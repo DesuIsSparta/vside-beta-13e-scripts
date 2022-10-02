@@ -1,0 +1,26 @@
+$Pref::HostMultiPlayer = 0;
+$Pref::Server::RegionMask = 2;
+$Pref::Server::ManagerAddress = "209.182.218.99";
+$Pref::Server::ManagerHTTPPort = 8080;
+$Pref::Server::ManagerUDPPort = 7777;
+$Pref::Server::Name = "San Francisco";
+$Pref::Server::Info = "Pussycat Dolls Lounge";
+$Pref::Server::ConnectionError = "Connection error!";
+$Pref::Server::Port = 28000;
+$Pref::Server::Password = "";
+$Pref::Server::AdminPassword = "";
+$Pref::Server::MaxPlayers = 300;
+$Pref::Server::TimeLimit = 0;
+$Pref::Server::KickBanTime = 300;
+$Pref::Server::BanTime = 1800;
+$Pref::Server::FloodProtectionEnabled = 1;
+$Pref::Server::MaxChatLen = 1200;
+$Audio::voiceCodec = ".v12";
+$Pref::Server::playerHeightMin = 0.5;
+$Pref::Server::playerHeightMax = 2.1;
+$Pref::Server::playerHeightWidthFactor = -0.4;
+$Pref::Server::adLogFolder = "adLogs";
+$Pref::Server::adLogBaseName = "adLog";
+$Pref::Server::adLogAppendTimeStamp = 1;
+$Pref::Net::BindAddress = "";
+

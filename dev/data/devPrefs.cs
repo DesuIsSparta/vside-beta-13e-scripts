@@ -1,0 +1,21 @@
+$DevPref::Audio::NotifySnoop = 1;
+$DevPref::autoOpenTriggers = 0;
+$DevPref::closet::skuDeets = 0;
+$DevPref::Debug::PrintClickedOn = 0;
+$DevPref::Editor::autoSelectGroupContents = 1;
+$DevPref::GuiEditor::SelectNonModal = 0;
+$DevPref::HUD::ShowLODs = 0;
+$DevPref::Mod::autoOpenMics = 1;
+$DevPref::Mod::autoOpenSnoop = 1;
+$DevPref::Mod::botSaveFileName = "";
+$DevPref::Mod::censorSnoop = 1;
+$DevPref::Mod::cusses = 1;
+$DevPref::Mod::SnoopWindow::Dim = "0 170 316 122";
+$DevPref::OpenGL::PlayerTextureLobotomyFile = "";
+$DevPref::OpenGL::WorldTextureLobotomyFile = "";
+$DevPref::reportTriggers = 0;
+$DevPref::showOnlyMusicTriggers = 0;
+$DevPref::SkuSnapshot::CameraFOVDeg = 60;
+$DevPref::SkuSnapshot::CameraVector = "1 2 -1";
+$DevPref::TS::renderBones = 0;
+

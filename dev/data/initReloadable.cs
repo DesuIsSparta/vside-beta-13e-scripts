@@ -1,0 +1,39 @@
+exec("./benchmarks/initReloadable.cs");
+exec("./admin/initReloadable.cs");
+exec("./testSuite.cs");
+exec("./testSmokeTests.cs");
+exec("./testNamespace.cs");
+exec("./testCommandToServer.cs");
+exec("./benchmarks/profiler.cs");
+exec("./testCurlClient.cs");
+exec("./testPlayer.cs");
+exec("./testOutfits.cs");
+exec("./testStrings.cs");
+exec("./testHTTPObject.cs");
+exec("./testManager.cs");
+exec("./testPermissions.cs");
+exec("./testSeatingSystem.cs");
+exec("./testAnimationSystem.cs");
+exec("./testMissionGroupIntegrity.cs");
+exec("./testGameStateBitSet.cs");
+exec("./testGameMetrics.cs");
+exec("./testGameGenericCollection.cs");
+exec("./testCustomizableSpaces.cs");
+exec("./testCustomizableSpacesServerSide.cs");
+exec("./testCustomizableSpacesActiveClient.cs");
+exec("./testGiftBox.cs");
+exec("./customSpacesSelectorDev.cs");
+exec("./testVURL.cs");
+exec("./asynchronousTestRunner.cs");
+exec("./closetDev.cs");
+exec("./miscDev.cs");
+exec("./scratchDev.cs");
+exec("./videoRendererDev.cs");
+exec("./testData/initReloadable.cs");
+if ($StandAlone || !$Server::Dedicated)
+{
+}
+if ($AmClient)
+{
+    exec("./ui/initReloadable.cs");
+}

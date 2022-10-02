@@ -1,0 +1,21 @@
+$DevPref::Mod::autoOpenSnoop = $Defaults::DevPref::Mod::autoOpenSnoop = 1;
+$DevPref::Mod::censorSnoop = $Defaults::DevPref::Mod::censorSnoop = 1;
+$DevPref::Mod::cusses = $Defaults::DevPref::Mod::cusses = 1;
+$DevPref::Mod::SnoopWindow::Dim = $Defaults::DevPref::Mod::SnoopWindow::Dim = "119 0 243 122";
+$DevPref::Audio::NotifySnoop = $Defaults::DevPref::Audio::NotifySnoop = 1;
+$DevPref::Mod::autoOpenMics = $Defaults::DevPref::Mod::autoOpenMics = 1;
+$DevPref::Mod::botSaveFileName = $Defaults::DevPref::Mod::botSaveFileName = "";
+$DevPref::reportTriggers = $Defaults::DevPref::reportTriggers = 0;
+$DevPref::showOnlyMusicTriggers = $Defaults::DevPref::showOnlyMusicTriggers = 0;
+$DevPref::autoOpenTriggers = $Defaults::DevPref::autoOpenTriggers = 0;
+$DevPref::HUD::ShowLODs = $Defaults::DevPref::HUD::ShowLODs = 0;
+$DevPref::Editor::autoSelectGroupContents = $Defaults::DevPref::Editor::autoSelectGroupContents = 1;
+$DevPref::Mod::botSaveFileName = $Defaults::DevPref::Mod::botSaveFileName = "";
+$DevPref::OpenGL::WorldTextureLobotomyFile = $Defaults::DevPref::OpenGL::WorldTextureLobotomyFile = "";
+$DevPref::OpenGL::PlayerTextureLobotomyFile = $Defaults::DevPref::OpenGL::PlayerTextureLobotomyFile = "";
+$DevPref::GuiEditor::SelectNonModal = $Defaults::DevPref::GuiEditor::SelectNonModal = 0;
+$DevPref::Debug::PrintClickedOn = $Defaults::DevPref::Debug::PrintClickedOn = 0;
+$DevPref::SkuSnapshot::CameraVector = $DevPref::SkuSnapshot::CameraVector = "1 2 -1";
+$DevPref::SkuSnapshot::CameraFOVDeg = $DevPref::SkuSnapshot::CameraFOVDeg = 60;
+$DevPref::closet::skuDeets = $DevPref::closet::skuDeets = 0;
+

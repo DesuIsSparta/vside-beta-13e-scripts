@@ -1,0 +1,2 @@
+datablock PlayerData(MyBot : MyPlayer);
+
