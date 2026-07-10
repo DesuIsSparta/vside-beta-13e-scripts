@@ -151,7 +151,7 @@ function HudTabs::autoHide(%this) {
     }
     %tabName = %currentTab.name;
     "";
-    if (!(%tabName[$UserPref::HudTabs::AutoClose @ %tabName])) {
+    if (!$UserPref::HudTabs::AutoClose[%tabName]) {
         return;
     }
     if (%this.container.cursorInControl()) {

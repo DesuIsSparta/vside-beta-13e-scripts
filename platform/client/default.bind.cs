@@ -231,24 +231,24 @@ function moveFaster(%val) {
     commandToServer('goFaster');
 };
 function doubleTapActionStop(%actionTag) {
-    if (%actionTag[$DoubleTapStopTimer @ %actionTag]) {
-        cancel(%actionTag[$DoubleTapStopTimer @ %actionTag]);
-        %actionTag[$DoubleTapStopTimer @ %actionTag] = 0;
+    if ($DoubleTapStopTimer[%actionTag]) {
+        cancel($DoubleTapStopTimer[%actionTag]);
+        $DoubleTapStopTimer[%actionTag] = 0;
     }
-    %actionTag[$DoubleTapActionAlreadyDone @ %actionTag] = 0;
+    $DoubleTapActionAlreadyDone[%actionTag] = 0;
 };
 function doubleTapDeclareActionVariable(%actionTag) {
-    %actionTag[$DoubleTapStopTimer @ %actionTag] = 0;
-    %actionTag[$DoubleTapActionAlreadyDone @ %actionTag] = 0;
+    $DoubleTapStopTimer[%actionTag] = 0;
+    $DoubleTapActionAlreadyDone[%actionTag] = 0;
 };
 function doubleTapCheckOnAction(%actionTag, %keyDown, %canDoubleTapInCamera, %resetDelayMS) {
     if (%keyDown) {
-        if (%actionTag[$DoubleTapStopTimer @ %actionTag]) {
-            cancel(%actionTag[$DoubleTapStopTimer @ %actionTag]);
-            %actionTag[$DoubleTapStopTimer @ %actionTag] = 0;
+        if ($DoubleTapStopTimer[%actionTag]) {
+            cancel($DoubleTapStopTimer[%actionTag]);
+            $DoubleTapStopTimer[%actionTag] = 0;
         }
-        if ((%actionTag[$DoubleTapActionAlreadyDone @ %actionTag] == 0.0)) {
-            %actionTag[$DoubleTapActionAlreadyDone @ %actionTag] = 1;
+        if (($DoubleTapActionAlreadyDone[%actionTag] == 0.0)) {
+            $DoubleTapActionAlreadyDone[%actionTag] = 1;
             return 0;
         } else {
             return 1;
@@ -259,7 +259,7 @@ function doubleTapCheckOnAction(%actionTag, %keyDown, %canDoubleTapInCamera, %re
         if (($IN_FREEFLY_CAM == 1.0)) {
             doubleTapActionStop(%actionTag);
         } else {
-            %actionTag[$DoubleTapStopTimer @ %actionTag] = schedule(%resetDelayMS, 0, "doubleTapActionStop", %actionTag);
+            $DoubleTapStopTimer[%actionTag] = schedule(%resetDelayMS, 0, "doubleTapActionStop", %actionTag);
         }
     }
 };
@@ -456,7 +456,7 @@ function doPropAction(%actionNum) {
     if (ClosetGui.isVisible()) {
         if (!ClosetGui.isDoingPropAction) {
             ClosetGui.isDoingPropAction = 1;
-            %propAnimation = $player.getPropAnimationFromSkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %actionNum);
+            %propAnimation = $player.getPropAnimationFromSkus($ClosetSkusOutfit[$ClosetOutfitName], %actionNum);
             if ((%propAnimation $= "")) {
                 ClosetGui.isDoingPropAction = 0;
             } else {

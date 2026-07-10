@@ -1,63 +1,63 @@
 $tmp::eventName = "autolookat";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 2;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = (1000.0 * 2.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = 0;
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "";
+$floodFilter::maxEvents[$tmp::eventName] = 2;
+$floodFilter::inPeriod[$tmp::eventName] = (1000.0 * 2.0);
+$floodFilter::penalty[$tmp::eventName] = 0;
+$floodFilter::message[$tmp::eventName] = "";
+$floodFilter::exemptPermission[$tmp::eventName] = "";
 $tmp::eventName = "helpMeNotify";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 1;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = ((1000.0 * 60.0) * 4.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = 0;
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 1;
+$floodFilter::inPeriod[$tmp::eventName] = ((1000.0 * 60.0) * 4.0);
+$floodFilter::penalty[$tmp::eventName] = 0;
+$floodFilter::message[$tmp::eventName] = "";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "mic";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 7;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = (1000.0 * 5.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = 0;
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "FLOOD PROTECTION: Chill out for a few seconds...";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 7;
+$floodFilter::inPeriod[$tmp::eventName] = (1000.0 * 5.0);
+$floodFilter::penalty[$tmp::eventName] = 0;
+$floodFilter::message[$tmp::eventName] = "FLOOD PROTECTION: Chill out for a few seconds...";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "pubNotify";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 10;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = (1000.0 * 5.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = 0;
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 10;
+$floodFilter::inPeriod[$tmp::eventName] = (1000.0 * 5.0);
+$floodFilter::penalty[$tmp::eventName] = 0;
+$floodFilter::message[$tmp::eventName] = "";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "raiseHand";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 1;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = (1000.0 * 60.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = 0;
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "cussExempt";
+$floodFilter::maxEvents[$tmp::eventName] = 1;
+$floodFilter::inPeriod[$tmp::eventName] = (1000.0 * 60.0);
+$floodFilter::penalty[$tmp::eventName] = 0;
+$floodFilter::message[$tmp::eventName] = "";
+$floodFilter::exemptPermission[$tmp::eventName] = "cussExempt";
 $tmp::eventName = "regular";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 7;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = (1000.0 * 10.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = (1000.0 * 4.0);
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "FLOOD PROTECTION: Chill out for a few seconds...";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 7;
+$floodFilter::inPeriod[$tmp::eventName] = (1000.0 * 10.0);
+$floodFilter::penalty[$tmp::eventName] = (1000.0 * 4.0);
+$floodFilter::message[$tmp::eventName] = "FLOOD PROTECTION: Chill out for a few seconds...";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "sos";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 2;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = ((1000.0 * 60.0) * 5.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = 0;
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "Whoa there - spamming won't help you get help. Try again in a few minutes. For more information on how block annoying users or report abuse, press F1.";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 2;
+$floodFilter::inPeriod[$tmp::eventName] = ((1000.0 * 60.0) * 5.0);
+$floodFilter::penalty[$tmp::eventName] = 0;
+$floodFilter::message[$tmp::eventName] = "Whoa there - spamming won't help you get help. Try again in a few minutes. For more information on how block annoying users or report abuse, press F1.";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "teleport";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 5;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = (1000.0 * 2.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = (1000.0 * 30.0);
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "Whoa there!";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 5;
+$floodFilter::inPeriod[$tmp::eventName] = (1000.0 * 2.0);
+$floodFilter::penalty[$tmp::eventName] = (1000.0 * 30.0);
+$floodFilter::message[$tmp::eventName] = "Whoa there!";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "whisper";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 7;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = (1000.0 * 10.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = (1000.0 * 4.0);
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "FLOOD PROTECTION: Chill out for a few seconds...";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 7;
+$floodFilter::inPeriod[$tmp::eventName] = (1000.0 * 10.0);
+$floodFilter::penalty[$tmp::eventName] = (1000.0 * 4.0);
+$floodFilter::message[$tmp::eventName] = "FLOOD PROTECTION: Chill out for a few seconds...";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "yell";
-$tmp::eventName[$floodFilter::maxEvents @ $tmp::eventName] = 1;
-$tmp::eventName[$floodFilter::inPeriod @ $tmp::eventName] = ((1000.0 * 60.0) * 10.0);
-$tmp::eventName[$floodFilter::penalty @ $tmp::eventName] = 0;
-$tmp::eventName[$floodFilter::message @ $tmp::eventName] = "FLOOD PROTECTION: Don't yell so much!";
-$tmp::eventName[$floodFilter::exemptPermission @ $tmp::eventName] = "flood";
+$floodFilter::maxEvents[$tmp::eventName] = 1;
+$floodFilter::inPeriod[$tmp::eventName] = ((1000.0 * 60.0) * 10.0);
+$floodFilter::penalty[$tmp::eventName] = 0;
+$floodFilter::message[$tmp::eventName] = "FLOOD PROTECTION: Don't yell so much!";
+$floodFilter::exemptPermission[$tmp::eventName] = "flood";
 function testFlooding(%player, %eventType, %testExempt) {
     if (!isObject(%player)) {
         if (!$AmClient) {
@@ -80,7 +80,7 @@ function testFlooding(%player, %eventType, %testExempt) {
     %erOld = %player.eventRecord[%eventType];
     %erNew = "";
     %newNum = 0;
-    %expiredTime = (getSimTime() - %eventType[$floodFilter::inPeriod @ %eventType]);
+    %expiredTime = (getSimTime() - $floodFilter::inPeriod[%eventType]);
     %n = (getWordCount(%erOld) - 1.0);
     while ((%n >= 0.0)) {
         %eventTime = getWord(%erOld, %n);
@@ -90,9 +90,9 @@ function testFlooding(%player, %eventType, %testExempt) {
         }
         %n = (%n - 1.0);
     }
-    if ((%newNum >= %eventType[$floodFilter::maxEvents @ %eventType])) {
-        if ((%eventType[$floodFilter::penalty @ %eventType] > 0.0)) {
-            %erNew = (getSimTime() + %eventType[$floodFilter::penalty @ %eventType]) @ " " @ %erNew;
+    if ((%newNum >= $floodFilter::maxEvents[%eventType])) {
+        if (($floodFilter::penalty[%eventType] > 0.0)) {
+            %erNew = (getSimTime() + $floodFilter::penalty[%eventType]) @ " " @ %erNew;
             (%n >= 0.0);
         }
         %player.eventRecord[%eventType] = %erNew;
@@ -104,10 +104,10 @@ function testFlooding(%player, %eventType, %testExempt) {
     }
 };
 function testFloodingExempt(%player, %eventType) {
-    %count = getWordCount(%eventType[$floodFilter::exemptPermission @ %eventType]);
+    %count = getWordCount($floodFilter::exemptPermission[%eventType]);
     %idx = 0;
     while ((%idx < %count)) {
-        %permission = getWord(%eventType[$floodFilter::exemptPermission @ %eventType], %idx);
+        %permission = getWord($floodFilter::exemptPermission[%eventType], %idx);
         if (%player.rolesPermissionCheckNoWarn(%permission)) {
             return 1;
         }

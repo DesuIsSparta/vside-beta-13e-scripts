@@ -151,8 +151,8 @@ function ApplauseMeterGui::setGray(%this, %value) {
     }
 };
 function ApplauseMeterGui::openForBlockGame(%this, %gameType) {
-    ApplauseMeterGui.setText(%gameType[$MsgCat::applauseGui @ "TITLE-BLOCKGAME-" @ %gameType]);
-    ApplauseMeterInfoText.setText(%gameType[$MsgCat::applauseGui @ "BODYTEXT-BLOCKGAME-" @ %gameType]);
+    ApplauseMeterGui.setText($MsgCat::applauseGui["TITLE-BLOCKGAME-",%gameType]);
+    ApplauseMeterInfoText.setText($MsgCat::applauseGui["BODYTEXT-BLOCKGAME-",%gameType]);
     %this.nonIdleStateA = 0;
     ApplauseMeterGui.alignToBottom();
 };

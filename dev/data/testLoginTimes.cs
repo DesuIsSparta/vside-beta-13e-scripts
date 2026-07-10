@@ -8,8 +8,8 @@ function testLoginTimes() {
         quitOnError = "true";
     };
     %testLogin.init();
-    echo("LOAD: Logging into " @ $cityIndex[$Cities @ $cityIndex]);
-    %testLogin.doLogin($cityIndex[$Cities @ $cityIndex]);
+    echo("LOAD: Logging into " @ $Cities[$cityIndex]);
+    %testLogin.doLogin($Cities[$cityIndex]);
     $cityIndex = ($cityIndex + 1.0);
 };
 function doSomething() {

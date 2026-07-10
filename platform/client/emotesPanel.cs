@@ -296,7 +296,7 @@ function EmoteHudList::onURL(%this, %url) {
         } else {
             if ((getWord(%url, 0) $= "list")) {
                 %listName = getWords(%url, 1);
-                %listName[$UserPref::emotes::collapsedLists @ %listName] = !(%listName[$UserPref::emotes::collapsedLists @ %listName]);
+                $UserPref::emotes::collapsedLists[%listName] = !$UserPref::emotes::collapsedLists[%listName];
                 EmoteHudList.populateLists();
             } else {
                 if ((getWord(%url, 0) $= "bindemote")) {
@@ -366,11 +366,11 @@ function normalizeKey(%key) {
 };
 function EmoteHudList::getEmoteForBinding(%this, %binding) {
     %binding = normalizeKey(%binding);
-    return %binding[$UserPref::emotes TAB $UserPref::Player::gender @ %binding];
+    return $UserPref::emotes[$UserPref::Player::gender,%binding];
 };
 function EmoteHudList::setEmoteForBinding(%this, %binding, %emote) {
     %binding = normalizeKey(%binding);
-    %binding[%emote @ $UserPref::emotes TAB $UserPref::Player::gender @ %binding] = ;
+    %emote[$UserPref::emotes,$UserPref::Player::gender,%binding] = ;
 };
 function EmoteHudList::rebind(%this, %binding, %emote) {
     %binding2 = normalizeKey(%binding);
@@ -379,8 +379,8 @@ function EmoteHudList::rebind(%this, %binding, %emote) {
         return;
     }
     %this.setEmoteForBinding(EmoteBindingMap.get(%emote), "");
-    EmoteBindingMap.remove(%binding2[$UserPref::emotes TAB $UserPref::Player::gender @ %binding2]);
-    %binding2[%emote @ $UserPref::emotes TAB $UserPref::Player::gender @ %binding2] = ;
+    EmoteBindingMap.remove($UserPref::emotes[$UserPref::Player::gender,%binding2]);
+    %emote[$UserPref::emotes,$UserPref::Player::gender,%binding2] = ;
     if (!(%emote $= "")) {
         EmoteBindingMap.put(%emote, %binding2);
     }

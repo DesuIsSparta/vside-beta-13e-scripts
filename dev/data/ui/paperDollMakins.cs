@@ -136,7 +136,7 @@ function paperDoll_MakePermutations(%gender) {
     paperDoll_StartTakingSnaps();
 };
 function paperDoll_RecursePermutations(%gender, %currentSkus, %currentNames, %startingDepth, %array) {
-    %masterList = %gender[$gPaperDollPermutationLists @ %gender];
+    %masterList = $gPaperDollPermutationLists[%gender];
     %masterListSize = %masterList.size();
     if ((%startingDepth >= %masterListSize)) {
         %array.append(%currentSkus @ "\t" @ %currentNames);
@@ -224,7 +224,7 @@ function paperDoll_generateXML() {
     %n = 0;
     while ((%n < getWordCount(%genders))) {
         %gender = getWord(%genders, %n);
-        %genderLong = %gender[%gendersLong @ %gender];
+        %genderLong = %gendersLong[%gender];
         %file.writeLineIndented("");
         %file.writeOpenTag("Gender", "name=\"" @ %gender @ "\"");
         %file.writeCommentTag("Parameters for gender" @ " " @ %genderLong);
@@ -283,7 +283,7 @@ function paperDoll_generateJSON() {
     %n = 0;
     while ((%n < getWordCount(%genders))) {
         %gender = getWord(%genders, %n);
-        %genderLong = %gender[%gendersLong @ %gender];
+        %genderLong = %gendersLong[%gender];
         %file.writeLineIndented("{");
         %file.indent();
         %file.writeLineIndented("\"Gender\": \"" @ %gender @ "\",");
@@ -395,7 +395,7 @@ function paperDoll_generateManifest_Recurse(%file, %gender, %initialDepth, %valu
             %imgFilename = getField(%s, 0);
             %imgFilename = %imgFilename @ "." @ $gPaperDoll_ImgExtension;
             %skus = getField(%s, 1);
-            %skusEntire = SkuManager.overlaySkus(%gender[$gPaperDoll_BaseSkus @ %gender], %skus);
+            %skusEntire = SkuManager.overlaySkus($gPaperDoll_BaseSkus[%gender], %skus);
             %file.writeLineIndented("");
             %file.writeOpenTag("permutation", "");
             %file.writeShortTag("filename", "", %imgFilename);

@@ -283,7 +283,7 @@ function WorldMap::selectVenue(%this, %cityName, %venueName, %spawnName) {
         }
         %serverInfo = WorldMapServerInfoGroup.getObject(%idx);
         if (!(%cityName $= "")) {
-            %cityName[$UserPref::WorldMap::ServerChoice @ %cityName] = %serverInfo.serverName;
+            $UserPref::WorldMap::ServerChoice[%cityName] = %serverInfo.serverName;
         }
         %targetVurl = %targetVurl @ "?server0=" @ %serverInfo.serverName;
     }
@@ -1181,12 +1181,12 @@ function getSkipMapVurl(%bChangeUI) {
         }
     }
     if (!(isDefined("$gTriedToAutoConnectOnceAlready" @ $Player::Name))) {
-        $Player::Name[$gTriedToAutoConnectOnceAlready @ $Player::Name] = 0;
+        $gTriedToAutoConnectOnceAlready[$Player::Name] = 0;
     }
-    if (!($Player::Name[$gTriedToAutoConnectOnceAlready @ $Player::Name])) {
+    if (!$gTriedToAutoConnectOnceAlready[$Player::Name]) {
         log("communication", "debug", "Checking for autodest.");
         if (%bChangeUI) {
-            $Player::Name[$gTriedToAutoConnectOnceAlready @ $Player::Name] = 1;
+            $gTriedToAutoConnectOnceAlready[$Player::Name] = 1;
         }
         if ((gUserPropMgrClient.getProperty($Player::Name, "level started count gw", 0) == 0.0)) {
         }

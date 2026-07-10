@@ -539,21 +539,21 @@ function LoginRequest::onGotUserProperties(%this) {
         %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, -(1.0));
         if ((%action == -(1.0)) || (%action $= "")) {
             %action[%numberOfUnboundKeyCombinations @ "f"] = (%action[%numberOfUnboundKeyCombinations @ "f"] + 1.0);
-            %keyCombo["" @ $UserPref::emotes TAB "f" @ %keyCombo] = ;
+            ""[$UserPref::emotes,"f",%keyCombo] = ;
         } else {
             if (!(%keyCombo $= "")) {
                 EmoteBindingMap.put(%action, %keyCombo);
-                %keyCombo[%action @ $UserPref::emotes TAB "f" @ %keyCombo] = ;
+                %action[$UserPref::emotes,"f",%keyCombo] = ;
             }
         }
         %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, -(1.0));
         if ((%action == -(1.0)) || (%action $= "")) {
             %action[%numberOfUnboundKeyCombinations @ "m"] = (%action[%numberOfUnboundKeyCombinations @ "m"] + 1.0);
-            %keyCombo["" @ $UserPref::emotes TAB "m" @ %keyCombo] = ;
+            ""[$UserPref::emotes,"m",%keyCombo] = ;
         } else {
             if (!(%keyCombo $= "")) {
                 EmoteBindingMap.put(%action, %keyCombo);
-                %keyCombo[%action @ $UserPref::emotes TAB "m" @ %keyCombo] = ;
+                %action[$UserPref::emotes,"m",%keyCombo] = ;
             }
         }
         %m = (%m - 1.0);
@@ -567,7 +567,7 @@ function LoginRequest::onGotUserProperties(%this) {
         (%m >= 0.0);
         while ((%m >= 0.0)) {
             %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
-            %keyCombo[%keyCombo[$Defaults::UserPref::emotes TAB "f" @ %keyCombo] @ $UserPref::emotes TAB "f" @ %keyCombo] = ;
+            $Defaults::UserPref::emotes["f",%keyCombo][$UserPref::emotes,"f",%keyCombo] = ;
             %m = (%m - 1.0);
         }
     }
@@ -576,7 +576,7 @@ function LoginRequest::onGotUserProperties(%this) {
         (%m >= 0.0);
         while ((%m >= 0.0)) {
             %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
-            %keyCombo[%keyCombo[$Defaults::UserPref::emotes TAB "m" @ %keyCombo] @ $UserPref::emotes TAB "m" @ %keyCombo] = ;
+            $Defaults::UserPref::emotes["m",%keyCombo][$UserPref::emotes,"m",%keyCombo] = ;
             %m = (%m - 1.0);
         }
     }

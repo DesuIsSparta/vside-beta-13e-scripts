@@ -133,7 +133,7 @@ function SystemMessageTextCtrl::getMessageColor(%this, %age) {
     if ((%age > 3.0)) {
         %age = 3;
     }
-    return %age[$gAgedMessageColors @ %age];
+    return $gAgedMessageColors[%age];
 };
 function SystemMessageTextCtrl::onRightURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {

@@ -24,12 +24,12 @@ function outfits_makeDefault(%stringMap) {
         %n = (getWordCount(%outfits) - 1.0);
         while ((%n >= 0.0)) {
             %name = %gender @ getWord(%outfits, %n);
-            %stringMap.put(%name, %name[$gNewStockOutfits @ %name]);
+            %stringMap.put(%name, $gNewStockOutfits[%name]);
             %n = (%n - 1.0);
         }
         %name = %gender @ "Body";
         (%n >= 0.0);
-        %stringMap.put(%name, %gender[$gDefaultBodyAttrs @ %gender]);
+        %stringMap.put(%name, $gDefaultBodyAttrs[%gender]);
         %m = (%m - 1.0);
     }
     if (isObject($player)) {
@@ -96,8 +96,8 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
     if (!((%n < %num) @ " " @ %stringMap.get("initialOutfitAndBody") $= "")) {
     }
     if ((%stringMap.get("currentOutfit") $= "")) {
-        $Player::Name[$userpref::player::initialSkus @ $Player::Name] = %stringMap.get("initialOutfitAndBody");
-        if (!(SkuManager.filterSkusGender($Player::Name[$userpref::player::initialSkus @ $Player::Name], "f") $= $Player::Name[$userpref::player::initialSkus @ $Player::Name])) {
+        $userpref::player::initialSkus[$Player::Name] = %stringMap.get("initialOutfitAndBody");
+        if (!(SkuManager.filterSkusGender($userpref::player::initialSkus[$Player::Name], "f") $= $userpref::player::initialSkus[$Player::Name])) {
             %skusGender = "m";
         } else {
             %skusGender = "f";
@@ -105,21 +105,21 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
         if (!(%skusGender $= $UserPref::Player::gender)) {
             error(getScopeName() @ " " @ "incoming SKUs do not match gender. outfit will likely be old-school default.");
         }
-        $Player::Name[$userpref::player::initialSkusGender @ $Player::Name] = $UserPref::Player::gender;
+        $userpref::player::initialSkusGender[$Player::Name] = $UserPref::Player::gender;
         %stringMap.clear();
     }
     if ((%stringMap.size() == 0.0)) {
     }
-    if (!($Player::Name[$userpref::player::initialSkus @ $Player::Name] $= "")) {
-        if (($Player::Name[$userpref::player::initialSkusGender @ $Player::Name] $= $UserPref::Player::gender)) {
-            %skusBody = SkuManager.filterSkusForBody($Player::Name[$userpref::player::initialSkus @ $Player::Name]);
-            %skusOutfit = SkuManager.filterSkusForClothing($Player::Name[$userpref::player::initialSkus @ $Player::Name]);
+    if (!($userpref::player::initialSkus[$Player::Name] $= "")) {
+        if (($userpref::player::initialSkusGender[$Player::Name] $= $UserPref::Player::gender)) {
+            %skusBody = SkuManager.filterSkusForBody($userpref::player::initialSkus[$Player::Name]);
+            %skusOutfit = SkuManager.filterSkusForClothing($userpref::player::initialSkus[$Player::Name]);
             %stringMap.put("currentOutfit", "A");
             %stringMap.put($UserPref::Player::gender @ "Body", %skusBody);
             %stringMap.put($UserPref::Player::gender @ "A", %skusOutfit);
             schedule(500, 0, "outfits_persist");
         } else {
-            error(getScopeName() @ " " @ "- got" @ " " @ $UserPref::Player::gender @ " " @ "expected" @ " " @ $Player::Name[$userpref::player::initialSkusGender @ $Player::Name]);
+            error(getScopeName() @ " " @ "- got" @ " " @ $UserPref::Player::gender @ " " @ "expected" @ " " @ $userpref::player::initialSkusGender[$Player::Name]);
         }
         deleteVariables("$userpref::player::initialSkus" @ $Player::Name);
         deleteVariables("$userpref::player::initialSkusGender" @ $Player::Name);

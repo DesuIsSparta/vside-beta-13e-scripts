@@ -727,7 +727,7 @@ $gUGCPrevSku["REJECTED"] = "";
 $gUGCPrevSku["TEMPLATES"] = "";
 $gUGCPrevSku["INCOMING"] = "";
 function getUGCItems(%type) {
-    %type[$gUGCSkus @ %type] = "";
+    $gUGCSkus[%type] = "";
     if ((%type $= "TEMPLATES")) {
         %list = SkuManager.getSkusTag("template", $player.getGender());
         %list = %list @ " " @ SkuManager.getSkusTag("template", $player.getOtherGender());
@@ -742,7 +742,7 @@ function getUGCItems(%type) {
             if (0) {
                 ClosetThumbnailsMyShop.infoText.setVisible(1);
                 ClosetThumbnailsMyShop.infoText.setText("Fetching..");
-                %list = %type[$gSampleUGC @ %type];
+                %list = $gSampleUGC[%type];
                 %n = (getWordCount(%list) - 1.0);
                 while ((%n >= 0.0)) {
                     %sku = getWord(%list, %n);
@@ -761,7 +761,7 @@ function getUGCItems(%type) {
     }
 };
 function onGotUGCItems(%type, %list) {
-    %type[$gUGCSkus @ %type] = %list;
+    $gUGCSkus[%type] = %list;
     if ((%type $= "REJECTED")) {
         ClosetThumbnailsMyShop.setUnfilteredSkus("");
         ClosetThumbnailsMyShop.infoText.setText("rejected list not implemented yet");
@@ -774,10 +774,10 @@ function onGotUGCItems(%type, %list) {
             %theTab.firstLoad = 0;
             ClosetGui_MyShop_SetView("TEMPLATES");
         } else {
-            ClosetThumbnailsMyShop.infoText.setText(%type[$MsgCat::MyShop TAB "EMPTYLIST" @ %type]);
+            ClosetThumbnailsMyShop.infoText.setText($MsgCat::MyShop["EMPTYLIST",%type]);
         }
     }
-    ClosetGui_MyShop_SetCurrentSku(%type[$gUGCPrevSku @ %type]);
+    ClosetGui_MyShop_SetCurrentSku($gUGCPrevSku[%type]);
 };
 function ClosetGui_MyShop_GetSkuUGCStatus(%sku) {
     %si = SkuManager.findBySku(%sku);
@@ -794,7 +794,7 @@ function ClosetGui_MyShop_GetSkuUGCStatus(%sku) {
     }
     while ((%n >= 0.0)) {
         %s = getWord(%statusi, %n);
-        if (hasWord(%s[$gUGCSkus @ %s], %sku)) {
+        if (hasWord($gUGCSkus[%s], %sku)) {
             %status = %s;
         }
         %n = (%n - 1.0);
@@ -839,7 +839,7 @@ function ClosetGui_MyShop_SetCurrentSku(%sku) {
         %itemStatus = "";
     } else {
         %itemStatus = ClosetGui_MyShop_GetSkuUGCStatus(%sku);
-        %itemStatus[$gUGCPrevSku @ %itemStatus] = %sku;
+        $gUGCPrevSku[%itemStatus] = %sku;
     }
     if ((%itemStatus $= "ACCEPTED")) {
         %readOnlyDesc = 1;
@@ -1140,7 +1140,7 @@ function ClosetGUI_RefreshTextures() {
     }
 };
 function ClosetGui_MyShop_CopySkusToOutfit() {
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], $gSkusMyShopLayer);
+    $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], $gSkusMyShopLayer);
 };
 function MyShopItemDeets_DescShort::onKeystroke(%this) {
     %si = SkuManager.findBySku($gMyShopCurrentSku);
@@ -1207,7 +1207,7 @@ $gMyShopSubmitTitle["INCOMING"] = "Accept or Decline item";
 $gMyShopSubmitBody["INCOMING"] = "yep";
 function MyShopSubmitButton::onClick(%this) {
     %itemType = ClosetGui_MyShop_GetSkuUGCStatus($gMyShopCurrentSku);
-    MessageBoxOkCancel(%itemType[$gMyShopSubmitTitle @ %itemType], %itemType[$gMyShopSubmitBody @ %itemType], "MessageBoxOK(\"not implemented\", \"\", \"\");", "");
+    MessageBoxOkCancel($gMyShopSubmitTitle[%itemType], $gMyShopSubmitBody[%itemType], "MessageBoxOK(\"not implemented\", \"\", \"\");", "");
 };
 function MyShop_InspectTexture(%num) {
     if (MyShopTextureInspector.isVisible()) {

@@ -189,7 +189,7 @@ function geTGF_tabs::setup(%this, %container) {
         } else {
         }
         %toolTip = "";
-        %tabName[%tooltips @ %tabName];
+        %tooltips[%tabName];
         %tab = %this.newTab(%tabName, "platform/client/buttons/tgf/tgf_tab_" @ %tabName, %toolTip);
         %tab.setName("geTGF_Tab_" @ %tabName);
         %tab.bindClassName("geTGF_Tab_" @ %tabName);

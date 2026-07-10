@@ -499,8 +499,8 @@ function ClientCmdGiftingCurrency_Initiated(%sourcePlayerName, %giftTransactionI
         geGiftingPanel.doAccept(%sourcePlayerName, %giftTransactionID, 0, "E-ENVSERVER-UNKNOWN");
         return;
     }
-    %acceptModeStrangers = $UserPref::Player::GiftsPermissionStrangers[$gGiftAcceptModeStrings @ $UserPref::Player::GiftsPermissionStrangers];
-    %acceptModeFriends = $UserPref::Player::GiftsPermissionFriends[$gGiftAcceptModeStrings @ $UserPref::Player::GiftsPermissionFriends];
+    %acceptModeStrangers = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionStrangers];
+    %acceptModeFriends = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionFriends];
     if (%sourcePlayer.isFriend()) {
     } else {
     }
@@ -550,7 +550,7 @@ function ClientCmdGiftingCurrency_AcceptedOrDeclinedOrInvalid(%giftTransactionID
             error(getScopeName() @ " " @ "- can't find other player:" @ " " @ %otherPlayerName @ " " @ %giftTransactionID);
             %messageCode = "E-TARGET-MISSING";
         }
-        %text = strreplace(%messageCode[$MsgCat::gifting @ %messageCode], "[OTHERPLAYER]", "<linkcolor:ffddeeff><a:gamelink " @ munge(%otherPlayerName) @ ">" @ StripMLControlChars(%otherPlayerName) @ "</a>");
+        %text = strreplace($MsgCat::gifting[%messageCode], "[OTHERPLAYER]", "<linkcolor:ffddeeff><a:gamelink " @ munge(%otherPlayerName) @ ">" @ StripMLControlChars(%otherPlayerName) @ "</a>");
         %text = strreplace(%text, "[OTHERPLAYER_HE_SHE_IT]", getPronounHeSheIt(%otherPlayer));
         %text = strreplace(%text, "[OTHERPLAYER_HIM_HER_IT]", getPronounHimHerIt(%otherPlayer));
         MessageBoxOK("Woops..", %text, "");
@@ -584,7 +584,7 @@ function onDoneOrErrorCallback_GiftCurrency(%request) {
         if ((%errorCode $= "")) {
             %errorCode = "UNKNOWN";
         }
-        %msg = %errorCode[$MsgCat::gifting @ "E-BACKEND-" @ %errorCode];
+        %msg = $MsgCat::gifting["E-BACKEND-",%errorCode];
         if ((%msg $= "")) {
             %msg = %msg[$MsgCat::gifting @ "E-BACKEND-UNKNOWN"];
         }

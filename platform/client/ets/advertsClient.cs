@@ -97,8 +97,8 @@ function PlayGui::tryOnInfoSignClick(%this, %obj, %pt) {
         return 0;
     }
     %infoSignID = getWord(%s, 1);
-    %infoSignBody = %infoSignID[$MsgCat::infoSignBody @ %infoSignID];
-    %infoSignTitle = %infoSignID[$MsgCat::infoSignTitle @ %infoSignID];
+    %infoSignBody = $MsgCat::infoSignBody[%infoSignID];
+    %infoSignTitle = $MsgCat::infoSignTitle[%infoSignID];
     if ((%infoSignBody $= "")) {
         error(getTrace() @ " " @ "- unknown infoSign:" @ " " @ %s);
         return 1;
@@ -158,16 +158,16 @@ function convertPtToTextureSpace(%obj, %pt) {
     %pt[0] = getWord(%pt, 0);
     %pt[1] = getWord(%pt, 1);
     %pt[2] = getWord(%pt, 2);
-    %retX = %xComp[%pt @ %xComp];
-    %retY = %yComp[%pt @ %yComp];
+    %retX = %pt[%xComp];
+    %retY = %pt[%yComp];
     if ((%xFlip >= 0.0)) {
     }
-    if ((%xFlip[%pt @ %xFlip] < 0.5)) {
+    if ((%pt[%xFlip] < 0.5)) {
         %retX = (1.0 - %retX);
     }
     if ((%yFlip >= 0.0)) {
     }
-    if ((%yFlip[%pt @ %yFlip] < 0.5)) {
+    if ((%pt[%yFlip] < 0.5)) {
         %retY = (1.0 - %retY);
     }
     %retX = getSubStr(%retX, 0, 5);

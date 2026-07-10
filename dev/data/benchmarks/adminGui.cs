@@ -10,7 +10,7 @@ function adminActionPopup::onSelect(%this, %unused, %text) {
 };
 function selectAdminAction(%text) {
     adminActionPopup.setText(%text);
-    adminGuiEditMessage.setValue(%text[$gAdminActionDefaultMessages @ %text]);
+    adminGuiEditMessage.setValue($gAdminActionDefaultMessages[%text]);
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);

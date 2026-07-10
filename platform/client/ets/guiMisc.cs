@@ -392,7 +392,7 @@ function animateConversationTypingIndicator() {
         $Conv::TypingIndicatorState = ($Conv::TypingIndicatorsNum - 1.0);
     }
     $Conv::TypingIndicatorState = (($Conv::TypingIndicatorState + 1.0) % $Conv::TypingIndicatorsNum);
-    $Conv::typingIndicator = $Conv::TypingIndicatorState[$Conv::TypingIndicators @ $Conv::TypingIndicatorState];
+    $Conv::typingIndicator = $Conv::TypingIndicators[$Conv::TypingIndicatorState];
     %celebIndicatorOn = 0;
     if (%celebIndicatorOn) {
         if (($Conv::CelebOpenIndicatorState == -(1.0))) {
@@ -406,7 +406,7 @@ function animateConversationTypingIndicator() {
             $Conv::CelebOpenIndicatorState = ($Conv::CelebOpenIndicatorsNum - 1.0);
         }
         $Conv::CelebOpenIndicatorState = (($Conv::CelebOpenIndicatorState + 1.0) % $Conv::CelebOpenIndicatorsNum);
-        $Conv::celebOpenIndicator = $Conv::CelebOpenIndicatorState[$Conv::CelebOpenIndicators @ $Conv::CelebOpenIndicatorState];
+        $Conv::celebOpenIndicator = $Conv::CelebOpenIndicators[$Conv::CelebOpenIndicatorState];
         if (($Conv::CelebCloseIndicatorState == -(1.0))) {
             %n = -(1.0);
             $Conv::CelebCloseIndicators[%n = (%n + 1.0)] = "";
@@ -418,7 +418,7 @@ function animateConversationTypingIndicator() {
             $Conv::CelebCloseIndicatorState = ($Conv::CelebCloseIndicatorsNum - 1.0);
         }
         $Conv::CelebCloseIndicatorState = (($Conv::CelebCloseIndicatorState + 1.0) % $Conv::CelebCloseIndicatorsNum);
-        $Conv::celebCloseIndicator = $Conv::CelebCloseIndicatorState[$Conv::CelebCloseIndicators @ $Conv::CelebCloseIndicatorState];
+        $Conv::celebCloseIndicator = $Conv::CelebCloseIndicators[$Conv::CelebCloseIndicatorState];
     }
     if (($Conv::AffinityOpenIndicatorState == -(1.0))) {
         %n = -(1.0);
@@ -433,7 +433,7 @@ function animateConversationTypingIndicator() {
         $Conv::AffinityOpenIndicatorState = ($Conv::AffinityOpenIndicatorsNum - 1.0);
     }
     $Conv::AffinityOpenIndicatorState = (($Conv::AffinityOpenIndicatorState + 1.0) % $Conv::AffinityOpenIndicatorsNum);
-    $Conv::affinityOpenIndicator = $Conv::AffinityOpenIndicatorState[$Conv::AffinityOpenIndicators @ $Conv::AffinityOpenIndicatorState];
+    $Conv::affinityOpenIndicator = $Conv::AffinityOpenIndicators[$Conv::AffinityOpenIndicatorState];
     if (($Conv::AffinityCloseIndicatorState == -(1.0))) {
         %n = -(1.0);
         $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = "";
@@ -447,7 +447,7 @@ function animateConversationTypingIndicator() {
         $Conv::AffinityCloseIndicatorState = ($Conv::AffinityCloseIndicatorsNum - 1.0);
     }
     $Conv::AffinityCloseIndicatorState = (($Conv::AffinityCloseIndicatorState + 1.0) % $Conv::AffinityCloseIndicatorsNum);
-    $Conv::affinityCloseIndicator = $Conv::AffinityCloseIndicatorState[$Conv::AffinityCloseIndicators @ $Conv::AffinityCloseIndicatorState];
+    $Conv::affinityCloseIndicator = $Conv::AffinityCloseIndicators[$Conv::AffinityCloseIndicatorState];
 };
 $Conv::animateConversationTypingIndicatorTimerID = 0;
 $Conv::animateConversationTypingIndicatorTimerPeriod = 400;

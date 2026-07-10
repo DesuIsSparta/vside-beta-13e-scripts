@@ -105,9 +105,9 @@ function setVisibleDistanceOption(%val) {
 };
 function setVisibleDistanceOptionValue(%val) {
     if ((%val == 3.0)) {
-        %dist = $renderQuality[$Settings::VisibleDistances @ $renderQuality];
+        %dist = $Settings::VisibleDistances[$renderQuality];
     } else {
-        %dist = %val[$Settings::VisibleDistances @ %val];
+        %dist = $Settings::VisibleDistances[%val];
     }
     if ((%dist > 0.0)) {
         SetVisibleDistance(%dist);

@@ -439,7 +439,7 @@ function do_emote() {
     if (isObject(pChat)) {
         pChat.say($rand_genre[$rand_genre["(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote, 0, 0);
     }
-    commandToServer('setGenre', $rand_genre[$Genres @ $rand_genre]);
+    commandToServer('setGenre', $Genres[$rand_genre]);
     schedule(5000, 0, stopAndTalk);
     schedule(30000, 0, approveFriendRequests);
 };

@@ -1773,19 +1773,19 @@ function WorldEditor::CloneTo(%this, %snapType) {
     %selSize = %this.getSelectionSize();
     %i = 0;
     while ((%i < %selSize)) {
-        %i[%origObjects @ %i] = %this.getSelectedObject(%i);
+        %origObjects[%i] = %this.getSelectedObject(%i);
         %i = (%i + 1.0);
     }
     %i = 0;
     (%i < %selSize);
     while ((%i < %selSize)) {
         %this.clearSelection();
-        %objTarget = %i[%origObjects @ %i];
+        %objTarget = %origObjects[%i];
         %this.selectObject(%objTarget);
         %this.copySelection();
         %this.pasteSelection();
         %objToSnap = %this.getSelectedObject(0);
-        %i[%newObjects @ %i] = %objToSnap;
+        %newObjects[%i] = %objToSnap;
         %this.snapTo(%snapType, %objTarget, %objToSnap);
         %i = (%i + 1.0);
     }
@@ -1793,7 +1793,7 @@ function WorldEditor::CloneTo(%this, %snapType) {
     %i = 0;
     (%i < %selSize);
     while ((%i < %selSize)) {
-        %this.selectObject(%i[%newObjects @ %i]);
+        %this.selectObject(%newObjects[%i]);
         %i = (%i + 1.0);
     }
 };
@@ -1903,10 +1903,10 @@ function Creator::init(%this) {
         %i = 0;
         while ((%i < %dirCount)) {
             %parent = getWords(%split, 0, %i);
-            if (!(%parent[%interiorId @ %parent])) {
-                %parent[%interiorId @ %parent] = %this.insertItem(%parentId, getWord(%split, %i));
+            if (!%interiorId[%parent]) {
+                %interiorId[%parent] = %this.insertItem(%parentId, getWord(%split, %i));
             }
-            %parentId = %parent[%interiorId @ %parent];
+            %parentId = %interiorId[%parent];
             %i = (%i + 1.0);
         }
         %create = "createInterior(" @ "\"" @ %file @ "\"" @ ");";
@@ -1945,10 +1945,10 @@ function Creator::init(%this) {
         %i = 0;
         while ((%i < %dirCount)) {
             %parent = getWords(%split, 0, %i);
-            if (!(%parent[%staticId @ %parent])) {
-                %parent[%staticId @ %parent] = %this.insertItem(%parentId, getWord(%split, %i));
+            if (!%staticId[%parent]) {
+                %staticId[%parent] = %this.insertItem(%parentId, getWord(%split, %i));
             }
-            %parentId = %parent[%staticId @ %parent];
+            %parentId = %staticId[%parent];
             %i = (%i + 1.0);
         }
         %create = "TSStatic::create(\"" @ %file @ "\");";
@@ -1967,10 +1967,10 @@ function Creator::init(%this) {
         %i = 0;
         while ((%i < %dirCount)) {
             %parent = getWords(%split, 0, %i);
-            if (!(%parent[%dynamicID @ %parent])) {
-                %parent[%dynamicID @ %parent] = %this.insertItem(%parentId, getWord(%split, %i));
+            if (!%dynamicID[%parent]) {
+                %dynamicID[%parent] = %this.insertItem(%parentId, getWord(%split, %i));
             }
-            %parentId = %parent[%dynamicID @ %parent];
+            %parentId = %dynamicID[%parent];
             %i = (%i + 1.0);
         }
         %create = "TSDynamic::create(\"" @ %file @ "\");";
@@ -2027,9 +2027,9 @@ function Creator::init(%this) {
     echo(" Creator::init  loading mission objects");
     %base = %this.insertItem(0, "Mission Objects");
     %i = 0;
-    while (!(%i[%objGroup @ %i] $= "")) {
-        %grp = %this.insertItem(%base, %i[%objGroup @ %i]);
-        %groupTag = "%" @ %i[%objGroup @ %i] @ "_Item";
+    while (!(%objGroup[%i] $= "")) {
+        %grp = %this.insertItem(%base, %objGroup[%i]);
+        %groupTag = "%" @ %objGroup[%i] @ "_Item";
         %done = 0;
         %j = 0;
         while (!%done) {
@@ -2193,7 +2193,7 @@ function TextureInit() {
             %data = Texture_material.getRowText(%row);
             %entry = getRecord(%data, 0);
             %reg = getField(%entry, 1);
-            %reg[$dirtyTexture @ %reg] = 1;
+            $dirtyTexture[%reg] = 1;
             %opCount = getRecordCount(%data);
             %op = 2;
             while ((%op < %opCount)) {
@@ -2203,7 +2203,7 @@ function TextureInit() {
                 }
                 if (!(%label $= "Fractal Distortion")) {
                     %reg = getField(%entry, 2);
-                    %reg[$dirtyTexture @ %reg] = 1;
+                    $dirtyTexture[%reg] = 1;
                 }
                 %op = (%op + 1.0);
             }
@@ -2412,7 +2412,7 @@ function texture::evalOperationData(%data, %row) {
     %reg = getField(%data, 2);
     %dreg = getField(%data, 3);
     %id = Texture_material.getRowId(%row);
-    if ((%reg[$dirtyTexture @ %reg] == 0.0)) {
+    if (($dirtyTexture[%reg] == 0.0)) {
         return;
     }
     if ((%label $= "Fractal Distortion")) {
@@ -2434,7 +2434,7 @@ function texture::evalOperationData(%data, %row) {
             }
         }
     }
-    %reg[$dirtyTexture @ %reg] = 0;
+    $dirtyTexture[%reg] = 0;
 };
 function texture::previewOperation(%id) {
     if ((%id $= "")) {
@@ -2510,12 +2510,12 @@ function texture::saveOperation() {
     }
     %dirty = !((%field < %fieldCount) @ " " @ %data $= %newData);
     %reg = getField(%data, 2);
-    %reg[$dirtyTexture @ %reg] = %dirty;
+    $dirtyTexture[%reg] = %dirty;
     Texture_operation.setRowById(%id, %newData);
     if ((%dirty == 1.0)) {
         %data = Texture_material.getRowTextById($selectedMaterial);
         %reg = getField(getRecord(%data, 0), 1);
-        %reg[$dirtyTexture @ %reg] = 1;
+        $dirtyTexture[%reg] = 1;
     }
     %row = Texture_material.getRowNumById(%id);
     if ((%row == 0.0)) {
@@ -2533,7 +2533,7 @@ function texture::addMaterial(%entry) {
     %id = $nextTextureId = ($nextTextureId + 1.0);
     Texture_material.addRow(%id, %entry);
     %reg = getField(%entry, 1);
-    %reg[$dirtyTexture @ %reg] = 1;
+    $dirtyTexture[%reg] = 1;
     texture::save();
     return %id;
 };
@@ -2541,7 +2541,7 @@ function texture::addOperation(%entry) {
     %id = $nextTextureId = ($nextTextureId + 1.0);
     Texture_operation.addRow(%id, %entry);
     %reg = getField(%entry, 2);
-    %reg[$dirtyTexture @ %reg] = 1;
+    $dirtyTexture[%reg] = 1;
     texture::save();
     return %id;
 };
@@ -2579,7 +2579,7 @@ function texture::loadFromScript(%script) {
     %rowCount = Texture_material.rowCount();
     %row = 0;
     while ((%row < %rowCount)) {
-        $nextTextureRegister[$dirtyTexture @ $nextTextureRegister] = 1;
+        $dirtyTexture[$nextTextureRegister] = 1;
         %data = Texture_material.getRowText(%row);
         %rec = getRecord(%data, 0);
         %rec = setField(%rec, 1, $nextTextureRegister);
@@ -2591,7 +2591,7 @@ function texture::loadFromScript(%script) {
             if ((%op == 1.0)) {
                 %frac_reg = $nextTextureRegister;
             }
-            $nextTextureRegister[$dirtyTexture @ $nextTextureRegister] = 1;
+            $dirtyTexture[$nextTextureRegister] = 1;
             %rec = getRecord(%data, %op);
             %rec = setField(%rec, 2, $nextTextureRegister);
             %rec = setField(%rec, 3, %frac_reg);

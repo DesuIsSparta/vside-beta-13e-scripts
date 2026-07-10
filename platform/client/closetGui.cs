@@ -1,27 +1,27 @@
 $ClosetGuiOpenMessage = "Changing Clothes";
 $gSkusToHideInCloset = getSpecialSKU(0, "helpmebadge");
 $gClosetStanceEmotesNum = 0;
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "cool";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "cool";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "cool";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "cool";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "cool";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "cool";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "cool";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "cool";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "cool";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "cool";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "wve";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "wve";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "wve";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "wve";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "wve";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "wve";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "flr";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "flr";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "flr";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "flr";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
-$gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "ttth";
+$gClosetStanceEmotes[$gClosetStanceEmotesNum] = "ttth";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
 $gClosetStanceEmotesLast = "";
 $gClosetNeutralHeightInches["f"] = ((5.0 * 12.0) + 7.0);
@@ -276,13 +276,13 @@ function ClosetTabs::setup(%this) {
 };
 function removeShopBannerCache(%shop) {
     log("network", "debug", "DELETING SHOP BANNER CACHE!!! Shop: " @ %shop);
-    if (!(%shop[$shopBannerCacheCleared @ %shop])) {
-        %shop[$shopBannerCacheCleared @ %shop] = 1;
+    if (!$shopBannerCacheCleared[%shop]) {
+        $shopBannerCacheCleared[%shop] = 1;
         deleteFile("dc/cache/platform/client/buttons/banners/store_" @ %shop @ "_n.jpg");
         deleteFile("dc/cache/platform/client/buttons/banners/store_" @ %shop @ "_d.jpg");
         deleteFile("dc/cache/platform/client/buttons/banners/store_" @ %shop @ "_h.jpg");
         deleteFile("dc/cache/platform/client/buttons/banners/store_" @ %shop @ "_i.jpg");
-        log("network", "debug", "VAR: AFTER: " @ " " @ %shop[$shopBannerCacheCleared @ %shop]);
+        log("network", "debug", "VAR: AFTER: " @ " " @ $shopBannerCacheCleared[%shop]);
     }
 };
 function ClosetTabs::getInitialButtonOffset(%this) {
@@ -377,7 +377,7 @@ function ClosetTabs::tabSelected(%this, %tab) {
                 %name = getWord(%outfitNames, %i);
                 %objectView = ClosetTabs.getOutfitObjectView(%i);
                 %objectView.setSimObject($player);
-                %objectView.setSkus($ClosetSkusBody @ " " @ %name[$ClosetSkusOutfit @ %name]);
+                %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetSkusOutfit[%name]);
                 %i = (%i + 1.0);
             }
             %outfitNum = findWord($Player::HangerNames, [$player.getGender()], $ClosetOutfitName);
@@ -1171,7 +1171,7 @@ function ClosetThumbnails::setCellSkus(%this, %cell, %skus) {
         %skus = getWord(%skus, 0);
     }
     %skunum = %skus;
-    %bodyAndOutfitSkus = $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] @ " " @ $ClosetSkusBody;
+    %bodyAndOutfitSkus = $ClosetSkusOutfit[$ClosetOutfitName] @ " " @ $ClosetSkusBody;
     %skuItem = SkuManager.findBySku(%skunum);
     %thumb = %cell.objectView;
     %badge = %cell.badgeView;
@@ -1221,7 +1221,7 @@ function ClosetCurrentCamParams::adjustForHeight(%this) {
     %i = 0;
     while ((%i < %numDrawers)) {
         %drawer = strlwr(getWord(%allDrawers, %i));
-        %params = %drawer[$ThumbCamParams TAB $player.getGender() @ %drawer];
+        %params = $ThumbCamParams[$player.getGender(),%drawer];
         if (!(%params $= "")) {
             %vNudge = getWord(%params, 2);
             %vNudge = (%vNudge + ((%vNudge + 1.0) * ($UserPref::Player::height - 1.0)));
@@ -1269,7 +1269,7 @@ function ClosetThumbnails::setSelectedThumbs(%this) {
     if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
         %selectedSkus = $StoreSkusLayer;
     } else {
-        %selectedSkus = $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] @ " " @ $ClosetSkusBody;
+        %selectedSkus = $ClosetSkusOutfit[$ClosetOutfitName] @ " " @ $ClosetSkusBody;
     }
     %numThumbs = %this.getCount();
     %n = 0;
@@ -1460,7 +1460,7 @@ function ClosetGui::open(%this) {
     %i = 0;
     while ((%i < $gClosetNumOutfits)) {
         %name = getWord(%outfitNames, %i);
-        %name[$ClosetSkusOutfit @ %name] = $gOutfits.get(%name);
+        $ClosetSkusOutfit[%name] = $gOutfits.get(%name);
         %i = (%i + 1.0);
     }
     checkOutfitCorruption(1);
@@ -1536,8 +1536,8 @@ function ClosetGui::doClose(%this, %cancel, %allowMsgBoxOnExit) {
                 } else {
                     if (SkuManager.isOutfitSku(%aTriedOnSku)) {
                     }
-                    if ((findWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %aTriedOnSku) < 0.0)) {
-                        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %aTriedOnSku);
+                    if ((findWord($ClosetSkusOutfit[$ClosetOutfitName], %aTriedOnSku) < 0.0)) {
+                        $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], %aTriedOnSku);
                     }
                 }
             }
@@ -1608,7 +1608,7 @@ function ClosetGui::reallyClose(%this, %cancel) {
     popScreenSize();
     if (!gUserPropMgrClient.getProperty($Player::Name, "hasSeenPropUseAdvisory", 0)) {
     }
-    if (SkuManager.hasPropSku($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName])) {
+    if (SkuManager.hasPropSku($ClosetSkusOutfit[$ClosetOutfitName])) {
         gUserPropMgrClient.setProperty($Player::Name, "hasSeenPropUseAdvisory", 1);
         MessageBoxOK($MsgCat::closet["MSG-USE-PROP-TITLE"], $MsgCat::closet["MSG-USE-PROP-BODY"], "");
     }
@@ -1616,7 +1616,7 @@ function ClosetGui::reallyClose(%this, %cancel) {
 };
 function ClosetGui::doResetCurrent(%this) {
     checkOutfitCorruption(1);
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = $gOutfits.get($ClosetOutfitName);
+    $ClosetSkusOutfit[$ClosetOutfitName] = $gOutfits.get($ClosetOutfitName);
     %this.updateVisibleAvatar();
     ClosetMainObjectView.zoomToSKU("");
     ClosetItemsFrame.update();
@@ -1637,7 +1637,7 @@ function ClosetGui::doResetAll(%this) {
     %i = 0;
     while ((%i < $gClosetNumOutfits)) {
         %name = getWord(%outfitNames, %i);
-        %name[$ClosetSkusOutfit @ %name] = $gOutfits.get(%name);
+        $ClosetSkusOutfit[%name] = $gOutfits.get(%name);
         %i = (%i + 1.0);
     }
     $ClosetSkusBody = $gOutfits.get($player.getGender() @ "Body");
@@ -1651,7 +1651,7 @@ function ClosetGui::doCancel(%this) {
         outfitsCorruptedNotify();
     }
     %this.doResetAll();
-    $player.setActiveSKUs($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] @ " " @ $ClosetSkusBody);
+    $player.setActiveSKUs($ClosetSkusOutfit[$ClosetOutfitName] @ " " @ $ClosetSkusBody);
 };
 function ClosetGui::doOkay(%this) {
     $gOutfits.put("currentOutfit", strupr(getSubStr($ClosetOutfitName, 1, 1)));
@@ -1661,8 +1661,8 @@ function ClosetGui::doOkay(%this) {
     %n = ($gClosetNumOutfits - 1.0);
     while ((%n >= 0.0)) {
         %name = getWord(%outfitNames, %n);
-        %name[$ClosetSkusOutfit @ %name] = outfits_filterSKUList(%name[$ClosetSkusOutfit @ %name]);
-        $gOutfits.put(%name, %name[$ClosetSkusOutfit @ %name]);
+        $ClosetSkusOutfit[%name] = outfits_filterSKUList($ClosetSkusOutfit[%name]);
+        $gOutfits.put(%name, $ClosetSkusOutfit[%name]);
         %n = (%n - 1.0);
     }
     if (checkOutfitCorruption(1)) {
@@ -1670,7 +1670,7 @@ function ClosetGui::doOkay(%this) {
         return 0;
     }
     outfits_persist();
-    %activeSkus = $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] @ " " @ $ClosetSkusBody;
+    %activeSkus = $ClosetSkusOutfit[$ClosetOutfitName] @ " " @ $ClosetSkusBody;
     if (%this.wasInHelpmode) {
         %activeSkus = %activeSkus @ " " @ getSpecialSKU(0, "helpmebadge");
     }
@@ -1688,7 +1688,7 @@ function ClosetGui::doOkay(%this) {
     }
 };
 function ClosetGui::askUserToDropProp(%this) {
-    %propSku = SkuManager.filterSkusDrwr($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], "props");
+    %propSku = SkuManager.filterSkusDrwr($ClosetSkusOutfit[$ClosetOutfitName], "props");
     if ((%propSku $= "")) {
         return 0;
     } else {
@@ -1696,8 +1696,8 @@ function ClosetGui::askUserToDropProp(%this) {
             return 0;
         }
     }
-    %index = findWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %propSku);
-    %outfitWithoutProp = removeWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %index);
+    %index = findWord($ClosetSkusOutfit[$ClosetOutfitName], %propSku);
+    %outfitWithoutProp = removeWord($ClosetSkusOutfit[$ClosetOutfitName], %index);
     %activity = "engaging in this activity";
     if ((%this.currentOverrideGenre $= "k")) {
         %activity = "skating";
@@ -1734,7 +1734,7 @@ function ClosetGui::userHasChangedBodyOrOutfit(%this) {
     %n = ($gClosetNumOutfits - 1.0);
     while ((%n >= 0.0)) {
         %name = getWord(%outfitNames, %n);
-        %newOutfit = outfits_filterSKUList(%name[$ClosetSkusOutfit @ %name]);
+        %newOutfit = outfits_filterSKUList($ClosetSkusOutfit[%name]);
         %oldOutfit = $gOutfits.get(%name);
         if (!(%newOutfit $= %oldOutfit)) {
             return 1;
@@ -2019,7 +2019,7 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
         %m = (getFieldCount(%validationResults) - 1.0);
         while ((%m >= 0.0)) {
             %validationResult = getField(%validationResults, %m);
-            %validationResult[%skuResults @ %validationResult] = %validationResult[%skuResults @ %validationResult] @ %sku @ " ";
+            %skuResults[%validationResult] = %skuResults[%validationResult] @ %sku @ " ";
             %m = (%m - 1.0);
         }
         %n = (%n - 1.0);
@@ -2035,7 +2035,7 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
         } else {
             if ((%errorCode $= "insufficientTotalFunds")) {
                 %msgName = (%request.currency $= "vpoints") ? "E-NO-VPOINTS" : "E-NO-VBUX";
-                MessageBoxOK($MsgCat::commerce["E-TITLE"], %msgName[$MsgCat::commerce @ %msgName], "");
+                MessageBoxOK($MsgCat::commerce["E-TITLE"], $MsgCat::commerce[%msgName], "");
             } else {
                 if ((%errorCode $= "unacquirableItems")) {
                     if (!(%errorCode[%skuResults @ "OutOfStock"] $= "")) {
@@ -2062,8 +2062,8 @@ function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed) {
         } else {
             error(getScopeName() @ " " @ "- already have SKU:" @ " " @ %sku);
         }
-        if ((%sku[$gStoreItemsQty @ %sku] > 0.0)) {
-            %sku[$gStoreItemsQty @ %sku] = (%sku[$gStoreItemsQty @ %sku] - 1.0);
+        if (($gStoreItemsQty[%sku] > 0.0)) {
+            $gStoreItemsQty[%sku] = ($gStoreItemsQty[%sku] - 1.0);
         }
         if ((findWord($StoreSkusLayer, %sku) != -(1.0))) {
             %skusToFlatten = %skusToFlatten @ " " @ %sku;
@@ -2093,7 +2093,7 @@ function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed) {
         (%n >= 0.0);
         %skusToFlattenClothing = SkuManager.filterSkusForClothing(%skusToFlatten);
         %skusToFlattenBody = SkuManager.filterSkusForBody(%skusToFlatten);
-        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %skusToFlattenClothing);
+        $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], %skusToFlattenClothing);
         $ClosetSkusBody = SkuManager.overlaySkus($ClosetSkusBody, %skusToFlattenBody);
     }
     StoreItemsFrame.update();
@@ -2146,8 +2146,8 @@ function CheckoutRequest::onDone(%this) {
                             } else {
                                 error(getScopeName() @ " " @ "- already have SKU:" @ " " @ %sku);
                             }
-                            if ((%sku[$gStoreItemsQty @ %sku] > 0.0)) {
-                                %sku[$gStoreItemsQty @ %sku] = (%sku[$gStoreItemsQty @ %sku] - 1.0);
+                            if (($gStoreItemsQty[%sku] > 0.0)) {
+                                $gStoreItemsQty[%sku] = ($gStoreItemsQty[%sku] - 1.0);
                             }
                             if ((findWord($StoreSkusLayer, %sku) != -(1.0))) {
                                 %skusToFlatten = %skusToFlatten @ " " @ %sku;
@@ -2219,7 +2219,7 @@ function CheckoutRequest::onDone(%this) {
                     (%i < getWordCount($StoreSkusLayer));
                     %skusToFlattenClothing = SkuManager.filterSkusForClothing(%skusToFlatten);
                     %skusToFlattenBody = SkuManager.filterSkusForBody(%skusToFlatten);
-                    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %skusToFlattenClothing);
+                    $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], %skusToFlattenClothing);
                     $ClosetSkusBody = SkuManager.overlaySkus($ClosetSkusBody, %skusToFlattenBody);
                 }
                 StoreItemsFrame.update();
@@ -2245,15 +2245,15 @@ function ClosetGui::selectGenre(%this, %val) {
     $player.playAnim($player.getGender() @ %val @ %anim);
 };
 function ClosetGui::updateVisibleAvatar(%this) {
-    %merged = $ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName];
+    %merged = $ClosetSkusBody @ " " @ $ClosetSkusOutfit[$ClosetOutfitName];
     if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
-        %merged = SkuManager.overlaySkus($ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], $StoreSkusLayer);
+        %merged = SkuManager.overlaySkus($ClosetSkusBody @ " " @ $ClosetSkusOutfit[$ClosetOutfitName], $StoreSkusLayer);
     } else {
         if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
-            ClosetWhatYoureWearingList.refresh($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+            ClosetWhatYoureWearingList.refresh($ClosetSkusOutfit[$ClosetOutfitName]);
         } else {
             if ((ClosetTabs.getCurrentTab().name $= "MY DESIGNS")) {
-                %merged = SkuManager.overlaySkus($ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], $gSkusMyShopLayer);
+                %merged = SkuManager.overlaySkus($ClosetSkusBody @ " " @ $ClosetSkusOutfit[$ClosetOutfitName], $gSkusMyShopLayer);
                 ClosetWhatYoureWearingList.refresh($gSkusMyShopLayer);
             }
         }
@@ -2411,7 +2411,7 @@ function checkOutfitCorruption(%checkClosetVariables) {
     } else {
         %plyrGendr = $UserPref::Player::gender;
     }
-    %outfitNames = %plyrGendr[$Player::HangerNames @ %plyrGendr];
+    %outfitNames = $Player::HangerNames[%plyrGendr];
     %numOutfitNames = getWordCount(%outfitNames);
     %numOutfitNamesBroken = 0;
     %outfitsCorrupted = 0;
@@ -2450,7 +2450,7 @@ function checkOutfitCorruption(%checkClosetVariables) {
         %n = (%max - 1.0);
         while ((%n >= 0.0)) {
             %name = getWord(%outfitNames, %n);
-            %curOutfit = outfits_filterSKUList(%name[$ClosetSkusOutfit @ %name]);
+            %curOutfit = outfits_filterSKUList($ClosetSkusOutfit[%name]);
             if ((%curOutfit $= "")) {
                 %outfitsCorrupted = (%outfitsCorrupted + 1.0);
             }
@@ -2727,8 +2727,8 @@ function ClosetMainObjectView::onSystemDragDroppedEvent(%this, %text, %pt) {
     }
 };
 function ClosetGui_About(%section, %topic) {
-    %title = %topic[$MsgCat::closetAbout TAB "TITLE" @ %section @ %topic];
-    %body = %topic[$MsgCat::closetAbout TAB "BODY" @ %section @ %topic];
+    %title = $MsgCat::closetAbout["TITLE",%section,%topic];
+    %body = $MsgCat::closetAbout["BODY",%section,%topic];
     if ((%title $= "")) {
         %title = "about..";
     }

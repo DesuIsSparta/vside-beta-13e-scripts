@@ -19,14 +19,14 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch) {
     %found = 0;
     %i = 1;
     if ((%i < $Game::argc)) {
-        %arg = %i[$Game::argv @ %i];
+        %arg = $Game::argv[%i];
         %nextArg = "";
         if ((%i < ($Game::argc - 1.0))) {
             %nextArg = %i[$Game::argv @ (%i + 1.0)];
         }
         %hasNextArg = (($Game::argc - %i) > 1.0);
         if ((%arg $= %argToFind)) {
-            %i[$Game::ArgUsed @ %i] = (%i[$Game::ArgUsed @ %i] + 1.0);
+            $Game::ArgUsed[%i] = ($Game::ArgUsed[%i] + 1.0);
             if (!(%valToSet $= "")) {
                 if (%isSwitch) {
                     eval(%valToSet @ "=true;");
@@ -68,7 +68,7 @@ function getAllArgs() {
     %n = 1;
     while ((%n < $Game::argc)) {
         %sep = (%n == 1.0) ? "" : " ";
-        %ret = %ret @ %sep @ %n[$Game::argv @ %n];
+        %ret = %ret @ %sep @ $Game::argv[%n];
         %n = (%n + 1.0);
     }
     return %ret;
@@ -77,9 +77,9 @@ function getAllArgs() {
 function checkUnusedArgs() {
     %i = 1;
     while ((%i < $Game::argc)) {
-        if (!(%i[$Game::ArgUsed @ %i])) {
-            %arg = %i[$Game::argv @ %i];
-            %level = %arg[$gKnownUnusedArgsLogLevel @ %arg];
+        if (!$Game::ArgUsed[%i]) {
+            %arg = $Game::argv[%i];
+            %level = $gKnownUnusedArgsLogLevel[%arg];
             if ((%level $= "")) {
                 %level = "error";
             }

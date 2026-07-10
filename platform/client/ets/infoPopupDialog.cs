@@ -103,10 +103,10 @@ function InfoPopupDlg::tryShowPlayerInfo(%this) {
         %contentTagsText = "<br><spush><b>Shared Interests (tags)<spop>:";
         %tagsText = "";
         if ($ETS::PlayerInfo::NoTags) {
-            %tagsText = %tagsText @ "Interests you share with <a:PROFILE>" @ %gender[$genderPronounHimHerThem @ %gender] @ "</a> will show up here," @ "but you have none in your profile!" @ " " @ "<a:EDIT_PROFILE>Click here</a> to add some!";
+            %tagsText = %tagsText @ "Interests you share with <a:PROFILE>" @ $genderPronounHimHerThem[%gender] @ "</a> will show up here," @ "but you have none in your profile!" @ " " @ "<a:EDIT_PROFILE>Click here</a> to add some!";
         } else {
             if ((%tags $= "")) {
-                %tagsText = %tagsText @ "You have no interests in common with <a:PROFILE>" @ %gender[$genderPronounHimHerThem @ %gender] @ "</a>.";
+                %tagsText = %tagsText @ "You have no interests in common with <a:PROFILE>" @ $genderPronounHimHerThem[%gender] @ "</a>.";
             } else {
                 %tagsText = %tagsText @ %this.splitTagsIntoLinks(%tags, 0);
             }

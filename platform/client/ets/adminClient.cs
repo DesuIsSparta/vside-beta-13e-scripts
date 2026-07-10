@@ -9,7 +9,7 @@ $gModNotificationHandlers["micStatus"] = "onModNotificationMicStatus";
 $gModNotificationHandlers["cussing"] = "onModNotificationCussing";
 function clientCmdModNotification(%taggedNotifyType, %param1, %param2) {
     %notifyType = detag(%taggedNotifyType);
-    %handler = %notifyType[$gModNotificationHandlers @ %notifyType];
+    %handler = $gModNotificationHandlers[%notifyType];
     if ((%handler $= "")) {
         error(getScopeName() @ " " @ "- Unknown notifyType" @ " " @ %notifyType);
         return;

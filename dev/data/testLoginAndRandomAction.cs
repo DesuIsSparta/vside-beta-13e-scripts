@@ -62,7 +62,7 @@ function stopAndDance() {
 };
 function test::doDance() {
     %danceNum = getRandom($DancesCount);
-    $dance = %danceNum[$Dances @ %danceNum];
+    $dance = $Dances[%danceNum];
     commandToServer('EtsPlayAnimName', $dance);
     pChat.say("I'm doing dance" @ " " @ $dance @ " " @ ".", 0, 0);
 };

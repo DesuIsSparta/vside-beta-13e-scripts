@@ -16,12 +16,12 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
     SalonStyleSelector.targetPlayer = %targetPlayer;
     %thumbsDirectory = "platform/client/ui/salon/salonthumbs_";
     SalonStyleSelectorChair.setBitmap(%thumbsDirectory @ %typeOfSalon);
-    %text = "Choose" @ " " @ %typeOfSalon[$SALON_CHAIR_DEF_PROPDESC @ %typeOfSalon] @ " " @ "Prop";
+    %text = "Choose" @ " " @ $SALON_CHAIR_DEF_PROPDESC[%typeOfSalon] @ " " @ "Prop";
     ShowPropsButton.setText(%text);
-    %text = %typeOfSalon[$SALON_CHAIR_DEF_SALONMENUDESC @ %typeOfSalon];
+    %text = $SALON_CHAIR_DEF_SALONMENUDESC[%typeOfSalon];
     %text = strreplace(%text, "[TARGET]", %targetPlayerName);
     gePropsWindowTitle.setText(%text);
-    SalonStyleSelector.closeButton.setVisible(%typeOfSalon[$SALON_CHAIR_DEF_CANCLOSE @ %typeOfSalon]);
+    SalonStyleSelector.closeButton.setVisible($SALON_CHAIR_DEF_CANCLOSE[%typeOfSalon]);
     %propSku = $player.getActivePropSku();
     %propThumbsDir = "platform/client/ui/props/propthumbs_";
     if ((%propSku $= "")) {
@@ -40,9 +40,9 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
     %width = getWord(%list.childrenExtent, 0);
     %i = 0;
     while ((%i < $NUM_SALON_STYLES)) {
-        %skunum = %i[$SALON_STYLE_SKU @ %i];
-        %grouping = %i[$SALON_STYLE_GROUPING @ %i];
-        %req = %i[$SALON_STYLE_REQUIREDSKUS @ %i];
+        %skunum = $SALON_STYLE_SKU[%i];
+        %grouping = $SALON_STYLE_GROUPING[%i];
+        %req = $SALON_STYLE_REQUIREDSKUS[%i];
         if (!(%grouping $= %typeOfSalon)) {
         } else {
             if (!(%req $= "") && !DoesPlayerHaveItemActive($player, %req)) {
@@ -119,11 +119,11 @@ function SalonGiveTheStyleToClient(%styleNumber) {
 function SalonChooseStyle(%styleNumber) {
     cancel($gSalonStylistAnimSchedule);
     $gSalonStylistAnimSchedule = 0;
-    %sku = %styleNumber[$SALON_STYLE_SKU @ %styleNumber];
-    %req = %styleNumber[$SALON_STYLE_REQUIREDSKUS @ %styleNumber];
-    %reqMsg = %styleNumber[$SALON_STYLE_REQUREDSKUSMESSAGE @ %styleNumber];
-    %anim = %styleNumber[$SALON_STYLE_ANIMATION @ %styleNumber];
-    %cutTime = %styleNumber[$SALON_STYLE_CUTTIME @ %styleNumber];
+    %sku = $SALON_STYLE_SKU[%styleNumber];
+    %req = $SALON_STYLE_REQUIREDSKUS[%styleNumber];
+    %reqMsg = $SALON_STYLE_REQUREDSKUSMESSAGE[%styleNumber];
+    %anim = $SALON_STYLE_ANIMATION[%styleNumber];
+    %cutTime = $SALON_STYLE_CUTTIME[%styleNumber];
     if (!(%req $= "") && !DoesPlayerHaveItemActive($player, %req)) {
         %reqname = getSkuShortName(%req);
         MessageBoxOK("vSalon", %reqMsg, "");

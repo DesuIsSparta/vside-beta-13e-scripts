@@ -57,15 +57,15 @@ function getScreenShotMetaData(%guiTSCtrl) {
     }
     %cameraTransform = PlayGui.getLastCameraTransform();
     %numPts = 0;
-    %numPts[%samplePts @ %numPts] = "0 0";
+    %samplePts[%numPts] = "0 0";
     %numPts = (%numPts + 1.0);
-    %numPts[%samplePts @ %numPts] = "1 0";
+    %samplePts[%numPts] = "1 0";
     %numPts = (%numPts + 1.0);
-    %numPts[%samplePts @ %numPts] = "0 1";
+    %samplePts[%numPts] = "0 1";
     %numPts = (%numPts + 1.0);
-    %numPts[%samplePts @ %numPts] = "1 1";
+    %samplePts[%numPts] = "1 1";
     %numPts = (%numPts + 1.0);
-    %numPts[%samplePts @ %numPts] = "0.5 0.5";
+    %samplePts[%numPts] = "0.5 0.5";
     %numPts = (%numPts + 1.0);
     %ctrlExtent = %guiTSCtrl.getExtent();
     %exempt = "";
@@ -74,13 +74,13 @@ function getScreenShotMetaData(%guiTSCtrl) {
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %n = 0;
     while ((%n < %numPts)) {
-        %windowCoord = VectorConvolve(%n[%samplePts @ %n], %ctrlExtent);
+        %windowCoord = VectorConvolve(%samplePts[%n], %ctrlExtent);
         %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
         %camVec = VectorSub(%worldCoord1, %cameraTransform);
         %camVec = VectorNormalize(%camVec);
         %camVec = VectorScale(%camVec, 5000);
         %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
-        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %samplePts[%n] @ "\"  \"" @ %windowCoord @ "\"";
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
         %mask = ($TypeMasks::WaterObjectType | $TypeMasks::InteriorObjectType);
         %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
@@ -95,20 +95,20 @@ function getScreenShotMetaData(%guiTSCtrl) {
 function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %cameraTransform = PlayGui.getLastCameraTransform();
     %numPts = 0;
-    %numPts[%sampleName @ %numPts] = "upper left";
-    %numPts[%samplePts @ %numPts] = "0 0";
+    %sampleName[%numPts] = "upper left";
+    %samplePts[%numPts] = "0 0";
     %numPts = (%numPts + 1.0);
-    %numPts[%sampleName @ %numPts] = "upper right";
-    %numPts[%samplePts @ %numPts] = "1 0";
+    %sampleName[%numPts] = "upper right";
+    %samplePts[%numPts] = "1 0";
     %numPts = (%numPts + 1.0);
-    %numPts[%sampleName @ %numPts] = "lower left";
-    %numPts[%samplePts @ %numPts] = "0 1";
+    %sampleName[%numPts] = "lower left";
+    %samplePts[%numPts] = "0 1";
     %numPts = (%numPts + 1.0);
-    %numPts[%sampleName @ %numPts] = "lower right";
-    %numPts[%samplePts @ %numPts] = "1 1";
+    %sampleName[%numPts] = "lower right";
+    %samplePts[%numPts] = "1 1";
     %numPts = (%numPts + 1.0);
-    %numPts[%sampleName @ %numPts] = "center";
-    %numPts[%samplePts @ %numPts] = "0.5 0.5";
+    %sampleName[%numPts] = "center";
+    %samplePts[%numPts] = "0.5 0.5";
     %numPts = (%numPts + 1.0);
     %ctrlExtent = %guiTSCtrl.getExtent();
     %exempt = "";
@@ -123,19 +123,19 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %summary = "";
     %n = 0;
     while ((%n < %numPts)) {
-        %windowCoord = %n[%samplePts @ %n];
+        %windowCoord = %samplePts[%n];
         %windowCoord = VectorAdd(%windowCoord, "-0.5 -0.5");
         %windowCoord = VectorScale(%windowCoord, $pref::Render::orthoScale);
         %windowCoord = VectorAdd(%windowCoord, "0.5 0.5");
         %windowCoord = VectorConvolve(%windowCoord, %ctrlExtent);
         %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
         %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
-        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %samplePts[%n] @ "\"  \"" @ %windowCoord @ "\"";
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
         %hit = intersectPlaneLine("0 0 0", "0 0 1", %worldCoord1, %worldCoord2);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "XY plane: \"" @ %hit @ "\"";
-        %summary = %summary @ "\n" @ formatString("%-15s:", %n[%sampleName @ %n]) @ " " @ %hit;
-        %n[%resultPts @ %n] = %hit;
+        %summary = %summary @ "\n" @ formatString("%-15s:", %sampleName[%n]) @ " " @ %hit;
+        %resultPts[%n] = %hit;
         if (isObject(moWorldCornerMarkers) && (%n < moWorldCornerMarkers.getCount())) {
             %mh = %hit;
             %mh = setWord(%mh, 2, 0);

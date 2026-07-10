@@ -265,7 +265,7 @@ function sendRequest_PurchaseInventory(%userName, %skusArray, %payWith, %storena
     %request.addUserAndToken(%userName);
     %request.addUrlParam("payWith", %payWith);
     %request.addUrlParam("storeName", %storename);
-    %request.addUrlParam("storeRevisionDate", %storename[$gStoreStockRevision @ %storename]);
+    %request.addUrlParam("storeRevisionDate", $gStoreStockRevision[%storename]);
     %skusNum = %skusArray.count();
     %request.addUrlParam("itemsToBuyCount", %skusNum);
     %n = 0;

@@ -102,7 +102,7 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request) {
     %storename = %request.storeName;
     if (%request.checkSuccess()) {
         Inventory::clearStore(%storename);
-        %storename[$gStoreStockRevision @ %storename] = %request.getValue("storeRevisionDate");
+        $gStoreStockRevision[%storename] = %request.getValue("storeRevisionDate");
     } else {
         if ((%request.getValue("errorCode") $= "storeNotFound")) {
             Inventory::clearStore(%storename);
@@ -154,7 +154,7 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request) {
 };
 function Inventory::onGotVHDUserStoreInventory(%storename) {
     %hasUserNameFilter = !($gVHDUserNameFilter $= "") ? 1 : 0;
-    %storename[$gStoreStockLoaded @ %storename] = 1;
+    $gStoreStockLoaded[%storename] = 1;
     if (ClosetGui.isVisible()) {
     }
     if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
@@ -173,8 +173,8 @@ function Inventory::onGotVHDUserStoreInventory(%storename) {
             %storeLongName = $gVHDUserNameFilter @ " doesn't have any vHD Designs.";
             %storeDesc = %storeLongName @ " " @ "- Instead press F5 or click \"Shop\" to start browsing the full range of clothing from vSide House of Design!";
         } else {
-            %storeLongName = %storename[$gDestinationNames @ %storename];
-            %storeDesc = %storename[$gDestinationDescsInWorld @ %storename];
+            %storeLongName = $gDestinationNames[%storename];
+            %storeDesc = $gDestinationDescsInWorld[%storename];
         }
     }
     if ((%storeLongName $= "")) {
@@ -497,7 +497,7 @@ function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser) {
         %keyBody = $player.getGender() @ "Body";
         %skusOutfit = $gOutfits.get(%keyOutfit);
         %skusOutfit = removeAndReplaceSkuFromSkuList(%skusOutfit, %oldSku, %newSku);
-        %STOCKOutfit = %keyOutfit[$gNewStockOutfits @ %keyOutfit];
+        %STOCKOutfit = $gNewStockOutfits[%keyOutfit];
         %n = (getWordCount(%STOCKOutfit) - 1.0);
         while ((%n >= 0.0)) {
             %sku = getWord(%STOCKOutfit, %n);
@@ -671,7 +671,7 @@ function Inventory::equipOrWearSkus(%skus) {
     %skusWet = SkuManager.overlaySkus(%skusDry, %skusNew);
     log("inventory", "info", "Inventory::equipOrWearSkus(): %skusWet=" @ %skusWet);
     if (ClosetGui.isVisible()) {
-        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.filterSkusForClothing(%skusWet);
+        $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.filterSkusForClothing(%skusWet);
         $ClosetSkusBody = SkuManager.filterSkusForBody(%skusWet);
         ClosetTabs.selectCurrentTab();
         ClosetGui.updateVisibleAvatar();
@@ -690,7 +690,7 @@ function OnGotDoneOrError_GetStoreInventory(%request) {
     %storename = %request.storeName;
     if (%request.checkSuccess()) {
         Inventory::clearStore(%storename);
-        %storename[$gStoreStockRevision @ %storename] = %request.getValue("storeRevisionDate");
+        $gStoreStockRevision[%storename] = %request.getValue("storeRevisionDate");
     } else {
         if ((%request.getValue("errorCode") $= "storeNotFound")) {
             Inventory::clearStore(%storename);
@@ -720,7 +720,7 @@ function OnGotDoneOrError_GetStoreInventory(%request) {
 function Inventory::sortStoreInventory(%storename) {
     warn(getScopeName() @ " " @ "- should be done server-side. ETS-3468");
     %allSkus = SkuManager.filterSkusGender(SkuManager.getSkus(), $UserPref::Player::gender);
-    %storename[$gStoreStockCacheSkus @ %storename] = Inventory::sortSkus(%storename[$gStoreStockCacheSkus @ %storename], %allSkus);
+    $gStoreStockCacheSkus[%storename] = Inventory::sortSkus($gStoreStockCacheSkus[%storename], %allSkus);
 };
 function Inventory::sortSkus(%skusToSort, %orderToAppearIn) {
     %ret = "";
@@ -763,19 +763,19 @@ function fakeStoreInventoryGotFetchResults(%storename) {
     Inventory::onGotStoreInventory(%storename);
 };
 function Inventory::addItemToStore(%storename, %sku, %qty, %vpoints, %vbux) {
-    %storename[$gStoreStockCacheSkus @ %storename] = %storename[$gStoreStockCacheSkus @ %storename] @ %sku @ " ";
-    %sku[$gStoreItemsQty @ %sku] = %qty;
+    $gStoreStockCacheSkus[%storename] = $gStoreStockCacheSkus[%storename] @ %sku @ " ";
+    $gStoreItemsQty[%sku] = %qty;
     if ((%vpoints < 0.0)) {
     } else {
     }
-    %sku[$gStoreItemsVPoints @ %sku] = "-" @ mFloor(%vpoints);
+    $gStoreItemsVPoints[%sku] = "-" @ mFloor(%vpoints);
     if ((%vbux < 0.0)) {
     } else {
     }
-    %sku[$gStoreItemsVBux @ %sku] = "-" @ mFloor(%vbux);
+    $gStoreItemsVBux[%sku] = "-" @ mFloor(%vbux);
 };
 function Inventory::getVPointsPriceForSku(%sku) {
-    %price = %sku[$gStoreItemsVPoints @ %sku];
+    %price = $gStoreItemsVPoints[%sku];
     if (!(%price $= "")) {
         return %price;
     }
@@ -791,7 +791,7 @@ function Inventory::getVPointsPriceForSku(%sku) {
     return "-";
 };
 function Inventory::getVBuxPriceForSku(%sku) {
-    %price = %sku[$gStoreItemsVBux @ %sku];
+    %price = $gStoreItemsVBux[%sku];
     if (!(%price $= "")) {
         return %price;
     }
@@ -849,13 +849,13 @@ function Inventory::filterSkusByValidPrice(%currency, %skus) {
 };
 function Inventory::dumpStore(%storename) {
     echo("store" @ " " @ %storename);
-    %num = getWordCount(%storename[$gStoreStockCacheSkus @ %storename]);
+    %num = getWordCount($gStoreStockCacheSkus[%storename]);
     %n = 0;
     while ((%n < %num)) {
-        %sku = getWord(%storename[$gStoreStockCacheSkus @ %storename], %n);
-        %qty = %sku[$gStoreItemsQty @ %sku];
-        %vps = %sku[$gStoreItemsVPoints @ %sku];
-        %vbs = %sku[$gStoreItemsVBux @ %sku];
+        %sku = getWord($gStoreStockCacheSkus[%storename], %n);
+        %qty = $gStoreItemsQty[%sku];
+        %vps = $gStoreItemsVPoints[%sku];
+        %vbs = $gStoreItemsVBux[%sku];
         %si = SkuManager.findBySku(%sku);
         echo("sku:" @ " " @ formatInt("%6d", %sku) @ " " @ "qty" @ " " @ formatInt("%4d", %qty) @ " " @ "vPoints" @ " " @ formatInt("%6d", %vps) @ " " @ "vBux" @ " " @ formatInt("%6d", %vbs) @ " " @ %si.descShrt);
         %n = (%n + 1.0);
@@ -868,7 +868,7 @@ function Inventory::onGotStoreInventory(%storename) {
         }
         return;
     }
-    %storename[$gStoreStockLoaded @ %storename] = 1;
+    $gStoreStockLoaded[%storename] = 1;
     if (ClosetGui.isVisible()) {
     }
     if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
@@ -877,8 +877,8 @@ function Inventory::onGotStoreInventory(%storename) {
         saveStorePosition();
         ClosetTabs::refreshStoreTab();
     }
-    %storeLongName = %storename[$gDestinationNames @ %storename];
-    %storeDesc = %storename[$gDestinationDescsInWorld @ %storename];
+    %storeLongName = $gDestinationNames[%storename];
+    %storeDesc = $gDestinationDescsInWorld[%storename];
     if ((%storeLongName $= "")) {
         error(getScopeName() @ " " @ "- no store long name for" @ " " @ %storename);
     }
@@ -897,10 +897,10 @@ function Inventory::getCurrentStoreSkus() {
     if (($gCurrentStoreName $= "")) {
         return "no store";
     }
-    return $gCurrentStoreName[$gStoreStockCacheSkus @ $gCurrentStoreName];
+    return $gStoreStockCacheSkus[$gCurrentStoreName];
 };
 function Inventory::getStoreName(%storeID) {
-    return %storeID[$gDestinationNames @ %storeID];
+    return $gDestinationNames[%storeID];
 };
 function Inventory::getCurrentStoreName() {
     if (($gCurrentStoreName $= "")) {
@@ -909,10 +909,10 @@ function Inventory::getCurrentStoreName() {
     return Inventory::getStoreName($gCurrentStoreName);
 };
 function Inventory::getStoreDescInCloset(%storeID) {
-    return %storeID[$gDestinationDescsInCloset @ %storeID];
+    return $gDestinationDescsInCloset[%storeID];
 };
 function Inventory::getStoreDescInWorld(%storeID) {
-    return %storeID[$gDestinationDescsInWorld @ %storeID];
+    return $gDestinationDescsInWorld[%storeID];
 };
 function Inventory::getCurrentStoreDescInCloset() {
     return Inventory::getStoreDescInCloset($gCurrentStoreName);
@@ -1023,8 +1023,8 @@ function Inventory::dedupeSkus(%dry) {
     return %wet;
 };
 function Inventory::clearStore(%storename) {
-    %storename[$gStoreStockCacheSkus @ %storename] = "";
-    %storename[$gStoreStockRevision @ %storename] = "";
+    $gStoreStockCacheSkus[%storename] = "";
+    $gStoreStockRevision[%storename] = "";
 };
 function Inventory::giftItemToPlayer(%unused, %unused) {
 };

@@ -145,12 +145,12 @@ function rf_generateTestSkus(%num, %forJavascript) {
             %prob = 1.0;
             0.1;
             if ((getRandom() <= %prob)) {
-                if ((%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
+                if (($gRFGenerate_DrawersCache[%drawerName,%gender] $= "")) {
                     %skus = SkuManager.getSkusDrwr(%drawerName);
                     %skus = SkuManager.filterSkusGender(%skus, %gender);
-                    %gender[%skus @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] = ;
+                    %skus[$gRFGenerate_DrawersCache,%drawerName,%gender] = ;
                 }
-                %sku = getRandomWord(%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender]);
+                %sku = getRandomWord($gRFGenerate_DrawersCache[%drawerName,%gender]);
                 if (!(%sku $= "")) {
                     %skulist = %skulist @ " " @ %sku;
                 }

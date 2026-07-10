@@ -56,7 +56,7 @@ function skeletonClient::initSpawnPoints(%this) {
 };
 function skeletonClient::getHWSpawns() {
     %spawnNum = getRandom(1, $SpawnsCount);
-    return %spawnNum[$Spawns @ %spawnNum];
+    return $Spawns[%spawnNum];
 };
 function doLoginButton() {
     LoginGui.doLoginButton();

@@ -194,8 +194,8 @@ function ImageFrameBase::buildLinkURLAndCaption(%this, %imageTag, %type) {
         } else {
             if ((%type == $ImageFrameBase::Type_URL)) {
                 %host = %this.urlhost;
-                if (!(%host[$ImageFrame_DisplayName @ %host] $= "")) {
-                    %caption = %host[$ImageFrame_DisplayName @ %host];
+                if (!($ImageFrame_DisplayName[%host] $= "")) {
+                    %caption = $ImageFrame_DisplayName[%host];
                 } else {
                     %caption = $ImageFrame_DisplayName["unknown"];
                 }
@@ -268,8 +268,8 @@ function ImageFrameBase_IsPermittedURL(%url) {
     }
     %host = getWords(%testUrl, (%count - 2.0));
     %idx = 0;
-    while (!(%idx[$ImageFrame_WhiteList @ %idx] $= "")) {
-        if ((stricmp(%host, %idx[$ImageFrame_WhiteList @ %idx]) == 0.0)) {
+    while (!($ImageFrame_WhiteList[%idx] $= "")) {
+        if ((stricmp(%host, $ImageFrame_WhiteList[%idx]) == 0.0)) {
             return 1;
         }
         %idx = (%idx + 1.0);

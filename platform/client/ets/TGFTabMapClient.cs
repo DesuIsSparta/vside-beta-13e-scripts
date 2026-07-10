@@ -290,17 +290,17 @@ function geTGF_tabs::Maps_filterDestinations(%this, %type, %city) {
     while ((%idx < %count)) {
         %use = 1;
         %destCode = getWord($gDestinationNamesInternal, %idx);
-        if (!(%type $= "") && (findWord(%destCode[$gDestinationFilters @ %destCode], %type) < 0.0)) {
+        if (!(%type $= "") && (findWord($gDestinationFilters[%destCode], %type) < 0.0)) {
             %use = 0;
         }
-        if (!(%lastCityCheck $= %destCode[$gDestinationSpaces @ %destCode])) {
-            %lastCityCheck = %destCode[$gDestinationSpaces @ %destCode];
+        if (!(%lastCityCheck $= $gDestinationSpaces[%destCode])) {
+            %lastCityCheck = $gDestinationSpaces[%destCode];
             %cityAvailable = WorldMap.isServerForCity(%lastCityCheck);
         }
-        if (!(%city $= "") && !(%city $= %destCode[$gDestinationSpaces @ %destCode])) {
+        if (!(%city $= "") && !(%city $= $gDestinationSpaces[%destCode])) {
             %use = 0;
         }
-        if ((strstr(%destCode[$gDestinationFilters @ %destCode], $geTGF::DestinationFilterExclude) >= 0.0)) {
+        if ((strstr($gDestinationFilters[%destCode], $geTGF::DestinationFilterExclude) >= 0.0)) {
             %use = 0;
         }
         if (%use) {

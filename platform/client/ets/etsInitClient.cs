@@ -181,7 +181,7 @@ function Player::findPlayerInstance(%playerName) {
     return %dict.get(%playerName);
 };
 function getBitmapFilename(%category, %fileName) {
-    %rootPath = %category[$gBitmapCategoryRoot @ %category];
+    %rootPath = $gBitmapCategoryRoot[%category];
     if ((%rootPath $= "")) {
         error("unknown bitmap category:" @ " " @ %category @ " " @ "for filename" @ " " @ %fileName @ " " @ getTrace());
         return "";

@@ -267,8 +267,8 @@ function WindowManager::repositionWindows(%this, %windowSet) {
                 if ((%height < %minHeight)) {
                 } else {
                 }
-                %i[%height @ %i] = %minHeight @ %height;
-                %ypos = (%ypos + (%i[%height @ %i] + %padding));
+                %height[%i] = %minHeight @ %height;
+                %ypos = (%ypos + (%height[%i] + %padding));
             }
             %i = (%i + 1.0);
         }
@@ -289,10 +289,10 @@ function WindowManager::repositionWindows(%this, %windowSet) {
             %xPos = getWord(%win.getPosition(), 0);
             %width = getWord(%win.getExtent(), 0);
             %curHeight = getWord(%win.getExtent(), 1);
-            %win.resize(%xPos, %ypos, %width, %i[%height @ %i]);
+            %win.resize(%xPos, %ypos, %width, %height[%i]);
             if (%win.hasMethod("onResized")) {
             }
-            if ((%i[%height @ %i] != %curHeight)) {
+            if ((%height[%i] != %curHeight)) {
                 %win.onResized();
             }
             %ypos = (%ypos + (getWord(%win.getExtent(), 1) + %padding));

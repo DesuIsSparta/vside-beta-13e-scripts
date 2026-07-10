@@ -98,13 +98,13 @@ $gContiguousSpaceOfferSkip["nv"] = 0;
 $gContiguousSpaceFullNames["rj"] = "RaiJuku";
 $gContiguousSpaceOfferSkip["rj"] = 0;
 function getContiguousSpaceFullName(%code) {
-    return %code[$gContiguousSpaceFullNames @ %code];
+    return $gContiguousSpaceFullNames[%code];
 };
 function getCurrentContiguousSpaceFullName() {
     return getContiguousSpaceFullName($gContiguousSpaceName);
 };
 function getCurrentContiguousSpaceOfferSkip() {
-    return $gContiguousSpaceName[$gContiguousSpaceOfferSkip @ $gContiguousSpaceName];
+    return $gContiguousSpaceOfferSkip[$gContiguousSpaceName];
 };
 function ClientCmdLevelCompleted(%levelName) {
     gUserPropMgrClient.setProperty($Player::Name, "level completed" @ " " @ %levelName, 1);

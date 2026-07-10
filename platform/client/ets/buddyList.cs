@@ -1638,7 +1638,7 @@ function BuddyHudPlayerList::onURL(%this, %url) {
     } else {
         if ((getWord(%url, 1) $= "list")) {
             %listName = getWords(%url, 2);
-            %listName[$UserPref::buddies::collapsedLists @ %listName] = !(%listName[$UserPref::buddies::collapsedLists @ %listName]);
+            $UserPref::buddies::collapsedLists[%listName] = !$UserPref::buddies::collapsedLists[%listName];
             BuddyHudWin.populateBuddyListsReally();
         } else {
             if ((getWord(%url, 1) $= "approveall")) {

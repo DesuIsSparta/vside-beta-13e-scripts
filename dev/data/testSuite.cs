@@ -1,7 +1,7 @@
 $G_DECLARED_TEST_COUNT = 0;
 $G_DECLARED_TEST[0] = 0;
 function DeclareTestSuite(%name) {
-    $G_DECLARED_TEST_COUNT[$G_DECLARED_TEST @ $G_DECLARED_TEST_COUNT] = %name;
+    $G_DECLARED_TEST[$G_DECLARED_TEST_COUNT] = %name;
     $G_DECLARED_TEST_COUNT = ($G_DECLARED_TEST_COUNT + 1.0);
 };
 function DeclaredTestSuiteCount() {
@@ -9,7 +9,7 @@ function DeclaredTestSuiteCount() {
 };
 function DeclaredTestSuiteGet(%num) {
     if ((%num < $G_DECLARED_TEST_COUNT)) {
-        return %num[$G_DECLARED_TEST @ %num];
+        return $G_DECLARED_TEST[%num];
     }
     return -(1.0);
 };

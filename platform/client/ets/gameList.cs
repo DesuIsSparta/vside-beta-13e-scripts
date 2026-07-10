@@ -475,7 +475,7 @@ function GameList::CreateTabCreateGame(%this) {
     %gameType = %this.gameTypesDropdown.getText();
     %n = 0;
     if ((%n < $gameMgr::GAME_TYPES_COUNT)) {
-        if ((%n[$gameMgr::GAME_TYPES @ %n].INST_TITLE $= %gameType)) {
+        if (($gameMgr::GAME_TYPES[%n].INST_TITLE $= %gameType)) {
             %gameType = %n;
         } else {
             %n = (%n + 1.0);
@@ -496,8 +496,8 @@ function GameList::CreateTabSetupGametypesDropdown(%this) {
     %this = GameMgrHudTabs.CreateTab;
     %n = 0;
     while ((%n < $gameMgr::GAME_TYPES_COUNT)) {
-        if (%n[$gameMgr::GAME_TYPES @ %n].USER_CREATE) {
-            %this.gameTypesDropdown.add(%n[$gameMgr::GAME_TYPES @ %n].INST_TITLE);
+        if ($gameMgr::GAME_TYPES[%n].USER_CREATE) {
+            %this.gameTypesDropdown.add($gameMgr::GAME_TYPES[%n].INST_TITLE);
         }
         %n = (%n + 1.0);
     }

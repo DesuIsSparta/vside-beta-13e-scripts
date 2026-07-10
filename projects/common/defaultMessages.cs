@@ -381,12 +381,12 @@ function hasMessageBeenSeenThisSession(%msgID) {
     return %seen;
 };
 function msgCatOK(%msgID) {
-    %body = %msgID[$MsgCat @ %msgID];
+    %body = $MsgCat[%msgID];
     if ((%body $= "")) {
         error(getScopeName() @ " " @ "- no body for message" @ " " @ %msgID);
         return;
     }
-    %title = %msgID[$MsgCatTitles @ %msgID];
+    %title = $MsgCatTitles[%msgID];
     if ((%title $= "")) {
         error(getScopeName() @ " " @ "- no title for message" @ " " @ %msgID);
         %title = "Guess What?";

@@ -1,6 +1,6 @@
 function ClosetTabs::refreshStoreTab(%this) {
     StoreCategoryPopup.clear();
-    if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
+    if (!$gStoreStockLoaded[$gCurrentStoreName]) {
         StoreCategoryPopup.add("Loading ...");
         return;
     }
@@ -962,7 +962,7 @@ function StoreBalanceText::onURL(%this, %url) {
     Parent::onURL(%this, %url);
 };
 function StoreItemsFrame::update(%this) {
-    if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
+    if (!$gStoreStockLoaded[$gCurrentStoreName]) {
         %this.thumbnails.infoText.setText("Loading store inventory...");
     } else {
         if ((Inventory::getCurrentStoreSkus() $= "")) {
@@ -1064,18 +1064,18 @@ function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify) {
     if (%notify) {
         schedule(3000, 0, "floatBalanceChange", %whichBalance, %delta, $player);
     }
-    %threshhold1 = %whichBalance[$gBalanceUpdateSpecialEffect_Threshhold1 @ %whichBalance];
+    %threshhold1 = $gBalanceUpdateSpecialEffect_Threshhold1[%whichBalance];
     if ((%delta < %threshhold1)) {
         return;
     }
-    %delay = %whichBalance[$gBalanceUpdateSpecialEffect_Delay @ %whichBalance];
-    %threshhold2 = %whichBalance[$gBalanceUpdateSpecialEffect_Threshhold2 @ %whichBalance];
-    %sound1 = %whichBalance[$gBalanceUpdateSpecialEffect_Sound1 @ %whichBalance];
-    %sound2 = %whichBalance[$gBalanceUpdateSpecialEffect_Sound2 @ %whichBalance];
-    %guiControl1 = %whichBalance[$gBalanceUpdateSpecialEffect_GuiControl1 @ %whichBalance];
-    %guiControl2 = %whichBalance[$gBalanceUpdateSpecialEffect_GuiControl2 @ %whichBalance];
-    %pulseCount1 = %whichBalance[$gBalanceUpdateSpecialEffect_PulseCount1 @ %whichBalance];
-    %pulseCount2 = %whichBalance[$gBalanceUpdateSpecialEffect_PulseCount2 @ %whichBalance];
+    %delay = $gBalanceUpdateSpecialEffect_Delay[%whichBalance];
+    %threshhold2 = $gBalanceUpdateSpecialEffect_Threshhold2[%whichBalance];
+    %sound1 = $gBalanceUpdateSpecialEffect_Sound1[%whichBalance];
+    %sound2 = $gBalanceUpdateSpecialEffect_Sound2[%whichBalance];
+    %guiControl1 = $gBalanceUpdateSpecialEffect_GuiControl1[%whichBalance];
+    %guiControl2 = $gBalanceUpdateSpecialEffect_GuiControl2[%whichBalance];
+    %pulseCount1 = $gBalanceUpdateSpecialEffect_PulseCount1[%whichBalance];
+    %pulseCount2 = $gBalanceUpdateSpecialEffect_PulseCount2[%whichBalance];
     if ((%delta < %threshhold2)) {
         %sound = %sound1;
         %pulseCount = %pulseCount1;
@@ -1172,19 +1172,19 @@ function Player::floatTextSimple(%this, %text, %style) {
     if ((%style $= "")) {
         %style = "default";
     }
-    if ((%style[$gFloatingTextStyles TAB "font" @ %style] $= "")) {
+    if (($gFloatingTextStyles["font",%style] $= "")) {
         error(getScopeName() @ " " @ "- unknown style:" @ " " @ %style @ " " @ %text @ " " @ getTrace());
         %style = "default";
     }
-    %outline = %style[$gFloatingTextStyles TAB "outline" @ %style] ? "<b><outline>" : "";
-    %text = %style["<font:" @ $gFloatingTextStyles TAB "font" @ %style] @ ">" @ %text;
+    %outline = $gFloatingTextStyles["outline",%style] ? "<b><outline>" : "";
+    %text = "<font:"[$gFloatingTextStyles,"font",%style] @ ">" @ %text;
     %text = %outline @ %text;
-    %text = %style[$gFloatingTextStyles TAB "prepend" @ %style] @ %text;
-    %text = %style[%text @ $gFloatingTextStyles TAB "append" @ %style];
-    %baseColor = %style[$gFloatingTextStyles TAB "color" @ %style];
-    %baseAlpha = %style[$gFloatingTextStyles TAB "baseAlpha" @ %style];
-    %maxAge = %style[$gFloatingTextStyles TAB "maxAge" @ %style];
-    %speed = %style[$gFloatingTextStyles TAB "speed" @ %style];
+    %text = $gFloatingTextStyles["prepend",%style] @ %text;
+    %text = %text[$gFloatingTextStyles,"append",%style];
+    %baseColor = $gFloatingTextStyles["color",%style];
+    %baseAlpha = $gFloatingTextStyles["baseAlpha",%style];
+    %maxAge = $gFloatingTextStyles["maxAge",%style];
+    %speed = $gFloatingTextStyles["speed",%style];
     %this.floatText(%text, %maxAge, %speed, %baseColor, %baseAlpha);
 };
 function ClientCmdFloatText(%playerGhostID, %text, %style) {

@@ -16,7 +16,7 @@ $gameMgr::CUSTOM_GAME = 1;
 if (isObject(MissionCleanup)) {
     %n = 0;
     while ((%n < $gameMgr::GAME_TYPES_COUNT)) {
-        MissionCleanup.add(%n[$gameMgr::GAME_TYPES @ %n]);
+        MissionCleanup.add($gameMgr::GAME_TYPES[%n]);
         %n = (%n + 1.0);
     }
 }

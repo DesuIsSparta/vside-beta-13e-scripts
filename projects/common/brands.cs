@@ -6,6 +6,6 @@ function ClosetAddBrand(%userFacing, %codeName) {
         %s = %userFacing;
     }
     $gClosetBrands = $gClosetBrands @ %s;
-    %userFacing[$gClosetBrandsIntrnl @ %userFacing] = %codeName;
-    %codeName[$gClosetBrandsExtrnl @ %codeName] = %userFacing;
+    $gClosetBrandsIntrnl[%userFacing] = %codeName;
+    $gClosetBrandsExtrnl[%codeName] = %userFacing;
 };

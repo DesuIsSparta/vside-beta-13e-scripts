@@ -495,7 +495,7 @@ function RecursivelyFixOldStyleSeatingAreaProblems(%obj) {
     if ((%classname $= "Trigger")) {
         %dbName = %obj.getDataBlock().getName();
         if ((%dbName $= "SeatingArea") && (%obj.autosit $= "")) {
-            $OLDSEATAREA_KILLER_COUNT[$OLDSEATAREA_KILLER @ $OLDSEATAREA_KILLER_COUNT] = %obj.getId();
+            $OLDSEATAREA_KILLER[$OLDSEATAREA_KILLER_COUNT] = %obj.getId();
             $OLDSEATAREA_KILLER_COUNT = ($OLDSEATAREA_KILLER_COUNT + 1.0);
         }
     }
@@ -506,10 +506,10 @@ function FixOldStyleSeatingAreaProblems() {
     RecursivelyFixOldStyleSeatingAreaProblems(MissionGroup);
     %i = 0;
     while ((%i < $OLDSEATAREA_KILLER_COUNT)) {
-        %obj = %i[$OLDSEATAREA_KILLER @ %i];
+        %obj = $OLDSEATAREA_KILLER[%i];
         echo("deleteing no longer needed seating area " @ " " @ %obj @ " " @ "of class:" @ " " @ %obj.getClassName() @ " " @ ", with name:" @ " " @ %obj.getName());
         %obj.delete();
-        $OLDSEATAREA_KILLER_COUNT[$OLDSEATAREA_KILLER @ $OLDSEATAREA_KILLER_COUNT] = "";
+        $OLDSEATAREA_KILLER[$OLDSEATAREA_KILLER_COUNT] = "";
         %i = (%i + 1.0);
     }
     $OLDSEATAREA_KILLER_COUNT = 0;

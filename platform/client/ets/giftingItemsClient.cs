@@ -50,8 +50,8 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
         return;
     }
     error("// oxe 20090219 - todo - decide if this is good or if we want a new one");
-    %acceptModeStrangers = $UserPref::Player::GiftsPermissionStrangers[$gGiftAcceptModeStrings @ $UserPref::Player::GiftsPermissionStrangers];
-    %acceptModeFriends = $UserPref::Player::GiftsPermissionFriends[$gGiftAcceptModeStrings @ $UserPref::Player::GiftsPermissionFriends];
+    %acceptModeStrangers = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionStrangers];
+    %acceptModeFriends = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionFriends];
     if (%otherPlayer.isFriend()) {
     } else {
     }
@@ -99,7 +99,7 @@ function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %acce
             error(getScopeName() @ " " @ "- can't find other player:" @ " " @ %otherPlayerName @ " " @ %transactionID);
             %messageCode = "E-TARGET-MISSING";
         }
-        %text = strreplace(%messageCode[$MsgCat::gifting @ %messageCode], "[OTHERPLAYER]", "<linkcolor:ffddeeff><a:gamelink " @ munge(%otherPlayerName) @ ">" @ StripMLControlChars(%otherPlayerName) @ "</a>");
+        %text = strreplace($MsgCat::gifting[%messageCode], "[OTHERPLAYER]", "<linkcolor:ffddeeff><a:gamelink " @ munge(%otherPlayerName) @ ">" @ StripMLControlChars(%otherPlayerName) @ "</a>");
         %text = strreplace(%text, "[OTHERPLAYER_HIM_HER_IT]", getPronounHimHerIt(%otherPlayer));
         %text = strreplace(%text, "[OTHERPLAYER_HE_SHE_IT]", getPronounHeSheIt(%otherPlayer));
         MessageBoxOK("Woops..", %text, "");

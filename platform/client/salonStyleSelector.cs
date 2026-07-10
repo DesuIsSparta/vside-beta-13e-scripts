@@ -193,7 +193,7 @@ function ShowPropsButton::onClick(%this) {
             %callback = "toggleStore();";
         } else {
             %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-OUT"];
-            %callback = "vurlOperation(\"" @ %salonCode[$gDestinationVurls @ %salonCode] @ "\");";
+            %callback = "vurlOperation(\"" @ $gDestinationVurls[%salonCode] @ "\");";
         }
         MessageBoxYesNo(%salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-TITLE"], %msg, %callback, "");
     }

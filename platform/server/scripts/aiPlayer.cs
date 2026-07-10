@@ -392,15 +392,15 @@ function AIManager::BotsStress(%this, %val) {
 $randomAwayMessagesNum = 0;
 function getRandomAwayMessage() {
     if (($randomAwayMessagesNum == 0.0)) {
-        $randomAwayMessagesNum[$randomAwayMessage @ $randomAwayMessagesNum] = "I'm cooking dinner.";
+        $randomAwayMessage[$randomAwayMessagesNum] = "I'm cooking dinner.";
         $randomAwayMessagesNum = ($randomAwayMessagesNum + 1.0);
-        $randomAwayMessagesNum[$randomAwayMessage @ $randomAwayMessagesNum] = "I'm on a date.";
+        $randomAwayMessage[$randomAwayMessagesNum] = "I'm on a date.";
         $randomAwayMessagesNum = ($randomAwayMessagesNum + 1.0);
-        $randomAwayMessagesNum[$randomAwayMessage @ $randomAwayMessagesNum] = "away.";
+        $randomAwayMessage[$randomAwayMessagesNum] = "away.";
         $randomAwayMessagesNum = ($randomAwayMessagesNum + 1.0);
-        $randomAwayMessagesNum[$randomAwayMessage @ $randomAwayMessagesNum] = "lost.";
+        $randomAwayMessage[$randomAwayMessagesNum] = "lost.";
         $randomAwayMessagesNum = ($randomAwayMessagesNum + 1.0);
-        $randomAwayMessagesNum[$randomAwayMessage @ $randomAwayMessagesNum] = $Pref::Player::defaultAwayMessage;
+        $randomAwayMessage[$randomAwayMessagesNum] = $Pref::Player::defaultAwayMessage;
         $randomAwayMessagesNum = ($randomAwayMessagesNum + 1.0);
     }
     return $randomAwayMessage[getRandom(0, ($randomAwayMessagesNum - 1.0))];

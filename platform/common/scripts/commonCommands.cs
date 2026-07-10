@@ -33,10 +33,10 @@ function reloadScripts() {
     initProjectsReloadableLate();
 };
 function gSetField(%object, %name, %value) {
-    %name[%value @ $gGlobalFields TAB %object.getId() @ %name] = ;
+    %value[$gGlobalFields,%object.getId(),%name] = ;
 };
 function gGetField(%object, %name) {
-    return %name[$gGlobalFields TAB %object.getId() @ %name];
+    return $gGlobalFields[%object.getId(),%name];
 };
 function gGetFieldWithDefault(%object, %name, %def) {
     if (!isObject(%object)) {
@@ -44,7 +44,7 @@ function gGetFieldWithDefault(%object, %name, %def) {
         return %def;
     }
     if (isDefined("$gGlobalFields" @ %object.getId() @ "_" @ %name)) {
-        return %name[$gGlobalFields TAB %object.getId() @ %name];
+        return $gGlobalFields[%object.getId(),%name];
     }
     return %def;
 };

@@ -72,8 +72,8 @@ function Player::PChatProcessIncomingLine(%this, %text, %speechType, %isAutoRepl
     if (%this.isIgnore()) {
         return "";
     }
-    %rangeRadial = %speechType[$Player::PChat::rangeRadial @ %speechType];
-    %rangeAngular = %speechType[$Player::PChat::rangeAngular @ %speechType];
+    %rangeRadial = $Player::PChat::rangeRadial[%speechType];
+    %rangeAngular = $Player::PChat::rangeAngular[%speechType];
     if (!(%speechType $= "regular")) {
         %prox = proxRangeMutualDirected(%this.getTransform(), $GameConnection.getHere(), %rangeRadial, %rangeRadial, %rangeAngular, %rangeAngular);
     } else {

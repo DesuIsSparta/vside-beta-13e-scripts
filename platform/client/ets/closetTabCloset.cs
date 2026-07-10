@@ -330,7 +330,7 @@ function ClosetTabs::getOutfitButton(%this, %index) {
 function ClosetTabs::updateOutfitObjectView(%this, %index) {
     %objectView = %this.getOutfitObjectView(%index);
     %name = ClosetMyOutfitsFrame.getOutfitNameForHanger(%index);
-    %objectView.setSkus($ClosetSkusBody @ " " @ %name[$ClosetSkusOutfit @ %name]);
+    %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetSkusOutfit[%name]);
 };
 $gSwimsuitOutfitIndex = 6;
 function ClosetTabs::doCopyOutfit(%this, %src, %dest) {
@@ -346,7 +346,7 @@ function ClosetTabs::doCopyOutfit(%this, %src, %dest) {
 function ClosetTabs::doCopyOutfitReally(%this, %src, %dest) {
     %srcName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%src);
     %destName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%dest);
-    %destName[$ClosetSkusOutfit @ %destName] = %srcName[$ClosetSkusOutfit @ %srcName];
+    $ClosetSkusOutfit[%destName] = $ClosetSkusOutfit[%srcName];
     ClosetTabs.updateOutfitObjectView(%dest);
     ClosetTabs.getOutfitButton(%dest).performClick();
 };
@@ -362,9 +362,9 @@ function ClosetTabs::doSwapOutfits(%this, %src, %dest) {
 function ClosetTabs::doSwapOutfitsReally(%this, %src, %dest) {
     %srcName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%src);
     %destName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%dest);
-    %tmp = %srcName[$ClosetSkusOutfit @ %srcName];
-    %srcName[$ClosetSkusOutfit @ %srcName] = %destName[$ClosetSkusOutfit @ %destName];
-    %destName[$ClosetSkusOutfit @ %destName] = %tmp;
+    %tmp = $ClosetSkusOutfit[%srcName];
+    $ClosetSkusOutfit[%srcName] = $ClosetSkusOutfit[%destName];
+    $ClosetSkusOutfit[%destName] = %tmp;
     ClosetTabs.updateOutfitObjectView(%src);
     ClosetTabs.updateOutfitObjectView(%dest);
     ClosetTabs.getOutfitButton(%dest).performClick();
@@ -498,7 +498,7 @@ function ClosetBrandPopup::update(%this, %skus) {
     %i = 0;
     while ((%i < getFieldCount($gClosetBrands))) {
         %brand = getField($gClosetBrands, %i);
-        if (SkuManager.skusHaveBrands(%skus, %brand[$gClosetBrandsIntrnl @ %brand] @ " ")) {
+        if (SkuManager.skusHaveBrands(%skus, $gClosetBrandsIntrnl[%brand] @ " ")) {
             %this.add(%brand);
         }
         %i = (%i + 1.0);
@@ -754,7 +754,7 @@ function ClosetWhatYoureWearingList::addSku(%this, %sku) {
     %this.reseatChildren();
 };
 function ClosetWhatYoureWearingList::setSkus(%this, %skus) {
-    %propSku = SkuManager.getFirstPropSku($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+    %propSku = SkuManager.getFirstPropSku($ClosetSkusOutfit[$ClosetOutfitName]);
     if ((%propSku $= "") || (%this.lastPropSku != %propSku)) {
         stopPropAction();
     }
@@ -800,11 +800,11 @@ function ClosetWhatYoureWearingButton::onURL(%this, %url) {
     if ((%url $= "startPropAction")) {
         ClosetMainObjectView.zoomToSKU("");
         doPropAction();
-        ClosetWhatYoureWearingList.refresh($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+        ClosetWhatYoureWearingList.refresh($ClosetSkusOutfit[$ClosetOutfitName]);
     } else {
         if ((%url $= "stopPropAction")) {
             stopPropAction();
-            ClosetWhatYoureWearingList.refresh($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+            ClosetWhatYoureWearingList.refresh($ClosetSkusOutfit[$ClosetOutfitName]);
         } else {
             if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
                 ClosetThumbnailsCloset.scroll.scrollToSku(%url);
@@ -830,17 +830,17 @@ function ClosetGUI_ToggleSku_Closet(%sku) {
         }
     } else {
         if (SkuManager.isOutfitSku(%sku)) {
-            %wordLoc = findWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %sku);
+            %wordLoc = findWord($ClosetSkusOutfit[$ClosetOutfitName], %sku);
             if ((%wordLoc >= 0.0)) {
                 if (%removable) {
-                    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = removeWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %wordLoc);
+                    $ClosetSkusOutfit[$ClosetOutfitName] = removeWord($ClosetSkusOutfit[$ClosetOutfitName], %wordLoc);
                 }
             } else {
-                $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %sku);
+                $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], %sku);
             }
             %outfitNum = findWord($Player::HangerNames, [$player.getGender()], $ClosetOutfitName);
             %objectView = ClosetTabs.getOutfitObjectView(%outfitNum);
-            %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+            %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetSkusOutfit[$ClosetOutfitName]);
         }
     }
 };

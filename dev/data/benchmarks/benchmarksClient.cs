@@ -8,14 +8,14 @@ function benchmarks::initTestsList() {
     $benchmarks::currentRunningTest = -(1.0);
     $benchmarks::successCount = 0;
     %n = 0;
-    %n[$benchmarks::testEvalsList @ %n] = "benchmarks::runSampleTest1();";
-    %n[$benchmarks::testNamesList @ %n] = "Sample Test 1";
+    $benchmarks::testEvalsList[%n] = "benchmarks::runSampleTest1();";
+    $benchmarks::testNamesList[%n] = "Sample Test 1";
     %n = (%n + 1.0);
-    %n[$benchmarks::testEvalsList @ %n] = "benchmarks::runSampleTest2();";
-    %n[$benchmarks::testNamesList @ %n] = "Sample Test 2";
+    $benchmarks::testEvalsList[%n] = "benchmarks::runSampleTest2();";
+    $benchmarks::testNamesList[%n] = "Sample Test 2";
     %n = (%n + 1.0);
-    %n[$benchmarks::testEvalsList @ %n] = "benchmarks::loadCameraTests();benchmarks::runCameraTestsReps();";
-    %n[$benchmarks::testNamesList @ %n] = "FPS";
+    $benchmarks::testEvalsList[%n] = "benchmarks::loadCameraTests();benchmarks::runCameraTestsReps();";
+    $benchmarks::testNamesList[%n] = "FPS";
     %n = (%n + 1.0);
     $benchmarks::testsListNum = %n;
 };
@@ -45,8 +45,8 @@ function benchmarksTryNextTest() {
     $benchmarks::testsSchedule = schedule(1000, 0, "benchmarksTryNextTest");
 };
 function benchmarks::runNextTest() {
-    echo("running  test " @ $benchmarks::currentTest @ ": \"" @ $benchmarks::currentTest[$benchmarks::testNamesList @ $benchmarks::currentTest] @ "\"");
-    eval($benchmarks::currentTest[$benchmarks::testEvalsList @ $benchmarks::currentTest]);
+    echo("running  test " @ $benchmarks::currentTest @ ": \"" @ $benchmarks::testNamesList[$benchmarks::currentTest] @ "\"");
+    eval($benchmarks::testEvalsList[$benchmarks::currentTest]);
     $benchmarks::currentRunningTest = ($benchmarks::currentRunningTest + 1.0);
 };
 function benchmarks::finishedCurrentTest(%result) {
@@ -56,7 +56,7 @@ function benchmarks::finishedCurrentTest(%result) {
     if ((%result $= "success")) {
         $benchmarks::successCount = ($benchmarks::successCount + 1.0);
     }
-    echo("finished test " @ $benchmarks::currentTest @ ": \"" @ $benchmarks::currentTest[$benchmarks::testNamesList @ $benchmarks::currentTest] @ "\" result = " @ %result);
+    echo("finished test " @ $benchmarks::currentTest @ ": \"" @ $benchmarks::testNamesList[$benchmarks::currentTest] @ "\" result = " @ %result);
     $benchmarks::currentTest = ($benchmarks::currentTest + 1.0);
 };
 function benchmarks::finishedAllTests(%result) {

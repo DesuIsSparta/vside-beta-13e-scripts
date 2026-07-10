@@ -45,47 +45,47 @@ function testOutfits_Master() {
     $testOutfits_testCount = 0;
     $testOutfits_passCount = 0;
     $testOutfits_nextTest = 0;
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerOwned";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerOwned";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerMicrophone";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerMicrophone";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerMicrophone";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerMicrophone";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerSantaItem";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerSantaItem";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerSantaItem";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerSantaItem";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerOtherGender";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerOtherGender";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerOtherGender";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerOtherGender";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerAlmostEmpty";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerAlmostEmpty";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerAlmostEmpty";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerAlmostEmpty";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerEmpty";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerEmpty";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerEmpty";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerEmpty";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerStaff";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerStaff";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerStaff";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerStaff";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServer";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServer";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
-    $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManager";
+    $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManager";
     $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     %n = 0;
     while ((%n < $testOutfits_testCount)) {
-        %n[$testOutfits_result @ %n] = "NA  ";
+        $testOutfits_result[%n] = "NA  ";
         %n = (%n + 1.0);
     }
     testOutfits_MasterDoNext();
 };
 function testOutfits::getBodyAndOutfitSkus(%setName) {
     %gender = $player.getGender();
-    %skus = %setName[$testOutfits::dataOutfit TAB %gender @ %setName];
-    %skus = %setName[%skus @ " " @ $testOutfits::dataBody TAB %gender @ %setName];
+    %skus = $testOutfits::dataOutfit[%gender,%setName];
+    %skus = %skus[" ",$testOutfits::dataBody,%gender,%setName];
     return %skus;
 };
 function testOutfits::skuListsAreEqual(%skusA, %skusB) {
@@ -111,8 +111,8 @@ function testOutfits_MasterDoNext() {
         echo("testOutfitsMaster() complete. User=" @ $player.getShapeName() @ " " @ "Gender=" @ $player.getGender() @ " " @ "Roles=" @ roles::getRoleStrings($player.getRolesMask()));
         %n = 0;
         while ((%n < $testOutfits_testCount)) {
-            %level = (%n[$testOutfits_result @ %n] $= "pass") ? "info" : "error";
-            log("network", %level, "testOutfitsMaster()" @ " " @ %n[$testOutfits_result @ %n] @ ":" @ " " @ %n[$testOutfits_test @ %n]);
+            %level = ($testOutfits_result[%n] $= "pass") ? "info" : "error";
+            log("network", %level, "testOutfitsMaster()" @ " " @ $testOutfits_result[%n] @ ":" @ " " @ $testOutfits_test[%n]);
             %n = (%n + 1.0);
         }
         %level = ($testOutfits_testCount == $testOutfits_passCount) ? "info" : "warn";
@@ -122,7 +122,7 @@ function testOutfits_MasterDoNext() {
             quit();
         }
     } else {
-        call($testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest]);
+        call($testOutfits_test[$testOutfits_nextTest]);
         $testOutfits_nextTest = ($testOutfits_nextTest + 1.0);
     }
 };
@@ -154,12 +154,12 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout) {
 function testOutfits_FireEnvServerTest(%skusDry, %skusWet) {
     $player.setActiveSKUs($testOutfits::badSkus);
     commandToServer('SetActiveSkus', %skusDry);
-    $testOutfits::timer = schedule($testOutfits::timeout, 0, "testOutfits_TestCatch", $testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest], %skusDry, %skusWet, $testOutfits::timeout);
+    $testOutfits::timer = schedule($testOutfits::timeout, 0, "testOutfits_TestCatch", $testOutfits_test[$testOutfits_nextTest], %skusDry, %skusWet, $testOutfits::timeout);
 };
 function testOutfits_FireEnvManagerTest(%skusDry, %skusWet) {
     $player.setActiveSKUs($testOutfits::badSkus);
     SaveOutfitAndBodySkusAsCurrent(%skusDry);
-    $testOutfits::timer = schedule($testOutfits::timeout, 0, "testOutfits_TestCatch", $testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest], %skusDry, %skusWet, $testOutfits::timeout);
+    $testOutfits::timer = schedule($testOutfits::timeout, 0, "testOutfits_TestCatch", $testOutfits_test[$testOutfits_nextTest], %skusDry, %skusWet, $testOutfits::timeout);
 };
 function testOutfits_UpToEnvServer() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("nonStock");

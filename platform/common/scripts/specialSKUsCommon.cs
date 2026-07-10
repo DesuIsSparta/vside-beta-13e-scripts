@@ -42,7 +42,7 @@ function getSpecialSKU(%player, %skuName) {
     }
     %gender = "n";
     %player.getGender();
-    return %skuName[$specialSKUs TAB %gender @ %skuName];
+    return $specialSKUs[%gender,%skuName];
 };
 function Player::hasSpecialSku(%this, %skuName) {
     %sku = getSpecialSKU(%this, %skuName);

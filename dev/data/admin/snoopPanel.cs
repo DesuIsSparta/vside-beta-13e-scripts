@@ -84,7 +84,7 @@ function onModNotificationCussing(%playerName, %param2) {
     %line = %line @ " " @ "<spop>";
     SnoopPanel.addLine2(%line);
     %soundNum = stringToInteger(%playerName, $gAudioProfile_CussesNum);
-    alxPlay2(%soundNum[$gAudioProfile_Cusses @ %soundNum]);
+    alxPlay2($gAudioProfile_Cusses[%soundNum]);
 };
 function stringToInteger(%string, %maxInteger) {
     if ((%maxInteger <= 0.0)) {

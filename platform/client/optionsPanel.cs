@@ -1657,7 +1657,7 @@ function OptionsPanelTabs::restoreTabsDefaults(%this) {
     }
     %tabName = %currentTab.name;
     "";
-    if (%tabName[$UserPref::HudTabs::AutoClose @ %tabName]) {
+    if ($UserPref::HudTabs::AutoClose[%tabName]) {
         HudTabs.autoHide();
     }
     OptionsPanel.readSettings();
@@ -1832,8 +1832,8 @@ function persistOptionsPanelSettingsToManager() {
     %i = (%maxNumberKeyCombos - 1.0);
     while ((%i >= 0.0)) {
         %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %i);
-        gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, %keyCombo[$UserPref::emotes TAB "f" @ %keyCombo]);
-        gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, %keyCombo[$UserPref::emotes TAB "m" @ %keyCombo]);
+        gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, $UserPref::emotes["f",%keyCombo]);
+        gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, $UserPref::emotes["m",%keyCombo]);
         %i = (%i - 1.0);
     }
     $OptionsPanel::scheduledPersistID = 0;
@@ -2077,7 +2077,7 @@ function updateHudTabsHiding() {
     }
     %tabName = %currentTab.name;
     "";
-    if (%tabName[$UserPref::HudTabs::AutoClose @ %tabName]) {
+    if ($UserPref::HudTabs::AutoClose[%tabName]) {
         HudTabs.autoHide();
     }
 };

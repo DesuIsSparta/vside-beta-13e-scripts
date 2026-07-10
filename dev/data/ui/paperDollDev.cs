@@ -2,7 +2,7 @@ $gPaperDollPermutationLists["f"] = new_ScriptArray("");
 $gPaperDollPermutationLists["m"] = new_ScriptArray("");
 $gPaperDoll_SetupFile = "platform/client/ui/paperdolls/permutations.txt";
 function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
-    %masterList = %gender[$gPaperDollPermutationLists @ %gender];
+    %masterList = $gPaperDollPermutationLists[%gender];
     %found = -(1.0);
     %n = (%masterList.size() - 1.0);
     if ((%found == -(1.0))) {
@@ -98,7 +98,7 @@ function paperDoll_InitPermutations() {
                                 %gender = trim(restWords(%line));
                             } else {
                                 if ((%word $= "baseSkus")) {
-                                    %gender[$gPaperDoll_BaseSkus @ %gender] = trim(restWords(%line));
+                                    $gPaperDoll_BaseSkus[%gender] = trim(restWords(%line));
                                 } else {
                                     if ((%word $= "parameter")) {
                                         %param = trim(restWords(%line));
@@ -134,12 +134,12 @@ function paperDoll_InitPermutations() {
 };
 function paperDoll_getParamsNum(%gender) {
     paperDoll_InitPermutations();
-    %masterList = %gender[$gPaperDollPermutationLists @ %gender];
+    %masterList = $gPaperDollPermutationLists[%gender];
     return %masterList.size();
 };
 function paperDoll_getParamList(%gender, %paramNum) {
     paperDoll_InitPermutations();
-    %masterList = %gender[$gPaperDollPermutationLists @ %gender];
+    %masterList = $gPaperDollPermutationLists[%gender];
     %subList = %masterList.get(%paramNum);
     return %subList;
 };
@@ -183,7 +183,7 @@ function paperDoll_getNumPermutations(%gender) {
 };
 function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList) {
     paperDoll_InitPermutations();
-    %masterList = %gender[$gPaperDollPermutationLists @ %gender];
+    %masterList = $gPaperDollPermutationLists[%gender];
     %num = getWordCount(%optionIndexList);
     if ((%num != %masterList.size())) {
         error(getScopeName() @ " " @ "- list has" @ " " @ %num @ " " @ "entries, but should have" @ " " @ %masterList.size() @ "." @ " " @ %gender @ " " @ %optionIndexList @ " " @ getTrace());

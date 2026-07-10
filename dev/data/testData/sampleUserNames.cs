@@ -11,7 +11,7 @@ function sampleData_initUserNames() {
         $gRandomUserNamesNum = 0;
         while (!%fo.isEOF()) {
             %name = %fo.readLine();
-            $gRandomUserNamesNum[$gRandomUserNames @ $gRandomUserNamesNum] = %name;
+            $gRandomUserNames[$gRandomUserNamesNum] = %name;
             $gRandomUserNamesNum = ($gRandomUserNamesNum + 1.0);
         }
         %fo.close();
@@ -22,11 +22,11 @@ function sampleData_initUserNames() {
 function getRandomUserName() {
     sampleData_initUserNames();
     %num = getRandom(0, ($gRandomUserNamesNum - 1.0));
-    return %num[$gRandomUserNames @ %num];
+    return $gRandomUserNames[%num];
 };
 function getSequentialUserName() {
     sampleData_initUserNames();
-    %ret = $gRandomUserNameIdx[$gRandomUserNames @ $gRandomUserNameIdx];
+    %ret = $gRandomUserNames[$gRandomUserNameIdx];
     $gRandomUserNameIdx = (($gRandomUserNameIdx + 1.0) % $gRandomUserNamesNum);
     return %ret;
 };
@@ -43,7 +43,7 @@ function sampleData_initBannerIDs() {
         $gRandomBannerIDsNum = 0;
         while (!%fo.isEOF()) {
             %name = %fo.readLine();
-            $gRandomBannerIDsNum[$gRandomBannerIDs @ $gRandomBannerIDsNum] = %name;
+            $gRandomBannerIDs[$gRandomBannerIDsNum] = %name;
             $gRandomBannerIDsNum = ($gRandomBannerIDsNum + 1.0);
         }
         %fo.close();
@@ -54,11 +54,11 @@ function sampleData_initBannerIDs() {
 function getRandomBannerID() {
     sampleData_initBannerIDs();
     %num = getRandom(0, ($gRandomBannerIDsNum - 1.0));
-    return %num[$gRandomBannerIDs @ %num];
+    return $gRandomBannerIDs[%num];
 };
 function getSequentialBannerID() {
     sampleData_initBannerIDs();
-    %ret = $gSequentialBannerID[$gRandomBannerIDs @ $gSequentialBannerID];
+    %ret = $gRandomBannerIDs[$gSequentialBannerID];
     $gSequentialBannerID = (($gSequentialBannerID + 1.0) % $gRandomBannerIDsNum);
     return %ret;
 };
@@ -74,7 +74,7 @@ function getRandomApartmentPhotoID() {
         $gRandomApartmentPhotoIDsNum = 0;
         while (!%fo.isEOF()) {
             %name = %fo.readLine();
-            $gRandomApartmentPhotoIDsNum[$gRandomApartmentPhotoIDs @ $gRandomApartmentPhotoIDsNum] = %name;
+            $gRandomApartmentPhotoIDs[$gRandomApartmentPhotoIDsNum] = %name;
             $gRandomApartmentPhotoIDsNum = ($gRandomApartmentPhotoIDsNum + 1.0);
         }
         %fo.close();
@@ -83,5 +83,5 @@ function getRandomApartmentPhotoID() {
     }
     %num = getRandom(0, ($gRandomApartmentPhotoIDsNum - 1.0));
     !%fo.isEOF();
-    return %num[$gRandomApartmentPhotoIDs @ %num];
+    return $gRandomApartmentPhotoIDs[%num];
 };

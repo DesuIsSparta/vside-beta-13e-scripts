@@ -1,18 +1,18 @@
 $NUM_SALON_STYLES = 0;
 function SalonDefineChair(%grouping, %salonMenuDesc, %propDesc, %whereToGet, %destinationCode, %canClose) {
-    %grouping[$SALON_CHAIR_DEF_SALONMENUDESC @ %grouping] = %salonMenuDesc;
-    %grouping[$SALON_CHAIR_DEF_PROPDESC @ %grouping] = %propDesc;
-    %grouping[$SALON_CHAIR_DEF_WHERETOGET @ %grouping] = %whereToGet;
-    %grouping[$SALON_CHAIR_DEF_DESTCODE @ %grouping] = %destinationCode;
-    %grouping[$SALON_CHAIR_DEF_CANCLOSE @ %grouping] = %canClose;
+    $SALON_CHAIR_DEF_SALONMENUDESC[%grouping] = %salonMenuDesc;
+    $SALON_CHAIR_DEF_PROPDESC[%grouping] = %propDesc;
+    $SALON_CHAIR_DEF_WHERETOGET[%grouping] = %whereToGet;
+    $SALON_CHAIR_DEF_DESTCODE[%grouping] = %destinationCode;
+    $SALON_CHAIR_DEF_CANCLOSE[%grouping] = %canClose;
 };
 function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cutTime, %requiredActiveSkusMessage) {
-    $NUM_SALON_STYLES[$SALON_STYLE_GROUPING @ $NUM_SALON_STYLES] = %grouping;
-    $NUM_SALON_STYLES[$SALON_STYLE_SKU @ $NUM_SALON_STYLES] = %sku;
-    $NUM_SALON_STYLES[$SALON_STYLE_REQUIREDSKUS @ $NUM_SALON_STYLES] = %requiredActiveSkus;
-    $NUM_SALON_STYLES[$SALON_STYLE_ANIMATION @ $NUM_SALON_STYLES] = %animation;
-    $NUM_SALON_STYLES[$SALON_STYLE_CUTTIME @ $NUM_SALON_STYLES] = %cutTime;
-    $NUM_SALON_STYLES[$SALON_STYLE_REQUREDSKUSMESSAGE @ $NUM_SALON_STYLES] = %requiredActiveSkusMessage;
+    $SALON_STYLE_GROUPING[$NUM_SALON_STYLES] = %grouping;
+    $SALON_STYLE_SKU[$NUM_SALON_STYLES] = %sku;
+    $SALON_STYLE_REQUIREDSKUS[$NUM_SALON_STYLES] = %requiredActiveSkus;
+    $SALON_STYLE_ANIMATION[$NUM_SALON_STYLES] = %animation;
+    $SALON_STYLE_CUTTIME[$NUM_SALON_STYLES] = %cutTime;
+    $SALON_STYLE_REQUREDSKUSMESSAGE[$NUM_SALON_STYLES] = %requiredActiveSkusMessage;
     %si = SkuManager.findBySku(%sku);
     %si.salonStyleIndex = $NUM_SALON_STYLES;
     $NUM_SALON_STYLES = ($NUM_SALON_STYLES + 1.0);
@@ -520,7 +520,7 @@ SalonDefineStyles();
 function SalonDoesListContainAnySalonRewardSKUs(%skus) {
     %i = 0;
     while ((%i < $NUM_SALON_STYLES)) {
-        %skuToCheck = %i[$SALON_STYLE_SKU @ %i];
+        %skuToCheck = $SALON_STYLE_SKU[%i];
         %wordLoc = findWord(%skus, %skuToCheck);
         if ((%wordLoc >= 0.0)) {
             return 1;

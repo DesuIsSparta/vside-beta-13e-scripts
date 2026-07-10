@@ -42,7 +42,7 @@ function interiorRenderModeSet(%mode) {
     setInteriorRenderMode(%mode);
     %mode = getInteriorRenderMode();
     guiCtrlInteriorRenderMode.setValue(%mode);
-    guiCtrlInteriorRenderModeName.setValue(%mode[$interiorRenderModeNames @ %mode]);
+    guiCtrlInteriorRenderModeName.setValue($interiorRenderModeNames[%mode]);
 };
 function interiorRenderModeTextChange() {
     interiorRenderModeSet(guiCtrlInteriorRenderMode.getValue());

@@ -91,7 +91,7 @@ function putListIntoEnglish(%list) {
 function gameMgrClient::playerInvited(%this, %inviter, %aGameInstance, %gameType, %playerCount, %message) {
     echo(getScopeName());
     echo("gameMgrClient: Game invitation from " @ %inviter @ ": come join " @ %aGameInstance @ ".");
-    %msg = getPlayerMarkup(%inviter, "", 1) @ " invites you to play <a:game inspect " @ %aGameInstance @ ">" @ %gameType[$gameMgr::GAME_TYPES @ %gameType].title @ "</a>";
+    %msg = getPlayerMarkup(%inviter, "", 1) @ " invites you to play <a:game inspect " @ %aGameInstance @ ">" @ $gameMgr::GAME_TYPES[%gameType].title @ "</a>";
     if ((%playerCount > 2.0)) {
         %msg = %msg @ " with " @ (%playerCount - 1.0) @ " others.";
     } else {

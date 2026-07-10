@@ -2,19 +2,19 @@ $gDestinationNamesInternal = "";
 $gDestinationFiltersInUse = "";
 $gDestinationFiltersInDirectory = "event" @ " " @ "shop" @ " " @ "venue" @ " " @ "plaza" @ " " @ "residence";
 function DestinationList::AddDestinationInfo(%codeName, %filters, %contiguousSpaceNames, %userFacingName, %userFacingDescriptionBase, %inWorldTrailer, %vurl, %okayForTGF) {
-    %codeName[$gDestinationFilters @ %codeName] = %filters;
-    %codeName[$gDestinationNames @ %codeName] = %userFacingName;
-    %codeName[$gDestinationDescsInCloset @ %codeName] = %userFacingDescriptionBase;
-    %codeName[$gDestinationDescsInWorld @ %codeName] = "Welcome to" @ " " @ %userFacingName @ "!" @ " " @ %inWorldTrailer;
-    %codeName[$gDestinationSpaces @ %codeName] = %contiguousSpaceNames;
-    %codeName[$gDestinationVurls @ %codeName] = %vurl;
+    $gDestinationFilters[%codeName] = %filters;
+    $gDestinationNames[%codeName] = %userFacingName;
+    $gDestinationDescsInCloset[%codeName] = %userFacingDescriptionBase;
+    $gDestinationDescsInWorld[%codeName] = "Welcome to" @ " " @ %userFacingName @ "!" @ " " @ %inWorldTrailer;
+    $gDestinationSpaces[%codeName] = %contiguousSpaceNames;
+    $gDestinationVurls[%codeName] = %vurl;
     $gDestinationNamesInternal = $gDestinationNamesInternal @ %codeName @ " ";
     %i = (getWordCount(%filters) - 1.0);
     while ((%i >= 0.0)) {
         %filter = getWord(%filters, %i);
         if ((%filter $= "shop")) {
-            %codeName[$gStoreStockCacheSkus @ %codeName] = "";
-            %codeName[$gStoreStockRevision @ %codeName] = "";
+            $gStoreStockCacheSkus[%codeName] = "";
+            $gStoreStockRevision[%codeName] = "";
         }
         if ((findWord($gDestinationFiltersInUse, %filter) < 0.0)) {
             $gDestinationFiltersInUse = $gDestinationFiltersInUse @ %filter @ " ";
@@ -26,7 +26,7 @@ function DestinationList::AddDestinationInfo(%codeName, %filters, %contiguousSpa
     }
 };
 function DestinationList::getDestinationContiguousSpace(%codeName) {
-    return %codeName[$gDestinationSpaces @ %codeName];
+    return $gDestinationSpaces[%codeName];
 };
 function DestinationList::IsDestinationInMyContiguousSpace(%codeName) {
     if (($gContiguousSpaceName $= "")) {
@@ -42,7 +42,7 @@ function DestinationList::getBitmapLocation(%codeName) {
     if (("" $= %codeName)) {
         return 0;
     }
-    %filter = getWord(%codeName[$gDestinationFilters @ %codeName], 0);
+    %filter = getWord($gDestinationFilters[%codeName], 0);
     if (("" $= %filter)) {
         return 0;
     }
@@ -53,11 +53,11 @@ function DestinationList::getOccluderBitmapLocation() {
 };
 $gDestinationAdsNum = 0;
 function DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF) {
-    %isNewEntry = (%codeName[$gDestinationAdsNumByName @ %codeName] $= "");
+    %isNewEntry = ($gDestinationAdsNumByName[%codeName] $= "");
     $gDestinationAdsNum[%codeName @ $gDestinationAds TAB $gDestinationAdsNum @ "codename"] = ;
     $gDestinationAdsNum[%okayForTGF @ $gDestinationAds TAB $gDestinationAdsNum @ "okayForTGF"] = ;
     if (%isNewEntry) {
-        %codeName[$gDestinationAdsNumByName @ %codeName] = $gDestinationAdsNum;
+        $gDestinationAdsNumByName[%codeName] = $gDestinationAdsNum;
         $gDestinationAdsNum = ($gDestinationAdsNum + 1.0);
     }
 };
@@ -75,7 +75,7 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
             %codeName = %n[$gDestinationAds TAB %n @ "codename"];
             if (hasWord(%butNotThese, %codeName)) {
             } else {
-                %filters = %codeName[$gDestinationFilters @ %codeName];
+                %filters = $gDestinationFilters[%codeName];
                 if (hasWord(%filters, %filter)) {
                     %candidates = %candidates @ %delim @ %codeName;
                     %delim = " ";
@@ -94,7 +94,7 @@ function DestinationList::goToDestination(%codeName) {
     if ((findWord($gDestinationNamesInternal, %codeName) < 0.0)) {
         return;
     }
-    %vurl = %codeName[$gDestinationVurls @ %codeName];
+    %vurl = $gDestinationVurls[%codeName];
     if ((%vurl $= "")) {
         error(getScopeName() @ " " @ "- no vurl for destination" @ " " @ %codeName);
         return;
@@ -102,7 +102,7 @@ function DestinationList::goToDestination(%codeName) {
     %command = "geTGF.close();" @ " " @ "vurlOperation(\"" @ %vurl @ "\");";
     if (!DestinationList::IsDestinationInMyContiguousSpace(%codeName)) {
         %title = $MsgCat::destinations["REMOTE-TITLE"];
-        %body = strreplace($MsgCat::destinations["REMOTE-BODY"], "[NAME]", %codeName[$gDestinationNames @ %codeName]);
+        %body = strreplace($MsgCat::destinations["REMOTE-BODY"], "[NAME]", $gDestinationNames[%codeName]);
         MessageBoxOkCancel(%title, %body, %command, "");
     } else {
         eval(%command);
@@ -132,10 +132,10 @@ function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave) {
 };
 $gAreaNamesInternalList = "";
 function DestinationList::AddAreaNameInfo(%areaName, %shortName, %city, %userFacingName, %iconPath) {
-    %areaName[$gAreaNamesShortName @ %areaName] = %shortName;
-    %areaName[$gAreaNamesCity @ %areaName] = %city;
-    %areaName[$gAreaNamesUserFacingName @ %areaName] = %userFacingName;
-    %areaName[$gAreaNamesIconPath @ %areaName] = %iconPath;
+    $gAreaNamesShortName[%areaName] = %shortName;
+    $gAreaNamesCity[%areaName] = %city;
+    $gAreaNamesUserFacingName[%areaName] = %userFacingName;
+    $gAreaNamesIconPath[%areaName] = %iconPath;
     $gAreaNamesInternalList = $gAreaNamesInternalList @ %areaName @ " " @ "";
 };
 function DestinationList::GetAreaNameCount() {
@@ -151,13 +151,13 @@ function DestinationList::GetAreaNameByIndex(%index) {
     return getWord($gAreaNamesInternalList, %index);
 };
 function DestinationList::GetAreaNameShortName(%areaName) {
-    return %areaName[$gAreaNamesShortName @ %areaName];
+    return $gAreaNamesShortName[%areaName];
 };
 function DestinationList::GetAreaNameCity(%areaName) {
-    return %areaName[$gAreaNamesCity @ %areaName];
+    return $gAreaNamesCity[%areaName];
 };
 function DestinationList::GetAreaNameUserFacingName(%areaName) {
-    return %areaName[$gAreaNamesUserFacingName @ %areaName];
+    return $gAreaNamesUserFacingName[%areaName];
 };
 function DestinationList::GetAreaNameUserFacingNameCityAndBuildingShort(%areaName, %delimiter) {
     %cityName = DestinationList::GetAreaNameCity(%areaName);
@@ -184,5 +184,5 @@ function DestinationList::GetAreaNameUserFacingNameCityAndBuilding(%areaName, %d
     return %cityName @ %delimiter @ %bldgName;
 };
 function DestinationList::GetAreaNameIconPath(%areaName) {
-    return %areaName[$gAreaNamesIconPath @ %areaName];
+    return $gAreaNamesIconPath[%areaName];
 };

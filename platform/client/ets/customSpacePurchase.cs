@@ -46,24 +46,24 @@ function CSSpacePurchasePriceConfirmation(%space) {
     }
     if ((%finalVPoints >= 0.0)) {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVPoints) @ " vPoints";
-        %count[%callback @ %count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", false);";
+        %callback[%count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", false);";
         %count = (%count + 1.0);
     }
     if (($Player::VBux >= %finalVBux)) {
     }
     if ((%finalVBux >= 0.0)) {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVBux) @ " vBux";
-        %count[%callback @ %count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", true );";
+        %callback[%count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", true );";
         %count = (%count + 1.0);
     }
     %buttons = %buttons @ "\t" @ "Cancel";
-    %count[%callback @ %count] = "CSSpacePurchaseCancel();";
+    %callback[%count] = "CSSpacePurchaseCancel();";
     %count = (%count + 1.0);
     %buttons = ltrim(%buttons);
     %dlg = MessageBoxCustom(%title, %text, %buttons);
     %index = 0;
     while ((%index < %count)) {
-        %dlg.callback[%index],%index] = %index[%callback;
+        %dlg.callback[%index] = %callback[%index];
         %index = (%index + 1.0);
     }
 };
@@ -109,10 +109,10 @@ function CSSpacePurchaseSuccess(%unused, %unused, %vurl) {
 };
 function CSSpacePurchaseFailed(%errorCode) {
     %errorCode = strupr(%errorCode);
-    if ((%errorCode[$MsgCat::custSpace @ "ERROR_" @ %errorCode] $= "")) {
+    if (($MsgCat::custSpace["ERROR_",%errorCode] $= "")) {
         %errorCode = "GENERIC";
     }
-    %text = "<just:left>" @ "\n" @ "<spush><b>There was a problem!<spop>\n" @ "\n" @ "We could not purchase the apartment for you because " @ %errorCode[$MsgCat::custSpace @ "ERROR_" @ %errorCode] @ "\n";
+    %text = "<just:left>" @ "\n" @ "<spush><b>There was a problem!<spop>\n" @ "\n" @ "We could not purchase the apartment for you because " @ $MsgCat::custSpace["ERROR_",%errorCode] @ "\n";
     MessageBoxOK("Purchase a Space", %text, "");
 };
 function CSSpacePurchasePriceFormatting(%vpoints, %vbux) {
