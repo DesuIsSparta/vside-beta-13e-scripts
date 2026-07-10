@@ -8,9 +8,8 @@ function AccountBalanceHud::Initialize(%this) {
                 MissionCleanup.add(AccountBalancePBController);
             }
         }
-        "platform/client/ui/progress_sm_empty".Initialize("platform/client/ui/progress_sm_fill", "platform/client/ui/progress_sm_lcap", "platform/client/ui/progress_sm_rcap");
-        %this.pulsar = AccountBalancePBContainer @ AnimCtrl::newAnimCtrl("2 1", "89 26");
-        AccountBalancePBController;
+        AccountBalancePBController.Initialize(AccountBalancePBContainer, "platform/client/ui/progress_sm_empty", "platform/client/ui/progress_sm_fill", "platform/client/ui/progress_sm_lcap", "platform/client/ui/progress_sm_rcap");
+        %this.pulsar = AnimCtrl::newAnimCtrl("2 1", "89 26");
         %this.pulsar.setDelay(40);
         %nums = "00 01 02 03 04 05 06 07 08 09 10 11";
         %i = 0;
@@ -65,8 +64,8 @@ function AccountBalanceHud::update(%this) {
     }
     %this.close();
     if (isObject(AccountBalanceVPointsText)) {
-        commaify($Player::VPoints).setText();
-        commaify($Player::VBux).setText();
-        (respektPercentToNextLevel($gMyRespektPoints) - 1.0).setValue();
+        AccountBalanceVPointsText.setText(commaify($Player::VPoints));
+        AccountBalanceVBuxText.setText(commaify($Player::VBux));
+        AccountBalancePBController.setValue((respektPercentToNextLevel($gMyRespektPoints) - 1.0));
     }
 };

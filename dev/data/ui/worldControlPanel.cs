@@ -3,7 +3,7 @@ function worldControlPanel::open(%this) {
         return;
     }
     %this.setVisible(1);
-    %this.focusAndRaise();
+    playGui.focusAndRaise(%this);
     gui_DevOpts_SetTexturesButtons();
 };
 function worldControlPanel::close(%this) {
@@ -20,8 +20,8 @@ function interiorRenderModePrev() {
 function interiorRenderModeSet(%mode) {
     setInteriorRenderMode(%mode);
     %mode = getInteriorRenderMode();
-    %mode.setValue();
-    %mode[$interiorRenderModeNames @ %mode].setValue();
+    guiCtrlInteriorRenderMode.setValue(%mode);
+    guiCtrlInteriorRenderModeName.setValue(%mode[$interiorRenderModeNames @ %mode]);
 };
 function interiorRenderModeTextChange() {
     interiorRenderModeSet(guiCtrlInteriorRenderMode.getValue());

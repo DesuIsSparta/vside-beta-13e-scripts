@@ -8,23 +8,20 @@ datablock MissionMarkerData(SpawnSphereMarker) {
 };
 function MissionMarkerData::Create(%block) {
     if ((%block $= "WayPointMarker")) {
-        0;
-        %obj = new ""() {
-            dataBlock = WayPoint @ %block;
+        %obj = new WayPoint("") {
+            dataBlock = 0 @ %block;
         };
         return %obj;
     }
     if ((%block $= "SpawnSphereMarker")) {
-        0;
-        %obj = new ""() {
-            dataBlock = SpawnSphere @ %block;
+        %obj = new SpawnSphere("") {
+            dataBlock = 0 @ %block;
         };
         return %obj;
     }
     if ((%block $= "SeatMarker")) {
-        0;
-        %obj = new ""() {
-            dataBlock = MissionMarker @ %block;
+        %obj = new MissionMarker("") {
+            dataBlock = 0 @ %block;
             sitOffset = %block.sitOffset;
             sitAnim = %block.sitAnim;
             standAnim = %block.standAnim;

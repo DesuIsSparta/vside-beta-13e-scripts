@@ -1,26 +1,25 @@
 function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
-    %fo = new ""();;
-    FileObject;
+    %fo = new FileObject("");;
+    0;
     if (%fo.openForRead(%mlTextfileName)) {
         %text = "";
-        0;
         if (!(%fo.isEOF())) {
             %text = %text @ %fo.readLine() @ "\n";
         }
-        %text.setText();
+        InspectPanelMLText.setText(%text);
         %this.open();
     }
-    "I can't find the file: " @ %mlTextfileName.setText();
+    InspectPanelMLText.setText("I can't find the file: " @ %mlTextfileName);
     %fo.delete();
 };
 function clientCmdShowInspectionPanel(%mlTextfileName) {
-    %mlTextfileName.OnInspect();
+    MLScrollInspectPanel.OnInspect(%mlTextfileName);
 };
 function InspectPanelMLText::onURL(%this, %url) {
-    %url.OnInspect();
+    MLScrollInspectPanel.OnInspect(%url);
 };
 function MLScrollInspectPanel::toggle(%this) {
-    %this.showRaiseOrHide();
+    PlayGui.showRaiseOrHide(%this);
 };
 function MLScrollInspectPanel::updateSize(%this) {
     %screenWidth = getWord($UserPref::Video::Resolution, 0);
@@ -67,9 +66,9 @@ function MLScrollInspectPanel::updateSize(%this) {
 function MLScrollInspectPanel::open(%this) {
     %this.setVisible(1);
     %this.setConstrained(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
     %this.updateSize();
-    1.makeFirstResponder();
+    InspectPanelScrollControl.makeFirstResponder(1);
 };
 function MLScrollInspectPanel::close(%this) {
     %this.setVisible(0);

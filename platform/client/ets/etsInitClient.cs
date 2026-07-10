@@ -1,12 +1,10 @@
 function GameConnection::etsInit(%this) {
-    1.setLoggedIn();
+    WorldMap.setLoggedIn(1);
     $gWorldMapJoiningServer = 0;
-    WorldMap;
     resetScreenSize();
     ButtonBar.Initialize();
-    1000.schedule("showAndHide");
+    ButtonBar.schedule(1000, "showAndHide");
     $gClientGameConnection = %this;
-    ButtonBar;
     $player = %this.getPlayerObject();
     $IN_ORBIT_CAM = %this.getControlObject().isClassCamera();
     $Client::MissionLoadTimeFinish = getSimTime();
@@ -16,8 +14,7 @@ function GameConnection::etsInit(%this) {
     $player.prevRolesMask = -(1.0);
     $player.onGotRoles($player.getRolesMask());
     Inventory::fetchPlayerInventoryIfNeedTo($player);
-    $player.playersNotifiedOfIdleStatus = StringMap @ new ""();;
-    0;
+    $player.playersNotifiedOfIdleStatus = 0 @ new StringMap("");;
     if (($UserPref::Player::Genre $= "")) {
         %rand = getRandom(0, 2);
         $UserPref::Player::Genre = getSubStr($player.getDataBlock().possibleGenres, %rand, 1);
@@ -29,7 +26,7 @@ function GameConnection::etsInit(%this) {
     $UserPref::Player::gender = $player.gender;
     $player.startImpressionsTimer();
     echo("setting master volume to" @ " " @ $UserPref::Audio::masterVolume);
-    $UserPref::Audio::mute.setMuted();
+    MuteButton.setMuted($UserPref::Audio::mute);
     OptionsPanel.Initialize();
     WindowManager.Initialize();
     if (isFunction(gui_DevOpts_ShowCamPos)) {
@@ -40,7 +37,6 @@ function GameConnection::etsInit(%this) {
     }
     $player.configBoneBlends();
     $StoreSkusLayer = "";
-    MuteButton;
     %startingOutfit = $player.getGender() @ $gOutfits.get("currentOutfit");
     $player.setActiveSKUs(outfits_getCurrentSkus());
     commandToServer('setActiveSkus', $player.getActiveSKUs());
@@ -140,30 +136,29 @@ function Player::onAddClient(%this) {
         return;
     }
     %this.initGlobalFields();
-    gSetField(%this, 0);
+    gSetField(%this, prevSkuBadge, 0);
     if (%this.isAdded) {
-        return prevSkuBadge;
+        return;
     }
     %this.isAdded = 1;
-    gSetField(%this, 0);
-    gSetField(%this, "");
+    gSetField(%this, affinityLevel, 0);
+    gSetField(%this, lastTypingSomethingText, "");
     %this.addToPlayerInstanceDict();
-    %relation = %this.getShapeName().getFriendStatus();
-    BuddyHudWin;
-    if ((lastTypingSomethingText @ " " @ %relation $= "friends")) {
+    %relation = BuddyHudWin.getFriendStatus(%this.getShapeName());
+    if ((%relation $= "friends")) {
         %this.setBuddy(1);
         %this.setAmFave(1);
     }
-    if ((affinityLevel @ " " @ %relation $= "favorite")) {
+    if ((%relation $= "favorite")) {
         %this.setBuddy(1);
     }
     if ((%relation $= "fan")) {
         %this.setAmFave(1);
     }
-    %this.setIgnore(%this.getShapeName().getIgnoreStatus());
+    %this.setIgnore(BuddyHudWin.getIgnoreStatus(%this.getShapeName()));
     %this.rebuildHudCtrl();
     if (isObject(geMapHud2DTheOrthoMap)) {
-        %this.playerAdd();
+        geMapHud2DTheOrthoMap.playerAdd(%this);
     }
 };
 function Player::addToPlayerInstanceDict(%this) {
@@ -188,9 +183,8 @@ function getBitmapFilename(%category, %fileName) {
 };
 function Player::rebuildHudCtrl(%this) {
     if (!(isObject(%this.hudCtrl))) {
-        0;
-        %this.hudCtrl = new ""() {
-            profile = Gui3DProjectionCtrl @ "ETSNonModalProfile";
+        %this.hudCtrl = new Gui3DProjectionCtrl("") {
+            profile = 0 @ "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "10 10";
@@ -206,11 +200,10 @@ function Player::rebuildHudCtrl(%this) {
         };
         %hudCtrl = %this.hudCtrl;
         %hudCtrl.setAttachedTo(%this);
-        %hudCtrl.add();
-        0;
-        %ctrl = new ""() {
-            profile = GuiBitmapCtrl @ "ETSNonModalProfile";
-            horizSizing = TheBadgesHud @ "right";
+        TheBadgesHud.add(%hudCtrl);
+        %ctrl = new GuiBitmapCtrl("") {
+            profile = 0 @ "ETSNonModalProfile";
+            horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
             extent = "64 64";

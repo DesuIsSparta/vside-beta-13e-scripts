@@ -12,8 +12,7 @@ function clientCmdServerMessage(%msgType, %msgString) {
     log("communication", "debug", "clientCmdServerMessage, msgType: " @ %msgType);
     log("communication", "debug", "clientCmdServerMessage, msgString: " @ %msgString);
     %tag = getWord(%msgType, 0);
-    %defFuncList = "".get();
-    MessageFuncDict;
+    %defFuncList = MessageFuncDict.get("");
     if (isObject(%defFuncList)) {
         %i = 0;
         %func = %defFuncList.func;
@@ -24,8 +23,7 @@ function clientCmdServerMessage(%msgType, %msgString) {
         }
     }
     if (!(!(%i $= "") @ " " @ %tag $= "")) {
-        %funcList = %tag.get();
-        MessageFuncDict;
+        %funcList = MessageFuncDict.get(%tag);
         if (isObject(%funcList)) {
             %i = 0;
             %func = %funcList.func;
@@ -38,8 +36,7 @@ function clientCmdServerMessage(%msgType, %msgString) {
     }
 };
 function addMessageCallback(%msgType, %func) {
-    %m = %msgType.get();
-    MessageFuncDict;
+    %m = MessageFuncDict.get(%msgType);
     if (isObject(%m)) {
         %i = 0;
         if (!(%i @ " " @ %m.func $= "")) {
@@ -47,11 +44,10 @@ function addMessageCallback(%msgType, %func) {
         }
         %m.func = !(%i @ " " @ %m.func $= "") @ %func @ %i;
     }
-    %m = new ""();;
-    SimObject;
-    %msgType.put(%m);
-    %m.func = MessageFuncDict @ %func @ 0;
+    %m = new SimObject("");;
     0;
+    MessageFuncDict.put(%msgType, %m);
+    %m.func = %func @ 0;
 };
 function defaultMessageCallback(%msgType, %msgString) {
     onServerMessage(detag(%msgString));

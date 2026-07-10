@@ -37,7 +37,7 @@ function Editor::onAdd(%unused) {
     exec("./EditorGui.cs");
     exec("./WorldEditorSettingsDlg.gui");
     exec("./TerrainEditorVSettingsGui.gui");
-    Editor.ignoreObjClass("fxShapeReplicatedStatic");
+    EWorldEditor.ignoreObjClass("fxShapeReplicatedStatic");
     Editor.init(EditorGui);
     exec("./editorRender.cs");
 };

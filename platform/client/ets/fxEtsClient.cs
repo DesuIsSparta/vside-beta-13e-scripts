@@ -32,23 +32,22 @@ function fxEts::updateExposureFilter() {
     if ((0.01 < VectorDist(%colFin, "0.5 0.5 0.5"))) {
         %atNeutral = 1;
     }
-    !(%atNeutral).setVisible();
-    !(%atNeutral).setVisible();
+    ExposureFilter.setVisible(!(%atNeutral));
+    ExposureFilterSelfView.setVisible(!(%atNeutral));
     if (!(isObject(EditorExposureFilter))) {
-        return ExposureFilterSelfView;
+        return;
     }
     exposure = %colFin @ EditorExposureFilter;
-    !(%atNeutral).setVisible();
+    EditorExposureFilter.setVisible(!(%atNeutral));
 };
 function fxEts::updateTOD(%hod) {
     fxEts::updateTODColor(fxEts::getColorForTOD((60.0 * (60.0 * %hod))));
     if (isObject(DevOptsTextTOD)) {
-        mFloor((0.5 + %hod)).setValue();
+        DevOptsTextTOD.setValue(mFloor((0.5 + %hod)));
         %r = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 0)))));
-        DevOptsTextTOD;
         %g = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 1)))));
         %b = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 2)))));
-        %r @ " " @ %g @ " " @ %b.setValue();
+        DevOptsEditTODColor.setValue(%r @ " " @ %g @ " " @ %b);
     }
 };
 function fxEts::updateTODColor(%color) {
@@ -70,8 +69,8 @@ function fxEts::TODTick() {
     }
     fxEts::updateTOD(%cityHOD);
     if (isObject(DevOptsSliderTOD)) {
-        %cityHOD.setValue();
-        mFloor((0.5 + %cityHOD)).setValue();
+        DevOptsSliderTOD.setValue(%cityHOD);
+        DevOptsTextTOD.setValue(mFloor((0.5 + %cityHOD)));
     }
     fxEts::updateExposureFilter();
 };

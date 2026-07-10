@@ -16,14 +16,14 @@ function Canvas::onSystemDragDroppedEvent(%this, %url, %pt) {
         error(getScopeName() @ " " @ "- CSMediaDisplay not initialized." @ " " @ getTrace());
         return;
     }
-    %url.playMediaStream();
+    CSMediaDisplay.playMediaStream(%url);
 };
 function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt) {
     if (!(%this.acceptsSystemDragDropContent(%text))) {
         return 0;
     }
-    %this.setSystemDragTargetControl();
-    if ((Canvas @ " " @ %eventType $= "MAKE")) {
+    Canvas.setSystemDragTargetControl(%this);
+    if ((%eventType $= "MAKE")) {
         hiliteControl(%this);
     }
     if ((%eventType $= "MOVE")) {

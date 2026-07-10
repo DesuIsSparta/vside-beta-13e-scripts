@@ -14,9 +14,8 @@ function getUserActivityMgr() {
     if (!(isObject(gUserActivityMgr))) {
         echo(getScopeName() @ " " @ "- initializing");
         safeNewScriptObject("ScriptObject", "gUserActivityMgr", 0);
-        "UserActivityMgr".bindClassName();
+        gUserActivityMgr.bindClassName("UserActivityMgr");
         knownActivities = safeNewScriptObject("Array", "", 0) @ gUserActivityMgr;
-        gUserActivityMgr;
         currActivities = safeNewScriptObject("StringMap", "", 0) @ gUserActivityMgr;
         reportTimer = "" @ gUserActivityMgr;
         gUserActivityMgr.defineActivities();
@@ -216,10 +215,9 @@ function UserActivityMgr::getActivitiesMLText(%this, %activitiesList, %numToShow
 };
 function ClientCmdBuddyActivitiesChanged(%userName, %activitiesTagged) {
     %activitiesList = detag(%activitiesTagged);
-    %userName.setBuddyActivities(%activitiesList);
-    %infoMapEntry = %userName.get();
-    PlayerInfoMap;
+    BuddyHudTabs.setBuddyActivities(%userName, %activitiesList);
+    %infoMapEntry = PlayerInfoMap.get(%userName);
     if (isObject(%infoMapEntry)) {
-        %infoMapEntry.activities = BuddyHudTabs @ %activitiesList;
+        %infoMapEntry.activities = %activitiesList;
     }
 };

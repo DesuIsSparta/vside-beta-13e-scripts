@@ -14,9 +14,9 @@ function afxRequestEffect(%effectName) {
     }
 };
 function afxAddEffect(%effectName, %keyBinding) {
-    %keyBinding.bindCmd("afxRequestEffect(\"" @ %effectName @ "\");", "");
+    moveMap.bindCmd(keyboard, %keyBinding, "afxRequestEffect(\"" @ %effectName @ "\");", "");
     safeEnsureScriptObject("StringMap", "afxEffectsCatalog");
-    %effectName.put(%keyBinding);
+    afxEffectsCatalog.put(%effectName, %keyBinding);
 };
 function afxGetSelectedAvatar() {
     return $gAfxSelectedAvatar;

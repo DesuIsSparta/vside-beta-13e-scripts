@@ -38,8 +38,7 @@ function WorldMap::getCityButton(%this, %cityName, %alt, %forTGF) {
     if (isObject(%objName)) {
         return %objName.getId();
     }
-    %info = %cityName.get();
-    WorldMapCityInfoMap;
+    %info = WorldMapCityInfoMap.get(%cityName);
     if (!(isObject(%info))) {
         return 0;
     }
@@ -71,9 +70,8 @@ function WorldMap::getCityButton(%this, %cityName, %alt, %forTGF) {
     }
     %command = "WorldMap.getCityButton(" @ %cityName @ ", true, false).performClick();";
     "WorldMap.selectCity(" @ %cityName @ ");";
-    0;
-    %button = new %objName() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
+    %button = new GuiBitmapButtonCtrl(%objName) {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = getWords(%coords, 0, 1);
@@ -90,9 +88,8 @@ function WorldMap::getCityButton(%this, %cityName, %alt, %forTGF) {
     };
     %statusX = getWord(%coords, 0);
     %statusY = (20.0 - (getWord(%coords, 3) + getWord(%coords, 1)));
-    0;
-    %statusLabel = new ""() {
-        profile = GuiMLTextCtrl @ "ETSLoginMLTextProfile";
+    %statusLabel = new GuiMLTextCtrl("") {
+        profile = 0 @ "ETSLoginMLTextProfile";
         extent = getWord(%coords, 2) @ " " @ 14;
         position = %statusX @ " " @ %statusY;
         visible = 1;
@@ -109,8 +106,7 @@ function WorldMap::getCityPeepsCtrl(%this, %cityName) {
     return %objName.getId();
 };
 function WorldMap::getVenueButton(%this, %cityName, %venueName) {
-    %cityInfo = %cityName.get();
-    WorldMapCityInfoMap;
+    %cityInfo = WorldMapCityInfoMap.get(%cityName);
     if (!(isObject(%cityInfo.venues))) {
         return 0;
     }
@@ -123,9 +119,8 @@ function WorldMap::getVenueButton(%this, %cityName, %venueName) {
         return %objName.getId();
     }
     %cmd = "WorldMap.selectVenue(\"" @ %cityName @ "\", \"" @ %venueName @ "\", " @ %venueInfo.spawnName @ ");";
-    0;
-    return new %objName() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
+    return new GuiBitmapButtonCtrl(%objName) {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = getWords(%venueInfo.Coords, 0, 1);
@@ -143,8 +138,7 @@ function WorldMap::getVenueButton(%this, %cityName, %venueName) {
     };;
 };
 function WorldMap::getVenueLabel(%this, %cityName, %venueName) {
-    %cityInfo = %cityName.get();
-    WorldMapCityInfoMap;
+    %cityInfo = WorldMapCityInfoMap.get(%cityName);
     if (!(isObject(%cityInfo.venues))) {
         return 0;
     }
@@ -156,9 +150,18 @@ function WorldMap::getVenueLabel(%this, %cityName, %venueName) {
     if (isObject(%objName)) {
         return %objName.getId();
     }
-    0;
-    new ""() {
-        profile = GuiMLTextCtrl @ "ETSVenueNameMLTextProfile";
+    %ctrl = new GuiControl(%objName) {
+        profile = 0 @ "GuiModelessDialogProfile";
+        horizSizing = "width";
+        vertSizing = "height";
+        position = "0 0";
+        extent = "202 20";
+        minExtent = "1 1";
+        visible = 1;
+    };
+    new GuiMLTextCtrl("") {
+        profile = new GuiMLTextCtrl("") {
+        profile = "ETSVenueNameMLTextProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "1 1";
@@ -170,18 +173,7 @@ function WorldMap::getVenueLabel(%this, %cityName, %venueName) {
         allowColorChars = 1;
         maxChars = -1;
         stripTagsOnCopy = 1;
-    };
-    %ctrl = new %objName() {
-        profile = GuiControl @ "GuiModelessDialogProfile";
-        horizSizing = "width";
-        vertSizing = "height";
-        position = "0 0";
-        extent = "202 20";
-        minExtent = "1 1";
-        visible = 1;
-    };
-    new ""() {
-        profile = GuiMLTextCtrl @ "ETSVenueNameMLTextProfile";
+    }; @ "ETSVenueNameMLTextProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -204,22 +196,19 @@ function WorldMap::setUpCities(%this) {
     %size = WorldMapCityInfoMap.size();
     %i = 0;
     if ((%size < %i)) {
-        %cityName = %i.getValue().name;
-        WorldMapCityInfoMap;
+        %cityName = WorldMapCityInfoMap.getValue(%i).name;
         %largeCityButton = %this.getCityButton(%cityName, 0, 0);
         %cityPeepsCtrl = %this.getCityPeepsCtrl(%cityName);
-        %largeCityButton.add();
-        %largeCityButton.statusLabel.add();
+        WorldMapMultiCityLarge.add(%largeCityButton);
+        WorldMapStatusPanel.add(%largeCityButton.statusLabel);
         %largeCityButton.statusLabel.setVisible(0);
         if (isObject(packageDownload)) {
         }
         if ($AutoDownloadPackages) {
-            %status = %cityName.getStatusForCity();
-            packageDownload;
-            if ((WorldMapStatusPanel @ " " @ %status $= "done")) {
+            %status = packageDownload.getStatusForCity(%cityName);
+            if ((%status $= "done")) {
                 %largeCityButton.setActive(1);
                 %statusText = %this.getFullnessDesc(%largeCityButton.load, %largeCityButton.capacity);
-                WorldMapMultiCityLarge;
                 %largeCityButton.statusLabel.setText("<spush><font:Arial:12>" @ "Status: " @ %statusText @ "<spop>");
                 %cityPeepsCtrl.setTextWithStyle("-" @ " " @ %statusText);
             }
@@ -232,36 +221,30 @@ function WorldMap::selectCity(%this, %cityName) {
     if ((%this.currentCity $= %cityName)) {
         return;
     }
-    %cityInfo = %cityName.get();
-    WorldMapCityInfoMap;
+    %cityInfo = WorldMapCityInfoMap.get(%cityName);
     if (!(isObject(%cityInfo))) {
         warn(getScopeName() @ " " @ "- No info for city" @ " " @ %cityName @ " " @ getTrace());
         return;
     }
     %this.currentCity = %cityName;
     %this.setView("single_city");
-    %cityInfo.background.setBitmap();
-    %cityInfo.background.setBitmap();
-    %cityInfo.background.setBitmap();
+    WorldMapCityBkgd.setBitmap(%cityInfo.background);
+    LoadingGui.setBitmap(%cityInfo.background);
+    CityDownloadGui.setBitmap(%cityInfo.background);
     WorldMapCityBkgd.clear();
     %cityInfo.venues.forEach("addVenueButton");
     %cityInfo.venueButtons = "" @ WorldMapCityBkgd;
-    CityDownloadGui;
     %count = WorldMapCityBkgd.getCount();
-    LoadingGui;
     %i = 0;
-    WorldMapCityBkgd;
     if ((%count < %i)) {
-        %cityInfo.venueButtons = WorldMapCityBkgd @ %i.getObject() @ WorldMapCityBkgd;
-        %cityInfo.venueButtons @ " ";
-        %i = (1.0 + %i);
+        %cityInfo.venueButtons = %cityInfo.venueButtons @ " " @ WorldMapCityBkgd.getObject(%i) @ WorldMapCityBkgd;
         WorldMapCityBkgd;
+        %i = (1.0 + %i);
     }
-    1.setButtonsEnabled();
+    WorldMapCityBkgd.setButtonsEnabled(1);
     if (!(isObject(CityMapLargeTitleText))) {
-        (%count < %i);
         new GuiMLTextCtrl(CityMapLargeTitleText) {
-            profile = WorldMapCityBkgd @ "MapLargeLabelProfile";
+            profile = (%count < %i) @ "MapLargeLabelProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "545 484";
@@ -278,7 +261,7 @@ function WorldMap::selectCity(%this, %cityName) {
     }
     CityMapLargeTitleText.setText("");
     if (%this.forTGF) {
-        CityMapLargeTitleText.Maps_changedCityFilter(%cityName);
+        geTGF_tabs.Maps_changedCityFilter(%cityName);
     }
     CityMapLargeTitleText.performClick(%this.getCityButton(%cityName, 1, 1));
     CityMapLargeTitleText.performClick(%this.getCityButton(%cityName, 1, 0));
@@ -289,8 +272,8 @@ function CityMapLargeTitleText::onURL(%this, %url) {
     }
     %city = getWord(%url, 1);
     %spawn = getWord(%url, 2);
-    "Connecting...".setText();
-    %city.selectVenue("", %spawn);
+    CityMapLargeTitleText.setText("Connecting...");
+    WorldMap.selectVenue(%city, "", %spawn);
 };
 function WorldMap::selectVenue(%this, %cityName, %venueName, %spawnName) {
     %targetVurl = "vside:/location/" @ %cityName @ "/" @ %spawnName;
@@ -306,8 +289,7 @@ function WorldMap::selectVenue(%this, %cityName, %venueName, %spawnName) {
         if ((WorldMapServerInfoGroup.getCount() >= %idx)) {
             error("WorldMap::selectVenue(): invalid server selected");
         }
-        %serverInfo = %idx.getObject();
-        WorldMapServerInfoGroup;
+        %serverInfo = WorldMapServerInfoGroup.getObject(%idx);
         if (!(%cityName $= "")) {
             %cityName[$UserPref::WorldMap::ServerChoice @ %cityName] = %serverInfo.serverName;
         }
@@ -320,7 +302,7 @@ function WorldMap::open(%this) {
 };
 function WorldMap::openTGF(%this, %forTGF) {
     %this.Initialize();
-    %this.updateLocation();
+    GuiTracker.updateLocation(%this);
     %this.setBitmap("platform/client/ui/worldmapBackground");
     if ((1.0 > WorldMapCityInfoMap.size())) {
     }
@@ -330,17 +312,17 @@ function WorldMap::openTGF(%this, %forTGF) {
     if (!(%this.loggedIn)) {
         %this.setView("single_city");
     }
-    if (!(GuiTracker @ " " @ $gContiguousSpaceName $= "")) {
+    if (!($gContiguousSpaceName $= "")) {
         %this.getCityButton($gContiguousSpaceName, 1, 0).performClick();
     }
     %this.setVisible(1);
     if (!(%forTGF)) {
         DestroyMessageBoxes();
-        %this.setContent();
+        Canvas.setContent(%this);
         pushScreenSize(960, 544, 0, 1, 0);
     }
-    %this.forTGF = Canvas @ %forTGF;
-    1.setButtonsEnabled();
+    %this.forTGF = %forTGF;
+    WorldMapCityBkgd.setButtonsEnabled(1);
     %this.refresh();
 };
 function WorldMap::setLoggedIn(%this, %flag) {
@@ -362,42 +344,40 @@ function WorldMap::close(%this) {
 };
 function WorldMap::setView(%this, %view) {
     if ((%view $= "multi_city")) {
-        1.setVisible();
-        1.setVisible();
-        0.setVisible();
-        0.setVisible();
-        0.setVisible();
-        0.setVisible();
-        0.setVisible();
-        1.setVisible();
-        $ETS::devMode.setVisible();
-        %this.currentCity = DevModMapCtrls @ "";
-        geTGF_map_header;
+        WorldMapMultiCityLarge.setVisible(1);
+        WorldMapStatusPanel.setVisible(1);
+        WorldMapCityBkgd.setVisible(0);
+        WorldMapExpandButton.setVisible(0);
+        WorldMapChooseLocationLabel.setVisible(0);
+        WorldMapServerPopup.setVisible(0);
+        WorldMapServerPopupLabel.setVisible(0);
+        geTGF_map_header.setVisible(1);
+        DevModMapCtrls.setVisible($ETS::devMode);
+        %this.currentCity = "";
         if (%this.forTGF) {
-            "".Maps_changedCityFilter();
+            geTGF_tabs.Maps_changedCityFilter("");
         }
     }
-    if ((geTGF_tabs @ " " @ %view $= "single_city")) {
-        0.setVisible();
-        0.setVisible();
-        1.setVisible();
+    if ((%view $= "single_city")) {
+        WorldMapMultiCityLarge.setVisible(0);
+        WorldMapStatusPanel.setVisible(0);
+        WorldMapCityBkgd.setVisible(1);
         if (!(%this.forTGF)) {
-            1.setVisible();
+            WorldMapExpandButton.setVisible(1);
         }
-        1.setVisible();
-        1.setVisible();
-        1.setVisible();
-        0.setVisible();
+        WorldMapChooseLocationLabel.setVisible(1);
+        WorldMapServerPopup.setVisible(1);
+        WorldMapServerPopupLabel.setVisible(1);
+        geTGF_map_header.setVisible(0);
         %this.fillServerList();
-        0.setVisible();
+        DevModMapCtrls.setVisible(0);
     }
 };
 function WorldMap::fillDevModServerList(%this) {
     %names = "";
     %n = (1.0 - WorldMapServers.getCount());
     if ((0.0 >= %n)) {
-        %server = %n.getObject();
-        WorldMapServers;
+        %server = WorldMapServers.getObject(%n);
         %name = %server.get("name");
         %name[%array TAB %name @ server] = %server;
         %name[%array TAB %name @ load] = %server.get("load");
@@ -422,7 +402,7 @@ function WorldMap::fillDevModServerList(%this) {
         %list = %list @ %line @ "\n\t";
         %n = (1.0 - %n);
     }
-    %list.setText();
+    devModServerListML.setText(%list);
 };
 function WorldMap::fillServerList(%this) {
     WorldMapServerPopup.clear();
@@ -430,8 +410,7 @@ function WorldMap::fillServerList(%this) {
     %count = WorldMapServers.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %serverProps = %i.getObject();
-        WorldMapServers;
+        %serverProps = WorldMapServers.getObject(%i);
         if (!(%serverProps.get("mappable") $= 0)) {
             if ((%serverProps.get("city") $= %this.currentCity)) {
             }
@@ -439,39 +418,37 @@ function WorldMap::fillServerList(%this) {
                 %name = %serverProps.get("name");
                 %load = %serverProps.get("load");
                 %capacity = %serverProps.get("capacity");
-                0;
-                new ""() {
-                    server = SimObject @ %serverProps;
-                    serverName = WorldMapServerInfoGroup @ %name;
+                WorldMapServerInfoGroup;
+                new SimObject("") {
+                    server = 0 @ %serverProps;
+                    serverName = %name;
                 };.add();
-                %name @ " -- " @ %this.getFullnessDesc(%load, %capacity).add();
+                WorldMapServerPopup.add(%name @ " -- " @ %this.getFullnessDesc(%load, %capacity));
             }
         }
         %i = (1.0 + %i);
-        WorldMapServerPopup;
     }
-    0.SetSelected();
+    WorldMapServerPopup.SetSelected(0);
     %serverChoice = $UserPref::WorldMap::ServerChoice;
-    WorldMapServerPopup;
-    if (!((%count < %i) @ " " @ %serverChoice $= "")) {
+    (%count < %i);
+    if (!(%serverChoice $= "")) {
         %count = WorldMapServerInfoGroup.getCount();
         %i = 0;
         if ((%count < %i)) {
-            if ((WorldMapServerInfoGroup @ " " @ %i.getObject().serverName $= %serverChoice)) {
-                %i.SetSelected();
+            if ((WorldMapServerInfoGroup.getObject(%i).serverName $= %serverChoice)) {
+                WorldMapServerPopup.SetSelected(%i);
             }
             %i = (1.0 + %i);
-            WorldMapServerPopup;
         }
     }
     if ((1.0 > WorldMapServerInfoGroup.getCount())) {
-        1.setVisible();
-        1.setVisible();
-        0.setVisible();
+        WorldMapServerPopup.setVisible(1);
+        WorldMapServerPopupLabel.setVisible(1);
+        geTGF_map_header.setVisible(0);
     }
-    0.setVisible();
-    0.setVisible();
-    1.setVisible();
+    WorldMapServerPopup.setVisible(0);
+    WorldMapServerPopupLabel.setVisible(0);
+    geTGF_map_header.setVisible(1);
 };
 function WorldMap::onCanvasResize(%this) {
     %this.update();
@@ -539,9 +516,8 @@ function WorldMap::join(%this, %server, %isATransition, %targetVurl) {
     $gWorldMapJoiningServer = 1;
     %i = 0;
     if ((%this.numServers < %i)) {
-        %this.buttons.setActive(0);
+        %i.setActive(%this.buttons, 0);
         %i = (1.0 + %i);
-        %i;
     }
     %this.waitForDisconnect = 0 @ ServerConnection;
     (%this.numServers < %i);
@@ -561,7 +537,7 @@ function clientCmdOpenBuildingDirectoryFromCustomSpace(%buildingName) {
         %buildingName = $CSBuildingName;
     }
     Canvas.forceRightMouseUp();
-    %buildingName.open();
+    CustomSpacesSelector.open(%buildingName);
 };
 function clientCmdOpenBuildingDirectoryFromCustomSpaceCancel() {
 };
@@ -572,7 +548,7 @@ function showTransitionMessage(%description, %counter) {
         %this.text = "" @ TransitionMessage;
     }
     %this.text = "Wait here for a ride to" @ " " @ %description @ " " @ " in " @ " " @ %counter @ "..\n" @ TransitionMessage;
-    1.setVisible();
+    TransitionMessage.setVisible(1);
 };
 function clientCmdTransitionStartWithMessage(%description, %prompt, %counter, %vurl) {
     if ((%vurl $= "")) {
@@ -589,29 +565,27 @@ function clientCmdTransitionStartWithMessage(%description, %prompt, %counter, %v
 };
 function TransitionStartWithMessage(%description, %prompt, %counter, %vurl) {
     showTransitionMessage(%description, %counter);
-    $CountdownTimer = schedule(1000, 0, %counter, %description, %vurl);
-    TransitionCountdown;
+    $CountdownTimer = schedule(1000, 0, TransitionCountdown, %counter, %description, %vurl);
 };
 function TransitionCountdown(%counter, %description, %vurl) {
     %counter = (1.0 - %counter);
     showTransitionMessage(%description, %counter);
     if ((-(1.0) == %counter)) {
-        0.setVisible();
-        if (!(TransitionMessage @ " " @ %vurl $= "")) {
+        TransitionMessage.setVisible(0);
+        if (!(%vurl $= "")) {
             if (geTGF.isVisible()) {
                 geTGF.closeFully();
             }
             if (ClosetGui.isVisible()) {
-                0.close();
+                ClosetGui.close(0);
             }
             vurlOperation(%vurl);
         }
         MessageBoxOK("Transition Error", "Couldn't figure out where to take you!\nPlease use the Map to go where you would like to go.", "");
-        "Map".openToTabName();
-        return geTGF;
+        geTGF.openToTabName("Map");
+        return;
     }
-    $CountdownTimer = schedule(1000, 0, %counter, %description, %vurl);
-    TransitionCountdown;
+    $CountdownTimer = schedule(1000, 0, TransitionCountdown, %counter, %description, %vurl);
 };
 function clientCmdTransitionCancel() {
     echo("Server calling transition cancel");
@@ -619,7 +593,7 @@ function clientCmdTransitionCancel() {
 };
 function TransitionCancel(%retry) {
     cancel($CountdownTimer);
-    0.setVisible();
+    TransitionMessage.setVisible(0);
     if (isObject($VURL::curVURL)) {
         if (%retry) {
             echo("VURL Transition canceld... retrying next server");
@@ -638,19 +612,16 @@ function SetTransition(%destination, %spawnTargetVURL) {
     prepareForTransition(%destination, %spawnTargetVURL, 1);
 };
 function getServerInstance(%cityNameLongOrShort) {
-    if (%cityNameLongOrShort.hasKey()) {
-        %cityNameLong = %cityNameLongOrShort.get();
-        gCityNamesShortToLongMap;
+    if (gCityNamesShortToLongMap.hasKey(%cityNameLongOrShort)) {
+        %cityNameLong = gCityNamesShortToLongMap.get(%cityNameLongOrShort);
     }
     %cityNameLong = %cityNameLongOrShort;
-    gCityNamesShortToLongMap;
     %strLen = strlen(%cityNameLong);
     %mostSpaceSvr = 0;
     %mostSpaceAmt = 0;
     %n = (1.0 - WorldMapServers.getCount());
     if ((0.0 >= %n)) {
-        %serverObj = %n.getObject();
-        WorldMapServers;
+        %serverObj = WorldMapServers.getObject(%n);
         %ServerName = %serverObj.get("name");
         %matches = !(strnicmp(%cityNameLong, %ServerName, %strLen));
         if (%matches) {
@@ -691,14 +662,13 @@ function doTransitionAfterFrames(%frames, %ServerName, %spawnTargetVURL) {
         $gTransitionScreenshotLastFrame = -(1.0);
         doTransition(%ServerName, %spawnTargetVURL);
     }
-    $gTransitionScreenshotSchedule = schedule(10, 0, %frames, %ServerName, %spawnTargetVURL);
-    doTransitionAfterFrames;
+    $gTransitionScreenshotSchedule = schedule(10, 0, doTransitionAfterFrames, %frames, %ServerName, %spawnTargetVURL);
 };
 function doTransition(%server, %spawnTargetVURL) {
     Canvas.cursorOff();
     $TransitionScreenshot.shootMemory("GRAYSCALE");
     Canvas.cursorOn();
-    %server.join(1, %spawnTargetVURL);
+    WorldMap.join(%server, 1, %spawnTargetVURL);
 };
 function WorldMap::cleanUpServers(%this) {
     %curServerObjId = 0;
@@ -708,21 +678,19 @@ function WorldMap::cleanUpServers(%this) {
     }
     %i = 0;
     if ((WorldMapServers.getCount() < %i)) {
-        %server = %i.getObject();
-        WorldMapServers;
+        %server = WorldMapServers.getObject(%i);
         if ((%curServerObjId == %server.getId())) {
             %savedServer = %server;
-            %server.remove();
+            WorldMapServers.remove(%server);
         }
         if (isObject(%server.buddies)) {
             %server.buddies.delete();
         }
         %i = (1.0 + %i);
-        WorldMapServers;
     }
     WorldMapServers.deleteMembers();
     if (isObject(%savedServer)) {
-        %savedServer.add();
+        WorldMapServers.add(%savedServer);
     }
 };
 function WorldMap::refresh(%this) {
@@ -746,26 +714,24 @@ function WorldMap::exit(%this) {
 };
 function WorldMap::update(%this) {
     %this.clearCities();
-    0.setVisible();
+    WorldMapYouAreHereImg.setVisible(0);
     if (!(isObject(WorldMapServers))) {
-        return WorldMapYouAreHereImg;
+        return;
     }
     %sc = WorldMapServers.getCount();
     %i = 0;
     if ((%sc < %i)) {
-        %server = %i.getObject();
-        WorldMapServers;
+        %server = WorldMapServers.getObject(%i);
         if (isObject(%server)) {
             %ismappable = %server.get("mappable");
             if (!(%ismappable $= 0)) {
-                %server.addCity();
+                WorldMap.addCity(%server);
             }
         }
         %i = (1.0 + %i);
-        WorldMap;
     }
     %this.adjustButtons();
-    0.setVisible();
+    MapCityHud.setVisible(0);
     if (WorldMapCityBkgd.isVisible()) {
         %this.fillServerList();
     }
@@ -878,8 +844,8 @@ function WorldMap::addCity1(%this, %server) {
     if ((%server.get("name") $= $ServerName)) {
         %urHereLoc = WorldMap @ (%this.urHereHalfButtonSize - getWord(%centerLoc, 1));
         (%this.urHereHalfButtonSize - getWord(%centerLoc, 0)) @ " ";
-        getWord(%urHereLoc, 0).reposition(getWord(%urHereLoc, 1));
-        1.setVisible();
+        WorldMapYouAreHereImg.reposition(getWord(%urHereLoc, 0), getWord(%urHereLoc, 1));
+        WorldMapYouAreHereImg.setVisible(1);
     }
 };
 function WorldMap::showPopup(%this, %city) {
@@ -894,21 +860,19 @@ function WorldMap::showPopup(%this, %city) {
     %capacity = %server.get("capacity");
     %load = %server.get("load");
     %port = %server.get("port");
-    %destName.setText();
+    MapHudCityText.setText(%destName);
     if (isObject(packageDownload)) {
     }
     if ($AutoDownloadPackages) {
-        %status = %city.getStatusForCity();
-        packageDownload;
-        if ((MapHudCityText @ " " @ %status $= "done")) {
+        %status = packageDownload.getStatusForCity(%city);
+        if ((%status $= "done")) {
             %statusText = %this.getFullnessDesc(%load, %capacity);
         }
         %statusText = "Downloading!";
     }
     %statusText = %this.getFullnessDesc(%load, %capacity);
-    "Status: " @ %statusText.setText();
+    MapHudMetaText.setText("Status: " @ %statusText);
     %top = getWord(%city.getPosition(), 1);
-    MapHudMetaText;
     %left = getWord(%city.getPosition(), 0);
     %bottom = (getWord(%city.getExtent(), 1) + %top);
     %right = (getWord(%city.getExtent(), 0) + %left);
@@ -917,8 +881,8 @@ function WorldMap::showPopup(%this, %city) {
     %pos = (36.0 + %left) @ " " @ (5.0 + %top);
     %xPos = getWord(%pos, 0);
     %ypos = getWord(%pos, 1);
-    %xPos.reposition(%ypos);
-    1.setVisible();
+    MapCityHud.reposition(%xPos, %ypos);
+    MapCityHud.setVisible(1);
     %this.pushToBack();
     %this.pushToBack(%city);
 };
@@ -950,24 +914,23 @@ function WorldMap::getFullnessDesc(%this, %load, %capacity) {
 function MapCityHud::setDepressed(%this, %flag) {
 };
 function WorldMapServerButton::onMouseDown(%this) {
-    1.setDepressed();
+    MapCityHud.setDepressed(1);
 };
 function WorldMapServerButton::onMouseUp(%this) {
-    0.setDepressed();
+    MapCityHud.setDepressed(0);
 };
 function WorldMapServerButton::onMouseEnter(%this, %unused, %unused, %unused) {
-    %this.showPopup();
+    WorldMap.showPopup(%this);
 };
 function WorldMapServerButton::onMouseLeave(%this) {
-    0.setVisible();
+    MapCityHud.setVisible(0);
 };
 function WorldMap::setCitiesActive(%this, %flag) {
     %count = WorldMapMultiCityLarge.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %i.getObject().setActive(%flag);
+        WorldMapMultiCityLarge.getObject(%i).setActive(%flag);
         %i = (1.0 + %i);
-        WorldMapMultiCityLarge;
     }
 };
 function WorldMap::UpdateCityStatuses(%this) {
@@ -976,8 +939,7 @@ function WorldMap::UpdateCityStatuses(%this) {
     }
     %csn = "gw";
     %hasAccess = 0;
-    %hasAccess = ((gUserPropMgrClient < $Player::Name.getProperty("level started count " @ %csn, 0)) | %hasAccess);
-    10.0;
+    %hasAccess = ((10.0 < gUserPropMgrClient.getProperty($Player::Name, "level started count " @ %csn, 0)) | %hasAccess);
     %hasAccess = (roles::maskhaspermission($player::rolesMask, "gatewaySpawn") | %hasAccess);
     %hasAccess = ($ETS::devMode | %hasAccess);
     if (!(isObject(WorldMapServers))) {
@@ -986,8 +948,7 @@ function WorldMap::UpdateCityStatuses(%this) {
     }
     %n = (1.0 - WorldMapServers.getCount(WorldMapServers));
     if ((0.0 >= %n)) {
-        %serverProps = %n.getObject();
-        WorldMapServers;
+        %serverProps = WorldMapServers.getObject(%n);
         if (!(%hasAccess)) {
         }
         if ((%serverProps.get("city") $= %csn)) {
@@ -999,8 +960,7 @@ function WorldMap::UpdateCityStatuses(%this) {
     (0.0 >= %n);
     %i = 0;
     if ((%count < %i)) {
-        %buttonBig = %i.getObject();
-        WorldMapMultiCityLarge;
+        %buttonBig = WorldMapMultiCityLarge.getObject(%i);
         %buttonSml = %buttonBig.citybutton;
         %buttonBig.cityName @ TGFWorldMapMultiCitySmall;
         %statusTxtCtrl = "geTGF_map_peeps_" @ %buttonBig.cityName;
@@ -1018,8 +978,7 @@ function WorldMap::UpdateCityStatuses(%this) {
         }
         %n = (1.0 - WorldMapServers.getCount(WorldMapServers));
         if ((0.0 >= %n)) {
-            %serverProps = %n.getObject();
-            WorldMapServers;
+            %serverProps = WorldMapServers.getObject(%n);
             if ((%buttonBig.cityName $= %serverProps.get("city"))) {
                 %buttonBig.setActive(1);
                 %statusTxtCtrl.style = "tgfMapCityPeeps";
@@ -1036,9 +995,9 @@ function WorldMap::UpdateCityStatuses(%this) {
         if (isObject(packageDownload)) {
         }
         if ($AutoDownloadPackages) {
-            %dlStatus = %buttonBig.cityName.getStatusForCity();
-            packageDownload;
-            if (((0.0 >= %n) @ " " @ %dlStatus $= "done")) {
+            %dlStatus = packageDownload.getStatusForCity(%buttonBig.cityName);
+            (0.0 >= %n);
+            if ((%dlStatus $= "done")) {
                 %statusText = %this.getFullnessDesc(%buttonBig.load, %buttonBig.capacity);
             }
             %statusText = "Downloading!";
@@ -1062,8 +1021,7 @@ function WorldMap::cityNameForServerName(%this, %name) {
     %count = WorldMapServers.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %server = %i.getObject();
-        WorldMapServers;
+        %server = WorldMapServers.getObject(%i);
         if ((%server.get("name") $= %name)) {
             return %server.get("city");
         }
@@ -1078,8 +1036,7 @@ function WorldMap::IsApartmentServerForServerName(%this, %name) {
     %count = WorldMapServers.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %server = %i.getObject();
-        WorldMapServers;
+        %server = WorldMapServers.getObject(%i);
         if ((%server.get("name") $= %name)) {
             return !(%server.get("mappable"));
         }
@@ -1094,8 +1051,7 @@ function WorldMap::isServerForCity(%this, %name) {
     %count = WorldMapServers.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %server = %i.getObject();
-        WorldMapServers;
+        %server = WorldMapServers.getObject(%i);
         if ((%server.get("city") $= %name)) {
             return 1;
         }
@@ -1140,11 +1096,11 @@ function WorldMap::requestMapData(%this) {
 function MapRequestOnCompleted(%request, %result) {
     %request.isActive = 0;
     if ((0.0 == %result)) {
-        %request.parseResult();
+        WorldMap.parseResult(%request);
         WorldMap.update();
     }
     if (($CURL::CouldNotConnect == %result)) {
-        MessageBoxOK("Connection Error", WorldMap, "");
+        MessageBoxOK("Connection Error", , "");
     }
     if (($CURL::CouldNotResolveHost == %result)) {
         MessageBoxOK("Could Not Find Server", , "");
@@ -1162,8 +1118,7 @@ function WorldMap::parseResult(%this, %request) {
         %savedServer = "";
         %savedName = "";
     }
-    %savedServer = 0.getObject();
-    WorldMapServers;
+    %savedServer = WorldMapServers.getObject(0);
     %savedName = %savedServer.get("name");
     %numServers = %request.getResult("serverCount");
     if ((0.0 == %numServers)) {
@@ -1180,16 +1135,14 @@ function WorldMap::parseResult(%this, %request) {
         if (!(%savedServer $= "")) {
             %serverProps = %savedServer;
         }
-        %serverProps = new ""();;
-        StringMap;
+        %serverProps = new StringMap("");;
+        0;
         if (isObject(MissionCleanup)) {
-            %serverProps.add();
+            MissionCleanup.add(%serverProps);
         }
         %j = 0;
-        MissionCleanup;
         if ((getWordCount(%fields) < %j)) {
             %field = getWord(%fields, %j);
-            0;
             %name = "server" @ %i @ "." @ %field;
             %value = %request.getResult(%name);
             log("communication", "debug", "adding server prop: " @ %field @ " = " @ %value);
@@ -1201,19 +1154,17 @@ function WorldMap::parseResult(%this, %request) {
             %count = WorldMapCityNamesMap.size();
             %j = 0;
             if ((%count < %j)) {
-                %key = %j.getKey();
-                WorldMapCityNamesMap;
+                %key = WorldMapCityNamesMap.getKey(%j);
                 if ((0.0 == stricmp(%key, %name))) {
-                    %value = %j.getValue();
-                    WorldMapCityNamesMap;
+                    %value = WorldMapCityNamesMap.getValue(%j);
                     %serverProps.put("city", %value);
                 }
                 %j = (1.0 + %j);
             }
         }
-        %serverProps.add();
+        WorldMapServers.add(%serverProps);
         %i = (1.0 + %i);
-        WorldMapServers;
+        (%count < %j);
     }
     %this.TabulateWorldAreaSummary();
     %this.UpdateCityStatuses();
@@ -1234,7 +1185,7 @@ function getSkipMapVurl(%bChangeUI) {
         if (%bChangeUI) {
             $Player::Name[$gTriedToAutoConnectOnceAlready @ $Player::Name] = 1;
         }
-        if ((gUserPropMgrClient == $Player::Name.getProperty("level started count gw", 0))) {
+        if ((0.0 == gUserPropMgrClient.getProperty($Player::Name, "level started count gw", 0))) {
         }
         if (!(roles::maskhaspermission($player::rolesMask, "gatewaySpawn"))) {
             if ($ETS::devMode) {
@@ -1243,10 +1194,9 @@ function getSkipMapVurl(%bChangeUI) {
                 }
             }
             %ret = "vside:/location/gw/mapSpawns_entry";
-            0.0;
             if (%bChangeUI) {
-                "gw".selectCity();
-                "Maps".selectTab();
+                WorldMap.selectCity("gw");
+                geTGF.selectTab("Maps");
             }
         }
     }
@@ -1254,8 +1204,8 @@ function getSkipMapVurl(%bChangeUI) {
     return %ret;
 };
 function VenuesMap::addVenueButton(%this, %key, %value) {
-    %request.currentCity.getVenueButton(%key).add();
-    %request.currentCity.getVenueLabel(%key).add();
+    WorldMapCityBkgd.add(WorldMap.getVenueButton(WorldMap, %request.currentCity, %key));
+    WorldMapCityBkgd.add(WorldMap.getVenueLabel(WorldMap, %request.currentCity, %key));
 };
 function WorldMapVenueButton::onMouseEnter(%this) {
     %bitmapName = strreplace(%this.venueInfo.name, "'", "");
@@ -1263,14 +1213,14 @@ function WorldMapVenueButton::onMouseEnter(%this) {
     WorldMap;
     %bitmap = getPathOfButtonResource("platform/client/ui/spawn_info/" @ %bitmapName);
     if (!(%bitmap $= "")) {
-        %bitmap.setBitmap();
+        WorldMapDetails.setBitmap(%bitmap);
         WorldMapDetails.fitSize();
-        (getWord(%this.getExtent(), 0) + getWord(%this.getPosition(), 0)).reposition((6.0 + getWord(%this.getPosition(), 1)));
-        1.setVisible();
+        WorldMapDetails.reposition((getWord(%this.getExtent(), 0) + getWord(%this.getPosition(), 0)), (6.0 + getWord(%this.getPosition(), 1)));
+        WorldMapDetails.setVisible(1);
     }
 };
 function WorldMapVenueButton::onMouseLeave(%this) {
-    0.setVisible();
+    WorldMapDetails.setVisible(0);
 };
 function WorldMapCityBkgd::setButtonsEnabled(%this, %flag) {
     %count = getWordCount(%this.venueButtons);
@@ -1289,7 +1239,7 @@ function devModServerListML::onURL(%this, %url) {
     }
     %serverObj = getWord(%url, 1);
     geTGF.closeFully();
-    %serverObj.join(0, "");
+    WorldMap.join(%serverObj, 0, "");
 };
 function devModServerListML::onRightURL(%this, %url) {
     if (!(firstWord(%url) $= "gamelink")) {
@@ -1324,19 +1274,16 @@ function gotVURLCommandLineList(%arg) {
     if (isObject(WorldMap)) {
     }
     if (!(%this.loggedIn)) {
-        0.setControlsActive();
-        1.setVisible();
+        LoginGui.setControlsActive(0);
+        LoginProgressBarCtrls.setVisible(1);
         $Player::Name = trim($Player::Name);
-        LoginProgressBarCtrls;
-        $Player::Name.setValue();
+        WorldMap;
+        LoginUserNameField.setValue($Player::Name);
         if ($UserPref::Login::RememberMe) {
             $UserPref::Player::Name = $Player::Name;
-            LoginUserNameField;
             $UserPref::Player::Password = $Player::Password;
-            LoginGui;
         }
         $UserPref::Player::Name = "";
-        WorldMap;
         $UserPref::Player::Password = "";
         LoginGui.envManagerLogin();
     }

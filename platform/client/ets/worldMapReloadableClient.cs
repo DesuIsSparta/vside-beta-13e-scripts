@@ -1,8 +1,7 @@
 function WorldMap::TabulateWorldAreaSummary(%unused) {
-    safeEnsureScriptObject("StringMap", 0);
+    safeEnsureScriptObject("StringMap", WorldAreaSummaries, 0);
     WorldAreaSummaries.deleteValuesAsObjects();
     totalCapacity = 0 @ "gw" @ WorldAreaSummaries;
-    WorldAreaSummaries;
     totalCapacity = 0 @ "pvt" @ WorldAreaSummaries;
     totalCapacity = 0 @ "city" @ WorldAreaSummaries;
     totalOccupancy = 0 @ "gw" @ WorldAreaSummaries;
@@ -14,19 +13,16 @@ function WorldMap::TabulateWorldAreaSummary(%unused) {
     }
     %n = (1.0 - WorldMapServers.getCount());
     if ((0.0 >= %n)) {
-        %serverObj = %n.getObject();
-        WorldMapServers;
+        %serverObj = WorldMapServers.getObject(%n);
         %serverAreaName = %serverObj.get("city");
         %serverCapacity = %serverObj.get("capacity");
         %serverOccupancy = %serverObj.get("load");
-        %areaSummaryObj = %serverAreaName.get();
-        WorldAreaSummaries;
+        %areaSummaryObj = WorldAreaSummaries.get(%serverAreaName);
         if (!(isObject(%areaSummaryObj))) {
-            %areaSummaryObj = new ""();;
-            SimObject;
-            %serverAreaName.put(%areaSummaryObj);
-            %areaSummaryObj.areaName = WorldAreaSummaries @ %serverAreaName;
+            %areaSummaryObj = new SimObject("");;
             0;
+            WorldAreaSummaries.put(%serverAreaName, %areaSummaryObj);
+            %areaSummaryObj.areaName = %serverAreaName;
             %areaSummaryObj.occupancy = 0;
             %areaSummaryObj.capacity = 0;
             %areaSummaryObj.numServers = 0;

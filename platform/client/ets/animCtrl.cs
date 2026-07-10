@@ -1,7 +1,6 @@
 function AnimCtrl::newAnimCtrl(%pos, %ext) {
-    0;
-    %ctrl = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %ctrl = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %pos;
@@ -52,9 +51,8 @@ function AnimCtrl::tick(%this) {
     if ((0.0 > %this.delay)) {
         %this.timer = %this.schedule(%this.delay, "tick");
     }
-    %this.setBitmap(%this.frame);
+    %this.setBitmap(%this.currentFrame, %this.frame);
     %this.currentFrame = (1.0 + %this.currentFrame);
-    %this.currentFrame;
     if ((%this.numFrames == %this.currentFrame)) {
         if (%this.loop) {
             %this.currentFrame = 0;
@@ -69,5 +67,5 @@ function AnimCtrl::setCurrentFrame(%this, %frame) {
         return;
     }
     %this.currentFrame = %frame;
-    %this.setBitmap(%this.frame);
+    %this.setBitmap(%this.currentFrame, %this.frame);
 };

@@ -14,8 +14,7 @@ function Player::hasSpecialSku(%this, %skuName) {
     return %hasIt;
 };
 function getSkuShortName(%sku) {
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (!(isObject(%si))) {
         return %sku;
     }

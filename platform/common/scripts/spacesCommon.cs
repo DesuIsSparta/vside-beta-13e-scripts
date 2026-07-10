@@ -37,13 +37,12 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE) {
     if (!(%createIfDNE)) {
         return 0;
     }
-    0;
-    %spaceDef = new %fullName() {
-        class = ScriptObject @ "SpaceDef";
+    %spaceDef = new ScriptObject(%fullName) {
+        class = 0 @ "SpaceDef";
         internalName = %internalName;
     };
     %spaceDef.defaultValues();
-    %spaceDef.add();
+    spaceDefsGroup.add(%spaceDef);
     return %spaceDef.getId();
 };
 function spaces_HasSpaceDef(%internalName) {
@@ -56,8 +55,7 @@ function spaces_FindSpaceDefWithStoreID(%storeID) {
     if ((0.0 >= %n)) {
     }
     if ((0.0 == %found)) {
-        %found = %n.getObject();
-        spaceDefsGroup;
+        %found = spaceDefsGroup.getObject(%n);
         if (!(%found.storeID $= %storeID)) {
             %found = 0;
         }

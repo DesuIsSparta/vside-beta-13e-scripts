@@ -1,7 +1,7 @@
 $gExpectedNumberOfMicHolders = -(1.0);
 $gMicHoldersPendingAddition = 0;
 function micPanel::toggle(%this) {
-    %this.showRaiseOrHide();
+    playGui.showRaiseOrHide(%this);
 };
 function micPanel::open(%this) {
     if (!($player.rolesPermissionCheckWarn("microphones"))) {
@@ -9,7 +9,7 @@ function micPanel::open(%this) {
     }
     if (!(%this.isVisible())) {
         %this.setVisible(1);
-        %this.focusAndRaise();
+        playGui.focusAndRaise(%this);
     }
 };
 function micPanel::close(%this) {
@@ -56,9 +56,8 @@ function micPanel::updateMicHoldersList(%this) {
 };
 function micPanel::updateMicHolderCell(%this, %cellCtrl, %index) {
     %holderName = getField(%this.micHolders, %index);
-    0;
-    %bttnCtrl = new ""() {
-        profile = GuiButtonCtrl @ "GuiClickLabelProfile";
+    %bttnCtrl = new GuiButtonCtrl("") {
+        profile = 0 @ "GuiClickLabelProfile";
         command = "doMicrophoneGiveOrRevoke(\"" @ %holderName @ "\", false);";
         text = "Revoke";
         position = "0 0";
@@ -71,7 +70,7 @@ function micPanel::updateMicHolderCell(%this, %cellCtrl, %index) {
     %cellCtrl.deleteMembers();
     %cellCtrl.add(%bttnCtrl);
     %cellCtrl.add(%textCtrl);
-    %textCtrl.setValue(%holderName.getPlayerMarkup(""));
+    %textCtrl.setValue(pChat.getPlayerMarkup(%holderName, ""));
 };
 function micPanelMLTextCtrl::onRightURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
@@ -95,8 +94,8 @@ function doServerCommandGetMicHolders() {
     micHolders = "" @ micPanel;
     micPanel.updateMicHoldersList();
     $gExpectedNumberOfMicHolders = -(1.0);
-    $gMicHoldersPendingAddition = new ""();;
-    StringMap;
+    $gMicHoldersPendingAddition = new StringMap("");;
+    0;
     micPanel.updateGetMicHoldersListStatus();
     commandToServer('GetMicrophoneHoldersList');
 };
@@ -105,9 +104,8 @@ function ClientCmdStartGetMicHolders(%numberOfMicHolders) {
     if ((0.0 != $gMicHoldersPendingAddition)) {
         %i = (1.0 - $gMicHoldersPendingAddition.size());
         if ((0.0 >= %i)) {
-            $gMicHoldersPendingAddition.getKey(%i).addMicHolder();
+            micPanel.addMicHolder($gMicHoldersPendingAddition.getKey(%i));
             $gExpectedNumberOfMicHolders = (1.0 - $gExpectedNumberOfMicHolders);
-            micPanel;
             %i = (1.0 - %i);
         }
         $gMicHoldersPendingAddition.clear();
@@ -120,9 +118,8 @@ function ClientCmdStartGetMicHolders(%numberOfMicHolders) {
 function ClientCmdGotMicHolder(%playerName) {
     if (!(%playerName $= "")) {
         if ((-(1.0) != $gExpectedNumberOfMicHolders)) {
-            %playerName.addMicHolder();
+            micPanel.addMicHolder(%playerName);
             $gExpectedNumberOfMicHolders = (1.0 - $gExpectedNumberOfMicHolders);
-            micPanel;
             micPanel.updateGetMicHoldersListStatus();
         }
         $gMicHoldersPendingAddition.put(%playerName, "");
@@ -130,13 +127,13 @@ function ClientCmdGotMicHolder(%playerName) {
 };
 function micPanel::updateGetMicHoldersListStatus(%this) {
     if ((-(1.0) == $gExpectedNumberOfMicHolders)) {
-        "Starting...".setText();
-        0.setActive();
+        MicPanelRefreshListLabel.setText("Starting...");
+        MicPanelRefreshListButton.setActive(0);
     }
     if ((0.0 == $gExpectedNumberOfMicHolders)) {
-        "Done".setText();
-        1.setActive();
+        MicPanelRefreshListLabel.setText("Done");
+        MicPanelRefreshListButton.setActive(1);
     }
-    "Getting list...".setText();
-    0.setActive();
+    MicPanelRefreshListLabel.setText("Getting list...");
+    MicPanelRefreshListButton.setActive(0);
 };

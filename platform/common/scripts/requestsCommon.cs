@@ -7,8 +7,7 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
     if ((%num < %n)) {
         %sku = %this.getValue("items" @ %n @ ".sku");
         %qty = %this.getValue("items" @ %n @ ".quantity");
-        %si = %sku.findBySku();
-        SkuManager;
+        %si = SkuManager.findBySku(%sku);
         if (!(isObject(%si))) {
             error(getScopeName() @ " " @ "- could not find sku" @ " " @ %sku @ " " @ getTrace());
         }

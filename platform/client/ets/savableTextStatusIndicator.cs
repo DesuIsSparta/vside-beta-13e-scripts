@@ -14,9 +14,8 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
     %obj.requestsPendingCount = 0;
     %obj.lastValueSaved = "";
     %obj.initialValueSet = 0;
-    0;
-    %obj.savedBitmap = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %obj.savedBitmap = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -25,9 +24,8 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         bitmap = "platform/client/ui/checkmark_green";
         visible = 0;
     };
-    0;
-    %obj.savingBitmap = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %obj.savingBitmap = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -43,9 +41,8 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
     }
     %arrowBitmap = "platform/client/ui/arrow_red_right";
-    0;
-    %obj.changedBitmap = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %obj.changedBitmap = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";

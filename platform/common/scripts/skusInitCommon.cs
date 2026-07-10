@@ -1,11 +1,10 @@
 function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %brand, %drwrName, %meshName, %txtrNames, %descShrt, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime_TAB_tags, %author) {
     %expireTime = getField(%expireTime_TAB_tags, 0);
     %tags = getField(%expireTime_TAB_tags, 1);
-    %si = new ""();;
-    SkuItem;
+    %si = new SkuItem("");;
+    0;
     if (!(%avail)) {
         %rolesMask = 2147483648;
-        0;
     }
     if (!(%stores $= "")) {
     }
@@ -89,7 +88,7 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     }
 };
 function skusAddItem2(%skunum, %skuType, %roleStrings, %gender, %brand, %drwrName, %meshName, %txtrNames, %desc, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime, %tags, %author) {
-    %skunum.addItem(%skuType, roles::getRolesMaskFromStrings(%roleStrings), %gender, %brand, %drwrName, %meshName, %txtrNames, %desc, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime @ "\t" @ %tags, %author);
+    SkuManager.addItem(%skunum, %skuType, roles::getRolesMaskFromStrings(%roleStrings), %gender, %brand, %drwrName, %meshName, %txtrNames, %desc, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime @ "\t" @ %tags, %author);
 };
 function SkuManager::init(%this) {
     %t1 = getSimTime();
@@ -129,10 +128,8 @@ function SkuManager::sanityCheckStockOutfits(%this) {
 };
 function SkuManager::sanityCheckSkus(%this, %skusDry) {
     %skus = SortNumbers(%skusDry);
-    %skusRoles = SortNumbers(%skus.filterSkusRoles(0, 1));
-    SkuManager;
-    %skusOwned = SortNumbers(%skus.filterSkusBornWith(1));
-    SkuManager;
+    %skusRoles = SortNumbers(SkuManager.filterSkusRoles(%skus, 0, 1));
+    %skusOwned = SortNumbers(SkuManager.filterSkusBornWith(%skus, 1));
     %badSkusRoles = %this.getMissingSkus(%skus, %skusRoles);
     %badSkusOwned = %this.getMissingSkus(%skus, %skusOwned);
     if (!(%badSkusRoles $= "")) {
@@ -241,5 +238,5 @@ function SkuManager::setDrawerExclusive(%this, %drwr) {
 %this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL][m] = "121 200 303 801" @ $gDefaultBodyAttrs;
 %this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL][m][f] = "5100 5200 5303 5801" @ $gDefaultBodyAttrs;
 SkuManager.init();
-"AV/Videoscreens".setDrawerExclusive();
-"Activities/Games/PlayAreas".setDrawerExclusive();
+SkuManager.setDrawerExclusive("AV/Videoscreens");
+SkuManager.setDrawerExclusive("Activities/Games/PlayAreas");

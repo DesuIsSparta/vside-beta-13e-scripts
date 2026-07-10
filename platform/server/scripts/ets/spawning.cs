@@ -32,8 +32,7 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
         %tooClose = 0;
         %n = 0;
         if ((%num < %n)) {
-            %item = %n.getObject();
-            MissionCleanup;
+            %item = MissionCleanup.getObject(%n);
             if ((%exclude != %item)) {
             }
             if ((%item.getClassName() $= "Player")) {
@@ -74,9 +73,8 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
 function SpawnSphere::spawnBots(%this, %num, %sep) {
     %n = 0;
     if ((%num < %n)) {
-        AIManager::SpawnETS(%this.getEmptySpot(%sep, 0, 0));
+        AIManager::SpawnETS(AIManager, %this.getEmptySpot(%sep, 0, 0));
         %n = (1.0 + %n);
-        AIManager;
     }
 };
 function SpawnSphere::spawnBotsDensity(%this, %density, %sep) {
@@ -89,8 +87,8 @@ function SpawnSphere::spawnBotsDensity(%this, %density, %sep) {
     return;
 };
 function serverCmdAddBotsToSpawnSphere(%unused, %unused, %num, %sep) {
-    %num.spawnBots(%sep);
-    return EntrySpawn;
+    EntrySpawn.spawnBots(%num, %sep);
+    return;
 };
 function Player::teleportToRandomSpawnSphere(%this) {
     %chosen = "";
@@ -98,8 +96,7 @@ function Player::teleportToRandomSpawnSphere(%this) {
         // unhandled opcode 508 at 0x0000039B
         %chosen = EntrySpawn;
     }
-    %chosen = getRandom(0, (1.0 - PlayerDropPoints.getCount())).getObject();
-    PlayerDropPoints;
+    %chosen = PlayerDropPoints.getObject(getRandom(0, (1.0 - PlayerDropPoints.getCount())));
     if (!(isObject(%chosen))) {
         error("This is all messed up. No known spawn spheres!");
     }

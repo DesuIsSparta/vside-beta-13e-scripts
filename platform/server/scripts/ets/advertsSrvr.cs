@@ -33,8 +33,8 @@ function initAdLogFile() {
     %ts = getSubStr(%ts, 0, 17);
     $adLogFileName = getAdLogName(%ts);
     $adLogCreationTimestamp = %ts;
-    %file = new ""();;
-    FileObject;
+    %file = new FileObject("");;
+    0;
     if (%file.openForAppend($adLogFileName)) {
         %file.writeLine("# Evil Twin Ads Log File");
         %file.writeLine("#" @ " " @ $adLogFileName);
@@ -50,8 +50,8 @@ function initAdLogFile() {
 };
 function appendAdLogLine(%line) {
     %fn = initAdLogFile();
-    %file = new ""();;
-    FileObject;
+    %file = new FileObject("");;
+    0;
     if (%file.openForAppend(%fn)) {
         %file.writeLine(%line);
         %file.close();
@@ -59,7 +59,7 @@ function appendAdLogLine(%line) {
     echo("Error opening logfile:" @ " " @ %fn);
     echo(%line);
     %file.delete();
-    return 0;
+    return;
 };
 function serverCmdAdvertClick(%client, %ghostIndexClnt, %pt) {
     %playerName = detag(%client.Player.getShapeName());
@@ -128,11 +128,10 @@ function AdGroup::doSwap(%this) {
                 }
                 %dts.prevAdNum = %adNum;
             }
-            %dts.setSkinName(%this.textures);
-            %dts.setTitle(%this.titles);
-            %dts.setBasicURL(%this.urls);
+            %dts.setSkinName(%adNum, %this.textures);
+            %dts.setTitle(%adNum, %this.titles);
+            %dts.setBasicURL(%adNum, %this.urls);
             %adNum = (1.0 + %adNum);
-            %adNum @ %adNum @ %adNum;
             if ((%this.num >= %adNum)) {
                 %adNum = 0;
             }
@@ -147,8 +146,7 @@ function AdManager::doSwap(%this) {
     %numAds = 0;
     %g = 0;
     if ((%this.adGrpsNum < %g)) {
-        %numAds = (%this.adGrps.doSwap() + %numAds);
-        %g;
+        %numAds = (%g.doSwap(%this.adGrps) + %numAds);
         %g = (1.0 + %g);
     }
     return %numAds;
@@ -163,9 +161,8 @@ function AdManager::think(%this) {
     return think;
 };
 function AdManager::newAdGroup(%this) {
-    0;
-    %adGrp = new ""() {
-        class = ScriptObject @ AdGroup;
+    %adGrp = new ScriptObject("") {
+        class = 0 @ AdGroup;
         manager = %this;
     };
     %adGrp.init();

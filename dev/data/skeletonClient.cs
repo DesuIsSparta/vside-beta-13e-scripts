@@ -78,8 +78,8 @@ function skeletonClient::doLogin(%this, %destinationCity) {
     }
     $skeletonClient::targetCity = "NewVeneziaNorth";
     echo("LOAD: Setting targetCity to " @ $skeletonClient::targetCity);
-    %this.userName.setValue();
-    %this.password.setValue();
+    LoginUserNameField.setValue(%this.userName);
+    LoginPasswordField.setValue(%this.password);
     LoginGui.isAwake();
     LoginGui.doLoginButton();
     %this.schedule(1000);
@@ -159,10 +159,10 @@ function LoginRequest::onDone(%this) {
             echo("LOAD: Quit()-ing...");
             skeletonClient::quit();
         }
-        error(LoginRequest @ %this.loginResult);
+        error("LOAD: Login [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to ", LoginRequest @ %this.loginResult);
         skeletonClient::quit();
     }
-    if (("LOAD: Login [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ " " @ %status $= "success")) {
+    if ((checkStatus @ " " @ %status $= "success")) {
         %this.parseResponse();
         outfits_init();
         outfits_retrieve();
@@ -170,7 +170,7 @@ function LoginRequest::onDone(%this) {
         WorldMap.initCityMaps();
         WorldMap.open();
         $Login::loggedIn = 1;
-        checkStatus;
+        skeletonClient;
         schedule(2000, 0);
     }
     if ((joinServer @ " " @ %status $= "upgrade_available")) {
@@ -181,7 +181,6 @@ function LoginRequest::onDone(%this) {
         WorldMap.initCityMaps();
         WorldMap.open();
         $Login::loggedIn = 1;
-        skeletonClient;
         schedule(2000, 0);
     }
 };
@@ -215,10 +214,10 @@ function skeletonClient::joinServer() {
     %foundCity = 0;
     %i = 0;
     if ((WorldMapServers.getCount() < %i)) {
-        if ((WorldMapServers @ " " @ %i.getObject().get("name") $= $skeletonClient::targetCity)) {
+        if ((WorldMapServers.getObject(%i).get("name") $= $skeletonClient::targetCity)) {
             %foundCity = 1;
-            %i.getObject().join(0, %targetVurl);
-            echo(WorldMapServers @ %i.getObject().get("name"));
+            WorldMap.join(WorldMapServers.getObject(%i), 0, %targetVurl);
+            echo("LOAD: Joined server " @ WorldMapServers.getObject(%i).get("name"));
             echo("LOAD: Login completed");
             schedule(15000, 0);
         }
@@ -252,7 +251,6 @@ if (($Platform $= "x86UNIX")) {
 }
 function useAndSaveRandomOutfit() {
     %drwrs = SkuManager.commonDrawers();
-    %skus = %drwrs.getRandomSkusForLocalPlayer();
-    SkuManager;
+    %skus = SkuManager.getRandomSkusForLocalPlayer(%drwrs);
     commandToServer('SetActiveSkus', %skus);
 };

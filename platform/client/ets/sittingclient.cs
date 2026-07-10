@@ -15,9 +15,8 @@ function ETSSeatMarker::showSeat(%this, %seatID) {
     if (%this.isListeningStation()) {
         %type = "ClientSeatListeningDisplayData";
     }
-    0;
-    %seatDisplay = new ""() {
-        dataBlock = EtsClientModel @ %type;
+    %seatDisplay = new EtsClientModel("") {
+        dataBlock = 0 @ %type;
         seatID = %seatID;
         seatDisplay = 1;
         notSoFast = 0;
@@ -58,9 +57,9 @@ function clientCmdStandRequestSuccessful(%unused) {
     if (!($player.outfitBeforeAutosit $= "")) {
         %success = $player.switchOutfitTo($player.outfitBeforeAutosit);
         if (!(%success)) {
-            error(Player @ $player.outfitBeforeAutosit @ ")");
+            error(getScopeName() @ "->Could not restore saved pre-autosit outfit! (previous outfit = ", Player @ $player.outfitBeforeAutosit @ ")");
         }
-        $player.outfitBeforeAutosit = getScopeName() @ "->Could not restore saved pre-autosit outfit! (previous outfit = " @ "";
+        $player.outfitBeforeAutosit = "";
     }
 };
 function SendStandCommand(%moveDir) {
@@ -75,7 +74,7 @@ function ClientSittingSystemOnClick(%obj) {
     %obj.notSoFast = 1;
     %obj.schedule(%obj.notSoFastClearTime);
     if (isObject(CSFurnitureMover)) {
-        -(1.0).SelectNuggetID();
+        CSFurnitureMover.SelectNuggetID(-(1.0));
     }
     commandToServer('RequestToSit', %obj.seatID);
 };

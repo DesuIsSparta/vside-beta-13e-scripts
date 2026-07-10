@@ -108,8 +108,7 @@ function benchmarks::runCameraTestsReps() {
     if ((0.0 > cameraTestsGroup.getCount())) {
         %n = 0;
         if ((cameraTestsGroup.getCount() < %n)) {
-            %obj = %n.getObject();
-            cameraTestsGroup;
+            %obj = cameraTestsGroup.getObject(%n);
             %obj.totalFPS = 0;
             %obj.totalTests = 0;
             %n = (1.0 + %n);
@@ -164,8 +163,7 @@ function benchmarks::runCameraTests() {
     GLEnableMetrics(1);
     %repNum = ($benchmarks::camera::repsRemaining - $pref::benchmarks::fps::reps);
     echoBenchmarksCamera("rep" @ " " @ (1.0 + %repNum) @ " " @ "of" @ " " @ $pref::benchmarks::fps::reps);
-    $benchmarks::camera::originalSpot = %obj.Camera.getTransform();
-    LocalClientConnection;
+    $benchmarks::camera::originalSpot = LocalClientConnection.getTransform(%obj.Camera);
     if (!(isObject(cameraTestsGroup))) {
     }
     if ((1.0 < cameraTestsGroup.getCount())) {
@@ -201,8 +199,7 @@ function benchmarksRunNextCameraTest() {
         return;
     }
     if ((0.0 >= $benchmarks::camera::curPoint)) {
-        %theMark = $benchmarks::camera::curPoint.getObject();
-        cameraTestsGroup;
+        %theMark = cameraTestsGroup.getObject($benchmarks::camera::curPoint);
         %tris = ($OpenGL::triCount3 + ($OpenGL::triCount2 + ($OpenGL::triCount1 + $OpenGL::triCount0)));
         echoBenchmarksCamera("fps  " @ (1.0 + $benchmarks::camera::curPoint) @ ":" @ %theMark.spotName @ ":" @ $fps::real);
         if ($pref::benchmarks::fps::countTris) {
@@ -262,16 +259,14 @@ function benchmarks::addNewCameraTestPoint(%name) {
         }
     }
     MissionGroup.add(cameraTestsGroup);
-    0;
-    %spot = new ""() {
-        dataBlock = MissionMarker @ "CameraWayPointMarker";
+    %spot = new MissionMarker("") {
+        dataBlock = 0 @ "CameraWayPointMarker";
     };
-    %spot.setTransform(Camera.getTransform());
-    %spot.fov = LocalClientConnection @ getFovCur();
+    %spot.setTransform(LocalClientConnection.getTransform(Camera));
+    %spot.fov = getFovCur();
     %spot.spotName = %name;
-    %spot.add();
+    cameraTestsGroup.add(%spot);
     $benchmarks::camera::curPoint = 0;
-    cameraTestsGroup;
     benchmarks::prevCameraTestPoint();
 };
 function benchmarks::prevCameraTestPoint() {
@@ -285,7 +280,7 @@ function benchmarks::prevCameraTestPoint() {
     if ((0.0 < $benchmarks::camera::curPoint)) {
         $benchmarks::camera::curPoint = (1.0 - cameraTestsGroup.getCount());
     }
-    benchmarks::gotoCameraTestPoint($benchmarks::camera::curPoint.getObject());
+    benchmarks::gotoCameraTestPoint(cameraTestsGroup.getObject($benchmarks::camera::curPoint));
 };
 function benchmarks::nextCameraTestPoint() {
     if (!(isObject(cameraTestsGroup))) {
@@ -298,7 +293,7 @@ function benchmarks::nextCameraTestPoint() {
     if ((cameraTestsGroup.getCount() >= $benchmarks::camera::curPoint)) {
         $benchmarks::camera::curPoint = 0;
     }
-    benchmarks::gotoCameraTestPoint($benchmarks::camera::curPoint.getObject());
+    benchmarks::gotoCameraTestPoint(cameraTestsGroup.getObject($benchmarks::camera::curPoint));
 };
 function benchmarks::clearCameraTests() {
     if (!(isObject(cameraTestsGroup))) {
@@ -318,20 +313,18 @@ function benchmarks::cameraToGui() {
     if (!(benchmarks::isInteractive())) {
         return;
     }
-    $benchmarks::camera::curPoint.setText();
+    gui_Benchs_Cam_Cur.setText($benchmarks::camera::curPoint);
     %txt = "-";
-    gui_Benchs_Cam_Cur;
     %obj = 0;
     if (isObject(cameraTestsGroup)) {
     }
     if ((0.0 >= $benchmarks::camera::curPoint)) {
-        %obj = $benchmarks::camera::curPoint.getObject();
-        cameraTestsGroup;
+        %obj = cameraTestsGroup.getObject($benchmarks::camera::curPoint);
     }
     if (isObject(%obj)) {
         %txt = %obj.spotName;
     }
-    %txt.setText();
+    gui_Benchs_Cam_Name.setText(%txt);
     benchmarksGui.updateProgressBars();
 };
 function benchmarks::isInteractive() {

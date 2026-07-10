@@ -3,7 +3,7 @@ function toggleSnapshotTool() {
 };
 function snapshotTool::open(%this) {
     %this.setVisible(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
 };
 function snapshotTool::close(%this) {
     %this.setVisible(0);
@@ -11,52 +11,51 @@ function snapshotTool::close(%this) {
     return 1;
 };
 function snapshotTool::doSnap(%this) {
-    gSetField(%this, $Canvas::frameCount);
-    gSetField(%this, profile);
+    gSetField(%this, lastFrame, $Canvas::frameCount);
+    gSetField(%this, origProfile, ClosetMainObjectView, profile);
     ClosetMainObjectView.setProfile(ETSSnapshotBackgroundProfile);
-    0.setVisible();
+    snapshotToolActiveRegion.setVisible(0);
     %this.waitForNextFrameToSnap();
 };
 function snapshotTool::waitForNextFrameToSnap(%this) {
-    cancel(gGetField(%this));
+    cancel(waitForFrameSchedule, gGetField(%this));
     if ((gGetField(%this) <= $Canvas::frameCount)) {
-        gSetField(%this, %this.schedule(10, "waitForNextFrameToSnap"));
-        return waitForFrameSchedule;
+        gSetField(%this, waitForFrameSchedule, %this.schedule(10, "waitForNextFrameToSnap"));
+        return lastFrame;
     }
     %this.doSnap2();
 };
 function snapshotTool::doSnap2(%this) {
-    %snapshot = snapshot::snapAndUpControlRegion($player.getShapeName(), "y");
-    snapshotToolActiveRegion;
+    %snapshot = snapshot::snapAndUpControlRegion(snapshotToolActiveRegion, $player.getShapeName(), "y");
     if (!(isObject(%snapshot))) {
         error("Snapshot", "Problem taking snapshot");
         return;
     }
     %snapshot.saveObject = %this;
     %snapshot.setCompletedCallback("snapshotToolonComplete");
-    0.setVisible();
-    1.setVisible();
-    1.setVisible();
-    0.setValue();
-    gGetField(%this).setProfile();
+    snapshotToolSet1.setVisible(0);
+    snapshotToolSet2.setVisible(1);
+    snapshotToolActiveRegion.setVisible(1);
+    snapshotToolProgressBar.setValue(0);
+    ClosetMainObjectView.setProfile(origProfile, gGetField(%this));
 };
 function snapshotTool::onProgress(%this, %snapshot) {
     %percent = (%snapshot.ulTotal / %snapshot.ulNow);
-    %percent.setValue();
+    snapshotToolProgressBar.setValue(%percent);
 };
 function snapshotToolonComplete(%request, %result) {
     %snapshot = %request.saveObject;
     if ((0.0 == %result)) {
-        1.setVisible();
-        0.setVisible();
-        if (!(snapshotToolSet2 @ " " @ %snapshot.visitWhenDoneUrl $= "")) {
+        snapshotToolSet1.setVisible(1);
+        snapshotToolSet2.setVisible(0);
+        if (!(%snapshot.visitWhenDoneUrl $= "")) {
         }
         if ($UserPref::Snapshots::View) {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
     }
-    1.setVisible();
-    0.setVisible();
+    snapshotToolSet1.setVisible(1);
+    snapshotToolSet2.setVisible(0);
 };
 function snapshotTool::snapControl(%ctrl, %fileName) {
     %origin = %ctrl.getScreenPosition();

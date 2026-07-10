@@ -10,24 +10,20 @@ function toggleHighScoresPanel() {
     toggleVisibleState(geHighScoresPanel);
 };
 safeEnsureScriptObject("StringMap", "HumanReadableGameNamesMap");
-"TheGrind".put("The Grind");
-"Materiel".put("Materiel");
-"Sumo".put("Sumo");
+HumanReadableGameNamesMap.put("TheGrind", "The Grind");
+HumanReadableGameNamesMap.put("Materiel", "Materiel");
+HumanReadableGameNamesMap.put("Sumo", "Sumo");
 function geHighScoresPanel::open(%this, %gameName, %gameStationId) {
     geHighScoresPanelTabs.Initialize(%this);
     %this.setVisible(1);
-    geHighScoresPanelTabs.focusAndRaise(%this);
+    PlayGui.focusAndRaise(%this);
     geHighScoresPanelTabs.selectCurrentTab(geHighScoresPanelTabs);
-    %this.gameName = PlayGui @ %gameName;
-    HumanReadableGameNamesMap;
-    %this.gameStationId = HumanReadableGameNamesMap @ %gameStationId;
-    HumanReadableGameNamesMap;
-    %humanReadableGameName = %this.gameName.get();
-    HumanReadableGameNamesMap;
+    %this.gameName = %gameName;
+    %this.gameStationId = %gameStationId;
+    %humanReadableGameName = HumanReadableGameNamesMap.get(%this.gameName);
     %colon = (%humanReadableGameName $= "") ? "" : ": ";
-    "High Scores" @ %colon @ %humanReadableGameName.setText();
+    geHighScoresTitleText.setText("High Scores" @ %colon @ %humanReadableGameName);
     %request = sendRequest_GetHighGameScores($Player::Name, %this.gameName, 0, 25, "onDoneOrErrorCallback_GetHighGameScores");
-    geHighScoresTitleText;
     %request.global = 1;
     %this.requestStarted();
     %request = sendRequest_GetHighGameScoresForStation($Player::Name, %this.gameStationId, 0, 25, "onDoneOrErrorCallback_GetHighGameScores");
@@ -35,7 +31,7 @@ function geHighScoresPanel::open(%this, %gameName, %gameStationId) {
     %this.requestStarted();
 };
 function clientCmdOpenHighScoresFor(%gameName, %gameStationId) {
-    %gameName.open(%gameStationId);
+    geHighScoresPanel.open(%gameName, %gameStationId);
 };
 function geHighScoresPanel::close(%this) {
     %this.setVisible(0);
@@ -78,8 +74,7 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
     if (%request.checkSuccess()) {
         %global = %request.global;
         %tabName = %global ? "Global" : "This Machine";
-        %tab = %tabName.getTabWithName();
-        geHighScoresPanelTabs;
+        %tab = geHighScoresPanelTabs.getTabWithName(%tabName);
         if (!(isObject(%tab))) {
             error(getTrace() @ " " @ "tab with name" @ " " @ %tabName @ " " @ "not found!");
             return;
@@ -105,7 +100,7 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
                 %userScore = %score;
                 %userScoreDate = %dateAttained;
             }
-            %style = (BuddyHudWin @ " " @ %userName.getFriendStatus() $= "friends") ? "UserName_Friend" : "UserName_Normal";
+            %style = (BuddyHudWin.getFriendStatus(%userName) $= "friends") ? "UserName_Friend" : "UserName_Normal";
             %rowData = "rank" @ "\t" @ %scoreRanking @ "\t" @ %scoreRanking @ "\n" @ "avatar" @ "\t" @ %userName @ "\t" @ "platform/client/ui/tgf/tgf_profile_default" @ "\n" @ "username" @ "\t" @ %userName @ "\t" @ mlStyle(%userName, %style) @ "\n" @ "date" @ "\t" @ %dateAttained @ "\t" @ %dateAttained @ "\n" @ "score" @ "\t" @ %score @ "\t" @ %score;
             %dataTable.setRowDataByIndex(%i, %rowData);
             %rowData = "avatar" @ "\t" @ %userName @ "\t" @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=S";
@@ -120,10 +115,8 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
         }
         if ((%userRanking $= "")) {
             if (%global) {
-                %hrGameName = %tab.gameName.get();
-                geHighScoresPanel;
+                %hrGameName = HumanReadableGameNamesMap.get(geHighScoresPanel, %tab.gameName);
                 %text = "You have no score for " @ %hrGameName @ ".";
-                HumanReadableGameNamesMap;
             }
             %text = "You have no score on this machine.";
             %tab.noScoreText.setText(%text);
@@ -139,9 +132,8 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
     }
 };
 function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name) {
-    0;
-    return new ""() {
-        profile = GuiBitmapButtonCtrl @ "ClipboardTabButtonProfile";
+    return new GuiBitmapButtonCtrl("") {
+        profile = 0 @ "ClipboardTabButtonProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -160,7 +152,7 @@ function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name) {
 };
 function geHighScoresPanelTabs::setup(%this) {
     if (!(%this.initialized)) {
-        %this.Initialize("109 25", "", "0 0", "horizontal");
+        %this.Initialize(geHighScoresPanelTabContainer, "109 25", "", "0 0", "horizontal");
         %this.newTab("This Machine", "platform/client/buttons/clipboard_tab");
         %this.newTab("Global", "platform/client/buttons/clipboard_tab");
         %this.selectTabWithName("This Machine");
@@ -177,18 +169,16 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
         return;
     }
     %tab.setProfile();
-    %dataTable = new ""();;
-    DataTable;
-    %tab.DataTable = 0 @ %dataTable;
-    ClipboardProfile;
+    %dataTable = new DataTable("");;
+    0;
+    %tab.DataTable = ClipboardProfile @ %dataTable;
     %dataTable.addColumn("rank", "Rank", "number", 30);
     %dataTable.addColumn("avatar", "", "image", 20, 0);
     %dataTable.addColumn("username", "Name", "string", 150);
     %dataTable.addColumn("date", "Date", "string", 180);
     %dataTable.addColumn("score", "High Score", "number", 70);
-    0;
-    %guiTable = new ""() {
-        position = GuiTableCtrl @ "5 5";
+    %guiTable = new GuiTableCtrl("") {
+        position = 0 @ "5 5";
         extent = "460 372";
         horizSizing = "width";
         vertSizing = "height";
@@ -203,12 +193,12 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     %guiTable.setHeaderCellProfile();
     %guiTable.setHeaderCellButtonProfile();
     %guiTable.setHeaderCellMLTextProfile();
-    0;
-    ClipboardHeaderCellButtonProfile;
-    %userScoresPanel = new ""() {
-        profile = GuiControl @ "GuiDefaultProfile";
-        horizSizing = ClipboardHeaderMLTextProfile @ "width";
-        vertSizing = ClipboardHeaderCellProfile @ "top";
+    ClipboardHeaderMLTextProfile;
+    ClipboardHeaderCellProfile;
+    %userScoresPanel = new GuiControl("") {
+        profile = 0 @ "GuiDefaultProfile";
+        horizSizing = ClipboardHeaderCellButtonProfile @ "width";
+        vertSizing = "top";
         position = "5 380";
         extent = "460 50";
         minExtent = "1 1";
@@ -217,9 +207,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     };
     %tab.userScoresPanel = %userScoresPanel;
     %tab.add(%userScoresPanel);
-    0;
-    %userScoresPanel.add(new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %userScoresPanel.add(new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -230,9 +219,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
         text = "Player Name: ";
         maxLength = 255;
     };);
-    0;
-    %usernameField = new ""() {
-        profile = GuiMLTextCtrl @ "ClipboardTextProfile";
+    %usernameField = new GuiMLTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "70 2";
@@ -244,9 +232,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     };
     %tab.usernameField = %usernameField;
     %userScoresPanel.add(%usernameField);
-    0;
-    %userScoresPanel.add(new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %userScoresPanel.add(new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "200 0";
@@ -257,9 +244,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
         text = "Best Score: ";
         maxLength = 255;
     };);
-    0;
-    %bestScoreField = new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %bestScoreField = new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "305 0";
@@ -272,9 +258,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     };
     %tab.bestScoreField = %bestScoreField;
     %userScoresPanel.add(%bestScoreField);
-    0;
-    %userScoresPanel.add(new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %userScoresPanel.add(new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 25";
@@ -285,9 +270,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
         text = "Rank: ";
         maxLength = 255;
     };);
-    0;
-    %rankField = new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %rankField = new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "70 25";
@@ -300,9 +284,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     };
     %tab.rankField = %rankField;
     %userScoresPanel.add(%rankField);
-    0;
-    %userScoresPanel.add(new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %userScoresPanel.add(new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "200 25";
@@ -313,9 +296,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
         text = "Date of Best Score: ";
         maxLength = 255;
     };);
-    0;
-    %dateField = new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %dateField = new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "305 25";
@@ -328,9 +310,8 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     };
     %tab.dateField = %dateField;
     %userScoresPanel.add(%dateField);
-    0;
-    %noScoreText = new ""() {
-        profile = GuiTextCtrl @ "ClipboardTextProfile";
+    %noScoreText = new GuiTextCtrl("") {
+        profile = 0 @ "ClipboardTextProfile";
         horizSizing = "right";
         vertSizing = "top";
         position = "5 380";

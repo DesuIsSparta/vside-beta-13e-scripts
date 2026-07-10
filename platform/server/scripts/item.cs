@@ -23,13 +23,12 @@ function ItemData::onThrow(%this, %user, %amount) {
         return 0;
     }
     %user.decInventory(%this, %amount);
-    0;
-    %obj = new ""() {
-        dataBlock = Item @ %this;
+    %obj = new Item("") {
+        dataBlock = 0 @ %this;
         rotation = "0 0 1 " @ (360.0 * getRandom());
         count = %amount;
     };
-    %obj.add();
+    MissionGroup.add(%obj);
     %obj.schedulePop();
     return %obj;
 };
@@ -55,9 +54,8 @@ function ItemData::onPickup(%this, %obj, %user, %amount) {
     return 1;
 };
 function ItemData::create(%data) {
-    0;
-    %obj = new ""() {
-        dataBlock = Item @ %data;
+    %obj = new Item("") {
+        dataBlock = 0 @ %data;
         static = 1;
         rotate = 1;
     };

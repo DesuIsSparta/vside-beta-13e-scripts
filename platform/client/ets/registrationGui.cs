@@ -1,13 +1,12 @@
 $gHasOpenedRegistrationGui = 0;
 function RegistrationGui::open(%this) {
-    %this.setContent();
+    Canvas.setContent(%this);
     pushScreenSize(640, 363, 0, 1, 1);
     %this.init();
     if (0) {
     }
-    0.setVisible();
+    RegistrationPartnerLogo.setVisible(0);
     $gHasOpenedRegistrationGui = 1;
-    RegistrationPartnerLogo;
 };
 function RegistrationGui::haveIncompleteRegistration(%this) {
     if (1) {
@@ -38,16 +37,16 @@ function RegistrationGui::init(%this) {
         %this.waitIcon.addFrame("platform/client/ui/wait5.png");
         %this.waitIcon.addFrame("platform/client/ui/wait6.png");
         %this.waitIcon.addFrame("platform/client/ui/wait7.png");
-        %this.waitIcon.add();
+        RegistrationCenteredFrame.add(%this.waitIcon);
         %this.waitIcon.setVisible(0);
-        %this.initialized = RegistrationCenteredFrame @ 1;
+        %this.initialized = 1;
     }
 };
 function RegistrationGui::completeRegistration(%this) {
     %this.waitIcon.setVisible(1);
     %this.waitIcon.start();
     %request = sendRequest_CompleteClientRegistration($Net::RegistrationID, "onDoneOrErrorCallback_CompleteClientRegistration");
-    "<spush><font:BauhausStd-Demi:20><just:center>Fetching your info..<spop>".setValue();
+    geRegistrationStatusText.setValue("<spush><font:BauhausStd-Demi:20><just:center>Fetching your info..<spop>");
 };
 function RegistrationGui::markCurrentRegistrationAsCompleted(%this) {
     if (!(%this.haveIncompleteRegistration())) {
@@ -69,16 +68,14 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
         $UserPref::Player::gender;
         $Player::Name = $UserPrefPlayer::Name;
         $Player::Password = $UserPrefPlayer::Password;
-        $Player::Name.setValue();
-        $Player::Password.setValue();
+        LoginUserNameField.setValue($Player::Name);
+        LoginPasswordField.setValue($Player::Password);
         %this.close();
         %analytic = getAnalytic();
-        LoginPasswordField;
         %analytic.trackPageView("/client/registration/success");
         LoginGui.doLoginButton();
     }
     %errorCode = %request.getValue("errorCode");
-    LoginUserNameField;
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/registration/failed/" @ %errorCode);
     if ((%errorCode $= "UNKNOWN_ID")) {
@@ -92,7 +89,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
     }
     %errorMessage = %errorMessage[$MsgCat::login @ "E-REG-UNKNOWN"];
     %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
-    %errorMessage.setValue();
+    geRegistrationStatusText.setValue(%errorMessage);
 };
 function RegistrationGui::close(%this) {
     popScreenSize();

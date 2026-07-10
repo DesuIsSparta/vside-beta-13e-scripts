@@ -16,7 +16,7 @@ function HudTabs::fillTutorialTab(%this) {
     %theTab.locksOpen = 1;
     exec("platform/client/ets/tutorialContainer.gui");
     %theTab.add($returnControl);
-    "tutorial".hideTabWithName();
+    HudTabs.hideTabWithName("tutorial");
     %theTab.pushToBack(%theTab.closeButton);
 };
 $gTutorialsFontBig = "<font:arial bold:18><color:ffffff>";
@@ -52,15 +52,15 @@ function TutorialsCatalogClient::GetTutorialsRoot() {
 };
 function tutorials_Initialize() {
     safeNewScriptObject("SimGroup", "TutorialsCatalogClient", 1);
-    "TutorialsObject".bindClassName();
-    "TutorialsCatalogClient".bindClassName();
+    TutorialsCatalogClient.bindClassName("TutorialsObject");
+    TutorialsCatalogClient.bindClassName("TutorialsCatalogClient");
     TutorialsCatalogClient.deleteMembers();
-    if ((TutorialsCatalogClient @ " " @ TutorialsCatalogClient::GetTutorialsRoot() $= "")) {
-        return TutorialsCatalogClient;
+    if ((TutorialsCatalogClient::GetTutorialsRoot() $= "")) {
+        return;
     }
-    "*.jpg".addContentPattern();
-    "*.png".addContentPattern();
-    1.sortByInternalName();
+    TutorialsCatalogClient.addContentPattern("*.jpg");
+    TutorialsCatalogClient.addContentPattern("*.png");
+    TutorialsCatalogClient.sortByInternalName(1);
     if ($StandAlone) {
         if (isObject(TutorialsCatalogServer)) {
             TutorialsCatalogServer.ValidateForStandAlone();
@@ -68,10 +68,9 @@ function tutorials_Initialize() {
         error(getScopeName() @ " " @ "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
     }
     %theTab.currentTutorialObj = "" @ geTutorialContainer;
-    TutorialsCatalogClient;
-    "tutorial".hideTabWithName();
+    HudTabs.hideTabWithName("tutorial");
     if ((0.0 > TutorialsCatalogClient.getCount())) {
-        0.goToTutorialByIndex(1);
+        geTutorialContainer.goToTutorialByIndex(0, 1);
     }
 };
 function TutorialsCatalogClient::addContentPattern(%this, %pattern) {
@@ -96,12 +95,12 @@ function TutorialsCatalogClient::addContentItem(%this, %file) {
             %tutorialObj.nagsGroup = safeNewScriptObject("SimGroup", "", 0);
             %tutorialObj.nagsGroup.tutorial = %tutorialObj;
         }
-        %nagObj = new ""();;
-        SimGroup;
+        %nagObj = new SimGroup("");;
+        0;
         %nagObj.bindClassName("TutorialsObject");
         %nagObj.bindClassName("NagObject");
         %nagObj.setInternalName(%stepName);
-        %nagObj.timeDelay = 0 @ (1000.0 * getWord(%stepName, 1));
+        %nagObj.timeDelay = (1000.0 * getWord(%stepName, 1));
         %nagObj.timeDelayForFinalNagRepeat = (1000.0 * 120.0);
         %nagObj.schedule = "";
         %tutorialObj.nagsGroup.add(%nagObj);
@@ -184,8 +183,7 @@ function geTutorialContainer::getStepBitmapPath(%this, %stepObj) {
     return %path;
 };
 function geTutorialContainer::goToTutorialByIndex(%this, %ndx, %restartTutorial) {
-    %tutorialObj = %ndx.getSubItemByIndex();
-    TutorialsCatalogClient;
+    %tutorialObj = TutorialsCatalogClient.getSubItemByIndex(%ndx);
     if (!(isObject(%tutorialObj))) {
         error(getScopeName() @ " " @ "- can't find tutorial:" @ " " @ %ndx);
         return;
@@ -245,7 +243,7 @@ function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDel
     if (%promoteToParentDelta) {
         if ((0.0 < %delta)) {
         }
-        %this.goToTutorialByDelta(1, 1);
+        %this.goToTutorialByDelta(-(1.0), 1, 1);
     }
 };
 function geTutorialContainer::goToFirstStep(%this) {
@@ -262,28 +260,26 @@ function geTutorialContainer::goToLastStep(%this) {
 };
 function geTutorialContainer::doUpdateButtons(%this, %tutorialsObject) {
     if ((getWord(%tutorialsObject.getInternalName(), 0) $= "Nag")) {
-        0.setVisible();
-        0.setVisible();
-        1.setVisible();
-        %tutorialsObject.isLastNag().setVisible();
+        geTutorialMLNavNext.setVisible(0);
+        geTutorialMLNavPrev.setVisible(0);
+        geTutorialMLReturnToTutorialButton.setVisible(1);
+        geTutorialMLRepeatTheTutorialButton.setVisible(%tutorialsObject.isLastNag());
     }
-    0.setVisible();
-    0.setVisible();
+    geTutorialMLReturnToTutorialButton.setVisible(0);
+    geTutorialMLRepeatTheTutorialButton.setVisible(0);
     %stepCount = %tutorialsObject.getCount();
-    geTutorialMLRepeatTheTutorialButton;
-    (1.0 > %stepCount).setVisible();
-    (1.0 > %stepCount).setVisible();
+    geTutorialMLNavNext.setVisible((1.0 > %stepCount));
+    geTutorialMLNavPrev.setVisible((1.0 > %stepCount));
 };
 function geTutorialContainer::setMainBitmap(%this, %path) {
     %dragNZoom = geTutorialMainBitmap.getGroup();
-    %path.setBitmap();
+    geTutorialMainBitmap.setBitmap(%path);
     geTutorialMainBitmap.fitSize();
     %w = getWord(geTutorialMainBitmap.getExtent(), 0);
-    geTutorialMainBitmap;
     %h = getWord(geTutorialMainBitmap.getExtent(), 1);
     %dragNZoom.resize(%w, %h);
     %dragNZoom.inspectPostApply();
-    %w.resize(%h);
+    geTutorialMainBitmap.resize(%w, %h);
     %dragNZoom.fitAroundParent();
     %dragNZoom.reposition(0, 0);
 };
@@ -294,9 +290,8 @@ function geTutorialContainer::setMetaData(%this, %stepObj) {
     %tutorialObj = %stepObj.getGroup().tutorial;
     %tutorialName = %tutorialObj.getUserFacingName();
     %labelText = "<just:right>" @ $gTutorialsFontBig @ %tutorialName;
-    %labelText.setText();
+    geTutorialMLTop.setText(%labelText);
     %labelText = $gTutorialsFontMed @ %stepName;
-    geTutorialMLTop;
     if ((%stepObj.getGroup().tutorial == %stepObj.getGroup())) {
     }
     if (%stepObj.getGroup().tutorial.isSecret) {
@@ -304,15 +299,15 @@ function geTutorialContainer::setMetaData(%this, %stepObj) {
     if ((1.0 > %stepObj.getGroup().getCount())) {
         %labelText = %labelText @ "<just:right>" @ $gTutorialsFontSmall @ "step " @ %stepNum @ " of " @ %stepTTL;
         if ((%stepTTL < %stepNum)) {
-            %stepObj.getGroup().tutorial.activeText.setText();
+            geTutorialMLNavNext.setText(geTutorialMLNavNext, %stepObj.getGroup().tutorial.activeText);
         }
-        %stepObj.getGroup().tutorial.inactiveText.setText();
+        geTutorialMLNavNext.setText(geTutorialMLNavNext, %stepObj.getGroup().tutorial.inactiveText);
         if ((1.0 > %stepNum)) {
-            %stepObj.getGroup().tutorial.activeText.setText();
+            geTutorialMLNavPrev.setText(geTutorialMLNavPrev, %stepObj.getGroup().tutorial.activeText);
         }
-        %stepObj.getGroup().tutorial.inactiveText.setText();
+        geTutorialMLNavPrev.setText(geTutorialMLNavPrev, %stepObj.getGroup().tutorial.inactiveText);
     }
-    %labelText.setText();
+    geTutorialMLBot.setText(%labelText);
 };
 function geTutorialMLNavNext::onURL(%this, %url) {
     %stepObj = geTutorialContainer.getCurrentStepObj();
@@ -328,20 +323,20 @@ function geTutorialMLNavNext::onURL(%this, %url) {
     %word = %url;
     if ((%word $= "prev2x")) {
         if ((0.0 == %stepNdx)) {
-            -(1.0).goToTutorialByDelta(1);
+            geTutorialContainer.goToTutorialByDelta(-(1.0), 1);
         }
         geTutorialContainer.goToFirstStep();
     }
-    if ((geTutorialContainer @ " " @ %word $= "next2x")) {
-        1.goToTutorialByDelta(1);
+    if ((%word $= "next2x")) {
+        geTutorialContainer.goToTutorialByDelta(1, 1);
     }
-    if ((geTutorialContainer @ " " @ %word $= "prev")) {
-        -(1.0).goToStepByDelta(!(1));
+    if ((%word $= "prev")) {
+        geTutorialContainer.goToStepByDelta(-(1.0), !(1));
     }
-    if ((geTutorialContainer @ " " @ %word $= "next")) {
-        1.goToStepByDelta(!(1));
+    if ((%word $= "next")) {
+        geTutorialContainer.goToStepByDelta(1, !(1));
     }
-    if ((geTutorialContainer @ " " @ %word $= "repeat")) {
+    if ((%word $= "repeat")) {
         commandToServer('respawnPlayerAtTutorialBeginning', $gCurrentMainTutorial.getUserFacingName());
     }
     if ((%word $= "return")) {
@@ -360,8 +355,7 @@ function geTutorialMLReturnToTutorialButton::onURL(%this, %url) {
 $gTutorialOpenTimer = "";
 $gCurrentMainTutorial = 0;
 function clientCmdEnterTutorialSpace(%name, %forceRestartTutorial) {
-    %tutorialObj = %name.getChildByUserFacingName();
-    TutorialsCatalogClient;
+    %tutorialObj = TutorialsCatalogClient.getChildByUserFacingName(%name);
     if (!(isObject(%tutorialObj))) {
         error(getScopeName() @ " " @ "- no such tutorial:" @ " " @ %name);
         return;
@@ -419,26 +413,25 @@ function TutorialsObject::forceNextNag(%this) {
 };
 function TutorialsObject::doUpdateDisplay(%this, %showPanel, %restartTutorial) {
     if (%showPanel) {
-        %this.doUpdateButtons();
-        if ((geTutorialContainer @ " " @ $gTutorialOpenTimer $= "")) {
+        geTutorialContainer.doUpdateButtons(%this);
+        if (($gTutorialOpenTimer $= "")) {
             %nagObj.overrideLockedOpen = 1 @ HudTabs;
             HudTabs.close();
             $gTutorialOpenTimer = schedule(250, 0, "openTutorialPaneReally", %this, %restartTutorial);
         }
     }
     %nagObj.overrideLockedOpen = 1 @ HudTabs;
-    "tutorial".hideTabWithName();
+    HudTabs.hideTabWithName("tutorial");
 };
 function openTutorialPaneReally(%tutorialObj, %restartTutorial) {
     cancel($gTutorialOpenTimer);
     $gTutorialOpenTimer = "";
     alxPlay(AudioProfile_Tutorial);
-    %tutorialObj.getIndex().goToTutorialByIndex(%restartTutorial);
-    "tutorial".selectTabWithName();
+    geTutorialContainer.goToTutorialByIndex(%tutorialObj.getIndex(), %restartTutorial);
+    HudTabs.selectTabWithName("tutorial");
 };
 function clientCmdLeaveTutorialSpace(%name) {
-    %tutorialObj = %name.getChildByUserFacingName();
-    TutorialsCatalogClient;
+    %tutorialObj = TutorialsCatalogClient.getChildByUserFacingName(%name);
     if (!(isObject(%tutorialObj))) {
         error(getScopeName() @ " " @ "- no such tutorial:" @ " " @ %name);
         return;
@@ -462,19 +455,19 @@ function NagObject::doUpdateDisplay(%this) {
     %this.schedule = "";
     if (!(isObject(%this.getGroup().tutorial))) {
     }
-    if ((TutorialsCatalogClient < %this.getGroup().tutorial.getObjectIndex())) {
+    if ((0.0 < TutorialsCatalogClient.getObjectIndex(%this.getGroup().tutorial))) {
     }
     if ((%this.getGroup().tutorial.getId() != $gCurrentMainTutorial)) {
-        return 0.0;
+        return;
     }
     if (%this.isLastNag()) {
         %this.schedule = doUpdateDisplay @ %this.schedule(%this.timeDelayForFinalNagRepeat);
     }
-    %this.doUpdateButtons();
+    geTutorialContainer.doUpdateButtons(%this);
     alxPlay(AudioProfile_Tutorial);
-    "tutorial".selectTabWithName();
-    %this.getStepBitmapPath().setMainBitmap();
-    %this.setMetaData();
+    HudTabs.selectTabWithName("tutorial");
+    geTutorialContainer.setMainBitmap(geTutorialContainer.getStepBitmapPath(%this));
+    geTutorialContainer.setMetaData(%this);
 };
 function NagObject::isLastNag(%this) {
     return ((1.0 - %this.getGroup().getCount()) == %this.getGroup().getObjectIndex(%this));
@@ -503,6 +496,6 @@ function leaveAllTutorialSpaces() {
     $gCurrentMainTutorial = 0;
     %nagObj.overrideLockedOpen = 1 @ HudTabs;
     HudTabs.close();
-    "tutorial".hideTabWithName();
+    HudTabs.hideTabWithName("tutorial");
     CSControlPanel.close();
 };

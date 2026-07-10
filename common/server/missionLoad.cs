@@ -12,8 +12,7 @@ function loadMission(%missionName, %isFirstMission) {
     %count = ClientGroup.getCount();
     %cl = 0;
     if ((%count < %cl)) {
-        %client = %cl.getObject();
-        ClientGroup;
+        %client = ClientGroup.getObject(%cl);
         if (!(%client.isAIControlled())) {
             sendLoadInfoToClient(%client);
         }
@@ -56,9 +55,8 @@ function loadMissionStage2() {
     $missionRunning = 1;
     %clientIndex = 0;
     if ((ClientGroup.getCount() < %clientIndex)) {
-        %clientIndex.getObject().loadMission();
+        ClientGroup.getObject(%clientIndex).loadMission();
         %clientIndex = (1.0 + %clientIndex);
-        ClientGroup;
     }
     onMissionLoaded();
     purgeResources();
@@ -72,8 +70,7 @@ function endMission() {
     onMissionEnded();
     %clientIndex = 0;
     if ((ClientGroup.getCount() < %clientIndex)) {
-        %cl = %clientIndex.getObject();
-        ClientGroup;
+        %cl = ClientGroup.getObject(%clientIndex);
         %cl.endMission();
         %cl.resetGhosting();
         %cl.clearPaths();

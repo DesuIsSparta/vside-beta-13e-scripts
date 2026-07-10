@@ -1,14 +1,12 @@
 function StaticShapeData::create(%data) {
-    0;
-    %obj = new ""() {
-        dataBlock = StaticShape @ %data;
+    %obj = new StaticShape("") {
+        dataBlock = 0 @ %data;
     };
     return %obj;
 };
 function ScopeAlwaysShapeData::create(%data) {
-    0;
-    %obj = new ""() {
-        dataBlock = ScopeAlwaysShape @ %data;
+    %obj = new ScopeAlwaysShape("") {
+        dataBlock = 0 @ %data;
     };
     return %obj;
 };

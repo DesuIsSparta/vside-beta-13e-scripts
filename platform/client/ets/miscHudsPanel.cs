@@ -1,5 +1,5 @@
 function geMiscHudsPanel::toggle(%this) {
-    %this.showRaiseOrHide();
+    PlayGui.showRaiseOrHide(%this);
 };
 function geMiscHudsPanel::open(%this) {
     if (!($player.rolesPermissionCheckNoWarn("debugPassive"))) {
@@ -7,7 +7,7 @@ function geMiscHudsPanel::open(%this) {
     }
     if (!(%this.isVisible())) {
         %this.setVisible(1);
-        %this.focusAndRaise();
+        PlayGui.focusAndRaise(%this);
     }
 };
 function geMiscHudsPanel::close(%this) {
@@ -17,7 +17,7 @@ function geMiscHudsPanel::close(%this) {
 };
 function geMiscHudsPanel::addHud(%this, %panelCtrl) {
     %offsetX = getWord(geMiscHudsContainer.getExtent(), 0);
-    (getWord(%panelCtrl.getExtent(), 0) + (%offsetX + 1.0)).resize(mMax(getWord(%panelCtrl.getExtent(), 1), getWord(geMiscHudsContainer.getExtent(), 1)));
-    %panelCtrl.add();
+    geMiscHudsContainer.resize((getWord(%panelCtrl.getExtent(), 0) + (%offsetX + 1.0)), mMax(getWord(%panelCtrl.getExtent(), 1), getWord(geMiscHudsContainer.getExtent(), 1)));
+    geMiscHudsContainer.add(%panelCtrl);
     %panelCtrl.reposition(%offsetX, 0);
 };

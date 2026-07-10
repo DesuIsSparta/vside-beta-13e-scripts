@@ -17,8 +17,7 @@ function updateHelpMeModeMenu() {
     if (!(isObject(HelpPopupMenu))) {
         return;
     }
-    %item = "helpMe".findObjectByInternalName();
-    HelpPopupMenu;
+    %item = HelpPopupMenu.findObjectByInternalName("helpMe");
     if (!(isObject(%item))) {
         error(getScopeName() @ " " @ "- could not find menu item");
         return;
@@ -70,8 +69,7 @@ function Player::onAnimationStart(%this, %animName) {
     if (isObject($player)) {
     }
     if (($player.getId() == %this.getId())) {
-        %animTags = %animName.get();
-        gAnimationTags;
+        %animTags = gAnimationTags.get(%animName);
         %dancing = hasWord(%animTags, "dance");
         if (%dancing) {
             getUserActivityMgr().setActivityActive("dancing", 1);
@@ -91,11 +89,9 @@ function Player::onAnimationSku(%this, %state, %animName, %animInternalName) {
     }
     %activeSkus = %this.getActiveSKUs();
     if (%state) {
-        %activeSkus = %activeSkus.overlaySkus(%animSkus);
-        SkuManager;
+        %activeSkus = SkuManager.overlaySkus(%activeSkus, %animSkus);
     }
-    %activeSkus = %this.currentBaseActiveSkus.overlaySkus(%activeSkus.skusRemove(%animSkus));
-    SkuManager;
+    %activeSkus = SkuManager.overlaySkus(%this.currentBaseActiveSkus, SkuManager.skusRemove(%activeSkus, %animSkus));
     %this.setActiveSKUs(%activeSkus);
 };
 function Player::getAnimationSkus(%this, %animInternalName) {
@@ -110,8 +106,7 @@ function Player::getAnimationSkus(%this, %animInternalName) {
         %skusString = getSubStr(%animInternalName, %skusIndex);
         %skusString = strreplace(%skusString, "_", " ");
         %skus = restWords(restWords(%skusString));
-        %skus = %skus.filterSkusGender(%this.getGender());
-        SkuManager;
+        %skus = SkuManager.filterSkusGender(%skus, %this.getGender());
         %this.animationSkus = %skus @ %animInternalName;
     }
     return %this.animationSkus;
@@ -170,7 +165,7 @@ function Player::onAnimationDoneClient(%this, %unused) {
     if (ClosetGui.isVisible()) {
         %this.isDoingPropAction = 0 @ ClosetGui;
         if (isObject(ClosetWhatYoureWearingList)) {
-            %this.skus.refresh();
+            ClosetWhatYoureWearingList.refresh(ClosetWhatYoureWearingList, %this.skus);
         }
     }
 };

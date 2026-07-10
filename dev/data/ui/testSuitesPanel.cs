@@ -1,5 +1,5 @@
 function testSuitesPanel::toggle(%this) {
-    %this.showRaiseOrHide();
+    playGui.showRaiseOrHide(%this);
 };
 function testSuitesPanel::open(%this) {
     if (!($player.rolesPermissionCheckWarn("TestSuites"))) {
@@ -7,7 +7,7 @@ function testSuitesPanel::open(%this) {
     }
     %this.loadAvailableTests();
     %this.setVisible(1);
-    %this.focusAndRaise();
+    playGui.focusAndRaise(%this);
 };
 function testSuitesPanel::close(%this) {
     %this.setVisible(0);

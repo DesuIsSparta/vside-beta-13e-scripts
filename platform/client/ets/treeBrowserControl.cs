@@ -2,9 +2,8 @@ function TreeBrowserControl::newControl(%parent, %name) {
     if (!(isObject(%parent))) {
         return;
     }
-    0;
-    %ctrl = new ""() {
-        profile = GuiArray2Ctrl @ "GuiDefaultProfile";
+    %ctrl = new GuiArray2Ctrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         position = "0 0";
         extent = %parent.getExtent();
         childrenClassName = "GuiControl";
@@ -32,15 +31,14 @@ function TreeBrowserControl::newControl(%parent, %name) {
     %ctrl.adjustMenuCellHeight = 0;
     %ctrl.isExpanded = 0;
     %ctrl.expandDelta = "250 0";
-    0;
-    %ctrl.root = new ""() {
-        name = SimGroup @ "";
+    %ctrl.root = new SimGroup("") {
+        name = 0 @ "";
     };
     %ctrl.nodeDictionary = safeNewScriptObject("StringMap", "", 0);
     if (isObject(RootGroup)) {
-        %ctrl.root.add();
+        RootGroup.add(%ctrl.root);
     }
-    %ctrl.Path = RootGroup @ "";
+    %ctrl.Path = "";
     %ctrl.goToPath("");
     return %ctrl;
 };
@@ -79,9 +77,8 @@ function TreeBrowserControl::onCreatedChild(%this, %child, %x, %unused) {
     }
     %contentsExtentY = getWord(%child.getExtent(), 1);
     getWord(%this.collapsedParentExtent, 1);
-    0;
-    %child.expandedPane = new ""() {
-        profile = GuiControl @ "FocusableDefaultProfile";
+    %child.expandedPane = new GuiControl("") {
+        profile = 0 @ "FocusableDefaultProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -93,9 +90,8 @@ function TreeBrowserControl::onCreatedChild(%this, %child, %x, %unused) {
         treeBrowser = %this;
     };
     %child.add(%child.expandedPane);
-    0;
-    %child.contentPane = new ""() {
-        profile = GuiControl @ "FocusableDefaultProfile";
+    %child.contentPane = new GuiControl("") {
+        profile = 0 @ "FocusableDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%this.buttonPadding - (%this.buttonWidth - %leftPadding)) @ " " @ 0;
@@ -108,9 +104,8 @@ function TreeBrowserControl::onCreatedChild(%this, %child, %x, %unused) {
     };
     %child.contentPane.bindClassName("TreeBrowserContentPane");
     %child.add(%child.contentPane);
-    0;
-    %child.scroll = new ""() {
-        profile = GuiScrollCtrl @ "ETSScrollProfile";
+    %child.scroll = new GuiScrollCtrl("") {
+        profile = 0 @ "ETSScrollProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %leftPadding @ " " @ 0;
@@ -135,9 +130,8 @@ function TreeBrowserControl::onCreatedChild(%this, %child, %x, %unused) {
         }
         %menuTrgCellHeight = mFloor(%menuTrgCellHeight);
     }
-    0;
-    %child.menu = new ""() {
-        profile = GuiArray2Ctrl @ %this.menuProfile;
+    %child.menu = new GuiArray2Ctrl("") {
+        profile = 0 @ %this.menuProfile;
         childrenClassName = "GuiMouseEventCtrl";
         childrenExtent = (6.0 - %contentsExtentX) @ " " @ %menuTrgCellHeight;
         spacing = %menuCellSpacing;
@@ -321,11 +315,10 @@ function TreeBrowserControl::goToPath(%this, %path, %focus) {
     %i = 0;
     if ((mMax(%numButtons, %this.numButtons) < %i)) {
         if ((%numButtons < %i)) {
-            if (!(isObject(%this.button))) {
-                0;
-                %this.button = new ""() {
-                    profile = GuiBitmapButtonCtrl @ "ETSVerticalButtonProfile";
-                    horizSizing = %i @ "right";
+            if (!(isObject(%i, %this.button))) {
+                %this.button = new GuiBitmapButtonCtrl("") {
+                    profile = 0 @ "ETSVerticalButtonProfile";
+                    horizSizing = "right";
                     vertSizing = "bottom";
                     position = %offset @ " " @ 0;
                     extent = %this.buttonWidth @ " " @ %height;
@@ -340,21 +333,20 @@ function TreeBrowserControl::goToPath(%this, %path, %focus) {
                     drawText = 1;
                     textRotation = 90;
                 }; @ %i
-                %this.Parent.add(%this.button);
+                %this.Parent.add(%i, %this.button);
             }
-            if (!(%i @ %i @ " " @ %this.button.getExtent() $= %this.buttonWidth @ " " @ %height)) {
-                %this.button.resize(%this.buttonWidth, %height);
+            if (!(%i.getExtent(%this.button) $= %this.buttonWidth @ " " @ %height)) {
+                %i.resize(%this.button, %this.buttonWidth, %height);
             }
             %button = %this.button;
-            %i @ %i;
+            %i;
             %button.setVisible(1);
             %button.command = %this.getId() @ ".goToPath(\"" @ getFields(%this.Path, 0, %i) @ "\");";
             %button.text = getField(%this.Path, %i);
             %button.setActive(((1.0 - %level) < %i));
         }
-        %this.button.setVisible(0);
+        %i.setVisible(%this.button, 0);
         %offset = ((%this.buttonPadding + %this.buttonWidth) + %offset);
-        %i;
         %i = (1.0 + %i);
     }
     %this.numButtons = (mMax(%numButtons, %this.numButtons) < %i) @ %numButtons;
@@ -374,8 +366,7 @@ function TreeBrowserControl::getNodeSearchText(%this, %node) {
     }
     %sku = %node.sku;
     if (!(%sku $= "")) {
-        %ret = %sku.findBySku().searchText;
-        SkuManager;
+        %ret = SkuManager.findBySku(%sku).searchText;
     }
     %ret = %node.name;
     %n = (1.0 - %node.getCount());
@@ -433,9 +424,8 @@ function TreeBrowserControl::isNodeExpanded(%this, %path) {
 function TreeBrowserControl::fillExpandedFrame(%this, %expandedFrame) {
     %frame = %expandedFrame.getParent();
     %rightEdgeOfMenu = (getWord(%frame.menu.getPosition(), 0) + getWord(%frame.menu.getExtent(), 0));
-    0;
-    %expandedFrame.add(new ""() {
-        position = GuiMLTextCtrl @ %rightEdgeOfMenu @ " " @ 0;
+    %expandedFrame.add(new GuiMLTextCtrl("") {
+        position = 0 @ %rightEdgeOfMenu @ " " @ 0;
         extent = "50 18";
         text = "<color:ffffff>override me!";
         visible = 1;
@@ -444,9 +434,8 @@ function TreeBrowserControl::fillExpandedFrame(%this, %expandedFrame) {
 function TreeBrowserControl::fillExpandedContentPane(%this, %expandedPane) {
     %frame = %expandedPane.getParent();
     %rightEdgeOfContentPane = (getWord(%frame.contentPane.getPosition(), 0) + getWord(%frame.contentPane.getExtent(), 0));
-    0;
-    %expandedPane.add(new ""() {
-        position = GuiMLTextCtrl @ %rightEdgeOfContentPane @ " " @ 0;
+    %expandedPane.add(new GuiMLTextCtrl("") {
+        position = 0 @ %rightEdgeOfContentPane @ " " @ 0;
         extent = "50 18";
         text = "<color:ffffff>override me!";
         visible = 1;
@@ -458,9 +447,8 @@ function TreeBrowserControl::isInSubdirOfPath(%this, %path) {
 };
 function TreeBrowserControl::fillLeafPane(%this, %pane) {
     %level = %this.level;
-    0;
-    %pane.add(new ""() {
-        profile = GuiTextCtrl @ "GuiTextProfile";
+    %pane.add(new GuiTextCtrl("") {
+        profile = 0 @ "GuiTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "5 0";
@@ -564,9 +552,8 @@ function TreeBrowserControl::addNodeAt(%this, %prefix, %subpath) {
     %fullPath = %prefix @ "\t" @ %childNodeName;
     %childNode = %this.nodeDictionary.get(%fullPath);
     if (!(isObject(%childNode))) {
-        0;
-        %newSet = new ""() {
-            name = SimGroup @ %childNodeName;
+        %newSet = new SimGroup("") {
+            name = 0 @ %childNodeName;
         };
         %baseNode.add(%newSet);
         %this.nodeDictionary.put(%fullPath, %newSet);
@@ -622,9 +609,8 @@ function TreeBrowserControl::addMenuData(%this, %prefix, %list) {
     if ((%listCount < %i)) {
         %itemName = getField(%list, %i);
         if (!(%itemName $= "")) {
-            0;
-            %node.add(new ""() {
-                name = SimGroup @ %itemName;
+            %node.add(new SimGroup("") {
+                name = 0 @ %itemName;
             };);
         }
         %i = (1.0 + %i);
@@ -755,39 +741,37 @@ function TreeBrowserContentPane::onKeyDown(%this, %unused, %keyCode) {
     return 0;
 };
 function TreeBrowserControl::makeSomeTreeData() {
-    0;
-    new ""() {
-        text = SimGroup @ "Bar stool";
+    new SimGroup("") {
+        text = new SimGroup("") {
+        text = new SimGroup("") {
+        text = "Bar stool";
+    }; @ "Orange plush chair";
+    }; @ "Zen pillow";
     };
-    new ""() {
-        text = SimGroup @ "Orange plush chair";
+    new SimGroup("") {
+        text = new SimGroup("") {
+        text = "Chairs";
+    }; @ "Sofas";
     };
-    new ""() {
-        text = SimGroup @ "Chairs";
+    new SimGroup("") {
+        text = new SimGroup("") {
+        text = new SimGroup("") {
+        text = "Halogen torchiere";
+    }; @ "Track lighting";
+    }; @ "Glow in the dark stars";
     };
-    new ""() {
-        text = SimGroup @ "Seating";
+    %root = new SimGroup("") {
+        text = 0 @ "My Stuff";
     };
-    new ""() {
-        text = SimGroup @ "Sofas";
-    };
-    new ""() {
-        text = SimGroup @ "Halogen torchiere";
-    };
-    new ""() {
-        text = SimGroup @ "Track lighting";
-    };
-    new ""() {
-        text = SimGroup @ "Lights";
-    };
-    %root = new ""() {
-        text = SimGroup @ "My Stuff";
-    };
-    new ""() {
-        text = SimGroup @ "Appliances";
+    new SimGroup("") {
+        text = new SimGroup("") {
+        text = new SimGroup("") {
+        text = "Seating";
+    }; @ "Lights";
+    }; @ "Appliances";
     };
     if (isObject(RootGroup)) {
-        %root.add();
+        RootGroup.add(%root);
     }
     return %root;
 };
@@ -798,11 +782,11 @@ function TreeBrowserControl::test() {
     };
     %rootCtrl = BrowserParent.getContent(Canvas);
     %rootCtrl.add();
-    TreeBrowserControl::newControl("TheBrowser");
-    1.setNumChildren();
+    TreeBrowserControl::newControl(BrowserParent, "TheBrowser");
+    TheBrowser.setNumChildren(1);
     %data = TreeBrowserControl::makeSomeTreeData();
-    TheBrowser;
-    %data.setDataTree();
+    BrowserParent;
+    TheBrowser.setDataTree(%data);
 };
 function dumpTree(%tree) {
     dumpSubtree(%tree, "");

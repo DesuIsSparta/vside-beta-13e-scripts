@@ -5,31 +5,28 @@ function toggleBenchmarksDialog() {
     toggleVisibleState(benchmarksGui);
 };
 function benchmarksGui::open(%this) {
-    %this.pushDialog(0);
+    Canvas.pushDialog(%this, 0);
     %this.setVisible(1);
     benchmarks::loadCameraTests();
     benchmarks::cameraToGui();
     gui_Benchs_Metrics_Menu1.populate();
 };
 function benchmarksGui::close(%this, %unused) {
-    %this.popDialog();
+    Canvas.popDialog(%this);
     %this.setVisible(0);
 };
-gSetField(0);
+gSetField(gui_Benchs_Metrics_Menu1, populated, 0);
 function gui_Benchs_Metrics_Menu1::populate(%this) {
     if (!(gGetField(%this))) {
-        gSetField(%this, 1);
+        gSetField(%this, populated, 1);
         %this.clear();
         %num = getWordCount($metricsNamesList);
         populated;
         %n = 0;
-        populated;
         if ((%num < %n)) {
             %text = getWord($metricsNamesList, %n);
-            populated;
             %this.add(%text);
             %n = (1.0 + %n);
-            gui_Benchs_Metrics_Menu1;
         }
         %this.setText("none");
     }
@@ -57,79 +54,77 @@ function benchmarksGui::clearCameraTests(%this) {
 function benchmarksGui::runCameraTests(%this) {
     benchmarks::runCameraTests();
     %this.updateProgressBars();
-    1.setVisible();
-    1.setVisible();
-    0.setVisible();
-    1.setVisible();
+    gui_Benchs_Cam_Prog1.setVisible(1);
+    gui_Benchs_Cam_Prog2.setVisible(1);
+    gui_Benchs_Cam_Run.setVisible(0);
+    gui_Benchs_Cam_Cancel.setVisible(1);
     $benchmarks::originalMetrics = gui_Benchs_Metrics_Menu1.getValue();
-    gui_Benchs_Cam_Cancel;
     if (!($pref::benchmarks::metricsLock)) {
-        "video".setValue();
-        0.onSelect(gui_Benchs_Metrics_Menu1.getValue());
+        gui_Benchs_Metrics_Menu1.setValue("video");
+        gui_Benchs_Metrics_Menu1.onSelect(0, gui_Benchs_Metrics_Menu1.getValue());
     }
 };
 function benchmarksGui::runCameraTestsReps(%this) {
     benchmarks::runCameraTestsReps();
     %this.updateProgressBars();
-    1.setVisible();
-    1.setVisible();
-    0.setVisible();
-    1.setVisible();
+    gui_Benchs_Cam_Prog1.setVisible(1);
+    gui_Benchs_Cam_Prog2.setVisible(1);
+    gui_Benchs_Cam_Run.setVisible(0);
+    gui_Benchs_Cam_Cancel.setVisible(1);
     $benchmarks::originalMetrics = gui_Benchs_Metrics_Menu1.getValue();
-    gui_Benchs_Cam_Cancel;
     if (!($pref::benchmarks::metricsLock)) {
-        "video".setValue();
-        0.onSelect(gui_Benchs_Metrics_Menu1.getValue());
+        gui_Benchs_Metrics_Menu1.setValue("video");
+        gui_Benchs_Metrics_Menu1.onSelect(0, gui_Benchs_Metrics_Menu1.getValue());
     }
 };
 function benchmarksGui::onFinishedCameraTests(%this) {
-    1.setVisible();
-    0.setVisible();
-    0.setVisible();
-    0.setVisible();
-    $benchmarks::originalMetrics.setValue();
-    0.onSelect(gui_Benchs_Metrics_Menu1.getValue());
+    gui_Benchs_Cam_Run.setVisible(1);
+    gui_Benchs_Cam_Cancel.setVisible(0);
+    gui_Benchs_Cam_Prog1.setVisible(0);
+    gui_Benchs_Cam_Prog2.setVisible(0);
+    gui_Benchs_Metrics_Menu1.setValue($benchmarks::originalMetrics);
+    gui_Benchs_Metrics_Menu1.onSelect(0, gui_Benchs_Metrics_Menu1.getValue());
     if (!(benchmarks::isInteractive())) {
-        return gui_Benchs_Metrics_Menu1;
+        return;
     }
     setClipboard($benchmarks::camera::resultString);
     benchmarks::MessageBoxOK("Benchmark Results", ".. are now in the clipboard,\n(and in the console.log)");
 };
 function benchmarksGui::cancelCameraTests(%this) {
-    1.setVisible();
-    0.setVisible();
-    0.setVisible();
-    0.setVisible();
+    gui_Benchs_Cam_Run.setVisible(1);
+    gui_Benchs_Cam_Cancel.setVisible(0);
+    gui_Benchs_Cam_Prog1.setVisible(0);
+    gui_Benchs_Cam_Prog2.setVisible(0);
     benchmarks::cancelCameraTests();
 };
 function benchmarksGui::updateProgressBars(%this) {
-    (cameraTestsGroup.getCount() / (1.0 + $benchmarks::camera::curPoint)).setValue();
-    ($pref::benchmarks::fps::reps / (1.0 + $benchmarks::camera::repsDone)).setValue();
+    gui_Benchs_Cam_Prog1.setValue((cameraTestsGroup.getCount() / (1.0 + $benchmarks::camera::curPoint)));
+    gui_Benchs_Cam_Prog2.setValue(($pref::benchmarks::fps::reps / (1.0 + $benchmarks::camera::repsDone)));
 };
 function benchmarksGui::addNewCameraTestPoint1(%this) {
-    0.setVisible();
-    1.setVisible();
-    1.setVisible();
-    0.setVisible();
-    1.setVisible();
+    gui_Benchs_Cam_Add1.setVisible(0);
+    gui_Benchs_Cam_Add2.setVisible(1);
+    gui_Benchs_Cam_Add3.setVisible(1);
+    gui_Benchs_Cam_Name.setVisible(0);
+    gui_Benchs_Cam_NameIn.setVisible(1);
     gui_Benchs_Cam_NameIn.selectAll();
-    0.setVisible();
-    0.setVisible();
-    1.makeFirstResponder();
-    0.setSelection(10000);
+    gui_Benchs_Cam_Prog1.setVisible(0);
+    gui_Benchs_Cam_Prog2.setVisible(0);
+    gui_Benchs_Cam_NameIn.makeFirstResponder(1);
+    gui_Benchs_Cam_NameIn.setSelection(0, 10000);
 };
 function benchmarksGui::addNewCameraTestPoint2(%this) {
-    1.setVisible();
-    0.setVisible();
-    0.setVisible();
-    1.setVisible();
-    0.setVisible();
+    gui_Benchs_Cam_Add1.setVisible(1);
+    gui_Benchs_Cam_Add2.setVisible(0);
+    gui_Benchs_Cam_Add3.setVisible(0);
+    gui_Benchs_Cam_Name.setVisible(1);
+    gui_Benchs_Cam_NameIn.setVisible(0);
     benchmarks::addNewCameraTestPoint(gui_Benchs_Cam_NameIn.getValue());
 };
 function benchmarksGui::addNewCameraTestPoint3(%this) {
-    1.setVisible();
-    0.setVisible();
-    0.setVisible();
-    1.setVisible();
-    0.setVisible();
+    gui_Benchs_Cam_Add1.setVisible(1);
+    gui_Benchs_Cam_Add2.setVisible(0);
+    gui_Benchs_Cam_Add3.setVisible(0);
+    gui_Benchs_Cam_Name.setVisible(1);
+    gui_Benchs_Cam_NameIn.setVisible(0);
 };

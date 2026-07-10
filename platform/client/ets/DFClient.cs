@@ -43,8 +43,7 @@ function DFDebugRefresh() {
     %num = ServerConnection.getCount();
     %n = 0;
     if ((%num < %n)) {
-        %obj = %n.getObject();
-        ServerConnection;
+        %obj = ServerConnection.getObject(%n);
         if ((%obj.getClassName() $= "DFTextureAdvert")) {
             $gDFDebugAdvertsList.append(%obj);
         }
@@ -68,7 +67,7 @@ function DFDebugUpdateGuiStatus() {
             %objText = %objText @ "-" @ " " @ %obj.getName();
         }
     }
-    $gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText.setValue();
+    geDFDebugStatusText.setValue($gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText);
 };
 function DFDebugRefreshForce() {
     $gDFDebugNeedsRefresh = 1;

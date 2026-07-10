@@ -99,8 +99,8 @@ function CSSpacePurchaseCancel() {
 function CSSpacePurchaseSuccess(%unused, %unused, %vurl) {
     $Player::myPlaceVURL = %vurl;
     %title = "Get a Room (Complete!)";
-    $Player::Name.setProperty("ShowOwnerTip", 1);
-    %text = gUserPropMgrClient @ "<just:left>" @ "\n" @ "\n";
+    gUserPropMgrClient.setProperty($Player::Name, "ShowOwnerTip", 1);
+    %text = "<just:left>" @ "\n" @ "\n";
     %buttons = "Go there now" @ "\t" @ "Close";
     %dlg = MessageBoxCustom(%title, %text, %buttons);
     %dlg.callback = "vurlOperation( \"" @ %vurl @ "\");" @ 0;

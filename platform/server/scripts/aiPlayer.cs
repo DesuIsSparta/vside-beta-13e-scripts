@@ -22,16 +22,14 @@ function AIPlayer::spawn(%name, %spawnPoint) {
         // unhandled opcode 205 at 0x000000C4
     }
     // unhandled opcode 205 at 0x000000CC
-    0;
-    %player = new ""() {
-        dataBlock = AIPlayer @ %botDB;
+    %player = new AIPlayer("") {
+        dataBlock = 0 @ %botDB;
         Path = "";
     };
-    %player.add();
+    MissionCleanup.add(%player);
     %player.setShapeName(%name);
     %player.setTransform(%spawnPoint);
     %rand = getRandom(0, 2);
-    MissionCleanup;
     if ((0.0 == %rand)) {
         %genre = "h";
     }
@@ -239,27 +237,24 @@ function AIPlayer::doBlahBlah(%this, %target) {
         %this.blahblahsNum = (AIManager - %this.blahblahsNum);
         1.0;
     }
-    %num = getRandom(1, %this.blahblahsNum);
-    AIManager;
+    %num = getRandom(1, AIManager, %this.blahblahsNum);
     %msg = %this.blahblahs;
     %num @ AIManager;
     ServersideChatMessage(%this, %target, %msg);
-    CONV_DEBUG(AIManager @ %this.blahblahsNum @ " " @ ")");
+    CONV_DEBUG("Bot" @ " " @ %this @ " " @ "said" @ " " @ %msg @ " " @ "(" @ " " @ %num @ " " @ "/" @ " ", AIManager @ %this.blahblahsNum @ " " @ ")");
 };
 function AIManager::BotsBlahBlahOneShot(%this, %player) {
     %i = 0;
     if ((%this.numBots < %i)) {
-        %this.bots.doBlahBlah(%player);
+        %i.doBlahBlah(%this.bots, %player);
         %i = (1.0 + %i);
-        %i;
     }
 };
 function AIPlayer::doEavesdropChange(%this) {
     %newEavesdropTarget = %this.bots;
-    getRandom(0, (AIManager - %this.numBots)) @ AIManager;
+    getRandom(0, 1.0, (AIManager - %this.numBots)) @ AIManager;
     if ((%this == %newEavesdropTarget)) {
         %newEavesdropTarget = 0;
-        1.0;
     }
     CONV_DEBUG("Bot" @ " " @ %this @ " " @ "Switching eavesdrop from" @ " " @ %this.botEavesdropTarget @ " " @ "to" @ " " @ %newEavesdropTarget);
     serverSideEavesdrop(%this, %this.botEavesdropTarget, %newEavesdropTarget);
@@ -309,7 +304,7 @@ function AIManager::doBotsSurfing(%this, %periodMS) {
 };
 function AIManager::addOneBot(%this) {
     echo("adding one bot...");
-    1.spawnBots(1);
+    EntrySpawn.spawnBots(1, 1);
 };
 function AIManager::delOneBot(%this) {
     if ((0.0 <= %this.numBots)) {
@@ -317,15 +312,14 @@ function AIManager::delOneBot(%this) {
     }
     echo("removing one bot...");
     %this.numBots = (1.0 - %this.numBots);
-    %this.bots.delete();
+    %this.numBots.delete(%this.bots);
 };
 function AIManager::think(%this) {
     %period = 500;
     %i = 0;
     if ((%this.numBots < %i)) {
-        %this.bots.thinkETS(%period);
+        %i.thinkETS(%this.bots, %period);
         %i = (1.0 + %i);
-        %i;
     }
     if (%this.BotsSurfing) {
         %this.doBotsSurfing(%period);
@@ -372,7 +366,7 @@ function AIManager::SpawnETS(%this, %transform) {
     %player.setGenre(getSubStr(%player.getDataBlock().possibleGenres, %rand, 1));
     %player.botChatTarget = 0;
     %player.setAwayMessage(getRandomAwayMessage());
-    %name.put(%player);
+    PlayerDict.put(%name, %player);
     %player.MeshOff(%player.gender @ ".headphones.dj");
     echo("bot entered:   \x03" @ " " @ getDebugString(%player));
     return %player;
@@ -406,23 +400,20 @@ function AIManager::SpawnArmyETS(%this, %transform) {
 function AIManager::RandomizeBots(%this) {
     %i = 0;
     if ((%this.numBots < %i)) {
-        %this.bots.randomizeOutfit();
+        %i.randomizeOutfit(%this.bots);
         %rand = getRandom(0, 2);
-        %i;
-        %this.bots.setGenre(getSubStr(%this.bots.getDataBlock().possibleGenres, %rand, 1));
-        %this.bots.setAwayMessage(getRandomAwayMessage());
+        %i.setGenre(%this.bots, getSubStr(%i.getDataBlock(%this.bots).possibleGenres, %rand, 1));
+        %i.setAwayMessage(%this.bots, getRandomAwayMessage());
         %i = (1.0 + %i);
-        %i @ %i @ %i;
     }
 };
 function ServerCmdNextToonModeBots(%client) {
     %i = 0;
     if ((%this.numBots < %i)) {
-        %clientBotID = %client.getGhostID(%this.bots);
-        %i @ AIManager;
+        %clientBotID = %client.getGhostID(%i @ AIManager, %this.bots);
+        AIManager;
         commandToClient(%client, 'matchToonModeToPlayer', %clientBotID);
         %i = (1.0 + %i);
-        AIManager;
     }
 };
 function AIManager::BotsStress(%this, %val) {

@@ -38,18 +38,17 @@ function Player::adjustHorizontalScale(%this) {
     %hScale = getWord(%this.getScale(), 0);
     %vScale = getWord(%this.getScale(), 2);
     if (!(gGetField(%this))) {
-        gSetField(%this, 1);
-        gSetField(%this, %hScale);
+        gSetField(%this, isScaling, 1);
+        gSetField(%this, baseHorizScale, %hScale);
         %hScale = 0.05;
-        baseHorizScale;
+        isScaling;
     }
-    %hScale = mMin((0.05 + %hScale), gGetField(%this));
-    baseHorizScale;
+    %hScale = mMin((0.05 + %hScale), baseHorizScale, gGetField(%this));
     %this.setScale(%hScale @ " " @ %hScale @ " " @ %vScale);
     if ((gGetField(%this) < %hScale)) {
         %this.schedule(25, "adjustHorizontalScale");
     }
-    gSetField(%this, 0);
+    gSetField(%this, isScaling, 0);
 };
 function doTeleportToMyApartment(%ignoreDownloadStatus) {
     if (!(isDefined("%ignoreDownloadStatus"))) {
@@ -62,8 +61,7 @@ function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus) 
         handleSystemMessage("msgInfoMessage", "We could not find your apartment at this time.");
     }
     if ((%status $= "noOwnedSpace")) {
-        %statusMsg = "statusMsg".getValue();
-        GetMyApartmentVURLCommand;
+        %statusMsg = GetMyApartmentVURLCommand.getValue("statusMsg");
         handleSystemMessage("msgInfoMessage", "We could not find your apartment." @ "\n" @ %statusMsg);
     }
     if ((%vurl $= "")) {

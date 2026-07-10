@@ -1,12 +1,12 @@
 function staffSeatsPanel::toggle(%this) {
-    %this.showRaiseOrHide();
+    playGui.showRaiseOrHide(%this);
 };
 function staffSeatsPanel::open(%this) {
     if (!($player.rolesPermissionCheckWarn("events"))) {
         return;
     }
     %this.setVisible(1);
-    %this.focusAndRaise();
+    playGui.focusAndRaise(%this);
 };
 function staffSeatsPanel::close(%this) {
     %this.setVisible(0);
@@ -22,27 +22,24 @@ function doNextSeatSit(%seatNumber) {
         echo("not taking seat #" @ (1.0 + %seatNumber) @ "id: " @ %id @ "because the player is already sitting elsewhere");
         return;
     }
-    %id = %seatNumber.getObject();
-    StaffSeatsPanelTestSet;
+    %id = StaffSeatsPanelTestSet.getObject(%seatNumber);
     commandToServer('RequestToSit', %id);
-    (1.0 + %seatNumber).setText();
+    staffSeatsGuiCurNumber.setText((1.0 + %seatNumber));
     echo("testing seat #" @ (1.0 + %seatNumber) @ "id: " @ %id);
 };
 function waitForStandingBeforeSit(%seatNumber) {
     if ($player.isSitting()) {
         cancel($staffSeatsWaitingSchedule);
-        $staffSeatsWaitingSchedule = schedule($staffSeatsWaitForStandingRecheckDelay, 0, %seatNumber);
-        waitForStandingBeforeSit;
+        $staffSeatsWaitingSchedule = schedule($staffSeatsWaitForStandingRecheckDelay, 0, waitForStandingBeforeSit, %seatNumber);
     }
-    schedule(1000, 0, %seatNumber);
+    schedule(1000, 0, doNextSeatSit, %seatNumber);
 };
 function staffSeatsPanel::testSeat(%this, %seatNumber) {
     cancel($staffSeatsWaitingSchedule);
     $staffSeatsWaitingSchedule = 0;
     if ($player.isSitting()) {
         SendStandCommand(1);
-        $staffSeatsWaitingSchedule = schedule($staffSeatsWaitForStandingRecheckDelay, 0, %seatNumber);
-        waitForStandingBeforeSit;
+        $staffSeatsWaitingSchedule = schedule($staffSeatsWaitForStandingRecheckDelay, 0, waitForStandingBeforeSit, %seatNumber);
     }
     doNextSeatSit(%seatNumber);
 };
@@ -116,6 +113,6 @@ function staffSeatsPanel::startTestingSeats(%this) {
     recursiveCollectSeatsFromSimGroup(MissionGroup, StaffSeatsPanelTestSet);
     $staffSeatsPanel_TOTALNUM = StaffSeatsPanelTestSet.getCount(StaffSeatsPanelTestSet);
     $staffSeatsPanel_CUR = 0;
-    $staffSeatsPanel_CUR.setText();
-    $staffSeatsPanel_TOTALNUM.setText();
+    staffSeatsGuiCurNumber.setText($staffSeatsPanel_CUR);
+    staffSeatsGuiTotalNumber.setText($staffSeatsPanel_TOTALNUM);
 };

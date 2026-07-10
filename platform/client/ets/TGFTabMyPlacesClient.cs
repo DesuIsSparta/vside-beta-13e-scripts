@@ -25,16 +25,14 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     %dataTable.addIconToColumn("access", "open", "platform/client/ui/tgf/tgf_door_open_white");
     %dataTable.addIconToColumn("access", "friendsonly", "platform/client/ui/tgf/tgf_door_heart_white");
     %dataTable.addIconToColumn("access", "passwordprotected", "platform/client/ui/tgf/tgf_door_key_white");
-    0;
-    %container = new ""() {
-        profile = GuiControl @ ETSNonModalProfile;
+    %container = new GuiControl("") {
+        profile = 0 @ ETSNonModalProfile;
         position = "0 7";
         extent = "946 240";
     };
     %tab.add(%container);
-    0;
-    %dottedWindow = new ""() {
-        profile = GuiWindowCtrl @ DottedWindowProfile;
+    %dottedWindow = new GuiWindowCtrl("") {
+        profile = 0 @ DottedWindowProfile;
         position = "7 16";
         extent = "936 222";
         canHilite = 0;
@@ -46,9 +44,8 @@ function geTGF_tabs::fillTabMyPlace(%this) {
         resizeHeight = 0;
     };
     %container.add(%dottedWindow);
-    0;
-    %label = new ""() {
-        position = GuiMLTextCtrl @ "2 2";
+    %label = new GuiMLTextCtrl("") {
+        position = 0 @ "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
@@ -66,9 +63,8 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     %guiTable.setDataTable(%dataTable);
     %tab.GuiTable = %guiTable;
     %container.add(%guiTable);
-    0;
-    %guiTable.alternativeTextCtrl = new ""() {
-        position = GuiMLTextCtrl @ "226 4";
+    %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
+        position = 0 @ "226 4";
         extent = "717 18";
         noEntriesText = ".. Strange, something went wrong. Try pressing refresh in a few seconds.";
     };
@@ -88,16 +84,14 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     %dataTable.addIconToColumn("access", "open", "platform/client/ui/tgf/tgf_door_open_white");
     %dataTable.addIconToColumn("access", "friendsonly", "platform/client/ui/tgf/tgf_door_heart_white");
     %dataTable.addIconToColumn("access", "passwordprotected", "platform/client/ui/tgf/tgf_door_key_white");
-    0;
-    %container = new ""() {
-        profile = GuiControl @ ETSNonModalProfile;
+    %container = new GuiControl("") {
+        profile = 0 @ ETSNonModalProfile;
         position = "0 250";
         extent = "946 240";
     };
     %tab.add(%container);
-    0;
-    %dottedWindow = new ""() {
-        profile = GuiWindowCtrl @ DottedWindowProfile;
+    %dottedWindow = new GuiWindowCtrl("") {
+        profile = 0 @ DottedWindowProfile;
         position = "7 16";
         extent = "936 224";
         canHilite = 0;
@@ -109,9 +103,8 @@ function geTGF_tabs::fillTabMyPlace(%this) {
         resizeHeight = 0;
     };
     %container.add(%dottedWindow);
-    0;
-    %label = new ""() {
-        position = GuiMLTextCtrl @ "2 2";
+    %label = new GuiMLTextCtrl("") {
+        position = 0 @ "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
@@ -128,17 +121,15 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     %guiTable.setDataTable(%dataTable);
     %tab.GuiTable = %guiTable;
     %container.add(%guiTable);
-    0;
-    %guiTable.alternativeTextCtrl = new ""() {
-        position = GuiMLTextCtrl @ "226 4";
+    %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
+        position = 0 @ "226 4";
         extent = "717 18";
         noEntriesText = ".. You own them all!";
     };
     %container.add(%guiTable.alternativeTextCtrl);
     if (0) {
-        0;
-        %invite = new ""() {
-            position = GuiMLTextCtrl @ "250 473";
+        %invite = new GuiMLTextCtrl("") {
+            position = 0 @ "250 473";
             extent = "600 30";
             text = mlStyle(, "tgfTables_Invite");
         };
@@ -147,28 +138,28 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     %this.refreshTabMyPlace();
 };
 function geTGF_tabs::onShowTabMyPlace(%this) {
-    cancel(geTGF_Refresh_Schedule);
-    1.setActive();
-    1.setVisible();
-    1.makeFirstResponder();
+    cancel(geTGF, geTGF_Refresh_Schedule);
+    geTGF_Refresh.setActive(1);
+    geTGF_Refresh.setVisible(1);
+    geTGF_MyPlaceGuiTable.makeFirstResponder(1);
 };
 $gHaveGottenManagerSpaces = 0;
 function geTGF_tabs::refreshTabMyPlace(%this) {
-    alternativeTextCtrl.setVisible(1);
-    alternativeTextCtrl.setText(mlStyle("Fetching..", "tgfTables_DataCell_Text"));
+    geTGF_MyPlaceGuiTable.setVisible(alternativeTextCtrl, 1);
+    geTGF_MyPlaceGuiTable.setText(alternativeTextCtrl, mlStyle("Fetching..", "tgfTables_DataCell_Text"));
     getOwnerSpacesInfo($Player::Name, "geTGF_OnCompleted_MyPlace");
-    alternativeTextCtrl.setVisible(1);
-    alternativeTextCtrl.setText(mlStyle("Fetching..", "tgfTables_DataCell_Text"));
+    geTGF_OtherPlacesGuiTable.setVisible(alternativeTextCtrl, 1);
+    geTGF_OtherPlacesGuiTable.setText(alternativeTextCtrl, mlStyle("Fetching..", "tgfTables_DataCell_Text"));
     getOwnerSpacesInfo("The-Manager", "geTGF_OnCompleted_MyPlace");
 };
 function geTGF_OnCompleted_MyPlace(%tracker) {
     if ((geTGF_tabs.getCurrentTab().name $= "myplace")) {
-        cancel(geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        1.setActive();
+        cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
+        geTGF_Refresh.setActive(1);
     }
     if (!(isObject(%tracker))) {
         error(getScopeName() @ " " @ "- null tracker." @ " " @ getTrace());
-        return geTGF_Refresh;
+        return;
     }
     if ((%tracker.ownerName $= $Player::Name)) {
         %listName = "myplace";
@@ -180,9 +171,8 @@ function geTGF_OnCompleted_MyPlace(%tracker) {
     // unhandled opcode 515 at 0x000008F1
     %listName = geTGF_OtherPlacesGuiTable;
     %properOwnerName = "The-Manager";
-    %listName.clearItemList("happening");
+    geTGF.clearItemList(%listName, "happening");
     %count = %tracker.getCount();
-    geTGF;
     %n = 0;
     if ((%count < %n)) {
         %itemObj = %tracker.getObject(%n);
@@ -195,8 +185,7 @@ function geTGF_OnCompleted_MyPlace(%tracker) {
             echo(getScopeName() @ " " @ "- skipping space" @ " " @ %itemObj.get("description"));
         }
         %id = %itemObj.get("description") @ " " @ formatInt("%0.3d", %n);
-        %item = %listName.createNewItem("happening", %id);
-        geTGF;
+        %item = geTGF.createNewItem(%listName, "happening", %id);
         %item.accessMode = %itemObj.get("access");
         %item.baseImageURL = %itemObj.get("baseImageURL");
         %item.eventID = %itemObj.get("eventId");
@@ -213,24 +202,23 @@ function geTGF_OnCompleted_MyPlace(%tracker) {
         %item.subType = (%item.eventID $= "") ? "apt" : "aptEvent";
         %n = (1.0 + %n);
     }
-    if ("myplace".testItemList("happening")) {
+    if (geTGF.testItemList("myplace", "happening")) {
     }
-    %bothListsExist = "otherplaces".testItemList("happening");
-    geTGF;
+    %bothListsExist = geTGF.testItemList("otherplaces", "happening");
+    (%count < %n);
     if (%bothListsExist) {
         geTGF_OnCompleted_MyPlaceRemoveOwnedSpacesFromAvailableList();
         if ((geTGF_OtherPlacesGuiTable.getId() != %guiTable.getId())) {
-            populateMyPlaceTableFromItemList("otherplaces", "happening");
+            populateMyPlaceTableFromItemList(geTGF_OtherPlacesGuiTable, "otherplaces", "happening");
         }
     }
     populateMyPlaceTableFromItemList(%guiTable, %listName, "happening");
 };
 function geTGF_OnCompleted_MyPlaceRemoveOwnedSpacesFromAvailableList() {
-    "otherplaces".removeItemsFromList1WithMatchingItemInList2("happening", "myplace", "happening", "location_areaName");
+    geTGF.removeItemsFromList1WithMatchingItemInList2("otherplaces", "happening", "myplace", "happening", "location_areaName");
 };
 function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
-    %itemList = %listName.getItemList(%listType);
-    geTGF;
+    %itemList = geTGF.getItemList(%listName, %listType);
     %count = %itemList.count();
     %dataTable = %guiTable.getDataTable();
     %dataTable.clear();
@@ -268,10 +256,8 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
         }
         %eventValue = "regularEvent";
         %eventFmt = "";
-        %occupancyText = %item.occupancy.formatOccupancy("<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
-        geTGF;
-        %friendOccupancyText = %item.friendOccupancy.formatOccupancy("<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
-        geTGF;
+        %occupancyText = geTGF.formatOccupancy(%item.occupancy, "<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
+        %friendOccupancyText = geTGF.formatOccupancy(%item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         if ((0.0 >= %item.occupancy)) {
         }
         %occupancySortVal = 99999;
@@ -311,15 +297,13 @@ function geTGF_tabs::friendsTab_formatStatusMsg(%msg) {
     return geTGF_tabs::hotSpotsTab_formatDescription(%msg);
 };
 function geTGF::myplace_GetAndOpenDetailsContainer(%this, %item) {
-    %dataRowIndex = "description" @ "\t" @ %item.id.getRowIndexByCriteria();
-    geTGF_MyPlaceDataTable;
-    %guiRowIndex = %dataRowIndex.getGuiRowIndexForDataRowIndex();
-    geTGF_MyPlaceGuiTable;
+    %dataRowIndex = geTGF_MyPlaceDataTable.getRowIndexByCriteria("description" @ "\t" @ %item.id);
+    %guiRowIndex = geTGF_MyPlaceGuiTable.getGuiRowIndexForDataRowIndex(%dataRowIndex);
     if ((0.0 >= %guiRowIndex)) {
-        %guiRowIndex.doHiliteRow();
+        geTGF_MyPlaceGuiTable.doHiliteRow(%guiRowIndex);
     }
-    %this.constructDeetsWindow(%item);
-    1.setVisible();
+    %this.constructDeetsWindow(geDeetsWindow, %item);
+    geDeetsLayer.setVisible(1);
 };
 function geTGF_MyPlaceGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount) {
     %listName = "myplace";
@@ -352,9 +336,8 @@ function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %
     }
     %showDeets = 0;
     if (%showDeets) {
-        %item = %listName.findItem("happening", %itemID);
-        geTGF;
-        "myplace".DoDetails(%item);
+        %item = geTGF.findItem(%listName, "happening", %itemID);
+        geTGF.DoDetails("myplace", %item);
     }
 };
 function geTGF_MyPlaceGuiTable::onKeyDown(%this, %modifier, %keyCode) {
@@ -363,7 +346,7 @@ function geTGF_MyPlaceGuiTable::onKeyDown(%this, %modifier, %keyCode) {
     if ((%modifierStr @ %keyCodeStr $= "\t")) {
     }
     if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
-        1.makeFirstResponder();
+        geTGF_FriendsFilterBox.makeFirstResponder(1);
         return 1;
     }
     return 0;

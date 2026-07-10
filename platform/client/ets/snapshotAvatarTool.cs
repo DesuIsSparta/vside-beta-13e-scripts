@@ -3,7 +3,7 @@ function toggleSnapshotAvatarTool() {
 };
 function snapshotAvatarTool::open(%this) {
     %this.setVisible(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
     snapshotAvatarToolActiveRegion.initStuff();
 };
 function snapshotAvatarTool::onWake(%this) {
@@ -38,48 +38,47 @@ function snapshotAvatarToolActiveRegion::adjustForHeight(%this, %height, %cMin, 
     %this.setLookAtNudge("0 0" @ " " @ %c);
 };
 function snapshotAvatarTool::doSnap(%this) {
-    gSetField(%this, $Canvas::frameCount);
-    gSetField(%this, %this.profile);
+    gSetField(%this, lastFrame, $Canvas::frameCount);
+    gSetField(%this, origProfile, snapshotAvatarToolActiveRegion, %this.profile);
     snapshotAvatarToolActiveRegion.setProfile(ETSSnapshotBackgroundProfile);
     %this.waitForNextFrameToSnap();
 };
 function snapshotAvatarTool::waitForNextFrameToSnap(%this) {
-    cancel(gGetField(%this));
+    cancel(waitForFrameSchedule, gGetField(%this));
     if ((gGetField(%this) <= $Canvas::frameCount)) {
-        gSetField(%this, %this.schedule(10, "waitForNextFrameToSnap"));
-        return waitForFrameSchedule;
+        gSetField(%this, waitForFrameSchedule, %this.schedule(10, "waitForNextFrameToSnap"));
+        return lastFrame;
     }
     %this.doSnap2();
 };
 function snapshotAvatarTool::doSnap2(%this) {
-    %snapshot = snapshot::snapAndUpControlRegion($player.getShapeName(), "y");
-    snapshotAvatarToolActiveRegion;
+    %snapshot = snapshot::snapAndUpControlRegion(snapshotAvatarToolActiveRegion, $player.getShapeName(), "y");
     if (!(isObject(%snapshot))) {
         error("Snapshot", "Problem taking snapshot");
         return;
     }
     %snapshot.saveObject = %this;
     %snapshot.setCompletedCallback("snapshotAvatarToolonCompleted");
-    0.setVisible();
-    1.setVisible();
-    0.setValue();
-    gGetField(%this).setProfile();
+    snapshotAvatarToolSet1.setVisible(0);
+    snapshotAvatarToolSet2.setVisible(1);
+    snapshotAvatarToolProgressBar.setValue(0);
+    snapshotAvatarToolActiveRegion.setProfile(origProfile, gGetField(%this));
 };
 function snapshotAvatarTool::onProgress(%this, %snapshot) {
     %percent = (%snapshot.ulTotal / %snapshot.ulNow);
-    %percent.setValue();
+    snapshotAvatarToolProgressBar.setValue(%percent);
 };
 function snapshotAvatarToolonCompleted(%request, %result) {
     %snapshot = %request.saveObject;
     if ((0.0 == %result)) {
-        1.setVisible();
-        0.setVisible();
-        if (!(snapshotAvatarToolSet2 @ " " @ %snapshot.visitWhenDoneUrl $= "")) {
+        snapshotAvatarToolSet1.setVisible(1);
+        snapshotAvatarToolSet2.setVisible(0);
+        if (!(%snapshot.visitWhenDoneUrl $= "")) {
         }
         if ($UserPref::Snapshots::View) {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
     }
-    1.setVisible();
-    0.setVisible();
+    snapshotAvatarToolSet1.setVisible(1);
+    snapshotAvatarToolSet2.setVisible(0);
 };

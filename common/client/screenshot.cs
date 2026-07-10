@@ -24,13 +24,11 @@ function formatSessionNumber(%number) {
 };
 function recordMovie(%movieName, %fps) {
     $timeAdvance = (%fps / 1000.0);
-    $screenGrabThread = schedule($timeAdvance, 0, %movieName, 0);
-    movieGrabScreen;
+    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, 0);
 };
 function movieGrabScreen(%movieName, %frameNumber) {
     ScreenShot(%movieName @ formatImageNumber(%frameNumber) @ ".png");
-    $screenGrabThread = schedule($timeAdvance, 0, %movieName, (1.0 + %frameNumber));
-    movieGrabScreen;
+    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, (1.0 + %frameNumber));
 };
 function stopMovie() {
     $timeAdvance = 0;
@@ -55,4 +53,4 @@ function doScreenShot(%val) {
     ScreenShot(%name @ %ext, %fmt);
     doSaveScreenShotMetaData(%name, %ext);
 };
-"ctrl-alt s".bind();
+GlobalActionMap.bind(keyboard, "ctrl-alt s");

@@ -14,14 +14,14 @@ function AssetManager::getPackageOrder() {
     if (!($Net::userOwner $= "")) {
         %userOwner = $Net::userOwner;
     }
-    %map = new ""();;
-    StringMap;
+    %map = new StringMap("");;
+    0;
     if (isObject(MissionCleanup)) {
-        %map.add();
+        MissionCleanup.add(%map);
     }
     %map.put("projects/vside/worlds/common.zip", 0);
     %map.put("projects/vside/worlds/gateway.zip", 1);
-    if ((MissionCleanup @ " " @ %userOwner $= "degrassi")) {
+    if ((%userOwner $= "degrassi")) {
         %map.put("projects/vside/worlds/lounge.zip", 3);
         %map.put("projects/vside/worlds/raijuku.zip", 4);
         %map.put("projects/vside/worlds/lga.zip", 2);
@@ -39,12 +39,12 @@ function AssetManager::commonInit() {
     AssetManager::initPackages();
 };
 function AssetManager::getMissingAssets() {
-    %map = new ""();;
-    StringMap;
+    %map = new StringMap("");;
+    0;
     if (isObject(MissionCleanup)) {
-        %map.add();
+        MissionCleanup.add(%map);
     }
-    if ((MissionCleanup @ " " @ $AssetManager::missingAssets $= "")) {
+    if (($AssetManager::missingAssets $= "")) {
         return %map;
     }
     %num = getFieldCount($AssetManager::missingAssets);
@@ -70,15 +70,13 @@ function AssetManager::MapToString(%map) {
     }
 };
 function AssetManager::StringToMap(%str) {
-    %map = new ""();;
-    StringMap;
+    %map = new StringMap("");;
+    0;
     if (isObject(MissionCleanup)) {
-        %map.add();
+        MissionCleanup.add(%map);
     }
     %num = getFieldCount(%str);
-    MissionCleanup;
     %n = 0;
-    0;
     if ((%num < %n)) {
         %tag = getField(%str, %n);
         %fs = strstr(%tag, "=");
@@ -90,15 +88,13 @@ function AssetManager::StringToMap(%str) {
     return %map;
 };
 function AssetManager::StringToArray(%str) {
-    %array = new ""();;
-    Array;
+    %array = new Array("");;
+    0;
     if (isObject(MissionCleanup)) {
-        %array.add();
+        MissionCleanup.add(%array);
     }
     %num = getFieldCount(%str);
-    MissionCleanup;
     %n = 0;
-    0;
     if ((%num < %n)) {
         %tag = getField(%str, %n);
         %fs = strstr(%tag, "=");

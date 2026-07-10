@@ -4,113 +4,111 @@ function initActionMaps() {
     }
     new ActionMap(moveMap);
     new ActionMap(functionMap);
-    functionMap.bind("xaxis");
-    functionMap.bind("yaxis");
-    functionMap.bind("zaxis");
-    functionMap.bind("shift zaxis");
-    functionMap.bind("ctrl zaxis");
-    functionMap.bind("ctrl-shift zaxis");
-    functionMap.bind("alt zaxis");
-    functionMap.bind("shift-alt zaxis");
+    moveMap.bind(mouse, "xaxis");
+    moveMap.bind(mouse, "yaxis");
+    moveMap.bind(mouse, "zaxis");
+    moveMap.bind(mouse, "shift zaxis");
+    moveMap.bind(mouse, "ctrl zaxis");
+    moveMap.bind(mouse, "ctrl-shift zaxis");
+    moveMap.bind(mouse, "alt zaxis");
+    moveMap.bind(mouse, "shift-alt zaxis");
     moveMap.bind(mouse, button0, mouseFire);
-    functionMap.bind("ctrl space");
-    functionMap.bind("space");
-    functionMap.bind("enter");
-    functionMap.bind("numpadenter");
-    functionMap.bind("up");
-    functionMap.bind("shift up");
-    functionMap.bind("rshift");
-    functionMap.bind("lshift");
-    functionMap.bind("down");
-    functionMap.bind("right");
-    functionMap.bind("left");
-    functionMap.bind("ctrl w");
-    functionMap.bind("ctrl-shift w");
-    functionMap.bind("ctrl s");
-    functionMap.bind("ctrl a");
-    functionMap.bind("ctrl d");
-    functionMap.bind("ctrl up");
-    functionMap.bind("ctrl down");
-    functionMap.bind("ctrl left");
-    functionMap.bind("ctrl right");
-    functionMap.bind("ctrl x");
-    "ctrl =".bindCmd("startDollyIn();", "stopZoom();");
-    "ctrl-shift =".bindCmd("startDollyIn(0.3);", "stopZoom();");
-    "ctrl -".bindCmd("startDollyOut();", "stopZoom();");
-    "ctrl-shift -".bindCmd("startDollyOut(0.3);", "stopZoom();");
-    "ctrl numpadadd".bindCmd("startDollyIn();", "stopZoom();");
-    "ctrl-shift numpadadd".bindCmd("startDollyIn(0.3);", "stopZoom();");
-    "ctrl numpadminus".bindCmd("startDollyOut();", "stopZoom();");
-    "ctrl-shift numpadminus".bindCmd("startDollyOut(0.3);", "stopZoom();");
-    "ctrl-alt numpadadd".bindCmd("startDollyZoomIn();", "stopZoom();");
-    "shift-ctrl-alt numpadadd".bindCmd("startDollyZoomIn(0.3);", "stopZoom();");
-    "ctrl-alt numpadminus".bindCmd("startDollyZoomOut();", "stopZoom();");
-    "shift-ctrl-alt numpadminus".bindCmd("startDollyZoomOut(0.3);", "stopZoom();");
-    "alt =".bindCmd("startZoomIn();", "stopZoom();");
-    "shift-alt =".bindCmd("startZoomIn(0.3);", "stopZoom();");
-    "alt -".bindCmd("startZoomOut();", "stopZoom();");
-    "shift-alt -".bindCmd("startZoomOut(0.3);", "stopZoom();");
-    "ctrl-alt =".bindCmd("startDollyZoomIn();", "stopZoom();");
-    "shift-ctrl-alt =".bindCmd("startDollyZoomIn(0.3);", "stopZoom();");
-    "ctrl-alt -".bindCmd("startDollyZoomOut();", "stopZoom();");
-    "shift-ctrl-alt -".bindCmd("startDollyZoomOut(0.3);", "stopZoom();");
-    "ctrl n".bindCmd("TutorialsCatalogClient::forceNextNag();", "");
-    "ctrl tab".bindCmd("nextPlayerCamMode();", "");
-    "ctrl b".bindCmd("BroadCastControlPanel.toggle();", "");
-    "ctrl g".bindCmd("toggleGameMgrHudWin();", "");
-    "ctrl k".bindCmd("toggleConversationDebug();", "");
-    "ctrl o".bindCmd("toggleWorldControlPanel();", "");
-    "ctrl t".bindCmd("toggleDanceTool();", "");
-    "ctrl z".bindCmd("toggleFreeLook();", "");
-    "ctrl r".bindCmd("playerTexturesReload();", "");
-    "ctrl enter".bindCmd("doPropAction(0);", "stopPropAction(0);");
-    "ctrl numpadenter".bindCmd("doPropAction(0);", "stopPropAction(0);");
-    "ctrl '".bindCmd("doPropAction(1);", "stopPropAction(1);");
-    "ctrl ;".bindCmd("doPropAction(2);", "stopPropAction(2);");
-    "alt z".bindCmd("toggleSystemMessageDialog    ();", "");
-    "alt b".bindCmd("toggleBenchmarksDialog       ();", "");
-    "alt a".bindCmd("toggleAdminDialog            ();", "");
-    "alt-shift a".bindCmd("toggleAnimatorPanel          ();", "");
-    "alt-shift s".bindCmd("toggleSalonChairControlDialog();", "");
-    "alt f".bindCmd("toggleBuddyHud    ();", "");
-    "alt m".bindCmd("toggleMusicHud    ();", "");
-    "ctrl m".bindCmd("toggleMusicHud    ();", "");
-    "alt c".bindCmd("toggleClosetTab   ();", "");
-    "alt s".bindCmd("toggleOptionsPanel();", "");
-    "alt e".bindCmd("toggleEmoteHud    ();", "");
-    "alt v".bindCmd("nextPlayerCamMode ();", "");
-    "alt n".bindCmd("toggleTGF         ();", "");
-    "alt F7".bindCmd("dropPlayerAtCamera();", "");
-    "alt F8".bindCmd("dropCameraAtPlayer();", "");
+    moveMap.bind(keyboard, "ctrl space");
+    moveMap.bind(keyboard, "space");
+    moveMap.bind(keyboard, "enter");
+    moveMap.bind(keyboard, "numpadenter");
+    moveMap.bind(keyboard, "up");
+    moveMap.bind(keyboard, "shift up");
+    moveMap.bind(keyboard, "rshift");
+    moveMap.bind(keyboard, "lshift");
+    moveMap.bind(keyboard, "down");
+    moveMap.bind(keyboard, "right");
+    moveMap.bind(keyboard, "left");
+    moveMap.bind(keyboard, "ctrl w");
+    moveMap.bind(keyboard, "ctrl-shift w");
+    moveMap.bind(keyboard, "ctrl s");
+    moveMap.bind(keyboard, "ctrl a");
+    moveMap.bind(keyboard, "ctrl d");
+    moveMap.bind(keyboard, "ctrl up");
+    moveMap.bind(keyboard, "ctrl down");
+    moveMap.bind(keyboard, "ctrl left");
+    moveMap.bind(keyboard, "ctrl right");
+    moveMap.bind(keyboard, "ctrl x");
+    moveMap.bindCmd(keyboard, "ctrl =", "startDollyIn();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-shift =", "startDollyIn(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl -", "startDollyOut();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-shift -", "startDollyOut(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl numpadadd", "startDollyIn();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-shift numpadadd", "startDollyIn(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl numpadminus", "startDollyOut();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-shift numpadminus", "startDollyOut(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-alt numpadadd", "startDollyZoomIn();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "shift-ctrl-alt numpadadd", "startDollyZoomIn(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-alt numpadminus", "startDollyZoomOut();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "shift-ctrl-alt numpadminus", "startDollyZoomOut(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "alt =", "startZoomIn();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "shift-alt =", "startZoomIn(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "alt -", "startZoomOut();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "shift-alt -", "startZoomOut(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-alt =", "startDollyZoomIn();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "shift-ctrl-alt =", "startDollyZoomIn(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl-alt -", "startDollyZoomOut();", "stopZoom();");
+    moveMap.bindCmd(keyboard, "shift-ctrl-alt -", "startDollyZoomOut(0.3);", "stopZoom();");
+    moveMap.bindCmd(keyboard, "ctrl n", "TutorialsCatalogClient::forceNextNag();", "");
+    moveMap.bindCmd(keyboard, "ctrl tab", "nextPlayerCamMode();", "");
+    moveMap.bindCmd(keyboard, "ctrl b", "BroadCastControlPanel.toggle();", "");
+    moveMap.bindCmd(keyboard, "ctrl g", "toggleGameMgrHudWin();", "");
+    moveMap.bindCmd(keyboard, "ctrl k", "toggleConversationDebug();", "");
+    moveMap.bindCmd(keyboard, "ctrl o", "toggleWorldControlPanel();", "");
+    moveMap.bindCmd(keyboard, "ctrl t", "toggleDanceTool();", "");
+    moveMap.bindCmd(keyboard, "ctrl z", "toggleFreeLook();", "");
+    moveMap.bindCmd(keyboard, "ctrl r", "playerTexturesReload();", "");
+    moveMap.bindCmd(keyboard, "ctrl enter", "doPropAction(0);", "stopPropAction(0);");
+    moveMap.bindCmd(keyboard, "ctrl numpadenter", "doPropAction(0);", "stopPropAction(0);");
+    moveMap.bindCmd(keyboard, "ctrl '", "doPropAction(1);", "stopPropAction(1);");
+    moveMap.bindCmd(keyboard, "ctrl ;", "doPropAction(2);", "stopPropAction(2);");
+    moveMap.bindCmd(keyboard, "alt z", "toggleSystemMessageDialog    ();", "");
+    moveMap.bindCmd(keyboard, "alt b", "toggleBenchmarksDialog       ();", "");
+    moveMap.bindCmd(keyboard, "alt a", "toggleAdminDialog            ();", "");
+    moveMap.bindCmd(keyboard, "alt-shift a", "toggleAnimatorPanel          ();", "");
+    moveMap.bindCmd(keyboard, "alt-shift s", "toggleSalonChairControlDialog();", "");
+    moveMap.bindCmd(keyboard, "alt f", "toggleBuddyHud    ();", "");
+    moveMap.bindCmd(keyboard, "alt m", "toggleMusicHud    ();", "");
+    moveMap.bindCmd(keyboard, "ctrl m", "toggleMusicHud    ();", "");
+    GlobalActionMap.bindCmd(keyboard, "alt c", "toggleClosetTab   ();", "");
+    moveMap.bindCmd(keyboard, "alt s", "toggleOptionsPanel();", "");
+    moveMap.bindCmd(keyboard, "alt e", "toggleEmoteHud    ();", "");
+    moveMap.bindCmd(keyboard, "alt v", "nextPlayerCamMode ();", "");
+    moveMap.bindCmd(keyboard, "alt n", "toggleTGF         ();", "");
+    GlobalActionMap.bindCmd(keyboard, "alt F7", "dropPlayerAtCamera();", "");
+    GlobalActionMap.bindCmd(keyboard, "alt F8", "dropCameraAtPlayer();", "");
     if ($ETS::devMode) {
-        "ctrl F1".bindCmd("toggleVisibleState(geActivitiesPanel);", "");
+        moveMap.bindCmd(keyboard, "ctrl F1", "toggleVisibleState(geActivitiesPanel);", "");
     }
-    "F1".bindCmd("toggleLocalMap    ();", "");
-    "F2".bindCmd("toggleTGF         ();", "");
-    "F3".bindCmd("toggleBuddyHud    ();", "");
-    "F4".bindCmd("toggleEmoteHud    ();", "");
-    "F5".bindCmd("toggleClosetGui   ();", "");
-    "F6".bindCmd("toggleOptionsPanel();", "");
-    "F7".bindCmd("nextPlayerCamMode ();", "");
-    "alt 1".bindCmd("oxe_CameraSpeed(\"1\"  );", "");
-    "alt 2".bindCmd("oxe_CameraSpeed(\"2\"  );", "");
-    "alt 3".bindCmd("oxe_CameraSpeed(\"3\"  );", "");
-    "alt 4".bindCmd("oxe_CameraSpeed(\"4\"  );", "");
-    "alt 5".bindCmd("oxe_CameraSpeed(\"6\"  );", "");
-    "alt 6".bindCmd("oxe_CameraSpeed(\"8\"  );", "");
-    "alt 7".bindCmd("oxe_CameraSpeed(\"10\" );", "");
-    "alt 8".bindCmd("oxe_CameraSpeed(\"20\" );", "");
-    "alt 9".bindCmd("oxe_CameraSpeed(\"50\" );", "");
-    "alt 0".bindCmd("oxe_CameraSpeed(\"100\");", "");
+    moveMap.bindCmd(keyboard, "F1", "toggleLocalMap    ();", "");
+    moveMap.bindCmd(keyboard, "F2", "toggleTGF         ();", "");
+    moveMap.bindCmd(keyboard, "F3", "toggleBuddyHud    ();", "");
+    moveMap.bindCmd(keyboard, "F4", "toggleEmoteHud    ();", "");
+    moveMap.bindCmd(keyboard, "F5", "toggleClosetGui   ();", "");
+    moveMap.bindCmd(keyboard, "F6", "toggleOptionsPanel();", "");
+    moveMap.bindCmd(keyboard, "F7", "nextPlayerCamMode ();", "");
+    moveMap.bindCmd(keyboard, "alt 1", "oxe_CameraSpeed(\"1\"  );", "");
+    moveMap.bindCmd(keyboard, "alt 2", "oxe_CameraSpeed(\"2\"  );", "");
+    moveMap.bindCmd(keyboard, "alt 3", "oxe_CameraSpeed(\"3\"  );", "");
+    moveMap.bindCmd(keyboard, "alt 4", "oxe_CameraSpeed(\"4\"  );", "");
+    moveMap.bindCmd(keyboard, "alt 5", "oxe_CameraSpeed(\"6\"  );", "");
+    moveMap.bindCmd(keyboard, "alt 6", "oxe_CameraSpeed(\"8\"  );", "");
+    moveMap.bindCmd(keyboard, "alt 7", "oxe_CameraSpeed(\"10\" );", "");
+    moveMap.bindCmd(keyboard, "alt 8", "oxe_CameraSpeed(\"20\" );", "");
+    moveMap.bindCmd(keyboard, "alt 9", "oxe_CameraSpeed(\"50\" );", "");
+    moveMap.bindCmd(keyboard, "alt 0", "oxe_CameraSpeed(\"100\");", "");
 };
 function mapMessageKeys() {
     %messageKeys = "a b c d e f g h i j k l m n o p q r s t u v w x y z 0 1 2 3 4 5 6 7 8 9 " @ "A B C D E F G H I J K L M N O P Q R S T U V W X Y Z " @ "exclamation doublequote pound ampersand apostrophe lparen rparen " @ "comma minus period slash colon semicolon lessthan equals morethan lbracket backslash rbracket circumflex underscore " @ "grave tilde vertbar";
-    %messageKeys = NextToken(%messageKeys, " ");
-    key;
+    %messageKeys = NextToken(%messageKeys, key, " ");
     if (!(%key $= "")) {
-        %key.bindCmd("startTextEntry();", "");
-        %messageKeys = NextToken(%messageKeys, " ");
-        key;
+        moveMap.bindCmd(keyboard, %key, "startTextEntry();", "");
+        %messageKeys = NextToken(%messageKeys, key, " ");
     }
 };
 initActionMaps();
@@ -121,8 +119,7 @@ function escapeFromGame() {
         Canvas.releaseDragControl();
         return;
     }
-    %topGui = (1.0 - Canvas.getCount()).getObject();
-    Canvas;
+    %topGui = Canvas.getObject((1.0 - Canvas.getCount()));
     %topName = %topGui.getName();
     if (!(%topName $= "playGui")) {
         if (!(%topName $= "ConsoleDlg")) {
@@ -153,9 +150,9 @@ function escapeFromGame() {
             finishTextEntry();
         }
         if (ConvBub.isVisible()) {
-            0.close();
+            ConvBub.close(0);
         }
-        -(1.0).selectConvAtIndex();
+        AIMConvManager.selectConvAtIndex(-(1.0));
     }
 };
 $movementSpeed = 1;
@@ -293,7 +290,7 @@ function nextPlayerCamMode() {
     if (isObject(BroadcastHideSelfCheckbox)) {
         if (!($IN_ORBIT_CAM)) {
         }
-        !($firstPerson).setVisible();
+        BroadcastHideSelfCheckbox.setVisible(!($firstPerson));
     }
 };
 function ClientCmdOnOrbitMode(%orbitMode) {
@@ -572,26 +569,24 @@ function toggleVisibleState(%this) {
     %this.open();
 };
 safeEnsureScriptObject("StringMap", "CSPanelCategories");
-"CSMediaDisplay".put("settings");
-"CSRulesAndDescWindow".put("settings");
-"CSFurnitureMover".put("furniture");
-"CSInventoryBrowserWindow".put("furniture");
-"CSShoppingBrowserWindow".put("furniture");
-"CSPaintingWindow".put("painting");
+CSPanelCategories.put("CSMediaDisplay", "settings");
+CSPanelCategories.put("CSRulesAndDescWindow", "settings");
+CSPanelCategories.put("CSFurnitureMover", "furniture");
+CSPanelCategories.put("CSInventoryBrowserWindow", "furniture");
+CSPanelCategories.put("CSShoppingBrowserWindow", "furniture");
+CSPanelCategories.put("CSPaintingWindow", "painting");
 function closeCSPanelsInOtherCategories(%panel) {
     if (!(isObject(%panel))) {
-        return CSPanelCategories;
+        return;
     }
-    %category = %panel.getName().get();
-    CSPanelCategories;
+    %category = CSPanelCategories.get(%panel.getName());
     %size = CSPanelCategories.size();
     %i = 0;
     if ((%size < %i)) {
-        if (!(CSPanelCategories @ " " @ %i.getValue() $= %category)) {
-            %i.getKey().close();
+        if (!(CSPanelCategories.getValue(%i) $= %category)) {
+            CSPanelCategories.getKey(%i).close();
         }
         %i = (1.0 + %i);
-        CSPanelCategories;
     }
 };
 function numCSPanelsOpen() {
@@ -599,9 +594,8 @@ function numCSPanelsOpen() {
     %size = CSPanelCategories.size();
     %i = 0;
     if ((%size < %i)) {
-        if (%i.getKey().isVisible()) {
+        if (CSPanelCategories.getKey(%i).isVisible()) {
             %num = (1.0 + %num);
-            CSPanelCategories;
         }
         %i = (1.0 + %i);
     }
@@ -630,7 +624,7 @@ function toggleBuddyHudForTab(%tabName) {
         BuddyHudWin.close();
         return;
     }
-    %tabName.selectTabWithName();
+    BuddyHudTabs.selectTabWithName(%tabName);
 };
 function toggleSelfViewHud() {
     PlayGui.showRaiseOrHide(PlayerWin);
@@ -648,7 +642,7 @@ function toggleMusicHud() {
         MusicHud.hide();
     }
     MusicHud.show();
-    1.keepOpen();
+    MusicHud.keepOpen(1);
 };
 function toggleOptionsPanel() {
     toggleVisibleState(OptionsPanel);
@@ -676,14 +670,14 @@ function toggleBodyTab() {
         return;
     }
     toggleVisibleState(ClosetGui);
-    "Body".selectTabWithName();
+    ClosetTabs.selectTabWithName("Body");
 };
 function toggleClosetTab() {
     if (!(okToOpenClosetGui())) {
         return;
     }
     toggleVisibleState(ClosetGui);
-    "Closet".selectTabWithName();
+    ClosetTabs.selectTabWithName("Closet");
 };
 function toggleClosetGui() {
     scriptProfiler_EnterScope();
@@ -698,9 +692,9 @@ function toggleClosetGui() {
             if ((%tabToOpen $= "")) {
                 %tabToOpen = "Closet";
             }
-            %tabToOpen.selectTabWithName();
+            ClosetTabs.selectTabWithName(%tabToOpen);
         }
-        "Shops".selectTabWithName();
+        ClosetTabs.selectTabWithName("Shops");
     }
     scriptProfiler_LeaveScope();
 };
@@ -714,7 +708,7 @@ function toggleBuildingDirectory() {
         CustomSpacesSelector.close();
     }
     if (!(BuildingDirectoryButton @ " " @ BuddyHudTabs.getCurrentTab().lastBuildingEntered $= "")) {
-        BuddyHudTabs.getCurrentTab().lastBuildingEntered.open();
+        CustomSpacesSelector.open(BuildingDirectoryButton, BuddyHudTabs.getCurrentTab().lastBuildingEntered);
     }
 };
 function toggleClosetItemCategory(%category) {
@@ -723,8 +717,8 @@ function toggleClosetItemCategory(%category) {
     }
     toggleVisibleState(ClosetGui);
     if (BuddyHudTabs.getCurrentTab().visible) {
-        "CLOSET".selectTabWithName();
-        0.onSelect(%category);
+        ClosetTabs.selectTabWithName("CLOSET");
+        ClosetItemPopup.onSelect(0, %category);
     }
 };
 function toggleStore() {
@@ -735,7 +729,7 @@ function toggleStore() {
     }
     toggleVisibleState(ClosetGui);
     if (BuddyHudTabs.getCurrentTab().visible) {
-        "SHOPS".selectTabWithName();
+        ClosetTabs.selectTabWithName("SHOPS");
     }
 };
 function toggleSnapshot() {
@@ -747,7 +741,7 @@ function toggleSnapshot() {
 function toggleAIMHud() {
     toggleVisibleState(BuddyHudWin);
     if (BuddyHudWin.isVisible()) {
-        "AIM".selectTabWithName();
+        BuddyHudTabs.selectTabWithName("AIM");
     }
 };
 function toggleWorldControlPanel() {
@@ -765,26 +759,26 @@ function toggleTGF() {
     if ((geTGF.getId() != Canvas.getContent().getId())) {
     }
     if ((PlayGui.getId() != geTGF.getParent().getId())) {
-        0.setVisible();
+        geTGF.setVisible(0);
     }
     toggleVisibleState(geTGF);
 };
 function toggleWorldMap() {
-    "".Maps_filterDestinationsByType();
-    "Map".toggleToTabName();
-    "multi_city".setView();
+    geTGF_tabs.Maps_filterDestinationsByType("");
+    geTGF.toggleToTabName("Map");
+    WorldMap.setView("multi_city");
 };
 function toggleCityMap() {
-    "Map".toggleToTabName();
-    "".Maps_filterDestinationsByType();
+    geTGF.toggleToTabName("Map");
+    geTGF_tabs.Maps_filterDestinationsByType("");
     if ((0.0 != $CSBuildingInfo)) {
-        $CSBuildingInfo.city.selectCity();
+        WorldMap.selectCity($CSBuildingInfo.city);
     }
-    $gContiguousSpaceName.selectCity();
+    WorldMap.selectCity($gContiguousSpaceName);
 };
 function toggleTGFMapFiltered(%filterType) {
     toggleCityMap();
-    %filterType.Maps_filterDestinationsByType();
+    geTGF_tabs.Maps_filterDestinationsByType(%filterType);
 };
 function togglePerformerPanel() {
     performerPanel.toggle();
@@ -852,64 +846,64 @@ function cycleDebugRenderMode() {
     }
     echo("Debug render modes only available when running a Debug build.");
 };
-"alt tilde".bind();
-"ctrl capslock".bind();
-"alt F9".bindCmd("cycleDebugRenderMode();", "");
-"escape".bindCmd("", "escapeFromGame();");
-"alt F4".bindCmd("", "");
-if ((keyboard @ " " @ $Platform $= "macos")) {
-    "alt".bind("onDragAndDropCtrl");
+GlobalActionMap.bind(keyboard, "alt tilde");
+GlobalActionMap.bind(keyboard, "ctrl capslock");
+GlobalActionMap.bindCmd(keyboard, "alt F9", "cycleDebugRenderMode();", "");
+GlobalActionMap.bindCmd(keyboard, "escape", "", "escapeFromGame();");
+GlobalActionMap.bindCmd(keyboard, "alt F4", "", "");
+if ((ToggleConsoleReally @ " " @ $Platform $= "macos")) {
+    GlobalActionMap.bind(keyboard, "alt", "onDragAndDropCtrl");
 }
-"lcontrol".bind("onDragAndDropCtrl");
-"rcontrol".bind("onDragAndDropCtrl");
-"F8".bindCmd("EmoteHudList.doFunc(\"F08\"   );", "");
-"F9".bindCmd("EmoteHudList.doFunc(\"F09\"   );", "");
-"F10".bindCmd("EmoteHudList.doFunc(\"F10\"   );", "");
-"F11".bindCmd("EmoteHudList.doFunc(\"F11\"   );", "");
-"F12".bindCmd("EmoteHudList.doFunc(\"F12\"   );", "");
-"ctrl 1".bindCmd("EmoteHudList.doFunc(\"ctrl1\");", "");
-"ctrl 2".bindCmd("EmoteHudList.doFunc(\"ctrl2\");", "");
-"ctrl 3".bindCmd("EmoteHudList.doFunc(\"ctrl3\");", "");
-"ctrl 4".bindCmd("EmoteHudList.doFunc(\"ctrl4\");", "");
-"ctrl 5".bindCmd("EmoteHudList.doFunc(\"ctrl5\");", "");
-"ctrl 6".bindCmd("EmoteHudList.doFunc(\"ctrl6\");", "");
-"ctrl 7".bindCmd("EmoteHudList.doFunc(\"ctrl7\");", "");
-"ctrl 8".bindCmd("EmoteHudList.doFunc(\"ctrl8\");", "");
-"ctrl 9".bindCmd("EmoteHudList.doFunc(\"ctrl9\");", "");
-"ctrl 0".bindCmd("EmoteHudList.doFunc(\"ctrl0\");", "");
+GlobalActionMap.bind(keyboard, "lcontrol", "onDragAndDropCtrl");
+GlobalActionMap.bind(keyboard, "rcontrol", "onDragAndDropCtrl");
+functionMap.bindCmd(keyboard, "F8", "EmoteHudList.doFunc(\"F08\"   );", "");
+functionMap.bindCmd(keyboard, "F9", "EmoteHudList.doFunc(\"F09\"   );", "");
+functionMap.bindCmd(keyboard, "F10", "EmoteHudList.doFunc(\"F10\"   );", "");
+functionMap.bindCmd(keyboard, "F11", "EmoteHudList.doFunc(\"F11\"   );", "");
+functionMap.bindCmd(keyboard, "F12", "EmoteHudList.doFunc(\"F12\"   );", "");
+functionMap.bindCmd(keyboard, "ctrl 1", "EmoteHudList.doFunc(\"ctrl1\");", "");
+functionMap.bindCmd(keyboard, "ctrl 2", "EmoteHudList.doFunc(\"ctrl2\");", "");
+functionMap.bindCmd(keyboard, "ctrl 3", "EmoteHudList.doFunc(\"ctrl3\");", "");
+functionMap.bindCmd(keyboard, "ctrl 4", "EmoteHudList.doFunc(\"ctrl4\");", "");
+functionMap.bindCmd(keyboard, "ctrl 5", "EmoteHudList.doFunc(\"ctrl5\");", "");
+functionMap.bindCmd(keyboard, "ctrl 6", "EmoteHudList.doFunc(\"ctrl6\");", "");
+functionMap.bindCmd(keyboard, "ctrl 7", "EmoteHudList.doFunc(\"ctrl7\");", "");
+functionMap.bindCmd(keyboard, "ctrl 8", "EmoteHudList.doFunc(\"ctrl8\");", "");
+functionMap.bindCmd(keyboard, "ctrl 9", "EmoteHudList.doFunc(\"ctrl9\");", "");
+functionMap.bindCmd(keyboard, "ctrl 0", "EmoteHudList.doFunc(\"ctrl0\");", "");
 toggleFirstPerson(1);
 new ActionMap(buildingDirectoryMap);
-"F5".bindCmd("refreshCSSelector();", "");
-"enter".bindCmd("CustomSpacesSelector.doOnKeyDown(\"enter\");", "");
-"up".bindCmd("CustomSpacesSelector.doOnKeyDown(\"up\");", "CustomSpacesSelector.doOnKeyUp(\"up\");");
-"down".bindCmd("CustomSpacesSelector.doOnKeyDown(\"down\");", "CustomSpacesSelector.doOnKeyUp(\"down\");");
+buildingDirectoryMap.bindCmd(keyboard, "F5", "refreshCSSelector();", "");
+buildingDirectoryMap.bindCmd(keyboard, "enter", "CustomSpacesSelector.doOnKeyDown(\"enter\");", "");
+buildingDirectoryMap.bindCmd(keyboard, "up", "CustomSpacesSelector.doOnKeyDown(\"up\");", "CustomSpacesSelector.doOnKeyUp(\"up\");");
+buildingDirectoryMap.bindCmd(keyboard, "down", "CustomSpacesSelector.doOnKeyDown(\"down\");", "CustomSpacesSelector.doOnKeyUp(\"down\");");
 new ActionMap(closetMap);
-"F5".bindCmd("toggleClosetGui();", "");
-"left".bindCmd("ClosetGui.doArrow(-1, 0);", "");
-"right".bindCmd("ClosetGui.doArrow( 1, 0);", "");
-"up".bindCmd("ClosetGui.doArrow( 0, 1);", "");
-"down".bindCmd("ClosetGui.doArrow( 0,-1);", "");
-"alt n".bindCmd("", "");
-"F2".bindCmd("", "");
-"ctrl r".bindCmd("ClosetGUI_RefreshTextures();", "");
+closetMap.bindCmd(keyboard, "F5", "toggleClosetGui();", "");
+closetMap.bindCmd(keyboard, "left", "ClosetGui.doArrow(-1, 0);", "");
+closetMap.bindCmd(keyboard, "right", "ClosetGui.doArrow( 1, 0);", "");
+closetMap.bindCmd(keyboard, "up", "ClosetGui.doArrow( 0, 1);", "");
+closetMap.bindCmd(keyboard, "down", "ClosetGui.doArrow( 0,-1);", "");
+closetMap.bindCmd(keyboard, "alt n", "", "");
+closetMap.bindCmd(keyboard, "F2", "", "");
+closetMap.bindCmd(keyboard, "ctrl r", "ClosetGUI_RefreshTextures();", "");
 new ActionMap(optionsMap);
-"F6".bindCmd("toggleOptionsPanel();", "");
+optionsMap.bindCmd(keyboard, "F6", "toggleOptionsPanel();", "");
 new ActionMap(tgfMapMap);
-"alt n".bindCmd("toggleTGF();", "");
-"F2".bindCmd("geTGF.closeFully();", "");
-"F5".bindCmd("geTGF.onRefresh();", "");
+tgfMapMap.bindCmd(keyboard, "alt n", "toggleTGF();", "");
+tgfMapMap.bindCmd(keyboard, "F2", "geTGF.closeFully();", "");
+tgfMapMap.bindCmd(keyboard, "F5", "geTGF.onRefresh();", "");
 new ActionMap(csFurnitureMap);
-"delete".bindCmd("csTestFreeSelectedItem();", "");
-if ((keyboard @ " " @ $Platform $= "macos")) {
-    "backspace".bindCmd("csTestFreeSelectedItem();", "");
-    "delete".bindCmd("csTestFreeSelectedItem();", "");
-    "opt x".bindCmd("CSFurnitureMover.doCut();", "");
-    "opt c".bindCmd("CSFurnitureMover.doCopy();", "");
-    "opt v".bindCmd("CSFurnitureMover.doPaste();", "");
+csFurnitureMap.bindCmd(keyboard, "delete", "csTestFreeSelectedItem();", "");
+if ((ToggleConsoleReally @ " " @ $Platform $= "macos")) {
+    csFurnitureMap.bindCmd(keyboard, "backspace", "csTestFreeSelectedItem();", "");
+    csFurnitureMap.bindCmd(keyboard, "delete", "csTestFreeSelectedItem();", "");
+    csFurnitureMap.bindCmd(keyboard, "opt x", "CSFurnitureMover.doCut();", "");
+    csFurnitureMap.bindCmd(keyboard, "opt c", "CSFurnitureMover.doCopy();", "");
+    csFurnitureMap.bindCmd(keyboard, "opt v", "CSFurnitureMover.doPaste();", "");
 }
-"delete".bindCmd("csTestFreeSelectedItem();", "");
-"ctrl x".bindCmd("CSFurnitureMover.doCut();", "");
-"ctrl c".bindCmd("CSFurnitureMover.doCopy();", "");
-"ctrl insert".bindCmd("CSFurnitureMover.doCopy();", "");
-"ctrl v".bindCmd("CSFurnitureMover.doPaste();", "");
-"shift insert".bindCmd("CSFurnitureMover.doPaste();", "");
+csFurnitureMap.bindCmd(keyboard, "delete", "csTestFreeSelectedItem();", "");
+csFurnitureMap.bindCmd(keyboard, "ctrl x", "CSFurnitureMover.doCut();", "");
+csFurnitureMap.bindCmd(keyboard, "ctrl c", "CSFurnitureMover.doCopy();", "");
+csFurnitureMap.bindCmd(keyboard, "ctrl insert", "CSFurnitureMover.doCopy();", "");
+csFurnitureMap.bindCmd(keyboard, "ctrl v", "CSFurnitureMover.doPaste();", "");
+csFurnitureMap.bindCmd(keyboard, "shift insert", "CSFurnitureMover.doPaste();", "");

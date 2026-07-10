@@ -19,9 +19,9 @@ function Player::onGotRoles(%this, %rolesMask) {
         %po.rebuildHudCtrl();
         %n = (1.0 - %n);
     }
-    %this.rolesPermissionCheckNoWarn("quietHUD").setVisible();
-    %this.rolesPermissionCheckNoWarn("farNameOpacity").setVisible();
-    %this.rolesPermissionCheckNoWarn("console").setVisible();
+    HUDHideChatCheckBox.setVisible(%this.rolesPermissionCheckNoWarn("quietHUD"));
+    FarNameOpacityCtrl.setVisible(%this.rolesPermissionCheckNoWarn("farNameOpacity"));
+    optionsPanelAlertOnLogCtrl.setVisible(%this.rolesPermissionCheckNoWarn("console"));
     if (%this.hasRoleString("host")) {
         schedule(2000, 0, "delayedWearSku", getSpecialSKU($player, "hostBadge"));
     }

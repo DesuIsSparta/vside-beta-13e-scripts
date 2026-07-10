@@ -16,8 +16,8 @@ function doSomething() {
     if (ClosetGui.isVisible()) {
         ClosetGui.close();
     }
-    "Hello!".say(0, 0);
-    "Goodbye!".say(0, 0);
+    pChat.say("Hello!", 0, 0);
+    pChat.say("Goodbye!", 0, 0);
     logout(0);
     WorldMap.exit();
     if (($maxCities <= $cityIndex)) {

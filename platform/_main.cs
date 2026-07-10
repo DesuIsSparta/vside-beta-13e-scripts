@@ -181,10 +181,9 @@ package platform {
             }
             if (!(%haveSManagerArg)) {
                 %line = $Net::ManagerHost;
-                %line = NextToken(%line, ":");
-                host;
-                NextToken(%line, " ");
-                if ((port @ " " @ %port $= 80)) {
+                %line = NextToken(%line, host, ":");
+                NextToken(%line, port, " ");
+                if ((%port $= 80)) {
                     $Net::SecureManagerHost = %host @ ":443";
                 }
                 $Net::SecureManagerHost = %host @ ":8443";
@@ -276,8 +275,7 @@ package platform {
         "";
         %LongCityNameString = "";
         if (isObject(WorldMap)) {
-            %areaName = %ServerName.cityNameForServerName();
-            WorldMap;
+            %areaName = WorldMap.cityNameForServerName(%ServerName);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
             if ((%locationName $= "")) {
             }
@@ -359,8 +357,8 @@ package platform {
         hasArg("-webConfigFile");
     };
     function startInitialSSLConnection() {
-        %curl = new ""();;
-        URLPostObject;
+        %curl = new URLPostObject("");;
+        0;
         %curl.setURL("https://" @ $Net::SecureManagerHost);
         %curl.setBody(0);
         %curl.start();
@@ -383,7 +381,7 @@ package platform {
         }
         initClient();
         if (isObject(ConsoleEntry)) {
-            "platform/client/consoleHistory.txt".loadHistory();
+            ConsoleEntry.loadHistory("platform/client/consoleHistory.txt");
         }
         echo("---no ConsoleEntry not loading history");
     };
@@ -415,7 +413,7 @@ package platform {
         if (isObject(ConsoleEntry)) {
         }
         if (!($NonInteractive)) {
-            "platform/client/consoleHistory.txt".dumpHistory();
+            ConsoleEntry.dumpHistory("platform/client/consoleHistory.txt");
         }
         echo("---no ConsoleEntry not dumping history");
     };

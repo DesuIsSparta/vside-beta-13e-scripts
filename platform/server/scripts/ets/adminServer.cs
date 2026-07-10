@@ -85,10 +85,10 @@ function admin::doThrowVoice(%target, %message, %adminPlayer) {
     %targetName = admin::getTargetName(%target);
     %msg = %message;
     if ((0.0 == %target)) {
-        %message.doThrowVoice(%adminPlayer);
+        NPCManager.doThrowVoice(%message, %adminPlayer);
     }
     ServersideChatMessage(%target, 0, %msg);
-    return NPCManager;
+    return;
 };
 function NPCManager::doThrowVoice(%this, %msg, %adminPlayer) {
     if (!(isObject(%this.NPCGroup))) {

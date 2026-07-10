@@ -28,10 +28,10 @@ function initSeatsTakenSet() {
     if (isObject($SeatsTakenSet)) {
         $SeatsTakenSet.delete();
     }
-    $SeatsTakenSet = new ""();;
-    SimSet;
-    $SeatsTakenSet.add();
-    return MissionCleanup;
+    $SeatsTakenSet = new SimSet("");;
+    0;
+    MissionCleanup.add($SeatsTakenSet);
+    return;
 };
 function isSeatTaken(%seat) {
     if (!(isObject($SeatsTakenSet))) {
@@ -102,15 +102,13 @@ function TurnOnSitCam(%player) {
     %client = %player.client;
     if (isObject(%client)) {
         if (!(isObject(%client.sitCam))) {
-            0;
-            %client.sitCam = new ""() {
-                dataBlock = Camera @ SittingObserver;
+            %client.sitCam = new Camera("") {
+                dataBlock = 0 @ SittingObserver;
             };
-            %client.sitCam.add();
+            MissionCleanup.add(%client.sitCam);
             %client.sitCam.scopeToClient(%client);
         }
         %theta = getWord(%player.mySeat.camAngles, 0);
-        MissionCleanup;
         %phi = getWord(%player.mySeat.camAngles, 1);
         if ((%theta $= "")) {
             %theta = 180;

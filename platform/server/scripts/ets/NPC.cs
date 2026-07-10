@@ -2,11 +2,9 @@ function NPCManager::init(%this) {
     if (isObject(%this.animSets)) {
         %this.animSets.delete();
     }
-    %this.animSets = StringMap @ new ""();;
-    0;
-    %this.animSets.add();
+    %this.animSets = 0 @ new StringMap("");;
+    MissionCleanup.add(%this.animSets);
     %as = %this.animSets;
-    MissionCleanup;
     %this.thinkPeriod = 1311;
     %this.NPCGroup = NPCGroup;
     %this.resetnextAnimTimes();
@@ -196,9 +194,8 @@ function storeTransformsSet(%simSet) {
     %n = 0;
     if ((%num < %n)) {
         %obj = %simSet.getObject(%n);
-        gSetField(%obj, %obj.getTransform());
+        gSetField(%obj, origTransform, %obj.getTransform());
         %n = (1.0 + %n);
-        origTransform;
     }
 };
 function restoreTransformsSet(%simSet) {
@@ -206,9 +203,8 @@ function restoreTransformsSet(%simSet) {
     %n = 0;
     if ((%num < %n)) {
         %obj = %simSet.getObject(%n);
-        %obj.setTransform(gGetField(%obj));
+        %obj.setTransform(origTransform, gGetField(%obj));
         %n = (1.0 + %n);
-        origTransform;
     }
 };
 function copyObjectNamesToShapeNamesSet(%simSet) {
@@ -225,9 +221,8 @@ function registerInPlayerDictSet(%simSet) {
     %n = 0;
     if ((%num < %n)) {
         %obj = %simSet.getObject(%n);
-        %obj.getShapeName().put(%obj);
+        PlayerDict.put(%obj.getShapeName(), %obj);
         %n = (1.0 + %n);
-        PlayerDict;
     }
 };
 function NPCManager::resetnextAnimTimes(%this) {
@@ -237,9 +232,8 @@ function NPCManager::resetnextAnimTimes(%this) {
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
     if ((%NPCNum < %n)) {
-        gSetField(%this.NPCGroup.getObject(%n), "");
+        gSetField(%this.NPCGroup.getObject(%n), nextAnimTime, "");
         %n = (1.0 + %n);
-        nextAnimTime;
     }
 };
 function NPCManager::assertOutfits(%this) {
@@ -336,9 +330,8 @@ function NPCManager::thinkNPC(%this, %npc) {
         return;
     }
     %nat = (getRandom(%this.getAnimTimeMin(%setName), %this.getAnimTimeMax(%setName)) + %curTime);
-    gSetField(%npc, %nat);
+    gSetField(%npc, nextAnimTime, %nat);
     %animSet = %this.animSets.get(%setName);
-    nextAnimTime;
     %anim = %this.getRandomAnimFromSet(%setName);
     %npc.playAnim(%anim);
     return;

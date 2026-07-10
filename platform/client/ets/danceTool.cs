@@ -4,14 +4,14 @@ $gDanceToolSequence = 0;
 $gDanceToolTimeStart = 0;
 function danceTool::open(%this) {
     %this.setVisible(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
     userTips::showOnceEver("DanceToolUsage");
     %this.initialcontent();
     if (!(isObject($gDanceToolSequence))) {
-        $gDanceToolSequence = new ""();;
-        StringMap;
+        $gDanceToolSequence = new StringMap("");;
+        0;
         if (isObject(MissionCleanup)) {
-            $gDanceToolSequence.add();
+            MissionCleanup.add($gDanceToolSequence);
         }
     }
 };
@@ -27,55 +27,47 @@ function toggleDanceTool() {
     }
 };
 function danceTool::record(%this) {
-    0.setVisible();
-    0.setVisible();
-    1.setVisible();
-    "STOP (recording)".setText();
-    0.setVisible();
-    0.setVisible();
-    %this.recording = guiDanceToolCheckBoxLoop @ 1;
-    guiDanceToolButtonCopyFrom;
-    %this.playing = guiDanceToolButtonStop @ 0;
-    guiDanceToolButtonStop;
-    %this.nextStep = guiDanceToolButtonPlay @ 0;
-    guiDanceToolButtonRecord;
+    guiDanceToolButtonRecord.setVisible(0);
+    guiDanceToolButtonPlay.setVisible(0);
+    guiDanceToolButtonStop.setVisible(1);
+    guiDanceToolButtonStop.setText("STOP (recording)");
+    guiDanceToolButtonCopyFrom.setVisible(0);
+    guiDanceToolCheckBoxLoop.setVisible(0);
+    %this.recording = 1;
+    %this.playing = 0;
+    %this.nextStep = 0;
     %this.prevStepTime = -(1.0);
-    "".setText();
-    $player.getShapeName().setText();
-    "my cool dance".setText();
+    guiDanceToolMLTextBody.setText("");
+    guiDanceToolTextAuthor.setText($player.getShapeName());
+    guiDanceToolTextTitle.setText("my cool dance");
     %this.setGender($player.getGender());
     %this.startTimer();
 };
 function danceTool::play(%this) {
-    0.setVisible();
-    0.setVisible();
-    1.setVisible();
-    "STOP (playing)".setText();
-    0.setVisible();
-    1.setVisible();
+    guiDanceToolButtonRecord.setVisible(0);
+    guiDanceToolButtonPlay.setVisible(0);
+    guiDanceToolButtonStop.setVisible(1);
+    guiDanceToolButtonStop.setText("STOP (playing)");
+    guiDanceToolButtonCopyFrom.setVisible(0);
+    guiDanceToolCheckBoxLoop.setVisible(1);
     %this.constructSequence(guiDanceToolMLTextBody.getText());
-    %this.recording = guiDanceToolCheckBoxLoop @ 0;
-    guiDanceToolButtonCopyFrom;
-    %this.playing = guiDanceToolButtonStop @ 1;
-    guiDanceToolButtonStop;
-    %this.prevStep = guiDanceToolButtonPlay @ -(1.0);
-    guiDanceToolButtonRecord;
+    %this.recording = 0;
+    %this.playing = 1;
+    %this.prevStep = -(1.0);
     %this.startTimer();
 };
 function danceTool::stop(%this) {
-    1.setVisible();
-    1.setVisible();
-    0.setVisible();
-    1.setVisible();
-    1.setVisible();
+    guiDanceToolButtonRecord.setVisible(1);
+    guiDanceToolButtonPlay.setVisible(1);
+    guiDanceToolButtonStop.setVisible(0);
+    guiDanceToolButtonCopyFrom.setVisible(1);
+    guiDanceToolCheckBoxLoop.setVisible(1);
     commandToServer('DanceSequenceDone');
     if (%this.recording) {
         %this.finishRecordingPreviousStep();
     }
-    %this.recording = guiDanceToolCheckBoxLoop @ 0;
-    guiDanceToolButtonCopyFrom;
-    %this.playing = guiDanceToolButtonStop @ 0;
-    guiDanceToolButtonPlay;
+    %this.recording = 0;
+    %this.playing = 0;
     %this.stopTimer();
 };
 function danceTool::startTimer(%this) {
@@ -185,7 +177,7 @@ function danceTool::addStep(%this, %nameInternal) {
     }
     %animName = %nameInternal;
     %this.finishRecordingPreviousStep();
-    %animName.addText(1, 1);
+    guiDanceToolMLTextBody.addText(%animName, 1, 1);
 };
 function danceTool::finishRecordingPreviousStep(%this) {
     %t = getSimTime();
@@ -195,9 +187,9 @@ function danceTool::finishRecordingPreviousStep(%this) {
         if ((0.1 < %dt)) {
             %dt = 0.1;
         }
-        " " @ %dt @ "\n".addText(1, 1);
+        guiDanceToolMLTextBody.addText(" " @ %dt @ "\n", 1, 1);
     }
-    %this.prevStepTime = guiDanceToolMLTextBody @ %t;
+    %this.prevStepTime = %t;
 };
 function clientCmdDisableDanceTool(%unused) {
     danceTool.stop();
@@ -213,7 +205,7 @@ function danceTool::setGender(%this, %gender) {
     }
     %genderFull = "males";
     %txt = "Designed for:" @ " " @ %colorTag @ %genderFull;
-    %txt.setText();
+    guiDanceToolTextGender.setText(%txt);
 };
 $gDanceToolVersionString = "Dancetastique version 1.0";
 function danceTool::clipboardCopyTo(%this) {
@@ -244,10 +236,10 @@ function danceTool::setContent(%this, %content) {
         MessageBoxOK("Wrong Version!", "" @ $gDanceToolVersionString @ "\nand you're trying to use a dance from\n" @ " " @ %version, "");
         return;
     }
-    %author.setValue();
-    %title.setValue();
+    guiDanceToolTextAuthor.setValue(%author);
+    guiDanceToolTextTitle.setValue(%title);
     %this.setGender(%gender);
-    %content.setText();
+    guiDanceToolMLTextBody.setText(%content);
 };
 $gDanceToolInitialized = 0;
 function danceTool::initialcontent(%this) {

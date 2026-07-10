@@ -7,9 +7,8 @@ function OpenALInit() {
     %extString = alGetString("AL_EXTENSIONS");
     %extString = strreplace(%extString, "\n", " ");
     echo("   Extensions: " @ %extString);
-    alxListenerf($UserPref::Audio::masterVolume);
+    alxListenerf(AL_GAIN_LINEAR, $UserPref::Audio::masterVolume);
     %channel = 1;
-    AL_GAIN_LINEAR;
     if ((8.0 <= %channel)) {
         alxSetChannelVolume(%channel, %channel[$UserPref::Audio::channelVolume @ %channel]);
         %channel = (1.0 + %channel);

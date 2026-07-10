@@ -2,9 +2,8 @@ $TESTMissionGroupIntegrityAlreadyRun = 0;
 $gPrevNumMissing = 0;
 function PlayGui::onWake(%this) {
     %this.Initialize();
-    %this.updateLocation();
+    GuiTracker.updateLocation(%this);
     $enableDirectInput = 1;
-    GuiTracker;
     activateDirectInput();
     moveMap.push();
     functionMap.push();
@@ -89,9 +88,9 @@ function PlayGui::onCanvasResize(%this) {
 };
 function PlayGui::resetFirstResponder(%this) {
     if (MessageHud.isVisible()) {
-        1.makeFirstResponder();
+        MessageHudEdit.makeFirstResponder(1);
     }
-    1.makeFirstResponder();
+    TheShapeNameHud.makeFirstResponder(1);
 };
 function PlayGui::onMouseUp(%this, %obj, %pt, %worldVec) {
     %power = 1;
@@ -104,17 +103,17 @@ function PlayGui::onMouseDownObj(%this, %obj, %pt, %worldVec) {
         error(getScopeName() @ " " @ "-" @ " " @ getDebugString(%obj));
     }
     if (isObject(adminGui)) {
-        %obj.tryTarget();
+        adminGui.tryTarget(%obj);
     }
     if (isObject(animatorPanel)) {
-        %obj.tryTarget();
+        animatorPanel.tryTarget(%obj);
     }
     if (isObject(salonChairControlGui)) {
-        %obj.tryTarget();
+        salonChairControlGui.tryTarget(%obj);
     }
     if (!(isObject(%obj))) {
         onLeftClickSwatch(0);
-        return salonChairControlGui;
+        return;
     }
     %type = %obj.getType();
     if ($gSwatchPaintingModeOn) {
@@ -168,7 +167,7 @@ function PlayGui::onUsableObjectClick(%this, %obj, %pt) {
         if ($CS_EditingCustomSpace) {
         }
         if (!($EventModifier::CTRL & $Keyboard::modifierKeys)) {
-            %obj.SelectNuggetObject();
+            CSFurnitureMover.SelectNuggetObject(%obj);
         }
         if (checkInteractOK(%obj)) {
             if (%obj.hasMethod("onUse")) {
@@ -189,7 +188,7 @@ function PlayGui::onUsableObjectRightClick(%this, %obj) {
     if ((0.0 >= %nuggetId)) {
     }
     if ($CS_EditingCustomSpace) {
-        %obj.initWithObject();
+        FurnitureItemContextMenu.initWithObject(%obj);
         FurnitureItemContextMenu.showAtCursor();
     }
     if ((0.0 != %obj)) {
@@ -291,7 +290,7 @@ function GuiControl::focusTopWindow(%this) {
     if (isObject(%obj)) {
         %this.focusAndRaise(%obj);
     }
-    1.makeFirstResponder();
+    TheShapeNameHud.makeFirstResponder(1);
 };
 function GuiControl::closeTopClosableWindow(%this) {
     %closedOne = 0;
@@ -371,7 +370,7 @@ function onBuddyStateChange(%index) {
     BuddyHudWin.refreshAIMBuddyList();
     %buddyName = aimGetBuddyName(%index);
     %buddyState = aimGetBuddyState(%index);
-    stripUnprintables(%buddyName).buddyStateChanged(%buddyState);
+    AIMConvManager.buddyStateChanged(stripUnprintables(%buddyName), %buddyState);
 };
 function SitHud::sitDown(%this) {
     commandToServer('SitDown');
@@ -380,13 +379,13 @@ function SitHud::standUp(%this) {
     commandToServer('StandUp');
 };
 function clientCmdShowSitHud(%val, %sitOrStand) {
-    %sitOrStand.setVisible();
-    !(%sitOrStand).setVisible();
-    %val.setVisible();
+    SitButton.setVisible(%sitOrStand);
+    StandButton.setVisible(!(%sitOrStand));
+    SitHud.setVisible(%val);
 };
 function clientCmdShowSitButton(%sitOrStand) {
-    %sitOrStand.setVisible();
-    !(%sitOrStand).setVisible();
+    SitButton.setVisible(%sitOrStand);
+    StandButton.setVisible(!(%sitOrStand));
 };
 function BitmapFullScreenFlasher::FlashImage(%this, %bitmapName, %fadeInTime, %waitTime, %fadeOutTime) {
     %this.setBitmap(%bitmapName);
@@ -401,5 +400,5 @@ function BitmapFullScreenFlasher::onFinishedFading(%this) {
     %this.setVisible(0);
 };
 function clientCmdFlashImage(%imageName, %fadeInTime, %waitTime, %fadeOutTime) {
-    %imageName.FlashImage(%fadeInTime, %waitTime, %fadeOutTime);
+    BitmapFullScreenFlasher.FlashImage(%imageName, %fadeInTime, %waitTime, %fadeOutTime);
 };

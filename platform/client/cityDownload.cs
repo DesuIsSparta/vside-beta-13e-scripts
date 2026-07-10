@@ -3,10 +3,10 @@ $CityDownloadGui::lastCityIndex = 0;
 $CityDownloadGui::totalDownloaded = 0;
 function CityDownloadGui::onDone(%this) {
     echo("Finished downloading updated cities.");
-    1.setValue();
-    0.setTransitioning();
-    "LoadingGui".setContent();
-    $lastVURL.doServerJoin();
+    DLLoadingPBController.setValue(1);
+    LoadingGui.setTransitioning(0);
+    Canvas.setContent("LoadingGui");
+    WorldMap.doServerJoin($lastVURL);
 };
 function CityDownloadGui::onProgress(%this, %dltotal, %dlnow) {
     if (isObject(DLLoadingPBController)) {
@@ -19,7 +19,7 @@ function CityDownloadGui::onProgress(%this, %dltotal, %dlnow) {
         $CityDownloadGui::lastDLNow = %dlnow;
         $CityDownloadGui::totalDownloaded = (%part + $CityDownloadGui::totalDownloaded);
         %progressValue = (%dltotal / $CityDownloadGui::totalDownloaded);
-        %progressValue.setValue();
+        DLLoadingPBController.setValue(%progressValue);
     }
 };
 function CityDownloadGui::open(%this) {
@@ -42,21 +42,20 @@ function CityDownloadGui::onWake(%this) {
             MissionCleanup.add(DLLoadingPBController);
         }
     }
-    "platform/client/ui/progress_empty".Initialize("platform/client/ui/progress_fill", "", "");
+    DLLoadingPBController.Initialize(DLLoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
     if ($StandAlone) {
     }
     if (!($missionRunning)) {
         error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
-        MessageBoxOK("Error", DLLoadingProgressHolder @ " " @ $MissionArg, "quit();", "");
+        MessageBoxOK("Error",  @ " " @ $MissionArg, "quit();", "");
     }
     callBackSink = %this @ packageDownload;
-    DLLoadingPBController;
     if (!(packageDownload.isActive())) {
         packageDownload.start();
     }
 };
 function CityDownloadGui::onSleep(%this) {
     $Platform::CanSleepInBackground = 1;
-    "".setValue();
-    0.setValue();
+    DLLoadingProgressText.setValue("");
+    DLLoadingPBController.setValue(0);
 };

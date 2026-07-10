@@ -116,8 +116,7 @@ function vurl::tryProcessDynamicVurl(%this) {
                 error(getScopeName() @ " " @ "- type only valid on client:" @ " " @ %this.vurl @ " " @ getTrace());
                 return 0;
             }
-            %partnerObj = $Net::userOwner.getPartnerObj();
-            gLoginPartnersInfo;
+            %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
             %newVurl = %partnerObj.vurl;
         }
         error(getScopeName() @ " " @ "- Unknown dynamic vurl type:" @ " " @ %this.vurl @ " " @ getTrace());
@@ -202,14 +201,12 @@ function vurl::execute(%this) {
     if ($StandAlone) {
         %this.standAloneRetry = 1;
     }
-    %cityName = %this.getCityFromServerName(%this._server);
-    %this.retryIndex;
+    %cityName = %this.getCityFromServerName(%this.retryIndex, %this._server);
     if (isObject(WorldMapCityInfoMap)) {
     }
     if (isObject(LoadingGui)) {
-        %cityInfo = %cityName.get();
-        WorldMapCityInfoMap;
-        %cityInfo.background.setBitmap();
+        %cityInfo = WorldMapCityInfoMap.get(%cityName);
+        LoadingGui.setBitmap(%cityInfo.background);
     }
     if (%this.checkCityDownloadStatus(%cityName)) {
     }
@@ -240,8 +237,7 @@ function vurl::clearResolutionAndExecute(%this) {
 function vurl::getCityFromServerName(%this, %ServerName) {
     %idx = 0;
     if ((WorldMapServers.getCount() < %idx)) {
-        %serverProps = %idx.getObject();
-        WorldMapServers;
+        %serverProps = WorldMapServers.getObject(%idx);
         %testname = %serverProps.get("name");
         if ((%testname $= %ServerName)) {
             %cityspec = %serverProps.get("city");
@@ -258,8 +254,7 @@ function vurl::checkCityDownloadStatus(%this, %cityName) {
     if (isObject(packageDownload)) {
     }
     if ($AutoDownloadPackages) {
-        %status = %cityName.getStatusForCity();
-        packageDownload;
+        %status = packageDownload.getStatusForCity(%cityName);
         if ((%status $= "done")) {
             return 0;
         }
@@ -276,15 +271,13 @@ function vurl::clearResolution(%this) {
     }
 };
 function vurl::doResolveVURL(%this) {
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "ResolveVURLRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "ResolveVURLRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/ResolveVURL" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&vurl=" @ urlEncode(%this.vurl);
-    MissionCleanup;
     log("network", "debug", "ResovleVURLRequest: " @ %url);
     %request.VURLHandler = %this;
     %request.setURL(%url);
@@ -367,9 +360,8 @@ function vurl::DefaultReportError(%vurl, %errorCode, %errorText) {
     }
 };
 function vurl::DefaultRequestPassword(%this) {
-    MessageBoxTextEntryWithCancel(, , "", 0);
+    MessageBoxTextEntryWithCancel(, , VURL_ResumbmitWithPassword, "", 0);
     $VURL::saveVurlForPasswordCheck = %this.vurl;
-    VURL_ResumbmitWithPassword;
 };
 function VURL_ResumbmitWithPassword(%newPassword) {
     %vurl = vurlGetParsedVurl($VURL::saveVurlForPasswordCheck);
@@ -380,8 +372,8 @@ function vurl::handleIncompeteVURL(%this) {
     if ((0.0 == stricmp(%this.targetType, "location"))) {
         if (isObject(WorldMap)) {
             log("network", "info", "Showing map for city \"" @ %this.targetCity @ "\"");
-            "Map".openToTabName();
-            %this.targetCity.selectCity();
+            geTGF.openToTabName("Map");
+            WorldMap.selectCity(%this.targetCity);
         }
     }
     if ((0.0 == stricmp(%this.targetType, "apartment"))) {
@@ -448,8 +440,8 @@ function vurlOperation(%line, %ignoreDownloadStatus) {
         %ignoreDownloadStatus = 0;
     }
     log("network", "debug", "vurlOperation, vurl=\"" @ %line @ "\"");
-    %vurl = new ""();;
-    ScriptObject;
+    %vurl = new ScriptObject("");;
+    0;
     %vurl.bindClassName("VURL");
     %vurl.setIgnoreDownloadStatus(%ignoreDownloadStatus);
     if (%vurl.setVURL(%line)) {
@@ -464,8 +456,8 @@ function vurlOperation(%line, %ignoreDownloadStatus) {
 };
 function vurlClearResolutionAndExecute(%line) {
     log("network", "debug", "vurlClearResolutionAndExecute, vurl=\"" @ %line @ "\"");
-    %vurl = new ""();;
-    ScriptObject;
+    %vurl = new ScriptObject("");;
+    0;
     %vurl.bindClassName("VURL");
     if (%vurl.setVURL(%line)) {
         %vurl.clearResolution();
@@ -485,9 +477,8 @@ function vurlClearResolution(%line) {
     return %line;
 };
 function vurlGetParsedVurl(%aVurlString) {
-    0;
-    %theVurl = new ""() {
-        class = ScriptObject @ "VURL";
+    %theVurl = new ScriptObject("") {
+        class = 0 @ "VURL";
     };
     if (%theVurl.setVURL(%aVurlString)) {
         log("login", "debug", getScopeName() @ " " @ "- parsed VURL");

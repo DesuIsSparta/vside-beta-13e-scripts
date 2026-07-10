@@ -15,7 +15,7 @@ function ImageFrameBase::onImageTagChanged(%this, %newUrl) {
         if (CustomSpaceClient::isOwner()) {
             %playerName = %this.getImageTag();
             InfoPopupDlg.close();
-            %playerName.showInfoFor();
+            InfoPopupDlg.showInfoFor(%playerName);
             InfoPopupDlg.open();
         }
     }
@@ -23,10 +23,10 @@ function ImageFrameBase::onImageTagChanged(%this, %newUrl) {
 function ImageFrameBase::getImageTagType(%this, %imageTag) {
     %this.imageKey = "";
     %this.type = "";
-    %urlinfo = new ""();;
-    ScriptObject;
+    %urlinfo = new ScriptObject("");;
+    0;
     %urlinfo.bindClassName("URLInfo");
-    %urlinfo.url = 0 @ %imageTag;
+    %urlinfo.url = %imageTag;
     %bValidURL = %urlinfo.parse();
     if ((0.0 == %bValidURL)) {
         %urlinfo.delete();
@@ -87,17 +87,16 @@ function ImageFrameBase::onUse(%this) {
             if ((%this.url $= "")) {
                 return;
             }
-            %this.url.initWithURLAndTitle(%this.Caption);
+            LinkContextMenu.initWithURLAndTitle(%this.url, %this.Caption);
             LinkContextMenu.showAtCursor();
-            return LinkContextMenu;
+            return;
         }
         InfoPopupDlg.close();
-        %imageTag.showInfoFor();
+        InfoPopupDlg.showInfoFor(%imageTag);
         InfoPopupDlg.open();
-        return InfoPopupDlg;
+        return;
     }
-    $DlgPortraitSelect = MessageBoxTextEntryWithCancel(, , %this.getImageTag(), 0);
-    ImageFrameBase_SubmitPortrait;
+    $DlgPortraitSelect = MessageBoxTextEntryWithCancel(, , ImageFrameBase_SubmitPortrait, %this.getImageTag(), 0);
     $DlgPortraitSelect.textEntry.resize(8, 68, 284, 18);
     $DlgPortraitSelect.portrait = %this;
 };
@@ -127,15 +126,14 @@ function ImageFrameBase::onRightUse(%this) {
         if ((%this.url $= "")) {
             return;
         }
-        %this.url.initWithURLAndTitle(%this.Caption);
+        LinkContextMenu.initWithURLAndTitle(%this.url, %this.Caption);
         LinkContextMenu.showAtCursor();
-        return LinkContextMenu;
+        return;
     }
-    %info = %imageTag.get();
-    PlayerInfoMap;
+    %info = PlayerInfoMap.get(%imageTag);
     if (isObject(%info)) {
-        %imageTag.initWithPlayerName();
-        Canvas.getCursorPos().showAtPoint();
+        PlayerContextMenu.initWithPlayerName(%imageTag);
+        PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
     }
     requestPlayerInfoForWithCallback(%imageTag, "ImageFrameBase_gotInfoDoMenu", %this);
 };
@@ -200,7 +198,7 @@ function ImageFrameBase::downloadAndApplyImage(%this, %url) {
         return;
     }
     %this.expectedImageUrl = %url;
-    %url.applyUrl("dlMgrCallback_ImageFrameBase", "dlMgrErrorCallback_ImageFrameBase", %this, "");
+    dlMgr.applyUrl(%url, "dlMgrCallback_ImageFrameBase", "dlMgrErrorCallback_ImageFrameBase", %this, "");
 };
 function dlMgrCallback_ImageFrameBase(%dlItem, %unused) {
     %imageFrame = %dlItem.callbackData;
@@ -315,8 +313,7 @@ function dlMgrErrorCallback_ImageFrameBase(%dlItem) {
         if (($ImageFrameBase::Type_Event == %obj.type)) {
             %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDEVENT"], "[EVENT]", %imgTag);
         }
-        %info = %imgTag.get();
-        PlayerInfoMap;
+        %info = PlayerInfoMap.get(%imgTag);
         if (isObject(%info)) {
             %obj.showDefaultPlayerPortrait(%info);
         }
@@ -329,8 +326,8 @@ function dlMgrErrorCallback_ImageFrameBase(%dlItem) {
 };
 function ImageFrameBase_gotInfoDoMenu(%playerName, %info, %frame) {
     if (isObject(%info)) {
-        %playerName.initWithPlayerName();
-        Canvas.getCursorPos().showAtPoint();
+        PlayerContextMenu.initWithPlayerName(%playerName);
+        PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
     }
 };
 function ImageFrameBase_gotInfoPlayerSex(%playerName, %info, %frame) {

@@ -10,8 +10,7 @@ function waitAFrameAndEval_checkIfNextFrame(%script) {
         waitAFrameAndEval_waitedAFrame(%script);
     }
     cancel($gWaitAFrameAndEval_Timer);
-    $gWaitAFrameAndEval_Timer = schedule(10, 0, %script);
-    waitAFrameAndEval_checkIfNextFrame;
+    $gWaitAFrameAndEval_Timer = schedule(10, 0, waitAFrameAndEval_checkIfNextFrame, %script);
 };
 function waitAFrameAndEval_waitedAFrame(%script) {
     eval(%script);

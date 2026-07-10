@@ -28,9 +28,8 @@ function TabbedTextControl::addLine(%this, %fields) {
     %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
     if ((%numFields < %i)) {
-        %line.field.setText(getField(%fields, %i));
+        %i.setText(%line.field, getField(%fields, %i));
         %i = (1.0 + %i);
-        %i;
     }
     %line.command = (%numFields < %i) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
@@ -40,9 +39,8 @@ function TabbedTextControl::addLineNoReseat(%this, %fields) {
     %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
     if ((%numFields < %i)) {
-        %line.field.setText(getField(%fields, %i));
+        %i.setText(%line.field, getField(%fields, %i));
         %i = (1.0 + %i);
-        %i;
     }
     %line.command = (%numFields < %i) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
@@ -58,18 +56,16 @@ function TabbedTextControl::onCreatedChild(%this, %child) {
     %i = 0;
     if ((%numFields < %i)) {
         %fieldWidth = getWord(%this.fieldWidths, %i);
-        0;
-        %child.field = new ""() {
-            profile = GuiMLTextCtrl @ %this.menuTextProfile;
+        %child.field = new GuiMLTextCtrl("") {
+            profile = 0 @ %this.menuTextProfile;
             position = %xoffset @ " " @ %this.paddingAboveText;
             extent = %fieldWidth @ " " @ 20;
             lineSpacing = 1;
             allowColorChars = 1;
             stripTagsOnCopy = 1;
         }; @ %i
-        %child.add(%child.field);
+        %child.add(%i, %child.field);
         %xoffset = ((%this.Padding + %fieldWidth) + %xoffset);
-        %i;
         %i = (1.0 + %i);
     }
     %child.bindClassName("MenuItem");

@@ -15,24 +15,23 @@ function Player::playAnimPreRoll(%this, %anim, %preRollMS) {
 };
 function Player::initGlobalFields(%this) {
     %this.globalFieldsInited = 1;
-    gSetField(%this, "");
-    gSetField(%this, "");
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
+    gSetField(%this, previousAnimName, "");
+    gSetField(%this, lastTypingSomethingText, "");
+    gSetField(%this, puppyOwner, 0);
+    gSetField(%this, puppyTimer, 0);
+    gSetField(%this, reportTriggers, 0);
+    gSetField(%this, triggerSet, 0);
     %snoopers = safeNewScriptObject("SimSet", "", 0);
-    triggerSet;
-    gSetField(%this, %snoopers);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, "");
-    gSetField(%this, 0);
+    gSetField(%this, snoopers, %snoopers);
+    gSetField(%this, isScaling, 0);
+    gSetField(%this, SEAT_IDLE_SCHEDULE, 0);
+    gSetField(%this, SEAT_MAXUSE_SCHEDULE, 0);
+    gSetField(%this, genreOverride, "");
+    gSetField(%this, respektPoints, 0);
     gSetField(%this, "gameStateMap", "");
     gSetField(%this, "notifyRefuseWhispers", 1);
     gSetField(%this, "lastActiveTime", -(1.0));
-    gSetField(%this, 0);
+    gSetField(%this, answeringHelpMe, 0);
     gSetField(%this, "mapCtrl", "");
     gSetField(%this, "IsNoLongerTypingTimer", "");
     gSetField(%this, "TimeoutChatPreviewTimer", "");
@@ -40,32 +39,31 @@ function Player::initGlobalFields(%this) {
 };
 function Player::destroyGlobalFields(%this) {
     %this.globalFieldsInited = 0;
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
+    gSetField(%this, previousAnimName, 0);
+    gSetField(%this, lastTypingSomethingText, 0);
+    gSetField(%this, puppyOwner, 0);
+    gSetField(%this, puppyTimer, 0);
+    gSetField(%this, reportTriggers, 0);
     %x = gGetField(%this);
     triggerSet;
     if (isObject(%x)) {
         %x.delete();
     }
-    gSetField(%this, 0);
-    gGetField(%this).delete();
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, 0);
-    gSetField(%this, "");
-    gSetField(%this, 0);
+    gSetField(%this, triggerSet, 0);
+    snoopers.delete(gGetField(%this));
+    gSetField(%this, snoopers, 0);
+    gSetField(%this, isScaling, 0);
+    gSetField(%this, SEAT_IDLE_SCHEDULE, 0);
+    gSetField(%this, SEAT_MAXUSE_SCHEDULE, 0);
+    gSetField(%this, genreOverride, "");
+    gSetField(%this, respektPoints, 0);
     gSetField(%this, "notifyRefuseWhispers", 0);
     %x = gGetField(%this, "gameStateMap");
-    respektPoints;
     if (isObject(%x)) {
         %x.delete();
     }
     gSetField(%this, "gameStateMap", "");
-    gSetField(%this, 0);
+    gSetField(%this, answeringHelpMe, 0);
     gSetField(%this, "mapCtrl", "");
     gSetField(%this, "IsNoLongerTypingTimer", "");
     gSetField(%this, "balancesAndScoresRevision", "");
@@ -79,11 +77,11 @@ function Player::onDelete(%this) {
     }
     %this.removeFromPlayerInstanceDict();
     if (isObject(geMapHud2DTheOrthoMap)) {
-        %this.playerRemove();
+        geMapHud2DTheOrthoMap.playerRemove(%this);
     }
     %this.destroyGlobalFields();
     if (isObject(gUserPropMgrServer)) {
-        %this.getShapeName().forgetProperties();
+        gUserPropMgrServer.forgetProperties(%this.getShapeName());
     }
 };
 function Player::isInHelpMeMode(%this) {

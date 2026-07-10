@@ -514,10 +514,10 @@ datablock PlayerData(PlayerM : PlayerBody) {
     wardrobeInitFunc = "wardrobeInitM()";
 };
 function armor::onAdd(%this, %obj) {
-    gSetField(%this, 1);
+    gSetField(%this, mountVehicle, 1);
     %obj.setRechargeRate(%this.rechargeRate);
     %obj.setRepairRate(0);
-    return mountVehicle;
+    return;
 };
 function armor::onRemove(%this, %obj) {
     if ((%obj == %obj.client.Player)) {
@@ -537,8 +537,8 @@ function armor::onNewDataBlock(%this, %obj) {
 function armor::onMount(%this, %obj, %vehicle, %node) {
     if ((0.0 == %node)) {
         %obj.setTransform("0 0 0 0 0 1 0");
-        %obj.setActionThread(%vehicle.getDataBlock().mountPose, 1, 1);
-        %obj.lastWeapon = %node @ %obj.getMountedImage($WeaponSlot);
+        %obj.setActionThread(%node, %vehicle.getDataBlock().mountPose, 1, 1);
+        %obj.lastWeapon = %obj.getMountedImage($WeaponSlot);
         %obj.unmountImage($WeaponSlot);
         %obj.setControlObject(%vehicle);
         %obj.client.setObjectActiveImage(%vehicle, 2);
@@ -581,12 +581,12 @@ function armor::doDismount(%this, %obj, %forced) {
         %pos = %oldPos;
         (%numAttempts < %i);
     }
-    gSetField(%this, 0);
+    gSetField(%this, mountVehicle, 0);
     %obj.schedule(4000, "mountVehicles", 1);
     %obj.setTransform(%pos);
     %obj.applyImpulse(%pos, VectorScale(%impulseVec, %obj.getDataBlock().mass));
     %obj.setPilot(0);
-    %obj.vehicleTurret = mountVehicle @ "";
+    %obj.vehicleTurret = "";
     return;
 };
 function armor::onCollision(%this, %obj, %col) {
@@ -701,8 +701,8 @@ function Player::kill(%this, %damageType) {
     return;
 };
 function Player::mountVehicles(%this, %bool) {
-    gSetField(%this, %bool);
-    return mountVehicle;
+    gSetField(%this, mountVehicle, %bool);
+    return;
 };
 function Player::isPilot(%this) {
     %vehicle = %this.getObjectMount();
@@ -751,8 +751,8 @@ function Player::dancePulse(%player) {
     if ((0.0 <= %player.danceTimeRemaining)) {
         echo("choosing new dance");
         %dNum = getRandom(0, (1.0 - %player.danceObj.count));
-        %player.setActionThread(%player.danceObj.anim, 0, 1, (1000.0 @ %dNum / %player.danceObj.transition));
-        %player.danceTimeRemaining = %dNum @ %dNum @ %player.danceObj.time;
+        %player.setActionThread(%dNum, %player.danceObj.anim, 0, 1, (1000.0 @ %dNum / %player.danceObj.transition));
+        %player.danceTimeRemaining = %dNum @ %player.danceObj.time;
         echo("number " @ %dNum @ " chose anime" @ %dNum @ %player.danceObj.anim @ " for " @ %player.danceTimeRemaining @ " milliseconds");
     }
     %player.danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse");
@@ -765,8 +765,7 @@ function Player::startDance(%player) {
         %player.stopDance();
     }
     echo("setting up dance moves");
-    %player.danceObj = ScriptObject @ new ""();;
-    0;
+    %player.danceObj = 0 @ new ScriptObject("");;
     AddDance(%player.danceObj, "idl3a", 3000, 500);
     AddDance(%player.danceObj, "idl3b", 3000, 500);
     AddDance(%player.danceObj, "idl3c", 3000, 500);

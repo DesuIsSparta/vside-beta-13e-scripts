@@ -17,8 +17,7 @@ function CSBrowser::getMenuText(%this, %text) {
     return getField(strreplace(%text, "|", "\t"), 0);
 };
 function CSBrowser::getPathForSku(%this, %sku) {
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (!(isObject(%si))) {
         return "";
     }
@@ -33,8 +32,7 @@ function CSBrowser::getPathForSku(%this, %sku) {
     return %this.baseDir @ "\t" @ %path @ "\t" @ %name @ "|" @ %sku;
 };
 function CSBrowser::getPathsForSku(%this, %sku) {
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (!(isObject(%si))) {
         return "";
     }
@@ -64,8 +62,7 @@ function CSBrowser::getPathsForSku(%this, %sku) {
 };
 $CSBrowser::NewFurnishingPath = "New Items";
 function CSBrowser::getAddlPathsForSku(%this, %sku) {
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (!(isObject(%si))) {
         return;
     }
@@ -158,7 +155,7 @@ function CSBrowser::goToPath(%this, %path, %focus) {
     }
     if (!(%this.otherBrowsersVisible())) {
         %this.button.command = (%count < %i) @ %this.getId() @ ".switchToOtherBrowser();" @ 0;
-        %this.button.setActive(1);
+        0.setActive(%this.button, 1);
     }
 };
 $CSBrowser::NewFurnishingIconBitmap = "platform/client/ui/new_logo_small";
@@ -167,8 +164,7 @@ function CSBrowser::modifyListViewForSku(%this, %sku, %menuItem) {
     %leftIcon = %menuItem.leftIcon;
     %rightIcon = %menuItem.rightIcon;
     if (!(%sku $= "")) {
-        %si = %sku.findBySku();
-        SkuManager;
+        %si = SkuManager.findBySku(%sku);
         %rIconBmp = "";
         if ((%si.brand $= "new")) {
             %rIconBmp = $CSBrowser::NewFurnishingIconBitmap;
@@ -191,9 +187,8 @@ function CSBrowser::onCreatedChild(%this, %child, %x, %y) {
 };
 function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y) {
     Parent::onCreatedChild(%this, %child, %x, %y);
-    0;
-    %child.rightIcon = new ""() {
-        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+    %child.rightIcon = new GuiBitmapCtrl("") {
+        profile = 0 @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = mMax((24.0 - getWord(%child.getExtent(), 0)), 0) @ " " @ 0;
@@ -204,9 +199,8 @@ function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y) {
         bitmap = "";
     };
     %child.add(%child.rightIcon);
-    0;
-    %child.leftIcon = new ""() {
-        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+    %child.leftIcon = new GuiBitmapCtrl("") {
+        profile = 0 @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -225,7 +219,7 @@ function CSBrowserNextPrevLink::onURL(%this, %url) {
     return;
     if ((%dir $= "prev")) {
     }
-    %this.browser.selectNextLeaf(1, 0);
+    %this.browser.selectNextLeaf(-(1.0), 1, 0);
 };
 function CSBrowser::fillLeafPane(%this, %pane) {
     %desc = getField(%this.Path, (1.0 - %this.level));
@@ -239,15 +233,13 @@ function CSBrowser::fillLeafPane(%this, %pane) {
     %paneHeight = getWord(%pane.getExtent(), 1);
     %sku = getSubStr(strchr(getField(%this.Path, (1.0 - %this.level)), "|"), 1);
     if (!(%sku $= "")) {
-        %si = %sku.findBySku();
-        SkuManager;
+        %si = SkuManager.findBySku(%sku);
         if ((%si.brand $= "new")) {
             %desc = %desc @ "\n" @ "<spush><color:ff0000>New!<spop>";
         }
     }
-    0;
-    %itemText = new ""() {
-        profile = GuiMLTextCtrl @ "H2Profile";
+    %itemText = new GuiMLTextCtrl("") {
+        profile = 0 @ "H2Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "5 0";
@@ -263,9 +255,8 @@ function CSBrowser::fillLeafPane(%this, %pane) {
     %pane.add(%itemText);
     %pane.itemText = %itemText;
     %itemText.forceReflow();
-    0;
-    %nextPrevText = new ""() {
-        class = GuiMLTextCtrl @ "CSBrowserNextPrevLink";
+    %nextPrevText = new GuiMLTextCtrl("") {
+        class = 0 @ "CSBrowserNextPrevLink";
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -293,8 +284,7 @@ function CSBrowser::ShowMoreFor(%this, %sku) {
     if ((%sku $= "")) {
         return;
     }
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (!(isObject(%si))) {
         return;
     }
@@ -324,8 +314,7 @@ function CSBrowser::isNodeExpanded(%this, %path) {
     if ((%sku $= "")) {
         return 0;
     }
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (!(%si.descLong $= "")) {
     }
     return (1.0 == %this.getFieldValue("showMoreInfo"));
@@ -340,15 +329,13 @@ function CSBrowser::fillExpandedContentPane(%this, %expandedPane) {
         warn(getScopeName() @ "-> couldn't parse sku from path");
         return;
     }
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (!(isObject(%si))) {
         warn(getScopeName() @ "-> couldn't find sku = " @ %sku @ " in skumanager!");
         return;
     }
-    0;
-    %descText = new ""() {
-        position = GuiMLTextCtrl @ %rightEdgeOfContentPane @ " " @ %bottomOfItemText;
+    %descText = new GuiMLTextCtrl("") {
+        position = 0 @ %rightEdgeOfContentPane @ " " @ %bottomOfItemText;
         extent = (5.0 - (%rightEdgeOfContentPane - getWord(%expandedPane.getExtent(), 0))) @ " " @ 18;
         text = "<color:ffffff><spush><color:00ff00>" @ %si.descShrt @ "<spop>\n" @ %si.descLong;
         visible = 1;

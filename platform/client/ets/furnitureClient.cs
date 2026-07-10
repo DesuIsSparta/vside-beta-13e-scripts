@@ -1,7 +1,6 @@
-$Player::furnitureInventory = new ""();;
-Array;
-$Player::bFakeFurnitureInventory = 0;
+$Player::furnitureInventory = new Array("");;
 0;
+$Player::bFakeFurnitureInventory = 0;
 function getFurnitureSkus() {
     %count = $Player::furnitureInventory.count();
     %skulist = "";
@@ -167,8 +166,7 @@ function dumpFurniture() {
     if ((%count < %index)) {
         %val = $Player::furnitureInventory.getValue(%index);
         %sku = $Player::furnitureInventory.getKey(%index);
-        %si = %sku.findBySku();
-        SkuManager;
+        %si = SkuManager.findBySku(%sku);
         echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si.descShrt @ ")");
         %index = (1.0 + %index);
     }
@@ -181,8 +179,7 @@ function dumpFurnitureInUse() {
         %sku = $Player::furnitureInventory.getKey(%index);
         %numInUse = getWord(%val, 1);
         if ((0.0 > %numInUse)) {
-            %si = %sku.findBySku();
-            SkuManager;
+            %si = SkuManager.findBySku(%sku);
             echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si.descShrt @ ")");
         }
         %index = (1.0 + %index);
@@ -199,10 +196,9 @@ function getOwnedFurniture() {
         return;
     }
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/GetUserInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "skuType=furnishing";
-    MissionCleanup;
     log("network", "debug", "FurnitureRequest: " @ %url);
     %request.setURL(%url);
     if ($StandAlone) {
@@ -319,8 +315,7 @@ function clientCmdGotNuggetGhostList(%ghostchunk, %requestId, %completed) {
     if (!(%ghostlist $= "")) {
         %ghostID = firstWord(%ghostlist);
         %ghostlist = restWords(%ghostlist);
-        %objID = %ghostID.resolveGhostID();
-        ServerConnection;
+        %objID = ServerConnection.resolveGhostID(%ghostID);
         %objectList = %objectList @ " " @ %objID;
     }
     %objectList = trim(%objectList);
@@ -330,8 +325,7 @@ function clientCmdGotNuggetGhostList(%ghostchunk, %requestId, %completed) {
 };
 function FurnitureRequest::fakeOnDone(%this) {
     %this.putValue("status", "success");
-    %fakeInventory = "furnishing".getSkusType();
-    SkuManager;
+    %fakeInventory = SkuManager.getSkusType("furnishing");
     %count = getWordCount(%fakeInventory);
     %this.putValue("itemsCount", %count);
     %idx = 0;

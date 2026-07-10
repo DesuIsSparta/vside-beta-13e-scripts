@@ -12,14 +12,13 @@ function recordingsDlg::onWake() {
         }
         %file = findNextFile(%filespec);
     }
-    0.sort();
-    0.setSelectedRow();
-    0.scrollVisible();
+    RecordingsDlgList.sort(0);
+    RecordingsDlgList.setSelectedRow(0);
+    RecordingsDlgList.scrollVisible(0);
 };
 function StartSelectedDemo() {
     %sel = RecordingsDlgList.getSelectedId();
-    %rowText = %sel.getRowTextById();
-    RecordingsDlgList;
+    %rowText = RecordingsDlgList.getRowTextById(%sel);
     %file = $currentMod @ "/recordings/" @ getField(%rowText, 0) @ ".rec";
     new GameConnection(ServerConnection);
     ServerConnection.setCommonPreconnectClientSettings("");
@@ -57,24 +56,23 @@ function startDemoRecord() {
         return (1000.0 < %i);
     }
     $DemoFileName = %file;
-    "\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
+    ChatHud.addLine("\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].");
     ServerConnection.prepDemoRecord();
-    $DemoFileName.startRecording();
+    ServerConnection.startRecording($DemoFileName);
     if (!(ServerConnection.isDemoRecording())) {
         deleteFile($DemoFileName);
-        "\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
+        ChatHud.addLine("\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].");
         $DemoFileName = "";
-        ChatHud;
     }
 };
 function stopDemoRecord() {
     if (ServerConnection.isDemoRecording()) {
-        "\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.".addLine();
+        ChatHud.addLine("\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.");
         ServerConnection.stopRecording();
     }
 };
 function demoPlaybackComplete() {
     disconnect();
-    "MainMenuGui".setContent();
-    0.pushDialog();
+    Canvas.setContent("MainMenuGui");
+    Canvas.pushDialog(recordingsDlg, 0);
 };

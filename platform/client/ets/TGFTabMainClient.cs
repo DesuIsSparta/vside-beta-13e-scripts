@@ -6,9 +6,8 @@ function geTGF_tabs::fillTabMain(%this) {
     }
     %tab.filled = 1;
     %this.fillTabGeneric(%tab);
-    0;
-    %ctrl = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %ctrl = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "685 4";
@@ -16,13 +15,6 @@ function geTGF_tabs::fillTabMain(%this) {
         bitmap = "platform/client/ui/tgf/tgf_bkgd_rightside";
     };
     %tab.add(%ctrl);
-    new ""() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
-        position = "0 0";
-        extent = "100 100";
-        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
-        command = "geTGF.onProfile();";
-    };
     %ctrl = new GuiBitmapCtrl(geTGF_profilePic) {
         profile = "GuiDefaultProfile";
         horizSizing = "left";
@@ -31,85 +23,119 @@ function geTGF_tabs::fillTabMain(%this) {
         extent = "100 100";
         bitmap = "platform/client/ui/tgf/tgf_profile_default";
     };
-    new ""() {
-        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+    new GuiMLTextCtrl("") {
+        profile = new GuiBitmapButtonCtrl("") {
+        profile = "GuiDefaultProfile";
+        position = "0 0";
+        extent = "100 100";
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
+        command = "geTGF.onProfile();";
+    }; @ "ETSNonModalProfile";
         position = "3 81";
         extent = "100 21";
         text = mlStyle("My Profile", "tgfWebLink_Light");
     };
     %tab.add(%ctrl);
-    0;
-    new ""() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
-        position = "0 0";
-        extent = "100 100";
-        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
-        command = "geTGF.onEventsCalendar();";
-    };
-    %ctrl = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %ctrl = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "left";
         vertSizing = "top";
         position = "828 310";
         extent = "100 100";
         bitmap = "platform/client/ui/tgf/tgf_events";
     };
-    new ""() {
-        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+    new GuiMLTextCtrl("") {
+        profile = new GuiBitmapButtonCtrl("") {
+        profile = "GuiDefaultProfile";
+        position = "0 0";
+        extent = "100 100";
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
+        command = "geTGF.onEventsCalendar();";
+    }; @ "ETSNonModalProfile";
         position = "3 81";
         extent = "100 21";
         text = mlStyle("Calendar", "tgfWebLink_Light");
     };
     %tab.add(%ctrl);
-    0;
-    new ""() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
-        position = "0 0";
-        extent = "100 50";
-        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x50";
-        command = "geTGF.onForums();";
-    };
-    %ctrl = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %ctrl = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "left";
         vertSizing = "top";
         position = "708 431";
         extent = "100 50";
         bitmap = "platform/client/ui/tgf/tgf_forums";
     };
-    new ""() {
-        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+    new GuiMLTextCtrl("") {
+        profile = new GuiBitmapButtonCtrl("") {
+        profile = "GuiDefaultProfile";
+        position = "0 0";
+        extent = "100 50";
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x50";
+        command = "geTGF.onForums();";
+    }; @ "ETSNonModalProfile";
         position = "3 31";
         extent = "100 21";
         text = mlStyle("Forums", "tgfWebLink_Light");
     };
     %tab.add(%ctrl);
-    0;
-    new ""() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
-        position = "0 0";
-        extent = "100 50";
-        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x50";
-        command = "geTGF.onFaq();";
-    };
-    %ctrl = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %ctrl = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "left";
         vertSizing = "top";
         position = "828 431";
         extent = "100 50";
         bitmap = "platform/client/ui/tgf/tgf_faq";
     };
-    new ""() {
-        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+    new GuiMLTextCtrl("") {
+        profile = new GuiBitmapButtonCtrl("") {
+        profile = "GuiDefaultProfile";
+        position = "0 0";
+        extent = "100 50";
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x50";
+        command = "geTGF.onFaq();";
+    }; @ "ETSNonModalProfile";
         position = "3 31";
         extent = "100 21";
         text = mlStyle("FAQs", "tgfWebLink_Light");
     };
     %tab.add(%ctrl);
-    new GuiTextCtrl(AccountBalanceVPointsText) {
-        profile = new ""() {
-        profile = GuiVariableWidthButtonCtrl @ "VPointsButtonProfile";
+    %ctrl = new GuiBitmapCtrl(geTGF_main_BalancesContainer) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "width";
+        vertSizing = "height";
+        position = "687 8";
+        extent = "268 68";
+        bitmap = "platform/client/ui/tgf/tgf_main_balances_background";
+    };
+    new GuiControl(AccountBalanceContents) {
+        profile = new GuiMLTextCtrl(geTGF_main_OfflineIncomeNotification) {
+        horizSizing = new GuiMLTextCtrl("") {
+        profile = "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "6 9";
+        extent = "117 16";
+        text = "Your Balances:";
+    }; @ "right";
+        vertSizing = "bottom";
+        position = "6 37";
+        extent = "257 36";
+        style = "tgf_General_Medium";
+    }; @ ETSNonModalProfile;
+        horizSizing = "left";
+        vertSizing = "bottom";
+        position = "108 0";
+        extent = "162 39";
+    };
+    %tab.add(%ctrl);
+    %ctrl = new GuiBitmapCtrl(MOTDHud) {
+        profile = new GuiControl(AccountBalancePBContainer) {
+        profile = new GuiBitmapCtrl("") {
+        profile = new GuiTextCtrl(AccountBalanceVBuxText) {
+        profile = new GuiVariableWidthButtonCtrl("") {
+        profile = new GuiTextCtrl(AccountBalanceVPointsText) {
+        profile = new GuiVariableWidthButtonCtrl("") {
+        profile = "VPointsButtonProfile";
         horizSizing = "left";
         vertSizing = "bottom";
         position = "6 5";
@@ -132,10 +158,7 @@ function geTGF_tabs::fillTabMain(%this) {
         visible = 1;
         text = "";
         maxLength = 255;
-    };
-    new GuiTextCtrl(AccountBalanceVBuxText) {
-        profile = new ""() {
-        profile = GuiVariableWidthButtonCtrl @ "VBuxButtonProfile";
+    }; @ "VBuxButtonProfile";
         horizSizing = "left";
         vertSizing = "bottom";
         position = "93 5";
@@ -158,40 +181,7 @@ function geTGF_tabs::fillTabMain(%this) {
         visible = 1;
         text = "";
         maxLength = 255;
-    };
-    %ctrl = new GuiBitmapCtrl(geTGF_main_BalancesContainer) {
-        profile = "GuiDefaultProfile";
-        horizSizing = "width";
-        vertSizing = "height";
-        position = "687 8";
-        extent = "268 68";
-        bitmap = "platform/client/ui/tgf/tgf_main_balances_background";
-    };
-    new GuiControl(AccountBalanceContents) {
-        profile = new GuiMLTextCtrl(geTGF_main_OfflineIncomeNotification) {
-        horizSizing = new ""() {
-        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "6 9";
-        extent = "117 16";
-        text = "Your Balances:";
-    }; @ "right";
-        vertSizing = "bottom";
-        position = "6 37";
-        extent = "257 36";
-        style = "tgf_General_Medium";
-    }; @ ETSNonModalProfile;
-        horizSizing = "left";
-        vertSizing = "bottom";
-        position = "108 0";
-        extent = "162 39";
-    };
-    %tab.add(%ctrl);
-    %ctrl = new GuiBitmapCtrl(MOTDHud) {
-        profile = new GuiControl(AccountBalancePBContainer) {
-        profile = new ""() {
-        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+    }; @ "ETSNonModalProfile";
         horizSizing = "left";
         vertSizing = "bottom";
         position = "6 29";
@@ -217,8 +207,8 @@ function geTGF_tabs::fillTabMain(%this) {
         visible = 1;
         bitmap = "platform/client/ui/motdBackground";
     };
-    new ""() {
-        profile = GuiScrollCtrl @ "DottedScrollDarkProfile";
+    new GuiScrollCtrl("") {
+        profile = "DottedScrollDarkProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 -1";
@@ -262,27 +252,15 @@ function geTGF_tabs::fillTabMain(%this) {
         };
         %tab.add(%ctrl);
     }
-    0;
-    %ctrl = new ""() {
-        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+    %ctrl = new GuiBitmapCtrl("") {
+        profile = 0 @ "ETSNonModalProfile";
         bitmap = "platform/client/ui/tgf/tgf_main_sectionOutlines";
         position = "0 0";
         extent = "685 498";
     };
     %tab.add(%ctrl);
-    0;
-    new GuiArray2Ctrl(geTGF_main_happenings) {
-        profile = "EtsNonModalProfile";
-        position = "0 0";
-        extent = "580 340";
-        inRows = 0;
-        numRowsOrCols = 3;
-        childrenClassName = "GuiControl";
-        childrenExtent = "190 109";
-        spacing = 4;
-    };
-    %ctrl = new ""() {
-        profile = GuiScrollCtrl @ "DottedScrollProfile";
+    %ctrl = new GuiScrollCtrl("") {
+        profile = 0 @ "DottedScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "71 15";
@@ -294,8 +272,17 @@ function geTGF_tabs::fillTabMain(%this) {
         saneDrag = 1;
         scrollMultiplier = 1;
     };
-    new ""() {
-        internalName = GuiMLTextCtrl @ "emptyText";
+    new GuiMLTextCtrl("") {
+        internalName = new GuiArray2Ctrl(geTGF_main_happenings) {
+        profile = "EtsNonModalProfile";
+        position = "0 0";
+        extent = "580 340";
+        inRows = 0;
+        numRowsOrCols = 3;
+        childrenClassName = "GuiControl";
+        childrenExtent = "190 109";
+        spacing = 4;
+    }; @ "emptyText";
         profile = "ETSNonModalProfile";
         position = "5 5";
         extent = 300;
@@ -303,8 +290,31 @@ function geTGF_tabs::fillTabMain(%this) {
         textLoading = mlStyle("<just:left>" @ "fetching.." @ "<just:right>", "tgfItem_Happening");
     };
     %tab.add(%ctrl);
-    new ""() {
-        profile = GuiScrollCtrl @ "DottedScrollProfile";
+    new GuiMLTextCtrl(geTGF_main_people_locationsText) {
+        position = "3 2";
+        extent = "164 1";
+        style = "tgfPeopleCounts";
+        lineSpacing = -(1.0);
+        stripGamelink = 1;
+    };
+    new GuiMLTextCtrl("") {
+        position = "1 1";
+        extent = "168 1";
+        style = "";
+        lineSpacing = -(1.0);
+        stripGamelink = 1;
+        text = mlStyle(, "tgfMainInvite");
+    };
+    %ctrl = new GuiControl(geTGF_main_people) {
+        profile = "EtsNonModalProfile";
+        position = "40 367";
+        extent = "625 129";
+    };
+    new GuiMLTextCtrl("") {
+        internalName = new GuiControl(geTGF_main_PeopleGoRound_Container) {
+        profile = new GuiControl("") {
+        profile = new GuiScrollCtrl("") {
+        profile = "DottedScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "1 1";
@@ -316,37 +326,13 @@ function geTGF_tabs::fillTabMain(%this) {
         saneDrag = 1;
         scrollMultiplier = 1;
         stickyBottom = 0;
-    };
-    new ""() {
-        position = GuiMLTextCtrl @ "1 1";
-        extent = "168 1";
-        style = "";
-        lineSpacing = -(1.0);
-        stripGamelink = 1;
-        text = mlStyle(, "tgfMainInvite");
-    };
-    new GuiControl(geTGF_main_PeopleGoRound_Container) {
-        profile = new ""() {
-        profile = GuiControl @ EtsNotQuiteSoDarkBorderlessBoxProfile;
-        position = new GuiMLTextCtrl(geTGF_main_people_locationsText) {
-        position = "3 2";
-        extent = "164 1";
-        style = "tgfPeopleCounts";
-        lineSpacing = -(1.0);
-        stripGamelink = 1;
-    }; @ "1 96";
+    }; @ EtsNotQuiteSoDarkBorderlessBoxProfile;
+        position = "1 96";
         extent = "170 31";
     }; @ "ETSNonModalProfile";
         position = "158 2";
         extent = "467 125";
-    };
-    %ctrl = new GuiControl(geTGF_main_people) {
-        profile = "EtsNonModalProfile";
-        position = "40 367";
-        extent = "625 129";
-    };
-    new ""() {
-        internalName = GuiMLTextCtrl @ "emptyText";
+    }; @ "emptyText";
         profile = "ETSNonModalProfile";
         position = "2 2";
         extent = "300 10";
@@ -354,9 +340,8 @@ function geTGF_tabs::fillTabMain(%this) {
         textLoading = mlStyle("<just:left>" @ "fetching..", "tgfItem_Happening");
     };
     %tab.add(%ctrl);
-    0;
-    %ctrl = new ""() {
-        profile = GuiVariableWidthButtonCtrl @ "BracketButtonLt19Profile";
+    %ctrl = new GuiVariableWidthButtonCtrl("") {
+        profile = 0 @ "BracketButtonLt19Profile";
         position = "5 86";
         extent = "50 19";
         command = "geTGF.main_testData_happenings();";
@@ -366,9 +351,9 @@ function geTGF_tabs::fillTabMain(%this) {
     %tab.add(%ctrl);
 };
 function geTGF_tabs::onShowTabMain(%this) {
-    cancel(geTGF_Refresh_Schedule);
-    1.setActive();
-    1.setVisible();
+    cancel(geTGF, geTGF_Refresh_Schedule);
+    geTGF_Refresh.setActive(1);
+    geTGF_Refresh.setVisible(1);
 };
 function geTGF::main_testData_happenings(%this) {
     %requestName = "request_GetMainHappenings";
@@ -457,24 +442,21 @@ function geTGF_tabs::refreshTabMain(%this) {
     %tab = %this.getTabWithName(%tabName);
     %this.refreshQOTD();
     if (!(geTGF_tabs @ " " @ %statusTextCtrl.previousProfileName $= $Player::Name)) {
-        "platform/client/ui/tgf/tgf_profile_default".setBitmap();
+        geTGF_profilePic.setBitmap("platform/client/ui/tgf/tgf_profile_default");
         geTGF_profilePic.fitInParentAsBitmap();
     }
     %statusTextCtrl.previousProfileName = $Player::Name @ geTGF_tabs;
-    geTGF_profilePic;
     %url = $Net::AvatarURL @ urlEncode($Player::Name) @ "?size=M";
-    %url.downloadAndApplyBitmap();
+    geTGF_profilePic.downloadAndApplyBitmap(%url);
     geTGF.main_sendRequests();
 };
 function geTGF::main_sendRequests(%this) {
-    %statusTextCtrl = "emptyText".child(1);
-    geTGF_main_people;
+    %statusTextCtrl = geTGF_main_people.child("emptyText", 1);
     %text = %statusTextCtrl.textLoading;
     %statusTextCtrl.setText(%text);
     sendRequest_GetOnlineUsers(60, "onDoneOrErrorCallback_GetOnlineUsers");
-    "".setText();
+    geTGF_main_people_locationsText.setText("");
     %statusTextCtrl = geTGF_main_happenings.getParent().child("emptyText", 1);
-    geTGF_main_people_locationsText;
     %text = %statusTextCtrl.textLoading;
     %statusTextCtrl.setText(%text);
     sendRequest_GetMainHappenings(9, "onDoneOrErrorCallback_GetMainHappenings");
@@ -482,16 +464,15 @@ function geTGF::main_sendRequests(%this) {
 };
 function onDoneOrErrorCallback_GetMainHappenings(%request, %unused) {
     if ((geTGF_tabs.getCurrentTab().name $= "main")) {
-        cancel(geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        1.setActive();
+        cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
+        geTGF_Refresh.setActive(1);
     }
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %itemType = "happening";
-    geTGF_Refresh;
-    "main".clearItemList(%itemType);
+    geTGF.clearItemList("main", %itemType);
     if (!(%request.checkSuccess())) {
-        %itemType.main_onGotDataOfType();
-        return geTGF;
+        geTGF.main_onGotDataOfType(%itemType);
+        return;
     }
     %listBase = "happenings";
     %count = %request.getResult(%listBase @ "Count");
@@ -499,8 +480,7 @@ function onDoneOrErrorCallback_GetMainHappenings(%request, %unused) {
     if ((%count < %n)) {
         %listItem = %listBase @ %n;
         %id = %request.getResult(%listItem @ ".hostUserName");
-        %item = "main".createNewItem(%itemType, %id);
-        geTGF;
+        %item = geTGF.createNewItem("main", %itemType, %id);
         %request.copyListValueIntoObject(%item, %listItem, "accessMode");
         %request.copyListValueIntoObject(%item, %listItem, "occupancy");
         %request.copyListValueIntoObject(%item, %listItem, "baseImageURL");
@@ -519,21 +499,20 @@ function onDoneOrErrorCallback_GetMainHappenings(%request, %unused) {
         %item.goThereVURL = vurlClearResolution(%item.goThereVURL);
         %n = (1.0 + %n);
     }
-    "main".removeItemsWithFieldValueFromList(%itemType, "hostUserName", "The-Manager");
-    %itemType.main_onGotDataOfType();
+    geTGF.removeItemsWithFieldValueFromList("main", %itemType, "hostUserName", "The-Manager");
+    geTGF.main_onGotDataOfType(%itemType);
 };
 function onDoneOrErrorCallback_GetOnlineFriends_Main(%request) {
     if ((geTGF_tabs.getCurrentTab().name $= "main")) {
-        cancel(geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        1.setActive();
+        cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
+        geTGF_Refresh.setActive(1);
     }
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %itemType = "person";
-    geTGF_Refresh;
-    "main".clearItemList(%itemType);
+    geTGF.clearItemList("main", %itemType);
     if (!(%request.checkSuccess())) {
-        %itemType.main_onGotDataOfType();
-        return geTGF;
+        geTGF.main_onGotDataOfType(%itemType);
+        return;
     }
     %listBase = "friends";
     %count = %request.getValue(%listBase @ "Count");
@@ -541,8 +520,7 @@ function onDoneOrErrorCallback_GetOnlineFriends_Main(%request) {
     if ((%count < %n)) {
         %listItem = %listBase @ %n;
         %id = %request.getValue(%listItem @ ".userName");
-        %item = "main".createNewItem(%itemType, %id);
-        geTGF;
+        %item = geTGF.createNewItem("main", %itemType, %id);
         %request.copyListValueIntoObject(%item, %listItem, "age");
         %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
         %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
@@ -565,18 +543,17 @@ function onDoneOrErrorCallback_GetOnlineFriends_Main(%request) {
         %item.goThereVURL = "vside:/user/" @ %item.userName;
         %n = (1.0 + %n);
     }
-    %itemType.main_onGotDataOfType();
+    geTGF.main_onGotDataOfType(%itemType);
 };
 function onDoneOrErrorCallback_GetOnlineUsers(%request) {
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
-    %statusTextCtrl = "emptyText".child(1);
-    geTGF_main_people;
+    %statusTextCtrl = geTGF_main_people.child("emptyText", 1);
     %statusTextCtrl.setText("");
     %itemType = "person";
-    "main".clearItemList(%itemType);
+    geTGF.clearItemList("main", %itemType);
     if (!(%request.checkSuccess())) {
-        %itemType.main_onGotDataOfType();
-        return geTGF;
+        geTGF.main_onGotDataOfType(%itemType);
+        return;
     }
     %listBase = "user";
     %count = %request.getValue(%listBase @ "Count");
@@ -584,8 +561,7 @@ function onDoneOrErrorCallback_GetOnlineUsers(%request) {
     if ((%count < %n)) {
         %listItem = %listBase @ %n;
         %id = %request.getValue(%listItem @ ".userName");
-        %item = "main".createNewItem(%itemType, %id);
-        geTGF;
+        %item = geTGF.createNewItem("main", %itemType, %id);
         %request.copyListValueIntoObject(%item, %listItem, "age");
         %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
         %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
@@ -608,22 +584,21 @@ function onDoneOrErrorCallback_GetOnlineUsers(%request) {
         %item.goThereVURL = "vside:/user/" @ %item.userName;
         %n = (1.0 + %n);
     }
-    %itemType.main_onGotDataOfType();
+    geTGF.main_onGotDataOfType(%itemType);
 };
 function onDoneOrErrorCallback_GetMainVenues(%request) {
     if ((geTGF_tabs.getCurrentTab().name $= "main")) {
-        cancel(geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        1.setActive();
+        cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
+        geTGF_Refresh.setActive(1);
     }
     log("network", "debug", "FAKE REQUEST: " @ getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %request.putValue("statusMsg", "fakeSuccess");
-    %request.timeFinish = geTGF_Refresh @ getSimTime();
-    geTGF;
+    %request.timeFinish = getSimTime();
     %itemType = "venue";
-    "main".clearItemList(%itemType);
+    geTGF.clearItemList("main", %itemType);
     if (!(%request.checkSuccess())) {
-        %itemType.main_onGotDataOfType();
-        return geTGF;
+        geTGF.main_onGotDataOfType(%itemType);
+        return;
     }
     %listBase = "venues";
     %count = %request.getValue(%listBase @ "Count");
@@ -631,8 +606,7 @@ function onDoneOrErrorCallback_GetMainVenues(%request) {
     if ((%count < %n)) {
         %listItem = %listBase @ %n;
         %id = %request.getValue(%listItem @ ".name");
-        %item = "main".createNewItem(%itemType, %id);
-        geTGF;
+        %item = geTGF.createNewItem("main", %itemType, %id);
         %request.copyListValueIntoObject(%item, %listItem, "codeName");
         %request.copyListValueIntoObject(%item, %listItem, "fullName");
         %request.copyListValueIntoObject(%item, %listItem, "location.areaName");
@@ -644,7 +618,7 @@ function onDoneOrErrorCallback_GetMainVenues(%request) {
         %request.copyListValueIntoObject(%item, %listItem, "goThereVURL");
         %n = (1.0 + %n);
     }
-    %itemType.main_onGotDataOfType();
+    geTGF.main_onGotDataOfType(%itemType);
 };
 function geTGF::main_onGotDataOfType(%this, %type) {
     if ((%type $= "happening")) {
@@ -683,9 +657,8 @@ function geTGF::main_onGotDataOfType(%this, %type) {
 function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     %item = %cell.Item;
     %cell.deleteMembers();
-    0;
-    %cont = new ""() {
-        profile = GuiControl @ "EtsNonModalProfile";
+    %cont = new GuiControl("") {
+        profile = 0 @ "EtsNonModalProfile";
         extent = (2.0 - getWord(%cell.getExtent(), 0)) @ " " @ (2.0 - getWord(%cell.getExtent(), 1));
         position = "1 1";
         horizSizing = "width";
@@ -697,9 +670,8 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     if ((%item.eventID $= "")) {
         %w = %h;
     }
-    0;
-    %ctrl = new ""() {
-        profile = GuiBitmapCtrl @ "EtsNonModalProfile";
+    %ctrl = new GuiBitmapCtrl("") {
+        profile = 0 @ "EtsNonModalProfile";
         extent = %w @ " " @ %h;
         position = "0 0";
         horizSizing = "width";
@@ -716,27 +688,24 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     %ctrl.fitInParentAsBitmap();
     %ctrl.downloadAndApplyBitmap(%url);
     %tmp = 20;
-    0;
-    %ctrl = new ""() {
-        profile = GuiControl @ "EtsDarkBorderlessBoxProfile";
+    %ctrl = new GuiControl("") {
+        profile = 0 @ "EtsDarkBorderlessBoxProfile";
         extent = getWord(%cont.getExtent(), 0) @ " " @ %tmp;
         position = 0 @ " " @ (%tmp - getWord(%cont.getExtent(), 1));
         horizSizing = "width";
         vertSizing = "top";
     };
     %cont.add(%ctrl);
-    0;
-    %ctrl = new ""() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
+    %ctrl = new GuiBitmapButtonCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         position = "-1 -1";
         extent = %cell.getExtent();
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_190x109";
         command = "geTGF.main_OnClickItem(\"" @ %item @ "\");";
     };
     %cont.add(%ctrl);
-    0;
-    %ctrl = new ""() {
-        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+    %ctrl = new GuiMLTextCtrl("") {
+        profile = 0 @ "ETSNonModalProfile";
         position = 2 @ " " @ (16.0 - getWord(%cont.getExtent(), 1));
         extent = (9.0 - getWord(%cont.getExtent(), 0)) @ " " @ 20;
         text = mlStyle("<just:left>" @ %item.headline @ "<just:right>", "tgfItem_headline");
@@ -752,9 +721,8 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
         %occupancyText = "(empty) ";
     }
     %occupancyText = "<b>" @ %item.occupancy @ " P ";
-    0;
-    %ctrl = new ""() {
-        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+    %ctrl = new GuiMLTextCtrl("") {
+        profile = 0 @ "ETSNonModalProfile";
         position = 0 @ " " @ (38.0 - getWord(%cont.getExtent(), 1));
         extent = (9.0 - getWord(%cont.getExtent(), 0)) @ " " @ 20;
         text = mlStyle("<just:left>" @ %item.hostUserName @ "<just:right><font:Arial:14>" @ %occupancyText, "tgfItem_host");
@@ -763,11 +731,9 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     };
     %cont.add(%ctrl);
     if (!(%item.eventID $= "")) {
-        %bitmap = %item.getEventTypePostItTagBitmap();
-        geTGF;
-        0;
-        %ctrl = new ""() {
-            bitmap = GuiBitmapCtrl @ %bitmap;
+        %bitmap = geTGF.getEventTypePostItTagBitmap(%item);
+        %ctrl = new GuiBitmapCtrl("") {
+            bitmap = 0 @ %bitmap;
             profile = "EtsNonModalProfile";
             extent = "82 19";
             position = (0.0 - (82.0 - getWord(%cont.getExtent(), 0))) @ " " @ 0;
@@ -778,8 +744,7 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     }
 };
 function geTGF_main_people::onGotData(%this) {
-    %list = "main".getItemList("person");
-    geTGF;
+    %list = geTGF.getItemList("main", "person");
     %num = %list.size();
     %statusTextCtrl = %this.child("emptyText");
     if ((0.0 <= %num)) {
@@ -788,27 +753,23 @@ function geTGF_main_people::onGotData(%this) {
     %statusTextCtrl.textNothing;
     %statusTextCtrl.setText(%text);
     if (!(isObject(geTGFGoRound))) {
-        newTGFGoRound(geTGFGoRound).add();
-        "".reparentSameSize();
+        geTGF_main_PeopleGoRound_Container.add(newTGFGoRound(geTGFGoRound));
+        geTGFGoRound.reparentSameSize(geTGF_main_PeopleGoRound_Container, "");
         %statusTextCtrl.mDeetsMinWidth = 0 @ geTGFGoRound;
-        geTGF_main_PeopleGoRound_Container;
         %statusTextCtrl.mLilThumbPadding = 5 @ geTGFGoRound;
-        geTGFGoRound;
         %statusTextCtrl.mLilThumbHeight = geTGFGoRound.calcMaximumThumbHeight() @ geTGFGoRound;
-        geTGF_main_PeopleGoRound_Container;
         %statusTextCtrl.mTickPeriodMS = 4500 @ geTGFGoRound;
         geTGFGoRound.rebuild();
     }
-    %list.setItemList();
+    geTGFGoRound.setItemList(%list);
     %this.tryUpdateWorldmapSummaries();
 };
 function geTGF_main_people::tryUpdateWorldmapSummaries(%this) {
-    "".setTextWithStyle();
+    geTGF_main_people_locationsText.setTextWithStyle("");
     if (isObject(MapRequest)) {
         %this.schedule(1000, "tryUpdateWorldmapSummaries");
     }
     %areaNames = "lga nv rj pvt";
-    geTGF_main_people_locationsText;
     %total = 0;
     %text = "";
     %delim = "";
@@ -816,10 +777,9 @@ function geTGF_main_people::tryUpdateWorldmapSummaries(%this) {
     if ((getWordCount(%areaNames) < %n)) {
         %areaName = getWord(%areaNames, %n);
         if (!(%areaName $= "pvt")) {
-            %userCount = %areaName.get().occupancy;
-            WorldAreaSummaries;
+            %userCount = WorldAreaSummaries.get(%areaName).occupancy;
         }
-        %userCount = %areaName.get().totalOccupancy;
+        %userCount = WorldAreaSummaries.get(%areaName).totalOccupancy;
         %areaName @ WorldAreaSummaries;
         %link = "TGF_GOTO" @ " " @ %areaName;
         if ((%areaName $= "pvt")) {
@@ -835,7 +795,7 @@ function geTGF_main_people::tryUpdateWorldmapSummaries(%this) {
     (getWordCount(%areaNames) < %n);
     %text = "<spush><just:center><font:arial:16>" @ commaify(%total) @ " vSider" @ %withS @ " In-World:<spop><br>" @ %text;
     %text = "<tab:100>" @ %text;
-    %text.setTextWithStyle();
+    geTGF_main_people_locationsText.setTextWithStyle(%text);
 };
 function geTGF_main_people_locationsText::onURL(%this, %url) {
     %cmd = firstWord(%url);
@@ -845,19 +805,19 @@ function geTGF_main_people_locationsText::onURL(%this, %url) {
     }
     %areaName = restWords(%url);
     if ((%areaName $= "pvt")) {
-        "HOTSPOTS".openToTabName();
+        geTGF.openToTabName("HOTSPOTS");
     }
-    if ((geTGF @ " " @ %areaName $= "lga")) {
-        "MAP".openToTabName();
-        %areaName.getCityButton(1, 0).performClick();
+    if ((%areaName $= "lga")) {
+        geTGF.openToTabName("MAP");
+        WorldMap.getCityButton(%areaName, 1, 0).performClick();
     }
-    if ((WorldMap @ " " @ %areaName $= "nv")) {
-        "MAP".openToTabName();
-        %areaName.getCityButton(1, 0).performClick();
+    if ((%areaName $= "nv")) {
+        geTGF.openToTabName("MAP");
+        WorldMap.getCityButton(%areaName, 1, 0).performClick();
     }
-    if ((WorldMap @ " " @ %areaName $= "rj")) {
-        "MAP".openToTabName();
-        %areaName.getCityButton(1, 0).performClick();
+    if ((%areaName $= "rj")) {
+        geTGF.openToTabName("MAP");
+        WorldMap.getCityButton(%areaName, 1, 0).performClick();
     }
     error(getScopeName() @ " " @ "- unknown areaname" @ " " @ %areaName @ " " @ getTrace());
 };
@@ -882,7 +842,7 @@ function geTGF_tabs::refreshMOTD(%this) {
     %url = %url @ "&token=" @ urlEncode($Token);
     %url = %url @ "&type=" @ urlEncode("motd");
     log("communication", "debug", "sending request to get current motd: " @ %url);
-    %url.setURL();
+    MOTDRequest.setURL(%url);
     MOTDRequest.start();
 };
 function MOTDRequest::onDone(%this) {
@@ -894,9 +854,8 @@ function MOTDRequest::onDone(%this) {
     %text = %this.getValue("message");
     if (!(%text $= "")) {
         %text = decodeMOTDString(%text);
-        %text.setText();
-        %areaName.get().qotdID = "" @ MOTDText;
-        MOTDText;
+        MOTDText.setText(%text);
+        WorldAreaSummaries.get(%areaName).qotdID = "" @ MOTDText;
     }
     geTGF_tabs.onMOTDPostFailed();
 };
@@ -913,7 +872,7 @@ function geTGF_tabs::refreshQOTD(%this) {
     %url = %url @ "&token=" @ urlEncode($Token);
     %url = %url @ "&type=" @ urlEncode("qotd");
     log("communication", "debug", "sending request to get current qotd: " @ %url);
-    %url.setURL();
+    QOTDRequest.setURL(%url);
     QOTDRequest.start();
 };
 function QOTDRequest::onDone(%this) {
@@ -931,9 +890,8 @@ function QOTDRequest::onDone(%this) {
         }
     }
     if (!(%text $= "")) {
-        %text.setText();
-        %areaName.get().qotdID = %qID @ MOTDText;
-        MOTDText;
+        MOTDText.setText(%text);
+        WorldAreaSummaries.get(%areaName).qotdID = %qID @ MOTDText;
     }
     geTGF_tabs.refreshMOTD();
 };
@@ -953,23 +911,20 @@ function MOTDText::onURL(%this, %url) {
     %analytic = getAnalytic();
     %analytic.trackPageView(%trackURL);
     %this.setText();
-    1000.schedule("refreshMOTD");
+    geTGF_tabs.schedule(1000, "refreshMOTD");
     $UserPref::QOTD::answered = $UserPref::QOTD::answered @ " " @ %this.qotdID;
-    geTGF_tabs;
 };
 function geTGF_tabs::onMOTDPostFailed(%this) {
-    "".setText();
+    MOTDText.setText("");
     %fileName = "projects/common/defaultMOTD.txt";
-    MOTDText;
-    %fo = new ""();;
-    FileObject;
+    %fo = new FileObject("");;
+    0;
     if (%fo.openForRead(%fileName)) {
         %text = "";
-        0;
         if (!(%fo.isEOF())) {
             %text = %text @ %fo.readLine() @ "\n";
         }
-        %text.setText();
+        MOTDText.setText(%text);
     }
     error("unable to find default motd: " @ %fileName);
     %fo.delete();
@@ -990,6 +945,6 @@ function geTGF::main_OnClickItem(%this, %item) {
     %this.DoDetails("main", %item);
 };
 function geTGF::main_GetAndOpenDetailsContainer(%this, %item) {
-    %this.constructDeetsWindow(%item);
-    1.setVisible();
+    %this.constructDeetsWindow(geDeetsWindow, %item);
+    geDeetsLayer.setVisible(1);
 };

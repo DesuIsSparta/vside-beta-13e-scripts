@@ -24,8 +24,8 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
     %uploader = "";
     if (snapshotTool::snapRegion(%region, %fileName)) {
         $screenShotNum = (1.0 + $screenShotNum);
-        %uploader = new ""();;
-        URLPostObject;
+        %uploader = new URLPostObject("");;
+        0;
         %uploader.setProgress(1);
         %uploader.setURL($Net::UploadPhotoURL);
         %uploader.setURLParam("user", $Player::Name);
@@ -34,7 +34,7 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
         %uploader.setPostFile("imageBody", %fileName);
         if (%uploader.start()) {
             if (isObject(CURLSimGroup)) {
-                %uploader.add();
+                CURLSimGroup.add(%uploader);
             }
         }
         error("Unable to upload avatar photo." @ " " @ getTrace());
@@ -137,8 +137,7 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
             if ((moWorldCornerMarkers.getCount() < %n)) {
                 %mh = %hit;
                 %mh = setWord(%mh, 2, 0);
-                %marker = %n.getObject();
-                moWorldCornerMarkers;
+                %marker = moWorldCornerMarkers.getObject(%n);
                 %marker.setTransform(%mh);
                 %marker.setScale("1 1 1");
             }
@@ -162,8 +161,8 @@ function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
         return;
     }
     %fn = %name @ ".cs";
-    %file = new ""();;
-    FileObject;
+    %file = new FileObject("");;
+    0;
     if (%file.openForWrite(%fn)) {
         %file.writeLine(getScreenShotMetaData(%guiCtrl));
     }

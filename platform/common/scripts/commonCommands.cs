@@ -56,9 +56,9 @@ function tmpFields(%obj) {
     if (!(isObject(%tmps))) {
         %tmps = new ScriptObject(temporaryfields);;
         if (isObject(MissionCleanup)) {
-            %tmps.add();
+            MissionCleanup.add(%tmps);
         }
-        gSetField(%obj, %tmps);
+        gSetField(%obj, tmpFields, %tmps);
     }
     return %tmps;
 };
@@ -139,7 +139,7 @@ function safeNewScriptObject(%classname, %objectName, %deleteExisting) {
     }
     eval("%ret = new " @ %classname @ "(" @ %objectName @ ");");
     if (isObject(MissionCleanup)) {
-        %ret.add();
+        MissionCleanup.add(%ret);
     }
     return %ret;
 };
@@ -181,7 +181,7 @@ function safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName,
     }
     %ret.setName(%objectName);
     if (isObject(MissionCleanup)) {
-        %ret.add();
+        MissionCleanup.add(%ret);
     }
     return %ret;
 };
@@ -218,17 +218,16 @@ function getPathsMatchingPattern(%pattern) {
 };
 function getCachedResourcePath(%res) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    %path = %res.get();
-    ResourcePathMap;
+    %path = ResourcePathMap.get(%res);
     return %path;
 };
 function setCachedResourcePath(%res, %path) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    %res.put(%path);
+    ResourcePathMap.put(%res, %path);
 };
 function setAllLogLevels(%level) {
-    %level.setAllLogLevels();
-    %level.setAllLogLevels();
+    Console.setAllLogLevels(%level);
+    log.setAllLogLevels(%level);
     setConsoleLogLevel(%level);
 };
 function bitstreamCountToggle() {

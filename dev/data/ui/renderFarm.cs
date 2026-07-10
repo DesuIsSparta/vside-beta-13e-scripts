@@ -2,19 +2,17 @@ function rf_TrySetup() {
     if (!(MissionInfo @ " " @ name $= "renderFarm")) {
         return;
     }
-    rf_getGE().setContent();
-    $gRFPlayerF = LocalClientConnection.getGhostID(seBotF).resolveGhostID();
-    ServerConnection;
-    $gRFPlayerM = LocalClientConnection.getGhostID(seBotM).resolveGhostID();
-    ServerConnection;
+    Canvas.setContent(rf_getGE());
+    $gRFPlayerF = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotF));
+    $gRFPlayerM = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotM));
     if (!(isObject($gRFPlayerF))) {
     }
     if (!(isObject($gRFPlayerM))) {
         schedule(1000, 0, "rf_TrySetup");
     }
-    $gRFPlayerF.setSimObject();
-    2.4.setOrbitDist();
-    10.resize(10);
+    geRenderFarmObjectView.setSimObject($gRFPlayerF);
+    geRenderFarmObjectView.setOrbitDist(2.4);
+    playGui.resize(10, 10);
     geRenderFarm.add(playGui);
     geRenderFarm.bringToFront(playGui);
 };
@@ -58,7 +56,7 @@ function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %hei
     %rfRequest.height = %height;
     %rfRequest.angle = %angle;
     %rfRequest.zoom = %zoom;
-    %rfRequest.push_back("");
+    gRFQueue.push_back(%rfRequest, "");
     rf_processQueue();
     return "success";
 };
@@ -69,8 +67,7 @@ function rf_processQueue() {
     if ((1.0 < gRFQueue.count())) {
         return;
     }
-    %request = 0.getKey();
-    gRFQueue;
+    %request = gRFQueue.getKey(0);
     gRFQueue.pop_front();
     if (isObject(%request)) {
         rf_beginRender(%request);
@@ -84,8 +81,7 @@ function rf_beginRender(%request) {
     }
     if ((%gender $= "n")) {
         %sku = getWord(%request.skus, %n);
-        %si = %sku.findBySku();
-        SkuManager;
+        %si = SkuManager.findBySku(%sku);
         %gender = %si.gender;
         %n = (1.0 - %n);
         if ((0.0 >= %n)) {
@@ -100,12 +96,10 @@ function rf_beginRender(%request) {
     $gRFPlayerF;
     %player.setActiveSKUs(%request.skus);
     %player.setHeight(%request.height);
-    %player.setSimObject();
-    0.setRotation(0, mDegToRad(%request.angle));
+    geRenderFarmObjectView.setSimObject(%player);
+    geRenderFarmObjectView.setRotation(0, 0, mDegToRad(%request.angle));
     %text = "<tab:100>";
-    geRenderFarmObjectView;
     %text = %text @ "requestID:" @ "\t" @ %request.requestID @ "\n";
-    geRenderFarmObjectView;
     %text = %text @ "user:" @ "\t" @ %request.user @ "\n";
     %text = %text @ "gender:" @ "\t" @ %request.gender @ "\n";
     %text = %text @ "skus:" @ "\t" @ %request.skus @ "\n";
@@ -113,10 +107,9 @@ function rf_beginRender(%request) {
     %text = %text @ "poseName:" @ "\t" @ %request.poseName @ "\n";
     %text = %text @ "poseOffset:" @ "\t" @ %request.poseOffset @ "\n";
     %text = trim(%text);
-    %text.setTextWithStyle();
+    geRenderFarmOverlayText1.setTextWithStyle(%text);
     %fileName = "web/rf/images/rf_" @ $gRF_CurrentRequest.requestID @ ".jpg";
-    geRenderFarmOverlayText1;
-    %fileName.snapshot();
+    geRenderFarmObjectView.snapshot(%fileName);
     rf_finishRender($gRF_CurrentRequest);
 };
 function rf_finishRender(%request) {
@@ -134,8 +127,7 @@ function rf_generateTestSkus(%num, %forJavascript) {
         %ret = %ret @ "\n" @ "{";
         %ret = %ret @ "\n" @ "   gSkusList.length            = 0;";
     }
-    %allDrawers = "all items".get();
-    ThumbCategories;
+    %allDrawers = ThumbCategories.get("all items");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "props");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "badges");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "tokens");
@@ -147,16 +139,14 @@ function rf_generateTestSkus(%num, %forJavascript) {
         %d = (1.0 - getWordCount(%allDrawers));
         if ((0.0 >= %d)) {
             %drawerName = getWord(%allDrawers, %d);
-            if (%drawerName.isOptionalDrawer()) {
+            if (SkuManager.isOptionalDrawer(%drawerName)) {
             }
             %prob = 1.0;
             0.1;
             if ((%prob <= getRandom())) {
-                if ((%gender[SkuManager @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
-                    %skus = %drawerName.getSkusDrwr();
-                    SkuManager;
-                    %skus = %skus.filterSkusGender(%gender);
-                    SkuManager;
+                if ((%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
+                    %skus = SkuManager.getSkusDrwr(%drawerName);
+                    %skus = SkuManager.filterSkusGender(%skus, %gender);
                     %gender[%skus @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] = ;
                 }
                 %sku = getRandomWord(%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender]);

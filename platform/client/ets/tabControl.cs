@@ -35,9 +35,8 @@ function TabControl::Initialize(%this, %container, %buttonSize, %sepBitmap, %sep
     }
     %this.initialized = 1;
     if (%this.hasButtons) {
-        0;
-        %this.hiddenButton = new ""() {
-            profile = GuiBitmapButtonCtrl @ "GuiClickLabelProfile";
+        %this.hiddenButton = new GuiBitmapButtonCtrl("") {
+            profile = 0 @ "GuiClickLabelProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
@@ -95,9 +94,8 @@ function TabControl::calculateTabDims(%this) {
     %this.tabPosition = 0 @ " " @ (getWord(%this.separatorSize, 1) + getWord(%this.buttonSize, 1));
 };
 function TabControl::drawSeparator(%this) {
-    0;
-    %this.separator = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %this.separator = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = 0 @ " " @ getWord(%this.buttonSize, 1);
@@ -138,19 +136,19 @@ function TabControl::selectTabAtIndex(%this, %tabIndex) {
     if ((%tabIndex != %this.currentTabIndex)) {
         %this.setTabAtIndexVisible(%this.currentTabIndex, 0);
         if (%this.hasButtons) {
-            %this.buttons.setActive(1);
+            %this.currentTabIndex.setActive(%this.buttons, 1);
         }
     }
-    %this.prevTabIndex = %this.currentTabIndex @ %this.currentTabIndex;
+    %this.prevTabIndex = %this.currentTabIndex;
     %this.currentTabIndex = %tabIndex;
     if ((0.0 >= %tabIndex)) {
     }
     if ((%this.numTabs < %tabIndex)) {
         %this.setTabAtIndexVisible(%tabIndex, 1);
         if (%this.hasButtons) {
-            %this.buttons.setActive(0);
+            %tabIndex.setActive(%this.buttons, 0);
         }
-        %this.tabSelected(%this.tabs);
+        %this.tabSelected(%tabIndex, %this.tabs);
     }
     %this.tabSelected(0);
     %this.update();
@@ -239,14 +237,13 @@ function TabControl::removeTabAtIndex(%this, %tabIndex) {
     if ((0.0 >= %tabIndex)) {
     }
     if ((%this.numTabs < %tabIndex)) {
-        %this.tabs.setVisible(0);
-        %this.tabs.delete();
+        %tabIndex.setVisible(%this.tabs, 0);
+        %tabIndex.delete(%this.tabs);
         if (%this.hasButtons) {
-            %this.buttons.setVisible(0);
-            %this.buttons.delete();
+            %tabIndex.setVisible(%this.buttons, 0);
+            %tabIndex.delete(%this.buttons);
         }
         %this.numTabs = (1.0 - %this.numTabs);
-        %tabIndex @ %tabIndex @ %tabIndex @ %tabIndex;
         %t = %tabIndex;
         if ((%this.numTabs < %t)) {
             %this.tabs = (1.0 + %t) @ %this.tabs @ %t;
@@ -337,11 +334,11 @@ function TabControl::update(%this) {
     if (%this.hasButtons) {
         %idx = 0;
         if ((%this.numTabs < %idx)) {
-            if (%this.buttons.isVisible()) {
-                %this.buttons.reposition(%xoffset, %yoffset);
+            if (%idx.isVisible(%this.buttons)) {
+                %idx.reposition(%this.buttons, %xoffset, %yoffset);
                 if ((%this.currentTabIndex == %idx)) {
                     %this.hiddenButton.reposition(%xoffset, %yoffset);
-                    %this.hiddenButton.tooltip = %idx @ %idx @ %idx @ %this.buttons.tooltip;
+                    %this.hiddenButton.tooltip = %idx @ %this.buttons.tooltip;
                 }
                 if ((%this.orientation $= "vertical")) {
                     %yoffset = ((%this.getPadding() @ %idx + getWord(%this.buttons.extent, 1)) + %yoffset);
@@ -363,9 +360,8 @@ function TabControl::update(%this) {
             if (%this.hasButtons) {
                 %idx = 0;
                 if ((%this.numTabs < %idx)) {
-                    %this.container.pushToBack(%this.buttons);
+                    %this.container.pushToBack(%idx, %this.buttons);
                     %idx = (1.0 + %idx);
-                    %idx;
                 }
                 %this.container.pushToBack(%this.hiddenButton);
             }
@@ -373,9 +369,8 @@ function TabControl::update(%this) {
     }
 };
 function TabControl::CreateTab(%this, %name) {
-    0;
-    return new ""() {
-        profile = GuiControl @ "ETSTabProfile";
+    return new GuiControl("") {
+        profile = 0 @ "ETSTabProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = %this.tabPosition;
@@ -397,9 +392,8 @@ function TabControl::createButton(%this, %bitmapName, %tab, %name) {
         }
         %horizSizing = "left";
     }
-    0;
-    return new ""() {
-        profile = GuiBitmapButtonCtrl @ "GuiClickLabelProfile";
+    return new GuiBitmapButtonCtrl("") {
+        profile = 0 @ "GuiClickLabelProfile";
         horizSizing = %horizSizing;
         vertSizing = %vertSizing;
         position = "0 0";

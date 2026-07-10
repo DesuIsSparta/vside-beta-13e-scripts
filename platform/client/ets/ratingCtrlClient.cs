@@ -16,9 +16,8 @@ function ratingControl::buildButtons(%this) {
     %ypos = 0;
     %i = 0;
     if ((%this.gradations < %i)) {
-        0;
-        %this.images = new ""() {
-            profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        %this.images = new GuiBitmapCtrl("") {
+            profile = 0 @ "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = %xPos @ " " @ %ypos;
@@ -29,16 +28,15 @@ function ratingControl::buildButtons(%this) {
             bitmap = %this.buttonBitmap @ "_n";
             bitmapBase = %this.buttonBitmap;
         }; @ %i
-        %this.images.bindClassName("RatingControlImage");
-        %this.add(%this.images);
+        %i.bindClassName(%this.images, "RatingControlImage");
+        %this.add(%i, %this.images);
         %xPos = (getWord(%this.buttonSize, 0) + %xPos);
-        %i @ %i;
         %i = (1.0 + %i);
     }
-    0;
-    %this.eventCatcher = new ""() {
-        profile = GuiMouseEventCtrl @ "GuiDefaultProfile";
-        horizSizing = (%this.gradations < %i) @ "right";
+    (%this.gradations < %i);
+    %this.eventCatcher = new GuiMouseEventCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
+        horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
         extent = (getWord(%this.buttonSize, 0) * %this.gradations) @ " " @ getWord(%this.buttonSize, 1);
@@ -62,11 +60,10 @@ function ratingControl::update(%this) {
     %i = 0;
     if ((%this.gradations < %i)) {
         if ((%cutoff <= %i)) {
-            %this.images.setImageSuffix(%suffix);
+            %i.setImageSuffix(%this.images, %suffix);
         }
-        %this.images.setImageSuffix("_n");
+        %i.setImageSuffix(%this.images, "_n");
         %i = (1.0 + %i);
-        %i @ %i;
     }
 };
 function ratingControl::setRating(%this, %rating, %saveToManager) {

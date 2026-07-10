@@ -1,18 +1,16 @@
 $gGetFakeBuildingDirectory = 0;
 function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
-    0;
-    %buildingInfo = new ""() {
-        name = SimGroup @ "Hotel Erez";
+    %buildingInfo = new SimGroup("") {
+        name = 0 @ "Hotel Erez";
         description = Buildings::GetLongDescription("");
         floorPlanCount = 4;
     };
-    %floorplan = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %floorplan.add();
-    }
-    %floorplan.name = MissionCleanup @ "floorPlan007";
+    %floorplan = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%floorplan);
+    }
+    %floorplan.name = "floorPlan007";
     %floorplan.description = "floorPlanDescription";
     %floorplan.capacity = 999;
     %floorplan.minLevel = -1;
@@ -21,13 +19,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
     %buildingInfo.floorplan = %floorplan @ 0;
-    %floorplan = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %floorplan.add();
-    }
-    %floorplan.name = MissionCleanup @ "floorPlan007vpointsonly";
+    %floorplan = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%floorplan);
+    }
+    %floorplan.name = "floorPlan007vpointsonly";
     %floorplan.description = "floorPlanDescription";
     %floorplan.capacity = 999;
     %floorplan.minLevel = -1;
@@ -36,13 +33,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
     %buildingInfo.floorplan = %floorplan @ 1;
-    %floorplan = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %floorplan.add();
-    }
-    %floorplan.name = MissionCleanup @ "floorPlan007vbuxonly";
+    %floorplan = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%floorplan);
+    }
+    %floorplan.name = "floorPlan007vbuxonly";
     %floorplan.description = "floorPlanDescription";
     %floorplan.capacity = 999;
     %floorplan.minLevel = -1;
@@ -51,13 +47,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
     %buildingInfo.floorplan = %floorplan @ 2;
-    %floorplan = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %floorplan.add();
-    }
-    %floorplan.name = MissionCleanup @ "floorPlan007noavailable";
+    %floorplan = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%floorplan);
+    }
+    %floorplan.name = "floorPlan007noavailable";
     %floorplan.description = "floorPlanDescription";
     %floorplan.capacity = 999;
     %floorplan.minLevel = -1;
@@ -66,10 +61,33 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
     %buildingInfo.floorplan = %floorplan @ 3;
-    SimGroup;
-    new ""() {
-        owner = SimGroup @ "the-manager";
-        name = 0 @ "Kenna";
+    %buildingDir = new SimGroup("");;
+    new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = new SimGroup("") {
+        owner = 0 @ "the-manager";
+        name = "Kenna";
         type = "CELEBSPACE";
         description = "Kenna's Loft";
         isFeatured = 1;
@@ -82,9 +100,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "BBBB";
+    }; @ "BBBB";
         name = 1000;
         type = "RESIDENCE";
         description = "i am door code-protected";
@@ -98,9 +114,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "DDDD";
+    }; @ "DDDD";
         name = 1002;
         type = "RESIDENCE";
         description = "foo foo";
@@ -114,9 +128,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "CCCC";
+    }; @ "CCCC";
         name = 1003;
         type = "RESIDENCE";
         description = "foo foo";
@@ -130,9 +142,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "Stacy gfghjfghjf ghj 5y jgn fgjhtyj5y";
+    }; @ "Stacy gfghjfghjf ghj 5y jgn fgjhtyj5y";
         name = 258;
         type = "RESIDENCE";
         description = "DJ Skully Show";
@@ -146,9 +156,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "aArOn";
+    }; @ "aArOn";
         name = 369;
         type = "RESIDENCE";
         description = "MusicLand";
@@ -162,9 +170,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez gfghjfghjf ghj 5y jgn fgjhtyj5y";
+    }; @ "erez gfghjfghjf ghj 5y jgn fgjhtyj5y";
         name = 159;
         type = "RESIDENCE";
         description = "Lincoln Log Cabin";
@@ -178,9 +184,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "adam gfghjfghjf ghj 5y jgn fgjhtyj5y";
+    }; @ "adam gfghjfghjf ghj 5y jgn fgjhtyj5y";
         name = 753;
         type = "RESIDENCE";
         description = "RCMP HQ";
@@ -194,9 +198,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez412313217575";
+    }; @ "erez412313217575";
         name = 3570;
         type = "RESIDENCE";
         description = "i am door code-protected";
@@ -210,9 +212,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez71412123575";
+    }; @ "erez71412123575";
         name = 3579;
         type = "RESIDENCE";
         description = "i am door code-protected";
@@ -226,9 +226,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez54534567575";
+    }; @ "erez54534567575";
         name = 3578;
         type = "RESIDENCE";
         description = "i am door code-protected";
@@ -242,9 +240,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez124237575";
+    }; @ "erez124237575";
         name = 3577;
         type = "RESIDENCE";
         description = "i am door code-protected";
@@ -258,9 +254,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez45675-567875";
+    }; @ "erez45675-567875";
         name = 3576;
         type = "RESIDENCE";
         description = "Kremlin";
@@ -274,9 +268,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez7575";
+    }; @ "erez7575";
         name = 3575;
         type = "RESIDENCE";
         description = "Kremlin";
@@ -290,9 +282,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez77575";
+    }; @ "erez77575";
         name = 3574;
         type = "RESIDENCE";
         description = "Kremlin";
@@ -306,9 +296,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez75789758";
+    }; @ "erez75789758";
         name = 35723;
         type = "RESIDENCE";
         description = "Kremlin";
@@ -322,9 +310,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez754678475";
+    }; @ "erez754678475";
         name = 3572;
         type = "RESIDENCE";
         description = "Kremlin";
@@ -338,9 +324,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "erez758708975";
+    }; @ "erez758708975";
         name = 3571;
         type = "RESIDENCE";
         description = "Kremlin";
@@ -354,9 +338,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "orion";
+    }; @ "orion";
         name = 321;
         type = "RESIDENCE";
         description = "Lily Pad Palace";
@@ -370,9 +352,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "Louis XIV";
+    }; @ "Louis XIV";
         name = "user facing model name 2";
         type = "MODEL";
         description = "Chateau de Versailles";
@@ -386,9 +366,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "Louis XVI";
+    }; @ "Louis XVI";
         name = "user facing model name 3";
         type = "MODEL";
         description = "Guillotine Row";
@@ -402,9 +380,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "Louis XVI";
+    }; @ "Louis XVI";
         name = "ghi";
         type = "MODEL";
         description = "vpoints only";
@@ -418,9 +394,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    new ""() {
-        owner = SimGroup @ "Louis XVI";
+    }; @ "Louis XVI";
         name = "def";
         type = "MODEL";
         description = "vbux only";
@@ -434,10 +408,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         videoStream = "myVideoStream";
         buildingName = %buildingInfo.name;
-    };
-    %buildingDir = new ""();;
-    new ""() {
-        owner = SimGroup @ "Louis XVI";
+    }; @ "Louis XVI";
         name = "abc";
         type = "MODEL";
         description = "both vpoints and vbux are -1";

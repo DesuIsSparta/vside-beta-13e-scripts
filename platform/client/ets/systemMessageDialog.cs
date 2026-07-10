@@ -9,7 +9,7 @@ function toggleSystemMessageDialog() {
 };
 function SystemMessageDialog::open(%this) {
     if () {
-        "word".selectTabWithName();
+        HudTabs.selectTabWithName("word");
     }
 };
 function SystemMessageDialog::close(%this) {
@@ -82,11 +82,10 @@ function handleSystemMessage(%msgType, %msgString) {
     if ((%importanceLevel $= 2)) {
     }
     if ((%importanceLevel $= 3)) {
-        "word".pulseTabWithName();
+        HudTabs.pulseTabWithName("word");
     }
     %timeStamp = "<spush><color:66aaffff>" @ %timeStamp @ "<spop>";
-    HudTabs;
-    %timeStamp @ " " @ %msgString.addText(1, 1);
+    SystemMessageTextCtrl.addText(%timeStamp @ " " @ %msgString, 1, 1);
     if ($UserPref::Audio::NotifyWhisper) {
         alxPlay(AudioIm_SystemMessageIn);
     }
@@ -144,11 +143,11 @@ function SystemMessageTextCtrl::onRightURL(%this, %url) {
     if ((getSubStr(%url, 0, 7) $= "http://")) {
     }
     if ((getSubStr(%url, 0, 7) $= "vside:/")) {
-        %url.initWithURL();
+        LinkContextMenu.initWithURL(%url);
         LinkContextMenu.showAtCursor();
     }
     if (!(%this.selectionActive)) {
-        1.makeFirstResponder();
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function SystemMessageTextCtrl::onURL(%this, %url) {
@@ -204,20 +203,19 @@ function SystemMessageTextCtrl::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "game")) {
         %cmd = getWord(%url, 1);
         if ((%cmd $= "inspect")) {
-            getWord(%url, 2).requestToInspectGame();
+            gameMgrClient.requestToInspectGame(getWord(%url, 2));
             GameMgrHudWin.open();
-            "INSPECT".selectTabWithName();
+            GameMgrHudTabs.selectTabWithName("INSPECT");
         }
     }
-    if ((GameMgrHudTabs @ " " @ getWord(%url, 0) $= "answerHelpMeMode")) {
+    if ((getWord(%url, 0) $= "answerHelpMeMode")) {
         %requestId = getWord(%url, 1);
-        gameMgrClient;
         %newbName = unmunge(getWords(%url, 2, 11111));
         answerHelpMeMode(%newbName, %requestId);
         %this.changeLinesEndingInString("<a:" @ %url, "- You answered the call!");
     }
     if (!(%this.selectionActive)) {
-        1.makeFirstResponder();
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function SystemMessageTextCtrl::updateFriendRequest(%this, %name, %accept) {

@@ -1,14 +1,11 @@
 $gameMgr::GAME_TYPES_COUNT = 1;
-0;
 $gameMgr::GAME_TYPES_COUNT = (1.0 + $gameMgr::GAME_TYPES_COUNT);
-0;
 $gameMgr::CUSTOM_GAME = 1;
 if (isObject(MissionCleanup)) {
     %n = 0;
     if (($gameMgr::GAME_TYPES_COUNT < %n)) {
-        %n[$gameMgr::GAME_TYPES @ %n].add();
+        MissionCleanup.add(%n[$gameMgr::GAME_TYPES @ %n]);
         %n = (1.0 + %n);
-        MissionCleanup;
     }
 }
 $gameMgr::InspectTab::MAX_PLAYERS = 10;

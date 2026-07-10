@@ -8,7 +8,7 @@ if (!(isObject(CSControlPanelTabs))) {
 }
 function CSControlPanelTabs::setup(%this) {
     if (!(%this.initialized)) {
-        %this.Initialize("", "", "", "horizontal");
+        %this.Initialize(CSControlPanelTabContainer, "", "", "", "horizontal");
         %this.newTab("MODEL_APT", "");
         %this.newTab("SKIP_TUTORIAL", "");
     }
@@ -62,15 +62,15 @@ function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab) {
         allowColorChars = 1;
         maxChars = -1;
     };);
-    %text.setText();
+    CSSpaceSkipTutorialText.setText(%text);
 };
 function CSControlPanelTabs::updateSkipTutorialTab(%this) {
     if (getCurrentContiguousSpaceOfferSkip()) {
         CSControlPanel.open();
-        "SKIP_TUTORIAL".selectTabWithName();
-        "<font:BauhausStd-Demi:18><linkcolor:eeffaa>To skip Gateway, <a:gamelink SKIP_TUTORIAL>Click Here</a>.".setText();
+        CSControlPanelTabs.selectTabWithName("SKIP_TUTORIAL");
+        CSSpaceSkipTutorialText.setText("<font:BauhausStd-Demi:18><linkcolor:eeffaa>To skip Gateway, <a:gamelink SKIP_TUTORIAL>Click Here</a>.");
     }
-    if (("SKIP_TUTORIAL".getTabWithName() == CSControlPanelTabs.getCurrentTab())) {
+    if ((CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL") == CSControlPanelTabs.getCurrentTab())) {
         CSControlPanel.close();
     }
 };

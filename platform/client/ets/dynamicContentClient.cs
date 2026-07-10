@@ -4,8 +4,7 @@ function staffSnapshot(%region) {
     commandToServer('getStaffSnapshotObj');
 };
 function clientCmdsetStaffSnapshotObj(%id) {
-    %obj = %id.resolveGhostID();
-    ServerConnection;
+    %obj = ServerConnection.resolveGhostID(%id);
     if (!(isObject(%obj))) {
         log("general", "warn", "clientCmdsetStaffSnapshot: invalid object id.");
         return;
@@ -33,16 +32,15 @@ function dlMgrCallback_GetNewSkin(%dlItem, %unused) {
     setNewSkin(%fileName, %dlData.shapebaseobj);
 };
 function clientCmdgetNewSkin(%skinName, %shapebaseobj) {
-    %shapebaseobj = %shapebaseobj.resolveGhostID();
-    ServerConnection;
+    %shapebaseobj = ServerConnection.resolveGhostID(%shapebaseobj);
     %skinName = getTaggedString(%skinName);
     %fileName = %skinName @ ".jpg";
     %url = $DC::RemoteSkinsFolder @ "/" @ %fileName;
-    %item = new ""();;
-    ScriptObject;
-    %item.skinName = 0 @ %skinName;
+    %item = new ScriptObject("");;
+    0;
+    %item.skinName = %skinName;
     %item.shapebaseobj = %shapebaseobj;
-    %url.applyUrl("dlMgrCallback_GetNewSkin", "", %item, "");
+    dlMgr.applyUrl(%url, "dlMgrCallback_GetNewSkin", "", %item, "");
 };
 function setNewSkin(%skinName, %shapebaseobj) {
     if (!(isObject(%shapebaseobj))) {

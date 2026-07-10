@@ -2,11 +2,11 @@ function toggleMOTDEditDialog() {
     toggleVisibleState(MOTDEditGui);
 };
 function MOTDEditGui::open(%this) {
-    %this.pushDialog(0);
+    Canvas.pushDialog(%this, 0);
     %this.setVisible(1);
 };
 function MOTDEditGui::close(%this, %unused) {
-    %this.popDialog();
+    Canvas.popDialog(%this);
     %this.setVisible(0);
 };
 function MOTDEditGui::refresh(%this, %messageType) {
@@ -41,30 +41,29 @@ function MOTDEditGui::onPasteFrom(%this, %messageType) {
         qotdID = %qID @ MOTDText;
     }
     qotdID = "" @ MOTDText;
-    %text.setText();
+    MOTDText.setText(%text);
 };
 function MOTDEditGui::onAction(%this, %messageType) {
     messageType = %messageType @ MOTDEditGui;
-    "confirm: submit as" @ " " @ %messageType.setText();
-    0.setVisible();
-    0.setVisible();
-    1.setVisible();
-    1.setVisible();
+    MOTDEditGuiButtonConfirm.setText("confirm: submit as" @ " " @ %messageType);
+    MOTDEditGuiButtonDoIt.setVisible(0);
+    MOTDEditGuiButtonDoIt2.setVisible(0);
+    MOTDEditGuiButtonConfirm.setVisible(1);
+    MOTDEditGuiButtonCancel.setVisible(1);
     %this.onPasteFrom(%messageType);
 };
 function MOTDEditGui::onCancel(%this) {
-    1.setVisible();
-    1.setVisible();
-    0.setVisible();
-    0.setVisible();
+    MOTDEditGuiButtonDoIt.setVisible(1);
+    MOTDEditGuiButtonDoIt2.setVisible(1);
+    MOTDEditGuiButtonConfirm.setVisible(0);
+    MOTDEditGuiButtonCancel.setVisible(0);
 };
 function MOTDEditGui::onConfirm(%this) {
-    1.setVisible();
-    1.setVisible();
-    0.setVisible();
-    0.setVisible();
+    MOTDEditGuiButtonDoIt.setVisible(1);
+    MOTDEditGuiButtonDoIt2.setVisible(1);
+    MOTDEditGuiButtonConfirm.setVisible(0);
+    MOTDEditGuiButtonCancel.setVisible(0);
     %message = getClipboard();
-    MOTDEditGuiButtonCancel;
     if (isObject(MOTDEditRequest)) {
         MOTDEditRequest.delete();
     }
@@ -73,18 +72,14 @@ function MOTDEditGui::onConfirm(%this) {
         MissionCleanup.add(MOTDEditRequest);
     }
     %url = $Net::ClientServiceURL @ "/GlobalMessage";
-    MOTDEditGuiButtonConfirm;
     %url = %url @ "?user=" @ urlEncode($Player::Name);
-    MOTDEditGuiButtonDoIt2;
     %url = %url @ "&token=" @ urlEncode($Token);
-    MOTDEditGuiButtonDoIt;
     %url = %url @ "&message=" @ encodeMOTDString(%message);
     %url = %url @ "&type=" @ urlEncode(%this.messageType);
     log("communication", "debug", "sending request to set the current" @ " " @ %this.messageType @ " " @ "message: " @ %url);
-    %url.setURL();
+    MOTDEditRequest.setURL(%url);
     MOTDEditRequest.start();
     %this.messageType = %this.messageType @ MOTDEditRequest;
-    MOTDEditRequest;
 };
 function MOTDEditRequest::onError(%this, %unused, %unused) {
     MessageBoxOK("Server Unavailable", "The server is currently unavailable." @ " " @ %this.messageType @ " " @ "NOT submitted.", "");

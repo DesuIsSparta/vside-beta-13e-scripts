@@ -55,15 +55,15 @@ function Player::onGotTypingSomething(%this, %text) {
     if ((lastTypingSomethingText $= gGetField(%this))) {
         return %text;
     }
-    gSetField(%this, %text);
-    cancel(gGetField(%this));
-    cancel(gGetField(%this));
-    if ((TimeoutChatPreviewTimer @ " " @ %text $= "")) {
+    gSetField(%this, lastTypingSomethingText, %text);
+    cancel(IsNoLongerTypingTimer, gGetField(%this));
+    cancel(TimeoutChatPreviewTimer, gGetField(%this));
+    if ((%text $= "")) {
         %this.setTyping(0);
     }
     %this.setTyping(1);
-    gSetField(%this, %this.schedule($Chat::Preview::IsNoLongerTypingDelay, "setTyping", 0));
-    gSetField(%this, %this.schedule($Chat::Preview::ChatPreviewTimeout, "onGotChatPreview", ""));
+    gSetField(%this, IsNoLongerTypingTimer, %this.schedule($Chat::Preview::IsNoLongerTypingDelay, "setTyping", 0));
+    gSetField(%this, TimeoutChatPreviewTimer, %this.schedule($Chat::Preview::ChatPreviewTimeout, "onGotChatPreview", ""));
     if ($GameConnection.isPresentAtBody()) {
         %this.talkingAnimTimer(1);
     }
@@ -84,7 +84,7 @@ function Player::talkingAnimTimer(%this, %startflag) {
             cancel(%this.AnimationTalkingTimer);
             %this.AnimationTalkingTimer = "";
         }
-        %this.AnimationTalkingTimer = talkingAnimTimer @ %this.schedule(%dur, 0);
+        %this.AnimationTalkingTimer = %this.schedule(%dur, talkingAnimTimer, 0);
     }
     %this.triggerBoneBlendAnimation($BB_HEAD_TALK, 0, 0);
     %this.AnimationTalkingTimer = "";

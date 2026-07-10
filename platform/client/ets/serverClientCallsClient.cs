@@ -11,11 +11,10 @@ function initClientCalls() {
     if (isObject($gClientCallsList)) {
         return;
     }
-    $gClientCallsList = new ""();;
-    StringMap;
+    $gClientCallsList = new StringMap("");;
+    0;
     $gClientCallsList.put("gatewayExitTransition", "gatewayExitTransition");
     %n = (1.0 - $gClientCallsList.size());
-    0;
     if ((0.0 >= %n)) {
         %callName = $gClientCallsList.getKey(%n);
         %fnName = $gClientCallsList.get(%callName);
@@ -51,8 +50,7 @@ function onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit(%request) {
 };
 function gatewayeExitTransitionShowDialog(%isEntry, %showCancel) {
     %title = "Where would you like to go next?";
-    %partnerObj = $Net::userOwner.getPartnerObj();
-    gLoginPartnersInfo;
+    %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
     %body = %partnerObj.gatewayOptionBody;
     %buttons = %partnerObj.gatewayOptionButton1 @ "\t" @ %partnerObj.gatewayOptionButton2;
     if (!($Player::inviterOnline $= "")) {
@@ -81,8 +79,7 @@ function gatewayeExitTransitionShowDialog(%isEntry, %showCancel) {
     %dlg.doCallbackOnEscape = 0;
 };
 function gatewayExitTransitionWorld() {
-    %partnerObj = $Net::userOwner.getPartnerObj();
-    gLoginPartnersInfo;
+    %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
     %vurl = %partnerObj.vurl;
     commandToServer('skipGateway', "world", $Net::userOwner);
     schedule(1000, 0, "vurlOperation", %vurl, 1);

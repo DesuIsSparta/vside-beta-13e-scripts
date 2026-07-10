@@ -46,9 +46,8 @@ function Player::orientToward(%this, %obj) {
     return;
 };
 function Player::orientTowardsOverTime(%this, %obj, %milliseconds) {
-    gSetField(%this, 20);
+    gSetField(%this, orientTickPeriod, 20);
     %rotCur = getWords(%this.getTransform(), 3, 6);
-    orientTickPeriod;
     %rotA = getWord(%rotCur, 3);
     if ((0.0 < getWord(%rotCur, 2))) {
         %rotA = (-(1.0) * %rotA);
@@ -67,7 +66,7 @@ function Player::orientTowardsTicker(%this, %curA, %dltA, %ticksLeft) {
     %ticksLeft = (1.0 - %ticksLeft);
     %this.setTransform(%this.getPosition() @ " " @ "0 0 1" @ " " @ %curA);
     if ((0.0 > %ticksLeft)) {
-        %this.schedule(gGetField(%this), "orientTowardsTicker", %curA, %dltA, %ticksLeft);
+        %this.schedule(orientTickPeriod, gGetField(%this), "orientTowardsTicker", %curA, %dltA, %ticksLeft);
     }
-    return orientTickPeriod;
+    return;
 };

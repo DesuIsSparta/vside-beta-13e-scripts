@@ -1,75 +1,74 @@
 function onMissionDownloadPhase1(%unused, %unused) {
     if (isObject(LoadingPBController)) {
-        0.setValue();
-        "Loading data".setValue();
+        LoadingPBController.setValue(0);
+        LoadingProgressTxt.setValue("Loading data");
     }
     if (isObject(TransitionPBController)) {
-        0.setValue();
+        TransitionPBController.setValue(0);
     }
 };
 function onPhase1Progress(%progress) {
     if (isObject(LoadingPBController)) {
-        (0.33 * %progress).setValue();
+        LoadingPBController.setValue((0.33 * %progress));
     }
     if (isObject(TransitionPBController)) {
-        (0.33 * %progress).setValue();
+        TransitionPBController.setValue((0.33 * %progress));
     }
 };
 function onPhase1Complete() {
     if (isObject(LoadingPBController)) {
-        0.33.setValue();
+        LoadingPBController.setValue(0.33);
     }
 };
 function onMissionDownloadPhase2() {
     $Client::MissionLoadTimeStart = getSimTime();
     if (isObject(LoadingPBController)) {
-        "Loading objects".setValue();
+        LoadingProgressTxt.setValue("Loading objects");
     }
     if (isObject(TransitionPBController)) {
-        "Loading objects".setValue();
+        TransitionProgressTxt.setValue("Loading objects");
     }
 };
 function onPhase2ProgressUpdateStatusDisplay(%progress) {
     if (isObject(LoadingPBController)) {
-        (0.33 + (0.33 * %progress)).setValue();
+        LoadingPBController.setValue((0.33 + (0.33 * %progress)));
     }
     if (isObject(TransitionPBController)) {
-        (0.33 + (0.33 * %progress)).setValue();
+        TransitionPBController.setValue((0.33 + (0.33 * %progress)));
     }
 };
 function onPhase2Complete() {
 };
 function onFileChunkReceived(%fileName, %ofs, %size) {
     if (isObject(LoadingPBController)) {
-        (%size / %ofs).setValue();
-        "Downloading " @ %fileName @ "...".setValue();
+        LoadingPBController.setValue((%size / %ofs));
+        LoadingProgressTxt.setValue("Downloading " @ %fileName @ "...");
     }
     if (isObject(TransitionPBController)) {
-        (%size / %ofs).setValue();
+        TransitionPBController.setValue((%size / %ofs));
     }
 };
 function onMissionDownloadPhase3() {
     if (isObject(LoadingProgressTxt)) {
-        "Lighting".setValue();
+        LoadingProgressTxt.setValue("Lighting");
     }
 };
 function onPhase3Progress(%progress) {
     if (isObject(LoadingPBController)) {
-        (0.66 + (0.33 * %progress)).setValue();
+        LoadingPBController.setValue((0.66 + (0.33 * %progress)));
     }
     if (isObject(TransitionPBController)) {
-        (0.66 + (0.33 * %progress)).setValue();
+        TransitionPBController.setValue((0.66 + (0.33 * %progress)));
     }
 };
 function onPhase3Complete() {
     if (isObject(LoadingPBController)) {
-        1.setValue();
+        LoadingPBController.setValue(1);
     }
     if (isObject(TransitionPBController)) {
-        1.setValue();
+        TransitionPBController.setValue(1);
     }
     $lightingMission = 0;
-    TransitionPBController;
 };
 function onMissionDownloadComplete() {
     InitClientSittingSystem();
@@ -89,29 +88,29 @@ if (Using_DF()) {
     addMessageCallback('MsgDFZoneName');
 }
 function handleLoadInfoMessage(%unused, %msgString) {
-    0.setVisible();
+    TransitionMessage.setVisible(0);
     if (WorldMap.isAwake()) {
     }
     if (LoginGui.isAwake()) {
     }
     if ($StandAlone) {
-        0.setTransitioning();
-        "LoadingGui".setContent();
+        LoadingGui.setTransitioning(0);
+        Canvas.setContent("LoadingGui");
         %line = 0;
-        Canvas;
+        handleMsgDFZoneNameMessage;
         if ((qLineCount < %line)) {
             qLine = "" @ %line @ LoadingGui;
             LoadingGui;
             %line = (1.0 + %line);
-            LoadingGui;
+            handleLoadInfoDoneMessage;
         }
         qLineCount = 0 @ LoadingGui;
         (qLineCount < %line);
     }
     if (PlayGui.isAwake()) {
-        1.setTransitioning();
-        "LoadingGui".setContent();
-        $TransitionScreenshot.setScreenshotBitmap();
+        LoadingGui.setTransitioning(1);
+        Canvas.setContent("LoadingGui");
+        LoadingGui.setScreenshotBitmap($TransitionScreenshot);
     }
 };
 function handleLoadDescriptionMessage(%unused, %msgString) {

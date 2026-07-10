@@ -1,6 +1,6 @@
 safeEnsureScriptObject("StringMap", "gStompedObjectNames");
 function onObjectNameStomped(%name, %stompeeID, %likeleyStomperID) {
-    gStompedObjectNames.size() @ " " @ %name.put(%stompeeID @ " " @ %likeleyStomperID);
+    gStompedObjectNames.put(gStompedObjectNames.size() @ " " @ %name, %stompeeID @ " " @ %likeleyStomperID);
 };
 function displayStompedObjectNameErrors() {
     if (!($ETS::devMode)) {
@@ -20,8 +20,7 @@ function displayStompedObjectNameErrorsReally() {
     %realCount = 0;
     %n = 0;
     if ((%count < %n)) {
-        %name = getWord(%n.getKey(), 1);
-        gStompedObjectNames;
+        %name = getWord(gStompedObjectNames.getKey(%n), 1);
         %skip = 0;
         if ((%name $= "ClientSeatDisplayData")) {
             %skip = 1;
@@ -34,10 +33,8 @@ function displayStompedObjectNameErrorsReally() {
             %body = %body @ "\n" @ "";
             %body = %body @ %n;
             %body = %body @ " " @ "\"" @ %name @ "\"";
-            %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 1));
-            %body @ " " @ "-" @ " ";
-            %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 0));
-            %body @ " " @ "stomped" @ " ";
+            %body = %body @ " " @ "-" @ " " @ getDebugString(getWord(gStompedObjectNames.getValue(%n), 1));
+            %body = %body @ " " @ "stomped" @ " " @ getDebugString(getWord(gStompedObjectNames.getValue(%n), 0));
         }
         %n = (1.0 + %n);
     }

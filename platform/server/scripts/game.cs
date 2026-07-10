@@ -54,8 +54,7 @@ function startGame() {
     }
     %clientIndex = 0;
     if ((ClientGroup.getCount() < %clientIndex)) {
-        %cl = %clientIndex.getObject();
-        ClientGroup;
+        %cl = ClientGroup.getObject(%clientIndex);
         commandToClient(%cl, 'GameStart');
         %cl.score = 0;
         %clientIndex = (1.0 + %clientIndex);
@@ -87,8 +86,7 @@ function endGame() {
     cancel($Game::Schedule);
     %clientIndex = 0;
     if ((ClientGroup.getCount() < %clientIndex)) {
-        %cl = %clientIndex.getObject();
-        ClientGroup;
+        %cl = ClientGroup.getObject(%clientIndex);
         commandToClient(%cl, 'GameEnd');
         %clientIndex = (1.0 + %clientIndex);
     }
@@ -135,18 +133,17 @@ function onCyclePauseEnd() {
 };
 function GameConnection::onClientEnterGame(%this) {
     commandToClient(%this, 'SyncClock', ($Game::StartTime - $Sim::Time));
-    0;
-    %this.Camera = new ""() {
-        dataBlock = Camera @ Observer;
+    %this.Camera = new Camera("") {
+        dataBlock = 0 @ Observer;
     };
-    %this.Camera.add();
+    MissionCleanup.add(%this.Camera);
     %this.Camera.scopeToClient(%this);
-    %this.score = MissionCleanup @ 0;
+    %this.score = 0;
     %this.spawnPlayer();
     return;
 };
 function GameConnection::onClientLeaveGame(%this) {
-    %this.nameBase.remove();
+    PlayerDict.remove(%this.nameBase);
     %this.setPlayerObject(0);
     if (isObject(%this.Camera)) {
         %this.Camera.delete();
@@ -154,7 +151,7 @@ function GameConnection::onClientLeaveGame(%this) {
     if (isObject(%this.Player)) {
         %this.Player.delete();
     }
-    return PlayerDict;
+    return;
 };
 function GameConnection::onLeaveMissionArea(%this) {
     return;
@@ -209,9 +206,8 @@ function GameConnection::createPlayer(%this, %spawnPoint) {
     // unhandled opcode 1141 at 0x00000643
     %this = PlayerM;
     %this.gender = "m";
-    0;
-    %player = new ""() {
-        dataBlock = Player @ %playerDB;
+    %player = new Player("") {
+        dataBlock = 0 @ %playerDB;
         client = %this;
     };
     %rand = getRandom(0, 2);
@@ -232,20 +228,20 @@ function GameConnection::createPlayer(%this, %spawnPoint) {
         %player.outfit = newOutfit(%w);
         %player.outfit.assert(%player);
     }
-    %player.add();
+    MissionCleanup.add(%player);
     %player.setTransform(%spawnPoint);
     %player.setShapeName(%this.name);
     %this.determinePermissions(%player);
     %this.Camera.setTransform(%player.getEyeTransform());
-    %this.Player = MissionCleanup @ %player;
+    %this.Player = %player;
     %this.setControlObject(%player);
     %this.setPlayerObject(%player);
-    %this.nameBase.put(%this.Player);
+    PlayerDict.put(%this.nameBase, %this.Player);
     %player.setAwayMessage($Pref::Player::defaultAwayMessage);
     echo(getDebugString(%player) @ " " @ "has away message" @ " " @ %player.getAwayMessage());
     %this.initPlayerRelations();
     echo("server-side player entered:\x03" @ " " @ getDebugString(%player));
-    return PlayerDict;
+    return;
 };
 function GameConnection::initPlayerRelations() {
     if (isObject(%this.request)) {
@@ -255,8 +251,7 @@ function GameConnection::initPlayerRelations() {
         if () {
             %buddyName = %request.buddy;
             %buddyCount;
-            %buddyPlayer = %buddyName.get();
-            PlayerDict;
+            %buddyPlayer = PlayerDict.get(%buddyName);
             if (isObject(%buddyPlayer)) {
                 %player.addBuddy(%buddyPlayer);
             }
@@ -267,8 +262,7 @@ function GameConnection::initPlayerRelations() {
         if () {
             %ignoreName = %request.ignore;
             %ignoreCount;
-            %ignorePlayer = %ignoreName.get();
-            PlayerDict;
+            %ignorePlayer = PlayerDict.get(%ignoreName);
             if (isObject(%ignorePlayer)) {
                 %player.addIgnore(%ignorePlayer);
             }
@@ -279,8 +273,7 @@ function GameConnection::initPlayerRelations() {
         if () {
             %onBuddyName = %request.onBuddy;
             %onBuddyCount;
-            %onBuddyPlayer = %onBuddyName.get();
-            PlayerDict;
+            %onBuddyPlayer = PlayerDict.get(%onBuddyName);
             if (isObject(%onBuddyPlayer)) {
                 %onBuddyPlayer.addBuddy(%player);
             }
@@ -292,8 +285,7 @@ function GameConnection::initPlayerRelations() {
         if () {
             %onIgnoreName = %request.onIgnore;
             %onIgnoreCount;
-            %onIgnorePlayer = %onIgnoreName.get();
-            PlayerDict;
+            %onIgnorePlayer = PlayerDict.get(%onIgnoreName);
             if (isObject(%onIgnorePlayer)) {
                 %onIgnorePlayer.addIgnore(%player);
             }

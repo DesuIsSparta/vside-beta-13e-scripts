@@ -47,8 +47,7 @@ function serverHeartBeat() {
         if ((0.0 > %i)) {
             %users = %users @ ",";
         }
-        %client = %i.getObject();
-        ClientGroup;
+        %client = ClientGroup.getObject(%i);
         %users = %users @ urlEncode(%client.nameBase);
         %i = (1.0 + %i);
     }
@@ -80,13 +79,10 @@ function InitRequest::onConnectFailed(%unused) {
     return;
 };
 function InitRequest::onLine(%unused, %line) {
-    %line = NextToken(%line, "=");
-    name;
-    %line = NextToken(%line, "=");
-    value;
+    %line = NextToken(%line, name, "=");
+    %line = NextToken(%line, value, "=");
     if ((%name $= "boot")) {
-        %connection = %value.get();
-        ClientDict;
+        %connection = ClientDict.get(%value);
         if ((0.0 != %connection)) {
             echo("received boot for player " @ %connection.nameBase);
             %connection.delete("You have connected in another location.");

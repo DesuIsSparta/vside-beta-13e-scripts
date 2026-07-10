@@ -42,7 +42,7 @@ function stopAndTalk() {
         if (geTGF.isVisible()) {
             geTGF.closeFully();
         }
-        "Hello from" @ " " @ $Hostname @ ".".say(0, 0);
+        pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
         schedule(4000, 0);
         if ((changeClothes @ " " @ $DestServerName $= "MyApartment")) {
         }
@@ -57,7 +57,6 @@ function stopAndTalk() {
     }
     echo("LOAD: Lost PChat... Gonna try again.");
     $failureCount = (1.0 + $failureCount);
-    pChat;
     schedule(5000, 0);
 };
 function logoffAndQuit() {
@@ -67,11 +66,10 @@ function logoffAndQuit() {
     schedule(1000, 0);
 };
 function updateApartment() {
-    "http://www.youtube.com/watch?v=_qkmrKa74ts".setText();
+    CSMediaVideoTextBox.setText("http://www.youtube.com/watch?v=_qkmrKa74ts");
     CSMediaWindow.stopVideo();
     CSMediaWindow.playVideo();
     $videoURLUpdated = 1;
-    CSMediaVideoTextBox;
 };
 function changeClothes() {
     if ((2.0 < $changeClothesCount)) {
@@ -97,8 +95,7 @@ function approveFriendRequests() {
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        "Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
+        pChat.whisper("Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (1.0 - %n);
-        pChat;
     }
 };

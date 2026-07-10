@@ -1,11 +1,11 @@
 function TextureManager_OnDelayedLoad(%num) {
     textureLoadingIndicator_initialize();
     if ((0.0 > %num)) {
-        1.setVisible();
+        geTextureLoadingContainer.setVisible(1);
         geTextureLoadingContainer.setProfile(HUDDarkProfile);
         geTexturesLoadingIcon.resume();
     }
-    0.setVisible();
+    geTextureLoadingContainer.setVisible(0);
     geTextureLoadingContainer.setProfile(ETSNonModalProfile);
     geTexturesLoadingIcon.stop();
     WindowManager.update();
@@ -25,8 +25,7 @@ function textureLoadingIndicator_initialize() {
     %wi.addFrame("platform/client/ui/wait6.png");
     %wi.addFrame("platform/client/ui/wait7.png");
     %wi.setName("geTexturesLoadingIcon");
-    %wi.add();
-    geTextureLoadingContainer;
+    geTextureLoadingContainer.add(%wi);
     new GuiMLTextCtrl(geTGF_deets_eventTxtr) {
         profile = geTextureLoadingContainer @ "InfoWindowTextProfile";
         position = "0 0";

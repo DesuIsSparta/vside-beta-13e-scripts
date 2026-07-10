@@ -2,8 +2,7 @@ function GuiTracker::updateLocation(%this, %guiJustOpened) {
     if (%this.inTransit) {
         %sched = gGetField(%this, "guiTrackerUpdateLocation");
         cancel(%sched);
-        %sched = %this.schedule(200, %guiJustOpened);
-        updateLocation;
+        %sched = %this.schedule(200, updateLocation, %guiJustOpened);
         gSetField(%this, "guiTrackerUpdateLocation", %sched);
         return;
     }

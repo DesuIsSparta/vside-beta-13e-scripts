@@ -39,8 +39,7 @@ function serverCmdEtsPlayAnimName(%client, %animName) {
     return;
 };
 function playRandomEmote(%player) {
-    %animName = getRandom(0, (1.0 - EmoteDict.size())).getValue();
-    EmoteDict;
+    %animName = EmoteDict.getValue(getRandom(0, (1.0 - EmoteDict.size())));
     %player.playAnim(%animName);
     return;
 };

@@ -70,7 +70,7 @@ function walk() {
 function stopAndTalk() {
     $mvYawLeftSpeed = 0;
     $mvForwardAction = 0;
-    "Hello from" @ " " @ $Hostname @ ".".say(0, 0);
+    pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
     schedule(1000, 0);
 };
 function stopAndDance() {
@@ -83,7 +83,7 @@ function test::doDance() {
     %danceNum = getRandom($DancesCount);
     $dance = %danceNum[$Dances @ %danceNum];
     commandToServer('EtsPlayAnimName', $dance);
-    "I'm doing dance" @ " " @ $dance @ " " @ ".".say(0, 0);
+    pChat.say("I'm doing dance" @ " " @ $dance @ " " @ ".", 0, 0);
 };
 function test::getRandomGenre() {
     %num = getRandom(2);
@@ -112,7 +112,7 @@ function doAction() {
     %num = getRandom(4);
     if ((0.0 == %num)) {
         $genre = test::getRandomGenre();
-        $genre.selectGenre();
+        ClosetGui.selectGenre($genre);
     }
     if ((1.0 == %num)) {
         test::doDance();

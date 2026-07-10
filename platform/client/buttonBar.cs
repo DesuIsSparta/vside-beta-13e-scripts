@@ -39,82 +39,64 @@ function ButtonBar::Initialize(%this) {
     %this.background = %background;
     %this.add(%background);
     %this.addButtonWithPopupMenu("PrivateSpacePopupMenu", "platform/client/buttons/bb_apartment", 0);
-    "My Furnishings".addMenuItem("toggleCSPanel(CSInventoryBrowserWindow);", "platform/client/buttons/bb_apartment_furniture", "");
-    "Shop".addMenuItem("toggleCSPanel(CSShoppingBrowserWindow);", "platform/client/buttons/bb_apartment_shop", "");
-    "Materials & Surfaces".addMenuItem("toggleCSPanel(CSPaintingWindow);", "platform/client/buttons/bb_apartment_paint", "");
-    "Layouts".addMenuItem("toggleCSPanel(CSLayoutSelector);", "platform/client/buttons/bb_apartment_layout", "");
-    "My Music & Videos".addMenuItem("toggleCSPanel(CSMediaDisplay);", "platform/client/buttons/bb_apartment_audio_video", "");
-    "My Rules & Description".addMenuItem("toggleCSPanel(CSRulesAndDescWindow);", "platform/client/buttons/bb_apartment_settings", "");
-    "My Other Places".addMenuItem("geTGF.toggleToTabName(\"MyPlace\");", "platform/client/buttons/bb_apartment_myOtherPlaces", "");
+    PrivateSpacePopupMenu.addMenuItem("My Furnishings", "toggleCSPanel(CSInventoryBrowserWindow);", "platform/client/buttons/bb_apartment_furniture", "");
+    PrivateSpacePopupMenu.addMenuItem("Shop", "toggleCSPanel(CSShoppingBrowserWindow);", "platform/client/buttons/bb_apartment_shop", "");
+    PrivateSpacePopupMenu.addMenuItem("Materials & Surfaces", "toggleCSPanel(CSPaintingWindow);", "platform/client/buttons/bb_apartment_paint", "");
+    PrivateSpacePopupMenu.addMenuItem("Layouts", "toggleCSPanel(CSLayoutSelector);", "platform/client/buttons/bb_apartment_layout", "");
+    PrivateSpacePopupMenu.addMenuItem("My Music & Videos", "toggleCSPanel(CSMediaDisplay);", "platform/client/buttons/bb_apartment_audio_video", "");
+    PrivateSpacePopupMenu.addMenuItem("My Rules & Description", "toggleCSPanel(CSRulesAndDescWindow);", "platform/client/buttons/bb_apartment_settings", "");
+    PrivateSpacePopupMenu.addMenuItem("My Other Places", "geTGF.toggleToTabName(\"MyPlace\");", "platform/client/buttons/bb_apartment_myOtherPlaces", "");
     %this.addButton("StoreButton", "toggleStore();", "platform/client/buttons/bb_store", 0);
     %this.addButton("BuildingDirectoryButton", "toggleBuildingDirectory();", "platform/client/buttons/bb_building_directory", 0);
     %this.lastBuildingEntered = "" @ BuildingDirectoryButton;
-    PrivateSpacePopupMenu;
     %this.addButton("PlacesButton", "toggleTGF();", "platform/client/buttons/bb_places", 1);
     %this.addButtonWithPopupMenu("MePopupMenu", "platform/client/buttons/bb_avatar", 1);
     if ($UserPref::UI::ShowReloadTextures) {
-        "Reload Textures".addMenuItem("playerTexturesReload();", "platform/client/buttons/bb_avatar_hanger", "");
+        MePopupMenu.addMenuItem("Reload Textures", "playerTexturesReload();", "platform/client/buttons/bb_avatar_hanger", "");
     }
-    "View".addMenuItem("nextPlayerCamMode();", "platform/client/buttons/bb_avatar_view", "F7");
-    "Body".addMenuItem("toggleBodyTab();", "platform/client/buttons/bb_avatar_body", "");
-    "Closet".addMenuItem("toggleClosetTab();", "platform/client/buttons/bb_avatar_hanger", "F5");
-    "Actions".addMenuItem("toggleEmoteHud();", "platform/client/buttons/bb_avatar_action", "F4");
+    MePopupMenu.addMenuItem("View", "nextPlayerCamMode();", "platform/client/buttons/bb_avatar_view", "F7");
+    MePopupMenu.addMenuItem("Body", "toggleBodyTab();", "platform/client/buttons/bb_avatar_body", "");
+    MePopupMenu.addMenuItem("Closet", "toggleClosetTab();", "platform/client/buttons/bb_avatar_hanger", "F5");
+    MePopupMenu.addMenuItem("Actions", "toggleEmoteHud();", "platform/client/buttons/bb_avatar_action", "F4");
     %this.addButtonWithPopupMenu("PeoplePopupMenu", "platform/client/buttons/bb_people", 1);
-    "Invite friends - earn vPoints!".addMenuItem("doInviteFriends();", "platform/client/buttons/bb_people_friends", "");
-    "AIM".addMenuItem("toggleBuddyHudForTab(\"AIM\");", "platform/client/buttons/bb_people_aim", "");
-    "Requests".addMenuItem("toggleBuddyHudForTab(\"requests\");", "platform/client/buttons/bb_people_requests", "");
-    "Friends".addMenuItem("toggleBuddyHudForTab(\"friends\");", "platform/client/buttons/bb_people_friends", "F3");
+    PeoplePopupMenu.addMenuItem("Invite friends - earn vPoints!", "doInviteFriends();", "platform/client/buttons/bb_people_friends", "");
+    PeoplePopupMenu.addMenuItem("AIM", "toggleBuddyHudForTab(\"AIM\");", "platform/client/buttons/bb_people_aim", "");
+    PeoplePopupMenu.addMenuItem("Requests", "toggleBuddyHudForTab(\"requests\");", "platform/client/buttons/bb_people_requests", "");
+    PeoplePopupMenu.addMenuItem("Friends", "toggleBuddyHudForTab(\"friends\");", "platform/client/buttons/bb_people_friends", "F3");
     %this.addButtonWithPopupMenu("ToolsPopupMenu", "platform/client/buttons/bb_tools", 1);
-    "Camera".addMenuItem("toggleCameraImgBroadcast();", "platform/client/buttons/bb_tools_camera", "Ctrl B");
-    "Radar".addMenuItem("toggleLocalMap();", "platform/client/buttons/bb_tools_radar", "F1");
-    "Settings".addMenuItem("toggleOptionsPanel();", "platform/client/buttons/bb_tools_settings", "F6");
+    ToolsPopupMenu.addMenuItem("Camera", "toggleCameraImgBroadcast();", "platform/client/buttons/bb_tools_camera", "Ctrl B");
+    ToolsPopupMenu.addMenuItem("Radar", "toggleLocalMap();", "platform/client/buttons/bb_tools_radar", "F1");
+    ToolsPopupMenu.addMenuItem("Settings", "toggleOptionsPanel();", "platform/client/buttons/bb_tools_settings", "F6");
     %thisMenuName = "geWebPopupMenu";
-    ToolsPopupMenu;
     %this.addButtonWithPopupMenu(%thisMenuName, "platform/client/buttons/bb_web", 1, "", "");
     %item = %thisMenuName.addMenuItem("Invite friends - earn vPoints!", "doInviteFriends();", "platform/client/buttons/bb_people_friends", "");
-    ToolsPopupMenu;
     %item = %thisMenuName.addMenuItem("vSide Home", "gotoWebPage(\"http://" @ $Net::BaseDomain @ "/\");", "platform/client/buttons/bb_help_info", "");
-    ToolsPopupMenu;
     %item = %thisMenuName.addMenuItem("My Profile", "doEditProfile();", "platform/client/buttons/bb_help_info", "");
-    PeoplePopupMenu;
     %item = %thisMenuName.addMenuItem("Music", "gotoWebPage(\"" @ $Net::MusicURL @ "\" );", "platform/client/buttons/bb_help_info", "");
-    PeoplePopupMenu;
     %item = %thisMenuName.addMenuItem("Forums", "gotoWebPage(\"" @ $Net::ForumsURL @ "\" );", "platform/client/buttons/bb_help_info", "");
-    PeoplePopupMenu;
     %item = %thisMenuName.addMenuItem("Events", "gotoWebPage(\"" @ $Net::EventsURL @ "\" );", "platform/client/buttons/bb_help_info", "");
-    PeoplePopupMenu;
     %this.addButtonWithPopupMenu("HelpPopupMenu", "platform/client/buttons/bb_help", 1, "", "");
-    %item = "Info for parents".addMenuItem("gotoWebPage(\"" @ $Net::HelpURL_Parents @ "\");", "platform/client/buttons/bb_help_info", "");
-    HelpPopupMenu;
-    %item = "House Rules".addMenuItem("gotoWebPage(\"" @ $Net::HelpURL_Guidelines @ "\");", "platform/client/buttons/bb_help_info", "");
-    HelpPopupMenu;
-    %item = "FAQ: Designing your own clothes".addMenuItem("gotoWebPage(\"" @ $Net::HelpURL_VHD @ "\");", "platform/client/buttons/bb_help_faq", "");
-    HelpPopupMenu;
-    %item = "FAQ: Moving, dancing, and chatting".addMenuItem("gotoWebPage(\"" @ $Net::HelpURL_Navigation @ "\");", "platform/client/buttons/bb_help_faq", "");
-    HelpPopupMenu;
-    %item = "FAQ: Music and events".addMenuItem("gotoWebPage(\"" @ $Net::HelpURL_MusicNEvents @ "\");", "platform/client/buttons/bb_help_faq", "");
-    HelpPopupMenu;
-    %item = "FAQ: Something is wrong with vSide".addMenuItem("gotoWebPage(\"" @ $Net::HelpURL_Support @ "\");", "platform/client/buttons/bb_help_faq", "");
-    HelpPopupMenu;
-    %item = "Someone is bothering me!".addMenuItem("gotoWebPage(\"" @ $Net::HelpURL_Abuse @ "\");", "platform/client/buttons/bb_help_alert", "");
-    HelpPopupMenu;
-    %item = "Ask other vSiders for help".addMenuItem("toggleHelpMeMode();", "platform/client/buttons/bb_help_person", "");
-    HelpPopupMenu;
+    %item = HelpPopupMenu.addMenuItem("Info for parents", "gotoWebPage(\"" @ $Net::HelpURL_Parents @ "\");", "platform/client/buttons/bb_help_info", "");
+    %item = HelpPopupMenu.addMenuItem("House Rules", "gotoWebPage(\"" @ $Net::HelpURL_Guidelines @ "\");", "platform/client/buttons/bb_help_info", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Designing your own clothes", "gotoWebPage(\"" @ $Net::HelpURL_VHD @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Moving, dancing, and chatting", "gotoWebPage(\"" @ $Net::HelpURL_Navigation @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Music and events", "gotoWebPage(\"" @ $Net::HelpURL_MusicNEvents @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Something is wrong with vSide", "gotoWebPage(\"" @ $Net::HelpURL_Support @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("Someone is bothering me!", "gotoWebPage(\"" @ $Net::HelpURL_Abuse @ "\");", "platform/client/buttons/bb_help_alert", "");
+    %item = HelpPopupMenu.addMenuItem("Ask other vSiders for help", "toggleHelpMeMode();", "platform/client/buttons/bb_help_person", "");
     %item.setInternalName("helpMe");
     updateHelpMeModeMenu();
     %this.bringToFront(%background);
     %this.update();
     $ButtonBarVar::Hidden = 0;
-    MePopupMenu;
     %this.handleContiguousSpace();
 };
 function ButtonBar::makeButton(%this, %buttonName, %command, %bitmap) {
     %bbHeight = getWord(%this.extent, 1);
     %xPos = (((1.0 - %this.getCount()) * ($ButtonBarVar::buttonPadding + $ButtonBarVar::buttonWidth)) + $ButtonBarVar::buttonBarSideBorder);
     %ypos = mFloor((2.0 / ($ButtonBarVar::buttonHeight - %bbHeight)));
-    0;
-    %button = new %buttonName() {
-        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
+    %button = new GuiBitmapButtonCtrl(%buttonName) {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
@@ -132,9 +114,8 @@ function ButtonBar::makeButton(%this, %buttonName, %command, %bitmap) {
     return %button;
 };
 function ButtonBar::makeNewDot(%this) {
-    0;
-    %dot = new ""() {
-        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+    %dot = new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "top";
         position = "0 0";
@@ -182,13 +163,11 @@ function ButtonBar::insertButton(%this, %buttonName) {
     if ((-(1.0) != %this.getObjectIndex(%buttonToInsert))) {
         return;
     }
-    %dotToInsert.add();
-    %dummyContainer = new ""();;
-    GuiControl;
-    %maxCount = %this.getCount();
+    ButtonBarActivator.add(%dotToInsert);
+    %dummyContainer = new GuiControl("");;
     0;
+    %maxCount = %this.getCount();
     %i = (1.0 - %maxCount);
-    ButtonBarActivator;
     if ((0.0 > %i)) {
         %currentButton = %this.getObject(%i);
         %this.remove(%currentButton);
@@ -230,7 +209,7 @@ function ButtonBar::removeButton(%this, %buttonName) {
         return;
     }
     %this.remove(%buttonToRemove);
-    %dotToRemove.remove();
+    ButtonBarActivator.remove(%dotToRemove);
     %this.update();
 };
 function ButtonBar::update(%this) {
@@ -265,8 +244,7 @@ function ButtonBar::update(%this) {
         %maxCount = ButtonBarActivator.getCount();
         %i = 0;
         if ((%maxCount < %i)) {
-            %currentDot = %i.getObject();
-            ButtonBarActivator;
+            %currentDot = ButtonBarActivator.getObject(%i);
             %currentDot.setTrgPosition(%xoffset, %yoffset);
             %xoffset = (($ButtonBarVar::dotPadding + $ButtonBarVar::dotWidth) + %xoffset);
             %i = (1.0 + %i);
@@ -291,7 +269,7 @@ function ButtonBar::update(%this) {
     %newBgExt = %newWidth @ " " @ %bbHeight;
     (%maxCount < %i);
     %newBgPos = "0 0";
-    mFloor((1.0 + (2.0 / (%newWidth - %screenWidth)))).resize(($ButtonBarVar::buttonBarActivatorHeight - %screenHeight), %newWidth, $ButtonBarVar::buttonBarActivatorHeight);
+    ButtonBarActivator.resize(mFloor((1.0 + (2.0 / (%newWidth - %screenWidth)))), ($ButtonBarVar::buttonBarActivatorHeight - %screenHeight), %newWidth, $ButtonBarVar::buttonBarActivatorHeight);
     if (isObject(%this.background)) {
         %this.background.setTrgExtent(%newBgExt);
         %this.background.setTrgPosition(%newBgPos);
@@ -314,7 +292,7 @@ function ButtonBar::show(%this) {
     }
     $ButtonBarVar::Hidden = 0;
     %this.setVisible(1);
-    0.setVisible();
+    ButtonBarActivator.setVisible(0);
     %this.update();
     PlayGui.pushToBack(ButtonBar);
     PlayGui.bringToFront(ButtonBarActivator);
@@ -375,7 +353,7 @@ function ButtonBar::handleContiguousSpace(%this) {
     if (isObject(MessageHudShoutOutIcon)) {
         %isGW = (PlacesButton @ " " @ $gContiguousSpaceName $= "gw");
         PlacesButton;
-        !(%isGW).setVisible();
+        MessageHudShoutOutIcon.setVisible(!(%isGW));
     }
 };
 function ButtonBarBackground::onReachedTarget(%this) {
@@ -383,10 +361,9 @@ function ButtonBarBackground::onReachedTarget(%this) {
         %maxCount = ButtonBar.getCount();
         %i = 1;
         if ((%maxCount < %i)) {
-            %i.getObject().setVisible(0);
+            ButtonBar.getObject(%i).setVisible(0);
             %i = (1.0 + %i);
-            ButtonBar;
         }
-        1.setVisible();
+        ButtonBarActivator.setVisible(1);
     }
 };

@@ -12,14 +12,13 @@ function initCoAnimList() {
 $gCoAnimDictionary = 0;
 function addCoAnim(%coAnimName, %anim, %delayA, %delayB, %range, %relativeTransform, %minLevel, %requestText, %moveMode) {
     if (!(isObject($gCoAnimDictionary))) {
-        $gCoAnimDictionary = new ""();;
-        StringMap;
+        $gCoAnimDictionary = new StringMap("");;
+        0;
         if (isObject(MissionCleanup)) {
-            $gCoAnimDictionary.add();
+            MissionCleanup.add($gCoAnimDictionary);
         }
     }
     %entry = "" @ %anim @ "\t" @ %delayA @ "\t" @ %delayB @ "\t" @ %range @ "\t" @ %relativeTransform @ "\t" @ %minLevel @ "\t" @ %requestText @ "\t" @ %moveMode;
-    MissionCleanup;
     setCoAnimEntry(%coAnimName, %entry);
 };
 function setCoAnimSkuPeriod(%coAnimName, %whichPlayer, %specialSkuName, %startMS, %stopMS) {

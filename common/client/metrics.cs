@@ -88,8 +88,8 @@ function metrics(%expr) {
         %cb = "waterMetricsCallback()";
     }
     if (!(%cb $= "")) {
-        1000.pushDialog();
-        %cb.setValue();
+        Canvas.pushDialog(FrameOverlayGui, 1000);
+        TextOverlayControl.setValue(%cb);
     }
     GLEnableMetrics(0);
     Canvas.popDialog(FrameOverlayGui);

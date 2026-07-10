@@ -5,7 +5,7 @@ function addSpace3DMap(%spaceName, %mapFile) {
             MissionCleanup.add(space3DMapsMap);
         }
     }
-    %spaceName.put(%mapFile);
+    space3DMapsMap.put(%spaceName, %mapFile);
 };
 function addSpace2DMap(%spaceName, %mapFile, %coordUpperLeft, %coordUpperRight, %coordLowerLeft, %altitudeOffset) {
     if (!(isObject(space2DMapsMap))) {
@@ -14,18 +14,17 @@ function addSpace2DMap(%spaceName, %mapFile, %coordUpperLeft, %coordUpperRight, 
             MissionCleanup.add(space2DMapsMap);
         }
     }
-    %obj = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %obj.add();
-    }
-    %obj.spaceName = MissionCleanup @ %spaceName;
+    %obj = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%obj);
+    }
+    %obj.spaceName = %spaceName;
     %obj.mapFile = %mapFile;
     %obj.coordUpperLeft = %coordUpperLeft;
     %obj.coordLowerLeft = %coordLowerLeft;
     %obj.coordUpperRight = %coordUpperRight;
     %obj.altitudeOffset = %altitudeOffset;
     %obj.radians = "";
-    %spaceName.put(%obj);
+    space2DMapsMap.put(%spaceName, %obj);
 };

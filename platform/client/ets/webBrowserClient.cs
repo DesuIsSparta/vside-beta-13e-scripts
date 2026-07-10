@@ -150,9 +150,9 @@ function dlMgr::beginDownloadingItem(%this, %dlItem) {
     }
     %dlItem.localFilename = %this.makeLocalFilename(%dlItem.url);
     %this.outstanding.put(%dlItem.url, %dlItem);
-    %curl = new ""();;
-    URLPostObject;
-    %curl.dlItem = 0 @ %dlItem;
+    %curl = new URLPostObject("");;
+    0;
+    %curl.dlItem = %dlItem;
     %curl.setURL(%dlItem.url);
     %curl.setDownloadFile(%dlItem.localFilename);
     %curl.setRecvData(1);
@@ -168,9 +168,9 @@ function dlMgr::makeLocalFilename(%this, %url) {
 function dlMgrRequest_onCompletedDownload(%request, %result) {
     %dlItem = %request.dlItem;
     if ((0.0 == %result)) {
-        %dlItem.downloadSucceeded();
+        dlMgr.downloadSucceeded(%dlItem);
     }
-    %dlItem.downloadFailed(%request, %result);
+    dlMgr.downloadFailed(%dlItem, %request, %result);
 };
 function dlMgr::downloadFailed(%this, %dlItem, %curl, %error) {
     error(getScopeName() @ " " @ "-" @ " " @ %error @ " " @ %curl.statusCode() @ " " @ %curl.resultCodeToString(%error));
@@ -240,7 +240,7 @@ function dlMgr::loadCacheIndex(%this) {
     %this.cacheIndex.loadFrom(%this.cacheIndexFilename, "debug");
 };
 function dlMgr::saveCacheIndex(%this) {
-    %this.cacheIndex.saveTo(%this.cacheIndexFilename);
+    dlMgr.saveTo(%this.cacheIndex, dlMgr, %this.cacheIndexFilename);
 };
 function dlMgr::clearCache(%this) {
     %n = (1.0 - %this.cacheIndex.size());
@@ -324,7 +324,7 @@ function GuiControl::downloadAndApplyBitmap(%this, %url, %policyName) {
         %policyName = "";
     }
     %this.expectedImageUrl = %url;
-    %url.applyUrl("dlMgrCallback_GuiControl", "", %this, %policyName);
+    dlMgr.applyUrl(%url, "dlMgrCallback_GuiControl", "", %this, %policyName);
 };
 function dlMgrCallback_GuiControl(%dlItem, %isFresh) {
     %ctrl = %dlItem.callbackData;

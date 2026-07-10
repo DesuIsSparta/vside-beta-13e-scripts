@@ -5,7 +5,7 @@ $gPaperDoll_Nudge = "0 0";
 $gPaperDoll_NudgeStep = "0.025 0.025";
 function gePaperDollMakins::open(%this) {
     $UserPref::Video::ConstrainWindowDimensions = 0;
-    %this.pushDialog(0);
+    Canvas.pushDialog(%this, 0);
     setScreenMode(1048, 1048, getWord($UserPref::Video::Resolution, 2), 0);
     if (!(gePaperDollWhichSetup_Client.getValue())) {
     }
@@ -14,12 +14,12 @@ function gePaperDollMakins::open(%this) {
     }
     %this.paperDoll_refresh();
     if (isObject($player)) {
-        $player.setSimObject();
+        gePaperDollObjectView.setSimObject($player);
     }
-    "<color:ffffff>" @ "\n" @ "Welcome to the paper doll making interface." @ "\n" @ "This runs on two different folders." @ "\n" @ "for the client:<spush><b>platform/client/ui/paperdolls/<spop>" @ "\n" @ "for the web:<spush><b>web/paperdolls/<spop>." @ "\n" @ "in each of those, <spush><b>permutations.txt<spop> sets up everything." @ "\n" @ "When you click \"refresh\", <spush><b>permutations.xml<spop> and <spush><b>permutations_manifest.txt<spop> are generated." @ "\n" @ "" @ "\n" @ "The client and the web can have different setup files. eg, you can have [many] more options on the web, if you want." @ "\n" @ "" @ "\n" @ "The size of the avatar area is set in permutations.txt." @ "\n" @ "Since the alpha channel is not anti-aliased, i recommend setting the avatar area to twice the actual desired image size, and then using photoshop or similar to batch-process the images down to size." @ "\n" @ "" @ "\n" @ "Also, surfaces which have alpha (such as glasses or some hair) will be saved transparent in those regions, which looks weird. To fix this, again use batch processing in photoshop to simply duplicate the layer of the image several times, building up the opacity." @ "\n" @ "" @ "\n" @ "During a real run, the images are saved out to <spush><b>images/source<spop>." @ "\n" @ "<spush><color:77FF44><b>For the client, these must be copied into just plain \"images/\"!<spop>" @ "\n" @ "For the web, they may need to be copied elsewhere as well; that process hasn't been worked out yet." @ "\n" @ "" @ "\n" @ "Don't check in the images in \"source/\", only the ones from \"images\"." @ "\n" @ "" @ "\n" @ "During a real or dry run, HTML files are also generated previewing all the images." @ "\n" @ "" @ "\n" @ "<spush><color:77FF44><b>To get alpha, the -alphaBuffer option must be used on the command line.<spop>".setText();
+    gePaperDollInfo_Long.setText("<color:ffffff>" @ "\n" @ "Welcome to the paper doll making interface." @ "\n" @ "This runs on two different folders." @ "\n" @ "for the client:<spush><b>platform/client/ui/paperdolls/<spop>" @ "\n" @ "for the web:<spush><b>web/paperdolls/<spop>." @ "\n" @ "in each of those, <spush><b>permutations.txt<spop> sets up everything." @ "\n" @ "When you click \"refresh\", <spush><b>permutations.xml<spop> and <spush><b>permutations_manifest.txt<spop> are generated." @ "\n" @ "" @ "\n" @ "The client and the web can have different setup files. eg, you can have [many] more options on the web, if you want." @ "\n" @ "" @ "\n" @ "The size of the avatar area is set in permutations.txt." @ "\n" @ "Since the alpha channel is not anti-aliased, i recommend setting the avatar area to twice the actual desired image size, and then using photoshop or similar to batch-process the images down to size." @ "\n" @ "" @ "\n" @ "Also, surfaces which have alpha (such as glasses or some hair) will be saved transparent in those regions, which looks weird. To fix this, again use batch processing in photoshop to simply duplicate the layer of the image several times, building up the opacity." @ "\n" @ "" @ "\n" @ "During a real run, the images are saved out to <spush><b>images/source<spop>." @ "\n" @ "<spush><color:77FF44><b>For the client, these must be copied into just plain \"images/\"!<spop>" @ "\n" @ "For the web, they may need to be copied elsewhere as well; that process hasn't been worked out yet." @ "\n" @ "" @ "\n" @ "Don't check in the images in \"source/\", only the ones from \"images\"." @ "\n" @ "" @ "\n" @ "During a real or dry run, HTML files are also generated previewing all the images." @ "\n" @ "" @ "\n" @ "<spush><color:77FF44><b>To get alpha, the -alphaBuffer option must be used on the command line.<spop>");
 };
 function gePaperDollMakins::close(%this) {
-    %this.popDialog();
+    Canvas.popDialog(%this);
 };
 function gePaperDollMakins::paperDoll_refresh(%this) {
     $gPaperDoll_SetupFile = paperDoll_getBaseFilepath() @ "permutations.txt";
@@ -36,15 +36,13 @@ function gePaperDollMakins::paperDoll_refresh(%this) {
     %text = %text @ "num F =" @ " " @ %numf;
     %text = %text @ "\n" @ "num M =" @ " " @ %numm;
     %text = %text @ "\n" @ "currently:" @ " " @ %genderText;
-    %text.setText();
-    getWord($gPaperDollImgSize, 0).resize(getWord($gPaperDollImgSize, 1));
+    gePaperDollInfo.setText(%text);
+    gePaperDollEraser.resize(getWord($gPaperDollImgSize, 0), getWord($gPaperDollImgSize, 1));
     eraserColor = $gPaperDollBackground @ gePaperDollEraser;
-    gePaperDollEraser;
     paperDoll_generateXML();
     paperDoll_generateJSON();
     paperDoll_generateManifest();
     $gPaperDoll_SkuArray = new_ScriptArray("");
-    gePaperDollInfo;
     paperDoll_RecursePermutations(%gender, "", %gender, 0, $gPaperDoll_SkuArray);
     $gPaperDoll_SkuArray.dumpValues();
 };
@@ -54,20 +52,18 @@ function paperDoll_StartTakingSnaps() {
     $gPaperDoll_CancelRun = 0;
     $gPaperDoll_PreviewFile = "";
     if (1) {
-        $gPaperDoll_PreviewFile = new ""();;
-        FileObject;
-        %fileName = paperDoll_getBaseFilepath();
+        $gPaperDoll_PreviewFile = new FileObject("");;
         0;
+        %fileName = paperDoll_getBaseFilepath();
         %fileName = %fileName @ "index_" @ $player.getGender() @ ".html";
         $gPaperDoll_PreviewFile.openForWrite(%fileName);
         $gPaperDoll_PreviewFile.writeLine("<html>\n<body background=\"greychecks.png\">");
     }
-    0.setVisible();
-    0.setVisible();
-    1.setVisible();
-    1.setVisible();
+    gePaperDollDryRun.setVisible(0);
+    gePaperDollRealRun.setVisible(0);
+    gePaperDollCancel.setVisible(1);
+    gePaperDollInfo_Running.setVisible(1);
     $gPaperDoll_NumRemaining = paperDoll_getNumPermutations($player.getGender());
-    gePaperDollInfo_Running;
     paperDoll_prepareNextSnapshot();
 };
 function paperDoll_finishedSnapshots() {
@@ -77,10 +73,10 @@ function paperDoll_finishedSnapshots() {
         $gPaperDoll_PreviewFile.delete();
         $gPaperDoll_PreviewFile = "";
     }
-    1.setVisible();
-    1.setVisible();
-    0.setVisible();
-    0.setVisible();
+    gePaperDollDryRun.setVisible(1);
+    gePaperDollRealRun.setVisible(1);
+    gePaperDollCancel.setVisible(0);
+    gePaperDollInfo_Running.setVisible(0);
 };
 function paperDoll_prepareNextSnapshot() {
     paperDoll_prepareOneSnapshot($gPaperDoll_CurIndex);
@@ -96,14 +92,12 @@ function paperDoll_prepareOneSnapshot(%index) {
     $gPaperDoll_CurName = getField($gPaperDoll_SkuArray.get(%index), 1);
     %skus = SkuManager.overlaySkus($gPaperDoll_CurSkus);
     $gPaperDoll_ObjViewCtrl.setSkus(%skus);
-    %index.setValue();
+    gePaperDollCurOutfitField.setValue(%index);
     %tmp = altCommand;
     gePaperDollCurOutfitSlider;
     altCommand = "" @ gePaperDollCurOutfitSlider;
-    gePaperDollCurOutfitField;
-    (((1.0 - $gPaperDoll_SkuArray.size()) / %index) - 1.0).setValue();
+    gePaperDollCurOutfitSlider.setValue((((1.0 - $gPaperDoll_SkuArray.size()) / %index) - 1.0));
     altCommand = %tmp @ gePaperDollCurOutfitSlider;
-    gePaperDollCurOutfitSlider;
     $gPaperDoll_CurIndex = %index;
 };
 function paperDoll_Permute_Cancel() {
@@ -137,7 +131,7 @@ function paperDoll_takeCurrentSnapshot() {
         $gPaperDoll_PreviewFile.writeLine("<img src=\"images/" @ %justFileName @ "\">");
     }
     $gPaperDoll_NumRemaining = (1.0 - $gPaperDoll_NumRemaining);
-    "Remaining:" @ " " @ $gPaperDoll_NumRemaining.setText();
+    gePaperDollInfo_Running.setText("Remaining:" @ " " @ $gPaperDoll_NumRemaining);
 };
 function paperDoll_MakePermutations(%gender) {
     paperDoll_StartTakingSnaps();
@@ -178,8 +172,8 @@ function paperDoll_Permute_DryRun() {
 function paperDoll_Nudge(%vec) {
     %vec = VectorScale(%vec, $gPaperDoll_NudgeStep);
     $gPaperDoll_Nudge = VectorAdd($gPaperDoll_Nudge, %vec);
-    getWord($gPaperDoll_Nudge, 0) @ " " @ 0 @ " " @ getWord($gPaperDoll_Nudge, 1).setLookAtNudge();
-    getWords($gPaperDoll_Nudge, 0, 1).setValue();
+    gePaperDollObjectView.setLookAtNudge(getWord($gPaperDoll_Nudge, 0) @ " " @ 0 @ " " @ getWord($gPaperDoll_Nudge, 1));
+    gePaperDollNudgeField.setValue(getWords($gPaperDoll_Nudge, 0, 1));
 };
 function paperDoll_NudgeSet(%vec) {
     $gPaperDoll_Nudge = %vec;
@@ -202,12 +196,12 @@ function gePaperDollCurOutfitSlider::valueChanged(%this) {
 };
 function paperDoll_generateXML() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.xml";
-    %file = new ""();;
-    FileObject;
+    %file = new FileObject("");;
+    0;
     if (!(%file.openForWrite(%fileName))) {
         error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
-        return 0;
+        return;
     }
     %file.indent = "";
     %file.indentString = "    ";
@@ -270,12 +264,12 @@ function paperDoll_generateXML() {
 };
 function paperDoll_generateJSON() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.json";
-    %file = new ""();;
-    FileObject;
+    %file = new FileObject("");;
+    0;
     if (!(%file.openForWrite(%fileName))) {
         error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
-        return 0;
+        return;
     }
     %file.indent = "";
     %file.indentString = "    ";
@@ -364,12 +358,12 @@ function paperDoll_generateJSON() {
 };
 function paperDoll_generateManifest() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations_manifest.txt";
-    %file = new ""();;
-    FileObject;
+    %file = new FileObject("");;
+    0;
     if (!(%file.openForWrite(%fileName))) {
         error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
-        return 0;
+        return;
     }
     %genders = "f m";
     %file.writeOpenTag("permutations", "");
@@ -399,8 +393,7 @@ function paperDoll_generateManifest_Recurse(%file, %gender, %initialDepth, %valu
             %imgFilename = getField(%s, 0);
             %imgFilename = %imgFilename @ "." @ $gPaperDoll_ImgExtension;
             %skus = getField(%s, 1);
-            %skusEntire = %gender[$gPaperDoll_BaseSkus @ %gender].overlaySkus(%skus);
-            SkuManager;
+            %skusEntire = SkuManager.overlaySkus(%gender[$gPaperDoll_BaseSkus @ %gender], %skus);
             %file.writeLineIndented("");
             %file.writeOpenTag("permutation", "");
             %file.writeShortTag("filename", "", %imgFilename);

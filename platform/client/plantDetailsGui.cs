@@ -1,9 +1,9 @@
 function PlantDetailsGui::open(%this) {
-    %this.ensureAdded();
+    PlayGui.ensureAdded(%this);
     if (!(%this.isVisible())) {
         %this.setVisible(1);
     }
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
 };
 function PlantDetailsGui::close(%this) {
     %this.setVisible(0);
@@ -15,14 +15,12 @@ function PlantDetailsGui::onClickFAQButton(%this) {
 };
 function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL) {
     %this.open();
-    %plantName.setText();
-    (%totalStates / %currentState).setValue();
-    %info.setText();
+    PlantDetailsTitle.setText(%plantName);
+    PlantDetailsProgressBar.setValue((%totalStates / %currentState));
+    PlantDetailsStatusText.setText(%info);
     %bmp = "projects/common/inventory/" @ %plantSKU @ "/progress" @ %plantSKU @ ".png";
-    PlantDetailsStatusText;
-    %bmp.setBitmap();
-    %this.faqURL = PlantProgressBackgroundBMP @ %faqURL;
-    PlantDetailsProgressBar;
+    PlantProgressBackgroundBMP.setBitmap(%bmp);
+    %this.faqURL = %faqURL;
 };
 function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL) {
     if ((%status $= "HAPPY")) {
@@ -39,5 +37,5 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
     }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
     PlantDetailsGui.open();
-    %plantSKU.showDetails(%plantName, %info, %currentState, %totalStates, %faqURL);
+    PlantDetailsGui.showDetails(%plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL);
 };

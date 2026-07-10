@@ -24,12 +24,12 @@ function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, 
     if ((1.0 == %hasStandaloneCache)) {
         log("network", "debug", "tell client to load local cache");
         %client.readingCache = 1;
-        commandToClient(%client, 'LoadLocalCache', $MissionSequence, $Server::MissionFile, %client.musicTrack);
+        commandToClient(%client, 'LoadLocalCache', $MissionSequence, $Server::MissionFile, MissionGroup, %client.musicTrack);
     }
     log("network", "debug", "tell client to start caching our data");
-    %client.readingCache = MissionGroup @ 0;
-    commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, %client.musicTrack);
-    return MissionGroup;
+    %client.readingCache = 0;
+    commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, MissionGroup, %client.musicTrack);
+    return;
 };
 function serverCmdStartCacheAck(%client, %missionSequence) {
     log("network", "info", "sending mission load to client:" @ " " @ $Server::MissionFile @ " " @ "seq: " @ " " @ %missionSequence);

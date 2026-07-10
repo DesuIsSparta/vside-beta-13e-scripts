@@ -206,11 +206,10 @@ function hiliteControl(%ctrl, %inParent) {
         %targetPosY = (%offset - 0.0);
         %targetExtX = ((%offset * 2.0) + getWord(%ctrl.getExtent(), 0));
         %targetExtY = ((%offset * 2.0) + getWord(%ctrl.getExtent(), 1));
-        1.setVisible();
-        %targetPosX @ " " @ %targetPosY.setTrgPosition();
-        %targetExtX @ " " @ %targetExtY.setTrgExtent();
+        HiliteWindow.setVisible(1);
+        HiliteWindow.setTrgPosition(%targetPosX @ " " @ %targetPosY);
+        HiliteWindow.setTrgExtent(%targetExtX @ " " @ %targetExtY);
         hiliteCtrl = %ctrl @ HiliteWindow;
-        HiliteWindow;
     }
     if (isObject(HiliteWindow)) {
         HiliteWindow.delete();
@@ -228,7 +227,7 @@ function GuiControl::isHiliteCtrl(%this) {
     }
     if (HiliteWindow.isVisible()) {
     }
-    return (HiliteWindow == hiliteCtrl.getId());
+    return (%this.getId() == HiliteWindow.getId(hiliteCtrl));
 };
 $gToolTipDelay = 500;
 function GuiControl::onMouseEnterBounds(%this) {
@@ -268,7 +267,7 @@ function GuiControl::hideToolTip(%this) {
         ToolTipCtrl.setVisible(0);
     }
     cancel(%this.tooltiptimer);
-    %this.tooltiptimer = ToolTipCtrl @ 0;
+    %this.tooltiptimer = 0;
 };
 function GuiControl::onMouseLeaveBounds(%this) {
     %this.hideToolTip();
@@ -361,9 +360,8 @@ function onDragAndDropCtrl(%make) {
     }
 };
 function GuiControl::makeVisualClone(%this) {
-    0;
-    return new ""() {
-        profile = GuiControl @ "DragAndDropProfile";
+    return new GuiControl("") {
+        profile = 0 @ "DragAndDropProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -602,8 +600,7 @@ function generic_takeSnapshotReally(%previewBitmapCtrl) {
     %bottomMargin = -(10.0);
     %leftMargin = 0;
     %rightMargin = 0;
-    %playerIDs = (%leftMargin - getWord(%regionCtrl.getScreenPosition(), 0)).getPlayerIDsInViewAndInRangeAndInFrame((%topMargin - getWord(%regionCtrl.getScreenPosition(), 1)), (%rightMargin + (%leftMargin + getWord(%regionCtrl.getExtent(), 0))), (%bottomMargin + (%topMargin + getWord(%regionCtrl.getExtent(), 1))));
-    TheShapeNameHud;
+    %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame((%leftMargin - getWord(%regionCtrl.getScreenPosition(), 0)), (%topMargin - getWord(%regionCtrl.getScreenPosition(), 1)), (%rightMargin + (%leftMargin + getWord(%regionCtrl.getExtent(), 0))), (%bottomMargin + (%topMargin + getWord(%regionCtrl.getExtent(), 1))));
     %numPlayers = getWordCount(%playerIDs);
     %playerNames = "";
     %n = 0;

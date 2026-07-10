@@ -46,30 +46,29 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
     %this.setTrgExtent(%newW, %extY);
 };
 function GuiConvBubbleCtrl::AutosizeTimer(%this) {
-    gSetField(%this, 0);
+    gSetField(%this, expanded, 0);
     if (ConvBubScroll.isAtBottom()) {
         %this.autoResize(0, 0);
     }
-    cancel(gGetField(%this));
-    gSetField(%this, %this.schedule(1000, "AutosizeTimer"));
+    cancel(resizeTimer, gGetField(%this));
+    gSetField(%this, resizeTimer, %this.schedule(1000, "AutosizeTimer"));
 };
 $gConvBubOrigSlug = -(123.0);
 $gConvBubChillTimer = 0;
 function GuiConvBubbleCtrl::reexpand(%this, %howLongSecs) {
-    cancel(gGetField(%this));
-    gSetField(%this, %this.schedule((1000.0 * %howLongSecs), "AutosizeTimer"));
+    cancel(resizeTimer, gGetField(%this));
+    gSetField(%this, resizeTimer, %this.schedule((1000.0 * %howLongSecs), "AutosizeTimer"));
     if (!(gGetField(%this))) {
         if ((-(123.0) == $gConvBubOrigSlug)) {
             $gConvBubOrigSlug = %this.getSluggishness();
             expanded;
         }
-        gSetField(%this, 1);
+        gSetField(%this, expanded, 1);
         %this.setSluggishness(0.5);
         %this.autoResize(1, 1);
         %this.setChilling(0);
         cancel($gConvBubChillTimer);
         $gConvBubChillTimer = %this.schedule(700, "setChilling", 1);
-        expanded;
         %this.schedule(700, "setSluggishness", $gConvBubOrigSlug);
     }
 };
@@ -81,17 +80,17 @@ ConvBub.AutosizeTimer();
 function ConvBub::updateAutoMargins(%this) {
     %clientRectPosition = WindowManager.getClientRectPosition();
     %clientRectExtent = WindowManager.getClientRectExtent();
-    %clientRectExtent.setTrgExtent();
-    %clientRectPosition.setTrgPosition();
+    gePlayGuiHudlessArea.setTrgExtent(%clientRectExtent);
+    gePlayGuiHudlessArea.setTrgPosition(%clientRectPosition);
 };
 function ConvBub::close(%this, %keepHistory) {
-    0.setVisible();
+    ConvBub.setVisible(0);
     if (!(%keepHistory)) {
     }
     if (isObject(pChat)) {
         pChat.clearHistory();
     }
-    0.makeFirstResponder();
+    ConvBubVecCtrl.makeFirstResponder(0);
 };
 function ConvBub::open(%this) {
     if ($UserPref::Display::hideChat) {
@@ -126,12 +125,12 @@ function ConvBub::tryAutoClose(%this) {
         %this.restartAutoCloseTimer((1000.0 * 10.0));
         return;
     }
-    1.close();
+    ConvBub.close(1);
 };
 function ConvBub::onWake(%this) {
 };
 function ConvBub::onMouseDown(%this) {
-    15.reexpand();
+    ConvBub.reexpand(15);
 };
 function ConvBubVecCtrl::onMouseDown(%this) {
     ConvBub.onMouseDown();
@@ -141,10 +140,10 @@ function ConvBubVecCtrl::onRightURL(%this, %url) {
         %name = unmunge(getWords(%url, 1));
         onRightClickPlayerName(%name);
     }
-    %url.initWithURL();
+    LinkContextMenu.initWithURL(%url);
     LinkContextMenu.showAtCursor();
     if (!(%this.selectionActive)) {
-        1.makeFirstResponder();
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function ConvBubVecCtrl::onURL(%this, %url) {
@@ -159,7 +158,7 @@ function ConvBubVecCtrl::onURL(%this, %url) {
         vurlOperation(%url);
     }
     if (!(%this.selectionActive)) {
-        1.makeFirstResponder();
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function ConvBubScroll::onScrolledToBottom(%this) {

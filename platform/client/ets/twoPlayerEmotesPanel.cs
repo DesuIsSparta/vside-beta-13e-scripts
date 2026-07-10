@@ -1,10 +1,9 @@
 function TwoPlayerEmotesPanel::open(%this, %playerName) {
-    %this.ensureAdded();
+    PlayGui.ensureAdded(%this);
     %this.setVisible(1);
-    %this.focusAndRaise();
-    %this.playerName = PlayGui @ %playerName;
-    PlayGui;
-    "Target: " @ %playerName.setText();
+    PlayGui.focusAndRaise(%this);
+    %this.playerName = %playerName;
+    TwoPlayerEmotesText.setText("Target: " @ %playerName);
     %this.refresh();
 };
 function TwoPlayerEmotesPanel::close(%this) {
@@ -34,7 +33,7 @@ function TwoPlayerEmotesPanel::refresh(%this) {
 };
 function TwoPlayerEmotesList::onSelect(%this, %id, %text) {
     if ((0.0 >= %id)) {
-        doCoAnim(%text, %this.playerName);
+        doCoAnim(%text, TwoPlayerEmotesPanel, %this.playerName);
         TwoPlayerEmotesPanel.close();
     }
 };

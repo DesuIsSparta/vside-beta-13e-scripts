@@ -57,14 +57,13 @@ function RunTestRunner(%runnername) {
     %runnername.execute();
 };
 function TestSuiteRunner::construct(%name) {
-    0;
-    %ret = new %name() {
-        class = ScriptObject @ "TestSuiteRunner";
+    %ret = new ScriptObject(%name) {
+        class = 0 @ "TestSuiteRunner";
         testSuiteCount = 0;
         quitWhenDone = 0;
     };
     if (isObject(MissionCleanup)) {
-        %ret.add();
+        MissionCleanup.add(%ret);
     }
     return %ret;
 };
@@ -132,14 +131,13 @@ function TestSuiteRunner::reportResults(%this) {
     echo(" ");
 };
 function TestSuite::construct(%name) {
-    0;
-    %ret = new %name() {
-        class = ScriptObject @ "TestSuite";
+    %ret = new ScriptObject(%name) {
+        class = 0 @ "TestSuite";
         testCount = 0;
         quitWhenDone = 0;
     };
     if (isObject(MissionCleanup)) {
-        %ret.add();
+        MissionCleanup.add(%ret);
     }
     return %ret;
 };
@@ -226,14 +224,13 @@ function TestSuite::reportResults(%this) {
     echo(" ");
 };
 function TestCase::construct(%name) {
-    0;
-    %ret = new %name() {
-        class = ScriptObject @ "TestCase";
+    %ret = new ScriptObject(%name) {
+        class = 0 @ "TestCase";
         errorCount = 0;
         assertCount = 0;
     };
     if (isObject(MissionCleanup)) {
-        %ret.add();
+        MissionCleanup.add(%ret);
     }
     return %ret;
 };
@@ -304,9 +301,8 @@ function TestCase::reportResults(%this) {
     %i = 0;
     if ((%this.errorCount < %i)) {
         %message = "  " @ %i @ %this.ErrorMessage;
-        log("general", %message);
+        log("general", error, %message);
         %i = (1.0 + %i);
-        error;
     }
     echo(%this.getName() @ " " @ ":" @ " " @ %this.errorCount @ " " @ "errors found, " @ " " @ %this.assertCount @ " " @ "assertions");
 };

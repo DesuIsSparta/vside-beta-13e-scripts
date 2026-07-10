@@ -11,12 +11,12 @@ function toggleSalonChairControlDialog() {
     toggleVisibleState(salonChairControlGui);
 };
 function salonChairControlGui::open(%this) {
-    %this.pushDialog(0);
+    Canvas.pushDialog(%this, 0);
     %this.setVisible(1);
     %this.onRefreshTargetsList();
 };
 function salonChairControlGui::close(%this, %unused) {
-    %this.popDialog();
+    Canvas.popDialog(%this);
     %this.setVisible(0);
 };
 function salonChairControlGui::tryTarget(%this, %shape) {
@@ -29,7 +29,7 @@ function salonChairControlGui::tryTarget(%this, %shape) {
     }
     %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
-    %targetName.setText();
+    salonChairControlTargetsPopup.setText(%targetName);
 };
 function salonChairControlGui::sitInChair(%this, %chairType) {
     %name = getField(salonChairControlTargetsPopup.getText(), 1);
@@ -42,7 +42,7 @@ function salonChairControlGui::releaseFromChair(%this, %teleportAway) {
 $gSalonChairControlTargetsList = "";
 function salonChairControlGui::onRefreshTargetsList(%this) {
     $gSalonChairControlGuiPrevMenuTarget = salonChairControlTargetsPopup.getText();
-    "getting list..".setText();
+    salonChairControlTargetsPopup.setText("getting list..");
     commandToServer('SalonChairControlGetTargets');
 };
 function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item) {
@@ -57,7 +57,7 @@ function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item) {
         $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
     }
     if ((%action $= "finish")) {
-        $gSalonChairControlTargetsList.onGotTargetsList();
+        salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
     }
 };
 function salonChairControlGui::onGotTargetsList(%this, %theList) {
@@ -71,15 +71,15 @@ function salonChairControlGui::onGotTargetsList(%this, %theList) {
     %n = 0;
     if ((%num < %n)) {
         %entry = getRecord(%theList, %n);
-        %entry.add(%n);
-        if ((salonChairControlTargetsPopup @ " " @ %entry $= $gSalonChairControlGuiPrevMenuTarget)) {
+        salonChairControlTargetsPopup.add(%entry, %n);
+        if ((%entry $= $gSalonChairControlGuiPrevMenuTarget)) {
             %nextItem = %entry;
         }
         %n = (1.0 + %n);
     }
     salonChairControlTargetsPopup.sort();
     if (!((%num < %n) @ " " @ %this.defaultTarget $= "")) {
-        %this.defaultTarget.setText();
+        salonChairControlTargetsPopup.setText(%this.defaultTarget);
     }
-    %nextItem.setText();
+    salonChairControlTargetsPopup.setText(%nextItem);
 };

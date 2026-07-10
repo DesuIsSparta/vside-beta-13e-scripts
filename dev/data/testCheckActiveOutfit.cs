@@ -21,8 +21,8 @@ function doLoginButton() {
 };
 function doLogin() {
     echo("login as " @ $testUser);
-    $testUser.setValue();
-    "etspass".setValue();
+    LoginUserNameField.setValue($testUser);
+    LoginPasswordField.setValue("etspass");
     LoginGui.isAwake();
     LoginGui.doLoginButton();
     schedule(7000, 0);
@@ -95,7 +95,7 @@ function LoginRequest::onDone(%this) {
         quit();
     }
     error("Login failed");
-    warn(LoginRequest @ loginResult);
+    warn("Login failed for [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to ", LoginRequest @ loginResult);
     quit();
 };
 function joinServer() {
@@ -107,9 +107,9 @@ function joinServer() {
     }
     %i = 0;
     if ((servers.getCount() < %i)) {
-        if ((servers @ " " @ %i.getObject().get("name") $= "TestTown")) {
-            %i.getObject().join();
-            echo(servers @ %i.getObject().get("name"));
+        if ((servers.getObject(%i).get("name") $= "TestTown")) {
+            WorldMap.join(servers.getObject(%i));
+            echo("LOAD: Joined server " @ servers.getObject(%i).get("name"));
             echo("LOAD: Test login completed");
             schedule(11000, 0);
         }

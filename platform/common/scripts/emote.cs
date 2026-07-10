@@ -352,7 +352,6 @@ function intializeSharedEmoteDict() {
 };
 function getSharedEmote(%theirEmote) {
     %got = SharedEmoteDict.get(%theirEmote);
-    SharedEmoteDict;
     return %got;
 };
 intializeSharedEmoteDict();

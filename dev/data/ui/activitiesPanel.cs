@@ -1,7 +1,7 @@
 function geActivitiesPanel::open(%this) {
     %this.updateStates();
     %this.setVisible(1);
-    %this.focusAndRaise();
+    playGui.focusAndRaise(%this);
     WindowManager.update();
     %this.onUpdateTimer();
 };
@@ -62,7 +62,7 @@ function geActivitiesPanel::updateStates(%this) {
         %timeToNextReport = formatFloat("%.1f", (1000.0 / %timeToNextReport));
         %text = %text @ %delim @ "<just:left><color:907000>reports paused for" @ " " @ %timeToNextReport @ "s..";
     }
-    %text.setText();
+    geActivitiesPanel_Current.setText(%text);
 };
 function geActivitiesPanel_Current::onUrl(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {

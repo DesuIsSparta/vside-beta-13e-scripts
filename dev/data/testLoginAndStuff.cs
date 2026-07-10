@@ -628,8 +628,7 @@ function do_emote() {
         $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
     }
     $mvForwardAction = 0;
-    $rand_emote = getRandom(0, (1.0 - EmoteDict.size())).getValue();
-    EmoteDict;
+    $rand_emote = EmoteDict.getValue(getRandom(0, (1.0 - EmoteDict.size())));
     $rand_genre = getRandom(1, $GenresCount);
     commandToServer('EtsPlayAnimName', $rand_emote);
     if (isObject(pChat)) {
@@ -671,7 +670,7 @@ function stopAndTalk() {
             %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
             %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
         }
-        "(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination.say(0, 0);
+        pChat.say("(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination, 0, 0);
         commandToServer(%command, %destination);
         schedule(4000, 0);
     }
@@ -697,8 +696,7 @@ function takeSnapshot() {
 };
 function useAndSaveRandomOutfit() {
     %drwrs = "glasses torso legs legsb feet ear neck neckb wristleft wristleftb wristright wristrightb purse hat";
-    %skus = %drwrs.getRandomSkusForLocalPlayer();
-    SkuManager;
+    %skus = SkuManager.getRandomSkusForLocalPlayer(%drwrs);
     commandToServer('SetActiveSkus', %skus);
 };
 function changeClothes() {
@@ -722,8 +720,7 @@ function approveFriendRequests() {
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
+        pChat.whisper("(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (1.0 - %n);
-        pChat;
     }
 };

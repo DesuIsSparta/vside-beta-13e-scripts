@@ -82,11 +82,10 @@ function PlayGui::onAdvertClick(%this, %obj, %pt) {
     }
     %description = %obj.getTitle();
     commandToServer('advertClick', %obj.getGhostID(), %description);
-    if (%obj.init()) {
+    if (ETSWhatsThisMenu.init(%obj)) {
         ETSWhatsThisMenu.showAtCursor();
     }
     %this.description = %description @ ETSWhatsThisMenu;
-    ETSWhatsThisMenu;
 };
 function PlayGui::tryOnInfoSignClick(%this, %obj, %pt) {
     %s = %obj.getTitle();
@@ -118,18 +117,16 @@ function PlayGui::tryOnMLTextSignClick(%this, %obj) {
         error(getScopeName() @ " " @ "- file not found:" @ " " @ %file);
         return 1;
     }
-    %file.setBitmap();
+    MapPointPanelBitmap.setBitmap(%file);
     MapPointPanelBitmap.fitSize();
     %extentX = (6.0 + getWord(MapPointPanelBitmap.getExtent(), 0));
-    MapPointPanelBitmap;
     %extentY = (6.0 + getWord(MapPointPanelBitmap.getExtent(), 1));
     MapPointPanel.open();
-    0.resize(0, %extentX, %extentY);
+    MapPointPanel.resize(0, 0, %extentX, %extentY);
     MapPointPanel.fitInParent();
     %extentX = (6.0 - getWord(MapPointPanel.getExtent(), 0));
-    MapPointPanel;
     %extentY = (6.0 - getWord(MapPointPanel.getExtent(), 1));
-    3.resize(3, %extentX, %extentY);
+    MapPointPanelBitmap.resize(3, 3, %extentX, %extentY);
     return 1;
 };
 function getTargetURL(%obj) {
@@ -187,7 +184,7 @@ function AdvertShape::onGotImageURL(%this) {
     }
     %justFileName = strreplace(formatInt("%5i", $gDynamicAdvertCount), " ", 0) @ ".dynamic.jpg";
     %this.justFilename = %justFileName;
-    %imageURL.applyUrl("dlMgrCallback_AdvertShape", "", %this, "");
+    dlMgr.applyUrl(%imageURL, "dlMgrCallback_AdvertShape", "", %this, "");
 };
 function dlMgrCallback_AdvertShape(%dlItem, %unused) {
     %advertShape = %dlItem.callbackData;

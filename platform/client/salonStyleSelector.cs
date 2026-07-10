@@ -1,10 +1,10 @@
 function SalonStyleSelector::open(%this) {
-    %this.ensureAdded();
+    PlayGui.ensureAdded(%this);
     %this.Initialize();
     if (!(%this.isVisible())) {
         %this.setVisible(1);
     }
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
 };
 function SalonStyleSelector::close(%this) {
     if ((0.0 != $gSalonChairCurrent)) {
@@ -19,20 +19,16 @@ function SalonStyleSelector::Initialize(%this) {
         return;
     }
     %this.initialized = 1;
-    if (isObject(%this.skuGuiList)) {
-        %this.skuGuiList.delete();
+    if (isObject(SalonStyleSelector, %this.skuGuiList)) {
+        SalonStyleSelector.delete(%this.skuGuiList);
     }
-    if (isObject(%this.noSkuGuiText)) {
-        %this.noSkuGuiText.delete();
+    if (isObject(SalonStyleSelector, %this.noSkuGuiText)) {
+        SalonStyleSelector.delete(%this.noSkuGuiText);
     }
     %SSS_Height = 200;
-    SalonStyleSelector;
     %SSS_Width = 220;
-    SalonStyleSelector;
     %SSS_ButtonWidth = 20;
-    SalonStyleSelector;
     %SSS_ButtonSpacing = 6;
-    SalonStyleSelector;
     %SSS_ButtonMargin = ((%SSS_ButtonSpacing * 2.0) + %SSS_ButtonWidth);
     %this.minExtent = %SSS_Width @ " " @ 110;
     %this.resize(%SSS_Width, %SSS_Height);
@@ -52,9 +48,8 @@ function SalonStyleSelector::Initialize(%this) {
         tooltiptimer = 0;
     };
     %this.add(%gc);
-    0;
-    %gc = new ""() {
-        profile = GuiWindowCtrl @ "DottedWindowDkProfile";
+    %gc = new GuiWindowCtrl("") {
+        profile = 0 @ "DottedWindowDkProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 18";
@@ -70,9 +65,8 @@ function SalonStyleSelector::Initialize(%this) {
         canHilite = 0;
     };
     %this.add(%gc);
-    0;
-    %gc = new ""() {
-        position = GuiBitmapButtonCtrl @ (18.0 - %SSS_Width) @ " " @ 5;
+    %gc = new GuiBitmapButtonCtrl("") {
+        position = 0 @ (18.0 - %SSS_Width) @ " " @ 5;
         extent = 13 @ " " @ 13;
         bitmap = "platform/client/buttons/close_m";
         command = "SalonStyleSelector.close();";
@@ -129,9 +123,8 @@ function SalonStyleSelector::Initialize(%this) {
         tooltip = "Your Styling Prop";
     };
     %this.add(%gc);
-    0;
-    %gc = new ""() {
-        profile = GuiScrollCtrl @ "ETSScrollProfile";
+    %gc = new GuiScrollCtrl("") {
+        profile = 0 @ "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "7 48";
@@ -151,9 +144,8 @@ function SalonStyleSelector::Initialize(%this) {
         stickyBottom = 0;
         tooltiptimer = 0;
     };
-    0;
-    skuGuiList = new ""() {
-        profile = GuiArray2Ctrl @ "GuiDefaultProfile";
+    skuGuiList = new GuiArray2Ctrl("") {
+        profile = 0 @ "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
@@ -169,11 +161,10 @@ function SalonStyleSelector::Initialize(%this) {
         numRowsOrCols = 1;
         spacing = 5;
     }; @ SalonStyleSelector
-    %gc.add(skuGuiList);
-    0;
-    noSkuGuiText = new ""() {
-        profile = GuiMLTextCtrl @ "ETSShadowTextNonModalProfile";
-        horizSizing = SalonStyleSelector @ "width";
+    %gc.add(SalonStyleSelector, skuGuiList);
+    noSkuGuiText = new GuiMLTextCtrl("") {
+        profile = 0 @ "ETSShadowTextNonModalProfile";
+        horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
         extent = (22.0 - %SSS_Width) @ " " @ 8;
@@ -184,10 +175,9 @@ function SalonStyleSelector::Initialize(%this) {
         allowAutoFirstResponderUpdates = 1;
         text = "";
     }; @ SalonStyleSelector
-    %gc.add(noSkuGuiText);
+    %gc.add(SalonStyleSelector, noSkuGuiText);
     %this.add(%gc);
     %left = 50;
-    SalonStyleSelector;
     %top = (2.0 / (getWord(%this.getExtent(), 1) - getWord(PlayGui.getExtent(), 1)));
     %this.reposition(%left, %top);
 };

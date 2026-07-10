@@ -8,8 +8,7 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName) {
     $GeneratingCacheNow = 0;
     $CurrentMission = %missionName;
     if ($CacheFlagIsSet) {
-        %crc = %missionName.getCacheCRC();
-        ServerConnection;
+        %crc = ServerConnection.getCacheCRC(%missionName);
     }
     %crc = -(1.0);
     log("network", "debug", "client cache CRC:" @ " " @ %crc);
@@ -31,8 +30,7 @@ function clientCmdStartCache(%missionSequence, %missionName, %musicTrack) {
     log("network", "info", "attempting client side load caching:" @ " " @ %missionName @ " " @ "seq:" @ " " @ %missionSequence);
     onMissionDownloadPhase1(%missionName, %musicTrack);
     $GeneratingCacheNow = 1;
-    %success = %missionName.startCache();
-    ServerConnection;
+    %success = ServerConnection.startCache(%missionName);
     if (%success) {
         log("network", "info", "cache writing started successfully");
     }
@@ -45,8 +43,8 @@ function clientCmdLoadLocalCache(%missionSequence, %missionName, %musicTrack) {
     }
     log("network", "info", "loading local datablocks for mission:" @ " " @ %missionName @ " " @ "seq: " @ " " @ %missionSequence);
     onMissionDownloadPhase1(%missionName, %musicTrack);
-    %missionSequence.setDatablockSequence();
-    %missionSequence.loadCachePhase1(%missionName);
+    ServerConnection.setDatablockSequence(%missionSequence);
+    ServerConnection.loadCachePhase1(%missionSequence, %missionName);
 };
 function onDataBlockObjectReceived(%index, %total) {
     onPhase1Progress((%total / %index));
@@ -62,7 +60,7 @@ function clientCmdStartGhostAlways(%missionSequence, %missionName) {
     if ($CacheFlagIsSet) {
     }
     if (!($GeneratingCacheNow)) {
-        %missionSequence.loadCachePhase2(%missionName);
+        ServerConnection.loadCachePhase2(%missionSequence, %missionName);
     }
     log("network", "debug", "not using cache, acking server to start ghost always phase");
     commandToServer('StartGhostAlwaysAck', %missionSequence);
@@ -135,8 +133,8 @@ function sceneLightingComplete() {
     $GeneratingCacheNow = 0;
 };
 function connect(%server) {
-    %conn = new ""();;
-    GameConnection;
+    %conn = new GameConnection("");;
+    0;
     %conn.setCommonPreconnectClientSettings("");
     %conn.connect(%server);
 };

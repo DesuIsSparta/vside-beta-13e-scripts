@@ -4,14 +4,13 @@ if (!(isObject(ConversationList))) {
 function newConversation(%senderPlayer, %targetPlayer) {
     %senderPos = ConversationList.getPosition(%senderPlayer);
     %conversationPos = %senderPos;
-    0;
-    %newConversation = new ""() {
-        dataBlock = Conversation @ "release_conv";
+    %newConversation = new Conversation("") {
+        dataBlock = 0 @ "release_conv";
         position = %conversationPos;
     };
     %senderPlayer.setConversation(%newConversation);
     %newConversation.addParticipant(%senderPlayer);
-    %newConversation.add();
+    ConversationList.add(%newConversation);
     return %newConversation;
 };
 function leaveListening(%senderPlayer, %conversation) {
@@ -29,9 +28,9 @@ function leaveConversation(%senderPlayer) {
     if (isObject(%conversation)) {
         %conversation.removeMember(%senderPlayer);
         %senderPlayer.setConversation(0);
-        gSetField(%senderPlayer, 0);
+        gSetField(%senderPlayer, orientedConversation, 0);
     }
-    return orientedConversation;
+    return;
 };
 function findConversation(%senderPlayer, %targetPlayer) {
     %conv = 0;
@@ -54,14 +53,12 @@ function updateConversationLocations() {
     CONVBUB_DEBUG("ConversationList has" @ " " @ %count);
     %i = 0;
     if ((%count < %i)) {
-        %conversation = %i.getObject();
-        ConversationList;
+        %conversation = ConversationList.getObject(%i);
         if (!(%conversation.updateLocation())) {
-            %conversation.remove();
+            ConversationList.remove(%conversation);
             %conversation.delete();
         }
         %i = (1.0 + %i);
-        ConversationList;
     }
 };
 $Conv::updateLocationsTimerID = 0;
@@ -91,10 +88,9 @@ function ServersideChatMessage(%senderPlayer, %targetPlayer, %message) {
     }
     CONVBUB_DEBUG("CHAT MESSAGE sender: " @ getDebugString(%senderPlayer) @ "  target: " @ getDebugString(%targetPlayer) @ "  message: " @ %message);
     if (isAIPlayerObject(%targetPlayer)) {
-        %senderPlayer.handleTalkedToNPC(%targetPlayer, %message);
+        NPCManager.handleTalkedToNPC(%senderPlayer, %targetPlayer, %message);
     }
     %conv = findConversation(%senderPlayer, %targetPlayer);
-    NPCManager;
     if (!(isObject(%conv))) {
         error("could not find conversation.");
         return;
@@ -106,11 +102,11 @@ function ServersideChatMessage(%senderPlayer, %targetPlayer, %message) {
         if ((1.0 > %conv.countParticipants())) {
             if ((orientedConversation != gGetField(%senderPlayer))) {
                 %senderPlayer.orientTowardsOverTime(%conv, 700);
-                gSetField(%senderPlayer, %conv);
+                gSetField(%senderPlayer, orientedConversation, %conv);
             }
         }
     }
-    return orientedConversation;
+    return %conv;
 };
 function serverCmdEavesdrop(%senderConnection, %newTarget) {
     CONVBUB_DEBUG("EAVESDROP: " @ %newTarget);

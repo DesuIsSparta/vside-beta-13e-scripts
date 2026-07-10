@@ -131,44 +131,44 @@ function setExposureFilter(%val) {
 };
 function setExposureFilterValue(%val) {
     if ((0.0 == %val)) {
-        0.showBrightnessControls();
-        0.setVisible();
+        OptionsPanel.showBrightnessControls(0);
+        ExposureFilter.setVisible(0);
         if (isObject(EditorExposureFilter)) {
-            0.setVisible();
+            EditorExposureFilter.setVisible(0);
         }
-        0.setVisible();
+        ExposureFilterSelfView.setVisible(0);
     }
     if ((1.0 == %val)) {
-        1.showBrightnessControls();
-        1.setVisible();
+        OptionsPanel.showBrightnessControls(1);
+        ExposureFilter.setVisible(1);
         if (isObject(EditorExposureFilter)) {
-            1.setVisible();
+            EditorExposureFilter.setVisible(1);
         }
-        1.setVisible();
+        ExposureFilterSelfView.setVisible(1);
     }
     if ((2.0 == %val)) {
-        1.showBrightnessControls();
-        1.setVisible();
+        OptionsPanel.showBrightnessControls(1);
+        ExposureFilter.setVisible(1);
         if (isObject(EditorExposureFilter)) {
-            1.setVisible();
+            EditorExposureFilter.setVisible(1);
         }
-        1.setVisible();
+        ExposureFilterSelfView.setVisible(1);
     }
     if ((3.0 == %val)) {
         if ((0.0 == $renderQuality)) {
-            0.showBrightnessControls();
-            0.setVisible();
+            OptionsPanel.showBrightnessControls(0);
+            ExposureFilter.setVisible(0);
             if (isObject(EditorExposureFilter)) {
-                0.setVisible();
+                EditorExposureFilter.setVisible(0);
             }
-            0.setVisible();
+            ExposureFilterSelfView.setVisible(0);
         }
-        1.showBrightnessControls();
-        1.setVisible();
+        OptionsPanel.showBrightnessControls(1);
+        ExposureFilter.setVisible(1);
         if (isObject(EditorExposureFilter)) {
-            1.setVisible();
+            EditorExposureFilter.setVisible(1);
         }
-        1.setVisible();
+        ExposureFilterSelfView.setVisible(1);
     }
 };
 function ClientCmdRenderModsVD(%s) {

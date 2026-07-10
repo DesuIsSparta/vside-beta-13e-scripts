@@ -4,12 +4,11 @@ $SystemMetric::totalObjectCount = 0;
 if (isObject($SystemMetric::ObjectCounts)) {
     $SystemMetric::ObjectCounts.delete();
 }
-0;
-$SystemMetric::ObjectCounts = new ""() {
-    class = StringMap @ "SystemMetric";
+$SystemMetric::ObjectCounts = new StringMap("") {
+    class = 0 @ "SystemMetric";
 };
 if (isObject(MissionCleanup)) {
-    $SystemMetric::ObjectCounts.add();
+    MissionCleanup.add($SystemMetric::ObjectCounts);
 }
 if (isDefined("$GMetricsLogFile")) {
 }
@@ -19,15 +18,15 @@ if (isObject($GMetricsLogFile)) {
 if ($StandAlone) {
 }
 if ($Server::Dedicated) {
-    $GMetricsLogFile = new "gameMetrics.log"();;
-    GMetricsLogger;
+    $GMetricsLogFile = new FileLogger(GMetricsLogger);;
+    0;
     if (isObject(MissionCleanup)) {
-        $GMetricsLogFile.add();
+        MissionCleanup.add($GMetricsLogFile);
     }
 }
 function System::compileClassInstanceCounts3(%obj, %counts, %depth) {
     if (!(isObject(%obj))) {
-        return MissionCleanup;
+        return;
     }
     %classname = %obj.getClassName();
     %key = %classname;
@@ -122,15 +121,13 @@ function System::dumpObjects(%obj) {
 if (isObject($System::LoginLog)) {
     $System::LoginLog.delete();
 }
-$SystemMetric::loginLog = new ""();;
-StringMap;
+$SystemMetric::loginLog = new StringMap("");;
+0;
 if (isObject(MissionCleanup)) {
-    $SystemMetric::loginLog.add();
+    MissionCleanup.add($SystemMetric::loginLog);
 }
 $SystemMetric::connectCount = 0;
-MissionCleanup;
 $SystemMetric::disconnectCount = 0;
-0;
 $SystemMetric::enteredGameCount = 0;
 function System::onUserConnect(%client) {
     $SystemMetric::connectCount = (1.0 + $SystemMetric::connectCount);
@@ -161,8 +158,7 @@ function System::calculateLoginMetrics() {
     warn("current users begin");
     %n = (1.0 - ClientGroup.getCount());
     if ((0.0 >= %n)) {
-        %player = %n.getObject().Player;
-        ClientGroup;
+        %player = ClientGroup.getObject(%n).Player;
         if (!(isObject(%player))) {
             $SystemMetric::userCountOrphan = (1.0 + $SystemMetric::userCountOrphan);
         }
@@ -270,8 +266,8 @@ function DelayedRealPlayStopEvent(%group, %specificGame, %player) {
         echo(getScopeName() @ " " @ %group @ " " @ %specificGame @ " " @ "player is not an object, not logging this:" @ " " @ %player);
         return;
     }
-    cancel(%player.GMetricsDelayStopTimer);
-    %player.GMetricsDelayStopTimer = %specificGame @ 0 @ %specificGame;
+    cancel(%specificGame, %player.GMetricsDelayStopTimer);
+    %player.GMetricsDelayStopTimer = 0 @ %specificGame;
     %startTime = %player.GMetricsStart;
     %specificGame;
     %seconds = 0.0;
@@ -297,16 +293,16 @@ function GMetrics::GamePlayStopEvent(%group, %specificGame, %player, %delayTillR
     if (!(isObject(%player.client))) {
         return;
     }
-    cancel(%player.GMetricsDelayStopTimer);
-    %player.GMetricsDelayStopTimer = %specificGame @ 0 @ %specificGame;
+    cancel(%specificGame, %player.GMetricsDelayStopTimer);
+    %player.GMetricsDelayStopTimer = 0 @ %specificGame;
     if ((0.0 <= %delayTillRealStop)) {
         return DelayedRealPlayStopEvent(%group, %specificGame, %player);
     }
     %player.GMetricsDelayStopTimer = schedule(%delayTillRealStop, 0, "DelayedRealPlayStopEvent", %group, %specificGame, %player) @ %specificGame;
 };
 function GMetricsDoneTouching(%group, %specificGame, %player) {
-    cancel(%player.GMetricsTouchStopTimer);
-    %player.GMetricsTouchStopTimer = %specificGame @ 0 @ %specificGame;
+    cancel(%specificGame, %player.GMetricsTouchStopTimer);
+    %player.GMetricsTouchStopTimer = 0 @ %specificGame;
     GMetrics::GamePlayStopEvent(%group, %specificGame, %player, 0);
 };
 function GMetrics::GameTouchEvent(%group, %specificGame, %player, %TimeToWaitForPlayerToStop) {
@@ -351,14 +347,14 @@ function dumpClassInstances(%simGroup) {
     if (!(isObject(%simGroup))) {
         return;
     }
-    %container = new ""();;
-    SimObject;
-    %container.numClasses = 0 @ 0;
+    %container = new SimObject("");;
+    0;
+    %container.numClasses = 0;
     %total = 0;
     compileClassInstances(%simGroup, %container);
     %n = 0;
     if ((%container.numClasses < %n)) {
-        %line = %n @ "class" @ formatString("%-40s", %container.instanceCounts) TAB %n @ "count" @ formatInt("%5d", %container.instanceCounts);
+        %line = formatString("%-40s", %n @ "class", %container.instanceCounts) TAB %n @ "count" @ formatInt("%5d", %container.instanceCounts);
         echo(%line);
         %total = (%container.instanceCounts + %total);
         %n @ "count";

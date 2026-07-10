@@ -33,7 +33,7 @@ function GuiButtonBaseCtrl::onMouseDown(%this, %modifier, %point, %clickCount) {
     if (($gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions >= %this.repeatDelayMS)) {
     }
     if (($gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions >= %this.tickPeriodMS)) {
-        %this.repetitionSchedule = onMouseEventDoRepeat @ %this.schedule(%this.repeatDelayMS, %modifier, %point, %clickCount);
+        %this.repetitionSchedule = %this.schedule(%this.repeatDelayMS, onMouseEventDoRepeat, %modifier, %point, %clickCount);
     }
     Parent::onMouseDown(%this, %modifier, %point, %clickCount);
 };
@@ -46,7 +46,7 @@ function GuiButtonBaseCtrl::onMouseEventDoRepeat(%this, %modifier, %point, %clic
     if ((0.0 > %this.tickPeriodMS)) {
         cancel(%this.repetitionSchedule);
         %this.performClick();
-        %this.repetitionSchedule = onMouseEventDoRepeat @ %this.schedule(%this.tickPeriodMS, %modifier, %point, %clickCount);
+        %this.repetitionSchedule = %this.schedule(%this.tickPeriodMS, onMouseEventDoRepeat, %modifier, %point, %clickCount);
     }
 };
 function GuiButtonBaseCtrl::onMouseUp(%this, %modifier, %point, %clickCount) {

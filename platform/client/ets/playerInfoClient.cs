@@ -16,8 +16,7 @@ function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %locati
     %playerInfo.respekt = %respekt;
     %playerInfo.respektRank = %respektRank;
     %playerInfo.activities = "";
-    %entry = %playerName.get();
-    UserListFriends;
+    %entry = UserListFriends.get(%playerName);
     if (isObject(%entry)) {
         %playerInfo.activities = %entry.activities;
     }
@@ -127,9 +126,8 @@ function PlayerInfoRequest::onDone(%this) {
             %affinity = %this.getValue("proximalPlayers" @ %i @ ".affinity");
             %respekt = %this.getValue("proximalPlayers" @ %i @ ".respekt");
             %respektRank = %this.getValue("proximalPlayers" @ %i @ ".respektRanking");
-            %name.addPlayerInfo(%age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank);
+            PlayerInfoMap.addPlayerInfo(%name, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank);
             %askedForIndex = findField(%failedPlayers, %name);
-            PlayerInfoMap;
             if ((0.0 >= %askedForIndex)) {
                 %failedPlayers = removeField(%failedPlayers, %askedForIndex);
             }
@@ -143,9 +141,8 @@ function PlayerInfoRequest::onDone(%this) {
             if ((%num < %i)) {
                 %name = getField(%failedPlayers, %i);
                 warn("adding null player info for" @ " " @ %name);
-                %name.addPlayerInfo("unknown", "unknown", "unknown", "", "", 0, "", "");
+                PlayerInfoMap.addPlayerInfo(%name, "unknown", "unknown", "unknown", "", "", 0, "", "");
                 %i = (1.0 + %i);
-                PlayerInfoMap;
             }
         }
         if (((%num < %i) @ " " @ %this.callback $= "")) {
@@ -160,15 +157,14 @@ function PlayerInfoRequest::onDone(%this) {
             if (isObject(InfoPopupDlg)) {
                 if (!(%this.requestPlayerInfoFor $= "")) {
                 }
-                if ((PlayerInfoMap @ " " @ %this.requestPlayerInfoFor.get() $= "")) {
+                if ((PlayerInfoMap.get(%this.requestPlayerInfoFor) $= "")) {
                     InfoPopupDlg.showPlayerNotFound();
                 }
                 InfoPopupDlg.tryShowPlayerInfo();
             }
         }
         if ((0.0 > %numUsers)) {
-            %playinfo = %this.requestPlayerInfoFor.get();
-            PlayerInfoMap;
+            %playinfo = PlayerInfoMap.get(%this.requestPlayerInfoFor);
         }
         %playinfo = 0;
         %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this.callbackData @ ");";

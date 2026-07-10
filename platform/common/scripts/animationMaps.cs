@@ -1,45 +1,45 @@
 function initializeAnimationMaps() {
-    initializeAnimationMap("f", "h");
-    initializeAnimationMap("f", "i");
-    initializeAnimationMap("f", "p");
-    initializeAnimationMap("f", "b");
-    initializeAnimationMap("m", "h");
-    initializeAnimationMap("m", "i");
-    initializeAnimationMap("m", "p");
-    initializeAnimationMap("m", "b");
-    initializeAnimationMapAnimal("d", "h");
-    initializeAnimationMapAnimal("d", "i");
-    initializeAnimationMapAnimal("d", "p");
-    makeAnimationMapZombie("m");
-    makeAnimationMapZombie("f");
-    makeAnimationMapSkate("m");
-    makeAnimationMapSkate("f");
-    makeAnimationMapSwim("m");
-    makeAnimationMapSwim("f");
-    makeAnimationMapTyra("m");
-    makeAnimationMapTyra("f");
-    makeAnimationMapSuperTyra("m");
-    makeAnimationMapSuperTyra("f");
-    makeAnimationMapSumo("m");
-    makeAnimationMapSumo("f");
-    makeAnimationMapPillow("m");
-    makeAnimationMapPillow("f");
-    makeAnimationMapProps("m");
-    makeAnimationMapProps("f");
-    makeAnimationMapCross("m");
-    makeAnimationMapCross("f");
-    makeAnimationMapBottleShake("m");
-    makeAnimationMapBottleShake("f");
-    makeAnimationMapBottle("m");
-    makeAnimationMapBottle("f");
-    makeAnimationMapDrinkStem("m");
-    makeAnimationMapDrinkStem("f");
-    makeAnimationMapDrinkCup("m");
-    makeAnimationMapDrinkCup("f");
-    makeAnimationMapRedMana("m");
-    makeAnimationMapRedMana("f");
-    makeAnimationMapBlueMana("m");
-    makeAnimationMapBlueMana("f");
+    initializeAnimationMap(animationMapFH, "f", "h");
+    initializeAnimationMap(animationMapFI, "f", "i");
+    initializeAnimationMap(animationMapFP, "f", "p");
+    initializeAnimationMap(animationMapFB, "f", "b");
+    initializeAnimationMap(animationMapMH, "m", "h");
+    initializeAnimationMap(animationMapMI, "m", "i");
+    initializeAnimationMap(animationMapMP, "m", "p");
+    initializeAnimationMap(animationMapMB, "m", "b");
+    initializeAnimationMapAnimal(animationMapDH, "d", "h");
+    initializeAnimationMapAnimal(animationMapDI, "d", "i");
+    initializeAnimationMapAnimal(animationMapDP, "d", "p");
+    makeAnimationMapZombie(animationMapMZ, animationMapMP, "m");
+    makeAnimationMapZombie(animationMapFZ, animationMapFP, "f");
+    makeAnimationMapSkate(animationMapMK, animationMapMP, "m");
+    makeAnimationMapSkate(animationMapFK, animationMapFP, "f");
+    makeAnimationMapSwim(animationMapMW, animationMapMP, "m");
+    makeAnimationMapSwim(animationMapFW, animationMapFP, "f");
+    makeAnimationMapTyra(animationMapMT, animationMapMH, "m");
+    makeAnimationMapTyra(animationMapFT, animationMapFH, "f");
+    makeAnimationMapSuperTyra(animationMapMS, animationMapMT, "m");
+    makeAnimationMapSuperTyra(animationMapFS, animationMapFT, "f");
+    makeAnimationMapSumo(animationMapMO, animationMapMP, "m");
+    makeAnimationMapSumo(animationMapFO, animationMapFP, "f");
+    makeAnimationMapPillow(animationMapML, animationMapMP, "m");
+    makeAnimationMapPillow(animationMapFL, animationMapFP, "f");
+    makeAnimationMapProps(animationMapMY, animationMapMP, "m");
+    makeAnimationMapProps(animationMapFY, animationMapFP, "f");
+    makeAnimationMapCross(animationMapMX, animationMapMP, "m");
+    makeAnimationMapCross(animationMapFX, animationMapFP, "f");
+    makeAnimationMapBottleShake(animationMapME, animationMapMP, "m");
+    makeAnimationMapBottleShake(animationMapFE, animationMapFP, "f");
+    makeAnimationMapBottle(animationMapMF, animationMapMP, "m");
+    makeAnimationMapBottle(animationMapFF, animationMapFP, "f");
+    makeAnimationMapDrinkStem(animationMapMU, animationMapMP, "m");
+    makeAnimationMapDrinkStem(animationMapFU, animationMapFP, "f");
+    makeAnimationMapDrinkCup(animationMapMV, animationMapMP, "m");
+    makeAnimationMapDrinkCup(animationMapFV, animationMapFP, "f");
+    makeAnimationMapRedMana(animationMapMJ, animationMapMP, "m");
+    makeAnimationMapRedMana(animationMapFJ, animationMapFP, "f");
+    makeAnimationMapBlueMana(animationMapMM, animationMapMP, "m");
+    makeAnimationMapBlueMana(animationMapFM, animationMapFP, "f");
 };
 function makeAnimationMapSuperTyra(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
@@ -84,8 +84,8 @@ function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideA
     if (isObject(%animationMapName)) {
         %map = %animationMapName.getId();
     }
-    %map = new %animationMapName();;
-    StringMap;
+    %map = new StringMap(%animationMapName);;
+    0;
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ %rootAnim);
     %map.put("run", %gender @ %runAnim);
@@ -301,10 +301,10 @@ function makeAnimationMapBlueMana(%map, %src, %gender) {
 };
 function initializeAnimationMapAnimal(%map, %gender, %genre) {
     if (!(isObject(%map))) {
-        new %map();
+        new StringMap(%map);
     }
     if (isObject(MissionCleanup)) {
-        %map.add();
+        MissionCleanup.add(%map);
     }
     %map.put("root", %gender @ %genre @ "idle1");
     %map.put("run", %gender @ %genre @ "wlkf");
@@ -316,20 +316,20 @@ function initializeAnimationMapAnimal(%map, %gender, %genre) {
 };
 function initializeAnimationMap(%map, %gender, %genre) {
     if (!(isObject(%map))) {
-        new %map();
+        new StringMap(%map);
     }
     if (isObject(MissionCleanup)) {
-        %map.add();
+        MissionCleanup.add(%map);
     }
     addGenreSpecificAnimations(%map, %gender, %genre);
     addGenreNeutralAnimations(%map, %gender);
 };
 function copyAnimationMap(%map, %src) {
     if (!(isObject(%map))) {
-        new %map();
+        new StringMap(%map);
     }
     if (isObject(MissionCleanup)) {
-        %map.add();
+        MissionCleanup.add(%map);
     }
     %map.duplicate(%src);
 };
@@ -345,14 +345,12 @@ function addAnimationToMap(%map, %mapThis, %toThis, %tags) {
             error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
         }
         safeEnsureScriptObject("StringMap", "gAnimationTags");
-        %animTags = %toThis.get();
-        gAnimationTags;
+        %animTags = gAnimationTags.get(%toThis);
         if (hasWord(%animTags, %tag)) {
         }
         %animTags = %tag @ " " @ %animTags;
-        %toThis.put(%animTags);
+        gAnimationTags.put(%toThis, %animTags);
         %n = (1.0 - %n);
-        gAnimationTags;
     }
 };
 function addGenreSpecificAnimations(%map, %gender, %genre) {
@@ -888,10 +886,10 @@ function initNoAutoEmoteList() {
 $gNoAutoEmoteWords = 0;
 function addNoAutoEmoteWord(%word) {
     if (!(isObject($gNoAutoEmoteWords))) {
-        $gNoAutoEmoteWords = new ""();;
-        StringMap;
+        $gNoAutoEmoteWords = new StringMap("");;
+        0;
         if (isObject(MissionCleanup)) {
-            $gNoAutoEmoteWords.add();
+            MissionCleanup.add($gNoAutoEmoteWords);
         }
     }
     $gNoAutoEmoteWords.put(%word, 1);

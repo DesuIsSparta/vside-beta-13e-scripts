@@ -64,12 +64,11 @@ function CustomSpaceClient::SetupClientAsNotInSpace() {
     if ((HudTabs.getCurrentTab().name $= "private space")) {
         HudTabs.close();
     }
-    "private space".hideTabWithName();
+    HudTabs.hideTabWithName("private space");
     if ((0.0 != $CSSpaceInfo)) {
         destroySpaceInfo($CSSpaceInfo);
     }
     $CSSpaceInfo = 0;
-    HudTabs;
     $CSBuildingInfo = 0;
     CustomSpaceClient::SetSpaceImIn("", "");
     CustomSpaceClient::SetUpOwnership(0);
@@ -117,11 +116,11 @@ function GotCustomSpaceInfo(%buildingInfo, %spaceGroup) {
     }
     error("$Player is not an object. Setting space I'm in before I'm there...");
     CustomSpaceClient::SetUpOwnership(%isOwner);
-    $CSSpaceInfo.access.updateSettings($CSSpaceInfo.password, $CSSpaceInfo.description);
+    CSRulesAndDescWindow.updateSettings($CSSpaceInfo.access, $CSSpaceInfo.password, $CSSpaceInfo.description);
     if ((0.0 == stricmp($CSSpaceInfo.type, "model"))) {
         CSControlPanel.open();
         CSSpaceModelAptText.update();
-        "MODEL_APT".selectTabWithName();
+        CSControlPanelTabs.selectTabWithName("MODEL_APT");
     }
     CustomSpacesClient::setMap2DText();
     CustomSpacesClient::InitializeVideoRequest();
@@ -131,7 +130,7 @@ function CustomSpacesClient::setMap2DText() {
     }
     if (($CSSpaceInfo.name @ $CSSpaceInfo.owner @ "\n\tBuilding:\t" @ " " @ Buildings::GetDescription($CSBuildingName) $= "")) {
     }
-    "<color:ffffff><just:center><b>" @ TryFixBadWords($CSSpaceInfo.description).setMap2DForCustomSpacesMode($CSBuildingName @ Buildings::GetDescription($CSBuildingName) @ "\n\tCity:\t" @ getContiguousSpaceFullName(Buildings::GetContiguousSpace($CSBuildingName)));
+    geLocalMapContainer.setMap2DForCustomSpacesMode("<color:ffffff><just:center><b>" @ TryFixBadWords($CSSpaceInfo.description), $CSBuildingName @ Buildings::GetDescription($CSBuildingName) @ "\n\tCity:\t" @ getContiguousSpaceFullName(Buildings::GetContiguousSpace($CSBuildingName)));
 };
 $CSSpaceOwner = 0;
 function CustomSpaceClient::SetUpOwnership(%isOwner) {
@@ -147,30 +146,26 @@ function CustomSpaceClient::SetUpOwnership(%isOwner) {
             }
             if ((0.0 == stricmp($CSSpaceInfo.type, "model"))) {
                 CSControlPanel.open();
-                "MODEL_APT".selectTabWithName();
+                CSControlPanelTabs.selectTabWithName("MODEL_APT");
             }
             CSControlPanel.close();
         }
         if (isObject(MusicHud)) {
-            0.setChangeStationAllowed();
+            MusicHud.setChangeStationAllowed(0);
         }
         ButtonBar.hideButton(PrivateSpacePopupMenuButton);
         $CSSpaceOwner = 0;
-        MusicHud;
     }
     ButtonBar.showButton(PrivateSpacePopupMenuButton);
-    %showSpaceOwnerTip = $Player::Name.getProperty("ShowOwnerTip", 1);
-    gUserPropMgrClient;
+    %showSpaceOwnerTip = gUserPropMgrClient.getProperty($Player::Name, "ShowOwnerTip", 1);
     if (%showSpaceOwnerTip) {
-        $Player::Name.setProperty("ShowOwnerTip", 0);
+        gUserPropMgrClient.setProperty($Player::Name, "ShowOwnerTip", 0);
         userTips::showNow("SpaceOwner");
     }
     $CSSpaceOwner = 1;
-    gUserPropMgrClient;
     $CSBlockedList = $CSSpaceInfo.blockedList;
-    CSControlPanelTabs;
     Music::createGetMusicStreamsRequest();
-    1.setChangeStationAllowed();
+    MusicHud.setChangeStationAllowed(1);
     csLoadMediaFavorites();
     csRequestHotMedia();
     getOwnedFurniture();
@@ -229,13 +224,12 @@ function clientCmdCSRequestToEditAccepted(%spaceName, %numberOfSlots) {
         error(getScopeName() @ " " @ "how can you accept to edit a space that you are not in?");
         return;
     }
-    %spaceName.InitForSpace(%numberOfSlots);
+    CSFurnitureMover.InitForSpace(%spaceName, %numberOfSlots);
 };
 function clientCmdCSOnUnownedInventoryTimeOut(%referenceID) {
     if (($CSSelectedID == %referenceID)) {
-        -(1.0).SelectNuggetID();
+        CSFurnitureMover.SelectNuggetID(-(1.0));
         $CSInstaTestDrive = 0;
-        CSFurnitureMover;
     }
     getNuggetGhostList("CSFurnitureMover::refreshGhostList");
 };
@@ -271,17 +265,17 @@ function clientCmdCS_OnEnterSpace(%spaceName, %musicStreamId, %videoURL, %buildi
 };
 function late_OnEnterSpace(%spaceName, %musicStreamId, %videoURL, %building, %CurrentLayout) {
     if (!(isObject($player))) {
-        schedule(500, 0, %spaceName, %musicStreamId, %videoURL, %building, %CurrentLayout);
-        return late_OnEnterSpace;
+        schedule(500, 0, late_OnEnterSpace, %spaceName, %musicStreamId, %videoURL, %building, %CurrentLayout);
+        return;
     }
     CustomSpaceClient::SetSpaceImIn(%building, %spaceName);
     if (!(%musicStreamId $= "")) {
-        %musicStreamId.syncPlayingAudioStream();
+        CSMediaDisplay.syncPlayingAudioStream(%musicStreamId);
     }
-    if (!(CSMediaDisplay @ " " @ %videoURL $= "no-video")) {
-        %videoURL.syncPlayingMediaStream();
+    if (!(%videoURL $= "no-video")) {
+        CSMediaDisplay.syncPlayingMediaStream(%videoURL);
     }
-    $CSLayoutSelector::NumLayouts.updateSettings(%CurrentLayout);
+    CSLayoutSelector.updateSettings($CSLayoutSelector::NumLayouts, %CurrentLayout);
     CSInventoryBrowserWindow.Initialize();
     CSShoppingBrowserWindow.Initialize();
 };
@@ -312,9 +306,8 @@ function destroySpaceInfo(%spaceInfo) {
 };
 $CSNewInventoryGhostRefreshEvent = 0;
 function clientCmdCS_OnInventoryCreated(%sku, %referenceName, %isOwned, %freeRotate) {
-    %referenceName.SelectNuggetID();
+    CSFurnitureMover.SelectNuggetID(%referenceName);
     $CSSelectedIsOwned = %isOwned;
-    CSFurnitureMover;
     $CSSelectedFreeRotate = %freeRotate;
     if (GrowingPlantClient::isPlant(%sku)) {
         GrowingPlantClient::onPlantCreated(%referenceName);
@@ -326,11 +319,11 @@ function clientCmdCS_OnInventoryCreated(%sku, %referenceName, %isOwned, %freeRot
 };
 function clientCmdCS_OnInventoryCreationFailed(%sku, %isOwned) {
     refreshActiveFurniture();
-    -(1.0).SelectNuggetID();
+    CSFurnitureMover.SelectNuggetID(-(1.0));
 };
 function clientCmdCS_OnEnterEntryPortal(%buildingName) {
     Canvas.forceRightMouseUp();
-    %buildingName.open();
+    CustomSpacesSelector.open(%buildingName);
 };
 function CustomSpaceClient::CheckBlockUserFromSpace(%playerName, %unblock) {
     if ((%unblock $= "")) {
@@ -392,14 +385,13 @@ function CustomSpaceClient::ReallyTryBlockUserFromSpace(%playerName, %unblock) {
     }
     %blockText = (0.0 == %unblock) ? "block" : "unblock";
     %space = CustomSpaceClient::GetSpaceImIn();
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "BanFromSpaceRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "BanFromSpaceRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
-    %request.blockedPlayer = MissionCleanup @ %playerName;
+    %request.blockedPlayer = %playerName;
     %request.blockText = %blockText;
     %url = $Net::ClientServiceURL @ "/BanFromSpace" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&space=" @ urlEncode(%space) @ "&userToBan=" @ urlEncode(%playerName);
     if ((1.0 == %unblock)) {
@@ -441,14 +433,13 @@ function CustomSpaceClient::TryBootAllUsersFromSpace(%space) {
     if ((%space $= "")) {
         %space = CustomSpaceClient::GetSpaceImIn();
     }
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "BootAllFromSpaceRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "BootAllFromSpaceRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
-    %request.spaceName = MissionCleanup @ %space;
+    %request.spaceName = %space;
     %url = $Net::ClientServiceURL @ "/BootAllFromSpace" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&space=" @ urlEncode(%space);
     log("network", "debug", "BootAllFromSpaceRequest: " @ %url);
     %request.setURL(%url);
@@ -481,13 +472,12 @@ function teleportToSpaceNumber(%number) {
     commandToServer('GoToSpaceNumber', %number);
 };
 function getBuildingDirectory(%buildingName, %callbackFn, %callbackFail) {
-    %BuildingDirRequest = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %BuildingDirRequest.add();
-    }
-    %BuildingDirRequest.callback = MissionCleanup @ %callbackFn;
+    %BuildingDirRequest = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%BuildingDirRequest);
+    }
+    %BuildingDirRequest.callback = %callbackFn;
     %BuildingDirRequest.callbackFailure = %callbackFail;
     %BuildingDirRequest.buildingName = %buildingName;
     %BuildingDirRequest.spaceName = "";
@@ -497,13 +487,12 @@ function getBuildingDirectory(%buildingName, %callbackFn, %callbackFail) {
     doGetSpaceInfo(%BuildingDirRequest);
 };
 function getBuildingSpaceInfo(%buildingName, %spaceName, %callbackFn, %callbackFail) {
-    %BuildingDirRequest = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %BuildingDirRequest.add();
-    }
-    %BuildingDirRequest.callback = MissionCleanup @ %callbackFn;
+    %BuildingDirRequest = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%BuildingDirRequest);
+    }
+    %BuildingDirRequest.callback = %callbackFn;
     %BuildingDirRequest.callbackFailure = %callbackFail;
     %BuildingDirRequest.buildingName = %buildingName;
     %BuildingDirRequest.spaceName = %spaceName;
@@ -581,12 +570,11 @@ function ownerHasSpaceWithFloorplan(%ownerName, %floorplanName) {
 };
 function getOwnerSpaceInfoTracker(%ownerName) {
     safeEnsureScriptObject("StringMap", "gOwnerSpaceInfoTrackers", 0);
-    %tracker = %ownerName.get();
-    gOwnerSpaceInfoTrackers;
+    %tracker = gOwnerSpaceInfoTrackers.get(%ownerName);
     if (!(isObject(%tracker))) {
         %tracker = safeNewScriptObject("SimSet", "", 0);
-        %ownerName.put(%tracker);
-        %tracker.ownerName = gOwnerSpaceInfoTrackers @ %ownerName;
+        gOwnerSpaceInfoTrackers.put(%ownerName, %tracker);
+        %tracker.ownerName = %ownerName;
     }
     return %tracker;
 };
@@ -653,8 +641,8 @@ function onDoneOrErrorCallback_GetCustomSpaceInfo(%request, %result) {
 function addBuildingInfo(%buildingInfo) {
     safeEnsureScriptObject("SimGroup", "BuildingInfos");
     log("network", "debug", "Adding building info for \"" @ %buildingInfo.name @ "\" to cache");
-    %buildingInfo.add();
-    %buildingInfo.bringToFront();
+    BuildingInfos.add(%buildingInfo);
+    BuildingInfos.bringToFront(%buildingInfo);
     log("network", "debug", "Cache now contains " @ BuildingInfos.getCount() @ " items.");
 };
 function findBuildingInfo(%buildingName) {
@@ -663,11 +651,10 @@ function findBuildingInfo(%buildingName) {
     log("network", "debug", "Searching for \"" @ %buildingName @ "\" in cache (" @ %count @ " items)");
     %idx = 0;
     if ((%count < %idx)) {
-        %buildingInfo = %idx.getObject();
-        BuildingInfos;
+        %buildingInfo = BuildingInfos.getObject(%idx);
         if ((0.0 == stricmp(%buildingInfo.name, %buildingName))) {
             log("network", "debug", "Found item at index " @ %idx);
-            %buildingInfo.bringToFront();
+            BuildingInfos.bringToFront(%buildingInfo);
             return %buildingInfo;
         }
         %idx = (1.0 + %idx);
@@ -677,13 +664,11 @@ function findBuildingInfo(%buildingName) {
 };
 function clearBuildingInfo(%buildingInfo) {
     safeEnsureScriptObject("SimGroup", "BuildingInfos");
-    %buildingInfo.remove();
+    BuildingInfos.remove(%buildingInfo);
     %idx = 0;
-    BuildingInfos;
     if ((%buildingInfo.floorPlanCount < %idx)) {
-        %buildingInfo.floorplan.delete();
+        %idx.delete(%buildingInfo.floorplan);
         %idx = (1.0 + %idx);
-        %idx;
     }
     %buildingInfo.schedule(0, "delete");
 };
@@ -709,15 +694,13 @@ function GetBuildingInfoRequest(%tracker) {
         }
         return;
     }
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "GetBuildingInfo";
+    %request = new ManagerRequest("") {
+        className = 0 @ "GetBuildingInfo";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/GetBuildingInfo" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token);
-    MissionCleanup;
     %url = %url @ "&building=" @ urlEncode(%tracker.buildingName);
     %request.tracker = %tracker;
     log("network", "debug", "GetBuildingInfoRequest: " @ %url);
@@ -738,25 +721,23 @@ function GetBuildingInfo::onDone(%this) {
             eval(%command);
         }
     }
-    %buildingInfo = new ""();;
-    SimObject;
-    if (isObject(MissionCleanup)) {
-        %buildingInfo.add();
-    }
-    %buildingInfo.name = MissionCleanup @ %this.getValue("name");
+    %buildingInfo = new SimObject("");;
     0;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(%buildingInfo);
+    }
+    %buildingInfo.name = %this.getValue("name");
     %buildingInfo.city = %this.getValue("city");
     %buildingInfo.description = urlDecode(%this.getValue("description"));
     %buildingInfo.floorPlanCount = %this.getValue("floorPlansCount");
     %idx = 0;
     if ((%buildingInfo.floorPlanCount < %idx)) {
-        %floorplan = new ""();;
-        SimObject;
-        if (isObject(MissionCleanup)) {
-            %floorplan.add();
-        }
-        %floorplan.name = MissionCleanup @ %this.getValue("floorPlans" @ %idx @ ".name");
+        %floorplan = new SimObject("");;
         0;
+        if (isObject(MissionCleanup)) {
+            MissionCleanup.add(%floorplan);
+        }
+        %floorplan.name = %this.getValue("floorPlans" @ %idx @ ".name");
         %floorplan.description = %this.getValue("floorPlans" @ %idx @ ".description");
         %floorplan.capacity = %this.getValue("floorPlans" @ %idx @ ".capacity");
         %floorplan.minLevel = %this.getValue("floorPlans" @ %idx @ ".minLevel");
@@ -764,10 +745,10 @@ function GetBuildingInfo::onDone(%this) {
         %floorplan.priceVPoints = %this.getValue("floorPlans" @ %idx @ ".priceVPoints");
         %floorplan.isUpgrade = (0.0 == stricmp(%this.getValue("floorPlans" @ %idx @ ".upgrade"), "true"));
         %floorplan.numAvailable = %this.getValue("floorPlans" @ %idx @ ".numAvailable");
-        if (isObject(%buildingInfo.floorplan)) {
-            %buildingInfo.floorplan.delete();
+        if (isObject(%idx, %buildingInfo.floorplan)) {
+            %idx.delete(%buildingInfo.floorplan);
         }
-        %buildingInfo.floorplan = %idx @ %idx @ %floorplan @ %idx;
+        %buildingInfo.floorplan = %floorplan @ %idx;
         %idx = (1.0 + %idx);
     }
     addBuildingInfo(%buildingInfo);
@@ -801,15 +782,13 @@ function doGetSpaceInfo(%tracker) {
         }
         return;
     }
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "GetSpaceInfo";
+    %request = new ManagerRequest("") {
+        className = 0 @ "GetSpaceInfo";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL;
-    MissionCleanup;
     %url = %url @ "/GetCustomSpaceInfo";
     %url = %url @ "?user=" @ urlEncode($Player::Name);
     %url = %url @ "&token=" @ urlEncode($Token);
@@ -840,17 +819,15 @@ function GetSpaceInfo::onDone(%this) {
     }
     %this.tracker.spaceBuildingName = %this.getValue("building");
     %this.tracker.spaceCount = %this.getValue("spaceCount");
-    %this.tracker.spaces = SimGroup @ new ""();;
-    0;
+    %this.tracker.spaces = 0 @ new SimGroup("");;
     %idx = 0;
     if ((%this.tracker.spaceCount < %idx)) {
-        %space = new ""();;
-        SimObject;
-        if (isObject(MissionCleanup)) {
-            %space.add();
-        }
-        %space.access = MissionCleanup @ %this.getValue("space" @ %idx @ ".access");
+        %space = new SimObject("");;
         0;
+        if (isObject(MissionCleanup)) {
+            MissionCleanup.add(%space);
+        }
+        %space.access = %this.getValue("space" @ %idx @ ".access");
         %space.audioStream = %this.getValue("space" @ %idx @ ".audioStream");
         %space.description = %this.getValue("space" @ %idx @ ".description");
         %space.isFeatured = (%this.getValue("space" @ %idx @ ".featured") $= "true");
@@ -904,14 +881,13 @@ function GetSpaceInfo::onError(%this, %unused, %errMsg) {
     %this.schedule(0, "delete");
 };
 function purchaseApartmentRequest(%space, %useBux, %unused, %callback, %callbackFail) {
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "PurchaseSpaceRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "PurchaseSpaceRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
-    %request.callback = MissionCleanup @ %callback;
+    %request.callback = %callback;
     %request.callbackFail = %callbackFail;
     %url = $Net::ClientServiceURL @ "/PurchaseCustomSpace?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "building=" @ urlEncode(%space.buildingInfo.name) @ "&" @ "floorPlan=" @ urlEncode(%space.floorPlanName) @ "&" @ "payWith=" @ %useBux ? "vbux" : "vpoints";
     log("network", "debug", "PurchaseSpace: " @ %url);
@@ -955,14 +931,13 @@ function PurchaseSpaceRequest::onError(%this, %unused, %errMsg) {
     %this.schedule(0, "delete");
 };
 function getCustomSpacePurchaseInfo(%space, %callback) {
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "CustomSpacePurchaseInfo";
+    %request = new ManagerRequest("") {
+        className = 0 @ "CustomSpacePurchaseInfo";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
-    %request.callback = MissionCleanup @ %callback;
+    %request.callback = %callback;
     %request.space = %space;
     %url = $Net::ClientServiceURL @ "/GetCustomSpacePurchaseInfo?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "building=" @ urlEncode(%space.buildingInfo.name) @ "&" @ "floorPlan=" @ urlEncode(%space.floorPlanName);
     log("network", "debug", "PurchaseSpace: " @ %url);
@@ -1001,8 +976,8 @@ function csSelectLayout(%layoutToSelect) {
 };
 function clientCmdCSLayoutSelected(%unused, %audioStream, %videoStream) {
     refreshActiveFurniture();
-    -(1.0).SelectNuggetID();
-    if ((CSFurnitureMover @ " " @ %videoStream $= "")) {
+    CSFurnitureMover.SelectNuggetID(-(1.0));
+    if ((%videoStream $= "")) {
     }
     %envMgrVideoStr = %videoStream;
     "no-video";
@@ -1018,7 +993,7 @@ function csCopyLayoutFromTo(%from, %to) {
 function clientCmdCSGotLayoutVitals(%infoStr) {
     %layoutNum = getField(%infoStr, 0);
     if ((CSLayoutSelector == %this.copyTarget)) {
-        %infoStr.gotCopyTargetInfo();
+        CSLayoutSelector.gotCopyTargetInfo(%infoStr);
     }
 };
 function csGetLayoutVitals(%layoutNum) {
@@ -1031,25 +1006,22 @@ function csSaveLayoutAsDefault(%layoutNum) {
     commandToServer('CSSaveLayoutAsDefault', CustomSpaceClient::GetSpaceImIn(), %layoutNum);
 };
 function csLoadMediaFavorites() {
-    %mediafavorites = $Player::Name.getProperty("mediafavoritelist", "vside://radio/" @ $CSSpaceInfo.audioStream @ "\t" @ $CSSpaceInfo.videoStream);
-    gUserPropMgrClient;
+    %mediafavorites = gUserPropMgrClient.getProperty($Player::Name, "mediafavoritelist", "vside://radio/" @ $CSSpaceInfo.audioStream @ "\t" @ $CSSpaceInfo.videoStream);
     echo("csLoadMediaFavorites - \"" @ %mediafavorites @ "\"");
-    %mediafavorites.setMediaFavorites();
+    CSMediaDisplay.setMediaFavorites(%mediafavorites);
 };
 function csSaveMediaFavorites() {
     %mediafavorites = CSMediaDisplay.getMediaFavorites();
-    $Player::Name.setProperty("mediafavoritelist", %mediafavorites);
+    gUserPropMgrClient.setProperty($Player::Name, "mediafavoritelist", %mediafavorites);
 };
 function csRequestHotMedia() {
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "GetUrlRatingListRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "GetUrlRatingListRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/GetUrlRatingList?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "type=VIDEO" @ "&" @ "order=BY_SHOWS" @ "&" @ "first=0" @ "&" @ "count=" @ $CSMediaDisplay::DefaultFavoriteCount;
-    MissionCleanup;
     log("network", "debug", "requesting 'hot' media");
     %request.setURL(%url);
     %request.start();
@@ -1080,7 +1052,7 @@ function GetUrlRatingListRequest::onDone(%this) {
         if ((%count < %idx)) {
         }
     }
-    %mediaList.setMediaHotlist();
+    CSMediaDisplay.setMediaHotlist(%mediaList);
     %this.schedule(0, "delete");
 };
 function GetUrlRatingListRequest::onError(%this, %unused, %errMsg) {
@@ -1088,15 +1060,13 @@ function GetUrlRatingListRequest::onError(%this, %unused, %errMsg) {
     %this.schedule(0, "delete");
 };
 function csRequestMediaStatistics(%mediaURL) {
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "GetUrlRatingRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "GetUrlRatingRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/GetUrlRating?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "url=" @ urlEncode(%mediaURL);
-    MissionCleanup;
     log("network", "debug", "UrlRating: request rating for: " @ %mediaURL);
     %request.mediaurl = %mediaURL;
     %request.setURL(%url);
@@ -1111,24 +1081,22 @@ function GetUrlRatingRequest::onDone(%this) {
     %mediaURL = %this.getValue("url");
     %mediaviews = %this.getValue("viewCount");
     %mediaplays = %this.getValue("showCount");
-    %mediaURL.setMediaStatistics(%mediaviews, %mediaplays);
+    CSMediaDisplay.setMediaStatistics(%mediaURL, %mediaviews, %mediaplays);
     %this.schedule(0, "delete");
 };
 function GetUrlRatingRequest::onError(%this, %unused, %errMsg) {
     log("network", "warn", "GetUrlRatingRequest::onError: " @ %errMsg);
-    %this.mediaurl.clearMediaStatistics();
+    CSMediaDisplay.clearMediaStatistics(%this.mediaurl);
     %this.schedule(0, "delete");
 };
 function csRecordMediaShow(%mediaURL, %type) {
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "RecordUrlShowRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "RecordUrlShowRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/RecordUrlShow?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "url=" @ urlEncode(%mediaURL) @ "&" @ "type=" @ %type;
-    MissionCleanup;
     log("network", "debug", "ShowRequest: request rating for: " @ %mediaURL);
     %request.mediaurl = %mediaURL;
     %request.setURL(%url);
@@ -1147,15 +1115,13 @@ function RecordUrlShowRequest::onError(%this, %unused, %errMsg) {
     %this.schedule(0, "delete");
 };
 function csRecordMediaView(%mediaURL, %type) {
-    0;
-    %request = new ""() {
-        className = ManagerRequest @ "RecordUrlViewRequest";
+    %request = new ManagerRequest("") {
+        className = 0 @ "RecordUrlViewRequest";
     };
     if (isObject(MissionCleanup)) {
-        %request.add();
+        MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/RecordUrlView?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "url=" @ urlEncode(%mediaURL) @ "&" @ "type=" @ %type;
-    MissionCleanup;
     log("network", "debug", "ViewRequest: request rating for: " @ %mediaURL);
     %request.mediaurl = %mediaURL;
     %request.setURL(%url);

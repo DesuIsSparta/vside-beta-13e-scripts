@@ -23,11 +23,9 @@ function onAppCloseButton() {
     $closeConfirmDlg = MessageBoxYesNo("Quit vSide", , "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
     %dialog = ;
     if (!($gLastLoggedInThisSessionAs $= "")) {
-        %yesButtonPos = %dialog.button.getParent().getPosition();
-        0;
-        0;
-        %ctrl = new ""() {
-            profile = GuiCheckBoxCtrl @ "ETSCheckBoxProfile";
+        %yesButtonPos = 0.getParent(%dialog.button).getPosition();
+        %ctrl = new GuiCheckBoxCtrl("") {
+            profile = 0 @ "ETSCheckBoxProfile";
             position = getWord(%yesButtonPos, 0) @ " " @ (23.0 - getWord(%yesButtonPos, 1));
             extent = "110 20";
             horizSizing = "center";
@@ -75,14 +73,14 @@ function ClientCmdMissionInfo(%contiguousSpaceName, %mode) {
 function onGotContiguousSpaceName(%contiguousSpaceName) {
     $gContiguousSpaceName = %contiguousSpaceName;
     tutorials_Initialize();
-    %contiguousSpaceName.onSpaceChange();
+    geLocalMapContainer.onSpaceChange(%contiguousSpaceName);
     CSControlPanelTabs.updateSkipTutorialTab();
     ButtonBar.handleContiguousSpace();
-    if (!(geLocalMapContainer @ " " @ %contiguousSpaceName $= "")) {
+    if (!(%contiguousSpaceName $= "")) {
     }
     %name = "[" @ $ServerName @ "]";
     %contiguousSpaceName;
-    $Player::Name.incrementIntegerProperty("level started count" @ " " @ %name, 1);
+    gUserPropMgrClient.incrementIntegerProperty($Player::Name, "level started count" @ " " @ %name, 1);
 };
 function getContiguousSpaceFullName(%code) {
     return %code[$gContiguousSpaceFullNames @ %code];
@@ -94,7 +92,7 @@ function getCurrentContiguousSpaceOfferSkip() {
     return $gContiguousSpaceName[$gContiguousSpaceOfferSkip @ $gContiguousSpaceName];
 };
 function ClientCmdLevelCompleted(%levelName) {
-    $Player::Name.setProperty("level completed" @ " " @ %levelName, 1);
+    gUserPropMgrClient.setProperty($Player::Name, "level completed" @ " " @ %levelName, 1);
 };
 function ClientCmdToonColorOffsetFill(%colorOffset) {
     $pref::TS::ToonColorOffsetFill = %colorOffset;

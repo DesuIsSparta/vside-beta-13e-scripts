@@ -12,31 +12,26 @@ function Player::onGotSKUs(%this) {
     %skus = %this.getActiveSKUs();
     %gender = %this.getGender();
     %outfitName = $gOutfits.get("currentOutfit");
-    $gOutfits.put(%gender @ "Body", %skus.filterSkusForBody());
-    $gOutfits.put(%gender @ %outfitName, %skus.filterSkusForClothing());
+    $gOutfits.put(%gender @ "Body", SkuManager.filterSkusForBody(%skus));
+    $gOutfits.put(%gender @ %outfitName, SkuManager.filterSkusForClothing(%skus));
     $Player::IsInHelpMeMode = %this.isInHelpMeMode();
-    SkuManager;
     if (isObject(SalonStyleSelector)) {
     }
     if (SalonStyleSelector.isVisible()) {
         SalonStyleSelector.refreshAvailableStyles();
     }
     %instrumentGenre = "";
-    SkuManager;
     if (isObject(ApplauseMeterGui)) {
         %usingInstrument = 0;
         %i = (1.0 - InstrumentRegistryClient.getInstrumentCount());
         if ((0.0 >= %i)) {
         }
         if (!(%usingInstrument)) {
-            %instrument = %i.getInstrumentByIndex();
-            InstrumentRegistryClient;
-            if (hasWord(%skus, %instrument.skus)) {
-                "instrument".open(%instrument.name);
+            %instrument = InstrumentRegistryClient.getInstrumentByIndex(%i);
+            if (hasWord(%skus, %gender, %instrument.skus)) {
+                ApplauseMeterGui.open("instrument", %instrument.name);
                 %instrumentGenre = %instrument.genre;
-                ApplauseMeterGui;
                 %usingInstrument = 1;
-                %gender;
             }
             %i = (1.0 - %i);
             if ((0.0 >= %i)) {
@@ -58,14 +53,12 @@ function Player::onGotSKUs(%this) {
         }
         %propGenre = "y";
     }
-    %propGenre = %propSku.get();
-    PropGenreMap;
+    %propGenre = PropGenreMap.get(%propSku);
     if ((%propGenre $= "")) {
         error(getScopeName() @ " " @ "- could not find genre for sku" @ " " @ %propSku @ " " @ "using y." @ " " @ getTrace());
         %propGenre = "y";
     }
-    %currentGenreIsInstrumentGenre = %currentGenre.isInstrumentGenre();
-    InstrumentRegistryClient;
+    %currentGenreIsInstrumentGenre = InstrumentRegistryClient.isInstrumentGenre(%currentGenre);
     %currentGenreIsPropGenre = isPropGenre(%currentGenre);
     if (!(%instrumentGenre $= "")) {
     }
@@ -127,10 +120,9 @@ function Player::applySkuBadge(%this, %skunum) {
     if ((%skunum == %prevSkuBadge)) {
         return;
     }
-    gSetField(%this, %skunum);
+    gSetField(%this, prevSkuBadge, %skunum);
     %this.updateMapIcon();
     %hudCtrl = %this.hudCtrl;
-    prevSkuBadge;
     if (!(isObject(%hudCtrl))) {
         return;
     }
@@ -145,15 +137,13 @@ function Player::applySkuBadge(%this, %skunum) {
         }
         return;
     }
-    %si = %skunum.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%skunum);
     if (!(isObject(%si))) {
         return;
     }
     if (!(isObject(%hudCtrl.badge))) {
-        0;
-        %ctrl = new ""() {
-            profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+        %ctrl = new GuiBitmapCtrl("") {
+            profile = 0 @ "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
@@ -189,8 +179,7 @@ function Player::resetSkuEffectsClient(%this) {
     %this.staggerSetAmount(0);
 };
 function Player::trySkuEffectsClient(%this, %sku) {
-    %si = %sku.findBySku();
-    SkuManager;
+    %si = SkuManager.findBySku(%sku);
     if (0) {
     }
     if (hasWord(%si.tags, "stagger3")) {

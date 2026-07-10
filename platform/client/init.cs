@@ -72,7 +72,7 @@ function initClient() {
         fmodSetMute($UserPref::Audio::mute);
     }
     error("FMOD Audio Initialization Failed");
-    "DefaultCursor".setCursor();
+    Canvas.setCursor("DefaultCursor");
     userProperties_makeManager("gUserPropMgrClient", 1);
     AssetManager::clientInit();
     textureDownloadSetDownloadHost($Net::DownloadHost);
@@ -81,15 +81,14 @@ function initClient() {
         log("general", "info", "--------- Starting standalone ---------");
         startStandAlone();
     }
-    if (!(Canvas @ " " @ $JoinGameAddress $= "")) {
+    if (!($JoinGameAddress $= "")) {
         log("general", "info", "--------- Joining: " @ $JoinGameAddress @ "---------");
         join($JoinGameAddress);
     }
     checkForPackageUpdates($AutoDownloadPackages);
     loadMainMenu();
-    0;
-    $TransitionScreenshot = new ""() {
-        className = ScreenShotUploader @ "ScreenShotUploaderClass";
+    $TransitionScreenshot = new ScreenShotUploader("") {
+        className = 0 @ "ScreenShotUploaderClass";
     };
     HudTabs::setup();
     enableManualWindowResize(1);
@@ -104,7 +103,7 @@ function loadMainMenu() {
     if ($Audio::initFailed) {
         MessageBoxOK("Audio Initialization Failed", "A sound card must be installed to hear audio playback.  If a soundcard is already present please ensure the drivers are installed properly.", "");
     }
-    "DefaultCursor".setCursor();
+    Canvas.setCursor("DefaultCursor");
 };
 function startStandAlone() {
     log("initialization", "info", "start connectLocal()");
@@ -116,8 +115,8 @@ function startStandAlone() {
     if (($Player::Name $= "")) {
         $Player::Name = "no_name";
     }
-    $Player::Name.forgetProperties();
-    $Player::Name.requestProperties("startStandAlone_Part2();");
+    gUserPropMgrClient.forgetProperties($Player::Name);
+    gUserPropMgrClient.requestProperties($Player::Name, "startStandAlone_Part2();");
 };
 function startStandAlone_Part2() {
     outfits_init();
@@ -138,16 +137,15 @@ function join(%joinGameAddress) {
 };
 function showLicense() {
     %file = findFirstFile("*/license.txt");
-    %fo = new ""();;
-    FileObject;
+    %fo = new FileObject("");;
+    0;
     %fo.openForRead(%file);
     %text = "";
-    0;
     if (!(%fo.isEOF())) {
         %text = %text @ %fo.readLine() @ "\n";
     }
-    %text.setText();
-    0.pushDialog();
+    LicenseText.setText(%text);
+    Canvas.pushDialog(licenseDlg, 0);
 };
 function onVideoDeactivate() {
     stopMoving();
@@ -191,16 +189,16 @@ function logout(%doQuit) {
     if (!($UserPref::AIM::RememberMe)) {
     }
     if (isObject(AIMScreenNameField)) {
-        "".setText();
+        AIMScreenNameField.setText("");
     }
     if (!($UserPref::AIM::SavePassword)) {
     }
     if (isObject(AIMPasswordField)) {
-        "".setText();
+        AIMPasswordField.setText("");
     }
     WorldMap.setNotConnectedToServer();
     if (isObject(ConvBub)) {
-        0.close();
+        ConvBub.close(0);
     }
     if (isObject(BuddyHudWin)) {
         BuddyHudWin.close();
@@ -220,24 +218,24 @@ function logout(%doQuit) {
     }
     setWindowTitle(generateWindowTitle($ServerName));
     if (!($Login::loggedIn)) {
-        return ConvBub;
+        return;
     }
     if (isObject(LogoutRequest)) {
         return;
     }
     %cmd = "logoutPart2(" @ %doQuit @ ");";
-    "".setText();
-    "".setText();
-    $Player::Name.setProperty("prevBalanceVBux", $Player::VBux);
-    $Player::Name.setProperty("prevBalanceVPoints", $Player::VPoints);
-    $Player::Name.persistReally(%cmd);
+    geShoutout_Credential_Twitter_Username.setText("");
+    geShoutout_Credential_Twitter_Password.setText("");
+    gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVBux", $Player::VBux);
+    gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVPoints", $Player::VPoints);
+    gUserPropMgrClient.persistReally($Player::Name, %cmd);
 };
 function logoutPart2(%doQuit) {
     %logout = new ManagerRequest(LogoutRequest);;
     if (isObject(MissionCleanup)) {
-        %logout.add();
+        MissionCleanup.add(%logout);
     }
-    %logout.doQuit = MissionCleanup @ %doQuit;
+    %logout.doQuit = %doQuit;
     %url = $Net::ClientServiceURL @ "/logout";
     if (($Player::Name $= "")) {
         log("login", "error", getScopeName() @ " " @ "- logout called with empty player name" @ " " @ getTrace());
@@ -250,8 +248,7 @@ function logoutPart2(%doQuit) {
     %userValue = "?user=" @ urlEncode($Player::Name);
     %tokenValue = "&token=" @ urlEncode($Token);
     if (isObject(AIMConvManager)) {
-        %aimMessagesSentValue = AIMConvManager @ urlEncode(%logout.totalMessagesSent);
-        "&aimMessagesSent=";
+        %aimMessagesSentValue = "&aimMessagesSent=" @ urlEncode(AIMConvManager, %logout.totalMessagesSent);
     }
     %url = %url @ %userValue @ %tokenValue @ %aimMessagesSentValue;
     log("login", "debug", "logout: " @ %url);

@@ -199,7 +199,7 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler) {
         %request.putValue(%keyBase @ "relationType", (20.0 < getRandom(0, 99)) ? "friend" : "");
         if ((0.0 == getRandom(0, 1))) {
         }
-        %request.putValue(%keyBase @ "age", "");
+        %request.putValue(%keyBase @ "age", getRandom(13, 25), "");
         %request.putValue(%keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
         %request.putValue(%keyBase @ "currentLocation.areaName", "lga_yachts");
         %request.putValue(%keyBase @ "currentLocation.buildingName", "LGAHarbor");
@@ -211,7 +211,6 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler) {
         %request.putValue(%keyBase @ "score", 694040);
         %request.putValue(%keyBase @ "homeLocation.buildingName", "LGAHarbor");
         %n = (1.0 + %n);
-        getRandom(13, 25);
     }
     %n = 0;
     (%num < %n);

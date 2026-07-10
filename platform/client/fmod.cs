@@ -6,19 +6,19 @@ $Fmod::randomStreamName = "";
 function clientCmdMusicSpaceEnter(%spaceId, %streamUrl, %volume, %attenuation) {
     log("communication", "info", "MusicSpaceEnter: spaceId:" @ " " @ %spaceId @ " " @ "URL:" @ " " @ %streamUrl @ " " @ "attenuation:" @ " " @ %attenuation @ " " @ getScopeName(1));
     Music::setService(FMod);
-    %streamUrl.setStreamUrl();
-    %spaceId.pushStreamWithVolume(%streamUrl, %volume, %attenuation);
+    FMod.setStreamUrl(%streamUrl);
+    FMod.pushStreamWithVolume(%spaceId, %streamUrl, %volume, %attenuation);
 };
 function clientCmdMusicSpaceLeave(%spaceId) {
     log("communication", "debug", "INFO FMod MusicSpaceLeave called on spaceId" @ " " @ %spaceId);
-    %spaceId.popStream();
+    FMod.popStream(%spaceId);
 };
 function clientCmdMusicSpaceChange(%spaceId, %newStreamUrl) {
     log("communication", "debug", "music space change called -" @ " " @ %spaceId @ " " @ "URL:" @ " " @ %newStreamUrl);
     %volume = fmodGetSourceVolume();
-    %spaceId.popStream();
-    %newStreamUrl.setStreamUrl();
-    %spaceId.pushStreamWithVolume(%newStreamUrl, %volume, "");
+    FMod.popStream(%spaceId);
+    FMod.setStreamUrl(%newStreamUrl);
+    FMod.pushStreamWithVolume(%spaceId, %newStreamUrl, %volume, "");
 };
 function FMod::FadeOutVolume(%this) {
     %vol = fmodGetTopChannelVolume();
@@ -129,7 +129,7 @@ function FMod::checkMetaData(%this) {
     if ((0.0 != strcmp(%this.metaData, %current))) {
         %this.metaData = %current;
         if ((0.0 != strcmp(%this.metaData, ""))) {
-            %artist.displayMetaData(%title, %album, %comment, 1);
+            MusicHud.displayMetaData(%artist, %title, %album, %comment, 1);
         }
     }
 };

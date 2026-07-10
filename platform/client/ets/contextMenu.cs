@@ -2,9 +2,8 @@ function GuiControl::newContextMenu(%this, %menuName) {
     if (isObject(%menuName)) {
         return %menuName;
     }
-    0;
-    %cm = new ""() {
-        profile = GuiPopUp2MenuCtrl @ "ETSRightClickProfile";
+    %cm = new GuiPopUp2MenuCtrl("") {
+        profile = 0 @ "ETSRightClickProfile";
         scrollProfile = "ETSScrollProfile";
         winProfile = "ETSRightClickWindowProfile";
         horizSizing = "right";
@@ -25,8 +24,7 @@ function GuiControl::newContextMenu(%this, %menuName) {
     return %cm;
 };
 function ContextMenu::showAtPoint(%this, %pos) {
-    %topContent = (1.0 - Canvas.getCount()).getObject();
-    Canvas;
+    %topContent = Canvas.getObject((1.0 - Canvas.getCount()));
     %topContent.add(%this);
     %topContent.pushToBack(%this);
     %this.setVisible(1);
@@ -58,15 +56,15 @@ function onscreenCoordinates(%left, %top, %width, %height) {
     }
     return %left @ " " @ %top;
 };
-"EditContextMenu".newContextMenu();
+Canvas.newContextMenu("EditContextMenu");
 function GuiTextEditCtrl::onRightMouseUp(%this) {
     if (%this.password) {
-        return Canvas;
+        return;
     }
     %this.makeFirstResponder(1);
-    %this.init();
+    EditContextMenu.init(%this);
     EditContextMenu.showAtCursor();
-    %this.showCursor = EditContextMenu @ 1;
+    %this.showCursor = 1;
 };
 function EditContextMenu::init(%this, %ctrl) {
     %this.ctrl = %ctrl;
@@ -92,27 +90,27 @@ function EditContextMenu::init(%this, %ctrl) {
     %n = (1.0 + %n);
     if (%modifiable) {
     }
-    %this.add("Undo", , %schemeDisabled);
+    %this.add("Undo", , %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
-    %this.add("---", %schemeNormal, %schemeDisabled);
+    %this.add("---", , %schemeDisabled);
     %n = (1.0 + %n);
     if (%canCut) {
     }
-    %this.add("Cut", , %schemeDisabled);
+    %this.add("Cut", , %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
     if (%canCopy) {
     }
-    %this.add("Copy", %schemeNormal, %schemeDisabled);
+    %this.add("Copy", , %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
     if (%canPaste) {
     }
-    %this.add("Paste", %schemeNormal, %schemeDisabled);
+    %this.add("Paste", , %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
     if (%canCut) {
     }
-    %this.add("Delete", %schemeNormal, %schemeDisabled);
+    %this.add("Delete", , %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
-    %this.add("---", %schemeNormal, %schemeDisabled);
+    %this.add("---", , %schemeDisabled);
     %n = (1.0 + %n);
     %this.add("Select All", , %schemeNormal);
 };

@@ -6,8 +6,7 @@ function messageAll(%msgType, %msgString) {
     %count = ClientGroup.getCount();
     %cl = 0;
     if ((%count < %cl)) {
-        %client = %cl.getObject();
-        ClientGroup;
+        %client = ClientGroup.getObject(%cl);
         messageClient(%client, %msgType, %msgString);
         %cl = (1.0 + %cl);
     }

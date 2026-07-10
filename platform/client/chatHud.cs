@@ -3,16 +3,16 @@ $ChatHud::ListenTarget = 0;
 function onServerMessage(%unused) {
 };
 function onAIMReceive(%sender, %msg) {
-    %sender.receivedMessage(%msg);
+    AIMConvManager.receivedMessage(%sender, %msg);
 };
 function MessageHud::open(%this, %text) {
     if (%this.isVisible()) {
         return;
     }
     %this.setVisible(1);
-    1.makeFirstResponder();
+    MessageHudEdit.makeFirstResponder(1);
     MessageHudEdit.reinjectOpenEvent();
-    100.schedule();
+    MessageHud.schedule(100);
     if (isObject(ConvBubVecCtrlMsgVec)) {
         if ((0.0 > ConvBubVecCtrlMsgVec.getNumLines())) {
             ConvBub.open();
@@ -24,8 +24,8 @@ function MessageHud::close(%this) {
         return;
     }
     %this.setVisible(0);
-    0.makeFirstResponder();
-    "".setValue();
+    MessageHudEdit.makeFirstResponder(0);
+    MessageHudEdit.setValue("");
 };
 function MessageHudEdit::onEscape(%this) {
     finishTextEntry();
@@ -35,7 +35,7 @@ function MessageHud::updatePosition(%this) {
     %trgX = ((getWord(%this.getExtent(), 0) - %resWidth) * 0.5);
     %trgY = ($ButtonBarVar::VerticalAdjustment + (35.0 - getWord(ButtonBar.getTrgPosition(), 1)));
     %this.setTrgPosition(%trgX, %trgY);
-    %this.pushToBack();
+    PlayGui.pushToBack(%this);
 };
 function MessageHudEdit::eval(%this) {
     %text = trim(StripMLControlChars(%this.getValue()));
@@ -47,8 +47,7 @@ function MessageHudEdit::eval(%this) {
         if (!(processCommand(%text))) {
             %curAnim = $player.getCurrActionName();
             %curBase = getSubStr(%curAnim, 2, 100);
-            %curProt = %curBase.get();
-            ProtectedAnimsDict;
+            %curProt = ProtectedAnimsDict.get(%curBase);
             if ((1.0 == %curProt)) {
                 commandToServer('RequestToStand', 0, 0);
             }
@@ -57,7 +56,7 @@ function MessageHudEdit::eval(%this) {
     }
     emote(%text);
     if (isObject(pChat)) {
-        %text.say(0, 0);
+        pChat.say(%text, 0, 0);
     }
     say(%text);
 };
@@ -70,8 +69,7 @@ function MessageHudEdit::scanForAutoCommands(%this) {
         return;
     }
     if (isObject(CommandAbbreviationMap)) {
-        %replace = %firstWord.get();
-        CommandAbbreviationMap;
+        %replace = CommandAbbreviationMap.get(%firstWord);
         if (!(%replace $= "")) {
             %this.setValue(setWord(%this.getValue(), 0, %replace));
             %this.setCursorPos(40000);
@@ -102,7 +100,7 @@ function MessageHudEdit::chatPreviewTimer(%this) {
     %this.sendPreviewText();
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
     $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
-    %this.pushToBack();
+    PlayGui.pushToBack(%this);
 };
 function MessageHudEdit::sendPreviewText(%this) {
     $player.sendPreviewText(%this.getValue());
@@ -145,9 +143,8 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
         $gMessageHudEditOriginalExtent = MessageHudEdit.getExtent();
     }
     if ((%modeIconName $= "")) {
-        0.setVisible();
+        MessageHudModeIcon.setVisible(0);
         position = $gMessageHudEditOriginalPosition @ MessageHudEdit;
-        MessageHudModeIcon;
         extent = $gMessageHudEditOriginalExtent @ MessageHudEdit;
     }
     %bitmap = "platform/client/buttons/" @ %modeIconName;
@@ -155,10 +152,9 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
     position = %positionNew @ MessageHudEdit;
     %extentNew = VectorSub($gMessageHudEditOriginalExtent, $gMessageHudEditModeIconOffset);
     extent = %extentNew @ MessageHudEdit;
-    %bitmap.setBitmap();
-    1.setVisible();
+    MessageHudModeIcon.setBitmap(%bitmap);
+    MessageHudModeIcon.setVisible(1);
     command = %modeIconCommand @ MessageHudModeIcon;
-    MessageHudModeIcon;
 };
 function displayMicrophoneHelp() {
     if ((PlayGui.getId() != Canvas.getContent())) {
@@ -168,10 +164,10 @@ function displayMicrophoneHelp() {
 };
 function startTextEntry() {
     if (!(MessageHud.isVisible())) {
-        lastkey.open();
+        MessageHud.open(moveMap, lastkey);
     }
-    moveMap @ lastkey.setText();
-    1.makeFirstResponder();
+    MessageHudEdit.setText(MessageHudEdit.getValue(), moveMap @ lastkey);
+    MessageHudEdit.makeFirstResponder(1);
 };
 function finishTextEntry(%text) {
     MessageHud.close();
@@ -179,5 +175,5 @@ function finishTextEntry(%text) {
     $gChatPreviewTimer = 0;
     $player.onGotTypingSomething("");
     $player.sendPreviewText("");
-    "".setValue();
+    MessageHudEdit.setValue("");
 };

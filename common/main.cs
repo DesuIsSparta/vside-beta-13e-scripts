@@ -112,8 +112,7 @@ function displayHelp() {
     print("\nGeneral options:\n" @ "  -logMode <0|disable|1|append|2|overwrite>\n" @ "                             Set the logging mode\n" @ "  -logLevel <0|none|1|error|2|warn|3|info|4|debug>\n" @ "                             Sets the debug level\n" @ "  -help                      Display this help message\n" @ "  -version                   Display version information and exit\n");
 };
 function loadMods(%modPath) {
-    %modPath = NextToken(%modPath, ";");
-    token;
+    %modPath = NextToken(%modPath, token, ";");
     if (!(%modPath $= "")) {
         loadMods(%modPath);
     }
@@ -121,16 +120,14 @@ function loadMods(%modPath) {
     exec(%token @ "/main.cs");
 };
 function dumpMods(%modPath) {
-    %modPath = NextToken(%modPath, ";");
-    token;
+    %modPath = NextToken(%modPath, token, ";");
     if (!(%modPath $= "")) {
         dumpMods(%modPath);
     }
     log("initialization", "info", %token @ "/main.cs");
 };
 function doreloadModScripts(%modPath) {
-    %modPath = NextToken(%modPath, ";");
-    token;
+    %modPath = NextToken(%modPath, token, ";");
     if (!(%modPath $= "")) {
         doreloadModScripts(%modPath);
     }

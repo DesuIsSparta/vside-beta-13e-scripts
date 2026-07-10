@@ -27,19 +27,16 @@ function TestSuite_SeatingSystemSmokeTests::TearDown(%this) {
 };
 function TEST_SeatAvailable::runTest(%this) {
     %seatID = TestSeatingSystemTestSet.getObject(0);
-    TestSeatingSystemTestSet;
     %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is not available, it was expected to be");
 };
 function TEST_SitDown::runTest(%this) {
-    %seatID = 0.getObject();
-    TestSeatingSystemTestSet;
+    %seatID = TestSeatingSystemTestSet.getObject(0);
     %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "should not be taken if we are going to sit down in it");
     commandToServer('RequestToSit', %seatID);
 };
 function TEST_SitDown::delayedEval(%this) {
     %this.assert($player.isSitting(), "the player should be sitting after we tell her to");
-    %seatID = 0.getObject();
-    TestSeatingSystemTestSet;
+    %seatID = TestSeatingSystemTestSet.getObject(0);
     %this.assert(%seatID.isSeatTaken(), %seatID @ " " @ "is not taken, after we sit down, it should be taken");
 };
 function TEST_StandUp::runTest(%this) {
@@ -48,8 +45,7 @@ function TEST_StandUp::runTest(%this) {
 };
 function TEST_StandUp::delayedEval(%this) {
     %this.assert(!($player.isSitting()), "the player should be standing up after well tell him to");
-    %seatID = 0.getObject();
-    TestSeatingSystemTestSet;
+    %seatID = TestSeatingSystemTestSet.getObject(0);
     %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is taken, but it should be available after we stand up");
 };
 function TEST_TeleportAway::runTest(%this) {
@@ -58,8 +54,7 @@ function TEST_TeleportAway::runTest(%this) {
 };
 function TEST_TeleportAway::delayedEval(%this) {
     %this.assert(!($player.isSitting()), "the player should be standing up after well tell him to");
-    %seatID = 0.getObject();
-    TestSeatingSystemTestSet;
+    %seatID = TestSeatingSystemTestSet.getObject(0);
     %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is taken, but it should be available after we stand up");
     %this.animName = $PLAYER_FORCE_IDLE_ANIM;
     %this.expectedAnimName = $player.getGender() @ $player.getGenre() @ %this.animName;

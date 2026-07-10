@@ -27,22 +27,19 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     if ((%num < %n)) {
         %sku = getWord(%skusDry, %n);
         %okay = 1;
-        if (!(SkuManager @ " " @ %sku.filterSkusBornWith(1) $= %sku)) {
-            error(SkuManager @ %sku.findBySku().descShrt);
+        if (!(SkuManager.filterSkusBornWith(%sku, 1) $= %sku)) {
+            error(getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku is not bornWith:" @ " " @ %sku @ " " @ SkuManager.findBySku(%sku).descShrt);
             %okay = 0;
-            getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku is not bornWith:" @ " " @ %sku @ " ";
         }
-        if (!(SkuManager @ " " @ %sku.filterSkusRoles(0) $= %sku)) {
-            error(SkuManager @ %sku.findBySku().descShrt);
+        if (!(SkuManager.filterSkusRoles(%sku, 0) $= %sku)) {
+            error(getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku requires roles:" @ " " @ %sku @ " " @ SkuManager.findBySku(%sku).descShrt);
             %okay = 0;
-            getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku requires roles:" @ " " @ %sku @ " ";
         }
         if (%okay) {
             %skus = %skus @ %sku @ " ";
         }
-        MessageBoxOK("Error", SkuManager @ %sku.findBySku().descShrt, "");
+        MessageBoxOK("Error", "invalid sku" @ " " @ %sku @ " " @ "in paper doll list\nsee console.log for\"" @ " " @ getScopeName() @ " " @ "\"" @ "\n" @ %skusName @ "\n" @ %sku @ " " @ SkuManager.findBySku(%sku).descShrt, "");
         %n = (1.0 + %n);
-        "invalid sku" @ " " @ %sku @ " " @ "in paper doll list\nsee console.log for\"" @ " " @ getScopeName() @ " " @ "\"" @ "\n" @ %skusName @ "\n" @ %sku @ " ";
     }
     %skus = trim(%skus);
     (%num < %n);
@@ -67,10 +64,9 @@ function paperDoll_InitPermutations() {
     %param = "";
     %option = "";
     %optionName = "";
-    %fo = new ""();;
-    FileObject;
-    %lineNum = 0;
+    %fo = new FileObject("");;
     0;
+    %lineNum = 0;
     %requiredTokens = "";
     %requiredTokens = %requiredTokens @ "size" @ " ";
     %requiredTokens = %requiredTokens @ "background" @ " ";
@@ -107,10 +103,8 @@ function paperDoll_InitPermutations() {
             }
             if ((%word $= "option")) {
                 %s = trim(restWords(%line));
-                %s = NextToken(%s, ":");
-                optionName;
-                %s = NextToken(%s, ":");
-                option;
+                %s = NextToken(%s, optionName, ":");
+                %s = NextToken(%s, option, ":");
                 %option = trim(%option);
                 %optionName = trim(%optionName);
                 paperDoll_AddPermutation(%gender, %param, %option, %optionName);

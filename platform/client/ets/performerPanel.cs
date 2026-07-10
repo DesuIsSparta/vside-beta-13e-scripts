@@ -10,7 +10,7 @@ function performerPanel::open(%this) {
     }
     if (!(%this.isVisible())) {
         %this.setVisible(1);
-        %this.focusAndRaise();
+        PlayGui.focusAndRaise(%this);
     }
 };
 function performerPanel::close(%this) {

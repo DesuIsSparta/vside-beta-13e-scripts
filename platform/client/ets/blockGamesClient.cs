@@ -1,6 +1,6 @@
 function clientCmdBlockGameEngage(%gameType) {
     setFOV(90);
-    "blockgame".open(%gameType);
+    ApplauseMeterGui.open("blockgame", %gameType);
     ConvBub.chooseProfile();
     getUserActivityMgr().setActivityActive("gaming", 1);
 };

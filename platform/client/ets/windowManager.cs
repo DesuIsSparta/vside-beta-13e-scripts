@@ -179,9 +179,8 @@ function WindowManager::countVisibleRightMarginWindows(%this) {
     %count = 0;
     %n = 0;
     if ((%this.rightMargin.numWindows < %n)) {
-        if (%this.rightMargin.rightMargin.windows.isVisible()) {
+        if (%n @ WindowManager.isVisible(%this.rightMargin.rightMargin.windows)) {
             %count = (1.0 + %count);
-            %n @ WindowManager;
         }
         %n = (1.0 + %n);
     }
@@ -307,7 +306,7 @@ function BuddyHudWin::open(%this) {
     BuddyHudWin.refreshAIMBuddyList();
     BuddyHudWin.clearSelections();
     %this.setVisible(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
 };
 function BuddyHudWin::close(%this) {
@@ -315,12 +314,12 @@ function BuddyHudWin::close(%this) {
     if (!($UserPref::AIM::RememberMe)) {
     }
     if (isObject(AIMScreenNameField)) {
-        "".setText();
+        AIMScreenNameField.setText("");
     }
     if (!($UserPref::AIM::SavePassword)) {
     }
     if (isObject(AIMPasswordField)) {
-        "".setText();
+        AIMPasswordField.setText("");
     }
     PlayGui.focusTopWindow();
     WindowManager.update();
@@ -347,7 +346,7 @@ function GameMgrHudWin::open(%this) {
         return;
     }
     %this.setVisible(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
 };
 function GameMgrHudWin::close(%this) {
@@ -358,11 +357,11 @@ function GameMgrHudWin::close(%this) {
 };
 function PlayerWin::open(%this) {
     if (!($player.getShapeName() $= "")) {
-        "\x04" @ " " @ $player.getShapeName().setText();
+        PlayerWin.setText("\x04" @ " " @ $player.getShapeName());
     }
-    "\x04Player - Cam!".setText();
+    PlayerWin.setText("\x04Player - Cam!");
     %this.setVisible(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
 };
 function PlayerWin::close(%this) {

@@ -2,22 +2,22 @@ function toggleSnoopPanel() {
     SnoopPanel.toggle();
 };
 function SnoopPanel::toggle(%this) {
-    %this.ensureAdded();
-    %this.showRaiseOrHide();
+    playGui.ensureAdded(%this);
+    playGui.showRaiseOrHide(%this);
 };
 function SnoopPanel::open(%this) {
     if (!($player.rolesPermissionCheckNoWarn("snoop"))) {
         return;
     }
-    %this.ensureAdded();
+    playGui.ensureAdded(%this);
     if (!(%this.isVisible())) {
         %this.setVisible(1);
         %this.restoreDims();
-        %this.focusAndRaise();
+        playGui.focusAndRaise(%this);
     }
 };
 function SnoopPanel::close(%this) {
-    %this.ensureAdded();
+    playGui.ensureAdded(%this);
     %this.setVisible(0);
     playGui.focusTopWindow();
     %this.storeDims();
@@ -41,7 +41,7 @@ function SnoopPanel::addLine(%this, %text) {
         %newLine = "\n";
     }
     %newLine = "";
-    %newLine @ %timeStamp @ %text.addText(1, SnoopPanelScroll.isAtBottom());
+    snoopPanelTextCtrl.addText(%newLine @ %timeStamp @ %text, 1, SnoopPanelScroll.isAtBottom());
 };
 function SnoopPanel::addLine2(%this, %line) {
     %this.addLine(%line);
@@ -67,7 +67,7 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
     }
 };
 function ClientCmdSnoopIn(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply) {
-    %text.handleIncoming(%name, %whisperedTo, %ignored, %speechType, %isAutoReply);
+    SnoopPanel.handleIncoming(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
 };
 function onModNotificationCussing(%playerName, %param2) {
     if (!($DevPref::Mod::cusses)) {
@@ -75,13 +75,11 @@ function onModNotificationCussing(%playerName, %param2) {
     }
     %text = NextToken(%param2, "verb", " ");
     %line = "<spush><color:880088>cuss ";
-    %line = pChat @ %playerName.getPlayerMarkup("");
-    %line @ " ";
+    %line = %line @ " " @ pChat.getPlayerMarkup(%playerName, "");
     %line = %line @ " " @ %verb @ " " @ %text;
     %line = %line @ " " @ "<spop>";
-    %line.addLine2();
+    SnoopPanel.addLine2(%line);
     %soundNum = stringToInteger(%playerName, $gAudioProfile_CussesNum);
-    SnoopPanel;
     alxPlay2(%soundNum[$gAudioProfile_Cusses @ %soundNum]);
 };
 function stringToInteger(%string, %maxInteger) {

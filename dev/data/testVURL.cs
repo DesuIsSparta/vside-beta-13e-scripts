@@ -6,9 +6,8 @@ function TestSuite_VURL::setup(%this) {
 };
 function TEST_VURL_PARSE_USER::runTest(%this) {
     %aVurlString = "vside:/user/Bob";
-    0;
-    %theVurl = new ""() {
-        class = ScriptObject @ "VURL";
+    %theVurl = new ScriptObject("") {
+        class = 0 @ "VURL";
     };
     if (%theVurl.setVURL(%aVurlString)) {
         %this.assertSameString(%theVurl.targetType, "user", "the target type should have been user");
@@ -19,9 +18,8 @@ function TEST_VURL_PARSE_USER::runTest(%this) {
 };
 function TEST_VURL_PARSE_APARTMENT::runTest(%this) {
     %aVurlString = "vside:/apartment/a_building/an_apartment";
-    0;
-    %theVurl = new ""() {
-        class = ScriptObject @ "VURL";
+    %theVurl = new ScriptObject("") {
+        class = 0 @ "VURL";
     };
     if (%theVurl.setVURL(%aVurlString)) {
         %this.assertSameString(%theVurl.targetType, "apartment", "the target type should have been apartment");

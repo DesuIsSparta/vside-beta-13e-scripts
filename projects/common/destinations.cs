@@ -123,7 +123,7 @@ function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave) {
         }
         %doSave = 0;
     }
-    !(%doSave).doClose(0);
+    ClosetGui.doClose(!(%doSave), 0);
     toggleTGFMapFiltered("shop");
 };
 $gAreaNamesInternalList = "";

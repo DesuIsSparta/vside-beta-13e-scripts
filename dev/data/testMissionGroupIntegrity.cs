@@ -30,19 +30,17 @@ function TEST_MISSIONGROUPINTEGRITY::InitializeNPCNames(%this) {
         %this.NPCNameMap = 1.0 @ 0;
         return;
     }
-    0;
-    %this.NPCNameMap = new ""() {
-        ignoreCase = StringMap @ 1;
+    %this.NPCNameMap = new StringMap("") {
+        ignoreCase = 0 @ 1;
     };
     if (isObject(MissionCleanup)) {
-        %this.NPCNameMap.add();
+        MissionCleanup.add(%this.NPCNameMap);
     }
-    %file = new ""();;
-    FileObject;
+    %file = new FileObject("");;
+    0;
     if (%file.openForRead("dev/data/npc_usernames.txt")) {
         if (!(%file.isEOF())) {
             %npcName = %file.readLine();
-            0;
             %this.NPCNameMap.put(%npcName, "NPC");
         }
     }
@@ -140,7 +138,7 @@ function TEST_MISSIONGROUPINTEGRITY::runTest(%this) {
     if ($MAYBE_BAD_MODEL_UNIT_FLAG) {
         %this.assert(0, "AINT NO MODEL UNIT HIGH ENOUUGH, NO MORE CRACK PIPE FOR YOU!, FIX ME!!!, filename does not contain the string modelunit, likely not a real model unit, should probably be pointing to different _generated.cs file");
     }
-    %this.RecursivelyCheckForThingsThatDontBelong("invalidGroup");
+    %this.RecursivelyCheckForThingsThatDontBelong(MissionGroup, "invalidGroup");
     %this.CheckBuildingTransitionSetup();
     %this.CheckPrivateSpaceSetup();
     %this.CheckDatablockSetup();
@@ -158,9 +156,8 @@ function CountObjectsInMissionWithName(%name) {
     %v.skipSimGroups = 0;
     %v.count = 0;
     %v.nameToCount = %name;
-    SimGroupVisitor::VisitSimgroup(%v);
+    SimGroupVisitor::VisitSimgroup(MissionGroup, %v);
     %count = %v.count;
-    MissionGroup;
     %v.delete();
     return %count;
 };
@@ -189,8 +186,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckBuildingTransitionSetup(%this) {
         %count = BuildingDefinitions.getCount();
         %i = 0;
         if ((%count < %i)) {
-            %obj = %i.getObject();
-            BuildingDefinitions;
+            %obj = BuildingDefinitions.getObject(%i);
             if (isObject(%obj)) {
                 %name = %obj.buildingName;
                 %vurl = Buildings::getReturnVURL(%name);
@@ -254,9 +250,9 @@ function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this) {
         }
     }
     if ((MissionInfo @ " " @ %parsedVURLobject.mode $= "PrivateSpaceGrid")) {
-        %this.assertDifferentString(%parsedVURLobject.modelID, "", "For privatespace grid servers, a modelID must be specified in MissionInfo, this is the type of floorplan supported by this server");
-        %this.assertDifferentString(%parsedVURLobject.building, "", "For privatespace grid servers, a building must be specified in MissionInfo, this is the building that connects to this grid server");
-        %this.assertDifferentString(%parsedVURLobject.spacePrefix, "", "For privatespace grid servers, a spacePrefix must be specified in MissionInfo, this is the prefix that will be used to name each space");
+        %this.assertDifferentString(MissionInfo, %parsedVURLobject.modelID, "", "For privatespace grid servers, a modelID must be specified in MissionInfo, this is the type of floorplan supported by this server");
+        %this.assertDifferentString(MissionInfo, %parsedVURLobject.building, "", "For privatespace grid servers, a building must be specified in MissionInfo, this is the building that connects to this grid server");
+        %this.assertDifferentString(MissionInfo, %parsedVURLobject.spacePrefix, "", "For privatespace grid servers, a spacePrefix must be specified in MissionInfo, this is the prefix that will be used to name each space");
     }
 };
 function TEST_MISSIONGROUPINTEGRITY::CheckDatablockSetup(%this) {
@@ -310,8 +306,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckPaperDollSKUs(%this) {
 };
 function MissionMarkerData::checkIntegrity(%this, %testCase) {
     if (!(%testCase.isProtectedSitAnimException(%this.sitIdle))) {
-        %isProtected = %this.sitIdle.hasKey();
-        ProtectedAnimsDict;
+        %isProtected = ProtectedAnimsDict.hasKey(%this.sitIdle);
         %testCase.assert(%isProtected, "seat marker datablock \"" @ %this.getName() @ "\" has a non-protected idle anim, \"" @ %this.sitIdle @ "\". You may want to add it to initializeProtectedAnims().");
     }
 };
@@ -394,12 +389,11 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         }
     }
     if (%obj.isClassAIPlayer()) {
-        %this.assert((NPCGroup > %obj.getObjectIndex()), "AIPlayer is not in NPCGroup:" @ " " @ getDebugString(%obj));
+        %this.assert((-(1.0) > NPCGroup.getObjectIndex(%obj)), "AIPlayer is not in NPCGroup:" @ " " @ getDebugString(%obj));
         if (isObject(%this.NPCNameMap)) {
         }
         if ((-(1.0) == %this.NPCNameMap.findKey(%obj.getName()))) {
             %belongs = 0;
-            -(1.0);
             %actionNeeded = "NPC" @ " " @ %obj.getName() @ " " @ "should be listed in npc_usernames.txt.";
         }
     }
@@ -411,8 +405,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
             %actionNeeded = "This is an old style seat marker and shuold be converted to an ETSSeatMarker";
         }
         if (!(%this.isProtectedSitAnimException(%obj.sitIdle))) {
-            %isProtected = %obj.sitIdle.hasKey();
-            ProtectedAnimsDict;
+            %isProtected = ProtectedAnimsDict.hasKey(%obj.sitIdle);
             %this.assert(%isProtected, "seat marker \"" @ %obj.getName() @ "\" has a non-protected idle anim, \"" @ %obj.sitIdle @ "\". You may want to add it to initializeProtectedAnims().");
         }
     }
@@ -423,8 +416,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         }
         %this.assert((0.0 == %obj.isNetCacheable), "seat markers cannot be cached, you should set isNetCacheable to 0 for the seat marker:" @ " " @ getDebugString(%obj) @ " " @ "in the group" @ " " @ %parentGroupName);
         if (!(%this.isProtectedSitAnimException(%obj.sitIdle))) {
-            %isProtected = %obj.sitIdle.hasKey();
-            ProtectedAnimsDict;
+            %isProtected = ProtectedAnimsDict.hasKey(%obj.sitIdle);
             %this.assert(%isProtected, "seat marker \"" @ %obj.getName() @ "\" has a non-protected idle anim, \"" @ %obj.sitIdle @ "\". You may want to add it to initializeProtectedAnims().");
         }
     }

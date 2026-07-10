@@ -52,8 +52,7 @@ function destroyServer() {
         $ServerGroup.delete();
     }
     if (ClientGroup.getCount()) {
-        %client = 0.getObject();
-        ClientGroup;
+        %client = ClientGroup.getObject(0);
         %client.delete();
     }
     $Server::GuidList = "";
@@ -96,8 +95,7 @@ function removeFromServerGuidList(%guid) {
     }
 };
 function isUserConnected(%userName) {
-    %client = %userName.getNorm();
-    ClientDict;
+    %client = ClientDict.getNorm(%userName);
     if (!(%client $= "")) {
         return 1;
     }

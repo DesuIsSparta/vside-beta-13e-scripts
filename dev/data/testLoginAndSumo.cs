@@ -561,7 +561,7 @@ function stopAndTalk() {
             %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
             %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
         }
-        "Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination.say(0, 0);
+        pChat.say("Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination, 0, 0);
         commandToServer(%command, %destination);
     }
     if ((5.0 == $failureCount)) {
@@ -571,7 +571,6 @@ function stopAndTalk() {
     }
     echo("LOAD: Lost PChat... Gonna try again.");
     $failureCount = (1.0 + $failureCount);
-    pChat;
     schedule(10000, 0);
 };
 function logoffAndQuit() {
@@ -596,8 +595,7 @@ function approveFriendRequests() {
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
+        pChat.whisper("(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (1.0 - %n);
-        pChat;
     }
 };

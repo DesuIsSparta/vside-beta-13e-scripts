@@ -1,7 +1,7 @@
 function DancePadGui::open(%this) {
     %this.fillDanceButtonOptions();
     %this.setVisible(1);
-    %this.focusAndRaise();
+    PlayGui.focusAndRaise(%this);
     userTips::showOnceEver("DancePadUsage");
 };
 function DancePadGui::close(%this) {
@@ -40,21 +40,20 @@ function DancePadGui::fillDanceButtonOptions(%this) {
         (%numlists <= %listNum);
         return;
     }
-    $UserPref::DancePad::Button1.SetSelected();
-    $UserPref::DancePad::Button2.SetSelected();
-    $UserPref::DancePad::Button3.SetSelected();
-    $UserPref::DancePad::Button4.SetSelected();
-    $UserPref::DancePad::Button5.SetSelected();
-    $UserPref::DancePad::Button6.SetSelected();
-    $UserPref::DancePad::Button7.SetSelected();
-    $UserPref::DancePad::Button8.SetSelected();
+    danceButton1List.SetSelected($UserPref::DancePad::Button1);
+    danceButton2List.SetSelected($UserPref::DancePad::Button2);
+    danceButton3List.SetSelected($UserPref::DancePad::Button3);
+    danceButton4List.SetSelected($UserPref::DancePad::Button4);
+    danceButton5List.SetSelected($UserPref::DancePad::Button5);
+    danceButton6List.SetSelected($UserPref::DancePad::Button6);
+    danceButton7List.SetSelected($UserPref::DancePad::Button7);
+    danceButton8List.SetSelected($UserPref::DancePad::Button8);
 };
 function dancePadDoEmote(%list) {
     %emote = "/" @ %list.getText();
     %curAnim = $player.getCurrActionName();
     %curBase = getSubStr(%curAnim, 2, 100);
-    %curProt = %curBase.get();
-    ProtectedAnimsDict;
+    %curProt = ProtectedAnimsDict.get(%curBase);
     if ((1.0 == %curProt)) {
         commandToServer('RequestToStand', 0, 0);
     }

@@ -170,18 +170,14 @@ function testOutfits_UpToEnvManager() {
 };
 function testOutfits_UpToEnvServerStaff() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("staff");
-    %skusWet = %skusDry.filterSkusRoles($player.getRolesMask());
-    SkuManager;
-    %skusWet = testOutfits::getBodyAndOutfitSkus("stock").overlaySkus(%skusWet);
-    SkuManager;
+    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
+    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
     testOutfits_FireEnvServerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerStaff() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("staff");
-    %skusWet = %skusDry.filterSkusRoles($player.getRolesMask());
-    SkuManager;
-    %skusWet = testOutfits::getBodyAndOutfitSkus("stock").overlaySkus(%skusWet);
-    SkuManager;
+    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
+    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvServerEmpty() {
@@ -216,42 +212,32 @@ function testOutfits_UpToEnvManagerOtherGender() {
 };
 function testOutfits_UpToEnvServerSantaItem() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("santaItem");
-    %skusWet = %skusDry.filterSkusRoles($player.getRolesMask());
-    SkuManager;
-    %skusWet = testOutfits::getBodyAndOutfitSkus("stock").overlaySkus(%skusWet);
-    SkuManager;
+    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
+    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
     testOutfits_FireEnvServerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerSantaItem() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("santaItem");
-    %skusWet = %skusDry.filterSkusRoles($player.getRolesMask());
-    SkuManager;
-    %skusWet = testOutfits::getBodyAndOutfitSkus("stock").overlaySkus(%skusWet);
-    SkuManager;
+    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
+    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvServerMicrophone() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("microphone");
-    %skusWet = %skusDry.filterSkusRoles($player.getRolesMask());
-    SkuManager;
-    %skusWet = testOutfits::getBodyAndOutfitSkus("stock").overlaySkus(%skusWet);
-    SkuManager;
+    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
+    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
     testOutfits_FireEnvServerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerMicrophone() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("microphone");
-    %skusWet = %skusDry.filterSkusRoles($player.getRolesMask());
-    SkuManager;
-    %skusWet = testOutfits::getBodyAndOutfitSkus("stock").overlaySkus(%skusWet);
-    SkuManager;
+    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
+    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerOwned() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("owned");
-    %skusWet = %skusDry.filterSkusInList($Player::inventory);
-    SkuManager;
-    %skusWet = testOutfits::getBodyAndOutfitSkus("stock").overlaySkus(%skusWet);
-    SkuManager;
+    %skusWet = SkuManager.filterSkusInList(%skusDry, $Player::inventory);
+    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_dumpSkusInteresting() {
@@ -264,10 +250,8 @@ function testOutfits_dumpSkusRoles(%skus, %roleStrings) {
     %indnt = "                    ";
     %delim = ", ";
     %roles = roles::getRolesMaskFromStrings(%roleStrings);
-    %skus = %skus.filterSkusRoles(%roles, 1);
-    SkuManager;
-    %skus = %skus.filterSkusBornWith(1);
-    SkuManager;
+    %skus = SkuManager.filterSkusRoles(%skus, %roles, 1);
+    %skus = SkuManager.filterSkusBornWith(%skus, 1);
     %skus = putInSets(%skus, %delim, %indnt, 10);
     echo("\n" @ %indnt @ "//Role Skus: (ie born with = 1, roles = " @ %roleStrings @ ")\n" @ %skus);
 };

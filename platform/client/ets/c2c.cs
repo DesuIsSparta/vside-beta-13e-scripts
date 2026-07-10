@@ -6,7 +6,7 @@ function sendC2CCmd(%commandName, %targetUserName, %param1, %param2) {
         %param2 = "";
     }
     %text = "[c2ccmd]" @ "\n" @ %commandName @ "\n" @ %param1 @ "\n" @ %param2;
-    %text.whisper(%targetUserName, 0);
+    pChat.whisper(%text, %targetUserName, 0);
 };
 function handleC2CCmd(%commandName, %senderUserName, %param1, %param2) {
     echoDebug(getScopeName() @ " " @ "-" @ " " @ %commandName @ " " @ %senderUserName @ " " @ %param1 @ " " @ %param2);

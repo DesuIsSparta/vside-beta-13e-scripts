@@ -139,12 +139,11 @@ function VideoRenderer::updateVideoMetadata(%this) {
     if ((0.0 != strcmp(%this.videoMetaData, %current))) {
         %this.videoMetaData = %current;
         if ((0.0 != strcmp(%this.videoMetaData, ""))) {
-            %artist.displayMetaData(%title, %album, "", %this.isDoppelgangerSite());
+            MusicHud.displayMetaData(%artist, %title, %album, "", %this.isDoppelgangerSite());
         }
     }
     cancel($ETS::VideoRenderer::MetadataTimer);
     $ETS::VideoRenderer::MetadataTimer = 0;
-    MusicHud;
     if ((-(1.0) == strstr(%this.getNamespaceList(), "FFMPEGRenderer"))) {
         $ETS::VideoRenderer::MetadataTimer = %this.schedule(2000, "updateVideoMetadata");
     }
@@ -203,8 +202,7 @@ function clientCmdStartSlavePlaying(%slaveGhost, %videoGhost) {
     doStartSlavePlaying(%slaveGhost, %videoGhost, 1);
 };
 function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry) {
-    %video = %videoGhost.resolveGhostID();
-    ServerConnection;
+    %video = ServerConnection.resolveGhostID(%videoGhost);
     log("media", "debug", "doStartVideoPlaying(" @ %video @ ", " @ %playIndex @ ", \"" @ %videoURL @ "\")");
     if (isObject(%video)) {
         if ((0.0 != $CSSpaceInfo)) {
@@ -231,17 +229,16 @@ function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry) {
         if (CustomSpaceClient::isOwner()) {
         }
         if (!(%videoURL $= "")) {
-            %videoURL.syncPlayingMediaStream();
+            CSMediaDisplay.syncPlayingMediaStream(%videoURL);
         }
     }
     if ((0.0 > %retry)) {
         log("media", "info", "client not ready for doStartVideoPlaying. Rescheduling.");
-        schedule(1000, 0, %videoGhost, %playIndex, %videoURL, (1.0 - %retry));
+        schedule(1000, 0, doStartVideoPlaying, %videoGhost, %playIndex, %videoURL, (1.0 - %retry));
     }
 };
 function doStartSlavePlaying(%slaveGhost, %videoGhost, %retry) {
-    %slave = %slaveGhost.resolveGhostID();
-    ServerConnection;
+    %slave = ServerConnection.resolveGhostID(%slaveGhost);
     log("media", "debug", "doStartSlavePlaying(" @ %slave @ ", \"" @ %videoGhost @ "\")");
     if (isObject(%slave)) {
         %slave.unloadVideoRenderer();
@@ -250,12 +247,11 @@ function doStartSlavePlaying(%slaveGhost, %videoGhost, %retry) {
     }
     if ((0.0 > %retry)) {
         log("media", "info", "client not ready for doStartSlavePlaying. Rescheduling.");
-        schedule(1000, 0, %slaveGhost, %videoGhost, (1.0 - %retry));
+        schedule(1000, 0, doStartSlavePlaying, %slaveGhost, %videoGhost, (1.0 - %retry));
     }
 };
 function clientCmdStopVideoPlaying(%videoGhost) {
-    %video = %videoGhost.resolveGhostID();
-    ServerConnection;
+    %video = ServerConnection.resolveGhostID(%videoGhost);
     log("media", "debug", "clientCmdStopVideoPlaying videoGhost: " @ %videoGhost @ " video: " @ %video);
     if (isObject(%video)) {
         %video.unloadVideoRenderer();
@@ -263,8 +259,7 @@ function clientCmdStopVideoPlaying(%videoGhost) {
 };
 function clientCmdVideoForceToPlaylistIndex(%videoGhost, %playIndex) {
     log("media", "debug", "Force video index to " @ %playIndex);
-    %video = %videoGhost.resolveGhostID();
-    ServerConnection;
+    %video = ServerConnection.resolveGhostID(%videoGhost);
     if (isObject(%video)) {
         %video.unload();
         %video.setNextPlayIndex(%playIndex);

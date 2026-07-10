@@ -1,16 +1,14 @@
 function getEmporium(%name, %callback) {
-    %storeInfo = new ""();;
-    SimObject;
+    %storeInfo = new SimObject("");;
+    0;
     %storeInfo.bindClassName("Emporium");
     if (isObject(MissionCleanup)) {
-        %storeInfo.add();
+        MissionCleanup.add(%storeInfo);
     }
-    %storeInfo.storeName = MissionCleanup @ %name;
-    0;
-    %storeInfo.Inventory = Array @ new ""();;
-    0;
+    %storeInfo.storeName = %name;
+    %storeInfo.Inventory = 0 @ new Array("");;
     if (isObject(MissionCleanup)) {
-        %storeInfo.Inventory.add();
+        MissionCleanup.add(%storeInfo.Inventory);
     }
     %storeInfo.refreshInventory(%callback);
 };
@@ -89,8 +87,7 @@ function GetStoreInventory::onDone(%this) {
     %index = 0;
     if ((%count < %index)) {
         %sku = %this.getValue("items" @ %index @ ".sku");
-        %item = %sku.findBySku();
-        SkuManager;
+        %item = SkuManager.findBySku(%sku);
         %quantity = %this.getValue("items" @ %index @ ".quantity");
         %priceVPoints = %this.getValue("items" @ %index @ ".priceVPoints");
         %priceVBux = %this.getValue("items" @ %index @ ".priceVBux");
@@ -118,10 +115,10 @@ function Emporium::purchase(%this, %skulist, %currency, %callback) {
 function Emporium::purchaseCollated(%this, %skulist, %currency, %callback) {
     %currency = strlwr(%currency);
     %this.shoppingList = %skulist;
-    %purchaseArray = new ""();;
-    Array;
+    %purchaseArray = new Array("");;
+    0;
     echoDebug(getScopeName());
-    if (!(0 @ " " @ %skulist $= "")) {
+    if (!(%skulist $= "")) {
         %sku = firstWord(%skulist);
         %skulist = restWords(%skulist);
         %index = %purchaseArray.getIndexFromKey(%sku);

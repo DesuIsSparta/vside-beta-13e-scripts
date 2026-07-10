@@ -5,7 +5,7 @@ function respektHandle_Generic(%user, %otherUser, %value, %dValue, %code, %isCur
     %msg = respektComposeMessage(%user, %otherUser, %value, %dValue, %code);
     if (!(hasSubString(%msg, "[NONOTIFY]"))) {
         if (%isCurrent) {
-            4.startPulse();
+            AccountBalanceHud.startPulse(4);
         }
         handleSystemMessage("msgInfoMessage", %msg);
     }
@@ -46,10 +46,8 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code) {
     %levelNameWithIndefiniteArticle = respektLevelToNameWithIndefiniteArticle(%levelNum);
     %userProfileURL = $Net::ProfileURL @ urlEncode(stripUnprintables(%user));
     %otherUserProfileURL = $Net::ProfileURL @ urlEncode(stripUnprintables(%otherUser));
-    %userWet = %user.getPlayerMarkup("ffddeeff");
-    pChat;
-    %otherUserWet = %otherUser.getPlayerMarkup("ffddeeff");
-    pChat;
+    %userWet = pChat.getPlayerMarkup(%user, "ffddeeff");
+    %otherUserWet = pChat.getPlayerMarkup(%otherUser, "ffddeeff");
     if ((0.0 > %dValue)) {
     }
     %dValueWet = %dValue;
@@ -68,9 +66,8 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code) {
 };
 function clientCmdInitialScores(%respektPoints, %respektRank) {
     if (isObject(HudScoresContent)) {
-        %respektRank.setRespektRank();
+        HudScoresContent.setRespektRank(%respektRank);
         previousRespektPoints = %respektPoints @ HudScoresContent;
-        HudScoresContent;
     }
     $gMyBalancesAndScoresRevision = 0;
     setMyRespektPoints(%respektPoints, 0);
@@ -83,7 +80,7 @@ $gMyRespektPoints = 0;
 function setMyRespektPoints(%points, %notify) {
     $gMyRespektPoints = %points;
     if (isObject(HudScoresContent)) {
-        %points.setRespektPoints(%notify);
+        HudScoresContent.setRespektPoints(%points, %notify);
     }
 };
 function getMyRespektPoints(%points) {
@@ -96,7 +93,7 @@ function setMyRespektRank(%rank) {
         return;
     }
     if (isObject(HudScoresContent)) {
-        %rank.setRespektRank();
+        HudScoresContent.setRespektRank(%rank);
     }
 };
 $gGetBalancesAndScoresDelay = (1000.0 * 60.0);
@@ -145,13 +142,10 @@ function OnGotDoneOrError_GetBalancesAndScores(%request) {
     }
 };
 function checkPointsEarnedSinceLastLogin() {
-    %dVP = ($Player::Name.getProperty("prevBalanceVPoints", 0) - $Player::VPoints);
-    gUserPropMgrClient;
-    %dVB = ($Player::Name.getProperty("prevBalanceVBux", 0) - $Player::VBux);
-    gUserPropMgrClient;
+    %dVP = (gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVPoints", 0) - $Player::VPoints);
+    %dVB = (gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVBux", 0) - $Player::VBux);
     echo(getScopeName() @ " " @ "- offline earnings:" @ " " @ %dVP @ " " @ "vPoints and" @ " " @ %dVB @ " " @ "vBux");
-    %firstLogin = !($Player::Name.hasProperty("prevBalanceVPoints"));
-    gUserPropMgrClient;
+    %firstLogin = !(gUserPropMgrClient.hasProperty($Player::Name, "prevBalanceVPoints"));
     if (!(%firstLogin)) {
         if ((0.0 != %dVP)) {
         }
@@ -175,7 +169,7 @@ function checkPointsEarnedSinceLastLogin() {
         %msg = %msg @ "!";
     }
     %msg = "";
-    %msg.setTextWithStyle();
+    geTGF_main_OfflineIncomeNotification.setTextWithStyle(%msg);
 };
 function moveAccountBalanceHud(%toWhere) {
     if (!(isObject(PlayGui))) {

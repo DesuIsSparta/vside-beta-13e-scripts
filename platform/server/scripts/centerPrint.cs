@@ -9,8 +9,7 @@ function centerPrintAll(%message, %time, %lines) {
     %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %cl = %i.getObject();
-        ClientGroup;
+        %cl = ClientGroup.getObject(%i);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'centerPrint', %message, %time, %lines);
         }
@@ -28,8 +27,7 @@ function bottomPrintAll(%message, %time, %lines) {
     %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %cl = %i.getObject();
-        ClientGroup;
+        %cl = ClientGroup.getObject(%i);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'bottomPrint', %message, %time, %lines);
         }
@@ -66,8 +64,7 @@ function clearCenterPrintAll() {
     %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %cl = %i.getObject();
-        ClientGroup;
+        %cl = ClientGroup.getObject(%i);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'ClearCenterPrint');
         }
@@ -78,8 +75,7 @@ function clearBottomPrintAll() {
     %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %cl = %i.getObject();
-        ClientGroup;
+        %cl = ClientGroup.getObject(%i);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'ClearBottomPrint');
         }

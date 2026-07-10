@@ -21,9 +21,8 @@ function GameConnection::setLagIcon(%this, %state) {
     (LagIcon @ " " @ %state $= "true").setVisible();
 };
 function GameConnection::onConnectionAccepted(%this) {
-    0.setVisible();
+    LagIcon.setVisible(0);
     $GameConnection = %this;
-    LagIcon;
     $VURLcmd = "";
     getUserActivityMgr().setActivityActive("traveling", 1);
 };
@@ -42,33 +41,31 @@ function GameConnection::onConnectionDropped(%this, %msg) {
     if (%this.waitForDisconnect) {
         %this.waitForDisconnect = 0;
         disconnectedCleanup("");
-        1.schedule("doServerJoin", $SpawnTargetSavedVURL);
-        return WorldMap;
+        WorldMap.schedule(1, "doServerJoin", $SpawnTargetSavedVURL);
+        return;
     }
     if ((getField(%msg, 0) $= "bootToMap")) {
         %currentCity = %this.currentCity;
         WorldMap;
         WorldMap.setNotConnectedToServer();
-        "map".openToTabName();
+        geTGF.openToTabName("map");
         %levelOrCityName = getField(%msg, 1);
-        geTGF;
         if ((%levelOrCityName $= 0)) {
         }
         if ((%levelOrCityName $= 1)) {
-            %currentCity.selectCity();
+            WorldMap.selectCity(%currentCity);
         }
-        %levelOrCityName.selectCity();
+        WorldMap.selectCity(%levelOrCityName);
         MessageBoxOK("BOOTED TO MAP", getFields(%msg, 2), "");
     }
     logout(0);
     disconnectedCleanup(LoginGui);
-    MessageBoxOK("DISCONNECT", WorldMap @ %msg, "");
+    MessageBoxOK("DISCONNECT", %msg, "");
 };
 function GameConnection::onConnectionError(%this, %msg) {
     if ($CacheFlagIsSet) {
-        $CurrentMission.deleteCacheFile();
+        ServerConnection.deleteCacheFile($CurrentMission);
         $CurrentMission = "";
-        ServerConnection;
     }
     disconnectedCleanup(geTGF);
     MessageBoxOK("DISCONNECT", $ServerConnectionErrorMessage @ " (" @ %msg @ ")", "");
@@ -188,7 +185,7 @@ function disconnect(%screen) {
     destroyServer();
 };
 function disconnectedStop() {
-    0.close();
+    ConvBub.close(0);
     alxStopAll();
     if (isObject(MusicPlayer)) {
         MusicPlayer.stop();
@@ -197,13 +194,13 @@ function disconnectedStop() {
 function disconnectedCleanup(%screen) {
     $gWorldMapJoiningServer = 0;
     disconnectedStop();
-    0.setVisible();
+    LagIcon.setVisible(0);
     if (isObject(%screen)) {
         if ((geTGF.getId() == %screen.getId())) {
             WorldMap.setNotConnectedToServer();
             geTGF.open();
         }
-        %screen.setContent();
+        Canvas.setContent(%screen);
     }
     geTGF.closeFully();
     clearTextureHolds();
@@ -218,14 +215,12 @@ function disconnectedCleanup(%screen) {
     }
     if (isObject(SalonStyleSelector)) {
         $gSalonChairCurrent = 0;
-        Canvas;
         SalonStyleSelector.close();
     }
     if (isObject(PlantDetailsGui)) {
         PlantDetailsGui.close();
     }
     $StoreSkusLayer = "";
-    LagIcon;
     clientCmdOnLeaveStore("");
     leaveAllTutorialSpaces();
     afxEndMissionNotify();

@@ -1,8 +1,8 @@
 function new_ScriptArray(%name) {
-    %obj = new ""();;
-    ScriptObject;
+    %obj = new ScriptObject("");;
+    0;
     %obj.bindClassName("ScriptArray");
-    %obj.numElements = 0 @ 0;
+    %obj.numElements = 0;
     %obj.setName(%name);
     return %obj;
 };

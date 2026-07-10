@@ -2,24 +2,24 @@ function ValidateRequest::getInfoString(%this) {
     return "[" @ %this.connection @ " " @ %this.name @ "]";
 };
 function ValidateRequest::onError(%this, %errorNum, %errorName) {
-    if (!(PendingValidate @ " " @ %this.name.get() $= "")) {
-        %this.name.remove();
+    if (!(PendingValidate.get(%this.name) $= "")) {
+        PendingValidate.remove(%this.name);
     }
     if ($Insecure) {
         %this.connection.connectCallback("");
     }
     %this.connection.connectCallback("CR_TOKEN");
-    return PendingValidate;
+    return;
 };
 function ValidateRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     log("login", "info", %this.getInfoString() @ " " @ "ValidateRequest::onDone:" @ " " @ %status);
-    if (!(PendingValidate @ " " @ %this.name.get() $= "")) {
-        %this.name.remove();
+    if (!(PendingValidate.get(%this.name) $= "")) {
+        PendingValidate.remove(%this.name);
     }
     if (!($Insecure)) {
     }
-    if (!(PendingValidate @ " " @ %status $= "success")) {
+    if (!(%status $= "success")) {
         %this.connection.connectCallback("CR_TOKEN");
         return;
     }
@@ -55,14 +55,13 @@ function sendJoinRequest(%callback, %name, %token) {
         %callback.onJoinResponse(0);
         return;
     }
-    0;
-    %joinRequest = new ""() {
-        className = ManagerRequest @ "JoinRequest";
+    %joinRequest = new ManagerRequest("") {
+        className = 0 @ "JoinRequest";
     };
     if (isObject(MissionCleanup)) {
-        %joinRequest.add();
+        MissionCleanup.add(%joinRequest);
     }
-    %joinRequest.name = MissionCleanup @ %name;
+    %joinRequest.name = %name;
     %joinRequest.inventoryCount = 0;
     %joinRequest.callback = %callback;
     %url = $Net::BaseURL @ "?cmd=join" @ "&port=" @ urlEncode($Net::BoundPort) @ "&user=" @ urlEncode(%name) @ "&token=" @ urlEncode(%token);
@@ -114,8 +113,7 @@ function JoinRequest::onDone(%this) {
     log("wardrobe", "info", "bodyAttrs_f returned in ValidateRequest::onLine, bodyAttrs[\"f\"] = " @ "f" @ %this.bodyAttrs);
     %this.callback.onJoinResponse(%this);
     if (!(%this.teleportTarget $= "")) {
-        %trgPlayer = %this.teleportTarget.getNorm();
-        PlayerDict;
+        %trgPlayer = PlayerDict.getNorm(%this.teleportTarget);
         %me = %this.callback.Player;
         if (!(isObject(%me))) {
             log("communication", "error", "invalid player object attached to connection during join");
@@ -155,8 +153,7 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
     if ($StandAlone) {
         return;
     }
-    %client = %name.get();
-    ClientDict;
+    %client = ClientDict.get(%name);
     if (isObject(%client)) {
         %this.connectCallback("CR_TOKEN");
         return;
@@ -175,8 +172,7 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
         %this.connectCallback("CHR_INVALID_CHALLENGE_PACKET");
         return;
     }
-    %timeout = %name.get();
-    PendingValidate;
+    %timeout = PendingValidate.get(%name);
     %curSimTime = getSimTime();
     if (!(%timeout $= "")) {
         log("login", "debug", "GameConnection::onConnectRequest timeout for" @ " " @ %name @ " " @ %timeout);
@@ -187,16 +183,14 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
     }
     %timeout = (25000.0 + %curSimTime);
     log("login", "debug", "adding validate timeout" @ " " @ %timeout @ " " @ "for" @ " " @ %name);
-    %name.put((25000.0 + %curSimTime));
-    0;
-    %validateRequest = new ""() {
-        className = ManagerRequest @ "ValidateRequest";
+    PendingValidate.put(%name, (25000.0 + %curSimTime));
+    %validateRequest = new ManagerRequest("") {
+        className = 0 @ "ValidateRequest";
     };
-    PendingValidate;
     if (isObject(MissionCleanup)) {
-        %validateRequest.add();
+        MissionCleanup.add(%validateRequest);
     }
-    %validateRequest.name = MissionCleanup @ %name;
+    %validateRequest.name = %name;
     %validateRequest.connection = %this;
     %validateRequest.skip = 0;
     %url = $Net::BaseURL @ "?cmd=validate";
@@ -216,25 +210,24 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
 function GameConnection::onConnect(%client, %name, %token) {
     %client.nameBase = %name;
     log("login", "info", "GameConnection::onConnect: " @ %name);
-    if ((ClientDict != %name.getNorm())) {
+    if ((0.0 != ClientDict.getNorm(%name))) {
         log("login", "warn", "GameConnection::onConnect: duplicate entry in ClientDict" @ getDebugString(%client));
     }
-    %name.putNorm(%client);
-    if ((ClientDict @ " " @ %token $= "")) {
+    ClientDict.putNorm(%name, %client);
+    if ((%token $= "")) {
         log("login", "warn", "GameConnection::onConnect called with empty token: " @ %name);
     }
-    %name.putNorm(%token);
-    if (%client.nameBase.get()) {
-        %client.nameBase.remove();
+    TokenDict.putNorm(%name, %token);
+    if (PendingValidate.get(%client.nameBase)) {
+        PendingValidate.remove(%client.nameBase);
     }
     System::onUserConnect(%client);
     messageClient(%client, 'MsgConnectionError', $Pref::Server::ConnectionError);
     sendLoadInfoToClient(%client);
-    %client.guid = PendingValidate @ 0;
-    PendingValidate;
+    %client.guid = 0;
     addToServerGuidList(%client.guid);
-    if ((TokenDict @ " " @ %client.getAddress() $= "local")) {
-        %client.isAdmin = 0.0 @ 1;
+    if ((%client.getAddress() $= "local")) {
+        %client.isAdmin = 1;
         %client.isSuperAdmin = 1;
     }
     %client.isAdmin = 0;
@@ -280,14 +273,13 @@ function GameConnection::postClientDrop(%this, %ignoreResponse, %reason) {
         log("login", "warn", "GameConnection::postClientDrop called twice" @ " " @ getDebugString(%this));
         return;
     }
-    0;
-    %dropRequest = new ""() {
-        className = ManagerRequest @ "DropRequest";
+    %dropRequest = new ManagerRequest("") {
+        className = 0 @ "DropRequest";
     };
     if (isObject(MissionCleanup)) {
-        %dropRequest.add();
+        MissionCleanup.add(%dropRequest);
     }
-    %this.DropRequest = MissionCleanup @ %dropRequest;
+    %this.DropRequest = %dropRequest;
     %status = "normal";
     if (!(%reason $= "")) {
         %status = "failure";
@@ -295,23 +287,19 @@ function GameConnection::postClientDrop(%this, %ignoreResponse, %reason) {
     %dropRequest.client = %this;
     %dropRequest.ignoreResponse = %ignoreResponse;
     %name = %this.nameBase;
-    if ((ClientDict == %name.getNorm())) {
+    if ((0.0 == ClientDict.getNorm(%name))) {
         log("login", "warn", "GameConnection::postClientDrop called with no entry in ClientDict:" @ " " @ getDebugString(%this));
     }
-    %name.remove();
-    %token = %name.getNorm();
-    TokenDict;
-    if ((ClientDict @ " " @ %token $= "")) {
+    ClientDict.remove(%name);
+    %token = TokenDict.getNorm(%name);
+    if ((%token $= "")) {
         log("login", "warn", "GameConnection::postClientDrop, no token for user: " @ %name);
     }
-    %name.remove();
-    strlwr(%name).remove();
+    TokenDict.remove(%name);
+    PlayerNameLowerToRegMap.remove(strlwr(%name));
     %url = $Net::BaseURL @ "?cmd=drop";
-    PlayerNameLowerToRegMap;
     %bindPort = "&port=" @ urlEncode($Net::BoundPort);
-    TokenDict;
     %userValue = "&user=" @ urlEncode(%name);
-    0.0;
     %passValue = "&token=" @ urlEncode(%token);
     %statusValue = "&status=" @ urlEncode(%status);
     %url = %url @ %bindPort @ %userValue @ %passValue @ %statusValue;
@@ -325,14 +313,14 @@ function GameConnection::onDrop(%this, %reason) {
     log("login", "info", "GameConnection::onDrop: " @ %this @ " " @ %this.getAddress() @ ": " @ %reason);
     if (!($StandAlone)) {
     }
-    if (%this.nameBase.get()) {
-        %this.nameBase.remove();
+    if (PendingValidate.get(%this.nameBase)) {
+        PendingValidate.remove(%this.nameBase);
     }
     %this.onClientLeaveGame();
     removeFromServerGuidList(%this.guid);
     removeTaggedString(%this.name);
     %this.postClientDrop(1, %reason);
-    return PendingValidate;
+    return;
 };
 function GameConnection::startMission(%this) {
     commandToClient(%this, 'MissionStart', $MissionSequence);
