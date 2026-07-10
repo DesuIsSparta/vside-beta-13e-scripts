@@ -11,7 +11,7 @@ function testLoginAndStay() {
     };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
-    %testLogin.doLogin($DestServerName);
+    $DestServerName.doLogin(%testLogin);
 };
 function doSomething() {
     walk();
@@ -21,10 +21,10 @@ testLoginAndStay();
 function walk() {
     $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
     $mvForwardAction = $movementSpeed;
-    $walkIterations = (1.0 + $walkIterations);
+    $walkIterations = ($walkIterations + 1.0);
     if ($loginLogout) {
     }
-    if ((5.0 == $walkIterations)) {
+    if (($walkIterations == 5.0)) {
         logout(0);
         WorldMap.exit();
         schedule(6000, 0);
@@ -42,7 +42,7 @@ function stopAndTalk() {
         if (geTGF.isVisible()) {
             geTGF.closeFully();
         }
-        pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
+        0.say(pChat, "Hello from" @ " " @ $Hostname @ ".", 0);
         schedule(4000, 0);
         if ((changeClothes @ " " @ $DestServerName $= "MyApartment")) {
         }
@@ -50,13 +50,13 @@ function stopAndTalk() {
             updateApartment();
         }
     }
-    if ((30.0 == $failureCount)) {
+    if (($failureCount == 30.0)) {
         echo("LOAD: Giving up. Lost PChat object.");
         echo("LOAD: Quit()-ing...");
         logoffAndQuit();
     }
     echo("LOAD: Lost PChat... Gonna try again.");
-    $failureCount = (1.0 + $failureCount);
+    $failureCount = ($failureCount + 1.0);
     schedule(5000, 0);
 };
 function logoffAndQuit() {
@@ -66,16 +66,16 @@ function logoffAndQuit() {
     schedule(1000, 0);
 };
 function updateApartment() {
-    CSMediaVideoTextBox.setText("http://www.youtube.com/watch?v=_qkmrKa74ts");
+    "http://www.youtube.com/watch?v=_qkmrKa74ts".setText(CSMediaVideoTextBox);
     CSMediaWindow.stopVideo();
     CSMediaWindow.playVideo();
     $videoURLUpdated = 1;
 };
 function changeClothes() {
-    if ((2.0 < $changeClothesCount)) {
+    if (($changeClothesCount < 2.0)) {
         echo("LOAD: changeClothes enter...");
         useAndSaveRandomOutfit();
-        $changeClothesCount = (1.0 + $changeClothesCount);
+        $changeClothesCount = ($changeClothesCount + 1.0);
         echo("LOAD: changeClothes done...");
     }
 };
@@ -85,17 +85,17 @@ function approveFriendRequests() {
     if (!(isObject(%fansHere))) {
         return;
     }
-    if ((0.0 == %fansHere.size())) {
+    if ((%fansHere.size() == 0.0)) {
         echo("LOAD: There are no waiting requests.");
         return;
     }
-    %n = (1.0 - %fansHere.size());
-    if ((0.0 >= %n)) {
-        %playerName = %fansHere.getKey(%n);
+    %n = (%fansHere.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %playerName = %n.getKey(%fansHere);
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        pChat.whisper("Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
-        %n = (1.0 - %n);
+        %playerName.whisper(pChat, "Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.");
+        %n = (%n - 1.0);
     }
 };

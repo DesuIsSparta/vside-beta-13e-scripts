@@ -3,7 +3,7 @@ if (isObject(MessageFuncDict)) {
 }
 $MessageFuncDict = new StringMap(MessageFuncDict);;
 if (isObject(MissionCleanup)) {
-    MissionCleanup.add(MessageFuncDict);
+    MessageFuncDict.add(MissionCleanup);
 }
 function clientCmdChatMessage(%unused, %voice, %pitch, %msgString) {
     onChatMessage(detag(%msgString), %voice, %pitch);
@@ -12,41 +12,41 @@ function clientCmdServerMessage(%msgType, %msgString) {
     log("communication", "debug", "clientCmdServerMessage, msgType: " @ %msgType);
     log("communication", "debug", "clientCmdServerMessage, msgString: " @ %msgString);
     %tag = getWord(%msgType, 0);
-    %defFuncList = MessageFuncDict.get("");
+    %defFuncList = "".get(MessageFuncDict);
     if (isObject(%defFuncList)) {
         %i = 0;
         %func = %defFuncList.func;
-        if (!(%i $= "")) {
+        while (!(%i $= "")) {
             call(%func, %msgType, %msgString);
-            %i = (1.0 + %i);
+            %i = (%i + 1.0);
             %func = %defFuncList.func;
         }
     }
     if (!(!(%i $= "") @ " " @ %tag $= "")) {
-        %funcList = MessageFuncDict.get(%tag);
+        %funcList = %tag.get(MessageFuncDict);
         if (isObject(%funcList)) {
             %i = 0;
             %func = %funcList.func;
-            if (!(%i $= "")) {
+            while (!(%i $= "")) {
                 call(%func, %msgType, %msgString);
-                %i = (1.0 + %i);
+                %i = (%i + 1.0);
                 %func = %funcList.func;
             }
         }
     }
 };
 function addMessageCallback(%msgType, %func) {
-    %m = MessageFuncDict.get(%msgType);
+    %m = %msgType.get(MessageFuncDict);
     if (isObject(%m)) {
         %i = 0;
-        if (!(%i @ " " @ %m.func $= "")) {
-            %i = (1.0 + %i);
+        while (!(%i @ " " @ %m.func $= "")) {
+            %i = (%i + 1.0);
         }
         %m.func = !(%i @ " " @ %m.func $= "") @ %func @ %i;
     }
     %m = new SimObject("");;
     0;
-    MessageFuncDict.put(%msgType, %m);
+    %m.put(MessageFuncDict, %msgType);
     %m.func = %func @ 0;
 };
 function defaultMessageCallback(%msgType, %msgString) {

@@ -1,72 +1,72 @@
 function onMissionDownloadPhase1(%unused, %unused) {
     if (isObject(LoadingPBController)) {
-        LoadingPBController.setValue(0);
-        LoadingProgressTxt.setValue("Loading data");
+        0.setValue(LoadingPBController);
+        "Loading data".setValue(LoadingProgressTxt);
     }
     if (isObject(TransitionPBController)) {
-        TransitionPBController.setValue(0);
+        0.setValue(TransitionPBController);
     }
 };
 function onPhase1Progress(%progress) {
     if (isObject(LoadingPBController)) {
-        LoadingPBController.setValue((0.33 * %progress));
+        (%progress * 0.33).setValue(LoadingPBController);
     }
     if (isObject(TransitionPBController)) {
-        TransitionPBController.setValue((0.33 * %progress));
+        (%progress * 0.33).setValue(TransitionPBController);
     }
 };
 function onPhase1Complete() {
     if (isObject(LoadingPBController)) {
-        LoadingPBController.setValue(0.33);
+        0.33.setValue(LoadingPBController);
     }
 };
 function onMissionDownloadPhase2() {
     $Client::MissionLoadTimeStart = getSimTime();
     if (isObject(LoadingPBController)) {
-        LoadingProgressTxt.setValue("Loading objects");
+        "Loading objects".setValue(LoadingProgressTxt);
     }
     if (isObject(TransitionPBController)) {
-        TransitionProgressTxt.setValue("Loading objects");
+        "Loading objects".setValue(TransitionProgressTxt);
     }
 };
 function onPhase2ProgressUpdateStatusDisplay(%progress) {
     if (isObject(LoadingPBController)) {
-        LoadingPBController.setValue((0.33 + (0.33 * %progress)));
+        ((%progress * 0.33) + 0.33).setValue(LoadingPBController);
     }
     if (isObject(TransitionPBController)) {
-        TransitionPBController.setValue((0.33 + (0.33 * %progress)));
+        ((%progress * 0.33) + 0.33).setValue(TransitionPBController);
     }
 };
 function onPhase2Complete() {
 };
 function onFileChunkReceived(%fileName, %ofs, %size) {
     if (isObject(LoadingPBController)) {
-        LoadingPBController.setValue((%size / %ofs));
-        LoadingProgressTxt.setValue("Downloading " @ %fileName @ "...");
+        (%ofs / %size).setValue(LoadingPBController);
+        "Downloading " @ %fileName @ "...".setValue(LoadingProgressTxt);
     }
     if (isObject(TransitionPBController)) {
-        TransitionPBController.setValue((%size / %ofs));
+        (%ofs / %size).setValue(TransitionPBController);
     }
 };
 function onMissionDownloadPhase3() {
     if (isObject(LoadingProgressTxt)) {
-        LoadingProgressTxt.setValue("Lighting");
+        "Lighting".setValue(LoadingProgressTxt);
     }
 };
 function onPhase3Progress(%progress) {
     if (isObject(LoadingPBController)) {
-        LoadingPBController.setValue((0.66 + (0.33 * %progress)));
+        ((%progress * 0.33) + 0.66).setValue(LoadingPBController);
     }
     if (isObject(TransitionPBController)) {
-        TransitionPBController.setValue((0.66 + (0.33 * %progress)));
+        ((%progress * 0.33) + 0.66).setValue(TransitionPBController);
     }
 };
 function onPhase3Complete() {
     if (isObject(LoadingPBController)) {
-        LoadingPBController.setValue(1);
+        1.setValue(LoadingPBController);
     }
     if (isObject(TransitionPBController)) {
-        TransitionPBController.setValue(1);
+        1.setValue(TransitionPBController);
     }
     $lightingMission = 0;
 };
@@ -88,42 +88,42 @@ if (Using_DF()) {
     addMessageCallback('MsgDFZoneName');
 }
 function handleLoadInfoMessage(%unused, %msgString) {
-    TransitionMessage.setVisible(0);
+    0.setVisible(TransitionMessage);
     if (WorldMap.isAwake()) {
     }
     if (LoginGui.isAwake()) {
     }
     if ($StandAlone) {
-        LoadingGui.setTransitioning(0);
-        Canvas.setContent("LoadingGui");
+        0.setTransitioning(LoadingGui);
+        "LoadingGui".setContent(Canvas);
         %line = 0;
         handleMsgDFZoneNameMessage;
-        if ((qLineCount < %line)) {
+        while ((%line < qLineCount)) {
             qLine = "" @ %line @ LoadingGui;
             LoadingGui;
-            %line = (1.0 + %line);
+            %line = (%line + 1.0);
             handleLoadInfoDoneMessage;
         }
         qLineCount = 0 @ LoadingGui;
-        (qLineCount < %line);
+        (%line < qLineCount);
     }
     if (PlayGui.isAwake()) {
-        LoadingGui.setTransitioning(1);
-        Canvas.setContent("LoadingGui");
-        LoadingGui.setScreenshotBitmap($TransitionScreenshot);
+        1.setTransitioning(LoadingGui);
+        "LoadingGui".setContent(Canvas);
+        $TransitionScreenshot.setScreenshotBitmap(LoadingGui);
     }
 };
 function handleLoadDescriptionMessage(%unused, %msgString) {
     qLine = LoadingGui @ qLineCount @ LoadingGui;
     %msgString;
-    qLineCount = (LoadingGui + qLineCount);
+    qLineCount = (qLineCount + LoadingGui);
     1.0;
     %text = "<spush><font:Arial:16>";
     %line = 0;
-    if (((LoadingGui - qLineCount) < %line)) {
+    while ((%line < (qLineCount - LoadingGui))) {
         %text = %line @ LoadingGui @ qLine @ " ";
         %text;
-        %line = (1.0 + %line);
+        %line = (%line + 1.0);
         1.0;
     }
     %text = %line @ LoadingGui @ qLine @ "<spop>";

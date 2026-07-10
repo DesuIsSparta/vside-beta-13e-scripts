@@ -13,10 +13,10 @@ function testHTTPObject() {
 function testHTTPObjectReal(%client) {
     %httpObj = httpObjTest::init();
     %httpObj.requestingClient = %client;
-    %httpObj.get("winbuild:80", "/scripts/orion/tests/pi.txt", "");
+    "".get(%httpObj, "winbuild:80", "/scripts/orion/tests/pi.txt");
 };
 function serverCmdTestHTTPObject(%client) {
-    if (!(%client.hasPlayerObjectAndPermission_Warn("debugActive"))) {
+    if (!("debugActive".hasPlayerObjectAndPermission_Warn(%client))) {
         return;
     }
     testHTTPObjectReal(%client);
@@ -25,8 +25,8 @@ function httpObjTestRequest::onLine(%this, %line) {
     if ((%line $= "EOF")) {
         %this.gotEOF = 1;
     }
-    %this.numLines = (1.0 + %this.numLines);
-    %this.numChars = (strlen(%line) + %this.numChars);
+    %this.numLines = (%this.numLines + 1.0);
+    %this.numChars = (%this.numChars + strlen(%line));
     log("network", "debug", "HTTPObjTestRequest::onLine:" @ " " @ %line);
 };
 function httpObjTestRequest::onDisconnect(%this) {
@@ -34,17 +34,17 @@ function httpObjTestRequest::onDisconnect(%this) {
     %lvl = %this.gotEOF ? "debug" : "error";
     %line = "HTTPObjTestRequest::onDisconnect" @ " " @ %wwo @ " " @ "EOF. lines =" @ " " @ %this.numLines @ " " @ "chars =" @ " " @ %this.numChars;
     log("network", %lvl, %line);
-    %this.notifyRequestingClient(%line);
+    %line.notifyRequestingClient(%this);
     %this.delete();
 };
 function httpObjTestRequest::onConnectFailed(%this) {
     %line = "HTTPObjTestRequest::onConnectFailed.";
     log("network", "error", %line);
-    %this.notifyRequestingClient(%line);
+    %line.notifyRequestingClient(%this);
 };
 function httpObjTestRequest::onConnected(%this) {
     %line = "HTTPObjTestRequest::onConnected.";
-    %this.notifyRequestingClient(%line);
+    %line.notifyRequestingClient(%this);
 };
 function httpObjTestRequest::notifyRequestingClient(%this, %line) {
     if (isObject(%this.requestingClient)) {

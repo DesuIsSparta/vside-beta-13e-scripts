@@ -72,11 +72,11 @@ function initClient() {
         fmodSetMute($UserPref::Audio::mute);
     }
     error("FMOD Audio Initialization Failed");
-    Canvas.setCursor("DefaultCursor");
+    "DefaultCursor".setCursor(Canvas);
     userProperties_makeManager("gUserPropMgrClient", 1);
     AssetManager::clientInit();
     textureDownloadSetDownloadHost($Net::DownloadHost);
-    if ((1.0 == $StandAlone)) {
+    if (($StandAlone == 1.0)) {
         userProperties_makeManager("gUserPropMgrServer", 0);
         log("general", "info", "--------- Starting standalone ---------");
         startStandAlone();
@@ -99,11 +99,11 @@ function shutdownClient() {
     dlMgr.shutDown();
 };
 function loadMainMenu() {
-    Canvas.setContent(LoginGui);
+    LoginGui.setContent(Canvas);
     if ($Audio::initFailed) {
         MessageBoxOK("Audio Initialization Failed", "A sound card must be installed to hear audio playback.  If a soundcard is already present please ensure the drivers are installed properly.", "");
     }
-    Canvas.setCursor("DefaultCursor");
+    "DefaultCursor".setCursor(Canvas);
 };
 function startStandAlone() {
     log("initialization", "info", "start connectLocal()");
@@ -115,15 +115,15 @@ function startStandAlone() {
     if (($Player::Name $= "")) {
         $Player::Name = "no_name";
     }
-    gUserPropMgrClient.forgetProperties($Player::Name);
-    gUserPropMgrClient.requestProperties($Player::Name, "startStandAlone_Part2();");
+    $Player::Name.forgetProperties(gUserPropMgrClient);
+    "startStandAlone_Part2();".requestProperties(gUserPropMgrClient, $Player::Name);
 };
 function startStandAlone_Part2() {
     outfits_init();
     createServer("SinglePlayer", $MissionArg);
     $GameConnection = new GameConnection(ServerConnection);;
-    $GameConnection.setCommonPreconnectClientSettings("");
-    RootGroup.add(ServerConnection);
+    "".setCommonPreconnectClientSettings($GameConnection);
+    ServerConnection.add(RootGroup);
     $GameConnection.connectLocal();
     log("initialization", "info", "end connectLocal()");
 };
@@ -132,20 +132,20 @@ function join(%joinGameAddress) {
     echo("join:: connecting to: " @ %joinGameAddress);
     $lastJoinedServer = %joinGameAddress;
     $GameConnection = new GameConnection(ServerConnection);;
-    $GameConnection.setCommonPreconnectClientSettings("");
-    $GameConnection.connect(%joinGameAddress);
+    "".setCommonPreconnectClientSettings($GameConnection);
+    %joinGameAddress.connect($GameConnection);
 };
 function showLicense() {
     %file = findFirstFile("*/license.txt");
     %fo = new FileObject("");;
     0;
-    %fo.openForRead(%file);
+    %file.openForRead(%fo);
     %text = "";
-    if (!(%fo.isEOF())) {
+    while (!(%fo.isEOF())) {
         %text = %text @ %fo.readLine() @ "\n";
     }
-    LicenseText.setText(%text);
-    Canvas.pushDialog(licenseDlg, 0);
+    %text.setText(LicenseText);
+    0.pushDialog(Canvas, licenseDlg);
 };
 function onVideoDeactivate() {
     stopMoving();
@@ -170,7 +170,7 @@ function quitApp() {
 };
 function logout(%doQuit) {
     %analytic = getAnalytic();
-    %analytic.trackPageView("/client/logout/" @ %doQuit);
+    "/client/logout/" @ %doQuit.trackPageView(%analytic);
     if (isObject(ApplauseMeterGui)) {
         ApplauseMeterGui.close();
     }
@@ -183,22 +183,22 @@ function logout(%doQuit) {
     }
     CustomSpaceClient::OnClientDisconnect();
     if (isObject($player)) {
-        $player.applySkuBadge(0);
+        0.applySkuBadge($player);
     }
     silentAIMDisconnect();
     if (!($UserPref::AIM::RememberMe)) {
     }
     if (isObject(AIMScreenNameField)) {
-        AIMScreenNameField.setText("");
+        "".setText(AIMScreenNameField);
     }
     if (!($UserPref::AIM::SavePassword)) {
     }
     if (isObject(AIMPasswordField)) {
-        AIMPasswordField.setText("");
+        "".setText(AIMPasswordField);
     }
     WorldMap.setNotConnectedToServer();
     if (isObject(ConvBub)) {
-        ConvBub.close(0);
+        0.close(ConvBub);
     }
     if (isObject(BuddyHudWin)) {
         BuddyHudWin.close();
@@ -224,16 +224,16 @@ function logout(%doQuit) {
         return;
     }
     %cmd = "logoutPart2(" @ %doQuit @ ");";
-    geShoutout_Credential_Twitter_Username.setText("");
-    geShoutout_Credential_Twitter_Password.setText("");
-    gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVBux", $Player::VBux);
-    gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVPoints", $Player::VPoints);
-    gUserPropMgrClient.persistReally($Player::Name, %cmd);
+    "".setText(geShoutout_Credential_Twitter_Username);
+    "".setText(geShoutout_Credential_Twitter_Password);
+    $Player::VBux.setProperty(gUserPropMgrClient, $Player::Name, "prevBalanceVBux");
+    $Player::VPoints.setProperty(gUserPropMgrClient, $Player::Name, "prevBalanceVPoints");
+    %cmd.persistReally(gUserPropMgrClient, $Player::Name);
 };
 function logoutPart2(%doQuit) {
     %logout = new ManagerRequest(LogoutRequest);;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%logout);
+        %logout.add(MissionCleanup);
     }
     %logout.doQuit = %doQuit;
     %url = $Net::ClientServiceURL @ "/logout";
@@ -252,7 +252,7 @@ function logoutPart2(%doQuit) {
     }
     %url = %url @ %userValue @ %tokenValue @ %aimMessagesSentValue;
     log("login", "debug", "logout: " @ %url);
-    %logout.setURL(%url);
+    %url.setURL(%logout);
     %logout.start();
 };
 function LogoutRequest::onError(%this, %errorNum, %errorName) {
@@ -285,13 +285,13 @@ function StatusRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onDone:" @ " " @ %status);
     if ((%status $= "success")) {
-        %dfEnabled = %this.getValueBool("doubleFusionEnabled");
+        %dfEnabled = "doubleFusionEnabled".getValueBool(%this);
         if (isFunction("Using_DF")) {
         }
         if (Using_DF()) {
             setDFEnabled(%dfEnabled);
         }
-        %preload = %this.getValueBool("assetPreloadEnabled");
+        %preload = "assetPreloadEnabled".getValueBool(%this);
         if ($Preload) {
         }
         if (%preload) {
@@ -299,25 +299,25 @@ function StatusRequest::onDone(%this) {
         if (!($NoDisplay)) {
             preloadResources();
         }
-        %cache = %this.getValueBool("missionCacheEnabled");
+        %cache = "missionCacheEnabled".getValueBool(%this);
         if ($CacheFlagIsSet) {
         }
         if (!(%cache)) {
             $CacheFlagIsSet = 0;
         }
-        $gLoginStatusMessage = %this.getValue("message");
+        $gLoginStatusMessage = "message".getValue(%this);
         if (($gLoginStatusMessage $= "")) {
             $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "A-OKAY"];
         }
         parseGiftingSettings(%this);
-        $gVPointsRatio = %this.getValue("vPointsRatio");
+        $gVPointsRatio = "vPointsRatio".getValue(%this);
         $gVPointsRatio = 50;
     }
     $gLoginStatusMessage = $gVPointsRatio[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $gVPointsRatio[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     LoginGui.update();
 };
 function StatusRequest::onError(%this, %errorNum, %errorName) {
-    if (($CURL::CouldNotResolveHost == %errorNum)) {
+    if ((%errorNum == $CURL::CouldNotResolveHost)) {
         $gLoginStatusMessage = %errorNum[$MsgCat::network @ "E-SERVER-DNS"];
     }
     $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $gLoginStatusMessage[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
@@ -335,7 +335,7 @@ function sendStatusRequest() {
     }
     %url = $Net::ClientServiceURL @ "/SystemStatus";
     log("login", "info", "sending system status request: " @ %url);
-    %request.setURL(%url);
+    %url.setURL(%request);
     %request.start();
     $gLoginStatusMessage = ;
     LoginGui.update();
@@ -364,6 +364,6 @@ function sendFirstLaunchRequest() {
     }
     %owner = "doppelganger";
     %url = $Net::downloadURL @ "/first_launch?status=true&platform=" @ $Platform @ "&referrer=" @ %referrer @ "&owner=" @ %owner;
-    %request.setURL(%url);
+    %url.setURL(%request);
     %request.start();
 };

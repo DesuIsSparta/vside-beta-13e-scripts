@@ -17,23 +17,21 @@ function CSSpacePurchasePriceConfirmation(%space) {
     %tradein = CSSpacePurchasePriceFormatting(%space.floorplan.tradeInValueVPoints, %space.floorplan.tradeInValueVBux);
     %final = CSSpacePurchasePriceFormatting(%finalVPoints, %finalVBux);
     %text = %text @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"] @ "\n<tab:30>" @ "\n" @ "\t" @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"][$MsgCat::custSpace @ "PURCHASE_SPACEPRICE"] @ " " @ %price @ "\n" @ " " @ "\n" @ "\t" @ %price[$MsgCat::custSpace @ "PURCHASE_NOTINCLUDED"] @ "\n" @ "<spop>";
-    if ((%finalVPoints >= $Player::VPoints)) {
+    if (($Player::VPoints >= %finalVPoints)) {
     }
-    if ((0.0 >= %finalVPoints)) {
-        if ((%finalVBux >= $Player::VBux)) {
-        }
+    if ((%finalVPoints >= 0.0) && ($Player::VBux >= %finalVBux)) {
     }
-    if ((0.0 >= %finalVBux)) {
+    if ((%finalVBux >= 0.0)) {
         %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_CHOICE"] @ "\n";
     }
-    if ((%finalVPoints >= $Player::VPoints)) {
+    if (($Player::VPoints >= %finalVPoints)) {
     }
-    if ((0.0 >= %finalVPoints)) {
+    if ((%finalVPoints >= 0.0)) {
         %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VPOINTSONLY"] @ "\n";
     }
-    if ((%finalVBux >= $Player::VBux)) {
+    if (($Player::VBux >= %finalVBux)) {
     }
-    if ((0.0 >= %finalVBux)) {
+    if ((%finalVBux >= 0.0)) {
         %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
     }
     %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
@@ -41,29 +39,29 @@ function CSSpacePurchasePriceConfirmation(%space) {
     return;
     %buttons = "";
     %count = 0;
-    if ((%finalVPoints >= $Player::VPoints)) {
+    if (($Player::VPoints >= %finalVPoints)) {
     }
-    if ((0.0 >= %finalVPoints)) {
+    if ((%finalVPoints >= 0.0)) {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVPoints) @ " vPoints";
         %count[%callback @ %count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", false);";
-        %count = (1.0 + %count);
+        %count = (%count + 1.0);
     }
-    if ((%finalVBux >= $Player::VBux)) {
+    if (($Player::VBux >= %finalVBux)) {
     }
-    if ((0.0 >= %finalVBux)) {
+    if ((%finalVBux >= 0.0)) {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVBux) @ " vBux";
         %count[%callback @ %count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", true );";
-        %count = (1.0 + %count);
+        %count = (%count + 1.0);
     }
     %buttons = %buttons @ "\t" @ "Cancel";
     %count[%callback @ %count] = "CSSpacePurchaseCancel();";
-    %count = (1.0 + %count);
+    %count = (%count + 1.0);
     %buttons = ltrim(%buttons);
     %dlg = MessageBoxCustom(%title, %text, %buttons);
     %index = 0;
-    if ((%count < %index)) {
+    while ((%index < %count)) {
         %dlg.callback = %index[%callback @ %index] @ %index;
-        %index = (1.0 + %index);
+        %index = (%index + 1.0);
     }
 };
 function CSSpacePurchaseDoConfirm(%space, %useBux) {
@@ -79,9 +77,9 @@ function CSSpacePurchaseDoConfirm(%space, %useBux) {
     MessageBoxYesNo(%title, %text, %cmd, "CSSpacePurchaseCancel();");
 };
 function CSSpacePurchaseDowngradeCheck(%space, %useBux, %priceFinal, %lossVPoints, %lossVBux) {
-    if ((0.0 > %lossVPoints)) {
+    if ((%lossVPoints > 0.0)) {
     }
-    if ((0.0 > %lossVBux)) {
+    if ((%lossVBux > 0.0)) {
         %loss = CSSpacePurchasePriceFormatting(%lossVPoints, %lossVBux);
         %text = "<just:left>" @ "\n" @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_A"] @ " " @ %loss @ " " @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_B"] @ "\n";
         %buttons = "Yes - Trade in" @ "\t" @ "No - Cancel";
@@ -99,7 +97,7 @@ function CSSpacePurchaseCancel() {
 function CSSpacePurchaseSuccess(%unused, %unused, %vurl) {
     $Player::myPlaceVURL = %vurl;
     %title = "Get a Room (Complete!)";
-    gUserPropMgrClient.setProperty($Player::Name, "ShowOwnerTip", 1);
+    1.setProperty(gUserPropMgrClient, $Player::Name, "ShowOwnerTip");
     %text = "<just:left>" @ "\n" @ "\n";
     %buttons = "Go there now" @ "\t" @ "Close";
     %dlg = MessageBoxCustom(%title, %text, %buttons);
@@ -116,15 +114,15 @@ function CSSpacePurchaseFailed(%errorCode) {
 };
 function CSSpacePurchasePriceFormatting(%vpoints, %vbux) {
     %result = "";
-    if ((0.0 >= %vpoints)) {
+    if ((%vpoints >= 0.0)) {
         %result = "<bitmap:platform/client/ui/vpoints_9> " @ commaify(%vpoints);
     }
-    if ((0.0 >= %vpoints)) {
+    if ((%vpoints >= 0.0)) {
     }
-    if ((0.0 >= %vbux)) {
+    if ((%vbux >= 0.0)) {
         %result = %result @ "  or  ";
     }
-    if ((0.0 >= %vbux)) {
+    if ((%vbux >= 0.0)) {
         %result = %result @ "<bitmap:platform/client/ui/vbux_9> " @ commaify(%vbux);
     }
     return %result;

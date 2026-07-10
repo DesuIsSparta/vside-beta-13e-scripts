@@ -1,11 +1,11 @@
 $gHasOpenedRegistrationGui = 0;
 function RegistrationGui::open(%this) {
-    Canvas.setContent(%this);
+    %this.setContent(Canvas);
     pushScreenSize(640, 363, 0, 1, 1);
     %this.init();
     if (0) {
     }
-    RegistrationPartnerLogo.setVisible(0);
+    0.setVisible(RegistrationPartnerLogo);
     $gHasOpenedRegistrationGui = 1;
 };
 function RegistrationGui::haveIncompleteRegistration(%this) {
@@ -28,25 +28,25 @@ function RegistrationGui::tryOpenOrWebPage(%this) {
 function RegistrationGui::init(%this) {
     if (!(%this.initialized)) {
         %this.waitIcon = AnimCtrl::newAnimCtrl("300 98", "18 18");
-        %this.waitIcon.setDelay(60);
-        %this.waitIcon.addFrame("platform/client/ui/wait0.png");
-        %this.waitIcon.addFrame("platform/client/ui/wait1.png");
-        %this.waitIcon.addFrame("platform/client/ui/wait2.png");
-        %this.waitIcon.addFrame("platform/client/ui/wait3.png");
-        %this.waitIcon.addFrame("platform/client/ui/wait4.png");
-        %this.waitIcon.addFrame("platform/client/ui/wait5.png");
-        %this.waitIcon.addFrame("platform/client/ui/wait6.png");
-        %this.waitIcon.addFrame("platform/client/ui/wait7.png");
-        RegistrationCenteredFrame.add(%this.waitIcon);
-        %this.waitIcon.setVisible(0);
+        60.setDelay(%this.waitIcon);
+        "platform/client/ui/wait0.png".addFrame(%this.waitIcon);
+        "platform/client/ui/wait1.png".addFrame(%this.waitIcon);
+        "platform/client/ui/wait2.png".addFrame(%this.waitIcon);
+        "platform/client/ui/wait3.png".addFrame(%this.waitIcon);
+        "platform/client/ui/wait4.png".addFrame(%this.waitIcon);
+        "platform/client/ui/wait5.png".addFrame(%this.waitIcon);
+        "platform/client/ui/wait6.png".addFrame(%this.waitIcon);
+        "platform/client/ui/wait7.png".addFrame(%this.waitIcon);
+        %this.waitIcon.add(RegistrationCenteredFrame);
+        0.setVisible(%this.waitIcon);
         %this.initialized = 1;
     }
 };
 function RegistrationGui::completeRegistration(%this) {
-    %this.waitIcon.setVisible(1);
+    1.setVisible(%this.waitIcon);
     %this.waitIcon.start();
     %request = sendRequest_CompleteClientRegistration($Net::RegistrationID, "onDoneOrErrorCallback_CompleteClientRegistration");
-    geRegistrationStatusText.setValue("<spush><font:BauhausStd-Demi:20><just:center>Fetching your info..<spop>");
+    "<spush><font:BauhausStd-Demi:20><just:center>Fetching your info..<spop>".setValue(geRegistrationStatusText);
 };
 function RegistrationGui::markCurrentRegistrationAsCompleted(%this) {
     if (!(%this.haveIncompleteRegistration())) {
@@ -57,27 +57,27 @@ function RegistrationGui::markCurrentRegistrationAsCompleted(%this) {
 function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
     '8';
     %this.waitIcon.stop();
-    %this.waitIcon.setVisible(0);
+    0.setVisible(%this.waitIcon);
     if (%request.checkSuccess()) {
-        $UserPref::Player::Name = %request.getValue("userName");
+        $UserPref::Player::Name = "userName".getValue(%request);
         RegistrationGui;
-        $UserPref::Player::Password = %request.getValue("password");
-        if ((%request.getValue("gender") $= "")) {
+        $UserPref::Player::Password = "password".getValue(%request);
+        if (("gender".getValue(%request) $= "")) {
         }
-        $UserPref::Player::gender = %request.getValue("gender");
+        $UserPref::Player::gender = "gender".getValue(%request);
         $UserPref::Player::gender;
         $Player::Name = $UserPrefPlayer::Name;
         $Player::Password = $UserPrefPlayer::Password;
-        LoginUserNameField.setValue($Player::Name);
-        LoginPasswordField.setValue($Player::Password);
+        $Player::Name.setValue(LoginUserNameField);
+        $Player::Password.setValue(LoginPasswordField);
         %this.close();
         %analytic = getAnalytic();
-        %analytic.trackPageView("/client/registration/success");
+        "/client/registration/success".trackPageView(%analytic);
         LoginGui.doLoginButton();
     }
-    %errorCode = %request.getValue("errorCode");
+    %errorCode = "errorCode".getValue(%request);
     %analytic = getAnalytic();
-    %analytic.trackPageView("/client/registration/failed/" @ %errorCode);
+    "/client/registration/failed/" @ %errorCode.trackPageView(%analytic);
     if ((%errorCode $= "UNKNOWN_ID")) {
         %errorMessage = %errorCode[$MsgCat::login @ "E-REG-UNKNOWN-ID"];
         error(getScopeName() @ " " @ "- unknown registration ID -" @ " " @ $Net::RegistrationID);
@@ -89,11 +89,11 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
     }
     %errorMessage = %errorMessage[$MsgCat::login @ "E-REG-UNKNOWN"];
     %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
-    geRegistrationStatusText.setValue(%errorMessage);
+    %errorMessage.setValue(geRegistrationStatusText);
 };
 function RegistrationGui::close(%this) {
     popScreenSize();
-    Canvas.setContent(LoginGui);
+    LoginGui.setContent(Canvas);
 };
 function RegistrationLink::onURL(%this, %url) {
     if ((%url $= "HAVE_ACCOUNT")) {

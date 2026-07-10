@@ -1,19 +1,19 @@
 function setRenderQualityValue(%val) {
-    if ((0.0 < %val)) {
+    if ((%val < 0.0)) {
     }
-    if ((3.0 > %val)) {
+    if ((%val > 3.0)) {
         error("Unknown render quality:" @ " " @ %val);
         return;
     }
     %q = "automatic";
-    if ((3.0 < %val)) {
-        if ((0.0 == %val)) {
+    if ((%val < 3.0)) {
+        if ((%val == 0.0)) {
             %q = "low";
         }
-        if ((1.0 == %val)) {
+        if ((%val == 1.0)) {
             %q = "medium";
         }
-        if ((2.0 == %val)) {
+        if ((%val == 2.0)) {
             %q = "high";
         }
         $renderQuality = %val;
@@ -40,7 +40,7 @@ function setRenderQualityValue(%val) {
 function setRenderQuality(%val) {
     $UserPref::Video::renderQualitySetting = %val;
     setRenderQualityValue(%val);
-    if ((3.0 < %val)) {
+    if ((%val < 3.0)) {
         setToonLODMode(%val);
     }
     setToonLODMode(1);
@@ -52,17 +52,17 @@ function setShadowDetailSize(%val) {
 };
 function setShadowDetailSizeValue(%val) {
     setShadowDetailLevel(1);
-    if ((0.0 == %val)) {
+    if ((%val == 0.0)) {
         $pref::TS::sgShadowDetailSize = 1000;
         setShadowDetailLevel(0);
     }
-    if ((1.0 == %val)) {
+    if ((%val == 1.0)) {
         $pref::TS::sgShadowDetailSize = 1000;
     }
-    if ((2.0 == %val)) {
+    if ((%val == 2.0)) {
         $pref::TS::sgShadowDetailSize = 0;
     }
-    if ((3.0 == %val)) {
+    if ((%val == 3.0)) {
         if (($renderQuality $= 2)) {
             $pref::Water::sgShadowDetailSize = 0;
         }
@@ -74,16 +74,16 @@ function setSmallTextureMode(%val) {
     setSmallTextureModeValue(%val);
 };
 function setSmallTextureModeValue(%val) {
-    if ((0.0 == %val)) {
+    if ((%val == 0.0)) {
         setSmallTexturesMode(2);
     }
-    if ((1.0 == %val)) {
+    if ((%val == 1.0)) {
         setSmallTexturesMode(2);
     }
-    if ((2.0 == %val)) {
+    if ((%val == 2.0)) {
         setSmallTexturesMode(0);
     }
-    if ((3.0 == %val)) {
+    if ((%val == 3.0)) {
         if (($renderQuality $= 2)) {
             setSmallTexturesMode(0);
         }
@@ -95,11 +95,11 @@ function setVisibleDistanceOption(%val) {
     setVisibleDistanceOptionValue(%val);
 };
 function setVisibleDistanceOptionValue(%val) {
-    if ((3.0 == %val)) {
+    if ((%val == 3.0)) {
         %dist = $renderQuality[$Settings::VisibleDistances @ $renderQuality];
     }
     %dist = %val[$Settings::VisibleDistances @ %val];
-    if ((0.0 > %dist)) {
+    if ((%dist > 0.0)) {
         SetVisibleDistance(%dist);
     }
     error("render", "setVisibleDistanceOptionValue: unknown val =" @ " " @ %val @ " " @ "RQ =" @ " " @ $renderQuality);
@@ -109,16 +109,16 @@ function setWaterReflection(%val) {
     setWaterReflectionValue(%val);
 };
 function setWaterReflectionValue(%val) {
-    if ((0.0 == %val)) {
+    if ((%val == 0.0)) {
         $pref::Water::DynamicReflections = 0;
     }
-    if ((1.0 == %val)) {
+    if ((%val == 1.0)) {
         $pref::Water::DynamicReflections = 0;
     }
-    if ((2.0 == %val)) {
+    if ((%val == 2.0)) {
         $pref::Water::DynamicReflections = 1;
     }
-    if ((3.0 == %val)) {
+    if ((%val == 3.0)) {
         if (($renderQuality $= 2)) {
             $pref::Water::DynamicReflections = 1;
         }
@@ -130,45 +130,45 @@ function setExposureFilter(%val) {
     setExposureFilterValue(%val);
 };
 function setExposureFilterValue(%val) {
-    if ((0.0 == %val)) {
-        OptionsPanel.showBrightnessControls(0);
-        ExposureFilter.setVisible(0);
+    if ((%val == 0.0)) {
+        0.showBrightnessControls(OptionsPanel);
+        0.setVisible(ExposureFilter);
         if (isObject(EditorExposureFilter)) {
-            EditorExposureFilter.setVisible(0);
+            0.setVisible(EditorExposureFilter);
         }
-        ExposureFilterSelfView.setVisible(0);
+        0.setVisible(ExposureFilterSelfView);
     }
-    if ((1.0 == %val)) {
-        OptionsPanel.showBrightnessControls(1);
-        ExposureFilter.setVisible(1);
+    if ((%val == 1.0)) {
+        1.showBrightnessControls(OptionsPanel);
+        1.setVisible(ExposureFilter);
         if (isObject(EditorExposureFilter)) {
-            EditorExposureFilter.setVisible(1);
+            1.setVisible(EditorExposureFilter);
         }
-        ExposureFilterSelfView.setVisible(1);
+        1.setVisible(ExposureFilterSelfView);
     }
-    if ((2.0 == %val)) {
-        OptionsPanel.showBrightnessControls(1);
-        ExposureFilter.setVisible(1);
+    if ((%val == 2.0)) {
+        1.showBrightnessControls(OptionsPanel);
+        1.setVisible(ExposureFilter);
         if (isObject(EditorExposureFilter)) {
-            EditorExposureFilter.setVisible(1);
+            1.setVisible(EditorExposureFilter);
         }
-        ExposureFilterSelfView.setVisible(1);
+        1.setVisible(ExposureFilterSelfView);
     }
-    if ((3.0 == %val)) {
-        if ((0.0 == $renderQuality)) {
-            OptionsPanel.showBrightnessControls(0);
-            ExposureFilter.setVisible(0);
+    if ((%val == 3.0)) {
+        if (($renderQuality == 0.0)) {
+            0.showBrightnessControls(OptionsPanel);
+            0.setVisible(ExposureFilter);
             if (isObject(EditorExposureFilter)) {
-                EditorExposureFilter.setVisible(0);
+                0.setVisible(EditorExposureFilter);
             }
-            ExposureFilterSelfView.setVisible(0);
+            0.setVisible(ExposureFilterSelfView);
         }
-        OptionsPanel.showBrightnessControls(1);
-        ExposureFilter.setVisible(1);
+        1.showBrightnessControls(OptionsPanel);
+        1.setVisible(ExposureFilter);
         if (isObject(EditorExposureFilter)) {
-            EditorExposureFilter.setVisible(1);
+            1.setVisible(EditorExposureFilter);
         }
-        ExposureFilterSelfView.setVisible(1);
+        1.setVisible(ExposureFilterSelfView);
     }
 };
 function ClientCmdRenderModsVD(%s) {

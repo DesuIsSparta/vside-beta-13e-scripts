@@ -17,7 +17,7 @@ datablock TriggerData(RespawnTriggerDB) {
     targetSpawnSphere = "";
 };
 function MusicTrigger::onEnterTrigger(%this, %trigger, %obj) {
-    %cmd = addTaggedString(RespawnTriggerDB.getName(%trigger) @ "Enter");
+    %cmd = addTaggedString(%trigger.getName() @ "Enter");
     commandToClient(%obj.client, %cmd);
     Parent::onEnterTrigger(%this, %trigger, %obj);
 };

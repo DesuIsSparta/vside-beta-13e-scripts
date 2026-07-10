@@ -1,37 +1,37 @@
 function afxPanel::toggle(%this) {
-    playGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(playGui);
 };
 function afxPanel::open(%this) {
-    if (!($player.rolesPermissionCheckWarn("debugActive"))) {
+    if (!("debugActive".rolesPermissionCheckWarn($player))) {
         return;
     }
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
-        playGui.focusAndRaise(%this);
+        1.setVisible(%this);
+        %this.focusAndRaise(playGui);
     }
     %this.initEffectsList();
 };
 function afxPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     return 1;
 };
 function afxPanel::initEffectsList(%this) {
     if (!(isObject(afxEffectsCatalog))) {
-        afxPanelEffectList.setText("");
+        "".setText(afxPanelEffectList);
         return;
     }
     %list = "";
     %n = 0;
-    if ((afxEffectsCatalog.size() < %n)) {
-        %effectName = afxEffectsCatalog.getKey(%n);
-        %keyBinding = afxEffectsCatalog.get(%effectName);
+    while ((%n < afxEffectsCatalog.size())) {
+        %effectName = %n.getKey(afxEffectsCatalog);
+        %keyBinding = %effectName.get(afxEffectsCatalog);
         %entry = "<just:left><a:gamelink" @ " " @ %effectName @ ">" @ %effectName @ "</a><just:right>" @ %keyBinding;
         %list = %list @ %entry;
         %list = %list @ "\n";
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    afxPanelEffectList.setText(%list);
+    %list.setText(afxPanelEffectList);
 };
 function afxPanelEffectList::onUrl(%this, %url) {
     %cmd = firstWord(%url);

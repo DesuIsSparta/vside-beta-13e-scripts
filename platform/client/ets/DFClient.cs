@@ -42,23 +42,23 @@ function DFDebugRefresh() {
     $gDFDebugAdvertsList.clear();
     %num = ServerConnection.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        %obj = ServerConnection.getObject(%n);
+    while ((%n < %num)) {
+        %obj = %n.getObject(ServerConnection);
         if ((%obj.getClassName() $= "DFTextureAdvert")) {
-            $gDFDebugAdvertsList.append(%obj);
+            %obj.append($gDFDebugAdvertsList);
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     $gDFDebugCurrAdvert = "-";
-    (%num < %n);
+    (%n < %num);
     DFDebugUpdateGuiStatus();
 };
 function DFDebugUpdateGuiStatus() {
-    if ((1.0 < $gDFDebugCurrAdvert)) {
+    if (($gDFDebugCurrAdvert < 1.0)) {
     }
-    if ((0.0 > $gDFDebugAdvertsList.size())) {
+    if (($gDFDebugAdvertsList.size() > 0.0)) {
     }
-    %obj = $gDFDebugAdvertsList.get((1.0 - $gDFDebugCurrAdvert));
+    %obj = ($gDFDebugCurrAdvert - 1.0).get($gDFDebugAdvertsList);
     "";
     %objText = "";
     if (isObject(%obj)) {
@@ -67,7 +67,7 @@ function DFDebugUpdateGuiStatus() {
             %objText = %objText @ "-" @ " " @ %obj.getName();
         }
     }
-    geDFDebugStatusText.setValue($gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText);
+    $gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText.setValue(geDFDebugStatusText);
 };
 function DFDebugRefreshForce() {
     $gDFDebugNeedsRefresh = 1;
@@ -78,32 +78,32 @@ function DFDebugPrev() {
         return;
     }
     DFDebugRefresh();
-    DFDebugGotoAdvert((1.0 - $gDFDebugCurrAdvert));
+    DFDebugGotoAdvert(($gDFDebugCurrAdvert - 1.0));
 };
 function DFDebugNext() {
     if (!($Pref::DF::debugMode)) {
         return;
     }
     DFDebugRefresh();
-    DFDebugGotoAdvert((1.0 + $gDFDebugCurrAdvert));
+    DFDebugGotoAdvert(($gDFDebugCurrAdvert + 1.0));
 };
 function DFDebugGotoAdvert(%advertNumber) {
     %advertObj = "";
-    if (($gDFDebugAdvertsList.size() > %advertNumber)) {
+    if ((%advertNumber > $gDFDebugAdvertsList.size())) {
         %advertNumber = 1;
     }
-    if ((1.0 < %advertNumber)) {
+    if ((%advertNumber < 1.0)) {
         %advertNumber = $gDFDebugAdvertsList.size();
     }
-    if ((1.0 < %advertNumber)) {
+    if ((%advertNumber < 1.0)) {
         %advertNumber = "-";
     }
-    %advertObj = $gDFDebugAdvertsList.get((1.0 - %advertNumber));
+    %advertObj = (%advertNumber - 1.0).get($gDFDebugAdvertsList);
     $gDFDebugCurrAdvert = %advertNumber;
     DFDebugUpdateGuiStatus();
     if (isObject(%advertObj)) {
-        %trans = %advertObj.localToWorldTransform("0 0 0 0 0 1 -3.14159");
-        %offset = %advertObj.localToWorldVector("0 5 0");
+        %trans = "0 0 0 0 0 1 -3.14159".localToWorldTransform(%advertObj);
+        %offset = "0 5 0".localToWorldVector(%advertObj);
         %point = %advertObj.getWorldBoxCenter();
         %point = VectorAdd(%offset, %point);
         %trans = %point @ " " @ getWords(%trans, 3, 100);

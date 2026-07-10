@@ -7,14 +7,14 @@ package CanvasCursor {
     function GuiCanvas::checkCursor(%this) {
         %cursorShouldBeOn = 0;
         %i = 0;
-        if ((%this.getCount() < %i)) {
-            %control = %this.getObject(%i);
+        while ((%i < %this.getCount())) {
+            %control = %i.getObject(%this);
             if ((%control.noCursor $= "")) {
                 %cursorShouldBeOn = 1;
             }
-            %i = (1.0 + %i);
+            %i = (%i + 1.0);
         }
-        if ((%this.isCursorOn() != %cursorShouldBeOn)) {
+        if ((%cursorShouldBeOn != %this.isCursorOn())) {
             if (%cursorShouldBeOn) {
                 cursorOn();
             }

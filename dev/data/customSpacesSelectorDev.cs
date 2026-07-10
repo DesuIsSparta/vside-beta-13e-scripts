@@ -8,7 +8,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan = new SimObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%floorplan);
+        %floorplan.add(MissionCleanup);
     }
     %floorplan.name = "floorPlan007";
     %floorplan.description = "floorPlanDescription";
@@ -22,7 +22,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan = new SimObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%floorplan);
+        %floorplan.add(MissionCleanup);
     }
     %floorplan.name = "floorPlan007vpointsonly";
     %floorplan.description = "floorPlanDescription";
@@ -36,7 +36,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan = new SimObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%floorplan);
+        %floorplan.add(MissionCleanup);
     }
     %floorplan.name = "floorPlan007vbuxonly";
     %floorplan.description = "floorPlanDescription";
@@ -50,7 +50,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan = new SimObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%floorplan);
+        %floorplan.add(MissionCleanup);
     }
     %floorplan.name = "floorPlan007noavailable";
     %floorplan.description = "floorPlanDescription";

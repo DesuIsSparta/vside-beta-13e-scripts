@@ -3,7 +3,7 @@ function respektAddLevel(%minPoints, %indefiniteArticle, %levelName) {
     $gRespektLevelsNum[$gRespektLevelsMinPoints @ $gRespektLevelsNum] = %minPoints;
     $gRespektLevelsNum[$gRespektLevelsIndefiniteArticles @ $gRespektLevelsNum] = %indefiniteArticle;
     $gRespektLevelsNum[$gRespektLevelsNames @ $gRespektLevelsNum] = %levelName;
-    $gRespektLevelsNum = (1.0 + $gRespektLevelsNum);
+    $gRespektLevelsNum = ($gRespektLevelsNum + 1.0);
 };
 function respektScoresInit() {
     $gRespektThreshholdsNum = 0;
@@ -23,19 +23,19 @@ respektScoresInit();
 function respektScoreToLevel(%score) {
     %level = 0;
     %n = 1;
-    if (($gRespektLevelsNum < %n)) {
-        if ((%score > %n[$gRespektLevelsMinPoints @ %n])) {
+    while ((%n < $gRespektLevelsNum)) {
+        if ((%n[$gRespektLevelsMinPoints @ %n] > %score)) {
             return %level;
         }
-        %level = (1.0 + %level);
-        %n = (1.0 + %n);
+        %level = (%level + 1.0);
+        %n = (%n + 1.0);
     }
     return %level;
 };
 function respektScoreToNextLevel(%score) {
     %level = respektScoreToLevel(%score);
-    if (((1.0 - $gRespektLevelsNum) < %level)) {
-        %level = (1.0 + %level);
+    if ((%level < ($gRespektLevelsNum - 1.0))) {
+        %level = (%level + 1.0);
     }
     return %level;
 };
@@ -43,15 +43,15 @@ function respektLevelValidate(%level) {
     if ((%level $= "")) {
         %level = 0;
     }
-    if ((0.0 < %level)) {
+    if ((%level < 0.0)) {
         error(getScopeName() @ " " @ "- invalid level:" @ " " @ %level);
         %level = 0;
     }
-    if (($gRespektLevelsNum >= %level)) {
+    if ((%level >= $gRespektLevelsNum)) {
         error(getScopeName() @ " " @ "- invalid level:" @ " " @ %level);
-        %level = (1.0 - $gRespektLevelsNum);
+        %level = ($gRespektLevelsNum - 1.0);
     }
-    if ((0.0 < %level)) {
+    if ((%level < 0.0)) {
         error(getScopeName() @ " " @ "- levels not initialized:" @ " " @ %level);
         %level = 0;
     }
@@ -73,16 +73,16 @@ function respektLevelToNameWithIndefiniteArticle(%level) {
 };
 function respektPointsNeededToNextLevel(%score) {
     %nextLevel = respektScoreToNextLevel(%score);
-    return (%score - %nextLevel[$gRespektLevelsMinPoints @ %nextLevel]);
+    return (%nextLevel[$gRespektLevelsMinPoints @ %nextLevel] - %score);
 };
 function respektPercentToNextLevel(%score) {
     %prevLevel = respektScoreToLevel(%score);
     %nextLevel = respektScoreToNextLevel(%score);
-    %range = (%prevLevel[$gRespektLevelsMinPoints @ %prevLevel] - %nextLevel[$gRespektLevelsMinPoints @ %nextLevel]);
-    if ((0.0 == %range)) {
+    %range = (%nextLevel[$gRespektLevelsMinPoints @ %nextLevel] - %prevLevel[$gRespektLevelsMinPoints @ %prevLevel]);
+    if ((%range == 0.0)) {
         return 0;
     }
-    %percent = (%range / (%score - %nextLevel[$gRespektLevelsMinPoints @ %nextLevel]));
+    %percent = ((%nextLevel[$gRespektLevelsMinPoints @ %nextLevel] - %score) / %range);
     return %percent;
 };
 function respektLevelMinPoints(%level) {
@@ -91,10 +91,10 @@ function respektLevelMinPoints(%level) {
 };
 function respektLevelMaxPoints(%level) {
     %level = respektLevelValidate(%level);
-    if (((1.0 - $gRespektLevelsNum) >= %level)) {
+    if ((%level >= ($gRespektLevelsNum - 1.0))) {
         return %level[$gRespektLevelsMinPoints @ %level];
     }
-    return (1.0 - %level[$gRespektLevelsMinPoints @ (1.0 + %level)]);
+    return (%level[$gRespektLevelsMinPoints @ (%level + 1.0)] - 1.0);
 };
 function Player::getRespektLevel(%this) {
     return respektScoreToLevel(%this.getRespektPoints());
@@ -105,14 +105,14 @@ function Player::hasRespektLevel(%this, %level) {
     }
     if ((%level $= "")) {
     }
-    if ((0.0 == %level)) {
+    if ((%level == 0.0)) {
         return 1;
     }
-    return (respektLevelMinPoints(%level) >= %this.getRespektPoints());
+    return (%this.getRespektPoints() >= respektLevelMinPoints(%level));
 };
 function Player::getRespektPoints(%this) {
     if (!(%this.isServerObject())) {
-        %this.setRespektPoints($gMyRespektPoints);
+        $gMyRespektPoints.setRespektPoints(%this);
     }
     return gGetField(%this, "respektPoints");
 };
@@ -124,11 +124,11 @@ function isNewerRevision(%isThis, %newerThanThis, %playerName) {
         log("communication", "error", getScopeName() @ " " @ "- got empty revision for" @ " " @ %playerName);
         return 1;
     }
-    if ((%newerThanThis < %isThis)) {
+    if ((%isThis < %newerThanThis)) {
         log("communication", "debug", getScopeName() @ " " @ "- got revision out of order for" @ " " @ %playerName @ " " @ ":" @ " " @ %isThis @ " " @ "<" @ " " @ %newerThanThis);
         return 0;
     }
-    if ((%newerThanThis == %isThis)) {
+    if ((%isThis == %newerThanThis)) {
         log("communication", "info", getScopeName() @ " " @ "- got duplicate revision for" @ " " @ %playerName @ " " @ ":" @ " " @ %isThis @ " " @ "==" @ " " @ %newerThanThis);
         return 0;
     }
@@ -139,14 +139,14 @@ function isOlderRevision(%isThis, %olderThanThis, %playerName) {
         log("communication", "error", getScopeName() @ " " @ "- got empty revision for" @ " " @ %playerName);
         return 1;
     }
-    if ((%olderThanThis < %isThis)) {
+    if ((%isThis < %olderThanThis)) {
         log("communication", "debug", getScopeName() @ " " @ "- got revision out of order for" @ " " @ %playerName @ " " @ ":" @ " " @ %isThis @ " " @ "<" @ " " @ %olderThanThis);
         return 1;
     }
     return 0;
 };
 function getRespektMessage(%dValue, %code) {
-    %posNeg = (0.0 >= %dValue) ? "pos" : "neg";
+    %posNeg = (%dValue >= 0.0) ? "pos" : "neg";
     %msg = %posNeg[$MsgCat::respektEvent TAB %code @ %posNeg];
     if ((%msg $= "")) {
         error(getScopeName() @ " " @ "- unknown respekt event code:" @ " " @ %code @ " " @ "dValue:" @ " " @ %dValue @ " " @ getTrace());

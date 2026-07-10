@@ -4,7 +4,7 @@ function kick(%client) {
     if (!(%client.isAIControlled())) {
         BanList::add(%client.guid, %client.getAddress(), $Pref::Server::KickBanTime);
     }
-    %client.delete("You have been kicked from this server");
+    "You have been kicked from this server".delete(%client);
     return;
 };
 function Ban(%client) {
@@ -13,6 +13,6 @@ function Ban(%client) {
     if (!(%client.isAIControlled())) {
         BanList::add(%client.guid, %client.getAddress(), $Pref::Server::BanTime);
     }
-    %client.delete("You have been banned from this server");
+    "You have been banned from this server".delete(%client);
     return;
 };

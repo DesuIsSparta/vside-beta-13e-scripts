@@ -1,15 +1,15 @@
 function botControlPanel::toggle(%this) {
-    playGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(playGui);
 };
 function botControlPanel::open(%this) {
-    if (!($player.rolesPermissionCheckWarn("bots"))) {
+    if (!("bots".rolesPermissionCheckWarn($player))) {
         return;
     }
-    %this.setVisible(1);
-    playGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(playGui);
 };
 function botControlPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     return 1;
 };
@@ -30,6 +30,6 @@ function botControlPanel::getSaveFilename(%this) {
         %filebase = "default";
     }
     $DevPref::Mod::botSaveFileName = %filebase;
-    saveLoadBotsFileNameCtrl.setValue(%filebase);
+    %filebase.setValue(saveLoadBotsFileNameCtrl);
     return %filebase;
 };

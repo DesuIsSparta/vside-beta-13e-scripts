@@ -1,6 +1,6 @@
 function compileCS() {
     %file = findFirstFile("*.cs");
-    if (!(%file $= "")) {
+    while (!(%file $= "")) {
         compile(%file);
         %file = findNextFile("*.cs");
     }

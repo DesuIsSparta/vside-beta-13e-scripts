@@ -3,226 +3,226 @@ function NPCManager::init(%this) {
         %this.animSets.delete();
     }
     %this.animSets = 0 @ new StringMap("");;
-    MissionCleanup.add(%this.animSets);
+    %this.animSets.add(MissionCleanup);
     %as = %this.animSets;
     %this.thinkPeriod = 1311;
     %this.NPCGroup = NPCGroup;
     %this.resetnextAnimTimes();
     %this.assertOutfits();
     %this.numResponseAnims = 0;
-    %this.setAnimTimeMin("bouncer1", 10000);
-    %this.setAnimTimeMax("bouncer1", 20000);
-    %this.addAnimToSet("bouncer1", "idle2");
-    %this.addAnimToSet("bouncer1", "idle1");
-    %this.addAnimToSet("bouncer1", "idle1");
-    %this.setAnimTimeMin("pcdkim", 10000);
-    %this.setAnimTimeMax("pcdkim", 15000);
-    %this.addAnimToSet("pcdkim", "talk2");
-    %this.addAnimToSet("pcdkim", "talk3");
-    %this.addAnimToSet("pcdkim", "listen2");
-    %this.setAnimTimeMin("pcdashley", 10000);
-    %this.setAnimTimeMax("pcdashley", 15000);
-    %this.addAnimToSet("pcdashley", "listen");
-    %this.setAnimTimeMin("pcdcarmit", 10000);
-    %this.setAnimTimeMax("pcdcarmit", 15000);
-    %this.addAnimToSet("pcdcarmit", "talk");
-    %this.setAnimTimeMin("pcdmelody", 10000);
-    %this.setAnimTimeMax("pcdmelody", 15000);
-    %this.addAnimToSet("pcdmelody", "idle");
-    %this.addAnimToSet("pcdmelody", "idle");
-    %this.addAnimToSet("pcdmelody", "talk");
-    %this.setAnimTimeMin("pcdjessica", 10000);
-    %this.setAnimTimeMax("pcdjessica", 15000);
-    %this.addAnimToSet("pcdjessica", "lidle1");
-    %this.addAnimToSet("pcdjessica", "lidle2");
-    %this.addAnimToSet("pcdjessica", "lidle3");
-    %this.addAnimToSet("pcdjessica", "lidle4");
-    %this.addAnimToSet("pcdjessica", "lidle5");
-    %this.addAnimToSet("pcdjessica", "lidle6");
-    %this.setAnimTimeMin("pcdnicole", 8000);
-    %this.setAnimTimeMax("pcdnicole", 10000);
-    %this.addAnimToSet("pcdnicole", "idle1");
-    %this.addAnimToSet("pcdnicole", "idle2");
-    %this.addAnimToSet("pcdnicole", "idle3");
-    %this.addAnimToSet("pcdnicole", "idle4");
-    %this.addAnimToSet("pcdnicole", "idle1");
-    %this.addAnimToSet("pcdnicole", "idle1");
-    %this.addAnimToSet("pcdnicole", "wave");
-    %this.setAnimTimeMin("dj1", 3000);
-    %this.setAnimTimeMax("dj1", 5000);
-    %this.addAnimToSet("dj1", "idle");
-    %this.addAnimToSet("dj1", "idle");
-    %this.addAnimToSet("dj1", "idle");
-    %this.addAnimToSet("dj1", "fiddle");
-    %this.setAnimTimeMin("dj2", 3000);
-    %this.setAnimTimeMax("dj2", 5000);
-    %this.addAnimToSet("dj2", "idle");
-    %this.addAnimToSet("dj2", "idle");
-    %this.addAnimToSet("dj2", "idle");
-    %this.addAnimToSet("dj2", "fiddle");
-    %this.setAnimTimeMin("bartenderF", 10000);
-    %this.setAnimTimeMax("bartenderF", 15000);
-    %this.addAnimToSet("bartenderF", "fnbtfbb");
-    %this.addAnimToSet("bartenderF", "fnbtidl1");
-    %this.addAnimToSet("bartenderF", "fnbtidl1");
-    %this.addAnimToSet("bartenderF", "fnbtlidl1");
-    %this.addAnimToSet("bartenderF", "fnbtlidl1");
-    %this.addAnimToSet("bartenderF", "fnbtlidl2");
-    %this.addAnimToSet("bartenderF", "fnbtidl1");
-    %this.addAnimToSet("bartenderF", "fnbtidl1");
-    %this.addAnimToSet("bartenderF", "fnbtlidl1");
-    %this.addAnimToSet("bartenderF", "fnbtlidl1");
-    %this.addAnimToSet("bartenderF", "fnbtlidl2");
-    %this.setAnimTimeMin("bartenderM", 10000);
-    %this.setAnimTimeMax("bartenderM", 15000);
-    %this.addAnimToSet("bartenderM", "mnbtfbb");
-    %this.addAnimToSet("bartenderM", "mnbtidl1");
-    %this.addAnimToSet("bartenderM", "mnbtidl1");
-    %this.addAnimToSet("bartenderM", "mnbtlidl1");
-    %this.addAnimToSet("bartenderM", "mnbtlidl2");
-    %this.addAnimToSet("bartenderM", "mnbtlidl2");
-    %this.addAnimToSet("bartenderM", "mnbtidl1");
-    %this.addAnimToSet("bartenderM", "mnbtidl1");
-    %this.addAnimToSet("bartenderM", "mnbtlidl1");
-    %this.addAnimToSet("bartenderM", "mnbtlidl2");
-    %this.addAnimToSet("bartenderM", "mnbtlidl2");
-    %this.setAnimTimeMin("storekeepM", 10000);
-    %this.setAnimTimeMax("storekeepM", 15000);
-    %this.addAnimToSet("storekeepM", "mnbtidl1");
-    %this.addAnimToSet("storekeepM", "mnbtlidl1");
-    %this.addAnimToSet("storekeepM", "mnbtlidl2");
-    %this.setAnimTimeMin("djgroupie1", 10000);
-    %this.setAnimTimeMax("djgroupie1", 15000);
-    %this.addAnimToSet("djgroupie1", "fhlidl1a");
-    %this.addAnimToSet("djgroupie1", "fhlidl2a");
-    %this.addAnimToSet("djgroupie1", "filidl1a");
-    %this.addAnimToSet("djgroupie1", "filidl2a");
-    %this.addAnimToSet("djgroupie1", "fplidl1a");
-    %this.addAnimToSet("djgroupie1", "fplidl2a");
-    %this.setAnimTimeMin("djgroupie2", 10000);
-    %this.setAnimTimeMax("djgroupie2", 15000);
-    %this.addAnimToSet("djgroupie2", "fnsitlsn");
-    %this.addAnimToSet("djgroupie2", "fnsittlk");
-    %this.setAnimTimeMin("djgroupie3", 7000);
-    %this.setAnimTimeMax("djgroupie3", 9000);
-    %this.addAnimToSet("djgroupie3", "midl2a");
-    %this.addAnimToSet("djgroupie3", "midl2b");
-    %this.addAnimToSet("djgroupie3", "midl2c");
-    %this.addAnimToSet("djgroupie3", "midl2d");
-    %this.addAnimToSet("djgroupie3", "mntlk2");
-    %this.addAnimToSet("djgroupie3", "mntlk3");
-    %this.addAnimToSet("djgroupie3", "mntlk");
-    %this.addAnimToSet("djgroupie3", "micool");
-    %this.addAnimToSet("djgroupie3", "miflr");
-    %this.setAnimTimeMin("andrew", 3000);
-    %this.setAnimTimeMax("andrew", 5000);
-    %this.addAnimToSet("andrew", "idl1");
-    %this.addAnimToSet("andrew", "idl2");
-    %this.addAnimToSet("andrew", "idl3");
-    %this.addAnimToSet("andrew", "idl4");
-    %this.addAnimToSet("andrew", "vomit");
-    %this.addAnimToSet("andrew", "whew");
-    %this.addAnimToSet("ai_bouncer", "idle2");
-    %this.addAnimToSet("ai_bouncer", "idle1");
-    %this.addAnimToSet("ai_bouncer", "idle1");
-    %this.addAnimToSet("ai_pcd", "");
-    %this.addAnimToSet("ai_dj", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "cnf");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "lol");
-    %this.addAnimToSet("ai_generic", "think");
-    %this.addAnimToSet("ai_generic", "think");
-    %this.addAnimToSet("ai_generic", "think");
-    %this.addAnimToSet("ai_generic", "think");
-    %this.addAnimToSet("ai_generic", "think");
-    %this.addAnimToSet("ai_generic", "cool");
-    %this.addAnimToSet("ai_generic", "cool");
-    %this.addAnimToSet("ai_generic", "cool");
-    %this.addAnimToSet("ai_generic", "nlst");
-    %this.addAnimToSet("ai_generic", "nlst");
-    %this.addAnimToSet("ai_generic", "nlst");
-    %this.addAnimToSet("ai_generic", "ttth");
-    %this.addAnimToSet("ai_generic", "cool");
-    %this.addAnimToSet("ai_generic", "shhh");
-    %this.addAnimToSet("ai_generic", "flr");
-    %this.addAnimToSet("ai_generic", "lsn");
-    %this.addAnimToSet("ai_generic", "sad");
-    %this.addAnimToSet("ai_generic", "spr");
-    %this.addAnimToSet("ai_generic", "srd");
-    %this.addAnimToSet("ai_generic", "cry");
-    %this.addAnimToSet("ai_generic", "ilve");
-    %this.addAnimToSet("ai_generic", "kiss");
-    %this.addAnimToSet("ai_generic", "emb");
-    %this.addAnimToSet("ai_generic", "vom");
-    %this.addAnimToSet("ai_generic", "slpy");
-    %this.addAnimToSet("ai_generic", "whw");
-    %this.addAnimToSet("ai_generic", "rotfl");
-    %this.addAnimToSet("ai_generic", "apls");
-    %this.addAnimToSet("ai_generic", "doh");
-    %this.addAnimToSet("ai_generic", "busy");
-    %this.addAnimToSet("ai_generic", "nlst");
+    10000.setAnimTimeMin(%this, "bouncer1");
+    20000.setAnimTimeMax(%this, "bouncer1");
+    "idle2".addAnimToSet(%this, "bouncer1");
+    "idle1".addAnimToSet(%this, "bouncer1");
+    "idle1".addAnimToSet(%this, "bouncer1");
+    10000.setAnimTimeMin(%this, "pcdkim");
+    15000.setAnimTimeMax(%this, "pcdkim");
+    "talk2".addAnimToSet(%this, "pcdkim");
+    "talk3".addAnimToSet(%this, "pcdkim");
+    "listen2".addAnimToSet(%this, "pcdkim");
+    10000.setAnimTimeMin(%this, "pcdashley");
+    15000.setAnimTimeMax(%this, "pcdashley");
+    "listen".addAnimToSet(%this, "pcdashley");
+    10000.setAnimTimeMin(%this, "pcdcarmit");
+    15000.setAnimTimeMax(%this, "pcdcarmit");
+    "talk".addAnimToSet(%this, "pcdcarmit");
+    10000.setAnimTimeMin(%this, "pcdmelody");
+    15000.setAnimTimeMax(%this, "pcdmelody");
+    "idle".addAnimToSet(%this, "pcdmelody");
+    "idle".addAnimToSet(%this, "pcdmelody");
+    "talk".addAnimToSet(%this, "pcdmelody");
+    10000.setAnimTimeMin(%this, "pcdjessica");
+    15000.setAnimTimeMax(%this, "pcdjessica");
+    "lidle1".addAnimToSet(%this, "pcdjessica");
+    "lidle2".addAnimToSet(%this, "pcdjessica");
+    "lidle3".addAnimToSet(%this, "pcdjessica");
+    "lidle4".addAnimToSet(%this, "pcdjessica");
+    "lidle5".addAnimToSet(%this, "pcdjessica");
+    "lidle6".addAnimToSet(%this, "pcdjessica");
+    8000.setAnimTimeMin(%this, "pcdnicole");
+    10000.setAnimTimeMax(%this, "pcdnicole");
+    "idle1".addAnimToSet(%this, "pcdnicole");
+    "idle2".addAnimToSet(%this, "pcdnicole");
+    "idle3".addAnimToSet(%this, "pcdnicole");
+    "idle4".addAnimToSet(%this, "pcdnicole");
+    "idle1".addAnimToSet(%this, "pcdnicole");
+    "idle1".addAnimToSet(%this, "pcdnicole");
+    "wave".addAnimToSet(%this, "pcdnicole");
+    3000.setAnimTimeMin(%this, "dj1");
+    5000.setAnimTimeMax(%this, "dj1");
+    "idle".addAnimToSet(%this, "dj1");
+    "idle".addAnimToSet(%this, "dj1");
+    "idle".addAnimToSet(%this, "dj1");
+    "fiddle".addAnimToSet(%this, "dj1");
+    3000.setAnimTimeMin(%this, "dj2");
+    5000.setAnimTimeMax(%this, "dj2");
+    "idle".addAnimToSet(%this, "dj2");
+    "idle".addAnimToSet(%this, "dj2");
+    "idle".addAnimToSet(%this, "dj2");
+    "fiddle".addAnimToSet(%this, "dj2");
+    10000.setAnimTimeMin(%this, "bartenderF");
+    15000.setAnimTimeMax(%this, "bartenderF");
+    "fnbtfbb".addAnimToSet(%this, "bartenderF");
+    "fnbtidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtlidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtlidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtlidl2".addAnimToSet(%this, "bartenderF");
+    "fnbtidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtlidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtlidl1".addAnimToSet(%this, "bartenderF");
+    "fnbtlidl2".addAnimToSet(%this, "bartenderF");
+    10000.setAnimTimeMin(%this, "bartenderM");
+    15000.setAnimTimeMax(%this, "bartenderM");
+    "mnbtfbb".addAnimToSet(%this, "bartenderM");
+    "mnbtidl1".addAnimToSet(%this, "bartenderM");
+    "mnbtidl1".addAnimToSet(%this, "bartenderM");
+    "mnbtlidl1".addAnimToSet(%this, "bartenderM");
+    "mnbtlidl2".addAnimToSet(%this, "bartenderM");
+    "mnbtlidl2".addAnimToSet(%this, "bartenderM");
+    "mnbtidl1".addAnimToSet(%this, "bartenderM");
+    "mnbtidl1".addAnimToSet(%this, "bartenderM");
+    "mnbtlidl1".addAnimToSet(%this, "bartenderM");
+    "mnbtlidl2".addAnimToSet(%this, "bartenderM");
+    "mnbtlidl2".addAnimToSet(%this, "bartenderM");
+    10000.setAnimTimeMin(%this, "storekeepM");
+    15000.setAnimTimeMax(%this, "storekeepM");
+    "mnbtidl1".addAnimToSet(%this, "storekeepM");
+    "mnbtlidl1".addAnimToSet(%this, "storekeepM");
+    "mnbtlidl2".addAnimToSet(%this, "storekeepM");
+    10000.setAnimTimeMin(%this, "djgroupie1");
+    15000.setAnimTimeMax(%this, "djgroupie1");
+    "fhlidl1a".addAnimToSet(%this, "djgroupie1");
+    "fhlidl2a".addAnimToSet(%this, "djgroupie1");
+    "filidl1a".addAnimToSet(%this, "djgroupie1");
+    "filidl2a".addAnimToSet(%this, "djgroupie1");
+    "fplidl1a".addAnimToSet(%this, "djgroupie1");
+    "fplidl2a".addAnimToSet(%this, "djgroupie1");
+    10000.setAnimTimeMin(%this, "djgroupie2");
+    15000.setAnimTimeMax(%this, "djgroupie2");
+    "fnsitlsn".addAnimToSet(%this, "djgroupie2");
+    "fnsittlk".addAnimToSet(%this, "djgroupie2");
+    7000.setAnimTimeMin(%this, "djgroupie3");
+    9000.setAnimTimeMax(%this, "djgroupie3");
+    "midl2a".addAnimToSet(%this, "djgroupie3");
+    "midl2b".addAnimToSet(%this, "djgroupie3");
+    "midl2c".addAnimToSet(%this, "djgroupie3");
+    "midl2d".addAnimToSet(%this, "djgroupie3");
+    "mntlk2".addAnimToSet(%this, "djgroupie3");
+    "mntlk3".addAnimToSet(%this, "djgroupie3");
+    "mntlk".addAnimToSet(%this, "djgroupie3");
+    "micool".addAnimToSet(%this, "djgroupie3");
+    "miflr".addAnimToSet(%this, "djgroupie3");
+    3000.setAnimTimeMin(%this, "andrew");
+    5000.setAnimTimeMax(%this, "andrew");
+    "idl1".addAnimToSet(%this, "andrew");
+    "idl2".addAnimToSet(%this, "andrew");
+    "idl3".addAnimToSet(%this, "andrew");
+    "idl4".addAnimToSet(%this, "andrew");
+    "vomit".addAnimToSet(%this, "andrew");
+    "whew".addAnimToSet(%this, "andrew");
+    "idle2".addAnimToSet(%this, "ai_bouncer");
+    "idle1".addAnimToSet(%this, "ai_bouncer");
+    "idle1".addAnimToSet(%this, "ai_bouncer");
+    "".addAnimToSet(%this, "ai_pcd");
+    "".addAnimToSet(%this, "ai_dj");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "cnf".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "lol".addAnimToSet(%this, "ai_generic");
+    "think".addAnimToSet(%this, "ai_generic");
+    "think".addAnimToSet(%this, "ai_generic");
+    "think".addAnimToSet(%this, "ai_generic");
+    "think".addAnimToSet(%this, "ai_generic");
+    "think".addAnimToSet(%this, "ai_generic");
+    "cool".addAnimToSet(%this, "ai_generic");
+    "cool".addAnimToSet(%this, "ai_generic");
+    "cool".addAnimToSet(%this, "ai_generic");
+    "nlst".addAnimToSet(%this, "ai_generic");
+    "nlst".addAnimToSet(%this, "ai_generic");
+    "nlst".addAnimToSet(%this, "ai_generic");
+    "ttth".addAnimToSet(%this, "ai_generic");
+    "cool".addAnimToSet(%this, "ai_generic");
+    "shhh".addAnimToSet(%this, "ai_generic");
+    "flr".addAnimToSet(%this, "ai_generic");
+    "lsn".addAnimToSet(%this, "ai_generic");
+    "sad".addAnimToSet(%this, "ai_generic");
+    "spr".addAnimToSet(%this, "ai_generic");
+    "srd".addAnimToSet(%this, "ai_generic");
+    "cry".addAnimToSet(%this, "ai_generic");
+    "ilve".addAnimToSet(%this, "ai_generic");
+    "kiss".addAnimToSet(%this, "ai_generic");
+    "emb".addAnimToSet(%this, "ai_generic");
+    "vom".addAnimToSet(%this, "ai_generic");
+    "slpy".addAnimToSet(%this, "ai_generic");
+    "whw".addAnimToSet(%this, "ai_generic");
+    "rotfl".addAnimToSet(%this, "ai_generic");
+    "apls".addAnimToSet(%this, "ai_generic");
+    "doh".addAnimToSet(%this, "ai_generic");
+    "busy".addAnimToSet(%this, "ai_generic");
+    "nlst".addAnimToSet(%this, "ai_generic");
     return;
 };
 function storeTransformsSet(%simSet) {
     %num = %simSet.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        %obj = %simSet.getObject(%n);
+    while ((%n < %num)) {
+        %obj = %n.getObject(%simSet);
         gSetField(%obj, origTransform, %obj.getTransform());
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function restoreTransformsSet(%simSet) {
     %num = %simSet.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        %obj = %simSet.getObject(%n);
-        %obj.setTransform(origTransform, gGetField(%obj));
-        %n = (1.0 + %n);
+    while ((%n < %num)) {
+        %obj = %n.getObject(%simSet);
+        gGetField(%obj).setTransform(%obj, origTransform);
+        %n = (%n + 1.0);
     }
 };
 function copyObjectNamesToShapeNamesSet(%simSet) {
     %num = %simSet.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        %obj = %simSet.getObject(%n);
-        %obj.setShapeName(%obj.getName());
-        %n = (1.0 + %n);
+    while ((%n < %num)) {
+        %obj = %n.getObject(%simSet);
+        %obj.getName().setShapeName(%obj);
+        %n = (%n + 1.0);
     }
 };
 function registerInPlayerDictSet(%simSet) {
     %num = %simSet.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        %obj = %simSet.getObject(%n);
-        PlayerDict.put(%obj.getShapeName(), %obj);
-        %n = (1.0 + %n);
+    while ((%n < %num)) {
+        %obj = %n.getObject(%simSet);
+        %obj.put(PlayerDict, %obj.getShapeName());
+        %n = (%n + 1.0);
     }
 };
 function NPCManager::resetnextAnimTimes(%this) {
@@ -231,9 +231,9 @@ function NPCManager::resetnextAnimTimes(%this) {
     }
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
-    if ((%NPCNum < %n)) {
-        gSetField(%this.NPCGroup.getObject(%n), nextAnimTime, "");
-        %n = (1.0 + %n);
+    while ((%n < %NPCNum)) {
+        gSetField(%n.getObject(%this.NPCGroup), nextAnimTime, "");
+        %n = (%n + 1.0);
     }
 };
 function NPCManager::assertOutfits(%this) {
@@ -242,11 +242,11 @@ function NPCManager::assertOutfits(%this) {
     }
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
-    if ((%NPCNum < %n)) {
-        %npc = %this.NPCGroup.getObject(%n);
+    while ((%n < %NPCNum)) {
+        %npc = %n.getObject(%this.NPCGroup);
         %gnd = %npc.getDataBlock().gender;
         %npc.gender = %gnd;
-        %npc.MeshOff(%gnd @ ".headphones.dj");
+        %gnd @ ".headphones.dj".MeshOff(%npc);
         if (!(%gnd $= "")) {
             %w = Wardrobe::findWardrobe(%gnd);
             if (%w) {
@@ -255,48 +255,48 @@ function NPCManager::assertOutfits(%this) {
                 if ((%os $= "random")) {
                     %outfit.makeRandom();
                 }
-                %outfit.deserialize(%os);
-                %outfit.assert(%npc);
+                %os.deserialize(%outfit);
+                %npc.assert(%outfit);
             }
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function NPCManager::setAnimTimeMin(%this, %setName, %val) {
-    %this.animSets.put(%setName @ "_TimeMin", %val);
+    %val.put(%this.animSets, %setName @ "_TimeMin");
     return;
 };
 function NPCManager::setAnimTimeMax(%this, %setName, %val) {
-    %this.animSets.put(%setName @ "_TimeMax", %val);
+    %val.put(%this.animSets, %setName @ "_TimeMax");
     return;
 };
 function NPCManager::getAnimTimeMin(%this, %setName) {
-    return %this.animSets.get(%setName @ "_TimeMin");
+    return %setName @ "_TimeMin".get(%this.animSets);
 };
 function NPCManager::getAnimTimeMax(%this, %setName) {
-    return %this.animSets.get(%setName @ "_TimeMax");
+    return %setName @ "_TimeMax".get(%this.animSets);
 };
 function NPCManager::getRandomAnimFromSet(%this, %setName) {
-    %set = %this.animSets.get(%setName);
+    %set = %setName.get(%this.animSets);
     %num = getWordCount(%set);
-    return getWord(%set, getRandom(0, (1.0 - %num)));
+    return getWord(%set, getRandom(0, (%num - 1.0)));
 };
 function NPCManager::addAnimToSet(%this, %setName, %val) {
-    %prev = %this.animSets.get(%setName);
+    %prev = %setName.get(%this.animSets);
     if (!(%prev $= "")) {
         %newThing = %prev @ " " @ %val;
     }
     %newThing = %val;
-    %this.animSets.put(%setName, %newThing);
-    %sets = %this.animSets.get("setNames");
-    if ((-(1.0) != findWord(%sets, %setName))) {
+    %newThing.put(%this.animSets, %setName);
+    %sets = "setNames".get(%this.animSets);
+    if ((findWord(%sets, %setName) != -(1.0))) {
         return;
     }
     if (!(%sets $= "")) {
         %newThing = %sets @ " " @ %setName;
     }
     %newThing = %setName;
-    %this.animSets.put("setNames", %newThing);
+    %newThing.put(%this.animSets, "setNames");
     return;
 };
 function NPCManager::think(%this) {
@@ -306,11 +306,11 @@ function NPCManager::think(%this) {
     }
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
-    if ((%NPCNum < %n)) {
-        %this.thinkNPC(%this.NPCGroup.getObject(%n));
-        %n = (1.0 + %n);
+    while ((%n < %NPCNum)) {
+        %n.getObject(%this.NPCGroup).thinkNPC(%this);
+        %n = (%n + 1.0);
     }
-    %this.schedule(%this.thinkPeriod);
+    %this.thinkPeriod.schedule(%this);
     return think;
 };
 function NPCManager::thinkNPC(%this, %npc) {
@@ -326,42 +326,42 @@ function NPCManager::thinkNPC(%this, %npc) {
     nextAnimTime;
     if (!(%nat $= "")) {
     }
-    if ((%nat < %curTime)) {
+    if ((%curTime < %nat)) {
         return;
     }
-    %nat = (getRandom(%this.getAnimTimeMin(%setName), %this.getAnimTimeMax(%setName)) + %curTime);
+    %nat = (%curTime + getRandom(%setName.getAnimTimeMin(%this), %setName.getAnimTimeMax(%this)));
     gSetField(%npc, nextAnimTime, %nat);
-    %animSet = %this.animSets.get(%setName);
-    %anim = %this.getRandomAnimFromSet(%setName);
-    %npc.playAnim(%anim);
+    %animSet = %setName.get(%this.animSets);
+    %anim = %setName.getRandomAnimFromSet(%this);
+    %anim.playAnim(%npc);
     return;
 };
 function NPCManager::dumpEts(%this) {
-    %sets = %this.animSets.get("setNames");
+    %sets = "setNames".get(%this.animSets);
     %setsNum = getWordCount(%sets);
     %setN = 0;
-    if ((%setsNum < %setN)) {
+    while ((%setN < %setsNum)) {
         %set = getWord(%sets, %setN);
-        echo(%set @ " " @ "timeMin =" @ " " @ %this.getAnimTimeMin(%set) @ " " @ "timeMax =" @ " " @ %this.getAnimTimeMax(%set));
-        %anims = %this.animSets.get(%set);
+        echo(%set @ " " @ "timeMin =" @ " " @ %set.getAnimTimeMin(%this) @ " " @ "timeMax =" @ " " @ %set.getAnimTimeMax(%this));
+        %anims = %set.get(%this.animSets);
         %animsNum = getWordCount(%anims);
         %animN = 0;
-        if ((%animsNum < %animN)) {
+        while ((%animN < %animsNum)) {
             %anim = getWord(%anims, %animN);
             echo("  " @ %anim);
-            %animN = (1.0 + %animN);
+            %animN = (%animN + 1.0);
         }
-        %setN = (1.0 + %setN);
-        (%animsNum < %animN);
+        %setN = (%setN + 1.0);
+        (%animN < %animsNum);
     }
 };
 function NPCManager::handleTalkedToNPC(%this, %unused, %npc, %unused) {
     %setName = %npc.getDataBlock().aiProfile;
-    %anim = %this.getRandomAnimFromSet(%setName);
+    %anim = %setName.getRandomAnimFromSet(%this);
     if ((%anim $= "")) {
         return;
     }
     %delay = getRandom(500, 1500);
-    %npc.schedule(%delay, "playAnim", %anim);
+    %anim.schedule(%npc, %delay, "playAnim");
     return;
 };

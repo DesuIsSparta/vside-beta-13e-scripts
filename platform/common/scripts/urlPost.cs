@@ -1,16 +1,16 @@
 function URLPostObject::onComplete(%this, %unused) {
     if (!(%this.NoAutoDelete)) {
-        %this.schedule(0);
+        0.schedule(%this);
     }
 };
 function URLPostObject::checkSuccess(%this) {
-    if ((%this.getResult("status") $= "success")) {
+    if (("status".getResult(%this) $= "success")) {
         return 1;
     }
     return 0;
 };
 function URLPostObject::copyValueIntoObject(%this, %object, %requestFieldName, %objectFieldName) {
-    %value = %this.getResult(%requestFieldName);
+    %value = %requestFieldName.getResult(%this);
     if ((%value $= "true")) {
         %value = 1;
     }
@@ -23,40 +23,40 @@ function URLPostObject::copyValueIntoObject(%this, %object, %requestFieldName, %
 function URLPostObject::copyListValueIntoObject(%this, %object, %listPrefix, %objectFieldName) {
     %requestFieldName = %listPrefix @ "." @ %objectFieldName;
     %objectFieldName = strreplace(%objectFieldName, ".", "_");
-    %this.copyValueIntoObject(%object, %requestFieldName, %objectFieldName);
+    %objectFieldName.copyValueIntoObject(%this, %object, %requestFieldName);
 };
 function URLPostObject::copyListValuesIntoMap(%this, %map, %listPrefix, %tabDelimitedListOfFieldNames) {
     %tabDelimitedListOfFieldNames = trim(%tabDelimitedListOfFieldNames);
-    %n = (1.0 - getFieldCount(%tabDelimitedListOfFieldNames));
-    if ((0.0 >= %n)) {
+    %n = (getFieldCount(%tabDelimitedListOfFieldNames) - 1.0);
+    while ((%n >= 0.0)) {
         %fieldName = getField(%tabDelimitedListOfFieldNames, %n);
-        %fieldValue = %this.getResult(%listPrefix @ "." @ %fieldName);
+        %fieldValue = %listPrefix @ "." @ %fieldName.getResult(%this);
         if ((%fieldValue $= "true")) {
             %fieldValue = 1;
         }
         if ((%fieldValue $= "false")) {
             %fieldValue = 0;
         }
-        %map.put(%fieldName, %fieldValue);
-        %n = (1.0 - %n);
+        %fieldValue.put(%map, %fieldName);
+        %n = (%n - 1.0);
     }
 };
 function URLPostObject::addUserAndToken(%this, %userName) {
     if ($StandAlone) {
         echoDebug(getScopeName() @ " " @ "- called in standalone. Setting token to \"" @ $TokenStandalone @ "\"." @ " " @ getTrace());
-        %this.setURLParam("user", %userName);
-        %this.setURLParam("token", $TokenStandalone);
+        %userName.setURLParam(%this, "user");
+        $TokenStandalone.setURLParam(%this, "token");
     }
     if (!($Token $= "")) {
         if (!(%userName $= $Player::Name)) {
             error(getScopeName() @ " " @ "- got username not equal this user!" @ " " @ %userName @ " " @ $Player::Name @ " " @ getTrace());
             return;
         }
-        %this.setURLParam("user", %userName);
-        %this.setURLParam("token", $Token);
+        %userName.setURLParam(%this, "user");
+        $Token.setURLParam(%this, "token");
     }
-    %this.setURLParam("user", %userName);
-    %this.setURLParam("token", getClientToken(%userName));
+    %userName.setURLParam(%this, "user");
+    getClientToken(%userName).setURLParam(%this, "token");
 };
 function URLPostObject::setURLParamIfNotEmpty(%this, %paramName, %paramValue) {
     if ((%paramValue $= "")) {
@@ -65,5 +65,5 @@ function URLPostObject::setURLParamIfNotEmpty(%this, %paramName, %paramValue) {
     if ((%paramValue $= "true")) {
     }
     %isBool = (%paramValue $= "false");
-    %this.setURLParam(%paramName, %paramValue, %isBool);
+    %isBool.setURLParam(%this, %paramName, %paramValue);
 };

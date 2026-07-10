@@ -1,15 +1,15 @@
 $gameMgr::GAME_TYPES_COUNT = 1;
-$gameMgr::GAME_TYPES_COUNT = (1.0 + $gameMgr::GAME_TYPES_COUNT);
+$gameMgr::GAME_TYPES_COUNT = ($gameMgr::GAME_TYPES_COUNT + 1.0);
 $gameMgr::CUSTOM_GAME = 1;
 if (isObject(MissionCleanup)) {
     %n = 0;
-    if (($gameMgr::GAME_TYPES_COUNT < %n)) {
-        MissionCleanup.add(%n[$gameMgr::GAME_TYPES @ %n]);
-        %n = (1.0 + %n);
+    while ((%n < $gameMgr::GAME_TYPES_COUNT)) {
+        %n[$gameMgr::GAME_TYPES @ %n].add(MissionCleanup);
+        %n = (%n + 1.0);
     }
 }
 $gameMgr::InspectTab::MAX_PLAYERS = 10;
-($gameMgr::GAME_TYPES_COUNT < %n);
+(%n < $gameMgr::GAME_TYPES_COUNT);
 $gameMgr::MAX_SCORE_DIGITS = 6;
 $gameMgr::ListColors::CANT_START = ColorIToHex("255 0 0");
 $gameMgr::ListColors::WAITING = ColorIToHex("127 200 220");
@@ -21,5 +21,5 @@ $gameMgr::GameStatus::WAITING = 0;
 $gameMgr::GameStatus::STARTED = 1;
 $gameMgr::GameStatus::POST_GAME = 2;
 function SimSet::getByNameField(%this, %name) {
-    return %this.getByField("name", %name);
+    return %name.getByField(%this, "name");
 };

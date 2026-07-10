@@ -1,13 +1,13 @@
 function TriggersPanel::toggle(%this) {
-    playGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(playGui);
 };
 function TriggersPanel::open(%this) {
-    if (!($player.rolesPermissionCheckNoWarn("debugActive"))) {
+    if (!("debugActive".rolesPermissionCheckNoWarn($player))) {
         return;
     }
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
-        playGui.focusAndRaise(%this);
+        1.setVisible(%this);
+        %this.focusAndRaise(playGui);
     }
     TriggersPanelTriggerPopup.clear();
     TriggersPanelStreamPopup.clear();
@@ -15,7 +15,7 @@ function TriggersPanel::open(%this) {
     commandToServer('GetStreamIDs', addTaggedString("GetStreamIDsCallback"));
 };
 function TriggersPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     return 1;
 };
@@ -37,7 +37,7 @@ function TriggersPanel::setStreamReally(%this) {
         log("Communication", "info", "Setting stream for trigger " @ %trigger @ " to " @ %stream);
         commandToServer('SetMusicStreamMapping', %trigger, %stream);
         triggersPanelTextList.clear();
-        TriggersPanelURLText.setValue("");
+        "".setValue(TriggersPanelURLText);
         commandToServer('reportTriggers', $DevPref::reportTriggers);
     }
 };
@@ -61,7 +61,7 @@ function TriggersPanel::setLocalURLMappingReally(%this) {
         commandToServer('SetUrl', %stream, %newUrl);
         TriggersPanelStreamPopup.clear();
         TriggersPanelTriggerPopup.clear();
-        TriggersPanelURLText.setValue("");
+        "".setValue(TriggersPanelURLText);
         commandToServer('GetMusicTriggers', addTaggedString("GetMusicTriggerNamesCallback"));
         commandToServer('GetStreamIDs', addTaggedString("GetStreamIDsCallback"));
     }
@@ -83,7 +83,7 @@ function TriggersPanel::setURLMappingReally(%this) {
     }
     if (!(%newUrl $= "")) {
         log("communication", "info", "Stream " @ %stream @ " " @ "will now be mapped to " @ %newUrl);
-        %this.urlsToEnvmanager(%stream, %newUrl);
+        %newUrl.urlsToEnvmanager(%this, %stream);
     }
 };
 function TriggersPanel::urlsToEnvmanager(%this, %stream, %musicURL) {
@@ -91,53 +91,53 @@ function TriggersPanel::urlsToEnvmanager(%this, %stream, %musicURL) {
         className = 0 @ "ChangeStreamIDMappingRequest";
     };
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%request);
+        %request.add(MissionCleanup);
     }
     %url = $Net::ClientServiceURL @ "/UpdateMusicStreamIDMapping" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token);
     %url = %url @ "&streamID=" @ urlEncode(%stream);
     %url = %url @ "&mountURL=" @ urlEncode(%musicURL);
     log("network", "info", getScopeName() @ ":" @ %url);
-    %request.setURL(%url);
+    %url.setURL(%request);
     %request.start();
 };
 function ChangeStreamIDMappingRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     log("network", "info", getScopeName() @ ":" @ %status);
     if ((%status $= "fail")) {
-        warn("network", getScopeName() @ " request failed: " @ %this.getValue("statusMessage"));
+        warn("network", getScopeName() @ " request failed: " @ "statusMessage".getValue(%this));
     }
     TriggersPanelStreamPopup.clear();
     TriggersPanelTriggerPopup.clear();
-    TriggersPanelURLText.setValue("");
+    "".setValue(TriggersPanelURLText);
     commandToServer('GetMusicTriggers', addTaggedString("GetMusicTriggerNamesCallback"));
     commandToServer('GetStreamIDs', addTaggedString("GetStreamIDsCallback"));
-    %this.schedule(0, "delete");
+    "delete".schedule(%this, 0);
 };
 function TriggersPanel::testURL(%this) {
     if ((TriggersPanelTestUrl.getText() $= "Test URL")) {
-        TriggersPanelTestUrl.setText("Stop Test");
+        "Stop Test".setText(TriggersPanelTestUrl);
     }
     if ((TriggersPanelTestUrl.getText() $= "Stop Test")) {
-        FMod.popStream("TriggersPanelTest");
-        TriggersPanelTestUrl.setText("Test URL");
+        "TriggersPanelTest".popStream(FMod);
+        "Test URL".setText(TriggersPanelTestUrl);
         return;
     }
     %newUrl = $TriggersPanel::NewURL;
     if (!(%newUrl $= "")) {
-        FMod.pushStreamWithVolume("TriggersPanelTest", %newUrl, 0.8, "");
+        "".pushStreamWithVolume(FMod, "TriggersPanelTest", %newUrl, 0.8);
     }
     MessageBoxOK("Test URL", "Please specify a URL to test.", "");
 };
 function TriggersPanel::selectTrigger(%this) {
     %selected = triggersPanelTextList.getValue();
-    if ((0.0 < strstr(%selected, "MusicTrigger"))) {
+    if ((strstr(%selected, "MusicTrigger") < 0.0)) {
         return;
     }
     %wc = getWordCount(%selected);
-    %trigger = getWord(%selected, (3.0 - %wc));
-    %stream = getWord(%selected, (1.0 - %wc));
-    TriggersPanelTriggerPopup.setValue(%trigger);
-    TriggersPanelStreamPopup.setValue(%stream);
+    %trigger = getWord(%selected, (%wc - 3.0));
+    %stream = getWord(%selected, (%wc - 1.0));
+    %trigger.setValue(TriggersPanelTriggerPopup);
+    %stream.setValue(TriggersPanelStreamPopup);
     commandToServer('getUrl', %stream, addTaggedString("GetTriggersPanelURLCallback"));
 };
 function setTriggerReportingState() {
@@ -151,22 +151,22 @@ function setShowOnlyMusicTriggers() {
     commandToServer('reportTriggers', $DevPref::reportTriggers);
 };
 function ClientCmdTriggerSet(%triggerDesc) {
-    %isMusicTrigger = (0.0 >= strstr(%triggerDesc, "MusicTrigger"));
+    %isMusicTrigger = (strstr(%triggerDesc, "MusicTrigger") >= 0.0);
     if (!($DevPref::showOnlyMusicTriggers)) {
     }
     %displayTrigger = %isMusicTrigger;
     if (%displayTrigger) {
         %idx = triggersPanelTextList.rowCount();
-        triggersPanelTextList.addRow(%idx, %triggerDesc, %idx);
+        %idx.addRow(triggersPanelTextList, %idx, %triggerDesc);
         if ($DevPref::autoOpenTriggers) {
             TriggersPanel.open();
         }
     }
 };
 function ClientCmdTriggerUnset(%triggerDesc) {
-    %idx = triggersPanelTextList.findTextIndex(%triggerDesc);
-    if ((0.0 >= %idx)) {
-        triggersPanelTextList.removeRow(%idx);
+    %idx = %triggerDesc.findTextIndex(triggersPanelTextList);
+    if ((%idx >= 0.0)) {
+        %idx.removeRow(triggersPanelTextList);
     }
     warn(getScopeName() @ "Couldn't match a trigger description to delete it! desc = " @ %triggerDesc);
 };
@@ -174,16 +174,16 @@ function ClientCmdTriggerSetByList(%set) {
     %num = getFieldCount(%set);
     %rowNum = triggersPanelTextList.rowCount();
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %desc = getField(%set, %n);
-        %isMusicTrigger = (0.0 >= strstr(%desc, "MusicTrigger"));
+        %isMusicTrigger = (strstr(%desc, "MusicTrigger") >= 0.0);
         if (!($DevPref::showOnlyMusicTriggers)) {
         }
         %displayTrigger = %isMusicTrigger;
         if (%displayTrigger) {
-            triggersPanelTextList.addRow((%rowNum + %n), %desc, (%rowNum + %n));
+            (%n + %rowNum).addRow(triggersPanelTextList, (%n + %rowNum), %desc);
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     if ($DevPref::autoOpenTriggers) {
         TriggersPanel.open();
@@ -192,23 +192,23 @@ function ClientCmdTriggerSetByList(%set) {
 function clientCmdGetMusicTriggerNamesCallback(%names) {
     %count = getFieldCount(%names);
     %i = 0;
-    if ((%count < %i)) {
+    while ((%i < %count)) {
         %name = getField(%names, %i);
         if (!(%name $= "")) {
-            TriggersPanelTriggerPopup.add(%name);
+            %name.add(TriggersPanelTriggerPopup);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function clientCmdGetStreamIDsCallback(%names) {
     %count = getFieldCount(%names);
     %i = 0;
-    if ((%count < %i)) {
+    while ((%i < %count)) {
         %name = getField(%names, %i);
         if (!(%name $= "")) {
-            TriggersPanelStreamPopup.add(%name);
+            %name.add(TriggersPanelStreamPopup);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function TriggersPanelStreamPopup::streamSelected(%this) {
@@ -224,12 +224,12 @@ function TriggersPanelTriggerPopup::triggerSelected(%this) {
     }
 };
 function clientCmdGetStreamIDCallback(%stream) {
-    TriggersPanelStreamPopup.setValue(%stream);
+    %stream.setValue(TriggersPanelStreamPopup);
     commandToServer('getUrl', %stream, addTaggedString("GetTriggersPanelURLCallback"));
 };
 function clientCmdGetTriggersPanelURLCallback(%url) {
     if ((%url $= "")) {
         %url = "<blank>";
     }
-    TriggersPanelURLText.setValue(%url);
+    %url.setValue(TriggersPanelURLText);
 };

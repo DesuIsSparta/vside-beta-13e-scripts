@@ -12,7 +12,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %isRentabot = rentabot_isRentabotName(%playerName);
     if (isObject(%playerClicked)) {
     }
-    %sameServer = (UserListFriends.get(%playerName).serverName $= $ServerName);
+    %sameServer = (%playerName.get(UserListFriends).serverName $= $ServerName);
     if (isObject(%playerClicked)) {
     }
     %isRealPlayer = 0;
@@ -23,8 +23,8 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %playerClicked.getAFK();
     %grey = "255 255 255 128";
     %white = "255 255 255 255";
-    %this.addScheme(1, %grey, %grey, %grey);
-    %this.addScheme(2, %white, %white, %white);
+    %grey.addScheme(%this, 1, %grey, %grey);
+    %white.addScheme(%this, 2, %white, %white);
     %schemeNormal = 0;
     %schemeDisabled = 1;
     %schemeProfile = 0;
@@ -44,46 +44,42 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %schemeInfo = 2;
     %n = -(1.0);
     if (%hasName) {
-        if (($player != %playerClicked)) {
-            %onlineHere = BuddyHudWin.isOnlineHereOrNotFavorite(%playerName);
+        if ((%playerClicked != $player)) {
+            %onlineHere = %playerName.isOnlineHereOrNotFavorite(BuddyHudWin);
             %ignorable = 1;
             if (isObject(%playerClicked)) {
-                %ignorable = !(%playerClicked.rolesPermissionCheckNoWarn("omnivocal"));
+                %ignorable = !("omnivocal".rolesPermissionCheckNoWarn(%playerClicked));
             }
-            if (isObject(%playerClicked)) {
-                if (!(getWearingItemWithMoreInfo(%playerClicked) $= "")) {
-                    %n = (1.0 + %n);
-                    %this.add("** Look At My Clothes **", , %schemeProfile);
-                }
+            if (isObject(%playerClicked) && !(getWearingItemWithMoreInfo(%playerClicked) $= "")) {
+                %n = (%n + 1.0);
+                %schemeProfile.add(%this, "** Look At My Clothes **", );
             }
-            %n = (1.0 + %n);
-            %this.add("View Profile", , %schemeProfile);
+            %n = (%n + 1.0);
+            %schemeProfile.add(%this, "View Profile", );
             if ((%friendStatus $= "friends")) {
-                %n = (1.0 + %n);
-                %this.add("Remove from Friends", , %schemeFavorite);
+                %n = (%n + 1.0);
+                %schemeFavorite.add(%this, "Remove from Friends", );
             }
             if ((%friendStatus $= "favorite")) {
-                %n = (1.0 + %n);
-                %this.add("Cancel Friend Request", , %schemeFavorite);
+                %n = (%n + 1.0);
+                %schemeFavorite.add(%this, "Cancel Friend Request", );
             }
             if ((%friendStatus $= "fan")) {
-                %n = (1.0 + %n);
-                %this.add("Accept Friend Request", , %schemeFavorite);
-                %n = (1.0 + %n);
-                %this.add("Decline Friend Request", , %schemeFavorite);
+                %n = (%n + 1.0);
+                %schemeFavorite.add(%this, "Accept Friend Request", );
+                %n = (%n + 1.0);
+                %schemeFavorite.add(%this, "Decline Friend Request", );
             }
             if ((%friendStatus $= "none")) {
-                %n = (1.0 + %n);
-                %this.add("Add to Friends", , %schemeFavorite);
+                %n = (%n + 1.0);
+                %schemeFavorite.add(%this, "Add to Friends", );
             }
             if (%onlineHere) {
-                %n = (1.0 + %n);
-                %this.add("Whisper", , %schemePM);
+                %n = (%n + 1.0);
+                %schemePM.add(%this, "Whisper", );
             }
             if (!(rentabot_isRentabotName(%playerName))) {
-                if (%sameServer) {
-                    if (!(%isNPC)) {
-                    }
+                if (%sameServer && !(%isNPC)) {
                 }
                 if ($StandAlone) {
                 }
@@ -91,19 +87,19 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!(%isIgnore)) {
                 }
-                if (geGiftingPanel.isInRange(%playerClicked)) {
+                if (%playerClicked.isInRange(geGiftingPanel)) {
                 }
                 if (!(%isIdle)) {
-                    %n = (1.0 + %n);
-                    %this.add("Two-Player Action..", , %schemeNormal);
+                    %n = (%n + 1.0);
+                    %schemeNormal.add(%this, "Two-Player Action..", );
                 }
-                if (!(geGiftingPanel.isInRange(%playerClicked))) {
-                    %n = (1.0 + %n);
-                    %this.add("Two-Player Action.. - Too Far!", , %schemeDisabled);
+                if (!(%playerClicked.isInRange(geGiftingPanel))) {
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Two-Player Action.. - Too Far!", );
                 }
                 if (%isIdle) {
-                    %n = (1.0 + %n);
-                    %this.add("Two-Player Action.. - Idle!", , %schemeDisabled);
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Two-Player Action.. - Idle!", );
                 }
             }
             if (!(rentabot_isRentabotName(%playerName))) {
@@ -113,22 +109,22 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!(%isIgnore)) {
                 }
-                if (geGiftingPanel.isInRange(%playerClicked)) {
+                if (%playerClicked.isInRange(geGiftingPanel)) {
                 }
                 if (!(%isIdle)) {
-                    %n = (1.0 + %n);
-                    %this.add("Give vCurrency", , %schemeNormal);
+                    %n = (%n + 1.0);
+                    %schemeNormal.add(%this, "Give vCurrency", );
                 }
-                if (!(geGiftingPanel.isInRange(%playerClicked))) {
-                    %n = (1.0 + %n);
-                    %this.add("Give vCurrency - Too Far!", , %schemeDisabled);
+                if (!(%playerClicked.isInRange(geGiftingPanel))) {
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Give vCurrency - Too Far!", );
                 }
                 if (%isIdle) {
-                    %n = (1.0 + %n);
-                    %this.add("Give vCurrency - Idle!", , %schemeDisabled);
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Give vCurrency - Idle!", );
                 }
             }
-            if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drink")) {
+            if ("drink".hasSkuWithAnyTags(SkuManager, $player.getActiveSKUs())) {
             }
             if (!(rentabot_isRentabotName(%playerName))) {
                 if (%sameServer) {
@@ -137,24 +133,24 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!(%isIgnore)) {
                 }
-                if (geGiftingPanel.isInRange(%playerClicked)) {
+                if (%playerClicked.isInRange(geGiftingPanel)) {
                 }
                 if (!(%isIdle)) {
-                    %n = (1.0 + %n);
-                    %this.add("Give Drink", , %schemeNormal);
+                    %n = (%n + 1.0);
+                    %schemeNormal.add(%this, "Give Drink", );
                 }
-                if (!(geGiftingPanel.isInRange(%playerClicked))) {
-                    %n = (1.0 + %n);
-                    %this.add("Give Drink - Too Far!", , %schemeDisabled);
+                if (!(%playerClicked.isInRange(geGiftingPanel))) {
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Give Drink - Too Far!", );
                 }
                 if (%isIdle) {
-                    %n = (1.0 + %n);
-                    %this.add("Give Drink - Idle!", , %schemeDisabled);
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Give Drink - Idle!", );
                 }
             }
-            %n = (1.0 + %n);
-            %this.add("Give Gift", , %schemeNormal);
-            if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drinkMaker")) {
+            %n = (%n + 1.0);
+            %schemeNormal.add(%this, "Give Gift", );
+            if ("drinkMaker".hasSkuWithAnyTags(SkuManager, $player.getActiveSKUs())) {
             }
             if (!(rentabot_isRentabotName(%playerName))) {
                 if (%sameServer) {
@@ -163,77 +159,71 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!(%isIgnore)) {
                 }
-                if (geGiftingPanel.isInRange(%playerClicked)) {
+                if (%playerClicked.isInRange(geGiftingPanel)) {
                 }
                 if (!(%isIdle)) {
-                    %n = (1.0 + %n);
-                    %this.add("Make Drink", , %schemeNormal);
+                    %n = (%n + 1.0);
+                    %schemeNormal.add(%this, "Make Drink", );
                 }
-                if (!(geGiftingPanel.isInRange(%playerClicked))) {
-                    %n = (1.0 + %n);
-                    %this.add("Make Drink - Too Far!", , %schemeDisabled);
+                if (!(%playerClicked.isInRange(geGiftingPanel))) {
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Make Drink - Too Far!", );
                 }
                 if (%isIdle) {
-                    %n = (1.0 + %n);
-                    %this.add("Make Drink - Idle!", , %schemeDisabled);
+                    %n = (%n + 1.0);
+                    %schemeDisabled.add(%this, "Make Drink - Idle!", );
                 }
             }
             if (isObject(%playerClicked)) {
             }
             if (%playerClicked.getCanHandleMusicRequest()) {
-                %n = (1.0 + %n);
-                %this.add("Request Music", , %schemeNormal);
+                %n = (%n + 1.0);
+                %schemeNormal.add(%this, "Request Music", );
             }
             if (isObject(%playerClicked)) {
-                %this.add("Applaud For Me!");
+                "Applaud For Me!".add(%this);
             }
             if ($player.isHostOrCohost()) {
-                if ($player.isHost()) {
-                    if (%isRealPlayer) {
-                        if (%playerClicked.isCohost()) {
-                            %n = (1.0 + %n);
-                            %this.add("This Space: Unmake Co-Host", , %schemeNormal);
-                        }
-                        %n = (1.0 + %n);
-                        %this.add("This Space: Make Co-Host", , %schemeNormal);
+                if ($player.isHost() && %isRealPlayer) {
+                    if (%playerClicked.isCohost()) {
+                        %n = (%n + 1.0);
+                        %schemeNormal.add(%this, "This Space: Unmake Co-Host", );
                     }
+                    %n = (%n + 1.0);
+                    %schemeNormal.add(%this, "This Space: Make Co-Host", );
                 }
                 if (%isRealPlayer) {
                 }
                 if (!(%playerClicked.isHost())) {
-                    %n = (1.0 + %n);
-                    %this.add("This Space: Kick", , %schemeNormal);
+                    %n = (%n + 1.0);
+                    %schemeNormal.add(%this, "This Space: Kick", );
                 }
                 if (!(%isRentabot)) {
                 }
                 if ($player.isHost()) {
-                    if ((-(1.0) == findField($CSBlockedList, %playerName))) {
-                        %n = (1.0 + %n);
-                        %this.add("This Space: Block", , %schemeNormal);
+                    if ((findField($CSBlockedList, %playerName) == -(1.0))) {
+                        %n = (%n + 1.0);
+                        %schemeNormal.add(%this, "This Space: Block", );
                     }
-                    %n = (1.0 + %n);
-                    %this.add("This Space: Unblock", , %schemeNormal);
+                    %n = (%n + 1.0);
+                    %schemeNormal.add(%this, "This Space: Unblock", );
                 }
                 if (isObject(%playerClicked)) {
                     if (CustomSpaceClient::isOwner()) {
                     }
                     if (%isRentabot) {
-                        %n = (1.0 + %n);
-                        %this.add("This Space: Customize", , %schemeNormal);
+                        %n = (%n + 1.0);
+                        %schemeNormal.add(%this, "This Space: Customize", );
                     }
                     if ($player.isHostOrCohost()) {
                     }
-                    if (!(%playerClicked.rolesPermissionCheckNoWarn("customspaceImmune"))) {
-                        if ($player.isHost()) {
-                            if (!(%playerClicked.isHost())) {
-                            }
-                        }
+                    if (!("customspaceImmune".rolesPermissionCheckNoWarn(%playerClicked)) && $player.isHost() && !(%playerClicked.isHost())) {
                     }
                     if (!(%playerClicked.isClassAIPlayer())) {
-                        %n = (1.0 + %n);
-                        %this.add("This Space: Summon", , %schemeNormal);
-                        %n = (1.0 + %n);
-                        %this.add("This Space: Respawn", , %schemeNormal);
+                        %n = (%n + 1.0);
+                        %schemeNormal.add(%this, "This Space: Summon", );
+                        %n = (%n + 1.0);
+                        %schemeNormal.add(%this, "This Space: Respawn", );
                     }
                 }
             }
@@ -241,11 +231,11 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if (%ignorable) {
                 if (%isIgnore) {
-                    %n = (1.0 + %n);
-                    %this.add("Unignore", , %schemeIgnore);
+                    %n = (%n + 1.0);
+                    %schemeIgnore.add(%this, "Unignore", );
                 }
-                %n = (1.0 + %n);
-                %this.add("Ignore", , %schemeIgnore);
+                %n = (%n + 1.0);
+                %schemeIgnore.add(%this, "Ignore", );
             }
             if ((%friendStatus $= "friends")) {
             }
@@ -255,15 +245,15 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 if (isObject(%playerClicked)) {
                 }
             }
-            if (($player != %playerClicked)) {
-                %n = (1.0 + %n);
-                %this.add("Teleport To", , %schemeTeleport);
+            if ((%playerClicked != $player)) {
+                %n = (%n + 1.0);
+                %schemeTeleport.add(%this, "Teleport To", );
             }
             if (%onlineHere) {
             }
             if (!(%isRentabot)) {
-                %n = (1.0 + %n);
-                %this.add("Report Abuse", , %schemeProfile);
+                %n = (%n + 1.0);
+                %schemeProfile.add(%this, "Report Abuse", );
             }
             if ($flowerGiftingEnabled) {
                 if (isObject(%playerClicked)) {
@@ -271,70 +261,68 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 if (%isNPC) {
                     %skuSelf = getSpecialSKU($player, "flower");
                     %skuThem = getSpecialSKU(%playerClicked, "flower");
-                    if (%playerClicked.hasActiveSKU(%skuThem)) {
+                    if (%skuThem.hasActiveSKU(%playerClicked)) {
                     }
-                    if (!($player.hasInventorySKU(%skuSelf))) {
-                        %n = (1.0 + %n);
-                        %this.add("Take Flower", , %schemeGifting);
+                    if (!(%skuSelf.hasInventorySKU($player))) {
+                        %n = (%n + 1.0);
+                        %schemeGifting.add(%this, "Take Flower", );
                     }
                 }
                 if (isObject(%playerClicked)) {
                 }
                 if (!(%isNPC)) {
                     %skuSelf = getSpecialSKU($player, "flower");
-                    if ($player.hasInventorySKU(%skuSelf)) {
-                        %n = (1.0 + %n);
-                        %this.add("Give Flower", , %schemeGifting);
+                    if (%skuSelf.hasInventorySKU($player)) {
+                        %n = (%n + 1.0);
+                        %schemeGifting.add(%this, "Give Flower", );
                     }
                 }
             }
             if (isObject(%playerClicked)) {
                 %helpmesku = getSpecialSKU(%playerClicked, "helpmebadge");
-                if (%playerClicked.hasActiveSKU(%helpmesku)) {
-                    %n = (1.0 + %n);
-                    %this.addIfPermitted("answerHelpMe", "Turn off Help Request", , %schemeNormal);
+                if (%helpmesku.hasActiveSKU(%playerClicked)) {
+                    %n = (%n + 1.0);
+                    %schemeNormal.addIfPermitted(%this, "answerHelpMe", "Turn off Help Request", );
                 }
             }
         }
-        if (isObject(%playerClicked)) {
-            if (!(getWearingItemWithMoreInfo(%playerClicked) $= "")) {
-                %n = (1.0 + %n);
-                %this.add("** Look At My Clothes **", , 0);
-            }
+        if (isObject(%playerClicked) && !(getWearingItemWithMoreInfo(%playerClicked) $= "")) {
+            %n = (%n + 1.0);
+            0.add(%this, "** Look At My Clothes **", );
         }
-        %n = (1.0 + %n);
-        %this.add("My Profile & Account (web)", , 0);
-        %n = (1.0 + %n);
-        %this.add("Edit Away Message", , 0);
+        %n = (%n + 1.0);
+        0.add(%this, "My Profile & Account (web)", );
+        %n = (%n + 1.0);
+        0.add(%this, "Edit Away Message", );
         if (isIdle()) {
-            %n = (1.0 + %n);
-            %this.add("Back From Idle", , 0);
+            %n = (%n + 1.0);
+            0.add(%this, "Back From Idle", );
         }
-        %n = (1.0 + %n);
-        %this.add("Go Idle", , 0);
+        %n = (%n + 1.0);
+        0.add(%this, "Go Idle", );
         if ($UserPref::Player::TeleportBlock) {
-            %n = (1.0 + %n);
-            %this.add("Allow Teleports", , 0);
+            %n = (%n + 1.0);
+            0.add(%this, "Allow Teleports", );
         }
-        %n = (1.0 + %n);
-        %this.add("Refuse Teleports", , 0);
+        %n = (%n + 1.0);
+        0.add(%this, "Refuse Teleports", );
         if ($UserPref::Player::WhisperBlock) {
-            %n = (1.0 + %n);
-            %this.add("Allow Whispers", , 0);
+            %n = (%n + 1.0);
+            0.add(%this, "Allow Whispers", );
         }
-        %n = (1.0 + %n);
-        %this.add("Refuse Whispers", , 0);
+        %n = (%n + 1.0);
+        0.add(%this, "Refuse Whispers", );
         if ($UserPref::Player::YellBlock) {
-            %n = (1.0 + %n);
-            %this.add("Allow Yells", , 0);
+            %n = (%n + 1.0);
+            0.add(%this, "Allow Yells", );
         }
-        %n = (1.0 + %n);
-        %this.add("Refuse Yells", , 0);
-        %n = (1.0 + %n);
-        %this.add("Respawn Me!", , 0);
+        %n = (%n + 1.0);
+        0.add(%this, "Refuse Yells", );
+        %n = (%n + 1.0);
+        0.add(%this, "Respawn Me!", );
         if (%playerClicked.isCohost()) {
-            %n = (1.0 + %n);
-            %this.add("Stop being Co-Host", , 0);
+            %n = (%n + 1.0);
+            0.add(%this, "Stop being Co-Host", );
         }
         %text = "";
         if (%playerClicked.isHost()) {
@@ -352,141 +340,141 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             %text = "Wear Cohost Badge";
         }
         if (!(%text $= "")) {
-            %n = (1.0 + %n);
-            %this.add(%text, , 0);
+            %n = (%n + 1.0);
+            0.add(%this, %text, );
         }
-        if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drinkMaker")) {
-            %n = (1.0 + %n);
-            %this.add("Make Drink", , %schemeNormal);
+        if ("drinkMaker".hasSkuWithAnyTags(SkuManager, $player.getActiveSKUs())) {
+            %n = (%n + 1.0);
+            %schemeNormal.add(%this, "Make Drink", );
         }
         if (%playerClicked.hasMicrophone()) {
-            %n = (1.0 + %n);
-            %this.add("Drop Microphone", , 0);
+            %n = (%n + 1.0);
+            0.add(%this, "Drop Microphone", );
         }
         if (gameMgrClient.areWeInspecting()) {
-            if (($player != %playerClicked)) {
-                %this.add("Invite to game");
+            if ((%playerClicked != $player)) {
+                "Invite to game".add(%this);
             }
             if (gameMgrClient.inCustomGame()) {
             }
             if (gameMgrClient.areWeHostOfInspectedGame()) {
-                %this.add("Change score");
-                %this.add("Change status");
+                "Change score".add(%this);
+                "Change status".add(%this);
             }
         }
-        %n = (1.0 + %n);
-        %this.addIfPermitted("snoop", "        --- mod/staff ---", , %schemeDisabled);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("manageUsersBasic", "Ban...", , %schemeNormal);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("manageUsersBasic", "Manage on Web", , %schemeNormal);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("track", "Fly To", , %schemeFlyTo);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("track", "Track", , %schemeTrack);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("manageUsersBasic", "Peek at GameState", , %schemeNormal);
+        %n = (%n + 1.0);
+        %schemeDisabled.addIfPermitted(%this, "snoop", "        --- mod/staff ---", );
+        %n = (%n + 1.0);
+        %schemeNormal.addIfPermitted(%this, "manageUsersBasic", "Ban...", );
+        %n = (%n + 1.0);
+        %schemeNormal.addIfPermitted(%this, "manageUsersBasic", "Manage on Web", );
+        %n = (%n + 1.0);
+        %schemeFlyTo.addIfPermitted(%this, "track", "Fly To", );
+        %n = (%n + 1.0);
+        %schemeTrack.addIfPermitted(%this, "track", "Track", );
+        %n = (%n + 1.0);
+        %schemeNormal.addIfPermitted(%this, "manageUsersBasic", "Peek at GameState", );
         if (isObject(%playerClicked)) {
-            if (%playerClicked.hasRoleString("snooped")) {
-                %n = (1.0 + %n);
-                %this.addIfPermitted("snoop", "unSnoop", , %schemeNormal);
+            if ("snooped".hasRoleString(%playerClicked)) {
+                %n = (%n + 1.0);
+                %schemeNormal.addIfPermitted(%this, "snoop", "unSnoop", );
             }
-            %n = (1.0 + %n);
-            %this.addIfPermitted("snoop", "Snoop", , %schemeNormal);
+            %n = (%n + 1.0);
+            %schemeNormal.addIfPermitted(%this, "snoop", "Snoop", );
         }
-        %n = (1.0 + %n);
-        %this.addIfPermitted("snoop", "Snoop", , %schemeNormal);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("snoop", "unSnoop", , %schemeNormal);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("track", "Teleport To", , %schemeTeleport);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("summon", "Respawn", , %schemeNormal);
-        %n = (1.0 + %n);
-        %this.addIfPermitted("summon", "Summon", , %schemeNormal);
+        %n = (%n + 1.0);
+        %schemeNormal.addIfPermitted(%this, "snoop", "Snoop", );
+        %n = (%n + 1.0);
+        %schemeNormal.addIfPermitted(%this, "snoop", "unSnoop", );
+        %n = (%n + 1.0);
+        %schemeTeleport.addIfPermitted(%this, "track", "Teleport To", );
+        %n = (%n + 1.0);
+        %schemeNormal.addIfPermitted(%this, "summon", "Respawn", );
+        %n = (%n + 1.0);
+        %schemeNormal.addIfPermitted(%this, "summon", "Summon", );
         if (CustomSpaceClient::isOwner()) {
         }
         if ($player.isHostOrCohost()) {
         }
-        if ($player.rolesPermissionCheckNoWarn("microphones")) {
+        if ("microphones".rolesPermissionCheckNoWarn($player)) {
         }
         if (isObject(%playerClicked)) {
             if (%playerClicked.hasMicrophone()) {
-                %n = (1.0 + %n);
-                %this.add("Revoke Microphone", , %schemeNormal);
+                %n = (%n + 1.0);
+                %schemeNormal.add(%this, "Revoke Microphone", );
             }
-            %n = (1.0 + %n);
-            %this.add("Give Microphone", , %schemeNormal);
+            %n = (%n + 1.0);
+            %schemeNormal.add(%this, "Give Microphone", );
         }
         if ($player.isDebugging()) {
-            %n = (1.0 + %n);
-            %this.add("        --- debug --- (" @ %playerClicked @ ")", , %schemeDisabled);
+            %n = (%n + 1.0);
+            %schemeDisabled.add(%this, "        --- debug --- (" @ %playerClicked @ ")", );
             if (%isNPC) {
             }
             if ($StandAlone) {
-                %n = (1.0 + %n);
-                %this.add("Set Height: really tall", , %schemeNormal);
-                %n = (1.0 + %n);
-                %this.add("Set Height: tall", , %schemeNormal);
-                %n = (1.0 + %n);
-                %this.add("Set Height: medium", , %schemeNormal);
-                %n = (1.0 + %n);
-                %this.add("Set Height: short", , %schemeNormal);
-                %n = (1.0 + %n);
-                %this.add("Set Height: really short", , %schemeNormal);
+                %n = (%n + 1.0);
+                %schemeNormal.add(%this, "Set Height: really tall", );
+                %n = (%n + 1.0);
+                %schemeNormal.add(%this, "Set Height: tall", );
+                %n = (%n + 1.0);
+                %schemeNormal.add(%this, "Set Height: medium", );
+                %n = (%n + 1.0);
+                %schemeNormal.add(%this, "Set Height: short", );
+                %n = (%n + 1.0);
+                %schemeNormal.add(%this, "Set Height: really short", );
             }
-            %n = (1.0 + %n);
-            %this.add("Relative Transform", , %schemeSaySumpn);
-            %n = (1.0 + %n);
-            %this.add("Body Mod", , %schemeSaySumpn);
-            %n = (1.0 + %n);
-            %this.add("Puppetry: Copy Skus", , %schemeSaySumpn);
-            %n = (1.0 + %n);
-            %this.add("Puppetry: Paste Skus", , %schemeSaySumpn);
+            %n = (%n + 1.0);
+            %schemeSaySumpn.add(%this, "Relative Transform", );
+            %n = (%n + 1.0);
+            %schemeSaySumpn.add(%this, "Body Mod", );
+            %n = (%n + 1.0);
+            %schemeSaySumpn.add(%this, "Puppetry: Copy Skus", );
+            %n = (%n + 1.0);
+            %schemeSaySumpn.add(%this, "Puppetry: Paste Skus", );
             if (isObject(pChat)) {
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Speak", , %schemeSaySumpn);
-            }
-            if (isObject(pChat)) {
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Whisper", , %schemeWhisper);
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: Speak", );
             }
             if (isObject(pChat)) {
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Yell", , %schemeSaySumpn);
+                %n = (%n + 1.0);
+                %schemeWhisper.add(%this, "Puppetry: Whisper", );
             }
             if (isObject(pChat)) {
-                %n = (1.0 + %n);
-                %this.add("Puppetry: SOS", , %schemeSaySumpn);
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: Yell", );
+            }
+            if (isObject(pChat)) {
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: SOS", );
             }
             if ((%playerClicked.getClassName() $= "AIPlayer")) {
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Dance", , %schemeSaySumpn);
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Emote", , %schemeSaySumpn);
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Be Still", , %schemeSaySumpn);
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Puppy", , %schemeSaySumpn);
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: Dance", );
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: Emote", );
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: Be Still", );
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: Puppy", );
             }
             if (isObject(pChat)) {
-                %n = (1.0 + %n);
-                %this.add("Puppetry: Badge", , %schemeSaySumpn);
+                %n = (%n + 1.0);
+                %schemeSaySumpn.add(%this, "Puppetry: Badge", );
             }
-            %n = (1.0 + %n);
-            %this.add("Puppetry: Dance With", , %schemeSaySumpn);
-            %n = (1.0 + %n);
-            %this.add("Puppetry: Kiss", , %schemeSaySumpn);
+            %n = (%n + 1.0);
+            %schemeSaySumpn.add(%this, "Puppetry: Dance With", );
+            %n = (%n + 1.0);
+            %schemeSaySumpn.add(%this, "Puppetry: Kiss", );
         }
     }
     %title = %playerName;
-    if (($player == %playerClicked)) {
+    if ((%playerClicked == $player)) {
         %title = %title @ " " @ "(this is you)";
     }
     if (%isNPC) {
         %title = %title @ " " @ "(a bot)";
     }
-    %this.setText(%title);
+    %title.setText(%this);
     gSetField(%this, "playerName", %playerName);
     gSetField(%this, "player", %playerClicked);
     gSetField(%this, "aimName", "");
@@ -494,29 +482,29 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
 function PlayerContextMenu::initForAIM(%this, %aimName) {
     %this.clear();
     %n = -(1.0);
-    %n = (1.0 + %n);
-    %this.add("Message", , 0);
+    %n = (%n + 1.0);
+    0.add(%this, "Message", );
     if (showInviteFriend()) {
-        %n = (1.0 + %n);
-        %this.add("Send Invite", , 0);
+        %n = (%n + 1.0);
+        0.add(%this, "Send Invite", );
     }
-    %this.setText(%aimName);
+    %aimName.setText(%this);
     gSetField(%this, "playerName", "");
     gSetField(%this, "player", "");
     gSetField(%this, "aimName", %aimName);
 };
 function PlayerContextMenu::addIfPermitted(%this, %permName, %text, %n, %scheme) {
-    if ($player.rolesPermissionCheckNoWarn(%permName)) {
+    if (%permName.rolesPermissionCheckNoWarn($player)) {
         if ((%permName $= "answerHelpMe")) {
             %skuGuide = getSpecialSKU($player, "guidebadge");
             %skuSGuide = getSpecialSKU($player, "seniorguidebadge");
-            if (!($player.hasActiveSKU(%skuGuide))) {
+            if (!(%skuGuide.hasActiveSKU($player))) {
             }
-            if (!($player.hasActiveSKU(%skuSGuide))) {
+            if (!(%skuSGuide.hasActiveSKU($player))) {
                 return;
             }
         }
-        %this.add(%text, %n, %scheme);
+        %scheme.add(%this, %text, %n);
     }
 };
 function PlayerContextMenu::initWithPlayerName(%this, %playerName) {
@@ -524,11 +512,11 @@ function PlayerContextMenu::initWithPlayerName(%this, %playerName) {
         %playerObj = $player;
     }
     %playerObj = 0;
-    %this.init(%playerName, BuddyHudWin.getFriendStatus(%playerName), BuddyHudWin.getIgnoreStatus(%playerName), %playerObj);
+    %playerObj.init(%this, %playerName, %playerName.getFriendStatus(BuddyHudWin), %playerName.getIgnoreStatus(BuddyHudWin));
 };
 function PlayerContextMenu::initWithPlayer(%this, %player) {
     %playerName = %player.getShapeName();
-    %this.init(%playerName, BuddyHudWin.getFriendStatus(%playerName), BuddyHudWin.getIgnoreStatus(%playerName), %player);
+    %player.init(%this, %playerName, %playerName.getFriendStatus(BuddyHudWin), %playerName.getIgnoreStatus(BuddyHudWin));
 };
 function PlayerContextMenu::onSelect(%this, %unused, %text) {
     %player = gGetField(%this, "player");
@@ -559,10 +547,10 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
             openUserWhisper(%playerName);
         }
         if ((%text $= "Two-Player Action..")) {
-            TwoPlayerEmotesPanel.open(%playerName);
+            %playerName.open(TwoPlayerEmotesPanel);
         }
         if ((%text $= "Give vCurrency")) {
-            geGiftingPanel.open(%playerName, "initiate");
+            "initiate".open(geGiftingPanel, %playerName);
         }
         if ((%text $= "Give Drink")) {
             drinks_confirmInitiateGift(%playerName);
@@ -578,13 +566,13 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
             gotoWebPage($Net::MusicURL);
         }
         if ((%text $= "Invite to game")) {
-            gameMgrClient.invitePlayerToInspectedGame(%playerName);
+            %playerName.invitePlayerToInspectedGame(gameMgrClient);
         }
         if ((%text $= "Change score")) {
-            gameMgrClient.doHostPopupChangeScore(%playerName);
+            %playerName.doHostPopupChangeScore(gameMgrClient);
         }
         if ((%text $= "Change status")) {
-            gameMgrClient.doHostPopupChangeStatus(%playerName);
+            %playerName.doHostPopupChangeStatus(gameMgrClient);
         }
         %handled = 0;
     }
@@ -657,26 +645,26 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
             setIdle(0);
         }
         if ((%text $= "Allow Teleports")) {
-            TeleportBlockCheckBox.setValue(0);
+            0.setValue(TeleportBlockCheckBox);
             doTeleportBlock();
         }
         if ((%text $= "Refuse Teleports")) {
-            TeleportBlockCheckBox.setValue(1);
+            1.setValue(TeleportBlockCheckBox);
             doTeleportBlock();
         }
         if ((%text $= "Allow Whispers")) {
-            WhisperBlockCheckBox.setValue(0);
+            0.setValue(WhisperBlockCheckBox);
             doWhisperBlock(1);
         }
         if ((%text $= "Refuse Whispers")) {
-            WhisperBlockCheckBox.setValue(1);
+            1.setValue(WhisperBlockCheckBox);
             doWhisperBlock(1);
         }
         if ((%text $= "Allow Yells")) {
-            YellBlockCheckBox.setValue(0);
+            0.setValue(YellBlockCheckBox);
         }
         if ((%text $= "Refuse Yells")) {
-            YellBlockCheckBox.setValue(1);
+            1.setValue(YellBlockCheckBox);
         }
         if ((%text $= "Respawn Me!")) {
             doRespawnMe();
@@ -696,27 +684,27 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
         %handled = 1;
         if ((%text $= "Set Height: really tall")) {
             if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(1.15);
+                1.15.setHeight(%playerName.get(PlayerDict));
             }
         }
         if ((%text $= "Set Height: tall")) {
             if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(1.075);
+                1.075.setHeight(%playerName.get(PlayerDict));
             }
         }
         if ((%text $= "Set Height: medium")) {
             if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(1);
+                1.setHeight(%playerName.get(PlayerDict));
             }
         }
         if ((%text $= "Set Height: short")) {
             if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(0.93);
+                0.93.setHeight(%playerName.get(PlayerDict));
             }
         }
         if ((%text $= "Set Height: really short")) {
             if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(0.86);
+                0.86.setHeight(%playerName.get(PlayerDict));
             }
         }
         if ((%text $= "Puppetry: Speak")) {
@@ -813,10 +801,10 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
             doMicrophoneGiveOrRevoke(%playerName, 1);
         }
         if ((%text $= "Message")) {
-            AIMConvManager.talkTo(%aimName);
+            %aimName.talkTo(AIMConvManager);
         }
         if ((%text $= "Send Invite")) {
-            AimInviteDialog.open(%aimName);
+            %aimName.open(AimInviteDialog);
         }
         %handled = 0;
     }
@@ -825,14 +813,14 @@ function PlayerContextMenu::showComingSoon(%this, %featureName) {
     MessageBoxOK(%featureName @ " " @ "- Coming Soon!", "The" @ " " @ %featureName @ " " @ "feature will be here soon!", "");
 };
 function PlayGui::onRMBPlayer(%this, %obj) {
-    PlayerContextMenu.initWithPlayer(%obj);
-    PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
+    %obj.initWithPlayer(PlayerContextMenu);
+    Canvas.getCursorPos().showAtPoint(PlayerContextMenu);
 };
 function BuddyHudRequestsList::onRightMouseUp(%this) {
-    %text = stripUnprintables(%this.getRowText(%this.getMouseOverRow()));
+    %text = stripUnprintables(%this.getMouseOverRow().getRowText(%this));
     if (!(%text $= "")) {
-        PlayerContextMenu.initWithPlayerName(%text);
-        PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
+        %text.initWithPlayerName(PlayerContextMenu);
+        Canvas.getCursorPos().showAtPoint(PlayerContextMenu);
     }
     warn("Got empty player name from right click on FavoritesList");
 };
@@ -860,48 +848,48 @@ function getWearingItemWithMoreInfo(%player) {
         $InspectSkusMap = new StringMap("");;
         0;
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add($InspectSkusMap);
+            $InspectSkusMap.add(MissionCleanup);
         }
-        $InspectSkusMap.put(22228, "neptune");
-        $InspectSkusMap.put(22229, "neptune");
-        $InspectSkusMap.put(32261, "rtv");
-        $InspectSkusMap.put(32262, "rtv");
-        $InspectSkusMap.put(22212, "masquerade");
-        $InspectSkusMap.put(22213, "masquerade");
-        $InspectSkusMap.put(32259, "viper");
-        $InspectSkusMap.put(32260, "viper");
-        $InspectSkusMap.put(22210, "wireless");
-        $InspectSkusMap.put(22211, "wireless");
-        $InspectSkusMap.put(32257, "visionvamp");
-        $InspectSkusMap.put(32258, "visionvamp");
-        $InspectSkusMap.put(22230, "crown");
-        $InspectSkusMap.put(22231, "crown");
-        $InspectSkusMap.put(32274, "cosmicyoga");
-        $InspectSkusMap.put(32275, "cosmicyoga");
-        $InspectSkusMap.put(22214, "royalflush");
-        $InspectSkusMap.put(22215, "royalflush");
-        $InspectSkusMap.put(32255, "warrior");
-        $InspectSkusMap.put(32256, "warrior");
+        "neptune".put($InspectSkusMap, 22228);
+        "neptune".put($InspectSkusMap, 22229);
+        "rtv".put($InspectSkusMap, 32261);
+        "rtv".put($InspectSkusMap, 32262);
+        "masquerade".put($InspectSkusMap, 22212);
+        "masquerade".put($InspectSkusMap, 22213);
+        "viper".put($InspectSkusMap, 32259);
+        "viper".put($InspectSkusMap, 32260);
+        "wireless".put($InspectSkusMap, 22210);
+        "wireless".put($InspectSkusMap, 22211);
+        "visionvamp".put($InspectSkusMap, 32257);
+        "visionvamp".put($InspectSkusMap, 32258);
+        "crown".put($InspectSkusMap, 22230);
+        "crown".put($InspectSkusMap, 22231);
+        "cosmicyoga".put($InspectSkusMap, 32274);
+        "cosmicyoga".put($InspectSkusMap, 32275);
+        "royalflush".put($InspectSkusMap, 22214);
+        "royalflush".put($InspectSkusMap, 22215);
+        "warrior".put($InspectSkusMap, 32255);
+        "warrior".put($InspectSkusMap, 32256);
     }
     %skusList = %player.getActiveSKUs();
     %num = getWordCount(%skusList);
     %inspectTextDir = "projects/common/inventoryInspect/";
     %i = 0;
-    if ((%num < %i)) {
+    while ((%i < %num)) {
         %skunum = getWord(%skusList, %i);
-        %mapped = $InspectSkusMap.get(%skunum);
+        %mapped = %skunum.get($InspectSkusMap);
         if (!(%mapped $= "")) {
             %skunum = %mapped;
         }
         %inspectFile = %inspectTextDir @ %skunum @ ".txt";
         %fo = new FileObject("");;
         0;
-        if (%fo.openForRead(%inspectFile)) {
+        if (%inspectFile.openForRead(%fo)) {
             %fo.delete();
             return %inspectFile;
         }
         %fo.delete();
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     return "";
 };
@@ -910,11 +898,11 @@ function doLookAtMyClothes(%player) {
     %file = getWearingItemWithMoreInfo(%player);
     if (!(%file $= "")) {
         echo("looking closer at player's clothes");
-        MLScrollInspectPanel.OnInspect(%file);
+        %file.OnInspect(MLScrollInspectPanel);
     }
 };
 function doCheerFor(%playerName) {
-    ApplauseMeterGui.open("applause", %playerName);
+    %playerName.open(ApplauseMeterGui, "applause");
 };
 function doTurnOffHelpme(%playerName) {
     commandToServer('TurnOffHelpMeMode', %playerName);

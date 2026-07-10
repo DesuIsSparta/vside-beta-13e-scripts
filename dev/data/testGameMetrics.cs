@@ -1,10 +1,10 @@
 DeclareTestSuite("TestSuite_GameMetrics");
 function TestSuite_GameMetrics::setup(%this) {
-    %this.addTestCase("TEST_GAMEMETRICS_BASICS");
+    "TEST_GAMEMETRICS_BASICS".addTestCase(%this);
 };
 function TEST_GAMEMETRICS_BASICS::runTest(%this) {
     if (!($StandAlone)) {
-        %this.assert(0, "this test must be run in $standalone");
+        "this test must be run in $standalone".assert(%this, 0);
         return;
     }
     %player = $StandaloneServerPlayer;
@@ -30,5 +30,5 @@ function TEST_GAMEMETRICS_BASICS::runTest(%this) {
     GMetrics::GamePlayStopEvent("TEST", "TEST_GAMEMETRICS_BASICS_SIX", %player, 10000);
     GMetrics::GamePlayStartEvent("TEST", "TEST_GAMEMETRICS_BASICS_SIX", %player);
     GMetrics::GamePlayStopEvent("TEST", "TEST_GAMEMETRICS_BASICS_SIX", %player, 10000);
-    %this.assert(0, "you will have to check the gameMetrics.log in a short time to see if this test really worked");
+    "you will have to check the gameMetrics.log in a short time to see if this test really worked".assert(%this, 0);
 };

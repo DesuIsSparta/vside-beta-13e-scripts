@@ -6,7 +6,7 @@ function testLogin() {
         joinAction = "joinAction";
     };
     %testLogin.init();
-    %testLogin.doLogin("NewVenezia");
+    "NewVenezia".doLogin(%testLogin);
 };
 function joinAction() {
     logout();

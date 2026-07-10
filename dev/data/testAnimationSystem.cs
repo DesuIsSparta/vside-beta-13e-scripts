@@ -3,8 +3,8 @@ function doAnimationSystemSuiteTest() {
 };
 DeclareTestSuite("TestSuite_AnimationSystemSmokeTests");
 function TestSuite_AnimationSystemSmokeTests::setup(%this) {
-    %this.addTestCaseDelayed("TEST_PlayAnimIdleB", 1000);
-    %this.addTestCaseDelayed("TEST_PlayAnimIdleA", 1000);
+    1000.addTestCaseDelayed(%this, "TEST_PlayAnimIdleB");
+    1000.addTestCaseDelayed(%this, "TEST_PlayAnimIdleA");
 };
 function TEST_PlayAnimIdleB::runTest(%this) {
     %this.animName = "idl1b";
@@ -13,7 +13,7 @@ function TEST_PlayAnimIdleB::runTest(%this) {
 };
 function TEST_PlayAnimIdleB::delayedEval(%this) {
     %curr = $player.getCurrActionName();
-    %this.assertSameString(%curr, %this.expectedAnimName, "expected the player to be playing the animation by now");
+    "expected the player to be playing the animation by now".assertSameString(%this, %curr, %this.expectedAnimName);
 };
 function TEST_PlayAnimIdleA::runTest(%this) {
     %this.animName = "idl1a";
@@ -22,5 +22,5 @@ function TEST_PlayAnimIdleA::runTest(%this) {
 };
 function TEST_PlayAnimIdleA::delayedEval(%this) {
     %curr = $player.getCurrActionName();
-    %this.assertSameString(%curr, %this.expectedAnimName, "expected the player to be playing the animation by now");
+    "expected the player to be playing the animation by now".assertSameString(%this, %curr, %this.expectedAnimName);
 };

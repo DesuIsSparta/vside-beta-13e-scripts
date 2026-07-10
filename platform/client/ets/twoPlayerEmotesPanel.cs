@@ -1,13 +1,13 @@
 function TwoPlayerEmotesPanel::open(%this, %playerName) {
-    PlayGui.ensureAdded(%this);
-    %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
+    %this.ensureAdded(PlayGui);
+    1.setVisible(%this);
+    %this.focusAndRaise(PlayGui);
     %this.playerName = %playerName;
-    TwoPlayerEmotesText.setText("Target: " @ %playerName);
+    "Target: " @ %playerName.setText(TwoPlayerEmotesText);
     %this.refresh();
 };
 function TwoPlayerEmotesPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
     return 1;
 };
@@ -15,24 +15,24 @@ function TwoPlayerEmotesPanel::refresh(%this) {
     %width = getWord(%this.getExtent(), 0);
     %height = getWord(%this.getExtent(), 1);
     %cursorPos = Canvas.getCursorPos();
-    %targetX = (20.0 - getWord(%cursorPos, 0));
-    %targetY = (5.0 - getWord(%cursorPos, 1));
+    %targetX = (getWord(%cursorPos, 0) - 20.0);
+    %targetY = (getWord(%cursorPos, 1) - 5.0);
     %pos = onscreenCoordinates(%targetX, %targetY, %width, %height);
     %posX = getWord(%pos, 0);
     %posY = getWord(%pos, 1);
-    %this.reposition(%posX, %posY);
+    %posY.reposition(%this, %posX);
     // unhandled opcode 308 at 0x00000131
     %list.clear();
     %anims = getAllUserTriggerableCoAnims();
     %count = getFieldCount(%anims);
     %i = 0;
-    if ((%count < %i)) {
-        %list.addRow(%i, getField(%anims, %i));
-        %i = (1.0 + %i);
+    while ((%i < %count)) {
+        getField(%anims, %i).addRow(%list, %i);
+        %i = (%i + 1.0);
     }
 };
 function TwoPlayerEmotesList::onSelect(%this, %id, %text) {
-    if ((0.0 >= %id)) {
+    if ((%id >= 0.0)) {
         doCoAnim(%text, TwoPlayerEmotesPanel, %this.playerName);
         TwoPlayerEmotesPanel.close();
     }

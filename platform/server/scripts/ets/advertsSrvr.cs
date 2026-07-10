@@ -18,7 +18,7 @@ function checkNewAdLogFile() {
     }
     %minsLog = getSubStr($adLogCreationTimestamp, 0, 8);
     %minsNow = getSubStr(getTimeStamp(), 0, 8);
-    if ((0.0 > strcmp(%minsNow, %minsLog))) {
+    if ((strcmp(%minsNow, %minsLog) > 0.0)) {
         $adLogFileName = "";
         $adLogCreationTimestamp = "";
     }
@@ -35,12 +35,12 @@ function initAdLogFile() {
     $adLogCreationTimestamp = %ts;
     %file = new FileObject("");;
     0;
-    if (%file.openForAppend($adLogFileName)) {
-        %file.writeLine("# Evil Twin Ads Log File");
-        %file.writeLine("#" @ " " @ $adLogFileName);
-        %file.writeLine("#" @ " " @ %ts);
-        %file.writeLine("# Action: <tab> timestamp <tab> playername <tab> imagename <tab> (image-click-coords) <tab> (advert transform) <tab> (advert scale)");
-        %file.writeLine("");
+    if ($adLogFileName.openForAppend(%file)) {
+        "# Evil Twin Ads Log File".writeLine(%file);
+        "#" @ " " @ $adLogFileName.writeLine(%file);
+        "#" @ " " @ %ts.writeLine(%file);
+        "# Action: <tab> timestamp <tab> playername <tab> imagename <tab> (image-click-coords) <tab> (advert transform) <tab> (advert scale)".writeLine(%file);
+        "".writeLine(%file);
         %file.close();
         echo("AdLog started:" @ " " @ $adLogFileName);
     }
@@ -52,8 +52,8 @@ function appendAdLogLine(%line) {
     %fn = initAdLogFile();
     %file = new FileObject("");;
     0;
-    if (%file.openForAppend(%fn)) {
-        %file.writeLine(%line);
+    if (%fn.openForAppend(%file)) {
+        %line.writeLine(%file);
         %file.close();
     }
     echo("Error opening logfile:" @ " " @ %fn);
@@ -63,7 +63,7 @@ function appendAdLogLine(%line) {
 };
 function serverCmdAdvertClick(%client, %ghostIndexClnt, %pt) {
     %playerName = detag(%client.Player.getShapeName());
-    %obj = %client.resolveObjectFromGhostIndex(%ghostIndexClnt);
+    %obj = %ghostIndexClnt.resolveObjectFromGhostIndex(%client);
     %tex = %obj.getSkinName();
     %line = "AdClick: ";
     %line = %line @ "\t" @ getTimeStamp();
@@ -94,68 +94,68 @@ function AdGroup::addAd(%this, %texture, %title, %url) {
     %this.textures = %texture @ %this.num;
     %this.titles = %title @ %this.num;
     %this.urls = %url @ %this.num;
-    %this.num = (1.0 + %this.num);
+    %this.num = (%this.num + 1.0);
     return;
 };
 function AdGroup::addDTSGroup(%this, %grp) {
     %this.dtss = %grp @ %this.dtsNum;
-    %this.dtsNum = (1.0 + %this.dtsNum);
+    %this.dtsNum = (%this.dtsNum + 1.0);
     return;
 };
 function AdGroup::doSwap(%this) {
-    %this.offset = (1.0 + %this.offset);
-    if ((%this.num >= %this.offset)) {
+    %this.offset = (%this.offset + 1.0);
+    if ((%this.offset >= %this.num)) {
         %this.offset = 0;
     }
     %adNum = %this.offset;
     %numAds = 0;
     %gn = 0;
-    if ((%this.dtsNum < %gn)) {
+    while ((%gn < %this.dtsNum)) {
         %dtsGrp = %this.dtss;
         %gn;
         %dtsNum = %dtsGrp.getCount();
-        %numAds = (%dtsNum + %numAds);
+        %numAds = (%numAds + %dtsNum);
         %dn = 0;
-        if ((%dtsNum < %dn)) {
-            %dts = %dtsGrp.getObject(%dn);
+        while ((%dn < %dtsNum)) {
+            %dts = %dn.getObject(%dtsGrp);
             if ((%this.sort $= "random")) {
-                %adNum = getRandom((1.0 - %this.num));
-                if ((%dts.prevAdNum == %adNum)) {
-                    %adNum = getRandom((1.0 - %this.num));
+                %adNum = getRandom((%this.num - 1.0));
+                if ((%adNum == %dts.prevAdNum)) {
+                    %adNum = getRandom((%this.num - 1.0));
                 }
-                if ((%dts.prevAdNum == %adNum)) {
-                    %adNum = getRandom((1.0 - %this.num));
+                if ((%adNum == %dts.prevAdNum)) {
+                    %adNum = getRandom((%this.num - 1.0));
                 }
                 %dts.prevAdNum = %adNum;
             }
-            %dts.setSkinName(%adNum, %this.textures);
-            %dts.setTitle(%adNum, %this.titles);
-            %dts.setBasicURL(%adNum, %this.urls);
-            %adNum = (1.0 + %adNum);
-            if ((%this.num >= %adNum)) {
+            %this.textures.setSkinName(%dts, %adNum);
+            %this.titles.setTitle(%dts, %adNum);
+            %this.urls.setBasicURL(%dts, %adNum);
+            %adNum = (%adNum + 1.0);
+            if ((%adNum >= %this.num)) {
                 %adNum = 0;
             }
-            %dn = (1.0 + %dn);
+            %dn = (%dn + 1.0);
         }
-        %gn = (1.0 + %gn);
-        (%dtsNum < %dn);
+        %gn = (%gn + 1.0);
+        (%dn < %dtsNum);
     }
     return %numAds;
 };
 function AdManager::doSwap(%this) {
     %numAds = 0;
     %g = 0;
-    if ((%this.adGrpsNum < %g)) {
-        %numAds = (%g.doSwap(%this.adGrps) + %numAds);
-        %g = (1.0 + %g);
+    while ((%g < %this.adGrpsNum)) {
+        %numAds = (%numAds + %this.adGrps.doSwap(%g));
+        %g = (%g + 1.0);
     }
     return %numAds;
 };
 function AdManager::think(%this) {
-    if ((0.0 > %this.doSwap())) {
+    if ((%this.doSwap() > 0.0)) {
     }
-    if ((0.0 > %this.periodSecs)) {
-        %this.schedule((1000.0 * %this.periodSecs));
+    if ((%this.periodSecs > 0.0)) {
+        (%this.periodSecs * 1000.0).schedule(%this);
     }
     echo("Putting AdManager to sleep..");
     return think;
@@ -167,6 +167,6 @@ function AdManager::newAdGroup(%this) {
     };
     %adGrp.init();
     %this.adGrps = %adGrp @ %this.adGrpsNum;
-    %this.adGrpsNum = (1.0 + %this.adGrpsNum);
+    %this.adGrpsNum = (%this.adGrpsNum + 1.0);
     return %adGrp;
 };

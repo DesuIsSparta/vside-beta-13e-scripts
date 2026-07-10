@@ -1,6 +1,6 @@
 function doAIMSignIn() {
     $Player::AIMName = trim($Player::AIMName);
-    AIMScreenNameField.setValue($Player::AIMName);
+    $Player::AIMName.setValue(AIMScreenNameField);
     if (!($Player::AIMName $= "")) {
         if ($UserPref::AIM::RememberMe) {
             $UserPref::Player::AIMName = $Player::AIMName;
@@ -8,8 +8,8 @@ function doAIMSignIn() {
         }
         $UserPref::Player::AIMName = "";
         $UserPref::Player::AIMPassword = "";
-        AIMSignInButton.setActive(0);
-        if ((0.0 == aimGetState())) {
+        0.setActive(AIMSignInButton);
+        if ((aimGetState() == 0.0)) {
             warn("Tried connecting to AIM when already connected.  Disconnecting.");
             aimDisconnect();
         }
@@ -17,91 +17,91 @@ function doAIMSignIn() {
     }
 };
 function doAIMSignOff() {
-    %aimTab = BuddyHudTabs.getTabWithName("AIM");
-    %aimTab.aimListScroll.setVisible(0);
-    %aimTab.signOffButton.setVisible(0);
-    %aimTab.inviteButton.setVisible(0);
-    %aimTab.loginFrame.setVisible(1);
-    AIMSignInButton.setActive(1);
+    %aimTab = "AIM".getTabWithName(BuddyHudTabs);
+    0.setVisible(%aimTab.aimListScroll);
+    0.setVisible(%aimTab.signOffButton);
+    0.setVisible(%aimTab.inviteButton);
+    1.setVisible(%aimTab.loginFrame);
+    1.setActive(AIMSignInButton);
     aimDisconnect();
 };
 function silentAIMDisconnect() {
-    if ((0.0 == aimGetState())) {
+    if ((aimGetState() == 0.0)) {
         aimDisconnect();
     }
 };
 function aimLoginCallback() {
-    %aimTab = BuddyHudTabs.getTabWithName("AIM");
-    %aimTab.aimListScroll.setVisible(1);
-    %aimTab.signOffButton.setVisible(1);
-    %aimTab.inviteButton.setVisible(1);
-    %aimTab.loginFrame.setVisible(0);
+    %aimTab = "AIM".getTabWithName(BuddyHudTabs);
+    1.setVisible(%aimTab.aimListScroll);
+    1.setVisible(%aimTab.signOffButton);
+    1.setVisible(%aimTab.inviteButton);
+    0.setVisible(%aimTab.loginFrame);
     AIMConvManager.Initialize();
 };
 function onAIMStateChange(%state) {
-    if ((0.0 == %state)) {
-        if ((AIMLoginFrame == %aimTab.AIMState)) {
-            AIMSignInButton.setActive(1);
+    if ((%state == 0.0)) {
+        if ((%aimTab.AIMState == AIMLoginFrame)) {
+            1.setActive(AIMSignInButton);
             MessageBoxOK("AIM Login Failed", 200.0, "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
         }
     }
-    if ((50.0 == %state)) {
-        AIMSignInButton.setActive(1);
+    if ((%state == 50.0)) {
+        1.setActive(AIMSignInButton);
         MessageBoxOK("AIM Disconnected", , "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
     }
-    if ((100.0 == %state)) {
+    if ((%state == 100.0)) {
         echo("AIM connecting");
     }
-    if ((150.0 == %state)) {
+    if ((%state == 150.0)) {
         echo("AIM challenging");
     }
-    if ((200.0 == %state)) {
+    if ((%state == 200.0)) {
         echo("AIM validating");
     }
-    if ((210.0 == %state)) {
+    if ((%state == 210.0)) {
         echo("AIM secure ID");
     }
-    if ((211.0 == %state)) {
+    if ((%state == 211.0)) {
         echo("AIM secure ID next key");
     }
-    if ((300.0 == %state)) {
+    if ((%state == 300.0)) {
         echo("AIM transferring");
     }
-    if ((350.0 == %state)) {
+    if ((%state == 350.0)) {
         echo("AIM negotiating");
     }
-    if ((400.0 == %state)) {
+    if ((%state == 400.0)) {
         echo("AIM starting");
     }
-    if ((500.0 == %state)) {
+    if ((%state == 500.0)) {
         echo("AIM online");
         aimLoginCallback();
     }
     %aimTab.AIMState = %state @ AIMLoginFrame;
-    (600.0 == %state);
+    (%state == 600.0);
 };
 function AIMLoginFrame::setup(%this) {
     if ($UserPref::AIM::RememberMe) {
-        AIMScreenNameField.setText($UserPref::Player::AIMName);
-        AIMPasswordField.setText($UserPref::Player::AIMPassword);
+        $UserPref::Player::AIMName.setText(AIMScreenNameField);
+        $UserPref::Player::AIMPassword.setText(AIMPasswordField);
     }
-    AIMScreenNameField.setText("");
-    AIMPasswordField.setText("");
+    "".setText(AIMScreenNameField);
+    "".setText(AIMPasswordField);
     %this.update();
 };
 function AIMLoginFrame::update(%this) {
     if (AIMRememberMeCheckbox.getValue()) {
-        AIMSavePasswordCheckbox.setActive(1);
+        1.setActive(AIMSavePasswordCheckbox);
         if (AIMSavePasswordCheckbox.getValue()) {
-            AIMAutoSigninCheckbox.setActive(1);
+            1.setActive(AIMAutoSigninCheckbox);
         }
-        AIMAutoSigninCheckbox.setActive(0);
-        AIMAutoSigninCheckbox.setValue(0);
+        0.setActive(AIMAutoSigninCheckbox);
+        0.setValue(AIMAutoSigninCheckbox);
     }
-    AIMSavePasswordCheckbox.setActive(0);
-    AIMSavePasswordCheckbox.setValue(0);
-    AIMAutoSigninCheckbox.setActive(0);
-    AIMAutoSigninCheckbox.setValue(0);
+    0.setActive(AIMSavePasswordCheckbox);
+    0.setValue(AIMSavePasswordCheckbox);
+    0.setActive(AIMAutoSigninCheckbox);
+    0.setValue(AIMAutoSigninCheckbox);
     if (AIMRememberMeCheckbox.getValue()) {
         $UserPref::Player::AIMName = $Player::AIMName;
     }

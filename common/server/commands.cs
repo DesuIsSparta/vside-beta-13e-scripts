@@ -21,7 +21,7 @@ function serverCmdSADSetPassword(%client, %password) {
 function serverCmdTeamMessageSent(%client, %text) {
     error("TeamMessageSent not supported");
     return;
-    if (($Pref::Server::MaxChatLen >= strlen(%text))) {
+    if ((strlen(%text) >= $Pref::Server::MaxChatLen)) {
         %text = getSubStr(%text, 0, $Pref::Server::MaxChatLen);
     }
     chatMessageTeam(%client, %client.team, '\x04%1: %2', %client.name, %text);

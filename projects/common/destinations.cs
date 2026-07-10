@@ -9,20 +9,20 @@ function DestinationList::AddDestinationInfo(%codeName, %filters, %contiguousSpa
     %codeName[$gDestinationSpaces @ %codeName] = %contiguousSpaceNames;
     %codeName[$gDestinationVurls @ %codeName] = %vurl;
     $gDestinationNamesInternal = $gDestinationNamesInternal @ %codeName @ " ";
-    %i = (1.0 - getWordCount(%filters));
-    if ((0.0 >= %i)) {
+    %i = (getWordCount(%filters) - 1.0);
+    while ((%i >= 0.0)) {
         %filter = getWord(%filters, %i);
         if ((%filter $= "shop")) {
             %codeName[$gStoreStockCacheSkus @ %codeName] = "";
             %codeName[$gStoreStockRevision @ %codeName] = "";
         }
-        if ((0.0 < findWord($gDestinationFiltersInUse, %filter))) {
+        if ((findWord($gDestinationFiltersInUse, %filter) < 0.0)) {
             $gDestinationFiltersInUse = $gDestinationFiltersInUse @ %filter @ " ";
         }
-        if ((0.0 >= findWord($gDestinationFiltersInDirectory, %filter))) {
+        if ((findWord($gDestinationFiltersInDirectory, %filter) >= 0.0)) {
             DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF);
         }
-        %i = (1.0 - %i);
+        %i = (%i - 1.0);
     }
 };
 function DestinationList::getDestinationContiguousSpace(%codeName) {
@@ -32,7 +32,7 @@ function DestinationList::IsDestinationInMyContiguousSpace(%codeName) {
     if (($gContiguousSpaceName $= "")) {
         return 0;
     }
-    return (0.0 >= findWord(DestinationList::getDestinationContiguousSpace(%codeName), $gContiguousSpaceName));
+    return (findWord(DestinationList::getDestinationContiguousSpace(%codeName), $gContiguousSpaceName) >= 0.0);
 };
 function DestinationList::getCityNameForDestination(%codeName) {
     %dest = DestinationList::getDestinationContiguousSpace(%codeName);
@@ -58,7 +58,7 @@ function DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF) {
     $gDestinationAdsNum[%okayForTGF @ $gDestinationAds TAB $gDestinationAdsNum @ "okayForTGF"] = ;
     if (%isNewEntry) {
         %codeName[$gDestinationAdsNumByName @ %codeName] = $gDestinationAdsNum;
-        $gDestinationAdsNum = (1.0 + $gDestinationAdsNum);
+        $gDestinationAdsNum = ($gDestinationAdsNum + 1.0);
     }
 };
 function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
@@ -68,7 +68,7 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
     %candidates = "";
     %delim = "";
     %n = 0;
-    if (($gDestinationAdsNum < %n)) {
+    while ((%n < $gDestinationAdsNum)) {
         %eligible = %n[$gDestinationAds TAB %n @ "okayForTGF"];
         if (!(%eligible)) {
         }
@@ -80,16 +80,16 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
             %candidates = %candidates @ %delim @ %codeName;
             %delim = " ";
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    if ((($gDestinationAdsNum < %n) @ " " @ %candidates $= "")) {
+    if (((%n < $gDestinationAdsNum) @ " " @ %candidates $= "")) {
         error("Unable to find any candidates for filter \"" @ %filter @ "\"." @ " " @ getTrace());
         return "";
     }
     return getRandomWord(%candidates);
 };
 function DestinationList::goToDestination(%codeName) {
-    if ((0.0 < findWord($gDestinationNamesInternal, %codeName))) {
+    if ((findWord($gDestinationNamesInternal, %codeName) < 0.0)) {
         return;
     }
     %vurl = %codeName[$gDestinationVurls @ %codeName];
@@ -123,7 +123,7 @@ function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave) {
         }
         %doSave = 0;
     }
-    ClosetGui.doClose(!(%doSave), 0);
+    0.doClose(ClosetGui, !(%doSave));
     toggleTGFMapFiltered("shop");
 };
 $gAreaNamesInternalList = "";

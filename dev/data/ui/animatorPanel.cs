@@ -1,6 +1,6 @@
 initialized = 0 @ animatorPanel;
 function toggleAnimatorPanel(%target) {
-    if (!($player.rolesPermissionCheckNoWarn("debugActive"))) {
+    if (!("debugActive".rolesPermissionCheckNoWarn($player))) {
         return;
     }
     if (!(isDefined("%target"))) {
@@ -14,8 +14,8 @@ function toggleAnimatorPanel(%target) {
 };
 function animatorPanel::open(%this) {
     %this.init();
-    Canvas.pushDialog(%this, 0);
-    %this.setVisible(1);
+    0.pushDialog(Canvas, %this);
+    1.setVisible(%this);
     %this.onRefreshTargetsList();
 };
 function animatorPanel::init(%this) {
@@ -27,8 +27,8 @@ function animatorPanel::init(%this) {
     %this.initialized = 1;
 };
 function animatorPanel::close(%this, %unused) {
-    Canvas.popDialog(%this);
-    %this.setVisible(0);
+    %this.popDialog(Canvas);
+    0.setVisible(%this);
 };
 function animatorPanel::tryTarget(%this, %shape) {
     if (!(%this.isVisible())) {
@@ -40,7 +40,7 @@ function animatorPanel::tryTarget(%this, %shape) {
     }
     %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
-    animatorPanelTargetsPopup.setText(%targetName);
+    %targetName.setText(animatorPanelTargetsPopup);
 };
 function animatorPanel::doAnimToTarget(%this, %animTextBox) {
     %playerName = getField(animatorPanelTargetsPopup.getText(), 1);
@@ -56,71 +56,71 @@ function animatorPanel::onRefreshAnimsList(%this) {
     commandToServer('RefreshAnimatorPanel');
 };
 function clientCmdRefreshAnimatorPanel(%possibleGenres) {
-    animatorPanel.onGotPossibleGenres(%possibleGenres);
+    %possibleGenres.onGotPossibleGenres(animatorPanel);
 };
 function animatorPanel::onGotPossibleGenres(%this, %possibleGenres) {
     animatorPanelAnimsPopup.clear();
     %animIndex = 0;
     %numGenres = strlen(%possibleGenres);
     %i = 0;
-    if ((%numGenres < %i)) {
+    while ((%i < %numGenres)) {
         %genre = strupr(getSubStr(%possibleGenres, %i, 1));
         %g = 0;
-        if ((2.0 < %g)) {
+        while ((%g < 2.0)) {
             %gender = %g ? "M" : "F";
             %animationMap = "animationMap" @ %gender @ %genre;
             if (isObject(%animationMap)) {
                 %numAnimations = %animationMap.size();
                 %j = 0;
-                if ((%numAnimations < %j)) {
-                    %anim = %animationMap.getValue(%j);
-                    if ((0.0 < animatorPanelAnimsPopup.findText(%anim))) {
-                        animatorPanelAnimsPopup.add(%anim, %animIndex);
-                        %animIndex = (1.0 + %animIndex);
+                while ((%j < %numAnimations)) {
+                    %anim = %j.getValue(%animationMap);
+                    if ((%anim.findText(animatorPanelAnimsPopup) < 0.0)) {
+                        %animIndex.add(animatorPanelAnimsPopup, %anim);
+                        %animIndex = (%animIndex + 1.0);
                     }
-                    %j = (1.0 + %j);
+                    %j = (%j + 1.0);
                 }
             }
-            %g = (1.0 + %g);
-            (%numAnimations < %j);
+            %g = (%g + 1.0);
+            (%j < %numAnimations);
         }
-        %i = (1.0 + %i);
-        (2.0 < %g);
+        %i = (%i + 1.0);
+        (%g < 2.0);
     }
     animatorPanelAnimsPopup.sort();
 };
 function animatorPanelAnimsPopup::onSelect(%this, %unused, %text) {
     if (isObject(animatorPanel, %this.lastTextBox)) {
-        animatorPanel.setText(%this.lastTextBox, %text);
+        %text.setText(animatorPanel, %this.lastTextBox);
     }
 };
 function animatorPanel::onRefreshTargetsList(%this) {
     $gAnimatorGuiPrevMenuTarget = animatorPanelTargetsPopup.getText();
-    animatorPanelTargetsPopup.setText("getting list..");
+    "getting list..".setText(animatorPanelTargetsPopup);
     commandToServer('AnimatorGetTargets');
 };
 function animatorPanel::onGotTargetsList(%this, %theList) {
     animatorPanelTargetsPopup.clear();
     %num = getRecordCount(%theList);
-    if ((1.0 < %num)) {
+    if ((%num < 1.0)) {
         error("apparently nobody is here. this is bad.");
         return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %entry = getRecord(%theList, %n);
-        animatorPanelTargetsPopup.add(%entry, %n);
+        %n.add(animatorPanelTargetsPopup, %entry);
         if ((%entry $= $gAnimatorGuiPrevMenuTarget)) {
             %nextItem = %entry;
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     animatorPanelTargetsPopup.sort();
-    if (!((%num < %n) @ " " @ %this.defaultTarget $= "")) {
-        animatorPanelTargetsPopup.setText(%this.defaultTarget);
+    if (!((%n < %num) @ " " @ %this.defaultTarget $= "")) {
+        %this.defaultTarget.setText(animatorPanelTargetsPopup);
     }
-    animatorPanelTargetsPopup.setText(%nextItem);
+    %nextItem.setText(animatorPanelTargetsPopup);
 };
 function animatorPanelTargetsPopup::onSelect(%this, %unused, %text) {
 };
@@ -137,6 +137,6 @@ function clientCmdBuildAnimatorTargetsList(%actionTagged, %item) {
         $animatorPanelTargetsList = $animatorPanelTargetsList @ "\n" @ %item;
     }
     if ((%action $= "finish")) {
-        animatorPanel.onGotTargetsList($animatorPanelTargetsList);
+        $animatorPanelTargetsList.onGotTargetsList(animatorPanel);
     }
 };

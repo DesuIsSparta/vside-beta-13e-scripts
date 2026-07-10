@@ -1,12 +1,12 @@
 $gTickerRepetitionCount = 2;
-$gTickerRepetitionDelayMS = (50.0 * 1000.0);
+$gTickerRepetitionDelayMS = (1000.0 * 50.0);
 function handleTickerMessage(%unused, %msgString) {
     %senderName = getField(%msgString, 0);
     %body = getField(%msgString, 1);
     %priority = getField(%msgString, 2);
     %repetitions = getField(%msgString, 3);
     %repetitions = $gTickerRepetitionCount;
-    if (UserListIgnores.hasKey(%senderName)) {
+    if (%senderName.hasKey(UserListIgnores)) {
         %priority = 2;
         %markedName = "<spush>" @ getPlayerMarkup(%senderName, "eeffff", 1) @ "<spop>";
         %body = "(you are ignoring" @ " " @ %markedName @ " " @ ")";
@@ -16,19 +16,19 @@ function handleTickerMessage(%unused, %msgString) {
     %queue = ticker_getQueue(%priority);
     ticker_enqueue(%queue, %msgString);
     %n = 1;
-    if ((%repetitions < %n)) {
-        schedule(($gTickerRepetitionDelayMS * %n), 0, "ticker_enqueue", %queue, %msgString);
-        %n = (1.0 + %n);
+    while ((%n < %repetitions)) {
+        schedule((%n * $gTickerRepetitionDelayMS), 0, "ticker_enqueue", %queue, %msgString);
+        %n = (%n + 1.0);
     }
 };
 function ticker_enqueue(%queue, %msgString) {
-    %queue.push_back(%msgString, "");
+    "".push_back(%queue, %msgString);
     ticker_tick();
 };
 function ticker_getQueue(%priority) {
-    if ((0.0 < %priority)) {
+    if ((%priority < 0.0)) {
     }
-    if ((3.0 > %priority)) {
+    if ((%priority > 3.0)) {
         error(getScopeName() @ " " @ "- invalid priority. setting to 0." @ " " @ %msgString);
         %priority = 0;
     }
@@ -63,28 +63,28 @@ function ticker_doScroll() {
     $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
     %curX = getWord(geTicker_Text.getPosition(), 0);
     %curY = getWord(geTicker_Text.getPosition(), 1);
-    %pixelsToScroll = (1000.0 / ($gTicker_TimerPeriodMS * $gTicker_TimerPixelsPerSecond));
-    %newX = (%pixelsToScroll - %curX);
+    %pixelsToScroll = (($gTicker_TimerPixelsPerSecond * $gTicker_TimerPeriodMS) / 1000.0);
+    %newX = (%curX - %pixelsToScroll);
     %newY = %curY;
-    if ((0.0 < (getWord(geTicker_Text.getExtent(), 0) + %newX))) {
-        geTicker_TextContainer.setVisible(0);
+    if (((%newX + getWord(geTicker_Text.getExtent(), 0)) < 0.0)) {
+        0.setVisible(geTicker_TextContainer);
     }
-    geTicker_Text.reposition(%newX, %newY);
+    %newY.reposition(geTicker_Text, %newX);
     %curX = getWord(geTicker_Text.getPosition(), 0);
 };
 function ticker_newMessage() {
     %msg = "";
     %n = 2;
-    if ((0.0 >= %n)) {
+    if ((%n >= 0.0)) {
     }
-    if ((%msg $= "")) {
+    while ((%msg $= "")) {
         %queue = ticker_getQueue(%n);
-        if ((0.0 > %queue.count())) {
-            %msg = %queue.getKey(0);
+        if ((%queue.count() > 0.0)) {
+            %msg = 0.getKey(%queue);
             %queue.pop_front();
         }
-        %n = (1.0 - %n);
-        if ((0.0 >= %n)) {
+        %n = (%n - 1.0);
+        if ((%n >= 0.0)) {
         }
     }
     if (!((%msg $= "") @ " " @ %msg $= "")) {
@@ -97,10 +97,10 @@ function ticker_newMessage() {
         %unmarkedText = %senderName @ " " @ "-" @ " " @ %body @ " " @ "-" @ " " @ %senderName;
         %markedText = %markedName @ " " @ "-" @ " " @ %body @ " " @ "-" @ " " @ %markedName;
         ticker_createUI();
-        geTicker_TextContainer.setVisible(1);
-        geTicker_Text.reposition(getWord(geTicker_TextContainer.getExtent(), 0), 0);
-        geTicker_Text.resize((26.0 + getStrWidth(%unmarkedText)), 14);
-        geTicker_Text.setTextWithStyle(%markedText);
+        1.setVisible(geTicker_TextContainer);
+        0.reposition(geTicker_Text, getWord(geTicker_TextContainer.getExtent(), 0));
+        14.resize(geTicker_Text, (getStrWidth(%unmarkedText) + 26.0));
+        %markedText.setTextWithStyle(geTicker_Text);
         ticker_tick();
     }
     geTicker.delete();
@@ -113,33 +113,33 @@ function ticker_createUI() {
     if (isObject(geTicker)) {
         return;
     }
-    new GuiMLTextCtrl(geTicker_Text) {
+    new GuiBitmapCtrl(geTicker) {
+        extent = PlayGui @ "20 29";
+        bitmap = "platform/client/ui/ticker_background";
+    };.add(new GuiMLTextCtrl(geTicker_Text) {
         horizSizing = "right";
         extent = 14 @ " " @ 16;
         position = 0 @ " " @ 0;
         style = "ticker";
         stripGamelink = 0;
-    };.add(new GuiControl(geTicker_TextContainer) {
+    };, new GuiControl(geTicker_TextContainer) {
         horizSizing = "width";
         extent = 2 @ " " @ 16;
         position = 9 @ " " @ 6;
         visible = 0;
-    };, new GuiBitmapCtrl(geTicker) {
-        extent = PlayGui @ "20 29";
-        bitmap = "platform/client/ui/ticker_background";
     };);
     $ButtonBarVar::buttonBarPaddingBottom = getWord(geTicker.getExtent(), 1);
-    $ButtonBarVar::buttonBarPaddingBottom = (4.0 - $ButtonBarVar::buttonBarPaddingBottom);
+    $ButtonBarVar::buttonBarPaddingBottom = ($ButtonBarVar::buttonBarPaddingBottom - 4.0);
     ButtonBar.update();
 };
 function geTicker::update(%this) {
     %clientRectPosition = WindowManager.getClientRectPosition();
     %clientRectExtent = WindowManager.getClientRectExtent();
     %parentW = getWord(%this.getGroup().getExtent(), 0);
-    %rightMargin = (getWord(%clientRectExtent, 0) + getWord(%clientRectPosition, 0));
-    %w = ((2.0 * (%rightMargin - %parentW)) - %parentW);
+    %rightMargin = (getWord(%clientRectPosition, 0) + getWord(%clientRectExtent, 0));
+    %w = (%parentW - ((%parentW - %rightMargin) * 2.0));
     %w = mMax(%w, 300);
-    %this.resize(%w, 29);
+    29.resize(%this, %w);
     %this.alignToCenterX();
     %this.alignToBottom();
 };

@@ -1,6 +1,6 @@
 function newTGFGoRound(%name) {
     %obj = newThumbnailsGoRound(%name);
-    %obj.bindClassName("TGFGoRound");
+    "TGFGoRound".bindClassName(%obj);
     return %obj;
 };
 function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
@@ -9,20 +9,20 @@ function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
         profile = 0 @ ETSNonModalProfile;
         extent = %container.getExtent();
     };
-    %container.add(%ctrl);
+    %ctrl.add(%container);
     %container.mBitmapCtrl = %ctrl;
     %ctrlB = new GuiControl("") {
         profile = 0 @ EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
-        position = 0 @ " " @ (10.0 - getWord(%container.getExtent(), 1));
+        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 10.0);
     };
-    %container.add(%ctrlB);
+    %ctrlB.add(%container);
     %ctrl = new GuiMLTextCtrl("") {
         profile = 0 @ ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundLilThumb";
     };
-    %ctrlB.add(%ctrl);
+    %ctrl.add(%ctrlB);
     %container.mTextCtrl = %ctrl;
 };
 function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
@@ -32,20 +32,20 @@ function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
         position = "0 0";
         extent = %container.getExtent();
     };
-    %container.add(%ctrl);
+    %ctrl.add(%container);
     %container.mBitmapCtrl = %ctrl;
     %ctrlB = new GuiControl("") {
         profile = 0 @ EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
-        position = 0 @ " " @ (18.0 - getWord(%container.getExtent(), 1));
+        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 18.0);
     };
-    %container.add(%ctrlB);
+    %ctrlB.add(%container);
     %ctrl = new GuiMLTextCtrl("") {
         profile = 0 @ ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundBigThumb";
     };
-    %ctrlB.add(%ctrl);
+    %ctrl.add(%ctrlB);
     %container.mTextCtrl = %ctrl;
     %ctrl = new GuiBitmapButtonCtrl("") {
         position = 0 @ "-2 -2";
@@ -54,7 +54,7 @@ function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
         canHilite = 0;
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
     };
-    %container.add(%ctrl);
+    %ctrl.add(%container);
 };
 function TGFGoRound::rebuildContainer_Deets(%this, %container) {
     %container.deleteMembers();
@@ -64,7 +64,7 @@ function TGFGoRound::newContentLilThumb(%this, %container) {
         error(getScopeName() @ " " @ "- no list" @ " " @ getTrace());
         return;
     }
-    %item = %this.mItemsList.getValue(%this.mItemsList.mCurrentItem);
+    %item = %this.mItemsList.mCurrentItem.getValue(%this.mItemsList);
     if (!(isObject(%item))) {
         error(getScopeName() @ " " @ "- bad item" @ " " @ %this.mItemsList.mCurrentItem @ " " @ getTrace());
         %this.mItemsList.mCurrentItem = 0;
@@ -72,7 +72,7 @@ function TGFGoRound::newContentLilThumb(%this, %container) {
     }
     if ((%item.relationType $= "")) {
     }
-    if (UserListFriends.hasKey(%item.userName)) {
+    if (%item.userName.hasKey(UserListFriends)) {
         %item.relationType = "friend";
     }
     %userName = %item.userName;
@@ -80,12 +80,12 @@ function TGFGoRound::newContentLilThumb(%this, %container) {
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
     if (!(%userName $= "")) {
         %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=M";
-        %container.mBitmapCtrl.downloadAndApplyBitmap(%avatarPicURL);
+        %avatarPicURL.downloadAndApplyBitmap(%container.mBitmapCtrl);
     }
-    %container.mBitmapCtrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
-    %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
+    "platform/client/ui/tgf/tgf_profile_default".setBitmap(%container.mBitmapCtrl);
+    %friendColorTag @ %userName.setTextWithStyle(%container.mTextCtrl);
     %container.mItem = %item;
-    %this.mItemsList.mCurrentItem = (%this.mItemsList.size() % (1.0 + %this.mItemsList.mCurrentItem));
+    %this.mItemsList.mCurrentItem = ((%this.mItemsList.mCurrentItem + 1.0) % %this.mItemsList.size());
 };
 function TGFGoRound::newContentBigThumb(%this) {
     %container = %this.mBigThumbContainer;
@@ -96,21 +96,21 @@ function TGFGoRound::newContentBigThumb(%this) {
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
     if (!(%userName $= "")) {
         %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=L";
-        %container.getObject(0).downloadAndApplyBitmap(%avatarPicURL);
+        %avatarPicURL.downloadAndApplyBitmap(0.getObject(%container));
     }
-    %container.mBitmapCtrl.setBitmap(%lilThumbContainer.mBitmapCtrl.getBitmap());
-    %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
+    %lilThumbContainer.mBitmapCtrl.getBitmap().setBitmap(%container.mBitmapCtrl);
+    %friendColorTag @ %userName.setTextWithStyle(%container.mTextCtrl);
     %container.mItem = %item;
     %this.newContentDeets();
 };
 function TGFGoRound::newContentDeets(%this) {
 };
 function TGFGoRound::onBigThumbClick(%this, %bigThumbContainer) {
-    %this.viewItem(%bigThumbContainer.mItem);
+    %bigThumbContainer.mItem.viewItem(%this);
 };
 function TGFGoRound::viewItem(%this, %item) {
     %this.pause();
-    geTGF.DoDetails("main", %item);
+    %item.DoDetails(geTGF, "main");
 };
 function geTGFGoRound_DeetsMLText::onURL(%this, %url) {
     %type = firstWord(%url);
@@ -119,16 +119,16 @@ function geTGFGoRound_DeetsMLText::onURL(%this, %url) {
         return;
     }
     %userName = restWords(%url);
-    geTGFGoRound.viewProfile(%userName);
+    %userName.viewProfile(geTGFGoRound);
 };
 function TGFGoRound::setItemList(%this, %list) {
     %this.mItemsList = %list;
     %list.mCurrentItem = 0;
     %n = 0;
-    if (((2.0 * %this.mLilThumbsNumAcross) < %n)) {
-        %lilThumbContainer = %this.mLilThumbsContainer.getObject(%n);
-        %this.newContentLilThumb(%lilThumbContainer);
-        %n = (1.0 + %n);
+    while ((%n < (%this.mLilThumbsNumAcross * 2.0))) {
+        %lilThumbContainer = %n.getObject(%this.mLilThumbsContainer);
+        %lilThumbContainer.newContentLilThumb(%this);
+        %n = (%n + 1.0);
     }
     %this.newContentBigThumb();
 };

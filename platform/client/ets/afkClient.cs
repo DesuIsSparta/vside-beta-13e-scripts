@@ -6,10 +6,10 @@ function TryFixBadWords(%dry) {
     return %dry;
 };
 function Player::onGotTextFields(%this) {
-    %this.setAwayMessage(TryFixBadWords(%this.getAwayMessage()));
+    TryFixBadWords(%this.getAwayMessage()).setAwayMessage(%this);
     %this.updateMapIcon();
 };
-setIdleTimeout((1000.0 * (60.0 * 4.0)));
+setIdleTimeout(((4.0 * 60.0) * 1000.0));
 $gCurrentAwayMessage = "";
 function setIdle(%idle, %message) {
     if (!(isDefined("%message"))) {
@@ -21,7 +21,7 @@ function setIdle(%idle, %message) {
         %idle = 1;
     }
     if (!($Server::Dedicated)) {
-        if ((1.0 == %idle)) {
+        if ((%idle == 1.0)) {
             if (!(isIdle())) {
             }
             if (!(%message $= $gCurrentAwayMessage)) {
@@ -44,7 +44,7 @@ function onIdle(%message) {
     }
     %message = getSubStr(%message, 0, $Pref::Player::awayMessageMaxLen);
     commandToServer('setAfkOn', makeTaggedString(%message));
-    getUserActivityMgr().setActivityActive("idle", 1);
+    1.setActivityActive(getUserActivityMgr(), "idle");
 };
 function onUnidle() {
     if (!(isObject($player))) {
@@ -60,7 +60,7 @@ function onUnidle() {
     if ($player.visible) {
         commandToServer('setAfkOn', $ClosetGuiOpenMessage);
     }
-    getUserActivityMgr().setActivityActive("idle", 0);
+    0.setActivityActive(getUserActivityMgr(), "idle");
 };
 function awayOperation(%line) {
     DefaultAwayMsgEdit.applySettings();

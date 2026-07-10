@@ -313,16 +313,16 @@ new ScriptObject(blendAnim_22) {
 };
 $gBlendAnimsTitlesMap = 0;
 function Player::configBoneBlends(%this) {
-    if ((0.0 == $gBlendAnimsTitlesMap)) {
+    if (($gBlendAnimsTitlesMap == 0.0)) {
         $gBlendAnimsTitlesMap = safeEnsureScriptObject("StringMap", "");
     }
     %i = 0;
-    if (($MAX_FREE_BONE_BLENDS < %i)) {
-        %index = ($FIRST_FREE_BLEND_INDEX + %i);
+    while ((%i < $MAX_FREE_BONE_BLENDS)) {
+        %index = (%i + $FIRST_FREE_BLEND_INDEX);
         %sobj = "blendAnim_" @ %i;
-        %this.configBoneBlendAnimation(%index, %sobj.sequence, %sobj.flavor, %sobj.defaultPosition, %sobj.attackTime, %sobj.decayTime, %sobj.attackRate, %sobj.decayRate, %sobj.isReplacement, %sobj.holdPosition);
-        $gBlendAnimsTitlesMap.put(%sobj.title, %i);
-        %i = (1.0 + %i);
+        %sobj.holdPosition.configBoneBlendAnimation(%this, %index, %sobj.sequence, %sobj.flavor, %sobj.defaultPosition, %sobj.attackTime, %sobj.decayTime, %sobj.attackRate, %sobj.decayRate, %sobj.isReplacement);
+        %i.put($gBlendAnimsTitlesMap, %sobj.title);
+        %i = (%i + 1.0);
     }
 };
 function Player::getBoneBlendIndexFromTitle(%this, %title) {
@@ -330,21 +330,21 @@ function Player::getBoneBlendIndexFromTitle(%this, %title) {
         warn(getScopeName() @ " " @ "- $gBlendAnimsTitlesMap not configured");
         %this.configBoneBlends();
     }
-    %ret = $gBlendAnimsTitlesMap.get(%title);
+    %ret = %title.get($gBlendAnimsTitlesMap);
     if ((%ret $= "")) {
         %ret = -(1.0);
     }
-    %ret = ($FIRST_FREE_BLEND_INDEX + %ret);
+    %ret = (%ret + $FIRST_FREE_BLEND_INDEX);
     return %ret;
 };
 function Player::triggerBlendAnimByTitle(%this, %title, %doit) {
-    %index = %this.getBoneBlendIndexFromTitle(%title);
-    if ((0.0 < %index)) {
+    %index = %title.getBoneBlendIndexFromTitle(%this);
+    if ((%index < 0.0)) {
         error(getScopeName() @ " " @ "- blend anim not found:" @ " " @ %title);
         return;
     }
     if (%this.isServerObject()) {
-        %this.triggerBoneBlendAnimation(%index, %doit, 0);
+        0.triggerBoneBlendAnimation(%this, %index, %doit);
     }
-    %this.triggerBlendAnim(%index, %doit);
+    %doit.triggerBlendAnim(%this, %index);
 };

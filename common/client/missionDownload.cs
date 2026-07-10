@@ -8,7 +8,7 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName) {
     $GeneratingCacheNow = 0;
     $CurrentMission = %missionName;
     if ($CacheFlagIsSet) {
-        %crc = ServerConnection.getCacheCRC(%missionName);
+        %crc = %missionName.getCacheCRC(ServerConnection);
     }
     %crc = -(1.0);
     log("network", "debug", "client cache CRC:" @ " " @ %crc);
@@ -16,7 +16,7 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName) {
     }
     if ($StandAlone) {
     }
-    %hasStandaloneCache = (-(1.0) != %crc);
+    %hasStandaloneCache = (%crc != -(1.0));
     $Client::TempMissionFile = %missionName;
     prepLighting();
     commandToServer('MissionCRC', %missionSequence, %missionName, %crc, $UserPref::Player::gender, %hasStandaloneCache);
@@ -30,7 +30,7 @@ function clientCmdStartCache(%missionSequence, %missionName, %musicTrack) {
     log("network", "info", "attempting client side load caching:" @ " " @ %missionName @ " " @ "seq:" @ " " @ %missionSequence);
     onMissionDownloadPhase1(%missionName, %musicTrack);
     $GeneratingCacheNow = 1;
-    %success = ServerConnection.startCache(%missionName);
+    %success = %missionName.startCache(ServerConnection);
     if (%success) {
         log("network", "info", "cache writing started successfully");
     }
@@ -43,11 +43,11 @@ function clientCmdLoadLocalCache(%missionSequence, %missionName, %musicTrack) {
     }
     log("network", "info", "loading local datablocks for mission:" @ " " @ %missionName @ " " @ "seq: " @ " " @ %missionSequence);
     onMissionDownloadPhase1(%missionName, %musicTrack);
-    ServerConnection.setDatablockSequence(%missionSequence);
-    ServerConnection.loadCachePhase1(%missionSequence, %missionName);
+    %missionSequence.setDatablockSequence(ServerConnection);
+    %missionName.loadCachePhase1(ServerConnection, %missionSequence);
 };
 function onDataBlockObjectReceived(%index, %total) {
-    onPhase1Progress((%total / %index));
+    onPhase1Progress((%index / %total));
 };
 function clientCmdStartGhostAlways(%missionSequence, %missionName) {
     onPhase1Complete();
@@ -60,7 +60,7 @@ function clientCmdStartGhostAlways(%missionSequence, %missionName) {
     if ($CacheFlagIsSet) {
     }
     if (!($GeneratingCacheNow)) {
-        ServerConnection.loadCachePhase2(%missionSequence, %missionName);
+        %missionName.loadCachePhase2(ServerConnection, %missionSequence);
     }
     log("network", "debug", "not using cache, acking server to start ghost always phase");
     commandToServer('StartGhostAlwaysAck', %missionSequence);
@@ -85,16 +85,14 @@ function onGhostAlwaysStarted(%ghostCount) {
     $GhostsRecvd = 0;
 };
 function onGhostAlwaysObjectReceived() {
-    $GhostsRecvd = (1.0 + $GhostsRecvd);
-    onPhase2ProgressUpdateStatusDisplay(($GhostCount / $GhostsRecvd));
+    $GhostsRecvd = ($GhostsRecvd + 1.0);
+    onPhase2ProgressUpdateStatusDisplay(($GhostsRecvd / $GhostCount));
 };
 function onGhostAlwaysDone() {
     log("network", "debug", "ghost always done");
-    if ($CacheFlagIsSet) {
-        if ($GeneratingCacheNow) {
-            $Client::DatablockCRC = ServerConnection.stopCache();
-            log("network", "debug", "ghost always done, computed CRC:" @ " " @ $Client::DatablockCRC);
-        }
+    if ($CacheFlagIsSet && $GeneratingCacheNow) {
+        $Client::DatablockCRC = ServerConnection.stopCache();
+        log("network", "debug", "ghost always done, computed CRC:" @ " " @ $Client::DatablockCRC);
     }
 };
 function clientCmdMissionStartPhase3(%missionSequence, %missionName) {
@@ -104,7 +102,7 @@ function clientCmdMissionStartPhase3(%missionSequence, %missionName) {
     StartFoliageReplication();
     purgeResources();
     log("network", "info", "phase 3" @ " " @ %missionName);
-    log("general", "info", "phase_3_memory=" @ (1024.0 / getCurrentMemoryUsage()));
+    log("general", "info", "phase_3_memory=" @ (getCurrentMemoryUsage() / 1024.0));
     $MSeq = %missionSequence;
     $Client::MissionFile = %missionName;
     if ($NoDisplay) {
@@ -126,7 +124,7 @@ function updateLightingProgress() {
 };
 function sceneLightingComplete() {
     log("network", "info", "scene lighting complete");
-    log("general", "info", "lighting_complete_memory=" @ (1024.0 / getCurrentMemoryUsage()));
+    log("general", "info", "lighting_complete_memory=" @ (getCurrentMemoryUsage() / 1024.0));
     onPhase3Complete();
     onMissionDownloadComplete();
     commandToServer('MissionStartPhase3Ack', $MSeq);
@@ -135,6 +133,6 @@ function sceneLightingComplete() {
 function connect(%server) {
     %conn = new GameConnection("");;
     0;
-    %conn.setCommonPreconnectClientSettings("");
-    %conn.connect(%server);
+    "".setCommonPreconnectClientSettings(%conn);
+    %server.connect(%conn);
 };

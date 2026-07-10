@@ -1,13 +1,13 @@
 $gClientHeartbeatTimer = "";
-$gClientHeartbeatPeriodMS = (2.0 * (60.0 * 1000.0));
-$gClientHeartbeatPeriodMinimumMS = (15.0 * 1000.0);
+$gClientHeartbeatPeriodMS = ((1000.0 * 60.0) * 2.0);
+$gClientHeartbeatPeriodMinimumMS = (1000.0 * 15.0);
 function clientHeartbeat() {
     if (!($gClientHeartbeatTimer $= "")) {
         cancel($gClientHeartbeatTimer);
         $gClientHeartbeatTimer = "";
     }
     if (!($Token $= "")) {
-        if (($gClientHeartbeatPeriodMinimumMS < $gClientHeartbeatPeriodMS)) {
+        if (($gClientHeartbeatPeriodMS < $gClientHeartbeatPeriodMinimumMS)) {
             error(getScopeName() @ " " @ "- heartbeat too frequent. setting to" @ " " @ $gClientHeartbeatPeriodMinimumMS @ " " @ "MS");
             $gClientHeartbeatPeriodMS = $gClientHeartbeatPeriodMinimumMS;
         }
@@ -18,7 +18,7 @@ function clientHeartbeat() {
 };
 function onDoneOrErrorCallback_ClientHeartbeat(%request) {
     if (!(%request.checkSuccess())) {
-        %errorCode = %request.getValue("errorCode");
+        %errorCode = "errorCode".getValue(%request);
         error(getScopeName() @ " " @ "- heartbeat failed, error =" @ " " @ %errorCode);
         if ((%errorCode $= "invalid")) {
             error(getScopeName() @ " " @ "- heartbeat failed due to invalid token, logging out.");

@@ -1,12 +1,12 @@
 function PlantDetailsGui::open(%this) {
-    PlayGui.ensureAdded(%this);
+    %this.ensureAdded(PlayGui);
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
+        1.setVisible(%this);
     }
-    PlayGui.focusAndRaise(%this);
+    %this.focusAndRaise(PlayGui);
 };
 function PlantDetailsGui::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
     return 1;
 };
@@ -15,17 +15,17 @@ function PlantDetailsGui::onClickFAQButton(%this) {
 };
 function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL) {
     %this.open();
-    PlantDetailsTitle.setText(%plantName);
-    PlantDetailsProgressBar.setValue((%totalStates / %currentState));
-    PlantDetailsStatusText.setText(%info);
+    %plantName.setText(PlantDetailsTitle);
+    (%currentState / %totalStates).setValue(PlantDetailsProgressBar);
+    %info.setText(PlantDetailsStatusText);
     %bmp = "projects/common/inventory/" @ %plantSKU @ "/progress" @ %plantSKU @ ".png";
-    PlantProgressBackgroundBMP.setBitmap(%bmp);
+    %bmp.setBitmap(PlantProgressBackgroundBMP);
     %this.faqURL = %faqURL;
 };
 function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL) {
     if ((%status $= "HAPPY")) {
         %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsHappy"];
-        if ((%totalStates == %currentState)) {
+        if ((%currentState == %totalStates)) {
             %info = %currentState[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsFullyGrown"];
         }
     }
@@ -37,5 +37,5 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
     }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
     PlantDetailsGui.open();
-    PlantDetailsGui.showDetails(%plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL);
+    %faqURL.showDetails(PlantDetailsGui, %plantSKU, %plantName, %info, %currentState, %totalStates);
 };

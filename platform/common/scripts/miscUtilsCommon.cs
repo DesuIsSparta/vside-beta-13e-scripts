@@ -1,31 +1,31 @@
 function SimSet::sortByInternalName(%this, %recurse) {
     %chilluns = "";
     %delim = "";
-    %n = (1.0 - %this.getCount());
-    if ((0.0 >= %n)) {
-        %obj = %this.getObject(%n);
+    %n = (%this.getCount() - 1.0);
+    while ((%n >= 0.0)) {
+        %obj = %n.getObject(%this);
         %chilluns = %chilluns @ %delim;
         %chilluns = %chilluns @ %obj.getInternalName() @ "\t" @ %obj;
         %delim = "\n";
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     %chilluns = SortRecords(%chilluns);
-    (0.0 >= %n);
-    %n = (1.0 - getRecordCount(%chilluns));
-    if ((0.0 >= %n)) {
+    (%n >= 0.0);
+    %n = (getRecordCount(%chilluns) - 1.0);
+    while ((%n >= 0.0)) {
         %obj = getField(getRecord(%chilluns, %n), 1);
-        %this.bringToFront(%obj);
-        %n = (1.0 - %n);
+        %obj.bringToFront(%this);
+        %n = (%n - 1.0);
     }
     if (%recurse) {
-        %n = (1.0 - %this.getCount());
-        (0.0 >= %n);
-        if ((0.0 >= %n)) {
-            %obj = %this.getObject(%n);
+        %n = (%this.getCount() - 1.0);
+        (%n >= 0.0);
+        while ((%n >= 0.0)) {
+            %obj = %n.getObject(%this);
             if (%obj.isClassSimSet()) {
-                %obj.sortByInternalName(1);
+                1.sortByInternalName(%obj);
             }
-            %n = (1.0 - %n);
+            %n = (%n - 1.0);
         }
     }
 };
@@ -53,33 +53,33 @@ function FileObject::unindent(%this) {
 function FileObject::writeLineIndented(%this, %line) {
     %line = %this.indent @ %line;
     %line = strreplace(%line, "\n", "\n" @ %this.indent @ %this.indent);
-    %this.writeLine(%line);
+    %line.writeLine(%this);
 };
 function FileObject::writeOpenTag(%this, %tagName, %tagValues) {
-    %this.writeLineIndented(("<" @ %tagName @ " " @ %tagValues $= "") ? "" : " " @ %tagValues @ ">");
+    ("<" @ %tagName @ " " @ %tagValues $= "") ? "" : " " @ %tagValues @ ">".writeLineIndented(%this);
     %this.indent();
 };
 function FileObject::writeCloseTag(%this, %tagName) {
     %this.unindent();
-    %this.writeLineIndented("</" @ %tagName @ ">");
+    "</" @ %tagName @ ">".writeLineIndented(%this);
 };
 function FileObject::writeShortTag(%this, %tagName, %tagValues, %tagContent) {
     %line = ("<" @ %tagName @ " " @ %tagValues $= "") ? "" : " " @ %tagValues @ ">";
     %line = %line @ %tagContent;
     %line = %line @ "</" @ %tagName @ ">";
-    %this.writeLineIndented(%line);
+    %line.writeLineIndented(%this);
 };
 function FileObject::writeCommentTag(%this, %value) {
     %line = "<!--" @ " " @ %value @ " " @ "-->";
-    %this.writeLineIndented(%line);
+    %line.writeLineIndented(%this);
 };
 function SimObject::dumpParentContainers(%this) {
-    %this._dumpParentContainersRecursive(%this, 0);
+    0._dumpParentContainersRecursive(%this, %this);
 };
 function SimObject::_dumpParentContainersRecursive(%this, %depth) {
     echo(getDebugString(%this));
     %container = %this.getGroup();
     if (isObject(%container)) {
-        %container._dumpParentContainersRecursive((1.0 + %depth));
+        (%depth + 1.0)._dumpParentContainersRecursive(%container);
     }
 };

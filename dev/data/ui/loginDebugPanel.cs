@@ -1,14 +1,14 @@
 function loginDebugPanel::toggle(%this) {
-    LoginGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(LoginGui);
 };
 function loginDebugPanel::open(%this) {
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
-        LoginGui.focusAndRaise(%this);
+        1.setVisible(%this);
+        %this.focusAndRaise(LoginGui);
     }
     DragAndDropExampleList.Initialize();
 };
 function loginDebugPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     LoginGui.focusTopWindow();
 };

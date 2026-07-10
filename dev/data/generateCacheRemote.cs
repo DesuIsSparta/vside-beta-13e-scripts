@@ -8,7 +8,7 @@ function generateCacheRemote() {
     };
     $iterationsWaited = 0;
     %cacheGenerate.init();
-    %cacheGenerate.doLogin("cache_host");
+    "cache_host".doLogin(%cacheGenerate);
 };
 echo("LOAD: starting via generateCacheRemote()");
 generateCacheRemote();
@@ -17,11 +17,11 @@ function doSomething() {
         echo("CACHE: We found PChat. Quitting in 5 seconds...");
         schedule(5000, 0);
     }
-    if ((200.0 == $iterationsWaited)) {
+    if (($iterationsWaited == 200.0)) {
         error("CACHE->ERROR : Giving up. Waited for 10 minutes and nothing happended");
     }
     echo("CACHE: Nothing yet....");
-    $iterationsWaited = (1.0 + $iterationsWaited);
+    $iterationsWaited = ($iterationsWaited + 1.0);
     quit;
     schedule(3000, 0);
 };

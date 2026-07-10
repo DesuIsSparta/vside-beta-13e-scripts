@@ -1,16 +1,16 @@
 function Player::playCelAnimation(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        %this.setActionThread("emote_" @ %anim);
+        "emote_" @ %anim.setActionThread(%this);
     }
 };
 function Player::playAnim(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        %this.setActionThread(%anim);
+        %anim.setActionThread(%this);
     }
 };
 function Player::playAnimPreRoll(%this, %anim, %preRollMS) {
     if (!(%this.getState() $= "Dead")) {
-        %this.setActionThreadPreRoll(%anim, %preRollMS);
+        %preRollMS.setActionThreadPreRoll(%this, %anim);
     }
 };
 function Player::initGlobalFields(%this) {
@@ -50,7 +50,7 @@ function Player::destroyGlobalFields(%this) {
         %x.delete();
     }
     gSetField(%this, triggerSet, 0);
-    snoopers.delete(gGetField(%this));
+    gGetField(%this).delete(snoopers);
     gSetField(%this, snoopers, 0);
     gSetField(%this, isScaling, 0);
     gSetField(%this, SEAT_IDLE_SCHEDULE, 0);
@@ -77,15 +77,15 @@ function Player::onDelete(%this) {
     }
     %this.removeFromPlayerInstanceDict();
     if (isObject(geMapHud2DTheOrthoMap)) {
-        geMapHud2DTheOrthoMap.playerRemove(%this);
+        %this.playerRemove(geMapHud2DTheOrthoMap);
     }
     %this.destroyGlobalFields();
     if (isObject(gUserPropMgrServer)) {
-        gUserPropMgrServer.forgetProperties(%this.getShapeName());
+        %this.getShapeName().forgetProperties(gUserPropMgrServer);
     }
 };
 function Player::isInHelpMeMode(%this) {
-    return %this.hasActiveSKU(getSpecialSKU(%this, "helpmebadge"));
+    return getSpecialSKU(%this, "helpmebadge").hasActiveSKU(%this);
 };
 function Player::isHostOrCohost(%this) {
     if (%this.isHost()) {
@@ -93,10 +93,10 @@ function Player::isHostOrCohost(%this) {
     return %this.isCohost();
 };
 function Player::isHost(%this) {
-    return %this.hasRoleString("host");
+    return "host".hasRoleString(%this);
 };
 function Player::isCohost(%this) {
-    return %this.hasRoleString("cohost");
+    return "cohost".hasRoleString(%this);
 };
 function Player::getOtherGender(%this) {
     %g = %this.getGender();
@@ -110,7 +110,7 @@ function Player::getOtherGender(%this) {
 };
 function Player::onAnimationDone(%this, %anim) {
     if (%this.isServerObject()) {
-        return %this.onAnimationDoneServer(%anim);
+        return %anim.onAnimationDoneServer(%this);
     }
-    return %this.onAnimationDoneClient(%anim);
+    return %anim.onAnimationDoneClient(%this);
 };

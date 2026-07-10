@@ -39,6 +39,6 @@ function getPronounHisHersTheirs(%obj) {
     return;
 };
 function getPronounItThem(%quantity) {
-    %ret = (1.0 == %quantity) ? "it" : "them";
+    %ret = (%quantity == 1.0) ? "it" : "them";
     return %ret;
 };

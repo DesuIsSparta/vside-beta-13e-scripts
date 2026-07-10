@@ -10,28 +10,28 @@ function VideoRenderer::loadVideoRenderer(%this) {
     %loadTextureName = %this.getLoadingTextureName();
     if (!(%loadTextureName $= "")) {
         echo("Changing texture to " @ %loadTextureName);
-        %this.setTextureFile(%loadTextureName);
+        %loadTextureName.setTextureFile(%this);
     }
     if (%this.getPlayWithPlaylist()) {
         renderer = %this @ VideoPlaylist;
     }
-    $VideoRendererLoadable = (1.0 + $VideoRendererLoadable);
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    $VideoRendererLoadable = ($VideoRendererLoadable + 1.0);
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (!(%this.videoRetryScdId $= "")) {
     }
-    if ((0.0 != %this.videoRetryScdId)) {
+    if ((%this.videoRetryScdId != 0.0)) {
         cancel(%this.videoRetryScdId);
     }
     %this.videoRetryScdId = 0;
     %this.load();
 };
 function VideoRenderer::unloadVideoRenderer(%this) {
-    if ((0.0 > $VideoRendererLoadable)) {
-        $VideoRendererLoadable = (1.0 - $VideoRendererLoadable);
+    if (($VideoRendererLoadable > 0.0)) {
+        $VideoRendererLoadable = ($VideoRendererLoadable - 1.0);
     }
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (%this.getPlayWithPlaylist()) {
@@ -41,27 +41,27 @@ function VideoRenderer::unloadVideoRenderer(%this) {
     %this.startFModMusic();
     if (!(%this.videoRetryScdId $= "")) {
     }
-    if ((0.0 != %this.videoRetryScdId)) {
+    if ((%this.videoRetryScdId != 0.0)) {
         cancel(%this.videoRetryScdId);
     }
     %this.videoRetryScdId = 0;
     %inactTextureName = %this.getInactiveTextureName();
     if (!(%inactTextureName $= "")) {
-        %this.setTextureFile(%inactTextureName);
+        %inactTextureName.setTextureFile(%this);
     }
 };
 function VideoRenderer::onLoad(%this) {
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (!(fmodIsPlaying())) {
-        %this.startMetadataDisplay(0);
+        0.startMetadataDisplay(%this);
     }
     %this.stopFModMusic();
     %this.play();
 };
 function VideoRenderer::onComplete(%this) {
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (!(%this.completeCallback $= "")) {
@@ -72,24 +72,24 @@ function VideoRenderer::onComplete(%this) {
 function VideoRenderer::onAdvance(%this) {
     %index = %this.getPlayIndex();
     %spaceName = "";
-    if ((-(1.0) != strstr(%this.getNamespaceList(), "TheoraRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "TheoraRenderer") != -(1.0))) {
         return;
     }
     log("media", "info", "Client advanced to next video, last video index = #" @ %index);
-    if ((0.0 != $CSSpaceInfo)) {
+    if (($CSSpaceInfo != 0.0)) {
         %spaceName = CustomSpaceClient::GetSpaceImIn();
     }
     commandToServer('VideoRendererAdvance', %this.getGhostID(), %index, %spaceName);
 };
 function VideoRenderer::startMetadataDisplay(%this, %fadeoutVolume) {
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
-    if ((0.0 == strstr(%this.getNamespaceList(), "SlaveRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "SlaveRenderer") == 0.0)) {
         return;
     }
-    if ((0.0 > $VideoRendererLoadable)) {
-        if (($FMod::MetadataTimer != 0.0)) {
+    if (($VideoRendererLoadable > 0.0)) {
+        if ((0.0 != $FMod::MetadataTimer)) {
             cancel($FMod::MetadataTimer);
             $FMod::MetadataTimer = 0;
         }
@@ -98,24 +98,22 @@ function VideoRenderer::startMetadataDisplay(%this, %fadeoutVolume) {
             FMod.FadeOutVolume();
         }
         $ETS::VideoRenderer::MusicStopped = 1;
-        if (!(%this.getPlayWithPlaylist())) {
-            if (($ETS::VideoRenderer::MetadataTimer == 0.0)) {
-                $ETS::VideoRenderer::MetadataTimer = %this.schedule(500, "updateVideoMetadata");
-            }
+        if (!(%this.getPlayWithPlaylist()) && (0.0 == $ETS::VideoRenderer::MetadataTimer)) {
+            $ETS::VideoRenderer::MetadataTimer = "updateVideoMetadata".schedule(%this, 500);
         }
     }
 };
 function VideoRenderer::stopFModMusic(%this) {
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (!(fmodIsPlaying())) {
         return;
     }
-    %this.startMetadataDisplay(1);
+    1.startMetadataDisplay(%this);
 };
 function VideoRenderer::startFModMusic(%this) {
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (!(fmodIsPlaying())) {
@@ -128,7 +126,7 @@ function VideoRenderer::startFModMusic(%this) {
     }
 };
 function VideoRenderer::updateVideoMetadata(%this) {
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     %this.stopFModMusic();
@@ -136,32 +134,32 @@ function VideoRenderer::updateVideoMetadata(%this) {
     %title = %this.getTitle();
     %album = %this.getAlbum();
     %current = %artist @ " " @ %title @ " " @ %album;
-    if ((0.0 != strcmp(%this.videoMetaData, %current))) {
+    if ((strcmp(%this.videoMetaData, %current) != 0.0)) {
         %this.videoMetaData = %current;
-        if ((0.0 != strcmp(%this.videoMetaData, ""))) {
-            MusicHud.displayMetaData(%artist, %title, %album, "", %this.isDoppelgangerSite());
+        if ((strcmp(%this.videoMetaData, "") != 0.0)) {
+            %this.isDoppelgangerSite().displayMetaData(MusicHud, %artist, %title, %album, "");
         }
     }
     cancel($ETS::VideoRenderer::MetadataTimer);
     $ETS::VideoRenderer::MetadataTimer = 0;
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "FFMPEGRenderer"))) {
-        $ETS::VideoRenderer::MetadataTimer = %this.schedule(2000, "updateVideoMetadata");
+    if ((strstr(%this.getNamespaceList(), "FFMPEGRenderer") == -(1.0))) {
+        $ETS::VideoRenderer::MetadataTimer = "updateVideoMetadata".schedule(%this, 2000);
     }
 };
 function VideoRenderer::onError(%this) {
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (!(%this.videoRetryScdId $= "")) {
     }
-    if ((0.0 != %this.videoRetryScdId)) {
+    if ((%this.videoRetryScdId != 0.0)) {
         cancel(%this.videoRetryScdId);
     }
     %this.videoRetryScdId = 0;
-    if ((0.0 > $VideoRendererLoadable)) {
+    if (($VideoRendererLoadable > 0.0)) {
     }
     if (!(%this.getPlayWithPlaylist())) {
-        %this.videoRetryScdId = %this.schedule(10000, "VideoRetry");
+        %this.videoRetryScdId = "VideoRetry".schedule(%this, 10000);
     }
     %this.startFModMusic();
 };
@@ -169,7 +167,7 @@ function VideoRenderer::VideoRetry(%this) {
     if (!(isObject(%this))) {
         return;
     }
-    if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
+    if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         return;
     }
     if (%this.getPlayWithPlaylist()) {
@@ -202,18 +200,18 @@ function clientCmdStartSlavePlaying(%slaveGhost, %videoGhost) {
     doStartSlavePlaying(%slaveGhost, %videoGhost, 1);
 };
 function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry) {
-    %video = ServerConnection.resolveGhostID(%videoGhost);
+    %video = %videoGhost.resolveGhostID(ServerConnection);
     log("media", "debug", "doStartVideoPlaying(" @ %video @ ", " @ %playIndex @ ", \"" @ %videoURL @ "\")");
     if (isObject(%video)) {
-        if ((0.0 != $CSSpaceInfo)) {
+        if (($CSSpaceInfo != 0.0)) {
             $CSSpaceInfo.videoplayer = %video;
         }
         %video.unloadVideoRenderer();
         if (!(%videoURL $= "")) {
             if (!(%videoURL $= "")) {
-                %video.setMediaFile(%videoURL);
+                %videoURL.setMediaFile(%video);
             }
-            %video.setNextPlayIndex(%playIndex);
+            %playIndex.setNextPlayIndex(%video);
             %video.loadVideoRenderer();
             %mediaType = "";
             if (strstr(%videoURL, "v=")) {
@@ -229,29 +227,29 @@ function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry) {
         if (CustomSpaceClient::isOwner()) {
         }
         if (!(%videoURL $= "")) {
-            CSMediaDisplay.syncPlayingMediaStream(%videoURL);
+            %videoURL.syncPlayingMediaStream(CSMediaDisplay);
         }
     }
-    if ((0.0 > %retry)) {
+    if ((%retry > 0.0)) {
         log("media", "info", "client not ready for doStartVideoPlaying. Rescheduling.");
-        schedule(1000, 0, doStartVideoPlaying, %videoGhost, %playIndex, %videoURL, (1.0 - %retry));
+        schedule(1000, 0, doStartVideoPlaying, %videoGhost, %playIndex, %videoURL, (%retry - 1.0));
     }
 };
 function doStartSlavePlaying(%slaveGhost, %videoGhost, %retry) {
-    %slave = ServerConnection.resolveGhostID(%slaveGhost);
+    %slave = %slaveGhost.resolveGhostID(ServerConnection);
     log("media", "debug", "doStartSlavePlaying(" @ %slave @ ", \"" @ %videoGhost @ "\")");
     if (isObject(%slave)) {
         %slave.unloadVideoRenderer();
-        %slave.setMediaFile(%videoGhost);
+        %videoGhost.setMediaFile(%slave);
         %slave.loadVideoRenderer();
     }
-    if ((0.0 > %retry)) {
+    if ((%retry > 0.0)) {
         log("media", "info", "client not ready for doStartSlavePlaying. Rescheduling.");
-        schedule(1000, 0, doStartSlavePlaying, %slaveGhost, %videoGhost, (1.0 - %retry));
+        schedule(1000, 0, doStartSlavePlaying, %slaveGhost, %videoGhost, (%retry - 1.0));
     }
 };
 function clientCmdStopVideoPlaying(%videoGhost) {
-    %video = ServerConnection.resolveGhostID(%videoGhost);
+    %video = %videoGhost.resolveGhostID(ServerConnection);
     log("media", "debug", "clientCmdStopVideoPlaying videoGhost: " @ %videoGhost @ " video: " @ %video);
     if (isObject(%video)) {
         %video.unloadVideoRenderer();
@@ -259,10 +257,10 @@ function clientCmdStopVideoPlaying(%videoGhost) {
 };
 function clientCmdVideoForceToPlaylistIndex(%videoGhost, %playIndex) {
     log("media", "debug", "Force video index to " @ %playIndex);
-    %video = ServerConnection.resolveGhostID(%videoGhost);
+    %video = %videoGhost.resolveGhostID(ServerConnection);
     if (isObject(%video)) {
         %video.unload();
-        %video.setNextPlayIndex(%playIndex);
+        %playIndex.setNextPlayIndex(%video);
         %video.load();
     }
 };

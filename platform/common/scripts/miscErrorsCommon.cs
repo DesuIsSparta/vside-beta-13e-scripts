@@ -1,11 +1,11 @@
 safeEnsureScriptObject("StringMap", "gStompedObjectNames");
 function onObjectNameStomped(%name, %stompeeID, %likeleyStomperID) {
-    gStompedObjectNames.put(gStompedObjectNames.size() @ " " @ %name, %stompeeID @ " " @ %likeleyStomperID);
+    %stompeeID @ " " @ %likeleyStomperID.put(gStompedObjectNames, gStompedObjectNames.size() @ " " @ %name);
 };
 function displayStompedObjectNameErrors() {
     if (!($ETS::devMode)) {
     }
-    if ((0.0 == gStompedObjectNames.size())) {
+    if ((gStompedObjectNames.size() == 0.0)) {
         return;
     }
     schedule(0, 0, "displayStompedObjectNameErrorsReally");
@@ -19,8 +19,8 @@ function displayStompedObjectNameErrorsReally() {
     %count = gStompedObjectNames.size();
     %realCount = 0;
     %n = 0;
-    if ((%count < %n)) {
-        %name = getWord(gStompedObjectNames.getKey(%n), 1);
+    while ((%n < %count)) {
+        %name = getWord(%n.getKey(gStompedObjectNames), 1);
         %skip = 0;
         if ((%name $= "ClientSeatDisplayData")) {
             %skip = 1;
@@ -29,19 +29,19 @@ function displayStompedObjectNameErrorsReally() {
             %skip = 1;
         }
         if (!(%skip)) {
-            %realCount = (1.0 + %realCount);
+            %realCount = (%realCount + 1.0);
             %body = %body @ "\n" @ "";
             %body = %body @ %n;
             %body = %body @ " " @ "\"" @ %name @ "\"";
-            %body = %body @ " " @ "-" @ " " @ getDebugString(getWord(gStompedObjectNames.getValue(%n), 1));
-            %body = %body @ " " @ "stomped" @ " " @ getDebugString(getWord(gStompedObjectNames.getValue(%n), 0));
+            %body = %body @ " " @ "-" @ " " @ getDebugString(getWord(%n.getValue(gStompedObjectNames), 1));
+            %body = %body @ " " @ "stomped" @ " " @ getDebugString(getWord(%n.getValue(gStompedObjectNames), 0));
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    if ((0.0 > %realCount)) {
+    if ((%realCount > 0.0)) {
         %mb = MessageBoxOK(%title, %body, "").window;
-        (%count < %n);
-        %mb.resize(800, 200);
+        (%n < %count);
+        200.resize(%mb, 800);
         %mb.resizeWidth = 1;
         %mb.resizeHeight = 1;
     }

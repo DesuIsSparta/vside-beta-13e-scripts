@@ -77,7 +77,7 @@ function doCredits() {
     %text = credits_AddName(%text, "Tom N.");
     %text = credits_AddName(%text, "Tracie R.");
     %text = credits_AddName(%text, "Willy B.");
-    LoginCreditsText.setText(%text);
+    %text.setText(LoginCreditsText);
     $gCreditsTickDirection = -($gCreditsTickDirection);
     creditsTick();
 };
@@ -86,18 +86,18 @@ function creditsTick() {
     cancel($gCreditsTimerID);
     %y = getWord(LoginCreditsText, position, 1);
     %h = getWord(LoginCreditsText, extent, 1);
-    if ((0.0 < $gCreditsTickDirection)) {
+    if (($gCreditsTickDirection < 0.0)) {
     }
-    if ((0.0 < (%h + %y))) {
+    if (((%y + %h) < 0.0)) {
         return;
     }
-    if ((0.0 > $gCreditsTickDirection)) {
+    if (($gCreditsTickDirection > 0.0)) {
     }
-    if ((157.0 > %y)) {
+    if ((%y > 157.0)) {
         return;
     }
-    %y = (($gCreditsTickDirection * $gCreditsTickPixels) + %y);
-    LoginCreditsText.reposition(0, %y);
+    %y = (%y + ($gCreditsTickPixels * $gCreditsTickDirection));
+    %y.reposition(LoginCreditsText, 0);
     $gCreditsTimerID = schedule($gCreditsTickPeriod, 0, "creditsTick");
 };
 function credits_AddSection(%dry, %name) {

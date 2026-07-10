@@ -5,6 +5,6 @@ function convertDif2Dae() {
         scale = "1 1 1";
         interiorFile = "projects/vside/worlds/lounge/shapes/NV_apartmentb001.dif";
     };
-    %obj.exportToCollada(0);
-    MissionGroup.add(%obj);
+    0.exportToCollada(%obj);
+    %obj.add(MissionGroup);
 };

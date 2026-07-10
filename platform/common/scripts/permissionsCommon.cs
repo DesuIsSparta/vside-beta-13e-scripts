@@ -2,21 +2,21 @@ function roles::maskhaspermission(%rolesMask, %permName) {
     return rolesPermissionCheck(%permName, %rolesMask);
 };
 function Player::isSuperMod(%this) {
-    if (%this.hasRoleString("moderator")) {
+    if ("moderator".hasRoleString(%this)) {
     }
-    return %this.hasRoleString("staff");
+    return "staff".hasRoleString(%this);
 };
 function isObjectAndHasPermission_Warn(%obj, %permName) {
     if (!(isObject(%obj))) {
         error(getScopeName() @ " " @ "- not an object." @ " " @ getDebugString(%obj) @ " " @ %permName @ " " @ getTrace());
         return 0;
     }
-    return %obj.rolesPermissionCheckWarn(%permName);
+    return %permName.rolesPermissionCheckWarn(%obj);
 };
 function isObjectAndHasPermission_NoWarn(%obj, %permName) {
     if (!(isObject(%obj))) {
         error(getScopeName() @ " " @ "- not an object." @ " " @ getDebugString(%obj) @ " " @ %permName @ " " @ getTrace());
         return 0;
     }
-    return %obj.rolesPermissionCheckNoWarn(%permName);
+    return %permName.rolesPermissionCheckNoWarn(%obj);
 };

@@ -5,15 +5,15 @@ datablock CameraData(Observer) {
     cameraMaxFov = 120;
 };
 function Observer::onTrigger(%this, %obj, %unused, %state) {
-    if ((0.0 == %state)) {
+    if ((%state == 0.0)) {
         return;
     }
-    %client = Observer.getControllingClient(%obj);
+    %client = %obj.getControllingClient();
     if ((%obj.mode $= "Observer")) {
     }
     if ((%obj.mode $= "Corpse")) {
         %client.spawnPlayer();
-        %this.setMode(%obj, "Observer");
+        "Observer".setMode(%this, %obj);
     }
 };
 function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3) {
@@ -22,13 +22,13 @@ function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3) {
     }
     if ((%mode $= "Corpse")) {
         %transform = %arg1.getTransform();
-        %obj.setOrbitMode(%arg1, %transform, 0.5, 4.5, 4.5);
+        4.5.setOrbitMode(%obj, %arg1, %transform, 0.5, 4.5);
     }
     %obj.mode = %mode;
 };
 function Camera::onAdd(%this, %obj) {
-    %this.setMode(%this.mode);
+    %this.mode.setMode(%this);
 };
 function Camera::setMode(%this, %mode, %arg1, %arg2, %arg3) {
-    %this.getDataBlock().setMode(%this, %mode, %arg1, %arg2, %arg3);
+    %arg3.setMode(%this.getDataBlock(), %this, %mode, %arg1, %arg2);
 };

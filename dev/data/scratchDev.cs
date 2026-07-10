@@ -9,24 +9,24 @@ function fakeBuddyInfo(%friends, %faves, %fans) {
     UserListFavorites.deleteValuesAsObjects();
     UserListFans.deleteValuesAsObjects();
     %n = 0;
-    if ((%friends < %n)) {
-        %record = getFakeBuddyRecord("fakefriend" @ " " @ formatInt("%0.4d", (%n - %friends)));
-        UserListFriends.put(%record.name, %record);
-        %n = (1.0 + %n);
+    while ((%n < %friends)) {
+        %record = getFakeBuddyRecord("fakefriend" @ " " @ formatInt("%0.4d", (%friends - %n)));
+        %record.put(UserListFriends, %record.name);
+        %n = (%n + 1.0);
     }
     %n = 0;
-    (%friends < %n);
-    if ((%faves < %n)) {
+    (%n < %friends);
+    while ((%n < %faves)) {
         %record = getFakeBuddyRecord("fakeFave" @ " " @ formatInt("%0.4d", %n));
-        UserListFavorites.put(%record.name, %record);
-        %n = (1.0 + %n);
+        %record.put(UserListFavorites, %record.name);
+        %n = (%n + 1.0);
     }
     %n = 0;
-    (%faves < %n);
-    if ((%fans < %n)) {
+    (%n < %faves);
+    while ((%n < %fans)) {
         %record = getFakeBuddyRecord("fakeFan" @ " " @ formatInt("%0.4d", %n));
-        UserListFans.put(%record.name, %record);
-        %n = (1.0 + %n);
+        %record.put(UserListFans, %record.name);
+        %n = (%n + 1.0);
     }
 };
 function getFakeBuddyRecord(%name) {
@@ -58,90 +58,82 @@ function dev_TestMLText(%onOrOff, %method) {
         extent = playGui.getExtent();
         profile = ETSNonModalProfile;
     };
-    playGui.add(geMLTest);
+    geMLTest.add(playGui);
     if (isObject(geMLTestArray)) {
-        geMLTest.delete(geMLTestArray);
+        geMLTestArray.delete();
     }
     new GuiArray2Ctrl(geMLTestArray) {
-        extent = geMLTest.getExtent(playGui);
+        extent = playGui.getExtent();
         spacing = 0;
         inRows = 0;
         profile = ETSNonModalProfile;
     };
-    playGui.add(geMLTestArray);
-    if ((0.0 == %method)) {
+    geMLTestArray.add(playGui);
+    if ((%method == 0.0)) {
         %text = "";
         if (%onOrOff) {
             %n = 0;
-            if ((%numLines < %n)) {
+            while ((%n < %numLines)) {
                 %text = %text @ %method[%lineText @ %method] @ "\n";
-                %n = (1.0 + %n);
+                %n = (%n + 1.0);
             }
         }
-        geMLTest.setText(%text);
+        %text.setText(geMLTest);
     }
-    if ((1.0 == %method)) {
-        if (%onOrOff) {
-            childrenExtent = (1.0 / getWord(playGui.getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-            (%numLines < %n);
-            numRowsOrCols = 1 @ geMLTestArray;
-            childrenClassName = "GuiMLTextCtrl" @ geMLTestArray;
-            geMLTestArray.setNumChildren(%numLines);
-            %n = 0;
-            if ((%numLines < %n)) {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setText(%method[%lineText @ %method]);
-                %n = (1.0 + %n);
-            }
+    if ((%method == 1.0) && %onOrOff) {
+        childrenExtent = (getWord(playGui.getExtent(), 0) / 1.0) @ " " @ 16 @ geMLTestArray;
+        (%n < %numLines);
+        numRowsOrCols = 1 @ geMLTestArray;
+        childrenClassName = "GuiMLTextCtrl" @ geMLTestArray;
+        %numLines.setNumChildren(geMLTestArray);
+        %n = 0;
+        while ((%n < %numLines)) {
+            %child = %n.getObject(geMLTestArray);
+            %child.profile = ETSNonModalProfile;
+            %method[%lineText @ %method].setText(%child);
+            %n = (%n + 1.0);
         }
     }
-    if ((2.0 == %method)) {
-        if (%onOrOff) {
-            %child.childrenExtent = (1.0 / getWord(playGui.getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-            (%numLines < %n);
-            %child.numRowsOrCols = 1 @ geMLTestArray;
-            %child.childrenClassName = "GuiTextCtrl" @ geMLTestArray;
-            geMLTestArray.setNumChildren(%numLines);
-            %n = 0;
-            if ((%numLines < %n)) {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setText(%method[%lineText @ %method]);
-                %n = (1.0 + %n);
-            }
+    if ((%method == 2.0) && %onOrOff) {
+        %child.childrenExtent = (getWord(playGui.getExtent(), 0) / 1.0) @ " " @ 16 @ geMLTestArray;
+        (%n < %numLines);
+        %child.numRowsOrCols = 1 @ geMLTestArray;
+        %child.childrenClassName = "GuiTextCtrl" @ geMLTestArray;
+        %numLines.setNumChildren(geMLTestArray);
+        %n = 0;
+        while ((%n < %numLines)) {
+            %child = %n.getObject(geMLTestArray);
+            %child.profile = ETSNonModalProfile;
+            %method[%lineText @ %method].setText(%child);
+            %n = (%n + 1.0);
         }
     }
-    if ((3.0 == %method)) {
-        if (%onOrOff) {
-            %child.childrenExtent = (%numCols / getWord(playGui.getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-            (%numLines < %n);
-            %child.numRowsOrCols = %numCols @ geMLTestArray;
-            %child.childrenClassName = "GuiButtonCtrl" @ geMLTestArray;
-            geMLTestArray.setNumChildren((%numCols * %numLines));
-            %n = 0;
-            if (((%numCols * %numLines) < %n)) {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setText(%method[%lineText @ %method]);
-                %n = (1.0 + %n);
-            }
+    if ((%method == 3.0) && %onOrOff) {
+        %child.childrenExtent = (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16 @ geMLTestArray;
+        (%n < %numLines);
+        %child.numRowsOrCols = %numCols @ geMLTestArray;
+        %child.childrenClassName = "GuiButtonCtrl" @ geMLTestArray;
+        (%numLines * %numCols).setNumChildren(geMLTestArray);
+        %n = 0;
+        while ((%n < (%numLines * %numCols))) {
+            %child = %n.getObject(geMLTestArray);
+            %child.profile = ETSNonModalProfile;
+            %method[%lineText @ %method].setText(%child);
+            %n = (%n + 1.0);
         }
     }
-    if ((4.0 == %method)) {
-        if (%onOrOff) {
-            %child.childrenExtent = (%numCols / getWord(playGui.getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-            ((%numCols * %numLines) < %n);
-            %child.numRowsOrCols = %numCols @ geMLTestArray;
-            %child.childrenClassName = "GuiBitmapCtrl" @ geMLTestArray;
-            geMLTestArray.setNumChildren((%numCols * %numLines));
-            %n = 0;
-            if (((%numCols * %numLines) < %n)) {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setBitmap(%method[%lineText @ %method]);
-                %n = (1.0 + %n);
-            }
+    if ((%method == 4.0) && %onOrOff) {
+        %child.childrenExtent = (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16 @ geMLTestArray;
+        (%n < (%numLines * %numCols));
+        %child.numRowsOrCols = %numCols @ geMLTestArray;
+        %child.childrenClassName = "GuiBitmapCtrl" @ geMLTestArray;
+        (%numLines * %numCols).setNumChildren(geMLTestArray);
+        %n = 0;
+        while ((%n < (%numLines * %numCols))) {
+            %child = %n.getObject(geMLTestArray);
+            %child.profile = ETSNonModalProfile;
+            %method[%lineText @ %method].setBitmap(%child);
+            %n = (%n + 1.0);
         }
     }
 };
@@ -153,14 +145,14 @@ function dev_clientSideSceneObjectsTick() {
     if (!(isObject($gClientSideSceneObjectsGroup))) {
         $gClientSideSceneObjectsGroup = new SimGroup("");;
         0;
-        ServerConnection.add($gClientSideSceneObjectsGroup);
+        $gClientSideSceneObjectsGroup.add(ServerConnection);
         %a = new StaticShape("") {
             dataBlock = 0 @ "db_CounterDie";
         };
-        $gClientSideSceneObjectsGroup.add(%a);
+        %a.add($gClientSideSceneObjectsGroup);
     }
     %windowCoord = Canvas.getCursorPos();
-    %startPoint = playGui.unproject(%windowCoord);
+    %startPoint = %windowCoord.unproject(playGui);
     %camTran = playGui.getLastCameraTransform();
     %camPos = getWords(%camTran, 0, 2);
     %camPtVec = VectorSub(%startPoint, %camPos);
@@ -168,19 +160,19 @@ function dev_clientSideSceneObjectsTick() {
     %checkDistance = 200;
     %endPoint = VectorScale(%camPtVec, %checkDistance);
     %endPoint = VectorAdd(%startPoint, %endPoint);
-    %possibleColiders = ($TypeMasks::WaterObjectType | ($TypeMasks::InteriorObjectType | 0));
+    %possibleColiders = ((0 | $TypeMasks::InteriorObjectType) | $TypeMasks::WaterObjectType);
     %result = containerRayCast(%startPoint, %endPoint, %possibleColiders, $player, 1);
     %hitObject = getWord(%result, 0);
     if (isObject(%hitObject)) {
         %hitPosition = getWords(%result, 1, 3);
     }
     %hitPosition = VectorAdd(%startPoint, VectorScale(%camPtVec, 4));
-    %t = (0.1 * $gClientSideSceneObjectsTickNum);
-    %a = $gClientSideSceneObjectsGroup.getObject(0);
-    %a.setTransform(MatrixMultiply(MatrixMultiply(playGui.getLastCameraTransform(), "0 2 0 1 0 0" @ " " @ %t), "0 0 0 1 0" @ " " @ (0.0 * $gClientSideSceneObjectsTickNum)));
-    %a.setTransform(%hitPosition @ " " @ "0 0 1" @ " " @ %t);
-    $gClientSideSceneObjectsTickNum = (1.0 + $gClientSideSceneObjectsTickNum);
-    if ((0.0 == (2 % $gClientSideSceneObjectsTickNum))) {
+    %t = ($gClientSideSceneObjectsTickNum * 0.1);
+    %a = 0.getObject($gClientSideSceneObjectsGroup);
+    MatrixMultiply(MatrixMultiply(playGui.getLastCameraTransform(), "0 2 0 1 0 0" @ " " @ %t), "0 0 0 1 0" @ " " @ ($gClientSideSceneObjectsTickNum * 0.0)).setTransform(%a);
+    %hitPosition @ " " @ "0 0 1" @ " " @ %t.setTransform(%a);
+    $gClientSideSceneObjectsTickNum = ($gClientSideSceneObjectsTickNum + 1.0);
+    if ((($gClientSideSceneObjectsTickNum % 2) == 0.0)) {
         // unhandled opcode 1167 at 0x00000816
         $gClientSideSceneObjectsTickNum = unitCubeGreyDataBlock;
     }
@@ -194,12 +186,12 @@ function standardizeWindowAspect() {
     %currentX = getWord($UserPref::Video::Resolution, 0);
     %currentY = getWord($UserPref::Video::Resolution, 1);
     %currentBPP = getWord($UserPref::Video::Resolution, 2);
-    %proportionX = (%standardX / %currentX);
-    %proportionY = (%standardY / %currentY);
-    if ((%proportionY > %proportionX)) {
-        %currentY = (%standardY * %proportionX);
+    %proportionX = (%currentX / %standardX);
+    %proportionY = (%currentY / %standardY);
+    if ((%proportionX > %proportionY)) {
+        %currentY = (%proportionX * %standardY);
     }
-    %currentX = (%standardX * %proportionY);
+    %currentX = (%proportionY * %standardX);
     setScreenMode(%currentX, %currentY, %currentBPP, 0);
 };
 function tryArray() {
@@ -207,9 +199,9 @@ function tryArray() {
         childrenClassName = 0 @ "GuiButtonCtrl";
         spacing = 10;
     };
-    %arrayCtrl.setChildrenExtents("20 40 80 160", 20);
-    %arrayCtrl.setNumChildren(20);
-    LoginGui.add(%arrayCtrl);
+    20.setChildrenExtents(%arrayCtrl, "20 40 80 160");
+    20.setNumChildren(%arrayCtrl);
+    %arrayCtrl.add(LoginGui);
 };
 function tryGuiTable() {
     if (isObject(erezG)) {
@@ -222,7 +214,7 @@ function tryGuiTable() {
         childrenClassName = "GuiMLTextCtrl";
         spacing = 2;
     };
-    LoginGui.add(%table);
+    %table.add(LoginGui);
 };
 function tryDataTable() {
     if (isObject(erezD)) {
@@ -233,19 +225,19 @@ function tryDataTable() {
 function tryTable() {
     tryGuiTable();
     tryDataTable();
-    erezG.setDataTable(erezD);
-    erezD.addColumn("username", "User Names", "string", 100);
-    erezD.addColumn("population", "Population", "number", 200);
-    erezD.addColumn("online", "Online", "icon", 50);
-    erezD.addIconToColumn("online", "online", "platform/client/ui/checkmark_green");
-    erezD.addIconToColumn("online", "idle", "platform/client/ui/ellipsis_yellow");
-    erezD.addIconToColumn("online", "offline", "platform/client/ui/arrow_red_right");
-    erezD.addRows(5);
-    erezD.setRowDataByIndex(0, "username" @ "\t" @ "erez" @ "\t" @ "erez" @ "\n" @ "population" @ "\t" @ 30 @ "\t" @ 30 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]");
-    erezD.setRowDataByIndex(1, "username" @ "\t" @ "ship" @ "\t" @ "<b>ship" @ "\n" @ "population" @ "\t" @ 70 @ "\t" @ 70 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]");
-    erezD.setRowDataByIndex(2, "username" @ "\t" @ "boat" @ "\t" @ "<color:ff0000>boat" @ "\n" @ "population" @ "\t" @ 60 @ "\t" @ 60 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]");
-    erezD.setRowDataByIndex(3, "username" @ "\t" @ "band" @ "\t" @ "<clip:40>band</clip>" @ "\n" @ "population" @ "\t" @ 20 @ "\t" @ 20 @ "\n" @ "online" @ "\t" @ "idle" @ "\t" @ "[ICON]");
-    erezD.setRowDataByIndex(4, "username" @ "\t" @ "dunk" @ "\t" @ "<color:00ff00>dunk" @ "\n" @ "population" @ "\t" @ 90 @ "\t" @ 90 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]");
+    erezD.setDataTable(erezG);
+    100.addColumn(erezD, "username", "User Names", "string");
+    200.addColumn(erezD, "population", "Population", "number");
+    50.addColumn(erezD, "online", "Online", "icon");
+    "platform/client/ui/checkmark_green".addIconToColumn(erezD, "online", "online");
+    "platform/client/ui/ellipsis_yellow".addIconToColumn(erezD, "online", "idle");
+    "platform/client/ui/arrow_red_right".addIconToColumn(erezD, "online", "offline");
+    5.addRows(erezD);
+    "username" @ "\t" @ "erez" @ "\t" @ "erez" @ "\n" @ "population" @ "\t" @ 30 @ "\t" @ 30 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 0);
+    "username" @ "\t" @ "ship" @ "\t" @ "<b>ship" @ "\n" @ "population" @ "\t" @ 70 @ "\t" @ 70 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 1);
+    "username" @ "\t" @ "boat" @ "\t" @ "<color:ff0000>boat" @ "\n" @ "population" @ "\t" @ 60 @ "\t" @ 60 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 2);
+    "username" @ "\t" @ "band" @ "\t" @ "<clip:40>band</clip>" @ "\n" @ "population" @ "\t" @ 20 @ "\t" @ 20 @ "\n" @ "online" @ "\t" @ "idle" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 3);
+    "username" @ "\t" @ "dunk" @ "\t" @ "<color:00ff00>dunk" @ "\n" @ "population" @ "\t" @ 90 @ "\t" @ 90 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 4);
     erezD.updateListeners();
 };
 function devAvatarNamesNormal() {
@@ -254,473 +246,473 @@ function devAvatarNamesNormal() {
 function devAvatarNamesBlues() {
     %n = 0;
     %n[$gDevNameColors @ %n] = "0.0 0.0 1.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.2 0.2 0.9 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.3 0.3 0.8 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.4 0.4 0.8 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.5 0.5 0.9 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.6 0.6 0.9 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.8 0.8 0.9 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.9 0.9 1.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     numNameColors = %n @ TheShapeNameHud;
 };
 function devAvatarNamesGreens() {
     %n = 0;
     %n[$gDevNameColors @ %n] = "0.0 0.6 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.0 0.7 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.0 0.8 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.0 0.9 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.3 0.9 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.5 0.9 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.6 0.9 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.7 1.0 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.8 1.0 0.0 1.0";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     numNameColors = %n @ TheShapeNameHud;
 };
 function devAvatarNamesIcons() {
     %n = 0;
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/star_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/star_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/star_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/star_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/pending_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/pending_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/pending_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/pending_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/hud_scores_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/hud_scores_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/hud_scores_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/hud_scores_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/buddies_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/buddies_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/buddies_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/buddies_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/buildingDir_heart_blue";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/buildingDir_heart_green";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/buildingDir_heart_white";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     numNameColors = %n @ TheShapeNameHud;
 };
 function devAvatarNamesColorsAndIcons() {
     %n = 0;
     %n[$gDevNameColors @ %n] = "0.0 0.0 1.0 1.0 platform/client/buttons/star_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.2 0.2 0.9 1.0 platform/client/buttons/star_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.3 0.3 0.8 1.0 platform/client/buttons/star_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.4 0.4 0.8 1.0 platform/client/buttons/star_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.5 0.5 0.9 1.0 platform/client/buttons/pending_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.6 0.6 0.9 1.0 platform/client/buttons/pending_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.8 0.8 0.9 1.0 platform/client/buttons/pending_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.9 0.9 1.0 1.0 platform/client/buttons/pending_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/buttons/hud_scores_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.0 0.6 0.0 1.0 platform/client/buttons/hud_scores_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.0 0.7 0.0 1.0 platform/client/buttons/hud_scores_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.0 0.8 0.0 1.0 platform/client/buttons/hud_scores_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.0 0.9 0.0 1.0 platform/client/buttons/buddies_d";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.3 0.9 0.0 1.0 platform/client/buttons/buddies_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.5 0.9 0.0 1.0 platform/client/buttons/buddies_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.6 0.9 0.0 1.0 platform/client/buttons/buddies_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.7 1.0 0.0 1.0 platform/client/ui/buildingDir_heart_blue";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "0.8 1.0 0.0 1.0 platform/client/ui/buildingDir_heart_green";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/buildingDir_heart_white";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_h";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_i";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     %n[$gDevNameColors @ %n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_n";
-    %n = (1.0 + %n);
+    %n = (%n + 1.0);
     numNameColors = %n @ TheShapeNameHud;
 };
 $gAnimTestNum = 0;
 $gAnimTestCur = 0;
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "bcidl1a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "bwlkf1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "iang";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "iwlkf1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "narcadeidl";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nbassr1e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nblext";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nblidl1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nbrshft";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nbtwlkl";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nclbent";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nclbext";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nclbidl1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ncutout01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ncutout02";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nd2step";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nd2stepx";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndhtoe";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndlnwit";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndrumr1e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndshfle";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndslpsld";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndvstepb";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndwlkit";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ndxhop";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo02";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo03";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo04";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo05";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo06";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo07";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngo08";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr10a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr11a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr12a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr13a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr14a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr15b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr16b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr17b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr18b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr19b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr1e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr20b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr2e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr3e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr4e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr5e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr6e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr7e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr8a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglr9a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglridl1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglrjmp01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglrside01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglrwlkb01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrglrwlkf01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr10e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr11e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr12a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr13a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr14a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr15a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr17a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr18a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr1e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr22a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr25b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr28b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr29b";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr2e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr3e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr5e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr6e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr7e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr8e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ngtrgr9e";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nhead_LR";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nhead_UD";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nhead_ss";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nhi5ee";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nhi5er";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nlsnext";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nlyidl1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmcheer";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmcheer1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmchug";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmdip";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmdrink";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmflrt";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmlol";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmlowdnc";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmmic";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmomg";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmpitch";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmpiv";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmroll";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmsitbend";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmsitpiv";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmtoast";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmupdnc";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmupkis";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmupyaw";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmwave";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nmwlk";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwbbattack";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwidle";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwjabattack";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwjabdefend";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwjmp";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwlongstun";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwpowerattack";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwpowerdefend";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwsde";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwshortstun";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwtaunt01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwtaunt02";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwwlkb";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "npwwlkf";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nreachdown";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nrlidl1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nrsbbeaux";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nrsbloop";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nrsbreaux";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nrsbsham";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsitlsn";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsittlk";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nspinbottle";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nssext";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumobbattack";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumoidle";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumojabattack";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumojabdefend";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumojmp";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumolongstun";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumopowerattack";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumopowerdefend";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumoshortstun";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumostun";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumotaunt01";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumotaunt02";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumowlkb";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumowlkf";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nsumowlks";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ntalk";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ntapglass";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nthink";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ntyidl1a";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ntyrsml";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ntyrturn";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nvom";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nxrcst";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nzidl1";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "nzwlk";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ygunsling";
-$gAnimTestNum = (1.0 + $gAnimTestNum);
+$gAnimTestNum = ($gAnimTestNum + 1.0);
 function animTest_Again() {
     %anim = $player.getGender() @ $gAnimTestCur[$gAnimTestAnim @ $gAnimTestCur];
-    $player.playAnim(%anim);
+    %anim.playAnim($player);
     echo(getScopeName() @ " " @ "-" @ " " @ %anim);
 };
 function animTest_Next() {
-    $gAnimTestCur = (1.0 + $gAnimTestCur);
-    if (($gAnimTestNum >= $gAnimTestCur)) {
+    $gAnimTestCur = ($gAnimTestCur + 1.0);
+    if (($gAnimTestCur >= $gAnimTestNum)) {
         $gAnimTestCur = 0;
     }
     animTest_Again();
 };
 function animTest_Prev() {
-    $gAnimTestCur = (1.0 - $gAnimTestCur);
-    if ((0.0 < $gAnimTestCur)) {
-        $gAnimTestCur = (1.0 - $gAnimTestCur);
+    $gAnimTestCur = ($gAnimTestCur - 1.0);
+    if (($gAnimTestCur < 0.0)) {
+        $gAnimTestCur = ($gAnimTestCur - 1.0);
     }
     animTest_Again();
 };
@@ -736,11 +728,11 @@ function timeTest_measure() {
     %elapsedSim = mSubS32(%timeSim, $gTimeTest_StartTimeSim);
     %expectedTimeSim = mAddS32(%timeReal, $gTimeTest_dRealToSim);
     %driftSim = mSubS32(%expectedTimeSim, %timeSim);
-    echo("driftSim is" @ " " @ (0.001 * %driftSim));
-    echo("elapsed real seconds   =" @ " " @ (0.001 * %elapsedReal));
-    echo("elapsed sim  seconds   =" @ " " @ (0.001 * %elapsedSim));
-    echo("driftSim  /elapsedReal =" @ " " @ (%elapsedReal / %driftSim));
-    echo("elapsedSim/elapsedReal =" @ " " @ (%elapsedReal / %elapsedSim));
+    echo("driftSim is" @ " " @ (%driftSim * 0.001));
+    echo("elapsed real seconds   =" @ " " @ (%elapsedReal * 0.001));
+    echo("elapsed sim  seconds   =" @ " " @ (%elapsedSim * 0.001));
+    echo("driftSim  /elapsedReal =" @ " " @ (%driftSim / %elapsedReal));
+    echo("elapsedSim/elapsedReal =" @ " " @ (%elapsedSim / %elapsedReal));
 };
 function dev_TestRequestRetry() {
     %url = "http://winbuild.doppelganger.com/scripts/orion/fakeEnvManagerResponses/failedRequest1.txt";
@@ -752,24 +744,24 @@ function onDoneOrErrorCallback_TestRequestRetry(%request) {
 };
 function sendRequest_ArbitraryTestUrl(%url, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    %request.bindClassName("UniformManagerRequest");
-    %request.setURL(%url);
+    "UniformManagerRequest".bindClassName(%request);
+    %url.setURL(%request);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
 };
 function dev_testURLEncode() {
     %n = 0;
-    if ((256.0 < %n)) {
+    while ((%n < 256.0)) {
         %c = intToChar(%n);
         %d = urlEncode(%c);
         %e = urlDecode(%d);
         echo(formatInt("%3d", %n) @ " " @ %c @ " " @ "->" @ " " @ %d);
         echo(formatInt("%3d", %n) @ " " @ %e @ " " @ "<-" @ " " @ %d);
-        if ((20.0 > %n)) {
+        if ((%n > 20.0)) {
             %gnarly = %gnarly @ %c;
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     echo(%gnarly);
     return %gnarly;
@@ -778,7 +770,7 @@ function dev_ensureRandomItemManager() {
     if (!(isObject(gRandomItemManager))) {
         new ScriptObject(gRandomItemManager);
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add(gRandomItemManager);
+            gRandomItemManager.add(MissionCleanup);
             %request.numItems = 0 @ gRandomItemManager;
         }
     }
@@ -794,7 +786,7 @@ function dev_declareRandomItem(%itemName, %itemWeight) {
     %request.itemName = %itemName @ %n @ gRandomItemManager;
     %request.itemWeight = %itemWeight @ %n @ gRandomItemManager;
     %request.weightsNeedNormalizing = 1 @ gRandomItemManager;
-    %request.numItems = (gRandomItemManager + %request.numItems);
+    %request.numItems = (%request.numItems + gRandomItemManager);
     1.0;
 };
 function dev_getRandomItem() {
@@ -804,25 +796,25 @@ function dev_getRandomItem() {
         gRandomItemManager;
         %totalWeight = 0;
         %n = 0;
-        if ((%request.numItems < %n)) {
-            %request.itemWeightCumulative = (%n @ gRandomItemManager + %request.itemWeight) @ %n @ gRandomItemManager;
+        while ((%n < %request.numItems)) {
+            %request.itemWeightCumulative = (%request.itemWeight + %n @ gRandomItemManager) @ %n @ gRandomItemManager;
             %totalWeight;
-            %totalWeight = (%request.itemWeight + %totalWeight);
+            %totalWeight = (%totalWeight + %request.itemWeight);
             %n @ gRandomItemManager;
-            %n = (1.0 + %n);
+            %n = (%n + 1.0);
             gRandomItemManager;
         }
         %request.totalWeight = %totalWeight @ gRandomItemManager;
-        (%request.numItems < %n);
+        (%n < %request.numItems);
     }
-    %rand = getRandom(0, 1.0, (gRandomItemManager - %request.totalWeight));
+    %rand = getRandom(0, 1.0, (%request.totalWeight - gRandomItemManager));
     gRandomItemManager;
     %n = 0;
-    if ((%request.numItems < %n)) {
-        if ((%request.itemWeightCumulative < %rand)) {
+    while ((%n < %request.numItems)) {
+        if ((%rand < %request.itemWeightCumulative)) {
             return %request.itemName;
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     error("something went wrong.");
     return "";
@@ -834,47 +826,47 @@ function dev_testRandomItems(%iterations) {
     dev_declareRandomItem("C", 1);
     dev_declareRandomItem("D", 3);
     %n = 0;
-    if ((%iterations < %n)) {
+    while ((%n < %iterations)) {
         %item = dev_getRandomItem();
-        %item[%totals @ %item] = (1.0 + %item[%totals @ %item]);
-        %n = (1.0 + %n);
+        %item[%totals @ %item] = (%item[%totals @ %item] + 1.0);
+        %n = (%n + 1.0);
     }
     echo("A -" @ " " @ %n[%totals @ "A"]);
-    echo((%iterations < %n) @ "B -" @ " ");
+    echo((%n < %iterations) @ "B -" @ " ");
     echo("C -" @ " ");
     echo("D -" @ " ");
 };
 function SimObject::getTypeStrings(%this) {
     %types = "";
     %mask = %this.getType();
-    %types = %types @ ($TypeMasks::StaticObjectType & %mask) ? "StaticObjectType " : "";
-    %types = %types @ ($TypeMasks::EnvironmentObjectType & %mask) ? "EnvironmentObjectType " : "";
-    %types = %types @ ($TypeMasks::TerrainObjectType & %mask) ? "TerrainObjectType " : "";
-    %types = %types @ ($TypeMasks::InteriorObjectType & %mask) ? "InteriorObjectType " : "";
-    %types = %types @ ($TypeMasks::WaterObjectType & %mask) ? "WaterObjectType " : "";
-    %types = %types @ ($TypeMasks::TriggerObjectType & %mask) ? "TriggerObjectType " : "";
-    %types = %types @ ($TypeMasks::AntiPortalObjectType & %mask) ? "AntiPortalObjectType " : "";
-    %types = %types @ ($TypeMasks::ZoneBoxObjectType & %mask) ? "ZoneBoxObjectType " : "";
-    %types = %types @ ($TypeMasks::MarkerObjectType & %mask) ? "MarkerObjectType " : "";
-    %types = %types @ ($TypeMasks::GameBaseObjectType & %mask) ? "GameBaseObjectType " : "";
-    %types = %types @ ($TypeMasks::ShapeBaseObjectType & %mask) ? "ShapeBaseObjectType " : "";
-    %types = %types @ ($TypeMasks::CameraObjectType & %mask) ? "CameraObjectType " : "";
-    %types = %types @ ($TypeMasks::StaticShapeObjectType & %mask) ? "StaticShapeObjectType " : "";
-    %types = %types @ ($TypeMasks::PlayerObjectType & %mask) ? "PlayerObjectType " : "";
-    %types = %types @ ($TypeMasks::ItemObjectType & %mask) ? "ItemObjectType " : "";
-    %types = %types @ ($TypeMasks::VehicleObjectType & %mask) ? "VehicleObjectType " : "";
-    %types = %types @ ($TypeMasks::VehicleBlockerObjectType & %mask) ? "VehicleBlockerObjectType " : "";
-    %types = %types @ ($TypeMasks::ProjectileObjectType & %mask) ? "ProjectileObjectType " : "";
-    %types = %types @ ($TypeMasks::ExplosionObjectType & %mask) ? "ExplosionObjectType " : "";
-    %types = %types @ ($TypeMasks::CorpseObjectType & %mask) ? "CorpseObjectType " : "";
-    %types = %types @ ($TypeMasks::DebrisObjectType & %mask) ? "DebrisObjectType " : "";
-    %types = %types @ ($TypeMasks::PhysicalZoneObjectType & %mask) ? "PhysicalZoneObjectType " : "";
-    %types = %types @ ($TypeMasks::StaticTSObjectType & %mask) ? "StaticTSObjectType " : "";
-    %types = %types @ ($TypeMasks::StaticRenderedObjectType & %mask) ? "StaticRenderedObjectType " : "";
-    %types = %types @ ($TypeMasks::DamagableItemObjectType & %mask) ? "DamagableItemObjectType " : "";
-    %types = %types @ ($TypeMasks::AdvertObjectType & %mask) ? "AdvertObjectType " : "";
-    %types = %types @ ($TypeMasks::ConversationObjectType & %mask) ? "ConversationObjectType " : "";
-    %types = %types @ ($TypeMasks::UsableObjectType & %mask) ? "UsableObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticObjectType) ? "StaticObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::EnvironmentObjectType) ? "EnvironmentObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::TerrainObjectType) ? "TerrainObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::InteriorObjectType) ? "InteriorObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::WaterObjectType) ? "WaterObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::TriggerObjectType) ? "TriggerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::AntiPortalObjectType) ? "AntiPortalObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ZoneBoxObjectType) ? "ZoneBoxObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::MarkerObjectType) ? "MarkerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::GameBaseObjectType) ? "GameBaseObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ShapeBaseObjectType) ? "ShapeBaseObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::CameraObjectType) ? "CameraObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticShapeObjectType) ? "StaticShapeObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::PlayerObjectType) ? "PlayerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ItemObjectType) ? "ItemObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::VehicleObjectType) ? "VehicleObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::VehicleBlockerObjectType) ? "VehicleBlockerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ProjectileObjectType) ? "ProjectileObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ExplosionObjectType) ? "ExplosionObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::CorpseObjectType) ? "CorpseObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::DebrisObjectType) ? "DebrisObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::PhysicalZoneObjectType) ? "PhysicalZoneObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticTSObjectType) ? "StaticTSObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticRenderedObjectType) ? "StaticRenderedObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::DamagableItemObjectType) ? "DamagableItemObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::AdvertObjectType) ? "AdvertObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ConversationObjectType) ? "ConversationObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::UsableObjectType) ? "UsableObjectType " : "";
     %types = trim(%types);
     return %types;
 };
@@ -885,16 +877,16 @@ function twitterTest1(%text) {
         %text = "hey there";
     }
     if ((%text $= $gTwitterText)) {
-        $gTwitterTextCount = (1.0 + $gTwitterTextCount);
+        $gTwitterTextCount = ($gTwitterTextCount + 1.0);
         %text = %text @ " " @ $gTwitterTextCount;
     }
     $gTwitterText = %text;
     $gTwitterTextCount = 1;
     %request = new URLPostObject("");;
     0;
-    %request.setURL("https://twitter.com/statuses/update.xml");
-    %request.setBodyParam("status", %text);
-    %request.setUserNameAndPassword("elenzil:etspass777");
+    "https://twitter.com/statuses/update.xml".setURL(%request);
+    %text.setBodyParam(%request, "status");
+    "elenzil:etspass777".setUserNameAndPassword(%request);
     %request.start();
 };
 function GuiControl::snapAndUpToTwitter(%this, %userName, %password, %asBackground, %tile) {
@@ -919,16 +911,16 @@ function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %pass
     if (!(snapshotTool::snapRegion(%region, %fileName))) {
         error(getScopeName() @ " " @ "- Unable to capture region." @ " " @ %region @ " " @ %fileName @ " " @ getTrace());
     }
-    $screenShotNum = (1.0 + $screenShotNum);
+    $screenShotNum = ($screenShotNum + 1.0);
     %uploader = new URLPostObject("");;
     0;
-    %uploader.setProgress(1);
-    %uploader.setURL(%url);
-    %uploader.setUserNameAndPassword(%userName @ ":" @ %password);
-    %uploader.setPostFile("image", %fileName);
-    %uploader.setCustomHeaders("Expect:");
+    1.setProgress(%uploader);
+    %url.setURL(%uploader);
+    %userName @ ":" @ %password.setUserNameAndPassword(%uploader);
+    %fileName.setPostFile(%uploader, "image");
+    "Expect:".setCustomHeaders(%uploader);
     if (%tile) {
-        %uploader.setBodyParam("tile", "true");
+        "true".setBodyParam(%uploader, "tile");
     }
     if (!(%uploader.start())) {
         error(getScopeName() @ " " @ "- Unable to upload photo." @ " " @ %fileName @ " " @ %url @ " " @ getTrace());

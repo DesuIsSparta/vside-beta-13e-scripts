@@ -6,11 +6,11 @@ function doLoginCheck() {
         echo("BENCH: We found PChat. Starting tests in 2 seconds...");
         schedule(10000, 0);
     }
-    if ((200.0 == $iterationsWaited)) {
+    if (($iterationsWaited == 200.0)) {
         error("BENCH->ERROR : Giving up. Waited for 10 minutes and nothing happended");
     }
     echo("BENCH: Nothing yet....");
-    $iterationsWaited = (1.0 + $iterationsWaited);
+    $iterationsWaited = ($iterationsWaited + 1.0);
     doRunTests;
     schedule(3000, 0);
 };
@@ -22,6 +22,6 @@ function doRunTests() {
 };
 function testComplete() {
     echo("BENCH: hot damn! Quit()-ing!");
-    log("general", "info", "tests_complete_memory=" @ (1024.0 / getCurrentMemoryUsage()));
+    log("general", "info", "tests_complete_memory=" @ (getCurrentMemoryUsage() / 1024.0));
     quit();
 };

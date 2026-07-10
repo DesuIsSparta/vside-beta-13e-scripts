@@ -1,27 +1,27 @@
 function worldControlPanel::open(%this) {
-    if (!($player.rolesPermissionCheckNoWarn("staffPanelMain"))) {
+    if (!("staffPanelMain".rolesPermissionCheckNoWarn($player))) {
         return;
     }
-    %this.setVisible(1);
-    playGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(playGui);
     gui_DevOpts_SetTexturesButtons();
 };
 function worldControlPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     return 1;
 };
 function interiorRenderModeNext() {
-    interiorRenderModeSet((1.0 + getInteriorRenderMode()));
+    interiorRenderModeSet((getInteriorRenderMode() + 1.0));
 };
 function interiorRenderModePrev() {
-    interiorRenderModeSet((1.0 - getInteriorRenderMode()));
+    interiorRenderModeSet((getInteriorRenderMode() - 1.0));
 };
 function interiorRenderModeSet(%mode) {
     setInteriorRenderMode(%mode);
     %mode = getInteriorRenderMode();
-    guiCtrlInteriorRenderMode.setValue(%mode);
-    guiCtrlInteriorRenderModeName.setValue(%mode[$interiorRenderModeNames @ %mode]);
+    %mode.setValue(guiCtrlInteriorRenderMode);
+    %mode[$interiorRenderModeNames @ %mode].setValue(guiCtrlInteriorRenderModeName);
 };
 function interiorRenderModeTextChange() {
     interiorRenderModeSet(guiCtrlInteriorRenderMode.getValue());

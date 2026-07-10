@@ -3,14 +3,14 @@ $Net::UpgradeToolAvailable = 1;
 function clientVersion::startUpgrade() {
     echo("We will now upgrade you!");
     %analytic = getAnalytic();
-    %analytic.trackPageView("/client/clientUpdate");
+    "/client/clientUpdate".trackPageView(%analytic);
     launchClientUpdater();
 };
 function clientVersion::checkForUpgrades() {
     if (!(isValidHostAddress($Net::DownloadHost))) {
         return;
     }
-    if ((0.0 == $Net::UpgradeToolAvailable)) {
+    if (($Net::UpgradeToolAvailable == 0.0)) {
     }
     if (!(platformIsFile("bin\\_update.exe"))) {
         $Net::UpgradeToolAvailable = 0;
@@ -20,34 +20,34 @@ function clientVersion::checkForUpgrades() {
     %url = $Net::downloadURL @ "/version_resp.txt";
     new ManagerRequest(clientVersionCheck);
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(clientVersionCheck);
+        clientVersionCheck.add(MissionCleanup);
     }
-    clientVersionCheck.setURL(%url);
-    clientVersionCheck.start(clientVersionCheck);
+    %url.setURL(clientVersionCheck);
+    clientVersionCheck.start();
 };
 function clientVersionCheck::onDone(%this, %unused) {
     %status = findRequestStatus(%this);
     if (!(%status $= "success")) {
         log("Admin", "error", getScopeName() @ " " @ "- status =" @ " " @ %status);
-        %this.schedule(0);
+        0.schedule(%this);
         return delete;
     }
-    isUpToDate(%this.getValue("client_version"));
-    %this.schedule(0);
+    isUpToDate("client_version".getValue(%this));
+    0.schedule(%this);
 };
 function isUpToDate(%available) {
     %buildVersion = formatInt("%d", getBuildVersion());
     %protocolVersion = formatInt("%d", getProtocolVersion());
-    if ((0.0 <= %buildVersion)) {
+    if ((%buildVersion <= 0.0)) {
     }
-    if ((0.0 <= %protocolVersion)) {
+    if ((%protocolVersion <= 0.0)) {
         echo("We're not sure about our own versions. Returning...");
         $Net::upgradeAvailable = 0;
         return 0;
     }
-    if ((%buildVersion > %available)) {
+    if ((%available > %buildVersion)) {
     }
-    if ((%protocolVersion > %available)) {
+    if ((%available > %protocolVersion)) {
         echo("A new client version(" @ %available @ ") is available. We have " @ %buildVersion @ ".");
         $Net::upgradeAvailable = 1;
         return 1;
@@ -59,5 +59,5 @@ function clientVersionCheck::onError(%this) {
     $Net::upgradeAvailable = 0;
     log("Admin", "error", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- error = " @ " " @ %errorName @ " " @ "url = " @ " " @ %this.getURL());
     $Net::upgradeAvailable = 0;
-    %this.schedule(0);
+    0.schedule(%this);
 };

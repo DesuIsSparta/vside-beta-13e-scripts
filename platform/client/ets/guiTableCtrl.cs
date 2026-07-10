@@ -15,19 +15,19 @@ function GuiTableCtrl::Initialize(%this) {
         %bodyArrayContainer = "";
         %this.getBodyArrayCtrl().getParent();
         if (isObject(%headerArray)) {
-            %this.doSetupColumnHeaders(%headerArray);
+            %headerArray.doSetupColumnHeaders(%this);
         }
         warn(getScopeName() @ " " @ "- missing gui table header array -" @ " " @ getTrace());
         if (isObject(%scroll)) {
-            %this.doSetupBodyScroll(%scroll);
+            %scroll.doSetupBodyScroll(%this);
         }
         warn(getScopeName() @ " " @ "- missing gui table body scroll -" @ " " @ getTrace());
         if (isObject(%bodyArrayContainer)) {
-            %this.doSetupBodyContainer(%bodyArrayContainer);
+            %bodyArrayContainer.doSetupBodyContainer(%this);
         }
         warn(getScopeName() @ " " @ "- missing gui table body array container -" @ " " @ getTrace());
         if (isObject(%bodyArray)) {
-            %this.doSetupArrayOfRows(%bodyArray);
+            %bodyArray.doSetupArrayOfRows(%this);
         }
         warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
     }
@@ -66,12 +66,12 @@ function GuiTableRowCtrl::onMouseLeaveBounds(%this) {
 };
 function GuiTableHeaderCellButtonCtrl::onMouseEnterBounds(%this) {
     %headerCell = %this.getParent();
-    if (!(%headerCell.getParent().getParent().getDataTable().getColumnIsSortable(%headerCell.getParent().getObjectIndex(%headerCell)))) {
+    if (!(%headerCell.getObjectIndex(%headerCell.getParent()).getColumnIsSortable(%headerCell.getParent().getParent().getDataTable()))) {
         return;
     }
     if (isObject($gCurrentTableHeaderCellHighlight)) {
     }
-    if ((%headerCell != $gCurrentTableHeaderCellHighlight)) {
+    if (($gCurrentTableHeaderCellHighlight != %headerCell)) {
         $gCurrentTableHeaderCellHighlight.setProfile();
     }
     %headerCell.setProfile();
@@ -80,7 +80,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseEnterBounds(%this) {
 };
 function GuiTableHeaderCellButtonCtrl::onMouseLeaveBounds(%this) {
     %headerCell = %this.getParent();
-    if (!(%headerCell.getParent().getParent().getDataTable().getColumnIsSortable(%headerCell.getParent().getObjectIndex(%headerCell)))) {
+    if (!(%headerCell.getObjectIndex(%headerCell.getParent()).getColumnIsSortable(%headerCell.getParent().getParent().getDataTable()))) {
         return;
     }
     %this.getParent().setProfile();
@@ -89,12 +89,12 @@ function GuiTableHeaderCellButtonCtrl::onMouseLeaveBounds(%this) {
 };
 function GuiTableHeaderCellButtonCtrl::onMouseDown(%this) {
     %headerCell = %this.getParent();
-    if ((0.0 == %headerCell.getParent().getObjectIndex(%headerCell))) {
+    if ((%headerCell.getObjectIndex(%headerCell.getParent()) == 0.0)) {
         return;
     }
     if (isObject($gCurrentTableHeaderCellHighlight)) {
     }
-    if ((%headerCell != $gCurrentTableHeaderCellHighlight)) {
+    if (($gCurrentTableHeaderCellHighlight != %headerCell)) {
         $gCurrentTableHeaderCellHighlight.setProfile();
     }
     %headerCell.setProfile();
@@ -103,10 +103,10 @@ function GuiTableHeaderCellButtonCtrl::onMouseDown(%this) {
 };
 function GuiTableHeaderCellButtonCtrl::onMouseUp(%this) {
     %headerCell = %this.getParent();
-    if ((0.0 == %headerCell.getParent().getObjectIndex(%headerCell))) {
+    if ((%headerCell.getObjectIndex(%headerCell.getParent()) == 0.0)) {
         return;
     }
-    if (%this.pointInControl(%this.globalToLocal(Canvas.getCursorPos()))) {
+    if (Canvas.getCursorPos().globalToLocal(%this).pointInControl(%this)) {
         %headerCell.setProfile();
     }
     %headerCell.setProfile();

@@ -2,26 +2,24 @@ $G_DECLARED_TEST_COUNT = 0;
 $G_DECLARED_TEST_COUNT[$G_DECLARED_TEST @ 0] = 0;
 function DeclareTestSuite(%name) {
     $G_DECLARED_TEST_COUNT[$G_DECLARED_TEST @ $G_DECLARED_TEST_COUNT] = %name;
-    $G_DECLARED_TEST_COUNT = (1.0 + $G_DECLARED_TEST_COUNT);
+    $G_DECLARED_TEST_COUNT = ($G_DECLARED_TEST_COUNT + 1.0);
 };
 function DeclaredTestSuiteCount() {
     return $G_DECLARED_TEST_COUNT;
 };
 function DeclaredTestSuiteGet(%num) {
-    if (($G_DECLARED_TEST_COUNT < %num)) {
+    if ((%num < $G_DECLARED_TEST_COUNT)) {
         return %num[$G_DECLARED_TEST @ %num];
     }
     return -(1.0);
 };
 function RunTestSuite(%suitename) {
     TestSuite::construct(%suitename);
-    if (!($AmServer)) {
-        if (%suitename.ShouldRunOnServer()) {
-            %suitename.delete();
-            echo("running" @ " " @ %suitename @ " " @ "on the server");
-            commandToServer('RunTestSuiteServerSide', %suitename);
-            return;
-        }
+    if (!($AmServer) && %suitename.ShouldRunOnServer()) {
+        %suitename.delete();
+        echo("running" @ " " @ %suitename @ " " @ "on the server");
+        commandToServer('RunTestSuiteServerSide', %suitename);
+        return;
     }
     %suitename.execute();
 };
@@ -37,20 +35,18 @@ function RunTestSuite_QuiteWhenDone(%suitename) {
 function RunTestCase(%testname, %dialogTitle) {
     TestCase::construct(%testname);
     %testname.execute();
-    if (!(%dialogTitle $= "")) {
-        if ((0.0 > %testname.errorCount)) {
-            %message = "<font:Arial Bold:18><color:FFFFFF>DO NOT IGNORE THIS MESSAGE, THESE NEED TO BE FIXED BEFORE YOU CHECK IN!!!!!<font:Arial Bold:12>Hi There! It's likely that the changes you have recently made have introduced some serious errors. Please don't check in until these are fixed. If the fix is not obvious, feel free to ask richard or terrence or orion or clint for help. Thanks!<br><br>There are **maybe" @ " " @ %testname.errorCount @ " " @ "problems with this missionfile.** Look in the console for things labeled <color:FF0000>TEST_MISSIONGROUPINTEGRITY<color:FFFFFF> in red, or talk to one of the engineers for help.\nAnd by the way, you are doing great work! Have a fine day." @ "<font:Arial:12>\n" @ %testname.getErrorMessagesBrief();
-            %dlg = MessageBoxOK(%dialogTitle, %message, "");
-            %dlg.window.resize(500, getWord(%dlg.getExtent(), 1));
-        }
+    if (!(%dialogTitle $= "") && (%testname.errorCount > 0.0)) {
+        %message = "<font:Arial Bold:18><color:FFFFFF>DO NOT IGNORE THIS MESSAGE, THESE NEED TO BE FIXED BEFORE YOU CHECK IN!!!!!<font:Arial Bold:12>Hi There! It's likely that the changes you have recently made have introduced some serious errors. Please don't check in until these are fixed. If the fix is not obvious, feel free to ask richard or terrence or orion or clint for help. Thanks!<br><br>There are **maybe" @ " " @ %testname.errorCount @ " " @ "problems with this missionfile.** Look in the console for things labeled <color:FF0000>TEST_MISSIONGROUPINTEGRITY<color:FFFFFF> in red, or talk to one of the engineers for help.\nAnd by the way, you are doing great work! Have a fine day." @ "<font:Arial:12>\n" @ %testname.getErrorMessagesBrief();
+        %dlg = MessageBoxOK(%dialogTitle, %message, "");
+        getWord(%dlg.getExtent(), 1).resize(%dlg.window, 500);
     }
     return %testname.errorCount;
 };
 function TestRunner_SmokeTests::setup(%this) {
-    %this.addTestSuite("TestSuite_AnimationSystemSmokeTests");
-    %this.addTestSuite("TestSuite_CSSmokeTests");
-    %this.addTestSuite("TestSuite_MissionGroup");
-    %this.addTestSuite("TestSuite_SeatingSystemSmokeTests");
+    "TestSuite_AnimationSystemSmokeTests".addTestSuite(%this);
+    "TestSuite_CSSmokeTests".addTestSuite(%this);
+    "TestSuite_MissionGroup".addTestSuite(%this);
+    "TestSuite_SeatingSystemSmokeTests".addTestSuite(%this);
 };
 function RunTestRunner(%runnername) {
     TestSuiteRunner::construct(%runnername);
@@ -63,13 +59,13 @@ function TestSuiteRunner::construct(%name) {
         quitWhenDone = 0;
     };
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%ret);
+        %ret.add(MissionCleanup);
     }
     return %ret;
 };
 function TestSuiteRunner::addTestSuite(%this, %name) {
     %this.Suite = %name @ %this.testSuiteCount;
-    %this.testSuiteCount = (1.0 + %this.testSuiteCount);
+    %this.testSuiteCount = (%this.testSuiteCount + 1.0);
 };
 function TestSuiteRunner::setup(%this) {
     error("TestSuiteRunner::Setup: you must override this and addTestSuites for the runner");
@@ -87,14 +83,12 @@ function TestSuiteRunner::execute(%this) {
 };
 function TestSuiteRunner::ProcessLoop(%this) {
     cancel(%this.TimerProcess);
-    if (isObject(%this.currentSuite)) {
-        if (%this.currentSuite.running) {
-            %this.TimerProcess = %this.schedule(100, "ProcessLoop");
-            return;
-        }
+    if (isObject(%this.currentSuite) && %this.currentSuite.running) {
+        %this.TimerProcess = "ProcessLoop".schedule(%this, 100);
+        return;
     }
-    %this.nextSuite = (1.0 + %this.nextSuite);
-    if ((%this.testSuiteCount >= %this.nextSuite)) {
+    %this.nextSuite = (%this.nextSuite + 1.0);
+    if ((%this.nextSuite >= %this.testSuiteCount)) {
         %this.finishTesting();
         return;
     }
@@ -102,7 +96,7 @@ function TestSuiteRunner::ProcessLoop(%this) {
     %this.nextSuite;
     %this.currentSuite = TestSuite::construct(%testSuiteName);
     %this.currentSuite.execute();
-    %this.TimerProcess = %this.schedule(100, "ProcessLoop");
+    %this.TimerProcess = "ProcessLoop".schedule(%this, 100);
 };
 function TestSuiteRunner::finishTesting(%this) {
     %this.TearDown();
@@ -117,16 +111,16 @@ function TestSuiteRunner::reportResults(%this) {
     echo(" ");
     echo(%this.getName() @ " " @ "results summary --------------");
     %i = 0;
-    if ((%this.testSuiteCount < %i)) {
+    while ((%i < %this.testSuiteCount)) {
         %testname = %this.Suite;
         %i;
         %message = "    " @ %testname.errorCount @ " " @ "errors" @ " " @ %testname.assertCount @ " " @ "asserts" @ " " @ "reported by" @ " " @ %testname;
         %level = "info";
-        if ((0.0 > %testname.errorCount)) {
+        if ((%testname.errorCount > 0.0)) {
             %level = "error";
         }
         log("general", %level, %message);
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     echo(" ");
 };
@@ -137,7 +131,7 @@ function TestSuite::construct(%name) {
         quitWhenDone = 0;
     };
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%ret);
+        %ret.add(MissionCleanup);
     }
     return %ret;
 };
@@ -147,12 +141,12 @@ function TestSuite::ShouldRunOnServer(%this) {
 function TestSuite::addTestCase(%this, %name) {
     %this.test = %name @ %this.testCount;
     %this.TestDelay = 0 @ %this.testCount;
-    %this.testCount = (1.0 + %this.testCount);
+    %this.testCount = (%this.testCount + 1.0);
 };
 function TestSuite::addTestCaseDelayed(%this, %name, %delay) {
     %this.test = %name @ %this.testCount;
     %this.TestDelay = %delay @ %this.testCount;
-    %this.testCount = (1.0 + %this.testCount);
+    %this.testCount = (%this.testCount + 1.0);
 };
 function TestSuite::setup(%this) {
     error("TestSuite::Setup: you must override this and addTestCases for the suite");
@@ -175,8 +169,8 @@ function TestSuite::FinishDelayedTest(%this, %testname) {
 };
 function TestSuite::ExecNextTest(%this) {
     cancel(%this.TimerNextTest);
-    %this.nextTest = (1.0 + %this.nextTest);
-    if ((%this.testCount >= %this.nextTest)) {
+    %this.nextTest = (%this.nextTest + 1.0);
+    if ((%this.nextTest >= %this.testCount)) {
         %this.finishTesting();
         return;
     }
@@ -185,13 +179,13 @@ function TestSuite::ExecNextTest(%this) {
     %delay = %this.TestDelay;
     %this.nextTest;
     TestCase::construct(%testname);
-    if ((0.0 == %delay)) {
+    if ((%delay == 0.0)) {
         %testname.execute();
-        %this.TimerNextTest = %this.schedule(0, "ExecNextTest");
+        %this.TimerNextTest = "ExecNextTest".schedule(%this, 0);
         return;
     }
     %testname.executeStartForDelay();
-    %this.TimerNextTest = %this.schedule(%delay, "FinishDelayedTest", %testname);
+    %this.TimerNextTest = %testname.schedule(%this, %delay, "FinishDelayedTest");
     return;
 };
 function TestSuite::execute(%this) {
@@ -208,18 +202,18 @@ function TestSuite::reportResults(%this) {
     %this.errorCount = 0;
     %this.assertCount = 0;
     %i = 0;
-    if ((%this.testCount < %i)) {
+    while ((%i < %this.testCount)) {
         %testname = %this.test;
         %i;
-        %this.errorCount = (%testname.errorCount + %this.errorCount);
-        %this.assertCount = (%testname.assertCount + %this.assertCount);
+        %this.errorCount = (%this.errorCount + %testname.errorCount);
+        %this.assertCount = (%this.assertCount + %testname.assertCount);
         %message = "    " @ %testname.errorCount @ " " @ "errors" @ " " @ %testname.assertCount @ " " @ "asserts" @ " " @ "reported by" @ " " @ %testname;
         %level = "info";
-        if ((0.0 > %testname.errorCount)) {
+        if ((%testname.errorCount > 0.0)) {
             %level = "error";
         }
         log("general", %level, %message);
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     echo(" ");
 };
@@ -230,86 +224,86 @@ function TestCase::construct(%name) {
         assertCount = 0;
     };
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%ret);
+        %ret.add(MissionCleanup);
     }
     return %ret;
 };
 function TestCase::recordError(%this, %message, %messageBrief) {
     %this.ErrorMessage = %this.getName() @ " " @ "error:" @ " " @ %message @ %this.errorCount;
     %this.ErrorMessageBrief = %messageBrief @ %this.errorCount;
-    %this.errorCount = (1.0 + %this.errorCount);
+    %this.errorCount = (%this.errorCount + 1.0);
 };
 function TestCase::getErrorMessagesBrief(%this) {
     %ret = "";
     %delim = "";
     %n = 0;
-    if ((%this.errorCount < %n)) {
-        %ret = %ret @ (1.0 + %n) @ "." @ %n @ %this.ErrorMessageBrief @ "\n";
-        %n = (1.0 + %n);
+    while ((%n < %this.errorCount)) {
+        %ret = %ret @ (%n + 1.0) @ "." @ %n @ %this.ErrorMessageBrief @ "\n";
+        %n = (%n + 1.0);
     }
     return %ret;
 };
 function TestCase::assert(%this, %val, %message) {
-    %this.assertCount = (1.0 + %this.assertCount);
+    %this.assertCount = (%this.assertCount + 1.0);
     if (!(%val)) {
         %messageBrief = %message;
-        %this.recordError(%message, %messageBrief);
+        %messageBrief.recordError(%this, %message);
     }
     return !(%val);
 };
 function TestCase::assertSameObject(%this, %objA, %objB, %message) {
-    %this.assertCount = (1.0 + %this.assertCount);
-    %val = (%objB.getId() == %objA.getId());
+    %this.assertCount = (%this.assertCount + 1.0);
+    %val = (%objA.getId() == %objB.getId());
     if (!(%val)) {
         %message = "\"" @ %objA.getId() @ "\"" @ " " @ "!=" @ " " @ "\"" @ %objB.getId() @ "\"" @ " " @ ":" @ " " @ %message;
         %messageBrief = "different:" @ " " @ getDebugString(%objA) @ " " @ getDebugString(%objB);
-        %this.recordError(%message, %messageBrief);
+        %messageBrief.recordError(%this, %message);
     }
     return !(%val);
 };
 function TestCase::assertDifferentObject(%this, %objA, %objB, %message) {
-    %this.assertCount = (1.0 + %this.assertCount);
-    %val = (%objB.getId() != %objA.getId());
+    %this.assertCount = (%this.assertCount + 1.0);
+    %val = (%objA.getId() != %objB.getId());
     if (!(%val)) {
         %message = "\"" @ %objA.getId() @ "\"" @ " " @ "!=" @ " " @ "\"" @ %objB.getId() @ "\"" @ " " @ ":" @ " " @ %message;
         %messageBrief = "same:" @ " " @ getDebugString(%objA) @ " " @ getDebugString(%objB);
-        %this.recordError(%message, %messageBrief);
+        %messageBrief.recordError(%this, %message);
     }
     return !(%val);
 };
 function TestCase::assertSameString(%this, %strA, %strB, %message) {
-    %this.assertCount = (1.0 + %this.assertCount);
+    %this.assertCount = (%this.assertCount + 1.0);
     %val = (%strA $= %strB);
     if (!(%val)) {
         %message = "\"" @ %strA @ "\"" @ " " @ "!$=" @ " " @ "\"" @ %strB @ "\"" @ " " @ ":" @ " " @ %message;
         %messageBrief = "different:" @ " " @ %strA @ " " @ %strB;
-        %this.recordError(%message, %messageBrief);
+        %messageBrief.recordError(%this, %message);
     }
     return !(%val);
 };
 function TestCase::assertDifferentString(%this, %strA, %strB, %message) {
-    %this.assertCount = (1.0 + %this.assertCount);
+    %this.assertCount = (%this.assertCount + 1.0);
     %val = !(%strA $= %strB);
     if (!(%val)) {
         %message = "\"" @ %strA @ "\"" @ " " @ "$=" @ " " @ "\"" @ %strB @ "\"" @ " " @ ":" @ " " @ %message;
         %messageBrief = "same:" @ " " @ %strA @ " " @ %strB;
-        %this.recordError(%message, %messageBrief);
+        %messageBrief.recordError(%this, %message);
     }
     return !(%val);
 };
 function TestCase::reportResults(%this) {
     %i = 0;
-    if ((%this.errorCount < %i)) {
+    while ((%i < %this.errorCount)) {
         %message = "  " @ %i @ %this.ErrorMessage;
         log("general", error, %message);
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     echo(%this.getName() @ " " @ ":" @ " " @ %this.errorCount @ " " @ "errors found, " @ " " @ %this.assertCount @ " " @ "assertions");
 };
 function TestCase::setup(%this) {
 };
 function TestCase::runTest(%this) {
-    %this.assert(0, "TestCase::runTest must be overriden");
+    "TestCase::runTest must be overriden".assert(%this, 0);
 };
 function TestCase::delayedEval(%this) {
 };

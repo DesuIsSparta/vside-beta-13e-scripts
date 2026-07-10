@@ -1,14 +1,14 @@
 function MapPointPanel::toggle(%this) {
-    PlayGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(PlayGui);
 };
 function MapPointPanel::open(%this) {
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
-        PlayGui.focusAndRaise(%this);
+        1.setVisible(%this);
+        %this.focusAndRaise(PlayGui);
     }
 };
 function MapPointPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
     return 1;
 };

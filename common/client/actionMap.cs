@@ -3,14 +3,14 @@ function ActionMap::copyBind(%this, %otherMap, %command) {
         error("ActionMap::copyBind - \"" @ %otherMap @ "\" is not an object!");
         return;
     }
-    %bind = %otherMap.getBinding(%command);
+    %bind = %command.getBinding(%otherMap);
     if (!(%bind $= "")) {
         %device = getField(%bind, 0);
         %action = getField(%bind, 1);
-        %flags = %otherMap.isInverted(%device, %action) ? "SDI" : "SD";
-        %deadZone = %otherMap.getDeadZone(%device, %action);
-        %scale = %otherMap.getScale(%device, %action);
-        %this.bind(%device, %action, %flags, %deadZone, %scale, %command);
+        %flags = %action.isInverted(%otherMap, %device) ? "SDI" : "SD";
+        %deadZone = %action.getDeadZone(%otherMap, %device);
+        %scale = %action.getScale(%otherMap, %device);
+        %command.bind(%this, %device, %action, %flags, %deadZone, %scale);
     }
 };
 function ActionMap::blockBind(%this, %otherMap, %command) {
@@ -18,8 +18,8 @@ function ActionMap::blockBind(%this, %otherMap, %command) {
         error("ActionMap::blockBind - \"" @ %otherMap @ "\" is not an object!");
         return;
     }
-    %bind = %otherMap.getBinding(%command);
+    %bind = %command.getBinding(%otherMap);
     if (!(%bind $= "")) {
-        %this.bind(getField(%bind, 0), getField(%bind, 1), "");
+        "".bind(%this, getField(%bind, 0), getField(%bind, 1));
     }
 };

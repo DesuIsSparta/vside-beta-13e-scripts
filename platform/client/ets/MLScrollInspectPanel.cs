@@ -1,25 +1,25 @@
 function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
     %fo = new FileObject("");;
     0;
-    if (%fo.openForRead(%mlTextfileName)) {
+    if (%mlTextfileName.openForRead(%fo)) {
         %text = "";
-        if (!(%fo.isEOF())) {
+        while (!(%fo.isEOF())) {
             %text = %text @ %fo.readLine() @ "\n";
         }
-        InspectPanelMLText.setText(%text);
+        %text.setText(InspectPanelMLText);
         %this.open();
     }
-    InspectPanelMLText.setText("I can't find the file: " @ %mlTextfileName);
+    "I can't find the file: " @ %mlTextfileName.setText(InspectPanelMLText);
     %fo.delete();
 };
 function clientCmdShowInspectionPanel(%mlTextfileName) {
-    MLScrollInspectPanel.OnInspect(%mlTextfileName);
+    %mlTextfileName.OnInspect(MLScrollInspectPanel);
 };
 function InspectPanelMLText::onURL(%this, %url) {
-    MLScrollInspectPanel.OnInspect(%url);
+    %url.OnInspect(MLScrollInspectPanel);
 };
 function MLScrollInspectPanel::toggle(%this) {
-    PlayGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(PlayGui);
 };
 function MLScrollInspectPanel::updateSize(%this) {
     %screenWidth = getWord($UserPref::Video::Resolution, 0);
@@ -28,50 +28,50 @@ function MLScrollInspectPanel::updateSize(%this) {
     %posY = 0;
     %width = 358;
     %height = 243;
-    if ((272.0 == %screenHeight)) {
+    if ((%screenHeight == 272.0)) {
     }
-    if ((480.0 == %screenWidth)) {
+    if ((%screenWidth == 480.0)) {
         %height = 243;
         %width = 358;
-        %posX = (2.0 / (%width - %screenWidth));
+        %posX = ((%screenWidth - %width) / 2.0);
         %posY = 0;
     }
-    if ((363.0 == %screenHeight)) {
+    if ((%screenHeight == 363.0)) {
     }
-    if ((640.0 == %screenWidth)) {
-        %height = (2.0 * 161.0);
-        %width = (3.0 * 161.0);
-        %posX = (2.0 / (%width - %screenWidth));
+    if ((%screenWidth == 640.0)) {
+        %height = (161.0 * 2.0);
+        %width = (161.0 * 3.0);
+        %posX = ((%screenWidth - %width) / 2.0);
         %posY = 0;
     }
-    if ((544.0 == %screenHeight)) {
+    if ((%screenHeight == 544.0)) {
     }
-    if ((960.0 == %screenWidth)) {
-        %height = (2.0 * 242.0);
-        %width = (3.0 * 242.0);
-        %posX = (2.0 / (%width - %screenWidth));
+    if ((%screenWidth == 960.0)) {
+        %height = (242.0 * 2.0);
+        %width = (242.0 * 3.0);
+        %posX = ((%screenWidth - %width) / 2.0);
         %posY = 0;
     }
-    if ((714.0 == %screenHeight)) {
+    if ((%screenHeight == 714.0)) {
     }
-    if ((1260.0 == %screenWidth)) {
-        %height = (2.0 * 317.0);
-        %width = (3.0 * 317.0);
-        %posX = (2.0 / (%width - %screenWidth));
+    if ((%screenWidth == 1260.0)) {
+        %height = (317.0 * 2.0);
+        %width = (317.0 * 3.0);
+        %posX = ((%screenWidth - %width) / 2.0);
         %posY = 0;
     }
-    %this.resize(%posX, %posY, %width, %height);
+    %height.resize(%this, %posX, %posY, %width);
     InspectPanelScrollControl.scrollToTop();
 };
 function MLScrollInspectPanel::open(%this) {
-    %this.setVisible(1);
-    %this.setConstrained(1);
-    PlayGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    1.setConstrained(%this);
+    %this.focusAndRaise(PlayGui);
     %this.updateSize();
-    InspectPanelScrollControl.makeFirstResponder(1);
+    1.makeFirstResponder(InspectPanelScrollControl);
 };
 function MLScrollInspectPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
     return 1;
 };

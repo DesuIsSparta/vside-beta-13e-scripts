@@ -1,5 +1,5 @@
 function SkuManager::getRandomSkusForLocalPlayer(%this, %drawersList) {
     %skulist = $Player::inventory;
-    %skulist = %this.filterSkusGender(%skulist, $player.getGender());
-    return %this.getRandomSkusFromList(%skulist, %drawersList);
+    %skulist = $player.getGender().filterSkusGender(%this, %skulist);
+    return %drawersList.getRandomSkusFromList(%this, %skulist);
 };

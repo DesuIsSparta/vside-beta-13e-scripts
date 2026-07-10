@@ -8,7 +8,7 @@ $SystemMetric::ObjectCounts = new StringMap("") {
     class = 0 @ "SystemMetric";
 };
 if (isObject(MissionCleanup)) {
-    MissionCleanup.add($SystemMetric::ObjectCounts);
+    $SystemMetric::ObjectCounts.add(MissionCleanup);
 }
 if (isDefined("$GMetricsLogFile")) {
 }
@@ -21,7 +21,7 @@ if ($Server::Dedicated) {
     $GMetricsLogFile = new FileLogger(GMetricsLogger);;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add($GMetricsLogFile);
+        $GMetricsLogFile.add(MissionCleanup);
     }
 }
 function System::compileClassInstanceCounts3(%obj, %counts, %depth) {
@@ -30,35 +30,35 @@ function System::compileClassInstanceCounts3(%obj, %counts, %depth) {
     }
     %classname = %obj.getClassName();
     %key = %classname;
-    %curCount = %counts.get(%key);
-    %curCount = (1.0 + %curCount);
-    $SystemMetric::totalObjectCount = (1.0 + $SystemMetric::totalObjectCount);
-    %counts.put(%key, %curCount);
+    %curCount = %key.get(%counts);
+    %curCount = (%curCount + 1.0);
+    $SystemMetric::totalObjectCount = ($SystemMetric::totalObjectCount + 1.0);
+    %curCount.put(%counts, %key);
     if (!(%obj.isClassSimGroup())) {
         return;
     }
-    if (($Pref::System::dumpMetricsMaxRecurseDepth >= %depth)) {
+    if ((%depth >= $Pref::System::dumpMetricsMaxRecurseDepth)) {
         error("Hit Maximum recurse depth" @ " " @ getDebugString(%obj));
         return;
     }
-    %depth = (1.0 + %depth);
+    %depth = (%depth + 1.0);
     %num = %obj.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        System::compileClassInstanceCounts3(%obj.getObject(%n), %counts, %depth);
-        %n = (1.0 + %n);
+    while ((%n < %num)) {
+        System::compileClassInstanceCounts3(%n.getObject(%obj), %counts, %depth);
+        %n = (%n + 1.0);
     }
 };
 function System::getClassInstanceCounts(%obj) {
     %ret = "";
     System::compileClassInstanceCounts2(%obj);
-    %n = (1.0 - $SystemMetric::ObjectCounts.size());
-    if ((0.0 >= %n)) {
-        %ret = $SystemMetric::ObjectCounts.getKey(%n) @ " " @ $SystemMetric::ObjectCounts.getValue(%n) @ "\n" @ %ret;
-        %n = (1.0 - %n);
+    %n = ($SystemMetric::ObjectCounts.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %ret = %n.getKey($SystemMetric::ObjectCounts) @ " " @ %n.getValue($SystemMetric::ObjectCounts) @ "\n" @ %ret;
+        %n = (%n - 1.0);
     }
     %ret = %ret @ "Total objects =" @ " " @ $SystemMetric::totalObjectCount @ "\n" @ "";
-    (0.0 >= %n);
+    (%n >= 0.0);
     return %ret;
 };
 function System::dumpClassInstanceCounts(%obj) {
@@ -75,10 +75,10 @@ function System::compileClassInstanceCounts2(%obj) {
     System::compileClassInstanceCounts3(%obj, $SystemMetric::ObjectCounts, 0);
 };
 function System::getClassInstanceCount(%classname) {
-    if ((0.0 < !($SystemMetric::ObjectCounts.findKey(%classname)))) {
+    if ((!(%classname.findKey($SystemMetric::ObjectCounts)) < 0.0)) {
         return 0;
     }
-    return $SystemMetric::ObjectCounts.get(%classname);
+    return %classname.get($SystemMetric::ObjectCounts);
 };
 function SystemMetric::dumpPairsInstances(%unused, %key, %value) {
     warn(%value @ " " @ %key);
@@ -93,24 +93,24 @@ function System::dumpObjectsRecurse(%obj, %depth) {
     }
     %indent = "";
     %n = %depth;
-    if ((0.0 > %n)) {
+    while ((%n > 0.0)) {
         %indent = %indent @ " ";
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     warn(%indent @ getDebugString(%obj));
     if (!(%obj.isClassSimGroup())) {
-        return (0.0 > %n);
+        return (%n > 0.0);
     }
-    if (($Pref::System::dumpMetricsMaxRecurseDepth >= %depth)) {
+    if ((%depth >= $Pref::System::dumpMetricsMaxRecurseDepth)) {
         error("Hit Maximum recurse depth" @ " " @ getDebugString(%obj));
         return;
     }
-    %depth = (1.0 + %depth);
+    %depth = (%depth + 1.0);
     %num = %obj.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        System::dumpObjectsRecurse(%obj.getObject(%n), %depth);
-        %n = (1.0 + %n);
+    while ((%n < %num)) {
+        System::dumpObjectsRecurse(%n.getObject(%obj), %depth);
+        %n = (%n + 1.0);
     }
 };
 function System::dumpObjects(%obj) {
@@ -124,23 +124,23 @@ if (isObject($System::LoginLog)) {
 $SystemMetric::loginLog = new StringMap("");;
 0;
 if (isObject(MissionCleanup)) {
-    MissionCleanup.add($SystemMetric::loginLog);
+    $SystemMetric::loginLog.add(MissionCleanup);
 }
 $SystemMetric::connectCount = 0;
 $SystemMetric::disconnectCount = 0;
 $SystemMetric::enteredGameCount = 0;
 function System::onUserConnect(%client) {
-    $SystemMetric::connectCount = (1.0 + $SystemMetric::connectCount);
+    $SystemMetric::connectCount = ($SystemMetric::connectCount + 1.0);
     if (!(isObject(%client))) {
         warn("got onUserConnect on non-object client:" @ " " @ %client);
     }
     %name = %client.nameBase;
-    %curCount = $SystemMetric::loginLog.get(%name);
-    %curCount = (1.0 + %curCount);
-    $SystemMetric::loginLog.put(%name, %curCount);
+    %curCount = %name.get($SystemMetric::loginLog);
+    %curCount = (%curCount + 1.0);
+    %curCount.put($SystemMetric::loginLog, %name);
 };
 function System::onUserDisconnect(%client) {
-    $SystemMetric::disconnectCount = (1.0 + $SystemMetric::disconnectCount);
+    $SystemMetric::disconnectCount = ($SystemMetric::disconnectCount + 1.0);
     if (!(isObject(%client))) {
         warn("got onUserDisconnect on non-object client:" @ " " @ %client);
     }
@@ -149,39 +149,39 @@ function System::onUserDisconnect(%client) {
     }
 };
 function System::onUserEnteredGame(%client) {
-    $SystemMetric::enteredGameCount = (1.0 + $SystemMetric::enteredGameCount);
+    $SystemMetric::enteredGameCount = ($SystemMetric::enteredGameCount + 1.0);
 };
 function System::calculateLoginMetrics() {
     $SystemMetric::userCountNonIdle = 0;
     $SystemMetric::userCountIdle = 0;
     $SystemMetric::userCountOrphan = 0;
     warn("current users begin");
-    %n = (1.0 - ClientGroup.getCount());
-    if ((0.0 >= %n)) {
-        %player = ClientGroup.getObject(%n).Player;
+    %n = (ClientGroup.getCount() - 1.0);
+    while ((%n >= 0.0)) {
+        %player = %n.getObject(ClientGroup).Player;
         if (!(isObject(%player))) {
-            $SystemMetric::userCountOrphan = (1.0 + $SystemMetric::userCountOrphan);
+            $SystemMetric::userCountOrphan = ($SystemMetric::userCountOrphan + 1.0);
         }
         warn(getDebugString(%player));
         if (%player.getAFK()) {
-            $SystemMetric::userCountIdle = (1.0 + $SystemMetric::userCountIdle);
+            $SystemMetric::userCountIdle = ($SystemMetric::userCountIdle + 1.0);
         }
-        $SystemMetric::userCountNonIdle = (1.0 + $SystemMetric::userCountNonIdle);
-        %n = (1.0 - %n);
+        $SystemMetric::userCountNonIdle = ($SystemMetric::userCountNonIdle + 1.0);
+        %n = (%n - 1.0);
     }
     warn("current users finish");
-    $SystemMetric::clientCount = ($SystemMetric::userCountNonIdle + $SystemMetric::userCountIdle);
-    (0.0 >= %n);
+    $SystemMetric::clientCount = ($SystemMetric::userCountIdle + $SystemMetric::userCountNonIdle);
+    (%n >= 0.0);
     $SystemMetric::uniqueLoginCount = $SystemMetric::loginLog.size();
-    $SystemMetric::connectsMinusDisconnects = ($SystemMetric::disconnectCount - $SystemMetric::connectCount);
-    $SystemMetric::connectsMinusGameEntries = ($SystemMetric::enteredGameCount - $SystemMetric::connectCount);
+    $SystemMetric::connectsMinusDisconnects = ($SystemMetric::connectCount - $SystemMetric::disconnectCount);
+    $SystemMetric::connectsMinusGameEntries = ($SystemMetric::connectCount - $SystemMetric::enteredGameCount);
     $SystemMetric::pendingEventCount = countPendingEvents();
 };
 function System::dumpLoginMetrics() {
     warn("System::dumpLoginMetrics() begin");
     if ($Pref::System::dumpMetricsVerboseLogins) {
         warn("cumulative logins details begin");
-        $SystemMetric::loginLog.forEach("dumpPairsInstances");
+        "dumpPairsInstances".forEach($SystemMetric::loginLog);
         warn("cumulative logins details finish");
     }
     warn("events pending                :" @ " " @ $SystemMetric::pendingEventCount);
@@ -212,11 +212,11 @@ function System::dumpMetrics() {
     warn("System::dumpMetrics() finish");
 };
 function dumpIdleTimes() {
-    %secondsSinceLastIdleTimesDump = ($gLastIdleTimesReportTime - (1000.0 / getSimTime()));
-    if ((3600.0 < %secondsSinceLastIdleTimesDump)) {
+    %secondsSinceLastIdleTimesDump = ((getSimTime() / 1000.0) - $gLastIdleTimesReportTime);
+    if ((%secondsSinceLastIdleTimesDump < 3600.0)) {
         return;
     }
-    $gLastIdleTimesReportTime = (1000.0 / getSimTime());
+    $gLastIdleTimesReportTime = (getSimTime() / 1000.0);
     safeEnsureScriptObject("StringMap", "gIdleTimesReport");
     gIdleTimesReport.dumpValues();
     gIdleTimesReport.clear();
@@ -227,7 +227,7 @@ function SystemDumpMetricsTimer() {
         warn("deactivating SystemDumpMetricsTimer because $Game::Compile is " @ " " @ $Game::Compile);
         return;
     }
-    if ((0.0 <= $Pref::System::dumpMetricsTimerPeriodMS)) {
+    if (($Pref::System::dumpMetricsTimerPeriodMS <= 0.0)) {
         error("deactivating SystemDumpMetricsTimer because timer period is " @ " " @ $Pref::System::dumpMetricsTimerPeriodMS);
         return;
     }
@@ -241,7 +241,7 @@ function SystemDumpMetricsTimer() {
     $System::dumpMetricsTimerID = schedule($Pref::System::dumpMetricsTimerPeriodMS, 0, "SystemDumpMetricsTimer");
 };
 cancel($System::dumpMetricsTimerID);
-if ((0.0 > $Pref::System::dumpMetricsTimerPeriodMS)) {
+if (($Pref::System::dumpMetricsTimerPeriodMS > 0.0)) {
     $System::dumpMetricsTimerID = schedule($Pref::System::dumpMetricsTimerPeriodMS, 0, "SystemDumpMetricsTimer");
 }
 function GMetrics::GamePlayStartEvent(%group, %specificGame, %player) {
@@ -272,8 +272,8 @@ function DelayedRealPlayStopEvent(%group, %specificGame, %player) {
     %specificGame;
     %seconds = 0.0;
     if (!(%startTime $= "")) {
-        %seconds = ((%startTime - getSimTime()) * 0.001);
-        if ((0.0 < %seconds)) {
+        %seconds = (0.001 * (getSimTime() - %startTime));
+        if ((%seconds < 0.0)) {
             error(getScopeName() @ " " @ %specificGame @ " " @ "got stop but had no startime just using:" @ " " @ %seconds @ " " @ "for duration.");
             %seconds = 0.0;
         }
@@ -295,7 +295,7 @@ function GMetrics::GamePlayStopEvent(%group, %specificGame, %player, %delayTillR
     }
     cancel(%specificGame, %player.GMetricsDelayStopTimer);
     %player.GMetricsDelayStopTimer = 0 @ %specificGame;
-    if ((0.0 <= %delayTillRealStop)) {
+    if ((%delayTillRealStop <= 0.0)) {
         return DelayedRealPlayStopEvent(%group, %specificGame, %player);
     }
     %player.GMetricsDelayStopTimer = schedule(%delayTillRealStop, 0, "DelayedRealPlayStopEvent", %group, %specificGame, %player) @ %specificGame;
@@ -313,7 +313,7 @@ function GMetrics::GameTouchEvent(%group, %specificGame, %player, %TimeToWaitFor
     if (!(isObject(%player.client))) {
         return;
     }
-    if ((0.0 <= %TimeToWaitForPlayerToStop)) {
+    if ((%TimeToWaitForPlayerToStop <= 0.0)) {
         %TimeToWaitForPlayerToStop = 10000;
     }
     if (%player.GMetricsTouchStopTimer) {
@@ -331,7 +331,7 @@ function GMetrics::GameAwardEvent(%group, %specificGame, %player, %points) {
     if (!(isObject(%player.client))) {
         return;
     }
-    if ((0.0 <= %points)) {
+    if ((%points <= 0.0)) {
         return;
     }
     %eventTXT = "[event=award]";
@@ -341,7 +341,7 @@ function GMetrics::GameAwardEvent(%group, %specificGame, %player, %points) {
 function GMetrics::LogToFile(%eventTXT, %detailTXT) {
     %text = %eventTXT @ %detailTXT;
     %time = getFormattedTime("[%m/%d/%Y %H:%M:%S]");
-    $GMetricsLogFile.log("games", "info", %time @ "[games]" @ %text);
+    %time @ "[games]" @ %text.log($GMetricsLogFile, "games", "info");
 };
 function dumpClassInstances(%simGroup) {
     if (!(isObject(%simGroup))) {
@@ -353,15 +353,15 @@ function dumpClassInstances(%simGroup) {
     %total = 0;
     compileClassInstances(%simGroup, %container);
     %n = 0;
-    if ((%container.numClasses < %n)) {
+    while ((%n < %container.numClasses)) {
         %line = formatString("%-40s", %n @ "class", %container.instanceCounts) TAB %n @ "count" @ formatInt("%5d", %container.instanceCounts);
         echo(%line);
-        %total = (%container.instanceCounts + %total);
+        %total = (%total + %container.instanceCounts);
         %n @ "count";
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     %line = formatString("%-40s", "Total object instances:") @ formatInt("%5d", %total);
-    (%container.numClasses < %n);
+    (%n < %container.numClasses);
     echo(%line);
     %container.delete();
 };
@@ -369,20 +369,20 @@ function compileClassInstances(%obj, %container) {
     %classname = %obj.getClassName();
     %found = -(1.0);
     %n = 0;
-    if ((%container.numClasses < %n)) {
+    if ((%n < %container.numClasses)) {
     }
-    if ((-(1.0) == %found)) {
+    while ((%found == -(1.0))) {
         if ((%n @ "class" @ " " @ %container.instanceCounts $= %classname)) {
             %found = %n;
         }
-        %n = (1.0 + %n);
-        if ((%container.numClasses < %n)) {
+        %n = (%n + 1.0);
+        if ((%n < %container.numClasses)) {
         }
     }
-    if ((-(1.0) == %found)) {
+    if ((%found == -(1.0))) {
         %found = %container.numClasses;
-        (-(1.0) == %found);
-        %container.numClasses = (1.0 + %container.numClasses);
+        (%found == -(1.0));
+        %container.numClasses = (%container.numClasses + 1.0);
         %container.instanceCounts = %classname TAB %found @ "class";
     }
     %curr = %container.instanceCounts;
@@ -391,13 +391,13 @@ function compileClassInstances(%obj, %container) {
     }
     %curr = %curr;
     0;
-    %container.instanceCounts = (1.0 + %curr) TAB %found @ "count";
+    %container.instanceCounts = (%curr + 1.0) TAB %found @ "count";
     if (%obj.isClassSimGroup()) {
-        %n = (1.0 - %obj.getCount());
-        if ((0.0 >= %n)) {
-            %child = %obj.getObject(%n);
+        %n = (%obj.getCount() - 1.0);
+        while ((%n >= 0.0)) {
+            %child = %n.getObject(%obj);
             compileClassInstances(%child, %container);
-            %n = (1.0 - %n);
+            %n = (%n - 1.0);
         }
     }
 };

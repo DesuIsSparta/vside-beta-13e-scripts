@@ -15,18 +15,18 @@ function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnla
     %newWidth = %curWidth;
     %newHeight = %curHeight;
     if (%onlyEnlarge) {
-        if ((%width < %curWidth)) {
+        if ((%curWidth < %width)) {
             %newWidth = %width;
         }
-        if ((%height < %curHeight)) {
+        if ((%curHeight < %height)) {
             %newHeight = %height;
         }
     }
     %newWidth = %width;
     %newHeight = %height;
-    if ((%curWidth != %newWidth)) {
+    if ((%newWidth != %curWidth)) {
     }
-    if ((%curHeight != %newHeight)) {
+    if ((%newHeight != %curHeight)) {
         $Video::allowResize = 1;
         setScreenMode(%newWidth, %newHeight, %bpp, 0);
     }
@@ -45,16 +45,16 @@ function pushScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlar
 };
 function popScreenSize() {
     %stackSize = getFieldCount($gScreenSizeStack);
-    if ((0.0 == %stackSize)) {
+    if ((%stackSize == 0.0)) {
         %width = getWord($UserPref::Video::Resolution, 0);
         %height = getWord($UserPref::Video::Resolution, 1);
         %allowResize = 1;
     }
-    %frame = getField($gScreenSizeStack, (1.0 - %stackSize));
+    %frame = getField($gScreenSizeStack, (%stackSize - 1.0));
     %width = getWord(%frame, 0);
     %height = getWord(%frame, 1);
     %allowResize = getWord(%frame, 2);
-    $gScreenSizeStack = getFields($gScreenSizeStack, 0, (2.0 - %stackSize));
+    $gScreenSizeStack = getFields($gScreenSizeStack, 0, (%stackSize - 2.0));
     applyScreenSize(%width, %height, %allowResize, 1, 0);
 };
 function clearScreenSizeStack() {
@@ -79,22 +79,22 @@ function standardizeScreenAspect() {
     %currentX = getWord($UserPref::Video::Resolution, 0);
     %currentY = getWord($UserPref::Video::Resolution, 1);
     %currentBPP = getWord($UserPref::Video::Resolution, 2);
-    %proportionX = (%standardX / %currentX);
-    %proportionY = (%standardY / %currentY);
-    if ((%proportionY < %proportionX)) {
-        if ((1.0 < %proportionX)) {
+    %proportionX = (%currentX / %standardX);
+    %proportionY = (%currentY / %standardY);
+    if ((%proportionX < %proportionY)) {
+        if ((%proportionX < 1.0)) {
             %proportionX = 1;
         }
-        %currentX = (%standardX * %proportionX);
-        %currentY = (%standardY * %proportionX);
+        %currentX = (%proportionX * %standardX);
+        %currentY = (%proportionX * %standardY);
     }
-    if ((1.0 < %proportionY)) {
+    if ((%proportionY < 1.0)) {
         %proportionY = 1;
     }
-    %currentX = (%standardX * %proportionY);
-    %currentY = (%standardY * %proportionY);
-    %currentX = mFloor((0.5 + %currentX));
-    %currentY = mFloor((0.5 + %currentY));
+    %currentX = (%proportionY * %standardX);
+    %currentY = (%proportionY * %standardY);
+    %currentX = mFloor((%currentX + 0.5));
+    %currentY = mFloor((%currentY + 0.5));
     setScreenMode(%currentX, %currentY, %currentBPP, 0);
 };
 function setClipboardToken() {

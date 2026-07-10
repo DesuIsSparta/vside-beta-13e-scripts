@@ -16,7 +16,7 @@ function serverStart() {
     %version = "version=" @ urlEncode(getProtocolVersion());
     %post = %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version;
     echo("sending server start to: " @ %host);
-    %initRequest.post(%host, %uri, %query, %post);
+    %post.post(%initRequest, %host, %uri, %query);
     schedule(7500, 0, "serverHeartBeat");
     return;
 };
@@ -43,29 +43,29 @@ function serverHeartBeat() {
     %load = "load=" @ urlEncode(ClientGroup.getCount());
     %users = "users=";
     %i = 0;
-    if ((%count < %i)) {
-        if ((0.0 > %i)) {
+    while ((%i < %count)) {
+        if ((%i > 0.0)) {
             %users = %users @ ",";
         }
-        %client = ClientGroup.getObject(%i);
+        %client = %i.getObject(ClientGroup);
         %users = %users @ urlEncode(%client.nameBase);
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     %post = %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version @ "&" @ %load @ "&" @ %users;
-    (%count < %i);
+    (%i < %count);
     echo("sending server heartbeat to: " @ %host);
-    %initRequest.post(%host, %uri, %query, %post);
+    %post.post(%initRequest, %host, %uri, %query);
     schedule(7500, 0, "serverHeartBeat");
     return;
 };
 function generateRandomMapLocation() {
-    %x = (0.2 + (0.6 * getRandom()));
-    %y = (0.2 + (0.6 * getRandom()));
+    %x = ((getRandom() * 0.6) + 0.2);
+    %y = ((getRandom() * 0.6) + 0.2);
     $Pref::Net::Location = %x @ " " @ %y;
     return $Pref::Net::Location;
 };
 function InitRequest::onStatus(%unused, %status) {
-    if ((200.0 != %status)) {
+    if ((%status != 200.0)) {
         error("heartbeat HTTP status: " @ %status);
     }
     return;
@@ -82,10 +82,10 @@ function InitRequest::onLine(%unused, %line) {
     %line = NextToken(%line, name, "=");
     %line = NextToken(%line, value, "=");
     if ((%name $= "boot")) {
-        %connection = ClientDict.get(%value);
-        if ((0.0 != %connection)) {
+        %connection = %value.get(ClientDict);
+        if ((%connection != 0.0)) {
             echo("received boot for player " @ %connection.nameBase);
-            %connection.delete("You have connected in another location.");
+            "You have connected in another location.".delete(%connection);
         }
     }
     return;

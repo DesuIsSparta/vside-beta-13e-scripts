@@ -9,37 +9,37 @@ function testLoginTimes() {
     };
     %testLogin.init();
     echo("LOAD: Logging into " @ $cityIndex[$Cities @ $cityIndex]);
-    %testLogin.doLogin($cityIndex[$Cities @ $cityIndex]);
-    $cityIndex = (1.0 + $cityIndex);
+    $cityIndex[$Cities @ $cityIndex].doLogin(%testLogin);
+    $cityIndex = ($cityIndex + 1.0);
 };
 function doSomething() {
     if (ClosetGui.isVisible()) {
         ClosetGui.close();
     }
-    pChat.say("Hello!", 0, 0);
-    pChat.say("Goodbye!", 0, 0);
+    0.say(pChat, "Hello!", 0);
+    0.say(pChat, "Goodbye!", 0);
     logout(0);
     WorldMap.exit();
-    if (($maxCities <= $cityIndex)) {
+    if (($cityIndex <= $maxCities)) {
         schedule(3000, 0);
     }
     skeletonClient::reallyQuit();
 };
 function initCities() {
     %i = 0;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["NewVeneziaNorth" @ $Cities] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["LaGenoaAiresNorth" @ $Cities] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["RaijukuNorth" @ $Cities] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["IIR Raijuku" @ $Cities] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["LaBoca Apartments" @ $Cities] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["Warehouse Loft" @ $Cities] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["BeatUp" @ $Cities] = ;
     $maxCities = %i;
     $cityIndex = 1;

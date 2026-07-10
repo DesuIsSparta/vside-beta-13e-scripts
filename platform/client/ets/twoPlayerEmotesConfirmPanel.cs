@@ -4,25 +4,25 @@ function geTwoPlayerEmotesConfirmPanel::open(%this, %otherPlayerName, %coAnimNam
         error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName @ " " @ getTrace());
         return;
     }
-    PlayGui.add(geTwoPlayerEmotesConfirmPanelBackground);
-    geTwoPlayerEmotesConfirmPanelBackground.setVisible(1);
-    geTwoPlayerEmotesConfirmPanelBackground.resize(getWord(PlayGui.getExtent(), 0), getWord(PlayGui.getExtent(), 1));
-    geTwoPlayerEmotesConfirmPanelBackground.reposition(0, 0);
-    PlayGui.focusAndRaise(geTwoPlayerEmotesConfirmPanelBackground);
-    PlayGui.ensureAdded(%this);
-    %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
+    geTwoPlayerEmotesConfirmPanelBackground.add(PlayGui);
+    1.setVisible(geTwoPlayerEmotesConfirmPanelBackground);
+    getWord(PlayGui.getExtent(), 1).resize(geTwoPlayerEmotesConfirmPanelBackground, getWord(PlayGui.getExtent(), 0));
+    0.reposition(geTwoPlayerEmotesConfirmPanelBackground, 0);
+    geTwoPlayerEmotesConfirmPanelBackground.focusAndRaise(PlayGui);
+    %this.ensureAdded(PlayGui);
+    1.setVisible(%this);
+    %this.focusAndRaise(PlayGui);
     setActionMapsEnabled(0);
     %this.otherPlayerName = %otherPlayerName;
     %this.coAnimName = %coAnimName;
     %this.requestID = %requestId;
-    %this.countdownTick((1000.0 * 15.0));
+    (15.0 * 1000.0).countdownTick(%this);
     %this.refresh();
 };
 function geTwoPlayerEmotesConfirmPanel::close(%this, %accepted, %messageCode) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
-    geTwoPlayerEmotesConfirmPanelBackground.setVisible(0);
+    0.setVisible(geTwoPlayerEmotesConfirmPanelBackground);
     setActionMapsEnabled(1);
     if (!(isDefined("%accepted"))) {
         %accepted = 0;
@@ -30,7 +30,7 @@ function geTwoPlayerEmotesConfirmPanel::close(%this, %accepted, %messageCode) {
     if (!(isDefined("%messageCode"))) {
         %messageCode = "DECLINE MANUAL";
     }
-    %this.doAccept(%accepted, %messageCode);
+    %messageCode.doAccept(%this, %accepted);
     return 1;
 };
 function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemainingMS) {
@@ -38,19 +38,19 @@ function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemaining
         %this.countdownMSRemaining = %resetTimeRemainingMS;
     }
     %tickPeriod = 100;
-    %this.countdownMSRemaining = (%tickPeriod - %this.countdownMSRemaining);
-    %this.rotRadians = (6.0 / (0.001 * %this.countdownMSRemaining)) @ geTwoPlayerEmotesConfirmClock_littleHand;
-    %this.rotRadians = (0.001 * %this.countdownMSRemaining) @ geTwoPlayerEmotesConfirmClock_bigHand;
-    %text = mFloor((0.5 + (0.001 * %this.countdownMSRemaining)));
+    %this.countdownMSRemaining = (%this.countdownMSRemaining - %tickPeriod);
+    %this.rotRadians = ((%this.countdownMSRemaining * 0.001) / 6.0) @ geTwoPlayerEmotesConfirmClock_littleHand;
+    %this.rotRadians = (%this.countdownMSRemaining * 0.001) @ geTwoPlayerEmotesConfirmClock_bigHand;
+    %text = mFloor(((%this.countdownMSRemaining * 0.001) + 0.5));
     %text = %text @ "..";
-    geTwoPlayerEmotesConfirmClock_readout.setTextWithStyle(%text);
+    %text.setTextWithStyle(geTwoPlayerEmotesConfirmClock_readout);
     cancel(%this.countdownTimerID);
-    if ((0.0 > %this.countdownMSRemaining)) {
+    if ((%this.countdownMSRemaining > 0.0)) {
     }
     if (%this.isVisible()) {
-        %this.countdownTimerID = %this.schedule(%tickPeriod, "countdownTick");
+        %this.countdownTimerID = "countdownTick".schedule(%this, %tickPeriod);
     }
-    %this.close(0, "DECLINE TIMEOUT");
+    "DECLINE TIMEOUT".close(%this, 0);
     %coAnimEntry = findCoAnimEntry(%this.coAnimName);
     %actionDesc = getField(%coAnimEntry, 6);
     %text = %actionDesc[$MsgCat::coanim @ "E-TOOSLOW"];
@@ -70,16 +70,16 @@ function geTwoPlayerEmotesConfirmPanel::refresh(%this) {
         return;
     }
     %text = "<just:right><clip:1000>" @ %this.otherPlayerName;
-    geTwoPlayerEmotesConfirmOtherPlayerName.setTextWithStyle(%text);
+    %text.setTextWithStyle(geTwoPlayerEmotesConfirmOtherPlayerName);
     %otherPlayerPortraitUrl = $Net::AvatarURL @ urlEncode(%this.otherPlayerName) @ "?size=M";
-    geTwoPlayerEmotesConfirmOtherPlayerPortrait.setBitmap("platform/client/ui/tgf/tgf_profile_default_" @ %otherPlayer.getGender());
-    geTwoPlayerEmotesConfirmOtherPlayerPortrait.downloadAndApplyBitmap(%otherPlayerPortraitUrl);
+    "platform/client/ui/tgf/tgf_profile_default_" @ %otherPlayer.getGender().setBitmap(geTwoPlayerEmotesConfirmOtherPlayerPortrait);
+    %otherPlayerPortraitUrl.downloadAndApplyBitmap(geTwoPlayerEmotesConfirmOtherPlayerPortrait);
     %text = "Two-Player Action -" @ " " @ %this.coAnimName;
-    geTwoPlayerEmotesConfirmTitle.setTextWithStyle(%text);
+    %text.setTextWithStyle(geTwoPlayerEmotesConfirmTitle);
     %coAnimEntry = findCoAnimEntry(%this.coAnimName);
     %actionDesc = getField(%coAnimEntry, 6);
     %text = %actionDesc[$MsgCat::coanim @ "ACCEPT-OR-DECLINE"];
     %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
     %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
-    geTwoPlayerEmotesConfirmTextAcceptDecline.setTextWithStyle(%text);
+    %text.setTextWithStyle(geTwoPlayerEmotesConfirmTextAcceptDecline);
 };

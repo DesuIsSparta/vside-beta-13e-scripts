@@ -4,7 +4,7 @@ function drinks_confirmInitiateGift(%otherPlayerName) {
         error(getScopeName() @ " " @ "- no drink!" @ " " @ getTrace());
         return;
     }
-    %si = SkuManager.findBySku(%sku);
+    %si = %sku.findBySku(SkuManager);
     %msg = %si[$MsgCat::giftingItems @ "DLG-BODY-GIVE-CONFIRM"];
     %msg = strreplace(%msg, "[ITEMNAME]", %si.descShrt);
     %msg = strreplace(%msg, "[OTHERPLAYER]", %otherPlayerName);
@@ -19,7 +19,7 @@ function drinks_confirmInitiateMake(%otherPlayerName, %sku) {
         error(getScopeName() @ " " @ "- can't find other player" @ " " @ %otherPlayerName @ " " @ getTrace());
         return;
     }
-    %si = SkuManager.findBySku(%sku);
+    %si = %sku.findBySku(SkuManager);
     if ((%otherPlayerName $= $Player::Name)) {
         %msg = $Player::Name[$MsgCat::giftingItems @ "DLG-BODY-MAKE-SELF-CONFIRM"];
     }
@@ -71,7 +71,7 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
         %dlg.skus = %skus @ geGiftingPanel;
         %dlg.GiftType = "items" @ geGiftingPanel;
         %dlg.making = %making @ geGiftingPanel;
-        geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
+        "items_acceptDecline".open(geGiftingPanel, %otherPlayerName);
     }
 };
 function GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, %accepted, %messageCode) {

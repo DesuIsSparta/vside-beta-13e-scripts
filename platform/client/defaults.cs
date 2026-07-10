@@ -56,8 +56,8 @@ $Chat::Preview::Period = 1200;
 $Chat::Preview::Size = 30;
 $Chat::Preview::ShowOwn = !(1);
 $Chat::Preview::WordBoundaries = 1;
-$Chat::Preview::IsNoLongerTypingDelay = (5.0 * 1000.0);
-$Chat::Preview::ChatPreviewTimeout = (10.0 * 1000.0);
+$Chat::Preview::IsNoLongerTypingDelay = (1000.0 * 5.0);
+$Chat::Preview::ChatPreviewTimeout = (1000.0 * 10.0);
 $Pref::Input::LinkMouseSensitivity = 1;
 $Pref::Input::MouseEnabled = 1;
 $Pref::Input::JoystickEnabled = 0;
@@ -150,7 +150,7 @@ $Pref::OpenGL::interiorMipReduction = 0;
 $Pref::OpenGL::skyMipReduction = 0;
 $pref::OpenGL::resizedBitmapLoadingIsEnabled = 1;
 if (($Platform $= "windows")) {
-    $pref::OpenGL::disableEXTCompiledVertexArray = (6.0 == $Platform::Version::Major);
+    $pref::OpenGL::disableEXTCompiledVertexArray = ($Platform::Version::Major == 6.0);
 }
 $pref::visibleDistanceMod = 1.0;
 $pref::TS::sgShadowDetailSize = 1000;
@@ -324,7 +324,7 @@ $pref::benchmarks::fps::countTris = 1;
 $pref::benchmarks::metricsLock = 1;
 $pref::benchmarks::fps::countTris = 1;
 $pref::benchmarks::cameraScreenshots = 1;
-$fxEts::TODTimerPeriod = (1000.0 * 30.0);
+$fxEts::TODTimerPeriod = (30.0 * 1000.0);
 $fxEts::TODTimerID = 0;
 $pref::fxEts::TODNotInside = 0;
 $ButtonBarVar::VerticalAdjustment = 0;

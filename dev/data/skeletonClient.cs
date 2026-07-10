@@ -3,17 +3,17 @@ function skeletonClient_postJoinAction() {
         echo("LOAD: Logged in. Calling " @ $skeletonClient::joinAction);
         schedule(2000, 0);
     }
-    if ((200.0 == $iterationsWaited)) {
+    if (($iterationsWaited == 200.0)) {
         error("LOAD: Giving up. Waited for 10 minutes and nothing happened.");
         skeletonClient::quit();
     }
     echo("LOAD: Waiting ...");
-    $iterationsWaited = (1.0 + $iterationsWaited);
+    $iterationsWaited = ($iterationsWaited + 1.0);
     skeletonClient_doPostJoinAction;
     schedule(3000, 0);
 };
 function fakeFrameCount() {
-    $Canvas::frameCount = (1.0 + $Canvas::frameCount);
+    $Canvas::frameCount = ($Canvas::frameCount + 1.0);
     schedule(500, 0);
 };
 function skeletonClient_doPostJoinAction() {
@@ -39,29 +39,29 @@ function skeletonClient::init(%this) {
 };
 function skeletonClient::initSpawnPoints(%this) {
     %i = 0;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["DanceFloorSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["PlazaSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["ShoppingSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["LoungeSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["RailwaySpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["LobbySpawns_NV255Lofts" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["GariSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["LAXSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["DanceFloorSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["ShoppingSpawns_sf1972" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["TeaHouseSpawns" @ $Spawns] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["SkyBarSpawns" @ $Spawns] = ;
     $SpawnsCount = %i;
 };
@@ -78,11 +78,11 @@ function skeletonClient::doLogin(%this, %destinationCity) {
     }
     $skeletonClient::targetCity = "NewVeneziaNorth";
     echo("LOAD: Setting targetCity to " @ $skeletonClient::targetCity);
-    LoginUserNameField.setValue(%this.userName);
-    LoginPasswordField.setValue(%this.password);
+    %this.userName.setValue(LoginUserNameField);
+    %this.password.setValue(LoginPasswordField);
     LoginGui.isAwake();
     LoginGui.doLoginButton();
-    %this.schedule(1000);
+    1000.schedule(%this);
 };
 function skeletonClient::checkStatus() {
     if (!(isObject(LoginRequest))) {
@@ -107,7 +107,7 @@ function GameConnection::onConnectRequestRejected(%this) {
 };
 function BootRequest::onDone(%this) {
     log("login", "debug", "LOAD: BootRequest::onDone");
-    if (($HTTP::StatusOK != %this.statusCode())) {
+    if ((%this.statusCode() != $HTTP::StatusOK)) {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         %this.quit();
     }
@@ -127,7 +127,7 @@ function BootRequest::onDone(%this) {
     }
 };
 function LoginRequest::onError(%this, %errorNum, %unused) {
-    if (($CURL::CouldNotResolveHost == %errorNum)) {
+    if ((%errorNum == $CURL::CouldNotResolveHost)) {
         echo("LOAD: CURL::CouldNotResolveHost");
     }
     echo("LOAD: OtherError");
@@ -136,7 +136,7 @@ function LoginRequest::onError(%this, %errorNum, %unused) {
 };
 function LoginRequest::onDone(%this) {
     log("login", "debug", "LOAD: LoginRequest::onDone");
-    if (($HTTP::StatusOK != %this.statusCode())) {
+    if ((%this.statusCode() != $HTTP::StatusOK)) {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         skeletonClient::quit();
     }
@@ -145,15 +145,15 @@ function LoginRequest::onDone(%this) {
     if ((%status $= "fail")) {
     }
     if ((%status $= "error")) {
-        %errorCode = %this.getValue("errorCode");
+        %errorCode = "errorCode".getValue(%this);
         %errorCode = strlwr(%errorCode);
         log("login", "error", "LOAD: errorCode = " @ %errorCode);
         if ((%errorCode $= "alreadyloggedin")) {
-            if ((0.0 == $skeletonClient::bootAttempted)) {
+            if (($skeletonClient::bootAttempted == 0.0)) {
                 echo("LOAD: Test login auto-booting from previously joined server");
                 LoginRequest::handleBoot();
                 $skeletonClient::bootAttempted = 1;
-                %this.schedule(1000);
+                1000.schedule(%this);
             }
             error("LOAD: Boot failed. Giving up.");
             echo("LOAD: Quit()-ing...");
@@ -189,7 +189,7 @@ function joinServer() {
 };
 function skeletonClient::joinServer() {
     echo("LOAD: count:" @ " " @ WorldMapServers.getCount());
-    if ((0.0 == WorldMapServers.getCount())) {
+    if ((WorldMapServers.getCount() == 0.0)) {
         echo("LOAD: We got 0 servers. Trying again in 5 seconds.");
         schedule(5000, 0);
         return joinServer;
@@ -213,15 +213,15 @@ function skeletonClient::joinServer() {
     echo("LOAD: Using spawn point" @ " " @ %spawn @ " " @ "in" @ " " @ $skeletonClient::targetCity);
     %foundCity = 0;
     %i = 0;
-    if ((WorldMapServers.getCount() < %i)) {
-        if ((WorldMapServers.getObject(%i).get("name") $= $skeletonClient::targetCity)) {
+    while ((%i < WorldMapServers.getCount())) {
+        if (("name".get(%i.getObject(WorldMapServers)) $= $skeletonClient::targetCity)) {
             %foundCity = 1;
-            WorldMap.join(WorldMapServers.getObject(%i), 0, %targetVurl);
-            echo("LOAD: Joined server " @ WorldMapServers.getObject(%i).get("name"));
+            %targetVurl.join(WorldMap, %i.getObject(WorldMapServers), 0);
+            echo("LOAD: Joined server " @ "name".get(%i.getObject(WorldMapServers)));
             echo("LOAD: Login completed");
             schedule(15000, 0);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
         skeletonClient_postJoinAction;
     }
     if (!(%foundCity)) {
@@ -251,6 +251,6 @@ if (($Platform $= "x86UNIX")) {
 }
 function useAndSaveRandomOutfit() {
     %drwrs = SkuManager.commonDrawers();
-    %skus = SkuManager.getRandomSkusForLocalPlayer(%drwrs);
+    %skus = %drwrs.getRandomSkusForLocalPlayer(SkuManager);
     commandToServer('SetActiveSkus', %skus);
 };

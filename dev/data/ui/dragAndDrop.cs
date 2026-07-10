@@ -5,21 +5,21 @@ if (!(isObject(DraggableProfile))) {
 }
 function DragAndDropExampleList::Initialize(%this) {
     if (!(%this.initialized)) {
-        %this.setNumChildren(10);
+        10.setNumChildren(%this);
         %this.initialized = 1;
     }
 };
 function DragAndDropExampleList::onCreatedChild(%this, %child, %unused, %yPos) {
     %child.setProfile();
     %child.contentText = DraggableProfile @ %yPos;
-    %child.add(new GuiTextCtrl("") {
+    new GuiTextCtrl("") {
         profile = 0 @ VPointsTextProfile;
         position = "10 8";
         extent = "200 50";
         text = %child.contentText;
-    };);
+    };.add(%child);
     if (!(getWord(%child.getNamespaceList(), 0) $= "DragAndDropExampleDraggable")) {
-        %child.bindClassName("DragAndDropExampleDraggable");
+        "DragAndDropExampleDraggable".bindClassName(%child);
     }
 };
 function DragAndDropExampleList::onDragAndDropEnter(%this, %dragCtrl) {
@@ -28,7 +28,7 @@ function DragAndDropExampleList::onDragAndDropEnter(%this, %dragCtrl) {
 function DragAndDropExampleList::onDragAndDropLeave(%this, %dragCtrl) {
     hiliteControl(0);
     %marker = %this.getHiliteMarker();
-    %marker.setVisible(0);
+    0.setVisible(%marker);
 };
 function DragAndDropExampleList::getHiliteMarker(%this) {
     if (!(isObject(%this.hiliteMarker))) {
@@ -48,28 +48,28 @@ function DragAndDropExampleList::getHiliteMarker(%this) {
     return %this.hiliteMarker;
 };
 function DragAndDropExampleList::onDragAndDropMove(%this, %dragCtrl, %mousePos) {
-    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), ((2.0 / getWord(%this.childrenExtent, 1)) + getWord(%mousePos, 1)));
+    %ctrl = (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)).closestChildToPoint(%this, getWord(%mousePos, 0));
     %marker = %this.getHiliteMarker();
-    Canvas.getContent().add(%marker);
-    Canvas.getContent().pushToBack(%marker);
+    %marker.add(Canvas.getContent());
+    %marker.pushToBack(Canvas.getContent());
     if (isObject(%ctrl)) {
-        %marker.reposition((5.0 + getWord(%ctrl.getScreenPosition(), 0)), (1.0 - (%this.spacing - getWord(%ctrl.getScreenPosition(), 1))));
+        ((getWord(%ctrl.getScreenPosition(), 1) - %this.spacing) - 1.0).reposition(%marker, (getWord(%ctrl.getScreenPosition(), 0) + 5.0));
     }
-    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), ((2.0 / getWord(%this.childrenExtent, 1)) - getWord(%mousePos, 1)));
+    %ctrl = (getWord(%mousePos, 1) - (getWord(%this.childrenExtent, 1) / 2.0)).closestChildToPoint(%this, getWord(%mousePos, 0));
     if (isObject(%ctrl)) {
-        %marker.reposition((5.0 + getWord(%ctrl.getScreenPosition(), 0)), (1.0 - (getWord(%this.childrenExtent, 1) + getWord(%ctrl.getScreenPosition(), 1))));
+        ((getWord(%ctrl.getScreenPosition(), 1) + getWord(%this.childrenExtent, 1)) - 1.0).reposition(%marker, (getWord(%ctrl.getScreenPosition(), 0) + 5.0));
     }
-    %marker.setVisible(1);
+    1.setVisible(%marker);
 };
 function DragAndDropExampleList::onDragAndDropDrop(%this, %dragCtrl, %mousePos) {
-    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), ((2.0 / getWord(%this.childrenExtent, 1)) + getWord(%mousePos, 1)));
-    %this.reorderChild(%dragCtrl, %ctrl);
+    %ctrl = (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)).closestChildToPoint(%this, getWord(%mousePos, 0));
+    %ctrl.reorderChild(%this, %dragCtrl);
     return 1;
 };
 function DragAndDropExampleDraggable::onMouseDown(%this) {
 };
 function DragAndDropExampleDraggable::onMouseDragged(%this) {
-    %this.setAsDragControl(1);
+    1.setAsDragControl(%this);
 };
 function DragAndDropExampleDraggable::onDragSet(%this) {
 };

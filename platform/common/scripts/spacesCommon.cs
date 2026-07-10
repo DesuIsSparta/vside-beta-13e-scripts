@@ -42,7 +42,7 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE) {
         internalName = %internalName;
     };
     %spaceDef.defaultValues();
-    spaceDefsGroup.add(%spaceDef);
+    %spaceDef.add(spaceDefsGroup);
     return %spaceDef.getId();
 };
 function spaces_HasSpaceDef(%internalName) {
@@ -51,16 +51,16 @@ function spaces_HasSpaceDef(%internalName) {
 };
 function spaces_FindSpaceDefWithStoreID(%storeID) {
     %found = 0;
-    %n = (1.0 - spaceDefsGroup.getCount());
-    if ((0.0 >= %n)) {
+    %n = (spaceDefsGroup.getCount() - 1.0);
+    if ((%n >= 0.0)) {
     }
-    if ((0.0 == %found)) {
-        %found = spaceDefsGroup.getObject(%n);
+    while ((%found == 0.0)) {
+        %found = %n.getObject(spaceDefsGroup);
         if (!(%found.storeID $= %storeID)) {
             %found = 0;
         }
-        %n = (1.0 - %n);
-        if ((0.0 >= %n)) {
+        %n = (%n - 1.0);
+        if ((%n >= 0.0)) {
         }
     }
     return %found;
@@ -75,25 +75,25 @@ function initTokenSubstitutions() {
     if (%map.initialized) {
         return %map;
     }
-    %map.put("[PLAYERNAME]", "          %player     .getShapeName()");
-    %map.put("[PLAYERFIRSTNAME]", "firstWord(%player     .getShapeName())");
-    %map.put("[REASON]", "          %this       .lastReason");
-    %map.put("[SHORTNAME]", "          %this       .shortName");
+    "          %player     .getShapeName()".put(%map, "[PLAYERNAME]");
+    "firstWord(%player     .getShapeName())".put(%map, "[PLAYERFIRSTNAME]");
+    "          %this       .lastReason".put(%map, "[REASON]");
+    "          %this       .shortName".put(%map, "[SHORTNAME]");
     %map.initialized = 1;
     return %map;
 };
 function SpaceDef::doTokenSubstitution(%this, %dry, %player) {
     %map = initTokenSubstitutions();
     %wet = %dry;
-    %n = (1.0 - %map.size());
-    if ((0.0 >= %n)) {
-        %replaceThis = %map.getKey(%n);
-        %withThis = %map.getValue(%n);
+    %n = (%map.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %replaceThis = %n.getKey(%map);
+        %withThis = %n.getValue(%map);
         %player = %player;
         %evalCmd = "%withThis = " @ %withThis @ ";";
         eval(%evalCmd);
         %wet = strreplace(%wet, %replaceThis, %withThis);
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return %wet;
 };

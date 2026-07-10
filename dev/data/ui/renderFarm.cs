@@ -2,19 +2,19 @@ function rf_TrySetup() {
     if (!(MissionInfo @ " " @ name $= "renderFarm")) {
         return;
     }
-    Canvas.setContent(rf_getGE());
-    $gRFPlayerF = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotF));
-    $gRFPlayerM = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotM));
+    rf_getGE().setContent(Canvas);
+    $gRFPlayerF = seBotF.getGhostID(LocalClientConnection).resolveGhostID(ServerConnection);
+    $gRFPlayerM = seBotM.getGhostID(LocalClientConnection).resolveGhostID(ServerConnection);
     if (!(isObject($gRFPlayerF))) {
     }
     if (!(isObject($gRFPlayerM))) {
         schedule(1000, 0, "rf_TrySetup");
     }
-    geRenderFarmObjectView.setSimObject($gRFPlayerF);
-    geRenderFarmObjectView.setOrbitDist(2.4);
-    playGui.resize(10, 10);
-    geRenderFarm.add(playGui);
-    geRenderFarm.bringToFront(playGui);
+    $gRFPlayerF.setSimObject(geRenderFarmObjectView);
+    2.4.setOrbitDist(geRenderFarmObjectView);
+    10.resize(playGui, 10);
+    playGui.add(geRenderFarm);
+    playGui.bringToFront(geRenderFarm);
 };
 function rf_getGE() {
     if (!(isObject(geRenderFarm))) {
@@ -56,7 +56,7 @@ function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %hei
     %rfRequest.height = %height;
     %rfRequest.angle = %angle;
     %rfRequest.zoom = %zoom;
-    gRFQueue.push_back(%rfRequest, "");
+    "".push_back(gRFQueue, %rfRequest);
     rf_processQueue();
     return "success";
 };
@@ -64,10 +64,10 @@ function rf_processQueue() {
     if (isObject($gRF_CurrentRequest)) {
         return;
     }
-    if ((1.0 < gRFQueue.count())) {
+    if ((gRFQueue.count() < 1.0)) {
         return;
     }
-    %request = gRFQueue.getKey(0);
+    %request = 0.getKey(gRFQueue);
     gRFQueue.pop_front();
     if (isObject(%request)) {
         rf_beginRender(%request);
@@ -76,15 +76,15 @@ function rf_processQueue() {
 function rf_beginRender(%request) {
     $gRF_CurrentRequest = %request;
     %gender = "n";
-    %n = (1.0 - getWordCount(%request.skus));
-    if ((0.0 >= %n)) {
+    %n = (getWordCount(%request.skus) - 1.0);
+    if ((%n >= 0.0)) {
     }
-    if ((%gender $= "n")) {
+    while ((%gender $= "n")) {
         %sku = getWord(%request.skus, %n);
-        %si = SkuManager.findBySku(%sku);
+        %si = %sku.findBySku(SkuManager);
         %gender = %si.gender;
-        %n = (1.0 - %n);
-        if ((0.0 >= %n)) {
+        %n = (%n - 1.0);
+        if ((%n >= 0.0)) {
         }
     }
     if (((%gender $= "n") @ " " @ %gender $= "n")) {
@@ -94,10 +94,10 @@ function rf_beginRender(%request) {
     }
     %player = $gRFPlayerM;
     $gRFPlayerF;
-    %player.setActiveSKUs(%request.skus);
-    %player.setHeight(%request.height);
-    geRenderFarmObjectView.setSimObject(%player);
-    geRenderFarmObjectView.setRotation(0, 0, mDegToRad(%request.angle));
+    %request.skus.setActiveSKUs(%player);
+    %request.height.setHeight(%player);
+    %player.setSimObject(geRenderFarmObjectView);
+    mDegToRad(%request.angle).setRotation(geRenderFarmObjectView, 0, 0);
     %text = "<tab:100>";
     %text = %text @ "requestID:" @ "\t" @ %request.requestID @ "\n";
     %text = %text @ "user:" @ "\t" @ %request.user @ "\n";
@@ -107,9 +107,9 @@ function rf_beginRender(%request) {
     %text = %text @ "poseName:" @ "\t" @ %request.poseName @ "\n";
     %text = %text @ "poseOffset:" @ "\t" @ %request.poseOffset @ "\n";
     %text = trim(%text);
-    geRenderFarmOverlayText1.setTextWithStyle(%text);
+    %text.setTextWithStyle(geRenderFarmOverlayText1);
     %fileName = "web/rf/images/rf_" @ $gRF_CurrentRequest.requestID @ ".jpg";
-    geRenderFarmObjectView.snapshot(%fileName);
+    %fileName.snapshot(geRenderFarmObjectView);
     rf_finishRender($gRF_CurrentRequest);
 };
 function rf_finishRender(%request) {
@@ -127,26 +127,26 @@ function rf_generateTestSkus(%num, %forJavascript) {
         %ret = %ret @ "\n" @ "{";
         %ret = %ret @ "\n" @ "   gSkusList.length            = 0;";
     }
-    %allDrawers = ThumbCategories.get("all items");
+    %allDrawers = "all items".get(ThumbCategories);
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "props");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "badges");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "tokens");
     %allDrawers = %allDrawers @ " " @ "skin face eyes hair hat";
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %gender = getRandom(0, 1) ? "f" : "m";
         %skulist = "";
-        %d = (1.0 - getWordCount(%allDrawers));
-        if ((0.0 >= %d)) {
+        %d = (getWordCount(%allDrawers) - 1.0);
+        while ((%d >= 0.0)) {
             %drawerName = getWord(%allDrawers, %d);
-            if (SkuManager.isOptionalDrawer(%drawerName)) {
+            if (%drawerName.isOptionalDrawer(SkuManager)) {
             }
             %prob = 1.0;
             0.1;
-            if ((%prob <= getRandom())) {
+            if ((getRandom() <= %prob)) {
                 if ((%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
-                    %skus = SkuManager.getSkusDrwr(%drawerName);
-                    %skus = SkuManager.filterSkusGender(%skus, %gender);
+                    %skus = %drawerName.getSkusDrwr(SkuManager);
+                    %skus = %gender.filterSkusGender(SkuManager, %skus);
                     %gender[%skus @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] = ;
                 }
                 %sku = getRandomWord(%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender]);
@@ -154,10 +154,10 @@ function rf_generateTestSkus(%num, %forJavascript) {
                     %skulist = %skulist @ " " @ %sku;
                 }
             }
-            %d = (1.0 - %d);
+            %d = (%d - 1.0);
         }
         %skulist = trim(%skulist);
-        (0.0 >= %d);
+        (%d >= 0.0);
         if (%forJavascript) {
             %ret = %ret @ "   gSkusList[gSkusList.length] = \"";
         }
@@ -166,11 +166,11 @@ function rf_generateTestSkus(%num, %forJavascript) {
             %ret = %ret @ "\";";
         }
         %ret = %ret @ "\n";
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     if (%forJavascript) {
         %ret = %ret @ "}\n";
-        (%num < %n);
+        (%n < %num);
     }
     return %ret;
 };

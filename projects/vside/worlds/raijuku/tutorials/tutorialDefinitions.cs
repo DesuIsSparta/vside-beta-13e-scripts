@@ -1,3 +1,3 @@
 function TutorialsCatalogServer::Initialize(%this) {
-    %this.AddTutorialInfo("Sumo", 1, 0, 0, "");
+    "".AddTutorialInfo(%this, "Sumo", 1, 0, 0);
 };

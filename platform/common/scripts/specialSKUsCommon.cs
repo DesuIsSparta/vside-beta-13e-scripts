@@ -7,14 +7,14 @@ function getSpecialSKU(%player, %skuName) {
 };
 function Player::hasSpecialSku(%this, %skuName) {
     %sku = getSpecialSKU(%this, %skuName);
-    if ((0.0 == %sku)) {
+    if ((%sku == 0.0)) {
         return 0;
     }
-    %hasIt = %this.hasActiveSKU(%sku);
+    %hasIt = %sku.hasActiveSKU(%this);
     return %hasIt;
 };
 function getSkuShortName(%sku) {
-    %si = SkuManager.findBySku(%sku);
+    %si = %sku.findBySku(SkuManager);
     if (!(isObject(%si))) {
         return %sku;
     }

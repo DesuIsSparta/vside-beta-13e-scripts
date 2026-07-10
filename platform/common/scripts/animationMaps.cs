@@ -43,35 +43,35 @@ function initializeAnimationMaps() {
 };
 function makeAnimationMapSuperTyra(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("run", %gender @ "ntyrwlk");
-    %map.put("root", %gender @ "ntyidl1a");
-    %map.put("back", %gender @ "hwlkb1");
-    %map.put("sml", %gender @ "ntyrsml");
+    %gender @ "ntyrwlk".put(%map, "run");
+    %gender @ "ntyidl1a".put(%map, "root");
+    %gender @ "hwlkb1".put(%map, "back");
+    %gender @ "ntyrsml".put(%map, "sml");
 };
 function makeAnimationMapTyra(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("run", %gender @ "ntyrwlk");
-    %map.put("root", %gender @ "ntyidl1a");
-    %map.put("back", %gender @ "hwlkb1");
-    %map.put("sml", %gender @ "ntyrsml");
+    %gender @ "ntyrwlk".put(%map, "run");
+    %gender @ "ntyidl1a".put(%map, "root");
+    %gender @ "hwlkb1".put(%map, "back");
+    %gender @ "ntyrsml".put(%map, "sml");
 };
 function makeAnimationMapSkate(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("run", %gender @ "kwlkf1");
-    %map.put("side", %gender @ "ksde");
-    %map.put("back", %gender @ "kwlkb1");
+    %gender @ "kwlkf1".put(%map, "run");
+    %gender @ "ksde".put(%map, "side");
+    %gender @ "kwlkb1".put(%map, "back");
 };
 function makeAnimationMapSwim(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "nswmidl1");
-    %map.put("run", %gender @ "nswmf1");
-    %map.put("side", %gender @ "nswmsde");
-    %map.put("back", %gender @ "nswmb1");
+    %gender @ "nswmidl1".put(%map, "root");
+    %gender @ "nswmf1".put(%map, "run");
+    %gender @ "nswmsde".put(%map, "side");
+    %gender @ "nswmb1".put(%map, "back");
 };
 function makeAnimationMapZombie(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("run", %gender @ "nzwlk");
-    %map.put("root", %gender @ "nzidl1");
+    %gender @ "nzwlk".put(%map, "run");
+    %gender @ "nzidl1".put(%map, "root");
 };
 function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim) {
     if ((%gender $= "f")) {
@@ -87,239 +87,239 @@ function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideA
     %map = new StringMap(%animationMapName);;
     0;
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ %rootAnim);
-    %map.put("run", %gender @ %runAnim);
-    %map.put("side", %gender @ %sideAnim);
-    %map.put("back", %gender @ %backAnim);
-    %map.put("jump", %gender @ %jumpAnim);
+    %gender @ %rootAnim.put(%map, "root");
+    %gender @ %runAnim.put(%map, "run");
+    %gender @ %sideAnim.put(%map, "side");
+    %gender @ %backAnim.put(%map, "back");
+    %gender @ %jumpAnim.put(%map, "jump");
     return %map;
 };
 function makeAnimationMapSumo(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "nsumoidle");
-    %map.put("run", %gender @ "nsumowlkf");
-    %map.put("side", %gender @ "nsumowlks");
-    %map.put("back", %gender @ "nsumowlkb");
-    %map.put("jump", %gender @ "nsumojmp");
+    %gender @ "nsumoidle".put(%map, "root");
+    %gender @ "nsumowlkf".put(%map, "run");
+    %gender @ "nsumowlks".put(%map, "side");
+    %gender @ "nsumowlkb".put(%map, "back");
+    %gender @ "nsumojmp".put(%map, "jump");
 };
 function makeAnimationMapPillow(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "npwidle");
-    %map.put("run", %gender @ "npwwlkf");
-    %map.put("side", %gender @ "npwsde");
-    %map.put("back", %gender @ "npwwlkb");
-    %map.put("jump", %gender @ "npwjmp");
+    %gender @ "npwidle".put(%map, "root");
+    %gender @ "npwwlkf".put(%map, "run");
+    %gender @ "npwsde".put(%map, "side");
+    %gender @ "npwwlkb".put(%map, "back");
+    %gender @ "npwjmp".put(%map, "jump");
 };
 function makeAnimationMapProps(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "y" @ "idl1a");
-    %map.put("idl1a", %gender @ "y" @ "idl1a");
-    %map.put("idl1b", %gender @ "y" @ "idl1a");
-    %map.put("idl1c", %gender @ "y" @ "idl1a");
-    %map.put("idl1d", %gender @ "y" @ "idl1a");
-    %map.put("idl2a", %gender @ "y" @ "idl1a");
-    %map.put("idl2b", %gender @ "y" @ "idl1a");
-    %map.put("idl2c", %gender @ "y" @ "idl1a");
-    %map.put("idl2d", %gender @ "y" @ "idl1a");
-    %map.put("idl3a", %gender @ "y" @ "idl1a");
-    %map.put("idl3b", %gender @ "y" @ "idl1a");
-    %map.put("idl3c", %gender @ "y" @ "idl1a");
-    %map.put("idl3d", %gender @ "y" @ "idl1a");
-    %map.put("run", %gender @ "y" @ "wlkf1");
-    %map.put("wlkf1", %gender @ "y" @ "wlkf1");
-    %map.put("side", %gender @ "y" @ "sde");
-    %map.put("back", %gender @ "y" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "y" @ "wlkb1");
-    %map.put("jump", %gender @ "y" @ "jmp");
-    %map.put("cidl1a", %gender @ "y" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "y" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "y" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "y" @ "lidl2a");
-    %map.put("lidl3a", %gender @ "y" @ "lidl3a");
+    %gender @ "y" @ "idl1a".put(%map, "root");
+    %gender @ "y" @ "idl1a".put(%map, "idl1a");
+    %gender @ "y" @ "idl1a".put(%map, "idl1b");
+    %gender @ "y" @ "idl1a".put(%map, "idl1c");
+    %gender @ "y" @ "idl1a".put(%map, "idl1d");
+    %gender @ "y" @ "idl1a".put(%map, "idl2a");
+    %gender @ "y" @ "idl1a".put(%map, "idl2b");
+    %gender @ "y" @ "idl1a".put(%map, "idl2c");
+    %gender @ "y" @ "idl1a".put(%map, "idl2d");
+    %gender @ "y" @ "idl1a".put(%map, "idl3a");
+    %gender @ "y" @ "idl1a".put(%map, "idl3b");
+    %gender @ "y" @ "idl1a".put(%map, "idl3c");
+    %gender @ "y" @ "idl1a".put(%map, "idl3d");
+    %gender @ "y" @ "wlkf1".put(%map, "run");
+    %gender @ "y" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "y" @ "sde".put(%map, "side");
+    %gender @ "y" @ "wlkb1".put(%map, "back");
+    %gender @ "y" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "y" @ "jmp".put(%map, "jump");
+    %gender @ "y" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "y" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "y" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "y" @ "lidl2a".put(%map, "lidl2a");
+    %gender @ "y" @ "lidl3a".put(%map, "lidl3a");
 };
 function makeAnimationMapCross(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "x" @ "idl1a");
-    %map.put("run", %gender @ "x" @ "wlkf1");
-    %map.put("wlkf1", %gender @ "x" @ "wlkf1");
-    %map.put("back", %gender @ "x" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "x" @ "wlkb1");
-    %map.put("cidl1a", %gender @ "x" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "x" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "x" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "x" @ "lidl2a");
+    %gender @ "x" @ "idl1a".put(%map, "root");
+    %gender @ "x" @ "wlkf1".put(%map, "run");
+    %gender @ "x" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "x" @ "wlkb1".put(%map, "back");
+    %gender @ "x" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "x" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "x" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "x" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "x" @ "lidl2a".put(%map, "lidl2a");
 };
 function makeAnimationMapBottleShake(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "e" @ "idl1a");
-    %map.put("idl1a", %gender @ "e" @ "idl1a");
-    %map.put("idl1b", %gender @ "e" @ "idl1a");
-    %map.put("idl1c", %gender @ "e" @ "idl1a");
-    %map.put("idl1d", %gender @ "e" @ "idl1a");
-    %map.put("idl2a", %gender @ "e" @ "idl1a");
-    %map.put("idl2b", %gender @ "e" @ "idl1a");
-    %map.put("idl2c", %gender @ "e" @ "idl1a");
-    %map.put("idl2d", %gender @ "e" @ "idl1a");
-    %map.put("idl3a", %gender @ "e" @ "idl1a");
-    %map.put("idl3b", %gender @ "e" @ "idl1a");
-    %map.put("idl3c", %gender @ "e" @ "idl1a");
-    %map.put("idl3d", %gender @ "e" @ "idl1a");
-    %map.put("run", %gender @ "e" @ "wlkf1");
-    %map.put("wlkf1", %gender @ "e" @ "wlkf1");
-    %map.put("side", %gender @ "e" @ "sde");
-    %map.put("back", %gender @ "e" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "e" @ "wlkb1");
-    %map.put("cidl1a", %gender @ "e" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "e" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "e" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "e" @ "lidl2a");
+    %gender @ "e" @ "idl1a".put(%map, "root");
+    %gender @ "e" @ "idl1a".put(%map, "idl1a");
+    %gender @ "e" @ "idl1a".put(%map, "idl1b");
+    %gender @ "e" @ "idl1a".put(%map, "idl1c");
+    %gender @ "e" @ "idl1a".put(%map, "idl1d");
+    %gender @ "e" @ "idl1a".put(%map, "idl2a");
+    %gender @ "e" @ "idl1a".put(%map, "idl2b");
+    %gender @ "e" @ "idl1a".put(%map, "idl2c");
+    %gender @ "e" @ "idl1a".put(%map, "idl2d");
+    %gender @ "e" @ "idl1a".put(%map, "idl3a");
+    %gender @ "e" @ "idl1a".put(%map, "idl3b");
+    %gender @ "e" @ "idl1a".put(%map, "idl3c");
+    %gender @ "e" @ "idl1a".put(%map, "idl3d");
+    %gender @ "e" @ "wlkf1".put(%map, "run");
+    %gender @ "e" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "e" @ "sde".put(%map, "side");
+    %gender @ "e" @ "wlkb1".put(%map, "back");
+    %gender @ "e" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "e" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "e" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "e" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "e" @ "lidl2a".put(%map, "lidl2a");
 };
 function makeAnimationMapBottle(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "f" @ "idl1a");
-    %map.put("idl1a", %gender @ "f" @ "idl1a");
-    %map.put("idl1b", %gender @ "f" @ "idl1a");
-    %map.put("idl1c", %gender @ "f" @ "idl1a");
-    %map.put("idl1d", %gender @ "f" @ "idl1a");
-    %map.put("idl2a", %gender @ "f" @ "idl1a");
-    %map.put("idl2b", %gender @ "f" @ "idl1a");
-    %map.put("idl2c", %gender @ "f" @ "idl1a");
-    %map.put("idl2d", %gender @ "f" @ "idl1a");
-    %map.put("idl3a", %gender @ "f" @ "idl1a");
-    %map.put("idl3b", %gender @ "f" @ "idl1a");
-    %map.put("idl3c", %gender @ "f" @ "idl1a");
-    %map.put("idl3d", %gender @ "f" @ "idl1a");
-    %map.put("run", %gender @ "f" @ "wlkf1");
-    %map.put("side", %gender @ "f" @ "sde");
-    %map.put("wlkf1", %gender @ "f" @ "wlkf1");
-    %map.put("back", %gender @ "f" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "f" @ "wlkb1");
-    %map.put("cidl1a", %gender @ "f" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "f" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "f" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "f" @ "lidl2a");
+    %gender @ "f" @ "idl1a".put(%map, "root");
+    %gender @ "f" @ "idl1a".put(%map, "idl1a");
+    %gender @ "f" @ "idl1a".put(%map, "idl1b");
+    %gender @ "f" @ "idl1a".put(%map, "idl1c");
+    %gender @ "f" @ "idl1a".put(%map, "idl1d");
+    %gender @ "f" @ "idl1a".put(%map, "idl2a");
+    %gender @ "f" @ "idl1a".put(%map, "idl2b");
+    %gender @ "f" @ "idl1a".put(%map, "idl2c");
+    %gender @ "f" @ "idl1a".put(%map, "idl2d");
+    %gender @ "f" @ "idl1a".put(%map, "idl3a");
+    %gender @ "f" @ "idl1a".put(%map, "idl3b");
+    %gender @ "f" @ "idl1a".put(%map, "idl3c");
+    %gender @ "f" @ "idl1a".put(%map, "idl3d");
+    %gender @ "f" @ "wlkf1".put(%map, "run");
+    %gender @ "f" @ "sde".put(%map, "side");
+    %gender @ "f" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "f" @ "wlkb1".put(%map, "back");
+    %gender @ "f" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "f" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "f" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "f" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "f" @ "lidl2a".put(%map, "lidl2a");
 };
 function makeAnimationMapDrinkStem(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "u" @ "idl1a");
-    %map.put("idl1a", %gender @ "u" @ "idl1a");
-    %map.put("idl1b", %gender @ "u" @ "idl1a");
-    %map.put("idl1c", %gender @ "u" @ "idl1a");
-    %map.put("idl1d", %gender @ "u" @ "idl1a");
-    %map.put("idl2a", %gender @ "u" @ "idl1a");
-    %map.put("idl2b", %gender @ "u" @ "idl1a");
-    %map.put("idl2c", %gender @ "u" @ "idl1a");
-    %map.put("idl2d", %gender @ "u" @ "idl1a");
-    %map.put("idl3a", %gender @ "u" @ "idl1a");
-    %map.put("idl3b", %gender @ "u" @ "idl1a");
-    %map.put("idl3c", %gender @ "u" @ "idl1a");
-    %map.put("idl3d", %gender @ "u" @ "idl1a");
-    %map.put("run", %gender @ "u" @ "wlkf1");
-    %map.put("side", %gender @ "u" @ "sde");
-    %map.put("wlkf1", %gender @ "u" @ "wlkf1");
-    %map.put("back", %gender @ "u" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "u" @ "wlkb1");
-    %map.put("cidl1a", %gender @ "u" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "u" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "u" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "u" @ "lidl2a");
+    %gender @ "u" @ "idl1a".put(%map, "root");
+    %gender @ "u" @ "idl1a".put(%map, "idl1a");
+    %gender @ "u" @ "idl1a".put(%map, "idl1b");
+    %gender @ "u" @ "idl1a".put(%map, "idl1c");
+    %gender @ "u" @ "idl1a".put(%map, "idl1d");
+    %gender @ "u" @ "idl1a".put(%map, "idl2a");
+    %gender @ "u" @ "idl1a".put(%map, "idl2b");
+    %gender @ "u" @ "idl1a".put(%map, "idl2c");
+    %gender @ "u" @ "idl1a".put(%map, "idl2d");
+    %gender @ "u" @ "idl1a".put(%map, "idl3a");
+    %gender @ "u" @ "idl1a".put(%map, "idl3b");
+    %gender @ "u" @ "idl1a".put(%map, "idl3c");
+    %gender @ "u" @ "idl1a".put(%map, "idl3d");
+    %gender @ "u" @ "wlkf1".put(%map, "run");
+    %gender @ "u" @ "sde".put(%map, "side");
+    %gender @ "u" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "u" @ "wlkb1".put(%map, "back");
+    %gender @ "u" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "u" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "u" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "u" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "u" @ "lidl2a".put(%map, "lidl2a");
 };
 function makeAnimationMapDrinkCup(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "v" @ "idl1a");
-    %map.put("idl1a", %gender @ "v" @ "idl1a");
-    %map.put("idl1b", %gender @ "v" @ "idl1a");
-    %map.put("idl1c", %gender @ "v" @ "idl1a");
-    %map.put("idl1d", %gender @ "v" @ "idl1a");
-    %map.put("idl2a", %gender @ "v" @ "idl1a");
-    %map.put("idl2b", %gender @ "v" @ "idl1a");
-    %map.put("idl2c", %gender @ "v" @ "idl1a");
-    %map.put("idl2d", %gender @ "v" @ "idl1a");
-    %map.put("idl3a", %gender @ "v" @ "idl1a");
-    %map.put("idl3b", %gender @ "v" @ "idl1a");
-    %map.put("idl3c", %gender @ "v" @ "idl1a");
-    %map.put("idl3d", %gender @ "v" @ "idl1a");
-    %map.put("run", %gender @ "v" @ "wlkf1");
-    %map.put("side", %gender @ "v" @ "sde");
-    %map.put("wlkf1", %gender @ "v" @ "wlkf1");
-    %map.put("back", %gender @ "v" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "v" @ "wlkb1");
-    %map.put("cidl1a", %gender @ "v" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "v" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "v" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "v" @ "lidl2a");
+    %gender @ "v" @ "idl1a".put(%map, "root");
+    %gender @ "v" @ "idl1a".put(%map, "idl1a");
+    %gender @ "v" @ "idl1a".put(%map, "idl1b");
+    %gender @ "v" @ "idl1a".put(%map, "idl1c");
+    %gender @ "v" @ "idl1a".put(%map, "idl1d");
+    %gender @ "v" @ "idl1a".put(%map, "idl2a");
+    %gender @ "v" @ "idl1a".put(%map, "idl2b");
+    %gender @ "v" @ "idl1a".put(%map, "idl2c");
+    %gender @ "v" @ "idl1a".put(%map, "idl2d");
+    %gender @ "v" @ "idl1a".put(%map, "idl3a");
+    %gender @ "v" @ "idl1a".put(%map, "idl3b");
+    %gender @ "v" @ "idl1a".put(%map, "idl3c");
+    %gender @ "v" @ "idl1a".put(%map, "idl3d");
+    %gender @ "v" @ "wlkf1".put(%map, "run");
+    %gender @ "v" @ "sde".put(%map, "side");
+    %gender @ "v" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "v" @ "wlkb1".put(%map, "back");
+    %gender @ "v" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "v" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "v" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "v" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "v" @ "lidl2a".put(%map, "lidl2a");
 };
 function makeAnimationMapRedMana(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "j" @ "idl1a");
-    %map.put("idl1a", %gender @ "j" @ "idl1a");
-    %map.put("idl1b", %gender @ "j" @ "idl1a");
-    %map.put("idl1c", %gender @ "j" @ "idl1a");
-    %map.put("idl1d", %gender @ "j" @ "idl1a");
-    %map.put("idl2a", %gender @ "j" @ "idl1a");
-    %map.put("idl2b", %gender @ "j" @ "idl1a");
-    %map.put("idl2c", %gender @ "j" @ "idl1a");
-    %map.put("idl2d", %gender @ "j" @ "idl1a");
-    %map.put("idl3a", %gender @ "j" @ "idl1a");
-    %map.put("idl3b", %gender @ "j" @ "idl1a");
-    %map.put("idl3c", %gender @ "j" @ "idl1a");
-    %map.put("idl3d", %gender @ "j" @ "idl1a");
-    %map.put("run", %gender @ "j" @ "wlkf1");
-    %map.put("wlkf1", %gender @ "j" @ "wlkf1");
-    %map.put("side", %gender @ "j" @ "sde");
-    %map.put("back", %gender @ "j" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "j" @ "wlkb1");
-    %map.put("cidl1a", %gender @ "e" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "e" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "e" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "e" @ "lidl2a");
+    %gender @ "j" @ "idl1a".put(%map, "root");
+    %gender @ "j" @ "idl1a".put(%map, "idl1a");
+    %gender @ "j" @ "idl1a".put(%map, "idl1b");
+    %gender @ "j" @ "idl1a".put(%map, "idl1c");
+    %gender @ "j" @ "idl1a".put(%map, "idl1d");
+    %gender @ "j" @ "idl1a".put(%map, "idl2a");
+    %gender @ "j" @ "idl1a".put(%map, "idl2b");
+    %gender @ "j" @ "idl1a".put(%map, "idl2c");
+    %gender @ "j" @ "idl1a".put(%map, "idl2d");
+    %gender @ "j" @ "idl1a".put(%map, "idl3a");
+    %gender @ "j" @ "idl1a".put(%map, "idl3b");
+    %gender @ "j" @ "idl1a".put(%map, "idl3c");
+    %gender @ "j" @ "idl1a".put(%map, "idl3d");
+    %gender @ "j" @ "wlkf1".put(%map, "run");
+    %gender @ "j" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "j" @ "sde".put(%map, "side");
+    %gender @ "j" @ "wlkb1".put(%map, "back");
+    %gender @ "j" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "e" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "e" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "e" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "e" @ "lidl2a".put(%map, "lidl2a");
 };
 function makeAnimationMapBlueMana(%map, %src, %gender) {
     copyAnimationMap(%map, %src);
-    %map.put("root", %gender @ "m" @ "idl1a");
-    %map.put("idl1a", %gender @ "m" @ "idl1a");
-    %map.put("idl1b", %gender @ "m" @ "idl1a");
-    %map.put("idl1c", %gender @ "m" @ "idl1a");
-    %map.put("idl1d", %gender @ "m" @ "idl1a");
-    %map.put("idl2a", %gender @ "m" @ "idl1a");
-    %map.put("idl2b", %gender @ "m" @ "idl1a");
-    %map.put("idl2c", %gender @ "m" @ "idl1a");
-    %map.put("idl2d", %gender @ "m" @ "idl1a");
-    %map.put("idl3a", %gender @ "m" @ "idl1a");
-    %map.put("idl3b", %gender @ "m" @ "idl1a");
-    %map.put("idl3c", %gender @ "m" @ "idl1a");
-    %map.put("idl3d", %gender @ "m" @ "idl1a");
-    %map.put("run", %gender @ "m" @ "wlkf1");
-    %map.put("wlkf1", %gender @ "m" @ "wlkf1");
-    %map.put("side", %gender @ "m" @ "sde");
-    %map.put("back", %gender @ "m" @ "wlkb1");
-    %map.put("wlkb1", %gender @ "m" @ "wlkb1");
-    %map.put("cidl1a", %gender @ "e" @ "cidl1a");
-    %map.put("cidl2a", %gender @ "e" @ "cidl2a");
-    %map.put("lidl1a", %gender @ "e" @ "lidl1a");
-    %map.put("lidl2a", %gender @ "e" @ "lidl2a");
+    %gender @ "m" @ "idl1a".put(%map, "root");
+    %gender @ "m" @ "idl1a".put(%map, "idl1a");
+    %gender @ "m" @ "idl1a".put(%map, "idl1b");
+    %gender @ "m" @ "idl1a".put(%map, "idl1c");
+    %gender @ "m" @ "idl1a".put(%map, "idl1d");
+    %gender @ "m" @ "idl1a".put(%map, "idl2a");
+    %gender @ "m" @ "idl1a".put(%map, "idl2b");
+    %gender @ "m" @ "idl1a".put(%map, "idl2c");
+    %gender @ "m" @ "idl1a".put(%map, "idl2d");
+    %gender @ "m" @ "idl1a".put(%map, "idl3a");
+    %gender @ "m" @ "idl1a".put(%map, "idl3b");
+    %gender @ "m" @ "idl1a".put(%map, "idl3c");
+    %gender @ "m" @ "idl1a".put(%map, "idl3d");
+    %gender @ "m" @ "wlkf1".put(%map, "run");
+    %gender @ "m" @ "wlkf1".put(%map, "wlkf1");
+    %gender @ "m" @ "sde".put(%map, "side");
+    %gender @ "m" @ "wlkb1".put(%map, "back");
+    %gender @ "m" @ "wlkb1".put(%map, "wlkb1");
+    %gender @ "e" @ "cidl1a".put(%map, "cidl1a");
+    %gender @ "e" @ "cidl2a".put(%map, "cidl2a");
+    %gender @ "e" @ "lidl1a".put(%map, "lidl1a");
+    %gender @ "e" @ "lidl2a".put(%map, "lidl2a");
 };
 function initializeAnimationMapAnimal(%map, %gender, %genre) {
     if (!(isObject(%map))) {
         new StringMap(%map);
     }
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%map);
+        %map.add(MissionCleanup);
     }
-    %map.put("root", %gender @ %genre @ "idle1");
-    %map.put("run", %gender @ %genre @ "wlkf");
-    %map.put("back", %gender @ %genre @ "wlkf");
-    %map.put("idl1a", %gender @ %genre @ "idle1");
-    %map.put("idl1b", %gender @ %genre @ "idle2");
-    %map.put("idl1c", %gender @ %genre @ "idle3");
-    %map.put("idl1d", %gender @ %genre @ "idle4");
+    %gender @ %genre @ "idle1".put(%map, "root");
+    %gender @ %genre @ "wlkf".put(%map, "run");
+    %gender @ %genre @ "wlkf".put(%map, "back");
+    %gender @ %genre @ "idle1".put(%map, "idl1a");
+    %gender @ %genre @ "idle2".put(%map, "idl1b");
+    %gender @ %genre @ "idle3".put(%map, "idl1c");
+    %gender @ %genre @ "idle4".put(%map, "idl1d");
 };
 function initializeAnimationMap(%map, %gender, %genre) {
     if (!(isObject(%map))) {
         new StringMap(%map);
     }
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%map);
+        %map.add(MissionCleanup);
     }
     addGenreSpecificAnimations(%map, %gender, %genre);
     addGenreNeutralAnimations(%map, %gender);
@@ -329,15 +329,15 @@ function copyAnimationMap(%map, %src) {
         new StringMap(%map);
     }
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%map);
+        %map.add(MissionCleanup);
     }
-    %map.duplicate(%src);
+    %src.duplicate(%map);
 };
 $gKnownAnimationTags = "dance";
 function addAnimationToMap(%map, %mapThis, %toThis, %tags) {
-    %map.put(%mapThis, %toThis);
+    %toThis.put(%map, %mapThis);
     %n = getWordCount(%tags);
-    if ((0.0 >= %n)) {
+    while ((%n >= 0.0)) {
         %tag = getWord(%tags, %n);
         if ((%tag $= "")) {
         }
@@ -345,12 +345,12 @@ function addAnimationToMap(%map, %mapThis, %toThis, %tags) {
             error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
         }
         safeEnsureScriptObject("StringMap", "gAnimationTags");
-        %animTags = gAnimationTags.get(%toThis);
+        %animTags = %toThis.get(gAnimationTags);
         if (hasWord(%animTags, %tag)) {
         }
         %animTags = %tag @ " " @ %animTags;
-        gAnimationTags.put(%toThis, %animTags);
-        %n = (1.0 - %n);
+        %animTags.put(gAnimationTags, %toThis);
+        %n = (%n - 1.0);
     }
 };
 function addGenreSpecificAnimations(%map, %gender, %genre) {
@@ -798,28 +798,28 @@ function addGenreNeutralAnimations(%map, %gender) {
     addAnimationToMap(%map, "djidl1", %gender @ "ndjidl1", "");
     %coanims = "";
     %delim = "";
-    %n = (1.0 - $gCoAnimDictionary.size());
-    if ((0.0 >= %n)) {
-        %animName = getField($gCoAnimDictionary.getValue(%n), 0);
+    %n = ($gCoAnimDictionary.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %animName = getField(%n.getValue($gCoAnimDictionary), 0);
         %coanims = %coanims @ %delim @ %animName;
         %delim = " ";
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     %coanimCount = getWordCount(%coanims);
-    (0.0 >= %n);
+    (%n >= 0.0);
     %prefixes = "sti mti mmi msi tsi str mtr mmr msr tsr";
     %prefixCount = getWordCount(%prefixes);
     %i = 0;
-    if ((%coanimCount < %i)) {
+    while ((%i < %coanimCount)) {
         %coanim = getWord(%coanims, %i);
         %j = 0;
-        if ((%prefixCount < %j)) {
+        while ((%j < %prefixCount)) {
             %prefix = getWord(%prefixes, %j);
             addAnimationToMap(%map, %prefix @ "_" @ %coanim, %gender @ "n" @ %prefix @ "_" @ %coanim, "");
-            %j = (1.0 + %j);
+            %j = (%j + 1.0);
         }
-        %i = (1.0 + %i);
-        (%prefixCount < %j);
+        %i = (%i + 1.0);
+        (%j < %prefixCount);
     }
 };
 function initNoAutoEmoteList() {
@@ -889,15 +889,15 @@ function addNoAutoEmoteWord(%word) {
         $gNoAutoEmoteWords = new StringMap("");;
         0;
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add($gNoAutoEmoteWords);
+            $gNoAutoEmoteWords.add(MissionCleanup);
         }
     }
-    $gNoAutoEmoteWords.put(%word, 1);
+    1.put($gNoAutoEmoteWords, %word);
 };
 function isNoAutoEmoteWord(%word) {
     if (!(isObject($gNoAutoEmoteWords))) {
         initNoAutoEmoteList();
     }
-    return $gNoAutoEmoteWords.get(%word);
+    return %word.get($gNoAutoEmoteWords);
 };
 initializeAnimationMaps();

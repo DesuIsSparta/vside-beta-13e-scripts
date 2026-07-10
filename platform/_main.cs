@@ -161,7 +161,7 @@ package platform {
             %testdomain = strreplace($Net::BaseDomain, ":", " ");
             if (stricmp("www.vside.com", firstWord(%testdomain))) {
                 %analytic = getAnalytic();
-                %analytic.setDomainAndAccount("test.vside.com", "UA-324914-24");
+                "UA-324914-24".setDomainAndAccount(%analytic, "test.vside.com");
             }
         }
     };
@@ -170,7 +170,7 @@ package platform {
         %haveSManagerArg = findArg("-smanager", "$Net::SecureManagerHost", "Missing smanager <host[:port]>");
         if (%haveManagerArg) {
             %colonPos = strstr($Net::ManagerHost, ":");
-            if ((-(1.0) == %colonPos)) {
+            if ((%colonPos == -(1.0))) {
                 if (!(%haveSManagerArg)) {
                     $Net::SecureManagerHost = $Net::ManagerHost @ ":8443";
                 }
@@ -191,7 +191,7 @@ package platform {
         }
         if (%haveSManagerArg) {
             %colonPos = strstr($Net::SecureManagerHost, ":");
-            if ((-(1.0) == %colonPos)) {
+            if ((%colonPos == -(1.0))) {
                 $Net::SecureManagerHost = $NetSecureManagerHost @ ":8443";
             }
         }
@@ -275,7 +275,7 @@ package platform {
         "";
         %LongCityNameString = "";
         if (isObject(WorldMap)) {
-            %areaName = WorldMap.cityNameForServerName(%ServerName);
+            %areaName = %ServerName.cityNameForServerName(WorldMap);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
             if ((%locationName $= "")) {
             }
@@ -359,8 +359,8 @@ package platform {
     function startInitialSSLConnection() {
         %curl = new URLPostObject("");;
         0;
-        %curl.setURL("https://" @ $Net::SecureManagerHost);
-        %curl.setBody(0);
+        "https://" @ $Net::SecureManagerHost.setURL(%curl);
+        0.setBody(%curl);
         %curl.start();
     };
     function onStart() {
@@ -381,7 +381,7 @@ package platform {
         }
         initClient();
         if (isObject(ConsoleEntry)) {
-            ConsoleEntry.loadHistory("platform/client/consoleHistory.txt");
+            "platform/client/consoleHistory.txt".loadHistory(ConsoleEntry);
         }
         echo("---no ConsoleEntry not loading history");
     };
@@ -413,7 +413,7 @@ package platform {
         if (isObject(ConsoleEntry)) {
         }
         if (!($NonInteractive)) {
-            ConsoleEntry.dumpHistory("platform/client/consoleHistory.txt");
+            "platform/client/consoleHistory.txt".dumpHistory(ConsoleEntry);
         }
         echo("---no ConsoleEntry not dumping history");
     };

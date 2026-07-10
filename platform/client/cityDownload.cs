@@ -3,23 +3,23 @@ $CityDownloadGui::lastCityIndex = 0;
 $CityDownloadGui::totalDownloaded = 0;
 function CityDownloadGui::onDone(%this) {
     echo("Finished downloading updated cities.");
-    DLLoadingPBController.setValue(1);
-    LoadingGui.setTransitioning(0);
-    Canvas.setContent("LoadingGui");
-    WorldMap.doServerJoin($lastVURL);
+    1.setValue(DLLoadingPBController);
+    0.setTransitioning(LoadingGui);
+    "LoadingGui".setContent(Canvas);
+    $lastVURL.doServerJoin(WorldMap);
 };
 function CityDownloadGui::onProgress(%this, %dltotal, %dlnow) {
     if (isObject(DLLoadingPBController)) {
         %dltotal = packageDownload.getEstimatedSize();
-        if (($CityDownloadGui::lastCityIndex > packageDownload.getCurrentPackageIndex())) {
+        if ((packageDownload.getCurrentPackageIndex() > $CityDownloadGui::lastCityIndex)) {
             $CityDownloadGui::lastCityIndex = packageDownload.getCurrentPackageIndex();
             $CityDownloadGui::lastDLNow = 0;
         }
-        %part = ($CityDownloadGui::lastDLNow - %dlnow);
+        %part = (%dlnow - $CityDownloadGui::lastDLNow);
         $CityDownloadGui::lastDLNow = %dlnow;
-        $CityDownloadGui::totalDownloaded = (%part + $CityDownloadGui::totalDownloaded);
-        %progressValue = (%dltotal / $CityDownloadGui::totalDownloaded);
-        DLLoadingPBController.setValue(%progressValue);
+        $CityDownloadGui::totalDownloaded = ($CityDownloadGui::totalDownloaded + %part);
+        %progressValue = ($CityDownloadGui::totalDownloaded / %dltotal);
+        %progressValue.setValue(DLLoadingPBController);
     }
 };
 function CityDownloadGui::open(%this) {
@@ -29,7 +29,7 @@ function CityDownloadGui::open(%this) {
     $CityDownloadGui::lastCityIndex = 0;
 };
 function CityDownloadGui::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     $Video::allowResize = 1;
 };
 function CityDownloadGui::onWake(%this) {
@@ -39,10 +39,10 @@ function CityDownloadGui::onWake(%this) {
             class = "ProgressBarController";
         };
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add(DLLoadingPBController);
+            DLLoadingPBController.add(MissionCleanup);
         }
     }
-    DLLoadingPBController.Initialize(DLLoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
+    "".Initialize(DLLoadingPBController, DLLoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "");
     if ($StandAlone) {
     }
     if (!($missionRunning)) {
@@ -56,6 +56,6 @@ function CityDownloadGui::onWake(%this) {
 };
 function CityDownloadGui::onSleep(%this) {
     $Platform::CanSleepInBackground = 1;
-    DLLoadingProgressText.setValue("");
-    DLLoadingPBController.setValue(0);
+    "".setValue(DLLoadingProgressText);
+    0.setValue(DLLoadingPBController);
 };

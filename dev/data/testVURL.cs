@@ -1,19 +1,19 @@
 DeclareTestSuite("TestSuite_VURL");
 function TestSuite_VURL::setup(%this) {
-    %this.addTestCase("TEST_VURL_PARSE_USER");
-    %this.addTestCase("TEST_VURL_PARSE_APARTMENT");
-    %this.addTestCase("TEST_VURL_PARSE_LOCATION");
+    "TEST_VURL_PARSE_USER".addTestCase(%this);
+    "TEST_VURL_PARSE_APARTMENT".addTestCase(%this);
+    "TEST_VURL_PARSE_LOCATION".addTestCase(%this);
 };
 function TEST_VURL_PARSE_USER::runTest(%this) {
     %aVurlString = "vside:/user/Bob";
     %theVurl = new ScriptObject("") {
         class = 0 @ "VURL";
     };
-    if (%theVurl.setVURL(%aVurlString)) {
-        %this.assertSameString(%theVurl.targetType, "user", "the target type should have been user");
-        %this.assertSameString(%theVurl.targetPath, "Bob", "the target type is wrong");
+    if (%aVurlString.setVURL(%theVurl)) {
+        "the target type should have been user".assertSameString(%this, %theVurl.targetType, "user");
+        "the target type is wrong".assertSameString(%this, %theVurl.targetPath, "Bob");
     }
-    %this.assert(0, "setVURL failed for this vurl:" @ " " @ %aVurlString);
+    "setVURL failed for this vurl:" @ " " @ %aVurlString.assert(%this, 0);
     %theVurl.delete();
 };
 function TEST_VURL_PARSE_APARTMENT::runTest(%this) {
@@ -21,14 +21,14 @@ function TEST_VURL_PARSE_APARTMENT::runTest(%this) {
     %theVurl = new ScriptObject("") {
         class = 0 @ "VURL";
     };
-    if (%theVurl.setVURL(%aVurlString)) {
-        %this.assertSameString(%theVurl.targetType, "apartment", "the target type should have been apartment");
-        %this.assertSameString(%theVurl.targetDest, "an_apartment", "the targetDest is wrong");
-        %this.assertSameString(%theVurl.targetCity, "a_building", "the targetCity is wrong");
+    if (%aVurlString.setVURL(%theVurl)) {
+        "the target type should have been apartment".assertSameString(%this, %theVurl.targetType, "apartment");
+        "the targetDest is wrong".assertSameString(%this, %theVurl.targetDest, "an_apartment");
+        "the targetCity is wrong".assertSameString(%this, %theVurl.targetCity, "a_building");
     }
-    %this.assert(0, "setVURL failed for this vurl:" @ " " @ %aVurlString);
+    "setVURL failed for this vurl:" @ " " @ %aVurlString.assert(%this, 0);
     %theVurl.delete();
 };
 function TEST_VURL_PARSE_LOCATION::runTest(%this) {
-    %this.assert(0, "test not implemented");
+    "test not implemented".assert(%this, 0);
 };

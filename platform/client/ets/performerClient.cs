@@ -4,24 +4,22 @@ function clientCmdSetPerformerMode(%pm, %nativePerformer) {
     if (!(isObject(ForceFieldCtrls))) {
         return;
     }
-    ForceFieldCtrls.setVisible(%pm);
-    performerPanelRadioButtonForceField2.setVisible(%nativePerformer);
-    performerPanelRadioButtonForceField3.setVisible(%nativePerformer);
+    %pm.setVisible(ForceFieldCtrls);
+    %nativePerformer.setVisible(performerPanelRadioButtonForceField2);
+    %nativePerformer.setVisible(performerPanelRadioButtonForceField3);
 };
 function clientCmdSetPerformerMode_DEPRECATED(%pm, %nativePerformer) {
     $gPerformerMode = %pm;
     if (!($gPerformerMode)) {
         performerPanel.close();
     }
-    if ($UserPref::Performer::AutoOpenPanel) {
-        if (!(performerPanel.isVisible())) {
-            performerPanel.open();
-        }
+    if ($UserPref::Performer::AutoOpenPanel && !(performerPanel.isVisible())) {
+        performerPanel.open();
     }
-    performerPanelRadioButtonForceField0.setVisible(1);
-    performerPanelRadioButtonForceField1.setVisible(1);
-    performerPanelRadioButtonForceField2.setVisible(%nativePerformer);
-    performerPanelRadioButtonForceField3.setVisible(%nativePerformer);
+    1.setVisible(performerPanelRadioButtonForceField0);
+    1.setVisible(performerPanelRadioButtonForceField1);
+    %nativePerformer.setVisible(performerPanelRadioButtonForceField2);
+    %nativePerformer.setVisible(performerPanelRadioButtonForceField3);
 };
 function performerClient::setForceField(%val) {
     if (!($gPerformerMode)) {

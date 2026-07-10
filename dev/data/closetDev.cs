@@ -5,50 +5,50 @@ $gSnapping_ObjViewCtrl = 0;
 $gSnapping_CurSku = 0;
 $gSnapping_BaseSkus = "";
 function ClosetStaffPanel::snapShotAll(%this) {
-    %skus = SkuManager.filterSkusGender(SkuManager.getSkus(), $player.getGender());
+    %skus = $player.getGender().filterSkusGender(SkuManager, SkuManager.getSkus());
     ClosetMainObjectView.setSkus();
-    %this.snapShotSkuList(%skus);
+    %skus.snapShotSkuList(%this);
 };
 function ClosetStaffPanel::snapShotSkuList(%this, %skus) {
-    ClosetStaffPanel.setVisible(0);
+    0.setVisible(ClosetStaffPanel);
     ClosetMainObjectView;
     $gSnapping_BaseSkus = ClosetMainObjectView.getSkus();
     %skusBody = "";
     %skusClothing = "";
-    %n = (1.0 - getWordCount(%skus));
-    if ((0.0 >= %n)) {
+    %n = (getWordCount(%skus) - 1.0);
+    while ((%n >= 0.0)) {
         %sku = getWord(%skus, %n);
-        if (SkuManager.isBodySku(%sku)) {
+        if (%sku.isBodySku(SkuManager)) {
             %skusBody = %sku @ " " @ %skusBody;
         }
         %skusClothing = %sku @ " " @ %skusClothing;
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     %skus = %skusBody @ " " @ %skusClothing;
-    (0.0 >= %n);
+    (%n >= 0.0);
     $gSnapping_SkuList = %skus;
     $gSnapping_CurIndex = 0;
-    $gSnapping_MaxIndex = (1.0 - getWordCount($gSnapping_SkuList));
+    $gSnapping_MaxIndex = (getWordCount($gSnapping_SkuList) - 1.0);
     snapping_prepareNextSnapshot();
 };
 function snapping_prepareNextSnapshot() {
     $gSnapping_CurSku = getWord($gSnapping_SkuList, $gSnapping_CurIndex);
-    %skus = SkuManager.overlaySkus($gSnapping_BaseSkus, $gSnapping_CurSku);
-    $gSnapping_ObjViewCtrl.setSkus(%skus);
-    ClosetMainObjectSnapshotBackdrop.setVisible(1);
+    %skus = $gSnapping_CurSku.overlaySkus(SkuManager, $gSnapping_BaseSkus);
+    %skus.setSkus($gSnapping_ObjViewCtrl);
+    1.setVisible(ClosetMainObjectSnapshotBackdrop);
     waitAFrameAndCall("snapping_callingTakeCurrentSnapshot");
 };
 function snapping_callingTakeCurrentSnapshot() {
     snapping_takeCurrentSnapshot();
-    $gSnapping_CurIndex = (1.0 + $gSnapping_CurIndex);
-    if (($gSnapping_MaxIndex < $gSnapping_CurIndex)) {
+    $gSnapping_CurIndex = ($gSnapping_CurIndex + 1.0);
+    if (($gSnapping_CurIndex < $gSnapping_MaxIndex)) {
         snapping_prepareNextSnapshot();
     }
-    $gSnapping_ObjViewCtrl.setSkus($gSnapping_BaseSkus);
-    ClosetMainObjectSnapshotBackdrop.setVisible(0);
+    $gSnapping_BaseSkus.setSkus($gSnapping_ObjViewCtrl);
+    0.setVisible(ClosetMainObjectSnapshotBackdrop);
 };
 function snapping_takeCurrentSnapshot() {
-    %desc = SkuManager.findBySku($gSnapping_CurSku).descShrt;
+    %desc = $gSnapping_CurSku.findBySku(SkuManager).descShrt;
     %curSku = formatInt("%0.5d", $gSnapping_CurSku);
     %index = formatInt("%0.5d", $gSnapping_CurIndex);
     %fileName = "";
@@ -59,11 +59,11 @@ function snapping_takeCurrentSnapshot() {
     %fileName = %fileName @ "_" @ %curSku;
     %fileName = %fileName @ "_" @ %desc;
     %fileName = %fileName @ ".png";
-    ClosetMainObjectSnapshotBackdrop.snapshot(%fileName);
+    %fileName.snapshot(ClosetMainObjectSnapshotBackdrop);
 };
 function ClosetStaffPanel::adjustLOD(%this, %direction) {
-    %val = ClosetMainObjectView.changeDetailLevel(%direction);
-    closetStaffLODLabelButton.setText((-(1.0) * %val));
+    %val = %direction.changeDetailLevel(ClosetMainObjectView);
+    (%val * -(1.0)).setText(closetStaffLODLabelButton);
     if (!(isObject(ClosetTabs.getCurrentTab().itemsScroll))) {
         return;
     }
@@ -72,18 +72,18 @@ function ClosetStaffPanel::adjustLOD(%this, %direction) {
         error(getScopeName() @ " " @ "- no array");
         return;
     }
-    %n = (1.0 - %array.getCount());
-    if ((0.0 >= %n)) {
-        %cell = %array.getObject(%n);
+    %n = (%array.getCount() - 1.0);
+    while ((%n >= 0.0)) {
+        %cell = %n.getObject(%array);
         %objectView = %cell.objectView;
-        %objectView.changeDetailLevel(%direction);
-        %n = (1.0 - %n);
+        %direction.changeDetailLevel(%objectView);
+        %n = (%n - 1.0);
     }
 };
 function ClosetStaffPanel::viewAll(%this) {
     $Player::inventory = SkuManager.getSkus();
-    $Player::inventory = SkuManager.filterSkusGender($Player::inventory, $player.getGender());
-    $Player::inventory = SkuManager.filterSkusRoles($Player::inventory, (~(2147483648) & 4294967295));
+    $Player::inventory = $player.getGender().filterSkusGender(SkuManager, $Player::inventory);
+    $Player::inventory = (4294967295 & ~(2147483648)).filterSkusRoles(SkuManager, $Player::inventory);
     $gClosetThumbnailsDrawersPrevious = "";
     ClosetTabs.selectCurrentTab();
     if ((ClosetTabs.getCurrentTab().name $= "BODY")) {

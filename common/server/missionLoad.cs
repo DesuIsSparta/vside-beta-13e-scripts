@@ -5,22 +5,22 @@ function loadMission(%missionName, %isFirstMission) {
     echo("*** Stage 1 load");
     clearCenterPrintAll();
     clearBottomPrintAll();
-    $MissionSequence = (1.0 + $MissionSequence);
+    $MissionSequence = ($MissionSequence + 1.0);
     $missionRunning = 0;
     $Server::MissionFile = %missionName;
     buildLoadInfo(%missionName);
     %count = ClientGroup.getCount();
     %cl = 0;
-    if ((%count < %cl)) {
-        %client = ClientGroup.getObject(%cl);
+    while ((%cl < %count)) {
+        %client = %cl.getObject(ClientGroup);
         if (!(%client.isAIControlled())) {
             sendLoadInfoToClient(%client);
         }
-        %cl = (1.0 + %cl);
+        %cl = (%cl + 1.0);
     }
     if (%isFirstMission) {
     }
-    if (((%count < %cl) @ " " @ $Server::ServerType $= "SinglePlayer")) {
+    if (((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer")) {
         loadMissionStage2();
     }
     schedule($MissionLoadPause);
@@ -54,13 +54,13 @@ function loadMissionStage2() {
     echo("*** Mission loaded");
     $missionRunning = 1;
     %clientIndex = 0;
-    if ((ClientGroup.getCount() < %clientIndex)) {
-        ClientGroup.getObject(%clientIndex).loadMission();
-        %clientIndex = (1.0 + %clientIndex);
+    while ((%clientIndex < ClientGroup.getCount())) {
+        %clientIndex.getObject(ClientGroup).loadMission();
+        %clientIndex = (%clientIndex + 1.0);
     }
     onMissionLoaded();
     purgeResources();
-    return (ClientGroup.getCount() < %clientIndex);
+    return (%clientIndex < ClientGroup.getCount());
 };
 function endMission() {
     if (!(isObject(MissionGroup))) {
@@ -69,18 +69,18 @@ function endMission() {
     echo("*** ENDING MISSION");
     onMissionEnded();
     %clientIndex = 0;
-    if ((ClientGroup.getCount() < %clientIndex)) {
-        %cl = ClientGroup.getObject(%clientIndex);
+    while ((%clientIndex < ClientGroup.getCount())) {
+        %cl = %clientIndex.getObject(ClientGroup);
         %cl.endMission();
         %cl.resetGhosting();
         %cl.clearPaths();
-        %clientIndex = (1.0 + %clientIndex);
+        %clientIndex = (%clientIndex + 1.0);
     }
     MissionGroup.delete();
     MissionCleanup.delete();
     $ServerGroup.delete();
     $ServerGroup = new SimGroup(ServerGroup);;
-    (ClientGroup.getCount() < %clientIndex);
+    (%clientIndex < ClientGroup.getCount());
     return;
 };
 function resetMission() {

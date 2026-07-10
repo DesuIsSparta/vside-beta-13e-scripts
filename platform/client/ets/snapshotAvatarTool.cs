@@ -1,16 +1,16 @@
 function toggleSnapshotAvatarTool() {
-    PlayGui.showRaiseOrHide(snapshotAvatarTool);
+    snapshotAvatarTool.showRaiseOrHide(PlayGui);
 };
 function snapshotAvatarTool::open(%this) {
-    %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(PlayGui);
     snapshotAvatarToolActiveRegion.initStuff();
 };
 function snapshotAvatarTool::onWake(%this) {
     snapshotAvatarToolActiveRegion.initStuff();
 };
 function snapshotAvatarTool::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
     return 1;
 };
@@ -19,34 +19,34 @@ function snapshotAvatarToolActiveRegion::initStuff(%this) {
         warn("Snapshot", "initstuff: $player invalid");
         return;
     }
-    %this.setSimObject($player);
+    $player.setSimObject(%this);
     %this.cameraXRotMin = -(0.3);
     %this.cameraXRotMax = 0.1;
-    %this.adjustForHeight($UserPref::Player::height, 0.3, 1.1);
-    %this.setOrbitDistMin(0.4);
-    %this.setOrbitDistMax(0.7);
-    %this.setOrbitDist(0.5);
-    %this.setLightDirection("0 3 -2");
+    1.1.adjustForHeight(%this, $UserPref::Player::height, 0.3);
+    0.4.setOrbitDistMin(%this);
+    0.7.setOrbitDistMax(%this);
+    0.5.setOrbitDist(%this);
+    "0 3 -2".setLightDirection(%this);
     %anim = $player.getGender() @ "pidl1a";
-    $player.playAnim(%anim);
+    %anim.playAnim($player);
 };
 function snapshotAvatarToolActiveRegion::adjustForHeight(%this, %height, %cMin, %cMax) {
     %hMin = 0.7;
     %hMax = 1.2;
-    %h = ((%hMin - %hMax) / (%hMin - %height));
-    %c = (%cMin + ((%cMin - %cMax) * %h));
-    %this.setLookAtNudge("0 0" @ " " @ %c);
+    %h = ((%height - %hMin) / (%hMax - %hMin));
+    %c = ((%h * (%cMax - %cMin)) + %cMin);
+    "0 0" @ " " @ %c.setLookAtNudge(%this);
 };
 function snapshotAvatarTool::doSnap(%this) {
     gSetField(%this, lastFrame, $Canvas::frameCount);
     gSetField(%this, origProfile, snapshotAvatarToolActiveRegion, %this.profile);
-    snapshotAvatarToolActiveRegion.setProfile(ETSSnapshotBackgroundProfile);
+    ETSSnapshotBackgroundProfile.setProfile(snapshotAvatarToolActiveRegion);
     %this.waitForNextFrameToSnap();
 };
 function snapshotAvatarTool::waitForNextFrameToSnap(%this) {
     cancel(waitForFrameSchedule, gGetField(%this));
-    if ((gGetField(%this) <= $Canvas::frameCount)) {
-        gSetField(%this, waitForFrameSchedule, %this.schedule(10, "waitForNextFrameToSnap"));
+    if (($Canvas::frameCount <= gGetField(%this))) {
+        gSetField(%this, waitForFrameSchedule, "waitForNextFrameToSnap".schedule(%this, 10));
         return lastFrame;
     }
     %this.doSnap2();
@@ -58,27 +58,27 @@ function snapshotAvatarTool::doSnap2(%this) {
         return;
     }
     %snapshot.saveObject = %this;
-    %snapshot.setCompletedCallback("snapshotAvatarToolonCompleted");
-    snapshotAvatarToolSet1.setVisible(0);
-    snapshotAvatarToolSet2.setVisible(1);
-    snapshotAvatarToolProgressBar.setValue(0);
-    snapshotAvatarToolActiveRegion.setProfile(origProfile, gGetField(%this));
+    "snapshotAvatarToolonCompleted".setCompletedCallback(%snapshot);
+    0.setVisible(snapshotAvatarToolSet1);
+    1.setVisible(snapshotAvatarToolSet2);
+    0.setValue(snapshotAvatarToolProgressBar);
+    gGetField(%this).setProfile(snapshotAvatarToolActiveRegion, origProfile);
 };
 function snapshotAvatarTool::onProgress(%this, %snapshot) {
-    %percent = (%snapshot.ulTotal / %snapshot.ulNow);
-    snapshotAvatarToolProgressBar.setValue(%percent);
+    %percent = (%snapshot.ulNow / %snapshot.ulTotal);
+    %percent.setValue(snapshotAvatarToolProgressBar);
 };
 function snapshotAvatarToolonCompleted(%request, %result) {
     %snapshot = %request.saveObject;
-    if ((0.0 == %result)) {
-        snapshotAvatarToolSet1.setVisible(1);
-        snapshotAvatarToolSet2.setVisible(0);
+    if ((%result == 0.0)) {
+        1.setVisible(snapshotAvatarToolSet1);
+        0.setVisible(snapshotAvatarToolSet2);
         if (!(%snapshot.visitWhenDoneUrl $= "")) {
         }
         if ($UserPref::Snapshots::View) {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
     }
-    snapshotAvatarToolSet1.setVisible(1);
-    snapshotAvatarToolSet2.setVisible(0);
+    1.setVisible(snapshotAvatarToolSet1);
+    0.setVisible(snapshotAvatarToolSet2);
 };

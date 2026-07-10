@@ -9,53 +9,53 @@ function testLoginAndStay() {
     };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
-    %testLogin.doLogin($DestServerName);
+    $DestServerName.doLogin(%testLogin);
 };
 testLoginAndStay();
 function test::initDances() {
     %i = 0;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdnc1" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdnc2" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdnc3" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdnc4" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["idnc1" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["idnc2" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["idnc3" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["idnc4" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["pdnc1" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["pdnc2" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["pdnc3" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["pdnc4" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdncb1" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdncb2" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdncb3" @ $Dances] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["hdncb4" @ $Dances] = ;
     $DancesCount = %i;
     $DancesAvail = %i;
 };
 function test::initGenres() {
     %i = 0;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["i" @ $Genres] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["h" @ $Genres] = ;
-    %i = (1.0 + %i);
+    %i = (%i + 1.0);
     %i["p" @ $Genres] = ;
     $GenresCount = %i;
     $GenresAvail = %i;
@@ -70,7 +70,7 @@ function walk() {
 function stopAndTalk() {
     $mvYawLeftSpeed = 0;
     $mvForwardAction = 0;
-    pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
+    0.say(pChat, "Hello from" @ " " @ $Hostname @ ".", 0);
     schedule(1000, 0);
 };
 function stopAndDance() {
@@ -83,18 +83,18 @@ function test::doDance() {
     %danceNum = getRandom($DancesCount);
     $dance = %danceNum[$Dances @ %danceNum];
     commandToServer('EtsPlayAnimName', $dance);
-    pChat.say("I'm doing dance" @ " " @ $dance @ " " @ ".", 0, 0);
+    0.say(pChat, "I'm doing dance" @ " " @ $dance @ " " @ ".", 0);
 };
 function test::getRandomGenre() {
     %num = getRandom(2);
     $genre = "";
-    if ((0.0 == %num)) {
+    if ((%num == 0.0)) {
         $genre = "i";
     }
-    if ((1.0 == %num)) {
+    if ((%num == 1.0)) {
         $genre = "h";
     }
-    if ((2.0 == %num)) {
+    if ((%num == 2.0)) {
         $genre = "p";
     }
     return $genre;
@@ -110,20 +110,20 @@ function test::doRemoveBuddy() {
 };
 function doAction() {
     %num = getRandom(4);
-    if ((0.0 == %num)) {
+    if ((%num == 0.0)) {
         $genre = test::getRandomGenre();
-        ClosetGui.selectGenre($genre);
+        $genre.selectGenre(ClosetGui);
     }
-    if ((1.0 == %num)) {
+    if ((%num == 1.0)) {
         test::doDance();
     }
-    if ((2.0 == %num)) {
+    if ((%num == 2.0)) {
         test::doWhisper();
     }
-    if ((3.0 == %num)) {
+    if ((%num == 3.0)) {
         test::doAddBuddy();
     }
-    if ((4.0 == %num)) {
+    if ((%num == 4.0)) {
         test::doRemoveBuddy();
     }
 };

@@ -1,15 +1,15 @@
 function staffPanel::toggle(%this) {
-    playGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(playGui);
 };
 function staffPanel::open(%this) {
-    if (!($player.rolesPermissionCheckNoWarn("debugPassive"))) {
+    if (!("debugPassive".rolesPermissionCheckNoWarn($player))) {
         return;
     }
-    %this.setVisible(1);
-    playGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(playGui);
 };
 function staffPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     return 1;
 };

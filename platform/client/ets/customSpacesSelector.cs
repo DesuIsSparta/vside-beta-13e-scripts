@@ -33,23 +33,23 @@ function CSSelectorCtrl::makeNewListBox(%type) {
         horizSizing = "width";
         vertSizing = "bottom";
         position = "0 0";
-        extent = ((750.0 - %windowWidth) - ("textAreaWidth" @ CustomSpacesSelector + vars)) @ " " @ "headerboxHeight" @ CustomSpacesSelector @ vars;
+        extent = ((vars + "textAreaWidth" @ CustomSpacesSelector) - (%windowWidth - 750.0)) @ " " @ "headerboxHeight" @ CustomSpacesSelector @ vars;
         minExtent = "textAreaIndentation" @ CustomSpacesSelector @ "1 1";
         sluggishness = -1;
         visible = 1;
         scroll = "CSSelectorScrollCtrl";
     };
-    %listBox.bindClassName("MenuControl");
-    %listBox.bindClassName("TabbedTextControl");
-    %listBox.bindClassName("CSSelectorCtrl");
-    %fieldWidths = "90 16" @ " " @ ((750.0 - %windowWidth) + 197.0) @ " " @ "25 0 68";
+    "MenuControl".bindClassName(%listBox);
+    "TabbedTextControl".bindClassName(%listBox);
+    "CSSelectorCtrl".bindClassName(%listBox);
+    %fieldWidths = "90 16" @ " " @ (197.0 + (%windowWidth - 750.0)) @ " " @ "25 0 68";
     %listBox.descriptionFieldNumber = 2;
     if ((%type $= "MODEL")) {
         %listBox.unselectedProfile = "CSProfileModelListingUnselected";
         %listBox.selectedProfile = "CSProfileModelListingSelected";
         %listBox.menuTextProfile = "CSProfileModelListingMenuText";
         %listBox.menuTextSelectedProfile = "CSProfileModelListingMenuTextSelected";
-        %fieldWidths = 111 @ " " @ ((750.0 - %windowWidth) + 227.0) @ " " @ "0 68";
+        %fieldWidths = 111 @ " " @ (227.0 + (%windowWidth - 750.0)) @ " " @ "0 68";
         %listBox.descriptionFieldNumber = 1;
     }
     if ((%type $= "FEATURED")) {
@@ -83,10 +83,10 @@ function CSSelectorCtrl::makeNewListBox(%type) {
     if (!(isObject(%listBox.entriesSet))) {
         %listBox.entriesSet = 0 @ new SimSet("");;
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add(%listBox.entriesSet);
+            %listBox.entriesSet.add(MissionCleanup);
         }
     }
-    %listBox.setFieldWidths(%fieldWidths, "spacesColumnPadding" @ CustomSpacesSelector, %listBox.vars);
+    %listBox.vars.setFieldWidths(%listBox, %fieldWidths, "spacesColumnPadding" @ CustomSpacesSelector);
     %listBox.clear();
     return %listBox;
 };
@@ -94,19 +94,19 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort) {
     %this.clear();
     %count = %this.entriesSet.getCount();
     if (%doSort) {
-        %this.sortEntries("owner", 1);
-        %this.sortEntries("occupancy", 0);
-        %this.sortEntries("access", 1);
+        1.sortEntries(%this, "owner");
+        0.sortEntries(%this, "occupancy");
+        1.sortEntries(%this, "access");
     }
     %nameFieldWidth = getWord(%this.fieldWidths, 0);
     %descriptionFieldWidth = 10000;
     %n = 0;
-    if ((%count < %n)) {
-        %entry = %this.entriesSet.getObject(%n);
-        if (!(%this.includeSpaceInList(%entry, CustomSpacesSelector, %this.filterByText))) {
+    while ((%n < %count)) {
+        %entry = %n.getObject(%this.entriesSet);
+        if (!(%this.filterByText.includeSpaceInList(%this, %entry, CustomSpacesSelector))) {
         }
         %amCurrentlyHere = (%entry.name $= $CSSpaceName);
-        %isFriend = %this.ownerIsFriend(%entry.owner);
+        %isFriend = %entry.owner.ownerIsFriend(%this);
         %floorPlanNameText = "<clip:" @ %nameFieldWidth @ ">" @ %entry.name @ "</clip>";
         if ((%entry.type $= "CELEBSPACE")) {
         }
@@ -123,9 +123,9 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort) {
         %spaceDescText = %spaceDescTextForModel;
         "<spush>" @ %isFriend[$gMlStyle @ "CSProfileFriendMenuTextUnselected"] @ %spaceDescTextForModel @ "<spop>";
         %dummyText = "";
-        if ((0.0 == stricmp(%entry.access, "PasswordProtected"))) {
+        if ((stricmp(%entry.access, "PasswordProtected") == 0.0)) {
         }
-        if ((0.0 == stricmp(%entry.access, "Locked"))) {
+        if ((stricmp(%entry.access, "Locked") == 0.0)) {
         }
         %occupancyTextForModel = "---" @ %entry.occupancy;
         "<just:right>";
@@ -168,42 +168,42 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort) {
             %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
         }
         %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
-        %line = %this.addLine(%lineText);
+        %line = %lineText.addLine(%this);
         %line.entryName = %entry.name;
         %line.horizSizing = "width";
-        if ((-(1.0) != %this.descriptionFieldNumber)) {
-            %line.getObject(%this.descriptionFieldNumber).horizSizing = "width";
-            %i = (1.0 - %line.getCount());
-            if ((%this.descriptionFieldNumber > %i)) {
-                %line.getObject(%i).horizSizing = "left";
-                %i = (1.0 - %i);
+        if ((%this.descriptionFieldNumber != -(1.0))) {
+            %this.descriptionFieldNumber.getObject(%line).horizSizing = "width";
+            %i = (%line.getCount() - 1.0);
+            while ((%i > %this.descriptionFieldNumber)) {
+                %i.getObject(%line).horizSizing = "left";
+                %i = (%i - 1.0);
             }
         }
-        if ((-(1.0) != %accessIconIndex)) {
-            %position = %line.getObject(%accessIconIndex).getPosition();
-            (%this.descriptionFieldNumber > %i);
-            %position = getWord(%position, 0) @ " " @ (1.0 - getWord(%position, 1));
-            %line.accessIcon = %this.createAccessIcon(%entry.access, %isFriend, %position);
+        if ((%accessIconIndex != -(1.0))) {
+            %position = %accessIconIndex.getObject(%line).getPosition();
+            (%i > %this.descriptionFieldNumber);
+            %position = getWord(%position, 0) @ " " @ (getWord(%position, 1) - 1.0);
+            %line.accessIcon = %position.createAccessIcon(%this, %entry.access, %isFriend);
             if (!(%line.accessIcon $= "")) {
-                %line.add(%line.accessIcon);
+                %line.accessIcon.add(%line);
             }
         }
         if (!(%amCurrentlyHere)) {
-            %visitNowTextBox = %line.getObject(%visitNowIndex);
-            %visitNowTextBox.setProfile(%visitNowTextBox.profile @ "Modal");
-            %visitNowTextBox.bindClassName("CSSelectorLineVisitNowMLText");
+            %visitNowTextBox = %visitNowIndex.getObject(%line);
+            %visitNowTextBox.profile @ "Modal".setProfile(%visitNowTextBox);
+            "CSSelectorLineVisitNowMLText".bindClassName(%visitNowTextBox);
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     %extentWidth = getWord(CSSelectorListCtrl.getExtent(), 0);
-    (%count < %n);
-    %extentHeight = (%visitNowTextBox.vars + (getWord(%this.getExtent(), 1) + getWord(%this.getPosition(), 1)));
+    (%n < %count);
+    %extentHeight = ((getWord(%this.getPosition(), 1) + getWord(%this.getExtent(), 1)) + %visitNowTextBox.vars);
     "textAreaPadding" @ CustomSpacesSelector;
-    if ((("scrollBarHeight" @ CustomSpacesSelector - %visitNowTextBox.vars) < %extentHeight)) {
-        %extentHeight = ("scrollBarHeight" @ CustomSpacesSelector - %visitNowTextBox.vars);
+    if ((%extentHeight < (%visitNowTextBox.vars - "scrollBarHeight" @ CustomSpacesSelector))) {
+        %extentHeight = (%visitNowTextBox.vars - "scrollBarHeight" @ CustomSpacesSelector);
         2.0;
     }
-    CSSelectorListCtrl.resize(getWord(CSSelectorListCtrl.getPosition(), 0), getWord(CSSelectorListCtrl.getPosition(), 1), %extentWidth, %extentHeight);
+    %extentHeight.resize(CSSelectorListCtrl, getWord(CSSelectorListCtrl.getPosition(), 0), getWord(CSSelectorListCtrl.getPosition(), 1), %extentWidth);
 };
 function CSSelectorCtrl::sortEntries(%this, %sortField, %increasing) {
     %set = %this.entriesSet;
@@ -211,13 +211,13 @@ function CSSelectorCtrl::sortEntries(%this, %sortField, %increasing) {
     %sortArray = new Array("");;
     0;
     %n = 0;
-    if ((%num < %n)) {
-        %entry = %set.getObject(%n);
+    while ((%n < %num)) {
+        %entry = %n.getObject(%set);
         %cmd = "%key = %entry." @ %sortField @ ";";
         eval(%cmd);
         if ((%sortField $= "access")) {
             if ((strlwr(%key) $= "friendsonly")) {
-                %key = %this.ownerIsFriend(%entry.owner) ? 00 : 10;
+                %key = %entry.owner.ownerIsFriend(%this) ? 00 : 10;
             }
             if ((strlwr(%key) $= "open")) {
                 %key = 00;
@@ -241,20 +241,20 @@ function CSSelectorCtrl::sortEntries(%this, %sortField, %increasing) {
         if ((mFloor(%key) $= %key)) {
             %key = formatInt("%0.8d", %key);
         }
-        %sortArray.push_back(%key, %entry);
-        %n = (1.0 + %n);
+        %entry.push_back(%sortArray, %key);
+        %n = (%n + 1.0);
     }
     if (%increasing) {
         %sortArray.ssortka();
     }
     %sortArray.ssortkd();
-    %this.entriesSet.clear(1);
+    1.clear(%this.entriesSet);
     %count = %sortArray.count();
-    (%num < %n);
+    (%n < %num);
     %i = 0;
-    if ((%count < %i)) {
-        %this.entriesSet.add(%sortArray.getValue(%i));
-        %i = (1.0 + %i);
+    while ((%i < %count)) {
+        %i.getValue(%sortArray).add(%this.entriesSet);
+        %i = (%i + 1.0);
     }
     %sortArray.delete();
 };
@@ -262,10 +262,10 @@ function CSSelectorCtrl::dumpSpaces(%this) {
     %set = %this.entriesSet;
     %num = %set.getCount();
     %n = 0;
-    if ((%num < %n)) {
-        %entry = %set.getObject(%n);
+    while ((%n < %num)) {
+        %entry = %n.getObject(%set);
         echo(formatString("%20s", %entry.owner) @ " " @ formatInt("%6d", %entry.occupancy) @ " " @ %entry);
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function CSSelectorCtrl::createAccessIcon(%this, %accessType, %isFriend, %position) {
@@ -279,34 +279,34 @@ function CSSelectorCtrl::createAccessIcon(%this, %accessType, %isFriend, %positi
         sluggishness = -1;
         visible = 1;
     };
-    if ((0.0 == stricmp(%accessType, "PasswordProtected"))) {
+    if ((stricmp(%accessType, "PasswordProtected") == 0.0)) {
     }
-    if ((0.0 == stricmp(%accessType, "Locked"))) {
+    if ((stricmp(%accessType, "Locked") == 0.0)) {
         if (%isFriend) {
-            %icon.setBitmap("platform/client/ui/buildingDir_key_green");
+            "platform/client/ui/buildingDir_key_green".setBitmap(%icon);
         }
-        %icon.setBitmap("platform/client/ui/buildingDir_key_white");
+        "platform/client/ui/buildingDir_key_white".setBitmap(%icon);
     }
-    if ((0.0 == stricmp(%accessType, "FriendsOnly"))) {
+    if ((stricmp(%accessType, "FriendsOnly") == 0.0)) {
         if (%isFriend) {
-            %icon.setBitmap("platform/client/ui/buildingDir_heart_green");
+            "platform/client/ui/buildingDir_heart_green".setBitmap(%icon);
         }
-        %icon.setBitmap("platform/client/ui/buildingDir_heart_white");
+        "platform/client/ui/buildingDir_heart_white".setBitmap(%icon);
     }
     %icon.delete();
     %icon = "";
     return %icon;
 };
 function CSSelectorCtrl::updateEntry(%this, %space) {
-    %entry = %this.getEntryByName(%space.name);
+    %entry = %space.name.getEntryByName(%this);
     if (!(isObject(%entry))) {
         %entry = new ScriptObject("") {
             name = 0 @ %space.name;
         };
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add(%entry);
+            %entry.add(MissionCleanup);
         }
-        %this.entriesSet.add(%entry);
+        %entry.add(%this.entriesSet);
     }
     %entry.name = %space.name;
     %entry.description = %space.description;
@@ -326,23 +326,23 @@ function CSSelectorCtrl::updateEntry(%this, %space) {
     %entry.vurl = %space.vurl;
     if ((%space.audioStream $= "")) {
     }
-    %entry.audioStream = "" @ $musicStreamIDMap.get(%space.audioStream);
+    %entry.audioStream = "" @ %space.audioStream.get($musicStreamIDMap);
     %entry.videoStream = %space.videoStream;
     return %entry;
 };
 function CSSelectorCtrl::deleteEntry(%this, %name) {
-    %entry = %this.getEntryByName(%name);
-    %this.entriesSet.remove(%entry);
+    %entry = %name.getEntryByName(%this);
+    %entry.remove(%this.entriesSet);
     %entry.delete();
 };
 function CSSelectorCtrl::getEntryByName(%this, %name) {
-    %n = (1.0 - %this.entriesSet.getCount());
-    if ((0.0 >= %n)) {
-        %entry = %this.entriesSet.getObject(%n);
+    %n = (%this.entriesSet.getCount() - 1.0);
+    while ((%n >= 0.0)) {
+        %entry = %n.getObject(%this.entriesSet);
         if ((%entry.name $= %name)) {
             return %entry;
         }
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return -(1.0);
 };
@@ -352,10 +352,10 @@ function CSSelectorCtrl::onCreatedChild(%this, %child) {
     Parent::onCreatedChild(%this, %child);
     %position = %child.getPosition();
     %extent = %child.getExtent();
-    %newHeight = (%this.spacing + getWord(%extent, 1));
-    %child.resize(getWord(%position, 0), getWord(%position, 1), getWord(%extent, 0), %newHeight);
+    %newHeight = (getWord(%extent, 1) + %this.spacing);
+    %newHeight.resize(%child, getWord(%position, 0), getWord(%position, 1), getWord(%extent, 0));
     if (!(getWord(%child.getNamespaceList(), 0) $= "CSSelectorLine")) {
-        %child.bindClassName("CSSelectorLine");
+        "CSSelectorLine".bindClassName(%child);
     }
 };
 function CSSelectorCtrl::ownerIsFriend(%this, %spaceOwner) {
@@ -366,7 +366,7 @@ function CSSelectorCtrl::ownerIsFriend(%this, %spaceOwner) {
     if ((%spaceOwner $= "DDDD")) {
         return 1;
     }
-    return (BuddyHudWin.getFriendStatus(%spaceOwner) $= "friends");
+    return (%spaceOwner.getFriendStatus(BuddyHudWin) $= "friends");
 };
 function CSSelectorLine::forgetFirstClick(%this) {
     %this.lastSelectedEntry = "" @ CustomSpacesSelector;
@@ -380,73 +380,73 @@ function CSSelectorLine::onMouseDown(%this) {
         CSSelectorListCtrl.teleportToSelected();
         return;
     }
-    if ((0.0 != $gCustomSpacesDoubleClickSched)) {
+    if (($gCustomSpacesDoubleClickSched != 0.0)) {
         cancel($gCustomSpacesDoubleClickSched);
         $gCustomSpacesDoubleClickSched = 0;
     }
-    $gCustomSpacesDoubleClickSched = %this.schedule(500);
+    $gCustomSpacesDoubleClickSched = 500.schedule(%this);
     forgetFirstClick;
     %this.lastSelectedEntry = %this.entryName @ CustomSpacesSelector;
-    %entry = %this.getParent().getEntryByName(%this.entryName);
+    %entry = %this.entryName.getEntryByName(%this.getParent());
     if (isObject(%entry)) {
-        %this.doGetDescription(%entry);
+        %entry.doGetDescription(%this);
         %amCurrentlyHere = (%entry.name $= $CSSpaceName);
         if ((%entry.type $= "MODEL")) {
-            CustomSpacesSelector_GOBUTTON.setVisible(0);
-            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-            CustomSpacesSelector_VISITandBUYBUTTON.setActive(!(%amCurrentlyHere));
-            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(1);
+            0.setVisible(CustomSpacesSelector_GOBUTTON);
+            0.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
+            !(%amCurrentlyHere).setActive(CustomSpacesSelector_VISITandBUYBUTTON);
+            1.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
         }
         if (($Player::Name $= %entry.owner)) {
         }
-        if ($player.rolesPermissionCheckNoWarn("customspaceMaster")) {
-            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-            CustomSpacesSelector_GOBUTTON.setActive(!(%amCurrentlyHere));
-            CustomSpacesSelector_GOBUTTON.setVisible(1);
+        if ("customspaceMaster".rolesPermissionCheckNoWarn($player)) {
+            0.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
+            0.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
+            !(%amCurrentlyHere).setActive(CustomSpacesSelector_GOBUTTON);
+            1.setVisible(CustomSpacesSelector_GOBUTTON);
         }
-        if ((0.0 == stricmp(%entry.access, "PasswordProtected"))) {
-            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-            CustomSpacesSelector_GOBUTTON.setVisible(0);
-            CustomSpacesSelector_ENTERPASSWORDBUTTON.setActive(!(%amCurrentlyHere));
-            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(1);
+        if ((stricmp(%entry.access, "PasswordProtected") == 0.0)) {
+            0.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
+            0.setVisible(CustomSpacesSelector_GOBUTTON);
+            !(%amCurrentlyHere).setActive(CustomSpacesSelector_ENTERPASSWORDBUTTON);
+            1.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
         }
-        if ((0.0 == stricmp(%entry.access, "Locked"))) {
-            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-            CustomSpacesSelector_GOBUTTON.setActive(0);
-            CustomSpacesSelector_GOBUTTON.setVisible(1);
+        if ((stricmp(%entry.access, "Locked") == 0.0)) {
+            0.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
+            0.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
+            0.setActive(CustomSpacesSelector_GOBUTTON);
+            1.setVisible(CustomSpacesSelector_GOBUTTON);
         }
-        if ((0.0 == stricmp(%entry.access, "FriendOnly"))) {
-            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
+        if ((stricmp(%entry.access, "FriendOnly") == 0.0)) {
+            0.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
+            0.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
             if (!(%amCurrentlyHere)) {
             }
-            CustomSpacesSelector_GOBUTTON.setActive(%this.ownerIsFriend(%entry.owner));
-            CustomSpacesSelector_GOBUTTON.setVisible(1);
+            %entry.owner.ownerIsFriend(%this).setActive(CustomSpacesSelector_GOBUTTON);
+            1.setVisible(CustomSpacesSelector_GOBUTTON);
         }
-        CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-        CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-        CustomSpacesSelector_GOBUTTON.setActive(!(%amCurrentlyHere));
-        CustomSpacesSelector_GOBUTTON.setVisible(1);
+        0.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
+        0.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
+        !(%amCurrentlyHere).setActive(CustomSpacesSelector_GOBUTTON);
+        1.setVisible(CustomSpacesSelector_GOBUTTON);
     }
-    CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-    CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-    CustomSpacesSelector_GOBUTTON.setVisible(0);
-    CSSelectorDescriptionCtrl.setTextAndUpdate("");
+    0.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
+    0.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
+    0.setVisible(CustomSpacesSelector_GOBUTTON);
+    "".setTextAndUpdate(CSSelectorDescriptionCtrl);
     Parent::onMouseDown(%this);
 };
 function CSSelectorLine::doGetDescription(%this, %entry) {
     %existingDesc = %entry.vars;
     "descriptions" @ %entry.name @ CustomSpacesSelector;
     if (!(%existingDesc $= "")) {
-        CSSelectorDescriptionCtrl.setTextAndUpdate(%existingDesc);
+        %existingDesc.setTextAndUpdate(CSSelectorDescriptionCtrl);
         return;
     }
     if ((%entry.type $= "MODEL")) {
-        CSSelectorDescriptionCtrl.setTextAndUpdateWithCallback("(loading...)", %this, "doGetModelDescription", %entry);
+        %entry.setTextAndUpdateWithCallback(CSSelectorDescriptionCtrl, "(loading...)", %this, "doGetModelDescription");
     }
-    CSSelectorDescriptionCtrl.setTextAndUpdateWithCallback("(loading...)", %this, "doGetNonModelDescription", %entry);
+    %entry.setTextAndUpdateWithCallback(CSSelectorDescriptionCtrl, "(loading...)", %this, "doGetNonModelDescription");
 };
 function CSSelectorLine::doGetModelDescription(%this, %entry) {
     %bitmapText = "<sbreak><bitmap:platform/client/ui/buildingDir_model_" @ %entry.city @ "_" @ %entry.floorPlanName @ "><sbreak>";
@@ -459,7 +459,7 @@ function CSSelectorLine::doGetNonModelDescription(%this, %entry) {
     %entry.owner;
     %this.entry = %entry;
     %url = $Net::AvatarURL @ urlEncode(stripUnprintables(%spaceOwnerName)) @ "?size=M200";
-    dlMgr.applyUrl(%url, "CSSelectorLine_gotDescriptionPhoto", "CSSelectorLine_gotDescriptionPhotoFailed", %this, "");
+    "".applyUrl(dlMgr, %url, "CSSelectorLine_gotDescriptionPhoto", "CSSelectorLine_gotDescriptionPhotoFailed", %this);
 };
 function CSSelectorLine_gotDescriptionPhotoFailed(%dlItem) {
     %entry = %dlItem.callbackData.entry;
@@ -478,7 +478,7 @@ function CSSelectorLine_gotDescriptionPhotoFinale(%entry, %bitmapText) {
     if (!(CSSelectorListCtrl.getSelectedList().getHilitedCell().entryName $= %entry.name)) {
         return;
     }
-    CSSelectorDescriptionCtrl.setTextAndUpdate(%descText);
+    %descText.setTextAndUpdate(CSSelectorDescriptionCtrl);
 };
 function csGetCurrentlyPlaying(%audioStream, %videoStream) {
     if (!(%videoStream $= "")) {
@@ -496,7 +496,7 @@ function csGetCurrentlyPlaying(%audioStream, %videoStream) {
 function CSSelectorLine::getDescriptionText(%entry, %bitmapText) {
     %desc = "";
     if ((%entry.type $= "MODEL")) {
-        %titleLineWidth = (5.0 - getWord(CustomSpacesSelector_VISITandBUYBUTTON.getPosition(), 0));
+        %titleLineWidth = (getWord(CustomSpacesSelector_VISITandBUYBUTTON.getPosition(), 0) - 5.0);
         %pricingText = CSSpacePurchasePriceFormatting(%entry.floorplan.priceVPoints, %entry.floorplan.priceVBux);
         if ((%pricingText $= "")) {
             %pricingText = "Currently unavailable for purchase - check back soon!";
@@ -505,11 +505,11 @@ function CSSelectorLine::getDescriptionText(%entry, %bitmapText) {
     }
     if (%entry.isFeatured) {
     }
-    if ((0.0 == stricmp(%entry.access, "PasswordProtected"))) {
+    if ((stricmp(%entry.access, "PasswordProtected") == 0.0)) {
     }
-    if ((0.0 == stricmp(%entry.access, "Locked"))) {
+    if ((stricmp(%entry.access, "Locked") == 0.0)) {
     }
-    %titleLineWidth = (0.0 - (getWord(CustomSpacesSelector_ENTERPASSWORDBUTTON.getPosition(), 0) - getWord(CustomSpacesSelector_GOBUTTON.getPosition(), 0)));
+    %titleLineWidth = ((getWord(CustomSpacesSelector_GOBUTTON.getPosition(), 0) - getWord(CustomSpacesSelector_ENTERPASSWORDBUTTON.getPosition(), 0)) - 0.0);
     35.0;
     if (("<spush>" @ %entry.isFeatured ? "<bitmap:platform/client/ui/buildingDir_featured_star_lg>" : "" @ %entry[$gMlStyle @ "CSProfileDescriptionTitleNormal"] @ " " @ %entry.type $= "CELEBSPACE")) {
     }
@@ -517,34 +517,34 @@ function CSSelectorLine::getDescriptionText(%entry, %bitmapText) {
     return %desc;
 };
 function CSSelectorLine::onHilite(%this) {
-    %this.setProfile(%this.Parent.selectedProfile);
-    CSSelectorListCtrl.setSelectedList(%this.Parent);
+    %this.Parent.selectedProfile.setProfile(%this);
+    %this.Parent.setSelectedList(CSSelectorListCtrl);
     %doScroll = 1;
     %scrollHeight = getWord(CSSelectorScrollCtrl.getExtent(), 1);
     %listHeight = getWord(CSSelectorListCtrl.getExtent(), 1);
-    if ((%scrollHeight <= %listHeight)) {
+    if ((%listHeight <= %scrollHeight)) {
         return;
     }
     %listTop = getWord(CSSelectorListCtrl.getPosition(), 1);
-    %extremeEdge = (2.0 - (getWord(%this.getPosition(), 1) + getWord(%this.getParent().getPosition(), 1)));
-    if ((0.0 >= (%extremeEdge + %listTop))) {
-        %extremeEdge = ((4.0 + (%scrollHeight - getWord(%this.getExtent(), 1))) + %extremeEdge);
-        if ((0.0 <= (%extremeEdge + %listTop))) {
+    %extremeEdge = ((getWord(%this.getParent().getPosition(), 1) + getWord(%this.getPosition(), 1)) - 2.0);
+    if (((%listTop + %extremeEdge) >= 0.0)) {
+        %extremeEdge = (%extremeEdge + ((getWord(%this.getExtent(), 1) - %scrollHeight) + 4.0));
+        if (((%listTop + %extremeEdge) <= 0.0)) {
             %doScroll = 0;
         }
     }
     if (%doScroll) {
-        CSSelectorScrollCtrl.scrollTo(0, %extremeEdge);
+        %extremeEdge.scrollTo(CSSelectorScrollCtrl, 0);
     }
 };
 function CSSelectorLine::onUnhilite(%this) {
     Parent::onUnhilite(%this);
 };
 function CSSelectorDescriptionCtrl::setTextAndUpdate(%this, %text) {
-    %this.setTextAndUpdateWithCallback(%text, 0, "", "");
+    "".setTextAndUpdateWithCallback(%this, %text, 0, "");
 };
 function CSSelectorDescriptionCtrl::setTextAndUpdateWithCallback(%this, %text, %callbackObject, %callbackFunction, %callbackParameters) {
-    %this.setText(%text);
+    %text.setText(%this);
     CSSelectorDescriptionScrollCtrl.scrollToTop();
     %resizingFunction = "CSSelectorDescriptionContainer.resize(getWord(CSSelectorDescriptionContainer.getExtent(), 0), getWord(CSSelectorDescriptionCtrl.getExtent(), 1) + 4);";
     if ((%callbackFunction $= "")) {
@@ -576,7 +576,7 @@ function CustomSpacesSelector::doOnKeyUp(%this, %keyname) {
     }
 };
 function CustomSpacesSelector::fromKeyStopRepetition(%this) {
-    if ((0.0 != $gCustomSpacesKeyStrokeRepeatSched)) {
+    if (($gCustomSpacesKeyStrokeRepeatSched != 0.0)) {
         cancel($gCustomSpacesKeyStrokeRepeatSched);
         $gCustomSpacesKeyStrokeRepeatSched = 0;
     }
@@ -586,45 +586,45 @@ function CustomSpacesSelector::fromKeyStartMovingUp(%this) {
     if (!(isObject(%selectedListBox))) {
         return;
     }
-    %indexOfHilitedCell = %selectedListBox.getObjectIndex(%selectedListBox.getHilitedCell());
-    %lastIndexPossible = (1.0 - %selectedListBox.getCount());
-    if ((0.0 == %indexOfHilitedCell)) {
-        if ((0.0 > %selectedListBox.myIndex)) {
+    %indexOfHilitedCell = %selectedListBox.getHilitedCell().getObjectIndex(%selectedListBox);
+    %lastIndexPossible = (%selectedListBox.getCount() - 1.0);
+    if ((%indexOfHilitedCell == 0.0)) {
+        if ((%selectedListBox.myIndex > 0.0)) {
             %nextListBox = %selectedListBox.vars;
-            "aptCategoryListBoxes" @ (1.0 - %selectedListBox.myIndex) @ CustomSpacesSelector;
-            %nextListBox.getObject((1.0 - %nextListBox.getCount())).onMouseDown();
+            "aptCategoryListBoxes" @ (%selectedListBox.myIndex - 1.0) @ CustomSpacesSelector;
+            (%nextListBox.getCount() - 1.0).getObject(%nextListBox).onMouseDown();
         }
         CSSelectorScrollCtrl.scrollToTop();
     }
-    %selectedListBox.getObject((1.0 - %indexOfHilitedCell)).onMouseDown();
-    $gCustomSpacesKeyStrokeRepeatSched = %this.schedule($gCustomSpacesKeyStrokeRepFrequency);
+    (%indexOfHilitedCell - 1.0).getObject(%selectedListBox).onMouseDown();
+    $gCustomSpacesKeyStrokeRepeatSched = $gCustomSpacesKeyStrokeRepFrequency.schedule(%this);
     fromKeyStartMovingUp;
 };
 function CustomSpacesSelector::fromKeyStartMovingDown(%this) {
     %selectedListBox = CSSelectorListCtrl.getSelectedList();
     if (!(isObject(%selectedListBox))) {
-        if (("aptCategoryCount" @ CustomSpacesSelector > %selectedListBox.vars)) {
-            %selectedListBox.vars.getObject(0).onMouseDown();
+        if ((%selectedListBox.vars > "aptCategoryCount" @ CustomSpacesSelector)) {
+            0.getObject(%selectedListBox.vars).onMouseDown();
         }
         return 0.0 TAB "aptCategoryListBoxes" @ 0 @ CustomSpacesSelector;
     }
-    %indexOfHilitedCell = %selectedListBox.getObjectIndex(%selectedListBox.getHilitedCell());
-    %lastIndexPossible = (1.0 - %selectedListBox.getCount());
-    if ((%lastIndexPossible == %indexOfHilitedCell)) {
-        if ((("aptCategoryCount" @ CustomSpacesSelector - %selectedListBox.vars) < %selectedListBox.myIndex)) {
+    %indexOfHilitedCell = %selectedListBox.getHilitedCell().getObjectIndex(%selectedListBox);
+    %lastIndexPossible = (%selectedListBox.getCount() - 1.0);
+    if ((%indexOfHilitedCell == %lastIndexPossible)) {
+        if ((%selectedListBox.myIndex < (%selectedListBox.vars - "aptCategoryCount" @ CustomSpacesSelector))) {
             %nextListBox = %selectedListBox.vars;
-            1.0 TAB "aptCategoryListBoxes" @ (1.0 + %selectedListBox.myIndex) @ CustomSpacesSelector;
-            %nextListBox.getObject(0).onMouseDown();
+            1.0 TAB "aptCategoryListBoxes" @ (%selectedListBox.myIndex + 1.0) @ CustomSpacesSelector;
+            0.getObject(%nextListBox).onMouseDown();
         }
     }
-    %selectedListBox.getObject((1.0 + %indexOfHilitedCell)).onMouseDown();
-    $gCustomSpacesKeyStrokeRepeatSched = %this.schedule($gCustomSpacesKeyStrokeRepFrequency);
+    (%indexOfHilitedCell + 1.0).getObject(%selectedListBox).onMouseDown();
+    $gCustomSpacesKeyStrokeRepeatSched = $gCustomSpacesKeyStrokeRepFrequency.schedule(%this);
     fromKeyStartMovingDown;
 };
 function CSSelectorDescriptionCtrl::onURL(%this, %text) {
     if ((%text $= "COPY_VURL")) {
         %entryName = CSSelectorListCtrl.getSelectedList().getHilitedCell().entryName;
-        %entry = CSSelectorListCtrl.getSelectedList().getEntryByName(%entryName);
+        %entry = %entryName.getEntryByName(CSSelectorListCtrl.getSelectedList());
         setClipboard(vurlClearResolution(%entry.vurl));
     }
 };
@@ -633,7 +633,7 @@ function CSSelectorListCtrl::getSelectedList(%this) {
 };
 function CSSelectorListCtrl::setSelectedList(%this, %listBox) {
     if (isObject(%this.selectedCSSelectorCtrl)) {
-        if ((%listBox.getId() == %this.selectedCSSelectorCtrl.getId())) {
+        if ((%this.selectedCSSelectorCtrl.getId() == %listBox.getId())) {
             return;
         }
         %this.selectedCSSelectorCtrl.reseatChildren();
@@ -646,34 +646,34 @@ function CSSelectorListCtrl::teleportToSelected(%this) {
         return;
     }
     %entryName = %selectorCtrl.getHilitedCell().entryName;
-    %entry = %selectorCtrl.getEntryByName(%entryName);
+    %entry = %entryName.getEntryByName(%selectorCtrl);
     if (!($Player::Name $= %entry.owner)) {
     }
-    if (!($player.rolesPermissionCheckNoWarn("customspaceMaster"))) {
-        if ((0.0 == stricmp(%entry.access, "FriendsOnly"))) {
+    if (!("customspaceMaster".rolesPermissionCheckNoWarn($player))) {
+        if ((stricmp(%entry.access, "FriendsOnly") == 0.0)) {
         }
-        if (!(%selectorCtrl.ownerIsFriend(%entry.owner))) {
+        if (!(%entry.owner.ownerIsFriend(%selectorCtrl))) {
             MessageBoxOK(, , "");
             return;
         }
-        if ((0.0 == stricmp(%entry.access, "PasswordProtected"))) {
+        if ((stricmp(%entry.access, "PasswordProtected") == 0.0)) {
             MessageBoxTextEntryWithCancel(, , CSSelectorListCtrl_tackOnPassword, "", 0);
             return;
         }
-        if ((0.0 == stricmp(%entry.access, "Locked"))) {
+        if ((stricmp(%entry.access, "Locked") == 0.0)) {
             MessageBoxOK(, , "");
             return;
         }
     }
-    %this.teleportToSpaceName(%entryName, "");
+    "".teleportToSpaceName(%this, %entryName);
 };
 function CSSelectorListCtrl_tackOnPassword(%password) {
     %entryName = CSSelectorListCtrl.getSelectedList().getHilitedCell().entryName;
-    CSSelectorListCtrl.teleportToSpaceName(%entryName, %password);
+    %password.teleportToSpaceName(CSSelectorListCtrl, %entryName);
 };
 function CustomSpacesSelector::doTeleportToMyApartment(%this) {
     if (!($Player::myPlaceVURL $= "")) {
-        %this.doTeleportToSpace($Player::myPlaceVURL, "", "");
+        "".doTeleportToSpace(%this, $Player::myPlaceVURL, "");
     }
 };
 function CSSelectorListCtrl::teleportToSpaceName(%this, %spaceName, %password) {
@@ -682,19 +682,19 @@ function CSSelectorListCtrl::teleportToSpaceName(%this, %spaceName, %password) {
         error("error in retrieving list of space entries <- " @ getScopeName());
         return;
     }
-    %space = %selectedCSSelectorCtrl.getEntryByName(%spaceName);
+    %space = %spaceName.getEntryByName(%selectedCSSelectorCtrl);
     if (!(isObject(%space))) {
         error("error in retrieving object record of space entry in list <- " @ getScopeName());
         return;
     }
-    CustomSpacesSelector.doTeleportToSpace(%space.vurl, %space.name, %password);
+    %password.doTeleportToSpace(CustomSpacesSelector, %space.vurl, %space.name);
 };
 function CustomSpacesSelector::doTeleportToSpace(%this, %vurl, %spaceName, %password) {
     if (!(%spaceName $= "")) {
         showTransitionMessage(%spaceName, 0);
     }
     %vurlObject = vurlGetParsedVurl(%vurl);
-    %vurlObject.setPassword(%password);
+    %password.setPassword(%vurlObject);
     %vurlObject.cbSuccessExpected = "CustomSpacesSelector_vurlSuccessExpected";
     %vurlObject.cbSuccess = "CustomSpacesSelector_vurlTransitionSucceeded";
     %vurlObject.cbReportError = "CustomSpacesSelector_vurlTransitionFailed";
@@ -708,13 +708,13 @@ function CustomSpacesSelector_vurlTransitionSucceeded(%vurl) {
     %vurlObject.lastSelectedEntry = "" @ CustomSpacesSelector;
 };
 function CustomSpacesSelector_vurlTransitionFailed(%vurl, %errorCode, %unused) {
-    if ((0.0 == stricmp(%errorCode, "missingdoorcode"))) {
+    if ((stricmp(%errorCode, "missingdoorcode") == 0.0)) {
     }
-    if ((0.0 == stricmp(%errorCode, "missingpassword"))) {
+    if ((stricmp(%errorCode, "missingpassword") == 0.0)) {
     }
-    if ((0.0 == stricmp(%errorCode, "incorrectdoorcode"))) {
+    if ((stricmp(%errorCode, "incorrectdoorcode") == 0.0)) {
     }
-    if ((0.0 == stricmp(%errorCode, "incorrectpassword"))) {
+    if ((stricmp(%errorCode, "incorrectpassword") == 0.0)) {
         MessageBoxTextEntryWithCancel(, , CSSelectorListCtrl_tackOnPassword, "", 0);
         return 1;
     }
@@ -744,28 +744,28 @@ function CustomSpacesSelector::open(%this, %building) {
     %this.clearHeaderAndListBoxes();
     %this.lastSelectedEntry = "";
     buildingDirectoryMap.replaceAllOthers();
-    %this.vars = "textAreaPadding" @ ((%this.vars * 2.0) @ "scrollBarWidth" - (%this.vars - getWord(CSSelectorScrollCtrl.getExtent(), 0))) @ "textAreaWidth";
-    CustomSpacesSelector_TITLE.setVisible(0);
-    CustomSpacesSelector_NO_APARTMENTS.setVisible(0);
-    CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-    CustomSpacesSelector_GOBUTTON.setVisible(0);
-    CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
+    %this.vars = "textAreaPadding" @ ((getWord(CSSelectorScrollCtrl.getExtent(), 0) - %this.vars) - (2.0 * %this.vars) @ "scrollBarWidth") @ "textAreaWidth";
+    0.setVisible(CustomSpacesSelector_TITLE);
+    0.setVisible(CustomSpacesSelector_NO_APARTMENTS);
+    0.setVisible(CustomSpacesSelector_VISITandBUYBUTTON);
+    0.setVisible(CustomSpacesSelector_GOBUTTON);
+    0.setVisible(CustomSpacesSelector_ENTERPASSWORDBUTTON);
     !(CustomSpacesSelector_RETURNTOLOBBY @ " " @ CustomSpaceClient::GetSpaceImIn() $= "").setVisible();
-    CustomSpacesSelector_LOADING.setVisible(1);
-    %this.container.setVisible(1);
-    PlayGui.focusAndRaise(%this.container);
+    1.setVisible(CustomSpacesSelector_LOADING);
+    1.setVisible(%this.container);
+    %this.container.focusAndRaise(PlayGui);
     if ($ETS::devMode) {
     }
     if ($gGetFakeBuildingDirectory) {
-        CSSelectorDescriptionCtrl.setTextAndUpdateWithCallback("(loading...)", %this, "getFakeBuildingDirectory", "");
+        "".setTextAndUpdateWithCallback(CSSelectorDescriptionCtrl, "(loading...)", %this, "getFakeBuildingDirectory");
     }
-    CSSelectorDescriptionCtrl.setTextAndUpdateWithCallback("(loading...)", "", "getBuildingDirectory", %building @ ", customSpaceSelGotData, customSpaceSelFailed");
+    %building @ ", customSpaceSelGotData, customSpaceSelFailed".setTextAndUpdateWithCallback(CSSelectorDescriptionCtrl, "(loading...)", "", "getBuildingDirectory");
     CustomSpacesSelector_MYPLACE.applyBaseText();
     CustomSpacesSelector_RETURNTOLOBBY.applyBaseText();
 };
 function CustomSpacesSelector::close(%this) {
     %this.buildingName = "";
-    %this.container.setVisible(0);
+    0.setVisible(%this.container);
     PlayGui.focusTopWindow();
     if (buildingDirectoryMap.isActive()) {
         buildingDirectoryMap.restoreAllOthers();
@@ -789,43 +789,43 @@ function CustomSpacesSelector::addHeaderAndListBoxes(%this, %type) {
         bitmap = "";
     };
     if ((%type $= "MODEL")) {
-        %headerText.setBitmap("platform/client/ui/buildingDir_check_out_the_models");
+        "platform/client/ui/buildingDir_check_out_the_models".setBitmap(%headerText);
     }
     if ((%type $= "FEATURED")) {
-        %headerText.setBitmap("platform/client/ui/buildingDir_featured_apartments");
+        "platform/client/ui/buildingDir_featured_apartments".setBitmap(%headerText);
     }
     if ((%type $= "CELEBSPACE")) {
-        %headerText.setBitmap("platform/client/ui/buildingDir_celebrity_apartments");
+        "platform/client/ui/buildingDir_celebrity_apartments".setBitmap(%headerText);
     }
     if ((%type $= "MYPLACE")) {
-        %headerText.setBitmap("platform/client/ui/buildingDir_my_apartment");
+        "platform/client/ui/buildingDir_my_apartment".setBitmap(%headerText);
     }
     if ((%type $= "RESIDENCE")) {
-        %headerText.setBitmap("platform/client/ui/buildingDir_resident_apartments");
+        "platform/client/ui/buildingDir_resident_apartments".setBitmap(%headerText);
     }
-    %headerText.setBitmap("");
+    "".setBitmap(%headerText);
     %headerBox = new GuiControl("") {
         horizSizing = 0 @ "right";
         vertSizing = "bottom";
-        position = "textAreaPadding" @ %this.vars @ " " @ "aptCategoryCount" @ %this.calculateHeaderTop(%this.vars);
-        extent = (3.0 + getWord(%headerText.getExtent(), 0)) @ " " @ "headerboxHeight" @ %this.vars;
+        position = "textAreaPadding" @ %this.vars @ " " @ "aptCategoryCount" @ %this.vars.calculateHeaderTop(%this);
+        extent = (getWord(%headerText.getExtent(), 0) + 3.0) @ " " @ "headerboxHeight" @ %this.vars;
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
         maxLength = 64;
     };
-    %headerBox.add(%headerText);
-    CSSelectorListCtrl.add(%headerBox);
+    %headerText.add(%headerBox);
+    %headerBox.add(CSSelectorListCtrl);
     %this.vars = %headerBox TAB "aptCategoryHeaderBoxes" @ %newHeaderAndListBoxIndex;
     %listBox = CSSelectorCtrl::makeNewListBox(%type);
-    %positionLeft = (%this.vars + getWord(%headerBox.getPosition(), 0));
+    %positionLeft = (getWord(%headerBox.getPosition(), 0) + %this.vars);
     "textAreaIndentation" @ CustomSpacesSelector;
-    %positionTop = (%this.vars + (getWord(%headerBox.getExtent(), 1) + getWord(%headerBox.getPosition(), 1)));
+    %positionTop = ((getWord(%headerBox.getPosition(), 1) + getWord(%headerBox.getExtent(), 1)) + %this.vars);
     "spaceBetweenHeaderAndListBoxes";
     %extentWidth = getWord(%listBox.getExtent(), 0);
     %extentHeight = getWord(%listBox.getExtent(), 1);
-    %listBox.resize(%positionLeft, %positionTop, %extentWidth, %extentHeight);
-    CSSelectorListCtrl.add(%listBox);
+    %extentHeight.resize(%listBox, %positionLeft, %positionTop, %extentWidth);
+    %listBox.add(CSSelectorListCtrl);
     %this.vars = %listBox TAB "aptCategoryListBoxes" @ %newHeaderAndListBoxIndex;
     %listBox.myIndex = %newHeaderAndListBoxIndex;
     if (("aptCategoriesInUse" @ CustomSpacesSelector @ " " @ %listBox.vars $= "")) {
@@ -834,53 +834,53 @@ function CustomSpacesSelector::addHeaderAndListBoxes(%this, %type) {
     %listBox.vars = %listBox.vars @ "\t" @ %type @ "aptCategoriesInUse" @ CustomSpacesSelector;
     "aptCategoriesInUse" @ CustomSpacesSelector;
     %this.vars = %newHeaderAndListBoxIndex TAB "aptCategoryIndexes" @ %type;
-    %this.vars = (1.0 + %newHeaderAndListBoxIndex) @ "aptCategoryCount";
+    %this.vars = (%newHeaderAndListBoxIndex + 1.0) @ "aptCategoryCount";
     return %listBox;
 };
 function CustomSpacesSelector::calculateHeaderTop(%this, %ordinal) {
-    if ((0.0 < %ordinal)) {
+    if ((%ordinal < 0.0)) {
         %ordinal = 0;
     }
-    if ((%this.vars > %ordinal)) {
+    if ((%ordinal > %this.vars)) {
         %ordinal = %this.vars;
         "aptCategoryCount" @ "aptCategoryCount";
     }
-    if ((0.0 == %ordinal)) {
+    if ((%ordinal == 0.0)) {
         %top = %this.vars;
         "textAreaPadding";
     }
-    %top = getWord("aptCategoryListBoxes" @ (1.0 - %ordinal).getPosition(%this.vars), 1);
-    %top = (getWord("aptCategoryListBoxes" @ (1.0 - %ordinal).getExtent(%this.vars), 1) + %top);
-    %top = (%this.vars + %top);
+    %top = getWord(%this.vars.getPosition("aptCategoryListBoxes" @ (%ordinal - 1.0)), 1);
+    %top = (%top + getWord(%this.vars.getExtent("aptCategoryListBoxes" @ (%ordinal - 1.0)), 1));
+    %top = (%top + %this.vars);
     "textAreaPadding";
-    %top = (%this.vars + %top);
+    %top = (%top + %this.vars);
     "textAreaInterCategoryPadding";
     return %top;
 };
 function CustomSpacesSelector::clearHeaderAndListBoxes(%this) {
     CSSelectorListCtrl.clear();
     %i = 0;
-    if ((%this.vars < %i)) {
+    while ((%i < %this.vars)) {
         %this.vars.delete();
         %this.vars = "aptCategoryCount" @ CustomSpacesSelector TAB "aptCategoryHeaderBoxes" @ %i @ "" TAB "aptCategoryHeaderBoxes" @ %i;
-        "aptCategoryListBoxes" @ %i.delete(%this.vars);
+        %this.vars.delete("aptCategoryListBoxes" @ %i);
         %this.vars = "" TAB "aptCategoryListBoxes" @ %i;
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
-    %this.vars = (%this.vars < %i) @ 0 @ "aptCategoryCount";
+    %this.vars = (%i < %this.vars) @ 0 @ "aptCategoryCount";
     "aptCategoryCount" @ CustomSpacesSelector;
     %this.vars = "" @ "aptCategoriesInUse";
 };
 function CustomSpacesSelector::setTypeIndexes(%this, %typeList) {
     %currentIndex = 0;
     %i = 0;
-    if ((getFieldCount("aptCategories", %this.vars) < %i)) {
+    while ((%i < getFieldCount("aptCategories", %this.vars))) {
         %type = getField("aptCategories", %this.vars, %i);
-        if ((0.0 >= findField(%typeList, %type))) {
+        if ((findField(%typeList, %type) >= 0.0)) {
             %this.vars = %currentIndex TAB "aptCategoryIndexes" @ %type;
-            %currentIndex = (1.0 + %currentIndex);
+            %currentIndex = (%currentIndex + 1.0);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function CustomSpacesSelector::getTypeIndex(%this, %type) {
@@ -890,11 +890,11 @@ function CustomSpacesSelector::getTypeIndex(%this, %type) {
 };
 function CustomSpacesSelector::getListBox(%this, %type) {
     %listBox = %this.vars;
-    "aptCategoryListBoxes" @ %this.getTypeIndex(%type);
+    "aptCategoryListBoxes" @ %type.getTypeIndex(%this);
     return %listBox;
 };
 function CustomSpacesSelector::saveListBox(%this, %listBox, %type) {
-    %this.vars = %listBox TAB "aptCategoryListBoxes" @ %this.getTypeIndex(%type);
+    %this.vars = %listBox TAB "aptCategoryListBoxes" @ %type.getTypeIndex(%this);
 };
 function CustomSpacesSelector::rearrangeListBoxes(%this) {
     %typesAvailable = %this.vars;
@@ -904,15 +904,15 @@ function CustomSpacesSelector::rearrangeListBoxes(%this) {
     %numTypesAvailable = getFieldCount(%typesAvailable);
     %typesSkipped = 0;
     %i = 0;
-    if (((1.0 - %numTypesAvailable) < %i)) {
+    while ((%i < (%numTypesAvailable - 1.0))) {
         %currentTypeToExamine = getField(%typesAvailable, %i);
         %indexOfCurrentType = findField(%typesInUse, %currentTypeToExamine);
-        if (((%typesSkipped - %i) == %indexOfCurrentType)) {
+        if ((%indexOfCurrentType == (%i - %typesSkipped))) {
         }
-        if ((-(1.0) == %indexOfCurrentType)) {
-            %typesSkipped = (1.0 + %typesSkipped);
+        if ((%indexOfCurrentType == -(1.0))) {
+            %typesSkipped = (%typesSkipped + 1.0);
         }
-        %indexOfWhereTypeShouldBe = (%typesSkipped - findField(%typesAvailable, %currentTypeToExamine));
+        %indexOfWhereTypeShouldBe = (findField(%typesAvailable, %currentTypeToExamine) - %typesSkipped);
         %tempHeader = %this.vars;
         "aptCategoryHeaderBoxes" @ %indexOfWhereTypeShouldBe;
         %tempListBox = %this.vars;
@@ -925,85 +925,85 @@ function CustomSpacesSelector::rearrangeListBoxes(%this) {
         %this.vars.myIndex = %indexOfCurrentType TAB "aptCategoryListBoxes" @ %indexOfCurrentType;
         %typesInUse = setField(%typesInUse, %indexOfCurrentType, getField(%typesInUse, %indexOfWhereTypeShouldBe));
         %typesInUse = setField(%typesInUse, %indexOfWhereTypeShouldBe, %currentTypeToExamine);
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
-    %this.vars = ((1.0 - %numTypesAvailable) < %i) @ %typesAvailable @ "aptCategories";
+    %this.vars = (%i < (%numTypesAvailable - 1.0)) @ %typesAvailable @ "aptCategories";
     %this.vars = %typesInUse @ "aptCategoriesInUse";
-    %this.setTypeIndexes("aptCategoriesInUse", %this.vars);
-    %this.adjustListBoxPositions(1);
+    %this.vars.setTypeIndexes(%this, "aptCategoriesInUse");
+    1.adjustListBoxPositions(%this);
 };
 function CustomSpacesSelector::adjustListBoxPositions(%this, %doSort) {
-    if ((1.0 @ "aptCategoryCount" < %this.vars)) {
+    if ((%this.vars < 1.0 @ "aptCategoryCount")) {
         return;
     }
     %lastListBoxBottomEdgeY = 0;
     %i = 0;
-    if ((%this.vars < %i)) {
+    while ((%i < %this.vars)) {
         %headerBox = %this.vars;
         "aptCategoryCount" TAB "aptCategoryHeaderBoxes" @ %i;
         %listBox = %this.vars;
         "aptCategoryListBoxes" @ %i;
-        %headerBox.reposition("textAreaPadding", %this.vars, %this.calculateHeaderTop(%i));
-        %listBox.refreshFromSet(%doSort);
-        %positionLeft = (%this.vars + getWord(%headerBox.getPosition(), 0));
+        %i.calculateHeaderTop(%this).reposition(%headerBox, "textAreaPadding", %this.vars);
+        %doSort.refreshFromSet(%listBox);
+        %positionLeft = (getWord(%headerBox.getPosition(), 0) + %this.vars);
         "textAreaIndentation" @ CustomSpacesSelector;
-        %positionTop = (%this.vars + (getWord(%headerBox.getExtent(), 1) + getWord(%headerBox.getPosition(), 1)));
+        %positionTop = ((getWord(%headerBox.getPosition(), 1) + getWord(%headerBox.getExtent(), 1)) + %this.vars);
         "spaceBetweenHeaderAndListBoxes";
-        %extentWidth = ("textAreaWidth" @ CustomSpacesSelector - %this.vars);
+        %extentWidth = (%this.vars - "textAreaWidth" @ CustomSpacesSelector);
         %this.vars;
         %extentHeight = getWord(%listBox.getExtent(), 1);
         "textAreaIndentation" @ CustomSpacesSelector;
-        %listBox.resize(%positionLeft, %positionTop, %extentWidth, %extentHeight);
-        %lastListBoxBottomEdgeY = (getWord(%listBox.getExtent(), 1) + %positionTop);
-        %i = (1.0 + %i);
+        %extentHeight.resize(%listBox, %positionLeft, %positionTop, %extentWidth);
+        %lastListBoxBottomEdgeY = (%positionTop + getWord(%listBox.getExtent(), 1));
+        %i = (%i + 1.0);
     }
-    %newHeight = (%this.vars + %lastListBoxBottomEdgeY);
-    (%this.vars < %i) @ "textAreaPadding";
-    CSSelectorListCtrl.resize(getWord(CSSelectorListCtrl.getPosition(), 0), getWord(CSSelectorListCtrl.getPosition(), 1), getWord(CSSelectorListCtrl.getExtent(), 0), %newHeight);
+    %newHeight = (%lastListBoxBottomEdgeY + %this.vars);
+    (%i < %this.vars) @ "textAreaPadding";
+    %newHeight.resize(CSSelectorListCtrl, getWord(CSSelectorListCtrl.getPosition(), 0), getWord(CSSelectorListCtrl.getPosition(), 1), getWord(CSSelectorListCtrl.getExtent(), 0));
 };
 function CustomSpacesSelector::getHeaderBox(%this, %type) {
     return %this.vars;
 };
 function customSpaceSelGotData(%buildingInfo, %buildingDir) {
-    CustomSpacesSelector_LOADING.setVisible(0);
-    CSLegendContainer.setVisible(1);
+    0.setVisible(CustomSpacesSelector_LOADING);
+    1.setVisible(CSLegendContainer);
     if (!(%buildingInfo.name $= "")) {
         if ((%buildingInfo[$gMlStyle @ "CSProfileTitleText"] @ " " @ Buildings::GetDescription(%buildingInfo.name) $= "")) {
         }
         %titleBarText = %buildingInfo.name @ Buildings::GetDescription(%buildingInfo.name) @ " " @ "building directory";
-        CustomSpacesSelector_TITLE.setText(%titleBarText);
+        %titleBarText.setText(CustomSpacesSelector_TITLE);
     }
-    CustomSpacesSelector_TITLE.setText("Building Directory");
-    CustomSpacesSelector_TITLE.setVisible(1);
-    CSSelectorDescriptionCtrl.schedule(50, setTextAndUpdate, %buildingInfo.description);
+    "Building Directory".setText(CustomSpacesSelector_TITLE);
+    1.setVisible(CustomSpacesSelector_TITLE);
+    %buildingInfo.description.schedule(CSSelectorDescriptionCtrl, 50, setTextAndUpdate);
     CustomSpacesSelector.clearHeaderAndListBoxes();
     %buildingInfo.myApartment = 0 @ CustomSpacesSelector;
     %myPlaceIsInThisBuilding = 0;
     %spacesCount = %buildingDir.getCount();
-    if ((0.0 == %spacesCount)) {
-        CSSelectorListCtrl.setVisible(0);
-        CustomSpacesSelector_NO_APARTMENTS.setVisible(1);
+    if ((%spacesCount == 0.0)) {
+        0.setVisible(CSSelectorListCtrl);
+        1.setVisible(CustomSpacesSelector_NO_APARTMENTS);
     }
-    CustomSpacesSelector_NO_APARTMENTS.setVisible(0);
-    CSSelectorListCtrl.setVisible(1);
+    0.setVisible(CustomSpacesSelector_NO_APARTMENTS);
+    1.setVisible(CSSelectorListCtrl);
     %i = 0;
-    if ((%spacesCount < %i)) {
-        %space = %buildingDir.getObject(%i);
+    while ((%i < %spacesCount)) {
+        %space = %i.getObject(%buildingDir);
         %floorPlanFound = 0;
         %j = 0;
-        if ((%buildingInfo.floorPlanCount < %j)) {
+        if ((%j < %buildingInfo.floorPlanCount)) {
         }
-        if (!(%floorPlanFound)) {
+        while (!(%floorPlanFound)) {
             %floorPlanFound = (%space.floorPlanName @ %j $= %buildingInfo.floorplan.name);
-            %j = (1.0 + %j);
-            if ((%buildingInfo.floorPlanCount < %j)) {
+            %j = (%j + 1.0);
+            if ((%j < %buildingInfo.floorPlanCount)) {
             }
         }
         if (!(%floorPlanFound)) {
             warn("customSpaceSelGotData() got listing for apartment '" @ %space.name @ "' with owner '" @ %space.owner @ "' that refers to non-existent floorPlan '" @ %space.floorPlanName @ "'");
         }
         %space.city = !(%floorPlanFound) @ %buildingInfo.city;
-        %info = PlayerInfoMap.get(%space.owner);
+        %info = %space.owner.get(PlayerInfoMap);
         if (isObject(%info)) {
             %space.ownerAge = StripMLControlChars(%info.age);
             if ((%space.ownerAge $= "")) {
@@ -1029,11 +1029,11 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir) {
         %type = %space.type;
         if (($Player::Name $= %space.owner)) {
             %type = "MYPLACE";
-            if ((0.0 >= findField("aptCategoriesInUse" @ CustomSpacesSelector, %space.vars, %type))) {
-                %listBox = CustomSpacesSelector.getListBox(%type);
+            if ((findField("aptCategoriesInUse" @ CustomSpacesSelector, %space.vars, %type) >= 0.0)) {
+                %listBox = %type.getListBox(CustomSpacesSelector);
             }
-            %listBox = CustomSpacesSelector.addHeaderAndListBoxes(%type);
-            CustomSpacesSelector.saveListBox(%listBox, %type);
+            %listBox = %type.addHeaderAndListBoxes(CustomSpacesSelector);
+            %type.saveListBox(CustomSpacesSelector, %listBox);
             %myPlaceIsInThisBuilding = 1;
         }
         if (!($Player::Name $= %space.owner)) {
@@ -1042,53 +1042,53 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir) {
             if (%space.isFeatured) {
                 %type = "FEATURED";
             }
-            if ((0.0 >= findField("aptCategoriesInUse" @ CustomSpacesSelector, %space.vars, %type))) {
-                %listBox = CustomSpacesSelector.getListBox(%type);
+            if ((findField("aptCategoriesInUse" @ CustomSpacesSelector, %space.vars, %type) >= 0.0)) {
+                %listBox = %type.getListBox(CustomSpacesSelector);
             }
-            %listBox = CustomSpacesSelector.addHeaderAndListBoxes(%type);
-            CustomSpacesSelector.saveListBox(%listBox, %type);
+            %listBox = %type.addHeaderAndListBoxes(CustomSpacesSelector);
+            %type.saveListBox(CustomSpacesSelector, %listBox);
         }
-        %listBox.updateEntry(%space);
+        %space.updateEntry(%listBox);
         %space.vars = "" TAB "descriptions" @ %space.name @ CustomSpacesSelector;
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     CustomSpacesSelector.rearrangeListBoxes();
     if (0) {
-        if (!((%spacesCount < %i) @ " " @ $Player::myPlaceVURL $= "")) {
+        if (!((%i < %spacesCount) @ " " @ $Player::myPlaceVURL $= "")) {
         }
-        if ((0.0 != $CSSpaceInfo)) {
+        if (($CSSpaceInfo != 0.0)) {
         }
-        %amAtHome = (0.0 == stricmp($CSSpaceInfo.owner, $player.getShapeName()));
+        %amAtHome = (stricmp($CSSpaceInfo.owner, $player.getShapeName()) == 0.0);
         !(CustomSpacesSelector_MYPLACE_container @ " " @ $Player::myPlaceVURL $= "").setVisible();
         %style = %amAtHome ? "CSProfileSpecialLinkDisabled" : "CSProfileSpecialLink";
         %alpha = %amAtHome ? 85 : 255;
-        CustomSpacesSelector_MYPLACE.applyBaseTextWithStyle(%style);
-        CustomSpacesSelector_MYPLACE.setActive(!(%amAtHome));
+        %style.applyBaseTextWithStyle(CustomSpacesSelector_MYPLACE);
+        !(%amAtHome).setActive(CustomSpacesSelector_MYPLACE);
         $CSSpaceInfo.modulationColor = "255 255 255" @ " " @ %alpha @ CustomSpacesSelector_MYPLACEIcon;
     }
-    if (("aptCategoryCount" @ CustomSpacesSelector == $CSSpaceInfo.vars)) {
-        CSSelectorListCtrl.setVisible(0);
-        CustomSpacesSelector_NO_APARTMENTS.setVisible(1);
+    if (($CSSpaceInfo.vars == "aptCategoryCount" @ CustomSpacesSelector)) {
+        0.setVisible(CSSelectorListCtrl);
+        1.setVisible(CustomSpacesSelector_NO_APARTMENTS);
     }
     %buildingDir.delete();
 };
 function customSpaceSelFailed(%building) {
-    CustomSpacesSelector_LOADING.setVisible(0);
-    CSLegendContainer.setVisible(0);
+    0.setVisible(CustomSpacesSelector_LOADING);
+    0.setVisible(CSLegendContainer);
     if (!(%building $= "")) {
         if ((%building[$gMlStyle @ "CSProfileTitleText"] @ " " @ Buildings::GetDescription(%building) $= "")) {
         }
         %titleBarText = %building @ Buildings::GetDescription(%building) @ " " @ "building directory";
-        CustomSpacesSelector_TITLE.setText(%titleBarText);
+        %titleBarText.setText(CustomSpacesSelector_TITLE);
     }
-    CustomSpacesSelector_TITLE.setText("Building Directory");
-    CustomSpacesSelector_TITLE.setVisible(1);
-    CSSelectorDescriptionCtrl.setTextAndUpdate("Could not connect! Please try back later.");
+    "Building Directory".setText(CustomSpacesSelector_TITLE);
+    1.setVisible(CustomSpacesSelector_TITLE);
+    "Could not connect! Please try back later.".setTextAndUpdate(CSSelectorDescriptionCtrl);
 };
 function CustomSpacesSelector_MYPLACE::onURL(%this, %url) {
     %url = getWords(%url, 1);
     if ((%url $= "MY_PLACE")) {
-        geTGF.openToTabName("myplace");
+        "myplace".openToTabName(geTGF);
     }
 };
 function CustomSpacesSelector_RETURNTOLOBBY::onURL(%this, %url) {
@@ -1098,7 +1098,7 @@ function CustomSpacesSelector_RETURNTOLOBBY::onURL(%this, %url) {
     }
 };
 function CustomSpacesSelector::doReturnToLobby(%this) {
-    %this.doTeleportToSpace(Buildings::getReturnVURL($CSBuildingName), "Lobby", "");
+    "".doTeleportToSpace(%this, Buildings::getReturnVURL($CSBuildingName), "Lobby");
 };
 function CustomSpacesSelector_CLOSEWINDOW::onURL(%this, %url) {
     %url = getWords(%url, 1);
@@ -1116,22 +1116,22 @@ function CustomSpacesSelector::refresh(%this) {
     if (buildingDirectoryMap.isActive()) {
         buildingDirectoryMap.restoreAllOthers();
     }
-    %this.open(%this.buildingName);
-    CustomSpacesSelector_TITLE.setVisible(1);
+    %this.buildingName.open(%this);
+    1.setVisible(CustomSpacesSelector_TITLE);
 };
 function CustomSpacesSelector_FILTER::onKeyDown(%this, %unused, %unused) {
-    CustomSpacesSelector_FILTER_OVERLAY.setVisible(0);
+    0.setVisible(CustomSpacesSelector_FILTER_OVERLAY);
     return 0;
 };
 function CustomSpacesSelector_FILTER::onKeyUp(%this, %unused, %unused) {
     %fieldIsVisible = %this.isVisible();
     (CustomSpacesSelector_FILTER_OVERLAY @ " " @ %this.getValue() $= "").setVisible();
-    CustomSpacesSelector.doFilter(%this.getValue());
+    %this.getValue().doFilter(CustomSpacesSelector);
     return 0;
 };
 function CustomSpacesSelector::doFilter(%this, %filterByText) {
     %this.filterByText = %filterByText;
-    %this.adjustListBoxPositions(0);
+    0.adjustListBoxPositions(%this);
 };
 function CSSelectorCtrl::includeSpaceInList(%this, %entry, %filterByText) {
     if (!(isObject(%entry))) {
@@ -1150,10 +1150,10 @@ function CSSelectorCtrl::includeSpaceInList(%this, %entry, %filterByText) {
     if ((%filterByText $= "")) {
         return 1;
     }
-    if ((-(1.0) > strstr(strlwr(%entry.owner), %filterByText))) {
+    if ((strstr(strlwr(%entry.owner), %filterByText) > -(1.0))) {
         return 1;
     }
-    if ((-(1.0) > strstr(strlwr(%entry.description), %filterByText))) {
+    if ((strstr(strlwr(%entry.description), %filterByText) > -(1.0))) {
         return 1;
     }
     return 0;

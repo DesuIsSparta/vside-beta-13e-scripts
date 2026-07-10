@@ -21,15 +21,15 @@ function DeclareBuilding(%buildingName, %buildingDescription, %longDescription, 
     %buildingName[$gBuildingVURL @ %buildingName] = "vside:/location/" @ %areaNameCity @ "/" @ %buildingName @ "_ReturnSpawn";
     %buildingName[$gBuildingAreaNames @ %buildingName] = %areaNames;
     %buildingName[$gBuildingFloorplans @ %buildingName] = %floorplans;
-    %i = (1.0 - getWordCount(%floorplans));
-    if ((0.0 >= %i)) {
+    %i = (getWordCount(%floorplans) - 1.0);
+    while ((%i >= 0.0)) {
         %floorplanName = getWord(%floorplans, %i);
         %sku = Buildings::GetSkuFromFloorPlanName(%floorplanName);
         if ((%sku $= "")) {
             error(getScopeName() @ " " @ "This Floorplan has not properly been declared yet, see DeclareFloorplan");
         }
         %floorplanName[$gBuildingNamesFromFloorplans @ %floorplanName] = %buildingName;
-        %i = (1.0 - %i);
+        %i = (%i - 1.0);
     }
 };
 function Buildings::GetDescription(%name) {

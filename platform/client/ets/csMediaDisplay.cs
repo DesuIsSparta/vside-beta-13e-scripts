@@ -3,7 +3,7 @@ $CSMediaDisplay::TypeRadio = 1;
 $CSMediaDisplay::TypeYoutube = 2;
 $CSMediaDisplay::TypeShoutCast = 3;
 $CSMediaDisplay::DefaultFavoriteCount = 15;
-$CSMediaDisplay::TotalEntryCount = (2.0 * $CSMediaDisplay::DefaultFavoriteCount);
+$CSMediaDisplay::TotalEntryCount = ($CSMediaDisplay::DefaultFavoriteCount * 2.0);
 $CSMediaMusicOffName = "- none -";
 $CSMediaMusicOffID = "-";
 $CSMediaDisplay::YoutubeDefaultThumb = "projects/vside/worlds/common/shapes/videoback_loading.jpg";
@@ -27,20 +27,20 @@ function CSMediaDisplay::toggle(%this) {
 };
 function CSMediaDisplay::open(%this) {
     closeCSPanelsInOtherCategories(%this);
-    %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(PlayGui);
     WindowManager.update();
     CustomSpaceClient::checkEditingSpace();
     if (!(%this.periodic $= "")) {
         cancel(%this.periodic);
         %this.periodic = "";
     }
-    %this.syncPlayingMediaStream(%this.playingStream);
+    %this.playingStream.syncPlayingMediaStream(%this);
     %this.periodicCycle();
     %this.update();
 };
 function CSMediaDisplay::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     CustomSpaceClient::checkEditingSpace();
     PlayGui.focusTopWindow();
     WindowManager.update();
@@ -53,21 +53,21 @@ function CSMediaDisplay::close(%this) {
 function CSMediaDisplay::periodicCycle(%this) {
     cancel(%this.periodic);
     %this.cycleYoutubeThumbnails();
-    %this.periodic = periodicCycle @ %this.schedule(4000);
+    %this.periodic = periodicCycle @ 4000.schedule(%this);
 };
 function CSMediaDisplay::update(%this) {
 };
 function CSMediaDisplay::Initialize() {
     if (!(CSMediaDisplay @ " " @ %this.initialized $= "")) {
     }
-    if ((CSMediaDisplay == %this.initialized)) {
+    if ((%this.initialized == CSMediaDisplay)) {
         return 1.0;
     }
     %newExtent = getWord(CSMediaFavDisplayArray, %this.childrenExtent, 0) @ " " @ 51;
     %this.childrenExtent = %newExtent @ CSMediaFavDisplayArray;
     %this.childrenExtent = %newExtent @ CSMediaHotDisplayArray;
-    CSMediaFavDisplayArray.setNumChildren($CSMediaDisplay::DefaultFavoriteCount);
-    CSMediaHotDisplayArray.setNumChildren($CSMediaDisplay::DefaultFavoriteCount);
+    $CSMediaDisplay::DefaultFavoriteCount.setNumChildren(CSMediaFavDisplayArray);
+    $CSMediaDisplay::DefaultFavoriteCount.setNumChildren(CSMediaHotDisplayArray);
     %this.visible = 0 @ CSMediaWhatsHotSelector;
     %this.playingChild = 0 @ CSMediaDisplay;
     %this.playingStream = "" @ CSMediaDisplay;
@@ -75,75 +75,75 @@ function CSMediaDisplay::Initialize() {
     %this.initialized = 1 @ CSMediaDisplay;
 };
 function CSMediaFavDisplayArray::onCreatedChild(%this, %child, %unused, %y) {
-    if ((0.0 > %y)) {
+    if ((%y > 0.0)) {
         %child.setProfile();
     }
     %child.setProfile();
     %child.isReadOnly = GuiDefaultProfile @ 0;
     ETSDroppableProfile;
     %child.systemDragDrop = 1;
-    if ((1.0 == %this.getCount())) {
-        CSMediaDisplay.buildChildDisplayRadio(%child);
+    if ((%this.getCount() == 1.0)) {
+        %child.buildChildDisplayRadio(CSMediaDisplay);
     }
-    CSMediaDisplay.buildChildDisplayEmpty(%child);
-    %child.forceRadio = (1.0 == %this.getCount());
+    %child.buildChildDisplayEmpty(CSMediaDisplay);
+    %child.forceRadio = (%this.getCount() == 1.0);
     %child.visible = 1;
     %child.oldMediaLink = "";
     if (!(getWord(%child.getNamespaceList(), 0) $= "CSMediaFavListItem")) {
-        %child.bindClassName("CSMediaFavListItem");
+        "CSMediaFavListItem".bindClassName(%child);
     }
 };
 function CSMediaHotDisplayArray::onCreatedChild(%this, %child) {
     %child.isReadOnly = 1;
-    CSMediaDisplay.buildChildDisplayEmpty(%child);
+    %child.buildChildDisplayEmpty(CSMediaDisplay);
     %child.forceRadio = 0;
     %child.visible = 0;
     %child.oldMediaLink = "";
     if (!(getWord(%child.getNamespaceList(), 0) $= "CSMediaHotListItem")) {
         echo("Binding CSMediaHotListItem to " @ %child);
-        %child.bindClassName("CSMediaHotListItem");
+        "CSMediaHotListItem".bindClassName(%child);
     }
 };
 function CSMediaDisplay::buttonWhatsHot(%this) {
-    %widthDelta = (3.0 + getWord(CSMediaWhatsHotSelector.getExtent(), 0));
+    %widthDelta = (getWord(CSMediaWhatsHotSelector.getExtent(), 0) + 3.0);
     %width = getWord(%this.getExtent(), 0);
     %height = getWord(%this.getExtent(), 1);
     if (%child.showingWhatsHot) {
         %child.text = " What's Hot >> " @ CSMediaWhatsHotButton;
         CSMediaDisplay;
-        CSMediaWhatsHotButton.reposition("352 24");
-        %widthDelta = (-(1.0) * %widthDelta);
+        "352 24".reposition(CSMediaWhatsHotButton);
+        %widthDelta = (%widthDelta * -(1.0));
     }
     csRequestHotMedia();
     %child.text = " << Hide " @ CSMediaWhatsHotButton;
-    CSMediaWhatsHotButton.reposition("423 24");
+    "423 24".reposition(CSMediaWhatsHotButton);
     %this.showingWhatsHot = !(%this.showingWhatsHot);
-    %this.setTrgExtent((%widthDelta + %width), %height);
+    %height.setTrgExtent(%this, (%width + %widthDelta));
     %this.visible = %this.showingWhatsHot @ CSMediaWhatsHotSelector;
 };
 function CSMediaDisplay::onReachedTarget(%this) {
     WindowManager.update();
 };
 function CSMediaDisplay::setMediaFavorites(%this, %mediaList) {
-    %this.setMediaList(%mediaList, 0, CSMediaFavDisplayArray.getCount(), 0);
+    0.setMediaList(%this, %mediaList, 0, CSMediaFavDisplayArray.getCount());
 };
 function CSMediaDisplay::setMediaHotlist(%this, %mediaList) {
-    %this.setMediaList(%mediaList, $CSMediaDisplay::DefaultFavoriteCount, CSMediaHotDisplayArray.getCount(), 1);
+    1.setMediaList(%this, %mediaList, $CSMediaDisplay::DefaultFavoriteCount, CSMediaHotDisplayArray.getCount());
 };
 function CSMediaDisplay::setMediaList(%this, %mediaList, %startIdx, %maxIdx, %hideEmpty) {
     %count = getFieldCount(%mediaList);
     %idx = 0;
-    if ((%count < %idx)) {
+    while ((%idx < %count)) {
         %linkInfo = getField(%mediaList, %idx);
         %linkName = getWord(%linkInfo, 0);
-        %child = %this.getChildDisplay((%startIdx + %idx));
+        %child = (%idx + %startIdx).getChildDisplay(%this);
         %child.visible = 1;
         %infoCount = getWordCount(%linkInfo);
-        %this.updateMediaLinkTo(%child, %linkName, (2.0 > %infoCount));
-        if ((1.0 > %infoCount)) {
-            %this.setMediaInfo(%child, getWord(%linkInfo, 1), getWord(%linkInfo, 2));
+        (%infoCount > 2.0).updateMediaLinkTo(%this, %child, %linkName);
+        if ((%infoCount > 1.0)) {
+            getWord(%linkInfo, 2).setMediaInfo(%this, %child, getWord(%linkInfo, 1));
         }
-        %streamID = %this.extractMediaStreamId(%linkName);
+        %streamID = %linkName.extractMediaStreamId(%this);
         if ((%this.playingStream $= %linkName)) {
             %this.playingChild = %child;
             %child.playButton.visible = 0;
@@ -152,9 +152,9 @@ function CSMediaDisplay::setMediaList(%this, %mediaList, %startIdx, %maxIdx, %hi
             %urlinfo = new ScriptObject("");;
             0;
             if (isObject(MissionCleanup)) {
-                MissionCleanup.add(%urlinfo);
+                %urlinfo.add(MissionCleanup);
             }
-            %urlinfo.bindClassName("URLInfo");
+            "URLInfo".bindClassName(%urlinfo);
             %urlinfo.url = %this.playingStream;
             %tStreamInfo = %streamID @ ".ogg";
             if (!(%urlinfo.parse())) {
@@ -166,60 +166,60 @@ function CSMediaDisplay::setMediaList(%this, %mediaList, %startIdx, %maxIdx, %hi
             }
             %urlinfo.delete();
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
-    if ((%maxIdx < %idx)) {
-        %child = %this.getChildDisplay((%startIdx + %idx));
-        (%count < %idx);
-        %this.updateMediaLinkTo(%child, "", 0);
+    while ((%idx < %maxIdx)) {
+        %child = (%idx + %startIdx).getChildDisplay(%this);
+        (%idx < %count);
+        0.updateMediaLinkTo(%this, %child, "");
         if (%hideEmpty) {
             %child.visible = 0;
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
 };
 function CSMediaDisplay::setMediaStatistics(%this, %url, %views, %plays) {
     %count = %this.getChildCount();
     %idx = 0;
-    if ((%count < %idx)) {
-        %child = %this.getChildDisplay(%idx);
-        %medialink = %this.getMediaLink(%child);
+    while ((%idx < %count)) {
+        %child = %idx.getChildDisplay(%this);
+        %medialink = %child.getMediaLink(%this);
         if ((%medialink $= %url)) {
-            %this.setMediaInfo(%child, %views, %plays);
+            %plays.setMediaInfo(%this, %child, %views);
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
 };
 function CSMediaDisplay::clearMediaStatistics(%this, %url) {
     %count = %this.getChildCount();
     %idx = 0;
-    if ((%count < %idx)) {
-        %child = %this.getChildDisplay(%idx);
-        %medialink = %this.getMediaLink(%child);
+    while ((%idx < %count)) {
+        %child = %idx.getChildDisplay(%this);
+        %medialink = %child.getMediaLink(%this);
         if ((%medialink $= %url)) {
-            %this.setNoMediaInfo(%child);
+            %child.setNoMediaInfo(%this);
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
 };
 function CSMediaDisplay::setMediaInfo(%this, %child, %views, %plays) {
     if (!(%child.mediainfo $= "")) {
         %text = "<color:ffffff70>" @ %plays @ " plays";
-        %child.mediainfo.setText(%text);
+        %text.setText(%child.mediainfo);
     }
 };
 function CSMediaDisplay::setNoMediaInfo(%this, %child) {
     if (!(%child.mediainfo $= "")) {
-        %child.mediainfo.setText("(no stats)");
+        "(no stats)".setText(%child.mediainfo);
     }
 };
 function CSMediaDisplay::getMediaFavorites(%this) {
     %mediaList = "";
     %idx = 0;
-    if (($CSMediaDisplay::DefaultFavoriteCount < %idx)) {
-        %child = %this.getChildDisplay(%idx);
+    while ((%idx < $CSMediaDisplay::DefaultFavoriteCount)) {
+        %child = %idx.getChildDisplay(%this);
         if (!(%child $= "")) {
-            %medialink = %this.getMediaLink(%child);
+            %medialink = %child.getMediaLink(%this);
             if (!(%medialink $= "")) {
                 if (!(%mediaList $= "")) {
                     %mediaList = %mediaList @ "\t" @ %medialink;
@@ -227,36 +227,36 @@ function CSMediaDisplay::getMediaFavorites(%this) {
                 %mediaList = %medialink;
             }
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
     return %mediaList;
 };
 function CSMediaDisplay::syncPlayingAudioStream(%this, %streamID) {
-    if ((0.0 < strstr(%streamID, "http://"))) {
-        %this.syncPlayingMediaStream("vside://radio/" @ %streamID);
+    if ((strstr(%streamID, "http://") < 0.0)) {
+        "vside://radio/" @ %streamID.syncPlayingMediaStream(%this);
     }
-    %this.syncPlayingMediaStream(%streamID);
+    %streamID.syncPlayingMediaStream(%this);
 };
 function CSMediaDisplay::syncPlayingMediaStream(%this, %medialink) {
-    %child = %this.findChildWithMedialink(%medialink);
-    if ((0.0 > %child)) {
-        %this.setPlayingChild(%child);
+    %child = %medialink.findChildWithMedialink(%this);
+    if ((%child > 0.0)) {
+        %child.setPlayingChild(%this);
     }
     %this.playingStream = %medialink;
 };
 function CSMediaDisplay::playMediaStream(%this, %newStreamUrl, %displayURL) {
-    %mediaType = %this.getMediaType(%newStreamUrl);
+    %mediaType = %newStreamUrl.getMediaType(%this);
     %musicStream = "";
     %videoStream = "no-video";
     %streamType = "";
-    if (($CSMediaDisplay::TypeRadio == %mediaType)) {
-        %musicStream = %this.extractMediaStreamId(%newStreamUrl);
+    if ((%mediaType == $CSMediaDisplay::TypeRadio)) {
+        %musicStream = %newStreamUrl.extractMediaStreamId(%this);
         %ratableURL = ;
         customSpace::SetMusicStreamID(%musicStream);
         customSpace::SetVideoURL("");
         %streamType = "RADIO";
     }
-    if (($CSMediaDisplay::TypeYoutube == %mediaType)) {
+    if ((%mediaType == $CSMediaDisplay::TypeYoutube)) {
         %videoStream = %newStreamUrl;
         %ratableURL = ;
         customSpace::SetMusicStreamID("");
@@ -268,7 +268,7 @@ function CSMediaDisplay::playMediaStream(%this, %newStreamUrl, %displayURL) {
             %streamType = "VIDEO_PLAYLIST";
         }
     }
-    if (($CSMediaDisplay::TypeShoutCast == %mediaType)) {
+    if ((%mediaType == $CSMediaDisplay::TypeShoutCast)) {
         %musicStream = %newStreamUrl;
         %ratableURL = %displayURL;
         customSpace::SetMusicStreamID(%musicStream, %displayURL);
@@ -286,15 +286,15 @@ function CSMediaDisplay::extractMediaStreamId(%this, %medialink) {
     %url = new ScriptObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%url);
+        %url.add(MissionCleanup);
     }
-    %url.bindClassName("URLInfo");
+    "URLInfo".bindClassName(%url);
     %url.url = %medialink;
     %streamID = "";
     if (%url.parse()) {
-        if ((0.0 == stricmp(%url.protocol, "vside"))) {
+        if ((stricmp(%url.protocol, "vside") == 0.0)) {
         }
-        if ((0.0 == stricmp(%url.host, "radio"))) {
+        if ((stricmp(%url.host, "radio") == 0.0)) {
             %streamID = %url.Path;
         }
     }
@@ -302,48 +302,48 @@ function CSMediaDisplay::extractMediaStreamId(%this, %medialink) {
     return %streamID;
 };
 function CSMediaDisplay::PlayButtonPushed(%this, %child) {
-    %this.setPlayingChild(%child);
+    %child.setPlayingChild(%this);
     if (!(%child.streamUrl $= "")) {
-        %this.playMediaStream(%child.streamUrl, %this.playingStream);
+        %this.playingStream.playMediaStream(%this, %child.streamUrl);
     }
-    %this.playMediaStream(%this.playingStream);
+    %this.playingStream.playMediaStream(%this);
 };
 function CSMediaDisplay::setPlayingChild(%this, %child) {
     %count = %this.getChildCount();
     %idx = 0;
-    if ((%count < %idx)) {
-        %otherChild = %this.getChildDisplay(%idx);
-        if ((%otherChild != %child)) {
+    while ((%idx < %count)) {
+        %otherChild = %idx.getChildDisplay(%this);
+        if ((%child != %otherChild)) {
             %otherChild.isPlaying = 0;
             if (!(%otherChild.highlight $= "")) {
             }
             if (isObject(%otherChild.highlight)) {
-                %otherChild.remove(%otherChild.highlight);
+                %otherChild.highlight.remove(%otherChild);
                 %otherChild.highlight.delete();
                 %otherChild.highlight = "";
             }
-            %this.setPlaybuttonVisible(%otherChild, 1);
+            1.setPlaybuttonVisible(%this, %otherChild);
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
     %medialink = "";
-    (%count < %idx);
-    if ((0.0 != %child)) {
+    (%idx < %count);
+    if ((%child != 0.0)) {
         %child.isPlaying = 1;
         if ((%child.highlight $= "")) {
             %extent = %child.getExtent();
             %child.highlight = new GuiConvBubbleCtrl("") {
                 profile = 0 @ "ETSLightHighlightProfile";
-                extent = getWord(%extent, 0) @ " " @ (4.0 - getWord(%extent, 1));
+                extent = getWord(%extent, 0) @ " " @ (getWord(%extent, 1) - 4.0);
                 position = "0 0";
                 roundRadius = 4;
                 roundInterps = 2;
                 sluggishness = -(1.0);
             };
-            %child.add(%child.highlight);
+            %child.highlight.add(%child);
         }
-        %this.setPlaybuttonVisible(%child, 0);
-        %medialink = %this.getMediaLink(%child);
+        0.setPlaybuttonVisible(%this, %child);
+        %medialink = %child.getMediaLink(%this);
     }
     %this.playingStream = %medialink;
     %this.playingChild = %child;
@@ -351,43 +351,43 @@ function CSMediaDisplay::setPlayingChild(%this, %child) {
 function CSMediaDisplay::findChildWithMedialink(%this, %medialink) {
     %count = %this.getChildCount();
     %idx = 0;
-    if ((%count < %idx)) {
-        %child = %this.getChildDisplay(%idx);
-        %testlink = %this.getMediaLink(%child);
+    while ((%idx < %count)) {
+        %child = %idx.getChildDisplay(%this);
+        %testlink = %child.getMediaLink(%this);
         if ((%testlink $= %medialink)) {
             return %child;
         }
         if ((%child.streamUrl $= %medialink)) {
             return %child;
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
     return 0;
 };
 function CSMediaDisplay::stopAllMedia(%this) {
-    %this.PlayButtonPushed(0);
+    0.PlayButtonPushed(%this);
 };
 function CSMediaDisplay::showHelp(%this) {
     %msg = ;
     %dlg = MessageBoxOK("My Music & Videos - How To", %msg, "");
-    %dlg.window.resize(550, 300);
+    300.resize(%dlg.window, 550);
 };
 function CSMediaDisplay::getMediaLink(%this, %child) {
     if ((%child.medialink $= "")) {
         return "";
     }
-    if (($CSMediaDisplay::TypeRadio != %child.displayType)) {
+    if ((%child.displayType != $CSMediaDisplay::TypeRadio)) {
         %medialinkValue = %child.medialink.getText();
     }
     %medialinkName = %child.medialink.getText();
     %idx = -(1.0);
     if (isObject($musicStreamNameMap)) {
-        %idx = $musicStreamNameMap.findKey(%medialinkName);
+        %idx = %medialinkName.findKey($musicStreamNameMap);
     }
-    if ((-(1.0) == %idx)) {
+    if ((%idx == -(1.0))) {
         %streamID = %medialinkName;
     }
-    %streamID = $musicStreamNameMap.getValue(%idx);
+    %streamID = %idx.getValue($musicStreamNameMap);
     %medialinkValue = "vside://radio/" @ %streamID;
     return %medialinkValue;
 };
@@ -395,32 +395,32 @@ function CSMediaDisplay::setMediaLink(%this, %child, %medialink, %skipStatistics
     if ((%child.medialink $= "")) {
         return;
     }
-    if (($CSMediaDisplay::TypeYoutube == %child.displayType)) {
+    if ((%child.displayType == $CSMediaDisplay::TypeYoutube)) {
         %validate = %child.medialink.validate;
         %child.medialink.validate = "";
-        %child.medialink.setText(%medialink);
+        %medialink.setText(%child.medialink);
         %child.medialink.validate = %validate;
         %child.skipStatistics = %skipStatistics;
-        %this.requestYoutubeInfo(%child);
-        %this.setPlaybuttonAvailable(%child, 1);
+        %child.requestYoutubeInfo(%this);
+        1.setPlaybuttonAvailable(%this, %child);
         %child.oldMediaLink = %medialink;
     }
-    if (($CSMediaDisplay::TypeShoutCast == %child.displayType)) {
+    if ((%child.displayType == $CSMediaDisplay::TypeShoutCast)) {
         %validate = %child.medialink.validate;
         %child.medialink.validate = "";
-        %child.medialink.setText(%medialink);
+        %medialink.setText(%child.medialink);
         %child.medialink.validate = %validate;
         %child.skipStatistics = %skipStatistics;
-        %this.requestShoutCastInfo(%child);
-        %this.setPlaybuttonAvailable(%child, 1);
+        %child.requestShoutCastInfo(%this);
+        1.setPlaybuttonAvailable(%this, %child);
         %child.oldMediaLink = %medialink;
     }
     %url = new ScriptObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%url);
+        %url.add(MissionCleanup);
     }
-    %url.bindClassName("URLInfo");
+    "URLInfo".bindClassName(%url);
     %url.url = %medialink;
     %url.parse();
     %path = %url.Path;
@@ -430,19 +430,19 @@ function CSMediaDisplay::setMediaLink(%this, %child, %medialink, %skipStatistics
         %count = $musicStreamNameMap.size();
     }
     %idx = 0;
-    if ((%count < %idx)) {
-        if ((0.0 == stricmp($musicStreamNameMap.getValue(%idx), %path))) {
+    while ((%idx < %count)) {
+        if ((stricmp(%idx.getValue($musicStreamNameMap), %path) == 0.0)) {
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
-    if ((%count < %idx)) {
-        %newStreamName = $musicStreamNameMap.getKey(%idx);
-        (%count < %idx);
-        %index = %child.medialink.findText(%newStreamName);
-        %child.medialink.SetSelected(%index);
+    if ((%idx < %count)) {
+        %newStreamName = %idx.getKey($musicStreamNameMap);
+        (%idx < %count);
+        %index = %newStreamName.findText(%child.medialink);
+        %index.SetSelected(%child.medialink);
     }
-    %child.medialink.setText(%path);
-    %this.setPlaybuttonAvailable(%child, !(%path $= "-"));
+    %path.setText(%child.medialink);
+    !(%path $= "-").setPlaybuttonAvailable(%this, %child);
 };
 function CSMediaDisplay::setPlaybuttonAvailable(%this, %child, %avail) {
     %child.playbuttonAvailable = %avail;
@@ -461,31 +461,29 @@ function CSMediaDisplay::setPlaybuttonVisible(%this, %child, %visible) {
     }
 };
 function CSMediaDisplay::changeMediaLink(%this, %child) {
-    %this.schedule(0, "changeMediaLinkReally", %child);
+    %child.schedule(%this, 0, "changeMediaLinkReally");
 };
 function CSMediaDisplay::changeMediaLinkReally(%this, %child) {
-    %newMediaType = %this.getMediaType(%child.medialink);
-    %newMediaLink = %this.getMediaLink(%child);
+    %newMediaType = %child.medialink.getMediaType(%this);
+    %newMediaLink = %child.getMediaLink(%this);
     if ((%child.oldMediaLink $= %newMediaLink)) {
         return;
     }
-    %this.updateMediaLinkTo(%child, %newMediaLink, 0);
-    %newMediaType = %this.getMediaType(%newMediaLink);
-    if ((%child == %this.playingChild)) {
-        if (($CSMediaDisplay::TypeRadio == %newMediaType)) {
-            if ((%newMediaLink $= "vside://radio/-")) {
-                %newMediaLink = "";
-                %this.playingChild = 0;
-                %child.isPlaying = 0;
-            }
+    0.updateMediaLinkTo(%this, %child, %newMediaLink);
+    %newMediaType = %newMediaLink.getMediaType(%this);
+    if ((%this.playingChild == %child)) {
+        if ((%newMediaType == $CSMediaDisplay::TypeRadio) && (%newMediaLink $= "vside://radio/-")) {
+            %newMediaLink = "";
+            %this.playingChild = 0;
+            %child.isPlaying = 0;
         }
-        if (($CSMediaDisplay::TypeShoutCast == %newMediaType)) {
+        if ((%newMediaType == $CSMediaDisplay::TypeShoutCast)) {
             %child.autoplay = 1;
         }
-        %this.playMediaStream(%newMediaLink);
+        %newMediaLink.playMediaStream(%this);
         %this.playingStream = %newMediaLink;
     }
-    if (($CSMediaDisplay::TypeRadio == %newMediaType)) {
+    if ((%newMediaType == $CSMediaDisplay::TypeRadio)) {
     }
     if ((%newMediaLink $= "")) {
         csSaveMediaFavorites();
@@ -493,14 +491,14 @@ function CSMediaDisplay::changeMediaLinkReally(%this, %child) {
 };
 function CSMediaDisplay::updateMediaLinkTo(%this, %child, %newMediaLink, %skipStats) {
     %child.streamUrl = "";
-    %newMediaType = %this.getMediaType(%newMediaLink);
-    if (($CSMediaDisplay::TypeRadio == %newMediaType)) {
+    %newMediaType = %newMediaLink.getMediaType(%this);
+    if ((%newMediaType == $CSMediaDisplay::TypeRadio)) {
         %url = new ScriptObject("");;
         0;
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add(%url);
+            %url.add(MissionCleanup);
         }
-        %url.bindClassName("URLInfo");
+        "URLInfo".bindClassName(%url);
         %url.url = %newMediaLink;
         %url.parse();
         %path = %url.Path;
@@ -512,48 +510,48 @@ function CSMediaDisplay::updateMediaLinkTo(%this, %child, %newMediaLink, %skipSt
             %newMediaLink = "";
         }
     }
-    if (($CSMediaDisplay::TypeYoutube == %newMediaType)) {
+    if ((%newMediaType == $CSMediaDisplay::TypeYoutube)) {
         %normalizedURL = CSMediaDisplay::normalizeYoutubeURL(%newMediaLink);
         if ((%normalizedURL $= "")) {
             %newMediaType = $CSMediaDisplay::TypeEmpty;
         }
         %newMediaLink = %normalizedURL;
     }
-    if ((%child.displayType != %newMediaType)) {
-        %this.clearChildDisplay(%child);
-        if (($CSMediaDisplay::TypeRadio == %newMediaType)) {
-            %this.buildChildDisplayRadio(%child);
+    if ((%newMediaType != %child.displayType)) {
+        %child.clearChildDisplay(%this);
+        if ((%newMediaType == $CSMediaDisplay::TypeRadio)) {
+            %child.buildChildDisplayRadio(%this);
         }
-        if (($CSMediaDisplay::TypeYoutube == %newMediaType)) {
-            %this.buildChildDisplayYouTube(%child);
+        if ((%newMediaType == $CSMediaDisplay::TypeYoutube)) {
+            %child.buildChildDisplayYouTube(%this);
         }
-        if (($CSMediaDisplay::TypeShoutCast == %newMediaType)) {
-            %this.buildChildDisplayShoutCast(%child);
+        if ((%newMediaType == $CSMediaDisplay::TypeShoutCast)) {
+            %child.buildChildDisplayShoutCast(%this);
         }
-        %this.buildChildDisplayEmpty(%child);
+        %child.buildChildDisplayEmpty(%this);
     }
-    %this.setMediaLink(%child, %newMediaLink, %skipStats);
+    %skipStats.setMediaLink(%this, %child, %newMediaLink);
 };
 function CSMediaDisplay::getMediaType(%this, %medialink) {
     %url = new ScriptObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%url);
+        %url.add(MissionCleanup);
     }
-    %url.bindClassName("URLInfo");
+    "URLInfo".bindClassName(%url);
     %url.url = %medialink;
     if (!(%url.parse())) {
         %url.delete();
         return $CSMediaDisplay::TypeEmpty;
     }
     %type = $CSMediaDisplay::TypeEmpty;
-    if ((0.0 == stricmp(%url.protocol, "vside"))) {
-        if ((0.0 == stricmp(%url.host, "radio"))) {
+    if ((stricmp(%url.protocol, "vside") == 0.0)) {
+        if ((stricmp(%url.host, "radio") == 0.0)) {
             %type = $CSMediaDisplay::TypeRadio;
         }
     }
-    if ((0.0 == stricmp(%url.protocol, "http"))) {
-        if ((0.0 >= strstr(%url.host, "youtube."))) {
+    if ((stricmp(%url.protocol, "http") == 0.0)) {
+        if ((strstr(%url.host, "youtube.") >= 0.0)) {
             %type = $CSMediaDisplay::TypeYoutube;
         }
         %type = $CSMediaDisplay::TypeShoutCast;
@@ -565,34 +563,34 @@ function CSMediaDisplay::getMediaType(%this, %medialink) {
 function CSMediaDisplay::updateRadioStreams(%this) {
     %count = %this.getChildCount();
     %idx = 0;
-    if ((%count < %idx)) {
-        %child = %this.getChildDisplay(%idx);
-        if (($CSMediaDisplay::TypeRadio == %child.displayType)) {
-            %this.updateRadioDropDown(%child);
+    while ((%idx < %count)) {
+        %child = %idx.getChildDisplay(%this);
+        if ((%child.displayType == $CSMediaDisplay::TypeRadio)) {
+            %child.updateRadioDropDown(%this);
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
 };
 function CSMediaDisplay::updateRadioDropDown(%this, %child) {
-    %medialink = %this.getMediaLink(%child);
+    %medialink = %child.getMediaLink(%this);
     %dropdown = %child.medialink;
     %dropdown.clear();
     %count = $musicStreamNameMap.size();
     %idx = 0;
-    if ((%count < %idx)) {
-        %dropdown.add($musicStreamNameMap.getKey(%idx));
-        %idx = (1.0 + %idx);
+    while ((%idx < %count)) {
+        %idx.getKey($musicStreamNameMap).add(%dropdown);
+        %idx = (%idx + 1.0);
     }
-    %this.setMediaLink(%child, %medialink, 0);
+    0.setMediaLink(%this, %child, %medialink);
 };
 function CSMediaDisplay::cycleYoutubeThumbnails(%this) {
     %idx = 0;
-    if (($CSMediaDisplay::TotalEntryCount < %idx)) {
-        %child = %this.getChildDisplay(%idx);
-        if (($CSMediaDisplay::TypeYoutube == %child.displayType)) {
-            %this.selectYoutubeThumbnails(%child, 0);
+    while ((%idx < $CSMediaDisplay::TotalEntryCount)) {
+        %child = %idx.getChildDisplay(%this);
+        if ((%child.displayType == $CSMediaDisplay::TypeYoutube)) {
+            0.selectYoutubeThumbnails(%this, %child);
         }
-        %idx = (1.0 + %idx);
+        %idx = (%idx + 1.0);
     }
 };
 function CSMediaDisplay::buildYoutubeTitle(%this, %child) {
@@ -609,12 +607,12 @@ function CSMediaDisplay::buildYoutubeTitle(%this, %child) {
         %authorString = "<just:right><color:ffffff80><linkcolorhl:ffaaff><a:gamelink " @ $CSMediaDisplay::YoutubeProfile @ %AuthorName @ ">";
         %authorString = %authorString @ %AuthorName @ "</a>";
         if (!(%child.mediaauthor $= "")) {
-            %child.mediaauthor.setText(%authorString);
+            %authorString.setText(%child.mediaauthor);
         }
     }
     %FullTitle = "<spush><b>" @ %title @ "<spop>" @ %FullTitle;
     %FullTitle = "<clip:" @ getWord(%child.mediatitle.extent, 0) @ ">" @ %FullTitle @ "</clip>";
-    %child.mediatitle.setText(%FullTitle);
+    %FullTitle.setText(%child.mediatitle);
 };
 function CSMediaDisplay::buildShoutCastTitle(%this, %child) {
     %AuthorName = "";
@@ -633,30 +631,30 @@ function CSMediaDisplay::buildShoutCastTitle(%this, %child) {
         %FullTitle = "<a:gamelink " @ %homeURL @ "/><clip:" @ getWord(%child.mediatitle.extent, 0) @ ">" @ %title @ "</clip></a>";
     }
     %FullTitle = "<clip:" @ getWord(%child.mediatitle.extent, 0) @ ">" @ %title @ "</clip>";
-    %child.mediatitle.setText(%FullTitle);
+    %FullTitle.setText(%child.mediatitle);
 };
 function CSMediaDisplay::selectYoutubeThumbnails(%this, %child, %force) {
     if (!(%force)) {
         %chance = getRandom(0, 99);
-        if ((%child.changeThumbChance > %chance)) {
-            %child.changeThumbChance = (%child.changeCume + %child.changeThumbChance);
+        if ((%chance > %child.changeThumbChance)) {
+            %child.changeThumbChance = (%child.changeThumbChance + %child.changeCume);
             return;
         }
     }
     %child.changeThumbChance = %child.changeCume;
-    %index = getRandom(0, (1.0 - %child.thumbCount));
+    %index = getRandom(0, (%child.thumbCount - 1.0));
     %child.currentThumb = %index;
     if (!(%child.currentThumb @ " " @ %child.thumbURL $= "")) {
-        %child.thumbnail.downloadAndApplyBitmap(%child.currentThumb, %child.thumbURL, "youtube");
+        "youtube".downloadAndApplyBitmap(%child.thumbnail, %child.currentThumb, %child.thumbURL);
     }
 };
 function CSMediaDisplay::normalizeYoutubeURL(%medialink) {
     %url = new ScriptObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%url);
+        %url.add(MissionCleanup);
     }
-    %url.bindClassName("URLInfo");
+    "URLInfo".bindClassName(%url);
     %url.url = %medialink;
     %url.parse();
     %urlOut = "http://" @ %url.host @ "/";
@@ -679,19 +677,19 @@ function CSMediaDisplay::requestYoutubeInfo(%this, %child) {
     %child.AuthorName = "";
     if (!(%child.thumbCount $= "")) {
         %idx = 0;
-        if ((%child.thumbCount < %idx)) {
+        while ((%idx < %child.thumbCount)) {
             %child.thumbURL = "" @ %idx;
-            %idx = (1.0 + %idx);
+            %idx = (%idx + 1.0);
         }
     }
-    %child.thumbCount = (%child.thumbCount < %idx) @ "";
+    %child.thumbCount = (%idx < %child.thumbCount) @ "";
     %url = new ScriptObject("");;
     0;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%url);
+        %url.add(MissionCleanup);
     }
-    %url.bindClassName("URLInfo");
-    %url.url = %this.getMediaLink(%child);
+    "URLInfo".bindClassName(%url);
+    %url.url = %child.getMediaLink(%this);
     %url.parse();
     %gdataRequest = $CSMediaDisplay::GDataAPIURL;
     if (!("v" @ " " @ %url.param $= "")) {
@@ -703,12 +701,12 @@ function CSMediaDisplay::requestYoutubeInfo(%this, %child) {
     return;
     %child.gdataRequest = 0 @ new XMLDoc("");;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%child.gdataRequest);
+        %child.gdataRequest.add(MissionCleanup);
     }
-    %child.gdataRequest.bindClassName("CSMDGDataRequest");
+    "CSMDGDataRequest".bindClassName(%child.gdataRequest);
     %child.gdataRequest.control = %child;
     %child.gdataRequest.Display = %this;
-    %child.gdataRequest.parseXMLFromURL(%gdataRequest);
+    %gdataRequest.parseXMLFromURL(%child.gdataRequest);
 };
 function CSMediaDisplay::requestShoutCastInfo(%this, %child) {
     if (!(%child.scRequest $= "")) {
@@ -717,26 +715,26 @@ function CSMediaDisplay::requestShoutCastInfo(%this, %child) {
     %child.title = "";
     %child.AuthorName = "";
     %child.thumbCount = "";
-    %url = %this.getMediaLink(%child);
-    if ((0.0 > strstr(%url, ".mp3"))) {
+    %url = %child.getMediaLink(%this);
+    if ((strstr(%url, ".mp3") > 0.0)) {
         %child.scRequest = 0 @ new M3UDemuxer("");;
     }
-    if ((0.0 > strstr(%url, ".pls"))) {
+    if ((strstr(%url, ".pls") > 0.0)) {
         %child.scRequest = 0 @ new PLSDemuxer("");;
         %child.URLtypeUnknown = 1;
     }
-    if ((0.0 > strstr(%url, ".m3u"))) {
+    if ((strstr(%url, ".m3u") > 0.0)) {
         %child.scRequest = 0 @ new M3UDemuxer("");;
     }
     %child.scRequest = 0 @ new PLSDemuxer("");;
     %child.URLtypeUnknown = 1;
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%child.scRequest);
+        %child.scRequest.add(MissionCleanup);
     }
-    %child.scRequest.bindClassName("CSSCDataRequest");
+    "CSSCDataRequest".bindClassName(%child.scRequest);
     %child.scRequest.control = %child;
     %child.scRequest.Display = %this;
-    %child.scRequest.setURL(%this.getMediaLink(%child));
+    %child.getMediaLink(%this).setURL(%child.scRequest);
     %child.scRequest.start();
 };
 function CSSCDataRequest::onDone(%this, %url) {
@@ -746,52 +744,52 @@ function CSSCDataRequest::onDone(%this, %url) {
     %child.streamUrl = %url;
     %child.title = %this.getTitle();
     %child.homeURL = %this.getHomeURL();
-    %window.buildShoutCastTitle(%child);
-    %child.mediainfo.setText("");
-    %child.thumbnail.setBitmap($CSMediaDisplay::ShoutCastThumb);
+    %child.buildShoutCastTitle(%window);
+    "".setText(%child.mediainfo);
+    $CSMediaDisplay::ShoutCastThumb.setBitmap(%child.thumbnail);
     schedule(%this, "delete", 0);
-    %medialink = %window.getMediaLink(%child);
+    %medialink = %child.getMediaLink(%window);
     if (!(%child.skipStatistics)) {
         csRequestMediaStatistics(%medialink);
     }
-    if ((1.0 == %child.autoplay)) {
+    if ((%child.autoplay == 1.0)) {
         %child.autoplay = 0;
         %child.isPlaying = 1;
         if (%child.isPlaying) {
             CSMediaDisplay.stopAllMedia();
         }
-        CSMediaDisplay.PlayButtonPushed(%child);
+        %child.PlayButtonPushed(CSMediaDisplay);
     }
     csSaveMediaFavorites();
 };
 function CSSCDataRequest::onError(%this) {
     %child = %this.control;
     %window = %this.Display;
-    if ((1.0 == %child.URLtypeUnknown)) {
+    if ((%child.URLtypeUnknown == 1.0)) {
         %child.scRequest = 0 @ new M3UDemuxer("");;
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add(%child.scRequest);
+            %child.scRequest.add(MissionCleanup);
         }
-        %child.scRequest.bindClassName("CSSCDataRequest");
+        "CSSCDataRequest".bindClassName(%child.scRequest);
         %child.scRequest.control = %child;
         %child.scRequest.Display = %window;
         %child.URLtypeUnknown = 0;
-        %child.scRequest.setURL(%window.getMediaLink(%child));
+        %child.getMediaLink(%window).setURL(%child.scRequest);
         %child.scRequest.start();
         schedule(%this, "delete", 0);
         return;
     }
-    %medialink = %window.getMediaLink(%child);
+    %medialink = %child.getMediaLink(%window);
     %child.scRequest = "";
-    %child.thumbnail.setBitmap($CSMediaDisplay::ShoutCastThumb);
-    %child.mediatitle.setText($CSMediaDisplay::ShoutCastErrorTitle);
+    $CSMediaDisplay::ShoutCastThumb.setBitmap(%child.thumbnail);
+    $CSMediaDisplay::ShoutCastErrorTitle.setText(%child.mediatitle);
     %lastError = %this.getErrorBuffer();
     if ((%lastError $= "")) {
         %lastError = $CSMediaDisplay::ShoutCastErrorInfo;
     }
-    %child.mediainfo.setText(%lastError);
-    echo("Invalid Media URL: " @ %window.getMediaLink(%child) @ " Error: " @ %lastError);
-    %window.setPlaybuttonAvailable(%child, 0);
+    %lastError.setText(%child.mediainfo);
+    echo("Invalid Media URL: " @ %child.getMediaLink(%window) @ " Error: " @ %lastError);
+    0.setPlaybuttonAvailable(%window, %child);
     schedule(%this, "delete", 0);
 };
 function CSMDGDataRequest::onDone(%this) {
@@ -806,84 +804,84 @@ function CSMDGDataRequest::onDone(%this) {
     }
     %child.thumbCount = 0;
     if ((%root.getValue() $= "feed")) {
-        %window.parseFeedNode(%child, %root);
+        %root.parseFeedNode(%window, %child);
         %child.changeCume = 5;
     }
     if ((%root.getValue() $= "entry")) {
-        %window.parseEntryNode(%child, %root, 1);
+        1.parseEntryNode(%window, %child, %root);
         %child.changeCume = 2;
     }
     log("error", "media", "Root node is not an entry or feed tag");
     return;
-    %window.buildYoutubeTitle(%child);
-    %window.selectYoutubeThumbnails(%child, 1);
-    %medialink = %window.getMediaLink(%child);
+    %child.buildYoutubeTitle(%window);
+    1.selectYoutubeThumbnails(%window, %child);
+    %medialink = %child.getMediaLink(%window);
     if (!(%child.skipStatistics)) {
         csRequestMediaStatistics(%medialink);
     }
-    if ((1.0 == %child.autoplay)) {
+    if ((%child.autoplay == 1.0)) {
         %child.autoplay = 0;
         %child.isPlaying = 1;
         if (%child.isPlaying) {
             CSMediaDisplay.stopAllMedia();
         }
-        CSMediaDisplay.PlayButtonPushed(%child);
+        %child.PlayButtonPushed(CSMediaDisplay);
     }
     csSaveMediaFavorites();
 };
 function CSMediaDisplay::parseEntryNode(%this, %child, %entryNode, %setTitle) {
-    %MediaGroup = %entryNode.getFirstChild("media:group");
+    %MediaGroup = "media:group".getFirstChild(%entryNode);
     if (%setTitle) {
-        %AuthorNode = %entryNode.getFirstChild("author");
-        %AuthorNameNode = %AuthorNode.getFirstChild("name");
+        %AuthorNode = "author".getFirstChild(%entryNode);
+        %AuthorNameNode = "name".getFirstChild(%AuthorNode);
         %child.AuthorName = %AuthorNameNode.getText();
-        %TitleNode = %MediaGroup.getFirstChild("media:title");
+        %TitleNode = "media:title".getFirstChild(%MediaGroup);
         %child.title = %TitleNode.getText();
     }
     %ThumbnailIdx = %child.thumbCount;
-    %ThumbnailNode = %MediaGroup.getFirstChild("media:thumbnail");
-    if (%ThumbnailNode) {
-        %child.thumbURL = %ThumbnailNode.getAttribute("url") @ %ThumbnailIdx;
-        %ThumbnailIdx = (1.0 + %ThumbnailIdx);
-        %ThumbnailNode = %ThumbnailNode.getNext("media:thumbnail");
+    %ThumbnailNode = "media:thumbnail".getFirstChild(%MediaGroup);
+    while (%ThumbnailNode) {
+        %child.thumbURL = "url".getAttribute(%ThumbnailNode) @ %ThumbnailIdx;
+        %ThumbnailIdx = (%ThumbnailIdx + 1.0);
+        %ThumbnailNode = "media:thumbnail".getNext(%ThumbnailNode);
     }
     %child.thumbCount = %ThumbnailNode @ %ThumbnailIdx;
 };
 function CSMediaDisplay::parseFeedNode(%this, %child, %feedNode) {
-    %AuthorNode = %feedNode.getFirstChild("author");
-    %AuthorNode = %AuthorNode.getFirstChild("name");
+    %AuthorNode = "author".getFirstChild(%feedNode);
+    %AuthorNode = "name".getFirstChild(%AuthorNode);
     %child.AuthorName = %AuthorNode.getText();
-    %MediaGroup = %feedNode.getFirstChild("media:group");
-    %TitleNode = %MediaGroup.getFirstChild("media:title");
+    %MediaGroup = "media:group".getFirstChild(%feedNode);
+    %TitleNode = "media:title".getFirstChild(%MediaGroup);
     %child.title = %TitleNode.getText();
-    %entry = %feedNode.getFirstChild("entry");
-    if (%entry) {
-        %this.parseEntryNode(%child, %entry, 0);
-        %entry = %entry.getNext("entry");
+    %entry = "entry".getFirstChild(%feedNode);
+    while (%entry) {
+        0.parseEntryNode(%this, %child, %entry);
+        %entry = "entry".getNext(%entry);
     }
 };
 function CSMDGDataRequest::onError(%this) {
     %child = %this.control;
     %window = %this.Display;
     %child.gdataRequest = "";
-    %child.thumbnail.setBitmap($CSMediaDisplay::YoutubeErrorThumb);
-    %child.mediatitle.setText($CSMediaDisplay::YoutubeErrorTitle);
-    %child.mediainfo.setText($CSMediaDisplay::YoutubeErrorInfo);
-    %window.setPlaybuttonAvailable(%child, 0);
+    $CSMediaDisplay::YoutubeErrorThumb.setBitmap(%child.thumbnail);
+    $CSMediaDisplay::YoutubeErrorTitle.setText(%child.mediatitle);
+    $CSMediaDisplay::YoutubeErrorInfo.setText(%child.mediainfo);
+    0.setPlaybuttonAvailable(%window, %child);
     schedule(%this, "delete", 0);
 };
 function CSMediaDisplay::getChildDisplay(%this, %childIdx) {
     %faveCount = CSMediaFavDisplayArray.getCount();
-    if ((%childIdx > %faveCount)) {
-        return CSMediaFavDisplayArray.getObject(%childIdx);
+    if ((%faveCount > %childIdx)) {
+        return %childIdx.getObject(CSMediaFavDisplayArray);
     }
-    if ((CSMediaFavDisplayArray.getCount() < (%faveCount - %childIdx))) {
-        return CSMediaHotDisplayArray.getObject((%faveCount - %childIdx));
+    if (((%childIdx - %faveCount) < CSMediaFavDisplayArray.getCount())) {
+        return (%childIdx - %faveCount).getObject(CSMediaHotDisplayArray);
     }
     return "";
 };
 function CSMediaDisplay::getChildCount(%this) {
-    return (CSMediaHotDisplayArray.getCount() + CSMediaFavDisplayArray.getCount());
+    return (CSMediaFavDisplayArray.getCount() + CSMediaHotDisplayArray.getCount());
 };
 function CSMediaDisplay::clearChildDisplay(%this, %child) {
     %child.deleteMembers();
@@ -898,12 +896,12 @@ function CSMediaDisplay::clearChildDisplay(%this, %child) {
     %child.AuthorName = "";
     if (!(%child.thumbCount $= "")) {
         %idx = 0;
-        if ((%child.thumbCount < %idx)) {
+        while ((%idx < %child.thumbCount)) {
             %child.thumbURL = "" @ %idx;
-            %idx = (1.0 + %idx);
+            %idx = (%idx + 1.0);
         }
     }
-    %child.thumbCount = (%child.thumbCount < %idx) @ "";
+    %child.thumbCount = (%idx < %child.thumbCount) @ "";
 };
 function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
     %padding = 1;
@@ -915,7 +913,7 @@ function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
         profile = 0 @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %xPos @ " " @ (1.0 + %ypos);
+        position = %xPos @ " " @ (%ypos + 1.0);
         extent = "60 45";
         minExtent = "1 1";
         sluggishness = -1;
@@ -923,15 +921,15 @@ function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
     };
     %bmpWidth = getWord(%bitmap.getExtent(), 0);
     %bmpHeight = getWord(%bitmap.getExtent(), 1);
-    %bitmap.setBitmap($CSMediaDisplay::YoutubeDefaultThumb);
-    %xPos = ((%padding + %bmpWidth) + %xPos);
-    %windowWidth = (%bmpWidth - %windowWidth);
+    $CSMediaDisplay::YoutubeDefaultThumb.setBitmap(%bitmap);
+    %xPos = (%xPos + (%bmpWidth + %padding));
+    %windowWidth = (%windowWidth - %bmpWidth);
     %textTitle = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = (%padding - %windowWidth) @ " " @ 14;
+        extent = (%windowWidth - %padding) @ " " @ 14;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -940,15 +938,15 @@ function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textTitle.bindClassName("CSMediaMLText");
-    %textTitle.setText("YouTube Video");
-    %ypos = ((%padding + 13.0) + %ypos);
+    "CSMediaMLText".bindClassName(%textTitle);
+    "YouTube Video".setText(%textTitle);
+    %ypos = (%ypos + (13.0 + %padding));
     %textEntry = new GuiTextEditCtrl("") {
         profile = 0 @ %child.isReadOnly ? "ETSDarkReadonlyTextEditProfile" : "ETSDarkTextEditProfile";
         horizSizing = "center";
         vertSizing = "top";
         position = %xPos @ " " @ %ypos;
-        extent = (1.0 - (%padding - %windowWidth)) @ " " @ 18;
+        extent = ((%windowWidth - %padding) - 1.0) @ " " @ 18;
         minExtent = "8 8";
         visible = 1;
         setFirstResponder = 0;
@@ -958,13 +956,13 @@ function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
         historySize = 0;
         readOnly = %child.isReadOnly;
     };
-    %ypos = ((%padding + 16.0) + %ypos);
+    %ypos = (%ypos + (16.0 + %padding));
     %textInfo = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = ((%authorWidth + (2.0 * %padding)) - %windowWidth) @ " " @ 14;
+        extent = (%windowWidth - ((%padding * 2.0) + %authorWidth)) @ " " @ 14;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -973,9 +971,9 @@ function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textInfo.bindClassName("CSMediaMLText");
-    %textInfo.setText("Retrieving video info...");
-    %xPos = ((getWord(%textInfo.extent, 0) + %padding) + %xPos);
+    "CSMediaMLText".bindClassName(%textInfo);
+    "Retrieving video info...".setText(%textInfo);
+    %xPos = (%xPos + (%padding + getWord(%textInfo.extent, 0)));
     %textAuthor = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
@@ -990,8 +988,8 @@ function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textAuthor.bindClassName("CSMediaMLText");
-    %ypos = ((%padding + 14.0) + %ypos);
+    "CSMediaMLText".bindClassName(%textAuthor);
+    %ypos = (%ypos + (14.0 + %padding));
     %playButton = new GuiBitmapButtonCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
@@ -1008,13 +1006,13 @@ function CSMediaDisplay::buildChildDisplayYouTube(%this, %child) {
         bitmap = "platform/client/buttons/playMedia";
         modulationColor = "255 255 255 180";
     };
-    %playButton.bindClassName("CSBitmapButton");
-    %bitmap.add(%playButton);
-    %child.add(%bitmap);
-    %child.add(%textTitle);
-    %child.add(%textEntry);
-    %child.add(%textInfo);
-    %child.add(%textAuthor);
+    "CSBitmapButton".bindClassName(%playButton);
+    %playButton.add(%bitmap);
+    %bitmap.add(%child);
+    %textTitle.add(%child);
+    %textEntry.add(%child);
+    %textInfo.add(%child);
+    %textAuthor.add(%child);
     %child.playButton = %playButton;
     %child.playbuttonAvailable = 1;
     %child.thumbnail = %bitmap;
@@ -1041,15 +1039,15 @@ function CSMediaDisplay::buildChildDisplayRadio(%this, %child, %url) {
     };
     %bmpWidth = 60;
     %bmpHeight = getWord(%bitmap.getExtent(), 1);
-    %bitmap.setBitmap($CSMediaDisplay::RadioBunnyThumb);
-    %xPos = ((%padding + %bmpWidth) + %xPos);
-    %windowWidth = (%bmpWidth - %windowWidth);
+    $CSMediaDisplay::RadioBunnyThumb.setBitmap(%bitmap);
+    %xPos = (%xPos + (%bmpWidth + %padding));
+    %windowWidth = (%windowWidth - %bmpWidth);
     %textTitle = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = (%padding - %windowWidth) @ " " @ 14;
+        extent = (%windowWidth - %padding) @ " " @ 14;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -1058,9 +1056,9 @@ function CSMediaDisplay::buildChildDisplayRadio(%this, %child, %url) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textTitle.bindClassName("CSMediaMLText");
-    %textTitle.setText("vSide Radio");
-    %ypos = ((%padding + 14.0) + %ypos);
+    "CSMediaMLText".bindClassName(%textTitle);
+    "vSide Radio".setText(%textTitle);
+    %ypos = (%ypos + (14.0 + %padding));
     %dropdown = new GuiPopUp2MenuCtrl(CSMediaMusicStreamPopup) {
         profile = "InfoWindowPopupProfile";
         scrollProfile = "DottedScrollProfile";
@@ -1068,7 +1066,7 @@ function CSMediaDisplay::buildChildDisplayRadio(%this, %child, %url) {
         horizSizing = "right";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = (2.0 - (%padding - %windowWidth)) @ " " @ 30;
+        extent = ((%windowWidth - %padding) - 2.0) @ " " @ 30;
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
@@ -1094,22 +1092,22 @@ function CSMediaDisplay::buildChildDisplayRadio(%this, %child, %url) {
         bitmap = "platform/client/buttons/playMedia";
         modulationColor = "255 255 255 180";
     };
-    %playButton.bindClassName("CSBitmapButton");
-    %bitmap.add(%playButton);
-    %child.add(%bitmap);
-    %child.add(%textTitle);
-    %child.add(%dropdown);
+    "CSBitmapButton".bindClassName(%playButton);
+    %playButton.add(%bitmap);
+    %bitmap.add(%child);
+    %textTitle.add(%child);
+    %dropdown.add(%child);
     if (isObject($musicStreamNameMap)) {
         %count = $musicStreamNameMap.size();
     }
     %count = 0;
     %idx = 0;
-    if ((%count < %idx)) {
-        %dropdown.add($musicStreamNameMap.getKey(%idx));
-        %idx = (1.0 + %idx);
+    while ((%idx < %count)) {
+        %idx.getKey($musicStreamNameMap).add(%dropdown);
+        %idx = (%idx + 1.0);
     }
     if (%child.isReadOnly) {
-        (%count < %idx);
+        (%idx < %count);
         %blocker = new GuiMLTextCtrl("") {
             profile = 0 @ "GuiMessageTextProfile";
             horizSizing = "width";
@@ -1124,8 +1122,8 @@ function CSMediaDisplay::buildChildDisplayRadio(%this, %child, %url) {
             helpTag = 0;
             historySize = 0;
         };
-        %blocker.bindClassName("CSMediaMLText");
-        %child.add(%blocker);
+        "CSMediaMLText".bindClassName(%blocker);
+        %blocker.add(%child);
     }
     %child.playButton = %playButton;
     %child.playbuttonAvailable = 1;
@@ -1145,7 +1143,7 @@ function CSMediaDisplay::buildChildDisplayShoutCast(%this, %child) {
         profile = 0 @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %xPos @ " " @ (1.0 + %ypos);
+        position = %xPos @ " " @ (%ypos + 1.0);
         extent = "60 45";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1153,15 +1151,15 @@ function CSMediaDisplay::buildChildDisplayShoutCast(%this, %child) {
     };
     %bmpWidth = getWord(%bitmap.getExtent(), 0);
     %bmpHeight = getWord(%bitmap.getExtent(), 1);
-    %bitmap.setBitmap($CSMediaDisplay::RadioBunnyThumb);
-    %xPos = ((%padding + %bmpWidth) + %xPos);
-    %windowWidth = (%bmpWidth - %windowWidth);
+    $CSMediaDisplay::RadioBunnyThumb.setBitmap(%bitmap);
+    %xPos = (%xPos + (%bmpWidth + %padding));
+    %windowWidth = (%windowWidth - %bmpWidth);
     %textTitle = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = (%padding - %windowWidth) @ " " @ 14;
+        extent = (%windowWidth - %padding) @ " " @ 14;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -1170,15 +1168,15 @@ function CSMediaDisplay::buildChildDisplayShoutCast(%this, %child) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textTitle.bindClassName("CSMediaMLText");
-    %textTitle.setText("SHOUTcast Stream");
-    %ypos = ((%padding + 13.0) + %ypos);
+    "CSMediaMLText".bindClassName(%textTitle);
+    "SHOUTcast Stream".setText(%textTitle);
+    %ypos = (%ypos + (13.0 + %padding));
     %textEntry = new GuiTextEditCtrl("") {
         profile = 0 @ %child.isReadOnly ? "ETSDarkReadonlyTextEditProfile" : "ETSDarkTextEditProfile";
         horizSizing = "center";
         vertSizing = "top";
         position = %xPos @ " " @ %ypos;
-        extent = (1.0 - (%padding - %windowWidth)) @ " " @ 18;
+        extent = ((%windowWidth - %padding) - 1.0) @ " " @ 18;
         minExtent = "8 8";
         visible = 1;
         setFirstResponder = 0;
@@ -1188,13 +1186,13 @@ function CSMediaDisplay::buildChildDisplayShoutCast(%this, %child) {
         historySize = 0;
         readOnly = %child.isReadOnly;
     };
-    %ypos = ((%padding + 16.0) + %ypos);
+    %ypos = (%ypos + (16.0 + %padding));
     %textInfo = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = ((%authorWidth + (2.0 * %padding)) - %windowWidth) @ " " @ 14;
+        extent = (%windowWidth - ((%padding * 2.0) + %authorWidth)) @ " " @ 14;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -1203,9 +1201,9 @@ function CSMediaDisplay::buildChildDisplayShoutCast(%this, %child) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textInfo.bindClassName("CSMediaMLText");
-    %textInfo.setText("Retrieving stream info...");
-    %xPos = ((getWord(%textInfo.extent, 0) + %padding) + %xPos);
+    "CSMediaMLText".bindClassName(%textInfo);
+    "Retrieving stream info...".setText(%textInfo);
+    %xPos = (%xPos + (%padding + getWord(%textInfo.extent, 0)));
     %textAuthor = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
@@ -1220,8 +1218,8 @@ function CSMediaDisplay::buildChildDisplayShoutCast(%this, %child) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textAuthor.bindClassName("CSMediaMLText");
-    %ypos = ((%padding + 14.0) + %ypos);
+    "CSMediaMLText".bindClassName(%textAuthor);
+    %ypos = (%ypos + (14.0 + %padding));
     %playButton = new GuiBitmapButtonCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
@@ -1238,13 +1236,13 @@ function CSMediaDisplay::buildChildDisplayShoutCast(%this, %child) {
         bitmap = "platform/client/buttons/playMedia";
         modulationColor = "255 255 255 180";
     };
-    %playButton.bindClassName("CSBitmapButton");
-    %bitmap.add(%playButton);
-    %child.add(%bitmap);
-    %child.add(%textTitle);
-    %child.add(%textEntry);
-    %child.add(%textInfo);
-    %child.add(%textAuthor);
+    "CSBitmapButton".bindClassName(%playButton);
+    %playButton.add(%bitmap);
+    %bitmap.add(%child);
+    %textTitle.add(%child);
+    %textEntry.add(%child);
+    %textInfo.add(%child);
+    %textAuthor.add(%child);
     %child.playButton = %playButton;
     %child.playbuttonAvailable = 1;
     %child.thumbnail = %bitmap;
@@ -1271,15 +1269,15 @@ function CSMediaDisplay::buildChildDisplayEmpty(%this, %child, %url) {
     };
     %bmpWidth = 60;
     %bmpHeight = getWord(%bitmap.getExtent(), 1);
-    %bitmap.setBitmap($CSMediaDisplay::EmptyBunnyThumb);
-    %xPos = ((%padding + %bmpWidth) + %xPos);
-    %windowWidth = (%bmpWidth - %windowWidth);
+    $CSMediaDisplay::EmptyBunnyThumb.setBitmap(%bitmap);
+    %xPos = (%xPos + (%bmpWidth + %padding));
+    %windowWidth = (%windowWidth - %bmpWidth);
     %textTitle = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = (%padding - %windowWidth) @ " " @ 14;
+        extent = (%windowWidth - %padding) @ " " @ 14;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -1288,15 +1286,15 @@ function CSMediaDisplay::buildChildDisplayEmpty(%this, %child, %url) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textTitle.bindClassName("CSMediaMLText");
-    %textTitle.setText("Media URL:");
-    %ypos = ((%padding + 14.0) + %ypos);
+    "CSMediaMLText".bindClassName(%textTitle);
+    "Media URL:".setText(%textTitle);
+    %ypos = (%ypos + (14.0 + %padding));
     %textEntry = new GuiTextEditCtrl("") {
         profile = 0 @ "ETSDarkTextEditProfile";
         horizSizing = "center";
         vertSizing = "top";
         position = %xPos @ " " @ %ypos;
-        extent = (1.0 - (%padding - %windowWidth)) @ " " @ 18;
+        extent = ((%windowWidth - %padding) - 1.0) @ " " @ 18;
         minExtent = "8 8";
         visible = 1;
         setFirstResponder = 0;
@@ -1306,10 +1304,10 @@ function CSMediaDisplay::buildChildDisplayEmpty(%this, %child, %url) {
         historySize = 0;
         canHilite = 1;
     };
-    %ypos = ((%padding + 18.0) + %ypos);
-    %child.add(%bitmap);
-    %child.add(%textTitle);
-    %child.add(%textEntry);
+    %ypos = (%ypos + (18.0 + %padding));
+    %bitmap.add(%child);
+    %textTitle.add(%child);
+    %textEntry.add(%child);
     %child.playButton = "";
     %child.playbuttonAvailable = 0;
     %child.thumbnail = %bitmap;
@@ -1320,8 +1318,8 @@ function CSMediaDisplay::buildChildDisplayEmpty(%this, %child, %url) {
 };
 function CSMediaMLText::onMouseDragged(%this) {
     %parent = %this.getParent();
-    if ((-(1.0) != findWord(%parent.getNamespaceList(), "CSMediaHotListItem"))) {
-        %parent.setAsDragControl(1);
+    if ((findWord(%parent.getNamespaceList(), "CSMediaHotListItem") != -(1.0))) {
+        1.setAsDragControl(%parent);
         return 1;
     }
     return 0;
@@ -1331,18 +1329,18 @@ function CSBitmapButton::onMouseDown(%this) {
 };
 function CSBitmapButton::onMouseDragged(%this) {
     %parent = %this.getParent().getParent();
-    if ((-(1.0) == findWord(%parent.getNamespaceList(), "CSMediaHotListItem"))) {
+    if ((findWord(%parent.getNamespaceList(), "CSMediaHotListItem") == -(1.0))) {
         return 0;
     }
     %vec = VectorSub(%this.origin, Canvas.getCursorPos());
-    if (((12.0 * 12.0) < VectorLenSquared(%vec))) {
+    if ((VectorLenSquared(%vec) < (12.0 * 12.0))) {
         return 0;
     }
-    %parent.setAsDragControl(1);
+    1.setAsDragControl(%parent);
     return 1;
 };
 function CSMediaHotListItem::onMouseDragged(%this) {
-    %this.setAsDragControl(1);
+    1.setAsDragControl(%this);
 };
 function CSMediaHotListItem::makeVisualClone(%this) {
     %padding = 1;
@@ -1363,24 +1361,24 @@ function CSMediaHotListItem::makeVisualClone(%this) {
         profile = 0 @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %xPos @ " " @ (1.0 + %ypos);
+        position = %xPos @ " " @ (%ypos + 1.0);
         extent = "60 45";
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
     };
-    %ctrl.add(%bitmap);
-    %bitmap.setBitmap(%this.getObject(0).getBitmap());
+    %bitmap.add(%ctrl);
+    0.getObject(%this).getBitmap().setBitmap(%bitmap);
     %bmpWidth = getWord(%bitmap.getExtent(), 0);
     %bmpHeight = getWord(%bitmap.getExtent(), 1);
-    %xPos = ((%padding + %bmpWidth) + %xPos);
-    %windowWidth = (%bmpWidth - %windowWidth);
+    %xPos = (%xPos + (%bmpWidth + %padding));
+    %windowWidth = (%windowWidth - %bmpWidth);
     %textTitle = new GuiMLTextCtrl("") {
         profile = 0 @ "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %xPos @ " " @ %ypos;
-        extent = (%padding - %windowWidth) @ " " @ 14;
+        extent = (%windowWidth - %padding) @ " " @ 14;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -1389,18 +1387,18 @@ function CSMediaHotListItem::makeVisualClone(%this) {
         maxChars = -1;
         helpTag = 0;
     };
-    %textTitle.bindClassName("CSMediaMLText");
-    %textTitle.setText("YouTube Video");
-    %ypos = ((%padding + 13.0) + %ypos);
-    %ctrl.add(%textTitle);
+    "CSMediaMLText".bindClassName(%textTitle);
+    "YouTube Video".setText(%textTitle);
+    %ypos = (%ypos + (13.0 + %padding));
+    %textTitle.add(%ctrl);
     %ctrl.mediatitle = %textTitle;
     %ctrl.AuthorName = %this.AuthorName;
     %ctrl.title = %this.title;
-    CSMediaDisplay.buildYoutubeTitle(%ctrl);
+    %ctrl.buildYoutubeTitle(CSMediaDisplay);
     return %ctrl;
 };
 function CSMediaFavListItem::onDragAndDropEnter(%this, %dragCtrl) {
-    if ((-(1.0) == findWord(%dragCtrl.getNamespaceList(), "CSMediaHotListItem"))) {
+    if ((findWord(%dragCtrl.getNamespaceList(), "CSMediaHotListItem") == -(1.0))) {
         return;
     }
     hiliteControl(%this.medialink);
@@ -1411,19 +1409,19 @@ function CSMediaFavListItem::onDragAndDropLeave(%this, %dragCtrl) {
 function CSMediaFavListItem::onDragAndDropMove(%this, %dragCtrl, %unused) {
 };
 function CSMediaFavListItem::onDragAndDropDrop(%this, %dragCtrl, %unused) {
-    %url = CSMediaDisplay.getMediaLink(%dragCtrl);
+    %url = %dragCtrl.getMediaLink(CSMediaDisplay);
     if ((%url $= "")) {
         return 0;
     }
     %this.autoplay = 1;
-    CSMediaDisplay.updateMediaLinkTo(%this, %url, 1);
+    1.updateMediaLinkTo(CSMediaDisplay, %this, %url);
     return 1;
 };
 function CSMediaFavListItem::onSystemDragDropEvent(%this, %text, %eventType, %pt) {
     if (!(isURL(%text))) {
         return 0;
     }
-    if (($CSMediaDisplay::TypeRadio == %this.displayType)) {
+    if ((%this.displayType == $CSMediaDisplay::TypeRadio)) {
         return 0;
     }
     if (!(Parent::onSystemDragDropEvent(%this, %text, %eventType, %pt))) {
@@ -1433,9 +1431,9 @@ function CSMediaFavListItem::onSystemDragDropEvent(%this, %text, %eventType, %pt
     if ((%eventType $= "BREAK")) {
         %this.autoplay = 1;
         if (isObject(%this.mediainfo)) {
-            %this.mediainfo.setText("Retrieving stream info...");
+            "Retrieving stream info...".setText(%this.mediainfo);
         }
-        CSMediaDisplay.updateMediaLinkTo(%this, %text, 0);
+        0.updateMediaLinkTo(CSMediaDisplay, %this, %text);
     }
     return 1;
 };

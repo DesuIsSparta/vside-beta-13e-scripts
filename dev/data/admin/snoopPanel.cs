@@ -2,29 +2,29 @@ function toggleSnoopPanel() {
     SnoopPanel.toggle();
 };
 function SnoopPanel::toggle(%this) {
-    playGui.ensureAdded(%this);
-    playGui.showRaiseOrHide(%this);
+    %this.ensureAdded(playGui);
+    %this.showRaiseOrHide(playGui);
 };
 function SnoopPanel::open(%this) {
-    if (!($player.rolesPermissionCheckNoWarn("snoop"))) {
+    if (!("snoop".rolesPermissionCheckNoWarn($player))) {
         return;
     }
-    playGui.ensureAdded(%this);
+    %this.ensureAdded(playGui);
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
+        1.setVisible(%this);
         %this.restoreDims();
-        playGui.focusAndRaise(%this);
+        %this.focusAndRaise(playGui);
     }
 };
 function SnoopPanel::close(%this) {
-    playGui.ensureAdded(%this);
-    %this.setVisible(0);
+    %this.ensureAdded(playGui);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     %this.storeDims();
 };
 function SnoopPanel::restoreDims(%this) {
     %dim = $DevPref::Mod::SnoopWindow::Dim;
-    %this.resize(getWord(%dim, 0), getWord(%dim, 1), getWord(%dim, 2), getWord(%dim, 3));
+    getWord(%dim, 3).resize(%this, getWord(%dim, 0), getWord(%dim, 1), getWord(%dim, 2));
 };
 function SnoopPanel::storeDims(%this) {
     $DevPref::Mod::SnoopWindow::Dim = %this.getPosition() @ " " @ %this.getExtent();
@@ -41,10 +41,10 @@ function SnoopPanel::addLine(%this, %text) {
         %newLine = "\n";
     }
     %newLine = "";
-    snoopPanelTextCtrl.addText(%newLine @ %timeStamp @ %text, 1, SnoopPanelScroll.isAtBottom());
+    SnoopPanelScroll.isAtBottom().addText(snoopPanelTextCtrl, %newLine @ %timeStamp @ %text, 1);
 };
 function SnoopPanel::addLine2(%this, %line) {
-    %this.addLine(%line);
+    %line.addLine(%this);
 };
 function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply) {
     %text = pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
@@ -56,7 +56,7 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
         %text = "<spush><color:dd0000>abuse<spop>  " @ " " @ %text;
     }
     %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
-    %this.addLine2(%text);
+    %text.addLine2(%this);
     if ($DevPref::Audio::NotifySnoop) {
         if ((%speechType $= "sos")) {
             alxPlay(Audio_SOSMessageIn);
@@ -67,7 +67,7 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
     }
 };
 function ClientCmdSnoopIn(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply) {
-    SnoopPanel.handleIncoming(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
+    %isAutoReply.handleIncoming(SnoopPanel, %text, %name, %whisperedTo, %ignored, %speechType);
 };
 function onModNotificationCussing(%playerName, %param2) {
     if (!($DevPref::Mod::cusses)) {
@@ -75,28 +75,28 @@ function onModNotificationCussing(%playerName, %param2) {
     }
     %text = NextToken(%param2, "verb", " ");
     %line = "<spush><color:880088>cuss ";
-    %line = %line @ " " @ pChat.getPlayerMarkup(%playerName, "");
+    %line = %line @ " " @ "".getPlayerMarkup(pChat, %playerName);
     %line = %line @ " " @ %verb @ " " @ %text;
     %line = %line @ " " @ "<spop>";
-    SnoopPanel.addLine2(%line);
+    %line.addLine2(SnoopPanel);
     %soundNum = stringToInteger(%playerName, $gAudioProfile_CussesNum);
     alxPlay2(%soundNum[$gAudioProfile_Cusses @ %soundNum]);
 };
 function stringToInteger(%string, %maxInteger) {
-    if ((0.0 <= %maxInteger)) {
+    if ((%maxInteger <= 0.0)) {
         error("%maxInteger must be positive" @ " " @ getTrace());
         return 0;
     }
     %val = 0;
     %a = munge(%string);
-    if (!(%a $= "")) {
+    while (!(%a $= "")) {
         %chars = 4;
         %b = getSubStr(%a, 0, %chars);
         eval("%b = 0x" @ %b @ ";");
-        %val = (%b ^ %val);
+        %val = (%val ^ %b);
         %a = getSubStr(%a, %chars, 10000000);
     }
-    %val = (%maxInteger % %val);
+    %val = (%val % %maxInteger);
     !(%a $= "");
     return %val;
 };

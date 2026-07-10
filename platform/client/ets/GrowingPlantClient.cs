@@ -7,7 +7,7 @@ function GrowingPlantClient::onPlantCreated(%nuggetId) {
     }
     if ((%nuggetId $= "")) {
     }
-    if ((0.0 == %nuggetId)) {
+    if ((%nuggetId == 0.0)) {
         warn(getScopeName() @ "->passed empty nuggetID");
         return;
     }
@@ -22,5 +22,5 @@ function GrowingPlantClient::isPlant(%plantSkuOrObject) {
         %sku = %plantSkuOrObject.nugget.sku;
     }
     %sku = %plantSkuOrObject;
-    return (0.0 >= findWord($gGrowingPlantSkuList, %sku));
+    return (findWord($gGrowingPlantSkuList, %sku) >= 0.0);
 };

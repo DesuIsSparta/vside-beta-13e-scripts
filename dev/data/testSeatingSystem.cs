@@ -10,54 +10,54 @@ function TestSuite_SeatingSystemSmokeTests::setup(%this) {
         TestSeatingSystemTestSet.delete();
     }
     new SimSet(TestSeatingSystemTestSet);
-    MissionCleanup.add(TestSeatingSystemTestSet);
+    TestSeatingSystemTestSet.add(MissionCleanup);
     recursiveCollectSeatsFromSimGroup(MissionGroup, TestSeatingSystemTestSet);
     commandToServer('dropCameraAtPlayer');
     commandToServer('dropPlayerAtCamera');
-    %this.addTestCase("TEST_SeatAvailable");
-    %this.addTestCaseDelayed("TEST_SitDown", 1000);
-    %this.addTestCaseDelayed("TEST_StandUp", 2000);
-    %this.addTestCaseDelayed("TEST_SitDown", 1000);
-    %this.addTestCaseDelayed("TEST_TeleportAway", 500);
+    "TEST_SeatAvailable".addTestCase(%this);
+    1000.addTestCaseDelayed(%this, "TEST_SitDown");
+    2000.addTestCaseDelayed(%this, "TEST_StandUp");
+    1000.addTestCaseDelayed(%this, "TEST_SitDown");
+    500.addTestCaseDelayed(%this, "TEST_TeleportAway");
 };
 function TestSuite_SeatingSystemSmokeTests::TearDown(%this) {
     if (isObject(TestSeatingSystemTestSet)) {
-        TestSeatingSystemTestSet.delete(TestSeatingSystemTestSet);
+        TestSeatingSystemTestSet.delete();
     }
 };
 function TEST_SeatAvailable::runTest(%this) {
-    %seatID = TestSeatingSystemTestSet.getObject(0);
-    %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is not available, it was expected to be");
+    %seatID = 0.getObject(TestSeatingSystemTestSet);
+    %seatID @ " " @ "is not available, it was expected to be".assert(%this, !(%seatID.isSeatTaken()));
 };
 function TEST_SitDown::runTest(%this) {
-    %seatID = TestSeatingSystemTestSet.getObject(0);
-    %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "should not be taken if we are going to sit down in it");
+    %seatID = 0.getObject(TestSeatingSystemTestSet);
+    %seatID @ " " @ "should not be taken if we are going to sit down in it".assert(%this, !(%seatID.isSeatTaken()));
     commandToServer('RequestToSit', %seatID);
 };
 function TEST_SitDown::delayedEval(%this) {
-    %this.assert($player.isSitting(), "the player should be sitting after we tell her to");
-    %seatID = TestSeatingSystemTestSet.getObject(0);
-    %this.assert(%seatID.isSeatTaken(), %seatID @ " " @ "is not taken, after we sit down, it should be taken");
+    "the player should be sitting after we tell her to".assert(%this, $player.isSitting());
+    %seatID = 0.getObject(TestSeatingSystemTestSet);
+    %seatID @ " " @ "is not taken, after we sit down, it should be taken".assert(%this, %seatID.isSeatTaken());
 };
 function TEST_StandUp::runTest(%this) {
-    %this.assert($player.isSitting(), "the player should be sitting if we are running the standup test");
+    "the player should be sitting if we are running the standup test".assert(%this, $player.isSitting());
     SendStandCommand(1);
 };
 function TEST_StandUp::delayedEval(%this) {
-    %this.assert(!($player.isSitting()), "the player should be standing up after well tell him to");
-    %seatID = TestSeatingSystemTestSet.getObject(0);
-    %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is taken, but it should be available after we stand up");
+    "the player should be standing up after well tell him to".assert(%this, !($player.isSitting()));
+    %seatID = 0.getObject(TestSeatingSystemTestSet);
+    %seatID @ " " @ "is taken, but it should be available after we stand up".assert(%this, !(%seatID.isSeatTaken()));
 };
 function TEST_TeleportAway::runTest(%this) {
-    %this.assert($player.isSitting(), "the player should be sitting if we are running the teleport away test");
+    "the player should be sitting if we are running the teleport away test".assert(%this, $player.isSitting());
     commandToServer('DropPlayerAtCamera');
 };
 function TEST_TeleportAway::delayedEval(%this) {
-    %this.assert(!($player.isSitting()), "the player should be standing up after well tell him to");
-    %seatID = TestSeatingSystemTestSet.getObject(0);
-    %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is taken, but it should be available after we stand up");
+    "the player should be standing up after well tell him to".assert(%this, !($player.isSitting()));
+    %seatID = 0.getObject(TestSeatingSystemTestSet);
+    %seatID @ " " @ "is taken, but it should be available after we stand up".assert(%this, !(%seatID.isSeatTaken()));
     %this.animName = $PLAYER_FORCE_IDLE_ANIM;
     %this.expectedAnimName = $player.getGender() @ $player.getGenre() @ %this.animName;
     %curr = $player.getCurrActionName();
-    %this.assertSameString(%curr, %this.expectedAnimName, "expected the player to be in the force idle anim after we teleport away");
+    "expected the player to be in the force idle anim after we teleport away".assertSameString(%this, %curr, %this.expectedAnimName);
 };

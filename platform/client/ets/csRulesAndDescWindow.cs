@@ -7,16 +7,16 @@ function CSRulesAndDescWindow::toggle(%this) {
 function CSRulesAndDescWindow::open(%this) {
     %this.setup();
     closeCSPanelsInOtherCategories(%this);
-    %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(PlayGui);
     WindowManager.update();
     CustomSpaceClient::checkEditingSpace();
     if (!(CSRulesPasswordSavedIndicator @ " " @ lastValueSaved $= "")) {
-        CSRulesPasswordField.setValue(CSRulesPasswordSavedIndicator, lastValueSaved);
+        lastValueSaved.setValue(CSRulesPasswordField, CSRulesPasswordSavedIndicator);
     }
 };
 function CSRulesAndDescWindow::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     CustomSpaceClient::checkEditingSpace();
     PlayGui.focusTopWindow();
     WindowManager.update();
@@ -27,10 +27,10 @@ function CSRulesAndDescWindow::setup(%this) {
     }
     if (!(%this.initializing)) {
         %this.initializing = 1;
-        CSRulesAccessPopup.add("Open");
-        CSRulesAccessPopup.add("Friends Only");
-        CSRulesAccessPopup.add("Door Code");
-        CSRulesAccessPopup.SetSelected(0);
+        "Open".add(CSRulesAccessPopup);
+        "Friends Only".add(CSRulesAccessPopup);
+        "Door Code".add(CSRulesAccessPopup);
+        0.SetSelected(CSRulesAccessPopup);
         SavableTextStatusIndicatorCreator::make("CSRulesDescSavedIndicator", "210 72", CSDescTaglineTextBox, "CSRulesAndDescWindow.update();", 0, "right");
         %this.add();
         SavableTextStatusIndicatorCreator::make("CSRulesPasswordSavedIndicator", "210 125", CSRulesPasswordField, "CSRulesAndDescWindow.update();", 1, "right");
@@ -65,60 +65,60 @@ function CSRulesAndDescWindow::checkSaveRulesSettings(%this) {
 $gCSRulesAccessCodes = "OPEN FRIENDSONLY PASSWORDPROTECTED LOCKED";
 function CSRulesAndDescWindow::updateSettings(%this, %accessMode, %password, %description) {
     %this.setup();
-    CSRulesDescSavedIndicator.setInitialValue(%description);
-    CSDescTaglineTextBox.setText(%description);
-    CSRulesPasswordField.setText(%password);
-    CSRulesPasswordSavedIndicator.setInitialValue(%password);
+    %description.setInitialValue(CSRulesDescSavedIndicator);
+    %description.setText(CSDescTaglineTextBox);
+    %password.setText(CSRulesPasswordField);
+    %password.setInitialValue(CSRulesPasswordSavedIndicator);
     %this.accessLevel = strupr(%accessMode);
-    if ((0.0 == findWord($gCSRulesAccessCodes, %this.accessLevel))) {
-        CSRulesAccessPopup.SetSelected(0);
+    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 0.0)) {
+        0.SetSelected(CSRulesAccessPopup);
     }
-    if ((1.0 == findWord($gCSRulesAccessCodes, %this.accessLevel))) {
-        CSRulesAccessPopup.SetSelected(1);
+    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 1.0)) {
+        1.SetSelected(CSRulesAccessPopup);
     }
-    if ((2.0 == findWord($gCSRulesAccessCodes, %this.accessLevel))) {
-        CSRulesAccessPopup.SetSelected(2);
+    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 2.0)) {
+        2.SetSelected(CSRulesAccessPopup);
     }
-    if ((3.0 == findWord($gCSRulesAccessCodes, %this.accessLevel))) {
-        CSRulesAccessPopup.SetSelected(2);
+    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 3.0)) {
+        2.SetSelected(CSRulesAccessPopup);
     }
     %this.accessLevel = "OPEN";
     %this.update();
 };
 function CSRulesAndDescWindow::update(%this) {
     %this.setup();
-    %flag = (findWord($gCSRulesAccessCodes, "PASSWORDPROTECTED") == CSRulesAccessPopup.GetSelected());
-    CSRulesDescTextForLocked.setVisible(!(%flag));
-    CSRulesPasswordLabel.setVisible(%flag);
+    %flag = (CSRulesAccessPopup.GetSelected() == findWord($gCSRulesAccessCodes, "PASSWORDPROTECTED"));
+    !(%flag).setVisible(CSRulesDescTextForLocked);
+    %flag.setVisible(CSRulesPasswordLabel);
     %this.text = CSRulesPasswordField.getValue() @ CSRulesPasswordField;
     if (%flag) {
         // unhandled opcode 975 at 0x000003CC
     }
-    CSRulesPasswordField.setProfile(InfoWindowTextEditProfile, InfoWindowTextEditInactiveProfile);
-    CSRulesPasswordField.setVisible(%flag);
-    CSRulesPasswordButton.setActive(%flag);
-    CSRulesPasswordButton.setVisible(%flag);
-    CSRulesPasswordDescText.setVisible(%flag);
+    InfoWindowTextEditInactiveProfile.setProfile(CSRulesPasswordField, InfoWindowTextEditProfile);
+    %flag.setVisible(CSRulesPasswordField);
+    %flag.setActive(CSRulesPasswordButton);
+    %flag.setVisible(CSRulesPasswordButton);
+    %flag.setVisible(CSRulesPasswordDescText);
     if (%flag) {
     }
     (CSRulesPasswordFieldOverlay @ " " @ CSRulesPasswordField.getValue() $= "").setVisible();
-    CSRulesDescSavedIndicator.update(0);
-    CSRulesPasswordSavedIndicator.setVisible(%flag);
-    CSRulesPasswordSavedIndicator.update(0);
+    0.update(CSRulesDescSavedIndicator);
+    %flag.setVisible(CSRulesPasswordSavedIndicator);
+    0.update(CSRulesPasswordSavedIndicator);
 };
 function CSDescTaglineTextBox::onKeyUp(%this) {
-    CSRulesDescSavedIndicator.update(0);
+    0.update(CSRulesDescSavedIndicator);
 };
 function CSRulesPasswordField::onKeyDown(%this, %unused, %unused) {
-    CSRulesPasswordFieldOverlay.setVisible(0);
+    0.setVisible(CSRulesPasswordFieldOverlay);
     return 0;
 };
 function CSRulesPasswordField::onKeyUp(%this, %unused, %unused) {
     %fieldIsVisible = %this.isVisible();
-    if ((CSRulesPasswordSavedIndicator.isVisible() != %fieldIsVisible)) {
-        CSRulesPasswordSavedIndicator.setVisible(%fieldIsVisible);
+    if ((%fieldIsVisible != CSRulesPasswordSavedIndicator.isVisible())) {
+        %fieldIsVisible.setVisible(CSRulesPasswordSavedIndicator);
     }
     (CSRulesPasswordFieldOverlay @ " " @ %this.getValue() $= "").setVisible();
-    CSRulesPasswordSavedIndicator.update(0);
+    0.update(CSRulesPasswordSavedIndicator);
     return 0;
 };

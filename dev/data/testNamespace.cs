@@ -2,10 +2,10 @@ function testNamespace() {
     new SimObject(mySimObject);
     new SimObject(mySimObject2);
     new GuiControl(myGuiControl);
-    myGuiControl.allowInstanceMethods(mySimObject2);
-    myGuiControl.func1(mySimObject);
-    myGuiControl.func1(mySimObject2);
-    myGuiControl.func1(myGuiControl);
+    mySimObject2.allowInstanceMethods();
+    mySimObject.func1();
+    mySimObject2.func1();
+    myGuiControl.func1();
 };
 function mySimObject::func1(%this) {
     echo("mySimObject func1()");
@@ -18,15 +18,15 @@ function myGuiControl::func1(%this) {
 };
 DeclareTestSuite("TestSuite_NAMESPACE");
 function TestSuite_NAMESPACE::setup(%this) {
-    %this.addTestCase("TEST_NAMESPACE_PackageTest");
+    "TEST_NAMESPACE_PackageTest".addTestCase(%this);
 };
 function TEST_NAMESPACE_PackageTest::runTest(%this) {
-    %this.assertSameString("yes in a package", myGuiControl.packagePreActivatedFunc(%this), "we should be in a package if it was activated in the same script it was declared in");
-    %this.assertSameString("not in a package", myGuiControl.packageFunc(%this), "we should be not in a package when we have not activated it yet");
+    "we should be in a package if it was activated in the same script it was declared in".assertSameString(%this, "yes in a package", %this.packagePreActivatedFunc());
+    "we should be not in a package when we have not activated it yet".assertSameString(%this, "not in a package", %this.packageFunc());
     activatePackage(TEST_NAMESPACE_Package);
-    %this.assertSameString("yes in a package", myGuiControl.packageFunc(%this), "we should be in a package when we activat it");
+    "we should be in a package when we activat it".assertSameString(%this, "yes in a package", %this.packageFunc());
     deactivatePackage(TEST_NAMESPACE_Package);
-    %this.assertSameString("not in a package", myGuiControl.packageFunc(%this), "we should not be in a package when we deactivate it");
+    "we should not be in a package when we deactivate it".assertSameString(%this, "not in a package", %this.packageFunc());
 };
 function TEST_NAMESPACE_PackageTest::packageFunc(%this) {
     return "not in a package";

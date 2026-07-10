@@ -3,22 +3,22 @@ if (!(isObject(CSControlPanelTabs))) {
         class = "TabControl";
     };
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(CSControlPanelTabs);
+        CSControlPanelTabs.add(MissionCleanup);
     }
 }
 function CSControlPanelTabs::setup(%this) {
     if (!(%this.initialized)) {
-        %this.Initialize(CSControlPanelTabContainer, "", "", "", "horizontal");
-        %this.newTab("MODEL_APT", "");
-        %this.newTab("SKIP_TUTORIAL", "");
+        "horizontal".Initialize(%this, CSControlPanelTabContainer, "", "", "");
+        "".newTab(%this, "MODEL_APT");
+        "".newTab(%this, "SKIP_TUTORIAL");
     }
 };
 function CSControlPanelTabs::tabSelected(%this, %tab) {
     if ((%tab.name $= "MODEL_APT")) {
-        %this.fillModelAptTab(%tab);
+        %tab.fillModelAptTab(%this);
     }
     if ((%tab.name $= "SKIP_TUTORIAL")) {
-        %this.fillSkipTutorialTab(%tab);
+        %tab.fillSkipTutorialTab(%this);
     }
 };
 function CSControlPanelTabs::fillModelAptTab(%this, %theTab) {
@@ -26,7 +26,7 @@ function CSControlPanelTabs::fillModelAptTab(%this, %theTab) {
         return;
     }
     %theTab.initialized = 1;
-    %theTab.add(new GuiMLTextCtrl(CSSpaceModelAptText) {
+    new GuiMLTextCtrl(CSSpaceModelAptText) {
         profile = "MusicMLTextProfileMedium";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -38,7 +38,7 @@ function CSControlPanelTabs::fillModelAptTab(%this, %theTab) {
         lineSpacing = 4;
         allowColorChars = 1;
         maxChars = -1;
-    };);
+    };.add(%theTab);
     CSSpaceModelAptText.update();
 };
 function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab) {
@@ -49,7 +49,7 @@ function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab) {
     %userFacingName = "vSide";
     %vrl = "vside://foo/bar/bim/bam";
     %text = "<a:VRL " @ %vrl @ ">Click here to go straight to<br>" @ %userFacingName @ "</a>";
-    %theTab.add(new GuiMLTextCtrl(CSSpaceSkipTutorialText) {
+    new GuiMLTextCtrl(CSSpaceSkipTutorialText) {
         profile = "MusicMLTextProfileMedium";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -61,16 +61,16 @@ function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab) {
         lineSpacing = 0;
         allowColorChars = 1;
         maxChars = -1;
-    };);
-    CSSpaceSkipTutorialText.setText(%text);
+    };.add(%theTab);
+    %text.setText(CSSpaceSkipTutorialText);
 };
 function CSControlPanelTabs::updateSkipTutorialTab(%this) {
     if (getCurrentContiguousSpaceOfferSkip()) {
         CSControlPanel.open();
-        CSControlPanelTabs.selectTabWithName("SKIP_TUTORIAL");
-        CSSpaceSkipTutorialText.setText("<font:BauhausStd-Demi:18><linkcolor:eeffaa>To skip Gateway, <a:gamelink SKIP_TUTORIAL>Click Here</a>.");
+        "SKIP_TUTORIAL".selectTabWithName(CSControlPanelTabs);
+        "<font:BauhausStd-Demi:18><linkcolor:eeffaa>To skip Gateway, <a:gamelink SKIP_TUTORIAL>Click Here</a>.".setText(CSSpaceSkipTutorialText);
     }
-    if ((CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL") == CSControlPanelTabs.getCurrentTab())) {
+    if ((CSControlPanelTabs.getCurrentTab() == "SKIP_TUTORIAL".getTabWithName(CSControlPanelTabs))) {
         CSControlPanel.close();
     }
 };
@@ -86,11 +86,11 @@ function CSControlPanel::open(%this) {
         return;
     }
     %this.userHasClickedMe = 0;
-    %this.setVisible(1);
+    1.setVisible(%this);
     WindowManager.update();
 };
 function CSControlPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     csDoneEditingSpace();
     WindowManager.update();
 };
@@ -119,12 +119,12 @@ function CSSpaceModelAptText::onURL(%this, %url) {
     %this.userHasClickedMe = 0;
 };
 function CSSpaceModelAptText::update(%this) {
-    if ((0.0 == $CSSpaceInfo)) {
+    if (($CSSpaceInfo == 0.0)) {
         %this.lineSpacing = 0;
         %text = "Waiting for apartment info...";
     }
     %myLevel = respektScoreToLevel($gMyRespektPoints);
-    if ((%myLevel > $CSSpaceInfo.floorplan.minLevel)) {
+    if (($CSSpaceInfo.floorplan.minLevel > %myLevel)) {
         %text = "You must be at least<spush><color:ffbbdd> " @ respektLevelToNameWithIndefiniteArticle($CSSpaceInfo.floorplan.minLevel) @ "<spop> to purchase an apartment like this.";
     }
     %this.lineSpacing = 4;
@@ -132,5 +132,5 @@ function CSSpaceModelAptText::update(%this) {
         %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
     }
     %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
-    %this.setText(%text);
+    %text.setText(%this);
 };

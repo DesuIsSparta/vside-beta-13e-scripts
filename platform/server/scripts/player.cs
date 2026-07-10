@@ -419,7 +419,7 @@ datablock PlayerData(PlayerBody) {
     repairRate = 0.33;
     energyPerDamagePoint = 75;
     rechargeRate = 0.256;
-    runForce = (90.0 * 48.0);
+    runForce = (48.0 * 90.0);
     runEnergyDrain = 0;
     minRunEnergy = 0;
     minForwardSpeed = 3;
@@ -430,7 +430,7 @@ datablock PlayerData(PlayerBody) {
     maxUnderwaterForwardSpeed = 8.4;
     maxUnderwaterBackwardSpeed = 7.8;
     maxUnderwaterSideSpeed = 7.8;
-    jumpForce = (90.0 * 8.3);
+    jumpForce = (8.3 * 90.0);
     jumpEnergyDrain = 0;
     minJumpEnergy = 0;
     jumpDelay = 12;
@@ -515,12 +515,12 @@ datablock PlayerData(PlayerM : PlayerBody) {
 };
 function armor::onAdd(%this, %obj) {
     gSetField(%this, mountVehicle, 1);
-    %obj.setRechargeRate(%this.rechargeRate);
-    %obj.setRepairRate(0);
+    %this.rechargeRate.setRechargeRate(%obj);
+    0.setRepairRate(%obj);
     return;
 };
 function armor::onRemove(%this, %obj) {
-    if ((%obj == %obj.client.Player)) {
+    if ((%obj.client.Player == %obj)) {
         %obj.client.Player = 0;
     }
     if (%obj.isDancing) {
@@ -535,19 +535,19 @@ function armor::onNewDataBlock(%this, %obj) {
     return;
 };
 function armor::onMount(%this, %obj, %vehicle, %node) {
-    if ((0.0 == %node)) {
-        %obj.setTransform("0 0 0 0 0 1 0");
-        %obj.setActionThread(%node, %vehicle.getDataBlock().mountPose, 1, 1);
-        %obj.lastWeapon = %obj.getMountedImage($WeaponSlot);
-        %obj.unmountImage($WeaponSlot);
-        %obj.setControlObject(%vehicle);
-        %obj.client.setObjectActiveImage(%vehicle, 2);
+    if ((%node == 0.0)) {
+        "0 0 0 0 0 1 0".setTransform(%obj);
+        1.setActionThread(%obj, %node, %vehicle.getDataBlock().mountPose, 1);
+        %obj.lastWeapon = $WeaponSlot.getMountedImage(%obj);
+        $WeaponSlot.unmountImage(%obj);
+        %vehicle.setControlObject(%obj);
+        2.setObjectActiveImage(%obj.client, %vehicle);
     }
     return;
 };
 function armor::onUnmount(%this, %obj, %vehicle, %node) {
-    if ((0.0 == %node)) {
-        %obj.mountImage(%obj.lastWeapon, $WeaponSlot);
+    if ((%node == 0.0)) {
+        $WeaponSlot.mountImage(%obj, %obj.lastWeapon);
     }
     return;
 };
@@ -567,25 +567,25 @@ function armor::doDismount(%this, %obj, %forced) {
     %numAttempts = 5;
     %success = -(1.0);
     %i = 0;
-    if ((%numAttempts < %i)) {
+    while ((%i < %numAttempts)) {
         %pos = VectorAdd(%oldPos, VectorScale(%i[%vec @ %i], 3));
-        if (%obj.checkDismountPoint(%oldPos, %pos)) {
+        if (%pos.checkDismountPoint(%obj, %oldPos)) {
             %success = %i;
             %impulseVec = %i[%vec @ %i];
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     if (%forced) {
     }
-    if ((-(1.0) == %success)) {
+    if ((%success == -(1.0))) {
         %pos = %oldPos;
-        (%numAttempts < %i);
+        (%i < %numAttempts);
     }
     gSetField(%this, mountVehicle, 0);
-    %obj.schedule(4000, "mountVehicles", 1);
-    %obj.setTransform(%pos);
-    %obj.applyImpulse(%pos, VectorScale(%impulseVec, %obj.getDataBlock().mass));
-    %obj.setPilot(0);
+    1.schedule(%obj, 4000, "mountVehicles");
+    %pos.setTransform(%obj);
+    VectorScale(%impulseVec, %obj.getDataBlock().mass).applyImpulse(%obj, %pos);
+    0.setPilot(%obj);
     %obj.vehicleTurret = "";
     return;
 };
@@ -594,7 +594,7 @@ function armor::onCollision(%this, %obj, %col) {
         return;
     }
     if ((%col.getClassName() $= "Item")) {
-        %obj.pickup(%col);
+        %col.pickup(%obj);
     }
     %this = %col.getDataBlock();
     if (WheeledVehicleData) {
@@ -605,20 +605,20 @@ function armor::onCollision(%this, %obj, %col) {
     }
     if (%col.mountable) {
         %node = 0;
-        %col.mountObject(%obj, %node);
+        %node.mountObject(%col, %obj);
         %obj.mVehicle = %col;
     }
     return;
 };
 function armor::onImpact(%this, %obj, %unused, %vec, %vecLen) {
-    %obj.Damage(0, VectorAdd(%obj.getPosition(), %vec), (%this.speedDamageScale * %vecLen), "Impact");
+    "Impact".Damage(%obj, 0, VectorAdd(%obj.getPosition(), %vec), (%vecLen * %this.speedDamageScale));
     return;
 };
 function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType) {
     if ((%obj.getState() $= "Dead")) {
         return;
     }
-    %obj.applyDamage(%damage);
+    %damage.applyDamage(%obj);
     %location = "Body";
     %client = %obj.client;
     if (%sourceObject) {
@@ -626,20 +626,20 @@ function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType
     %sourceClient = 0;
     %sourceObject;
     if ((%obj.getState() $= "Dead")) {
-        %client.onDeath(%sourceObject, %sourceClient, %damageType, %location);
+        %location.onDeath(%client, %sourceObject, %sourceClient, %damageType);
     }
     return;
 };
 function armor::onDamage(%this, %obj, %delta) {
-    if ((0.0 > %delta)) {
+    if ((%delta > 0.0)) {
     }
     if (!(%obj.getState() $= "Dead")) {
-        %flash = ((2.0 * (%this.maxDamage / %delta)) + %obj.getDamageFlash());
-        if ((0.75 > %flash)) {
+        %flash = (%obj.getDamageFlash() + ((%delta / %this.maxDamage) * 2.0));
+        if ((%flash > 0.75)) {
             %flash = 0.75;
         }
-        %obj.setDamageFlash(%flash);
-        if ((10.0 > %delta)) {
+        %flash.setDamageFlash(%obj);
+        if ((%delta > 10.0)) {
             %obj.playPain();
         }
     }
@@ -648,10 +648,10 @@ function armor::onDamage(%this, %obj, %delta) {
 function armor::onDisabled(%this, %obj, %unused) {
     %obj.playDeathCry();
     %obj.playDeathAnimation();
-    %obj.setDamageFlash(0.75);
-    %obj.setImageTrigger(0, 0);
-    %obj.schedule((1000.0 - $CorpseTimeoutValue), "startFade", 1000, 0, 1);
-    %obj.schedule($CorpseTimeoutValue, "delete");
+    0.75.setDamageFlash(%obj);
+    0.setImageTrigger(%obj, 0);
+    1.schedule(%obj, ($CorpseTimeoutValue - 1000.0), "startFade", 1000, 0);
+    "delete".schedule(%obj, $CorpseTimeoutValue);
     return;
 };
 function armor::onLeaveMissionArea(%this, %obj) {
@@ -667,24 +667,24 @@ function armor::onEnterMissionArea(%this, %obj) {
     return;
 };
 function armor::onEnterLiquid(%this, %obj, %unused, %type) {
-    if ((0.0 == %type)) {
+    if ((%type == 0.0)) {
     }
-    if ((1.0 == %type)) {
+    if ((%type == 1.0)) {
     }
-    if ((2.0 == %type)) {
+    if ((%type == 2.0)) {
     }
-    if ((3.0 == %type)) {
+    if ((%type == 3.0)) {
     }
-    if ((4.0 == %type)) {
-        %obj.setDamageDt(%this, $DamageLava, "Lava");
+    if ((%type == 4.0)) {
+        "Lava".setDamageDt(%obj, %this, $DamageLava);
     }
-    if ((5.0 == %type)) {
-        %obj.setDamageDt(%this, $DamageHotLava, "Lava");
+    if ((%type == 5.0)) {
+        "Lava".setDamageDt(%obj, %this, $DamageHotLava);
     }
-    if ((6.0 == %type)) {
-        %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
+    if ((%type == 6.0)) {
+        "Lava".setDamageDt(%obj, %this, $DamageCrustyLava);
     }
-    return (7.0 == %type);
+    return (%type == 7.0);
 };
 function armor::onLeaveLiquid(%this, %obj, %type) {
     %obj.clearDamageDt();
@@ -697,7 +697,7 @@ function armor::animationDone(%this) {
     return;
 };
 function Player::kill(%this, %damageType) {
-    %this.Damage(0, %this.getPosition(), 10000, %damageType);
+    %damageType.Damage(%this, 0, %this.getPosition(), 10000);
     return;
 };
 function Player::mountVehicles(%this, %bool) {
@@ -706,22 +706,20 @@ function Player::mountVehicles(%this, %bool) {
 };
 function Player::isPilot(%this) {
     %vehicle = %this.getObjectMount();
-    if (%vehicle) {
-        if ((%this == %vehicle.getMountNodeObject(0))) {
-            return 1;
-        }
+    if (%vehicle && (0.getMountNodeObject(%vehicle) == %this)) {
+        return 1;
     }
     return 0;
 };
 function Player::playCelAnimation(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        %this.setActionThread("emote_" @ %anim);
+        "emote_" @ %anim.setActionThread(%this);
     }
     return;
 };
 function Player::playAnim(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        %this.setActionThread(%anim);
+        %anim.setActionThread(%this);
     }
     return;
 };
@@ -736,26 +734,26 @@ function AddDance(%danceObj, %sequence, %timeTillSwitch, %transitionTime) {
     %danceObj.anim = %sequence @ %danceObj.count;
     %danceObj.time = %timeTillSwitch @ %danceObj.count;
     %danceObj.transition = %transitionTime @ %danceObj.count;
-    %danceObj.count = (1.0 + %danceObj.count);
+    %danceObj.count = (%danceObj.count + 1.0);
     return;
 };
 $DANCE_PULSE_FREQ = 100;
 function Player::dancePulse(%player) {
     %playerVel = %player.getVelocity();
     %vel = VectorLen(%playerVel);
-    if ((0.1 > %vel)) {
+    if ((%vel > 0.1)) {
         %player.stopDance();
         return;
     }
-    %player.danceTimeRemaining = ($DANCE_PULSE_FREQ - %player.danceTimeRemaining);
-    if ((0.0 <= %player.danceTimeRemaining)) {
+    %player.danceTimeRemaining = (%player.danceTimeRemaining - $DANCE_PULSE_FREQ);
+    if ((%player.danceTimeRemaining <= 0.0)) {
         echo("choosing new dance");
-        %dNum = getRandom(0, (1.0 - %player.danceObj.count));
-        %player.setActionThread(%dNum, %player.danceObj.anim, 0, 1, (1000.0 @ %dNum / %player.danceObj.transition));
+        %dNum = getRandom(0, (%player.danceObj.count - 1.0));
+        (%player.danceObj.transition / 1000.0 @ %dNum).setActionThread(%player, %dNum, %player.danceObj.anim, 0, 1);
         %player.danceTimeRemaining = %dNum @ %player.danceObj.time;
         echo("number " @ %dNum @ " chose anime" @ %dNum @ %player.danceObj.anim @ " for " @ %player.danceTimeRemaining @ " milliseconds");
     }
-    %player.danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse");
+    %player.danceSchedule = "dancePulse".schedule(%player, $DANCE_PULSE_FREQ);
     return;
 };
 function Player::startDance(%player) {
@@ -772,7 +770,7 @@ function Player::startDance(%player) {
     AddDance(%player.danceObj, "idl3d", 3000, 500);
     echo("starting schedule");
     %player.isDancing = 1;
-    %player.danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse");
+    %player.danceSchedule = "dancePulse".schedule(%player, $DANCE_PULSE_FREQ);
     return;
 };
 function Player::stopDance(%player) {

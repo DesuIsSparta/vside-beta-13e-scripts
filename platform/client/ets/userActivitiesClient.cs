@@ -1,20 +1,20 @@
 function UserActivityMgr::defineActivities(%this) {
-    %this.defineActivity("idle", "idle", -(1.0));
-    %this.defineActivity("dressing", "dressing", -(1.0));
-    %this.defineActivity("shoppingForClothes", "clothes shopping", -(1.0));
-    %this.defineActivity("decorating", "decorating", -(1.0));
-    %this.defineActivity("gaming", "gaming", -(1.0));
-    %this.defineActivity("wrestling", "wrestling", -(1.0));
-    %this.defineActivity("discovering", "exploring", -(1.0));
-    %this.defineActivity("chatting", "chatting", 15000);
-    %this.defineActivity("dancing", "dancing", 45000);
-    %this.defineActivity("traveling", "traveling", -(1.0));
+    -(1.0).defineActivity(%this, "idle", "idle");
+    -(1.0).defineActivity(%this, "dressing", "dressing");
+    -(1.0).defineActivity(%this, "shoppingForClothes", "clothes shopping");
+    -(1.0).defineActivity(%this, "decorating", "decorating");
+    -(1.0).defineActivity(%this, "gaming", "gaming");
+    -(1.0).defineActivity(%this, "wrestling", "wrestling");
+    -(1.0).defineActivity(%this, "discovering", "exploring");
+    15000.defineActivity(%this, "chatting", "chatting");
+    45000.defineActivity(%this, "dancing", "dancing");
+    -(1.0).defineActivity(%this, "traveling", "traveling");
 };
 function getUserActivityMgr() {
     if (!(isObject(gUserActivityMgr))) {
         echo(getScopeName() @ " " @ "- initializing");
         safeNewScriptObject("ScriptObject", "gUserActivityMgr", 0);
-        gUserActivityMgr.bindClassName("UserActivityMgr");
+        "UserActivityMgr".bindClassName(gUserActivityMgr);
         knownActivities = safeNewScriptObject("Array", "", 0) @ gUserActivityMgr;
         currActivities = safeNewScriptObject("StringMap", "", 0) @ gUserActivityMgr;
         reportTimer = "" @ gUserActivityMgr;
@@ -26,7 +26,7 @@ function UserActivityMgr::reset(%this) {
     echo(getScopeName());
     %this.currActivities.clear();
     %this.lastReportTimeMS = 0;
-    %this.maxReportPeriodMS = (1000.0 * 20.0);
+    %this.maxReportPeriodMS = (20.0 * 1000.0);
     cancel(%this.reportTimer);
     %this.reportTimer = "";
 };
@@ -40,13 +40,13 @@ function UserActivityMgr::defineActivity(%this, %activityName, %userFacingName, 
     %duration = -(1.0);
     %duration;
     %params = %userFacingName @ "\t" @ %duration;
-    %this.knownActivities.put(%activityName, %params);
-    if (!(isFile(%this.getActivityIconFilename(%activityName) @ ".png"))) {
-        error(getScopeName() @ " " @ "- no icon for" @ " " @ %activityName @ " " @ %this.getActivityIconFilename(%activityName));
+    %params.put(%this.knownActivities, %activityName);
+    if (!(isFile(%activityName.getActivityIconFilename(%this) @ ".png"))) {
+        error(getScopeName() @ " " @ "- no icon for" @ " " @ %activityName @ " " @ %activityName.getActivityIconFilename(%this));
     }
 };
 function UserActivityMgr::isKnownActivity(%this, %activityName, %warn) {
-    %known = %this.knownActivities.hasKey(%activityName);
+    %known = %activityName.hasKey(%this.knownActivities);
     if (!(%known)) {
     }
     if (isDefined("%warn")) {
@@ -66,14 +66,14 @@ function UserActivityMgr::getActivityUserFacingName(%this, %activityName) {
     if ((%activityName $= "")) {
         return "";
     }
-    if (!(%this.isKnownActivity(%activityName, 1))) {
+    if (!(1.isKnownActivity(%this, %activityName))) {
         return "[" @ %activityName @ "]";
     }
-    return getField(%this.knownActivities.get(%activityName), 0);
+    return getField(%activityName.get(%this.knownActivities), 0);
 };
 function UserActivityMgr::getActivityBitmapMLText(%this, %activityName) {
-    %ufn = %this.getActivityUserFacingName(%activityName);
-    %bitmap = %this.getActivityIconFilename(%activityName);
+    %ufn = %activityName.getActivityUserFacingName(%this);
+    %bitmap = %activityName.getActivityIconFilename(%this);
     if ((%ufn $= "")) {
     }
     %tip = "<tip:" @ %ufn @ ">";
@@ -82,33 +82,33 @@ function UserActivityMgr::getActivityBitmapMLText(%this, %activityName) {
     return %ret;
 };
 function UserActivityMgr::getActivityDuration(%this, %activityName) {
-    if (!(%this.isKnownActivity(%activityName, 1))) {
+    if (!(1.isKnownActivity(%this, %activityName))) {
         return -(1.0);
     }
-    return getField(%this.knownActivities.get(%activityName), 1);
+    return getField(%activityName.get(%this.knownActivities), 1);
 };
 function UserActivityMgr::getActivityPriority(%this, %activityName) {
-    return %this.knownActivities.getIndexFromKey(%activityName);
+    return %activityName.getIndexFromKey(%this.knownActivities);
 };
 function UserActivityMgr::setActivityActive(%this, %activityName, %state) {
-    %this.isKnownActivity(%activityName, 1);
-    %oldState = %this.currActivities.hasKey(%activityName);
+    1.isKnownActivity(%this, %activityName);
+    %oldState = %activityName.hasKey(%this.currActivities);
     if (%oldState) {
-        %timerID = %this.currActivities.get(%activityName);
+        %timerID = %activityName.get(%this.currActivities);
         if (!(%timerID $= "")) {
             cancel(%timerID);
         }
     }
     if (%state) {
-        %durationMS = %this.getActivityDuration(%activityName);
-        if ((0.0 > %durationMS)) {
-            %timerID = %this.schedule(%durationMS, "cancelActivity", %activityName);
+        %durationMS = %activityName.getActivityDuration(%this);
+        if ((%durationMS > 0.0)) {
+            %timerID = %activityName.schedule(%this, %durationMS, "cancelActivity");
         }
         %timerID = "";
-        %this.currActivities.put(%activityName, %timerID);
+        %timerID.put(%this.currActivities, %activityName);
     }
-    %this.currActivities.remove(%activityName);
-    if ((%state != %oldState)) {
+    %activityName.remove(%this.currActivities);
+    if ((%oldState != %state)) {
         %this.tryReport();
     }
     if (isObject(geActivitiesPanel)) {
@@ -117,16 +117,16 @@ function UserActivityMgr::setActivityActive(%this, %activityName, %state) {
 };
 function UserActivityMgr::cancelActivity(%this, %activityName) {
     echoDebug(getScopeName() @ " " @ "- cancelling activity" @ " " @ %activityName);
-    %this.setActivityActive(%activityName, 0);
+    0.setActivityActive(%this, %activityName);
 };
 function UserActivityMgr::getActivityActive(%this, %activityName) {
-    return %this.currActivities.hasKey(%activityName);
+    return %activityName.hasKey(%this.currActivities);
 };
 function UserActivityMgr::getActivityTimeLeft(%this, %activityName) {
-    if (!(%this.currActivities.hasKey(%activityName))) {
+    if (!(%activityName.hasKey(%this.currActivities))) {
         return -(1.0);
     }
-    %timerID = %this.currActivities.get(%activityName);
+    %timerID = %activityName.get(%this.currActivities);
     if ((%timerID $= "")) {
         return -(1.0);
     }
@@ -135,33 +135,33 @@ function UserActivityMgr::getActivityTimeLeft(%this, %activityName) {
 function UserActivityMgr::getHighestPriorityCurrentActivity(%this) {
     %highestPri = "";
     %highestAct = "";
-    %n = (1.0 - %this.currActivities.size());
-    if ((0.0 >= %n)) {
-        %act = %this.currActivities.getKey(%n);
-        %pri = %this.getActivityPriority(%act);
+    %n = (%this.currActivities.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %act = %n.getKey(%this.currActivities);
+        %pri = %act.getActivityPriority(%this);
         if ((%highestAct $= "")) {
         }
-        if ((%highestPri < %pri)) {
+        if ((%pri < %highestPri)) {
             %highestPri = %pri;
             %highestAct = %act;
         }
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return %highestAct;
 };
 function UserActivityMgr::tryReport(%this) {
     %wait = %this.getMSToNextReport();
-    if ((0.0 < %wait)) {
+    if ((%wait < 0.0)) {
         %this._doReport();
     }
     if ((%this.reportTimer $= "")) {
-        %this.reportTimer = %this.schedule(%wait, "_doReport");
+        %this.reportTimer = "_doReport".schedule(%this, %wait);
         echoDebug(getScopeName() @ " " @ "- delaying for" @ " " @ %wait @ "MS");
     }
     echoDebug(getScopeName() @ " " @ "- waiting  for" @ " " @ %wait @ "MS");
 };
 function UserActivityMgr::getMSToNextReport(%this) {
-    %wait = (%this.getLastReportAgeMS() - %this.maxReportPeriodMS);
+    %wait = (%this.maxReportPeriodMS - %this.getLastReportAgeMS());
     return %wait;
 };
 function UserActivityMgr::_doReport(%this) {
@@ -170,53 +170,53 @@ function UserActivityMgr::_doReport(%this) {
     %this.lastReportTimeMS = getSimTime();
     %list = "";
     %delim = "";
-    %n = (1.0 - %this.currActivities.size());
-    if ((0.0 >= %n)) {
-        %list = %this.currActivities.getKey(%n) @ %delim @ %list;
+    %n = (%this.currActivities.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %list = %n.getKey(%this.currActivities) @ %delim @ %list;
         %delim = "\t";
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     if (!($StandAlone)) {
         sendRequest_UpdateUserStates(%list);
     }
 };
 function UserActivityMgr::getLastReportAgeMS(%this) {
-    return (%this.lastReportTimeMS - getSimTime());
+    return (getSimTime() - %this.lastReportTimeMS);
 };
 function UserActivityMgr::getActivitiesMLText(%this, %activitiesList, %numToShow) {
     %alphaOfSecond = 80;
     %alphaOfLast = 80;
     %ret = "";
     %delim = "";
-    if ((-(1.0) == %numToShow)) {
+    if ((%numToShow == -(1.0))) {
         %numToShow = getFieldCount(%activitiesList);
     }
     %numToShow = mMin(%numToShow, getFieldCount(%activitiesList));
-    if ((0.0 <= %numToShow)) {
-        %activityBitmapMLText = %this.getActivityBitmapMLText("");
+    if ((%numToShow <= 0.0)) {
+        %activityBitmapMLText = "".getActivityBitmapMLText(%this);
         %ret = "<color:" @ ColorIToHex("255 255 255" @ " " @ %alphaOfLast) @ ">" @ %activityBitmapMLText;
     }
-    %stepDown = ((1.0 - %numToShow) / (%alphaOfLast - %alphaOfSecond));
+    %stepDown = ((%alphaOfSecond - %alphaOfLast) / (%numToShow - 1.0));
     %m = 0;
-    if ((%numToShow < %m)) {
-        if ((0.0 == %m)) {
+    while ((%m < %numToShow)) {
+        if ((%m == 0.0)) {
             %modulationColor = ColorIToHex("220 255 180 255");
         }
-        %modulationColor = ColorIToHex("255 255 255" @ " " @ ((%stepDown * %m) - %alphaOfSecond));
+        %modulationColor = ColorIToHex("255 255 255" @ " " @ (%alphaOfSecond - (%m * %stepDown)));
         %activityName = getField(%activitiesList, %m);
-        %activityBitmapMLText = %this.getActivityBitmapMLText(%activityName);
+        %activityBitmapMLText = %activityName.getActivityBitmapMLText(%this);
         %ret = %ret @ %delim @ "<modulationColor:" @ %modulationColor @ ">" @ %activityBitmapMLText;
         %delim = " ";
-        %m = (1.0 + %m);
+        %m = (%m + 1.0);
     }
     %ret = "<spush>" @ %ret @ "<spop>";
-    (%numToShow < %m);
+    (%m < %numToShow);
     return %ret;
 };
 function ClientCmdBuddyActivitiesChanged(%userName, %activitiesTagged) {
     %activitiesList = detag(%activitiesTagged);
-    BuddyHudTabs.setBuddyActivities(%userName, %activitiesList);
-    %infoMapEntry = PlayerInfoMap.get(%userName);
+    %activitiesList.setBuddyActivities(BuddyHudTabs, %userName);
+    %infoMapEntry = %userName.get(PlayerInfoMap);
     if (isObject(%infoMapEntry)) {
         %infoMapEntry.activities = %activitiesList;
     }

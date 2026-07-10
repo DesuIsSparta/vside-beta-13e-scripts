@@ -6,48 +6,48 @@ labelOffset2 = "190 25" @ boneBlendGui;
 labelOffset3 = "190 45" @ boneBlendGui;
 groupOffset1 = "120 0" @ boneBlendGui;
 function boneBlendGui::open(%this) {
-    %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(PlayGui);
     if (!(%this.runOnce)) {
         %i = 0;
-        if (($MAX_FREE_BONE_BLENDS < %i)) {
-            %index = ($FIRST_FREE_BLEND_INDEX + %i);
-            $player.setBoneBlendOffsetByIndex(%index, blendOffsetSliderUniqueField.getValue());
-            $player.setBoneBlendRateByIndex(%index, blendRateSliderUniqueField.getValue());
-            $player.setBoneBlendScaleByIndex(%index, blendScaleSliderUniqueField.getValue());
-            %i = (1.0 + %i);
+        while ((%i < $MAX_FREE_BONE_BLENDS)) {
+            %index = (%i + $FIRST_FREE_BLEND_INDEX);
+            blendOffsetSliderUniqueField.getValue().setBoneBlendOffsetByIndex($player, %index);
+            blendRateSliderUniqueField.getValue().setBoneBlendRateByIndex($player, %index);
+            blendScaleSliderUniqueField.getValue().setBoneBlendScaleByIndex($player, %index);
+            %i = (%i + 1.0);
         }
-        $player.setBoneBlendRate(blendRateSlider.getValue());
-        $player.setBoneBlendScale(blendScaleSlider.getValue());
-        %this.runOnce = ($MAX_FREE_BONE_BLENDS < %i) @ 1;
+        blendRateSlider.getValue().setBoneBlendRate($player);
+        blendScaleSlider.getValue().setBoneBlendScale($player);
+        %this.runOnce = (%i < $MAX_FREE_BONE_BLENDS) @ 1;
     }
 };
 function boneBlendGui::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
     return 1;
 };
 %this.currentSliderIndex = -(1.0) @ boneBlendGui;
 function blendUpperPitch::onMouseEnter(%this) {
-    boneBlendGui.positionDynamicCtrls(%this);
+    %this.positionDynamicCtrls(boneBlendGui);
     %this.currentSliderIndex = $BB_UPPR_PITCH @ boneBlendGui;
-    blendUpperPitch.getGroup().setBitmap("platform/client/ui/messageHud");
-    blendUpperYaw.getGroup().setBitmap("");
-    blendUpperRoll.getGroup().setBitmap("");
+    "platform/client/ui/messageHud".setBitmap(blendUpperPitch.getGroup());
+    "".setBitmap(blendUpperYaw.getGroup());
+    "".setBitmap(blendUpperRoll.getGroup());
 };
 function blendUpperYaw::onMouseEnter(%this) {
-    boneBlendGui.positionDynamicCtrls(%this);
+    %this.positionDynamicCtrls(boneBlendGui);
     %this.currentSliderIndex = $BB_UPPR_YAW @ boneBlendGui;
-    blendUpperYaw.getGroup().setBitmap("platform/client/ui/messageHud");
-    blendUpperPitch.getGroup().setBitmap("");
-    blendUpperRoll.getGroup().setBitmap("");
+    "platform/client/ui/messageHud".setBitmap(blendUpperYaw.getGroup());
+    "".setBitmap(blendUpperPitch.getGroup());
+    "".setBitmap(blendUpperRoll.getGroup());
 };
 function blendUpperRoll::onMouseEnter(%this) {
-    boneBlendGui.positionDynamicCtrls(%this);
+    %this.positionDynamicCtrls(boneBlendGui);
     %this.currentSliderIndex = $BB_UPPR_ROLL @ boneBlendGui;
-    blendUpperPitch.getGroup().setBitmap("");
-    blendUpperRoll.getGroup().setBitmap("platform/client/ui/messageHud");
-    blendUpperYaw.getGroup().setBitmap("");
+    "".setBitmap(blendUpperPitch.getGroup());
+    "platform/client/ui/messageHud".setBitmap(blendUpperRoll.getGroup());
+    "".setBitmap(blendUpperYaw.getGroup());
 };
 function boneBlendGui::positionDynamicCtrls(%this, %contextControl) {
     %groupPosition = VectorAdd(%contextControl.getGroup().position, boneBlendGui, %contextControl.getGroup().groupOffset1);

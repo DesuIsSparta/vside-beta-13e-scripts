@@ -1,10 +1,10 @@
 function writeOutFunctions() {
     new ConsoleLogger(Logger);
     dumpConsoleFunctions();
-    Logger.delete(Logger);
+    Logger.delete();
 };
 function writeOutClasses() {
     new ConsoleLogger(Logger);
     dumpConsoleClasses();
-    Logger.delete(Logger);
+    Logger.delete();
 };

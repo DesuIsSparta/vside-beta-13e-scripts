@@ -6,7 +6,7 @@ function GuiEditLazy(%val) {
     }
     GuiEdit(%val);
 };
-GlobalActionMap.bind(keyboard, "alt F10");
+"alt F10".bind(GlobalActionMap, keyboard);
 $gWorldEditorExeced = 0;
 GuiEditLazy;
 function toggleEditorLazy(%val) {
@@ -16,7 +16,7 @@ function toggleEditorLazy(%val) {
     }
     toggleEditor(%val);
 };
-GlobalActionMap.bind(keyboard, "alt F11");
+"alt F11".bind(GlobalActionMap, keyboard);
 function canvasExecMisc() {
     if (!($AmClient)) {
         return toggleEditorLazy;

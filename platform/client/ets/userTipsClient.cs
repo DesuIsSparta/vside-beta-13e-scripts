@@ -7,7 +7,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = 300;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "DancePadUsage";
     %tipName[$userTips::tipTitle @ %tipName] = "Tip - Switch Dances with the Dance Pad";
     %tipName[$userTips::tipBody @ %tipName] = "Mouse over the 8 buttons to perform that dance.\nUse the drop down menus to choose the dance a button will do.";
@@ -15,7 +15,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = 300;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "DanceToolUsage";
     %tipName[$userTips::tipTitle @ %tipName] = "";
     %tipName[$userTips::tipBody @ %tipName] = "Welcome to the preview of the Dance Tool! - This is a simple tool to let you record and play back dances, and also share them with other people via email, forums, etc.\n\nBasic Usage:\nClick 'record' and start dancing! To play it back, click 'stop' and then 'play'.\n\nThe dance tool only records dance moves and animations like 'rotfl' - it won't record walking, turning, or jumping.\n\nTo save a dance, 'clipboard: copy to' will copy your dance into the computer clipboard. From there, you can paste it like normal into your favorite text editor, email, or forum page. To load a dance, you do the same thing backwards - copy the text of the dance into the clipboard, and then click 'clipboard: copy from'.\nNote that your dance isn't automatically saved when you quit the " @ $ETS::AppName @ " !\n\nWe're going to be building a lot more stuff around this in coming releases, so don't worry if this one seems to be lacking.";
@@ -23,7 +23,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = 420;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "HideChat";
     %tipName[$userTips::tipTitle @ %tipName] = "Chat Is Hidden";
     %tipName[$userTips::tipBody @ %tipName] = "<just:left>You currently hiding the chat bubble.\nTo stop hiding it, press F6, choose display settings, and un-check \"Hide Chat\".";
@@ -31,7 +31,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = 300;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "SOSUsage";
     %tipName[$userTips::tipTitle @ %tipName] = "Help";
     %tipName[$userTips::tipBody @ %tipName] = "<linkcolor:e553ff><linkcolorhl:ff93f8>" @ "\n" @ "<spush><font:BauhausStd-Demi:24><just:center>What's The Problem?<spop>" @ "\n" @ "" @ "\n" @ "<just:left><font:Verdana:12>         Click the links below for Help:" @ "\n" @ "" @ "\n" @ "<font:Verdana Bold:14>       <bitmap:platform/client/ui/bullet_white> Help with <a:" @ $Net::HelpURL_Navigation @ ">moving, chatting, dancing, etc.</a>" @ "\n" @ "       <bitmap:platform/client/ui/bullet_white> Help finding <a:" @ $Net::HelpURL_MusicNEvents @ ">music, locations and events.</a>" @ "\n" @ "       <bitmap:platform/client/ui/bullet_white> Something is <a:" @ $Net::HelpURL_Support @ ">wrong with vSide.</a>" @ "\n" @ "       <bitmap:platform/client/ui/bullet_white> Someone is <a:" @ $Net::HelpURL_Abuse @ "?section=Safety>bothering me!</a>" @ "\n" @ "<spush><just:center>" @ "\n" @ "[ <a:" @ $Net::HelpURL_Guidelines @ ">vSide House Rules</a> | <a:" @ $Net::HelpURL_Parents @ ">Parents FAQ</a> ]<spop>" @ "\n" @ "";
@@ -39,7 +39,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "cancelUserSOS();";
     %tipName[$userTips::tipWidth @ %tipName] = 360;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "GotMic";
     %tipName[$userTips::tipTitle @ %tipName] = "You've got the Microphone!";
     %tipName[$userTips::tipBody @ %tipName] = "You just got a microphone!\nWhatever you type will carry extra far!  (Whispers still work normally)\nIf you don't want the microphone, just click \"cancel\" below.";
@@ -47,7 +47,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "doDropMic();";
     %tipName[$userTips::tipWidth @ %tipName] = 400;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "PasteSkus";
     %tipName[$userTips::tipTitle @ %tipName] = "Pasting SKUs";
     %tipName[$userTips::tipBody @ %tipName] = "This will attempt to apply whatever's in the system clipboard as SKUs to user <spush><b>[TARGETPLAYERNAME]<spop>.<br><br><spush><b>The SKUs will not be vetted!<spop><br><br>Is you sure ?";
@@ -55,7 +55,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = "";
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "BroadcastImages";
     %tipName[$userTips::tipTitle @ %tipName] = "Camera Tool";
     %tipName[$userTips::tipBody @ %tipName] = "Use this window to take snapshots of the world!";
@@ -63,7 +63,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = 300;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "SpaceOwner";
     %tipName[$userTips::tipTitle @ %tipName] = "Hosting Tips!";
     %tipName[$userTips::tipBody @ %tipName] = "<linkcolor:e553ff><linkcolorhl:ff93f8><color:ffffff>" @ "\n" @ "<spush><font:BauhausStd-Demi:24><just:center>Welcome to your new apartment!<spop>" @ "\n" @ "" @ "\n" @ "<just:left><font:Verdana:14>Congratulations on your new vSide apartment! Here are a few things you should know:" @ "\n" @ "" @ "\n" @ "<spush><font:Verdana Bold:14>1. <color:e553ff>Moderate:<spop> You are in charge of your space. Control who can come in and who can't in \"My Rules\" from the Space button on the button bar.  Block troublemakers with right-click \"Block from space\". <a:" @ absoluteURL($Net::BaseDomain, "go/moderatespace") @ ">How to moderate your apartment</a>." @ "\n" @ "" @ "\n" @ "<spush><font:Verdana Bold:14>2. <color:e553ff>Decorate:<spop> Access your furniture by clicking \"My Furnishings\" in the Space button. When you're ready for more, use \"Shop\". <a:" @ absoluteURL($Net::BaseDomain, "go/customizespace") @ ">More on decorating your apartment</a>." @ "\n" @ "" @ "\n" @ "<spush><font:Verdana Bold:14>3. <color:e553ff>Entertain:<spop> Play your choice of music and YouTube videos by clicking \"My Music & Videos\" in the Space button. <a:" @ absoluteURL($Net::BaseDomain, "go/apartmentmedia") @ ">More about music and video in your apartment</a>." @ "\n" @ "" @ "\n" @ "<spush><font:Verdana Bold:14>4. <color:e553ff>Party!<spop> Now that you've got an awesome place, you'll want to throw a housewarming party! <a:" @ absoluteURL($Net::BaseDomain, "go/eventshelp") @ ">How to list your event on the vSide Event Calendar</a>." @ "\n" @ "";
@@ -80,7 +80,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "echo(\"\");";
     %tipName[$userTips::tipWidth @ %tipName] = 500;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "PaperDollPermute";
     %tipName[$userTips::tipTitle @ %tipName] = "Paper Doll Permutations";
     %tipName[$userTips::tipBody @ %tipName] = "Please read dev/aboutPaperDolls.txt";
@@ -88,7 +88,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = 300;
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "tgf_main_samples";
     %tipName[$userTips::tipTitle @ %tipName] = "Sample Images";
     %tipName[$userTips::tipBody @ %tipName] = "you need the <spush><outline><shadowcolor:ee3399><linkcolor:ffffff><a:gamelink http://svn.doppelganger.com/release/trunk/misc/>dev-mod</a><spop> to get sample images here";
@@ -96,7 +96,7 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = "";
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     %tipName = "closet_myshop_copyToOutfit";
     %tipName[$userTips::tipTitle @ %tipName] = "Copy Items to Outfit";
     %tipName[$userTips::tipBody @ %tipName] = "This will copy these items to your current outfit.";
@@ -104,21 +104,21 @@ function userTips::initUserTips() {
     %tipName[$userTips::tipCallbackCnc @ %tipName] = "";
     %tipName[$userTips::tipWidth @ %tipName] = "";
     $userTips::numTips[$userTips::allTips @ $userTips::numTips] = %tipName;
-    $userTips::numTips = (1.0 + $userTips::numTips);
+    $userTips::numTips = ($userTips::numTips + 1.0);
     userTips::resetSeenThisSession();
 };
 function userTips::resetSeenThisSession() {
     %n = 0;
-    if (($userTips::numTips < %n)) {
+    while ((%n < $userTips::numTips)) {
         %n[$userTips::allTips @ %n][$userTips::tipSeen @ %n[$userTips::allTips @ %n]] = 0;
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function userTips::resetSeenEver() {
     %n = 0;
-    if (($userTips::numTips < %n)) {
+    while ((%n < $userTips::numTips)) {
         %n[$userTips::allTips @ %n][$UserPref::userTips::tipSeen @ %n[$userTips::allTips @ %n]] = 0;
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function userTips::resetSeenAll() {
@@ -141,11 +141,11 @@ function userTips::showNow(%tipName) {
         %dialog = MessageBoxOkCancel(%title, %body, %cbOk, %cbCnc);
     }
     %dialog = MessageBoxOK(%title, %body, "");
-    %dialog.setWindowWidth(%width);
+    %width.setWindowWidth(%dialog);
     return %dialog;
 };
 function userTips::showOnceThisSession(%tipName) {
-    if ((0.0 != %tipName[$userTips::tipSeen @ %tipName])) {
+    if ((%tipName[$userTips::tipSeen @ %tipName] != 0.0)) {
         if (!(%tipName[$userTips::tipCallbackOK @ %tipName] $= "")) {
             eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
         }
@@ -153,7 +153,7 @@ function userTips::showOnceThisSession(%tipName) {
     userTips::showNow(%tipName);
 };
 function userTips::showOnceEver(%tipName) {
-    if ((1.0 == %tipName[$UserPref::userTips::tipSeen @ %tipName])) {
+    if ((%tipName[$UserPref::userTips::tipSeen @ %tipName] == 1.0)) {
         if (!(%tipName[$userTips::tipCallbackOK @ %tipName] $= "")) {
             eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
         }

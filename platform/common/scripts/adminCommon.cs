@@ -24,7 +24,7 @@ function admin::isActionable(%obj, %action) {
         return !(isAIPlayerObject(%obj));
     }
     if ((%action $= "Message")) {
-        if ((0.0 == %obj)) {
+        if ((%obj == 0.0)) {
             return 1;
         }
         if (!(isPlayerObject(%obj))) {

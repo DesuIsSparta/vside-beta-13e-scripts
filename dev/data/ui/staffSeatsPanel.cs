@@ -1,15 +1,15 @@
 function staffSeatsPanel::toggle(%this) {
-    playGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(playGui);
 };
 function staffSeatsPanel::open(%this) {
-    if (!($player.rolesPermissionCheckWarn("events"))) {
+    if (!("events".rolesPermissionCheckWarn($player))) {
         return;
     }
-    %this.setVisible(1);
-    playGui.focusAndRaise(%this);
+    1.setVisible(%this);
+    %this.focusAndRaise(playGui);
 };
 function staffSeatsPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     return 1;
 };
@@ -19,13 +19,13 @@ $staffSeatsWaitForStandingRecheckDelay = 32;
 $staffSeatsWaitingSchedule = 0;
 function doNextSeatSit(%seatNumber) {
     if ($player.isSitting()) {
-        echo("not taking seat #" @ (1.0 + %seatNumber) @ "id: " @ %id @ "because the player is already sitting elsewhere");
+        echo("not taking seat #" @ (%seatNumber + 1.0) @ "id: " @ %id @ "because the player is already sitting elsewhere");
         return;
     }
-    %id = StaffSeatsPanelTestSet.getObject(%seatNumber);
+    %id = %seatNumber.getObject(StaffSeatsPanelTestSet);
     commandToServer('RequestToSit', %id);
-    staffSeatsGuiCurNumber.setText((1.0 + %seatNumber));
-    echo("testing seat #" @ (1.0 + %seatNumber) @ "id: " @ %id);
+    (%seatNumber + 1.0).setText(staffSeatsGuiCurNumber);
+    echo("testing seat #" @ (%seatNumber + 1.0) @ "id: " @ %id);
 };
 function waitForStandingBeforeSit(%seatNumber) {
     if ($player.isSitting()) {
@@ -44,28 +44,28 @@ function staffSeatsPanel::testSeat(%this, %seatNumber) {
     doNextSeatSit(%seatNumber);
 };
 function staffSeatsPanel::testNextSeat(%this) {
-    if ((0.0 > $staffSeatsPanel_TOTALNUM)) {
+    if (($staffSeatsPanel_TOTALNUM > 0.0)) {
         %last = $staffSeatsPanel_CUR;
-        $staffSeatsPanel_CUR = (1.0 + $staffSeatsPanel_CUR);
-        if (($staffSeatsPanel_TOTALNUM > $staffSeatsPanel_CUR)) {
-            $staffSeatsPanel_CUR = (1.0 - $staffSeatsPanel_CUR);
+        $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR + 1.0);
+        if (($staffSeatsPanel_CUR > $staffSeatsPanel_TOTALNUM)) {
+            $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR - 1.0);
             return;
         }
-        if (($staffSeatsPanel_CUR != %last)) {
-            %this.testSeat((1.0 - $staffSeatsPanel_CUR));
+        if ((%last != $staffSeatsPanel_CUR)) {
+            ($staffSeatsPanel_CUR - 1.0).testSeat(%this);
         }
     }
 };
 function staffSeatsPanel::testPrevSeat(%this) {
-    if ((0.0 > $staffSeatsPanel_TOTALNUM)) {
+    if (($staffSeatsPanel_TOTALNUM > 0.0)) {
         %last = $staffSeatsPanel_CUR;
-        $staffSeatsPanel_CUR = (1.0 - $staffSeatsPanel_CUR);
-        if ((0.0 <= $staffSeatsPanel_CUR)) {
-            $staffSeatsPanel_CUR = (1.0 + $staffSeatsPanel_CUR);
+        $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR - 1.0);
+        if (($staffSeatsPanel_CUR <= 0.0)) {
+            $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR + 1.0);
             return;
         }
-        if (($staffSeatsPanel_CUR != %last)) {
-            %this.testSeat((1.0 - $staffSeatsPanel_CUR));
+        if ((%last != $staffSeatsPanel_CUR)) {
+            ($staffSeatsPanel_CUR - 1.0).testSeat(%this);
         }
     }
 };
@@ -78,19 +78,19 @@ function recursiveCollectSeatsFromSimGroup(%obj, %seatSet) {
     if (%obj.isClassSimGroup()) {
         %num = %obj.getCount();
         %n = 0;
-        if ((%num < %n)) {
-            recursiveCollectSeatsFromSimGroup(%obj.getObject(%n), %seatSet);
-            %n = (1.0 + %n);
+        while ((%n < %num)) {
+            recursiveCollectSeatsFromSimGroup(%n.getObject(%obj), %seatSet);
+            %n = (%n + 1.0);
         }
-        return (%num < %n);
+        return (%n < %num);
     }
     if ((%obj.getClassName() $= "MissionMarker")) {
     }
     if ((%obj.getClassName() $= "ETSSeatMarker")) {
         %dbName = %obj.getDataBlock().getName();
         %seatMarkerFound = strstr(%dbName, "SeatMarker");
-        if ((-(1.0) != %seatMarkerFound)) {
-            %seatSet.add(%obj.getId());
+        if ((%seatMarkerFound != -(1.0))) {
+            %obj.getId().add(%seatSet);
         }
     }
     return;
@@ -109,10 +109,10 @@ function staffSeatsPanel::startTestingSeats(%this) {
         StaffSeatsPanelTestSet.delete();
     }
     new SimSet(StaffSeatsPanelTestSet);
-    MissionCleanup.add(StaffSeatsPanelTestSet);
+    StaffSeatsPanelTestSet.add(MissionCleanup);
     recursiveCollectSeatsFromSimGroup(MissionGroup, StaffSeatsPanelTestSet);
-    $staffSeatsPanel_TOTALNUM = StaffSeatsPanelTestSet.getCount(StaffSeatsPanelTestSet);
+    $staffSeatsPanel_TOTALNUM = StaffSeatsPanelTestSet.getCount();
     $staffSeatsPanel_CUR = 0;
-    staffSeatsGuiCurNumber.setText($staffSeatsPanel_CUR);
-    staffSeatsGuiTotalNumber.setText($staffSeatsPanel_TOTALNUM);
+    $staffSeatsPanel_CUR.setText(staffSeatsGuiCurNumber);
+    $staffSeatsPanel_TOTALNUM.setText(staffSeatsGuiTotalNumber);
 };

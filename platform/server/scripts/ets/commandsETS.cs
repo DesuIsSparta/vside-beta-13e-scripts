@@ -10,46 +10,46 @@ function serverCmdSetAfkOn(%client, %msgTagged) {
         error("serverCmdSetAfkOn: null client player" @ " " @ getDebugString(%client));
         return;
     }
-    %client.Player.setAFK(1);
-    %client.Player.setAwayMessage(detag(%msgTagged));
+    1.setAFK(%client.Player);
+    detag(%msgTagged).setAwayMessage(%client.Player);
     return;
 };
 function serverCmdSetAfkOff(%client) {
     if (isObject(%client.Player)) {
-        %client.Player.setAFK(0);
+        0.setAFK(%client.Player);
     }
     return;
 };
 function serverCmdTypingStarted(%client) {
     if (isObject(%client.Player)) {
-        %client.Player.setTyping(1);
+        1.setTyping(%client.Player);
     }
     return;
 };
 function serverCmdTypingFinished(%client) {
     if (isObject(%client.Player)) {
-        %client.Player.setTyping(0);
+        0.setTyping(%client.Player);
     }
     return;
 };
 function serverCmdEtsPlayAnimName(%client, %animName) {
     if (isObject(%client.Player)) {
-        %client.Player.playAnim(%animName);
+        %animName.playAnim(%client.Player);
     }
     return;
 };
 function playRandomEmote(%player) {
-    %animName = EmoteDict.getValue(getRandom(0, (1.0 - EmoteDict.size())));
-    %player.playAnim(%animName);
+    %animName = getRandom(0, (EmoteDict.size() - 1.0)).getValue(EmoteDict);
+    %animName.playAnim(%player);
     return;
 };
 function Player::cardinalPosition(%this, %num) {
-    %this.setTransform("56.1625 -22.954 2.38509 0 0 -1 0.931784");
+    "56.1625 -22.954 2.38509 0 0 -1 0.931784".setTransform(%this);
     return;
 };
 function ServerCmdCardinalPosition(%client, %num) {
     if (isObject(%client.Player)) {
-        %client.Player.cardinalPosition(%num);
+        %num.cardinalPosition(%client.Player);
     }
     return;
 };
@@ -61,6 +61,6 @@ function ServerCmdSetGenre(%client, %genre) {
     if (!(isObject(%client.Player))) {
         return;
     }
-    %client.Player.setGenre(%genre);
+    %genre.setGenre(%client.Player);
     return;
 };

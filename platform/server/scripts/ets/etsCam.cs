@@ -1,16 +1,16 @@
 function GameConnection::nextCamMode(%this) {
-    %this.etsCamMode = (1.0 + %this.etsCamMode);
+    %this.etsCamMode = (%this.etsCamMode + 1.0);
     %this.etsCamMode = ;
-    if ((1.0 > %this.etsCamMode)) {
+    if ((%this.etsCamMode > 1.0)) {
         %this.etsCamMode = 0;
     }
-    if ((0.0 == %this.etsCamMode)) {
-        %this.setControlObject(%this.Player);
+    if ((%this.etsCamMode == 0.0)) {
+        %this.Player.setControlObject(%this);
     }
-    if ((1.0 == %this.etsCamMode)) {
+    if ((%this.etsCamMode == 1.0)) {
         %rot = getOrientationRelativeToObject(%this.Player, 3.14159, 0.5);
-        %this.Camera.setOrbitMode(%this.Player, "0 0 0" @ " " @ %rot, 0.5, 2.5, 1.5, 1);
-        %this.setControlObject(%this.Camera);
+        1.setOrbitMode(%this.Camera, %this.Player, "0 0 0" @ " " @ %rot, 0.5, 2.5, 1.5);
+        %this.Camera.setControlObject(%this);
     }
     return;
 };

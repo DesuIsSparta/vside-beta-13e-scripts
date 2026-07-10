@@ -21,8 +21,8 @@ function doLoginButton() {
     LoginGui.doLoginButton();
 };
 function doLogin() {
-    LoginUserNameField.setValue($testUser);
-    LoginPasswordField.setValue("etspass");
+    $testUser.setValue(LoginUserNameField);
+    "etspass".setValue(LoginPasswordField);
     LoginGui.isAwake();
     LoginGui.doLoginButton();
     schedule(7000, 0);
@@ -36,12 +36,12 @@ function checkStatus() {
 };
 function BootRequest::onDone(%this) {
     log("login", "debug", "LOAD: BootRequest::onDone");
-    if (($HTTP::StatusOK != %this.statusCode())) {
+    if ((%this.statusCode() != $HTTP::StatusOK)) {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         quit();
     }
-    if (%this.hasKey("status")) {
-        %status = %this.getValue("status");
+    if ("status".hasKey(%this)) {
+        %status = "status".getValue(%this);
     }
     %status = findStatus(%this);
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
@@ -60,12 +60,12 @@ function BootRequest::onDone(%this) {
 };
 function LoginRequest::onDone(%this) {
     log("login", "debug", "LOAD: LoginRequest::onDone");
-    if (($HTTP::StatusOK != %this.statusCode())) {
+    if ((%this.statusCode() != $HTTP::StatusOK)) {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         quit();
     }
-    if (%this.hasKey("status")) {
-        %status = %this.getValue("status");
+    if ("status".hasKey(%this)) {
+        %status = "status".getValue(%this);
     }
     %status = findStatus(%this);
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
@@ -84,7 +84,7 @@ function LoginRequest::onDone(%this) {
         schedule(2000, 0);
     }
     if ((joinServer @ " " @ %status $= "alreadyloggedin")) {
-        if ((0.0 == $bootAttempted)) {
+        if (($bootAttempted == 0.0)) {
             echo("LOAD: Test login auto-booting from previously joined server");
             LoginRequest::handleBoot();
             $bootAttempted = 1;
@@ -100,20 +100,20 @@ function LoginRequest::onDone(%this) {
 };
 function joinServer() {
     echo("Servers.getCount() = " @ " " @ servers.getCount());
-    if ((0.0 == servers.getCount())) {
+    if ((servers.getCount() == 0.0)) {
         echo("LOAD: We got 0 servers. Trying again in 5 seconds.");
         schedule(5000, 0);
         return joinServer;
     }
     %i = 0;
-    if ((servers.getCount() < %i)) {
-        if ((servers.getObject(%i).get("name") $= "TestTown")) {
-            WorldMap.join(servers.getObject(%i));
-            echo("LOAD: Joined server " @ servers.getObject(%i).get("name"));
+    while ((%i < servers.getCount())) {
+        if (("name".get(%i.getObject(servers)) $= "TestTown")) {
+            %i.getObject(servers).join(WorldMap);
+            echo("LOAD: Joined server " @ "name".get(%i.getObject(servers)));
             echo("LOAD: Test login completed");
             schedule(11000, 0);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
         doSomething;
     }
 };

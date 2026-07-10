@@ -1,10 +1,10 @@
 exec("./dif2dae.cs");
 function portInit(%port) {
     %failCount = 0;
-    if (!(setNetPort(%port))) {
+    while (!(setNetPort(%port))) {
         echo("Port init failed on port " @ %port @ " trying next port.");
-        %port = (1.0 + %port);
-        %failCount = (1.0 + %failCount);
+        %port = (%port + 1.0);
+        %failCount = (%failCount + 1.0);
     }
     $Net::BoundPort = %port;
     !(setNetPort(%port));
@@ -51,8 +51,8 @@ function destroyServer() {
     if (isObject($ServerGroup)) {
         $ServerGroup.delete();
     }
-    if (ClientGroup.getCount()) {
-        %client = ClientGroup.getObject(0);
+    while (ClientGroup.getCount()) {
+        %client = 0.getObject(ClientGroup);
         %client.delete();
     }
     $Server::GuidList = "";
@@ -71,13 +71,13 @@ function resetServerDefaults() {
 function addToServerGuidList(%guid) {
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    if ((%count < %i)) {
-        if ((%guid == getField($Server::GuidList, %i))) {
+    while ((%i < %count)) {
+        if ((getField($Server::GuidList, %i) == %guid)) {
             return;
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
-    if (((%count < %i) @ " " @ $Server::GuidList $= "")) {
+    if (((%i < %count) @ " " @ $Server::GuidList $= "")) {
     }
     $Server::GuidList = $Server::GuidList;
     %guid;
@@ -86,16 +86,16 @@ function addToServerGuidList(%guid) {
 function removeFromServerGuidList(%guid) {
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    if ((%count < %i)) {
-        if ((%guid == getField($Server::GuidList, %i))) {
+    while ((%i < %count)) {
+        if ((getField($Server::GuidList, %i) == %guid)) {
             $Server::GuidList = removeField($Server::GuidList, %i);
             return;
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function isUserConnected(%userName) {
-    %client = ClientDict.getNorm(%userName);
+    %client = %userName.getNorm(ClientDict);
     if (!(%client $= "")) {
         return 1;
     }

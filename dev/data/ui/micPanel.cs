@@ -1,26 +1,26 @@
 $gExpectedNumberOfMicHolders = -(1.0);
 $gMicHoldersPendingAddition = 0;
 function micPanel::toggle(%this) {
-    playGui.showRaiseOrHide(%this);
+    %this.showRaiseOrHide(playGui);
 };
 function micPanel::open(%this) {
-    if (!($player.rolesPermissionCheckWarn("microphones"))) {
+    if (!("microphones".rolesPermissionCheckWarn($player))) {
         return;
     }
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
-        playGui.focusAndRaise(%this);
+        1.setVisible(%this);
+        %this.focusAndRaise(playGui);
     }
 };
 function micPanel::close(%this) {
-    %this.setVisible(0);
+    0.setVisible(%this);
     playGui.focusTopWindow();
     return 1;
 };
 micHolders = "" @ micPanel;
 function micPanel::addMicHolder(%this, %playerName) {
     %index = findField(%this.micHolders, %playerName);
-    if ((0.0 >= %index)) {
+    if ((%index >= 0.0)) {
         return;
     }
     %delim = (%this.micHolders $= "") ? "" : "\t";
@@ -30,7 +30,7 @@ function micPanel::addMicHolder(%this, %playerName) {
 };
 function micPanel::delMicHolder(%this, %playerName) {
     %index = findField(%this.micHolders, %playerName);
-    if ((0.0 < %index)) {
+    if ((%index < 0.0)) {
         return;
     }
     %this.micHolders = removeField(%this.micHolders, %index);
@@ -44,11 +44,11 @@ function micPanel::updateMicHoldersList(%this) {
     %theArray.inRows = 0;
     %theArray.numRowsOrCols = 1;
     %num = getFieldCount(%this.micHolders);
-    %theArray.setNumChildren(%num);
+    %num.setNumChildren(%theArray);
     %n = 0;
-    if ((%num < %n)) {
-        %this.updateMicHolderCell(%theArray.getObject(%n), %n);
-        %n = (1.0 + %n);
+    while ((%n < %num)) {
+        %n.updateMicHolderCell(%this, %n.getObject(%theArray));
+        %n = (%n + 1.0);
     }
     if ($DevPref::Mod::autoOpenMics) {
         %this.open();
@@ -68,9 +68,9 @@ function micPanel::updateMicHolderCell(%this, %cellCtrl, %index) {
         position = "62 0";
     };
     %cellCtrl.deleteMembers();
-    %cellCtrl.add(%bttnCtrl);
-    %cellCtrl.add(%textCtrl);
-    %textCtrl.setValue(pChat.getPlayerMarkup(%holderName, ""));
+    %bttnCtrl.add(%cellCtrl);
+    %textCtrl.add(%cellCtrl);
+    "".getPlayerMarkup(pChat, %holderName).setValue(%textCtrl);
 };
 function micPanelMLTextCtrl::onRightURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
@@ -101,39 +101,39 @@ function doServerCommandGetMicHolders() {
 };
 function ClientCmdStartGetMicHolders(%numberOfMicHolders) {
     $gExpectedNumberOfMicHolders = %numberOfMicHolders;
-    if ((0.0 != $gMicHoldersPendingAddition)) {
-        %i = (1.0 - $gMicHoldersPendingAddition.size());
-        if ((0.0 >= %i)) {
-            micPanel.addMicHolder($gMicHoldersPendingAddition.getKey(%i));
-            $gExpectedNumberOfMicHolders = (1.0 - $gExpectedNumberOfMicHolders);
-            %i = (1.0 - %i);
+    if (($gMicHoldersPendingAddition != 0.0)) {
+        %i = ($gMicHoldersPendingAddition.size() - 1.0);
+        while ((%i >= 0.0)) {
+            %i.getKey($gMicHoldersPendingAddition).addMicHolder(micPanel);
+            $gExpectedNumberOfMicHolders = ($gExpectedNumberOfMicHolders - 1.0);
+            %i = (%i - 1.0);
         }
         $gMicHoldersPendingAddition.clear();
         $gMicHoldersPendingAddition.delete();
         $gMicHoldersPendingAddition = 0;
-        (0.0 >= %i);
+        (%i >= 0.0);
     }
     micPanel.updateGetMicHoldersListStatus();
 };
 function ClientCmdGotMicHolder(%playerName) {
     if (!(%playerName $= "")) {
-        if ((-(1.0) != $gExpectedNumberOfMicHolders)) {
-            micPanel.addMicHolder(%playerName);
-            $gExpectedNumberOfMicHolders = (1.0 - $gExpectedNumberOfMicHolders);
+        if (($gExpectedNumberOfMicHolders != -(1.0))) {
+            %playerName.addMicHolder(micPanel);
+            $gExpectedNumberOfMicHolders = ($gExpectedNumberOfMicHolders - 1.0);
             micPanel.updateGetMicHoldersListStatus();
         }
-        $gMicHoldersPendingAddition.put(%playerName, "");
+        "".put($gMicHoldersPendingAddition, %playerName);
     }
 };
 function micPanel::updateGetMicHoldersListStatus(%this) {
-    if ((-(1.0) == $gExpectedNumberOfMicHolders)) {
-        MicPanelRefreshListLabel.setText("Starting...");
-        MicPanelRefreshListButton.setActive(0);
+    if (($gExpectedNumberOfMicHolders == -(1.0))) {
+        "Starting...".setText(MicPanelRefreshListLabel);
+        0.setActive(MicPanelRefreshListButton);
     }
-    if ((0.0 == $gExpectedNumberOfMicHolders)) {
-        MicPanelRefreshListLabel.setText("Done");
-        MicPanelRefreshListButton.setActive(1);
+    if (($gExpectedNumberOfMicHolders == 0.0)) {
+        "Done".setText(MicPanelRefreshListLabel);
+        1.setActive(MicPanelRefreshListButton);
     }
-    MicPanelRefreshListLabel.setText("Getting list...");
-    MicPanelRefreshListButton.setActive(0);
+    "Getting list...".setText(MicPanelRefreshListLabel);
+    0.setActive(MicPanelRefreshListButton);
 };

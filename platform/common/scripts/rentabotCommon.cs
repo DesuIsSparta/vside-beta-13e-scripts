@@ -3,7 +3,7 @@ function rentabot_getCoreName(%name) {
         return %name;
     }
     %len = strlen(%name);
-    %cn = getSubStr(%name, 1, (2.0 - %len));
+    %cn = getSubStr(%name, 1, (%len - 2.0));
     return %cn;
 };
 function rentabot_isRentabotName(%name) {

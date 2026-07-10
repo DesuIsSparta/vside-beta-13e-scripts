@@ -18,15 +18,15 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch) {
     log("initialization", "debug", "find arg: looking for " @ %argToFind);
     %found = 0;
     %i = 1;
-    if (($Game::argc < %i)) {
+    while ((%i < $Game::argc)) {
         %arg = %i[$Game::argv @ %i];
         %nextArg = "";
-        if (((1.0 - $Game::argc) < %i)) {
-            %nextArg = %i[$Game::argv @ (1.0 + %i)];
+        if ((%i < ($Game::argc - 1.0))) {
+            %nextArg = %i[$Game::argv @ (%i + 1.0)];
         }
-        %hasNextArg = (1.0 > (%i - $Game::argc));
+        %hasNextArg = (($Game::argc - %i) > 1.0);
         if ((%arg $= %argToFind)) {
-            %i[$Game::ArgUsed @ %i] = (1.0 + %i[$Game::ArgUsed @ %i]);
+            %i[$Game::ArgUsed @ %i] = (%i[$Game::ArgUsed @ %i] + 1.0);
             if (!(%valToSet $= "")) {
                 if (%isSwitch) {
                     eval(%valToSet @ "=true;");
@@ -42,7 +42,7 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch) {
                     log("initialization", "debug", "evalString: " @ %evalString);
                     eval(%evalString);
                     log("initialization", "debug", "setting value " @ %valToSet);
-                    %i[$Game::ArgUsed @ (1.0 + %i)] = (1.0 + %i[$Game::ArgUsed @ (1.0 + %i)]);
+                    %i[$Game::ArgUsed @ (%i + 1.0)] = (%i[$Game::ArgUsed @ (%i + 1.0)] + 1.0);
                     %found = 1;
                 }
                 %found = 0;
@@ -50,7 +50,7 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch) {
             }
             %found = 1;
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     return %found;
 };
@@ -62,17 +62,17 @@ function parseArgs() {
 function getAllArgs() {
     %ret = "";
     %n = 1;
-    if (($Game::argc < %n)) {
-        %sep = (1.0 == %n) ? "" : " ";
+    while ((%n < $Game::argc)) {
+        %sep = (%n == 1.0) ? "" : " ";
         %ret = %ret @ %sep @ %n[$Game::argv @ %n];
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     return %ret;
 };
 %ret[$gKnownUnusedArgsLogLevel @ "-debug"] = "info";
 function checkUnusedArgs() {
     %i = 1;
-    if (($Game::argc < %i)) {
+    while ((%i < $Game::argc)) {
         if (!(%i[$Game::ArgUsed @ %i])) {
             %arg = %i[$Game::argv @ %i];
             %level = %arg[$gKnownUnusedArgsLogLevel @ %arg];
@@ -81,7 +81,7 @@ function checkUnusedArgs() {
             }
             log("initialization", %level, "unknown (or possibly duplicated) command line argument: " @ %arg);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function doStart() {
@@ -217,18 +217,18 @@ package common {
 };
 
 function findRequestStatus(%managerRequest) {
-    if (%managerRequest.hasKey("status")) {
-        return %managerRequest.getValue("status");
+    if ("status".hasKey(%managerRequest)) {
+        return "status".getValue(%managerRequest);
     }
     %stati = "invalid fail serverfail inactive alreadyloggedin banned suspended upgrade_required upgrade_available success overloaded sendstart boot";
     %count = getWordCount(%stati);
     %i = 0;
-    if ((%count <= %i)) {
+    while ((%i <= %count)) {
         %astatus = getWord(%stati, %i);
-        if (%managerRequest.hasKey(%astatus)) {
+        if (%astatus.hasKey(%managerRequest)) {
             return %astatus;
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     return "";
 };

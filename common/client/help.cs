@@ -2,60 +2,60 @@ function HelpDlg::onWake(%this) {
     entryCount = 0 @ HelpFileList;
     HelpFileList.clear();
     %file = findFirstFile("*.hfl");
-    if (!(%file $= "")) {
+    while (!(%file $= "")) {
         fileName = HelpFileList @ entryCount @ HelpFileList;
         %file;
-        HelpFileList.addRow(HelpFileList, entryCount, fileBase(%file));
-        entryCount = (HelpFileList + entryCount);
+        fileBase(%file).addRow(HelpFileList, HelpFileList, entryCount);
+        entryCount = (entryCount + HelpFileList);
         1.0;
         %file = findNextFile("*.hfl");
     }
-    HelpFileList.sortNumerical(0);
+    0.sortNumerical(HelpFileList);
     %i = 0;
     !(%file $= "");
-    if ((entryCount < %i)) {
-        %rowId = HelpFileList.getRowId(%i);
+    while ((%i < entryCount)) {
+        %rowId = %i.getRowId(HelpFileList);
         HelpFileList;
-        %text = HelpFileList.getRowTextById(%rowId);
-        %text = (1.0 + %i) @ ". " @ restWords(%text);
-        HelpFileList.setRowById(%rowId, %text);
-        %i = (1.0 + %i);
+        %text = %rowId.getRowTextById(HelpFileList);
+        %text = (%i + 1.0) @ ". " @ restWords(%text);
+        %text.setRowById(HelpFileList, %rowId);
+        %i = (%i + 1.0);
     }
-    HelpFileList.setSelectedRow(0);
+    0.setSelectedRow(HelpFileList);
 };
 function HelpDlg::close(%this) {
-    Canvas.popDialog(%this);
+    %this.popDialog(Canvas);
 };
 function HelpFileList::onSelect(%this, %row) {
     %fo = new FileObject("");;
     0;
-    %fo.openForRead(%row, %this.fileName);
+    %this.fileName.openForRead(%fo, %row);
     %text = "";
-    if (!(%fo.isEOF())) {
+    while (!(%fo.isEOF())) {
         %text = %text @ %fo.readLine() @ "\n";
     }
     %fo.delete();
-    HelpText.setText(%text);
-    HelpText.makeFirstResponder(1);
+    %text.setText(HelpText);
+    1.makeFirstResponder(HelpText);
 };
 function getHelp(%helpName) {
-    Canvas.pushDialog(HelpDlg, 0);
+    0.pushDialog(Canvas, HelpDlg);
     if (!(%helpName $= "")) {
-        %index = HelpFileList.findTextIndex(%helpName);
-        HelpFileList.setSelectedRow(%index);
+        %index = %helpName.findTextIndex(HelpFileList);
+        %index.setSelectedRow(HelpFileList);
     }
 };
 function contextHelp() {
     %i = 0;
-    if ((Canvas.getCount() < %i)) {
+    while ((%i < Canvas.getCount())) {
         if (HelpDlg) {
-            Canvas.popDialog(HelpDlg);
-            return Canvas.getObject(%i).getName();
+            HelpDlg.popDialog(Canvas);
+            return %i.getObject(Canvas).getName();
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     %content = Canvas.getContent();
-    (Canvas.getCount() < %i);
+    (%i < Canvas.getCount());
     %helpPage = %content.getHelpPage();
     getHelp(%helpPage);
 };

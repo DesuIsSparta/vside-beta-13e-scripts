@@ -28,10 +28,10 @@ function Monitor::onConnectRequest(%unused, %unused, %id) {
 };
 function openMonitorSocket() {
     %mon = new TCPObject(Monitor);;
-    if ((0.0 != $Pref::Server::MonitorPort)) {
-        %mon.listen($Pref::Server::MonitorPort);
+    if (($Pref::Server::MonitorPort != 0.0)) {
+        $Pref::Server::MonitorPort.listen(%mon);
     }
-    %mon.listen(28000);
+    28000.listen(%mon);
 };
 function initDedicated() {
     enableWinConsole(1);
@@ -58,7 +58,7 @@ function stopServer() {
     %uri = "/envmanager/status";
     %query = "cmd=stop";
     %post = "";
-    %stopRequest.post(%host, %uri, %query, %post);
+    %post.post(%stopRequest, %host, %uri, %query);
 };
 function StopRequest::onStatus(%unused) {
     doQuit();

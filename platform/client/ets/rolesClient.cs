@@ -1,31 +1,31 @@
 function Player::onGotRoles(%this, %rolesMask) {
     %this.updateMapIcon();
-    if (($player != %this)) {
+    if ((%this != $player)) {
         %this.rebuildHudCtrl();
         return;
     }
-    if ((%rolesMask == %this.prevRolesMask)) {
+    if ((%this.prevRolesMask == %rolesMask)) {
         return;
     }
     %this.prevRolesMask = %rolesMask;
-    if (%this.rolesPermissionCheckNoWarn("snoop")) {
+    if ("snoop".rolesPermissionCheckNoWarn(%this)) {
         $TSControl::objSelRange = 1000;
     }
     $TSControl::objSelRange = $pref::TS::distMouseOver;
     %playerObjects = ServerConnection.findObjectsPlayer();
-    %n = (1.0 - getWordCount(%playerObjects));
-    if ((0.0 >= %n)) {
+    %n = (getWordCount(%playerObjects) - 1.0);
+    while ((%n >= 0.0)) {
         %po = getWord(%playerObjects, %n);
         %po.rebuildHudCtrl();
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
-    HUDHideChatCheckBox.setVisible(%this.rolesPermissionCheckNoWarn("quietHUD"));
-    FarNameOpacityCtrl.setVisible(%this.rolesPermissionCheckNoWarn("farNameOpacity"));
-    optionsPanelAlertOnLogCtrl.setVisible(%this.rolesPermissionCheckNoWarn("console"));
-    if (%this.hasRoleString("host")) {
+    "quietHUD".rolesPermissionCheckNoWarn(%this).setVisible(HUDHideChatCheckBox);
+    "farNameOpacity".rolesPermissionCheckNoWarn(%this).setVisible(FarNameOpacityCtrl);
+    "console".rolesPermissionCheckNoWarn(%this).setVisible(optionsPanelAlertOnLogCtrl);
+    if ("host".hasRoleString(%this)) {
         schedule(2000, 0, "delayedWearSku", getSpecialSKU($player, "hostBadge"));
     }
-    if (%this.hasRoleString("cohost")) {
+    if ("cohost".hasRoleString(%this)) {
         schedule(2000, 0, "delayedWearSku", getSpecialSKU($player, "cohostBadge"));
     }
     schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "hostBadge"));

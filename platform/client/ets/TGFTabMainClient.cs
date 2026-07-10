@@ -1,11 +1,11 @@
 function geTGF_tabs::fillTabMain(%this) {
     %tabName = "main";
-    %tab = %this.getTabWithName(%tabName);
+    %tab = %tabName.getTabWithName(%this);
     if (%tab.filled) {
         return;
     }
     %tab.filled = 1;
-    %this.fillTabGeneric(%tab);
+    %tab.fillTabGeneric(%this);
     %ctrl = new GuiBitmapCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "width";
@@ -14,7 +14,7 @@ function geTGF_tabs::fillTabMain(%this) {
         extent = "275 495";
         bitmap = "platform/client/ui/tgf/tgf_bkgd_rightside";
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiBitmapCtrl(geTGF_profilePic) {
         profile = "GuiDefaultProfile";
         horizSizing = "left";
@@ -35,7 +35,7 @@ function geTGF_tabs::fillTabMain(%this) {
         extent = "100 21";
         text = mlStyle("My Profile", "tgfWebLink_Light");
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiBitmapCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "left";
@@ -56,7 +56,7 @@ function geTGF_tabs::fillTabMain(%this) {
         extent = "100 21";
         text = mlStyle("Calendar", "tgfWebLink_Light");
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiBitmapCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "left";
@@ -77,7 +77,7 @@ function geTGF_tabs::fillTabMain(%this) {
         extent = "100 21";
         text = mlStyle("Forums", "tgfWebLink_Light");
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiBitmapCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "left";
@@ -98,7 +98,7 @@ function geTGF_tabs::fillTabMain(%this) {
         extent = "100 21";
         text = mlStyle("FAQs", "tgfWebLink_Light");
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiBitmapCtrl(geTGF_main_BalancesContainer) {
         profile = "GuiDefaultProfile";
         horizSizing = "width";
@@ -127,7 +127,7 @@ function geTGF_tabs::fillTabMain(%this) {
         position = "108 0";
         extent = "162 39";
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiBitmapCtrl(MOTDHud) {
         profile = new GuiControl(AccountBalancePBContainer) {
         profile = new GuiBitmapCtrl("") {
@@ -222,7 +222,7 @@ function geTGF_tabs::fillTabMain(%this) {
         scrollMultiplier = 1;
         stickyBottom = 0;
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     if ($ETS::devMode) {
         %ctrl = new GuiVariableWidthButtonCtrl(EditMOTDStaffOnly) {
             profile = new GuiMLTextCtrl(MOTDText) {
@@ -250,7 +250,7 @@ function geTGF_tabs::fillTabMain(%this) {
             groupNum = -1;
             buttonType = "PushButton";
         };
-        %tab.add(%ctrl);
+        %ctrl.add(%tab);
     }
     %ctrl = new GuiBitmapCtrl("") {
         profile = 0 @ "ETSNonModalProfile";
@@ -258,7 +258,7 @@ function geTGF_tabs::fillTabMain(%this) {
         position = "0 0";
         extent = "685 498";
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiScrollCtrl("") {
         profile = 0 @ "DottedScrollProfile";
         horizSizing = "width";
@@ -289,7 +289,7 @@ function geTGF_tabs::fillTabMain(%this) {
         textNothing = mlStyle("<just:left>" @ "More parties coming up soon!" @ "<just:right>", "tgfItem_Happening");
         textLoading = mlStyle("<just:left>" @ "fetching.." @ "<just:right>", "tgfItem_Happening");
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     new GuiMLTextCtrl(geTGF_main_people_locationsText) {
         position = "3 2";
         extent = "164 1";
@@ -339,7 +339,7 @@ function geTGF_tabs::fillTabMain(%this) {
         textNothing = mlStyle("<just:left>" @ "You're early! Come on in!", "tgfItem_Happening");
         textLoading = mlStyle("<just:left>" @ "fetching..", "tgfItem_Happening");
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
     %ctrl = new GuiVariableWidthButtonCtrl("") {
         profile = 0 @ "BracketButtonLt19Profile";
         position = "5 86";
@@ -348,277 +348,277 @@ function geTGF_tabs::fillTabMain(%this) {
         text = "test";
         visible = 0;
     };
-    %tab.add(%ctrl);
+    %ctrl.add(%tab);
 };
 function geTGF_tabs::onShowTabMain(%this) {
     cancel(geTGF, geTGF_Refresh_Schedule);
-    geTGF_Refresh.setActive(1);
-    geTGF_Refresh.setVisible(1);
+    1.setActive(geTGF_Refresh);
+    1.setVisible(geTGF_Refresh);
 };
 function geTGF::main_testData_happenings(%this) {
     %requestName = "request_GetMainHappenings";
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    %request.bindClassName("UniformManagerRequest");
-    %request.setName(%requestName);
+    "UniformManagerRequest".bindClassName(%request);
+    %requestName.setName(%request);
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/finder/GetMainHappenings";
-    %request.setURL(%url);
-    %request.addUserAndToken($Player::Name);
-    %request.putValue("status", "success");
+    %url.setURL(%request);
+    $Player::Name.addUserAndToken(%request);
+    "success".putValue(%request, "status");
     %n = 0;
-    %request.putValue("happenings" @ %n @ ".accessMode", "open");
-    %request.putValue("happenings" @ %n @ ".baseImageURL", "https://s-website.doppelganger.com/photoservice/e5b50410-76cc-4627-b0bb-5508b311436d");
-    %request.putValue("happenings" @ %n @ ".customSpaceId", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".eventId", 1164);
-    %request.putValue("happenings" @ %n @ ".featured", "true");
-    %request.putValue("happenings" @ %n @ ".friendOccupancy", -1);
-    %request.putValue("happenings" @ %n @ ".goThereVURL", "vside:/location/lga/ShoppingSpawns_modpodz");
-    %request.putValue("happenings" @ %n @ ".headline", "HOWDY!");
-    %request.putValue("happenings" @ %n @ ".hostUserName", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".initialized", "true");
-    %request.putValue("happenings" @ %n @ ".location.areaName", "lga");
-    %request.putValue("happenings" @ %n @ ".location.buildingName", "");
-    %request.putValue("happenings" @ %n @ ".location.serverName", "LaGenoaAiresNorth");
-    %request.putValue("happenings" @ %n @ ".occupancy", -1);
-    %request.putValue("happenings" @ %n @ ".type", "publicLocationEvent");
-    %n = (1.0 + %n);
-    %request.putValue("happenings" @ %n @ ".accessMode", "open");
-    %request.putValue("happenings" @ %n @ ".baseImageURL", "https://s-website.doppelganger.com/photoservice/e5b50410-76cc-4627-b0bb-5508b311436d");
-    %request.putValue("happenings" @ %n @ ".customSpaceId", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".eventId", 1164);
-    %request.putValue("happenings" @ %n @ ".featured", "true");
-    %request.putValue("happenings" @ %n @ ".friendOccupancy", 3);
-    %request.putValue("happenings" @ %n @ ".goThereVURL", "vside:/location/lga/ShoppingSpawns_modpodz");
-    %request.putValue("happenings" @ %n @ ".headline", "HOWDY!");
-    %request.putValue("happenings" @ %n @ ".hostUserName", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".initialized", "true");
-    %request.putValue("happenings" @ %n @ ".location.areaName", "lga");
-    %request.putValue("happenings" @ %n @ ".location.buildingName", "");
-    %request.putValue("happenings" @ %n @ ".location.serverName", "LaGenoaAiresNorth");
-    %request.putValue("happenings" @ %n @ ".occupancy", 17);
-    %request.putValue("happenings" @ %n @ ".type", "aptEvent");
-    %n = (1.0 + %n);
-    %request.putValue("happenings" @ %n @ ".accessMode", "open");
-    %request.putValue("happenings" @ %n @ ".baseImageURL", "https://s-website.doppelganger.com/photoservice/e5b50410-76cc-4627-b0bb-5508b311436d");
-    %request.putValue("happenings" @ %n @ ".customSpaceId", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".eventId", 1164);
-    %request.putValue("happenings" @ %n @ ".featured", "false");
-    %request.putValue("happenings" @ %n @ ".friendOccupancy", 3);
-    %request.putValue("happenings" @ %n @ ".goThereVURL", "vside:/location/lga/ShoppingSpawns_modpodz");
-    %request.putValue("happenings" @ %n @ ".headline", "HOWDY!");
-    %request.putValue("happenings" @ %n @ ".hostUserName", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".initialized", "true");
-    %request.putValue("happenings" @ %n @ ".location.areaName", "lga");
-    %request.putValue("happenings" @ %n @ ".location.buildingName", "");
-    %request.putValue("happenings" @ %n @ ".location.serverName", "LaGenoaAiresNorth");
-    %request.putValue("happenings" @ %n @ ".occupancy", 17);
-    %request.putValue("happenings" @ %n @ ".type", "aptEvent");
-    %n = (1.0 + %n);
-    %request.putValue("happenings" @ %n @ ".accessMode", "open");
-    %request.putValue("happenings" @ %n @ ".baseImageURL", "");
-    %request.putValue("happenings" @ %n @ ".customSpaceId", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".eventId", "");
-    %request.putValue("happenings" @ %n @ ".featured", "false");
-    %request.putValue("happenings" @ %n @ ".friendOccupancy", 3);
-    %request.putValue("happenings" @ %n @ ".goThereVURL", "vside:/location/lga/ShoppingSpawns_modpodz");
-    %request.putValue("happenings" @ %n @ ".headline", "HOWDY!");
-    %request.putValue("happenings" @ %n @ ".hostUserName", "dababydoll");
-    %request.putValue("happenings" @ %n @ ".initialized", "true");
-    %request.putValue("happenings" @ %n @ ".location.areaName", "lga");
-    %request.putValue("happenings" @ %n @ ".location.buildingName", "");
-    %request.putValue("happenings" @ %n @ ".location.serverName", "LaGenoaAiresNorth");
-    %request.putValue("happenings" @ %n @ ".occupancy", 17);
-    %request.putValue("happenings" @ %n @ ".type", "apt");
-    %n = (1.0 + %n);
-    %request.putValue("happeningsCount", %n);
-    %statusTextCtrl = geTGF_main_happenings.getParent().child("emptyText", 1);
+    "open".putValue(%request, "happenings" @ %n @ ".accessMode");
+    "https://s-website.doppelganger.com/photoservice/e5b50410-76cc-4627-b0bb-5508b311436d".putValue(%request, "happenings" @ %n @ ".baseImageURL");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".customSpaceId");
+    1164.putValue(%request, "happenings" @ %n @ ".eventId");
+    "true".putValue(%request, "happenings" @ %n @ ".featured");
+    -1.putValue(%request, "happenings" @ %n @ ".friendOccupancy");
+    "vside:/location/lga/ShoppingSpawns_modpodz".putValue(%request, "happenings" @ %n @ ".goThereVURL");
+    "HOWDY!".putValue(%request, "happenings" @ %n @ ".headline");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".hostUserName");
+    "true".putValue(%request, "happenings" @ %n @ ".initialized");
+    "lga".putValue(%request, "happenings" @ %n @ ".location.areaName");
+    "".putValue(%request, "happenings" @ %n @ ".location.buildingName");
+    "LaGenoaAiresNorth".putValue(%request, "happenings" @ %n @ ".location.serverName");
+    -1.putValue(%request, "happenings" @ %n @ ".occupancy");
+    "publicLocationEvent".putValue(%request, "happenings" @ %n @ ".type");
+    %n = (%n + 1.0);
+    "open".putValue(%request, "happenings" @ %n @ ".accessMode");
+    "https://s-website.doppelganger.com/photoservice/e5b50410-76cc-4627-b0bb-5508b311436d".putValue(%request, "happenings" @ %n @ ".baseImageURL");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".customSpaceId");
+    1164.putValue(%request, "happenings" @ %n @ ".eventId");
+    "true".putValue(%request, "happenings" @ %n @ ".featured");
+    3.putValue(%request, "happenings" @ %n @ ".friendOccupancy");
+    "vside:/location/lga/ShoppingSpawns_modpodz".putValue(%request, "happenings" @ %n @ ".goThereVURL");
+    "HOWDY!".putValue(%request, "happenings" @ %n @ ".headline");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".hostUserName");
+    "true".putValue(%request, "happenings" @ %n @ ".initialized");
+    "lga".putValue(%request, "happenings" @ %n @ ".location.areaName");
+    "".putValue(%request, "happenings" @ %n @ ".location.buildingName");
+    "LaGenoaAiresNorth".putValue(%request, "happenings" @ %n @ ".location.serverName");
+    17.putValue(%request, "happenings" @ %n @ ".occupancy");
+    "aptEvent".putValue(%request, "happenings" @ %n @ ".type");
+    %n = (%n + 1.0);
+    "open".putValue(%request, "happenings" @ %n @ ".accessMode");
+    "https://s-website.doppelganger.com/photoservice/e5b50410-76cc-4627-b0bb-5508b311436d".putValue(%request, "happenings" @ %n @ ".baseImageURL");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".customSpaceId");
+    1164.putValue(%request, "happenings" @ %n @ ".eventId");
+    "false".putValue(%request, "happenings" @ %n @ ".featured");
+    3.putValue(%request, "happenings" @ %n @ ".friendOccupancy");
+    "vside:/location/lga/ShoppingSpawns_modpodz".putValue(%request, "happenings" @ %n @ ".goThereVURL");
+    "HOWDY!".putValue(%request, "happenings" @ %n @ ".headline");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".hostUserName");
+    "true".putValue(%request, "happenings" @ %n @ ".initialized");
+    "lga".putValue(%request, "happenings" @ %n @ ".location.areaName");
+    "".putValue(%request, "happenings" @ %n @ ".location.buildingName");
+    "LaGenoaAiresNorth".putValue(%request, "happenings" @ %n @ ".location.serverName");
+    17.putValue(%request, "happenings" @ %n @ ".occupancy");
+    "aptEvent".putValue(%request, "happenings" @ %n @ ".type");
+    %n = (%n + 1.0);
+    "open".putValue(%request, "happenings" @ %n @ ".accessMode");
+    "".putValue(%request, "happenings" @ %n @ ".baseImageURL");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".customSpaceId");
+    "".putValue(%request, "happenings" @ %n @ ".eventId");
+    "false".putValue(%request, "happenings" @ %n @ ".featured");
+    3.putValue(%request, "happenings" @ %n @ ".friendOccupancy");
+    "vside:/location/lga/ShoppingSpawns_modpodz".putValue(%request, "happenings" @ %n @ ".goThereVURL");
+    "HOWDY!".putValue(%request, "happenings" @ %n @ ".headline");
+    "dababydoll".putValue(%request, "happenings" @ %n @ ".hostUserName");
+    "true".putValue(%request, "happenings" @ %n @ ".initialized");
+    "lga".putValue(%request, "happenings" @ %n @ ".location.areaName");
+    "".putValue(%request, "happenings" @ %n @ ".location.buildingName");
+    "LaGenoaAiresNorth".putValue(%request, "happenings" @ %n @ ".location.serverName");
+    17.putValue(%request, "happenings" @ %n @ ".occupancy");
+    "apt".putValue(%request, "happenings" @ %n @ ".type");
+    %n = (%n + 1.0);
+    %n.putValue(%request, "happeningsCount");
+    %statusTextCtrl = 1.child(geTGF_main_happenings.getParent(), "emptyText");
     %text = %statusTextCtrl.textLoading;
-    %statusTextCtrl.setText(%text);
+    %text.setText(%statusTextCtrl);
     schedule(500, 0, "onDoneOrErrorCallback_GetMainHappenings", %request);
 };
 function geTGF_tabs::refreshTabMain(%this) {
     %tabName = "main";
-    %tab = %this.getTabWithName(%tabName);
+    %tab = %tabName.getTabWithName(%this);
     %this.refreshQOTD();
     if (!(geTGF_tabs @ " " @ %statusTextCtrl.previousProfileName $= $Player::Name)) {
-        geTGF_profilePic.setBitmap("platform/client/ui/tgf/tgf_profile_default");
+        "platform/client/ui/tgf/tgf_profile_default".setBitmap(geTGF_profilePic);
         geTGF_profilePic.fitInParentAsBitmap();
     }
     %statusTextCtrl.previousProfileName = $Player::Name @ geTGF_tabs;
     %url = $Net::AvatarURL @ urlEncode($Player::Name) @ "?size=M";
-    geTGF_profilePic.downloadAndApplyBitmap(%url);
+    %url.downloadAndApplyBitmap(geTGF_profilePic);
     geTGF.main_sendRequests();
 };
 function geTGF::main_sendRequests(%this) {
-    %statusTextCtrl = geTGF_main_people.child("emptyText", 1);
+    %statusTextCtrl = 1.child(geTGF_main_people, "emptyText");
     %text = %statusTextCtrl.textLoading;
-    %statusTextCtrl.setText(%text);
+    %text.setText(%statusTextCtrl);
     sendRequest_GetOnlineUsers(60, "onDoneOrErrorCallback_GetOnlineUsers");
-    geTGF_main_people_locationsText.setText("");
-    %statusTextCtrl = geTGF_main_happenings.getParent().child("emptyText", 1);
+    "".setText(geTGF_main_people_locationsText);
+    %statusTextCtrl = 1.child(geTGF_main_happenings.getParent(), "emptyText");
     %text = %statusTextCtrl.textLoading;
-    %statusTextCtrl.setText(%text);
+    %text.setText(%statusTextCtrl);
     sendRequest_GetMainHappenings(9, "onDoneOrErrorCallback_GetMainHappenings");
     WorldMap.refresh();
 };
 function onDoneOrErrorCallback_GetMainHappenings(%request, %unused) {
     if ((geTGF_tabs.getCurrentTab().name $= "main")) {
         cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        geTGF_Refresh.setActive(1);
+        1.setActive(geTGF_Refresh);
     }
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %itemType = "happening";
-    geTGF.clearItemList("main", %itemType);
+    %itemType.clearItemList(geTGF, "main");
     if (!(%request.checkSuccess())) {
-        geTGF.main_onGotDataOfType(%itemType);
+        %itemType.main_onGotDataOfType(geTGF);
         return;
     }
     %listBase = "happenings";
-    %count = %request.getResult(%listBase @ "Count");
+    %count = %listBase @ "Count".getResult(%request);
     %n = 0;
-    if ((%count < %n)) {
+    while ((%n < %count)) {
         %listItem = %listBase @ %n;
-        %id = %request.getResult(%listItem @ ".hostUserName");
-        %item = geTGF.createNewItem("main", %itemType, %id);
-        %request.copyListValueIntoObject(%item, %listItem, "accessMode");
-        %request.copyListValueIntoObject(%item, %listItem, "occupancy");
-        %request.copyListValueIntoObject(%item, %listItem, "baseImageURL");
-        %request.copyListValueIntoObject(%item, %listItem, "eventId");
-        %request.copyListValueIntoObject(%item, %listItem, "featured");
-        %request.copyListValueIntoObject(%item, %listItem, "friendOccupancy");
-        %request.copyListValueIntoObject(%item, %listItem, "goThereVURL");
-        %request.copyListValueIntoObject(%item, %listItem, "headline");
-        %request.copyListValueIntoObject(%item, %listItem, "hostUserName");
-        %request.copyListValueIntoObject(%item, %listItem, "moreInfoURL");
-        %request.copyListValueIntoObject(%item, %listItem, "apt");
-        %request.copyListValueIntoObject(%item, %listItem, "location.areaName");
-        %request.copyListValueIntoObject(%item, %listItem, "location.buildingName");
-        %request.copyListValueIntoObject(%item, %listItem, "location.serverName");
-        %item.subType = %request.getResult(%listItem @ ".type");
+        %id = %listItem @ ".hostUserName".getResult(%request);
+        %item = %id.createNewItem(geTGF, "main", %itemType);
+        "accessMode".copyListValueIntoObject(%request, %item, %listItem);
+        "occupancy".copyListValueIntoObject(%request, %item, %listItem);
+        "baseImageURL".copyListValueIntoObject(%request, %item, %listItem);
+        "eventId".copyListValueIntoObject(%request, %item, %listItem);
+        "featured".copyListValueIntoObject(%request, %item, %listItem);
+        "friendOccupancy".copyListValueIntoObject(%request, %item, %listItem);
+        "goThereVURL".copyListValueIntoObject(%request, %item, %listItem);
+        "headline".copyListValueIntoObject(%request, %item, %listItem);
+        "hostUserName".copyListValueIntoObject(%request, %item, %listItem);
+        "moreInfoURL".copyListValueIntoObject(%request, %item, %listItem);
+        "apt".copyListValueIntoObject(%request, %item, %listItem);
+        "location.areaName".copyListValueIntoObject(%request, %item, %listItem);
+        "location.buildingName".copyListValueIntoObject(%request, %item, %listItem);
+        "location.serverName".copyListValueIntoObject(%request, %item, %listItem);
+        %item.subType = %listItem @ ".type".getResult(%request);
         %item.goThereVURL = vurlClearResolution(%item.goThereVURL);
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    geTGF.removeItemsWithFieldValueFromList("main", %itemType, "hostUserName", "The-Manager");
-    geTGF.main_onGotDataOfType(%itemType);
+    "The-Manager".removeItemsWithFieldValueFromList(geTGF, "main", %itemType, "hostUserName");
+    %itemType.main_onGotDataOfType(geTGF);
 };
 function onDoneOrErrorCallback_GetOnlineFriends_Main(%request) {
     if ((geTGF_tabs.getCurrentTab().name $= "main")) {
         cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        geTGF_Refresh.setActive(1);
+        1.setActive(geTGF_Refresh);
     }
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %itemType = "person";
-    geTGF.clearItemList("main", %itemType);
+    %itemType.clearItemList(geTGF, "main");
     if (!(%request.checkSuccess())) {
-        geTGF.main_onGotDataOfType(%itemType);
+        %itemType.main_onGotDataOfType(geTGF);
         return;
     }
     %listBase = "friends";
-    %count = %request.getValue(%listBase @ "Count");
+    %count = %listBase @ "Count".getValue(%request);
     %n = 0;
-    if ((%count < %n)) {
+    while ((%n < %count)) {
         %listItem = %listBase @ %n;
-        %id = %request.getValue(%listItem @ ".userName");
-        %item = geTGF.createNewItem("main", %itemType, %id);
-        %request.copyListValueIntoObject(%item, %listItem, "age");
-        %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
-        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
-        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.buildingName");
-        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.serverName");
-        %request.copyListValueIntoObject(%item, %listItem, "gender");
-        %request.copyListValueIntoObject(%item, %listItem, "headline");
-        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.areaName");
-        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.buildingName");
-        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.serverName");
-        %request.copyListValueIntoObject(%item, %listItem, "ignored");
-        %request.copyListValueIntoObject(%item, %listItem, "locationIRL");
-        %request.copyListValueIntoObject(%item, %listItem, "onlineStatus");
-        %request.copyListValueIntoObject(%item, %listItem, "permissionsMask");
-        %request.copyListValueIntoObject(%item, %listItem, "profileViewCount");
-        %request.copyListValueIntoObject(%item, %listItem, "profileViewRanking");
-        %request.copyListValueIntoObject(%item, %listItem, "relationType");
-        %request.copyListValueIntoObject(%item, %listItem, "score");
-        %request.copyListValueIntoObject(%item, %listItem, "userName");
+        %id = %listItem @ ".userName".getValue(%request);
+        %item = %id.createNewItem(geTGF, "main", %itemType);
+        "age".copyListValueIntoObject(%request, %item, %listItem);
+        "currentActivities".copyListValueIntoObject(%request, %item, %listItem);
+        "currentLocation.areaName".copyListValueIntoObject(%request, %item, %listItem);
+        "currentLocation.buildingName".copyListValueIntoObject(%request, %item, %listItem);
+        "currentLocation.serverName".copyListValueIntoObject(%request, %item, %listItem);
+        "gender".copyListValueIntoObject(%request, %item, %listItem);
+        "headline".copyListValueIntoObject(%request, %item, %listItem);
+        "homeLocation.areaName".copyListValueIntoObject(%request, %item, %listItem);
+        "homeLocation.buildingName".copyListValueIntoObject(%request, %item, %listItem);
+        "homeLocation.serverName".copyListValueIntoObject(%request, %item, %listItem);
+        "ignored".copyListValueIntoObject(%request, %item, %listItem);
+        "locationIRL".copyListValueIntoObject(%request, %item, %listItem);
+        "onlineStatus".copyListValueIntoObject(%request, %item, %listItem);
+        "permissionsMask".copyListValueIntoObject(%request, %item, %listItem);
+        "profileViewCount".copyListValueIntoObject(%request, %item, %listItem);
+        "profileViewRanking".copyListValueIntoObject(%request, %item, %listItem);
+        "relationType".copyListValueIntoObject(%request, %item, %listItem);
+        "score".copyListValueIntoObject(%request, %item, %listItem);
+        "userName".copyListValueIntoObject(%request, %item, %listItem);
         %item.goThereVURL = "vside:/user/" @ %item.userName;
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    geTGF.main_onGotDataOfType(%itemType);
+    %itemType.main_onGotDataOfType(geTGF);
 };
 function onDoneOrErrorCallback_GetOnlineUsers(%request) {
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
-    %statusTextCtrl = geTGF_main_people.child("emptyText", 1);
-    %statusTextCtrl.setText("");
+    %statusTextCtrl = 1.child(geTGF_main_people, "emptyText");
+    "".setText(%statusTextCtrl);
     %itemType = "person";
-    geTGF.clearItemList("main", %itemType);
+    %itemType.clearItemList(geTGF, "main");
     if (!(%request.checkSuccess())) {
-        geTGF.main_onGotDataOfType(%itemType);
+        %itemType.main_onGotDataOfType(geTGF);
         return;
     }
     %listBase = "user";
-    %count = %request.getValue(%listBase @ "Count");
+    %count = %listBase @ "Count".getValue(%request);
     %n = 0;
-    if ((%count < %n)) {
+    while ((%n < %count)) {
         %listItem = %listBase @ %n;
-        %id = %request.getValue(%listItem @ ".userName");
-        %item = geTGF.createNewItem("main", %itemType, %id);
-        %request.copyListValueIntoObject(%item, %listItem, "age");
-        %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
-        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
-        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.buildingName");
-        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.serverName");
-        %request.copyListValueIntoObject(%item, %listItem, "gender");
-        %request.copyListValueIntoObject(%item, %listItem, "headline");
-        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.areaName");
-        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.buildingName");
-        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.serverName");
-        %request.copyListValueIntoObject(%item, %listItem, "ignored");
-        %request.copyListValueIntoObject(%item, %listItem, "locationIRL");
-        %request.copyListValueIntoObject(%item, %listItem, "onlineStatus");
-        %request.copyListValueIntoObject(%item, %listItem, "permissionsMask");
-        %request.copyListValueIntoObject(%item, %listItem, "profileViewCount");
-        %request.copyListValueIntoObject(%item, %listItem, "profileViewRanking");
-        %request.copyListValueIntoObject(%item, %listItem, "relationType");
-        %request.copyListValueIntoObject(%item, %listItem, "score");
-        %request.copyListValueIntoObject(%item, %listItem, "userName");
+        %id = %listItem @ ".userName".getValue(%request);
+        %item = %id.createNewItem(geTGF, "main", %itemType);
+        "age".copyListValueIntoObject(%request, %item, %listItem);
+        "currentActivities".copyListValueIntoObject(%request, %item, %listItem);
+        "currentLocation.areaName".copyListValueIntoObject(%request, %item, %listItem);
+        "currentLocation.buildingName".copyListValueIntoObject(%request, %item, %listItem);
+        "currentLocation.serverName".copyListValueIntoObject(%request, %item, %listItem);
+        "gender".copyListValueIntoObject(%request, %item, %listItem);
+        "headline".copyListValueIntoObject(%request, %item, %listItem);
+        "homeLocation.areaName".copyListValueIntoObject(%request, %item, %listItem);
+        "homeLocation.buildingName".copyListValueIntoObject(%request, %item, %listItem);
+        "homeLocation.serverName".copyListValueIntoObject(%request, %item, %listItem);
+        "ignored".copyListValueIntoObject(%request, %item, %listItem);
+        "locationIRL".copyListValueIntoObject(%request, %item, %listItem);
+        "onlineStatus".copyListValueIntoObject(%request, %item, %listItem);
+        "permissionsMask".copyListValueIntoObject(%request, %item, %listItem);
+        "profileViewCount".copyListValueIntoObject(%request, %item, %listItem);
+        "profileViewRanking".copyListValueIntoObject(%request, %item, %listItem);
+        "relationType".copyListValueIntoObject(%request, %item, %listItem);
+        "score".copyListValueIntoObject(%request, %item, %listItem);
+        "userName".copyListValueIntoObject(%request, %item, %listItem);
         %item.goThereVURL = "vside:/user/" @ %item.userName;
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    geTGF.main_onGotDataOfType(%itemType);
+    %itemType.main_onGotDataOfType(geTGF);
 };
 function onDoneOrErrorCallback_GetMainVenues(%request) {
     if ((geTGF_tabs.getCurrentTab().name $= "main")) {
         cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        geTGF_Refresh.setActive(1);
+        1.setActive(geTGF_Refresh);
     }
     log("network", "debug", "FAKE REQUEST: " @ getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
-    %request.putValue("statusMsg", "fakeSuccess");
+    "fakeSuccess".putValue(%request, "statusMsg");
     %request.timeFinish = getSimTime();
     %itemType = "venue";
-    geTGF.clearItemList("main", %itemType);
+    %itemType.clearItemList(geTGF, "main");
     if (!(%request.checkSuccess())) {
-        geTGF.main_onGotDataOfType(%itemType);
+        %itemType.main_onGotDataOfType(geTGF);
         return;
     }
     %listBase = "venues";
-    %count = %request.getValue(%listBase @ "Count");
+    %count = %listBase @ "Count".getValue(%request);
     %n = 0;
-    if ((%count < %n)) {
+    while ((%n < %count)) {
         %listItem = %listBase @ %n;
-        %id = %request.getValue(%listItem @ ".name");
-        %item = geTGF.createNewItem("main", %itemType, %id);
-        %request.copyListValueIntoObject(%item, %listItem, "codeName");
-        %request.copyListValueIntoObject(%item, %listItem, "fullName");
-        %request.copyListValueIntoObject(%item, %listItem, "location.areaName");
-        %request.copyListValueIntoObject(%item, %listItem, "location.buildingName");
-        %request.copyListValueIntoObject(%item, %listItem, "location.serverName");
-        %request.copyListValueIntoObject(%item, %listItem, "headline");
-        %request.copyListValueIntoObject(%item, %listItem, "occupancy");
-        %request.copyListValueIntoObject(%item, %listItem, "friendOccupancy");
-        %request.copyListValueIntoObject(%item, %listItem, "goThereVURL");
-        %n = (1.0 + %n);
+        %id = %listItem @ ".name".getValue(%request);
+        %item = %id.createNewItem(geTGF, "main", %itemType);
+        "codeName".copyListValueIntoObject(%request, %item, %listItem);
+        "fullName".copyListValueIntoObject(%request, %item, %listItem);
+        "location.areaName".copyListValueIntoObject(%request, %item, %listItem);
+        "location.buildingName".copyListValueIntoObject(%request, %item, %listItem);
+        "location.serverName".copyListValueIntoObject(%request, %item, %listItem);
+        "headline".copyListValueIntoObject(%request, %item, %listItem);
+        "occupancy".copyListValueIntoObject(%request, %item, %listItem);
+        "friendOccupancy".copyListValueIntoObject(%request, %item, %listItem);
+        "goThereVURL".copyListValueIntoObject(%request, %item, %listItem);
+        %n = (%n + 1.0);
     }
-    geTGF.main_onGotDataOfType(%itemType);
+    %itemType.main_onGotDataOfType(geTGF);
 };
 function geTGF::main_onGotDataOfType(%this, %type) {
     if ((%type $= "happening")) {
@@ -633,38 +633,38 @@ function geTGF::main_onGotDataOfType(%this, %type) {
     }
     error("unknown type:" @ " " @ %type @ " " @ getTrace());
     return;
-    %list = %this.getItemList("main", %type);
+    %list = %type.getItemList(%this, "main");
     %num = %list.count();
-    %control.setNumChildren(%num);
+    %num.setNumChildren(%control);
     %n = 0;
-    if ((%num < %n)) {
-        %cell = %control.getObject(%n);
-        %item = %list.getValue(%n);
+    while ((%n < %num)) {
+        %cell = %n.getObject(%control);
+        %item = %n.getValue(%list);
         %cell.Item = %item;
         %cell.setProfile();
         %cell.isInviteFriendsButton = ETSDarkBoxNonModalProfile @ 0;
-        %control.updateCellFromItsItem(%cell);
-        %n = (1.0 + %n);
+        %cell.updateCellFromItsItem(%control);
+        %n = (%n + 1.0);
     }
-    %statusTextCtrl = %control.getParent().child("emptyText");
-    (%num < %n);
-    if ((0.0 <= %num)) {
+    %statusTextCtrl = "emptyText".child(%control.getParent());
+    (%n < %num);
+    if ((%num <= 0.0)) {
         %text = %statusTextCtrl.textNothing;
     }
     %text = "";
-    %statusTextCtrl.setText(%text);
+    %text.setText(%statusTextCtrl);
 };
 function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     %item = %cell.Item;
     %cell.deleteMembers();
     %cont = new GuiControl("") {
         profile = 0 @ "EtsNonModalProfile";
-        extent = (2.0 - getWord(%cell.getExtent(), 0)) @ " " @ (2.0 - getWord(%cell.getExtent(), 1));
+        extent = (getWord(%cell.getExtent(), 0) - 2.0) @ " " @ (getWord(%cell.getExtent(), 1) - 2.0);
         position = "1 1";
         horizSizing = "width";
         vertSizing = "top";
     };
-    %cell.add(%cont);
+    %cont.add(%cell);
     %w = getWord(%cell.getParent().childrenExtent, 0);
     %h = getWord(%cell.getParent().childrenExtent, 1);
     if ((%item.eventID $= "")) {
@@ -678,24 +678,24 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
         vertSizing = "top";
         fitInParentAlign = 1;
     };
-    %cont.add(%ctrl);
+    %ctrl.add(%cont);
     %url = %item.baseImageURL;
     if ((%url $= "")) {
         %url = $Net::BuildDirPhotoURL @ urlEncode(%item.hostUserName);
     }
     %url = !(%url @ "?size=" @ " " @ %item.eventID $= "") ? "M" : "M";
-    %ctrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
+    "platform/client/ui/tgf/tgf_profile_default".setBitmap(%ctrl);
     %ctrl.fitInParentAsBitmap();
-    %ctrl.downloadAndApplyBitmap(%url);
+    %url.downloadAndApplyBitmap(%ctrl);
     %tmp = 20;
     %ctrl = new GuiControl("") {
         profile = 0 @ "EtsDarkBorderlessBoxProfile";
         extent = getWord(%cont.getExtent(), 0) @ " " @ %tmp;
-        position = 0 @ " " @ (%tmp - getWord(%cont.getExtent(), 1));
+        position = 0 @ " " @ (getWord(%cont.getExtent(), 1) - %tmp);
         horizSizing = "width";
         vertSizing = "top";
     };
-    %cont.add(%ctrl);
+    %ctrl.add(%cont);
     %ctrl = new GuiBitmapButtonCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         position = "-1 -1";
@@ -703,83 +703,83 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_190x109";
         command = "geTGF.main_OnClickItem(\"" @ %item @ "\");";
     };
-    %cont.add(%ctrl);
+    %ctrl.add(%cont);
     %ctrl = new GuiMLTextCtrl("") {
         profile = 0 @ "ETSNonModalProfile";
-        position = 2 @ " " @ (16.0 - getWord(%cont.getExtent(), 1));
-        extent = (9.0 - getWord(%cont.getExtent(), 0)) @ " " @ 20;
+        position = 2 @ " " @ (getWord(%cont.getExtent(), 1) - 16.0);
+        extent = (getWord(%cont.getExtent(), 0) - 9.0) @ " " @ 20;
         text = mlStyle("<just:left>" @ %item.headline @ "<just:right>", "tgfItem_headline");
         horizSizing = "width";
         vertSizing = "top";
         lineSpacing = 0;
     };
-    %cont.add(%ctrl);
-    if ((-(1.0) == %item.occupancy)) {
+    %ctrl.add(%cont);
+    if ((%item.occupancy == -(1.0))) {
         %occupancyText = "";
     }
-    if ((0.0 == %item.occupancy)) {
+    if ((%item.occupancy == 0.0)) {
         %occupancyText = "(empty) ";
     }
     %occupancyText = "<b>" @ %item.occupancy @ " P ";
     %ctrl = new GuiMLTextCtrl("") {
         profile = 0 @ "ETSNonModalProfile";
-        position = 0 @ " " @ (38.0 - getWord(%cont.getExtent(), 1));
-        extent = (9.0 - getWord(%cont.getExtent(), 0)) @ " " @ 20;
+        position = 0 @ " " @ (getWord(%cont.getExtent(), 1) - 38.0);
+        extent = (getWord(%cont.getExtent(), 0) - 9.0) @ " " @ 20;
         text = mlStyle("<just:left>" @ %item.hostUserName @ "<just:right><font:Arial:14>" @ %occupancyText, "tgfItem_host");
         horizSizing = "width";
         vertSizing = "top";
     };
-    %cont.add(%ctrl);
+    %ctrl.add(%cont);
     if (!(%item.eventID $= "")) {
-        %bitmap = geTGF.getEventTypePostItTagBitmap(%item);
+        %bitmap = %item.getEventTypePostItTagBitmap(geTGF);
         %ctrl = new GuiBitmapCtrl("") {
             bitmap = 0 @ %bitmap;
             profile = "EtsNonModalProfile";
             extent = "82 19";
-            position = (0.0 - (82.0 - getWord(%cont.getExtent(), 0))) @ " " @ 0;
+            position = ((getWord(%cont.getExtent(), 0) - 82.0) - 0.0) @ " " @ 0;
             horizSizing = "left";
             vertSizing = "bottom";
         };
-        %cont.add(%ctrl);
+        %ctrl.add(%cont);
     }
 };
 function geTGF_main_people::onGotData(%this) {
-    %list = geTGF.getItemList("main", "person");
+    %list = "person".getItemList(geTGF, "main");
     %num = %list.size();
-    %statusTextCtrl = %this.child("emptyText");
-    if ((0.0 <= %num)) {
+    %statusTextCtrl = "emptyText".child(%this);
+    if ((%num <= 0.0)) {
     }
     %text = "";
     %statusTextCtrl.textNothing;
-    %statusTextCtrl.setText(%text);
+    %text.setText(%statusTextCtrl);
     if (!(isObject(geTGFGoRound))) {
-        geTGF_main_PeopleGoRound_Container.add(newTGFGoRound(geTGFGoRound));
-        geTGFGoRound.reparentSameSize(geTGF_main_PeopleGoRound_Container, "");
+        newTGFGoRound(geTGFGoRound).add(geTGF_main_PeopleGoRound_Container);
+        "".reparentSameSize(geTGFGoRound, geTGF_main_PeopleGoRound_Container);
         %statusTextCtrl.mDeetsMinWidth = 0 @ geTGFGoRound;
         %statusTextCtrl.mLilThumbPadding = 5 @ geTGFGoRound;
         %statusTextCtrl.mLilThumbHeight = geTGFGoRound.calcMaximumThumbHeight() @ geTGFGoRound;
         %statusTextCtrl.mTickPeriodMS = 4500 @ geTGFGoRound;
         geTGFGoRound.rebuild();
     }
-    geTGFGoRound.setItemList(%list);
+    %list.setItemList(geTGFGoRound);
     %this.tryUpdateWorldmapSummaries();
 };
 function geTGF_main_people::tryUpdateWorldmapSummaries(%this) {
-    geTGF_main_people_locationsText.setTextWithStyle("");
+    "".setTextWithStyle(geTGF_main_people_locationsText);
     if (isObject(MapRequest)) {
-        %this.schedule(1000, "tryUpdateWorldmapSummaries");
+        "tryUpdateWorldmapSummaries".schedule(%this, 1000);
     }
     %areaNames = "lga nv rj pvt";
     %total = 0;
     %text = "";
     %delim = "";
     %n = 0;
-    if ((getWordCount(%areaNames) < %n)) {
+    while ((%n < getWordCount(%areaNames))) {
         %areaName = getWord(%areaNames, %n);
         if (!(%areaName $= "pvt")) {
-            %userCount = WorldAreaSummaries.get(%areaName).occupancy;
+            %userCount = %areaName.get(WorldAreaSummaries).occupancy;
         }
-        %userCount = WorldAreaSummaries.get(%areaName).totalOccupancy;
+        %userCount = %areaName.get(WorldAreaSummaries).totalOccupancy;
         %areaName @ WorldAreaSummaries;
         %link = "TGF_GOTO" @ " " @ %areaName;
         if ((%areaName $= "pvt")) {
@@ -787,15 +787,15 @@ function geTGF_main_people::tryUpdateWorldmapSummaries(%this) {
         }
         %areaName = DestinationList::GetAreaNameUserFacingName(DestinationList::GetAreaNameCity(%areaName));
         %text = %text @ %delim @ "<spush><just:left><a:gamelink:" @ %link @ ">" @ %areaName @ "" @ "\t" @ "<just:right>" @ commaify(%userCount) @ "</a><spop>";
-        %total = (%userCount + %total);
+        %total = (%total + %userCount);
         %delim = "<br>";
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    %withS = (1.0 == %total) ? "" : "s";
-    (getWordCount(%areaNames) < %n);
+    %withS = (%total == 1.0) ? "" : "s";
+    (%n < getWordCount(%areaNames));
     %text = "<spush><just:center><font:arial:16>" @ commaify(%total) @ " vSider" @ %withS @ " In-World:<spop><br>" @ %text;
     %text = "<tab:100>" @ %text;
-    geTGF_main_people_locationsText.setTextWithStyle(%text);
+    %text.setTextWithStyle(geTGF_main_people_locationsText);
 };
 function geTGF_main_people_locationsText::onURL(%this, %url) {
     %cmd = firstWord(%url);
@@ -805,19 +805,19 @@ function geTGF_main_people_locationsText::onURL(%this, %url) {
     }
     %areaName = restWords(%url);
     if ((%areaName $= "pvt")) {
-        geTGF.openToTabName("HOTSPOTS");
+        "HOTSPOTS".openToTabName(geTGF);
     }
     if ((%areaName $= "lga")) {
-        geTGF.openToTabName("MAP");
-        WorldMap.getCityButton(%areaName, 1, 0).performClick();
+        "MAP".openToTabName(geTGF);
+        0.getCityButton(WorldMap, %areaName, 1).performClick();
     }
     if ((%areaName $= "nv")) {
-        geTGF.openToTabName("MAP");
-        WorldMap.getCityButton(%areaName, 1, 0).performClick();
+        "MAP".openToTabName(geTGF);
+        0.getCityButton(WorldMap, %areaName, 1).performClick();
     }
     if ((%areaName $= "rj")) {
-        geTGF.openToTabName("MAP");
-        WorldMap.getCityButton(%areaName, 1, 0).performClick();
+        "MAP".openToTabName(geTGF);
+        0.getCityButton(WorldMap, %areaName, 1).performClick();
     }
     error(getScopeName() @ " " @ "- unknown areaname" @ " " @ %areaName @ " " @ getTrace());
 };
@@ -835,14 +835,14 @@ function geTGF_tabs::refreshMOTD(%this) {
     }
     new ManagerRequest(MOTDRequest);
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(MOTDRequest);
+        MOTDRequest.add(MissionCleanup);
     }
     %url = $Net::ClientServiceURL @ "/GlobalMessage";
     %url = %url @ "?user=" @ urlEncode($Player::Name);
     %url = %url @ "&token=" @ urlEncode($Token);
     %url = %url @ "&type=" @ urlEncode("motd");
     log("communication", "debug", "sending request to get current motd: " @ %url);
-    MOTDRequest.setURL(%url);
+    %url.setURL(MOTDRequest);
     MOTDRequest.start();
 };
 function MOTDRequest::onDone(%this) {
@@ -851,11 +851,11 @@ function MOTDRequest::onDone(%this) {
         geTGF_tabs.onMOTDPostFailed();
         log("communication", "warn", "MOTDRequest::onDone status: " @ %status);
     }
-    %text = %this.getValue("message");
+    %text = "message".getValue(%this);
     if (!(%text $= "")) {
         %text = decodeMOTDString(%text);
-        MOTDText.setText(%text);
-        WorldAreaSummaries.get(%areaName).qotdID = "" @ MOTDText;
+        %text.setText(MOTDText);
+        %areaName.get(WorldAreaSummaries).qotdID = "" @ MOTDText;
     }
     geTGF_tabs.onMOTDPostFailed();
 };
@@ -865,21 +865,21 @@ function geTGF_tabs::refreshQOTD(%this) {
     }
     new ManagerRequest(QOTDRequest);
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(QOTDRequest);
+        QOTDRequest.add(MissionCleanup);
     }
     %url = $Net::ClientServiceURL @ "/GlobalMessage";
     %url = %url @ "?user=" @ urlEncode($Player::Name);
     %url = %url @ "&token=" @ urlEncode($Token);
     %url = %url @ "&type=" @ urlEncode("qotd");
     log("communication", "debug", "sending request to get current qotd: " @ %url);
-    QOTDRequest.setURL(%url);
+    %url.setURL(QOTDRequest);
     QOTDRequest.start();
 };
 function QOTDRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     %text = "";
     if ((%status $= "success")) {
-        %text = %this.getValue("message");
+        %text = "message".getValue(%this);
         %text = decodeMOTDString(%text);
         %qID = trim(getWords(%text, 0, 0));
         %text = getWords(%text, 1);
@@ -890,8 +890,8 @@ function QOTDRequest::onDone(%this) {
         }
     }
     if (!(%text $= "")) {
-        MOTDText.setText(%text);
-        WorldAreaSummaries.get(%areaName).qotdID = %qID @ MOTDText;
+        %text.setText(MOTDText);
+        %areaName.get(WorldAreaSummaries).qotdID = %qID @ MOTDText;
     }
     geTGF_tabs.refreshMOTD();
 };
@@ -899,7 +899,7 @@ function MOTDText::onURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
         %url = restWords(%url);
     }
-    if ((0.0 != strstr(%url, "answer:"))) {
+    if ((strstr(%url, "answer:") != 0.0)) {
         Parent::onURL(%this, %url);
         return;
     }
@@ -909,22 +909,22 @@ function MOTDText::onURL(%this, %url) {
     %trackURL = %trackURL @ "/" @ %this.qotdID;
     %trackURL = %trackURL @ "/" @ %answer;
     %analytic = getAnalytic();
-    %analytic.trackPageView(%trackURL);
-    %this.setText();
-    geTGF_tabs.schedule(1000, "refreshMOTD");
+    %trackURL.trackPageView(%analytic);
+    .setText(%this);
+    "refreshMOTD".schedule(geTGF_tabs, 1000);
     $UserPref::QOTD::answered = $UserPref::QOTD::answered @ " " @ %this.qotdID;
 };
 function geTGF_tabs::onMOTDPostFailed(%this) {
-    MOTDText.setText("");
+    "".setText(MOTDText);
     %fileName = "projects/common/defaultMOTD.txt";
     %fo = new FileObject("");;
     0;
-    if (%fo.openForRead(%fileName)) {
+    if (%fileName.openForRead(%fo)) {
         %text = "";
-        if (!(%fo.isEOF())) {
+        while (!(%fo.isEOF())) {
             %text = %text @ %fo.readLine() @ "\n";
         }
-        MOTDText.setText(%text);
+        %text.setText(MOTDText);
     }
     error("unable to find default motd: " @ %fileName);
     %fo.delete();
@@ -942,9 +942,9 @@ function geTGF::onFAQ(%this) {
     openHelpURL();
 };
 function geTGF::main_OnClickItem(%this, %item) {
-    %this.DoDetails("main", %item);
+    %item.DoDetails(%this, "main");
 };
 function geTGF::main_GetAndOpenDetailsContainer(%this, %item) {
-    %this.constructDeetsWindow(geDeetsWindow, %item);
-    geDeetsLayer.setVisible(1);
+    %item.constructDeetsWindow(%this, geDeetsWindow);
+    1.setVisible(geDeetsLayer);
 };

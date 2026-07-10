@@ -9,9 +9,9 @@ function OpenALInit() {
     echo("   Extensions: " @ %extString);
     alxListenerf(AL_GAIN_LINEAR, $UserPref::Audio::masterVolume);
     %channel = 1;
-    if ((8.0 <= %channel)) {
+    while ((%channel <= 8.0)) {
         alxSetChannelVolume(%channel, %channel[$UserPref::Audio::channelVolume @ %channel]);
-        %channel = (1.0 + %channel);
+        %channel = (%channel + 1.0);
     }
     echo("");
 };

@@ -10,33 +10,33 @@ function initProjectsNonReloadable() {
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %file = "./" @ getWord(%folders, %n) @ "/initNonReloadable.cs";
         log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function initProjectsReloadable() {
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %file = "./" @ getWord(%folders, %n) @ "/initReloadable.cs";
         log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function initProjectsReloadableLate() {
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %file = "./" @ getWord(%folders, %n) @ "/initReloadableLate.cs";
         log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
 };
 function parseProjectArg() {

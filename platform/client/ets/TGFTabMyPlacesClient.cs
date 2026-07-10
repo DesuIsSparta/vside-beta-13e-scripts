@@ -1,36 +1,36 @@
 function geTGF_tabs::fillTabMyPlace(%this) {
     %tabName = "myplace";
-    %tab = %this.getTabWithName(%tabName);
+    %tab = %tabName.getTabWithName(%this);
     if (%tab.filled) {
         if (isObject(%tab.GuiTable)) {
-            %tab.GuiTable.makeFirstResponder(1);
+            1.makeFirstResponder(%tab.GuiTable);
         }
         return;
     }
     %tab.filled = 1;
-    %this.fillTabGeneric(%tab);
+    %tab.fillTabGeneric(%this);
     %dataTable = new DataTable(geTGF_MyPlaceDataTable);;
-    %dataTable.addColumn("event", "", "icon", 20, 1, 1, 0);
-    %dataTable.addColumn("description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", 342, 1, 1, 1);
-    %dataTable.addColumn("username", mlStyle("Host", "tgfTables_ColumnHeader"), "string", 150, 1, 1, 1);
-    %dataTable.addColumn("location", mlStyle("Where", "tgfTables_ColumnHeader"), "string", 202, 1, 1, 1);
-    %dataTable.addColumn("population", mlStyle("People", "tgfTables_ColumnHeader"), "number", 70, 1, 1, 1);
-    %dataTable.addColumn("friends", mlStyle("Friends", "tgfTables_ColumnHeader"), "number", 70, 1, 1, 1);
-    %dataTable.addColumn("access", mlStyle("Access", "tgfTables_ColumnHeader"), "icon", 70, 1, 1, 0);
-    %dataTable.setUniqueIdentifierColumns("description");
-    %dataTable.addIconToColumn("event", "publicEvent", "platform/client/ui/tgf/tgf_calendar_19x17_blue");
-    %dataTable.addIconToColumn("event", "featuredEvent", "platform/client/ui/tgf/tgf_calendar_19x17_green");
-    %dataTable.addIconToColumn("event", "regularEvent", "platform/client/ui/tgf/tgf_calendar_19x17");
-    %dataTable.addIconToColumn("event", "notAnEvent", "platform/client/ui/tgf/tgf_house_white");
-    %dataTable.addIconToColumn("access", "open", "platform/client/ui/tgf/tgf_door_open_white");
-    %dataTable.addIconToColumn("access", "friendsonly", "platform/client/ui/tgf/tgf_door_heart_white");
-    %dataTable.addIconToColumn("access", "passwordprotected", "platform/client/ui/tgf/tgf_door_key_white");
+    0.addColumn(%dataTable, "event", "", "icon", 20, 1, 1);
+    1.addColumn(%dataTable, "description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", 342, 1, 1);
+    1.addColumn(%dataTable, "username", mlStyle("Host", "tgfTables_ColumnHeader"), "string", 150, 1, 1);
+    1.addColumn(%dataTable, "location", mlStyle("Where", "tgfTables_ColumnHeader"), "string", 202, 1, 1);
+    1.addColumn(%dataTable, "population", mlStyle("People", "tgfTables_ColumnHeader"), "number", 70, 1, 1);
+    1.addColumn(%dataTable, "friends", mlStyle("Friends", "tgfTables_ColumnHeader"), "number", 70, 1, 1);
+    0.addColumn(%dataTable, "access", mlStyle("Access", "tgfTables_ColumnHeader"), "icon", 70, 1, 1);
+    "description".setUniqueIdentifierColumns(%dataTable);
+    "platform/client/ui/tgf/tgf_calendar_19x17_blue".addIconToColumn(%dataTable, "event", "publicEvent");
+    "platform/client/ui/tgf/tgf_calendar_19x17_green".addIconToColumn(%dataTable, "event", "featuredEvent");
+    "platform/client/ui/tgf/tgf_calendar_19x17".addIconToColumn(%dataTable, "event", "regularEvent");
+    "platform/client/ui/tgf/tgf_house_white".addIconToColumn(%dataTable, "event", "notAnEvent");
+    "platform/client/ui/tgf/tgf_door_open_white".addIconToColumn(%dataTable, "access", "open");
+    "platform/client/ui/tgf/tgf_door_heart_white".addIconToColumn(%dataTable, "access", "friendsonly");
+    "platform/client/ui/tgf/tgf_door_key_white".addIconToColumn(%dataTable, "access", "passwordprotected");
     %container = new GuiControl("") {
         profile = 0 @ ETSNonModalProfile;
         position = "0 7";
         extent = "946 240";
     };
-    %tab.add(%container);
+    %container.add(%tab);
     %dottedWindow = new GuiWindowCtrl("") {
         profile = 0 @ DottedWindowProfile;
         position = "7 16";
@@ -43,53 +43,53 @@ function geTGF_tabs::fillTabMyPlace(%this) {
         resizeWidth = 0;
         resizeHeight = 0;
     };
-    %container.add(%dottedWindow);
+    %dottedWindow.add(%container);
     %label = new GuiMLTextCtrl("") {
         position = 0 @ "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
-    %label.setTextWithStyle("My Places");
-    %container.add(%label);
+    "My Places".setTextWithStyle(%label);
+    %label.add(%container);
     %guiTable = new GuiTableCtrl(geTGF_MyPlaceGuiTable) {
         position = "2 20";
         extent = "933 220";
         visible = 1;
         spacing = 2;
     };
-    %guiTable.setHeaderCellUniformExtent(22);
-    %guiTable.setHeaderMLTextBoxTopMargin(0);
-    %guiTable.setChildrenExtents(18);
-    %guiTable.setDataTable(%dataTable);
+    22.setHeaderCellUniformExtent(%guiTable);
+    0.setHeaderMLTextBoxTopMargin(%guiTable);
+    18.setChildrenExtents(%guiTable);
+    %dataTable.setDataTable(%guiTable);
     %tab.GuiTable = %guiTable;
-    %container.add(%guiTable);
+    %guiTable.add(%container);
     %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
         position = 0 @ "226 4";
         extent = "717 18";
         noEntriesText = ".. Strange, something went wrong. Try pressing refresh in a few seconds.";
     };
-    %container.add(%guiTable.alternativeTextCtrl);
+    %guiTable.alternativeTextCtrl.add(%container);
     %dataTable = new DataTable(geTGF_OtherPlacesDataTable);;
-    %dataTable.addColumn("event", "", "icon", 20, 1, 1, 0);
-    %dataTable.addColumn("description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", (%guiTable.spacing + (150.0 + 342.0)), 1, 1, 1);
-    %dataTable.addColumn("location", mlStyle("Where", "tgfTables_ColumnHeader"), "string", 202, 1, 1, 1);
-    %dataTable.addColumn("population", mlStyle("People", "tgfTables_ColumnHeader"), "number", 70, 1, 1, 1);
-    %dataTable.addColumn("friends", mlStyle("Friends", "tgfTables_ColumnHeader"), "number", 70, 1, 1, 1);
-    %dataTable.addColumn("access", mlStyle("Access", "tgfTables_ColumnHeader"), "icon", 70, 1, 1, 0);
-    %dataTable.setUniqueIdentifierColumns("description");
-    %dataTable.addIconToColumn("event", "publicEvent", "platform/client/ui/tgf/tgf_calendar_19x17_blue");
-    %dataTable.addIconToColumn("event", "featuredEvent", "platform/client/ui/tgf/tgf_calendar_19x17_green");
-    %dataTable.addIconToColumn("event", "regularEvent", "platform/client/ui/tgf/tgf_calendar_19x17");
-    %dataTable.addIconToColumn("event", "notAnEvent", "platform/client/ui/tgf/tgf_house_white");
-    %dataTable.addIconToColumn("access", "open", "platform/client/ui/tgf/tgf_door_open_white");
-    %dataTable.addIconToColumn("access", "friendsonly", "platform/client/ui/tgf/tgf_door_heart_white");
-    %dataTable.addIconToColumn("access", "passwordprotected", "platform/client/ui/tgf/tgf_door_key_white");
+    0.addColumn(%dataTable, "event", "", "icon", 20, 1, 1);
+    1.addColumn(%dataTable, "description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", ((342.0 + 150.0) + %guiTable.spacing), 1, 1);
+    1.addColumn(%dataTable, "location", mlStyle("Where", "tgfTables_ColumnHeader"), "string", 202, 1, 1);
+    1.addColumn(%dataTable, "population", mlStyle("People", "tgfTables_ColumnHeader"), "number", 70, 1, 1);
+    1.addColumn(%dataTable, "friends", mlStyle("Friends", "tgfTables_ColumnHeader"), "number", 70, 1, 1);
+    0.addColumn(%dataTable, "access", mlStyle("Access", "tgfTables_ColumnHeader"), "icon", 70, 1, 1);
+    "description".setUniqueIdentifierColumns(%dataTable);
+    "platform/client/ui/tgf/tgf_calendar_19x17_blue".addIconToColumn(%dataTable, "event", "publicEvent");
+    "platform/client/ui/tgf/tgf_calendar_19x17_green".addIconToColumn(%dataTable, "event", "featuredEvent");
+    "platform/client/ui/tgf/tgf_calendar_19x17".addIconToColumn(%dataTable, "event", "regularEvent");
+    "platform/client/ui/tgf/tgf_house_white".addIconToColumn(%dataTable, "event", "notAnEvent");
+    "platform/client/ui/tgf/tgf_door_open_white".addIconToColumn(%dataTable, "access", "open");
+    "platform/client/ui/tgf/tgf_door_heart_white".addIconToColumn(%dataTable, "access", "friendsonly");
+    "platform/client/ui/tgf/tgf_door_key_white".addIconToColumn(%dataTable, "access", "passwordprotected");
     %container = new GuiControl("") {
         profile = 0 @ ETSNonModalProfile;
         position = "0 250";
         extent = "946 240";
     };
-    %tab.add(%container);
+    %container.add(%tab);
     %dottedWindow = new GuiWindowCtrl("") {
         profile = 0 @ DottedWindowProfile;
         position = "7 16";
@@ -102,60 +102,60 @@ function geTGF_tabs::fillTabMyPlace(%this) {
         resizeWidth = 0;
         resizeHeight = 0;
     };
-    %container.add(%dottedWindow);
+    %dottedWindow.add(%container);
     %label = new GuiMLTextCtrl("") {
         position = 0 @ "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
-    %label.setTextWithStyle("Other Available Places");
-    %container.add(%label);
+    "Other Available Places".setTextWithStyle(%label);
+    %label.add(%container);
     %guiTable = new GuiTableCtrl(geTGF_OtherPlacesGuiTable) {
         position = "2 20";
         extent = "933 220";
         spacing = 2;
     };
-    %guiTable.setHeaderCellUniformExtent(22);
-    %guiTable.setHeaderMLTextBoxTopMargin(0);
-    %guiTable.setChildrenExtents(18);
-    %guiTable.setDataTable(%dataTable);
+    22.setHeaderCellUniformExtent(%guiTable);
+    0.setHeaderMLTextBoxTopMargin(%guiTable);
+    18.setChildrenExtents(%guiTable);
+    %dataTable.setDataTable(%guiTable);
     %tab.GuiTable = %guiTable;
-    %container.add(%guiTable);
+    %guiTable.add(%container);
     %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
         position = 0 @ "226 4";
         extent = "717 18";
         noEntriesText = ".. You own them all!";
     };
-    %container.add(%guiTable.alternativeTextCtrl);
+    %guiTable.alternativeTextCtrl.add(%container);
     if (0) {
         %invite = new GuiMLTextCtrl("") {
             position = 0 @ "250 473";
             extent = "600 30";
             text = mlStyle(, "tgfTables_Invite");
         };
-        %tab.add(%invite);
+        %invite.add(%tab);
     }
     %this.refreshTabMyPlace();
 };
 function geTGF_tabs::onShowTabMyPlace(%this) {
     cancel(geTGF, geTGF_Refresh_Schedule);
-    geTGF_Refresh.setActive(1);
-    geTGF_Refresh.setVisible(1);
-    geTGF_MyPlaceGuiTable.makeFirstResponder(1);
+    1.setActive(geTGF_Refresh);
+    1.setVisible(geTGF_Refresh);
+    1.makeFirstResponder(geTGF_MyPlaceGuiTable);
 };
 $gHaveGottenManagerSpaces = 0;
 function geTGF_tabs::refreshTabMyPlace(%this) {
-    geTGF_MyPlaceGuiTable.setVisible(alternativeTextCtrl, 1);
-    geTGF_MyPlaceGuiTable.setText(alternativeTextCtrl, mlStyle("Fetching..", "tgfTables_DataCell_Text"));
+    1.setVisible(geTGF_MyPlaceGuiTable, alternativeTextCtrl);
+    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_MyPlaceGuiTable, alternativeTextCtrl);
     getOwnerSpacesInfo($Player::Name, "geTGF_OnCompleted_MyPlace");
-    geTGF_OtherPlacesGuiTable.setVisible(alternativeTextCtrl, 1);
-    geTGF_OtherPlacesGuiTable.setText(alternativeTextCtrl, mlStyle("Fetching..", "tgfTables_DataCell_Text"));
+    1.setVisible(geTGF_OtherPlacesGuiTable, alternativeTextCtrl);
+    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_OtherPlacesGuiTable, alternativeTextCtrl);
     getOwnerSpacesInfo("The-Manager", "geTGF_OnCompleted_MyPlace");
 };
 function geTGF_OnCompleted_MyPlace(%tracker) {
     if ((geTGF_tabs.getCurrentTab().name $= "myplace")) {
         cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
-        geTGF_Refresh.setActive(1);
+        1.setActive(geTGF_Refresh);
     }
     if (!(isObject(%tracker))) {
         error(getScopeName() @ " " @ "- null tracker." @ " " @ getTrace());
@@ -171,69 +171,69 @@ function geTGF_OnCompleted_MyPlace(%tracker) {
     // unhandled opcode 515 at 0x000008F1
     %listName = geTGF_OtherPlacesGuiTable;
     %properOwnerName = "The-Manager";
-    geTGF.clearItemList(%listName, "happening");
+    "happening".clearItemList(geTGF, %listName);
     %count = %tracker.getCount();
     %n = 0;
-    if ((%count < %n)) {
-        %itemObj = %tracker.getObject(%n);
-        if (!(%itemObj.get("owner") $= %properOwnerName)) {
-            error(getScopeName() @ " " @ "- improper owner. should be \"" @ %properOwnerName @ "\" but is \"" @ %itemObj.get("owner") @ "\". skipping." @ " " @ getTrace());
+    while ((%n < %count)) {
+        %itemObj = %n.getObject(%tracker);
+        if (!("owner".get(%itemObj) $= %properOwnerName)) {
+            error(getScopeName() @ " " @ "- improper owner. should be \"" @ %properOwnerName @ "\" but is \"" @ "owner".get(%itemObj) @ "\". skipping." @ " " @ getTrace());
         }
-        if ((geTGF_OtherPlacesGuiTable.getId() == %guiTable.getId())) {
+        if ((%guiTable.getId() == geTGF_OtherPlacesGuiTable.getId())) {
         }
-        if (!(%itemObj.get("type") $= "MODEL")) {
-            echo(getScopeName() @ " " @ "- skipping space" @ " " @ %itemObj.get("description"));
+        if (!("type".get(%itemObj) $= "MODEL")) {
+            echo(getScopeName() @ " " @ "- skipping space" @ " " @ "description".get(%itemObj));
         }
-        %id = %itemObj.get("description") @ " " @ formatInt("%0.3d", %n);
-        %item = geTGF.createNewItem(%listName, "happening", %id);
-        %item.accessMode = %itemObj.get("access");
-        %item.baseImageURL = %itemObj.get("baseImageURL");
-        %item.eventID = %itemObj.get("eventId");
-        %item.featured = %itemObj.get("featured");
-        %item.occupancy = %itemObj.get("occupancy");
-        %item.friendOccupancy = %itemObj.get("friendOccupancy");
-        %item.goThereVURL = %itemObj.get("URI");
-        %item.headline = %itemObj.get("description");
-        %item.hostUserName = %itemObj.get("owner");
-        %item.location_areaName = %itemObj.get("location.areaName");
-        %item.location_buildingName = %itemObj.get("location.buildingName");
-        %item.location_serverName = %itemObj.get("location.serverName");
-        %item.moreInfoURL = %itemObj.get("moreInfoURL");
+        %id = "description".get(%itemObj) @ " " @ formatInt("%0.3d", %n);
+        %item = %id.createNewItem(geTGF, %listName, "happening");
+        %item.accessMode = "access".get(%itemObj);
+        %item.baseImageURL = "baseImageURL".get(%itemObj);
+        %item.eventID = "eventId".get(%itemObj);
+        %item.featured = "featured".get(%itemObj);
+        %item.occupancy = "occupancy".get(%itemObj);
+        %item.friendOccupancy = "friendOccupancy".get(%itemObj);
+        %item.goThereVURL = "URI".get(%itemObj);
+        %item.headline = "description".get(%itemObj);
+        %item.hostUserName = "owner".get(%itemObj);
+        %item.location_areaName = "location.areaName".get(%itemObj);
+        %item.location_buildingName = "location.buildingName".get(%itemObj);
+        %item.location_serverName = "location.serverName".get(%itemObj);
+        %item.moreInfoURL = "moreInfoURL".get(%itemObj);
         %item.subType = (%item.eventID $= "") ? "apt" : "aptEvent";
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    if (geTGF.testItemList("myplace", "happening")) {
+    if ("happening".testItemList(geTGF, "myplace")) {
     }
-    %bothListsExist = geTGF.testItemList("otherplaces", "happening");
-    (%count < %n);
+    %bothListsExist = "happening".testItemList(geTGF, "otherplaces");
+    (%n < %count);
     if (%bothListsExist) {
         geTGF_OnCompleted_MyPlaceRemoveOwnedSpacesFromAvailableList();
-        if ((geTGF_OtherPlacesGuiTable.getId() != %guiTable.getId())) {
+        if ((%guiTable.getId() != geTGF_OtherPlacesGuiTable.getId())) {
             populateMyPlaceTableFromItemList(geTGF_OtherPlacesGuiTable, "otherplaces", "happening");
         }
     }
     populateMyPlaceTableFromItemList(%guiTable, %listName, "happening");
 };
 function geTGF_OnCompleted_MyPlaceRemoveOwnedSpacesFromAvailableList() {
-    geTGF.removeItemsFromList1WithMatchingItemInList2("otherplaces", "happening", "myplace", "happening", "location_areaName");
+    "location_areaName".removeItemsFromList1WithMatchingItemInList2(geTGF, "otherplaces", "happening", "myplace", "happening");
 };
 function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
-    %itemList = geTGF.getItemList(%listName, %listType);
+    %itemList = %listType.getItemList(geTGF, %listName);
     %count = %itemList.count();
     %dataTable = %guiTable.getDataTable();
     %dataTable.clear();
-    %dataTable.addRows(%count);
-    if ((0.0 == %count)) {
-        %guiTable.alternativeTextCtrl.setVisible(1);
-        %guiTable.alternativeTextCtrl.setText(mlStyle(%guiTable.alternativeTextCtrl.noEntriesText, "tgfTables_DataCell_Text"));
-        %guiTable.setVisible(0);
+    %count.addRows(%dataTable);
+    if ((%count == 0.0)) {
+        1.setVisible(%guiTable.alternativeTextCtrl);
+        mlStyle(%guiTable.alternativeTextCtrl.noEntriesText, "tgfTables_DataCell_Text").setText(%guiTable.alternativeTextCtrl);
+        0.setVisible(%guiTable);
         return;
     }
-    %guiTable.alternativeTextCtrl.setVisible(0);
-    %guiTable.setVisible(1);
+    0.setVisible(%guiTable.alternativeTextCtrl);
+    1.setVisible(%guiTable);
     %n = 0;
-    if ((%count < %n)) {
-        %item = %itemList.getValue(%n);
+    while ((%n < %count)) {
+        %item = %n.getValue(%itemList);
         if ((%item.baseImageURL $= "")) {
         }
         %imageURL = %item.baseImageURL @ "?size=S";
@@ -256,13 +256,13 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
         }
         %eventValue = "regularEvent";
         %eventFmt = "";
-        %occupancyText = geTGF.formatOccupancy(%item.occupancy, "<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
-        %friendOccupancyText = geTGF.formatOccupancy(%item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
-        if ((0.0 >= %item.occupancy)) {
+        %occupancyText = "<color:ffffff60>-".formatOccupancy(geTGF, %item.occupancy, "<b>", "<color:ffffff60>(unknown)");
+        %friendOccupancyText = "<color:ffffff60>-".formatOccupancy(geTGF, %item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)");
+        if ((%item.occupancy >= 0.0)) {
         }
         %occupancySortVal = 99999;
         %item.occupancy;
-        if ((0.0 >= %item.friendOccupancy)) {
+        if ((%item.friendOccupancy >= 0.0)) {
         }
         %friendOccupancySortVal = 99999;
         %item.friendOccupancy;
@@ -273,7 +273,7 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
         %rowData = "";
         %rowData = %rowData @ "\n" @ "event" @ "\t" @ %eventValue @ "\t" @ "<just:right>" @ %eventFmt @ "[ICON]";
         %rowData = %rowData @ "\n" @ "description" @ "\t" @ %item.id @ "\t" @ geTGF_tabs::hotSpotsTab_formatDescription(%item.headline);
-        if (%dataTable.hasColumnNamed("userName")) {
+        if ("userName".hasColumnNamed(%dataTable)) {
             %rowData = %rowData @ "\n" @ "username" @ "\t" @ %hostUserName @ "\t" @ geTGF_tabs::hotSpotsTab_formatUserName(%hostUserName, 0);
         }
         %rowData = %rowData @ "\n" @ "location" @ "\t" @ %item.location_areaName @ "\t" @ geTGF_tabs::hotSpotsTab_formatLocation2(%item.location_areaName);
@@ -281,8 +281,8 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
         %rowData = %rowData @ "\n" @ "friends" @ "\t" @ %friendOccupancySortVal @ "\t" @ "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%friendOccupancyText);
         %rowData = %rowData @ "\n" @ "access" @ "\t" @ %item.accessMode @ "\t" @ "<just:left>[ICON]";
         %rowData = trim(%rowData);
-        %dataTable.setRowDataByIndex(%n, %rowData);
-        %n = (1.0 + %n);
+        %rowData.setRowDataByIndex(%dataTable, %n);
+        %n = (%n + 1.0);
     }
     %dataTable.doFilter();
     %dataTable.updateListeners();
@@ -297,13 +297,13 @@ function geTGF_tabs::friendsTab_formatStatusMsg(%msg) {
     return geTGF_tabs::hotSpotsTab_formatDescription(%msg);
 };
 function geTGF::myplace_GetAndOpenDetailsContainer(%this, %item) {
-    %dataRowIndex = geTGF_MyPlaceDataTable.getRowIndexByCriteria("description" @ "\t" @ %item.id);
-    %guiRowIndex = geTGF_MyPlaceGuiTable.getGuiRowIndexForDataRowIndex(%dataRowIndex);
-    if ((0.0 >= %guiRowIndex)) {
-        geTGF_MyPlaceGuiTable.doHiliteRow(%guiRowIndex);
+    %dataRowIndex = "description" @ "\t" @ %item.id.getRowIndexByCriteria(geTGF_MyPlaceDataTable);
+    %guiRowIndex = %dataRowIndex.getGuiRowIndexForDataRowIndex(geTGF_MyPlaceGuiTable);
+    if ((%guiRowIndex >= 0.0)) {
+        %guiRowIndex.doHiliteRow(geTGF_MyPlaceGuiTable);
     }
-    %this.constructDeetsWindow(geDeetsWindow, %item);
-    geDeetsLayer.setVisible(1);
+    %item.constructDeetsWindow(%this, geDeetsWindow);
+    1.setVisible(geDeetsLayer);
 };
 function geTGF_MyPlaceGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount) {
     %listName = "myplace";
@@ -314,39 +314,39 @@ function geTGF_OtherPlacesGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %al
     geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount, %listName);
 };
 function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount, %listName) {
-    if ((-(1.0) == %rowIndex)) {
+    if ((%rowIndex == -(1.0))) {
         error(getScopeName() @ " " @ "- Gui Row" @ " " @ %guiRow @ " " @ "has no Data Row -" @ " " @ getTrace());
         return;
     }
-    %this.makeFirstResponder(1);
-    %cellIndex = %this.getDataTable().getColumnIndex("description");
-    %itemID = %this.getDataTable().getCellSortValue(%rowIndex, %cellIndex);
+    1.makeFirstResponder(%this);
+    %cellIndex = "description".getColumnIndex(%this.getDataTable());
+    %itemID = %cellIndex.getCellSortValue(%this.getDataTable(), %rowIndex);
     %showDeets = 0;
-    if ((-(1.0) == %mouseClickCount)) {
+    if ((%mouseClickCount == -(1.0))) {
         %showDeets = 0;
     }
-    if ((0.0 == %mouseClickCount)) {
+    if ((%mouseClickCount == 0.0)) {
         %showDeets = 1;
     }
-    if ((1.0 == %mouseClickCount)) {
+    if ((%mouseClickCount == 1.0)) {
         %showDeets = 1;
     }
-    if ((2.0 == %mouseClickCount)) {
+    if ((%mouseClickCount == 2.0)) {
         %showDeets = 1;
     }
     %showDeets = 0;
     if (%showDeets) {
-        %item = geTGF.findItem(%listName, "happening", %itemID);
-        geTGF.DoDetails("myplace", %item);
+        %item = %itemID.findItem(geTGF, %listName, "happening");
+        %item.DoDetails(geTGF, "myplace");
     }
 };
 function geTGF_MyPlaceGuiTable::onKeyDown(%this, %modifier, %keyCode) {
-    %modifierStr = %this.getStringFromModifier(%modifier);
-    %keyCodeStr = %this.getStringFromKeyCode(%keyCode);
+    %modifierStr = %modifier.getStringFromModifier(%this);
+    %keyCodeStr = %keyCode.getStringFromKeyCode(%this);
     if ((%modifierStr @ %keyCodeStr $= "\t")) {
     }
     if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
-        geTGF_FriendsFilterBox.makeFirstResponder(1);
+        1.makeFirstResponder(geTGF_FriendsFilterBox);
         return 1;
     }
     return 0;

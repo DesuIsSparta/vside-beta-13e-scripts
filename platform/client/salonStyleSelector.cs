@@ -1,16 +1,16 @@
 function SalonStyleSelector::open(%this) {
-    PlayGui.ensureAdded(%this);
+    %this.ensureAdded(PlayGui);
     %this.Initialize();
     if (!(%this.isVisible())) {
-        %this.setVisible(1);
+        1.setVisible(%this);
     }
-    PlayGui.focusAndRaise(%this);
+    %this.focusAndRaise(PlayGui);
 };
 function SalonStyleSelector::close(%this) {
-    if ((0.0 != $gSalonChairCurrent)) {
+    if (($gSalonChairCurrent != 0.0)) {
         return 1;
     }
-    %this.setVisible(0);
+    0.setVisible(%this);
     PlayGui.focusTopWindow();
     return 1;
 };
@@ -20,24 +20,24 @@ function SalonStyleSelector::Initialize(%this) {
     }
     %this.initialized = 1;
     if (isObject(SalonStyleSelector, %this.skuGuiList)) {
-        SalonStyleSelector.delete(%this.skuGuiList);
+        %this.skuGuiList.delete(SalonStyleSelector);
     }
     if (isObject(SalonStyleSelector, %this.noSkuGuiText)) {
-        SalonStyleSelector.delete(%this.noSkuGuiText);
+        %this.noSkuGuiText.delete(SalonStyleSelector);
     }
     %SSS_Height = 200;
     %SSS_Width = 220;
     %SSS_ButtonWidth = 20;
     %SSS_ButtonSpacing = 6;
-    %SSS_ButtonMargin = ((%SSS_ButtonSpacing * 2.0) + %SSS_ButtonWidth);
+    %SSS_ButtonMargin = (%SSS_ButtonWidth + (2.0 * %SSS_ButtonSpacing));
     %this.minExtent = %SSS_Width @ " " @ 110;
-    %this.resize(%SSS_Width, %SSS_Height);
+    %SSS_Height.resize(%this, %SSS_Width);
     %gc = new GuiTextCtrl(gePropsWindowTitle) {
         profile = "ETSShadowTextNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "5 0";
-        extent = (10.0 - %SSS_Width) @ " " @ 18;
+        extent = (%SSS_Width - 10.0) @ " " @ 18;
         minExtent = "8 2";
         sluggishness = -1;
         visible = 1;
@@ -47,7 +47,7 @@ function SalonStyleSelector::Initialize(%this) {
         maxLength = 255;
         tooltiptimer = 0;
     };
-    %this.add(%gc);
+    %gc.add(%this);
     %gc = new GuiWindowCtrl("") {
         profile = 0 @ "DottedWindowDkProfile";
         horizSizing = "right";
@@ -64,14 +64,14 @@ function SalonStyleSelector::Initialize(%this) {
         visible = 1;
         canHilite = 0;
     };
-    %this.add(%gc);
+    %gc.add(%this);
     %gc = new GuiBitmapButtonCtrl("") {
-        position = 0 @ (18.0 - %SSS_Width) @ " " @ 5;
+        position = 0 @ (%SSS_Width - 18.0) @ " " @ 5;
         extent = 13 @ " " @ 13;
         bitmap = "platform/client/buttons/close_m";
         command = "SalonStyleSelector.close();";
     };
-    %this.add(%gc);
+    %gc.add(%this);
     %this.closeButton = %gc;
     %gc = new GuiBitmapCtrl(SalonStyleSelectorChair) {
         profile = "GuiDefaultProfile";
@@ -85,13 +85,13 @@ function SalonStyleSelector::Initialize(%this) {
         bitmap = "";
         tooltip = "Your Salon Station";
     };
-    %this.add(%gc);
+    %gc.add(%this);
     %gc = new GuiVariableWidthButtonCtrl(ShowPropsButton) {
         profile = "BracketButton19Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %SSS_ButtonMargin @ " " @ 22;
-        extent = ((%SSS_ButtonMargin * 2.0) - %SSS_Width) @ " " @ 19;
+        extent = (%SSS_Width - (2.0 * %SSS_ButtonMargin)) @ " " @ 19;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -109,12 +109,12 @@ function SalonStyleSelector::Initialize(%this) {
         tickPeriodMS = 0;
         tooltiptimer = 0;
     };
-    %this.add(%gc);
+    %gc.add(%this);
     %gc = new GuiBitmapCtrl(SalonStyleSelectorProp) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%SSS_ButtonSpacing - (%SSS_ButtonWidth - %SSS_Width)) @ " " @ 22;
+        position = ((%SSS_Width - %SSS_ButtonWidth) - %SSS_ButtonSpacing) @ " " @ 22;
         extent = "20 20";
         minExtent = "8 8";
         sluggishness = -1;
@@ -122,13 +122,13 @@ function SalonStyleSelector::Initialize(%this) {
         bitmap = "";
         tooltip = "Your Styling Prop";
     };
-    %this.add(%gc);
+    %gc.add(%this);
     %gc = new GuiScrollCtrl("") {
         profile = 0 @ "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "7 48";
-        extent = (13.0 - %SSS_Width) @ " " @ (61.0 - %SSS_Height);
+        extent = (%SSS_Width - 13.0) @ " " @ (%SSS_Height - 61.0);
         minExtent = "8 2";
         sluggishness = -1;
         visible = 1;
@@ -149,8 +149,8 @@ function SalonStyleSelector::Initialize(%this) {
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
-        extent = (22.0 - %SSS_Width) @ " " @ 8;
-        minExtent = (22.0 - %SSS_Width) @ " " @ 8;
+        extent = (%SSS_Width - 22.0) @ " " @ 8;
+        minExtent = (%SSS_Width - 22.0) @ " " @ 8;
         sluggishness = -1;
         visible = 1;
         canHilite = 0;
@@ -161,25 +161,25 @@ function SalonStyleSelector::Initialize(%this) {
         numRowsOrCols = 1;
         spacing = 5;
     }; @ SalonStyleSelector
-    %gc.add(SalonStyleSelector, skuGuiList);
+    skuGuiList.add(%gc, SalonStyleSelector);
     noSkuGuiText = new GuiMLTextCtrl("") {
         profile = 0 @ "ETSShadowTextNonModalProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
-        extent = (22.0 - %SSS_Width) @ " " @ 8;
-        minExtent = (22.0 - %SSS_Width) @ " " @ 8;
+        extent = (%SSS_Width - 22.0) @ " " @ 8;
+        minExtent = (%SSS_Width - 22.0) @ " " @ 8;
         sluggishness = -1;
         visible = 1;
         canHilite = 1;
         allowAutoFirstResponderUpdates = 1;
         text = "";
     }; @ SalonStyleSelector
-    %gc.add(SalonStyleSelector, noSkuGuiText);
-    %this.add(%gc);
+    noSkuGuiText.add(%gc, SalonStyleSelector);
+    %gc.add(%this);
     %left = 50;
-    %top = (2.0 / (getWord(%this.getExtent(), 1) - getWord(PlayGui.getExtent(), 1)));
-    %this.reposition(%left, %top);
+    %top = ((getWord(PlayGui.getExtent(), 1) - getWord(%this.getExtent(), 1)) / 2.0);
+    %top.reposition(%this, %left);
 };
 function ShowPropsButton::onClick(%this) {
     if ($player.hasAvailableProp()) {

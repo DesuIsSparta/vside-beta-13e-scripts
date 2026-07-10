@@ -1,55 +1,47 @@
 function centerPrintAll(%message, %time, %lines) {
-    if ((%lines $= "")) {
-        if ((3.0 > %lines)) {
-        }
+    if ((%lines $= "") && (%lines > 3.0)) {
     }
-    if ((1.0 < %lines)) {
+    if ((%lines < 1.0)) {
         %lines = 1;
     }
     %count = ClientGroup.getCount();
     %i = 0;
-    if ((%count < %i)) {
-        %cl = ClientGroup.getObject(%i);
+    while ((%i < %count)) {
+        %cl = %i.getObject(ClientGroup);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'centerPrint', %message, %time, %lines);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function bottomPrintAll(%message, %time, %lines) {
-    if ((%lines $= "")) {
-        if ((3.0 > %lines)) {
-        }
+    if ((%lines $= "") && (%lines > 3.0)) {
     }
-    if ((1.0 < %lines)) {
+    if ((%lines < 1.0)) {
         %lines = 1;
     }
     %count = ClientGroup.getCount();
     %i = 0;
-    if ((%count < %i)) {
-        %cl = ClientGroup.getObject(%i);
+    while ((%i < %count)) {
+        %cl = %i.getObject(ClientGroup);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'bottomPrint', %message, %time, %lines);
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function centerPrint(%client, %message, %time, %lines) {
-    if ((%lines $= "")) {
-        if ((3.0 > %lines)) {
-        }
+    if ((%lines $= "") && (%lines > 3.0)) {
     }
-    if ((1.0 < %lines)) {
+    if ((%lines < 1.0)) {
         %lines = 1;
     }
     commandToClient(%client, 'CenterPrint', %message, %time, %lines);
 };
 function bottomPrint(%client, %message, %time, %lines) {
-    if ((%lines $= "")) {
-        if ((3.0 > %lines)) {
-        }
+    if ((%lines $= "") && (%lines > 3.0)) {
     }
-    if ((1.0 < %lines)) {
+    if ((%lines < 1.0)) {
         %lines = 1;
     }
     commandToClient(%client, 'BottomPrint', %message, %time, %lines);
@@ -63,22 +55,22 @@ function clearBottomPrint(%client) {
 function clearCenterPrintAll() {
     %count = ClientGroup.getCount();
     %i = 0;
-    if ((%count < %i)) {
-        %cl = ClientGroup.getObject(%i);
+    while ((%i < %count)) {
+        %cl = %i.getObject(ClientGroup);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'ClearCenterPrint');
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };
 function clearBottomPrintAll() {
     %count = ClientGroup.getCount();
     %i = 0;
-    if ((%count < %i)) {
-        %cl = ClientGroup.getObject(%i);
+    while ((%i < %count)) {
+        %cl = %i.getObject(ClientGroup);
         if (!(%cl.isAIControlled())) {
             commandToClient(%cl, 'ClearBottomPrint');
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
 };

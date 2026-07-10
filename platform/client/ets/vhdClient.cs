@@ -1,17 +1,17 @@
 function playerTexturesReload() {
-    %n = (1.0 - PlayerInstanceDict.size());
-    if ((0.0 >= %n)) {
-        %player = PlayerInstanceDict.getValue(%n);
-        %player.setActiveSKUs(%player.getActiveSKUs(), 1);
-        %n = (1.0 - %n);
+    %n = (PlayerInstanceDict.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %player = %n.getValue(PlayerInstanceDict);
+        1.setActiveSKUs(%player, %player.getActiveSKUs());
+        %n = (%n - 1.0);
     }
 };
 function changedShowReloadTextures() {
     MessageBoxOK("Restart required", , "");
     %n = 0;
-    if ((4.0 < %n)) {
-        MePopupMenuButton.schedule((300.0 * %n), "setVisible", 0);
-        MePopupMenuButton.schedule((150.0 + (300.0 * %n)), "setVisible", 1);
-        %n = (1.0 + %n);
+    while ((%n < 4.0)) {
+        0.schedule(MePopupMenuButton, (%n * 300.0), "setVisible");
+        1.schedule(MePopupMenuButton, ((%n * 300.0) + 150.0), "setVisible");
+        %n = (%n + 1.0);
     }
 };

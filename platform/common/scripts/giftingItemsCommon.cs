@@ -14,7 +14,7 @@ function giftingItems_registerPendingTransactionServer(%transactionID, %sourcePl
     return giftingItems_registerPendingTransaction(giftingItems_getRegistryServer(), %transactionID, %sourcePlayerName, %targetPlayerName, %skus, "", 0, %making);
 };
 function giftingItems_registerPendingTransaction(%registry, %transactionID, %sourcePlayerName, %targetPlayerName, %skus, %dlg, %autoAccepted, %making) {
-    if (!(%registry.get(%transactionID) $= "")) {
+    if (!(%transactionID.get(%registry) $= "")) {
         error(getScopeName() @ " " @ "- transaction already exists!" @ " " @ %transactionID @ " " @ getTrace());
         return;
     }
@@ -26,7 +26,7 @@ function giftingItems_registerPendingTransaction(%registry, %transactionID, %sou
     %pendingTransactionRecord.dlg = %dlg;
     %pendingTransactionRecord.autoAccepted = %autoAccepted;
     %pendingTransactionRecord.making = %making;
-    %registry.put(%transactionID, %pendingTransactionRecord);
+    %pendingTransactionRecord.put(%registry, %transactionID);
     %line = getScopeName() @ " " @ "- Initiated:" @ " " @ %transactionID @ " " @ %skus @ " " @ %sourcePlayerName @ " " @ "->" @ " " @ %targetPlayerName;
     if ($AmServer) {
         appendLogLine("gifting", %line);
@@ -40,7 +40,7 @@ function giftingItems_getPendingTransactionServer(%transactionID) {
     return giftingItems_getPendingTransaction(giftingItems_getRegistryServer(), %transactionID);
 };
 function giftingItems_getPendingTransaction(%registry, %transactionID) {
-    %pendingTransactionRecord = %registry.get(%transactionID);
+    %pendingTransactionRecord = %transactionID.get(%registry);
     if ((%pendingTransactionRecord $= "")) {
         error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %transactionID @ " " @ getTrace());
         return "";
@@ -54,13 +54,13 @@ function giftingItems_deletePendingTransactionServer(%transactionID) {
     return giftingItems_deletePendingTransaction(giftingItems_getRegistryServer(), %transactionID);
 };
 function giftingItems_deletePendingTransaction(%registry, %transactionID) {
-    %pendingTransactionRecord = %registry.get(%transactionID);
+    %pendingTransactionRecord = %transactionID.get(%registry);
     if ((%pendingTransactionRecord $= "")) {
         error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %transactionID @ " " @ getTrace());
         return "";
     }
     %pendingTransactionRecord.delete();
-    %registry.remove(%transactionID);
+    %transactionID.remove(%registry);
 };
 function giftingItems_dumpPendingTransactionsClient() {
     return giftingItems_dumpPendingTransaction(giftingItems_getRegistryClient());

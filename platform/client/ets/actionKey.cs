@@ -3,8 +3,8 @@ function onActionKey(%val) {
 };
 function onThrowBall(%val) {
     if (%val) {
-        $mvTriggerCount0 = (1.0 + $mvTriggerCount0);
-        $mvTriggerCount0 = (1.0 + $mvTriggerCount0);
+        $mvTriggerCount0 = ($mvTriggerCount0 + 1.0);
+        $mvTriggerCount0 = ($mvTriggerCount0 + 1.0);
     }
 };
 function onMouseUpThrowBall(%power, %worldVec) {

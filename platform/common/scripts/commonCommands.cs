@@ -1,7 +1,7 @@
 function isPlayerObject(%obj) {
     if (isObject(%obj)) {
     }
-    return !(!($TypeMasks::PlayerObjectType & %obj.getType()));
+    return !(!(%obj.getType() & $TypeMasks::PlayerObjectType));
 };
 function isAIPlayerObject(%obj) {
     if (isObject(%obj)) {
@@ -14,7 +14,7 @@ function isNPCObject(%obj) {
     if (!(isAIPlayerObject(%obj))) {
         return 0;
     }
-    return (NPCGroup.getId() == %obj.getGroup().getId());
+    return (%obj.getGroup().getId() == NPCGroup.getId());
 };
 function isPlayerCharacter(%obj) {
     return isObject(%obj.client);
@@ -56,7 +56,7 @@ function tmpFields(%obj) {
     if (!(isObject(%tmps))) {
         %tmps = new ScriptObject(temporaryfields);;
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add(%tmps);
+            %tmps.add(MissionCleanup);
         }
         gSetField(%obj, tmpFields, %tmps);
     }
@@ -75,42 +75,42 @@ function makeTaggedString(%plainText) {
 };
 function crash() {
     echo("intentionally crashing.");
-    echo((0 % 1));
+    echo((1 % 0));
 };
 function crashDelayed(%ms) {
     if ((%ms $= "")) {
         %ms = 5000;
     }
-    echo("scheduled crash in" @ " " @ (1000.0 / %ms) @ " " @ "seconds..");
-    if ((1000.0 > %ms)) {
-        schedule(1000, 0, "crashDelayed", (1000.0 - %ms));
+    echo("scheduled crash in" @ " " @ (%ms / 1000.0) @ " " @ "seconds..");
+    if ((%ms > 1000.0)) {
+        schedule(1000, 0, "crashDelayed", (%ms - 1000.0));
     }
     schedule(%ms, 0, "crash");
 };
 function hasWord(%searchText, %findText) {
-    return (0.0 >= findWord(%searchText, %findText));
+    return (findWord(%searchText, %findText) >= 0.0);
 };
 function hasField(%searchText, %findText) {
-    return (0.0 >= findField(%searchText, %findText));
+    return (findField(%searchText, %findText) >= 0.0);
 };
 function hasRecord(%searchText, %findText) {
-    return (0.0 >= findRecord(%searchText, %findText));
+    return (findRecord(%searchText, %findText) >= 0.0);
 };
 function hasSubString(%searchText, %findText) {
-    return (0.0 >= strstr(%searchText, %findText));
+    return (strstr(%searchText, %findText) >= 0.0);
 };
 function getSuffixPos(%searchText, %suffix) {
     %idx = strpos(%searchText, %suffix);
-    if ((0.0 < %idx)) {
+    if ((%idx < 0.0)) {
         return -(1.0);
     }
-    if ((0.0 >= %idx)) {
+    while ((%idx >= 0.0)) {
         %last = %idx;
-        %idx = strpos(%searchText, %suffix, (1.0 + %idx));
+        %idx = strpos(%searchText, %suffix, (%idx + 1.0));
     }
     %idx = %last;
-    (0.0 >= %idx);
-    if ((strlen(%searchText) != (strlen(%suffix) + %idx))) {
+    (%idx >= 0.0);
+    if (((%idx + strlen(%suffix)) != strlen(%searchText))) {
         return -(1.0);
     }
     return %idx;
@@ -121,12 +121,12 @@ function hasPrefix(%searchText, %prefix) {
     return %ret;
 };
 function hasSuffix(%searchText, %suffix) {
-    %ret = (0.0 >= getSuffixPos(%searchText, %suffix));
+    %ret = (getSuffixPos(%searchText, %suffix) >= 0.0);
     return %ret;
 };
 function execFilesWithName(%fileName) {
     %file = findFirstFile(%fileName);
-    if (!(%file $= "")) {
+    while (!(%file $= "")) {
         exec(%file);
         %file = findNextFile(%fileName);
     }
@@ -139,7 +139,7 @@ function safeNewScriptObject(%classname, %objectName, %deleteExisting) {
     }
     eval("%ret = new " @ %classname @ "(" @ %objectName @ ");");
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%ret);
+        %ret.add(MissionCleanup);
     }
     return %ret;
 };
@@ -174,14 +174,14 @@ function safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName,
     if (!(%classesToBind $= "")) {
         %classCount = getWordCount(%classesToBind);
         %i = 0;
-        if ((%classCount < %i)) {
-            %ret.bindClassName(getWord(%classesToBind, %i));
-            %i = (1.0 + %i);
+        while ((%i < %classCount)) {
+            getWord(%classesToBind, %i).bindClassName(%ret);
+            %i = (%i + 1.0);
         }
     }
-    %ret.setName(%objectName);
+    %objectName.setName(%ret);
     if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%ret);
+        %ret.add(MissionCleanup);
     }
     return %ret;
 };
@@ -191,8 +191,8 @@ function getPathOfButtonResource(%res) {
     if (!(%cached $= "")) {
         return %cached;
     }
-    %n = (1.0 - getWordCount($gValidTextureExt));
-    if ((0.0 >= %n)) {
+    %n = (getWordCount($gValidTextureExt) - 1.0);
+    while ((%n >= 0.0)) {
         %ext = getWord($gValidTextureExt, %n);
         if (isFile(%res @ %ext)) {
         }
@@ -200,34 +200,32 @@ function getPathOfButtonResource(%res) {
             setCachedResourcePath(%res, %res);
             return %res;
         }
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return "";
 };
 function getPathsMatchingPattern(%pattern) {
     %ret = findFirstFile(%pattern);
-    if (!(%ret $= "")) {
-        if (1) {
-            %next = findNextFile(%pattern);
-            if ((%next $= "")) {
-            }
-            %ret = %ret @ "\t" @ %next;
+    if (!(%ret $= "") && 1) {
+        %next = findNextFile(%pattern);
+        if ((%next $= "")) {
         }
+        %ret = %ret @ "\t" @ %next;
     }
     return %ret;
 };
 function getCachedResourcePath(%res) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    %path = ResourcePathMap.get(%res);
+    %path = %res.get(ResourcePathMap);
     return %path;
 };
 function setCachedResourcePath(%res, %path) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    ResourcePathMap.put(%res, %path);
+    %path.put(ResourcePathMap, %res);
 };
 function setAllLogLevels(%level) {
-    Console.setAllLogLevels(%level);
-    log.setAllLogLevels(%level);
+    %level.setAllLogLevels(Console);
+    %level.setAllLogLevels(log);
     setConsoleLogLevel(%level);
 };
 function bitstreamCountToggle() {
@@ -290,22 +288,22 @@ function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize) {
     %outString = "";
     %idx = 0;
     %len = strlen(%masterList);
-    if ((%len < %idx)) {
+    while ((%idx < %len)) {
         %segStart = %idx;
         %lastGoodIdx = %len;
-        if ((%segmentSize > (%segStart - %len))) {
+        if (((%len - %segStart) > %segmentSize)) {
             %idx = strpos(%masterList, %delimiter, %idx);
-            if (( < (%segmentSize - %segStart))) {
-                if ((0.0 < %idx)) {
+            while (((%segStart - %segmentSize) < )) {
+                if ((%idx < 0.0)) {
                 }
                 %lastGoodIdx = %idx;
-                %idx = (1.0 + %idx);
+                %idx = (%idx + 1.0);
                 %idx = strpos(%masterList, %delimiter, %idx);
             }
         }
-        %currentList = getSubStr(%masterList, %segStart, (%segStart - %lastGoodIdx));
-        ( < (%segmentSize - %segStart));
-        %idx = (1.0 + %lastGoodIdx);
+        %currentList = getSubStr(%masterList, %segStart, (%lastGoodIdx - %segStart));
+        ((%segStart - %segmentSize) < );
+        %idx = (%lastGoodIdx + 1.0);
         if (!(%outString $= "")) {
             %outString = %outString @ %segmentDelimiter @ %currentList;
         }
@@ -314,14 +312,14 @@ function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize) {
     return %outString;
 };
 function SimSet::getByField(%this, %field, %svalue) {
-    %n = (1.0 - %this.getCount());
-    if ((0.0 >= %n)) {
-        %obj = %this.getObject(%n);
+    %n = (%this.getCount() - 1.0);
+    while ((%n >= 0.0)) {
+        %obj = %n.getObject(%this);
         %evalString = "return %obj." @ %field @ " $= \"" @ %svalue @ "\";";
         if (eval(%evalString)) {
             return %obj;
         }
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return "";
 };
@@ -329,39 +327,39 @@ function GuiControl::getChildrenInOrder(%this, %children) {
     %ids = "";
     %count = getWordCount(%children);
     %i = 0;
-    if ((%count < %i)) {
+    while ((%i < %count)) {
         %child = getWord(%children, %i);
         if (isObject(%child)) {
             %ids = %ids @ " " @ %child.getId();
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     %ids = trim(%ids);
-    (%count < %i);
+    (%i < %count);
     %toReturn = "";
     %count = %this.getCount();
     %i = 0;
-    if ((%count < %i)) {
-        %child = %this.getObject(%i);
+    while ((%i < %count)) {
+        %child = %i.getObject(%this);
         if (hasWord(%ids, %child)) {
             %toReturn = %toReturn @ " " @ %child;
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     return trim(%toReturn);
 };
 function logOnce(%logSystems, %logLevel, %key, %msg) {
     %key = %logLevel @ " " @ getScopeName(1) @ "_" @ %key;
     %map = safeEnsureScriptObject("StringMap", "messageCountsErrors");
-    %count = %map.get(%key);
+    %count = %key.get(%map);
     if ((%count $= "")) {
         log(%logSystems, %logLevel, %msg);
     }
-    if ((1.0 == %count)) {
+    if ((%count == 1.0)) {
         log(%logSystems, %logLevel, "multiple log messages for:" @ " " @ %key @ " " @ "- swallowing the remainder." @ " " @ %msg);
     }
-    %count = (1.0 + %count);
-    %map.put(%key, %count);
+    %count = (%count + 1.0);
+    %count.put(%map, %key);
 };
 function debugOnce(%key, %msg) {
     %key = getScopeName(1) @ "_" @ %key;
@@ -414,11 +412,11 @@ function getExtension(%dry) {
 };
 function stripExtension(%dry) {
     %ext = getExtension(%dry);
-    %wet = getSubStr(%dry, 0, (strlen(%ext) - strlen(%dry)));
+    %wet = getSubStr(%dry, 0, (strlen(%dry) - strlen(%ext)));
     return %wet;
 };
 function commaify(%num) {
-    if ((0.0 == %num)) {
+    if ((%num == 0.0)) {
         return 0;
     }
     %sign = "";
@@ -428,10 +426,10 @@ function commaify(%num) {
     }
     %result = "";
     %len = strlen(%num);
-    if (!(%num $= "")) {
-        if ((3.0 >= %len)) {
-            %segment = getSubStr(%num, (3.0 - %len), 3);
-            %num = getSubStr(%num, 0, (3.0 - %len));
+    while (!(%num $= "")) {
+        if ((%len >= 3.0)) {
+            %segment = getSubStr(%num, (%len - 3.0), 3);
+            %num = getSubStr(%num, 0, (%len - 3.0));
         }
         %segment = %num;
         %num = "";
@@ -439,7 +437,7 @@ function commaify(%num) {
             %result = %segment;
         }
         %result = %segment @ "," @ %result;
-        %len = (3.0 - %len);
+        %len = (%len - 3.0);
     }
     return %sign @ %result;
 };

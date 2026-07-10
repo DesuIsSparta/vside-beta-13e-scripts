@@ -3,7 +3,7 @@ function URLInfo::parse(%this) {
     %work = trim(%this.url);
     %work = NextToken(%work, "protocol", ":");
     %this.protocol = %protocol;
-    if ((0.0 != strncmp(%work, "//", 2))) {
+    if ((strncmp(%work, "//", 2) != 0.0)) {
         return 0;
     }
     %work = getSubStr(%work, 2, strlen(%work));
@@ -20,15 +20,15 @@ function URLInfo::parse(%this) {
         %count = getWordCount(%params);
         %this.paramCount = %count;
         %idx = 0;
-        if ((%count < %idx)) {
+        while ((%idx < %count)) {
             %nvPair = getWord(%params, %idx);
             %value = NextToken(%nvPair, "name", "=");
             %this.paramName = %name @ %idx;
             %this.param = %value @ %name;
-            %idx = (1.0 + %idx);
+            %idx = (%idx + 1.0);
         }
     }
-    %this.paramCount = (%count < %idx) @ 0;
+    %this.paramCount = (%idx < %count) @ 0;
     %this.parsed = 1;
     return 1;
 };
@@ -40,17 +40,17 @@ function URLInfo::reconstruct(%this) {
     if (!(%this.Path $= "")) {
         %newUrl = %newUrl @ "/" @ %this.Path;
     }
-    if ((0.0 > %this.paramCount)) {
+    if ((%this.paramCount > 0.0)) {
         %newUrl = %newUrl @ "?";
         %idx = 0;
-        if ((%this.paramCount < %idx)) {
-            if ((0.0 > %idx)) {
+        while ((%idx < %this.paramCount)) {
+            if ((%idx > 0.0)) {
                 %newUrl = %newUrl @ "&";
             }
             %name = %this.paramName;
             %idx;
             %newUrl = %newUrl @ %name @ "=" @ %name @ %this.param;
-            %idx = (1.0 + %idx);
+            %idx = (%idx + 1.0);
         }
     }
 };

@@ -6,7 +6,7 @@ function Player::sendPreviewText(%this, %text) {
     if ((getSubStr(trim(%text), 0, 1) $= "/")) {
         return;
     }
-    %this.onGotTypingSomething(%text);
+    %text.onGotTypingSomething(%this);
     if ($Chat::Preview::WordBoundaries) {
         %text = removeLastWordIfNotFollowedByWhiteSpace(%text);
     }
@@ -20,9 +20,9 @@ function Player::sendPreviewText(%this, %text) {
         return;
     }
     $gIsTyping = 1;
-    %numChars = (1.0 + $Chat::Preview::Size);
-    %start = (%numChars - strlen(%text));
-    if ((0.0 < %start)) {
+    %numChars = ($Chat::Preview::Size + 1.0);
+    %start = (strlen(%text) - %numChars);
+    if ((%start < 0.0)) {
         %start = 0;
     }
     %text = getSubStr(%text, %start, %numChars);
@@ -44,12 +44,12 @@ function Player::onGotChatPreview(%this, %dry) {
     %wet = TryFixBadWords(%dry);
     if ((%this $= $player)) {
         if ($Chat::Preview::ShowOwn) {
-            %this.setChatPreview(%wet);
+            %wet.setChatPreview(%this);
         }
-        %this.setChatPreview("");
+        "".setChatPreview(%this);
     }
-    %this.setChatPreview(%wet);
-    %this.onGotTypingSomething(%wet);
+    %wet.setChatPreview(%this);
+    %wet.onGotTypingSomething(%this);
 };
 function Player::onGotTypingSomething(%this, %text) {
     if ((lastTypingSomethingText $= gGetField(%this))) {
@@ -59,39 +59,39 @@ function Player::onGotTypingSomething(%this, %text) {
     cancel(IsNoLongerTypingTimer, gGetField(%this));
     cancel(TimeoutChatPreviewTimer, gGetField(%this));
     if ((%text $= "")) {
-        %this.setTyping(0);
+        0.setTyping(%this);
     }
-    %this.setTyping(1);
-    gSetField(%this, IsNoLongerTypingTimer, %this.schedule($Chat::Preview::IsNoLongerTypingDelay, "setTyping", 0));
-    gSetField(%this, TimeoutChatPreviewTimer, %this.schedule($Chat::Preview::ChatPreviewTimeout, "onGotChatPreview", ""));
+    1.setTyping(%this);
+    gSetField(%this, IsNoLongerTypingTimer, 0.schedule(%this, $Chat::Preview::IsNoLongerTypingDelay, "setTyping"));
+    gSetField(%this, TimeoutChatPreviewTimer, "".schedule(%this, $Chat::Preview::ChatPreviewTimeout, "onGotChatPreview"));
     if ($GameConnection.isPresentAtBody()) {
-        %this.talkingAnimTimer(1);
+        1.talkingAnimTimer(%this);
     }
 };
 function Player::talkingAnimTimer(%this, %startflag) {
     %whichAnim = 2;
     if (%startflag) {
         if (!(%this.talking)) {
-            %this.triggerBoneBlendAnimation($BB_HEAD_TALK, 1, 0);
+            0.triggerBoneBlendAnimation(%this, $BB_HEAD_TALK, 1);
             %this.talking = 1;
             if (%this.hasMicrophone()) {
-                %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.75);
-                %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
+                0.75.setBlendTargetValue(%this, $BB_UPPR_MICROPHONE);
+                0.triggerBoneBlendAnimation(%this, $BB_UPPR_MICROPHONE, 1);
             }
         }
-        %dur = %this.getBlendDuration($BB_HEAD_TALK);
+        %dur = $BB_HEAD_TALK.getBlendDuration(%this);
         if (!(%this.AnimationTalkingTimer $= "")) {
             cancel(%this.AnimationTalkingTimer);
             %this.AnimationTalkingTimer = "";
         }
-        %this.AnimationTalkingTimer = %this.schedule(%dur, talkingAnimTimer, 0);
+        %this.AnimationTalkingTimer = 0.schedule(%this, %dur, talkingAnimTimer);
     }
-    %this.triggerBoneBlendAnimation($BB_HEAD_TALK, 0, 0);
+    0.triggerBoneBlendAnimation(%this, $BB_HEAD_TALK, 0);
     %this.AnimationTalkingTimer = "";
     %this.talking = 0;
     if (%this.hasMicrophone()) {
-        %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
-        %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
+        0.2.setBlendTargetValue(%this, $BB_UPPR_MICROPHONE);
+        0.triggerBoneBlendAnimation(%this, $BB_UPPR_MICROPHONE, 1);
     }
 };
 function talkBlender::animate(%this) {

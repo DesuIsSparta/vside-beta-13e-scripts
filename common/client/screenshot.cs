@@ -1,34 +1,34 @@
 function formatImageNumber(%number) {
-    if ((10.0 < %number)) {
+    if ((%number < 10.0)) {
         %number = 0 @ %number;
     }
-    if ((100.0 < %number)) {
+    if ((%number < 100.0)) {
         %number = 0 @ %number;
     }
-    if ((1000.0 < %number)) {
+    if ((%number < 1000.0)) {
         %number = 0 @ %number;
     }
-    if ((10000.0 < %number)) {
+    if ((%number < 10000.0)) {
         %number = 0 @ %number;
     }
     return %number;
 };
 function formatSessionNumber(%number) {
-    if ((10.0 < %number)) {
+    if ((%number < 10.0)) {
         %number = 0 @ %number;
     }
-    if ((100.0 < %number)) {
+    if ((%number < 100.0)) {
         %number = 0 @ %number;
     }
     return %number;
 };
 function recordMovie(%movieName, %fps) {
-    $timeAdvance = (%fps / 1000.0);
+    $timeAdvance = (1000.0 / %fps);
     $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, 0);
 };
 function movieGrabScreen(%movieName, %frameNumber) {
     ScreenShot(%movieName @ formatImageNumber(%frameNumber) @ ".png");
-    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, (1.0 + %frameNumber));
+    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, (%frameNumber + 1.0));
 };
 function stopMovie() {
     $timeAdvance = 0;
@@ -53,4 +53,4 @@ function doScreenShot(%val) {
     ScreenShot(%name @ %ext, %fmt);
     doSaveScreenShotMetaData(%name, %ext);
 };
-GlobalActionMap.bind(keyboard, "ctrl-alt s");
+"ctrl-alt s".bind(GlobalActionMap, keyboard);

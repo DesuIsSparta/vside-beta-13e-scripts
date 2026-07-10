@@ -46,39 +46,39 @@ function testOutfits_Master() {
     $testOutfits_passCount = 0;
     $testOutfits_nextTest = 0;
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerOwned";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerMicrophone";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerMicrophone";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerSantaItem";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerSantaItem";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerOtherGender";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerOtherGender";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerAlmostEmpty";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerAlmostEmpty";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerEmpty";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerEmpty";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServerStaff";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManagerStaff";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvServer";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManager";
-    $testOutfits_testCount = (1.0 + $testOutfits_testCount);
+    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
     %n = 0;
-    if (($testOutfits_testCount < %n)) {
+    while ((%n < $testOutfits_testCount)) {
         %n[$testOutfits_result @ %n] = "NA  ";
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     testOutfits_MasterDoNext();
 };
@@ -95,35 +95,35 @@ function testOutfits::skuListsAreEqual(%skusA, %skusB) {
 };
 function testOutfits::skuListHasDuplicates(%skus) {
     %skus = SortNumbers(%skus);
-    %n = (2.0 - getWordCount(%skus));
-    if ((0.0 >= %n)) {
-        if ((getWord(%skus, %n) $= getWord(%skus, (1.0 + %n)))) {
+    %n = (getWordCount(%skus) - 2.0);
+    while ((%n >= 0.0)) {
+        if ((getWord(%skus, %n) $= getWord(%skus, (%n + 1.0)))) {
             return 1;
         }
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return 0;
 };
 function testOutfits_MasterDoNext() {
     cancel($testOutfits::timer);
     $testOutfits::timer = 0;
-    if (($testOutfits_testCount >= $testOutfits_nextTest)) {
+    if (($testOutfits_nextTest >= $testOutfits_testCount)) {
         echo("testOutfitsMaster() complete. User=" @ $player.getShapeName() @ " " @ "Gender=" @ $player.getGender() @ " " @ "Roles=" @ roles::getRoleStrings($player.getRolesMask()));
         %n = 0;
-        if (($testOutfits_testCount < %n)) {
+        while ((%n < $testOutfits_testCount)) {
             %level = (%n[$testOutfits_result @ %n] $= "pass") ? "info" : "error";
             log("network", %level, "testOutfitsMaster()" @ " " @ %n[$testOutfits_result @ %n] @ ":" @ " " @ %n[$testOutfits_test @ %n]);
-            %n = (1.0 + %n);
+            %n = (%n + 1.0);
         }
-        %level = ($testOutfits_passCount == $testOutfits_testCount) ? "info" : "warn";
-        ($testOutfits_testCount < %n);
-        log("network", %level, "testOutfitsMaster() results:" @ " " @ $testOutfits_passCount @ " " @ "of" @ " " @ $testOutfits_testCount @ " " @ "passed," @ " " @ ($testOutfits_passCount - $testOutfits_testCount) @ " " @ "failed.");
+        %level = ($testOutfits_testCount == $testOutfits_passCount) ? "info" : "warn";
+        (%n < $testOutfits_testCount);
+        log("network", %level, "testOutfitsMaster() results:" @ " " @ $testOutfits_passCount @ " " @ "of" @ " " @ $testOutfits_testCount @ " " @ "passed," @ " " @ ($testOutfits_testCount - $testOutfits_passCount) @ " " @ "failed.");
         if ($testOutfits::quitWhenDone) {
             quit();
         }
     }
     call($testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest]);
-    $testOutfits_nextTest = (1.0 + $testOutfits_nextTest);
+    $testOutfits_nextTest = ($testOutfits_nextTest + 1.0);
 };
 function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout) {
     %skusGot = $player.getActiveSKUs();
@@ -137,24 +137,24 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout) {
     %noChange = "";
     if (%succ) {
         log("network", "info", "outfit test succeeded after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ ".");
-        $testOutfits_passCount = (1.0 + $testOutfits_passCount);
-        $testOutfits_nextTest[$testOutfits_result @ (1.0 - $testOutfits_nextTest)] = "pass";
+        $testOutfits_passCount = ($testOutfits_passCount + 1.0);
+        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1.0)] = "pass";
     }
     log("network", "warn", "outfit test failed    after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ "." @ " " @ %noChange);
     log("network", "warn", "sent    " @ " " @ %skusSent);
     log("network", "warn", "got     " @ " " @ %skusGot);
     log("network", "warn", "expected" @ " " @ %skusExpected);
-    $testOutfits_passCount = (0.0 + $testOutfits_passCount);
-    $testOutfits_nextTest[$testOutfits_result @ (1.0 - $testOutfits_nextTest)] = "fail";
+    $testOutfits_passCount = ($testOutfits_passCount + 0.0);
+    $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1.0)] = "fail";
     testOutfits_MasterDoNext();
 };
 function testOutfits_FireEnvServerTest(%skusDry, %skusWet) {
-    $player.setActiveSKUs($testOutfits::badSkus);
+    $testOutfits::badSkus.setActiveSKUs($player);
     commandToServer('SetActiveSkus', %skusDry);
     $testOutfits::timer = schedule($testOutfits::timeout, 0, "testOutfits_TestCatch", $testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest], %skusDry, %skusWet, $testOutfits::timeout);
 };
 function testOutfits_FireEnvManagerTest(%skusDry, %skusWet) {
-    $player.setActiveSKUs($testOutfits::badSkus);
+    $testOutfits::badSkus.setActiveSKUs($player);
     SaveOutfitAndBodySkusAsCurrent(%skusDry);
     $testOutfits::timer = schedule($testOutfits::timeout, 0, "testOutfits_TestCatch", $testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest], %skusDry, %skusWet, $testOutfits::timeout);
 };
@@ -170,14 +170,14 @@ function testOutfits_UpToEnvManager() {
 };
 function testOutfits_UpToEnvServerStaff() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("staff");
-    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
-    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
+    %skusWet = $player.getRolesMask().filterSkusRoles(SkuManager, %skusDry);
+    %skusWet = %skusWet.overlaySkus(SkuManager, testOutfits::getBodyAndOutfitSkus("stock"));
     testOutfits_FireEnvServerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerStaff() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("staff");
-    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
-    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
+    %skusWet = $player.getRolesMask().filterSkusRoles(SkuManager, %skusDry);
+    %skusWet = %skusWet.overlaySkus(SkuManager, testOutfits::getBodyAndOutfitSkus("stock"));
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvServerEmpty() {
@@ -212,32 +212,32 @@ function testOutfits_UpToEnvManagerOtherGender() {
 };
 function testOutfits_UpToEnvServerSantaItem() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("santaItem");
-    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
-    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
+    %skusWet = $player.getRolesMask().filterSkusRoles(SkuManager, %skusDry);
+    %skusWet = %skusWet.overlaySkus(SkuManager, testOutfits::getBodyAndOutfitSkus("stock"));
     testOutfits_FireEnvServerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerSantaItem() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("santaItem");
-    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
-    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
+    %skusWet = $player.getRolesMask().filterSkusRoles(SkuManager, %skusDry);
+    %skusWet = %skusWet.overlaySkus(SkuManager, testOutfits::getBodyAndOutfitSkus("stock"));
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvServerMicrophone() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("microphone");
-    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
-    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
+    %skusWet = $player.getRolesMask().filterSkusRoles(SkuManager, %skusDry);
+    %skusWet = %skusWet.overlaySkus(SkuManager, testOutfits::getBodyAndOutfitSkus("stock"));
     testOutfits_FireEnvServerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerMicrophone() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("microphone");
-    %skusWet = SkuManager.filterSkusRoles(%skusDry, $player.getRolesMask());
-    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
+    %skusWet = $player.getRolesMask().filterSkusRoles(SkuManager, %skusDry);
+    %skusWet = %skusWet.overlaySkus(SkuManager, testOutfits::getBodyAndOutfitSkus("stock"));
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_UpToEnvManagerOwned() {
     %skusDry = testOutfits::getBodyAndOutfitSkus("owned");
-    %skusWet = SkuManager.filterSkusInList(%skusDry, $Player::inventory);
-    %skusWet = SkuManager.overlaySkus(testOutfits::getBodyAndOutfitSkus("stock"), %skusWet);
+    %skusWet = $Player::inventory.filterSkusInList(SkuManager, %skusDry);
+    %skusWet = %skusWet.overlaySkus(SkuManager, testOutfits::getBodyAndOutfitSkus("stock"));
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_dumpSkusInteresting() {
@@ -250,8 +250,8 @@ function testOutfits_dumpSkusRoles(%skus, %roleStrings) {
     %indnt = "                    ";
     %delim = ", ";
     %roles = roles::getRolesMaskFromStrings(%roleStrings);
-    %skus = SkuManager.filterSkusRoles(%skus, %roles, 1);
-    %skus = SkuManager.filterSkusBornWith(%skus, 1);
+    %skus = 1.filterSkusRoles(SkuManager, %skus, %roles);
+    %skus = 1.filterSkusBornWith(SkuManager, %skus);
     %skus = putInSets(%skus, %delim, %indnt, 10);
     echo("\n" @ %indnt @ "//Role Skus: (ie born with = 1, roles = " @ %roleStrings @ ")\n" @ %skus);
 };
@@ -262,17 +262,17 @@ function putInSets(%nums, %delim, %indent, %setSize) {
     %inum = getWordCount(%nums);
     %prevNum = getWord(%nums, 0);
     %i = 0;
-    if ((%inum < %i)) {
+    while ((%i < %inum)) {
         %num = getWord(%nums, %i);
-        %dif = (%prevNum - %num);
-        if ((%setSize >= %dif)) {
+        %dif = (%num - %prevNum);
+        if ((%dif >= %setSize)) {
             %out = %out @ %delim @ "\n";
             %prevNum = %num;
             %d = %indent;
         }
         %out = %out @ %d @ %num;
         %d = %delim;
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     return %out;
 };

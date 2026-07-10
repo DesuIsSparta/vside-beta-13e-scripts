@@ -15,7 +15,7 @@ function addCoAnim(%coAnimName, %anim, %delayA, %delayB, %range, %relativeTransf
         $gCoAnimDictionary = new StringMap("");;
         0;
         if (isObject(MissionCleanup)) {
-            MissionCleanup.add($gCoAnimDictionary);
+            $gCoAnimDictionary.add(MissionCleanup);
         }
     }
     %entry = "" @ %anim @ "\t" @ %delayA @ "\t" @ %delayB @ "\t" @ %range @ "\t" @ %relativeTransform @ "\t" @ %minLevel @ "\t" @ %requestText @ "\t" @ %moveMode;
@@ -39,10 +39,10 @@ function findCoAnimEntry(%name) {
     if (!(isObject($gCoAnimDictionary))) {
         return "";
     }
-    return $gCoAnimDictionary.get(%name);
+    return %name.get($gCoAnimDictionary);
 };
 function setCoAnimEntry(%name, %value) {
-    $gCoAnimDictionary.put(%name, %value);
+    %value.put($gCoAnimDictionary, %name);
 };
 initCoAnimList();
 function getAllCoAnims() {
@@ -52,12 +52,12 @@ function getAllCoAnims() {
     %list = "";
     %count = $gCoAnimDictionary.size();
     %i = 0;
-    if ((%count < %i)) {
-        %userFacingName = $gCoAnimDictionary.getKey(%i);
+    while ((%i < %count)) {
+        %userFacingName = %i.getKey($gCoAnimDictionary);
         if (!(%userFacingName $= "")) {
             %list = %list @ "\t" @ %userFacingName;
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
     return trim(%list);
 };
@@ -65,16 +65,16 @@ function getAllUserTriggerableCoAnims() {
     %retList = "";
     %delim = "";
     %list = getAllCoAnims();
-    %n = (1.0 - getFieldCount(%list));
-    if ((0.0 >= %n)) {
+    %n = (getFieldCount(%list) - 1.0);
+    while ((%n >= 0.0)) {
         %entryKey = getField(%list, %n);
-        %entryVal = $gCoAnimDictionary.get(%entryKey);
+        %entryVal = %entryKey.get($gCoAnimDictionary);
         %wantsTo = getField(%entryVal, 6);
         if (!(%wantsTo $= "")) {
             %retList = %entryKey @ %delim @ %retList;
             %delim = "\t";
         }
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return %retList;
 };

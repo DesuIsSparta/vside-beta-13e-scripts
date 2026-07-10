@@ -5,7 +5,7 @@ function testPermissions_Master() {
     asyncTestsMasterRun();
 };
 function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess) {
-    if ((%actualSuccess == %expectedSuccess)) {
+    if ((%expectedSuccess == %actualSuccess)) {
         %result = "pass";
     }
     if (%expectedSuccess) {
@@ -29,10 +29,10 @@ function testPermissions_AddABot_Evaluate() {
     %expectedDelta = 1;
     if ($StandAlone) {
     }
-    %expectedDelta = (1.0 * %expectedDelta);
+    %expectedDelta = (%expectedDelta * 1.0);
     2.0;
-    %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
-    %actualSuccess = ((%expectedDelta + $gTestPermissions_Num_Dry) == $gTestPermissions_Num_Wet);
+    %expectedSuccess = "bots".rolesPermissionCheckNoWarn($player);
+    %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
 };
@@ -51,10 +51,10 @@ function testPermissions_AddABotArmy_Evaluate() {
     %expectedDelta = 8;
     if ($StandAlone) {
     }
-    %expectedDelta = (1.0 * %expectedDelta);
+    %expectedDelta = (%expectedDelta * 1.0);
     2.0;
-    %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
-    %actualSuccess = ((%expectedDelta + $gTestPermissions_Num_Dry) == $gTestPermissions_Num_Wet);
+    %expectedSuccess = "bots".rolesPermissionCheckNoWarn($player);
+    %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
 };

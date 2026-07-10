@@ -23,18 +23,18 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
     %fileName = %fileName @ %ext;
     %uploader = "";
     if (snapshotTool::snapRegion(%region, %fileName)) {
-        $screenShotNum = (1.0 + $screenShotNum);
+        $screenShotNum = ($screenShotNum + 1.0);
         %uploader = new URLPostObject("");;
         0;
-        %uploader.setProgress(1);
-        %uploader.setURL($Net::UploadPhotoURL);
-        %uploader.setURLParam("user", $Player::Name);
-        %uploader.setURLParam("token", $Token);
-        %uploader.setURLParam("type", "avatar");
-        %uploader.setPostFile("imageBody", %fileName);
+        1.setProgress(%uploader);
+        $Net::UploadPhotoURL.setURL(%uploader);
+        $Player::Name.setURLParam(%uploader, "user");
+        $Token.setURLParam(%uploader, "token");
+        "avatar".setURLParam(%uploader, "type");
+        %fileName.setPostFile(%uploader, "imageBody");
         if (%uploader.start()) {
             if (isObject(CURLSimGroup)) {
-                CURLSimGroup.add(%uploader);
+                %uploader.add(CURLSimGroup);
             }
         }
         error("Unable to upload avatar photo." @ " " @ getTrace());
@@ -49,43 +49,43 @@ function snapshot::snapRegion(%region, %fileName) {
     shootscreen(%fileName, %region);
 };
 function getScreenShotMetaData(%guiTSCtrl) {
-    if ((1.0 != $pref::Render::orthoScale)) {
+    if (($pref::Render::orthoScale != 1.0)) {
         return getScreenShotMetaDataOrtho(%guiTSCtrl);
     }
     %cameraTransform = PlayGui.getLastCameraTransform();
     %numPts = 0;
     %numPts[%samplePts @ %numPts] = "0 0";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%samplePts @ %numPts] = "1 0";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%samplePts @ %numPts] = "0 1";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%samplePts @ %numPts] = "1 1";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%samplePts @ %numPts] = "0.5 0.5";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %ctrlExtent = %guiTSCtrl.getExtent();
     %exempt = "";
     %ret = "";
     %ret = %ret @ "\n" @ "// %cameraTransform =" @ " " @ %cameraTransform;
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %n = 0;
-    if ((%numPts < %n)) {
+    while ((%n < %numPts)) {
         %windowCoord = VectorConvolve(%n[%samplePts @ %n], %ctrlExtent);
-        %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
+        %worldCoord1 = %windowCoord.unproject(%guiTSCtrl);
         %camVec = VectorSub(%worldCoord1, %cameraTransform);
         %camVec = VectorNormalize(%camVec);
         %camVec = VectorScale(%camVec, 5000);
         %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
-        %mask = ($TypeMasks::InteriorObjectType | $TypeMasks::WaterObjectType);
+        %mask = ($TypeMasks::WaterObjectType | $TypeMasks::InteriorObjectType);
         %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "anyhit:   \"" @ getWords(%hit, 1, 3) @ "\"";
         %mask = $TypeMasks::WaterObjectType;
         %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "waterhit: \"" @ getWords(%hit, 1, 3) @ "\"";
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     return %ret;
 };
@@ -94,23 +94,23 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %numPts = 0;
     %numPts[%sampleName @ %numPts] = "upper left";
     %numPts[%samplePts @ %numPts] = "0 0";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%sampleName @ %numPts] = "upper right";
     %numPts[%samplePts @ %numPts] = "1 0";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%sampleName @ %numPts] = "lower left";
     %numPts[%samplePts @ %numPts] = "0 1";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%sampleName @ %numPts] = "lower right";
     %numPts[%samplePts @ %numPts] = "1 1";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %numPts[%sampleName @ %numPts] = "center";
     %numPts[%samplePts @ %numPts] = "0.5 0.5";
-    %numPts = (1.0 + %numPts);
+    %numPts = (%numPts + 1.0);
     %ctrlExtent = %guiTSCtrl.getExtent();
     %exempt = "";
     %windowCoord = VectorConvolve("0.5 0.5", %ctrlExtent);
-    %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
+    %worldCoord1 = %windowCoord.unproject(%guiTSCtrl);
     %centerCoord = %worldCoord1;
     %camVec = VectorSub(%worldCoord1, %cameraTransform);
     %camVec = VectorNormalize(%camVec);
@@ -119,13 +119,13 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %summary = "";
     %n = 0;
-    if ((%numPts < %n)) {
+    while ((%n < %numPts)) {
         %windowCoord = %n[%samplePts @ %n];
         %windowCoord = VectorAdd(%windowCoord, "-0.5 -0.5");
         %windowCoord = VectorScale(%windowCoord, $pref::Render::orthoScale);
         %windowCoord = VectorAdd(%windowCoord, "0.5 0.5");
         %windowCoord = VectorConvolve(%windowCoord, %ctrlExtent);
-        %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
+        %worldCoord1 = %windowCoord.unproject(%guiTSCtrl);
         %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
@@ -133,19 +133,17 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "XY plane: \"" @ %hit @ "\"";
         %summary = %summary @ "\n" @ formatString("%-15s:", %n[%sampleName @ %n]) @ " " @ %hit;
         %n[%resultPts @ %n] = %hit;
-        if (isObject(moWorldCornerMarkers)) {
-            if ((moWorldCornerMarkers.getCount() < %n)) {
-                %mh = %hit;
-                %mh = setWord(%mh, 2, 0);
-                %marker = moWorldCornerMarkers.getObject(%n);
-                %marker.setTransform(%mh);
-                %marker.setScale("1 1 1");
-            }
+        if (isObject(moWorldCornerMarkers) && (%n < moWorldCornerMarkers.getCount())) {
+            %mh = %hit;
+            %mh = setWord(%mh, 2, 0);
+            %marker = %n.getObject(moWorldCornerMarkers);
+            %mh.setTransform(%marker);
+            "1 1 1".setScale(%marker);
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     %p1 = "0 0 0";
-    (%numPts < %n);
+    (%n < %numPts);
     %p2 = VectorAdd(%p1, %camVec);
     %pA = intersectPlaneLine("0 0 0", "0 0 1", %p1, %p2);
     %p1 = VectorAdd(%p1, "0 0 1");
@@ -157,14 +155,14 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     return %command @ "\n" @ %summary @ "\n" @ %ret;
 };
 function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
-    if ((1.0 <= $pref::Render::orthoScale)) {
+    if (($pref::Render::orthoScale <= 1.0)) {
         return;
     }
     %fn = %name @ ".cs";
     %file = new FileObject("");;
     0;
-    if (%file.openForWrite(%fn)) {
-        %file.writeLine(getScreenShotMetaData(%guiCtrl));
+    if (%fn.openForWrite(%file)) {
+        getScreenShotMetaData(%guiCtrl).writeLine(%file);
     }
     error(getScopeName() @ " " @ "- could not open file for write:" @ " " @ %fn);
     %file.delete();

@@ -2,15 +2,15 @@ function Player::hasRoleMask(%this, %mask) {
     return roles::maskHasRole(%this.getRolesMask(), %mask);
 };
 function Player::hasAnyRoleInMask(%this, %mask) {
-    if ((0.0 == %mask)) {
+    if ((%mask == 0.0)) {
     }
     return roles::masksOverlap(%this.getRolesMask(), %mask);
 };
 function Player::isStaff(%this) {
-    return %this.hasRoleString("staff");
+    return "staff".hasRoleString(%this);
 };
 function Player::isModerator(%this) {
-    return %this.hasRoleString("moderator");
+    return "moderator".hasRoleString(%this);
 };
 function Player::isStaffOrModerator(%this) {
     if (%this.isStaff()) {
@@ -18,7 +18,7 @@ function Player::isStaffOrModerator(%this) {
     return %this.isModerator();
 };
 function Player::isCeleb(%this) {
-    return %this.hasRoleString("celeb");
+    return "celeb".hasRoleString(%this);
 };
 function Player::mayConnectToFullServer(%this) {
     if (%this.isStaff()) {
@@ -38,32 +38,32 @@ function Player::isDebugging(%this) {
 };
 function Player::hasRoleString(%this, %roleString) {
     %roleBits = roleGet(%roleString);
-    if ((0.0 == %roleBits)) {
+    if ((%roleBits == 0.0)) {
         return 0;
     }
-    return %this.hasRoleMask(%roleBits);
+    return %roleBits.hasRoleMask(%this);
 };
 function Player::getRoleStrings(%this) {
     return roles::getRoleStrings(%this.getRolesMask());
 };
 function Player::toggleRoleString(%this, %roleString) {
     %roleBits = roleGet(%roleString);
-    return %this.toggleRoleMask(%roleBits);
+    return %roleBits.toggleRoleMask(%this);
 };
 function Player::toggleRoleMask(%this, %roleBits) {
-    if (%this.hasRoleMask(%roleBits)) {
-        %this.removeRoleByMask(%roleBits);
+    if (%roleBits.hasRoleMask(%this)) {
+        %roleBits.removeRoleByMask(%this);
         %ret = 0;
     }
-    %this.addRoleByMask(%roleBits);
+    %roleBits.addRoleByMask(%this);
     %ret = 1;
     return %ret;
 };
 function roles::masksOverlap(%maskA, %maskB) {
-    return (%maskB & %maskA);
+    return (%maskA & %maskB);
 };
 function roles::maskHasRole(%mask, %roleMask) {
-    return (%roleMask == (%roleMask & %mask));
+    return ((%mask & %roleMask) == %roleMask);
 };
 function roles::maskHasRoleString(%mask, %roleString) {
     return roles::maskHasRole(%mask, roleGet(%roleString));
@@ -73,9 +73,9 @@ function roles::getRoleStrings(%mask) {
 };
 function roles::getRolesMaskFromStrings(%rolesStrings) {
     %rolesMask = 0;
-    if (!(%rolesStrings $= "")) {
+    while (!(%rolesStrings $= "")) {
         %rolesStrings = NextToken(%rolesStrings, "roleString", " ");
-        %rolesMask = (roleGet(%roleString) | %rolesMask);
+        %rolesMask = (%rolesMask | roleGet(%roleString));
     }
     return %rolesMask;
 };

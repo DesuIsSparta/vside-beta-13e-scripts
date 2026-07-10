@@ -5,9 +5,9 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     %uri = "/envmanager/status";
     %query = "cmd=relate";
     %user = %client.nameBase;
-    %userId = PlayerDict.get(%user);
-    %otherId = PlayerDict.get(%other);
-    if ((0.0 == %userId)) {
+    %userId = %user.get(PlayerDict);
+    %otherId = %other.get(PlayerDict);
+    if ((%userId == 0.0)) {
         return;
     }
     %client.userId = %userId @ RelRequest;
@@ -19,7 +19,7 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     %relTypeValue = "type=" @ urlEncode(%relType);
     %operTypeValue = "op=" @ urlEncode(%oper);
     %post = %userValue @ "&" @ %otherValue @ "&" @ %relTypeValue @ "&" @ %operTypeValue;
-    %relRequest.post(%host, %uri, %query, %post);
+    %post.post(%relRequest, %host, %uri, %query);
     return;
 };
 function RelRequest::onConnected(%this) {
@@ -48,7 +48,7 @@ function RelRequest::onDisconnect(%this) {
 };
 function doLocalChangeRelation(%client, %other, %relType, %oper) {
     %sender = %client.Player;
-    %otherId = PlayerDict.get(%other);
+    %otherId = %other.get(PlayerDict);
     if (!(isPlayerObject(%otherId))) {
         error("bad other in doLocalChangeRelation:" @ " " @ getDebugString(%otherId) @ " " @ "from" @ " " @ getDebugString(%sender));
         return;

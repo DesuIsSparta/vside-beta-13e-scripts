@@ -4,75 +4,75 @@ function recordingsDlg::onWake() {
     %filespec = $currentMod @ "/recordings/*.rec";
     echo(%filespec);
     %file = findFirstFile(%filespec);
-    if (!(%file $= "")) {
+    while (!(%file $= "")) {
         %fileName = fileBase(%file);
-        if ((-(1.0) == strstr(%file, "/CVS/"))) {
-            %i = (1.0 + %i);
-            RecordingsDlgList.addRow(%fileName);
+        if ((strstr(%file, "/CVS/") == -(1.0))) {
+            %i = (%i + 1.0);
+            %fileName.addRow(RecordingsDlgList);
         }
         %file = findNextFile(%filespec);
     }
-    RecordingsDlgList.sort(0);
-    RecordingsDlgList.setSelectedRow(0);
-    RecordingsDlgList.scrollVisible(0);
+    0.sort(RecordingsDlgList);
+    0.setSelectedRow(RecordingsDlgList);
+    0.scrollVisible(RecordingsDlgList);
 };
 function StartSelectedDemo() {
     %sel = RecordingsDlgList.getSelectedId();
-    %rowText = RecordingsDlgList.getRowTextById(%sel);
+    %rowText = %sel.getRowTextById(RecordingsDlgList);
     %file = $currentMod @ "/recordings/" @ getField(%rowText, 0) @ ".rec";
     new GameConnection(ServerConnection);
-    ServerConnection.setCommonPreconnectClientSettings("");
-    RootGroup.add(ServerConnection);
-    if (ServerConnection.playDemo(%file)) {
-        Canvas.setContent(PlayGui);
-        Canvas.popDialog(recordingsDlg);
-        ServerConnection.prepDemoPlayback(ServerConnection);
+    "".setCommonPreconnectClientSettings(ServerConnection);
+    ServerConnection.add(RootGroup);
+    if (%file.playDemo(ServerConnection)) {
+        PlayGui.setContent(Canvas);
+        recordingsDlg.popDialog(Canvas);
+        ServerConnection.prepDemoPlayback();
     }
     MessageBoxOK("Playback Failed", "Demo playback failed for file '" @ %file @ "'.", "");
     if (isObject(ServerConnection)) {
-        ServerConnection.delete(ServerConnection);
+        ServerConnection.delete();
     }
 };
 function startDemoRecord() {
-    ServerConnection.stopRecording(ServerConnection);
-    if (ServerConnection.isDemoPlaying(ServerConnection)) {
+    ServerConnection.stopRecording();
+    if (ServerConnection.isDemoPlaying()) {
         return;
     }
     %i = 0;
-    if ((1000.0 < %i)) {
+    while ((%i < 1000.0)) {
         %num = %i;
-        if ((10.0 < %num)) {
+        if ((%num < 10.0)) {
             %num = 0 @ %num;
         }
-        if ((100.0 < %num)) {
+        if ((%num < 100.0)) {
             %num = 0 @ %num;
         }
         %file = $currentMod @ "/recordings/demo" @ %num @ ".rec";
         if (!(isFile(%file))) {
         }
-        %i = (1.0 + %i);
+        %i = (%i + 1.0);
     }
-    if ((1000.0 == %i)) {
-        return (1000.0 < %i);
+    if ((%i == 1000.0)) {
+        return (%i < 1000.0);
     }
     $DemoFileName = %file;
-    ChatHud.addLine("\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].");
+    "\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].".addLine(ChatHud);
     ServerConnection.prepDemoRecord();
-    ServerConnection.startRecording($DemoFileName);
+    $DemoFileName.startRecording(ServerConnection);
     if (!(ServerConnection.isDemoRecording())) {
         deleteFile($DemoFileName);
-        ChatHud.addLine("\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].");
+        "\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].".addLine(ChatHud);
         $DemoFileName = "";
     }
 };
 function stopDemoRecord() {
     if (ServerConnection.isDemoRecording()) {
-        ChatHud.addLine("\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.");
+        "\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.".addLine(ChatHud);
         ServerConnection.stopRecording();
     }
 };
 function demoPlaybackComplete() {
     disconnect();
-    Canvas.setContent("MainMenuGui");
-    Canvas.pushDialog(recordingsDlg, 0);
+    "MainMenuGui".setContent(Canvas);
+    0.pushDialog(Canvas, recordingsDlg);
 };

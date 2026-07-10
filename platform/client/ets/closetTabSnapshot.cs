@@ -1,9 +1,9 @@
 function ClosetTabs::fillProfileTab(%this) {
-    %theTab = %this.getTabWithName("SNAPSHOT");
+    %theTab = "SNAPSHOT".getTabWithName(%this);
     if (!(isObject(%theTab))) {
         return;
     }
-    %theTab.add(new GuiBitmapCtrl("") {
+    new GuiBitmapCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -13,8 +13,8 @@ function ClosetTabs::fillProfileTab(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closet_tabs_bracket";
-    };);
-    %theTab.add(new GuiMLTextCtrl("") {
+    };.add(%theTab);
+    new GuiMLTextCtrl("") {
         profile = 0 @ "ClosetLargeLinkProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -25,8 +25,8 @@ function ClosetTabs::fillProfileTab(%this) {
         visible = 1;
         maxChars = -1;
         text = ;
-    };);
-    %theTab.add(new GuiBitmapCtrl(ProfileCurrentPicture) {
+    };.add(%theTab);
+    new GuiBitmapCtrl(ProfileCurrentPicture) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -36,8 +36,8 @@ function ClosetTabs::fillProfileTab(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "";
-    };);
-    %theTab.add(new GuiWindowCtrl("") {
+    };.add(%theTab);
+    new GuiWindowCtrl("") {
         profile = 0 @ "CornersWindowProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -52,8 +52,8 @@ function ClosetTabs::fillProfileTab(%this) {
         canClose = 0;
         canMinimize = 0;
         canMaximize = 0;
-    };);
-    %theTab.add(new GuiVariableWidthButtonCtrl("") {
+    };.add(%theTab);
+    new GuiVariableWidthButtonCtrl("") {
         profile = 0 @ "BracketButton15NonDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -65,8 +65,18 @@ function ClosetTabs::fillProfileTab(%this) {
         text = "View Your Profile";
         buttonType = "PushButton";
         drawText = 1;
-    };);
-    %theTab.add(new GuiMLTextCtrl("") {
+    };.add(%theTab);
+    new GuiBitmapCtrl("") {
+        profile = 0 @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "35 336";
+        extent = "216 77";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/bulb_box";
+    };.add(%theTab, new GuiMLTextCtrl("") {
         profile = "ClosetLargeLinkProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -77,16 +87,6 @@ function ClosetTabs::fillProfileTab(%this) {
         visible = 1;
         maxChars = -1;
         text = ;
-    };, new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "35 336";
-        extent = "216 77";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        bitmap = "platform/client/ui/bulb_box";
     };);
     %background = new GuiBitmapCtrl(ProfileBackgroundImage) {
         profile = "GuiDefaultProfile";
@@ -101,7 +101,7 @@ function ClosetTabs::fillProfileTab(%this) {
         systemDragDrop = 0;
     };
     %theTab.background = %background;
-    %theTab.add(%background);
+    %background.add(%theTab);
     %maskFrame = new GuiControl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
@@ -137,7 +137,7 @@ function ClosetTabs::fillProfileTab(%this) {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "-195 -700";
-        extent = 759 @ " " @ (2.0 * 859.0);
+        extent = 759 @ " " @ (859.0 * 2.0);
         minExtent = "1 1";
         sluggishness = 1;
         visible = 1;
@@ -157,14 +157,14 @@ function ClosetTabs::fillProfileTab(%this) {
         leftMouseFunc = "";
         rightMouseFunc = "rotate";
     };
-    %objView.setOrbitDist(2.4);
-    %objView.setLightDirection("0 3 -2");
-    %objView.moveBy("0 0");
+    2.4.setOrbitDist(%objView);
+    "0 3 -2".setLightDirection(%objView);
+    "0 0".moveBy(%objView);
     %theTab.objView = %objView;
-    %snapFrame.add(%objView);
-    %maskFrame.add(%snapFrame);
-    %theTab.add(%maskFrame);
-    %theTab.add(new GuiBitmapCtrl("") {
+    %objView.add(%snapFrame);
+    %snapFrame.add(%maskFrame);
+    %maskFrame.add(%theTab);
+    new GuiBitmapCtrl("") {
         profile = 0 @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -174,8 +174,8 @@ function ClosetTabs::fillProfileTab(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/largeSnapFrame";
-    };);
-    %theTab.add(new GuiTextCtrl("") {
+    };.add(%theTab);
+    new GuiTextCtrl("") {
         profile = 0 @ "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -185,8 +185,8 @@ function ClosetTabs::fillProfileTab(%this) {
         sluggishness = -1;
         visible = 1;
         text = "Choose Background";
-    };);
-    %theTab.add(new GuiVariableWidthButtonCtrl(ProfilePreviousBackgroundButton) {
+    };.add(%theTab);
+    new GuiVariableWidthButtonCtrl(ProfilePreviousBackgroundButton) {
         profile = "BracketButton19NonFocusProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -200,8 +200,8 @@ function ClosetTabs::fillProfileTab(%this) {
         drawText = 1;
         repeatDelayMS = 360;
         tickPeriodMS = 120;
-    };);
-    ProfilePreviousBackgroundButton.setActive(0);
+    };.add(%theTab);
+    0.setActive(ProfilePreviousBackgroundButton);
     %chooserScroll = new GuiScrollCtrl("") {
         profile = 0 @ "DottedScrollProfile";
         position = "328 476";
@@ -224,9 +224,9 @@ function ClosetTabs::fillProfileTab(%this) {
         sluggishness = 1;
         minExtent = "303 55";
     };
-    %chooserScroll.add(%backgroundChooser);
-    %theTab.add(%chooserScroll);
-    %theTab.add(new GuiVariableWidthButtonCtrl(ProfileNextBackgroundButton) {
+    %backgroundChooser.add(%chooserScroll);
+    %chooserScroll.add(%theTab);
+    new GuiVariableWidthButtonCtrl(ProfileNextBackgroundButton) {
         profile = "BracketButton19NonFocusProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -240,17 +240,8 @@ function ClosetTabs::fillProfileTab(%this) {
         drawText = 1;
         repeatDelayMS = 360;
         tickPeriodMS = 120;
-    };);
-    %theTab.add(new GuiTextEditCtrl(ProfileBackgroundURLField) {
-        profile = "InfoWindowTextEditInvisibleOnWhiteProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "289 20";
-        altCommand = "$ThisControl.OnEnterKey();";
-        text = ".. or enter an HTTP image URL here ..";
-        isDefault = 1;
-    };, new GuiWindowCtrl("") {
+    };.add(%theTab);
+    new GuiWindowCtrl("") {
         profile = 0 @ "DottedWindowProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -263,8 +254,17 @@ function ClosetTabs::fillProfileTab(%this) {
         canClose = 0;
         canMinimize = 0;
         canMaximize = 0;
+    };.add(%theTab, new GuiTextEditCtrl(ProfileBackgroundURLField) {
+        profile = "InfoWindowTextEditInvisibleOnWhiteProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "289 20";
+        altCommand = "$ThisControl.OnEnterKey();";
+        text = ".. or enter an HTTP image URL here ..";
+        isDefault = 1;
     };);
-    %theTab.add(new GuiWindowCtrl("") {
+    new GuiWindowCtrl("") {
         profile = 0 @ "DottedWindowProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -281,47 +281,47 @@ function ClosetTabs::fillProfileTab(%this) {
         canMaximize = 0;
         closeCommand = "";
         canHilite = 0;
-    };);
-    ProfilePosePopup.add("photo-pose-01");
-    ProfilePosePopup.add("photo-pose-02");
-    ProfilePosePopup.add("photo-pose-03");
-    ProfilePosePopup.add("photo-pose-04");
-    ProfilePosePopup.add("photo-pose-05");
-    ProfilePosePopup.add("photo-pose-06");
-    ProfilePosePopup.add("photo-pose-07");
-    ProfilePosePopup.add("photo-pose-08");
-    ProfilePosePopup.add("angry");
-    ProfilePosePopup.add("boo");
-    ProfilePosePopup.add("confused");
-    ProfilePosePopup.add("cry");
-    ProfilePosePopup.add("embarrassed");
-    ProfilePosePopup.add("flirt");
-    ProfilePosePopup.add("hmm");
-    ProfilePosePopup.add("in-love");
-    ProfilePosePopup.add("lol");
-    ProfilePosePopup.add("rotfl");
-    ProfilePosePopup.add("sad");
-    ProfilePosePopup.add("scared");
-    ProfilePosePopup.add("sleepy");
-    ProfilePosePopup.add("smile");
-    ProfilePosePopup.add("surprised");
-    ProfilePosePopup.add("thinking");
-    ProfilePosePopup.add("applause");
-    ProfilePosePopup.add("busy");
-    ProfilePosePopup.add("cool");
-    ProfilePosePopup.add("doh");
-    ProfilePosePopup.add("kiss");
-    ProfilePosePopup.add("not-listening");
-    ProfilePosePopup.add("shhh");
-    ProfilePosePopup.add("sit");
-    ProfilePosePopup.add("talk-to-the-hand");
-    ProfilePosePopup.add("vomit");
-    ProfilePosePopup.add("waiting");
-    ProfilePosePopup.add("wave");
-    ProfilePosePopup.add("whew");
-    ProfilePosePopup.add("vside");
-    ProfilePosePopup.setText("Pose");
-    %theTab.add(new GuiControl(ProfileSnapshotButton_Container) {
+    };.add(%theTab);
+    "photo-pose-01".add(ProfilePosePopup);
+    "photo-pose-02".add(ProfilePosePopup);
+    "photo-pose-03".add(ProfilePosePopup);
+    "photo-pose-04".add(ProfilePosePopup);
+    "photo-pose-05".add(ProfilePosePopup);
+    "photo-pose-06".add(ProfilePosePopup);
+    "photo-pose-07".add(ProfilePosePopup);
+    "photo-pose-08".add(ProfilePosePopup);
+    "angry".add(ProfilePosePopup);
+    "boo".add(ProfilePosePopup);
+    "confused".add(ProfilePosePopup);
+    "cry".add(ProfilePosePopup);
+    "embarrassed".add(ProfilePosePopup);
+    "flirt".add(ProfilePosePopup);
+    "hmm".add(ProfilePosePopup);
+    "in-love".add(ProfilePosePopup);
+    "lol".add(ProfilePosePopup);
+    "rotfl".add(ProfilePosePopup);
+    "sad".add(ProfilePosePopup);
+    "scared".add(ProfilePosePopup);
+    "sleepy".add(ProfilePosePopup);
+    "smile".add(ProfilePosePopup);
+    "surprised".add(ProfilePosePopup);
+    "thinking".add(ProfilePosePopup);
+    "applause".add(ProfilePosePopup);
+    "busy".add(ProfilePosePopup);
+    "cool".add(ProfilePosePopup);
+    "doh".add(ProfilePosePopup);
+    "kiss".add(ProfilePosePopup);
+    "not-listening".add(ProfilePosePopup);
+    "shhh".add(ProfilePosePopup);
+    "sit".add(ProfilePosePopup);
+    "talk-to-the-hand".add(ProfilePosePopup);
+    "vomit".add(ProfilePosePopup);
+    "waiting".add(ProfilePosePopup);
+    "wave".add(ProfilePosePopup);
+    "whew".add(ProfilePosePopup);
+    "vside".add(ProfilePosePopup);
+    "Pose".setText(ProfilePosePopup);
+    new GuiControl(ProfileSnapshotButton_Container) {
         horizSizing = new GuiBitmapButtonCtrl("") {
         position = new GuiBitmapButtonCtrl("") {
         position = new GuiMLTextCtrl(ProfilePoseReplay) {
@@ -572,7 +572,7 @@ function ClosetTabs::fillProfileTab(%this) {
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
-    };);
+    };.add(%theTab);
     new GuiBitmapButtonCtrl(ProfileSnapshotButton) {
         profile = ProfileSnapshotButton_Container @ "GuiDefaultProfile";
         horizSizing = "right";
@@ -590,18 +590,18 @@ function ClosetTabs::fillProfileTab(%this) {
         drawText = 0;
     };.add();
     %wi = AnimCtrl::newAnimCtrl("31 13", "18 18");
-    %wi.setDelay(60);
-    %wi.addFrame("platform/client/ui/wait0.png");
-    %wi.addFrame("platform/client/ui/wait1.png");
-    %wi.addFrame("platform/client/ui/wait2.png");
-    %wi.addFrame("platform/client/ui/wait3.png");
-    %wi.addFrame("platform/client/ui/wait4.png");
-    %wi.addFrame("platform/client/ui/wait5.png");
-    %wi.addFrame("platform/client/ui/wait6.png");
-    %wi.addFrame("platform/client/ui/wait7.png");
-    ProfileSnapshotButton_Container.add(%wi);
+    60.setDelay(%wi);
+    "platform/client/ui/wait0.png".addFrame(%wi);
+    "platform/client/ui/wait1.png".addFrame(%wi);
+    "platform/client/ui/wait2.png".addFrame(%wi);
+    "platform/client/ui/wait3.png".addFrame(%wi);
+    "platform/client/ui/wait4.png".addFrame(%wi);
+    "platform/client/ui/wait5.png".addFrame(%wi);
+    "platform/client/ui/wait6.png".addFrame(%wi);
+    "platform/client/ui/wait7.png".addFrame(%wi);
+    %wi.add(ProfileSnapshotButton_Container);
     waitIcon = %wi @ ProfileSnapshotButton_Container;
-    %wi.setVisible(0);
+    0.setVisible(%wi);
     %doneButton = new GuiVariableWidthButtonCtrl("") {
         profile = 0 @ "BracketButton19Profile";
         horizSizing = "right";
@@ -628,24 +628,24 @@ function ClosetTabs::fillProfileTab(%this) {
         buttonType = "PushButton";
         drawText = 1;
     };
-    %theTab.add(%doneButton);
+    %doneButton.add(%theTab);
     %theTab.doneButton = %doneButton;
-    %theTab.add(%cancelButton);
+    %cancelButton.add(%theTab);
     %theTab.cancelButton = %cancelButton;
     %this.tabSnapshotInitialized = 1;
 };
 function ProfilePosePopup::onSelect(%this, %unused, %entries) {
     if (!(%entries $= "")) {
         %anim = convertWordToAnim(%entries);
-        $player.playAnim(%anim);
-        ProfilePoseReplay.setVisible(1);
+        %anim.playAnim($player);
+        1.setVisible(ProfilePoseReplay);
     }
 };
 function ProfilePoseReplay::onURL(%this, %url) {
     %anim = ProfilePosePopup.getText();
     if (!(%anim $= "pose")) {
         %anim = convertWordToAnim(%anim);
-        $player.playAnim(%anim);
+        %anim.playAnim($player);
     }
 };
 function ProfileCurrentPicture::update(%this, %url) {
@@ -657,47 +657,47 @@ function ProfileCurrentPicture::update(%this, %url) {
     }
     %curl = new URLPostObject("");;
     0;
-    %curl.setName("ProfileAvatarPictureRequest");
+    "ProfileAvatarPictureRequest".setName(%curl);
     if ((%url $= "")) {
         %url = $Net::AvatarURL @ urlEncode($player.getShapeName());
     }
-    %curl.setURL(%url);
-    %curl.setDownloadFile(%this.getLocalFileName(1));
-    %curl.setRecvData(1);
-    %curl.setCompletedCallback("ProfileAvatarPictureRequestOnCompleted");
+    %url.setURL(%curl);
+    1.getLocalFileName(%this).setDownloadFile(%curl);
+    1.setRecvData(%curl);
+    "ProfileAvatarPictureRequestOnCompleted".setCompletedCallback(%curl);
     if (!(%curl.start())) {
         %curl.delete();
         warn("ProfileCurrentPicture::update(): couldn't start dynamic download of avatar pic.");
         return;
     }
     if (isObject(CURLSimGroup)) {
-        CURLSimGroup.add(%curl);
+        %curl.add(CURLSimGroup);
     }
     echo("ProfileCurrentPicture::update(): started dynamic download of avatar pic");
 };
 function ProfileAvatarPictureRequestOnCompleted(%request, %result) {
-    if ((0.0 == %result)) {
-        gUserPropMgrClient.setProperty($Player::Name, "hasTakenAvatarPhoto", 1);
+    if ((%result == 0.0)) {
+        1.setProperty(gUserPropMgrClient, $Player::Name, "hasTakenAvatarPhoto");
         %fileName = %request.getDownloadFile();
         removeFile(%fileName);
         addFile(%fileName);
-        ProfileCurrentPicture.setBitmap("");
-        ProfileCurrentPicture.setBitmap(%fileName);
-        dlMgr.purgeCacheEntry(%request.getURL());
-        dlMgr.purgeCacheEntry(%request.getURL() @ "?size=S");
-        dlMgr.purgeCacheEntry(%request.getURL() @ "?size=M");
-        dlMgr.purgeCacheEntry(%request.getURL() @ "?size=L");
+        "".setBitmap(ProfileCurrentPicture);
+        %fileName.setBitmap(ProfileCurrentPicture);
+        %request.getURL().purgeCacheEntry(dlMgr);
+        %request.getURL() @ "?size=S".purgeCacheEntry(dlMgr);
+        %request.getURL() @ "?size=M".purgeCacheEntry(dlMgr);
+        %request.getURL() @ "?size=L".purgeCacheEntry(dlMgr);
     }
     %retryCount = 1;
-    if (!(gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0))) {
+    if (!(0.getProperty(gUserPropMgrClient, $Player::Name, "hasTakenAvatarPhoto"))) {
     }
-    if ((%retryCount < $Player::attemptsToAutoUploadAvatarSnapshot)) {
+    if (($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount)) {
     }
     if ((ClosetGui @ " " @ %this.lastTabOpened $= "SNAPSHOT")) {
     }
     if (ClosetGui.isVisible()) {
-        ProfileSnapRegion.schedule(200);
-        $Player::attemptsToAutoUploadAvatarSnapshot = (1.0 + $Player::attemptsToAutoUploadAvatarSnapshot);
+        200.schedule(ProfileSnapRegion);
+        $Player::attemptsToAutoUploadAvatarSnapshot = ($Player::attemptsToAutoUploadAvatarSnapshot + 1.0);
         prepareSnapshot;
     }
 };
@@ -715,7 +715,7 @@ function ProfileCurrentPicture::getLocalFileName(%this, %includeExtention) {
 };
 function ProfileSnapRegion::prepareSnapshot(%this) {
     if (%this.returnClosetGuiFUE) {
-        ClosetGuiFUE.setVisible(0);
+        0.setVisible(ClosetGuiFUE);
         waitAFrameAndCall("ProfileSnapRegion_doSnapshot");
         return;
     }
@@ -725,33 +725,33 @@ function ProfileSnapRegion_doSnapshot() {
     ProfileSnapRegion.doSnapshot();
 };
 function ProfileSnapRegion::doSnapshot(%this) {
-    ProfileSnapshotButton.setActive(0);
-    ProfileSnapshotButton_Container.setVisible(%this.waitIcon, 1);
-    ProfileSnapshotButton_Container.start(%this.waitIcon);
+    0.setActive(ProfileSnapshotButton);
+    1.setVisible(ProfileSnapshotButton_Container, %this.waitIcon);
+    %this.waitIcon.start(ProfileSnapshotButton_Container);
     %reg = %this.getScreenPosition() @ " " @ %this.getExtent();
-    %snapshot = snapshot::snapAndUpRegion(%reg, ProfileCurrentPicture.getLocalFileName(0), "n");
-    %snapshot.setCompletedCallback("ProfileSnapRegionOnCompleted");
+    %snapshot = snapshot::snapAndUpRegion(%reg, 0.getLocalFileName(ProfileCurrentPicture), "n");
+    "ProfileSnapRegionOnCompleted".setCompletedCallback(%snapshot);
     %snapshot.saveObject = %this;
     if (%this.returnClosetGuiFUE) {
-        ClosetGuiFUE.setVisible(1);
+        1.setVisible(ClosetGuiFUE);
     }
 };
 function ProfileSnapRegion::onProgress(%this, %unused) {
 };
 function ProfileSnapRegionOnCompleted(%request, %result) {
     %snapRegion = %request.saveObject;
-    if ((0.0 == %result)) {
+    if ((%result == 0.0)) {
         echo("Profile pic upload done -- downloading");
-        echo("photoURL =" @ " " @ %request.getResult("photoURL"));
-        ProfileSnapshotButton_Container.stop(%request.waitIcon);
-        ProfileSnapshotButton_Container.setVisible(%request.waitIcon, 0);
-        ProfileSnapshotButton.setActive(1);
-        ProfileCurrentPicture.update(%request.getResult("photoURL"));
+        echo("photoURL =" @ " " @ "photoURL".getResult(%request));
+        %request.waitIcon.stop(ProfileSnapshotButton_Container);
+        0.setVisible(ProfileSnapshotButton_Container, %request.waitIcon);
+        1.setActive(ProfileSnapshotButton);
+        "photoURL".getResult(%request).update(ProfileCurrentPicture);
     }
     warn("Profile pic upload error");
-    ProfileSnapshotButton_Container.stop(%request.waitIcon);
-    ProfileSnapshotButton_Container.setVisible(%request.waitIcon, 0);
-    ProfileSnapshotButton.setActive(1);
+    %request.waitIcon.stop(ProfileSnapshotButton_Container);
+    0.setVisible(ProfileSnapshotButton_Container, %request.waitIcon);
+    1.setActive(ProfileSnapshotButton);
 };
 function ProfileBackgroundChooser::onCreatedChild(%this, %child) {
     %thumb = new GuiBitmapCtrl("") {
@@ -782,8 +782,8 @@ function ProfileBackgroundChooser::onCreatedChild(%this, %child) {
         drawText = 0;
     };
     %frame.command = "ProfileBackgroundChooser.thumbClicked(" @ %child.getId() @ ");";
-    %child.add(%thumb);
-    %child.add(%frame);
+    %thumb.add(%child);
+    %frame.add(%child);
     %child.thumb = %thumb;
     %child.frame = %frame;
 };
@@ -794,107 +794,107 @@ function ProfileBackgroundChooser::Initialize(%this) {
         %count = getFieldCount(%images);
         %numImages = 0;
         %i = 0;
-        if ((%count < %i)) {
+        while ((%i < %count)) {
             %fileName = fileName(getField(%images, %i));
             if ((getSubStr(%fileName, 0, 3) $= "sm_")) {
                 %extension = strrchr(%fileName, ".");
                 if ((%extension $= ".jpg")) {
-                    %numImages = (1.0 + %numImages);
+                    %numImages = (%numImages + 1.0);
                 }
                 if ((%extension $= ".png")) {
-                    %numImages = (1.0 + %numImages);
+                    %numImages = (%numImages + 1.0);
                 }
             }
-            %i = (1.0 + %i);
+            %i = (%i + 1.0);
         }
-        %this.setNumChildren(%numImages);
+        %numImages.setNumChildren(%this);
         %i = 0;
-        (%count < %i);
-        if ((%numImages < %i)) {
-            %cell = %this.getObject(%i);
+        (%i < %count);
+        while ((%i < %numImages)) {
+            %cell = %i.getObject(%this);
             %cell.index = %i;
-            %cell.thumb.setBitmap(%bgdPath @ "sm_" @ (1.0 + %i));
-            %cell.thumbBitmapName = %bgdPath @ "sm_" @ (1.0 + %i);
-            %cell.bitmapName = %bgdPath @ (1.0 + %i) @ ".jpg";
-            %i = (1.0 + %i);
+            %bgdPath @ "sm_" @ (%i + 1.0).setBitmap(%cell.thumb);
+            %cell.thumbBitmapName = %bgdPath @ "sm_" @ (%i + 1.0);
+            %cell.bitmapName = %bgdPath @ (%i + 1.0) @ ".jpg";
+            %i = (%i + 1.0);
         }
-        %this.selected = (%numImages < %i) @ -(1.0);
-        %this.selectThumbAtIndex(0);
+        %this.selected = (%i < %numImages) @ -(1.0);
+        0.selectThumbAtIndex(%this);
         %this.initialized = 1;
     }
 };
 function ProfileBackgroundChooser::selectThumbAtIndex(%this, %index) {
-    if ((%index == %this.selected)) {
+    if ((%this.selected == %index)) {
         return;
     }
-    if ((0.0 >= %this.selected)) {
-        %cell = %this.getObject(%this.selected);
+    if ((%this.selected >= 0.0)) {
+        %cell = %this.selected.getObject(%this);
         if (isObject(%cell)) {
-            %cell.frame.setBitmap("platform/client/buttons/sm_frame");
+            "platform/client/buttons/sm_frame".setBitmap(%cell.frame);
         }
     }
     %this.selected = %index;
-    %cell = %this.getObject(%this.selected);
-    %cell.frame.setBitmap("platform/client/buttons/sm_frame_selected");
+    %cell = %this.selected.getObject(%this);
+    "platform/client/buttons/sm_frame_selected".setBitmap(%cell.frame);
     if (isFile(%cell.bitmapName)) {
-        ProfileBackgroundImage.setBitmap(%cell.bitmapName);
+        %cell.bitmapName.setBitmap(ProfileBackgroundImage);
     }
     %url = $Net::downloadURL @ "/packages/" @ %cell.bitmapName;
-    ProfileBackgroundImage.setBitmap(%cell.thumbBitmapName);
-    ProfileBackgroundImage.downloadAndApplyBitmap(%url);
+    %cell.thumbBitmapName.setBitmap(ProfileBackgroundImage);
+    %url.downloadAndApplyBitmap(ProfileBackgroundImage);
 };
 function ProfileBackgroundImage::onSystemDragDroppedEvent(%this, %text, %unused) {
     %text = strreplace(%text, "\\", "/");
     if (platformIsFile(%text)) {
         addFile(%text);
-        %this.setBitmap("");
-        %this.setBitmap(%text);
+        "".setBitmap(%this);
+        %text.setBitmap(%this);
     }
-    %this.downloadAndApplyBitmap(%text);
+    %text.downloadAndApplyBitmap(%this);
 };
 function ProfileBackgroundChooser::thumbClicked(%this, %cell) {
-    %this.selectThumbAtIndex(%cell.index);
+    %cell.index.selectThumbAtIndex(%this);
 };
 function ProfileBackgroundChooser::moveBy(%this, %numSlots) {
     %pos = %this.getTrgPosition();
     %xPos = getWord(%pos, 0);
     %ypos = getWord(%pos, 1);
-    %slotWidth = (%this.spacing + getWord(%this.childrenExtent, 0));
-    %min = (%slotWidth * -((6.0 - %this.getCount())));
+    %slotWidth = (getWord(%this.childrenExtent, 0) + %this.spacing);
+    %min = (-((%this.getCount() - 6.0)) * %slotWidth);
     %max = 0;
     if (ProfilePreviousBackgroundButton.isActive()) {
     }
-    if ((%max >= ((%numSlots * %slotWidth) + %xPos))) {
-        ProfilePreviousBackgroundButton.setActive(0);
+    if (((%xPos + (%slotWidth * %numSlots)) >= %max)) {
+        0.setActive(ProfilePreviousBackgroundButton);
     }
     if (!(ProfilePreviousBackgroundButton.isActive())) {
-        ProfilePreviousBackgroundButton.setActive(1);
+        1.setActive(ProfilePreviousBackgroundButton);
     }
     if (ProfileNextBackgroundButton.isActive()) {
     }
-    if ((%min <= ((%numSlots * %slotWidth) + %xPos))) {
-        ProfileNextBackgroundButton.setActive(0);
+    if (((%xPos + (%slotWidth * %numSlots)) <= %min)) {
+        0.setActive(ProfileNextBackgroundButton);
     }
     if (!(ProfileNextBackgroundButton.isActive())) {
-        ProfileNextBackgroundButton.setActive(1);
+        1.setActive(ProfileNextBackgroundButton);
     }
-    %xPos = mMin(%max, mMax(%min, ((%numSlots * %slotWidth) + %xPos)));
-    %this.setTrgPosition(%xPos, %ypos);
-    %this.minExtent = (%this.getCount() * %slotWidth) @ " " @ %slotWidth;
+    %xPos = mMin(%max, mMax(%min, (%xPos + (%slotWidth * %numSlots))));
+    %ypos.setTrgPosition(%this, %xPos);
+    %this.minExtent = (%slotWidth * %this.getCount()) @ " " @ %slotWidth;
 };
 function ProfileObjectView::moveBy(%this, %dx, %dy) {
     %nudge = ($player.getGender() $= "f") ? "0.4 -0.3 0.8" : "0 -0.1 0.8";
-    %this.setLookAtNudge(%nudge);
-    %dx = (0.25 * %dx);
-    %dy = (0.25 * %dy);
-    %x = mMin(3, mMax(-(3.0), (%dx + %this.xPos)));
-    %y = mMin(4, mMax(-(13.0), (%dy + %this.yPos)));
-    %this.setMove(%x @ " " @ %y);
+    %nudge.setLookAtNudge(%this);
+    %dx = (%dx * 0.25);
+    %dy = (%dy * 0.25);
+    %x = mMin(3, mMax(-(3.0), (%this.xPos + %dx)));
+    %y = mMin(4, mMax(-(13.0), (%this.yPos + %dy)));
+    %x @ " " @ %y.setMove(%this);
 };
 function ProfileObjectView::setMove(%this, %pos) {
     %this.xPos = getWord(%pos, 0);
     %this.yPos = getWord(%pos, 1);
-    %this.setTrgPosition(((%this.xPos * 50.0) + -(195.0)), ((%this.yPos * 50.0) + -(700.0)));
+    (-(700.0) + (50.0 * %this.yPos)).setTrgPosition(%this, (-(195.0) + (50.0 * %this.xPos)));
 };
 function ProfileObjectView::setView(%this, %viewName) {
     %view = ;
@@ -904,8 +904,8 @@ function ProfileObjectView::setView(%this, %viewName) {
     }
     %position = getWords(%view, 0, 1);
     %zoom = getWords(%view, 2, 2);
-    %this.setMove(%position);
-    %this.setOrbitDist(%zoom);
+    %position.setMove(%this);
+    %zoom.setOrbitDist(%this);
 };
 function ProfilePresetViews::onURL(%this, %url) {
     %cmd = firstWord(%url);
@@ -914,7 +914,7 @@ function ProfilePresetViews::onURL(%this, %url) {
         return;
     }
     %viewName = restWords(%url);
-    ProfileObjectView.setView(%viewName);
+    %viewName.setView(ProfileObjectView);
 };
 function ProfileBackgroundURLField::OnEnterKey(%this) {
     %url = %this.getValue();
@@ -922,17 +922,17 @@ function ProfileBackgroundURLField::OnEnterKey(%this) {
         MessageBoxOK(, , "");
         return;
     }
-    ProfileBackgroundImage.downloadAndApplyBitmap(%url);
+    %url.downloadAndApplyBitmap(ProfileBackgroundImage);
 };
 function ProfileBackgroundURLField::onSetFirstResponder(%this) {
     Parent::onSetFirstResponder(%this);
     if (%this.isDefault) {
         %this.isDefault = 0;
-        %this.setText("");
+        "".setText(%this);
     }
-    %this.setSelection(0, 1000);
+    1000.setSelection(%this, 0);
 };
 function ProfileObjectView::resetLight(%this) {
-    %this.setLightDirection("0 3 -2");
-    %this.setLightColor("1 1 1");
+    "0 3 -2".setLightDirection(%this);
+    "1 1 1".setLightColor(%this);
 };

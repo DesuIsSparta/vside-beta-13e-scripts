@@ -14,15 +14,15 @@ function afxRequestEffect(%effectName) {
     }
 };
 function afxAddEffect(%effectName, %keyBinding) {
-    moveMap.bindCmd(keyboard, %keyBinding, "afxRequestEffect(\"" @ %effectName @ "\");", "");
+    "".bindCmd(moveMap, keyboard, %keyBinding, "afxRequestEffect(\"" @ %effectName @ "\");");
     safeEnsureScriptObject("StringMap", "afxEffectsCatalog");
-    afxEffectsCatalog.put(%effectName, %keyBinding);
+    %keyBinding.put(afxEffectsCatalog, %effectName);
 };
 function afxGetSelectedAvatar() {
     return $gAfxSelectedAvatar;
 };
 function afxGetSelectedAvatarGhost() {
-    if ((-(1.0) != $gAfxSelectedAvatar)) {
+    if (($gAfxSelectedAvatar != -(1.0))) {
     }
     return -(1.0);
 };
@@ -34,15 +34,15 @@ function afxSelectAvatarByName(%name) {
     if (!(isObject(%avatar))) {
         return;
     }
-    %start_new_sele = (%avatar != $gAfxSelectedAvatar);
-    if ((-(1.0) != $gAfxSelectedAvatar)) {
+    %start_new_sele = ($gAfxSelectedAvatar != %avatar);
+    if (($gAfxSelectedAvatar != -(1.0))) {
         $gAfxSelectedAvatar.sele.stopSelectron();
         $gAfxSelectedAvatar = -(1.0);
     }
     if (%start_new_sele) {
         %sele = startSelectron(%avatar, $gAfxSelectronStyle);
         if (isObject(%sele)) {
-            %sele.addConstraint(%avatar, "selected");
+            "selected".addConstraint(%sele, %avatar);
             %avatar.sele = %sele;
             $gAfxSelectedAvatar = %avatar;
         }
@@ -52,17 +52,17 @@ function afxNextSelectronStyle() {
     if (!($player.isDebugging())) {
         return;
     }
-    $gAfxSelectronStyle = (1.0 + $gAfxSelectronStyle);
-    if (($gAfxSelectronStyleCount >= $gAfxSelectronStyle)) {
+    $gAfxSelectronStyle = ($gAfxSelectronStyle + 1.0);
+    if (($gAfxSelectronStyle >= $gAfxSelectronStyleCount)) {
         $gAfxSelectronStyle = 0;
     }
-    if ((-(1.0) == $gAfxSelectedAvatar)) {
+    if (($gAfxSelectedAvatar == -(1.0))) {
         return;
     }
     $gAfxSelectedAvatar.sele.stopSelectron();
     %sele = startSelectron($gAfxSelectedAvatar, $gAfxSelectronStyle);
     if (isObject(%sele)) {
-        %sele.addConstraint($gAfxSelectedAvatar, "selected");
+        "selected".addConstraint(%sele, $gAfxSelectedAvatar);
         $gAfxSelectedAvatar.sele = %sele;
     }
 };
@@ -79,7 +79,7 @@ function ClientCmdAfxClientSpecificSound(%soundID) {
         error(getScopeName() @ " " @ "- could not find sound profile for" @ " " @ %soundID);
         return;
     }
-    if ((0.0 > %delay)) {
+    if ((%delay > 0.0)) {
         schedule(%delay, 0, "alxPlay", %profile);
     }
     alxPlay(%profile);

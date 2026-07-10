@@ -5,12 +5,12 @@ function ETSWhatsThisMenu::init(%this, %obj) {
     if ((%title $= "")) {
         %title = "Sponsored Link";
     }
-    %this.setText(%title);
+    %title.setText(%this);
     if (!(%obj.isClassAdvertTextureAdvert())) {
     }
-    if ((2.0 > getFieldCount(%obj.getBasicURL()))) {
+    if ((getFieldCount(%obj.getBasicURL()) > 2.0)) {
         %this.newStyle = 1;
-        %this.initNewStyle(%obj);
+        %obj.initNewStyle(%this);
     }
     %this.newStyle = 0;
     %url = getTargetURL(%obj);
@@ -18,17 +18,17 @@ function ETSWhatsThisMenu::init(%this, %obj) {
         return 0;
     }
     %grey = "0 0 0 128";
-    %this.addScheme(1, %grey, %grey, %grey);
+    %grey.addScheme(%this, 1, %grey, %grey);
     %this.visitURL = %url;
     %this.obj = %obj;
     %n = 0;
-    %this.add("Visit WebSite", %n, 0);
-    %n = (1.0 + %n);
-    %this.add($gAdvertsClient_NoThanksText, 0, 0);
-    %n = (1.0 + %n);
+    0.add(%this, "Visit WebSite", %n);
+    %n = (%n + 1.0);
+    0.add(%this, $gAdvertsClient_NoThanksText, 0);
+    %n = (%n + 1.0);
     if ($player.isDebugging()) {
-        %this.add("--- debug (" @ %obj @ ") ---", 0, 1);
-        %n = (1.0 + %n);
+        1.add(%this, "--- debug (" @ %obj @ ") ---", 0);
+        %n = (%n + 1.0);
     }
     return 1;
 };
@@ -39,10 +39,10 @@ function ETSWhatsThisMenu::initNewStyle(%this, %obj) {
     %s = getFields(%s, 2);
     %num = getFieldCount(%s);
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %base = getField(%s, %n);
-        %this.add(%base, 0, 0);
-        %n = (1.0 + %n);
+        0.add(%this, %base, 0);
+        %n = (%n + 1.0);
     }
     return 1;
 };
@@ -54,7 +54,7 @@ function ETSWhatsThisMenu::onSelect(%this, %id, %text) {
     if (%this.newStyle) {
         %url = absoluteURL($Net::BaseDomain, %this.prePend @ %text @ %this.postPend);
     }
-    if ((0.0 == %id)) {
+    if ((%id == 0.0)) {
         %url = strreplace(%this.visitURL, "[BASEDOMAIN]", $Net::BaseDomain);
     }
     if (!(%url $= "")) {
@@ -70,10 +70,10 @@ function ETSWhatsThisMenu::onSelect(%this, %id, %text) {
 };
 function PlayGui::onAdvertClick(%this, %obj, %pt) {
     if (%this.isClassAdvertShape()) {
-        if (%this.tryOnInfoSignClick(%obj)) {
+        if (%obj.tryOnInfoSignClick(%this)) {
             return;
         }
-        if (%this.tryOnMLTextSignClick(%obj)) {
+        if (%obj.tryOnMLTextSignClick(%this)) {
             return;
         }
     }
@@ -82,7 +82,7 @@ function PlayGui::onAdvertClick(%this, %obj, %pt) {
     }
     %description = %obj.getTitle();
     commandToServer('advertClick', %obj.getGhostID(), %description);
-    if (ETSWhatsThisMenu.init(%obj)) {
+    if (%obj.init(ETSWhatsThisMenu)) {
         ETSWhatsThisMenu.showAtCursor();
     }
     %this.description = %description @ ETSWhatsThisMenu;
@@ -117,16 +117,16 @@ function PlayGui::tryOnMLTextSignClick(%this, %obj) {
         error(getScopeName() @ " " @ "- file not found:" @ " " @ %file);
         return 1;
     }
-    MapPointPanelBitmap.setBitmap(%file);
+    %file.setBitmap(MapPointPanelBitmap);
     MapPointPanelBitmap.fitSize();
-    %extentX = (6.0 + getWord(MapPointPanelBitmap.getExtent(), 0));
-    %extentY = (6.0 + getWord(MapPointPanelBitmap.getExtent(), 1));
+    %extentX = (getWord(MapPointPanelBitmap.getExtent(), 0) + 6.0);
+    %extentY = (getWord(MapPointPanelBitmap.getExtent(), 1) + 6.0);
     MapPointPanel.open();
-    MapPointPanel.resize(0, 0, %extentX, %extentY);
+    %extentY.resize(MapPointPanel, 0, 0, %extentX);
     MapPointPanel.fitInParent();
-    %extentX = (6.0 - getWord(MapPointPanel.getExtent(), 0));
-    %extentY = (6.0 - getWord(MapPointPanel.getExtent(), 1));
-    MapPointPanelBitmap.resize(3, 3, %extentX, %extentY);
+    %extentX = (getWord(MapPointPanel.getExtent(), 0) - 6.0);
+    %extentY = (getWord(MapPointPanel.getExtent(), 1) - 6.0);
+    %extentY.resize(MapPointPanelBitmap, 3, 3, %extentX);
     return 1;
 };
 function getTargetURL(%obj) {
@@ -153,15 +153,15 @@ function convertPtToTextureSpace(%obj, %pt) {
     %yFlip = %obj.getDataBlock().advertYFlip;
     %retX = %xComp[%pt @ %xComp];
     %retY = %yComp[%pt @ %yComp];
-    if ((0.0 >= %xFlip)) {
+    if ((%xFlip >= 0.0)) {
     }
-    if ((0.5 < %xFlip[%pt @ %xFlip])) {
-        %retX = (%retX - 1.0);
+    if ((%xFlip[%pt @ %xFlip] < 0.5)) {
+        %retX = (1.0 - %retX);
     }
-    if ((0.0 >= %yFlip)) {
+    if ((%yFlip >= 0.0)) {
     }
-    if ((0.5 < %yFlip[%pt @ %yFlip])) {
-        %retY = (%retY - 1.0);
+    if ((%yFlip[%pt @ %yFlip] < 0.5)) {
+        %retY = (1.0 - %retY);
     }
     %retX = getSubStr(%retX, 0, 5);
     %retY = getSubStr(%retY, 0, 5);
@@ -184,12 +184,12 @@ function AdvertShape::onGotImageURL(%this) {
     }
     %justFileName = strreplace(formatInt("%5i", $gDynamicAdvertCount), " ", 0) @ ".dynamic.jpg";
     %this.justFilename = %justFileName;
-    dlMgr.applyUrl(%imageURL, "dlMgrCallback_AdvertShape", "", %this, "");
+    "".applyUrl(dlMgr, %imageURL, "dlMgrCallback_AdvertShape", "", %this);
 };
 function dlMgrCallback_AdvertShape(%dlItem, %unused) {
     %advertShape = %dlItem.callbackData;
     %justFileName = %advertShape.justFilename;
     %ext = strrchr(%justFileName, ".");
-    %justFileName = getSubStr(%justFileName, 0, (strlen(%ext) - strlen(%justFileName)));
-    %advertShape.setSkinNameWithPath(%justFileName, %dlItem.localFilename, 1);
+    %justFileName = getSubStr(%justFileName, 0, (strlen(%justFileName) - strlen(%ext)));
+    1.setSkinNameWithPath(%advertShape, %justFileName, %dlItem.localFilename);
 };

@@ -7,7 +7,7 @@ function testPlayer_Master() {
 };
 function testPlayer_AddInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory1;
-    $player.addInventorySKUs($testPlayer::sampleSKUsTwo);
+    $testPlayer::sampleSKUsTwo.addInventorySKUs($player);
     echo("testPlayer_AddInventoryTest(): " @ $Player::inventory);
     if (!($Player::inventory $= $testPlayer::sampleSKUsTwo) @ " " @ $testPlayer::sampleInitialInventory1) {
         log("network", "error", "testPlayer_AddInventoryTest(): failed");
@@ -15,7 +15,7 @@ function testPlayer_AddInventoryTest() {
 };
 function testPlayer_RemoveInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory2;
-    $player.removeInventorySKUs($testPlayer::sampleSKUsTwo);
+    $testPlayer::sampleSKUsTwo.removeInventorySKUs($player);
     echo("testPlayer_RemoveInventoryTest(): " @ $Player::inventory);
     if (!($Player::inventory $= $testPlayer::sampleInitialInventory1)) {
         log("network", "error", "testPlayer_RemoveInventoryTest(): failed");
@@ -28,7 +28,7 @@ function testPlayer_AddInventoryMultiTest() {
     %delta = "3 4";
     %wetExpected = "3 4 1 2";
     $Player::inventory = %dry;
-    $player.addInventorySKUs(%delta);
+    %delta.addInventorySKUs($player);
     %wetActual = $Player::inventory;
     return testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %q);
 };
@@ -39,7 +39,7 @@ function testPlayer_RemoveInventoryMultiTest() {
     %delta = "5 4 6";
     %wetExpected = "1 2 3";
     $Player::inventory = %dry;
-    $player.removeInventorySKUs(%delta);
+    %delta.removeInventorySKUs($player);
     %wetActual = $Player::inventory;
     return testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %q);
 };

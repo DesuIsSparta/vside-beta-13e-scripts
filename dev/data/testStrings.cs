@@ -2,32 +2,32 @@ function testStringsMaster() {
     %testCount = 0;
     %passCount = 0;
     %testCount[%test @ %testCount] = "testIntToChar()";
-    %testCount = (1.0 + %testCount);
+    %testCount = (%testCount + 1.0);
     %testCount[%test @ %testCount] = "testUrlEncode()";
-    %testCount = (1.0 + %testCount);
+    %testCount = (%testCount + 1.0);
     %testCount[%test @ %testCount] = "testUrlDecode()";
-    %testCount = (1.0 + %testCount);
+    %testCount = (%testCount + 1.0);
     %testCount[%test @ %testCount] = "testCollapseWhiteSpace()";
-    %testCount = (1.0 + %testCount);
+    %testCount = (%testCount + 1.0);
     %testCount[%test @ %testCount] = "testFindUnit()";
-    %testCount = (1.0 + %testCount);
+    %testCount = (%testCount + 1.0);
     %n = 0;
-    if ((%testCount < %n)) {
+    while ((%n < %testCount)) {
         eval("%succ =" @ " " @ %n[%test @ %n] @ ";");
         if (%succ) {
             echo("test passed:" @ " " @ %n[%test @ %n]);
-            %passCount = (1.0 + %passCount);
+            %passCount = (%passCount + 1.0);
         }
         error("test failed:" @ " " @ %n[%test @ %n]);
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    echo("testStringsMaster():" @ " " @ %passCount @ " " @ "of" @ " " @ %testCount @ " " @ "passed," @ " " @ (%passCount - %testCount) @ " " @ "failed.");
-    return (%testCount == %passCount);
+    echo("testStringsMaster():" @ " " @ %passCount @ " " @ "of" @ " " @ %testCount @ " " @ "passed," @ " " @ (%testCount - %passCount) @ " " @ "failed.");
+    return (%passCount == %testCount);
 };
 function testIntToChar() {
     %succ = 1;
     %n = 0;
-    if ((256.0 < %n)) {
+    while ((%n < 256.0)) {
         %c = intToChar(%n);
         %m = charToInt(%c);
         %d = intToChar(%m);
@@ -35,11 +35,11 @@ function testIntToChar() {
             error("testIntToChar() failed 1 at" @ " " @ %n);
             %succ = 0;
         }
-        if ((%n != %m)) {
+        if ((%m != %n)) {
             error("testIntToChar() failed 2 at" @ " " @ %n);
             %succ = 0;
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     return %succ;
 };
@@ -59,28 +59,28 @@ function testCollapseWhiteSpace() {
     %num = 0;
     %num[%dry @ %num] = "      ";
     %num[%exp @ %num] = " ";
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = " x  x xx     ";
     %num[%exp @ %num] = " x x xx ";
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "";
     %num[%exp @ %num] = "";
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "x   \t     x";
     %num[%exp @ %num] = "x x";
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "x\t\t\t    x";
     %num[%exp @ %num] = "x\tx";
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "          x";
     %num[%exp @ %num] = " x";
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "xxx";
     %num[%exp @ %num] = "xxx";
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %ret = 1;
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %dry = %n[%dry @ %n];
         %exp = %n[%exp @ %n];
         %wet = collapseWhiteSpace(%n[%dry @ %n]);
@@ -89,55 +89,55 @@ function testCollapseWhiteSpace() {
             error(getScopeName() @ " " @ "- test failed. dry=[" @ %dry @ "] wet=[" @ %wet @ "] expected=[" @ %exp @ "]");
             %ret = 0;
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     return %ret;
 };
 function testFindUnit() {
     %ret = 1;
-    %ret = (testFindUnitInsensitive(" ", "findWord") & %ret);
-    %ret = (testFindUnitInsensitive("\t", "findField") & %ret);
-    %ret = (testFindUnitInsensitive("\n", "findRecord") & %ret);
-    %ret = (testFindUnitSensitive(" ", "findWord") & %ret);
-    %ret = (testFindUnitSensitive("\t", "findField") & %ret);
-    %ret = (testFindUnitSensitive("\n", "findRecord") & %ret);
+    %ret = (%ret & testFindUnitInsensitive(" ", "findWord"));
+    %ret = (%ret & testFindUnitInsensitive("\t", "findField"));
+    %ret = (%ret & testFindUnitInsensitive("\n", "findRecord"));
+    %ret = (%ret & testFindUnitSensitive(" ", "findWord"));
+    %ret = (%ret & testFindUnitSensitive("\t", "findField"));
+    %ret = (%ret & testFindUnitSensitive("\n", "findRecord"));
     return %ret;
 };
 function testFindUnitInsensitive(%delimiter, %findFnName) {
     %num = 0;
     %num[%dry @ %num] = "fOo";
     %num[%exp @ %num] = 0;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "foOo";
     %num[%exp @ %num] = -1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "fo";
     %num[%exp @ %num] = -1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "foo" @ %delimiter @ "";
     %num[%exp @ %num] = 0;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "" @ %delimiter @ "FOO" @ %delimiter @ "";
     %num[%exp @ %num] = 1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 0;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "bar" @ %delimiter @ "fooo" @ %delimiter @ "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 2;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "" @ %delimiter @ "" @ %delimiter @ "" @ %delimiter @ "foo";
     %num[%exp @ %num] = 3;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "bar" @ %delimiter @ "foo" @ %delimiter @ "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "bar" @ %delimiter @ "foobar" @ %delimiter @ "bar" @ %delimiter @ "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 3;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %ret = 1;
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %dry = %n[%dry @ %n];
         %exp = %n[%exp @ %n];
         %wet = call(%findFnName, %n[%dry @ %n], "foo");
@@ -146,7 +146,7 @@ function testFindUnitInsensitive(%delimiter, %findFnName) {
             error(getScopeName() @ " " @ "- test failed. findFn =" @ " " @ %findFnName @ " " @ "delim =" @ " " @ %delimiter @ " " @ "dry=[" @ %dry @ "] wet=[" @ %wet @ "] expected=[" @ %exp @ "]");
             %ret = 0;
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     return %ret;
 };
@@ -154,37 +154,37 @@ function testFindUnitSensitive(%delimiter, %findFnName) {
     %num = 0;
     %num[%dry @ %num] = "fOo";
     %num[%exp @ %num] = -1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "foOo";
     %num[%exp @ %num] = -1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "fo";
     %num[%exp @ %num] = -1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "foo" @ %delimiter @ "";
     %num[%exp @ %num] = 0;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "" @ %delimiter @ "FOO" @ %delimiter @ "";
     %num[%exp @ %num] = -1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 0;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "bar" @ %delimiter @ "fooo" @ %delimiter @ "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 2;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "" @ %delimiter @ "" @ %delimiter @ "" @ %delimiter @ "foo";
     %num[%exp @ %num] = 3;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "bar" @ %delimiter @ "foo" @ %delimiter @ "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 1;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %num[%dry @ %num] = "bar" @ %delimiter @ "foobar" @ %delimiter @ "bar" @ %delimiter @ "foo" @ %delimiter @ "bar";
     %num[%exp @ %num] = 3;
-    %num = (1.0 + %num);
+    %num = (%num + 1.0);
     %ret = 1;
     %n = 0;
-    if ((%num < %n)) {
+    while ((%n < %num)) {
         %dry = %n[%dry @ %n];
         %exp = %n[%exp @ %n];
         %wet = call(%findFnName, %n[%dry @ %n], "foo", 1);
@@ -193,7 +193,7 @@ function testFindUnitSensitive(%delimiter, %findFnName) {
             error(getScopeName() @ " " @ "- test failed. findFn =" @ " " @ %findFnName @ " " @ "delim =" @ " " @ %delimiter @ " " @ "dry=[" @ %dry @ "] wet=[" @ %wet @ "] expected=[" @ %exp @ "]");
             %ret = 0;
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
     return %ret;
 };

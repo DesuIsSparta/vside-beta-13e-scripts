@@ -1,9 +1,9 @@
 function ClosetTabs::fillBodyTab(%this) {
-    %theTab = %this.getTabWithName("BODY");
+    %theTab = "BODY".getTabWithName(%this);
     if (!(isObject(%theTab))) {
         return;
     }
-    %theTab.add(new GuiBitmapCtrl("") {
+    new GuiBitmapCtrl("") {
         profile = 0 @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -13,7 +13,7 @@ function ClosetTabs::fillBodyTab(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closet_tabs_bracket";
-    };);
+    };.add(%theTab);
     %featuresLabel = new GuiTextCtrl("") {
         profile = 0 @ "ClosetTitleProfile";
         horizSizing = "right";
@@ -26,7 +26,7 @@ function ClosetTabs::fillBodyTab(%this) {
         text = "Features";
         maxLength = 255;
     };
-    %theTab.add(%featuresLabel);
+    %featuresLabel.add(%theTab);
     %featuresPopup = new GuiPopUp2MenuCtrl(BodyFeaturesPopup) {
         profile = "ClosetPopupProfile";
         scrollProfile = "DottedScrollProfile";
@@ -42,7 +42,7 @@ function ClosetTabs::fillBodyTab(%this) {
         maxPopupHeight = 200;
         allowReverse = 0;
     };
-    %theTab.add(%featuresPopup);
+    %featuresPopup.add(%theTab);
     %featuresPopup.rebuildPopupList();
     new GuiSliderCtrl(BodyHeightSlider) {
         profile = new GuiBitmapCtrl("") {
@@ -208,7 +208,7 @@ function ClosetTabs::fillBodyTab(%this) {
         text = "no matching items";
         maxLength = 255;
     };
-    %itemsFrame.add(%itemsInfoText);
+    %itemsInfoText.add(%itemsFrame);
     %itemsRangeText = new GuiTextCtrl("") {
         profile = 0 @ "ClosetRightInfoProfile";
         horizSizing = "left";
@@ -221,7 +221,7 @@ function ClosetTabs::fillBodyTab(%this) {
         text = "";
         maxLength = 255;
     };
-    %itemsFrame.add(%itemsRangeText);
+    %itemsRangeText.add(%itemsFrame);
     %theTab.rangeText = %itemsRangeText;
     %itemsScroll = new GuiScrollCtrl("") {
         profile = 0 @ "ETSScrollProfile";
@@ -236,7 +236,7 @@ function ClosetTabs::fillBodyTab(%this) {
         constantThumbHeight = 1;
         scrollMultiplier = 14;
     };
-    %itemsScroll.bindClassName("ClosetItemsScroll");
+    "ClosetItemsScroll".bindClassName(%itemsScroll);
     %theTab.itemsScroll = %itemsScroll;
     %thumbnails = new GuiArray2Ctrl(ClosetThumbnailsBody) {
         class = "ClosetThumbnails";
@@ -251,28 +251,28 @@ function ClosetTabs::fillBodyTab(%this) {
         tab = %theTab;
         scroll = %itemsScroll;
     };
-    %itemsScroll.add(%thumbnails);
+    %thumbnails.add(%itemsScroll);
     %itemsScroll.thumbnails = %thumbnails;
-    %itemsFrame.add(%itemsScroll);
+    %itemsScroll.add(%itemsFrame);
     %itemsFrame.thumbnails = %thumbnails;
-    %theTab.add(%itemsFrame);
+    %itemsFrame.add(%theTab);
     %theTab.thumbnails = %thumbnails;
-    %theTab.add(new GuiMLTextCtrl(BodyShortDescText) {
+    new GuiMLTextCtrl(BodyShortDescText) {
         profile = "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "692 84";
         extent = "242 25";
         lineSpacing = -(3.0);
-    };);
-    %theTab.add(new GuiMLTextCtrl(BodyLongDescText) {
+    };.add(%theTab);
+    new GuiMLTextCtrl(BodyLongDescText) {
         profile = "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "692 106";
         extent = "173 32";
         lineSpacing = -(3.0);
-    };);
+    };.add(%theTab);
     %doneButton = new GuiVariableWidthButtonCtrl("") {
         profile = 0 @ "BracketButton19Profile";
         horizSizing = "right";
@@ -299,11 +299,11 @@ function ClosetTabs::fillBodyTab(%this) {
         buttonType = "PushButton";
         drawText = 1;
     };
-    %theTab.add(%doneButton);
+    %doneButton.add(%theTab);
     %theTab.doneButton = %doneButton;
-    %theTab.add(%cancelButton);
+    %cancelButton.add(%theTab);
     %theTab.cancelButton = %cancelButton;
-    %featuresPopup.SetSelected(0);
+    0.SetSelected(%featuresPopup);
     %this.tabBodyInitialized = 1;
     BodyItemsFrame.update();
 };
@@ -311,34 +311,34 @@ function ClosetTabs::updateBodyTabDisplay(%this) {
     if (!(%this.tabBodyInitialized)) {
         return;
     }
-    BodyHeightSlider.setValue($UserPref::Player::height);
+    $UserPref::Player::height.setValue(BodyHeightSlider);
     BodyHeightSlider.valueChanged();
 };
 function BodyItemsFrame::update(%this) {
-    %this.thumbnails.setDrawers(ThumbCategories.get(strlwr(%this.features)));
-    %this.thumbnails.makeFirstResponder(1);
+    strlwr(%this.features).get(ThumbCategories).setDrawers(%this.thumbnails);
+    1.makeFirstResponder(%this.thumbnails);
     if ((%this.features $= "Height")) {
-        BodyHeightFrame.setVisible(1);
+        1.setVisible(BodyHeightFrame);
         BodyHeightFrame.getParent().pushToBack();
     }
-    BodyHeightFrame.setVisible(0);
+    0.setVisible(BodyHeightFrame);
     if ((BodyHeightFrame @ " " @ %this.features $= "Stance")) {
-        BodyStanceButtons.setVisible(1);
+        1.setVisible(BodyStanceButtons);
         BodyStanceButtons.getParent().pushToBack();
     }
-    BodyStanceButtons.setVisible(0);
+    0.setVisible(BodyStanceButtons);
 };
 function BodyHeightDisplayText::update(%this) {
-    %myHeight = ( * $UserPref::Player::height);
-    %myFeet = mFloor((12.0 / %myHeight));
-    %myInches = mFloor(((12.0 * %myFeet) - %myHeight));
-    %this.setText(%myFeet @ "'" @ " " @ %myInches @ "\"");
+    %myHeight = ($UserPref::Player::height * );
+    %myFeet = mFloor((%myHeight / 12.0));
+    %myInches = mFloor((%myHeight - (%myFeet * 12.0)));
+    %myFeet @ "'" @ " " @ %myInches @ "\"".setText(%this);
 };
 function BodyHeightSlider::valueChanged(%this) {
     %h = %this.getValue();
     $UserPref::Player::height = %h;
-    %sxy = (1.0 + ($Pref::Wardrobe::playerHeightWidthFactor * (1.0 - %h)));
-    $player.setScale(%sxy @ " " @ %sxy @ " " @ %h);
+    %sxy = (((%h - 1.0) * $Pref::Wardrobe::playerHeightWidthFactor) + 1.0);
+    %sxy @ " " @ %sxy @ " " @ %h.setScale($player);
     BodyHeightDisplayText.update();
 };
 function BodyFeaturesPopup::onSelect(%this, %unused, %entries) {
@@ -355,15 +355,15 @@ function BodyFeaturesPopup::rebuildPopupList(%this) {
     %this.clear();
     %categoryList = "All Features" @ "\t" @ "Skin" @ "\t" @ "Face" @ "\t" @ "Eyes" @ "\t" @ "Hair";
     %n = 0;
-    if ((getFieldCount(%categoryList) < %n)) {
+    while ((%n < getFieldCount(%categoryList))) {
         %category = getField(%categoryList, %n);
         if (Closet::skuListHasCategory($Player::inventory, %category)) {
-            %this.add(%category);
+            %category.add(%this);
         }
-        %n = (1.0 + %n);
+        %n = (%n + 1.0);
     }
-    %this.add("Height");
-    %this.SetSelected(0);
+    "Height".add(%this);
+    0.SetSelected(%this);
 };
 function ClosetGUI_ToggleSku_Body(%sku) {
     ClosetGUI_ToggleSku_Closet(%sku);

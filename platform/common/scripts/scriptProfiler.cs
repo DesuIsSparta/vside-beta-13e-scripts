@@ -31,9 +31,9 @@ function scriptProfiler_EnterScopeSection(%sectionId) {
 };
 function scriptProfiler_EnterSection(%sectionId) {
     %curTime = getSimTime();
-    $gScriptProfiler_EntryTimes.put(%sectionId, %curTime);
-    $gScriptProfiler_TotalTimes.put(%sectionId, $gScriptProfiler_TotalTimes.get(%sectionId));
-    $gScriptProfiler_TotalCalls.put(%sectionId, (1.0 + $gScriptProfiler_TotalCalls.get(%sectionId)));
+    %curTime.put($gScriptProfiler_EntryTimes, %sectionId);
+    %sectionId.get($gScriptProfiler_TotalTimes).put($gScriptProfiler_TotalTimes, %sectionId);
+    (%sectionId.get($gScriptProfiler_TotalCalls) + 1.0).put($gScriptProfiler_TotalCalls, %sectionId);
 };
 function scriptProfiler_LeaveScope() {
     if (!($gScriptProfiler_Active)) {
@@ -51,8 +51,8 @@ function scriptProfiler_LeaveSection(%sectionId) {
     if (!($gScriptProfiler_Active)) {
         return;
     }
-    %ntrTime = $gScriptProfiler_EntryTimes.get(%sectionId);
-    %ttlTime = $gScriptProfiler_TotalTimes.get(%sectionId);
+    %ntrTime = %sectionId.get($gScriptProfiler_EntryTimes);
+    %ttlTime = %sectionId.get($gScriptProfiler_TotalTimes);
     %dltTime = mSubS32(getSimTime(), %ntrTime);
     %newTime = mAddS32(%ttlTime, %dltTime);
     if (0) {
@@ -61,22 +61,22 @@ function scriptProfiler_LeaveSection(%sectionId) {
         error("dltTime" @ " " @ %dltTime);
         error("newTime" @ " " @ %newTime);
     }
-    $gScriptProfiler_TotalTimes.put(%sectionId, %newTime);
-    $gScriptProfiler_EntryTimes.put(%sectionId, "");
+    %newTime.put($gScriptProfiler_TotalTimes, %sectionId);
+    "".put($gScriptProfiler_EntryTimes, %sectionId);
 };
 function scriptProfiler_getTotals() {
     %ret = "";
     %delim = "";
-    %n = (1.0 - $gScriptProfiler_TotalTimes.size());
-    if ((0.0 >= %n)) {
-        %time = formatFloat("%10.4f", (1000.0 / $gScriptProfiler_TotalTimes.getValue(%n)));
-        %id = $gScriptProfiler_TotalTimes.getKey(%n);
+    %n = ($gScriptProfiler_TotalTimes.size() - 1.0);
+    while ((%n >= 0.0)) {
+        %time = formatFloat("%10.4f", (%n.getValue($gScriptProfiler_TotalTimes) / 1000.0));
+        %id = %n.getKey($gScriptProfiler_TotalTimes);
         %id2 = formatString("%-70s", %id);
-        %bal = ($gScriptProfiler_EntryTimes.get(%id) $= "") ? "(  balanced)" : "(unbalanced)";
-        %cls = formatInt("%5d", $gScriptProfiler_TotalCalls.getValue(%n));
+        %bal = (%id.get($gScriptProfiler_EntryTimes) $= "") ? "(  balanced)" : "(unbalanced)";
+        %cls = formatInt("%5d", %n.getValue($gScriptProfiler_TotalCalls));
         %ret = %ret @ %delim @ %time @ " " @ %bal @ " " @ %cls @ " " @ %id2;
         %delim = "\n";
-        %n = (1.0 - %n);
+        %n = (%n - 1.0);
     }
     return %ret;
 };
@@ -95,9 +95,9 @@ function scriptProfiler_deactivate() {
 function scriptProfiler_foo() {
     scriptProfiler_EnterScope();
     %n = 0;
-    if ((200000.0 < %n)) {
-        %m = (mSqrt(%n) + %m);
-        %n = (1.0 + %n);
+    while ((%n < 200000.0)) {
+        %m = (%m + mSqrt(%n));
+        %n = (%n + 1.0);
     }
     scriptProfiler_LeaveScope();
 };

@@ -23,22 +23,22 @@ function onAppCloseButton() {
     $closeConfirmDlg = MessageBoxYesNo("Quit vSide", , "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
     %dialog = ;
     if (!($gLastLoggedInThisSessionAs $= "")) {
-        %yesButtonPos = 0.getParent(%dialog.button).getPosition();
+        %yesButtonPos = %dialog.button.getParent(0).getPosition();
         %ctrl = new GuiCheckBoxCtrl("") {
             profile = 0 @ "ETSCheckBoxProfile";
-            position = getWord(%yesButtonPos, 0) @ " " @ (23.0 - getWord(%yesButtonPos, 1));
+            position = getWord(%yesButtonPos, 0) @ " " @ (getWord(%yesButtonPos, 1) - 23.0);
             extent = "110 20";
             horizSizing = "center";
             vertSizing = "top";
             text = "Visit my web profile";
         };
-        %ctrl.setValue($UserPref::General::onQuitVisitWebProfile);
+        $UserPref::General::onQuitVisitWebProfile.setValue(%ctrl);
         %window = %dialog.window;
-        %window.add(%ctrl);
+        %ctrl.add(%window);
         %dialog.visitProfileOptionCtrl = %ctrl;
         %width = getWord(%window.getExtent(), 0);
         %height = getWord(%window.getExtent(), 1);
-        %window.resize(%width, (20.0 + %height));
+        (%height + 20.0).resize(%window, %width);
     }
 };
 function confirmQuitOnYes() {
@@ -73,14 +73,14 @@ function ClientCmdMissionInfo(%contiguousSpaceName, %mode) {
 function onGotContiguousSpaceName(%contiguousSpaceName) {
     $gContiguousSpaceName = %contiguousSpaceName;
     tutorials_Initialize();
-    geLocalMapContainer.onSpaceChange(%contiguousSpaceName);
+    %contiguousSpaceName.onSpaceChange(geLocalMapContainer);
     CSControlPanelTabs.updateSkipTutorialTab();
     ButtonBar.handleContiguousSpace();
     if (!(%contiguousSpaceName $= "")) {
     }
     %name = "[" @ $ServerName @ "]";
     %contiguousSpaceName;
-    gUserPropMgrClient.incrementIntegerProperty($Player::Name, "level started count" @ " " @ %name, 1);
+    1.incrementIntegerProperty(gUserPropMgrClient, $Player::Name, "level started count" @ " " @ %name);
 };
 function getContiguousSpaceFullName(%code) {
     return %code[$gContiguousSpaceFullNames @ %code];
@@ -92,7 +92,7 @@ function getCurrentContiguousSpaceOfferSkip() {
     return $gContiguousSpaceName[$gContiguousSpaceOfferSkip @ $gContiguousSpaceName];
 };
 function ClientCmdLevelCompleted(%levelName) {
-    gUserPropMgrClient.setProperty($Player::Name, "level completed" @ " " @ %levelName, 1);
+    1.setProperty(gUserPropMgrClient, $Player::Name, "level completed" @ " " @ %levelName);
 };
 function ClientCmdToonColorOffsetFill(%colorOffset) {
     $pref::TS::ToonColorOffsetFill = %colorOffset;
