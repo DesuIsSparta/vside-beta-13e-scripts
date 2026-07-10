@@ -117,7 +117,7 @@ function recursiveCollectSeatsFromSimGroup(%obj, %seatSet)
     {
         %dbName = %obj.getDataBlock().getName();
         %seatMarkerFound = strstr(%dbName, "SeatMarker");
-        if (%seatMarkerFound != -(1))
+        if (%seatMarkerFound != -1)
         {
             %seatSet.add(%obj.getId());
         }

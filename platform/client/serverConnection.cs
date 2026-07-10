@@ -65,7 +65,10 @@ function GameConnection::onConnectionDropped(%this, %msg)
             {
                 WorldMap.selectCity(%currentCity);
             }
-            WorldMap.selectCity(%levelOrCityName);
+            else
+            {
+                WorldMap.selectCity(%levelOrCityName);
+            }
         }
         MessageBoxOK("BOOTED TO MAP", getFields(%msg, 2), "");
     }
@@ -101,90 +104,135 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
             %error = "Internal Error: badly formed network packet";
             %destGui = geTGF;
         }
-        if (%msg $= "CR_YOUAREBANNED")
+        else
         {
-            %error = "You are not allowed to play on this server.";
-        }
-        if (%msg $= "CR_TOKEN")
-        {
-            %error = $ETS::AppName @ " " @ $ETS::AppName[$MsgCat::network @ "E-SERVICE-UNAVAIL"];
-        }
-        if (%msg $= "CR_SERVERFULL")
-        {
-            %error = %msg[$MsgCat::login @ "E-SERVER-FULL"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CR_BAD_TARGET")
-        {
-            %error = %msg[$MsgCat::login @ "E-BAD-TARGET"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CR_CANNOT_ACTIVATE_APARTMENT")
-        {
-            %error = %msg[$MsgCat::login @ "E-CANNOT-ACTIVATE-APARTMENT"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CR_APARTMENT_ACTIVATION_DENIED")
-        {
-            %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATION-DENIED"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CR_APARTMENT_ACTIVE_ELSEWHERE")
-        {
-            %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATE-ELSEWHERE"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CR_LEVEL_COMPLETED")
-        {
-            %error = %msg[$MsgCat::login @ "E-LEVEL-COMPLETED"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CHR_PASSWORD")
-        {
-            if ($Client::Password $= "")
+            if (%msg $= "CR_YOUAREBANNED")
             {
-                MessageBoxOK("REJECTED", $MsgCat::login["PASSWORD-REQD"], "");
+                %error = "You are not allowed to play on this server.";
             }
             else
             {
-                $Client::Password = "";
-                MessageBoxOK("REJECTED", $MsgCat::login["PASSWORD-BAD"], "");
+                if (%msg $= "CR_TOKEN")
+                {
+                    %error = $ETS::AppName @ " " @ $ETS::AppName[$MsgCat::network @ "E-SERVICE-UNAVAIL"];
+                }
+                else
+                {
+                    if (%msg $= "CR_SERVERFULL")
+                    {
+                        %error = %msg[$MsgCat::login @ "E-SERVER-FULL"];
+                        %destGui = geTGF;
+                    }
+                    else
+                    {
+                        if (%msg $= "CR_BAD_TARGET")
+                        {
+                            %error = %msg[$MsgCat::login @ "E-BAD-TARGET"];
+                            %destGui = geTGF;
+                        }
+                        else
+                        {
+                            if (%msg $= "CR_CANNOT_ACTIVATE_APARTMENT")
+                            {
+                                %error = %msg[$MsgCat::login @ "E-CANNOT-ACTIVATE-APARTMENT"];
+                                %destGui = geTGF;
+                            }
+                            else
+                            {
+                                if (%msg $= "CR_APARTMENT_ACTIVATION_DENIED")
+                                {
+                                    %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATION-DENIED"];
+                                    %destGui = geTGF;
+                                }
+                                else
+                                {
+                                    if (%msg $= "CR_APARTMENT_ACTIVE_ELSEWHERE")
+                                    {
+                                        %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATE-ELSEWHERE"];
+                                        %destGui = geTGF;
+                                    }
+                                    else
+                                    {
+                                        if (%msg $= "CR_LEVEL_COMPLETED")
+                                        {
+                                            %error = %msg[$MsgCat::login @ "E-LEVEL-COMPLETED"];
+                                            %destGui = geTGF;
+                                        }
+                                        else
+                                        {
+                                            if (%msg $= "CHR_PASSWORD")
+                                            {
+                                                if ($Client::Password $= "")
+                                                {
+                                                    MessageBoxOK("REJECTED", $MsgCat::login["PASSWORD-REQD"], "");
+                                                }
+                                                else
+                                                {
+                                                    $Client::Password = "";
+                                                    MessageBoxOK("REJECTED", $MsgCat::login["PASSWORD-BAD"], "");
+                                                }
+                                                return;
+                                            }
+                                            else
+                                            {
+                                                if (%msg $= "CHR_PROTOCOL")
+                                                {
+                                                    %error = %msg[$MsgCat::network @ "E-PROTOCOL-VER"];
+                                                    %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                    %destGui = geTGF;
+                                                }
+                                                else
+                                                {
+                                                    if (%msg $= "CHR_CLASSCRC")
+                                                    {
+                                                        %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
+                                                        %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                        %destGui = geTGF;
+                                                    }
+                                                    else
+                                                    {
+                                                        if (%msg $= "CHR_CLASSCRCROOTDIRVAL")
+                                                        {
+                                                            %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
+                                                            %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                            %destGui = geTGF;
+                                                        }
+                                                        else
+                                                        {
+                                                            if (%msg $= "CHR_INVALID_CHALLENGE_PACKET")
+                                                            {
+                                                                %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
+                                                                %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                                %error = %error @ "\n" @ "(assets)";
+                                                                %destGui = geTGF;
+                                                            }
+                                                            else
+                                                            {
+                                                                if (%msg $= "CR_ASSETS_MISSING")
+                                                                {
+                                                                    %error = "Cities/packages are missing or out of date: " @ %extra;
+                                                                    %destGui = CityDownloadGui;
+                                                                    queuePackageUpdatesByString(%extra);
+                                                                }
+                                                                else
+                                                                {
+                                                                    %error = "Connection error.  Please try another server.  Error code: (" @ %msg @ ")";
+                                                                    %destGui = geTGF;
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            return;
         }
-        if (%msg $= "CHR_PROTOCOL")
-        {
-            %error = %msg[$MsgCat::network @ "E-PROTOCOL-VER"];
-            %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CHR_CLASSCRC")
-        {
-            %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
-            %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CHR_CLASSCRCROOTDIRVAL")
-        {
-            %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
-            %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
-            %destGui = geTGF;
-        }
-        if (%msg $= "CHR_INVALID_CHALLENGE_PACKET")
-        {
-            %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
-            %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
-            %error = %error @ "\n" @ "(assets)";
-            %destGui = geTGF;
-        }
-        if (%msg $= "CR_ASSETS_MISSING")
-        {
-            %error = "Cities/packages are missing or out of date: " @ %extra;
-            %destGui = CityDownloadGui;
-            queuePackageUpdatesByString(%extra);
-        }
-        %error = "Connection error.  Please try another server.  Error code: (" @ %msg @ ")";
-        %destGui = geTGF;
     }
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/connectionRejected/" @ %msg);

@@ -96,45 +96,54 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                         %thisLine = "";
                         %atEndOfLine = 1;
                     }
-                    if (%thisLineWidth < %thisLineMaxWidth)
+                    else
                     {
-                        %currentWordIndex = %currentWordIndex + 1;
-                    }
-                    if (%thisLineWidth == %thisLineMaxWidth)
-                    {
-                        %currentWordIndex = %currentWordIndex + 1;
-                        %atEndOfLine = 1;
-                    }
-                    %wordLength = strlen(%currentWord);
-                    %partialWord = "";
-                    %beginningOfNextWord = 0;
-                    %wordDone = 0;
-                    %i = 1;
-                    while ((%i <= %wordLength) && !%wordDone)
-                    {
-                        %partialWord = getSubStr(%currentWord, 0, %i);
-                        %thisLineWidth = getStrWidth(%partialWord, %profile);
-                        if (%thisLineWidth > %thisLineMaxWidth)
+                        if (%thisLineWidth < %thisLineMaxWidth)
                         {
-                            if (%i > 1)
+                            %currentWordIndex = %currentWordIndex + 1;
+                        }
+                        else
+                        {
+                            if (%thisLineWidth == %thisLineMaxWidth)
                             {
-                                %partialWord = getSubStr(%currentWord, 0, (%i - 1));
-                                %beginningOfNextWord = %i - 1;
+                                %currentWordIndex = %currentWordIndex + 1;
+                                %atEndOfLine = 1;
                             }
                             else
                             {
-                                %beginningOfNextWord = 1;
+                                %wordLength = strlen(%currentWord);
+                                %partialWord = "";
+                                %beginningOfNextWord = 0;
+                                %wordDone = 0;
+                                %i = 1;
+                                while ((%i <= %wordLength) && !%wordDone)
+                                {
+                                    %partialWord = getSubStr(%currentWord, 0, %i);
+                                    %thisLineWidth = getStrWidth(%partialWord, %profile);
+                                    if (%thisLineWidth > %thisLineMaxWidth)
+                                    {
+                                        if (%i > 1)
+                                        {
+                                            %partialWord = getSubStr(%currentWord, 0, (%i - 1));
+                                            %beginningOfNextWord = %i - 1;
+                                        }
+                                        else
+                                        {
+                                            %beginningOfNextWord = 1;
+                                        }
+                                        %wordDone = 1;
+                                    }
+                                    %i = %i + 1;
+                                }
+                                %thisLine = %partialWord;
+                                if (%beginningOfNextWord > 0)
+                                {
+                                    %text = setWord(%text, %currentWordIndex, getSubStr(%currentWord, %beginningOfNextWord, %wordLength));
+                                }
+                                %atEndOfLine = 1;
                             }
-                            %wordDone = 1;
                         }
-                        %i = %i + 1;
                     }
-                    %thisLine = %partialWord;
-                    if (%beginningOfNextWord > 0)
-                    {
-                        %text = setWord(%text, %currentWordIndex, getSubStr(%currentWord, %beginningOfNextWord, %wordLength));
-                    }
-                    %atEndOfLine = 1;
                 }
             }
             else
@@ -146,13 +155,19 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                     %thisLine = %thisLine @ " " @ %currentWord;
                     %currentWordIndex = %currentWordIndex + 1;
                 }
-                if (%thisLineWidth == %thisLineMaxWidth)
+                else
                 {
-                    %thisLine = %thisLine @ " " @ %currentWord;
-                    %currentWordIndex = %currentWordIndex + 1;
-                    %atEndOfLine = 1;
+                    if (%thisLineWidth == %thisLineMaxWidth)
+                    {
+                        %thisLine = %thisLine @ " " @ %currentWord;
+                        %currentWordIndex = %currentWordIndex + 1;
+                        %atEndOfLine = 1;
+                    }
+                    else
+                    {
+                        %atEndOfLine = 1;
+                    }
                 }
-                %atEndOfLine = 1;
             }
             if (%currentWordIndex >= %inputWordCount)
             {

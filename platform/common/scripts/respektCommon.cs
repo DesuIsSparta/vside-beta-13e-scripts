@@ -79,14 +79,7 @@ function respektLevelToNameWithIndefiniteArticle(%level)
     %level = respektLevelValidate(%level);
     %article = $gRespektLevelsIndefiniteArticles[%level];
     %levelName = respektLevelToNameWithoutArticle(%level);
-    if (%article $= "")
-    {
-    }
-    else
-    {
-    }
-    %ret = %article @ " " @ %levelName;
-    %levelName;
+    %ret = (%article $= "") ? %levelName : %article @ " " @ %levelName;
     return %ret;
 }
 function respektPointsNeededToNextLevel(%score)

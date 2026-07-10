@@ -398,14 +398,7 @@ function MessageBox_SetDontShow(%key, %val)
 }
 function MessageBox_GetKey(%title, %message, %key)
 {
-    if (!(%key $= ""))
-    {
-    }
-    else
-    {
-    }
-    %key = stripVeryAgressively(%title @ "\t" @ %message);
-    %key;
+    %key = !(%key $= "") ? %key : stripVeryAgressively(%title @ "\t" @ %message);
     return %key;
 }
 function MessageBox::tryAddStopShowing(%this, %title, %message, %canStopShowing, %key)

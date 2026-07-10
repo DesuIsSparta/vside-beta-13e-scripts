@@ -70,10 +70,13 @@ function BootRequest::onDone(%this)
             echo("LOAD: Boot failed.");
             quit();
         }
-        if (%status $= "error")
+        else
         {
-            echo("LOAD: Boot errored.");
-            quit();
+            if (%status $= "error")
+            {
+                echo("LOAD: Boot errored.");
+                quit();
+            }
         }
     }
 }
@@ -112,25 +115,31 @@ function LoginRequest::onDone(%this)
             WorldMap.open();
             schedule(2000, 0, joinServer);
         }
-        if (%status $= "alreadyloggedin")
+        else
         {
-            if ($bootAttempted == 0)
+            if (%status $= "alreadyloggedin")
             {
-                echo("LOAD: Test login auto-booting from previously joined server");
-                LoginRequest::handleBoot();
-                $bootAttempted = 1;
-                schedule(7000, 0, checkStatus);
+                if ($bootAttempted == 0)
+                {
+                    echo("LOAD: Test login auto-booting from previously joined server");
+                    LoginRequest::handleBoot();
+                    $bootAttempted = 1;
+                    schedule(7000, 0, checkStatus);
+                }
+                else
+                {
+                    error("LOAD: Boot failed. Giving up.");
+                    echo("LOAD: Quit()-ing...");
+                    quit();
+                }
             }
             else
             {
-                error("LOAD: Boot failed. Giving up.");
-                echo("LOAD: Quit()-ing...");
+                error("Login failed");
+                warn("Login failed for [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
                 quit();
             }
         }
-        error("Login failed");
-        warn("Login failed for [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
-        quit();
     }
 }
 function joinServer()
@@ -151,6 +160,7 @@ function joinServer()
             echo("LOAD: Joined server " @ servers.getObject(%i).get("name"));
             echo("LOAD: Test login completed");
             schedule(11000, 0, doSomething);
+            break;
         }
         %i = %i + 1;
     }

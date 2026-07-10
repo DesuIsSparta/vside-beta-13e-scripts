@@ -18,7 +18,7 @@ function CSShoppingBrowserWindow::open(%this)
 }
 function CSShoppingBrowserWindow::close(%this)
 {
-    if (($CSSelectedSku != -(1)) && !$CSSelectedIsOwned)
+    if (($CSSelectedSku != -1) && !$CSSelectedIsOwned)
     {
         csTestFreeSelectedItem();
     }
@@ -352,14 +352,7 @@ function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus)
     {
         %totalPrice = Inventory::getTotalPrice("vPoints", %skus);
         %itemCount = getWordCount(%skus);
-        if (%itemCount == 1)
-        {
-        }
-        else
-        {
-        }
-        %itemsStr = "these" @ " " @ %itemCount @ " " @ "items";
-        "this item";
+        %itemsStr = (%itemCount == 1) ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
         if (%totalPrice <= $Player::VPoints)
         {
             %vpointsString = (%totalPrice == 1) ? "vPoint" : "vPoints";
@@ -367,7 +360,10 @@ function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus)
             %cmd = "CSShoppingBrowser.storeInfo.purchase(\"" @ %skus @ "\", \"vPoints\", \"CSShoppingBrowser::onGotPurchaseResult\");";
             MessageBoxOkCancel("Confirm Purchase", %msg, %cmd, "");
         }
-        MessageBoxOK("Not Enough vPoints", "You do not have enough vPoints to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::HelpURL_VPoints @ ">here</a> for more information about earning vPoints.", "");
+        else
+        {
+            MessageBoxOK("Not Enough vPoints", "You do not have enough vPoints to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::HelpURL_VPoints @ ">here</a> for more information about earning vPoints.", "");
+        }
     }
 }
 function CSShoppingBrowser::purchaseSkusVBux(%this, %skus)
@@ -376,21 +372,17 @@ function CSShoppingBrowser::purchaseSkusVBux(%this, %skus)
     {
         %totalPrice = Inventory::getTotalPrice("vBux", %skus);
         %itemCount = getWordCount(%skus);
-        if (%itemCount == 1)
-        {
-        }
-        else
-        {
-        }
-        %itemsStr = "these" @ " " @ %itemCount @ " " @ "items";
-        "this item";
+        %itemsStr = (%itemCount == 1) ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
         if (%totalPrice <= $Player::VBux)
         {
             %msg = "Do you wish to purchase " @ %itemsStr @ " for " @ %totalPrice @ " vBux?";
             %cmd = "CSShoppingBrowser.storeInfo.purchase(\"" @ %skus @ "\", \"vBux\", \"CSShoppingBrowser::onGotPurchaseResult\");";
             MessageBoxOkCancel("Confirm Purchase", %msg, %cmd, "");
         }
-        MessageBoxOK("Not Enough vBux", "You do not have enough vBux to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::AddFundsURL @ ">here</a> to refill your account.", "");
+        else
+        {
+            MessageBoxOK("Not Enough vBux", "You do not have enough vBux to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::AddFundsURL @ ">here</a> to refill your account.", "");
+        }
     }
 }
 function CSShoppingBrowser::onGotPurchaseResult(%status, %results)
@@ -449,7 +441,7 @@ function CSShoppingBrowser::goToPath(%this, %path, %focus)
     }
     CSShoppingBrowser.vBuxIcon.reposition(3, (getWord(%this.getExtent(), 1) - 20));
     %pathSku = getSubStr(strchr(%path, "|"), 1);
-    if (($CSSelectedSku != -(1)) && !$CSSelectedIsOwned && !(%path $= %oldPath) && !(%pathSku $= $CSSelectedSku))
+    if (($CSSelectedSku != -1) && !$CSSelectedIsOwned && !(%path $= %oldPath) && !(%pathSku $= $CSSelectedSku))
     {
         csTestFreeSelectedItem();
     }
@@ -469,7 +461,7 @@ function CSShoppingBrowserSKUItem::onMouseEnterBounds(%this)
         warn("CSShoppingBrowserSKUItem .name has gone missing?");
         return;
     }
-    if (($CSSelectedSku == -(1)) || !$CSSelectedIsOwned)
+    if (($CSSelectedSku == -1) || !$CSSelectedIsOwned)
     {
         if (isEventPending($CSShoppingBrowserSKUItem::deleteEvent))
         {

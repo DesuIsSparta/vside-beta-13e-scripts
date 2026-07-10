@@ -70,7 +70,10 @@ function AnimCtrl::tick(%this)
         {
             %this.currentFrame = 0;
         }
-        %this.stop();
+        else
+        {
+            %this.stop();
+        }
     }
 }
 function AnimCtrl::setCurrentFrame(%this, %frame)

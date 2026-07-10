@@ -154,9 +154,12 @@ function EtsInviteRequest::onDone(%this)
         {
             EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
         }
-        if (%status $= "success")
+        else
         {
-            EtsInviteDialog.onInviteSuccess();
+            if (%status $= "success")
+            {
+                EtsInviteDialog.onInviteSuccess();
+            }
         }
     }
 }

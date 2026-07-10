@@ -9,8 +9,8 @@ function SpawnSphere::choosePointOnCenterPlane(%this)
     %n = 0;
     while (%n < 10)
     {
-        %tryX = getRandom(-(1000), 1000);
-        %tryY = getRandom(-(1000), 1000);
+        %tryX = getRandom(-1000, 1000);
+        %tryY = getRandom(-1000, 1000);
         if (((%tryX * %tryX) + (%tryY * %tryY)) < (1000 * 1000))
         {
             %good = 1;

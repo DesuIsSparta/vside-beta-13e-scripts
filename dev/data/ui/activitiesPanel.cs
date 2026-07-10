@@ -40,32 +40,11 @@ function geActivitiesPanel::updateStates(%this)
         %timeLeft = %uam.getActivityTimeLeft(%activityName);
         %isHighest = %activityName $= %highest;
         %baseColor = %isHighest ? "ccff33" : "dddddd";
-        if (%on)
-        {
-        }
-        else
-        {
-        }
-        %style = "<linkcolor:" @ %baseColor @ "80><modulationColor:" @ %baseColor @ "40>";
-        "<linkcolor:" @ %baseColor @ "f0><modulationColor:" @ %baseColor @ "f0>";
+        %style = %on ? "<linkcolor:" @ %baseColor @ "f0><modulationColor:" @ %baseColor @ "f0>" : "<linkcolor:" @ %baseColor @ "80><modulationColor:" @ %baseColor @ "40>";
         %style = %style @ "<color:" @ %baseColor @ "f0>";
-        if (%isHighest)
-        {
-        }
-        else
-        {
-        }
-        %style = %style;
-        "<b>" @ %style;
+        %style = %isHighest ? "<b>" @ %style : %style;
         %icon = %uam.getActivityIconFilename(%activityName);
-        if (%timeLeft <= 0)
-        {
-        }
-        else
-        {
-        }
-        %timeLeftText = " - " @ formatFloat("%0.1f", (%timeLeft / 1000));
-        "";
+        %timeLeftText = (%timeLeft <= 0) ? "" : " - " @ formatFloat("%0.1f", (%timeLeft / 1000));
         %text = "<spush>" @ %style @ "<just:left><a:gamelink " @ %activityName @ ">" @ %activityUFName @ "</a>" @ %timeLeftText @ "<just:right><bitmap:" @ %icon @ "><spop>" @ %delim @ %text;
         %delim = "<br>";
         %n = %n - 1;

@@ -187,7 +187,10 @@ function CustomSpaceClient::SetUpOwnership(%isOwner)
                 CSControlPanel.open();
                 CSControlPanelTabs.selectTabWithName("MODEL_APT");
             }
-            CSControlPanel.close();
+            else
+            {
+                CSControlPanel.close();
+            }
         }
         if (isObject(MusicHud))
         {
@@ -290,7 +293,7 @@ function clientCmdCSOnUnownedInventoryTimeOut(%referenceID)
 {
     if (%referenceID == $CSSelectedID)
     {
-        CSFurnitureMover.SelectNuggetID(-(1));
+        CSFurnitureMover.SelectNuggetID(-1);
         $CSInstaTestDrive = 0;
     }
     getNuggetGhostList("CSFurnitureMover::refreshGhostList");
@@ -404,7 +407,7 @@ function clientCmdCS_OnInventoryCreated(%sku, %referenceName, %isOwned, %freeRot
 function clientCmdCS_OnInventoryCreationFailed(%sku, %isOwned)
 {
     refreshActiveFurniture();
-    CSFurnitureMover.SelectNuggetID(-(1));
+    CSFurnitureMover.SelectNuggetID(-1);
 }
 function clientCmdCS_OnEnterEntryPortal(%buildingName)
 {
@@ -520,7 +523,10 @@ function BanFromSpaceRequest::onDone(%this)
                 $CSBlockedList = %this.blockedPlayer;
             }
         }
-        $CSBlockedList = removeField($CSBlockedList, findField($CSBlockedList, %this.blockedPlayer));
+        else
+        {
+            $CSBlockedList = removeField($CSBlockedList, findField($CSBlockedList, %this.blockedPlayer));
+        }
     }
 }
 function CustomSpaceClient::TryBootAllUsersFromSpace(%space)
@@ -642,7 +648,10 @@ function doCheckForBuildingInfo(%BuildingDirRequest, %forceupdate)
             checkDoneBuildingDirectory(%BuildingDirRequest);
             return;
         }
-        clearBuildingInfo(%buildingInfo);
+        else
+        {
+            clearBuildingInfo(%buildingInfo);
+        }
     }
     GetBuildingInfoRequest(%BuildingDirRequest);
 }
@@ -926,7 +935,10 @@ function GetBuildingInfo::onDone(%this)
             %this.tracker.buildingInfo = %buildingInfo;
             %this.tracker.doneBuildingInfo = 1;
         }
-        log("network", "warn", "%this.tracker is not an object.");
+        else
+        {
+            log("network", "warn", "%this.tracker is not an object.");
+        }
     }
     if (isObject(%this.tracker))
     {
@@ -1047,11 +1059,17 @@ function GetSpaceInfo::onDone(%this)
                     {
                         warn(getScopeName() @ "->banned user #" @ %k @ " OUT OF " @ %banCount @ ", is a duplicate entry! entry = " @ %blockedUser @ " .");
                     }
-                    if (!(%space.blockedList $= ""))
+                    else
                     {
-                        %space.blockedList = %space.blockedList @ "\t" @ %blockedUser;
+                        if (!(%space.blockedList $= ""))
+                        {
+                            %space.blockedList = %space.blockedList @ "\t" @ %blockedUser;
+                        }
+                        else
+                        {
+                            %space.blockedList = %blockedUser;
+                        }
                     }
-                    %space.blockedList = %blockedUser;
                 }
                 %k = %k + 1;
             }
@@ -1196,7 +1214,7 @@ function csSelectLayout(%layoutToSelect)
 function clientCmdCSLayoutSelected(%unused, %audioStream, %videoStream)
 {
     refreshActiveFurniture();
-    CSFurnitureMover.SelectNuggetID(-(1));
+    CSFurnitureMover.SelectNuggetID(-1);
     %envMgrVideoStr = (%videoStream $= "") ? "no-video" : %videoStream;
     CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", "", "", %audioStream, %envMgrVideoStr);
 }
@@ -1277,7 +1295,10 @@ function GetUrlRatingListRequest::onDone(%this)
             {
                 %mediaList = %mediaInfo;
             }
-            %mediaList = %mediaList @ "\t" @ %mediaInfo;
+            else
+            {
+                %mediaList = %mediaList @ "\t" @ %mediaInfo;
+            }
         }
         %idx = %idx + 1;
     }

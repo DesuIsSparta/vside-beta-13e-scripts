@@ -20,7 +20,7 @@ function VideoRenderer::loadVideoRenderer(%this)
         VideoPlaylist.renderer = %this;
     }
     $VideoRendererLoadable = $VideoRendererLoadable + 1;
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -37,7 +37,7 @@ function VideoRenderer::unloadVideoRenderer(%this)
     {
         $VideoRendererLoadable = $VideoRendererLoadable - 1;
     }
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -63,7 +63,7 @@ function VideoRenderer::unloadVideoRenderer(%this)
 }
 function VideoRenderer::onLoad(%this)
 {
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -79,7 +79,7 @@ function VideoRenderer::onLoad(%this)
 }
 function VideoRenderer::onComplete(%this)
 {
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -93,7 +93,7 @@ function VideoRenderer::onAdvance(%this)
 {
     %index = %this.getPlayIndex();
     %spaceName = "";
-    if (strstr(%this.getNamespaceList(), "TheoraRenderer") != -(1))
+    if (strstr(%this.getNamespaceList(), "TheoraRenderer") != -1)
     {
         return;
     }
@@ -106,7 +106,7 @@ function VideoRenderer::onAdvance(%this)
 }
 function VideoRenderer::startMetadataDisplay(%this, %fadeoutVolume)
 {
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -135,7 +135,7 @@ function VideoRenderer::startMetadataDisplay(%this, %fadeoutVolume)
 }
 function VideoRenderer::stopFModMusic(%this)
 {
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -147,7 +147,7 @@ function VideoRenderer::stopFModMusic(%this)
 }
 function VideoRenderer::startFModMusic(%this)
 {
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -163,7 +163,7 @@ function VideoRenderer::startFModMusic(%this)
 }
 function VideoRenderer::updateVideoMetadata(%this)
 {
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -182,14 +182,14 @@ function VideoRenderer::updateVideoMetadata(%this)
     }
     cancel($ETS::VideoRenderer::MetadataTimer);
     $ETS::VideoRenderer::MetadataTimer = 0;
-    if (strstr(%this.getNamespaceList(), "FFMPEGRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "FFMPEGRenderer") == -1)
     {
         $ETS::VideoRenderer::MetadataTimer = %this.schedule(2000, "updateVideoMetadata");
     }
 }
 function VideoRenderer::onError(%this)
 {
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }
@@ -210,7 +210,7 @@ function VideoRenderer::VideoRetry(%this)
     {
         return;
     }
-    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -(1))
+    if (strstr(%this.getNamespaceList(), "VideoRenderer") == -1)
     {
         return;
     }

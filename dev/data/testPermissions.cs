@@ -17,7 +17,10 @@ function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess)
         {
             %result = "should have succeeded but did not.";
         }
-        %result = "should not have succeeded but did.";
+        else
+        {
+            %result = "should not have succeeded but did.";
+        }
     }
     return %result;
 }

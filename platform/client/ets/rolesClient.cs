@@ -40,8 +40,11 @@ function Player::onGotRoles(%this, %rolesMask)
         {
             schedule(2000, 0, "delayedWearSku", getSpecialSKU($player, "cohostBadge"));
         }
-        schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "hostBadge"));
-        schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "cohostBadge"));
+        else
+        {
+            schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "hostBadge"));
+            schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "cohostBadge"));
+        }
     }
 }
 function delayedWearSku(%sku)

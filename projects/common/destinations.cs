@@ -97,11 +97,14 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese)
             if (hasWord(%butNotThese, %codeName))
             {
             }
-            %filters = $gDestinationFilters[%codeName];
-            if (hasWord(%filters, %filter))
+            else
             {
-                %candidates = %candidates @ %delim @ %codeName;
-                %delim = " ";
+                %filters = $gDestinationFilters[%codeName];
+                if (hasWord(%filters, %filter))
+                {
+                    %candidates = %candidates @ %delim @ %codeName;
+                    %delim = " ";
+                }
             }
         }
         %n = %n + 1;
@@ -157,7 +160,10 @@ function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave)
             %dlg.callback[2] = "";
             return;
         }
-        %doSave = 0;
+        else
+        {
+            %doSave = 0;
+        }
     }
     ClosetGui.doClose(!%doSave, 0);
     toggleTGFMapFiltered("shop");

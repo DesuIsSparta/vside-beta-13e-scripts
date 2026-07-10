@@ -66,14 +66,7 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code)
     %otherUserProfileURL = $Net::ProfileURL @ urlEncode(stripUnprintables(%otherUser));
     %userWet = pChat.getPlayerMarkup(%user, "ffddeeff");
     %otherUserWet = pChat.getPlayerMarkup(%otherUser, "ffddeeff");
-    if (%dValue > 0)
-    {
-    }
-    else
-    {
-    }
-    %dValueWet = %dValue;
-    "+" @ %dValue;
+    %dValueWet = (%dValue > 0) ? "+" @ %dValue : %dValue;
     %msg = getRespektMessage(%dValue, %code);
     %msg = strreplace(%msg, "[USER]", %userWet);
     %msg = strreplace(%msg, "[OTHERUSER]", %otherUserWet);
@@ -188,30 +181,9 @@ function checkPointsEarnedSinceLastLogin()
     if (!%firstLogin && (%dVP != 0) || (%dVB != 0))
     {
         %msg = %dVB[$MsgCat::TGF @ "currencyEarnedOffline"];
-        if (%dVP != 0)
-        {
-        }
-        else
-        {
-        }
-        %msg = " " @ %dVP @ " " @ "vPoints" @ "";
-        %msg;
-        if ((%dVP != 0) && (%dVB != 0))
-        {
-        }
-        else
-        {
-        }
-        %msg = " " @ "and" @ "";
-        %msg;
-        if (%dVB != 0)
-        {
-        }
-        else
-        {
-        }
-        %msg = " " @ %dVB @ " " @ "vBux" @ "";
-        %msg;
+        %msg = %msg @ (%dVP != 0) ? " " @ %dVP @ " " @ "vPoints" : "";
+        %msg = %msg @ (%dVP != 0) && (%dVB != 0) ? " " @ "and" : "";
+        %msg = %msg @ (%dVB != 0) ? " " @ %dVB @ " " @ "vBux" : "";
         %msg = %msg @ "!";
     }
     else
@@ -260,8 +232,11 @@ function moveAccountBalanceHud(%toWhere)
             %newPosition = "0 0";
             %newExtent = "162 39";
         }
-        error(getScopeName() @ " " @ "- invalid destination code:" @ " " @ %toWhere @ " " @ getTrace());
-        return;
+        else
+        {
+            error(getScopeName() @ " " @ "- invalid destination code:" @ " " @ %toWhere @ " " @ getTrace());
+            return;
+        }
     }
     %childCtrl.reparent(%dstContainer, %newPosition, %newExtent, %newProfile);
 }

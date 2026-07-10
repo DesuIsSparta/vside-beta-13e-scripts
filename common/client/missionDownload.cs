@@ -15,10 +15,10 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName)
     }
     else
     {
-        %crc = -(1);
+        %crc = -1;
     }
     log("network", "debug", "client cache CRC:" @ " " @ %crc);
-    %hasStandaloneCache = $CacheFlagIsSet && $StandAlone && (%crc != -(1));
+    %hasStandaloneCache = $CacheFlagIsSet && $StandAlone && (%crc != -1);
     $Client::TempMissionFile = %missionName;
     prepLighting();
     commandToServer('MissionCRC', %missionSequence, %missionName, %crc, $UserPref::Player::gender, %hasStandaloneCache);

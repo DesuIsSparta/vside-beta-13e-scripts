@@ -14,7 +14,7 @@ function buildLoadInfo(%mission)
     if (%file.openForRead(%mission))
     {
         %inInfoBlock = 0;
-        if (!%file.isEOF())
+        while (!%file.isEOF())
         {
             %line = %file.readLine();
             %line = trim(%line);
@@ -28,13 +28,11 @@ function buildLoadInfo(%mission)
                 {
                     %inInfoBlock = 0;
                     %infoObject = %infoObject @ %line;
+                    break;
                 }
-                else
+                if (%inInfoBlock)
                 {
-                    if (%inInfoBlock)
-                    {
-                        %infoObject = %infoObject @ %line @ " ";
-                    }
+                    %infoObject = %infoObject @ %line @ " ";
                 }
             }
         }

@@ -144,7 +144,7 @@ function LoadingTipsHud::initTipsList(%this)
     while (!%fo.isEOF())
     {
         %file = %fo.readLine();
-        if (strstr(%file, $TIP_CATEGORY) == -(1))
+        if (strstr(%file, $TIP_CATEGORY) == -1)
         {
         }
         else

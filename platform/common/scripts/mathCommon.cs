@@ -59,7 +59,7 @@ function getRandomNormal()
 {
     %u1 = getRandom();
     %u2 = getRandom();
-    %x = mSqrt((-(2) * mLog(%u1))) * mCos((6.28318531 * %u2));
+    %x = mSqrt((-2 * mLog(%u1))) * mCos((6.28318531 * %u2));
     return %x;
 }
 function getRandomNormalMeanVariance(%mean, %variance)
@@ -77,8 +77,8 @@ function fitCameraConeAroundSphere(%spherePosition, %sphereRadius, %camDirection
 {
     %fovD2 = %camFOVRadians * 0.5;
     %vConeEdge = mSin(%fovD2) @ " " @ mCos(%fovD2);
-    %vConeEdgePerp = -(mCos(%fovD2)) @ " " @ mSin(%fovD2);
-    %pTangentPoint = VectorScale(%vConeEdgePerp, (-(1) * %sphereRadius));
+    %vConeEdgePerp = -mCos(%fovD2) @ " " @ mSin(%fovD2);
+    %pTangentPoint = VectorScale(%vConeEdgePerp, (-1 * %sphereRadius));
     %sCamDist = getWord(intersectLineLine2D("0 0", "0 1", %pTangentPoint, VectorAdd(%pTangentPoint, %vConeEdge)), 1);
     %pCamPos = VectorScale(%camDirection, %sCamDist);
     %pCamPos = VectorAdd(%pCamPos, %spherePosition);

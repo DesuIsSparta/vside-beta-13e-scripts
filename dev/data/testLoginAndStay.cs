@@ -66,8 +66,11 @@ function stopAndTalk()
             echo("LOAD: Quit()-ing...");
             logoffAndQuit();
         }
-        echo("LOAD: Lost PChat... Gonna try again.");
-        $failureCount = $failureCount + 1;
+        else
+        {
+            echo("LOAD: Lost PChat... Gonna try again.");
+            $failureCount = $failureCount + 1;
+        }
     }
     schedule(5000, 0, walk);
 }

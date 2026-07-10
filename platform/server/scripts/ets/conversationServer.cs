@@ -54,8 +54,11 @@ function findConversation(%senderPlayer, %targetPlayer)
         {
             %conv = %senderPlayer.getConversation();
         }
-        %conv = newConversation(%senderPlayer, %targetPlayer);
-        CONVBUB_DEBUG("new conversation: " @ getDebugString(%conv));
+        else
+        {
+            %conv = newConversation(%senderPlayer, %targetPlayer);
+            CONVBUB_DEBUG("new conversation: " @ getDebugString(%conv));
+        }
     }
     return %conv;
 }
@@ -181,11 +184,17 @@ function Player::joinConversation(%this, %conv, %asParticipant)
         {
             %oldConv.removeListener(%this);
         }
-        if (%oldConv.hasParticipant(%this))
+        else
         {
-            %oldConv.removeParticipant(%this);
+            if (%oldConv.hasParticipant(%this))
+            {
+                %oldConv.removeParticipant(%this);
+            }
+            else
+            {
+                error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
+            }
         }
-        error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
     }
     if (!isObject(%conv))
     {

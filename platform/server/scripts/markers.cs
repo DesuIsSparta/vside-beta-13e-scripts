@@ -24,21 +24,24 @@ function MissionMarkerData::Create(%block)
             };
             return %obj;
         }
-        if (%block $= "SeatMarker")
+        else
         {
-            %obj = new MissionMarker("") {
-                dataBlock = %block;
-                sitOffset = %block.sitOffset;
-                sitAnim = %block.sitAnim;
-                standAnim = %block.standAnim;
-                sitIdle = %block.sitIdle;
-                idleDelay = %block.idleDelay;
-                listeningStation = %block.listeningStation;
-                sitSound = %block.sitSound;
-                standSound = %block.standSound;
-            };
-            return %obj;
+            if (%block $= "SeatMarker")
+            {
+                %obj = new MissionMarker("") {
+                    dataBlock = %block;
+                    sitOffset = %block.sitOffset;
+                    sitAnim = %block.sitAnim;
+                    standAnim = %block.standAnim;
+                    sitIdle = %block.sitIdle;
+                    idleDelay = %block.idleDelay;
+                    listeningStation = %block.listeningStation;
+                    sitSound = %block.sitSound;
+                    standSound = %block.standSound;
+                };
+                return %obj;
+            }
         }
     }
-    return -(1);
+    return -1;
 }

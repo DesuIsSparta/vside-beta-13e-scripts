@@ -26,8 +26,11 @@ function doSomething()
         {
             error("CACHE->ERROR : Giving up. Waited for 10 minutes and nothing happended");
         }
-        echo("CACHE: Nothing yet....");
-        $iterationsWaited = $iterationsWaited + 1;
-        schedule(3000, 0, doSomething);
+        else
+        {
+            echo("CACHE: Nothing yet....");
+            $iterationsWaited = $iterationsWaited + 1;
+            schedule(3000, 0, doSomething);
+        }
     }
 }

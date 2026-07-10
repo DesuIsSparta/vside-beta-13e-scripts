@@ -6,7 +6,7 @@ function ratingControl::Initialize(%this, %gradations, %buttonSize, %buttonBitma
         %this.buttonSize = %buttonSize;
         %this.buttonBitmap = %buttonBitmap;
         %this.rating = 0;
-        %this.mouseOver = -(1);
+        %this.mouseOver = -1;
         %this.mouseDown = 0;
         %this.buildButtons();
         %this.update();
@@ -23,7 +23,7 @@ function ratingControl::buildButtons(%this)
         %this.images[" ",%ypos;
             extent = %this.buttonSize;
             minExtent = "1 1";
-            sluggishness = -(1);
+            sluggishness = -1;
             visible = 1;
             bitmap = %this.buttonBitmap,"_n";
             bitmapBase = %this.buttonBitmap;
@@ -44,7 +44,7 @@ function ratingControl::buildButtons(%this)
         position = "0 0";
         extent = (%this.gradations * getWord(%this.buttonSize, 0)) @ " " @ getWord(%this.buttonSize, 1);
         minExtent = "1 1";
-        sluggishness = -(1);
+        sluggishness = -1;
         visible = 1;
     };
     %this.eventCatcher.bindClassName("RatingControlEventCatcher");
@@ -105,14 +105,14 @@ function ratingControl::mouseMove(%this, %point)
 }
 function ratingControl::mouseUp(%this, %point)
 {
-    %this.mouseOver = -(1);
+    %this.mouseOver = -1;
     %this.mouseDown = 0;
     %this.setRating((mFloor((%point / getWord(%this.buttonSize, 0))) + 1), 1);
 }
 function RatingControlEventCatcher::onMouseLeaveBounds(%this)
 {
     %rc = %this.getParent();
-    %rc.setMouseOver(-(1));
+    %rc.setMouseOver(-1);
 }
 function RatingControlEventCatcher::onMouseEnterBounds(%this, %unused, %point, %unused)
 {

@@ -1,5 +1,5 @@
 $gClosetGuiFueStepCount = 0;
-$gClosetGuiFueCurrentStep = -(1);
+$gClosetGuiFueCurrentStep = -1;
 function ClosetGuiFUE::open(%this)
 {
     if (%this.refreshingOrInitializing)
@@ -96,7 +96,7 @@ function ClosetGuiFUE::addStepWithName(%this, %activeContainer, %inactiveContain
     if (!%this.addStep(%activeContainer, %inactiveContainer))
     {
         warn(getScopeName() @ " " @ "- step" @ " " @ %stepName @ " " @ "not added -" @ " " @ getTrace());
-        %this.stepNumbersByName[strlwr(%stepName)] = -(1);
+        %this.stepNumbersByName[strlwr(%stepName)] = -1;
         return 0;
     }
     return 1;
@@ -115,13 +115,13 @@ function ClosetGuiFUE::firstStep(%this)
 function ClosetGuiFUE::nextStep(%this)
 {
     %this.hideCurrentStep();
-    if (($gClosetGuiFueCurrentStep >= -(1)) && ($gClosetGuiFueCurrentStep < ($gClosetGuiFueStepCount - 1)))
+    if (($gClosetGuiFueCurrentStep >= -1) && ($gClosetGuiFueCurrentStep < ($gClosetGuiFueStepCount - 1)))
     {
         $gClosetGuiFueCurrentStep = $gClosetGuiFueCurrentStep + 1;
     }
     else
     {
-        $gClosetGuiFueCurrentStep = -(1);
+        $gClosetGuiFueCurrentStep = -1;
     }
     %this.showCurrentStep();
 }
@@ -160,7 +160,7 @@ function ClosetGuiFUE::goToStepByNumber(%this, %stepNumber)
 }
 function ClosetGuiFUE::showCurrentStep(%this)
 {
-    if ($gClosetGuiFueCurrentStep == -(1))
+    if ($gClosetGuiFueCurrentStep == -1)
     {
         return;
     }
@@ -181,7 +181,7 @@ function ClosetGuiFUE::showCurrentStep(%this)
 }
 function ClosetGuiFUE::hideCurrentStep(%this)
 {
-    if ($gClosetGuiFueCurrentStep == -(1))
+    if ($gClosetGuiFueCurrentStep == -1)
     {
         return;
     }
@@ -201,7 +201,7 @@ function ClosetGuiFUE::refresh(%this)
     %this.refreshingOrInitializing = 1;
     ClosetGuiFUE.deleteMembers();
     $gClosetGuiFueStepCount = 0;
-    $gClosetGuiFueCurrentStep = -(1);
+    $gClosetGuiFueCurrentStep = -1;
     %this.Initialize();
     if (%visible)
     {

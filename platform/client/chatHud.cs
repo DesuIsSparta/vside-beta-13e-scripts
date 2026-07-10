@@ -73,7 +73,10 @@ function MessageHudEdit::eval(%this)
         {
             pChat.say(%text, 0, 0);
         }
-        say(%text);
+        else
+        {
+            say(%text);
+        }
     }
 }
 function MessageHudEdit::scanForAutoCommands(%this)
@@ -104,6 +107,9 @@ function MessageHudEdit::scanForAutoCommands(%this)
     else
     {
         if (%firstWord $= "/sos")
+        {
+        }
+        else
         {
         }
     }

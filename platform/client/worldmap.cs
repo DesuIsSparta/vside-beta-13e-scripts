@@ -77,14 +77,7 @@ function WorldMap::getCityButton(%this, %cityName, %alt, %forTGF)
         }
     }
     %buttonType = %alt || %forTGF ? "RadioButton" : "PushButton";
-    if (%alt || %forTGF)
-    {
-    }
-    else
-    {
-    }
-    %command = "WorldMap.getCityButton(" @ %cityName @ ", true, false).performClick();";
-    "WorldMap.selectCity(" @ %cityName @ ");";
+    %command = %alt || %forTGF ? "WorldMap.selectCity(" @ %cityName @ ");" : "WorldMap.getCityButton(" @ %cityName @ ", true, false).performClick();";
     %button = new GuiBitmapButtonCtrl(%objName) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -357,9 +350,12 @@ function WorldMap::openTGF(%this, %forTGF)
         {
             %this.setView("single_city");
         }
-        if (!($gContiguousSpaceName $= ""))
+        else
         {
-            %this.getCityButton($gContiguousSpaceName, 1, 0).performClick();
+            if (!($gContiguousSpaceName $= ""))
+            {
+                %this.getCityButton($gContiguousSpaceName, 1, 0).performClick();
+            }
         }
     }
     %this.setVisible(1);
@@ -494,13 +490,16 @@ function WorldMap::fillServerList(%this)
     {
         %count = WorldMapServerInfoGroup.getCount();
         %i = 0;
-        while (%i < %count)
+        if (%i < %count)
         {
             if (WorldMapServerInfoGroup.getObject(%i).serverName $= %serverChoice)
             {
                 WorldMapServerPopup.SetSelected(%i);
             }
-            %i = %i + 1;
+            else
+            {
+                %i = %i + 1;
+            }
         }
     }
     if (WorldMapServerInfoGroup.getCount() > 1)
@@ -599,7 +598,7 @@ function WorldMap::join(%this, %server, %isATransition, %targetVurl)
         %i = %i + 1;
     }
     ServerConnection.waitForDisconnect = 0;
-    if (isObject(ServerConnection) && (GameConnection::getServerConnection() != -(1)))
+    if (isObject(ServerConnection) && (GameConnection::getServerConnection() != -1))
     {
         echo("disconnecting...");
         ServerConnection.waitForDisconnect = 1;
@@ -658,7 +657,7 @@ function TransitionCountdown(%counter, %description, %vurl)
 {
     %counter = %counter - 1;
     showTransitionMessage(%description, %counter);
-    if (%counter == -(1))
+    if (%counter == -1)
     {
         TransitionMessage.setVisible(0);
         if (!(%vurl $= ""))
@@ -702,7 +701,10 @@ function TransitionCancel(%retry)
                 $VURL::curVURL.delete();
             }
         }
-        $VURL::curVURL.delete();
+        else
+        {
+            $VURL::curVURL.delete();
+        }
     }
 }
 function clientCmdSetTransition(%destination, %spawnTargetVURL)
@@ -768,7 +770,7 @@ function prepareForTransition(%destination, %spawnTargetVURL, %pauseForScreensho
     }
 }
 $gTransitionScreenshotSchedule = 0;
-$gTransitionScreenshotLastFrame = -(1);
+$gTransitionScreenshotLastFrame = -1;
 function doTransitionAfterFrames(%frames, %ServerName, %spawnTargetVURL)
 {
     cancel($gTransitionScreenshotSchedule);
@@ -779,7 +781,7 @@ function doTransitionAfterFrames(%frames, %ServerName, %spawnTargetVURL)
     %delta = $Canvas::frameCount - $gTransitionScreenshotLastFrame;
     if (%delta >= %frames)
     {
-        $gTransitionScreenshotLastFrame = -(1);
+        $gTransitionScreenshotLastFrame = -1;
         doTransition(%ServerName, %spawnTargetVURL);
     }
     else
@@ -942,8 +944,8 @@ function WorldMap::validateSpot(%this, %locOrig)
         }
         if (!%valid)
         {
-            %locX = getWord(%locOrig, 0) + getRandom(-(15), 15);
-            %locY = getWord(%locOrig, 1) + getRandom(-(15), 15);
+            %locX = getWord(%locOrig, 0) + getRandom(-15, 15);
+            %locY = getWord(%locOrig, 1) + getRandom(-15, 15);
             %loc = %locX @ " " @ %locY;
         }
         %try = %try + 1;
@@ -1051,23 +1053,38 @@ function WorldMap::getFullnessDesc(%this, %load, %capacity)
         {
             %fullnessDesc = "Chillin'";
         }
-        if (%load <= 125)
+        else
         {
-            %fullnessDesc = "Groovin'";
+            if (%load <= 125)
+            {
+                %fullnessDesc = "Groovin'";
+            }
+            else
+            {
+                if (%load <= 200)
+                {
+                    %fullnessDesc = "Hoppin'";
+                }
+                else
+                {
+                    if (%load <= 249)
+                    {
+                        %fullnessDesc = "Packed";
+                    }
+                    else
+                    {
+                        if (%load <= 349)
+                        {
+                            %fullnessDesc = "Slammed";
+                        }
+                        else
+                        {
+                            %fullnessDesc = "Sold Out";
+                        }
+                    }
+                }
+            }
         }
-        if (%load <= 200)
-        {
-            %fullnessDesc = "Hoppin'";
-        }
-        if (%load <= 249)
-        {
-            %fullnessDesc = "Packed";
-        }
-        if (%load <= 349)
-        {
-            %fullnessDesc = "Slammed";
-        }
-        %fullnessDesc = "Sold Out";
     }
     if (%load > 50)
     {
@@ -1305,11 +1322,17 @@ function MapRequestOnCompleted(%request, %result)
         {
             MessageBoxOK("Connection Error", $MsgCat::network["E-SERVER-CONNECT"], "");
         }
-        if (%result == $CURL::CouldNotResolveHost)
+        else
         {
-            MessageBoxOK("Could Not Find Server", $MsgCat::network["E-SERVER-DNS"], "");
+            if (%result == $CURL::CouldNotResolveHost)
+            {
+                MessageBoxOK("Could Not Find Server", $MsgCat::network["E-SERVER-DNS"], "");
+            }
+            else
+            {
+                MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
+            }
         }
-        MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
     }
     %request.schedule(0, "delete");
     %vurl = getSkipMapVurl(1);
@@ -1372,7 +1395,7 @@ function WorldMap::parseResult(%this, %request)
                 %name = %serverProps.get("name");
                 %count = WorldMapCityNamesMap.size();
                 %j = 0;
-                while (%j < %count)
+                if (%j < %count)
                 {
                     %key = WorldMapCityNamesMap.getKey(%j);
                     if (stricmp(%key, %name) == 0)
@@ -1380,7 +1403,10 @@ function WorldMap::parseResult(%this, %request)
                         %value = WorldMapCityNamesMap.getValue(%j);
                         %serverProps.put("city", %value);
                     }
-                    %j = %j + 1;
+                    else
+                    {
+                        %j = %j + 1;
+                    }
                 }
             }
             WorldMapServers.add(%serverProps);
@@ -1421,11 +1447,14 @@ function getSkipMapVurl(%bChangeUI)
                     MessageBoxOK("Not going to gateway..", "Ordinarily, you would have been\nautomatically take to gateway here,\nbut since you're devmode, you're not.", "");
                 }
             }
-            %ret = "vside:/location/gw/mapSpawns_entry";
-            if (%bChangeUI)
+            else
             {
-                WorldMap.selectCity("gw");
-                geTGF.selectTab("Maps");
+                %ret = "vside:/location/gw/mapSpawns_entry";
+                if (%bChangeUI)
+                {
+                    WorldMap.selectCity("gw");
+                    geTGF.selectTab("Maps");
+                }
             }
         }
     }
@@ -1497,14 +1526,17 @@ function gotVURLCommandLineList(%arg)
     }
     %count = getWordCount(%arg);
     %i = 0;
-    while (%i < %count)
+    if (%i < %count)
     {
         %value = getWord(%arg, %i);
         if (%value $= "-url")
         {
             %url = getWord(%arg, (%i + 1));
         }
-        %i = %i + 1;
+        else
+        {
+            %i = %i + 1;
+        }
     }
     log("communication", "debug", "value of URL is " @ %url);
     log("communication", "debug", "now URL is " @ %url);

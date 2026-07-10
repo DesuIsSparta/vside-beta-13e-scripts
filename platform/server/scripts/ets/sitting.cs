@@ -376,7 +376,10 @@ function Player::sitDown(%this)
         {
             commandToClient(%this.client, 'StartListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
         }
-        warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not starting");
+        else
+        {
+            warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not starting");
+        }
     }
     %this.schedule(%seat.idleDelay, "setActionThread", %seat.sitIdle, 0, 0);
     return;
@@ -415,7 +418,10 @@ function Player::standUp(%this)
         {
             commandToClient(%this.client, 'StopListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
         }
-        warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not stopping");
+        else
+        {
+            warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not stopping");
+        }
     }
     return;
 }

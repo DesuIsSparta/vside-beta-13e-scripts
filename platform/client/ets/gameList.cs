@@ -188,9 +188,12 @@ function GameList::refreshInspectTab(%this)
         {
             %lowerText = %lowerText @ "Waiting on players.";
         }
-        if (%game.gamestatus == $gameMgr::GameStatus::STARTED)
+        else
         {
-            %lowerText = %lowerText @ "Game started!";
+            if (%game.gamestatus == $gameMgr::GameStatus::STARTED)
+            {
+                %lowerText = %lowerText @ "Game started!";
+            }
         }
     }
     %lowerText = %lowerText @ "<br>";
@@ -250,19 +253,31 @@ function GameMgrMLText::onURL(%this, %url)
         {
             gameMgrClient.playerQuitGame(%arguments);
         }
-        if (%command $= "changeReady")
+        else
         {
-            gameMgrClient.playerChangeReadyStatus(getWord(%arguments, 0), getWord(%arguments, 1));
+            if (%command $= "changeReady")
+            {
+                gameMgrClient.playerChangeReadyStatus(getWord(%arguments, 0), getWord(%arguments, 1));
+            }
+            else
+            {
+                if (%command $= "startGame")
+                {
+                    gameMgrClient.playerRequestStartGame(%arguments);
+                }
+                else
+                {
+                    if (%command $= "stopInspecting")
+                    {
+                        gameMgrClient.inspectNothing();
+                    }
+                    else
+                    {
+                        error("GameMgr action link with unrecognized action=" @ %command @ ". <- " @ getScopeName());
+                    }
+                }
+            }
         }
-        if (%command $= "startGame")
-        {
-            gameMgrClient.playerRequestStartGame(%arguments);
-        }
-        if (%command $= "stopInspecting")
-        {
-            gameMgrClient.inspectNothing();
-        }
-        error("GameMgr action link with unrecognized action=" @ %command @ ". <- " @ getScopeName());
     }
 }
 function GameMgrHudTabs::tabSelected(%this, %tab)
@@ -528,13 +543,16 @@ function GameList::CreateTabCreateGame(%this)
     GameList.CreateTabResetDefaults();
     %gameType = %this.gameTypesDropdown.getText();
     %n = 0;
-    while (%n < $gameMgr::GAME_TYPES_COUNT)
+    if (%n < $gameMgr::GAME_TYPES_COUNT)
     {
         if ($gameMgr::GAME_TYPES[%n].INST_TITLE $= %gameType)
         {
             %gameType = %n;
         }
-        %n = %n + 1;
+        else
+        {
+            %n = %n + 1;
+        }
     }
     if (%gameType $= %this.gameTypesDropdown.getText())
     {
@@ -699,11 +717,17 @@ function GameList::refresh(%this)
                     {
                         %color = $gameMgr::ListColors::WAITING;
                     }
-                    if (%aGame.gamestatus == $gameMgr::GameStatus::STARTED)
+                    else
                     {
-                        %color = $gameMgr::ListColors::STARTED;
+                        if (%aGame.gamestatus == $gameMgr::GameStatus::STARTED)
+                        {
+                            %color = $gameMgr::ListColors::STARTED;
+                        }
+                        else
+                        {
+                            %color = $gameMgr::ListColors::ELSE;
+                        }
                     }
-                    %color = $gameMgr::ListColors::ELSE;
                 }
                 if (%aGame.deepUpdated)
                 {

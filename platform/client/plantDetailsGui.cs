@@ -43,9 +43,12 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
         {
             %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDry"];
         }
-        if (%status $= "DEAD")
+        else
         {
-            %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
+            if (%status $= "DEAD")
+            {
+                %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
+            }
         }
     }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);

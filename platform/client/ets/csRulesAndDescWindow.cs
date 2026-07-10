@@ -94,15 +94,24 @@ function CSRulesAndDescWindow::updateSettings(%this, %accessMode, %password, %de
         {
             CSRulesAccessPopup.SetSelected(1);
         }
-        if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 2)
+        else
         {
-            CSRulesAccessPopup.SetSelected(2);
+            if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 2)
+            {
+                CSRulesAccessPopup.SetSelected(2);
+            }
+            else
+            {
+                if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 3)
+                {
+                    CSRulesAccessPopup.SetSelected(2);
+                }
+                else
+                {
+                    %this.accessLevel = "OPEN";
+                }
+            }
         }
-        if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 3)
-        {
-            CSRulesAccessPopup.SetSelected(2);
-        }
-        %this.accessLevel = "OPEN";
     }
     %this.update();
 }

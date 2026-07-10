@@ -59,7 +59,7 @@ function FileObject::unindent(%this)
     {
         %this.indentString = "   ";
     }
-    %this.indent = getSubStr(%this.indent, strlen(%this.indentString), -(1));
+    %this.indent = getSubStr(%this.indent, strlen(%this.indentString), -1);
 }
 function FileObject::writeLineIndented(%this, %line)
 {

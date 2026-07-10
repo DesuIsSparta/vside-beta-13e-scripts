@@ -149,15 +149,24 @@ function PlayGui::onMouseDownObj(%this, %obj, %pt, %worldVec)
         {
             %this.onAdvertClick(%obj, %pt);
         }
-        if (%type & $TypeMasks::UsableObjectType)
+        else
         {
-            %this.onUsableObjectClick(%obj, %pt);
+            if (%type & $TypeMasks::UsableObjectType)
+            {
+                %this.onUsableObjectClick(%obj, %pt);
+            }
+            else
+            {
+                if (%type & $TypeMasks::PlayerObjectType)
+                {
+                    onLeftClickPlayerName(%obj.getShapeName(), %obj);
+                }
+                else
+                {
+                    echoDebug("got a clicked object but didn't find a proper typemask:" @ " " @ %type @ " " @ getDebugString(%obj));
+                }
+            }
         }
-        if (%type & $TypeMasks::PlayerObjectType)
-        {
-            onLeftClickPlayerName(%obj.getShapeName(), %obj);
-        }
-        echoDebug("got a clicked object but didn't find a proper typemask:" @ " " @ %type @ " " @ getDebugString(%obj));
     }
 }
 function PlayGui::onRightMouseDown(%this, %obj, %pt)
@@ -189,13 +198,19 @@ function PlayGui::onRightMouseUp(%this, %obj)
         {
             %this.onUsableObjectRightClick(%obj);
         }
-        if (%type & $TypeMasks::PlayerObjectType)
+        else
         {
-            %this.onRMBPlayer(%obj);
-        }
-        if (%type & $TypeMasks::InteriorObjectType)
-        {
-            onRightClickUpInterior(%obj);
+            if (%type & $TypeMasks::PlayerObjectType)
+            {
+                %this.onRMBPlayer(%obj);
+            }
+            else
+            {
+                if (%type & $TypeMasks::InteriorObjectType)
+                {
+                    onRightClickUpInterior(%obj);
+                }
+            }
         }
     }
 }
@@ -227,13 +242,16 @@ function PlayGui::onUsableObjectClick(%this, %obj, %pt)
                 }
             }
         }
-        if (checkInteractOK(%obj))
+        else
         {
-            if (%obj.hasMethod("onUse"))
+            if (checkInteractOK(%obj))
             {
-                %obj.onUse($player);
+                if (%obj.hasMethod("onUse"))
+                {
+                    %obj.onUse($player);
+                }
+                commandToServer('usableObjectClick', %obj.getGhostID());
             }
-            commandToServer('usableObjectClick', %obj.getGhostID());
         }
     }
 }
@@ -332,11 +350,14 @@ function GuiControl::getTopNthWindow(%this, %ndex)
             {
                 return %obj;
             }
-            %num = %num + 1;
+            else
+            {
+                %num = %num + 1;
+            }
         }
         %idx = %idx - 1;
     }
-    return -(1);
+    return -1;
 }
 function GuiControl::focusTopWindow(%this)
 {
@@ -354,21 +375,24 @@ function GuiControl::closeTopClosableWindow(%this)
 {
     %closedOne = 0;
     %n = 0;
-    while (!%closedOne)
+    if (!%closedOne)
     {
         %obj = %this.getTopNthWindow(%n);
         if (!isObject(%obj))
         {
         }
-        if (!(%obj.closeCommand $= ""))
-        {
-            eval("%closedOne =" @ " " @ %obj.closeCommand);
-        }
         else
         {
-            %closedOne = %obj.close();
+            if (!(%obj.closeCommand $= ""))
+            {
+                eval("%closedOne =" @ " " @ %obj.closeCommand);
+            }
+            else
+            {
+                %closedOne = %obj.close();
+            }
+            %n = %n + 1;
         }
-        %n = %n + 1;
     }
     %this.focusTopWindow();
     return %closedOne;
@@ -376,14 +400,17 @@ function GuiControl::closeTopClosableWindow(%this)
 function GuiControl::dumpTopWindows(%this)
 {
     %n = 0;
-    while (1)
+    if (1)
     {
         %obj = %this.getTopNthWindow(%n);
         if (!isObject(%obj))
         {
         }
-        echo(getDebugString(%obj));
-        %n = %n + 1;
+        else
+        {
+            echo(getDebugString(%obj));
+            %n = %n + 1;
+        }
     }
 }
 function GuiControl::showRaiseOrHide(%this, %ctrl)

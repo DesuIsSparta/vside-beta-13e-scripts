@@ -164,15 +164,24 @@ function AssetManager::cityToPackage(%str)
         {
             return "projects/vside/worlds/lga.zip";
         }
-        if (%str $= "rj")
+        else
         {
-            return "projects/vside/worlds/raijuku.zip";
+            if (%str $= "rj")
+            {
+                return "projects/vside/worlds/raijuku.zip";
+            }
+            else
+            {
+                if (%str $= "gw")
+                {
+                    return "projects/vside/worlds/gateway.zip";
+                }
+                else
+                {
+                    return "";
+                }
+            }
         }
-        if (%str $= "gw")
-        {
-            return "projects/vside/worlds/gateway.zip";
-        }
-        return "";
     }
 }
 function AssetManager::packageToCity(%str)
@@ -187,14 +196,23 @@ function AssetManager::packageToCity(%str)
         {
             return "lga";
         }
-        if (%str $= "raijuku.zip")
+        else
         {
-            return "rj";
+            if (%str $= "raijuku.zip")
+            {
+                return "rj";
+            }
+            else
+            {
+                if (%str $= "gateway.zip")
+                {
+                    return "gw";
+                }
+                else
+                {
+                    return "";
+                }
+            }
         }
-        if (%str $= "gateway.zip")
-        {
-            return "gw";
-        }
-        return "";
     }
 }

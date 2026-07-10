@@ -166,11 +166,17 @@ function escapeFromGame()
         {
             finishTextEntry();
         }
-        if (ConvBub.isVisible())
+        else
         {
-            ConvBub.close(0);
+            if (ConvBub.isVisible())
+            {
+                ConvBub.close(0);
+            }
+            else
+            {
+                AIMConvManager.selectConvAtIndex(-1);
+            }
         }
-        AIMConvManager.selectConvAtIndex(-(1));
     }
 }
 $movementSpeed = 1;
@@ -301,7 +307,10 @@ function doubleTapCheckOnAction(%actionTag, %keyDown, %canDoubleTapInCamera, %re
         {
             doubleTapActionStop(%actionTag);
         }
-        $DoubleTapStopTimer[%actionTag] = schedule(%resetDelayMS, 0, "doubleTapActionStop", %actionTag);
+        else
+        {
+            $DoubleTapStopTimer[%actionTag] = schedule(%resetDelayMS, 0, "doubleTapActionStop", %actionTag);
+        }
     }
 }
 doubleTapDeclareActionVariable("forward");
@@ -348,7 +357,10 @@ function nextPlayerCamMode()
         {
             toggleFirstPerson();
         }
-        togglePlayerCamMode();
+        else
+        {
+            togglePlayerCamMode();
+        }
     }
     if (isObject(BroadcastHideSelfCheckbox))
     {
@@ -457,7 +469,7 @@ function changeCameraDist(%val)
         changeCameraFOV(%val);
         return;
     }
-    %val = %val * -(0.001);
+    %val = %val * -0.001;
     %val = %val + 1;
     %f = $cameraDist * %val;
     %f = max(%f, $gCameraDistMin);
@@ -466,7 +478,7 @@ function changeCameraDist(%val)
 }
 function changeCameraDistAndFOV(%val)
 {
-    %val = %val * -(0.001);
+    %val = %val * -0.001;
     %val = %val + 1;
     %dollyMin = $gCameraDistMin;
     %dollyMax = $gCameraDistMax;
@@ -516,7 +528,10 @@ function doPropAction(%actionNum)
             {
                 ClosetGui.isDoingPropAction = 0;
             }
-            $player.playAnim(%propAnimation);
+            else
+            {
+                $player.playAnim(%propAnimation);
+            }
         }
     }
     else
@@ -598,7 +613,7 @@ function startZoomOut(%amt)
     {
         %amt = 1;
     }
-    $cameraFOVAdjustment = -(100) * %amt;
+    $cameraFOVAdjustment = -100 * %amt;
     zoomTick();
 }
 function startDollyIn(%amt)
@@ -616,7 +631,7 @@ function startDollyOut(%amt)
     {
         %amt = 1;
     }
-    $cameraDistAdjustment = -(100) * %amt;
+    $cameraDistAdjustment = -100 * %amt;
     zoomTick();
 }
 function startDollyZoomIn(%amt)
@@ -635,7 +650,7 @@ function startDollyZoomOut(%amt)
     {
         %amt = 1;
     }
-    $cameraFOVAdjustment = -(100) * %amt;
+    $cameraFOVAdjustment = -100 * %amt;
     $cameraDistAdjustment = 1;
     zoomTick();
 }
@@ -838,7 +853,10 @@ function toggleClosetGui()
             }
             ClosetTabs.selectTabWithName(%tabToOpen);
         }
-        ClosetTabs.selectTabWithName("Shops");
+        else
+        {
+            ClosetTabs.selectTabWithName("Shops");
+        }
     }
     scriptProfiler_LeaveScope();
 }
@@ -1035,12 +1053,15 @@ function cycleDebugRenderMode()
                 setInteriorRenderMode(7);
                 showInterior();
             }
-            if ($MFDebugRenderMode == 2)
+            else
             {
-                $MFDebugRenderMode = 0;
-                setInteriorRenderMode(0);
-                GLEnableOutline(0);
-                show();
+                if ($MFDebugRenderMode == 2)
+                {
+                    $MFDebugRenderMode = 0;
+                    setInteriorRenderMode(0);
+                    GLEnableOutline(0);
+                    show();
+                }
             }
         }
     }

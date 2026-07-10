@@ -149,7 +149,10 @@ function pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %
                 {
                     %text = pChat.getPlayerMarkup(%name, "") @ "autoreplies: " @ makeColorTag(%yellColor) @ %text;
                 }
-                %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%yellColor) @ %text;
+                else
+                {
+                    %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%yellColor) @ %text;
+                }
             }
         }
         else
@@ -158,23 +161,38 @@ function pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %
             {
                 %text = pChat.getPlayerMarkup(%name, "") @ " pleads: " @ makeColorTag(%sosColor) @ %text;
             }
-            if (%speechType $= "mic")
+            else
             {
-                %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%micColor) @ %text;
+                if (%speechType $= "mic")
+                {
+                    %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%micColor) @ %text;
+                }
+                else
+                {
+                    if (%speechType $= "pvtNotify")
+                    {
+                        %text = pChat.getPlayerMarkup(%name, "") @ " " @ makeColorTag(%pvtNotifyColor) @ %text;
+                    }
+                    else
+                    {
+                        if (%speechType $= "pubNotify")
+                        {
+                            %text = pChat.getPlayerMarkup(%name, %pubNotifyColor) @ " " @ makeColorTag(%pubNotifyColor) @ %text;
+                        }
+                        else
+                        {
+                            if (%isAutoReply)
+                            {
+                                %text = pChat.getPlayerMarkup(%name, "") @ "autoreplies: " @ makeColorTag(%regularColor) @ %text;
+                            }
+                            else
+                            {
+                                %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%regularColor) @ %text;
+                            }
+                        }
+                    }
+                }
             }
-            if (%speechType $= "pvtNotify")
-            {
-                %text = pChat.getPlayerMarkup(%name, "") @ " " @ makeColorTag(%pvtNotifyColor) @ %text;
-            }
-            if (%speechType $= "pubNotify")
-            {
-                %text = pChat.getPlayerMarkup(%name, %pubNotifyColor) @ " " @ makeColorTag(%pubNotifyColor) @ %text;
-            }
-            if (%isAutoReply)
-            {
-                %text = pChat.getPlayerMarkup(%name, "") @ "autoreplies: " @ makeColorTag(%regularColor) @ %text;
-            }
-            %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%regularColor) @ %text;
         }
     }
     else
@@ -183,36 +201,48 @@ function pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %
         {
             %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%abuseColor) @ " narcs on " @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ makeColorTag(%abuseColor) @ %text;
         }
-        if (%speechType $= "gift")
+        else
         {
-            %giftText = getField(%text, 0);
-            %message = getField(%text, 1);
-            %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%giftColor) @ " gave " @ pChat.getPlayerMarkup(%whisperedTo, "") @ " " @ %giftText @ ": " @ makeColorTag(%giftColor) @ %message;
-        }
-        if (%name $= $player.getShapeName())
-        {
-            if (%name $= %whisperedTo)
+            if (%speechType $= "gift")
             {
-                %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
+                %giftText = getField(%text, 0);
+                %message = getField(%text, 1);
+                %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%giftColor) @ " gave " @ pChat.getPlayerMarkup(%whisperedTo, "") @ " " @ %giftText @ ": " @ makeColorTag(%giftColor) @ %message;
             }
             else
             {
-                %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ %text;
+                if (%name $= $player.getShapeName())
+                {
+                    if (%name $= %whisperedTo)
+                    {
+                        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
+                    }
+                    else
+                    {
+                        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ %text;
+                    }
+                }
+                else
+                {
+                    if (!(%whisperedTo $= $player.getShapeName()))
+                    {
+                        if (%name $= %whisperedTo)
+                        {
+                            %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
+                        }
+                        else
+                        {
+                            %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ %text;
+                        }
+                    }
+                    else
+                    {
+                        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies: " : " whispers: " @ makeColorTag(%regularColor) @ %text;
+                        $previousIncomingWhisperer = %name;
+                    }
+                }
             }
         }
-        if (!(%whisperedTo $= $player.getShapeName()))
-        {
-            if (%name $= %whisperedTo)
-            {
-                %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
-            }
-            else
-            {
-                %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ %text;
-            }
-        }
-        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies: " : " whispers: " @ makeColorTag(%regularColor) @ %text;
-        $previousIncomingWhisperer = %name;
     }
     %text = "<spush>" @ %text @ "<spop>";
     return %text;
@@ -262,7 +292,10 @@ function pChat::ProcessIncomingLine(%text, %senderPlayer, %name, %whisperedTo, %
         {
             ConvBubScroll.setProfile(ETSScrollDimProfile);
         }
-        ConvBubScroll.setProfile(ETSHiScrollProfile);
+        else
+        {
+            ConvBubScroll.setProfile(ETSHiScrollProfile);
+        }
     }
     pChat::tryLookAt(%senderPlayer, %speechType, %rawText);
     return %text;

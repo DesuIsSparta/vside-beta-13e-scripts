@@ -1,15 +1,15 @@
 function UserActivityMgr::defineActivities(%this)
 {
-    %this.defineActivity("idle", "idle", -(1));
-    %this.defineActivity("dressing", "dressing", -(1));
-    %this.defineActivity("shoppingForClothes", "clothes shopping", -(1));
-    %this.defineActivity("decorating", "decorating", -(1));
-    %this.defineActivity("gaming", "gaming", -(1));
-    %this.defineActivity("wrestling", "wrestling", -(1));
-    %this.defineActivity("discovering", "exploring", -(1));
+    %this.defineActivity("idle", "idle", -1);
+    %this.defineActivity("dressing", "dressing", -1);
+    %this.defineActivity("shoppingForClothes", "clothes shopping", -1);
+    %this.defineActivity("decorating", "decorating", -1);
+    %this.defineActivity("gaming", "gaming", -1);
+    %this.defineActivity("wrestling", "wrestling", -1);
+    %this.defineActivity("discovering", "exploring", -1);
     %this.defineActivity("chatting", "chatting", 15000);
     %this.defineActivity("dancing", "dancing", 45000);
-    %this.defineActivity("traveling", "traveling", -(1));
+    %this.defineActivity("traveling", "traveling", -1);
 }
 function getUserActivityMgr()
 {
@@ -38,7 +38,7 @@ function UserActivityMgr::reset(%this)
 function UserActivityMgr::defineActivity(%this, %activityName, %userFacingName, %duration)
 {
     %userFacingName = isDefined("%userFacingName") ? %userFacingName : %activityName;
-    %duration = isDefined("%duration") ? %duration : -(1);
+    %duration = isDefined("%duration") ? %duration : -1;
     %params = %userFacingName @ "\t" @ %duration;
     %this.knownActivities.put(%activityName, %params);
     if (!(isFile(%this.getActivityIconFilename(%activityName) @ ".png")))
@@ -82,14 +82,7 @@ function UserActivityMgr::getActivityBitmapMLText(%this, %activityName)
 {
     %ufn = %this.getActivityUserFacingName(%activityName);
     %bitmap = %this.getActivityIconFilename(%activityName);
-    if (%ufn $= "")
-    {
-    }
-    else
-    {
-    }
-    %tip = "<tip:" @ %ufn @ ">";
-    "";
+    %tip = (%ufn $= "") ? "" : "<tip:" @ %ufn @ ">";
     %ret = "<spush>" @ %tip @ "<bitmap:" @ %bitmap @ "><spop>";
     return %ret;
 }
@@ -97,7 +90,7 @@ function UserActivityMgr::getActivityDuration(%this, %activityName)
 {
     if (!%this.isKnownActivity(%activityName, 1))
     {
-        return -(1);
+        return -1;
     }
     else
     {
@@ -159,12 +152,12 @@ function UserActivityMgr::getActivityTimeLeft(%this, %activityName)
 {
     if (!%this.currActivities.hasKey(%activityName))
     {
-        return -(1);
+        return -1;
     }
     %timerID = %this.currActivities.get(%activityName);
     if (%timerID $= "")
     {
-        return -(1);
+        return -1;
     }
     else
     {
@@ -203,7 +196,10 @@ function UserActivityMgr::tryReport(%this)
             %this.reportTimer = %this.schedule(%wait, "_doReport");
             echoDebug(getScopeName() @ " " @ "- delaying for" @ " " @ %wait @ "MS");
         }
-        echoDebug(getScopeName() @ " " @ "- waiting  for" @ " " @ %wait @ "MS");
+        else
+        {
+            echoDebug(getScopeName() @ " " @ "- waiting  for" @ " " @ %wait @ "MS");
+        }
     }
 }
 function UserActivityMgr::getMSToNextReport(%this)
@@ -240,7 +236,7 @@ function UserActivityMgr::getActivitiesMLText(%this, %activitiesList, %numToShow
     %alphaOfLast = 80;
     %ret = "";
     %delim = "";
-    if (%numToShow == -(1))
+    if (%numToShow == -1)
     {
         %numToShow = getFieldCount(%activitiesList);
     }

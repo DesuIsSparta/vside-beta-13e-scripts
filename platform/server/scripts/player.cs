@@ -95,13 +95,13 @@ datablock AudioProfile(ExitingWaterLightSound) {
 };
 datablock ParticleData(PlayerSplashMist) {
     dragCoefficient = 2;
-    gravityCoefficient = -(0.05);
+    gravityCoefficient = -0.05;
     inheritedVelFactor = 0;
     constantAcceleration = 0;
     lifetimeMS = 400;
     lifetimeVarianceMS = 100;
     useInvAlpha = 0;
-    spinRandomMin = -(90);
+    spinRandomMin = -90;
     spinRandomMax = 500;
     textureName = "projects/common/characters/splash";
     colors = "0.7 0.8 1.0 1.0";
@@ -130,7 +130,7 @@ datablock ParticleEmitterData(PlayerSplashMistEmitter) {
 };
 datablock ParticleData(PlayerBubbleParticle) {
     dragCoefficient = 0;
-    gravityCoefficient = -(0.5);
+    gravityCoefficient = -0.5;
     inheritedVelFactor = 0;
     constantAcceleration = 0;
     lifetimeMS = 400;
@@ -162,13 +162,13 @@ datablock ParticleEmitterData(PlayerBubbleEmitter) {
 };
 datablock ParticleData(PlayerFoamParticle) {
     dragCoefficient = 2;
-    gravityCoefficient = -(0.05);
+    gravityCoefficient = -0.05;
     inheritedVelFactor = 0;
     constantAcceleration = 0;
     lifetimeMS = 400;
     lifetimeVarianceMS = 100;
     useInvAlpha = 0;
-    spinRandomMin = -(90);
+    spinRandomMin = -90;
     spinRandomMax = 500;
     textureName = "projects/common/characters/splash";
     colors = "0.7 0.8 1.0 0.20";
@@ -198,7 +198,7 @@ datablock ParticleData(PlayerFoamDropletsParticle) {
     dragCoefficient = 1;
     gravityCoefficient = 0.2;
     inheritedVelFactor = 0.2;
-    constantAcceleration = -(0);
+    constantAcceleration = -0;
     lifetimeMS = 600;
     lifetimeVarianceMS = 0;
     textureName = "projects/common/characters/splash";
@@ -230,7 +230,7 @@ datablock ParticleData(PlayerSplashParticle) {
     dragCoefficient = 1;
     gravityCoefficient = 0.2;
     inheritedVelFactor = 0.2;
-    constantAcceleration = -(0);
+    constantAcceleration = -0;
     lifetimeMS = 600;
     lifetimeVarianceMS = 0;
     colors = "0.7 0.8 1.0 1.0";
@@ -266,7 +266,7 @@ datablock SplashData(PlayerSplash) {
     lifetimeMS = 300;
     velocity = 4;
     startRadius = 0;
-    acceleration = -(3);
+    acceleration = -3;
     texWrap = 5;
     texture = "projects/common/characters/splash";
     emitter = PlayerSplashEmitter;
@@ -282,13 +282,13 @@ datablock SplashData(PlayerSplash) {
 };
 datablock ParticleData(LightPuff) {
     dragCoefficient = 2;
-    gravityCoefficient = -(0.01);
+    gravityCoefficient = -0.01;
     inheritedVelFactor = 0.6;
     constantAcceleration = 0;
     lifetimeMS = 800;
     lifetimeVarianceMS = 100;
     useInvAlpha = 1;
-    spinRandomMin = -(35);
+    spinRandomMin = -35;
     spinRandomMax = 35;
     colors = "1.0 1.0 1.0 1.0";
     colors = "1.0 1.0 1.0 0.0";
@@ -313,13 +313,13 @@ datablock ParticleEmitterData(LightPuffEmitter) {
 };
 datablock ParticleData(LiftoffDust) {
     dragCoefficient = 1;
-    gravityCoefficient = -(0.01);
+    gravityCoefficient = -0.01;
     inheritedVelFactor = 0;
     constantAcceleration = 0;
     lifetimeMS = 1000;
     lifetimeVarianceMS = 100;
     useInvAlpha = 1;
-    spinRandomMin = -(90);
+    spinRandomMin = -90;
     spinRandomMax = 500;
     colors = "1.0 1.0 1.0 1.0";
     sizes = 1;
@@ -405,7 +405,7 @@ datablock PlayerData(PlayerBody) {
     debrisShapeName = "";
     Debris = PlayerDebris;
     aiAvoidThis = 1;
-    minLookAngle = -(1);
+    minLookAngle = -1;
     maxLookAngle = 1.6;
     maxFreelookAngle = 3;
     maxTimeScale = 1.2;
@@ -578,9 +578,9 @@ function armor::doDismount(%this, %obj, %forced)
     %vec[0] = MatrixMulVector(%obj.getTransform(), %vec[0]);
     %pos = "0 0 0";
     %numAttempts = 5;
-    %success = -(1);
+    %success = -1;
     %i = 0;
-    while (%i < %numAttempts)
+    if (%i < %numAttempts)
     {
         %pos = VectorAdd(%oldPos, VectorScale(%vec[%i], 3));
         if (%obj.checkDismountPoint(%oldPos, %pos))
@@ -588,9 +588,12 @@ function armor::doDismount(%this, %obj, %forced)
             %success = %i;
             %impulseVec = %vec[%i];
         }
-        %i = %i + 1;
+        else
+        {
+            %i = %i + 1;
+        }
     }
-    if (%forced && (%success == -(1)))
+    if (%forced && (%success == -1))
     {
         %pos = %oldPos;
     }
@@ -695,23 +698,41 @@ function armor::onEnterLiquid(%this, %obj, %unused, %type)
         if (%type == 1)
         {
         }
-        if (%type == 2)
+        else
         {
-        }
-        if (%type == 3)
-        {
-        }
-        if (%type == 4)
-        {
-            %obj.setDamageDt(%this, $DamageLava, "Lava");
-        }
-        if (%type == 5)
-        {
-            %obj.setDamageDt(%this, $DamageHotLava, "Lava");
-        }
-        if (%type == 6)
-        {
-            %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
+            if (%type == 2)
+            {
+            }
+            else
+            {
+                if (%type == 3)
+                {
+                }
+                else
+                {
+                    if (%type == 4)
+                    {
+                        %obj.setDamageDt(%this, $DamageLava, "Lava");
+                    }
+                    else
+                    {
+                        if (%type == 5)
+                        {
+                            %obj.setDamageDt(%this, $DamageHotLava, "Lava");
+                        }
+                        else
+                        {
+                            if (%type == 6)
+                            {
+                                %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
+                            }
+                            else
+                            {
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     return %type == 7;

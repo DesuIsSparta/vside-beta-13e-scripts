@@ -1,5 +1,5 @@
 $gAfxEffectsEnabledClient = 1;
-$gAfxSelectedAvatar = -(1);
+$gAfxSelectedAvatar = -1;
 $gAfxSelectronStyle = 0;
 $gAfxSelectronStyleCount = 1;
 $gAfxTestViaBots = 0;
@@ -29,7 +29,7 @@ function afxGetSelectedAvatar()
 }
 function afxGetSelectedAvatarGhost()
 {
-    return ($gAfxSelectedAvatar != -(1)) ? ServerConnection.GetGhostIndex($gAfxSelectedAvatar) : -(1);
+    return ($gAfxSelectedAvatar != -1) ? ServerConnection.GetGhostIndex($gAfxSelectedAvatar) : -1;
 }
 function afxSelectAvatarByName(%name)
 {
@@ -43,10 +43,10 @@ function afxSelectAvatarByName(%name)
         return;
     }
     %start_new_sele = $gAfxSelectedAvatar != %avatar;
-    if ($gAfxSelectedAvatar != -(1))
+    if ($gAfxSelectedAvatar != -1)
     {
         $gAfxSelectedAvatar.sele.stopSelectron();
-        $gAfxSelectedAvatar = -(1);
+        $gAfxSelectedAvatar = -1;
     }
     if (%start_new_sele)
     {
@@ -70,7 +70,7 @@ function afxNextSelectronStyle()
     {
         $gAfxSelectronStyle = 0;
     }
-    if ($gAfxSelectedAvatar == -(1))
+    if ($gAfxSelectedAvatar == -1)
     {
         return;
     }

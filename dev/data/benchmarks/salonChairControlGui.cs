@@ -80,9 +80,12 @@ function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item)
                 $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
             }
         }
-        if (%action $= "finish")
+        else
         {
-            salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
+            if (%action $= "finish")
+            {
+                salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
+            }
         }
     }
 }

@@ -94,15 +94,21 @@ function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus)
             %statusMsg = GetMyApartmentVURLCommand.getValue("statusMsg");
             handleSystemMessage("msgInfoMessage", "We could not find your apartment." @ "\n" @ %statusMsg);
         }
-        if (%vurl $= "")
+        else
         {
-            handleSystemMessage("msgInfoMessage", "You do not appear to own an appartment.");
+            if (%vurl $= "")
+            {
+                handleSystemMessage("msgInfoMessage", "You do not appear to own an appartment.");
+            }
+            else
+            {
+                if (CustomSpacesSelector.isVisible())
+                {
+                    CustomSpacesSelector.close();
+                }
+                vurlOperation(%vurl, %ignoreDownloadStatus);
+            }
         }
-        if (CustomSpacesSelector.isVisible())
-        {
-            CustomSpacesSelector.close();
-        }
-        vurlOperation(%vurl, %ignoreDownloadStatus);
     }
 }
 function getApartmentVURL(%callback, %ignoreDownloadStatus)

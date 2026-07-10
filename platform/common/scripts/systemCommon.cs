@@ -205,7 +205,10 @@ function System::calculateLoginMetrics()
             {
                 $SystemMetric::userCountIdle = $SystemMetric::userCountIdle + 1;
             }
-            $SystemMetric::userCountNonIdle = $SystemMetric::userCountNonIdle + 1;
+            else
+            {
+                $SystemMetric::userCountNonIdle = $SystemMetric::userCountNonIdle + 1;
+            }
         }
         %n = %n - 1;
     }
@@ -247,7 +250,10 @@ function System::dumpMetrics()
         {
             warn("complete object dump crashes on client - skipped.");
         }
-        System::dumpObjects(RootGroup);
+        else
+        {
+            System::dumpObjects(RootGroup);
+        }
     }
     System::dumpClassInstanceCounts(RootGroup);
     System::calculateLoginMetrics();
@@ -450,9 +456,9 @@ function dumpClassInstances(%simGroup)
 function compileClassInstances(%obj, %container)
 {
     %classname = %obj.getClassName();
-    %found = -(1);
+    %found = -1;
     %n = 0;
-    while ((%n < %container.numClasses) && (%found == -(1)))
+    while ((%n < %container.numClasses) && (%found == -1))
     {
         if (%n @ " " @ %container.instanceCounts["class"] $= %classname)
         {
@@ -460,7 +466,7 @@ function compileClassInstances(%obj, %container)
         }
         %n = %n + 1;
     }
-    if (%found == -(1))
+    if (%found == -1)
     {
         %found = %container.numClasses;
         %container.numClasses = %container.numClasses + 1;

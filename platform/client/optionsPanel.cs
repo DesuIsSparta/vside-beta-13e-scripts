@@ -2122,10 +2122,13 @@ function setShapeNameFontSize(%val)
             %prof = MediumShapeNameHudProfile;
             %otherProf = BoldMediumShapeNameHudProfile;
         }
-        if (%val == 2)
+        else
         {
-            %prof = LargeShapeNameHudProfile;
-            %otherProf = BoldLargeShapeNameHudProfile;
+            if (%val == 2)
+            {
+                %prof = LargeShapeNameHudProfile;
+                %otherProf = BoldLargeShapeNameHudProfile;
+            }
         }
     }
     TheShapeNameHud.setProfile(%prof);

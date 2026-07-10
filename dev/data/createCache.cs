@@ -14,8 +14,11 @@ function doLoginCheck()
             error("CACHE->ERROR : Giving up. Waited for 20 minutes and nothing happended");
             quit();
         }
-        echo("CACHE: Nothing yet....");
-        $iterationsWaited = $iterationsWaited + 1;
-        schedule(3000, 0, doLoginCheck);
+        else
+        {
+            echo("CACHE: Nothing yet....");
+            $iterationsWaited = $iterationsWaited + 1;
+            schedule(3000, 0, doLoginCheck);
+        }
     }
 }

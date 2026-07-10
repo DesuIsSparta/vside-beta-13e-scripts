@@ -198,22 +198,25 @@ function geTGF_OnCompleted_MyPlace(%tracker)
             {
                 echo(getScopeName() @ " " @ "- skipping space" @ " " @ %itemObj.get("description"));
             }
-            %id = %itemObj.get("description") @ " " @ formatInt("%0.3d", %n);
-            %item = geTGF.createNewItem(%listName, "happening", %id);
-            %item.accessMode = %itemObj.get("access");
-            %item.baseImageURL = %itemObj.get("baseImageURL");
-            %item.eventID = %itemObj.get("eventId");
-            %item.featured = %itemObj.get("featured");
-            %item.occupancy = %itemObj.get("occupancy");
-            %item.friendOccupancy = %itemObj.get("friendOccupancy");
-            %item.goThereVURL = %itemObj.get("URI");
-            %item.headline = %itemObj.get("description");
-            %item.hostUserName = %itemObj.get("owner");
-            %item.location_areaName = %itemObj.get("location.areaName");
-            %item.location_buildingName = %itemObj.get("location.buildingName");
-            %item.location_serverName = %itemObj.get("location.serverName");
-            %item.moreInfoURL = %itemObj.get("moreInfoURL");
-            %item.subType = (%item.eventID $= "") ? "apt" : "aptEvent";
+            else
+            {
+                %id = %itemObj.get("description") @ " " @ formatInt("%0.3d", %n);
+                %item = geTGF.createNewItem(%listName, "happening", %id);
+                %item.accessMode = %itemObj.get("access");
+                %item.baseImageURL = %itemObj.get("baseImageURL");
+                %item.eventID = %itemObj.get("eventId");
+                %item.featured = %itemObj.get("featured");
+                %item.occupancy = %itemObj.get("occupancy");
+                %item.friendOccupancy = %itemObj.get("friendOccupancy");
+                %item.goThereVURL = %itemObj.get("URI");
+                %item.headline = %itemObj.get("description");
+                %item.hostUserName = %itemObj.get("owner");
+                %item.location_areaName = %itemObj.get("location.areaName");
+                %item.location_buildingName = %itemObj.get("location.buildingName");
+                %item.location_serverName = %itemObj.get("location.serverName");
+                %item.moreInfoURL = %itemObj.get("moreInfoURL");
+                %item.subType = (%item.eventID $= "") ? "apt" : "aptEvent";
+            }
         }
         %n = %n + 1;
     }
@@ -274,13 +277,19 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType)
                 %eventValue = "publicEvent";
                 %eventFmt = "";
             }
-            if (%item.featured)
+            else
             {
-                %eventValue = "featuredEvent";
-                %eventFmt = "";
+                if (%item.featured)
+                {
+                    %eventValue = "featuredEvent";
+                    %eventFmt = "";
+                }
+                else
+                {
+                    %eventValue = "regularEvent";
+                    %eventFmt = "";
+                }
             }
-            %eventValue = "regularEvent";
-            %eventFmt = "";
         }
         %occupancyText = geTGF.formatOccupancy(%item.occupancy, "<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         %friendOccupancyText = geTGF.formatOccupancy(%item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
@@ -362,7 +371,7 @@ function geTGF_OtherPlacesGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %al
 }
 function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount, %listName)
 {
-    if (%rowIndex == -(1))
+    if (%rowIndex == -1)
     {
         error(getScopeName() @ " " @ "- Gui Row" @ " " @ %guiRow @ " " @ "has no Data Row -" @ " " @ getTrace());
         return;
@@ -371,7 +380,7 @@ function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %
     %cellIndex = %this.getDataTable().getColumnIndex("description");
     %itemID = %this.getDataTable().getCellSortValue(%rowIndex, %cellIndex);
     %showDeets = 0;
-    if (%mouseClickCount == -(1))
+    if (%mouseClickCount == -1)
     {
         %showDeets = 0;
     }
@@ -381,15 +390,24 @@ function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %
         {
             %showDeets = 1;
         }
-        if (%mouseClickCount == 1)
+        else
         {
-            %showDeets = 1;
+            if (%mouseClickCount == 1)
+            {
+                %showDeets = 1;
+            }
+            else
+            {
+                if (%mouseClickCount == 2)
+                {
+                    %showDeets = 1;
+                }
+                else
+                {
+                    %showDeets = 0;
+                }
+            }
         }
-        if (%mouseClickCount == 2)
-        {
-            %showDeets = 1;
-        }
-        %showDeets = 0;
     }
     if (%showDeets)
     {

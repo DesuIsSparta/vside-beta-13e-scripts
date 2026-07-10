@@ -37,7 +37,7 @@ function Player::initGlobalFields(%this)
     gSetField(%this, respektPoints, 0);
     gSetField(%this, "gameStateMap", "");
     gSetField(%this, "notifyRefuseWhispers", 1);
-    gSetField(%this, "lastActiveTime", -(1));
+    gSetField(%this, "lastActiveTime", -1);
     gSetField(%this, answeringHelpMe, 0);
     gSetField(%this, "mapCtrl", "");
     gSetField(%this, "IsNoLongerTypingTimer", "");

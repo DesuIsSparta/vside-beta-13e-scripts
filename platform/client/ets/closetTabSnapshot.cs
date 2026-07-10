@@ -608,7 +608,10 @@ function ProfileCurrentPicture::getLocalFileName(%this, %includeExtention)
         {
             %ext = ".png";
         }
-        %ext = ".png";
+        else
+        {
+            %ext = ".png";
+        }
     }
     return $DC::LocalAvatarFolder @ "/avatar_" @ stripUnprintables($Player::Name) @ %includeExtention ? %ext : "";
 }
@@ -717,9 +720,12 @@ function ProfileBackgroundChooser::Initialize(%this)
                 {
                     %numImages = %numImages + 1;
                 }
-                if (%extension $= ".png")
+                else
                 {
-                    %numImages = %numImages + 1;
+                    if (%extension $= ".png")
+                    {
+                        %numImages = %numImages + 1;
+                    }
                 }
             }
             %i = %i + 1;
@@ -735,7 +741,7 @@ function ProfileBackgroundChooser::Initialize(%this)
             %cell.bitmapName = %bgdPath @ (%i + 1) @ ".jpg";
             %i = %i + 1;
         }
-        %this.selected = -(1);
+        %this.selected = -1;
         %this.selectThumbAtIndex(0);
         %this.initialized = 1;
     }
@@ -826,15 +832,15 @@ function ProfileObjectView::moveBy(%this, %dx, %dy)
     %this.setLookAtNudge(%nudge);
     %dx = %dx * 0.25;
     %dy = %dy * 0.25;
-    %x = mMin(3, mMax(-(3), (%this.xPos + %dx)));
-    %y = mMin(4, mMax(-(13), (%this.yPos + %dy)));
+    %x = mMin(3, mMax(-3, (%this.xPos + %dx)));
+    %y = mMin(4, mMax(-13, (%this.yPos + %dy)));
     %this.setMove(%x @ " " @ %y);
 }
 function ProfileObjectView::setMove(%this, %pos)
 {
     %this.xPos = getWord(%pos, 0);
     %this.yPos = getWord(%pos, 1);
-    %this.setTrgPosition((-(195) + (50 * %this.xPos)), (-(700) + (50 * %this.yPos)));
+    %this.setTrgPosition((-195 + (50 * %this.xPos)), (-700 + (50 * %this.yPos)));
 }
 $gProfileObjectView_Views["default","f"] = "-0 0 2.4";
 $gProfileObjectView_Views["default","m"] = "-0 0 2.4";

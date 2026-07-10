@@ -9,7 +9,10 @@ function DemoPlayer::onReachDestination(%this, %obj)
         {
             %this.onEndOfPath(%obj, %obj.Path);
         }
-        %obj.moveToNextNode();
+        else
+        {
+            %obj.moveToNextNode();
+        }
     }
 }
 function DemoPlayer::onEndOfPath(%this, %obj, %path)
@@ -50,9 +53,12 @@ function AIPlayer::spawn(%name, %spawnPoint)
         {
             %genre = "i";
         }
-        if (%rand == 2)
+        else
         {
-            %genre = "p";
+            if (%rand == 2)
+            {
+                %genre = "p";
+            }
         }
     }
     %player.setGenre(%genre);
@@ -113,7 +119,10 @@ function AIPlayer::moveToNextNode(%this)
         {
             %this.moveToNode((%this.Path.getCount() - 1));
         }
-        %this.moveToNode((%this.currentNode - 1));
+        else
+        {
+            %this.moveToNode((%this.currentNode - 1));
+        }
     }
 }
 function AIPlayer::moveToNode(%this, %index)
@@ -127,11 +136,11 @@ function AIPlayer::pushTask(%this, %method)
     if (%this.taskIndex $= "")
     {
         %this.taskIndex = 0;
-        %this.taskCurrent = -(1);
+        %this.taskCurrent = -1;
     }
     %this.task[%this.taskIndex] = %method;
     %this.taskIndex = %this.taskIndex + 1;
-    if (%this.taskCurrent == -(1))
+    if (%this.taskCurrent == -1)
     {
         %this.executeTask((%this.taskIndex - 1));
     }
@@ -139,18 +148,21 @@ function AIPlayer::pushTask(%this, %method)
 function AIPlayer::clearTasks(%this)
 {
     %this.taskIndex = 0;
-    %this.taskCurrent = -(1);
+    %this.taskCurrent = -1;
 }
 function AIPlayer::nextTask(%this)
 {
-    if (%this.taskCurrent != -(1))
+    if (%this.taskCurrent != -1)
     {
         if (%this.taskCurrent < (%this.taskIndex - 1))
         {
             %this.taskCurrent = %this.taskCurrent + 1;
             %this.executeTask();
         }
-        %this.taskCurrent = -(1);
+        else
+        {
+            %this.taskCurrent = -1;
+        }
     }
 }
 function AIPlayer::executeTask(%this, %index)
@@ -294,8 +306,8 @@ function AIPlayer::doAutoMove(%this)
     {
         %this.autoMoveList[" ","0 0",0] = %amount;
         %this.autoMoveList[" ",%amount," ",0,1] = 0;
-        %this.autoMoveList[" ","0 0",2] = -(%amount);
-        %this.autoMoveList[" ",-(%amount)," ",0,3] = 0;
+        %this.autoMoveList[" ","0 0",2] = -%amount;
+        %this.autoMoveList[" ",-%amount," ",0,3] = 0;
         %this.autoMoveNum = 0;
     }
     %move = %this.autoMoveList[%this.autoMoveNum];
@@ -326,7 +338,10 @@ function AIManager::doBotsSurfing(%this, %periodMS)
         {
             %add = 0;
         }
-        %add = getRandom(0, 1);
+        else
+        {
+            %add = getRandom(0, 1);
+        }
     }
     if (%add == 1)
     {
@@ -372,8 +387,8 @@ function AIManager::spawn(%this)
 {
     %BotRows = 10;
     %BotCols = 5;
-    %XPosition = -(288);
-    %YPosition = -(410);
+    %XPosition = -288;
+    %YPosition = -410;
     %j = 0;
     while (%j < %BotRows)
     {

@@ -168,7 +168,7 @@ function onMouseWheelDifSkus(%val)
     %numSwatchSkus = getWordCount($gDifSkusSwatchSkusViewable);
     if (%numSwatchSkus < 1)
     {
-        geSwatchesPanel.selectCell(-(1));
+        geSwatchesPanel.selectCell(-1);
         return;
     }
     if ($gDifSkusCurrentSwatch != 0)
@@ -177,9 +177,9 @@ function onMouseWheelDifSkus(%val)
     }
     else
     {
-        %ndx = -(1);
+        %ndx = -1;
     }
-    %val = (%val < 0) ? 1 : -(1);
+    %val = (%val < 0) ? 1 : -1;
     %ndx = %ndx - %val;
     if (%ndx < 0)
     {

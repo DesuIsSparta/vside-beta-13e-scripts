@@ -264,7 +264,7 @@ function ClosetTabs::fillBodyTab(%this)
         vertSizing = "bottom";
         position = "692 84";
         extent = "242 25";
-        lineSpacing = -(3);
+        lineSpacing = -3;
     };);
     %theTab.add(new GuiMLTextCtrl(BodyLongDescText) {
         profile = "ClosetLeftInfoProfile";
@@ -272,7 +272,7 @@ function ClosetTabs::fillBodyTab(%this)
         vertSizing = "bottom";
         position = "692 106";
         extent = "173 32";
-        lineSpacing = -(3);
+        lineSpacing = -3;
     };);
     %doneButton = new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton19Profile";

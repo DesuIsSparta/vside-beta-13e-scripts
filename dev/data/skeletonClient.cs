@@ -12,9 +12,12 @@ function skeletonClient_postJoinAction()
             error("LOAD: Giving up. Waited for 10 minutes and nothing happened.");
             skeletonClient::quit();
         }
-        echo("LOAD: Waiting ...");
-        $iterationsWaited = $iterationsWaited + 1;
-        schedule(3000, 0, skeletonClient_postJoinAction);
+        else
+        {
+            echo("LOAD: Waiting ...");
+            $iterationsWaited = $iterationsWaited + 1;
+            schedule(3000, 0, skeletonClient_postJoinAction);
+        }
     }
 }
 function fakeFrameCount()
@@ -140,10 +143,13 @@ function BootRequest::onDone(%this)
             echo("LOAD: Boot failed.");
             skeletonClient::quit();
         }
-        if (%status $= "error")
+        else
         {
-            echo("LOAD: Boot errored.");
-            skeletonClient::quit();
+            if (%status $= "error")
+            {
+                echo("LOAD: Boot errored.");
+                skeletonClient::quit();
+            }
         }
     }
 }
@@ -210,16 +216,19 @@ function LoginRequest::onDone(%this)
             $Login::loggedIn = 1;
             schedule(2000, 0, joinServer);
         }
-        if (%status $= "upgrade_available")
+        else
         {
-            %this.parseResponse();
-            outfits_init();
-            outfits_retrieve();
-            WorldMap.setNotConnectedToServer();
-            WorldMap.initCityMaps();
-            WorldMap.open();
-            $Login::loggedIn = 1;
-            schedule(2000, 0, joinServer);
+            if (%status $= "upgrade_available")
+            {
+                %this.parseResponse();
+                outfits_init();
+                outfits_retrieve();
+                WorldMap.setNotConnectedToServer();
+                WorldMap.initCityMaps();
+                WorldMap.open();
+                $Login::loggedIn = 1;
+                schedule(2000, 0, joinServer);
+            }
         }
     }
 }
@@ -269,6 +278,7 @@ function skeletonClient::joinServer()
             echo("LOAD: Joined server " @ WorldMapServers.getObject(%i).get("name"));
             echo("LOAD: Login completed");
             schedule(15000, 0, skeletonClient_postJoinAction);
+            break;
         }
         %i = %i + 1;
     }

@@ -50,7 +50,10 @@ function GuiArray2Ctrl::scrollToRowByCellIndex(%this, %cellIdx)
         {
             %targetRow = %closestRow;
         }
-        %targetRow = (%targetRow - %visibleRows) + 1;
+        else
+        {
+            %targetRow = (%targetRow - %visibleRows) + 1;
+        }
     }
     %this.getParent().scrollTo(0, (%cellHeight * %targetRow));
 }
@@ -447,16 +450,16 @@ function GuiControl::makeVisualClone(%this)
         visible = 1;
     };;
 }
-$Conv::TypingIndicatorState = -(1);
-$Conv::CelebOpenIndicatorState = -(1);
-$Conv::CelebCloseIndicatorState = -(1);
-$Conv::AffinityOpenIndicatorState = -(1);
-$Conv::AffinityCloseIndicatorState = -(1);
+$Conv::TypingIndicatorState = -1;
+$Conv::CelebOpenIndicatorState = -1;
+$Conv::CelebCloseIndicatorState = -1;
+$Conv::AffinityOpenIndicatorState = -1;
+$Conv::AffinityCloseIndicatorState = -1;
 function animateConversationTypingIndicator()
 {
-    if ($Conv::TypingIndicatorState == -(1))
+    if ($Conv::TypingIndicatorState == -1)
     {
-        %n = -(1);
+        %n = -1;
         $Conv::TypingIndicators[%n = %n + 1] = "_   ";
         $Conv::TypingIndicators[%n = %n + 1] = " _  ";
         $Conv::TypingIndicators[%n = %n + 1] = "  _ ";
@@ -469,9 +472,9 @@ function animateConversationTypingIndicator()
     %celebIndicatorOn = 0;
     if (%celebIndicatorOn)
     {
-        if ($Conv::CelebOpenIndicatorState == -(1))
+        if ($Conv::CelebOpenIndicatorState == -1)
         {
-            %n = -(1);
+            %n = -1;
             $Conv::CelebOpenIndicators[%n = %n + 1] = "";
             $Conv::CelebOpenIndicators[%n = %n + 1] = "* ";
             $Conv::CelebOpenIndicators[%n = %n + 1] = "*  ";
@@ -482,9 +485,9 @@ function animateConversationTypingIndicator()
         }
         $Conv::CelebOpenIndicatorState = ($Conv::CelebOpenIndicatorState + 1) % $Conv::CelebOpenIndicatorsNum;
         $Conv::celebOpenIndicator = $Conv::CelebOpenIndicators[$Conv::CelebOpenIndicatorState];
-        if ($Conv::CelebCloseIndicatorState == -(1))
+        if ($Conv::CelebCloseIndicatorState == -1)
         {
-            %n = -(1);
+            %n = -1;
             $Conv::CelebCloseIndicators[%n = %n + 1] = "";
             $Conv::CelebCloseIndicators[%n = %n + 1] = " *";
             $Conv::CelebCloseIndicators[%n = %n + 1] = "  *";
@@ -496,9 +499,9 @@ function animateConversationTypingIndicator()
         $Conv::CelebCloseIndicatorState = ($Conv::CelebCloseIndicatorState + 1) % $Conv::CelebCloseIndicatorsNum;
         $Conv::celebCloseIndicator = $Conv::CelebCloseIndicators[$Conv::CelebCloseIndicatorState];
     }
-    if ($Conv::AffinityOpenIndicatorState == -(1))
+    if ($Conv::AffinityOpenIndicatorState == -1)
     {
-        %n = -(1);
+        %n = -1;
         $Conv::AffinityOpenIndicators[%n = %n + 1] = "";
         $Conv::AffinityOpenIndicators[%n = %n + 1] = "(";
         $Conv::AffinityOpenIndicators[%n = %n + 1] = "(:";
@@ -511,9 +514,9 @@ function animateConversationTypingIndicator()
     }
     $Conv::AffinityOpenIndicatorState = ($Conv::AffinityOpenIndicatorState + 1) % $Conv::AffinityOpenIndicatorsNum;
     $Conv::affinityOpenIndicator = $Conv::AffinityOpenIndicators[$Conv::AffinityOpenIndicatorState];
-    if ($Conv::AffinityCloseIndicatorState == -(1))
+    if ($Conv::AffinityCloseIndicatorState == -1)
     {
-        %n = -(1);
+        %n = -1;
         $Conv::AffinityCloseIndicators[%n = %n + 1] = "";
         $Conv::AffinityCloseIndicators[%n = %n + 1] = ")";
         $Conv::AffinityCloseIndicators[%n = %n + 1] = ":)";
@@ -678,7 +681,7 @@ function generic_takeSnapshotReally(%previewBitmapCtrl)
     else
     {
         %topMargin = 60;
-        %bottomMargin = -(10);
+        %bottomMargin = -10;
         %leftMargin = 0;
         %rightMargin = 0;
         %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame((getWord(%regionCtrl.getScreenPosition(), 0) - %leftMargin), (getWord(%regionCtrl.getScreenPosition(), 1) - %topMargin), ((getWord(%regionCtrl.getExtent(), 0) + %leftMargin) + %rightMargin), ((getWord(%regionCtrl.getExtent(), 1) + %topMargin) + %bottomMargin));

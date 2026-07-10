@@ -187,7 +187,10 @@ function LoginRegistrationLinks::onURL(%this, %url)
         {
             vurlOperation(%url);
         }
-        gotoWebPage(%url);
+        else
+        {
+            gotoWebPage(%url);
+        }
     }
 }
 function LoginHelpLinks::onURL(%this, %url)
@@ -206,7 +209,10 @@ function LoginHelpLinks::onURL(%this, %url)
         {
             vurlOperation(%url);
         }
-        gotoWebPage(%url);
+        else
+        {
+            gotoWebPage(%url);
+        }
     }
 }
 function LoginCreditsLink::onURL(%this, %url)
@@ -386,51 +392,72 @@ function LoginRequest::onDone(%this)
                 LoginGui.onConnectFailed("Overcrowded");
                 MessageBoxOK("No More Room", $ETS::AppName @ $ETS::AppName[$MsgCat::server @ "E-SERVER-FULL"], "");
             }
-            if (%errorCode $= "serverfail")
+            else
             {
-                LoginGui.onConnectFailed("There was a server error");
-                MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
+                if (%errorCode $= "serverfail")
+                {
+                    LoginGui.onConnectFailed("There was a server error");
+                    MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
+                }
+                else
+                {
+                    if (%errorCode $= "inactive")
+                    {
+                        LoginGui.onConnectFailed("Activation required");
+                        MessageBoxOK("Activation Required", "You have not yet activated your account.  Check your email for the message with the activation link.  If you have not received an activation message, you can get another copy sent to you at <a:" @ $Net::ActivationURL @ ">the registration site</a>.", "");
+                    }
+                    else
+                    {
+                        if (%errorCode $= "alreadyloggedin")
+                        {
+                            LoginGui.onConnectFailed("You are already logged in on another connection.");
+                            MessageBoxYesNo("Already Logged In", $MsgCat::login["E-ALREADY-IN"], "LoginRequest::handleBoot();", "LoginRequest::cancelBoot();");
+                        }
+                        else
+                        {
+                            if (%errorCode $= "banned")
+                            {
+                                LoginGui.onConnectFailed("Banned");
+                                MessageBoxOK("Banned", $MsgCat::login["E-BANNED"] @ $MsgCat::login["E-BANNED"][$MsgCat::login @ "E-DONT-KNOW-RULES"], "");
+                            }
+                            else
+                            {
+                                if (%errorCode $= "suspended")
+                                {
+                                    LoginGui.onConnectFailed("Banned");
+                                    %msg = "";
+                                    %msg = %msg @ %msg[$MsgCat::login @ "E-SUSPENDED"];
+                                    %msg = %msg @ "\n";
+                                    %msg = %msg @ "\n";
+                                    %msg = %msg @ %this.getValue("suspensionReason");
+                                    %msg = strreplace(%msg, "[READTOU]", "");
+                                    %msg = %msg @ "[READTOU]";
+                                    %secs = %this.getValue("suspensionSecondsRemaining");
+                                    %secs = (%secs + 60) - (%secs % 60);
+                                    %msg = %msg @ "\n";
+                                    %msg = %msg @ "\n";
+                                    %msg = %msg @ "Timeout Remaining:" @ " " @ secondsToDaysHoursMinutesSeconds(%secs);
+                                    %msg = standardSubstitutions(%msg);
+                                    MessageBoxOK("Suspended", %msg, "");
+                                }
+                                else
+                                {
+                                    if (%errorCode $= "upgrade_required")
+                                    {
+                                        LoginGui.onConnectFailed("Upgrade required");
+                                        MessageBoxOK("Upgrade Required", $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-2"], "");
+                                    }
+                                    else
+                                    {
+                                        LoginGui.onConnectFailed("There was a server error");
+                                        MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            if (%errorCode $= "inactive")
-            {
-                LoginGui.onConnectFailed("Activation required");
-                MessageBoxOK("Activation Required", "You have not yet activated your account.  Check your email for the message with the activation link.  If you have not received an activation message, you can get another copy sent to you at <a:" @ $Net::ActivationURL @ ">the registration site</a>.", "");
-            }
-            if (%errorCode $= "alreadyloggedin")
-            {
-                LoginGui.onConnectFailed("You are already logged in on another connection.");
-                MessageBoxYesNo("Already Logged In", $MsgCat::login["E-ALREADY-IN"], "LoginRequest::handleBoot();", "LoginRequest::cancelBoot();");
-            }
-            if (%errorCode $= "banned")
-            {
-                LoginGui.onConnectFailed("Banned");
-                MessageBoxOK("Banned", $MsgCat::login["E-BANNED"] @ $MsgCat::login["E-BANNED"][$MsgCat::login @ "E-DONT-KNOW-RULES"], "");
-            }
-            if (%errorCode $= "suspended")
-            {
-                LoginGui.onConnectFailed("Banned");
-                %msg = "";
-                %msg = %msg @ %msg[$MsgCat::login @ "E-SUSPENDED"];
-                %msg = %msg @ "\n";
-                %msg = %msg @ "\n";
-                %msg = %msg @ %this.getValue("suspensionReason");
-                %msg = strreplace(%msg, "[READTOU]", "");
-                %msg = %msg @ "[READTOU]";
-                %secs = %this.getValue("suspensionSecondsRemaining");
-                %secs = (%secs + 60) - (%secs % 60);
-                %msg = %msg @ "\n";
-                %msg = %msg @ "\n";
-                %msg = %msg @ "Timeout Remaining:" @ " " @ secondsToDaysHoursMinutesSeconds(%secs);
-                %msg = standardSubstitutions(%msg);
-                MessageBoxOK("Suspended", %msg, "");
-            }
-            if (%errorCode $= "upgrade_required")
-            {
-                LoginGui.onConnectFailed("Upgrade required");
-                MessageBoxOK("Upgrade Required", $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-2"], "");
-            }
-            LoginGui.onConnectFailed("There was a server error");
-            MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
         }
         %analytic = getAnalytic();
         %analytic.trackPageView("/client/login/error/" @ %errorCode);
@@ -442,9 +469,12 @@ function LoginRequest::onDone(%this)
             LoginRequest::commonLogin(%this);
             MessageBoxOK("Upgrade Available", "There is a new version of" @ " " @ $ETS::AppName @ " " @ "available.  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-3"], "");
         }
-        if (%status $= "success")
+        else
         {
-            LoginRequest::commonLogin(%this);
+            if (%status $= "success")
+            {
+                LoginRequest::commonLogin(%this);
+            }
         }
     }
 }
@@ -495,9 +525,12 @@ function LoginRequest::commonLogin_Part2(%this)
                 MessageBoxYesNo("Email Not Verified", $MsgCat::login["CONF-NAG"], "gotoWebPage(\"" @ $Net::ActivationURL @ "\");", "");
             }
         }
-        if (!$Login::newAccount)
+        else
         {
-            MessageBoxYesNo("No Email Address", $MsgCat::login["NO-EMAIL-NAG"], "gotoWebPage(\"" @ $Net::AccountEditURL @ "\");", "");
+            if (!$Login::newAccount)
+            {
+                MessageBoxYesNo("No Email Address", $MsgCat::login["NO-EMAIL-NAG"], "gotoWebPage(\"" @ $Net::AccountEditURL @ "\");", "");
+            }
         }
     }
     %validCharacters = "abcdefghijklmnopqrstuvwxyz" @ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" @ "0123456789-_ ";
@@ -631,8 +664,8 @@ function LoginRequest::onGotUserProperties(%this)
     while (%m >= 0)
     {
         %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
-        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, -(1));
-        if ((%action == -(1)) || (%action $= ""))
+        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, -1);
+        if ((%action == -1) || (%action $= ""))
         {
             %action[%numberOfUnboundKeyCombinations @ "f"] = %action[%numberOfUnboundKeyCombinations @ "f"] + 1;
             ""[$UserPref::emotes,"f",%keyCombo] =;
@@ -645,8 +678,8 @@ function LoginRequest::onGotUserProperties(%this)
                 %action[$UserPref::emotes,"f",%keyCombo] =;
             }
         }
-        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, -(1));
-        if ((%action == -(1)) || (%action $= ""))
+        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, -1);
+        if ((%action == -1) || (%action $= ""))
         {
             %action[%numberOfUnboundKeyCombinations @ "m"] = %action[%numberOfUnboundKeyCombinations @ "m"] + 1;
             ""[$UserPref::emotes,"m",%keyCombo] =;
@@ -707,15 +740,21 @@ function onDoneOrErrorCallback_Boot(%request)
             LoginGui.onConnectFailed("Could not disconnect");
             MessageBoxOK("Could Not Disconnect", $MsgCat::login["E-DISCONNECT"], "");
         }
-        if (%status $= "error")
+        else
         {
-            error("client boot HTTP status: " @ %status);
-            LoginGui.onConnectFailed("There was a problem with the login server");
-            MessageBoxOK("Problem Connecting", $MsgCat::login["E-CONNECT"], "");
+            if (%status $= "error")
+            {
+                error("client boot HTTP status: " @ %status);
+                LoginGui.onConnectFailed("There was a problem with the login server");
+                MessageBoxOK("Problem Connecting", $MsgCat::login["E-CONNECT"], "");
+            }
+            else
+            {
+                error("client boot HTTP status: " @ %status);
+                LoginGui.onConnectFailed("Error communicating with server");
+                MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
+            }
         }
-        error("client boot HTTP status: " @ %status);
-        LoginGui.onConnectFailed("Error communicating with server");
-        MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
     }
 }
 function LoginGui::update(%this, %unused)

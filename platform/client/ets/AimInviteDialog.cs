@@ -11,7 +11,7 @@ function AimInviteDialog::open(%this, %buddyName)
     }
     else
     {
-        if (findField(%this.buddyNames, %buddyName) == -(1))
+        if (findField(%this.buddyNames, %buddyName) == -1)
         {
             %this.buddyNames = %this.buddyNames @ "\t" @ %buddyName;
             %this.refreshBuddyDropdown();
@@ -91,9 +91,12 @@ function AimInviteDialog::buddyDropdownChanged(%this)
             AimInviteBuddyDropDown.add("All buddies!");
             AimInviteBuddyDropDown.SetSelected(0);
         }
-        if (%selection $= "-------------------")
+        else
         {
-            AimInviteBuddyDropDown.SetSelected(0);
+            if (%selection $= "-------------------")
+            {
+                AimInviteBuddyDropDown.SetSelected(0);
+            }
         }
     }
 }
@@ -111,7 +114,10 @@ function AimInviteDialog::sendInvite(%this)
         {
             return;
         }
-        AIMConvManager.prepareToSendInvites(%this.buddyNames, AimInviteMessageField.getText());
+        else
+        {
+            AIMConvManager.prepareToSendInvites(%this.buddyNames, AimInviteMessageField.getText());
+        }
     }
     %this.close();
 }
@@ -142,7 +148,7 @@ function AimInviteAddBuddyDialog::refresh(%this)
     {
         %buddyName = aimGetBuddyName(%i);
         %buddyState = aimGetBuddyState(%i);
-        if ((%buddyState == 1) || (%buddyState == 2) || (%buddyState == 3) && (findField(AimInviteDialog.buddyNames, %buddyName) == -(1)))
+        if ((%buddyState == 1) || (%buddyState == 2) || (%buddyState == 3) && (findField(AimInviteDialog.buddyNames, %buddyName) == -1))
         {
             AimInviteAddBuddyList.addRow(%i, %buddyName, %i);
         }

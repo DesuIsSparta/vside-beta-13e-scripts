@@ -5,7 +5,7 @@ function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %locati
     {
         return 0;
     }
-    if (%this.findKey(%playerName) != -(1))
+    if (%this.findKey(%playerName) != -1)
     {
         return 0;
     }
@@ -37,7 +37,7 @@ function PlayerInfoMap::removePlayerInfo(%this, %playerName)
     {
         return;
     }
-    if (%this.findKey(%playerName) == -(1))
+    if (%this.findKey(%playerName) == -1)
     {
         return;
     }
@@ -67,15 +67,18 @@ function getPlayerNamesInRadius(%radius)
     }
     initContainerRadiusSearch($player.getTransform(), %radius, $TypeMasks::PlayerObjectType, 1);
     %names = "";
-    while (1)
+    if (1)
     {
         %player = containerSearchNext(1);
         if (!isObject(%player))
         {
         }
-        if (%player.getId() != $player.getId())
+        else
         {
-            %names = %names @ "\t" @ %player.getShapeName();
+            if (%player.getId() != $player.getId())
+            {
+                %names = %names @ "\t" @ %player.getShapeName();
+            }
         }
     }
     return trim(%names);
@@ -188,7 +191,10 @@ function PlayerInfoRequest::onDone(%this)
                     {
                         InfoPopupDlg.showPlayerNotFound();
                     }
-                    InfoPopupDlg.tryShowPlayerInfo();
+                    else
+                    {
+                        InfoPopupDlg.tryShowPlayerInfo();
+                    }
                 }
             }
         }
@@ -215,8 +221,11 @@ function PlayerInfoRequest::onDone(%this)
                 InfoPopupDlg.stopAnimation();
             }
         }
-        %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
-        eval(%cmd);
+        else
+        {
+            %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
+            eval(%cmd);
+        }
     }
     %this.requestPlayerInfoFor = "";
     %this.callback = "";

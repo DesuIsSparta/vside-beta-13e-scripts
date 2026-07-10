@@ -87,9 +87,12 @@ function test::getRandomGenre()
         {
             $genre = "h";
         }
-        if (%num == 2)
+        else
         {
-            $genre = "p";
+            if (%num == 2)
+            {
+                $genre = "p";
+            }
         }
     }
     return $genre;
@@ -120,17 +123,26 @@ function doAction()
         {
             test::doDance();
         }
-        if (%num == 2)
+        else
         {
-            test::doWhisper();
-        }
-        if (%num == 3)
-        {
-            test::doAddBuddy();
-        }
-        if (%num == 4)
-        {
-            test::doRemoveBuddy();
+            if (%num == 2)
+            {
+                test::doWhisper();
+            }
+            else
+            {
+                if (%num == 3)
+                {
+                    test::doAddBuddy();
+                }
+                else
+                {
+                    if (%num == 4)
+                    {
+                        test::doRemoveBuddy();
+                    }
+                }
+            }
         }
     }
 }

@@ -297,14 +297,14 @@ function geTGF_tabs::fillTabMain(%this)
         position = "3 2";
         extent = "164 1";
         style = "tgfPeopleCounts";
-        lineSpacing = -(1);
+        lineSpacing = -1;
         stripGamelink = 1;
     };
     new GuiMLTextCtrl("") {
         position = "1 1";
         extent = "168 1";
         style = "";
-        lineSpacing = -(1);
+        lineSpacing = -1;
         stripGamelink = 1;
         text = mlStyle($MsgCat::invitation["TEXT-TGF-MAIN"], "tgfMainInvite");
     };
@@ -657,8 +657,11 @@ function geTGF::main_onGotDataOfType(%this, %type)
             %control.onGotData();
             return;
         }
-        error("unknown type:" @ " " @ %type @ " " @ getTrace());
-        return;
+        else
+        {
+            error("unknown type:" @ " " @ %type @ " " @ getTrace());
+            return;
+        }
     }
     %list = %this.getItemList("main", %type);
     %num = %list.count();
@@ -748,7 +751,7 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell)
         lineSpacing = 0;
     };
     %cont.add(%ctrl);
-    if (%item.occupancy == -(1))
+    if (%item.occupancy == -1)
     {
         %occupancyText = "";
     }
@@ -758,7 +761,10 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell)
         {
             %occupancyText = "(empty) ";
         }
-        %occupancyText = "<b>" @ %item.occupancy @ " P ";
+        else
+        {
+            %occupancyText = "<b>" @ %item.occupancy @ " P ";
+        }
     }
     %ctrl = new GuiMLTextCtrl("") {
         profile = "ETSNonModalProfile";
@@ -872,17 +878,26 @@ function geTGF_main_people_locationsText::onURL(%this, %url)
             geTGF.openToTabName("MAP");
             WorldMap.getCityButton(%areaName, 1, 0).performClick();
         }
-        if (%areaName $= "nv")
+        else
         {
-            geTGF.openToTabName("MAP");
-            WorldMap.getCityButton(%areaName, 1, 0).performClick();
+            if (%areaName $= "nv")
+            {
+                geTGF.openToTabName("MAP");
+                WorldMap.getCityButton(%areaName, 1, 0).performClick();
+            }
+            else
+            {
+                if (%areaName $= "rj")
+                {
+                    geTGF.openToTabName("MAP");
+                    WorldMap.getCityButton(%areaName, 1, 0).performClick();
+                }
+                else
+                {
+                    error(getScopeName() @ " " @ "- unknown areaname" @ " " @ %areaName @ " " @ getTrace());
+                }
+            }
         }
-        if (%areaName $= "rj")
-        {
-            geTGF.openToTabName("MAP");
-            WorldMap.getCityButton(%areaName, 1, 0).performClick();
-        }
-        error(getScopeName() @ " " @ "- unknown areaname" @ " " @ %areaName @ " " @ getTrace());
     }
 }
 function encodeMOTDString(%text)
@@ -931,7 +946,10 @@ function MOTDRequest::onDone(%this)
             MOTDText.setText(%text);
             MOTDText.qotdID = "";
         }
-        geTGF_tabs.onMOTDPostFailed();
+        else
+        {
+            geTGF_tabs.onMOTDPostFailed();
+        }
     }
 }
 function geTGF_tabs::refreshQOTD(%this)

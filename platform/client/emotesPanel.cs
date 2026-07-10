@@ -51,7 +51,7 @@ function EmoteHudTabs::dynamicRemoveList(%this, %dancesList)
         %danceName = getField(%dancesList, (%n * 2));
         %index = %list.findTextIndex(%danceName);
         echo("Searching for \"" @ %danceName @ "\" and got index" @ " " @ %index);
-        if (%index != -(1))
+        if (%index != -1)
         {
             %list.removeRow(%index);
         }
@@ -277,7 +277,10 @@ function EmoteHudList::getMLDisplayForEmote(%this, %emote)
         {
             %rightStr = "<spush><color:cccccc><linkcolor:cccccc><just:right><a:gamelink bindemote " @ %emote @ ">[" @ %binding @ "]</a><just:left><spop>";
         }
-        %rightStr = "<spush><color:999999><linkcolor:999999><just:right>[" @ %binding @ "]<just:left><spop>";
+        else
+        {
+            %rightStr = "<spush><color:999999><linkcolor:999999><just:right>[" @ %binding @ "]<just:left><spop>";
+        }
     }
     return "    <a:gamelink emote " @ convertWordToAnim(%emote) @ ">" @ %emote @ "</a>" @ %rightStr;
 }
@@ -358,73 +361,88 @@ function EmoteHudList::onURL(%this, %url)
         {
             sendAnimToServer(getWords(%url, 1));
         }
-        if (getWord(%url, 0) $= "list")
+        else
         {
-            %listName = getWords(%url, 1);
-            $UserPref::emotes::collapsedLists[%listName] = !$UserPref::emotes::collapsedLists[%listName];
-            EmoteHudList.populateLists();
-        }
-        if (getWord(%url, 0) $= "bindemote")
-        {
-            %this.currentEmote = getWords(%url, 1);
-            %this.setText("<linkcolor:ffffff>" @ "Binding <spush><b><color:e553ff>" @ %this.currentEmote @ "<spop>...<br>" @ "<br>" @ "Type a hotkey below or choose one from the list.<br>" @ "<br>");
-            %bindings = "F08 F09 F10 F11 F12 ctrl1 ctrl2 ctrl3 ctrl4 ctrl5 ctrl6 ctrl7 ctrl8 ctrl9 ctrl0";
-            %count = getWordCount(%bindings);
-            %i = 0;
-            while (%i < %count)
+            if (getWord(%url, 0) $= "list")
             {
-                %binding = getWord(%bindings, %i);
-                %emote = %this.getEmoteForBinding(%binding);
-                %rightStr = "";
-                %leftStr = "<a:gamelink bindbinding " @ %binding @ ">[" @ %binding @ "]</a>";
-                if (%emote $= %this.currentEmote)
+                %listName = getWords(%url, 1);
+                $UserPref::emotes::collapsedLists[%listName] = !$UserPref::emotes::collapsedLists[%listName];
+                EmoteHudList.populateLists();
+            }
+            else
+            {
+                if (getWord(%url, 0) $= "bindemote")
                 {
-                    %rightStr = "<just:right><spush><b><color:e553ff>" @ %emote @ "<spop><just:left>";
-                    %leftStr = "[<spush><b><linkcolor:e553ff><linkcolorhl:f5b9ff><a:gamelink cancel>" @ %binding @ "</a><spop>]";
+                    %this.currentEmote = getWords(%url, 1);
+                    %this.setText("<linkcolor:ffffff>" @ "Binding <spush><b><color:e553ff>" @ %this.currentEmote @ "<spop>...<br>" @ "<br>" @ "Type a hotkey below or choose one from the list.<br>" @ "<br>");
+                    %bindings = "F08 F09 F10 F11 F12 ctrl1 ctrl2 ctrl3 ctrl4 ctrl5 ctrl6 ctrl7 ctrl8 ctrl9 ctrl0";
+                    %count = getWordCount(%bindings);
+                    %i = 0;
+                    while (%i < %count)
+                    {
+                        %binding = getWord(%bindings, %i);
+                        %emote = %this.getEmoteForBinding(%binding);
+                        %rightStr = "";
+                        %leftStr = "<a:gamelink bindbinding " @ %binding @ ">[" @ %binding @ "]</a>";
+                        if (%emote $= %this.currentEmote)
+                        {
+                            %rightStr = "<just:right><spush><b><color:e553ff>" @ %emote @ "<spop><just:left>";
+                            %leftStr = "[<spush><b><linkcolor:e553ff><linkcolorhl:f5b9ff><a:gamelink cancel>" @ %binding @ "</a><spop>]";
+                        }
+                        else
+                        {
+                            if (!(%emote $= ""))
+                            {
+                                %rightStr = "<just:right>" @ %emote @ "<just:left>";
+                            }
+                        }
+                        %this.setText(%this.getText() @ %leftStr @ %rightStr @ "<br>");
+                        %i = %i + 1;
+                    }
+                    %this.setText(%this.getText() @ "<br>");
+                    %binding = EmoteBindingMap.get(%this.currentEmote);
+                    if (!(%binding $= ""))
+                    {
+                        %this.setText(%this.getText() @ "<a:gamelink unbind " @ %binding @ ">[ Unbind " @ %binding @ " ]</a>  ");
+                    }
+                    %this.setText(%this.getText() @ "<just:right><a:gamelink cancel>[ Cancel ]</a><just:left>");
                 }
                 else
                 {
-                    if (!(%emote $= ""))
+                    if (getWord(%url, 0) $= "bindbinding")
                     {
-                        %rightStr = "<just:right>" @ %emote @ "<just:left>";
+                        if (!(%this.currentEmote $= ""))
+                        {
+                            %this.doFunc(getWord(%url, 1));
+                        }
+                        else
+                        {
+                            warn("Tried to bind a key without current emote defined.");
+                        }
+                    }
+                    else
+                    {
+                        if (getWord(%url, 0) $= "unbind")
+                        {
+                            if (!(%this.currentEmote $= ""))
+                            {
+                                %this.rebind(getWord(%url, 1), "");
+                            }
+                            else
+                            {
+                                warn("Tried to unbind a key without current emote defined.");
+                            }
+                        }
+                        else
+                        {
+                            if (getWord(%url, 0) $= "cancel")
+                            {
+                                %this.reset();
+                            }
+                        }
                     }
                 }
-                %this.setText(%this.getText() @ %leftStr @ %rightStr @ "<br>");
-                %i = %i + 1;
             }
-            %this.setText(%this.getText() @ "<br>");
-            %binding = EmoteBindingMap.get(%this.currentEmote);
-            if (!(%binding $= ""))
-            {
-                %this.setText(%this.getText() @ "<a:gamelink unbind " @ %binding @ ">[ Unbind " @ %binding @ " ]</a>  ");
-            }
-            %this.setText(%this.getText() @ "<just:right><a:gamelink cancel>[ Cancel ]</a><just:left>");
-        }
-        if (getWord(%url, 0) $= "bindbinding")
-        {
-            if (!(%this.currentEmote $= ""))
-            {
-                %this.doFunc(getWord(%url, 1));
-            }
-            else
-            {
-                warn("Tried to bind a key without current emote defined.");
-            }
-        }
-        if (getWord(%url, 0) $= "unbind")
-        {
-            if (!(%this.currentEmote $= ""))
-            {
-                %this.rebind(getWord(%url, 1), "");
-            }
-            else
-            {
-                warn("Tried to unbind a key without current emote defined.");
-            }
-        }
-        if (getWord(%url, 0) $= "cancel")
-        {
-            %this.reset();
         }
     }
 }
@@ -492,7 +510,10 @@ function EmoteHudList::doFunc(%this, %func)
         {
             error(getScopeName() @ " " @ "can't find anim for" @ " " @ %func);
         }
-        sendAnimToServer(%anim);
+        else
+        {
+            sendAnimToServer(%anim);
+        }
     }
 }
 $gMoods = "Confident Relaxed Upbeat Blue Fabulous";

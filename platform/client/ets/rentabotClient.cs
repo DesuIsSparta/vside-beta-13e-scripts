@@ -226,7 +226,10 @@ function rentabotClient_DressUpRead(%obj)
         {
             %msg = %msg @ "You don't own some of those items";
         }
-        %msg = %msg @ ", and you don't own some of those items";
+        else
+        {
+            %msg = %msg @ ", and you don't own some of those items";
+        }
     }
     if (!(%msg $= ""))
     {

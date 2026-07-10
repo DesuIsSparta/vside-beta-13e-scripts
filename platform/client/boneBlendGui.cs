@@ -31,7 +31,7 @@ function boneBlendGui::close(%this)
     PlayGui.focusTopWindow();
     return 1;
 }
-boneBlendGui.currentSliderIndex = -(1);
+boneBlendGui.currentSliderIndex = -1;
 function blendUpperPitch::onMouseEnter(%this)
 {
     boneBlendGui.positionDynamicCtrls(%this);

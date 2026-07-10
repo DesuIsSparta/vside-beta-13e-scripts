@@ -106,8 +106,11 @@ function asyncTestsMasterFinished()
                 %countNA = %countNA + 1;
                 log("general", "error", "test failed to init:" @ " " @ %testname);
             }
-            %countFail = %countFail + 1;
-            log("general", "error", "test         failed:" @ " " @ %testname @ " " @ %testRslt);
+            else
+            {
+                %countFail = %countFail + 1;
+                log("general", "error", "test         failed:" @ " " @ %testname @ " " @ %testRslt);
+            }
         }
         %n = %n + 1;
     }

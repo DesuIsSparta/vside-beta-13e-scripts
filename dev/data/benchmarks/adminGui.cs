@@ -226,9 +226,12 @@ function clientCmdBuildTargetsList(%actionTagged, %item)
                 $adminTargetsList = $adminTargetsList @ "\n" @ %item;
             }
         }
-        if (%action $= "finish")
+        else
         {
-            adminGui.onGotTargetsList($adminTargetsList);
+            if (%action $= "finish")
+            {
+                adminGui.onGotTargetsList($adminTargetsList);
+            }
         }
     }
 }

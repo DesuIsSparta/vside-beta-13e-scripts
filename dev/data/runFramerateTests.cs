@@ -13,9 +13,12 @@ function doLoginCheck()
         {
             error("BENCH->ERROR : Giving up. Waited for 10 minutes and nothing happended");
         }
-        echo("BENCH: Nothing yet....");
-        $iterationsWaited = $iterationsWaited + 1;
-        schedule(3000, 0, doLoginCheck);
+        else
+        {
+            echo("BENCH: Nothing yet....");
+            $iterationsWaited = $iterationsWaited + 1;
+            schedule(3000, 0, doLoginCheck);
+        }
     }
 }
 function doRunTests()

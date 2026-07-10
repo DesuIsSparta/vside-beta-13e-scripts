@@ -48,7 +48,10 @@ function ItemData::onPickup(%this, %obj, %user, %amount)
                 return;
             }
         }
-        %count = 1;
+        else
+        {
+            %count = 1;
+        }
     }
     %user.incInventory(%this, %count);
     if (%user.client)

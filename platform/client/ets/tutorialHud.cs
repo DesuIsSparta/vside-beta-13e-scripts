@@ -44,23 +44,35 @@ function TutorialsCatalogClient::GetTutorialsRoot()
         {
             %world = "lga";
         }
-        if (%csn $= "nv")
+        else
         {
-            %world = "lounge";
+            if (%csn $= "nv")
+            {
+                %world = "lounge";
+            }
+            else
+            {
+                if (%csn $= "rj")
+                {
+                    %world = "raijuku";
+                }
+                else
+                {
+                    if (%csn $= "minimal")
+                    {
+                        %world = "dummy";
+                    }
+                    else
+                    {
+                        if (!($gContiguousSpaceName $= ""))
+                        {
+                            error(getScopeName() @ " " @ "- contiguous space name '" @ $gContiguousSpaceName @ "' not recognized!" @ " " @ getTrace());
+                        }
+                        return "";
+                    }
+                }
+            }
         }
-        if (%csn $= "rj")
-        {
-            %world = "raijuku";
-        }
-        if (%csn $= "minimal")
-        {
-            %world = "dummy";
-        }
-        if (!($gContiguousSpaceName $= ""))
-        {
-            error(getScopeName() @ " " @ "- contiguous space name '" @ $gContiguousSpaceName @ "' not recognized!" @ " " @ getTrace());
-        }
-        return "";
     }
     %ret = "projects/" @ $ETS::ProjectName @ "/worlds/" @ %world @ "/tutorials/";
     return %ret;
@@ -84,7 +96,10 @@ function tutorials_Initialize()
         {
             TutorialsCatalogServer.ValidateForStandAlone();
         }
-        error(getScopeName() @ " " @ "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
+        else
+        {
+            error(getScopeName() @ " " @ "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
+        }
     }
     geTutorialContainer.currentTutorialObj = "";
     HudTabs.hideTabWithName("tutorial");
@@ -180,7 +195,10 @@ function TutorialsObject::getUserFacingName(%this)
         {
             %userFacingName = restWords(restWords(%internalName));
         }
-        %userFacingName = restWords(%internalName);
+        else
+        {
+            %userFacingName = restWords(%internalName);
+        }
     }
     return %userFacingName;
 }
@@ -315,7 +333,7 @@ function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDel
     {
         if (%promoteToParentDelta)
         {
-            %this.goToTutorialByDelta((%delta < 0) ? -(1) : 1, 1);
+            %this.goToTutorialByDelta((%delta < 0) ? -1 : 1, 1);
         }
     }
 }
@@ -390,7 +408,10 @@ function geTutorialContainer::setMetaData(%this, %stepObj)
         {
             geTutorialMLNavPrev.setText(geTutorialMLNavPrev.activeText);
         }
-        geTutorialMLNavPrev.setText(geTutorialMLNavPrev.inactiveText);
+        else
+        {
+            geTutorialMLNavPrev.setText(geTutorialMLNavPrev.inactiveText);
+        }
     }
     geTutorialMLBot.setText(%labelText);
 }
@@ -416,7 +437,7 @@ function geTutorialMLNavNext::onURL(%this, %url)
     {
         if (%stepNdx == 0)
         {
-            geTutorialContainer.goToTutorialByDelta(-(1), 1);
+            geTutorialContainer.goToTutorialByDelta(-1, 1);
         }
         geTutorialContainer.goToFirstStep();
     }
@@ -426,21 +447,33 @@ function geTutorialMLNavNext::onURL(%this, %url)
         {
             geTutorialContainer.goToTutorialByDelta(1, 1);
         }
-        if (%word $= "prev")
+        else
         {
-            geTutorialContainer.goToStepByDelta(-(1), !1);
-        }
-        if (%word $= "next")
-        {
-            geTutorialContainer.goToStepByDelta(1, !1);
-        }
-        if (%word $= "repeat")
-        {
-            commandToServer('respawnPlayerAtTutorialBeginning', $gCurrentMainTutorial.getUserFacingName());
-        }
-        if (%word $= "return")
-        {
-            geTutorialContainer.goToCurrentStep();
+            if (%word $= "prev")
+            {
+                geTutorialContainer.goToStepByDelta(-1, !1);
+            }
+            else
+            {
+                if (%word $= "next")
+                {
+                    geTutorialContainer.goToStepByDelta(1, !1);
+                }
+                else
+                {
+                    if (%word $= "repeat")
+                    {
+                        commandToServer('respawnPlayerAtTutorialBeginning', $gCurrentMainTutorial.getUserFacingName());
+                    }
+                    else
+                    {
+                        if (%word $= "return")
+                        {
+                            geTutorialContainer.goToCurrentStep();
+                        }
+                    }
+                }
+            }
         }
     }
 }

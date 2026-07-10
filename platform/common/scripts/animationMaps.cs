@@ -374,13 +374,19 @@ function addAnimationToMap(%map, %mapThis, %toThis, %tags)
             {
                 error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
             }
-            safeEnsureScriptObject("StringMap", "gAnimationTags");
-            %animTags = gAnimationTags.get(%toThis);
-            if (hasWord(%animTags, %tag))
+            else
             {
+                safeEnsureScriptObject("StringMap", "gAnimationTags");
+                %animTags = gAnimationTags.get(%toThis);
+                if (hasWord(%animTags, %tag))
+                {
+                }
+                else
+                {
+                    %animTags = %tag @ " " @ %animTags;
+                    gAnimationTags.put(%toThis, %animTags);
+                }
             }
-            %animTags = %tag @ " " @ %animTags;
-            gAnimationTags.put(%toThis, %animTags);
         }
         %n = %n - 1;
     }

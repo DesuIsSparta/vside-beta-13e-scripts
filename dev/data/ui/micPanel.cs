@@ -1,4 +1,4 @@
-$gExpectedNumberOfMicHolders = -(1);
+$gExpectedNumberOfMicHolders = -1;
 $gMicHoldersPendingAddition = 0;
 function micPanel::toggle(%this)
 {
@@ -106,9 +106,12 @@ function micPanelMLTextCtrl::onUrl(%this, %url)
         {
             gotoWebPage(%url);
         }
-        if (getSubStr(%url, 0, 7) $= "vside:/")
+        else
         {
-            vurlOperation(%url);
+            if (getSubStr(%url, 0, 7) $= "vside:/")
+            {
+                vurlOperation(%url);
+            }
         }
     }
 }
@@ -116,7 +119,7 @@ function doServerCommandGetMicHolders()
 {
     micPanel.micHolders = "";
     micPanel.updateMicHoldersList();
-    $gExpectedNumberOfMicHolders = -(1);
+    $gExpectedNumberOfMicHolders = -1;
     $gMicHoldersPendingAddition = new StringMap("");
     micPanel.updateGetMicHoldersListStatus();
     commandToServer('GetMicrophoneHoldersList');
@@ -143,18 +146,21 @@ function ClientCmdGotMicHolder(%playerName)
 {
     if (!(%playerName $= ""))
     {
-        if ($gExpectedNumberOfMicHolders != -(1))
+        if ($gExpectedNumberOfMicHolders != -1)
         {
             micPanel.addMicHolder(%playerName);
             $gExpectedNumberOfMicHolders = $gExpectedNumberOfMicHolders - 1;
             micPanel.updateGetMicHoldersListStatus();
         }
-        $gMicHoldersPendingAddition.put(%playerName, "");
+        else
+        {
+            $gMicHoldersPendingAddition.put(%playerName, "");
+        }
     }
 }
 function micPanel::updateGetMicHoldersListStatus(%this)
 {
-    if ($gExpectedNumberOfMicHolders == -(1))
+    if ($gExpectedNumberOfMicHolders == -1)
     {
         MicPanelRefreshListLabel.setText("Starting...");
         MicPanelRefreshListButton.setActive(0);
@@ -166,7 +172,10 @@ function micPanel::updateGetMicHoldersListStatus(%this)
             MicPanelRefreshListLabel.setText("Done");
             MicPanelRefreshListButton.setActive(1);
         }
-        MicPanelRefreshListLabel.setText("Getting list...");
-        MicPanelRefreshListButton.setActive(0);
+        else
+        {
+            MicPanelRefreshListLabel.setText("Getting list...");
+            MicPanelRefreshListButton.setActive(0);
+        }
     }
 }

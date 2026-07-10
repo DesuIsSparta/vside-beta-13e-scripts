@@ -338,7 +338,7 @@ function Player::getBoneBlendIndexFromTitle(%this, %title)
     %ret = $gBlendAnimsTitlesMap.get(%title);
     if (%ret $= "")
     {
-        %ret = -(1);
+        %ret = -1;
     }
     else
     {

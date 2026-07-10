@@ -48,7 +48,7 @@ function TreeBrowserControl::newControl(%parent, %name)
 function TreeBrowserControl::onResized(%this)
 {
     %curMenu = %this.getCurrentMenu();
-    %hilitedIdx = -(1);
+    %hilitedIdx = -1;
     if (isObject(%curMenu))
     {
         %hilitedCell = %curMenu.getHilitedCell();
@@ -146,7 +146,10 @@ function TreeBrowserControl::onCreatedChild(%this, %child, %x, %unused)
         {
             %menuTrgCellHeight = mCeil(%menuTrgCellHeight);
         }
-        %menuTrgCellHeight = mFloor(%menuTrgCellHeight);
+        else
+        {
+            %menuTrgCellHeight = mFloor(%menuTrgCellHeight);
+        }
     }
     %child.menu = new GuiArray2Ctrl("") {
         profile = %this.menuProfile;
@@ -177,7 +180,7 @@ function TreeBrowserControl::getHiliteProxy(%this)
 function TreeBrowserControl::scrollToLevel(%this, %level)
 {
     %this.level = %level;
-    %this.setTrgPosition((-(%level) * getWord(%this.childrenExtent, 0)), 0);
+    %this.setTrgPosition((-%level * getWord(%this.childrenExtent, 0)), 0);
 }
 function TreeBrowserControl::goToCurrentPath(%this, %focus)
 {
@@ -195,14 +198,17 @@ function TreeBrowserControl::goToParentPath(%this)
     %menu = %this.getCurrentMenu();
     %count = %menu.getCount();
     %i = 0;
-    while (%i < %count)
+    if (%i < %count)
     {
         %menuItem = %menu.getObject(%i);
         if (%menuItem.name $= %currentNodeName)
         {
             %menu.hiliteCell(0, %i);
         }
-        %i = %i + 1;
+        else
+        {
+            %i = %i + 1;
+        }
     }
 }
 function TreeBrowserControl::getMenuText(%this, %text)
@@ -546,7 +552,7 @@ function TreeBrowserControl::selectNextLeaf(%this, %forward, %slide)
             if (!%slide && (getFieldCount(%this.Path) != %level))
             {
                 %this.level = %level;
-                %this.reposition((-(%level) * getWord(%this.childrenExtent, 0)), 0);
+                %this.reposition((-%level * getWord(%this.childrenExtent, 0)), 0);
             }
         }
         %this.goToPath(%path);
@@ -578,7 +584,7 @@ function TreeBrowserControl::getNextLeaf(%this, %path, %forward)
         %ppath = getFields(%path, 0, (%depth - 2));
         %pnode = %this.getNode(%ppath);
         %childCount = %pnode.getCount();
-        %nidx = -(1);
+        %nidx = -1;
         %i = 0;
         while (%i < %childCount)
         {
@@ -775,7 +781,7 @@ function TreeBrowserControl::getNode(%this, %path)
             %nodeCount = %node.getCount();
             %match = 0;
             %j = 0;
-            while (%j < %nodeCount)
+            if (%j < %nodeCount)
             {
                 %subNode = %node.getObject(%j);
                 if (%subNode.name $= %dirName)
@@ -783,7 +789,10 @@ function TreeBrowserControl::getNode(%this, %path)
                     %node = %subNode;
                     %match = 1;
                 }
-                %j = %j + 1;
+                else
+                {
+                    %j = %j + 1;
+                }
             }
             if (!%match)
             {
@@ -875,13 +884,16 @@ function TreeBrowserContentPane::onKeyDown(%this, %unused, %keyCode)
     {
         if (%this.getStringFromKeyCode(%keyCode) $= "up")
         {
-            %this.treeBrowser.selectNextLeaf(-(1), 0);
+            %this.treeBrowser.selectNextLeaf(-1, 0);
             return 1;
         }
-        if (%this.getStringFromKeyCode(%keyCode) $= "down")
+        else
         {
-            %this.treeBrowser.selectNextLeaf(1, 0);
-            return 1;
+            if (%this.getStringFromKeyCode(%keyCode) $= "down")
+            {
+                %this.treeBrowser.selectNextLeaf(1, 0);
+                return 1;
+            }
         }
     }
     return 0;

@@ -15,7 +15,7 @@ function DeclaredTestSuiteGet(%num)
     {
         return $G_DECLARED_TEST[%num];
     }
-    return -(1);
+    return -1;
 }
 function RunTestSuite(%suitename)
 {
@@ -96,7 +96,7 @@ function TestSuiteRunner::execute(%this)
     %this.currentSuite = 0;
     %this.TimerProcess = 0;
     echo(%this.getName() @ " " @ ":  begin, with" @ " " @ %this.suiteCount @ " " @ "suites:");
-    %this.nextSuite = -(1);
+    %this.nextSuite = -1;
     %this.ProcessLoop();
 }
 function TestSuiteRunner::ProcessLoop(%this)
@@ -232,7 +232,7 @@ function TestSuite::execute(%this)
     %this.TimerNextTest = 0;
     %this.setup();
     echo(%this.getName() @ " " @ ":  begin, with" @ " " @ %this.testCount @ " " @ "tests:");
-    %this.nextTest = -(1);
+    %this.nextTest = -1;
     %this.ExecNextTest();
 }
 function TestSuite::reportResults(%this)

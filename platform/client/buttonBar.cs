@@ -171,7 +171,7 @@ function ButtonBar::insertButton(%this, %buttonName)
     %buttonName;
     %dotToInsert = %this.buttons["dot"];
     %buttonName;
-    if (%this.getObjectIndex(%buttonToInsert) != -(1))
+    if (%this.getObjectIndex(%buttonToInsert) != -1)
     {
         return;
     }
@@ -219,7 +219,7 @@ function ButtonBar::removeButton(%this, %buttonName)
         return;
     }
     %indexOfButton = %this.getObjectIndex(%buttonToRemove);
-    if (%indexOfButton == -(1))
+    if (%indexOfButton == -1)
     {
         return;
     }
@@ -391,7 +391,10 @@ function ButtonBar::handleContiguousSpace(%this)
         {
             %this.showButton(PlacesButton);
         }
-        %this.hideButton(PlacesButton);
+        else
+        {
+            %this.hideButton(PlacesButton);
+        }
     }
     if (isObject(MessageHudShoutOutIcon))
     {

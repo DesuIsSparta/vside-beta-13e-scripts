@@ -16,7 +16,10 @@ function toggleEditor(%make)
         {
             Editor.close();
         }
-        Editor.open();
+        else
+        {
+            Editor.open();
+        }
     }
 }
 function Editor::Create()

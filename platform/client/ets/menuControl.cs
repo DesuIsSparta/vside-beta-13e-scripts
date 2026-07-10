@@ -44,7 +44,7 @@ function MenuLayer::addCloneOf(%this, %ctrl)
         position = %ctrl.getScreenPosition();
         extent = %ctrl.getExtent();
         minExtent = "1 1";
-        sluggishness = -(1);
+        sluggishness = -1;
         visible = 1;
         tooltip = %ctrl.tooltip;
         original = %ctrl;
@@ -111,13 +111,16 @@ function MenuLayer::nextActiveButton(%this)
         %next = 0;
         %count = %this.clones.getCount();
         %i = 0;
-        while (%i < %count)
+        if (%i < %count)
         {
             if (%this.clones.getObject(%i).original == %this.activeButton.getId())
             {
                 %next = %this.clones.getObject(((%i + 1) % %count)).original;
             }
-            %i = %i + 1;
+            else
+            {
+                %i = %i + 1;
+            }
         }
         %this.setActiveButton(%next);
     }
@@ -129,13 +132,16 @@ function MenuLayer::previousActiveButton(%this)
         %prev = 0;
         %count = %this.clones.getCount();
         %i = 0;
-        while (%i < %count)
+        if (%i < %count)
         {
             if (%this.clones.getObject(%i).original == %this.activeButton.getId())
             {
                 %prev = %this.clones.getObject((((%i - 1) + %count) % %count)).original;
             }
-            %i = %i + 1;
+            else
+            {
+                %i = %i + 1;
+            }
         }
         %this.setActiveButton(%prev);
     }
@@ -312,7 +318,7 @@ function MenuControl::onCreatedChild(%this, %child)
         position = "30 2";
         extent = "210 20";
         minExtent = "1 1";
-        sluggishness = -(1);
+        sluggishness = -1;
         visible = 1;
         text = "";
         maxLength = 255;
@@ -326,7 +332,7 @@ function MenuControl::onCreatedChild(%this, %child)
         position = (getWord(%child.getExtent(), 0) - 35) @ " " @ 2;
         extent = "35 20";
         minExtent = "1 1";
-        sluggishness = -(1);
+        sluggishness = -1;
         visible = 1;
         text = %child.accelerator;
         maxLength = 255;
@@ -363,10 +369,13 @@ function MenuControl::onKeyDown(%this, %unused, %keyCode)
             %this.layer.previousActiveButton();
             return 1;
         }
-        if (%this.getStringFromKeyCode(%keyCode) $= "right")
+        else
         {
-            %this.layer.nextActiveButton();
-            return 1;
+            if (%this.getStringFromKeyCode(%keyCode) $= "right")
+            {
+                %this.layer.nextActiveButton();
+                return 1;
+            }
         }
     }
     return 0;
@@ -420,7 +429,7 @@ function MenuControl::show(%this)
         %this.layer.push(%this);
     }
     %this.scroll.setVisible(1);
-    %this.hiliteCell(-(1), -(1));
+    %this.hiliteCell(-1, -1);
     %this.makeFirstResponder(1);
 }
 function MenuControl::hide(%this)
@@ -428,7 +437,7 @@ function MenuControl::hide(%this)
     if (isObject(%this.layer))
     {
         %idx = findWord(%this.layer.stack, %this.getId());
-        if (%idx != -(1))
+        if (%idx != -1)
         {
             %i = 0;
             while (%i < %idx)
@@ -440,7 +449,7 @@ function MenuControl::hide(%this)
         }
     }
     %this.makeFirstResponder(0);
-    %this.hiliteCell(-(1), -(1));
+    %this.hiliteCell(-1, -1);
     %this.scroll.setVisible(0);
 }
 function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical)
@@ -471,10 +480,13 @@ function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical)
                 %top = (%topMargin - %height) - 6;
                 %width = getWord(%scrollCtrl.getExtent(), 0);
             }
-            %left = %leftMargin;
-            %top = %ctrlBottom;
-            %width = getWord(%scrollCtrl.getExtent(), 0);
-            %height = %bottomMargin;
+            else
+            {
+                %left = %leftMargin;
+                %top = %ctrlBottom;
+                %width = getWord(%scrollCtrl.getExtent(), 0);
+                %height = %bottomMargin;
+            }
         }
     }
     else
@@ -489,10 +501,13 @@ function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical)
             %width = getWord(%scrollCtrl.getExtent(), 0);
             %height = getWord(%this.getExtent(), 1) + 2;
         }
-        %left = %leftMargin - getWord(%scrollCtrl.getExtent(), 0);
-        %top = %topMargin;
-        %width = getWord(%scrollCtrl.getExtent(), 0);
-        %height = getWord(%this.getExtent(), 1) + 2;
+        else
+        {
+            %left = %leftMargin - getWord(%scrollCtrl.getExtent(), 0);
+            %top = %topMargin;
+            %width = getWord(%scrollCtrl.getExtent(), 0);
+            %height = getWord(%this.getExtent(), 1) + 2;
+        }
     }
     %width = mMin(%width, %screenWidth);
     %height = mMin(%height, %screenHeight);
@@ -552,23 +567,26 @@ function MenuItem::onHilite(%this)
     {
         %currentMenu = %this.Parent;
         %thisIdx = findWord(%layer.stack, %currentMenu.getId());
-        if (%thisIdx != -(1))
+        if (%thisIdx != -1)
         {
             %parentMenu = getWord(%layer.stack, (%thisIdx + 1));
             if (isObject(%parentMenu))
             {
                 %count = %parentMenu.getCount();
-                %cellIdx = -(1);
+                %cellIdx = -1;
                 %i = 0;
-                while (%i < %count)
+                if (%i < %count)
                 {
                     if (%parentMenu.getObject(%i).submenu == %currentMenu.getId())
                     {
                         %cellIdx = %i;
                     }
-                    %i = %i + 1;
+                    else
+                    {
+                        %i = %i + 1;
+                    }
                 }
-                if (%cellIdx != -(1))
+                if (%cellIdx != -1)
                 {
                     %parentMenu.hiliteCell(0, %cellIdx);
                 }
@@ -623,12 +641,15 @@ function MenuItem::onMouseEnterBounds(%this)
 {
     %count = %this.Parent.getCount();
     %i = 0;
-    while (%i < %count)
+    if (%i < %count)
     {
         if (%this.getId() == %this.Parent.getObject(%i))
         {
         }
-        %i = %i + 1;
+        else
+        {
+            %i = %i + 1;
+        }
     }
     %this.Parent.hiliteCell(0, %i);
 }

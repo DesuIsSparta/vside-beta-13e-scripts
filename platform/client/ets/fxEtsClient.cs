@@ -127,7 +127,7 @@ function fxEts::getColorForTOD(%sod)
         error("No Color Mod Table!");
         return "0 0 0 0";
     }
-    %lowerBound = -(1);
+    %lowerBound = -1;
     %upperBound = 1000;
     %hod = %sod / (60 * 60);
     %n = 0;
@@ -148,7 +148,7 @@ function fxEts::getColorForTOD(%sod)
     {
         %upperBound = %n - 1;
     }
-    if (%lowerBound == -(1))
+    if (%lowerBound == -1)
     {
         %lowerBound = 0;
     }

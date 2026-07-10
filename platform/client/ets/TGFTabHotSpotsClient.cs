@@ -158,8 +158,8 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request)
         %item.subType = %request.getValue(%listItem @ ".type");
         if (!1)
         {
-            %item.occupancy = -(1);
-            %item.friendOccupancy = -(1);
+            %item.occupancy = -1;
+            %item.friendOccupancy = -1;
             %item.subType = "publicLocationEvent";
             %item.featured = 1;
             %item.eventID = 1234;
@@ -200,13 +200,19 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request)
                 %eventValue = "publicEvent";
                 %eventFmt = "";
             }
-            if (%item.featured)
+            else
             {
-                %eventValue = "featuredEvent";
-                %eventFmt = "";
+                if (%item.featured)
+                {
+                    %eventValue = "featuredEvent";
+                    %eventFmt = "";
+                }
+                else
+                {
+                    %eventValue = "regularEvent";
+                    %eventFmt = "";
+                }
             }
-            %eventValue = "regularEvent";
-            %eventFmt = "";
         }
         %occupancyText = geTGF.formatOccupancy(%item.occupancy, "<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         %friendOccupancyText = geTGF.formatOccupancy(%item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
@@ -279,19 +285,31 @@ function geTGF_tabs::hotSpotsTab_formatAccess(%access, %isFriend)
         {
             return "friendsOnlyOfFriend";
         }
-        if (%access $= "FRIENDSONLY")
+        else
         {
-            return "friendsOnlyOfNonFriend";
+            if (%access $= "FRIENDSONLY")
+            {
+                return "friendsOnlyOfNonFriend";
+            }
+            else
+            {
+                if ((%access $= "PASSWORDPROTECTED") && %isFriend)
+                {
+                    return "doorcodeOfFriend";
+                }
+                else
+                {
+                    if (%access $= "PASSWORDPROTECTED")
+                    {
+                        return "doorcodeOfNonFriend";
+                    }
+                    else
+                    {
+                        return "";
+                    }
+                }
+            }
         }
-        if ((%access $= "PASSWORDPROTECTED") && %isFriend)
-        {
-            return "doorcodeOfFriend";
-        }
-        if (%access $= "PASSWORDPROTECTED")
-        {
-            return "doorcodeOfNonFriend";
-        }
-        return "";
     }
 }
 function geTGF::hotspots_GetAndOpenDetailsContainer(%this, %item)
@@ -308,7 +326,7 @@ function geTGF::hotspots_GetAndOpenDetailsContainer(%this, %item)
 }
 function geTGF_HotSpotsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unused, %mouseClickCount)
 {
-    if (%rowIndex == -(1))
+    if (%rowIndex == -1)
     {
         error(getScopeName() @ " " @ "- Gui Row" @ " " @ %guiRow @ " " @ "has no Data Row -" @ " " @ getTrace());
         return;
@@ -317,7 +335,7 @@ function geTGF_HotSpotsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unuse
     %cellIndex = geTGF_HotSpotsDataTable.getColumnIndex("username");
     %userName = geTGF_HotSpotsDataTable.getCellSortValue(%rowIndex, %cellIndex);
     %showDeets = 0;
-    if (%mouseClickCount == -(1))
+    if (%mouseClickCount == -1)
     {
         %showDeets = 0;
     }
@@ -327,15 +345,24 @@ function geTGF_HotSpotsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unuse
         {
             %showDeets = 1;
         }
-        if (%mouseClickCount == 1)
+        else
         {
-            %showDeets = 1;
+            if (%mouseClickCount == 1)
+            {
+                %showDeets = 1;
+            }
+            else
+            {
+                if (%mouseClickCount == 2)
+                {
+                    %showDeets = 1;
+                }
+                else
+                {
+                    %showDeets = 0;
+                }
+            }
         }
-        if (%mouseClickCount == 2)
-        {
-            %showDeets = 1;
-        }
-        %showDeets = 0;
     }
     if (%showDeets)
     {

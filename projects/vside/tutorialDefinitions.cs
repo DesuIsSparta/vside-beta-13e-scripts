@@ -9,17 +9,29 @@ else
     {
         exec("./worlds/raijuku/tutorials/tutorialDefinitions.cs");
     }
-    if (%cityName $= "lga")
+    else
     {
-        exec("./worlds/lga/tutorials/tutorialDefinitions.cs");
+        if (%cityName $= "lga")
+        {
+            exec("./worlds/lga/tutorials/tutorialDefinitions.cs");
+        }
+        else
+        {
+            if (%cityName $= "nv")
+            {
+                exec("./worlds/lounge/tutorials/tutorialDefinitions.cs");
+            }
+            else
+            {
+                if (%cityName $= "minimal")
+                {
+                    exec("./worlds/minimal/tutorials/tutorialDefinitions.cs");
+                }
+                else
+                {
+                    error("Unknown cityname " @ %cityName @ " for tutorials!");
+                }
+            }
+        }
     }
-    if (%cityName $= "nv")
-    {
-        exec("./worlds/lounge/tutorials/tutorialDefinitions.cs");
-    }
-    if (%cityName $= "minimal")
-    {
-        exec("./worlds/minimal/tutorials/tutorialDefinitions.cs");
-    }
-    error("Unknown cityname " @ %cityName @ " for tutorials!");
 }

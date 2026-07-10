@@ -199,7 +199,7 @@ function SaveOutfitAndBodySkusAsCurrent(%skus)
 function Player::switchOutfitTo(%unused, %outfitName)
 {
     %idx = findWord($Player::HangerNames, [$player.getGender()], $player.getGender() @ %outfitName);
-    if (%idx == -(1))
+    if (%idx == -1)
     {
         warn(getScopeName() @ "->Trying to change to an outfit not in $Player::HangerNames");
     }
@@ -221,7 +221,7 @@ function Player::switchOutfitTo(%unused, %outfitName)
     %idx = findWord(%activeSkus, %helpmesku);
     if ($player.isInHelpMeMode())
     {
-        if (%idx == -(1))
+        if (%idx == -1)
         {
             %activeSkus = %activeSkus @ " " @ %helpmesku;
         }

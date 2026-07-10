@@ -177,7 +177,7 @@ function ClosetTabs::fillClosetTab(%this)
         vertSizing = "bottom";
         position = "692 84";
         extent = "242 25";
-        lineSpacing = -(3);
+        lineSpacing = -3;
     };);
     %theTab.add(new GuiMLTextCtrl(ClosetLongDescText) {
         profile = "ClosetLeftInfoProfile";
@@ -185,7 +185,7 @@ function ClosetTabs::fillClosetTab(%this)
         vertSizing = "bottom";
         position = "692 106";
         extent = "173 32";
-        lineSpacing = -(3);
+        lineSpacing = -3;
     };);
     %myOutfitsFrame = new GuiControl(ClosetMyOutfitsFrame) {
         profile = "GuiDefaultProfile";
@@ -216,7 +216,7 @@ function ClosetTabs::fillClosetTab(%this)
         position = "21 0";
         extent = "471 112";
         minExtent = "1 1";
-        sluggishness = -(1);
+        sluggishness = -1;
         visible = 1;
     };
     %myOutfitsFrame.add(%hangers);
@@ -486,7 +486,7 @@ function ClosetOutfitButton::onDragReleased(%this)
 }
 function ClosetOutfitButton::onDragAndDropEnter(%this, %dragCtrl)
 {
-    if (findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -(1))
+    if (findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -1)
     {
         return;
     }
@@ -510,7 +510,7 @@ function ClosetOutfitButton::onDragAndDropLeave(%this, %dragCtrl)
 }
 function ClosetOutfitButton::onDragAndDropDrop(%this, %dragCtrl, %unused)
 {
-    if (findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -(1))
+    if (findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -1)
     {
         return 0;
     }
@@ -595,7 +595,10 @@ function ClosetItemPopup::update(%this, %skus)
             {
                 %brandString = " basic";
             }
-            %brandString = " " @ ClosetBrandPopup.getText() @ " " @ "brand";
+            else
+            {
+                %brandString = " " @ ClosetBrandPopup.getText() @ " " @ "brand";
+            }
         }
         %categoryString = strlwr((firstWord(%prevSelText) $= "All") ? restWords(%prevSelText) : %prevSelText);
         if (%categoryString $= "")
@@ -770,7 +773,7 @@ function ClosetWhatYoureWearingList::onCreatedChild(%this, %child)
 $gNoSkuList = "400 850 875 900 950 5400 5850 5875 5900 5950 5980";
 function ClosetWhatYoureWearingList::addSku(%this, %sku)
 {
-    if (findWord($gNoSkuList, %sku) != -(1))
+    if (findWord($gNoSkuList, %sku) != -1)
     {
         return;
     }
@@ -784,11 +787,17 @@ function ClosetWhatYoureWearingList::addSku(%this, %sku)
         {
             %drawerAction = "  (no animation)";
         }
-        if (ClosetGui.isDoingPropAction)
+        else
         {
-            %drawerAction = "  <a:gamelink stopPropAction>stop animation</a>";
+            if (ClosetGui.isDoingPropAction)
+            {
+                %drawerAction = "  <a:gamelink stopPropAction>stop animation</a>";
+            }
+            else
+            {
+                %drawerAction = "  <a:gamelink startPropAction>start animation</a>";
+            }
         }
-        %drawerAction = "  <a:gamelink startPropAction>start animation</a>";
     }
     %child.desc.setText("<a:gamelink " @ %sku @ ">" @ %si.descShrt @ "</a>" @ "<br><spush><font:Arial:12><color:00000099>" @ %si.getUserFacingDrawerName() @ %drawerAction @ "<spop>");
     if (!(%si.author $= ""))
@@ -851,7 +860,10 @@ function ClosetWhatYoureWearingList::setSkus(%this, %skus)
         {
             $player.setGenre("p");
         }
-        $player.setGenre(%instrument.genre);
+        else
+        {
+            $player.setGenre(%instrument.genre);
+        }
     }
     %this.setNumChildren(0);
     if (getWordCount(%skus) == 0)
@@ -903,13 +915,19 @@ function ClosetWhatYoureWearingButton::onURL(%this, %url)
             stopPropAction();
             ClosetWhatYoureWearingList.refresh($ClosetSkusOutfit[$ClosetOutfitName]);
         }
-        if (ClosetTabs.getCurrentTab().name $= "CLOSET")
+        else
         {
-            ClosetThumbnailsCloset.scroll.scrollToSku(%url);
-        }
-        if (ClosetTabs.getCurrentTab().name $= "MY DESIGNS")
-        {
-            ClosetGui_MyShop_ToggleCurrentSku(%url);
+            if (ClosetTabs.getCurrentTab().name $= "CLOSET")
+            {
+                ClosetThumbnailsCloset.scroll.scrollToSku(%url);
+            }
+            else
+            {
+                if (ClosetTabs.getCurrentTab().name $= "MY DESIGNS")
+                {
+                    ClosetGui_MyShop_ToggleCurrentSku(%url);
+                }
+            }
         }
     }
 }

@@ -6,7 +6,7 @@ $benchmarks::camera::testSchedule = 0;
 function benchmarks::initTestsList()
 {
     $benchmarks::currentTest = 0;
-    $benchmarks::currentRunningTest = -(1);
+    $benchmarks::currentRunningTest = -1;
     $benchmarks::successCount = 0;
     %n = 0;
     $benchmarks::testEvalsList[%n] = "benchmarks::runSampleTest1();";
@@ -30,7 +30,7 @@ function benchmarks::doAllTests()
     benchmarks::setup();
     $benchmarks::successCount = 0;
     $benchmarks::currentTest = 0;
-    $benchmarks::currentRunningTest = -(1);
+    $benchmarks::currentRunningTest = -1;
     echo("running  all" @ " " @ $benchmarks::testsListNum @ " " @ "tests..");
     benchmarksTryNextTest();
 }
@@ -209,9 +209,9 @@ function benchmarks::runCameraTests()
     $benchmarks::camera::totalFPS = 0;
     $benchmarks::camera::totalTris = 0;
     $benchmarks::camera::totalTests = 0;
-    $benchmarks::camera::maxFPS = -(1);
+    $benchmarks::camera::maxFPS = -1;
     $benchmarks::camera::minFPS = 100000000;
-    $benchmarks::camera::curPoint = -(1);
+    $benchmarks::camera::curPoint = -1;
     benchmarksRunNextCameraTest();
     $benchmarks::currentTimeStamp = getSubStr(getTimeStamp(), 0, 8);
 }
@@ -255,7 +255,10 @@ function benchmarksRunNextCameraTest()
             {
                 ScreenShot(%screenshotFileName, "JPEG");
             }
-            error("Cannot write to file" @ " " @ %screenshotFileName);
+            else
+            {
+                error("Cannot write to file" @ " " @ %screenshotFileName);
+            }
         }
     }
     if ($benchmarks::camera::curPoint < (cameraTestsGroup.getCount() - 1))
@@ -283,7 +286,7 @@ function benchmarks::finishedCameraTests(%result)
     echoBenchmarksCamera("Max FPS:" @ $benchmarks::camera::maxFPS);
     echoBenchmarksCamera("Avg FPS:" @ $benchmarks::camera::avgFPS);
     commandToServer('dropCameraAtTransform', $benchmarks::camera::originalSpot);
-    $benchmarks::camera::curPoint = -(1);
+    $benchmarks::camera::curPoint = -1;
     benchmarks::cameraToGui();
     benchmarks::finishedCameraTestsRep(%result);
 }
@@ -352,7 +355,7 @@ function benchmarks::clearCameraTests()
         return;
     }
     cameraTestsGroup.delete();
-    $benchmarks::camera::curPoint = -(1);
+    $benchmarks::camera::curPoint = -1;
 }
 function benchmarks::gotoCameraTestPoint(%obj)
 {

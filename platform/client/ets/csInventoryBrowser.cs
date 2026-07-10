@@ -265,31 +265,10 @@ function CSInventoryItemPane::update(%this)
     %numOwned = numOwnedFurnitureSku(%sku);
     %numPlaced = numUsingFurnitureSku(%sku);
     %numStored = %numOwned - %numPlaced;
-    %omni = %numOwned == -(1);
-    if (%omni)
-    {
-    }
-    else
-    {
-    }
-    %txtOwned = "You own " @ %numOwned @ " of these,";
-    "You own many of these,";
-    if (%omni)
-    {
-    }
-    else
-    {
-    }
-    %txtPlaced = %numPlaced @ " in room, ";
-    %numPlaced @ " in room.";
-    if (%omni)
-    {
-    }
-    else
-    {
-    }
-    %txtStored = %numStored @ " in storage.";
-    "";
+    %omni = %numOwned == -1;
+    %txtOwned = %omni ? "You own many of these," : "You own " @ %numOwned @ " of these,";
+    %txtPlaced = %omni ? %numPlaced @ " in room." : %numPlaced @ " in room, ";
+    %txtStored = %omni ? "" : %numStored @ " in storage.";
     %this.qtyText.setText("<color:ffffff>" @ %txtOwned);
     %this.distributionText.setText("<color:ffffff>" @ %txtPlaced @ %txtStored);
     if (%omni)

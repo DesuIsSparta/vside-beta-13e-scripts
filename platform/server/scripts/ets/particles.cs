@@ -1,7 +1,7 @@
 datablock ParticleData(JacuzziSteamParticle) {
     dragCoefficient = 0;
     windCoefficient = 0;
-    gravityCoefficient = -(0.06);
+    gravityCoefficient = -0.06;
     inheritedVelFactor = 0;
     constantAcceleration = 0;
     lifetimeMS = 704;
@@ -40,7 +40,7 @@ datablock ParticleEmitterNodeData(JacuzziSteamEmitterNode) {
 datablock ParticleData(BathSteamParticle) {
     dragCoefficient = 0.14;
     windCoefficient = 0;
-    gravityCoefficient = -(0.16);
+    gravityCoefficient = -0.16;
     inheritedVelFactor = 0;
     constantAcceleration = 0;
     lifetimeMS = 1028;
@@ -85,7 +85,7 @@ datablock ParticleData(FallingLeafParticle) {
     lifetimeMS = 2496;
     lifetimeVarianceMS = 0;
     spinSpeed = 0.04;
-    spinRandomMin = -(3);
+    spinRandomMin = -3;
     spinRandomMax = 0.5;
     useInvAlpha = 1;
     textureName = "projects/vside/worlds/common/leaf";

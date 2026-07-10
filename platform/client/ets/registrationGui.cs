@@ -101,7 +101,10 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
             {
                 %errorMessage = %errorCode[$MsgCat::login @ "E-REG-INCOMPLETE"];
             }
-            %errorMessage = $MsgCat::login["E-REG-UNKNOWN"];
+            else
+            {
+                %errorMessage = $MsgCat::login["E-REG-UNKNOWN"];
+            }
         }
         %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
         geRegistrationStatusText.setValue(%errorMessage);
@@ -124,9 +127,12 @@ function RegistrationLink::onURL(%this, %url)
         {
             gotoWebPage($Net::ReregisterURL);
         }
-        if (%url $= "FINISH_REGISTRATION")
+        else
         {
-            gotoWebPage(standardSubstitutions($Net::FinishRegistrationURL));
+            if (%url $= "FINISH_REGISTRATION")
+            {
+                gotoWebPage(standardSubstitutions($Net::FinishRegistrationURL));
+            }
         }
     }
 }

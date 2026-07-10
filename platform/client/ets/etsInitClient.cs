@@ -12,7 +12,7 @@ function GameConnection::etsInit(%this)
     echo("client-side load time total:  " @ " " @ ($Client::MissionLoadTimeFinish * 0.001) @ " " @ "seconds.");
     echo("client-side load time mission:" @ " " @ (($Client::MissionLoadTimeFinish - $Client::MissionLoadTimeStart) * 0.001) @ " " @ "seconds.");
     echo("client-side player init:" @ " " @ getDebugString($player));
-    $player.prevRolesMask = -(1);
+    $player.prevRolesMask = -1;
     $player.onGotRoles($player.getRolesMask());
     Inventory::fetchPlayerInventoryIfNeedTo($player);
     $player.playersNotifiedOfIdleStatus = new StringMap("");
@@ -81,7 +81,7 @@ function GameConnection::etsInit(%this)
 }
 function Player::startImpressionsTimer(%this)
 {
-    %this.lastImpressionCount = -(1);
+    %this.lastImpressionCount = -1;
 }
 function Player::takeImpressionsTimer(%this)
 {
@@ -194,9 +194,12 @@ function Player::onAddClient(%this)
         {
             %this.setBuddy(1);
         }
-        if (%relation $= "fan")
+        else
         {
-            %this.setAmFave(1);
+            if (%relation $= "fan")
+            {
+                %this.setAmFave(1);
+            }
         }
     }
     %this.setIgnore(BuddyHudWin.getIgnoreStatus(%this.getShapeName()));
@@ -344,9 +347,12 @@ function Player::getRoleBadgeBitmapName(%this)
                     %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
                 }
             }
-            if (%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"] $= "")
+            else
             {
-                %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
+                if (%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"] $= "")
+                {
+                    %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
+                }
             }
         }
         %n = %n + 1;

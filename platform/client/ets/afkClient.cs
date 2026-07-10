@@ -36,9 +36,12 @@ function setIdle(%idle, %message)
                 onIdle(%message);
             }
         }
-        if (isIdle())
+        else
         {
-            onUnidle();
+            if (isIdle())
+            {
+                onUnidle();
+            }
         }
     }
     setGameInterfaceIdle(%idle);

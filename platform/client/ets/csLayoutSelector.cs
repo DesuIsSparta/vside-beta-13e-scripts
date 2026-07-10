@@ -129,17 +129,26 @@ function CSLayoutSelectorLink::onURL(%this, %url)
         {
             CSLayoutSelector.setMode(trim(%args));
         }
-        if (%cmd $= "ERASE")
+        else
         {
-            customSpace::ConfirmEraseLayout(CSLayoutSelector.selectedLayout);
-        }
-        if (%cmd $= "DEFAULT")
-        {
-            customSpace::ConfirmResetLayoutToDefault(CSLayoutSelector.selectedLayout);
-        }
-        if (%cmd $= "SAVE_AS_DEFAULT")
-        {
-            customSpace::ConfirmSaveLayoutAsDefault(CSLayoutSelector.selectedLayout);
+            if (%cmd $= "ERASE")
+            {
+                customSpace::ConfirmEraseLayout(CSLayoutSelector.selectedLayout);
+            }
+            else
+            {
+                if (%cmd $= "DEFAULT")
+                {
+                    customSpace::ConfirmResetLayoutToDefault(CSLayoutSelector.selectedLayout);
+                }
+                else
+                {
+                    if (%cmd $= "SAVE_AS_DEFAULT")
+                    {
+                        customSpace::ConfirmSaveLayoutAsDefault(CSLayoutSelector.selectedLayout);
+                    }
+                }
+            }
         }
     }
 }
@@ -307,7 +316,7 @@ function CSLayoutButton::makeVisualClone(%this)
 }
 function CSLayoutButton::onDragAndDropEnter(%this, %dragCtrl)
 {
-    if (findWord(%dragCtrl.getNamespaceList(), "CSLayoutButton") == -(1))
+    if (findWord(%dragCtrl.getNamespaceList(), "CSLayoutButton") == -1)
     {
         return;
     }
@@ -324,7 +333,7 @@ function CSLayoutButton::onDragAndDropLeave(%this, %dragCtrl)
 }
 function CSLayoutButton::onDragAndDropDrop(%this, %dragCtrl, %unused)
 {
-    if (findWord(%dragCtrl.getNamespaceList(), "CSLayoutButton") == -(1))
+    if (findWord(%dragCtrl.getNamespaceList(), "CSLayoutButton") == -1)
     {
         return 0;
     }

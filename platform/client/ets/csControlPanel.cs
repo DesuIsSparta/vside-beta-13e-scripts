@@ -170,12 +170,18 @@ function CSSpaceModelAptText::update(%this)
         {
             %text = "You must be at least<spush><color:ffbbdd> " @ respektLevelToNameWithIndefiniteArticle($CSSpaceInfo.floorplan.minLevel) @ "<spop> to purchase an apartment like this.";
         }
-        %this.lineSpacing = 4;
-        if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName))
+        else
         {
-            %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
+            %this.lineSpacing = 4;
+            if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName))
+            {
+                %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
+            }
+            else
+            {
+                %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
+            }
         }
-        %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
     }
     %this.setText(%text);
 }

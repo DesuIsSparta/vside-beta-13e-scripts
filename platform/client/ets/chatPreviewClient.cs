@@ -44,7 +44,10 @@ function Player::sendPreviewText(%this, %text)
         {
             %text = "";
         }
-        %text = " ";
+        else
+        {
+            %text = " ";
+        }
     }
     commandToServer('ChatPreview', %text);
     setIdle(0);

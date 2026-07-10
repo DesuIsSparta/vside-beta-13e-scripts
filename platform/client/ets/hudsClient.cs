@@ -127,7 +127,7 @@ function HudTabs::close(%this)
         %tab.content.onClose();
     }
     HudTabsCollapsed.setVisible(1);
-    %this.selectTabAtIndex(-(1));
+    %this.selectTabAtIndex(-1);
 }
 function HudTabs::onHiddenButton(%this)
 {
@@ -760,7 +760,10 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify)
             {
                 %code = "LEVELCHANGE2";
             }
-            %code = "LEVELCHANGE";
+            else
+            {
+                %code = "LEVELCHANGE";
+            }
         }
         schedule(5000, 0, "respektHandle", "", %points, (%points - %this.previousRespektPoints), %code, 0, 1);
         HudTabs.schedule(5100, "pulseTabWithName", "scores");
@@ -850,7 +853,7 @@ function HudScoresContent::getCollectionObject(%this, %name)
         }
         %n = %n - 1;
     }
-    return -(1);
+    return -1;
 }
 function HudScoresContent::refreshCollections(%this)
 {
@@ -881,7 +884,10 @@ function HudScoresContent::refreshCollections(%this)
             {
                 %completed = %completed @ " " @ %collection.getId();
             }
-            %completed = %collection.getId();
+            else
+            {
+                %completed = %collection.getId();
+            }
         }
         %i = %i - 1;
     }
@@ -1044,7 +1050,10 @@ function PrivSpaceHudToggleOP::onURL(%this, %url)
         {
             PrivSpaceHud.hideOP();
         }
-        error("Url in PrivSpaceHud.toggleOP is broken.<-" @ getScopeName());
+        else
+        {
+            error("Url in PrivSpaceHud.toggleOP is broken.<-" @ getScopeName());
+        }
     }
 }
 function PrivSpaceHud::enableOPlink(%this)
@@ -1324,8 +1333,11 @@ function OPSpaceHud::updateSettings(%this, %name, %description, %accessMode)
         {
             %this.AccessOptFriends.performClick();
         }
-        %this.accessLevel = "Open";
-        %this.AccessOptAnyone.performClick();
+        else
+        {
+            %this.accessLevel = "Open";
+            %this.AccessOptAnyone.performClick();
+        }
     }
     %this.spaceNameField.setText(%name);
 }
@@ -1620,11 +1632,17 @@ function ChangeSpaceOwnershipRequest::onDone(%this)
         {
             handleSystemMessage("msgInfoMessage", "Sorry, the space is already owned by someone else.");
         }
-        if (trim(getWords(%statusMsg, 0, 1)) $= "fail respekt")
+        else
         {
-            handleSystemMessage("msgInfoMessage", "Sorry, you must be at least a " @ getWord(%statusMsg, 2) @ " to own this space.");
+            if (trim(getWords(%statusMsg, 0, 1)) $= "fail respekt")
+            {
+                handleSystemMessage("msgInfoMessage", "Sorry, you must be at least a " @ getWord(%statusMsg, 2) @ " to own this space.");
+            }
+            else
+            {
+                handleSystemMessage("msgInfoMessage", "Sorry, you couldn't change the ownership of the space.");
+            }
         }
-        handleSystemMessage("msgInfoMessage", "Sorry, you couldn't change the ownership of the space.");
     }
     %this.schedule(0, "delete");
 }

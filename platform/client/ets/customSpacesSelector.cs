@@ -62,31 +62,43 @@ function CSSelectorCtrl::makeNewListBox(%type)
             %listBox.menuTextProfile = "CSProfileFeaturedListingMenuText";
             %listBox.menuTextSelectedProfile = "CSProfileFeaturedListingMenuTextSelected";
         }
-        if (%type $= "CELEBSPACE")
+        else
         {
-            %listBox.unselectedProfile = "CSProfileCelebListingUnselected";
-            %listBox.selectedProfile = "CSProfileCelebListingSelected";
-            %listBox.menuTextProfile = "CSProfileCelebListingMenuText";
-            %listBox.menuTextSelectedProfile = "CSProfileCelebListingMenuTextSelected";
+            if (%type $= "CELEBSPACE")
+            {
+                %listBox.unselectedProfile = "CSProfileCelebListingUnselected";
+                %listBox.selectedProfile = "CSProfileCelebListingSelected";
+                %listBox.menuTextProfile = "CSProfileCelebListingMenuText";
+                %listBox.menuTextSelectedProfile = "CSProfileCelebListingMenuTextSelected";
+            }
+            else
+            {
+                if (%type $= "MYPLACE")
+                {
+                    %listBox.unselectedProfile = "CSProfileNormalListingUnselected";
+                    %listBox.selectedProfile = "CSProfileNormalListingSelected";
+                    %listBox.menuTextProfile = "CSProfileNormalListingMenuText";
+                    %listBox.menuTextSelectedProfile = "CSProfileNormalListingMenuTextSelected";
+                }
+                else
+                {
+                    if (%type $= "RESIDENCE")
+                    {
+                        %listBox.unselectedProfile = "CSProfileNormalListingUnselected";
+                        %listBox.selectedProfile = "CSProfileNormalListingSelected";
+                        %listBox.menuTextProfile = "CSProfileNormalListingMenuText";
+                        %listBox.menuTextSelectedProfile = "CSProfileNormalListingMenuTextSelected";
+                    }
+                    else
+                    {
+                        %listBox.unselectedProfile = "GuiDefaultProfile";
+                        %listBox.selectedProfile = "ETSSelectedMenuItemProfile";
+                        %listBox.menuTextProfile = "ETSUnselectedMenuTextProfile";
+                        %listBox.menuTextSelectedProfile = "ETSSelectedMenuTextProfile";
+                    }
+                }
+            }
         }
-        if (%type $= "MYPLACE")
-        {
-            %listBox.unselectedProfile = "CSProfileNormalListingUnselected";
-            %listBox.selectedProfile = "CSProfileNormalListingSelected";
-            %listBox.menuTextProfile = "CSProfileNormalListingMenuText";
-            %listBox.menuTextSelectedProfile = "CSProfileNormalListingMenuTextSelected";
-        }
-        if (%type $= "RESIDENCE")
-        {
-            %listBox.unselectedProfile = "CSProfileNormalListingUnselected";
-            %listBox.selectedProfile = "CSProfileNormalListingSelected";
-            %listBox.menuTextProfile = "CSProfileNormalListingMenuText";
-            %listBox.menuTextSelectedProfile = "CSProfileNormalListingMenuTextSelected";
-        }
-        %listBox.unselectedProfile = "GuiDefaultProfile";
-        %listBox.selectedProfile = "ETSSelectedMenuItemProfile";
-        %listBox.menuTextProfile = "ETSUnselectedMenuTextProfile";
-        %listBox.menuTextSelectedProfile = "ETSSelectedMenuTextProfile";
     }
     if (!isObject(%listBox.entriesSet))
     {
@@ -180,9 +192,9 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
                 {
                 }
                 %visitNowLinkText = %entry.isFeatured ? "<a:gamelink go><linkcolor:f2ff16ff><linkcolorHL:f279f2ff>Visit Now</a>" : %isFriend ? "<a:gamelink go><linkcolor:aaff00ff><linkcolorHL:f279f2ff>Visit Now</a>" : "<a:gamelink go><linkcolor:ffffffff><linkcolorHL:f279f2ff>Visit Now</a>";
-                "<a:gamelink go><linkcolor:aaffffff><linkcolorHL:f279f2ff>Visit Now</a>";
             }
             %type = %entry.type;
+            "<a:gamelink go><linkcolor:aaffffff><linkcolorHL:f279f2ff>Visit Now</a>";
             if (%entry.isFeatured)
             {
                 %type = "FEATURED";
@@ -193,7 +205,7 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
             if (%type $= "MODEL")
             {
                 %lineText = %floorPlanNameText @ "\t" @ %spaceDescTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
-                %accessIconIndex = -(1);
+                %accessIconIndex = -1;
                 %visitNowIndex = 3;
             }
             else
@@ -202,24 +214,36 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
                 {
                     %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
                 }
-                if (%type $= "CELEBSPACE")
+                else
                 {
-                    %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
+                    if (%type $= "CELEBSPACE")
+                    {
+                        %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
+                    }
+                    else
+                    {
+                        if (%type $= "MYPLACE")
+                        {
+                            %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
+                        }
+                        else
+                        {
+                            if (%type $= "RESIDENCE")
+                            {
+                                %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
+                            }
+                            else
+                            {
+                                %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
+                            }
+                        }
+                    }
                 }
-                if (%type $= "MYPLACE")
-                {
-                    %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
-                }
-                if (%type $= "RESIDENCE")
-                {
-                    %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
-                }
-                %lineText = %ownerNameText @ "\t" @ %dummyText @ "\t" @ %spaceDescTextForModel @ "\t" @ %occupancyTextForModel @ "\t" @ %dummyText @ "\t" @ %visitNowLinkText;
             }
             %line = %this.addLine(%lineText);
             %line.entryName = %entry.name;
             %line.horizSizing = "width";
-            if (%this.descriptionFieldNumber != -(1))
+            if (%this.descriptionFieldNumber != -1)
             {
                 %line.getObject(%this.descriptionFieldNumber).horizSizing = "width";
                 %i = %line.getCount() - 1;
@@ -229,7 +253,7 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
                     %i = %i - 1;
                 }
             }
-            if (%accessIconIndex != -(1))
+            if (%accessIconIndex != -1)
             {
                 %position = %line.getObject(%accessIconIndex).getPosition();
                 %position = getWord(%position, 0) @ " " @ (getWord(%position, 1) - 1);
@@ -279,13 +303,19 @@ function CSSelectorCtrl::sortEntries(%this, %sortField, %increasing)
                 {
                     %key = 00;
                 }
-                if (strlwr(%key) $= "passwordprotected")
+                else
                 {
-                    %key = 08;
-                }
-                if (strlwr(%key) $= "locked")
-                {
-                    %key = 10;
+                    if (strlwr(%key) $= "passwordprotected")
+                    {
+                        %key = 08;
+                    }
+                    else
+                    {
+                        if (strlwr(%key) $= "locked")
+                        {
+                            %key = 10;
+                        }
+                    }
                 }
             }
         }
@@ -295,17 +325,26 @@ function CSSelectorCtrl::sortEntries(%this, %sortField, %increasing)
             {
                 %key = %key;
             }
-            if (%sortField $= "occupancy")
+            else
             {
-                %key = formatInt("%0.8d", %key);
-            }
-            if (%sortField $= "self")
-            {
-                %key = (%entry.owner $= $Player::Name) ? 00 : 10;
-            }
-            if (mFloor(%key) $= %key)
-            {
-                %key = formatInt("%0.8d", %key);
+                if (%sortField $= "occupancy")
+                {
+                    %key = formatInt("%0.8d", %key);
+                }
+                else
+                {
+                    if (%sortField $= "self")
+                    {
+                        %key = (%entry.owner $= $Player::Name) ? 00 : 10;
+                    }
+                    else
+                    {
+                        if (mFloor(%key) $= %key)
+                        {
+                            %key = formatInt("%0.8d", %key);
+                        }
+                    }
+                }
             }
         }
         %sortArray.push_back(%key, %entry);
@@ -377,8 +416,11 @@ function CSSelectorCtrl::createAccessIcon(%this, %accessType, %isFriend, %positi
                 %icon.setBitmap("platform/client/ui/buildingDir_heart_white");
             }
         }
-        %icon.delete();
-        %icon = "";
+        else
+        {
+            %icon.delete();
+            %icon = "";
+        }
     }
     return %icon;
 }
@@ -440,7 +482,7 @@ function CSSelectorCtrl::getEntryByName(%this, %name)
         }
         %n = %n - 1;
     }
-    return -(1);
+    return -1;
 }
 function CSSelectorCtrl::childSelected(%this, %child)
 {
@@ -506,31 +548,43 @@ function CSSelectorLine::onMouseDown(%this)
                 CustomSpacesSelector_GOBUTTON.setActive(!%amCurrentlyHere);
                 CustomSpacesSelector_GOBUTTON.setVisible(1);
             }
-            if (stricmp(%entry.access, "PasswordProtected") == 0)
+            else
             {
-                CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-                CustomSpacesSelector_GOBUTTON.setVisible(0);
-                CustomSpacesSelector_ENTERPASSWORDBUTTON.setActive(!%amCurrentlyHere);
-                CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(1);
+                if (stricmp(%entry.access, "PasswordProtected") == 0)
+                {
+                    CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
+                    CustomSpacesSelector_GOBUTTON.setVisible(0);
+                    CustomSpacesSelector_ENTERPASSWORDBUTTON.setActive(!%amCurrentlyHere);
+                    CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(1);
+                }
+                else
+                {
+                    if (stricmp(%entry.access, "Locked") == 0)
+                    {
+                        CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
+                        CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
+                        CustomSpacesSelector_GOBUTTON.setActive(0);
+                        CustomSpacesSelector_GOBUTTON.setVisible(1);
+                    }
+                    else
+                    {
+                        if (stricmp(%entry.access, "FriendOnly") == 0)
+                        {
+                            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
+                            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
+                            CustomSpacesSelector_GOBUTTON.setActive(!%amCurrentlyHere && %this.ownerIsFriend(%entry.owner));
+                            CustomSpacesSelector_GOBUTTON.setVisible(1);
+                        }
+                        else
+                        {
+                            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
+                            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
+                            CustomSpacesSelector_GOBUTTON.setActive(!%amCurrentlyHere);
+                            CustomSpacesSelector_GOBUTTON.setVisible(1);
+                        }
+                    }
+                }
             }
-            if (stricmp(%entry.access, "Locked") == 0)
-            {
-                CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-                CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-                CustomSpacesSelector_GOBUTTON.setActive(0);
-                CustomSpacesSelector_GOBUTTON.setVisible(1);
-            }
-            if (stricmp(%entry.access, "FriendOnly") == 0)
-            {
-                CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-                CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-                CustomSpacesSelector_GOBUTTON.setActive(!%amCurrentlyHere && %this.ownerIsFriend(%entry.owner));
-                CustomSpacesSelector_GOBUTTON.setVisible(1);
-            }
-            CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
-            CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-            CustomSpacesSelector_GOBUTTON.setActive(!%amCurrentlyHere);
-            CustomSpacesSelector_GOBUTTON.setVisible(1);
         }
     }
     else
@@ -685,14 +739,7 @@ function CSSelectorDescriptionCtrl::setTextAndUpdateWithCallback(%this, %text, %
     }
     else
     {
-        if (isObject(%callbackObject))
-        {
-        }
-        else
-        {
-        }
-        %afterResizeFunction = "" @ %callbackFunction @ "(" @ %callbackParameters @ ");";
-        %callbackObject @ ".";
+        %afterResizeFunction = isObject(%callbackObject) ? %callbackObject @ "." : "" @ %callbackFunction @ "(" @ %callbackParameters @ ");";
     }
     waitAFrameAndEval(%resizingFunction @ " " @ %afterResizeFunction);
 }
@@ -709,6 +756,9 @@ function CustomSpacesSelector::doOnKeyDown(%this, %keyname)
         {
             CustomSpacesSelector.fromKeyStartMovingDown();
         }
+        else
+        {
+        }
     }
 }
 function CustomSpacesSelector::doOnKeyUp(%this, %keyname)
@@ -722,9 +772,12 @@ function CustomSpacesSelector::doOnKeyUp(%this, %keyname)
         if (%keyname $= "down")
         {
         }
-        if (%keyname $= "enter")
+        else
         {
-            CSSelectorListCtrl.teleportToSelected();
+            if (%keyname $= "enter")
+            {
+                CSSelectorListCtrl.teleportToSelected();
+            }
         }
     }
 }
@@ -987,19 +1040,31 @@ function CustomSpacesSelector::addHeaderAndListBoxes(%this, %type)
         {
             %headerText.setBitmap("platform/client/ui/buildingDir_featured_apartments");
         }
-        if (%type $= "CELEBSPACE")
+        else
         {
-            %headerText.setBitmap("platform/client/ui/buildingDir_celebrity_apartments");
+            if (%type $= "CELEBSPACE")
+            {
+                %headerText.setBitmap("platform/client/ui/buildingDir_celebrity_apartments");
+            }
+            else
+            {
+                if (%type $= "MYPLACE")
+                {
+                    %headerText.setBitmap("platform/client/ui/buildingDir_my_apartment");
+                }
+                else
+                {
+                    if (%type $= "RESIDENCE")
+                    {
+                        %headerText.setBitmap("platform/client/ui/buildingDir_resident_apartments");
+                    }
+                    else
+                    {
+                        %headerText.setBitmap("");
+                    }
+                }
+            }
         }
-        if (%type $= "MYPLACE")
-        {
-            %headerText.setBitmap("platform/client/ui/buildingDir_my_apartment");
-        }
-        if (%type $= "RESIDENCE")
-        {
-            %headerText.setBitmap("platform/client/ui/buildingDir_resident_apartments");
-        }
-        %headerText.setBitmap("");
     }
     %headerBox = new GuiControl("") {
         horizSizing = "right";
@@ -1120,23 +1185,26 @@ function CustomSpacesSelector::rearrangeListBoxes(%this)
         }
         else
         {
-            if (%indexOfCurrentType == -(1))
+            if (%indexOfCurrentType == -1)
             {
                 %typesSkipped = %typesSkipped + 1;
             }
-            %indexOfWhereTypeShouldBe = findField(%typesAvailable, %currentTypeToExamine) - %typesSkipped;
-            %tempHeader = %this.vars[%indexOfWhereTypeShouldBe];
-            "aptCategoryHeaderBoxes";
-            %tempListBox = %this.vars[%indexOfWhereTypeShouldBe];
-            "aptCategoryListBoxes";
-            %this.vars[%this.vars[%indexOfCurrentType],"aptCategoryHeaderBoxes",%indexOfWhereTypeShouldBe] = "aptCategoryHeaderBoxes";
-            %this.vars[%this.vars[%indexOfCurrentType],"aptCategoryListBoxes",%indexOfWhereTypeShouldBe] = "aptCategoryListBoxes";
-            %this.vars[%indexOfWhereTypeShouldBe].myIndex = %indexOfWhereTypeShouldBe @ "aptCategoryListBoxes";
-            %this.vars["aptCategoryHeaderBoxes",%indexOfCurrentType] = %tempHeader;
-            %this.vars["aptCategoryListBoxes",%indexOfCurrentType] = %tempListBox;
-            %this.vars[%indexOfCurrentType].myIndex = %indexOfCurrentType @ "aptCategoryListBoxes";
-            %typesInUse = setField(%typesInUse, %indexOfCurrentType, getField(%typesInUse, %indexOfWhereTypeShouldBe));
-            %typesInUse = setField(%typesInUse, %indexOfWhereTypeShouldBe, %currentTypeToExamine);
+            else
+            {
+                %indexOfWhereTypeShouldBe = findField(%typesAvailable, %currentTypeToExamine) - %typesSkipped;
+                %tempHeader = %this.vars[%indexOfWhereTypeShouldBe];
+                "aptCategoryHeaderBoxes";
+                %tempListBox = %this.vars[%indexOfWhereTypeShouldBe];
+                "aptCategoryListBoxes";
+                %this.vars[%this.vars[%indexOfCurrentType],"aptCategoryHeaderBoxes",%indexOfWhereTypeShouldBe] = "aptCategoryHeaderBoxes";
+                %this.vars[%this.vars[%indexOfCurrentType],"aptCategoryListBoxes",%indexOfWhereTypeShouldBe] = "aptCategoryListBoxes";
+                %this.vars[%indexOfWhereTypeShouldBe].myIndex = %indexOfWhereTypeShouldBe @ "aptCategoryListBoxes";
+                %this.vars["aptCategoryHeaderBoxes",%indexOfCurrentType] = %tempHeader;
+                %this.vars["aptCategoryListBoxes",%indexOfCurrentType] = %tempListBox;
+                %this.vars[%indexOfCurrentType].myIndex = %indexOfCurrentType @ "aptCategoryListBoxes";
+                %typesInUse = setField(%typesInUse, %indexOfCurrentType, getField(%typesInUse, %indexOfWhereTypeShouldBe));
+                %typesInUse = setField(%typesInUse, %indexOfWhereTypeShouldBe, %currentTypeToExamine);
+            }
         }
         %i = %i + 1;
     }
@@ -1251,7 +1319,10 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
                         {
                             %space.ownerSex = "M";
                         }
-                        %space.ownerSex = "-";
+                        else
+                        {
+                            %space.ownerSex = "-";
+                        }
                     }
                     %space.ownerLocation = StripMLControlChars(%info.location);
                     if (%space.ownerLocation $= "")
@@ -1290,8 +1361,11 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
                     {
                         %listBox = CustomSpacesSelector.getListBox(%type);
                     }
-                    %listBox = CustomSpacesSelector.addHeaderAndListBoxes(%type);
-                    CustomSpacesSelector.saveListBox(%listBox, %type);
+                    else
+                    {
+                        %listBox = CustomSpacesSelector.addHeaderAndListBoxes(%type);
+                        CustomSpacesSelector.saveListBox(%listBox, %type);
+                    }
                 }
                 %listBox.updateEntry(%space);
                 CustomSpacesSelector.vars["descriptions",%space.name] = "";
@@ -1418,11 +1492,11 @@ function CSSelectorCtrl::includeSpaceInList(%this, %entry, %filterByText)
     {
         return 1;
     }
-    if (strstr(strlwr(%entry.owner), %filterByText) > -(1))
+    if (strstr(strlwr(%entry.owner), %filterByText) > -1)
     {
         return 1;
     }
-    if (strstr(strlwr(%entry.description), %filterByText) > -(1))
+    if (strstr(strlwr(%entry.description), %filterByText) > -1)
     {
         return 1;
     }

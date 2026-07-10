@@ -63,7 +63,7 @@ function Music::toggleMute()
     $UserPref::Audio::mute = !$UserPref::Audio::mute;
     %multiplier = $UserPref::Audio::mute ? 0 : 1;
     alxListenerf(AL_GAIN_LINEAR, (%multiplier * $UserPref::Audio::masterVolume));
-    if (isObject($Music::service) && !($Music::service $= "") && (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -(1)))
+    if (isObject($Music::service) && !($Music::service $= "") && (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -1))
     {
         $Music::service.setMute($UserPref::Audio::mute);
         $Music::service.setMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));

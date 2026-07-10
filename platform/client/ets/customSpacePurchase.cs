@@ -31,13 +31,19 @@ function CSSpacePurchasePriceConfirmation(%space)
         {
             %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VPOINTSONLY"] @ "\n";
         }
-        if (($Player::VBux >= %finalVBux) && (%finalVBux >= 0))
+        else
         {
-            %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
+            if (($Player::VBux >= %finalVBux) && (%finalVBux >= 0))
+            {
+                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
+            }
+            else
+            {
+                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
+                MessageBoxOK(%title, %text, "");
+                return;
+            }
         }
-        %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
-        MessageBoxOK(%title, %text, "");
-        return;
     }
     %buttons = "";
     %count = 0;

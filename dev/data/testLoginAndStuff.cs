@@ -483,10 +483,13 @@ function stopAndTalk()
                 %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
                 %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
             }
-            if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth"))
+            else
             {
-                %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
-                %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
+                if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth"))
+                {
+                    %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
+                    %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
+                }
             }
         }
         pChat.say("(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination, 0, 0);
@@ -501,8 +504,11 @@ function stopAndTalk()
             echo("LOAD: Quit()-ing...");
             logoffAndQuit();
         }
-        echo("LOAD: Lost PChat... Gonna try again.");
-        $failureCount = $failureCount + 1;
+        else
+        {
+            echo("LOAD: Lost PChat... Gonna try again.");
+            $failureCount = $failureCount + 1;
+        }
     }
     schedule(10000, 0, do_emote);
 }

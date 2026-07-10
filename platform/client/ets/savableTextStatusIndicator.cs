@@ -47,7 +47,10 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         {
             %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
         }
-        %arrowBitmap = "platform/client/ui/arrow_red_right";
+        else
+        {
+            %arrowBitmap = "platform/client/ui/arrow_red_right";
+        }
     }
     %obj.changedBitmap = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";

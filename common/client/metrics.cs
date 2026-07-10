@@ -69,48 +69,75 @@ function metrics(%expr)
         {
             %cb = "debugMetricsCallback()";
         }
-        if (%expr $= "interior")
+        else
         {
-            $fps::virtual = 0;
-            $Interior::numPolys = 0;
-            $Interior::numTextures = 0;
-            $Interior::numTexels = 0;
-            $Interior::numLightmaps = 0;
-            $Interior::numLumels = 0;
-            %cb = "interiorMetricsCallback()";
-        }
-        if (%expr $= "fps")
-        {
-            %cb = "fpsMetricsCallback()";
-        }
-        if (%expr $= "keyboard")
-        {
-            %cb = "keyboardMetricsCallback()";
-        }
-        if (%expr $= "time")
-        {
-            %cb = "timeMetricsCallback()";
-        }
-        if (%expr $= "terrain")
-        {
-            %cb = "terrainMetricsCallback()";
-        }
-        if (%expr $= "texture")
-        {
-            GLEnableMetrics(1);
-            %cb = "textureMetricsCallback()";
-        }
-        if (%expr $= "video")
-        {
-            %cb = "videoMetricsCallback()";
-        }
-        if (%expr $= "vehicle")
-        {
-            %cb = "vehicleMetricsCallback()";
-        }
-        if (%expr $= "water")
-        {
-            %cb = "waterMetricsCallback()";
+            if (%expr $= "interior")
+            {
+                $fps::virtual = 0;
+                $Interior::numPolys = 0;
+                $Interior::numTextures = 0;
+                $Interior::numTexels = 0;
+                $Interior::numLightmaps = 0;
+                $Interior::numLumels = 0;
+                %cb = "interiorMetricsCallback()";
+            }
+            else
+            {
+                if (%expr $= "fps")
+                {
+                    %cb = "fpsMetricsCallback()";
+                }
+                else
+                {
+                    if (%expr $= "keyboard")
+                    {
+                        %cb = "keyboardMetricsCallback()";
+                    }
+                    else
+                    {
+                        if (%expr $= "time")
+                        {
+                            %cb = "timeMetricsCallback()";
+                        }
+                        else
+                        {
+                            if (%expr $= "terrain")
+                            {
+                                %cb = "terrainMetricsCallback()";
+                            }
+                            else
+                            {
+                                if (%expr $= "texture")
+                                {
+                                    GLEnableMetrics(1);
+                                    %cb = "textureMetricsCallback()";
+                                }
+                                else
+                                {
+                                    if (%expr $= "video")
+                                    {
+                                        %cb = "videoMetricsCallback()";
+                                    }
+                                    else
+                                    {
+                                        if (%expr $= "vehicle")
+                                        {
+                                            %cb = "vehicleMetricsCallback()";
+                                        }
+                                        else
+                                        {
+                                            if (%expr $= "water")
+                                            {
+                                                %cb = "waterMetricsCallback()";
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
     }
     if (!(%cb $= ""))

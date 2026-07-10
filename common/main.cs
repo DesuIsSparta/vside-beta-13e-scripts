@@ -59,14 +59,18 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch)
                         %i[$Game::ArgUsed @ (%i + 1)] = %i[$Game::ArgUsed @ (%i + 1)] + 1;
                         %found = 1;
                     }
-                    %found = 0;
-                    error("initialization", "Error: " @ %errorMsg);
+                    else
+                    {
+                        %found = 0;
+                        error("initialization", "Error: " @ %errorMsg);
+                    }
                 }
             }
             else
             {
                 %found = 1;
             }
+            break;
         }
         %i = %i + 1;
     }

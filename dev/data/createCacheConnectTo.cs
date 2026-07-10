@@ -20,9 +20,12 @@ function doLoginCheck()
             echo("CACHE: Telling server to shutdown.");
             commandToServer('KillServer');
         }
-        echo("CACHE: Nothing yet....");
-        $iterationsWaited = $iterationsWaited + 1;
-        schedule(3000, 0, doLoginCheck);
+        else
+        {
+            echo("CACHE: Nothing yet....");
+            $iterationsWaited = $iterationsWaited + 1;
+            schedule(3000, 0, doLoginCheck);
+        }
     }
 }
 function logoutAndQuit()

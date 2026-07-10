@@ -18,9 +18,12 @@ function setRenderQualityValue(%val)
             {
                 %q = "medium";
             }
-            if (%val == 2)
+            else
             {
-                %q = "high";
+                if (%val == 2)
+                {
+                    %q = "high";
+                }
             }
         }
         $renderQuality = %val;
@@ -83,17 +86,26 @@ function setShadowDetailSizeValue(%val)
         {
             $pref::TS::sgShadowDetailSize = 1000;
         }
-        if (%val == 2)
+        else
         {
-            $pref::TS::sgShadowDetailSize = 0;
-        }
-        if (%val == 3)
-        {
-            if ($renderQuality $= 2)
+            if (%val == 2)
             {
-                $pref::Water::sgShadowDetailSize = 0;
+                $pref::TS::sgShadowDetailSize = 0;
             }
-            $pref::Water::sgShadowDetailSize = 1000;
+            else
+            {
+                if (%val == 3)
+                {
+                    if ($renderQuality $= 2)
+                    {
+                        $pref::Water::sgShadowDetailSize = 0;
+                    }
+                    else
+                    {
+                        $pref::Water::sgShadowDetailSize = 1000;
+                    }
+                }
+            }
         }
     }
 }
@@ -114,17 +126,26 @@ function setSmallTextureModeValue(%val)
         {
             setSmallTexturesMode(2);
         }
-        if (%val == 2)
+        else
         {
-            setSmallTexturesMode(0);
-        }
-        if (%val == 3)
-        {
-            if ($renderQuality $= 2)
+            if (%val == 2)
             {
                 setSmallTexturesMode(0);
             }
-            setSmallTexturesMode(2);
+            else
+            {
+                if (%val == 3)
+                {
+                    if ($renderQuality $= 2)
+                    {
+                        setSmallTexturesMode(0);
+                    }
+                    else
+                    {
+                        setSmallTexturesMode(2);
+                    }
+                }
+            }
         }
     }
 }
@@ -169,17 +190,26 @@ function setWaterReflectionValue(%val)
         {
             $pref::Water::DynamicReflections = 0;
         }
-        if (%val == 2)
+        else
         {
-            $pref::Water::DynamicReflections = 1;
-        }
-        if (%val == 3)
-        {
-            if ($renderQuality $= 2)
+            if (%val == 2)
             {
                 $pref::Water::DynamicReflections = 1;
             }
-            $pref::Water::DynamicReflections = 0;
+            else
+            {
+                if (%val == 3)
+                {
+                    if ($renderQuality $= 2)
+                    {
+                        $pref::Water::DynamicReflections = 1;
+                    }
+                    else
+                    {
+                        $pref::Water::DynamicReflections = 0;
+                    }
+                }
+            }
         }
     }
 }
@@ -212,35 +242,44 @@ function setExposureFilterValue(%val)
             }
             ExposureFilterSelfView.setVisible(1);
         }
-        if (%val == 2)
+        else
         {
-            OptionsPanel.showBrightnessControls(1);
-            ExposureFilter.setVisible(1);
-            if (isObject(EditorExposureFilter))
+            if (%val == 2)
             {
-                EditorExposureFilter.setVisible(1);
-            }
-            ExposureFilterSelfView.setVisible(1);
-        }
-        if (%val == 3)
-        {
-            if ($renderQuality == 0)
-            {
-                OptionsPanel.showBrightnessControls(0);
-                ExposureFilter.setVisible(0);
+                OptionsPanel.showBrightnessControls(1);
+                ExposureFilter.setVisible(1);
                 if (isObject(EditorExposureFilter))
                 {
-                    EditorExposureFilter.setVisible(0);
+                    EditorExposureFilter.setVisible(1);
                 }
-                ExposureFilterSelfView.setVisible(0);
+                ExposureFilterSelfView.setVisible(1);
             }
-            OptionsPanel.showBrightnessControls(1);
-            ExposureFilter.setVisible(1);
-            if (isObject(EditorExposureFilter))
+            else
             {
-                EditorExposureFilter.setVisible(1);
+                if (%val == 3)
+                {
+                    if ($renderQuality == 0)
+                    {
+                        OptionsPanel.showBrightnessControls(0);
+                        ExposureFilter.setVisible(0);
+                        if (isObject(EditorExposureFilter))
+                        {
+                            EditorExposureFilter.setVisible(0);
+                        }
+                        ExposureFilterSelfView.setVisible(0);
+                    }
+                    else
+                    {
+                        OptionsPanel.showBrightnessControls(1);
+                        ExposureFilter.setVisible(1);
+                        if (isObject(EditorExposureFilter))
+                        {
+                            EditorExposureFilter.setVisible(1);
+                        }
+                        ExposureFilterSelfView.setVisible(1);
+                    }
+                }
             }
-            ExposureFilterSelfView.setVisible(1);
         }
     }
 }

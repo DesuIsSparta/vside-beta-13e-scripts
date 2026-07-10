@@ -32,13 +32,19 @@ function serverCmdAdminAction(%senderConnection, %action, %target, %message)
         {
             admin::doBan(%target, %message, %senderConnection.Player);
         }
-        if (%action $= "Message")
+        else
         {
-            admin::doMessage(%target, %message, %senderConnection.Player);
-        }
-        if (%action $= "Throw Voice")
-        {
-            admin::doThrowVoice(%target, %message, %senderConnection.Player);
+            if (%action $= "Message")
+            {
+                admin::doMessage(%target, %message, %senderConnection.Player);
+            }
+            else
+            {
+                if (%action $= "Throw Voice")
+                {
+                    admin::doThrowVoice(%target, %message, %senderConnection.Player);
+                }
+            }
         }
     }
     return;

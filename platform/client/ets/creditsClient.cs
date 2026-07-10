@@ -79,7 +79,7 @@ function doCredits()
     %text = credits_AddName(%text, "Tracie R.");
     %text = credits_AddName(%text, "Willy B.");
     LoginCreditsText.setText(%text);
-    $gCreditsTickDirection = -($gCreditsTickDirection);
+    $gCreditsTickDirection = -$gCreditsTickDirection;
     creditsTick();
 }
 $gCreditsTimerID = 0;

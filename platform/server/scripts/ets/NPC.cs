@@ -321,7 +321,7 @@ function NPCManager::addAnimToSet(%this, %setName, %val)
     }
     %this.animSets.put(%setName, %newThing);
     %sets = %this.animSets.get("setNames");
-    if (findWord(%sets, %setName) != -(1))
+    if (findWord(%sets, %setName) != -1)
     {
         return;
     }

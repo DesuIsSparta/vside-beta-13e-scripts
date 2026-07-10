@@ -134,7 +134,7 @@ function onCyclePauseEnd()
     $Game::Cycling = 0;
     %search = $Server::MissionFileSpec;
     %file = findFirstFile(%search);
-    while (!(%file $= ""))
+    if (!(%file $= ""))
     {
         if (%file $= $Server::MissionFile)
         {
@@ -144,7 +144,10 @@ function onCyclePauseEnd()
                 %file = findFirstFile(%search);
             }
         }
-        %file = findNextFile(%search);
+        else
+        {
+            %file = findNextFile(%search);
+        }
     }
     loadMission(%file);
     return;
@@ -194,7 +197,7 @@ function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %un
     %this.Player = 0;
     if ((%damageType $= "Suicide") && (%sourceClient == %this))
     {
-        %this.incScore(-(1));
+        %this.incScore(-1);
         messageAll('MsgClientKilled', '%1 takes his own life!', %this.name);
     }
     else
@@ -231,13 +234,19 @@ function GameConnection::createPlayer(%this, %spawnPoint)
         {
             %playerDB = PlayerM;
         }
-        if (getRandom(0, 1) == 0)
+        else
         {
-            %playerDB = PlayerF;
-            %this.gender = "f";
+            if (getRandom(0, 1) == 0)
+            {
+                %playerDB = PlayerF;
+                %this.gender = "f";
+            }
+            else
+            {
+                %playerDB = PlayerM;
+                %this.gender = "m";
+            }
         }
-        %playerDB = PlayerM;
-        %this.gender = "m";
     }
     %player = new Player("") {
         dataBlock = %playerDB;
@@ -254,9 +263,12 @@ function GameConnection::createPlayer(%this, %spawnPoint)
         {
             %genre = "i";
         }
-        if (%rand == 2)
+        else
         {
-            %genre = "p";
+            if (%rand == 2)
+            {
+                %genre = "p";
+            }
         }
     }
     %player.setGender(%this.gender);
@@ -342,7 +354,7 @@ function pickSpawnPoint()
 {
     %groupName = "MissionGroup/PlayerDropPoints";
     %group = nameToID(%groupName);
-    if (%group != -(1))
+    if (%group != -1)
     {
         %count = %group.getCount();
         if (%count != 0)

@@ -94,8 +94,11 @@ function initClient()
             log("general", "info", "--------- Joining: " @ $JoinGameAddress @ "---------");
             join($JoinGameAddress);
         }
-        checkForPackageUpdates($AutoDownloadPackages);
-        loadMainMenu();
+        else
+        {
+            checkForPackageUpdates($AutoDownloadPackages);
+            loadMainMenu();
+        }
     }
     $TransitionScreenshot = new ScreenShotUploader("") {
         className = "ScreenShotUploaderClass";

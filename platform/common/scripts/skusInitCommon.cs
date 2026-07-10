@@ -48,7 +48,7 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     %si.expireTime = %expireTime;
     %si.usageShrt = %usageShrt;
     %si.tags = %tags;
-    %si.salonStyleIndex = -(1);
+    %si.salonStyleIndex = -1;
     %si.author = %author;
     %prev = %this.findBySku(%si.skuNumber);
     if (isObject(%prev))
@@ -231,7 +231,7 @@ function SkuManager::getTopExclusionLevelForDrawer(%this, %drwr)
     {
         %folder = getField(%tabbedDrwr, %i);
         %incStr = %incStr @ %folder;
-        if ((%idx = findRecord(%this.exclusiveDrwrs, %incStr)) != -(1))
+        if ((%idx = findRecord(%this.exclusiveDrwrs, %incStr)) != -1)
         {
             return getRecord(%this.exclusiveDrwrs, %idx);
         }

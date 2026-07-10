@@ -262,7 +262,7 @@ function CSBrowserNextPrevLink::onURL(%this, %url)
     {
         return;
     }
-    %this.browser.selectNextLeaf((%dir $= "prev") ? -(1) : 1, 0);
+    %this.browser.selectNextLeaf((%dir $= "prev") ? -1 : 1, 0);
 }
 function CSBrowser::fillLeafPane(%this, %pane)
 {

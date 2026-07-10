@@ -73,8 +73,11 @@ function URLPostObject::addUserAndToken(%this, %userName)
             %this.setURLParam("user", %userName);
             %this.setURLParam("token", $Token);
         }
-        %this.setURLParam("user", %userName);
-        %this.setURLParam("token", getClientToken(%userName));
+        else
+        {
+            %this.setURLParam("user", %userName);
+            %this.setURLParam("token", getClientToken(%userName));
+        }
     }
 }
 function URLPostObject::setURLParamIfNotEmpty(%this, %paramName, %paramValue)

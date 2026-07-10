@@ -224,7 +224,10 @@ function paperDoll_CurOutfitSet(%val)
         {
             %newVal = $gPaperDoll_CurIndex + getSubStr(%val, 1, 100);
         }
-        %newVal = %val;
+        else
+        {
+            %newVal = %val;
+        }
     }
     paperDoll_prepareOneSnapshot(%newVal);
 }

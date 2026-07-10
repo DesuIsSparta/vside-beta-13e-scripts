@@ -1,4 +1,4 @@
-$gRandomUserNamesNum = -(1);
+$gRandomUserNamesNum = -1;
 $gRandomUserNameIdx = 0;
 function sampleData_initUserNames()
 {
@@ -36,7 +36,7 @@ function getSequentialUserName()
     $gRandomUserNameIdx = ($gRandomUserNameIdx + 1) % $gRandomUserNamesNum;
     return %ret;
 }
-$gRandomBannerIDsNum = -(1);
+$gRandomBannerIDsNum = -1;
 $gSequentialBannerID = 0;
 function sampleData_initBannerIDs()
 {
@@ -74,7 +74,7 @@ function getSequentialBannerID()
     $gSequentialBannerID = ($gSequentialBannerID + 1) % $gRandomBannerIDsNum;
     return %ret;
 }
-$gRandomApartmentPhotoIDsNum = -(1);
+$gRandomApartmentPhotoIDsNum = -1;
 function getRandomApartmentPhotoID()
 {
     if ($gRandomApartmentPhotoIDsNum < 0)

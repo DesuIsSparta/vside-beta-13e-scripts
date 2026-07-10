@@ -26,7 +26,7 @@ function snapshotAvatarToolActiveRegion::initStuff(%this)
         return;
     }
     %this.setSimObject($player);
-    %this.cameraXRotMin = -(0.3);
+    %this.cameraXRotMin = -0.3;
     %this.cameraXRotMax = 0.1;
     %this.adjustForHeight($UserPref::Player::height, 0.3, 1.1);
     %this.setOrbitDistMin(0.4);

@@ -8,7 +8,7 @@ function recordingsDlg::onWake()
     while (!(%file $= ""))
     {
         %fileName = fileBase(%file);
-        if (strstr(%file, "/CVS/") == -(1))
+        if (strstr(%file, "/CVS/") == -1)
         {
             RecordingsDlgList.addRow(%i = %i + 1, %fileName);
         }
@@ -63,6 +63,7 @@ function startDemoRecord()
         %file = $currentMod @ "/recordings/demo" @ %num @ ".rec";
         if (!isFile(%file))
         {
+            break;
         }
         %i = %i + 1;
     }

@@ -77,7 +77,7 @@ function snapping_takeCurrentSnapshot()
 function ClosetStaffPanel::adjustLOD(%this, %direction)
 {
     %val = ClosetMainObjectView.changeDetailLevel(%direction);
-    closetStaffLODLabelButton.setText((%val * -(1)));
+    closetStaffLODLabelButton.setText((%val * -1));
     if (!isObject(ClosetTabs.getCurrentTab().itemsScroll))
     {
         return;

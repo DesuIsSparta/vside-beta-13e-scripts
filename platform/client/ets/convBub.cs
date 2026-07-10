@@ -56,7 +56,10 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest)
         {
             %extY = %parentHeight * %this.vPercent1;
         }
-        %extY = %parentHeight * %this.vPercent0;
+        else
+        {
+            %extY = %parentHeight * %this.vPercent0;
+        }
     }
     %textHeight = getWord(%this.getObject(0).getObject(0).getExtent(), 1);
     %extY = mClamp(%extY, 0, (%textHeight + 30));
@@ -72,7 +75,7 @@ function GuiConvBubbleCtrl::AutosizeTimer(%this)
     cancel(gGetField(%this, resizeTimer));
     gSetField(%this, resizeTimer, %this.schedule(1000, "AutosizeTimer"));
 }
-$gConvBubOrigSlug = -(123);
+$gConvBubOrigSlug = -123;
 $gConvBubChillTimer = 0;
 function GuiConvBubbleCtrl::reexpand(%this, %howLongSecs)
 {
@@ -80,7 +83,7 @@ function GuiConvBubbleCtrl::reexpand(%this, %howLongSecs)
     gSetField(%this, resizeTimer, %this.schedule((%howLongSecs * 1000), "AutosizeTimer"));
     if (!gGetField(%this, expanded))
     {
-        if ($gConvBubOrigSlug == -(123))
+        if ($gConvBubOrigSlug == -123)
         {
             $gConvBubOrigSlug = %this.getSluggishness();
         }
@@ -138,7 +141,10 @@ function ConvBub::chooseProfile(%this)
         {
             %this.setProfile(ConvBubSpookyProfile);
         }
-        %this.setProfile(ConvBubProfile);
+        else
+        {
+            %this.setProfile(ConvBubProfile);
+        }
     }
 }
 $gConvBubAutoCloseTimer = 0;
@@ -201,9 +207,12 @@ function ConvBubVecCtrl::onURL(%this, %url)
         {
             gotoWebPage(%url);
         }
-        if (getSubStr(%url, 0, 7) $= "vside:/")
+        else
         {
-            vurlOperation(%url);
+            if (getSubStr(%url, 0, 7) $= "vside:/")
+            {
+                vurlOperation(%url);
+            }
         }
     }
     if (!%this.selectionActive)

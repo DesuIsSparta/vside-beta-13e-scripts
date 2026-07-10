@@ -97,7 +97,10 @@ function BroadSnapshotButton_doTakeSnapshot()
         {
             %ext = ".png";
         }
-        %ext = ".png";
+        else
+        {
+            %ext = ".png";
+        }
     }
     %regionControl = 0;
     if (BroadcastFullScreenCheckbox.getValue())
@@ -112,7 +115,7 @@ function BroadSnapshotButton_doTakeSnapshot()
     if (%tookPhoto)
     {
         %topMargin = 60;
-        %bottomMargin = -(10);
+        %bottomMargin = -10;
         %leftMargin = 0;
         %rightMargin = 0;
         %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame((getWord(%regionControl.getScreenPosition(), 0) - %leftMargin), (getWord(%regionControl.getScreenPosition(), 1) - %topMargin), ((getWord(%regionControl.getExtent(), 0) + %leftMargin) + %rightMargin), ((getWord(%regionControl.getExtent(), 1) + %topMargin) + %bottomMargin));

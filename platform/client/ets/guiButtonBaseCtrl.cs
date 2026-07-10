@@ -13,10 +13,13 @@ function GuiButtonBaseCtrl::onMouseDown(%this, %modifier, %point, %clickCount)
             {
                 %this.tickPeriodMS = 0;
             }
-            if (%this.tickPeriodMS < $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions)
+            else
             {
-                warn((getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "") ? %this.getId() : %this.getName() @ " " @ "has invalid tickPeriodMS=" @ %this.tickPeriodMS @ ", changing value to" @ " " @ $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions @ " " @ "ms");
-                %this.tickPeriodMS = $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions;
+                if (%this.tickPeriodMS < $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions)
+                {
+                    warn((getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "") ? %this.getId() : %this.getName() @ " " @ "has invalid tickPeriodMS=" @ %this.tickPeriodMS @ ", changing value to" @ " " @ $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions @ " " @ "ms");
+                    %this.tickPeriodMS = $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions;
+                }
             }
         }
     }
@@ -32,10 +35,13 @@ function GuiButtonBaseCtrl::onMouseDown(%this, %modifier, %point, %clickCount)
             {
                 %this.repeatDelayMS = 0;
             }
-            if (%this.repeatDelayMS < %this.tickPeriodMS)
+            else
             {
-                warn((getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "") ? %this.getId() : %this.getName() @ " " @ "has invalid repeatDelayMS=" @ %this.repeatDelayMS @ ", changing value to" @ " " @ %this.tickPeriodMS @ " " @ "ms (tickPeriodMS)");
-                %this.repeatDelayMS = %this.tickPeriodMS;
+                if (%this.repeatDelayMS < %this.tickPeriodMS)
+                {
+                    warn((getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "") ? %this.getId() : %this.getName() @ " " @ "has invalid repeatDelayMS=" @ %this.repeatDelayMS @ ", changing value to" @ " " @ %this.tickPeriodMS @ " " @ "ms (tickPeriodMS)");
+                    %this.repeatDelayMS = %this.tickPeriodMS;
+                }
             }
         }
     }

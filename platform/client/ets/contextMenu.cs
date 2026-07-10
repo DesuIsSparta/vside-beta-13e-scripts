@@ -94,7 +94,7 @@ function EditContextMenu::init(%this, %ctrl)
     %canCopy = (%end - %start) > 0;
     %canCut = %modifiable && %canCopy;
     %canPaste = %modifiable && !(getClipboard() $= "");
-    %n = -(1);
+    %n = -1;
     %this.add("Undo", %n = %n + 1, %modifiable ? %schemeNormal : %schemeDisabled);
     %this.add("---", %n = %n + 1, %schemeDisabled);
     %this.add("Cut", %n = %n + 1, %canCut ? %schemeNormal : %schemeDisabled);
@@ -125,21 +125,33 @@ function EditContextMenu::onSelect(%this, %unused, %text)
         {
             %this.ctrl.doCut();
         }
-        if (%text $= "Copy")
+        else
         {
-            %this.ctrl.doCopy();
-        }
-        if (%text $= "Paste")
-        {
-            %this.ctrl.doPaste();
-        }
-        if (%text $= "Delete")
-        {
-            %this.ctrl.deleteSelection();
-        }
-        if (%text $= "Select All")
-        {
-            %this.ctrl.selectAll();
+            if (%text $= "Copy")
+            {
+                %this.ctrl.doCopy();
+            }
+            else
+            {
+                if (%text $= "Paste")
+                {
+                    %this.ctrl.doPaste();
+                }
+                else
+                {
+                    if (%text $= "Delete")
+                    {
+                        %this.ctrl.deleteSelection();
+                    }
+                    else
+                    {
+                        if (%text $= "Select All")
+                        {
+                            %this.ctrl.selectAll();
+                        }
+                    }
+                }
+            }
         }
     }
 }

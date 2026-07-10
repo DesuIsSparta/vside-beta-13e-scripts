@@ -75,8 +75,11 @@ function MusicHud::update(%this)
         {
             %heightOffset = %heightOffset + 20;
         }
-        %content = %content @ "\n" @ %this.comment;
-        %heightOffset = %heightOffset + %heightDelta;
+        else
+        {
+            %content = %content @ "\n" @ %this.comment;
+            %heightOffset = %heightOffset + %heightDelta;
+        }
     }
     if ($UserPref::Audio::mute)
     {
@@ -89,19 +92,25 @@ function MusicHud::update(%this)
         {
             %this.ratingControl.setVisible(1);
         }
-        %this.ratingControl.setVisible(0);
-        if (isObject(FMod))
+        else
         {
-            if (FMod.isMusicOn())
+            %this.ratingControl.setVisible(0);
+            if (isObject(FMod))
             {
-                %content = "Loading music info...";
+                if (FMod.isMusicOn())
+                {
+                    %content = "Loading music info...";
+                }
+                else
+                {
+                    %content = "You are currently in a space without music. To listen to music visit clubs, stores, apartments, or other venues that have music playing.";
+                }
             }
             else
             {
-                %content = "You are currently in a space without music. To listen to music visit clubs, stores, apartments, or other venues that have music playing.";
+                %content = "FMod music not currently available.";
             }
         }
-        %content = "FMod music not currently available.";
     }
     %this.updateRatingText();
     MusicText.setText(%content);
@@ -289,7 +298,10 @@ function MusicText::onUrl_NOOP(%this, %url)
             MessagePopup("Please Wait", "Starting ITunes...", 5000);
             iTunesOpen(%url);
         }
-        MessageBoxYesNo("Confirm Installation", "You have selected a link to the ITunes Store " @ "but do not have ITunes installed.  " @ "Would you like to install it now?", "MusicText::installITunes();", "MusicText::declineITunes();");
+        else
+        {
+            MessageBoxYesNo("Confirm Installation", "You have selected a link to the ITunes Store " @ "but do not have ITunes installed.  " @ "Would you like to install it now?", "MusicText::installITunes();", "MusicText::declineITunes();");
+        }
     }
 }
 function MusicText::installITunes()
@@ -315,19 +327,31 @@ function MusicRatingControl::onUpdate(%this)
         {
             %this.descripText = "Not So Good";
         }
-        if ((%this.mouseOver + 1) == 3)
+        else
         {
-            %this.descripText = "So-So";
+            if ((%this.mouseOver + 1) == 3)
+            {
+                %this.descripText = "So-So";
+            }
+            else
+            {
+                if ((%this.mouseOver + 1) == 4)
+                {
+                    %this.descripText = "Like It";
+                }
+                else
+                {
+                    if ((%this.mouseOver + 1) == 5)
+                    {
+                        %this.descripText = "Love It!";
+                    }
+                    else
+                    {
+                        %this.descripText = "";
+                    }
+                }
+            }
         }
-        if ((%this.mouseOver + 1) == 4)
-        {
-            %this.descripText = "Like It";
-        }
-        if ((%this.mouseOver + 1) == 5)
-        {
-            %this.descripText = "Love It!";
-        }
-        %this.descripText = "";
     }
     MusicHud.updateRatingText();
 }

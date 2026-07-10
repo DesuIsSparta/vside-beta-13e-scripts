@@ -105,14 +105,7 @@ function shoutout_takeSnapshot()
     %ctrlList = %ctrlList @ " " @ geShoutOutWindow;
     %ctrlList = %ctrlList @ " " @ ConsoleDlg;
     %ctrlList = %ctrlList @ " " @ geTicker;
-    if ($UserPref::UI::ShoutOut::Show::Chat)
-    {
-    }
-    else
-    {
-    }
-    %ctrlList = "" @ " " @ ConvBub;
-    %ctrlList;
+    %ctrlList = %ctrlList @ $UserPref::UI::ShoutOut::Show::Chat ? "" : " " @ ConvBub;
     geShoutout_Snapshot.snap_hiddenCtrlList = %ctrlList;
     BroadSnapshotButton_HideSnoop();
     if (!$UserPref::UI::ShoutOut::Show::Me && !$IN_ORBIT_CAM && !$firstPerson)

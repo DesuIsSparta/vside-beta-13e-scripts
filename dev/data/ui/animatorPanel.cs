@@ -180,9 +180,12 @@ function clientCmdBuildAnimatorTargetsList(%actionTagged, %item)
                 $animatorPanelTargetsList = $animatorPanelTargetsList @ "\n" @ %item;
             }
         }
-        if (%action $= "finish")
+        else
         {
-            animatorPanel.onGotTargetsList($animatorPanelTargetsList);
+            if (%action $= "finish")
+            {
+                animatorPanel.onGotTargetsList($animatorPanelTargetsList);
+            }
         }
     }
 }

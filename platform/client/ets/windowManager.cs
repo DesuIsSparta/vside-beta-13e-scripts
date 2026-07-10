@@ -71,7 +71,7 @@ function WindowManager::wakeUp(%this)
 }
 function WindowManager::getRightMargin(%this)
 {
-    return %this.getRightMarginAtY(-(1));
+    return %this.getRightMarginAtY(-1);
 }
 $gWindowManagerMarginSpecialCasesRight = "";
 $gWindowManagerMarginSpecialCasesLeft = "AimConvContainer";
@@ -128,7 +128,7 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY)
 }
 function WindowManager::getLeftMargin(%this)
 {
-    return %this.getLeftMarginAtY(-(1));
+    return %this.getLeftMarginAtY(-1);
 }
 function WindowManager::getLeftMarginAtY(%this, %checkAtY)
 {
@@ -242,9 +242,12 @@ function WindowManager::repositionWindows(%this, %windowSet)
                         {
                             %oldestWin = %win;
                         }
-                        if (%win.getFieldValue("age") > %oldestWin.getFieldValue("age"))
+                        else
                         {
-                            %oldestWin = %win;
+                            if (%win.getFieldValue("age") > %oldestWin.getFieldValue("age"))
+                            {
+                                %oldestWin = %win;
+                            }
                         }
                     }
                     %weight = %win.vWeight;
@@ -260,9 +263,12 @@ function WindowManager::repositionWindows(%this, %windowSet)
                             %weight = 0;
                             %residualHeight = %residualHeight - (getWord(%win.getExtent(), 1) + %padding);
                         }
-                        if (%weight == 2)
+                        else
                         {
-                            %weight = $gWindowManagerSpacerWeight;
+                            if (%weight == 2)
+                            {
+                                %weight = $gWindowManagerSpacerWeight;
+                            }
                         }
                     }
                     DEBUG_WM("weight: " @ %weight);

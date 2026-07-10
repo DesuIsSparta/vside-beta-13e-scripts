@@ -17,6 +17,7 @@ package CanvasCursor
             if (%control.noCursor $= "")
             {
                 %cursorShouldBeOn = 1;
+                break;
             }
             %i = %i + 1;
         }
@@ -26,7 +27,10 @@ package CanvasCursor
             {
                 cursorOn();
             }
-            cursorOff();
+            else
+            {
+                cursorOff();
+            }
         }
     }
     function GuiCanvas::setContent(%this, %ctrl)

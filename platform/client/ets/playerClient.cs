@@ -128,7 +128,7 @@ function Player::getAnimationSkus(%this, %animInternalName)
     if (%this.animationSkus[%animInternalName] $= "")
     {
         %skusIndex = strstr(%animInternalName, "_skus_");
-        if (%skusIndex == -(1))
+        if (%skusIndex == -1)
         {
             %skus = "";
         }
@@ -165,7 +165,7 @@ function Player::staggerTick(%this)
     if ((%fwdVel != 0) || (%sdeVel != 0))
     {
         %amt = getRandom(0, ($gPlayerStaggerAmount * 1000)) * 0.001;
-        %amt = %amt * getRandom(0, 1) ? -(1) : 1;
+        %amt = %amt * getRandom(0, 1) ? -1 : 1;
     }
     else
     {
@@ -183,15 +183,18 @@ function Player::staggerTick(%this)
     }
     else
     {
-        if (%speed < -(0.00001))
+        if (%speed < -0.00001)
         {
             $mvYawLeftSpeed = 0;
-            $mvYawRightSpeed = %speed * -(1);
+            $mvYawRightSpeed = %speed * -1;
             %period = $gPlayerStaggerTimerPeriod;
         }
-        $mvYawLeftSpeed = 0;
-        $mvYawRightSpeed = 0;
-        %period = $gPlayerStaggerTimerPeriod * 3;
+        else
+        {
+            $mvYawLeftSpeed = 0;
+            $mvYawRightSpeed = 0;
+            %period = $gPlayerStaggerTimerPeriod * 3;
+        }
     }
     $gPlayerStaggerTimer = %this.schedule(%period, "staggerTick");
 }

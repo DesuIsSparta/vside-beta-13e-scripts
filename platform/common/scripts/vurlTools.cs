@@ -48,20 +48,23 @@ function vurl::parse(%this)
             %this.reconstructVURL();
             return 1;
         }
-        if (stricmp(%this.targetType, "location") == 0)
+        else
         {
-            %testTargetDest = strreplace(%this.targetDest, ",", " ");
-            %wordCount = getWordCount(%testTargetDest);
-            if ((%wordCount == 3) || (%wordCount == 7) && ($Server::Dedicated == 1) || isObjectAndHasPermission_NoWarn($player, "freeVURLTransform"))
+            if (stricmp(%this.targetType, "location") == 0)
             {
-                %this.targetDest = %testTargetDest;
-                %this.isRawTransform = 1;
-            }
-            if ((%wordCount != 1) && (%this.isRawTransform == 0))
-            {
-                %errorText = "Invalid number of parameters in target";
-                %this.doReportError("parseError", %errorText);
-                return 0;
+                %testTargetDest = strreplace(%this.targetDest, ",", " ");
+                %wordCount = getWordCount(%testTargetDest);
+                if ((%wordCount == 3) || (%wordCount == 7) && ($Server::Dedicated == 1) || isObjectAndHasPermission_NoWarn($player, "freeVURLTransform"))
+                {
+                    %this.targetDest = %testTargetDest;
+                    %this.isRawTransform = 1;
+                }
+                if ((%wordCount != 1) && (%this.isRawTransform == 0))
+                {
+                    %errorText = "Invalid number of parameters in target";
+                    %this.doReportError("parseError", %errorText);
+                    return 0;
+                }
             }
         }
     }
@@ -180,11 +183,14 @@ function vurl::execute(%this)
             %this.doReportError("TELETOSELF", "");
             return 0;
         }
-        if (isObject(ServerConnection) && isNPCName(%this.targetPath))
+        else
         {
-            %this.doReportSuccessExpected();
-            commandToServer('TeleportToPlayer', %this.targetPath);
-            return 1;
+            if (isObject(ServerConnection) && isNPCName(%this.targetPath))
+            {
+                %this.doReportSuccessExpected();
+                commandToServer('TeleportToPlayer', %this.targetPath);
+                return 1;
+            }
         }
     }
     if (!%this.isResolved && !$StandAlone)
@@ -230,9 +236,12 @@ function vurl::execute(%this)
         {
             commandToServer('TeleportToVURL', %this.vurl);
         }
-        %serverDest = %this._server[%this.retryIndex];
-        %this.retryIndex = %this.retryIndex + 1;
-        SetTransition(%serverDest, %this.vurl);
+        else
+        {
+            %serverDest = %this._server[%this.retryIndex];
+            %this.retryIndex = %this.retryIndex + 1;
+            SetTransition(%serverDest, %this.vurl);
+        }
     }
     return 1;
 }
@@ -269,7 +278,10 @@ function vurl::checkCityDownloadStatus(%this, %cityName)
         {
             return 0;
         }
-        return 1;
+        else
+        {
+            return 1;
+        }
     }
     return 0;
 }
@@ -372,22 +384,28 @@ function vurl::DefaultReportError(%vurl, %errorCode, %errorText)
             handleSystemMessage("msgInfoMessage", %errorText);
             %vurl.VURLHandler.schedule(0, "delete");
         }
-        if (stricmp(%errorCode, "offline") == 0)
+        else
         {
-            if (stricmp(%vurl.targetType, "user") == 0)
+            if (stricmp(%errorCode, "offline") == 0)
             {
-                %errorCode = "USEROFFLINE";
+                if (stricmp(%vurl.targetType, "user") == 0)
+                {
+                    %errorCode = "USEROFFLINE";
+                }
+                else
+                {
+                    if (stricmp(%vurl.targetType, "apartment") == 0)
+                    {
+                        %errorCode = "NOSPACE";
+                    }
+                }
             }
-            if (stricmp(%vurl.targetType, "apartment") == 0)
+            %errorMessage = $MsgCat::VURLError["ERROR_",strupr(%errorCode)];
+            handleSystemMessage("msgInfoMessage", %errorMessage);
+            if (geTGF.isVisible() || (WorldMap.loggedIn == 0))
             {
-                %errorCode = "NOSPACE";
+                MessageBoxOK("Whoa!", %errorMessage, "");
             }
-        }
-        %errorMessage = $MsgCat::VURLError["ERROR_",strupr(%errorCode)];
-        handleSystemMessage("msgInfoMessage", %errorMessage);
-        if (geTGF.isVisible() || (WorldMap.loggedIn == 0))
-        {
-            MessageBoxOK("Whoa!", %errorMessage, "");
         }
     }
 }
@@ -471,12 +489,15 @@ function vurl::reorderServerList(%this)
         return;
     }
     %idxSwapout = 0;
-    while (!(%this._server[%idxSwapout] $= ""))
+    if (!(%this._server[%idxSwapout] $= ""))
     {
         if (stricmp($ServerName, %this._server[%idxSwapout]) == 0)
         {
         }
-        %idxSwapout = %idxSwapout + 1;
+        else
+        {
+            %idxSwapout = %idxSwapout + 1;
+        }
     }
     if ((%this._server[%idxSwapout] $= "") || (%idxSwapout == 0))
     {
@@ -541,7 +562,7 @@ function vurlClearResolutionAndExecute(%line)
 function vurlClearResolution(%line)
 {
     %questionMarkIndex = strpos(%line, "?");
-    if (%questionMarkIndex != -(1))
+    if (%questionMarkIndex != -1)
     {
         return getSubStr(%line, 0, %questionMarkIndex);
     }

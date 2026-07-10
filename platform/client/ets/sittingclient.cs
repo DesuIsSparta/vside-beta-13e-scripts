@@ -99,7 +99,7 @@ function ClientSittingSystemOnClick(%obj)
     %obj.schedule(%obj.notSoFastClearTime, cancelNotSoFast);
     if (isObject(CSFurnitureMover))
     {
-        CSFurnitureMover.SelectNuggetID(-(1));
+        CSFurnitureMover.SelectNuggetID(-1);
     }
     commandToServer('RequestToSit', %obj.seatID);
 }

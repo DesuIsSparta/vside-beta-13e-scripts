@@ -138,10 +138,13 @@ package dev
                 playJournal($JournalPlayFile, 0);
                 log("initialization", "info", "playing event log from journal: " @ $JournalPlayFile);
             }
-            if (!($JournalPlayAndBreakFile $= ""))
+            else
             {
-                playJournal($JournalPlayAndBreakFile, 1);
-                log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
+                if (!($JournalPlayAndBreakFile $= ""))
+                {
+                    playJournal($JournalPlayAndBreakFile, 1);
+                    log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
+                }
             }
         }
     }
@@ -163,17 +166,20 @@ package dev
                     generateRegistrationStart();
                     return;
                 }
-                exec("dev/data/devDefaults.cs");
-                exec("dev/data/devPrefs.cs");
-                exec("./data/initNonReloadable.cs");
-                exec("./data/initReloadable.cs");
-                if (!($EvalString $= ""))
+                else
                 {
-                    eval($EvalString);
-                }
-                if (!($ExecScript $= ""))
-                {
-                    exec("./data/" @ $ExecScript);
+                    exec("dev/data/devDefaults.cs");
+                    exec("dev/data/devPrefs.cs");
+                    exec("./data/initNonReloadable.cs");
+                    exec("./data/initReloadable.cs");
+                    if (!($EvalString $= ""))
+                    {
+                        eval($EvalString);
+                    }
+                    if (!($ExecScript $= ""))
+                    {
+                        exec("./data/" @ $ExecScript);
+                    }
                 }
             }
         }

@@ -76,7 +76,10 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
         {
             %text = "<spush><color:dd0000>abuse<spop>  " @ " " @ %text;
         }
-        %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
+        else
+        {
+            %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
+        }
     }
     %this.addLine2(%text);
     if ($DevPref::Audio::NotifySnoop)
@@ -85,9 +88,12 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
         {
             alxPlay(Audio_SOSMessageIn);
         }
-        if (%speechType $= "abuse")
+        else
         {
-            alxPlay(Audio_SOSMessageIn);
+            if (%speechType $= "abuse")
+            {
+                alxPlay(Audio_SOSMessageIn);
+            }
         }
     }
 }
@@ -151,9 +157,12 @@ function snoopPanelTextCtrl::onUrl(%this, %url)
         {
             gotoWebPage(%url);
         }
-        if (getSubStr(%url, 0, 7) $= "vside:/")
+        else
         {
-            vurlOperation(%url);
+            if (getSubStr(%url, 0, 7) $= "vside:/")
+            {
+                vurlOperation(%url);
+            }
         }
     }
 }

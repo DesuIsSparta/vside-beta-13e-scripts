@@ -27,7 +27,10 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG)
         {
             %ext = ".png";
         }
-        %ext = ".png";
+        else
+        {
+            %ext = ".png";
+        }
     }
     %fileName = %fileName @ %ext;
     %uploader = "";

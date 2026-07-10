@@ -584,7 +584,10 @@ function BuddyHudWin::onlineBuddiesToString(%this)
             {
                 %onlineBuddies = %onlineBuddies @ "\t" @ aimGetBuddyName(%n);
             }
-            %onlineBuddies = aimGetBuddyName(%n);
+            else
+            {
+                %onlineBuddies = aimGetBuddyName(%n);
+            }
         }
         %n = %n + 1;
     }
@@ -623,7 +626,7 @@ function BuddyHudWin::refreshAIMBuddyList(%this)
         {
             %buddyName = aimGetBuddyName(%i);
             %buddyState = aimGetBuddyState(%i);
-            if (%buddyState == -(1))
+            if (%buddyState == -1)
             {
                 %tag = "\x10\x06";
                 %offlineList.put(%buddyName, %tag @ %buddyName @ "\x11");
@@ -635,22 +638,34 @@ function BuddyHudWin::refreshAIMBuddyList(%this)
                     %tag = "\x10\x06";
                     %offlineList.put(%buddyName, %tag @ %buddyName @ "\x11");
                 }
-                if (%buddyState == 1)
+                else
                 {
-                    %tag = "\x10\x07";
-                    %onlineList.put(%buddyName, %tag @ %buddyName @ "\x11");
+                    if (%buddyState == 1)
+                    {
+                        %tag = "\x10\x07";
+                        %onlineList.put(%buddyName, %tag @ %buddyName @ "\x11");
+                    }
+                    else
+                    {
+                        if (%buddyState == 2)
+                        {
+                            %tag = "\x10\x0B";
+                            %idleAwayList.put(%buddyName, %tag @ %buddyName @ "\x11");
+                        }
+                        else
+                        {
+                            if (%buddyState == 3)
+                            {
+                                %tag = "\x10\x0C";
+                                %idleAwayList.put(%buddyName, %tag @ %buddyName @ "\x11");
+                            }
+                            else
+                            {
+                                %offlineList.put(%buddyName, %buddyName);
+                            }
+                        }
+                    }
                 }
-                if (%buddyState == 2)
-                {
-                    %tag = "\x10\x0B";
-                    %idleAwayList.put(%buddyName, %tag @ %buddyName @ "\x11");
-                }
-                if (%buddyState == 3)
-                {
-                    %tag = "\x10\x0C";
-                    %idleAwayList.put(%buddyName, %tag @ %buddyName @ "\x11");
-                }
-                %offlineList.put(%buddyName, %buddyName);
             }
             %i = %i + 1;
         }
@@ -666,7 +681,7 @@ function BuddyHudWin::clearSelections(%this)
 {
     if (isObject(AIMBuddyList))
     {
-        AIMBuddyList.setSelectedRow(-(1));
+        AIMBuddyList.setSelectedRow(-1);
     }
 }
 BuddyHudWin.STATE_PARSE_RESULT = 1;
@@ -740,11 +755,14 @@ function BuddyHudWin::populateBuddyLists(%this)
         {
             %doit = 1;
         }
-        if (!($gBuddyListPopulateTimer $= ""))
+        else
         {
-            cancel($gBuddyListPopulateTimer);
+            if (!($gBuddyListPopulateTimer $= ""))
+            {
+                cancel($gBuddyListPopulateTimer);
+            }
+            $gBuddyListPopulateTimer = %this.schedule($gBuddyListMinRepopulatePeriodMS, "populateBuddyLists");
         }
-        $gBuddyListPopulateTimer = %this.schedule($gBuddyListMinRepopulatePeriodMS, "populateBuddyLists");
     }
     if (%doit)
     {
@@ -880,11 +898,17 @@ function BuddyHudWin::populateBuddyListsReally(%this)
                     %includeInList = 0;
                 }
             }
-            if (%friend.serverName $= $ServerName)
+            else
             {
-                %listName = "FrndsHere";
+                if (%friend.serverName $= $ServerName)
+                {
+                    %listName = "FrndsHere";
+                }
+                else
+                {
+                    %listName = "FrndsThere";
+                }
             }
-            %listName = "FrndsThere";
         }
         %list = %this.buddyLists[%listName];
         if (!isObject(%list))
@@ -1102,21 +1126,27 @@ function BuddyHudWin::populateBuddyListsReally(%this)
                 %color = $NameColorOffline;
                 %listName = "FansOffline";
             }
-            if (%fan.serverName $= $ServerName)
+            else
             {
-                if ((%vipRoleMasks != 0) && ((%fan.roles & %vipRoleMasks) != 0))
+                if (%fan.serverName $= $ServerName)
                 {
-                    %color = $NameColorStaff;
-                    %listName = "FansHere";
+                    if ((%vipRoleMasks != 0) && ((%fan.roles & %vipRoleMasks) != 0))
+                    {
+                        %color = $NameColorStaff;
+                        %listName = "FansHere";
+                    }
+                    else
+                    {
+                        %color = $NameColorNormal;
+                        %listName = "FansHere";
+                    }
                 }
                 else
                 {
-                    %color = $NameColorNormal;
-                    %listName = "FansHere";
+                    %color = $NameColorElsewhere;
+                    %listName = "FansThere";
                 }
             }
-            %color = $NameColorElsewhere;
-            %listName = "FansThere";
         }
         if (!(%listName $= ""))
         {
@@ -1435,11 +1465,17 @@ function BuddyHudWin::getFriendStatus(%this, %playerName)
         {
             return "favorite";
         }
-        if (UserListFans.hasKey(%playerName))
+        else
         {
-            return "fan";
+            if (UserListFans.hasKey(%playerName))
+            {
+                return "fan";
+            }
+            else
+            {
+                return "none";
+            }
         }
-        return "none";
     }
 }
 function BuddyHudWin::getIgnoreStatus(%this, %playerName)
@@ -1591,11 +1627,17 @@ function parseBuddyRecord(%record, %val)
         {
             %record.isIdle = 1;
         }
-        if (%record.isIdle $= "no")
+        else
         {
-            %record.isIdle = 0;
+            if (%record.isIdle $= "no")
+            {
+                %record.isIdle = 0;
+            }
+            else
+            {
+                %record.isIdle = 1;
+            }
         }
-        %record.isIdle = 1;
     }
     %record.loggedIn = %record.loggedIn $= "yes";
     if (%record.isNPC && (%record.serverName $= ""))
@@ -1689,14 +1731,20 @@ function onDoneOrErrorCallback_GetUserRelations_Single(%request)
             %list = UserListFavorites;
             log("network", "debug", getScopeName() @ " " @ " -" @ " " @ %key @ " " @ "=" @ " " @ %val);
         }
-        if (%request.getValue("fanCount") > 0)
+        else
         {
-            %key = "fan0";
-            %val = %request.getValue("fan0");
-            %list = UserListFans;
-            log("network", "debug", getScopeName() @ " " @ " -" @ " " @ %key @ " " @ "=" @ " " @ %val);
+            if (%request.getValue("fanCount") > 0)
+            {
+                %key = "fan0";
+                %val = %request.getValue("fan0");
+                %list = UserListFans;
+                log("network", "debug", getScopeName() @ " " @ " -" @ " " @ %key @ " " @ "=" @ " " @ %val);
+            }
+            else
+            {
+                log("network", "debug", getScopeName() @ " " @ "- lost relation" @ " " @ %val);
+            }
         }
-        log("network", "debug", getScopeName() @ " " @ "- lost relation" @ " " @ %val);
     }
     if (!(%val $= ""))
     {
@@ -1798,69 +1846,99 @@ function clientCmdUpdateBuddy(%source, %target, %action)
         {
             sendBuddyStatusRequest(%other);
         }
-        if (%action $= "userToIdle")
+        else
         {
-            BuddyHudTabs.setBuddyIdleStatus(%source, 1);
-        }
-        if (%action $= "userToNonIdle")
-        {
-            BuddyHudTabs.setBuddyIdleStatus(%source, 0);
-        }
-        if (%action $= "friendRequestCreated")
-        {
-            sendBuddyStatusRequest(%other);
-            if (%other $= %source)
+            if (%action $= "userToIdle")
             {
-                handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff><a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> has just asked to be your friend!  <a:ACCEPT " @ munge(%other) @ ">Accept</a> | <a:DECLINE " @ munge(%other) @ ">Decline</a>");
+                BuddyHudTabs.setBuddyIdleStatus(%source, 1);
             }
             else
             {
-                handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You have asked <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> to be your friend.");
+                if (%action $= "userToNonIdle")
+                {
+                    BuddyHudTabs.setBuddyIdleStatus(%source, 0);
+                }
+                else
+                {
+                    if (%action $= "friendRequestCreated")
+                    {
+                        sendBuddyStatusRequest(%other);
+                        if (%other $= %source)
+                        {
+                            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff><a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> has just asked to be your friend!  <a:ACCEPT " @ munge(%other) @ ">Accept</a> | <a:DECLINE " @ munge(%other) @ ">Decline</a>");
+                        }
+                        else
+                        {
+                            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You have asked <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> to be your friend.");
+                        }
+                    }
+                    else
+                    {
+                        if (%action $= "friendsCreated")
+                        {
+                            sendBuddyStatusRequest(%other);
+                            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff><a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> is now your friend.");
+                            SystemMessageTextCtrl.updateFriendRequest(%other, 1);
+                        }
+                        else
+                        {
+                            if (%action $= "friendsRemoved")
+                            {
+                                sendBuddyStatusRequest(%other);
+                                handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff><a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> is no longer your friend.");
+                            }
+                            else
+                            {
+                                if (%action $= "friendRequestDenied")
+                                {
+                                    sendBuddyStatusRequest(%other);
+                                    if (%self $= %source)
+                                    {
+                                        handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You declined <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>'s friend request.");
+                                        SystemMessageTextCtrl.updateFriendRequest(%other, 0);
+                                    }
+                                }
+                                else
+                                {
+                                    if (%action $= "friendRequestCancelled")
+                                    {
+                                        sendBuddyStatusRequest(%other);
+                                        if (%self $= %source)
+                                        {
+                                            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You canceled your friend request to <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>.");
+                                        }
+                                        else
+                                        {
+                                            SystemMessageTextCtrl.updateFriendRequest(%other, 2);
+                                        }
+                                    }
+                                    else
+                                    {
+                                        if (%action $= "ignoreAdded")
+                                        {
+                                            sendBuddyStatusRequest(%other);
+                                            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You ignored <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>.");
+                                        }
+                                        else
+                                        {
+                                            if (%action $= "ignoreRemoved")
+                                            {
+                                                sendBuddyStatusRequest(%other);
+                                                handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You stopped ignoring <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>.");
+                                            }
+                                            else
+                                            {
+                                                log("relations", "error", "Unknown action: " @ %action);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        if (%action $= "friendsCreated")
-        {
-            sendBuddyStatusRequest(%other);
-            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff><a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> is now your friend.");
-            SystemMessageTextCtrl.updateFriendRequest(%other, 1);
-        }
-        if (%action $= "friendsRemoved")
-        {
-            sendBuddyStatusRequest(%other);
-            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff><a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a> is no longer your friend.");
-        }
-        if (%action $= "friendRequestDenied")
-        {
-            sendBuddyStatusRequest(%other);
-            if (%self $= %source)
-            {
-                handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You declined <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>'s friend request.");
-                SystemMessageTextCtrl.updateFriendRequest(%other, 0);
-            }
-        }
-        if (%action $= "friendRequestCancelled")
-        {
-            sendBuddyStatusRequest(%other);
-            if (%self $= %source)
-            {
-                handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You canceled your friend request to <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>.");
-            }
-            else
-            {
-                SystemMessageTextCtrl.updateFriendRequest(%other, 2);
-            }
-        }
-        if (%action $= "ignoreAdded")
-        {
-            sendBuddyStatusRequest(%other);
-            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You ignored <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>.");
-        }
-        if (%action $= "ignoreRemoved")
-        {
-            sendBuddyStatusRequest(%other);
-            handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You stopped ignoring <a:gamelink " @ munge(%other) @ ">" @ StripMLControlChars(%other) @ "</a>.");
-        }
-        log("relations", "error", "Unknown action: " @ %action);
     }
 }
 function BuddyHudFriendsList::scrollToPos(%this, %pos)
@@ -1898,13 +1976,19 @@ function BuddyHudPlayerList::onURL(%this, %url)
             $UserPref::buddies::collapsedLists[%listName] = !$UserPref::buddies::collapsedLists[%listName];
             BuddyHudWin.populateBuddyListsReally();
         }
-        if (getWord(%url, 1) $= "approveall")
+        else
         {
-            acceptAllOperation();
-        }
-        if (getWord(%url, 1) $= "declineall")
-        {
-            declineAllOperation();
+            if (getWord(%url, 1) $= "approveall")
+            {
+                acceptAllOperation();
+            }
+            else
+            {
+                if (getWord(%url, 1) $= "declineall")
+                {
+                    declineAllOperation();
+                }
+            }
         }
     }
 }

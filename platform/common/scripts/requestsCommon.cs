@@ -29,9 +29,12 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
                     error(getScopeName() @ " " @ "- more than one non-furnishing SKU owned::" @ " " @ %sku @ " " @ %qty @ " " @ %si.skuType);
                 }
             }
-            if ((%qty < 1) && (%qty != -(1)))
+            else
             {
-                error(getScopeName() @ " " @ "- invalid sku quantity:" @ " " @ %sku @ " " @ %qty);
+                if ((%qty < 1) && (%qty != -1))
+                {
+                    error(getScopeName() @ " " @ "- invalid sku quantity:" @ " " @ %sku @ " " @ %qty);
+                }
             }
         }
         %n = %n + 1;
@@ -72,9 +75,12 @@ function ManagerRequest::onDoneOrError(%this)
         {
             %this.callbackHandler.onDoneOrErrorCallback_GetStoreInventory(%this);
         }
-        %cmd = %this.callbackHandler @ "(" @ %this.getId() @ ");";
-        log("Communication", "debug", getScopeName() @ " " @ "-" @ " " @ getDebugString(%this) @ " " @ "executing callback" @ " " @ %cmd);
-        eval(%cmd);
+        else
+        {
+            %cmd = %this.callbackHandler @ "(" @ %this.getId() @ ");";
+            log("Communication", "debug", getScopeName() @ " " @ "-" @ " " @ getDebugString(%this) @ " " @ "executing callback" @ " " @ %cmd);
+            eval(%cmd);
+        }
     }
     %this.schedule(0, "delete");
 }
@@ -98,8 +104,11 @@ function ManagerRequest::addUserAndToken(%this, %userName)
             %this.addUrlParam("user", %userName);
             %this.addUrlParam("token", $Token);
         }
-        %this.addUrlParam("user", %userName);
-        %this.addUrlParam("token", getClientToken(%userName));
+        else
+        {
+            %this.addUrlParam("user", %userName);
+            %this.addUrlParam("token", getClientToken(%userName));
+        }
     }
 }
 function UniformManagerRequest::start(%this)

@@ -16,7 +16,7 @@ function AIMConvManager::Initialize(%this)
             MissionCleanup.add(%this.spamDict);
         }
         %this.numConvs = 0;
-        %this.currentConvIndex = -(1);
+        %this.currentConvIndex = -1;
         if (%this.maxConvs <= 0)
         {
             %this.maxConvs = 20;
@@ -94,19 +94,28 @@ function AIMConvManager::removeConvAtIndex(%this, %convIndex)
         %this.convs[%this.numConvs] = 0;
         if (%this.numConvs == 0)
         {
-            %this.currentConvIndex = -(1);
+            %this.currentConvIndex = -1;
         }
-        if (%this.currentConvIndex >= %this.numConvs)
+        else
         {
-            %this.selectConvAtIndex((%this.numConvs - 1));
-        }
-        if (%this.currentConvIndex > %convIndex)
-        {
-            %this.selectConvAtIndex((%this.currentConvIndex - 1));
-        }
-        if (%this.currentConvIndex == %convIndex)
-        {
-            %this.selectCurrentConv();
+            if (%this.currentConvIndex >= %this.numConvs)
+            {
+                %this.selectConvAtIndex((%this.numConvs - 1));
+            }
+            else
+            {
+                if (%this.currentConvIndex > %convIndex)
+                {
+                    %this.selectConvAtIndex((%this.currentConvIndex - 1));
+                }
+                else
+                {
+                    if (%this.currentConvIndex == %convIndex)
+                    {
+                        %this.selectCurrentConv();
+                    }
+                }
+            }
         }
     }
     %this.update();
@@ -231,11 +240,12 @@ function AIMConvManager::newConv(%this, %aimName)
         if (aimGetBuddyName(%i) $= %conv.aimName)
         {
             %state = aimGetBuddyState(%i);
-            if (%state == -(1))
+            if (%state == -1)
             {
                 %state = 0;
             }
             %conv.status = getWord(%this.stateMapping, %state);
+            break;
         }
         %i = %i + 1;
     }
@@ -445,7 +455,7 @@ function AIMConvManager::convClicked(%this, %conv)
     %curConv = %this.getCurrentConv();
     if (isObject(%curConv) && (%curConv.getId() == %conv.getId()))
     {
-        %this.selectConvAtIndex(-(1));
+        %this.selectConvAtIndex(-1);
     }
     else
     {
@@ -685,7 +695,7 @@ function AIMConvManager::buddyStateChanged(%this, %name, %state)
     %conv = %this.getConvWithName(%name);
     if (%conv)
     {
-        if (%state == -(1))
+        if (%state == -1)
         {
             %state = 0;
         }

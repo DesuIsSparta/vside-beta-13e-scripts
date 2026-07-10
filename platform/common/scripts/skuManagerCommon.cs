@@ -569,7 +569,10 @@ function SkuManager::setSkuPair(%this, %list, %first, %second)
         {
             %list = setWord(%list, (%ndx + 1), %second);
         }
-        %list = removeWord(removeWord(%list, (%ndx + 1)), %ndx);
+        else
+        {
+            %list = removeWord(removeWord(%list, (%ndx + 1)), %ndx);
+        }
     }
     return %list;
 }

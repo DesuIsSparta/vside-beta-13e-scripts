@@ -27,8 +27,8 @@ function TabControl::Initialize(%this, %container, %buttonSize, %sepBitmap, %sep
     %this.visibleTabsWidth = 1;
     %this.container.clear();
     %this.numTabs = 0;
-    %this.currentTabIndex = -(1);
-    %this.prevTabIndex = -(1);
+    %this.currentTabIndex = -1;
+    %this.prevTabIndex = -1;
     if (%this.maxTabs <= 0)
     {
         %this.maxTabs = 10;
@@ -119,7 +119,7 @@ function TabControl::drawSeparator(%this)
         position = 0 @ " " @ getWord(%this.buttonSize, 1);
         extent = %this.tabWidth @ " " @ getWord(%this.separatorSize, 1);
         minExtent = "0 0";
-        sluggishness = -(1);
+        sluggishness = -1;
         visible = 1;
         bitmap = %this.separatorBitmap;
     };
@@ -227,7 +227,7 @@ function TabControl::getTabIndexWithName(%this, %name)
         }
         %idx = %idx + 1;
     }
-    return -(1);
+    return -1;
 }
 function TabControl::getTabIndex(%this, %tabObject)
 {
@@ -240,7 +240,7 @@ function TabControl::getTabIndex(%this, %tabObject)
         }
         %idx = %idx + 1;
     }
-    return -(1);
+    return -1;
 }
 function TabControl::getTabWithName(%this, %name)
 {
@@ -324,7 +324,7 @@ function TabControl::removeTabAtIndex(%this, %tabIndex)
         }
         if (%this.numTabs == 0)
         {
-            %this.currentTabIndex = -(1);
+            %this.currentTabIndex = -1;
         }
         else
         {
@@ -332,13 +332,19 @@ function TabControl::removeTabAtIndex(%this, %tabIndex)
             {
                 %this.selectTabAtIndex((%this.numTabs - 1));
             }
-            if (%this.currentTabIndex > %tabIndex)
+            else
             {
-                %this.selectTabAtIndex((%this.currentTabIndex - 1));
-            }
-            if (%this.currentTabIndex == %tabIndex)
-            {
-                %this.selectCurrentTab();
+                if (%this.currentTabIndex > %tabIndex)
+                {
+                    %this.selectTabAtIndex((%this.currentTabIndex - 1));
+                }
+                else
+                {
+                    if (%this.currentTabIndex == %tabIndex)
+                    {
+                        %this.selectCurrentTab();
+                    }
+                }
             }
         }
         %this.update();
@@ -430,7 +436,10 @@ function TabControl::update(%this)
                 {
                     %yoffset = %yoffset + (getWord(%this.buttons[%idx].extent, 1) + %this.getPadding());
                 }
-                %xoffset = %xoffset + (getWord(%this.buttons[%idx].extent, 0) + %this.getPadding());
+                else
+                {
+                    %xoffset = %xoffset + (getWord(%this.buttons[%idx].extent, 0) + %this.getPadding());
+                }
             }
             %idx = %idx + 1;
         }
@@ -485,7 +494,10 @@ function TabControl::createButton(%this, %bitmapName, %tab, %name)
         {
             %vertSizing = "top";
         }
-        %horizSizing = "left";
+        else
+        {
+            %horizSizing = "left";
+        }
     }
     return new GuiBitmapButtonCtrl("") {
         profile = "GuiClickLabelProfile";

@@ -72,7 +72,7 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container)
     {
         if (%m == 0)
         {
-            %dx = (%this.mLilThumbPadding + %this.mLilThumbHeight) * -(1);
+            %dx = (%this.mLilThumbPadding + %this.mLilThumbHeight) * -1;
             %posX = (getWord(%container.getExtent(), 0) + %dx) + 1;
             %posY = getWord(%container.getExtent(), 1) - %this.mLilThumbHeight;
         }

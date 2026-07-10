@@ -213,7 +213,7 @@ function geTGF::friends_GetAndOpenDetailsContainer(%this, %item)
 }
 function geTGF_FriendsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unused, %mouseClickCount)
 {
-    if (%rowIndex == -(1))
+    if (%rowIndex == -1)
     {
         error(getScopeName() @ " " @ "- Gui Row" @ " " @ %guiRow @ " " @ "has no Data Row -" @ " " @ getTrace());
         return;
@@ -222,7 +222,7 @@ function geTGF_FriendsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unused
     %cellIndex = geTGF_FriendsDataTable.getColumnIndex("username");
     %userName = geTGF_FriendsDataTable.getCellSortValue(%rowIndex, %cellIndex);
     %showDeets = 0;
-    if (%mouseClickCount == -(1))
+    if (%mouseClickCount == -1)
     {
         %showDeets = 0;
     }
@@ -232,15 +232,24 @@ function geTGF_FriendsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unused
         {
             %showDeets = 1;
         }
-        if (%mouseClickCount == 1)
+        else
         {
-            %showDeets = 1;
+            if (%mouseClickCount == 1)
+            {
+                %showDeets = 1;
+            }
+            else
+            {
+                if (%mouseClickCount == 2)
+                {
+                    %showDeets = 1;
+                }
+                else
+                {
+                    %showDeets = 0;
+                }
+            }
         }
-        if (%mouseClickCount == 2)
-        {
-            %showDeets = 1;
-        }
-        %showDeets = 0;
     }
     if (%showDeets)
     {

@@ -23,7 +23,7 @@ function getFurnitureSkus()
 function addFurnitureSku(%sku, %quantity)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         $Player::furnitureInventory.push_back(%sku, %quantity @ " " @ 0);
         return;
@@ -38,7 +38,7 @@ function addFurnitureSku(%sku, %quantity)
 function removeFurnitureSku(%sku, %quantity)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         echo("Player does not own sku #" @ %sku);
         return;
@@ -66,7 +66,7 @@ function removeFurnitureSku(%sku, %quantity)
 function removeAllFurnitureSku(%sku)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         echo("Player does not own sku #" @ %sku);
         return;
@@ -76,7 +76,7 @@ function removeAllFurnitureSku(%sku)
 function numOwnedFurnitureSku(%sku)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         return 0;
     }
@@ -87,7 +87,7 @@ function numOwnedFurnitureSku(%sku)
 function numUsingFurnitureSku(%sku)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         return 0;
     }
@@ -112,7 +112,7 @@ function numUsingFurnitureAll()
 function useFurnitureSku(%sku, %quantity)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         log("inventory", "warn", "Player does not own " @ %sku);
         return;
@@ -132,7 +132,7 @@ function useFurnitureSku(%sku, %quantity)
 function useAnotherFurnitureSku(%sku)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         log("inventory", "warn", "Player does not own " @ %sku);
         return 0;
@@ -161,7 +161,7 @@ function useAnotherFurnitureSku(%sku)
 function putAwayAnotherFurnitureSku(%sku)
 {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    if (%index == -(1))
+    if (%index == -1)
     {
         log("inventory", "warn", "Player does not own " @ %sku);
         return 0;

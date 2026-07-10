@@ -10,11 +10,17 @@ function admin::getFormattedClassName(%classname)
         {
             return "player";
         }
-        if (%classname $= "special")
+        else
         {
-            return "*     ";
+            if (%classname $= "special")
+            {
+                return "*     ";
+            }
+            else
+            {
+                return %classname;
+            }
         }
-        return %classname;
     }
 }
 function admin::isActionable(%obj, %action)
@@ -29,60 +35,87 @@ function admin::isActionable(%obj, %action)
         {
             return isPlayerObject(%obj);
         }
-        if (%action $= "Ban")
+        else
         {
-            if (!isPlayerObject(%obj))
+            if (%action $= "Ban")
             {
-                return 0;
+                if (!isPlayerObject(%obj))
+                {
+                    return 0;
+                }
+                else
+                {
+                    return !isAIPlayerObject(%obj);
+                }
             }
             else
             {
-                return !isAIPlayerObject(%obj);
+                if (%action $= "Message")
+                {
+                    if (%obj == 0)
+                    {
+                        return 1;
+                    }
+                    if (!isPlayerObject(%obj))
+                    {
+                        return 0;
+                    }
+                    if (isAIPlayerObject(%obj))
+                    {
+                        return 0;
+                    }
+                    return 1;
+                }
+                else
+                {
+                    if (%action $= "Summon")
+                    {
+                        return isPlayerObject(%obj);
+                    }
+                    else
+                    {
+                        if (%action $= "Snoop Toggle")
+                        {
+                            return isPlayerObject(%obj);
+                        }
+                        else
+                        {
+                            if (%action $= "Respawn")
+                            {
+                                return isPlayerObject(%obj);
+                            }
+                            else
+                            {
+                                if (%action $= "Throw Voice")
+                                {
+                                    return isAIPlayerObject(%obj);
+                                }
+                                else
+                                {
+                                    if (%action $= "Teleport To")
+                                    {
+                                        return isPlayerObject(%obj);
+                                    }
+                                    else
+                                    {
+                                        if (%action $= "Fly To")
+                                        {
+                                            return isPlayerObject(%obj);
+                                        }
+                                        else
+                                        {
+                                            if (%action $= "Track")
+                                            {
+                                                return isPlayerObject(%obj);
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-        }
-        if (%action $= "Message")
-        {
-            if (%obj == 0)
-            {
-                return 1;
-            }
-            if (!isPlayerObject(%obj))
-            {
-                return 0;
-            }
-            if (isAIPlayerObject(%obj))
-            {
-                return 0;
-            }
-            return 1;
-        }
-        if (%action $= "Summon")
-        {
-            return isPlayerObject(%obj);
-        }
-        if (%action $= "Snoop Toggle")
-        {
-            return isPlayerObject(%obj);
-        }
-        if (%action $= "Respawn")
-        {
-            return isPlayerObject(%obj);
-        }
-        if (%action $= "Throw Voice")
-        {
-            return isAIPlayerObject(%obj);
-        }
-        if (%action $= "Teleport To")
-        {
-            return isPlayerObject(%obj);
-        }
-        if (%action $= "Fly To")
-        {
-            return isPlayerObject(%obj);
-        }
-        if (%action $= "Track")
-        {
-            return isPlayerObject(%obj);
         }
     }
     return 0;

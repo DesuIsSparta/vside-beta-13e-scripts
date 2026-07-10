@@ -12,7 +12,7 @@ function setHighFidelityCull(%on)
 $closeConfirmDlg = 0;
 function onAppCloseButton()
 {
-    commandToServer('SetLookAt', -(1), 0, 0);
+    commandToServer('SetLookAt', -1, 0, 0);
     if (isObject($closeConfirmDlg))
     {
         %isShowingNow = $closeConfirmDlg.visible;
@@ -95,14 +95,7 @@ function onGotContiguousSpaceName(%contiguousSpaceName)
     geLocalMapContainer.onSpaceChange(%contiguousSpaceName);
     CSControlPanelTabs.updateSkipTutorialTab();
     ButtonBar.handleContiguousSpace();
-    if (!(%contiguousSpaceName $= ""))
-    {
-    }
-    else
-    {
-    }
-    %name = "[" @ $ServerName @ "]";
-    %contiguousSpaceName;
+    %name = !(%contiguousSpaceName $= "") ? %contiguousSpaceName : "[" @ $ServerName @ "]";
     gUserPropMgrClient.incrementIntegerProperty($Player::Name, "level started count" @ " " @ %name, 1);
 }
 $gContiguousSpaceFullNames[""] = "vSide";

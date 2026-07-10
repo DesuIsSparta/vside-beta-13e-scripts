@@ -81,17 +81,26 @@ function Player::onGotSKUs(%this)
         {
             commandToServer('ExitSpecialGenre', %currentGenre);
         }
-        if (!(%propSku $= "") && (%instrumentGenre $= "") && !%currentGenreIsPropGenre)
+        else
         {
-            commandToServer('EnterSpecialGenre', %propGenre);
-        }
-        if ((%propSku $= "") && %currentGenreIsPropGenre)
-        {
-            commandToServer('ExitSpecialGenre', %propGenre);
-        }
-        if (!(%propSku $= "") && %currentGenreIsPropGenre && !(%currentGenre $= %propGenre))
-        {
-            commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
+            if (!(%propSku $= "") && (%instrumentGenre $= "") && !%currentGenreIsPropGenre)
+            {
+                commandToServer('EnterSpecialGenre', %propGenre);
+            }
+            else
+            {
+                if ((%propSku $= "") && %currentGenreIsPropGenre)
+                {
+                    commandToServer('ExitSpecialGenre', %propGenre);
+                }
+                else
+                {
+                    if (!(%propSku $= "") && %currentGenreIsPropGenre && !(%currentGenre $= %propGenre))
+                    {
+                        commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
+                    }
+                }
+            }
         }
     }
     if ((%propSku $= "") && %currentGenreIsPropGenre || %currentGenreIsInstrumentGenre || !(%instrumentGenre $= "") && !(%currentGenre $= $UserPref::Player::Genre))
@@ -200,13 +209,19 @@ function Player::trySkuEffectsClient(%this, %sku)
         {
             %this.staggerSetAmount(0.1);
         }
-        if (hasWord(%si.tags, "stagger2"))
+        else
         {
-            %this.staggerSetAmount(0.05);
-        }
-        if (hasWord(%si.tags, "stagger1"))
-        {
-            %this.staggerSetAmount(0.01);
+            if (hasWord(%si.tags, "stagger2"))
+            {
+                %this.staggerSetAmount(0.05);
+            }
+            else
+            {
+                if (hasWord(%si.tags, "stagger1"))
+                {
+                    %this.staggerSetAmount(0.01);
+                }
+            }
         }
     }
 }

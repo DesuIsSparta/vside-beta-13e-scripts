@@ -476,11 +476,17 @@ function sendRequest_GetMainVenues(%maxCount, %callbackHandler)
             {
                 %type = "shop";
             }
-            if (getRandom(0, 2) == 2)
+            else
             {
-                %type = "residence";
+                if (getRandom(0, 2) == 2)
+                {
+                    %type = "residence";
+                }
+                else
+                {
+                    %type = "venue";
+                }
             }
-            %type = "venue";
         }
         %venue = DestinationList::GetRandomDestinationForTGF(%type, %notThese);
         %notThese = %notThese @ " " @ %venue;

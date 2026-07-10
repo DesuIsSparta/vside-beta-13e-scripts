@@ -77,19 +77,25 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
         {
             GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-AUTO");
         }
-        if (%acceptMode $= "ask")
+        else
         {
-            if (geGiftingPanel.isVisible())
+            if (%acceptMode $= "ask")
             {
-                GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
+                if (geGiftingPanel.isVisible())
+                {
+                    GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
+                }
+                else
+                {
+                    giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
+                    geGiftingPanel.giftTransactionID = %transactionID;
+                    geGiftingPanel.personalMessage = "";
+                    geGiftingPanel.skus = %skus;
+                    geGiftingPanel.GiftType = "items";
+                    geGiftingPanel.making = %making;
+                    geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
+                }
             }
-            giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
-            geGiftingPanel.giftTransactionID = %transactionID;
-            geGiftingPanel.personalMessage = "";
-            geGiftingPanel.skus = %skus;
-            geGiftingPanel.GiftType = "items";
-            geGiftingPanel.making = %making;
-            geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
         }
     }
 }
@@ -156,8 +162,11 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded)
             {
                 updateInventorySkus("", %skus, 0, 1, %otherPlayerName);
             }
-            %autoAccepted = %transactionRecord.autoAccepted;
-            updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
+            else
+            {
+                %autoAccepted = %transactionRecord.autoAccepted;
+                updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
+            }
         }
     }
     else

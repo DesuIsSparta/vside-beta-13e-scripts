@@ -109,6 +109,9 @@ function doUserReport(%targetName, %reportType)
             %dlg.callback[%targetName,"\", \"add\"); ReportAbuseDlg.open(\"",%targetName,"\"); ",%dlg.getId(),".close();",1] = "doUserIgnore(\"";
             %dlg.callback[2] = "";
         }
-        ReportAbuseDlg.open(%targetName);
+        else
+        {
+            ReportAbuseDlg.open(%targetName);
+        }
     }
 }

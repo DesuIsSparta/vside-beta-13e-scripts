@@ -53,19 +53,25 @@ function MLScrollInspectPanel::updateSize(%this)
             %posX = (%screenWidth - %width) / 2;
             %posY = 0;
         }
-        if ((%screenHeight == 544) && (%screenWidth == 960))
+        else
         {
-            %height = 242 * 2;
-            %width = 242 * 3;
-            %posX = (%screenWidth - %width) / 2;
-            %posY = 0;
-        }
-        if ((%screenHeight == 714) && (%screenWidth == 1260))
-        {
-            %height = 317 * 2;
-            %width = 317 * 3;
-            %posX = (%screenWidth - %width) / 2;
-            %posY = 0;
+            if ((%screenHeight == 544) && (%screenWidth == 960))
+            {
+                %height = 242 * 2;
+                %width = 242 * 3;
+                %posX = (%screenWidth - %width) / 2;
+                %posY = 0;
+            }
+            else
+            {
+                if ((%screenHeight == 714) && (%screenWidth == 1260))
+                {
+                    %height = 317 * 2;
+                    %width = 317 * 3;
+                    %posX = (%screenWidth - %width) / 2;
+                    %posY = 0;
+                }
+            }
         }
     }
     %this.resize(%posX, %posY, %width, %height);

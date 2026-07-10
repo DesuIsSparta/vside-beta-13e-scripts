@@ -248,7 +248,7 @@ function geSwatchesPanel::refresh(%this)
             %cellArray.setVisible(0);
             if (%drawerName $= %this.hilitedCell.drawerName)
             {
-                geSwatchesPanel.selectCell(-(1));
+                geSwatchesPanel.selectCell(-1);
                 geSwatchesPanelSelected.setVisible(0);
             }
         }
@@ -264,7 +264,10 @@ function geSwatchesPanel::refresh(%this)
             {
                 $gDifSkusSwatchSkusViewable = %this.swatchDrawers[%drawerName];
             }
-            $gDifSkusSwatchSkusViewable = %this.swatchDrawers[%drawerName] @ " " @ $gDifSkusSwatchSkusViewable;
+            else
+            {
+                $gDifSkusSwatchSkusViewable = %this.swatchDrawers[%drawerName] @ " " @ $gDifSkusSwatchSkusViewable;
+            }
         }
         %i = %i + 1;
     }
@@ -283,7 +286,7 @@ function geSwatchesPanel::refresh(%this)
     geSwatchesPanelContainer.resize(%width, %height);
     if ($gDifSkusSwatchSkusViewable $= "")
     {
-        geSwatchesPanel.selectCell(-(1));
+        geSwatchesPanel.selectCell(-1);
     }
 }
 function geSwatchesPanelHeaderBox::onURL(%this, %url)
@@ -312,9 +315,12 @@ function geSwatchesPanelHeaderBox::onURL(%this, %url)
             geSwatchesPanel.expandOrCollapseAll(1);
             geSwatchesPanel.selectCell(geSwatchesPanel.hilitedCell);
         }
-        if (getWord(%url, 1) $= "collapseAll")
+        else
         {
-            geSwatchesPanel.expandOrCollapseAll(0);
+            if (getWord(%url, 1) $= "collapseAll")
+            {
+                geSwatchesPanel.expandOrCollapseAll(0);
+            }
         }
     }
 }
@@ -346,9 +352,12 @@ function geSwatchesPanelMLOnOff::onURL(%this, %url)
         {
             difSkusResetConfirm();
         }
-        if (firstWord(%url) $= "RANDOMIZE")
+        else
         {
-            difSkusRandomizeConfirm();
+            if (firstWord(%url) $= "RANDOMIZE")
+            {
+                difSkusRandomizeConfirm();
+            }
         }
     }
 }
@@ -365,20 +374,20 @@ function geSwatchesPanel::inspectSku(%this, %skunum)
 function geSwatchesPanel::selectSwatch(%this, %skunum)
 {
     %this.init();
-    %cell = -(1);
+    %cell = -1;
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
     %i = 0;
-    while ((%i < %numberOfDrawers) && (%cell == -(1)))
+    while ((%i < %numberOfDrawers) && (%cell == -1))
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         %cellArray = %this.swatchDrawerCellArrays[%drawerName];
         %n = %cellArray.getCount() - 1;
-        while ((%n >= 0) && (%cell == -(1)))
+        while ((%n >= 0) && (%cell == -1))
         {
             %cell = %cellArray.getObject(%n);
             if (%cell.skuNum != %skunum)
             {
-                %cell = -(1);
+                %cell = -1;
             }
             %n = %n - 1;
         }
@@ -398,7 +407,7 @@ function geSwatchesPanel::selectCell(%this, %cell)
 {
     if (!isObject(%cell))
     {
-        %cell = -(1);
+        %cell = -1;
         $gSwatchPaintingModeOn = 0;
         geSwatchesPanelInspectedBitmap.setBitmap("platform/client/ui/nobrush");
         geSwatchesPanelInspectedDesc.setText("");

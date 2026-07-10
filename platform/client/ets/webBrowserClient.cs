@@ -133,21 +133,24 @@ function dlMgr::serviceToDownloadQueue(%this)
         echoDebug(getScopeName() @ " " @ "- too many outstanding already:" @ " " @ %this.outstanding.size() @ " " @ getTrace());
         return;
     }
-    while (%this.outstanding.size() < %this.maxOutstanding)
+    if (%this.outstanding.size() < %this.maxOutstanding)
     {
         %dlItem = %this.getAndRemoveFirstActionableItemInToDownloadQueue();
         if (!isObject(%dlItem))
         {
         }
-        %this.beginDownloadingItem(%dlItem);
+        else
+        {
+            %this.beginDownloadingItem(%dlItem);
+        }
     }
 }
 function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this)
 {
     %num = %this.toDownload.count();
-    %found = -(1);
+    %found = -1;
     %n = 0;
-    while ((%n < %num) && (%found == -(1)))
+    while ((%n < %num) && (%found == -1))
     {
         %dlItem = %this.toDownload.getKey(%n);
         if (!%this.isUrlOutstanding(%dlItem.url))
@@ -156,7 +159,7 @@ function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this)
         }
         %n = %n + 1;
     }
-    if (%found == -(1))
+    if (%found == -1)
     {
         return "";
     }
@@ -227,12 +230,15 @@ function dlMgr::downloadFailed(%this, %dlItem, %curl, %error)
         {
             %this.schedule((%this.retryDelay * 1000), "enqueueItem", %dlItem);
         }
-        error(getScopeName() @ " " @ "- failed" @ " " @ %failCount @ " " @ "times; giving up on" @ " " @ %dlItem.url);
-        if (!(%dlItem.errorCallback $= ""))
+        else
         {
-            call(%dlItem.errorCallback, %dlItem);
+            error(getScopeName() @ " " @ "- failed" @ " " @ %failCount @ " " @ "times; giving up on" @ " " @ %dlItem.url);
+            if (!(%dlItem.errorCallback $= ""))
+            {
+                call(%dlItem.errorCallback, %dlItem);
+            }
+            %dlItem.delete();
         }
-        %dlItem.delete();
     }
     %this.serviceToDownloadQueue();
 }

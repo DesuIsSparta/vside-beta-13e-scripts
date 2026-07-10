@@ -39,7 +39,10 @@ function GuiTableCtrl::Initialize(%this)
         {
             %this.doSetupArrayOfRows(%bodyArray);
         }
-        warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
+        else
+        {
+            warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
+        }
     }
 }
 function GuiTableCtrl::doSetupColumnHeaders(%this, %headerArray)

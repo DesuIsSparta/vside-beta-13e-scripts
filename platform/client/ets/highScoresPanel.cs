@@ -143,12 +143,15 @@ function onDoneOrErrorCallback_GetHighGameScores(%request)
             %tab.noScoreText.setVisible(1);
             %tab.userScoresPanel.setVisible(0);
         }
-        %tab.usernameField.setText("<clip:111>" @ $Player::Name);
-        %tab.bestScoreField.setText(%userScore);
-        %tab.rankField.setText(%userRanking);
-        %tab.dateField.setText(%userScoreDate);
-        %tab.noScoreText.setVisible(0);
-        %tab.userScoresPanel.setVisible(1);
+        else
+        {
+            %tab.usernameField.setText("<clip:111>" @ $Player::Name);
+            %tab.bestScoreField.setText(%userScore);
+            %tab.rankField.setText(%userRanking);
+            %tab.dateField.setText(%userScoreDate);
+            %tab.noScoreText.setVisible(0);
+            %tab.userScoresPanel.setVisible(1);
+        }
     }
 }
 function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name)

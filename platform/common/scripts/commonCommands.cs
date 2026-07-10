@@ -131,7 +131,7 @@ function getSuffixPos(%searchText, %suffix)
     %idx = strpos(%searchText, %suffix);
     if (%idx < 0)
     {
-        return -(1);
+        return -1;
     }
     while (%idx >= 0)
     {
@@ -141,7 +141,7 @@ function getSuffixPos(%searchText, %suffix)
     %idx = %last;
     if ((%idx + strlen(%suffix)) != strlen(%searchText))
     {
-        return -(1);
+        return -1;
     }
     return %idx;
 }
@@ -264,7 +264,10 @@ function getPathsMatchingPattern(%pattern)
         if (%next $= "")
         {
         }
-        %ret = %ret @ "\t" @ %next;
+        else
+        {
+            %ret = %ret @ "\t" @ %next;
+        }
     }
     return %ret;
 }
@@ -360,8 +363,11 @@ function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize)
             if (%idx < 0)
             {
             }
-            %lastGoodIdx = %idx;
-            %idx = %idx + 1;
+            else
+            {
+                %lastGoodIdx = %idx;
+                %idx = %idx + 1;
+            }
         }
         %currentList = getSubStr(%masterList, %segStart, (%lastGoodIdx - %segStart));
         %idx = %lastGoodIdx + 1;

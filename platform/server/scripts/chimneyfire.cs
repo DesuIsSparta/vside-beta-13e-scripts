@@ -1,12 +1,12 @@
 datablock ParticleData(ChimneySmoke) {
     textureName = "~/data/shapes/particles/smoke";
     dragCoefficient = 0;
-    gravityCoefficient = -(0.2);
+    gravityCoefficient = -0.2;
     inheritedVelFactor = 0;
     lifetimeMS = 3000;
     lifetimeVarianceMS = 250;
     useInvAlpha = 0;
-    spinRandomMin = -(30);
+    spinRandomMin = -30;
     spinRandomMax = 30;
     colors = "0.6 0.6 0.6 0.1";
     colors = "0.6 0.6 0.6 0.1";
@@ -33,12 +33,12 @@ datablock ParticleEmitterNodeData(ChimneySmokeEmitterNode) {
 datablock ParticleData(ChimneyFire1) {
     textureName = "~/data/shapes/particles/smoke";
     dragCoefficient = 0;
-    gravityCoefficient = -(0.3);
+    gravityCoefficient = -0.3;
     inheritedVelFactor = 0;
     lifetimeMS = 500;
     lifetimeVarianceMS = 250;
     useInvAlpha = 0;
-    spinRandomMin = -(30);
+    spinRandomMin = -30;
     spinRandomMax = 30;
     colors = "0.8 0.6 0.0 0.1";
     colors = "0.8 0.6 0.0 0.1";
@@ -53,12 +53,12 @@ datablock ParticleData(ChimneyFire1) {
 datablock ParticleData(ChimneyFire2) {
     textureName = "~/data/shapes/particles/smoke";
     dragCoefficient = 0;
-    gravityCoefficient = -(0.5);
+    gravityCoefficient = -0.5;
     inheritedVelFactor = 0;
     lifetimeMS = 800;
     lifetimeVarianceMS = 150;
     useInvAlpha = 0;
-    spinRandomMin = -(30);
+    spinRandomMin = -30;
     spinRandomMax = 30;
     colors = "0.6 0.6 0.0 0.1";
     colors = "0.6 0.6 0.0 0.1";

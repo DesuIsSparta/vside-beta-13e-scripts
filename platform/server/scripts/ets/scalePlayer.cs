@@ -47,7 +47,7 @@ function Player::getAngleTowards(%this, %obj)
     %vAB = VectorSub(%posB, %posA);
     %dx = getWord(%vAB, 0);
     %dy = getWord(%vAB, 1);
-    %dy = %dy * -(1);
+    %dy = %dy * -1;
     %atan = mAtan(%dy, %dx);
     %atan = %atan + (3.15149 * 0.5);
     return %atan;
@@ -65,7 +65,7 @@ function Player::orientTowardsOverTime(%this, %obj, %milliseconds)
     %rotA = getWord(%rotCur, 3);
     if (getWord(%rotCur, 2) < 0)
     {
-        %rotA = %rotA * -(1);
+        %rotA = %rotA * -1;
     }
     %angle = %this.getAngleTowards(%obj);
     %dA = %angle - %rotA;

@@ -5,7 +5,7 @@ $DanceWithResetTimeout = 60000;
 $LookAtPrevObj = 0;
 function doLookAt(%obj, %isDanceWith, %isKiss)
 {
-    %ghostID = -(1);
+    %ghostID = -1;
     if (%isDanceWith)
     {
         %resetTime = $DanceWithResetTimeout;
@@ -26,11 +26,11 @@ function doLookAt(%obj, %isDanceWith, %isKiss)
         }
         else
         {
-            %ghostID = -(1);
+            %ghostID = -1;
         }
         if (%ghostID == 0)
         {
-            %ghostID = -(1);
+            %ghostID = -1;
         }
         commandToServer('SetLookAt', %ghostID, %isKiss, %isDanceWith);
         $LookAtPrevObj = %obj;
@@ -40,7 +40,7 @@ function doLookAt(%obj, %isDanceWith, %isKiss)
         cancel($LookAtSchedule);
         $LookAtSchedule = 0;
     }
-    if (%ghostID != -(1))
+    if (%ghostID != -1)
     {
         $LookAtSchedule = schedule(%resetTime, 0, "doLookAt", 0, 0, 0);
     }
@@ -50,7 +50,7 @@ $PointAtResetTimeout = 7000;
 $PointAtPrevObj = 0;
 function doPointAt(%obj)
 {
-    %ghostID = -(1);
+    %ghostID = -1;
     %resetTime = $PointAtResetTimeout;
     if ((%obj != $PointAtPrevObj) && (%obj != $player))
     {
@@ -60,11 +60,11 @@ function doPointAt(%obj)
         }
         else
         {
-            %ghostID = -(1);
+            %ghostID = -1;
         }
         if (%ghostID == 0)
         {
-            %ghostID = -(1);
+            %ghostID = -1;
         }
         commandToServer('SetPointAt', %ghostID);
         $PointAtPrevObj = %obj;
@@ -74,7 +74,7 @@ function doPointAt(%obj)
         cancel($PointAtSchedule);
         $PointAtSchedule = 0;
     }
-    if (%ghostID != -(1))
+    if (%ghostID != -1)
     {
         $PointAtSchedule = schedule(%resetTime, 0, "doPointAt", 0);
     }

@@ -72,7 +72,10 @@ function ticker_doScroll()
         {
             $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
         }
-        $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
+        else
+        {
+            $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
+        }
     }
     %curX = getWord(geTicker_Text.getPosition(), 0);
     %curY = getWord(geTicker_Text.getPosition(), 1);

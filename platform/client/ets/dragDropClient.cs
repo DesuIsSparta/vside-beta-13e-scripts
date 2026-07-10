@@ -35,20 +35,26 @@ function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt)
         if (%eventType $= "MOVE")
         {
         }
-        if (%eventType $= "LEAVE")
+        else
         {
-            if (%this.isHiliteCtrl())
+            if (%eventType $= "LEAVE")
             {
-                hiliteControl("");
+                if (%this.isHiliteCtrl())
+                {
+                    hiliteControl("");
+                }
             }
-        }
-        if (%eventType $= "BREAK")
-        {
-            if (%this.isHiliteCtrl())
+            else
             {
-                hiliteControl("");
+                if (%eventType $= "BREAK")
+                {
+                    if (%this.isHiliteCtrl())
+                    {
+                        hiliteControl("");
+                    }
+                    %this.onSystemDragDroppedEvent(%text, %pt);
+                }
             }
-            %this.onSystemDragDroppedEvent(%text, %pt);
         }
     }
     return 1;

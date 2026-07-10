@@ -272,13 +272,16 @@ function geTGF_tabs::Maps_changedCityFilter(%this, %cityName)
             TGFDestinations.setTrgPosition(getWord(%pos, 0) @ " " @ (getWord(%pos, 1) + TGFDestinations.childHeightDelta));
             TGFWorldMapMultiCitySmall.setVisible(1);
         }
-        if ((%cityName $= "") && (TGFWorldMapMultiCitySmall.isVisible() == 1))
+        else
         {
-            %pos = TGFDestinations.getPosition();
-            %ext = TGFDestinations.getExtent();
-            TGFDestinations.resize(getWord(%ext, 0), (getWord(%ext, 1) + TGFDestinations.childHeightDelta));
-            TGFDestinations.setTrgPosition(getWord(%pos, 0) @ " " @ (getWord(%pos, 1) - TGFDestinations.childHeightDelta));
-            TGFWorldMapMultiCitySmall.setVisible(0);
+            if ((%cityName $= "") && (TGFWorldMapMultiCitySmall.isVisible() == 1))
+            {
+                %pos = TGFDestinations.getPosition();
+                %ext = TGFDestinations.getExtent();
+                TGFDestinations.resize(getWord(%ext, 0), (getWord(%ext, 1) + TGFDestinations.childHeightDelta));
+                TGFDestinations.setTrgPosition(getWord(%pos, 0) @ " " @ (getWord(%pos, 1) - TGFDestinations.childHeightDelta));
+                TGFWorldMapMultiCitySmall.setVisible(0);
+            }
         }
     }
     %this.Maps_filterDestinations(%this.Maps_filterType, %cityName);
