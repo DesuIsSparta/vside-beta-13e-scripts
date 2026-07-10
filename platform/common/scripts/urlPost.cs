@@ -4,7 +4,6 @@ function URLPostObject::onComplete(%this, %unused)
     {
         %this.schedule(0, delete);
     }
-    return ;
 }
 function URLPostObject::checkSuccess(%this)
 {
@@ -27,14 +26,12 @@ function URLPostObject::copyValueIntoObject(%this, %object, %requestFieldName, %
     }
     %cmd = "%object." @ %objectFieldName @ " = %value;";
     eval(%cmd);
-    return ;
 }
 function URLPostObject::copyListValueIntoObject(%this, %object, %listPrefix, %objectFieldName)
 {
     %requestFieldName = %listPrefix @ "." @ %objectFieldName;
     %objectFieldName = strreplace(%objectFieldName, ".", "_");
     %this.copyValueIntoObject(%object, %requestFieldName, %objectFieldName);
-    return ;
 }
 function URLPostObject::copyListValuesIntoMap(%this, %map, %listPrefix, %tabDelimitedListOfFieldNames)
 {
@@ -56,12 +53,11 @@ function URLPostObject::copyListValuesIntoMap(%this, %map, %listPrefix, %tabDeli
         %n = %n - 1;
     }
 }
-
 function URLPostObject::addUserAndToken(%this, %userName)
 {
     if ($StandAlone)
     {
-        echoDebug(getScopeName() SPC "- called in standalone. Setting token to \"" @ $TokenStandalone @ "\"." SPC getTrace());
+        echoDebug(getScopeName() @ " " @ "- called in standalone. Setting token to \"" @ $TokenStandalone @ "\"." @ " " @ getTrace());
         %this.setURLParam("user", %userName);
         %this.setURLParam("token", $TokenStandalone);
     }
@@ -71,8 +67,8 @@ function URLPostObject::addUserAndToken(%this, %userName)
         {
             if (!(%userName $= $Player::Name))
             {
-                error(getScopeName() SPC "- got username not equal this user!" SPC %userName SPC $Player::Name SPC getTrace());
-                return ;
+                error(getScopeName() @ " " @ "- got username not equal this user!" @ " " @ %userName @ " " @ $Player::Name @ " " @ getTrace());
+                return;
             }
             %this.setURLParam("user", %userName);
             %this.setURLParam("token", $Token);
@@ -83,15 +79,13 @@ function URLPostObject::addUserAndToken(%this, %userName)
             %this.setURLParam("token", getClientToken(%userName));
         }
     }
-    return ;
 }
 function URLPostObject::setURLParamIfNotEmpty(%this, %paramName, %paramValue)
 {
     if (%paramValue $= "")
     {
-        return ;
+        return;
     }
     %isBool = (%paramValue $= "true") || (%paramValue $= "false");
     %this.setURLParam(%paramName, %paramValue, %isBool);
-    return ;
 }

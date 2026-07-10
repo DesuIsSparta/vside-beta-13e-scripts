@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(pcd_storespot)
-{
+datablock sgUniversalStaticLightData(pcd_storespot) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 5;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(pcd_storespot)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

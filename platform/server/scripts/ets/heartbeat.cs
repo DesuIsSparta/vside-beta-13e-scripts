@@ -20,14 +20,14 @@ function serverStart()
     echo("sending server start to: " @ %host);
     %initRequest.post(%host, %uri, %query, %post);
     schedule(7500, 0, "serverHeartBeat");
-    return ;
+    return;
 }
 function serverHeartBeat()
 {
     if ($StandAlone)
     {
         error("StandAlone - turning off serverHeartBeat.");
-        return ;
+        return;
     }
     %initRequest = new CURLObject(InitRequest);
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
@@ -62,13 +62,13 @@ function serverHeartBeat()
     echo("sending server heartbeat to: " @ %host);
     %initRequest.post(%host, %uri, %query, %post);
     schedule(7500, 0, "serverHeartBeat");
-    return ;
+    return;
 }
 function generateRandomMapLocation()
 {
     %x = (getRandom() * 0.6) + 0.2;
     %y = (getRandom() * 0.6) + 0.2;
-    $Pref::Net::Location = %x SPC %y;
+    $Pref::Net::Location = %x @ " " @ %y;
     return $Pref::Net::Location;
 }
 function InitRequest::onStatus(%unused, %status)
@@ -77,17 +77,17 @@ function InitRequest::onStatus(%unused, %status)
     {
         error("heartbeat HTTP status: " @ %status);
     }
-    return ;
+    return;
 }
 function InitRequest::onConnected(%unused)
 {
-    return ;
+    return;
 }
 function InitRequest::onConnectFailed(%unused)
 {
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     echo("Cannot reach Server Manager (" @ %host @ ")");
-    return ;
+    return;
 }
 function InitRequest::onLine(%unused, %line)
 {
@@ -102,18 +102,18 @@ function InitRequest::onLine(%unused, %line)
             %connection.delete("You have connected in another location.");
         }
     }
-    return ;
+    return;
 }
 function InitRequest::onDNSResolved(%unused)
 {
-    return ;
+    return;
 }
 function InitRequest::onDNSFailed(%unused)
 {
     echo("Cannot resolve Manager Host (" @ $Pref::Server::ManagerAddress @ ")");
-    return ;
+    return;
 }
 function InitRequest::onDisconnect(%unused)
 {
-    return ;
+    return;
 }

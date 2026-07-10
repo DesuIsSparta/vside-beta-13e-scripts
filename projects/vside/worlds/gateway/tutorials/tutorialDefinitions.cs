@@ -17,5 +17,4 @@ function TutorialsCatalogServer::Initialize(%this)
     %this.AddTutorialInfo("Club Secret", 1, 0, 0, "22384 32428");
     %this.AddTutorialInfo("Apartment Secret", 1, 0, 0, "22385 32429");
     %this.AddTutorialInfo("Exit", 0, 0, 0, "");
-    return ;
 }

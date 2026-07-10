@@ -4,7 +4,9 @@ function AccountBalanceHud::Initialize(%this)
     {
         if (!isObject(AccountBalancePBController))
         {
-            new ScriptObject(AccountBalancePBController);
+            new ScriptObject(AccountBalancePBController) {
+                class = "ProgressBarController";
+            };
             if (isObject(MissionCleanup))
             {
                 MissionCleanup.add(AccountBalancePBController);
@@ -27,7 +29,6 @@ function AccountBalanceHud::Initialize(%this)
         %this.initialized = 1;
     }
     AccountBalanceHud.update();
-    return ;
 }
 function AccountBalanceHud::open(%this)
 {
@@ -41,7 +42,6 @@ function AccountBalanceHud::open(%this)
     {
         %this.schedule(5000, "close");
     }
-    return ;
 }
 function AccountBalanceHud::close(%this)
 {
@@ -58,20 +58,17 @@ function AccountBalanceHud::close(%this)
         }
         return 1;
     }
-    return ;
 }
 function AccountBalanceHud::startPulse(%this, %numPulses)
 {
     %this.pulsar.setVisible(1);
     %this.pulsar.start();
-    %this.schedule((%numPulses * %this.pulsar.delay) * %this.pulsar.numFrames, "stopPulse");
-    return ;
+    %this.schedule(((%numPulses * %this.pulsar.delay) * %this.pulsar.numFrames), "stopPulse");
 }
 function AccountBalanceHud::stopPulse(%this)
 {
     %this.pulsar.stop();
     %this.pulsar.setVisible(0);
-    return ;
 }
 function AccountBalanceHud::update(%this)
 {
@@ -91,7 +88,6 @@ function AccountBalanceHud::update(%this)
     {
         AccountBalanceVPointsText.setText(commaify($Player::VPoints));
         AccountBalanceVBuxText.setText(commaify($Player::VBux));
-        AccountBalancePBController.setValue(1 - respektPercentToNextLevel($gMyRespektPoints));
+        AccountBalancePBController.setValue((1 - respektPercentToNextLevel($gMyRespektPoints)));
     }
-    return ;
 }

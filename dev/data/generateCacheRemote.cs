@@ -1,8 +1,7 @@
 exec("./skeletonClient.cs");
 function generateCacheRemote()
 {
-    %cacheGenerate = new ScriptObject(skeletonClient)
-    {
+    %cacheGenerate = new ScriptObject(skeletonClient) {
         userName = "btuser";
         password = "eviltwin";
         joinAction = "doSomething";
@@ -11,7 +10,6 @@ function generateCacheRemote()
     $iterationsWaited = 0;
     %cacheGenerate.init();
     %cacheGenerate.doLogin("cache_host");
-    return ;
 }
 echo("LOAD: starting via generateCacheRemote()");
 generateCacheRemote();
@@ -35,5 +33,4 @@ function doSomething()
             schedule(3000, 0, doSomething);
         }
     }
-    return ;
 }

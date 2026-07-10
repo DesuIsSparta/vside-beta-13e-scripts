@@ -23,4 +23,3 @@ $Pref::Server::adLogFolder = "adLogs";
 $Pref::Server::adLogBaseName = "adLog";
 $Pref::Server::adLogAppendTimeStamp = 1;
 $Pref::Net::BindAddress = "";
-

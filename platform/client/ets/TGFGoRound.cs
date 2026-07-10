@@ -7,58 +7,50 @@ function newTGFGoRound(%name)
 function TGFGoRound::rebuildContainer_LilThumb(%this, %container)
 {
     %container.deleteMembers();
-    %ctrl = new GuiBitmapCtrl()
-    {
+    %ctrl = new GuiBitmapCtrl("") {
         profile = ETSNonModalProfile;
         extent = %container.getExtent();
     };
     %container.add(%ctrl);
     %container.mBitmapCtrl = %ctrl;
-    %ctrlB = new GuiControl()
-    {
+    %ctrlB = new GuiControl("") {
         profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
-        position = 0 SPC getWord(%container.getExtent(), 1) - 10;
+        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 10);
     };
     %container.add(%ctrlB);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         profile = ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundLilThumb";
     };
     %ctrlB.add(%ctrl);
     %container.mTextCtrl = %ctrl;
-    return ;
 }
 function TGFGoRound::rebuildContainer_BigThumb(%this, %container)
 {
     %container.deleteMembers();
-    %ctrl = new GuiBitmapCtrl()
-    {
+    %ctrl = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         position = "0 0";
         extent = %container.getExtent();
     };
     %container.add(%ctrl);
     %container.mBitmapCtrl = %ctrl;
-    %ctrlB = new GuiControl()
-    {
+    %ctrlB = new GuiControl("") {
         profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
-        position = 0 SPC getWord(%container.getExtent(), 1) - 18;
+        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 18);
     };
     %container.add(%ctrlB);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         profile = ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundBigThumb";
     };
     %ctrlB.add(%ctrl);
     %container.mTextCtrl = %ctrl;
-    %ctrl = new GuiBitmapButtonCtrl()
-    {
+    %ctrl = new GuiBitmapButtonCtrl("") {
         position = "-2 -2";
         extent = VectorAdd(%container.getExtent(), "4 4");
         command = %this @ ".onBigThumbClick(" @ %container @ ");";
@@ -66,26 +58,24 @@ function TGFGoRound::rebuildContainer_BigThumb(%this, %container)
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
     };
     %container.add(%ctrl);
-    return ;
 }
 function TGFGoRound::rebuildContainer_Deets(%this, %container)
 {
     %container.deleteMembers();
-    return ;
 }
 function TGFGoRound::newContentLilThumb(%this, %container)
 {
     if (!isObject(%this.mItemsList))
     {
-        error(getScopeName() SPC "- no list" SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- no list" @ " " @ getTrace());
+        return;
     }
     %item = %this.mItemsList.getValue(%this.mItemsList.mCurrentItem);
     if (!isObject(%item))
     {
-        error(getScopeName() SPC "- bad item" SPC %this.mItemsList.mCurrentItem SPC getTrace());
+        error(getScopeName() @ " " @ "- bad item" @ " " @ %this.mItemsList.mCurrentItem @ " " @ getTrace());
         %this.mItemsList.mCurrentItem = 0;
-        return ;
+        return;
     }
     if ((%item.relationType $= "") && UserListFriends.hasKey(%item.userName))
     {
@@ -103,7 +93,6 @@ function TGFGoRound::newContentLilThumb(%this, %container)
     %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
     %container.mItem = %item;
     %this.mItemsList.mCurrentItem = (%this.mItemsList.mCurrentItem + 1) % %this.mItemsList.size();
-    return ;
 }
 function TGFGoRound::newContentBigThumb(%this)
 {
@@ -122,34 +111,29 @@ function TGFGoRound::newContentBigThumb(%this)
     %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
     %container.mItem = %item;
     %this.newContentDeets();
-    return ;
 }
 function TGFGoRound::newContentDeets(%this)
 {
-    return ;
 }
 function TGFGoRound::onBigThumbClick(%this, %bigThumbContainer)
 {
     %this.viewItem(%bigThumbContainer.mItem);
-    return ;
 }
 function TGFGoRound::viewItem(%this, %item)
 {
     %this.pause();
     geTGF.DoDetails("main", %item);
-    return ;
 }
 function geTGFGoRound_DeetsMLText::onURL(%this, %url)
 {
     %type = firstWord(%url);
     if (!(%type $= "PROFILE"))
     {
-        error(getScopeName() SPC "- unknown type" SPC %type SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- unknown type" @ " " @ %type @ " " @ getTrace());
+        return;
     }
     %userName = restWords(%url);
     geTGFGoRound.viewProfile(%userName);
-    return ;
 }
 function TGFGoRound::setItemList(%this, %list)
 {
@@ -163,5 +147,4 @@ function TGFGoRound::setItemList(%this, %list)
         %n = %n + 1;
     }
     %this.newContentBigThumb();
-    return ;
 }

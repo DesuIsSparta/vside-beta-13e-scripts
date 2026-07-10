@@ -10,12 +10,11 @@ function scriptProfiler_Initialize()
         $gScriptProfiler_EntryTimes.clear();
         $gScriptProfiler_TotalTimes.clear();
         $gScriptProfiler_TotalCalls.clear();
-        return ;
+        return;
     }
     $gScriptProfiler_EntryTimes = safeNewScriptObject("StringMap", "", 0);
     $gScriptProfiler_TotalTimes = safeNewScriptObject("StringMap", "", 0);
     $gScriptProfiler_TotalCalls = safeNewScriptObject("StringMap", "", 0);
-    return ;
 }
 function scriptProfiler_GetScopeId()
 {
@@ -25,51 +24,46 @@ function scriptProfiler_EnterScope()
 {
     if (!$gScriptProfiler_Active)
     {
-        return ;
+        return;
     }
     scriptProfiler_EnterSection(scriptProfiler_GetScopeId());
-    return ;
 }
 function scriptProfiler_EnterScopeSection(%sectionId)
 {
     if (!$gScriptProfiler_Active)
     {
-        return ;
+        return;
     }
     scriptProfiler_EnterSection(scriptProfiler_GetScopeId() @ "_" @ %sectionId);
-    return ;
 }
 function scriptProfiler_EnterSection(%sectionId)
 {
     %curTime = getSimTime();
     $gScriptProfiler_EntryTimes.put(%sectionId, %curTime);
     $gScriptProfiler_TotalTimes.put(%sectionId, $gScriptProfiler_TotalTimes.get(%sectionId));
-    $gScriptProfiler_TotalCalls.put(%sectionId, $gScriptProfiler_TotalCalls.get(%sectionId) + 1);
-    return ;
+    $gScriptProfiler_TotalCalls.put(%sectionId, ($gScriptProfiler_TotalCalls.get(%sectionId) + 1));
 }
 function scriptProfiler_LeaveScope()
 {
     if (!$gScriptProfiler_Active)
     {
-        return ;
+        return;
     }
     scriptProfiler_LeaveSection(scriptProfiler_GetScopeId());
-    return ;
 }
 function scriptProfiler_LeaveScopeSection(%sectionId)
 {
     if (!$gScriptProfiler_Active)
     {
-        return ;
+        return;
     }
     scriptProfiler_LeaveSection(scriptProfiler_GetScopeId() @ "_" @ %sectionId);
-    return ;
 }
 function scriptProfiler_LeaveSection(%sectionId)
 {
     if (!$gScriptProfiler_Active)
     {
-        return ;
+        return;
     }
     %ntrTime = $gScriptProfiler_EntryTimes.get(%sectionId);
     %ttlTime = $gScriptProfiler_TotalTimes.get(%sectionId);
@@ -77,14 +71,13 @@ function scriptProfiler_LeaveSection(%sectionId)
     %newTime = mAddS32(%ttlTime, %dltTime);
     if (0)
     {
-        error("ntrTime" SPC %ntrTime);
-        error("ttlTime" SPC %ttlTime);
-        error("dltTime" SPC %dltTime);
-        error("newTime" SPC %newTime);
+        error("ntrTime" @ " " @ %ntrTime);
+        error("ttlTime" @ " " @ %ttlTime);
+        error("dltTime" @ " " @ %dltTime);
+        error("newTime" @ " " @ %newTime);
     }
     $gScriptProfiler_TotalTimes.put(%sectionId, %newTime);
     $gScriptProfiler_EntryTimes.put(%sectionId, "");
-    return ;
 }
 function scriptProfiler_getTotals()
 {
@@ -93,12 +86,12 @@ function scriptProfiler_getTotals()
     %n = $gScriptProfiler_TotalTimes.size() - 1;
     while (%n >= 0)
     {
-        %time = formatFloat("%10.4f", $gScriptProfiler_TotalTimes.getValue(%n) / 1000);
+        %time = formatFloat("%10.4f", ($gScriptProfiler_TotalTimes.getValue(%n) / 1000));
         %id = $gScriptProfiler_TotalTimes.getKey(%n);
         %id2 = formatString("%-70s", %id);
         %bal = $gScriptProfiler_EntryTimes.get(%id) $= "" ? "(  balanced)" : "(unbalanced)";
         %cls = formatInt("%5d", $gScriptProfiler_TotalCalls.getValue(%n));
-        %ret = %ret @ %delim @ %time SPC %bal SPC %cls SPC %id2;
+        %ret = %ret @ %delim @ %time @ " " @ %bal @ " " @ %cls @ " " @ %id2;
         %delim = "\n";
         %n = %n - 1;
     }
@@ -107,22 +100,18 @@ function scriptProfiler_getTotals()
 function scriptProfiler_dumpTotals()
 {
     echo("\n" @ scriptProfiler_getTotals());
-    return ;
 }
 function scriptProfiler_reset()
 {
     scriptProfiler_Initialize();
-    return ;
 }
 function scriptProfiler_activate()
 {
     $gScriptProfiler_Active = 1;
-    return ;
 }
 function scriptProfiler_deactivate()
 {
     $gScriptProfiler_Active = 0;
-    return ;
 }
 function scriptProfiler_foo()
 {
@@ -134,7 +123,5 @@ function scriptProfiler_foo()
         %n = %n + 1;
     }
     scriptProfiler_LeaveScope();
-    return ;
 }
 scriptProfiler_Initialize();
-

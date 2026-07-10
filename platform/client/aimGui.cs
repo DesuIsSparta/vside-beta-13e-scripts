@@ -10,7 +10,7 @@ function AIMConvManager::Initialize(%this)
 {
     if (!%this.initialized)
     {
-        %this.spamDict = new StringMap();
+        %this.spamDict = new StringMap("");
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add(%this.spamDict);
@@ -26,11 +26,10 @@ function AIMConvManager::Initialize(%this)
         %this.initialized = 1;
     }
     %this.update();
-    return ;
 }
 function AIMConvManager::selectConvAtIndex(%this, %convIndex)
 {
-    if (((%this.currentConvIndex >= 0) && (%this.currentConvIndex < %this.numConvs)) && (%this.currentConvIndex != %convIndex))
+    if ((%this.currentConvIndex >= 0) && (%this.currentConvIndex < %this.numConvs) && (%this.currentConvIndex != %convIndex))
     {
         %this.convs[%this.currentConvIndex].contents.setVisible(0);
         %this.convs[%this.currentConvIndex].titlebar.recipient.setProfile(ETSAIMDeselectedProfile);
@@ -43,12 +42,10 @@ function AIMConvManager::selectConvAtIndex(%this, %convIndex)
     }
     %this.currentConvIndex = %convIndex;
     %this.update();
-    return ;
 }
 function AIMConvManager::selectCurrentConv(%this)
 {
     %this.selectConvAtIndex(%this.currentConvIndex);
-    return ;
 }
 function AIMConvManager::selectConv(%this, %convId)
 {
@@ -58,27 +55,24 @@ function AIMConvManager::selectConv(%this, %convId)
         if (%this.convs[%idx].getId() == %convId)
         {
             %this.selectConvAtIndex(%idx);
-            return ;
+            return;
         }
         %idx = %idx + 1;
     }
 }
-
 function AIMConvManager::nextConv(%this)
 {
     if (%this.numConvs > 0)
     {
-        %this.selectConvAtIndex((%this.currentConvIndex + 1) % %this.numConvs);
+        %this.selectConvAtIndex(((%this.currentConvIndex + 1) % %this.numConvs));
     }
-    return ;
 }
 function AIMConvManager::previousConv(%this)
 {
     if (%this.numConvs > 0)
     {
-        %this.selectConvAtIndex(((%this.currentConvIndex - 1) + %this.numConvs) % %this.numConvs);
+        %this.selectConvAtIndex((((%this.currentConvIndex - 1) + %this.numConvs) % %this.numConvs));
     }
-    return ;
 }
 function AIMConvManager::removeConvAtIndex(%this, %convIndex)
 {
@@ -106,13 +100,13 @@ function AIMConvManager::removeConvAtIndex(%this, %convIndex)
         {
             if (%this.currentConvIndex >= %this.numConvs)
             {
-                %this.selectConvAtIndex(%this.numConvs - 1);
+                %this.selectConvAtIndex((%this.numConvs - 1));
             }
             else
             {
                 if (%this.currentConvIndex > %convIndex)
                 {
-                    %this.selectConvAtIndex(%this.currentConvIndex - 1);
+                    %this.selectConvAtIndex((%this.currentConvIndex - 1));
                 }
                 else
                 {
@@ -126,7 +120,6 @@ function AIMConvManager::removeConvAtIndex(%this, %convIndex)
     }
     %this.update();
     ConvBub.updateAutoMargins();
-    return ;
 }
 function AIMConvManager::removeConv(%this, %convId)
 {
@@ -136,20 +129,18 @@ function AIMConvManager::removeConv(%this, %convId)
         if (%this.convs[%idx].getId() == %convId)
         {
             %this.removeConvAtIndex(%idx);
-            return ;
+            return;
         }
         %idx = %idx + 1;
     }
 }
-
 function AIMConvManager::removeCurrentConv(%this)
 {
     %this.removeConvAtIndex(%this.currentConvIndex);
-    return ;
 }
 function AIMConvManager::update(%this)
 {
-    if (((%this.numConvs == 0) || (%this.currentConvIndex < 0)) && (Canvas.getFirstResponder() == 0))
+    if ((%this.numConvs == 0) || (%this.currentConvIndex < 0) && (Canvas.getFirstResponder() == 0))
     {
         TheShapeNameHud.makeFirstResponder(1);
     }
@@ -168,7 +159,14 @@ function AIMConvManager::update(%this)
         %contents.setTrgPosition(getWord(%contents.getTrgPosition(), 0), %ypos);
         if (%idx == %this.currentConvIndex)
         {
-            %status = %conv.newMessage ? "new_msg" : %conv;
+            if (%conv.newMessage)
+            {
+            }
+            else
+            {
+            }
+            %status = %conv.status;
+            "new_msg";
             %titlebar.status.setBitmap("platform/client/ui/AIM_sel_" @ %status);
             %titlebar.status.resize(0, 0, 29, 26);
             %titlebar.statusButton.resize(0, 0, 35, 26);
@@ -179,18 +177,24 @@ function AIMConvManager::update(%this)
         }
         else
         {
-            %status = %conv.newMessage ? "new_msg" : %conv;
+            if (%conv.newMessage)
+            {
+            }
+            else
+            {
+            }
+            %status = %conv.status;
+            "new_msg";
             %titlebar.status.setBitmap("platform/client/ui/AIM_" @ %status);
             %titlebar.status.resize(11, 5, 30, 15);
             %titlebar.statusButton.resize(0, 0, 45, 26);
             %titlebar.recipient.reposition(45, 3);
             %titlebar.close.setBitmap("platform/client/buttons/close_s");
-            %titlebar.close.resize(57 + %titlebar.recipient.width, 8, 11, 11);
+            %titlebar.close.resize((57 + %titlebar.recipient.width), 8, 11, 11);
         }
         %idx = %idx + 1;
     }
 }
-
 function AIMConvManager::finishUpdate(%this)
 {
     %curConv = %this.convs[%this.currentConvIndex];
@@ -202,7 +206,6 @@ function AIMConvManager::finishUpdate(%this)
             %curConv.contents.textInput.makeFirstResponder(1);
         }
     }
-    return ;
 }
 function AIMConvManager::titlebarReachedTarget(%this)
 {
@@ -214,7 +217,6 @@ function AIMConvManager::titlebarReachedTarget(%this)
             %this.finishUpdate();
         }
     }
-    return ;
 }
 function AIMConvManager::newConv(%this, %aimName)
 {
@@ -223,7 +225,9 @@ function AIMConvManager::newConv(%this, %aimName)
     {
         return %conv;
     }
-    %conv = new ScriptObject();
+    %conv = new ScriptObject("") {
+        class = "AIMConversation";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%conv);
@@ -246,8 +250,7 @@ function AIMConvManager::newConv(%this, %aimName)
         %i = %i + 1;
     }
     %conv.newMessage = 0;
-    %textInput = new GuiTextEditCtrl()
-    {
+    %textInput = new GuiTextEditCtrl("") {
         profile = "AIMTextEditProfile";
         horizSizing = "width";
         vertSizing = "top";
@@ -266,8 +269,7 @@ function AIMConvManager::newConv(%this, %aimName)
         conv = %conv;
         escCommand = "AIMConvManager.selectConvAtIndex(-1);";
     };
-    %scroll = new GuiScrollCtrl()
-    {
+    %scroll = new GuiScrollCtrl("") {
         profile = "ETSAimMessageScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
@@ -282,8 +284,7 @@ function AIMConvManager::newConv(%this, %aimName)
         childMargin = "0 0";
         scrollMultiplier = 2.5;
     };
-    %mlText = new GuiMLTextCtrl()
-    {
+    %mlText = new GuiMLTextCtrl("") {
         profile = "ETSAIMMessageProfile";
         horizSizing = "relative";
         vertSizing = "relative";
@@ -296,8 +297,7 @@ function AIMConvManager::newConv(%this, %aimName)
         stripTagsOnCopy = 1;
     };
     %scroll.add(%mlText);
-    %contents = new GuiControl()
-    {
+    %contents = new GuiControl("") {
         profile = "ETSAIMTabProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -310,10 +310,32 @@ function AIMConvManager::newConv(%this, %aimName)
         mlText = %mlText;
         scroll = %scroll;
     };
+    new GuiBitmapCtrl("") {
+        profile = new GuiBitmapCtrl("") {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "top";
+        position = "2 101";
+        extent = "8 13";
+        minExtent = "8 13";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "./ui/AIM_bracket_left";
+        wrap = 0;
+    }; @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "top";
+        position = "157 101";
+        extent = "8 13";
+        minExtent = "8 13";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "./ui/AIM_bracket_right";
+        wrap = 0;
+    };
     %contents.add(%textInput);
     %contents.add(%scroll);
-    %dummy = new GuiTextCtrl()
-    {
+    %dummy = new GuiTextCtrl("") {
         profile = "ETSAIMDeselectedProfile";
         horizSizing = "left";
         vertSizing = "top";
@@ -327,8 +349,7 @@ function AIMConvManager::newConv(%this, %aimName)
     %dummy.setText(%aimName);
     %recipWidth = getWord(%dummy.getExtent(), 0);
     %dummy.delete();
-    %recipient = new GuiBitmapButtonCtrl()
-    {
+    %recipient = new GuiBitmapButtonCtrl("") {
         profile = "ETSAIMDeselectedProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -345,8 +366,7 @@ function AIMConvManager::newConv(%this, %aimName)
         drawText = 1;
         width = %recipWidth;
     };
-    %status = new GuiBitmapCtrl()
-    {
+    %status = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -358,8 +378,7 @@ function AIMConvManager::newConv(%this, %aimName)
         bitmap = "./ui/AIM_sel_avail";
         wrap = 0;
     };
-    %statusButton = new GuiBitmapButtonCtrl()
-    {
+    %statusButton = new GuiBitmapButtonCtrl("") {
         profile = "ETSAIMDeselectedProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -374,8 +393,7 @@ function AIMConvManager::newConv(%this, %aimName)
         bitmap = "./buttons/clear";
         drawText = 0;
     };
-    %close = new GuiBitmapButtonCtrl()
-    {
+    %close = new GuiBitmapButtonCtrl("") {
         profile = "GuiButtonProfile";
         horizSizing = "left";
         vertSizing = "bottom";
@@ -391,8 +409,7 @@ function AIMConvManager::newConv(%this, %aimName)
         bitmap = "./buttons/close_m";
         drawText = 0;
     };
-    %titlebar = new GuiControl()
-    {
+    %titlebar = new GuiControl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -445,7 +462,6 @@ function AIMConvManager::convClicked(%this, %conv)
         %this.selectConv(%conv);
         %conv.contents.textInput.makeFirstResponder(1);
     }
-    return ;
 }
 function AIMConvManager::getConvWithName(%this, %aimName)
 {
@@ -470,7 +486,6 @@ function AIMConvManager::getCurrentText(%this)
     {
         return "";
     }
-    return ;
 }
 function AIMConvManager::clearCurrentText(%this)
 {
@@ -478,7 +493,6 @@ function AIMConvManager::clearCurrentText(%this)
     {
         %this.convs[%this.currentConvIndex].contents.textInput.setValue("");
     }
-    return ;
 }
 function AIMConvManager::getCurrentConv(%this)
 {
@@ -490,7 +504,6 @@ function AIMConvManager::getCurrentConv(%this)
     {
         return 0;
     }
-    return ;
 }
 function AIMConvManager::wakeUp(%this)
 {
@@ -499,7 +512,6 @@ function AIMConvManager::wakeUp(%this)
     {
         %this.selectCurrentConv();
     }
-    return ;
 }
 function AIMConvManager::updateContainer(%this)
 {
@@ -508,7 +520,7 @@ function AIMConvManager::updateContainer(%this)
     {
         AimConvContainer.setVisible(0);
         WindowManager.update();
-        return ;
+        return;
     }
     else
     {
@@ -532,13 +544,12 @@ function AIMConvManager::updateContainer(%this)
     AimConvContainer.resize(getWord(AimConvContainer.getExtent(), 0), %height);
     AimConvContainer.setVisible(1);
     WindowManager.update();
-    return ;
 }
 function AIMConvManager::buildSpamString(%this, %prepend, %aimName, %link, %message)
 {
     if (!(%message $= ""))
     {
-        %text = %prepend SPC "( " @ %link @ " ):" @ %message;
+        %text = %prepend @ " " @ "( " @ %link @ " ):" @ %message;
     }
     else
     {
@@ -563,19 +574,16 @@ function AIMConvManager::sendInvites(%this, %recipients, %links, %userMsg)
         aimSend(%aBuddy, %inviteText);
         %n = %n + 1;
     }
-    MessageBoxOK("Invites Sent", %count SPC "buddies have been invited to join" SPC $ETS::AppName, "");
-    return ;
+    MessageBoxOK("Invites Sent", %count @ " " @ "buddies have been invited to join" @ " " @ $ETS::AppName, "");
 }
 function AIMConvManager::inviteAll(%this, %userMsg)
 {
     %buddies = BuddyHudWin.onlineBuddiesToString();
     %this.prepareToSendInvites(%buddies, %userMsg);
-    return ;
 }
 function AIMConvManager::prepareToSendInvites(%this, %recipients, %userMsg)
 {
-    %request = new ManagerRequest()
-    {
+    %request = new ManagerRequest("") {
         className = "GetAIMInviteURLsRequest";
         userMsg = %userMsg;
     };
@@ -590,7 +598,6 @@ function AIMConvManager::prepareToSendInvites(%this, %recipients, %userMsg)
     %request.setURL(%url);
     %request.recipients = %recipients;
     %request.start();
-    return ;
 }
 function GetAIMInviteURLsRequest::onDone(%this)
 {
@@ -599,7 +606,7 @@ function GetAIMInviteURLsRequest::onDone(%this)
     if (%status $= "fail")
     {
         warn("network", getScopeName() @ ": request failed: " @ %this.getValue("statusMessage"));
-        MessageBoxOK("Invite failed", "Couldn\'t get unique invite URLs. Please try again later.", "");
+        MessageBoxOK("Invite failed", "Couldn't get unique invite URLs. Please try again later.", "");
     }
     else
     {
@@ -610,19 +617,17 @@ function GetAIMInviteURLsRequest::onDone(%this)
         {
             %key = "url" @ %i;
             %val = %this.getValue(%key);
-            %links = %links TAB %val;
+            %links = %links @ "\t" @ %val;
             %i = %i + 1;
         }
         AIMConvManager.sendInvites(%this.recipients, %links, %this.userMsg);
     }
     %this.schedule(0, "delete");
-    return ;
 }
 function GetAIMInviteURLsRequest::onError(%this, %unused, %errMsg)
 {
     error("network", getScopeName() @ ":" @ %errMsg);
     %this.schedule(0, "delete");
-    return ;
 }
 function AIMConvManager::sendMessage(%this)
 {
@@ -641,7 +646,6 @@ function AIMConvManager::sendMessage(%this)
         %this.update();
     }
     %this.clearCurrentText();
-    return ;
 }
 function AIMConvManager::talkTo(%this, %aimName)
 {
@@ -655,7 +659,6 @@ function AIMConvManager::talkTo(%this, %aimName)
     {
         echo("Failed to talk to " @ %aimName @ ": too many conversations open");
     }
-    return ;
 }
 function AIMConvManager::receivedMessage(%this, %aimName, %message)
 {
@@ -672,14 +675,10 @@ function AIMConvManager::receivedMessage(%this, %aimName, %message)
     {
         echo("Received message from " @ %aimName @ ": " @ %message);
     }
-    if ((!isForegroundWindow() || isIdle()) || !PlayGui.canPlayerSeeWorld())
+    if (!isForegroundWindow() || isIdle() || !PlayGui.canPlayerSeeWorld() && $UserPref::Audio::NotifyChat)
     {
-        if ($UserPref::Audio::NotifyChat)
-        {
-            alxPlay(AudioIm_MessageIn);
-        }
+        alxPlay(AudioIm_MessageIn);
     }
-    return ;
 }
 function AIMConvManager::closeAllConvs(%this)
 {
@@ -690,7 +689,6 @@ function AIMConvManager::closeAllConvs(%this)
         %n = %n - 1;
     }
 }
-
 AIMConvManager.stateMapping = "offline avail away away";
 function AIMConvManager::buddyStateChanged(%this, %name, %state)
 {
@@ -704,5 +702,4 @@ function AIMConvManager::buddyStateChanged(%this, %name, %state)
         %conv.status = getWord(%this.stateMapping, %state);
         %this.update();
     }
-    return ;
 }

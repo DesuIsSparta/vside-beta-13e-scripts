@@ -4,11 +4,11 @@ function Player::onGotRoles(%this, %rolesMask)
     if (%this != $player)
     {
         %this.rebuildHudCtrl();
-        return ;
+        return;
     }
     if (%this.prevRolesMask == %rolesMask)
     {
-        return ;
+        return;
     }
     %this.prevRolesMask = %rolesMask;
     if (%this.rolesPermissionCheckNoWarn("snoop"))
@@ -46,27 +46,24 @@ function Player::onGotRoles(%this, %rolesMask)
             schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "cohostBadge"));
         }
     }
-    return ;
 }
 function delayedWearSku(%sku)
 {
     %skus = $player.getActiveSKUs();
     if (hasWord(%skus, %sku))
     {
-        return ;
+        return;
     }
-    %skus = %skus SPC %sku;
+    %skus = %skus @ " " @ %sku;
     commandToServer('SetActiveSkus', %skus);
-    return ;
 }
 function delayedRemoveSku(%sku)
 {
     %skus = $player.getActiveSKUs();
     if (!hasWord(%skus, %sku))
     {
-        return ;
+        return;
     }
     %skus = findAndRemoveAllOccurrencesOfWord(%skus, %sku);
     commandToServer('SetActiveSkus', %skus);
-    return ;
 }

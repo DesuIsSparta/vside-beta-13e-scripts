@@ -5,7 +5,9 @@ if (isObject($SystemMetric::ObjectCounts))
 {
     $SystemMetric::ObjectCounts.delete();
 }
-$SystemMetric::ObjectCounts = new StringMap();
+$SystemMetric::ObjectCounts = new StringMap("") {
+    class = "SystemMetric";
+};
 if (isObject(MissionCleanup))
 {
     MissionCleanup.add($SystemMetric::ObjectCounts);
@@ -14,9 +16,9 @@ if (isDefined("$GMetricsLogFile") && isObject($GMetricsLogFile))
 {
     $GMetricsLogFile.delete();
 }
-if ($StandAlone && $Server::Dedicated)
+if ($StandAlone || $Server::Dedicated)
 {
-    $GMetricsLogFile = new FileLogger(GMetricsLogger, "gameMetrics.log");
+    $GMetricsLogFile = new FileLogger(GMetricsLogger);
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add($GMetricsLogFile);
@@ -26,7 +28,7 @@ function System::compileClassInstanceCounts3(%obj, %counts, %depth)
 {
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     %classname = %obj.getClassName();
     %key = %classname;
@@ -36,12 +38,12 @@ function System::compileClassInstanceCounts3(%obj, %counts, %depth)
     %counts.put(%key, %curCount);
     if (!%obj.isClassSimGroup())
     {
-        return ;
+        return;
     }
     if (%depth >= $Pref::System::dumpMetricsMaxRecurseDepth)
     {
-        error("Hit Maximum recurse depth" SPC getDebugString(%obj));
-        return ;
+        error("Hit Maximum recurse depth" @ " " @ getDebugString(%obj));
+        return;
     }
     %depth = %depth + 1;
     %num = %obj.getCount();
@@ -52,7 +54,6 @@ function System::compileClassInstanceCounts3(%obj, %counts, %depth)
         %n = %n + 1;
     }
 }
-
 function System::getClassInstanceCounts(%obj)
 {
     %ret = "";
@@ -60,10 +61,10 @@ function System::getClassInstanceCounts(%obj)
     %n = $SystemMetric::ObjectCounts.size() - 1;
     while (%n >= 0)
     {
-        %ret = $SystemMetric::ObjectCounts.getKey(%n) SPC $SystemMetric::ObjectCounts.getValue(%n) NL %ret;
+        %ret = $SystemMetric::ObjectCounts.getKey(%n) @ " " @ $SystemMetric::ObjectCounts.getValue(%n) @ "\n" @ %ret;
         %n = %n - 1;
     }
-    %ret = %ret @ "Total objects =" SPC $SystemMetric::totalObjectCount NL "";
+    %ret = %ret @ "Total objects =" @ " " @ $SystemMetric::totalObjectCount @ "\n" @ "";
     return %ret;
 }
 function System::dumpClassInstanceCounts(%obj)
@@ -71,19 +72,16 @@ function System::dumpClassInstanceCounts(%obj)
     warn("System::dumpClassInstanceCounts() begin");
     warn(System::getClassInstanceCounts(%obj));
     warn("System::dumpClassInstanceCounts() finish");
-    return ;
 }
 function System::compileClassInstanceCounts()
 {
     System::compileClassInstanceCounts2(RootGroup);
-    return ;
 }
 function System::compileClassInstanceCounts2(%obj)
 {
     $SystemMetric::totalObjectCount = 0;
     $SystemMetric::ObjectCounts.clear();
     System::compileClassInstanceCounts3(%obj, $SystemMetric::ObjectCounts, 0);
-    return ;
 }
 function System::getClassInstanceCount(%classname)
 {
@@ -95,20 +93,18 @@ function System::getClassInstanceCount(%classname)
 }
 function SystemMetric::dumpPairsInstances(%unused, %key, %value)
 {
-    warn(%value SPC %key);
-    return ;
+    warn(%value @ " " @ %key);
 }
 function SystemMetric::dumpKeyValuePairs(%unused, %key, %value)
 {
-    warn(%key SPC %value);
-    return ;
+    warn(%key @ " " @ %value);
 }
 function System::dumpObjectsRecurse(%obj, %depth)
 {
     if (!isObject(%obj))
     {
-        warn("not an object -" SPC %obj);
-        return ;
+        warn("not an object -" @ " " @ %obj);
+        return;
     }
     %indent = "";
     %n = %depth;
@@ -120,12 +116,12 @@ function System::dumpObjectsRecurse(%obj, %depth)
     warn(%indent @ getDebugString(%obj));
     if (!%obj.isClassSimGroup())
     {
-        return ;
+        return;
     }
     if (%depth >= $Pref::System::dumpMetricsMaxRecurseDepth)
     {
-        error("Hit Maximum recurse depth" SPC getDebugString(%obj));
-        return ;
+        error("Hit Maximum recurse depth" @ " " @ getDebugString(%obj));
+        return;
     }
     %depth = %depth + 1;
     %num = %obj.getCount();
@@ -136,19 +132,17 @@ function System::dumpObjectsRecurse(%obj, %depth)
         %n = %n + 1;
     }
 }
-
 function System::dumpObjects(%obj)
 {
     warn("System::dumpObjects() begin");
     System::dumpObjectsRecurse(%obj, 0);
     warn("System::dumpObjects() finish");
-    return ;
 }
 if (isObject($System::LoginLog))
 {
     $System::LoginLog.delete();
 }
-$SystemMetric::loginLog = new StringMap();
+$SystemMetric::loginLog = new StringMap("");
 if (isObject(MissionCleanup))
 {
     MissionCleanup.add($SystemMetric::loginLog);
@@ -161,7 +155,7 @@ function System::onUserConnect(%client)
     $SystemMetric::connectCount = $SystemMetric::connectCount + 1;
     if (!isObject(%client))
     {
-        warn("got onUserConnect on non-object client:" SPC %client);
+        warn("got onUserConnect on non-object client:" @ " " @ %client);
     }
     else
     {
@@ -170,28 +164,25 @@ function System::onUserConnect(%client)
         %curCount = %curCount + 1;
         $SystemMetric::loginLog.put(%name, %curCount);
     }
-    return ;
 }
 function System::onUserDisconnect(%client)
 {
     $SystemMetric::disconnectCount = $SystemMetric::disconnectCount + 1;
     if (!isObject(%client))
     {
-        warn("got onUserDisconnect on non-object client:" SPC %client);
+        warn("got onUserDisconnect on non-object client:" @ " " @ %client);
     }
     else
     {
         if (!isObject(%client.Player))
         {
-            warn("got onUserDisconnect on non-object player:" SPC %client.Player);
+            warn("got onUserDisconnect on non-object player:" @ " " @ %client.Player);
         }
     }
-    return ;
 }
 function System::onUserEnteredGame(%client)
 {
     $SystemMetric::enteredGameCount = $SystemMetric::enteredGameCount + 1;
-    return ;
 }
 function System::calculateLoginMetrics()
 {
@@ -227,7 +218,6 @@ function System::calculateLoginMetrics()
     $SystemMetric::connectsMinusDisconnects = $SystemMetric::connectCount - $SystemMetric::disconnectCount;
     $SystemMetric::connectsMinusGameEntries = $SystemMetric::connectCount - $SystemMetric::enteredGameCount;
     $SystemMetric::pendingEventCount = countPendingEvents();
-    return ;
 }
 function System::dumpLoginMetrics()
 {
@@ -238,19 +228,18 @@ function System::dumpLoginMetrics()
         $SystemMetric::loginLog.forEach("dumpPairsInstances");
         warn("cumulative logins details finish");
     }
-    warn("events pending                :" SPC $SystemMetric::pendingEventCount);
-    warn("cumulative connects           :" SPC $SystemMetric::connectCount);
-    warn("cumulative disconnects        :" SPC $SystemMetric::disconnectCount);
-    warn("connects-disconnects          :" SPC $SystemMetric::connectsMinusDisconnects);
-    warn("cumulative game entries       :" SPC $SystemMetric::enteredGameCount);
-    warn("connects-game entries         :" SPC $SystemMetric::connectsMinusGameEntries);
-    warn("unique logins                 :" SPC $SystemMetric::uniqueLoginCount);
-    warn("current user count            :" SPC $SystemMetric::clientCount);
-    warn("current users idle            :" SPC $SystemMetric::userCountIdle);
-    warn("current users nonidle         :" SPC $SystemMetric::userCountNonIdle);
-    warn("current user orphans          :" SPC $SystemMetric::userCountOrphan);
+    warn("events pending                :" @ " " @ $SystemMetric::pendingEventCount);
+    warn("cumulative connects           :" @ " " @ $SystemMetric::connectCount);
+    warn("cumulative disconnects        :" @ " " @ $SystemMetric::disconnectCount);
+    warn("connects-disconnects          :" @ " " @ $SystemMetric::connectsMinusDisconnects);
+    warn("cumulative game entries       :" @ " " @ $SystemMetric::enteredGameCount);
+    warn("connects-game entries         :" @ " " @ $SystemMetric::connectsMinusGameEntries);
+    warn("unique logins                 :" @ " " @ $SystemMetric::uniqueLoginCount);
+    warn("current user count            :" @ " " @ $SystemMetric::clientCount);
+    warn("current users idle            :" @ " " @ $SystemMetric::userCountIdle);
+    warn("current users nonidle         :" @ " " @ $SystemMetric::userCountNonIdle);
+    warn("current user orphans          :" @ " " @ $SystemMetric::userCountOrphan);
     warn("System::dumpLoginMetrics() finish");
-    return ;
 }
 function System::dumpMetrics()
 {
@@ -271,42 +260,39 @@ function System::dumpMetrics()
     System::dumpLoginMetrics();
     dumpIdleTimes();
     warn("System::dumpMetrics() finish");
-    return ;
 }
 function dumpIdleTimes()
 {
     %secondsSinceLastIdleTimesDump = (getSimTime() / 1000) - $gLastIdleTimesReportTime;
     if (%secondsSinceLastIdleTimesDump < 3600)
     {
-        return ;
+        return;
     }
     $gLastIdleTimesReportTime = getSimTime() / 1000;
     safeEnsureScriptObject("StringMap", "gIdleTimesReport");
     gIdleTimesReport.dumpValues();
     gIdleTimesReport.clear();
-    return ;
 }
 function SystemDumpMetricsTimer()
 {
     cancel($System::dumpMetricsTimerID);
     if ($Game::Compile)
     {
-        warn("deactivating SystemDumpMetricsTimer because $Game::Compile is " SPC $Game::Compile);
-        return ;
+        warn("deactivating SystemDumpMetricsTimer because $Game::Compile is " @ " " @ $Game::Compile);
+        return;
     }
     if ($Pref::System::dumpMetricsTimerPeriodMS <= 0)
     {
-        error("deactivating SystemDumpMetricsTimer because timer period is " SPC $Pref::System::dumpMetricsTimerPeriodMS);
-        return ;
+        error("deactivating SystemDumpMetricsTimer because timer period is " @ " " @ $Pref::System::dumpMetricsTimerPeriodMS);
+        return;
     }
     if ($AmClient && !$Pref::System::dumpMetricsOnStandAloneClient)
     {
         echo("deactivating SystemDumpMetricsTimer because am client");
-        return ;
+        return;
     }
     System::dumpMetrics();
     $System::dumpMetricsTimerID = schedule($Pref::System::dumpMetricsTimerPeriodMS, 0, "SystemDumpMetricsTimer");
-    return ;
 }
 cancel($System::dumpMetricsTimerID);
 if ($Pref::System::dumpMetricsTimerPeriodMS > 0)
@@ -317,18 +303,18 @@ function GMetrics::GamePlayStartEvent(%group, %specificGame, %player)
 {
     if (%specificGame $= "")
     {
-        error(getScopeName() SPC "specificGame name must be set, it is an empty string. group=" SPC %group SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "specificGame name must be set, it is an empty string. group=" @ " " @ %group @ " " @ getTrace());
+        return;
     }
     if (!isObject(%player.client))
     {
-        return ;
+        return;
     }
     if (%player.GMetricsDelayStopTimer[%specificGame])
     {
         cancel(%player.GMetricsDelayStopTimer[%specificGame]);
         %player.GMetricsDelayStopTimer[%specificGame] = 0;
-        return ;
+        return;
     }
     if (!(%player.GMetricsStart[%specificGame] $= ""))
     {
@@ -337,14 +323,13 @@ function GMetrics::GamePlayStartEvent(%group, %specificGame, %player)
     {
         %player.GMetricsStart[%specificGame] = getSimTime();
     }
-    return ;
 }
 function DelayedRealPlayStopEvent(%group, %specificGame, %player)
 {
     if (!isObject(%player))
     {
-        echo(getScopeName() SPC %group SPC %specificGame SPC "player is not an object, not logging this:" SPC %player);
-        return ;
+        echo(getScopeName() @ " " @ %group @ " " @ %specificGame @ " " @ "player is not an object, not logging this:" @ " " @ %player);
+        return;
     }
     cancel(%player.GMetricsDelayStopTimer[%specificGame]);
     %player.GMetricsDelayStopTimer[%specificGame] = 0;
@@ -355,31 +340,30 @@ function DelayedRealPlayStopEvent(%group, %specificGame, %player)
         %seconds = 0.001 * (getSimTime() - %startTime);
         if (%seconds < 0)
         {
-            error(getScopeName() SPC %specificGame SPC "got stop but had no startime just using:" SPC %seconds SPC "for duration.");
+            error(getScopeName() @ " " @ %specificGame @ " " @ "got stop but had no startime just using:" @ " " @ %seconds @ " " @ "for duration.");
             %seconds = 0;
         }
     }
     else
     {
-        error(getScopeName() SPC %specificGame SPC "got stop but had no startime just using:" SPC %seconds SPC "for duration.");
+        error(getScopeName() @ " " @ %specificGame @ " " @ "got stop but had no startime just using:" @ " " @ %seconds @ " " @ "for duration.");
     }
     %player.GMetricsStart[%specificGame] = "";
     %duration = formatFloat("%0.0f", mCeil(%seconds));
     %eventTXT = "[event=playstop]";
     %detailTXT = "[group=" @ %group @ "][game=" @ %specificGame @ "][user=" @ %player.getShapeName() @ "][duration=" @ %duration @ "]";
     GMetrics::LogToFile(%eventTXT, %detailTXT);
-    return ;
 }
 function GMetrics::GamePlayStopEvent(%group, %specificGame, %player, %delayTillRealStop)
 {
     if (%specificGame $= "")
     {
-        error(getScopeName() SPC "specificGame name must be set, it is an empty string. group=" SPC %group SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "specificGame name must be set, it is an empty string. group=" @ " " @ %group @ " " @ getTrace());
+        return;
     }
     if (!isObject(%player.client))
     {
-        return ;
+        return;
     }
     cancel(%player.GMetricsDelayStopTimer[%specificGame]);
     %player.GMetricsDelayStopTimer[%specificGame] = 0;
@@ -388,25 +372,23 @@ function GMetrics::GamePlayStopEvent(%group, %specificGame, %player, %delayTillR
         return DelayedRealPlayStopEvent(%group, %specificGame, %player);
     }
     %player.GMetricsDelayStopTimer[%specificGame] = schedule(%delayTillRealStop, 0, "DelayedRealPlayStopEvent", %group, %specificGame, %player);
-    return ;
 }
 function GMetricsDoneTouching(%group, %specificGame, %player)
 {
     cancel(%player.GMetricsTouchStopTimer[%specificGame]);
     %player.GMetricsTouchStopTimer[%specificGame] = 0;
     GMetrics::GamePlayStopEvent(%group, %specificGame, %player, 0);
-    return ;
 }
 function GMetrics::GameTouchEvent(%group, %specificGame, %player, %TimeToWaitForPlayerToStop)
 {
     if (%specificGame $= "")
     {
-        error(getScopeName() SPC "specificGame name must be set, it is an empty string. group=" SPC %group SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "specificGame name must be set, it is an empty string. group=" @ " " @ %group @ " " @ getTrace());
+        return;
     }
     if (!isObject(%player.client))
     {
-        return ;
+        return;
     }
     if (%TimeToWaitForPlayerToStop <= 0)
     {
@@ -422,97 +404,86 @@ function GMetrics::GameTouchEvent(%group, %specificGame, %player, %TimeToWaitFor
         GMetrics::GamePlayStartEvent(%group, %specificGame, %player);
         %player.GMetricsTouchStopTimer[%specificGame] = schedule(%TimeToWaitForPlayerToStop, 0, "GMetricsDoneTouching", %group, %specificGame, %player);
     }
-    return ;
 }
 function GMetrics::GameAwardEvent(%group, %specificGame, %player, %points)
 {
     if (%specificGame $= "")
     {
-        error(getScopeName() SPC "specificGame name must be set, it is an empty string. group=" SPC %group SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "specificGame name must be set, it is an empty string. group=" @ " " @ %group @ " " @ getTrace());
+        return;
     }
     if (!isObject(%player.client))
     {
-        return ;
+        return;
     }
     if (%points <= 0)
     {
-        return ;
+        return;
     }
     %eventTXT = "[event=award]";
     %detailTXT = "[group=" @ %group @ "][game=" @ %specificGame @ "][user=" @ %player.getShapeName() @ "][points=" @ %points @ "]";
     GMetrics::LogToFile(%eventTXT, %detailTXT);
-    return ;
 }
 function GMetrics::LogToFile(%eventTXT, %detailTXT)
 {
     %text = %eventTXT @ %detailTXT;
     %time = getFormattedTime("[%m/%d/%Y %H:%M:%S]");
     $GMetricsLogFile.log("games", "info", %time @ "[games]" @ %text);
-    return ;
 }
-
-// TODO: Figure out what causes this syntax error crash for the two functions below
-// [5/24/2020 21:25:54][Wrn][Script ] >>> Advanced script error report.  Line 937.
-// [5/24/2020 21:25:54][Wrn][Script ] >>> Some error context, with ## on sides of error halt:
-// [5/24/2020 21:25:54][Err][Script ]         %line = formatString("%-40s", %container.instanceCounts[(%n,##"##class")]) @ formatInt("%5d", %container.instanceCounts[(%n,"count")]);
-// [5/24/2020 21:25:54][Wrn][Script ] >>> Error report complete.
-
 function dumpClassInstances(%simGroup)
 {
-    // if (!isObject(%simGroup))
-    // {
-    //     return ;
-    // }
-    // %container = new SimObject();
-    // %container.numClasses = 0;
-    // %total = 0;
-    // compileClassInstances(%simGroup, %container);
-    // %n = 0;
-    // while (%n < %container.numClasses)
-    // {
-    //     %line = formatString("%-40s", %container.instanceCounts[(%n,"class")]) @ formatInt("%5d", %container.instanceCounts[(%n,"count")]);
-    //     echo(%line);
-    //     %total = %total + %container.instanceCounts[(%n,"count")];
-    //     %n = %n + 1;
-    // }
-    // %line = formatString("%-40s", "Total object instances:") @ formatInt("%5d", %total);
-    // echo(%line);
-    // %container.delete();
-    // return ;
+    if (!isObject(%simGroup))
+    {
+        return;
+    }
+    %container = new SimObject("");
+    %container.numClasses = 0;
+    %total = 0;
+    compileClassInstances(%simGroup, %container);
+    %n = 0;
+    while (%n < %container.numClasses)
+    {
+        %line = formatString("%-40s", %n, %container.instanceCounts["class"]) @ %n @ formatInt("%5d", %container.instanceCounts["count"]);
+        echo(%line);
+        %total = %total + %container.instanceCounts["count"];
+        %n;
+        %n = %n + 1;
+    }
+    %line = formatString("%-40s", "Total object instances:") @ formatInt("%5d", %total);
+    echo(%line);
+    %container.delete();
 }
 function compileClassInstances(%obj, %container)
 {
-    // %classname = %obj.getClassName();
-    // %found = -1;
-    // %n = 0;
-    // while (%found == -1)
-    // {
-    //     if (%container.instanceCounts[(%n,"class")] $= %classname)
-    //     {
-    //         %found = %n;
-    //     }
-    //     %n = %n + 1;
-    // }
-    // if (%found == -1)
-    // {
-    //     %found = %container.numClasses;
-    //     %container.numClasses = %container.numClasses + 1;
-    //     %container.instanceCounts[%found,"class"] = %classname;
-    // }
-    // %curr = %container.instanceCounts[(%found,"count")];
-    // %curr = %curr $= "" ? 0 : %curr;
-    // %container.instanceCounts[%found,"count"] = %curr + 1;
-    // if (%obj.isClassSimGroup())
-    // {
-    //     %n = %obj.getCount() - 1;
-    //     while (%n >= 0)
-    //     {
-    //         %child = %obj.getObject(%n);
-    //         compileClassInstances(%child, %container);
-    //         %n = %n - 1;
-    //     }
-    // }
+    %classname = %obj.getClassName();
+    %found = -1;
+    %n = 0;
+    while ((%n < %container.numClasses) && (%found == -1))
+    {
+        if (%n @ " " @ %container.instanceCounts["class"] $= %classname)
+        {
+            %found = %n;
+        }
+        %n = %n + 1;
+    }
+    if (%found == -1)
+    {
+        %found = %container.numClasses;
+        %container.numClasses = %container.numClasses + 1;
+        %container.instanceCounts[%found,"class"] = %classname;
+    }
+    %curr = %container.instanceCounts["count"];
+    %found;
+    %curr = %curr $= "" ? 0 : %curr;
+    %container.instanceCounts[%found,"count"] = %curr + 1;
+    if (%obj.isClassSimGroup())
+    {
+        %n = %obj.getCount() - 1;
+        while (%n >= 0)
+        {
+            %child = %obj.getObject(%n);
+            compileClassInstances(%child, %container);
+            %n = %n - 1;
+        }
+    }
 }
-
-

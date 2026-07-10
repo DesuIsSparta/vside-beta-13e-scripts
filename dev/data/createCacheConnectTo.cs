@@ -27,12 +27,10 @@ function doLoginCheck()
             schedule(3000, 0, doLoginCheck);
         }
     }
-    return ;
 }
 function logoutAndQuit()
 {
     logout(0);
     WorldMap.exit();
     quit();
-    return ;
 }

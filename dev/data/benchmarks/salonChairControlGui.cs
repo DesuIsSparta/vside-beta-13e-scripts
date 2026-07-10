@@ -2,37 +2,34 @@ function toggleSalonChairControlDialog()
 {
     if (!$StandAlone)
     {
-        return ;
+        return;
     }
     if (!($gContiguousSpaceName $= "minimal"))
     {
-        return ;
+        return;
     }
     if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic"))
     {
-        return ;
+        return;
     }
     toggleVisibleState(salonChairControlGui);
-    return ;
 }
 function salonChairControlGui::open(%this)
 {
     Canvas.pushDialog(%this, 0);
     %this.setVisible(1);
     %this.onRefreshTargetsList();
-    return ;
 }
 function salonChairControlGui::close(%this, %unused)
 {
     Canvas.popDialog(%this);
     %this.setVisible(0);
-    return ;
 }
 function salonChairControlGui::tryTarget(%this, %shape)
 {
     if (!%this.isVisible())
     {
-        return ;
+        return;
     }
     %name = admin::getTargetName(%shape);
     if (isObject(%shape))
@@ -45,19 +42,16 @@ function salonChairControlGui::tryTarget(%this, %shape)
     }
     %targetName = %classname @ "\t" @ %name;
     salonChairControlTargetsPopup.setText(%targetName);
-    return ;
 }
 function salonChairControlGui::sitInChair(%this, %chairType)
 {
     %name = getField(salonChairControlTargetsPopup.getText(), 1);
     commandToServer('RequestOtherPlayerToSit', %name, "seSalonChairClient" @ %chairType);
-    return ;
 }
 function salonChairControlGui::releaseFromChair(%this, %teleportAway)
 {
     %name = getField(salonChairControlTargetsPopup.getText(), 1);
     commandToServer('RequestOtherPlayerToStand', %name, %teleportAway);
-    return ;
 }
 $gSalonChairControlTargetsList = "";
 function salonChairControlGui::onRefreshTargetsList(%this)
@@ -65,7 +59,6 @@ function salonChairControlGui::onRefreshTargetsList(%this)
     $gSalonChairControlGuiPrevMenuTarget = salonChairControlTargetsPopup.getText();
     salonChairControlTargetsPopup.setText("getting list..");
     commandToServer('SalonChairControlGetTargets');
-    return ;
 }
 function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item)
 {
@@ -95,7 +88,6 @@ function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item)
             }
         }
     }
-    return ;
 }
 function salonChairControlGui::onGotTargetsList(%this, %theList)
 {
@@ -104,7 +96,7 @@ function salonChairControlGui::onGotTargetsList(%this, %theList)
     if (%num < 1)
     {
         error("apparently nobody is here. this is bad.");
-        return ;
+        return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
@@ -127,5 +119,4 @@ function salonChairControlGui::onGotTargetsList(%this, %theList)
     {
         salonChairControlTargetsPopup.setText(%nextItem);
     }
-    return ;
 }

@@ -5,7 +5,6 @@ function InfoPopupDlg::open(%this)
     {
         HudTabs.selectTabWithName("affinity");
     }
-    return ;
 }
 function InfoPopupDlg::close(%this)
 {
@@ -13,12 +12,10 @@ function InfoPopupDlg::close(%this)
     {
         HudTabs.close();
     }
-    return ;
 }
 function InfoPopupDlg::onClose(%this)
 {
     %this.clear();
-    return ;
 }
 function InfoPopupDlg::isShowing(%this)
 {
@@ -44,42 +41,39 @@ function InfoPopupDlg::init(%this)
         %this.playerName = "";
         %this.clear();
     }
-    return ;
 }
 function InfoPopupDlg::clear(%this)
 {
     InfoPopupNameField.setText("");
-    InfoPopupContents.setText("Click on a player or player\'s name to see information about them.");
+    InfoPopupContents.setText("Click on a player or player's name to see information about them.");
     InfoPopupTagsScroll.setVisible(0);
     InfoPopupBottom.setText("");
-    return ;
 }
 function InfoPopupDlg::showInfoFor(%this, %playerName)
 {
     if (rentabot_isRentabotName(%playerName))
     {
         %this.open();
-        InfoPopupContents.setText("Sorry," SPC %playerName SPC "doesn\'t have info..");
+        InfoPopupContents.setText("Sorry," @ " " @ %playerName @ " " @ "doesn't have info..");
         InfoPopupTagsText.setText("");
         InfoPopupBottom.setText("");
         %this.waitIcon.stop();
         %this.waitIcon.setVisible(0);
-        return ;
+        return;
     }
     %this.playerName = %playerName;
     %this.tryShowPlayerInfo();
-    return ;
 }
 function InfoPopupDlg::tryShowPlayerInfo(%this)
 {
     %this.init();
     %tableSettings = "<tab:88,215>";
-    %fieldOpen = "" TAB "<spush>";
+    %fieldOpen = "" @ "\t" @ "<spush>";
     %fieldClose = "<spop>";
     if (%this.playerName $= "")
     {
         echoDebug("tryShowPlayerInfo(): No playerName set.");
-        return ;
+        return;
     }
     %playerName = StripMLControlChars(%this.playerName);
     gSetField(%this, playerNameDict, %playerName);
@@ -94,7 +88,7 @@ function InfoPopupDlg::tryShowPlayerInfo(%this)
             %age = "hidden";
         }
         %gender = %info.gender;
-        if (!((%gender $= "f")) && !((%gender $= "m")))
+        if (!(%gender $= "f") && !(%gender $= "m"))
         {
             %gender = "n";
         }
@@ -129,7 +123,7 @@ function InfoPopupDlg::tryShowPlayerInfo(%this)
         %tagsText = "";
         if ($ETS::PlayerInfo::NoTags)
         {
-            %tagsText = %tagsText @ "Interests you share with <a:PROFILE>" @ $genderPronounHimHerThem[%gender] @ "</a> will show up here," @ "but you have none in your profile!" SPC "<a:EDIT_PROFILE>Click here</a> to add some!";
+            %tagsText = %tagsText @ "Interests you share with <a:PROFILE>" @ $genderPronounHimHerThem[%gender] @ "</a> will show up here," @ "but you have none in your profile!" @ " " @ "<a:EDIT_PROFILE>Click here</a> to add some!";
         }
         else
         {
@@ -164,7 +158,6 @@ function InfoPopupDlg::tryShowPlayerInfo(%this)
         InfoPopupBottom.setText("");
         requestPlayerInfoFor(%this.playerName);
     }
-    return ;
 }
 function InfoPopupDlg::setAffinityName(%this, %playerName)
 {
@@ -172,18 +165,16 @@ function InfoPopupDlg::setAffinityName(%this, %playerName)
     %visibleCharLimit = 17;
     if (strlen(%nameFieldString) > %visibleCharLimit)
     {
-        %nameFieldString = getSubStr(%playerName, 0, %visibleCharLimit - 3);
+        %nameFieldString = getSubStr(%playerName, 0, (%visibleCharLimit - 3));
         %nameFieldString = %nameFieldString @ "...";
     }
     InfoPopupNameField.setText("(" @ %nameFieldString @ ")");
-    return ;
 }
 function InfoPopupDlg::showPlayerNotFound(%this)
 {
-    InfoPopupContents.setText("Sorry, couldn\'t find anyone named " @ %this.playerName @ ".");
+    InfoPopupContents.setText("Sorry, couldn't find anyone named " @ %this.playerName @ ".");
     InfoPopupTagsText.setText("");
     InfoPopupBottom.setText("");
-    return ;
 }
 function InfoPopupDlg::splitTagsIntoLinks(%this, %tags, %includeCategory)
 {
@@ -205,7 +196,7 @@ function InfoPopupDlg::splitTagsIntoLinks(%this, %tags, %includeCategory)
         {
             %dispTag = getSubStr(strrchr(%tag, ":"), 1, 10000);
         }
-        %ret = %ret @ "<a:TAG" SPC munge(%tag) @ ">" @ %dispTag @ "</a>";
+        %ret = %ret @ "<a:TAG" @ " " @ munge(%tag) @ ">" @ %dispTag @ "</a>";
         %n = %n + 1;
     }
     return %ret;
@@ -222,7 +213,7 @@ function InfoPopupDlg::getAddRemoveIgnoreUnignoreText(%this, %playerName)
     %ret = "";
     if (!isObject(UserListFavorites))
     {
-        error(getTrace() SPC "- hmm. not sure how this happened.");
+        error(getTrace() @ " " @ "- hmm. not sure how this happened.");
         return "<just:center>(favorite status unknown)";
     }
     %friendStatus = BuddyHudWin.getFriendStatus(%playerName);
@@ -290,7 +281,6 @@ function InfoPopupDlg::stopAnimation(%this)
     %this.init();
     %this.waitIcon.stop();
     %this.waitIcon.setVisible(0);
-    return ;
 }
 function InfoPopupContents::onURL(%this, %url)
 {
@@ -363,17 +353,14 @@ function InfoPopupContents::onURL(%this, %url)
             }
         }
     }
-    return ;
 }
 function InfoPopupTagsText::onURL(%this, %url)
 {
     InfoPopupContents::onURL(%this, %url);
-    return ;
 }
 function InfoPopupNameField::onURL(%this, %url)
 {
     InfoPopupContents::onURL(%this, %url);
-    return ;
 }
 function InfoPopupNameField::onRightURL(%this, %url)
 {
@@ -382,14 +369,11 @@ function InfoPopupNameField::onRightURL(%this, %url)
     {
         onRightClickPlayerName(InfoPopupDlg.playerName);
     }
-    return ;
 }
 function InfoPopupContents::sheduleBuddyRefreshIfNeeded(%this)
 {
-    return ;
 }
 function InfoPopupBottom::onURL(%this, %url)
 {
     InfoPopupContents.onURL(%url);
-    return ;
 }

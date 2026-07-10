@@ -7,7 +7,6 @@ function SalonStyleSelector::open(%this)
         %this.setVisible(1);
     }
     PlayGui.focusAndRaise(%this);
-    return ;
 }
 function SalonStyleSelector::close(%this)
 {
@@ -23,7 +22,7 @@ function SalonStyleSelector::Initialize(%this)
 {
     if (%this.initialized)
     {
-        return ;
+        return;
     }
     %this.initialized = 1;
     if (isObject(SalonStyleSelector.skuGuiList))
@@ -39,15 +38,14 @@ function SalonStyleSelector::Initialize(%this)
     %SSS_ButtonWidth = 20;
     %SSS_ButtonSpacing = 6;
     %SSS_ButtonMargin = %SSS_ButtonWidth + (2 * %SSS_ButtonSpacing);
-    %this.minExtent = %SSS_Width SPC 110;
+    %this.minExtent = %SSS_Width @ " " @ 110;
     %this.resize(%SSS_Width, %SSS_Height);
-    %gc = new GuiTextCtrl(gePropsWindowTitle)
-    {
+    %gc = new GuiTextCtrl(gePropsWindowTitle) {
         profile = "ETSShadowTextNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "5 0";
-        extent = %SSS_Width - 10 SPC 18;
+        extent = (%SSS_Width - 10) @ " " @ 18;
         minExtent = "8 2";
         sluggishness = -1;
         visible = 1;
@@ -58,13 +56,12 @@ function SalonStyleSelector::Initialize(%this)
         tooltiptimer = 0;
     };
     %this.add(%gc);
-    %gc = new GuiWindowCtrl()
-    {
+    %gc = new GuiWindowCtrl("") {
         profile = "DottedWindowDkProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 18";
-        extent = %SSS_Width SPC 1;
+        extent = %SSS_Width @ " " @ 1;
         minExtent = "8 1";
         sluggishness = -1;
         resizeWidth = 0;
@@ -76,21 +73,19 @@ function SalonStyleSelector::Initialize(%this)
         canHilite = 0;
     };
     %this.add(%gc);
-    %gc = new GuiBitmapButtonCtrl()
-    {
-        position = %SSS_Width - 18 SPC 5;
-        extent = 13 SPC 13;
+    %gc = new GuiBitmapButtonCtrl("") {
+        position = (%SSS_Width - 18) @ " " @ 5;
+        extent = 13 @ " " @ 13;
         bitmap = "platform/client/buttons/close_m";
         command = "SalonStyleSelector.close();";
     };
     %this.add(%gc);
     %this.closeButton = %gc;
-    %gc = new GuiBitmapCtrl(SalonStyleSelectorChair)
-    {
+    %gc = new GuiBitmapCtrl(SalonStyleSelectorChair) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %SSS_ButtonSpacing SPC 22;
+        position = %SSS_ButtonSpacing @ " " @ 22;
         extent = "20 20";
         minExtent = "8 8";
         sluggishness = -1;
@@ -99,13 +94,12 @@ function SalonStyleSelector::Initialize(%this)
         tooltip = "Your Salon Station";
     };
     %this.add(%gc);
-    %gc = new GuiVariableWidthButtonCtrl(ShowPropsButton)
-    {
+    %gc = new GuiVariableWidthButtonCtrl(ShowPropsButton) {
         profile = "BracketButton19Profile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %SSS_ButtonMargin SPC 22;
-        extent = %SSS_Width - (2 * %SSS_ButtonMargin) SPC 19;
+        position = %SSS_ButtonMargin @ " " @ 22;
+        extent = (%SSS_Width - (2 * %SSS_ButtonMargin)) @ " " @ 19;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -124,12 +118,11 @@ function SalonStyleSelector::Initialize(%this)
         tooltiptimer = 0;
     };
     %this.add(%gc);
-    %gc = new GuiBitmapCtrl(SalonStyleSelectorProp)
-    {
+    %gc = new GuiBitmapCtrl(SalonStyleSelectorProp) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%SSS_Width - %SSS_ButtonWidth) - %SSS_ButtonSpacing SPC 22;
+        position = ((%SSS_Width - %SSS_ButtonWidth) - %SSS_ButtonSpacing) @ " " @ 22;
         extent = "20 20";
         minExtent = "8 8";
         sluggishness = -1;
@@ -138,13 +131,12 @@ function SalonStyleSelector::Initialize(%this)
         tooltip = "Your Styling Prop";
     };
     %this.add(%gc);
-    %gc = new GuiScrollCtrl()
-    {
+    %gc = new GuiScrollCtrl("") {
         profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "7 48";
-        extent = %SSS_Width - 13 SPC %SSS_Height - 61;
+        extent = (%SSS_Width - 13) @ " " @ (%SSS_Height - 61);
         minExtent = "8 2";
         sluggishness = -1;
         visible = 1;
@@ -160,14 +152,13 @@ function SalonStyleSelector::Initialize(%this)
         stickyBottom = 0;
         tooltiptimer = 0;
     };
-    SalonStyleSelector.skuGuiList = new GuiArray2Ctrl()
-    {
+    SalonStyleSelector.skuGuiList = new GuiArray2Ctrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
-        extent = %SSS_Width - 22 SPC 8;
-        minExtent = %SSS_Width - 22 SPC 8;
+        extent = (%SSS_Width - 22) @ " " @ 8;
+        minExtent = (%SSS_Width - 22) @ " " @ 8;
         sluggishness = -1;
         visible = 1;
         canHilite = 0;
@@ -179,14 +170,13 @@ function SalonStyleSelector::Initialize(%this)
         spacing = 5;
     };
     %gc.add(SalonStyleSelector.skuGuiList);
-    SalonStyleSelector.noSkuGuiText = new GuiMLTextCtrl()
-    {
+    SalonStyleSelector.noSkuGuiText = new GuiMLTextCtrl("") {
         profile = "ETSShadowTextNonModalProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
-        extent = %SSS_Width - 22 SPC 8;
-        minExtent = %SSS_Width - 22 SPC 8;
+        extent = (%SSS_Width - 22) @ " " @ 8;
+        minExtent = (%SSS_Width - 22) @ " " @ 8;
         sluggishness = -1;
         visible = 1;
         canHilite = 1;
@@ -198,7 +188,6 @@ function SalonStyleSelector::Initialize(%this)
     %left = 50;
     %top = (getWord(PlayGui.getExtent(), 1) - getWord(%this.getExtent(), 1)) / 2;
     %this.reposition(%left, %top);
-    return ;
 }
 function ShowPropsButton::onClick(%this)
 {
@@ -213,15 +202,14 @@ function ShowPropsButton::onClick(%this)
         %callback = "";
         if (%amInSalon)
         {
-            %msg = $MsgCat::shops["NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-IN"];
+            %msg = $MsgCat::shops["NO-PROPS-GO-TO-",%salonCode,"-BODY-IN"];
             %callback = "toggleStore();";
         }
         else
         {
-            %msg = $MsgCat::shops["NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-OUT"];
+            %msg = $MsgCat::shops["NO-PROPS-GO-TO-",%salonCode,"-BODY-OUT"];
             %callback = "vurlOperation(\"" @ $gDestinationVurls[%salonCode] @ "\");";
         }
-        MessageBoxYesNo($MsgCat::shops["NO-PROPS-GO-TO-" @ %salonCode @ "-TITLE"], %msg, %callback, "");
+        MessageBoxYesNo($MsgCat::shops["NO-PROPS-GO-TO-",%salonCode,"-TITLE"], %msg, %callback, "");
     }
-    return ;
 }

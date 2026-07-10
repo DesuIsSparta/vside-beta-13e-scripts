@@ -22,7 +22,6 @@ function admin::getFormattedClassName(%classname)
             }
         }
     }
-    return ;
 }
 function admin::isActionable(%obj, %action)
 {
@@ -131,12 +130,11 @@ function admin::getTargetName(%shape)
     {
         return "everyone";
     }
-    return ;
 }
 function admin::composeSystemMessage(%target, %message, %unused)
 {
     %msg = "";
-    %msg = %msg @ "system message to" SPC admin::getTargetName(%target) @ ":";
+    %msg = %msg @ "system message to" @ " " @ admin::getTargetName(%target) @ ":";
     %msg = %msg @ "\n";
     %msg = %msg @ %message;
     return %msg;

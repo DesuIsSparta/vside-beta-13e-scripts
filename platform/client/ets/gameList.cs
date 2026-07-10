@@ -1,7 +1,9 @@
 if (!isObject(GameMgrHudTabs))
 {
     echo(getScopeName());
-    new ScriptObject(GameMgrHudTabs);
+    new ScriptObject(GameMgrHudTabs) {
+        class = "TabControl";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(GameMgrHudTabs);
@@ -24,32 +26,29 @@ function GameMgrHudTabs::setup(%this)
         %this.fillINSPECTtab();
         %this.fillCREATEtab();
     }
-    return ;
 }
 function GameMgrHudTabs::OnETSInviteFriends(%this)
 {
     if (!isObject(EtsInviteDialog))
     {
         error("no EtsInviteDialog, this should not happen");
-        return ;
+        return;
     }
     if (!EtsInviteDialog.isVisible())
     {
         EtsInviteDialog.open();
     }
-    return ;
 }
 function GameMgrHudTabs::fillINSPECTtab(%this)
 {
     echo(getScopeName());
     %theTab = %this.InspectTab;
-    %theTab.UpperContent = new GuiMLTextCtrl()
-    {
+    %theTab.UpperContent = new GuiMLTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
-        extent = getWord(%theTab.getExtent(), 0) - 1 SPC 108;
+        extent = (getWord(%theTab.getExtent(), 0) - 1) @ " " @ 108;
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
@@ -58,13 +57,12 @@ function GameMgrHudTabs::fillINSPECTtab(%this)
     };
     %theTab.UpperContent.bindClassName("GameMgrMLText");
     %theTab.add(%theTab.UpperContent);
-    %theTab.PlayerListScroll = new GuiScrollCtrl()
-    {
+    %theTab.PlayerListScroll = new GuiScrollCtrl("") {
         profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 109";
-        extent = getWord(%theTab.getExtent(), 0) SPC 70;
+        extent = getWord(%theTab.getExtent(), 0) @ " " @ 70;
         minExtent = "10 10";
         sluggishness = -1;
         visible = 1;
@@ -75,8 +73,7 @@ function GameMgrHudTabs::fillINSPECTtab(%this)
         childMargin = "-4 -1";
         helpTag = 0;
     };
-    %theTab.PlayerList = new GuiTextListCtrl(PlayerList)
-    {
+    %theTab.PlayerList = new GuiTextListCtrl(PlayerList) {
         profile = "ETSTextListProfile";
         horizSizing = "width";
         vertSizing = "bottom";
@@ -95,13 +92,12 @@ function GameMgrHudTabs::fillINSPECTtab(%this)
     };
     %theTab.PlayerListScroll.add(%theTab.PlayerList);
     %theTab.add(%theTab.PlayerListScroll);
-    %theTab.LowerContent = new GuiMLTextCtrl()
-    {
+    %theTab.LowerContent = new GuiMLTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC getWord(%theTab.PlayerListScroll.getPosition(), 1) + getWord(%theTab.PlayerListScroll.getExtent(), 1);
-        extent = getWord(%theTab.getExtent(), 0) - 1 SPC 108;
+        position = 0 @ " " @ (getWord(%theTab.PlayerListScroll.getPosition(), 1) + getWord(%theTab.PlayerListScroll.getExtent(), 1));
+        extent = (getWord(%theTab.getExtent(), 0) - 1) @ " " @ 108;
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
@@ -111,9 +107,8 @@ function GameMgrHudTabs::fillINSPECTtab(%this)
     %theTab.LowerContent.bindClassName("GameMgrMLText");
     %theTab.add(%theTab.LowerContent);
     gameMgrClient.inspectNothing();
-    return ;
 }
-$gameMgr::InspectTab::NO_INSPECTED_GAME_MESSAGE = "<spush><b>Inspect a game.<spop><br>You aren\'t inspecting a game right now. If you\'d like to see how you or your friends are doing in a game, double click one on your list!";
+$gameMgr::InspectTab::NO_INSPECTED_GAME_MESSAGE = "<spush><b>Inspect a game.<spop><br>You aren't inspecting a game right now. If you'd like to see how you or your friends are doing in a game, double click one on your list!";
 function GameList::refreshInspectTab(%this)
 {
     %this = GameMgrHudTabs.InspectTab;
@@ -122,7 +117,7 @@ function GameList::refreshInspectTab(%this)
         %this.UpperContent.setText($gameMgr::InspectTab::NO_INSPECTED_GAME_MESSAGE);
         %this.LowerContent.setText("");
         %this.PlayerList.clear();
-        return ;
+        return;
     }
     %game = gameMgrClient.inspectedGame;
     if (gameMgrClient.areWePlaying(%game))
@@ -136,7 +131,7 @@ function GameList::refreshInspectTab(%this)
     {
         if (!gameMgrClient.areWePlaying(%game))
         {
-            %upperText = %upperText @ "You\'re not in this game. <a:game join " @ %game.serversideID @ ">Join it!</a><br>";
+            %upperText = %upperText @ "You're not in this game. <a:game join " @ %game.serversideID @ ">Join it!</a><br>";
         }
         else
         {
@@ -165,7 +160,7 @@ function GameList::refreshInspectTab(%this)
         %record = %game.PlayerRecords.getObject(%n);
         if (%game.gamestatus == $gameMgr::GameStatus::STARTED)
         {
-            %this.PlayerList.addRow(%n, "#" @ %n + 1 @ "- " @ %record.name TAB %record.status TAB %record.score, %n);
+            %this.PlayerList.addRow(%n, "#" @ (%n + 1) @ "- " @ %record.name @ "\t" @ %record.status @ "\t" @ %record.score, %n);
         }
         else
         {
@@ -177,7 +172,7 @@ function GameList::refreshInspectTab(%this)
             {
                 %ready = "not ready";
             }
-            %this.PlayerList.addRow(%n, %record.name TAB %ready TAB "", %n);
+            %this.PlayerList.addRow(%n, %record.name @ "\t" @ %ready @ "\t" @ "", %n);
         }
         %n = %n + 1;
     }
@@ -185,7 +180,7 @@ function GameList::refreshInspectTab(%this)
     %lowerText = %lowerText @ "Game status: ";
     if (%game.gamestatus == $gameMgr::GameStatus::CANT_START)
     {
-        %lowerText = %lowerText @ "Can\'t start.";
+        %lowerText = %lowerText @ "Can't start.";
     }
     else
     {
@@ -209,19 +204,19 @@ function GameList::refreshInspectTab(%this)
     }
     else
     {
-        if ((%game.gamestatus != $gameMgr::GameStatus::STARTED) && !(%this.postgameView))
+        if ((%game.gamestatus != $gameMgr::GameStatus::STARTED) && !%this.postgameView)
         {
-            %readyText = !%game.ourRecord.ready ? "[I\'m ready]" : "[I\'m not ready]";
-            %lowerText = %lowerText @ "Change readiness:<a:game changeReady " @ %game.serversideID SPC !%game.ourRecord.ready @ ">" @ %readyText @ "</a><br>";
+            %readyText = !%game.ourRecord.ready ? "[I'm ready]" : "[I'm not ready]";
+            %lowerText = %lowerText @ "Change readiness:<a:game changeReady " @ %game.serversideID @ " " @ !%game.ourRecord.ready @ ">" @ %readyText @ "</a><br>";
             if (%game.host $= $player.getShapeName())
             {
-                %lowerText = %lowerText @ "You\'re the host. <a:game startGame " @ %game.serversideID @ ">" @ "[start game]" @ "</a><br>";
+                %lowerText = %lowerText @ "You're the host. <a:game startGame " @ %game.serversideID @ ">" @ "[start game]" @ "</a><br>";
             }
         }
         %lowerText = %lowerText @ "<a:game quit " @ %game.serversideID @ ">[Quit game]</a><br>";
     }
     %lowerText = %lowerText @ "<br><br>" @ "<a:game stopInspecting>[stop inspecting]</a>";
-    %lowerText = %lowerText @ "<br>Want more people to play in this game? When it\'s inspected like this, right-click people or their name-links and choose \"Invite to game.\"";
+    %lowerText = %lowerText @ "<br>Want more people to play in this game? When it's inspected like this, right-click people or their name-links and choose \"Invite to game.\"";
     %this.LowerContent.setText(%lowerText);
     %this.UpperContent.forceReflow();
     %newPLSPosX = getWord(%this.PlayerListScroll.getPosition, 0);
@@ -230,7 +225,6 @@ function GameList::refreshInspectTab(%this)
     %newLCPosX = getWord(%this.LowerContent.getPosition, 0);
     %newLCPosY = getWord(%this.PlayerListScroll.getPosition(), 1) + getWord(%this.PlayerListScroll.getExtent(), 1);
     %this.LowerContent.reposition(%newLCPosX, %newLCPosY);
-    return ;
 }
 function GameMgrMLText::onURL(%this, %url)
 {
@@ -244,7 +238,7 @@ function GameMgrMLText::onURL(%this, %url)
         if (!(%firstWord $= "game"))
         {
             warn("GameMgrMLText received an unrecognized link URL=" @ %url @ ". Returning!<-" @ getScopeName());
-            return ;
+            return;
         }
     }
     %command = getWord(%url, 1);
@@ -285,7 +279,6 @@ function GameMgrMLText::onURL(%this, %url)
             }
         }
     }
-    return ;
 }
 function GameMgrHudTabs::tabSelected(%this, %tab)
 {
@@ -294,7 +287,6 @@ function GameMgrHudTabs::tabSelected(%this, %tab)
         gameMgrClient.inspectedGame.deepUpdated = 0;
         GameList.refresh();
     }
-    return ;
 }
 function GameList::switchIfInspectEmpty(%this)
 {
@@ -302,19 +294,26 @@ function GameList::switchIfInspectEmpty(%this)
     {
         GameMgrHudTabs.selectTabWithName("MYGAMES");
     }
-    return ;
 }
 function GameMgrHudTabs::fillMYGAMESTab(%this)
 {
     echo(getScopeName());
     %theTab = %this.getTabWithName("MYGAMES");
-    new GuiScrollCtrl()
-    {
+    %theTab.add(new GuiMLTextCtrl(GameList) {
+        profile = "ETSFavTextListProfile";
+        horizSizing = "width";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = (getWord(%theTab.getExtent(), 0) - 1) @ " " @ 80;
+        minExtent = "80 80";
+        sluggishness = -1;
+        visible = 1;
+    };, new GuiScrollCtrl("") {
         profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "top relative";
         position = "0 0";
-        extent = getWord(%theTab.getExtent(), 0) SPC getWord(%theTab.getExtent(), 1) - 24;
+        extent = getWord(%theTab.getExtent(), 0) @ " " @ (getWord(%theTab.getExtent(), 1) - 24);
         minExtent = "10 10";
         sluggishness = -1;
         visible = 1;
@@ -323,42 +322,25 @@ function GameMgrHudTabs::fillMYGAMESTab(%this)
         vScrollBar = "dynamic";
         constantThumbHeight = 1;
         helpTag = 0;
-    }.add(new GuiScrollCtrl()
-    {
-        profile = "ETSScrollProfile";
-        horizSizing = "width";
-        vertSizing = "top relative";
-        position = "0 0";
-        extent = getWord(%theTab.getExtent(), 0) SPC getWord(%theTab.getExtent(), 1) - 24;
-        minExtent = "10 10";
-        sluggishness = -1;
-        visible = 1;
-        willFirstRespond = 1;
-        hScrollBar = "alwaysOff";
-        vScrollBar = "dynamic";
-        constantThumbHeight = 1;
-        helpTag = 0;
-    });
-    GameList.lists = new SimSet();
+    };);
+    GameList.lists = new SimSet("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(GameList.lists.getId());
     }
     GameList.refresh();
-    return ;
 }
 function GameMgrHudTabs::fillCREATEtab(%this)
 {
     echo(getScopeName());
     %theTab = %this.getTabWithName("CREATE");
     %ypos = 1;
-    %theTab.UpperContent = new GuiMLTextCtrl()
-    {
+    %theTab.UpperContent = new GuiMLTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos;
-        extent = getWord(%theTab.getExtent(), 0) - 1 SPC 18;
+        position = 0 @ " " @ %ypos;
+        extent = (getWord(%theTab.getExtent(), 0) - 1) @ " " @ 18;
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
@@ -368,12 +350,23 @@ function GameMgrHudTabs::fillCREATEtab(%this)
     %theTab.add(%theTab.UpperContent);
     %theTab.UpperContent.forceReflow();
     %ypos = getWord(%theTab.UpperContent.getExtent(), 1) + %ypos;
-    %theTab.gameNameField = new GuiTextEditCtrl()
-    {
+    %theTab.add(new GuiTextCtrl("") {
+        profile = "ETSShadowTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos;
+        extent = "50 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Game name:";
+        maxLength = -1;
+    };);
+    %theTab.gameNameField = new GuiTextEditCtrl("") {
         profile = "ETSDarkTextEditProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 65 SPC %ypos;
+        position = 65 @ " " @ %ypos;
         extent = "85 16";
         minExtent = "1 1";
         sluggishness = -1;
@@ -386,14 +379,25 @@ function GameMgrHudTabs::fillCREATEtab(%this)
         sinkAllKeyEvents = 0;
     };
     %theTab.add(%theTab.gameNameField);
-    %theTab.gameTypesDropdown = new GuiPopUp2MenuCtrl()
-    {
+    %theTab.add(new GuiTextCtrl("") {
+        profile = "ETSShadowTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
+        extent = "150 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Choose a game type:";
+        maxLength = 64;
+    };);
+    %theTab.gameTypesDropdown = new GuiPopUp2MenuCtrl("") {
         profile = "InfoWindowPopupProfile";
         scrollProfile = "DottedScrollProfile";
         winProfile = "InfoWindowPopupWindowProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 20;
+        position = 0 @ " " @ %ypos = %ypos + 20;
         extent = "150 30";
         minExtent = "1 1";
         sluggishness = -1;
@@ -405,13 +409,24 @@ function GameMgrHudTabs::fillCREATEtab(%this)
     };
     GameList.CreateTabSetupGametypesDropdown();
     %theTab.add(%theTab.gameTypesDropdown);
-    %theTab.SettingWaitingRoom = new GuiCheckBoxCtrl()
-    {
+    %theTab.add(new GuiTextCtrl("") {
+        profile = "ETSShadowTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
+        extent = "150 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Game settings:";
+        maxLength = 64;
+    };);
+    %theTab.SettingWaitingRoom = new GuiCheckBoxCtrl("") {
         profile = "InfoWindowRadioButtonProfile";
         buttonType = "ToggleButton";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 10 SPC %ypos = %ypos + 20;
+        position = 10 @ " " @ %ypos = %ypos + 20;
         extent = "150 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -421,13 +436,12 @@ function GameMgrHudTabs::fillCREATEtab(%this)
         maxLength = 64;
     };
     %theTab.add(%theTab.SettingWaitingRoom);
-    %theTab.SettingJoinInProgress = new GuiCheckBoxCtrl()
-    {
+    %theTab.SettingJoinInProgress = new GuiCheckBoxCtrl("") {
         profile = "InfoWindowRadioButtonProfile";
         buttonType = "ToggleButton";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 15 SPC %ypos = %ypos + 20;
+        position = 15 @ " " @ %ypos = %ypos + 20;
         extent = "150 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -437,13 +451,12 @@ function GameMgrHudTabs::fillCREATEtab(%this)
         maxLength = 64;
     };
     %theTab.add(%theTab.SettingJoinInProgress);
-    %theTab.SettingAutoStartOnReady = new GuiCheckBoxCtrl()
-    {
+    %theTab.SettingAutoStartOnReady = new GuiCheckBoxCtrl("") {
         profile = "InfoWindowRadioButtonProfile";
         buttonType = "ToggleButton";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 15 SPC %ypos = %ypos + 20;
+        position = 15 @ " " @ %ypos = %ypos + 20;
         extent = "150 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -453,13 +466,12 @@ function GameMgrHudTabs::fillCREATEtab(%this)
         maxLength = 64;
     };
     %theTab.add(%theTab.SettingAutoStartOnReady);
-    %theTab.SettingDropUnreadyPlayers = new GuiCheckBoxCtrl()
-    {
+    %theTab.SettingDropUnreadyPlayers = new GuiCheckBoxCtrl("") {
         profile = "InfoWindowRadioButtonProfile";
         buttonType = "ToggleButton";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 15 SPC %ypos = %ypos + 20;
+        position = 15 @ " " @ %ypos = %ypos + 20;
         extent = "150 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -469,12 +481,11 @@ function GameMgrHudTabs::fillCREATEtab(%this)
         maxLength = 64;
     };
     %theTab.add(%theTab.SettingDropUnreadyPlayers);
-    %theTab.createGameButton = new GuiVariableWidthButtonCtrl()
-    {
+    %theTab.createGameButton = new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 14 SPC %ypos = %ypos + 35;
+        position = 14 @ " " @ %ypos = %ypos + 35;
         extent = "134 15";
         minExtent = "1 1";
         sluggishness = -1;
@@ -486,7 +497,6 @@ function GameMgrHudTabs::fillCREATEtab(%this)
     };
     %theTab.add(%theTab.createGameButton);
     GameList.CreateTabResetDefaults();
-    return ;
 }
 function GameList::CreateTabSettingClicked(%this, %setting)
 {
@@ -498,7 +508,6 @@ function GameList::CreateTabSettingClicked(%this, %setting)
         %this.SettingDropUnreadyPlayers.setActive(%onOff);
         %this.SettingJoinInProgress.setActive(%onOff);
     }
-    return ;
 }
 function GameList::CreateTabResetDefaults(%this)
 {
@@ -509,29 +518,27 @@ function GameList::CreateTabResetDefaults(%this)
     %this.SettingWaitingRoom.setValue(1);
     %this.gameNameField.setText(GameList.GetDefaultGameName());
     %this.gameTypesDropdown.SetSelected(0);
-    return ;
 }
 function GameList::GetDefaultGameName(%this)
 {
     if (isObject($player))
     {
-        return $player.getShapeName() @ "\'s Game";
+        return $player.getShapeName() @ "'s Game";
     }
     else
     {
         return "A Fun Game";
     }
-    return ;
 }
 function GameList::CreateTabCreateGame(%this)
 {
     %this = GameMgrHudTabs.CreateTab;
-    %errorMsgPrepend = "Sorry, couldn\'t create game:";
+    %errorMsgPrepend = "Sorry, couldn't create game:";
     %gameName = %this.gameNameField.getText();
     if (%gameName $= "")
     {
-        handleSystemMessage("msgInfoMessage", %errorMsgPrepend SPC "you didn\'t specify a game name.");
-        return ;
+        handleSystemMessage("msgInfoMessage", %errorMsgPrepend @ " " @ "you didn't specify a game name.");
+        return;
     }
     GameList.CreateTabResetDefaults();
     %gameType = %this.gameTypesDropdown.getText();
@@ -547,16 +554,15 @@ function GameList::CreateTabCreateGame(%this)
     }
     if (%gameType $= %this.gameTypesDropdown.getText())
     {
-        handleSystemMessage("msgInfoMessage", %errorMsgPrepend SPC "we\'re having a problem with that game type.");
-        error("Couldn\'t translate gametype text to commonID !! aborting create game<-" @ getScopeName());
-        return ;
+        handleSystemMessage("msgInfoMessage", %errorMsgPrepend @ " " @ "we're having a problem with that game type.");
+        error("Couldn't translate gametype text to commonID !! aborting create game<-" @ getScopeName());
+        return;
     }
     %waitingRoom = %this.SettingWaitingRoom.getValue();
     %joinInProgress = %this.SettingJoinInProgress.getValue();
     %autoStartOnReady = %this.SettingAutoStartOnReady.getValue();
     %dropUnreadyPlayers = %this.SettingDropUnreadyPlayers.getValue();
     gameMgrClient.createGame(%gameName, %gameType, %waitingRoom, %joinInProgress, %autoStartOnReady, %dropUnreadyPlayers);
-    return ;
 }
 function GameList::CreateTabSetupGametypesDropdown(%this)
 {
@@ -571,34 +577,30 @@ function GameList::CreateTabSetupGametypesDropdown(%this)
         %n = %n + 1;
     }
     %this.gameTypesDropdown.SetSelected(0);
-    return ;
 }
 function GameMgrHudTabs::wakeUp(%this)
 {
-    log("general", "debug", getScopeName() SPC "- gameMgr disabled.");
-    return ;
+    log("general", "debug", getScopeName() @ " " @ "- gameMgr disabled.");
+    return;
     echo(getScopeName());
     %this.setup();
     %this.selectCurrentTab();
-    return ;
 }
 function GameMgrHudWin::wakeUp(%this)
 {
     echo(getScopeName());
     GameMgrHudTabs.wakeUp();
-    return ;
 }
 function GameList::scrollToPos(%this, %pos)
 {
-    %this.getParent().scrollTo(0, 1 - getWord(%pos, 1));
-    return ;
+    %this.getParent().scrollTo(0, (1 - getWord(%pos, 1)));
 }
 function GameList::onURL(%this, %url)
 {
     echo(getScopeName());
     if (!(firstWord(%url) $= "gamelink"))
     {
-        return ;
+        return;
     }
     if (getWord(%url, 1) $= "game")
     {
@@ -615,20 +617,18 @@ function GameList::onURL(%this, %url)
             GameList.refresh();
         }
     }
-    return ;
 }
 function GameList::onRightURL(%this, %url)
 {
     if (!(firstWord(%url) $= "gamelink"))
     {
-        return ;
+        return;
     }
     if (getWord(%url, 1) $= "game")
     {
         %SID = getWord(%url, 2);
         onRightClickGameName(%SID);
     }
-    return ;
 }
 function onLeftClickGameName(%SID)
 {
@@ -650,22 +650,19 @@ function onLeftClickGameName(%SID)
     }
     $gLastNameClickTime = %curTime;
     $gLastNameClickName = %SID;
-    return ;
 }
 function onRightClickGameName(%name)
 {
-    return ;
 }
 function onSingleClickGameName(%name)
 {
-    if (showPlayerInfoPopup() && !((%name $= $player.getShapeName())))
+    if (showPlayerInfoPopup() && !(%name $= $player.getShapeName()))
     {
         InfoPopupDlg.open();
         InfoPopupDlg.showInfoFor(%name);
     }
-    return ;
 }
-$gameMgr::GameList::NO_GAMES_MESSAGE = "<spush><color:FFFFFF><b>Your games.<spop><spush><color:FFFFFF><br>This is where your games would be listed - but you\'re not playing any!<br>Join a game or start your own!<br><spop>";
+$gameMgr::GameList::NO_GAMES_MESSAGE = "<spush><color:FFFFFF><b>Your games.<spop><spush><color:FFFFFF><br>This is where your games would be listed - but you're not playing any!<br>Join a game or start your own!<br><spop>";
 function GameList::refresh(%this)
 {
     %outString = "";
@@ -674,13 +671,13 @@ function GameList::refresh(%this)
     if (!isObject(GameList.lists))
     {
         error("GameList.Lists unavailable!<-" @ getScopeName());
-        return ;
+        return;
     }
     %numlists = GameList.lists.getCount();
     if (%numlists == 0)
     {
         %this.setText($gameMgr::GameList::NO_GAMES_MESSAGE);
-        return ;
+        return;
     }
     %outString = %outString @ "<spush><color:FFFFFF><b>Your games:<spop><br>";
     %n = GameList.lists.getCount() - 1;
@@ -696,7 +693,7 @@ function GameList::refresh(%this)
         {
             %listPrefix = "+";
         }
-        %outString = %outString @ "<a:gamelink list " @ %aList @ " >" @ %listPrefix SPC $gameMgr::GAME_TYPES[%aList.gametype].title SPC "(" @ %aList.getCount() @ " games)</a><spop><br>";
+        %outString = %outString @ "<a:gamelink list " @ %aList @ " >" @ %listPrefix @ " " @ $gameMgr::GAME_TYPES[%aList.gametype].title @ " " @ "(" @ %aList.getCount() @ " games)</a><spop><br>";
         if (%aList.collapsed == 1)
         {
             echo("the list is collapsed <-" @ getScopeName());
@@ -738,12 +735,11 @@ function GameList::refresh(%this)
                 {
                     %changed = "";
                 }
-                %outString = %outString @ %indent @ "<spush><linkcolor:" @ %color @ "><a:gamelink game " @ %aGame.serversideID @ " >" @ %aGame.gname SPC "(" @ %aGame.playercount @ " players)</a><spop>" @ %changed @ "<br>";
+                %outString = %outString @ %indent @ "<spush><linkcolor:" @ %color @ "><a:gamelink game " @ %aGame.serversideID @ " >" @ %aGame.gname @ " " @ "(" @ %aGame.playercount @ " players)</a><spop>" @ %changed @ "<br>";
                 %i = %i - 1;
             }
         }
         %n = %n - 1;
     }
     %this.setText(%outString);
-    return ;
 }

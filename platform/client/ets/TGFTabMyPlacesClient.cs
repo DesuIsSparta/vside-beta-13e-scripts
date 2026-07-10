@@ -8,7 +8,7 @@ function geTGF_tabs::fillTabMyPlace(%this)
         {
             %tab.GuiTable.makeFirstResponder(1);
         }
-        return ;
+        return;
     }
     %tab.filled = 1;
     %this.fillTabGeneric(%tab);
@@ -28,15 +28,13 @@ function geTGF_tabs::fillTabMyPlace(%this)
     %dataTable.addIconToColumn("access", "open", "platform/client/ui/tgf/tgf_door_open_white");
     %dataTable.addIconToColumn("access", "friendsonly", "platform/client/ui/tgf/tgf_door_heart_white");
     %dataTable.addIconToColumn("access", "passwordprotected", "platform/client/ui/tgf/tgf_door_key_white");
-    %container = new GuiControl()
-    {
+    %container = new GuiControl("") {
         profile = ETSNonModalProfile;
         position = "0 7";
         extent = "946 240";
     };
     %tab.add(%container);
-    %dottedWindow = new GuiWindowCtrl()
-    {
+    %dottedWindow = new GuiWindowCtrl("") {
         profile = DottedWindowProfile;
         position = "7 16";
         extent = "936 222";
@@ -49,16 +47,14 @@ function geTGF_tabs::fillTabMyPlace(%this)
         resizeHeight = 0;
     };
     %container.add(%dottedWindow);
-    %label = new GuiMLTextCtrl()
-    {
+    %label = new GuiMLTextCtrl("") {
         position = "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
     %label.setTextWithStyle("My Places");
     %container.add(%label);
-    %guiTable = new GuiTableCtrl(geTGF_MyPlaceGuiTable)
-    {
+    %guiTable = new GuiTableCtrl(geTGF_MyPlaceGuiTable) {
         position = "2 20";
         extent = "933 220";
         visible = 1;
@@ -70,8 +66,7 @@ function geTGF_tabs::fillTabMyPlace(%this)
     %guiTable.setDataTable(%dataTable);
     %tab.GuiTable = %guiTable;
     %container.add(%guiTable);
-    %guiTable.alternativeTextCtrl = new GuiMLTextCtrl()
-    {
+    %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
         position = "226 4";
         extent = "717 18";
         noEntriesText = ".. Strange, something went wrong. Try pressing refresh in a few seconds.";
@@ -79,7 +74,7 @@ function geTGF_tabs::fillTabMyPlace(%this)
     %container.add(%guiTable.alternativeTextCtrl);
     %dataTable = new DataTable(geTGF_OtherPlacesDataTable);
     %dataTable.addColumn("event", "", "icon", 20, 1, 1, 0);
-    %dataTable.addColumn("description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", (342 + 150) + %guiTable.spacing, 1, 1, 1);
+    %dataTable.addColumn("description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", ((342 + 150) + %guiTable.spacing), 1, 1, 1);
     %dataTable.addColumn("location", mlStyle("Where", "tgfTables_ColumnHeader"), "string", 202, 1, 1, 1);
     %dataTable.addColumn("population", mlStyle("People", "tgfTables_ColumnHeader"), "number", 70, 1, 1, 1);
     %dataTable.addColumn("friends", mlStyle("Friends", "tgfTables_ColumnHeader"), "number", 70, 1, 1, 1);
@@ -92,15 +87,13 @@ function geTGF_tabs::fillTabMyPlace(%this)
     %dataTable.addIconToColumn("access", "open", "platform/client/ui/tgf/tgf_door_open_white");
     %dataTable.addIconToColumn("access", "friendsonly", "platform/client/ui/tgf/tgf_door_heart_white");
     %dataTable.addIconToColumn("access", "passwordprotected", "platform/client/ui/tgf/tgf_door_key_white");
-    %container = new GuiControl()
-    {
+    %container = new GuiControl("") {
         profile = ETSNonModalProfile;
         position = "0 250";
         extent = "946 240";
     };
     %tab.add(%container);
-    %dottedWindow = new GuiWindowCtrl()
-    {
+    %dottedWindow = new GuiWindowCtrl("") {
         profile = DottedWindowProfile;
         position = "7 16";
         extent = "936 224";
@@ -113,16 +106,14 @@ function geTGF_tabs::fillTabMyPlace(%this)
         resizeHeight = 0;
     };
     %container.add(%dottedWindow);
-    %label = new GuiMLTextCtrl()
-    {
+    %label = new GuiMLTextCtrl("") {
         position = "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
     %label.setTextWithStyle("Other Available Places");
     %container.add(%label);
-    %guiTable = new GuiTableCtrl(geTGF_OtherPlacesGuiTable)
-    {
+    %guiTable = new GuiTableCtrl(geTGF_OtherPlacesGuiTable) {
         position = "2 20";
         extent = "933 220";
         spacing = 2;
@@ -133,8 +124,7 @@ function geTGF_tabs::fillTabMyPlace(%this)
     %guiTable.setDataTable(%dataTable);
     %tab.GuiTable = %guiTable;
     %container.add(%guiTable);
-    %guiTable.alternativeTextCtrl = new GuiMLTextCtrl()
-    {
+    %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
         position = "226 4";
         extent = "717 18";
         noEntriesText = ".. You own them all!";
@@ -142,8 +132,7 @@ function geTGF_tabs::fillTabMyPlace(%this)
     %container.add(%guiTable.alternativeTextCtrl);
     if (0)
     {
-        %invite = new GuiMLTextCtrl()
-        {
+        %invite = new GuiMLTextCtrl("") {
             position = "250 473";
             extent = "600 30";
             text = mlStyle($MsgCat::invitation["TEXT-TGF-MYPLACE"], "tgfTables_Invite");
@@ -151,7 +140,6 @@ function geTGF_tabs::fillTabMyPlace(%this)
         %tab.add(%invite);
     }
     %this.refreshTabMyPlace();
-    return ;
 }
 function geTGF_tabs::onShowTabMyPlace(%this)
 {
@@ -159,7 +147,6 @@ function geTGF_tabs::onShowTabMyPlace(%this)
     geTGF_Refresh.setActive(1);
     geTGF_Refresh.setVisible(1);
     geTGF_MyPlaceGuiTable.makeFirstResponder(1);
-    return ;
 }
 $gHaveGottenManagerSpaces = 0;
 function geTGF_tabs::refreshTabMyPlace(%this)
@@ -170,7 +157,6 @@ function geTGF_tabs::refreshTabMyPlace(%this)
     geTGF_OtherPlacesGuiTable.alternativeTextCtrl.setVisible(1);
     geTGF_OtherPlacesGuiTable.alternativeTextCtrl.setText(mlStyle("Fetching..", "tgfTables_DataCell_Text"));
     getOwnerSpacesInfo("The-Manager", "geTGF_OnCompleted_MyPlace");
-    return ;
 }
 function geTGF_OnCompleted_MyPlace(%tracker)
 {
@@ -181,8 +167,8 @@ function geTGF_OnCompleted_MyPlace(%tracker)
     }
     if (!isObject(%tracker))
     {
-        error(getScopeName() SPC "- null tracker." SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- null tracker." @ " " @ getTrace());
+        return;
     }
     if (%tracker.ownerName $= $Player::Name)
     {
@@ -204,17 +190,17 @@ function geTGF_OnCompleted_MyPlace(%tracker)
         %itemObj = %tracker.getObject(%n);
         if (!(%itemObj.get("owner") $= %properOwnerName))
         {
-            error(getScopeName() SPC "- improper owner. should be \"" @ %properOwnerName @ "\" but is \"" @ %itemObj.get("owner") @ "\". skipping." SPC getTrace());
+            error(getScopeName() @ " " @ "- improper owner. should be \"" @ %properOwnerName @ "\" but is \"" @ %itemObj.get("owner") @ "\". skipping." @ " " @ getTrace());
         }
         else
         {
-            if ((%guiTable.getId() == geTGF_OtherPlacesGuiTable.getId()) && !((%itemObj.get("type") $= "MODEL")))
+            if ((%guiTable.getId() == geTGF_OtherPlacesGuiTable.getId()) && !(%itemObj.get("type") $= "MODEL"))
             {
-                echo(getScopeName() SPC "- skipping space" SPC %itemObj.get("description"));
+                echo(getScopeName() @ " " @ "- skipping space" @ " " @ %itemObj.get("description"));
             }
             else
             {
-                %id = %itemObj.get("description") SPC formatInt("%0.3d", %n);
+                %id = %itemObj.get("description") @ " " @ formatInt("%0.3d", %n);
                 %item = geTGF.createNewItem(%listName, "happening", %id);
                 %item.accessMode = %itemObj.get("access");
                 %item.baseImageURL = %itemObj.get("baseImageURL");
@@ -244,12 +230,10 @@ function geTGF_OnCompleted_MyPlace(%tracker)
         }
     }
     populateMyPlaceTableFromItemList(%guiTable, %listName, "happening");
-    return ;
 }
 function geTGF_OnCompleted_MyPlaceRemoveOwnedSpacesFromAvailableList()
 {
     geTGF.removeItemsFromList1WithMatchingItemInList2("otherplaces", "happening", "myplace", "happening", "location_areaName");
-    return ;
 }
 function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType)
 {
@@ -263,7 +247,7 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType)
         %guiTable.alternativeTextCtrl.setVisible(1);
         %guiTable.alternativeTextCtrl.setText(mlStyle(%guiTable.alternativeTextCtrl.noEntriesText, "tgfTables_DataCell_Text"));
         %guiTable.setVisible(0);
-        return ;
+        return;
     }
     %guiTable.alternativeTextCtrl.setVisible(0);
     %guiTable.setVisible(1);
@@ -271,8 +255,15 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType)
     while (%n < %count)
     {
         %item = %itemList.getValue(%n);
-        %imageURL = %item.baseImageURL $= "" ? "" : %item;
-        %sameServer = !(($ServerName $= "")) && (%item.location_serverName $= $ServerName) ? "true" : "false";
+        if (%item.baseImageURL $= "")
+        {
+        }
+        else
+        {
+        }
+        %imageURL = %item.baseImageURL @ "?size=S";
+        "";
+        %sameServer = !($ServerName $= "") && (%item.location_serverName $= $ServerName) ? "true" : "false";
         if (%item.eventID $= "")
         {
             %eventValue = "notAnEvent";
@@ -282,7 +273,7 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType)
         {
             if (%item.subType $= "publicLocationEvent")
             {
-                error(getScopeName() SPC "- public location. odd.");
+                error(getScopeName() @ " " @ "- public location. odd.");
                 %eventValue = "publicEvent";
                 %eventFmt = "";
             }
@@ -302,27 +293,47 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType)
         }
         %occupancyText = geTGF.formatOccupancy(%item.occupancy, "<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         %friendOccupancyText = geTGF.formatOccupancy(%item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
-        %occupancySortVal = %item.occupancy >= 0 ? %item : 99999;
-        %friendOccupancySortVal = %item.friendOccupancy >= 0 ? %item : 99999;
-        %hostUserName = %item.hostUserName $= $Player::Name ? "you!" : %item;
+        if (%item.occupancy >= 0)
+        {
+        }
+        else
+        {
+        }
+        %occupancySortVal = 99999;
+        %item.occupancy;
+        if (%item.friendOccupancy >= 0)
+        {
+        }
+        else
+        {
+        }
+        %friendOccupancySortVal = 99999;
+        %item.friendOccupancy;
+        if (%item.hostUserName $= $Player::Name)
+        {
+        }
+        else
+        {
+        }
+        %hostUserName = %item.hostUserName;
+        "you!";
         %rowData = "";
-        %rowData = %rowData NL "event" TAB %eventValue TAB "<just:right>" @ %eventFmt @ "[ICON]";
-        %rowData = %rowData NL "description" TAB %item.id TAB geTGF_tabs::hotSpotsTab_formatDescription(%item.headline);
+        %rowData = %rowData @ "\n" @ "event" @ "\t" @ %eventValue @ "\t" @ "<just:right>" @ %eventFmt @ "[ICON]";
+        %rowData = %rowData @ "\n" @ "description" @ "\t" @ %item.id @ "\t" @ geTGF_tabs::hotSpotsTab_formatDescription(%item.headline);
         if (%dataTable.hasColumnNamed("userName"))
         {
-            %rowData = %rowData NL "username" TAB %hostUserName TAB geTGF_tabs::hotSpotsTab_formatUserName(%hostUserName, 0);
+            %rowData = %rowData @ "\n" @ "username" @ "\t" @ %hostUserName @ "\t" @ geTGF_tabs::hotSpotsTab_formatUserName(%hostUserName, 0);
         }
-        %rowData = %rowData NL "location" TAB %item.location_areaName TAB geTGF_tabs::hotSpotsTab_formatLocation2(%item.location_areaName);
-        %rowData = %rowData NL "population" TAB %occupancySortVal TAB "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%occupancyText);
-        %rowData = %rowData NL "friends" TAB %friendOccupancySortVal TAB "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%friendOccupancyText);
-        %rowData = %rowData NL "access" TAB %item.accessMode TAB "<just:left>[ICON]";
+        %rowData = %rowData @ "\n" @ "location" @ "\t" @ %item.location_areaName @ "\t" @ geTGF_tabs::hotSpotsTab_formatLocation2(%item.location_areaName);
+        %rowData = %rowData @ "\n" @ "population" @ "\t" @ %occupancySortVal @ "\t" @ "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%occupancyText);
+        %rowData = %rowData @ "\n" @ "friends" @ "\t" @ %friendOccupancySortVal @ "\t" @ "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%friendOccupancyText);
+        %rowData = %rowData @ "\n" @ "access" @ "\t" @ %item.accessMode @ "\t" @ "<just:left>[ICON]";
         %rowData = trim(%rowData);
         %dataTable.setRowDataByIndex(%n, %rowData);
         %n = %n + 1;
     }
     %dataTable.doFilter();
     %dataTable.updateListeners();
-    return ;
 }
 function geTGF_tabs::friendsTab_formatUserName(%name, %isFriend)
 {
@@ -338,7 +349,7 @@ function geTGF_tabs::friendsTab_formatStatusMsg(%msg)
 }
 function geTGF::myplace_GetAndOpenDetailsContainer(%this, %item)
 {
-    %dataRowIndex = geTGF_MyPlaceDataTable.getRowIndexByCriteria("description" TAB %item.id);
+    %dataRowIndex = geTGF_MyPlaceDataTable.getRowIndexByCriteria("description" @ "\t" @ %item.id);
     %guiRowIndex = geTGF_MyPlaceGuiTable.getGuiRowIndexForDataRowIndex(%dataRowIndex);
     if (%guiRowIndex >= 0)
     {
@@ -352,20 +363,18 @@ function geTGF_MyPlaceGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alread
 {
     %listName = "myplace";
     geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount, %listName);
-    return ;
 }
 function geTGF_OtherPlacesGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount)
 {
     %listName = "otherplaces";
     geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount, %listName);
-    return ;
 }
 function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount, %listName)
 {
     if (%rowIndex == -1)
     {
-        error(getScopeName() SPC "- Gui Row" SPC %guiRow SPC "has no Data Row -" SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- Gui Row" @ " " @ %guiRow @ " " @ "has no Data Row -" @ " " @ getTrace());
+        return;
     }
     %this.makeFirstResponder(1);
     %cellIndex = %this.getDataTable().getColumnIndex("description");
@@ -405,7 +414,6 @@ function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %
         %item = geTGF.findItem(%listName, "happening", %itemID);
         geTGF.DoDetails("myplace", %item);
     }
-    return ;
 }
 function geTGF_MyPlaceGuiTable::onKeyDown(%this, %modifier, %keyCode)
 {
@@ -428,16 +436,13 @@ function geTGF_tabs::Maps_clickMyApartment()
 {
     geTGF.closeFully();
     doTeleportToMyApartment();
-    return ;
 }
 function geTGF_tabs::Maps_GetApartmentVURL(%this)
 {
     getApartmentVURL("geTGF_tabs::Maps_GotApartmentVURL");
-    return ;
 }
 function geTGF_tabs::Maps_GotApartmentVURL(%status, %vurl)
 {
-    %active = (%status $= "noOwnedSpace") || !((%vurl $= ""));
+    %active = !(%status $= "noOwnedSpace") || (%vurl $= "");
     $geTGF::Map_ApartmentVURL = %vurl;
-    return ;
 }

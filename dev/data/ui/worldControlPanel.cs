@@ -2,12 +2,11 @@ function worldControlPanel::open(%this)
 {
     if (!$player.rolesPermissionCheckNoWarn("staffPanelMain"))
     {
-        return ;
+        return;
     }
     %this.setVisible(1);
     playGui.focusAndRaise(%this);
     gui_DevOpts_SetTexturesButtons();
-    return ;
 }
 function worldControlPanel::close(%this)
 {
@@ -17,13 +16,11 @@ function worldControlPanel::close(%this)
 }
 function interiorRenderModeNext()
 {
-    interiorRenderModeSet(getInteriorRenderMode() + 1);
-    return ;
+    interiorRenderModeSet((getInteriorRenderMode() + 1));
 }
 function interiorRenderModePrev()
 {
-    interiorRenderModeSet(getInteriorRenderMode() - 1);
-    return ;
+    interiorRenderModeSet((getInteriorRenderMode() - 1));
 }
 $interiorRenderModeNames[0] = "normal";
 $interiorRenderModeNames[1] = "lines";
@@ -52,17 +49,14 @@ function interiorRenderModeSet(%mode)
     %mode = getInteriorRenderMode();
     guiCtrlInteriorRenderMode.setValue(%mode);
     guiCtrlInteriorRenderModeName.setValue($interiorRenderModeNames[%mode]);
-    return ;
 }
 function interiorRenderModeTextChange()
 {
     interiorRenderModeSet(guiCtrlInteriorRenderMode.getValue());
-    return ;
 }
 function gui_DevOpts_ShowCamPos()
 {
     TheShapeNameHud.showHere = $UserPref::ETS::ShowCamPos;
-    return ;
 }
 function gui_DevOpts_Toggle_WorldTextureLobotomyFile()
 {
@@ -76,7 +70,6 @@ function gui_DevOpts_Toggle_WorldTextureLobotomyFile()
     }
     MessageBoxOK("lobotomize textures", "you will need to restart vSide for this to take effect", "");
     gui_DevOpts_SetTexturesButtons();
-    return ;
 }
 function gui_DevOpts_Toggle_PlayerTextureLobotomyFile()
 {
@@ -90,11 +83,9 @@ function gui_DevOpts_Toggle_PlayerTextureLobotomyFile()
     }
     MessageBoxOK("lobotomize textures", "you will need to restart vSide for this to take effect", "");
     gui_DevOpts_SetTexturesButtons();
-    return ;
 }
 function gui_DevOpts_SetTexturesButtons()
 {
-    ge_LocalOpts_WorldTextures.setValue($DevPref::OpenGL::WorldTextureLobotomyFile $= "");
-    ge_LocalOpts_PlayerTextures.setValue($DevPref::OpenGL::PlayerTextureLobotomyFile $= "");
-    return ;
+    ge_LocalOpts_WorldTextures.setValue(($DevPref::OpenGL::WorldTextureLobotomyFile $= ""));
+    ge_LocalOpts_PlayerTextures.setValue(($DevPref::OpenGL::PlayerTextureLobotomyFile $= ""));
 }

@@ -7,9 +7,8 @@ $gSnapping_BaseSkus = "";
 function ClosetStaffPanel::snapShotAll(%this)
 {
     %skus = SkuManager.filterSkusGender(SkuManager.getSkus(), $player.getGender());
-    ClosetMainObjectView.setSkus($gNewStockOutfits[$player.getGender() @ "F"]);
+    ClosetMainObjectView.setSkus($gNewStockOutfits, $player.getGender()["F"]);
     %this.snapShotSkuList(%skus);
-    return ;
 }
 function ClosetStaffPanel::snapShotSkuList(%this, %skus)
 {
@@ -24,20 +23,19 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus)
         %sku = getWord(%skus, %n);
         if (SkuManager.isBodySku(%sku))
         {
-            %skusBody = %sku SPC %skusBody;
+            %skusBody = %sku @ " " @ %skusBody;
         }
         else
         {
-            %skusClothing = %sku SPC %skusClothing;
+            %skusClothing = %sku @ " " @ %skusClothing;
         }
         %n = %n - 1;
     }
-    %skus = %skusBody SPC %skusClothing;
+    %skus = %skusBody @ " " @ %skusClothing;
     $gSnapping_SkuList = %skus;
     $gSnapping_CurIndex = 0;
     $gSnapping_MaxIndex = getWordCount($gSnapping_SkuList) - 1;
     snapping_prepareNextSnapshot();
-    return ;
 }
 function snapping_prepareNextSnapshot()
 {
@@ -46,7 +44,6 @@ function snapping_prepareNextSnapshot()
     $gSnapping_ObjViewCtrl.setSkus(%skus);
     ClosetMainObjectSnapshotBackdrop.setVisible(1);
     waitAFrameAndCall("snapping_callingTakeCurrentSnapshot");
-    return ;
 }
 function snapping_callingTakeCurrentSnapshot()
 {
@@ -61,7 +58,6 @@ function snapping_callingTakeCurrentSnapshot()
         $gSnapping_ObjViewCtrl.setSkus($gSnapping_BaseSkus);
         ClosetMainObjectSnapshotBackdrop.setVisible(0);
     }
-    return ;
 }
 function snapping_takeCurrentSnapshot()
 {
@@ -77,21 +73,20 @@ function snapping_takeCurrentSnapshot()
     %fileName = %fileName @ "_" @ %desc;
     %fileName = %fileName @ ".png";
     ClosetMainObjectSnapshotBackdrop.snapshot(%fileName);
-    return ;
 }
 function ClosetStaffPanel::adjustLOD(%this, %direction)
 {
     %val = ClosetMainObjectView.changeDetailLevel(%direction);
-    closetStaffLODLabelButton.setText(%val * -1);
+    closetStaffLODLabelButton.setText((%val * -1));
     if (!isObject(ClosetTabs.getCurrentTab().itemsScroll))
     {
-        return ;
+        return;
     }
     %array = ClosetTabs.getCurrentTab().itemsScroll.thumbnails;
     if (!isObject(%array))
     {
-        error(getScopeName() SPC "- no array");
-        return ;
+        error(getScopeName() @ " " @ "- no array");
+        return;
     }
     %n = %array.getCount() - 1;
     while (%n >= 0)
@@ -102,12 +97,11 @@ function ClosetStaffPanel::adjustLOD(%this, %direction)
         %n = %n - 1;
     }
 }
-
 function ClosetStaffPanel::viewAll(%this)
 {
     $Player::inventory = SkuManager.getSkus();
     $Player::inventory = SkuManager.filterSkusGender($Player::inventory, $player.getGender());
-    $Player::inventory = SkuManager.filterSkusRoles($Player::inventory, 4294967295 & ~2147483648);
+    $Player::inventory = SkuManager.filterSkusRoles($Player::inventory, (4294967295 & ~(2147483648)));
     $gClosetThumbnailsDrawersPrevious = "";
     ClosetTabs.selectCurrentTab();
     if (ClosetTabs.getCurrentTab().name $= "BODY")
@@ -135,5 +129,4 @@ function ClosetStaffPanel::viewAll(%this)
         }
         ClosetTabs.refreshStoreTab();
     }
-    return ;
 }

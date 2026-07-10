@@ -455,7 +455,7 @@ function skusInitFurnishings()
     skusAddItem2(41503, "furnishing", "", "n", "", "Activities/Arcade Machines", "", "", "The Edge", "another addictive retro-style arcade game which combines puzzle and twitch gameplay elements.", "furnishings", 0, 200, 1, -1, 0, 0, "", "");
     skusAddItem2(41504, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Kawaii Mascot Cutout", "", "special", 0, 200, 1, -1, 0, 0, "", "");
     skusAddItem2(41505, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Hand Turkey Poster", "", "furnishings", 0, 100, 1, -1, 0, 0, "", "");
-    skusAddItem2(41506, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Holiday Tree", "Grow your very own holiday tree!  Grow it by watering it daily with a watering can (stand next to the tree and press Ctrl-Enter with the can in your hand to start watering).  Once your tree is fully grown it will grant you gifts if you keep watering it!  Beware, though!  If you don\'t water it every day, it will die and once dead, you cannot bring it back to life!  So take care of it and get lots of gifts!  NOTE:  All Holiday Trees will stop giving gifts eventually so keep checking.", "furnishings", 0, 100, 1, -1, 0, 0, "", "");
+    skusAddItem2(41506, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Holiday Tree", "Grow your very own holiday tree!  Grow it by watering it daily with a watering can (stand next to the tree and press Ctrl-Enter with the can in your hand to start watering).  Once your tree is fully grown it will grant you gifts if you keep watering it!  Beware, though!  If you don't water it every day, it will die and once dead, you cannot bring it back to life!  So take care of it and get lots of gifts!  NOTE:  All Holiday Trees will stop giving gifts eventually so keep checking.", "furnishings", 0, 100, 1, -1, 0, 0, "", "");
     skusAddItem2(41507, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Dead Holiday Tree", "", "special", 0, 9999, 1, -1, 0, 0, "", "");
     skusAddItem2(41509, "furnishing", "", "n", "", "Decoration/Xmas", "", "", "Blue Ornament", "", "furnishings", 0, 10, 1, -1, 0, 0, "", "");
     skusAddItem2(41510, "furnishing", "", "n", "", "Decoration/Xmas", "", "", "Cream Ornament", "", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
@@ -491,9 +491,9 @@ function skusInitFurnishings()
     skusAddItem2(41540, "furnishing", "", "n", "", "Decoration/Xmas", "", "", "Stars on a string light (Green)", "", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
     skusAddItem2(41541, "furnishing", "", "n", "", "Decoration/Xmas", "", "", "Stars on a string light (Red)", "", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
     skusAddItem2(41542, "furnishing", "", "n", "", "Decoration/Xmas", "", "", "Wreath", "", "furnishings", 0, 25, 1, -1, 0, 0, "", "");
-    skusAddItem2(41543, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Valentine\'s Heart with Wings", "", "furnishings", 0, 25, 1, -1, 0, 0, "", "");
-    skusAddItem2(41544, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Valentine\'s Heart Shaped Chocolates Box", "A beautifully presented Heart shaped box of exquisite chocolates", "furnishings", 0, 25, 1, -1, 0, 0, "", "");
-    skusAddItem2(41545, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Valentine\'s Chocolates Box", "A selection of the finest chocolates to share ", "furnishings", 0, 50, 1, -1, 0, 0, "", "");
+    skusAddItem2(41543, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Valentine's Heart with Wings", "", "furnishings", 0, 25, 1, -1, 0, 0, "", "");
+    skusAddItem2(41544, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Valentine's Heart Shaped Chocolates Box", "A beautifully presented Heart shaped box of exquisite chocolates", "furnishings", 0, 25, 1, -1, 0, 0, "", "");
+    skusAddItem2(41545, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Valentine's Chocolates Box", "A selection of the finest chocolates to share ", "furnishings", 0, 50, 1, -1, 0, 0, "", "");
     skusAddItem2(41546, "furnishing", "", "n", "", "Decoration/Miscellaneous", "", "", "Reindeer poop", "", "furnishings", 0, 9999, 1, -1, 0, 0, "", "");
     skusAddItem2(41547, "furnishing", "", "n", "", "Decoration/Portraits", "", "", "Landscape poster L (frameless)", "Insert your favorite picture URL or vSide username by clicking on this frame!  (NOTE: you have to exit Shop or Decorate mode first.)", "furnishings", 0, 100, 1, -1, 0, 0, "", "");
     skusAddItem2(41548, "furnishing", "", "n", "", "Decoration/Portraits", "", "", "Landscape poster XL (frameless)", "Insert your favorite picture URL or vSide username by clicking on this frame!  (NOTE: you have to exit Shop or Decorate mode first.)", "furnishings", 0, 125, 1, -1, 0, 0, "", "");
@@ -502,7 +502,7 @@ function skusInitFurnishings()
     skusAddItem2(41551, "furnishing", "", "n", "", "Decoration/Earthworks", "", "", "Rock Form (small)", "", "furnishings", 0, 50, 1, -1, 0, 0, "", "");
     skusAddItem2(41552, "furnishing", "", "n", "", "Decoration/Earthworks", "", "", "Rock Form (mid)", "", "furnishings", 0, 75, 1, -1, 0, 0, "", "");
     skusAddItem2(41553, "furnishing", "", "n", "", "Decoration/Earthworks", "", "", "Rock Form (lg)", "", "furnishings", 0, 100, 1, -1, 0, 0, "", "");
-    skusAddItem2(41554, "furnishing", "", "n", "", "Activities/Body Mods", "", "", "Piercing Station", "Use this item to give piercings to your friends!  It\'s all about body mods!  (Temporary only, each piercing only lasts 72 hours.)", "furnishings", 0, 100, 1, -1, 0, 0, "", "");
+    skusAddItem2(41554, "furnishing", "", "n", "", "Activities/Body Mods", "", "", "Piercing Station", "Use this item to give piercings to your friends!  It's all about body mods!  (Temporary only, each piercing only lasts 72 hours.)", "furnishings", 0, 100, 1, -1, 0, 0, "", "");
     skusAddItem2(41555, "furnishing", "", "n", "", "Furniture/HotTubs", "", "", "Hot Tub", "Get your chill on", "furnishings", 0, 75, 1, -1, 0, 0, "", "");
     skusAddItem2(41556, "furnishing", "", "n", "", "Decoration/Fans", "", "", "Ceiling Row Fans Brass and Antique", "", "furnishings", 0, 40, 1, -1, 0, 0, "", "");
     skusAddItem2(41557, "furnishing", "", "n", "", "Decoration/Fans", "", "", "Ceiling Row Fans Brass and Palm", "", "furnishings", 0, 40, 1, -1, 0, 0, "", "");
@@ -559,7 +559,7 @@ function skusInitFurnishings()
     skusAddItem2(41608, "furnishing", "", "n", "", "Decoration/Foliage", "", "", "Low Shrub 2", "", "furnishings", 0, 10, 1, -1, 0, 0, "", "");
     skusAddItem2(41609, "furnishing", "", "n", "", "Decoration/Foliage", "", "", "Low Shrub 3", "", "furnishings", 0, 10, 1, -1, 0, 0, "", "");
     skusAddItem2(41610, "furnishing", "", "n", "", "Decoration/Foliage", "", "", "Fern", "", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
-    skusAddItem2(41611, "furnishing", "", "n", "", "Decoration/Foliage", "", "", "Queen Anne\'s Lace", "", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
+    skusAddItem2(41611, "furnishing", "", "n", "", "Decoration/Foliage", "", "", "Queen Anne's Lace", "", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
     skusAddItem2(41612, "furnishing", "", "n", "", "Decoration/Foliage", "", "", "Baby Tree", "", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
     skusAddItem2(41613, "furnishing", "", "n", "", "Lighting/FX Machines", "", "", "White Smoke System", "", "furnishings", 0, 75, 1, -1, 0, 0, "", "");
     skusAddItem2(41614, "furnishing", "", "n", "", "Lighting/FX Machines", "", "", "Pink Smoke System", "", "furnishings", 0, 75, 1, -1, 0, 0, "", "");
@@ -583,13 +583,13 @@ function skusInitFurnishings()
     skusAddItem2(41632, "furnishing", "", "n", "", "Lighting/Club Lights", "", "", "Animated Red Gyro Light", "", "furnishings", 0, 80, 1, -1, 0, 0, "", "");
     skusAddItem2(41633, "furnishing", "", "n", "", "Furniture/Active/Doors", "", "", "Sliding Door - Proximity", "This door opens when people get near it", "furnishings", 0, 90, 1, -1, 0, 0, "", "");
     skusAddItem2(41634, "furnishing", "", "n", "", "Furniture/Active/Doors", "", "", "Sliding Door - Click", "This door opens when a host or co-host clicks on it.", "furnishings", 0, 90, 1, -1, 0, 0, "", "");
-    skusAddItem2(41700, "furnishing", "", "n", "", "HouseBots", "", "", "Alberta Bot", "Get your very own Bot!  You can tell it what to say, and if you\'re a girl you can dress it like you!", "furnishings", 0, 200, 1, -1, 0, 0, "", "");
-    skusAddItem2(41701, "furnishing", "", "n", "", "HouseBots", "", "", "Ringo Bot", "Get your very own Bot!  You can even tell it what to say! <br>(Note, Ringo Bot can\'t have a microphone)", "furnishings", 0, 200, 1, -1, 0, 0, "", "");
-    skusAddItem2(41702, "furnishing", "", "n", "", "HouseBots", "", "", "Ike Bot", "Get your very own Bot!  You can tell it what to say, and if you\'re a guy you can dress it like you!", "furnishings", 0, 200, 1, -1, 0, 0, "", "");
-    skusAddItem2(41703, "furnishing", "", "n", "", "HouseBots", "", "", "White Mannequin - Female", "Get your very own Mannequin! You can dress it like you (if you\'re a girl), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
-    skusAddItem2(41704, "furnishing", "", "n", "", "HouseBots", "", "", "White Mannequin - Male", "Get your very own Mannequin! You can dress it like you (if you\'re a guy), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
-    skusAddItem2(41705, "furnishing", "", "n", "", "HouseBots", "", "", "Black Mannequin - Female", "Get your very own Mannequin! You can dress it like you (if you\'re a girl), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
-    skusAddItem2(41706, "furnishing", "", "n", "", "HouseBots", "", "", "Black Mannequin - Male", "Get your very own Mannequin! You can dress it like you (if you\'re a guy), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
+    skusAddItem2(41700, "furnishing", "", "n", "", "HouseBots", "", "", "Alberta Bot", "Get your very own Bot!  You can tell it what to say, and if you're a girl you can dress it like you!", "furnishings", 0, 200, 1, -1, 0, 0, "", "");
+    skusAddItem2(41701, "furnishing", "", "n", "", "HouseBots", "", "", "Ringo Bot", "Get your very own Bot!  You can even tell it what to say! <br>(Note, Ringo Bot can't have a microphone)", "furnishings", 0, 200, 1, -1, 0, 0, "", "");
+    skusAddItem2(41702, "furnishing", "", "n", "", "HouseBots", "", "", "Ike Bot", "Get your very own Bot!  You can tell it what to say, and if you're a guy you can dress it like you!", "furnishings", 0, 200, 1, -1, 0, 0, "", "");
+    skusAddItem2(41703, "furnishing", "", "n", "", "HouseBots", "", "", "White Mannequin - Female", "Get your very own Mannequin! You can dress it like you (if you're a girl), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
+    skusAddItem2(41704, "furnishing", "", "n", "", "HouseBots", "", "", "White Mannequin - Male", "Get your very own Mannequin! You can dress it like you (if you're a guy), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
+    skusAddItem2(41705, "furnishing", "", "n", "", "HouseBots", "", "", "Black Mannequin - Female", "Get your very own Mannequin! You can dress it like you (if you're a girl), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
+    skusAddItem2(41706, "furnishing", "", "n", "", "HouseBots", "", "", "Black Mannequin - Male", "Get your very own Mannequin! You can dress it like you (if you're a guy), and also dress yourself like it!", "furnishings", 0, 150, 1, -1, 0, 0, "", "");
     skusAddItem2(41707, "furnishing", "", "n", "", "Lighting/Club Lights", "", "", "Lava Pillar Light Silver", "", "furnishings", 0, 75, 1, -1, 0, 0, "", "");
     skusAddItem2(41708, "furnishing", "", "n", "", "Lighting/Club Lights", "", "", "Lava Pillar Light Yellow", "", "furnishings", 0, 75, 1, -1, 0, 0, "", "");
     skusAddItem2(41709, "furnishing", "", "n", "", "Lighting/Club Lights", "", "", "Lava Pillar Light Hot Pink", "", "furnishings", 0, 75, 1, -1, 0, 0, "", "");
@@ -788,7 +788,7 @@ function skusInitFurnishings()
     skusAddItem2(41913, "furnishing", "", "n", "", "Decoration/Halloween", "", "", "Halloween Spiderweb 1", "", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
     skusAddItem2(41914, "furnishing", "", "n", "", "Decoration/Halloween", "", "", "Halloween Spiderweb 2", "", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
     skusAddItem2(45000, "floorplan", "", "n", "", "", "", "", "NV 255 Studio", "Starter o-rama", "Building_NV255", 0, 0, 1, -1, 0, 0, "", "");
-    skusAddItem2(45001, "floorplan", "", "n", "", "", "", "", "NV 255 Suite", "How\'s about a bed?", "Building_NV255", 0, 5, 1, -1, 0, 0, "", "");
+    skusAddItem2(45001, "floorplan", "", "n", "", "", "", "", "NV 255 Suite", "How's about a bed?", "Building_NV255", 0, 5, 1, -1, 0, 0, "", "");
     skusAddItem2(45002, "floorplan", "", "n", "", "", "", "", "NV 255 Lux", "Da bomb", "Building_NV255", 0, 0, 1, -1, 0, 0, "", "");
     skusAddItem2(45003, "floorplan", "", "n", "", "", "", "", "Warehouse Lofts", "Big Styled Living!", "LoftApartments", 0, 500, 1, -1, 0, 0, "", "");
     skusAddItem2(45004, "floorplan", "", "n", "", "", "", "", "Tower Studio", "Cramped but cozy", "LGATower", 0, 0, 1, -1, 0, 0, "", "");
@@ -825,12 +825,12 @@ function skusInitFurnishings()
     skusAddItem2(81531, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Crate Water Damaged", "Weathered Crate", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
     skusAddItem2(81532, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Crate Eaten by Rats", "Weathered Crate", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
     skusAddItem2(81533, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Aged Crate", "Aged and weathered crate", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
-    skusAddItem2(81534, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Fragile Wood Crate", "Crate with \'fragile\' stenciled into each side", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
+    skusAddItem2(81534, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Fragile Wood Crate", "Crate with 'fragile' stenciled into each side", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
     skusAddItem2(81535, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Weathered Crate", "Weathered and cracked crate", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
     skusAddItem2(81536, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Crate of Evil Bunnies", "Crate full of evil bunnies", "furnishings", 0, 60, 1, -1, 0, 0, "", "");
     skusAddItem2(81538, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Fragile Crate", "Gray crate with fragile stenciled on the side", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
     skusAddItem2(81539, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Gray Crate", "Simple gray crate", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
-    skusAddItem2(81540, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Closed White Dumpster", "White \'cardboard only\' closed dumpster", "furnishings", 0, 20, 1, -1, 0, 0, "", "");
+    skusAddItem2(81540, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Closed White Dumpster", "White 'cardboard only' closed dumpster", "furnishings", 0, 20, 1, -1, 0, 0, "", "");
     skusAddItem2(81541, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Blue Bumpster", "Pale blue closed dumpster", "furnishings", 0, 20, 1, -1, 0, 0, "", "");
     skusAddItem2(81542, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Open Green Dumpster", "Open style green dumpster", "furnishings", 0, 20, 1, -1, 0, 0, "", "");
     skusAddItem2(81543, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Garage Sign", "Garage sign", "furnishings", 0, 15, 1, -1, 0, 0, "", "");
@@ -849,9 +849,8 @@ function skusInitFurnishings()
     skusAddItem2(81557, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Truck Trailer Asian Imports Green", "Truck trailer loaded with a green shipping container", "furnishings", 0, 35, 1, -1, 0, 0, "", "");
     skusAddItem2(81558, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Truck Trailer Reinforced Orange", "Truck trailer loaded with a orange shipping container", "furnishings", 0, 35, 1, -1, 0, 0, "", "");
     skusAddItem2(81559, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Road Block: Basic", "Black and yellow road block", "furnishings", 0, 10, 1, -1, 0, 0, "", "");
-    skusAddItem2(81560, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Road Block: No Trespassing", "Keep people out with this no questions asked road block, pass it and you\'ll be prosecuted", "furnishings", 0, 50, 1, -1, 0, 0, "", "");
+    skusAddItem2(81560, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Road Block: No Trespassing", "Keep people out with this no questions asked road block, pass it and you'll be prosecuted", "furnishings", 0, 50, 1, -1, 0, 0, "", "");
     skusAddItem2(81561, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Road Block: Road Closed Ahead", "Black and yellow Road Closed Ahead road block", "furnishings", 0, 25, 1, -1, 0, 0, "", "");
     skusAddItem2(81562, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Traffic Cone", "Worn plastic orange traffic cone", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
     skusAddItem2(81563, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Square Warning Cone", "Weathered square traffic cone", "furnishings", 0, 5, 1, -1, 0, 0, "", "");
-    return ;
 }

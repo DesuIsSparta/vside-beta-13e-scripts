@@ -1,7 +1,6 @@
 function MapPointPanel::toggle(%this)
 {
     PlayGui.showRaiseOrHide(%this);
-    return ;
 }
 function MapPointPanel::open(%this)
 {
@@ -10,7 +9,6 @@ function MapPointPanel::open(%this)
         %this.setVisible(1);
         PlayGui.focusAndRaise(%this);
     }
-    return ;
 }
 function MapPointPanel::close(%this)
 {

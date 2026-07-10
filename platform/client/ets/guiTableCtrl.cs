@@ -1,6 +1,6 @@
 function GuiTableCtrl::Initialize(%this)
 {
-    if (!isDefined("%this.initialized") && !(%this.initialized))
+    if (!isDefined("%this.initialized") || !%this.initialized)
     {
         %this.initialized = 1;
         %this.setProfile(GuiTableProfile);
@@ -17,7 +17,7 @@ function GuiTableCtrl::Initialize(%this)
         }
         else
         {
-            warn(getScopeName() SPC "- missing gui table header array -" SPC getTrace());
+            warn(getScopeName() @ " " @ "- missing gui table header array -" @ " " @ getTrace());
         }
         if (isObject(%scroll))
         {
@@ -25,7 +25,7 @@ function GuiTableCtrl::Initialize(%this)
         }
         else
         {
-            warn(getScopeName() SPC "- missing gui table body scroll -" SPC getTrace());
+            warn(getScopeName() @ " " @ "- missing gui table body scroll -" @ " " @ getTrace());
         }
         if (isObject(%bodyArrayContainer))
         {
@@ -33,7 +33,7 @@ function GuiTableCtrl::Initialize(%this)
         }
         else
         {
-            warn(getScopeName() SPC "- missing gui table body array container -" SPC getTrace());
+            warn(getScopeName() @ " " @ "- missing gui table body array container -" @ " " @ getTrace());
         }
         if (isObject(%bodyArray))
         {
@@ -41,10 +41,9 @@ function GuiTableCtrl::Initialize(%this)
         }
         else
         {
-            warn(getScopeName() SPC "- missing gui table body array -" SPC getTrace());
+            warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
         }
     }
-    return ;
 }
 function GuiTableCtrl::doSetupColumnHeaders(%this, %headerArray)
 {
@@ -52,56 +51,47 @@ function GuiTableCtrl::doSetupColumnHeaders(%this, %headerArray)
     %this.setHeaderCellProfile(GuiTableHeaderCell_N_Profile);
     %this.setHeaderCellButtonProfile(GuiTableHeaderCellButtonProfile);
     %this.setHeaderCellMLTextProfile(GuiTableHeaderCellMLTextProfile);
-    return ;
 }
 function GuiTableCtrl::doSetupBodyScroll(%this, %scroll)
 {
     %scroll.setProfile(GuiTableScrollProfile);
     %scroll.modulationColor = "177 183 209 160";
-    return ;
 }
 function GuiTableCtrl::doSetupBodyContainer(%this, %container)
 {
     %container.setProfile(GuiDefaultProfile);
-    return ;
 }
 function GuiTableCtrl::doSetupArrayOfRows(%this, %arrayOfRows)
 {
     %arrayOfRows.setProfile(GuiDefaultProfile);
-    return ;
 }
 function GuiTableCtrl::doSetupRowGuiArray(%this, %rowArray)
 {
     %rowArray.setProfile(GuiTableBodyRowUnhilitedProfile);
-    return ;
 }
 function GuiTableBodyCellCtrl::doSetupBodyCellForText(%this, %mlTextCtrl)
 {
     %this.setProfile(GuiTableBodyCellProfile);
     %mlTextCtrl.setProfile(GuiTableBodyCellMLTextProfile);
-    return ;
 }
 function GuiTableBodyCellCtrl::doSetupBodyCellForImage(%this, %bitmapCtrl)
 {
     %this.setProfile(GuiTableBodyCellProfile);
     %bitmapCtrl.setProfile(GuiTableBodyCellBitmapProfile);
-    return ;
 }
 $gCurrentTableHeaderCellHighlight = "";
 function GuiTableRowCtrl::onMouseEnterBounds(%this)
 {
-    return ;
 }
 function GuiTableRowCtrl::onMouseLeaveBounds(%this)
 {
-    return ;
 }
 function GuiTableHeaderCellButtonCtrl::onMouseEnterBounds(%this)
 {
     %headerCell = %this.getParent();
     if (!%headerCell.getParent().getParent().getDataTable().getColumnIsSortable(%headerCell.getParent().getObjectIndex(%headerCell)))
     {
-        return ;
+        return;
     }
     if (isObject($gCurrentTableHeaderCellHighlight) && ($gCurrentTableHeaderCellHighlight != %headerCell))
     {
@@ -109,25 +99,23 @@ function GuiTableHeaderCellButtonCtrl::onMouseEnterBounds(%this)
     }
     %headerCell.setProfile(GuiTableHeaderCell_H_Profile);
     $gCurrentTableHeaderCellHighlight = %headerCell;
-    return ;
 }
 function GuiTableHeaderCellButtonCtrl::onMouseLeaveBounds(%this)
 {
     %headerCell = %this.getParent();
     if (!%headerCell.getParent().getParent().getDataTable().getColumnIsSortable(%headerCell.getParent().getObjectIndex(%headerCell)))
     {
-        return ;
+        return;
     }
     %this.getParent().setProfile(GuiTableHeaderCell_N_Profile);
     $gCurrentTableHeaderCellHighlight = "";
-    return ;
 }
 function GuiTableHeaderCellButtonCtrl::onMouseDown(%this)
 {
     %headerCell = %this.getParent();
     if (%headerCell.getParent().getObjectIndex(%headerCell) == 0)
     {
-        return ;
+        return;
     }
     if (isObject($gCurrentTableHeaderCellHighlight) && ($gCurrentTableHeaderCellHighlight != %headerCell))
     {
@@ -135,14 +123,13 @@ function GuiTableHeaderCellButtonCtrl::onMouseDown(%this)
     }
     %headerCell.setProfile(GuiTableHeaderCell_D_Profile);
     $gCurrentTableHeaderCellHighlight = %headerCell;
-    return ;
 }
 function GuiTableHeaderCellButtonCtrl::onMouseUp(%this)
 {
     %headerCell = %this.getParent();
     if (%headerCell.getParent().getObjectIndex(%headerCell) == 0)
     {
-        return ;
+        return;
     }
     if (%this.pointInControl(%this.globalToLocal(Canvas.getCursorPos())))
     {
@@ -152,5 +139,4 @@ function GuiTableHeaderCellButtonCtrl::onMouseUp(%this)
     {
         %headerCell.setProfile(GuiTableHeaderCell_N_Profile);
     }
-    return ;
 }

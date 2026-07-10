@@ -6,22 +6,21 @@ function InstrumentRegistryClient::initializeRegistry(%this)
 {
     if (%this.initialized)
     {
-        warn(getScopeName() SPC "- registry already intialized");
-        return ;
+        warn(getScopeName() @ " " @ "- registry already intialized");
+        return;
     }
-    %this.instrumentsList = new StringMap();
+    %this.instrumentsList = new StringMap("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%this.instrumentsList);
     }
-    %this.keyBindings = new StringMap();
+    %this.keyBindings = new StringMap("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%this.keyBindings);
     }
     %this.initializeRegistryCommon();
     %this.initialized = 1;
-    return ;
 }
 InstrumentRegistryClient.initialized = 0;
 InstrumentRegistryClient.initializeRegistry();
@@ -56,7 +55,6 @@ function InstrumentRegistryClient::clearRegistry(%this)
         %this.keyBindings.clear();
     }
     %this.clearRegistryCommon();
-    return ;
 }
 function InstrumentRegistryClient::closeRegistry(%this)
 {
@@ -72,12 +70,10 @@ function InstrumentRegistryClient::closeRegistry(%this)
         %this.keyBindings = "";
     }
     %this.closeRegistryCommon();
-    return ;
 }
 function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %instrumentGameTitleText, %instrumentGameBodyText, %instrumentGameDisabledText, %instrumentGameActiveIconA, %instrumentGameActiveIconB, %instrumentGameIdleIcon, %instrumentGameUnfocusedIcon)
 {
-    %instrument = new SimSet()
-    {
+    %instrument = new SimSet("") {
         name = %instrumentName;
         titleText = %instrumentGameTitleText;
         bodyText = %instrumentGameBodyText;
@@ -88,35 +84,33 @@ function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %i
         unfocusedIcon = %instrumentGameUnfocusedIcon;
     };
     %this.instrumentsList.put(%instrumentName, %instrument);
-    return ;
 }
 function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrumentName, %keyBinding, %animationName)
 {
-    if ((%instrumentName $= "") && !((%keyBinding $= "")))
+    if ((%instrumentName $= "") && !(%keyBinding $= ""))
     {
-        error(getScopeName() SPC "- cannot bind nonempty keyBinding for empty instrumentName");
-        return ;
+        error(getScopeName() @ " " @ "- cannot bind nonempty keyBinding for empty instrumentName");
+        return;
     }
     if (%animationName $= "")
     {
-        error(getScopeName() SPC "- cannot bind empty animationName");
-        return ;
+        error(getScopeName() @ " " @ "- cannot bind empty animationName");
+        return;
     }
-    if (!((%instrumentName $= "")) && !%this.instrumentsList.hasKey(%instrumentName))
+    if (!(%instrumentName $= "") && !%this.instrumentsList.hasKey(%instrumentName))
     {
-        warn(getScopeName() SPC "- cannot find instrument \'" @ %instrumentName @ "\'");
-        return ;
+        warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+        return;
     }
     %keyBinding = %this.normalizeKeyBinding(%instrumentName, %keyBinding);
     %this.keyBindings.put(%keyBinding, %animationName);
-    return ;
 }
 function InstrumentRegistryClient::getAnimation(%this, %instrumentName, %keyBinding)
 {
     if (!%this.isInstrument(%instrumentName))
     {
-        warn(getScopeName() SPC "- cannot find instrument \'" @ %instrumentName @ "\'");
-        return ;
+        warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+        return;
     }
     if (%keyBinding $= "")
     {
@@ -136,7 +130,7 @@ function InstrumentRegistryClient::normalizeKeyBinding(%this, %instrumentName, %
         %keyBinding = "stop";
     }
     %keyBinding = strlwr(%keyBinding);
-    return %instrumentName TAB %keyBinding;
+    return %instrumentName @ "\t" @ %keyBinding;
 }
 InstrumentRegistryClient.registerInstrument("lguitar", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/guitar_activeA", "platform/client/ui/guitar_activeB", "platform/client/ui/guitar_idle", "platform/client/ui/guitar_unfocused");
 InstrumentRegistryClient.registerInstrument("rguitar", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out YAY!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/rguitar_activeA", "platform/client/ui/rguitar_activeB", "platform/client/ui/rguitar_idle", "platform/client/ui/rguitar_unfocused");
@@ -185,4 +179,3 @@ InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "p", "gtrgr17a"
 InstrumentRegistryClient.registerInstrumentKeyBinding("bassa", 1, "bassr1e");
 InstrumentRegistryClient.registerInstrumentKeyBinding("druma", 1, "drumr1e");
 InstrumentRegistryClient.registerCommonProperties();
-

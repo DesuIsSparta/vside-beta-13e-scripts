@@ -9,20 +9,18 @@ function Music::init()
     }
     %fmod.init($UserPref::Audio::mute);
     $Music::lastPos = "0 0 0";
-    return ;
 }
 function Music::setService(%service)
 {
     $Music::service = %service;
     MusicHud.setMusicService(%service);
-    return ;
 }
 function Music::adjustVolume()
 {
     %soundPos = $Music::service.getAttenuation();
-    if (!isObject($player) && (%soundPos $= ""))
+    if (!isObject($player) || (%soundPos $= ""))
     {
-        return ;
+        return;
     }
     %pos = $player.getPosition();
     if (%pos != $Music::lastPos)
@@ -30,7 +28,6 @@ function Music::adjustVolume()
         Music::attenuate(%pos, %soundPos, 30, $Music::service.getSourceVolume());
         $Music::lastPos = %pos;
     }
-    return ;
 }
 function musicAttenuationTimer()
 {
@@ -43,7 +40,6 @@ function musicAttenuationTimer()
     {
         $Music::lastPos = "0 0 0";
     }
-    return ;
 }
 function Music::attenuate(%playerPos, %soundPos, %maxDistance, %maxVolume)
 {
@@ -54,7 +50,6 @@ function Music::attenuate(%playerPos, %soundPos, %maxDistance, %maxVolume)
     }
     %vol = (1 - (%dist / %maxDistance)) * %maxVolume;
     $Music::service.setVolume(%vol);
-    return ;
 }
 function Music::setMuted(%flag)
 {
@@ -62,17 +57,16 @@ function Music::setMuted(%flag)
     {
         Music::toggleMute();
     }
-    return ;
 }
 function Music::toggleMute()
 {
     $UserPref::Audio::mute = !$UserPref::Audio::mute;
     %multiplier = $UserPref::Audio::mute ? 0 : 1;
-    alxListenerf(AL_GAIN_LINEAR, %multiplier * $UserPref::Audio::masterVolume);
-    if ((isObject($Music::service) && !(($Music::service $= ""))) && (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -1))
+    alxListenerf(AL_GAIN_LINEAR, (%multiplier * $UserPref::Audio::masterVolume));
+    if (isObject($Music::service) && !($Music::service $= "") && (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -1))
     {
         $Music::service.setMute($UserPref::Audio::mute);
-        $Music::service.setMasterVolume((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1);
+        $Music::service.setMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
     }
     else
     {
@@ -86,26 +80,24 @@ function Music::toggleMute()
     }
     if (Using_FFMPEG())
     {
-        ffmpegSetMasterVolume((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1);
+        ffmpegSetMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
     }
     schedulePersist();
     MusicHud.update();
-    return ;
 }
 function doRateSong(%rating)
 {
     Music::rateSong(%rating);
-    return ;
 }
 function Music::rateSong(%rating)
 {
     %request = safeEnsureScriptObject("ManagerRequest", "RatingRequest");
     if (%request.isOpen())
     {
-        warn("network", getScopeName() SPC "- got overlapping requests. postponing. url =" SPC %request.getURL());
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
         cancel(%request.timer);
         %request.timer = schedule(100, 0, "doRateSong", %rating);
-        return ;
+        return;
     }
     %request.user_rating = %rating;
     %url = $Net::ClientServiceURL @ "/RateSong?";
@@ -118,7 +110,7 @@ function Music::rateSong(%rating)
     if (("&artist=" $= %val3) && ("&song=" $= %val5))
     {
         warn("did not have artist and song name, not sending rating request: " @ %url);
-        return ;
+        return;
     }
     %url = %url @ %val1 @ %val2 @ %val3 @ %val4 @ %val5 @ %val6;
     log("communication", "debug", "sending RatingRequest for rateSong: " @ %url);
@@ -127,24 +119,23 @@ function Music::rateSong(%rating)
     {
         log("communication", "debug", "failed to send RatingRequest for rateSong: " @ %url);
     }
-    return ;
 }
 function Music::fetchRatings(%artist, %title, %album)
 {
     if (!haveValidManagerHost())
     {
-        return ;
+        return;
     }
-    if (($Player::Name $= "") && ($Token $= ""))
+    if (($Player::Name $= "") || ($Token $= ""))
     {
-        log("communication", "debug", "the get_song_ratings request will not be made because we don\'t have a valid user or token");
-        return ;
+        log("communication", "debug", "the get_song_ratings request will not be made because we don't have a valid user or token");
+        return;
     }
     %request = safeEnsureScriptObject("ManagerRequest", "RatingRequest");
     if (%request.isOpen())
     {
-        warn("network", getScopeName() SPC "- got overlapping requests. aborting. url =" SPC %request.getURL());
-        return ;
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. aborting. url =" @ " " @ %request.getURL());
+        return;
     }
     %request.user_rating = 0;
     %url = $Net::ClientServiceURL @ "/GetSongRating?";
@@ -160,22 +151,20 @@ function Music::fetchRatings(%artist, %title, %album)
     {
         log("communication", "debug", "failed to send RatingRequest for fetchRatings: " @ %url);
     }
-    return ;
 }
 function RatingRequest::onError(%this, %unused, %unused)
 {
-    return ;
 }
 function RatingRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    log("network", "debug", getScopeName() SPC "- status =" SPC %status SPC "url =" SPC %this.getURL());
+    log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
     if (!(%status $= "success"))
     {
         MusicHud.setRating(0);
         MusicHud.update();
-        error(getScopeName() SPC "- status =" SPC %status);
-        return ;
+        error(getScopeName() @ " " @ "- status =" @ " " @ %status);
+        return;
     }
     %this.community_rating = %this.getValue("communityRating");
     %this.community_rating = mRoundTo(%this.community_rating, 0.1);
@@ -187,17 +176,16 @@ function RatingRequest::onDone(%this)
     }
     MusicHud.setRating(%this.user_rating);
     MusicHud.update();
-    return ;
 }
 function Music::createGetMusicStreamsRequest()
 {
     if (!haveValidManagerHost())
     {
-        return ;
+        return;
     }
     if (isObject(GetMusicStreamsRequest))
     {
-        return ;
+        return;
     }
     new ManagerRequest(GetMusicStreamsRequest);
     if (isObject(MissionCleanup))
@@ -214,30 +202,28 @@ function Music::createGetMusicStreamsRequest()
     {
         log("communication", "debug", "failed to send GetMusicStreamsRequest for getMusicStreamMapping: " @ %url);
     }
-    return ;
 }
 function GetMusicStreamsRequest::onError(%this, %unused, %unused)
 {
     %this.schedule(0, "delete");
-    return ;
 }
 function GetMusicStreamsRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    log("network", "debug", getScopeName() SPC "- status =" SPC %status SPC "url =" SPC %this.getURL());
+    log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
     if (!(%status $= "success"))
     {
-        error(getScopeName() SPC "- status =" SPC %status);
-        return ;
+        error(getScopeName() @ " " @ "- status =" @ " " @ %status);
+        return;
     }
-    log("communication", "debug", "GetMusicStreamsRequest::onDone:" SPC %status);
+    log("communication", "debug", "GetMusicStreamsRequest::onDone:" @ " " @ %status);
     %count = %this.getValue("mountCount");
-    $musicStreamNameMap = new StringMap();
+    $musicStreamNameMap = new StringMap("");
     if (isObject($musicStreamNameMap) && isObject(MissionCleanup))
     {
         MissionCleanup.add($musicStreamNameMap);
     }
-    $musicStreamIDMap = new StringMap();
+    $musicStreamIDMap = new StringMap("");
     if (isObject($musicStreamIDMap) && isObject(MissionCleanup))
     {
         MissionCleanup.add($musicStreamIDMap);
@@ -269,7 +255,6 @@ function GetMusicStreamsRequest::onDone(%this)
     MusicHud.updateStations(%streamField);
     CSMediaDisplay.updateRadioStreams();
     %this.schedule(0, "delete");
-    return ;
 }
 function MuteButton::setMuted(%this, %flag)
 {
@@ -281,5 +266,4 @@ function MuteButton::setMuted(%this, %flag)
     {
         %this.setBitmap("platform/client/buttons/unmuted");
     }
-    return ;
 }

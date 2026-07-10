@@ -20,7 +20,6 @@ function doLoginCheck()
             schedule(3000, 0, doLoginCheck);
         }
     }
-    return ;
 }
 function doRunTests()
 {
@@ -28,12 +27,10 @@ function doRunTests()
     $pref::benchmarks::fps::reps = 3;
     $benchmarks::callbackOnAllComplete = "testComplete();";
     benchmarks::doAllTests();
-    return ;
 }
 function testComplete()
 {
     echo("BENCH: hot damn! Quit()-ing!");
-    log("general", "info", "tests_complete_memory=" @ getCurrentMemoryUsage() / 1024);
+    log("general", "info", "tests_complete_memory=" @ (getCurrentMemoryUsage() / 1024));
     quit();
-    return ;
 }

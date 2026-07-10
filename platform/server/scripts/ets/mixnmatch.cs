@@ -2,42 +2,42 @@ function serverCmdUseMesh(%client, %mesh)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.UseMesh(%mesh);
-    return ;
+    return;
 }
 function serverCmdUseMeshRandom(%client, %category)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.UseMeshRandom(%category);
-    return ;
+    return;
 }
 function serverCmdUseSkinToneRandom(%client)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.UseSkinToneRandom();
-    return ;
+    return;
 }
 function serverCmdUseSkinTone(%client, %tone)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.UseSkinTone(%tone);
-    return ;
+    return;
 }
 function Player::UseSkinTone(%this, %tone)
 {
     %this.setSkinName(%tone);
-    return ;
+    return;
 }
 function Player::UseSkinToneRandom(%this)
 {
@@ -51,20 +51,20 @@ function Player::UseSkinToneRandom(%this)
         $skinTones[$numSkinTones] = "dark";
         $numSkinTones = $numSkinTones + 1;
     }
-    %tone = $skinTones[getRandom(0, $numSkinTones - 1)];
+    %tone = $skinTones[getRandom(0, ($numSkinTones - 1))];
     %face = getRandom(1, 4);
     %this.UseSkinTone(%tone @ ".body");
     %this.UseSkinTone(%tone @ %face @ ".face");
-    return ;
+    return;
 }
 function serverCmdUseHairRandom(%client)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.UseHairRandom();
-    return ;
+    return;
 }
 function Player::UseHairRandom(%this)
 {
@@ -79,18 +79,18 @@ function Player::UseHairRandom(%this)
         $numHairTones = $numHairTones + 1;
     }
     %this.UseMeshRandom("hair");
-    %tone = $hairTones[getRandom(0, $numHairTones - 1)];
+    %tone = $hairTones[getRandom(0, ($numHairTones - 1))];
     %this.UseSkinTone(%tone @ ".hair");
-    return ;
+    return;
 }
 function serverCmdUseClothesRandom(%client)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.UseClothesRandom();
-    return ;
+    return;
 }
 function Player::UseClothesRandom(%this)
 {
@@ -98,5 +98,5 @@ function Player::UseClothesRandom(%this)
     %this.UseMeshRandom("legs");
     %this.UseMeshRandom("torso");
     %this.UseMeshRandom("glasses");
-    return ;
+    return;
 }

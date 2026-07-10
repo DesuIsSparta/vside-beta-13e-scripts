@@ -6,4 +6,3 @@ $Pref::System::dumpMetricsOnStandAloneClient = 0;
 $Pref::System::dumpMetricsVerboseObjects = 0;
 $Pref::System::dumpMetricsVerboseLogins = 0;
 $CS_EditingCustomSpace = 0;
-

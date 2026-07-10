@@ -5,7 +5,6 @@ $gSpaceNumberMax = 5;
 function teleportToNextSpace()
 {
     teleportToSpaceLocal($gSpaceNumber);
-    return ;
 }
 function teleportToSpaceLocal(%space)
 {
@@ -16,7 +15,6 @@ function teleportToSpaceLocal(%space)
     teleportToSpaceNumber(%space);
     schedule(5000, 0, teleportToNextSpace);
     $gSpaceNumber = $gSpaceNumber + 1;
-    return ;
 }
 function doLoginCheck()
 {
@@ -43,5 +41,4 @@ function doLoginCheck()
             schedule(3000, 0, doLoginCheck);
         }
     }
-    return ;
 }

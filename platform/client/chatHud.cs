@@ -2,47 +2,39 @@ $ChatHud::ChatTarget = 0;
 $ChatHud::ListenTarget = 0;
 function onServerMessage(%unused)
 {
-    return ;
 }
 function onAIMReceive(%sender, %msg)
 {
     AIMConvManager.receivedMessage(%sender, %msg);
-    return ;
 }
 function MessageHud::open(%this, %text)
 {
     if (%this.isVisible())
     {
-        return ;
+        return;
     }
     %this.setVisible(1);
     MessageHudEdit.makeFirstResponder(1);
     MessageHudEdit.reinjectOpenEvent();
     MessageHud.schedule(100, updatePosition);
-    if (isObject(ConvBubVecCtrlMsgVec))
+    if (isObject(ConvBubVecCtrlMsgVec) && (ConvBubVecCtrlMsgVec.getNumLines() > 0))
     {
-        if (ConvBubVecCtrlMsgVec.getNumLines() > 0)
-        {
-            ConvBub.open();
-        }
+        ConvBub.open();
     }
-    return ;
 }
 function MessageHud::close(%this)
 {
     if (!%this.isVisible())
     {
-        return ;
+        return;
     }
     %this.setVisible(0);
     MessageHudEdit.makeFirstResponder(0);
     MessageHudEdit.setValue("");
-    return ;
 }
 function MessageHudEdit::onEscape(%this)
 {
     finishTextEntry();
-    return ;
 }
 function MessageHud::updatePosition(%this)
 {
@@ -51,7 +43,6 @@ function MessageHud::updatePosition(%this)
     %trgY = (getWord(ButtonBar.getTrgPosition(), 1) - 35) + $ButtonBarVar::VerticalAdjustment;
     %this.setTrgPosition(%trgX, %trgY);
     PlayGui.pushToBack(%this);
-    return ;
 }
 function MessageHudEdit::eval(%this)
 {
@@ -59,7 +50,7 @@ function MessageHudEdit::eval(%this)
     finishTextEntry();
     if (%text $= "")
     {
-        return ;
+        return;
     }
     if (isCommand(%text))
     {
@@ -87,18 +78,17 @@ function MessageHudEdit::eval(%this)
             say(%text);
         }
     }
-    return ;
 }
 function MessageHudEdit::scanForAutoCommands(%this)
 {
     if (getWordCount(%this.getValue()) != 1)
     {
-        return ;
+        return;
     }
     %firstWord = getWord(%this.getValue(), 0);
     if (strpos(%this.getValue(), " ") < 0)
     {
-        return ;
+        return;
     }
     if (isObject(CommandAbbreviationMap))
     {
@@ -121,12 +111,8 @@ function MessageHudEdit::scanForAutoCommands(%this)
         }
         else
         {
-            if (%firstWord $= "/911")
-            {
-            }
         }
     }
-    return ;
 }
 $gChatPreviewTimer = 0;
 function MessageHudEdit::onKeystroke(%this)
@@ -139,11 +125,10 @@ function MessageHudEdit::onKeystroke(%this)
     %this.scanForAutoCommands();
     if ($gChatPreviewTimer != 0)
     {
-        return ;
+        return;
     }
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
     $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
-    return ;
 }
 function MessageHudEdit::chatPreviewTimer(%this)
 {
@@ -152,12 +137,10 @@ function MessageHudEdit::chatPreviewTimer(%this)
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
     $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
     PlayGui.pushToBack(%this);
-    return ;
 }
 function MessageHudEdit::sendPreviewText(%this)
 {
     $player.sendPreviewText(%this.getValue());
-    return ;
 }
 function removeLastWordIfNotFollowedByWhiteSpace(%dry)
 {
@@ -170,8 +153,8 @@ function removeLastWordIfNotFollowedByWhiteSpace(%dry)
     {
         return "";
     }
-    %lastWordSize = strlen(getWord(%dry, %num - 1));
-    %wet = getSubStr(%dry, 0, strlen(%dry) - %lastWordSize);
+    %lastWordSize = strlen(getWord(%dry, (%num - 1)));
+    %wet = getSubStr(%dry, 0, (strlen(%dry) - %lastWordSize));
     return %wet;
 }
 function MessageHud::setGrayed(%this, %value)
@@ -184,7 +167,6 @@ function MessageHud::setGrayed(%this, %value)
     {
         %this.setBitmap("platform/client/ui/messageHud");
     }
-    return ;
 }
 function MessageHud::updateModeIcon(%this)
 {
@@ -199,7 +181,6 @@ function MessageHud::updateModeIcon(%this)
         %modeIconCommand = "";
     }
     %this.setModeIconName(%modeIconName, %modeIconCommand);
-    return ;
 }
 $gMessageHudEditOriginalPosition = "";
 $gMessageHudEditOriginalExtent = "";
@@ -228,16 +209,14 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand)
         MessageHudModeIcon.setVisible(1);
         MessageHudModeIcon.command = %modeIconCommand;
     }
-    return ;
 }
 function displayMicrophoneHelp()
 {
     if (Canvas.getContent() != PlayGui.getId())
     {
-        return ;
+        return;
     }
     userTips::showNow("GotMic");
-    return ;
 }
 function startTextEntry()
 {
@@ -250,7 +229,6 @@ function startTextEntry()
         MessageHudEdit.setText(MessageHudEdit.getValue() @ moveMap.lastkey);
         MessageHudEdit.makeFirstResponder(1);
     }
-    return ;
 }
 function finishTextEntry(%text)
 {
@@ -260,5 +238,4 @@ function finishTextEntry(%text)
     $player.onGotTypingSomething("");
     $player.sendPreviewText("");
     MessageHudEdit.setValue("");
-    return ;
 }

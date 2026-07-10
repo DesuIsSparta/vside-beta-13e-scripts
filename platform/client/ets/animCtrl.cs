@@ -1,7 +1,6 @@
 function AnimCtrl::newAnimCtrl(%pos, %ext)
 {
-    %ctrl = new GuiBitmapCtrl()
-    {
+    %ctrl = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -29,24 +28,21 @@ function AnimCtrl::addFrame(%this, %frame)
     }
     %this.frame[%this.numFrames] = %frame;
     %this.numFrames = %this.numFrames + 1;
-    return ;
 }
 function AnimCtrl::setDelay(%this, %delay)
 {
     %this.delay = %delay;
-    return ;
 }
 function AnimCtrl::start(%this)
 {
     %this.currentFrame = 0;
     %this.resume();
-    return ;
 }
 function AnimCtrl::resume(%this)
 {
     if (%this.numFrames <= 0)
     {
-        return ;
+        return;
     }
     if (%this.timer != 0)
     {
@@ -54,13 +50,11 @@ function AnimCtrl::resume(%this)
         %this.timer = 0;
     }
     %this.tick();
-    return ;
 }
 function AnimCtrl::stop(%this)
 {
     cancel(%this.timer);
     %this.timer = 0;
-    return ;
 }
 function AnimCtrl::tick(%this)
 {
@@ -81,15 +75,13 @@ function AnimCtrl::tick(%this)
             %this.stop();
         }
     }
-    return ;
 }
 function AnimCtrl::setCurrentFrame(%this, %frame)
 {
-    if ((%frame < 0) && (%frame >= %this.numFrames))
+    if ((%frame < 0) || (%frame >= %this.numFrames))
     {
-        return ;
+        return;
     }
     %this.currentFrame = %frame;
     %this.setBitmap(%this.frame[%this.currentFrame]);
-    return ;
 }

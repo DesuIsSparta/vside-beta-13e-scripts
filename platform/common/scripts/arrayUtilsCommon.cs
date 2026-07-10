@@ -15,7 +15,7 @@ function Array::get(%this, %key)
     %ndx = %this.getIndexFromKey(%key);
     if (%ndx < 0)
     {
-        error(getScopeName() SPC "- no such key: \"" @ %key @ "\"." SPC getTrace());
+        error(getScopeName() @ " " @ "- no such key: \"" @ %key @ "\"." @ " " @ getTrace());
         return "";
     }
     return %this.getValue(%ndx);
@@ -23,5 +23,4 @@ function Array::get(%this, %key)
 function Array::put(%this, %key, %value)
 {
     %this.push_back(%key, %value);
-    return ;
 }

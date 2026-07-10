@@ -1,17 +1,15 @@
 function staffSeatsPanel::toggle(%this)
 {
     playGui.showRaiseOrHide(%this);
-    return ;
 }
 function staffSeatsPanel::open(%this)
 {
     if (!$player.rolesPermissionCheckWarn("events"))
     {
-        return ;
+        return;
     }
     %this.setVisible(1);
     playGui.focusAndRaise(%this);
-    return ;
 }
 function staffSeatsPanel::close(%this)
 {
@@ -27,14 +25,13 @@ function doNextSeatSit(%seatNumber)
 {
     if ($player.isSitting())
     {
-        echo("not taking seat #" @ %seatNumber + 1 @ "id: " @ %id @ "because the player is already sitting elsewhere");
-        return ;
+        echo("not taking seat #" @ (%seatNumber + 1) @ "id: " @ %id @ "because the player is already sitting elsewhere");
+        return;
     }
     %id = StaffSeatsPanelTestSet.getObject(%seatNumber);
     commandToServer('RequestToSit', %id);
-    staffSeatsGuiCurNumber.setText(%seatNumber + 1);
-    echo("testing seat #" @ %seatNumber + 1 @ "id: " @ %id);
-    return ;
+    staffSeatsGuiCurNumber.setText((%seatNumber + 1));
+    echo("testing seat #" @ (%seatNumber + 1) @ "id: " @ %id);
 }
 function waitForStandingBeforeSit(%seatNumber)
 {
@@ -47,7 +44,6 @@ function waitForStandingBeforeSit(%seatNumber)
     {
         schedule(1000, 0, doNextSeatSit, %seatNumber);
     }
-    return ;
 }
 function staffSeatsPanel::testSeat(%this, %seatNumber)
 {
@@ -62,7 +58,6 @@ function staffSeatsPanel::testSeat(%this, %seatNumber)
     {
         doNextSeatSit(%seatNumber);
     }
-    return ;
 }
 function staffSeatsPanel::testNextSeat(%this)
 {
@@ -73,14 +68,13 @@ function staffSeatsPanel::testNextSeat(%this)
         if ($staffSeatsPanel_CUR > $staffSeatsPanel_TOTALNUM)
         {
             $staffSeatsPanel_CUR = $staffSeatsPanel_CUR - 1;
-            return ;
+            return;
         }
         if (%last != $staffSeatsPanel_CUR)
         {
-            %this.testSeat($staffSeatsPanel_CUR - 1);
+            %this.testSeat(($staffSeatsPanel_CUR - 1));
         }
     }
-    return ;
 }
 function staffSeatsPanel::testPrevSeat(%this)
 {
@@ -91,24 +85,22 @@ function staffSeatsPanel::testPrevSeat(%this)
         if ($staffSeatsPanel_CUR <= 0)
         {
             $staffSeatsPanel_CUR = $staffSeatsPanel_CUR + 1;
-            return ;
+            return;
         }
         if (%last != $staffSeatsPanel_CUR)
         {
-            %this.testSeat($staffSeatsPanel_CUR - 1);
+            %this.testSeat(($staffSeatsPanel_CUR - 1));
         }
     }
-    return ;
 }
 function staffSeatsPanel::editCurSeat(%this)
 {
-    return ;
 }
 function recursiveCollectSeatsFromSimGroup(%obj, %seatSet)
 {
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     if (%obj.isClassSimGroup())
     {
@@ -119,9 +111,9 @@ function recursiveCollectSeatsFromSimGroup(%obj, %seatSet)
             recursiveCollectSeatsFromSimGroup(%obj.getObject(%n), %seatSet);
             %n = %n + 1;
         }
+        return;
     }
-    return ;
-    if ((%obj.getClassName() $= "MissionMarker") && (%obj.getClassName() $= "ETSSeatMarker"))
+    if ((%obj.getClassName() $= "MissionMarker") || (%obj.getClassName() $= "ETSSeatMarker"))
     {
         %dbName = %obj.getDataBlock().getName();
         %seatMarkerFound = strstr(%dbName, "SeatMarker");
@@ -130,7 +122,7 @@ function recursiveCollectSeatsFromSimGroup(%obj, %seatSet)
             %seatSet.add(%obj.getId());
         }
     }
-    return ;
+    return;
 }
 function staffSeatsPanel::startTestingSeats(%this)
 {
@@ -138,12 +130,12 @@ function staffSeatsPanel::startTestingSeats(%this)
     $staffSeatsPanel_CUR = 0;
     if (!$StandAlone)
     {
-        return ;
+        return;
     }
     if (!isObject(MissionGroup))
     {
         error("startTestingSeats no missiongroup!");
-        return ;
+        return;
     }
     if (isObject(StaffSeatsPanelTestSet))
     {
@@ -156,5 +148,4 @@ function staffSeatsPanel::startTestingSeats(%this)
     $staffSeatsPanel_CUR = 0;
     staffSeatsGuiCurNumber.setText($staffSeatsPanel_CUR);
     staffSeatsGuiTotalNumber.setText($staffSeatsPanel_TOTALNUM);
-    return ;
 }

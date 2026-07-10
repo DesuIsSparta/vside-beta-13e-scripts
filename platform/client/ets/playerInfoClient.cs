@@ -28,9 +28,6 @@ function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %locati
     if (!(%playerName $= $Player::Name))
     {
         %playerInstance = Player::findPlayerInstance(%playerName);
-        if (isObject(%playerInstance))
-        {
-        }
     }
     return %playerInfo;
 }
@@ -38,15 +35,14 @@ function PlayerInfoMap::removePlayerInfo(%this, %playerName)
 {
     if (%playerName $= "")
     {
-        return ;
+        return;
     }
     if (%this.findKey(%playerName) == -1)
     {
-        return ;
+        return;
     }
     %this.get(%playerName).delete();
     %this.remove(%playerName);
-    return ;
 }
 function PlayerInfoMap::removeAllInfo(%this)
 {
@@ -58,12 +54,10 @@ function PlayerInfoMap::removeAllInfo(%this)
         %i = %i + 1;
     }
     %this.clear();
-    return ;
 }
 function clientCmdClearPlayerInfoCache()
 {
     PlayerInfoMap.removeAllInfo();
-    return ;
 }
 function getPlayerNamesInRadius(%radius)
 {
@@ -78,11 +72,11 @@ function getPlayerNamesInRadius(%radius)
         %player = containerSearchNext(1);
         if (!isObject(%player))
         {
-            continue;
+            break;
         }
         if (%player.getId() != $player.getId())
         {
-            %names = %names TAB %player.getShapeName();
+            %names = %names @ "\t" @ %player.getShapeName();
         }
     }
     return trim(%names);
@@ -90,20 +84,19 @@ function getPlayerNamesInRadius(%radius)
 function requestPlayerInfoFor(%playerName)
 {
     requestPlayerInfoForWithCallback(%playerName, "", 0);
-    return ;
 }
 function requestPlayerInfoForWithCallback(%playerName, %callback, %data)
 {
-    if (!haveValidManagerHost() && $StandAlone)
+    if (!haveValidManagerHost() || $StandAlone)
     {
-        return ;
+        return;
     }
-    log("communication", "info", "Requesting information for player: " @ %playerName SPC getTrace());
+    log("communication", "info", "Requesting information for player: " @ %playerName @ " " @ getTrace());
     %request = safeEnsureScriptObject("ManagerRequest", "PlayerInfoRequest");
     if (%request.isOpen())
     {
-        warn("network", getScopeName() SPC "- got overlapping requests. postponing. url =" SPC %request.getURL());
-        return ;
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+        return;
     }
     %request.callback = %callback;
     %request.callbackData = %data;
@@ -118,23 +111,21 @@ function requestPlayerInfoForWithCallback(%playerName, %callback, %data)
     %request.askedForPlayers = "";
     log("relations", "debug", "requestPlayerInfoFor: " @ %url);
     %request.setURL(%url);
-    if (!haveValidManagerHost() && !haveValidToken())
+    if (!haveValidManagerHost() || !haveValidToken())
     {
         %request.onDone();
-        return ;
+        return;
     }
     %request.start();
-    return ;
 }
 function PlayerInfoRequest::onError(%this, %errorNum, %errorName)
 {
-    log("network", "warn", getScopeName() @ ": " @ %errorNum SPC %errorName);
+    log("network", "warn", getScopeName() @ ": " @ %errorNum @ " " @ %errorName);
     if (isObject(InfoPopupDlg) && InfoPopupDlg.isShowing())
     {
         InfoPopupDlg.stopAnimation();
     }
     %this.callback = "";
-    return ;
 }
 function PlayerInfoRequest::onDone(%this)
 {
@@ -167,12 +158,12 @@ function PlayerInfoRequest::onDone(%this)
         %num = getFieldCount(%failedPlayers);
         if (%num > 0)
         {
-            error("Communication", getScopeName() SPC getDebugString(%this) SPC "- failed to get information for" SPC %num SPC "players:" SPC %failedPlayers);
+            error("Communication", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- failed to get information for" @ " " @ %num @ " " @ "players:" @ " " @ %failedPlayers);
             %i = 0;
             while (%i < %num)
             {
                 %name = getField(%failedPlayers, %i);
-                warn("adding null player info for" SPC %name);
+                warn("adding null player info for" @ " " @ %name);
                 PlayerInfoMap.addPlayerInfo(%name, "unknown", "unknown", "unknown", "", "", 0, "", "");
                 %i = %i + 1;
             }
@@ -194,7 +185,7 @@ function PlayerInfoRequest::onDone(%this)
             {
                 if (isObject(InfoPopupDlg))
                 {
-                    if (!((%this.requestPlayerInfoFor $= "")) && (PlayerInfoMap.get(%this.requestPlayerInfoFor) $= ""))
+                    if (!(%this.requestPlayerInfoFor $= "") && (PlayerInfoMap.get(%this.requestPlayerInfoFor) $= ""))
                     {
                         InfoPopupDlg.showPlayerNotFound();
                     }
@@ -236,5 +227,4 @@ function PlayerInfoRequest::onDone(%this)
     }
     %this.requestPlayerInfoFor = "";
     %this.callback = "";
-    return ;
 }

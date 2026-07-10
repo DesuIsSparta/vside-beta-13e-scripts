@@ -5,14 +5,12 @@ function Item::respawn(%this)
     %this.startFade(0, 0, 1);
     %this.setHidden(1);
     %this.schedule($Item::RespawnTime, "setHidden", 0);
-    %this.schedule($Item::RespawnTime + 100, "startFade", 1000, 0, 0);
-    return ;
+    %this.schedule(($Item::RespawnTime + 100), "startFade", 1000, 0, 0);
 }
 function Item::schedulePop(%this)
 {
-    %this.schedule($Item::PopTime - 1000, "startFade", 1000, 0, 1);
+    %this.schedule(($Item::PopTime - 1000), "startFade", 1000, 0, 1);
     %this.schedule($Item::PopTime, "delete");
-    return ;
 }
 function ItemData::onThrow(%this, %user, %amount)
 {
@@ -20,22 +18,18 @@ function ItemData::onThrow(%this, %user, %amount)
     {
         %amount = 1;
     }
-    if (!(%this.maxInventory $= ""))
+    if (!(%this.maxInventory $= "") && (%amount > %this.maxInventory))
     {
-        if (%amount > %this.maxInventory)
-        {
-            %amount = %this.maxInventory;
-        }
+        %amount = %this.maxInventory;
     }
     if (!%amount)
     {
         return 0;
     }
     %user.decInventory(%this, %amount);
-    %obj = new Item()
-    {
+    %obj = new Item("") {
         dataBlock = %this;
-        rotation = "0 0 1 " @ getRandom() * 360;
+        rotation = "0 0 1 " @ (getRandom() * 360);
         count = %amount;
     };
     MissionGroup.add(%obj);
@@ -49,9 +43,9 @@ function ItemData::onPickup(%this, %obj, %user, %amount)
     {
         if (!(%this.maxInventory $= ""))
         {
-            if (!%count = %this.maxInventory)
+            if (!(%count = %this.maxInventory))
             {
-                return ;
+                return;
             }
         }
         else
@@ -62,7 +56,7 @@ function ItemData::onPickup(%this, %obj, %user, %amount)
     %user.incInventory(%this, %count);
     if (%user.client)
     {
-        messageClient(%user.client, 'MsgItemPickup', '\c1\c0You picked up %1', %this.pickUpName);
+        messageClient(%user.client, 'MsgItemPickup', '\x02\x01You picked up %1', %this.pickUpName);
     }
     if (%obj.isStatic())
     {
@@ -76,8 +70,7 @@ function ItemData::onPickup(%this, %obj, %user, %amount)
 }
 function ItemData::create(%data)
 {
-    %obj = new Item()
-    {
+    %obj = new Item("") {
         dataBlock = %data;
         static = 1;
         rotate = 1;

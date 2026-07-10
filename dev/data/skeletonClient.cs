@@ -19,13 +19,11 @@ function skeletonClient_postJoinAction()
             schedule(3000, 0, skeletonClient_postJoinAction);
         }
     }
-    return ;
 }
 function fakeFrameCount()
 {
     $Canvas::frameCount = $Canvas::frameCount + 1;
     schedule(500, 0, fakeFrameCount);
-    return ;
 }
 function skeletonClient_doPostJoinAction()
 {
@@ -33,7 +31,6 @@ function skeletonClient_doPostJoinAction()
     {
         call($skeletonClient::joinAction);
     }
-    return ;
 }
 function skeletonClient::init(%this)
 {
@@ -53,7 +50,6 @@ function skeletonClient::init(%this)
     }
     skeletonClient::initSpawnPoints();
     schedule(500, 0, fakeFrameCount);
-    return ;
 }
 function skeletonClient::initSpawnPoints(%this)
 {
@@ -71,7 +67,6 @@ function skeletonClient::initSpawnPoints(%this)
     $Spawns[%i = %i + 1] = "TeaHouseSpawns";
     $Spawns[%i = %i + 1] = "SkyBarSpawns";
     $SpawnsCount = %i;
-    return ;
 }
 function skeletonClient::getHWSpawns()
 {
@@ -81,7 +76,6 @@ function skeletonClient::getHWSpawns()
 function doLoginButton()
 {
     LoginGui.doLoginButton();
-    return ;
 }
 function skeletonClient::doLogin(%this, %destinationCity)
 {
@@ -99,7 +93,6 @@ function skeletonClient::doLogin(%this, %destinationCity)
     LoginGui.isAwake();
     LoginGui.doLoginButton();
     %this.schedule(1000, checkStatus);
-    return ;
 }
 function skeletonClient::checkStatus()
 {
@@ -107,9 +100,8 @@ function skeletonClient::checkStatus()
     {
         echo("LOAD: No LoginRequest object yet. Trying again in 5 seconds.");
         schedule(7000, skeletonClient, checkStatus);
-        return ;
+        return;
     }
-    return ;
 }
 function GameConnection::onConnectionDropped(%this, %msg)
 {
@@ -118,19 +110,16 @@ function GameConnection::onConnectionDropped(%this, %msg)
     {
         skeletonClient::logoffAndQuit();
     }
-    return ;
 }
 function GameConnection::onServerConnectionTimedOut(%this)
 {
-    echo("LOAD: We\'re disconnected for some unknown reason.");
+    echo("LOAD: We're disconnected for some unknown reason.");
     skeletonClient::logoffAndQuit();
-    return ;
 }
 function GameConnection::onConnectRequestRejected(%this)
 {
-    echo("LOAD: We\'re rejected for some reason reason.");
+    echo("LOAD: We're rejected for some reason reason.");
     skeletonClient::logoffAndQuit();
-    return ;
 }
 function BootRequest::onDone(%this)
 {
@@ -141,7 +130,7 @@ function BootRequest::onDone(%this)
         %this.quit();
     }
     %status = findRequestStatus(%this);
-    log("login", "info", "LOAD: BootRequest::onDone status:" SPC %status);
+    log("login", "info", "LOAD: BootRequest::onDone status:" @ " " @ %status);
     if (%status $= "success")
     {
         echo("LOAD: Boot suceeded.");
@@ -163,7 +152,6 @@ function BootRequest::onDone(%this)
             }
         }
     }
-    return ;
 }
 function LoginRequest::onError(%this, %errorNum, %unused)
 {
@@ -175,9 +163,8 @@ function LoginRequest::onError(%this, %errorNum, %unused)
     {
         echo("LOAD: OtherError");
     }
-    echo("LOAD: Couldn\'t login to envmanager. Giving up.");
+    echo("LOAD: Couldn't login to envmanager. Giving up.");
     skeletonClient::quit();
-    return ;
 }
 function LoginRequest::onDone(%this)
 {
@@ -189,7 +176,7 @@ function LoginRequest::onDone(%this)
     }
     %status = strlwr(findRequestStatus(%this));
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
-    if ((%status $= "fail") && (%status $= "error"))
+    if ((%status $= "fail") || (%status $= "error"))
     {
         %errorCode = %this.getValue("errorCode");
         %errorCode = strlwr(%errorCode);
@@ -244,7 +231,6 @@ function LoginRequest::onDone(%this)
             }
         }
     }
-    return ;
 }
 function joinServer()
 {
@@ -252,12 +238,12 @@ function joinServer()
 }
 function skeletonClient::joinServer()
 {
-    echo("LOAD: count:" SPC WorldMapServers.getCount());
+    echo("LOAD: count:" @ " " @ WorldMapServers.getCount());
     if (WorldMapServers.getCount() == 0)
     {
         echo("LOAD: We got 0 servers. Trying again in 5 seconds.");
         schedule(5000, 0, joinServer);
-        return ;
+        return;
     }
     if ("vside:" $= getSubStr($skeletonClient::targetCity, 0, 6))
     {
@@ -265,7 +251,7 @@ function skeletonClient::joinServer()
         vurlOperation($skeletonClient::targetCity);
         schedule(15000, 0, skeletonClient_postJoinAction);
         WorldMap.close();
-        return ;
+        return;
     }
     else
     {
@@ -275,12 +261,12 @@ function skeletonClient::joinServer()
             WorldMap.close();
             doTeleportToMyApartment();
             schedule(15000, 0, skeletonClient_postJoinAction);
-            return ;
+            return;
         }
     }
     %spawn = skeletonClient::getHWSpawns();
     %targetVurl = "vside:/location/generic/" @ %spawn;
-    echo("LOAD: Using spawn point" SPC %spawn SPC "in" SPC $skeletonClient::targetCity);
+    echo("LOAD: Using spawn point" @ " " @ %spawn @ " " @ "in" @ " " @ $skeletonClient::targetCity);
     %foundCity = 0;
     %i = 0;
     while (%i < WorldMapServers.getCount())
@@ -301,13 +287,11 @@ function skeletonClient::joinServer()
         echo("LOAD: Did not find targetCity " @ $skeletonClient::targetCity @ ". Giving up.");
         skeletonClient::quit();
     }
-    return ;
 }
 function skeletonClient::reallyQuit(%this)
 {
     echo("LOAD: Quit()-ing...");
     quit();
-    return ;
 }
 function skeletonClient::quit(%this)
 {
@@ -317,15 +301,13 @@ function skeletonClient::quit(%this)
         echo("LOAD: Quit()-ing...");
         quit();
     }
-    return ;
 }
 function skeletonClient::logoffAndQuit()
 {
     echo("LOAD: Logging off and quit()-ing...");
-    echo("LOAD: Login::loggedIn:" SPC $Login::loggedIn);
+    echo("LOAD: Login::loggedIn:" @ " " @ $Login::loggedIn);
     logout(0);
     schedule(1000, 0, doQuit);
-    return ;
 }
 if ($Platform $= "x86UNIX")
 {
@@ -336,5 +318,4 @@ function useAndSaveRandomOutfit()
     %drwrs = SkuManager.commonDrawers();
     %skus = SkuManager.getRandomSkusForLocalPlayer(%drwrs);
     commandToServer('SetActiveSkus', %skus);
-    return ;
 }

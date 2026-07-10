@@ -24,8 +24,7 @@ function TabbedTextControl::setFieldWidths(%this, %fieldWidths, %padding)
         %i = %i + 1;
     }
     %this.resize(%sum, getWord(%this.getExtent(), 1));
-    %this.childrenExtent = %sum SPC getWord(%this.childrenExtent, 1);
-    return ;
+    %this.childrenExtent = %sum @ " " @ getWord(%this.childrenExtent, 1);
 }
 function TabbedTextControl::addLine(%this, %fields)
 {
@@ -68,35 +67,30 @@ function TabbedTextControl::onCreatedChild(%this, %child)
     while (%i < %numFields)
     {
         %fieldWidth = getWord(%this.fieldWidths, %i);
-        %child.field[%i] = new GuiMLTextCtrl()
-        {
-            profile = %this.menuTextProfile;
-            position = %xoffset SPC %this.paddingAboveText;
-            extent = %fieldWidth SPC 20;
+        %child.field[" ",%this.paddingAboveText;
+            extent = %fieldWidth," ",20;
             lineSpacing = 1;
             allowColorChars = 1;
             stripTagsOnCopy = 1;
-        };
+        };,%i] = new GuiMLTextCtrl("") {
+            profile = %this.menuTextProfile;
+            position = %xoffset;
         %child.add(%child.field[%i]);
         %xoffset = %xoffset + (%fieldWidth + %this.Padding);
         %i = %i + 1;
     }
     %child.bindClassName("MenuItem");
     %child.bindClassName("TabbedTextLine");
-    return ;
 }
 function TabbedTextControl::childSelected(%this, %child)
 {
-    return ;
 }
 function TabbedTextLine::onMouseEnterBounds(%this)
 {
-    return ;
 }
 function TabbedTextLine::onMouseDown(%this)
 {
     Parent::onMouseEnterBounds(%this);
-    return ;
 }
 function TabbedTextLine::onMouseUp(%this, %unused, %unused, %clickCount)
 {
@@ -105,5 +99,4 @@ function TabbedTextLine::onMouseUp(%this, %unused, %unused, %clickCount)
         %this.onSelect();
     }
     %this.Parent.lastClicked = %this;
-    return ;
 }

@@ -9,19 +9,17 @@ function onMissionDownloadPhase1(%unused, %unused)
     {
         TransitionPBController.setValue(0);
     }
-    return ;
 }
 function onPhase1Progress(%progress)
 {
     if (isObject(LoadingPBController))
     {
-        LoadingPBController.setValue(%progress * 0.33);
+        LoadingPBController.setValue((%progress * 0.33));
     }
     if (isObject(TransitionPBController))
     {
-        TransitionPBController.setValue(%progress * 0.33);
+        TransitionPBController.setValue((%progress * 0.33));
     }
-    return ;
 }
 function onPhase1Complete()
 {
@@ -29,7 +27,6 @@ function onPhase1Complete()
     {
         LoadingPBController.setValue(0.33);
     }
-    return ;
 }
 function onMissionDownloadPhase2()
 {
@@ -42,36 +39,32 @@ function onMissionDownloadPhase2()
     {
         TransitionProgressTxt.setValue("Loading objects");
     }
-    return ;
 }
 function onPhase2ProgressUpdateStatusDisplay(%progress)
 {
     if (isObject(LoadingPBController))
     {
-        LoadingPBController.setValue((%progress * 0.33) + 0.33);
+        LoadingPBController.setValue(((%progress * 0.33) + 0.33));
     }
     if (isObject(TransitionPBController))
     {
-        TransitionPBController.setValue((%progress * 0.33) + 0.33);
+        TransitionPBController.setValue(((%progress * 0.33) + 0.33));
     }
-    return ;
 }
 function onPhase2Complete()
 {
-    return ;
 }
 function onFileChunkReceived(%fileName, %ofs, %size)
 {
     if (isObject(LoadingPBController))
     {
-        LoadingPBController.setValue(%ofs / %size);
+        LoadingPBController.setValue((%ofs / %size));
         LoadingProgressTxt.setValue("Downloading " @ %fileName @ "...");
     }
     if (isObject(TransitionPBController))
     {
-        TransitionPBController.setValue(%ofs / %size);
+        TransitionPBController.setValue((%ofs / %size));
     }
-    return ;
 }
 function onMissionDownloadPhase3()
 {
@@ -79,19 +72,17 @@ function onMissionDownloadPhase3()
     {
         LoadingProgressTxt.setValue("Lighting");
     }
-    return ;
 }
 function onPhase3Progress(%progress)
 {
     if (isObject(LoadingPBController))
     {
-        LoadingPBController.setValue((%progress * 0.33) + 0.66);
+        LoadingPBController.setValue(((%progress * 0.33) + 0.66));
     }
     if (isObject(TransitionPBController))
     {
-        TransitionPBController.setValue((%progress * 0.33) + 0.66);
+        TransitionPBController.setValue(((%progress * 0.33) + 0.66));
     }
-    return ;
 }
 function onPhase3Complete()
 {
@@ -104,7 +95,6 @@ function onPhase3Complete()
         TransitionPBController.setValue(1);
     }
     $lightingMission = 0;
-    return ;
 }
 function onMissionDownloadComplete()
 {
@@ -114,7 +104,6 @@ function onMissionDownloadComplete()
         startDFZone();
     }
     setMissionLoaded(1);
-    return ;
 }
 addMessageCallback('MsgLoadInfo', handleLoadInfoMessage);
 addMessageCallback('MsgLoadDescripition', handleLoadDescriptionMessage);
@@ -126,7 +115,7 @@ if (isFunction("Using_DF") && Using_DF())
 function handleLoadInfoMessage(%unused, %msgString)
 {
     TransitionMessage.setVisible(0);
-    if ((WorldMap.isAwake() || LoginGui.isAwake()) || $StandAlone)
+    if (WorldMap.isAwake() || LoginGui.isAwake() || $StandAlone)
     {
         LoadingGui.setTransitioning(0);
         Canvas.setContent("LoadingGui");
@@ -147,7 +136,6 @@ function handleLoadInfoMessage(%unused, %msgString)
             LoadingGui.setScreenshotBitmap($TransitionScreenshot);
         }
     }
-    return ;
 }
 function handleLoadDescriptionMessage(%unused, %msgString)
 {
@@ -161,18 +149,15 @@ function handleLoadDescriptionMessage(%unused, %msgString)
         %line = %line + 1;
     }
     %text = %text @ LoadingGui.qLine[%line] @ "<spop>";
-    return ;
 }
 function handleLoadInfoDoneMessage(%unused, %msgString)
 {
-    return ;
 }
 function handleMsgDFZoneNameMessage(%unused, %msgString)
 {
-    if (!isFunction("Using_DF") && !Using_DF())
+    if (!isFunction("Using_DF") || !Using_DF())
     {
-        return ;
+        return;
     }
     setDFZoneName(%msgString);
-    return ;
 }

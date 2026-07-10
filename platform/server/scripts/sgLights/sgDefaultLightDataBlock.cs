@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(sgDefaultLightDataBlock)
-{
+datablock sgUniversalStaticLightData(sgDefaultLightDataBlock) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 10;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(sgDefaultLightDataBlock)
     SmoothSpotLight = 0;
     DoubleSidedAmbient = 0;
 };
-

@@ -44,7 +44,6 @@ function doLookAt(%obj, %isDanceWith, %isKiss)
     {
         $LookAtSchedule = schedule(%resetTime, 0, "doLookAt", 0, 0, 0);
     }
-    return ;
 }
 $PointAtSchedule = 0;
 $PointAtResetTimeout = 7000;
@@ -79,5 +78,4 @@ function doPointAt(%obj)
     {
         $PointAtSchedule = schedule(%resetTime, 0, "doPointAt", 0);
     }
-    return ;
 }

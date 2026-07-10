@@ -2,7 +2,7 @@ function dlMgr::smInit()
 {
     if (isObject(dlMgr))
     {
-        return ;
+        return;
     }
     new ScriptObject(dlMgr);
     if (isObject(MissionCleanup))
@@ -10,7 +10,6 @@ function dlMgr::smInit()
         MissionCleanup.add(dlMgr);
     }
     dlMgr.reset();
-    return ;
 }
 function dlMgr::reset(%this)
 {
@@ -25,23 +24,20 @@ function dlMgr::reset(%this)
     %this.setPolicyValue("default", "useStale", 1);
     %this.setPolicyValue("default", "cacheDuration", daysToSeconds(14));
     %this.setPolicyValue("avatar", "expirationDuration", minutesToSeconds(1));
-    %this.setPolicyValue("youtube", "expirationDuration", minutesToSeconds((24 * 60) * 2));
+    %this.setPolicyValue("youtube", "expirationDuration", minutesToSeconds(((24 * 60) * 2)));
     %this.maxOutstanding = 10;
     %this.maxFailures = 3;
     %this.retryDelay = 2;
-    return ;
 }
 function dlMgr::shutDown(%this)
 {
     %this.purgeCache();
     %this.saveCacheIndex();
-    return ;
 }
 function dlMgr::setPolicyValue(%this, %policyName, %valuename, %value)
 {
     %policy = %this.getPolicy(%policyName);
     %policy.put(%valuename, %value);
-    return ;
 }
 function dlMgr::getPolicyValue(%this, %policyName, %valuename)
 {
@@ -52,7 +48,7 @@ function dlMgr::getPolicyValue(%this, %policyName, %valuename)
     }
     if (!%policy.hasKey(%valuename))
     {
-        error("unknown policy value:" SPC %policyName @ ":" @ %valuename);
+        error("unknown policy value:" @ " " @ %policyName @ ":" @ %valuename);
         return "";
     }
     return %policy.get(%valuename);
@@ -74,13 +70,13 @@ function dlMgr::applyUrl(%this, %url, %callback, %errorCallback, %callbackData, 
     if (%dlItem.localFilename $= "")
     {
         %this.enqueueItem(%dlItem);
-        return ;
+        return;
     }
     %isFresh = 1;
     %record = %this.cacheIndex.get(%dlItem.url);
     if (%record $= "")
     {
-        error(getScopeName() SPC "- no entry in cache index." SPC %dlItem.url SPC getTrace());
+        error(getScopeName() @ " " @ "- no entry in cache index." @ " " @ %dlItem.url @ " " @ getTrace());
     }
     else
     {
@@ -92,11 +88,10 @@ function dlMgr::applyUrl(%this, %url, %callback, %errorCallback, %callbackData, 
         }
     }
     %this.applyItem(%dlItem, %isFresh);
-    return ;
 }
 function dlMgr::buildDLItem(%this, %url, %callback, %errorCallback, %callbackData, %policyName)
 {
-    if (!isDefined("%policyName") && (%policyName $= ""))
+    if (!isDefined("%policyName") || (%policyName $= ""))
     {
         %policyName = "default";
     }
@@ -115,13 +110,10 @@ function dlMgr::buildDLItem(%this, %url, %callback, %errorCallback, %callbackDat
     %dlItem.callbackData = %callbackData;
     %dlItem.policyName = %policyName;
     %dlItem.localFilename = %this.getCachedFilename(%url);
-    if (!(%dlItem.localFilename $= ""))
+    if (!(%dlItem.localFilename $= "") && !isFile(%dlItem.localFilename))
     {
-        if (!isFile(%dlItem.localFilename))
-        {
-            error(getScopeName() SPC "- file missing from cache:" SPC %dlItem.localFilename SPC %dlItem.url SPC getTrace());
-            %dlItem.localFilename = "";
-        }
+        error(getScopeName() @ " " @ "- file missing from cache:" @ " " @ %dlItem.localFilename @ " " @ %dlItem.url @ " " @ getTrace());
+        %dlItem.localFilename = "";
     }
     return %dlItem;
 }
@@ -133,32 +125,30 @@ function dlMgr::enqueueItem(%this, %dlItem)
 {
     %this.toDownload.push_back(%dlItem, "");
     %this.serviceToDownloadQueue();
-    return ;
 }
 function dlMgr::serviceToDownloadQueue(%this)
 {
     if (%this.outstanding.size() >= %this.maxOutstanding)
     {
-        echoDebug(getScopeName() SPC "- too many outstanding already:" SPC %this.outstanding.size() SPC getTrace());
-        return ;
+        echoDebug(getScopeName() @ " " @ "- too many outstanding already:" @ " " @ %this.outstanding.size() @ " " @ getTrace());
+        return;
     }
     while (%this.outstanding.size() < %this.maxOutstanding)
     {
         %dlItem = %this.getAndRemoveFirstActionableItemInToDownloadQueue();
         if (!isObject(%dlItem))
         {
-            continue;
+            break;
         }
         %this.beginDownloadingItem(%dlItem);
     }
 }
-
 function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this)
 {
     %num = %this.toDownload.count();
     %found = -1;
     %n = 0;
-    while (%found == -1)
+    while ((%n < %num) && (%found == -1))
     {
         %dlItem = %this.toDownload.getKey(%n);
         if (!%this.isUrlOutstanding(%dlItem.url))
@@ -185,18 +175,17 @@ function dlMgr::beginDownloadingItem(%this, %dlItem)
     if (%failCount >= %this.maxFailures)
     {
         %dlItem.delete();
-        return ;
+        return;
     }
     %dlItem.localFilename = %this.makeLocalFilename(%dlItem.url);
     %this.outstanding.put(%dlItem.url, %dlItem);
-    %curl = new URLPostObject();
+    %curl = new URLPostObject("");
     %curl.dlItem = %dlItem;
     %curl.setURL(%dlItem.url);
     %curl.setDownloadFile(%dlItem.localFilename);
     %curl.setRecvData(1);
     %curl.setCompletedCallback("dlMgrRequest_onCompletedDownload");
     %curl.start();
-    return ;
 }
 function dlMgr::makeLocalFilename(%this, %url)
 {
@@ -216,11 +205,10 @@ function dlMgrRequest_onCompletedDownload(%request, %result)
     {
         dlMgr.downloadFailed(%dlItem, %request, %result);
     }
-    return ;
 }
 function dlMgr::downloadFailed(%this, %dlItem, %curl, %error)
 {
-    error(getScopeName() SPC "-" SPC %error SPC %curl.statusCode() SPC %curl.resultCodeToString(%error));
+    error(getScopeName() @ " " @ "-" @ " " @ %error @ " " @ %curl.statusCode() @ " " @ %curl.resultCodeToString(%error));
     %this.outstanding.remove(%dlItem.url);
     %failCount = %this.failCounts.get(%dlItem.url);
     %failCount = %failCount + 1;
@@ -238,11 +226,11 @@ function dlMgr::downloadFailed(%this, %dlItem, %curl, %error)
     {
         if (%failCount < %this.maxFailures)
         {
-            %this.schedule(%this.retryDelay * 1000, "enqueueItem", %dlItem);
+            %this.schedule((%this.retryDelay * 1000), "enqueueItem", %dlItem);
         }
         else
         {
-            error(getScopeName() SPC "- failed" SPC %failCount SPC "times; giving up on" SPC %dlItem.url);
+            error(getScopeName() @ " " @ "- failed" @ " " @ %failCount @ " " @ "times; giving up on" @ " " @ %dlItem.url);
             if (!(%dlItem.errorCallback $= ""))
             {
                 call(%dlItem.errorCallback, %dlItem);
@@ -251,7 +239,6 @@ function dlMgr::downloadFailed(%this, %dlItem, %curl, %error)
         }
     }
     %this.serviceToDownloadQueue();
-    return ;
 }
 function dlMgr::downloadSucceeded(%this, %dlItem)
 {
@@ -260,32 +247,31 @@ function dlMgr::downloadSucceeded(%this, %dlItem)
     removeFile(%dlItem.localFilename);
     addFile(%dlItem.localFilename);
     %curSeconds = getTime();
-    %record = %dlItem.localFilename TAB %curSeconds TAB %curSeconds TAB %dlItem.policyName;
+    %record = %dlItem.localFilename @ "\t" @ %curSeconds @ "\t" @ %curSeconds @ "\t" @ %dlItem.policyName;
     %this.cacheIndex.put(%dlItem.url, %record);
     %this.applyItem(%dlItem, 1);
     %this.serviceToDownloadQueue();
-    return ;
 }
 function dlMgr::applyItem(%this, %dlItem, %isFresh)
 {
     if (%dlItem.callback $= "")
     {
-        error(getScopeName() SPC "- no callback!" SPC %dlItem.url SPC getTrace());
+        error(getScopeName() @ " " @ "- no callback!" @ " " @ %dlItem.url @ " " @ getTrace());
         %dlItem.delete();
-        return ;
+        return;
     }
-    if (%isFresh && %this.getPolicyValue(%dlItem.policyName, "useStale"))
+    if (%isFresh || %this.getPolicyValue(%dlItem.policyName, "useStale"))
     {
         if (!%isFresh)
         {
-            echoDebug(getScopeName() SPC "- using stale data -" SPC %dlItem.url);
+            echoDebug(getScopeName() @ " " @ "- using stale data -" @ " " @ %dlItem.url);
         }
         call(%dlItem.callback, %dlItem, %isFresh);
     }
     %record = %this.cacheIndex.get(%dlItem.url);
     if (%record $= "")
     {
-        error(getScopeName() SPC "- no entry in cache index." SPC %dlItem.url SPC getTrace());
+        error(getScopeName() @ " " @ "- no entry in cache index." @ " " @ %dlItem.url @ " " @ getTrace());
     }
     else
     {
@@ -294,30 +280,26 @@ function dlMgr::applyItem(%this, %dlItem, %isFresh)
     }
     if (!%isFresh)
     {
-        echoDebug(getScopeName() SPC "- re-downloading" SPC %dlItem.url SPC getTrace());
+        echoDebug(getScopeName() @ " " @ "- re-downloading" @ " " @ %dlItem.url @ " " @ getTrace());
         %this.enqueueItem(%dlItem);
     }
     else
     {
         %dlItem.delete();
     }
-    return ;
 }
 function dlMgrDefaultCallback(%dlItem, %isFresh)
 {
-    error(getScopeName() SPC "- callbackData =" SPC %dlItem);
+    error(getScopeName() @ " " @ "- callbackData =" @ " " @ %dlItem);
     %dlItem.dumpFields();
-    return ;
 }
 function dlMgr::loadCacheIndex(%this)
 {
     %this.cacheIndex.loadFrom(%this.cacheIndexFilename, "debug");
-    return ;
 }
 function dlMgr::saveCacheIndex(%this)
 {
     dlMgr.cacheIndex.saveTo(dlMgr.cacheIndexFilename);
-    return ;
 }
 function dlMgr::clearCache(%this)
 {
@@ -330,7 +312,6 @@ function dlMgr::clearCache(%this)
     }
     %this.cacheIndex.clear();
     %this.saveCacheIndex();
-    return ;
 }
 function dlMgr::purgeCache(%this)
 {
@@ -356,23 +337,21 @@ function dlMgr::purgeCache(%this)
         }
         %n = %n - 1;
     }
-    echo(getScopeName() SPC "- purged" SPC %purgedCount SPC "out of" SPC %num SPC "files.");
+    echo(getScopeName() @ " " @ "- purged" @ " " @ %purgedCount @ " " @ "out of" @ " " @ %num @ " " @ "files.");
     %this.saveCacheIndex();
-    return ;
 }
 function dlMgr::purgeCacheEntry(%this, %url)
 {
     if (!%this.cacheIndex.hasKey(%url))
     {
-        echoDebug(getScopeName() SPC "- no such record:" SPC %url SPC getTrace());
-        return ;
+        echoDebug(getScopeName() @ " " @ "- no such record:" @ " " @ %url @ " " @ getTrace());
+        return;
     }
     %record = %this.cacheIndex.get(%url);
     %localFile = getField(%record, 0);
-    echoDebug(getScopeName() SPC "- purging! \"" @ %localFile @ "\"");
+    echoDebug(getScopeName() @ " " @ "- purging! \"" @ %localFile @ "\"");
     %this.cacheIndex.remove(%url);
     deleteFile(%localFile);
-    return ;
 }
 function dlMgr::dumpCache(%this)
 {
@@ -392,25 +371,24 @@ function dlMgr::dumpCache(%this)
         %time = getTime();
         %aAge = mSubS32(%time, %aTime);
         %cAge = mSubS32(%time, %cTime);
-        echo(getScopeName() SPC "- entry" SPC formatInt("%0.5d", %n));
-        echo(getScopeName() SPC "- url         : \"" @ %url @ "\"");
-        echo(getScopeName() SPC "- local file  : \"" @ %localFile @ "\"");
-        echo(getScopeName() SPC "- access   age: " @ secondsToDaysHoursMinutesSeconds(%aAge));
-        echo(getScopeName() SPC "- creation age: " @ secondsToDaysHoursMinutesSeconds(%cAge));
-        echo(getScopeName() SPC "- policy      : " @ %policyName);
-        echo(getScopeName() SPC "  - purge time: " @ secondsToDaysHoursMinutesSeconds(%cacheDuration));
-        echo(getScopeName() SPC "  - stale time: " @ secondsToDaysHoursMinutesSeconds(%staleTime));
-        echo(getScopeName() SPC "  - use stale : " @ %useStale);
+        echo(getScopeName() @ " " @ "- entry" @ " " @ formatInt("%0.5d", %n));
+        echo(getScopeName() @ " " @ "- url         : \"" @ %url @ "\"");
+        echo(getScopeName() @ " " @ "- local file  : \"" @ %localFile @ "\"");
+        echo(getScopeName() @ " " @ "- access   age: " @ secondsToDaysHoursMinutesSeconds(%aAge));
+        echo(getScopeName() @ " " @ "- creation age: " @ secondsToDaysHoursMinutesSeconds(%cAge));
+        echo(getScopeName() @ " " @ "- policy      : " @ %policyName);
+        echo(getScopeName() @ " " @ "  - purge time: " @ secondsToDaysHoursMinutesSeconds(%cacheDuration));
+        echo(getScopeName() @ " " @ "  - stale time: " @ secondsToDaysHoursMinutesSeconds(%staleTime));
+        echo(getScopeName() @ " " @ "  - use stale : " @ %useStale);
         %n = %n + 1;
     }
 }
-
 function GuiControl::downloadAndApplyBitmap(%this, %url, %policyName)
 {
     if (!%this.hasMethod("setBitmap"))
     {
-        error(getScopeName() SPC "- no setBitmap() method!" SPC getDebugString(%this) SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- no setBitmap() method!" @ " " @ getDebugString(%this) @ " " @ getTrace());
+        return;
     }
     if (!isDefined("%policyName"))
     {
@@ -418,19 +396,18 @@ function GuiControl::downloadAndApplyBitmap(%this, %url, %policyName)
     }
     %this.expectedImageUrl = %url;
     dlMgr.applyUrl(%url, "dlMgrCallback_GuiControl", "", %this, %policyName);
-    return ;
 }
 function dlMgrCallback_GuiControl(%dlItem, %isFresh)
 {
     %ctrl = %dlItem.callbackData;
     if (!isObject(%ctrl))
     {
-        warn(getScopeName() SPC "- control no longer exists!" SPC %ctrl SPC %dlItem.url SPC getTrace());
-        return ;
+        warn(getScopeName() @ " " @ "- control no longer exists!" @ " " @ %ctrl @ " " @ %dlItem.url @ " " @ getTrace());
+        return;
     }
     if (!(%ctrl.expectedImageUrl $= %dlItem.url))
     {
-        echoDebug(getScopeName() SPC "- unexpected URL retrieved. Expected \"" @ %ctrl.expectedImageUrl @ "\" but got \"" @ %dlItem.url @ "\".");
+        echoDebug(getScopeName() @ " " @ "- unexpected URL retrieved. Expected \"" @ %ctrl.expectedImageUrl @ "\" but got \"" @ %dlItem.url @ "\".");
     }
     else
     {
@@ -439,5 +416,4 @@ function dlMgrCallback_GuiControl(%dlItem, %isFresh)
         %ctrl.expectedUrl = "";
         %ctrl.fitInParentAsBitmap();
     }
-    return ;
 }

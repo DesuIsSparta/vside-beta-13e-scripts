@@ -13,19 +13,17 @@ function AimInviteDialog::open(%this, %buddyName)
     {
         if (findField(%this.buddyNames, %buddyName) == -1)
         {
-            %this.buddyNames = %this.buddyNames TAB %buddyName;
+            %this.buddyNames = %this.buddyNames @ "\t" @ %buddyName;
             %this.refreshBuddyDropdown();
             AimInviteBuddyDropDown.SetSelected(0);
         }
     }
-    return ;
 }
 function AimInviteDialog::initWithName(%this, %buddyName)
 {
     %this.buddyNames = %buddyName;
     %this.refreshBuddyDropdown();
     AimInviteMessageField.setText("Come join " @ $ETS::AppName @ "!");
-    return ;
 }
 function AimInviteDialog::close(%this)
 {
@@ -38,18 +36,16 @@ function AimInviteDialog::close(%this)
 function AimInviteDialog::setControlsActive(%this, %flag)
 {
     AimInviteDialogButtonSend.setActive(%flag);
-    return ;
 }
 function AimInviteDialog::onWake(%this)
 {
     %this.setControlsActive(1);
-    return ;
 }
 function AimInviteDialog::refreshBuddyDropdown(%this)
 {
     if (AimInviteBuddyDropDown.getText $= "All buddies!")
     {
-        return ;
+        return;
     }
     AimInviteBuddyDropDown.clear();
     %count = getFieldCount(%this.buddyNames);
@@ -61,7 +57,7 @@ function AimInviteDialog::refreshBuddyDropdown(%this)
     {
         if (%count > 1)
         {
-            AimInviteBuddyDropDown.add(%count SPC "buddies");
+            AimInviteBuddyDropDown.add(%count @ " " @ "buddies");
         }
     }
     %n = 0;
@@ -73,13 +69,11 @@ function AimInviteDialog::refreshBuddyDropdown(%this)
     AimInviteBuddyDropDown.add("-------------------");
     AimInviteBuddyDropDown.add("Add Buddies");
     AimInviteBuddyDropDown.add("Invite all buddies!");
-    return ;
 }
 function AimInviteBuddyDropDown::selectBuddy(%this, %aBuddyName)
 {
     %n = %this.findText(%aBuddyName);
     %this.SetSelected(%n);
-    return ;
 }
 function AimInviteDialog::buddyDropdownChanged(%this)
 {
@@ -105,7 +99,6 @@ function AimInviteDialog::buddyDropdownChanged(%this)
             }
         }
     }
-    return ;
 }
 function AimInviteDialog::sendInvite(%this)
 {
@@ -119,7 +112,7 @@ function AimInviteDialog::sendInvite(%this)
     {
         if (%count == 0)
         {
-            return ;
+            return;
         }
         else
         {
@@ -127,13 +120,12 @@ function AimInviteDialog::sendInvite(%this)
         }
     }
     %this.close();
-    return ;
 }
 function AimInviteAddBuddyDialog::open(%this)
 {
     %inviteWinPos = AimInviteDialog.getPosition();
     %inviteWinExtent = AimInviteDialog.getExtent();
-    %this.reposition(getWord(%inviteWinPos, 0) + getWord(%inviteWinExtent, 0), getWord(%inviteWinPos, 1));
+    %this.reposition((getWord(%inviteWinPos, 0) + getWord(%inviteWinExtent, 0)), getWord(%inviteWinPos, 1));
     if (%this.visible == 0)
     {
         %this.refresh();
@@ -141,13 +133,11 @@ function AimInviteAddBuddyDialog::open(%this)
         PlayGui.focusAndRaise(%this);
         %this.refresh();
     }
-    return ;
 }
 function AimInviteAddBuddyDialog::close(%this)
 {
     %this.setVisible(0);
     PlayGui.focusTopWindow();
-    return ;
 }
 function AimInviteAddBuddyDialog::refresh(%this)
 {
@@ -158,17 +148,13 @@ function AimInviteAddBuddyDialog::refresh(%this)
     {
         %buddyName = aimGetBuddyName(%i);
         %buddyState = aimGetBuddyState(%i);
-        if (((%buddyState == 1) || (%buddyState == 2)) || (%buddyState == 3))
+        if ((%buddyState == 1) || (%buddyState == 2) || (%buddyState == 3) && (findField(AimInviteDialog.buddyNames, %buddyName) == -1))
         {
-            if (findField(AimInviteDialog.buddyNames, %buddyName) == -1)
-            {
-                AimInviteAddBuddyList.addRow(%i, %buddyName, %i);
-            }
+            AimInviteAddBuddyList.addRow(%i, %buddyName, %i);
         }
         %i = %i + 1;
     }
 }
-
 function AimInviteAddBuddyDialog::addSelected(%this)
 {
     %id = AimInviteAddBuddyList.getSelectedId();
@@ -184,5 +170,4 @@ function AimInviteAddBuddyDialog::addSelected(%this)
         AimInviteDialog.open(%selected);
     }
     AimInviteAddBuddyList.setSelectedRow(%row);
-    return ;
 }

@@ -6,7 +6,7 @@ function getProjectFolders()
     {
         parseProjectArg();
     }
-    return "common" SPC $ETS::ProjectName;
+    return "common" @ " " @ $ETS::ProjectName;
 }
 function initProjectsNonReloadable()
 {
@@ -16,12 +16,11 @@ function initProjectsNonReloadable()
     while (%n < %num)
     {
         %file = "./" @ getWord(%folders, %n) @ "/initNonReloadable.cs";
-        log("initialization", "info", "Checking for" SPC %file);
+        log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
         %n = %n + 1;
     }
 }
-
 function initProjectsReloadable()
 {
     %folders = getProjectFolders();
@@ -30,12 +29,11 @@ function initProjectsReloadable()
     while (%n < %num)
     {
         %file = "./" @ getWord(%folders, %n) @ "/initReloadable.cs";
-        log("initialization", "info", "Checking for" SPC %file);
+        log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
         %n = %n + 1;
     }
 }
-
 function initProjectsReloadableLate()
 {
     %folders = getProjectFolders();
@@ -44,21 +42,19 @@ function initProjectsReloadableLate()
     while (%n < %num)
     {
         %file = "./" @ getWord(%folders, %n) @ "/initReloadableLate.cs";
-        log("initialization", "info", "Checking for" SPC %file);
+        log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
         %n = %n + 1;
     }
 }
-
 function parseProjectArg()
 {
     %haveArg = findArg("-project", "$ETS::ProjectName", "Missing -project <project name>");
     if (!%haveArg)
     {
         $ETS::ProjectName = "vside";
-        warn("Using Default Project" SPC $ETS::ProjectName);
+        warn("Using Default Project" @ " " @ $ETS::ProjectName);
     }
-    return ;
 }
 function parseCityArg()
 {
@@ -66,11 +62,9 @@ function parseCityArg()
     if (!%haveArg)
     {
         $ETS::cityName = "nv";
-        warn("Using Default City" SPC $ETS::cityName);
+        warn("Using Default City" @ " " @ $ETS::cityName);
     }
-    return ;
 }
 parseCityArg();
 initProjectsNonReloadable();
 initProjectsReloadable();
-

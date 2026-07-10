@@ -33,7 +33,7 @@ function onMouseOverSwatchObj(%obj)
         {
             if (%obj.getInventoryNuggetSKU() > 0)
             {
-                $gDifSkusCurrentBaseSwatch = "obj" SPC %obj;
+                $gDifSkusCurrentBaseSwatch = "obj" @ " " @ %obj;
             }
         }
         $TSControl::objSelContinuous = 1;
@@ -44,26 +44,48 @@ function onMouseOverSwatchObj(%obj)
         $TSControl::objSelContinuous = 0;
     }
     updateSwatchBrush();
-    return ;
 }
 function updateSwatchBrush()
 {
     if (!isObject(geSwatchBrushContainer))
     {
-        new GuiControl(geSwatchBrushContainer)
-        {
+        new GuiBitmapCtrl(geSwatchBrushObjectBitmap) {
+            profile = new GuiBitmapCtrl(geSwatchBrushObjectShadowBitmap) {
+            profile = "ETSNonModalProfile";
+            position = "1 34";
+            extent = "33 33";
+            modulationColor = "0 0 0 200";
+        }; @ "ETSNonModalProfile";
+            position = "0 34";
+            extent = "32 32";
+            modulationColor = "255 255 255 255";
+        };
+        new GuiControl(geSwatchBrushContainer) {
             profile = "SwatchBrushProfile";
             extent = "72 72";
         };
         PlayGui.add(geSwatchBrushContainer);
     }
-    if (((!$gSwatchPaintingModeOn || !objectIsSwatchable($gDifSkusCurrentDif)) || ($gDifSkusCurrentBaseSwatch $= 0)) || ($gDifSkusCurrentSwatch $= 0))
+    if ((!$gSwatchPaintingModeOn || !objectIsSwatchable($gDifSkusCurrentDif) || ((new GuiMLTextCtrl(geSwatchBrushText1) {
+        profile = new GuiMLTextCtrl(geSwatchBrushText2) {
+        profile = new GuiBitmapCtrl(geSwatchBrushBitmap) {
+        profile = "ETSNonModalProfile";
+        extent = "70 70";
+        position = "1 1";
+        modulationColor = "255 255 255 200";
+    }; @ "GuiMLTextModelessProfile";
+        position = "2 57";
+        extent = "70 16";
+    }; @ "GuiMLTextModelessProfile";
+        position = "1 58";
+        extent = "70 16";
+    }; @ " " @ $gDifSkusCurrentBaseSwatch) $= 0)) || ($gDifSkusCurrentSwatch $= 0))
     {
         geSwatchBrushContainer.setVisible(0);
         Canvas.setCursor(ETSDefaultCursor);
-        return ;
+        return;
     }
-    %pos = (getWord(Canvas.getCursorPos(), 0) - (getWord(geSwatchBrushContainer.getExtent(), 0) / 2)) + 2 SPC getWord(Canvas.getCursorPos(), 1) + 15;
+    %pos = ((getWord(Canvas.getCursorPos(), 0) - (getWord(geSwatchBrushContainer.getExtent(), 0) / 2)) + 2) @ " " @ (getWord(Canvas.getCursorPos(), 1) + 15);
     geSwatchBrushContainer.reposition(%pos);
     geSwatchBrushContainer.setVisible(1);
     geSwatchBrushBitmap.setBitmap(getBitmapFilename("swatch", SkuManager.findBySku($gDifSkusCurrentSwatch).getTxtrNames()));
@@ -85,7 +107,6 @@ function updateSwatchBrush()
     geSwatchBrushObjectBitmap.setBitmap(%bitmap);
     geSwatchBrushObjectShadowBitmap.setBitmap(%bitmap);
     Canvas.setCursor(ETSHandCursor);
-    return ;
 }
 function objectIsSwatchable(%obj)
 {
@@ -108,11 +129,11 @@ function onLeftClickSwatch(%obj)
 {
     if (!$gSwatchPaintingModeOn)
     {
-        return ;
+        return;
     }
     if (!objectIsSwatchable(%obj))
     {
-        return ;
+        return;
     }
     if (%obj.getType() & $TypeMasks::InteriorObjectType)
     {
@@ -122,11 +143,9 @@ function onLeftClickSwatch(%obj)
     {
         objSkusFixSku(%obj, $gDifSkusCurrentSwatch);
     }
-    return ;
 }
 function onRightClickDownInterior(%obj)
 {
-    return ;
 }
 function onRightClickUpInterior(%obj)
 {
@@ -135,7 +154,6 @@ function onRightClickUpInterior(%obj)
         FurnitureItemContextMenu.initWithObject();
         FurnitureItemContextMenu.showAtCursor();
     }
-    return ;
 }
 function onMouseWheelDifSkus(%val)
 {
@@ -143,7 +161,7 @@ function onMouseWheelDifSkus(%val)
     {
         return 0;
     }
-    if (($gDifSkusCurrentDif $= 0) && ($gDifSkusCurrentBaseSwatch $= 0))
+    if (($gDifSkusCurrentDif $= 0) || ($gDifSkusCurrentBaseSwatch $= 0))
     {
         return 0;
     }
@@ -151,7 +169,7 @@ function onMouseWheelDifSkus(%val)
     if (%numSwatchSkus < 1)
     {
         geSwatchesPanel.selectCell(-1);
-        return ;
+        return;
     }
     if ($gDifSkusCurrentSwatch != 0)
     {
@@ -161,7 +179,7 @@ function onMouseWheelDifSkus(%val)
     {
         %ndx = -1;
     }
-    %val = %val < 0 ? 1 : 1;
+    %val = %val < 0 ? 1 : -1;
     %ndx = %ndx - %val;
     if (%ndx < 0)
     {
@@ -190,116 +208,107 @@ function difSkusFixSkuPair(%obj, %base, %rplc)
 {
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     if (%base <= 0)
     {
-        return ;
+        return;
     }
-    if ((CustomSpaceClient::GetSpaceImIn() $= "") && !CustomSpaceClient::isOwner())
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner())
     {
-        error(getScopeName() SPC "- not owner, what are we doing here?");
+        error(getScopeName() @ " " @ "- not owner, what are we doing here?");
         $gSwatchPaintingModeOn = 0;
         updateSwatchBrush();
-        return ;
+        return;
     }
     %oldPairs = %obj.getActiveSkuPairs();
     %newPairs = SkuManager.setSkuPair(%oldPairs, %base, %rplc);
     $gDifSkusCurrentBaseSwatch = %base;
     difSkusPairsToServer(%obj, %newPairs);
     difSkusSetActiveSkuPairs(%obj, %newPairs);
-    return ;
 }
 function difSkusPairsToServer(%obj, %newPairs)
 {
     if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
     {
         commandToServer('CSSetSwatches', CustomSpaceClient::GetSpaceImIn(), %newPairs);
-        log("general", "debug", getScopeName() SPC "setting swatches through custom space.." SPC %newPairs);
+        log("general", "debug", getScopeName() @ " " @ "setting swatches through custom space.." @ " " @ %newPairs);
     }
     else
     {
         %ghostID = ServerConnection.getGhostID(%obj);
         commandToServer('fixSwatches', %ghostID, %newPairs);
-        log("general", "debug", getScopeName() SPC "setting swatches through interior object itself, not through custom space.." SPC %newPairs);
+        log("general", "debug", getScopeName() @ " " @ "setting swatches through interior object itself, not through custom space.." @ " " @ %newPairs);
     }
-    return ;
 }
 function difSkusSetActiveSkuPairs(%obj, %pairs)
 {
     %obj.setActiveSkuPairs(%pairs);
-    return ;
 }
 function objSkusFixSku(%obj, %sku)
 {
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
-    if ((CustomSpaceClient::GetSpaceImIn() $= "") && !CustomSpaceClient::isOwner())
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner())
     {
-        error(getScopeName() SPC "- not owner, what are we doing here?");
+        error(getScopeName() @ " " @ "- not owner, what are we doing here?");
         $gSwatchPaintingModeOn = 0;
         updateSwatchBrush();
-        return ;
+        return;
     }
     objSkusToServer(%obj, %sku);
     %obj.setActiveSku(%sku);
-    return ;
 }
 function objSkusToServer(%obj, %sku)
 {
     if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
     {
         commandToServer('CSSetFurnishingSku', CustomSpaceClient::GetSpaceImIn(), %obj.getGhostID(), %sku);
-        log("general", "debug", getScopeName() SPC "setting swatches through custom space.." SPC %sku);
+        log("general", "debug", getScopeName() @ " " @ "setting swatches through custom space.." @ " " @ %sku);
     }
     else
     {
         %ghostID = ServerConnection.getGhostID(%obj);
         commandToServer('fixSwatch', %ghostID, %sku);
-        log("general", "debug", getScopeName() SPC "setting swatches through object itself, not through custom space.." SPC %sku);
+        log("general", "debug", getScopeName() @ " " @ "setting swatches through object itself, not through custom space.." @ " " @ %sku);
     }
-    return ;
 }
 function difSkusResetConfirm()
 {
     MessageBoxYesNo("Default Materials & Surfaces", $MsgCat::custSpace["SWATCHES_RESET"], "difSkusResetDefaults();", "");
-    return ;
 }
 function difSkusReset()
 {
     %obj = $gDifSkusCurrentDif;
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     %newPairs = "";
     difSkusPairsToServer(%obj, %newPairs);
     difSkusSetActiveSkuPairs(%obj, %newPairs);
-    return ;
 }
 function difSkusResetDefaults()
 {
     %obj = $gDifSkusCurrentDif;
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     commandToServer('CSSetDefaultSwatches', CustomSpaceClient::GetSpaceImIn());
-    return ;
 }
 function difSkusRandomizeConfirm()
 {
     MessageBoxYesNo("Randomize Materials & Surfaces", $MsgCat::custSpace["SWATCHES_RANDOMIZE"], "difSkusRandomize();", "");
-    return ;
 }
 function difSkusRandomize()
 {
     %obj = $gDifSkusCurrentDif;
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     %baseSkus = %obj.getBaseSkus();
     if ($gDifSkusSwatchSkus $= "")
@@ -313,11 +322,10 @@ function difSkusRandomize()
     {
         %baseSku = getWord(%baseSkus, %n);
         %randSku = getRandomWord($gDifSkusSwatchSkus);
-        %newPairs = %newPairs @ %delim @ %baseSku SPC %randSku;
+        %newPairs = %newPairs @ %delim @ %baseSku @ " " @ %randSku;
         %delim = " ";
         %n = %n - 1;
     }
     difSkusPairsToServer(%obj, %newPairs);
     difSkusSetActiveSkuPairs(%obj, %newPairs);
-    return ;
 }

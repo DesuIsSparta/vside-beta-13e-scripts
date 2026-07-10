@@ -13,28 +13,26 @@ $CURL::SendError = 55;
 $CURL::RecvError = 56;
 function CURLObject::onRecvData(%this, %data)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " just received body data");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " just received body data");
     log("communication", "debug", %data);
     if (isObject(%this.callBackSink))
     {
         %this.callBackSink.onRecvData(%this, %data);
     }
-    return ;
 }
 function CURLObject::onDone(%this)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " is done!");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done!");
     CURLSimGroup.remove(%this);
     %this.schedule(0, delete);
     if (isObject(%this.callBackSink))
     {
         %this.callBackSink.onDone(%this);
     }
-    return ;
 }
 function CURLObject::onError(%this, %errorNum, %errorName)
 {
-    log("communication", "error", getScopeName() SPC "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
+    log("communication", "error", getScopeName() @ " " @ "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
     if (!%this.noDeleteOnError)
     {
         CURLSimGroup.remove(%this);
@@ -44,25 +42,22 @@ function CURLObject::onError(%this, %errorNum, %errorName)
     {
         %this.callBackSink.onError(%this, %errorNum, %errorName);
     }
-    return ;
 }
 function CURLObject::onHeaderData(%this, %data)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " just received header data");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " just received header data");
     log("communication", "debug", %data);
-    return ;
 }
 function CURLObject::onVerbose(%this, %data)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " just received verbose data");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " just received verbose data");
     log("communication", "debug", %data);
-    return ;
 }
 function CURLObject::onProgress(%this, %dltotal, %dlnow, %ultotal, %ulnow)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " just received progress data");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " just received progress data");
     log("communication", "debug", "downloaded: " @ %dlnow @ "/" @ %dltotal);
-    if ((%ulnow != 0) && (%ultotal != 0))
+    if ((%ulnow != 0) || (%ultotal != 0))
     {
         log("communication", "debug", "uploaded: " @ %ulnow @ "/" @ %ultotal);
     }
@@ -70,41 +65,36 @@ function CURLObject::onProgress(%this, %dltotal, %dlnow, %ultotal, %ulnow)
     {
         %this.callBackSink.onProgress(%this, %dltotal, %dlnow, %ultotal, %ulnow);
     }
-    return ;
 }
 function CurlClassNameTest::onRecvData(%this, %data)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " just received body data with classname CurlClassNameTest");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " just received body data with classname CurlClassNameTest");
     log("communication", "debug", %data);
-    return ;
 }
 function CurlDownloadClassName::onDone(%this)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " is done in CurlDownloadClassName!");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done in CurlDownloadClassName!");
     CURLSimGroup.remove(%this);
     %this.schedule(0, delete);
-    log("communication", "debug", getScopeName() SPC "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
-    return ;
+    log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
 }
 function PostTestClass::onDone(%this)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " is done!");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done!");
     CURLSimGroup.remove(%this);
     %this.schedule(0, delete);
-    log("communication", "debug", getScopeName() SPC "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
-    return ;
+    log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
 }
 function PostTestClass::onError(%this, %errorNum, %errorName)
 {
-    log("communication", "error", getScopeName() SPC "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
+    log("communication", "error", getScopeName() @ " " @ "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
     CURLSimGroup.remove(%this);
     %this.schedule(0, delete);
-    log("communication", "debug", getScopeName() SPC "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
-    return ;
+    log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
 }
 function ScreenShotUploaderClass::onProgress(%this, %dltotal, %dlnow, %ultotal, %ulnow)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " just received progress data");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " just received progress data");
     log("communication", "debug", "downloaded: " @ %dlnow @ "/" @ %dltotal);
     log("communication", "debug", "uploaded: " @ %ulnow @ "/" @ %ultotal);
     %this.dlTotal = %dltotal;
@@ -115,29 +105,26 @@ function ScreenShotUploaderClass::onProgress(%this, %dltotal, %dlnow, %ultotal, 
     {
         %this.callBackSink.onProgress(%this);
     }
-    return ;
 }
 function ScreenShotUploaderClass::onDone(%this)
 {
-    log("communication", "debug", getScopeName() SPC "- " @ %this.getName() @ " is done!");
+    log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done!");
     CURLSimGroup.remove(%this);
     %this.schedule(0, delete);
-    log("communication", "debug", getScopeName() SPC "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
+    log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
     if (isObject(%this.callBackSink))
     {
         %this.callBackSink.onDone(%this);
     }
-    return ;
 }
 function ScreenShotUploaderClass::onError(%this, %errorNum, %errorName)
 {
-    log("communication", "error", getScopeName() SPC "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
+    log("communication", "error", getScopeName() @ " " @ "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
     CURLSimGroup.remove(%this);
     %this.schedule(0, delete);
-    log("communication", "debug", getScopeName() SPC "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
+    log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
     if (isObject(%this.callBackSink))
     {
         %this.callBackSink.onError(%this);
     }
-    return ;
 }

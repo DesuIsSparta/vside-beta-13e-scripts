@@ -10,8 +10,8 @@ function WorldMap::TabulateWorldAreaSummary(%unused)
     WorldAreaSummaries.totalOccupancy["city"] = 0;
     if (!isObject(WorldMapServers))
     {
-        error(getScopeName() SPC "- no WorldMapServers object." SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- no WorldMapServers object." @ " " @ getTrace());
+        return;
     }
     %n = WorldMapServers.getCount() - 1;
     while (%n >= 0)
@@ -23,14 +23,20 @@ function WorldMap::TabulateWorldAreaSummary(%unused)
         %areaSummaryObj = WorldAreaSummaries.get(%serverAreaName);
         if (!isObject(%areaSummaryObj))
         {
-            %areaSummaryObj = new SimObject();
+            %areaSummaryObj = new SimObject("");
             WorldAreaSummaries.put(%serverAreaName, %areaSummaryObj);
             %areaSummaryObj.areaName = %serverAreaName;
             %areaSummaryObj.occupancy = 0;
             %areaSummaryObj.capacity = 0;
             %areaSummaryObj.numServers = 0;
             %areaSummaryObj.areaType = hasWord("lga nv rj", %serverAreaName) ? "city" : "pvt";
-            %areaSummaryObj.areaType = hasWord("gw", %serverAreaName) ? "gw" : %areaSummaryObj;
+            if (hasWord("gw", %serverAreaName))
+            {
+            }
+            else
+            {
+            }
+            %areaSummaryObj.areaType = "gw" @ %areaSummaryObj.areaType;
         }
         %areaSummaryObj.occupancy = %areaSummaryObj.occupancy + %serverOccupancy;
         %areaSummaryObj.capacity = %areaSummaryObj.capacity + %serverCapacity;

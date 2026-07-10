@@ -4,12 +4,11 @@ function clientCmdSetPerformerMode(%pm, %nativePerformer)
     $gPerformerMode = %pm;
     if (!isObject(ForceFieldCtrls))
     {
-        return ;
+        return;
     }
     ForceFieldCtrls.setVisible(%pm);
     performerPanelRadioButtonForceField2.setVisible(%nativePerformer);
     performerPanelRadioButtonForceField3.setVisible(%nativePerformer);
-    return ;
 }
 function clientCmdSetPerformerMode_DEPRECATED(%pm, %nativePerformer)
 {
@@ -20,27 +19,22 @@ function clientCmdSetPerformerMode_DEPRECATED(%pm, %nativePerformer)
     }
     else
     {
-        if ($UserPref::Performer::AutoOpenPanel)
+        if ($UserPref::Performer::AutoOpenPanel && !performerPanel.isVisible())
         {
-            if (!performerPanel.isVisible())
-            {
-                performerPanel.open();
-            }
+            performerPanel.open();
         }
     }
     performerPanelRadioButtonForceField0.setVisible(1);
     performerPanelRadioButtonForceField1.setVisible(1);
     performerPanelRadioButtonForceField2.setVisible(%nativePerformer);
     performerPanelRadioButtonForceField3.setVisible(%nativePerformer);
-    return ;
 }
 function performerClient::setForceField(%val)
 {
     if (!$gPerformerMode)
     {
-        error(getScopeName() SPC "not performing");
-        return ;
+        error(getScopeName() @ " " @ "not performing");
+        return;
     }
     commandToServer('setForceField', %val);
-    return ;
 }

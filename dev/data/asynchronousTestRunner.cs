@@ -8,15 +8,13 @@ function asyncTestsMasterClear()
     $asyncTests::timer = 0;
     $asyncTests::nextTest = 0;
     $asyncTests::testsNum = 0;
-    return ;
 }
 function asyncTestsMasterAdd(%testname, %waitTimeMS)
 {
-    $asyncTests::testNames[$asyncTests::testsNum] = %testname ;
-    $asyncTests::testTimes[$asyncTests::testsNum] = %waitTimeMS ;
-    $asyncTests::testRslts[$asyncTests::testsNum] = $asyncTests::untestedResult ;
+    $asyncTests::testNames[$asyncTests::testsNum] = %testname;
+    $asyncTests::testTimes[$asyncTests::testsNum] = %waitTimeMS;
+    $asyncTests::testRslts[$asyncTests::testsNum] = $asyncTests::untestedResult;
     $asyncTests::testsNum = $asyncTests::testsNum + 1;
-    return ;
 }
 function asyncTestsMasterRun()
 {
@@ -24,7 +22,6 @@ function asyncTestsMasterRun()
     $asyncTests::timer = 0;
     $asyncTests::nextTest = 0;
     asyncTestsMasterDoNext();
-    return ;
 }
 function asyncTestsMasterDoNext()
 {
@@ -35,46 +32,44 @@ function asyncTestsMasterDoNext()
     if (%thisTestNum >= $asyncTests::testsNum)
     {
         asyncTestsMasterFinished();
-        return ;
+        return;
     }
     %testname = $asyncTests::testNames[%thisTestNum];
     %timeout = $asyncTests::testTimes[%thisTestNum];
-    log("general", "debug", "asyncTests: setting up test" SPC %testname @ "..");
+    log("general", "debug", "asyncTests: setting up test" @ " " @ %testname @ "..");
     %result = call(asyncTestMasterGetFuncNameSetup(%testname));
     if (!(%result $= "pass"))
     {
-        log("general", "error", "asyncTests: failed to setup test" SPC %testname);
+        log("general", "error", "asyncTests: failed to setup test" @ " " @ %testname);
         asyncTestsMasterDoNext();
-        return ;
+        return;
     }
-    log("general", "debug", "asyncTests: firing off test" SPC %testname @ "..");
+    log("general", "debug", "asyncTests: firing off test" @ " " @ %testname @ "..");
     %result = call(asyncTestMasterGetFuncNameFire(%testname));
     if (!(%result $= "pass"))
     {
-        log("general", "error", "asyncTests: failed to fire off test" SPC %testname);
+        log("general", "error", "asyncTests: failed to fire off test" @ " " @ %testname);
         asyncTestsMasterDoNext();
-        return ;
+        return;
     }
     $asyncTests::timer = schedule(%timeout, 0, "asyncTestsMasterOnTimeout", %thisTestNum);
-    return ;
 }
 function asyncTestsMasterOnTimeout(%testNum)
 {
     cancel($asyncTests::timer);
     $asyncTests::timer = 0;
     %testname = $asyncTests::testNames[%testNum];
-    log("general", "debug", "asyncTests: evaluating test" SPC %testname @ "..");
-    %result = $asyncTests::testRslts[%testNum] = call(asyncTestMasterGetFuncNameEval(%testname)) ;
+    log("general", "debug", "asyncTests: evaluating test" @ " " @ %testname @ "..");
+    %result = $asyncTests::testRslts[%testNum] = call(asyncTestMasterGetFuncNameEval(%testname));
     if (%result $= "pass")
     {
-        log("general", "debug", "asyncTests: test passed:" SPC %testname);
+        log("general", "debug", "asyncTests: test passed:" @ " " @ %testname);
     }
     else
     {
-        log("general", "error", "test         failed:" SPC %testname SPC %result);
+        log("general", "error", "test         failed:" @ " " @ %testname @ " " @ %result);
     }
     asyncTestsMasterDoNext();
-    return ;
 }
 function asyncTestMasterGetFuncNameSetup(%testname)
 {
@@ -102,24 +97,23 @@ function asyncTestsMasterFinished()
         if (%testRslt $= "pass")
         {
             %countPass = %countPass + 1;
-            log("general", "info", "test          passed:" SPC %testname);
+            log("general", "info", "test          passed:" @ " " @ %testname);
         }
         else
         {
             if (%testRslt $= $asyncTests::untestedResult)
             {
                 %countNA = %countNA + 1;
-                log("general", "error", "test failed to init:" SPC %testname);
+                log("general", "error", "test failed to init:" @ " " @ %testname);
             }
             else
             {
                 %countFail = %countFail + 1;
-                log("general", "error", "test         failed:" SPC %testname SPC %testRslt);
+                log("general", "error", "test         failed:" @ " " @ %testname @ " " @ %testRslt);
             }
         }
         %n = %n + 1;
     }
     %level = %countPass == $asyncTests::testsNum ? "info" : "error";
-    log("general", %level, "tests finished." SPC $asyncTests::testsNum SPC "total," SPC %countPass SPC "passed," SPC %countFail SPC "failed," SPC %countNA SPC "did not initialize.");
-    return ;
+    log("general", %level, "tests finished." @ " " @ $asyncTests::testsNum @ " " @ "total," @ " " @ %countPass @ " " @ "passed," @ " " @ %countFail @ " " @ "failed," @ " " @ %countNA @ " " @ "did not initialize.");
 }

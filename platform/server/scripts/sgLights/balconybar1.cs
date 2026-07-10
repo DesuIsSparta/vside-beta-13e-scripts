@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(balconybar1)
-{
+datablock sgUniversalStaticLightData(balconybar1) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 10;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(balconybar1)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

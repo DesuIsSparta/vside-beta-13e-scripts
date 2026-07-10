@@ -1,12 +1,10 @@
 function AmbientAnimateShapeData::onAdd(%unused, %obj)
 {
-    %obj.playThread(0, "ambient");
-    return ;
+    0.playThread("ambient", %obj);
+    return;
 }
-datablock StaticShapeData(BasicAmbientAnimateShapeData)
-{
+datablock StaticShapeData(BasicAmbientAnimateShapeData) {
     className = AmbientAnimateShapeData;
     category = "AutoAnimate";
 };
 exec("./etsShapes.cs");
-

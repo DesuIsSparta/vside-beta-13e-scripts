@@ -6,6 +6,5 @@ function doBenchmark()
     $pref::benchmarks::fps::reps = 5;
     benchmarks::runCameraTestsReps();
     benchmarks::doAllTests();
-    schedule(100000 * $pref::benchmarks::fps::reps, 0, quit);
-    return ;
+    schedule((100000 * $pref::benchmarks::fps::reps), 0, quit);
 }

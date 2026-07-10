@@ -14,7 +14,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %isNPC = isNPCName(%playerName);
     %isRentabot = rentabot_isRentabotName(%playerName);
     %sameServer = isObject(%playerClicked) || (UserListFriends.get(%playerName).serverName $= $ServerName);
-    %isRealPlayer = isObject(%playerClicked) ? %playerClicked.isClassAIPlayer() : 0;
+    %isRealPlayer = isObject(%playerClicked) ? !%playerClicked.isClassAIPlayer() : 0;
     %isIdle = isObject(%playerClicked) ? %playerClicked.getAFK() : 0;
     %grey = "255 255 255 128";
     %white = "255 255 255 255";
@@ -48,12 +48,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             {
                 %ignorable = !%playerClicked.rolesPermissionCheckNoWarn("omnivocal");
             }
-            if (isObject(%playerClicked))
+            if (isObject(%playerClicked) && !(getWearingItemWithMoreInfo(%playerClicked) $= ""))
             {
-                if (!(getWearingItemWithMoreInfo(%playerClicked) $= ""))
-                {
-                    %this.add("** Look At My Clothes **", %n = %n + 1, %schemeProfile);
-                }
+                %this.add("** Look At My Clothes **", %n = %n + 1, %schemeProfile);
             }
             %this.add("View Profile", %n = %n + 1, %schemeProfile);
             if (%friendStatus $= "friends")
@@ -88,7 +85,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if (!rentabot_isRentabotName(%playerName))
             {
-                if ((((((%sameServer && !%isNPC) || $StandAlone) && %onlineHere) && !%isIgnore) && geGiftingPanel.isInRange(%playerClicked)) && !%isIdle)
+                if (%sameServer && !%isNPC || $StandAlone && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Two-Player Action..", %n = %n + 1, %schemeNormal);
                 }
@@ -109,7 +106,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if (!rentabot_isRentabotName(%playerName))
             {
-                if ((((%sameServer && %onlineHere) && !%isIgnore) && geGiftingPanel.isInRange(%playerClicked)) && !%isIdle)
+                if (%sameServer && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Give vCurrency", %n = %n + 1, %schemeNormal);
                 }
@@ -130,7 +127,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drink") && !rentabot_isRentabotName(%playerName))
             {
-                if ((((%sameServer && %onlineHere) && !%isIgnore) && geGiftingPanel.isInRange(%playerClicked)) && !%isIdle)
+                if (%sameServer && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Give Drink", %n = %n + 1, %schemeNormal);
                 }
@@ -152,7 +149,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             %this.add("Give Gift", %n = %n + 1, %schemeNormal);
             if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drinkMaker") && !rentabot_isRentabotName(%playerName))
             {
-                if ((((%sameServer && %onlineHere) && !%isIgnore) && geGiftingPanel.isInRange(%playerClicked)) && !%isIdle)
+                if (%sameServer && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Make Drink", %n = %n + 1, %schemeNormal);
                 }
@@ -181,18 +178,15 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if ($player.isHostOrCohost())
             {
-                if ($player.isHost())
+                if ($player.isHost() && %isRealPlayer)
                 {
-                    if (%isRealPlayer)
+                    if (%playerClicked.isCohost())
                     {
-                        if (%playerClicked.isCohost())
-                        {
-                            %this.add("This Space: Unmake Co-Host", %n = %n + 1, %schemeNormal);
-                        }
-                        else
-                        {
-                            %this.add("This Space: Make Co-Host", %n = %n + 1, %schemeNormal);
-                        }
+                        %this.add("This Space: Unmake Co-Host", %n = %n + 1, %schemeNormal);
+                    }
+                    else
+                    {
+                        %this.add("This Space: Make Co-Host", %n = %n + 1, %schemeNormal);
                     }
                 }
                 if (%isRealPlayer && !%playerClicked.isHost())
@@ -216,7 +210,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                     {
                         %this.add("This Space: Customize", %n = %n + 1, %schemeNormal);
                     }
-                    if (((($player.isHostOrCohost() && !%playerClicked.rolesPermissionCheckNoWarn("customspaceImmune")) && $player.isHost()) || !%playerClicked.isHost()) && !%playerClicked.isClassAIPlayer())
+                    if ($player.isHostOrCohost() && !%playerClicked.rolesPermissionCheckNoWarn("customspaceImmune") && $player.isHost() || !%playerClicked.isHost() && !%playerClicked.isClassAIPlayer())
                     {
                         %this.add("This Space: Summon", %n = %n + 1, %schemeNormal);
                         %this.add("This Space: Respawn", %n = %n + 1, %schemeNormal);
@@ -234,7 +228,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                     %this.add("Ignore", %n = %n + 1, %schemeIgnore);
                 }
             }
-            if (((((%friendStatus $= "friends") || %isNPC) || CustomSpaceClient::isOwner()) && isObject(%playerClicked)) && (%playerClicked != $player))
+            if ((%friendStatus $= "friends") || %isNPC || CustomSpaceClient::isOwner() && isObject(%playerClicked) && (%playerClicked != $player))
             {
                 %this.add("Teleport To", %n = %n + 1, %schemeTeleport);
             }
@@ -273,12 +267,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
         }
         else
         {
-            if (isObject(%playerClicked))
+            if (isObject(%playerClicked) && !(getWearingItemWithMoreInfo(%playerClicked) $= ""))
             {
-                if (!(getWearingItemWithMoreInfo(%playerClicked) $= ""))
-                {
-                    %this.add("** Look At My Clothes **", %n = %n + 1, 0);
-                }
+                %this.add("** Look At My Clothes **", %n = %n + 1, 0);
             }
             %this.add("My Profile & Account (web)", %n = %n + 1, 0);
             %this.add("Edit Away Message", %n = %n + 1, 0);
@@ -397,7 +388,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
         %this.addIfPermitted("track", "Teleport To", %n = %n + 1, %schemeTeleport);
         %this.addIfPermitted("summon", "Respawn", %n = %n + 1, %schemeNormal);
         %this.addIfPermitted("summon", "Summon", %n = %n + 1, %schemeNormal);
-        if (((CustomSpaceClient::isOwner() || $player.isHostOrCohost()) || $player.rolesPermissionCheckNoWarn("microphones")) && isObject(%playerClicked))
+        if (CustomSpaceClient::isOwner() || $player.isHostOrCohost() || $player.rolesPermissionCheckNoWarn("microphones") && isObject(%playerClicked))
         {
             if (%playerClicked.hasMicrophone())
             {
@@ -457,17 +448,16 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %title = %playerName;
     if (%playerClicked == $player)
     {
-        %title = %title SPC "(this is you)";
+        %title = %title @ " " @ "(this is you)";
     }
     if (%isNPC)
     {
-        %title = %title SPC "(a bot)";
+        %title = %title @ " " @ "(a bot)";
     }
     %this.setText(%title);
     gSetField(%this, "playerName", %playerName);
     gSetField(%this, "player", %playerClicked);
     gSetField(%this, "aimName", "");
-    return ;
 }
 function PlayerContextMenu::initForAIM(%this, %aimName)
 {
@@ -482,7 +472,6 @@ function PlayerContextMenu::initForAIM(%this, %aimName)
     gSetField(%this, "playerName", "");
     gSetField(%this, "player", "");
     gSetField(%this, "aimName", %aimName);
-    return ;
 }
 function PlayerContextMenu::addIfPermitted(%this, %permName, %text, %n, %scheme)
 {
@@ -494,12 +483,11 @@ function PlayerContextMenu::addIfPermitted(%this, %permName, %text, %n, %scheme)
             %skuSGuide = getSpecialSKU($player, "seniorguidebadge");
             if (!$player.hasActiveSKU(%skuGuide) && !$player.hasActiveSKU(%skuSGuide))
             {
-                return ;
+                return;
             }
         }
         %this.add(%text, %n, %scheme);
     }
-    return ;
 }
 function PlayerContextMenu::initWithPlayerName(%this, %playerName)
 {
@@ -512,13 +500,11 @@ function PlayerContextMenu::initWithPlayerName(%this, %playerName)
         %playerObj = 0;
     }
     %this.init(%playerName, BuddyHudWin.getFriendStatus(%playerName), BuddyHudWin.getIgnoreStatus(%playerName), %playerObj);
-    return ;
 }
 function PlayerContextMenu::initWithPlayer(%this, %player)
 {
     %playerName = %player.getShapeName();
     %this.init(%playerName, BuddyHudWin.getFriendStatus(%playerName), BuddyHudWin.getIgnoreStatus(%playerName), %player);
-    return ;
 }
 function PlayerContextMenu::onSelect(%this, %unused, %text)
 {
@@ -1163,18 +1149,15 @@ function PlayerContextMenu::onSelect(%this, %unused, %text)
             }
         }
     }
-    return ;
 }
 function PlayerContextMenu::showComingSoon(%this, %featureName)
 {
-    MessageBoxOK(%featureName SPC "- Coming Soon!", "The" SPC %featureName SPC "feature will be here soon!", "");
-    return ;
+    MessageBoxOK(%featureName @ " " @ "- Coming Soon!", "The" @ " " @ %featureName @ " " @ "feature will be here soon!", "");
 }
 function PlayGui::onRMBPlayer(%this, %obj)
 {
     PlayerContextMenu.initWithPlayer(%obj);
     PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
-    return ;
 }
 function BuddyHudRequestsList::onRightMouseUp(%this)
 {
@@ -1188,44 +1171,37 @@ function BuddyHudRequestsList::onRightMouseUp(%this)
     {
         warn("Got empty player name from right click on FavoritesList");
     }
-    return ;
 }
 function doUserMimic(%player)
 {
     commandToServer('EtsPlayerClickedSharedAnim', %player.getGhostID());
-    return ;
 }
 function doGiftInventoryItemToPlayer(%playerName, %sku)
 {
     commandToServer('GiftInventoryItemToPlayer', %playerName, %sku);
-    return ;
 }
 function doRespawnMe()
 {
     commandToServer('respawnMe');
-    return ;
 }
 function doDropMic()
 {
     commandToServer('dropMic');
-    return ;
 }
 function doDanceWith(%obj)
 {
     doLookAt(%obj, 1, 0);
-    return ;
 }
 function doKiss(%obj)
 {
     doLookAt(%obj, 0, 1, 0);
-    return ;
 }
 $InspectSkusMap = 0;
 function getWearingItemWithMoreInfo(%player)
 {
     if (!isObject($InspectSkusMap))
     {
-        $InspectSkusMap = new StringMap();
+        $InspectSkusMap = new StringMap("");
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add($InspectSkusMap);
@@ -1264,7 +1240,7 @@ function getWearingItemWithMoreInfo(%player)
             %skunum = %mapped;
         }
         %inspectFile = %inspectTextDir @ %skunum @ ".txt";
-        %fo = new FileObject();
+        %fo = new FileObject("");
         if (%fo.openForRead(%inspectFile))
         {
             %fo.delete();
@@ -1284,18 +1260,15 @@ function doLookAtMyClothes(%player)
     %file = getWearingItemWithMoreInfo(%player);
     if (!(%file $= ""))
     {
-        echo("looking closer at player\'s clothes");
+        echo("looking closer at player's clothes");
         MLScrollInspectPanel.OnInspect(%file);
     }
-    return ;
 }
 function doCheerFor(%playerName)
 {
     ApplauseMeterGui.open("applause", %playerName);
-    return ;
 }
 function doTurnOffHelpme(%playerName)
 {
     commandToServer('TurnOffHelpMeMode', %playerName);
-    return ;
 }

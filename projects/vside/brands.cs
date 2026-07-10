@@ -33,7 +33,5 @@ function ClosetInitBrands()
     ClosetAddBrand("vSideHouseofDesign", "vhd");
     ClosetAddBrand("Vee Bar", "vbar");
     ClosetAddBrand("VHD Template", "vhdtemplate");
-    return ;
 }
 ClosetInitBrands();
-

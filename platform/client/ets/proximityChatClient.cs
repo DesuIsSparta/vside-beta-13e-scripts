@@ -10,11 +10,9 @@ function sPChat::init()
         MissionCleanup.add(pChat);
     }
     pChat.reset();
-    return ;
 }
 function pChat::reset(%this)
 {
-    return ;
 }
 function pChat::say(%this, %text, %noMic, %isAutoReply)
 {
@@ -25,27 +23,25 @@ function pChat::say(%this, %text, %noMic, %isAutoReply)
     }
     else
     {
-        handleSystemMessage("msgInfoMessage", "dude, you\'re not at your body. text not sent.");
+        handleSystemMessage("msgInfoMessage", "dude, you're not at your body. text not sent.");
     }
     %this.raiseHand(%text, "said");
     getUserActivityMgr().setActivityActive("chatting", 1);
-    return ;
 }
 function pChat::whisper(%this, %text, %playerName, %isAutoReply)
 {
     %text = trim(%text);
     if (%text $= "")
     {
-        return ;
+        return;
     }
     if (UserListIgnores.hasKey(%playerName))
     {
-        handleSystemMessage("msgInfoMessage", "Sorry, you can\'t whisper to <linkcolor:ffddeeff><a:gamelink " @ munge(%playerName) @ ">" @ StripMLControlChars(%playerName) @ "</a>, because you are ignoring them!");
-        return ;
+        handleSystemMessage("msgInfoMessage", "Sorry, you can't whisper to <linkcolor:ffddeeff><a:gamelink " @ munge(%playerName) @ ">" @ StripMLControlChars(%playerName) @ "</a>, because you are ignoring them!");
+        return;
     }
     commandToServer('PChatWhisper', %text, makeTaggedString(%playerName), %isAutoReply);
     %this.raiseHand(%text, "whispered");
-    return ;
 }
 function pChat::yell(%this, %text, %isAutoReply)
 {
@@ -56,10 +52,9 @@ function pChat::yell(%this, %text, %isAutoReply)
     }
     else
     {
-        handleSystemMessage("msgInfoMessage", "dude, you\'re not at your body. text not yelled.");
+        handleSystemMessage("msgInfoMessage", "dude, you're not at your body. text not yelled.");
     }
     %this.raiseHand(%text, "yelled");
-    return ;
 }
 function pChat::clearHistory(%this)
 {
@@ -67,7 +62,6 @@ function pChat::clearHistory(%this)
     {
         ConvBubVecCtrlMsgVec.clear();
     }
-    return ;
 }
 function pChat::getPlayerMarkup(%this, %playerName, %color)
 {
@@ -86,14 +80,13 @@ function pChat::raiseHand(%this, %text, %type)
     %wet = fixBadWords(%text);
     if (%wet $= %text)
     {
-        return ;
+        return;
     }
     if (!testFlooding($player, "raiseHand", 1))
     {
-        return ;
+        return;
     }
     commandToServer('raiseHand', %text, %type);
-    return ;
 }
 function Player::PChatProcessIncomingLine(%this, %text, %speechType, %isAutoReply)
 {
@@ -115,13 +108,12 @@ function Player::PChatProcessIncomingLine(%this, %text, %speechType, %isAutoRepl
     {
         %prox = %this.getProximityVal();
     }
-    sPChat::echo("prox" SPC %prox SPC getDebugString(%this));
+    sPChat::echo("prox" @ " " @ %prox @ " " @ getDebugString(%this));
     if (%prox < 0.001)
     {
         return "";
     }
     pChat::ProcessIncomingLine(%text, %this, %this.getShapeName(), "", 0, %speechType, %isAutoReply);
-    return ;
 }
 function makeColorTag(%color)
 {
@@ -215,7 +207,7 @@ function pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %
             {
                 %giftText = getField(%text, 0);
                 %message = getField(%text, 1);
-                %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%giftColor) @ " gave " @ pChat.getPlayerMarkup(%whisperedTo, "") SPC %giftText @ ": " @ makeColorTag(%giftColor) @ %message;
+                %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%giftColor) @ " gave " @ pChat.getPlayerMarkup(%whisperedTo, "") @ " " @ %giftText @ ": " @ makeColorTag(%giftColor) @ %message;
             }
             else
             {
@@ -262,7 +254,7 @@ function pChat::ProcessIncomingLine(%text, %senderPlayer, %name, %whisperedTo, %
     %text = pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
     if (%text $= "")
     {
-        return ;
+        return;
     }
     if (!isObject(ConvBubVecCtrlMsgVec))
     {
@@ -287,12 +279,9 @@ function pChat::ProcessIncomingLine(%text, %senderPlayer, %name, %whisperedTo, %
     }
     else
     {
-        if ((!isForegroundWindow() || isIdle()) || !PlayGui.canPlayerSeeWorld())
+        if (!isForegroundWindow() || isIdle() || !PlayGui.canPlayerSeeWorld() && $UserPref::Audio::NotifyChat)
         {
-            if ($UserPref::Audio::NotifyChat)
-            {
-                alxPlay(AudioIm_MessageIn);
-            }
+            alxPlay(AudioIm_MessageIn);
         }
     }
     ConvBub.open();
@@ -315,50 +304,46 @@ function pChat::tryLookAt(%targetObj, %speechType, %text)
 {
     if (isIdle())
     {
-        return ;
+        return;
     }
     if (%speechType $= "whisper")
     {
-        return ;
+        return;
     }
     if (%speechType $= "regular")
     {
         %length = strlen(%text);
         if (%length < 5)
         {
-            return ;
+            return;
         }
-        if (%length < 30)
+        if (%length < 30 && testFlooding($player, "autolookat", 0))
         {
-            if (testFlooding($player, "autolookat", 0))
-            {
-                return ;
-            }
+            return;
         }
     }
     if (!isObject(%targetObj))
     {
-        return ;
+        return;
     }
     if (%targetObj.getId() == $player.getId())
     {
-        return ;
+        return;
     }
     doLookAt(%targetObj, 0, 0);
-    return ;
 }
 function clientCmdPChatUse(%bool, %rangeRadialRegular, %rangeAngularRegular, %rangeRadialYell, %rangeAngularYell, %rangeRadialMic, %rangeAngularMic)
 {
     if (%bool)
     {
-        $Player::PChat::rangeRadial["regular"] = %rangeRadialRegular ;
-        $Player::PChat::rangeAngular["regular"] = %rangeAngularRegular ;
-        $Player::PChat::rangeRadial["yell"] = %rangeRadialYell ;
-        $Player::PChat::rangeAngular["yell"] = %rangeAngularYell ;
-        $Player::PChat::rangeRadial["mic"] = %rangeRadialMic ;
-        $Player::PChat::rangeAngular["mic"] = %rangeAngularMic ;
-        $Player::PChat::rangeRadial["pubNotify"] = %rangeRadialMic ;
-        $Player::PChat::rangeAngular["pubNotify"] = %rangeAngularMic ;
+        $Player::PChat::rangeRadial["regular"] = %rangeRadialRegular;
+        $Player::PChat::rangeAngular["regular"] = %rangeAngularRegular;
+        $Player::PChat::rangeRadial["yell"] = %rangeRadialYell;
+        $Player::PChat::rangeAngular["yell"] = %rangeAngularYell;
+        $Player::PChat::rangeRadial["mic"] = %rangeRadialMic;
+        $Player::PChat::rangeAngular["mic"] = %rangeAngularMic;
+        $Player::PChat::rangeRadial["pubNotify"] = %rangeRadialMic;
+        $Player::PChat::rangeAngular["pubNotify"] = %rangeAngularMic;
         $Player::PChat::rangeRadial = %rangeRadialRegular;
         $Player::PChat::rangeAngular = %rangeAngularRegular;
         sPChat::init();
@@ -370,7 +355,6 @@ function clientCmdPChatUse(%bool, %rangeRadialRegular, %rangeAngularRegular, %ra
             pChat.delete();
         }
     }
-    return ;
 }
 function clientCmdWhisperIn(%text, %name, %isAutoReply)
 {
@@ -380,27 +364,23 @@ function clientCmdWhisperIn(%text, %name, %isAutoReply)
         %param1 = getField(%text, 2);
         %param2 = getField(%text, 3);
         handleC2CCmd(%commandName, %name, %param1, %param2);
-        return ;
+        return;
     }
     pChat::ProcessIncomingLine(%text, 0, %name, $player.getShapeName(), 0, "whisper", %isAutoReply);
-    if ((((!%isAutoReply && $UserPref::Player::autoReplyToWhispersWhenAway) && $GameConnection.isPresentAtBody()) && $player.getAFK()) && !$player.haveNotifiedPlayerOfIdleStatus(%name))
+    if (!%isAutoReply && $UserPref::Player::autoReplyToWhispersWhenAway && $GameConnection.isPresentAtBody() && $player.getAFK() && !$player.haveNotifiedPlayerOfIdleStatus(%name))
     {
         doUserWhisper(%name, $player.getAwayMessage(), 1);
     }
-    return ;
 }
 function clientCmdWhisperOut(%text, %name, %ignored, %isAutoReply)
 {
     pChat::ProcessIncomingLine(%text, 0, $player.getShapeName(), %name, %ignored, "whisper", %isAutoReply);
-    return ;
 }
 function clientCmdNotification(%unused, %name, %type)
 {
-    return ;
 }
 function clientCmdSosIn(%text, %name)
 {
-    %text = pChat.getPlayerMarkup(%name, "") SPC "pleads:" SPC %text;
+    %text = pChat.getPlayerMarkup(%name, "") @ " " @ "pleads:" @ " " @ %text;
     handleSystemMessage("msgSosMessage", %text);
-    return ;
 }

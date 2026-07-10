@@ -22,8 +22,8 @@ function giftingItems_registerPendingTransaction(%registry, %transactionID, %sou
 {
     if (!(%registry.get(%transactionID) $= ""))
     {
-        error(getScopeName() SPC "- transaction already exists!" SPC %transactionID SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- transaction already exists!" @ " " @ %transactionID @ " " @ getTrace());
+        return;
     }
     %pendingTransactionRecord = safeNewScriptObject("ScriptObject", "", 0);
     %pendingTransactionRecord.transactionID = %transactionID;
@@ -34,13 +34,12 @@ function giftingItems_registerPendingTransaction(%registry, %transactionID, %sou
     %pendingTransactionRecord.autoAccepted = %autoAccepted;
     %pendingTransactionRecord.making = %making;
     %registry.put(%transactionID, %pendingTransactionRecord);
-    %line = getScopeName() SPC "- Initiated:" SPC %transactionID SPC %skus SPC %sourcePlayerName SPC "->" SPC %targetPlayerName;
+    %line = getScopeName() @ " " @ "- Initiated:" @ " " @ %transactionID @ " " @ %skus @ " " @ %sourcePlayerName @ " " @ "->" @ " " @ %targetPlayerName;
     if ($AmServer)
     {
         appendLogLine("gifting", %line);
     }
     echo(%line);
-    return ;
 }
 function giftingItems_getPendingTransactionClient(%transactionID)
 {
@@ -55,7 +54,7 @@ function giftingItems_getPendingTransaction(%registry, %transactionID)
     %pendingTransactionRecord = %registry.get(%transactionID);
     if (%pendingTransactionRecord $= "")
     {
-        error(getScopeName() SPC "- no such transaction:" SPC %transactionID SPC getTrace());
+        error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %transactionID @ " " @ getTrace());
         return "";
     }
     return %pendingTransactionRecord;
@@ -73,12 +72,11 @@ function giftingItems_deletePendingTransaction(%registry, %transactionID)
     %pendingTransactionRecord = %registry.get(%transactionID);
     if (%pendingTransactionRecord $= "")
     {
-        error(getScopeName() SPC "- no such transaction:" SPC %transactionID SPC getTrace());
+        error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %transactionID @ " " @ getTrace());
         return "";
     }
     %pendingTransactionRecord.delete();
     %registry.remove(%transactionID);
-    return ;
 }
 function giftingItems_dumpPendingTransactionsClient()
 {
@@ -91,5 +89,4 @@ function giftingItems_dumpPendingTransactionsServer(%transactionID)
 function giftingItems_dumpPendingTransaction(%registry)
 {
     %registry.dumpValues();
-    return ;
 }

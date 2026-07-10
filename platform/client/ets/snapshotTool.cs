@@ -1,13 +1,11 @@
 function toggleSnapshotTool()
 {
     PlayGui.showRaiseOrHide(snapshotTool);
-    return ;
 }
 function snapshotTool::open(%this)
 {
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
-    return ;
 }
 function snapshotTool::close(%this)
 {
@@ -22,7 +20,6 @@ function snapshotTool::doSnap(%this)
     ClosetMainObjectView.setProfile(ETSSnapshotBackgroundProfile);
     snapshotToolActiveRegion.setVisible(0);
     %this.waitForNextFrameToSnap();
-    return ;
 }
 function snapshotTool::waitForNextFrameToSnap(%this)
 {
@@ -30,10 +27,9 @@ function snapshotTool::waitForNextFrameToSnap(%this)
     if ($Canvas::frameCount <= gGetField(%this, lastFrame))
     {
         gSetField(%this, waitForFrameSchedule, %this.schedule(10, "waitForNextFrameToSnap"));
-        return ;
+        return;
     }
     %this.doSnap2();
-    return ;
 }
 function snapshotTool::doSnap2(%this)
 {
@@ -41,7 +37,7 @@ function snapshotTool::doSnap2(%this)
     if (!isObject(%snapshot))
     {
         error("Snapshot", "Problem taking snapshot");
-        return ;
+        return;
     }
     %snapshot.saveObject = %this;
     %snapshot.setCompletedCallback("snapshotToolonComplete");
@@ -50,13 +46,11 @@ function snapshotTool::doSnap2(%this)
     snapshotToolActiveRegion.setVisible(1);
     snapshotToolProgressBar.setValue(0);
     ClosetMainObjectView.setProfile(gGetField(%this, origProfile));
-    return ;
 }
 function snapshotTool::onProgress(%this, %snapshot)
 {
     %percent = %snapshot.ulNow / %snapshot.ulTotal;
     snapshotToolProgressBar.setValue(%percent);
-    return ;
 }
 function snapshotToolonComplete(%request, %result)
 {
@@ -65,7 +59,7 @@ function snapshotToolonComplete(%request, %result)
     {
         snapshotToolSet1.setVisible(1);
         snapshotToolSet2.setVisible(0);
-        if (!((%snapshot.visitWhenDoneUrl $= "")) && $UserPref::Snapshots::View)
+        if (!(%snapshot.visitWhenDoneUrl $= "") && $UserPref::Snapshots::View)
         {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
@@ -75,13 +69,12 @@ function snapshotToolonComplete(%request, %result)
         snapshotToolSet1.setVisible(1);
         snapshotToolSet2.setVisible(0);
     }
-    return ;
 }
 function snapshotTool::snapControl(%ctrl, %fileName)
 {
     %origin = %ctrl.getScreenPosition();
     %extent = %ctrl.getExtent();
-    %rect = %origin SPC %extent;
+    %rect = %origin @ " " @ %extent;
     return snapshotTool::snapRegion(%rect, %fileName);
 }
 function snapshotTool::snapRegion(%region, %fileName)

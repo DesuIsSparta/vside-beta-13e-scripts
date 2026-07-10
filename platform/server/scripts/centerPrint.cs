@@ -1,6 +1,6 @@
 function centerPrintAll(%message, %time, %lines)
 {
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }
@@ -16,10 +16,9 @@ function centerPrintAll(%message, %time, %lines)
         %i = %i + 1;
     }
 }
-
 function bottomPrintAll(%message, %time, %lines)
 {
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }
@@ -35,34 +34,29 @@ function bottomPrintAll(%message, %time, %lines)
         %i = %i + 1;
     }
 }
-
 function centerPrint(%client, %message, %time, %lines)
 {
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }
     commandToClient(%client, 'CenterPrint', %message, %time, %lines);
-    return ;
 }
 function bottomPrint(%client, %message, %time, %lines)
 {
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }
     commandToClient(%client, 'BottomPrint', %message, %time, %lines);
-    return ;
 }
 function clearCenterPrint(%client)
 {
     commandToClient(%client, 'ClearCenterPrint');
-    return ;
 }
 function clearBottomPrint(%client)
 {
     commandToClient(%client, 'ClearBottomPrint');
-    return ;
 }
 function clearCenterPrintAll()
 {
@@ -78,7 +72,6 @@ function clearCenterPrintAll()
         %i = %i + 1;
     }
 }
-
 function clearBottomPrintAll()
 {
     %count = ClientGroup.getCount();
@@ -93,5 +86,3 @@ function clearBottomPrintAll()
         %i = %i + 1;
     }
 }
-
-

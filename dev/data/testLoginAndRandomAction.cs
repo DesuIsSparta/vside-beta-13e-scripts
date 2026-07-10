@@ -2,8 +2,7 @@ exec("./skeletonClient.cs");
 function testLoginAndStay()
 {
     $loginLogout = 0;
-    %testLogin = new ScriptObject(skeletonClient)
-    {
+    %testLogin = new ScriptObject(skeletonClient) {
         userName = $UserPref::Player::Name;
         password = $UserPref::Player::Password;
         joinAction = "walk";
@@ -12,7 +11,6 @@ function testLoginAndStay()
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
-    return ;
 }
 testLoginAndStay();
 function test::initDances()
@@ -36,7 +34,6 @@ function test::initDances()
     $Dances[%i = %i + 1] = "hdncb4";
     $DancesCount = %i;
     $DancesAvail = %i;
-    return ;
 }
 function test::initGenres()
 {
@@ -46,7 +43,6 @@ function test::initGenres()
     $Genres[%i = %i + 1] = "p";
     $GenresCount = %i;
     $GenresAvail = %i;
-    return ;
 }
 test::initDances();
 test::initGenres();
@@ -55,15 +51,13 @@ function walk()
     $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
     $mvForwardAction = $movementSpeed;
     schedule(1000, 0, stopAndTalk);
-    return ;
 }
 function stopAndTalk()
 {
     $mvYawLeftSpeed = 0;
     $mvForwardAction = 0;
-    pChat.say("Hello from" SPC $Hostname @ ".", 0, 0);
+    pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
     schedule(1000, 0, stopAndDance);
-    return ;
 }
 function stopAndDance()
 {
@@ -71,15 +65,13 @@ function stopAndDance()
     $mvForwardAction = 0;
     doAction();
     schedule(5000, 0, walk);
-    return ;
 }
 function test::doDance()
 {
     %danceNum = getRandom($DancesCount);
     $dance = $Dances[%danceNum];
     commandToServer('EtsPlayAnimName', $dance);
-    pChat.say("I\'m doing dance" SPC $dance SPC ".", 0, 0);
-    return ;
+    pChat.say("I'm doing dance" @ " " @ $dance @ " " @ ".", 0, 0);
 }
 function test::getRandomGenre()
 {
@@ -108,17 +100,14 @@ function test::getRandomGenre()
 function test::doWhisper()
 {
     doUserWhisper($BestFriend, "Hey Beautiful!", 0);
-    return ;
 }
 function test::doAddBuddy()
 {
     doUserFavorite($BestFriend, "add");
-    return ;
 }
 function test::doRemoveBuddy()
 {
     doUserFavorite($BestFriend, "remove");
-    return ;
 }
 function doAction()
 {
@@ -156,5 +145,4 @@ function doAction()
             }
         }
     }
-    return ;
 }

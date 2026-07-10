@@ -1,5 +1,5 @@
 $gMlStyle["plainOnBlack"] = "<color:ffffff><linkcolor:e553ff><linkcolorhl:ff93f8>";
-$gMlStyle["plainOnBlackOutline"] = "<shadowcolor:00000055><outline>" @ $gMlStyle["plainOnBlack"] ;
+$gMlStyle["plainOnBlackOutline"] = "<shadowcolor:00000055><outline>" @ $gMlStyle["plainOnBlack"];
 $gMlStyle["plainOnWhite"] = "<color:000000ff><linkcolor:e553ffff><linkcolorhl:ff93f8ff>";
 $gMlStyle["faintOnWhite"] = "<color:00000080><linkcolor:e553ff80><linkcolorhl:ff93f880>";
 $gMlStyle["plainOnWhiteBlueLinks"] = "<color:000000ff><linkcolor:0000ddff><linkcolorhl:dd0000ff>";
@@ -50,16 +50,16 @@ $gMlStyle["tgfPeopleCounts"] = "<font:Arial:16><color:ffffffaa><linkcolor:ffffff
 $gMlStyle["tgfMainInvite"] = "<font:Arial:16><color:ffffffaa><linkcolor:ff88ffee><linkcolorhl:ffd0ff><b><just:center>";
 $gMlStyle["tgfTables_Title_Blue"] = "<shadowcolor:4f5b8555><outline><font:Arial Bold:20><color:b1b7d1>";
 $gMlStyle["tgfTables_Title_White"] = "<shadowcolor:4f5b8555><outline><font:Arial Bold:20><color:ffffff>";
-$gMlStyle["tgfTables_ColumnHeader"] = $gMlStyle["tgfTables_Title_Blue"] ;
+$gMlStyle["tgfTables_ColumnHeader"] = $gMlStyle["tgfTables_Title_Blue"];
 $gMlStyle["tgfTables_DataCell_Text"] = "<font:Arial:16><color:ffffff>";
-$gMlStyle["tgfTables_DataCell_UserName_Normal"] = $gMlStyle["tgfTables_DataCell_Text"] ;
+$gMlStyle["tgfTables_DataCell_UserName_Normal"] = $gMlStyle["tgfTables_DataCell_Text"];
 $gMlStyle["tgfTables_DataCell_UserName_Friend"] = "<font:Arial:16><color:33ee66>";
 $gMlStyle["tgfTables_Legend"] = "<font:Arial:16><color:ffffff>";
 $gMlStyle["tgfTables_Invite"] = $gMlStyle["tgf_StandardTextColors"] @ "<font:Arial:16>";
-$gMlStyle["tgfTables_Label"] = $gMlStyle["tgfTables_Title_White"] ;
+$gMlStyle["tgfTables_Label"] = $gMlStyle["tgfTables_Title_White"];
 $gMlStyle["loadingHUD"] = "<shadowcolor:00000080><shadow:1:1><font:Arial:16><color:ffffffa0>";
-$gMlStyle["salonPanel"] = $gMlStyle["tgf_StandardTextColors"] ;
-$gMlStyle["giftingPanelNoClip"] = $gMlStyle["tgf_StandardTextColors"] ;
+$gMlStyle["salonPanel"] = $gMlStyle["tgf_StandardTextColors"];
+$gMlStyle["giftingPanelNoClip"] = $gMlStyle["tgf_StandardTextColors"];
 $gMlStyle["giftingPanel"] = $gMlStyle["giftingPanelNoClip"] @ "<clip:278>";
 $gMlStyle["giftingPanelCurrencies"] = $gMlStyle["giftingPanel"] @ "<b>";
 $gMlStyle["giftingPanelDim"] = $gMlStyle["giftingPanelNoClip"] @ "<color:ffffffa0>";
@@ -68,7 +68,7 @@ $gMlStyle["shoutout_status"] = "<color:ffffffd0><outline><shadowcolor:00000080><
 $gMlStyle["ticker"] = $gMlStyle["tgf_StandardTextColors"] @ "<just:center>";
 function mlStyle(%dry, %styleName)
 {
-    if (!isDefined("%styleName") && (%styleName $= ""))
+    if (!isDefined("%styleName") || (%styleName $= ""))
     {
         return "";
     }
@@ -76,7 +76,7 @@ function mlStyle(%dry, %styleName)
     %styleBody = $gMlStyle[%styleName];
     if (%styleBody $= "")
     {
-        error(getScopeName() SPC "- unknown style:" SPC %styleName SPC getTrace());
+        error(getScopeName() @ " " @ "- unknown style:" @ " " @ %styleName @ " " @ getTrace());
     }
     %wet = "<spush>" @ %styleBody @ %wet @ "<spop>";
     return %wet;

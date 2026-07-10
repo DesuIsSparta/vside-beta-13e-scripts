@@ -1,19 +1,16 @@
 function toggleHelpMeMode(%this)
 {
-    if (isObject(ApplauseMeterGui))
+    if (isObject(ApplauseMeterGui) && (ApplauseMeterGui.applauseMeterUse $= "sumo"))
     {
-        if (ApplauseMeterGui.applauseMeterUse $= "sumo")
+        if (ApplauseMeterGui.sumoGameType $= "PillowFightGame")
         {
-            if (ApplauseMeterGui.sumoGameType $= "PillowFightGame")
-            {
-                MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USER-NO-HELPME"], "");
-            }
-            else
-            {
-                MessageBoxOK($MsgCat::applauseGui["MSG-SUMO-WARN"], $MsgCat::applauseGui["MSG-SUMO-USER-NO-HELPME"], "");
-            }
-            return ;
+            MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USER-NO-HELPME"], "");
         }
+        else
+        {
+            MessageBoxOK($MsgCat::applauseGui["MSG-SUMO-WARN"], $MsgCat::applauseGui["MSG-SUMO-USER-NO-HELPME"], "");
+        }
+        return;
     }
     if ($player.isInHelpMeMode())
     {
@@ -23,19 +20,18 @@ function toggleHelpMeMode(%this)
     {
         setHelpMeMode();
     }
-    return ;
 }
 function updateHelpMeModeMenu()
 {
     if (!isObject(HelpPopupMenu))
     {
-        return ;
+        return;
     }
     %item = HelpPopupMenu.findObjectByInternalName("helpMe");
     if (!isObject(%item))
     {
-        error(getScopeName() SPC "- could not find menu item");
-        return ;
+        error(getScopeName() @ " " @ "- could not find menu item");
+        return;
     }
     %command = "toggleHelpMeMode();";
     if (isObject($player) && $player.isInHelpMeMode())
@@ -48,17 +44,15 @@ function updateHelpMeModeMenu()
     }
     %item.setMenuItemText(%text);
     %item.command = %command;
-    return ;
 }
 $gHelpMeModeDuration = (3 * 60) * 1000;
 $gHelpMeModeAutoOffTimer = 0;
 function setHelpMeMode()
 {
-    commandToServer('setActiveSkus', $player.getActiveSKUs() SPC getSpecialSKU($player, "helpmebadge"));
+    commandToServer('setActiveSkus', $player.getActiveSKUs() @ " " @ getSpecialSKU($player, "helpmebadge"));
     msgCatOKOnceThisSession("UI::HELPMEMODE-ON");
     cancel($gHelpMeModeAutoOffTimer);
     $gHelpMeModeAutoOffTimer = schedule($gHelpMeModeDuration, 0, "clearHelpMeMode");
-    return ;
 }
 function clearHelpMeMode()
 {
@@ -71,27 +65,24 @@ function clearHelpMeMode()
     }
     cancel($gHelpMeModeAutoOffTimer);
     $gHelpMeModeAutoOffTimer = 0;
-    return ;
 }
 $gHelpMeRequestId = 0;
 $gHelpMeRequestsAnswered = "";
 function clientCmdNotifyOfHelpMeMode(%newbName)
 {
     %name = getPlayerMarkup(%newbName, "ffffff", 1);
-    handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You are an active guide, and " @ %name @ " has just entered \"Help-Me\" Mode. <a:answerHelpMeMode " @ $gHelpMeRequestId SPC munge(%newbName) @ ">Click Here</a> to answer the call!");
+    handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You are an active guide, and " @ %name @ " has just entered \"Help-Me\" Mode. <a:answerHelpMeMode " @ $gHelpMeRequestId @ " " @ munge(%newbName) @ ">Click Here</a> to answer the call!");
     $gHelpMeRequestId = $gHelpMeRequestId + 1;
-    return ;
 }
 function answerHelpMeMode(%newbName, %requestId)
 {
     if (findWord($gHelpMeRequestsAnswered, %requestId) >= 0)
     {
         msgCatOK("UI::HELPMEANSWERED");
-        return ;
+        return;
     }
-    $gHelpMeRequestsAnswered = $gHelpMeRequestsAnswered SPC %requestId;
+    $gHelpMeRequestsAnswered = $gHelpMeRequestsAnswered @ " " @ %requestId;
     commandToServer('answerHelpMeMode', %newbName, %requestId);
-    return ;
 }
 function Player::onAnimationStart(%this, %animName)
 {
@@ -105,21 +96,17 @@ function Player::onAnimationStart(%this, %animName)
         }
         %this.onAnimationSku(0, %animName, "");
     }
-    return ;
 }
 function Player::onAnimationSku(%this, %state, %animName, %animInternalName)
 {
     %animSkus = %this.getAnimationSkus(%animInternalName);
     if (%animSkus $= "")
     {
-        if (!(%this.currentBaseActiveSkus $= ""))
+        if (!(%this.currentBaseActiveSkus $= "") && !(%this.currentBaseActiveSkus $= %this.getActiveSKUs()))
         {
-            if (!(%this.currentBaseActiveSkus $= %this.getActiveSKUs()))
-            {
-                %this.setActiveSKUs(%this.currentBaseActiveSkus);
-            }
+            %this.setActiveSKUs(%this.currentBaseActiveSkus);
         }
-        return ;
+        return;
     }
     %activeSkus = %this.getActiveSKUs();
     if (%state)
@@ -131,7 +118,6 @@ function Player::onAnimationSku(%this, %state, %animName, %animInternalName)
         %activeSkus = SkuManager.overlaySkus(%this.currentBaseActiveSkus, SkuManager.skusRemove(%activeSkus, %animSkus));
     }
     %this.setActiveSKUs(%activeSkus);
-    return ;
 }
 function Player::getAnimationSkus(%this, %animInternalName)
 {
@@ -165,7 +151,6 @@ function Player::staggerSetAmount(%this, %amount)
 {
     $gPlayerStaggerAmount = %amount;
     %this.staggerTick();
-    return ;
 }
 function Player::staggerTick(%this)
 {
@@ -173,14 +158,14 @@ function Player::staggerTick(%this)
     $gPlayerStaggerTimer = "";
     if ($gPlayerStaggerAmount == 0)
     {
-        return ;
+        return;
     }
     %fwdVel = $mvForwardAction - $mvBackwardAction;
     %sdeVel = $mvLeftAction - $mvRightAction;
-    if ((%fwdVel != 0) && (%sdeVel != 0))
+    if ((%fwdVel != 0) || (%sdeVel != 0))
     {
-        %amt = getRandom(0, $gPlayerStaggerAmount * 1000) * 0.001;
-        %amt = %amt * getRandom(0, 1) ? 1 : 1;
+        %amt = getRandom(0, ($gPlayerStaggerAmount * 1000)) * 0.001;
+        %amt = %amt * getRandom(0, 1) ? -1 : 1;
     }
     else
     {
@@ -190,7 +175,7 @@ function Player::staggerTick(%this)
     $gPlayerStaggerPrevAmt = %amt;
     %speedBase = $mvYawLeftSpeedBase - $mvYawRightSpeedBase;
     %speed = %speedBase + %amt;
-    if (%speed > 1e-05)
+    if (%speed > 0.00001)
     {
         $mvYawLeftSpeed = %speed * 1;
         $mvYawRightSpeed = 0;
@@ -198,7 +183,7 @@ function Player::staggerTick(%this)
     }
     else
     {
-        if (%speed < -1e-05)
+        if (%speed < -0.00001)
         {
             $mvYawLeftSpeed = 0;
             $mvYawRightSpeed = %speed * -1;
@@ -212,13 +197,12 @@ function Player::staggerTick(%this)
         }
     }
     $gPlayerStaggerTimer = %this.schedule(%period, "staggerTick");
-    return ;
 }
 function Player::onAnimationDoneClient(%this, %unused)
 {
     if (%this.getId() != $player.getId())
     {
-        return ;
+        return;
     }
     if (isObject(ClosetGui) && ClosetGui.isVisible())
     {
@@ -228,5 +212,4 @@ function Player::onAnimationDoneClient(%this, %unused)
             ClosetWhatYoureWearingList.refresh(ClosetWhatYoureWearingList.skus);
         }
     }
-    return ;
 }

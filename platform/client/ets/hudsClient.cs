@@ -2,7 +2,9 @@ function HudTabs::setup()
 {
     if (!isObject(HudTabs))
     {
-        new ScriptObject(HudTabs);
+        new ScriptObject(HudTabs) {
+            class = "TabControl";
+        };
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add(HudTabs);
@@ -17,7 +19,6 @@ function HudTabs::setup()
         HudTabs.close();
         HudTabs.closeTimer = 0;
     }
-    return ;
 }
 function HudTabs::newTab(%this, %name, %bitmapName, %title)
 {
@@ -50,7 +51,6 @@ function HudTabs::newTab(%this, %name, %bitmapName, %title)
     %ypos = getWord(%pos, 1) - 2;
     %tab.pulsar.reposition(%xPos, %ypos);
     %tab.pulseTimer = 0;
-    return ;
 }
 function HudTabs::update(%this)
 {
@@ -69,14 +69,13 @@ function HudTabs::update(%this)
     %height = %height - %padding;
     %width = getWord(HudTabsCollapsed.getExtent(), 0);
     HudTabsCollapsed.resize(%width, %height);
-    return ;
 }
 function HudTabs::pulseTab(%this, %tabObject)
 {
-    if (!isObject(%tabObject) && !isObject(%tabObject.pulsar))
+    if (!isObject(%tabObject) || !isObject(%tabObject.pulsar))
     {
         error(getScopeName() @ "->invalid tab object or tab without pulsar object passed! returning!");
-        return ;
+        return;
     }
     %this.pausePulseOnAllTabs();
     HudContainer.add(%tabObject.pulsar);
@@ -85,7 +84,6 @@ function HudTabs::pulseTab(%this, %tabObject)
     %tabObject.pulsar.start();
     cancel(%tabObject.pulseTimer);
     %tabObject.pulseTimer = %this.schedule(4000, "pausePulseOnTab", %tabObject);
-    return ;
 }
 function HudTabs::pulseTabWithName(%this, %tabName)
 {
@@ -95,14 +93,12 @@ function HudTabs::pulseTabWithName(%this, %tabName)
         %tabObject = %this.getTabWithName(%tabName);
     }
     %this.pulseTab(%tabObject);
-    return ;
 }
 function HudTabs::pausePulseOnTab(%this, %tabObject)
 {
     cancel(%tabObject.pulseTimer);
     %tabObject.pulsar.stop();
     %tabObject.pulsar.setCurrentFrame(0);
-    return ;
 }
 function HudTabs::pausePulseOnAllTabs(%this)
 {
@@ -113,13 +109,11 @@ function HudTabs::pausePulseOnAllTabs(%this)
         %i = %i + 1;
     }
 }
-
 function HudTabs::stopPulseOnTab(%this, %tabObject)
 {
     cancel(%tabObject.pulseTimer);
     %tabObject.pulsar.stop();
     %tabObject.pulsar.setVisible(0);
-    return ;
 }
 function HudTabs::getPadding(%this)
 {
@@ -134,41 +128,35 @@ function HudTabs::close(%this)
     }
     HudTabsCollapsed.setVisible(1);
     %this.selectTabAtIndex(-1);
-    return ;
 }
 function HudTabs::onHiddenButton(%this)
 {
     Parent::onHiddenButton(%this);
     %this.close();
-    return ;
 }
 function HudTabs::hideOrShowTab(%this, %tabObject, %show)
 {
     if (%this.currentTabIsLockedOpen())
     {
         Parent::hideOrShowTab(%this, %tabObject, %show);
-        return ;
+        return;
     }
     if (%this.getCurrentTab() == %tabObject)
     {
         %this.close();
     }
     Parent::hideOrShowTab(%this, %tabObject, %show);
-    if (isObject(%tabObject.pulsar))
+    if (isObject(%tabObject.pulsar) && %tabObject.pulsar.isVisible())
     {
-        if (%tabObject.pulsar.isVisible())
-        {
-            %this.stopPulseOnTab(%tabObject);
-        }
+        %this.stopPulseOnTab(%tabObject);
     }
-    return ;
 }
 function HudTabs::setTabAtIndexVisible(%this, %tabIndex, %visible)
 {
     %tab = %this.tabs[%tabIndex];
     if (!isObject(%tab))
     {
-        return ;
+        return;
     }
     %posX = getWord(%this.tabPosition, 0);
     %posY = getWord(%this.tabPosition, 1);
@@ -179,41 +167,44 @@ function HudTabs::setTabAtIndexVisible(%this, %tabIndex, %visible)
     }
     else
     {
-        %tab.setTrgPosition(%posX - getWord(%tab.getExtent(), 0), %posY);
+        %tab.setTrgPosition((%posX - getWord(%tab.getExtent(), 0)), %posY);
     }
-    return ;
 }
 function HudTabs::autoHide(%this)
 {
     %currentTab = %this.getCurrentTab();
-    %tabName = %currentTab $= "" ? "" : %currentTab;
+    if (%currentTab $= "")
+    {
+    }
+    else
+    {
+    }
+    %tabName = %currentTab.name;
+    "";
     if (!$UserPref::HudTabs::AutoClose[%tabName])
     {
-        return ;
+        return;
     }
     if (%this.container.cursorInControl())
     {
         %this.autoHideSchedule(2000);
-        return ;
+        return;
     }
     %this.close();
     if (%currentTab.pulsar.isVisible())
     {
         %this.pausePulseOnTab(%currentTab);
     }
-    return ;
 }
 function HudTabs::autoHideSchedule(%this, %ms)
 {
     cancel(%this.closeTimer);
     %this.closeTimer = %this.schedule(%ms, "autoHide");
-    return ;
 }
 function HudTabs::dontCloseNextTime(%this)
 {
     cancel(%this.closeTimer);
     %this.closeTimer = 0;
-    return ;
 }
 function HudTabs::tabSelected(%this, %tab)
 {
@@ -231,18 +222,14 @@ function HudTabs::tabSelected(%this, %tab)
         %this.dontCloseNextTime();
     }
     %prevTab = %this.getPreviousTab();
-    if (%prevTab != %tab)
+    if (%prevTab != %tab && isObject(%prevTab) && isObject(%prevTab.content))
     {
-        if (isObject(%prevTab) && isObject(%prevTab.content))
+        %prevTab.content.onClose();
+        if (%prevTab.pulsar.isVisible())
         {
-            %prevTab.content.onClose();
-            if (%prevTab.pulsar.isVisible())
-            {
-                %this.pausePulseOnTab(%prevTab);
-            }
+            %this.pausePulseOnTab(%prevTab);
         }
     }
-    return ;
 }
 function HudTabs::getInitialButtonOffset(%this)
 {
@@ -252,7 +239,7 @@ function HudTabs::CreateTab(%this, %name)
 {
     %tab = Parent::CreateTab(%this, %name);
     %tab.sluggishness = 0.5;
-    %tab.reposition(getWord(%this.tabPosition, 0) - getWord(%tab.getExtent(), 0), getWord(%this.tabPosition, 1));
+    %tab.reposition((getWord(%this.tabPosition, 0) - getWord(%tab.getExtent(), 0)), getWord(%this.tabPosition, 1));
     return %tab;
 }
 function HudTabs::fillTabs(%this)
@@ -264,9 +251,26 @@ function HudTabs::fillTabs(%this)
         %tab.setProfile(GuiDefaultProfile);
         %tab.clear();
         %tab.button.tooltip = %tab.name;
-        %title = %tab.title $= "" ? %tab : %tab;
-        %titleText = new GuiMLTextCtrl()
+        %tab.add(new GuiControl("") {
+            profile = "ETSDarkBoxProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = 291 @ " " @ getWord(HudContainer.extent, 1);
+            minExtent = "1 1";
+            sluggishness = -1;
+            visible = 1;
+            maxLength = 255;
+        };);
+        if (%tab.title $= "")
         {
+        }
+        else
+        {
+        }
+        %title = %tab.title;
+        %tab.name;
+        %titleText = new GuiMLTextCtrl("") {
             profile = "ETSHudHeadingProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -280,8 +284,7 @@ function HudTabs::fillTabs(%this)
         };
         %tab.titleText = %titleText;
         %tab.add(%titleText);
-        %closeButton = new GuiBitmapButtonCtrl()
-        {
+        %closeButton = new GuiBitmapButtonCtrl("") {
             profile = "GuiDefaultProfile";
             horizSizing = "left";
             vertSizing = "bottom";
@@ -295,8 +298,7 @@ function HudTabs::fillTabs(%this)
         };
         %tab.closeButton = %closeButton;
         %tab.add(%closeButton);
-        %content = new GuiControl()
-        {
+        %content = new GuiControl("") {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -316,15 +318,13 @@ function HudTabs::fillTabs(%this)
     HudTabs.fillScoresTab();
     HudTabs.fillWordTab();
     HudTabs.fillTutorialTab();
-    return ;
 }
 function HudTabs::fillMusicTab(%this)
 {
     %theTab = %this.getTabWithName("music");
     %theTab.content.setName("MusicHud");
     %theTab.content.bindClassName("MusicHud");
-    %theTab.toggleSoundTxt = new GuiMLTextCtrl(MusicTabToggleSoundTxt)
-    {
+    %theTab.toggleSoundTxt = new GuiMLTextCtrl(MusicTabToggleSoundTxt) {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -334,9 +334,76 @@ function HudTabs::fillMusicTab(%this)
     };
     %theTab.toggleSoundTxt.updateText();
     %theTab.add(%theTab.toggleSoundTxt);
+    %theTab.add(new GuiBitmapButtonCtrl(MuteButton) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "199 6";
+        extent = "22 22";
+        minExtent = "22 22";
+        sluggishness = -1;
+        visible = 1;
+        command = "Music::toggleMute();";
+        text = "";
+        groupNum = -1;
+        buttonType = "PushButton";
+        bitmap = "platform/client/buttons/unmuted";
+        drawText = 0;
+    };);
     MusicHud.station = "";
-    new GuiControl(MusicHudBasicView)
-    {
+    MusicHud.add(new GuiMLTextCtrl(MusicText) {
+        profile = "MusicMLTextProfile";
+        horizSizing = "width";
+        vertSizing = "bottom";
+        position = "1 1";
+        extent = "223 20";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        lineSpacing = 0;
+        allowColorChars = 1;
+        maxChars = -1;
+    };, new GuiScrollCtrl(MusicTextScroll) {
+        profile = new GuiVariableWidthButtonCtrl(MusicHudMyMediaButton) {
+        profile = new GuiVariableWidthButtonCtrl(MusicHudChangeStationButton) {
+        profile = "BracketButton15Profile";
+        horizSizing = "left";
+        vertSizing = "bottom";
+        position = "156 3";
+        extent = "82 15";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        command = "MusicHud.setView(\"change_station\");";
+        text = "Change Station";
+        groupNum = -1;
+        buttonType = "PushButton";
+    }; @ "BracketButton15Profile";
+        horizSizing = "left";
+        vertSizing = "bottom";
+        position = "1 164";
+        extent = "122 15";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        command = "toggleCSPanel(CSMediaDisplay);";
+        text = "My Music & Videos";
+        groupNum = -1;
+        buttonType = "PushButton";
+    }; @ "ETSScrollSmallProfile";
+        horizSizing = "width";
+        vertSizing = "height";
+        position = "0 0";
+        extent = "234 101";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        willFirstRespond = 0;
+        hScrollBar = "alwaysOff";
+        vScrollBar = "dynamic";
+        constantThumbHeight = 1;
+        childMargin = "0 0";
+    };, new GuiControl(MusicHudBasicView) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -345,19 +412,8 @@ function HudTabs::fillMusicTab(%this)
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
-    }.add(new GuiControl(MusicHudBasicView)
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = MusicHud.getExtent();
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    });
-    %ratingLabel = new GuiMLTextCtrl()
-    {
+    };);
+    %ratingLabel = new GuiMLTextCtrl("") {
         profile = "MusicRatingTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -370,8 +426,7 @@ function HudTabs::fillMusicTab(%this)
         lineSpacing = -2;
         allowColorChars = 1;
     };
-    MusicHud.ratingControl = new GuiControl()
-    {
+    MusicHud.ratingControl = new GuiControl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -386,8 +441,7 @@ function HudTabs::fillMusicTab(%this)
     MusicHud.ratingControl.Initialize(5, "19 19", "platform/client/buttons/star");
     MusicHud.ratingControl.add(%ratingLabel);
     MusicHudBasicView.add(MusicHud.ratingControl);
-    new GuiControl(MusicHudEditView)
-    {
+    MusicHud.add(new GuiControl(MusicHudEditView) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -396,18 +450,7 @@ function HudTabs::fillMusicTab(%this)
         minExtent = "1 1";
         sluggishness = -1;
         visible = 0;
-    }.add(new GuiControl(MusicHudEditView)
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = MusicHud.getExtent();
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 0;
-    });
-    return ;
+    };);
 }
 function MusicTabToggleSoundTxt::updateText(%this)
 {
@@ -420,15 +463,13 @@ function MusicTabToggleSoundTxt::updateText(%this)
         %soundTxt = "(on)";
     }
     %this.setText(%soundTxt);
-    return ;
 }
 function MusicRatingControl::updatePosition(%this)
 {
     %musicTextBottomY = (getWord(MusicText.getExtent(), 1) + getWord(MusicTextScroll.getPosition(), 1)) + getWord(MusicText.getPosition(), 1);
     %mTScrollBottomY = getWord(MusicTextScroll.getExtent(), 1) + getWord(MusicTextScroll.getPosition(), 1);
     %padding = 10;
-    %this.reposition(getWord(%this.getPosition, 0), mMin(%musicTextBottomY, %mTScrollBottomY) + %padding);
-    return ;
+    %this.reposition(getWord(%this.getPosition, 0), (mMin(%musicTextBottomY, %mTScrollBottomY) + %padding));
 }
 function HudTabs::fillAffinityTab(%this)
 {
@@ -439,8 +480,61 @@ function HudTabs::fillAffinityTab(%this)
     }
     %theTab.content.setName("InfoPopupDlg");
     %theTab.content.bindClassName("InfoPopupDlg");
-    new GuiMLTextCtrl(InfoPopupTagsText)
-    {
+    %theTab.add(new GuiMLTextCtrl(InfoPopupNameField) {
+        profile = "InfoWindowTextProfile";
+        horizSizing = "width";
+        vertSizing = "bottom";
+        position = "122 8";
+        extent = "150 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        lineSpacing = 1;
+        allowColorChars = 0;
+        maxChars = -1;
+    };);
+    InfoPopupDlg.add(new GuiMLTextCtrl(InfoPopupContents) {
+        profile = "InfoWindowTextProfile";
+        horizSizing = "width";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "235 69";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        lineSpacing = 2;
+        allowColorChars = 0;
+        maxChars = -1;
+    };);
+    InfoPopupDlg.add(new GuiMLTextCtrl(InfoPopupBottom) {
+        profile = "InfoWindowTextProfile";
+        horizSizing = "width";
+        vertSizing = "bottom";
+        position = "0 164";
+        extent = "235 16";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        lineSpacing = 1;
+        allowColorChars = 0;
+        maxChars = -1;
+    };);
+    InfoPopupDlg.add(new GuiScrollCtrl(InfoPopupTagsScroll) {
+        profile = "ETSScrollProfile";
+        horizSizing = "width";
+        vertSizing = "height";
+        position = "1 122";
+        extent = "229 38";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        willFirstRespond = 1;
+        hScrollBar = "alwaysOff";
+        vScrollBar = "dynamic";
+        constantThumbHeight = 1;
+        childMargin = "0 0";
+    };);
+    new GuiMLTextCtrl(InfoPopupTagsText) {
         profile = "InfoWindowTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
@@ -456,7 +550,6 @@ function HudTabs::fillAffinityTab(%this)
     InfoPopupTagsScroll.add(InfoPopupTagsText);
     InfoPopupDlg.add(InfoPopupTagsScroll);
     InfoPopupDlg.init();
-    return ;
 }
 function HudTabs::fillScoresTab(%this)
 {
@@ -465,12 +558,23 @@ function HudTabs::fillScoresTab(%this)
     %theTab.content.bindClassName("HudScoresContent");
     %ypos = 2;
     %fieldx = 110;
-    HudScoresContent.respektLevelLabel = new GuiMLTextCtrl()
-    {
+    HudScoresContent.add(new GuiMLTextCtrl("") {
+        profile = "HudScoresLabelTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos;
+        extent = "76 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "<b>Level:";
+        maxLength = 64;
+    };);
+    HudScoresContent.respektLevelLabel = new GuiMLTextCtrl("") {
         profile = "InfoWindowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %fieldx SPC %ypos;
+        position = %fieldx @ " " @ %ypos;
         extent = "134 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -479,27 +583,39 @@ function HudTabs::fillScoresTab(%this)
         maxLength = 64;
     };
     HudScoresContent.add(HudScoresContent.respektLevelLabel);
+    HudScoresContent.add(new GuiMLTextCtrl("") {
+        profile = "HudScoresLabelTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
+        extent = "85 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "<b>Next Level:";
+        maxLength = 64;
+    };);
     if (!isObject(HudScoresPBController))
     {
-        new ScriptObject(HudScoresPBController);
+        new ScriptObject(HudScoresPBController) {
+            class = "ProgressBarController";
+        };
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add(HudScoresPBController);
         }
     }
-    HudScoresContent.respektBarContainer = new GuiControl()
-    {
+    HudScoresContent.respektBarContainer = new GuiControl("") {
         profile = "ETSRespektLevelPBProfile";
         horizSizing = "center";
         vertSizing = "top";
-        position = %fieldx - 2 SPC %ypos + 2;
+        position = (%fieldx - 2) @ " " @ (%ypos + 2);
         extent = "125 14";
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
     };
-    HudScoresContent.respektBarHolder = new GuiControl()
-    {
+    HudScoresContent.respektBarHolder = new GuiControl("") {
         profile = "BlankProfile";
         horizSizing = "center";
         vertSizing = "top";
@@ -512,12 +628,23 @@ function HudTabs::fillScoresTab(%this)
     HudScoresContent.respektBarContainer.add(HudScoresContent.respektBarHolder);
     HudScoresContent.add(HudScoresContent.respektBarContainer);
     HudScoresPBController.Initialize(HudScoresContent.respektBarHolder, "", "platform/client/ui/respektprogress_fill", "", "");
-    HudScoresContent.respektScoreLabel = new GuiMLTextCtrl()
-    {
+    HudScoresContent.add(new GuiMLTextCtrl("") {
+        profile = "HudScoresLabelTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
+        extent = "76 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "<b><a:gamelink " @ $Net::HelpURL_VPoints @ "?section=vPoints>All-time <bitmap:platform/client/ui/vpoints_14></a>:";
+        maxLength = 64;
+    };);
+    HudScoresContent.respektScoreLabel = new GuiMLTextCtrl("") {
         profile = "InfoWindowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %fieldx SPC %ypos;
+        position = %fieldx @ " " @ %ypos;
         extent = "100 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -528,12 +655,23 @@ function HudTabs::fillScoresTab(%this)
     HudScoresContent.add(HudScoresContent.respektScoreLabel);
     if (0)
     {
-        HudScoresContent.respektRankLabel = new GuiMLTextCtrl()
-        {
+        HudScoresContent.add(new GuiMLTextCtrl("") {
+            profile = "HudScoresLabelTextProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = 0 @ " " @ %ypos = %ypos + 20;
+            extent = "76 18";
+            minExtent = "1 1";
+            sluggishness = -1;
+            visible = 1;
+            text = "<b>Rank:";
+            maxLength = 64;
+        };);
+        HudScoresContent.respektRankLabel = new GuiMLTextCtrl("") {
             profile = "InfoWindowTextProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %fieldx SPC %ypos;
+            position = %fieldx @ " " @ %ypos;
             extent = "68 18";
             minExtent = "1 1";
             sluggishness = -1;
@@ -543,12 +681,23 @@ function HudTabs::fillScoresTab(%this)
         };
         HudScoresContent.add(HudScoresContent.respektRankLabel);
     }
-    HudScoresContent.collectionsScroll = new GuiScrollCtrl()
-    {
+    HudScoresContent.add(new GuiMLTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 18;
+        extent = "100 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "<b>Collections:";
+        maxLength = 64;
+    };);
+    HudScoresContent.collectionsScroll = new GuiScrollCtrl("") {
         profile = "ETSInviteMessageScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
-        position = 1 SPC %ypos = %ypos + 20;
+        position = 1 @ " " @ %ypos = %ypos + 20;
         extent = "233 99";
         minExtent = "1 1";
         sluggishness = -1;
@@ -562,8 +711,7 @@ function HudTabs::fillScoresTab(%this)
         scrollMultiplier = 1;
         stickyBottom = 0;
     };
-    HudScoresContent.collectionsList = new GuiMLTextCtrl()
-    {
+    HudScoresContent.collectionsList = new GuiMLTextCtrl("") {
         profile = "InfoWindowTextListProfile";
         horizSizing = "width";
         vertSizing = "bottom";
@@ -587,7 +735,6 @@ function HudTabs::fillScoresTab(%this)
     }
     HudScoresContent.previousRespektPoints = 0;
     HudScoresContent.setRespektPoints(0, 0);
-    return ;
 }
 function HudScoresContent::setRespektPoints(%this, %points, %notify)
 {
@@ -595,7 +742,7 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify)
     %level = respektScoreToLevel(%points);
     %levelName = respektLevelToNameWithoutArticle(%level);
     %this.respektLevelLabel.setText(%level @ " - " @ %levelName);
-    HudScoresPBController.setValue(1 - respektPercentToNextLevel(%points));
+    HudScoresPBController.setValue((1 - respektPercentToNextLevel(%points)));
     %levelPrev = respektScoreToLevel(%this.previousRespektPoints);
     if ((%level != %levelPrev) && (%this.previousRespektPoints != 0))
     {
@@ -618,7 +765,7 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify)
                 %code = "LEVELCHANGE";
             }
         }
-        schedule(5000, 0, "respektHandle", "", %points, %points - %this.previousRespektPoints, %code, 0, 1);
+        schedule(5000, 0, "respektHandle", "", %points, (%points - %this.previousRespektPoints), %code, 0, 1);
         HudTabs.schedule(5100, "pulseTabWithName", "scores");
     }
     if (%notify && (%points != %this.previousRespektPoints))
@@ -626,7 +773,6 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify)
         HudTabs.pulseTabWithName("scores");
     }
     %this.previousRespektPoints = %points;
-    return ;
 }
 function HudScoresContent::setRespektRank(%this, %rank)
 {
@@ -647,7 +793,6 @@ function HudScoresContent::setRespektRank(%this, %rank)
         HudTabs.pulseTabWithName("scores");
     }
     %this.previousRespektRank = %rank;
-    return ;
 }
 function HudScoresContent::clearCollections(%this)
 {
@@ -661,12 +806,10 @@ function HudScoresContent::clearCollections(%this)
         %n = %n - 1;
     }
     %this.refreshCollections();
-    return ;
 }
 function clientCmdSetCollectionStatus(%name, %sofar, %total)
 {
     HudScoresContent.setCollectionStatus(%name, %sofar, %total);
-    return ;
 }
 function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total)
 {
@@ -675,9 +818,11 @@ function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total)
     {
         if ((%total == 0) && (%sofar == 0))
         {
-            return ;
+            return;
         }
-        %ourCopy = new ScriptObject();
+        %ourCopy = new ScriptObject("") {
+            name = %name;
+        };
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add(%ourCopy);
@@ -695,7 +840,6 @@ function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total)
         %ourCopy.total = %total;
     }
     %this.refreshCollections();
-    return ;
 }
 function HudScoresContent::getCollectionObject(%this, %name)
 {
@@ -724,10 +868,10 @@ function HudScoresContent::refreshCollections(%this)
         %ratio = %collection.sofar / %collection.total;
         if (%ratio != 1)
         {
-            %append = formatFloat("%1.3f", %ratio) TAB %collection.getId();
+            %append = formatFloat("%1.3f", %ratio) @ "\t" @ %collection.getId();
             if (!(%stringToSort $= ""))
             {
-                %stringToSort = %stringToSort SPC %append;
+                %stringToSort = %stringToSort @ " " @ %append;
             }
             else
             {
@@ -738,7 +882,7 @@ function HudScoresContent::refreshCollections(%this)
         {
             if (!(%completed $= ""))
             {
-                %completed = %completed SPC %collection.getId();
+                %completed = %completed @ " " @ %collection.getId();
             }
             else
             {
@@ -754,12 +898,12 @@ function HudScoresContent::refreshCollections(%this)
     while (%i > 0)
     {
         %collection = getWord(getField(%stringToSort, %i), 0);
-        %this.collectionsList.addText("<spush><just:left>   " @ %collection.name SPC "<just:right>(" @ %collection.sofar @ "/" @ %collection.total @ ")<spop><br>", 0);
+        %this.collectionsList.addText("<spush><just:left>   " @ %collection.name @ " " @ "<just:right>(" @ %collection.sofar @ "/" @ %collection.total @ ")<spop><br>", 0);
         %i = %i - 1;
     }
     if (%completed $= "")
     {
-        return ;
+        return;
     }
     %this.collectionsList.addText("<spush><just:left><b> Completed:<spop><br>", 0);
     %count = getWordCount(%completed);
@@ -767,26 +911,36 @@ function HudScoresContent::refreshCollections(%this)
     while (%i < %count)
     {
         %collection = getWord(%completed, %i);
-        %this.collectionsList.addText("<spush><just:left>   " @ %collection.name SPC "<just:right>(" @ %collection.sofar @ "/" @ %collection.total @ ")<spop><br>", 0);
+        %this.collectionsList.addText("<spush><just:left>   " @ %collection.name @ " " @ "<just:right>(" @ %collection.sofar @ "/" @ %collection.total @ ")<spop><br>", 0);
         %i = %i + 1;
     }
     if (%this.collectionsList.isAwake())
     {
         %this.collectionsList.forceReflow();
     }
-    return ;
 }
 function HudScoresContent::onClose(%this)
 {
-    return ;
 }
 function HudTabs::fillWordTab(%this)
 {
     %theTab = %this.getTabWithName("word");
     %theTab.content.setName("SystemMessageDialog");
     %theTab.content.bindClassName("SystemMessageDialog");
-    new GuiScrollCtrl(SystemMessageScrollCtrl)
-    {
+    SystemMessageDialog.add(new GuiMLTextCtrl(SystemMessageTextCtrl) {
+        profile = "SystemMessageTextProfile";
+        horizSizing = "width";
+        vertSizing = "bottom";
+        position = "1 1";
+        extent = "220 180";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        lineSpacing = 2;
+        allowColorChars = 0;
+        maxChars = -1;
+        DefaultMessage = "<spush><b><color:ffffffff>This space tells you when you get friend invites, vPoint awards, system messages, etc..<spop>";
+    };, new GuiScrollCtrl(SystemMessageScrollCtrl) {
         profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
@@ -800,24 +954,8 @@ function HudTabs::fillWordTab(%this)
         vScrollBar = "dynamic";
         constantThumbHeight = 1;
         childMargin = "0 0";
-    }.add(new GuiScrollCtrl(SystemMessageScrollCtrl)
-    {
-        profile = "ETSScrollProfile";
-        horizSizing = "width";
-        vertSizing = "height";
-        position = "3 0";
-        extent = "229 180";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        willFirstRespond = 1;
-        hScrollBar = "alwaysOff";
-        vScrollBar = "dynamic";
-        constantThumbHeight = 1;
-        childMargin = "0 0";
-    });
+    };);
     SystemMessageTextCtrl.setText(SystemMessageTextCtrl.DefaultMessage);
-    return ;
 }
 function HudTabs::fillPrivateSpaceTab(%this)
 {
@@ -825,8 +963,7 @@ function HudTabs::fillPrivateSpaceTab(%this)
     %theTab = %this.getTabWithName("private space");
     %theTab.content.setName("PrivSpaceHud");
     %theTab.content.bindClassName("PrivSpaceHud");
-    PrivSpaceHud.toggleOP = new GuiMLTextCtrl(PrivSpaceHudToggleOP)
-    {
+    PrivSpaceHud.toggleOP = new GuiMLTextCtrl(PrivSpaceHudToggleOP) {
         profile = "ETSShadowTextProfile";
         extent = "68 18";
         horizSizing = "right";
@@ -840,11 +977,30 @@ function HudTabs::fillPrivateSpaceTab(%this)
         maxLength = 64;
     };
     %theTab.add(PrivSpaceHud.toggleOP);
+    PrivSpaceHud.add(new GuiControl(OPSpaceHud) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = PrivSpaceHud.getExtent();
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+    };);
+    PrivSpaceHud.add(new GuiControl(NonOPSpaceHud) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = PrivSpaceHud.getExtent();
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+    };);
     OPSpaceHud.setup();
     NonOPSpaceHud.setup();
     PrivSpaceHud.hideOP();
-    new GuiMLTextCtrl(SpaceSurfText)
-    {
+    new GuiMLTextCtrl(SpaceSurfText) {
         profile = "InfoWindowTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
@@ -859,8 +1015,7 @@ function HudTabs::fillPrivateSpaceTab(%this)
         maxChars = -1;
     };
     %theTab.add(SpaceSurfText);
-    new GuiTextEditCtrl(SpaceSurfTE)
-    {
+    new GuiTextEditCtrl(SpaceSurfTE) {
         profile = "InfoWindowTextEditProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -878,12 +1033,10 @@ function HudTabs::fillPrivateSpaceTab(%this)
     };
     %theTab.add(SpaceSurfTE);
     %this.filledPrivateSpaceTab = 1;
-    return ;
 }
 function PrivSpaceHud::onClose(%this)
 {
     OPSpaceHud.descriptionChanged();
-    return ;
 }
 function PrivSpaceHudToggleOP::onURL(%this, %url)
 {
@@ -902,17 +1055,14 @@ function PrivSpaceHudToggleOP::onURL(%this, %url)
             error("Url in PrivSpaceHud.toggleOP is broken.<-" @ getScopeName());
         }
     }
-    return ;
 }
 function PrivSpaceHud::enableOPlink(%this)
 {
     %this.toggleOP.setVisible(1);
-    return ;
 }
 function PrivSpaceHud::disableOPlink(%this)
 {
     %this.toggleOP.setVisible(0);
-    return ;
 }
 function PrivSpaceHud::showOP(%this)
 {
@@ -924,20 +1074,18 @@ function PrivSpaceHud::showOP(%this)
         HudTabs.dontCloseNextTime();
     }
     CSControlPanel.open();
-    return ;
 }
 function PrivSpaceHud::hideOP(%this)
 {
     OPSpaceHud.setVisible(0);
     NonOPSpaceHud.setVisible(1);
-    %this.toggleOP.setText("<a:OPon >(host\'s view)</a>");
+    %this.toggleOP.setText("<a:OPon >(host's view)</a>");
     if (HudTabs.getCurrentTab().name $= "private space")
     {
         HudTabs.autoHideSchedule($Pref::ETS::HudTabs::timeout);
         OPSpaceHud.descriptionChanged();
     }
     CSControlPanel.close();
-    return ;
 }
 function PrivSpaceHud::updateMusic(%this, %newStreamID)
 {
@@ -957,25 +1105,33 @@ function PrivSpaceHud::updateMusic(%this, %newStreamID)
     }
     OPSpaceHud.updateMusic(%newStreamName);
     NonOPSpaceHud.updateMusic(%newStreamName);
-    return ;
 }
 function clientCmdPrivSpaceHudUpdateMusic(%newStreamID)
 {
-    return ;
 }
 function clientCmdPrivSpaceHudUpdateVideo(%unused)
 {
-    return ;
 }
 function OPSpaceHud::setup(%this)
 {
     %ypos = 0;
-    %this.spaceNameField = new GuiTextCtrl()
-    {
+    %this.add(new GuiTextCtrl("") {
         profile = "InfoWindowNonModalTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 60 SPC %ypos;
+        position = 0 @ " " @ %ypos;
+        extent = "68 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Name: ";
+        maxLength = 64;
+    };);
+    %this.spaceNameField = new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 60 @ " " @ %ypos;
         extent = "155 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -984,12 +1140,23 @@ function OPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.spaceNameField);
-    %this.spaceDescField = new GuiTextEditCtrl()
-    {
+    %this.add(new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 22;
+        extent = "100 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Description: ";
+        maxLength = 64;
+    };);
+    %this.spaceDescField = new GuiTextEditCtrl("") {
         profile = "InfoWindowTextEditProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 20;
+        position = 0 @ " " @ %ypos = %ypos + 20;
         extent = "215 16";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1003,14 +1170,25 @@ function OPSpaceHud::setup(%this)
         sinkAllKeyEvents = 0;
     };
     %this.add(%this.spaceDescField);
-    %this.AccessOptAnyone = new GuiRadioCtrl()
-    {
+    %this.add(new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 27;
+        extent = "68 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Access:";
+        maxLength = 64;
+    };);
+    %this.AccessOptAnyone = new GuiRadioCtrl("") {
         profile = "InfoWindowRadioButtonProfile";
         groupNum = 1;
         buttonType = "RadioButton";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 20;
+        position = 0 @ " " @ %ypos = %ypos + 20;
         extent = "68 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1020,14 +1198,13 @@ function OPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.AccessOptAnyone);
-    %this.AccessOptFriends = new GuiRadioCtrl()
-    {
+    %this.AccessOptFriends = new GuiRadioCtrl("") {
         profile = "InfoWindowRadioButtonProfile";
         groupNum = 1;
         buttonType = "RadioButton";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 20;
+        position = 0 @ " " @ %ypos = %ypos + 20;
         extent = "120 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1037,14 +1214,25 @@ function OPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.AccessOptFriends);
-    %this.MusicStreamDropdown = new GuiPopUp2MenuCtrl()
-    {
+    %this.add(new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
+        extent = "68 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Music: ";
+        maxLength = 64;
+    };);
+    %this.MusicStreamDropdown = new GuiPopUp2MenuCtrl("") {
         profile = "InfoWindowPopupProfile";
         scrollProfile = "DottedScrollProfile";
         winProfile = "InfoWindowPopupWindowProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 20;
+        position = 0 @ " " @ %ypos = %ypos + 20;
         extent = "200 30";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1056,7 +1244,6 @@ function OPSpaceHud::setup(%this)
         allowReverse = 0;
     };
     %this.add(%this.MusicStreamDropdown);
-    return ;
 }
 function OPSpaceHud::accessSelected(%this, %accessLevel)
 {
@@ -1065,7 +1252,6 @@ function OPSpaceHud::accessSelected(%this, %accessLevel)
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", %accessLevel, "", "");
     }
     %this.accessLevel = %accessLevel;
-    return ;
 }
 function OPSpaceHud::descriptionChanged(%this)
 {
@@ -1075,7 +1261,6 @@ function OPSpaceHud::descriptionChanged(%this)
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), %description, "", "", "");
     }
     %this.description = %description;
-    return ;
 }
 function OPSpaceHud::MusicSelected(%this)
 {
@@ -1083,13 +1268,13 @@ function OPSpaceHud::MusicSelected(%this)
     if (%selection $= "")
     {
         error("Empty string was selected on MusicStreamDropdown. Not sending request. Check that the server sent StreamID was in the $musicStreamIDMap checked by PrivSpaceHud::updateMusic <-" @ getScopeName());
-        return ;
+        return;
     }
     if (!(%selection $= %this.musicStream))
     {
         if (isObject($musicStreamNameMap))
         {
-            log("communication", "debug", "getting the stream name from the musicStreamMap which is" SPC $musicStreamNameMap);
+            log("communication", "debug", "getting the stream name from the musicStreamMap which is" @ " " @ $musicStreamNameMap);
             %streamID = $musicStreamNameMap.get(%selection);
         }
         else
@@ -1101,7 +1286,6 @@ function OPSpaceHud::MusicSelected(%this)
         customSpace::SetMusicStreamID(%streamID);
     }
     %this.musicStream = %selection;
-    return ;
 }
 function OPSpaceHud::updateMusic(%this, %newStreamName)
 {
@@ -1121,9 +1305,8 @@ function OPSpaceHud::updateMusic(%this, %newStreamName)
     }
     else
     {
-        warn("Tried to set selected music stream on updating OPSpaceHud settings, but the music wasn\'t loaded!<-" @ getScopeName());
+        warn("Tried to set selected music stream on updating OPSpaceHud settings, but the music wasn't loaded!<-" @ getScopeName());
     }
-    return ;
 }
 function OPSpaceHud::updateStreams(%this, %streamList)
 {
@@ -1134,7 +1317,6 @@ function OPSpaceHud::updateStreams(%this, %streamList)
         %selectedIndex = %this.MusicStreamDropdown.findText(%this.musicStream);
     }
     %this.MusicStreamDropdown.SetSelected(%selectedIndex);
-    return ;
 }
 function OPSpaceHud::updateSettings(%this, %name, %description, %accessMode)
 {
@@ -1158,17 +1340,27 @@ function OPSpaceHud::updateSettings(%this, %name, %description, %accessMode)
         }
     }
     %this.spaceNameField.setText(%name);
-    return ;
 }
 function NonOPSpaceHud::setup(%this)
 {
     %ypos = 0;
-    %this.spaceNameField = new GuiMLTextCtrl()
-    {
+    %this.add(new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos;
+        extent = "68 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Name: ";
+        maxLength = 64;
+    };);
+    %this.spaceNameField = new GuiMLTextCtrl("") {
         profile = "InfoWindowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 60 SPC %ypos;
+        position = 60 @ " " @ %ypos;
         extent = "170 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1177,12 +1369,23 @@ function NonOPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.spaceNameField);
-    %this.spaceOwnerField = new GuiMLTextCtrl(NonOPSpaceHudOwnerField)
-    {
+    %this.add(new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
+        extent = "68 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Host: ";
+        maxLength = 64;
+    };);
+    %this.spaceOwnerField = new GuiMLTextCtrl(NonOPSpaceHudOwnerField) {
         profile = "InfoWindowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 60 SPC %ypos;
+        position = 60 @ " " @ %ypos;
         extent = "170 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1191,12 +1394,23 @@ function NonOPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.spaceOwnerField);
-    %this.spaceDescField = new GuiTextCtrl()
-    {
+    %this.add(new GuiTextCtrl("") {
         profile = "InfoWindowNonModalTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 20;
+        position = 0 @ " " @ %ypos = %ypos + 35;
+        extent = "85 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Description: ";
+        maxLength = 64;
+    };);
+    %this.spaceDescField = new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
         extent = "215 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1205,12 +1419,23 @@ function NonOPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.spaceDescField);
-    %this.musicStreamField = new GuiTextCtrl()
-    {
+    %this.add(new GuiTextCtrl("") {
         profile = "InfoWindowNonModalTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 20;
+        position = 0 @ " " @ %ypos = %ypos + 40;
+        extent = "68 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Music: ";
+        maxLength = 64;
+    };);
+    %this.musicStreamField = new GuiTextCtrl("") {
+        profile = "InfoWindowNonModalTextProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = 0 @ " " @ %ypos = %ypos + 20;
         extent = "215 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1219,12 +1444,11 @@ function NonOPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.musicStreamField);
-    %this.bigMLText = new GuiMLTextCtrl()
-    {
+    %this.bigMLText = new GuiMLTextCtrl("") {
         profile = "InfoWindowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 0 SPC %ypos = %ypos + 30;
+        position = 0 @ " " @ %ypos = %ypos + 30;
         extent = "215 200";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1233,7 +1457,6 @@ function NonOPSpaceHud::setup(%this)
         maxLength = 64;
     };
     %this.add(%this.bigMLText);
-    return ;
 }
 function NonOPSpaceHud::updateSettings(%this, %name, %description, %owner)
 {
@@ -1247,12 +1470,10 @@ function NonOPSpaceHud::updateSettings(%this, %name, %description, %owner)
     }
     %this.spaceDescField.setText(%description);
     %this.spaceNameField.setText(%name);
-    return ;
 }
 function NonOPSpaceHud::updateMusic(%this, %newStreamName)
 {
     %this.musicStreamField.setText(%newStreamName);
-    return ;
 }
 function GuiPopUp2MenuCtrl::fillFromList(%this, %list)
 {
@@ -1265,7 +1486,6 @@ function GuiPopUp2MenuCtrl::fillFromList(%this, %list)
         %i = %i + 1;
     }
 }
-
 function NonOPSpaceHudOwnerField::onURL(%this, %url)
 {
     if (getWord(%url, 0) $= "noowner")
@@ -1279,7 +1499,6 @@ function NonOPSpaceHudOwnerField::onURL(%this, %url)
             onLeftClickPlayerName(unmunge(getWords(%url, 1)), "");
         }
     }
-    return ;
 }
 function NonOPSpaceHudOwnerField::onRightURL(%this, %url)
 {
@@ -1293,13 +1512,12 @@ function NonOPSpaceHudOwnerField::onRightURL(%this, %url)
             onRightClickPlayerName(unmunge(getWords(%url, 1)));
         }
     }
-    return ;
 }
 function CustomSpaceSettings::saveSettings(%spaceName, %description, %accessMode, %password, %audioStream, %videoStream)
 {
-    if (!isObject($CSSpaceInfo) && !(($CSSpaceInfo.owner $= $Player::Name)))
+    if (!isObject($CSSpaceInfo) || !($CSSpaceInfo.owner $= $Player::Name))
     {
-        return ;
+        return;
     }
     if (!(%description $= ""))
     {
@@ -1311,15 +1529,17 @@ function CustomSpaceSettings::saveSettings(%spaceName, %description, %accessMode
     }
     if ($StandAlone)
     {
-        echo(getScopeName() SPC "pretending success using standalone");
-        return ;
+        echo(getScopeName() @ " " @ "pretending success using standalone");
+        return;
     }
-    if (!haveValidManagerHost() && !haveValidToken())
+    if (!haveValidManagerHost() || !haveValidToken())
     {
-        echo(getScopeName() SPC "No valid manager host or token.");
-        return ;
+        echo(getScopeName() @ " " @ "No valid manager host or token.");
+        return;
     }
-    %request = new ManagerRequest();
+    %request = new ManagerRequest("") {
+        className = "ModifyCustomSpaceSettingsRequest";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%request);
@@ -1358,7 +1578,6 @@ function CustomSpaceSettings::saveSettings(%spaceName, %description, %accessMode
     {
         CSRulesPasswordSavedIndicator.incrementRequestCount();
     }
-    return ;
 }
 function ModifyCustomSpaceSettingsRequest::onDone(%this)
 {
@@ -1377,17 +1596,17 @@ function ModifyCustomSpaceSettingsRequest::onDone(%this)
     {
         CSRulesPasswordSavedIndicator.decrementRequestCount();
     }
-    return ;
 }
 function ModifyCustomSpaceSettingsRequest::onError(%this, %unused, %errMsg)
 {
     error("network", getScopeName() @ ":" @ %errMsg);
     %this.schedule(0, "delete");
-    return ;
 }
 function CustomSpaceSettings::changeSpaceOwnership(%spaceName, %takeOwnershipBool)
 {
-    %request = new ManagerRequest();
+    %request = new ManagerRequest("") {
+        className = "ChangeSpaceOwnershipRequest";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%request);
@@ -1397,7 +1616,6 @@ function CustomSpaceSettings::changeSpaceOwnership(%spaceName, %takeOwnershipBoo
     %request.setURL(%url);
     %request.spaceName = %spaceName;
     %request.start();
-    return ;
 }
 function ChangeSpaceOwnershipRequest::onDone(%this)
 {
@@ -1422,24 +1640,22 @@ function ChangeSpaceOwnershipRequest::onDone(%this)
             }
             else
             {
-                handleSystemMessage("msgInfoMessage", "Sorry, you couldn\'t change the ownership of the space.");
+                handleSystemMessage("msgInfoMessage", "Sorry, you couldn't change the ownership of the space.");
             }
         }
     }
     %this.schedule(0, "delete");
-    return ;
 }
 function CustomSpaceSettings::onError(%this, %unused, %errMsg)
 {
     error("network", getScopeName() @ ":" @ %errMsg);
     %this.schedule(0, "delete");
-    return ;
 }
 function HudTabs::addPermissionBasedContent(%this)
 {
     if (!%this.filledPrivateSpaceTab)
     {
-        return ;
+        return;
     }
     %hasPerm = $player.rolesPermissionCheckNoWarn("fly");
     SpaceSurfText.setVisible(%hasPerm);
@@ -1448,15 +1664,12 @@ function HudTabs::addPermissionBasedContent(%this)
     {
         %this.showTabWithName("private space");
     }
-    return ;
 }
 function SpaceSurfText::onURL(%this, %url)
 {
-    teleportToAdjacentSpace(%url $= "spaceN");
-    return ;
+    teleportToAdjacentSpace((%url $= "spaceN"));
 }
 function SpaceSurfTE::onEnter(%this)
 {
     teleportToSpaceNumber(%this.getValue());
-    return ;
 }

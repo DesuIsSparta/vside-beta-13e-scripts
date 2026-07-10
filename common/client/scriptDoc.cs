@@ -1,14 +1,12 @@
 function writeOutFunctions()
 {
-    new ConsoleLogger(Logger, "scriptFunctions.txt", 0);
+    new ConsoleLogger(Logger);
     dumpConsoleFunctions();
     Logger.delete();
-    return ;
 }
 function writeOutClasses()
 {
-    new ConsoleLogger(Logger, "scriptClasses.txt", 0);
+    new ConsoleLogger(Logger);
     dumpConsoleClasses();
     Logger.delete();
-    return ;
 }

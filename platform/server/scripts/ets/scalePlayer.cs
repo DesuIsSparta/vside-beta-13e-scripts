@@ -2,7 +2,7 @@ function Player::UseHeightRandom(%this)
 {
     %height = getRandom(98, 110) * 0.01;
     %this.setHeight(%height);
-    return ;
+    return;
 }
 function Player::setHeight(%this, %height)
 {
@@ -28,17 +28,17 @@ function Player::setHeight(%this, %height)
         %h = %height;
     }
     %sxy = ((%h - 1) * $Pref::Server::playerHeightWidthFactor) + 1;
-    %this.setScale(%sxy SPC %sxy SPC %h);
-    return ;
+    %this.setScale(%sxy @ " " @ %sxy @ " " @ %h);
+    return;
 }
 function serverCmdSetHeight(%client, %height)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.setHeight(%height);
-    return ;
+    return;
 }
 function Player::getAngleTowards(%this, %obj)
 {
@@ -55,8 +55,8 @@ function Player::getAngleTowards(%this, %obj)
 function Player::orientToward(%this, %obj)
 {
     %angle = %this.getAngleTowards(%obj);
-    %this.setTransform(%posA SPC "0 0 1" SPC %angle);
-    return ;
+    %this.setTransform(%posA @ " " @ "0 0 1" @ " " @ %angle);
+    return;
 }
 function Player::orientTowardsOverTime(%this, %obj, %milliseconds)
 {
@@ -73,16 +73,16 @@ function Player::orientTowardsOverTime(%this, %obj, %milliseconds)
     %numTicks = %milliseconds / %period;
     %dA2 = %dA / %numTicks;
     %this.orientTowardsTicker(%rotA, %dA2, %numTicks);
-    return ;
+    return;
 }
 function Player::orientTowardsTicker(%this, %curA, %dltA, %ticksLeft)
 {
     %curA = %curA + %dltA;
     %ticksLeft = %ticksLeft - 1;
-    %this.setTransform(%this.getPosition() SPC "0 0 1" SPC %curA);
+    %this.setTransform(%this.getPosition() @ " " @ "0 0 1" @ " " @ %curA);
     if (%ticksLeft > 0)
     {
         %this.schedule(gGetField(%this, orientTickPeriod), "orientTowardsTicker", %curA, %dltA, %ticksLeft);
     }
-    return ;
+    return;
 }

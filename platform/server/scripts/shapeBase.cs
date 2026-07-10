@@ -1,7 +1,6 @@
 function ShapeBase::Damage(%this, %sourceObject, %position, %damage, %damageType)
 {
     %this.getDataBlock().Damage(%this, %sourceObject, %position, %damage, %damageType);
-    return ;
 }
 function ShapeBase::setDamageDt(%this, %damageAmount, %damageType)
 {
@@ -14,7 +13,6 @@ function ShapeBase::setDamageDt(%this, %damageAmount, %damageType)
     {
         %obj.damageSchedule = "";
     }
-    return ;
 }
 function ShapeBase::clearDamageDt(%this)
 {
@@ -23,9 +21,7 @@ function ShapeBase::clearDamageDt(%this)
         cancel(%obj.damageSchedule);
         %obj.damageSchedule = "";
     }
-    return ;
 }
 function ShapeBaseData::Damage(%this, %obj, %position, %unused, %unused, %damageType)
 {
-    return ;
 }

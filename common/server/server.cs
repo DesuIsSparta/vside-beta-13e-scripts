@@ -16,7 +16,7 @@ function createServer(%serverType, %mission)
     if (%mission $= "")
     {
         error("createServer: mission name unspecified");
-        return ;
+        return;
     }
     destroyServer();
     $MissionSequence = 0;
@@ -38,7 +38,7 @@ function createServer(%serverType, %mission)
     new StringMap(PlayerNameLowerToRegMap);
     onServerCreated();
     loadMission(%mission, 1);
-    return ;
+    return;
 }
 function destroyServer()
 {
@@ -67,7 +67,7 @@ function destroyServer()
     $Server::GuidList = "";
     deleteDataBlocks();
     purgeResources();
-    return ;
+    return;
 }
 function resetServerDefaults()
 {
@@ -75,7 +75,7 @@ function resetServerDefaults()
     exec("~/defaults.cs");
     exec("~/prefs.cs");
     loadMission($Server::MissionFile);
-    return ;
+    return;
 }
 function addToServerGuidList(%guid)
 {
@@ -85,12 +85,12 @@ function addToServerGuidList(%guid)
     {
         if (getField($Server::GuidList, %i) == %guid)
         {
-            return ;
+            return;
         }
         %i = %i + 1;
     }
     $Server::GuidList = $Server::GuidList $= "" ? %guid : $Server::GuidList;
-    return ;
+    return;
 }
 function removeFromServerGuidList(%guid)
 {
@@ -101,12 +101,11 @@ function removeFromServerGuidList(%guid)
         if (getField($Server::GuidList, %i) == %guid)
         {
             $Server::GuidList = removeField($Server::GuidList, %i);
-            return ;
+            return;
         }
         %i = %i + 1;
     }
 }
-
 function isUserConnected(%userName)
 {
     %client = ClientDict.getNorm(%userName);

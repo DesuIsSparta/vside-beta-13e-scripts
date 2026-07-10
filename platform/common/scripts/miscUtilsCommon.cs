@@ -7,7 +7,7 @@ function SimSet::sortByInternalName(%this, %recurse)
     {
         %obj = %this.getObject(%n);
         %chilluns = %chilluns @ %delim;
-        %chilluns = %chilluns @ %obj.getInternalName() TAB %obj;
+        %chilluns = %chilluns @ %obj.getInternalName() @ "\t" @ %obj;
         %delim = "\n";
         %n = %n - 1;
     }
@@ -33,21 +33,17 @@ function SimSet::sortByInternalName(%this, %recurse)
         }
     }
 }
-
 function echoDebug(%line)
 {
     log("general", "debug", %line);
-    return ;
 }
 function echoWarn(%line)
 {
     log("general", "warn", %line);
-    return ;
 }
 function echoError(%line)
 {
     log("general", "error", %line);
-    return ;
 }
 function FileObject::indent(%this)
 {
@@ -56,7 +52,6 @@ function FileObject::indent(%this)
         %this.indentString = "   ";
     }
     %this.indent = %this.indent @ %this.indentString;
-    return ;
 }
 function FileObject::unindent(%this)
 {
@@ -65,45 +60,38 @@ function FileObject::unindent(%this)
         %this.indentString = "   ";
     }
     %this.indent = getSubStr(%this.indent, strlen(%this.indentString), -1);
-    return ;
 }
 function FileObject::writeLineIndented(%this, %line)
 {
     %line = %this.indent @ %line;
     %line = strreplace(%line, "\n", "\n" @ %this.indent @ %this.indent);
     %this.writeLine(%line);
-    return ;
 }
 function FileObject::writeOpenTag(%this, %tagName, %tagValues)
 {
-    %this.writeLineIndented("<" @ %tagName @ %tagValues $= "" ? "" : " " @ %tagValues @ ">");
+    %this.writeLineIndented(("<" @ %tagName @ " " @ %tagValues $= "") ? "" : " " @ %tagValues @ ">");
     %this.indent();
-    return ;
 }
 function FileObject::writeCloseTag(%this, %tagName)
 {
     %this.unindent();
     %this.writeLineIndented("</" @ %tagName @ ">");
-    return ;
 }
 function FileObject::writeShortTag(%this, %tagName, %tagValues, %tagContent)
 {
-    %line = "<" @ %tagName @ %tagValues $= "" ? "" : " " @ %tagValues @ ">";
+    %line = "<" @ %tagName @ " " @ %tagValues $= "" ? "" : " " @ %tagValues @ ">";
     %line = %line @ %tagContent;
     %line = %line @ "</" @ %tagName @ ">";
     %this.writeLineIndented(%line);
-    return ;
 }
 function FileObject::writeCommentTag(%this, %value)
 {
-    %line = "<!--" SPC %value SPC "-->";
+    %line = "<!--" @ " " @ %value @ " " @ "-->";
     %this.writeLineIndented(%line);
-    return ;
 }
 function SimObject::dumpParentContainers(%this)
 {
     %this._dumpParentContainersRecursive(%this, 0);
-    return ;
 }
 function SimObject::_dumpParentContainersRecursive(%this, %depth)
 {
@@ -111,7 +99,6 @@ function SimObject::_dumpParentContainersRecursive(%this, %depth)
     %container = %this.getGroup();
     if (isObject(%container))
     {
-        %container._dumpParentContainersRecursive(%depth + 1);
+        %container._dumpParentContainersRecursive((%depth + 1));
     }
-    return ;
 }

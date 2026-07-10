@@ -4,7 +4,6 @@ function testPermissions_Master()
     asyncTestsMasterAdd("testPermissions_AddABot", 1000);
     asyncTestsMasterAdd("testPermissions_AddABotArmy", 3000);
     asyncTestsMasterRun();
-    return ;
 }
 function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess)
 {

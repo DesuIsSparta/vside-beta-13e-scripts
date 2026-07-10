@@ -2,29 +2,23 @@ addMessageCallback('MsgConnectionError', handleConnectionErrorMessage);
 function handleConnectionErrorMessage(%unused, %msgString)
 {
     $ServerConnectionErrorMessage = %msgString;
-    return ;
 }
 function GameConnection::initialControlSet(%this)
 {
     echo("*** Initial Control Object");
-    if (!isObject(EditorGui) && !Editor::checkActiveLoadDone())
+    if (!isObject(EditorGui) || !Editor::checkActiveLoadDone() && (Canvas.getContent() != PlayGui.getId()))
     {
-        if (Canvas.getContent() != PlayGui.getId())
-        {
-            Canvas.setContent(PlayGui);
-        }
+        Canvas.setContent(PlayGui);
     }
     %this.etsInit();
-    return ;
 }
 function GameConnection::setLagIcon(%this, %state)
 {
     if (%this.getAddress() $= "local")
     {
-        return ;
+        return;
     }
-    LagIcon.setVisible(%state $= "true");
-    return ;
+    LagIcon.setVisible((%state $= "true"));
 }
 function GameConnection::onConnectionAccepted(%this)
 {
@@ -32,23 +26,19 @@ function GameConnection::onConnectionAccepted(%this)
     $GameConnection = %this;
     $VURLcmd = "";
     getUserActivityMgr().setActivityActive("traveling", 1);
-    return ;
 }
 function GameConnection::onServerConnectionPossiblyTimingOut(%this)
 {
     warn("Possibly losing connection to server..");
-    return ;
 }
 function GameConnection::onServerConnectionRestored(%this)
 {
     warn("Restored connection to server.");
-    return ;
 }
 function GameConnection::onServerConnectionTimedOut(%this)
 {
     disconnectedCleanup(geTGF);
     MessageBoxOK("TIMED OUT", $MsgCat::network["E-SERVER-TIMEOUT"], "");
-    return ;
 }
 function GameConnection::onConnectionDropped(%this, %msg)
 {
@@ -58,7 +48,7 @@ function GameConnection::onConnectionDropped(%this, %msg)
         %this.waitForDisconnect = 0;
         disconnectedCleanup("");
         WorldMap.schedule(1, "doServerJoin", $SpawnTargetSavedVURL);
-        return ;
+        return;
     }
     if (getField(%msg, 0) $= "bootToMap")
     {
@@ -88,7 +78,6 @@ function GameConnection::onConnectionDropped(%this, %msg)
         disconnectedCleanup(LoginGui);
         MessageBoxOK("DISCONNECT", $MsgCat::network["E-DROPPED"] @ %msg, "");
     }
-    return ;
 }
 function GameConnection::onConnectionError(%this, %msg)
 {
@@ -99,7 +88,6 @@ function GameConnection::onConnectionError(%this, %msg)
     }
     disconnectedCleanup(geTGF);
     MessageBoxOK("DISCONNECT", $ServerConnectionErrorMessage @ " (" @ %msg @ ")", "");
-    return ;
 }
 function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
 {
@@ -183,14 +171,14 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
                                                     $Client::Password = "";
                                                     MessageBoxOK("REJECTED", $MsgCat::login["PASSWORD-BAD"], "");
                                                 }
-                                                return ;
+                                                return;
                                             }
                                             else
                                             {
                                                 if (%msg $= "CHR_PROTOCOL")
                                                 {
                                                     %error = $MsgCat::network["E-PROTOCOL-VER"];
-                                                    %error = %error NL $MsgCat::login["E-UPGRADE-2"];
+                                                    %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
                                                     %destGui = geTGF;
                                                 }
                                                 else
@@ -198,7 +186,7 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
                                                     if (%msg $= "CHR_CLASSCRC")
                                                     {
                                                         %error = $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".";
-                                                        %error = %error NL $MsgCat::login["E-UPGRADE-2"];
+                                                        %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
                                                         %destGui = geTGF;
                                                     }
                                                     else
@@ -206,7 +194,7 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
                                                         if (%msg $= "CHR_CLASSCRCROOTDIRVAL")
                                                         {
                                                             %error = $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".";
-                                                            %error = %error NL $MsgCat::login["E-UPGRADE-2"];
+                                                            %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
                                                             %destGui = geTGF;
                                                         }
                                                         else
@@ -214,8 +202,8 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
                                                             if (%msg $= "CHR_INVALID_CHALLENGE_PACKET")
                                                             {
                                                                 %error = $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".";
-                                                                %error = %error NL $MsgCat::login["E-UPGRADE-2"];
-                                                                %error = %error NL "(assets)";
+                                                                %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
+                                                                %error = %error @ "\n" @ "(assets)";
                                                                 %destGui = geTGF;
                                                             }
                                                             else
@@ -248,7 +236,7 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
     }
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/connectionRejected/" @ %msg);
-    if ((%destGui.getId() == LoginGui.getId()) && !((%msg $= "CR_ASSETS_MISSING")))
+    if ((%destGui.getId() == LoginGui.getId()) && !(%msg $= "CR_ASSETS_MISSING"))
     {
         logout(0);
     }
@@ -258,13 +246,11 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
     {
         MessageBoxOK("Could Not Connect", %error, "");
     }
-    return ;
 }
 function GameConnection::onConnectRequestTimedOut(%this)
 {
     disconnectedCleanup(geTGF);
     MessageBoxOK("TIMED OUT", $MsgCat::network["E-SERVER-TIMEOUT"], "");
-    return ;
 }
 function disconnect(%screen)
 {
@@ -274,7 +260,6 @@ function disconnect(%screen)
     }
     disconnectedCleanup(%screen);
     destroyServer();
-    return ;
 }
 function disconnectedStop()
 {
@@ -284,7 +269,6 @@ function disconnectedStop()
     {
         MusicPlayer.stop();
     }
-    return ;
 }
 function disconnectedCleanup(%screen)
 {
@@ -331,10 +315,8 @@ function disconnectedCleanup(%screen)
     clientCmdOnLeaveStore("");
     leaveAllTutorialSpaces();
     afxEndMissionNotify();
-    return ;
 }
 function loggedoutCleanup()
 {
     $Token = "";
-    return ;
 }

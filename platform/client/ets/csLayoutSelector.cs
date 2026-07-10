@@ -9,17 +9,15 @@ function CSLayoutSelector::toggle(%this)
     {
         %this.open();
     }
-    return ;
 }
 function CSLayoutSelector::open(%this)
 {
-    CSLayoutSelectorSaveAsDefaultLink.setVisible(($ETS::devMode && $player.rolesPermissionCheckNoWarn("debugActive")) || $StandAlone);
+    CSLayoutSelectorSaveAsDefaultLink.setVisible($ETS::devMode && $player.rolesPermissionCheckNoWarn("debugActive") || $StandAlone);
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     WindowManager.update();
     %this.setMode("");
     CustomSpaceClient::checkEditingSpace();
-    return ;
 }
 function CSLayoutSelector::close(%this)
 {
@@ -34,16 +32,15 @@ function CSLayoutSelector::layoutSelected(%this, %newLayoutSelection)
     if (%this.selectedLayout == %newLayoutSelection)
     {
         %this.setMode("");
-        return ;
+        return;
     }
     if (%this.layMode $= "COPY")
     {
         %this.getCopyTargetInfo(%this.selectedLayout, %newLayoutSelection);
-        return ;
+        return;
     }
     %undoClickCmd = "CSLayoutButtonsArray.getChild(" @ %this.selectedLayout @ ",0).buttonSelect.performClick();";
     MessageBoxYesNo($MsgCat::custSpace["LAYOUT_CHANGE","TITLE"], $MsgCat::custSpace["LAYOUT_CHANGE","BODY"], "CSLayoutSelector.layoutSelectedAndConfirmed(" @ %newLayoutSelection @ ");", %undoClickCmd);
-    return ;
 }
 function CSLayoutSelector::layoutSelectedAndConfirmed(%this, %newLayoutSelection)
 {
@@ -51,18 +48,15 @@ function CSLayoutSelector::layoutSelectedAndConfirmed(%this, %newLayoutSelection
     %this.setSelectionState(%newLayoutSelection, 1);
     %this.selectedLayout = %newLayoutSelection;
     %this.saveSettings();
-    return ;
 }
 function CSLayoutSelector::setSelectionState(%this, %buttonIndex, %selected)
 {
     CSLayoutButtonsArray.getObject(%buttonIndex).buttonSelect.setActive(!%selected);
-    return ;
 }
 function CSLayoutSelector::saveSettings(%this)
 {
     echo("Saving new space layout selection: " @ %this.selectedLayout);
     csSelectLayout(%this.selectedLayout);
-    return ;
 }
 function CSLayoutSelector::updateSettings(%this, %numLayouts, %curLayout)
 {
@@ -78,43 +72,44 @@ function CSLayoutSelector::updateSettings(%this, %numLayouts, %curLayout)
     %this.selectedLayout = %curLayout;
     CSLayoutButtonsArray.getObject(%this.selectedLayout).buttonSelect.performClick();
     %this.setSelectionState(%this.selectedLayout, 1);
-    if (!((%oldSelected $= "")) && (%oldSelected != %this.selectedLayout))
+    if (!(%oldSelected $= "") && (%oldSelected != %this.selectedLayout))
     {
         %this.setSelectionState(%oldSelected, 0);
     }
-    return ;
 }
 function CSLayoutSelector::cloneLayout(%this, %sourceLayout)
 {
     %title = $MsgCat::custSpace["LAYOUT_CLONE","TITLE"];
     %body = $MsgCat::custSpace["LAYOUT_CLONE","BODY"];
-    %body = strreplace(%body, "[SRC]", %sourceLayout + 1);
-    %body = strreplace(%body, "[DST]", %this.selectedLayout + 1);
+    %body = strreplace(%body, "[SRC]", (%sourceLayout + 1));
+    %body = strreplace(%body, "[DST]", (%this.selectedLayout + 1));
     MessageBoxYesNo(%title, %body, "CSLayoutSelector.cloneLayoutConfirmed(" @ %sourceLayout @ ");", "");
-    return ;
 }
 function CSLayoutSelector::cloneLayoutConfirmed(%this, %sourceLayout)
 {
     csCopyLayoutFromTo(%sourceLayout, %this.selectedLayout);
-    return ;
 }
 function CSLayoutButtonsArray::onCreatedChild(%this, %child)
 {
     %num = %this.getCount() - 1;
-    %ctrl = new GuiBitmapButtonCtrl()
-    {
+    %ctrl = new GuiBitmapButtonCtrl("") {
         position = "3 0";
         extent = "35 35";
         profile = "GuiClickLabelProfile";
         command = CSLayoutSelector.getId() @ ".layoutSelected(" @ %num @ ");";
         bitmap = "platform/client/buttons/emptyCircleBrightInactive";
     };
+    new GuiMLTextCtrl("") {
+        profile = "etsNonModalProfile";
+        position = "9 11";
+        extent = "15 15";
+        text = "<color:ffffff><b><just:center>" @ " " @ (%num + 1);
+    };
     %ctrl.bindClassName("CSLayoutButton");
     %ctrl.num = %num;
     %child.buttonSelect = %ctrl;
     %child.add(%ctrl);
     CSLayoutSelector.setSelectionState(%num, 0);
-    return ;
 }
 function CSLayoutSelectorLink::onURL(%this, %url)
 {
@@ -156,14 +151,13 @@ function CSLayoutSelectorLink::onURL(%this, %url)
             }
         }
     }
-    return ;
 }
 function CSLayoutSelector::setMode(%this, %mode)
 {
     if (%mode $= "COPY")
     {
-        %titleText = "<color:ffffff>Copy Layout " @ %this.selectedLayout + 1 @ " To";
-        %descText = "<color:ffffff>Select the layout to copy layout " @ %this.selectedLayout + 1 @ " into!";
+        %titleText = "<color:ffffff>Copy Layout " @ (%this.selectedLayout + 1) @ " To";
+        %descText = "<color:ffffff>Select the layout to copy layout " @ (%this.selectedLayout + 1) @ " into!";
         %copyLink = "<a:gamelink MODE DEFAULT>[cancel]</a>";
         %eraseLink = "";
         %defaultLink = "";
@@ -183,7 +177,6 @@ function CSLayoutSelector::setMode(%this, %mode)
     CSLayoutSelectorCopyLink.setText(%copyLink);
     CSLayoutSelectorEraseLink.setText(%eraseLink);
     CSLayoutSelectorDefaultLink.setText(%defaultLink);
-    return ;
 }
 function CSLayoutSelector::getCopyTargetInfo(%this, %sourceLayout, %layoutNum)
 {
@@ -191,7 +184,6 @@ function CSLayoutSelector::getCopyTargetInfo(%this, %sourceLayout, %layoutNum)
     %this.sourceLayout = %sourceLayout;
     %this.copyTarget = %layoutNum;
     csGetLayoutVitals(%layoutNum);
-    return ;
 }
 function CSLayoutSelector::gotCopyTargetInfo(%this, %infoStr)
 {
@@ -200,11 +192,11 @@ function CSLayoutSelector::gotCopyTargetInfo(%this, %infoStr)
     {
         warn(getScopeName() @ "-> got passed info string for layout idx = \"" @ %layoutNum @ "\" when copyTarget = \"" @ %this.copyTarget @ "\".");
         %this.copyTarget = "";
-        return ;
+        return;
     }
     if (!(%this.layMode $= "COPY"))
     {
-        return ;
+        return;
     }
     %this.copyTarget = "";
     %layoutFrom = %this.sourceLayout + 1;
@@ -221,16 +213,15 @@ function CSLayoutSelector::gotCopyTargetInfo(%this, %infoStr)
         %body = strreplace(%body, "[DST]", %layoutTo);
         MessageBoxOK(%title, %body, "");
         %this.setMode("");
-        return ;
+        return;
     }
     %this.copyLayout(%this.sourceLayout, %layoutNum, %texturesChnged);
-    return ;
 }
 function CSLayoutSelector::copyLayout(%this, %layoutFrom, %layoutTo, %texturesChnged)
 {
     %title = $MsgCat::custSpace["LAYOUT_COPY","TITLE"];
-    %title = strreplace(%title, "[SRC]", %layoutFrom + 1);
-    %title = strreplace(%title, "[DST]", %layoutTo + 1);
+    %title = strreplace(%title, "[SRC]", (%layoutFrom + 1));
+    %title = strreplace(%title, "[DST]", (%layoutTo + 1));
     if (!(%texturesChnged $= 1))
     {
         %body = $MsgCat::custSpace["LAYOUT_COPY","BODY"];
@@ -239,60 +230,55 @@ function CSLayoutSelector::copyLayout(%this, %layoutFrom, %layoutTo, %texturesCh
     {
         %body = $MsgCat::custSpace["LAYOUT_COPY","BODY_LOSE_TEX"];
     }
-    %body = strreplace(%body, "[SRC]", %layoutFrom + 1);
-    %body = strreplace(%body, "[DST]", %layoutTo + 1);
+    %body = strreplace(%body, "[SRC]", (%layoutFrom + 1));
+    %body = strreplace(%body, "[DST]", (%layoutTo + 1));
     %normalModeCmd = "CSLayoutSelector.setMode(\"\");";
     MessageBoxYesNo(%title, %body, "csCopyLayoutFromTo(" @ %layoutFrom @ ", " @ %layoutTo @ ");" @ %normalModeCmd, %normalModeCmd);
-    return ;
 }
 function customSpace::ConfirmEraseLayout(%layoutNum)
 {
     %title = $MsgCat::custSpace["LAYOUT_ERASE","TITLE"];
-    %title = strreplace(%title, "[TRG]", %layoutNum + 1);
+    %title = strreplace(%title, "[TRG]", (%layoutNum + 1));
     %body = $MsgCat::custSpace["LAYOUT_ERASE","BODY"];
-    %body = strreplace(%body, "[TRG]", %layoutNum + 1);
+    %body = strreplace(%body, "[TRG]", (%layoutNum + 1));
     %cbOkay = "CustomSpace::EraseLayout(" @ %layoutNum @ ");";
     %cbCancel = "";
     MessageBoxOkCancel(%title, %body, %cbOkay, %cbCancel);
-    return ;
 }
 function customSpace::EraseLayout(%layoutNum)
 {
     if (%layoutNum $= "")
     {
         error(getScopeName() @ "->passed empty string for layout num... ");
-        return ;
+        return;
     }
     commandToServer('CSClearLayout', CustomSpaceClient::GetSpaceImIn(), %layoutNum);
     setIdle(0);
-    return ;
 }
 function customSpace::ConfirmResetLayoutToDefault(%layoutNum)
 {
     %title = $MsgCat::custSpace["LAYOUT_DEFAULT","TITLE"];
-    %title = strreplace(%title, "[TRG]", %layoutNum + 1);
+    %title = strreplace(%title, "[TRG]", (%layoutNum + 1));
     %body = $MsgCat::custSpace["LAYOUT_DEFAULT","BODY"];
-    %body = strreplace(%body, "[TRG]", %layoutNum + 1);
+    %body = strreplace(%body, "[TRG]", (%layoutNum + 1));
     %cbOkay = "CustomSpace::ResetLayoutToDefault(" @ %layoutNum @ ");";
     %cbCancel = "";
     MessageBoxOkCancel(%title, %body, %cbOkay, %cbCancel);
-    return ;
 }
 function customSpace::ResetLayoutToDefault(%layoutNum)
 {
     if (%layoutNum $= "")
     {
         error(getScopeName() @ "->passed empty string for layout num...");
-        return ;
+        return;
     }
     commandToServer('CSResetLayoutToDefault', CustomSpaceClient::GetSpaceImIn(), %layoutNum);
     setIdle(0);
-    return ;
 }
 function customSpace::ConfirmSaveLayoutAsDefault(%layoutIdx)
 {
-    %title = "Save Layout " @ %layoutIdx + 1 @ " To Default Apartment";
-    %body = "Do you want to make layout " @ %layoutIdx + 1 @ " in your current space the default layout " @ %layoutIdx + 1 @ " for new apartments of";
+    %title = "Save Layout " @ (%layoutIdx + 1) @ " To Default Apartment";
+    %body = "Do you want to make layout " @ (%layoutIdx + 1) @ " in your current space the default layout " @ (%layoutIdx + 1) @ " for new apartments of";
     if ($StandAlone)
     {
         %body = %body @ " type " @ MissionInfo.modelID;
@@ -301,16 +287,14 @@ function customSpace::ConfirmSaveLayoutAsDefault(%layoutIdx)
     {
         %body = %body @ " this type";
     }
-    %body = %body @ "? The previous default layout " @ %layoutIdx + 1 @ " will be replaced locally.";
+    %body = %body @ "? The previous default layout " @ (%layoutIdx + 1) @ " will be replaced locally.";
     %cbOkay = "csSaveLayoutAsDefault(" @ %layoutIdx @ ");";
     %cbCancel = "";
     MessageBoxOkCancel(%title, %body, %cbOkay, %cbCancel);
-    return ;
 }
 function CSLayoutButton::onMouseDown(%this)
 {
     %this.origin = Canvas.getCursorPos();
-    return ;
 }
 function CSLayoutButton::onMouseDragged(%this)
 {
@@ -324,32 +308,28 @@ function CSLayoutButton::onMouseDragged(%this)
 }
 function CSLayoutButton::makeVisualClone(%this)
 {
-    return new GuiBitmapButtonCtrl()
-    {
+    return new GuiBitmapButtonCtrl("") {
         position = "0 0";
         extent = %this.getExtent();
         bitmap = %this.bitmap;
-    };
-    return ;
+    };;
 }
 function CSLayoutButton::onDragAndDropEnter(%this, %dragCtrl)
 {
     if (findWord(%dragCtrl.getNamespaceList(), "CSLayoutButton") == -1)
     {
-        return ;
+        return;
     }
     if (%this != %dragCtrl)
     {
         hiliteControl(%this, 1);
         %this.depressed = 1;
     }
-    return ;
 }
 function CSLayoutButton::onDragAndDropLeave(%this, %dragCtrl)
 {
     hiliteControl(0);
     %this.depressed = 0;
-    return ;
 }
 function CSLayoutButton::onDragAndDropDrop(%this, %dragCtrl, %unused)
 {

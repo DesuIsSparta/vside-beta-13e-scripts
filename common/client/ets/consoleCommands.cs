@@ -4,7 +4,6 @@ function connectLocal(%userName)
     $Player::Name = %userName;
     %c.setCommonPreconnectClientSettings("");
     %c.connect("localhost:" @ $Pref::Net::Port);
-    return ;
 }
 function GameConnection::setCommonPreconnectClientSettings(%this, %teleTarget)
 {
@@ -13,10 +12,9 @@ function GameConnection::setCommonPreconnectClientSettings(%this, %teleTarget)
     %this.setAssetSet(AssetManager::getCurrentAssetSet());
     %this.setSkus(outfits_getCurrentSkus());
     %this.setTeleportTarget(%teleTarget);
-    log("Network", "debug", getScopeName() SPC "- setUser          :" SPC $Player::Name);
-    log("Network", "debug", getScopeName() SPC "- setToken         :" SPC $Token);
-    log("Network", "debug", getScopeName() SPC "- setAssetSet      :" SPC AssetManager::getCurrentAssetSet());
-    log("Network", "debug", getScopeName() SPC "- setSkus          :" SPC outfits_getCurrentSkus());
-    log("Network", "debug", getScopeName() SPC "- setTeleportTarget:" SPC %teleTarget);
-    return ;
+    log("Network", "debug", getScopeName() @ " " @ "- setUser          :" @ " " @ $Player::Name);
+    log("Network", "debug", getScopeName() @ " " @ "- setToken         :" @ " " @ $Token);
+    log("Network", "debug", getScopeName() @ " " @ "- setAssetSet      :" @ " " @ AssetManager::getCurrentAssetSet());
+    log("Network", "debug", getScopeName() @ " " @ "- setSkus          :" @ " " @ outfits_getCurrentSkus());
+    log("Network", "debug", getScopeName() @ " " @ "- setTeleportTarget:" @ " " @ %teleTarget);
 }

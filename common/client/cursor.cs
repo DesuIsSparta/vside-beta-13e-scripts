@@ -1,11 +1,9 @@
 $cursorControlled = 1;
 function cursorOff()
 {
-    return ;
 }
 function cursorOn()
 {
-    return ;
 }
 package CanvasCursor
 {
@@ -34,33 +32,27 @@ package CanvasCursor
                 cursorOff();
             }
         }
-        return ;
     }
     function GuiCanvas::setContent(%this, %ctrl)
     {
         Parent::setContent(%this, %ctrl);
         %this.checkCursor();
-        return ;
     }
     function GuiCanvas::pushDialog(%this, %ctrl, %layer)
     {
         Parent::pushDialog(%this, %ctrl, %layer);
         %this.checkCursor();
-        return ;
     }
     function GuiCanvas::popDialog(%this, %ctrl)
     {
         Parent::popDialog(%this, %ctrl);
         %this.checkCursor();
-        return ;
     }
     function GuiCanvas::popLayer(%this, %layer)
     {
         Parent::popLayer(%this, %layer);
         %this.checkCursor();
-        return ;
     }
+    activatePackage(CanvasCursor);
 };
-
-activatePackage(CanvasCursor);
 

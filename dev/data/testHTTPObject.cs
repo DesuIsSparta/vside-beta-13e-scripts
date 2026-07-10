@@ -11,23 +11,20 @@ function httpObjTest::init()
 function testHTTPObject()
 {
     testHTTPObjectReal(0);
-    return ;
 }
 function testHTTPObjectReal(%client)
 {
     %httpObj = httpObjTest::init();
     %httpObj.requestingClient = %client;
     %httpObj.get("winbuild:80", "/scripts/orion/tests/pi.txt", "");
-    return ;
 }
 function serverCmdTestHTTPObject(%client)
 {
     if (!%client.hasPlayerObjectAndPermission_Warn("debugActive"))
     {
-        return ;
+        return;
     }
     testHTTPObjectReal(%client);
-    return ;
 }
 function httpObjTestRequest::onLine(%this, %line)
 {
@@ -37,31 +34,27 @@ function httpObjTestRequest::onLine(%this, %line)
     }
     %this.numLines = %this.numLines + 1;
     %this.numChars = %this.numChars + strlen(%line);
-    log("network", "debug", "HTTPObjTestRequest::onLine:" SPC %line);
-    return ;
+    log("network", "debug", "HTTPObjTestRequest::onLine:" @ " " @ %line);
 }
 function httpObjTestRequest::onDisconnect(%this)
 {
     %wwo = %this.gotEOF ? "with" : "without";
     %lvl = %this.gotEOF ? "debug" : "error";
-    %line = "HTTPObjTestRequest::onDisconnect" SPC %wwo SPC "EOF. lines =" SPC %this.numLines SPC "chars =" SPC %this.numChars;
+    %line = "HTTPObjTestRequest::onDisconnect" @ " " @ %wwo @ " " @ "EOF. lines =" @ " " @ %this.numLines @ " " @ "chars =" @ " " @ %this.numChars;
     log("network", %lvl, %line);
     %this.notifyRequestingClient(%line);
     %this.delete();
-    return ;
 }
 function httpObjTestRequest::onConnectFailed(%this)
 {
     %line = "HTTPObjTestRequest::onConnectFailed.";
     log("network", "error", %line);
     %this.notifyRequestingClient(%line);
-    return ;
 }
 function httpObjTestRequest::onConnected(%this)
 {
     %line = "HTTPObjTestRequest::onConnected.";
     %this.notifyRequestingClient(%line);
-    return ;
 }
 function httpObjTestRequest::notifyRequestingClient(%this, %line)
 {
@@ -69,5 +62,4 @@ function httpObjTestRequest::notifyRequestingClient(%this, %line)
     {
         admin::doSystemMessagePlayer(%this.requestingClient.Player, %line, 'MsgInfoMessage');
     }
-    return ;
 }

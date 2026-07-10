@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(dancelight2)
-{
+datablock sgUniversalStaticLightData(dancelight2) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 14;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(dancelight2)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

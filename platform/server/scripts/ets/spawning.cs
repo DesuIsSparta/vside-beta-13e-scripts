@@ -19,7 +19,7 @@ function SpawnSphere::choosePointOnCenterPlane(%this)
     }
     %posX = %posX + ((%tryX * 0.001) * %this.radius);
     %posY = %posY + ((%tryY * 0.001) * %this.radius);
-    return %posX SPC %posY SPC %posZ;
+    return %posX @ " " @ %posY @ " " @ %posZ;
 }
 function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphere)
 {
@@ -38,7 +38,7 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
         while (%n < %num)
         {
             %item = MissionCleanup.getObject(%n);
-            if (((%item != %exclude) && (%item.getClassName() $= "Player")) || (%item.getClassName() $= "AIPlayer"))
+            if ((%item != %exclude) && (%item.getClassName() $= "Player") || (%item.getClassName() $= "AIPlayer"))
             {
                 %itTrans = %item.getTransform();
                 %itX = getWord(%itTrans, 0);
@@ -62,16 +62,16 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
     %rot = "0 0 1";
     if (%m >= %retries)
     {
-        echo("\c2 could not find empty spot");
+        echo("\x03 could not find empty spot");
         %rot = "0 0 -1";
     }
     %theta = (getRandom(0, 360) * 3.41593) / 180;
-    %rot = %rot SPC %theta;
+    %rot = %rot @ " " @ %theta;
     if (%alignToSphere)
     {
         %rot = getWords(%this.getTransform(), 3);
     }
-    %ret = %candidate SPC %rot;
+    %ret = %candidate @ " " @ %rot;
     return %ret;
 }
 function SpawnSphere::spawnBots(%this, %num, %sep)
@@ -83,21 +83,20 @@ function SpawnSphere::spawnBots(%this, %num, %sep)
         %n = %n + 1;
     }
 }
-
 function SpawnSphere::spawnBotsDensity(%this, %density, %sep)
 {
     %spnArea = (%this.radius * %this.radius) * 3.14159;
     %botArea = %sep / 2;
     %botArea = (%botArea * %botArea) * 3.14159;
     %num = ((%spnArea / %botArea) * 0.9) * %density;
-    echo("spawning" SPC %num SPC "bots..");
+    echo("spawning" @ " " @ %num @ " " @ "bots..");
     %this.spawnBots(%num);
-    return ;
+    return;
 }
 function serverCmdAddBotsToSpawnSphere(%unused, %unused, %num, %sep)
 {
     EntrySpawn.spawnBots(%num, %sep);
-    return ;
+    return;
 }
 function Player::teleportToRandomSpawnSphere(%this)
 {
@@ -108,7 +107,7 @@ function Player::teleportToRandomSpawnSphere(%this)
     }
     else
     {
-        %chosen = PlayerDropPoints.getObject(getRandom(0, PlayerDropPoints.getCount() - 1));
+        %chosen = PlayerDropPoints.getObject(getRandom(0, (PlayerDropPoints.getCount() - 1)));
     }
     if (!isObject(%chosen))
     {
@@ -116,7 +115,7 @@ function Player::teleportToRandomSpawnSphere(%this)
     }
     %pos = %chosen.getEmptySpot(1, 0, 0);
     %rot = getWords(%this.getTransform(), 3, 4);
-    %this.setTransform(%pos SPC %rot);
+    %this.setTransform(%pos @ " " @ %rot);
     %this.setVelocity("0 0 5");
-    return ;
+    return;
 }

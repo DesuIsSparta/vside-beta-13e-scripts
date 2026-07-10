@@ -4,7 +4,6 @@ function DancePadGui::open(%this)
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     userTips::showOnceEver("DancePadUsage");
-    return ;
 }
 function DancePadGui::close(%this)
 {
@@ -32,11 +31,11 @@ function DancePadGui::fillDanceButtonOptions(%this)
         %n = 0;
         while (%n < %num)
         {
-            %theList.add(getField(%dancesList, %n * 2), %n);
+            %theList.add(getField(%dancesList, (%n * 2)), %n);
             %n = %n + 1;
         }
         %theList.sort();
-        %sel = getRandom(1, %num - 1);
+        %sel = getRandom(1, (%num - 1));
         %theList.SetSelected(%sel);
         if ($UserPref::DancePad::dancePadSeen == 0)
         {
@@ -48,7 +47,7 @@ function DancePadGui::fillDanceButtonOptions(%this)
     if ($UserPref::DancePad::dancePadSeen == 0)
     {
         $UserPref::DancePad::dancePadSeen = 1;
-        return ;
+        return;
     }
     danceButton1List.SetSelected($UserPref::DancePad::Button1);
     danceButton2List.SetSelected($UserPref::DancePad::Button2);
@@ -58,7 +57,6 @@ function DancePadGui::fillDanceButtonOptions(%this)
     danceButton6List.SetSelected($UserPref::DancePad::Button6);
     danceButton7List.SetSelected($UserPref::DancePad::Button7);
     danceButton8List.SetSelected($UserPref::DancePad::Button8);
-    return ;
 }
 function dancePadDoEmote(%list)
 {
@@ -71,45 +69,36 @@ function dancePadDoEmote(%list)
         commandToServer('RequestToStand', 0, 0);
     }
     emote(%emote);
-    return ;
 }
 function dancePadButton1::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton1List);
-    return ;
 }
 function dancePadButton2::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton2List);
-    return ;
 }
 function dancePadButton3::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton3List);
-    return ;
 }
 function dancePadButton4::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton4List);
-    return ;
 }
 function dancePadButton5::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton5List);
-    return ;
 }
 function dancePadButton6::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton6List);
-    return ;
 }
 function dancePadButton7::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton7List);
-    return ;
 }
 function dancePadButton8::onMouseEnter(%this)
 {
     dancePadDoEmote(danceButton8List);
-    return ;
 }

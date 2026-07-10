@@ -10,7 +10,7 @@ function sgLibraryExec(%file)
     }
     else
     {
-        echo("Platform is" SPC $Platform);
+        echo("Platform is" @ " " @ $Platform);
         if ($Platform $= "macos")
         {
             %fullPath = %path @ "/bigEndian/" @ %name;
@@ -22,5 +22,4 @@ function sgLibraryExec(%file)
         echo(%fullPath);
         exec(%fullPath);
     }
-    return ;
 }

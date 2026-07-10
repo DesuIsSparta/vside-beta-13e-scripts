@@ -4,7 +4,6 @@ function clientCmdBlockGameEngage(%gameType)
     ApplauseMeterGui.open("blockgame", %gameType);
     ConvBub.chooseProfile();
     getUserActivityMgr().setActivityActive("gaming", 1);
-    return ;
 }
 function clientCmdBlockGameDisengage()
 {
@@ -12,5 +11,4 @@ function clientCmdBlockGameDisengage()
     ApplauseMeterGui.close();
     ConvBub.chooseProfile();
     getUserActivityMgr().setActivityActive("gaming", 0);
-    return ;
 }

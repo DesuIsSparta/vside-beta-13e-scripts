@@ -8,7 +8,6 @@ function setHighFidelityCull(%on)
     {
         $pref::Player::highFidelityCullMask = 0;
     }
-    return ;
 }
 $closeConfirmDlg = 0;
 function onAppCloseButton()
@@ -21,7 +20,7 @@ function onAppCloseButton()
         if (%isShowingNow)
         {
             confirmQuitOnYes();
-            return ;
+            return;
         }
     }
     %noCmd = "";
@@ -30,14 +29,13 @@ function onAppCloseButton()
         ToggleConsole(1);
         %noCmd = "ToggleConsole(true);";
     }
-    %dialog = $closeConfirmDlg = MessageBoxYesNo("Quit vSide", $MsgCat::login["CONF-QUIT"], "confirmQuitOnYes();", %noCmd SPC "confirmQuitOnNo ();");
+    %dialog = $closeConfirmDlg = MessageBoxYesNo("Quit vSide", $MsgCat::login["CONF-QUIT"], "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
     if (!($gLastLoggedInThisSessionAs $= ""))
     {
         %yesButtonPos = %dialog.button[0].getParent().getPosition();
-        %ctrl = new GuiCheckBoxCtrl()
-        {
+        %ctrl = new GuiCheckBoxCtrl("") {
             profile = "ETSCheckBoxProfile";
-            position = getWord(%yesButtonPos, 0) SPC getWord(%yesButtonPos, 1) - 23;
+            position = getWord(%yesButtonPos, 0) @ " " @ (getWord(%yesButtonPos, 1) - 23);
             extent = "110 20";
             horizSizing = "center";
             vertSizing = "top";
@@ -49,9 +47,8 @@ function onAppCloseButton()
         %dialog.visitProfileOptionCtrl = %ctrl;
         %width = getWord(%window.getExtent(), 0);
         %height = getWord(%window.getExtent(), 1);
-        %window.resize(%width, %height + 20);
+        %window.resize(%width, (%height + 20));
     }
-    return ;
 }
 function confirmQuitOnYes()
 {
@@ -64,7 +61,6 @@ function confirmQuitOnYes()
         }
     }
     cleanUpAndQuit();
-    return ;
 }
 function confirmQuitOnNo()
 {
@@ -73,27 +69,24 @@ function confirmQuitOnNo()
         $UserPref::General::onQuitVisitWebProfile = $closeConfirmDlg.visitProfileOptionCtrl.getValue();
     }
     $closeConfirmDlg = 0;
-    return ;
 }
 function cleanUpAndQuit()
 {
     if (isObject(ConsoleWindow))
     {
-        $UserPref::ETS::Console::Dim = ConsoleWindow.getPosition() SPC ConsoleWindow.getExtent();
+        $UserPref::ETS::Console::Dim = ConsoleWindow.getPosition() @ " " @ ConsoleWindow.getExtent();
     }
     if (isObject(SnoopPanel))
     {
         SnoopPanel.storeDims();
     }
     quit();
-    return ;
 }
 $gContiguousSpaceName = "";
 function ClientCmdMissionInfo(%contiguousSpaceName, %mode)
 {
     $gMode = %mode;
     onGotContiguousSpaceName(%contiguousSpaceName);
-    return ;
 }
 function onGotContiguousSpaceName(%contiguousSpaceName)
 {
@@ -102,9 +95,8 @@ function onGotContiguousSpaceName(%contiguousSpaceName)
     geLocalMapContainer.onSpaceChange(%contiguousSpaceName);
     CSControlPanelTabs.updateSkipTutorialTab();
     ButtonBar.handleContiguousSpace();
-    %name = !(%contiguousSpaceName $= "") ? %contiguousSpaceName : "[";
-    gUserPropMgrClient.incrementIntegerProperty($Player::Name, "level started count" SPC %name, 1);
-    return ;
+    %name = !(%contiguousSpaceName $= "") ? %contiguousSpaceName : "[" @ $ServerName @ "]";
+    gUserPropMgrClient.incrementIntegerProperty($Player::Name, "level started count" @ " " @ %name, 1);
 }
 $gContiguousSpaceFullNames[""] = "vSide";
 $gContiguousSpaceOfferSkip[""] = 0;
@@ -134,26 +126,21 @@ function getCurrentContiguousSpaceOfferSkip()
 }
 function ClientCmdLevelCompleted(%levelName)
 {
-    gUserPropMgrClient.setProperty($Player::Name, "level completed" SPC %levelName, 1);
-    return ;
+    gUserPropMgrClient.setProperty($Player::Name, "level completed" @ " " @ %levelName, 1);
 }
 function ClientCmdToonColorOffsetFill(%colorOffset)
 {
     $pref::TS::ToonColorOffsetFill = %colorOffset;
-    return ;
 }
 function ClientCmdToonColorOffsetEdge(%colorOffset)
 {
     $pref::TS::ToonColorOffsetEdge = %colorOffset;
-    return ;
 }
 function ClientCmdDoYouWantToOpenGiftBox(%boxID)
 {
     MessageBoxYesNo("A Gift Box", "Would you like to take this gift?", "onOpenGiftBoxYes(" @ %boxID @ ");", "");
-    return ;
 }
 function onOpenGiftBoxYes(%boxID)
 {
     commandToServer('OpenGiftBox', %boxID);
-    return ;
 }

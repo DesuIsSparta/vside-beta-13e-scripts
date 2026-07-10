@@ -4,12 +4,13 @@ function TestSuite_VURL::setup(%this)
     %this.addTestCase("TEST_VURL_PARSE_USER");
     %this.addTestCase("TEST_VURL_PARSE_APARTMENT");
     %this.addTestCase("TEST_VURL_PARSE_LOCATION");
-    return ;
 }
 function TEST_VURL_PARSE_USER::runTest(%this)
 {
     %aVurlString = "vside:/user/Bob";
-    %theVurl = new ScriptObject();
+    %theVurl = new ScriptObject("") {
+        class = "VURL";
+    };
     if (%theVurl.setVURL(%aVurlString))
     {
         %this.assertSameString(%theVurl.targetType, "user", "the target type should have been user");
@@ -17,15 +18,16 @@ function TEST_VURL_PARSE_USER::runTest(%this)
     }
     else
     {
-        %this.assert(0, "setVURL failed for this vurl:" SPC %aVurlString);
+        %this.assert(0, "setVURL failed for this vurl:" @ " " @ %aVurlString);
     }
     %theVurl.delete();
-    return ;
 }
 function TEST_VURL_PARSE_APARTMENT::runTest(%this)
 {
     %aVurlString = "vside:/apartment/a_building/an_apartment";
-    %theVurl = new ScriptObject();
+    %theVurl = new ScriptObject("") {
+        class = "VURL";
+    };
     if (%theVurl.setVURL(%aVurlString))
     {
         %this.assertSameString(%theVurl.targetType, "apartment", "the target type should have been apartment");
@@ -34,13 +36,11 @@ function TEST_VURL_PARSE_APARTMENT::runTest(%this)
     }
     else
     {
-        %this.assert(0, "setVURL failed for this vurl:" SPC %aVurlString);
+        %this.assert(0, "setVURL failed for this vurl:" @ " " @ %aVurlString);
     }
     %theVurl.delete();
-    return ;
 }
 function TEST_VURL_PARSE_LOCATION::runTest(%this)
 {
     %this.assert(0, "test not implemented");
-    return ;
 }

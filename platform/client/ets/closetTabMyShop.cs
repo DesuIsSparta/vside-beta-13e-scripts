@@ -4,36 +4,109 @@ function ClosetTabs::fillMyShopTab(%this)
     %theTab = %this.getTabWithName("MY DESIGNS");
     if (!isObject(%theTab))
     {
-        return ;
+        return;
     }
+    %theTab.add(new GuiBitmapCtrl("") {
+        profile = "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "26 26";
+        extent = "571 37";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/closet_tabs_bracket";
+    };);
     if (0)
     {
+        %theTab.add(new GuiTextCtrl("") {
+            profile = "ClosetTitleProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "26 64";
+            extent = "28 20";
+            text = "My Designs:";
+        };);
     }
     %xPos = 34;
     %xGap = 6;
     %ypos = 84;
     %xSiz = 66;
     %viewType = "Accepted";
+    %theTab.add(new GuiVariableWidthButtonCtrl("geClosetMyShopViewButton_" @ %viewType) {
+        profile = "BracketButton17NonDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = %xPos @ " " @ %ypos;
+        extent = %xSiz @ " " @ 17;
+        command = "ClosetGui_MyShop_SetView(\"" @ %viewType @ "\");";
+        text = %viewType;
+        buttonType = "PushButton";
+        canHilite = 0;
+    };);
     %xPos = %xPos + (%xSiz + %xGap);
     if (0)
     {
         %xSiz = 64;
         %viewType = "Pending";
+        %theTab.add(new GuiVariableWidthButtonCtrl("geClosetMyShopViewButton_" @ %viewType) {
+            profile = "BracketButton17NonDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = %xPos @ " " @ 84;
+            extent = %xSiz @ " " @ 17;
+            command = "ClosetGui_MyShop_SetView(\"" @ %viewType @ "\");";
+            text = %viewType;
+            buttonType = "PushButton";
+            canHilite = 0;
+        };);
         %xPos = %xPos + (%xSiz + %xGap);
         %xSiz = 76;
         %viewType = "Rejected";
+        %theTab.add(new GuiVariableWidthButtonCtrl("geClosetMyShopViewButton_" @ %viewType) {
+            profile = "BracketButton17NonDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = %xPos @ " " @ 84;
+            extent = %xSiz @ " " @ 17;
+            command = "ClosetGui_MyShop_SetView(\"" @ %viewType @ "\");";
+            text = %viewType;
+            buttonType = "PushButton";
+            canHilite = 0;
+        };);
         %xPos = %xPos + (%xSiz + %xGap);
     }
     %xSiz = 74;
     %viewType = "Templates";
+    %theTab.add(new GuiVariableWidthButtonCtrl("geClosetMyShopViewButton_" @ %viewType) {
+        profile = "BracketButton17NonDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = %xPos @ " " @ %ypos;
+        extent = %xSiz @ " " @ 17;
+        command = "ClosetGui_MyShop_SetView(\"" @ %viewType @ "\");";
+        text = %viewType;
+        buttonType = "PushButton";
+        canHilite = 0;
+    };);
     if (0)
     {
         error("TODO - need to check for FashionPolice permission");
         %viewType = "Incoming";
+        %theTab.add(new GuiVariableWidthButtonCtrl("geClosetMyShopViewButton_" @ %viewType) {
+            profile = "BracketButton17NonDefaultProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = %xPos @ " " @ 66;
+            extent = %xSiz @ " " @ 17;
+            command = "ClosetGui_MyShop_SetView(\"" @ %viewType @ "\");";
+            text = %viewType;
+            buttonType = "PushButton";
+            canHilite = 0;
+        };);
         %xPos = %xPos + (%xSiz + %xGap);
     }
-    %itemsFrame = new GuiControl(MyShopItemsFrame)
-    {
+    %itemsFrame = new GuiControl(MyShopItemsFrame) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -43,8 +116,7 @@ function ClosetTabs::fillMyShopTab(%this)
         sluggishness = -1;
         visible = 1;
     };
-    %itemsInfoText = new GuiMLTextCtrl()
-    {
+    %itemsInfoText = new GuiMLTextCtrl("") {
         profile = "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -57,8 +129,7 @@ function ClosetTabs::fillMyShopTab(%this)
         maxLength = 255;
     };
     %itemsFrame.add(%itemsInfoText);
-    %ctrl = new GuiTextCtrl()
-    {
+    %ctrl = new GuiTextCtrl("") {
         profile = "ClosetRightInfoProfile";
         horizSizing = "left";
         vertSizing = "bottom";
@@ -72,8 +143,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %itemsFrame.add(%ctrl);
     %theTab.rangeText = %ctrl;
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         profile = "ClosetRightInfoProfile";
         horizSizing = "left";
         vertSizing = "bottom";
@@ -83,8 +153,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %itemsFrame.add(%ctrl);
     %theTab.otherGenderText = %ctrl;
-    %ctrl = new GuiScrollCtrl()
-    {
+    %ctrl = new GuiScrollCtrl("") {
         profile = "ETSScrollProfile";
         position = "0 20";
         extent = "465 326";
@@ -100,8 +169,7 @@ function ClosetTabs::fillMyShopTab(%this)
     %ctrl.bindClassName("ClosetItemsScroll");
     %theTab.itemsScroll = %ctrl;
     %itemsFrame.add(%ctrl);
-    %thumbnails = new GuiArray2Ctrl(ClosetThumbnailsMyShop)
-    {
+    %thumbnails = new GuiArray2Ctrl(ClosetThumbnailsMyShop) {
         class = "ClosetThumbnails";
         profile = "FocusableDefaultProfile";
         childrenClassName = "GuiMouseEventCtrl";
@@ -120,18 +188,67 @@ function ClosetTabs::fillMyShopTab(%this)
     %theTab.add(%itemsFrame);
     %theTab.thumbnails = %thumbnails;
     %itemsFrame.thumbnails = %thumbnails;
-    %itemDescFrame = new GuiControl()
-    {
+    %itemDescFrame = new GuiControl("") {
         profile = ETSNonModalProfile;
         horizSizing = "right";
         vertSizing = "bottom";
         position = "689 309";
         extent = "245 179";
     };
+    new GuiMLTextCtrl(MyShopCopyToOutfitText) {
+        horizSizing = new GuiWindowCtrl(MyShopWhatYourWearingContainer) {
+        profile = "DottedWindowProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "245 179";
+        resizeWidth = 0;
+        resizeHeight = 0;
+        canMove = 0;
+        canClose = 0;
+        canMinimize = 0;
+        canMaximize = 0;
+        canHilite = 0;
+    }; @ "left";
+        vertSizing = "bottom";
+        position = "0 2";
+        extent = "233 18";
+        style = "plainOnWhiteSmall";
+        stripGamelink = 1;
+    };
     %theTab.add(%itemDescFrame);
     MyShopCopyToOutfitText.setTextWithStyle("<just:right><a:gamelink:COPY_TO_OUTFIT>copy to outfit</a>");
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %theTab.add(new GuiWindowCtrl(MyShopItemDeetsPanel) {
+        profile = "DottedWindowProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "689 84";
+        extent = "245 223";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        resizeWidth = 0;
+        resizeHeight = 0;
+        canMove = 0;
+        canClose = 0;
+        canMinimize = 0;
+        canMaximize = 0;
+        canHilite = 0;
+        submitPriceValid = 0;
+        submitTexturesValid = 1;
+        submitDescriptionValid = 1;
+    };);
+    MyShopItemDeetsPanel.add(new GuiTextEditCtrl(MyShopItemDeets_DescShort) {
+        profile = "Profile_MyShop_TextField_Bold";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "8 3";
+        extent = "222 18";
+        text = "Item Details";
+        readOnly = 1;
+        command = "$ThisControl.onKeyStroke();";
+    };);
+    %ctrl = new GuiMLTextCtrl("") {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "232 5";
@@ -142,10 +259,19 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.bindClassName("MyShopGenericMLText");
     %ctrl.setTextWithStyle("<a:gamelink:MYDESIGNS_ABOUT DESCSHORT>-?</a>");
-    $gMyShopAboutLinks = $gMyShopAboutLinks SPC %ctrl;
+    $gMyShopAboutLinks = $gMyShopAboutLinks @ " " @ %ctrl;
     MyShopItemDeetsPanel.add(%ctrl);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    MyShopItemDeetsPanel.add(new GuiTextEditCtrl(MyShopItemDeets_DescLong) {
+        profile = "Profile_MyShop_TextField";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "8 23";
+        extent = "222 18";
+        text = "Item Details Long";
+        readOnly = 1;
+        command = "$ThisControl.onKeyStroke();";
+    };);
+    %ctrl = new GuiMLTextCtrl("") {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "232 25";
@@ -156,7 +282,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.bindClassName("MyShopGenericMLText");
     %ctrl.setTextWithStyle("<a:gamelink:MYDESIGNS_ABOUT DESCLONG>-?</a>");
-    $gMyShopAboutLinks = $gMyShopAboutLinks SPC %ctrl;
+    $gMyShopAboutLinks = $gMyShopAboutLinks @ " " @ %ctrl;
     MyShopItemDeetsPanel.add(%ctrl);
     %letterWords = "A B C D";
     %posX = 0;
@@ -166,91 +292,148 @@ function ClosetTabs::fillMyShopTab(%this)
     %dx = %extX + 13;
     %dy = %extY + 4;
     %n = 0;
-    new GuiScrollCtrl(MyShopItemDeets_TexturesScroll)
-    {
+    MyShopItemDeetsPanel.add(new GuiControl(MyShopItemDeets_TexturesContainer) {
+        profile = "ETSNonModalProfile";
+        position = "0 0";
+        extent = %extX @ " " @ %extY;
+    };, new GuiScrollCtrl(MyShopItemDeets_TexturesScroll) {
         profile = "DottedScrollProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "8 43";
-        extent = 210 SPC %extY + 18;
+        extent = 210 @ " " @ (%extY + 18);
         hScrollBar = "dynamic";
         vScrollBar = "alwaysOff";
-    }.add(new GuiScrollCtrl(MyShopItemDeets_TexturesScroll)
-    {
-        profile = "DottedScrollProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "8 43";
-        extent = 210 SPC %extY + 18;
-        hScrollBar = "dynamic";
-        vScrollBar = "alwaysOff";
-    });
-    %ctrl = new GuiBitmapCtrl()
-    {
+    };);
+    %ctrl = new GuiBitmapCtrl("") {
         profile = "ClosetDkBackgroundProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %posX SPC %posY;
-        extent = %extX SPC %extY;
+        position = %posX @ " " @ %posY;
+        extent = %extX @ " " @ %extY;
         systemDragDrop = 1;
         canHilite = 1;
         visible = 0;
+    };
+    new GuiBitmapButtonCtrl("") {
+        profile = new GuiMLTextCtrl("") {
+        modal = 0;
+        position = "3 3";
+        extent = "20 20";
+        text = "<b><outline><shadowcolor:ffffffd0><color:000000d0>" @ getWord(%letterWords, %n);
+    }; @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = %extX @ " " @ %extY;
+        visible = 1;
+        command = "MyShop_InspectTexture(" @ %n @ ");";
+        canHilite = 0;
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
+        lazyLoad = 1;
     };
     %ctrl.bindClassName("geTextureDropTarget");
     MyShopItemDeets_TexturesContainer.add(%ctrl);
     MyShopItemDeetsPanel.geTextureTarget[%n] = %ctrl;
     %posX = %posX + %dx;
     %n = %n + 1;
-    %ctrl = new GuiBitmapCtrl()
-    {
+    %ctrl = new GuiBitmapCtrl("") {
         profile = "ClosetDkBackgroundProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %posX SPC %posY;
-        extent = %extX SPC %extY;
+        position = %posX @ " " @ %posY;
+        extent = %extX @ " " @ %extY;
         systemDragDrop = 1;
         canHilite = 1;
         visible = 0;
+    };
+    new GuiBitmapButtonCtrl("") {
+        profile = new GuiMLTextCtrl("") {
+        modal = 0;
+        position = "3 3";
+        extent = "20 20";
+        text = "<b><outline><shadowcolor:ffffffd0><color:000000d0>" @ getWord(%letterWords, %n);
+    }; @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = %extX @ " " @ %extY;
+        visible = 1;
+        command = "MyShop_InspectTexture(" @ %n @ ");";
+        canHilite = 0;
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
+        lazyLoad = 1;
     };
     %ctrl.bindClassName("geTextureDropTarget");
     MyShopItemDeets_TexturesContainer.add(%ctrl);
     MyShopItemDeetsPanel.geTextureTarget[%n] = %ctrl;
     %posX = %posX + %dx;
     %n = %n + 1;
-    %ctrl = new GuiBitmapCtrl()
-    {
+    %ctrl = new GuiBitmapCtrl("") {
         profile = "ClosetDkBackgroundProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %posX SPC %posY;
-        extent = %extX SPC %extY;
+        position = %posX @ " " @ %posY;
+        extent = %extX @ " " @ %extY;
         systemDragDrop = 1;
         canHilite = 1;
         visible = 0;
+    };
+    new GuiBitmapButtonCtrl("") {
+        profile = new GuiMLTextCtrl("") {
+        modal = 0;
+        position = "3 3";
+        extent = "20 20";
+        text = "<b><outline><shadowcolor:ffffffd0><color:000000d0>" @ getWord(%letterWords, %n);
+    }; @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = %extX @ " " @ %extY;
+        visible = 1;
+        command = "MyShop_InspectTexture(" @ %n @ ");";
+        canHilite = 0;
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
+        lazyLoad = 1;
     };
     %ctrl.bindClassName("geTextureDropTarget");
     MyShopItemDeets_TexturesContainer.add(%ctrl);
     MyShopItemDeetsPanel.geTextureTarget[%n] = %ctrl;
     %posX = %posX + %dx;
     %n = %n + 1;
-    %ctrl = new GuiBitmapCtrl()
-    {
+    %ctrl = new GuiBitmapCtrl("") {
         profile = "ClosetDkBackgroundProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = %posX SPC %posY;
-        extent = %extX SPC %extY;
+        position = %posX @ " " @ %posY;
+        extent = %extX @ " " @ %extY;
         systemDragDrop = 1;
         canHilite = 1;
         visible = 0;
+    };
+    new GuiBitmapButtonCtrl("") {
+        profile = new GuiMLTextCtrl("") {
+        modal = 0;
+        position = "3 3";
+        extent = "20 20";
+        text = "<b><outline><shadowcolor:ffffffd0><color:000000d0>" @ getWord(%letterWords, %n);
+    }; @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = %extX @ " " @ %extY;
+        visible = 1;
+        command = "MyShop_InspectTexture(" @ %n @ ");";
+        canHilite = 0;
+        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
+        lazyLoad = 1;
     };
     %ctrl.bindClassName("geTextureDropTarget");
     MyShopItemDeets_TexturesContainer.add(%ctrl);
     MyShopItemDeetsPanel.geTextureTarget[%n] = %ctrl;
     %posX = %posX + %dx;
     %n = %n + 1;
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "87 71";
@@ -261,10 +444,9 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.bindClassName("MyShopGenericMLText");
     %ctrl.setTextWithStyle("<a:gamelink:MYDESIGNS_ABOUT TEXTURES>-?</a>");
-    $gMyShopAboutLinks = $gMyShopAboutLinks SPC %ctrl;
+    $gMyShopAboutLinks = $gMyShopAboutLinks @ " " @ %ctrl;
     MyShopItemDeets_TexturesScroll.add(%ctrl);
-    %ctrl = new GuiVariableWidthButtonCtrl(MyShopRefreshTexturesCtrl)
-    {
+    %ctrl = new GuiVariableWidthButtonCtrl(MyShopRefreshTexturesCtrl) {
         profile = "BracketButton19Profile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -277,8 +459,7 @@ function ClosetTabs::fillMyShopTab(%this)
         tooltip = "(Ctrl-R)";
     };
     MyShopItemDeetsPanel.add(%ctrl);
-    %ctrl = new GuiControl(MyShopItemSettings)
-    {
+    %ctrl = new GuiControl(MyShopItemSettings) {
         profile = ETSNonModalProfile;
         position = "8 142";
         extent = "232 80";
@@ -287,8 +468,7 @@ function ClosetTabs::fillMyShopTab(%this)
         visible = 0;
     };
     MyShopItemDeetsPanel.add(%ctrl);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -299,8 +479,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.setTextWithStyle("vBux:");
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiTextEditCtrl(MyShopVBuxField)
-    {
+    %ctrl = new GuiTextEditCtrl(MyShopVBuxField) {
         profile = "Profile_MyShop_SettingsField";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -312,8 +491,7 @@ function ClosetTabs::fillMyShopTab(%this)
         tooltip = "How much this will cost";
     };
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "94 2";
@@ -324,10 +502,9 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.bindClassName("MyShopGenericMLText");
     %ctrl.setTextWithStyle("<a:gamelink:MYDESIGNS_ABOUT VBUX>-?</a>");
-    $gMyShopAboutLinks = $gMyShopAboutLinks SPC %ctrl;
+    $gMyShopAboutLinks = $gMyShopAboutLinks @ " " @ %ctrl;
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -337,8 +514,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.setTextWithStyle("vPoints:");
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiTextEditCtrl(MyShopVPointsField)
-    {
+    %ctrl = new GuiTextEditCtrl(MyShopVPointsField) {
         profile = "Profile_MyShop_SettingsField";
         modal = 0;
         horizSizing = "right";
@@ -353,8 +529,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     MyShopItemSettings.add(%ctrl);
     %ctrl.setActive(0);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "94 22";
@@ -365,10 +540,9 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.bindClassName("MyShopGenericMLText");
     %ctrl.setTextWithStyle("<a:gamelink:MYDESIGNS_ABOUT VPOINTS>-?</a>");
-    $gMyShopAboutLinks = $gMyShopAboutLinks SPC %ctrl;
+    $gMyShopAboutLinks = $gMyShopAboutLinks @ " " @ %ctrl;
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiCheckBoxCtrl(MyShopPriceForSaleOption)
-    {
+    %ctrl = new GuiCheckBoxCtrl(MyShopPriceForSaleOption) {
         profile = "ETSCheckBoxProfile2";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -380,8 +554,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.setValue(1);
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "209 0";
@@ -392,10 +565,9 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.bindClassName("MyShopGenericMLText");
     %ctrl.setTextWithStyle("<a:gamelink:MYDESIGNS_ABOUT FOR_SALE>-?</a>");
-    $gMyShopAboutLinks = $gMyShopAboutLinks SPC %ctrl;
+    $gMyShopAboutLinks = $gMyShopAboutLinks @ " " @ %ctrl;
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiCheckBoxCtrl(MyShopPriceFeaturedOption)
-    {
+    %ctrl = new GuiCheckBoxCtrl(MyShopPriceFeaturedOption) {
         profile = "ETSCheckBoxProfile2";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -406,8 +578,7 @@ function ClosetTabs::fillMyShopTab(%this)
         tooltip = "Make this your one item in the VHD store";
     };
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiMLTextCtrl()
-    {
+    %ctrl = new GuiMLTextCtrl("") {
         horizSizing = "right";
         vertSizing = "bottom";
         position = "209 15";
@@ -418,10 +589,9 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.bindClassName("MyShopGenericMLText");
     %ctrl.setTextWithStyle("<a:gamelink:MYDESIGNS_ABOUT FEATURED>-?</a>");
-    $gMyShopAboutLinks = $gMyShopAboutLinks SPC %ctrl;
+    $gMyShopAboutLinks = $gMyShopAboutLinks @ " " @ %ctrl;
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiMLTextCtrl(MyShopPriceOutOfRangeText)
-    {
+    %ctrl = new GuiMLTextCtrl(MyShopPriceOutOfRangeText) {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -432,8 +602,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %ctrl.setTextWithStyle("");
     MyShopItemSettings.add(%ctrl);
-    %ctrl = new GuiVariableWidthButtonCtrl(MyShopSubmitButton)
-    {
+    %ctrl = new GuiVariableWidthButtonCtrl(MyShopSubmitButton) {
         profile = "BracketButton17NonDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -448,8 +617,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     MyShopItemSettings.add(%ctrl);
     %ctrl.setActive(0);
-    %ctrl = new GuiVariableWidthButtonCtrl(MyShopStartNewButton)
-    {
+    %ctrl = new GuiVariableWidthButtonCtrl(MyShopStartNewButton) {
         profile = "BracketButton19Profile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -462,8 +630,7 @@ function ClosetTabs::fillMyShopTab(%this)
         tooltip = "Start designing with a new copy of this template";
     };
     MyShopItemDeetsPanel.add(%ctrl);
-    new GuiBitmapCtrl(MyShopDragFilesImage)
-    {
+    new GuiBitmapCtrl(MyShopDragFilesImage) {
         profile = "ETSNonModalProfile";
         horizSizing = "left";
         vertSizing = "bottom";
@@ -475,11 +642,10 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %w = 461;
     %h = 423;
-    new GuiWindowCtrl(MyShopTextureInspector)
-    {
+    %theTab.add(new GuiWindowCtrl(MyShopTextureInspector) {
         profile = "DottedWindowProfile";
         position = "25 65";
-        extent = %w SPC %h;
+        extent = %w @ " " @ %h;
         visible = 0;
         canHilite = 0;
         resizeWidth = 0;
@@ -490,25 +656,26 @@ function ClosetTabs::fillMyShopTab(%this)
         canMaximize = 0;
         systemDragDrop = 1;
         canHilite = 1;
-    }.add(new GuiWindowCtrl(MyShopTextureInspector)
-    {
-        profile = "DottedWindowProfile";
-        position = "25 65";
-        extent = %w SPC %h;
-        visible = 0;
-        canHilite = 0;
-        resizeWidth = 0;
-        resizeHeight = 0;
-        canMove = 0;
-        canClose = 0;
-        canMinimize = 0;
-        canMaximize = 0;
-        systemDragDrop = 1;
-        canHilite = 1;
-    });
-    %ctrl = new GuiVariableWidthButtonCtrl()
-    {
-        profile = "BracketButton19Profile";
+    };);
+    %ctrl = new GuiVariableWidthButtonCtrl("") {
+        profile = new GuiBitmapButtonCtrl("") {
+        position = new GuiBitmapCtrl(MyShopTextureInspectorBitmap) {
+        profile = new GuiBitmapCtrl("") {
+        profile = ETSNonModalProfile;
+        position = "1 1";
+        extent = (%w - 2) @ " " @ (%h - 2);
+        wrap = 1;
+        bitmap = "platform/client/ui/greyChecks";
+    }; @ "ETSNonModalProfile";
+        position = ((%w - %h) / 2) @ " " @ 1;
+        extent = (%h - 2) @ " " @ (%h - 2);
+        horizSizing = "width";
+        vertSizing = "height";
+    }; @ ((461 - 16) - 2) @ " " @ 2;
+        extent = "16 16";
+        command = "MyShopTextureInspector.close();";
+        bitmap = "platform/client/buttons/gray_close";
+    }; @ "BracketButton19Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "829 519";
@@ -522,8 +689,7 @@ function ClosetTabs::fillMyShopTab(%this)
     };
     %theTab.add(%ctrl);
     %theTab.doneButton = %ctrl;
-    %ctrl = new GuiVariableWidthButtonCtrl()
-    {
+    %ctrl = new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton19NonDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -542,7 +708,6 @@ function ClosetTabs::fillMyShopTab(%this)
     %theTab.firstLoad = 1;
     ClosetGui_MyShop_SetView(ACCEPTED);
     %this.tabMyShopInitialized = 1;
-    return ;
 }
 $gPrevMyShopTypeButton = "";
 function ClosetGui_MyShop_SetView(%viewType)
@@ -557,7 +722,6 @@ function ClosetGui_MyShop_SetView(%viewType)
     %buttonCtrl.modal = 0;
     $gPrevMyShopTypeButton = %buttonCtrl;
     getUGCItems(%viewType);
-    return ;
 }
 $gUGCSkus["ACCEPTED"] = "";
 $gUGCSkus["PENDING"] = "";
@@ -575,7 +739,7 @@ function getUGCItems(%type)
     if (%type $= "TEMPLATES")
     {
         %list = SkuManager.getSkusTag("template", $player.getGender());
-        %list = %list SPC SkuManager.getSkusTag("template", $player.getOtherGender());
+        %list = %list @ " " @ SkuManager.getSkusTag("template", $player.getOtherGender());
         onGotUGCItems(%type, %list);
     }
     else
@@ -588,7 +752,7 @@ function getUGCItems(%type)
         }
         else
         {
-            error(getScopeName() SPC "- not implemented" SPC %type SPC getTrace());
+            error(getScopeName() @ " " @ "- not implemented" @ " " @ %type @ " " @ getTrace());
             if (0)
             {
                 ClosetThumbnailsMyShop.infoText.setVisible(1);
@@ -602,7 +766,7 @@ function getUGCItems(%type)
                     %si.brand = "";
                     %si.tags = findAndRemoveAllOccurrencesOfWord(%si.tags, "new");
                     %si.expireTime = "";
-                    if ((%type $= "ACCEPTED") && (%type $= "PENDING"))
+                    if ((%type $= "ACCEPTED") || (%type $= "PENDING"))
                     {
                         %si.author = $Player::Name;
                     }
@@ -612,11 +776,10 @@ function getUGCItems(%type)
             }
         }
     }
-    return ;
 }
 function onGotUGCItems(%type, %list)
 {
-    $gUGCSkus[%type] = %list ;
+    $gUGCSkus[%type] = %list;
     if (%type $= "REJECTED")
     {
         ClosetThumbnailsMyShop.setUnfilteredSkus("");
@@ -640,7 +803,6 @@ function onGotUGCItems(%type, %list)
         }
     }
     ClosetGui_MyShop_SetCurrentSku($gUGCPrevSku[%type]);
-    return ;
 }
 function ClosetGui_MyShop_GetSkuUGCStatus(%sku)
 {
@@ -656,7 +818,7 @@ function ClosetGui_MyShop_GetSkuUGCStatus(%sku)
     %statusi = "ACCEPTED PENDING REJECTED TEMPLATES INCOMING";
     %status = "";
     %n = getWordCount(%statusi) - 1;
-    while (%n >= 0)
+    while ((%status $= "") && (%n >= 0))
     {
         %s = getWord(%statusi, %n);
         if (hasWord($gUGCSkus[%s], %sku))
@@ -668,7 +830,7 @@ function ClosetGui_MyShop_GetSkuUGCStatus(%sku)
     %si.ugcStatus = %status;
     if (%status $= "")
     {
-        error(getScopeName() SPC "- no UGC status for sku" SPC %sku SPC getTrace());
+        error(getScopeName() @ " " @ "- no UGC status for sku" @ " " @ %sku @ " " @ getTrace());
     }
     return %status;
 }
@@ -689,11 +851,10 @@ function MyShopItemsFrame::update(%this)
 {
     if (!(ClosetTabs.getCurrentTab().name $= "MY DESIGNS"))
     {
-        return ;
+        return;
     }
     %this.thumbnails.refilter();
     ClosetGui_MyShop_SetCurrentSku($gMyShopCurrentSku);
-    return ;
 }
 $gSkusMyShopLayer = "";
 $gMyShopCurrentSku = "";
@@ -709,7 +870,6 @@ function ClosetGUI_ToggleSku_MyShop(%sku)
         $gSkusMyShopLayer = SkuManager.overlaySkus($gSkusMyShopLayer, %sku);
         ClosetGui_MyShop_SetCurrentSku(%sku);
     }
-    return ;
 }
 function ClosetGui_MyShop_SetCurrentSku(%sku)
 {
@@ -720,7 +880,7 @@ function ClosetGui_MyShop_SetCurrentSku(%sku)
     else
     {
         %itemStatus = ClosetGui_MyShop_GetSkuUGCStatus(%sku);
-        $gUGCPrevSku[%itemStatus] = %sku ;
+        $gUGCPrevSku[%itemStatus] = %sku;
     }
     if (%itemStatus $= "ACCEPTED")
     {
@@ -736,7 +896,7 @@ function ClosetGui_MyShop_SetCurrentSku(%sku)
     {
         if (%itemStatus $= "PENDING")
         {
-            error(getScopeName() SPC "- not implemented yet:" SPC %itemStatus SPC getTrace());
+            error(getScopeName() @ " " @ "- not implemented yet:" @ " " @ %itemStatus @ " " @ getTrace());
             %readOnlyDesc = 1;
             %readOnlySettings = 1;
             %showSettings = 1;
@@ -748,7 +908,7 @@ function ClosetGui_MyShop_SetCurrentSku(%sku)
         {
             if (%itemStatus $= "REJECTED")
             {
-                error(getScopeName() SPC "- not implemented yet:" SPC %itemStatus SPC getTrace());
+                error(getScopeName() @ " " @ "- not implemented yet:" @ " " @ %itemStatus @ " " @ getTrace());
                 %readOnlyDesc = 1;
                 %readOnlySettings = 1;
                 %showSettings = 1;
@@ -772,7 +932,7 @@ function ClosetGui_MyShop_SetCurrentSku(%sku)
                 {
                     if (%itemStatus $= "INCOMING")
                     {
-                        error(getScopeName() SPC "- not implemented yet:" SPC %itemStatus SPC getTrace());
+                        error(getScopeName() @ " " @ "- not implemented yet:" @ " " @ %itemStatus @ " " @ getTrace());
                         %readOnlyDesc = 1;
                         %readOnlySettings = 1;
                         %showSettings = 1;
@@ -831,14 +991,14 @@ function ClosetGui_MyShop_SetCurrentSku(%sku)
         MyShopItemDeets_DescLong.setText("");
         $gMyShopCurrentSku = %sku;
         ClosetMainObjectView.zoomToSKU("");
-        return ;
+        return;
     }
     %si = SkuManager.findBySku(%sku);
     if (!isObject(%si))
     {
         MyShopItemDeets_DescLong.setText("hmm, something went wrong. please check the bug forum.");
         $gMyShopCurrentSku = "";
-        return ;
+        return;
     }
     MyShopItemDeets_DescShort.setText(%si.descShrt);
     MyShopItemDeets_DescLong.setText(%si.descLong);
@@ -846,7 +1006,6 @@ function ClosetGui_MyShop_SetCurrentSku(%sku)
     ClosetMainObjectView.zoomToSKU(%sku);
     MyShopVBuxField.setValue(%si.price);
     MyShopVBuxField.onKeystroke();
-    return ;
 }
 function MyShopItemDeetsPanel::setSkuBaseTextures(%this, %sku)
 {
@@ -877,7 +1036,7 @@ function MyShopItemDeetsPanel::setSkuBaseTextures(%this, %sku)
             {
                 %path = "projects/common/characters/" @ $player.getGender() @ "_player/" @ %baseTexture;
             }
-            if (isFile(%path @ ".jpg") && isFile(%path @ ".png"))
+            if (isFile(%path @ ".jpg") || isFile(%path @ ".png"))
             {
                 %this.geTextureTarget[%n].setBitmap(%path);
             }
@@ -897,7 +1056,7 @@ function MyShopItemDeetsPanel::setSkuBaseTextures(%this, %sku)
     }
     %stepX = getWord(%this.geTextureTarget[1].getPosition(), 0) - getWord(%this.geTextureTarget[0].getPosition(), 0);
     %padding = %stepX - getWord(%this.geTextureTarget[0].getExtent(), 0);
-    MyShopItemDeets_TexturesContainer.resize((%stepX * %num) - %padding, getWord(%this.geTextureTarget[0].getExtent(), 1));
+    MyShopItemDeets_TexturesContainer.resize(((%stepX * %num) - %padding), getWord(%this.geTextureTarget[0].getExtent(), 1));
     %prevParent = MyShopDragFilesImage.getGroup();
     if (!%isValid)
     {
@@ -926,11 +1085,10 @@ function MyShopItemDeetsPanel::setSkuBaseTextures(%this, %sku)
         }
     }
     %currParent = MyShopDragFilesImage.getGroup();
-    if ((%isValid && (%currParent != %prevParent)) && %si.hasTag("TEMPLATE"))
+    if (%isValid && (%currParent != %prevParent) && %si.hasTag("TEMPLATE"))
     {
         MyShopDragFilesImage.FlashVisibility(5, 150);
     }
-    return ;
 }
 function ClosetGui_MyShop_ToggleCurrentSku(%sku)
 {
@@ -939,22 +1097,18 @@ function ClosetGui_MyShop_ToggleCurrentSku(%sku)
         %sku = "";
     }
     ClosetGui_MyShop_SetCurrentSku(%sku);
-    return ;
 }
 function MyShopItemDeets_Desc::onURL(%this, %url)
 {
     ClosetGui_MyShop_onURL(%url, %this);
-    return ;
 }
 function MyShopCopyToOutfitText::onURL(%this, %url)
 {
     ClosetGui_MyShop_onURL(%url, %this);
-    return ;
 }
 function MyShopGenericMLText::onURL(%this, %url)
 {
     ClosetGui_MyShop_onURL(%url, %this);
-    return ;
 }
 function ClosetGui_MyShop_onURL(%url, %mlTextCtrl)
 {
@@ -996,19 +1150,17 @@ function ClosetGui_MyShop_onURL(%url, %mlTextCtrl)
                         }
                         else
                         {
-                            error(getScopeName() SPC "- unknown command" SPC %url SPC getDebugString(%mlTextCtrl) SPC getTrace());
+                            error(getScopeName() @ " " @ "- unknown command" @ " " @ %url @ " " @ getDebugString(%mlTextCtrl) @ " " @ getTrace());
                         }
                     }
                 }
             }
         }
     }
-    return ;
 }
 function MyShopTextureInspector::onSystemDragDroppedEvent(%this, %text, %pt)
 {
     ClosetMainObjectView::onSystemDragDroppedEvent_MyShop(%this, %text, %pt);
-    return ;
 }
 function ClosetMainObjectView::acceptsSystemDragDropContent(%this, %text)
 {
@@ -1025,7 +1177,6 @@ function ClosetMainObjectView::onSystemDragDroppedEvent_MyShop(%this, %text, %pt
     {
         MessageBoxOK("Use the texture list", $MsgCat::closetMyShop["E-USE-TEXTURE-LIST"]);
     }
-    return ;
 }
 function geTextureDropTarget::acceptsSystemDragDropContent(%this, %text)
 {
@@ -1038,9 +1189,9 @@ function geTextureDropTarget::acceptsSystemDragDropContent(%this, %text)
         return 0;
     }
     %extension = getExtension(%text);
-    if (!((%extension $= ".jpg")) && !((%extension $= ".png")))
+    if (!(%extension $= ".jpg") && !(%extension $= ".png"))
     {
-        echo(getScopeName() SPC "- invalid extension:" SPC %text);
+        echo(getScopeName() @ " " @ "- invalid extension:" @ " " @ %text);
         return 0;
     }
     return 1;
@@ -1089,9 +1240,8 @@ function geTextureDropTarget::applyTexture(%this, %texturePath)
     }
     else
     {
-        error(getScopeName() SPC "- could not copy" SPC %texturePath SPC "to" SPC %newFullPath SPC getTrace());
+        error(getScopeName() @ " " @ "- could not copy" @ " " @ %texturePath @ " " @ "to" @ " " @ %newFullPath @ " " @ getTrace());
     }
-    return ;
 }
 function ClosetGUI_RefreshTextures()
 {
@@ -1106,52 +1256,48 @@ function ClosetGUI_RefreshTextures()
         %n = %n + 1;
     }
 }
-
 function ClosetGui_MyShop_CopySkusToOutfit()
 {
-    $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], $gSkusMyShopLayer) ;
-    return ;
+    $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], $gSkusMyShopLayer);
 }
 function MyShopItemDeets_DescShort::onKeystroke(%this)
 {
     %si = SkuManager.findBySku($gMyShopCurrentSku);
     if (!isObject(%si))
     {
-        return ;
+        return;
     }
     %si.descShrt = %this.getValue();
-    return ;
 }
 function MyShopItemDeets_DescLong::onKeystroke(%this)
 {
     %si = SkuManager.findBySku($gMyShopCurrentSku);
     if (!isObject(%si))
     {
-        return ;
+        return;
     }
     %si.descLong = %this.getValue();
-    return ;
 }
 function MyShopVBuxField::onKeystroke(%this)
 {
     %si = SkuManager.findBySku($gMyShopCurrentSku);
     if (!isObject(%si))
     {
-        return ;
+        return;
     }
     %priceVBux = %this.getValue();
     %minPrice = %si.price;
-    %maxPrice = 1e+06 - 1;
+    %maxPrice = 1000000 - 1;
     if (%priceVBux < %minPrice)
     {
-        MyShopPriceOutOfRangeText.setTextWithStyle("<just:center>" @ %minPrice SPC "vBux minimum for this item");
+        MyShopPriceOutOfRangeText.setTextWithStyle("<just:center>" @ %minPrice @ " " @ "vBux minimum for this item");
         MyShopItemDeetsPanel.submitPriceValid = 0;
     }
     else
     {
         if (%priceVBux > %maxPrice)
         {
-            MyShopPriceOutOfRangeText.setTextWithStyle("<just:center>" @ %maxPrice SPC "vBux maximum");
+            MyShopPriceOutOfRangeText.setTextWithStyle("<just:center>" @ %maxPrice @ " " @ "vBux maximum");
             MyShopItemDeetsPanel.submitPriceValid = 0;
         }
         else
@@ -1165,7 +1311,6 @@ function MyShopVBuxField::onKeystroke(%this)
     %multiplier = $gVPointsRatio * %itemMultiplier;
     %priceVPoints = %priceVBux * %multiplier;
     MyShopVPointsField.setText(%priceVPoints);
-    return ;
 }
 function MyShopItemDeetsPanel::updateSubmitValidity(%this)
 {
@@ -1183,7 +1328,6 @@ function MyShopItemDeetsPanel::updateSubmitValidity(%this)
         MyShopSubmitButton.setActive(0);
         MyShopSubmitButton.modulationColor = "255 255 255 64";
     }
-    return ;
 }
 $gMyShopSubmitTitle["ACCEPTED"] = "Change item settings";
 $gMyShopSubmitBody["ACCEPTED"] = "You can change the price & availability of an existing item, but not its description or textures.";
@@ -1199,7 +1343,6 @@ function MyShopSubmitButton::onClick(%this)
 {
     %itemType = ClosetGui_MyShop_GetSkuUGCStatus($gMyShopCurrentSku);
     MessageBoxOkCancel($gMyShopSubmitTitle[%itemType], $gMyShopSubmitBody[%itemType], "MessageBoxOK(\"not implemented\", \"\", \"\");", "");
-    return ;
 }
 function MyShop_InspectTexture(%num)
 {
@@ -1216,19 +1359,16 @@ function MyShop_InspectTexture(%num)
         MyShopTextureInspector.getGroup().pushToBack(MyShopTextureInspector);
         MyShopTextureInspector.showingTextureNum = %num;
     }
-    return ;
 }
 function MyShopTextureInspector::open(%this)
 {
     %this.setVisible(1);
     MyShopItemsFrame.thumbnails.otherGenderText.setVisible(0);
-    return ;
 }
 function MyShopTextureInspector::close(%this)
 {
     %this.setVisible(0);
     MyShopItemsFrame.thumbnails.otherGenderText.setVisible(1);
-    return ;
 }
 function MyShopStartNewButton::onClick(%this)
 {
@@ -1237,8 +1377,8 @@ function MyShopStartNewButton::onClick(%this)
         %templateSku = SkuManager.findTemplateSku($gMyShopCurrentSku);
         if (%templateSku $= "")
         {
-            error(getScopeName() SPC "- can\'t find template for sku" SPC $gMyShopCurrentSku SPC getTrace());
-            return ;
+            error(getScopeName() @ " " @ "- can't find template for sku" @ " " @ $gMyShopCurrentSku @ " " @ getTrace());
+            return;
         }
         ClosetGui_MyShop_SetView("Templates");
         ClosetGui_MyShop_SetCurrentSku(%templateSku);
@@ -1247,8 +1387,8 @@ function MyShopStartNewButton::onClick(%this)
     %si = SkuManager.findBySku($gMyShopCurrentSku);
     if (!isObject(%si))
     {
-        error(getScopeName() SPC "- invalid sku" SPC $gMyShopCurrentSku SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- invalid sku" @ " " @ $gMyShopCurrentSku @ " " @ getTrace());
+        return;
     }
     %trgdir = "user/textures/templates/" @ %si.descShrt @ "/" @ getTimeStamp();
     %n = getWordCount(%si.originalTxtrNames) - 1;
@@ -1276,8 +1416,8 @@ function MyShopStartNewButton::onClick(%this)
         }
         if (%ext $= "")
         {
-            error(getScopeName() SPC "- can\'t find original file" SPC %originalPath SPC getTrace());
-            return ;
+            error(getScopeName() @ " " @ "- can't find original file" @ " " @ %originalPath @ " " @ getTrace());
+            return;
         }
         %srcFile = %originalPath @ %ext;
         if ($Platform $= "macos")
@@ -1287,11 +1427,11 @@ function MyShopStartNewButton::onClick(%this)
             %srcFile = %workingDir @ "/" @ %srcFile;
         }
         %trgFile = %trgdir @ "/" @ %originalName @ %ext;
-        echoDebug(getScopeName() SPC "- copying" SPC %srcFile SPC "to" SPC %trgFile);
+        echoDebug(getScopeName() @ " " @ "- copying" @ " " @ %srcFile @ " " @ "to" @ " " @ %trgFile);
         if (!fileCopy(%srcFile, %trgFile))
         {
-            error(getScopeName() SPC "- error copying" SPC %srcFile SPC "to" SPC %trgFile);
-            return ;
+            error(getScopeName() @ " " @ "- error copying" @ " " @ %srcFile @ " " @ "to" @ " " @ %trgFile);
+            return;
         }
         MyShopItemDeetsPanel.geTextureTarget[%n].textureName = %textureName;
         MyShopItemDeetsPanel.geTextureTarget[%n].applyTexture(%trgFile);
@@ -1316,5 +1456,4 @@ function MyShopStartNewButton::onClick(%this)
     {
         openFileSystemFolder(%trgdir);
     }
-    return ;
 }

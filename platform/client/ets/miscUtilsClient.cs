@@ -9,7 +9,6 @@ function gotoWebPage(%url, %useToken)
     {
         gotoWebPageReally(%url);
     }
-    return ;
 }
 $gScreenSizeStack = "";
 function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlarge)
@@ -37,7 +36,7 @@ function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnla
         %newWidth = %width;
         %newHeight = %height;
     }
-    if ((%newWidth != %curWidth) && (%newHeight != %curHeight))
+    if ((%newWidth != %curWidth) || (%newHeight != %curHeight))
     {
         $Video::allowResize = 1;
         setScreenMode(%newWidth, %newHeight, %bpp, 0);
@@ -47,7 +46,6 @@ function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnla
         $UserPref::Video::Resolution = %oldPrefs;
     }
     $Video::allowResize = %allowResize;
-    return ;
 }
 function pushScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlarge)
 {
@@ -55,9 +53,8 @@ function pushScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlar
     %curWidth = getWord(%curRes, 0);
     %curHeight = getWord(%curRes, 1);
     %stackSize = getFieldCount($gScreenSizeStack);
-    $gScreenSizeStack = trim($gScreenSizeStack TAB %curWidth SPC %curHeight SPC $Video::allowResize);
+    $gScreenSizeStack = trim($gScreenSizeStack @ "\t" @ %curWidth @ " " @ %curHeight @ " " @ $Video::allowResize);
     applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlarge);
-    return ;
 }
 function popScreenSize()
 {
@@ -70,19 +67,17 @@ function popScreenSize()
     }
     else
     {
-        %frame = getField($gScreenSizeStack, %stackSize - 1);
+        %frame = getField($gScreenSizeStack, (%stackSize - 1));
         %width = getWord(%frame, 0);
         %height = getWord(%frame, 1);
         %allowResize = getWord(%frame, 2);
     }
-    $gScreenSizeStack = getFields($gScreenSizeStack, 0, %stackSize - 2);
+    $gScreenSizeStack = getFields($gScreenSizeStack, 0, (%stackSize - 2));
     applyScreenSize(%width, %height, %allowResize, 1, 0);
-    return ;
 }
 function clearScreenSizeStack()
 {
     $gScreenSizeStack = "";
-    return ;
 }
 function resetScreenSize()
 {
@@ -93,7 +88,6 @@ function resetScreenSize()
     {
         setScreenMode(getWord($UserPref::Video::Resolution, 0), getWord($UserPref::Video::Resolution, 1), getWord($UserPref::Video::Resolution, 2), 0);
     }
-    return ;
 }
 function tryStandardizeScreenAspect()
 {
@@ -101,7 +95,6 @@ function tryStandardizeScreenAspect()
     {
         standardizeScreenAspect();
     }
-    return ;
 }
 function standardizeScreenAspect()
 {
@@ -130,13 +123,11 @@ function standardizeScreenAspect()
         %currentX = %proportionY * %standardX;
         %currentY = %proportionY * %standardY;
     }
-    %currentX = mFloor(%currentX + 0.5);
-    %currentY = mFloor(%currentY + 0.5);
+    %currentX = mFloor((%currentX + 0.5));
+    %currentY = mFloor((%currentY + 0.5));
     setScreenMode(%currentX, %currentY, %currentBPP, 0);
-    return ;
 }
 function setClipboardToken()
 {
     setClipboard($Token);
-    return ;
 }

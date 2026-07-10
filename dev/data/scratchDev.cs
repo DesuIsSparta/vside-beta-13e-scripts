@@ -13,32 +13,31 @@ function fakeBuddyInfo(%friends, %faves, %fans)
     %n = 0;
     while (%n < %friends)
     {
-        %record = getFakeBuddyRecord("fakefriend" SPC formatInt("%0.4d", %friends - %n));
+        %record = getFakeBuddyRecord("fakefriend" @ " " @ formatInt("%0.4d", (%friends - %n)));
         UserListFriends.put(%record.name, %record);
         %n = %n + 1;
     }
     %n = 0;
     while (%n < %faves)
     {
-        %record = getFakeBuddyRecord("fakeFave" SPC formatInt("%0.4d", %n));
+        %record = getFakeBuddyRecord("fakeFave" @ " " @ formatInt("%0.4d", %n));
         UserListFavorites.put(%record.name, %record);
         %n = %n + 1;
     }
     %n = 0;
     while (%n < %fans)
     {
-        %record = getFakeBuddyRecord("fakeFan" SPC formatInt("%0.4d", %n));
+        %record = getFakeBuddyRecord("fakeFan" @ " " @ formatInt("%0.4d", %n));
         UserListFans.put(%record.name, %record);
         %n = %n + 1;
     }
 }
-
 function getFakeBuddyRecord(%name)
 {
     %words = "a A b B c C";
-    %record = new ScriptObject();
+    %record = new ScriptObject("");
     %record.loggedIn = getRandom(0, 1) ? 1 : 0;
-    %record.name = getRandomWord(%words) SPC %name;
+    %record.name = getRandomWord(%words) @ " " @ %name;
     %record.serverName = %record.loggedIn ? "Raijuku" : "";
     %record.roles = 0;
     %record.isIdle = getRandom(0, 1) ? 1 : 0;
@@ -51,17 +50,16 @@ function dev_TestMLText(%onOrOff, %method)
     %numLines = 40;
     %numCols = 20;
     %lineLong = "als djalsk jdlaksj dlakjs dl;kaj sd;lahf;ha;fkqehrk;jhqrkljhals djalsk jdlaksj dlakjs dl;kaj sd;lahf;ha;fkqehrk;jhqrkljhals djalsk jdlaksj dlakjs dl;kaj sd;lahf;ha;fkqehrk;jhqrkljhq wekljrh qkwjrh qkjwh kqjwhr kqjrwh";
-    %lineText[0] = "<color:ffff33>" @ %lineLong ;
-    %lineText[1] = "<color:22ff33>" @ %lineLong ;
-    %lineText[2] = %lineLong ;
+    %lineLong[%lineText @ 0] = "<color:ffff33>" @ %lineLong;
+    %lineLong[%lineText @ 1] = "<color:22ff33>" @ %lineLong;
+    %lineLong[%lineText @ 2] = %lineLong;
     %lineText[3] = "";
     %lineText[4] = "platform/client/ui/evilbunny";
     if (isObject(geMLTest))
     {
         geMLTest.delete();
     }
-    new GuiMLTextCtrl(geMLTest)
-    {
+    new GuiMLTextCtrl(geMLTest) {
         extent = playGui.getExtent();
         profile = ETSNonModalProfile;
     };
@@ -70,8 +68,7 @@ function dev_TestMLText(%onOrOff, %method)
     {
         geMLTestArray.delete();
     }
-    new GuiArray2Ctrl(geMLTestArray)
-    {
+    new GuiArray2Ctrl(geMLTestArray) {
         extent = playGui.getExtent();
         spacing = 0;
         inRows = 0;
@@ -92,80 +89,67 @@ function dev_TestMLText(%onOrOff, %method)
         }
         geMLTest.setText(%text);
     }
-    if (%method == 1)
+    if (%method == 1 && %onOrOff)
     {
-        if (%onOrOff)
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / 1) @ " " @ 16;
+        geMLTestArray.numRowsOrCols = 1;
+        geMLTestArray.childrenClassName = "GuiMLTextCtrl";
+        geMLTestArray.setNumChildren(%numLines);
+        %n = 0;
+        while (%n < %numLines)
         {
-            geMLTestArray.childrenExtent = getWord(playGui.getExtent(), 0) / 1 SPC 16;
-            geMLTestArray.numRowsOrCols = 1;
-            geMLTestArray.childrenClassName = "GuiMLTextCtrl";
-            geMLTestArray.setNumChildren(%numLines);
-            %n = 0;
-            while (%n < %numLines)
-            {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setText(%lineText[%method]);
-                %n = %n + 1;
-            }
+            %child = geMLTestArray.getObject(%n);
+            %child.profile = ETSNonModalProfile;
+            %child.setText(%lineText[%method]);
+            %n = %n + 1;
         }
     }
-    if (%method == 2)
+    if (%method == 2 && %onOrOff)
     {
-        if (%onOrOff)
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / 1) @ " " @ 16;
+        geMLTestArray.numRowsOrCols = 1;
+        geMLTestArray.childrenClassName = "GuiTextCtrl";
+        geMLTestArray.setNumChildren(%numLines);
+        %n = 0;
+        while (%n < %numLines)
         {
-            geMLTestArray.childrenExtent = getWord(playGui.getExtent(), 0) / 1 SPC 16;
-            geMLTestArray.numRowsOrCols = 1;
-            geMLTestArray.childrenClassName = "GuiTextCtrl";
-            geMLTestArray.setNumChildren(%numLines);
-            %n = 0;
-            while (%n < %numLines)
-            {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setText(%lineText[%method]);
-                %n = %n + 1;
-            }
+            %child = geMLTestArray.getObject(%n);
+            %child.profile = ETSNonModalProfile;
+            %child.setText(%lineText[%method]);
+            %n = %n + 1;
         }
     }
-    if (%method == 3)
+    if (%method == 3 && %onOrOff)
     {
-        if (%onOrOff)
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
+        geMLTestArray.numRowsOrCols = %numCols;
+        geMLTestArray.childrenClassName = "GuiButtonCtrl";
+        geMLTestArray.setNumChildren((%numLines * %numCols));
+        %n = 0;
+        while (%n < (%numLines * %numCols))
         {
-            geMLTestArray.childrenExtent = getWord(playGui.getExtent(), 0) / %numCols SPC 16;
-            geMLTestArray.numRowsOrCols = %numCols;
-            geMLTestArray.childrenClassName = "GuiButtonCtrl";
-            geMLTestArray.setNumChildren(%numLines * %numCols);
-            %n = 0;
-            while (%n < (%numLines * %numCols))
-            {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setText(%lineText[%method]);
-                %n = %n + 1;
-            }
+            %child = geMLTestArray.getObject(%n);
+            %child.profile = ETSNonModalProfile;
+            %child.setText(%lineText[%method]);
+            %n = %n + 1;
         }
     }
-    if (%method == 4)
+    if (%method == 4 && %onOrOff)
     {
-        if (%onOrOff)
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
+        geMLTestArray.numRowsOrCols = %numCols;
+        geMLTestArray.childrenClassName = "GuiBitmapCtrl";
+        geMLTestArray.setNumChildren((%numLines * %numCols));
+        %n = 0;
+        while (%n < (%numLines * %numCols))
         {
-            geMLTestArray.childrenExtent = getWord(playGui.getExtent(), 0) / %numCols SPC 16;
-            geMLTestArray.numRowsOrCols = %numCols;
-            geMLTestArray.childrenClassName = "GuiBitmapCtrl";
-            geMLTestArray.setNumChildren(%numLines * %numCols);
-            %n = 0;
-            while (%n < (%numLines * %numCols))
-            {
-                %child = geMLTestArray.getObject(%n);
-                %child.profile = ETSNonModalProfile;
-                %child.setBitmap(%lineText[%method]);
-                %n = %n + 1;
-            }
+            %child = geMLTestArray.getObject(%n);
+            %child.profile = ETSNonModalProfile;
+            %child.setBitmap(%lineText[%method]);
+            %n = %n + 1;
         }
     }
 }
-
 $gClientSideSceneObjectsTimer = "";
 $gClientSideSceneObjectsTickNum = 0;
 $gClientSideSceneObjectsGroup = "";
@@ -174,9 +158,11 @@ function dev_clientSideSceneObjectsTick()
     cancel($gClientSideSceneObjectsTimer);
     if (!isObject($gClientSideSceneObjectsGroup))
     {
-        $gClientSideSceneObjectsGroup = new SimGroup();
+        $gClientSideSceneObjectsGroup = new SimGroup("");
         ServerConnection.add($gClientSideSceneObjectsGroup);
-        %a = new StaticShape();
+        %a = new StaticShape("") {
+            dataBlock = "db_CounterDie";
+        };
         $gClientSideSceneObjectsGroup.add(%a);
     }
     %windowCoord = Canvas.getCursorPos();
@@ -201,8 +187,8 @@ function dev_clientSideSceneObjectsTick()
     }
     %t = $gClientSideSceneObjectsTickNum * 0.1;
     %a = $gClientSideSceneObjectsGroup.getObject(0);
-    %a.setTransform(MatrixMultiply(MatrixMultiply(playGui.getLastCameraTransform(), "0 2 0 1 0 0" SPC %t), "0 0 0 1 0" SPC $gClientSideSceneObjectsTickNum * 0));
-    %a.setTransform(%hitPosition SPC "0 0 1" SPC %t);
+    %a.setTransform(MatrixMultiply(MatrixMultiply(playGui.getLastCameraTransform(), "0 2 0 1 0 0" @ " " @ %t), "0 0 0 1 0" @ " " @ ($gClientSideSceneObjectsTickNum * 0)));
+    %a.setTransform(%hitPosition @ " " @ "0 0 1" @ " " @ %t);
     $gClientSideSceneObjectsTickNum = $gClientSideSceneObjectsTickNum + 1;
     if (($gClientSideSceneObjectsTickNum % 2) == 0)
     {
@@ -213,7 +199,6 @@ function dev_clientSideSceneObjectsTick()
         %datablock = unitCubeBlueDataBlock;
     }
     $gClientSideSceneObjectsTimer = schedule(100, 0, "dev_clientSideSceneObjectsTick");
-    return ;
 }
 function standardizeWindowAspect()
 {
@@ -233,19 +218,16 @@ function standardizeWindowAspect()
         %currentX = %proportionY * %standardX;
     }
     setScreenMode(%currentX, %currentY, %currentBPP, 0);
-    return ;
 }
 function tryArray()
 {
-    %arrayCtrl = new GuiArray2Ctrl()
-    {
+    %arrayCtrl = new GuiArray2Ctrl("") {
         childrenClassName = "GuiButtonCtrl";
         spacing = 10;
     };
     %arrayCtrl.setChildrenExtents("20 40 80 160", 20);
     %arrayCtrl.setNumChildren(20);
     LoginGui.add(%arrayCtrl);
-    return ;
 }
 function tryGuiTable()
 {
@@ -253,8 +235,7 @@ function tryGuiTable()
     {
         erezG.delete();
     }
-    %table = new GuiTableCtrl(erezG)
-    {
+    %table = new GuiTableCtrl(erezG) {
         position = "30 30";
         extent = "400 400";
         visible = 1;
@@ -262,7 +243,6 @@ function tryGuiTable()
         spacing = 2;
     };
     LoginGui.add(%table);
-    return ;
 }
 function tryDataTable()
 {
@@ -271,7 +251,6 @@ function tryDataTable()
         erezD.delete();
     }
     %table = new DataTable(erezD);
-    return ;
 }
 function tryTable()
 {
@@ -285,18 +264,16 @@ function tryTable()
     erezD.addIconToColumn("online", "idle", "platform/client/ui/ellipsis_yellow");
     erezD.addIconToColumn("online", "offline", "platform/client/ui/arrow_red_right");
     erezD.addRows(5);
-    erezD.setRowDataByIndex(0, "username" TAB "erez" TAB "erez" NL "population" TAB 30 TAB 30 NL "online" TAB "online" TAB "[ICON]");
-    erezD.setRowDataByIndex(1, "username" TAB "ship" TAB "<b>ship" NL "population" TAB 70 TAB 70 NL "online" TAB "offline" TAB "[ICON]");
-    erezD.setRowDataByIndex(2, "username" TAB "boat" TAB "<color:ff0000>boat" NL "population" TAB 60 TAB 60 NL "online" TAB "online" TAB "[ICON]");
-    erezD.setRowDataByIndex(3, "username" TAB "band" TAB "<clip:40>band</clip>" NL "population" TAB 20 TAB 20 NL "online" TAB "idle" TAB "[ICON]");
-    erezD.setRowDataByIndex(4, "username" TAB "dunk" TAB "<color:00ff00>dunk" NL "population" TAB 90 TAB 90 NL "online" TAB "offline" TAB "[ICON]");
+    erezD.setRowDataByIndex(0, "username" @ "\t" @ "erez" @ "\t" @ "erez" @ "\n" @ "population" @ "\t" @ 30 @ "\t" @ 30 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(1, "username" @ "\t" @ "ship" @ "\t" @ "<b>ship" @ "\n" @ "population" @ "\t" @ 70 @ "\t" @ 70 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(2, "username" @ "\t" @ "boat" @ "\t" @ "<color:ff0000>boat" @ "\n" @ "population" @ "\t" @ 60 @ "\t" @ 60 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(3, "username" @ "\t" @ "band" @ "\t" @ "<clip:40>band</clip>" @ "\n" @ "population" @ "\t" @ 20 @ "\t" @ 20 @ "\n" @ "online" @ "\t" @ "idle" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(4, "username" @ "\t" @ "dunk" @ "\t" @ "<color:00ff00>dunk" @ "\n" @ "population" @ "\t" @ 90 @ "\t" @ 90 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]");
     erezD.updateListeners();
-    return ;
 }
 function devAvatarNamesNormal()
 {
     TheShapeNameHud.numNameColors = 0;
-    return ;
 }
 function devAvatarNamesBlues()
 {
@@ -320,7 +297,6 @@ function devAvatarNamesBlues()
     $gDevNameColors[%n] = "1.0 1.0 1.0 1.0";
     %n = %n + 1;
     TheShapeNameHud.numNameColors = %n;
-    return ;
 }
 function devAvatarNamesGreens()
 {
@@ -344,7 +320,6 @@ function devAvatarNamesGreens()
     $gDevNameColors[%n] = "0.8 1.0 0.0 1.0";
     %n = %n + 1;
     TheShapeNameHud.numNameColors = %n;
-    return ;
 }
 function devAvatarNamesIcons()
 {
@@ -394,7 +369,6 @@ function devAvatarNamesIcons()
     $gDevNameColors[%n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_n";
     %n = %n + 1;
     TheShapeNameHud.numNameColors = %n;
-    return ;
 }
 function devAvatarNamesColorsAndIcons()
 {
@@ -444,7 +418,6 @@ function devAvatarNamesColorsAndIcons()
     $gDevNameColors[%n] = "1.0 1.0 1.0 1.0 platform/client/ui/friendsHud_lightning_n";
     %n = %n + 1;
     TheShapeNameHud.numNameColors = %n;
-    return ;
 }
 $gAnimTestNum = 0;
 $gAnimTestCur = 0;
@@ -764,8 +737,7 @@ function animTest_Again()
 {
     %anim = $player.getGender() @ $gAnimTestAnim[$gAnimTestCur];
     $player.playAnim(%anim);
-    echo(getScopeName() SPC "-" SPC %anim);
-    return ;
+    echo(getScopeName() @ " " @ "-" @ " " @ %anim);
 }
 function animTest_Next()
 {
@@ -775,7 +747,6 @@ function animTest_Next()
         $gAnimTestCur = 0;
     }
     animTest_Again();
-    return ;
 }
 function animTest_Prev()
 {
@@ -785,14 +756,12 @@ function animTest_Prev()
         $gAnimTestCur = $gAnimTestCur - 1;
     }
     animTest_Again();
-    return ;
 }
 function timeTest_tare()
 {
     $gTimeTest_StartTimeReal = getRealTime();
     $gTimeTest_StartTimeSim = getSimTime();
     $gTimeTest_dRealToSim = mSubS32($gTimeTest_StartTimeSim, $gTimeTest_StartTimeReal);
-    return ;
 }
 function timeTest_measure()
 {
@@ -802,24 +771,21 @@ function timeTest_measure()
     %elapsedSim = mSubS32(%timeSim, $gTimeTest_StartTimeSim);
     %expectedTimeSim = mAddS32(%timeReal, $gTimeTest_dRealToSim);
     %driftSim = mSubS32(%expectedTimeSim, %timeSim);
-    echo("driftSim is" SPC %driftSim * 0.001);
-    echo("elapsed real seconds   =" SPC %elapsedReal * 0.001);
-    echo("elapsed sim  seconds   =" SPC %elapsedSim * 0.001);
-    echo("driftSim  /elapsedReal =" SPC %driftSim / %elapsedReal);
-    echo("elapsedSim/elapsedReal =" SPC %elapsedSim / %elapsedReal);
-    return ;
+    echo("driftSim is" @ " " @ (%driftSim * 0.001));
+    echo("elapsed real seconds   =" @ " " @ (%elapsedReal * 0.001));
+    echo("elapsed sim  seconds   =" @ " " @ (%elapsedSim * 0.001));
+    echo("driftSim  /elapsedReal =" @ " " @ (%driftSim / %elapsedReal));
+    echo("elapsedSim/elapsedReal =" @ " " @ (%elapsedSim / %elapsedReal));
 }
 function dev_TestRequestRetry()
 {
     %url = "http://winbuild.doppelganger.com/scripts/orion/fakeEnvManagerResponses/failedRequest1.txt";
     %request = sendRequest_ArbitraryTestUrl(%url, "onDoneOrErrorCallback_TestRequestRetry");
     %request.retryTotal = 1;
-    return ;
 }
 function onDoneOrErrorCallback_TestRequestRetry(%request)
 {
-    echo(getScopeName() SPC "- YEP!" SPC getTrace());
-    return ;
+    echo(getScopeName() @ " " @ "- YEP!" @ " " @ getTrace());
 }
 function sendRequest_ArbitraryTestUrl(%url, %callbackHandler)
 {
@@ -838,8 +804,8 @@ function dev_testURLEncode()
         %c = intToChar(%n);
         %d = urlEncode(%c);
         %e = urlDecode(%d);
-        echo(formatInt("%3d", %n) SPC %c SPC "->" SPC %d);
-        echo(formatInt("%3d", %n) SPC %e SPC "<-" SPC %d);
+        echo(formatInt("%3d", %n) @ " " @ %c @ " " @ "->" @ " " @ %d);
+        echo(formatInt("%3d", %n) @ " " @ %e @ " " @ "<-" @ " " @ %d);
         if (%n > 20)
         {
             %gnarly = %gnarly @ %c;
@@ -860,13 +826,11 @@ function dev_ensureRandomItemManager()
             gRandomItemManager.numItems = 0;
         }
     }
-    return ;
 }
 function dev_clearRandomItems()
 {
     dev_ensureRandomItemManager();
     gRandomItemManager.numItems = 0;
-    return ;
 }
 function dev_declareRandomItem(%itemName, %itemWeight)
 {
@@ -876,7 +840,6 @@ function dev_declareRandomItem(%itemName, %itemWeight)
     gRandomItemManager.itemWeight[%n] = %itemWeight;
     gRandomItemManager.weightsNeedNormalizing = 1;
     gRandomItemManager.numItems = gRandomItemManager.numItems + 1;
-    return ;
 }
 function dev_getRandomItem()
 {
@@ -894,7 +857,7 @@ function dev_getRandomItem()
         }
         gRandomItemManager.totalWeight = %totalWeight;
     }
-    %rand = getRandom(0, gRandomItemManager.totalWeight - 1);
+    %rand = getRandom(0, (gRandomItemManager.totalWeight - 1));
     %n = 0;
     while (%n < gRandomItemManager.numItems)
     {
@@ -925,44 +888,43 @@ function dev_testRandomItems(%iterations)
         %totals[%item] = %totals[%item] + 1;
         %n = %n + 1;
     }
-    echo("A -" SPC %totals["A"]);
-    echo("B -" SPC %totals["B"]);
-    echo("C -" SPC %totals["C"]);
-    echo("D -" SPC %totals["D"]);
-    return ;
+    echo("A -" @ " " @ %n[%totals @ "A"]);
+    echo("B -" @ " " @ %totals["B"]);
+    echo("C -" @ " " @ %totals["C"]);
+    echo("D -" @ " " @ %totals["D"]);
 }
 function SimObject::getTypeStrings(%this)
 {
     %types = "";
     %mask = %this.getType();
-    %types = %types @ %mask & $TypeMasks::StaticObjectType ? "StaticObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::EnvironmentObjectType ? "EnvironmentObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::TerrainObjectType ? "TerrainObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::InteriorObjectType ? "InteriorObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::WaterObjectType ? "WaterObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::TriggerObjectType ? "TriggerObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::AntiPortalObjectType ? "AntiPortalObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::ZoneBoxObjectType ? "ZoneBoxObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::MarkerObjectType ? "MarkerObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::GameBaseObjectType ? "GameBaseObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::ShapeBaseObjectType ? "ShapeBaseObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::CameraObjectType ? "CameraObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::StaticShapeObjectType ? "StaticShapeObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::PlayerObjectType ? "PlayerObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::ItemObjectType ? "ItemObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::VehicleObjectType ? "VehicleObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::VehicleBlockerObjectType ? "VehicleBlockerObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::ProjectileObjectType ? "ProjectileObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::ExplosionObjectType ? "ExplosionObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::CorpseObjectType ? "CorpseObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::DebrisObjectType ? "DebrisObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::PhysicalZoneObjectType ? "PhysicalZoneObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::StaticTSObjectType ? "StaticTSObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::StaticRenderedObjectType ? "StaticRenderedObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::DamagableItemObjectType ? "DamagableItemObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::AdvertObjectType ? "AdvertObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::ConversationObjectType ? "ConversationObjectType " : "";
-    %types = %types @ %mask & $TypeMasks::UsableObjectType ? "UsableObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticObjectType) ? "StaticObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::EnvironmentObjectType) ? "EnvironmentObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::TerrainObjectType) ? "TerrainObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::InteriorObjectType) ? "InteriorObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::WaterObjectType) ? "WaterObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::TriggerObjectType) ? "TriggerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::AntiPortalObjectType) ? "AntiPortalObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ZoneBoxObjectType) ? "ZoneBoxObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::MarkerObjectType) ? "MarkerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::GameBaseObjectType) ? "GameBaseObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ShapeBaseObjectType) ? "ShapeBaseObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::CameraObjectType) ? "CameraObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticShapeObjectType) ? "StaticShapeObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::PlayerObjectType) ? "PlayerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ItemObjectType) ? "ItemObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::VehicleObjectType) ? "VehicleObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::VehicleBlockerObjectType) ? "VehicleBlockerObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ProjectileObjectType) ? "ProjectileObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ExplosionObjectType) ? "ExplosionObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::CorpseObjectType) ? "CorpseObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::DebrisObjectType) ? "DebrisObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::PhysicalZoneObjectType) ? "PhysicalZoneObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticTSObjectType) ? "StaticTSObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::StaticRenderedObjectType) ? "StaticRenderedObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::DamagableItemObjectType) ? "DamagableItemObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::AdvertObjectType) ? "AdvertObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::ConversationObjectType) ? "ConversationObjectType " : "";
+    %types = %types @ (%mask & $TypeMasks::UsableObjectType) ? "UsableObjectType " : "";
     %types = trim(%types);
     return %types;
 }
@@ -977,25 +939,24 @@ function twitterTest1(%text)
     if (%text $= $gTwitterText)
     {
         $gTwitterTextCount = $gTwitterTextCount + 1;
-        %text = %text SPC $gTwitterTextCount;
+        %text = %text @ " " @ $gTwitterTextCount;
     }
     else
     {
         $gTwitterText = %text;
         $gTwitterTextCount = 1;
     }
-    %request = new URLPostObject();
+    %request = new URLPostObject("");
     %request.setURL("https://twitter.com/statuses/update.xml");
     %request.setBodyParam("status", %text);
     %request.setUserNameAndPassword("elenzil:etspass777");
     %request.start();
-    return ;
 }
 function GuiControl::snapAndUpToTwitter(%this, %userName, %password, %asBackground, %tile)
 {
     isDefined("%asBackground", 0);
     isDefined("%tile", 0);
-    %region = %this.getScreenPosition() SPC %this.getExtent();
+    %region = %this.getScreenPosition() @ " " @ %this.getExtent();
     return snapshot::snapAndUpRegionToTwitter(%region, "", %userName, %password, %asBackground, %tile);
 }
 function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %password, %asBackground, %tile)
@@ -1019,12 +980,12 @@ function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %pass
     %uploader = "";
     if (!snapshotTool::snapRegion(%region, %fileName))
     {
-        error(getScopeName() SPC "- Unable to capture region." SPC %region SPC %fileName SPC getTrace());
+        error(getScopeName() @ " " @ "- Unable to capture region." @ " " @ %region @ " " @ %fileName @ " " @ getTrace());
     }
     else
     {
         $screenShotNum = $screenShotNum + 1;
-        %uploader = new URLPostObject();
+        %uploader = new URLPostObject("");
         %uploader.setProgress(1);
         %uploader.setURL(%url);
         %uploader.setUserNameAndPassword(%userName @ ":" @ %password);
@@ -1036,7 +997,7 @@ function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %pass
         }
         if (!%uploader.start())
         {
-            error(getScopeName() SPC "- Unable to upload photo." SPC %fileName SPC %url SPC getTrace());
+            error(getScopeName() @ " " @ "- Unable to upload photo." @ " " @ %fileName @ " " @ %url @ " " @ getTrace());
         }
     }
     return %uploader;

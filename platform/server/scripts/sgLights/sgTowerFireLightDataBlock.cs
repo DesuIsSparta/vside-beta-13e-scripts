@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(sgTowerFireLightDataBlock)
-{
+datablock sgUniversalStaticLightData(sgTowerFireLightDataBlock) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 5;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(sgTowerFireLightDataBlock)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Inverse Square Fast Falloff (Lighting Pack)";
 };
-

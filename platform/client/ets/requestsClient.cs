@@ -33,8 +33,8 @@ function sendRequest_GetBalancesAndScores(%userName, %callbackHandler)
     %request.setName("request_GetBalancesAndScores");
     if (%request.isOpen())
     {
-        warn("network", getScopeName() SPC "- got overlapping requests. postponing. url =" SPC %request.getURL());
-        return ;
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+        return;
     }
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
@@ -55,7 +55,7 @@ function sendRequest_GetCustomSpaceInfo(%buildingName, %spaceName, %ownerName, %
     %request.addUserAndToken($Player::Name);
     if ((%buildingName $= "") && (%ownerName $= ""))
     {
-        error(getScopeName() SPC "- either buildingName or ownerName must have a value." SPC getTrace());
+        error(getScopeName() @ " " @ "- either buildingName or ownerName must have a value." @ " " @ getTrace());
         return "";
     }
     %request.setURLParamIfNotEmpty("building", %buildingName);
@@ -117,11 +117,11 @@ function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandl
     {
         if (%requestName.doAnother)
         {
-            echo(getScopeName() SPC "- got overlapping requests, dropping intermediate." SPC getTrace());
+            echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
         }
         else
         {
-            echo(getScopeName() SPC "- got overlapping requests." SPC getTrace());
+            echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         }
         %requestName.doAnother = 1;
         return "";
@@ -151,11 +151,11 @@ function sendRequest_GetOnlineFriends(%maxCount, %sortCriteria, %callbackHandler
     {
         if (%requestName.doAnother)
         {
-            echo(getScopeName() SPC "- got overlapping requests, dropping intermediate." SPC getTrace());
+            echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
         }
         else
         {
-            echo(getScopeName() SPC "- got overlapping requests." SPC getTrace());
+            echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         }
         %requestName.doAnother = 1;
         return "";
@@ -188,11 +188,11 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
     {
         if (%requestName.doAnother)
         {
-            echo(getScopeName() SPC "- got overlapping requests, dropping intermediate." SPC getTrace());
+            echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
         }
         else
         {
-            echo(getScopeName() SPC "- got overlapping requests." SPC getTrace());
+            echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         }
         %requestName.doAnother = 1;
         return "";
@@ -215,7 +215,7 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
     }
     else
     {
-        echo(getScopeName() SPC "- using fake data.");
+        echo(getScopeName() @ " " @ "- using fake data.");
         %num = 100;
         %request.putValue("status", "success");
         %request.putValue("userCount", %num);
@@ -224,8 +224,8 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
         {
             %keyBase = "user" @ %n @ ".";
             %request.putValue(%keyBase @ "userName", getRandomUserName());
-            %request.putValue(%keyBase @ "relationType", getRandom(0, 99) < 20 ? "friend" : "");
-            %request.putValue(%keyBase @ "age", getRandom(0, 1) == 0 ? getRandom(13, 25) : "");
+            %request.putValue(%keyBase @ "relationType", (getRandom(0, 99) < 20) ? "friend" : "");
+            %request.putValue(%keyBase @ "age", (getRandom(0, 1) == 0) ? getRandom(13, 25) : "");
             %request.putValue(%keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
             %request.putValue(%keyBase @ "currentLocation.areaName", "lga_yachts");
             %request.putValue(%keyBase @ "currentLocation.buildingName", "LGAHarbor");
@@ -296,7 +296,7 @@ function sendRequest_PurchaseInventory(%userName, %skusArray, %payWith, %storena
     {
         if (%skusArray.getValue(%n) != 1)
         {
-            error("trying to buy a non-unit quantity of a sku." SPC %skusArray.getKey(%n) SPC %skusArray.getValue(%n));
+            error("trying to buy a non-unit quantity of a sku." @ " " @ %skusArray.getKey(%n) @ " " @ %skusArray.getValue(%n));
             %skusArray.setValue(%n, 1);
         }
         %n = %n + 1;
@@ -375,7 +375,7 @@ function sendRequest_UpdateUserInventoryCollection(%userName, %collectionName, %
     {
         if (!(%callbackHandler $= ""))
         {
-            warn(getScopeName() SPC "- standalone: faking success" SPC getTrace());
+            warn(getScopeName() @ " " @ "- standalone: faking success" @ " " @ getTrace());
             %request.putValue("status", "success");
             schedule(500, 0, %callbackHandler, %request);
         }
@@ -456,11 +456,11 @@ function sendRequest_GetMainVenues(%maxCount, %callbackHandler)
     fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
     %n = %n + 1;
     %venue = DestinationList::GetRandomDestinationForTGF("venue", %notThese);
-    %notThese = %notThese SPC %venue;
+    %notThese = %notThese @ " " @ %venue;
     fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
     %n = %n + 1;
     %venue = DestinationList::GetRandomDestinationForTGF("shop", %notThese);
-    %notThese = %notThese SPC %venue;
+    %notThese = %notThese @ " " @ %venue;
     fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
     %n = %n + 1;
     %n = %n;
@@ -489,17 +489,15 @@ function sendRequest_GetMainVenues(%maxCount, %callbackHandler)
             }
         }
         %venue = DestinationList::GetRandomDestinationForTGF(%type, %notThese);
-        %notThese = %notThese SPC %venue;
+        %notThese = %notThese @ " " @ %venue;
         fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
         %n = %n + 1;
     }
     %request.schedule(100, "onDoneOrError");
-    return ;
 }
 function fakeRequestListItem_GetMainVenues(%request, %listNameBase, %listIndex, %venueCodeName)
 {
     %request.putValue(%listNameBase @ %listIndex @ ".codeName", %venueCodeName);
-    return ;
 }
 function sendRequest_AbuseReport(%abuser, %description, %occurrence, %abuseType, %chatSnippetFile, %callbackHandler)
 {
@@ -584,7 +582,7 @@ function sendRequest_GiftCurrency(%targetUserName, %currencyType, %currencyAmoun
     %request.addUserAndToken($Player::Name);
     %request.setBodyParam("password", MD5($Player::Password));
     %request.setURLParam("payee", %targetUserName);
-    %request.setURLParam("currencyType", %currencyType $= "vPoints" ? "VPOINTS" : "VBUX");
+    %request.setURLParam("currencyType", (%currencyType $= "vPoints") ? "VPOINTS" : "VBUX");
     %request.setURLParam("amount", %currencyAmount);
     %request.setURLParam("dryRun", %dryRun, 1);
     %request.setCompletedCallback(%callbackHandler);
@@ -651,7 +649,7 @@ function sendRequest_PublishToTicker(%message, %priority, %callbackHandler)
     }
     else
     {
-        echo(getScopeName() SPC "- using fake data. yep");
+        echo(getScopeName() @ " " @ "- using fake data. yep");
         %request.setResult("status", "success");
         %request.schedule(500, "onDoneOrError");
     }

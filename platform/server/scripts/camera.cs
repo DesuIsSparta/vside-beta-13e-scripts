@@ -1,6 +1,5 @@
 $Camera::movementSpeed = 40;
-datablock CameraData(Observer)
-{
+datablock CameraData(Observer) {
     mode = "Observer";
     cameraMinFov = 56;
     cameraMaxFov = 120;
@@ -9,7 +8,7 @@ function Observer::onTrigger(%this, %obj, %unused, %state)
 {
     if (%state == 0)
     {
-        return ;
+        return;
     }
     %client = %obj.getControllingClient();
     if (%obj.mode $= "Observer")
@@ -23,7 +22,6 @@ function Observer::onTrigger(%this, %obj, %unused, %state)
             %this.setMode(%obj, "Observer");
         }
     }
-    return ;
 }
 function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3)
 {
@@ -40,15 +38,12 @@ function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3)
         }
     }
     %obj.mode = %mode;
-    return ;
 }
 function Camera::onAdd(%this, %obj)
 {
     %this.setMode(%this.mode);
-    return ;
 }
 function Camera::setMode(%this, %mode, %arg1, %arg2, %arg3)
 {
     %this.getDataBlock().setMode(%this, %mode, %arg1, %arg2, %arg3);
-    return ;
 }

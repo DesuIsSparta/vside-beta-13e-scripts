@@ -10,13 +10,12 @@ function UserActivityMgr::defineActivities(%this)
     %this.defineActivity("chatting", "chatting", 15000);
     %this.defineActivity("dancing", "dancing", 45000);
     %this.defineActivity("traveling", "traveling", -1);
-    return ;
 }
 function getUserActivityMgr()
 {
     if (!isObject(gUserActivityMgr))
     {
-        echo(getScopeName() SPC "- initializing");
+        echo(getScopeName() @ " " @ "- initializing");
         safeNewScriptObject("ScriptObject", "gUserActivityMgr", 0);
         gUserActivityMgr.bindClassName("UserActivityMgr");
         gUserActivityMgr.knownActivities = safeNewScriptObject("Array", "", 0);
@@ -35,26 +34,24 @@ function UserActivityMgr::reset(%this)
     %this.maxReportPeriodMS = 20 * 1000;
     cancel(%this.reportTimer);
     %this.reportTimer = "";
-    return ;
 }
 function UserActivityMgr::defineActivity(%this, %activityName, %userFacingName, %duration)
 {
     %userFacingName = isDefined("%userFacingName") ? %userFacingName : %activityName;
-    %duration = isDefined("%duration") ? %duration : 1;
-    %params = %userFacingName TAB %duration;
+    %duration = isDefined("%duration") ? %duration : -1;
+    %params = %userFacingName @ "\t" @ %duration;
     %this.knownActivities.put(%activityName, %params);
-    if (!isFile(%this.getActivityIconFilename(%activityName) @ ".png"))
+    if (!(isFile(%this.getActivityIconFilename(%activityName) @ ".png")))
     {
-        error(getScopeName() SPC "- no icon for" SPC %activityName SPC %this.getActivityIconFilename(%activityName));
+        error(getScopeName() @ " " @ "- no icon for" @ " " @ %activityName @ " " @ %this.getActivityIconFilename(%activityName));
     }
-    return ;
 }
 function UserActivityMgr::isKnownActivity(%this, %activityName, %warn)
 {
     %known = %this.knownActivities.hasKey(%activityName);
-    if ((!%known && isDefined("%warn")) && %warn)
+    if (!%known && isDefined("%warn") && %warn)
     {
-        error(getScopeName() SPC "- unknown activity: \"" @ %activityName @ "\"." SPC getTrace());
+        error(getScopeName() @ " " @ "- unknown activity: \"" @ %activityName @ "\"." @ " " @ getTrace());
     }
     return %known;
 }
@@ -80,13 +77,12 @@ function UserActivityMgr::getActivityUserFacingName(%this, %activityName)
     {
         return getField(%this.knownActivities.get(%activityName), 0);
     }
-    return ;
 }
 function UserActivityMgr::getActivityBitmapMLText(%this, %activityName)
 {
     %ufn = %this.getActivityUserFacingName(%activityName);
     %bitmap = %this.getActivityIconFilename(%activityName);
-    %tip = %ufn $= "" ? "" : "<tip:";
+    %tip = %ufn $= "" ? "" : "<tip:" @ %ufn @ ">";
     %ret = "<spush>" @ %tip @ "<bitmap:" @ %bitmap @ "><spop>";
     return %ret;
 }
@@ -100,7 +96,6 @@ function UserActivityMgr::getActivityDuration(%this, %activityName)
     {
         return getField(%this.knownActivities.get(%activityName), 1);
     }
-    return ;
 }
 function UserActivityMgr::getActivityPriority(%this, %activityName)
 {
@@ -143,13 +138,11 @@ function UserActivityMgr::setActivityActive(%this, %activityName, %state)
     {
         geActivitiesPanel.updateStates();
     }
-    return ;
 }
 function UserActivityMgr::cancelActivity(%this, %activityName)
 {
-    echoDebug(getScopeName() SPC "- cancelling activity" SPC %activityName);
+    echoDebug(getScopeName() @ " " @ "- cancelling activity" @ " " @ %activityName);
     %this.setActivityActive(%activityName, 0);
-    return ;
 }
 function UserActivityMgr::getActivityActive(%this, %activityName)
 {
@@ -170,7 +163,6 @@ function UserActivityMgr::getActivityTimeLeft(%this, %activityName)
     {
         return getEventTimeLeft(%timerID);
     }
-    return ;
 }
 function UserActivityMgr::getHighestPriorityCurrentActivity(%this)
 {
@@ -181,7 +173,7 @@ function UserActivityMgr::getHighestPriorityCurrentActivity(%this)
     {
         %act = %this.currActivities.getKey(%n);
         %pri = %this.getActivityPriority(%act);
-        if ((%highestAct $= "") && (%pri < %highestPri))
+        if ((%highestAct $= "") || (%pri < %highestPri))
         {
             %highestPri = %pri;
             %highestAct = %act;
@@ -202,14 +194,13 @@ function UserActivityMgr::tryReport(%this)
         if (%this.reportTimer $= "")
         {
             %this.reportTimer = %this.schedule(%wait, "_doReport");
-            echoDebug(getScopeName() SPC "- delaying for" SPC %wait @ "MS");
+            echoDebug(getScopeName() @ " " @ "- delaying for" @ " " @ %wait @ "MS");
         }
         else
         {
-            echoDebug(getScopeName() SPC "- waiting  for" SPC %wait @ "MS");
+            echoDebug(getScopeName() @ " " @ "- waiting  for" @ " " @ %wait @ "MS");
         }
     }
-    return ;
 }
 function UserActivityMgr::getMSToNextReport(%this)
 {
@@ -234,7 +225,6 @@ function UserActivityMgr::_doReport(%this)
     {
         sendRequest_UpdateUserStates(%list);
     }
-    return ;
 }
 function UserActivityMgr::getLastReportAgeMS(%this)
 {
@@ -257,7 +247,7 @@ function UserActivityMgr::getActivitiesMLText(%this, %activitiesList, %numToShow
     if (%numToShow <= 0)
     {
         %activityBitmapMLText = %this.getActivityBitmapMLText("");
-        %ret = "<color:" @ ColorIToHex("255 255 255" SPC %alphaOfLast) @ ">" @ %activityBitmapMLText;
+        %ret = "<color:" @ ColorIToHex("255 255 255" @ " " @ %alphaOfLast) @ ">" @ %activityBitmapMLText;
     }
     else
     {
@@ -271,7 +261,7 @@ function UserActivityMgr::getActivitiesMLText(%this, %activitiesList, %numToShow
             }
             else
             {
-                %modulationColor = ColorIToHex("255 255 255" SPC %alphaOfSecond - (%m * %stepDown));
+                %modulationColor = ColorIToHex("255 255 255" @ " " @ (%alphaOfSecond - (%m * %stepDown)));
             }
             %activityName = getField(%activitiesList, %m);
             %activityBitmapMLText = %this.getActivityBitmapMLText(%activityName);
@@ -292,5 +282,4 @@ function ClientCmdBuddyActivitiesChanged(%userName, %activitiesTagged)
     {
         %infoMapEntry.activities = %activitiesList;
     }
-    return ;
 }

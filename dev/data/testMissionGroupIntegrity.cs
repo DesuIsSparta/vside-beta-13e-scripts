@@ -2,30 +2,25 @@ DeclareTestSuite("TestSuite_MissionGroup");
 function TestSuite_MissionGroup::setup(%this)
 {
     %this.addTestCase("TEST_MISSIONGROUPINTEGRITY");
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::AddOkClass(%this, %okClassName)
 {
     %this.okClass[%this.okClassCount] = %okClassName;
     %this.okClassCount = %this.okClassCount + 1;
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::Add_NO_CacheClass(%this, %okClassName)
 {
     %this.ableToNotCacheClass[%this.ableToNotCacheClassCount] = %okClassName;
     %this.ableToNotCacheClassCount = %this.ableToNotCacheClassCount + 1;
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::AddInitiallyNotNetCacheableClass(%this, %classname)
 {
     %this.InitiallyNotNetCacheableClass[%this.InitiallyNotNetCacheableClassCount] = %classname;
     %this.InitiallyNotNetCacheableClassCount = %this.InitiallyNotNetCacheableClassCount + 1;
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::AddObjectInstancesMustHaveUniqueNamesClass(%this, %classname)
 {
-    %this.instancesMustHaveUniqueNamesClass = %classname TAB %this.instancesMustHaveUniqueNamesClass;
-    return ;
+    %this.instancesMustHaveUniqueNamesClass = %classname @ "\t" @ %this.instancesMustHaveUniqueNamesClass;
 }
 function TEST_MISSIONGROUPINTEGRITY::objectInstanceMustHaveUniqueName(%this, %obj)
 {
@@ -35,18 +30,20 @@ function TEST_MISSIONGROUPINTEGRITY::objectInstanceMustHaveUniqueName(%this, %ob
 }
 function TEST_MISSIONGROUPINTEGRITY::InitializeNPCNames(%this)
 {
-    if (!((MissionInfo.skipNPCCheck $= "")) && (MissionInfo.skipNPCCheck == 1))
+    if (!(MissionInfo.skipNPCCheck $= "") && (MissionInfo.skipNPCCheck == 1))
     {
         log("general", "debug", "Skipping NPC name check.");
         %this.NPCNameMap = 0;
-        return ;
+        return;
     }
-    %this.NPCNameMap = new StringMap();
+    %this.NPCNameMap = new StringMap("") {
+        ignoreCase = 1;
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%this.NPCNameMap);
     }
-    %file = new FileObject();
+    %file = new FileObject("");
     if (%file.openForRead("dev/data/npc_usernames.txt"))
     {
         while (!%file.isEOF())
@@ -58,11 +55,10 @@ function TEST_MISSIONGROUPINTEGRITY::InitializeNPCNames(%this)
     else
     {
         %file.delete();
-        return ;
+        return;
     }
     %file.close();
     %file.delete();
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::setup(%this)
 {
@@ -89,28 +85,19 @@ function TEST_MISSIONGROUPINTEGRITY::setup(%this)
     %this.AddOkClass("AntiPortal");
     %this.AddOkClass("ZoneBox");
     %this.AddOkClass("AudioEmitter");
-    if (isFunction("Using_DShow"))
+    if (isFunction("Using_DShow") && Using_DShow())
     {
-        if (Using_DShow())
-        {
-            %this.AddOkClass("DSRenderer");
-        }
+        %this.AddOkClass("DSRenderer");
     }
     %this.AddOkClass("ETSSeatMarker");
-    if (isFunction("Using_FFMPEG"))
+    if (isFunction("Using_FFMPEG") && Using_FFMPEG())
     {
-        if (Using_FFMPEG())
-        {
-            %this.AddOkClass("FFMPEGRenderer");
-        }
+        %this.AddOkClass("FFMPEGRenderer");
     }
     %this.AddOkClass("SlaveRenderer");
-    if (isFunction("Using_DF"))
+    if (isFunction("Using_DF") && Using_DF())
     {
-        if (Using_DF())
-        {
-            %this.AddOkClass("DFTextureAdvert");
-        }
+        %this.AddOkClass("DFTextureAdvert");
     }
     %this.AddOkClass("InteriorInstance");
     %this.AddOkClass("TerrainBlock");
@@ -129,12 +116,9 @@ function TEST_MISSIONGROUPINTEGRITY::setup(%this)
     %this.AddOkClass("Sun");
     %this.AddOkClass("TSStatic");
     %this.AddOkClass("TSDynamic");
-    if (isFunction("Using_Theora"))
+    if (isFunction("Using_Theora") && Using_Theora())
     {
-        if (Using_Theora())
-        {
-            %this.AddOkClass("TheoraRenderer");
-        }
+        %this.AddOkClass("TheoraRenderer");
     }
     %this.AddOkClass("Trigger");
     %this.AddOkClass("WaterBlock");
@@ -156,7 +140,6 @@ function TEST_MISSIONGROUPINTEGRITY::setup(%this)
     %this.AddOkClass("ImageFrameBase");
     %this.AddOkClass("TSText");
     %this.InitializeNPCNames();
-    return ;
 }
 $MAYBE_BAD_MODEL_UNIT_FLAG = 0;
 function TEST_MISSIONGROUPINTEGRITY::runTest(%this)
@@ -171,7 +154,6 @@ function TEST_MISSIONGROUPINTEGRITY::runTest(%this)
     %this.CheckDatablockSetup();
     %this.CheckUniqueObjectNames();
     %this.CheckPaperDollSKUs();
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::TearDown(%this)
 {
@@ -180,7 +162,6 @@ function TEST_MISSIONGROUPINTEGRITY::TearDown(%this)
         %this.NPCNameMap.delete();
         %this.NPCNameMap = 0;
     }
-    return ;
 }
 function CountObjectsInMissionWithName(%name)
 {
@@ -199,7 +180,6 @@ function NameCounterVisitor::visitObject(%this, %obj)
     {
         %this.count = %this.count + 1;
     }
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::assertCount(%this, %name, %expected_count, %message)
 {
@@ -208,8 +188,7 @@ function TEST_MISSIONGROUPINTEGRITY::assertCount(%this, %name, %expected_count, 
         %this.assert(isObject(%name), %message);
     }
     %count = CountObjectsInMissionWithName(%name);
-    %this.assert(%count == %expected_count, "expected there to be" SPC %expected_count SPC "of" SPC %name SPC "but found" SPC %count SPC ".  maybe you accidentally named the other ones this? or you accidentally copied and pasted it?");
-    return ;
+    %this.assert((%count == %expected_count), "expected there to be" @ " " @ %expected_count @ " " @ "of" @ " " @ %name @ " " @ "but found" @ " " @ %count @ " " @ ".  maybe you accidentally named the other ones this? or you accidentally copied and pasted it?");
 }
 function TEST_MISSIONGROUPINTEGRITY::assertCountAtMost(%this, %name, %atMost_count, %message)
 {
@@ -218,8 +197,7 @@ function TEST_MISSIONGROUPINTEGRITY::assertCountAtMost(%this, %name, %atMost_cou
         %this.assert(isObject(%name), %message);
     }
     %count = CountObjectsInMissionWithName(%name);
-    %this.assert(%count <= %atMost_count, "expected there to be at most" SPC %atMost_count SPC "of" SPC %name SPC "but found" SPC %count SPC ".  maybe you accidentally named the other ones this? or you accidentally copied and pasted it?");
-    return ;
+    %this.assert((%count <= %atMost_count), "expected there to be at most" @ " " @ %atMost_count @ " " @ "of" @ " " @ %name @ " " @ "but found" @ " " @ %count @ " " @ ".  maybe you accidentally named the other ones this? or you accidentally copied and pasted it?");
 }
 function TEST_MISSIONGROUPINTEGRITY::CheckBuildingTransitionSetup(%this)
 {
@@ -237,7 +215,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckBuildingTransitionSetup(%this)
                 %vurl = Buildings::getReturnVURL(%name);
                 %parsedVURLobject = vurlGetParsedVurl(%vurl);
                 %returnName = %parsedVURLobject.targetDest;
-                %this.assert(isObject(%returnName), "Building(" SPC %name SPC ") return spawn \"" @ %returnName @ "\" is not an object, you should make a simgroup with that name and place a spawn sphere in it for this building");
+                %this.assert(isObject(%returnName), "Building(" @ " " @ %name @ " " @ ") return spawn \"" @ %returnName @ "\" is not an object, you should make a simgroup with that name and place a spawn sphere in it for this building");
                 %parsedVURLobject.delete();
             }
             %i = %i + 1;
@@ -247,7 +225,6 @@ function TEST_MISSIONGROUPINTEGRITY::CheckBuildingTransitionSetup(%this)
     {
         %this.assertCountAtMost("NPCGroup", 1, "there should only be at most a single NPCGroup SimGroup");
     }
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this)
 {
@@ -284,7 +261,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this)
             %zonemaxx = getWord(%maxP, 0);
             %zonemaxy = getWord(%maxP, 1);
             %zonemaxz = getWord(%maxP, 2);
-            %contained = (((((%zoneminx <= %areaminx) && (%zoneminy <= %areaminy)) && (%zoneminz <= %areaminz)) && (%zonemaxx >= %areamaxx)) && (%zonemaxy >= %areamaxy)) && (%zonemaxz >= %areamaxz);
+            %contained = (%zoneminx <= %areaminx) && (%zoneminy <= %areaminy) && (%zoneminz <= %areaminz) && (%zonemaxx >= %areamaxx) && (%zonemaxy >= %areamaxy) && (%zonemaxz >= %areamaxz);
             %this.assert(%contained, " PRIVATESPACE_AREA  must be entirely inside of PRIVATESPACE_ZONEBOX, it looks like the area is outside in this mission, make sure the zonebox surrounds it completely. thanks!");
         }
     }
@@ -294,14 +271,13 @@ function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this)
         %this.assertDifferentString(MissionInfo.building, "", "For privatespace grid servers, a building must be specified in MissionInfo, this is the building that connects to this grid server");
         %this.assertDifferentString(MissionInfo.spacePrefix, "", "For privatespace grid servers, a spacePrefix must be specified in MissionInfo, this is the prefix that will be used to name each space");
     }
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::CheckDatablockSetup(%this)
 {
     %group = DataBlockGroup;
     if (%this.assert(isObject(%group), "no DataBlockGroup!"))
     {
-        return ;
+        return;
     }
     %n = %group.getCount() - 1;
     while (%n >= 0)
@@ -309,27 +285,27 @@ function TEST_MISSIONGROUPINTEGRITY::CheckDatablockSetup(%this)
         %obj = %group.getObject(%n);
         if (%this.assert(isObject(%obj), "non-object in DataBlockGroup!"))
         {
-            continue;
         }
-        if (%obj.hasMethod("checkIntegrity"))
+        else
         {
-            %obj.checkIntegrity(%this);
+            if (%obj.hasMethod("checkIntegrity"))
+            {
+                %obj.checkIntegrity(%this);
+            }
         }
         %n = %n - 1;
     }
 }
-
 function TEST_MISSIONGROUPINTEGRITY::CheckUniqueObjectNames(%this)
 {
     %group = MissionGroup;
     if (%this.assert(isObject(%group), "no MissionGroup!"))
     {
-        return ;
+        return;
     }
     %nameMap = safeNewScriptObject("StringMap", "", 0);
     %this._checkUniqueObjectNames_Recursive(%group, %nameMap);
     %nameMap.delete();
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::_checkUniqueObjectNames_Recursive(%this, %obj, %nameMap)
 {
@@ -359,11 +335,9 @@ function TEST_MISSIONGROUPINTEGRITY::_checkUniqueObjectNames_Recursive(%this, %o
         }
     }
 }
-
 function TEST_MISSIONGROUPINTEGRITY::CheckPaperDollSKUs(%this)
 {
     paperDoll_InitPermutations();
-    return ;
 }
 function MissionMarkerData::checkIntegrity(%this, %testCase)
 {
@@ -372,14 +346,13 @@ function MissionMarkerData::checkIntegrity(%this, %testCase)
         %isProtected = ProtectedAnimsDict.hasKey(%this.sitIdle);
         %testCase.assert(%isProtected, "seat marker datablock \"" @ %this.getName() @ "\" has a non-protected idle anim, \"" @ %this.sitIdle @ "\". You may want to add it to initializeProtectedAnims().");
     }
-    return ;
 }
 function TEST_MISSIONGROUPINTEGRITY::IsAbleToNotCache(%this, %obj)
 {
     %classname = %obj.getClassName();
     %ableToNotCache = 0;
     %i = 0;
-    while (%ableToNotCache == 0)
+    while ((%i < %this.ableToNotCacheClassCount) && (%ableToNotCache == 0))
     {
         if (%this.ableToNotCacheClass[%i] $= %classname)
         {
@@ -398,7 +371,7 @@ function TEST_MISSIONGROUPINTEGRITY::getInitialNetCacheable(%this, %obj)
     %classname = %obj.getClassName();
     %ret = 1;
     %i = 0;
-    while (%ret == 1)
+    while ((%i < %this.InitiallyNotNetCacheableClassCount) && (%ret == 1))
     {
         if (%this.InitiallyNotNetCacheableClass[%i] $= %classname)
         {
@@ -410,10 +383,10 @@ function TEST_MISSIONGROUPINTEGRITY::getInitialNetCacheable(%this, %obj)
 }
 function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%this, %obj, %parentGroupName)
 {
-    %this.assert(isObject(%obj), %parentGroupName SPC ", the object " @ %obj @ "is not an object");
+    %this.assert(isObject(%obj), %parentGroupName @ " " @ ", the object " @ %obj @ "is not an object");
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     if (%obj.isClassSimSet())
     {
@@ -444,7 +417,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         %wordLoc = findWord(%exceptions, %classname);
         if (%wordLoc < 0)
         {
-            %this.assert(%obj.isNetCacheable == 1, "this object is a type that should be able to cache, you should set isNetCacheable to 1" SPC getDebugString(%obj));
+            %this.assert((%obj.isNetCacheable == 1), "this object is a type that should be able to cache, you should set isNetCacheable to 1" @ " " @ getDebugString(%obj));
         }
     }
     if (%obj.isClassSimSpace())
@@ -452,21 +425,21 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         if (!(getSubStr(%obj.getName(), 0, 9) $= "SimSpace_"))
         {
             %belongs = 0;
-            %actionNeeded = "SimSpaces should be named starting with \"SimSpace_\"." SPC %obj.getName() SPC "is breakin\' the law!";
+            %actionNeeded = "SimSpaces should be named starting with \"SimSpace_\"." @ " " @ %obj.getName() @ " " @ "is breakin' the law!";
         }
         if (!%obj.hasSpaceDef())
         {
             %belongs = 0;
-            %actionNeeded = "SimSpace" SPC %obj.getName() SPC "has no associated SpaceDef.";
+            %actionNeeded = "SimSpace" @ " " @ %obj.getName() @ " " @ "has no associated SpaceDef.";
         }
     }
     if (%obj.isClassAIPlayer())
     {
-        %this.assert(NPCGroup.getObjectIndex(%obj) > -1, "AIPlayer is not in NPCGroup:" SPC getDebugString(%obj));
+        %this.assert((NPCGroup.getObjectIndex(%obj) > -1), "AIPlayer is not in NPCGroup:" @ " " @ getDebugString(%obj));
         if (isObject(%this.NPCNameMap) && (%this.NPCNameMap.findKey(%obj.getName()) == -1))
         {
             %belongs = 0;
-            %actionNeeded = "NPC" SPC %obj.getName() SPC "should be listed in npc_usernames.txt.";
+            %actionNeeded = "NPC" @ " " @ %obj.getName() @ " " @ "should be listed in npc_usernames.txt.";
         }
     }
     if (%classname $= "MissionMarker")
@@ -491,7 +464,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
             %belongs = 0;
             %actionNeeded = "ETSSeatMarkers should not have listening station of 0, listening station should be the name of an object or an empty string";
         }
-        %this.assert(%obj.isNetCacheable == 0, "seat markers cannot be cached, you should set isNetCacheable to 0 for the seat marker:" SPC getDebugString(%obj) SPC "in the group" SPC %parentGroupName);
+        %this.assert((%obj.isNetCacheable == 0), "seat markers cannot be cached, you should set isNetCacheable to 0 for the seat marker:" @ " " @ getDebugString(%obj) @ " " @ "in the group" @ " " @ %parentGroupName);
         if (!%this.isProtectedSitAnimException(%obj.sitIdle))
         {
             %isProtected = ProtectedAnimsDict.hasKey(%obj.sitIdle);
@@ -517,20 +490,17 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
     if (%classname $= "Trigger")
     {
         %dbName = %obj.getDataBlock().getName();
-        if (%dbName $= "SeatingArea")
+        if (%dbName $= "SeatingArea" && (%obj.autosit $= ""))
         {
-            if (%obj.autosit $= "")
-            {
-                %belongs = 0;
-                %actionNeeded = "SeatingArea triggers are only needed if you are using autosit, otherwise it should be deleted";
-            }
+            %belongs = 0;
+            %actionNeeded = "SeatingArea triggers are only needed if you are using autosit, otherwise it should be deleted";
         }
         if (%dbName $= "DoorTrigger")
         {
             %myDoor = %obj.findMyDoor();
-            %this.assert(isObject(%myDoor), %parentGroupName SPC ", the object " @ %myDoor @ "is not an object, this is the door referenced by" SPC getDebugString(%obj));
+            %this.assert(isObject(%myDoor), %parentGroupName @ " " @ ", the object " @ %myDoor @ "is not an object, this is the door referenced by" @ " " @ getDebugString(%obj));
             %doorsDataBlock = %myDoor.getDataBlock();
-            %this.assert(!(%doorsDataBlock $= ""), %parentGroupName SPC ", the object " @ %myDoor @ " is not a datablock based door, you should make the datablock first and place that in the world, not a Static, look in Shapes->Doors for your datablock name, this is the door referenced by" SPC getDebugString(%obj));
+            %this.assert(!(%doorsDataBlock $= ""), %parentGroupName @ " " @ ", the object " @ %myDoor @ " is not a datablock based door, you should make the datablock first and place that in the world, not a Static, look in Shapes->Doors for your datablock name, this is the door referenced by" @ " " @ getDebugString(%obj));
         }
     }
     if (MissionInfo.mode $= "PrivateSpaceDesign")
@@ -543,7 +513,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         if (%classname $= "InteriorInstance")
         {
             %isManagingZones = %obj.managezones;
-            %this.assert(!%isManagingZones, %parentGroupName SPC ", the object" SPC %obj.getDebugString() SPC " - In a private space, interiors should not be managing zones, set \"managezones\" to zero for this interior instance, and make sure you have a ZoneBox surrounding the entire apartment, the ZoneBox will serve as the zone manager");
+            %this.assert(!%isManagingZones, %parentGroupName @ " " @ ", the object" @ " " @ %obj.getDebugString() @ " " @ " - In a private space, interiors should not be managing zones, set \"managezones\" to zero for this interior instance, and make sure you have a ZoneBox surrounding the entire apartment, the ZoneBox will serve as the zone manager");
         }
         if (%obj.getName() $= "PRIVATESPACE_AREA")
         {
@@ -553,17 +523,16 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         if (%obj.getName() $= "PRIVATESPACE_INTERIOR")
         {
             %this.assertSameString(%classname, "InteriorInstance", "the PRIVATESPACE_INTERIOR object should be a InteriorInstance object");
-            %this.assert(%obj.isNetCacheable == 0, "The PRIVATESPACE_INTERIOR will have the textures on it changed at runtime for this reason, it should have isNetCacheable set to 0, make that change to fix this problem");
+            %this.assert((%obj.isNetCacheable == 0), "The PRIVATESPACE_INTERIOR will have the textures on it changed at runtime for this reason, it should have isNetCacheable set to 0, make that change to fix this problem");
         }
     }
     if (!(%obj.dataBlock $= ""))
     {
-        %this.assertDifferentString(%obj.dataBlock, %obj.getName(), "You cannot have an object with the same name as a datablock, It\'s a good idea to name your datablocks something like blah_DB so you don\'t accidentally call your object the same name");
+        %this.assertDifferentString(%obj.dataBlock, %obj.getName(), "You cannot have an object with the same name as a datablock, It's a good idea to name your datablocks something like blah_DB so you don't accidentally call your object the same name");
     }
     %openSpace = "                                       action to take:";
-    %message = "in" SPC %parentGroupName SPC ": object:" SPC %obj SPC "of class:" SPC %classname SPC ", with name:" SPC %obj.getName() NL %openSpace SPC %actionNeeded;
-    %this.assert(%belongs == 1, %message);
-    return ;
+    %message = "in" @ " " @ %parentGroupName @ " " @ ": object:" @ " " @ %obj @ " " @ "of class:" @ " " @ %classname @ " " @ ", with name:" @ " " @ %obj.getName() @ "\n" @ %openSpace @ " " @ %actionNeeded;
+    %this.assert((%belongs == 1), %message);
 }
 function TEST_MISSIONGROUPINTEGRITY::isProtectedSitAnimException(%this, %animName)
 {
@@ -585,7 +554,7 @@ function RecursivelyFixOldStyleSeatingAreaProblems(%obj)
 {
     if (!isObject(%obj))
     {
-        return ;
+        return;
     }
     if (%obj.isClassSimGroup())
     {
@@ -596,30 +565,23 @@ function RecursivelyFixOldStyleSeatingAreaProblems(%obj)
             RecursivelyFixOldStyleSeatingAreaProblems(%obj.getObject(%n));
             %n = %n + 1;
         }
+        return;
     }
-    return ;
     %classname = %obj.getClassName();
-    if (%classname $= "ETSSeatMarker")
+    if (%classname $= "ETSSeatMarker" && (%obj.listeningStation $= 0))
     {
-        if (%obj.listeningStation $= 0)
-        {
-            %obj.listeningStation = "";
-            echo("cleared listening station that was 0 for " SPC %obj SPC "of class:" SPC %classname SPC ", with name:" SPC %obj.getName());
-        }
+        %obj.listeningStation = "";
+        echo("cleared listening station that was 0 for " @ " " @ %obj @ " " @ "of class:" @ " " @ %classname @ " " @ ", with name:" @ " " @ %obj.getName());
     }
     if (%classname $= "Trigger")
     {
         %dbName = %obj.getDataBlock().getName();
-        if (%dbName $= "SeatingArea")
+        if (%dbName $= "SeatingArea" && (%obj.autosit $= ""))
         {
-            if (%obj.autosit $= "")
-            {
-                $OLDSEATAREA_KILLER[$OLDSEATAREA_KILLER_COUNT] = %obj.getId() ;
-                $OLDSEATAREA_KILLER_COUNT = $OLDSEATAREA_KILLER_COUNT + 1;
-            }
+            $OLDSEATAREA_KILLER[$OLDSEATAREA_KILLER_COUNT] = %obj.getId();
+            $OLDSEATAREA_KILLER_COUNT = $OLDSEATAREA_KILLER_COUNT + 1;
         }
     }
-    return ;
 }
 function FixOldStyleSeatingAreaProblems()
 {
@@ -630,14 +592,13 @@ function FixOldStyleSeatingAreaProblems()
     while (%i < $OLDSEATAREA_KILLER_COUNT)
     {
         %obj = $OLDSEATAREA_KILLER[%i];
-        echo("deleteing no longer needed seating area " SPC %obj SPC "of class:" SPC %obj.getClassName() SPC ", with name:" SPC %obj.getName());
+        echo("deleteing no longer needed seating area " @ " " @ %obj @ " " @ "of class:" @ " " @ %obj.getClassName() @ " " @ ", with name:" @ " " @ %obj.getName());
         %obj.delete();
         $OLDSEATAREA_KILLER[$OLDSEATAREA_KILLER_COUNT] = "";
         %i = %i + 1;
     }
     $OLDSEATAREA_KILLER_COUNT = 0;
     echo("done----------------------");
-    return ;
 }
 function Utility::ListDataBlocksNotUsed()
 {
@@ -657,7 +618,7 @@ function Utility::ListDataBlocksNotUsed()
     {
         if (!%v.uses[%i])
         {
-            error(%v.theList[%i] SPC "not used");
+            error(%v.theList[%i] @ " " @ "not used");
         }
         %i = %i + 1;
     }
@@ -665,24 +626,22 @@ function Utility::ListDataBlocksNotUsed()
     error("-----------------------------------------------------");
     %v2.delete();
     %v.delete();
-    return ;
 }
 function UtilityCollectNameVisitor::visitObject(%this, %obj)
 {
-    if (((((((((((((%obj.getClassName() $= "SimSet") || (%obj.getClassName() $= "ActionMap")) || (%obj.getClassName() $= "GuiControlProfile")) || (%obj.getClassName() $= "StringMap")) || (%obj.getClassName() $= "GuiCursor")) || (%obj.getClassName() $= "Sun")) || (%obj.getClassName() $= "MissionArea")) || (%obj.getClassName() $= "WaterBlock")) || (%obj.getClassName() $= "InteriorInstance")) || (%obj.getClassName() $= "TSStatic")) || (%obj.getClassName() $= "SimObject")) || (%obj.getClassName() $= "ScreenShotUploader")) || (%obj.getClassName() $= "fxSpectrumAnalyzer"))
+    if ((%obj.getClassName() $= "SimSet") || (%obj.getClassName() $= "ActionMap") || (%obj.getClassName() $= "GuiControlProfile") || (%obj.getClassName() $= "StringMap") || (%obj.getClassName() $= "GuiCursor") || (%obj.getClassName() $= "Sun") || (%obj.getClassName() $= "MissionArea") || (%obj.getClassName() $= "WaterBlock") || (%obj.getClassName() $= "InteriorInstance") || (%obj.getClassName() $= "TSStatic") || (%obj.getClassName() $= "SimObject") || (%obj.getClassName() $= "ScreenShotUploader") || (%obj.getClassName() $= "fxSpectrumAnalyzer"))
     {
-        return ;
+        return;
     }
     %this.theList[%this.count] = %obj.getName();
     %this.uses[%this.count] = 0;
     %this.count = %this.count + 1;
-    return ;
 }
 function UtilityDBInUseVisitor::visitObject(%this, %obj)
 {
-    if (((((((((((((%obj.getClassName() $= "SimSet") || (%obj.getClassName() $= "ActionMap")) || (%obj.getClassName() $= "GuiControlProfile")) || (%obj.getClassName() $= "StringMap")) || (%obj.getClassName() $= "GuiCursor")) || (%obj.getClassName() $= "Sun")) || (%obj.getClassName() $= "MissionArea")) || (%obj.getClassName() $= "WaterBlock")) || (%obj.getClassName() $= "InteriorInstance")) || (%obj.getClassName() $= "TSStatic")) || (%obj.getClassName() $= "SimObject")) || (%obj.getClassName() $= "ScreenShotUploader")) || (%obj.getClassName() $= "fxSpectrumAnalyzer"))
+    if ((%obj.getClassName() $= "SimSet") || (%obj.getClassName() $= "ActionMap") || (%obj.getClassName() $= "GuiControlProfile") || (%obj.getClassName() $= "StringMap") || (%obj.getClassName() $= "GuiCursor") || (%obj.getClassName() $= "Sun") || (%obj.getClassName() $= "MissionArea") || (%obj.getClassName() $= "WaterBlock") || (%obj.getClassName() $= "InteriorInstance") || (%obj.getClassName() $= "TSStatic") || (%obj.getClassName() $= "SimObject") || (%obj.getClassName() $= "ScreenShotUploader") || (%obj.getClassName() $= "fxSpectrumAnalyzer"))
     {
-        return ;
+        return;
     }
     %i = 0;
     while (%i < %this.collector.count)
@@ -774,7 +733,7 @@ function UtilityDBInUseVisitor::visitObject(%this, %obj)
                 }
                 else
                 {
-                    if ((%obj.getClassName() $= "SplashData") && (%obj.getClassName() $= "ExplosionData"))
+                    if ((%obj.getClassName() $= "SplashData") || (%obj.getClassName() $= "ExplosionData"))
                     {
                         if (%obj.emitter[0] $= %this.collector.theList[%i])
                         {
@@ -831,12 +790,9 @@ function UtilityDBInUseVisitor::visitObject(%this, %obj)
                                     }
                                     else
                                     {
-                                        if (isObject(%obj.getDataBlock()))
+                                        if (isObject(%obj.getDataBlock()) && (%obj.getDataBlock().getName() $= %this.collector.theList[%i]))
                                         {
-                                            if (%obj.getDataBlock().getName() $= %this.collector.theList[%i])
-                                            {
-                                                %this.collector.uses[%i] = %this.collector.uses[%i] + 1;
-                                            }
+                                            %this.collector.uses[%i] = %this.collector.uses[%i] + 1;
                                         }
                                     }
                                 }
@@ -849,21 +805,17 @@ function UtilityDBInUseVisitor::visitObject(%this, %obj)
         %i = %i + 1;
     }
 }
-
 function SimGroup::PrintAllDebugNames(%this)
 {
     %v = SimGroupVisitor::construct("DebugStringVisitor");
     SimGroupVisitor::VisitSimgroup(%this, %v);
     %v.delete();
-    return ;
 }
 function DebugStringVisitor::visitObject(%this, %obj)
 {
     echo(%obj.getDebugString());
-    return ;
 }
 function testMissionIntegrity()
 {
     RunTestCase("TEST_MISSIONGROUPINTEGRITY", "WARNING: About that mission file you just loaded...");
-    return ;
 }

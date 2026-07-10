@@ -2,11 +2,10 @@ $gBroadSnapshotUploadTimeOutSched = 0;
 function BroadCastControlPanel::toggle(%this)
 {
     PlayGui.showRaiseOrHide(%this);
-    return ;
 }
 function BroadCastControlPanel::open(%this)
 {
-    BroadCastCrossHairsFrame.resize(getWord(BroadCastRegionControl.getExtent(), 0) - 1, getWord(BroadCastRegionControl.getExtent(), 1) - 1);
+    BroadCastCrossHairsFrame.resize((getWord(BroadCastRegionControl.getExtent(), 0) - 1), (getWord(BroadCastRegionControl.getExtent(), 1) - 1));
     BroadCastCrossHairsFrame.resize(getWord(BroadCastRegionControl.getExtent(), 0), getWord(BroadCastRegionControl.getExtent(), 1));
     %this.setVisible(1);
     %this.setConstrained(1);
@@ -14,7 +13,6 @@ function BroadCastControlPanel::open(%this)
     %this.hasError = 0;
     %this.enterFirstTimeMode();
     PlayGui.focusAndRaise(%this);
-    return ;
 }
 function BroadCastControlPanel::close(%this)
 {
@@ -41,7 +39,7 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot()
     {
         if (BroadCastControlPanel.temporaryGUIControlContainer == 0)
         {
-            BroadCastControlPanel.temporaryGUIControlContainer = new GuiControl();
+            BroadCastControlPanel.temporaryGUIControlContainer = new GuiControl("");
         }
         BroadCastControlPanel.temporaryGUIControlContainer.setVisible(0);
         %orderedChildren = PlayGui.getChildrenInOrder(BroadCastControlPanel.playGuiControlsToHide);
@@ -57,23 +55,20 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot()
     {
         if (BroadCastControlPanel.temporaryGUIControlContainer == 0)
         {
-            BroadCastControlPanel.temporaryGUIControlContainer = new GuiControl();
+            BroadCastControlPanel.temporaryGUIControlContainer = new GuiControl("");
         }
         BroadCastControlPanel.temporaryGUIControlContainer.setVisible(0);
         BroadCastControlPanel.temporaryGUIControlContainer.add(ConvBub);
     }
-    if (BroadcastHideSelfCheckbox.getValue() && BroadcastHideSelfCheckbox.isVisible())
+    if (BroadcastHideSelfCheckbox.getValue() && BroadcastHideSelfCheckbox.isVisible() && !$IN_ORBIT_CAM && !$firstPerson)
     {
-        if (!$IN_ORBIT_CAM && !$firstPerson)
+        $player.MeshOff("*");
+        $player.setShapeName("");
+        if (isObject($player.hudCtrl))
         {
-            $player.MeshOff("*");
-            $player.setShapeName("");
-            if (isObject($player.hudCtrl))
-            {
-                $player.hudCtrl.setVisible(0);
-            }
-            ThePointsFloaterHud.setVisible(0);
+            $player.hudCtrl.setVisible(0);
         }
+        ThePointsFloaterHud.setVisible(0);
     }
     if (BroadcastFullScreenCheckbox.getValue())
     {
@@ -87,7 +82,6 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot()
     {
         waitAFrameAndCall("BroadSnapshotButton_doTakeSnapshot");
     }
-    return ;
 }
 function BroadSnapshotButton_doTakeSnapshot()
 {
@@ -124,13 +118,13 @@ function BroadSnapshotButton_doTakeSnapshot()
         %bottomMargin = -10;
         %leftMargin = 0;
         %rightMargin = 0;
-        %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame(getWord(%regionControl.getScreenPosition(), 0) - %leftMargin, getWord(%regionControl.getScreenPosition(), 1) - %topMargin, (getWord(%regionControl.getExtent(), 0) + %leftMargin) + %rightMargin, (getWord(%regionControl.getExtent(), 1) + %topMargin) + %bottomMargin);
+        %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame((getWord(%regionControl.getScreenPosition(), 0) - %leftMargin), (getWord(%regionControl.getScreenPosition(), 1) - %topMargin), ((getWord(%regionControl.getExtent(), 0) + %leftMargin) + %rightMargin), ((getWord(%regionControl.getExtent(), 1) + %topMargin) + %bottomMargin));
         %numPlayers = getWordCount(%playerIDs);
         %playerNames = "";
         %n = 0;
         while (%n < %numPlayers)
         {
-            %playerNames = %playerNames TAB getWord(%playerIDs, %n).getShapeName();
+            %playerNames = %playerNames @ "\t" @ getWord(%playerIDs, %n).getShapeName();
             %n = %n + 1;
         }
         %playerNames = trim(%playerNames);
@@ -149,7 +143,7 @@ function BroadSnapshotButton_doTakeSnapshot()
         BroadCastCrossHairsFrame.setVisible(1);
         BroadCastPreview.setVisible(0);
         BroadCastPreview.setBitmap("");
-        MessageBoxOK("Can\'t take snapshot!", "Unable to create snapshot. Please let a Mod know, or post a note in the forums. Thank you!", "");
+        MessageBoxOK("Can't take snapshot!", "Unable to create snapshot. Please let a Mod know, or post a note in the forums. Thank you!", "");
         BroadSnapshotButton.setActive(1);
     }
     BroadcastCloseButtonContainer.setVisible(1);
@@ -169,7 +163,7 @@ function BroadSnapshotButton_doTakeSnapshot()
     {
         PlayGui.add(ConvBub);
     }
-    if (BroadcastHideHUDsCheckbox.getValue() && BroadcastHideChatCheckbox.getValue())
+    if (BroadcastHideHUDsCheckbox.getValue() || BroadcastHideChatCheckbox.getValue())
     {
         BroadCastControlPanel.temporaryGUIControlContainer.delete();
         BroadCastControlPanel.temporaryGUIControlContainer = 0;
@@ -199,13 +193,11 @@ function BroadSnapshotButton_doTakeSnapshot()
         BroadcastPhotoControls.focusAndRaise(BroadcastCaptionCtrl);
         BroadcastCaptionCtrl.selectAll();
     }
-    return ;
 }
 function BroadcastCaptionCtrl::doOnPressEnter(%this)
 {
     %button = BroadSnapshotUploadButton.isVisible() ? BroadSnapshotUploadButton : BroadSnapshotUploadButtonApartment;
     %button.performClick();
-    return ;
 }
 function BroadSnapshotUploadButton::doBroadCastSnapshot(%this, %callbackSink)
 {
@@ -238,11 +230,9 @@ function BroadSnapshotUploadButton::doBroadCastSnapshot(%this, %callbackSink)
         }
         BroadCastControlPanel.enterUploadingMode();
     }
-    return ;
 }
 function BroadSnapshotUploadButton::onProgress(%this, %uploader)
 {
-    return ;
 }
 function BroadSnapshotUploadButtonOnCompleted(%request, %result)
 {
@@ -255,7 +245,6 @@ function BroadSnapshotUploadButtonOnCompleted(%request, %result)
     {
         %callbackSink.onError(%request);
     }
-    return ;
 }
 function BroadSnapshotUploadButton::onError(%this, %uploader)
 {
@@ -264,7 +253,6 @@ function BroadSnapshotUploadButton::onError(%this, %uploader)
     BroadCastControlPanel.enterErrorUploadingMode();
     BroadCastPreview.curl.stop();
     error("Broadcast failed to upload");
-    return ;
 }
 function BroadSnapshotUploadButton::onDone(%this, %uploader)
 {
@@ -281,10 +269,10 @@ function BroadSnapshotUploadButton::onDone(%this, %uploader)
         {
             %this.onError(%uploader);
         }
-        return ;
+        return;
     }
     BroadCastControlPanel.enterTakePhotoMode();
-    echo("Broadcast done. photoURL =" SPC %uploader.getResult("photoURL"));
+    echo("Broadcast done. photoURL =" @ " " @ %uploader.getResult("photoURL"));
     BroadCastPreview.setVisible(0);
     BroadCastPreview.setBitmap("");
     %shareFB = BroadcastCaptionShareFcBookCtrl.getValue();
@@ -294,7 +282,6 @@ function BroadSnapshotUploadButton::onDone(%this, %uploader)
     }
     %gaURL = "/client/facebookShare/snapshot/" @ %shareFB ? "yes" : "no";
     getAnalytic().trackPageView(%gaURL);
-    return ;
 }
 function BroadSnapshotCancelButton::doCancel(%this)
 {
@@ -312,7 +299,6 @@ function BroadSnapshotCancelButton::doCancel(%this)
         BroadCastPreview.curl.delete();
     }
     BroadSnapshotButton.setActive(1);
-    return ;
 }
 function BroadSnapshotButton_HideSnoop()
 {
@@ -321,17 +307,13 @@ function BroadSnapshotButton_HideSnoop()
     {
         %projCtrl = TheBadgesHud.getObject(%n);
         %roleCtrl = %projCtrl.roleCtrl;
-        if (isObject(%roleCtrl))
+        if (isObject(%roleCtrl) && (strpos(%roleCtrl.bitmap, "neighborhoodwatch") >= 0))
         {
-            if (strpos(%roleCtrl.bitmap, "neighborhoodwatch") >= 0)
-            {
-                %roleCtrl.setVisible(0);
-            }
+            %roleCtrl.setVisible(0);
         }
         %n = %n - 1;
     }
 }
-
 function BroadSnapshotButton_ShowSnoop()
 {
     %n = TheBadgesHud.getCount() - 1;
@@ -346,7 +328,6 @@ function BroadSnapshotButton_ShowSnoop()
         %n = %n - 1;
     }
 }
-
 $gNumPhotosTaken = 0;
 function BroadcastCaptionSetBCastCtrl::onMouseUp(%this)
 {
@@ -354,7 +335,6 @@ function BroadcastCaptionSetBCastCtrl::onMouseUp(%this)
     {
         MessageBoxYesNo("Broadcast to billboards?", "Checking this box will cause your snapshot to be broadcast to in-world billboards. You can do this because you are a special user. Are you sure you want this snapshot on a billboard?", "BroadcastCaptionSetBCastCtrl.setValue(true);", "BroadcastCaptionSetBCastCtrl.setValue(false);");
     }
-    return ;
 }
 function BroadCastControlPanel::enterFirstTimeMode(%this)
 {
@@ -370,7 +350,6 @@ function BroadCastControlPanel::enterFirstTimeMode(%this)
     BroadcastUploadSuccessfulLabel.setVisible(0);
     BroadcastPhotoControls.setVisible(0);
     BroadcastSnapshotControls.setVisible(1);
-    return ;
 }
 function BroadCastControlPanel::enterFillCURLMode(%this, %photoFileName, %ext, %transform, %playerNames)
 {
@@ -378,19 +357,19 @@ function BroadCastControlPanel::enterFillCURLMode(%this, %photoFileName, %ext, %
     {
         error("BroadCastControlPanel::enterFillCURLMode called with empty filename");
         %this.enterFirstTimeMode();
-        return ;
+        return;
     }
     if (%ext $= "")
     {
         error("BroadCastControlPanel::enterFillCURLMode called with empty file extention");
         %this.enterFirstTimeMode();
-        return ;
+        return;
     }
     if (isObject(BroadCastPreview.curl))
     {
         BroadCastPreview.curl.delete();
     }
-    BroadCastPreview.curl = new URLPostObject();
+    BroadCastPreview.curl = new URLPostObject("");
     BroadCastPreview.curl.callBackSink = BroadSnapshotUploadButton;
     BroadCastPreview.curl.setProgress(1);
     BroadCastPreview.curl.setRecvData(1);
@@ -414,7 +393,6 @@ function BroadCastControlPanel::enterFillCURLMode(%this, %photoFileName, %ext, %
     BroadCastControlPanel.photoFileNameExt = %ext;
     BroadCastControlPanel.photoTransform = %transform;
     BroadCastControlPanel.photoInhabitants = %playerNames;
-    return ;
 }
 function BroadCastControlPanel::enterTookPhotoMode(%this)
 {
@@ -425,7 +403,7 @@ function BroadCastControlPanel::enterTookPhotoMode(%this)
     BroadcastCaptionShareFcBookIcon.setVisible(1);
     BroadcastUploadingLabel.setVisible(0);
     BroadcastUploadFailedLabel.setVisible(0);
-    if (!((CustomSpaceClient::GetSpaceImIn() $= "")) && CustomSpaceClient::isOwner())
+    if (!(CustomSpaceClient::GetSpaceImIn() $= "") && CustomSpaceClient::isOwner())
     {
         BroadSnapshotUploadButton.setVisible(0);
         BroadSnapshotUploadButtonApartment.setVisible(1);
@@ -443,7 +421,6 @@ function BroadCastControlPanel::enterTookPhotoMode(%this)
     BroadSnapshotCancelButton.setActive(1);
     BroadcastSnapshotControls.setVisible(0);
     BroadcastPhotoControls.setVisible(1);
-    return ;
 }
 function BroadCastControlPanel::enterUploadingMode(%this)
 {
@@ -466,7 +443,6 @@ function BroadCastControlPanel::enterUploadingMode(%this)
     BroadSnapshotCancelButton.setActive(0);
     BroadcastSnapshotControls.setVisible(0);
     BroadcastPhotoControls.setVisible(1);
-    return ;
 }
 function BroadCastControlPanel::enterErrorUploadingMode(%this)
 {
@@ -482,7 +458,6 @@ function BroadCastControlPanel::enterErrorUploadingMode(%this)
     BroadSnapshotCancelButton.setActive(1);
     BroadcastSnapshotControls.setVisible(0);
     BroadcastPhotoControls.setVisible(1);
-    return ;
 }
 function BroadCastControlPanel::enterTakePhotoMode(%this)
 {
@@ -497,7 +472,6 @@ function BroadCastControlPanel::enterTakePhotoMode(%this)
     BroadcastUploadSuccessfulLabel.setVisible(1);
     BroadcastPhotoControls.setVisible(0);
     BroadcastSnapshotControls.setVisible(1);
-    return ;
 }
 function BroadCastControlPanel::automateSnapshotUpload(%this)
 {
@@ -505,7 +479,6 @@ function BroadCastControlPanel::automateSnapshotUpload(%this)
     BroadSnapshotButton_doTakeSnapshot();
     BroadSnapshotUploadButton.doBroadCastSnapshot(BroadSnapshotUploadButton);
     %this.close();
-    return ;
 }
 function BroadCastControlPanel::shareFcBook(%this, %photoURL)
 {
@@ -513,9 +486,9 @@ function BroadCastControlPanel::shareFcBook(%this, %photoURL)
     %preamblePos = strpos(%photoURL, %preambleText);
     if (%preamblePos < 0)
     {
-        error(getScopeName() SPC "- invalid photo URL." SPC %photoURL SPC getTrace());
+        error(getScopeName() @ " " @ "- invalid photo URL." @ " " @ %photoURL @ " " @ getTrace());
     }
-    %justPhotoID = getSubStr(%photoURL, %preamblePos + strlen(%preambleText), 1000);
+    %justPhotoID = getSubStr(%photoURL, (%preamblePos + strlen(%preambleText)), 1000);
     %viewPhotoURL = $Net::PhotoPageURL @ %justPhotoID @ "?ref=fb";
     %viewPhotoURLEncoded = %viewPhotoURL;
     %viewPhotoURLEncoded = urlEncode(%viewPhotoURLEncoded);
@@ -523,5 +496,4 @@ function BroadCastControlPanel::shareFcBook(%this, %photoURL)
     %sharerURL = "http://www.facebook.com/sharer.php";
     %sharerURL = %sharerURL @ "?u=" @ %viewPhotoURLEncoded;
     gotoWebPage(%sharerURL);
-    return ;
 }

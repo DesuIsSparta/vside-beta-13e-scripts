@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(sgLanternPSDataBlock)
-{
+datablock sgUniversalStaticLightData(sgLanternPSDataBlock) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 9;
@@ -57,4 +56,3 @@ datablock sgUniversalStaticLightData(sgLanternPSDataBlock)
     AdvancedLightingModel = 1;
     EffectsDTSObjects = 1;
 };
-

@@ -4,14 +4,12 @@ $AssetManager::missingAssets = "";
 function AssetManager::setMissingAssets(%str)
 {
     $AssetManager::missingAssets = %str;
-    return ;
 }
 $AssetManager::defaultPackages = "";
 function AssetManager::initPackages()
 {
     %map = AssetManager::getPackageOrder();
     $AssetManager::defaultPackages = %map;
-    return ;
 }
 function AssetManager::getPackageOrder()
 {
@@ -20,7 +18,7 @@ function AssetManager::getPackageOrder()
     {
         %userOwner = $Net::userOwner;
     }
-    %map = new StringMap();
+    %map = new StringMap("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%map);
@@ -49,11 +47,10 @@ function AssetManager::getPackages()
 function AssetManager::commonInit()
 {
     AssetManager::initPackages();
-    return ;
 }
 function AssetManager::getMissingAssets()
 {
-    %map = new StringMap();
+    %map = new StringMap("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%map);
@@ -83,14 +80,13 @@ function AssetManager::MapToString(%map)
     while (%n < %orderMap.size())
     {
         %key = %orderMap.getKey(%n);
-        %str = %str @ %key @ "=" @ %map.getValue(%n) TAB "";
+        %str = %str @ %key @ "=" @ %map.getValue(%n) @ "\t" @ "";
         %n = %n + 1;
     }
 }
-
 function AssetManager::StringToMap(%str)
 {
-    %map = new StringMap();
+    %map = new StringMap("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%map);
@@ -110,7 +106,7 @@ function AssetManager::StringToMap(%str)
 }
 function AssetManager::StringToArray(%str)
 {
-    %array = new Array();
+    %array = new Array("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%array);
@@ -139,7 +135,6 @@ function AssetManager::dumpMap(%map)
         %n = %n + 1;
     }
 }
-
 function AssetManager::rehashSet(%map)
 {
     if (!isObject(%map))
@@ -188,7 +183,6 @@ function AssetManager::cityToPackage(%str)
             }
         }
     }
-    return ;
 }
 function AssetManager::packageToCity(%str)
 {
@@ -221,5 +215,4 @@ function AssetManager::packageToCity(%str)
             }
         }
     }
-    return ;
 }

@@ -28,31 +28,31 @@ function onServerCreated()
     {
         schedule(0, 0, serverStart);
     }
-    return ;
+    return;
 }
 function onServerDestroyed()
 {
     echo("server exiting");
-    return ;
+    return;
 }
 function onMissionLoaded()
 {
     startGame();
-    return ;
+    return;
 }
 function onMissionEnded()
 {
     cancel($Game::Schedule);
     $Game::Running = 0;
     $Game::Cycling = 0;
-    return ;
+    return;
 }
 function startGame()
 {
     if ($Game::Running)
     {
         error("startGame: End the game first!");
-        return ;
+        return;
     }
     if (isObject(NPCGroup))
     {
@@ -82,17 +82,17 @@ function startGame()
     InitSittingSystem();
     if ($Game::Duration)
     {
-        $Game::Schedule = schedule($Game::Duration * 1000, 0, "onGameDurationEnd");
+        $Game::Schedule = schedule(($Game::Duration * 1000), 0, "onGameDurationEnd");
     }
     $Game::Running = 1;
-    return ;
+    return;
 }
 function endGame()
 {
     if (!$Game::Running)
     {
         error("endGame: No game running!");
-        return ;
+        return;
     }
     cancel($Game::Schedule);
     %clientIndex = 0;
@@ -104,7 +104,7 @@ function endGame()
     }
     resetMission();
     $Game::Running = 0;
-    return ;
+    return;
 }
 function onGameDurationEnd()
 {
@@ -112,7 +112,7 @@ function onGameDurationEnd()
     {
         cycleGame();
     }
-    return ;
+    return;
 }
 function cycleGame()
 {
@@ -121,13 +121,13 @@ function cycleGame()
         $Game::Cycling = 1;
         $Game::Schedule = schedule(0, 0, "onCycleExec");
     }
-    return ;
+    return;
 }
 function onCycleExec()
 {
     endGame();
-    $Game::Schedule = schedule($Game::EndGamePause * 1000, 0, "onCyclePauseEnd");
-    return ;
+    $Game::Schedule = schedule(($Game::EndGamePause * 1000), 0, "onCyclePauseEnd");
+    return;
 }
 function onCyclePauseEnd()
 {
@@ -148,17 +148,19 @@ function onCyclePauseEnd()
         %file = findNextFile(%search);
     }
     loadMission(%file);
-    return ;
+    return;
 }
 function GameConnection::onClientEnterGame(%this)
 {
-    commandToClient(%this, 'SyncClock', $Sim::Time - $Game::StartTime);
-    %this.Camera = new Camera();
+    commandToClient(%this, 'SyncClock', ($Sim::Time - $Game::StartTime));
+    %this.Camera = new Camera("") {
+        dataBlock = Observer;
+    };
     MissionCleanup.add(%this.Camera);
     %this.Camera.scopeToClient(%this);
     %this.score = 0;
     %this.spawnPlayer();
-    return ;
+    return;
 }
 function GameConnection::onClientLeaveGame(%this)
 {
@@ -172,15 +174,15 @@ function GameConnection::onClientLeaveGame(%this)
     {
         %this.Player.delete();
     }
-    return ;
+    return;
 }
 function GameConnection::onLeaveMissionArea(%this)
 {
-    return ;
+    return;
 }
 function GameConnection::onEnterMissionArea(%this)
 {
-    return ;
+    return;
 }
 function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %unused)
 {
@@ -205,20 +207,20 @@ function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %un
             cycleGame();
         }
     }
-    return ;
+    return;
 }
 function GameConnection::spawnPlayer(%this)
 {
     %spawnPoint = pickSpawnPoint();
     %this.createPlayer(%spawnPoint);
-    return ;
+    return;
 }
 function GameConnection::createPlayer(%this, %spawnPoint)
 {
     if (%this.Player > 0)
     {
         error("Attempting to create an angus ghost!");
-        return ;
+        return;
     }
     if (%this.gender $= "f")
     {
@@ -244,8 +246,7 @@ function GameConnection::createPlayer(%this, %spawnPoint)
             }
         }
     }
-    %player = new Player()
-    {
+    %player = new Player("") {
         dataBlock = %playerDB;
         client = %this;
     };
@@ -287,10 +288,10 @@ function GameConnection::createPlayer(%this, %spawnPoint)
     %this.setPlayerObject(%player);
     PlayerDict.put(%this.nameBase, %this.Player);
     %player.setAwayMessage($Pref::Player::defaultAwayMessage);
-    echo(getDebugString(%player) SPC "has away message" SPC %player.getAwayMessage());
+    echo(getDebugString(%player) @ " " @ "has away message" @ " " @ %player.getAwayMessage());
     %this.initPlayerRelations();
-    echo("server-side player entered:\c2" SPC getDebugString(%player));
-    return ;
+    echo("server-side player entered:\x03" @ " " @ getDebugString(%player));
+    return;
 }
 function GameConnection::initPlayerRelations()
 {
@@ -347,7 +348,6 @@ function GameConnection::initPlayerRelations()
         }
     }
 }
-
 function pickSpawnPoint()
 {
     %groupName = "MissionGroup/PlayerDropPoints";
@@ -357,7 +357,7 @@ function pickSpawnPoint()
         %count = %group.getCount();
         if (%count != 0)
         {
-            %index = getRandom(%count - 1);
+            %index = getRandom((%count - 1));
             %spawn = %group.getObject(%index);
             return %spawn.getEmptySpot(1.5, 0, 1);
         }

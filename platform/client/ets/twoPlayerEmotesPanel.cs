@@ -6,7 +6,6 @@ function TwoPlayerEmotesPanel::open(%this, %playerName)
     %this.playerName = %playerName;
     TwoPlayerEmotesText.setText("Target: " @ %playerName);
     %this.refresh();
-    return ;
 }
 function TwoPlayerEmotesPanel::close(%this)
 {
@@ -36,7 +35,6 @@ function TwoPlayerEmotesPanel::refresh(%this)
         %i = %i + 1;
     }
 }
-
 function TwoPlayerEmotesList::onSelect(%this, %id, %text)
 {
     if (%id >= 0)
@@ -44,5 +42,4 @@ function TwoPlayerEmotesList::onSelect(%this, %id, %text)
         doCoAnim(%text, TwoPlayerEmotesPanel.playerName);
         TwoPlayerEmotesPanel.close();
     }
-    return ;
 }

@@ -16,21 +16,19 @@ function HelpDlg::onWake(%this)
     {
         %rowId = HelpFileList.getRowId(%i);
         %text = HelpFileList.getRowTextById(%rowId);
-        %text = %i + 1 @ ". " @ restWords(%text);
+        %text = (%i + 1) @ ". " @ restWords(%text);
         HelpFileList.setRowById(%rowId, %text);
         %i = %i + 1;
     }
     HelpFileList.setSelectedRow(0);
-    return ;
 }
 function HelpDlg::close(%this)
 {
     Canvas.popDialog(%this);
-    return ;
 }
 function HelpFileList::onSelect(%this, %row)
 {
-    %fo = new FileObject();
+    %fo = new FileObject("");
     %fo.openForRead(%this.fileName[%row]);
     %text = "";
     while (!%fo.isEOF())
@@ -40,7 +38,6 @@ function HelpFileList::onSelect(%this, %row)
     %fo.delete();
     HelpText.setText(%text);
     HelpText.makeFirstResponder(1);
-    return ;
 }
 function getHelp(%helpName)
 {
@@ -50,7 +47,6 @@ function getHelp(%helpName)
         %index = HelpFileList.findTextIndex(%helpName);
         HelpFileList.setSelectedRow(%index);
     }
-    return ;
 }
 function contextHelp()
 {
@@ -60,14 +56,13 @@ function contextHelp()
         if (Canvas.getObject(%i).getName() $= HelpDlg)
         {
             Canvas.popDialog(HelpDlg);
-            return ;
+            return;
         }
         %i = %i + 1;
     }
     %content = Canvas.getContent();
     %helpPage = %content.getHelpPage();
     getHelp(%helpPage);
-    return ;
 }
 function GuiControl::getHelpPage(%this)
 {

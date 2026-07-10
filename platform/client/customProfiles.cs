@@ -1,5 +1,4 @@
-new GuiControlProfile(GuiDefaultProfile)
-{
+new GuiControlProfile(GuiDefaultProfile) {
     tab = 0;
     canKeyFocus = 0;
     hasBitmapArray = 0;
@@ -38,27 +37,31 @@ new GuiControlProfile(GuiDefaultProfile)
     soundButtonDown = "";
     soundButtonOver = "";
 };
-new GuiControlProfile(GuiSelectableProfile : GuiDefaultProfile);
-new GuiControlProfile(LargeShapeNameHudProfile : GuiSelectableProfile)
-{
+new GuiControlProfile(GuiSelectableProfile : GuiDefaultProfile) {
+    canKeyFocus = 1;
+};
+new GuiControlProfile(LargeShapeNameHudProfile : GuiSelectableProfile) {
     fontType = "Arial";
     fontSize = 18;
 };
-new GuiControlProfile(MediumShapeNameHudProfile : LargeShapeNameHudProfile)
-{
+new GuiControlProfile(MediumShapeNameHudProfile : LargeShapeNameHudProfile) {
     fontType = "Arial";
     fontSize = 16;
 };
-new GuiControlProfile(SmallShapeNameHudProfile : LargeShapeNameHudProfile)
-{
+new GuiControlProfile(SmallShapeNameHudProfile : LargeShapeNameHudProfile) {
     fontType = "Arial";
     fontSize = 14;
 };
-new GuiControlProfile(BoldLargeShapeNameHudProfile : LargeShapeNameHudProfile);
-new GuiControlProfile(BoldMediumShapeNameHudProfile : MediumShapeNameHudProfile);
-new GuiControlProfile(BoldSmallShapeNameHudProfile : SmallShapeNameHudProfile);
-new GuiControlProfile(GuiWindowProfile)
-{
+new GuiControlProfile(BoldLargeShapeNameHudProfile : LargeShapeNameHudProfile) {
+    fontType = "Arial bold";
+};
+new GuiControlProfile(BoldMediumShapeNameHudProfile : MediumShapeNameHudProfile) {
+    fontType = "Arial bold";
+};
+new GuiControlProfile(BoldSmallShapeNameHudProfile : SmallShapeNameHudProfile) {
+    fontType = "Arial bold";
+};
+new GuiControlProfile(GuiWindowProfile) {
     opaque = 1;
     border = 2;
     borderColor = "200 200 200 200";
@@ -75,8 +78,7 @@ new GuiControlProfile(GuiWindowProfile)
     hasBitmapArray = 1;
     justify = "center";
 };
-new GuiControlProfile(GuiTranslucentProfile)
-{
+new GuiControlProfile(GuiTranslucentProfile) {
     opaque = 1;
     border = 0;
     fillColor = "255 255 255 150";
@@ -88,8 +90,7 @@ new GuiControlProfile(GuiTranslucentProfile)
     textOffset = "6 6";
     justify = "center";
 };
-new GuiControlProfile(GuiScrollProfile)
-{
+new GuiControlProfile(GuiScrollProfile) {
     opaque = 1;
     fillColor = "255 255 255";
     border = 3;
@@ -98,8 +99,7 @@ new GuiControlProfile(GuiScrollProfile)
     bitmap = "./demoScroll";
     hasBitmapArray = 1;
 };
-new GuiControlProfile(GuiCheckBoxProfile)
-{
+new GuiControlProfile(GuiCheckBoxProfile) {
     opaque = 0;
     fillColor = "232 232 232";
     border = 0;
@@ -112,8 +112,7 @@ new GuiControlProfile(GuiCheckBoxProfile)
     bitmap = "./demoCheck";
     hasBitmapArray = 1;
 };
-new GuiControlProfile(GuiRadioProfile)
-{
+new GuiControlProfile(GuiRadioProfile) {
     fontSize = 14;
     fillColor = "232 232 232";
     fontColorHL = "32 100 100";
@@ -123,9 +122,7 @@ new GuiControlProfile(GuiRadioProfile)
 };
 if (!isObject(GuiClickLabelProfile))
 {
-}
-new GuiControlProfile(GuiClickLabelProfile)
-    {
+    new GuiControlProfile(GuiClickLabelProfile) {
         opaque = 1;
         fontColor = "100 100 100";
         fontColorHL = "0 0 0";
@@ -140,8 +137,10 @@ new GuiControlProfile(GuiClickLabelProfile)
         borderColorNA = "128 128 128 200";
         acceptMouseDragAndDrop = 1;
     };
+}
 if (!isObject(GuiClickLabelProfileBold))
 {
+    new GuiControlProfile(GuiClickLabelProfileBold : GuiClickLabelProfile) {
+        borderColor = "256 0 0 100";
+    };
 }
-new GuiControlProfile(GuiClickLabelProfileBold : GuiClickLabelProfile);
-

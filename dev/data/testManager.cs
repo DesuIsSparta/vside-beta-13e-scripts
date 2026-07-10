@@ -1,6 +1,5 @@
 function TestLoginRequest::onError(%this, %unused, %unused)
 {
-    return ;
 }
 function TestLoginRequest::onDone(%this, %unused)
 {
@@ -18,12 +17,10 @@ function TestLoginRequest::onDone(%this, %unused)
     echo("acctbal:         " @ %this.getValue("acctbal"));
     echo("activated:       " @ %this.getValue("activated"));
     echo("hasemail:        " @ %this.getValue("hasemail"));
-    return ;
 }
 function TestBootRequest::onDone(%this)
 {
     schedule(1000, 0, Login);
-    return ;
 }
 function bootThenLogin()
 {
@@ -48,7 +45,6 @@ function bootThenLogin()
     {
         %bootRequest.delete();
     }
-    return ;
 }
 function Login()
 {
@@ -71,5 +67,4 @@ function Login()
     {
         %loginRequest.delete();
     }
-    return ;
 }

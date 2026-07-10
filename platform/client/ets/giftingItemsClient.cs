@@ -3,8 +3,8 @@ function drinks_confirmInitiateGift(%otherPlayerName)
     %sku = $player.getActiveDrinkSku();
     if (%sku $= "")
     {
-        error(getScopeName() SPC "- no drink!" SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- no drink!" @ " " @ getTrace());
+        return;
     }
     %si = SkuManager.findBySku(%sku);
     %msg = $MsgCat::giftingItems["DLG-BODY-GIVE-CONFIRM"];
@@ -14,15 +14,14 @@ function drinks_confirmInitiateGift(%otherPlayerName)
     %dlg.otherPlayerName = %otherPlayerName;
     %dlg.giftSkus = %sku;
     %dlg.making = 0;
-    return ;
 }
 function drinks_confirmInitiateMake(%otherPlayerName, %sku)
 {
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
     if (!isObject(%otherPlayer))
     {
-        error(getScopeName() SPC "- can\'t find other player" SPC %otherPlayerName SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- can't find other player" @ " " @ %otherPlayerName @ " " @ getTrace());
+        return;
     }
     %si = SkuManager.findBySku(%sku);
     if (%otherPlayerName $= $Player::Name)
@@ -39,7 +38,6 @@ function drinks_confirmInitiateMake(%otherPlayerName, %sku)
     %dlg.otherPlayerName = %otherPlayerName;
     %dlg.giftSkus = %sku;
     %dlg.making = 1;
-    return ;
 }
 function giftingItems_onInitiate(%dlg)
 {
@@ -51,19 +49,18 @@ function giftingItems_onInitiate(%dlg)
     }
     else
     {
-        %otherDlg = MessageBoxOK("The Gift of Libation", "<br>Checking with" SPC %dlg.otherPlayerName @ "..<br>", "");
+        %otherDlg = MessageBoxOK("The Gift of Libation", "<br>Checking with" @ " " @ %dlg.otherPlayerName @ "..<br>", "");
     }
     giftingItems_registerPendingTransactionGiver(%transactionID, %dlg.otherPlayerName, %dlg.giftSkus, %otherDlg, %dlg.making);
-    return ;
 }
 function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID, %making)
 {
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
     if (!isObject(%otherPlayer))
     {
-        error(getScopeName() SPC "- could not find other player:" SPC %otherPlayerName);
+        error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName);
         GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "E-ENVSERVER-UNKNOWN");
-        return ;
+        return;
     }
     error("// oxe 20090219 - todo - decide if this is good or if we want a new one");
     %acceptModeStrangers = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionStrangers];
@@ -101,20 +98,18 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
             }
         }
     }
-    return ;
 }
 function GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, %accepted, %messageCode)
 {
     commandToServer('GiftingItems_AcceptedOrDeclined', %otherPlayerName, %transactionID, %accepted, %messageCode);
-    return ;
 }
 function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %accepted, %messageCode)
 {
     %pendingTransactionRecord = giftingItems_getPendingTransactionClient(%transactionID);
     if (!isObject(%pendingTransactionRecord))
     {
-        error(getScopeName() SPC "- no such pending transaction:" SPC %transactionID);
-        return ;
+        error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
+        return;
     }
     if (isObject(%pendingTransactionRecord.dlg))
     {
@@ -126,7 +121,7 @@ function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %acce
         %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
         if (!isObject(%otherPlayer))
         {
-            error(getScopeName() SPC "- can\'t find other player:" SPC %otherPlayerName SPC %transactionID);
+            error(getScopeName() @ " " @ "- can't find other player:" @ " " @ %otherPlayerName @ " " @ %transactionID);
             %messageCode = "E-TARGET-MISSING";
         }
         %text = strreplace($MsgCat::gifting[%messageCode], "[OTHERPLAYER]", "<linkcolor:ffddeeff><a:gamelink " @ munge(%otherPlayerName) @ ">" @ StripMLControlChars(%otherPlayerName) @ "</a>");
@@ -135,18 +130,24 @@ function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %acce
         MessageBoxOK("Woops..", %text, "");
     }
     giftingItems_deletePendingTransactionClient(%transactionID);
-    return ;
 }
 function ClientCmdGiftingItems_Completed(%transactionID, %succeeded)
 {
     %transactionRecord = giftingItems_getPendingTransactionClient(%transactionID);
     if (!isObject(%transactionRecord))
     {
-        error(getScopeName() SPC "- no such pending transaction:" SPC %transactionID);
-        return ;
+        error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
+        return;
     }
     %amSource = %transactionRecord.sourcePlayerName $= $Player::Name;
-    %otherPlayerName = %amSource ? %transactionRecord : %transactionRecord;
+    if (%amSource)
+    {
+    }
+    else
+    {
+    }
+    %otherPlayerName = %transactionRecord.sourcePlayerName;
+    %transactionRecord.targetPlayerName;
     %amAlphaAndOmega = %otherPlayerName $= $Player::Name;
     %skus = %transactionRecord.skus;
     if (%succeeded)
@@ -182,5 +183,4 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded)
         }
     }
     giftingItems_deletePendingTransactionClient(%transactionID);
-    return ;
 }

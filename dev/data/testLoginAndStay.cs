@@ -4,8 +4,7 @@ function testLoginAndStay()
     $changeClothesCount = 0;
     $videoURLUpdated = 0;
     $loginLogout = 0;
-    %testLogin = new ScriptObject(skeletonClient)
-    {
+    %testLogin = new ScriptObject(skeletonClient) {
         userName = $UserPref::Player::Name;
         password = $UserPref::Player::Password;
         joinAction = "doSomething";
@@ -14,12 +13,10 @@ function testLoginAndStay()
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
-    return ;
 }
 function doSomething()
 {
     walk();
-    return ;
 }
 echo("LOAD: starting via testLoginAndStay()");
 testLoginAndStay();
@@ -39,7 +36,6 @@ function walk()
         schedule(5000, 0, stopAndTalk);
         schedule(10000, 0, approveFriendRequests);
     }
-    return ;
 }
 function stopAndTalk()
 {
@@ -55,7 +51,7 @@ function stopAndTalk()
         {
             geTGF.closeFully();
         }
-        pChat.say("Hello from" SPC $Hostname @ ".", 0, 0);
+        pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
         schedule(4000, 0, changeClothes);
         if (($DestServerName $= "MyApartment") && !$videoURLUpdated)
         {
@@ -77,15 +73,13 @@ function stopAndTalk()
         }
     }
     schedule(5000, 0, walk);
-    return ;
 }
 function logoffAndQuit()
 {
     echo("LOAD: Logging off and quit()-ing...");
-    echo("LOAD: Login::loggedIn:" SPC $Login::loggedIn);
+    echo("LOAD: Login::loggedIn:" @ " " @ $Login::loggedIn);
     logout(0);
     schedule(1000, 0, doQuit);
-    return ;
 }
 function updateApartment()
 {
@@ -93,7 +87,6 @@ function updateApartment()
     CSMediaWindow.stopVideo();
     CSMediaWindow.playVideo();
     $videoURLUpdated = 1;
-    return ;
 }
 function changeClothes()
 {
@@ -104,30 +97,27 @@ function changeClothes()
         $changeClothesCount = $changeClothesCount + 1;
         echo("LOAD: changeClothes done...");
     }
-    return ;
 }
 function approveFriendRequests()
 {
     %fansHere = BuddyHudWin.buddyLists[FansHere];
     if (!isObject(%fansHere))
     {
-        return ;
+        return;
     }
     if (%fansHere.size() == 0)
     {
         echo("LOAD: There are no waiting requests.");
-        return ;
+        return;
     }
     %n = %fansHere.size() - 1;
     while (%n >= 0)
     {
         %playerName = %fansHere.getKey(%n);
-        echo("LOAD: Friend" SPC %playerName);
+        echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        pChat.whisper("Hey" SPC %playerName SPC ", I" SPC %action SPC "your friendship.", %playerName);
+        pChat.whisper("Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = %n - 1;
     }
 }
-
-

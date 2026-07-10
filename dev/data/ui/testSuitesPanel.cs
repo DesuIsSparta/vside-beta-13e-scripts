@@ -1,18 +1,16 @@
 function testSuitesPanel::toggle(%this)
 {
     playGui.showRaiseOrHide(%this);
-    return ;
 }
 function testSuitesPanel::open(%this)
 {
     if (!$player.rolesPermissionCheckWarn("TestSuites"))
     {
-        return ;
+        return;
     }
     %this.loadAvailableTests();
     %this.setVisible(1);
     playGui.focusAndRaise(%this);
-    return ;
 }
 function testSuitesPanel::close(%this)
 {
@@ -23,21 +21,17 @@ function testSuitesPanel::close(%this)
 $G_LAST_SUITE_RUNNING = 0;
 function TestPanelTestList::onSelect(%this, %unused, %text)
 {
-    if (isObject($G_LAST_SUITE_RUNNING))
+    if (isObject($G_LAST_SUITE_RUNNING) && $G_LAST_SUITE_RUNNING.running)
     {
-        if ($G_LAST_SUITE_RUNNING.running)
-        {
-            MessageBoxOK("Test Suite", $G_LAST_SUITE_RUNNING SPC "is still running.", "");
-            return ;
-        }
+        MessageBoxOK("Test Suite", $G_LAST_SUITE_RUNNING @ " " @ "is still running.", "");
+        return;
     }
     $G_LAST_SUITE_RUNNING = %text;
     ToggleConsoleReally(1);
     echo("");
-    echo("-----------------------------" SPC %text SPC "running -----------------------------");
+    echo("-----------------------------" @ " " @ %text @ " " @ "running -----------------------------");
     echo("");
     RunTestSuite(%text);
-    return ;
 }
 function testSuitesPanel::loadAvailableTests(%this)
 {
@@ -51,5 +45,4 @@ function testSuitesPanel::loadAvailableTests(%this)
         %i = %i + 1;
     }
     %list.sort(0);
-    return ;
 }

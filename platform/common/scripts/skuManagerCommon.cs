@@ -38,7 +38,6 @@ function SkuManager::clearValueCache(%this)
         %this.valueCache.delete();
     }
     %this.valueCache = safeNewScriptObject("StringMap", "", 0);
-    return ;
 }
 SkuManager.clearValueCache();
 SkuManager.addBodyDrawer("hair");
@@ -168,7 +167,7 @@ SkuManager.addWearableSkuType("mesh");
 SkuManager.addWearableSkuType("badge");
 function SkuManager::allDrawers(%this)
 {
-    %allDrawers = %this.allClosetDrawers() SPC "gameplay";
+    %allDrawers = %this.allClosetDrawers() @ " " @ "gameplay";
     return %allDrawers;
 }
 function SkuManager::allClosetDrawers(%this)
@@ -183,9 +182,8 @@ SkuManager.userFacingDrawerNamesNum = 0;
 function SkuManager::addUserFacingDrawerName(%this, %internalName, %userFacingName)
 {
     %paddedNum = formatInt("%0.5d", %this.userFacingDrawerNamesNum);
-    %this.userFacingDrawerName[%internalName] = %paddedNum TAB %internalName TAB %userFacingName;
+    %this.userFacingDrawerName["\t",%internalName,"\t",%userFacingName,%internalName] = %paddedNum;
     %this.userFacingDrawerNamesNum = %this.userFacingDrawerNamesNum + 1;
-    return ;
 }
 SkuManager.addUserFacingDrawerName("torso", "Top");
 SkuManager.addUserFacingDrawerName("torsob", "Top");
@@ -263,7 +261,7 @@ function SkuManager::sortSkusByDrawer(%this, %drySkuList)
     {
         %sku = getWord(%drySkuList, %n);
         %thing = %this.userFacingDrawerName[SkuManager.findBySku(%sku).drwrName];
-        %sortableList = %sortableList @ %thing TAB %sku @ "\n";
+        %sortableList = %sortableList @ %thing @ "\t" @ %sku @ "\n";
         %n = %n - 1;
     }
     %sortableList = trim(%sortableList);
@@ -273,7 +271,7 @@ function SkuManager::sortSkusByDrawer(%this, %drySkuList)
     while (%n >= 0)
     {
         %thing = getRecord(%sortedList, %n);
-        %wetSkuList = getField(%thing, 3) SPC %wetSkuList;
+        %wetSkuList = getField(%thing, 3) @ " " @ %wetSkuList;
         %n = %n - 1;
     }
     %wetSkuList = trim(%wetSkuList);
@@ -284,7 +282,7 @@ function SkuManager::getUserFacingDrawerName(%this, %internalDrawerName)
     %val = %this.userFacingDrawerName[%internalDrawerName];
     if (%val $= "")
     {
-        error(getScopeName() SPC "- unknown drawer name:" SPC %internalDrawerName SPC getTrace());
+        error(getScopeName() @ " " @ "- unknown drawer name:" @ " " @ %internalDrawerName @ " " @ getTrace());
     }
     return getField(%val, 2);
 }
@@ -303,7 +301,14 @@ function SkuItem::getUserFacingDrawerName(%this)
 }
 function SkuItem::getDescLong(%this)
 {
-    %ret = %this.descLong $= "" ? %this : %this;
+    if (%this.descLong $= "")
+    {
+    }
+    else
+    {
+    }
+    %ret = %this.descLong;
+    %this.descShrt;
     return %ret;
 }
 $gSwatchableSkuDrawers = "BuildingBlocks";
@@ -342,7 +347,7 @@ function SkuManager::filterSkusDescription(%this, %skus, %userFilterText)
         %si = %this.findBySku(%sku);
         if (strstr(%si.searchText, %userFilterText) >= 0)
         {
-            %wet = %sku SPC %wet;
+            %wet = %sku @ " " @ %wet;
         }
         %n = %n - 1;
     }
@@ -362,7 +367,7 @@ function SkuManager::buildSkusSearchText(%this)
         {
             %drwr = getWord(%val, %m);
             %cats = gReverseThumbCategories.get(%drwr);
-            %cats = %cats SPC %key;
+            %cats = %cats @ " " @ %key;
             gReverseThumbCategories.put(%drwr, %cats);
             %m = %m - 1;
         }
@@ -373,21 +378,20 @@ function SkuManager::buildSkusSearchText(%this)
     {
         %si = %this.getObject(%n);
         %st = "";
-        %st = %st TAB %si.descLong;
-        %st = %st TAB %si.descShrt;
-        %st = %st TAB %si.tags;
-        %st = %st TAB %si.brand;
-        %st = %st TAB %si.drwrName;
-        %st = %st TAB gReverseThumbCategories.get(%si.drwrName);
-        %st = %st TAB %si.skuNumber;
-        %st = %st TAB %si.author;
+        %st = %st @ "\t" @ %si.descLong;
+        %st = %st @ "\t" @ %si.descShrt;
+        %st = %st @ "\t" @ %si.tags;
+        %st = %st @ "\t" @ %si.brand;
+        %st = %st @ "\t" @ %si.drwrName;
+        %st = %st @ "\t" @ gReverseThumbCategories.get(%si.drwrName);
+        %st = %st @ "\t" @ %si.skuNumber;
+        %st = %st @ "\t" @ %si.author;
         %st = strlwr(%st);
         %st = trim(%st);
         %si.searchText = %st;
         %n = %n - 1;
     }
 }
-
 function SkuManager::filterSkusInList(%this, %skusDry, %list)
 {
     %skusWet = "";
@@ -423,7 +427,7 @@ function SkuManager::getRandomSkusFromList(%this, %skulist, %drawersList)
         %numSkus = getWordCount(%drwrSkus);
         if (%numSkus > 0)
         {
-            %sku = getWord(%drwrSkus, getRandom(0, %numSkus - 1));
+            %sku = getWord(%drwrSkus, getRandom(0, (%numSkus - 1)));
             %skus = %skus @ %delim @ %sku;
             %delim = " ";
         }
@@ -444,11 +448,11 @@ function SkuManager::getRandomSkus(%this, %player, %drawersList)
         %numSkus = getWordCount(%drwrSkus);
         if (%numSkus < 1)
         {
-            log("wardrobe", "error", "Closet::getRandomSkus() - no skus in drawer" SPC %drwrName SPC getDebugString(%player));
+            log("wardrobe", "error", "Closet::getRandomSkus() - no skus in drawer" @ " " @ %drwrName @ " " @ getDebugString(%player));
         }
         else
         {
-            %skus = %skus @ getWord(%drwrSkus, getRandom(0, %numSkus - 1)) @ " ";
+            %skus = %skus @ getWord(%drwrSkus, getRandom(0, (%numSkus - 1))) @ " ";
         }
         %n = %n - 1;
     }
@@ -457,7 +461,7 @@ function SkuManager::getRandomSkus(%this, %player, %drawersList)
 function SkuManager::getRandomSku(%this, %player, %drawersList)
 {
     %sku = "";
-    %rnd = getRandom(0, getWordCount(%drawersList) - 1);
+    %rnd = getRandom(0, (getWordCount(%drawersList) - 1));
     %drwrName = getWord(%drawersList, %rnd);
     %drwrSkus = SkuManager.getSkusDrwr(%drwrName);
     %drwrSkus = SkuManager.filterSkusGender(%drwrSkus, %player.getGender());
@@ -465,11 +469,11 @@ function SkuManager::getRandomSku(%this, %player, %drawersList)
     %numSkus = getWordCount(%drwrSkus);
     if (%numSkus < 1)
     {
-        log("wardrobe", "error", "Closet::getRandomSku() - no skus in drawer" SPC %drwrName SPC getDebugString(%player));
+        log("wardrobe", "error", "Closet::getRandomSku() - no skus in drawer" @ " " @ %drwrName @ " " @ getDebugString(%player));
     }
     else
     {
-        %sku = getWord(%drwrSkus, getRandom(0, %numSkus - 1)) @ " ";
+        %sku = getWord(%drwrSkus, getRandom(0, (%numSkus - 1))) @ " ";
     }
     return %sku;
 }
@@ -489,14 +493,14 @@ function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeU
         %si = %this.findBySku(%sku);
         if (!isObject(%si))
         {
-            error(getScopeName() SPC "- unknown sku:" SPC %sku);
+            error(getScopeName() @ " " @ "- unknown sku:" @ " " @ %sku);
         }
         else
         {
             %usage = "";
-            if (%includeUsage && !((%si.usageShrt $= "")))
+            if (%includeUsage && !(%si.usageShrt $= ""))
             {
-                %usage = " -" SPC %si.usageShrt;
+                %usage = " -" @ " " @ %si.usageShrt;
             }
             %thumbnailText = "";
             if ((%thumbnailWidth > 0) && (%si.skuType $= "furnishing"))
@@ -529,7 +533,7 @@ function SkuManager::dumpSkuList(%this, %skus)
         %si = %this.findBySku(%sn);
         if (!isObject(%si))
         {
-            error("wardrobe", "dumpSkuList: unknown sku" SPC %sn);
+            error("wardrobe", "dumpSkuList: unknown sku" @ " " @ %sn);
         }
         else
         {
@@ -544,12 +548,10 @@ function SkuManager::dumpSkuList(%this, %skus)
         %n = %n + 1;
     }
 }
-
 function Player::dumpActiveSkus(%this)
 {
     %skus = %this.getActiveSKUs();
     SkuManager.dumpSkuList(%skus);
-    return ;
 }
 function SkuManager::setSkuPair(%this, %list, %first, %second)
 {
@@ -558,18 +560,18 @@ function SkuManager::setSkuPair(%this, %list, %first, %second)
     {
         if (%second > 0)
         {
-            %list = %list SPC %first SPC %second;
+            %list = %list @ " " @ %first @ " " @ %second;
         }
     }
     else
     {
         if (%second > 0)
         {
-            %list = setWord(%list, %ndx + 1, %second);
+            %list = setWord(%list, (%ndx + 1), %second);
         }
         else
         {
-            %list = removeWord(removeWord(%list, %ndx + 1), %ndx);
+            %list = removeWord(removeWord(%list, (%ndx + 1)), %ndx);
         }
     }
     return %list;
@@ -591,8 +593,8 @@ function SkuManager::addSkuTags(%this, %sku, %tags)
     %si = %this.findBySku(%sku);
     if (!isObject(%si))
     {
-        error(getScopeName() SPC "- no such sku:" SPC %sku SPC %tags SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- no such sku:" @ " " @ %sku @ " " @ %tags @ " " @ getTrace());
+        return;
     }
     %si.tags = mergeWords(%si.tags, %tags);
     %n = getWordCount(%tags) - 1;
@@ -600,12 +602,11 @@ function SkuManager::addSkuTags(%this, %sku, %tags)
     {
         %tag = getWord(%tags, %n);
         %skus = %this.skuTags.get(%tag);
-        %skus = trim(%skus SPC %sku);
+        %skus = trim(%skus @ " " @ %sku);
         %this.skuTags.put(%tag, %skus);
         %n = %n - 1;
     }
 }
-
 function SkuManager::getSkuTags(%this, %sku)
 {
     return %this.findBySku(%sku).tags;
@@ -621,7 +622,7 @@ function SkuManager::filterSkusAnyTags(%this, %skus, %tags)
         %num = numWordsInWords(%skuTags, %tags);
         if (%num > 0)
         {
-            %ret = %ret SPC %sku;
+            %ret = %ret @ " " @ %sku;
         }
         %n = %n - 1;
     }
@@ -638,7 +639,7 @@ function SkuManager::filterSkusTag(%this, %skus, %tag)
         %skuTags = %this.getSkuTags(%sku);
         if (hasWord(%skuTags, %tag))
         {
-            %ret = %ret SPC %sku;
+            %ret = %ret @ " " @ %sku;
         }
         %n = %n - 1;
     }
@@ -681,7 +682,7 @@ function SkuManager::filterSkusAllTags(%this, %skus, %tags)
         %num = numWordsInWords(%skuTags, %tags);
         if (%num == %numTags)
         {
-            %ret = %ret SPC %sku;
+            %ret = %ret @ " " @ %sku;
         }
         %n = %n - 1;
     }
@@ -712,7 +713,6 @@ function SkuManager::hasSkuWithAllTags(%this, %skus, %tags)
 function SkuManager::dumpSkuTags(%this)
 {
     %this.skuTags.dumpValues();
-    return ;
 }
 function SkuManager::getSkusTag(%this, %tag, %gender)
 {
@@ -735,7 +735,7 @@ function SkuManager::filterSkusDrwrs(%this, %skus, %drwrs)
         %si = %this.findBySku(%sku);
         if (hasWord(%drwrs, %si.drwrName))
         {
-            %ret = %ret SPC %sku;
+            %ret = %ret @ " " @ %sku;
         }
         %n = %n - 1;
     }
@@ -752,7 +752,7 @@ function SkuManager::filterSkusStore(%this, %skus, %storename)
         %si = %this.findBySku(%sku);
         if (hasWord(%si.stores, %storename))
         {
-            %ret = %ret SPC %sku;
+            %ret = %ret @ " " @ %sku;
         }
         %n = %n - 1;
     }
@@ -787,13 +787,12 @@ function Player::EnsureActiveSkus(%this, %skus)
         %sku = getWord(%skus, %n);
         if (!hasWord(%activeSkus, %sku))
         {
-            %currentSkus = %activeSkus SPC %sku;
+            %currentSkus = %activeSkus @ " " @ %sku;
         }
         %n = %n - 1;
     }
     %currentSkus = trim(%activeSkus);
     %this.setActiveSKUs(%activeSkus);
-    return ;
 }
 function SkuItem::hasTag(%this, %tag)
 {
@@ -816,12 +815,11 @@ function SkuItem::replaceTextureName(%this, %newTextureName)
         {
             %texture = %newTextureName;
         }
-        %newTextures = %newTextures SPC %texture;
+        %newTextures = %newTextures @ " " @ %texture;
         %n = %n + 1;
     }
     %newTextures = trim(%newTextures);
     %this.setTxtrNames(%newTextures);
-    return ;
 }
 function SkuManager::findTemplateSku(%this, %sku)
 {
@@ -832,7 +830,7 @@ function SkuManager::findTemplateSku(%this, %sku)
     %candidates = findAndRemoveFirstOccurrenceOfWord(%candidates, %sku);
     %found = "";
     %n = getWordCount(%candidates) - 1;
-    while (%found $= "")
+    while ((%n >= 0) && (%found $= ""))
     {
         %candidateSku = getWord(%candidates, %n);
         %candidateSI = %this.findBySku(%candidateSku);

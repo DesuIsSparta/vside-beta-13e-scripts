@@ -4,5 +4,4 @@ function ClosetStaffPanel::updateSkus(%unused)
     closetStaffSkusTextEdit.setValue(%skus);
     closetStaffSkusBodyTextEdit.setValue(SkuManager.filterSkusForBody(%skus));
     closetStaffSkusOutfitTextEdit.setValue(SkuManager.filterSkusForClothing(%skus));
-    return ;
 }

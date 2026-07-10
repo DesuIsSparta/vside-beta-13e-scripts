@@ -6,23 +6,28 @@ function ClientCmdEnterLeaveSpace(%internalName, %isEnter)
         %spaceDef.onEnterLeaveDoNotify(%isEnter);
         %spaceDef.onEnterLeaveDoStore(%isEnter);
     }
-    return ;
 }
 function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter)
 {
-    %dry = %isEnter ? %this : %this;
+    if (%isEnter)
+    {
+    }
+    else
+    {
+    }
+    %dry = %this.onLeaveText;
+    %this.onEntryText;
     %wet = %this.doTokenSubstitution(%dry, $player);
     if (!(%wet $= ""))
     {
         handleSystemMessage("msgInfoMessage", %wet);
     }
-    return ;
 }
 function SpaceDef::onEnterLeaveDoStore(%this, %isEnter)
 {
     if (%this.storeID $= "")
     {
-        return ;
+        return;
     }
     if (%isEnter)
     {
@@ -32,5 +37,4 @@ function SpaceDef::onEnterLeaveDoStore(%this, %isEnter)
     {
         clientCmdOnLeaveStore(%this.storeID);
     }
-    return ;
 }

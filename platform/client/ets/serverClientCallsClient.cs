@@ -4,22 +4,21 @@ function clientCmdClientSideCallTriggerEnterOrLeave(%callName, %isEntry, %param0
     %fnName = $gClientCallsList.get(%callName);
     if (!isFunction(%fnName))
     {
-        error(getScopeName() SPC "- no such call" SPC %callName SPC "-" SPC %fnName);
+        error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
     }
     else
     {
         call(%fnName, %isEntry, %param0, %param1, %param2, %param3);
     }
-    return ;
 }
 $gClientCallsList = "";
 function initClientCalls()
 {
     if (isObject($gClientCallsList))
     {
-        return ;
+        return;
     }
-    $gClientCallsList = new StringMap();
+    $gClientCallsList = new StringMap("");
     $gClientCallsList.put("gatewayExitTransition", "gatewayExitTransition");
     %n = $gClientCallsList.size() - 1;
     while (%n >= 0)
@@ -28,27 +27,25 @@ function initClientCalls()
         %fnName = $gClientCallsList.get(%callName);
         if (!isFunction(%fnName))
         {
-            error(getScopeName() SPC "- no such call" SPC %callName SPC "-" SPC %fnName);
+            error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
         }
         %n = %n - 1;
     }
 }
-
 function gatewayExitTransition(%isEntry, %showCancel)
 {
     if (!%isEntry)
     {
-        return ;
+        return;
     }
     if ($Player::inviter $= "")
     {
         gatewayeExitTransitionShowDialog(%isEntry, %showCancel);
-        return ;
+        return;
     }
     %request = sendRequest_GetUserProfileInfo($Player::inviter, "onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit");
     %request.isEntry = %isEntry;
     %request.showCancel = %showCancel;
-    return ;
 }
 function onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit(%request)
 {
@@ -64,29 +61,28 @@ function onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit(%request)
         }
     }
     gatewayeExitTransitionShowDialog(%request.isEntry, %request.showCancel);
-    return ;
 }
 function gatewayeExitTransitionShowDialog(%isEntry, %showCancel)
 {
     %title = "Where would you like to go next?";
     %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
     %body = %partnerObj.gatewayOptionBody;
-    %buttons = %partnerObj.gatewayOptionButton1 TAB %partnerObj.gatewayOptionButton2;
+    %buttons = %partnerObj.gatewayOptionButton1 @ "\t" @ %partnerObj.gatewayOptionButton2;
     if (!($Player::inviterOnline $= ""))
     {
-        %body = %body @ "<br>.. or, you could visit " SPC $Player::inviterOnline @ ", who invited you to vSide!";
-        %buttons = %buttons TAB "Visit" SPC $Player::inviterOnline;
+        %body = %body @ "<br>.. or, you could visit " @ " " @ $Player::inviterOnline @ ", who invited you to vSide!";
+        %buttons = %buttons @ "\t" @ "Visit" @ " " @ $Player::inviterOnline;
     }
     else
     {
         if (!($Player::inviter $= ""))
         {
-            %body = %body @ "<br><br>(You were invited to vSide by" SPC $Player::inviter @ ", but" SPC getPronounHeSheIt($Player::inviterGender) SPC "\'s offline right now)";
+            %body = %body @ "<br><br>(You were invited to vSide by" @ " " @ $Player::inviter @ ", but" @ " " @ getPronounHeSheIt($Player::inviterGender) @ " " @ "'s offline right now)";
         }
     }
     if (%showCancel)
     {
-        %buttons = %buttons TAB "Cancel";
+        %buttons = %buttons @ "\t" @ "Cancel";
     }
     %dlg = MessageBoxCustom(%title, %body, %buttons);
     %callbackNum = 0;
@@ -103,7 +99,6 @@ function gatewayeExitTransitionShowDialog(%isEntry, %showCancel)
     %callbackNum = %callbackNum + 1;
     %dlg.window.canMove = 0;
     %dlg.doCallbackOnEscape = 0;
-    return ;
 }
 function gatewayExitTransitionWorld()
 {
@@ -117,7 +112,6 @@ function gatewayExitTransitionWorld()
     }
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/gw/exit/Party");
-    return ;
 }
 function gatewayExitTransitionMyPlace()
 {
@@ -129,18 +123,15 @@ function gatewayExitTransitionMyPlace()
     }
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/gw/exit/MyPlace");
-    return ;
 }
 function gatewayExitTransitionInviter()
 {
     doUserTeleportTo($Player::inviter);
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/gw/exit/Inviter");
-    return ;
 }
 function gatewayExitTransitionCancel()
 {
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/gw/exit/Cancel");
-    return ;
 }

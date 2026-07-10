@@ -8,10 +8,9 @@ function CURLObject::onDonePreDelay(%this)
     }
     else
     {
-        log("network", "warn", getDebugString(%this) SPC "- delaying call to onDone()  by" SPC %totalDelayMS @ "ms. URL =" SPC %this.getURL());
+        log("network", "warn", getDebugString(%this) @ " " @ "- delaying call to onDone()  by" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
         %this.schedule(%totalDelayMS, "onDonePostDelay", %totalDelayMS);
     }
-    return ;
 }
 function CURLObject::onErrorPreDelay(%this, %val, %name)
 {
@@ -22,20 +21,17 @@ function CURLObject::onErrorPreDelay(%this, %val, %name)
     }
     else
     {
-        log("network", "warn", getDebugString(%this) SPC "- delaying call to onError() by" SPC %totalDelayMS @ "ms. URL =" SPC %this.getURL());
+        log("network", "warn", getDebugString(%this) @ " " @ "- delaying call to onError() by" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
         %this.schedule(%totalDelayMS, "onErrorPostDelay", %totalDelayMS, %val, %name);
     }
-    return ;
 }
 function CURLObject::onDonePostDelay(%this, %totalDelayMS)
 {
-    log("network", "warn", getDebugString(%this) SPC "- now executing call to onDone()  after delay of" SPC %totalDelayMS @ "ms. URL =" SPC %this.getURL());
+    log("network", "warn", getDebugString(%this) @ " " @ "- now executing call to onDone()  after delay of" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
     %this.onDone();
-    return ;
 }
 function CURLObject::onErrorPostDelay(%this, %totalDelayMS, %val, %name)
 {
-    log("network", "warn", getDebugString(%this) SPC "- now executing call to onError() after delay of" SPC %totalDelayMS @ "ms. URL =" SPC %this.getURL());
+    log("network", "warn", getDebugString(%this) @ " " @ "- now executing call to onError() after delay of" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
     %this.onError(%val, %name);
-    return ;
 }

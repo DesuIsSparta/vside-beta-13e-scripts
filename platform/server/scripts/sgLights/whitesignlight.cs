@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(whitesignlight)
-{
+datablock sgUniversalStaticLightData(whitesignlight) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 4;
@@ -65,4 +64,3 @@ datablock sgUniversalStaticLightData(whitesignlight)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

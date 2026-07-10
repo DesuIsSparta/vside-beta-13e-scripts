@@ -16,7 +16,6 @@ function toggleClientProfiler(%val)
         profilerDump();
         profilerEnable($clientProfilerEnabled);
     }
-    return ;
 }
 GlobalActionMap.bind(keyboard, "ctrl F3", toggleClientProfiler);
 $serverProfilerEnabled = 0;
@@ -34,14 +33,13 @@ function toggleServerProfiler(%val)
         }
         commandToServer('profilerEnable', $serverProfilerEnabled);
     }
-    return ;
 }
 GlobalActionMap.bind(keyboard, "ctrl F4", toggleServerProfiler);
 function serverCmdprofilerEnable(%client, %val)
 {
     if (!%client.hasPlayerObjectAndPermission_Warn("profiler"))
     {
-        return ;
+        return;
     }
     if (%val)
     {
@@ -53,5 +51,4 @@ function serverCmdprofilerEnable(%client, %val)
     }
     profilerDump();
     profilerEnable(%val);
-    return ;
 }

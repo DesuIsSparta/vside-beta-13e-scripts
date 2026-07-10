@@ -1,19 +1,18 @@
 function getEmporium(%name, %callback)
 {
-    %storeInfo = new SimObject();
+    %storeInfo = new SimObject("");
     %storeInfo.bindClassName("Emporium");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%storeInfo);
     }
     %storeInfo.storeName = %name;
-    %storeInfo.Inventory = new Array();
+    %storeInfo.Inventory = new Array("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%storeInfo.Inventory);
     }
     %storeInfo.refreshInventory(%callback);
-    return ;
 }
 function Emporium::OnRemove(%this)
 {
@@ -21,7 +20,6 @@ function Emporium::OnRemove(%this)
     {
         %storeInfo.Inventory.delete();
     }
-    return ;
 }
 function Emporium::getStoreName(%this)
 {
@@ -40,7 +38,7 @@ function Emporium::getSkus(%this)
     {
         if (%index != 0)
         {
-            %skus = %skus SPC %this.Inventory.getKey(%index);
+            %skus = %skus @ " " @ %this.Inventory.getKey(%index);
         }
         else
         {
@@ -53,7 +51,7 @@ function Emporium::getSkus(%this)
 }
 function Emporium::getItemByIndex(%this, %index)
 {
-    if ((%index < 0) && (%index >= %this.Inventory.count()))
+    if ((%index < 0) || (%index >= %this.Inventory.count()))
     {
         return 0;
     }
@@ -71,14 +69,13 @@ function Emporium::getItemBySku(%this, %sku)
 function Emporium::destroyStore(%this)
 {
     %this.Inventory.empty();
-    return ;
 }
 function Emporium::refreshInventory(%this, %callback)
 {
     if (!haveValidManagerHost())
     {
-        warn(getScopeName() SPC "no valid manager, not doing this");
-        return ;
+        warn(getScopeName() @ " " @ "no valid manager, not doing this");
+        return;
     }
     %request = safeEnsureScriptObject("ManagerRequest", "GetStoreInventory");
     %request.callback = %callback;
@@ -87,19 +84,18 @@ function Emporium::refreshInventory(%this, %callback)
     %url = $Net::ClientServiceURL @ "/GetStoreInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "storeName=" @ urlEncode(%this.storeName);
     %request.setURL(%url);
     %request.start();
-    return ;
 }
 function GetStoreInventory::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    log("network", "debug", getScopeName() SPC "- status =" SPC %status SPC "url =" SPC %this.getURL());
+    log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
     if (!(%status $= "success"))
     {
         %message = %this.getValue("statusMsg");
-        error(getScopeName() SPC "- status =" SPC %status SPC "\"" @ %message @ "\"");
+        error(getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "\"" @ %message @ "\"");
         %cmd = %this.callback @ "( 0, " @ %status @ ");";
         eval(%cmd);
-        return ;
+        return;
     }
     %storeInfo = %this.store;
     %storeInfo.storeName = %this.storeName;
@@ -116,7 +112,7 @@ function GetStoreInventory::onDone(%this)
         %priceVBux = %this.getValue("items" @ %index @ ".priceVBux");
         if (!%item)
         {
-            warn("Inventory", getScopeName() SPC "- Unknown SKU returned from server. SKU =" SPC %sku);
+            warn("Inventory", getScopeName() @ " " @ "- Unknown SKU returned from server. SKU =" @ " " @ %sku);
         }
         else
         {
@@ -130,24 +126,21 @@ function GetStoreInventory::onDone(%this)
     %cmd = %this.callback @ "(" @ %storeInfo @ ", \"success\");";
     eval(%cmd);
     %this.schedule(0, "delete");
-    return ;
 }
 function GetStoreInventory::onError(%this, %unused, %errorName)
 {
     %this.callback(0, %errorName);
     %this.schedule(0, "delete");
-    return ;
 }
 function Emporium::purchase(%this, %skulist, %currency, %callback)
 {
     %this.purchaseCollated(%skulist, %currency, %callback);
-    return ;
 }
 function Emporium::purchaseCollated(%this, %skulist, %currency, %callback)
 {
     %currency = strlwr(%currency);
     %this.shoppingList = %skulist;
-    %purchaseArray = new Array();
+    %purchaseArray = new Array("");
     echoDebug(getScopeName());
     while (!(%skulist $= ""))
     {
@@ -183,7 +176,6 @@ function Emporium::purchaseCollated(%this, %skulist, %currency, %callback)
     %request.setURL(%url);
     %request.start();
     %request.purchaseArray = %purchaseArray;
-    return ;
 }
 function Emporium::purchaseUncollated(%this, %skulist, %currency, %callback)
 {
@@ -212,13 +204,12 @@ function Emporium::purchaseUncollated(%this, %skulist, %currency, %callback)
     }
     %request.setURL(%url);
     %request.start();
-    return ;
 }
 function PurchaseInventory::onDone(%this)
 {
     %skuStatuslist = "";
     %status = findRequestStatus(%this);
-    log("network", "debug", getScopeName() SPC "- status =" SPC %status SPC "url =" SPC %this.getURL());
+    log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
     %count = %this.getValue("itemsCount");
     %index = 0;
     while (%index < %count)
@@ -228,7 +219,7 @@ function PurchaseInventory::onDone(%this)
         %qty = %this.purchaseArray.get(%sku);
         if (%qty $= "")
         {
-            error(getScopeName() SPC "- sku not found:" SPC %sku SPC %this.getURL());
+            error(getScopeName() @ " " @ "- sku not found:" @ " " @ %sku @ " " @ %this.getURL());
             %qty = 1;
         }
         %value = "";
@@ -246,7 +237,7 @@ function PurchaseInventory::onDone(%this)
         }
         else
         {
-            %skuStatuslist = %skuStatuslist SPC %value;
+            %skuStatuslist = %skuStatuslist @ " " @ %value;
         }
         %index = %index + 1;
     }
@@ -254,12 +245,10 @@ function PurchaseInventory::onDone(%this)
     eval(%cmd);
     %this.purchaseArray.delete();
     %this.schedule(0, "delete");
-    return ;
 }
 function PurchaseInventory::onError(%this, %unused, %errorName)
 {
     %cmd = %this.callback @ "( \"error\", " @ %errorName @ ");";
     eval(%cmd);
     %this.schedule(0, "delete");
-    return ;
 }

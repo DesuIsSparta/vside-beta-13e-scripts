@@ -17,7 +17,6 @@ function recordingsDlg::onWake()
     RecordingsDlgList.sort(0);
     RecordingsDlgList.setSelectedRow(0);
     RecordingsDlgList.scrollVisible(0);
-    return ;
 }
 function StartSelectedDemo()
 {
@@ -35,20 +34,19 @@ function StartSelectedDemo()
     }
     else
     {
-        MessageBoxOK("Playback Failed", "Demo playback failed for file \'" @ %file @ "\'.", "");
+        MessageBoxOK("Playback Failed", "Demo playback failed for file '" @ %file @ "'.", "");
         if (isObject(ServerConnection))
         {
             ServerConnection.delete();
         }
     }
-    return ;
 }
 function startDemoRecord()
 {
     ServerConnection.stopRecording();
     if (ServerConnection.isDemoPlaying())
     {
-        return ;
+        return;
     }
     %i = 0;
     while (%i < 1000)
@@ -65,39 +63,36 @@ function startDemoRecord()
         %file = $currentMod @ "/recordings/demo" @ %num @ ".rec";
         if (!isFile(%file))
         {
-            continue;
+            break;
         }
         %i = %i + 1;
     }
     if (%i == 1000)
     {
-        return ;
+        return;
     }
     $DemoFileName = %file;
-    ChatHud.addLine("\c4Recording to file [\c2" @ $DemoFileName @ "\cr].");
+    ChatHud.addLine("\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].");
     ServerConnection.prepDemoRecord();
     ServerConnection.startRecording($DemoFileName);
     if (!ServerConnection.isDemoRecording())
     {
         deleteFile($DemoFileName);
-        ChatHud.addLine("\c3 *** Failed to record to file [\c2" @ $DemoFileName @ "\cr].");
+        ChatHud.addLine("\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].");
         $DemoFileName = "";
     }
-    return ;
 }
 function stopDemoRecord()
 {
     if (ServerConnection.isDemoRecording())
     {
-        ChatHud.addLine("\c4Recording file [\c2" @ $DemoFileName @ "\cr] finished.");
+        ChatHud.addLine("\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.");
         ServerConnection.stopRecording();
     }
-    return ;
 }
 function demoPlaybackComplete()
 {
     disconnect();
     Canvas.setContent("MainMenuGui");
     Canvas.pushDialog(recordingsDlg, 0);
-    return ;
 }

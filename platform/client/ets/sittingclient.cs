@@ -1,30 +1,27 @@
 function InitClientSittingSystem()
 {
-    return ;
 }
 function ETSSeatMarker::moveDisplayedSeat(%this, %pos)
 {
     if (!isObject(%this.myDisplaySeat))
     {
-        return ;
+        return;
     }
     %this.myDisplaySeat.setTransform(%pos);
-    return ;
 }
 function ETSSeatMarker::showSeat(%this, %seatID)
 {
     if (isObject(%this.myDisplaySeat))
     {
         %this.myDisplaySeat.seatID = %seatID;
-        return ;
+        return;
     }
     %type = "ClientSeatDisplayData";
     if (%this.isListeningStation())
     {
         %type = "ClientSeatListeningDisplayData";
     }
-    %seatDisplay = new EtsClientModel()
-    {
+    %seatDisplay = new EtsClientModel("") {
         dataBlock = %type;
         seatID = %seatID;
         seatDisplay = 1;
@@ -33,7 +30,6 @@ function ETSSeatMarker::showSeat(%this, %seatID)
     };
     %seatDisplay.setTransform(%this.getTransform());
     %this.myDisplaySeat = %seatDisplay;
-    return ;
 }
 function ETSSeatMarker::hideSeat(%this)
 {
@@ -42,12 +38,10 @@ function ETSSeatMarker::hideSeat(%this)
         %this.myDisplaySeat.delete();
         %this.myDisplaySeat = 0;
     }
-    return ;
 }
 function EtsClientModel::cancelNotSoFast(%this)
 {
     %this.notSoFast = 0;
-    return ;
 }
 function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat)
 {
@@ -70,7 +64,6 @@ function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat)
     {
         $player.isKissSeat = 0;
     }
-    return ;
 }
 function clientCmdStandRequestSuccessful(%unused)
 {
@@ -88,7 +81,6 @@ function clientCmdStandRequestSuccessful(%unused)
         }
         $player.outfitBeforeAutosit = "";
     }
-    return ;
 }
 function SendStandCommand(%moveDir)
 {
@@ -96,13 +88,12 @@ function SendStandCommand(%moveDir)
     {
         commandToServer('RequestToStand', %moveDir, 0);
     }
-    return ;
 }
 function ClientSittingSystemOnClick(%obj)
 {
     if (%obj.notSoFast == 1)
     {
-        return ;
+        return;
     }
     %obj.notSoFast = 1;
     %obj.schedule(%obj.notSoFastClearTime, cancelNotSoFast);
@@ -111,9 +102,7 @@ function ClientSittingSystemOnClick(%obj)
         CSFurnitureMover.SelectNuggetID(-1);
     }
     commandToServer('RequestToSit', %obj.seatID);
-    return ;
 }
 function clientCmdOnLeaveSittingTrigger(%autosit_outfit)
 {
-    return ;
 }

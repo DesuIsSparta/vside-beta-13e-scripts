@@ -7,5 +7,3 @@ function compileCS()
         %file = findNextFile("*.cs");
     }
 }
-
-

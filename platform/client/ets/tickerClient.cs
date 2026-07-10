@@ -11,31 +11,29 @@ function handleTickerMessage(%unused, %msgString)
     {
         %priority = 2;
         %markedName = "<spush>" @ getPlayerMarkup(%senderName, "eeffff", 1) @ "<spop>";
-        %body = "(you are ignoring" SPC %markedName SPC ")";
+        %body = "(you are ignoring" @ " " @ %markedName @ " " @ ")";
         %repetitions = 0;
-        %msgString = %senderName TAB %body TAB %priority TAB %repetitions;
+        %msgString = %senderName @ "\t" @ %body @ "\t" @ %priority @ "\t" @ %repetitions;
     }
     %queue = ticker_getQueue(%priority);
     ticker_enqueue(%queue, %msgString);
     %n = 1;
     while (%n < %repetitions)
     {
-        schedule(%n * $gTickerRepetitionDelayMS, 0, "ticker_enqueue", %queue, %msgString);
+        schedule((%n * $gTickerRepetitionDelayMS), 0, "ticker_enqueue", %queue, %msgString);
         %n = %n + 1;
     }
 }
-
 function ticker_enqueue(%queue, %msgString)
 {
     %queue.push_back(%msgString, "");
     ticker_tick();
-    return ;
 }
 function ticker_getQueue(%priority)
 {
-    if ((%priority < 0) && (%priority > 3))
+    if ((%priority < 0) || (%priority > 3))
     {
-        error(getScopeName() SPC "- invalid priority. setting to 0." SPC %msgString);
+        error(getScopeName() @ " " @ "- invalid priority. setting to 0." @ " " @ %msgString);
         %priority = 0;
     }
     %obj = safeEnsureScriptObject(Array, "gTickerQueue" @ %priority, 0);
@@ -59,7 +57,6 @@ function ticker_tick()
     {
         ticker_newMessage();
     }
-    return ;
 }
 function ticker_doScroll()
 {
@@ -67,7 +64,7 @@ function ticker_doScroll()
     if (geTicker_TextContainer.cursorInControl())
     {
         $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
-        return ;
+        return;
     }
     else
     {
@@ -94,13 +91,12 @@ function ticker_doScroll()
         geTicker_Text.reposition(%newX, %newY);
         %curX = getWord(geTicker_Text.getPosition(), 0);
     }
-    return ;
 }
 function ticker_newMessage()
 {
     %msg = "";
     %n = 2;
-    while (%msg $= "")
+    while ((%n >= 0) && (%msg $= ""))
     {
         %queue = ticker_getQueue(%n);
         if (%queue.count() > 0)
@@ -118,12 +114,12 @@ function ticker_newMessage()
         %repetitions = getField(%msg, 3);
         %body = TryFixBadWords(%body);
         %markedName = "<spush><b>" @ getPlayerMarkup(%senderName, "eeffff", 1) @ "<spop>";
-        %unmarkedText = %senderName SPC "-" SPC %body SPC "-" SPC %senderName;
-        %markedText = %markedName SPC "-" SPC %body SPC "-" SPC %markedName;
+        %unmarkedText = %senderName @ " " @ "-" @ " " @ %body @ " " @ "-" @ " " @ %senderName;
+        %markedText = %markedName @ " " @ "-" @ " " @ %body @ " " @ "-" @ " " @ %markedName;
         ticker_createUI();
         geTicker_TextContainer.setVisible(1);
         geTicker_Text.reposition(getWord(geTicker_TextContainer.getExtent(), 0), 0);
-        geTicker_Text.resize(getStrWidth(%unmarkedText) + 26, 14);
+        geTicker_Text.resize((getStrWidth(%unmarkedText) + 26), 14);
         geTicker_Text.setTextWithStyle(%markedText);
         ticker_tick();
     }
@@ -131,32 +127,36 @@ function ticker_newMessage()
     {
         geTicker.delete();
     }
-    return %n;
 }
 function ticker_createUI()
 {
     if (!isObject(ButtonBar))
     {
-        error(getScopeName() SPC "- no ButtonBar yet." SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- no ButtonBar yet." @ " " @ getTrace());
+        return;
     }
     if (isObject(geTicker))
     {
-        return ;
+        return;
     }
-    new GuiBitmapCtrl(geTicker)
-    {
+    PlayGui.add(new GuiMLTextCtrl(geTicker_Text) {
+        horizSizing = "right";
+        extent = 14 @ " " @ 16;
+        position = 0 @ " " @ 0;
+        style = "ticker";
+        stripGamelink = 0;
+    };, new GuiControl(geTicker_TextContainer) {
+        horizSizing = "width";
+        extent = 2 @ " " @ 16;
+        position = 9 @ " " @ 6;
+        visible = 0;
+    };, new GuiBitmapCtrl(geTicker) {
         extent = "20 29";
         bitmap = "platform/client/ui/ticker_background";
-    }.add(new GuiBitmapCtrl(geTicker)
-    {
-        extent = "20 29";
-        bitmap = "platform/client/ui/ticker_background";
-    });
+    };);
     $ButtonBarVar::buttonBarPaddingBottom = getWord(geTicker.getExtent(), 1);
     $ButtonBarVar::buttonBarPaddingBottom = $ButtonBarVar::buttonBarPaddingBottom - 4;
     ButtonBar.update();
-    return ;
 }
 function geTicker::update(%this)
 {
@@ -169,13 +169,11 @@ function geTicker::update(%this)
     %this.resize(%w, 29);
     %this.alignToCenterX();
     %this.alignToBottom();
-    return ;
 }
 function geTicker::onDelete(%this)
 {
     $ButtonBarVar::buttonBarPaddingBottom = 0;
     ButtonBar.update();
-    return ;
 }
 function geTicker_Text::onURL(%this, %url)
 {
@@ -185,7 +183,6 @@ function geTicker_Text::onURL(%this, %url)
     }
     %name = unmunge(restWords(%url));
     onLeftClickPlayerName(%name, "");
-    return ;
 }
 function geTicker_Text::onRightURL(%this, %url)
 {
@@ -195,5 +192,4 @@ function geTicker_Text::onRightURL(%this, %url)
     }
     %name = unmunge(restWords(%url));
     onRightClickPlayerName(%name, "");
-    return ;
 }

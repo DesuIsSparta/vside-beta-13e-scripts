@@ -24,7 +24,7 @@ function Player::isCeleb(%this)
 }
 function Player::mayConnectToFullServer(%this)
 {
-    return (%this.isStaff() || %this.isModerator()) || %this.isCeleb();
+    return %this.isStaff() || %this.isModerator() || %this.isCeleb();
 }
 function Player::isDebugging(%this)
 {

@@ -1,7 +1,6 @@
 function MusicHud::setMusicService(%this, %musicService)
 {
     %this.musicService = %musicService;
-    return ;
 }
 function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %isItune)
 {
@@ -40,21 +39,20 @@ function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %is
         %this.comment = "<a:" @ %url @ ">" @ %commentText @ "</a>";
     }
     %commentData.delete();
-    %this.charWidth = mMax(mMax(mMax(strlen(%artist), 2 + strlen(%title)), strlen(%album)), strlen(%commentText));
+    %this.charWidth = mMax(mMax(mMax(strlen(%artist), (2 + strlen(%title))), strlen(%album)), strlen(%commentText));
     %this.update();
-    if ((((HudTabs.currentTabIndex < 0) || (HudTabs.getCurrentTab().name $= "music")) && !$UserPref::Audio::mute) && %this.hasMusicData())
+    if ((HudTabs.currentTabIndex < 0) || (HudTabs.getCurrentTab().name $= "music") && !$UserPref::Audio::mute && %this.hasMusicData())
     {
         %this.show();
     }
-    if ((!((%artist $= "")) || !((%title $= ""))) || !((%album $= "")))
+    if (!(%artist $= "") || !(%title $= "") || !(%album $= ""))
     {
         Music::fetchRatings(%artist, %title, %album);
     }
-    return ;
 }
 function MusicHud::hasMusicData(%this)
 {
-    return (!((%this.musicService $= "")) && !((%this.musicService.getArtist() $= ""))) || !((%this.musicService.getTitle() $= ""));
+    return !(%this.musicService $= "") && !(%this.musicService.getArtist() $= "") || !(%this.musicService.getTitle() $= "");
 }
 function MusicHud::update(%this)
 {
@@ -64,7 +62,7 @@ function MusicHud::update(%this)
     if (%this.hasMusicData())
     {
         %content = %this.artist @ "\n\"" @ %this.title @ "\"";
-        if ((%this.musicService.getAlbum() $= "") && (%this.musicService.getAlbum() $= "album"))
+        if ((%this.musicService.getAlbum() $= "") || (%this.musicService.getAlbum() $= "album"))
         {
             %heightOffset = %heightOffset + 20;
         }
@@ -121,7 +119,6 @@ function MusicHud::update(%this)
         MusicText.forceReflow();
     }
     MusicHud.ratingControl.updatePosition();
-    return ;
 }
 function MusicHud::updateRatingText(%this)
 {
@@ -131,13 +128,13 @@ function MusicHud::updateRatingText(%this)
         %ratingText = %ratingText @ "<br>";
     }
     %isObject = isObject(RatingRequest);
-    if (!%isObject && (findRequestStatus(RatingRequest) $= "fail"))
+    if (!%isObject || (findRequestStatus(RatingRequest) $= "fail"))
     {
-        %ratingText = %ratingText @ "Couldn\'t get song rating.";
+        %ratingText = %ratingText @ "Couldn't get song rating.";
     }
     else
     {
-        if (%isObject && !((RatingRequest.community_rating $= "")))
+        if (%isObject && !(RatingRequest.community_rating $= ""))
         {
             %ratingText = %ratingText @ "Avg. Rating: " @ RatingRequest.community_rating;
             if (!(RatingRequest.num_ratings $= ""))
@@ -148,16 +145,14 @@ function MusicHud::updateRatingText(%this)
         }
     }
     %this.ratingControl.label.setText(%ratingText);
-    return ;
 }
 function MusicHud::setRating(%this, %rating)
 {
     %this.ratingControl.setRating(%rating, 0);
-    return ;
 }
 function MusicHud::parseComment(%this, %comment)
 {
-    %map = new StringMap();
+    %map = new StringMap("");
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%map);
@@ -171,7 +166,7 @@ function MusicHud::parseComment(%this, %comment)
     %map.put("text", %var);
     if (getSubStr(%url, 0, 7) $= "http://")
     {
-        %map.put("url", getSubStr(%url, 7, strlen(%url) - 7));
+        %map.put("url", getSubStr(%url, 7, (strlen(%url) - 7)));
     }
     else
     {
@@ -200,12 +195,10 @@ function MusicHud::show(%this)
     {
         HudTabs.selectTabWithName("music");
     }
-    return ;
 }
 function MusicHud::keepOpen(%this, %flag)
 {
     $UserPref::Audio::keepMusicHudOpen = %flag;
-    return ;
 }
 function MusicHud::hide(%this)
 {
@@ -213,13 +206,11 @@ function MusicHud::hide(%this)
     {
         HudTabs.close();
     }
-    return ;
 }
 function MusicHud::onClose(%this)
 {
     %this.keepOpen(0);
     %this.update();
-    return ;
 }
 function MusicHud::isShowing(%this)
 {
@@ -238,7 +229,6 @@ function MusicHud::setChangeStationAllowed(%this, %flag)
         MusicHudChangeStationButton.setVisible(0);
         %this.setView("basic");
     }
-    return ;
 }
 function MusicHud::setView(%this, %view)
 {
@@ -256,7 +246,6 @@ function MusicHud::setView(%this, %view)
             %this.fillStationPopup();
         }
     }
-    return ;
 }
 function MusicHud::fillStationPopup(%this)
 {
@@ -267,7 +256,6 @@ function MusicHud::fillStationPopup(%this)
         MusicHudStationPopup.setText(%this.station);
     }
     Music::createGetMusicStreamsRequest();
-    return ;
 }
 function MusicHud::updateStations(%this, %stations)
 {
@@ -278,9 +266,11 @@ function MusicHud::updateStations(%this, %stations)
         %field = getField(%stations, %i);
         if (%field $= "")
         {
-            continue;
         }
-        MusicHudStationPopup.add(%field);
+        else
+        {
+            MusicHudStationPopup.add(%field);
+        }
         %i = %i + 1;
     }
     if (%this.station $= "")
@@ -288,13 +278,11 @@ function MusicHud::updateStations(%this, %stations)
         MusicHudStationPopup.SetSelected(0);
     }
     MusicHudStationPopup.setActive(1);
-    return ;
 }
 function MusicHud::stationSelected(%this)
 {
     %this.station = MusicHudStationPopup.getValue();
     customSpace::SetMusicStreamID(%this.station);
-    return ;
 }
 function MusicText::onUrl_NOOP(%this, %url)
 {
@@ -315,21 +303,17 @@ function MusicText::onUrl_NOOP(%this, %url)
             MessageBoxYesNo("Confirm Installation", "You have selected a link to the ITunes Store " @ "but do not have ITunes installed.  " @ "Would you like to install it now?", "MusicText::installITunes();", "MusicText::declineITunes();");
         }
     }
-    return ;
 }
 function MusicText::installITunes()
 {
     gotoWebPage(getITunesDownloadURL($MusicText::selectedURL));
-    return ;
 }
 function MusicText::declineITunes()
 {
-    return ;
 }
 function MusicText::startITunes()
 {
     iTunesOpen($MusicText::selectedURL);
-    return ;
 }
 function MusicRatingControl::onUpdate(%this)
 {
@@ -370,5 +354,4 @@ function MusicRatingControl::onUpdate(%this)
         }
     }
     MusicHud.updateRatingText();
-    return ;
 }

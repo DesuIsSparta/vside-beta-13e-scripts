@@ -1,17 +1,15 @@
 function botControlPanel::toggle(%this)
 {
     playGui.showRaiseOrHide(%this);
-    return ;
 }
 function botControlPanel::open(%this)
 {
     if (!$player.rolesPermissionCheckWarn("bots"))
     {
-        return ;
+        return;
     }
     %this.setVisible(1);
     playGui.focusAndRaise(%this);
-    return ;
 }
 function botControlPanel::close(%this)
 {
@@ -23,13 +21,11 @@ function botControlPanel::saveBots(%this)
 {
     %filebase = %this.getSaveFilename();
     commandToServer('saveBots', %filebase);
-    return ;
 }
 function botControlPanel::loadBots(%this)
 {
     %filebase = %this.getSaveFilename();
     commandToServer('loadBots', %filebase);
-    return ;
 }
 function botControlPanel::getSaveFilename(%this)
 {

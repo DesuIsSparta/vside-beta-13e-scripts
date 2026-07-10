@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(pcdsignlight)
-{
+datablock sgUniversalStaticLightData(pcdsignlight) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 6;
@@ -65,4 +64,3 @@ datablock sgUniversalStaticLightData(pcdsignlight)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

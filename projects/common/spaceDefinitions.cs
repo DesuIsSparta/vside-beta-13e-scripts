@@ -19,5 +19,4 @@ function spaceDefs_Init()
     %space = spaces_GetSpaceDef("maroonSpace", 1);
     %space = spaces_GetSpaceDef("yellowSpace", 1);
     %space = spaces_GetSpaceDef("triggerWonderlandSpace", 1);
-    return ;
 }

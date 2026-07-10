@@ -6,7 +6,7 @@ function Player::sendPreviewText(%this, %text)
     %text = StripMLControlChars(%text);
     if (getSubStr(trim(%text), 0, 1) $= "/")
     {
-        return ;
+        return;
     }
     %this.onGotTypingSomething(%text);
     if ($Chat::Preview::WordBoundaries)
@@ -22,7 +22,7 @@ function Player::sendPreviewText(%this, %text)
             commandToServer('ChatPreviewClear');
         }
         $gLastPreviewText = %text;
-        return ;
+        return;
     }
     $gIsTyping = 1;
     %numChars = $Chat::Preview::Size + 1;
@@ -34,7 +34,7 @@ function Player::sendPreviewText(%this, %text)
     %text = getSubStr(%text, %start, %numChars);
     if (%text $= $gLastPreviewText)
     {
-        return ;
+        return;
     }
     $gLastPreviewText = %text;
     if (!$UserPref::Chat::ShowTyping)
@@ -51,7 +51,6 @@ function Player::sendPreviewText(%this, %text)
     }
     commandToServer('ChatPreview', %text);
     setIdle(0);
-    return ;
 }
 function Player::onGotChatPreview(%this, %dry)
 {
@@ -72,13 +71,12 @@ function Player::onGotChatPreview(%this, %dry)
         %this.setChatPreview(%wet);
         %this.onGotTypingSomething(%wet);
     }
-    return ;
 }
 function Player::onGotTypingSomething(%this, %text)
 {
     if (%text $= gGetField(%this, lastTypingSomethingText))
     {
-        return ;
+        return;
     }
     gSetField(%this, lastTypingSomethingText, %text);
     cancel(gGetField(%this, IsNoLongerTypingTimer));
@@ -97,7 +95,6 @@ function Player::onGotTypingSomething(%this, %text)
             %this.talkingAnimTimer(1);
         }
     }
-    return ;
 }
 function Player::talkingAnimTimer(%this, %startflag)
 {
@@ -133,9 +130,7 @@ function Player::talkingAnimTimer(%this, %startflag)
             %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
         }
     }
-    return ;
 }
 function talkBlender::animate(%this)
 {
-    return ;
 }

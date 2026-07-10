@@ -14,7 +14,7 @@ function initClient()
     initBaseClient();
     if (!initCanvas(generateWindowTitle("")))
     {
-        return ;
+        return;
     }
     if ($StandAlone && $Preload)
     {
@@ -100,17 +100,17 @@ function initClient()
             loadMainMenu();
         }
     }
-    $TransitionScreenshot = new ScreenShotUploader();
+    $TransitionScreenshot = new ScreenShotUploader("") {
+        className = "ScreenShotUploaderClass";
+    };
     HudTabs::setup();
     enableManualWindowResize(1);
     dlMgr::smInit();
     loadAlwaysLoadManifest();
-    return ;
 }
 function shutdownClient()
 {
     dlMgr.shutDown();
-    return ;
 }
 function loadMainMenu()
 {
@@ -120,7 +120,6 @@ function loadMainMenu()
         MessageBoxOK("Audio Initialization Failed", "A sound card must be installed to hear audio playback.  If a soundcard is already present please ensure the drivers are installed properly.", "");
     }
     Canvas.setCursor("DefaultCursor");
-    return ;
 }
 function startStandAlone()
 {
@@ -128,7 +127,7 @@ function startStandAlone()
     if ($MissionArg $= "")
     {
         $MissionArg = "projects/vside/worlds/lounge/missions/lounge.mis";
-        log("initialization", "warn", "no mission specified. using" SPC $MissionArg);
+        log("initialization", "warn", "no mission specified. using" @ " " @ $MissionArg);
     }
     $Player::Name = $UserPref::Player::Name;
     if ($Player::Name $= "")
@@ -137,7 +136,6 @@ function startStandAlone()
     }
     gUserPropMgrClient.forgetProperties($Player::Name);
     gUserPropMgrClient.requestProperties($Player::Name, "startStandAlone_Part2();");
-    return ;
 }
 function startStandAlone_Part2()
 {
@@ -148,7 +146,6 @@ function startStandAlone_Part2()
     RootGroup.add(ServerConnection);
     $GameConnection.connectLocal();
     log("initialization", "info", "end connectLocal()");
-    return ;
 }
 function join(%joinGameAddress)
 {
@@ -158,12 +155,11 @@ function join(%joinGameAddress)
     $GameConnection = new GameConnection(ServerConnection);
     $GameConnection.setCommonPreconnectClientSettings("");
     $GameConnection.connect(%joinGameAddress);
-    return ;
 }
 function showLicense()
 {
     %file = findFirstFile("*/license.txt");
-    %fo = new FileObject();
+    %fo = new FileObject("");
     %fo.openForRead(%file);
     %text = "";
     while (!%fo.isEOF())
@@ -172,7 +168,6 @@ function showLicense()
     }
     LicenseText.setText(%text);
     Canvas.pushDialog(licenseDlg, 0);
-    return ;
 }
 function onVideoDeactivate()
 {
@@ -182,17 +177,15 @@ function onVideoDeactivate()
         benchmarks::onVideoDeactivate();
     }
     $Video::Inactive = 1;
-    return ;
 }
 function onVideoReactivate()
 {
     $Video::Inactive = 0;
-    return ;
 }
 function quitApp()
 {
-    echoDebug(getScopeName() SPC "- Disconnecting." SPC getTrace());
-    if ((!$StandAlone && $AmClient) && !(($Token $= "")))
+    echoDebug(getScopeName() @ " " @ "- Disconnecting." @ " " @ getTrace());
+    if (!$StandAlone && $AmClient && !($Token $= ""))
     {
         logout(1);
     }
@@ -200,7 +193,6 @@ function quitApp()
     {
         doQuit();
     }
-    return ;
 }
 function logout(%doQuit)
 {
@@ -262,11 +254,11 @@ function logout(%doQuit)
     setWindowTitle(generateWindowTitle($ServerName));
     if (!$Login::loggedIn)
     {
-        return ;
+        return;
     }
     if (isObject(LogoutRequest))
     {
-        return ;
+        return;
     }
     %cmd = "logoutPart2(" @ %doQuit @ ");";
     geShoutout_Credential_Twitter_Username.setText("");
@@ -274,7 +266,6 @@ function logout(%doQuit)
     gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVBux", $Player::VBux);
     gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVPoints", $Player::VPoints);
     gUserPropMgrClient.persistReally($Player::Name, %cmd);
-    return ;
 }
 function logoutPart2(%doQuit)
 {
@@ -287,13 +278,13 @@ function logoutPart2(%doQuit)
     %url = $Net::ClientServiceURL @ "/logout";
     if ($Player::Name $= "")
     {
-        log("login", "error", getScopeName() SPC "- logout called with empty player name" SPC getTrace());
-        return ;
+        log("login", "error", getScopeName() @ " " @ "- logout called with empty player name" @ " " @ getTrace());
+        return;
     }
     if ($Token $= "")
     {
-        log("login", "error", getScopeName() SPC "- logout called with empty token" SPC getTrace());
-        return ;
+        log("login", "error", getScopeName() @ " " @ "- logout called with empty token" @ " " @ getTrace());
+        return;
     }
     %userValue = "?user=" @ urlEncode($Player::Name);
     %tokenValue = "&token=" @ urlEncode($Token);
@@ -305,7 +296,6 @@ function logoutPart2(%doQuit)
     log("login", "debug", "logout: " @ %url);
     %logout.setURL(%url);
     %logout.start();
-    return ;
 }
 function LogoutRequest::onError(%this, %errorNum, %errorName)
 {
@@ -314,7 +304,6 @@ function LogoutRequest::onError(%this, %errorNum, %errorName)
         doQuit();
     }
     %this.delete();
-    return ;
 }
 function LogoutRequest::onDone(%this)
 {
@@ -338,14 +327,13 @@ function LogoutRequest::onDone(%this)
         doQuit();
     }
     %this.delete();
-    return ;
 }
 $gLoginStatusMessage = "";
 $gVPointsRatio = 50;
 function StatusRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    log("login", "info", %this.getInfoString() SPC "StatusRequest::onDone:" SPC %status);
+    log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onDone:" @ " " @ %status);
     if (%status $= "success")
     {
         %dfEnabled = %this.getValueBool("doubleFusionEnabled");
@@ -354,7 +342,7 @@ function StatusRequest::onDone(%this)
             setDFEnabled(%dfEnabled);
         }
         %preload = %this.getValueBool("assetPreloadEnabled");
-        if (($Preload && %preload) && !$NoDisplay)
+        if ($Preload && %preload && !$NoDisplay)
         {
             preloadResources();
         }
@@ -377,7 +365,6 @@ function StatusRequest::onDone(%this)
         $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SEE-FORUMS"];
     }
     LoginGui.update();
-    return ;
 }
 function StatusRequest::onError(%this, %errorNum, %errorName)
 {
@@ -390,20 +377,19 @@ function StatusRequest::onError(%this, %errorNum, %errorName)
         $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SEE-FORUMS"];
     }
     LoginGui.update();
-    log("login", "info", %this.getInfoString() SPC "StatusRequest::onError:" SPC %errorName);
-    return ;
+    log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onError:" @ " " @ %errorName);
 }
 function StatusRequest::getInfoString(%this)
 {
-    return "[" @ %this.connection SPC %this.name @ "]";
+    return "[" @ %this.connection @ " " @ %this.name @ "]";
 }
 function sendStatusRequest()
 {
     %request = safeEnsureScriptObject("ManagerRequest", "StatusRequest");
     if (%request.isOpen())
     {
-        warn("network", getScopeName() SPC "- got overlapping requests. postponing. url =" SPC %request.getURL());
-        return ;
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+        return;
     }
     %url = $Net::ClientServiceURL @ "/SystemStatus";
     log("login", "info", "sending system status request: " @ %url);
@@ -411,29 +397,26 @@ function sendStatusRequest()
     %request.start();
     $gLoginStatusMessage = $MsgCat::network["H-SEARCHING"];
     LoginGui.update();
-    return ;
 }
 function FirstLaunchRequest::onDone(%this)
 {
-    log("login", "info", %this.getInfoString() SPC "FirstLaunchRequest::onDone");
-    return ;
+    log("login", "info", %this.getInfoString() @ " " @ "FirstLaunchRequest::onDone");
 }
 function FirstLaunchRequest::onError(%this, %errorNum, %errorName)
 {
-    log("login", "info", %this.getInfoString() SPC "FirstLaunchRequest::onError:" SPC %errorName);
-    return ;
+    log("login", "info", %this.getInfoString() @ " " @ "FirstLaunchRequest::onError:" @ " " @ %errorName);
 }
 function FirstLaunchRequest::getInfoString(%this)
 {
-    return "[" @ %this.connection SPC %this.name @ "]";
+    return "[" @ %this.connection @ " " @ %this.name @ "]";
 }
 function sendFirstLaunchRequest()
 {
     %request = safeEnsureScriptObject("ManagerRequest", "FirstLaunchRequest");
     if (%request.isOpen())
     {
-        warn("network", getScopeName() SPC "- got overlapping requests. postponing. url =" SPC %request.getURL());
-        return ;
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+        return;
     }
     if (!($Net::userReferrer $= ""))
     {
@@ -454,5 +437,4 @@ function sendFirstLaunchRequest()
     %url = $Net::downloadURL @ "/first_launch?status=true&platform=" @ $Platform @ "&referrer=" @ %referrer @ "&owner=" @ %owner;
     %request.setURL(%url);
     %request.start();
-    return ;
 }

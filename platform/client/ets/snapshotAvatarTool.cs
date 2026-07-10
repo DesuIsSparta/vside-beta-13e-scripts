@@ -1,19 +1,16 @@
 function toggleSnapshotAvatarTool()
 {
     PlayGui.showRaiseOrHide(snapshotAvatarTool);
-    return ;
 }
 function snapshotAvatarTool::open(%this)
 {
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     snapshotAvatarToolActiveRegion.initStuff();
-    return ;
 }
 function snapshotAvatarTool::onWake(%this)
 {
     snapshotAvatarToolActiveRegion.initStuff();
-    return ;
 }
 function snapshotAvatarTool::close(%this)
 {
@@ -26,7 +23,7 @@ function snapshotAvatarToolActiveRegion::initStuff(%this)
     if (!isObject($player))
     {
         warn("Snapshot", "initstuff: $player invalid");
-        return ;
+        return;
     }
     %this.setSimObject($player);
     %this.cameraXRotMin = -0.3;
@@ -38,7 +35,6 @@ function snapshotAvatarToolActiveRegion::initStuff(%this)
     %this.setLightDirection("0 3 -2");
     %anim = $player.getGender() @ "pidl1a";
     $player.playAnim(%anim);
-    return ;
 }
 function snapshotAvatarToolActiveRegion::adjustForHeight(%this, %height, %cMin, %cMax)
 {
@@ -46,8 +42,7 @@ function snapshotAvatarToolActiveRegion::adjustForHeight(%this, %height, %cMin, 
     %hMax = 1.2;
     %h = (%height - %hMin) / (%hMax - %hMin);
     %c = (%h * (%cMax - %cMin)) + %cMin;
-    %this.setLookAtNudge("0 0" SPC %c);
-    return ;
+    %this.setLookAtNudge("0 0" @ " " @ %c);
 }
 function snapshotAvatarTool::doSnap(%this)
 {
@@ -55,7 +50,6 @@ function snapshotAvatarTool::doSnap(%this)
     gSetField(%this, origProfile, snapshotAvatarToolActiveRegion.profile);
     snapshotAvatarToolActiveRegion.setProfile(ETSSnapshotBackgroundProfile);
     %this.waitForNextFrameToSnap();
-    return ;
 }
 function snapshotAvatarTool::waitForNextFrameToSnap(%this)
 {
@@ -63,10 +57,9 @@ function snapshotAvatarTool::waitForNextFrameToSnap(%this)
     if ($Canvas::frameCount <= gGetField(%this, lastFrame))
     {
         gSetField(%this, waitForFrameSchedule, %this.schedule(10, "waitForNextFrameToSnap"));
-        return ;
+        return;
     }
     %this.doSnap2();
-    return ;
 }
 function snapshotAvatarTool::doSnap2(%this)
 {
@@ -74,7 +67,7 @@ function snapshotAvatarTool::doSnap2(%this)
     if (!isObject(%snapshot))
     {
         error("Snapshot", "Problem taking snapshot");
-        return ;
+        return;
     }
     %snapshot.saveObject = %this;
     %snapshot.setCompletedCallback("snapshotAvatarToolonCompleted");
@@ -82,13 +75,11 @@ function snapshotAvatarTool::doSnap2(%this)
     snapshotAvatarToolSet2.setVisible(1);
     snapshotAvatarToolProgressBar.setValue(0);
     snapshotAvatarToolActiveRegion.setProfile(gGetField(%this, origProfile));
-    return ;
 }
 function snapshotAvatarTool::onProgress(%this, %snapshot)
 {
     %percent = %snapshot.ulNow / %snapshot.ulTotal;
     snapshotAvatarToolProgressBar.setValue(%percent);
-    return ;
 }
 function snapshotAvatarToolonCompleted(%request, %result)
 {
@@ -97,7 +88,7 @@ function snapshotAvatarToolonCompleted(%request, %result)
     {
         snapshotAvatarToolSet1.setVisible(1);
         snapshotAvatarToolSet2.setVisible(0);
-        if (!((%snapshot.visitWhenDoneUrl $= "")) && $UserPref::Snapshots::View)
+        if (!(%snapshot.visitWhenDoneUrl $= "") && $UserPref::Snapshots::View)
         {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
@@ -107,5 +98,4 @@ function snapshotAvatarToolonCompleted(%request, %result)
         snapshotAvatarToolSet1.setVisible(1);
         snapshotAvatarToolSet2.setVisible(0);
     }
-    return ;
 }

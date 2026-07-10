@@ -25,7 +25,6 @@ function doAIMSignIn()
             aimConnect($Player::AIMName, $Player::AIMPassword);
         }
     }
-    return ;
 }
 function doAIMSignOff()
 {
@@ -36,7 +35,6 @@ function doAIMSignOff()
     %aimTab.loginFrame.setVisible(1);
     AIMSignInButton.setActive(1);
     aimDisconnect();
-    return ;
 }
 function silentAIMDisconnect()
 {
@@ -44,7 +42,6 @@ function silentAIMDisconnect()
     {
         aimDisconnect();
     }
-    return ;
 }
 function aimLoginCallback()
 {
@@ -54,7 +51,6 @@ function aimLoginCallback()
     %aimTab.inviteButton.setVisible(1);
     %aimTab.loginFrame.setVisible(0);
     AIMConvManager.Initialize();
-    return ;
 }
 function onAIMStateChange(%state)
 {
@@ -130,9 +126,6 @@ function onAIMStateChange(%state)
                                             }
                                             else
                                             {
-                                                if (%state == 600)
-                                                {
-                                                }
                                             }
                                         }
                                     }
@@ -144,8 +137,7 @@ function onAIMStateChange(%state)
             }
         }
     }
-    AIMLoginFrame.AIMState = %state;
-    return ;
+    AIMLoginFrame.AIMState = (%state == 600) @ %state;
 }
 function AIMLoginFrame::setup(%this)
 {
@@ -160,7 +152,6 @@ function AIMLoginFrame::setup(%this)
         AIMPasswordField.setText("");
     }
     %this.update();
-    return ;
 }
 function AIMLoginFrame::update(%this)
 {
@@ -200,5 +191,4 @@ function AIMLoginFrame::update(%this)
     {
         $UserPref::Player::AIMPassword = "";
     }
-    return ;
 }

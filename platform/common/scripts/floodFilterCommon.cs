@@ -38,7 +38,7 @@ $tmp::eventName = "sos";
 $floodFilter::maxEvents[$tmp::eventName] = 2;
 $floodFilter::inPeriod[$tmp::eventName] = (1000 * 60) * 5;
 $floodFilter::penalty[$tmp::eventName] = 0;
-$floodFilter::message[$tmp::eventName] = "Whoa there - spamming won\'t help you get help. Try again in a few minutes. For more information on how block annoying users or report abuse, press F1.";
+$floodFilter::message[$tmp::eventName] = "Whoa there - spamming won't help you get help. Try again in a few minutes. For more information on how block annoying users or report abuse, press F1.";
 $floodFilter::exemptPermission[$tmp::eventName] = "flood";
 $tmp::eventName = "teleport";
 $floodFilter::maxEvents[$tmp::eventName] = 5;
@@ -56,7 +56,7 @@ $tmp::eventName = "yell";
 $floodFilter::maxEvents[$tmp::eventName] = 1;
 $floodFilter::inPeriod[$tmp::eventName] = (1000 * 60) * 10;
 $floodFilter::penalty[$tmp::eventName] = 0;
-$floodFilter::message[$tmp::eventName] = "FLOOD PROTECTION: Don\'t yell so much!";
+$floodFilter::message[$tmp::eventName] = "FLOOD PROTECTION: Don't yell so much!";
 $floodFilter::exemptPermission[$tmp::eventName] = "flood";
 function testFlooding(%player, %eventType, %testExempt)
 {
@@ -64,12 +64,12 @@ function testFlooding(%player, %eventType, %testExempt)
     {
         if (!$AmClient)
         {
-            error(getScopeName() SPC "- called without an object on server. (allowing action)" SPC getTrace());
+            error(getScopeName() @ " " @ "- called without an object on server. (allowing action)" @ " " @ getTrace());
             return 0;
         }
         if (isObject($player))
         {
-            error(getScopeName() SPC "- called without an object when $player is valid (allowing action)" SPC getTrace());
+            error(getScopeName() @ " " @ "- called without an object when $player is valid (allowing action)" @ " " @ getTrace());
             return 0;
         }
         %player = safeEnsureScriptObject("ScriptObject", "gConnectionlessFloodingProxy");
@@ -79,12 +79,9 @@ function testFlooding(%player, %eventType, %testExempt)
     {
         return 0;
     }
-    if (%testExempt)
+    if (%testExempt && testFloodingExempt(%player, %eventType))
     {
-        if (testFloodingExempt(%player, %eventType))
-        {
-            return 0;
-        }
+        return 0;
     }
     %erOld = %player.eventRecord[%eventType];
     %erNew = "";
@@ -96,7 +93,7 @@ function testFlooding(%player, %eventType, %testExempt)
         %eventTime = getWord(%erOld, %n);
         if (%eventTime >= %expiredTime)
         {
-            %erNew = %eventTime SPC %erNew;
+            %erNew = %eventTime @ " " @ %erNew;
             %newNum = %newNum + 1;
         }
         %n = %n - 1;
@@ -105,18 +102,17 @@ function testFlooding(%player, %eventType, %testExempt)
     {
         if ($floodFilter::penalty[%eventType] > 0)
         {
-            %erNew = getSimTime() + $floodFilter::penalty[%eventType] SPC %erNew;
+            %erNew = (getSimTime() + $floodFilter::penalty[%eventType]) @ " " @ %erNew;
         }
         %player.eventRecord[%eventType] = %erNew;
         return 1;
     }
     else
     {
-        %erNew = getSimTime() SPC %erNew;
+        %erNew = getSimTime() @ " " @ %erNew;
         %player.eventRecord[%eventType] = %erNew;
         return 0;
     }
-    return ;
 }
 function testFloodingExempt(%player, %eventType)
 {

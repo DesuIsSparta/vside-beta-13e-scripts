@@ -31,5 +31,4 @@ function resetCanvas()
     {
         Canvas.repaint();
     }
-    return ;
 }

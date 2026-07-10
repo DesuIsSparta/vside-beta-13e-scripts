@@ -23,8 +23,8 @@ function initEmoticonMap(%map)
     %map.put("B)", "cool");
     %map.put("8)", "cool");
     %map.put(":((", "cry");
-    %map.put(":\'-(", "cry");
-    %map.put(":\'(", "cry");
+    %map.put(":'-(", "cry");
+    %map.put(":'(", "cry");
     %map.put(":*(", "cry");
     %map.put(":*-(", "cry");
     %map.put(";(", "cry");
@@ -119,15 +119,15 @@ function initEmoticonMap(%map)
     %map.put("salut", "wave");
     %map.put("#:-S", "whew");
     %map.put("phew", "whew");
-    return ;
 }
 if (!isObject(EmoticonMap))
 {
+    new StringMap(EmoticonMap) {
+        ignoreCase = 1;
+    };
 }
-new StringMap(EmoticonMap);
 if (isObject(MissionCleanup))
 {
     MissionCleanup.add(EmoticonMap);
 }
 initEmoticonMap(EmoticonMap);
-

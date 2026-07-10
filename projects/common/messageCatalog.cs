@@ -3,11 +3,11 @@ function setupProjectSpecificMessages()
     $MsgCat::infoSignTitle["ATM"] = "vBux";
     $MsgCat::infoSignBody["ATM"] = "Use vBux to gear up with more clothes, accessories, and other cool merch. <a:http://www.vside.com/go/help/category/vbux>Get more info on vBux</a>.";
     $MsgCat::infoSignTitle["BAR"] = "Main Floor Bar";
-    $MsgCat::infoSignBody["BAR"] = "Wouldn\'t it be cool if you could buy a drink here?" NL "The bartenders aren\'t talking...";
+    $MsgCat::infoSignBody["BAR"] = "Wouldn't it be cool if you could buy a drink here?" @ "\n" @ "The bartenders aren't talking...";
     $MsgCat::infoSignTitle["BBCOURT"] = "BBall Court";
-    $MsgCat::infoSignBody["BBCOURT"] = "You\'ve reached the secret BBall Court!  A hidden path from The Plaza leads to here.  Play games or test your ball throwing skills from the ball court\'s jump pad.";
-    $MsgCat::infoSignTitle["LAX"] = "DJ AM\'s Club LAX";
-    $MsgCat::infoSignBody["LAX"] = "Dance away in DJ AM\'s exclusive Hollywood virtual Club LAX!";
+    $MsgCat::infoSignBody["BBCOURT"] = "You've reached the secret BBall Court!  A hidden path from The Plaza leads to here.  Play games or test your ball throwing skills from the ball court's jump pad.";
+    $MsgCat::infoSignTitle["LAX"] = "DJ AM's Club LAX";
+    $MsgCat::infoSignBody["LAX"] = "Dance away in DJ AM's exclusive Hollywood virtual Club LAX!";
     $MsgCat::infoSignTitle["LISTENINGROOM"] = "Listening Station Room";
     $MsgCat::infoSignBody["LISTENINGROOM"] = "Check out the newest and hottest music releases and exclusive DJ mixes right here in the Listening Station Room.  Pick up a pair of headphones and get down!";
     $MsgCat::infoSignTitle["KITSON"] = "The Kitson Store";
@@ -15,17 +15,17 @@ function setupProjectSpecificMessages()
     $MsgCat::infoSignTitle["LOUNGE"] = "The PCD Lounge";
     $MsgCat::infoSignBody["LOUNGE"] = "In the Pussycat Dolls Lounge you can chat, dance, hang out, and listen to the latest and hottest music!";
     $MsgCat::infoSignTitle["NOOB1"] = "The Plaza";
-    $MsgCat::infoSignBody["NOOB1"] = "Welcome to vSide!" NL "Press F1 for the <a:http://www.vside.com/go/help>FAQ and safety information</a>." NL "Check out what shows, parties, and music events are happening on the <a:http://forums.vside.com/forums/forum.jspa?forumID=10>Music Schedule</a>." NL "Keep up to date with all the latest vSide info on <a:http://forums.vside.com>The vSide Forums</a>.";
+    $MsgCat::infoSignBody["NOOB1"] = "Welcome to vSide!" @ "\n" @ "Press F1 for the <a:http://www.vside.com/go/help>FAQ and safety information</a>." @ "\n" @ "Check out what shows, parties, and music events are happening on the <a:http://forums.vside.com/forums/forum.jspa?forumID=10>Music Schedule</a>." @ "\n" @ "Keep up to date with all the latest vSide info on <a:http://forums.vside.com>The vSide Forums</a>.";
     $MsgCat::infoSignTitle["NOOB2"] = "No Swimming";
-    $MsgCat::infoSignBody["NOOB2"] = "If you fall into the water, don\'t worry!  You can\'t swim but you\'ll respawn back here in The Plaza.";
+    $MsgCat::infoSignBody["NOOB2"] = "If you fall into the water, don't worry!  You can't swim but you'll respawn back here in The Plaza.";
     $MsgCat::infoSignTitle["PCDSTORE"] = "PCD Store";
     $MsgCat::infoSignBody["PCDSTORE"] = "Get your very own Pussycat Dolls virtual merch right here at the PCD Store!  Pick up a new outfit and show your love for the Dolls.";
     $MsgCat::infoSignTitle["PRIVATESPACE"] = "Warehouse Lofts";
     $MsgCat::infoSignBody["PRIVATESPACE"] = "Welcome to the Warehouse Lofts! All freshman can take over open apartments in this building. To take over an apartment walk into the elevator and select a unit without an owner. The apartment is yours to control until you leave.";
     $MsgCat::infoSignTitle["ROOFTOPDISCO"] = "Rooftop Disco";
-    $MsgCat::infoSignBody["ROOFTOPDISCO"] = "You\'ve reached the secret Disco Rooftop!" NL "A hidden path from The PCD Lounge leads to here.  Use the bunny triggers to control the lighting effects.";
+    $MsgCat::infoSignBody["ROOFTOPDISCO"] = "You've reached the secret Disco Rooftop!" @ "\n" @ "A hidden path from The PCD Lounge leads to here.  Use the bunny triggers to control the lighting effects.";
     $MsgCat::infoSignTitle["SHOPPING"] = "Virtual Stores Grand Opening";
-    $MsgCat::infoSignBody["SHOPPING"] = "Let\'s go shopping!  Check out the new stores and buy the latest fashions for your vSide lifestyle.";
+    $MsgCat::infoSignBody["SHOPPING"] = "Let's go shopping!  Check out the new stores and buy the latest fashions for your vSide lifestyle.";
     $MsgCat::infoSignTitle["VIP"] = "VIP Room";
     $MsgCat::infoSignBody["VIP"] = "VIP status was awarded to the first 400 members of vSide and to VIP contest winners.";
     $MsgCat::profile["H-PROFILE-TIP"] = "Want to learn more about your friends?  Check out <a:" @ $Net::ProfilesURL @ ">online profiles</a>.";
@@ -177,11 +177,11 @@ function setupProjectSpecificMessages()
     $MsgCat::respektEvent["","neg"] = "";
     $MsgCat::respektEvent["","pos"] = "";
     $MsgCat::respektEvent["","neg"] = "";
-    $MsgCat::respektEvent["LEVELCHANGE1","pos"] = "Congrats! You\'ve increased your All-Time vPoints to Level 1! You are now [LEVELNAME_WITH_INDEFINITE_ARTICLE]!  You now have access to Club LAX!";
+    $MsgCat::respektEvent["LEVELCHANGE1","pos"] = "Congrats! You've increased your All-Time vPoints to Level 1! You are now [LEVELNAME_WITH_INDEFINITE_ARTICLE]!  You now have access to Club LAX!";
     $MsgCat::respektEvent["LEVELCHANGE1","neg"] = "";
-    $MsgCat::respektEvent["LEVELCHANGE2","pos"] = "Congrats! You\'ve increased your All-Time vPoints to Level [LEVELNUM]! You are now [LEVELNAME_WITH_INDEFINITE_ARTICLE].    Some stores have new items for sale.";
+    $MsgCat::respektEvent["LEVELCHANGE2","pos"] = "Congrats! You've increased your All-Time vPoints to Level [LEVELNUM]! You are now [LEVELNAME_WITH_INDEFINITE_ARTICLE].    Some stores have new items for sale.";
     $MsgCat::respektEvent["LEVELCHANGE2","neg"] = "";
-    $MsgCat::respektEvent["LEVELCHANGE","pos"] = "Congrats! You\'ve increased your All-Time vPoints to Level [LEVELNUM]! You are now [LEVELNAME_WITH_INDEFINITE_ARTICLE].";
+    $MsgCat::respektEvent["LEVELCHANGE","pos"] = "Congrats! You've increased your All-Time vPoints to Level [LEVELNUM]! You are now [LEVELNAME_WITH_INDEFINITE_ARTICLE].";
     $MsgCat::respektEvent["LEVELCHANGE","neg"] = "";
     $MsgCat::respektEvent["","pos"] = "";
     $MsgCat::respektEvent["","neg"] = "";
@@ -191,7 +191,5 @@ function setupProjectSpecificMessages()
     $MsgCat::respektEvent["","neg"] = "";
     $MsgCat::respektEvent["DEFAULT","pos"] = "[DVALUE] vPoints: Stoked!";
     $MsgCat::respektEvent["DEFAULT","neg"] = "[DVALUE] vPoints: Bummer.";
-    return ;
 }
 setupProjectSpecificMessages();
-

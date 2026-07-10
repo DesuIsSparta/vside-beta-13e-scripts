@@ -7,28 +7,23 @@ function testNamespace()
     mySimObject.func1();
     mySimObject2.func1();
     myGuiControl.func1();
-    return ;
 }
 function mySimObject::func1(%this)
 {
     echo("mySimObject func1()");
-    return ;
 }
 function mySimObject2::func1(%this)
 {
     echo("mySimObject2 func1()");
-    return ;
 }
 function myGuiControl::func1(%this)
 {
     echo("myGuiControl func1()");
-    return ;
 }
 DeclareTestSuite("TestSuite_NAMESPACE");
 function TestSuite_NAMESPACE::setup(%this)
 {
     %this.addTestCase("TEST_NAMESPACE_PackageTest");
-    return ;
 }
 function TEST_NAMESPACE_PackageTest::runTest(%this)
 {
@@ -38,7 +33,6 @@ function TEST_NAMESPACE_PackageTest::runTest(%this)
     %this.assertSameString("yes in a package", %this.packageFunc(), "we should be in a package when we activat it");
     deactivatePackage(TEST_NAMESPACE_Package);
     %this.assertSameString("not in a package", %this.packageFunc(), "we should not be in a package when we deactivate it");
-    return ;
 }
 function TEST_NAMESPACE_PackageTest::packageFunc(%this)
 {
@@ -62,7 +56,6 @@ package TEST_NAMESPACE_Package_PreActivated
     {
         return "yes in a package";
     }
+    activatePackage(TEST_NAMESPACE_Package_PreActivated);
 };
-
-activatePackage(TEST_NAMESPACE_Package_PreActivated);
 

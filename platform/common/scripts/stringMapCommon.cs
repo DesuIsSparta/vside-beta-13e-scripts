@@ -13,7 +13,6 @@ function StringMap::hasValue(%this, %value)
     {
         return 1;
     }
-    return ;
 }
 function StringMap::saveToLocalStorage(%this, %fileName)
 {
@@ -22,7 +21,7 @@ function StringMap::saveToLocalStorage(%this, %fileName)
 }
 function StringMap::saveTo(%this, %fileName)
 {
-    %file = new FileObject();
+    %file = new FileObject("");
     %ret = 0;
     if (%file.openForWrite(%fileName))
     {
@@ -31,7 +30,7 @@ function StringMap::saveTo(%this, %fileName)
         {
             %key = %this.getKey(%n);
             %value = %this.getValue(%n);
-            %line = urlEncode(%key) TAB urlEncode(%value);
+            %line = urlEncode(%key) @ "\t" @ urlEncode(%value);
             %file.writeLine(%line);
             %n = %n + 1;
         }
@@ -40,7 +39,7 @@ function StringMap::saveTo(%this, %fileName)
     }
     else
     {
-        error(getScopeName() SPC "- can\'t open file for write:" SPC %fileName);
+        error(getScopeName() @ " " @ "- can't open file for write:" @ " " @ %fileName);
     }
     %file.delete();
     return %ret;
@@ -53,7 +52,7 @@ function StringMap::loadFromLocalStorage(%this, %fileName, %errorLogLevel)
 function StringMap::loadFrom(%this, %fileName, %errorLogLevel)
 {
     %this.clear();
-    %file = new FileObject();
+    %file = new FileObject("");
     %ret = 0;
     if (%file.openForRead(%fileName))
     {
@@ -69,7 +68,7 @@ function StringMap::loadFrom(%this, %fileName, %errorLogLevel)
     }
     else
     {
-        log("general", %errorLogLevel, getScopeName() SPC "- can\'t open file for read:" SPC %fileName SPC getTrace());
+        log("general", %errorLogLevel, getScopeName() @ " " @ "- can't open file for read:" @ " " @ %fileName @ " " @ getTrace());
     }
     %file.delete();
     return %ret;
@@ -93,5 +92,4 @@ function StringMap::deleteValuesAsObjects(%this)
         %i = %i - 1;
     }
     %this.clear();
-    return ;
 }

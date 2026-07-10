@@ -18,20 +18,18 @@ function SpaceDef::defaultValues(%this)
     %this.onEntryText = "";
     %this.onLeaveText = "";
     %this.shoppingUIText = "";
-    %this.notAllowedText = "Sorry [PLAYERFIRSTNAME], you\'re not allowed in [SHORTNAME] - [REASON].";
+    %this.notAllowedText = "Sorry [PLAYERFIRSTNAME], you're not allowed in [SHORTNAME] - [REASON].";
     %this.Visibility = "none";
     %this.storeID = "";
     %this.shoppingLongText = "";
     %this.contiguousSpaceName = "";
     %this.visitID = "";
     %this.partnerURL = "";
-    return ;
 }
 function spaces_Init()
 {
     safeEnsureScriptObject("SimGroup", "spaceDefsGroup");
     spaceDefs_Init();
-    return ;
 }
 function spaces_GetSpaceDef(%internalName, %createIfDNE)
 {
@@ -44,8 +42,7 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE)
     {
         return 0;
     }
-    %spaceDef = new ScriptObject(%fullName)
-    {
+    %spaceDef = new ScriptObject(%fullName) {
         class = "SpaceDef";
         internalName = %internalName;
     };
@@ -62,7 +59,7 @@ function spaces_FindSpaceDefWithStoreID(%storeID)
 {
     %found = 0;
     %n = spaceDefsGroup.getCount() - 1;
-    while (%found == 0)
+    while ((%n >= 0) && (%found == 0))
     {
         %found = spaceDefsGroup.getObject(%n);
         if (!(%found.storeID $= %storeID))
@@ -109,4 +106,3 @@ function SpaceDef::doTokenSubstitution(%this, %dry, %player)
     return %wet;
 }
 spaces_Init();
-

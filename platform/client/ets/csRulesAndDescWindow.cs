@@ -8,7 +8,6 @@ function CSRulesAndDescWindow::toggle(%this)
     {
         %this.open();
     }
-    return ;
 }
 function CSRulesAndDescWindow::open(%this)
 {
@@ -22,7 +21,6 @@ function CSRulesAndDescWindow::open(%this)
     {
         CSRulesPasswordField.setValue(CSRulesPasswordSavedIndicator.lastValueSaved);
     }
-    return ;
 }
 function CSRulesAndDescWindow::close(%this)
 {
@@ -34,7 +32,7 @@ function CSRulesAndDescWindow::close(%this)
 }
 function CSRulesAndDescWindow::setup(%this)
 {
-    if (!(%this.initialized) && !(%this.initializing))
+    if (!%this.initialized && !%this.initializing)
     {
         %this.initializing = 1;
         CSRulesAccessPopup.add("Open");
@@ -48,19 +46,16 @@ function CSRulesAndDescWindow::setup(%this)
         %this.update();
         %this.initialized = 1;
     }
-    return ;
 }
 function CSRulesAndDescWindow::descriptionChanged(%this)
 {
     %this.saveDescriptionSettings();
-    return ;
 }
 function CSRulesAndDescWindow::saveDescriptionSettings(%this)
 {
     %this.update();
     CustomSpacesClient::setMap2DText();
     CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), CSDescTaglineTextBox.getValue(), "", "", "", "");
-    return ;
 }
 function CSRulesAndDescWindow::saveRulesSettings(%this)
 {
@@ -75,12 +70,10 @@ function CSRulesAndDescWindow::saveRulesSettings(%this)
     {
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", %access, %doorCode, "", "");
     }
-    return ;
 }
 function CSRulesAndDescWindow::checkSaveRulesSettings(%this)
 {
     %this.saveRulesSettings();
-    return ;
 }
 $gCSRulesAccessCodes = "OPEN FRIENDSONLY PASSWORDPROTECTED LOCKED";
 function CSRulesAndDescWindow::updateSettings(%this, %accessMode, %password, %description)
@@ -121,7 +114,6 @@ function CSRulesAndDescWindow::updateSettings(%this, %accessMode, %password, %de
         }
     }
     %this.update();
-    return ;
 }
 function CSRulesAndDescWindow::update(%this)
 {
@@ -139,12 +131,10 @@ function CSRulesAndDescWindow::update(%this)
     CSRulesDescSavedIndicator.update(0);
     CSRulesPasswordSavedIndicator.setVisible(%flag);
     CSRulesPasswordSavedIndicator.update(0);
-    return ;
 }
 function CSDescTaglineTextBox::onKeyUp(%this)
 {
     CSRulesDescSavedIndicator.update(0);
-    return ;
 }
 function CSRulesPasswordField::onKeyDown(%this, %unused, %unused)
 {
@@ -158,7 +148,7 @@ function CSRulesPasswordField::onKeyUp(%this, %unused, %unused)
     {
         CSRulesPasswordSavedIndicator.setVisible(%fieldIsVisible);
     }
-    CSRulesPasswordFieldOverlay.setVisible(%this.getValue() $= "");
+    CSRulesPasswordFieldOverlay.setVisible((%this.getValue() $= ""));
     CSRulesPasswordSavedIndicator.update(0);
     return 0;
 }

@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(sgFirePitPSDataBlock)
-{
+datablock sgUniversalStaticLightData(sgFirePitPSDataBlock) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 3.25;
@@ -57,4 +56,3 @@ datablock sgUniversalStaticLightData(sgFirePitPSDataBlock)
     AdvancedLightingModel = 0;
     EffectsDTSObjects = 1;
 };
-

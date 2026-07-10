@@ -4,7 +4,6 @@ function Player::playCelAnimation(%this, %anim)
     {
         %this.setActionThread("emote_" @ %anim);
     }
-    return ;
 }
 function Player::playAnim(%this, %anim)
 {
@@ -12,7 +11,6 @@ function Player::playAnim(%this, %anim)
     {
         %this.setActionThread(%anim);
     }
-    return ;
 }
 function Player::playAnimPreRoll(%this, %anim, %preRollMS)
 {
@@ -20,7 +18,6 @@ function Player::playAnimPreRoll(%this, %anim, %preRollMS)
     {
         %this.setActionThreadPreRoll(%anim, %preRollMS);
     }
-    return ;
 }
 function Player::initGlobalFields(%this)
 {
@@ -46,7 +43,6 @@ function Player::initGlobalFields(%this)
     gSetField(%this, "IsNoLongerTypingTimer", "");
     gSetField(%this, "TimeoutChatPreviewTimer", "");
     gSetField(%this, "balancesAndScoresRevision", 0);
-    return ;
 }
 function Player::destroyGlobalFields(%this)
 {
@@ -80,7 +76,6 @@ function Player::destroyGlobalFields(%this)
     gSetField(%this, "mapCtrl", "");
     gSetField(%this, "IsNoLongerTypingTimer", "");
     gSetField(%this, "balancesAndScoresRevision", "");
-    return ;
 }
 function Player::onDelete(%this)
 {
@@ -105,7 +100,6 @@ function Player::onDelete(%this)
     {
         gUserPropMgrServer.forgetProperties(%this.getShapeName());
     }
-    return ;
 }
 function Player::isInHelpMeMode(%this)
 {
@@ -149,5 +143,4 @@ function Player::onAnimationDone(%this, %anim)
     {
         return %this.onAnimationDoneClient(%anim);
     }
-    return ;
 }

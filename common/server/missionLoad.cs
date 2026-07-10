@@ -29,7 +29,7 @@ function loadMission(%missionName, %isFirstMission)
     {
         schedule($MissionLoadPause, ServerGroup, loadMissionStage2);
     }
-    return ;
+    return;
 }
 function loadMissionStage2()
 {
@@ -43,21 +43,21 @@ function loadMissionStage2()
     }
     if (!isFile(%file))
     {
-        error("initialization", "Mission file could not be found:" SPC %ofile);
+        error("initialization", "Mission file could not be found:" @ " " @ %ofile);
         if (!$StandAlone)
         {
             quit();
         }
-        return ;
+        return;
     }
     $missionCRC = 0;
     new SimGroup(MissionCleanup);
     exec(%file);
     if (!isObject(MissionGroup))
     {
-        error("No \'MissionGroup\' found in mission \"" @ $missionName @ "\".");
+        error("No 'MissionGroup' found in mission \"" @ $missionName @ "\".");
         schedule(3000, ServerGroup, CycleMissions);
-        return ;
+        return;
     }
     $instantGroup = MissionCleanup;
     pathOnMissionLoadDone();
@@ -71,13 +71,13 @@ function loadMissionStage2()
     }
     onMissionLoaded();
     purgeResources();
-    return ;
+    return;
 }
 function endMission()
 {
     if (!isObject(MissionGroup))
     {
-        return ;
+        return;
     }
     echo("*** ENDING MISSION");
     onMissionEnded();
@@ -94,7 +94,7 @@ function endMission()
     MissionCleanup.delete();
     $ServerGroup.delete();
     $ServerGroup = new SimGroup(ServerGroup);
-    return ;
+    return;
 }
 function resetMission()
 {
@@ -104,5 +104,5 @@ function resetMission()
     new SimGroup(MissionCleanup);
     $instantGroup = MissionCleanup;
     onMissionReset();
-    return ;
+    return;
 }

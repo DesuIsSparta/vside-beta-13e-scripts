@@ -5,18 +5,18 @@ function AWAY_DEBUG(%text)
     {
         echo(%text);
     }
-    return ;
+    return;
 }
 function serverCmdSetAfkOn(%client, %msgTagged)
 {
     if (!isObject(%client.Player))
     {
-        error("serverCmdSetAfkOn: null client player" SPC getDebugString(%client));
-        return ;
+        error("serverCmdSetAfkOn: null client player" @ " " @ getDebugString(%client));
+        return;
     }
     %client.Player.setAFK(1);
     %client.Player.setAwayMessage(detag(%msgTagged));
-    return ;
+    return;
 }
 function serverCmdSetAfkOff(%client)
 {
@@ -24,7 +24,7 @@ function serverCmdSetAfkOff(%client)
     {
         %client.Player.setAFK(0);
     }
-    return ;
+    return;
 }
 function serverCmdTypingStarted(%client)
 {
@@ -32,7 +32,7 @@ function serverCmdTypingStarted(%client)
     {
         %client.Player.setTyping(1);
     }
-    return ;
+    return;
 }
 function serverCmdTypingFinished(%client)
 {
@@ -40,7 +40,7 @@ function serverCmdTypingFinished(%client)
     {
         %client.Player.setTyping(0);
     }
-    return ;
+    return;
 }
 function serverCmdEtsPlayAnimName(%client, %animName)
 {
@@ -48,18 +48,18 @@ function serverCmdEtsPlayAnimName(%client, %animName)
     {
         %client.Player.playAnim(%animName);
     }
-    return ;
+    return;
 }
 function playRandomEmote(%player)
 {
-    %animName = EmoteDict.getValue(getRandom(0, EmoteDict.size() - 1));
+    %animName = EmoteDict.getValue(getRandom(0, (EmoteDict.size() - 1)));
     %player.playAnim(%animName);
-    return ;
+    return;
 }
 function Player::cardinalPosition(%this, %num)
 {
     %this.setTransform("56.1625 -22.954 2.38509 0 0 -1 0.931784");
-    return ;
+    return;
 }
 function ServerCmdCardinalPosition(%client, %num)
 {
@@ -67,19 +67,19 @@ function ServerCmdCardinalPosition(%client, %num)
     {
         %client.Player.cardinalPosition(%num);
     }
-    return ;
+    return;
 }
 function etsReloadServer()
 {
     exec($userMods @ "/server/scripts/ets/init.cs");
-    return ;
+    return;
 }
 function ServerCmdSetGenre(%client, %genre)
 {
     if (!isObject(%client.Player))
     {
-        return ;
+        return;
     }
     %client.Player.setGenre(%genre);
-    return ;
+    return;
 }

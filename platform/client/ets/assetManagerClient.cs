@@ -6,7 +6,6 @@ function AssetManager::clientInit()
     %map = AssetManager::getPackages();
     $gClientAssetSetString = AssetManager::rehashSet(%map);
     echo("assetSet: " @ $gClientAssetSetString);
-    return ;
 }
 function AssetManager::getCurrentAssetSet()
 {
@@ -15,11 +14,9 @@ function AssetManager::getCurrentAssetSet()
 function AssetManager::rescanPackages()
 {
     AssetManager::clientInit();
-    return ;
 }
 function AssetManager::updatePackageHash(%file)
 {
     assetManagerUpdatePackage(%file);
     $gClientAssetSetString = assetManagerMapString();
-    return ;
 }

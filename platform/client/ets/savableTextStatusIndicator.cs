@@ -2,23 +2,22 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
 {
     if (isObject(%indicatorName))
     {
-        error(getScopeName() SPC "- object with name \'" @ %indicatorName @ "\' already exists");
+        error(getScopeName() @ " " @ "- object with name '" @ %indicatorName @ "' already exists");
         return 0;
     }
     if (!isObject(%controlToGetValueFrom))
     {
-        error(getScopeName() SPC "- requires object parameter - \'" @ %controlToGetValueFrom @ "\' is not an object");
+        error(getScopeName() @ " " @ "- requires object parameter - '" @ %controlToGetValueFrom @ "' is not an object");
         return 0;
     }
-    %obj = safeEnsureScriptObjectWithClassBindingsAndInit("GuiControl", %indicatorName, "SavableTextStatusIndicator", "{      profile      = \"GuiDefaultProfile\";" SPC "horizSizing  = \"right\";" SPC "vertSizing   = \"bottom\";" SPC "position     = \"" @ %position @ "\";" SPC "extent       = \"14 14\";" SPC "minExtent    = \"14 14\";" SPC "visible      = true; }");
+    %obj = safeEnsureScriptObjectWithClassBindingsAndInit("GuiControl", %indicatorName, "SavableTextStatusIndicator", "{      profile      = \"GuiDefaultProfile\";" @ " " @ "horizSizing  = \"right\";" @ " " @ "vertSizing   = \"bottom\";" @ " " @ "position     = \"" @ %position @ "\";" @ " " @ "extent       = \"14 14\";" @ " " @ "minExtent    = \"14 14\";" @ " " @ "visible      = true; }");
     %obj.acceptEmptyString = %acceptEmptyString;
     %obj.controlToGetValueFrom = %controlToGetValueFrom;
     %obj.callbackForUpdates = %callbackForSecondaryVisualUpdates;
     %obj.requestsPendingCount = 0;
     %obj.lastValueSaved = "";
     %obj.initialValueSet = 0;
-    %obj.savedBitmap = new GuiBitmapCtrl()
-    {
+    %obj.savedBitmap = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -28,8 +27,7 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         bitmap = "platform/client/ui/checkmark_green";
         visible = 0;
     };
-    %obj.savingBitmap = new GuiBitmapCtrl()
-    {
+    %obj.savingBitmap = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -54,8 +52,7 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
             %arrowBitmap = "platform/client/ui/arrow_red_right";
         }
     }
-    %obj.changedBitmap = new GuiBitmapCtrl()
-    {
+    %obj.changedBitmap = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -74,33 +71,30 @@ function SavableTextStatusIndicator::setInitialValue(%this, %initialValue)
 {
     if (%this.initialValueSet)
     {
-        warn(getScopeName() SPC "- initial value already set -" SPC getTrace());
+        warn(getScopeName() @ " " @ "- initial value already set -" @ " " @ getTrace());
     }
     else
     {
         %this.lastValueSaved = %initialValue;
         %this.initialValueSet = 1;
     }
-    return ;
 }
 function SavableTextStatusIndicator::incrementRequestCount(%this)
 {
     %newValue = %this.controlToGetValueFrom.getValue();
-    if (!(%this.acceptEmptyString) && (%newValue $= ""))
+    if (!%this.acceptEmptyString && (%newValue $= ""))
     {
-        return ;
+        return;
     }
     %this.lastValueSaved = %newValue;
     %this.initialValueSet = 1;
     %this.requestsPendingCount = %this.requestsPendingCount + 1;
     %this.update(1);
-    return ;
 }
 function SavableTextStatusIndicator::decrementRequestCount(%this)
 {
     %this.requestsPendingCount = %this.requestsPendingCount - 1;
     %this.update(1);
-    return ;
 }
 function SavableTextStatusIndicator::update(%this, %doCallback)
 {
@@ -109,15 +103,13 @@ function SavableTextStatusIndicator::update(%this, %doCallback)
     %this.savedBitmap.setVisible(%valueSaved && !%valueChanged);
     %this.savingBitmap.setVisible(!%valueSaved && !%valueChanged);
     %this.changedBitmap.setVisible(%valueChanged);
-    if (%doCallback && !((%this.callbackForUpdates $= "")))
+    if (%doCallback && !(%this.callbackForUpdates $= ""))
     {
         eval(%this.callbackForUpdates);
     }
-    return ;
 }
 function SavableTextStatusIndicator::reset(%this)
 {
     %this.requestsPendingCount = 0;
     %this.lastValueSaved = "";
-    return ;
 }

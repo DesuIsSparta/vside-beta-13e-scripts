@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(pinkpussycatdolllight)
-{
+datablock sgUniversalStaticLightData(pinkpussycatdolllight) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 10;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(pinkpussycatdolllight)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

@@ -187,7 +187,6 @@ function initializePropAnimationMap()
     setupPropAnimations(27274, "fmakeshot", "e", "shot red");
     setupPropAnimations(27275, "emakechmp", "e", "shot dgreen");
     setupPropAnimations(27276, "emakechmp", "e", "shot blue");
-    return ;
 }
 $gPropGenres = "";
 function setupPropAnimations(%propSku, %actionAnims, %genre, %internalDescription)
@@ -195,8 +194,7 @@ function setupPropAnimations(%propSku, %actionAnims, %genre, %internalDescriptio
     PropAnimationMap.put(%propSku, %actionAnims);
     PropGenreMap.put(%propSku, %genre);
     PropInternalDescriptionMap.put(%propSku, %internalDescription);
-    $gPropGenres = $gPropGenres SPC %genre;
-    return ;
+    $gPropGenres = $gPropGenres @ " " @ %genre;
 }
 function isPropGenre(%genre)
 {
@@ -213,15 +211,14 @@ function dumpProps()
         %desc = PropInternalDescriptionMap.getValue(%n);
         %anims = PropAnimationMap.get(%sku);
         %genre = PropGenreMap.get(%sku);
-        echo("|" SPC formatString("%-8s", %sku) SPC "|" SPC %genre SPC "|" SPC formatString("%-30s", %anims) SPC "|" SPC formatString("%-30s", %desc) SPC "|");
+        echo("|" @ " " @ formatString("%-8s", %sku) @ " " @ "|" @ " " @ %genre @ " " @ "|" @ " " @ formatString("%-30s", %anims) @ " " @ "|" @ " " @ formatString("%-30s", %desc) @ " " @ "|");
         %n = %n + 1;
     }
 }
-
 initializePropAnimationMap();
 function canHavePropsInGenre(%genre)
 {
-    if (((((%genre $= "k") || (%genre $= "w")) || (%genre $= "o")) || (%genre $= "l")) || (%genre $= "s"))
+    if ((%genre $= "k") || (%genre $= "w") || (%genre $= "o") || (%genre $= "l") || (%genre $= "s"))
     {
         return 0;
     }
@@ -281,5 +278,4 @@ function Player::dropProp(%this)
         %activeSkus = findAndRemoveFirstOccurrenceOfWord(%this.getActiveSKUs(), %propSku);
         %this.setActiveSKUs(%activeSkus);
     }
-    return ;
 }

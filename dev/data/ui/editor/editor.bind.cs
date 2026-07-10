@@ -79,4 +79,3 @@ AIEditorMap.bindCmd(keyboard, "ctrl q", "aiEdit.dropCameraToSelection();", "");
 AIEditorMap.bindCmd(keyboard, "ctrl m", "aiEdit.moveSelectionInPlace();", "");
 AIEditorMap.bindCmd(keyboard, "ctrl r", "aiEdit.resetTransforms();", "");
 AIEditorMap.bindCmd(keyboard, "i", "Canvas.pushDialog(interiorDebugDialog, 0);", "");
-

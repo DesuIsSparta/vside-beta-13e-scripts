@@ -1,18 +1,17 @@
 $gRespektLevelsNum = 0;
 function respektAddLevel(%minPoints, %indefiniteArticle, %levelName)
 {
-    $gRespektLevelsMinPoints[$gRespektLevelsNum] = %minPoints ;
-    $gRespektLevelsIndefiniteArticles[$gRespektLevelsNum] = %indefiniteArticle ;
-    $gRespektLevelsNames[$gRespektLevelsNum] = %levelName ;
+    $gRespektLevelsMinPoints[$gRespektLevelsNum] = %minPoints;
+    $gRespektLevelsIndefiniteArticles[$gRespektLevelsNum] = %indefiniteArticle;
+    $gRespektLevelsNames[$gRespektLevelsNum] = %levelName;
     $gRespektLevelsNum = $gRespektLevelsNum + 1;
-    return ;
 }
 function respektScoresInit()
 {
     $gRespektThreshholdsNum = 0;
     respektAddLevel(0, "a", "Wallflower");
     respektAddLevel(5300, "a", "Half-Pint");
-    respektAddLevel(5800, "a", "Young\'in");
+    respektAddLevel(5800, "a", "Young'in");
     respektAddLevel(9800, "a", "Sidekick");
     respektAddLevel(19800, "", "That One Kid");
     respektAddLevel(34800, "", "Somebody");
@@ -21,7 +20,6 @@ function respektScoresInit()
     respektAddLevel(254800, "", "Funkadelic");
     respektAddLevel(504800, "", "Da Shiznit");
     respektAddLevel(1004800, "a", "VIP");
-    return ;
 }
 respektScoresInit();
 function respektScoreToLevel(%score)
@@ -56,17 +54,17 @@ function respektLevelValidate(%level)
     }
     if (%level < 0)
     {
-        error(getScopeName() SPC "- invalid level:" SPC %level);
+        error(getScopeName() @ " " @ "- invalid level:" @ " " @ %level);
         %level = 0;
     }
     if (%level >= $gRespektLevelsNum)
     {
-        error(getScopeName() SPC "- invalid level:" SPC %level);
+        error(getScopeName() @ " " @ "- invalid level:" @ " " @ %level);
         %level = $gRespektLevelsNum - 1;
     }
     if (%level < 0)
     {
-        error(getScopeName() SPC "- levels not initialized:" SPC %level);
+        error(getScopeName() @ " " @ "- levels not initialized:" @ " " @ %level);
         %level = 0;
     }
     return %level;
@@ -81,7 +79,7 @@ function respektLevelToNameWithIndefiniteArticle(%level)
     %level = respektLevelValidate(%level);
     %article = $gRespektLevelsIndefiniteArticles[%level];
     %levelName = respektLevelToNameWithoutArticle(%level);
-    %ret = %article $= "" ? %levelName : %article;
+    %ret = %article $= "" ? %levelName : %article @ " " @ %levelName;
     return %ret;
 }
 function respektPointsNeededToNextLevel(%score)
@@ -115,9 +113,8 @@ function respektLevelMaxPoints(%level)
     }
     else
     {
-        return $gRespektLevelsMinPoints[%level + 1] - 1;
+        return $gRespektLevelsMinPoints[(%level + 1)] - 1;
     }
-    return ;
 }
 function Player::getRespektLevel(%this)
 {
@@ -129,7 +126,7 @@ function Player::hasRespektLevel(%this, %level)
     {
         return 1;
     }
-    if ((%level $= "") && (%level == 0))
+    if ((%level $= "") || (%level == 0))
     {
         return 1;
     }
@@ -146,23 +143,22 @@ function Player::getRespektPoints(%this)
 function Player::setRespektPoints(%this, %points)
 {
     gSetField(%this, "respektPoints", %points);
-    return ;
 }
 function isNewerRevision(%isThis, %newerThanThis, %playerName)
 {
     if (%isThis $= "")
     {
-        log("communication", "error", getScopeName() SPC "- got empty revision for" SPC %playerName);
+        log("communication", "error", getScopeName() @ " " @ "- got empty revision for" @ " " @ %playerName);
         return 1;
     }
     if (%isThis < %newerThanThis)
     {
-        log("communication", "debug", getScopeName() SPC "- got revision out of order for" SPC %playerName SPC ":" SPC %isThis SPC "<" SPC %newerThanThis);
+        log("communication", "debug", getScopeName() @ " " @ "- got revision out of order for" @ " " @ %playerName @ " " @ ":" @ " " @ %isThis @ " " @ "<" @ " " @ %newerThanThis);
         return 0;
     }
     if (%isThis == %newerThanThis)
     {
-        log("communication", "info", getScopeName() SPC "- got duplicate revision for" SPC %playerName SPC ":" SPC %isThis SPC "==" SPC %newerThanThis);
+        log("communication", "info", getScopeName() @ " " @ "- got duplicate revision for" @ " " @ %playerName @ " " @ ":" @ " " @ %isThis @ " " @ "==" @ " " @ %newerThanThis);
         return 0;
     }
     return 1;
@@ -171,12 +167,12 @@ function isOlderRevision(%isThis, %olderThanThis, %playerName)
 {
     if (%isThis $= "")
     {
-        log("communication", "error", getScopeName() SPC "- got empty revision for" SPC %playerName);
+        log("communication", "error", getScopeName() @ " " @ "- got empty revision for" @ " " @ %playerName);
         return 1;
     }
     if (%isThis < %olderThanThis)
     {
-        log("communication", "debug", getScopeName() SPC "- got revision out of order for" SPC %playerName SPC ":" SPC %isThis SPC "<" SPC %olderThanThis);
+        log("communication", "debug", getScopeName() @ " " @ "- got revision out of order for" @ " " @ %playerName @ " " @ ":" @ " " @ %isThis @ " " @ "<" @ " " @ %olderThanThis);
         return 1;
     }
     return 0;
@@ -187,12 +183,12 @@ function getRespektMessage(%dValue, %code)
     %msg = $MsgCat::respektEvent[%code,%posNeg];
     if (%msg $= "")
     {
-        error(getScopeName() SPC "- unknown respekt event code:" SPC %code SPC "dValue:" SPC %dValue SPC getTrace());
+        error(getScopeName() @ " " @ "- unknown respekt event code:" @ " " @ %code @ " " @ "dValue:" @ " " @ %dValue @ " " @ getTrace());
         %msg = $MsgCat::respektEvent["DEFAULT",%posNeg];
     }
     if (%msg $= "")
     {
-        error(getScopeName() SPC "- default respekt event message not defined.");
+        error(getScopeName() @ " " @ "- default respekt event message not defined.");
         %msg = "[NONOTIFY]";
     }
     return %msg;

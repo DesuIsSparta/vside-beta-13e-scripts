@@ -1,7 +1,7 @@
 exec("~/ui/FrameOverlayGui.gui");
 function fpsMetricsCallback()
 {
-    return " FPS: " @ $FPS::real @ "  mspf: " @ 1000 / $FPS::real;
+    return " FPS: " @ $FPS::real @ "  mspf: " @ (1000 / $FPS::real);
 }
 function keyboardMetricsCallback()
 {
@@ -13,7 +13,7 @@ function terrainMetricsCallback()
 }
 function videoMetricsCallback()
 {
-    return fpsMetricsCallback() @ "  Video -" @ "  TC: " @ (($OpenGL::triCount0 + $OpenGL::triCount1) + $OpenGL::triCount2) + $OpenGL::triCount3 @ "  PC: " @ (($OpenGL::primCount0 + $OpenGL::primCount1) + $OpenGL::primCount2) + $OpenGL::primCount3 @ "  T_T: " @ $OpenGL::triCount1 @ "  T_P: " @ $OpenGL::primCount1 @ "  I_T: " @ $OpenGL::triCount2 @ "  I_P: " @ $OpenGL::primCount2 @ "  TS_T: " @ $OpenGL::triCount3 @ "  TS_P: " @ $OpenGL::primCount3 @ "  ?_T: " @ $OpenGL::triCount0 @ "  ?_P: " @ $OpenGL::primCount0;
+    return fpsMetricsCallback() @ "  Video -" @ "  TC: " @ ((($OpenGL::triCount0 + $OpenGL::triCount1) + $OpenGL::triCount2) + $OpenGL::triCount3) @ "  PC: " @ ((($OpenGL::primCount0 + $OpenGL::primCount1) + $OpenGL::primCount2) + $OpenGL::primCount3) @ "  T_T: " @ $OpenGL::triCount1 @ "  T_P: " @ $OpenGL::primCount1 @ "  I_T: " @ $OpenGL::triCount2 @ "  I_P: " @ $OpenGL::primCount2 @ "  TS_T: " @ $OpenGL::triCount3 @ "  TS_P: " @ $OpenGL::primCount3 @ "  ?_T: " @ $OpenGL::triCount0 @ "  ?_P: " @ $OpenGL::primCount0;
 }
 function interiorMetricsCallback()
 {
@@ -29,7 +29,7 @@ function waterMetricsCallback()
 }
 function timeMetricsCallback()
 {
-    return fpsMetricsCallback() @ "  Time -- " @ "  Sim Time: " @ getSimTime() @ "  Mod: " @ getSimTime() % 32;
+    return fpsMetricsCallback() @ "  Time -- " @ "  Sim Time: " @ getSimTime() @ "  Mod: " @ (getSimTime() % 32);
 }
 function vehicleMetricsCallback()
 {
@@ -45,17 +45,17 @@ function debugMetricsCallback()
 }
 $metricsNamesList = "";
 $metricsNamesList = $metricsNamesList @ "audio";
-$metricsNamesList = $metricsNamesList SPC "debug";
-$metricsNamesList = $metricsNamesList SPC "fps";
-$metricsNamesList = $metricsNamesList SPC "interior";
-$metricsNamesList = $metricsNamesList SPC "keyboard";
-$metricsNamesList = $metricsNamesList SPC "none";
-$metricsNamesList = $metricsNamesList SPC "time";
-$metricsNamesList = $metricsNamesList SPC "terrain";
-$metricsNamesList = $metricsNamesList SPC "texture";
-$metricsNamesList = $metricsNamesList SPC "vehicle";
-$metricsNamesList = $metricsNamesList SPC "video";
-$metricsNamesList = $metricsNamesList SPC "water";
+$metricsNamesList = $metricsNamesList @ " " @ "debug";
+$metricsNamesList = $metricsNamesList @ " " @ "fps";
+$metricsNamesList = $metricsNamesList @ " " @ "interior";
+$metricsNamesList = $metricsNamesList @ " " @ "keyboard";
+$metricsNamesList = $metricsNamesList @ " " @ "none";
+$metricsNamesList = $metricsNamesList @ " " @ "time";
+$metricsNamesList = $metricsNamesList @ " " @ "terrain";
+$metricsNamesList = $metricsNamesList @ " " @ "texture";
+$metricsNamesList = $metricsNamesList @ " " @ "vehicle";
+$metricsNamesList = $metricsNamesList @ " " @ "video";
+$metricsNamesList = $metricsNamesList @ " " @ "water";
 function metrics(%expr)
 {
     %cb = "";
@@ -150,5 +150,4 @@ function metrics(%expr)
         GLEnableMetrics(0);
         Canvas.popDialog(FrameOverlayGui);
     }
-    return ;
 }

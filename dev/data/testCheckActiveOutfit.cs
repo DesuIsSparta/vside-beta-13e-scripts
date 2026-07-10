@@ -11,20 +11,17 @@ function GameConnection::onConnectionDropped(%this, %msg)
         echo("Quit()-ing...");
         quit();
     }
-    return ;
 }
 function GameConnection::onServerConnectionTimedOut(%this)
 {
-    error("We\'re disconnected for some unknown reason.");
+    error("We're disconnected for some unknown reason.");
     quit();
-    return ;
 }
 error("Test user login");
 schedule(3000, 0, doLogin);
 function doLoginButton()
 {
     LoginGui.doLoginButton();
-    return ;
 }
 function doLogin()
 {
@@ -34,7 +31,6 @@ function doLogin()
     LoginGui.isAwake();
     LoginGui.doLoginButton();
     schedule(7000, 0, checkStatus);
-    return ;
 }
 function checkStatus()
 {
@@ -42,9 +38,8 @@ function checkStatus()
     {
         echo("LOAD: No LoginRequest object yet. Trying again in 5 seconds.");
         schedule(7000, 0, checkStatus);
-        return ;
+        return;
     }
-    return ;
 }
 function BootRequest::onDone(%this)
 {
@@ -84,7 +79,6 @@ function BootRequest::onDone(%this)
             }
         }
     }
-    return ;
 }
 function LoginRequest::onDone(%this)
 {
@@ -147,16 +141,15 @@ function LoginRequest::onDone(%this)
             }
         }
     }
-    return ;
 }
 function joinServer()
 {
-    echo("Servers.getCount() = " SPC servers.getCount());
+    echo("Servers.getCount() = " @ " " @ servers.getCount());
     if (servers.getCount() == 0)
     {
         echo("LOAD: We got 0 servers. Trying again in 5 seconds.");
         schedule(5000, 0, joinServer);
-        return ;
+        return;
     }
     %i = 0;
     while (%i < servers.getCount())
@@ -172,17 +165,14 @@ function joinServer()
         %i = %i + 1;
     }
 }
-
 function checkActiveOutfit()
 {
     error("player.activeSkus = " @ $player.getActiveSKUs());
     logout(0);
     quit();
-    return ;
 }
 function doSomething()
 {
     $loggedIn = 1;
     $gEvalAfterEtsInit = "schedule(10000, 0, checkActiveOutfit);";
-    return ;
 }

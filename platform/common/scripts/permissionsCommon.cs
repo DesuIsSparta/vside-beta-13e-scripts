@@ -10,7 +10,7 @@ function isObjectAndHasPermission_Warn(%obj, %permName)
 {
     if (!isObject(%obj))
     {
-        error(getScopeName() SPC "- not an object." SPC getDebugString(%obj) SPC %permName SPC getTrace());
+        error(getScopeName() @ " " @ "- not an object." @ " " @ getDebugString(%obj) @ " " @ %permName @ " " @ getTrace());
         return 0;
     }
     return %obj.rolesPermissionCheckWarn(%permName);
@@ -19,7 +19,7 @@ function isObjectAndHasPermission_NoWarn(%obj, %permName)
 {
     if (!isObject(%obj))
     {
-        error(getScopeName() SPC "- not an object." SPC getDebugString(%obj) SPC %permName SPC getTrace());
+        error(getScopeName() @ " " @ "- not an object." @ " " @ getDebugString(%obj) @ " " @ %permName @ " " @ getTrace());
         return 0;
     }
     return %obj.rolesPermissionCheckNoWarn(%permName);

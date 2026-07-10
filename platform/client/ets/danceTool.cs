@@ -10,13 +10,12 @@ function danceTool::open(%this)
     %this.initialcontent();
     if (!isObject($gDanceToolSequence))
     {
-        $gDanceToolSequence = new StringMap();
+        $gDanceToolSequence = new StringMap("");
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add($gDanceToolSequence);
         }
     }
-    return ;
 }
 function danceTool::close(%this)
 {
@@ -31,7 +30,6 @@ function toggleDanceTool()
     {
         PlayGui.showRaiseOrHide(danceTool);
     }
-    return ;
 }
 function danceTool::record(%this)
 {
@@ -50,7 +48,6 @@ function danceTool::record(%this)
     guiDanceToolTextTitle.setText("my cool dance");
     %this.setGender($player.getGender());
     %this.startTimer();
-    return ;
 }
 function danceTool::play(%this)
 {
@@ -65,7 +62,6 @@ function danceTool::play(%this)
     %this.playing = 1;
     %this.prevStep = -1;
     %this.startTimer();
-    return ;
 }
 function danceTool::stop(%this)
 {
@@ -82,30 +78,26 @@ function danceTool::stop(%this)
     %this.recording = 0;
     %this.playing = 0;
     %this.stopTimer();
-    return ;
 }
 function danceTool::startTimer(%this)
 {
     cancel($gDanceToolTimer);
     $gDanceToolTimer = %this.schedule($gDanceToolTimerPeriod, "timerTick");
     $gDanceToolTimeStart = getSimTime();
-    return ;
 }
 function danceTool::stopTimer(%this)
 {
     cancel($gDanceToolTimer);
     $gDanceToolTimer = 0;
-    return ;
 }
 function danceTool::timerTick(%this)
 {
     if (!%this.playing)
     {
-        return ;
+        return;
     }
     %this.playNextStep();
     $gDanceToolTimer = %this.schedule($gDanceToolTimerPeriod, "timerTick");
-    return ;
 }
 function danceTool::constructSequence(%this, %lines)
 {
@@ -119,8 +111,8 @@ function danceTool::constructSequence(%this, %lines)
         %wc = getWordCount(%line);
         if (%wc >= %numFields)
         {
-            %stepName = getWords(%line, 0, %wc - %numFields);
-            %stepDuration = getWord(%line, %wc - 1);
+            %stepName = getWords(%line, 0, (%wc - %numFields));
+            %stepDuration = getWord(%line, (%wc - 1));
             %this.stepTimes[%n] = %totalT;
             %this.stepNames[%n] = %stepName;
             %totalT = %totalT + %stepDuration;
@@ -130,7 +122,6 @@ function danceTool::constructSequence(%this, %lines)
     %this.stepTimes[%this.numSteps] = %totalT;
     %this.stepNames[%this.numSteps] = "(finished)";
     %this.numSteps = %this.numSteps + 1;
-    return ;
 }
 function danceTool::playNextStep(%this)
 {
@@ -141,7 +132,7 @@ function danceTool::playNextStep(%this)
     if (%this.prevStep >= 0)
     {
         %n = %this.prevStep + 1;
-        while (!%tooFar)
+        while ((%n < %this.numSteps) && !%tooFar)
         {
             if (%this.stepTimes[%n] <= %curDanceTime)
             {
@@ -178,25 +169,23 @@ function danceTool::playNextStep(%this)
             %this.playStep(%playStep);
         }
     }
-    return %n;
 }
 function danceTool::playStep(%this, %stepNum)
 {
-    if ((%stepNum < 0) && (%stepNum >= %this.numSteps))
+    if ((%stepNum < 0) || (%stepNum >= %this.numSteps))
     {
-        error("invalid step index" SPC %stepNum SPC " - we have" SPC %this.numSteps);
+        error("invalid step index" @ " " @ %stepNum @ " " @ " - we have" @ " " @ %this.numSteps);
         %this.stop();
-        return ;
+        return;
     }
     %stepName = %this.stepNames[%stepNum];
     %this.prevStep = %stepNum;
     %animName = %this.getAnimName(%stepName);
     if (!%this.canRecordAnim(%animName))
     {
-        return ;
+        return;
     }
     sendDanceToolAnimToServer(%animName);
-    return ;
 }
 function danceTool::getAnimName(%this, %stepName)
 {
@@ -204,7 +193,7 @@ function danceTool::getAnimName(%this, %stepName)
 }
 function danceTool::canRecordAnim(%this, %nameInternal)
 {
-    %cantRecordList = "mnapls01 mnapls02 mnapls03 mngtrglr1e mngtrglr2e mngtrglr3e mngtrglr4e mngtrglr5e mngtrglr6e mngtrglr7e mngtrglr8a mngtrglr9a mngtrglr10a" SPC "mngtrglr11a mngtrglr12a mngtrglr13a mngtrglr14a mngtrglr15b mngtrglr16b mngtrglr17b mngtrglr18b mngtrglr19b mngtrglr20b mngtrglridl1 mngtrglrwlkf01" SPC "mngtrglrwlkb01 mngtrglrside01 mngtrglrjmp01 mnjmp mnfall mnrent mnrext mnridl1 mnwidl1 mnwent2 mnwext2 mnwidl2 mnsidl1 mnsent mnsext mnhtidl1 mnlsnidl1" SPC "mnlsnent mnlsnext mnclbent mnclbext mnclbidl1 mnbhop mnbedentr mnbedextr mnbedextl mnbedentl mnbedslpbk mnbedslpsdl mnbedrlx mnchzlngidl1 mnpckride" SPC "mnreachdown mnspinbottle mndrumr1e mnbassr1e mnsumowlks mnsumoshortstun mnsumolongstun mnsumoidle mnsumojabattack mnsumopowerattack mnsumobbattack" SPC "mnsumojabdefend mnsumopowerdefend mnsumotaunt01 mnsumotaunt02 mnsumoidl mnsumowlkf mnsumowlkb mnsumosde mnsumojmp mnsumoattack mnsumodefend mnsumostumble" SPC "mnsumowin mnsumoloose mngtrgr1e mngtrgr2e mngtrgr3e mngtrgr5e mngtrgr6e mngtrgr7e mngtrgr8e mngtrgr9e mngtrgr10e mngtrgr11e mngtrgr12a mngtrgr13a mngtrgr14a" SPC "mngtrgr15a mngtrgr17a mngtrgr18a mngtrgr22a mngtrgr25b mngtrgr28b mngtrgr29b mnarcadeidl fnapls01 fnapls02 fnapls03 fngtrglr1e fngtrglr2e fngtrglr3e fngtrglr4e" SPC "mnbhop mnbedentr mnbedextr mnbedextl mnbedentl mnbedslpbk mnbedslpsdr mnbedslpsdl mnbedrlx mnchzlngidl1" SPC "mnpckride mnreachdown mnspinbottle mndrumr1e mnbassr1e mnarcadeidl mnssentr mnssext mnssidl1 mnstyl1" SPC "mycut1 mybdry mywatrpt myidl1a mywlkf1 mysde mywlkb1 myjmp mycidl1a mycidl2a mylidl1a mylidl2a mylidl3a" SPC "mybrush myclip myhpick myshears mygunsling mymime mnswmidl1 mnswmf1 mnswmb1 mnswmsde" SPC "mnpwidle mnpwwlkf mnpwwlkb mnpwsde mnpwjmp mnpwjabattack mnpwpowerattack mnpwbbattack mnpwjabdefend mnpwpowerdefend" SPC "mnpwshortstun mnpwlongstun mnpwtaunt01 mnpwtaunt02" SPC "mntapglass mnsmentr mnsmexit mnsmcidl1 mnsmanidl1 mysmanfl mysmanpnt" SPC "mnspcentr mnspcexit mnspcidl1 mnspedentr mnspedexit mnspedidl myspedfl myspedpnt mynailpolish" SPC "mnmmi_handshake mnmmr_handshake mnmsi_handshake mnmsr_handshake mnmti_handshake mnmtr_handshake mnsti_handshake" SPC "mnstr_handshake mntsi_handshake mntsr_handshake" SPC "mnmmi_hug mnmmr_hug mnmsi_hug mnmsr_hug mnmti_hug mnmtr_hug mnsti_hug mnstr_hug mntsi_hug mntsr_hug" SPC "mnmmi_kiss mnmmr_kiss mnmsi_kiss mnmsr_kiss mnmti_kiss mnmtr_kiss mnsti_kiss mnstr_kiss mntsi_kiss mntsr_kiss" SPC "mnmmi_giveloot mnmmr_giveloot mnmsi_giveloot mnmsr_giveloot mnmti_giveloot mnmtr_giveloot mnsti_giveloot mnstr_giveloot mntsi_giveloot mntsr_giveloot" SPC "mynailfile mybowarrow myscissorhand myswitchcomb" SPC "myadjwrench mypipewrench mypiercegun myforcepa myforcepb mypliera myplierb" SPC "fngtrglr5e fngtrglr6e fngtrglr7e fngtrglr8a fngtrglr9a fngtrglr10a fngtrglr11a fngtrglr12a fngtrglr13a fngtrglr14a fngtrglr15b fngtrglr16b fngtrglr17b fngtrglr18b" SPC "fngtrglr19b fngtrglr20b fngtrglridl1 fngtrglrwlkf01 fngtrglrwlkb01 fngtrglrside01 fngtrglrjmp01 fnjmp fnfall fnrent fnrext fnridl1 fnwidl1 fnwent2 fnwext2 fnwidl2" SPC "fnsidl1 fnsent fnsext fnhtidl1 fnlsnidl1 fnlsnent fnlsnext fnclbent fnclbext fnclbidl1 fnbhop fnbedentr fnbedextr fnbedextl fnbedentl fnbedslpbk fnbedslpsdl fnbedrlx" SPC "fnchzlngidl1 fnpckride fnreachdown fnspinbottle fndrumr1e fnbassr1e fnsumowlks fnsumoshortstun fnsumolongstun fnsumoidle fnsumojabattack fnsumopowerattack" SPC "fnsumobbattack fnsumojabdefend fnsumopowerdefend fnsumotaunt01 fnsumotaunt02 fnsumoidl fnsumowlkf fnsumowlkb fnsumosde fnsumojmp fnsumoattack fnsumodefend fnsumostumble" SPC "fnsumowin fnsumoloose fngtrgr1e fngtrgr2e fngtrgr3e fngtrgr5e fngtrgr6e fngtrgr7e fngtrgr8e fngtrgr9e fngtrgr10e fngtrgr11e fngtrgr12a fngtrgr13a fngtrgr14a" SPC "fngtrgr15a fngtrgr17a fngtrgr18a fngtrgr22a fngtrgr25b fngtrgr28b fngtrgr29b fnarcadeidl fnswmb1 fnswmsde fnswmidl1 fnswmf1 mnswmb1 mnswmsde mnswmidl1 mnswmf1" SPC "fnbhop fnbedentr fnbedextr fnbedextl fnbedentl fnbedslpbk fnbedslpsdr fnbedslpsdl fnbedrlx fnchzlngidl1" SPC "fnpckride fnreachdown fnspinbottle fndrumr1e fnbassr1e fnarcadeidl fnssentr fnssext fnssidl1 fnstyl1" SPC "fycut1 fybdry fywatrpt fyidl1a fywlkf1 fysde fywlkb1 fyjmp fycidl1a fycidl2a fylidl1a fylidl2a fylidl3a" SPC "fybrush fyclip fyhpick fyshears fygunsling fymime fnswmidl1 fnswmf1 fnswmb1 fnswmsde" SPC "fnpwidle fnpwwlkf fnpwwlkb fnpwsde fnpwjmp fnpwjabattack fnpwpowerattack fnpwbbattack fnpwjabdefend fnpwpowerdefend" SPC "fnpwshortstun fnpwlongstun fnpwtaunt01 fnpwtaunt02" SPC "fntapglass fnsmentr fnsmexit fnsmcidl1 fnsmanidl1 fysmanfl fysmanpnt" SPC "fnspcentr fnspcexit fnspcidl1 fnspedentr fnspedexit fnspedidl fyspedfl fyspedpnt fynailpolish" SPC "fnmmi_handshake fnmmr_handshake fnmsi_handshake fnmsr_handshake fnmti_handshake fnmtr_handshake fnsti_handshake" SPC "fnstr_handshake fntsi_handshake fntsr_handshake" SPC "fnmmi_hug fnmmr_hug fnmsi_hug fnmsr_hug fnmti_hug fnmtr_hug fnsti_hug fnstr_hug fntsi_hug fntsr_hug" SPC "fnmmi_kiss fnmmr_kiss fnmsi_kiss fnmsr_kiss fnmti_kiss fnmtr_kiss fnsti_kiss fnstr_kiss fntsi_kiss fntsr_kiss" SPC "fnmmi_giveloot fnmmr_giveloot fnmsi_giveloot fnmsr_giveloot fnmti_giveloot fnmtr_giveloot fnsti_giveloot fnstr_giveloot fntsi_giveloot fntsr_giveloot" SPC "fynailfile fybowarrow fyscissorhand fyswitchcomb" SPC "fyadjwrench fypipewrench fypiercegun fyforcepa fyforcepb fypliera fyplierb" SPC "gtrglr5e gtrglr6e gtrglr7e gtrglr8a gtrglr9a gtrglr10a gtrglr11a gtrglr12a gtrglr13a gtrglr14a gtrglr15b gtrglr16b gtrglr17b gtrglr18b" SPC "gtrglr19b gtrglr20b gtrglridl1 gtrglrwlkf01 gtrglrwlkb01 gtrglrside01 gtrglrjmp01 jmp fall rent rext ridl1 widl1 went2 wext2 widl2" SPC "sidl1 sent sext htidl1 lsnidl1 lsnent lsnext clbent clbext clbidl1 bhop bedentr bedextr bedextl bedentl bedslpbk bedslpsdl bedrlx" SPC "chzlngidl1 pckride reachdown spinbottle drumr1e bassr1e sumowlks sumoshortstun sumolongstun sumoidle sumojabattack sumopowerattack" SPC "sumobbattack sumojabdefend sumopowerdefend sumotaunt01 sumotaunt02 sumoidl sumowlkf sumowlkb sumosde sumojmp sumoattack sumodefend sumostumble" SPC "sumowin sumoloose gtrgr1e gtrgr2e gtrgr3e gtrgr5e gtrgr6e gtrgr7e gtrgr8e gtrgr9e gtrgr10e gtrgr11e gtrgr12a gtrgr13a gtrgr14a" SPC "gtrgr15a gtrgr17a gtrgr18a gtrgr22a gtrgr25b gtrgr28b gtrgr29b arcadeidl swmb1 swmsde swmidl1 swmf1 mnswmb1 mnswmsde mnswmidl1 mnswmf1" SPC "bhop bedentr bedextr bedextl bedentl bedslpbk bedslpsdr bedslpsdl bedrlx chzlngidl1" SPC "pckride reachdown spinbottle drumr1e bassr1e arcadeidl ssentr ssext ssidl1 styl1" SPC "cut1 bdry watrpt idl1a wlkf1 sde wlkb1 jmp cidl1a cidl2a lidl1a lidl2a lidl3a" SPC "brush clip hpick shears gunsling mime swmidl1 swmf1 swmb1 swmsde" SPC "pwidle pwwlkf pwwlkb pwsde pwjmp pwjabattack pwpowerattack pwbbattack pwjabdefend pwpowerdefend" SPC "pwshortstun pwlongstun pwtaunt01 pwtaunt02" SPC "tapglass smentr smexit smcidl1 smanidl1 smanfl smanpnt" SPC "spcentr spcexit spcidl1 spedentr spedexit spedidl spedfl spedpnt nailpolish" SPC "mmi_handshake mmr_handshake msi_handshake msr_handshake mti_handshake mtr_handshake sti_handshake" SPC "str_handshake tsi_handshake tsr_handshake" SPC "mmi_hug mmr_hug msi_hug msr_hug mti_hug mtr_hug sti_hug str_hug tsi_hug tsr_hug" SPC "mmi_kiss mmr_kiss msi_kiss msr_kiss mti_kiss mtr_kiss sti_kiss str_kiss tsi_kiss tsr_kiss" SPC "mmi_giveloot mmr_giveloot msi_giveloot msr_giveloot mti_giveloot mtr_giveloot sti_giveloot str_giveloot tsi_giveloot tsr_giveloot" SPC "nailfile bowarrow scissorhand switchcomb" SPC "adjwrench pipewrench piercegun forcepa forcepb pliera plierb";
+    %cantRecordList = "mnapls01 mnapls02 mnapls03 mngtrglr1e mngtrglr2e mngtrglr3e mngtrglr4e mngtrglr5e mngtrglr6e mngtrglr7e mngtrglr8a mngtrglr9a mngtrglr10a" @ " " @ "mngtrglr11a mngtrglr12a mngtrglr13a mngtrglr14a mngtrglr15b mngtrglr16b mngtrglr17b mngtrglr18b mngtrglr19b mngtrglr20b mngtrglridl1 mngtrglrwlkf01" @ " " @ "mngtrglrwlkb01 mngtrglrside01 mngtrglrjmp01 mnjmp mnfall mnrent mnrext mnridl1 mnwidl1 mnwent2 mnwext2 mnwidl2 mnsidl1 mnsent mnsext mnhtidl1 mnlsnidl1" @ " " @ "mnlsnent mnlsnext mnclbent mnclbext mnclbidl1 mnbhop mnbedentr mnbedextr mnbedextl mnbedentl mnbedslpbk mnbedslpsdl mnbedrlx mnchzlngidl1 mnpckride" @ " " @ "mnreachdown mnspinbottle mndrumr1e mnbassr1e mnsumowlks mnsumoshortstun mnsumolongstun mnsumoidle mnsumojabattack mnsumopowerattack mnsumobbattack" @ " " @ "mnsumojabdefend mnsumopowerdefend mnsumotaunt01 mnsumotaunt02 mnsumoidl mnsumowlkf mnsumowlkb mnsumosde mnsumojmp mnsumoattack mnsumodefend mnsumostumble" @ " " @ "mnsumowin mnsumoloose mngtrgr1e mngtrgr2e mngtrgr3e mngtrgr5e mngtrgr6e mngtrgr7e mngtrgr8e mngtrgr9e mngtrgr10e mngtrgr11e mngtrgr12a mngtrgr13a mngtrgr14a" @ " " @ "mngtrgr15a mngtrgr17a mngtrgr18a mngtrgr22a mngtrgr25b mngtrgr28b mngtrgr29b mnarcadeidl fnapls01 fnapls02 fnapls03 fngtrglr1e fngtrglr2e fngtrglr3e fngtrglr4e" @ " " @ "mnbhop mnbedentr mnbedextr mnbedextl mnbedentl mnbedslpbk mnbedslpsdr mnbedslpsdl mnbedrlx mnchzlngidl1" @ " " @ "mnpckride mnreachdown mnspinbottle mndrumr1e mnbassr1e mnarcadeidl mnssentr mnssext mnssidl1 mnstyl1" @ " " @ "mycut1 mybdry mywatrpt myidl1a mywlkf1 mysde mywlkb1 myjmp mycidl1a mycidl2a mylidl1a mylidl2a mylidl3a" @ " " @ "mybrush myclip myhpick myshears mygunsling mymime mnswmidl1 mnswmf1 mnswmb1 mnswmsde" @ " " @ "mnpwidle mnpwwlkf mnpwwlkb mnpwsde mnpwjmp mnpwjabattack mnpwpowerattack mnpwbbattack mnpwjabdefend mnpwpowerdefend" @ " " @ "mnpwshortstun mnpwlongstun mnpwtaunt01 mnpwtaunt02" @ " " @ "mntapglass mnsmentr mnsmexit mnsmcidl1 mnsmanidl1 mysmanfl mysmanpnt" @ " " @ "mnspcentr mnspcexit mnspcidl1 mnspedentr mnspedexit mnspedidl myspedfl myspedpnt mynailpolish" @ " " @ "mnmmi_handshake mnmmr_handshake mnmsi_handshake mnmsr_handshake mnmti_handshake mnmtr_handshake mnsti_handshake" @ " " @ "mnstr_handshake mntsi_handshake mntsr_handshake" @ " " @ "mnmmi_hug mnmmr_hug mnmsi_hug mnmsr_hug mnmti_hug mnmtr_hug mnsti_hug mnstr_hug mntsi_hug mntsr_hug" @ " " @ "mnmmi_kiss mnmmr_kiss mnmsi_kiss mnmsr_kiss mnmti_kiss mnmtr_kiss mnsti_kiss mnstr_kiss mntsi_kiss mntsr_kiss" @ " " @ "mnmmi_giveloot mnmmr_giveloot mnmsi_giveloot mnmsr_giveloot mnmti_giveloot mnmtr_giveloot mnsti_giveloot mnstr_giveloot mntsi_giveloot mntsr_giveloot" @ " " @ "mynailfile mybowarrow myscissorhand myswitchcomb" @ " " @ "myadjwrench mypipewrench mypiercegun myforcepa myforcepb mypliera myplierb" @ " " @ "fngtrglr5e fngtrglr6e fngtrglr7e fngtrglr8a fngtrglr9a fngtrglr10a fngtrglr11a fngtrglr12a fngtrglr13a fngtrglr14a fngtrglr15b fngtrglr16b fngtrglr17b fngtrglr18b" @ " " @ "fngtrglr19b fngtrglr20b fngtrglridl1 fngtrglrwlkf01 fngtrglrwlkb01 fngtrglrside01 fngtrglrjmp01 fnjmp fnfall fnrent fnrext fnridl1 fnwidl1 fnwent2 fnwext2 fnwidl2" @ " " @ "fnsidl1 fnsent fnsext fnhtidl1 fnlsnidl1 fnlsnent fnlsnext fnclbent fnclbext fnclbidl1 fnbhop fnbedentr fnbedextr fnbedextl fnbedentl fnbedslpbk fnbedslpsdl fnbedrlx" @ " " @ "fnchzlngidl1 fnpckride fnreachdown fnspinbottle fndrumr1e fnbassr1e fnsumowlks fnsumoshortstun fnsumolongstun fnsumoidle fnsumojabattack fnsumopowerattack" @ " " @ "fnsumobbattack fnsumojabdefend fnsumopowerdefend fnsumotaunt01 fnsumotaunt02 fnsumoidl fnsumowlkf fnsumowlkb fnsumosde fnsumojmp fnsumoattack fnsumodefend fnsumostumble" @ " " @ "fnsumowin fnsumoloose fngtrgr1e fngtrgr2e fngtrgr3e fngtrgr5e fngtrgr6e fngtrgr7e fngtrgr8e fngtrgr9e fngtrgr10e fngtrgr11e fngtrgr12a fngtrgr13a fngtrgr14a" @ " " @ "fngtrgr15a fngtrgr17a fngtrgr18a fngtrgr22a fngtrgr25b fngtrgr28b fngtrgr29b fnarcadeidl fnswmb1 fnswmsde fnswmidl1 fnswmf1 mnswmb1 mnswmsde mnswmidl1 mnswmf1" @ " " @ "fnbhop fnbedentr fnbedextr fnbedextl fnbedentl fnbedslpbk fnbedslpsdr fnbedslpsdl fnbedrlx  /* expression truncated */;
     if (findWord(%cantRecordList, %nameInternal) == -1)
     {
         return 1;
@@ -215,16 +204,15 @@ function danceTool::addStep(%this, %nameInternal)
 {
     if (!%this.recording)
     {
-        return ;
+        return;
     }
     if (!%this.canRecordAnim(%nameInternal))
     {
-        return ;
+        return;
     }
     %animName = %nameInternal;
     %this.finishRecordingPreviousStep();
     guiDanceToolMLTextBody.addText(%animName, 1, 1);
-    return ;
 }
 function danceTool::finishRecordingPreviousStep(%this)
 {
@@ -240,13 +228,11 @@ function danceTool::finishRecordingPreviousStep(%this)
         guiDanceToolMLTextBody.addText(" " @ %dt @ "\n", 1, 1);
     }
     %this.prevStepTime = %t;
-    return ;
 }
 function clientCmdDisableDanceTool(%unused)
 {
     danceTool.stop();
-    handleSystemMessage("msgInfoMessage", "Sorry, Dancetastìque is temporarily disabled.");
-    return ;
+    handleSystemMessage("msgInfoMessage", "");
 }
 function danceTool::setGender(%this, %gender)
 {
@@ -266,20 +252,17 @@ function danceTool::setGender(%this, %gender)
     {
         %genderFull = "males";
     }
-    %txt = "Designed for:" SPC %colorTag @ %genderFull;
+    %txt = "Designed for:" @ " " @ %colorTag @ %genderFull;
     guiDanceToolTextGender.setText(%txt);
-    return ;
 }
 $gDanceToolVersionString = "Dancetastique version 1.0";
 function danceTool::clipboardCopyTo(%this)
 {
     setClipboard(%this.getContent());
-    return ;
 }
 function danceTool::clipboardPasteFrom(%this)
 {
     %this.setContent(getClipboard());
-    return ;
 }
 function danceTool::getContent(%this)
 {
@@ -303,21 +286,20 @@ function danceTool::setContent(%this, %content)
     %content = trim(removeRecord(%content, 0));
     if (!(%version $= $gDanceToolVersionString))
     {
-        MessageBoxOK("Wrong Version!", "The dance you\'re trying to use isn\'t compatible with this version of Le Studio Dancetastìque.\nThe current version is\n" @ $gDanceToolVersionString @ "\nand you\'re trying to use a dance from\n" SPC %version, "");
-        return ;
+        MessageBoxOK("Wrong Version!", "" @ $gDanceToolVersionString @ "\nand you're trying to use a dance from\n" @ " " @ %version, "");
+        return;
     }
     guiDanceToolTextAuthor.setValue(%author);
     guiDanceToolTextTitle.setValue(%title);
     %this.setGender(%gender);
     guiDanceToolMLTextBody.setText(%content);
-    return ;
 }
 $gDanceToolInitialized = 0;
 function danceTool::initialcontent(%this)
 {
     if ($gDanceToolInitialized)
     {
-        return ;
+        return;
     }
     %content = "";
     %content = %content @ $gDanceToolVersionString @ "\n";
@@ -337,5 +319,4 @@ function danceTool::initialcontent(%this)
     }
     %this.setContent(%content);
     $gDanceToolInitialized = 1;
-    return ;
 }

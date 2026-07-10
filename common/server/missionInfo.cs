@@ -4,13 +4,13 @@ function clearLoadInfo()
     {
         MissionInfo.delete();
     }
-    return ;
+    return;
 }
 function buildLoadInfo(%mission)
 {
     clearLoadInfo();
     %infoObject = "";
-    %file = new FileObject();
+    %file = new FileObject("");
     if (%file.openForRead(%mission))
     {
         %inInfoBlock = 0;
@@ -30,17 +30,17 @@ function buildLoadInfo(%mission)
                     %infoObject = %infoObject @ %line;
                     break;
                 }
-            }
-            if (%inInfoBlock)
-            {
-                %infoObject = %infoObject @ %line @ " ";
+                if (%inInfoBlock)
+                {
+                    %infoObject = %infoObject @ %line @ " ";
+                }
             }
         }
         %file.close();
     }
     eval(%infoObject);
     %file.delete();
-    return ;
+    return;
 }
 function dumpLoadInfo()
 {
@@ -53,7 +53,6 @@ function dumpLoadInfo()
         %i = %i + 1;
     }
 }
-
 function sendLoadInfoToClient(%client)
 {
     messageClient(%client, 'MsgLoadInfo', MissionInfo.name);
@@ -64,5 +63,5 @@ function sendLoadInfoToClient(%client)
         %i = %i + 1;
     }
     messageClient(%client, 'MsgLoadInfoDone', "");
-    return ;
+    return;
 }

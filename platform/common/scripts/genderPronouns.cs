@@ -1,6 +1,6 @@
 function getGender(%obj)
 {
-    if (((%obj $= "f") || (%obj $= "m")) || (%obj $= "n"))
+    if ((%obj $= "f") || (%obj $= "m") || (%obj $= "n"))
     {
         return %obj;
     }

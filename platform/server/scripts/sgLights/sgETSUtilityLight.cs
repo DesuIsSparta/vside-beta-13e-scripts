@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(sgETSUtilityLight)
-{
+datablock sgUniversalStaticLightData(sgETSUtilityLight) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 18;
@@ -65,4 +64,3 @@ datablock sgUniversalStaticLightData(sgETSUtilityLight)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Stock (Lighting Pack)";
 };
-

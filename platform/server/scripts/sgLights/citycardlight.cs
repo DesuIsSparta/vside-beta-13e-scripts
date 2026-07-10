@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(citycardlight)
-{
+datablock sgUniversalStaticLightData(citycardlight) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 18;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(citycardlight)
     DoubleSidedAmbient = 1;
     LightingModelName = "SG - Original Stock (Lighting Pack)";
 };
-

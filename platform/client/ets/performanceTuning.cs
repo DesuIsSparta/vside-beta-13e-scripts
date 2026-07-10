@@ -1,9 +1,9 @@
 function setRenderQualityValue(%val)
 {
-    if ((%val < 0) && (%val > 3))
+    if ((%val < 0) || (%val > 3))
     {
-        error("Unknown render quality:" SPC %val);
-        return ;
+        error("Unknown render quality:" @ " " @ %val);
+        return;
     }
     %q = "automatic";
     if (%val < 3)
@@ -52,7 +52,6 @@ function setRenderQualityValue(%val)
     {
         setExposureFilterValue($renderQuality);
     }
-    return ;
 }
 function setRenderQuality(%val)
 {
@@ -66,14 +65,12 @@ function setRenderQuality(%val)
     {
         setToonLODMode(1);
     }
-    echo("Setting render quality:" SPC %val SPC "(" @ %val @ ")");
-    return ;
+    echo("Setting render quality:" @ " " @ %val @ " " @ "(" @ %val @ ")");
 }
 function setShadowDetailSize(%val)
 {
     $UserPref::Video::shadowQualitySetting = %val;
     setShadowDetailSizeValue(%val);
-    return ;
 }
 function setShadowDetailSizeValue(%val)
 {
@@ -111,13 +108,11 @@ function setShadowDetailSizeValue(%val)
             }
         }
     }
-    return ;
 }
 function setSmallTextureMode(%val)
 {
     $UserPref::Video::smalltextureQualitySetting = %val;
     setSmallTextureModeValue(%val);
-    return ;
 }
 function setSmallTextureModeValue(%val)
 {
@@ -153,13 +148,11 @@ function setSmallTextureModeValue(%val)
             }
         }
     }
-    return ;
 }
 function setVisibleDistanceOption(%val)
 {
     $UserPref::Video::visibledistanceQualitySetting = %val;
     setVisibleDistanceOptionValue(%val);
-    return ;
 }
 function setVisibleDistanceOptionValue(%val)
 {
@@ -177,15 +170,13 @@ function setVisibleDistanceOptionValue(%val)
     }
     else
     {
-        error("render", "setVisibleDistanceOptionValue: unknown val =" SPC %val SPC "RQ =" SPC $renderQuality);
+        error("render", "setVisibleDistanceOptionValue: unknown val =" @ " " @ %val @ " " @ "RQ =" @ " " @ $renderQuality);
     }
-    return ;
 }
 function setWaterReflection(%val)
 {
     $UserPref::Video::waterreflectionQualitySetting = %val;
     setWaterReflectionValue(%val);
-    return ;
 }
 function setWaterReflectionValue(%val)
 {
@@ -221,13 +212,11 @@ function setWaterReflectionValue(%val)
             }
         }
     }
-    return ;
 }
 function setExposureFilter(%val)
 {
     $UserPref::Video::exposureQualitySetting = %val;
     setExposureFilterValue(%val);
-    return ;
 }
 function setExposureFilterValue(%val)
 {
@@ -293,19 +282,16 @@ function setExposureFilterValue(%val)
             }
         }
     }
-    return ;
 }
 function ClientCmdRenderModsVD(%s)
 {
-    $Settings::VisibleDistances[0] = getWord(%s, 0) ;
-    $Settings::VisibleDistances[1] = getWord(%s, 1) ;
-    $Settings::VisibleDistances[2] = getWord(%s, 2) ;
-    return ;
+    $Settings::VisibleDistances[0] = getWord(%s, 0);
+    $Settings::VisibleDistances[1] = getWord(%s, 1);
+    $Settings::VisibleDistances[2] = getWord(%s, 2);
 }
 function ClientCmdRenderModsSelfViewModifier(%s)
 {
     $Settings::selfviewmodifier = %s;
-    return ;
 }
 setShadowDetailSize($UserPref::Video::shadowQualitySetting);
 setSmallTextureMode($UserPref::Video::smalltextureQualitySetting);
@@ -313,4 +299,3 @@ setVisibleDistanceOption($UserPref::Video::visibledistanceQualitySetting);
 setWaterReflection($UserPref::Video::waterreflectionQualitySetting);
 setExposureFilter($UserPref::Video::exposureQualitySetting);
 setRenderQuality($UserPref::Video::renderQualitySetting);
-

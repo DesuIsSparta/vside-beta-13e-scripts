@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(ls_overhead)
-{
+datablock sgUniversalStaticLightData(ls_overhead) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 2.5;
@@ -65,4 +64,3 @@ datablock sgUniversalStaticLightData(ls_overhead)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

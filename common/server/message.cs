@@ -1,7 +1,7 @@
 function messageClient(%client, %msgType, %msgString)
 {
     commandToClient(%client, 'ServerMessage', %msgType, %msgString);
-    return ;
+    return;
 }
 function messageAll(%msgType, %msgString)
 {
@@ -14,11 +14,10 @@ function messageAll(%msgType, %msgString)
         %cl = %cl + 1;
     }
 }
-
 function GameConnection::spamReset(%this)
 {
     %this.isSpamming = 0;
-    return ;
+    return;
 }
 function spamAlert(%client, %speechType)
 {

@@ -16,5 +16,4 @@ function OpenALInit()
         %channel = %channel + 1;
     }
     echo("");
-    return ;
 }

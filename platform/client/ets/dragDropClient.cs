@@ -4,12 +4,9 @@ function Canvas::onSystemDragDropEvent(%this, %text, %isDrop, %pt)
     {
         return 0;
     }
-    if (%this.getId() == Canvas.getId())
+    if (%this.getId() == Canvas.getId() && !isObject($player) || !$player.isHost())
     {
-        if (!isObject($player) && !$player.isHost())
-        {
-            return 0;
-        }
+        return 0;
     }
     return Parent::onSystemDragDropEvent(%this, %text, %isDrop, %pt);
 }
@@ -17,11 +14,10 @@ function Canvas::onSystemDragDroppedEvent(%this, %url, %pt)
 {
     if (!isObject(CSMediaDisplay))
     {
-        error(getScopeName() SPC "- CSMediaDisplay not initialized." SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- CSMediaDisplay not initialized." @ " " @ getTrace());
+        return;
     }
     CSMediaDisplay.playMediaStream(%url);
-    return ;
 }
 function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt)
 {
@@ -69,5 +65,4 @@ function GuiControl::acceptsSystemDragDropContent(%this, %text)
 }
 function GuiControl::onSystemDragDroppedEvent(%this, %text, %pt)
 {
-    return ;
 }

@@ -3,7 +3,7 @@ function ActionMap::copyBind(%this, %otherMap, %command)
     if (!isObject(%otherMap))
     {
         error("ActionMap::copyBind - \"" @ %otherMap @ "\" is not an object!");
-        return ;
+        return;
     }
     %bind = %otherMap.getBinding(%command);
     if (!(%bind $= ""))
@@ -15,19 +15,17 @@ function ActionMap::copyBind(%this, %otherMap, %command)
         %scale = %otherMap.getScale(%device, %action);
         %this.bind(%device, %action, %flags, %deadZone, %scale, %command);
     }
-    return ;
 }
 function ActionMap::blockBind(%this, %otherMap, %command)
 {
     if (!isObject(%otherMap))
     {
         error("ActionMap::blockBind - \"" @ %otherMap @ "\" is not an object!");
-        return ;
+        return;
     }
     %bind = %otherMap.getBinding(%command);
     if (!(%bind $= ""))
     {
         %this.bind(getField(%bind, 0), getField(%bind, 1), "");
     }
-    return ;
 }

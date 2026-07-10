@@ -13,7 +13,7 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
         %si = SkuManager.findBySku(%sku);
         if (!isObject(%si))
         {
-            error(getScopeName() SPC "- could not find sku" SPC %sku SPC getTrace());
+            error(getScopeName() @ " " @ "- could not find sku" @ " " @ %sku @ " " @ getTrace());
         }
         else
         {
@@ -26,14 +26,14 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
             {
                 if (!(%si.skuType $= "furnishing"))
                 {
-                    error(getScopeName() SPC "- more than one non-furnishing SKU owned::" SPC %sku SPC %qty SPC %si.skuType);
+                    error(getScopeName() @ " " @ "- more than one non-furnishing SKU owned::" @ " " @ %sku @ " " @ %qty @ " " @ %si.skuType);
                 }
             }
             else
             {
                 if ((%qty < 1) && (%qty != -1))
                 {
-                    error(getScopeName() SPC "- invalid sku quantity:" SPC %sku SPC %qty);
+                    error(getScopeName() @ " " @ "- invalid sku quantity:" @ " " @ %sku @ " " @ %qty);
                 }
             }
         }
@@ -45,11 +45,11 @@ function ManagerRequest::checkSuccess(%this)
 {
     %status = findRequestStatus(%this);
     %statusMsg = %this.hasKey("statusMsg") ? %this.getValue("statusMsg") : "(unknown)";
-    log("network", "debug", getScopeName(1) SPC "- status =" SPC %status SPC "statusMsg =" SPC %statusMsg SPC "url =" SPC %this.getURL());
+    log("network", "debug", getScopeName(1) @ " " @ "- status =" @ " " @ %status @ " " @ "statusMsg =" @ " " @ %statusMsg @ " " @ "url =" @ " " @ %this.getURL());
     if (!(%status $= "success"))
     {
-        error(getScopeName() SPC "- status    =" SPC %status);
-        error(getScopeName() SPC "- statusMsg =" SPC %statusMsg);
+        error(getScopeName() @ " " @ "- status    =" @ " " @ %status);
+        error(getScopeName() @ " " @ "- statusMsg =" @ " " @ %statusMsg);
         return 0;
     }
     return 1;
@@ -62,12 +62,10 @@ function ManagerRequest::addUrlParam(%this, %name, %value)
     %delimiter = strhaschr(%url, "?") ? "&" : "?";
     %url = %url @ %delimiter @ %name @ "=" @ %value;
     %this.setURL(%url);
-    return ;
 }
 function ManagerRequest::addBodyParam(%this, %name, %value)
 {
     %this.addPostField(%name, %value);
-    return ;
 }
 function ManagerRequest::onDoneOrError(%this)
 {
@@ -80,18 +78,17 @@ function ManagerRequest::onDoneOrError(%this)
         else
         {
             %cmd = %this.callbackHandler @ "(" @ %this.getId() @ ");";
-            log("Communication", "debug", getScopeName() SPC "-" SPC getDebugString(%this) SPC "executing callback" SPC %cmd);
+            log("Communication", "debug", getScopeName() @ " " @ "-" @ " " @ getDebugString(%this) @ " " @ "executing callback" @ " " @ %cmd);
             eval(%cmd);
         }
     }
     %this.schedule(0, "delete");
-    return ;
 }
 function ManagerRequest::addUserAndToken(%this, %userName)
 {
     if ($StandAlone)
     {
-        echoDebug(getScopeName() SPC "- called in standalone. Setting token to \"" @ $TokenStandalone @ "\"." SPC getTrace());
+        echoDebug(getScopeName() @ " " @ "- called in standalone. Setting token to \"" @ $TokenStandalone @ "\"." @ " " @ getTrace());
         %this.addUrlParam("user", %userName);
         %this.addUrlParam("token", $TokenStandalone);
     }
@@ -101,8 +98,8 @@ function ManagerRequest::addUserAndToken(%this, %userName)
         {
             if (!(%userName $= $Player::Name))
             {
-                error(getScopeName() SPC "- got username not equal this user!" SPC %userName SPC $Player::Name SPC getTrace());
-                return ;
+                error(getScopeName() @ " " @ "- got username not equal this user!" @ " " @ %userName @ " " @ $Player::Name @ " " @ getTrace());
+                return;
             }
             %this.addUrlParam("user", %userName);
             %this.addUrlParam("token", $Token);
@@ -113,13 +110,24 @@ function ManagerRequest::addUserAndToken(%this, %userName)
             %this.addUrlParam("token", getClientToken(%userName));
         }
     }
-    return ;
 }
 function UniformManagerRequest::start(%this)
 {
     %this.timeStart = getSimTime();
-    %this.retryTotal = %this.retryTotal $= "" ? 0 : %this;
-    %this.retryDelay = %this.retryDelay $= "" ? 200 : %this;
+    if (%this.retryTotal $= "")
+    {
+    }
+    else
+    {
+    }
+    %this.retryTotal = 0 @ %this.retryTotal;
+    if (%this.retryDelay $= "")
+    {
+    }
+    else
+    {
+    }
+    %this.retryDelay = 200 @ %this.retryDelay;
     if (!haveValidManagerHost())
     {
         %this.putValue("status", "error");
@@ -130,60 +138,62 @@ function UniformManagerRequest::start(%this)
     {
         if (!(%this.retryCount $= ""))
         {
-            log("Communication", "warn", "Retry number" SPC %this.retryCount SPC "-" SPC %this.getURL());
+            log("Communication", "warn", "Retry number" @ " " @ %this.retryCount @ " " @ "-" @ " " @ %this.getURL());
         }
         Parent::start(%this);
     }
-    return ;
 }
 function UniformManagerRequest::onDoneOrError(%this)
 {
     %this.timeFinish = getSimTime();
     %this.duration = %this.timeFinish - %this.timeStart;
     %level = %this.duration < 1000 ? "debug" : "warn";
-    log("Communication", "debug", "Request duration" SPC formatFloat("%7.3f", %this.duration / 1000) SPC "seconds:" SPC %this.getURL());
-    %this.retryCount = %this.retryCount $= "" ? 0 : %this;
+    log("Communication", "debug", "Request duration" @ " " @ formatFloat("%7.3f", (%this.duration / 1000)) @ " " @ "seconds:" @ " " @ %this.getURL());
+    if (%this.retryCount $= "")
+    {
+    }
+    else
+    {
+    }
+    %this.retryCount = 0 @ %this.retryCount;
     if (!(findRequestStatus(%this) $= "success"))
     {
-        log("Communication", "debug", getScopeName() SPC "checking retries.." SPC %this.retryCount @ "/" @ %this.retryTotal SPC %this.getURL());
+        log("Communication", "debug", getScopeName() @ " " @ "checking retries.." @ " " @ %this.retryCount @ "/" @ %this.retryTotal @ " " @ %this.getURL());
         if (%this.retryCount < %this.retryTotal)
         {
             %this.retryCount = %this.retryCount + 1;
             %this.schedule(%this.retryDelay, "start");
-            return ;
+            return;
         }
         else
         {
-            log("Communication", "error", getScopeName() SPC "- failed after" SPC %this.retryCount SPC "retries." SPC %this.getURL());
+            log("Communication", "error", getScopeName() @ " " @ "- failed after" @ " " @ %this.retryCount @ " " @ "retries." @ " " @ %this.getURL());
         }
     }
     else
     {
         if (%this.retryCount > 0)
         {
-            log("Communication", "warn", getScopeName() SPC "- succeeded after" SPC %this.retryCount SPC "retries." SPC %this.getURL());
+            log("Communication", "warn", getScopeName() @ " " @ "- succeeded after" @ " " @ %this.retryCount @ " " @ "retries." @ " " @ %this.getURL());
         }
     }
     Parent::onDoneOrError(%this);
     if (%this.doAnother)
     {
-        log("Communication", "info", getScopeName() SPC "- serialization: doing another." SPC %this.getURL());
+        log("Communication", "info", getScopeName() @ " " @ "- serialization: doing another." @ " " @ %this.getURL());
         %this.doAnother = 0;
         %this.retryCount = 0;
         %this.start();
     }
-    return ;
 }
 function UniformManagerRequest::onError(%this, %unused, %errorName)
 {
-    error(getScopeName() SPC getDebugString(%this) SPC "- error=" @ %errorName SPC "status=" @ %this.getValue("status") SPC "statusMsg=" @ %this.getValue("statusMsg") SPC "url=" @ %this.getURL());
+    error(getScopeName() @ " " @ getDebugString(%this) @ " " @ "- error=" @ %errorName @ " " @ "status=" @ %this.getValue("status") @ " " @ "statusMsg=" @ %this.getValue("statusMsg") @ " " @ "url=" @ %this.getURL());
     %this.onDoneOrError();
-    return ;
 }
 function UniformManagerRequest::onDone(%this)
 {
     %this.onDoneOrError();
-    return ;
 }
 function UniformManagerRequest::copyValueIntoObject(%this, %object, %requestFieldName, %objectFieldName)
 {
@@ -198,12 +208,10 @@ function UniformManagerRequest::copyValueIntoObject(%this, %object, %requestFiel
     }
     %cmd = "%object." @ %objectFieldName @ " = %value;";
     eval(%cmd);
-    return ;
 }
 function UniformManagerRequest::copyListValueIntoObject(%this, %object, %listPrefix, %objectFieldName)
 {
     %requestFieldName = %listPrefix @ "." @ %objectFieldName;
     %objectFieldName = strreplace(%objectFieldName, ".", "_");
     %this.copyValueIntoObject(%object, %requestFieldName, %objectFieldName);
-    return ;
 }

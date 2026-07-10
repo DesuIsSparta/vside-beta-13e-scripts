@@ -12,11 +12,10 @@ function RegistrationGui::open(%this)
         RegistrationPartnerLogo.setVisible(0);
     }
     $gHasOpenedRegistrationGui = 1;
-    return ;
 }
 function RegistrationGui::haveIncompleteRegistration(%this)
 {
-    %ret = ((1 && isDefined("$Net::registrationID")) && !(($Net::RegistrationID $= ""))) && !hasField($UserPref::Login::completedRegistrations, $Net::RegistrationID);
+    %ret = 1 && isDefined("$Net::registrationID") && !($Net::RegistrationID $= "") && !hasField($UserPref::Login::completedRegistrations, $Net::RegistrationID);
     return %ret;
 }
 function RegistrationGui::tryOpenOrWebPage(%this)
@@ -30,7 +29,6 @@ function RegistrationGui::tryOpenOrWebPage(%this)
     {
         gotoWebPage($Net::ReregisterURL);
     }
-    return ;
 }
 function RegistrationGui::init(%this)
 {
@@ -50,7 +48,6 @@ function RegistrationGui::init(%this)
         %this.waitIcon.setVisible(0);
         %this.initialized = 1;
     }
-    return ;
 }
 function RegistrationGui::completeRegistration(%this)
 {
@@ -58,16 +55,14 @@ function RegistrationGui::completeRegistration(%this)
     %this.waitIcon.start();
     %request = sendRequest_CompleteClientRegistration($Net::RegistrationID, "onDoneOrErrorCallback_CompleteClientRegistration");
     geRegistrationStatusText.setValue("<spush><font:BauhausStd-Demi:20><just:center>Fetching your info..<spop>");
-    return ;
 }
 function RegistrationGui::markCurrentRegistrationAsCompleted(%this)
 {
     if (!%this.haveIncompleteRegistration())
     {
-        return ;
+        return;
     }
-    $UserPref::Login::completedRegistrations = trim($UserPref::Login::completedRegistrations TAB $Net::RegistrationID);
-    return ;
+    $UserPref::Login::completedRegistrations = trim($UserPref::Login::completedRegistrations @ "\t" @ $Net::RegistrationID);
 }
 function onDoneOrErrorCallback_CompleteClientRegistration(%request)
 {
@@ -96,7 +91,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
         if (%errorCode $= "UNKNOWN_ID")
         {
             %errorMessage = $MsgCat::login["E-REG-UNKNOWN-ID"];
-            error(getScopeName() SPC "- unknown registration ID -" SPC $Net::RegistrationID);
+            error(getScopeName() @ " " @ "- unknown registration ID -" @ " " @ $Net::RegistrationID);
             RegistrationGui.markCurrentRegistrationAsCompleted();
             RegistrationGui.close();
         }
@@ -114,13 +109,11 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
         %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
         geRegistrationStatusText.setValue(%errorMessage);
     }
-    return ;
 }
 function RegistrationGui::close(%this)
 {
     popScreenSize();
     Canvas.setContent(LoginGui);
-    return ;
 }
 function RegistrationLink::onURL(%this, %url)
 {
@@ -142,5 +135,4 @@ function RegistrationLink::onURL(%this, %url)
             }
         }
     }
-    return ;
 }

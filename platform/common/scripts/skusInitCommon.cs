@@ -2,14 +2,14 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
 {
     %expireTime = getField(%expireTime_TAB_tags, 0);
     %tags = getField(%expireTime_TAB_tags, 1);
-    %si = new SkuItem();
+    %si = new SkuItem("");
     if (!%avail)
     {
         %rolesMask = 2147483648;
     }
-    if ((!((%stores $= "")) && %bornWith) && !$StandAlone)
+    if (!(%stores $= "") && %bornWith && !$StandAlone)
     {
-        warn("Wardrobe", getScopeName() SPC "- bornWith sku in a store." SPC %skunum SPC %descShrt SPC %stores);
+        warn("Wardrobe", getScopeName() @ " " @ "- bornWith sku in a store." @ " " @ %skunum @ " " @ %descShrt @ " " @ %stores);
     }
     if (($ETS::ProjectName $= "vmtv") && (%brand $= "myet"))
     {
@@ -53,7 +53,7 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     %prev = %this.findBySku(%si.skuNumber);
     if (isObject(%prev))
     {
-        error("SkuManager::addItem() - duplicate sku." SPC %prev.skuNumber SPC "\"" @ %si.descShrt @ "\"" SPC "loses to" SPC "\"" @ %prev.descShrt @ "\"");
+        error("SkuManager::addItem() - duplicate sku." @ " " @ %prev.skuNumber @ " " @ "\"" @ %si.descShrt @ "\"" @ " " @ "loses to" @ " " @ "\"" @ %prev.descShrt @ "\"");
     }
     else
     {
@@ -64,8 +64,8 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
             %storeID = getWord(%stores, %n);
             if ($StandAlone)
             {
-                %this.storeSkus[%storeID] = %this.storeSkus[%storeID] @ %skunum @ " ";
-                %this.storeQtys[%storeID] = %this.storeQtys[%storeID] @ %qtyMfr @ " ";
+                %this.storeSkus[%skunum," ",%storeID] = %this.storeSkus[%storeID];
+                %this.storeQtys[%qtyMfr," ",%storeID] = %this.storeQtys[%storeID];
             }
             if (findWord(%this.storeIDs, %storeID) < 0)
             {
@@ -86,7 +86,7 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
         {
             %tag = getWord(%tags, %n);
             %skus = %this.skuTags.get(%tag);
-            %skus = trim(%skus SPC %skunum);
+            %skus = trim(%skus @ " " @ %skunum);
             %this.skuTags.put(%tag, %skus);
             %n = %n - 1;
         }
@@ -99,11 +99,9 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
         }
     }
 }
-
 function skusAddItem2(%skunum, %skuType, %roleStrings, %gender, %brand, %drwrName, %meshName, %txtrNames, %desc, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime, %tags, %author)
 {
-    SkuManager.addItem(%skunum, %skuType, roles::getRolesMaskFromStrings(%roleStrings), %gender, %brand, %drwrName, %meshName, %txtrNames, %desc, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime TAB %tags, %author);
-    return ;
+    SkuManager.addItem(%skunum, %skuType, roles::getRolesMaskFromStrings(%roleStrings), %gender, %brand, %drwrName, %meshName, %txtrNames, %desc, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime @ "\t" @ %tags, %author);
 }
 function SkuManager::init(%this)
 {
@@ -125,8 +123,7 @@ function SkuManager::init(%this)
     %this.sanityCheckStockOutfits();
     %t2 = getSimTime();
     %dt = %t2 - %t1;
-    echo(getScopeName() SPC "-" SPC %dt / 1000 SPC "seconds");
-    return ;
+    echo(getScopeName() @ " " @ "-" @ " " @ (%dt / 1000) @ " " @ "seconds");
 }
 function SkuManager::sanityCheckStockOutfits(%this)
 {
@@ -138,7 +135,7 @@ function SkuManager::sanityCheckStockOutfits(%this)
         %o = getWordCount(%outfits) - 1;
         while (%o >= 0)
         {
-            %skus = $gNewStockOutfits[getWord(%genders, %g) @ getWord(%outfits, %o)];
+            %skus = $gNewStockOutfits[getWord(%genders, %g),getWord(%outfits, %o)];
             %this.sanityCheckSkus(%skus);
             %o = %o - 1;
         }
@@ -147,7 +144,6 @@ function SkuManager::sanityCheckStockOutfits(%this)
         %g = %g - 1;
     }
 }
-
 function SkuManager::sanityCheckSkus(%this, %skusDry)
 {
     %skus = SortNumbers(%skusDry);
@@ -155,19 +151,18 @@ function SkuManager::sanityCheckSkus(%this, %skusDry)
     %skusOwned = SortNumbers(SkuManager.filterSkusBornWith(%skus, 1));
     %badSkusRoles = %this.getMissingSkus(%skus, %skusRoles);
     %badSkusOwned = %this.getMissingSkus(%skus, %skusOwned);
-    if (!((%badSkusRoles $= "")) && !((%badSkusOwned $= "")))
+    if (!(%badSkusRoles $= "") || !(%badSkusOwned $= ""))
     {
-        error(getScopeName() SPC "- trouble with these skus:" SPC %skusDry);
+        error(getScopeName() @ " " @ "- trouble with these skus:" @ " " @ %skusDry);
     }
     if (!(%badSkusRoles $= ""))
     {
-        error(getScopeName() SPC "- some skus have roles:      " SPC %badSkusRoles);
+        error(getScopeName() @ " " @ "- some skus have roles:      " @ " " @ %badSkusRoles);
     }
     if (!(%badSkusOwned $= ""))
     {
-        error(getScopeName() SPC "- some skus are not bornwith:" SPC %badSkusOwned);
+        error(getScopeName() @ " " @ "- some skus are not bornwith:" @ " " @ %badSkusOwned);
     }
-    return ;
 }
 function SkuManager::getMissingSkus(%this, %skusFull, %skusSubset)
 {
@@ -188,7 +183,7 @@ function SkuManager::getStoreSkus(%this, %storeID)
 {
     if (!$StandAlone)
     {
-        error(getScopeName() SPC "- should only be called in standalone.");
+        error(getScopeName() @ " " @ "- should only be called in standalone.");
     }
     return %this.storeSkus[%storeID];
 }
@@ -196,7 +191,7 @@ function SkuManager::getStoreQtys(%this, %storeID)
 {
     if (!$StandAlone)
     {
-        error(getScopeName() SPC "- should only be called in standalone.");
+        error(getScopeName() @ " " @ "- should only be called in standalone.");
     }
     return %this.storeQtys[%storeID];
 }
@@ -236,7 +231,7 @@ function SkuManager::getTopExclusionLevelForDrawer(%this, %drwr)
     {
         %folder = getField(%tabbedDrwr, %i);
         %incStr = %incStr @ %folder;
-        if (%idx = findRecord(%this.exclusiveDrwrs, %incStr) != -1)
+        if ((%idx = findRecord(%this.exclusiveDrwrs, %incStr)) != -1)
         {
             return getRecord(%this.exclusiveDrwrs, %idx);
         }
@@ -252,7 +247,6 @@ function SkuManager::setDrawerExclusive(%this, %drwr)
         warn(getScopeName() @ "-> drawer \"" @ %drwr @ "\" already exclusive or - for furnishing - a subdrawer of an already exclusive drawer.");
     }
     %this.exclusiveDrwrs = %this.exclusiveDrwrs @ %drwr @ "\n";
-    return ;
 }
 $gNewStockOutfits[mA] = "400 554 600 701 850 875 900 950";
 $gNewStockOutfits[mB] = "403 502 33763 31600 31034";
@@ -283,4 +277,3 @@ $gDefaultBodyAttrs[f] = "5100 5200 5303 5801";
 SkuManager.init();
 SkuManager.setDrawerExclusive("AV/Videoscreens");
 SkuManager.setDrawerExclusive("Activities/Games/PlayAreas");
-

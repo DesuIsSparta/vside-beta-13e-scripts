@@ -11,32 +11,26 @@ function initServer()
     exec("./scripts/game.cs");
     exec("./scripts/audio.cs");
     exec("./scripts/ets/init.cs");
-    return ;
 }
 function Monitor::onConnected(%unused)
 {
     echo("Monitor Connected");
-    return ;
 }
 function Monitor::onConnectFailed(%unused)
 {
     echo("Monitor Connection Failed");
-    return ;
 }
 function Monitor::onDisconnect(%unused)
 {
     echo("Monitor Disconnected");
-    return ;
 }
 function Monitor::onLine(%unused, %line)
 {
     echo("Monitor TCP: " @ %line);
-    return ;
 }
 function Monitor::onConnectRequest(%unused, %unused, %id)
 {
     echo("Monitor Accept: " @ %id);
-    return ;
 }
 function openMonitorSocket()
 {
@@ -49,7 +43,6 @@ function openMonitorSocket()
     {
         %mon.listen(28000);
     }
-    return ;
 }
 function initDedicated()
 {
@@ -65,7 +58,6 @@ function initDedicated()
     {
         echo("No mission specified (use -mission filename)");
     }
-    return ;
 }
 function quitApp()
 {
@@ -78,7 +70,6 @@ function quitApp()
     {
         doQuit();
     }
-    return ;
 }
 function stopServer()
 {
@@ -88,10 +79,8 @@ function stopServer()
     %query = "cmd=stop";
     %post = "";
     %stopRequest.post(%host, %uri, %query, %post);
-    return ;
 }
 function StopRequest::onStatus(%unused)
 {
     doQuit();
-    return ;
 }

@@ -1,7 +1,6 @@
 function loginDebugPanel::toggle(%this)
 {
     LoginGui.showRaiseOrHide(%this);
-    return ;
 }
 function loginDebugPanel::open(%this)
 {
@@ -11,11 +10,9 @@ function loginDebugPanel::open(%this)
         LoginGui.focusAndRaise(%this);
     }
     DragAndDropExampleList.Initialize();
-    return ;
 }
 function loginDebugPanel::close(%this)
 {
     %this.setVisible(0);
     LoginGui.focusTopWindow();
-    return ;
 }

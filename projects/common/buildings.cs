@@ -1,8 +1,7 @@
 function DeclareFloorplan(%floorplanName, %sku)
 {
-    $gFloorPlanFromSKU[%sku] = %floorplanName ;
-    $gSKUFromFloorPlan[%floorplanName] = %sku ;
-    return ;
+    $gFloorPlanFromSKU[%sku] = %floorplanName;
+    $gSKUFromFloorPlan[%floorplanName] = %sku;
 }
 function Buildings::GetFloorPlanNameFromSku(%sku)
 {
@@ -15,16 +14,16 @@ function Buildings::GetSkuFromFloorPlanName(%floorplanName)
 function DeclareBuilding(%buildingName, %buildingDescription, %longDescription, %minlevelToOwn, %areaNames, %floorplans)
 {
     %areaNameCity = DestinationList::GetAreaNameCity(firstWord(%areaNames));
-    if ((%areaNameCity $= "") && !((%areaNames $= "")))
+    if ((%areaNameCity $= "") && !(%areaNames $= ""))
     {
-        error(getScopeName() SPC "- areaName does not correspond to a city. -" SPC %areaNames SPC getTrace());
+        error(getScopeName() @ " " @ "- areaName does not correspond to a city. -" @ " " @ %areaNames @ " " @ getTrace());
     }
-    $gBuildingDesc[%buildingName] = %buildingDescription ;
-    $gBuildingLongDesc[%buildingName] = %longDescription ;
-    $gBuildingMinLevelToOwn[%buildingName] = %minlevelToOwn ;
+    $gBuildingDesc[%buildingName] = %buildingDescription;
+    $gBuildingLongDesc[%buildingName] = %longDescription;
+    $gBuildingMinLevelToOwn[%buildingName] = %minlevelToOwn;
     $gBuildingVURL[%buildingName] = "vside:/location/" @ %areaNameCity @ "/" @ %buildingName @ "_ReturnSpawn";
-    $gBuildingAreaNames[%buildingName] = %areaNames ;
-    $gBuildingFloorplans[%buildingName] = %floorplans ;
+    $gBuildingAreaNames[%buildingName] = %areaNames;
+    $gBuildingFloorplans[%buildingName] = %floorplans;
     %i = getWordCount(%floorplans) - 1;
     while (%i >= 0)
     {
@@ -32,13 +31,12 @@ function DeclareBuilding(%buildingName, %buildingDescription, %longDescription, 
         %sku = Buildings::GetSkuFromFloorPlanName(%floorplanName);
         if (%sku $= "")
         {
-            error(getScopeName() SPC "This Floorplan has not properly been declared yet, see DeclareFloorplan");
+            error(getScopeName() @ " " @ "This Floorplan has not properly been declared yet, see DeclareFloorplan");
         }
-        $gBuildingNamesFromFloorplans[%floorplanName] = %buildingName ;
+        $gBuildingNamesFromFloorplans[%floorplanName] = %buildingName;
         %i = %i - 1;
     }
 }
-
 function Buildings::GetDescription(%name)
 {
     return $gBuildingDesc[%name];
@@ -48,7 +46,7 @@ function Buildings::GetLongDescription(%name)
     %ret = $gBuildingLongDesc[%name];
     if (%ret $= "")
     {
-        %ret = $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Looking for a hoppin\' party?" NL $gMlStyle["CSProfileDescriptionTextNormal"] @ "Check out the directory to your left and pick an apartment with lots of people. Hop around!" @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Looking to meet people?" NL $gMlStyle["CSProfileDescriptionTextNormal"] @ "Browse the directory and see who\'s home. Don\'t be shy!" @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Want an apartment to call your own?" NL $gMlStyle["CSProfileDescriptionTextNormal"] @ "Visit the model apartment to get your own apartment! Stylize as you see fit and invite your friends over to meet up!" @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Strut your stuff!" NL $gMlStyle["CSProfileDescriptionTextNormal"] @ "Make your own jaw-dropping vSide party. Pick your favorite YouTube vids and jam!";
+        %ret = $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Looking for a hoppin' party?" @ "\n" @ $gMlStyle["CSProfileDescriptionTextNormal"] @ "Check out the directory to your left and pick an apartment with lots of people. Hop around!" @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Looking to meet people?" @ "\n" @ $gMlStyle["CSProfileDescriptionTextNormal"] @ "Browse the directory and see who's home. Don't be shy!" @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Want an apartment to call your own?" @ "\n" @ $gMlStyle["CSProfileDescriptionTextNormal"] @ "Visit the model apartment to get your own apartment! Stylize as you see fit and invite your friends over to meet up!" @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Strut your stuff!" @ "\n" @ $gMlStyle["CSProfileDescriptionTextNormal"] @ "Make your own jaw-dropping vSide party. Pick your favorite YouTube vids and jam!";
     }
     return %ret;
 }

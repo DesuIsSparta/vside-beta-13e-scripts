@@ -10,9 +10,9 @@ function vurl::isParsed(%this)
 function vurl::parse(%this)
 {
     %payload = NextToken(%this.vurl, "protocol", ":");
-    if ((stricmp(%protocol, "vside") != 0) && ("" $= %payload))
+    if ((stricmp(%protocol, "vside") != 0) || ("" $= %payload))
     {
-        %errorText = "VURL::parse attempting to determine protocol and paylod. %this.vurl =" SPC %this.vurl;
+        %errorText = "VURL::parse attempting to determine protocol and paylod. %this.vurl =" @ " " @ %this.vurl;
         %this.doReportError("parseError", %errorText);
         return 0;
     }
@@ -21,13 +21,13 @@ function vurl::parse(%this)
     %parameters = strreplace(%parameters, "?", "&");
     if (getSubStr(%target, 0, 1) $= "/")
     {
-        %target = getSubStr(%target, 1, strlen(%target) - 1);
+        %target = getSubStr(%target, 1, (strlen(%target) - 1));
     }
     %targetpath = NextToken(%target, "targettype", "/");
     strlwr(%targettype);
-    if (((stricmp(%targettype, "location") != 0) && (stricmp(%targettype, "user") != 0)) && (stricmp(%targettype, "apartment") != 0))
+    if ((stricmp(%targettype, "location") != 0) && (stricmp(%targettype, "user") != 0) && (stricmp(%targettype, "apartment") != 0))
     {
-        %errorText = "VURL::parse unknown type type in vurl =" SPC %this.vurl;
+        %errorText = "VURL::parse unknown type type in vurl =" @ " " @ %this.vurl;
         %this.doReportError("parseError", %errorText);
         return 0;
     }
@@ -35,7 +35,7 @@ function vurl::parse(%this)
     %this.targetPath = %targetpath;
     %this.isIncomplete = 0;
     %this.isRawTransform = 0;
-    if ((stricmp(%this.targetType, "location") == 0) && (stricmp(%this.targetType, "apartment") == 0))
+    if ((stricmp(%this.targetType, "location") == 0) || (stricmp(%this.targetType, "apartment") == 0))
     {
         %targetDest = NextToken(%targetpath, "city", "/");
         %this.targetDest = urlDecode(%targetDest);
@@ -54,13 +54,10 @@ function vurl::parse(%this)
             {
                 %testTargetDest = strreplace(%this.targetDest, ",", " ");
                 %wordCount = getWordCount(%testTargetDest);
-                if ((%wordCount == 3) && (%wordCount == 7))
+                if ((%wordCount == 3) || (%wordCount == 7) && ($Server::Dedicated == 1) || isObjectAndHasPermission_NoWarn($player, "freeVURLTransform"))
                 {
-                    if (($Server::Dedicated == 1) && isObjectAndHasPermission_NoWarn($player, "freeVURLTransform"))
-                    {
-                        %this.targetDest = %testTargetDest;
-                        %this.isRawTransform = 1;
-                    }
+                    %this.targetDest = %testTargetDest;
+                    %this.isRawTransform = 1;
                 }
                 if ((%wordCount != 1) && (%this.isRawTransform == 0))
                 {
@@ -98,14 +95,14 @@ function vurl::reconstructVURL(%this)
     %paramCount = 0;
     if (!(%this._key $= ""))
     {
-        %newVurl = %newVurl @ %paramCount == 0 ? "?" : "&";
+        %newVurl = %newVurl @ (%paramCount == 0) ? "?" : "&";
         %paramCount = %paramCount + 1;
         %newVurl = %newVurl @ "key=" @ urlEncode(%this._key);
     }
     %retryServer = 0;
     while (!(%this._server[%retryServer] $= ""))
     {
-        %newVurl = %newVurl @ %paramCount == 0 ? "?" : "&";
+        %newVurl = %newVurl @ (%paramCount == 0) ? "?" : "&";
         %paramCount = %paramCount + 1;
         %newVurl = %newVurl @ "server" @ %retryServer @ "=" @ urlEncode(%this._server[%retryServer]);
         %retryServer = %retryServer + 1;
@@ -124,7 +121,7 @@ function vurl::tryProcessDynamicVurl(%this)
         {
             if (!$AmClient)
             {
-                error(getScopeName() SPC "- type only valid on client:" SPC %this.vurl SPC getTrace());
+                error(getScopeName() @ " " @ "- type only valid on client:" @ " " @ %this.vurl @ " " @ getTrace());
                 return 0;
             }
             %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
@@ -132,13 +129,12 @@ function vurl::tryProcessDynamicVurl(%this)
         }
         else
         {
-            error(getScopeName() SPC "- Unknown dynamic vurl type:" SPC %this.vurl SPC getTrace());
+            error(getScopeName() @ " " @ "- Unknown dynamic vurl type:" @ " " @ %this.vurl @ " " @ getTrace());
             return 0;
         }
-        echo(getScopeName() SPC "- converting dynamic vurl \"" @ %this.vurl @ "\" to \"" @ %newVurl @ "\".");
+        echo(getScopeName() @ " " @ "- converting dynamic vurl \"" @ %this.vurl @ "\" to \"" @ %newVurl @ "\".");
         %this.vurl = %newVurl;
     }
-    return ;
 }
 function vurl::setVURL(%this, %vurl)
 {
@@ -152,12 +148,10 @@ function vurl::setPassword(%this, %password)
 {
     %this._key = %password;
     %this.reconstructVURL();
-    return ;
 }
 function vurl::setIgnoreDownloadStatus(%this, %val)
 {
     %this.ignoreDownloadStatus = %val;
-    return ;
 }
 function vurl::execute(%this)
 {
@@ -174,10 +168,10 @@ function vurl::execute(%this)
         $VURL::curVURL.schedule(0, "delete");
     }
     $VURL::curVURL = %this;
-    log("network", "debug", "executing VURL =" SPC %this.vurl);
+    log("network", "debug", "executing VURL =" @ " " @ %this.vurl);
     if (!%this.isParsed)
     {
-        %errorText = "Attempting to execute unparsed VURL =" SPC %this.vurl;
+        %errorText = "Attempting to execute unparsed VURL =" @ " " @ %this.vurl;
         %this.doReportError("EXECUTEERROR", %errorText);
         return 0;
     }
@@ -199,7 +193,7 @@ function vurl::execute(%this)
             }
         }
     }
-    if (!(%this.isResolved) && !$StandAlone)
+    if (!%this.isResolved && !$StandAlone)
     {
         log("network", "info", "Unresolved VURL execution. Processing resolution request first");
         %this.doResolveVURL();
@@ -212,7 +206,7 @@ function vurl::execute(%this)
         %this.schedule(0, "delete");
         return 1;
     }
-    if ((((%this._server[%this.retryIndex] $= "") && !$StandAlone) || $StandAlone) && !((%this.standAloneRetry $= "")))
+    if ((%this._server[%this.retryIndex] $= "") && !$StandAlone || $StandAlone && !(%this.standAloneRetry $= ""))
     {
         %this.doReportError("nomoreretry", "");
         return 0;
@@ -230,13 +224,13 @@ function vurl::execute(%this)
         %cityInfo = WorldMapCityInfoMap.get(%cityName);
         LoadingGui.setBitmap(%cityInfo.background);
     }
-    if (%this.checkCityDownloadStatus(%cityName) && !(%this.ignoreDownloadStatus))
+    if (%this.checkCityDownloadStatus(%cityName) && !%this.ignoreDownloadStatus)
     {
         %this.doReportError("downloading", "");
         return 0;
     }
     %this.doReportSuccessExpected();
-    if (((stricmp(%this.targetType, "location") == 0) || (stricmp(%this.targetType, "apartment") == 0)) || (stricmp(%this.targetType, "user") == 0))
+    if ((stricmp(%this.targetType, "location") == 0) || (stricmp(%this.targetType, "apartment") == 0) || (stricmp(%this.targetType, "user") == 0))
     {
         if ($StandAlone)
         {
@@ -255,7 +249,6 @@ function vurl::clearResolutionAndExecute(%this)
 {
     %this.clearResolution();
     %this.execute();
-    return ;
 }
 function vurl::getCityFromServerName(%this, %ServerName)
 {
@@ -302,10 +295,11 @@ function vurl::clearResolution(%this)
         %idx = %idx + 1;
     }
 }
-
 function vurl::doResolveVURL(%this)
 {
-    %request = new ManagerRequest();
+    %request = new ManagerRequest("") {
+        className = "ResolveVURLRequest";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%request);
@@ -315,7 +309,6 @@ function vurl::doResolveVURL(%this)
     %request.VURLHandler = %this;
     %request.setURL(%url);
     %request.start();
-    return ;
 }
 function vurl::doReportError(%this, %errorCode, %errorText)
 {
@@ -342,7 +335,6 @@ function vurl::doReportError(%this, %errorCode, %errorText)
     {
         vurl::DefaultReportError(%this, %errorCode, %errorText);
     }
-    return ;
 }
 function vurl::doReportSuccessExpected(%this)
 {
@@ -358,7 +350,6 @@ function vurl::doReportSuccessExpected(%this)
         log("network", "debug", "Executing callback cbSuccessExpected = \"" @ %cmd @ "\"");
         eval(%cmd);
     }
-    return ;
 }
 function vurl::doReportSuccess(%this)
 {
@@ -369,12 +360,10 @@ function vurl::doReportSuccess(%this)
         log("network", "debug", "Executing callback cbSuccess = \"" @ %cmd @ "\"");
         eval(%cmd);
     }
-    return ;
 }
 function vurl::doRequestPassword(%this)
 {
     %this.DefaultRequestPassword();
-    return ;
 }
 function vurl::DefaultReportError(%vurl, %errorCode, %errorText)
 {
@@ -382,15 +371,15 @@ function vurl::DefaultReportError(%vurl, %errorCode, %errorText)
     if (%errorCode $= "")
     {
         log("network", "error", "empty VURL Errorcode.");
-        return ;
+        return;
     }
-    if ((stricmp(%errorCode, "missingdoorcode") == 0) && (stricmp(%errorCode, "incorrectdoorcode") == 0))
+    if ((stricmp(%errorCode, "missingdoorcode") == 0) || (stricmp(%errorCode, "incorrectdoorcode") == 0))
     {
         %vurl.doRequestPassword();
     }
     else
     {
-        if (((%errorCode $= "accessDenied") || (errorCode $= "parseError")) && !((%errorText $= "")))
+        if ((%errorCode $= "accessDenied") || (errorCode $= "parseError") && !(%errorText $= ""))
         {
             handleSystemMessage("msgInfoMessage", %errorText);
             %vurl.VURLHandler.schedule(0, "delete");
@@ -411,28 +400,25 @@ function vurl::DefaultReportError(%vurl, %errorCode, %errorText)
                     }
                 }
             }
-            %errorMessage = $MsgCat::VURLError["ERROR_" @ strupr(%errorCode)];
+            %errorMessage = $MsgCat::VURLError["ERROR_",strupr(%errorCode)];
             handleSystemMessage("msgInfoMessage", %errorMessage);
-            if (geTGF.isVisible() && (WorldMap.loggedIn == 0))
+            if (geTGF.isVisible() || (WorldMap.loggedIn == 0))
             {
                 MessageBoxOK("Whoa!", %errorMessage, "");
             }
         }
     }
-    return ;
 }
 function vurl::DefaultRequestPassword(%this)
 {
     MessageBoxTextEntryWithCancel($MsgCat::VURLText["PASSWORD_REQUIRED_TITLE"], $MsgCat::VURLText["PASSWORD_REQUIRED_TEXT"], VURL_ResumbmitWithPassword, "", 0);
     $VURL::saveVurlForPasswordCheck = %this.vurl;
-    return ;
 }
 function VURL_ResumbmitWithPassword(%newPassword)
 {
     %vurl = vurlGetParsedVurl($VURL::saveVurlForPasswordCheck);
     %vurl.setPassword(%newPassword);
     %vurl.execute();
-    return ;
 }
 function vurl::handleIncompeteVURL(%this)
 {
@@ -452,7 +438,6 @@ function vurl::handleIncompeteVURL(%this)
             log("network", "warn", "Should show directory for building \"" @ %this.targetCity @ "\" here");
         }
     }
-    return ;
 }
 function ResolveVURLRequest::onDone(%this)
 {
@@ -462,13 +447,13 @@ function ResolveVURLRequest::onDone(%this)
     if (stricmp(%status, "success") == 0)
     {
         %this.vurl = %this.getValue("vurl");
-        log("network", "debug", "ResolveVURLRequest returned resolved VURL =" SPC %this.vurl);
+        log("network", "debug", "ResolveVURLRequest returned resolved VURL =" @ " " @ %this.vurl);
         %vurl = %this.VURLHandler;
         if (%vurl.setVURL(%this.vurl))
         {
             if (%vurl.execute() == 0)
             {
-                log("network", "error", "unable to execute VURL vurl=" SPC %this.vurl);
+                log("network", "error", "unable to execute VURL vurl=" @ " " @ %this.vurl);
             }
         }
         else
@@ -485,7 +470,6 @@ function ResolveVURLRequest::onDone(%this)
         %this.VURLHandler.schedule(0, "delete");
     }
     %this.schedule(0, "delete");
-    return ;
 }
 function ResolveVURLRequest::onError(%this, %unused, %errMsg)
 {
@@ -497,26 +481,25 @@ function ResolveVURLRequest::onError(%this, %unused, %errMsg)
         $VURL::curVURL.delete();
         $VURL::curVURL = 0;
     }
-    return ;
 }
 function vurl::reorderServerList(%this)
 {
     if ($Server::Dedicated)
     {
-        return ;
+        return;
     }
     %idxSwapout = 0;
     while (!(%this._server[%idxSwapout] $= ""))
     {
         if (stricmp($ServerName, %this._server[%idxSwapout]) == 0)
         {
-            continue;
+            break;
         }
         %idxSwapout = %idxSwapout + 1;
     }
-    if ((%this._server[%idxSwapout] $= "") && (%idxSwapout == 0))
+    if ((%this._server[%idxSwapout] $= "") || (%idxSwapout == 0))
     {
-        return ;
+        return;
     }
     %idx = %idxSwapout;
     while (%idx > 0)
@@ -525,7 +508,6 @@ function vurl::reorderServerList(%this)
         %idx = %idx - 1;
     }
     %this._server[0] = $ServerName;
-    return ;
 }
 function vurlOperation(%line, %ignoreDownloadStatus)
 {
@@ -534,14 +516,14 @@ function vurlOperation(%line, %ignoreDownloadStatus)
         %ignoreDownloadStatus = 0;
     }
     log("network", "debug", "vurlOperation, vurl=\"" @ %line @ "\"");
-    %vurl = new ScriptObject();
+    %vurl = new ScriptObject("");
     %vurl.bindClassName("VURL");
     %vurl.setIgnoreDownloadStatus(%ignoreDownloadStatus);
     if (%vurl.setVURL(%line))
     {
         if (%vurl.execute() == 0)
         {
-            log("network", "error", "Unable to execute VURL" SPC %line);
+            log("network", "error", "Unable to execute VURL" @ " " @ %line);
             %vurl.delete();
         }
         else
@@ -551,31 +533,29 @@ function vurlOperation(%line, %ignoreDownloadStatus)
     }
     else
     {
-        log("network", "error", "Unable to set and parse VURL" SPC %line);
+        log("network", "error", "Unable to set and parse VURL" @ " " @ %line);
         %vurl.delete();
     }
-    return ;
 }
 function vurlClearResolutionAndExecute(%line)
 {
     log("network", "debug", "vurlClearResolutionAndExecute, vurl=\"" @ %line @ "\"");
-    %vurl = new ScriptObject();
+    %vurl = new ScriptObject("");
     %vurl.bindClassName("VURL");
     if (%vurl.setVURL(%line))
     {
         %vurl.clearResolution();
         if (%vurl.execute() == 0)
         {
-            log("network", "error", "Unable to execute VURL" SPC %line);
+            log("network", "error", "Unable to execute VURL" @ " " @ %line);
             %vurl.delete();
         }
     }
     else
     {
-        log("network", "error", "Unable to set and parse VURL" SPC %line);
+        log("network", "error", "Unable to set and parse VURL" @ " " @ %line);
         %vurl.delete();
     }
-    return ;
 }
 function vurlClearResolution(%line)
 {
@@ -588,17 +568,18 @@ function vurlClearResolution(%line)
 }
 function vurlGetParsedVurl(%aVurlString)
 {
-    %theVurl = new ScriptObject();
+    %theVurl = new ScriptObject("") {
+        class = "VURL";
+    };
     if (%theVurl.setVURL(%aVurlString))
     {
-        log("login", "debug", getScopeName() SPC "- parsed VURL");
+        log("login", "debug", getScopeName() @ " " @ "- parsed VURL");
         return %theVurl;
     }
     else
     {
-        log("login", "error", getScopeName() SPC "-Unable to set and parse VURL");
+        log("login", "error", getScopeName() @ " " @ "-Unable to set and parse VURL");
         %theVurl.delete();
         return 0;
     }
-    return ;
 }

@@ -34,26 +34,23 @@ function recordMovie(%movieName, %fps)
 {
     $timeAdvance = 1000 / %fps;
     $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, 0);
-    return ;
 }
 function movieGrabScreen(%movieName, %frameNumber)
 {
     ScreenShot(%movieName @ formatImageNumber(%frameNumber) @ ".png");
-    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, %frameNumber + 1);
-    return ;
+    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, (%frameNumber + 1));
 }
 function stopMovie()
 {
     $timeAdvance = 0;
     cancel($screenGrabThread);
-    return ;
 }
 $screenshotNumber = 0;
 function doScreenShot(%val)
 {
     if (!%val)
     {
-        return ;
+        return;
     }
     %name = "screenshots/screen_" @ getTimeStamp();
     if ($Pref::Video::screenShotFormat $= "JPEG")
@@ -76,7 +73,5 @@ function doScreenShot(%val)
     }
     ScreenShot(%name @ %ext, %fmt);
     doSaveScreenShotMetaData(%name, %ext, PlayGui);
-    return ;
 }
 GlobalActionMap.bind(keyboard, "ctrl-alt s", doScreenShot);
-

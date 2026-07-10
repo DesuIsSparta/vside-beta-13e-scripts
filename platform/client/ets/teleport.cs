@@ -16,7 +16,6 @@ function clientCmdTeleportSuccessful()
     {
         $player.adjustHorizontalScale();
     }
-    return ;
 }
 function clientCmdTeleportFailure(%retry)
 {
@@ -28,7 +27,7 @@ function clientCmdTeleportFailure(%retry)
             log("network", "info", "Attempting Retry.");
             if ($VURL::curVURL.execute())
             {
-                return ;
+                return;
             }
             log("network", "warn", "VURL Teleportion faild, retries exausted.");
         }
@@ -44,16 +43,14 @@ function clientCmdTeleportFailure(%retry)
         echo("Teleport failed");
         geTGF.reopen();
     }
-    return ;
 }
 function clientCmdNotifyOfRefuseTeleport()
 {
     handleSystemMessage("msgInfoMessage", $MsgCat::teleport["NOTIFY-REFUSING-TELEPORTS"]);
-    return ;
 }
 if (!isObject($pi))
 {
-    $pi = 3.14159;
+    $pi = 3.1415926536;
 }
 function Player::adjustHorizontalScale(%this)
 {
@@ -65,8 +62,8 @@ function Player::adjustHorizontalScale(%this)
         gSetField(%this, baseHorizScale, %hScale);
         %hScale = 0.05;
     }
-    %hScale = mMin(%hScale + 0.05, gGetField(%this, baseHorizScale));
-    %this.setScale(%hScale SPC %hScale SPC %vScale);
+    %hScale = mMin((%hScale + 0.05), gGetField(%this, baseHorizScale));
+    %this.setScale(%hScale @ " " @ %hScale @ " " @ %vScale);
     if (%hScale < gGetField(%this, baseHorizScale))
     {
         %this.schedule(25, "adjustHorizontalScale");
@@ -75,7 +72,6 @@ function Player::adjustHorizontalScale(%this)
     {
         gSetField(%this, isScaling, 0);
     }
-    return ;
 }
 function doTeleportToMyApartment(%ignoreDownloadStatus)
 {
@@ -84,7 +80,6 @@ function doTeleportToMyApartment(%ignoreDownloadStatus)
         %ignoreDownloadStatus = 0;
     }
     getApartmentVURL("doTeleportToMyApartmentCallback", %ignoreDownloadStatus);
-    return ;
 }
 function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus)
 {
@@ -97,7 +92,7 @@ function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus)
         if (%status $= "noOwnedSpace")
         {
             %statusMsg = GetMyApartmentVURLCommand.getValue("statusMsg");
-            handleSystemMessage("msgInfoMessage", "We could not find your apartment." NL %statusMsg);
+            handleSystemMessage("msgInfoMessage", "We could not find your apartment." @ "\n" @ %statusMsg);
         }
         else
         {
@@ -115,14 +110,13 @@ function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus)
             }
         }
     }
-    return ;
 }
 function getApartmentVURL(%callback, %ignoreDownloadStatus)
 {
     %request = safeEnsureScriptObject("ManagerRequest", "GetMyApartmentVURLCommand");
     if (%request.isOpen())
     {
-        return ;
+        return;
     }
     %request.callback = %callback;
     %request.ignoreDownloadStatus = %ignoreDownloadStatus;
@@ -130,7 +124,6 @@ function getApartmentVURL(%callback, %ignoreDownloadStatus)
     log("network", "debug", "GetSpaceVURL: " @ %url);
     %request.setURL(%url);
     %request.start();
-    return ;
 }
 function GetMyApartmentVURLCommand::onDone(%this)
 {
@@ -155,12 +148,10 @@ function GetMyApartmentVURLCommand::onDone(%this)
         %cmd = %this.callback @ "(\"" @ %status @ "\", \"" @ %vurl @ "\", \"" @ %this.ignoreDownloadStatus @ "\");";
         eval(%cmd);
     }
-    return ;
 }
 function GetMyApartmentVURLCommand::onError(%this, %unused, %errMsg)
 {
     log("network", "debug", "GetMyApartmentVURLCommand::onError: " @ %errMsg);
     $Player::myPlaceVURL = "";
     %this.schedule(0, "delete");
-    return ;
 }

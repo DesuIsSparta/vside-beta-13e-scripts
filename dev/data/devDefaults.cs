@@ -18,4 +18,3 @@ $DevPref::Debug::PrintClickedOn = $Defaults::DevPref::Debug::PrintClickedOn = 0;
 $DevPref::SkuSnapshot::CameraVector = $DevPref::SkuSnapshot::CameraVector = "1 2 -1";
 $DevPref::SkuSnapshot::CameraFOVDeg = $DevPref::SkuSnapshot::CameraFOVDeg = 60;
 $DevPref::closet::skuDeets = $DevPref::closet::skuDeets = 0;
-

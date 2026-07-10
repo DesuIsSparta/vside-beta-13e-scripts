@@ -1,8 +1,7 @@
 function testCommandToServer_DumpVar(%val, %name)
 {
-    echo(%name SPC "    =" SPC %val);
-    echo(%name SPC "len =" SPC strlen(%val));
-    return ;
+    echo(%name @ " " @ "    =" @ " " @ %val);
+    echo(%name @ " " @ "len =" @ " " @ strlen(%val));
 }
 function testCommandToServer()
 {
@@ -18,19 +17,17 @@ function testCommandToServer()
     testCommandToServer_DumpVar(%var4, "var4");
     echo("sending vars to server..");
     commandToServer('testCommandToServer', %var1, %var2, %var3, %var4);
-    return ;
 }
 function serverCmdTestCommandToServer(%client, %var1, %var2, %var3, %var4)
 {
     echo("testCommandToServer: got vars from client");
-    echo("client =" SPC getDebugString(%client));
+    echo("client =" @ " " @ getDebugString(%client));
     testCommandToServer_DumpVar(%var1, "var1");
     testCommandToServer_DumpVar(%var2, "var2");
     testCommandToServer_DumpVar(%var3, "var3");
     testCommandToServer_DumpVar(%var4, "var4");
     echo("sending vars to client..");
     commandToClient(%client, 'testCommandToClient', %var1, %var2, %var3, %var4);
-    return ;
 }
 function clientCmdTestCommandToClient(%var1, %var2, %var3, %var4)
 {
@@ -39,5 +36,4 @@ function clientCmdTestCommandToClient(%var1, %var2, %var3, %var4)
     testCommandToServer_DumpVar(%var2, "var2");
     testCommandToServer_DumpVar(%var3, "var3");
     testCommandToServer_DumpVar(%var4, "var4");
-    return ;
 }

@@ -58,7 +58,7 @@ function ETSWhatsThisMenu::onSelect(%this, %id, %text)
 {
     if (%text $= $gAdvertsClient_NoThanksText)
     {
-        return ;
+        return;
     }
     %url = "";
     if (%this.newStyle)
@@ -82,7 +82,6 @@ function ETSWhatsThisMenu::onSelect(%this, %id, %text)
             %this.obj = 0;
         }
     }
-    return ;
 }
 function PlayGui::onAdvertClick(%this, %obj, %pt)
 {
@@ -90,11 +89,11 @@ function PlayGui::onAdvertClick(%this, %obj, %pt)
     {
         if (%this.tryOnInfoSignClick(%obj))
         {
-            return ;
+            return;
         }
         if (%this.tryOnMLTextSignClick(%obj))
         {
-            return ;
+            return;
         }
     }
     if (%obj.isClassDFTextureAdvert())
@@ -111,7 +110,6 @@ function PlayGui::onAdvertClick(%this, %obj, %pt)
         ETSWhatsThisMenu.showAtCursor();
     }
     ETSWhatsThisMenu.description = %description;
-    return ;
 }
 function PlayGui::tryOnInfoSignClick(%this, %obj, %pt)
 {
@@ -126,7 +124,7 @@ function PlayGui::tryOnInfoSignClick(%this, %obj, %pt)
     %infoSignTitle = $MsgCat::infoSignTitle[%infoSignID];
     if (%infoSignBody $= "")
     {
-        error(getTrace() SPC "- unknown infoSign:" SPC %s);
+        error(getTrace() @ " " @ "- unknown infoSign:" @ " " @ %s);
         return 1;
     }
     if (%infoSignTitle $= "")
@@ -147,7 +145,7 @@ function PlayGui::tryOnMLTextSignClick(%this, %obj)
     %file = trim(restWords(%s));
     if (!isFile(%file))
     {
-        error(getScopeName() SPC "- file not found:" SPC %file);
+        error(getScopeName() @ " " @ "- file not found:" @ " " @ %file);
         return 1;
     }
     MapPointPanelBitmap.setBitmap(%file);
@@ -192,9 +190,9 @@ function convertPtToTextureSpace(%obj, %pt)
     %yComp = %obj.getDataBlock().advertYComp;
     %xFlip = %obj.getDataBlock().advertXFlip;
     %yFlip = %obj.getDataBlock().advertYFlip;
-    %pt[0] = getWord(%pt, 0) ;
-    %pt[1] = getWord(%pt, 1) ;
-    %pt[2] = getWord(%pt, 2) ;
+    %pt[0] = getWord(%pt, 0);
+    %pt[1] = getWord(%pt, 1);
+    %pt[2] = getWord(%pt, 2);
     %retX = %pt[%xComp];
     %retY = %pt[%yComp];
     if ((%xFlip >= 0) && (%pt[%xFlip] < 0.5))
@@ -207,20 +205,20 @@ function convertPtToTextureSpace(%obj, %pt)
     }
     %retX = getSubStr(%retX, 0, 5);
     %retY = getSubStr(%retY, 0, 5);
-    return %retX SPC %retY;
+    return %retX @ " " @ %retY;
 }
 $gDynamicAdvertCount = 0;
 function AdvertShape::onGotImageURL(%this)
 {
-    log("Adverts", "debug", getScopeName() SPC getDebugString(%this) SPC "\"" @ %this.getImageURL() @ "\"");
+    log("Adverts", "debug", getScopeName() @ " " @ getDebugString(%this) @ " " @ "\"" @ %this.getImageURL() @ "\"");
     %imageURL = %this.getImageURL();
     if (%imageURL $= "")
     {
-        log("Adverts", "debug", getScopeName() SPC getDebugString(%this) SPC "got empty URL. doing nothing.");
-        return ;
+        log("Adverts", "debug", getScopeName() @ " " @ getDebugString(%this) @ " " @ "got empty URL. doing nothing.");
+        return;
     }
     %extension = strrchr(%imageURL, ".");
-    if ((%extension $= ".jpg") && (%extension $= ".png"))
+    if ((%extension $= ".jpg") || (%extension $= ".png"))
     {
         %justFileName = strrchr(%imageURL, "/");
         %justFileName = getSubStr(%justFileName, 1, 100000000);
@@ -231,14 +229,12 @@ function AdvertShape::onGotImageURL(%this)
     }
     %this.justFilename = %justFileName;
     dlMgr.applyUrl(%imageURL, "dlMgrCallback_AdvertShape", "", %this, "");
-    return ;
 }
 function dlMgrCallback_AdvertShape(%dlItem, %unused)
 {
     %advertShape = %dlItem.callbackData;
     %justFileName = %advertShape.justFilename;
     %ext = strrchr(%justFileName, ".");
-    %justFileName = getSubStr(%justFileName, 0, strlen(%justFileName) - strlen(%ext));
+    %justFileName = getSubStr(%justFileName, 0, (strlen(%justFileName) - strlen(%ext)));
     %advertShape.setSkinNameWithPath(%justFileName, %dlItem.localFilename, 1);
-    return ;
 }

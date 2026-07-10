@@ -1,12 +1,10 @@
 function clientCmdBeingBooted(%message)
 {
-    echo("i got booted!" SPC %message);
-    return ;
+    echo("i got booted!" @ " " @ %message);
 }
 function clientCmdBeingBanned(%message)
 {
-    echo("i got banned!" SPC %message);
-    return ;
+    echo("i got banned!" @ " " @ %message);
 }
 $gModNotificationHandlers["deleted"] = "onModNotificationDeleted";
 $gModNotificationHandlers["micStatus"] = "onModNotificationMicStatus";
@@ -17,16 +15,14 @@ function clientCmdModNotification(%taggedNotifyType, %param1, %param2)
     %handler = $gModNotificationHandlers[%notifyType];
     if (%handler $= "")
     {
-        error(getScopeName() SPC "- Unknown notifyType" SPC %notifyType);
-        return ;
+        error(getScopeName() @ " " @ "- Unknown notifyType" @ " " @ %notifyType);
+        return;
     }
     call(%handler, %param1, %param2);
-    return ;
 }
 function onModNotificationDeleted(%playerName, %unused)
 {
     onModNotificationMicStatus(%playerName, 0);
-    return ;
 }
 function onModNotificationMicStatus(%playerName, %hasOne)
 {
@@ -38,5 +34,4 @@ function onModNotificationMicStatus(%playerName, %hasOne)
     {
         micPanel.delMicHolder(%playerName);
     }
-    return ;
 }

@@ -5,7 +5,6 @@ function geActivitiesPanel::open(%this)
     playGui.focusAndRaise(%this);
     WindowManager.update();
     %this.onUpdateTimer();
-    return ;
 }
 function geActivitiesPanel::close(%this)
 {
@@ -19,14 +18,12 @@ function geActivitiesPanel::close(%this)
 function activitiesOperation()
 {
     toggleVisibleState(geActivitiesPanel);
-    return ;
 }
 function geActivitiesPanel::onUpdateTimer(%this)
 {
     %this.updateStates();
     cancel(%this.updateTimerID);
     %this.updateTimerID = %this.schedule(200, "onUpdateTimer");
-    return ;
 }
 function geActivitiesPanel::updateStates(%this)
 {
@@ -43,27 +40,26 @@ function geActivitiesPanel::updateStates(%this)
         %timeLeft = %uam.getActivityTimeLeft(%activityName);
         %isHighest = %activityName $= %highest;
         %baseColor = %isHighest ? "ccff33" : "dddddd";
-        %style = %on ? "<linkcolor:" : "<linkcolor:";
+        %style = %on ? "<linkcolor:" @ %baseColor @ "f0><modulationColor:" @ %baseColor @ "f0>" : "<linkcolor:" @ %baseColor @ "80><modulationColor:" @ %baseColor @ "40>";
         %style = %style @ "<color:" @ %baseColor @ "f0>";
-        %style = %isHighest ? "<b>" : %style;
+        %style = %isHighest ? "<b>" @ %style : %style;
         %icon = %uam.getActivityIconFilename(%activityName);
-        %timeLeftText = %timeLeft <= 0 ? "" : " - ";
+        %timeLeftText = %timeLeft <= 0 ? "" : " - " @ formatFloat("%0.1f", (%timeLeft / 1000));
         %text = "<spush>" @ %style @ "<just:left><a:gamelink " @ %activityName @ ">" @ %activityUFName @ "</a>" @ %timeLeftText @ "<just:right><bitmap:" @ %icon @ "><spop>" @ %delim @ %text;
         %delim = "<br>";
         %n = %n - 1;
     }
     %text = %text @ %delim;
     %timeSinceLastReport = %uam.getLastReportAgeMS();
-    %timeSinceLastReport = mFloor(%timeSinceLastReport / 1000);
-    %text = %text @ %delim @ "<just:left><color:a09000>last report:" SPC secondsToHHMMSS(%timeSinceLastReport);
+    %timeSinceLastReport = mFloor((%timeSinceLastReport / 1000));
+    %text = %text @ %delim @ "<just:left><color:a09000>last report:" @ " " @ secondsToHHMMSS(%timeSinceLastReport);
     %timeToNextReport = %uam.getMSToNextReport();
     if (%timeToNextReport > 0)
     {
-        %timeToNextReport = formatFloat("%.1f", %timeToNextReport / 1000);
-        %text = %text @ %delim @ "<just:left><color:907000>reports paused for" SPC %timeToNextReport @ "s..";
+        %timeToNextReport = formatFloat("%.1f", (%timeToNextReport / 1000));
+        %text = %text @ %delim @ "<just:left><color:907000>reports paused for" @ " " @ %timeToNextReport @ "s..";
     }
     geActivitiesPanel_Current.setText(%text);
-    return ;
 }
 function geActivitiesPanel_Current::onUrl(%this, %url)
 {
@@ -74,5 +70,4 @@ function geActivitiesPanel_Current::onUrl(%this, %url)
     %activityName = firstWord(%url);
     %uam = getUserActivityMgr();
     %uam.setActivityActive(%activityName, !%uam.getActivityActive(%activityName));
-    return ;
 }

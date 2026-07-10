@@ -1,16 +1,13 @@
 function tutorialHud::show(%this)
 {
     %this.onOpen();
-    return ;
 }
 function tutorialHud::onOpen(%this)
 {
     HudTabs.dontCloseNextTime();
-    return ;
 }
 function tutorialHud::onClose(%this)
 {
-    return ;
 }
 function HudTabs::fillTutorialTab(%this)
 {
@@ -25,7 +22,6 @@ function HudTabs::fillTutorialTab(%this)
     %theTab.add($returnControl);
     HudTabs.hideTabWithName("tutorial");
     %theTab.pushToBack(%theTab.closeButton);
-    return ;
 }
 $gTutorialsFontBig = "<font:arial bold:18><color:ffffff>";
 $gTutorialsFontMed = "<font:arial bold:16><color:ffffff>";
@@ -70,7 +66,7 @@ function TutorialsCatalogClient::GetTutorialsRoot()
                     {
                         if (!($gContiguousSpaceName $= ""))
                         {
-                            error(getScopeName() SPC "- contiguous space name \'" @ $gContiguousSpaceName @ "\' not recognized!" SPC getTrace());
+                            error(getScopeName() @ " " @ "- contiguous space name '" @ $gContiguousSpaceName @ "' not recognized!" @ " " @ getTrace());
                         }
                         return "";
                     }
@@ -89,7 +85,7 @@ function tutorials_Initialize()
     TutorialsCatalogClient.deleteMembers();
     if (TutorialsCatalogClient::GetTutorialsRoot() $= "")
     {
-        return ;
+        return;
     }
     TutorialsCatalogClient.addContentPattern("*.jpg");
     TutorialsCatalogClient.addContentPattern("*.png");
@@ -102,7 +98,7 @@ function tutorials_Initialize()
         }
         else
         {
-            error(getScopeName() SPC "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
+            error(getScopeName() @ " " @ "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
         }
     }
     geTutorialContainer.currentTutorialObj = "";
@@ -111,7 +107,6 @@ function tutorials_Initialize()
     {
         geTutorialContainer.goToTutorialByIndex(0, 1);
     }
-    return ;
 }
 function TutorialsCatalogClient::addContentPattern(%this, %pattern)
 {
@@ -123,7 +118,6 @@ function TutorialsCatalogClient::addContentPattern(%this, %pattern)
         %file = findNextFile(%filespec);
     }
 }
-
 function TutorialsCatalogClient::addContentItem(%this, %file)
 {
     %file = getSubStr(%file, strlen(TutorialsCatalogClient::GetTutorialsRoot()), 1000000);
@@ -141,7 +135,7 @@ function TutorialsCatalogClient::addContentItem(%this, %file)
             %tutorialObj.nagsGroup = safeNewScriptObject("SimGroup", "", 0);
             %tutorialObj.nagsGroup.tutorial = %tutorialObj;
         }
-        %nagObj = new SimGroup();
+        %nagObj = new SimGroup("");
         %nagObj.bindClassName("TutorialsObject");
         %nagObj.bindClassName("NagObject");
         %nagObj.setInternalName(%stepName);
@@ -155,7 +149,6 @@ function TutorialsCatalogClient::addContentItem(%this, %file)
         %itemObj = %tutorialObj.getSubItemByName(%stepName, 1);
         %itemObj.isSecret = 0;
     }
-    return ;
 }
 function TutorialsObject::getSubItemByName(%this, %name, %createIfNotFound)
 {
@@ -176,7 +169,7 @@ function TutorialsObject::getSubItemByName(%this, %name, %createIfNotFound)
 }
 function TutorialsObject::getSubItemByIndex(%this, %ndx)
 {
-    if ((%ndx < 0) && (%ndx >= %this.getCount()))
+    if ((%ndx < 0) || (%ndx >= %this.getCount()))
     {
         return 0;
     }
@@ -184,7 +177,6 @@ function TutorialsObject::getSubItemByIndex(%this, %ndx)
     {
         return %this.getObject(%ndx);
     }
-    return ;
 }
 function TutorialsObject::getIndex(%this)
 {
@@ -236,7 +228,7 @@ function TutorialsObject::getFirstSibling(%this)
 }
 function TutorialsObject::getLastSibling(%this)
 {
-    return %this.getGroup().getSubItemByIndex(%this.getGroup().getCount() - 1);
+    return %this.getGroup().getSubItemByIndex((%this.getGroup().getCount() - 1));
 }
 function geTutorialContainer::getCurrentTutorialObj(%this)
 {
@@ -253,7 +245,6 @@ function geTutorialContainer::getCurrentStepObj(%this)
     {
         return %tut.currentStepObj;
     }
-    return ;
 }
 function geTutorialContainer::getStepBitmapPath(%this, %stepObj)
 {
@@ -267,11 +258,11 @@ function geTutorialContainer::goToTutorialByIndex(%this, %ndx, %restartTutorial)
     %tutorialObj = TutorialsCatalogClient.getSubItemByIndex(%ndx);
     if (!isObject(%tutorialObj))
     {
-        error(getScopeName() SPC "- can\'t find tutorial:" SPC %ndx);
-        return ;
+        error(getScopeName() @ " " @ "- can't find tutorial:" @ " " @ %ndx);
+        return;
     }
     %this.currentTutorialObj = %tutorialObj;
-    if (%restartTutorial && !isObject(%tutorialObj.currentStepObj))
+    if (%restartTutorial || !isObject(%tutorialObj.currentStepObj))
     {
         %this.goToStepByIndex(0);
     }
@@ -279,15 +270,14 @@ function geTutorialContainer::goToTutorialByIndex(%this, %ndx, %restartTutorial)
     {
         %this.goToStepByIndex(%tutorialObj.currentStepObj.getIndex());
     }
-    return ;
 }
 function geTutorialContainer::goToTutorialByDelta(%this, %delta, %promoteToParentDelta)
 {
     %cur = %this.getCurrentTutorialObj();
     if (!isObject(%cur))
     {
-        error(getScopeName() SPC "- no current item. Trying to step by" SPC %delta);
-        return ;
+        error(getScopeName() @ " " @ "- no current item. Trying to step by" @ " " @ %delta);
+        return;
     }
     %new = %cur.getSiblingByDelta(%delta);
     if (isObject(%new))
@@ -302,39 +292,37 @@ function geTutorialContainer::goToTutorialByDelta(%this, %delta, %promoteToParen
     {
         if (%promoteToParentDelta)
         {
-            error(getScopeName() SPC "- no parents!");
+            error(getScopeName() @ " " @ "- no parents!");
         }
     }
-    return ;
 }
 function geTutorialContainer::goToStepByIndex(%this, %ndx)
 {
     %tut = %this.getCurrentTutorialObj();
     if (!isObject(%tut))
     {
-        error(getScopeName() SPC "- no current tutorial. Trying to go to step" SPC %ndx);
-        return ;
+        error(getScopeName() @ " " @ "- no current tutorial. Trying to go to step" @ " " @ %ndx);
+        return;
     }
     %stepObj = %tut.getSubItemByIndex(%ndx);
     if (!isObject(%stepObj))
     {
-        error(getScopeName() SPC "- no such step:" SPC %ndx);
-        return ;
+        error(getScopeName() @ " " @ "- no such step:" @ " " @ %ndx);
+        return;
     }
     %tut.currentStepObj = %stepObj;
     %this.setMainBitmap(%this.getStepBitmapPath(%stepObj));
     %this.setMetaData(%stepObj);
     %this.doUpdateButtons(%tut);
     %tut.doRestartNags();
-    return ;
 }
 function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDelta)
 {
     %cur = %this.getCurrentStepObj();
     if (!isObject(%cur))
     {
-        error(getScopeName() SPC "- no current item. Trying to step by" SPC %delta);
-        return ;
+        error(getScopeName() @ " " @ "- no current item. Trying to step by" @ " " @ %delta);
+        return;
     }
     %new = %cur.getSiblingByDelta(%delta);
     if (isObject(%new))
@@ -345,28 +333,24 @@ function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDel
     {
         if (%promoteToParentDelta)
         {
-            %this.goToTutorialByDelta(%delta < 0 ? 1 : 1, 1);
+            %this.goToTutorialByDelta((%delta < 0) ? -1 : 1, 1);
         }
     }
-    return ;
 }
 function geTutorialContainer::goToFirstStep(%this)
 {
     %cur = %this.getCurrentStepObj();
     %this.goToStepByIndex(%cur.getFirstSibling().getIndex());
-    return ;
 }
 function geTutorialContainer::goToCurrentStep(%this)
 {
     %cur = %this.getCurrentStepObj();
     %this.goToStepByIndex(%cur.getIndex());
-    return ;
 }
 function geTutorialContainer::goToLastStep(%this)
 {
     %cur = %this.getCurrentStepObj();
     %this.goToStepByIndex(%cur.getLastSibling().getIndex());
-    return ;
 }
 function geTutorialContainer::doUpdateButtons(%this, %tutorialsObject)
 {
@@ -382,10 +366,9 @@ function geTutorialContainer::doUpdateButtons(%this, %tutorialsObject)
         geTutorialMLReturnToTutorialButton.setVisible(0);
         geTutorialMLRepeatTheTutorialButton.setVisible(0);
         %stepCount = %tutorialsObject.getCount();
-        geTutorialMLNavNext.setVisible(%stepCount > 1);
-        geTutorialMLNavPrev.setVisible(%stepCount > 1);
+        geTutorialMLNavNext.setVisible((%stepCount > 1));
+        geTutorialMLNavPrev.setVisible((%stepCount > 1));
     }
-    return ;
 }
 function geTutorialContainer::setMainBitmap(%this, %path)
 {
@@ -399,7 +382,6 @@ function geTutorialContainer::setMainBitmap(%this, %path)
     geTutorialMainBitmap.resize(%w, %h);
     %dragNZoom.fitAroundParent();
     %dragNZoom.reposition(0, 0);
-    return ;
 }
 function geTutorialContainer::setMetaData(%this, %stepObj)
 {
@@ -411,7 +393,7 @@ function geTutorialContainer::setMetaData(%this, %stepObj)
     %labelText = "<just:right>" @ $gTutorialsFontBig @ %tutorialName;
     geTutorialMLTop.setText(%labelText);
     %labelText = $gTutorialsFontMed @ %stepName;
-    if (((%stepObj.getGroup() == %stepObj.getGroup().tutorial) || %stepObj.getGroup().tutorial.isSecret) && (%stepObj.getGroup().getCount() > 1))
+    if ((%stepObj.getGroup() == %stepObj.getGroup().tutorial) || %stepObj.getGroup().tutorial.isSecret && (%stepObj.getGroup().getCount() > 1))
     {
         %labelText = %labelText @ "<just:right>" @ $gTutorialsFontSmall @ "step " @ %stepNum @ " of " @ %stepTTL;
         if (%stepNum < %stepTTL)
@@ -432,15 +414,14 @@ function geTutorialContainer::setMetaData(%this, %stepObj)
         }
     }
     geTutorialMLBot.setText(%labelText);
-    return ;
 }
 function geTutorialMLNavNext::onURL(%this, %url)
 {
     %stepObj = geTutorialContainer.getCurrentStepObj();
     if (!isObject(%stepObj))
     {
-        error(getScopeName() SPC "- no current step");
-        return ;
+        error(getScopeName() @ " " @ "- no current step");
+        return;
     }
     %restartNags = 1;
     %stepNdx = %stepObj.getIndex();
@@ -495,22 +476,18 @@ function geTutorialMLNavNext::onURL(%this, %url)
             }
         }
     }
-    return ;
 }
 function geTutorialMLNavPrev::onURL(%this, %url)
 {
     geTutorialMLNavNext::onURL(%this, %url);
-    return ;
 }
 function geTutorialMLRepeatTheTutorialButton::onURL(%this, %url)
 {
     geTutorialMLNavNext::onURL(%this, %url);
-    return ;
 }
 function geTutorialMLReturnToTutorialButton::onURL(%this, %url)
 {
     geTutorialMLNavNext::onURL(%this, %url);
-    return ;
 }
 $gTutorialOpenTimer = "";
 $gCurrentMainTutorial = 0;
@@ -519,11 +496,10 @@ function clientCmdEnterTutorialSpace(%name, %forceRestartTutorial)
     %tutorialObj = TutorialsCatalogClient.getChildByUserFacingName(%name);
     if (!isObject(%tutorialObj))
     {
-        error(getScopeName() SPC "- no such tutorial:" SPC %name);
-        return ;
+        error(getScopeName() @ " " @ "- no such tutorial:" @ " " @ %name);
+        return;
     }
     %tutorialObj.doStartTutorial(%forceRestartTutorial);
-    return ;
 }
 function TutorialsObject::doStartTutorial(%this, %forceRestartTutorial)
 {
@@ -533,7 +509,6 @@ function TutorialsObject::doStartTutorial(%this, %forceRestartTutorial)
         $gCurrentMainTutorial = %this.getId();
     }
     %this.doUpdateDisplay(1, !%returningToMainTutorialFromSecretTutorial || %forceRestartTutorial);
-    return ;
 }
 function TutorialsObject::doRestartNags(%this)
 {
@@ -549,12 +524,11 @@ function TutorialsObject::doRestartNags(%this)
         }
     }
 }
-
 function TutorialsCatalogClient::forceNextNag()
 {
     if (!$ETS::devMode)
     {
-        return ;
+        return;
     }
     if (isObject($gCurrentMainTutorial))
     {
@@ -564,13 +538,12 @@ function TutorialsCatalogClient::forceNextNag()
     {
         handleSystemMessage("msgInfoMessage", "Not currently in a tutorial.");
     }
-    return ;
 }
 function TutorialsObject::forceNextNag(%this)
 {
     if (!$ETS::devMode)
     {
-        return ;
+        return;
     }
     if (isObject(%this.nagsGroup))
     {
@@ -582,13 +555,12 @@ function TutorialsObject::forceNextNag(%this)
             if (%nagObj.schedule)
             {
                 %nagObj.doUpdateDisplay();
-                return ;
+                return;
             }
             %i = %i + 1;
         }
     }
     handleSystemMessage("msgInfoMessage", "No nags exist for the current tutorial.");
-    return ;
 }
 function TutorialsObject::doUpdateDisplay(%this, %showPanel, %restartTutorial)
 {
@@ -607,7 +579,6 @@ function TutorialsObject::doUpdateDisplay(%this, %showPanel, %restartTutorial)
         HudTabs.overrideLockedOpen = 1;
         HudTabs.hideTabWithName("tutorial");
     }
-    return ;
 }
 function openTutorialPaneReally(%tutorialObj, %restartTutorial)
 {
@@ -616,15 +587,14 @@ function openTutorialPaneReally(%tutorialObj, %restartTutorial)
     alxPlay(AudioProfile_Tutorial);
     geTutorialContainer.goToTutorialByIndex(%tutorialObj.getIndex(), %restartTutorial);
     HudTabs.selectTabWithName("tutorial");
-    return ;
 }
 function clientCmdLeaveTutorialSpace(%name)
 {
     %tutorialObj = TutorialsCatalogClient.getChildByUserFacingName(%name);
     if (!isObject(%tutorialObj))
     {
-        error(getScopeName() SPC "- no such tutorial:" SPC %name);
-        return ;
+        error(getScopeName() @ " " @ "- no such tutorial:" @ " " @ %name);
+        return;
     }
     if (%tutorialObj.isSecret)
     {
@@ -641,7 +611,6 @@ function clientCmdLeaveTutorialSpace(%name)
     {
         %tutorialObj.doFinishTutorial();
     }
-    return ;
 }
 function TutorialsObject::doFinishTutorial(%this)
 {
@@ -650,15 +619,14 @@ function TutorialsObject::doFinishTutorial(%this)
         TutorialsCatalogClient.doCancelAllNagSchedules();
         %this.doUpdateDisplay(0, 1);
     }
-    return ;
 }
 function NagObject::doUpdateDisplay(%this)
 {
     cancel(%this.schedule);
     %this.schedule = "";
-    if ((!isObject(%this.getGroup().tutorial) || (TutorialsCatalogClient.getObjectIndex(%this.getGroup().tutorial) < 0)) || ($gCurrentMainTutorial != %this.getGroup().tutorial.getId()))
+    if (!isObject(%this.getGroup().tutorial) || (TutorialsCatalogClient.getObjectIndex(%this.getGroup().tutorial) < 0) || ($gCurrentMainTutorial != %this.getGroup().tutorial.getId()))
     {
-        return ;
+        return;
     }
     if (%this.isLastNag())
     {
@@ -669,7 +637,6 @@ function NagObject::doUpdateDisplay(%this)
     HudTabs.selectTabWithName("tutorial");
     geTutorialContainer.setMainBitmap(geTutorialContainer.getStepBitmapPath(%this));
     geTutorialContainer.setMetaData(%this);
-    return ;
 }
 function NagObject::isLastNag(%this)
 {
@@ -695,7 +662,6 @@ function TutorialsCatalogClient::doCancelAllNagSchedules(%this)
         %i = %i - 1;
     }
 }
-
 function leaveAllTutorialSpaces()
 {
     if (isObject(TutorialsCatalogClient))
@@ -707,5 +673,4 @@ function leaveAllTutorialSpaces()
     HudTabs.close();
     HudTabs.hideTabWithName("tutorial");
     CSControlPanel.close();
-    return ;
 }

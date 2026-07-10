@@ -2,8 +2,7 @@ exec("./skeletonClient.cs");
 function testLoginTimes()
 {
     $loginLogout = 0;
-    %testLogin = new ScriptObject(skeletonClient)
-    {
+    %testLogin = new ScriptObject(skeletonClient) {
         userName = $UserPref::Player::Name;
         password = $UserPref::Player::Password;
         joinAction = "doSomething";
@@ -13,7 +12,6 @@ function testLoginTimes()
     echo("LOAD: Logging into " @ $Cities[$cityIndex]);
     %testLogin.doLogin($Cities[$cityIndex]);
     $cityIndex = $cityIndex + 1;
-    return ;
 }
 function doSomething()
 {
@@ -33,7 +31,6 @@ function doSomething()
     {
         skeletonClient::reallyQuit();
     }
-    return ;
 }
 function initCities()
 {
@@ -47,8 +44,6 @@ function initCities()
     $Cities[%i = %i + 1] = "BeatUp";
     $maxCities = %i;
     $cityIndex = 1;
-    return ;
 }
 initCities();
 testLoginTimes();
-

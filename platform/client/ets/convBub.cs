@@ -4,12 +4,10 @@ function CONVBUB_DEBUG(%text)
     {
         echo(%text);
     }
-    return ;
 }
 function SayConv(%text, %unused)
 {
-    error("this needs to be reimplemented - " SPC %text);
-    return ;
+    error("this needs to be reimplemented - " @ " " @ %text);
 }
 function ResizeBub(%text, %reset, %ctrl)
 {
@@ -19,12 +17,12 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest)
 {
     if (!%this.autoSize)
     {
-        return ;
+        return;
     }
     %msgVec = %this.getObject(0).getObject(0).getAttached();
     if (!isObject(%msgVec))
     {
-        return ;
+        return;
     }
     %ext = %this.getExtent();
     %extY = getWord(%ext, 1);
@@ -64,9 +62,8 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest)
         }
     }
     %textHeight = getWord(%this.getObject(0).getObject(0).getExtent(), 1);
-    %extY = mClamp(%extY, 0, %textHeight + 30);
+    %extY = mClamp(%extY, 0, (%textHeight + 30));
     %this.setTrgExtent(%newW, %extY);
-    return ;
 }
 function GuiConvBubbleCtrl::AutosizeTimer(%this)
 {
@@ -77,14 +74,13 @@ function GuiConvBubbleCtrl::AutosizeTimer(%this)
     }
     cancel(gGetField(%this, resizeTimer));
     gSetField(%this, resizeTimer, %this.schedule(1000, "AutosizeTimer"));
-    return ;
 }
 $gConvBubOrigSlug = -123;
 $gConvBubChillTimer = 0;
 function GuiConvBubbleCtrl::reexpand(%this, %howLongSecs)
 {
     cancel(gGetField(%this, resizeTimer));
-    gSetField(%this, resizeTimer, %this.schedule(%howLongSecs * 1000, "AutosizeTimer"));
+    gSetField(%this, resizeTimer, %this.schedule((%howLongSecs * 1000), "AutosizeTimer"));
     if (!gGetField(%this, expanded))
     {
         if ($gConvBubOrigSlug == -123)
@@ -99,13 +95,11 @@ function GuiConvBubbleCtrl::reexpand(%this, %howLongSecs)
         $gConvBubChillTimer = %this.schedule(700, "setChilling", 1);
         %this.schedule(700, "setSluggishness", $gConvBubOrigSlug);
     }
-    return ;
 }
 function ConvBub::onMouseLeaveBounds(%this)
 {
     cancel($gConvBubChillTimer);
     $gConvBubChillTimer = 0;
-    return ;
 }
 ConvBub.AutosizeTimer();
 function ConvBub::updateAutoMargins(%this)
@@ -114,7 +108,6 @@ function ConvBub::updateAutoMargins(%this)
     %clientRectExtent = WindowManager.getClientRectExtent();
     gePlayGuiHudlessArea.setTrgExtent(%clientRectExtent);
     gePlayGuiHudlessArea.setTrgPosition(%clientRectPosition);
-    return ;
 }
 function ConvBub::close(%this, %keepHistory)
 {
@@ -124,19 +117,17 @@ function ConvBub::close(%this, %keepHistory)
         pChat.clearHistory();
     }
     ConvBubVecCtrl.makeFirstResponder(0);
-    return ;
 }
 function ConvBub::open(%this)
 {
     if ($UserPref::Display::hideChat)
     {
         userTips::showOnceThisSession("HideChat");
-        return ;
+        return;
     }
     %this.setVisible(1);
     %this.restartAutoCloseTimer(%this.autoCloseTimeout);
     %this.chooseProfile();
-    return ;
 }
 function ConvBub::chooseProfile(%this)
 {
@@ -155,42 +146,36 @@ function ConvBub::chooseProfile(%this)
             %this.setProfile(ConvBubProfile);
         }
     }
-    return ;
 }
 $gConvBubAutoCloseTimer = 0;
 function ConvBub::restartAutoCloseTimer(%this, %timeout)
 {
     if (%timeout <= 0)
     {
-        return ;
+        return;
     }
     cancel($gConvBubAutoCloseTimer);
     $gConvBubAutoCloseTimer = %this.schedule(%timeout, "tryAutoClose");
-    return ;
 }
 function ConvBub::tryAutoClose(%this)
 {
     if (%this.getChilling())
     {
-        %this.restartAutoCloseTimer(10 * 1000);
-        return ;
+        %this.restartAutoCloseTimer((10 * 1000));
+        return;
     }
     ConvBub.close(1);
-    return ;
 }
 function ConvBub::onWake(%this)
 {
-    return ;
 }
 function ConvBub::onMouseDown(%this)
 {
     ConvBub.reexpand(15);
-    return ;
 }
 function ConvBubVecCtrl::onMouseDown(%this)
 {
     ConvBub.onMouseDown();
-    return ;
 }
 function ConvBubVecCtrl::onRightURL(%this, %url)
 {
@@ -208,7 +193,6 @@ function ConvBubVecCtrl::onRightURL(%this, %url)
     {
         TheShapeNameHud.makeFirstResponder(1);
     }
-    return ;
 }
 function ConvBubVecCtrl::onURL(%this, %url)
 {
@@ -235,7 +219,6 @@ function ConvBubVecCtrl::onURL(%this, %url)
     {
         TheShapeNameHud.makeFirstResponder(1);
     }
-    return ;
 }
 function ConvBubScroll::onScrolledToBottom(%this)
 {
@@ -247,17 +230,14 @@ function ConvBubScroll::onScrolledToBottom(%this)
     {
         %this.setProfile(ETSScrollDarkProfile);
     }
-    return ;
 }
 function ConvBubScroll::onMouseDown(%this)
 {
     ConvBub.onMouseDown();
-    return ;
 }
 function LinkContextMenu::initWithURL(%this, %url)
 {
     %this.initWithURLAndTitle(%url, %url);
-    return ;
 }
 function LinkContextMenu::initWithURLAndTitle(%this, %url, %title)
 {
@@ -266,7 +246,6 @@ function LinkContextMenu::initWithURLAndTitle(%this, %url, %title)
     %this.url = %url;
     %this.add("Visit Link", %n = %n + 1, 0);
     %this.add("Copy Link", %n = %n + 1, 0);
-    return ;
 }
 function LinkContextMenu::onSelect(%this, %unused, %text)
 {
@@ -288,5 +267,4 @@ function LinkContextMenu::onSelect(%this, %unused, %text)
             setClipboard(%this.url);
         }
     }
-    return ;
 }

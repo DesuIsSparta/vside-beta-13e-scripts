@@ -1,2 +1,1 @@
 echo("// dummy sgDecal.cs");
-

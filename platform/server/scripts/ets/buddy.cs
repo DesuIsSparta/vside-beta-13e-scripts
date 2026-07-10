@@ -10,7 +10,7 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper)
     %otherId = PlayerDict.get(%other);
     if (%userId == 0)
     {
-        return ;
+        return;
     }
     RelRequest.userId = %userId;
     RelRequest.otherId = %otherId;
@@ -22,17 +22,17 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper)
     %operTypeValue = "op=" @ urlEncode(%oper);
     %post = %userValue @ "&" @ %otherValue @ "&" @ %relTypeValue @ "&" @ %operTypeValue;
     %relRequest.post(%host, %uri, %query, %post);
-    return ;
+    return;
 }
 function RelRequest::onConnected(%this)
 {
-    return ;
+    return;
 }
 function RelRequest::onConnectFailed(%this)
 {
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     echo("Cannot reach Server Manager (" @ %host @ ")");
-    return ;
+    return;
 }
 function RelRequest::onLine(%this, %line)
 {
@@ -42,24 +42,21 @@ function RelRequest::onLine(%this, %line)
     }
     else
     {
-        if (%line $= "fail")
-        {
-        }
     }
-    return ;
+    return %line $= "fail";
 }
 function RelRequest::onDNSResolved(%this)
 {
-    return ;
+    return;
 }
 function RelRequest::onDNSFailed(%this)
 {
     echo("Cannot resolve Manager Host (" @ $Pref::Server::ManagerAddress @ ")");
-    return ;
+    return;
 }
 function RelRequest::onDisconnect(%this)
 {
-    return ;
+    return;
 }
 function doLocalChangeRelation(%client, %other, %relType, %oper)
 {
@@ -67,8 +64,8 @@ function doLocalChangeRelation(%client, %other, %relType, %oper)
     %otherId = PlayerDict.get(%other);
     if (!isPlayerObject(%otherId))
     {
-        error("bad other in doLocalChangeRelation:" SPC getDebugString(%otherId) SPC "from" SPC getDebugString(%sender));
-        return ;
+        error("bad other in doLocalChangeRelation:" @ " " @ getDebugString(%otherId) @ " " @ "from" @ " " @ getDebugString(%sender));
+        return;
     }
     if (%oper $= "add")
     {
@@ -79,5 +76,5 @@ function doLocalChangeRelation(%client, %other, %relType, %oper)
         %opCode = 1;
     }
     changeRelation(%sender, %otherId, %relType, %opCode);
-    return ;
+    return;
 }

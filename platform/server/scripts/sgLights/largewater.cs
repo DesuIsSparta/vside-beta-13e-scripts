@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(largewater)
-{
+datablock sgUniversalStaticLightData(largewater) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 8;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(largewater)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Stock (Lighting Pack)";
 };
-

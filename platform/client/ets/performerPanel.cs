@@ -8,20 +8,18 @@ function performerPanel::toggle(%this)
     {
         %this.close();
     }
-    return ;
 }
 function performerPanel::open(%this)
 {
     if (!$gPerformerMode)
     {
-        return ;
+        return;
     }
     if (!%this.isVisible())
     {
         %this.setVisible(1);
         PlayGui.focusAndRaise(%this);
     }
-    return ;
 }
 function performerPanel::close(%this)
 {

@@ -1,17 +1,15 @@
 function debugPanel::toggle(%this)
 {
     playGui.showRaiseOrHide(%this);
-    return ;
 }
 function debugPanel::open(%this)
 {
     if (!$player.rolesPermissionCheckWarn("debugActive"))
     {
-        return ;
+        return;
     }
     %this.setVisible(1);
     playGui.focusAndRaise(%this);
-    return ;
 }
 function debugPanel::close(%this)
 {
@@ -27,7 +25,6 @@ function debugPanel::onWake(%this)
     {
         debugPanel_SkuSnapButton.setActive(0);
     }
-    return ;
 }
 function debugPanel::resizeApp(%this)
 {
@@ -37,7 +34,6 @@ function debugPanel::resizeApp(%this)
     %y = gui_DevOpts_ResY.getValue();
     %bpp = getWord($UserPref::Video::Resolution, 2);
     setScreenMode(%x, %y, %bpp, 0);
-    return ;
 }
 function debugPanel::advanceGPTime(%time)
 {
@@ -46,10 +42,9 @@ function debugPanel::advanceGPTime(%time)
     if (%space $= "")
     {
         handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
-        return ;
+        return;
     }
     commandToServer('GPDebugAdvanceTimeByXHours', CustomSpaceClient::GetSpaceImIn(), %time);
-    return ;
 }
 function debugPanel::getGPInfo()
 {
@@ -57,8 +52,7 @@ function debugPanel::getGPInfo()
     if (%spaceName $= "")
     {
         handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
-        return ;
+        return;
     }
     commandToServer('GPDebugGetInfo', CustomSpaceClient::GetSpaceImIn());
-    return ;
 }

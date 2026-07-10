@@ -1,27 +1,23 @@
 if (!isObject(GuiBMPRed_Scroll))
 {
-}
-new GuiControlProfile(GuiBMPRed_Scroll)
-    {
+    new GuiControlProfile(GuiBMPRed_Scroll) {
         fontColor = "255 0 0";
         justify = "center";
         fillColor = "200 200 200 120";
         border = 1;
         borderColor = "255 0 0";
     };
+}
 if (!isObject(GuiBMPBlue_Scroll))
 {
-}
-new GuiControlProfile(GuiBMPBlue_Scroll : GuiBMPRed_Scroll)
-    {
+    new GuiControlProfile(GuiBMPBlue_Scroll : GuiBMPRed_Scroll) {
         fontColor = "0 0 255";
         borderColor = "0 0 255";
     };
+}
 if (!isObject(GuiBMPRed_TE))
 {
-}
-new GuiControlProfile(GuiBMPRed_TE : GuiTextEditProfile)
-    {
+    new GuiControlProfile(GuiBMPRed_TE : GuiTextEditProfile) {
         fontColor = "255 0 0";
         justify = "center";
         tab = 0;
@@ -31,32 +27,30 @@ new GuiControlProfile(GuiBMPRed_TE : GuiTextEditProfile)
         borderColorHL = "0 0 0";
         borderColor = "255 0 0";
     };
+}
 if (!isObject(GuiBMPBlue_TE))
 {
-}
-new GuiControlProfile(GuiBMPBlue_TE : GuiBMPRed_TE)
-    {
+    new GuiControlProfile(GuiBMPBlue_TE : GuiBMPRed_TE) {
         fontColor = "0 0 255";
         borderColor = "0 0 255";
     };
+}
 if (!isObject(GuiBMPRed_Button))
 {
-}
-new GuiControlProfile(GuiBMPRed_Button : GuiClickLabelProfile)
-    {
+    new GuiControlProfile(GuiBMPRed_Button : GuiClickLabelProfile) {
         fontColor = "255 0 0";
         border = 1;
         borderColor = "255 0 0";
         justify = "center";
     };
+}
 if (!isObject(GuiBMPBlue_Button))
 {
-}
-new GuiControlProfile(GuiBMPBlue_Button : GuiBMPRed_Button)
-    {
+    new GuiControlProfile(GuiBMPBlue_Button : GuiBMPRed_Button) {
         fontColor = "0 0 255";
         borderColor = "0 0 255";
     };
+}
 $bodyModPanel::BMBIGC = "BMBIGC";
 $bodyModPanel::BMBIResetScaleButton = "BMBIResetScaleButton";
 $bodyModPanel::BMBIAntiScaleCheckBox = "BMBIAntiScaleCheckBox";
@@ -82,7 +76,6 @@ $bodyModPanel::offsetBoneRange = "-5.5 5.5";
 function bodyModPanel::toggle(%this)
 {
     playGui.showRaiseOrHide(%this);
-    return ;
 }
 function bodyModPanel::createBodyModInfoCell(%realRow, %realCol, %boneIndex, %indexName, %buttonProfile)
 {
@@ -96,15 +89,13 @@ function bodyModPanel::createBodyModInfoCell(%realRow, %realCol, %boneIndex, %in
         %gcObj.setName(%gcGCName);
         %gcObj.setProfile(%buttonProfile);
         %gcObj.boneIndex = %boneIndex;
-        %childGcObj = new GuiTextCtrl()
-        {
+        %childGcObj = new GuiTextCtrl("") {
             profile = %buttonProfile;
             position = "3 30";
             extent = "114 19";
         };
         %gcObj.add(%childGcObj);
-        %childGcObj = new GuiButtonCtrl(%gcResetScaleButton)
-        {
+        %childGcObj = new GuiButtonCtrl(%gcResetScaleButton) {
             profile = %buttonProfile;
             position = "4 4";
             extent = "68 19";
@@ -112,24 +103,21 @@ function bodyModPanel::createBodyModInfoCell(%realRow, %realCol, %boneIndex, %in
             command = "bodyModPanel::setModGCControllers(true,$ThisControl.boneIndex,\"xyz\",1);bodyModPanel::setAntiModToChildren(true,$ThisControl.boneIndex,\"xyz\",1);";
         };
         %gcObj.add(%childGcObj);
-        %childGcObj = new GuiTextCtrl()
-        {
+        %childGcObj = new GuiTextCtrl("") {
             profile = %buttonProfile;
             position = "71 6";
             extent = "35 14";
             text = "antiS";
         };
         %gcObj.add(%childGcObj);
-        %childGcObj = new GuiCheckBoxCtrl(%gcAntiScaleCheckBox)
-        {
+        %childGcObj = new GuiCheckBoxCtrl(%gcAntiScaleCheckBox) {
             profile = "GuiCheckBoxProfile";
             position = "103 7";
             extent = "14 14";
             buttonType = "ToggleButton";
         };
         %gcObj.add(%childGcObj);
-        %childGcObj = new GuiButtonCtrl(%gcResetOffsetButton)
-        {
+        %childGcObj = new GuiButtonCtrl(%gcResetOffsetButton) {
             profile = %buttonProfile;
             position = "4 57";
             extent = "68 19";
@@ -138,11 +126,10 @@ function bodyModPanel::createBodyModInfoCell(%realRow, %realCol, %boneIndex, %in
         };
         %gcObj.add(%childGcObj);
     }
-    %boneIndexStr = %boneIndex SPC "-" SPC %indexName;
+    %boneIndexStr = %boneIndex @ " " @ "-" @ " " @ %indexName;
     %gcGCName.getObject(0).setText(%boneIndexStr);
     %gcResetScaleButton.boneIndex = %boneIndex;
     %gcResetOffsetButton.boneIndex = %boneIndex;
-    return ;
 }
 function bmCellBG::onMouseEnterBounds(%this)
 {
@@ -152,7 +139,6 @@ function bmCellBG::onMouseEnterBounds(%this)
         %this.origProfile = %this.profile;
         %this.profile = GuiDefaultProfile;
     }
-    return ;
 }
 function bmCellBG::onMouseLeaveBounds(%this)
 {
@@ -161,7 +147,6 @@ function bmCellBG::onMouseLeaveBounds(%this)
         %this.profile = %this.origProfile;
         %this.origProfile = "";
     }
-    return ;
 }
 function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, %scale, %offset, %scrollProfile, %TEProfile)
 {
@@ -194,11 +179,11 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
                 %gcOffsetSliderName = bodyModPanel::getArrayGCName($bodyModPanel::BMZOffsetSlider, %realRow, %realCol);
                 %gcOffsetTEName = bodyModPanel::getArrayGCName($bodyModPanel::BMZOffsetTextEdit, %realRow, %realCol);
             }
+            else
+            {
+                return;
+            }
         }
-    }
-    else
-    {
-        return ;
     }
     if (!isObject(%gcGCName))
     {
@@ -206,8 +191,7 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
         %gcObj.setName(%gcGCName);
         %gcObj.setProfile(%scrollProfile);
         %gcObj.boneIndex = %boneIndex;
-        %childGcObj = new GuiSliderCtrl(%gcScaleSliderName)
-        {
+        %childGcObj = new GuiSliderCtrl(%gcScaleSliderName) {
             profile = %scrollProfile;
             position = "4 2";
             extent = "102 16";
@@ -215,16 +199,14 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
             range = $bodyModPanel::scaleBoneRange;
         };
         %gcObj.add(%childGcObj);
-        %childGcObj = new GuiTextEditCtrl(%gcScaleTEName)
-        {
+        %childGcObj = new GuiTextEditCtrl(%gcScaleTEName) {
             profile = %TEProfile;
             position = "23 19";
             extent = "64 18";
             altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
         };
         %gcObj.add(%childGcObj);
-        %childGcObj = new GuiSliderCtrl(%gcOffsetSliderName)
-        {
+        %childGcObj = new GuiSliderCtrl(%gcOffsetSliderName) {
             profile = %scrollProfile;
             position = "4 39";
             extent = "102 18";
@@ -232,8 +214,7 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
             range = $bodyModPanel::offsetBoneRange;
         };
         %gcObj.add(%childGcObj);
-        %childGcObj = new GuiTextEditCtrl(%gcOffsetTEName)
-        {
+        %childGcObj = new GuiTextEditCtrl(%gcOffsetTEName) {
             profile = %TEProfile;
             position = "23 58";
             extent = "64 18";
@@ -241,20 +222,22 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
         };
         %gcObj.add(%childGcObj);
     }
-    %gcScaleSliderName.boneIndex = %gcScaleTEName.boneIndex = %gcOffsetSliderName.boneIndex = %gcOffsetTEName.boneIndex = %boneIndex;
+    %gcOffsetTEName.boneIndex = %boneIndex;
+    %gcOffsetSliderName.boneIndex =;
+    %gcScaleTEName.boneIndex =;
+    %gcScaleSliderName.boneIndex =;
     %gcScaleSliderName.prevValue = %scale;
     %gcOffsetSliderName.prevValue = %offset;
     %gcScaleSliderName.setValue(%scale);
     %gcScaleTEName.setText(%scale);
     %gcOffsetSliderName.setValue(%offset);
     %gcOffsetTEName.setText(%offset);
-    return ;
 }
 function bodyModPanel::open(%this)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     if (!%this.isVisible())
     {
@@ -264,7 +247,7 @@ function bodyModPanel::open(%this)
     %numNodes = $player.getNumBones();
     if (%numNodes == -1)
     {
-        return ;
+        return;
     }
     %cells = %numNodes * bodyModPanelArray.numRowsOrCols;
     %col = 0;
@@ -277,7 +260,6 @@ function bodyModPanel::open(%this)
         %indexName = $player.getBoneName(%boneIndex);
         if (%indexName $= "")
         {
-            continue;
             %boneIndex = %boneIndex + 1;
             %realRow = %realRow + 1;
             %realCol = 0;
@@ -330,7 +312,6 @@ function bodyModPanel::open(%this)
     }
     bodyModPanelArray.reseatChildren();
     %this.setGCVisible($pref::TS::bodyMod);
-    return ;
 }
 function bodyModPanel::close(%this)
 {
@@ -343,7 +324,7 @@ function bodyModPanel::setGCVisible(%this, %val)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     %i = 1;
     while (%i < %this.getCount())
@@ -356,19 +337,18 @@ function bodyModPanel::setGCVisible(%this, %val)
         %i = %i + 1;
     }
 }
-
 function bodyModPanel::getArrayGCName(%prefix, %row, %col)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     %gcName = %prefix @ "_" @ %row @ "_" @ %col;
     return %gcName;
 }
 function ClassBodyMod::setBoneMod(%isScale, %boneIndex, %axis, %val)
 {
-    if (((%axis $= "") || (%boneIndex $= "")) || (%val $= ""))
+    if ((%axis $= "") || (%boneIndex $= "") || (%val $= ""))
     {
         return "";
     }
@@ -399,28 +379,28 @@ function ClassBodyMod::setBoneMod(%isScale, %boneIndex, %axis, %val)
             }
             else
             {
-                if ((%axis $= "xy") && (%axis $= "yx"))
+                if ((%axis $= "xy") || (%axis $= "yx"))
                 {
                     %scaleOffsetValue = setWord(%scaleOffsetValue, 0, %val);
                     %scaleOffsetValue = setWord(%scaleOffsetValue, 1, %val);
                 }
                 else
                 {
-                    if ((%axis $= "xz") && (%axis $= "zx"))
+                    if ((%axis $= "xz") || (%axis $= "zx"))
                     {
                         %scaleOffsetValue = setWord(%scaleOffsetValue, 0, %val);
                         %scaleOffsetValue = setWord(%scaleOffsetValue, 2, %val);
                     }
                     else
                     {
-                        if ((%axis $= "yz") && (%axis $= "zy"))
+                        if ((%axis $= "yz") || (%axis $= "zy"))
                         {
                             %scaleOffsetValue = setWord(%scaleOffsetValue, 1, %val);
                             %scaleOffsetValue = setWord(%scaleOffsetValue, 2, %val);
                         }
                         else
                         {
-                            if ((((((%axis $= "xyz") || (%axis $= "yzx")) || (%axis $= "zxy")) || (%axis $= "yxz")) || (%axis $= "zyx")) || (%axis $= "xzy"))
+                            if ((%axis $= "xyz") || (%axis $= "yzx") || (%axis $= "zxy") || (%axis $= "yxz") || (%axis $= "zyx") || (%axis $= "xzy"))
                             {
                                 %scaleOffsetValue = setWord(%scaleOffsetValue, 0, %val);
                                 %scaleOffsetValue = setWord(%scaleOffsetValue, 1, %val);
@@ -454,48 +434,48 @@ function bodyModPanel::setModGCControllers(%isScale, %boneIndex, %axis, %val)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     if (%isScale)
     {
         %xSlider = bodyModPanel::getArrayGCName($bodyModPanel::BMXScaleSlider, %boneIndex, 1);
         %xTEGC = bodyModPanel::getArrayGCName($bodyModPanel::BMXScaleTextEdit, %boneIndex, 1);
-        if (!isObject(%xSlider) && !isObject(%xTEGC))
+        if (!isObject(%xSlider) || !isObject(%xTEGC))
         {
-            return ;
+            return;
         }
         %ySlider = bodyModPanel::getArrayGCName($bodyModPanel::BMYScaleSlider, %boneIndex, 2);
         %yTEGC = bodyModPanel::getArrayGCName($bodyModPanel::BMYScaleTextEdit, %boneIndex, 2);
-        if (!isObject(%ySlider) && !isObject(%yTEGC))
+        if (!isObject(%ySlider) || !isObject(%yTEGC))
         {
-            return ;
+            return;
         }
         %zSlider = bodyModPanel::getArrayGCName($bodyModPanel::BMZScaleSlider, %boneIndex, 3);
         %zTEGC = bodyModPanel::getArrayGCName($bodyModPanel::BMZScaleTextEdit, %boneIndex, 3);
-        if (!isObject(%zSlider) && !isObject(%zTEGC))
+        if (!isObject(%zSlider) || !isObject(%zTEGC))
         {
-            return ;
+            return;
         }
     }
     else
     {
         %xSlider = bodyModPanel::getArrayGCName($bodyModPanel::BMXOffsetSlider, %boneIndex, 1);
         %xTEGC = bodyModPanel::getArrayGCName($bodyModPanel::BMXOffsetTextEdit, %boneIndex, 1);
-        if (!isObject(%xSlider) && !isObject(%xTEGC))
+        if (!isObject(%xSlider) || !isObject(%xTEGC))
         {
-            return ;
+            return;
         }
         %ySlider = bodyModPanel::getArrayGCName($bodyModPanel::BMYOffsetSlider, %boneIndex, 2);
         %yTEGC = bodyModPanel::getArrayGCName($bodyModPanel::BMYOffsetTextEdit, %boneIndex, 2);
-        if (!isObject(%ySlider) && !isObject(%yTEGC))
+        if (!isObject(%ySlider) || !isObject(%yTEGC))
         {
-            return ;
+            return;
         }
         %zSlider = bodyModPanel::getArrayGCName($bodyModPanel::BMZOffsetSlider, %boneIndex, 3);
         %zTEGC = bodyModPanel::getArrayGCName($bodyModPanel::BMZOffsetTextEdit, %boneIndex, 3);
-        if (!isObject(%zSlider) && !isObject(%zTEGC))
+        if (!isObject(%zSlider) || !isObject(%zTEGC))
         {
-            return ;
+            return;
         }
     }
     %scaleOffsetVal = ClassBodyMod::setBoneMod(%isScale, %boneIndex, %axis, %val);
@@ -508,28 +488,26 @@ function bodyModPanel::setModGCControllers(%isScale, %boneIndex, %axis, %val)
     %zSlider.setValue(getWord(%scaleOffsetVal, 2));
     %zSlider.prevValue = %zSlider.getValue();
     %zTEGC.setText(%zSlider.getValue());
-    return ;
 }
 function bodyModPanel::setAllBoneMods(%axis, %scaleVal, %offsetVal)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     bodyModPanel::setAllBoneScale(%axis, %scaleVal);
     bodyModPanel::setAllBoneOffsets(%axis, %offsetVal);
-    return ;
 }
 function bodyModPanel::setAllBoneScale(%axis, %val)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     %numNodes = $player.getNumBones();
     if (%numNodes == -1)
     {
-        return ;
+        return;
     }
     %boneIndex = 0;
     while (%boneIndex < %numNodes)
@@ -538,17 +516,16 @@ function bodyModPanel::setAllBoneScale(%axis, %val)
         %boneIndex = %boneIndex + 1;
     }
 }
-
 function bodyModPanel::setAllBoneOffsets(%axis, %val)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     %numNodes = $player.getNumBones();
     if (%numNodes == -1)
     {
-        return ;
+        return;
     }
     %boneIndex = 0;
     while (%boneIndex < %numNodes)
@@ -557,7 +534,6 @@ function bodyModPanel::setAllBoneOffsets(%axis, %val)
         %boneIndex = %boneIndex + 1;
     }
 }
-
 function bodyModPanel::applyChangeFromGC(%gc)
 {
     %gcName = strlwr(%gc.getName());
@@ -613,24 +589,23 @@ function bodyModPanel::applyChangeFromGC(%gc)
         %slider = %gc.getParent().getObject(2);
         %te = %gc.getParent().getObject(3);
     }
-    if (!isObject(%slider) && !isObject(%te))
+    if (!isObject(%slider) || !isObject(%te))
     {
-        return ;
+        return;
     }
     %slider.setValue(%value);
     %te.setText(%value);
     bodyModPanel::setBoneWithAntiMod(%isScale, %slider);
-    return ;
 }
 function bodyModPanel::setBoneWithAntiMod(%isScale, %slider)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     if (!isObject(%slider))
     {
-        return ;
+        return;
     }
     %gcName = strlwr(%slider.getName());
     %axis = "";
@@ -650,11 +625,11 @@ function bodyModPanel::setBoneWithAntiMod(%isScale, %slider)
             {
                 %axis = "z";
             }
+            else
+            {
+                return;
+            }
         }
-    }
-    else
-    {
-        return ;
     }
     %curParentValue = %slider.getValue();
     %boneIndex = %slider.boneIndex;
@@ -665,7 +640,7 @@ function bodyModPanel::setBoneWithAntiMod(%isScale, %slider)
     %demo = %curParentValue;
     if (%demo == 0)
     {
-        return ;
+        return;
     }
     if (%isScale)
     {
@@ -673,17 +648,17 @@ function bodyModPanel::setBoneWithAntiMod(%isScale, %slider)
     }
     else
     {
-        return ;
+        return;
     }
-    if (!isObject(%gcCheckBox) && !%gcCheckBox.getValue())
+    if (!isObject(%gcCheckBox) || !%gcCheckBox.getValue())
     {
-        return ;
+        return;
     }
     %childBones = $player.getChildBones(%boneIndex);
     %numBones = getWordCount(%childBones);
     if (!%numBones)
     {
-        return ;
+        return;
     }
     if (%isScale)
     {
@@ -745,45 +720,44 @@ function bodyModPanel::setBoneWithAntiMod(%isScale, %slider)
                 else
                 {
                 }
-            }
-        }
-        else
-        {
-            if (!isObject(%sliderGC) && !isObject(%teGC))
-            {
-            }
-            else
-            {
-                %prevChildValue = %sliderGC.getValue();
-                %numo = (-1 * %prevChildValue) * %deltaParentValue;
-                %deltaChildValue = %numo / %demo;
-                %newChildValue = %prevChildValue + %deltaChildValue;
-                if (%newChildValue < %rangeMin)
-                {
-                    %newChildValue = %rangeMin;
-                }
                 else
                 {
-                    if (%newChildValue > %rangeMax)
+                    if (!isObject(%sliderGC) || !isObject(%teGC))
                     {
-                        %newChildValue = %rangeMax;
+                    }
+                    else
+                    {
+                        %prevChildValue = %sliderGC.getValue();
+                        %numo = (-1 * %prevChildValue) * %deltaParentValue;
+                        %deltaChildValue = %numo / %demo;
+                        %newChildValue = %prevChildValue + %deltaChildValue;
+                        if (%newChildValue < %rangeMin)
+                        {
+                            %newChildValue = %rangeMin;
+                        }
+                        else
+                        {
+                            if (%newChildValue > %rangeMax)
+                            {
+                                %newChildValue = %rangeMax;
+                            }
+                        }
+                        %sliderGC.prevValue = %sliderGC.getValue();
+                        %sliderGC.setValue(%newChildValue);
+                        %teGC.setText(%newChildValue);
+                        ClassBodyMod::setBoneMod(%isScale, %childBoneIndex, %axis, %sliderGC.getValue());
                     }
                 }
-                %sliderGC.prevValue = %sliderGC.getValue();
-                %sliderGC.setValue(%newChildValue);
-                %teGC.setText(%newChildValue);
-                ClassBodyMod::setBoneMod(%isScale, %childBoneIndex, %axis, %sliderGC.getValue());
             }
         }
         %i = %i + 1;
     }
 }
-
 function bodyModPanel::setAntiModToChildren(%isScale, %parentBoneIndex, %axis, %val)
 {
     if (!$player.rolesPermissionCheckNoWarn("debugActive"))
     {
-        return ;
+        return;
     }
     if (%isScale)
     {
@@ -791,17 +765,17 @@ function bodyModPanel::setAntiModToChildren(%isScale, %parentBoneIndex, %axis, %
     }
     else
     {
-        return ;
+        return;
     }
-    if (!isObject(%gcCheckBox) && !%gcCheckBox.getValue())
+    if (!isObject(%gcCheckBox) || !%gcCheckBox.getValue())
     {
-        return ;
+        return;
     }
     %childBones = $player.getChildBones(%parentBoneIndex);
     %numBones = getWordCount(%childBones);
     if (!%numBones)
     {
-        return ;
+        return;
     }
     %i = 0;
     while (%i < %numBones)
@@ -811,5 +785,3 @@ function bodyModPanel::setAntiModToChildren(%isScale, %parentBoneIndex, %axis, %
         %i = %i + 1;
     }
 }
-
-

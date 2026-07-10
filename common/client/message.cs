@@ -10,7 +10,6 @@ if (isObject(MissionCleanup))
 function clientCmdChatMessage(%unused, %voice, %pitch, %msgString)
 {
     onChatMessage(detag(%msgString), %voice, %pitch);
-    return ;
 }
 function clientCmdServerMessage(%msgType, %msgString)
 {
@@ -21,7 +20,7 @@ function clientCmdServerMessage(%msgType, %msgString)
     if (isObject(%defFuncList))
     {
         %i = 0;
-        while (!(%func = %defFuncList.func[%i] $= ""))
+        while (!((%func = %defFuncList.func[%i]) $= ""))
         {
             call(%func, %msgType, %msgString);
             %i = %i + 1;
@@ -33,7 +32,7 @@ function clientCmdServerMessage(%msgType, %msgString)
         if (isObject(%funcList))
         {
             %i = 0;
-            while (!(%func = %funcList.func[%i] $= ""))
+            while (!((%func = %funcList.func[%i]) $= ""))
             {
                 call(%func, %msgType, %msgString);
                 %i = %i + 1;
@@ -41,7 +40,6 @@ function clientCmdServerMessage(%msgType, %msgString)
         }
     }
 }
-
 function addMessageCallback(%msgType, %func)
 {
     %m = MessageFuncDict.get(%msgType);
@@ -56,16 +54,13 @@ function addMessageCallback(%msgType, %func)
     }
     else
     {
-        %m = new SimObject();
+        %m = new SimObject("");
         MessageFuncDict.put(%msgType, %m);
         %m.func[0] = %func;
     }
-    return ;
 }
 function defaultMessageCallback(%msgType, %msgString)
 {
     onServerMessage(detag(%msgString));
-    return ;
 }
 addMessageCallback("", defaultMessageCallback);
-

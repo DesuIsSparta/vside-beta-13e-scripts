@@ -21,5 +21,4 @@ function doLoginCheck()
             schedule(3000, 0, doLoginCheck);
         }
     }
-    return ;
 }

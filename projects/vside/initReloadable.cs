@@ -12,4 +12,3 @@ exec("./buildings.cs");
 $gBitmapCategoryRoot["badge"] = "projects/vside/client/ui/badges/";
 $gBitmapCategoryRoot["token"] = "projects/vside/client/ui/tokens/";
 $gBitmapCategoryRoot["swatch"] = "projects/vside/worlds/common/swatches/";
-

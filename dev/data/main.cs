@@ -6,8 +6,7 @@ package dev
     function displayHelp()
     {
         Parent::displayHelp();
-        print("\nDevelopment options:\n" @ "  -standAlone                Start as standalone client\n" @ "  -mission <mission>         Specify mission file\n" @ "  -compile                   Compiles .dso & lighting (via running & quitting)\n" @ "  -connect <host[:port]>     Connect directly to <host>\n" @ "  -eval <scriptExpression>   Evaluate <scriptExpression> after initialization\n" @ "  -exec <scriptFile>         Execute <script> after initialization\n" @ "  -noDisplay                 Disable display (and sound) for testing\n" @ "  -console                   Open a separate console\n" @ "  -record <file>             Record a journal and save to <file>\n" @ "  -play <file>               Playback journal from <file>\n" @ "  -playAndBreak <file>       Playback journal and issue an int3 at the end\n" @ "  -insecure                  Don\'t check tokens\n" @ "  -noninteractive            Tell things we\'re running non-interactive\n" @ "  -genRegistration           Generate an account registration & quit\n" @ "  -echoFileNames             Echo file names as they\'re accessed(via resmanager)\n" @ "");
-        return ;
+        print("\nDevelopment options:\n" @ "  -standAlone                Start as standalone client\n" @ "  -mission <mission>         Specify mission file\n" @ "  -compile                   Compiles .dso & lighting (via running & quitting)\n" @ "  -connect <host[:port]>     Connect directly to <host>\n" @ "  -eval <scriptExpression>   Evaluate <scriptExpression> after initialization\n" @ "  -exec <scriptFile>         Execute <script> after initialization\n" @ "  -noDisplay                 Disable display (and sound) for testing\n" @ "  -console                   Open a separate console\n" @ "  -record <file>             Record a journal and save to <file>\n" @ "  -play <file>               Playback journal from <file>\n" @ "  -playAndBreak <file>       Playback journal and issue an int3 at the end\n" @ "  -insecure                  Don't check tokens\n" @ "  -noninteractive            Tell things we're running non-interactive\n" @ "  -genRegistration           Generate an account registration & quit\n" @ "  -echoFileNames             Echo file names as they're accessed(via resmanager)\n" @ "");
     }
     function parseArgs()
     {
@@ -84,14 +83,11 @@ package dev
         {
             setEchoFileLoads(1);
         }
-        if (hasArg("-mods"))
+        if (hasArg("-mods") && findArg("-mods", "$CommandLineMods", "no commandline mods"))
         {
-            if (findArg("-mods", "$CommandLineMods", "no commandline mods"))
-            {
-                log("initialization", "info", "commandlinemods: " @ $CommandLineMods);
-                setModPaths(getModPaths() @ ";" @ $CommandLineMods);
-                loadMods($CommandLineMods);
-            }
+            log("initialization", "info", "commandlinemods: " @ $CommandLineMods);
+            setModPaths(getModPaths() @ ";" @ $CommandLineMods);
+            loadMods($CommandLineMods);
         }
         if ($NoDisplay)
         {
@@ -108,12 +104,12 @@ package dev
         if ($Game::Compile)
         {
             $Server::Dedicated = 1;
-            return ;
+            return;
         }
         if ($GenRegistration)
         {
             $Server::Dedicated = 1;
-            return ;
+            return;
         }
         if (!($JournalRecordFile $= ""))
         {
@@ -136,7 +132,6 @@ package dev
                 }
             }
         }
-        return ;
     }
     function onStart()
     {
@@ -152,7 +147,7 @@ package dev
             if ($GenRegistration)
             {
                 generateRegistrationStart();
-                return ;
+                return;
             }
             else
             {
@@ -170,7 +165,6 @@ package dev
                 }
             }
         }
-        return ;
     }
     function onExit()
     {
@@ -181,7 +175,6 @@ package dev
             export("$DevPref::*", "dev/devPrefs.cs", 0);
         }
         Parent::onExit();
-        return ;
     }
     function compileAndQuit()
     {
@@ -197,7 +190,6 @@ package dev
             log("initialization", "info", "there were compile errors, exiting with non-zero status");
             exit(1);
         }
-        return ;
     }
     function generateRegistrationStart()
     {
@@ -215,11 +207,10 @@ package dev
         %request.addUrlParam("outfitAndBodySKUs", "5163 5200 5303 5400 5526 5714 5803 5850 5900 5950 5980 15917 21519");
         %request.callbackHandler = "onDoneOrErrorCallback_generateRegistration";
         %request.start();
-        return ;
     }
     function onDoneOrErrorCallback_generateRegistration(%request)
     {
-        log("network", "debug", getScopeName() SPC "- url =" SPC %request.getURL());
+        log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
         if (!%request.checkSuccess())
         {
             exit(1);
@@ -227,10 +218,10 @@ package dev
         %registrationID = %request.getValue("registrationID");
         if (%registrationID $= "")
         {
-            error(getScopeName() SPC "- no registration ID!");
+            error(getScopeName() @ " " @ "- no registration ID!");
             exit(2);
         }
-        %f = new FileObject();
+        %f = new FileObject("");
         if (%f.openForAppend("platform/client/default_owner.cs"))
         {
             %f.writeLine("// generated by the -genRegistration command line option:");
@@ -238,11 +229,10 @@ package dev
         }
         %f.close();
         quit();
-        return ;
     }
     function compileScripts(%extensions)
     {
-        log("initialization", "info", "compiling \"" SPC %extensions SPC "\"...");
+        log("initialization", "info", "compiling \"" @ " " @ %extensions @ " " @ "\"...");
         %tryCount = 0;
         %sucCount = 0;
         %n = 0;
@@ -257,17 +247,17 @@ package dev
                 %sucCount = %sucCount + %suc;
                 if (!%suc)
                 {
-                    %fails[%tryCount - %sucCount] = %file ;
+                    %tryCount[%fails @ (%tryCount - %sucCount)] = %file;
                 }
                 %file = findNextFile(%ext);
             }
             %n = %n + 1;
         }
-        log("initialization", "info", "compiled" SPC %sucCount SPC "out of" SPC %tryCount SPC "files");
+        log("initialization", "info", "compiled" @ " " @ %sucCount @ " " @ "out of" @ " " @ %tryCount @ " " @ "files");
         %n = 1;
         while (%n <= (%tryCount - %sucCount))
         {
-            error("initialization", "compile failed:" SPC %fails[%n]);
+            error("initialization", "compile failed:" @ " " @ %fails[%n]);
             %n = %n + 1;
         }
         if (%tryCount == %sucCount)
@@ -279,12 +269,10 @@ package dev
     function GameConnection::etsInit(%this)
     {
         Parent::etsInit(%this);
-        return ;
     }
     function completeTest()
     {
         error("test completed successfully");
-        return ;
     }
     function initCanvas(%windowName)
     {
@@ -295,7 +283,6 @@ package dev
         exec("./ui/ConsoleDlg.gui");
         return 1;
     }
+    activatePackage(dev);
 };
-
-activatePackage(dev);
 

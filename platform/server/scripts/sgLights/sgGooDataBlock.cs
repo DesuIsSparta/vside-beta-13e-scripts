@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(sgGooDataBlock)
-{
+datablock sgUniversalStaticLightData(sgGooDataBlock) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 48;
@@ -67,4 +66,3 @@ datablock sgUniversalStaticLightData(sgGooDataBlock)
     RestrictZone = 0;
     RestrictZoneDiffuse = 0;
 };
-

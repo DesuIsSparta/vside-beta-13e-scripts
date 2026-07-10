@@ -1,19 +1,17 @@
 function toggleSnoopPanel()
 {
     SnoopPanel.toggle();
-    return ;
 }
 function SnoopPanel::toggle(%this)
 {
     playGui.ensureAdded(%this);
     playGui.showRaiseOrHide(%this);
-    return ;
 }
 function SnoopPanel::open(%this)
 {
     if (!$player.rolesPermissionCheckNoWarn("snoop"))
     {
-        return ;
+        return;
     }
     playGui.ensureAdded(%this);
     if (!%this.isVisible())
@@ -22,7 +20,6 @@ function SnoopPanel::open(%this)
         %this.restoreDims();
         playGui.focusAndRaise(%this);
     }
-    return ;
 }
 function SnoopPanel::close(%this)
 {
@@ -30,18 +27,15 @@ function SnoopPanel::close(%this)
     %this.setVisible(0);
     playGui.focusTopWindow();
     %this.storeDims();
-    return ;
 }
 function SnoopPanel::restoreDims(%this)
 {
     %dim = $DevPref::Mod::SnoopWindow::Dim;
     %this.resize(getWord(%dim, 0), getWord(%dim, 1), getWord(%dim, 2), getWord(%dim, 3));
-    return ;
 }
 function SnoopPanel::storeDims(%this)
 {
-    $DevPref::Mod::SnoopWindow::Dim = %this.getPosition() SPC %this.getExtent();
-    return ;
+    $DevPref::Mod::SnoopWindow::Dim = %this.getPosition() @ " " @ %this.getExtent();
 }
 function SnoopPanel::addLine(%this, %text)
 {
@@ -63,12 +57,10 @@ function SnoopPanel::addLine(%this, %text)
         %newLine = "";
     }
     snoopPanelTextCtrl.addText(%newLine @ %timeStamp @ %text, 1, SnoopPanelScroll.isAtBottom());
-    return ;
 }
 function SnoopPanel::addLine2(%this, %line)
 {
     %this.addLine(%line);
-    return ;
 }
 function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply)
 {
@@ -76,17 +68,17 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
     %text = strreplace(%text, "<color:000000", "<color:ffffff");
     if (%speechType $= "sos")
     {
-        %text = "<spush><color:dd0000>sos<spop>  " SPC %text;
+        %text = "<spush><color:dd0000>sos<spop>  " @ " " @ %text;
     }
     else
     {
         if (%speechType $= "abuse")
         {
-            %text = "<spush><color:dd0000>abuse<spop>  " SPC %text;
+            %text = "<spush><color:dd0000>abuse<spop>  " @ " " @ %text;
         }
         else
         {
-            %text = "<spush><color:00aa00>snoop" SPC %text @ "<spop>";
+            %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
         }
     }
     %this.addLine2(%text);
@@ -104,34 +96,31 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
             }
         }
     }
-    return ;
 }
 function ClientCmdSnoopIn(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply)
 {
     SnoopPanel.handleIncoming(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
-    return ;
 }
 function onModNotificationCussing(%playerName, %param2)
 {
     if (!$DevPref::Mod::cusses)
     {
-        return ;
+        return;
     }
     %text = NextToken(%param2, "verb", " ");
     %line = "<spush><color:880088>cuss ";
-    %line = %line SPC pChat.getPlayerMarkup(%playerName, "");
-    %line = %line SPC %verb SPC %text;
-    %line = %line SPC "<spop>";
+    %line = %line @ " " @ pChat.getPlayerMarkup(%playerName, "");
+    %line = %line @ " " @ %verb @ " " @ %text;
+    %line = %line @ " " @ "<spop>";
     SnoopPanel.addLine2(%line);
     %soundNum = stringToInteger(%playerName, $gAudioProfile_CussesNum);
     alxPlay2($gAudioProfile_Cusses[%soundNum]);
-    return ;
 }
 function stringToInteger(%string, %maxInteger)
 {
     if (%maxInteger <= 0)
     {
-        error("%maxInteger must be positive" SPC getTrace());
+        error("%maxInteger must be positive" @ " " @ getTrace());
         return 0;
     }
     %val = 0;
@@ -154,7 +143,6 @@ function snoopPanelTextCtrl::onRightURL(%this, %url)
         %name = unmunge(getWords(%url, 1));
         onRightClickPlayerName(%name);
     }
-    return ;
 }
 function snoopPanelTextCtrl::onUrl(%this, %url)
 {
@@ -177,15 +165,12 @@ function snoopPanelTextCtrl::onUrl(%this, %url)
             }
         }
     }
-    return ;
 }
 function SnoopPanel::copyToClipboard(%this)
 {
     setClipboard(StripMLControlChars(snoopPanelTextCtrl.getText()));
-    return ;
 }
 function doUserSnoop(%playerName, %on)
 {
     commandToServer('SnoopPlayer', %playerName, %on);
-    return ;
 }

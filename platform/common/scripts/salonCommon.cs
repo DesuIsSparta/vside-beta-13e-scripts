@@ -1,28 +1,26 @@
 $NUM_SALON_STYLES = 0;
 function SalonDefineChair(%grouping, %salonMenuDesc, %propDesc, %whereToGet, %destinationCode, %canClose)
 {
-    $SALON_CHAIR_DEF_SALONMENUDESC[%grouping] = %salonMenuDesc ;
-    $SALON_CHAIR_DEF_PROPDESC[%grouping] = %propDesc ;
-    $SALON_CHAIR_DEF_WHERETOGET[%grouping] = %whereToGet ;
-    $SALON_CHAIR_DEF_DESTCODE[%grouping] = %destinationCode ;
-    $SALON_CHAIR_DEF_CANCLOSE[%grouping] = %canClose ;
-    return ;
+    $SALON_CHAIR_DEF_SALONMENUDESC[%grouping] = %salonMenuDesc;
+    $SALON_CHAIR_DEF_PROPDESC[%grouping] = %propDesc;
+    $SALON_CHAIR_DEF_WHERETOGET[%grouping] = %whereToGet;
+    $SALON_CHAIR_DEF_DESTCODE[%grouping] = %destinationCode;
+    $SALON_CHAIR_DEF_CANCLOSE[%grouping] = %canClose;
 }
 function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cutTime, %requiredActiveSkusMessage)
 {
-    $SALON_STYLE_GROUPING[$NUM_SALON_STYLES] = %grouping ;
-    $SALON_STYLE_SKU[$NUM_SALON_STYLES] = %sku ;
-    $SALON_STYLE_REQUIREDSKUS[$NUM_SALON_STYLES] = %requiredActiveSkus ;
-    $SALON_STYLE_ANIMATION[$NUM_SALON_STYLES] = %animation ;
-    $SALON_STYLE_CUTTIME[$NUM_SALON_STYLES] = %cutTime ;
-    $SALON_STYLE_REQUREDSKUSMESSAGE[$NUM_SALON_STYLES] = %requiredActiveSkusMessage ;
+    $SALON_STYLE_GROUPING[$NUM_SALON_STYLES] = %grouping;
+    $SALON_STYLE_SKU[$NUM_SALON_STYLES] = %sku;
+    $SALON_STYLE_REQUIREDSKUS[$NUM_SALON_STYLES] = %requiredActiveSkus;
+    $SALON_STYLE_ANIMATION[$NUM_SALON_STYLES] = %animation;
+    $SALON_STYLE_CUTTIME[$NUM_SALON_STYLES] = %cutTime;
+    $SALON_STYLE_REQUREDSKUSMESSAGE[$NUM_SALON_STYLES] = %requiredActiveSkusMessage;
     %si = SkuManager.findBySku(%sku);
     %si.salonStyleIndex = $NUM_SALON_STYLES;
     $NUM_SALON_STYLES = $NUM_SALON_STYLES + 1;
-    return ;
 }
-$SALON_STYLE_BALD_SKU["f"] = 20315 ;
-$SALON_STYLE_BALD_SKU["m"] = 177 ;
+$SALON_STYLE_BALD_SKU["f"] = 20315;
+$SALON_STYLE_BALD_SKU["m"] = 177;
 $SALON_STYLE_BALD_SKU["n"] = "";
 function SalonDefineStyles()
 {
@@ -520,7 +518,6 @@ function SalonDefineStyles()
     SalonDefineStyle("drinks", 27249, 27253, "fmakewine", 15000, "");
     SalonDefineStyle("drinks", 27250, 27254, "fmakewine", 15000, "");
     SalonDefineStyle("drinks", 27278, 27277, "fmakegcylin", 15000, "");
-    return ;
 }
 SalonDefineStyles();
 function SalonDoesListContainAnySalonRewardSKUs(%skus)

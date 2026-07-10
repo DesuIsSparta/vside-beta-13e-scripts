@@ -8,7 +8,6 @@ function CityDownloadGui::onDone(%this)
     LoadingGui.setTransitioning(0);
     Canvas.setContent("LoadingGui");
     WorldMap.doServerJoin($lastVURL);
-    return ;
 }
 function CityDownloadGui::onProgress(%this, %dltotal, %dlnow)
 {
@@ -26,7 +25,6 @@ function CityDownloadGui::onProgress(%this, %dltotal, %dlnow)
         %progressValue = $CityDownloadGui::totalDownloaded / %dltotal;
         DLLoadingPBController.setValue(%progressValue);
     }
-    return ;
 }
 function CityDownloadGui::open(%this)
 {
@@ -34,20 +32,20 @@ function CityDownloadGui::open(%this)
     $CityDownloadGui::totalDownloaded = 0;
     $CityDownloadGui::lastDLNow = 0;
     $CityDownloadGui::lastCityIndex = 0;
-    return ;
 }
 function CityDownloadGui::close(%this)
 {
     %this.setVisible(0);
     $Video::allowResize = 1;
-    return ;
 }
 function CityDownloadGui::onWake(%this)
 {
     $Platform::CanSleepInBackground = 0;
     if (!isObject(DLLoadingPBController))
     {
-        new ScriptObject(DLLoadingPBController);
+        new ScriptObject(DLLoadingPBController) {
+            class = "ProgressBarController";
+        };
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add(DLLoadingPBController);
@@ -56,20 +54,18 @@ function CityDownloadGui::onWake(%this)
     DLLoadingPBController.Initialize(DLLoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
     if ($StandAlone && !$missionRunning)
     {
-        error(getScopeName() SPC "-" SPC $MsgCat::loading["E-MISSION-LD"] SPC $MissionArg SPC getTrace());
-        MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] SPC $MissionArg, "quit();", "");
+        error(getScopeName() @ " " @ "-" @ " " @ $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
+        MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();", "");
     }
     packageDownload.callBackSink = %this;
     if (!packageDownload.isActive())
     {
         packageDownload.start();
     }
-    return ;
 }
 function CityDownloadGui::onSleep(%this)
 {
     $Platform::CanSleepInBackground = 1;
     DLLoadingProgressText.setValue("");
     DLLoadingPBController.setValue(0);
-    return ;
 }

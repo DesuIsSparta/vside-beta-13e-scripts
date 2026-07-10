@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(sgSpot2DataBlock)
-{
+datablock sgUniversalStaticLightData(sgSpot2DataBlock) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 4;
@@ -57,4 +56,3 @@ datablock sgUniversalStaticLightData(sgSpot2DataBlock)
     AdvancedLightingModel = 0;
     EffectsDTSObjects = 1;
 };
-

@@ -6,7 +6,6 @@ function TestRunner_SmokeTestQuick::setup(%this)
     %this.addTestSuite("TestSuite_MissionGroup");
     %this.addTestSuite("TestSuite_VURL");
     %this.addTestSuite("TestSuite_NAMESPACE");
-    return ;
 }
 function TestRunner_SmokeTestLong::setup(%this)
 {
@@ -14,15 +13,12 @@ function TestRunner_SmokeTestLong::setup(%this)
     %this.addTestSuite("TestSuite_AnimationSystemSmokeTests");
     %this.addTestSuite("TestSuite_SeatingSystemSmokeTests");
     %this.addTestSuite("TestSuite_GameMetrics");
-    return ;
 }
 function SmokeTestQuick()
 {
     RunTestRunner("TestRunner_SmokeTestQuick");
-    return ;
 }
 function SmokeTestLong()
 {
     RunTestRunner("TestRunner_SmokeTestLong");
-    return ;
 }

@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(galleryspot)
-{
+datablock sgUniversalStaticLightData(galleryspot) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 10;
@@ -65,4 +64,3 @@ datablock sgUniversalStaticLightData(galleryspot)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

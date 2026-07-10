@@ -23,7 +23,7 @@ function clientCmdUpdateRespekt(%otherUser, %value, %dValue, %code, %ranking, %v
     respektHandle(%otherUser, %value, %dValue, %code, %ranking, %isCurrent);
     if (!%isCurrent)
     {
-        return ;
+        return;
     }
     $gMyBalancesAndScoresRevision = %revision;
     setMyRespektPoints(%value, %notify);
@@ -32,7 +32,6 @@ function clientCmdUpdateRespekt(%otherUser, %value, %dValue, %code, %ranking, %v
     {
         clientCmdUpdateVPoints(%vpoints, %notify);
     }
-    return ;
 }
 function respektHandle(%otherUser, %value, %dValue, %code, %ranking, %isCurrent)
 {
@@ -54,10 +53,9 @@ function respektHandle(%otherUser, %value, %dValue, %code, %ranking, %isCurrent)
     {
         if (!(%ret $= "success"))
         {
-            error(getScopeName() SPC "-" SPC %ret);
+            error(getScopeName() @ " " @ "-" @ " " @ %ret);
         }
     }
-    return ;
 }
 function respektComposeMessage(%user, %otherUser, %value, %dValue, %code)
 {
@@ -68,7 +66,7 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code)
     %otherUserProfileURL = $Net::ProfileURL @ urlEncode(stripUnprintables(%otherUser));
     %userWet = pChat.getPlayerMarkup(%user, "ffddeeff");
     %otherUserWet = pChat.getPlayerMarkup(%otherUser, "ffddeeff");
-    %dValueWet = %dValue > 0 ? "+" : %dValue;
+    %dValueWet = %dValue > 0 ? "+" @ %dValue : %dValue;
     %msg = getRespektMessage(%dValue, %code);
     %msg = strreplace(%msg, "[USER]", %userWet);
     %msg = strreplace(%msg, "[OTHERUSER]", %otherUserWet);
@@ -95,7 +93,6 @@ function clientCmdInitialScores(%respektPoints, %respektRank)
         AccountBalanceHud.update();
     }
     setMyRespektRank(%respektRank);
-    return ;
 }
 $gMyRespektPoints = 0;
 function setMyRespektPoints(%points, %notify)
@@ -105,7 +102,6 @@ function setMyRespektPoints(%points, %notify)
     {
         HudScoresContent.setRespektPoints(%points, %notify);
     }
-    return ;
 }
 function getMyRespektPoints(%points)
 {
@@ -113,15 +109,14 @@ function getMyRespektPoints(%points)
 }
 function setMyRespektRank(%rank)
 {
-    if ((%rank $= "") && (%rank <= 0))
+    if ((%rank $= "") || (%rank <= 0))
     {
-        return ;
+        return;
     }
     if (isObject(HudScoresContent))
     {
         HudScoresContent.setRespektRank(%rank);
     }
-    return ;
 }
 $gGetBalancesAndScoresDelay = 60 * 1000;
 $gGetBalancesAndScoresTimer = 0;
@@ -138,20 +133,19 @@ function getBalancesAndScores(%callback)
         $Player::VBux = 12345;
         $Player::VPoints = 67890;
         setMyRespektPoints(54321, 0);
-        return ;
+        return;
     }
     if ($Token $= "")
     {
-        log("general", "debug", getScopeName() SPC "- no token. skipping request.");
-        return ;
+        log("general", "debug", getScopeName() @ " " @ "- no token. skipping request.");
+        return;
     }
     if (!isObject(ServerConnection))
     {
-        log("general", "debug", getScopeName() SPC "- no server connection." SPC getTrace());
+        log("general", "debug", getScopeName() @ " " @ "- no server connection." @ " " @ getTrace());
     }
     %request = sendRequest_GetBalancesAndScores($Player::Name, "OnGotDoneOrError_GetBalancesAndScores");
     %request.otherCallback = %callback;
-    return ;
 }
 $gMyBalancesAndScoresRevision = 0;
 function OnGotDoneOrError_GetBalancesAndScores(%request)
@@ -160,12 +154,12 @@ function OnGotDoneOrError_GetBalancesAndScores(%request)
     $gGetBalancesAndScoresTimer = schedule($gGetBalancesAndScoresDelay, 0, "getBalancesAndScores");
     if (!%request.checkSuccess())
     {
-        return ;
+        return;
     }
     %revision = %request.getValue("revision");
     if (isOlderRevision(%revision, $gMyBalancesAndScoresRevision, $Player::Name))
     {
-        return ;
+        return;
     }
     $gMyBalancesAndScoresRevision = %revision;
     $Player::VBux = mFloor(%request.getValue("vbux"));
@@ -174,23 +168,22 @@ function OnGotDoneOrError_GetBalancesAndScores(%request)
     updateAccountBalanceDisplays();
     if (!(%request.otherCallback $= ""))
     {
-        echoDebug(getScopeName() SPC "- eval(" @ %request.otherCallback @ "):");
+        echoDebug(getScopeName() @ " " @ "- eval(" @ %request.otherCallback @ "):");
         eval(%request.otherCallback);
     }
-    return ;
 }
 function checkPointsEarnedSinceLastLogin()
 {
     %dVP = $Player::VPoints - gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVPoints", 0);
     %dVB = $Player::VBux - gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVBux", 0);
-    echo(getScopeName() SPC "- offline earnings:" SPC %dVP SPC "vPoints and" SPC %dVB SPC "vBux");
+    echo(getScopeName() @ " " @ "- offline earnings:" @ " " @ %dVP @ " " @ "vPoints and" @ " " @ %dVB @ " " @ "vBux");
     %firstLogin = !gUserPropMgrClient.hasProperty($Player::Name, "prevBalanceVPoints");
-    if ((!%firstLogin && (%dVP != 0)) || (%dVB != 0))
+    if (!%firstLogin && (%dVP != 0) || (%dVB != 0))
     {
         %msg = $MsgCat::TGF["currencyEarnedOffline"];
-        %msg = %msg @ %dVP != 0 ? " " : "";
-        %msg = %msg @ (%dVP != 0) && (%dVB != 0) ? " " : "";
-        %msg = %msg @ %dVB != 0 ? " " : "";
+        %msg = %msg @ (%dVP != 0) ? " " @ %dVP @ " " @ "vPoints" : "";
+        %msg = %msg @ (%dVP != 0) && (%dVB != 0) ? " " @ "and" : "";
+        %msg = %msg @ (%dVB != 0) ? " " @ %dVB @ " " @ "vBux" : "";
         %msg = %msg @ "!";
     }
     else
@@ -198,29 +191,28 @@ function checkPointsEarnedSinceLastLogin()
         %msg = "";
     }
     geTGF_main_OfflineIncomeNotification.setTextWithStyle(%msg);
-    return ;
 }
 function moveAccountBalanceHud(%toWhere)
 {
     if (!isObject(PlayGui))
     {
-        error(getScopeName() SPC "- PlayGUI not instantiated!" SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- PlayGUI not instantiated!" @ " " @ getTrace());
+        return;
     }
     if (!isObject(AccountBalanceContents))
     {
-        error(getScopeName() SPC "- AccountBalanceContents not instantiated!" SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- AccountBalanceContents not instantiated!" @ " " @ getTrace());
+        return;
     }
     if (!isObject(geTGF_tabs))
     {
-        error(getScopeName() SPC "- No TGF_tabs !" SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- No TGF_tabs !" @ " " @ getTrace());
+        return;
     }
     if (!isObject(geTGF_main_BalancesContainer))
     {
-        error(getScopeName() SPC "- No main tab !" SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- No main tab !" @ " " @ getTrace());
+        return;
     }
     if (%toWhere $= "TGF")
     {
@@ -242,10 +234,9 @@ function moveAccountBalanceHud(%toWhere)
         }
         else
         {
-            error(getScopeName() SPC "- invalid destination code:" SPC %toWhere SPC getTrace());
-            return ;
+            error(getScopeName() @ " " @ "- invalid destination code:" @ " " @ %toWhere @ " " @ getTrace());
+            return;
         }
     }
     %childCtrl.reparent(%dstContainer, %newPosition, %newExtent, %newProfile);
-    return ;
 }

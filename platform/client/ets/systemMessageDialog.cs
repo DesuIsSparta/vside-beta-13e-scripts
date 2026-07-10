@@ -12,7 +12,6 @@ function toggleSystemMessageDialog()
     {
         SystemMessageDialog.open();
     }
-    return ;
 }
 function SystemMessageDialog::open(%this)
 {
@@ -20,7 +19,6 @@ function SystemMessageDialog::open(%this)
     {
         HudTabs.selectTabWithName("word");
     }
-    return ;
 }
 function SystemMessageDialog::close(%this)
 {
@@ -28,11 +26,9 @@ function SystemMessageDialog::close(%this)
     {
         HudTabs.close();
     }
-    return ;
 }
 function SystemMessageDialog::onClose(%this)
 {
-    return ;
 }
 addMessageCallback('MsgSystemMessage', handleSystemMessage);
 addMessageCallback('MsgInfoMessage', handleSystemMessage);
@@ -72,18 +68,17 @@ function handleGamePlayMessage(%msgType, %msgString)
     {
         return MessageBoxOK("vSide - Notice", %msgString, "");
     }
-    return ;
 }
 function formatMessagePriority(%msgString)
 {
     %lastMsgLvl = "MSGLEVEL2";
     %idx = 0;
-    while (%idx = strstr(%msgString, "MSGLEVEL") >= 0)
+    while ((%idx = strstr(%msgString, "MSGLEVEL")) >= 0)
     {
         %lastMsgLvl = getSubStr(%msgString, %idx, 9);
-        %msgString = getSubStr(%msgString, 0, %idx) @ getSubStr(%msgString, %idx + 9, 1000);
+        %msgString = getSubStr(%msgString, 0, %idx) @ getSubStr(%msgString, (%idx + 9), 1000);
     }
-    return getSubStr(%lastMsgLvl, 8, 1) SPC %msgString;
+    return getSubStr(%lastMsgLvl, 8, 1) @ " " @ %msgString;
 }
 function handleSystemMessage(%msgType, %msgString)
 {
@@ -118,7 +113,6 @@ function handleSystemMessage(%msgType, %msgString)
     {
         alxPlay(AudioIm_SystemMessageIn);
     }
-    return ;
 }
 SystemMessageTextCtrl.bufferSize = 0;
 function SystemMessageTextCtrl::addText(%this, %txtString)
@@ -134,13 +128,11 @@ function SystemMessageTextCtrl::addText(%this, %txtString)
     %this.bufferMessage[%this.bufferSize] = %txtString;
     %this.bufferSize = %this.bufferSize + 1;
     %this.refresh();
-    return ;
 }
 function SystemMessageTextCtrl::clearText(%this)
 {
     %this.bufferSize = 0;
     %this.setText(%this.DefaultMessage);
-    return ;
 }
 function SystemMessageTextCtrl::deleteOldestBufferLine(%this)
 {
@@ -151,7 +143,6 @@ function SystemMessageTextCtrl::deleteOldestBufferLine(%this)
         %n = %n + 1;
     }
     %this.bufferSize = %this.bufferSize - 1;
-    return ;
 }
 function SystemMessageTextCtrl::refresh(%this)
 {
@@ -164,12 +155,11 @@ function SystemMessageTextCtrl::refresh(%this)
         {
             %curString = %curString @ "<b>";
         }
-        %curString = %curString @ "<color:" @ %this.getMessageColor((%this.bufferSize - %n) - 1) @ ">" @ %this.bufferMessage[%n] @ "<spop>\n";
+        %curString = %curString @ "<color:" @ %this.getMessageColor(((%this.bufferSize - %n) - 1)) @ ">" @ %this.bufferMessage[%n] @ "<spop>\n";
         Parent::addText(%this, %curString, 0, 1);
         %n = %n - 1;
     }
     %this.scrollToTop();
-    return ;
 }
 $gAgedMessageColors[0] = "ffddffff";
 $gAgedMessageColors[1] = "ffeeffcc";
@@ -192,7 +182,7 @@ function SystemMessageTextCtrl::onRightURL(%this, %url)
     }
     else
     {
-        if ((getSubStr(%url, 0, 7) $= "http://") && (getSubStr(%url, 0, 7) $= "vside:/"))
+        if ((getSubStr(%url, 0, 7) $= "http://") || (getSubStr(%url, 0, 7) $= "vside:/"))
         {
             LinkContextMenu.initWithURL(%url);
             LinkContextMenu.showAtCursor();
@@ -202,7 +192,6 @@ function SystemMessageTextCtrl::onRightURL(%this, %url)
     {
         TheShapeNameHud.makeFirstResponder(1);
     }
-    return ;
 }
 function SystemMessageTextCtrl::onURL(%this, %url)
 {
@@ -248,7 +237,7 @@ function SystemMessageTextCtrl::onURL(%this, %url)
                         %name = unmunge(getWord(%url, 1));
                         %requestId = getWord(%url, 2);
                         %coanim = getWords(%url, 3);
-                        if (!((%name $= "")) && !((%coanim $= "")))
+                        if (!(%name $= "") && !(%coanim $= ""))
                         {
                             setIdle(0);
                             commandToServer('CoAnimRespond', %requestId, "ACCEPT MANUAL");
@@ -314,7 +303,6 @@ function SystemMessageTextCtrl::onURL(%this, %url)
     {
         TheShapeNameHud.makeFirstResponder(1);
     }
-    return ;
 }
 function SystemMessageTextCtrl::updateFriendRequest(%this, %name, %accept)
 {
@@ -343,7 +331,6 @@ function SystemMessageTextCtrl::updateFriendRequest(%this, %name, %accept)
         %linkStart = "<a:ACCEPT ";
     }
     %this.changeLinesEndingInString(%linkStart, %acceptString);
-    return ;
 }
 function SystemMessageTextCtrl::updateTwoPlayerActionRequest(%this, %name, %coAnimName, %requestId, %accept)
 {
@@ -372,10 +359,9 @@ function SystemMessageTextCtrl::updateTwoPlayerActionRequest(%this, %name, %coAn
     }
     if (!(%name $= ""))
     {
-        %linkStart = "<a:ACCEPT_2PLAYER_ACTION " @ munge(%name) SPC %requestId SPC %coAnimName @ ">";
+        %linkStart = "<a:ACCEPT_2PLAYER_ACTION " @ munge(%name) @ " " @ %requestId @ " " @ %coAnimName @ ">";
     }
     %this.changeLinesEndingInString(%linkStart, %acceptString);
-    return ;
 }
 function SystemMessageTextCtrl::changeLinesEndingInString(%this, %replaceThis, %withThis)
 {
@@ -386,12 +372,13 @@ function SystemMessageTextCtrl::changeLinesEndingInString(%this, %replaceThis, %
         %start = strstr(%curLine, %replaceThis);
         if (%start < 0)
         {
-            continue;
         }
-        %newLine = getSubStr(%curLine, 0, %start) SPC %withThis;
-        %this.bufferMessage[%i] = %newLine;
+        else
+        {
+            %newLine = getSubStr(%curLine, 0, %start) @ " " @ %withThis;
+            %this.bufferMessage[%i] = %newLine;
+        }
         %i = %i - 1;
     }
     %this.refresh();
-    return ;
 }

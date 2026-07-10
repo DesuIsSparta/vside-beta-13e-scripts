@@ -67,5 +67,3 @@ function URLInfo::reconstruct(%this)
         }
     }
 }
-
-

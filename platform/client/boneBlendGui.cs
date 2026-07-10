@@ -24,7 +24,6 @@ function boneBlendGui::open(%this)
         $player.setBoneBlendScale(blendScaleSlider.getValue());
         %this.runOnce = 1;
     }
-    return ;
 }
 function boneBlendGui::close(%this)
 {
@@ -40,7 +39,6 @@ function blendUpperPitch::onMouseEnter(%this)
     blendUpperPitch.getGroup().setBitmap("platform/client/ui/messageHud");
     blendUpperYaw.getGroup().setBitmap("");
     blendUpperRoll.getGroup().setBitmap("");
-    return ;
 }
 function blendUpperYaw::onMouseEnter(%this)
 {
@@ -49,7 +47,6 @@ function blendUpperYaw::onMouseEnter(%this)
     blendUpperYaw.getGroup().setBitmap("platform/client/ui/messageHud");
     blendUpperPitch.getGroup().setBitmap("");
     blendUpperRoll.getGroup().setBitmap("");
-    return ;
 }
 function blendUpperRoll::onMouseEnter(%this)
 {
@@ -58,7 +55,6 @@ function blendUpperRoll::onMouseEnter(%this)
     blendUpperPitch.getGroup().setBitmap("");
     blendUpperRoll.getGroup().setBitmap("platform/client/ui/messageHud");
     blendUpperYaw.getGroup().setBitmap("");
-    return ;
 }
 function boneBlendGui::positionDynamicCtrls(%this, %contextControl)
 {
@@ -76,5 +72,4 @@ function boneBlendGui::positionDynamicCtrls(%this, %contextControl)
     blendScaleLabel.position = %Position1;
     blendRateLabel.position = %Position2;
     blendOffsetLabel.position = %Position3;
-    return ;
 }

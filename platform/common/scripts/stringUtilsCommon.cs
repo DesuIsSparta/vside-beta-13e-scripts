@@ -35,7 +35,7 @@ function wordsNotInWords(%haystack, %needles)
         %word = getWord(%needles, %n);
         if (!hasWord(%haystack, %word))
         {
-            %ret = %ret SPC %word;
+            %ret = %ret @ " " @ %word;
         }
         %n = %n - 1;
     }
@@ -47,11 +47,11 @@ function stripSurroundingQuotes(%text)
     %text = trim(%text);
     if (getSubStr(%text, 0, 1) $= "\"")
     {
-        %text = getSubStr(%text, 1, strlen(%text) - 1);
+        %text = getSubStr(%text, 1, (strlen(%text) - 1));
     }
-    if (getSubStr(%text, strlen(%text) - 1, 1) $= "\"")
+    if (getSubStr(%text, (strlen(%text) - 1), 1) $= "\"")
     {
-        %text = getSubStr(%text, 0, strlen(%text) - 1);
+        %text = getSubStr(%text, 0, (strlen(%text) - 1));
     }
     return %text;
 }
@@ -116,7 +116,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                                 %beginningOfNextWord = 0;
                                 %wordDone = 0;
                                 %i = 1;
-                                while (!%wordDone)
+                                while ((%i <= %wordLength) && !%wordDone)
                                 {
                                     %partialWord = getSubStr(%currentWord, 0, %i);
                                     %thisLineWidth = getStrWidth(%partialWord, %profile);
@@ -124,7 +124,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                                     {
                                         if (%i > 1)
                                         {
-                                            %partialWord = getSubStr(%currentWord, 0, %i - 1);
+                                            %partialWord = getSubStr(%currentWord, 0, (%i - 1));
                                             %beginningOfNextWord = %i - 1;
                                         }
                                         else
@@ -148,18 +148,18 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
             }
             else
             {
-                %thisLineWidth = getStrWidth(%thisLine SPC %currentWord, %profile);
+                %thisLineWidth = getStrWidth(%thisLine @ " " @ %currentWord, %profile);
                 %thisLineMaxWidth = chopTextToFitLineWidths_getLineWidth(%generalWidth, %lineWidths, %lineCount);
                 if (%thisLineWidth < %thisLineMaxWidth)
                 {
-                    %thisLine = %thisLine SPC %currentWord;
+                    %thisLine = %thisLine @ " " @ %currentWord;
                     %currentWordIndex = %currentWordIndex + 1;
                 }
                 else
                 {
                     if (%thisLineWidth == %thisLineMaxWidth)
                     {
-                        %thisLine = %thisLine SPC %currentWord;
+                        %thisLine = %thisLine @ " " @ %currentWord;
                         %currentWordIndex = %currentWordIndex + 1;
                         %atEndOfLine = 1;
                     }
@@ -180,7 +180,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
         }
         else
         {
-            %outputText = %outputText NL %thisLine;
+            %outputText = %outputText @ "\n" @ %thisLine;
         }
         %lineCount = %lineCount + 1;
     }
@@ -219,7 +219,6 @@ function findAndRemoveFirstOccurrenceOfWord(%haystack, %needle)
     {
         return %haystack;
     }
-    return ;
 }
 function findAndRemoveAllOccurrencesOfWord(%haystack, %needle)
 {
@@ -233,16 +232,16 @@ function findAndRemoveAllOccurrencesOfWord(%haystack, %needle)
 }
 function mergeWords(%set1, %set2)
 {
-    %s = trim(trim(%set1) SPC trim(%set2));
+    %s = trim(trim(%set1) @ " " @ trim(%set2));
     return dedupeWords(%s);
 }
 function mergeFields(%set1, %set2)
 {
-    %s = trim(trim(%set1) TAB trim(%set2));
+    %s = trim(trim(%set1) @ "\t" @ trim(%set2));
     return dedupeFields(%s);
 }
 function mergeRecords(%set1, %set2)
 {
-    %s = trim(trim(%set1) NL trim(%set2));
+    %s = trim(trim(%set1) @ "\n" @ trim(%set2));
     return dedupeRecords(%s);
 }

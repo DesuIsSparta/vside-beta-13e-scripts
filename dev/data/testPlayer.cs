@@ -5,18 +5,16 @@ $testPlayer::sampleSKUsTwo = 45678;
 function testPlayer_Master()
 {
     error("inside testPlayer_Master");
-    return ;
 }
 function testPlayer_AddInventoryTest()
 {
     $Player::inventory = $testPlayer::sampleInitialInventory1;
     $player.addInventorySKUs($testPlayer::sampleSKUsTwo);
     echo("testPlayer_AddInventoryTest(): " @ $Player::inventory);
-    if (!($Player::inventory $= $testPlayer::sampleSKUsTwo) SPC $testPlayer::sampleInitialInventory1)
+    if (!($Player::inventory $= $testPlayer::sampleSKUsTwo) @ " " @ $testPlayer::sampleInitialInventory1)
     {
         log("network", "error", "testPlayer_AddInventoryTest(): failed");
     }
-    return ;
 }
 function testPlayer_RemoveInventoryTest()
 {
@@ -27,7 +25,6 @@ function testPlayer_RemoveInventoryTest()
     {
         log("network", "error", "testPlayer_RemoveInventoryTest(): failed");
     }
-    return ;
 }
 function testPlayer_AddInventoryMultiTest()
 {
@@ -58,7 +55,7 @@ function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname)
     %pass = %wetExpected $= %wetActual;
     if (!%pass)
     {
-        log("wardrobe", "error", "failed:" SPC %testname);
+        log("wardrobe", "error", "failed:" @ " " @ %testname);
         log("wardrobe", "debug", "dry         = \"" @ %dry @ "\"");
         log("wardrobe", "debug", "delta       = \"" @ %delta @ "\"");
         log("wardrobe", "debug", "wetActual   = \"" @ %wetActual @ "\"");
@@ -66,7 +63,7 @@ function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname)
     }
     else
     {
-        log("wardrobe", "debug", "passed:" SPC %testname);
+        log("wardrobe", "debug", "passed:" @ " " @ %testname);
     }
     return %pass;
 }

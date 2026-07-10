@@ -8,7 +8,6 @@ $gAdminActionDefaultMessages["Throw Voice"] = "";
 function adminActionPopup::onSelect(%this, %unused, %text)
 {
     selectAdminAction(%text);
-    return ;
 }
 function selectAdminAction(%text)
 {
@@ -24,13 +23,12 @@ function selectAdminAction(%text)
     adminBanUserName.setVisible(%isBanCommand);
     adminGuiDuration.setVisible(%isBanCommand);
     adminGuiEditDuration.setVisible(%isBanCommand);
-    return ;
 }
 function toggleAdminDialog(%action, %target)
 {
     if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic"))
     {
-        return ;
+        return;
     }
     if (!isDefined("%action"))
     {
@@ -42,7 +40,7 @@ function toggleAdminDialog(%action, %target)
     }
     adminGui.defaultAction = %action;
     adminGui.defaultTarget = %target;
-    if (!((%action $= "")) && !((%target $= "")))
+    if (!(%action $= "") || !(%target $= ""))
     {
         adminGui.open();
     }
@@ -50,7 +48,6 @@ function toggleAdminDialog(%action, %target)
     {
         toggleVisibleState(adminGui);
     }
-    return ;
 }
 function adminGui::open(%this)
 {
@@ -65,13 +62,11 @@ function adminGui::open(%this)
         selectAdminAction(%this.defaultAction);
     }
     %this.onRefreshTargetsList();
-    return ;
 }
 function adminGui::close(%this, %unused)
 {
     Canvas.popDialog(%this);
     %this.setVisible(0);
-    return ;
 }
 function adminGui::initMenu(%this, %unused)
 {
@@ -108,17 +103,16 @@ function adminGui::initMenu(%this, %unused)
     %itemText = "Throw Voice";
     adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     adminActionPopup.setText(%prevItem);
-    return ;
 }
 function adminGui::tryTarget(%this, %shape)
 {
     if (!%this.isVisible())
     {
-        return ;
+        return;
     }
     if (adminGuiButtonConfirm.isVisible())
     {
-        return ;
+        return;
     }
     %name = admin::getTargetName(%shape);
     if (isObject(%shape))
@@ -134,22 +128,19 @@ function adminGui::tryTarget(%this, %shape)
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
-    return ;
 }
 function adminGui::onAction(%this)
 {
     adminGuiButtonDoIt.setVisible(0);
-    adminGuiButtonConfirm.setText("confirm" SPC adminActionPopup.getText() @ ":" SPC adminTargetsPopup.getText());
+    adminGuiButtonConfirm.setText("confirm" @ " " @ adminActionPopup.getText() @ ":" @ " " @ adminTargetsPopup.getText());
     adminGuiButtonConfirm.setVisible(1);
     adminGuiButtonCancel.setVisible(1);
-    return ;
 }
 function adminGui::onCancel(%this)
 {
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
-    return ;
 }
 function adminGui::onConfirm(%this)
 {
@@ -168,16 +159,14 @@ function adminGui::onConfirm(%this)
     {
         %internalMsg = "";
     }
-    warn("adminAction:" SPC $player.getShapeName() SPC %action SPC "on" SPC adminTargetsPopup.getText() SPC "with message:" SPC %message);
+    warn("adminAction:" @ " " @ $player.getShapeName() @ " " @ %action @ " " @ "on" @ " " @ adminTargetsPopup.getText() @ " " @ "with message:" @ " " @ %message);
     commandToServer('AdminAction', %action, adminTargetsPopup.getText(), %message, %banUser, %duration, %internalMsg);
-    return ;
 }
 function adminGui::onRefreshTargetsList(%this)
 {
     $gAdminGuiPrevMenuTarget = adminTargetsPopup.getText();
     adminTargetsPopup.setText("getting list..");
     commandToServer('AdminGetTargets');
-    return ;
 }
 function adminGui::onGotTargetsList(%this, %theList)
 {
@@ -186,7 +175,7 @@ function adminGui::onGotTargetsList(%this, %theList)
     if (%num < 1)
     {
         error("apparently nobody is here. this is bad.");
-        return ;
+        return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
@@ -209,14 +198,12 @@ function adminGui::onGotTargetsList(%this, %theList)
     {
         adminTargetsPopup.setText(%nextItem);
     }
-    return ;
 }
 function adminTargetsPopup::onSelect(%this, %unused, %text)
 {
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
-    return ;
 }
 $adminTargetsList = "";
 function clientCmdBuildTargetsList(%actionTagged, %item)
@@ -247,5 +234,4 @@ function clientCmdBuildTargetsList(%actionTagged, %item)
             }
         }
     }
-    return ;
 }

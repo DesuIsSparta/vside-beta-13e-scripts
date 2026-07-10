@@ -1,8 +1,8 @@
 function setDFEnabled(%val)
 {
-    if (!isFunction("Using_DF") && !Using_DF())
+    if (!isFunction("Using_DF") || !Using_DF())
     {
-        return ;
+        return;
     }
     if (%val)
     {
@@ -12,16 +12,14 @@ function setDFEnabled(%val)
     {
         DFManagerDestroy();
     }
-    return ;
 }
 function clientCmdSetDFEnabled(%val)
 {
-    if (!isFunction("Using_DF") && !Using_DF())
+    if (!isFunction("Using_DF") || !Using_DF())
     {
-        return ;
+        return;
     }
     setDFEnabled(%val);
-    return ;
 }
 $gDFNotify = 0;
 $gDFNotifyCode = "";
@@ -36,14 +34,12 @@ function onDFEngineStartError(%errorCode)
         $gDFNotify = 1;
         $gDFNotifyCode = %errorCode;
     }
-    return ;
 }
 function onDFEngineStarted()
 {
     commandToServer('DFStart', 1, "");
     $gDFNotify = 0;
     $gDFNotifyCode = "";
-    return ;
 }
 $gDFDebugNeedsRefresh = 1;
 $gDFDebugAdvertsList = new_ScriptArray("");
@@ -52,7 +48,7 @@ function DFDebugRefresh()
 {
     if (!$gDFDebugNeedsRefresh)
     {
-        return ;
+        return;
     }
     $gDFDebugNeedsRefresh = 0;
     $gDFDebugAdvertsList.clear();
@@ -69,48 +65,43 @@ function DFDebugRefresh()
     }
     $gDFDebugCurrAdvert = "-";
     DFDebugUpdateGuiStatus();
-    return ;
 }
 function DFDebugUpdateGuiStatus()
 {
-    %obj = ($gDFDebugCurrAdvert < 1) && ($gDFDebugAdvertsList.size() > 0) ? "" : $gDFDebugAdvertsList.get($gDFDebugCurrAdvert - 1);
+    %obj = ($gDFDebugCurrAdvert < 1) && ($gDFDebugAdvertsList.size() > 0) ? "" : $gDFDebugAdvertsList.get(($gDFDebugCurrAdvert - 1));
     %objText = "";
     if (isObject(%obj))
     {
-        %objText = %objText @ "-" SPC %obj.getDFObjectName();
+        %objText = %objText @ "-" @ " " @ %obj.getDFObjectName();
         if (!(%obj.getName() $= ""))
         {
-            %objText = %objText @ "-" SPC %obj.getName();
+            %objText = %objText @ "-" @ " " @ %obj.getName();
         }
     }
-    geDFDebugStatusText.setValue($gDFDebugCurrAdvert SPC "/" SPC $gDFDebugAdvertsList.size() SPC %objText);
-    return ;
+    geDFDebugStatusText.setValue($gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText);
 }
 function DFDebugRefreshForce()
 {
     $gDFDebugNeedsRefresh = 1;
     DFDebugRefresh();
-    return ;
 }
 function DFDebugPrev()
 {
     if (!$Pref::DF::debugMode)
     {
-        return ;
+        return;
     }
     DFDebugRefresh();
-    DFDebugGotoAdvert($gDFDebugCurrAdvert - 1);
-    return ;
+    DFDebugGotoAdvert(($gDFDebugCurrAdvert - 1));
 }
 function DFDebugNext()
 {
     if (!$Pref::DF::debugMode)
     {
-        return ;
+        return;
     }
     DFDebugRefresh();
-    DFDebugGotoAdvert($gDFDebugCurrAdvert + 1);
-    return ;
+    DFDebugGotoAdvert(($gDFDebugCurrAdvert + 1));
 }
 function DFDebugGotoAdvert(%advertNumber)
 {
@@ -129,7 +120,7 @@ function DFDebugGotoAdvert(%advertNumber)
     }
     else
     {
-        %advertObj = $gDFDebugAdvertsList.get(%advertNumber - 1);
+        %advertObj = $gDFDebugAdvertsList.get((%advertNumber - 1));
     }
     $gDFDebugCurrAdvert = %advertNumber;
     DFDebugUpdateGuiStatus();
@@ -139,8 +130,7 @@ function DFDebugGotoAdvert(%advertNumber)
         %offset = %advertObj.localToWorldVector("0 5 0");
         %point = %advertObj.getWorldBoxCenter();
         %point = VectorAdd(%offset, %point);
-        %trans = %point SPC getWords(%trans, 3, 100);
+        %trans = %point @ " " @ getWords(%trans, 3, 100);
         commandToServer('DropCameraAtTransform', %trans);
     }
-    return ;
 }

@@ -6,7 +6,6 @@ function PlantDetailsGui::open(%this)
         %this.setVisible(1);
     }
     PlayGui.focusAndRaise(%this);
-    return ;
 }
 function PlantDetailsGui::close(%this)
 {
@@ -17,18 +16,16 @@ function PlantDetailsGui::close(%this)
 function PlantDetailsGui::onClickFAQButton(%this)
 {
     gotoWebPage(%this.faqURL);
-    return ;
 }
 function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL)
 {
     %this.open();
     PlantDetailsTitle.setText(%plantName);
-    PlantDetailsProgressBar.setValue(%currentState / %totalStates);
+    PlantDetailsProgressBar.setValue((%currentState / %totalStates));
     PlantDetailsStatusText.setText(%info);
     %bmp = "projects/common/inventory/" @ %plantSKU @ "/progress" @ %plantSKU @ ".png";
     PlantProgressBackgroundBMP.setBitmap(%bmp);
     %this.faqURL = %faqURL;
-    return ;
 }
 function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL)
 {
@@ -57,5 +54,4 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
     PlantDetailsGui.open();
     PlantDetailsGui.showDetails(%plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL);
-    return ;
 }

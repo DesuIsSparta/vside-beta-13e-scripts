@@ -2,8 +2,7 @@ function MenuLayer::Initialize()
 {
     if (!isObject(MenuLayer))
     {
-        new GuiMouseEventCtrl(MenuLayer)
-        {
+        new GuiMouseEventCtrl(MenuLayer) {
             profile = "GuiDefaultProfile";
             horizSizing = "width";
             vertSizing = "height";
@@ -16,33 +15,29 @@ function MenuLayer::Initialize()
         MenuLayer.justOpened = 0;
         MenuLayer.activeButton = 0;
         MenuLayer.activeMenu = 0;
-        MenuLayer.menus = new SimSet();
-        MenuLayer.clones = new SimSet();
+        MenuLayer.menus = new SimSet("");
+        MenuLayer.clones = new SimSet("");
     }
-    return ;
 }
 function MenuLayer::show(%this)
 {
     if (MenuLayer.isVisible())
     {
-        return ;
+        return;
     }
     MenuLayer::Initialize();
     Canvas.pushDialog(%this, 0);
     %this.setVisible(1);
     %this.justOpened = 1;
     %this.schedule(500, "shownForAWhile");
-    return ;
 }
 function MenuLayer::shownForAWhile(%this)
 {
     %this.justOpened = 0;
-    return ;
 }
 function MenuLayer::addCloneOf(%this, %ctrl)
 {
-    %clone = new GuiMouseEventCtrl()
-    {
+    %clone = new GuiMouseEventCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -58,7 +53,6 @@ function MenuLayer::addCloneOf(%this, %ctrl)
     %clone.bindClassName("MenuButtonClone");
     %this.add(%clone);
     %this.clones.add(%clone);
-    return ;
 }
 function MenuLayer::deleteClones(%this)
 {
@@ -70,12 +64,11 @@ function MenuLayer::deleteClones(%this)
         %i = %i - 1;
     }
 }
-
 function MenuLayer::setActiveButton(%this, %ctrl)
 {
     if (!isObject(%ctrl))
     {
-        return ;
+        return;
     }
     if (%this.clones.getCount() == 0)
     {
@@ -110,7 +103,6 @@ function MenuLayer::setActiveButton(%this, %ctrl)
             %this.activeButton.menu.showRelativeTo(%this.activeButton, 1);
         }
     }
-    return ;
 }
 function MenuLayer::nextActiveButton(%this)
 {
@@ -123,14 +115,13 @@ function MenuLayer::nextActiveButton(%this)
         {
             if (%this.clones.getObject(%i).original == %this.activeButton.getId())
             {
-                %next = %this.clones.getObject((%i + 1) % %count).original;
+                %next = %this.clones.getObject(((%i + 1) % %count)).original;
                 break;
             }
             %i = %i + 1;
         }
         %this.setActiveButton(%next);
     }
-    return ;
 }
 function MenuLayer::previousActiveButton(%this)
 {
@@ -143,20 +134,19 @@ function MenuLayer::previousActiveButton(%this)
         {
             if (%this.clones.getObject(%i).original == %this.activeButton.getId())
             {
-                %prev = %this.clones.getObject(((%i - 1) + %count) % %count).original;
+                %prev = %this.clones.getObject((((%i - 1) + %count) % %count)).original;
                 break;
             }
             %i = %i + 1;
         }
         %this.setActiveButton(%prev);
     }
-    return ;
 }
 function MenuLayer::hide(%this)
 {
     if (!%this.isVisible())
     {
-        return ;
+        return;
     }
     %this.setVisible(0);
     Canvas.popDialog(%this);
@@ -173,7 +163,6 @@ function MenuLayer::hide(%this)
         %this.activeButton.depressed = 0;
     }
     %this.deleteClones();
-    return ;
 }
 function MenuLayer::pop(%this)
 {
@@ -188,7 +177,6 @@ function MenuLayer::pop(%this)
     {
         %nextHighest.makeFirstResponder(1);
     }
-    return ;
 }
 function MenuLayer::popToMenu(%this, %menu)
 {
@@ -208,14 +196,12 @@ function MenuLayer::popToMenu(%this, %menu)
     {
         %nextHighest.makeFirstResponder(1);
     }
-    return ;
 }
 function MenuLayer::push(%this, %menu)
 {
     %menu = %menu.getId();
     %cleanStack = removeWord(%this.stack, findWord(%this.stack, %menu));
-    %this.stack = trim(%menu SPC %cleanStack);
-    return ;
+    %this.stack = trim(%menu @ " " @ %cleanStack);
 }
 function MenuLayer::close(%this)
 {
@@ -224,12 +210,10 @@ function MenuLayer::close(%this)
     {
         %this.hide();
     }
-    return ;
 }
 function MenuLayer::onMouseDown(%this)
 {
     %this.hide();
-    return ;
 }
 function MenuLayer::onMouseUp(%this)
 {
@@ -237,12 +221,10 @@ function MenuLayer::onMouseUp(%this)
     {
         %this.hide();
     }
-    return ;
 }
 function MenuLayer::onRightMouseDown(%this)
 {
     %this.hide();
-    return ;
 }
 function MenuLayer::newMenu(%menuName)
 {
@@ -259,17 +241,14 @@ function MenuButtonClone::onMouseEnter(%this)
     {
         %this.layer.schedule(0, "setActiveButton", %this.original);
     }
-    return ;
 }
 function MenuButtonClone::onMouseDown(%this)
 {
     %this.layer.schedule(0, "hide");
-    return ;
 }
 function MenuButtonClone::onMouseUp(%this)
 {
     %this.layer.schedule(0, "onMouseUp");
-    return ;
 }
 function MenuControl::newMenuWithScroll(%menuName)
 {
@@ -277,8 +256,7 @@ function MenuControl::newMenuWithScroll(%menuName)
     {
         return %menuName.getId();
     }
-    %scroll = new GuiScrollCtrl()
-    {
+    %scroll = new GuiScrollCtrl("") {
         profile = "ETSScrollProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -293,8 +271,7 @@ function MenuControl::newMenuWithScroll(%menuName)
         constantThumbHeight = 1;
         childMargin = "0 0";
     };
-    %menu = new GuiArray2Ctrl()
-    {
+    %menu = new GuiArray2Ctrl("") {
         profile = "ETSMenuProfile";
         childrenClassName = "GuiMouseEventCtrl";
         childrenExtent = "210 24";
@@ -317,8 +294,7 @@ function MenuControl::newMenuWithScroll(%menuName)
 }
 function MenuControl::onCreatedChild(%this, %child)
 {
-    %icon = new GuiBitmapCtrl()
-    {
+    %icon = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -331,8 +307,7 @@ function MenuControl::onCreatedChild(%this, %child)
     };
     %child.add(%icon);
     %child.icon = %icon;
-    %menuText = new GuiTextCtrl()
-    {
+    %menuText = new GuiTextCtrl("") {
         profile = %this.menuTextProfile;
         horizSizing = "right";
         vertSizing = "bottom";
@@ -346,12 +321,11 @@ function MenuControl::onCreatedChild(%this, %child)
     };
     %child.add(%menuText);
     %child.menuText = %menuText;
-    %accelText = new GuiTextCtrl()
-    {
+    %accelText = new GuiTextCtrl("") {
         profile = %this.menuTextProfile;
         horizSizing = "right";
         vertSizing = "bottom";
-        position = getWord(%child.getExtent(), 0) - 35 SPC 2;
+        position = (getWord(%child.getExtent(), 0) - 35) @ " " @ 2;
         extent = "35 20";
         minExtent = "1 1";
         sluggishness = -1;
@@ -363,12 +337,11 @@ function MenuControl::onCreatedChild(%this, %child)
     %child.accelText = %accelText;
     %width = getWord(%child.getExtent(), 0);
     %height = getWord(%child.getExtent(), 1);
-    %subArrow = new GuiBitmapCtrl()
-    {
+    %subArrow = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "left";
         vertSizing = "center";
-        position = %width - 10 SPC (%height / 2) - 5;
+        position = (%width - 10) @ " " @ ((%height / 2) - 5);
         extent = "5 9";
         minExtent = "1 1";
         sluggishness = -1;
@@ -382,7 +355,6 @@ function MenuControl::onCreatedChild(%this, %child)
     {
         %child.bindClassName("MenuItem");
     }
-    return ;
 }
 function MenuControl::onKeyDown(%this, %unused, %keyCode)
 {
@@ -423,7 +395,7 @@ function MenuControl::addSubmenu(%this, %text, %icon, %menuName)
 {
     if (!isObject(%this.layer))
     {
-        return ;
+        return;
     }
     %item = %this.addChild();
     %item.setMenuItemText(%text);
@@ -445,7 +417,6 @@ function MenuControl::showRelativeTo(%this, %baseCtrl, %vertical)
     %this.positionRelativeTo(%baseCtrl, %vertical);
     %this.baseCtrl = %baseCtrl;
     %this.show();
-    return ;
 }
 function MenuControl::show(%this)
 {
@@ -456,7 +427,6 @@ function MenuControl::show(%this)
     %this.scroll.setVisible(1);
     %this.hiliteCell(-1, -1);
     %this.makeFirstResponder(1);
-    return ;
 }
 function MenuControl::hide(%this)
 {
@@ -471,13 +441,12 @@ function MenuControl::hide(%this)
                 getWord(%this.layer.stack, %i).scroll.setVisible(0);
                 %i = %i + 1;
             }
-            %this.layer.stack = getWords(%this.layer.stack, %idx + 1);
+            %this.layer.stack = getWords(%this.layer.stack, (%idx + 1));
         }
     }
     %this.makeFirstResponder(0);
     %this.hiliteCell(-1, -1);
     %this.scroll.setVisible(0);
-    return ;
 }
 function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical)
 {
@@ -502,7 +471,7 @@ function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical)
         {
             if (%topMargin >= %bottomMargin)
             {
-                %height = mMin(%topMargin, getWord(%this.getExtent(), 1) + 2);
+                %height = mMin(%topMargin, (getWord(%this.getExtent(), 1) + 2));
                 %left = %leftMargin;
                 %top = (%topMargin - %height) - 6;
                 %width = getWord(%scrollCtrl.getExtent(), 0);
@@ -521,7 +490,7 @@ function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical)
         %menuWidth = getWord(%this.getExtent(), 0);
         %ctrlRight = getWord(%baseCtrl.getExtent(), 0) + %leftMargin;
         %rightMargin = %screenWidth - %ctrlRight;
-        if ((%menuWidth <= %rightMargin) && (%rightMargin >= %leftMargin))
+        if ((%menuWidth <= %rightMargin) || (%rightMargin >= %leftMargin))
         {
             %left = %ctrlRight;
             %top = %topMargin;
@@ -542,7 +511,6 @@ function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical)
     %left = getWord(%onscreen, 0);
     %top = getWord(%onscreen, 1);
     %scrollCtrl.resize(%left, %top, %width, %height);
-    return ;
 }
 function MenuItem::setMenuItemText(%this, %text)
 {
@@ -550,7 +518,6 @@ function MenuItem::setMenuItemText(%this, %text)
     {
         %this.menuText.setText(%text);
     }
-    return ;
 }
 function MenuItem::setIcon(%this, %icon)
 {
@@ -558,13 +525,11 @@ function MenuItem::setIcon(%this, %icon)
     {
         %this.icon.setBitmap(%icon);
     }
-    return ;
 }
 function MenuItem::setAccelerator(%this, %accelerator)
 {
     %this.accelerator = %accelerator;
     %this.accelText.setText(%accelerator);
-    return ;
 }
 function MenuItem::onHilite(%this)
 {
@@ -579,13 +544,13 @@ function MenuItem::onHilite(%this)
     %targetRow = getWord(%this.Parent.hilitedCell, 1);
     if (%targetRow < %closestRow)
     {
-        %scroll.scrollTo(0, (%cellHeight * %targetRow) + %this.Parent.spacing);
+        %scroll.scrollTo(0, ((%cellHeight * %targetRow) + %this.Parent.spacing));
     }
     else
     {
         if (%targetRow > ((%closestRow + %numRowsVisible) - 1))
         {
-            %scroll.scrollTo(0, %cellHeight * ((%targetRow - %numRowsVisible) + 1));
+            %scroll.scrollTo(0, (%cellHeight * ((%targetRow - %numRowsVisible) + 1)));
         }
     }
     %layer = %this.Parent.layer;
@@ -600,7 +565,7 @@ function MenuItem::onHilite(%this)
         %thisIdx = findWord(%layer.stack, %currentMenu.getId());
         if (%thisIdx != -1)
         {
-            %parentMenu = getWord(%layer.stack, %thisIdx + 1);
+            %parentMenu = getWord(%layer.stack, (%thisIdx + 1));
             if (isObject(%parentMenu))
             {
                 %count = %parentMenu.getCount();
@@ -622,7 +587,6 @@ function MenuItem::onHilite(%this)
             }
         }
     }
-    return ;
 }
 function MenuItem::onUnhilite(%this)
 {
@@ -632,7 +596,6 @@ function MenuItem::onUnhilite(%this)
         %this.menuText.text = %this.menuText.getValue();
         %this.menuText.setProfile(%this.Parent.menuTextProfile);
     }
-    return ;
 }
 function MenuItem::onSelect(%this)
 {
@@ -648,13 +611,12 @@ function MenuItem::onSelect(%this)
             %this.Parent.layer.hide();
         }
     }
-    return ;
 }
 function MenuItem::openSubmenu(%this)
 {
     if (!isObject(%this.Parent.layer))
     {
-        return ;
+        return;
     }
     if (isObject(%this.submenu))
     {
@@ -668,7 +630,6 @@ function MenuItem::openSubmenu(%this)
     {
         %this.Parent.layer.popToMenu(%this.Parent);
     }
-    return ;
 }
 function MenuItem::onMouseEnterBounds(%this)
 {
@@ -678,21 +639,18 @@ function MenuItem::onMouseEnterBounds(%this)
     {
         if (%this.getId() == %this.Parent.getObject(%i))
         {
-            continue;
+            break;
         }
         %i = %i + 1;
     }
     %this.Parent.hiliteCell(0, %i);
-    return ;
 }
 function MenuItem::onMouseLeaveBounds(%this)
 {
-    return ;
 }
 function MenuItem::onMouseUp(%this)
 {
     %this.onSelect();
-    return ;
 }
 function MenuItem::onMouseMove(%this)
 {
@@ -701,10 +659,8 @@ function MenuItem::onMouseMove(%this)
         cancel(%this.Parent.layer.hoverTimer);
         %this.Parent.layer.hoverTimer = %this.schedule(400, "onMouseHover");
     }
-    return ;
 }
 function MenuItem::onMouseHover(%this)
 {
     %this.openSubmenu();
-    return ;
 }

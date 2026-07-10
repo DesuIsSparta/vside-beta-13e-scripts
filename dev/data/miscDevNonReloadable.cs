@@ -7,7 +7,6 @@ function GuiEditLazy(%val)
         $gGuiEditorGuiExeced = 1;
     }
     GuiEdit(%val);
-    return ;
 }
 GlobalActionMap.bind(keyboard, "alt F10", GuiEditLazy);
 $gWorldEditorExeced = 0;
@@ -19,14 +18,13 @@ function toggleEditorLazy(%val)
         $gWorldEditorExeced = 1;
     }
     toggleEditor(%val);
-    return ;
 }
 GlobalActionMap.bind(keyboard, "alt F11", toggleEditorLazy);
 function canvasExecMisc()
 {
     if (!$AmClient)
     {
-        return ;
+        return;
     }
     exec("common/ui/InspectDlg.gui");
     exec("common/ui/LoadFileDlg.gui");
@@ -37,7 +35,5 @@ function canvasExecMisc()
     exec("common/ui/NetGraphGui.gui");
     exec("common/client/help.cs");
     exec("common/client/recordings.cs");
-    return ;
 }
 canvasExecMisc();
-

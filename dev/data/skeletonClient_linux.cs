@@ -15,20 +15,16 @@ $System::ID4 = "fakeMacAddress.com";
 function initAVPlayer()
 {
     echo("Fake initAVPlayer()");
-    return ;
 }
 function getCurrentMemoryUsage()
 {
     echo("Fake getCurrentMemoryUsage()");
-    return ;
 }
 function getAllAVPlayerNames()
 {
     echo("Fake getAllAVPlayerNames()");
-    return ;
 }
 function ffmpegSetMasterVolume()
 {
     echo("Fake ffmpegSetMasterVolume()");
-    return ;
 }

@@ -9,40 +9,37 @@ function initCoAnimList()
     addCoAnim("gift", "giveloot", 0, 0, 4, "0 1.1 0 0 0 1 3.14159", 0, "", "T");
     addCoAnim("giveDrink", "givedrink", 0, 0, 4, "0 0   0 0 0 1 3.14159", 0, "", "F");
     addCoAnim("makeDrink", "makedrink", 0, 0, 4, "0 0   0 0 0 1 3.14159", 0, "", "F");
-    return ;
 }
 $gCoAnimDictionary = 0;
 function addCoAnim(%coAnimName, %anim, %delayA, %delayB, %range, %relativeTransform, %minLevel, %requestText, %moveMode)
 {
     if (!isObject($gCoAnimDictionary))
     {
-        $gCoAnimDictionary = new StringMap();
+        $gCoAnimDictionary = new StringMap("");
         if (isObject(MissionCleanup))
         {
             MissionCleanup.add($gCoAnimDictionary);
         }
     }
-    %entry = "" @ %anim TAB %delayA TAB %delayB TAB %range TAB %relativeTransform TAB %minLevel TAB %requestText TAB %moveMode;
+    %entry = "" @ %anim @ "\t" @ %delayA @ "\t" @ %delayB @ "\t" @ %range @ "\t" @ %relativeTransform @ "\t" @ %minLevel @ "\t" @ %requestText @ "\t" @ %moveMode;
     setCoAnimEntry(%coAnimName, %entry);
-    return ;
 }
 function setCoAnimSkuPeriod(%coAnimName, %whichPlayer, %specialSkuName, %startMS, %stopMS)
 {
     %entry = findCoAnimEntry(%coAnimName);
     if (%entry $= "")
     {
-        error(getScopeName() SPC "- no such coAnim:" SPC %coAnimName SPC getTrace());
-        return ;
+        error(getScopeName() @ " " @ "- no such coAnim:" @ " " @ %coAnimName @ " " @ getTrace());
+        return;
     }
     %skuPeriods = getField(%entry, 6);
     if (!(%skuPeriods $= ""))
     {
         %skuPeriods = %skuPeriods @ " ";
     }
-    %skuPeriods = %skuPeriods @ %whichPlayer SPC %specialSkuName SPC %startMS SPC %stopMS;
+    %skuPeriods = %skuPeriods @ %whichPlayer @ " " @ %specialSkuName @ " " @ %startMS @ " " @ %stopMS;
     %entry = setField(%entry, %skuPeriods);
     setCoAnimEntry(%coAnimName, %entry);
-    return ;
 }
 function findCoAnimEntry(%name)
 {
@@ -55,7 +52,6 @@ function findCoAnimEntry(%name)
 function setCoAnimEntry(%name, %value)
 {
     $gCoAnimDictionary.put(%name, %value);
-    return ;
 }
 initCoAnimList();
 function getAllCoAnims()
@@ -72,7 +68,7 @@ function getAllCoAnims()
         %userFacingName = $gCoAnimDictionary.getKey(%i);
         if (!(%userFacingName $= ""))
         {
-            %list = %list TAB %userFacingName;
+            %list = %list @ "\t" @ %userFacingName;
         }
         %i = %i + 1;
     }

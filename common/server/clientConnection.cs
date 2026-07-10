@@ -1,6 +1,6 @@
 function ValidateRequest::getInfoString(%this)
 {
-    return "[" @ %this.connection SPC %this.name @ "]";
+    return "[" @ %this.connection @ " " @ %this.name @ "]";
 }
 function ValidateRequest::onError(%this, %errorNum, %errorName)
 {
@@ -16,29 +16,29 @@ function ValidateRequest::onError(%this, %errorNum, %errorName)
     {
         %this.connection.connectCallback("CR_TOKEN");
     }
-    return ;
+    return;
 }
 function ValidateRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    log("login", "info", %this.getInfoString() SPC "ValidateRequest::onDone:" SPC %status);
+    log("login", "info", %this.getInfoString() @ " " @ "ValidateRequest::onDone:" @ " " @ %status);
     if (!(PendingValidate.get(%this.name) $= ""))
     {
         PendingValidate.remove(%this.name);
     }
-    if (!$Insecure && !((%status $= "success")))
+    if (!$Insecure && !(%status $= "success"))
     {
         %this.connection.connectCallback("CR_TOKEN");
-        return ;
+        return;
     }
     %this.roles = %this.getValue("permissions");
     if (%this.isTooFullForPlayer(%this.roles))
     {
         %this.connection.connectCallback("CR_SERVERFULL");
-        return ;
+        return;
     }
     %this.connection.connectCallback("");
-    return ;
+    return;
 }
 function ValidateRequest::isTooFullForPlayer(%this, %roles)
 {
@@ -46,7 +46,7 @@ function ValidateRequest::isTooFullForPlayer(%this, %roles)
     %bypassing = "";
     if (ClientGroup.getCount() >= $Pref::Server::MaxPlayers)
     {
-        if (((roles::maskHasRoleString(mInt(%roles), "staff") || roles::maskHasRoleString(mInt(%roles), "moderator")) || roles::maskHasRoleString(mInt(%roles), "press")) || roles::maskHasRoleString(mInt(%roles), "celeb"))
+        if (roles::maskHasRoleString(mInt(%roles), "staff") || roles::maskHasRoleString(mInt(%roles), "moderator") || roles::maskHasRoleString(mInt(%roles), "press") || roles::maskHasRoleString(mInt(%roles), "celeb"))
         {
             %bypassing = "but bypassing";
         }
@@ -54,7 +54,7 @@ function ValidateRequest::isTooFullForPlayer(%this, %roles)
         {
             %ret = 1;
         }
-        log("login", "warn", %this.getInfoString() SPC "server full at:" SPC ClientGroup.getCount() SPC %bypassing SPC "for" SPC %this.registeredName);
+        log("login", "warn", %this.getInfoString() @ " " @ "server full at:" @ " " @ ClientGroup.getCount() @ " " @ %bypassing @ " " @ "for" @ " " @ %this.registeredName);
     }
     return %ret;
 }
@@ -62,11 +62,13 @@ function sendJoinRequest(%callback, %name, %token)
 {
     if (!haveValidManagerHost())
     {
-        echo(getScopeName() SPC "- invalid manager host - faking onJoinResponse.");
+        echo(getScopeName() @ " " @ "- invalid manager host - faking onJoinResponse.");
         %callback.onJoinResponse(0);
-        return ;
+        return;
     }
-    %joinRequest = new ManagerRequest();
+    %joinRequest = new ManagerRequest("") {
+        className = "JoinRequest";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%joinRequest);
@@ -82,51 +84,51 @@ function sendJoinRequest(%callback, %name, %token)
 }
 function JoinRequest::onError(%this, %errorNum, %errorName)
 {
-    log("login", "error", "JoinRequest for" SPC %this.name SPC "failed due to " SPC %errorNum SPC "-" SPC %errorName);
+    log("login", "error", "JoinRequest for" @ " " @ %this.name @ " " @ "failed due to " @ " " @ %errorNum @ " " @ "-" @ " " @ %errorName);
     %this.schedule(0, delete);
-    return ;
+    return;
 }
 function JoinRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    log("login", "info", "JoinRequest for" SPC %this.name SPC "complete");
+    log("login", "info", "JoinRequest for" @ " " @ %this.name @ " " @ "complete");
     %this.buddyCount = %this.getValue("numFavorites");
     %n = 1;
     while (%n <= %this.buddyCount)
     {
-        %this.buddy[%n] = %this.getValue("favorite" @ %n);
+        %this.buddy[%n),%n] = %this.getValue("favorite";
         %n = %n + 1;
     }
     %this.ignoreCount = %this.getValue("numIgnores");
     %n = 1;
     while (%n <= %this.ignoreCount)
     {
-        %this.ignore[%n] = %this.getValue("ignore" @ %n);
+        %this.ignore[%n),%n] = %this.getValue("ignore";
         %n = %n + 1;
     }
     %this.onBuddyCount = %this.getValue("numOnFavorites");
     %n = 1;
     while (%n <= %this.onBuddyCount)
     {
-        %this.onBuddy[%n] = %this.getValue("onFavorite" @ %n);
+        %this.onBuddy[%n),%n] = %this.getValue("onFavorite";
         %n = %n + 1;
     }
     %this.onIgnoreCount = %this.getValue("numOnIgnores");
     %n = 1;
     while (%n <= %this.onIgnoreCount)
     {
-        %this.onIgnore[%n] = %this.getValue("onIgnore" @ %n);
+        %this.onIgnore[%n),%n] = %this.getValue("onIgnore";
         %n = %n + 1;
     }
     %this.registeredName = %this.getValue("registered_user");
     %this.curOutfitSkus["m"] = %this.getValue("cur_outfit_skus_m");
-    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"m\"] = " @ %this.curOutfitSkus["m"]);
+    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"m\"] = "["m"].curOutfitSkus);
     %this.curOutfitSkus["f"] = %this.getValue("cur_outfit_skus_f");
-    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"f\"] = " @ %this.curOutfitSkus["f"]);
+    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"f\"] = "["f"].curOutfitSkus);
     %this.bodyAttrs["m"] = %this.getValue("bodyattrs_m");
-    log("wardrobe", "info", "bodyAttrs_m returned in ValidateRequest::onLine, bodyAttrs[\"m\"] = " @ %this.bodyAttrs["m"]);
+    log("wardrobe", "info", "bodyAttrs_m returned in ValidateRequest::onLine, bodyAttrs[\"m\"] = "["m"].bodyAttrs);
     %this.bodyAttrs["f"] = %this.getValue("bodyattrs_f");
-    log("wardrobe", "info", "bodyAttrs_f returned in ValidateRequest::onLine, bodyAttrs[\"f\"] = " @ %this.bodyAttrs["f"]);
+    log("wardrobe", "info", "bodyAttrs_f returned in ValidateRequest::onLine, bodyAttrs[\"f\"] = "["f"].bodyAttrs);
     %this.callback.onJoinResponse(%this);
     if (!(%this.teleportTarget $= ""))
     {
@@ -135,80 +137,82 @@ function JoinRequest::onDone(%this)
         if (!isObject(%me))
         {
             log("communication", "error", "invalid player object attached to connection during join");
-            return ;
+            return;
         }
         if (!isObject(%trgPlayer))
         {
-            log("communication", "error", "teleport target doesn\'t exist in during join");
-            return ;
+            log("communication", "error", "teleport target doesn't exist in during join");
+            return;
         }
         serverSideTeleportToPlayer2(%me, %trgPlayer);
     }
     %this.schedule(0, delete);
-    return ;
+    return;
 }
 function DropRequest::onError(%this, %errorNum, %errorName)
 {
     log("drop", "error", "DropRequest for " @ %this.name @ " failed due to " @ %errorNum @ " - " @ %errorName);
     %this.schedule(0, delete);
-    return ;
+    return;
 }
 function DropRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    log("login", "info", "DropRequest::onDone:" SPC %status);
-    if (isObject(%this.client) && !(%this.client.ignoreResponse))
+    log("login", "info", "DropRequest::onDone:" @ " " @ %status);
+    if (isObject(%this.client) && !%this.client.ignoreResponse)
     {
         %this.client.delete("CLIENT_REQUEST");
     }
     %this.schedule(0, delete);
-    return ;
+    return;
 }
 function serverCmdDisconnectRequest(%client)
 {
     %client.postClientDrop(0, "");
-    return ;
+    return;
 }
 function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %unused, %unused)
 {
-    log("login", "info", "GameConnection::onConnectRequest: " @ %netAddress SPC %this SPC %name SPC "token" SPC %token);
+    log("login", "info", "GameConnection::onConnectRequest: " @ %netAddress @ " " @ %this @ " " @ %name @ " " @ "token" @ " " @ %token);
     if ($StandAlone)
     {
-        return ;
+        return;
     }
     %client = ClientDict.get(%name);
     if (isObject(%client))
     {
         %this.connectCallback("CR_TOKEN");
-        return ;
+        return;
     }
-    if (!$Insecure && !((%this.getCrcRootDirVal() $= $Server::crcRootDirVal)))
+    if (!$Insecure && !(%this.getCrcRootDirVal() $= $Server::crcRootDirVal))
     {
-        log("login", "warn", "incompatible assets:" SPC %name);
+        log("login", "warn", "incompatible assets:" @ " " @ %name);
         %this.connectCallback("CHR_CLASSCRCROOTDIRVAL");
-        return ;
+        return;
     }
     if (!$Insecure && (%token $= ""))
     {
-        log("login", "error", "invalid token:" SPC %name);
+        log("login", "error", "invalid token:" @ " " @ %name);
         %this.connectCallback("CHR_INVALID_CHALLENGE_PACKET");
-        return ;
+        return;
     }
     %timeout = PendingValidate.get(%name);
     %curSimTime = getSimTime();
     if (!(%timeout $= ""))
     {
-        log("login", "debug", "GameConnection::onConnectRequest timeout for" SPC %name SPC %timeout);
+        log("login", "debug", "GameConnection::onConnectRequest timeout for" @ " " @ %name @ " " @ %timeout);
         if (%curSimTime < %timeout)
         {
-            log("login", "warn", "GameConnection::onConnectRequest ignoring repeat request from" SPC %netAddress SPC %name);
-            return ;
+            log("login", "warn", "GameConnection::onConnectRequest ignoring repeat request from" @ " " @ %netAddress @ " " @ %name);
+            return;
         }
     }
     %timeout = %curSimTime + 25000;
-    log("login", "debug", "adding validate timeout" SPC %timeout SPC "for" SPC %name);
-    PendingValidate.put(%name, %curSimTime + 25000);
-    %validateRequest = new ManagerRequest();
+    log("login", "debug", "adding validate timeout" @ " " @ %timeout @ " " @ "for" @ " " @ %name);
+    PendingValidate.put(%name, (%curSimTime + 25000));
+    %validateRequest = new ManagerRequest("") {
+        className = "ValidateRequest";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%validateRequest);
@@ -231,8 +235,8 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
     {
         %validateRequest.start();
     }
-    log("login", "info", "GameConnection::onConnectRequest: " SPC getDebugString(%this) SPC getDebugString(%this.ValidateRequest));
-    return ;
+    log("login", "info", "GameConnection::onConnectRequest: " @ " " @ getDebugString(%this) @ " " @ getDebugString(%this.ValidateRequest));
+    return;
 }
 function GameConnection::onConnect(%client, %name, %token)
 {
@@ -275,20 +279,20 @@ function GameConnection::onConnect(%client, %name, %token)
     $instantGroup = ServerGroup;
     $instantGroup = MissionCleanup;
     log("login", "info", "GameConnection::onConnect: " @ %client @ " " @ %client.getAddress());
-    messageClient(%client, 'MsgClientJoin', '\c2Welcome to Intersection, %1.', %client.name, %client, %client.sendGuid, %client.score, %client.isAIControlled(), %client.isAdmin, %client.isSuperAdmin);
+    messageClient(%client, 'MsgClientJoin', '\x03Welcome to Intersection, %1.', %client.name, %client, %client.sendGuid, %client.score, %client.isAIControlled(), %client.isAdmin, %client.isSuperAdmin);
     if ($missionRunning)
     {
         %client.loadMission();
     }
-    return ;
+    return;
 }
 function GameConnection::informAllOtherClientsOf(%client)
 {
-    return ;
+    return;
 }
 function GameConnection::sendAllClientsTo(%client)
 {
-    return ;
+    return;
 }
 function GameConnection::setPlayerName(%client, %name)
 {
@@ -296,20 +300,22 @@ function GameConnection::setPlayerName(%client, %name)
     %client.nameBase = %name;
     %client.name = addTaggedString(%name);
     %client.Conversation = 0;
-    return ;
+    return;
 }
 function GameConnection::postClientDrop(%this, %ignoreResponse, %reason)
 {
-    if (($StandAlone || $AmClient) || (%this.nameBase $= ""))
+    if ($StandAlone || $AmClient || (%this.nameBase $= ""))
     {
-        return ;
+        return;
     }
     if (isObject(%this.DropRequest))
     {
-        log("login", "warn", "GameConnection::postClientDrop called twice" SPC getDebugString(%this));
-        return ;
+        log("login", "warn", "GameConnection::postClientDrop called twice" @ " " @ getDebugString(%this));
+        return;
     }
-    %dropRequest = new ManagerRequest();
+    %dropRequest = new ManagerRequest("") {
+        className = "DropRequest";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(%dropRequest);
@@ -325,7 +331,7 @@ function GameConnection::postClientDrop(%this, %ignoreResponse, %reason)
     %name = %this.nameBase;
     if (ClientDict.getNorm(%name) == 0)
     {
-        log("login", "warn", "GameConnection::postClientDrop called with no entry in ClientDict:" SPC getDebugString(%this));
+        log("login", "warn", "GameConnection::postClientDrop called with no entry in ClientDict:" @ " " @ getDebugString(%this));
     }
     ClientDict.remove(%name);
     %token = TokenDict.getNorm(%name);
@@ -345,7 +351,7 @@ function GameConnection::postClientDrop(%this, %ignoreResponse, %reason)
     log("login", "debug", "postClientDrop: " @ %url);
     log("login", "info", "GameConnection::postClientDrop: " @ %name @ " status: " @ %status);
     %dropRequest.start();
-    return ;
+    return;
 }
 function GameConnection::onDrop(%this, %reason)
 {
@@ -358,28 +364,28 @@ function GameConnection::onDrop(%this, %reason)
     removeFromServerGuidList(%this.guid);
     removeTaggedString(%this.name);
     %this.postClientDrop(1, %reason);
-    return ;
+    return;
 }
 function GameConnection::startMission(%this)
 {
     commandToClient(%this, 'MissionStart', $MissionSequence);
-    return ;
+    return;
 }
 function GameConnection::endMission(%this)
 {
     commandToClient(%this, 'MissionEnd', $MissionSequence);
-    return ;
+    return;
 }
 function GameConnection::syncClock(%client, %time)
 {
     commandToClient(%client, 'syncClock', %time);
     commandToClient(%client, 'syncSolarTimeOfDay', getSolarTimeOfDayInCity());
-    return ;
+    return;
 }
 function GameConnection::incScore(%this, %delta)
 {
     %this.score = %this.score + %delta;
     messageAll('MsgClientScoreChanged', "", %this.score, %this);
     error("This function should not be called for The Lounge: GameConnection::incScore()");
-    return ;
+    return;
 }

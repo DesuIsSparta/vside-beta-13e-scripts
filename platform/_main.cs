@@ -17,17 +17,14 @@ package platform
         {
             displayClientHelp();
         }
-        return;
     }
     function displayClientHelp()
     {
         print("\nClient options:\n" @ "  -manager <host[:port]>     Specify login server\n" @ "  -mainsite <url>            Specify main website\n" @ "  -download <host[:port]>    Specify download host\n" @ "  -large                     Large display\n" @ "  -small                     Small display\n" @ "  -noSound                   Disable sound\n" @ "  -display <OpenGL|D3D|Auto> Specify device or auto-detect\n" @ "  -server                    Start as server\n" @ "  -cache                     Do network caching\n" @ "  -staging                   Run in staging environment\n" @ "  -stagingrc                 Run in stagingRC environment\n" @ "  -alpha                     Run in alpha environment\n" @ "  -preload                   Run asset preloading\n" @ "  -url                       Specify a place to spawn to via vURL\n" @ "  -alphabuffer               Request an alpha buffer for OpenGL\n" @ "  -notexdelay                Disable teuxture delay load\n" @ "  -enableRawTextures         Enable use of compressed textures\n" @ "  -automated                 Automatically begin tasks like thumbnail generationg\n" @ "");
-        return;
     }
     function displayServerHelp()
     {
         print("\nServer options:\n" @ "  -manager <host[:port]>     Specify host and port of login server\n" @ "  -mission <mission>         Specify mission file\n" @ "  -serverName                Server name\n" @ "  -nameSpaceTag              a namespace tag for private spaces and buildings default \"\"\n" @ "  -serverAddress <address>   Server bind address\n" @ "  -serverPort                Server bind port\n" @ "  -mapLocation <x,y>         Server worldmap coordinates\n" @ "  -disableChat               NPCs don't chat\n" @ "  -webloglevel <n>           Set web log level\n" @ "  -notmappable               Server will not appear on the map\n" @ "");
-        return;
     }
     function rebaseURLs()
     {
@@ -86,14 +83,13 @@ package platform
         else
         {
             $Net::BaseURL = "http://" @ $Net::ManagerHost @ "/envmanager/login";
-            $Net::SecureURL = "http://" @ $Net::SecureManagerHost @ "/envmanager/login";
+            $Net::SecureURL = "https://" @ $Net::SecureManagerHost @ "/envmanager/login";
             $Net::LoginURL = $Net::BaseURL;
             $Net::ClientServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envclient";
-            $Net::SecureClientServiceURL = "http://" @ $Net::SecureManagerHost @ "/envmanager/envclient";
+            $Net::SecureClientServiceURL = "https://" @ $Net::SecureManagerHost @ "/envmanager/envclient";
             $Net::ServerServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envserver";
         }
         setupProjectSpecificUrls();
-        return;
     }
     function notokenURL(%url)
     {
@@ -104,13 +100,11 @@ package platform
         $Net::ManagerHost = "envmanager." @ $Net::BaseDomain @ ":8080";
         $Net::SecureManagerHost = "envmanager." @ $Net::BaseDomain @ ":8443";
         $Net::DownloadHost = "download." @ $Net::BaseDomain;
-        return;
     }
     function serverRebaseHosts()
     {
         $Net::ManagerHost = $Net::BaseDomain @ ":8081";
         $Net::IRCHost = "irc." @ $Net::BaseDomain @ ":6667";
-        return;
     }
     function isValidHostAddress(%address)
     {
@@ -184,7 +178,6 @@ package platform
             log("initialization", "debug", "Exporting net_settings.log");
             export("$Net::*", "./net_settings.log", 0);
         }
-        return;
     }
     function parseMainsiteArg()
     {
@@ -206,7 +199,6 @@ package platform
                 }
             }
         }
-        return;
     }
     function parseManagerArgs()
     {
@@ -258,22 +250,18 @@ package platform
         }
         log("initialization", "debug", "manager host: " @ $Net::ManagerHost);
         log("initialization", "debug", "secure manager host: " @ $Net::SecureManagerHost);
-        return;
     }
     function parseDownloadArg()
     {
         findArg("-download", "$Net::DownloadHost", "Missing download <host[:port]>");
-        return;
     }
     function parseIRCArg()
     {
         findArg("-irc", "$Net::IRCHost", "Missing irc <host[:port]>");
-        return;
     }
     function parseURLArg()
     {
         findArg("-url", "$VURLcmd", "No url specified");
-        return;
     }
     function parseClientArgs()
     {
@@ -318,7 +306,7 @@ package platform
         }
         if (findArg("-display", "$Pref::Video::DisplayDevice", "Missing <display device>"))
         {
-            if (($Pref::Video::DisplayDevice $= "D3D") && ($Pref::Video::DisplayDevice $= "OpenGL"))
+            if (($Pref::Video::DisplayDevice $= "D3D") || ($Pref::Video::DisplayDevice $= "OpenGL"))
             {
             }
             else
@@ -353,18 +341,17 @@ package platform
             $gAutomatedRun = 1;
         }
         $ETS::WindowTitle = generateWindowTitle("");
-        return;
     }
     function generateWindowTitle(%ServerName)
     {
-        %ServerNameString = %ServerName $= "" ? "" : " on server";
-        %CityNameString = $ETS::cityName $= "" ? "" : " in";
+        %ServerNameString = %ServerName $= "" ? "" : " on server" @ " " @ %ServerName;
+        %CityNameString = $ETS::cityName $= "" ? "" : " in" @ " " @ $ETS::cityName;
         %LongCityNameString = "";
         if (isObject(WorldMap))
         {
             %areaName = WorldMap.cityNameForServerName(%ServerName);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
-            %LongCityNameString = %locationName $= "" ? "" : " - in";
+            %LongCityNameString = %locationName $= "" ? "" : " - in" @ " " @ %locationName;
         }
         else
         {
@@ -477,15 +464,13 @@ package platform
             $Pref::Server::usePackages = 0;
         }
         hasArg("-webConfigFile");
-        return;
     }
     function startInitialSSLConnection()
     {
         %curl = new URLPostObject("");
-        %curl.setURL("http://" @ $Net::SecureManagerHost);
+        %curl.setURL("https://" @ $Net::SecureManagerHost);
         %curl.setBody(0);
         %curl.start();
-        return;
     }
     function onStart()
     {
@@ -516,7 +501,6 @@ package platform
         {
             echo("---no ConsoleEntry not loading history");
         }
-        return;
     }
     function onExit()
     {
@@ -541,7 +525,6 @@ package platform
             shutdownDedicated();
         }
         Parent::onExit();
-        return;
     }
     function dumpConsoleHistorySchedule()
     {
@@ -553,7 +536,6 @@ package platform
         cancel($gConsoleHistoryDumpTimer);
         $gConsoleHistoryDumpTimer = "";
         $gConsoleHistoryDumpTimer = schedule($gConsoleHistoryPeriod, 0, "dumpConsoleHistoryReally");
-        return;
     }
     function dumpConsoleHistoryReally()
     {
@@ -565,7 +547,6 @@ package platform
         {
             echo("---no ConsoleEntry not dumping history");
         }
-        return;
     }
     activatePackage(platform);
 };

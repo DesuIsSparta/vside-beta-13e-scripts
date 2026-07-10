@@ -1,6 +1,8 @@
 if (!isObject(CSControlPanelTabs))
 {
-    new ScriptObject(CSControlPanelTabs);
+    new ScriptObject(CSControlPanelTabs) {
+        class = "TabControl";
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(CSControlPanelTabs);
@@ -14,7 +16,6 @@ function CSControlPanelTabs::setup(%this)
         %this.newTab("MODEL_APT", "");
         %this.newTab("SKIP_TUTORIAL", "");
     }
-    return ;
 }
 function CSControlPanelTabs::tabSelected(%this, %tab)
 {
@@ -29,30 +30,53 @@ function CSControlPanelTabs::tabSelected(%this, %tab)
             %this.fillSkipTutorialTab(%tab);
         }
     }
-    return ;
 }
 function CSControlPanelTabs::fillModelAptTab(%this, %theTab)
 {
     if (%theTab.initialized)
     {
-        return ;
+        return;
     }
     %theTab.initialized = 1;
+    %theTab.add(new GuiMLTextCtrl(CSSpaceModelAptText) {
+        profile = "MusicMLTextProfileMedium";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "4 4";
+        extent = "218 42";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        lineSpacing = 4;
+        allowColorChars = 1;
+        maxChars = -1;
+    };);
     CSSpaceModelAptText.update();
-    return ;
 }
 function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab)
 {
     if (%theTab.initialized)
     {
-        return ;
+        return;
     }
     %theTab.initialized = 1;
     %userFacingName = "vSide";
     %vrl = "vside://foo/bar/bim/bam";
     %text = "<a:VRL " @ %vrl @ ">Click here to go straight to<br>" @ %userFacingName @ "</a>";
+    %theTab.add(new GuiMLTextCtrl(CSSpaceSkipTutorialText) {
+        profile = "MusicMLTextProfileMedium";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "4 4";
+        extent = "218 42";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        lineSpacing = 0;
+        allowColorChars = 1;
+        maxChars = -1;
+    };);
     CSSpaceSkipTutorialText.setText(%text);
-    return ;
 }
 function CSControlPanelTabs::updateSkipTutorialTab(%this)
 {
@@ -69,7 +93,6 @@ function CSControlPanelTabs::updateSkipTutorialTab(%this)
             CSControlPanel.close();
         }
     }
-    return ;
 }
 function CSSpaceSkipTutorialText::onURL(%this, %url)
 {
@@ -79,28 +102,25 @@ function CSSpaceSkipTutorialText::onURL(%this, %url)
     }
     else
     {
-        error(getScopeName() SPC "- unknown option" SPC %url);
+        error(getScopeName() @ " " @ "- unknown option" @ " " @ %url);
     }
-    return ;
 }
 function CSControlPanel::open(%this)
 {
     CSControlPanelTabs.setup();
     if (%this.isVisible())
     {
-        return ;
+        return;
     }
     %this.userHasClickedMe = 0;
     %this.setVisible(1);
     WindowManager.update();
-    return ;
 }
 function CSControlPanel::close(%this)
 {
     %this.setVisible(0);
     csDoneEditingSpace();
     WindowManager.update();
-    return ;
 }
 function CSControlPanel::toggle(%this)
 {
@@ -112,11 +132,9 @@ function CSControlPanel::toggle(%this)
     {
         %this.open();
     }
-    return ;
 }
 function CSControlPanel::update(%this)
 {
-    return ;
 }
 $CSPurchaseErrorInsufficientFunds = "You do not have enough funds to purchase a space like this.";
 $CSPurchaseErrorNoLongerAvailable = "Spaces of this model are no longer available.";
@@ -125,7 +143,7 @@ function CSSpaceModelAptText::onURL(%this, %url)
 {
     if (%this.userHasClickedMe)
     {
-        return ;
+        return;
     }
     %this.userHasClickedMe = 1;
     if (getWord(%url, 0) $= "gamelink")
@@ -137,7 +155,6 @@ function CSSpaceModelAptText::onURL(%this, %url)
         CSSpacePurchase($CSSpaceInfo);
     }
     %this.userHasClickedMe = 0;
-    return ;
 }
 function CSSpaceModelAptText::update(%this)
 {
@@ -162,10 +179,9 @@ function CSSpaceModelAptText::update(%this)
             }
             else
             {
-                %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" NL CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
+                %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
             }
         }
     }
     %this.setText(%text);
-    return ;
 }

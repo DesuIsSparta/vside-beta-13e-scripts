@@ -2,11 +2,9 @@ $gEvalAfterEtsInit = "";
 $Pref::Net::BindAddress = "";
 function onStart()
 {
-    return ;
 }
 function onExit()
 {
-    return ;
 }
 function hasArg(%argToFind)
 {
@@ -32,7 +30,7 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch)
         %nextArg = "";
         if (%i < ($Game::argc - 1))
         {
-            %nextArg = $Game::argv[%i + 1];
+            %nextArg = $Game::argv[(%i + 1)];
         }
         %hasNextArg = ($Game::argc - %i) > 1;
         if (%arg $= %argToFind)
@@ -58,7 +56,7 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch)
                         log("initialization", "debug", "evalString: " @ %evalString);
                         eval(%evalString);
                         log("initialization", "debug", "setting value " @ %valToSet);
-                        $Game::ArgUsed[%i + 1] = $Game::ArgUsed[%i + 1] + 1;
+                        $Game::ArgUsed[(%i + 1)] = $Game::ArgUsed[(%i + 1)] + 1;
                         %found = 1;
                     }
                     else
@@ -81,11 +79,9 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch)
 function parseMainArgs()
 {
     findSwitch("-help", "$DisplayHelp");
-    return ;
 }
 function parseArgs()
 {
-    return ;
 }
 function getAllArgs()
 {
@@ -118,11 +114,10 @@ function checkUnusedArgs()
         %i = %i + 1;
     }
 }
-
 function doStart()
 {
     log("initialization", "info", "--------- Args ---------");
-    log("initialization", "info", $Game::argv[0] SPC getAllArgs());
+    log("initialization", "info", $Game::argv[0] @ " " @ getAllArgs());
     log("initialization", "info", "--------- Parsing Arg MOD: Main ---------");
     parseMainArgs();
     log("initialization", "info", "--------- Parsing Arguments ---------");
@@ -141,13 +136,11 @@ function doStart()
         $Platform::CanSleepInBackground = 1;
     }
     checkUnusedArgs();
-    return ;
 }
 package Help
 {
     function onExit()
     {
-        return ;
     }
 };
 
@@ -155,7 +148,6 @@ function displayHelp()
 {
     activatePackage(Help);
     print("\nGeneral options:\n" @ "  -logMode <0|disable|1|append|2|overwrite>\n" @ "                             Set the logging mode\n" @ "  -logLevel <0|none|1|error|2|warn|3|info|4|debug>\n" @ "                             Sets the debug level\n" @ "  -help                      Display this help message\n" @ "  -version                   Display version information and exit\n");
-    return ;
 }
 function loadMods(%modPath)
 {
@@ -166,7 +158,6 @@ function loadMods(%modPath)
     }
     log("initialization", "info", "--------- Loading MOD: " @ %token @ "---------");
     exec(%token @ "/main.cs");
-    return ;
 }
 function dumpMods(%modPath)
 {
@@ -176,7 +167,6 @@ function dumpMods(%modPath)
         dumpMods(%modPath);
     }
     log("initialization", "info", %token @ "/main.cs");
-    return ;
 }
 function doreloadModScripts(%modPath)
 {
@@ -190,7 +180,6 @@ function doreloadModScripts(%modPath)
     {
         exec(%fileName);
     }
-    return ;
 }
 function reloadModScripts(%modPath)
 {
@@ -199,7 +188,6 @@ function reloadModScripts(%modPath)
         %modPath = $modPath;
     }
     doreloadModScripts(%modPath);
-    return ;
 }
 $baseMods = "common";
 $userMods = "platform";
@@ -216,7 +204,7 @@ $Conv::updateLocationsTimeID = 0;
 $SystemMetric::ObjectCounts = 0;
 $System::LoginLog = 0;
 $System::dumpMetricsTimerID = 0;
-$pi = 3.14159;
+$pi = 3.1415926536;
 $BoundPort = 0;
 $Sim::Time = 0;
 $Net::ManagerHost = 0;
@@ -245,7 +233,6 @@ function initCommon()
 {
     setRandomSeed();
     exec("./client/canvas.cs");
-    return ;
 }
 function initBaseClient()
 {
@@ -255,7 +242,6 @@ function initBaseClient()
     exec("./client/actionMap.cs");
     exec("./client/scriptDoc.cs");
     exec("./client/ets/consoleCommands.cs");
-    return ;
 }
 function initBaseServer()
 {
@@ -267,7 +253,6 @@ function initBaseServer()
     exec("./server/missionDownload.cs");
     exec("./server/clientConnection.cs");
     exec("./server/kickban.cs");
-    return ;
 }
 package common
 {
@@ -276,16 +261,14 @@ package common
         Parent::onStart();
         echo("--------- Initializing MOD: Common ---------");
         initCommon();
-        return ;
     }
     function onExit()
     {
         Parent::onExit();
-        return ;
     }
+    activatePackage(common);
 };
 
-activatePackage(common);
 function findRequestStatus(%managerRequest)
 {
     if (%managerRequest.hasKey("status"))

@@ -1,5 +1,4 @@
-datablock sgUniversalStaticLightData(dj_spot)
-{
+datablock sgUniversalStaticLightData(dj_spot) {
     className = "sgUniversalStaticLightData";
     LightOn = 1;
     Radius = 5;
@@ -64,4 +63,3 @@ datablock sgUniversalStaticLightData(dj_spot)
     DoubleSidedAmbient = 0;
     LightingModelName = "SG - Original Advanced (Lighting Pack)";
 };
-

@@ -15,7 +15,6 @@ function CSShoppingBrowserWindow::open(%this)
     {
         CSShoppingBrowser.focusCurrentFrame();
     }
-    return ;
 }
 function CSShoppingBrowserWindow::close(%this)
 {
@@ -39,7 +38,6 @@ function CSShoppingBrowserWindow::toggle(%this)
     {
         %this.open();
     }
-    return ;
 }
 function CSShoppingBrowserWindow::Initialize(%this)
 {
@@ -58,13 +56,7 @@ function CSShoppingBrowserWindow::Initialize(%this)
             CSShoppingBrowser.button[0].delete();
         }
         %container = CSShoppingBrowser.getParent();
-        CSShoppingBrowser.button[0] = new GuiBitmapButtonCtrl()
-        {
-            profile = "ETSShopVerticalButtonProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = "0 0";
-            extent = CSShoppingBrowser.buttonWidth SPC getWord(%container.getExtent(), 1);
+        CSShoppingBrowser.button[" ",getWord(%container.getExtent(), 1);
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -75,10 +67,14 @@ function CSShoppingBrowserWindow::Initialize(%this)
             bitmap = "platform/client/buttons/vbutton";
             drawText = 1;
             textRotation = 90;
-        };
+        };,0] = new GuiBitmapButtonCtrl("") {
+            profile = "ETSShopVerticalButtonProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = CSShoppingBrowser.buttonWidth;
         %container.add(CSShoppingBrowser.button[0]);
-        CSShoppingBrowser.vBuxIcon = new GuiBitmapCtrl()
-        {
+        CSShoppingBrowser.vBuxIcon = new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "top";
@@ -97,7 +93,6 @@ function CSShoppingBrowserWindow::Initialize(%this)
         CSShoppingBrowser.loadAvailableSkus();
         %this.initialized = 1;
     }
-    return ;
 }
 function CSShoppingBrowser::loadAvailableSkus(%this)
 {
@@ -120,7 +115,7 @@ function CSShoppingBrowser::loadAvailableSkus(%this)
         %this.addSku(getWord(%skulist, %i));
         %i = %i + 1;
     }
-    if ((%this.Path $= "") && (%this.Path $= %this.baseDir))
+    if ((%this.Path $= "") || (%this.Path $= %this.baseDir))
     {
         %this.goToPath(%this.baseDir, 0);
     }
@@ -128,34 +123,32 @@ function CSShoppingBrowser::loadAvailableSkus(%this)
     {
         %this.update();
     }
-    return ;
 }
 function CSShoppingBrowser::fillLeafPane(%this, %pane)
 {
     Parent::fillLeafPane(%this, %pane);
-    %desc = getField(%this.Path, %this.level - 1);
+    %desc = getField(%this.Path, (%this.level - 1));
     %desc = %this.getMenuText(%desc);
     %paneWidth = getWord(%pane.getExtent(), 0);
     %paneHeight = getWord(%pane.getExtent(), 1);
     %pane.buyQuantity = 1;
-    if (!((%desc $= "")) && !((%desc $= %this.baseDir)))
+    if (!(%desc $= "") && !(%desc $= %this.baseDir))
     {
         %ypos = getWord(%pane.itemText.getExtent(), 1);
         %rightYPos = 18;
         %rmVPadding = 4;
         %buttonWidth = 62;
         %rightXPos = %paneWidth - %buttonWidth;
-        %sku = getSubStr(strchr(getField(%this.Path, %this.level - 1), "|"), 1);
+        %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1)), "|"), 1);
         %si = SkuManager.findBySku(%sku);
         if (!(%si.descLong $= ""))
         {
-            %moreButton = new GuiVariableWidthButtonCtrl()
-            {
+            %moreButton = new GuiVariableWidthButtonCtrl("") {
                 profile = "BracketButton15Profile";
                 horizSizing = "right";
                 vertSizing = "bottom";
-                position = %rightXPos - 4 SPC %rightYPos = %rightYPos + %rmVPadding;
-                extent = %buttonWidth SPC 15;
+                position = (%rightXPos - 4) @ " " @ %rightYPos = %rightYPos + %rmVPadding;
+                extent = %buttonWidth @ " " @ 15;
                 minExtent = "1 1";
                 sluggishness = -1;
                 visible = 1;
@@ -173,13 +166,12 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
             %pane.add(%moreButton);
             %pane.moreButton = %moreButton;
         }
-        %testDriveButton = new GuiVariableWidthButtonCtrl()
-        {
+        %testDriveButton = new GuiVariableWidthButtonCtrl("") {
             profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %rightXPos - 4 SPC %rightYPos;
-            extent = %buttonWidth SPC 15;
+            position = (%rightXPos - 4) @ " " @ %rightYPos;
+            extent = %buttonWidth @ " " @ 15;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -189,13 +181,12 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
             buttonType = "PushButton";
         };
         %rightYPos = %rightYPos + getWord(%testDriveButton.getExtent(), 1);
-        %buyButton = new GuiVariableWidthButtonCtrl()
-        {
+        %buyButton = new GuiVariableWidthButtonCtrl("") {
             profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %rightXPos - 4 SPC %rightYPos = %rightYPos + %rmVPadding;
-            extent = %buttonWidth SPC 15;
+            position = (%rightXPos - 4) @ " " @ %rightYPos = %rightYPos + %rmVPadding;
+            extent = %buttonWidth @ " " @ 15;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -206,35 +197,32 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
         };
         %rightYPos = %rightYPos + getWord(%buyButton.getExtent(), 1);
         %smallButtonWidth = 15;
-        %buyFewerButton = new GuiVariableWidthButtonCtrl()
-        {
+        %buyFewerButton = new GuiVariableWidthButtonCtrl("") {
             profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = ((%rightXPos - 4) + %buttonWidth) - ((%smallButtonWidth * 2) + 5) SPC %rightYPos + %rmVPadding;
-            extent = %smallButtonWidth SPC 15;
+            position = (((%rightXPos - 4) + %buttonWidth) - ((%smallButtonWidth * 2) + 5)) @ " " @ (%rightYPos + %rmVPadding);
+            extent = %smallButtonWidth @ " " @ 15;
             command = %pane @ ".buyFewer();";
             text = "-";
         };
-        %buyMoreButton = new GuiVariableWidthButtonCtrl()
-        {
+        %buyMoreButton = new GuiVariableWidthButtonCtrl("") {
             profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = ((%rightXPos - 4) + %buttonWidth) - %smallButtonWidth SPC %rightYPos + %rmVPadding;
-            extent = %smallButtonWidth SPC 15;
+            position = (((%rightXPos - 4) + %buttonWidth) - %smallButtonWidth) @ " " @ (%rightYPos + %rmVPadding);
+            extent = %smallButtonWidth @ " " @ 15;
             command = %pane @ ".buyMore();";
             text = "+";
         };
         %rightYPos = %rightYPos + getWord(%buyMoreButton.getExtent(), 1);
         %rightYPos = %rightYPos + %rmVPadding;
-        %priceTextVPoints = new GuiMLTextCtrl()
-        {
+        %priceTextVPoints = new GuiMLTextCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %rightXPos - 4 SPC %rightYPos;
-            extent = %buttonWidth SPC 18;
+            position = (%rightXPos - 4) @ " " @ %rightYPos;
+            extent = %buttonWidth @ " " @ 18;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -246,13 +234,12 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
         %pane.add(%priceTextVPoints);
         %pane.priceTextVPoints = %priceTextVPoints;
         %rightYPos = %rightYPos + getWord(%priceTextVPoints.getExtent(), 1);
-        %priceTextVBux = new GuiMLTextCtrl()
-        {
+        %priceTextVBux = new GuiMLTextCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %rightXPos - 4 SPC %rightYPos;
-            extent = %buttonWidth SPC 18;
+            position = (%rightXPos - 4) @ " " @ %rightYPos;
+            extent = %buttonWidth @ " " @ 18;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -267,17 +254,16 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
         %ypos = %ypos + 2;
         %nextPrevTextY = getWord(%pane.nextPrevText.getPosition(), 1);
         %maxThumbnailHeight = %nextPrevTextY - %ypos;
-        %maxThumbnailHeight = mMin(%maxThumbnailHeight, %rightXPos - 3);
+        %maxThumbnailHeight = mMin(%maxThumbnailHeight, (%rightXPos - 3));
         %ypos = ((%nextPrevTextY - (%ypos + %maxThumbnailHeight)) / 2) + %ypos;
         %ypos = mCeil(%ypos);
         %xPos = 0;
-        %thumbnail = new GuiBitmapCtrl()
-        {
+        %thumbnail = new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "top";
-            position = %xPos SPC %ypos;
-            extent = %maxThumbnailHeight SPC %maxThumbnailHeight;
+            position = %xPos @ " " @ %ypos;
+            extent = %maxThumbnailHeight @ " " @ %maxThumbnailHeight;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -302,13 +288,12 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
     }
     else
     {
-        %noItemText = new GuiMLTextCtrl()
-        {
+        %noItemText = new GuiMLTextCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "25 20";
-            extent = %paneWidth - 5 SPC 18;
+            extent = (%paneWidth - 5) @ " " @ 18;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -319,20 +304,23 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
         };
         %pane.add(%noItemText);
     }
-    return ;
 }
 function CSShoppingItemPane::buyMore(%this)
 {
     %this.buyQuantity = %this.buyQuantity + 1;
     %this.update();
-    return ;
 }
 function CSShoppingItemPane::buyFewer(%this)
 {
     %this.buyQuantity = %this.buyQuantity - 1;
-    %this.buyQuantity = %this.buyQuantity < 1 ? 1 : %this;
+    if (%this.buyQuantity < 1)
+    {
+    }
+    else
+    {
+    }
+    %this.buyQuantity = 1 @ %this.buyQuantity;
     %this.update();
-    return ;
 }
 function CSShoppingBrowser::testDriveSku(%this, %sku)
 {
@@ -344,21 +332,19 @@ function CSShoppingBrowser::testDriveSku(%this, %sku)
     }
     else
     {
-        error(getScopeName() SPC "No sku selected");
+        error(getScopeName() @ " " @ "No sku selected");
     }
-    return ;
 }
 function CSShoppingBrowser::purchaseSkus(%this, %skus)
 {
     if (!isObject(%this.storeInfo))
     {
-        return ;
+        return;
     }
     %cbPoints = "CSShoppingBrowser.purchaseSkusVPoints(\"" @ %skus @ "\");";
     %cbBux = "CSShoppingBrowser.purchaseSkusVBux(\"" @ %skus @ "\");";
     %cbCancel = "";
     ShowPurchaseSkusConfirmationDialog(%skus, %cbPoints, %cbBux, %cbCancel);
-    return ;
 }
 function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus)
 {
@@ -366,7 +352,7 @@ function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus)
     {
         %totalPrice = Inventory::getTotalPrice("vPoints", %skus);
         %itemCount = getWordCount(%skus);
-        %itemsStr = %itemCount == 1 ? "this item" : "these";
+        %itemsStr = %itemCount == 1 ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
         if (%totalPrice <= $Player::VPoints)
         {
             %vpointsString = %totalPrice == 1 ? "vPoint" : "vPoints";
@@ -379,7 +365,6 @@ function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus)
             MessageBoxOK("Not Enough vPoints", "You do not have enough vPoints to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::HelpURL_VPoints @ ">here</a> for more information about earning vPoints.", "");
         }
     }
-    return ;
 }
 function CSShoppingBrowser::purchaseSkusVBux(%this, %skus)
 {
@@ -387,7 +372,7 @@ function CSShoppingBrowser::purchaseSkusVBux(%this, %skus)
     {
         %totalPrice = Inventory::getTotalPrice("vBux", %skus);
         %itemCount = getWordCount(%skus);
-        %itemsStr = %itemCount == 1 ? "this item" : "these";
+        %itemsStr = %itemCount == 1 ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
         if (%totalPrice <= $Player::VBux)
         {
             %msg = "Do you wish to purchase " @ %itemsStr @ " for " @ %totalPrice @ " vBux?";
@@ -399,7 +384,6 @@ function CSShoppingBrowser::purchaseSkusVBux(%this, %skus)
             MessageBoxOK("Not Enough vBux", "You do not have enough vBux to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::AddFundsURL @ ">here</a> to refill your account.", "");
         }
     }
-    return ;
 }
 function CSShoppingBrowser::onGotPurchaseResult(%status, %results)
 {
@@ -433,7 +417,6 @@ function CSShoppingBrowser::onGotPurchaseResult(%status, %results)
     {
         MessageBoxOK("Purchase Unsuccessful", "There was a problem completing your purchase.", "");
     }
-    return ;
 }
 function CSShoppingBrowser::goToPath(%this, %path, %focus)
 {
@@ -450,22 +433,18 @@ function CSShoppingBrowser::goToPath(%this, %path, %focus)
     {
         %menuItem = %curMenu.getObject(%i);
         %sku = strchr(%menuItem.name, "|");
-        if (!(%sku $= ""))
+        if (!(%sku $= "") && !(getWord(%menuItem.getNamespaceList(), 0) $= "CSShoppingBrowserSKUItem"))
         {
-            if (!(getWord(%menuItem.getNamespaceList(), 0) $= "CSShoppingBrowserSKUItem"))
-            {
-                %menuItem.bindClassName("CSShoppingBrowserSKUItem");
-            }
+            %menuItem.bindClassName("CSShoppingBrowserSKUItem");
         }
         %i = %i + 1;
     }
-    CSShoppingBrowser.vBuxIcon.reposition(3, getWord(%this.getExtent(), 1) - 20);
+    CSShoppingBrowser.vBuxIcon.reposition(3, (getWord(%this.getExtent(), 1) - 20));
     %pathSku = getSubStr(strchr(%path, "|"), 1);
-    if (((($CSSelectedSku != -1) && !$CSSelectedIsOwned) && !((%path $= %oldPath))) && !((%pathSku $= $CSSelectedSku)))
+    if (($CSSelectedSku != -1) && !$CSSelectedIsOwned && !(%path $= %oldPath) && !(%pathSku $= $CSSelectedSku))
     {
         csTestFreeSelectedItem();
     }
-    return ;
 }
 $CSShoppingBrowser::InstaTestDriveEnabled = 0;
 $CSInstaTestDrive = 0;
@@ -475,14 +454,14 @@ function CSShoppingBrowserSKUItem::onMouseEnterBounds(%this)
     Parent::onMouseEnterBounds(%this);
     if (!$CSShoppingBrowser::InstaTestDriveEnabled)
     {
-        return ;
+        return;
     }
     if (%this.name $= "")
     {
         warn("CSShoppingBrowserSKUItem .name has gone missing?");
-        return ;
+        return;
     }
-    if (($CSSelectedSku == -1) && !$CSSelectedIsOwned)
+    if (($CSSelectedSku == -1) || !$CSSelectedIsOwned)
     {
         if (isEventPending($CSShoppingBrowserSKUItem::deleteEvent))
         {
@@ -493,7 +472,6 @@ function CSShoppingBrowserSKUItem::onMouseEnterBounds(%this)
         $CSSelectedSku = %sku;
         commandToServer('CreateInventoryBySkuJustTestingItOut', CustomSpaceClient::GetSpaceImIn(), %sku);
     }
-    return ;
 }
 function CSShoppingBrowserSKUItem::onMouseLeaveBounds(%this)
 {
@@ -505,12 +483,12 @@ function CSShoppingBrowserSKUItem::onMouseLeaveBounds(%this)
             $CSInstaTestDrive = 0;
             csTestFreeSelectedItem();
         }
-        return ;
+        return;
     }
     if (%this.name $= "")
     {
         warn("CSShoppingBrowserSKUItem .name has gone missing?");
-        return ;
+        return;
     }
     if ($CSInstaTestDrive)
     {
@@ -521,7 +499,6 @@ function CSShoppingBrowserSKUItem::onMouseLeaveBounds(%this)
         %code = "$CSInstaTestDrive = false;" @ "csTestFreeSelectedItem();";
         $CSShoppingBrowserSKUItem::deleteEvent = schedule(500, 0, "eval", %code);
     }
-    return ;
 }
 function CSShoppingBrowser::refreshInventory(%this)
 {
@@ -533,7 +510,6 @@ function CSShoppingBrowser::refreshInventory(%this)
     {
         getFurnitureStore("CSShoppingBrowser::onGotFurnishingsStore");
     }
-    return ;
 }
 function CSShoppingBrowser::onGotFurnishingsStore(%storeInfo, %status)
 {
@@ -542,20 +518,19 @@ function CSShoppingBrowser::onGotFurnishingsStore(%storeInfo, %status)
         CSShoppingBrowser.storeInfo = %storeInfo;
         CSShoppingBrowser.loadAvailableSkus();
     }
-    return ;
 }
 function CSShoppingItemPane::update(%this)
 {
     %sku = %this.node.sku;
     if (%sku $= "")
     {
-        return ;
+        return;
     }
     %si = SkuManager.findBySku(%sku);
     if (!isObject(%si))
     {
-        log("inventory", "error", getScopeName() SPC "- invalid sku: \"" @ %sku @ "\"." SPC getTrace());
-        return ;
+        log("inventory", "error", getScopeName() @ " " @ "- invalid sku: \"" @ %sku @ "\"." @ " " @ getTrace());
+        return;
     }
     %skus = "";
     %delim = "";
@@ -568,8 +543,22 @@ function CSShoppingItemPane::update(%this)
     }
     %this.testDriveButton.command = "CSShoppingBrowser.testDriveSku(\"" @ %sku @ "\");";
     %this.buyButton.command = "CSShoppingBrowser.purchaseSkus(\"" @ %skus @ "\");";
-    %vpoints = %si.priceVPoints < 0 ? "-" : %si;
-    %vbux = %si.priceVBux < 0 ? "-" : %si;
+    if (%si.priceVPoints < 0)
+    {
+    }
+    else
+    {
+    }
+    %vpoints = %si.priceVPoints;
+    "-";
+    if (%si.priceVBux < 0)
+    {
+    }
+    else
+    {
+    }
+    %vbux = %si.priceVBux;
+    "-";
     %vpoints = %vpoints * %this.buyQuantity;
     %vbux = %vbux * %this.buyQuantity;
     if (%this.buyQuantity == 1)
@@ -579,37 +568,32 @@ function CSShoppingItemPane::update(%this)
     }
     else
     {
-        %this.buyButton.setText("Buy" SPC %this.buyQuantity @ "!");
+        %this.buyButton.setText("Buy" @ " " @ %this.buyQuantity @ "!");
         %this.buyFewerButton.setActive(1);
     }
     %vpointsIcon = "<bitmap:platform/client/ui/vpoints_14>";
     %vbuxIcon = "<bitmap:platform/client/ui/vbux_14>";
     %this.priceTextVBux.setText("<color:ffffff>" @ %vbuxIcon @ "  " @ %vbux @ "");
     %this.priceTextVPoints.setText("<color:ffffff>" @ %vpointsIcon @ " " @ %vpoints @ "");
-    return ;
 }
 function CSShoppingBrowser::switchToOtherBrowser(%this)
 {
     CSShoppingBrowserWindow.close();
     CSInventoryBrowserWindow.open();
-    return ;
 }
 $gCSShoppingBrowserFilterFieldTimerID = "";
 function CSShoppingBrowserFilterField::OnTextChanged(%this)
 {
     cancel($gCSShoppingBrowserFilterFieldTimerID);
     $gCSShoppingBrowserFilterFieldTimerID = %this.schedule(%this.timeoutMS, "onTimer");
-    return ;
 }
 function CSShoppingBrowserFilterField::OnEnterKey(%this)
 {
     %this.refilter();
-    return ;
 }
 function CSShoppingBrowserFilterField::onTimer(%this)
 {
     %this.refilter();
-    return ;
 }
 function CSShoppingBrowserFilterField::refilter(%this)
 {
@@ -618,7 +602,7 @@ function CSShoppingBrowserFilterField::refilter(%this)
     %filterText = %this.getValue();
     if (%filterText $= %this.prevFilterText)
     {
-        return ;
+        return;
     }
     %this.prevFilterText = %filterText;
     CSShoppingBrowser.filterText = %filterText;
@@ -626,5 +610,4 @@ function CSShoppingBrowserFilterField::refilter(%this)
     CSInventoryBrowserFilterField.setValue(%filterText);
     CSInventoryBrowser.filterText = %filterText;
     CSInventoryBrowser.goToCurrentPath();
-    return ;
 }

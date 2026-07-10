@@ -1,14 +1,11 @@
 function toggleEditor(%make)
 {
-    if (!$player.rolesPermissionCheckNoWarn("gameEditors"))
-    {
-    }
     if (%make)
     {
         if (!$missionRunning)
         {
             MessageBoxOK("Mission Required", "You must load a mission before starting the Mission Editor.", "");
-            return ;
+            return !$player.rolesPermissionCheckNoWarn("gameEditors");
         }
         if (!isObject(Editor))
         {
@@ -24,12 +21,10 @@ function toggleEditor(%make)
             Editor.open();
         }
     }
-    return ;
 }
 function Editor::Create()
 {
-    new EditManager(Editor)
-    {
+    new EditManager(Editor) {
         profile = "GuiContentProfile";
         horizSizing = "right";
         vertSizing = "top";
@@ -42,7 +37,6 @@ function Editor::Create()
         helpTag = 0;
         open = 0;
     };
-    return ;
 }
 function Editor::onAdd(%unused)
 {
@@ -56,7 +50,6 @@ function Editor::onAdd(%unused)
     EWorldEditor.ignoreObjClass("fxShapeReplicatedStatic");
     EditorGui.init();
     exec("./editorRender.cs");
-    return ;
 }
 function Editor::checkActiveLoadDone()
 {

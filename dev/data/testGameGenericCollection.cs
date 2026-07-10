@@ -3,7 +3,6 @@ function TestSuite_Games_Collection::setup(%this)
 {
     %this.addTestCase("TEST_SIMPLE_LOADGAME");
     %this.addTestCase("TEST_SIMPLE_COLLECTION");
-    return ;
 }
 function ASimpleCollectionTestGame::setup(%this)
 {
@@ -20,42 +19,38 @@ function ASimpleCollectionTestGame::setup(%this)
     %this.MSG_STARTCOLLECTION = "You just got the first [ITEMNAMESINGULAR]. See if you can find all [TOTAL]!";
     %this.MSG_CONTINUECOLLECTION = "You found a [ITEMNAMESINGULAR]. Keep searching for the remaining [REMAINING]!";
     %this.MSG_FINISHCOLLECTION = "You found all [TOTAL] [ITEMNAMEPLURAL], well done!";
-    return ;
 }
 function TEST_SIMPLE_LOADGAME::CheckGameCount(%this, %shouldHaveCount, %message)
 {
     %count = gameplay::LoadedGamePlayGameCount();
-    %this.assert(%count == %shouldHaveCount, %message SPC "- loaded game count should be" SPC %shouldHaveCount SPC ", but it was" SPC %count);
-    return ;
+    %this.assert((%count == %shouldHaveCount), %message @ " " @ "- loaded game count should be" @ " " @ %shouldHaveCount @ " " @ ", but it was" @ " " @ %count);
 }
 function TEST_SIMPLE_LOADGAME::runTest(%this)
 {
     if (!$StandAlone)
     {
         %this.assert(0, "this test must be run in $standalone");
-        return ;
+        return;
     }
     %count = gameplay::LoadedGamePlayGameCount();
     %this.testGame = GameGenericCollection::LoadGame("ASimpleCollectionTestGame");
-    %this.CheckGameCount(%count + 1, "should have one more after loading this");
+    %this.CheckGameCount((%count + 1), "should have one more after loading this");
     gameplay::UnLoadGamePlayGame(%this.testGame.getId());
     %this.CheckGameCount(%count, "should have one less after unloading");
-    return ;
 }
 function TEST_SIMPLE_COLLECTION::CheckState(%this, %player, %shouldBeDone, %shouldHaveCount, %message)
 {
     %done = %this.testGame.AlreadyFinishedCollection(%player);
-    %this.assert(%done == %shouldBeDone, %message SPC "- done should be" SPC %shouldBeDone SPC "but it was" SPC %done);
+    %this.assert((%done == %shouldBeDone), %message @ " " @ "- done should be" @ " " @ %shouldBeDone @ " " @ "but it was" @ " " @ %done);
     %collected = %this.testGame.HowManyCollectedSoFar(%player);
-    %this.assert(%collected == %shouldHaveCount, %message SPC "- collected count should be" SPC %shouldHaveCount SPC ", but it was" SPC %collected);
-    return ;
+    %this.assert((%collected == %shouldHaveCount), %message @ " " @ "- collected count should be" @ " " @ %shouldHaveCount @ " " @ ", but it was" @ " " @ %collected);
 }
 function TEST_SIMPLE_COLLECTION::runTest(%this)
 {
     if (!$StandAlone)
     {
         %this.assert(0, "this test must be run in $standalone");
-        return ;
+        return;
     }
     %this.testGame = GameGenericCollection::LoadGame("ASimpleCollectionTestGame");
     %player = $StandaloneServerPlayer;
@@ -65,7 +60,7 @@ function TEST_SIMPLE_COLLECTION::runTest(%this)
     %this.CheckState(%player, 0, 2, "state after collecting two things");
     EventLocationVisited::Fire(0, "TestThing1", %player);
     EventLocationVisited::Fire(0, "TestThing2", %player);
-    %this.CheckState(%player, 0, 2, "state after collecting two things a second time, shouldn\'t change our state");
+    %this.CheckState(%player, 0, 2, "state after collecting two things a second time, shouldn't change our state");
     EventLocationVisited::Fire(0, "TestThing3", %player);
     EventLocationVisited::Fire(0, "TestThing4", %player);
     %this.CheckState(%player, 1, 4, "state after finishing the collection");
@@ -74,5 +69,4 @@ function TEST_SIMPLE_COLLECTION::runTest(%this)
     %this.testGame.ClearGameStateForPlayer(%player);
     %this.CheckState(%player, 0, 0, "state after clearing the game state for this player");
     gameplay::UnLoadGamePlayGame(%this.testGame.getId());
-    return ;
 }

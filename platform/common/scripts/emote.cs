@@ -1,8 +1,8 @@
 function addPlainToCoded(%list, %plain, %coded)
 {
     %num = getFieldCount(%list);
-    %list = setField(%list, %num + 0, %plain);
-    %list = setField(%list, %num + 1, %coded);
+    %list = setField(%list, (%num + 0), %plain);
+    %list = setField(%list, (%num + 1), %coded);
     return %list;
 }
 function initGenderedDances()
@@ -140,7 +140,6 @@ function initGenderedDances()
     %list = addPlainToCoded(%list, "Camel Walk", "jbdnc08");
     %list = addPlainToCoded(%list, "Get Funkie", "jbdnc10");
     $dancesMap_JB = %list;
-    return ;
 }
 $gDanceMaps = "";
 function getRandomDance()
@@ -156,7 +155,7 @@ function getRandomDance()
         $gDanceMaps = $gDanceMaps @ $dancesMap_JB @ "\t";
     }
     %num = getFieldCount($gDanceMaps) / 2;
-    %n = (getRandom(0, %num - 1) * 2) + 1;
+    %n = (getRandom(0, (%num - 1)) * 2) + 1;
     return getField($gDanceMaps, %n);
 }
 function insertPlainToCodedListIntoMap(%srcList, %trgMap)
@@ -165,26 +164,24 @@ function insertPlainToCodedListIntoMap(%srcList, %trgMap)
     %n = 0;
     while (%n < %num)
     {
-        %plain = getField(%srcList, %n * 2);
-        %coded = getField(%srcList, (%n * 2) + 1);
+        %plain = getField(%srcList, (%n * 2));
+        %coded = getField(%srcList, ((%n * 2) + 1));
         %trgMap.put(%plain, %coded);
         %n = %n + 1;
     }
 }
-
 function removePlainToCodedListFromMap(%srcList, %trgMap)
 {
     %num = getFieldCount(%srcList) / 2;
     %n = 0;
     while (%n < %num)
     {
-        %plain = getField(%srcList, %n * 2);
-        %coded = getField(%srcList, (%n * 2) + 1);
+        %plain = getField(%srcList, (%n * 2));
+        %coded = getField(%srcList, ((%n * 2) + 1));
         %trgMap.remove(%plain);
         %n = %n + 1;
     }
 }
-
 function initializeEmoteDictPublic(%dict)
 {
     initGenderedDances();
@@ -266,7 +263,6 @@ function initializeEmoteDictPublic(%dict)
     %dict.put("crowd-wave", "crdwve");
     %dict.put("loser", "losr");
     %dict.put("o-my-nails", "admrnail");
-    return ;
 }
 function initializeEmoteDictProtected(%dict)
 {
@@ -323,7 +319,6 @@ function initializeEmoteDictProtected(%dict)
     %dict.put("bed-lay-handsbehindhead", "bedrlx");
     %dict.put("bed-lay-chezlounge", "chzlngidl1");
     %dict.put("pocketbike-ride", "pckride");
-    return ;
 }
 function initializeEmoteDict()
 {
@@ -331,13 +326,14 @@ function initializeEmoteDict()
     {
         EmoteDict.delete();
     }
-    new StringMap(EmoteDict);
+    new StringMap(EmoteDict) {
+        ignoreCase = 1;
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(EmoteDict);
     }
     initializeEmoteDictPublic(EmoteDict);
-    return ;
 }
 initializeEmoteDict();
 function intializeSharedEmoteDict()
@@ -346,7 +342,9 @@ function intializeSharedEmoteDict()
     {
         SharedEmoteDict.delete();
     }
-    new StringMap(SharedEmoteDict);
+    new StringMap(SharedEmoteDict) {
+        ignoreCase = 1;
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(SharedEmoteDict);
@@ -367,7 +365,6 @@ function intializeSharedEmoteDict()
     %dict.put("hdncb1", "hdncb2");
     %dict.put("hdncb2", "hdncb3");
     %dict.put("hdncb3", "hdncb4");
-    return ;
 }
 function getSharedEmote(%theirEmote)
 {
@@ -381,7 +378,9 @@ function initializeProtectedAnims()
     {
         ProtectedAnimsDict.delete();
     }
-    new StringMap(ProtectedAnimsDict);
+    new StringMap(ProtectedAnimsDict) {
+        ignoreCase = 1;
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(ProtectedAnimsDict);
@@ -508,7 +507,6 @@ function initializeProtectedAnims()
     %dict.put("drinkbottle02", 2);
     %dict.put("drinkbottle03", 2);
     %dict.put("drinkmugwipe02", 2);
-    return ;
 }
 initializeProtectedAnims();
 function intializeDrinkExcludedAnims()
@@ -517,14 +515,14 @@ function intializeDrinkExcludedAnims()
     {
         DrinkExcludedAnimsDict.delete();
     }
-    new StringMap(DrinkExcludedAnimsDict);
+    new StringMap(DrinkExcludedAnimsDict) {
+        ignoreCase = 1;
+    };
     if (isObject(MissionCleanup))
     {
         MissionCleanup.add(DrinkExcludedAnimsDict);
     }
     %dict = DrinkExcludedAnimsDict;
     %dict.put("rotfl", 2);
-    return ;
 }
 intializeDrinkExcludedAnims();
-

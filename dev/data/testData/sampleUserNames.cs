@@ -5,29 +5,28 @@ function sampleData_initUserNames()
     if ($gRandomUserNamesNum < 0)
     {
         %fn = ExpandFilename("./sampleUserNames.txt");
-        %fo = new FileObject();
+        %fo = new FileObject("");
         if (!%fo.openForRead(%fn))
         {
-            error("could not open" SPC %fn);
-            return ;
+            error("could not open" @ " " @ %fn);
+            return;
         }
         $gRandomUserNamesNum = 0;
         while (!%fo.isEOF())
         {
             %name = %fo.readLine();
-            $gRandomUserNames[$gRandomUserNamesNum] = %name ;
+            $gRandomUserNames[$gRandomUserNamesNum] = %name;
             $gRandomUserNamesNum = $gRandomUserNamesNum + 1;
         }
         %fo.close();
         %fo.delete();
-        echo("read" SPC $gRandomUserNamesNum SPC "names..");
+        echo("read" @ " " @ $gRandomUserNamesNum @ " " @ "names..");
     }
-    return ;
 }
 function getRandomUserName()
 {
     sampleData_initUserNames();
-    %num = getRandom(0, $gRandomUserNamesNum - 1);
+    %num = getRandom(0, ($gRandomUserNamesNum - 1));
     return $gRandomUserNames[%num];
 }
 function getSequentialUserName()
@@ -44,29 +43,28 @@ function sampleData_initBannerIDs()
     if ($gRandomBannerIDsNum < 0)
     {
         %fn = ExpandFilename("./sampleBannerIDs.txt");
-        %fo = new FileObject();
+        %fo = new FileObject("");
         if (!%fo.openForRead(%fn))
         {
-            error("could not open" SPC %fn);
-            return ;
+            error("could not open" @ " " @ %fn);
+            return;
         }
         $gRandomBannerIDsNum = 0;
         while (!%fo.isEOF())
         {
             %name = %fo.readLine();
-            $gRandomBannerIDs[$gRandomBannerIDsNum] = %name ;
+            $gRandomBannerIDs[$gRandomBannerIDsNum] = %name;
             $gRandomBannerIDsNum = $gRandomBannerIDsNum + 1;
         }
         %fo.close();
         %fo.delete();
-        echo("read" SPC $gRandomBannerIDsNum SPC "names..");
+        echo("read" @ " " @ $gRandomBannerIDsNum @ " " @ "names..");
     }
-    return ;
 }
 function getRandomBannerID()
 {
     sampleData_initBannerIDs();
-    %num = getRandom(0, $gRandomBannerIDsNum - 1);
+    %num = getRandom(0, ($gRandomBannerIDsNum - 1));
     return $gRandomBannerIDs[%num];
 }
 function getSequentialBannerID()
@@ -82,23 +80,23 @@ function getRandomApartmentPhotoID()
     if ($gRandomApartmentPhotoIDsNum < 0)
     {
         %fn = ExpandFilename("./sampleApartmentPhotoIDs.txt");
-        %fo = new FileObject();
+        %fo = new FileObject("");
         if (!%fo.openForRead(%fn))
         {
-            error("could not open" SPC %fn);
-            return ;
+            error("could not open" @ " " @ %fn);
+            return;
         }
         $gRandomApartmentPhotoIDsNum = 0;
         while (!%fo.isEOF())
         {
             %name = %fo.readLine();
-            $gRandomApartmentPhotoIDs[$gRandomApartmentPhotoIDsNum] = %name ;
+            $gRandomApartmentPhotoIDs[$gRandomApartmentPhotoIDsNum] = %name;
             $gRandomApartmentPhotoIDsNum = $gRandomApartmentPhotoIDsNum + 1;
         }
         %fo.close();
         %fo.delete();
-        echo("read" SPC $gRandomApartmentPhotoIDsNum SPC "names..");
+        echo("read" @ " " @ $gRandomApartmentPhotoIDsNum @ " " @ "names..");
     }
-    %num = getRandom(0, $gRandomApartmentPhotoIDsNum - 1);
+    %num = getRandom(0, ($gRandomApartmentPhotoIDsNum - 1));
     return $gRandomApartmentPhotoIDs[%num];
 }

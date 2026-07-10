@@ -5,7 +5,7 @@ function ProgressBarController::Initialize(%this, %parentCtrl, %emptyBitmap, %fi
         %this.ctrl = %parentCtrl;
         if (!isObject(%this.ctrl))
         {
-            return ;
+            return;
         }
         %this.width = getWord(%this.ctrl.getExtent(), 0);
         %this.height = getWord(%this.ctrl.getExtent(), 1);
@@ -18,17 +18,15 @@ function ProgressBarController::Initialize(%this, %parentCtrl, %emptyBitmap, %fi
         %this.makeForeground(%fillBitmap);
         %this.pbinitialized = 1;
     }
-    return ;
 }
 function ProgressBarController::makeBackground(%this, %bitmap)
 {
-    %this.background = new GuiBitmapCtrl()
-    {
+    %this.background = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "width";
         vertSizing = "height";
-        position = %this.leftMargin SPC 0;
-        extent = %this.width - (%this.leftMargin + %this.rightMargin) SPC %this.height;
+        position = %this.leftMargin @ " " @ 0;
+        extent = (%this.width - (%this.leftMargin + %this.rightMargin)) @ " " @ %this.height;
         minExtent = "0 1";
         sluggishness = -1;
         visible = 1;
@@ -36,17 +34,15 @@ function ProgressBarController::makeBackground(%this, %bitmap)
         wrap = 1;
     };
     %this.ctrl.add(%this.background);
-    return ;
 }
 function ProgressBarController::makeForeground(%this, %bitmap)
 {
-    %this.foreground = new GuiBitmapCtrl()
-    {
+    %this.foreground = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
-        extent = 0 SPC %this.height;
+        extent = 0 @ " " @ %this.height;
         minExtent = "0 1";
         sluggishness = -1;
         visible = 1;
@@ -54,7 +50,6 @@ function ProgressBarController::makeForeground(%this, %bitmap)
         wrap = 1;
     };
     %this.ctrl.add(%this.foreground);
-    return ;
 }
 function ProgressBarController::makeLeftCap(%this, %bitmap)
 {
@@ -65,15 +60,14 @@ function ProgressBarController::makeLeftCap(%this, %bitmap)
     if (%bitmap $= "")
     {
         %this.leftCap = 0;
-        return ;
+        return;
     }
-    %this.leftCap = new GuiBitmapCtrl()
-    {
+    %this.leftCap = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
-        extent = 0 SPC %this.height;
+        extent = 0 @ " " @ %this.height;
         minExtent = "0 1";
         sluggishness = -1;
         visible = 1;
@@ -82,7 +76,6 @@ function ProgressBarController::makeLeftCap(%this, %bitmap)
     };
     %this.ctrl.add(%this.leftCap);
     %this.reseatCaps();
-    return ;
 }
 function ProgressBarController::makeRightCap(%this, %bitmap)
 {
@@ -93,15 +86,14 @@ function ProgressBarController::makeRightCap(%this, %bitmap)
     if (%bitmap $= "")
     {
         %this.rightCap = 0;
-        return ;
+        return;
     }
-    %this.rightCap = new GuiBitmapCtrl()
-    {
+    %this.rightCap = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "left";
         vertSizing = "bottom";
         position = "0 0";
-        extent = 0 SPC %this.height;
+        extent = 0 @ " " @ %this.height;
         minExtent = "0 1";
         sluggishness = -1;
         visible = 1;
@@ -110,7 +102,6 @@ function ProgressBarController::makeRightCap(%this, %bitmap)
     };
     %this.ctrl.add(%this.rightCap);
     %this.reseatCaps();
-    return ;
 }
 function ProgressBarController::reseatCaps(%this)
 {
@@ -124,18 +115,16 @@ function ProgressBarController::reseatCaps(%this)
         %this.rightCap.fitSize();
         %parentWidth = getWord(%this.ctrl.getExtent(), 0);
         %capWidth = getWord(%this.rightCap.getExtent(), 0);
-        %this.rightCap.reposition(%parentWidth - %capWidth, 0);
+        %this.rightCap.reposition((%parentWidth - %capWidth), 0);
         %this.rightMargin = %capWidth;
     }
-    return ;
 }
 function ProgressBarController::setValue(%this, %value)
 {
     %this.value = mMax(mMin(%value, 1), 0);
     %effectiveWidth = %this.width - (%this.leftMargin + %this.rightMargin);
-    %this.foreground.resize(%this.leftMargin, 0, mFloor(%this.value * %effectiveWidth), %this.height);
+    %this.foreground.resize(%this.leftMargin, 0, mFloor((%this.value * %effectiveWidth)), %this.height);
     %this.reseatCaps();
-    return ;
 }
 function ProgressBarController::update(%this)
 {
@@ -152,5 +141,4 @@ function ProgressBarController::update(%this)
             %this.setValue(%this.value);
         }
     }
-    return ;
 }

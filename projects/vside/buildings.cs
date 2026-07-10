@@ -18,7 +18,6 @@ function DeclareFloorplans()
     DeclareFloorplan("LaVilla", 45015);
     DeclareFloorplan("ClubRage", 45016);
     DeclareFloorplan("Islands", 45017);
-    return ;
 }
 function DeclareBuildings()
 {
@@ -32,8 +31,6 @@ function DeclareBuildings()
     DeclareBuilding("HotelRaijuku", "iiR Residences", "", "Senior", "rj_iir", "iiRResidences_L iiRResidences_M iiRResidences_S");
     DeclareBuilding("RunDownRaijukuApartments", "Hidden Jewel Apartments", "", "Junior", "", "BeatupApartment");
     DeclareBuilding("RJHarbor", "Island Apartments", "", "Freshman", "rj_islands", "Islands");
-    return ;
 }
 DeclareFloorplans();
 DeclareBuildings();
-
