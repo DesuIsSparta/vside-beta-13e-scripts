@@ -553,15 +553,13 @@ function CSMediaDisplay::setMediaLink(%this, %child, %medialink, %skipStatistics
                 %count = $musicStreamNameMap.size();
             }
             %idx = 0;
-            if (%idx < %count)
+            while (%idx < %count)
             {
                 if (stricmp($musicStreamNameMap.getValue(%idx), %path) == 0)
                 {
+                    break;
                 }
-                else
-                {
-                    %idx = %idx + 1;
-                }
+                %idx = %idx + 1;
             }
             if (%idx < %count)
             {

@@ -580,18 +580,16 @@ function armor::doDismount(%this, %obj, %forced)
     %numAttempts = 5;
     %success = -1;
     %i = 0;
-    if (%i < %numAttempts)
+    while (%i < %numAttempts)
     {
         %pos = VectorAdd(%oldPos, VectorScale(%vec[%i], 3));
         if (%obj.checkDismountPoint(%oldPos, %pos))
         {
             %success = %i;
             %impulseVec = %vec[%i];
+            break;
         }
-        else
-        {
-            %i = %i + 1;
-        }
+        %i = %i + 1;
     }
     if (%forced && (%success == -1))
     {

@@ -543,16 +543,14 @@ function GameList::CreateTabCreateGame(%this)
     GameList.CreateTabResetDefaults();
     %gameType = %this.gameTypesDropdown.getText();
     %n = 0;
-    if (%n < $gameMgr::GAME_TYPES_COUNT)
+    while (%n < $gameMgr::GAME_TYPES_COUNT)
     {
         if ($gameMgr::GAME_TYPES[%n].INST_TITLE $= %gameType)
         {
             %gameType = %n;
+            break;
         }
-        else
-        {
-            %n = %n + 1;
-        }
+        %n = %n + 1;
     }
     if (%gameType $= %this.gameTypesDropdown.getText())
     {

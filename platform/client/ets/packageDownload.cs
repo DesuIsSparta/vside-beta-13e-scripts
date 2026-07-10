@@ -448,21 +448,19 @@ function packageDownloadCheck::onDone(%this)
         MissionCleanup.add(%tempOrderArray);
     }
     %n = 0;
-    if (%n < %orderMap.size())
+    while (%n < %orderMap.size())
     {
         %key = %map.getKey(%n);
         if (%key $= "")
         {
+            break;
         }
-        else
+        %remoteValue = %this.getValue(%key);
+        if (!packageUpToDate(%map.get(%key), %remoteValue))
         {
-            %remoteValue = %this.getValue(%key);
-            if (!packageUpToDate(%map.get(%key), %remoteValue))
-            {
-                %tempOrderArray.push_back(%key, %orderMap.get(%key));
-            }
-            %n = %n + 1;
+            %tempOrderArray.push_back(%key, %orderMap.get(%key));
         }
+        %n = %n + 1;
     }
     %tempOrderArray.sorta();
     %n = 0;

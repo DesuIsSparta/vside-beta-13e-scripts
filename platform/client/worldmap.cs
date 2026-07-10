@@ -490,16 +490,14 @@ function WorldMap::fillServerList(%this)
     {
         %count = WorldMapServerInfoGroup.getCount();
         %i = 0;
-        if (%i < %count)
+        while (%i < %count)
         {
             if (WorldMapServerInfoGroup.getObject(%i).serverName $= %serverChoice)
             {
                 WorldMapServerPopup.SetSelected(%i);
+                break;
             }
-            else
-            {
-                %i = %i + 1;
-            }
+            %i = %i + 1;
         }
     }
     if (WorldMapServerInfoGroup.getCount() > 1)
@@ -1395,18 +1393,16 @@ function WorldMap::parseResult(%this, %request)
                 %name = %serverProps.get("name");
                 %count = WorldMapCityNamesMap.size();
                 %j = 0;
-                if (%j < %count)
+                while (%j < %count)
                 {
                     %key = WorldMapCityNamesMap.getKey(%j);
                     if (stricmp(%key, %name) == 0)
                     {
                         %value = WorldMapCityNamesMap.getValue(%j);
                         %serverProps.put("city", %value);
+                        break;
                     }
-                    else
-                    {
-                        %j = %j + 1;
-                    }
+                    %j = %j + 1;
                 }
             }
             WorldMapServers.add(%serverProps);
@@ -1526,17 +1522,15 @@ function gotVURLCommandLineList(%arg)
     }
     %count = getWordCount(%arg);
     %i = 0;
-    if (%i < %count)
+    while (%i < %count)
     {
         %value = getWord(%arg, %i);
         if (%value $= "-url")
         {
             %url = getWord(%arg, (%i + 1));
+            break;
         }
-        else
-        {
-            %i = %i + 1;
-        }
+        %i = %i + 1;
     }
     log("communication", "debug", "value of URL is " @ %url);
     log("communication", "debug", "now URL is " @ %url);

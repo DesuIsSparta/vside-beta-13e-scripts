@@ -134,7 +134,7 @@ function onCyclePauseEnd()
     $Game::Cycling = 0;
     %search = $Server::MissionFileSpec;
     %file = findFirstFile(%search);
-    if (!(%file $= ""))
+    while (!(%file $= ""))
     {
         if (%file $= $Server::MissionFile)
         {
@@ -143,11 +143,9 @@ function onCyclePauseEnd()
             {
                 %file = findFirstFile(%search);
             }
+            break;
         }
-        else
-        {
-            %file = findNextFile(%search);
-        }
+        %file = findNextFile(%search);
     }
     loadMission(%file);
     return;

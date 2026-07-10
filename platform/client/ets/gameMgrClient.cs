@@ -739,18 +739,16 @@ function gameMgrClient::addGame(%this, %serversideID, %gname, %gameType, %host, 
     %this.games.add(%newGame);
     %listFound = 0;
     %n = GameList.lists.getCount() - 1;
-    if (%n >= 0)
+    while (%n >= 0)
     {
         %aList = GameList.lists.getObject(%n);
         if (%aList.gametype == %newGame.gametype)
         {
             %aList.add(%newGame);
             %listFound = 1;
+            break;
         }
-        else
-        {
-            %n = %n - 1;
-        }
+        %n = %n - 1;
     }
     if (%listFound <= 0)
     {

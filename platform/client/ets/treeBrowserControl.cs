@@ -198,17 +198,15 @@ function TreeBrowserControl::goToParentPath(%this)
     %menu = %this.getCurrentMenu();
     %count = %menu.getCount();
     %i = 0;
-    if (%i < %count)
+    while (%i < %count)
     {
         %menuItem = %menu.getObject(%i);
         if (%menuItem.name $= %currentNodeName)
         {
             %menu.hiliteCell(0, %i);
+            break;
         }
-        else
-        {
-            %i = %i + 1;
-        }
+        %i = %i + 1;
     }
 }
 function TreeBrowserControl::getMenuText(%this, %text)
@@ -781,18 +779,16 @@ function TreeBrowserControl::getNode(%this, %path)
             %nodeCount = %node.getCount();
             %match = 0;
             %j = 0;
-            if (%j < %nodeCount)
+            while (%j < %nodeCount)
             {
                 %subNode = %node.getObject(%j);
                 if (%subNode.name $= %dirName)
                 {
                     %node = %subNode;
                     %match = 1;
+                    break;
                 }
-                else
-                {
-                    %j = %j + 1;
-                }
+                %j = %j + 1;
             }
             if (!%match)
             {

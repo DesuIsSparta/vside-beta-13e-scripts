@@ -489,15 +489,13 @@ function vurl::reorderServerList(%this)
         return;
     }
     %idxSwapout = 0;
-    if (!(%this._server[%idxSwapout] $= ""))
+    while (!(%this._server[%idxSwapout] $= ""))
     {
         if (stricmp($ServerName, %this._server[%idxSwapout]) == 0)
         {
+            break;
         }
-        else
-        {
-            %idxSwapout = %idxSwapout + 1;
-        }
+        %idxSwapout = %idxSwapout + 1;
     }
     if ((%this._server[%idxSwapout] $= "") || (%idxSwapout == 0))
     {

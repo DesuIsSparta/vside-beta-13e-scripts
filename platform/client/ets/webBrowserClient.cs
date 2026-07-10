@@ -133,16 +133,14 @@ function dlMgr::serviceToDownloadQueue(%this)
         echoDebug(getScopeName() @ " " @ "- too many outstanding already:" @ " " @ %this.outstanding.size() @ " " @ getTrace());
         return;
     }
-    if (%this.outstanding.size() < %this.maxOutstanding)
+    while (%this.outstanding.size() < %this.maxOutstanding)
     {
         %dlItem = %this.getAndRemoveFirstActionableItemInToDownloadQueue();
         if (!isObject(%dlItem))
         {
+            break;
         }
-        else
-        {
-            %this.beginDownloadingItem(%dlItem);
-        }
+        %this.beginDownloadingItem(%dlItem);
     }
 }
 function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this)

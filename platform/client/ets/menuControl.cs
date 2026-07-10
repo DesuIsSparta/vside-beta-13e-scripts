@@ -111,16 +111,14 @@ function MenuLayer::nextActiveButton(%this)
         %next = 0;
         %count = %this.clones.getCount();
         %i = 0;
-        if (%i < %count)
+        while (%i < %count)
         {
             if (%this.clones.getObject(%i).original == %this.activeButton.getId())
             {
                 %next = %this.clones.getObject(((%i + 1) % %count)).original;
+                break;
             }
-            else
-            {
-                %i = %i + 1;
-            }
+            %i = %i + 1;
         }
         %this.setActiveButton(%next);
     }
@@ -132,16 +130,14 @@ function MenuLayer::previousActiveButton(%this)
         %prev = 0;
         %count = %this.clones.getCount();
         %i = 0;
-        if (%i < %count)
+        while (%i < %count)
         {
             if (%this.clones.getObject(%i).original == %this.activeButton.getId())
             {
                 %prev = %this.clones.getObject((((%i - 1) + %count) % %count)).original;
+                break;
             }
-            else
-            {
-                %i = %i + 1;
-            }
+            %i = %i + 1;
         }
         %this.setActiveButton(%prev);
     }
@@ -575,16 +571,14 @@ function MenuItem::onHilite(%this)
                 %count = %parentMenu.getCount();
                 %cellIdx = -1;
                 %i = 0;
-                if (%i < %count)
+                while (%i < %count)
                 {
                     if (%parentMenu.getObject(%i).submenu == %currentMenu.getId())
                     {
                         %cellIdx = %i;
+                        break;
                     }
-                    else
-                    {
-                        %i = %i + 1;
-                    }
+                    %i = %i + 1;
                 }
                 if (%cellIdx != -1)
                 {
@@ -641,15 +635,13 @@ function MenuItem::onMouseEnterBounds(%this)
 {
     %count = %this.Parent.getCount();
     %i = 0;
-    if (%i < %count)
+    while (%i < %count)
     {
         if (%this.getId() == %this.Parent.getObject(%i))
         {
+            break;
         }
-        else
-        {
-            %i = %i + 1;
-        }
+        %i = %i + 1;
     }
     %this.Parent.hiliteCell(0, %i);
 }

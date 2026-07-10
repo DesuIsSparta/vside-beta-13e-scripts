@@ -137,7 +137,7 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request)
     if (strlen($gVHDUserNameFilter) > 0)
     {
         %n = 0;
-        if (%n < %num)
+        while (%n < %num)
         {
             %prefix = "items" @ %n @ ".";
             %sku = %request.getValue(%prefix @ "sku");
@@ -145,11 +145,9 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request)
             if (stricmp(%si.author, $gVHDUserNameFilter) == 0)
             {
                 %hasAuthoredInventory = 1;
+                break;
             }
-            else
-            {
-                %n = %n + 1;
-            }
+            %n = %n + 1;
         }
         $gVHDUserNoStock = !%hasAuthoredInventory;
     }
@@ -241,18 +239,16 @@ function fakeVHDUserStoreInventoryGotFetchResults(%storename)
     if (!($gVHDUserNameFilter $= ""))
     {
         %n = 0;
-        if (%n < %num)
+        while (%n < %num)
         {
             %sku = %request.getValue(%prefix @ "sku");
             %si = SkuManager.findBySku(%sku);
             if (%si.author $= $gVHDUserNameFilter)
             {
                 %hasAuthoredInventory = 1;
+                break;
             }
-            else
-            {
-                %n = %n + 1;
-            }
+            %n = %n + 1;
         }
         $gVHDUserNoStock = !%hasAuthoredInventory;
     }

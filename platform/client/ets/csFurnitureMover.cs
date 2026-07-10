@@ -186,7 +186,7 @@ function CSFurnitureMover::refreshGhostList(%ghostlist)
         {
             %numGhosts = getWordCount($gCSGhostList);
             %i = 0;
-            if (%i < %numGhosts)
+            while (%i < %numGhosts)
             {
                 %ghost = getWord($gCSGhostList, %i);
                 if (isObject(%ghost) && (%ghost.getInventoryNuggetID() == $CSSelectedID))
@@ -196,11 +196,9 @@ function CSFurnitureMover::refreshGhostList(%ghostlist)
                     {
                         rentabotClient_customizeBot(%ghost);
                     }
+                    break;
                 }
-                else
-                {
-                    %i = %i + 1;
-                }
+                %i = %i + 1;
             }
         }
         CSFurnitureMoverText.update();
@@ -312,7 +310,7 @@ function CSFurnitureMoverText::update(%this)
                 {
                     %numGhosts = getWordCount($gCSGhostList);
                     %i = 0;
-                    if (%i < %numGhosts)
+                    while (%i < %numGhosts)
                     {
                         %ghost = getWord($gCSGhostList, %i);
                         if (!isObject(%ghost))
@@ -329,11 +327,9 @@ function CSFurnitureMoverText::update(%this)
                             }
                             if (%ghost == $CSSelectedGhost)
                             {
+                                break;
                             }
-                            else
-                            {
-                                %i = %i + 1;
-                            }
+                            %i = %i + 1;
                         }
                     }
                 }
@@ -372,17 +368,15 @@ function CSFurnitureMoverText::onURL(%this, %url)
     {
         %numGhosts = getWordCount($gCSGhostList);
         %i = 0;
-        if (%i < %numGhosts)
+        while (%i < %numGhosts)
         {
             %ghost = getWord($gCSGhostList, %i);
             if (%ghost.getInventoryNuggetID() == $CSSelectedGhost.getInventoryNuggetID())
             {
                 %selectedObj = getWord($gCSGhostList, ((%i + 1) % %numGhosts));
+                break;
             }
-            else
-            {
-                %i = %i + 1;
-            }
+            %i = %i + 1;
         }
     }
     else
@@ -391,17 +385,15 @@ function CSFurnitureMoverText::onURL(%this, %url)
         {
             %numGhosts = getWordCount($gCSGhostList);
             %i = 0;
-            if (%i < %numGhosts)
+            while (%i < %numGhosts)
             {
                 %ghost = getWord($gCSGhostList, %i);
                 if (%ghost.getInventoryNuggetID() == $CSSelectedGhost.getInventoryNuggetID())
                 {
                     %selectedObj = getWord($gCSGhostList, (((%i - 1) + %numGhosts) % %numGhosts));
+                    break;
                 }
-                else
-                {
-                    %i = %i + 1;
-                }
+                %i = %i + 1;
             }
         }
     }

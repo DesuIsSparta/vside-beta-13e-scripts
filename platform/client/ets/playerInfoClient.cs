@@ -67,18 +67,16 @@ function getPlayerNamesInRadius(%radius)
     }
     initContainerRadiusSearch($player.getTransform(), %radius, $TypeMasks::PlayerObjectType, 1);
     %names = "";
-    if (1)
+    while (1)
     {
         %player = containerSearchNext(1);
         if (!isObject(%player))
         {
+            break;
         }
-        else
+        if (%player.getId() != $player.getId())
         {
-            if (%player.getId() != $player.getId())
-            {
-                %names = %names @ "\t" @ %player.getShapeName();
-            }
+            %names = %names @ "\t" @ %player.getShapeName();
         }
     }
     return trim(%names);

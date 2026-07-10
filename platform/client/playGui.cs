@@ -375,24 +375,22 @@ function GuiControl::closeTopClosableWindow(%this)
 {
     %closedOne = 0;
     %n = 0;
-    if (!%closedOne)
+    while (!%closedOne)
     {
         %obj = %this.getTopNthWindow(%n);
         if (!isObject(%obj))
         {
+            break;
+        }
+        if (!(%obj.closeCommand $= ""))
+        {
+            eval("%closedOne =" @ " " @ %obj.closeCommand);
         }
         else
         {
-            if (!(%obj.closeCommand $= ""))
-            {
-                eval("%closedOne =" @ " " @ %obj.closeCommand);
-            }
-            else
-            {
-                %closedOne = %obj.close();
-            }
-            %n = %n + 1;
+            %closedOne = %obj.close();
         }
+        %n = %n + 1;
     }
     %this.focusTopWindow();
     return %closedOne;
@@ -400,17 +398,15 @@ function GuiControl::closeTopClosableWindow(%this)
 function GuiControl::dumpTopWindows(%this)
 {
     %n = 0;
-    if (1)
+    while (1)
     {
         %obj = %this.getTopNthWindow(%n);
         if (!isObject(%obj))
         {
+            break;
         }
-        else
-        {
-            echo(getDebugString(%obj));
-            %n = %n + 1;
-        }
+        echo(getDebugString(%obj));
+        %n = %n + 1;
     }
 }
 function GuiControl::showRaiseOrHide(%this, %ctrl)
