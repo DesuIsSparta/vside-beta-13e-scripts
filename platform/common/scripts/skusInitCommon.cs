@@ -52,38 +52,40 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     %prev = %this.findBySku(%si.skuNumber);
     if (isObject(%prev)) {
         error("SkuManager::addItem() - duplicate sku." @ " " @ %prev.skuNumber @ " " @ "\"" @ %si.descShrt @ "\"" @ " " @ "loses to" @ " " @ "\"" @ %prev.descShrt @ "\"");
-    }
-    %this.add(%si);
-    %n = (getWordCount(%stores) - 1.0);
-    while ((%n >= 0.0)) {
-        %storeID = getWord(%stores, %n);
-        if ($StandAlone) {
-            %this.storeSkus[%skunum," ",%storeID] = %this.storeSkus[%storeID];
-            %this.storeQtys[%qtyMfr," ",%storeID] = %this.storeQtys[%storeID];
+    } else {
+        %this.add(%si);
+        %n = (getWordCount(%stores) - 1.0);
+        while ((%n >= 0.0)) {
+            %storeID = getWord(%stores, %n);
+            if ($StandAlone) {
+                %this.storeSkus[%skunum," ",%storeID] = %this.storeSkus[%storeID];
+                %this.storeQtys[%qtyMfr," ",%storeID] = %this.storeQtys[%storeID];
+            }
+            if ((findWord(%this.storeIDs, %storeID) < 0.0)) {
+                %this.storeIDs = %this.storeIDs @ %storeID @ " ";
+            }
+            %n = (%n - 1.0);
         }
-        if ((findWord(%this.storeIDs, %storeID) < 0.0)) {
-            %this.storeIDs = %this.storeIDs @ %storeID @ " ";
+        if (%bornWith) {
+            %this.bornWithSkus = (%n >= 0.0) @ %this.bornWithSkus @ %skunum @ " ";
+        } else {
+            %this.notBornWithSkus = %this.notBornWithSkus @ %skunum @ " ";
         }
-        %n = (%n - 1.0);
-    }
-    if (%bornWith) {
-        %this.bornWithSkus = (%n >= 0.0) @ %this.bornWithSkus @ %skunum @ " ";
-    }
-    %this.notBornWithSkus = %this.notBornWithSkus @ %skunum @ " ";
-    %n = (getWordCount(%tags) - 1.0);
-    while ((%n >= 0.0)) {
-        %tag = getWord(%tags, %n);
-        %skus = %this.skuTags.get(%tag);
-        %skus = trim(%skus @ " " @ %skunum);
-        %this.skuTags.put(%tag, %skus);
-        %n = (%n - 1.0);
-    }
-    %n = (getWordCount(%meshName) - 1.0);
-    (%n >= 0.0);
-    while ((%n >= 0.0)) {
-        %meshN = getWord(%meshName, %n);
-        %this.addKnownMeshName(%meshN);
-        %n = (%n - 1.0);
+        %n = (getWordCount(%tags) - 1.0);
+        while ((%n >= 0.0)) {
+            %tag = getWord(%tags, %n);
+            %skus = %this.skuTags.get(%tag);
+            %skus = trim(%skus @ " " @ %skunum);
+            %this.skuTags.put(%tag, %skus);
+            %n = (%n - 1.0);
+        }
+        %n = (getWordCount(%meshName) - 1.0);
+        (%n >= 0.0);
+        while ((%n >= 0.0)) {
+            %meshN = getWord(%meshName, %n);
+            %this.addKnownMeshName(%meshN);
+            %n = (%n - 1.0);
+        }
     }
 };
 function skusAddItem2(%skunum, %skuType, %roleStrings, %gender, %brand, %drwrName, %meshName, %txtrNames, %desc, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime, %tags, %author) {

@@ -119,14 +119,15 @@ function onCyclePauseEnd() {
     $Game::Cycling = 0;
     %search = $Server::MissionFileSpec;
     %file = findFirstFile(%search);
-    while (!(%file $= "")) {
+    if (!(%file $= "")) {
         if ((%file $= $Server::MissionFile)) {
             %file = findNextFile(%search);
             if ((%file $= "")) {
                 %file = findFirstFile(%search);
             }
+        } else {
+            %file = findNextFile(%search);
         }
-        %file = findNextFile(%search);
     }
     loadMission(%file);
     return !(%file $= "");
@@ -173,11 +174,12 @@ function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %un
     if ((%sourceClient == %this)) {
         %this.incScore(-(1.0));
         messageAll('MsgClientKilled', '%1 takes his own life!', %this.name);
-    }
-    %sourceClient.incScore(1);
-    messageAll('MsgClientKilled', '%1 gets nailed by %2!', %this.name, %sourceClient.name);
-    if ((%sourceClient.score >= $Game::EndGameScore)) {
-        cycleGame();
+    } else {
+        %sourceClient.incScore(1);
+        messageAll('MsgClientKilled', '%1 gets nailed by %2!', %this.name, %sourceClient.name);
+        if ((%sourceClient.score >= $Game::EndGameScore)) {
+            cycleGame();
+        }
     }
     return;
 };
@@ -193,16 +195,19 @@ function GameConnection::createPlayer(%this, %spawnPoint) {
     }
     if ((%this.gender $= "f")) {
         %playerDB = PlayerF;
+    } else {
+        if ((%this.gender $= "m")) {
+            %playerDB = PlayerM;
+        } else {
+            if ((getRandom(0, 1) == 0.0)) {
+                %playerDB = PlayerF;
+                %this.gender = "f";
+            } else {
+                %playerDB = PlayerM;
+                %this.gender = "m";
+            }
+        }
     }
-    if ((%this.gender $= "m")) {
-        %playerDB = PlayerM;
-    }
-    if ((getRandom(0, 1) == 0.0)) {
-        %playerDB = PlayerF;
-        %this.gender = "f";
-    }
-    %playerDB = PlayerM;
-    %this.gender = "m";
     %player = new Player("") {
         dataBlock = %playerDB;
         client = %this;
@@ -210,12 +215,14 @@ function GameConnection::createPlayer(%this, %spawnPoint) {
     %rand = getRandom(0, 2);
     if ((%rand == 0.0)) {
         %genre = "h";
-    }
-    if ((%rand == 1.0)) {
-        %genre = "i";
-    }
-    if ((%rand == 2.0)) {
-        %genre = "p";
+    } else {
+        if ((%rand == 1.0)) {
+            %genre = "i";
+        } else {
+            if ((%rand == 2.0)) {
+                %genre = "p";
+            }
+        }
     }
     %player.setGender(%this.gender);
     %player.setGenre(%genre);
@@ -267,8 +274,9 @@ function GameConnection::initPlayerRelations() {
             %onBuddyPlayer = PlayerDict.get(%onBuddyName);
             if (isObject(%onBuddyPlayer)) {
                 %onBuddyPlayer.addBuddy(%player);
+            } else {
+                warn("no player object for on buddy " @ %onBuddyName);
             }
-            warn("no player object for on buddy " @ %onBuddyName);
         }
         %onIgnoreCount = %request.onIgnoreCount;
         %onBuddyCount = ((%onBuddyCount - 1.0) >= 0.0);
@@ -277,8 +285,9 @@ function GameConnection::initPlayerRelations() {
             %onIgnorePlayer = PlayerDict.get(%onIgnoreName);
             if (isObject(%onIgnorePlayer)) {
                 %onIgnorePlayer.addIgnore(%player);
+            } else {
+                warn("no player object for on ignore " @ %onIgnorePlayer);
             }
-            warn("no player object for on ignore " @ %onIgnorePlayer);
         }
     }
 };
@@ -291,9 +300,11 @@ function pickSpawnPoint() {
             %index = getRandom((%count - 1.0));
             %spawn = %group.getObject(%index);
             return %spawn.getEmptySpot(1.5, 0, 1);
+        } else {
+            error("No spawn points found in " @ %groupName);
         }
-        error("No spawn points found in " @ %groupName);
+    } else {
+        error("Missing spawn points group " @ %groupName);
     }
-    error("Missing spawn points group " @ %groupName);
     return "0 0 300 1 0 0 0";
 };

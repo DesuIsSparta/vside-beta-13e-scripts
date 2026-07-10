@@ -159,8 +159,9 @@ function dev_clientSideSceneObjectsTick() {
     %hitObject = getWord(%result, 0);
     if (isObject(%hitObject)) {
         %hitPosition = getWords(%result, 1, 3);
+    } else {
+        %hitPosition = VectorAdd(%startPoint, VectorScale(%camPtVec, 4));
     }
-    %hitPosition = VectorAdd(%startPoint, VectorScale(%camPtVec, 4));
     %t = ($gClientSideSceneObjectsTickNum * 0.1);
     %a = $gClientSideSceneObjectsGroup.getObject(0);
     %a.setTransform(MatrixMultiply(MatrixMultiply(playGui.getLastCameraTransform(), "0 2 0 1 0 0" @ " " @ %t), "0 0 0 1 0" @ " " @ ($gClientSideSceneObjectsTickNum * 0.0)));
@@ -168,8 +169,9 @@ function dev_clientSideSceneObjectsTick() {
     $gClientSideSceneObjectsTickNum = ($gClientSideSceneObjectsTickNum + 1.0);
     if ((($gClientSideSceneObjectsTickNum % 2) == 0.0)) {
         %datablock = unitCubeGreyDataBlock;
+    } else {
+        %datablock = unitCubeBlueDataBlock;
     }
-    %datablock = unitCubeBlueDataBlock;
     $gClientSideSceneObjectsTimer = schedule(100, 0, "dev_clientSideSceneObjectsTick");
 };
 function standardizeWindowAspect() {
@@ -182,8 +184,9 @@ function standardizeWindowAspect() {
     %proportionY = (%currentY / %standardY);
     if ((%proportionX > %proportionY)) {
         %currentY = (%proportionX * %standardY);
+    } else {
+        %currentX = (%proportionY * %standardX);
     }
-    %currentX = (%proportionY * %standardX);
     setScreenMode(%currentX, %currentY, %currentBPP, 0);
 };
 function tryArray() {
@@ -867,9 +870,10 @@ function twitterTest1(%text) {
     if ((%text $= $gTwitterText)) {
         $gTwitterTextCount = ($gTwitterTextCount + 1.0);
         %text = %text @ " " @ $gTwitterTextCount;
+    } else {
+        $gTwitterText = %text;
+        $gTwitterTextCount = 1;
     }
-    $gTwitterText = %text;
-    $gTwitterTextCount = 1;
     %request = new URLPostObject("");
     %request.setURL("https://twitter.com/statuses/update.xml");
     %request.setBodyParam("status", %text);
@@ -892,24 +896,26 @@ function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %pass
     %fileName = %fileName @ ".jpg";
     if (%asBackground) {
         %url = "http://twitter.com/account/update_profile_background_image.html";
+    } else {
+        %url = "http://twitter.com/account/update_profile_image.xml";
     }
-    %url = "http://twitter.com/account/update_profile_image.xml";
     %uploader = "";
     if (!snapshotTool::snapRegion(%region, %fileName)) {
         error(getScopeName() @ " " @ "- Unable to capture region." @ " " @ %region @ " " @ %fileName @ " " @ getTrace());
-    }
-    $screenShotNum = ($screenShotNum + 1.0);
-    %uploader = new URLPostObject("");
-    %uploader.setProgress(1);
-    %uploader.setURL(%url);
-    %uploader.setUserNameAndPassword(%userName @ ":" @ %password);
-    %uploader.setPostFile("image", %fileName);
-    %uploader.setCustomHeaders("Expect:");
-    if (%tile) {
-        %uploader.setBodyParam("tile", "true");
-    }
-    if (!%uploader.start()) {
-        error(getScopeName() @ " " @ "- Unable to upload photo." @ " " @ %fileName @ " " @ %url @ " " @ getTrace());
+    } else {
+        $screenShotNum = ($screenShotNum + 1.0);
+        %uploader = new URLPostObject("");
+        %uploader.setProgress(1);
+        %uploader.setURL(%url);
+        %uploader.setUserNameAndPassword(%userName @ ":" @ %password);
+        %uploader.setPostFile("image", %fileName);
+        %uploader.setCustomHeaders("Expect:");
+        if (%tile) {
+            %uploader.setBodyParam("tile", "true");
+        }
+        if (!%uploader.start()) {
+            error(getScopeName() @ " " @ "- Unable to upload photo." @ " " @ %fileName @ " " @ %url @ " " @ getTrace());
+        }
     }
     return %uploader;
 };

@@ -7,10 +7,11 @@ function dumpOverlap(%group) {
         %m = 0;
         while ((%m < %num)) {
             if ((%m == %n)) {
-            }
-            %obj2 = %group.getObject(%m);
-            if (%obj1.objBoxesOverlap(%obj2)) {
-                echo("   " @ getDebugString(%obj2));
+            } else {
+                %obj2 = %group.getObject(%m);
+                if (%obj1.objBoxesOverlap(%obj2)) {
+                    echo("   " @ getDebugString(%obj2));
+                }
             }
             %m = (%m + 1.0);
         }

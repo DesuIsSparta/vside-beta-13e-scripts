@@ -121,9 +121,10 @@ function testOutfits_MasterDoNext() {
         if ($testOutfits::quitWhenDone) {
             quit();
         }
+    } else {
+        call($testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest]);
+        $testOutfits_nextTest = ($testOutfits_nextTest + 1.0);
     }
-    call($testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest]);
-    $testOutfits_nextTest = ($testOutfits_nextTest + 1.0);
 };
 function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout) {
     %skusGot = $player.getActiveSKUs();
@@ -133,19 +134,21 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout) {
     %succ = testOutfits::skuListsAreEqual(%skusGot, %skusExpected);
     if ((%skusGot $= $testOutfits::badSkus)) {
         %noChange = "(no change)";
+    } else {
+        %noChange = "";
     }
-    %noChange = "";
     if (%succ) {
         log("network", "info", "outfit test succeeded after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ ".");
         $testOutfits_passCount = ($testOutfits_passCount + 1.0);
         $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1.0)] = "pass";
+    } else {
+        log("network", "warn", "outfit test failed    after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ "." @ " " @ %noChange);
+        log("network", "warn", "sent    " @ " " @ %skusSent);
+        log("network", "warn", "got     " @ " " @ %skusGot);
+        log("network", "warn", "expected" @ " " @ %skusExpected);
+        $testOutfits_passCount = ($testOutfits_passCount + 0.0);
+        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1.0)] = "fail";
     }
-    log("network", "warn", "outfit test failed    after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ "." @ " " @ %noChange);
-    log("network", "warn", "sent    " @ " " @ %skusSent);
-    log("network", "warn", "got     " @ " " @ %skusGot);
-    log("network", "warn", "expected" @ " " @ %skusExpected);
-    $testOutfits_passCount = ($testOutfits_passCount + 0.0);
-    $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1.0)] = "fail";
     testOutfits_MasterDoNext();
 };
 function testOutfits_FireEnvServerTest(%skusDry, %skusWet) {

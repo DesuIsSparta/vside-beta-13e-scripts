@@ -39,8 +39,9 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
         }
         if (%okay) {
             %skus = %skus @ %sku @ " ";
+        } else {
+            MessageBoxOK("Error", "invalid sku" @ " " @ %sku @ " " @ "in paper doll list\nsee console.log for\"" @ " " @ getScopeName() @ " " @ "\"" @ "\n" @ %skusName @ "\n" @ %sku @ " " @ SkuManager.findBySku(%sku).descShrt, "");
         }
-        MessageBoxOK("Error", "invalid sku" @ " " @ %sku @ " " @ "in paper doll list\nsee console.log for\"" @ " " @ getScopeName() @ " " @ "\"" @ "\n" @ %skusName @ "\n" @ %sku @ " " @ SkuManager.findBySku(%sku).descShrt, "");
         %n = (%n + 1.0);
     }
     %skus = trim(%skus);
@@ -82,35 +83,43 @@ function paperDoll_InitPermutations() {
             %line = trim(collapseWhiteSpace(%line));
             %lineNum = (%lineNum + 1.0);
             if ((getSubStr(%line, 0, 1) $= "#")) {
+            } else {
+                %word = firstWord(%line);
+                %unseenTokens = findAndRemoveAllOccurrencesOfWord(%unseenTokens, %word);
+                if ((%word $= "")) {
+                } else {
+                    if ((%word $= "size")) {
+                        $gPaperDollImgSize = trim(restWords(%line));
+                    } else {
+                        if ((%word $= "background")) {
+                            $gPaperDollBackground = trim(restWords(%line));
+                        } else {
+                            if ((%word $= "gender")) {
+                                %gender = trim(restWords(%line));
+                            } else {
+                                if ((%word $= "baseSkus")) {
+                                    %gender[$gPaperDoll_BaseSkus @ %gender] = trim(restWords(%line));
+                                } else {
+                                    if ((%word $= "parameter")) {
+                                        %param = trim(restWords(%line));
+                                    } else {
+                                        if ((%word $= "option")) {
+                                            %s = trim(restWords(%line));
+                                            %s = NextToken(%s, optionName, ":");
+                                            %s = NextToken(%s, option, ":");
+                                            %option = trim(%option);
+                                            %optionName = trim(%optionName);
+                                            paperDoll_AddPermutation(%gender, %param, %option, %optionName);
+                                        } else {
+                                            error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-            %word = firstWord(%line);
-            %unseenTokens = findAndRemoveAllOccurrencesOfWord(%unseenTokens, %word);
-            if ((%word $= "")) {
-            }
-            if ((%word $= "size")) {
-                $gPaperDollImgSize = trim(restWords(%line));
-            }
-            if ((%word $= "background")) {
-                $gPaperDollBackground = trim(restWords(%line));
-            }
-            if ((%word $= "gender")) {
-                %gender = trim(restWords(%line));
-            }
-            if ((%word $= "baseSkus")) {
-                %gender[$gPaperDoll_BaseSkus @ %gender] = trim(restWords(%line));
-            }
-            if ((%word $= "parameter")) {
-                %param = trim(restWords(%line));
-            }
-            if ((%word $= "option")) {
-                %s = trim(restWords(%line));
-                %s = NextToken(%s, optionName, ":");
-                %s = NextToken(%s, option, ":");
-                %option = trim(%option);
-                %optionName = trim(%optionName);
-                paperDoll_AddPermutation(%gender, %param, %option, %optionName);
-            }
-            error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
         }
         %n = (getWordCount(%unseenTokens) - 1.0);
         !%fo.isEOF();
@@ -118,8 +127,9 @@ function paperDoll_InitPermutations() {
             error(getScopeName() @ " " @ "- unseen command:" @ " " @ getWord(%unseenTokens, %n));
             %n = (%n - 1.0);
         }
+    } else {
+        error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for read.");
     }
-    error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for read.");
     %fo.delete();
 };
 function paperDoll_getParamsNum(%gender) {

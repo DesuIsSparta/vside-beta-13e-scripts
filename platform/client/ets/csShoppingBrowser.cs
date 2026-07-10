@@ -28,8 +28,9 @@ function CSShoppingBrowserWindow::close(%this) {
 function CSShoppingBrowserWindow::toggle(%this) {
     if (%this.isVisible()) {
         %this.close();
+    } else {
+        %this.open();
     }
-    %this.open();
 };
 function CSShoppingBrowserWindow::Initialize(%this) {
     if (!%this.initialized) {
@@ -91,8 +92,9 @@ function CSShoppingBrowser::loadAvailableSkus(%this) {
         %skulist = %this.storeInfo.getSkus();
         %numSkus = getWordCount(%skulist);
         %this.statusText = (%numSkus == 0.0) ? "No furnishings available to buy." : "";
+    } else {
+        %this.statusText = "Getting Store Info...";
     }
-    %this.statusText = "Getting Store Info...";
     %i = 0;
     while ((%i < %numSkus)) {
         %this.addSku(getWord(%skulist, %i));
@@ -100,8 +102,9 @@ function CSShoppingBrowser::loadAvailableSkus(%this) {
     }
     if (((%i < %numSkus) @ " " @ %this.Path $= "") || (%this.Path $= %this.baseDir)) {
         %this.goToPath(%this.baseDir, 0);
+    } else {
+        %this.update();
     }
-    %this.update();
 };
 function CSShoppingBrowser::fillLeafPane(%this, %pane) {
     Parent::fillLeafPane(%this, %pane);
@@ -261,22 +264,23 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
             %pane.bindClassName("CSShoppingItemPane");
         }
         %pane.update();
+    } else {
+        %noItemText = new GuiMLTextCtrl("") {
+            profile = "ETSNonModalProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "25 20";
+            extent = (%paneWidth - 5.0) @ " " @ 18;
+            minExtent = "1 1";
+            sluggishness = -1;
+            visible = 1;
+            lineSpacing = 0;
+            allowColorChars = 1;
+            maxChars = -1;
+            text = "<color:ffffff>" @ %this.statusText;
+        };
+        %pane.add(%noItemText);
     }
-    %noItemText = new GuiMLTextCtrl("") {
-        profile = "ETSNonModalProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "25 20";
-        extent = (%paneWidth - 5.0) @ " " @ 18;
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        lineSpacing = 0;
-        allowColorChars = 1;
-        maxChars = -1;
-        text = "<color:ffffff>" @ %this.statusText;
-    };
-    %pane.add(%noItemText);
 };
 function CSShoppingItemPane::buyMore(%this) {
     %this.buyQuantity = (%this.buyQuantity + 1.0);
@@ -285,6 +289,7 @@ function CSShoppingItemPane::buyMore(%this) {
 function CSShoppingItemPane::buyFewer(%this) {
     %this.buyQuantity = (%this.buyQuantity - 1.0);
     if ((%this.buyQuantity < 1.0)) {
+    } else {
     }
     %this.buyQuantity = 1 @ %this.buyQuantity;
     %this.update();
@@ -294,8 +299,9 @@ function CSShoppingBrowser::testDriveSku(%this, %sku) {
     if ((%sku > 0.0)) {
         $CSSelectedSku = %sku;
         commandToServer('CreateInventoryBySkuJustTestingItOut', CustomSpaceClient::GetSpaceImIn(), %sku);
+    } else {
+        error(getScopeName() @ " " @ "No sku selected");
     }
-    error(getScopeName() @ " " @ "No sku selected");
 };
 function CSShoppingBrowser::purchaseSkus(%this, %skus) {
     if (!isObject(%this.storeInfo)) {
@@ -311,6 +317,7 @@ function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus) {
         %totalPrice = Inventory::getTotalPrice("vPoints", %skus);
         %itemCount = getWordCount(%skus);
         if ((%itemCount == 1.0)) {
+        } else {
         }
         %itemsStr = "these" @ " " @ %itemCount @ " " @ "items";
         "this item";
@@ -319,8 +326,9 @@ function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus) {
             %msg = "Do you wish to purchase " @ %itemsStr @ " for " @ %totalPrice @ " " @ %vpointsString @ "?";
             %cmd = "CSShoppingBrowser.storeInfo.purchase(\"" @ %skus @ "\", \"vPoints\", \"CSShoppingBrowser::onGotPurchaseResult\");";
             MessageBoxOkCancel("Confirm Purchase", %msg, %cmd, "");
+        } else {
+            MessageBoxOK("Not Enough vPoints", "You do not have enough vPoints to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::HelpURL_VPoints @ ">here</a> for more information about earning vPoints.", "");
         }
-        MessageBoxOK("Not Enough vPoints", "You do not have enough vPoints to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::HelpURL_VPoints @ ">here</a> for more information about earning vPoints.", "");
     }
 };
 function CSShoppingBrowser::purchaseSkusVBux(%this, %skus) {
@@ -328,6 +336,7 @@ function CSShoppingBrowser::purchaseSkusVBux(%this, %skus) {
         %totalPrice = Inventory::getTotalPrice("vBux", %skus);
         %itemCount = getWordCount(%skus);
         if ((%itemCount == 1.0)) {
+        } else {
         }
         %itemsStr = "these" @ " " @ %itemCount @ " " @ "items";
         "this item";
@@ -335,8 +344,9 @@ function CSShoppingBrowser::purchaseSkusVBux(%this, %skus) {
             %msg = "Do you wish to purchase " @ %itemsStr @ " for " @ %totalPrice @ " vBux?";
             %cmd = "CSShoppingBrowser.storeInfo.purchase(\"" @ %skus @ "\", \"vBux\", \"CSShoppingBrowser::onGotPurchaseResult\");";
             MessageBoxOkCancel("Confirm Purchase", %msg, %cmd, "");
+        } else {
+            MessageBoxOK("Not Enough vBux", "You do not have enough vBux to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::AddFundsURL @ ">here</a> to refill your account.", "");
         }
-        MessageBoxOK("Not Enough vBux", "You do not have enough vBux to purchase " @ %itemsStr @ ".  Click <a:" @ $Net::AddFundsURL @ ">here</a> to refill your account.", "");
     }
 };
 function CSShoppingBrowser::onGotPurchaseResult(%status, %results) {
@@ -362,8 +372,9 @@ function CSShoppingBrowser::onGotPurchaseResult(%status, %results) {
             }
             %i = (%i + 1.0);
         }
+    } else {
+        MessageBoxOK("Purchase Unsuccessful", "There was a problem completing your purchase.", "");
     }
-    MessageBoxOK("Purchase Unsuccessful", "There was a problem completing your purchase.", "");
 };
 function CSShoppingBrowser::goToPath(%this, %path, %focus) {
     if (!isDefined("%focus")) {
@@ -443,8 +454,9 @@ function CSShoppingBrowserSKUItem::onMouseLeaveBounds(%this) {
 function CSShoppingBrowser::refreshInventory(%this) {
     if (isObject(%this.storeInfo)) {
         %this.storeInfo.refreshInventory("CSShoppingBrowser::onGotFurnishingsStore");
+    } else {
+        getFurnitureStore("CSShoppingBrowser::onGotFurnishingsStore");
     }
-    getFurnitureStore("CSShoppingBrowser::onGotFurnishingsStore");
 };
 function CSShoppingBrowser::onGotFurnishingsStore(%storeInfo, %status) {
     if ((%status $= "success")) {
@@ -473,10 +485,12 @@ function CSShoppingItemPane::update(%this) {
     %this.testDriveButton.command = (%n < %this.buyQuantity) @ "CSShoppingBrowser.testDriveSku(\"" @ %sku @ "\");";
     %this.buyButton.command = "CSShoppingBrowser.purchaseSkus(\"" @ %skus @ "\");";
     if ((%si.priceVPoints < 0.0)) {
+    } else {
     }
     %vpoints = %si.priceVPoints;
     "-";
     if ((%si.priceVBux < 0.0)) {
+    } else {
     }
     %vbux = %si.priceVBux;
     "-";
@@ -485,9 +499,10 @@ function CSShoppingItemPane::update(%this) {
     if ((%this.buyQuantity == 1.0)) {
         %this.buyButton.setText("Buy It!");
         %this.buyFewerButton.setActive(0);
+    } else {
+        %this.buyButton.setText("Buy" @ " " @ %this.buyQuantity @ "!");
+        %this.buyFewerButton.setActive(1);
     }
-    %this.buyButton.setText("Buy" @ " " @ %this.buyQuantity @ "!");
-    %this.buyFewerButton.setActive(1);
     %vpointsIcon = "<bitmap:platform/client/ui/vpoints_14>";
     %vbuxIcon = "<bitmap:platform/client/ui/vbux_14>";
     %this.priceTextVBux.setText("<color:ffffff>" @ %vbuxIcon @ "  " @ %vbux @ "");

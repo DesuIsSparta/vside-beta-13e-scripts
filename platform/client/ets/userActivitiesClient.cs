@@ -33,10 +33,12 @@ function UserActivityMgr::reset(%this) {
 };
 function UserActivityMgr::defineActivity(%this, %activityName, %userFacingName, %duration) {
     if (isDefined("%userFacingName")) {
+    } else {
     }
     %userFacingName = %activityName;
     %userFacingName;
     if (isDefined("%duration")) {
+    } else {
     }
     %duration = -(1.0);
     %duration;
@@ -69,13 +71,15 @@ function UserActivityMgr::getActivityUserFacingName(%this, %activityName) {
     }
     if (!%this.isKnownActivity(%activityName, 1)) {
         return "[" @ %activityName @ "]";
+    } else {
+        return getField(%this.knownActivities.get(%activityName), 0);
     }
-    return getField(%this.knownActivities.get(%activityName), 0);
 };
 function UserActivityMgr::getActivityBitmapMLText(%this, %activityName) {
     %ufn = %this.getActivityUserFacingName(%activityName);
     %bitmap = %this.getActivityIconFilename(%activityName);
     if ((%ufn $= "")) {
+    } else {
     }
     %tip = "<tip:" @ %ufn @ ">";
     "";
@@ -85,8 +89,9 @@ function UserActivityMgr::getActivityBitmapMLText(%this, %activityName) {
 function UserActivityMgr::getActivityDuration(%this, %activityName) {
     if (!%this.isKnownActivity(%activityName, 1)) {
         return -(1.0);
+    } else {
+        return getField(%this.knownActivities.get(%activityName), 1);
     }
-    return getField(%this.knownActivities.get(%activityName), 1);
 };
 function UserActivityMgr::getActivityPriority(%this, %activityName) {
     return %this.knownActivities.getIndexFromKey(%activityName);
@@ -104,11 +109,13 @@ function UserActivityMgr::setActivityActive(%this, %activityName, %state) {
         %durationMS = %this.getActivityDuration(%activityName);
         if ((%durationMS > 0.0)) {
             %timerID = %this.schedule(%durationMS, "cancelActivity", %activityName);
+        } else {
+            %timerID = "";
         }
-        %timerID = "";
         %this.currActivities.put(%activityName, %timerID);
+    } else {
+        %this.currActivities.remove(%activityName);
     }
-    %this.currActivities.remove(%activityName);
     if ((%oldState != %state)) {
         %this.tryReport();
     }
@@ -130,8 +137,9 @@ function UserActivityMgr::getActivityTimeLeft(%this, %activityName) {
     %timerID = %this.currActivities.get(%activityName);
     if ((%timerID $= "")) {
         return -(1.0);
+    } else {
+        return getEventTimeLeft(%timerID);
     }
-    return getEventTimeLeft(%timerID);
 };
 function UserActivityMgr::getHighestPriorityCurrentActivity(%this) {
     %highestPri = "";
@@ -152,12 +160,14 @@ function UserActivityMgr::tryReport(%this) {
     %wait = %this.getMSToNextReport();
     if ((%wait < 0.0)) {
         %this._doReport();
+    } else {
+        if ((%this.reportTimer $= "")) {
+            %this.reportTimer = %this.schedule(%wait, "_doReport");
+            echoDebug(getScopeName() @ " " @ "- delaying for" @ " " @ %wait @ "MS");
+        } else {
+            echoDebug(getScopeName() @ " " @ "- waiting  for" @ " " @ %wait @ "MS");
+        }
     }
-    if ((%this.reportTimer $= "")) {
-        %this.reportTimer = %this.schedule(%wait, "_doReport");
-        echoDebug(getScopeName() @ " " @ "- delaying for" @ " " @ %wait @ "MS");
-    }
-    echoDebug(getScopeName() @ " " @ "- waiting  for" @ " " @ %wait @ "MS");
 };
 function UserActivityMgr::getMSToNextReport(%this) {
     %wait = (%this.maxReportPeriodMS - %this.getLastReportAgeMS());
@@ -189,24 +199,27 @@ function UserActivityMgr::getActivitiesMLText(%this, %activitiesList, %numToShow
     %delim = "";
     if ((%numToShow == -(1.0))) {
         %numToShow = getFieldCount(%activitiesList);
+    } else {
+        %numToShow = mMin(%numToShow, getFieldCount(%activitiesList));
     }
-    %numToShow = mMin(%numToShow, getFieldCount(%activitiesList));
     if ((%numToShow <= 0.0)) {
         %activityBitmapMLText = %this.getActivityBitmapMLText("");
         %ret = "<color:" @ ColorIToHex("255 255 255" @ " " @ %alphaOfLast) @ ">" @ %activityBitmapMLText;
-    }
-    %stepDown = ((%alphaOfSecond - %alphaOfLast) / (%numToShow - 1.0));
-    %m = 0;
-    while ((%m < %numToShow)) {
-        if ((%m == 0.0)) {
-            %modulationColor = ColorIToHex("220 255 180 255");
+    } else {
+        %stepDown = ((%alphaOfSecond - %alphaOfLast) / (%numToShow - 1.0));
+        %m = 0;
+        while ((%m < %numToShow)) {
+            if ((%m == 0.0)) {
+                %modulationColor = ColorIToHex("220 255 180 255");
+            } else {
+                %modulationColor = ColorIToHex("255 255 255" @ " " @ (%alphaOfSecond - (%m * %stepDown)));
+            }
+            %activityName = getField(%activitiesList, %m);
+            %activityBitmapMLText = %this.getActivityBitmapMLText(%activityName);
+            %ret = %ret @ %delim @ "<modulationColor:" @ %modulationColor @ ">" @ %activityBitmapMLText;
+            %delim = " ";
+            %m = (%m + 1.0);
         }
-        %modulationColor = ColorIToHex("255 255 255" @ " " @ (%alphaOfSecond - (%m * %stepDown)));
-        %activityName = getField(%activitiesList, %m);
-        %activityBitmapMLText = %this.getActivityBitmapMLText(%activityName);
-        %ret = %ret @ %delim @ "<modulationColor:" @ %modulationColor @ ">" @ %activityBitmapMLText;
-        %delim = " ";
-        %m = (%m + 1.0);
     }
     %ret = "<spush>" @ %ret @ "<spop>";
     (%m < %numToShow);

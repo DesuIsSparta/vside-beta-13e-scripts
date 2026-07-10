@@ -1,8 +1,9 @@
 function setHighFidelityCull(%on) {
     if (%on) {
         $pref::Player::highFidelityCullMask = $TypeMasks::InteriorObjectType;
+    } else {
+        $pref::Player::highFidelityCullMask = 0;
     }
-    $pref::Player::highFidelityCullMask = 0;
 };
 $closeConfirmDlg = 0;
 function onAppCloseButton() {
@@ -76,6 +77,7 @@ function onGotContiguousSpaceName(%contiguousSpaceName) {
     CSControlPanelTabs.updateSkipTutorialTab();
     ButtonBar.handleContiguousSpace();
     if (!(%contiguousSpaceName $= "")) {
+    } else {
     }
     %name = "[" @ $ServerName @ "]";
     %contiguousSpaceName;

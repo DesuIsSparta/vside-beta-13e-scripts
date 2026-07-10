@@ -23,20 +23,23 @@ function CSSpacePurchasePriceConfirmation(%space) {
     }
     if ((%finalVBux >= 0.0)) {
         %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_CHOICE"] @ "\n";
+    } else {
+        if (($Player::VPoints >= %finalVPoints)) {
+        }
+        if ((%finalVPoints >= 0.0)) {
+            %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VPOINTSONLY"] @ "\n";
+        } else {
+            if (($Player::VBux >= %finalVBux)) {
+            }
+            if ((%finalVBux >= 0.0)) {
+                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
+            } else {
+                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
+                MessageBoxOK(%title, %text, "");
+                return;
+            }
+        }
     }
-    if (($Player::VPoints >= %finalVPoints)) {
-    }
-    if ((%finalVPoints >= 0.0)) {
-        %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VPOINTSONLY"] @ "\n";
-    }
-    if (($Player::VBux >= %finalVBux)) {
-    }
-    if ((%finalVBux >= 0.0)) {
-        %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
-    }
-    %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
-    MessageBoxOK(%title, %text, "");
-    return;
     %buttons = "";
     %count = 0;
     if (($Player::VPoints >= %finalVPoints)) {
@@ -68,6 +71,7 @@ function CSSpacePurchaseDoConfirm(%space, %useBux) {
     %title = "Get a Room (Step 2 of 2)";
     %text = $MsgCat::custSpace["PURCHASE_CONFIRM"];
     if (%useBux) {
+    } else {
     }
     %priceFinal = %space.floorplan.priceVPoints;
     %space.floorplan.priceVBux;
@@ -84,8 +88,9 @@ function CSSpacePurchaseDowngradeCheck(%space, %useBux, %priceFinal, %lossVPoint
         %dlg = MessageBoxCustom("Warning", %text, %buttons);
         %dlg.callback[%space,", ",%useBux,", ",%priceFinal,",  \"CSSpacePurchaseSuccess\", \"CSSpacePurchaseFailed\");",0] = "purchaseApartmentRequest( ";
         %dlg.callback[1] = "CSSpacePurchaseCancel();";
+    } else {
+        purchaseApartmentRequest(%space, %useBux, %priceFinal, "CSSpacePurchaseSuccess", "CSSpacePurchaseFailed");
     }
-    purchaseApartmentRequest(%space, %useBux, %priceFinal, "CSSpacePurchaseSuccess", "CSSpacePurchaseFailed");
 };
 function CSSpacePurchaseCancel() {
     %title = "Purchase Cancelled";

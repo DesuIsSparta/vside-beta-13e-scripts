@@ -333,8 +333,9 @@ function Player::getBoneBlendIndexFromTitle(%this, %title) {
     %ret = $gBlendAnimsTitlesMap.get(%title);
     if ((%ret $= "")) {
         %ret = -(1.0);
+    } else {
+        %ret = (%ret + $FIRST_FREE_BLEND_INDEX);
     }
-    %ret = (%ret + $FIRST_FREE_BLEND_INDEX);
     return %ret;
 };
 function Player::triggerBlendAnimByTitle(%this, %title, %doit) {
@@ -345,6 +346,7 @@ function Player::triggerBlendAnimByTitle(%this, %title, %doit) {
     }
     if (%this.isServerObject()) {
         %this.triggerBoneBlendAnimation(%index, %doit, 0);
+    } else {
+        %this.triggerBlendAnim(%index, %doit);
     }
-    %this.triggerBlendAnim(%index, %doit);
 };

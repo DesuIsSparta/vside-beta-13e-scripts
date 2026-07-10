@@ -82,15 +82,18 @@ function AIMConvManager::removeConvAtIndex(%this, %convIndex) {
         %this.convs[%this.numConvs] = (%idx < %this.numConvs) @ 0;
         if ((%this.numConvs == 0.0)) {
             %this.currentConvIndex = -(1.0);
-        }
-        if ((%this.currentConvIndex >= %this.numConvs)) {
-            %this.selectConvAtIndex((%this.numConvs - 1.0));
-        }
-        if ((%this.currentConvIndex > %convIndex)) {
-            %this.selectConvAtIndex((%this.currentConvIndex - 1.0));
-        }
-        if ((%this.currentConvIndex == %convIndex)) {
-            %this.selectCurrentConv();
+        } else {
+            if ((%this.currentConvIndex >= %this.numConvs)) {
+                %this.selectConvAtIndex((%this.numConvs - 1.0));
+            } else {
+                if ((%this.currentConvIndex > %convIndex)) {
+                    %this.selectConvAtIndex((%this.currentConvIndex - 1.0));
+                } else {
+                    if ((%this.currentConvIndex == %convIndex)) {
+                        %this.selectCurrentConv();
+                    }
+                }
+            }
         }
     }
     %this.update();
@@ -129,6 +132,7 @@ function AIMConvManager::update(%this) {
         %contents.setTrgPosition(getWord(%contents.getTrgPosition(), 0), %ypos);
         if ((%idx == %this.currentConvIndex)) {
             if (%conv.newMessage) {
+            } else {
             }
             %status = %conv.status;
             "new_msg";
@@ -139,17 +143,19 @@ function AIMConvManager::update(%this) {
             %titlebar.close.setBitmap("platform/client/buttons/close_m");
             %titlebar.close.resize(180, 6, 13, 13);
             %ypos = (%ypos + getWord(%contents.getExtent(), 1));
+        } else {
+            if (%conv.newMessage) {
+            } else {
+            }
+            %status = %conv.status;
+            "new_msg";
+            %titlebar.status.setBitmap("platform/client/ui/AIM_" @ %status);
+            %titlebar.status.resize(11, 5, 30, 15);
+            %titlebar.statusButton.resize(0, 0, 45, 26);
+            %titlebar.recipient.reposition(45, 3);
+            %titlebar.close.setBitmap("platform/client/buttons/close_s");
+            %titlebar.close.resize((57.0 + %titlebar.recipient.width), 8, 11, 11);
         }
-        if (%conv.newMessage) {
-        }
-        %status = %conv.status;
-        "new_msg";
-        %titlebar.status.setBitmap("platform/client/ui/AIM_" @ %status);
-        %titlebar.status.resize(11, 5, 30, 15);
-        %titlebar.statusButton.resize(0, 0, 45, 26);
-        %titlebar.recipient.reposition(45, 3);
-        %titlebar.close.setBitmap("platform/client/buttons/close_s");
-        %titlebar.close.resize((57.0 + %titlebar.recipient.width), 8, 11, 11);
         %idx = (%idx + 1.0);
     }
 };
@@ -184,15 +190,16 @@ function AIMConvManager::newConv(%this, %aimName) {
     %conv.aimName = %aimName;
     %conv.status = "offline";
     %i = 0;
-    while ((%i < aimBuddyCount())) {
+    if ((%i < aimBuddyCount())) {
         if ((aimGetBuddyName(%i) $= %conv.aimName)) {
             %state = aimGetBuddyState(%i);
             if ((%state == -(1.0))) {
                 %state = 0;
             }
             %conv.status = getWord(%this.stateMapping, %state);
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     %conv.newMessage = (%i < aimBuddyCount()) @ 0;
     %textInput = new GuiTextEditCtrl("") {
@@ -385,8 +392,9 @@ function AIMConvManager::newConv(%this, %aimName) {
     }
     if ((%this.numConvs == 1.0)) {
         %this.selectConvAtIndex(0);
+    } else {
+        %this.update();
     }
-    %this.update();
     ConvBub.updateAutoMargins();
     return %conv;
 };
@@ -396,9 +404,10 @@ function AIMConvManager::convClicked(%this, %conv) {
     }
     if ((%curConv.getId() == %conv.getId())) {
         %this.selectConvAtIndex(-(1.0));
+    } else {
+        %this.selectConv(%conv);
+        %conv.contents.textInput.makeFirstResponder(1);
     }
-    %this.selectConv(%conv);
-    %conv.contents.textInput.makeFirstResponder(1);
 };
 function AIMConvManager::getConvWithName(%this, %aimName) {
     %idx = 0;
@@ -413,8 +422,9 @@ function AIMConvManager::getConvWithName(%this, %aimName) {
 function AIMConvManager::getCurrentText(%this) {
     if ((%this.numConvs > 0.0)) {
         return %this.convs[%this.currentConvIndex].contents.textInput.getValue();
+    } else {
+        return "";
     }
-    return "";
 };
 function AIMConvManager::clearCurrentText(%this) {
     if ((%this.numConvs > 0.0)) {
@@ -424,8 +434,9 @@ function AIMConvManager::clearCurrentText(%this) {
 function AIMConvManager::getCurrentConv(%this) {
     if ((%this.numConvs > 0.0)) {
         return %this.convs[%this.currentConvIndex];
+    } else {
+        return 0;
     }
-    return 0;
 };
 function AIMConvManager::wakeUp(%this) {
     %this.Initialize();
@@ -439,18 +450,20 @@ function AIMConvManager::updateContainer(%this) {
         AimConvContainer.setVisible(0);
         WindowManager.update();
         return;
-    }
-    %titleHeight = getWord(%this.convs[0].titlebar.getExtent(), 1);
-    %height = ((((%this.numConvs - 1.0) * %titleHeight) + getWord(%this.convs[0].titlebar.getPosition(), 1)) + %ypadding);
-    if ((%this.numConvs == 1.0)) {
-        %height = (%titleHeight + %ypadding);
+    } else {
+        %titleHeight = getWord(%this.convs[0].titlebar.getExtent(), 1);
+        %height = ((((%this.numConvs - 1.0) * %titleHeight) + getWord(%this.convs[0].titlebar.getPosition(), 1)) + %ypadding);
+        if ((%this.numConvs == 1.0)) {
+            %height = (%titleHeight + %ypadding);
+        }
     }
     %curConv = %this.getCurrentConv();
     if (isObject(%curConv)) {
         %contentsExtent = %curConv.contents.getExtent();
         %height = (%height + (getWord(%contentsExtent, 1) + %titleHeight));
+    } else {
+        %height = (%height + %titleHeight);
     }
-    %height = (%height + %titleHeight);
     AimConvContainer.resize(getWord(AimConvContainer.getExtent(), 0), %height);
     AimConvContainer.setVisible(1);
     WindowManager.update();
@@ -458,8 +471,9 @@ function AIMConvManager::updateContainer(%this) {
 function AIMConvManager::buildSpamString(%this, %prepend, %aimName, %link, %message) {
     if (!(%message $= "")) {
         %text = %prepend @ " " @ "( " @ %link @ " ):" @ %message;
+    } else {
+        %text = %prepend @ %link;
     }
-    %text = %prepend @ %link;
     return %text;
 };
 function AIMConvManager::filterMessage(%this, %conv, %message) {
@@ -504,17 +518,18 @@ function GetAIMInviteURLsRequest::onDone(%this) {
     if ((%status $= "fail")) {
         warn("network", getScopeName() @ ": request failed: " @ %this.getValue("statusMessage"));
         MessageBoxOK("Invite failed", "Couldn't get unique invite URLs. Please try again later.", "");
+    } else {
+        %count = %this.getValue("urlCount");
+        %links = "";
+        %i = 0;
+        while ((%i < %count)) {
+            %key = "url" @ %i;
+            %val = %this.getValue(%key);
+            %links = %links @ "\t" @ %val;
+            %i = (%i + 1.0);
+        }
+        AIMConvManager.sendInvites(%this.recipients, %links, %this.userMsg);
     }
-    %count = %this.getValue("urlCount");
-    %links = "";
-    %i = 0;
-    while ((%i < %count)) {
-        %key = "url" @ %i;
-        %val = %this.getValue(%key);
-        %links = %links @ "\t" @ %val;
-        %i = (%i + 1.0);
-    }
-    AIMConvManager.sendInvites(%this.recipients, %links, %this.userMsg);
     %this.schedule(0, "delete");
 };
 function GetAIMInviteURLsRequest::onError(%this, %unused, %errMsg) {
@@ -542,8 +557,9 @@ function AIMConvManager::talkTo(%this, %aimName) {
     if (%conv) {
         %this.selectConv(%conv);
         %conv.contents.textInput.makeFirstResponder(1);
+    } else {
+        echo("Failed to talk to " @ %aimName @ ": too many conversations open");
     }
-    echo("Failed to talk to " @ %aimName @ ": too many conversations open");
 };
 function AIMConvManager::receivedMessage(%this, %aimName, %message) {
     %conv = %this.newConv(%aimName);
@@ -553,8 +569,9 @@ function AIMConvManager::receivedMessage(%this, %aimName, %message) {
         %conv.contents.mlText.addText(%prefix @ "<spush><color:ee8fee>" @ %message @ "<spop>", 1, %toBottom);
         %conv.newMessage = 1;
         %this.update();
+    } else {
+        echo("Received message from " @ %aimName @ ": " @ %message);
     }
-    echo("Received message from " @ %aimName @ ": " @ %message);
     if (!isForegroundWindow() || isIdle() || !PlayGui.canPlayerSeeWorld() && $UserPref::Audio::NotifyChat) {
         alxPlay(AudioIm_MessageIn);
     }

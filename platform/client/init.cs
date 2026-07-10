@@ -70,8 +70,9 @@ function initClient() {
     if (fmodInitialize()) {
         echo("FMOD Audio Initialized");
         fmodSetMute($UserPref::Audio::mute);
+    } else {
+        error("FMOD Audio Initialization Failed");
     }
-    error("FMOD Audio Initialization Failed");
     Canvas.setCursor("DefaultCursor");
     userProperties_makeManager("gUserPropMgrClient", 1);
     AssetManager::clientInit();
@@ -80,13 +81,15 @@ function initClient() {
         userProperties_makeManager("gUserPropMgrServer", 0);
         log("general", "info", "--------- Starting standalone ---------");
         startStandAlone();
+    } else {
+        if (!($JoinGameAddress $= "")) {
+            log("general", "info", "--------- Joining: " @ $JoinGameAddress @ "---------");
+            join($JoinGameAddress);
+        } else {
+            checkForPackageUpdates($AutoDownloadPackages);
+            loadMainMenu();
+        }
     }
-    if (!($JoinGameAddress $= "")) {
-        log("general", "info", "--------- Joining: " @ $JoinGameAddress @ "---------");
-        join($JoinGameAddress);
-    }
-    checkForPackageUpdates($AutoDownloadPackages);
-    loadMainMenu();
     $TransitionScreenshot = new ScreenShotUploader("") {
         className = "ScreenShotUploaderClass";
     };
@@ -164,8 +167,9 @@ function quitApp() {
     }
     if (!($Token $= "")) {
         logout(1);
+    } else {
+        doQuit();
     }
-    doQuit();
 };
 function logout(%doQuit) {
     %analytic = getAnalytic();
@@ -311,15 +315,17 @@ function StatusRequest::onDone(%this) {
         parseGiftingSettings(%this);
         $gVPointsRatio = %this.getValue("vPointsRatio");
         $gVPointsRatio = 50;
+    } else {
+        $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     }
-    $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     LoginGui.update();
 };
 function StatusRequest::onError(%this, %errorNum, %errorName) {
     if ((%errorNum == $CURL::CouldNotResolveHost)) {
         $gLoginStatusMessage = %errorNum[$MsgCat::network @ "E-SERVER-DNS"];
+    } else {
+        $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     }
-    $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     LoginGui.update();
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onError:" @ " " @ %errorName);
 };
@@ -356,12 +362,14 @@ function sendFirstLaunchRequest() {
     }
     if (!($Net::userReferrer $= "")) {
         %referrer = $Net::userReferrer;
+    } else {
+        %referrer = "";
     }
-    %referrer = "";
     if (!($Net::userOwner $= "")) {
         %owner = $Net::userOwner;
+    } else {
+        %owner = "doppelganger";
     }
-    %owner = "doppelganger";
     %url = $Net::downloadURL @ "/first_launch?status=true&platform=" @ $Platform @ "&referrer=" @ %referrer @ "&owner=" @ %owner;
     %request.setURL(%url);
     %request.start();

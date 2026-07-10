@@ -99,9 +99,10 @@ function EtsInviteRequest::onError(%this, %errorNum, %unused) {
     if ((%errorNum == $CURL::CouldNotResolveHost)) {
         EtsInviteDialog.onConnectFailed("Could not reach server");
         MessageBoxOK("Could Not Find Server", $MsgCat::network["E-SERVER-DNS"], "");
+    } else {
+        EtsInviteDialog.onConnectFailed("Could not connect");
+        MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
     }
-    EtsInviteDialog.onConnectFailed("Could not connect");
-    MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
 };
 function EtsInviteRequest::onConnected(%this) {
     SendInvitePBController.setValue(0.5);
@@ -119,11 +120,13 @@ function EtsInviteRequest::onDone(%this) {
     log("network", "debug", "EtsInviteRequest::onDone status: " @ %status);
     if ((%status $= "fail")) {
         EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
-    }
-    if ((%status $= "error")) {
-        EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
-    }
-    if ((%status $= "success")) {
-        EtsInviteDialog.onInviteSuccess();
+    } else {
+        if ((%status $= "error")) {
+            EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
+        } else {
+            if ((%status $= "success")) {
+                EtsInviteDialog.onInviteSuccess();
+            }
+        }
     }
 };

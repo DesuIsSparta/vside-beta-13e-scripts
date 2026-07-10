@@ -1,8 +1,9 @@
 function performerPanel::toggle(%this) {
     if (!%this.isVisible()) {
         %this.open();
+    } else {
+        %this.close();
     }
-    %this.close();
 };
 function performerPanel::open(%this) {
     if (!$gPerformerMode) {

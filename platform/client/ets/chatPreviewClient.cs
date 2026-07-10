@@ -34,8 +34,9 @@ function Player::sendPreviewText(%this, %text) {
         $gTypingPreviewAlternator = !$gTypingPreviewAlternator;
         if ($gTypingPreviewAlternator) {
             %text = "";
+        } else {
+            %text = " ";
         }
-        %text = " ";
     }
     commandToServer('ChatPreview', %text);
     setIdle(0);
@@ -45,11 +46,13 @@ function Player::onGotChatPreview(%this, %dry) {
     if ((%this $= $player)) {
         if ($Chat::Preview::ShowOwn) {
             %this.setChatPreview(%wet);
+        } else {
+            %this.setChatPreview("");
         }
-        %this.setChatPreview("");
+    } else {
+        %this.setChatPreview(%wet);
+        %this.onGotTypingSomething(%wet);
     }
-    %this.setChatPreview(%wet);
-    %this.onGotTypingSomething(%wet);
 };
 function Player::onGotTypingSomething(%this, %text) {
     if ((%text $= gGetField(%this, lastTypingSomethingText))) {
@@ -60,12 +63,13 @@ function Player::onGotTypingSomething(%this, %text) {
     cancel(gGetField(%this, TimeoutChatPreviewTimer));
     if ((%text $= "")) {
         %this.setTyping(0);
-    }
-    %this.setTyping(1);
-    gSetField(%this, IsNoLongerTypingTimer, %this.schedule($Chat::Preview::IsNoLongerTypingDelay, "setTyping", 0));
-    gSetField(%this, TimeoutChatPreviewTimer, %this.schedule($Chat::Preview::ChatPreviewTimeout, "onGotChatPreview", ""));
-    if ($GameConnection.isPresentAtBody()) {
-        %this.talkingAnimTimer(1);
+    } else {
+        %this.setTyping(1);
+        gSetField(%this, IsNoLongerTypingTimer, %this.schedule($Chat::Preview::IsNoLongerTypingDelay, "setTyping", 0));
+        gSetField(%this, TimeoutChatPreviewTimer, %this.schedule($Chat::Preview::ChatPreviewTimeout, "onGotChatPreview", ""));
+        if ($GameConnection.isPresentAtBody()) {
+            %this.talkingAnimTimer(1);
+        }
     }
 };
 function Player::talkingAnimTimer(%this, %startflag) {
@@ -85,13 +89,14 @@ function Player::talkingAnimTimer(%this, %startflag) {
             %this.AnimationTalkingTimer = "";
         }
         %this.AnimationTalkingTimer = %this.schedule(%dur, talkingAnimTimer, 0);
-    }
-    %this.triggerBoneBlendAnimation($BB_HEAD_TALK, 0, 0);
-    %this.AnimationTalkingTimer = "";
-    %this.talking = 0;
-    if (%this.hasMicrophone()) {
-        %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
-        %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
+    } else {
+        %this.triggerBoneBlendAnimation($BB_HEAD_TALK, 0, 0);
+        %this.AnimationTalkingTimer = "";
+        %this.talking = 0;
+        if (%this.hasMicrophone()) {
+            %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
+            %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
+        }
     }
 };
 function talkBlender::animate(%this) {

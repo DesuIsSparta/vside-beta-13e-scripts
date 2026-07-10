@@ -43,20 +43,21 @@ function vurl::parse(%this) {
             %this.isParsed = 1;
             %this.reconstructVURL();
             return 1;
-        }
-        if ((stricmp(%this.targetType, "location") == 0.0)) {
-            %testTargetDest = strreplace(%this.targetDest, ",", " ");
-            %wordCount = getWordCount(%testTargetDest);
-            if ((%wordCount == 3.0) || (%wordCount == 7.0) && ($Server::Dedicated == 1.0) || isObjectAndHasPermission_NoWarn($player, "freeVURLTransform")) {
-                %this.targetDest = %testTargetDest;
-                %this.isRawTransform = 1;
-            }
-            if ((%wordCount != 1.0)) {
-            }
-            if ((%this.isRawTransform == 0.0)) {
-                %errorText = "Invalid number of parameters in target";
-                %this.doReportError("parseError", %errorText);
-                return 0;
+        } else {
+            if ((stricmp(%this.targetType, "location") == 0.0)) {
+                %testTargetDest = strreplace(%this.targetDest, ",", " ");
+                %wordCount = getWordCount(%testTargetDest);
+                if ((%wordCount == 3.0) || (%wordCount == 7.0) && ($Server::Dedicated == 1.0) || isObjectAndHasPermission_NoWarn($player, "freeVURLTransform")) {
+                    %this.targetDest = %testTargetDest;
+                    %this.isRawTransform = 1;
+                }
+                if ((%wordCount != 1.0)) {
+                }
+                if ((%this.isRawTransform == 0.0)) {
+                    %errorText = "Invalid number of parameters in target";
+                    %this.doReportError("parseError", %errorText);
+                    return 0;
+                }
             }
         }
     }
@@ -108,9 +109,10 @@ function vurl::tryProcessDynamicVurl(%this) {
             }
             %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
             %newVurl = %partnerObj.vurl;
+        } else {
+            error(getScopeName() @ " " @ "- Unknown dynamic vurl type:" @ " " @ %this.vurl @ " " @ getTrace());
+            return 0;
         }
-        error(getScopeName() @ " " @ "- Unknown dynamic vurl type:" @ " " @ %this.vurl @ " " @ getTrace());
-        return 0;
         echo(getScopeName() @ " " @ "- converting dynamic vurl \"" @ %this.vurl @ "\" to \"" @ %newVurl @ "\".");
         %this.vurl = %newVurl;
     }
@@ -156,13 +158,14 @@ function vurl::execute(%this) {
             %errorText = "Teleporting to yourself?";
             %this.doReportError("TELETOSELF", "");
             return 0;
-        }
-        if (isObject(ServerConnection)) {
-        }
-        if (isNPCName(%this.targetPath)) {
-            %this.doReportSuccessExpected();
-            commandToServer('TeleportToPlayer', %this.targetPath);
-            return 1;
+        } else {
+            if (isObject(ServerConnection)) {
+            }
+            if (isNPCName(%this.targetPath)) {
+                %this.doReportSuccessExpected();
+                commandToServer('TeleportToPlayer', %this.targetPath);
+                return 1;
+            }
         }
     }
     if (!%this.isResolved) {
@@ -185,9 +188,10 @@ function vurl::execute(%this) {
     if (!$StandAlone || !(%this.standAloneRetry $= "")) {
         %this.doReportError("nomoreretry", "");
         return 0;
-    }
-    if ($StandAlone) {
-        %this.standAloneRetry = 1;
+    } else {
+        if ($StandAlone) {
+            %this.standAloneRetry = 1;
+        }
     }
     %cityName = %this.getCityFromServerName(%this._server[%this.retryIndex]);
     if (isObject(WorldMapCityInfoMap)) {
@@ -206,10 +210,11 @@ function vurl::execute(%this) {
     if ((stricmp(%this.targetType, "location") == 0.0) || (stricmp(%this.targetType, "apartment") == 0.0) || (stricmp(%this.targetType, "user") == 0.0)) {
         if ($StandAlone) {
             commandToServer('TeleportToVURL', %this.vurl);
+        } else {
+            %serverDest = %this._server[%this.retryIndex];
+            %this.retryIndex = (%this.retryIndex + 1.0);
+            SetTransition(%serverDest, %this.vurl);
         }
-        %serverDest = %this._server[%this.retryIndex];
-        %this.retryIndex = (%this.retryIndex + 1.0);
-        SetTransition(%serverDest, %this.vurl);
     }
     return 1;
 };
@@ -240,8 +245,9 @@ function vurl::checkCityDownloadStatus(%this, %cityName) {
         %status = packageDownload.getStatusForCity(%cityName);
         if ((%status $= "done")) {
             return 0;
+        } else {
+            return 1;
         }
-        return 1;
     }
     return 0;
 };
@@ -271,8 +277,9 @@ function vurl::doReportError(%this, %errorCode, %errorText) {
         if (!(%this.lastError $= "")) {
             %errorCode = %this.lastErrorCode;
         }
+    } else {
+        %this.lastError = %errorCode;
     }
-    %this.lastError = %errorCode;
     %handled = 0;
     log("network", "info", "VURL Error code=\"" @ %errorCode @ "\" text=\"" @ %errorText @ "\"");
     if (!(%this.cbReportError $= "")) {
@@ -315,25 +322,28 @@ function vurl::DefaultReportError(%vurl, %errorCode, %errorText) {
     }
     if ((stricmp(%errorCode, "missingdoorcode") == 0.0) || (stricmp(%errorCode, "incorrectdoorcode") == 0.0)) {
         %vurl.doRequestPassword();
-    }
-    if ((%errorCode $= "accessDenied") || (errorCode $= "parseError")) {
-    }
-    if (!(%errorText $= "")) {
-        handleSystemMessage("msgInfoMessage", %errorText);
-        %vurl.VURLHandler.schedule(0, "delete");
-    }
-    if ((stricmp(%errorCode, "offline") == 0.0)) {
-        if ((stricmp(%vurl.targetType, "user") == 0.0)) {
-            %errorCode = "USEROFFLINE";
+    } else {
+        if ((%errorCode $= "accessDenied") || (errorCode $= "parseError")) {
         }
-        if ((stricmp(%vurl.targetType, "apartment") == 0.0)) {
-            %errorCode = "NOSPACE";
+        if (!(%errorText $= "")) {
+            handleSystemMessage("msgInfoMessage", %errorText);
+            %vurl.VURLHandler.schedule(0, "delete");
+        } else {
+            if ((stricmp(%errorCode, "offline") == 0.0)) {
+                if ((stricmp(%vurl.targetType, "user") == 0.0)) {
+                    %errorCode = "USEROFFLINE";
+                } else {
+                    if ((stricmp(%vurl.targetType, "apartment") == 0.0)) {
+                        %errorCode = "NOSPACE";
+                    }
+                }
+            }
+            %errorMessage = $MsgCat::VURLError["ERROR_",strupr(%errorCode)];
+            handleSystemMessage("msgInfoMessage", %errorMessage);
+            if (geTGF.isVisible() || (WorldMap.loggedIn == 0.0)) {
+                MessageBoxOK("Whoa!", %errorMessage, "");
+            }
         }
-    }
-    %errorMessage = $MsgCat::VURLError["ERROR_",strupr(%errorCode)];
-    handleSystemMessage("msgInfoMessage", %errorMessage);
-    if (geTGF.isVisible() || (WorldMap.loggedIn == 0.0)) {
-        MessageBoxOK("Whoa!", %errorMessage, "");
     }
 };
 function vurl::DefaultRequestPassword(%this) {
@@ -352,9 +362,10 @@ function vurl::handleIncompeteVURL(%this) {
             geTGF.openToTabName("Map");
             WorldMap.selectCity(%this.targetCity);
         }
-    }
-    if ((stricmp(%this.targetType, "apartment") == 0.0)) {
-        log("network", "warn", "Should show directory for building \"" @ %this.targetCity @ "\" here");
+    } else {
+        if ((stricmp(%this.targetType, "apartment") == 0.0)) {
+            log("network", "warn", "Should show directory for building \"" @ %this.targetCity @ "\" here");
+        }
     }
 };
 function ResolveVURLRequest::onDone(%this) {
@@ -369,14 +380,16 @@ function ResolveVURLRequest::onDone(%this) {
             if ((%vurl.execute() == 0.0)) {
                 log("network", "error", "unable to execute VURL vurl=" @ " " @ %this.vurl);
             }
+        } else {
+            log("network", "error", "Unable to parse returned VURL");
         }
-        log("network", "error", "Unable to parse returned VURL");
+    } else {
+        echo(getScopeName() @ "->" @ %status);
+        %statusMsg = %this.getValue("statusMsg");
+        %errorCode = %this.getValue("errorCode");
+        %this.VURLHandler.doReportError(%errorCode, %statusMsg);
+        %this.VURLHandler.schedule(0, "delete");
     }
-    echo(getScopeName() @ "->" @ %status);
-    %statusMsg = %this.getValue("statusMsg");
-    %errorCode = %this.getValue("errorCode");
-    %this.VURLHandler.doReportError(%errorCode, %statusMsg);
-    %this.VURLHandler.schedule(0, "delete");
     %this.schedule(0, "delete");
 };
 function ResolveVURLRequest::onError(%this, %unused, %errMsg) {
@@ -395,10 +408,11 @@ function vurl::reorderServerList(%this) {
         return;
     }
     %idxSwapout = 0;
-    while (!(%this._server[%idxSwapout] $= "")) {
+    if (!(%this._server[%idxSwapout] $= "")) {
         if ((stricmp($ServerName, %this._server[%idxSwapout]) == 0.0)) {
+        } else {
+            %idxSwapout = (%idxSwapout + 1.0);
         }
-        %idxSwapout = (%idxSwapout + 1.0);
     }
     if ((!(%this._server[%idxSwapout] $= "") @ " " @ %this._server[%idxSwapout] $= "") || (%idxSwapout == 0.0)) {
         return;
@@ -422,11 +436,13 @@ function vurlOperation(%line, %ignoreDownloadStatus) {
         if ((%vurl.execute() == 0.0)) {
             log("network", "error", "Unable to execute VURL" @ " " @ %line);
             %vurl.delete();
+        } else {
+            CustomSpacesSelector.close();
         }
-        CustomSpacesSelector.close();
+    } else {
+        log("network", "error", "Unable to set and parse VURL" @ " " @ %line);
+        %vurl.delete();
     }
-    log("network", "error", "Unable to set and parse VURL" @ " " @ %line);
-    %vurl.delete();
 };
 function vurlClearResolutionAndExecute(%line) {
     log("network", "debug", "vurlClearResolutionAndExecute, vurl=\"" @ %line @ "\"");
@@ -438,9 +454,10 @@ function vurlClearResolutionAndExecute(%line) {
             log("network", "error", "Unable to execute VURL" @ " " @ %line);
             %vurl.delete();
         }
+    } else {
+        log("network", "error", "Unable to set and parse VURL" @ " " @ %line);
+        %vurl.delete();
     }
-    log("network", "error", "Unable to set and parse VURL" @ " " @ %line);
-    %vurl.delete();
 };
 function vurlClearResolution(%line) {
     %questionMarkIndex = strpos(%line, "?");
@@ -456,8 +473,9 @@ function vurlGetParsedVurl(%aVurlString) {
     if (%theVurl.setVURL(%aVurlString)) {
         log("login", "debug", getScopeName() @ " " @ "- parsed VURL");
         return %theVurl;
+    } else {
+        log("login", "error", getScopeName() @ " " @ "-Unable to set and parse VURL");
+        %theVurl.delete();
+        return 0;
     }
-    log("login", "error", getScopeName() @ " " @ "-Unable to set and parse VURL");
-    %theVurl.delete();
-    return 0;
 };

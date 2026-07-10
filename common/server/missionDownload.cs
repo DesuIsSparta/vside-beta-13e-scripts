@@ -3,8 +3,9 @@ function GameConnection::loadMission(%this) {
     log("network", "debug", "GameConnection::load mission" @ " " @ $Server::MissionFile @ " " @ "seq: " @ " " @ $MissionSequence);
     if (%this.isAIControlled()) {
         %this.onClientEnterGame();
+    } else {
+        commandToClient(%this, 'CheckCacheCRC', $MissionSequence, $Server::MissionFile);
     }
-    commandToClient(%this, 'CheckCacheCRC', $MissionSequence, $Server::MissionFile);
     return;
 };
 function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, %hasStandaloneCache) {
@@ -25,10 +26,11 @@ function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, 
         log("network", "debug", "tell client to load local cache");
         %client.readingCache = 1;
         commandToClient(%client, 'LoadLocalCache', $MissionSequence, $Server::MissionFile, MissionGroup.musicTrack);
+    } else {
+        log("network", "debug", "tell client to start caching our data");
+        %client.readingCache = 0;
+        commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, MissionGroup.musicTrack);
     }
-    log("network", "debug", "tell client to start caching our data");
-    %client.readingCache = 0;
-    commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, MissionGroup.musicTrack);
     return;
 };
 function serverCmdStartCacheAck(%client, %missionSequence) {

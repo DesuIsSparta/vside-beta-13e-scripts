@@ -20,8 +20,9 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus) {
         %sku = getWord(%skus, %n);
         if (SkuManager.isBodySku(%sku)) {
             %skusBody = %sku @ " " @ %skusBody;
+        } else {
+            %skusClothing = %sku @ " " @ %skusClothing;
         }
-        %skusClothing = %sku @ " " @ %skusClothing;
         %n = (%n - 1.0);
     }
     %skus = %skusBody @ " " @ %skusClothing;
@@ -43,9 +44,10 @@ function snapping_callingTakeCurrentSnapshot() {
     $gSnapping_CurIndex = ($gSnapping_CurIndex + 1.0);
     if (($gSnapping_CurIndex < $gSnapping_MaxIndex)) {
         snapping_prepareNextSnapshot();
+    } else {
+        $gSnapping_ObjViewCtrl.setSkus($gSnapping_BaseSkus);
+        ClosetMainObjectSnapshotBackdrop.setVisible(0);
     }
-    $gSnapping_ObjViewCtrl.setSkus($gSnapping_BaseSkus);
-    ClosetMainObjectSnapshotBackdrop.setVisible(0);
 };
 function snapping_takeCurrentSnapshot() {
     %desc = SkuManager.findBySku($gSnapping_CurSku).descShrt;

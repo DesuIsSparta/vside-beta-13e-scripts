@@ -42,20 +42,23 @@ function BootRequest::onDone(%this) {
     }
     if (%this.hasKey("status")) {
         %status = %this.getValue("status");
+    } else {
+        %status = findStatus(%this);
     }
-    %status = findStatus(%this);
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
     if ((%status $= "success")) {
         echo("LOAD: Boot suceeded.");
         schedule(7000, 0, doLoginButton);
-    }
-    if ((%status $= "fail")) {
-        echo("LOAD: Boot failed.");
-        quit();
-    }
-    if ((%status $= "error")) {
-        echo("LOAD: Boot errored.");
-        quit();
+    } else {
+        if ((%status $= "fail")) {
+            echo("LOAD: Boot failed.");
+            quit();
+        } else {
+            if ((%status $= "error")) {
+                echo("LOAD: Boot errored.");
+                quit();
+            }
+        }
     }
 };
 function LoginRequest::onDone(%this) {
@@ -66,8 +69,9 @@ function LoginRequest::onDone(%this) {
     }
     if (%this.hasKey("status")) {
         %status = %this.getValue("status");
+    } else {
+        %status = findStatus(%this);
     }
-    %status = findStatus(%this);
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
     if ((%status $= "success")) {
         LoginGui.stopAnimation();
@@ -75,28 +79,32 @@ function LoginRequest::onDone(%this) {
         WorldMap.setNotConnectedToServer();
         WorldMap.open();
         schedule(2000, 0, joinServer);
-    }
-    if ((%status $= "upgrade_available")) {
-        LoginGui.stopAnimation();
-        %this.parseResponse();
-        WorldMap.setNotConnectedToServer();
-        WorldMap.open();
-        schedule(2000, 0, joinServer);
-    }
-    if ((%status $= "alreadyloggedin")) {
-        if (($bootAttempted == 0.0)) {
-            echo("LOAD: Test login auto-booting from previously joined server");
-            LoginRequest::handleBoot();
-            $bootAttempted = 1;
-            schedule(7000, 0, checkStatus);
+    } else {
+        if ((%status $= "upgrade_available")) {
+            LoginGui.stopAnimation();
+            %this.parseResponse();
+            WorldMap.setNotConnectedToServer();
+            WorldMap.open();
+            schedule(2000, 0, joinServer);
+        } else {
+            if ((%status $= "alreadyloggedin")) {
+                if (($bootAttempted == 0.0)) {
+                    echo("LOAD: Test login auto-booting from previously joined server");
+                    LoginRequest::handleBoot();
+                    $bootAttempted = 1;
+                    schedule(7000, 0, checkStatus);
+                } else {
+                    error("LOAD: Boot failed. Giving up.");
+                    echo("LOAD: Quit()-ing...");
+                    quit();
+                }
+            } else {
+                error("Login failed");
+                warn("Login failed for [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
+                quit();
+            }
         }
-        error("LOAD: Boot failed. Giving up.");
-        echo("LOAD: Quit()-ing...");
-        quit();
     }
-    error("Login failed");
-    warn("Login failed for [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
-    quit();
 };
 function joinServer() {
     echo("Servers.getCount() = " @ " " @ servers.getCount());
@@ -106,14 +114,15 @@ function joinServer() {
         return;
     }
     %i = 0;
-    while ((%i < servers.getCount())) {
+    if ((%i < servers.getCount())) {
         if ((servers.getObject(%i).get("name") $= "TestTown")) {
             WorldMap.join(servers.getObject(%i));
             echo("LOAD: Joined server " @ servers.getObject(%i).get("name"));
             echo("LOAD: Test login completed");
             schedule(11000, 0, doSomething);
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
 };
 function doSomething() {

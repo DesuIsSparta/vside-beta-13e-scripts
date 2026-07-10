@@ -2,8 +2,9 @@ function gotoWebPage(%url, %useToken) {
     %url = strreplace(%url, "[BASEDOMAIN]", $Net::BaseDomain);
     if (isDefined("%useToken")) {
         gotoWebPageReally(%url, %useToken);
+    } else {
+        gotoWebPageReally(%url);
     }
-    gotoWebPageReally(%url);
 };
 $gScreenSizeStack = "";
 function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlarge) {
@@ -21,9 +22,10 @@ function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnla
         if ((%curHeight < %height)) {
             %newHeight = %height;
         }
+    } else {
+        %newWidth = %width;
+        %newHeight = %height;
     }
-    %newWidth = %width;
-    %newHeight = %height;
     if ((%newWidth != %curWidth) || (%newHeight != %curHeight)) {
         $Video::allowResize = 1;
         setScreenMode(%newWidth, %newHeight, %bpp, 0);
@@ -47,11 +49,12 @@ function popScreenSize() {
         %width = getWord($UserPref::Video::Resolution, 0);
         %height = getWord($UserPref::Video::Resolution, 1);
         %allowResize = 1;
+    } else {
+        %frame = getField($gScreenSizeStack, (%stackSize - 1.0));
+        %width = getWord(%frame, 0);
+        %height = getWord(%frame, 1);
+        %allowResize = getWord(%frame, 2);
     }
-    %frame = getField($gScreenSizeStack, (%stackSize - 1.0));
-    %width = getWord(%frame, 0);
-    %height = getWord(%frame, 1);
-    %allowResize = getWord(%frame, 2);
     $gScreenSizeStack = getFields($gScreenSizeStack, 0, (%stackSize - 2.0));
     applyScreenSize(%width, %height, %allowResize, 1, 0);
 };
@@ -85,12 +88,13 @@ function standardizeScreenAspect() {
         }
         %currentX = (%proportionX * %standardX);
         %currentY = (%proportionX * %standardY);
+    } else {
+        if ((%proportionY < 1.0)) {
+            %proportionY = 1;
+        }
+        %currentX = (%proportionY * %standardX);
+        %currentY = (%proportionY * %standardY);
     }
-    if ((%proportionY < 1.0)) {
-        %proportionY = 1;
-    }
-    %currentX = (%proportionY * %standardX);
-    %currentY = (%proportionY * %standardY);
     %currentX = mFloor((%currentX + 0.5));
     %currentY = mFloor((%currentY + 0.5));
     setScreenMode(%currentX, %currentY, %currentBPP, 0);

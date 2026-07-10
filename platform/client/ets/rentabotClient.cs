@@ -162,8 +162,9 @@ function rentabotClient_customizeBot(%obj) {
     %window.ctrlName.setSelection(0, 1000);
     if (isObject(%window.ctrlBlab)) {
         %window.ctrlName.altCommand = %window.ctrlBlab @ ".makeFirstResponder(true);";
+    } else {
+        %window.ctrlName.altCommand = %okayCmd @ " " @ %dlg @ ".close();";
     }
-    %window.ctrlName.altCommand = %okayCmd @ " " @ %dlg @ ".close();";
     %window.ctrlBlab.altCommand = %window.ctrlWhisper @ ".makeFirstResponder(true);";
     %window.ctrlWhisper.altCommand = %okayCmd @ " " @ %dlg @ ".close();";
 };
@@ -173,10 +174,12 @@ function CustomizeBotDialog_onOkay() {
     %name = %window.ctrlName.getValue();
     %name = rentabot_getCoreName(%name);
     if (%obj.getCanSpew()) {
+    } else {
     }
     %msgBlab = "";
     %window.ctrlBlab.getValue();
     if (%obj.getCanSpew()) {
+    } else {
     }
     %msgWhisper = "";
     %window.ctrlWhisper.getValue();
@@ -202,16 +205,18 @@ function rentabotClient_DressUpRead(%obj) {
     if ((%numLostOwnership > 0.0)) {
         if ((%msg $= "")) {
             %msg = %msg @ "You don't own some of those items";
+        } else {
+            %msg = %msg @ ", and you don't own some of those items";
         }
-        %msg = %msg @ ", and you don't own some of those items";
     }
     if (!(%msg $= "")) {
         %msg = %msg @ "!";
         %msg = $MsgCat::furniture["DRESSUP-READ-CONF-NOTALL-BODY"] @ %msg;
         %tit = $MsgCat::furniture["DRESSUP-READ-CONF-NOTALL-TITLE"];
+    } else {
+        %msg = $MsgCat::furniture["DRESSUP-READ-CONF-BODY"] @ %msg;
+        %tit = $MsgCat::furniture["DRESSUP-READ-CONF-TITLE"];
     }
-    %msg = $MsgCat::furniture["DRESSUP-READ-CONF-BODY"] @ %msg;
-    %tit = $MsgCat::furniture["DRESSUP-READ-CONF-TITLE"];
     MessageBoxYesNo(%tit, %msg, "rentabotClient_DressUpReadConfirmed(\"" @ %otherSkusAllGood @ "\");", "");
 };
 function rentabotClient_DressUpReadConfirmed(%skus) {
@@ -251,8 +256,9 @@ function rentabotClient_reignore() {
             %record.csn = BuddyHudTabs.getCityNameForServerName(%record.serverName);
             %record.activities = "";
             UserListIgnores.put(%bot.getShapeName(), %record);
+        } else {
+            $gRentabotIgnores = findAndRemoveAllOccurrencesOfWord($gRentabotIgnores, %bot);
         }
-        $gRentabotIgnores = findAndRemoveAllOccurrencesOfWord($gRentabotIgnores, %bot);
         %n = (%n - 1.0);
     }
 };

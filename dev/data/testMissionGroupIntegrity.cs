@@ -42,9 +42,10 @@ function TEST_MISSIONGROUPINTEGRITY::InitializeNPCNames(%this) {
             %npcName = %file.readLine();
             %this.NPCNameMap.put(%npcName, "NPC");
         }
+    } else {
+        %file.delete();
+        return !%file.isEOF();
     }
-    %file.delete();
-    return !%file.isEOF();
     %file.close();
     %file.delete();
 };
@@ -255,9 +256,10 @@ function TEST_MISSIONGROUPINTEGRITY::CheckDatablockSetup(%this) {
     while ((%n >= 0.0)) {
         %obj = %group.getObject(%n);
         if (%this.assert(isObject(%obj), "non-object in DataBlockGroup!")) {
-        }
-        if (%obj.hasMethod("checkIntegrity")) {
-            %obj.checkIntegrity(%this);
+        } else {
+            if (%obj.hasMethod("checkIntegrity")) {
+                %obj.checkIntegrity(%this);
+            }
         }
         %n = (%n - 1.0);
     }
@@ -278,8 +280,9 @@ function TEST_MISSIONGROUPINTEGRITY::_checkUniqueObjectNames_Recursive(%this, %o
             %otherObj = %nameMap.get(%objName);
             %this.assert(!%this.objectInstanceMustHaveUniqueName(%obj), "object \"" @ getDebugString(%obj) @ "\" must have a unique name.");
             %this.assert(!%this.objectInstanceMustHaveUniqueName(%otherObj), "object \"" @ getDebugString(%otherObj) @ "\" must have a unique name.");
+        } else {
+            %nameMap.put(%objName, %obj);
         }
-        %nameMap.put(%objName, %obj);
     }
     if (%obj.isClassSimSet()) {
         %num = %obj.getCount();
@@ -464,9 +467,10 @@ function TEST_MISSIONGROUPINTEGRITY::isProtectedSitAnimException(%this, %animNam
     %ret = 0;
     if ((%animName $= "")) {
         %ret = 1;
-    }
-    if ((%animName $= "idl1a")) {
-        %ret = 1;
+    } else {
+        if ((%animName $= "idl1a")) {
+            %ret = 1;
+        }
     }
     return %ret;
 };
@@ -554,98 +558,106 @@ function UtilityDBInUseVisitor::visitObject(%this, %obj) {
             if ((%obj.description.getName() $= %this.collector.theList[%i])) {
                 %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
             }
-        }
-        if ((%obj.getClassName() $= "ParticleEmitterData")) {
-            if ((%obj.particles $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+        } else {
+            if ((%obj.getClassName() $= "ParticleEmitterData")) {
+                if ((%obj.particles $= %this.collector.theList[%i])) {
+                    %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                }
+            } else {
+                if ((%obj.getClassName() $= "PlayerData")) {
+                    if ((%obj.splashEmitter[0] $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.splashEmitter[1] $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.splashEmitter[2] $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.Splash $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.dustEmitter $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.DecalData $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.Debris $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.FootSound1 $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.FootSound2 $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.FootSound3 $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.FootShallowSound $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.FootWadingSound $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.FootUnderwaterSound $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.HalloweenfootPuffEmitter $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.HalloweenDecalDataL $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                    if ((%obj.HalloweenDecalDataR $= %this.collector.theList[%i])) {
+                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                    }
+                } else {
+                    if ((%obj.getClassName() $= "SplashData") || (%obj.getClassName() $= "ExplosionData")) {
+                        if ((%obj.emitter[0] $= %this.collector.theList[%i])) {
+                            %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                        }
+                        if ((%obj.emitter[1] $= %this.collector.theList[%i])) {
+                            %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                        }
+                    } else {
+                        if ((%obj.getClassName() $= "RigidShapeData")) {
+                            if ((%obj.particleTrailEmitter $= %this.collector.theList[%i])) {
+                                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                            }
+                            if ((%obj.Item $= %this.collector.theList[%i])) {
+                                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                            }
+                        } else {
+                            if ((%obj.getClassName() $= "ShapeBaseImageData")) {
+                                if ((%obj.rigidProjectile $= %this.collector.theList[%i])) {
+                                    %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                                }
+                                if ((%obj.stateEmitter[2] $= %this.collector.theList[%i])) {
+                                    %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                                }
+                            } else {
+                                if ((%obj.getClassName() $= "ItemData")) {
+                                    if ((%obj.image $= %this.collector.theList[%i])) {
+                                        %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                                    }
+                                } else {
+                                    if ((%obj.getClassName() $= "MissionMarker")) {
+                                        if ((%obj.sitSound $= %this.collector.theList[%i])) {
+                                            %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                                        }
+                                    } else {
+                                        if (isObject(%obj.getDataBlock()) && (%obj.getDataBlock().getName() $= %this.collector.theList[%i])) {
+                                            %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
-        }
-        if ((%obj.getClassName() $= "PlayerData")) {
-            if ((%obj.splashEmitter[0] $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.splashEmitter[1] $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.splashEmitter[2] $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.Splash $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.dustEmitter $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.DecalData $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.Debris $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.FootSound1 $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.FootSound2 $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.FootSound3 $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.FootShallowSound $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.FootWadingSound $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.FootUnderwaterSound $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.HalloweenfootPuffEmitter $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.HalloweenDecalDataL $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.HalloweenDecalDataR $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-        }
-        if ((%obj.getClassName() $= "SplashData") || (%obj.getClassName() $= "ExplosionData")) {
-            if ((%obj.emitter[0] $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.emitter[1] $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-        }
-        if ((%obj.getClassName() $= "RigidShapeData")) {
-            if ((%obj.particleTrailEmitter $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.Item $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-        }
-        if ((%obj.getClassName() $= "ShapeBaseImageData")) {
-            if ((%obj.rigidProjectile $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-            if ((%obj.stateEmitter[2] $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-        }
-        if ((%obj.getClassName() $= "ItemData")) {
-            if ((%obj.image $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-        }
-        if ((%obj.getClassName() $= "MissionMarker")) {
-            if ((%obj.sitSound $= %this.collector.theList[%i])) {
-                %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
-            }
-        }
-        if (isObject(%obj.getDataBlock()) && (%obj.getDataBlock().getName() $= %this.collector.theList[%i])) {
-            %this.collector.uses[%i] = (%this.collector.uses[%i] + 1.0);
         }
         %i = (%i + 1.0);
     }

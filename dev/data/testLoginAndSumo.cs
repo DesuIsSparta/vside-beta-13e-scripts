@@ -342,9 +342,10 @@ function do_sumo_action() {
     %i = getRandom(1, 2);
     if ((%i $= 1)) {
         $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
-    }
-    if ((%i $= 2)) {
-        $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
+    } else {
+        if ((%i $= 2)) {
+            $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
+        }
     }
     $mvForwardAction = 0;
     schedule(500, 0, movementstop);
@@ -393,25 +394,29 @@ function stopAndTalk() {
         if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth")) {
             %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
             %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
-        }
-        if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth")) {
-            %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
-            %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
-        }
-        if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth")) {
-            %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
-            %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
+        } else {
+            if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth")) {
+                %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
+                %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
+            } else {
+                if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth")) {
+                    %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
+                    %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
+                }
+            }
         }
         pChat.say("Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination, 0, 0);
         commandToServer(%command, %destination);
+    } else {
+        if (($failureCount == 5.0)) {
+            echo("LOAD: Giving up. Lost PChat object.");
+            echo("LOAD: Quit()-ing...");
+            logoffAndQuit();
+        } else {
+            echo("LOAD: Lost PChat... Gonna try again.");
+            $failureCount = ($failureCount + 1.0);
+        }
     }
-    if (($failureCount == 5.0)) {
-        echo("LOAD: Giving up. Lost PChat object.");
-        echo("LOAD: Quit()-ing...");
-        logoffAndQuit();
-    }
-    echo("LOAD: Lost PChat... Gonna try again.");
-    $failureCount = ($failureCount + 1.0);
     schedule(10000, 0, do_sumo);
 };
 function logoffAndQuit() {

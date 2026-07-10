@@ -37,8 +37,9 @@ function ItemData::onPickup(%this, %obj, %user, %amount) {
             if (!(%count = %this.maxInventory)) {
                 return;
             }
+        } else {
+            %count = 1;
         }
-        %count = 1;
     }
     %user.incInventory(%this, %count);
     if (%user.client) {
@@ -46,8 +47,9 @@ function ItemData::onPickup(%this, %obj, %user, %amount) {
     }
     if (%obj.isStatic()) {
         %obj.respawn();
+    } else {
+        %obj.delete();
     }
-    %obj.delete();
     return 1;
 };
 function ItemData::create(%data) {

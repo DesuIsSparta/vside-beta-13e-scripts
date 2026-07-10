@@ -12,45 +12,58 @@ function ClientCmdGameMgrClientNotify(%command, %arguments) {
     echo(getScopeName() @ "->\"" @ detag(%command) @ "\" with %arguments==" @ %arguments);
     if ((detag(%command) $= "playerInvited")) {
         gameMgrClient.playerInvited(getField(%arguments, 0), getField(%arguments, 1), getField(%arguments, 2), getRecord(%arguments, 1), getRecords(%arguments, 2));
-    }
-    if ((detag(%command) $= "playerJoined")) {
-        gameMgrClient.playerJoined(getField(%arguments, 0), getField(%arguments, 1), getField(%arguments, 2), getField(%arguments, 3), getField(%arguments, 4), getField(%arguments, 5), getField(%arguments, 6), getField(%arguments, 7), getField(%arguments, 8));
-    }
-    if ((detag(%command) $= "playerLeft")) {
-        gameMgrClient.playerLeft(getField(%arguments, 0), getField(%arguments, 1));
-    }
-    if ((detag(%command) $= "inspectNewGame")) {
-        gameMgrClient.inspectNewGame(getField(%arguments, 0), getField(%arguments, 1), getField(%arguments, 2), getField(%arguments, 3), getField(%arguments, 4), getField(%arguments, 5), getField(%arguments, 6), getField(%arguments, 7), getField(%arguments, 8), getField(%arguments, 9));
-    }
-    if ((detag(%command) $= "inspectAddRemovePlayers")) {
-        gameMgrClient.inspectAddRemovePlayers(getField(%arguments, 0), getRecord(%arguments, 1), getRecord(%arguments, 2), getRecord(%arguments, 3), getRecord(%arguments, 4));
-    }
-    if ((detag(%command) $= "inspectAddPlayers")) {
-        gameMgrClient.inspectAddRemovePlayers(getField(%arguments, 0), getRecord(%arguments, 1), "", getRecord(%arguments, 2), "");
-    }
-    if ((detag(%command) $= "inspectRemovePlayers")) {
-        gameMgrClient.inspectAddRemovePlayers(getField(%arguments, 0), "", getRecord(%arguments, 1), getRecord(%arguments, 2), getRecord(%arguments, 3));
-    }
-    if ((detag(%command) $= "inspectChangeReadyStatus")) {
-        gameMgrClient.inspectChangeReadyStatus(getWord(%arguments, 0), getRecord(%arguments, 1), getRecord(%arguments, 2));
-    }
-    if ((detag(%command) $= "inspectUpdatePlayersStatus")) {
-        gameMgrClient.inspectUpdatePlayersStatus(getField(%arguments, 0), getRecord(%arguments, 1));
-    }
-    if ((detag(%command) $= "superficialAddPlayers")) {
-        gameMgrClient.superficialAddPlayers(getField(%arguments, 0), getField(%arguments, 1), getField(%arguments, 2));
-    }
-    if ((detag(%command) $= "superficialAddRemovePlayers")) {
-        gameMgrClient.superficialAddRemovePlayers(getField(%arguments, 0), getField(%arguments, 1));
-    }
-    if ((detag(%command) $= "gamestatusChanged")) {
-        gameMgrClient.gamestatusChanged(getField(%arguments, 0), getField(%arguments, 1));
-    }
-    if ((detag(%command) $= "deepDetailUpdated")) {
-        gameMgrClient.deepDetailUpdated(getField(%arguments, 0));
-    }
-    if ((detag(%command) $= "inspectNothing")) {
-        gameMgrClient.inspectNothing();
+    } else {
+        if ((detag(%command) $= "playerJoined")) {
+            gameMgrClient.playerJoined(getField(%arguments, 0), getField(%arguments, 1), getField(%arguments, 2), getField(%arguments, 3), getField(%arguments, 4), getField(%arguments, 5), getField(%arguments, 6), getField(%arguments, 7), getField(%arguments, 8));
+        } else {
+            if ((detag(%command) $= "playerLeft")) {
+                gameMgrClient.playerLeft(getField(%arguments, 0), getField(%arguments, 1));
+            } else {
+                if ((detag(%command) $= "inspectNewGame")) {
+                    gameMgrClient.inspectNewGame(getField(%arguments, 0), getField(%arguments, 1), getField(%arguments, 2), getField(%arguments, 3), getField(%arguments, 4), getField(%arguments, 5), getField(%arguments, 6), getField(%arguments, 7), getField(%arguments, 8), getField(%arguments, 9));
+                } else {
+                    if ((detag(%command) $= "inspectAddRemovePlayers")) {
+                        gameMgrClient.inspectAddRemovePlayers(getField(%arguments, 0), getRecord(%arguments, 1), getRecord(%arguments, 2), getRecord(%arguments, 3), getRecord(%arguments, 4));
+                    } else {
+                        if ((detag(%command) $= "inspectAddPlayers")) {
+                            gameMgrClient.inspectAddRemovePlayers(getField(%arguments, 0), getRecord(%arguments, 1), "", getRecord(%arguments, 2), "");
+                        } else {
+                            if ((detag(%command) $= "inspectRemovePlayers")) {
+                                gameMgrClient.inspectAddRemovePlayers(getField(%arguments, 0), "", getRecord(%arguments, 1), getRecord(%arguments, 2), getRecord(%arguments, 3));
+                            } else {
+                                if ((detag(%command) $= "inspectChangeReadyStatus")) {
+                                    gameMgrClient.inspectChangeReadyStatus(getWord(%arguments, 0), getRecord(%arguments, 1), getRecord(%arguments, 2));
+                                } else {
+                                    if ((detag(%command) $= "inspectUpdatePlayersStatus")) {
+                                        gameMgrClient.inspectUpdatePlayersStatus(getField(%arguments, 0), getRecord(%arguments, 1));
+                                    } else {
+                                        if ((detag(%command) $= "superficialAddPlayers")) {
+                                            gameMgrClient.superficialAddPlayers(getField(%arguments, 0), getField(%arguments, 1), getField(%arguments, 2));
+                                        } else {
+                                            if ((detag(%command) $= "superficialAddRemovePlayers")) {
+                                                gameMgrClient.superficialAddRemovePlayers(getField(%arguments, 0), getField(%arguments, 1));
+                                            } else {
+                                                if ((detag(%command) $= "gamestatusChanged")) {
+                                                    gameMgrClient.gamestatusChanged(getField(%arguments, 0), getField(%arguments, 1));
+                                                } else {
+                                                    if ((detag(%command) $= "deepDetailUpdated")) {
+                                                        gameMgrClient.deepDetailUpdated(getField(%arguments, 0));
+                                                    } else {
+                                                        if ((detag(%command) $= "inspectNothing")) {
+                                                            gameMgrClient.inspectNothing();
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 function putListIntoEnglish(%list) {
@@ -58,18 +71,21 @@ function putListIntoEnglish(%list) {
     %fieldCount = getFieldCount(%list);
     if ((%fieldCount == 2.0)) {
         %ret = getField(%list, 0) @ " and " @ getField(%list, 1);
-    }
-    %n = 0;
-    while ((%n < %printedFieldCount)) {
-        %item = getField(%list, %n);
-        if ((%n == 0.0)) {
-            %ret = %item;
+    } else {
+        %n = 0;
+        while ((%n < %printedFieldCount)) {
+            %item = getField(%list, %n);
+            if ((%n == 0.0)) {
+                %ret = %item;
+            } else {
+                if ((%n < (%fieldCount - 1.0))) {
+                    %ret = %ret @ ", " @ %item;
+                } else {
+                    %ret = %ret @ ", and " @ %item @ ".";
+                }
+            }
+            %n = (%n + 1.0);
         }
-        if ((%n < (%fieldCount - 1.0))) {
-            %ret = %ret @ ", " @ %item;
-        }
-        %ret = %ret @ ", and " @ %item @ ".";
-        %n = (%n + 1.0);
     }
 };
 function gameMgrClient::playerInvited(%this, %inviter, %aGameInstance, %gameType, %playerCount, %message) {
@@ -78,8 +94,9 @@ function gameMgrClient::playerInvited(%this, %inviter, %aGameInstance, %gameType
     %msg = getPlayerMarkup(%inviter, "", 1) @ " invites you to play <a:game inspect " @ %aGameInstance @ ">" @ %gameType[$gameMgr::GAME_TYPES @ %gameType].title @ "</a>";
     if ((%playerCount > 2.0)) {
         %msg = %msg @ " with " @ (%playerCount - 1.0) @ " others.";
+    } else {
+        %msg = %msg @ ".";
     }
-    %msg = %msg @ ".";
     if (!(%message $= "")) {
         %msg = %msg @ " " @ %message;
     }
@@ -105,8 +122,9 @@ function gameMgrClient::superficialAddPlayers(%this, %serversideID, %playerCount
     if (isObject(%ourCopy)) {
         %ourCopy.playercount = %newTotal;
         GameList.refresh();
+    } else {
+        error("Received superficial player add update for game we don't have a record of! <- " @ getScopeName());
     }
-    error("Received superficial player add update for game we don't have a record of! <- " @ getScopeName());
 };
 function gameMgrClient::superficialAddRemovePlayers(%this, %serversideID, %newTotal) {
     echo(getScopeName());
@@ -114,8 +132,9 @@ function gameMgrClient::superficialAddRemovePlayers(%this, %serversideID, %newTo
     if (isObject(%ourCopy)) {
         %ourCopy.playercount = %newTotal;
         GameList.refresh();
+    } else {
+        error("Received superficial player add/remove update for game we don't have a record of! <- " @ getScopeName());
     }
-    error("Received superficial player add/remove update for game we don't have a record of! <- " @ getScopeName());
 };
 function gameMgrClient::gamestatusChanged(%this, %serversideID, %newStatus) {
     echo(getScopeName());
@@ -127,9 +146,10 @@ function gameMgrClient::gamestatusChanged(%this, %serversideID, %newStatus) {
     if ((%this.inspectedGame.serversideID == %serversideID)) {
         %this.inspectedGame.gamestatus = %newStatus;
         GameList.refreshInspectTab();
-    }
-    if (!isObject(%ourCopy)) {
-        error("Received gamestatus update for a game we don't have a record of and aren't inspecting! <- " @ getScopeName());
+    } else {
+        if (!isObject(%ourCopy)) {
+            error("Received gamestatus update for a game we don't have a record of and aren't inspecting! <- " @ getScopeName());
+        }
     }
 };
 function gameMgrClient::deepDetailUpdated(%this, %serversideID) {
@@ -164,14 +184,15 @@ function gameMgrClient::inspectNewGame(%this, %serversideID, %gname, %gameType, 
         if (!isObject(%this.inspectedGame.PlayerRecords)) {
             %this.inspectedGame.PlayerRecords = new SimSet("");
         }
-    }
-    if (!isObject(%this.inspectedGame)) {
-        %this.inspectedGame = new ScriptObject("") {
-            PlayerRecords = new SimSet("");;
-        };
-        if (isObject(MissionCleanup)) {
-            MissionCleanup.add(%this.inspectedGame.getId());
-            MissionCleanup.add(%this.inspectedGame.PlayerRecords.getId());
+    } else {
+        if (!isObject(%this.inspectedGame)) {
+            %this.inspectedGame = new ScriptObject("") {
+                PlayerRecords = new SimSet("");;
+            };
+            if (isObject(MissionCleanup)) {
+                MissionCleanup.add(%this.inspectedGame.getId());
+                MissionCleanup.add(%this.inspectedGame.PlayerRecords.getId());
+            }
         }
     }
     %this.inspectedGame.PlayerRecords.deleteMembers();
@@ -225,20 +246,22 @@ function gameMgrClient::inspectUpdatePlayersStatus(%this, %serversideID, %player
             if (!(%playerready $= "")) {
                 %theRecord.ready = %playerready;
             }
+        } else {
+            %this.inspectedGame.PlayerRecords.add(gameMgrClient.newPlayerRecord(%aPlayerName, %playerstatus, %playerready, %playerScore));
         }
-        %this.inspectedGame.PlayerRecords.add(gameMgrClient.newPlayerRecord(%aPlayerName, %playerstatus, %playerready, %playerScore));
         if ((%aPlayerName $= $player.getShapeName())) {
             if (!isObject(%this.inspectedGame.ourRecord)) {
                 %this.inspectedGame.ourRecord = %this.newPlayerRecord(%aPlayerName, %playerstatus, %playerready, %playerScore);
-            }
-            if (!(%playerstatus $= "")) {
-                %this.inspectedGame.ourRecord.status = %playerstatus;
-            }
-            if (!(%playerScore $= "")) {
-                %this.inspectedGame.ourRecord.score = %playerScore;
-            }
-            if (!(%playerready $= "")) {
-                %this.inspectedGame.ourRecord.ready = %playerready;
+            } else {
+                if (!(%playerstatus $= "")) {
+                    %this.inspectedGame.ourRecord.status = %playerstatus;
+                }
+                if (!(%playerScore $= "")) {
+                    %this.inspectedGame.ourRecord.score = %playerScore;
+                }
+                if (!(%playerready $= "")) {
+                    %this.inspectedGame.ourRecord.ready = %playerready;
+                }
             }
         }
         %i = (%i + 1.0);
@@ -284,8 +307,9 @@ function gameMgrClient::inspectAddRemovePlayers(%this, %serversideID, %playersAd
         if (isObject(%aPlayer)) {
             %this.inspectedGame.PlayerRecords.remove(%aPlayer);
             %aPlayer.delete();
+        } else {
+            warn("Asked to remove a player that we didn't have a record of! <- " @ getScopeName());
         }
-        warn("Asked to remove a player that we didn't have a record of! <- " @ getScopeName());
         %i = (%i - 1.0);
     }
     %this.sortAndPurgePlayerRecords(%this.inspectedGame);
@@ -309,9 +333,10 @@ function gameMgrClient::inspectChangeReadyStatus(%this, %serversideID, %readyVal
         %aPlayer = %this.inspectedGame.PlayerRecords.getByNameField(%aPlayerName);
         if (isObject(%aPlayer)) {
             %aPlayer.ready = %aReadyValue;
-        }
-        if (!(%aPlayerName $= $player.getShapeName())) {
-            warn("Received a request-to-start update on a player that we don't have a record for! <- " @ getScopeName());
+        } else {
+            if (!(%aPlayerName $= $player.getShapeName())) {
+                warn("Received a request-to-start update on a player that we don't have a record for! <- " @ getScopeName());
+            }
         }
         %i = (%i + 1.0);
     }
@@ -322,16 +347,18 @@ function gameMgrClient::inspectNothing(%this) {
     if (isObject(%this.inspectedGame)) {
         if (!%this.games.isMember(%this.inspectedGame)) {
             %this.inspectedGame.serversideID = "";
+        } else {
+            %this.inspectedGame = "";
         }
-        %this.inspectedGame = "";
     }
     GameList.refreshInspectTab();
 };
 function gameMgrClient::areWeInspecting(%this) {
     if (!isObject(%this.inspectedGame) || (%this.inspectedGame.serversideID $= "")) {
         return 0;
+    } else {
+        return 1;
     }
-    return 1;
 };
 function gameMgrClient::areWeHostOfInspectedGame(%this) {
     if (!%this.areWeInspecting()) {
@@ -339,8 +366,9 @@ function gameMgrClient::areWeHostOfInspectedGame(%this) {
     }
     if ((%this.inspectedGame.host $= $player.getShapeName())) {
         return 1;
+    } else {
+        return 0;
     }
-    return 0;
 };
 function gameMgrClient::inCustomGame(%this) {
     if (!%this.areWeInspecting()) {
@@ -348,8 +376,9 @@ function gameMgrClient::inCustomGame(%this) {
     }
     if ((%this.inspectedGame.gametype == $gameMgr::CUSTOM_GAME)) {
         return 1;
+    } else {
+        return 0;
     }
-    return 0;
 };
 function gameMgrClient::playerJoined(%this, %serversideID, %gname, %gameType, %host, %playerCount, %gamestatus, %playerstatus, %playerRank, %playerScore) {
     echo(getScopeName());
@@ -365,8 +394,9 @@ function gameMgrClient::playerJoined(%this, %serversideID, %gname, %gameType, %h
                 error("on playerJoined call for joining an inspected game, playerRank and playerScore were not passed!<-" @ getScopeName());
             }
             %this.inspectedGame.ourRecord = %this.newPlayerRecord($player.getShapeName(), %playerstatus, %playerRank, %playerScore);
+        } else {
+            error("playerJoined trying to create an ourRecord for inspected game we joined, but it already exists!<-" @ getScopeName());
         }
-        error("playerJoined trying to create an ourRecord for inspected game we joined, but it already exists!<-" @ getScopeName());
         GameList.refreshInspectTab();
     }
     if ((%host $= $player.getShapeName())) {
@@ -374,8 +404,9 @@ function gameMgrClient::playerJoined(%this, %serversideID, %gname, %gameType, %h
             userTips::showOnceThisSession("CustomGameHost");
         }
         handleSystemMessage("msgInfoMessage", "You created a game: <a:game inspect " @ %serversideID @ ">" @ %gname @ "</a>.");
+    } else {
+        handleSystemMessage("msgInfoMessage", "You joined " @ %host @ "'s game: <a:game inspect " @ %serversideID @ ">" @ %gname @ "</a>.");
     }
-    handleSystemMessage("msgInfoMessage", "You joined " @ %host @ "'s game: <a:game inspect " @ %serversideID @ ">" @ %gname @ "</a>.");
 };
 function gameMgrClient::playerLeft(%this, %serversideID, %message) {
     echo(getScopeName());
@@ -384,8 +415,9 @@ function gameMgrClient::playerLeft(%this, %serversideID, %message) {
     %exitMessage = "You left ";
     if ((%game.host $= $player.getShapeName())) {
         %exitMessage = %exitMessage @ " your";
+    } else {
+        %exitMessage = %exitMessage @ %game.host @ "'s";
     }
-    %exitMessage = %exitMessage @ %game.host @ "'s";
     %exitMessage = %exitMessage @ " game: <a:game inspect " @ %serversideID @ ">" @ %game.gname @ "</a>.";
     if (!(%message $= "")) {
         %exitMessage = %exitMessage @ " " @ %message;
@@ -503,29 +535,31 @@ function gameMgrClient::addGame(%this, %serversideID, %gname, %gameType, %host, 
         }
         %newGame.playercount = %playerCount;
         %newGame.gamestatus = %gamestatus;
-    }
-    %newGame = new ScriptObject("") {
-        serversideID = %serversideID;
-        gname = %gname;
-        gametype = %gameType;
-        host = %host;
-        playercount = %playerCount;
-        gamestatus = %gamestatus;
-        deepUpdate = 0;
-    };
-    if (isObject(MissionCleanup)) {
-        MissionCleanup.add(%newGame);
+    } else {
+        %newGame = new ScriptObject("") {
+            serversideID = %serversideID;
+            gname = %gname;
+            gametype = %gameType;
+            host = %host;
+            playercount = %playerCount;
+            gamestatus = %gamestatus;
+            deepUpdate = 0;
+        };
+        if (isObject(MissionCleanup)) {
+            MissionCleanup.add(%newGame);
+        }
     }
     %this.games.add(%newGame);
     %listFound = 0;
     %n = (GameList.lists.getCount() - 1.0);
-    while ((%n >= 0.0)) {
+    if ((%n >= 0.0)) {
         %aList = GameList.lists.getObject(%n);
         if ((%aList.gametype == %newGame.gametype)) {
             %aList.add(%newGame);
             %listFound = 1;
+        } else {
+            %n = (%n - 1.0);
         }
-        %n = (%n - 1.0);
     }
     if ((%listFound <= 0.0)) {
         %newList = new SimSet("") {
@@ -562,9 +596,10 @@ function gameMgrClient::removeGame(%this, %serversideID) {
                 GameList.lists.remove(%aList);
                 %aList.delete();
             }
-        }
-        if ((%n == 0.0)) {
-            error("Deleting a game whose gametype didn't have a list <- " @ getScopeName());
+        } else {
+            if ((%n == 0.0)) {
+                error("Deleting a game whose gametype didn't have a list <- " @ getScopeName());
+            }
         }
         %n = (%n - 1.0);
     }
@@ -625,10 +660,12 @@ function gameMgrClient::sortAndPurgePlayerRecords(%this, %aGameObj) {
             if ((%n >= (%count - $gameMgr::InspectTab::MAX_PLAYERS))) {
                 %aGameObj.PlayerRecords.add(%recordID);
                 %aGameObj.PlayerRecords.pushToBack(%recordID);
+            } else {
+                %recordID.delete();
             }
-            %recordID.delete();
+        } else {
+            error("Serious error! Record ID retrieved from sorted string invalid! Skipping and continuing <-" @ getScopeName());
         }
-        error("Serious error! Record ID retrieved from sorted string invalid! Skipping and continuing <-" @ getScopeName());
         %n = (%n - 1.0);
     }
 };
@@ -689,12 +726,14 @@ function gameMgrHostPopup::open(%this, %playerName, %command) {
     }
     if ((%command $= "score")) {
         %this.variText.setText("<spush><b>Change " @ %playerName @ "'s score by:<spop>(e.g. +5, -10)");
+    } else {
+        if ((%command $= "status")) {
+            %this.variText.setText("<spush><b>Set " @ %playerName @ "'s status to:<spop>");
+        } else {
+            error("gameMgrHostPopup::apply was passed a unrecognized command " @ %command @ ".<-" @ getScopeName());
+            return;
+        }
     }
-    if ((%command $= "status")) {
-        %this.variText.setText("<spush><b>Set " @ %playerName @ "'s status to:<spop>");
-    }
-    error("gameMgrHostPopup::apply was passed a unrecognized command " @ %command @ ".<-" @ getScopeName());
-    return;
     %this.command = %command;
     %this.playerName = %playerName;
     %this.setVisible(1);
@@ -702,9 +741,11 @@ function gameMgrHostPopup::open(%this, %playerName, %command) {
 function gameMgrHostPopup::apply(%this) {
     if ((%this.command $= "score")) {
         gameMgrClient.hostChangePlayerScore(%this.playerName, %this.textField.getText());
+    } else {
+        if ((%this.command $= "status")) {
+            gameMgrClient.hostChangePlayerStatus(%this.playerName, %this.textField.getText());
+        } else {
+            error("gameMgrHostPopup::apply was passed a unrecognized command " @ %this.command @ ".<-" @ getScopeName());
+        }
     }
-    if ((%this.command $= "status")) {
-        gameMgrClient.hostChangePlayerStatus(%this.playerName, %this.textField.getText());
-    }
-    error("gameMgrHostPopup::apply was passed a unrecognized command " @ %this.command @ ".<-" @ getScopeName());
 };

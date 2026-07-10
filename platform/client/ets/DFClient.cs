@@ -4,8 +4,9 @@ function setDFEnabled(%val) {
     }
     if (%val) {
         DFManagerInit();
+    } else {
+        DFManagerDestroy();
     }
-    DFManagerDestroy();
 };
 function clientCmdSetDFEnabled(%val) {
     if (!isFunction("Using_DF") || !Using_DF()) {
@@ -18,9 +19,10 @@ $gDFNotifyCode = "";
 function onDFEngineStartError(%errorCode) {
     if (isObject(ServerConnection)) {
         commandToServer('DFStart', 0, %errorCode);
+    } else {
+        $gDFNotify = 1;
+        $gDFNotifyCode = %errorCode;
     }
-    $gDFNotify = 1;
-    $gDFNotifyCode = %errorCode;
 };
 function onDFEngineStarted() {
     commandToServer('DFStart', 1, "");
@@ -53,6 +55,7 @@ function DFDebugUpdateGuiStatus() {
     if (($gDFDebugCurrAdvert < 1.0)) {
     }
     if (($gDFDebugAdvertsList.size() > 0.0)) {
+    } else {
     }
     %obj = $gDFDebugAdvertsList.get(($gDFDebugCurrAdvert - 1.0));
     "";
@@ -93,8 +96,9 @@ function DFDebugGotoAdvert(%advertNumber) {
     }
     if ((%advertNumber < 1.0)) {
         %advertNumber = "-";
+    } else {
+        %advertObj = $gDFDebugAdvertsList.get((%advertNumber - 1.0));
     }
-    %advertObj = $gDFDebugAdvertsList.get((%advertNumber - 1.0));
     $gDFDebugCurrAdvert = %advertNumber;
     DFDebugUpdateGuiStatus();
     if (isObject(%advertObj)) {

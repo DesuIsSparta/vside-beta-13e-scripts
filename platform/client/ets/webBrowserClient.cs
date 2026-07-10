@@ -63,11 +63,12 @@ function dlMgr::applyUrl(%this, %url, %callback, %errorCallback, %callbackData, 
     %record = %this.cacheIndex.get(%dlItem.url);
     if ((%record $= "")) {
         error(getScopeName() @ " " @ "- no entry in cache index." @ " " @ %dlItem.url @ " " @ getTrace());
-    }
-    %accessTime = getField(%record, 1);
-    %age = (getTime() - %accessTime);
-    if ((%age > %this.getPolicyValue(%policyName, "expirationDuration"))) {
-        %isFresh = 0;
+    } else {
+        %accessTime = getField(%record, 1);
+        %age = (getTime() - %accessTime);
+        if ((%age > %this.getPolicyValue(%policyName, "expirationDuration"))) {
+            %isFresh = 0;
+        }
     }
     %this.applyItem(%dlItem, %isFresh);
 };
@@ -106,11 +107,12 @@ function dlMgr::serviceToDownloadQueue(%this) {
         echoDebug(getScopeName() @ " " @ "- too many outstanding already:" @ " " @ %this.outstanding.size() @ " " @ getTrace());
         return;
     }
-    while ((%this.outstanding.size() < %this.maxOutstanding)) {
+    if ((%this.outstanding.size() < %this.maxOutstanding)) {
         %dlItem = %this.getAndRemoveFirstActionableItemInToDownloadQueue();
         if (!isObject(%dlItem)) {
+        } else {
+            %this.beginDownloadingItem(%dlItem);
         }
-        %this.beginDownloadingItem(%dlItem);
     }
 };
 function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this) {
@@ -164,8 +166,9 @@ function dlMgrRequest_onCompletedDownload(%request, %result) {
     %dlItem = %request.dlItem;
     if ((%result == 0.0)) {
         dlMgr.downloadSucceeded(%dlItem);
+    } else {
+        dlMgr.downloadFailed(%dlItem, %request, %result);
     }
-    dlMgr.downloadFailed(%dlItem, %request, %result);
 };
 function dlMgr::downloadFailed(%this, %dlItem, %curl, %error) {
     error(getScopeName() @ " " @ "-" @ " " @ %error @ " " @ %curl.statusCode() @ " " @ %curl.resultCodeToString(%error));
@@ -179,15 +182,17 @@ function dlMgr::downloadFailed(%this, %dlItem, %curl, %error) {
             call(%dlItem.errorCallback, %dlItem);
         }
         %dlItem.delete();
+    } else {
+        if ((%failCount < %this.maxFailures)) {
+            %this.schedule((%this.retryDelay * 1000.0), "enqueueItem", %dlItem);
+        } else {
+            error(getScopeName() @ " " @ "- failed" @ " " @ %failCount @ " " @ "times; giving up on" @ " " @ %dlItem.url);
+            if (!(%dlItem.errorCallback $= "")) {
+                call(%dlItem.errorCallback, %dlItem);
+            }
+            %dlItem.delete();
+        }
     }
-    if ((%failCount < %this.maxFailures)) {
-        %this.schedule((%this.retryDelay * 1000.0), "enqueueItem", %dlItem);
-    }
-    error(getScopeName() @ " " @ "- failed" @ " " @ %failCount @ " " @ "times; giving up on" @ " " @ %dlItem.url);
-    if (!(%dlItem.errorCallback $= "")) {
-        call(%dlItem.errorCallback, %dlItem);
-    }
-    %dlItem.delete();
     %this.serviceToDownloadQueue();
 };
 function dlMgr::downloadSucceeded(%this, %dlItem) {
@@ -216,14 +221,16 @@ function dlMgr::applyItem(%this, %dlItem, %isFresh) {
     %record = %this.cacheIndex.get(%dlItem.url);
     if ((%record $= "")) {
         error(getScopeName() @ " " @ "- no entry in cache index." @ " " @ %dlItem.url @ " " @ getTrace());
+    } else {
+        %record = setField(%record, 1, getTime());
+        %this.cacheIndex.put(%dlItem.url, %record);
     }
-    %record = setField(%record, 1, getTime());
-    %this.cacheIndex.put(%dlItem.url, %record);
     if (!%isFresh) {
         echoDebug(getScopeName() @ " " @ "- re-downloading" @ " " @ %dlItem.url @ " " @ getTrace());
         %this.enqueueItem(%dlItem);
+    } else {
+        %dlItem.delete();
     }
-    %dlItem.delete();
 };
 function dlMgrDefaultCallback(%dlItem, %isFresh) {
     error(getScopeName() @ " " @ "- callbackData =" @ " " @ %dlItem);
@@ -327,9 +334,10 @@ function dlMgrCallback_GuiControl(%dlItem, %isFresh) {
     }
     if (!(%ctrl.expectedImageUrl $= %dlItem.url)) {
         echoDebug(getScopeName() @ " " @ "- unexpected URL retrieved. Expected \"" @ %ctrl.expectedImageUrl @ "\" but got \"" @ %dlItem.url @ "\".");
+    } else {
+        %ctrl.setBitmap("");
+        %ctrl.setBitmap(%dlItem.localFilename);
+        %ctrl.expectedUrl = "";
+        %ctrl.fitInParentAsBitmap();
     }
-    %ctrl.setBitmap("");
-    %ctrl.setBitmap(%dlItem.localFilename);
-    %ctrl.expectedUrl = "";
-    %ctrl.fitInParentAsBitmap();
 };

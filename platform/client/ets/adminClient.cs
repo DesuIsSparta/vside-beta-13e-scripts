@@ -22,6 +22,7 @@ function onModNotificationDeleted(%playerName, %unused) {
 function onModNotificationMicStatus(%playerName, %hasOne) {
     if (%hasOne) {
         micPanel.addMicHolder(%playerName);
+    } else {
+        micPanel.delMicHolder(%playerName);
     }
-    micPanel.delMicHolder(%playerName);
 };

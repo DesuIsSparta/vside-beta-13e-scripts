@@ -21,19 +21,22 @@ function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt) {
     Canvas.setSystemDragTargetControl(%this);
     if ((%eventType $= "MAKE")) {
         hiliteControl(%this);
-    }
-    if ((%eventType $= "MOVE")) {
-    }
-    if ((%eventType $= "LEAVE")) {
-        if (%this.isHiliteCtrl()) {
-            hiliteControl("");
+    } else {
+        if ((%eventType $= "MOVE")) {
+        } else {
+            if ((%eventType $= "LEAVE")) {
+                if (%this.isHiliteCtrl()) {
+                    hiliteControl("");
+                }
+            } else {
+                if ((%eventType $= "BREAK")) {
+                    if (%this.isHiliteCtrl()) {
+                        hiliteControl("");
+                    }
+                    %this.onSystemDragDroppedEvent(%text, %pt);
+                }
+            }
         }
-    }
-    if ((%eventType $= "BREAK")) {
-        if (%this.isHiliteCtrl()) {
-            hiliteControl("");
-        }
-        %this.onSystemDragDroppedEvent(%text, %pt);
     }
     return 1;
 };

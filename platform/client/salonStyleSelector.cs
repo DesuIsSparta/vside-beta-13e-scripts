@@ -184,15 +184,17 @@ function SalonStyleSelector::Initialize(%this) {
 function ShowPropsButton::onClick(%this) {
     if ($player.hasAvailableProp()) {
         toggleClosetItemCategory("props");
+    } else {
+        %salonCode = $SALON_CHAIR_DEF_DESTCODE[SalonStyleSelector.lastTypeOfSalon];
+        %amInSalon = ($gCurrentStoreName $= %salonCode);
+        %callback = "";
+        if (%amInSalon) {
+            %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-IN"];
+            %callback = "toggleStore();";
+        } else {
+            %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-OUT"];
+            %callback = "vurlOperation(\"" @ %salonCode[$gDestinationVurls @ %salonCode] @ "\");";
+        }
+        MessageBoxYesNo(%salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-TITLE"], %msg, %callback, "");
     }
-    %salonCode = $SALON_CHAIR_DEF_DESTCODE[SalonStyleSelector.lastTypeOfSalon];
-    %amInSalon = ($gCurrentStoreName $= %salonCode);
-    %callback = "";
-    if (%amInSalon) {
-        %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-IN"];
-        %callback = "toggleStore();";
-    }
-    %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-OUT"];
-    %callback = "vurlOperation(\"" @ %salonCode[$gDestinationVurls @ %salonCode] @ "\");";
-    MessageBoxYesNo(%salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-TITLE"], %msg, %callback, "");
 };

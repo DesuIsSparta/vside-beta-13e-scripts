@@ -9,8 +9,9 @@ function toggleAnimatorPanel(%target) {
     animatorPanel.defaultTarget = %target;
     if (!(%target $= "")) {
         animatorPanel.open();
+    } else {
+        toggleVisibleState(animatorPanel);
     }
-    toggleVisibleState(animatorPanel);
 };
 function animatorPanel::open(%this) {
     %this.init();
@@ -37,8 +38,9 @@ function animatorPanel::tryTarget(%this, %shape) {
     %name = admin::getTargetName(%shape);
     if (isObject(%shape)) {
         %classname = admin::getFormattedClassName(%shape.getClassName());
+    } else {
+        %classname = admin::getFormattedClassName("special");
     }
-    %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
     animatorPanelTargetsPopup.setText(%targetName);
 };
@@ -117,8 +119,9 @@ function animatorPanel::onGotTargetsList(%this, %theList) {
     animatorPanelTargetsPopup.sort();
     if (!((%n < %num) @ " " @ %this.defaultTarget $= "")) {
         animatorPanelTargetsPopup.setText(%this.defaultTarget);
+    } else {
+        animatorPanelTargetsPopup.setText(%nextItem);
     }
-    animatorPanelTargetsPopup.setText(%nextItem);
 };
 function animatorPanelTargetsPopup::onSelect(%this, %unused, %text) {
 };
@@ -127,14 +130,17 @@ function clientCmdBuildAnimatorTargetsList(%actionTagged, %item) {
     %action = detag(%actionTagged);
     if ((%action $= "begin")) {
         $animatorPanelTargetsList = "";
-    }
-    if ((%action $= "add")) {
-        if (($animatorPanelTargetsList $= "")) {
-            $animatorPanelTargetsList = %item;
+    } else {
+        if ((%action $= "add")) {
+            if (($animatorPanelTargetsList $= "")) {
+                $animatorPanelTargetsList = %item;
+            } else {
+                $animatorPanelTargetsList = $animatorPanelTargetsList @ "\n" @ %item;
+            }
+        } else {
+            if ((%action $= "finish")) {
+                animatorPanel.onGotTargetsList($animatorPanelTargetsList);
+            }
         }
-        $animatorPanelTargetsList = $animatorPanelTargetsList @ "\n" @ %item;
-    }
-    if ((%action $= "finish")) {
-        animatorPanel.onGotTargetsList($animatorPanelTargetsList);
     }
 };

@@ -4,9 +4,10 @@ function toggleClientProfiler(%val) {
         if ($clientProfilerEnabled) {
             $clientProfilerEnabled = 0;
             echo("Ending CLIENT profile session...");
+        } else {
+            $clientProfilerEnabled = 1;
+            echo("Starting CLIENT profile session...");
         }
-        $clientProfilerEnabled = 1;
-        echo("Starting CLIENT profile session...");
         profilerDump();
         profilerEnable($clientProfilerEnabled);
     }
@@ -17,8 +18,9 @@ function toggleServerProfiler(%val) {
     if (%val) {
         if ($serverProfilerEnabled) {
             $serverProfilerEnabled = 0;
+        } else {
+            $serverProfilerEnabled = 1;
         }
-        $serverProfilerEnabled = 1;
         commandToServer('profilerEnable', $serverProfilerEnabled);
     }
 };
@@ -29,8 +31,9 @@ function serverCmdprofilerEnable(%client, %val) {
     }
     if (%val) {
         echo("Starting SERVER profile session...");
+    } else {
+        echo("Ending SERVER profile session...");
     }
-    echo("Ending SERVER profile session...");
     profilerDump();
     profilerEnable(%val);
 };

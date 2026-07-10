@@ -22,9 +22,10 @@ function displayStompedObjectNameErrorsReally() {
         %skip = 0;
         if ((%name $= "ClientSeatDisplayData")) {
             %skip = 1;
-        }
-        if ((%name $= "ClientSeatListeningDisplayData")) {
-            %skip = 1;
+        } else {
+            if ((%name $= "ClientSeatListeningDisplayData")) {
+                %skip = 1;
+            }
         }
         if (!%skip) {
             %realCount = (%realCount + 1.0);

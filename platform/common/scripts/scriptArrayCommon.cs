@@ -23,8 +23,9 @@ function ScriptArray::set(%this, %index, %value) {
     }
     if ((%index == %this.numElements)) {
         %this.append(%value);
+    } else {
+        %this.Array[%index] = %value;
     }
-    %this.Array[%index] = %value;
 };
 function ScriptArray::size(%this) {
     return %this.numElements;
@@ -38,8 +39,9 @@ function ScriptArray::deleteMembers(%this) {
         %element = %this.Array[%n];
         if (isObject(%element)) {
             %element.delete();
+        } else {
+            error(getScopeName() @ " " @ "- called on non-object member: \"" @ %element @ "\":" @ " " @ getDebugString(%this) @ " " @ getTrace());
         }
-        error(getScopeName() @ " " @ "- called on non-object member: \"" @ %element @ "\":" @ " " @ getDebugString(%this) @ " " @ getTrace());
         %n = (%n + 1.0);
     }
     %this.clear();

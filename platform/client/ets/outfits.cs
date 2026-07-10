@@ -35,8 +35,9 @@ function outfits_makeDefault(%stringMap) {
     if (isObject($player)) {
         %gender = $player.getGender();
         (%m >= 0.0);
+    } else {
+        %gender = $UserPref::Player::gender;
     }
-    %gender = $UserPref::Player::gender;
     %stringMap.put("currentOutfit", "A");
 };
 function outfits_persist() {
@@ -98,8 +99,9 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
         $Player::Name[$userpref::player::initialSkus @ $Player::Name] = %stringMap.get("initialOutfitAndBody");
         if (!(SkuManager.filterSkusGender($Player::Name[$userpref::player::initialSkus @ $Player::Name], "f") $= $Player::Name[$userpref::player::initialSkus @ $Player::Name])) {
             %skusGender = "m";
+        } else {
+            %skusGender = "f";
         }
-        %skusGender = "f";
         if (!(%skusGender $= $UserPref::Player::gender)) {
             error(getScopeName() @ " " @ "incoming SKUs do not match gender. outfit will likely be old-school default.");
         }
@@ -116,8 +118,9 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
             %stringMap.put($UserPref::Player::gender @ "Body", %skusBody);
             %stringMap.put($UserPref::Player::gender @ "A", %skusOutfit);
             schedule(500, 0, "outfits_persist");
+        } else {
+            error(getScopeName() @ " " @ "- got" @ " " @ $UserPref::Player::gender @ " " @ "expected" @ " " @ $Player::Name[$userpref::player::initialSkusGender @ $Player::Name]);
         }
-        error(getScopeName() @ " " @ "- got" @ " " @ $UserPref::Player::gender @ " " @ "expected" @ " " @ $Player::Name[$userpref::player::initialSkusGender @ $Player::Name]);
         deleteVariables("$userpref::player::initialSkus" @ $Player::Name);
         deleteVariables("$userpref::player::initialSkusGender" @ $Player::Name);
     }
@@ -187,9 +190,10 @@ function Player::switchOutfitTo(%unused, %outfitName) {
         if ((%idx == -(1.0))) {
             %activeSkus = %activeSkus @ " " @ %helpmesku;
         }
-    }
-    if ((%idx >= 0.0)) {
-        %activeSkus = removeWord(%activeSkus, %idx);
+    } else {
+        if ((%idx >= 0.0)) {
+            %activeSkus = removeWord(%activeSkus, %idx);
+        }
     }
     commandToServer('SetActiveSkus', %activeSkus);
     return 1;

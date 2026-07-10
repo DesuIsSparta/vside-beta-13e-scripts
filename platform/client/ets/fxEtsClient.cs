@@ -9,11 +9,12 @@ function fxEts::updateExposureFilter() {
     }
     if (($UserPref::Video::exposureQualitySetting == 0.0)) {
         return;
-    }
-    if (($renderQuality == 0.0)) {
-    }
-    if (($UserPref::Video::exposureQualitySetting == 3.0)) {
-        return;
+    } else {
+        if (($renderQuality == 0.0)) {
+        }
+        if (($UserPref::Video::exposureQualitySetting == 3.0)) {
+            return;
+        }
     }
     %valSld = $UserPref::Video::Exposure;
     %colSld = %valSld @ " " @ %valSld @ " " @ %valSld @ " " @ 1;
@@ -77,9 +78,10 @@ function fxEts::TODTimer() {
     fxEts::TODTick();
     if (($fxEts::TOD::ColorModSamplesNum <= 1.0)) {
         error("only one or fewer color samples, turning off TODTimer.");
-    }
-    if (($fxEts::TODTimerPeriod > 0.0)) {
-        $fxEts::TODTimerID = schedule($fxEts::TODTimerPeriod, 0, "eval", "fxEts::TODTimer();");
+    } else {
+        if (($fxEts::TODTimerPeriod > 0.0)) {
+            $fxEts::TODTimerID = schedule($fxEts::TODTimerPeriod, 0, "eval", "fxEts::TODTimer();");
+        }
     }
 };
 function ClientCmdTODColorMods(%s) {

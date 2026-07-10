@@ -16,7 +16,8 @@ function GrowingPlantClient::NamePlantDialogSubmit(%newName) {
 function GrowingPlantClient::isPlant(%plantSkuOrObject) {
     if (isObject(%plantSkuOrObject)) {
         %sku = %plantSkuOrObject.nugget.sku;
+    } else {
+        %sku = %plantSkuOrObject;
     }
-    %sku = %plantSkuOrObject;
     return (findWord($gGrowingPlantSkuList, %sku) >= 0.0);
 };

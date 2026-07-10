@@ -17,8 +17,9 @@ function testStringsMaster() {
         if (%succ) {
             echo("test passed:" @ " " @ %n[%test @ %n]);
             %passCount = (%passCount + 1.0);
+        } else {
+            error("test failed:" @ " " @ %n[%test @ %n]);
         }
-        error("test failed:" @ " " @ %n[%test @ %n]);
         %n = (%n + 1.0);
     }
     echo("testStringsMaster():" @ " " @ %passCount @ " " @ "of" @ " " @ %testCount @ " " @ "passed," @ " " @ (%testCount - %passCount) @ " " @ "failed.");

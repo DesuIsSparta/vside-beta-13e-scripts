@@ -5,8 +5,9 @@ function ShapeBase::setDamageDt(%this, %damageAmount, %damageType) {
     if (!(%obj.getState() $= "Dead")) {
         %this.Damage(0, "0 0 0", %damageAmount, %damageType);
         %obj.damageSchedule = %obj.schedule(50, "setDamageDt", %damageAmount, %damageType);
+    } else {
+        %obj.damageSchedule = "";
     }
-    %obj.damageSchedule = "";
 };
 function ShapeBase::clearDamageDt(%this) {
     if (!(%obj.damageSchedule $= "")) {

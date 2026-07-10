@@ -7,8 +7,9 @@ function ValidateRequest::onError(%this, %errorNum, %errorName) {
     }
     if ($Insecure) {
         %this.connection.connectCallback("");
+    } else {
+        %this.connection.connectCallback("CR_TOKEN");
     }
-    %this.connection.connectCallback("CR_TOKEN");
     return;
 };
 function ValidateRequest::onDone(%this) {
@@ -37,8 +38,9 @@ function ValidateRequest::isTooFullForPlayer(%this, %roles) {
     if ((ClientGroup.getCount() >= $Pref::Server::MaxPlayers)) {
         if (roles::maskHasRoleString(mInt(%roles), "staff") || roles::maskHasRoleString(mInt(%roles), "moderator") || roles::maskHasRoleString(mInt(%roles), "press") || roles::maskHasRoleString(mInt(%roles), "celeb")) {
             %bypassing = "but bypassing";
+        } else {
+            %ret = 1;
         }
-        %ret = 1;
         log("login", "warn", %this.getInfoString() @ " " @ "server full at:" @ " " @ ClientGroup.getCount() @ " " @ %bypassing @ " " @ "for" @ " " @ %this.registeredName);
     }
     return %ret;
@@ -196,8 +198,9 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
     %this.ValidateRequest = %validateRequest;
     if ($Insecure) {
         %validateRequest.onError();
+    } else {
+        %validateRequest.start();
     }
-    %validateRequest.start();
     log("login", "info", "GameConnection::onConnectRequest: " @ " " @ getDebugString(%this) @ " " @ getDebugString(%this.ValidateRequest));
     return;
 };
@@ -223,9 +226,10 @@ function GameConnection::onConnect(%client, %name, %token) {
     if ((%client.getAddress() $= "local")) {
         %client.isAdmin = 1;
         %client.isSuperAdmin = 1;
+    } else {
+        %client.isAdmin = 0;
+        %client.isSuperAdmin = 0;
     }
-    %client.isAdmin = 0;
-    %client.isSuperAdmin = 0;
     %client.armor = "Light";
     %client.race = "Human";
     %client.skin = addTaggedString("base");

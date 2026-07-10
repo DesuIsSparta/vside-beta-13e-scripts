@@ -25,10 +25,11 @@ function FMod::FadeOutVolume(%this) {
     if ((0.0 >= fmodGetTopChannelVolume())) {
         fmodStopTopChannel();
         return;
+    } else {
+        fmodSetTopChannelVolume((fmodGetTopChannelVolume() - 0.06));
+        cancel($FMod::FadeoutTimer);
+        $FMod::FadeoutTimer = %this.schedule(50, "FadeOutVolume");
     }
-    fmodSetTopChannelVolume((fmodGetTopChannelVolume() - 0.06));
-    cancel($FMod::FadeoutTimer);
-    $FMod::FadeoutTimer = %this.schedule(50, "FadeOutVolume");
 };
 function FMod::FadeInVolume(%this) {
     fmodSetTopChannelVolume(fmodGetSourceVolume());
@@ -44,8 +45,9 @@ function FMod::isMusicOn(%this) {
     if (!(%this.streamUrl $= "")) {
         %value = fmodIsTopChannelAvailable();
         return %value;
+    } else {
+        return 0;
     }
-    return 0;
 };
 function FMod::setStreamUrl(%this, %streamUrl) {
     %this.streamUrl = %streamUrl;
@@ -86,8 +88,9 @@ function FMod::getAttenuation(%this) {
 function FMod::pushStream(%spaceId, %streamUrl) {
     if ((strstr(%streamUrl, ".doppelganger.com") >= 0.0) || (strstr(%streamUrl, ".vside.com") >= 0.0) || (strstr(%streamUrl, ".eviltwinstudios.net") >= 0.0)) {
         %newStreamUrl = strreplace(%streamUrl, "http://", "http://" @ $Player::Name @ ":" @ $Token @ "@");
+    } else {
+        %newStreamUrl = %streamUrl;
     }
-    %newStreamUrl = %streamUrl;
     return fmodPushStream(%spaceId, %newStreamUrl);
 };
 function FMod::pushStreamWithVolume(%this, %spaceId, %streamUrl, %volume, %attenuation) {
@@ -96,8 +99,9 @@ function FMod::pushStreamWithVolume(%this, %spaceId, %streamUrl, %volume, %atten
         fmodSetAttenuation(%attenuation);
         if (!(%attenuation $= "")) {
             musicAttenuationTimer();
+        } else {
+            fmodSetTopChannelVolume(%volume);
         }
-        fmodSetTopChannelVolume(%volume);
         MusicHud.update();
     }
 };
@@ -106,8 +110,9 @@ function FMod::popStream(%this, %spaceId) {
     %attenuation = fmodGetAttenuation();
     if (!(%attenuation $= "")) {
         musicAttenuationTimer();
+    } else {
+        fmodSetTopChannelVolume(fmodGetSourceVolume());
     }
-    fmodSetTopChannelVolume(fmodGetSourceVolume());
     fmodSetAttenuation(%attenuation);
     MusicHud.update();
 };

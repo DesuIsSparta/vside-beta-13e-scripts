@@ -71,12 +71,14 @@ function test::getRandomGenre() {
     $genre = "";
     if ((%num == 0.0)) {
         $genre = "i";
-    }
-    if ((%num == 1.0)) {
-        $genre = "h";
-    }
-    if ((%num == 2.0)) {
-        $genre = "p";
+    } else {
+        if ((%num == 1.0)) {
+            $genre = "h";
+        } else {
+            if ((%num == 2.0)) {
+                $genre = "p";
+            }
+        }
     }
     return $genre;
 };
@@ -94,17 +96,21 @@ function doAction() {
     if ((%num == 0.0)) {
         $genre = test::getRandomGenre();
         ClosetGui.selectGenre($genre);
-    }
-    if ((%num == 1.0)) {
-        test::doDance();
-    }
-    if ((%num == 2.0)) {
-        test::doWhisper();
-    }
-    if ((%num == 3.0)) {
-        test::doAddBuddy();
-    }
-    if ((%num == 4.0)) {
-        test::doRemoveBuddy();
+    } else {
+        if ((%num == 1.0)) {
+            test::doDance();
+        } else {
+            if ((%num == 2.0)) {
+                test::doWhisper();
+            } else {
+                if ((%num == 3.0)) {
+                    test::doAddBuddy();
+                } else {
+                    if ((%num == 4.0)) {
+                        test::doRemoveBuddy();
+                    }
+                }
+            }
+        }
     }
 };

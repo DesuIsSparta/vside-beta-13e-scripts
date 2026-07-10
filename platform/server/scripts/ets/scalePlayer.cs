@@ -12,12 +12,14 @@ function Player::setHeight(%this, %height) {
         %h = (%h + %height);
         if ((%h > $Pref::Server::playerHeightMax)) {
             %h = $Pref::Server::playerHeightMax;
+        } else {
+            if ((%h < $Pref::Server::playerHeightMin)) {
+                %h = $Pref::Server::playerHeightMin;
+            }
         }
-        if ((%h < $Pref::Server::playerHeightMin)) {
-            %h = $Pref::Server::playerHeightMin;
-        }
+    } else {
+        %h = %height;
     }
-    %h = %height;
     %sxy = (((%h - 1.0) * $Pref::Server::playerHeightWidthFactor) + 1.0);
     %this.setScale(%sxy @ " " @ %sxy @ " " @ %h);
     return;

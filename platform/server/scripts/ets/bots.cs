@@ -52,8 +52,9 @@ function serverCmdOneShotBotsBlahBlah(%client, %toPlayer) {
     }
     if (%toPlayer) {
         AIManager.BotsBlahBlahOneShot(%client.Player);
+    } else {
+        AIManager.BotsBlahBlahOneShot();
     }
-    AIManager.BotsBlahBlahOneShot();
     return;
 };
 function serverCmdToggleBotsEavesdrop(%client) {
@@ -130,8 +131,9 @@ function AIPlayer::zombieAttack(%this, %position, %aimAt, %obj, %theta) {
     %this.setMoveDestination(%position, 0);
     if (!(%obj $= "")) {
         %this.setAimObject(%obj);
+    } else {
+        %this.setAimLocation(%aimAt);
     }
-    %this.setAimLocation(%aimAt);
     return;
 };
 function AIManager::zombiesDance(%this, %param) {

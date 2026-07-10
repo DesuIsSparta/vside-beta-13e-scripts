@@ -65,8 +65,9 @@ function InstrumentRegistry::getInstrumentObject(%this, %instrumentName) {
 function InstrumentRegistry::isInstrument(%this, %instrumentNameOrObject) {
     if (isObject(%instrumentNameOrObject)) {
         %instrumentName = %instrumentNameOrObject.name;
+    } else {
+        %instrumentName = %instrumentNameOrObject;
     }
-    %instrumentName = %instrumentNameOrObject;
     return %this.instrumentsList.hasKey(%instrumentName);
 };
 function InstrumentRegistry::isInstrumentGenre(%this, %genre) {

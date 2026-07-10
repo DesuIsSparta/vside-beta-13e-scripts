@@ -2,8 +2,9 @@ function TryFixBadWords(%dry) {
     %doFilter = $UserPref::Player::filterProfanity;
     if (%doFilter) {
         return fixBadWords(%dry);
+    } else {
+        return %dry;
     }
-    return %dry;
 };
 function Player::onGotTextFields(%this) {
     %this.setAwayMessage(TryFixBadWords(%this.getAwayMessage()));
@@ -25,9 +26,10 @@ function setIdle(%idle, %message) {
             if (!isIdle() || !(%message $= $gCurrentAwayMessage)) {
                 onIdle(%message);
             }
-        }
-        if (isIdle()) {
-            onUnidle();
+        } else {
+            if (isIdle()) {
+                onUnidle();
+            }
         }
     }
     setGameInterfaceIdle(%idle);
@@ -57,13 +59,15 @@ function onUnidle() {
     }
     if (ClosetGui.visible) {
         commandToServer('setAfkOn', $ClosetGuiOpenMessage);
+    } else {
+        getUserActivityMgr().setActivityActive("idle", 0);
     }
-    getUserActivityMgr().setActivityActive("idle", 0);
 };
 function awayOperation(%line) {
     DefaultAwayMsgEdit.applySettings();
     if (isDefined("%line")) {
         setIdle(1, %line);
+    } else {
+        setIdle(1);
     }
-    setIdle(1);
 };

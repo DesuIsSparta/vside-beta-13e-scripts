@@ -80,8 +80,9 @@ function Player::startImpressionsTimer(%this) {
 function Player::takeImpressionsTimer(%this) {
     if (%this.takeImpressions()) {
         %this.schedule(500, "takeImpressionsTimer");
+    } else {
+        %this.schedule(2000, "takeImpressionsTimer");
     }
-    %this.schedule(2000, "takeImpressionsTimer");
 };
 function Player::takeImpressions(%this) {
     if (!isObject($GameConnection)) {
@@ -106,27 +107,31 @@ function forceOnscreen(%top, %left, %bottom, %right, %hudwidth, %hudheight) {
     %leftB = (%leftslop > %rightslop) ? 1 : 0;
     if (%topB) {
         %ypos = (%top - %hudheight);
+    } else {
+        %ypos = %bottom;
     }
-    %ypos = %bottom;
     if (%leftB) {
         %xPos = (%left - %hudwidth);
+    } else {
+        %xPos = %right;
     }
-    %xPos = %right;
     if (%leftB) {
         if ((%xPos < 0.0)) {
             %xPos = 0;
         }
-    }
-    if (((%xPos + %hudwidth) > %screenright)) {
-        %xPos = (%screenright - %hudwidth);
+    } else {
+        if (((%xPos + %hudwidth) > %screenright)) {
+            %xPos = (%screenright - %hudwidth);
+        }
     }
     if (%topB) {
         if ((%ypos < 0.0)) {
             %ypos = 0;
         }
-    }
-    if (((%ypos + %hudheight) > %screenbottom)) {
-        %ypos = (%screenbottom - %hudheight);
+    } else {
+        if (((%ypos + %hudheight) > %screenbottom)) {
+            %ypos = (%screenbottom - %hudheight);
+        }
     }
     return %xPos @ " " @ %ypos;
 };
@@ -148,12 +153,14 @@ function Player::onAddClient(%this) {
     if ((%relation $= "friends")) {
         %this.setBuddy(1);
         %this.setAmFave(1);
-    }
-    if ((%relation $= "favorite")) {
-        %this.setBuddy(1);
-    }
-    if ((%relation $= "fan")) {
-        %this.setAmFave(1);
+    } else {
+        if ((%relation $= "favorite")) {
+            %this.setBuddy(1);
+        } else {
+            if ((%relation $= "fan")) {
+                %this.setAmFave(1);
+            }
+        }
     }
     %this.setIgnore(BuddyHudWin.getIgnoreStatus(%this.getShapeName()));
     %this.rebuildHudCtrl();
@@ -219,8 +226,9 @@ function Player::rebuildHudCtrl(%this) {
     %bitmap = "";
     if (isObject($player)) {
         %localPlayerIsStaffOrMod = $player.isStaffOrModerator();
+    } else {
+        %localPlayerIsStaffOrMod = 0;
     }
-    %localPlayerIsStaffOrMod = 0;
     %bitmapName = %this.getBadgeBitmapName();
     %hudCtrl.roleCtrl.setBitmap(%bitmapName);
 };
@@ -241,8 +249,9 @@ function Player::getAffinityBadgeBitmapName(%this) {
     }
     if ((%level == 0.0)) {
         %ret = "";
+    } else {
+        %ret = getBitmapFilename("badge", "affinity_" @ %level);
     }
-    %ret = getBitmapFilename("badge", "affinity_" @ %level);
     return %ret;
 };
 $gRoleBadgeBitmapNamesInitted = 0;
@@ -274,9 +283,10 @@ function Player::getRoleBadgeBitmapName(%this) {
                 if ($player.rolesPermissionCheckNoWarn(%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"])) {
                     %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
                 }
-            }
-            if ((%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"] $= "")) {
-                %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
+            } else {
+                if ((%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"] $= "")) {
+                    %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
+                }
             }
         }
         %n = (%n + 1.0);

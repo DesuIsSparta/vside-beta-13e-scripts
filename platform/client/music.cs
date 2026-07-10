@@ -27,8 +27,9 @@ function musicAttenuationTimer() {
     if (!($Music::service.getAttenuation() $= "")) {
         Music::adjustVolume();
         schedule(250, 0, "musicAttenuationTimer");
+    } else {
+        $Music::lastPos = "0 0 0";
     }
-    $Music::lastPos = "0 0 0";
 };
 function Music::attenuate(%playerPos, %soundPos, %maxDistance, %maxVolume) {
     %dist = VectorLen(VectorDist(%playerPos, %soundPos));
@@ -54,8 +55,9 @@ function Music::toggleMute() {
     if ((strstr($Music::service.getNamespaceList(), "VideoRenderer") == -(1.0))) {
         $Music::service.setMute($UserPref::Audio::mute);
         $Music::service.setMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
+    } else {
+        fmodSetMute($UserPref::Audio::mute);
     }
-    fmodSetMute($UserPref::Audio::mute);
     MuteButton.setMuted($UserPref::Audio::mute);
     MusicTabToggleSoundTxt.updateText();
     if (isObject(MuteCheckBox)) {
@@ -223,6 +225,7 @@ function GetMusicStreamsRequest::onDone(%this) {
 function MuteButton::setMuted(%this, %flag) {
     if (%flag) {
         %this.setBitmap("platform/client/buttons/muted");
+    } else {
+        %this.setBitmap("platform/client/buttons/unmuted");
     }
-    %this.setBitmap("platform/client/buttons/unmuted");
 };

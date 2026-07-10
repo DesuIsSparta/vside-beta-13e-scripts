@@ -3,8 +3,9 @@ function clientCmdClientSideCallTriggerEnterOrLeave(%callName, %isEntry, %param0
     %fnName = $gClientCallsList.get(%callName);
     if (!isFunction(%fnName)) {
         error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
+    } else {
+        call(%fnName, %isEntry, %param0, %param1, %param2, %param3);
     }
-    call(%fnName, %isEntry, %param0, %param1, %param2, %param3);
 };
 $gClientCallsList = "";
 function initClientCalls() {
@@ -55,9 +56,10 @@ function gatewayeExitTransitionShowDialog(%isEntry, %showCancel) {
     if (!($Player::inviterOnline $= "")) {
         %body = %body @ "<br>.. or, you could visit " @ " " @ $Player::inviterOnline @ ", who invited you to vSide!";
         %buttons = %buttons @ "\t" @ "Visit" @ " " @ $Player::inviterOnline;
-    }
-    if (!($Player::inviter $= "")) {
-        %body = %body @ "<br><br>(You were invited to vSide by" @ " " @ $Player::inviter @ ", but" @ " " @ getPronounHeSheIt($Player::inviterGender) @ " " @ "'s offline right now)";
+    } else {
+        if (!($Player::inviter $= "")) {
+            %body = %body @ "<br><br>(You were invited to vSide by" @ " " @ $Player::inviter @ ", but" @ " " @ getPronounHeSheIt($Player::inviterGender) @ " " @ "'s offline right now)";
+        }
     }
     if (%showCancel) {
         %buttons = %buttons @ "\t" @ "Cancel";

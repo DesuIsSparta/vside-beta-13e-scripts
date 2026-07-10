@@ -254,8 +254,9 @@ function NPCManager::assertOutfits(%this) {
                 %outfit = newOutfit(%w);
                 if ((%os $= "random")) {
                     %outfit.makeRandom();
+                } else {
+                    %outfit.deserialize(%os);
                 }
-                %outfit.deserialize(%os);
                 %outfit.assert(%npc);
             }
         }
@@ -285,8 +286,9 @@ function NPCManager::addAnimToSet(%this, %setName, %val) {
     %prev = %this.animSets.get(%setName);
     if (!(%prev $= "")) {
         %newThing = %prev @ " " @ %val;
+    } else {
+        %newThing = %val;
     }
-    %newThing = %val;
     %this.animSets.put(%setName, %newThing);
     %sets = %this.animSets.get("setNames");
     if ((findWord(%sets, %setName) != -(1.0))) {
@@ -294,8 +296,9 @@ function NPCManager::addAnimToSet(%this, %setName, %val) {
     }
     if (!(%sets $= "")) {
         %newThing = %sets @ " " @ %setName;
+    } else {
+        %newThing = %setName;
     }
-    %newThing = %setName;
     %this.animSets.put("setNames", %newThing);
     return;
 };

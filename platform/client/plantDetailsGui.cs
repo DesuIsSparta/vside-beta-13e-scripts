@@ -28,12 +28,14 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
         if ((%currentState == %totalStates)) {
             %info = %currentState[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsFullyGrown"];
         }
-    }
-    if ((%status $= "DRY")) {
-        %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDry"];
-    }
-    if ((%status $= "DEAD")) {
-        %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
+    } else {
+        if ((%status $= "DRY")) {
+            %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDry"];
+        } else {
+            if ((%status $= "DEAD")) {
+                %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
+            }
+        }
     }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
     PlantDetailsGui.open();

@@ -7,8 +7,9 @@ function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
         }
         InspectPanelMLText.setText(%text);
         %this.open();
+    } else {
+        InspectPanelMLText.setText("I can't find the file: " @ %mlTextfileName);
     }
-    InspectPanelMLText.setText("I can't find the file: " @ %mlTextfileName);
     %fo.delete();
 };
 function clientCmdShowInspectionPanel(%mlTextfileName) {
@@ -34,30 +35,33 @@ function MLScrollInspectPanel::updateSize(%this) {
         %width = 358;
         %posX = ((%screenWidth - %width) / 2.0);
         %posY = 0;
-    }
-    if ((%screenHeight == 363.0)) {
-    }
-    if ((%screenWidth == 640.0)) {
-        %height = (161.0 * 2.0);
-        %width = (161.0 * 3.0);
-        %posX = ((%screenWidth - %width) / 2.0);
-        %posY = 0;
-    }
-    if ((%screenHeight == 544.0)) {
-    }
-    if ((%screenWidth == 960.0)) {
-        %height = (242.0 * 2.0);
-        %width = (242.0 * 3.0);
-        %posX = ((%screenWidth - %width) / 2.0);
-        %posY = 0;
-    }
-    if ((%screenHeight == 714.0)) {
-    }
-    if ((%screenWidth == 1260.0)) {
-        %height = (317.0 * 2.0);
-        %width = (317.0 * 3.0);
-        %posX = ((%screenWidth - %width) / 2.0);
-        %posY = 0;
+    } else {
+        if ((%screenHeight == 363.0)) {
+        }
+        if ((%screenWidth == 640.0)) {
+            %height = (161.0 * 2.0);
+            %width = (161.0 * 3.0);
+            %posX = ((%screenWidth - %width) / 2.0);
+            %posY = 0;
+        } else {
+            if ((%screenHeight == 544.0)) {
+            }
+            if ((%screenWidth == 960.0)) {
+                %height = (242.0 * 2.0);
+                %width = (242.0 * 3.0);
+                %posX = ((%screenWidth - %width) / 2.0);
+                %posY = 0;
+            } else {
+                if ((%screenHeight == 714.0)) {
+                }
+                if ((%screenWidth == 1260.0)) {
+                    %height = (317.0 * 2.0);
+                    %width = (317.0 * 3.0);
+                    %posX = ((%screenWidth - %width) / 2.0);
+                    %posY = 0;
+                }
+            }
+        }
     }
     %this.resize(%posX, %posY, %width, %height);
     InspectPanelScrollControl.scrollToTop();

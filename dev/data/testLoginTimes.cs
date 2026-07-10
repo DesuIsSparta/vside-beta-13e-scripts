@@ -22,8 +22,9 @@ function doSomething() {
     WorldMap.exit();
     if (($cityIndex <= $maxCities)) {
         schedule(3000, 0, testLoginTimes);
+    } else {
+        skeletonClient::reallyQuit();
     }
-    skeletonClient::reallyQuit();
 };
 function initCities() {
     %i = 0;

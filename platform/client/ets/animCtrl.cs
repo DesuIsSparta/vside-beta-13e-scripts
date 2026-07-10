@@ -56,8 +56,9 @@ function AnimCtrl::tick(%this) {
     if ((%this.currentFrame == %this.numFrames)) {
         if (%this.loop) {
             %this.currentFrame = 0;
+        } else {
+            %this.stop();
         }
-        %this.stop();
     }
 };
 function AnimCtrl::setCurrentFrame(%this, %frame) {

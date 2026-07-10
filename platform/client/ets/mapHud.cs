@@ -59,18 +59,20 @@ function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text) 
         geMapHud2DCustomSpaceModeTitle.setText("");
         geMapHud2DCustomSpaceModeText.setText("");
         geMapHud2DNotAvail.setVisible(1);
+    } else {
+        geMapHud2DDragNZoom.setVisible(0);
+        geMapHud2DNotAvail.setVisible(0);
+        geMapHud2DCustomSpaceModeTitle.setText(%title);
+        geMapHud2DCustomSpaceModeTitle.setVisible(1);
+        geMapHud2DCustomSpaceModeText.setText(%text);
+        geMapHud2DCustomSpaceModeText.setVisible(1);
+        waitAFrameAndCall("geLocalMapContainer_repositionTitleText");
     }
-    geMapHud2DDragNZoom.setVisible(0);
-    geMapHud2DNotAvail.setVisible(0);
-    geMapHud2DCustomSpaceModeTitle.setText(%title);
-    geMapHud2DCustomSpaceModeTitle.setVisible(1);
-    geMapHud2DCustomSpaceModeText.setText(%text);
-    geMapHud2DCustomSpaceModeText.setVisible(1);
-    waitAFrameAndCall("geLocalMapContainer_repositionTitleText");
 };
 function geLocalMapContainer_repositionTitleText() {
     %newTitleTop = ((getWord(geMapHud2DCustomSpaceModeTitleContainer.getExtent(), 1) - getWord(geMapHud2DCustomSpaceModeTitle.getExtent(), 1)) / 2.0);
     if ((%newTitleTop < 1.0)) {
+    } else {
     }
     %newTitleTop = %newTitleTop;
     1;
@@ -92,8 +94,9 @@ function geLocalMapZoomOut::onMouseUp(%this) {
             cancel($gGeMapHud2DDragNZoomTimer);
             $gGeMapHud2DDragNZoomTimer = "";
         }
+    } else {
+        geMapHud2DDragNZoom.doScale((1.0 / $gGeMapHud2DDragNZoomRateAmountPerOneShot));
     }
-    geMapHud2DDragNZoom.doScale((1.0 / $gGeMapHud2DDragNZoomRateAmountPerOneShot));
 };
 function geLocalMapZoomIn::onMouseDown(%this) {
     if ($gDragNZoomIsReallySmooth) {
@@ -106,8 +109,9 @@ function geLocalMapZoomIn::onMouseUp(%this) {
             cancel($gGeMapHud2DDragNZoomTimer);
             $gGeMapHud2DDragNZoomTimer = "";
         }
+    } else {
+        geMapHud2DDragNZoom.doScale($gGeMapHud2DDragNZoomRateAmountPerOneShot);
     }
-    geMapHud2DDragNZoom.doScale($gGeMapHud2DDragNZoomRateAmountPerOneShot);
 };
 function geMapHud2DDragNZoom::zoomTick(%this, %isZoomIn) {
     if (!($gGeMapHud2DDragNZoomTimer $= "")) {
@@ -115,6 +119,7 @@ function geMapHud2DDragNZoom::zoomTick(%this, %isZoomIn) {
     }
     %amount = (($gGeMapHud2DDragNZoomTickPeriodMS / 1000.0) * $gGeMapHud2DDragNZoomRateAmountPerSecond);
     if (%isZoomIn) {
+    } else {
     }
     %amount = (1.0 - %amount);
     (1.0 + %amount);
@@ -154,23 +159,28 @@ function Player::updateMapIcon(%this) {
     if ((%this == $player) || %this.getShowOnRadar() || $player.rolesPermissionCheckNoWarn("radarSeeAll")) {
         %gender = %this.getGender();
         if ((%this.getShapeName() $= $Player::Name)) {
+        } else {
         }
         %relation = %this.isFriend() ? "friend" : "other";
         "self";
         %mode = "reg";
         if (%this.hasRoleString("celeb")) {
+        } else {
         }
         %mode = %mode;
         "celeb";
         if (%this.isClassAIPlayer()) {
+        } else {
         }
         %mode = %mode;
         "robot";
         if (%this.hasSpecialSku("guidebadge")) {
+        } else {
         }
         %mode = %mode;
         "guide";
         if (!%this.getShowOnRadar()) {
+        } else {
         }
         %mode = %mode;
         "hidden";

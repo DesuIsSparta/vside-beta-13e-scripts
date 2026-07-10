@@ -19,8 +19,9 @@ function doLookAt(%obj, %isDanceWith, %isKiss) {
     if ((%obj != $player)) {
         if (isObject(%obj)) {
             %ghostID = %obj.getGhostID();
+        } else {
+            %ghostID = -(1.0);
         }
-        %ghostID = -(1.0);
         if ((%ghostID == 0.0)) {
             %ghostID = -(1.0);
         }
@@ -46,8 +47,9 @@ function doPointAt(%obj) {
     if ((%obj != $player)) {
         if (isObject(%obj)) {
             %ghostID = %obj.getGhostID();
+        } else {
+            %ghostID = -(1.0);
         }
-        %ghostID = -(1.0);
         if ((%ghostID == 0.0)) {
             %ghostID = -(1.0);
         }

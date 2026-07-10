@@ -8,16 +8,18 @@ function doLoginCheck() {
         schedule(2000, 0, logoutAndQuit);
         echo("CACHE: Telling server to shutdown.");
         commandToServer('KillServer');
+    } else {
+        if (($iterationsWaited == 400.0)) {
+            error("CACHE->ERROR : Giving up. Waited for 20 minutes and nothing happended");
+            schedule(2000, 0, logoutAndQuit);
+            echo("CACHE: Telling server to shutdown.");
+            commandToServer('KillServer');
+        } else {
+            echo("CACHE: Nothing yet....");
+            $iterationsWaited = ($iterationsWaited + 1.0);
+            schedule(3000, 0, doLoginCheck);
+        }
     }
-    if (($iterationsWaited == 400.0)) {
-        error("CACHE->ERROR : Giving up. Waited for 20 minutes and nothing happended");
-        schedule(2000, 0, logoutAndQuit);
-        echo("CACHE: Telling server to shutdown.");
-        commandToServer('KillServer');
-    }
-    echo("CACHE: Nothing yet....");
-    $iterationsWaited = ($iterationsWaited + 1.0);
-    schedule(3000, 0, doLoginCheck);
 };
 function logoutAndQuit() {
     logout(0);

@@ -78,7 +78,8 @@ function snapshotAvatarToolonCompleted(%request, %result) {
         if ($UserPref::Snapshots::View) {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
+    } else {
+        snapshotAvatarToolSet1.setVisible(1);
+        snapshotAvatarToolSet2.setVisible(0);
     }
-    snapshotAvatarToolSet1.setVisible(1);
-    snapshotAvatarToolSet2.setVisible(0);
 };

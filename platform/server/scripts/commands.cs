@@ -3,9 +3,10 @@ function serverCmdToggleCamera(%client) {
     if ((%control == %client.Player)) {
         %control = %client.Camera;
         %control.mode = toggleCameraFly;
+    } else {
+        %control = %client.Player;
+        %control.mode = observerFly;
     }
-    %control = %client.Player;
-    %control.mode = observerFly;
     %client.Camera.setFlyMode();
     %client.setControlObject(%control);
 };

@@ -53,16 +53,18 @@ function gui_DevOpts_ShowCamPos() {
 function gui_DevOpts_Toggle_WorldTextureLobotomyFile() {
     if (($DevPref::OpenGL::WorldTextureLobotomyFile $= "")) {
         $DevPref::OpenGL::WorldTextureLobotomyFile = "platform/client/ui/paperdolls/greychecks";
+    } else {
+        $DevPref::OpenGL::WorldTextureLobotomyFile = "";
     }
-    $DevPref::OpenGL::WorldTextureLobotomyFile = "";
     MessageBoxOK("lobotomize textures", "you will need to restart vSide for this to take effect", "");
     gui_DevOpts_SetTexturesButtons();
 };
 function gui_DevOpts_Toggle_PlayerTextureLobotomyFile() {
     if (($DevPref::OpenGL::PlayerTextureLobotomyFile $= "")) {
         $DevPref::OpenGL::PlayerTextureLobotomyFile = "projects/common/worlds/disco_floor";
+    } else {
+        $DevPref::OpenGL::PlayerTextureLobotomyFile = "";
     }
-    $DevPref::OpenGL::PlayerTextureLobotomyFile = "";
     MessageBoxOK("lobotomize textures", "you will need to restart vSide for this to take effect", "");
     gui_DevOpts_SetTexturesButtons();
 };

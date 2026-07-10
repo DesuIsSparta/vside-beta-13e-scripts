@@ -3,9 +3,10 @@ function Player::onGotSKUs(%this) {
     if (%this.hasMicrophone()) {
         %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
         %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
+    } else {
+        %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0);
+        %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 0, 0);
     }
-    %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0);
-    %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 0, 0);
     if (!(%this.getShapeName() $= $Player::Name)) {
         return;
     }
@@ -49,13 +50,15 @@ function Player::onGotSKUs(%this) {
     if ((%propSku $= "")) {
         if (isPropGenre(%currentGenre)) {
             %propGenre = %currentGenre;
+        } else {
+            %propGenre = "y";
         }
-        %propGenre = "y";
-    }
-    %propGenre = PropGenreMap.get(%propSku);
-    if ((%propGenre $= "")) {
-        error(getScopeName() @ " " @ "- could not find genre for sku" @ " " @ %propSku @ " " @ "using y." @ " " @ getTrace());
-        %propGenre = "y";
+    } else {
+        %propGenre = PropGenreMap.get(%propSku);
+        if ((%propGenre $= "")) {
+            error(getScopeName() @ " " @ "- could not find genre for sku" @ " " @ %propSku @ " " @ "using y." @ " " @ getTrace());
+            %propGenre = "y";
+        }
     }
     %currentGenreIsInstrumentGenre = InstrumentRegistryClient.isInstrumentGenre(%currentGenre);
     %currentGenreIsPropGenre = isPropGenre(%currentGenre);
@@ -63,30 +66,34 @@ function Player::onGotSKUs(%this) {
     }
     if (!(%currentGenre $= %instrumentGenre)) {
         commandToServer('EnterSpecialGenre', %instrumentGenre);
-    }
-    if ((%propSku $= "")) {
-    }
-    if (%currentGenreIsInstrumentGenre) {
-        commandToServer('ExitSpecialGenre', %currentGenre);
-    }
-    if (!(%propSku $= "")) {
-    }
-    if ((%instrumentGenre $= "")) {
-    }
-    if (!%currentGenreIsPropGenre) {
-        commandToServer('EnterSpecialGenre', %propGenre);
-    }
-    if ((%propSku $= "")) {
-    }
-    if (%currentGenreIsPropGenre) {
-        commandToServer('ExitSpecialGenre', %propGenre);
-    }
-    if (!(%propSku $= "")) {
-    }
-    if (%currentGenreIsPropGenre) {
-    }
-    if (!(%currentGenre $= %propGenre)) {
-        commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
+    } else {
+        if ((%propSku $= "")) {
+        }
+        if (%currentGenreIsInstrumentGenre) {
+            commandToServer('ExitSpecialGenre', %currentGenre);
+        } else {
+            if (!(%propSku $= "")) {
+            }
+            if ((%instrumentGenre $= "")) {
+            }
+            if (!%currentGenreIsPropGenre) {
+                commandToServer('EnterSpecialGenre', %propGenre);
+            } else {
+                if ((%propSku $= "")) {
+                }
+                if (%currentGenreIsPropGenre) {
+                    commandToServer('ExitSpecialGenre', %propGenre);
+                } else {
+                    if (!(%propSku $= "")) {
+                    }
+                    if (%currentGenreIsPropGenre) {
+                    }
+                    if (!(%currentGenre $= %propGenre)) {
+                        commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
+                    }
+                }
+            }
+        }
     }
     if ((%propSku $= "")) {
     }
@@ -173,20 +180,24 @@ function Player::resetSkuEffectsClient(%this) {
 function Player::trySkuEffectsClient(%this, %sku) {
     %si = SkuManager.findBySku(%sku);
     if (0) {
-    }
-    if (hasWord(%si.tags, "stagger3")) {
-        %this.staggerSetAmount(0.1);
-    }
-    if (hasWord(%si.tags, "stagger2")) {
-        %this.staggerSetAmount(0.05);
-    }
-    if (hasWord(%si.tags, "stagger1")) {
-        %this.staggerSetAmount(0.01);
+    } else {
+        if (hasWord(%si.tags, "stagger3")) {
+            %this.staggerSetAmount(0.1);
+        } else {
+            if (hasWord(%si.tags, "stagger2")) {
+                %this.staggerSetAmount(0.05);
+            } else {
+                if (hasWord(%si.tags, "stagger1")) {
+                    %this.staggerSetAmount(0.01);
+                }
+            }
+        }
     }
 };
 function SkuItem::getBitmapPath(%this) {
     if ((%this.skuType $= "swatch")) {
         %ret = getBitmapFilename(%this.skuType, getWord(%this.getTxtrNames(), 1));
+    } else {
+        %ret = getBitmapFilename(%this.skuType, getWord(%this.getTxtrNames(), 0));
     }
-    %ret = getBitmapFilename(%this.skuType, getWord(%this.getTxtrNames(), 0));
 };

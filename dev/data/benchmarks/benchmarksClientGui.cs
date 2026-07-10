@@ -33,8 +33,9 @@ function gui_Benchs_Metrics_Menu1::populate(%this) {
 function gui_Benchs_Metrics_Menu1::onSelect(%this, %unused, %text) {
     if ((%text $= "video") || (%text $= "texture")) {
         GLEnableMetrics(1);
+    } else {
+        GLEnableMetrics(0);
     }
-    GLEnableMetrics(0);
     metrics(%text);
 };
 function benchmarksGui::loadCameraTests(%this) {

@@ -568,13 +568,14 @@ function armor::doDismount(%this, %obj, %forced) {
     %numAttempts = 5;
     %success = -(1.0);
     %i = 0;
-    while ((%i < %numAttempts)) {
+    if ((%i < %numAttempts)) {
         %pos = VectorAdd(%oldPos, VectorScale(%i[%vec @ %i], 3));
         if (%obj.checkDismountPoint(%oldPos, %pos)) {
             %success = %i;
             %impulseVec = %i[%vec @ %i];
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     if (%forced) {
     }
@@ -623,6 +624,7 @@ function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType
     %location = "Body";
     %client = %obj.client;
     if (%sourceObject) {
+    } else {
     }
     %sourceClient = 0;
     %sourceObject;
@@ -669,21 +671,28 @@ function armor::onEnterMissionArea(%this, %obj) {
 };
 function armor::onEnterLiquid(%this, %obj, %unused, %type) {
     if ((%type == 0.0)) {
-    }
-    if ((%type == 1.0)) {
-    }
-    if ((%type == 2.0)) {
-    }
-    if ((%type == 3.0)) {
-    }
-    if ((%type == 4.0)) {
-        %obj.setDamageDt(%this, $DamageLava, "Lava");
-    }
-    if ((%type == 5.0)) {
-        %obj.setDamageDt(%this, $DamageHotLava, "Lava");
-    }
-    if ((%type == 6.0)) {
-        %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
+    } else {
+        if ((%type == 1.0)) {
+        } else {
+            if ((%type == 2.0)) {
+            } else {
+                if ((%type == 3.0)) {
+                } else {
+                    if ((%type == 4.0)) {
+                        %obj.setDamageDt(%this, $DamageLava, "Lava");
+                    } else {
+                        if ((%type == 5.0)) {
+                            %obj.setDamageDt(%this, $DamageHotLava, "Lava");
+                        } else {
+                            if ((%type == 6.0)) {
+                                %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
+                            } else {
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
     return (%type == 7.0);
 };

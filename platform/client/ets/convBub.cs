@@ -27,8 +27,9 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
     %newW = (%newW + 20.0);
     if (%makewidest) {
         %newW = %maxWidth;
+    } else {
+        %newW = mClamp(%newW, %minWidth, %maxWidth);
     }
-    %newW = mClamp(%newW, %minWidth, %maxWidth);
     %youngest = (%msgVec.getYoungestLineAge() * 0.001);
     if (%reset) {
         %youngest = 0;
@@ -36,11 +37,13 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
     %parentHeight = getWord(%this.getParent().getExtent(), 1);
     if ((%youngest > %this.vTime2)) {
         %extY = (%parentHeight * %this.vPercent2);
+    } else {
+        if ((%youngest > %this.vTime1)) {
+            %extY = (%parentHeight * %this.vPercent1);
+        } else {
+            %extY = (%parentHeight * %this.vPercent0);
+        }
     }
-    if ((%youngest > %this.vTime1)) {
-        %extY = (%parentHeight * %this.vPercent1);
-    }
-    %extY = (%parentHeight * %this.vPercent0);
     %textHeight = getWord(%this.getObject(0).getObject(0).getExtent(), 1);
     %extY = mClamp(%extY, 0, (%textHeight + 30.0));
     %this.setTrgExtent(%newW, %extY);
@@ -105,11 +108,13 @@ function ConvBub::chooseProfile(%this) {
     }
     if (ApplauseMeterGui.downplayChatBubble()) {
         %this.setProfile(ConvBubFadedProfile);
+    } else {
+        if ($player.hasRoleString("hween")) {
+            %this.setProfile(ConvBubSpookyProfile);
+        } else {
+            %this.setProfile(ConvBubProfile);
+        }
     }
-    if ($player.hasRoleString("hween")) {
-        %this.setProfile(ConvBubSpookyProfile);
-    }
-    %this.setProfile(ConvBubProfile);
 };
 $gConvBubAutoCloseTimer = 0;
 function ConvBub::restartAutoCloseTimer(%this, %timeout) {
@@ -138,9 +143,10 @@ function ConvBubVecCtrl::onRightURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
         %name = unmunge(getWords(%url, 1));
         onRightClickPlayerName(%name);
+    } else {
+        LinkContextMenu.initWithURL(%url);
+        LinkContextMenu.showAtCursor();
     }
-    LinkContextMenu.initWithURL(%url);
-    LinkContextMenu.showAtCursor();
     if (!%this.selectionActive) {
         TheShapeNameHud.makeFirstResponder(1);
     }
@@ -149,12 +155,14 @@ function ConvBubVecCtrl::onURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
         %name = unmunge(getWords(%url, 1));
         onLeftClickPlayerName(%name, "");
-    }
-    if ((getSubStr(%url, 0, 7) $= "http://")) {
-        gotoWebPage(%url);
-    }
-    if ((getSubStr(%url, 0, 7) $= "vside:/")) {
-        vurlOperation(%url);
+    } else {
+        if ((getSubStr(%url, 0, 7) $= "http://")) {
+            gotoWebPage(%url);
+        } else {
+            if ((getSubStr(%url, 0, 7) $= "vside:/")) {
+                vurlOperation(%url);
+            }
+        }
     }
     if (!%this.selectionActive) {
         TheShapeNameHud.makeFirstResponder(1);
@@ -163,8 +171,9 @@ function ConvBubVecCtrl::onURL(%this, %url) {
 function ConvBubScroll::onScrolledToBottom(%this) {
     if (ConvBub.isEavesdrop) {
         %this.setProfile(ETSScrollDimProfile);
+    } else {
+        %this.setProfile(ETSScrollDarkProfile);
     }
-    %this.setProfile(ETSScrollDarkProfile);
 };
 function ConvBubScroll::onMouseDown(%this) {
     ConvBub.onMouseDown();
@@ -187,8 +196,9 @@ function LinkContextMenu::onSelect(%this, %unused, %text) {
         if ((getSubStr(%this.url, 0, 7) $= "vside:/")) {
             vurlOperation(%this.url);
         }
-    }
-    if ((%text $= "Copy Link")) {
-        setClipboard(%this.url);
+    } else {
+        if ((%text $= "Copy Link")) {
+            setClipboard(%this.url);
+        }
     }
 };

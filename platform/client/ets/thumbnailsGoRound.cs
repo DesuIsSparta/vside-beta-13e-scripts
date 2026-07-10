@@ -68,10 +68,11 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container) {
             %dx = ((%this.mLilThumbPadding + %this.mLilThumbHeight) * -(1.0));
             %posX = ((getWord(%container.getExtent(), 0) + %dx) + 1.0);
             %posY = (getWord(%container.getExtent(), 1) - %this.mLilThumbHeight);
+        } else {
+            %dx = (%this.mLilThumbPadding + %this.mLilThumbHeight);
+            %posX = %this.mLilThumbPadding;
+            %posY = 0;
         }
-        %dx = (%this.mLilThumbPadding + %this.mLilThumbHeight);
-        %posX = %this.mLilThumbPadding;
-        %posY = 0;
         %n = (%this.mLilThumbsNumAcross - 1.0);
         while ((%n >= 0.0)) {
             %ctrl = new GuiControl("") {
@@ -187,9 +188,10 @@ function thumbnailsGoRound::pause(%this, %pausePeriodMS) {
     %this.tickTimerID = "";
     if ((%pausePeriodMS > 0.0)) {
         %this.tickTimerID = %this.schedule(%pausePeriodMS, "tick");
-    }
-    if ((%pausePeriodMS == 0.0)) {
-        %this.tick();
+    } else {
+        if ((%pausePeriodMS == 0.0)) {
+            %this.tick();
+        }
     }
 };
 function newThumbnailsGoRound(%name) {

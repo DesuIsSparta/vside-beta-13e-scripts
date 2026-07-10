@@ -16,11 +16,13 @@ function doSomething() {
     if (isObject(pChat)) {
         echo("CACHE: We found PChat. Quitting in 5 seconds...");
         schedule(5000, 0, quit);
+    } else {
+        if (($iterationsWaited == 200.0)) {
+            error("CACHE->ERROR : Giving up. Waited for 10 minutes and nothing happended");
+        } else {
+            echo("CACHE: Nothing yet....");
+            $iterationsWaited = ($iterationsWaited + 1.0);
+            schedule(3000, 0, doSomething);
+        }
     }
-    if (($iterationsWaited == 200.0)) {
-        error("CACHE->ERROR : Giving up. Waited for 10 minutes and nothing happended");
-    }
-    echo("CACHE: Nothing yet....");
-    $iterationsWaited = ($iterationsWaited + 1.0);
-    schedule(3000, 0, doSomething);
 };

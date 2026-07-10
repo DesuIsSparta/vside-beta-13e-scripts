@@ -33,8 +33,9 @@ function bootThenLogin() {
     %bootRequest.setVerbose(1);
     if (%bootRequest.start()) {
         CURLSimGroup.add(%bootRequest);
+    } else {
+        %bootRequest.delete();
     }
-    %bootRequest.delete();
 };
 function Login() {
     if (isObject(TestLoginRequest)) {
@@ -48,6 +49,7 @@ function Login() {
     %loginRequest.setProgress(1);
     if (%loginRequest.start()) {
         CURLSimGroup.add(%loginRequest);
+    } else {
+        %loginRequest.delete();
     }
-    %loginRequest.delete();
 };

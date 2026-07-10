@@ -7,11 +7,13 @@ function testPermissions_Master() {
 function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess) {
     if ((%expectedSuccess == %actualSuccess)) {
         %result = "pass";
+    } else {
+        if (%expectedSuccess) {
+            %result = "should have succeeded but did not.";
+        } else {
+            %result = "should not have succeeded but did.";
+        }
     }
-    if (%expectedSuccess) {
-        %result = "should have succeeded but did not.";
-    }
-    %result = "should not have succeeded but did.";
     return %result;
 };
 function testPermissions_AddABot_Setup() {
@@ -28,6 +30,7 @@ function testPermissions_AddABot_Evaluate() {
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 1;
     if ($StandAlone) {
+    } else {
     }
     %expectedDelta = (%expectedDelta * 1.0);
     2.0;
@@ -50,6 +53,7 @@ function testPermissions_AddABotArmy_Evaluate() {
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 8;
     if ($StandAlone) {
+    } else {
     }
     %expectedDelta = (%expectedDelta * 1.0);
     2.0;

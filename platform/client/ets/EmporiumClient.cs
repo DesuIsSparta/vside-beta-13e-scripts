@@ -29,8 +29,9 @@ function Emporium::getSkus(%this) {
     while ((%index < %count)) {
         if ((%index != 0.0)) {
             %skus = %skus @ " " @ %this.Inventory.getKey(%index);
+        } else {
+            %skus = %this.Inventory.getKey(%index);
         }
-        %skus = %this.Inventory.getKey(%index);
         %index = (%index + 1.0);
     }
     %skus = trim(%skus);
@@ -90,11 +91,12 @@ function GetStoreInventory::onDone(%this) {
         %priceVBux = %this.getValue("items" @ %index @ ".priceVBux");
         if (!%item) {
             warn("Inventory", getScopeName() @ " " @ "- Unknown SKU returned from server. SKU =" @ " " @ %sku);
+        } else {
+            %item.quantityInStore = %quantity;
+            %item.priceVPoints = %priceVPoints;
+            %item.priceVBux = %priceVBux;
+            %storeInfo.Inventory.push_back(%sku, %item);
         }
-        %item.quantityInStore = %quantity;
-        %item.priceVPoints = %priceVPoints;
-        %item.priceVBux = %priceVBux;
-        %storeInfo.Inventory.push_back(%sku, %item);
         %index = (%index + 1.0);
     }
     %cmd = %this.callback @ "(" @ %storeInfo @ ", \"success\");";
@@ -121,10 +123,11 @@ function Emporium::purchaseCollated(%this, %skulist, %currency, %callback) {
         echo("Found sku=" @ %sku @ " at index " @ %index);
         if ((%index < 0.0)) {
             %purchaseArray.push_back(%sku, 1);
+        } else {
+            %count = %purchaseArray.getValue(%index);
+            %count = (%count + 1.0);
+            %purchaseArray.setValue(%count, %index);
         }
-        %count = %purchaseArray.getValue(%index);
-        %count = (%count + 1.0);
-        %purchaseArray.setValue(%count, %index);
     }
     %request = safeEnsureScriptObject("ManagerRequest", "PurchaseInventory");
     !(%skulist $= "");
@@ -195,8 +198,9 @@ function PurchaseInventory::onDone(%this) {
         if ((%index == 0.0)) {
             %skuStatuslist = %value;
             (%n < %qty);
+        } else {
+            %skuStatuslist = %skuStatuslist @ " " @ %value;
         }
-        %skuStatuslist = %skuStatuslist @ " " @ %value;
         %index = (%index + 1.0);
     }
     %cmd = %this.callback @ "(" @ %status @ ", \"" @ %skuStatuslist @ "\");";

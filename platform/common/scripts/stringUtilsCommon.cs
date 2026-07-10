@@ -69,67 +69,76 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths) {
                 %thisLineMaxWidth = chopTextToFitLineWidths_getLineWidth(%generalWidth, %lineWidths, %lineCount);
                 if ((%thisLineMaxWidth < 0.0)) {
                     return "";
-                }
-                if ((%thisLineMaxWidth == 0.0)) {
-                    %thisLine = "";
-                    %atEndOfLine = 1;
-                }
-                if ((%thisLineWidth < %thisLineMaxWidth)) {
-                    %currentWordIndex = (%currentWordIndex + 1.0);
-                }
-                if ((%thisLineWidth == %thisLineMaxWidth)) {
-                    %currentWordIndex = (%currentWordIndex + 1.0);
-                    %atEndOfLine = 1;
-                }
-                %wordLength = strlen(%currentWord);
-                %partialWord = "";
-                %beginningOfNextWord = 0;
-                %wordDone = 0;
-                %i = 1;
-                if ((%i <= %wordLength)) {
-                }
-                while (!%wordDone) {
-                    %partialWord = getSubStr(%currentWord, 0, %i);
-                    %thisLineWidth = getStrWidth(%partialWord, %profile);
-                    if ((%thisLineWidth > %thisLineMaxWidth)) {
-                        if ((%i > 1.0)) {
-                            %partialWord = getSubStr(%currentWord, 0, (%i - 1.0));
-                            %beginningOfNextWord = (%i - 1.0);
+                } else {
+                    if ((%thisLineMaxWidth == 0.0)) {
+                        %thisLine = "";
+                        %atEndOfLine = 1;
+                    } else {
+                        if ((%thisLineWidth < %thisLineMaxWidth)) {
+                            %currentWordIndex = (%currentWordIndex + 1.0);
+                        } else {
+                            if ((%thisLineWidth == %thisLineMaxWidth)) {
+                                %currentWordIndex = (%currentWordIndex + 1.0);
+                                %atEndOfLine = 1;
+                            } else {
+                                %wordLength = strlen(%currentWord);
+                                %partialWord = "";
+                                %beginningOfNextWord = 0;
+                                %wordDone = 0;
+                                %i = 1;
+                                if ((%i <= %wordLength)) {
+                                }
+                                while (!%wordDone) {
+                                    %partialWord = getSubStr(%currentWord, 0, %i);
+                                    %thisLineWidth = getStrWidth(%partialWord, %profile);
+                                    if ((%thisLineWidth > %thisLineMaxWidth)) {
+                                        if ((%i > 1.0)) {
+                                            %partialWord = getSubStr(%currentWord, 0, (%i - 1.0));
+                                            %beginningOfNextWord = (%i - 1.0);
+                                        } else {
+                                            %beginningOfNextWord = 1;
+                                        }
+                                        %wordDone = 1;
+                                    }
+                                    %i = (%i + 1.0);
+                                    if ((%i <= %wordLength)) {
+                                    }
+                                }
+                                %thisLine = %partialWord;
+                                !%wordDone;
+                                if ((%beginningOfNextWord > 0.0)) {
+                                    %text = setWord(%text, %currentWordIndex, getSubStr(%currentWord, %beginningOfNextWord, %wordLength));
+                                }
+                                %atEndOfLine = 1;
+                            }
                         }
-                        %beginningOfNextWord = 1;
-                        %wordDone = 1;
-                    }
-                    %i = (%i + 1.0);
-                    if ((%i <= %wordLength)) {
                     }
                 }
-                %thisLine = %partialWord;
-                !%wordDone;
-                if ((%beginningOfNextWord > 0.0)) {
-                    %text = setWord(%text, %currentWordIndex, getSubStr(%currentWord, %beginningOfNextWord, %wordLength));
+            } else {
+                %thisLineWidth = getStrWidth(%thisLine @ " " @ %currentWord, %profile);
+                %thisLineMaxWidth = chopTextToFitLineWidths_getLineWidth(%generalWidth, %lineWidths, %lineCount);
+                if ((%thisLineWidth < %thisLineMaxWidth)) {
+                    %thisLine = %thisLine @ " " @ %currentWord;
+                    %currentWordIndex = (%currentWordIndex + 1.0);
+                } else {
+                    if ((%thisLineWidth == %thisLineMaxWidth)) {
+                        %thisLine = %thisLine @ " " @ %currentWord;
+                        %currentWordIndex = (%currentWordIndex + 1.0);
+                        %atEndOfLine = 1;
+                    } else {
+                        %atEndOfLine = 1;
+                    }
                 }
-                %atEndOfLine = 1;
             }
-            %thisLineWidth = getStrWidth(%thisLine @ " " @ %currentWord, %profile);
-            %thisLineMaxWidth = chopTextToFitLineWidths_getLineWidth(%generalWidth, %lineWidths, %lineCount);
-            if ((%thisLineWidth < %thisLineMaxWidth)) {
-                %thisLine = %thisLine @ " " @ %currentWord;
-                %currentWordIndex = (%currentWordIndex + 1.0);
-            }
-            if ((%thisLineWidth == %thisLineMaxWidth)) {
-                %thisLine = %thisLine @ " " @ %currentWord;
-                %currentWordIndex = (%currentWordIndex + 1.0);
-                %atEndOfLine = 1;
-            }
-            %atEndOfLine = 1;
             if ((%currentWordIndex >= %inputWordCount)) {
                 %atEndOfLine = 1;
             }
         }
         if ((!%atEndOfLine @ " " @ %outputText $= "")) {
             %outputText = %thisLine;
+        } else {
+            %outputText = %outputText @ "\n" @ %thisLine;
         }
-        %outputText = %outputText @ "\n" @ %thisLine;
         %lineCount = (%lineCount + 1.0);
     }
     return %outputText;
@@ -156,8 +165,9 @@ function findAndRemoveFirstOccurrenceOfWord(%haystack, %needle) {
     %index = findWord(%haystack, %needle);
     if ((%index >= 0.0)) {
         return removeWord(%haystack, %index);
+    } else {
+        return %haystack;
     }
-    return %haystack;
 };
 function findAndRemoveAllOccurrencesOfWord(%haystack, %needle) {
     %index = findWord(%haystack, %needle);

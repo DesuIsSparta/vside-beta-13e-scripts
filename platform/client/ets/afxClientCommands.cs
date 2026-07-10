@@ -23,6 +23,7 @@ function afxGetSelectedAvatar() {
 };
 function afxGetSelectedAvatarGhost() {
     if (($gAfxSelectedAvatar != -(1.0))) {
+    } else {
     }
     return -(1.0);
 };
@@ -81,6 +82,7 @@ function ClientCmdAfxClientSpecificSound(%soundID) {
     }
     if ((%delay > 0.0)) {
         schedule(%delay, 0, "alxPlay", %profile);
+    } else {
+        alxPlay(%profile);
     }
-    alxPlay(%profile);
 };

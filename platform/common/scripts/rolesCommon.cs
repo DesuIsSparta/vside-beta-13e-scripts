@@ -21,6 +21,7 @@ function Player::mayConnectToFullServer(%this) {
 };
 function Player::isDebugging(%this) {
     if (isDefined("$UserPref::ETS::Debugging")) {
+    } else {
     }
     %debugging = 0;
     $UserPref::ETS::Debugging;
@@ -46,9 +47,10 @@ function Player::toggleRoleMask(%this, %roleBits) {
     if (%this.hasRoleMask(%roleBits)) {
         %this.removeRoleByMask(%roleBits);
         %ret = 0;
+    } else {
+        %this.addRoleByMask(%roleBits);
+        %ret = 1;
     }
-    %this.addRoleByMask(%roleBits);
-    %ret = 1;
     return %ret;
 };
 function roles::masksOverlap(%maskA, %maskB) {

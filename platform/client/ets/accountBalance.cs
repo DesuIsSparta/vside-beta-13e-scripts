@@ -38,12 +38,13 @@ function AccountBalanceHud::open(%this) {
 function AccountBalanceHud::close(%this) {
     if ($UserPref::UI::ShowAccountHud) {
         return 0;
+    } else {
+        if (%this.isVisible()) {
+            %this.setVisible(0);
+            WindowManager.update();
+        }
+        return 1;
     }
-    if (%this.isVisible()) {
-        %this.setVisible(0);
-        WindowManager.update();
-    }
-    return 1;
 };
 function AccountBalanceHud::startPulse(%this, %numPulses) {
     %this.pulsar.setVisible(1);
@@ -60,8 +61,9 @@ function AccountBalanceHud::update(%this) {
     }
     if ($UserPref::UI::ShowAccountHud) {
         %this.open();
+    } else {
+        %this.close();
     }
-    %this.close();
     if (isObject(AccountBalanceVPointsText)) {
         AccountBalanceVPointsText.setText(commaify($Player::VPoints));
         AccountBalanceVBuxText.setText(commaify($Player::VBux));

@@ -4,10 +4,11 @@ function TextureManager_OnDelayedLoad(%num) {
         geTextureLoadingContainer.setVisible(1);
         geTextureLoadingContainer.setProfile(HUDDarkProfile);
         geTexturesLoadingIcon.resume();
+    } else {
+        geTextureLoadingContainer.setVisible(0);
+        geTextureLoadingContainer.setProfile(ETSNonModalProfile);
+        geTexturesLoadingIcon.stop();
     }
-    geTextureLoadingContainer.setVisible(0);
-    geTextureLoadingContainer.setProfile(ETSNonModalProfile);
-    geTexturesLoadingIcon.stop();
     WindowManager.update();
 };
 function textureLoadingIndicator_initialize() {

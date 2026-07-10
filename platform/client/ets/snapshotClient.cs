@@ -15,11 +15,13 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
     %fn_orig = %fileName;
     if (($Pref::Video::screenShotFormat $= "JPEG")) {
         %ext = ".jpg";
+    } else {
+        if (($Pref::Video::screenShotFormat $= "PNG")) {
+            %ext = ".png";
+        } else {
+            %ext = ".png";
+        }
     }
-    if (($Pref::Video::screenShotFormat $= "PNG")) {
-        %ext = ".png";
-    }
-    %ext = ".png";
     %fileName = %fileName @ %ext;
     %uploader = "";
     if (snapshotTool::snapRegion(%region, %fileName)) {
@@ -35,10 +37,12 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
             if (isObject(CURLSimGroup)) {
                 CURLSimGroup.add(%uploader);
             }
+        } else {
+            error("Unable to upload avatar photo." @ " " @ getTrace());
         }
-        error("Unable to upload avatar photo." @ " " @ getTrace());
+    } else {
+        error("Unable to capture region." @ " " @ getTrace());
     }
-    error("Unable to capture region." @ " " @ getTrace());
     return %uploader;
 };
 function GuiControl::snapshot(%this, %fileName) {
@@ -161,7 +165,8 @@ function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
     %file = new FileObject("");
     if (%file.openForWrite(%fn)) {
         %file.writeLine(getScreenShotMetaData(%guiCtrl));
+    } else {
+        error(getScopeName() @ " " @ "- could not open file for write:" @ " " @ %fn);
     }
-    error(getScopeName() @ " " @ "- could not open file for write:" @ " " @ %fn);
     %file.delete();
 };

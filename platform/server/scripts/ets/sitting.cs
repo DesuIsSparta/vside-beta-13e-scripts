@@ -151,9 +151,10 @@ function StandPlayerUp(%player, %moveDir) {
         error("StandPlayerUp: player should be already sitting, fix this!");
     }
     if (isObject(%player.mySeat.listeningStation)) {
-    }
-    if ((%moveDir < 0.0)) {
-        return 0;
+    } else {
+        if ((%moveDir < 0.0)) {
+            return 0;
+        }
     }
     %player.standUp();
     freeSeat(%player.mySeat);
@@ -284,8 +285,9 @@ function Player::sitDown(%this) {
     %this.setTransform(%transform);
     if ((%seat.sitAnim $= "")) {
         warn("seat " @ %seat @ " does not specify a sitAnim");
+    } else {
+        %this.setActionThread(%seat.sitAnim, 1, 1);
     }
-    %this.setActionThread(%seat.sitAnim, 1, 1);
     if ((%seat.sitIdle $= "")) {
         warn("seat " @ %seat @ " does not specify a sitIdle");
     }
@@ -294,16 +296,18 @@ function Player::sitDown(%this) {
     }
     if ((%seat.sitSound $= "")) {
         warn("seat " @ %seat @ " does not specify a sitSound");
+    } else {
+        %this.playAudio(0, %seat.sitSound);
     }
-    %this.playAudio(0, %seat.sitSound);
     if (isObject(%seat.listeningStation)) {
         0.playThread("start", %seat.listeningStation);
         %meshName = %this.getDataBlock().gender @ ".headphones.dj";
         %this.MeshOn(%meshName);
         if (!(%seat.listeningStation.stream $= "")) {
             commandToClient(%this.client, 'StartListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
+        } else {
+            warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not starting");
         }
-        warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not starting");
     }
     %this.schedule(%seat.idleDelay, "setActionThread", %seat.sitIdle, 0, 0);
     return;
@@ -316,12 +320,14 @@ function Player::standUp(%this) {
     }
     if ((%seat.standSound $= "")) {
         warn("seat " @ %seat @ " does not specify a standSound");
+    } else {
+        %this.playAudio(0, %seat.standSound);
     }
-    %this.playAudio(0, %seat.standSound);
     if ((%seat.standAnim $= "")) {
         warn("seat " @ %seat @ " does not specify a standAnim");
+    } else {
+        %this.setActionThread(%seat.standAnim, 0, 0);
     }
-    %this.setActionThread(%seat.standAnim, 0, 0);
     if (isObject(%seat.listeningStation)) {
         %seat.listeningStation.stopThread(0);
         0.playThread("ambient", %seat.listeningStation);
@@ -329,8 +335,9 @@ function Player::standUp(%this) {
         %this.MeshOff(%meshName);
         if (!(%seat.listeningStation.stream $= "")) {
             commandToClient(%this.client, 'StopListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
+        } else {
+            warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not stopping");
         }
-        warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not stopping");
     }
     return;
 };

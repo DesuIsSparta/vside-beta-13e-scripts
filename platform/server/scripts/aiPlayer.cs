@@ -5,8 +5,9 @@ function DemoPlayer::onReachDestination(%this, %obj) {
     if (!(%obj.Path $= "")) {
         if ((%obj.currentNode == %obj.targetNode)) {
             %this.onEndOfPath(%obj, %obj.Path);
+        } else {
+            %obj.moveToNextNode();
         }
-        %obj.moveToNextNode();
     }
 };
 function DemoPlayer::onEndOfPath(%this, %obj, %path) {
@@ -20,8 +21,9 @@ function DemoPlayer::onEndSequence(%this, %obj, %slot) {
 function AIPlayer::spawn(%name, %spawnPoint) {
     if ((getRandom(0, 1) == 0.0)) {
         %botDB = PlayerM;
+    } else {
+        %botDB = PlayerF;
     }
-    %botDB = PlayerF;
     %player = new AIPlayer("") {
         dataBlock = %botDB;
         Path = "";
@@ -32,12 +34,14 @@ function AIPlayer::spawn(%name, %spawnPoint) {
     %rand = getRandom(0, 2);
     if ((%rand == 0.0)) {
         %genre = "h";
-    }
-    if ((%rand == 1.0)) {
-        %genre = "i";
-    }
-    if ((%rand == 2.0)) {
-        %genre = "p";
+    } else {
+        if ((%rand == 1.0)) {
+            %genre = "i";
+        } else {
+            if ((%rand == 2.0)) {
+                %genre = "p";
+            }
+        }
     }
     %player.setGenre(%genre);
     return %player;
@@ -58,25 +62,30 @@ function AIPlayer::followPath(%this, %path, %node) {
     }
     if ((%node > (%path.getCount() - 1.0))) {
         %this.targetNode = (%path.getCount() - 1.0);
+    } else {
+        %this.targetNode = %node;
     }
-    %this.targetNode = %node;
     if ((%this.Path $= %path)) {
         %this.moveToNode(%this.currentNode);
+    } else {
+        %this.Path = %path;
+        %this.moveToNode(0);
     }
-    %this.Path = %path;
-    %this.moveToNode(0);
 };
 function AIPlayer::moveToNextNode(%this) {
     if ((%this.targetNode < 0.0) || (%this.currentNode < %this.targetNode)) {
         if ((%this.currentNode < (%this.Path.getCount() - 1.0))) {
             %this.moveToNode((%this.currentNode + 1.0));
+        } else {
+            %this.moveToNode(0);
         }
-        %this.moveToNode(0);
+    } else {
+        if ((%this.currentNode == 0.0)) {
+            %this.moveToNode((%this.Path.getCount() - 1.0));
+        } else {
+            %this.moveToNode((%this.currentNode - 1.0));
+        }
     }
-    if ((%this.currentNode == 0.0)) {
-        %this.moveToNode((%this.Path.getCount() - 1.0));
-    }
-    %this.moveToNode((%this.currentNode - 1.0));
 };
 function AIPlayer::moveToNode(%this, %index) {
     %this.currentNode = %index;
@@ -103,8 +112,9 @@ function AIPlayer::nextTask(%this) {
         if ((%this.taskCurrent < (%this.taskIndex - 1.0))) {
             %this.taskCurrent = (%this.taskCurrent + 1.0);
             %this.executeTask();
+        } else {
+            %this.taskCurrent = -(1.0);
         }
-        %this.taskCurrent = -(1.0);
     }
 };
 function AIPlayer::executeTask(%this, %index) {
@@ -126,8 +136,9 @@ function AIPlayer::fire(%this, %bool) {
     if (%bool) {
         cancel(%this.Trigger);
         %this.singleShot();
+    } else {
+        cancel(%this.Trigger);
     }
-    cancel(%this.Trigger);
     %this.nextTask();
 };
 function AIPlayer::aimAt(%this, %object) {
@@ -246,15 +257,18 @@ function AIManager::doBotsSurfing(%this, %periodMS) {
     %add = 1;
     if ((%this.numBots <= %minBots)) {
         %add = 1;
+    } else {
+        if ((%this.numBots >= %maxBots)) {
+            %add = 0;
+        } else {
+            %add = getRandom(0, 1);
+        }
     }
-    if ((%this.numBots >= %maxBots)) {
-        %add = 0;
-    }
-    %add = getRandom(0, 1);
     if ((%add == 1.0)) {
         %this.addOneBot();
+    } else {
+        %this.delOneBot();
     }
-    %this.delOneBot();
     echo("NumBots is now" @ " " @ %this.numBots);
 };
 function AIManager::addOneBot(%this) {
@@ -300,8 +314,9 @@ function AIManager::spawn(%this) {
         %XPosition = (%XPosition - (1.0 * %BotCols));
         if (((%YPosition % 2) == 1.0)) {
             %XPosition = (%XPosition - 0.5);
+        } else {
+            %XPosition = (%XPosition + 0.5);
         }
-        %XPosition = (%XPosition + 0.5);
         %j = (%j + 1.0);
     }
     return %player;

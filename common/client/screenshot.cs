@@ -43,13 +43,15 @@ function doScreenShot(%val) {
     if (($Pref::Video::screenShotFormat $= "JPEG")) {
         %ext = ".jpg";
         %fmt = "JPEG";
+    } else {
+        if (($Pref::Video::screenShotFormat $= "PNG")) {
+            %ext = ".png";
+            %fmt = "PNG";
+        } else {
+            %ext = ".png";
+            %fmt = "PNG";
+        }
     }
-    if (($Pref::Video::screenShotFormat $= "PNG")) {
-        %ext = ".png";
-        %fmt = "PNG";
-    }
-    %ext = ".png";
-    %fmt = "PNG";
     ScreenShot(%name @ %ext, %fmt);
     doSaveScreenShotMetaData(%name, %ext, PlayGui);
 };

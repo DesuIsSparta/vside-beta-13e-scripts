@@ -51,12 +51,14 @@ function MessageHudEdit::eval(%this) {
             }
             emote(%text);
         }
+    } else {
+        emote(%text);
+        if (isObject(pChat)) {
+            pChat.say(%text, 0, 0);
+        } else {
+            say(%text);
+        }
     }
-    emote(%text);
-    if (isObject(pChat)) {
-        pChat.say(%text, 0, 0);
-    }
-    say(%text);
 };
 function MessageHudEdit::scanForAutoCommands(%this) {
     if ((getWordCount(%this.getValue()) != 1.0)) {
@@ -76,8 +78,10 @@ function MessageHudEdit::scanForAutoCommands(%this) {
     %firstWord = getWord(%this.getValue(), 0);
     if ((%firstWord $= "/reply")) {
         replyOperation();
-    }
-    if ((%firstWord $= "/sos")) {
+    } else {
+        if ((%firstWord $= "/sos")) {
+        } else {
+        }
     }
 };
 $gChatPreviewTimer = 0;
@@ -118,8 +122,9 @@ function removeLastWordIfNotFollowedByWhiteSpace(%dry) {
 function MessageHud::setGrayed(%this, %value) {
     if (%value) {
         %this.setBitmap("platform/client/ui/messageHudGray");
+    } else {
+        %this.setBitmap("platform/client/ui/messageHud");
     }
-    %this.setBitmap("platform/client/ui/messageHud");
 };
 function MessageHud::updateModeIcon(%this) {
     if (isObject($player)) {
@@ -127,9 +132,10 @@ function MessageHud::updateModeIcon(%this) {
     if ($player.hasMicrophone()) {
         %modeIconName = "bb_microphone";
         %modeIconCommand = "displayMicrophoneHelp();";
+    } else {
+        %modeIconName = "";
+        %modeIconCommand = "";
     }
-    %modeIconName = "";
-    %modeIconCommand = "";
     %this.setModeIconName(%modeIconName, %modeIconCommand);
 };
 $gMessageHudEditOriginalPosition = "";
@@ -144,15 +150,16 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
         MessageHudModeIcon.setVisible(0);
         MessageHudEdit.position = $gMessageHudEditOriginalPosition;
         MessageHudEdit.extent = $gMessageHudEditOriginalExtent;
+    } else {
+        %bitmap = "platform/client/buttons/" @ %modeIconName;
+        %positionNew = VectorAdd($gMessageHudEditOriginalPosition, $gMessageHudEditModeIconOffset);
+        MessageHudEdit.position = %positionNew;
+        %extentNew = VectorSub($gMessageHudEditOriginalExtent, $gMessageHudEditModeIconOffset);
+        MessageHudEdit.extent = %extentNew;
+        MessageHudModeIcon.setBitmap(%bitmap);
+        MessageHudModeIcon.setVisible(1);
+        MessageHudModeIcon.command = %modeIconCommand;
     }
-    %bitmap = "platform/client/buttons/" @ %modeIconName;
-    %positionNew = VectorAdd($gMessageHudEditOriginalPosition, $gMessageHudEditModeIconOffset);
-    MessageHudEdit.position = %positionNew;
-    %extentNew = VectorSub($gMessageHudEditOriginalExtent, $gMessageHudEditModeIconOffset);
-    MessageHudEdit.extent = %extentNew;
-    MessageHudModeIcon.setBitmap(%bitmap);
-    MessageHudModeIcon.setVisible(1);
-    MessageHudModeIcon.command = %modeIconCommand;
 };
 function displayMicrophoneHelp() {
     if ((Canvas.getContent() != PlayGui.getId())) {
@@ -163,9 +170,10 @@ function displayMicrophoneHelp() {
 function startTextEntry() {
     if (!MessageHud.isVisible()) {
         MessageHud.open(moveMap.lastkey);
+    } else {
+        MessageHudEdit.setText(MessageHudEdit.getValue() @ moveMap.lastkey);
+        MessageHudEdit.makeFirstResponder(1);
     }
-    MessageHudEdit.setText(MessageHudEdit.getValue() @ moveMap.lastkey);
-    MessageHudEdit.makeFirstResponder(1);
 };
 function finishTextEntry(%text) {
     MessageHud.close();

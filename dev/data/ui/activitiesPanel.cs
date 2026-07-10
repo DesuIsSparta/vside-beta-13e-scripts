@@ -35,16 +35,19 @@ function geActivitiesPanel::updateStates(%this) {
         %isHighest = (%activityName $= %highest);
         %baseColor = %isHighest ? "ccff33" : "dddddd";
         if (%on) {
+        } else {
         }
         %style = "<linkcolor:" @ %baseColor @ "80><modulationColor:" @ %baseColor @ "40>";
         "<linkcolor:" @ %baseColor @ "f0><modulationColor:" @ %baseColor @ "f0>";
         %style = %style @ "<color:" @ %baseColor @ "f0>";
         if (%isHighest) {
+        } else {
         }
         %style = %style;
         "<b>" @ %style;
         %icon = %uam.getActivityIconFilename(%activityName);
         if ((%timeLeft <= 0.0)) {
+        } else {
         }
         %timeLeftText = " - " @ formatFloat("%0.1f", (%timeLeft / 1000.0));
         "";

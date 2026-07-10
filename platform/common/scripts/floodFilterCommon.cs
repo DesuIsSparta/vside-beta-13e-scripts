@@ -97,10 +97,11 @@ function testFlooding(%player, %eventType, %testExempt) {
         }
         %player.eventRecord[%eventType] = %erNew;
         return 1;
+    } else {
+        %erNew = getSimTime() @ " " @ %erNew;
+        %player.eventRecord[%eventType] = %erNew;
+        return 0;
     }
-    %erNew = getSimTime() @ " " @ %erNew;
-    %player.eventRecord[%eventType] = %erNew;
-    return 0;
 };
 function testFloodingExempt(%player, %eventType) {
     %count = getWordCount(%eventType[$floodFilter::exemptPermission @ %eventType]);

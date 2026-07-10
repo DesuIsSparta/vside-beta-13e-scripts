@@ -90,6 +90,7 @@ function rf_beginRender(%request) {
         %gender = "f";
     }
     if ((%gender $= "f")) {
+    } else {
     }
     %player = $gRFPlayerM;
     $gRFPlayerF;
@@ -139,6 +140,7 @@ function rf_generateTestSkus(%num, %forJavascript) {
         while ((%d >= 0.0)) {
             %drawerName = getWord(%allDrawers, %d);
             if (SkuManager.isOptionalDrawer(%drawerName)) {
+            } else {
             }
             %prob = 1.0;
             0.1;

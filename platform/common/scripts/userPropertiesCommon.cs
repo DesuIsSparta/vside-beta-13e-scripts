@@ -18,10 +18,12 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
         return;
     }
     if ((%propertyValue $= "false")) {
+    } else {
     }
     %propertyValue = %propertyValue;
     0;
     if ((%propertyValue $= "true")) {
+    } else {
     }
     %propertyValue = %propertyValue;
     1;
@@ -64,9 +66,10 @@ function userPropertiesMgr::_clearProperty(%this, %userName, %propertyName, %war
     if (%smValue.hasKey(%propertyName)) {
         %smValue.remove(%propertyName);
         %this.persistSchedule(%userName);
-    }
-    if (%warn) {
-        warn(getScopeName() @ " " @ "- property does not exist:" @ " " @ %propertyName @ " " @ %userName @ " " @ getTrace());
+    } else {
+        if (%warn) {
+            warn(getScopeName() @ " " @ "- property does not exist:" @ " " @ %propertyName @ " " @ %userName @ " " @ getTrace());
+        }
     }
 };
 function userPropertiesMgr::incrementIntegerProperty(%this, %userName, %propertyName, %incrementAmount) {
@@ -117,8 +120,9 @@ function userPropertiesMgr::persistReally(%this, %userName, %callback) {
     }
     if (%this.isClient()) {
         %request = sendRequest_SaveClientUserProperties(%userName, %smValue, "onDoneOrErrorCallback_SetClientOrServerUserProperties");
+    } else {
+        %request = sendRequest_SaveServerUserProperties(%userName, %smValue, "onDoneOrErrorCallback_SetClientOrServerUserProperties");
     }
-    %request = sendRequest_SaveServerUserProperties(%userName, %smValue, "onDoneOrErrorCallback_SetClientOrServerUserProperties");
     %request.userPropertiesMgr = %this;
     %request.userName = %userName;
     %request.otherCallback = %callback;
@@ -181,8 +185,9 @@ function userPropertiesMgr::requestProperties(%this, %userName, %callback) {
     }
     if (%this.isClient()) {
         %request = sendRequest_GetClientUserProperties(%userName, "onDoneOrErrorCallback_GetClientOrServerUserProperties");
+    } else {
+        %request = sendRequest_GetServerUserProperties(%userName, "onDoneOrErrorCallback_GetClientOrServerUserProperties");
     }
-    %request = sendRequest_GetServerUserProperties(%userName, "onDoneOrErrorCallback_GetClientOrServerUserProperties");
     %request.userPropertiesMgr = %this;
     %request.userName = %userName;
     %request.otherCallback = %callback;
@@ -210,10 +215,12 @@ function userPropertiesMgr::parseRequest(%this, %request) {
         %key = utf8Decode(%request.getValue("property" @ %n @ ".key"));
         %value = utf8Decode(%request.getValue("property" @ %n @ ".value"));
         if ((%value $= "false")) {
+        } else {
         }
         %value = %value;
         0;
         if ((%value $= "true")) {
+        } else {
         }
         %value = %value;
         1;

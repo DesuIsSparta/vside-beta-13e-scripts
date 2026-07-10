@@ -36,8 +36,9 @@ function toggleAdminDialog(%action, %target) {
     adminGui.defaultTarget = %target;
     if (!(%action $= "") || !(%target $= "")) {
         adminGui.open();
+    } else {
+        toggleVisibleState(adminGui);
     }
-    toggleVisibleState(adminGui);
 };
 function adminGui::open(%this) {
     Canvas.pushDialog(%this, 0);
@@ -99,8 +100,9 @@ function adminGui::tryTarget(%this, %shape) {
     %name = admin::getTargetName(%shape);
     if (isObject(%shape)) {
         %classname = admin::getFormattedClassName(%shape.getClassName());
+    } else {
+        %classname = admin::getFormattedClassName("special");
     }
-    %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
     adminTargetsPopup.setText(%targetName);
     adminGuiButtonDoIt.setVisible(1);
@@ -128,8 +130,9 @@ function adminGui::onConfirm(%this) {
     %duration = adminGuiEditDuration.getValue();
     if ((%action $= "Ban")) {
         %internalMsg = adminGuiEditInternalMessage.getValue();
+    } else {
+        %internalMsg = "";
     }
-    %internalMsg = "";
     warn("adminAction:" @ " " @ $player.getShapeName() @ " " @ %action @ " " @ "on" @ " " @ adminTargetsPopup.getText() @ " " @ "with message:" @ " " @ %message);
     commandToServer('AdminAction', %action, adminTargetsPopup.getText(), %message, %banUser, %duration, %internalMsg);
 };
@@ -158,8 +161,9 @@ function adminGui::onGotTargetsList(%this, %theList) {
     adminTargetsPopup.sort();
     if (!((%n < %num) @ " " @ %this.defaultTarget $= "")) {
         adminTargetsPopup.setText(%this.defaultTarget);
+    } else {
+        adminTargetsPopup.setText(%nextItem);
     }
-    adminTargetsPopup.setText(%nextItem);
 };
 function adminTargetsPopup::onSelect(%this, %unused, %text) {
     adminGuiButtonDoIt.setVisible(1);
@@ -171,14 +175,17 @@ function clientCmdBuildTargetsList(%actionTagged, %item) {
     %action = detag(%actionTagged);
     if ((%action $= "begin")) {
         $adminTargetsList = "";
-    }
-    if ((%action $= "add")) {
-        if (($adminTargetsList $= "")) {
-            $adminTargetsList = %item;
+    } else {
+        if ((%action $= "add")) {
+            if (($adminTargetsList $= "")) {
+                $adminTargetsList = %item;
+            } else {
+                $adminTargetsList = $adminTargetsList @ "\n" @ %item;
+            }
+        } else {
+            if ((%action $= "finish")) {
+                adminGui.onGotTargetsList($adminTargetsList);
+            }
         }
-        $adminTargetsList = $adminTargetsList @ "\n" @ %item;
-    }
-    if ((%action $= "finish")) {
-        adminGui.onGotTargetsList($adminTargetsList);
     }
 };

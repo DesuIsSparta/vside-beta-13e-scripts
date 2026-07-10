@@ -2,8 +2,9 @@ $gCSFurnitureMoverClipboard = "";
 function CSFurnitureMover::toggle(%this) {
     if (%this.isVisible()) {
         %this.close();
+    } else {
+        %this.open();
     }
-    %this.open();
 };
 $CSMaximumSlots = 0;
 function CSFurnitureMover::open(%this) {
@@ -63,8 +64,9 @@ function CSFurnitureMover::updateButtonStates(%this) {
     customSpacePutAllAwayButton.setActive((numUsingFurnitureAll() > 0.0));
     if ($CSboolPickedUp) {
         customSpacePickupToggleButton.setText("Drop");
+    } else {
+        customSpacePickupToggleButton.setText("Pick Up");
     }
-    customSpacePickupToggleButton.setText("Pick Up");
 };
 function CSFurnitureMover::updateClickText(%this) {
     %prefix = "<color:cccccc>Click = ";
@@ -81,8 +83,9 @@ function CSFurnitureMover::preSelectedNuggetChanged(%this) {
             commandToServer('SlotPickUp', CustomSpaceClient::GetSpaceImIn(), $CSSelectedID);
             $CSboolPickedUp = 0;
         }
+    } else {
+        $CSboolPickedUp = 0;
     }
-    $CSboolPickedUp = 0;
 };
 function CSFurnitureMover::SelectNuggetObject(%this, %obj) {
     if (isObject($CSSelectedGhost)) {
@@ -108,10 +111,11 @@ function CSFurnitureMover::SelectNuggetObject(%this, %obj) {
     if ($CSSelectedIsOwned) {
         CSInventoryBrowserWindow.open();
         CSInventoryBrowser.navigateToSku($CSSelectedSku);
-    }
-    if (!$CSInstaTestDrive) {
-        CSShoppingBrowserWindow.open();
-        CSShoppingBrowser.navigateToSku($CSSelectedSku);
+    } else {
+        if (!$CSInstaTestDrive) {
+            CSShoppingBrowserWindow.open();
+            CSShoppingBrowser.navigateToSku($CSSelectedSku);
+        }
     }
     if ($UserPref::Spaces::FaceSelected) {
     }
@@ -128,12 +132,13 @@ function CSFurnitureMover::SelectNuggetID(%this, %id) {
     %this.updateButtonStates();
     if ((%id >= 0.0)) {
         %this.open();
+    } else {
+        %this.SelectNuggetObject(0);
+        $CSSelectedSku = -(1.0);
+        $CSSelectedIsOwned = 0;
+        $CSSelectedGhost = 0;
+        $CSSelectedFreeRotate = 0;
     }
-    %this.SelectNuggetObject(0);
-    $CSSelectedSku = -(1.0);
-    $CSSelectedIsOwned = 0;
-    $CSSelectedGhost = 0;
-    $CSSelectedFreeRotate = 0;
     if (!CSInventoryBrowserWindow.initialized) {
         CSInventoryBrowserWindow.Initialize();
     }
@@ -154,7 +159,7 @@ function CSFurnitureMover::refreshGhostList(%ghostlist) {
         if (($CSSelectedID > 0.0)) {
             %numGhosts = getWordCount($gCSGhostList);
             %i = 0;
-            while ((%i < %numGhosts)) {
+            if ((%i < %numGhosts)) {
                 %ghost = getWord($gCSGhostList, %i);
                 if (isObject(%ghost)) {
                 }
@@ -163,8 +168,9 @@ function CSFurnitureMover::refreshGhostList(%ghostlist) {
                     if (%ghost.isClassAIPlayer()) {
                         rentabotClient_customizeBot(%ghost);
                     }
+                } else {
+                    %i = (%i + 1.0);
                 }
-                %i = (%i + 1.0);
             }
         }
         CSFurnitureMoverText.update();
@@ -242,44 +248,51 @@ function CSFurnitureMoverText::update(%this) {
         %si = SkuManager.findBySku($CSSelectedSku);
         if ($CSboolPickedUp) {
             CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ " (following me)" @ %endTags);
-        }
-        if (!$CSSelectedIsOwned) {
-            CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ " (test drive)" @ %endTags @ %nextPrevLinks);
-        }
-        %whichOne = 0;
-        %howMany = numUsingFurnitureSku($CSSelectedSku);
-        if (isObject($CSSelectedGhost)) {
-        }
-        if (!($gCSGhostList $= "")) {
-            %numGhosts = getWordCount($gCSGhostList);
-            %i = 0;
-            while ((%i < %numGhosts)) {
-                %ghost = getWord($gCSGhostList, %i);
-                if (!isObject(%ghost)) {
-                    getNuggetGhostList("CSFurnitureMover::refreshGhostList");
-                    %whichOne = 0;
+        } else {
+            if (!$CSSelectedIsOwned) {
+                CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ " (test drive)" @ %endTags @ %nextPrevLinks);
+            } else {
+                %whichOne = 0;
+                %howMany = numUsingFurnitureSku($CSSelectedSku);
+                if (isObject($CSSelectedGhost)) {
                 }
-                %sku = %ghost.getInventoryNuggetSKU();
-                if ((%sku == $CSSelectedSku)) {
-                    %whichOne = (%whichOne + 1.0);
+                if (!($gCSGhostList $= "")) {
+                    %numGhosts = getWordCount($gCSGhostList);
+                    %i = 0;
+                    if ((%i < %numGhosts)) {
+                        %ghost = getWord($gCSGhostList, %i);
+                        if (!isObject(%ghost)) {
+                            getNuggetGhostList("CSFurnitureMover::refreshGhostList");
+                            %whichOne = 0;
+                        } else {
+                            %sku = %ghost.getInventoryNuggetSKU();
+                            if ((%sku == $CSSelectedSku)) {
+                                %whichOne = (%whichOne + 1.0);
+                            }
+                            if ((%ghost == $CSSelectedGhost)) {
+                            } else {
+                                %i = (%i + 1.0);
+                            }
+                        }
+                    }
                 }
-                if ((%ghost == $CSSelectedGhost)) {
+                if ((%whichOne == 1.0)) {
                 }
-                %i = (%i + 1.0);
+                if ((%howMany == 1.0)) {
+                    CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ %endTags @ %nextPrevLinks);
+                } else {
+                    if ((%whichOne > 0.0)) {
+                        CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ " (" @ %whichOne @ "/" @ %howMany @ ")" @ %endTags @ %nextPrevLinks);
+                    } else {
+                        CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ %endTags);
+                        schedule(500, 0, "getNuggetGhostList", "CSFurnitureMover::refreshGhostList");
+                    }
+                }
             }
         }
-        if ((%whichOne == 1.0)) {
-        }
-        if ((%howMany == 1.0)) {
-            CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ %endTags @ %nextPrevLinks);
-        }
-        if ((%whichOne > 0.0)) {
-            CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ " (" @ %whichOne @ "/" @ %howMany @ ")" @ %endTags @ %nextPrevLinks);
-        }
-        CSFurnitureMoverText.setText(%startTags @ %si.descShrt @ %endTags);
-        schedule(500, 0, "getNuggetGhostList", "CSFurnitureMover::refreshGhostList");
+    } else {
+        CSFurnitureMoverText.setText(%startTags @ "Click on an item in the room to select it" @ %endTags);
     }
-    CSFurnitureMoverText.setText(%startTags @ "Click on an item in the room to select it" @ %endTags);
 };
 function CSFurnitureMoverText::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "gamelink")) {
@@ -289,23 +302,26 @@ function CSFurnitureMoverText::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "NEXT")) {
         %numGhosts = getWordCount($gCSGhostList);
         %i = 0;
-        while ((%i < %numGhosts)) {
+        if ((%i < %numGhosts)) {
             %ghost = getWord($gCSGhostList, %i);
             if ((%ghost.getInventoryNuggetID() == $CSSelectedGhost.getInventoryNuggetID())) {
                 %selectedObj = getWord($gCSGhostList, ((%i + 1.0) % %numGhosts));
+            } else {
+                %i = (%i + 1.0);
             }
-            %i = (%i + 1.0);
         }
-    }
-    if (((%i < %numGhosts) @ " " @ getWord(%url, 0) $= "PREV")) {
-        %numGhosts = getWordCount($gCSGhostList);
-        %i = 0;
-        while ((%i < %numGhosts)) {
-            %ghost = getWord($gCSGhostList, %i);
-            if ((%ghost.getInventoryNuggetID() == $CSSelectedGhost.getInventoryNuggetID())) {
-                %selectedObj = getWord($gCSGhostList, (((%i - 1.0) + %numGhosts) % %numGhosts));
+    } else {
+        if (((%i < %numGhosts) @ " " @ getWord(%url, 0) $= "PREV")) {
+            %numGhosts = getWordCount($gCSGhostList);
+            %i = 0;
+            if ((%i < %numGhosts)) {
+                %ghost = getWord($gCSGhostList, %i);
+                if ((%ghost.getInventoryNuggetID() == $CSSelectedGhost.getInventoryNuggetID())) {
+                    %selectedObj = getWord($gCSGhostList, (((%i - 1.0) + %numGhosts) % %numGhosts));
+                } else {
+                    %i = (%i + 1.0);
+                }
             }
-            %i = (%i + 1.0);
         }
     }
     if (isObject(%selectedObj)) {
@@ -470,14 +486,16 @@ function FurnitureItemContextMenu::initWithObject(%this, %obj) {
         %this.setText(%si.descShrt);
         if (($CSSelectedGhost == %obj)) {
             %this.add("Deselect", %n = (%n + 1.0), %schemeNormal);
+        } else {
+            %this.add("Select", %n = (%n + 1.0), %schemeNormal);
         }
-        %this.add("Select", %n = (%n + 1.0), %schemeNormal);
         if (($CSSelectedGhost == %obj)) {
         }
         if ($CSboolPickedUp) {
             %this.add("Drop", %n = (%n + 1.0), %schemeNormal);
+        } else {
+            %this.add("Pick Up", %n = (%n + 1.0), %schemeNormal);
         }
-        %this.add("Pick Up", %n = (%n + 1.0), %schemeNormal);
         if (%obj.getInventoryNuggetIsOwned()) {
             %this.add("Put Away", %n = (%n + 1.0), %schemeNormal);
             %this.add("Cut", %n = (%n + 1.0), %schemeNormal);
@@ -488,59 +506,74 @@ function FurnitureItemContextMenu::initWithObject(%this, %obj) {
             %this.add("Buy Another", %n = (%n + 1.0), %schemeCanBuy);
             %schemeReset = (%obj.getActiveSku() > 0.0) ? 0 : 1;
             %this.add("Reset Material", %n = (%n + 1.0), %schemeReset);
+        } else {
+            %this.add("Buy Now", %n = (%n + 1.0), %schemeNormal);
+            %this.add("Done Test Driving", %n = (%n + 1.0), %schemeNormal);
         }
-        %this.add("Buy Now", %n = (%n + 1.0), %schemeNormal);
-        %this.add("Done Test Driving", %n = (%n + 1.0), %schemeNormal);
+    } else {
+        if (CSFurnitureMover.canPaste()) {
+        } else {
+        }
+        %schemeCanPaste = %schemeDisabled;
+        %schemeNormal;
+        %this.add("Paste", %n = (%n + 1.0), %schemeCanPaste);
     }
-    if (CSFurnitureMover.canPaste()) {
-    }
-    %schemeCanPaste = %schemeDisabled;
-    %schemeNormal;
-    %this.add("Paste", %n = (%n + 1.0), %schemeCanPaste);
 };
 function FurnitureItemContextMenu::onSelect(%this, %id, %text) {
     if (isObject(%this.obj)) {
         if ((%text $= "Deselect")) {
             CSFurnitureMover.SelectNuggetID(-(1.0));
+        } else {
+            if ((%text $= "Select")) {
+                CSFurnitureMover.SelectNuggetObject(%this.obj);
+            } else {
+                if ((%text $= "Drop")) {
+                    csTestTogglePickUp();
+                } else {
+                    if ((%text $= "Pick Up")) {
+                        CSFurnitureMover.SelectNuggetObject(%this.obj);
+                        csTestTogglePickUp();
+                    } else {
+                        if ((%text $= "Put Away")) {
+                            CSFurnitureMover.SelectNuggetObject(%this.obj);
+                            csTestFreeSelectedItem();
+                        } else {
+                            if ((%text $= "Cut")) {
+                                CSFurnitureMover.doCut(%this.obj);
+                            } else {
+                                if ((%text $= "Copy")) {
+                                    CSFurnitureMover.doCopy(%this.obj);
+                                } else {
+                                    if ((%text $= "Place Another")) {
+                                        CustomSpaceClient::placeSkuInWorld(%this.obj.getInventoryNuggetSKU());
+                                    } else {
+                                        if ((%text $= "Buy Another")) {
+                                            CSShoppingBrowser.purchaseSkus(%this.obj.getInventoryNuggetSKU());
+                                        } else {
+                                            if ((%text $= "Buy Now")) {
+                                                CSShoppingBrowser.purchaseSkus(%this.obj.getInventoryNuggetSKU());
+                                            } else {
+                                                if ((%text $= "Done Test Driving")) {
+                                                    CSFurnitureMover.SelectNuggetObject(%this.obj);
+                                                    csTestFreeSelectedItem();
+                                                } else {
+                                                    if ((%text $= "Reset Material")) {
+                                                        objSkusFixSku(%this.obj, 0);
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        if ((%text $= "Select")) {
-            CSFurnitureMover.SelectNuggetObject(%this.obj);
+    } else {
+        if ((%text $= "Paste")) {
+            CSFurnitureMover.doPaste();
         }
-        if ((%text $= "Drop")) {
-            csTestTogglePickUp();
-        }
-        if ((%text $= "Pick Up")) {
-            CSFurnitureMover.SelectNuggetObject(%this.obj);
-            csTestTogglePickUp();
-        }
-        if ((%text $= "Put Away")) {
-            CSFurnitureMover.SelectNuggetObject(%this.obj);
-            csTestFreeSelectedItem();
-        }
-        if ((%text $= "Cut")) {
-            CSFurnitureMover.doCut(%this.obj);
-        }
-        if ((%text $= "Copy")) {
-            CSFurnitureMover.doCopy(%this.obj);
-        }
-        if ((%text $= "Place Another")) {
-            CustomSpaceClient::placeSkuInWorld(%this.obj.getInventoryNuggetSKU());
-        }
-        if ((%text $= "Buy Another")) {
-            CSShoppingBrowser.purchaseSkus(%this.obj.getInventoryNuggetSKU());
-        }
-        if ((%text $= "Buy Now")) {
-            CSShoppingBrowser.purchaseSkus(%this.obj.getInventoryNuggetSKU());
-        }
-        if ((%text $= "Done Test Driving")) {
-            CSFurnitureMover.SelectNuggetObject(%this.obj);
-            csTestFreeSelectedItem();
-        }
-        if ((%text $= "Reset Material")) {
-            objSkusFixSku(%this.obj, 0);
-        }
-    }
-    if ((%text $= "Paste")) {
-        CSFurnitureMover.doPaste();
     }
 };

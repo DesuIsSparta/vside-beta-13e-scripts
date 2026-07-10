@@ -78,6 +78,7 @@ function addToServerGuidList(%guid) {
         %i = (%i + 1.0);
     }
     if (((%i < %count) @ " " @ $Server::GuidList $= "")) {
+    } else {
     }
     $Server::GuidList = $Server::GuidList;
     %guid;

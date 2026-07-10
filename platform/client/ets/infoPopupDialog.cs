@@ -89,9 +89,10 @@ function InfoPopupDlg::tryShowPlayerInfo(%this) {
             %respektScore = "(unknown)";
             %respektLvl = "?";
             %respektLvlName = "(unknown)";
+        } else {
+            %respektLvl = respektScoreToLevel(%respektScore);
+            %respektLvlName = respektLevelToNameWithoutArticle(%respektLvl);
         }
-        %respektLvl = respektScoreToLevel(%respektScore);
-        %respektLvlName = respektLevelToNameWithoutArticle(%respektLvl);
         %respektRank = StripMLControlChars(%info.respektRank);
         if ((%respektRank $= "")) {
             %respektRank = "?";
@@ -103,11 +104,13 @@ function InfoPopupDlg::tryShowPlayerInfo(%this) {
         %tagsText = "";
         if ($ETS::PlayerInfo::NoTags) {
             %tagsText = %tagsText @ "Interests you share with <a:PROFILE>" @ %gender[$genderPronounHimHerThem @ %gender] @ "</a> will show up here," @ "but you have none in your profile!" @ " " @ "<a:EDIT_PROFILE>Click here</a> to add some!";
+        } else {
+            if ((%tags $= "")) {
+                %tagsText = %tagsText @ "You have no interests in common with <a:PROFILE>" @ %gender[$genderPronounHimHerThem @ %gender] @ "</a>.";
+            } else {
+                %tagsText = %tagsText @ %this.splitTagsIntoLinks(%tags, 0);
+            }
         }
-        if ((%tags $= "")) {
-            %tagsText = %tagsText @ "You have no interests in common with <a:PROFILE>" @ %gender[$genderPronounHimHerThem @ %gender] @ "</a>.";
-        }
-        %tagsText = %tagsText @ %this.splitTagsIntoLinks(%tags, 0);
         %activitiesText = "<br><spush><b>Activities: <spop>" @ %fieldOpen @ getUserActivityMgr().getActivitiesMLText(%info.activities, 5) @ %fieldClose;
         InfoPopupDlg.setAffinityName(%playerName);
         InfoPopupContents.setText(%tableSettings @ %ageText @ %locText @ %respektText @ %activitiesText @ %contentTagsText @ "");
@@ -120,13 +123,14 @@ function InfoPopupDlg::tryShowPlayerInfo(%this) {
         InfoPopupTagsScroll.resize(0, %ypos, 225, %yExt);
         InfoPopupTagsScroll.setVisible(1);
         %this.playerName = "";
+    } else {
+        %this.waitIcon.setVisible(1);
+        %this.waitIcon.start();
+        InfoPopupDlg.setAffinityName(%playerName);
+        InfoPopupTagsText.setText("");
+        InfoPopupBottom.setText("");
+        requestPlayerInfoFor(%this.playerName);
     }
-    %this.waitIcon.setVisible(1);
-    %this.waitIcon.start();
-    InfoPopupDlg.setAffinityName(%playerName);
-    InfoPopupTagsText.setText("");
-    InfoPopupBottom.setText("");
-    requestPlayerInfoFor(%this.playerName);
 };
 function InfoPopupDlg::setAffinityName(%this, %playerName) {
     %nameFieldString = %playerName;
@@ -153,8 +157,9 @@ function InfoPopupDlg::splitTagsIntoLinks(%this, %tags, %includeCategory) {
         }
         if (%includeCategory) {
             %dispTag = %tag;
+        } else {
+            %dispTag = getSubStr(strrchr(%tag, ":"), 1, 10000);
         }
-        %dispTag = getSubStr(strrchr(%tag, ":"), 1, 10000);
         %ret = %ret @ "<a:TAG" @ " " @ munge(%tag) @ ">" @ %dispTag @ "</a>";
         %n = (%n + 1.0);
     }
@@ -181,34 +186,39 @@ function InfoPopupDlg::getAddRemoveIgnoreUnignoreText(%this, %playerName) {
     if ((%friendStatus $= "friends")) {
         %faveLink = "FRIEND_REM";
         %faveText = "Remove";
-    }
-    if ((%friendStatus $= "favorite")) {
-        %faveLink = "CANCEL_REQ";
-        %faveText = "Cancel";
-    }
-    if ((%friendStatus $= "fan")) {
-        %faveLink = "ACCEPT_REQ";
-        %faveText = "Accept";
-        %faveLink2 = "DECLINE_REQ";
-        %faveText2 = "Decline";
-    }
-    if ((%friendStatus $= "none")) {
-        %faveLink = "FRIEND_ADD";
-        %faveText = "Add";
+    } else {
+        if ((%friendStatus $= "favorite")) {
+            %faveLink = "CANCEL_REQ";
+            %faveText = "Cancel";
+        } else {
+            if ((%friendStatus $= "fan")) {
+                %faveLink = "ACCEPT_REQ";
+                %faveText = "Accept";
+                %faveLink2 = "DECLINE_REQ";
+                %faveText2 = "Decline";
+            } else {
+                if ((%friendStatus $= "none")) {
+                    %faveLink = "FRIEND_ADD";
+                    %faveText = "Add";
+                }
+            }
+        }
     }
     if (%isIgnr) {
         %ignrLink = "REMIGNR";
         %ignrText = "Unignore";
+    } else {
+        %ignrLink = "ADDIGNR";
+        %ignrText = "Ignore";
     }
-    %ignrLink = "ADDIGNR";
-    %ignrText = "Ignore";
     %ret = "";
     if (!(%faveLink2 $= "")) {
         %ret = %ret @ "Friend request:<a:" @ %faveLink @ ">" @ %faveText @ "</a>";
         %ret = %ret @ " | <a:" @ %faveLink2 @ ">" @ %faveText2 @ "</a>";
+    } else {
+        %ret = %ret @ "<a:" @ %faveLink @ ">" @ %faveText @ "</a>";
+        %ret = %ret @ " | <a:" @ %ignrLink @ ">" @ %ignrText @ "</a>";
     }
-    %ret = %ret @ "<a:" @ %faveLink @ ">" @ %faveText @ "</a>";
-    %ret = %ret @ " | <a:" @ %ignrLink @ ">" @ %ignrText @ "</a>";
     return %ret;
 };
 function InfoPopupDlg::stopAnimation(%this) {
@@ -221,33 +231,42 @@ function InfoPopupContents::onURL(%this, %url) {
     %rest = getWords(%url, 1, 10000);
     if ((%first $= "PROFILE")) {
         doUserProfile(InfoPopupDlg.playerName);
-    }
-    if ((%first $= "EDIT_PROFILE")) {
-        doEditProfile();
-    }
-    if ((%first $= "TAG")) {
-        doViewTag(unmunge(%rest));
-    }
-    if ((%first $= "FRIEND_ADD")) {
-        doUserFavorite(InfoPopupDlg.playerName, "add");
-    }
-    if ((%first $= "FRIEND_REM")) {
-        doUserFavorite(InfoPopupDlg.playerName, "remove");
-    }
-    if ((%first $= "CANCEL_REQ")) {
-        doUserFavorite(InfoPopupDlg.playerName, "cancel");
-    }
-    if ((%first $= "ACCEPT_REQ")) {
-        doUserFavorite(InfoPopupDlg.playerName, "accept");
-    }
-    if ((%first $= "DECLINE_REQ")) {
-        doUserFavorite(InfoPopupDlg.playerName, "decline");
-    }
-    if ((%first $= "ADDIGNR")) {
-        doUserIgnore(InfoPopupDlg.playerName, "add");
-    }
-    if ((%first $= "REMIGNR")) {
-        doUserIgnore(InfoPopupDlg.playerName, "remove");
+    } else {
+        if ((%first $= "EDIT_PROFILE")) {
+            doEditProfile();
+        } else {
+            if ((%first $= "TAG")) {
+                doViewTag(unmunge(%rest));
+            } else {
+                if ((%first $= "FRIEND_ADD")) {
+                    doUserFavorite(InfoPopupDlg.playerName, "add");
+                } else {
+                    if ((%first $= "FRIEND_REM")) {
+                        doUserFavorite(InfoPopupDlg.playerName, "remove");
+                    } else {
+                        if ((%first $= "CANCEL_REQ")) {
+                            doUserFavorite(InfoPopupDlg.playerName, "cancel");
+                        } else {
+                            if ((%first $= "ACCEPT_REQ")) {
+                                doUserFavorite(InfoPopupDlg.playerName, "accept");
+                            } else {
+                                if ((%first $= "DECLINE_REQ")) {
+                                    doUserFavorite(InfoPopupDlg.playerName, "decline");
+                                } else {
+                                    if ((%first $= "ADDIGNR")) {
+                                        doUserIgnore(InfoPopupDlg.playerName, "add");
+                                    } else {
+                                        if ((%first $= "REMIGNR")) {
+                                            doUserIgnore(InfoPopupDlg.playerName, "remove");
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
     }
 };
 function InfoPopupTagsText::onURL(%this, %url) {

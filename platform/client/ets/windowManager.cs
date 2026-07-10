@@ -78,8 +78,9 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY) {
             if ((%posY <= %checkAtY)) {
             }
             %overlap = ((%posY + getWord(%win.getExtent(), 1)) >= %checkAtY);
+        } else {
+            %overlap = 1;
         }
-        %overlap = 1;
         if (%win.isVisible()) {
         }
         if (%overlap) {
@@ -101,8 +102,9 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY) {
             if ((%posY <= %checkAtY)) {
             }
             %overlap = ((%posY + getWord(%ctrl.getExtent(), 1)) >= %checkAtY);
+        } else {
+            %overlap = 1;
         }
-        %overlap = 1;
         if (%ctrl.isVisible()) {
         }
         if (%overlap) {
@@ -127,8 +129,9 @@ function WindowManager::getLeftMarginAtY(%this, %checkAtY) {
             if ((%posY <= %checkAtY)) {
             }
             %overlap = ((%posY + getWord(%win.getExtent(), 1)) >= %checkAtY);
+        } else {
+            %overlap = 1;
         }
-        %overlap = 1;
         if (%win.isVisible()) {
         }
         if (%overlap) {
@@ -151,8 +154,9 @@ function WindowManager::getLeftMarginAtY(%this, %checkAtY) {
             if ((%posY <= %checkAtY)) {
             }
             %overlap = ((%posY + getWord(%ctrl.getExtent(), 1)) >= %checkAtY);
+        } else {
+            %overlap = 1;
         }
-        %overlap = 1;
         if (%ctrl.isVisible()) {
         }
         if (%overlap) {
@@ -201,32 +205,36 @@ function WindowManager::repositionWindows(%this, %windowSet) {
         while ((%i < %windowSet.numWindows)) {
             %win = %windowSet.windows[%i];
             if (!isObject(%win)) {
-            }
-            if (%win.isVisible()) {
-                if (%win.getFieldValue("doAutoClose")) {
-                }
-                if ((%win.getFieldValue("age") > 0.0)) {
-                    if ((%oldestWin $= "")) {
-                        %oldestWin = %win;
+            } else {
+                if (%win.isVisible()) {
+                    if (%win.getFieldValue("doAutoClose")) {
                     }
-                    if ((%win.getFieldValue("age") > %oldestWin.getFieldValue("age"))) {
-                        %oldestWin = %win;
+                    if ((%win.getFieldValue("age") > 0.0)) {
+                        if ((%oldestWin $= "")) {
+                            %oldestWin = %win;
+                        } else {
+                            if ((%win.getFieldValue("age") > %oldestWin.getFieldValue("age"))) {
+                                %oldestWin = %win;
+                            }
+                        }
                     }
+                    %weight = %win.vWeight;
+                    if ((%weight == 0.0)) {
+                        %weight = 1.0;
+                        %residualHeight = (%residualHeight - %padding);
+                    } else {
+                        if ((%weight < 0.0)) {
+                            %weight = 0;
+                            %residualHeight = (%residualHeight - (getWord(%win.getExtent(), 1) + %padding));
+                        } else {
+                            if ((%weight == 2.0)) {
+                                %weight = $gWindowManagerSpacerWeight;
+                            }
+                        }
+                    }
+                    DEBUG_WM("weight: " @ %weight);
+                    %totalWeight = (%totalWeight + %weight);
                 }
-                %weight = %win.vWeight;
-                if ((%weight == 0.0)) {
-                    %weight = 1.0;
-                    %residualHeight = (%residualHeight - %padding);
-                }
-                if ((%weight < 0.0)) {
-                    %weight = 0;
-                    %residualHeight = (%residualHeight - (getWord(%win.getExtent(), 1) + %padding));
-                }
-                if ((%weight == 2.0)) {
-                    %weight = $gWindowManagerSpacerWeight;
-                }
-                DEBUG_WM("weight: " @ %weight);
-                %totalWeight = (%totalWeight + %weight);
             }
             %i = (%i + 1.0);
         }
@@ -240,20 +248,24 @@ function WindowManager::repositionWindows(%this, %windowSet) {
                 %weight = %win.vWeight;
                 if ((%weight == 0.0)) {
                     %weight = 1.0;
-                }
-                if ((%weight == 2.0)) {
-                    %weight = $gWindowManagerSpacerWeight;
+                } else {
+                    if ((%weight == 2.0)) {
+                        %weight = $gWindowManagerSpacerWeight;
+                    }
                 }
                 if ((%totalWeight == 0.0)) {
+                } else {
                 }
                 %ratio = (%weight / %totalWeight);
                 0;
                 if ((%ratio > 0.0)) {
+                } else {
                 }
                 %height = getWord(%win.getExtent(), 1);
                 (%ratio * %residualHeight);
                 %minHeight = getWord(%win.minExtent, 1);
                 if ((%height < %minHeight)) {
+                } else {
                 }
                 %i[%height @ %i] = %minHeight @ %height;
                 %ypos = (%ypos + (%i[%height @ %i] + %padding));
@@ -284,8 +296,9 @@ function WindowManager::repositionWindows(%this, %windowSet) {
                 %win.onResized();
             }
             %ypos = (%ypos + (getWord(%win.getExtent(), 1) + %padding));
+        } else {
+            %win.age = 0;
         }
-        %win.age = 0;
         %i = (%i + 1.0);
     }
     %windowSet.bottom = (%i < %windowSet.numWindows) @ %ypos;
@@ -328,8 +341,9 @@ function GameMgrHudWin::toggle(%this) {
     }
     if (%this.isVisible()) {
         %this.close();
+    } else {
+        %this.open();
     }
-    %this.open();
 };
 function GameMgrHudWin::open(%this) {
     return;
@@ -352,8 +366,9 @@ function GameMgrHudWin::close(%this) {
 function PlayerWin::open(%this) {
     if (!($player.getShapeName() $= "")) {
         PlayerWin.setText("\x04" @ " " @ $player.getShapeName());
+    } else {
+        PlayerWin.setText("\x04Player - Cam!");
     }
-    PlayerWin.setText("\x04Player - Cam!");
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     WindowManager.update();

@@ -88,19 +88,24 @@ function EditContextMenu::init(%this, %ctrl) {
     %canPaste = !(getClipboard() $= "");
     %n = -(1.0);
     if (%modifiable) {
+    } else {
     }
     %this.add("Undo", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
     %this.add("---", %n = (%n + 1.0), %schemeDisabled);
     if (%canCut) {
+    } else {
     }
     %this.add("Cut", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
     if (%canCopy) {
+    } else {
     }
     %this.add("Copy", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
     if (%canPaste) {
+    } else {
     }
     %this.add("Paste", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
     if (%canCut) {
+    } else {
     }
     %this.add("Delete", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
     %this.add("---", %n = (%n + 1.0), %schemeDisabled);
@@ -116,20 +121,25 @@ function EditContextMenu::onSelect(%this, %unused, %text) {
     }
     if ((%text $= "Undo")) {
         %this.ctrl.doUndo();
-    }
-    if ((%text $= "Cut")) {
-        %this.ctrl.doCut();
-    }
-    if ((%text $= "Copy")) {
-        %this.ctrl.doCopy();
-    }
-    if ((%text $= "Paste")) {
-        %this.ctrl.doPaste();
-    }
-    if ((%text $= "Delete")) {
-        %this.ctrl.deleteSelection();
-    }
-    if ((%text $= "Select All")) {
-        %this.ctrl.selectAll();
+    } else {
+        if ((%text $= "Cut")) {
+            %this.ctrl.doCut();
+        } else {
+            if ((%text $= "Copy")) {
+                %this.ctrl.doCopy();
+            } else {
+                if ((%text $= "Paste")) {
+                    %this.ctrl.doPaste();
+                } else {
+                    if ((%text $= "Delete")) {
+                        %this.ctrl.deleteSelection();
+                    } else {
+                        if ((%text $= "Select All")) {
+                            %this.ctrl.selectAll();
+                        }
+                    }
+                }
+            }
+        }
     }
 };

@@ -12,8 +12,9 @@ function DancePadGui::close(%this) {
 function DancePadGui::fillDanceButtonOptions(%this) {
     if (($UserPref::Player::gender $= "f")) {
         %dancesList = $dancesMapF;
+    } else {
+        %dancesList = $dancesMapM;
     }
-    %dancesList = $dancesMapM;
     %num = (getFieldCount(%dancesList) / 2.0);
     %numlists = 8;
     %listNum = 1;

@@ -31,13 +31,15 @@ function respektHandle(%otherUser, %value, %dValue, %code, %ranking, %isCurrent)
     %user = $Player::Name;
     if (isFunction(%handler)) {
         %ret = call(%handler, %user, %otherUser, %value, %dValue, %code, %isCurrent);
+    } else {
+        %ret = "";
     }
-    %ret = "";
     if ((%ret $= "")) {
         %ret = respektHandle_Generic(%user, %otherUser, %value, %dValue, %code, %isCurrent);
-    }
-    if (!(%ret $= "success")) {
-        error(getScopeName() @ " " @ "-" @ " " @ %ret);
+    } else {
+        if (!(%ret $= "success")) {
+            error(getScopeName() @ " " @ "-" @ " " @ %ret);
+        }
     }
 };
 function respektComposeMessage(%user, %otherUser, %value, %dValue, %code) {
@@ -49,6 +51,7 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code) {
     %userWet = pChat.getPlayerMarkup(%user, "ffddeeff");
     %otherUserWet = pChat.getPlayerMarkup(%otherUser, "ffddeeff");
     if ((%dValue > 0.0)) {
+    } else {
     }
     %dValueWet = %dValue;
     "+" @ %dValue;
@@ -149,22 +152,26 @@ function checkPointsEarnedSinceLastLogin() {
     if ((%dVP != 0.0) || (%dVB != 0.0)) {
         %msg = %dVB[$MsgCat::TGF @ "currencyEarnedOffline"];
         if ((%dVP != 0.0)) {
+        } else {
         }
         %msg = " " @ %dVP @ " " @ "vPoints" @ "";
         %msg;
         if ((%dVP != 0.0)) {
         }
         if ((%dVB != 0.0)) {
+        } else {
         }
         %msg = " " @ "and" @ "";
         %msg;
         if ((%dVB != 0.0)) {
+        } else {
         }
         %msg = " " @ %dVB @ " " @ "vBux" @ "";
         %msg;
         %msg = %msg @ "!";
+    } else {
+        %msg = "";
     }
-    %msg = "";
     geTGF_main_OfflineIncomeNotification.setTextWithStyle(%msg);
 };
 function moveAccountBalanceHud(%toWhere) {
@@ -190,15 +197,17 @@ function moveAccountBalanceHud(%toWhere) {
         %newProfile = "";
         %newPosition = "108 0";
         %newExtent = "162 39";
+    } else {
+        if ((%toWhere $= "PLAYGUI")) {
+            %dstContainer = AccountBalanceHud;
+            %childCtrl = AccountBalanceContents;
+            %newProfile = "";
+            %newPosition = "0 0";
+            %newExtent = "162 39";
+        } else {
+            error(getScopeName() @ " " @ "- invalid destination code:" @ " " @ %toWhere @ " " @ getTrace());
+            return;
+        }
     }
-    if ((%toWhere $= "PLAYGUI")) {
-        %dstContainer = AccountBalanceHud;
-        %childCtrl = AccountBalanceContents;
-        %newProfile = "";
-        %newPosition = "0 0";
-        %newExtent = "162 39";
-    }
-    error(getScopeName() @ " " @ "- invalid destination code:" @ " " @ %toWhere @ " " @ getTrace());
-    return;
     %childCtrl.reparent(%dstContainer, %newPosition, %newExtent, %newProfile);
 };

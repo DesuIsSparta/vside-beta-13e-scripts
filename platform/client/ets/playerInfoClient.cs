@@ -54,12 +54,13 @@ function getPlayerNamesInRadius(%radius) {
     }
     initContainerRadiusSearch($player.getTransform(), %radius, $TypeMasks::PlayerObjectType, 1);
     %names = "";
-    while (1) {
+    if (1) {
         %player = containerSearchNext(1);
         if (!isObject(%player)) {
-        }
-        if ((%player.getId() != $player.getId())) {
-            %names = %names @ "\t" @ %player.getShapeName();
+        } else {
+            if ((%player.getId() != $player.getId())) {
+                %names = %names @ "\t" @ %player.getShapeName();
+            }
         }
     }
     return trim(%names);
@@ -149,32 +150,38 @@ function PlayerInfoRequest::onDone(%this) {
                 if (!(%this.requestPlayerInfoFor $= "")) {
                     InfoPopupDlg.showPlayerNotFound();
                 }
+            } else {
+                if (isObject(InfoPopupDlg)) {
+                    if (!(%this.requestPlayerInfoFor $= "")) {
+                    }
+                    if ((PlayerInfoMap.get(%this.requestPlayerInfoFor) $= "")) {
+                        InfoPopupDlg.showPlayerNotFound();
+                    } else {
+                        InfoPopupDlg.tryShowPlayerInfo();
+                    }
+                }
             }
+        } else {
+            if ((%numUsers > 0.0)) {
+                %playinfo = PlayerInfoMap.get(%this.requestPlayerInfoFor);
+            } else {
+                %playinfo = 0;
+            }
+            %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this.callbackData @ ");";
+            eval(%cmd);
+        }
+    } else {
+        if ((%this.callback $= "")) {
             if (isObject(InfoPopupDlg)) {
-                if (!(%this.requestPlayerInfoFor $= "")) {
-                }
-                if ((PlayerInfoMap.get(%this.requestPlayerInfoFor) $= "")) {
-                    InfoPopupDlg.showPlayerNotFound();
-                }
-                InfoPopupDlg.tryShowPlayerInfo();
             }
-        }
-        if ((%numUsers > 0.0)) {
-            %playinfo = PlayerInfoMap.get(%this.requestPlayerInfoFor);
-        }
-        %playinfo = 0;
-        %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this.callbackData @ ");";
-        eval(%cmd);
-    }
-    if ((%this.callback $= "")) {
-        if (isObject(InfoPopupDlg)) {
-        }
-        if (InfoPopupDlg.isShowing()) {
-            InfoPopupDlg.stopAnimation();
+            if (InfoPopupDlg.isShowing()) {
+                InfoPopupDlg.stopAnimation();
+            }
+        } else {
+            %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
+            eval(%cmd);
         }
     }
-    %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
-    eval(%cmd);
     %this.requestPlayerInfoFor = "";
     %this.callback = "";
 };

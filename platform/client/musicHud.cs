@@ -11,19 +11,22 @@ function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %is
         %this.album = %this.getITunesSearchLink(%artist, %album, "", %album);
         if (($ETS::ProjectName $= "vmtv")) {
             %this.title = %this.getITunesSearchLink(%artist, %album, %title, %title);
+        } else {
+            %this.title = %this.getSongPageLink(%artist, %album, %title, %title);
         }
-        %this.title = %this.getSongPageLink(%artist, %album, %title, %title);
+    } else {
+        %this.artist = %artist;
+        %this.album = %album;
+        %this.title = %title;
     }
-    %this.artist = %artist;
-    %this.album = %album;
-    %this.title = %title;
     %commentData = %this.parseComment(%comment);
     %commentText = %commentData.get("text");
     %url = %commentData.get("url");
     if ((%url $= "")) {
         %this.comment = %commentText;
+    } else {
+        %this.comment = "<a:" @ %url @ ">" @ %commentText @ "</a>";
     }
-    %this.comment = "<a:" @ %url @ ">" @ %commentText @ "</a>";
     %commentData.delete();
     %this.charWidth = mMax(mMax(mMax(strlen(%artist), (2.0 + strlen(%title))), strlen(%album)), strlen(%commentText));
     %this.update();
@@ -51,30 +54,36 @@ function MusicHud::update(%this) {
         %content = %this.artist @ "\n\"" @ %this.title @ "\"";
         if ((%this.musicService.getAlbum() $= "") || (%this.musicService.getAlbum() $= "album")) {
             %heightOffset = (%heightOffset + 20.0);
+        } else {
+            %content = %content @ "\n" @ %this.album;
+            %heightOffset = (%heightOffset + %heightDelta);
         }
-        %content = %content @ "\n" @ %this.album;
-        %heightOffset = (%heightOffset + %heightDelta);
         if ((%this.comment $= "")) {
             %heightOffset = (%heightOffset + 20.0);
+        } else {
+            %content = %content @ "\n" @ %this.comment;
+            %heightOffset = (%heightOffset + %heightDelta);
         }
-        %content = %content @ "\n" @ %this.comment;
-        %heightOffset = (%heightOffset + %heightDelta);
     }
     if ($UserPref::Audio::mute) {
         %this.ratingControl.setVisible(0);
         %content = "Audio is currently muted. Unmute audio to listen to music.";
-    }
-    if (!(%content $= "")) {
-        %this.ratingControl.setVisible(1);
-    }
-    %this.ratingControl.setVisible(0);
-    if (isObject(FMod)) {
-        if (FMod.isMusicOn()) {
-            %content = "Loading music info...";
+    } else {
+        if (!(%content $= "")) {
+            %this.ratingControl.setVisible(1);
+        } else {
+            %this.ratingControl.setVisible(0);
+            if (isObject(FMod)) {
+                if (FMod.isMusicOn()) {
+                    %content = "Loading music info...";
+                } else {
+                    %content = "You are currently in a space without music. To listen to music visit clubs, stores, apartments, or other venues that have music playing.";
+                }
+            } else {
+                %content = "FMod music not currently available.";
+            }
         }
-        %content = "You are currently in a space without music. To listen to music visit clubs, stores, apartments, or other venues that have music playing.";
     }
-    %content = "FMod music not currently available.";
     %this.updateRatingText();
     MusicText.setText(%content);
     if (MusicText.isVisible()) {
@@ -92,14 +101,15 @@ function MusicHud::updateRatingText(%this) {
     %isObject = isObject(RatingRequest);
     if (!%isObject || (findRequestStatus(RatingRequest) $= "fail")) {
         %ratingText = %ratingText @ "Couldn't get song rating.";
-    }
-    if (%isObject) {
-    }
-    if (!(RatingRequest.community_rating $= "")) {
-        %ratingText = %ratingText @ "Avg. Rating: " @ RatingRequest.community_rating;
-        if (!(RatingRequest.num_ratings $= "")) {
-            %plural = !(RatingRequest.num_ratings $= 1) ? "s" : "";
-            %ratingText = %ratingText @ " (" @ RatingRequest.num_ratings @ " vote" @ %plural @ ") ";
+    } else {
+        if (%isObject) {
+        }
+        if (!(RatingRequest.community_rating $= "")) {
+            %ratingText = %ratingText @ "Avg. Rating: " @ RatingRequest.community_rating;
+            if (!(RatingRequest.num_ratings $= "")) {
+                %plural = !(RatingRequest.num_ratings $= 1) ? "s" : "";
+                %ratingText = %ratingText @ " (" @ RatingRequest.num_ratings @ " vote" @ %plural @ ") ";
+            }
         }
     }
     %this.ratingControl.label.setText(%ratingText);
@@ -120,8 +130,9 @@ function MusicHud::parseComment(%this, %comment) {
     %map.put("text", %var);
     if ((getSubStr(%url, 0, 7) $= "http://")) {
         %map.put("url", getSubStr(%url, 7, (strlen(%url) - 7.0)));
+    } else {
+        %map.put("url", %url);
     }
-    %map.put("url", %url);
     return %map;
 };
 $Music::ITunesSearchURL = $Net::ItunesURL;
@@ -161,19 +172,21 @@ function MusicHud::setChangeStationAllowed(%this, %flag) {
     %flag = 0;
     if (%flag) {
         MusicHudChangeStationButton.setVisible(1);
+    } else {
+        MusicHudChangeStationButton.setVisible(0);
+        %this.setView("basic");
     }
-    MusicHudChangeStationButton.setVisible(0);
-    %this.setView("basic");
 };
 function MusicHud::setView(%this, %view) {
     if ((%view $= "basic")) {
         MusicHudBasicView.setVisible(1);
         MusicHudEditView.setVisible(0);
-    }
-    if ((%view $= "change_station")) {
-        MusicHudBasicView.setVisible(0);
-        MusicHudEditView.setVisible(1);
-        %this.fillStationPopup();
+    } else {
+        if ((%view $= "change_station")) {
+            MusicHudBasicView.setVisible(0);
+            MusicHudEditView.setVisible(1);
+            %this.fillStationPopup();
+        }
     }
 };
 function MusicHud::fillStationPopup(%this) {
@@ -190,8 +203,9 @@ function MusicHud::updateStations(%this, %stations) {
     while ((%i < getFieldCount(%stations))) {
         %field = getField(%stations, %i);
         if ((%field $= "")) {
+        } else {
+            MusicHudStationPopup.add(%field);
         }
-        MusicHudStationPopup.add(%field);
         %i = (%i + 1.0);
     }
     if (((%i < getFieldCount(%stations)) @ " " @ %this.station $= "")) {
@@ -207,12 +221,14 @@ function MusicText::onUrl_NOOP(%this, %url) {
     $MusicText::selectedURL = %url;
     if (iTunesIsRunning()) {
         iTunesOpen(%url);
+    } else {
+        if (iTunesIsInstalled()) {
+            MessagePopup("Please Wait", "Starting ITunes...", 5000);
+            iTunesOpen(%url);
+        } else {
+            MessageBoxYesNo("Confirm Installation", "You have selected a link to the ITunes Store " @ "but do not have ITunes installed.  " @ "Would you like to install it now?", "MusicText::installITunes();", "MusicText::declineITunes();");
+        }
     }
-    if (iTunesIsInstalled()) {
-        MessagePopup("Please Wait", "Starting ITunes...", 5000);
-        iTunesOpen(%url);
-    }
-    MessageBoxYesNo("Confirm Installation", "You have selected a link to the ITunes Store " @ "but do not have ITunes installed.  " @ "Would you like to install it now?", "MusicText::installITunes();", "MusicText::declineITunes();");
 };
 function MusicText::installITunes() {
     gotoWebPage(getITunesDownloadURL($MusicText::selectedURL));
@@ -225,19 +241,24 @@ function MusicText::startITunes() {
 function MusicRatingControl::onUpdate(%this) {
     if (((%this.mouseOver + 1.0) == 1.0)) {
         %this.descripText = "Hate It";
+    } else {
+        if (((%this.mouseOver + 1.0) == 2.0)) {
+            %this.descripText = "Not So Good";
+        } else {
+            if (((%this.mouseOver + 1.0) == 3.0)) {
+                %this.descripText = "So-So";
+            } else {
+                if (((%this.mouseOver + 1.0) == 4.0)) {
+                    %this.descripText = "Like It";
+                } else {
+                    if (((%this.mouseOver + 1.0) == 5.0)) {
+                        %this.descripText = "Love It!";
+                    } else {
+                        %this.descripText = "";
+                    }
+                }
+            }
+        }
     }
-    if (((%this.mouseOver + 1.0) == 2.0)) {
-        %this.descripText = "Not So Good";
-    }
-    if (((%this.mouseOver + 1.0) == 3.0)) {
-        %this.descripText = "So-So";
-    }
-    if (((%this.mouseOver + 1.0) == 4.0)) {
-        %this.descripText = "Like It";
-    }
-    if (((%this.mouseOver + 1.0) == 5.0)) {
-        %this.descripText = "Love It!";
-    }
-    %this.descripText = "";
     MusicHud.updateRatingText();
 };

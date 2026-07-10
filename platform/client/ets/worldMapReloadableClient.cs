@@ -27,6 +27,7 @@ function WorldMap::TabulateWorldAreaSummary(%unused) {
             %areaSummaryObj.numServers = 0;
             %areaSummaryObj.areaType = hasWord("lga nv rj", %serverAreaName) ? "city" : "pvt";
             if (hasWord("gw", %serverAreaName)) {
+            } else {
             }
             %areaSummaryObj.areaType = "gw" @ %areaSummaryObj.areaType;
         }

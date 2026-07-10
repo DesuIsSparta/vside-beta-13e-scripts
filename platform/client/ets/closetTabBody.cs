@@ -319,13 +319,15 @@ function BodyItemsFrame::update(%this) {
     if ((%this.features $= "Height")) {
         BodyHeightFrame.setVisible(1);
         BodyHeightFrame.getParent().pushToBack(BodyHeightFrame);
+    } else {
+        BodyHeightFrame.setVisible(0);
     }
-    BodyHeightFrame.setVisible(0);
     if ((%this.features $= "Stance")) {
         BodyStanceButtons.setVisible(1);
         BodyStanceButtons.getParent().pushToBack(BodyStanceButtons);
+    } else {
+        BodyStanceButtons.setVisible(0);
     }
-    BodyStanceButtons.setVisible(0);
 };
 function BodyHeightDisplayText::update(%this) {
     %myHeight = ($UserPref::Player::height * [$player.getGender()]);

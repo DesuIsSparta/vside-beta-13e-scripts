@@ -39,10 +39,11 @@ function addMessageCallback(%msgType, %func) {
             %i = (%i + 1.0);
         }
         %m.func[%i] = !(%m.func[%i] $= "") @ %func;
+    } else {
+        %m = new SimObject("");
+        MessageFuncDict.put(%msgType, %m);
+        %m.func[0] = %func;
     }
-    %m = new SimObject("");
-    MessageFuncDict.put(%msgType, %m);
-    %m.func[0] = %func;
 };
 function defaultMessageCallback(%msgType, %msgString) {
     onServerMessage(detag(%msgString));

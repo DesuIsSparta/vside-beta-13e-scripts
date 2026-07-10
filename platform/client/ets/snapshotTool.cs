@@ -53,9 +53,10 @@ function snapshotToolonComplete(%request, %result) {
         if ($UserPref::Snapshots::View) {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
+    } else {
+        snapshotToolSet1.setVisible(1);
+        snapshotToolSet2.setVisible(0);
     }
-    snapshotToolSet1.setVisible(1);
-    snapshotToolSet2.setVisible(0);
 };
 function snapshotTool::snapControl(%ctrl, %fileName) {
     %origin = %ctrl.getScreenPosition();

@@ -38,6 +38,7 @@ $specialSKUs["tickerPri1"] = 58001;
 $specialSKUs["tickerPri2"] = 58002;
 function getSpecialSKU(%player, %skuName) {
     if (isObject(%player)) {
+    } else {
     }
     %gender = "n";
     %player.getGender();

@@ -20,8 +20,9 @@ function CSInventoryBrowserWindow::close(%this) {
 function CSInventoryBrowserWindow::toggle(%this) {
     if (%this.isVisible()) {
         %this.close();
+    } else {
+        %this.open();
     }
-    %this.open();
 };
 function CSInventoryBrowserWindow::Initialize(%this) {
     if (!%this.initialized) {
@@ -38,9 +39,10 @@ function CSInventoryBrowserWindow::Initialize(%this) {
         CSInventoryBrowser.loadAvailableSkus();
         $gGotFurnitureCallback = "CSInventoryBrowser.loadAvailableSkus();" @ "CSFurnitureMoverText.update();" @ "CSFurnitureMover.updateButtonStates();";
         %this.initialized = 1;
+    } else {
+        CSInventoryBrowser.Path = "";
+        CSInventoryBrowser.loadAvailableSkus();
     }
-    CSInventoryBrowser.Path = "";
-    CSInventoryBrowser.loadAvailableSkus();
 };
 function CSInventoryBrowserWindow::onResized(%this) {
     %extent = %this.getExtent();
@@ -61,8 +63,9 @@ function CSInventoryBrowser::loadAvailableSkus(%this) {
     }
     if (((%i < %numSkus) @ " " @ %this.Path $= "") || (%this.Path $= %this.baseDir)) {
         %this.goToPath(%this.baseDir, 0);
+    } else {
+        %this.update();
     }
-    %this.update();
 };
 function CSInventoryBrowser::fillLeafPane(%this, %pane) {
     Parent::fillLeafPane(%this, %pane);
@@ -207,22 +210,23 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
             %pane.bindClassName("CSInventoryItemPane");
         }
         %pane.update();
+    } else {
+        %noItemText = new GuiMLTextCtrl("") {
+            profile = "ETSNonModalProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "25 20";
+            extent = (%paneWidth - 5.0) @ " " @ 18;
+            minExtent = "1 1";
+            sluggishness = -1;
+            visible = 1;
+            lineSpacing = 0;
+            allowColorChars = 1;
+            maxChars = -1;
+            text = "<color:ffffff>You don't own any furnishings.";
+        };
+        %pane.add(%noItemText);
     }
-    %noItemText = new GuiMLTextCtrl("") {
-        profile = "ETSNonModalProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "25 20";
-        extent = (%paneWidth - 5.0) @ " " @ 18;
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        lineSpacing = 0;
-        allowColorChars = 1;
-        maxChars = -1;
-        text = "<color:ffffff>You don't own any furnishings.";
-    };
-    %pane.add(%noItemText);
 };
 function CSInventoryItemPane::update(%this) {
     %sku = %this.node.sku;
@@ -240,14 +244,17 @@ function CSInventoryItemPane::update(%this) {
     %numStored = (%numOwned - %numPlaced);
     %omni = (%numOwned == -(1.0));
     if (%omni) {
+    } else {
     }
     %txtOwned = "You own " @ %numOwned @ " of these,";
     "You own many of these,";
     if (%omni) {
+    } else {
     }
     %txtPlaced = %numPlaced @ " in room, ";
     %numPlaced @ " in room.";
     if (%omni) {
+    } else {
     }
     %txtStored = %numStored @ " in storage.";
     "";
@@ -256,9 +263,10 @@ function CSInventoryItemPane::update(%this) {
     if (%omni) {
         %this.placeButton.setActive(1);
         %this.buyButton.setActive(0);
+    } else {
+        %this.placeButton.setActive((%numPlaced < %numOwned));
+        %this.buyButton.setActive(1);
     }
-    %this.placeButton.setActive((%numPlaced < %numOwned));
-    %this.buyButton.setActive(1);
 };
 function CSInventoryBrowser::switchToOtherBrowser(%this) {
     CSInventoryBrowserWindow.close();

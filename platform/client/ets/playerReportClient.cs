@@ -49,11 +49,12 @@ function ReportAbuseDlg::report(%this) {
     if (isObject(%messageVector)) {
         echo("valid message vector");
         %messageVector.dumpToFile("./chatbub.txt", "", 200);
+    } else {
+        echo("creating dummy message vector");
+        %messageVector = new MessageVector("");
+        %messageVector.dumpToFile("./chatbub.txt");
+        %messageVector.delete();
     }
-    echo("creating dummy message vector");
-    %messageVector = new MessageVector("");
-    %messageVector.dumpToFile("./chatbub.txt");
-    %messageVector.delete();
     %request = sendRequest_AbuseReport(%this.targetName, stripUnprintables(ReportDescription.getText()), %occurrence, %abuseType, "./chatBub.txt", "onDoneOrErrorCallback_AbuseReport");
     %request.targetName = %this.targetName;
     %request.dlg = MessageBoxOK("Reporting Abuse", "Your abuse report is being sent..", "");
@@ -63,10 +64,12 @@ function onDoneOrErrorCallback_AbuseReport(%request) {
     if (%request.checkSuccess()) {
         if (!($CSSpaceName $= "")) {
             MessageBoxOK("Report Abuse", $MsgCat::abuse["ABUSE-MSG-FROM-PRIVATE-SPACE"], "");
+        } else {
+            MessageBoxOK("Report Abuse", $MsgCat::abuse["ABUSE-MSG"], "");
         }
-        MessageBoxOK("Report Abuse", $MsgCat::abuse["ABUSE-MSG"], "");
+    } else {
+        MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
     }
-    MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
     commandToServer('NotifyAbuseReport', %request.targetName, getSubStr(ReportDescription.getText(), 0, 64));
     $gSecondsToWaitBetweenReportAbuseAndUnignore = (10.0 * 60.0);
     safeEnsureScriptObjectWithInit("StringMap", "cantUnignoreList", "{ ignoreCase = true; }");
@@ -85,7 +88,8 @@ function doUserReport(%targetName, %reportType) {
             %dlg.callback[%targetName,"\", \"add\");",0] = "doUserIgnore(\"";
             %dlg.callback[%targetName,"\", \"add\"); ReportAbuseDlg.open(\"",%targetName,"\"); ",%dlg.getId(),".close();",1] = "doUserIgnore(\"";
             %dlg.callback[2] = "";
+        } else {
+            ReportAbuseDlg.open(%targetName);
         }
-        ReportAbuseDlg.open(%targetName);
     }
 };

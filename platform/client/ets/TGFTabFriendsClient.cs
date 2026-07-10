@@ -210,17 +210,21 @@ function geTGF_FriendsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unused
     %showDeets = 0;
     if ((%mouseClickCount == -(1.0))) {
         %showDeets = 0;
+    } else {
+        if ((%mouseClickCount == 0.0)) {
+            %showDeets = 1;
+        } else {
+            if ((%mouseClickCount == 1.0)) {
+                %showDeets = 1;
+            } else {
+                if ((%mouseClickCount == 2.0)) {
+                    %showDeets = 1;
+                } else {
+                    %showDeets = 0;
+                }
+            }
+        }
     }
-    if ((%mouseClickCount == 0.0)) {
-        %showDeets = 1;
-    }
-    if ((%mouseClickCount == 1.0)) {
-        %showDeets = 1;
-    }
-    if ((%mouseClickCount == 2.0)) {
-        %showDeets = 1;
-    }
-    %showDeets = 0;
     if (%showDeets) {
         %item = geTGF.findItem("friends", "person", %userName);
         geTGF.DoDetails("friends", %item);
@@ -230,10 +234,11 @@ function geTGF_FriendsGuiTable::onKeyDown(%this, %modifier, %keyCode) {
     %modifierStr = %this.getStringFromModifier(%modifier);
     %keyCodeStr = %this.getStringFromKeyCode(%keyCode);
     if ((%modifierStr @ %keyCodeStr $= "\t")) {
-    }
-    if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
-        geTGF_FriendsFilterBox.makeFirstResponder(1);
-        return 1;
+    } else {
+        if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
+            geTGF_FriendsFilterBox.makeFirstResponder(1);
+            return 1;
+        }
     }
     return 0;
 };

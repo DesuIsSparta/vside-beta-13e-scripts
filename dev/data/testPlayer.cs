@@ -51,7 +51,8 @@ function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname) 
         log("wardrobe", "debug", "delta       = \"" @ %delta @ "\"");
         log("wardrobe", "debug", "wetActual   = \"" @ %wetActual @ "\"");
         log("wardrobe", "debug", "wetExpected = \"" @ %wetExpected @ "\"");
+    } else {
+        log("wardrobe", "debug", "passed:" @ " " @ %testname);
     }
-    log("wardrobe", "debug", "passed:" @ " " @ %testname);
     return %pass;
 };

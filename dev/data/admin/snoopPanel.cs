@@ -39,8 +39,9 @@ function SnoopPanel::addLine(%this, %text) {
     %timeStamp = SystemMessageDialog::getTimeStampNice(getTimeStamp()) @ " ";
     if (!(snoopPanelTextCtrl.getText() $= "")) {
         %newLine = "\n";
+    } else {
+        %newLine = "";
     }
-    %newLine = "";
     snoopPanelTextCtrl.addText(%newLine @ %timeStamp @ %text, 1, SnoopPanelScroll.isAtBottom());
 };
 function SnoopPanel::addLine2(%this, %line) {
@@ -51,18 +52,21 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
     %text = strreplace(%text, "<color:000000", "<color:ffffff");
     if ((%speechType $= "sos")) {
         %text = "<spush><color:dd0000>sos<spop>  " @ " " @ %text;
+    } else {
+        if ((%speechType $= "abuse")) {
+            %text = "<spush><color:dd0000>abuse<spop>  " @ " " @ %text;
+        } else {
+            %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
+        }
     }
-    if ((%speechType $= "abuse")) {
-        %text = "<spush><color:dd0000>abuse<spop>  " @ " " @ %text;
-    }
-    %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
     %this.addLine2(%text);
     if ($DevPref::Audio::NotifySnoop) {
         if ((%speechType $= "sos")) {
             alxPlay(Audio_SOSMessageIn);
-        }
-        if ((%speechType $= "abuse")) {
-            alxPlay(Audio_SOSMessageIn);
+        } else {
+            if ((%speechType $= "abuse")) {
+                alxPlay(Audio_SOSMessageIn);
+            }
         }
     }
 };
@@ -110,12 +114,14 @@ function snoopPanelTextCtrl::onUrl(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
         %name = unmunge(getWords(%url, 1));
         onLeftClickPlayerName(%name, "");
-    }
-    if ((getSubStr(%url, 0, 7) $= "http://")) {
-        gotoWebPage(%url);
-    }
-    if ((getSubStr(%url, 0, 7) $= "vside:/")) {
-        vurlOperation(%url);
+    } else {
+        if ((getSubStr(%url, 0, 7) $= "http://")) {
+            gotoWebPage(%url);
+        } else {
+            if ((getSubStr(%url, 0, 7) $= "vside:/")) {
+                vurlOperation(%url);
+            }
+        }
     }
 };
 function SnoopPanel::copyToClipboard(%this) {

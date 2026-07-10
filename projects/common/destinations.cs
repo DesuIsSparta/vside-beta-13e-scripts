@@ -71,14 +71,16 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
     while ((%n < $gDestinationAdsNum)) {
         %eligible = %n[$gDestinationAds TAB %n @ "okayForTGF"];
         if (!%eligible) {
-        }
-        %codeName = %n[$gDestinationAds TAB %n @ "codename"];
-        if (hasWord(%butNotThese, %codeName)) {
-        }
-        %filters = %codeName[$gDestinationFilters @ %codeName];
-        if (hasWord(%filters, %filter)) {
-            %candidates = %candidates @ %delim @ %codeName;
-            %delim = " ";
+        } else {
+            %codeName = %n[$gDestinationAds TAB %n @ "codename"];
+            if (hasWord(%butNotThese, %codeName)) {
+            } else {
+                %filters = %codeName[$gDestinationFilters @ %codeName];
+                if (hasWord(%filters, %filter)) {
+                    %candidates = %candidates @ %delim @ %codeName;
+                    %delim = " ";
+                }
+            }
         }
         %n = (%n + 1.0);
     }
@@ -102,8 +104,9 @@ function DestinationList::goToDestination(%codeName) {
         %title = $MsgCat::destinations["REMOTE-TITLE"];
         %body = strreplace($MsgCat::destinations["REMOTE-BODY"], "[NAME]", %codeName[$gDestinationNames @ %codeName]);
         MessageBoxOkCancel(%title, %body, %command, "");
+    } else {
+        eval(%command);
     }
-    eval(%command);
 };
 function transferFromShopToDestinationsDirectory() {
     transferFromShopToDestinationsDirectoryPart2(1, 0);
@@ -120,8 +123,9 @@ function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave) {
             %dlg.callback[1] = "transferFromShopToDestinationsDirectoryPart2(false, false);";
             %dlg.callback[2] = "";
             return;
+        } else {
+            %doSave = 0;
         }
-        %doSave = 0;
     }
     ClosetGui.doClose(!%doSave, 0);
     toggleTGFMapFiltered("shop");

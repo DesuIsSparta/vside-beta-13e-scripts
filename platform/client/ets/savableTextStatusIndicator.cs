@@ -36,11 +36,13 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
     };
     if ((%arrowDescription $= "right")) {
         %arrowBitmap = "platform/client/ui/arrow_red_right";
+    } else {
+        if ((%arrowDescription $= "downAndRight")) {
+            %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
+        } else {
+            %arrowBitmap = "platform/client/ui/arrow_red_right";
+        }
     }
-    if ((%arrowDescription $= "downAndRight")) {
-        %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
-    }
-    %arrowBitmap = "platform/client/ui/arrow_red_right";
     %obj.changedBitmap = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -59,9 +61,10 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
 function SavableTextStatusIndicator::setInitialValue(%this, %initialValue) {
     if (%this.initialValueSet) {
         warn(getScopeName() @ " " @ "- initial value already set -" @ " " @ getTrace());
+    } else {
+        %this.lastValueSaved = %initialValue;
+        %this.initialValueSet = 1;
     }
-    %this.lastValueSaved = %initialValue;
-    %this.initialValueSet = 1;
 };
 function SavableTextStatusIndicator::incrementRequestCount(%this) {
     %newValue = %this.controlToGetValueFrom.getValue();

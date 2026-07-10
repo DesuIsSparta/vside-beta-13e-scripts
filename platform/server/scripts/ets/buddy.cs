@@ -33,6 +33,7 @@ function RelRequest::onConnectFailed(%this) {
 function RelRequest::onLine(%this, %line) {
     if ((%line $= "success")) {
         changeRelation(%this.userId, %this.otherId, %this.relType, %this.oper);
+    } else {
     }
     return (%line $= "fail");
 };
@@ -55,8 +56,9 @@ function doLocalChangeRelation(%client, %other, %relType, %oper) {
     }
     if ((%oper $= "add")) {
         %opCode = 0;
+    } else {
+        %opCode = 1;
     }
-    %opCode = 1;
     changeRelation(%sender, %otherId, %relType, %opCode);
     return;
 };

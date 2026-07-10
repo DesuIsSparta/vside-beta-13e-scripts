@@ -5,8 +5,9 @@ function simpleGoogleTest() {
     %curl.setRecvData(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function headerTest() {
     %name = "headerTest" @ getRandom(0, 100000);
@@ -15,8 +16,9 @@ function headerTest() {
     %curl.setHeader(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function verboseTest() {
     %name = "verboseTest" @ getRandom(0, 100000);
@@ -25,8 +27,9 @@ function verboseTest() {
     %curl.setVerbose(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function progressTest() {
     %name = "progressTest" @ getRandom(0, 100000);
@@ -35,8 +38,9 @@ function progressTest() {
     %curl.setProgress(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function userheaderTest() {
     %name = "userheaderTest" @ getRandom(0, 100000);
@@ -47,8 +51,9 @@ function userheaderTest() {
     %curl.setRecvData(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function classNameCurlTest() {
     %name = "classNameCurlTest" @ getRandom(0, 100000);
@@ -59,8 +64,9 @@ function classNameCurlTest() {
     %curl.setRecvData(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function simpleDownloadTest() {
     %name = "simpleDownloadTest" @ getRandom(0, 100000);
@@ -70,8 +76,9 @@ function simpleDownloadTest() {
     %curl.setRecvData(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function downloadWithNameSpaceTest() {
     %name = "downloadWithNameSpaceTest" @ getRandom(0, 100000);
@@ -83,8 +90,9 @@ function downloadWithNameSpaceTest() {
     %curl.setRecvData(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function simplePostTest() {
     %name = "simplePostTest" @ getRandom(0, 100000);
@@ -96,8 +104,9 @@ function simplePostTest() {
     %curl.setHeader(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function newPostFileUploaderTest() {
     %fo = new FileObject("");
@@ -111,8 +120,9 @@ function newPostFileUploaderTest() {
 function onDoneOrErrorCallback_AbuseReport_Test(%request) {
     if (%request.checkSuccess()) {
         MessageBoxOK("File uploaded", "check out http://elenzil.com/doppelganger/posttests/incoming/chatLog.txt", "");
+    } else {
+        MessageBoxOK("File upload failed", "request status =" @ " " @ %request.statusCode());
     }
-    MessageBoxOK("File upload failed", "request status =" @ " " @ %request.statusCode());
 };
 function simplePostFileUploaderTest() {
     %name = "simplePostFileUploaderTest" @ getRandom(0, 100000);
@@ -125,8 +135,9 @@ function simplePostFileUploaderTest() {
     %curl.setProgress(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function anotherFileUploadTest() {
     %upurl = "http://www.lateralpunks.com/dc/post_dump.php";
@@ -139,8 +150,9 @@ function anotherFileUploadTest() {
     %curl.setVerbose(1);
     if (%curl.start()) {
         CURLSimGroup.add(%curl);
+    } else {
+        %curl.delete();
     }
-    %curl.delete();
 };
 function simpleScreenShotUploaderTest(%fileName) {
     %name = "simpleScreenShotUploaderTest" @ getRandom(0, 100000);
@@ -153,8 +165,9 @@ function simpleScreenShotUploaderTest(%fileName) {
     %screenshot.setKeyValue("variable1", "this is variable 1");
     if (%screenshot.shoot()) {
         CURLSimGroup.add(%screenshot);
+    } else {
+        %screenshot.delete();
     }
-    %screenshot.delete();
 };
 function curlTestAll() {
     %i = 0;

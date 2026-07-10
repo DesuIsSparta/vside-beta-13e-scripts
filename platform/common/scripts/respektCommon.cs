@@ -66,6 +66,7 @@ function respektLevelToNameWithIndefiniteArticle(%level) {
     %article = %level[$gRespektLevelsIndefiniteArticles @ %level];
     %levelName = respektLevelToNameWithoutArticle(%level);
     if ((%article $= "")) {
+    } else {
     }
     %ret = %article @ " " @ %levelName;
     %levelName;
@@ -93,8 +94,9 @@ function respektLevelMaxPoints(%level) {
     %level = respektLevelValidate(%level);
     if ((%level >= ($gRespektLevelsNum - 1.0))) {
         return %level[$gRespektLevelsMinPoints @ %level];
+    } else {
+        return (%level[$gRespektLevelsMinPoints @ (%level + 1.0)] - 1.0);
     }
-    return (%level[$gRespektLevelsMinPoints @ (%level + 1.0)] - 1.0);
 };
 function Player::getRespektLevel(%this) {
     return respektScoreToLevel(%this.getRespektPoints());

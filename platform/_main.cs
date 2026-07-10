@@ -9,8 +9,9 @@ package platform {
         Parent::displayHelp();
         if ($Server::Dedicated) {
             displayServerHelp();
+        } else {
+            displayClientHelp();
         }
-        displayClientHelp();
     };
     function displayClientHelp() {
         print("\nClient options:\n" @ "  -manager <host[:port]>     Specify login server\n" @ "  -mainsite <url>            Specify main website\n" @ "  -download <host[:port]>    Specify download host\n" @ "  -large                     Large display\n" @ "  -small                     Small display\n" @ "  -noSound                   Disable sound\n" @ "  -display <OpenGL|D3D|Auto> Specify device or auto-detect\n" @ "  -server                    Start as server\n" @ "  -cache                     Do network caching\n" @ "  -staging                   Run in staging environment\n" @ "  -stagingrc                 Run in stagingRC environment\n" @ "  -alpha                     Run in alpha environment\n" @ "  -preload                   Run asset preloading\n" @ "  -url                       Specify a place to spawn to via vURL\n" @ "  -alphabuffer               Request an alpha buffer for OpenGL\n" @ "  -notexdelay                Disable teuxture delay load\n" @ "  -enableRawTextures         Enable use of compressed textures\n" @ "  -automated                 Automatically begin tasks like thumbnail generationg\n" @ "");
@@ -69,13 +70,14 @@ package platform {
             $Net::LoginURL = "http://" @ $Net::ManagerHost @ "/envmanager/login";
             $Net::ClientServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envclient";
             $Net::ServerServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envserver";
+        } else {
+            $Net::BaseURL = "http://" @ $Net::ManagerHost @ "/envmanager/login";
+            $Net::SecureURL = "https://" @ $Net::SecureManagerHost @ "/envmanager/login";
+            $Net::LoginURL = $Net::BaseURL;
+            $Net::ClientServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envclient";
+            $Net::SecureClientServiceURL = "https://" @ $Net::SecureManagerHost @ "/envmanager/envclient";
+            $Net::ServerServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envserver";
         }
-        $Net::BaseURL = "http://" @ $Net::ManagerHost @ "/envmanager/login";
-        $Net::SecureURL = "https://" @ $Net::SecureManagerHost @ "/envmanager/login";
-        $Net::LoginURL = $Net::BaseURL;
-        $Net::ClientServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envclient";
-        $Net::SecureClientServiceURL = "https://" @ $Net::SecureManagerHost @ "/envmanager/envclient";
-        $Net::ServerServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envserver";
         setupProjectSpecificUrls();
     };
     function notokenURL(%url) {
@@ -94,12 +96,14 @@ package platform {
         %ret = 1;
         if ((%address $= "")) {
             %ret = 0;
-        }
-        if ((%address $= 0)) {
-            %ret = 0;
-        }
-        if ((%address $= "0:0")) {
-            %ret = 0;
+        } else {
+            if ((%address $= 0)) {
+                %ret = 0;
+            } else {
+                if ((%address $= "0:0")) {
+                    %ret = 0;
+                }
+            }
         }
         return %ret;
     };
@@ -128,8 +132,9 @@ package platform {
         }
         if ($Server::Dedicated) {
             parseServerArgs();
+        } else {
+            parseClientArgs();
         }
-        parseClientArgs();
         if (hasArg("-dedicated") || hasArg("-server")) {
         }
         if (!$Game::Compile) {
@@ -152,12 +157,13 @@ package platform {
         if (%haveMainsiteArg) {
             if ($Server::Dedicated) {
                 serverRebaseHosts();
-            }
-            clientRebaseHosts();
-            %testdomain = strreplace($Net::BaseDomain, ":", " ");
-            if (stricmp("www.vside.com", firstWord(%testdomain))) {
-                %analytic = getAnalytic();
-                %analytic.setDomainAndAccount("test.vside.com", "UA-324914-24");
+            } else {
+                clientRebaseHosts();
+                %testdomain = strreplace($Net::BaseDomain, ":", " ");
+                if (stricmp("www.vside.com", firstWord(%testdomain))) {
+                    %analytic = getAnalytic();
+                    %analytic.setDomainAndAccount("test.vside.com", "UA-324914-24");
+                }
             }
         }
     };
@@ -172,17 +178,20 @@ package platform {
                 }
                 if ($Server::Dedicated) {
                     $Net::ManagerHost = $Net::ManagerHost @ ":8081";
+                } else {
+                    $Net::ManagerHost = $Net::ManagerHost @ ":8080";
                 }
-                $Net::ManagerHost = $Net::ManagerHost @ ":8080";
-            }
-            if (!%haveSManagerArg) {
-                %line = $Net::ManagerHost;
-                %line = NextToken(%line, host, ":");
-                NextToken(%line, port, " ");
-                if ((%port $= 80)) {
-                    $Net::SecureManagerHost = %host @ ":443";
+            } else {
+                if (!%haveSManagerArg) {
+                    %line = $Net::ManagerHost;
+                    %line = NextToken(%line, host, ":");
+                    NextToken(%line, port, " ");
+                    if ((%port $= 80)) {
+                        $Net::SecureManagerHost = %host @ ":443";
+                    } else {
+                        $Net::SecureManagerHost = %host @ ":8443";
+                    }
                 }
-                $Net::SecureManagerHost = %host @ ":8443";
             }
         }
         if (%haveSManagerArg) {
@@ -226,20 +235,23 @@ package platform {
         }
         if (hasArg("-large")) {
             $UserPref::Video::Resolution = "960 544 32";
-        }
-        if (hasArg("-small")) {
-            $UserPref::Video::Resolution = "480 272 32";
+        } else {
+            if (hasArg("-small")) {
+                $UserPref::Video::Resolution = "480 272 32";
+            }
         }
         if (hasArg("-noSound")) {
             error("initialization", "no support yet");
         }
         if (findArg("-display", "$Pref::Video::DisplayDevice", "Missing <display device>")) {
             if (($Pref::Video::DisplayDevice $= "D3D") || ($Pref::Video::DisplayDevice $= "OpenGL")) {
+            } else {
+                if (($Pref::Video::DisplayDevice $= "Auto")) {
+                    $Pref::Video::DisplayDevice = "";
+                } else {
+                    error("initialization", "Error: " @ $Pref::Video::DisplayDevice @ " not one of OpenGL|D3D|Auto");
+                }
             }
-            if (($Pref::Video::DisplayDevice $= "Auto")) {
-                $Pref::Video::DisplayDevice = "";
-            }
-            error("initialization", "Error: " @ $Pref::Video::DisplayDevice @ " not one of OpenGL|D3D|Auto");
         }
         if (hasArg("-notexdelay")) {
             log("initialization", "debug", "Disabling delay loading of textures");
@@ -260,10 +272,12 @@ package platform {
     };
     function generateWindowTitle(%ServerName) {
         if ((%ServerName $= "")) {
+        } else {
         }
         %ServerNameString = " on server" @ " " @ %ServerName;
         "";
         if (($ETS::cityName $= "")) {
+        } else {
         }
         %CityNameString = " in" @ " " @ $ETS::cityName;
         "";
@@ -272,28 +286,34 @@ package platform {
             %areaName = WorldMap.cityNameForServerName(%ServerName);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
             if ((%locationName $= "")) {
+            } else {
             }
             %LongCityNameString = " - in" @ " " @ %locationName;
             "";
+        } else {
+            echo(getScopeName() @ " " @ "No WorldMap, not getting long city name from server");
         }
-        echo(getScopeName() @ " " @ "No WorldMap, not getting long city name from server");
         if (hasArg("-staging")) {
             %title = $ETS::AppName @ " (Staging Build " @ getBuildVersion() @ %ServerNameString @ ")";
-        }
-        if (hasArg("-stagingrc")) {
-            %title = $ETS::AppName @ " (StagingRC Build " @ getBuildVersion() @ %ServerNameString @ ")";
-        }
-        if (hasArg("-alpha")) {
-            %title = $ETS::AppName @ " (Alpha Build " @ getBuildVersion() @ %LongCityNameString @ ")";
-        }
-        if (hasArg("-standalone")) {
-            %alphabufferrequested = "";
-            if (hasArg("-alphabuffer")) {
-                %alphabufferrequested = " * Alpha Buffer Requested *";
+        } else {
+            if (hasArg("-stagingrc")) {
+                %title = $ETS::AppName @ " (StagingRC Build " @ getBuildVersion() @ %ServerNameString @ ")";
+            } else {
+                if (hasArg("-alpha")) {
+                    %title = $ETS::AppName @ " (Alpha Build " @ getBuildVersion() @ %LongCityNameString @ ")";
+                } else {
+                    if (hasArg("-standalone")) {
+                        %alphabufferrequested = "";
+                        if (hasArg("-alphabuffer")) {
+                            %alphabufferrequested = " * Alpha Buffer Requested *";
+                        }
+                        %title = $ETS::AppName @ " (Standalone Build " @ getBuildVersion() @ %ServerNameString @ %CityNameString @ %alphabufferrequested @ ")";
+                    } else {
+                        %title = $ETS::AppName @ " - " @ $ETS::AppVersion @ %LongCityNameString;
+                    }
+                }
             }
-            %title = $ETS::AppName @ " (Standalone Build " @ getBuildVersion() @ %ServerNameString @ %CityNameString @ %alphabufferrequested @ ")";
         }
-        %title = $ETS::AppName @ " - " @ $ETS::AppVersion @ %LongCityNameString;
         return %title;
     };
     function GetServerNameSpaceTaggedName(%name) {
@@ -346,8 +366,9 @@ package platform {
         }
         if (findSwitch("-usePackages", "$Pref::Server::usePackages", "Missing <usePackages>")) {
             log("initialization", "debug", "Enabling city package requirements.");
+        } else {
+            $Pref::Server::usePackages = 0;
         }
-        $Pref::Server::usePackages = 0;
         hasArg("-webConfigFile");
     };
     function startInitialSSLConnection() {
@@ -369,12 +390,14 @@ package platform {
         $TokenStandalone = "TOKEN_STANDALONE";
         if ($Server::Dedicated) {
             initDedicated();
+        } else {
+            initClient();
         }
-        initClient();
         if (isObject(ConsoleEntry)) {
             ConsoleEntry.loadHistory("platform/client/consoleHistory.txt");
+        } else {
+            echo("---no ConsoleEntry not loading history");
         }
-        echo("---no ConsoleEntry not loading history");
     };
     function onExit() {
         dumpConsoleHistoryReally();
@@ -385,10 +408,12 @@ package platform {
                 $UserPref::Player::Password = munge($UserPref::Player::Password);
                 $UserPref::Player::AIMPassword = munge($UserPref::Player::AIMPassword);
                 export("$UserPref::*", "./client/userprefs.cs", 0);
+            } else {
+                echo("NOTE: Skipping export of userprefs.cs on non-interactive client.");
             }
-            echo("NOTE: Skipping export of userprefs.cs on non-interactive client.");
+        } else {
+            shutdownDedicated();
         }
-        shutdownDedicated();
         Parent::onExit();
     };
     function dumpConsoleHistorySchedule() {
@@ -405,8 +430,9 @@ package platform {
         }
         if (!$NonInteractive) {
             ConsoleEntry.dumpHistory("platform/client/consoleHistory.txt");
+        } else {
+            echo("---no ConsoleEntry not dumping history");
         }
-        echo("---no ConsoleEntry not dumping history");
     };
     activatePackage(platform);
 };

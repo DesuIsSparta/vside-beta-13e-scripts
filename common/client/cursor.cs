@@ -7,18 +7,20 @@ package CanvasCursor {
     function GuiCanvas::checkCursor(%this) {
         %cursorShouldBeOn = 0;
         %i = 0;
-        while ((%i < %this.getCount())) {
+        if ((%i < %this.getCount())) {
             %control = %this.getObject(%i);
             if ((%control.noCursor $= "")) {
                 %cursorShouldBeOn = 1;
+            } else {
+                %i = (%i + 1.0);
             }
-            %i = (%i + 1.0);
         }
         if ((%cursorShouldBeOn != %this.isCursorOn())) {
             if (%cursorShouldBeOn) {
                 cursorOn();
+            } else {
+                cursorOff();
             }
-            cursorOff();
         }
     };
     function GuiCanvas::setContent(%this, %ctrl) {

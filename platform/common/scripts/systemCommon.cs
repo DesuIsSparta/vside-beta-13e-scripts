@@ -129,19 +129,21 @@ function System::onUserConnect(%client) {
     $SystemMetric::connectCount = ($SystemMetric::connectCount + 1.0);
     if (!isObject(%client)) {
         warn("got onUserConnect on non-object client:" @ " " @ %client);
+    } else {
+        %name = %client.nameBase;
+        %curCount = $SystemMetric::loginLog.get(%name);
+        %curCount = (%curCount + 1.0);
+        $SystemMetric::loginLog.put(%name, %curCount);
     }
-    %name = %client.nameBase;
-    %curCount = $SystemMetric::loginLog.get(%name);
-    %curCount = (%curCount + 1.0);
-    $SystemMetric::loginLog.put(%name, %curCount);
 };
 function System::onUserDisconnect(%client) {
     $SystemMetric::disconnectCount = ($SystemMetric::disconnectCount + 1.0);
     if (!isObject(%client)) {
         warn("got onUserDisconnect on non-object client:" @ " " @ %client);
-    }
-    if (!isObject(%client.Player)) {
-        warn("got onUserDisconnect on non-object player:" @ " " @ %client.Player);
+    } else {
+        if (!isObject(%client.Player)) {
+            warn("got onUserDisconnect on non-object player:" @ " " @ %client.Player);
+        }
     }
 };
 function System::onUserEnteredGame(%client) {
@@ -157,12 +159,14 @@ function System::calculateLoginMetrics() {
         %player = ClientGroup.getObject(%n).Player;
         if (!isObject(%player)) {
             $SystemMetric::userCountOrphan = ($SystemMetric::userCountOrphan + 1.0);
+        } else {
+            warn(getDebugString(%player));
+            if (%player.getAFK()) {
+                $SystemMetric::userCountIdle = ($SystemMetric::userCountIdle + 1.0);
+            } else {
+                $SystemMetric::userCountNonIdle = ($SystemMetric::userCountNonIdle + 1.0);
+            }
         }
-        warn(getDebugString(%player));
-        if (%player.getAFK()) {
-            $SystemMetric::userCountIdle = ($SystemMetric::userCountIdle + 1.0);
-        }
-        $SystemMetric::userCountNonIdle = ($SystemMetric::userCountNonIdle + 1.0);
         %n = (%n - 1.0);
     }
     warn("current users finish");
@@ -198,8 +202,9 @@ function System::dumpMetrics() {
     if ($Pref::System::dumpMetricsVerboseObjects) {
         if ($AmClient) {
             warn("complete object dump crashes on client - skipped.");
+        } else {
+            System::dumpObjects(RootGroup);
         }
-        System::dumpObjects(RootGroup);
     }
     System::dumpClassInstanceCounts(RootGroup);
     System::calculateLoginMetrics();
@@ -254,8 +259,9 @@ function GMetrics::GamePlayStartEvent(%group, %specificGame, %player) {
         return;
     }
     if (!(%player.GMetricsStart[%specificGame] $= "")) {
+    } else {
+        %player.GMetricsStart[%specificGame] = getSimTime();
     }
-    %player.GMetricsStart[%specificGame] = getSimTime();
 };
 function DelayedRealPlayStopEvent(%group, %specificGame, %player) {
     if (!isObject(%player)) {
@@ -272,8 +278,9 @@ function DelayedRealPlayStopEvent(%group, %specificGame, %player) {
             error(getScopeName() @ " " @ %specificGame @ " " @ "got stop but had no startime just using:" @ " " @ %seconds @ " " @ "for duration.");
             %seconds = 0.0;
         }
+    } else {
+        error(getScopeName() @ " " @ %specificGame @ " " @ "got stop but had no startime just using:" @ " " @ %seconds @ " " @ "for duration.");
     }
-    error(getScopeName() @ " " @ %specificGame @ " " @ "got stop but had no startime just using:" @ " " @ %seconds @ " " @ "for duration.");
     %player.GMetricsStart[%specificGame] = "";
     %duration = formatFloat("%0.0f", mCeil(%seconds));
     %eventTXT = "[event=playstop]";
@@ -314,9 +321,10 @@ function GMetrics::GameTouchEvent(%group, %specificGame, %player, %TimeToWaitFor
     if (%player.GMetricsTouchStopTimer[%specificGame]) {
         cancel(%player.GMetricsTouchStopTimer[%specificGame]);
         %player.GMetricsTouchStopTimer[%specificGame] = schedule(%TimeToWaitForPlayerToStop, 0, "GMetricsDoneTouching", %group, %specificGame, %player);
+    } else {
+        GMetrics::GamePlayStartEvent(%group, %specificGame, %player);
+        %player.GMetricsTouchStopTimer[%specificGame] = schedule(%TimeToWaitForPlayerToStop, 0, "GMetricsDoneTouching", %group, %specificGame, %player);
     }
-    GMetrics::GamePlayStartEvent(%group, %specificGame, %player);
-    %player.GMetricsTouchStopTimer[%specificGame] = schedule(%TimeToWaitForPlayerToStop, 0, "GMetricsDoneTouching", %group, %specificGame, %player);
 };
 function GMetrics::GameAwardEvent(%group, %specificGame, %player, %points) {
     if ((%specificGame $= "")) {
@@ -382,6 +390,7 @@ function compileClassInstances(%obj, %container) {
     %curr = %container.instanceCounts["count"];
     %found;
     if ((%curr $= "")) {
+    } else {
     }
     %curr = %curr;
     0;

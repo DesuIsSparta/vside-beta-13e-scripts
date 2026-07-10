@@ -33,11 +33,13 @@ function GuiArray2Ctrl::scrollToRowByCellIndex(%this, %cellIdx) {
     %dRows = (%targetRow - %closestRow);
     if ((%dRows < 0.0)) {
         %targetRow = %targetRow;
+    } else {
+        if ((%dRows < %visibleRows)) {
+            %targetRow = %closestRow;
+        } else {
+            %targetRow = ((%targetRow - %visibleRows) + 1.0);
+        }
     }
-    if ((%dRows < %visibleRows)) {
-        %targetRow = %closestRow;
-    }
-    %targetRow = ((%targetRow - %visibleRows) + 1.0);
     %this.getParent().scrollTo(0, (%cellHeight * %targetRow));
 };
 function GuiControl::blinkSet(%this, %mode, %periodOffMS, %periodOnMS, %param) {
@@ -45,6 +47,7 @@ function GuiControl::blinkSet(%this, %mode, %periodOffMS, %periodOnMS, %param) {
         %this.resize(getWord(%this.origPoint, 0), getWord(%this.origPoint, 1), getWord(%this.origExtnt, 0), getWord(%this.origExtnt, 1));
     }
     if ((%mode $= "none")) {
+    } else {
     }
     %mode = %mode;
     "";
@@ -69,6 +72,7 @@ function GuiControl::blinkDo(%this) {
     %this.blinkTimer = "";
     %newState = (1.0 - %this.blinkState);
     if (%newState) {
+    } else {
     }
     %period = %this.blinkPeriodOffMS;
     %this.blinkPeriodOnMS;
@@ -80,24 +84,26 @@ function GuiControl::blinkDo(%this) {
     if ((%this.blinksRemaining > 0.0)) {
         %this.blinkStateSet(%newState);
         %this.blinkTimer = %this.schedule(%period, "blinkDo");
-    }
-    %this.blinkStateSet(0);
-    if ((%period > 0.0)) {
-    }
-    if ((%period < 50.0)) {
-        error(getScopeName() @ " " @ "- period too small:" @ " " @ %period);
+    } else {
+        %this.blinkStateSet(0);
+        if ((%period > 0.0)) {
+        }
+        if ((%period < 50.0)) {
+            error(getScopeName() @ " " @ "- period too small:" @ " " @ %period);
+        }
     }
 };
 function GuiControl::blinkStateSet(%this, %state) {
     %cmd = "GuiControl_blinkStateSet_" @ %this.blinkMode;
     if (isFunction(%cmd)) {
         call(%cmd, %this, %state);
+    } else {
+        if (!(%this.blinkMode $= "")) {
+            error(getScopeName() @ " " @ "- Unknown mode:" @ " " @ %this.blinkMode @ " " @ getTrace());
+        }
+        %this.blinkPeriodOnMS = 0;
+        %this.blinkPeriodOffMS = 0;
     }
-    if (!(%this.blinkMode $= "")) {
-        error(getScopeName() @ " " @ "- Unknown mode:" @ " " @ %this.blinkMode @ " " @ getTrace());
-    }
-    %this.blinkPeriodOnMS = 0;
-    %this.blinkPeriodOffMS = 0;
 };
 function GuiControl_blinkStateSet_Bounce(%this, %state) {
     if ((%this.blinkState == %state)) {
@@ -111,10 +117,11 @@ function GuiControl_blinkStateSet_Bounce(%this, %state) {
     if ((%state == 0.0)) {
         %newPoint = %this.origPoint;
         %newExtnt = %this.origExtnt;
-    }
-    if ((%state == 1.0)) {
-        %newPoint = VectorAdd(%this.origPoint, getWords(%this.blinkParam, 0, 1));
-        %newExtnt = VectorAdd(%this.origExtnt, getWords(%this.blinkParam, 2, 3));
+    } else {
+        if ((%state == 1.0)) {
+            %newPoint = VectorAdd(%this.origPoint, getWords(%this.blinkParam, 0, 1));
+            %newExtnt = VectorAdd(%this.origExtnt, getWords(%this.blinkParam, 2, 3));
+        }
     }
     %this.resize(getWord(%newPoint, 0), getWord(%newPoint, 1), getWord(%newExtnt, 0), getWord(%newExtnt, 1));
 };
@@ -192,26 +199,29 @@ function hiliteControl(%ctrl, %inParent) {
                 %targetExtX = (getWord(%ctrl.getExtent(), 0) + (2.0 * %offset));
                 %targetExtY = (getWord(%ctrl.getExtent(), 1) + (2.0 * %offset));
             }
+        } else {
+            %ctrl.add(HiliteWindow);
+            %offset = 1;
+            %targetPosX = (0.0 - %offset);
+            %targetPosY = (0.0 - %offset);
+            %targetExtX = (getWord(%ctrl.getExtent(), 0) + (2.0 * %offset));
+            %targetExtY = (getWord(%ctrl.getExtent(), 1) + (2.0 * %offset));
         }
-        %ctrl.add(HiliteWindow);
-        %offset = 1;
-        %targetPosX = (0.0 - %offset);
-        %targetPosY = (0.0 - %offset);
-        %targetExtX = (getWord(%ctrl.getExtent(), 0) + (2.0 * %offset));
-        %targetExtY = (getWord(%ctrl.getExtent(), 1) + (2.0 * %offset));
         HiliteWindow.setVisible(1);
         HiliteWindow.setTrgPosition(%targetPosX @ " " @ %targetPosY);
         HiliteWindow.setTrgExtent(%targetExtX @ " " @ %targetExtY);
         HiliteWindow.hiliteCtrl = %ctrl;
-    }
-    if (isObject(HiliteWindow)) {
-        HiliteWindow.delete();
+    } else {
+        if (isObject(HiliteWindow)) {
+            HiliteWindow.delete();
+        }
     }
 };
 function getHiliteCtrl() {
     if (isObject(HiliteWindow)) {
     }
     if (HiliteWindow.isVisible()) {
+    } else {
     }
     return "";
 };
@@ -279,8 +289,9 @@ function GuiMLTextCtrl::onMouseOverTooltip(%this, %toolTip) {
     %this.tooltiptimer = 0;
     if ((%toolTip $= "")) {
         %this.hideToolTip();
+    } else {
+        %this.tooltiptimer = %this.schedule($gToolTipDelay, "showToolTip", %toolTip);
     }
-    %this.tooltiptimer = %this.schedule($gToolTipDelay, "showToolTip", %toolTip);
 };
 function CanvasDragHiliteCtrl::onReachedTarget(%this) {
     %this.setVisible(0);
@@ -336,10 +347,11 @@ function Canvas::onDragAndDropEnd(%this, %dragCtrl, %dropAccepted) {
     %dragHiliteCtrl = %this.getDragHiliteCtrl();
     if (%dropAccepted) {
         %dragHiliteCtrl.setVisible(0);
+    } else {
+        %xPos = getWord(%dragCtrl.getScreenPosition(), 0);
+        %ypos = getWord(%dragCtrl.getScreenPosition(), 1);
+        %dragHiliteCtrl.setTrgPosition(%xPos, %ypos);
     }
-    %xPos = getWord(%dragCtrl.getScreenPosition(), 0);
-    %ypos = getWord(%dragCtrl.getScreenPosition(), 1);
-    %dragHiliteCtrl.setTrgPosition(%xPos, %ypos);
     if (isObject(Canvas.getFirstResponder())) {
         Canvas.getFirstResponder().makeFirstResponder(1);
     }
@@ -545,10 +557,11 @@ function GuiControl::flashVisibilityTick(%this) {
         %this.flashTicksRemaining = "";
         %this.flashTickPeriod = "";
         %this.setVisible(1);
+    } else {
+        %this.flashTicksRemaining = (%this.flashTicksRemaining - 1.0);
+        %this.setVisible(!%this.isVisible());
+        %this.flashTickTimerID = %this.schedule(%this.flashTickPeriod, "flashVisibilityTick");
     }
-    %this.flashTicksRemaining = (%this.flashTicksRemaining - 1.0);
-    %this.setVisible(!%this.isVisible());
-    %this.flashTickTimerID = %this.schedule(%this.flashTickPeriod, "flashVisibilityTick");
 };
 function generic_takeSnapshotReally(%previewBitmapCtrl) {
     %regionCtrl = %previewBitmapCtrl.snap_regionCtrl;
@@ -558,27 +571,28 @@ function generic_takeSnapshotReally(%previewBitmapCtrl) {
     %previewBitmapCtrl.setBitmap("");
     if (!%tookPhoto) {
         MessageBoxOK("Can't take snapshot!", "Unable to create snapshot. Please post a bug report in the forums. Thank you!", "");
+    } else {
+        %topMargin = 60;
+        %bottomMargin = -(10.0);
+        %leftMargin = 0;
+        %rightMargin = 0;
+        %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame((getWord(%regionCtrl.getScreenPosition(), 0) - %leftMargin), (getWord(%regionCtrl.getScreenPosition(), 1) - %topMargin), ((getWord(%regionCtrl.getExtent(), 0) + %leftMargin) + %rightMargin), ((getWord(%regionCtrl.getExtent(), 1) + %topMargin) + %bottomMargin));
+        %numPlayers = getWordCount(%playerIDs);
+        %playerNames = "";
+        %n = 0;
+        while ((%n < %numPlayers)) {
+            %playerNames = %playerNames @ "\t" @ getWord(%playerIDs, %n).getShapeName();
+            %n = (%n + 1.0);
+        }
+        %playerNames = trim(%playerNames);
+        (%n < %numPlayers);
+        %previewBitmapCtrl.playersInViewNames = %playerNames;
+        removeFile(%filenameBase @ %filenameExt);
+        addFile(%filenameBase @ %filenameExt);
+        %previewBitmapCtrl.setBitmap(%filenameBase);
+        alxPlay(AudioProfile_Shutter);
+        commandToServer('FireEventPlayerTakesAPicture');
     }
-    %topMargin = 60;
-    %bottomMargin = -(10.0);
-    %leftMargin = 0;
-    %rightMargin = 0;
-    %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame((getWord(%regionCtrl.getScreenPosition(), 0) - %leftMargin), (getWord(%regionCtrl.getScreenPosition(), 1) - %topMargin), ((getWord(%regionCtrl.getExtent(), 0) + %leftMargin) + %rightMargin), ((getWord(%regionCtrl.getExtent(), 1) + %topMargin) + %bottomMargin));
-    %numPlayers = getWordCount(%playerIDs);
-    %playerNames = "";
-    %n = 0;
-    while ((%n < %numPlayers)) {
-        %playerNames = %playerNames @ "\t" @ getWord(%playerIDs, %n).getShapeName();
-        %n = (%n + 1.0);
-    }
-    %playerNames = trim(%playerNames);
-    (%n < %numPlayers);
-    %previewBitmapCtrl.playersInViewNames = %playerNames;
-    removeFile(%filenameBase @ %filenameExt);
-    addFile(%filenameBase @ %filenameExt);
-    %previewBitmapCtrl.setBitmap(%filenameBase);
-    alxPlay(AudioProfile_Shutter);
-    commandToServer('FireEventPlayerTakesAPicture');
     %previewBitmapCtrl.onSnapshotDone(%tookPhoto);
     return %tookPhoto;
 };
@@ -588,9 +602,10 @@ function hideABunchOfControls(%list) {
         %ctrl = getWord(%list, %n);
         if (!isObject(%ctrl)) {
             error(getScopeName() @ " " @ "- invalid control:" @ " " @ %ctrl @ " " @ getTrace());
+        } else {
+            %ctrl.hiding_originalVisibility = %ctrl.isVisible();
+            %ctrl.setVisible(0);
         }
-        %ctrl.hiding_originalVisibility = %ctrl.isVisible();
-        %ctrl.setVisible(0);
         %n = (%n - 1.0);
     }
 };
@@ -601,9 +616,10 @@ function restoreABunchOfControls(%list) {
         %ctrl = getWord(%list, %n);
         if (!isObject(%ctrl)) {
             error(getScopeName() @ " " @ "- invalid control:" @ " " @ %ctrl @ " " @ getTrace());
+        } else {
+            %ctrl.setVisible(%ctrl.hiding_originalVisibility);
+            %ctrl.hiding_originalVisibility = "";
         }
-        %ctrl.setVisible(%ctrl.hiding_originalVisibility);
-        %ctrl.hiding_originalVisibility = "";
         %n = (%n - 1.0);
     }
 };

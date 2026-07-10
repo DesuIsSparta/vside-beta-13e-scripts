@@ -100,8 +100,9 @@ function ClosetGuiFUE::nextStep(%this) {
     }
     if (($gClosetGuiFueCurrentStep < ($gClosetGuiFueStepCount - 1.0))) {
         $gClosetGuiFueCurrentStep = ($gClosetGuiFueCurrentStep + 1.0);
+    } else {
+        $gClosetGuiFueCurrentStep = -(1.0);
     }
-    $gClosetGuiFueCurrentStep = -(1.0);
     %this.showCurrentStep();
 };
 function ClosetGuiFUE::goToStepByName(%this, %stepName) {
@@ -115,8 +116,9 @@ function ClosetGuiFUE::goToStepByName(%this, %stepName) {
         StoreShoppingBag.setVisible(!($gCurrentStoreName $= ""));
         StoreAddItemsButton.setVisible(!($gCurrentStoreName $= ""));
         ClosetTabs.setLeaveStoreControlsVisible(0);
+    } else {
+        closetGuiFUEShopsDirBitmap.setVisible(0);
     }
-    closetGuiFUEShopsDirBitmap.setVisible(0);
     $gClosetGuiFueCurrentStep = %this.stepNumbersByName[strlwr(%stepName)];
     %this.showCurrentStep();
 };
@@ -188,9 +190,10 @@ function ClosetGuiFUE::Initialize(%this) {
             buttonType = "ToggleButton";
         };
         %this.add(%this.hideTipsCtrl);
+    } else {
+        %this.hideTipsCtrl = closetGuiFUEHideTipsCtrl;
+        %this.add(%this.hideTipsCtrl);
     }
-    %this.hideTipsCtrl = closetGuiFUEHideTipsCtrl;
-    %this.add(%this.hideTipsCtrl);
     %buttonPosition = ClosetTabs.getTabWithName("Body").button.getPosition();
     %newActiveStep = new GuiControl("") {
         profile = "ETSNonModalProfile";
@@ -327,9 +330,10 @@ function ClosetGuiFUE::Initialize(%this) {
             bitmap = "platform/client/ui/closetGuiFUE_shop_active_shopsDir";
         };
         %this.add(%this.shopsDirBitmap);
+    } else {
+        %this.shopsDirBitmap = closetGuiFUEShopsDirBitmap;
+        %this.add(%this.shopsDirBitmap);
     }
-    %this.shopsDirBitmap = closetGuiFUEShopsDirBitmap;
-    %this.add(%this.shopsDirBitmap);
     %credsBitmapCtrl = new GuiBitmapCtrl(closetGuiFUE_vPoints_vBux_Image) {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -434,8 +438,9 @@ function ClosetGuiFUE::Initialize(%this) {
 function closetGuiFUEHideTipsCtrl::onAction(%this) {
     if (%this.getValue()) {
         %this.hideTips();
+    } else {
+        %this.showTips();
     }
-    %this.showTips();
 };
 function closetGuiFUEHideTipsCtrl::hideTips(%this) {
     if (ClosetGuiFUE.refreshingOrInitializing) {

@@ -8,21 +8,23 @@ function ClosetTabs::refreshStoreTab(%this) {
     %storeDrwrs = SkuManager.getSkuDrwrs(SkuManager.filterSkusGender(Inventory::getCurrentStoreSkus(), $player.getGender()));
     if ((%storeDrwrs $= "")) {
         StoreItemsFrame.update();
-    }
-    %n = 0;
-    while ((%n < getFieldCount(%allCategories))) {
-        %cat = getField(%allCategories, %n);
-        %catDrwrs = ThumbCategories.get(strlwr(%cat));
-        %m = 0;
-        while ((%m < getWordCount(%catDrwrs))) {
-            %found = findWord(%storeDrwrs, getWord(%catDrwrs, %m));
-            if ((%found >= 0.0)) {
-                StoreCategoryPopup.add(%cat);
+    } else {
+        %n = 0;
+        while ((%n < getFieldCount(%allCategories))) {
+            %cat = getField(%allCategories, %n);
+            %catDrwrs = ThumbCategories.get(strlwr(%cat));
+            %m = 0;
+            if ((%m < getWordCount(%catDrwrs))) {
+                %found = findWord(%storeDrwrs, getWord(%catDrwrs, %m));
+                if ((%found >= 0.0)) {
+                    StoreCategoryPopup.add(%cat);
+                } else {
+                    %m = (%m + 1.0);
+                }
             }
-            %m = (%m + 1.0);
+            %n = (%n + 1.0);
+            (%m < getWordCount(%catDrwrs));
         }
-        %n = (%n + 1.0);
-        (%m < getWordCount(%catDrwrs));
     }
     loadStorePosition();
 };
@@ -760,17 +762,19 @@ function StoreShoppingList::addSku(%this, %sku) {
     if (!(%si.expireTime $= "")) {
         %child.expiringIcon.setBitmap("platform/client/ui/expiring_icon");
         %child.expiringIcon.setVisible(1);
+    } else {
+        %child.expiringIcon.setBitmap("");
+        %child.expiringIcon.setVisible(0);
     }
-    %child.expiringIcon.setBitmap("");
-    %child.expiringIcon.setVisible(0);
     %count = StoreItemsFrame.thumbnails.getCount();
     %i = 0;
-    while ((%i < %count)) {
+    if ((%i < %count)) {
         %obj = StoreItemsFrame.thumbnails.getObject(%i);
         if ((%obj.sku == %sku)) {
             %obj.toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     %this.update();
     %this.hiliteCell(0, (%this.getCount() - 1.0));
@@ -787,22 +791,24 @@ function StoreShoppingList::addSkus(%this, %skulist) {
 function StoreShoppingList::removeSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
-    while ((%i < %count)) {
+    if ((%i < %count)) {
         %obj = %this.getObject(%i);
         if ((%obj.sku == %sku)) {
             %obj.delete();
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     %count = StoreItemsFrame.thumbnails.getCount();
     (%i < %count);
     %i = 0;
-    while ((%i < %count)) {
+    if ((%i < %count)) {
         %obj = StoreItemsFrame.thumbnails.getObject(%i);
         if ((%obj.sku == %sku)) {
             %obj.toggleCartButton.setBitmap("platform/client/buttons/add2cart");
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     if ((findWord($StoreSkusLayer, %sku) != -(1.0))) {
         StoreAddItemsButton.setActive(1);
@@ -901,9 +907,10 @@ function StoreShoppingList::scrollToItem(%this, %item) {
         %targetRow = getWord(%this.hilitedCell, 1);
         if ((%targetRow < %closestRow)) {
             %scroll.scrollTo(0, (%cellHeight * %targetRow));
-        }
-        if ((%targetRow >= ((%closestRow + %numRowsVisible) - 1.0))) {
-            %scroll.scrollTo(0, ((%cellHeight * ((%targetRow - %numRowsVisible) + 1.0)) + (2.0 * %this.Parent.spacing)));
+        } else {
+            if ((%targetRow >= ((%closestRow + %numRowsVisible) - 1.0))) {
+                %scroll.scrollTo(0, ((%cellHeight * ((%targetRow - %numRowsVisible) + 1.0)) + (2.0 * %this.Parent.spacing)));
+            }
         }
     }
 };
@@ -957,11 +964,13 @@ function StoreBalanceText::onURL(%this, %url) {
 function StoreItemsFrame::update(%this) {
     if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
         %this.thumbnails.infoText.setText("Loading store inventory...");
+    } else {
+        if ((Inventory::getCurrentStoreSkus() $= "")) {
+            %this.thumbnails.infoText.setText("Nothing in stock!");
+        } else {
+            %this.thumbnails.infoText.setText("No matching items.");
+        }
     }
-    if ((Inventory::getCurrentStoreSkus() $= "")) {
-        %this.thumbnails.infoText.setText("Nothing in stock!");
-    }
-    %this.thumbnails.infoText.setText("No matching items.");
     %this.thumbnails.setDrawers(ThumbCategories.get(strlwr(%this.category)));
 };
 function StoreCategoryPopup::onSelect(%this, %unused, %entries) {
@@ -1070,9 +1079,10 @@ function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify) {
     if ((%delta < %threshhold2)) {
         %sound = %sound1;
         %pulseCount = %pulseCount1;
+    } else {
+        %sound = %sound2;
+        %pulseCount = %pulseCount2;
     }
-    %sound = %sound2;
-    %pulseCount = %pulseCount2;
     alxPlay(%sound);
     %guiControl1.schedule(%delay, "blinkSet", "bounce", 150, 100, "0 -1 0 0", 5);
     if (isObject(%guiControl2)) {
@@ -1198,27 +1208,28 @@ function ThePointsFloaterHud::doTick(%this) {
         %ageNorm = (%ctrl.age / %ctrl.maxAge);
         if ((%ageNorm > 1.0)) {
             %ctrl.delete();
+        } else {
+            %ctrl.age = (%ctrl.age + 1.0);
+            %x = getWord(%ctrl.position, 0);
+            %y = getWord(%ctrl.position, 1);
+            if ((%ageNorm > 0.2)) {
+                %x = (%x + ((%ctrl.speed * (%ageNorm - 0.2)) * 3.0));
+                %y = (%y - %ctrl.speed);
+            }
+            %ctrl.reposition(%x, %y);
+            %alpha = ((1.0 - %ageNorm) * %ctrl.baseAlpha);
+            if ((%ageNorm < 0.2)) {
+                %alpha = (1.0 - (%alpha * ((mSin((getSimTime() * 0.03)) * 0.5) + 0.5)));
+            }
+            %alpha1 = formatInt("%0.2X", (%alpha * 255.0));
+            %alpha2 = formatInt("%0.2X", (1.0 * 255.0));
+            if ((%ageNorm > 0.2)) {
+                %alpha2 = 00;
+            }
+            %colorTag = "<color:" @ %ctrl.BaseColor @ %alpha1 @ ">";
+            %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
+            %ctrl.setText(%shadowTag @ %colorTag @ %ctrl.baseText);
         }
-        %ctrl.age = (%ctrl.age + 1.0);
-        %x = getWord(%ctrl.position, 0);
-        %y = getWord(%ctrl.position, 1);
-        if ((%ageNorm > 0.2)) {
-            %x = (%x + ((%ctrl.speed * (%ageNorm - 0.2)) * 3.0));
-            %y = (%y - %ctrl.speed);
-        }
-        %ctrl.reposition(%x, %y);
-        %alpha = ((1.0 - %ageNorm) * %ctrl.baseAlpha);
-        if ((%ageNorm < 0.2)) {
-            %alpha = (1.0 - (%alpha * ((mSin((getSimTime() * 0.03)) * 0.5) + 0.5)));
-        }
-        %alpha1 = formatInt("%0.2X", (%alpha * 255.0));
-        %alpha2 = formatInt("%0.2X", (1.0 * 255.0));
-        if ((%ageNorm > 0.2)) {
-            %alpha2 = 00;
-        }
-        %colorTag = "<color:" @ %ctrl.BaseColor @ %alpha1 @ ">";
-        %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
-        %ctrl.setText(%shadowTag @ %colorTag @ %ctrl.baseText);
         %n = (%n - 1.0);
     }
     %this.timerID = (%n >= 0.0) @ %this.schedule(%this.tickPeriodMS, "doTick");
@@ -1250,20 +1261,22 @@ function ClosetGUI_ToggleSku_Shops(%sku) {
         StoreShortDescText.setBaseDesc("");
         StoreLongDescText.setBaseDesc("");
         ClosetTabs.updateAuthorWidget("");
+    } else {
+        $StoreSkusLayer = SkuManager.overlaySkus($StoreSkusLayer, %sku);
+        StoreShortDescText.setBaseDesc(ClosetTabs.getShortSkuDesc(%sku));
+        StoreLongDescText.setBaseDesc(ClosetTabs.getLongSkuDesc(%sku));
+        ClosetTabs.updateAuthorWidget(%sku);
     }
-    $StoreSkusLayer = SkuManager.overlaySkus($StoreSkusLayer, %sku);
-    StoreShortDescText.setBaseDesc(ClosetTabs.getShortSkuDesc(%sku));
-    StoreLongDescText.setBaseDesc(ClosetTabs.getLongSkuDesc(%sku));
-    ClosetTabs.updateAuthorWidget(%sku);
     %count = getWordCount($StoreSkusLayer);
     %itemsToAdd = 0;
     %i = 0;
-    while ((%i < %count)) {
+    if ((%i < %count)) {
         %sku2 = getWord($StoreSkusLayer, %i);
         if (!StoreShoppingList.containsSku(%sku2)) {
             %itemsToAdd = 1;
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     StoreAddItemsButton.setActive(%itemsToAdd);
 };

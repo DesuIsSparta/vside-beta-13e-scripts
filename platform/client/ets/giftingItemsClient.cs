@@ -22,8 +22,9 @@ function drinks_confirmInitiateMake(%otherPlayerName, %sku) {
     %si = SkuManager.findBySku(%sku);
     if ((%otherPlayerName $= $Player::Name)) {
         %msg = $Player::Name[$MsgCat::giftingItems @ "DLG-BODY-MAKE-SELF-CONFIRM"];
+    } else {
+        %msg = $MsgCat::giftingItems["DLG-BODY-MAKE-CONFIRM"];
     }
-    %msg = $MsgCat::giftingItems["DLG-BODY-MAKE-CONFIRM"];
     %msg = strreplace(%msg, "[ITEMNAME]", %si.descShrt);
     %msg = strreplace(%msg, "[OTHERPLAYER]", %otherPlayerName);
     %dlg = MessageBoxYesNo($MsgCat::giftingItems["DLG-TITLE-MAKE-CONFIRM"], %msg, "giftingItems_onInitiate($gThisDialog);", "");
@@ -36,8 +37,9 @@ function giftingItems_onInitiate(%dlg) {
     commandToServer('GiftingItems_Initiated', %dlg.otherPlayerName, %transactionID, %dlg.giftSkus, %dlg.making);
     if ((%dlg.otherPlayerName $= $Player::Name)) {
         %otherDlg = "";
+    } else {
+        %otherDlg = MessageBoxOK("The Gift of Libation", "<br>Checking with" @ " " @ %dlg.otherPlayerName @ "..<br>", "");
     }
-    %otherDlg = MessageBoxOK("The Gift of Libation", "<br>Checking with" @ " " @ %dlg.otherPlayerName @ "..<br>", "");
     giftingItems_registerPendingTransactionGiver(%transactionID, %dlg.otherPlayerName, %dlg.giftSkus, %otherDlg, %dlg.making);
 };
 function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID, %making) {
@@ -51,27 +53,31 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
     %acceptModeStrangers = $UserPref::Player::GiftsPermissionStrangers[$gGiftAcceptModeStrings @ $UserPref::Player::GiftsPermissionStrangers];
     %acceptModeFriends = $UserPref::Player::GiftsPermissionFriends[$gGiftAcceptModeStrings @ $UserPref::Player::GiftsPermissionFriends];
     if (%otherPlayer.isFriend()) {
+    } else {
     }
     %acceptMode = %acceptModeStrangers;
     %acceptModeFriends;
     if ((%acceptMode $= "accept")) {
         giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 1, %making);
         GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 1, "ACCEPTED-AUTO");
-    }
-    if ((%acceptMode $= "decline")) {
-        GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-AUTO");
-    }
-    if ((%acceptMode $= "ask")) {
-        if (geGiftingPanel.isVisible()) {
-            GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
+    } else {
+        if ((%acceptMode $= "decline")) {
+            GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-AUTO");
+        } else {
+            if ((%acceptMode $= "ask")) {
+                if (geGiftingPanel.isVisible()) {
+                    GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
+                } else {
+                    giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
+                    geGiftingPanel.giftTransactionID = %transactionID;
+                    geGiftingPanel.personalMessage = "";
+                    geGiftingPanel.skus = %skus;
+                    geGiftingPanel.GiftType = "items";
+                    geGiftingPanel.making = %making;
+                    geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
+                }
+            }
         }
-        giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
-        geGiftingPanel.giftTransactionID = %transactionID;
-        geGiftingPanel.personalMessage = "";
-        geGiftingPanel.skus = %skus;
-        geGiftingPanel.GiftType = "items";
-        geGiftingPanel.making = %making;
-        geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
     }
 };
 function GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, %accepted, %messageCode) {
@@ -108,6 +114,7 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded) {
     }
     %amSource = (%transactionRecord.sourcePlayerName $= $Player::Name);
     if (%amSource) {
+    } else {
     }
     %otherPlayerName = %transactionRecord.sourcePlayerName;
     %transactionRecord.targetPlayerName;
@@ -116,15 +123,18 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded) {
     if (%succeeded) {
         if (%amAlphaAndOmega) {
             schedule(3000, 0, "updateInventorySkus", %skus, "", 1, 1, %otherPlayerName);
+        } else {
+            if (%amSource) {
+                updateInventorySkus("", %skus, 0, 1, %otherPlayerName);
+            } else {
+                %autoAccepted = %transactionRecord.autoAccepted;
+                updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
+            }
         }
-        if (%amSource) {
-            updateInventorySkus("", %skus, 0, 1, %otherPlayerName);
-        }
-        %autoAccepted = %transactionRecord.autoAccepted;
-        updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
+    } else {
+        %msg = $MsgCat::giftingItems["E-UNKNOWN"];
+        MessageBoxOK("Woops...", %msg);
     }
-    %msg = $MsgCat::giftingItems["E-UNKNOWN"];
-    MessageBoxOK("Woops...", %msg);
     if (%amSource) {
         %dlg = %transactionRecord.dlg;
         if (isObject(%dlg)) {

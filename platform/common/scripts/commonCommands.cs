@@ -62,8 +62,9 @@ function tmpFields(%obj) {
 function getDebugString(%obj) {
     if (!isObject(%obj)) {
         return "-(" @ %obj @ " " @ "is not an object)-";
+    } else {
+        return %obj.getDebugString();
     }
-    return %obj.getDebugString();
 };
 function makeTaggedString(%plainText) {
     %cmd = "%ret = \"" @ expandEscape(%plainText) @ "\";";
@@ -81,8 +82,9 @@ function crashDelayed(%ms) {
     echo("scheduled crash in" @ " " @ (%ms / 1000.0) @ " " @ "seconds..");
     if ((%ms > 1000.0)) {
         schedule(1000, 0, "crashDelayed", (%ms - 1000.0));
+    } else {
+        schedule(%ms, 0, "crash");
     }
-    schedule(%ms, 0, "crash");
 };
 function hasWord(%searchText, %findText) {
     return (findWord(%searchText, %findText) >= 0.0);
@@ -161,22 +163,23 @@ function safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName,
         }
         %cmd = %cmd @ ";";
         eval(%cmd);
-    }
-    %cmd = "%ret = new " @ %classname @ "()";
-    if (!(%datablock $= "")) {
-        %cmd = %cmd @ " " @ %datablock;
-    }
-    %cmd = %cmd @ ";";
-    eval(%cmd);
-    if (!(%classesToBind $= "")) {
-        %classCount = getWordCount(%classesToBind);
-        %i = 0;
-        while ((%i < %classCount)) {
-            %ret.bindClassName(getWord(%classesToBind, %i));
-            %i = (%i + 1.0);
+    } else {
+        %cmd = "%ret = new " @ %classname @ "()";
+        if (!(%datablock $= "")) {
+            %cmd = %cmd @ " " @ %datablock;
         }
+        %cmd = %cmd @ ";";
+        eval(%cmd);
+        if (!(%classesToBind $= "")) {
+            %classCount = getWordCount(%classesToBind);
+            %i = 0;
+            while ((%i < %classCount)) {
+                %ret.bindClassName(getWord(%classesToBind, %i));
+                %i = (%i + 1.0);
+            }
+        }
+        %ret.setName(%objectName);
     }
-    %ret.setName(%objectName);
     if (isObject(MissionCleanup)) {
         MissionCleanup.add(%ret);
     }
@@ -204,8 +207,9 @@ function getPathsMatchingPattern(%pattern) {
     if (!(%ret $= "") && 1) {
         %next = findNextFile(%pattern);
         if ((%next $= "")) {
+        } else {
+            %ret = %ret @ "\t" @ %next;
         }
-        %ret = %ret @ "\t" @ %next;
     }
     return %ret;
 };
@@ -248,9 +252,10 @@ function getPlayerMarkup(%player, %color, %isNameNotObject) {
     }
     if (%player.isIgnore()) {
         %result = %result @ "<linkcolor:00000080>";
-    }
-    if (!(%color $= "")) {
-        %result = %result @ makeLinkColorTag(%color);
+    } else {
+        if (!(%color $= "")) {
+            %result = %result @ makeLinkColorTag(%color);
+        }
     }
     %botString = "";
     if (isObject(PlayerInstanceDict)) {
@@ -286,17 +291,19 @@ function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize) {
         %lastGoodIdx = %len;
         if (((%len - %segStart) > %segmentSize) && (((%idx = strpos(%masterList, %delimiter, %idx)) - %segStart) < %segmentSize)) {
             if ((%idx < 0.0)) {
+            } else {
+                %lastGoodIdx = %idx;
+                %idx = (%idx + 1.0);
             }
-            %lastGoodIdx = %idx;
-            %idx = (%idx + 1.0);
         }
         %currentList = getSubStr(%masterList, %segStart, (%lastGoodIdx - %segStart));
         (((%idx = strpos(%masterList, %delimiter, %idx)) - %segStart) < %segmentSize);
         %idx = (%lastGoodIdx + 1.0);
         if (!(%outString $= "")) {
             %outString = %outString @ %segmentDelimiter @ %currentList;
+        } else {
+            %outString = %currentList;
         }
-        %outString = %currentList;
     }
     return %outString;
 };
@@ -343,9 +350,10 @@ function logOnce(%logSystems, %logLevel, %key, %msg) {
     %count = %map.get(%key);
     if ((%count $= "")) {
         log(%logSystems, %logLevel, %msg);
-    }
-    if ((%count == 1.0)) {
-        log(%logSystems, %logLevel, "multiple log messages for:" @ " " @ %key @ " " @ "- swallowing the remainder." @ " " @ %msg);
+    } else {
+        if ((%count == 1.0)) {
+            log(%logSystems, %logLevel, "multiple log messages for:" @ " " @ %key @ " " @ "- swallowing the remainder." @ " " @ %msg);
+        }
     }
     %count = (%count + 1.0);
     %map.put(%key, %count);
@@ -374,24 +382,28 @@ function getExtension(%dry) {
     %wet = %dry;
     %wet = strrchr(%wet, "/");
     if ((%wet $= "")) {
+    } else {
     }
     %wet = %wet;
     %dry;
     %wet2 = %wet;
     %wet = strrchr(%wet, "?");
     if ((%wet $= "")) {
+    } else {
     }
     %wet = %wet;
     %wet2;
     %wet2 = %wet;
     %wet = strrchr(%wet, "&");
     if ((%wet $= "")) {
+    } else {
     }
     %wet = %wet;
     %wet2;
     %wet2 = %wet;
     %wet = strrchr(%wet, "=");
     if ((%wet $= "")) {
+    } else {
     }
     %wet = %wet;
     %wet2;
@@ -419,13 +431,15 @@ function commaify(%num) {
         if ((%len >= 3.0)) {
             %segment = getSubStr(%num, (%len - 3.0), 3);
             %num = getSubStr(%num, 0, (%len - 3.0));
+        } else {
+            %segment = %num;
+            %num = "";
         }
-        %segment = %num;
-        %num = "";
         if ((%result $= "")) {
             %result = %segment;
+        } else {
+            %result = %segment @ "," @ %result;
         }
-        %result = %segment @ "," @ %result;
         %len = (%len - 3.0);
     }
     return %sign @ %result;

@@ -10,20 +10,22 @@ function buildLoadInfo(%mission) {
     %file = new FileObject("");
     if (%file.openForRead(%mission)) {
         %inInfoBlock = 0;
-        while (!%file.isEOF()) {
+        if (!%file.isEOF()) {
             %line = %file.readLine();
             %line = trim(%line);
             if ((%line $= "new ScriptObject(MissionInfo) {")) {
                 %inInfoBlock = 1;
-            }
-            if (%inInfoBlock) {
-            }
-            if ((%line $= "};")) {
-                %inInfoBlock = 0;
-                %infoObject = %infoObject @ %line;
-            }
-            if (%inInfoBlock) {
-                %infoObject = %infoObject @ %line @ " ";
+            } else {
+                if (%inInfoBlock) {
+                }
+                if ((%line $= "};")) {
+                    %inInfoBlock = 0;
+                    %infoObject = %infoObject @ %line;
+                } else {
+                    if (%inInfoBlock) {
+                        %infoObject = %infoObject @ %line @ " ";
+                    }
+                }
             }
         }
         %file.close();

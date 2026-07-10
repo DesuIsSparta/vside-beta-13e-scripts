@@ -78,8 +78,9 @@ function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideA
     %animationMapName = "animationMap" @ %gender @ %genre;
     if (isObject(%animationMapName)) {
         %map = %animationMapName.getId();
+    } else {
+        %map = new StringMap(%animationMapName);
     }
-    %map = new StringMap(%animationMapName);
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ %rootAnim);
     %map.put("run", %gender @ %runAnim);
@@ -334,16 +335,19 @@ function addAnimationToMap(%map, %mapThis, %toThis, %tags) {
     while ((%n >= 0.0)) {
         %tag = getWord(%tags, %n);
         if ((%tag $= "")) {
+        } else {
+            if (!hasWord($gKnownAnimationTags, %tag)) {
+                error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
+            } else {
+                safeEnsureScriptObject("StringMap", "gAnimationTags");
+                %animTags = gAnimationTags.get(%toThis);
+                if (hasWord(%animTags, %tag)) {
+                } else {
+                    %animTags = %tag @ " " @ %animTags;
+                    gAnimationTags.put(%toThis, %animTags);
+                }
+            }
         }
-        if (!hasWord($gKnownAnimationTags, %tag)) {
-            error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
-        }
-        safeEnsureScriptObject("StringMap", "gAnimationTags");
-        %animTags = gAnimationTags.get(%toThis);
-        if (hasWord(%animTags, %tag)) {
-        }
-        %animTags = %tag @ " " @ %animTags;
-        gAnimationTags.put(%toThis, %animTags);
         %n = (%n - 1.0);
     }
 };

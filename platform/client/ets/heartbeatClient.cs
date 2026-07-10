@@ -13,8 +13,9 @@ function clientHeartbeat() {
         }
         sendRequest_ClientHeartbeat($Player::Name, "onDoneOrErrorCallback_ClientHeartbeat");
         $gClientHeartbeatTimer = schedule($gClientHeartbeatPeriodMS, 0, "clientHeartbeat");
+    } else {
+        echo("not repeating halting client heartbeat");
     }
-    echo("not repeating halting client heartbeat");
 };
 function onDoneOrErrorCallback_ClientHeartbeat(%request) {
     if (!%request.checkSuccess()) {

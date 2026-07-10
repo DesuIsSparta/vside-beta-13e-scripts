@@ -11,19 +11,20 @@ function ETSWhatsThisMenu::init(%this, %obj) {
     if ((getFieldCount(%obj.getBasicURL()) > 2.0)) {
         %this.newStyle = 1;
         %this.initNewStyle(%obj);
+    } else {
+        %this.newStyle = 0;
+        %url = getTargetURL(%obj);
+        if ((%url $= "")) {
+            return 0;
+        }
+        %grey = "0 0 0 128";
+        %this.addScheme(1, %grey, %grey, %grey);
+        %this.visitURL = %url;
+        %this.obj = %obj;
+        %n = 0;
+        %this.add("Visit WebSite", %n, 0);
+        %n = (%n + 1.0);
     }
-    %this.newStyle = 0;
-    %url = getTargetURL(%obj);
-    if ((%url $= "")) {
-        return 0;
-    }
-    %grey = "0 0 0 128";
-    %this.addScheme(1, %grey, %grey, %grey);
-    %this.visitURL = %url;
-    %this.obj = %obj;
-    %n = 0;
-    %this.add("Visit WebSite", %n, 0);
-    %n = (%n + 1.0);
     %this.add($gAdvertsClient_NoThanksText, 0, 0);
     %n = (%n + 1.0);
     if ($player.isDebugging()) {
@@ -53,9 +54,10 @@ function ETSWhatsThisMenu::onSelect(%this, %id, %text) {
     %url = "";
     if (%this.newStyle) {
         %url = absoluteURL($Net::BaseDomain, %this.prePend @ %text @ %this.postPend);
-    }
-    if ((%id == 0.0)) {
-        %url = strreplace(%this.visitURL, "[BASEDOMAIN]", $Net::BaseDomain);
+    } else {
+        if ((%id == 0.0)) {
+            %url = strreplace(%this.visitURL, "[BASEDOMAIN]", $Net::BaseDomain);
+        }
     }
     if (!(%url $= "")) {
         gotoWebPage(%url, 0);
@@ -79,8 +81,9 @@ function PlayGui::onAdvertClick(%this, %obj, %pt) {
     }
     if (%obj.isClassDFTextureAdvert()) {
         %description = %obj.getDFObjectName();
+    } else {
+        %description = %obj.getTitle();
     }
-    %description = %obj.getTitle();
     commandToServer('advertClick', %obj.getGhostID(), %description);
     if (ETSWhatsThisMenu.init(%obj)) {
         ETSWhatsThisMenu.showAtCursor();
@@ -132,11 +135,12 @@ function PlayGui::tryOnMLTextSignClick(%this, %obj) {
 function getTargetURL(%obj) {
     if (%obj.isClassAdvertTextureAdvert()) {
         %url = %obj.getURL();
+    } else {
+        if ((%obj.getBasicURL() $= "")) {
+            return "";
+        }
+        %url = %obj.getBasicURL();
     }
-    if ((%obj.getBasicURL() $= "")) {
-        return "";
-    }
-    %url = %obj.getBasicURL();
     if (0) {
         %url = %url @ "?image=" @ urlEncode(%obj.getSkinName());
         %url = %url @ "?title=" @ urlEncode(%obj.getTitle());
@@ -182,8 +186,9 @@ function AdvertShape::onGotImageURL(%this) {
     if ((%extension $= ".jpg") || (%extension $= ".png")) {
         %justFileName = strrchr(%imageURL, "/");
         %justFileName = getSubStr(%justFileName, 1, 100000000);
+    } else {
+        %justFileName = strreplace(formatInt("%5i", $gDynamicAdvertCount), " ", 0) @ ".dynamic.jpg";
     }
-    %justFileName = strreplace(formatInt("%5i", $gDynamicAdvertCount), " ", 0) @ ".dynamic.jpg";
     %this.justFilename = %justFileName;
     dlMgr.applyUrl(%imageURL, "dlMgrCallback_AdvertShape", "", %this, "");
 };

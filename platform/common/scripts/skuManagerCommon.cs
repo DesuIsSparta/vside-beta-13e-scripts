@@ -283,6 +283,7 @@ function SkuItem::getUserFacingDrawerName(%this) {
 };
 function SkuItem::getDescLong(%this) {
     if ((%this.descLong $= "")) {
+    } else {
     }
     %ret = %this.descLong;
     %this.descShrt;
@@ -407,8 +408,9 @@ function SkuManager::getRandomSkus(%this, %player, %drawersList) {
         %numSkus = getWordCount(%drwrSkus);
         if ((%numSkus < 1.0)) {
             log("wardrobe", "error", "Closet::getRandomSkus() - no skus in drawer" @ " " @ %drwrName @ " " @ getDebugString(%player));
+        } else {
+            %skus = %skus @ getWord(%drwrSkus, getRandom(0, (%numSkus - 1.0))) @ " ";
         }
-        %skus = %skus @ getWord(%drwrSkus, getRandom(0, (%numSkus - 1.0))) @ " ";
         %n = (%n - 1.0);
     }
     return %skus;
@@ -423,8 +425,9 @@ function SkuManager::getRandomSku(%this, %player, %drawersList) {
     %numSkus = getWordCount(%drwrSkus);
     if ((%numSkus < 1.0)) {
         log("wardrobe", "error", "Closet::getRandomSku() - no skus in drawer" @ " " @ %drwrName @ " " @ getDebugString(%player));
+    } else {
+        %sku = getWord(%drwrSkus, getRandom(0, (%numSkus - 1.0))) @ " ";
     }
-    %sku = getWord(%drwrSkus, getRandom(0, (%numSkus - 1.0))) @ " ";
     return %sku;
 };
 function SkuManager::skuListHasSku(%this, %list, %sku) {
@@ -432,6 +435,7 @@ function SkuManager::skuListHasSku(%this, %list, %sku) {
 };
 function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeUsage, %thumbnailWidth) {
     if (isDefined("%thumbnailSize")) {
+    } else {
     }
     %thumbnailSize = 0;
     %thumbnailSize;
@@ -443,22 +447,23 @@ function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeU
         %si = %this.findBySku(%sku);
         if (!isObject(%si)) {
             error(getScopeName() @ " " @ "- unknown sku:" @ " " @ %sku);
+        } else {
+            %usage = "";
+            if (%includeUsage) {
+            }
+            if (!(%si.usageShrt $= "")) {
+                %usage = " -" @ " " @ %si.usageShrt;
+            }
+            %thumbnailText = "";
+            if ((%thumbnailWidth > 0.0)) {
+            }
+            if ((%si.skuType $= "furnishing")) {
+                %thumbnailImage = CSBrowser::getThumbnailPathForSku(0, %sku, 32);
+                %thumbnailText = " <bitmap:" @ %thumbnailImage @ ":true:middle:width=" @ %thumbnailWidth @ ">";
+            }
+            %ret = %ret @ %delim @ %si.descShrt @ %thumbnailText @ %usage;
+            %delim = %delimiter;
         }
-        %usage = "";
-        if (%includeUsage) {
-        }
-        if (!(%si.usageShrt $= "")) {
-            %usage = " -" @ " " @ %si.usageShrt;
-        }
-        %thumbnailText = "";
-        if ((%thumbnailWidth > 0.0)) {
-        }
-        if ((%si.skuType $= "furnishing")) {
-            %thumbnailImage = CSBrowser::getThumbnailPathForSku(0, %sku, 32);
-            %thumbnailText = " <bitmap:" @ %thumbnailImage @ ":true:middle:width=" @ %thumbnailWidth @ ">";
-        }
-        %ret = %ret @ %delim @ %si.descShrt @ %thumbnailText @ %usage;
-        %delim = %delimiter;
         %n = (%n - 1.0);
     }
     return %ret;
@@ -479,14 +484,15 @@ function SkuManager::dumpSkuList(%this, %skus) {
         %si = %this.findBySku(%sn);
         if (!isObject(%si)) {
             error("wardrobe", "dumpSkuList: unknown sku" @ " " @ %sn);
+        } else {
+            %line = %sn;
+            %line = %line @ " - " @ %si.drwrName;
+            %line = %line @ " - " @ %si.descShrt;
+            %line = %line @ " - " @ %si.meshName;
+            %line = %line @ " - " @ %si.getTxtrNames();
+            %line = %line @ " - " @ roles::getRoleStrings(%si.rolesMask);
+            echo("wardrobe", %line);
         }
-        %line = %sn;
-        %line = %line @ " - " @ %si.drwrName;
-        %line = %line @ " - " @ %si.descShrt;
-        %line = %line @ " - " @ %si.meshName;
-        %line = %line @ " - " @ %si.getTxtrNames();
-        %line = %line @ " - " @ roles::getRoleStrings(%si.rolesMask);
-        echo("wardrobe", %line);
         %n = (%n + 1.0);
     }
 };
@@ -500,11 +506,13 @@ function SkuManager::setSkuPair(%this, %list, %first, %second) {
         if ((%second > 0.0)) {
             %list = %list @ " " @ %first @ " " @ %second;
         }
+    } else {
+        if ((%second > 0.0)) {
+            %list = setWord(%list, (%ndx + 1.0), %second);
+        } else {
+            %list = removeWord(removeWord(%list, (%ndx + 1.0)), %ndx);
+        }
     }
-    if ((%second > 0.0)) {
-        %list = setWord(%list, (%ndx + 1.0), %second);
-    }
-    %list = removeWord(removeWord(%list, (%ndx + 1.0)), %ndx);
     return %list;
 };
 function SkuManager::skusRemove(%this, %listA, %listB) {

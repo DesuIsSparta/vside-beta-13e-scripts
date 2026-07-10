@@ -550,9 +550,10 @@ function ProfileCurrentPicture::update(%this, %url) {
         %curl.delete();
         warn("ProfileCurrentPicture::update(): couldn't start dynamic download of avatar pic.");
         return;
-    }
-    if (isObject(CURLSimGroup)) {
-        CURLSimGroup.add(%curl);
+    } else {
+        if (isObject(CURLSimGroup)) {
+            CURLSimGroup.add(%curl);
+        }
     }
     echo("ProfileCurrentPicture::update(): started dynamic download of avatar pic");
 };
@@ -568,28 +569,32 @@ function ProfileAvatarPictureRequestOnCompleted(%request, %result) {
         dlMgr.purgeCacheEntry(%request.getURL() @ "?size=S");
         dlMgr.purgeCacheEntry(%request.getURL() @ "?size=M");
         dlMgr.purgeCacheEntry(%request.getURL() @ "?size=L");
-    }
-    %retryCount = 1;
-    if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0)) {
-    }
-    if (($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount)) {
-    }
-    if ((ClosetGui.lastTabOpened $= "SNAPSHOT")) {
-    }
-    if (ClosetGui.isVisible()) {
-        ProfileSnapRegion.schedule(200, prepareSnapshot);
-        $Player::attemptsToAutoUploadAvatarSnapshot = ($Player::attemptsToAutoUploadAvatarSnapshot + 1.0);
+    } else {
+        %retryCount = 1;
+        if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0)) {
+        }
+        if (($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount)) {
+        }
+        if ((ClosetGui.lastTabOpened $= "SNAPSHOT")) {
+        }
+        if (ClosetGui.isVisible()) {
+            ProfileSnapRegion.schedule(200, prepareSnapshot);
+            $Player::attemptsToAutoUploadAvatarSnapshot = ($Player::attemptsToAutoUploadAvatarSnapshot + 1.0);
+        }
     }
 };
 function ProfileCurrentPicture::getLocalFileName(%this, %includeExtention) {
     if (($Pref::Video::screenShotFormat $= "JPEG")) {
         %ext = ".jpg";
+    } else {
+        if (($Pref::Video::screenShotFormat $= "PNG")) {
+            %ext = ".png";
+        } else {
+            %ext = ".png";
+        }
     }
-    if (($Pref::Video::screenShotFormat $= "PNG")) {
-        %ext = ".png";
-    }
-    %ext = ".png";
     if (%includeExtention) {
+    } else {
     }
     return %ext @ "";
 };
@@ -627,11 +632,12 @@ function ProfileSnapRegionOnCompleted(%request, %result) {
         ProfileSnapshotButton_Container.waitIcon.setVisible(0);
         ProfileSnapshotButton.setActive(1);
         ProfileCurrentPicture.update(%request.getResult("photoURL"));
+    } else {
+        warn("Profile pic upload error");
+        ProfileSnapshotButton_Container.waitIcon.stop();
+        ProfileSnapshotButton_Container.waitIcon.setVisible(0);
+        ProfileSnapshotButton.setActive(1);
     }
-    warn("Profile pic upload error");
-    ProfileSnapshotButton_Container.waitIcon.stop();
-    ProfileSnapshotButton_Container.waitIcon.setVisible(0);
-    ProfileSnapshotButton.setActive(1);
 };
 function ProfileBackgroundChooser::onCreatedChild(%this, %child) {
     %thumb = new GuiBitmapCtrl("") {
@@ -680,9 +686,10 @@ function ProfileBackgroundChooser::Initialize(%this) {
                 %extension = strrchr(%fileName, ".");
                 if ((%extension $= ".jpg")) {
                     %numImages = (%numImages + 1.0);
-                }
-                if ((%extension $= ".png")) {
-                    %numImages = (%numImages + 1.0);
+                } else {
+                    if ((%extension $= ".png")) {
+                        %numImages = (%numImages + 1.0);
+                    }
                 }
             }
             %i = (%i + 1.0);
@@ -718,10 +725,11 @@ function ProfileBackgroundChooser::selectThumbAtIndex(%this, %index) {
     %cell.frame.setBitmap("platform/client/buttons/sm_frame_selected");
     if (isFile(%cell.bitmapName)) {
         ProfileBackgroundImage.setBitmap(%cell.bitmapName);
+    } else {
+        %url = $Net::downloadURL @ "/packages/" @ %cell.bitmapName;
+        ProfileBackgroundImage.setBitmap(%cell.thumbBitmapName);
+        ProfileBackgroundImage.downloadAndApplyBitmap(%url);
     }
-    %url = $Net::downloadURL @ "/packages/" @ %cell.bitmapName;
-    ProfileBackgroundImage.setBitmap(%cell.thumbBitmapName);
-    ProfileBackgroundImage.downloadAndApplyBitmap(%url);
 };
 function ProfileBackgroundImage::onSystemDragDroppedEvent(%this, %text, %unused) {
     %text = strreplace(%text, "\\", "/");
@@ -729,8 +737,9 @@ function ProfileBackgroundImage::onSystemDragDroppedEvent(%this, %text, %unused)
         addFile(%text);
         %this.setBitmap("");
         %this.setBitmap(%text);
+    } else {
+        %this.downloadAndApplyBitmap(%text);
     }
-    %this.downloadAndApplyBitmap(%text);
 };
 function ProfileBackgroundChooser::thumbClicked(%this, %cell) {
     %this.selectThumbAtIndex(%cell.index);
@@ -746,17 +755,19 @@ function ProfileBackgroundChooser::moveBy(%this, %numSlots) {
     }
     if (((%xPos + (%slotWidth * %numSlots)) >= %max)) {
         ProfilePreviousBackgroundButton.setActive(0);
-    }
-    if (!ProfilePreviousBackgroundButton.isActive()) {
-        ProfilePreviousBackgroundButton.setActive(1);
+    } else {
+        if (!ProfilePreviousBackgroundButton.isActive()) {
+            ProfilePreviousBackgroundButton.setActive(1);
+        }
     }
     if (ProfileNextBackgroundButton.isActive()) {
     }
     if (((%xPos + (%slotWidth * %numSlots)) <= %min)) {
         ProfileNextBackgroundButton.setActive(0);
-    }
-    if (!ProfileNextBackgroundButton.isActive()) {
-        ProfileNextBackgroundButton.setActive(1);
+    } else {
+        if (!ProfileNextBackgroundButton.isActive()) {
+            ProfileNextBackgroundButton.setActive(1);
+        }
     }
     %xPos = mMin(%max, mMax(%min, (%xPos + (%slotWidth * %numSlots))));
     %this.setTrgPosition(%xPos, %ypos);
@@ -819,8 +830,9 @@ function ProfileBackgroundURLField::onSetFirstResponder(%this) {
     if (%this.isDefault) {
         %this.isDefault = 0;
         %this.setText("");
+    } else {
+        %this.setSelection(0, 1000);
     }
-    %this.setSelection(0, 1000);
 };
 function ProfileObjectView::resetLight(%this) {
     %this.setLightDirection("0 3 -2");

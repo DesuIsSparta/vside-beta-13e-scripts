@@ -179,10 +179,11 @@ function TestSuite::ExecNextTest(%this) {
         %testname.execute();
         %this.TimerNextTest = %this.schedule(0, "ExecNextTest");
         return;
+    } else {
+        %testname.executeStartForDelay();
+        %this.TimerNextTest = %this.schedule(%delay, "FinishDelayedTest", %testname);
+        return;
     }
-    %testname.executeStartForDelay();
-    %this.TimerNextTest = %this.schedule(%delay, "FinishDelayedTest", %testname);
-    return;
 };
 function TestSuite::execute(%this) {
     %this.running = 1;

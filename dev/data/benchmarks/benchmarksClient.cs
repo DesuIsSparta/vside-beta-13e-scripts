@@ -118,9 +118,10 @@ function benchmarks::runCameraTestsReps() {
     }
     if (($benchmarks::camera::repsRemaining > 0.0)) {
         benchmarks::runCameraTests();
+    } else {
+        echoBenchmarksCamera("no reps!");
+        benchmarks::finishedCameraTestsReps("no reps");
     }
-    echoBenchmarksCamera("no reps!");
-    benchmarks::finishedCameraTestsReps("no reps");
 };
 function benchmarks::finishedCameraTestsRep(%result) {
     $benchmarks::camera::repsRemaining = ($benchmarks::camera::repsRemaining - 1.0);
@@ -134,8 +135,9 @@ function benchmarks::finishedCameraTestsRep(%result) {
     if (($benchmarks::camera::repsRemaining > 0.0)) {
         echoBenchmarksCamera("");
         benchmarks::runCameraTests();
+    } else {
+        benchmarks::finishedCameraTestsReps(%result);
     }
-    benchmarks::finishedCameraTestsReps(%result);
 };
 function benchmarks::finishedCameraTestsReps(%result) {
     echoBenchmarksCamera("");
@@ -213,15 +215,17 @@ function benchmarksRunNextCameraTest() {
             %screenshotFileName = %screenshotFolder @ "/" @ $benchmarks::currentTimeStamp @ "_" @ MissionInfo.name @ "_" @ %theMark.spotName @ ".jpg";
             if (isWriteableFileName(%screenshotFileName)) {
                 ScreenShot(%screenshotFileName, "JPEG");
+            } else {
+                error("Cannot write to file" @ " " @ %screenshotFileName);
             }
-            error("Cannot write to file" @ " " @ %screenshotFileName);
         }
     }
     if (($benchmarks::camera::curPoint < (cameraTestsGroup.getCount() - 1.0))) {
         benchmarks::nextCameraTestPoint();
         $benchmarks::camera::testSchedule = schedule($pref::benchmarks::cameraPeriod, 0, "benchmarksRunNextCameraTest");
+    } else {
+        benchmarks::finishedCameraTests("success");
     }
-    benchmarks::finishedCameraTests("success");
 };
 function benchmarks::finishedCameraTests(%result) {
     GLEnableMetrics(0);

@@ -49,14 +49,15 @@ function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemaining
     }
     if (%this.isVisible()) {
         %this.countdownTimerID = %this.schedule(%tickPeriod, "countdownTick");
+    } else {
+        %this.close(0, "DECLINE TIMEOUT");
+        %coAnimEntry = findCoAnimEntry(%this.coAnimName);
+        %actionDesc = getField(%coAnimEntry, 6);
+        %text = $MsgCat::coanim["E-TOOSLOW"];
+        %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
+        %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
+        handleSystemMessage("msgInfoMessage", %text);
     }
-    %this.close(0, "DECLINE TIMEOUT");
-    %coAnimEntry = findCoAnimEntry(%this.coAnimName);
-    %actionDesc = getField(%coAnimEntry, 6);
-    %text = $MsgCat::coanim["E-TOOSLOW"];
-    %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
-    %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
-    handleSystemMessage("msgInfoMessage", %text);
 };
 function geTwoPlayerEmotesConfirmPanel::doAccept(%this, %accepted, %messageCode) {
     cancel(%this.countdownTimerID);

@@ -23,11 +23,12 @@ function geTGF::adjustAppearanceForContainer(%this, %onPlayGui) {
         %this.mGeBackground.modulationColor = "255 255 255 90";
         %this.mGeWindow.setProfile(TGFSmallWindowProfile);
         %this.mGeWindow_BG.modulationColor = "255 255 255 255";
+    } else {
+        %this.mGeBackground.setBitmap("");
+        %this.mGeWindow.setProfile(TGFBigWindowProfile);
+        %this.mGeWindow.resize(0, 0, 960, 544);
+        %this.mGeWindow_BG.modulationColor = "255 255 255 200";
     }
-    %this.mGeBackground.setBitmap("");
-    %this.mGeWindow.setProfile(TGFBigWindowProfile);
-    %this.mGeWindow.resize(0, 0, 960, 544);
-    %this.mGeWindow_BG.modulationColor = "255 255 255 200";
     %this.mGeWindow.resizeWidth = 0;
     %this.mGeWindow.resizeHeight = 0;
     %this.mGeWindow.canMove = %onPlayGui;
@@ -52,10 +53,11 @@ function geTGF::open(%this) {
         moveMap.pop();
         functionMap.pop();
         pushScreenSize(960, 544, 0, 1, 1);
+    } else {
+        %this.onPlayGui = 0;
+        Canvas.setContent(%this);
+        %this.resize(0, 0, 960, 544);
     }
-    %this.onPlayGui = 0;
-    Canvas.setContent(%this);
-    %this.resize(0, 0, 960, 544);
     geTGF.mUserName.setText(mlStyle("<just:right>" @ $Player::Name, "tgfSmallText_large"));
     WorldMap.refresh();
     moveAccountBalanceHud("TGF");
@@ -122,8 +124,9 @@ function geTGF::onGroupRemove(%this) {
 function geTGF::toggle(%this) {
     if (%this.isVisible()) {
         return %this.close();
+    } else {
+        return %this.open();
     }
-    return %this.open();
 };
 function geTGF::refreshIfNeeded(%this) {
     %curTabName = geTGF_tabs.getUpcomingTab().name;
@@ -183,6 +186,7 @@ function geTGF_tabs::setup(%this, %container) {
     while ((%n < %num)) {
         %tabName = getWord(%tabNames, %n);
         if (isDefined("%tooltips" @ %tabName)) {
+        } else {
         }
         %toolTip = "";
         %tabName[%tooltips @ %tabName];
@@ -229,24 +233,29 @@ function geTGF_tabs::onShowOrHideTab(%this, %tabObject, %show) {
     if ((%tabObject.name $= "main")) {
         %this.fillTabMain();
         %this.onShowTabMain();
+    } else {
+        if ((%tabObject.name $= "hotspots")) {
+            %this.fillTabHotSpots();
+            %this.onShowTabHotSpots();
+        } else {
+            if ((%tabObject.name $= "friends")) {
+                %this.fillTabFriends();
+                %this.onShowTabFriends();
+            } else {
+                if ((%tabObject.name $= "map")) {
+                    %this.fillTabMap();
+                    %this.onShowTabMap();
+                } else {
+                    if ((%tabObject.name $= "myplace")) {
+                        %this.fillTabMyPlace();
+                        %this.onShowTabMyPlace();
+                    } else {
+                        error(getScopeName() @ " " @ "- unknown tab name:" @ " " @ %tabObject.name @ " " @ getTrace());
+                    }
+                }
+            }
+        }
     }
-    if ((%tabObject.name $= "hotspots")) {
-        %this.fillTabHotSpots();
-        %this.onShowTabHotSpots();
-    }
-    if ((%tabObject.name $= "friends")) {
-        %this.fillTabFriends();
-        %this.onShowTabFriends();
-    }
-    if ((%tabObject.name $= "map")) {
-        %this.fillTabMap();
-        %this.onShowTabMap();
-    }
-    if ((%tabObject.name $= "myplace")) {
-        %this.fillTabMyPlace();
-        %this.onShowTabMyPlace();
-    }
-    error(getScopeName() @ " " @ "- unknown tab name:" @ " " @ %tabObject.name @ " " @ getTrace());
     geTGF.refreshIfNeeded();
 };
 function geTGF::onLogin(%this) {
@@ -404,14 +413,17 @@ function geTGF::constructDeetsWindow(%this, %window, %item) {
     }
     if ((%item.type $= "happening")) {
         %this.arrangeDeetsWindow_happening(%window);
+    } else {
+        if ((%item.type $= "venue")) {
+            %this.arrangeDeetsWindow_venue(%window);
+        } else {
+            if ((%item.type $= "person")) {
+                %this.arrangeDeetsWindow_person(%window);
+            } else {
+                error("unknown itemType:" @ " " @ %item.type @ " " @ getTrace());
+            }
+        }
     }
-    if ((%item.type $= "venue")) {
-        %this.arrangeDeetsWindow_venue(%window);
-    }
-    if ((%item.type $= "person")) {
-        %this.arrangeDeetsWindow_person(%window);
-    }
-    error("unknown itemType:" @ " " @ %item.type @ " " @ getTrace());
 };
 function geTGF::arrangeDeetsWindow_happening(%this, %window) {
     geDeetsWindow.resize(500, 200);
@@ -468,22 +480,27 @@ function geTGF::arrangeDeetsPicture(%this, %window, %drop, %aspectW, %aspectH) {
 function geTGF::fillDetailsContainer(%this, %container, %item) {
     if ((%item.type $= "happening")) {
         %this.fillDetailsContainer_Happening(%container, %item);
+    } else {
+        if ((%item.type $= "venue")) {
+            %this.fillDetailsContainer_Venue(%container, %item);
+        } else {
+            if ((%item.type $= "person")) {
+                %this.fillDetailsContainer_Person(%container, %item);
+            } else {
+                error(getScopeName() @ " " @ "- unknown type:" @ " " @ %item.type @ " " @ getTrace());
+            }
+        }
     }
-    if ((%item.type $= "venue")) {
-        %this.fillDetailsContainer_Venue(%container, %item);
-    }
-    if ((%item.type $= "person")) {
-        %this.fillDetailsContainer_Person(%container, %item);
-    }
-    error(getScopeName() @ " " @ "- unknown type:" @ " " @ %item.type @ " " @ getTrace());
     %this.getItemList(%item.listName, %item.type).currentItem = %item;
     %hasPrevItem = isObject(%this.getPrevItem(%item.listName, %item.type));
     %hasNextItem = isObject(%this.getNextItem(%item.listName, %item.type));
     if (%hasPrevItem) {
+    } else {
     }
     %prevLink = mlStyle("<a:gamelink prev><<</a>", tgfDeets_NavLinkActive) @ mlStyle("<<", tgfDeets_NavLinkInactive);
     "<just:left>";
     if (%hasNextItem) {
+    } else {
     }
     %nextLink = mlStyle("<a:gamelink next>>></a>", tgfDeets_NavLinkActive) @ mlStyle(">>", tgfDeets_NavLinkInactive);
     "<just:right>";
@@ -492,11 +509,13 @@ function geTGF::fillDetailsContainer(%this, %container, %item) {
 function geTGF::formatOccupancy(%this, %num, %interestingNumberFormat, %unknownString, %noneString) {
     if ((%num == -(1.0))) {
         %ret = %unknownString;
+    } else {
+        if ((%num == 0.0)) {
+            %ret = %noneString;
+        } else {
+            %ret = %interestingNumberFormat @ %num;
+        }
     }
-    if ((%num == 0.0)) {
-        %ret = %noneString;
-    }
-    %ret = %interestingNumberFormat @ %num;
     return %ret;
 };
 function geTGF::getEventTypePostItTagBitmap(%this, %item) {
@@ -504,11 +523,13 @@ function geTGF::getEventTypePostItTagBitmap(%this, %item) {
     if (!(%item.eventID $= "")) {
         if ((%item.subType $= "publicLocationEvent")) {
             %ret = "platform/client/ui/tgf/tgf_publicEvent";
+        } else {
+            if (%item.featured) {
+                %ret = "platform/client/ui/tgf/tgf_featuredEvent";
+            } else {
+                %ret = "platform/client/ui/tgf/tgf_event";
+            }
         }
-        if (%item.featured) {
-            %ret = "platform/client/ui/tgf/tgf_featuredEvent";
-        }
-        %ret = "platform/client/ui/tgf/tgf_event";
     }
     return %ret;
 };
@@ -522,25 +543,29 @@ function geTGF::fillDetailsContainer_Happening(%this, %container, %item) {
         %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
         %detailsURL = %profileURL;
         %subTypeText = "personal space ";
+    } else {
+        if ((%item.subType $= "aptEvent")) {
+            %mainPicUrl1 = %item.baseImageURL @ "?size=S";
+            %mainPicUrl2 = %item.baseImageURL @ "?size=M";
+            %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
+            %detailsURL = $Net::EventDetailURL @ urlEncode(%item.eventID);
+            %subTypeText = "event ";
+        } else {
+            if ((%item.subType $= "publicLocationEvent")) {
+                %mainPicUrl1 = %item.baseImageURL @ "?size=S";
+                %mainPicUrl2 = %item.baseImageURL @ "?size=M";
+                %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
+                %detailsURL = $Net::EventDetailURL @ urlEncode(%item.eventID);
+                %subTypeText = "public event ";
+            } else {
+                if ((%item.subType $= "")) {
+                    error(getScopeName() @ " " @ "- empty happening subtype." @ " " @ "(" @ %item.type @ ")" @ " " @ getTrace());
+                } else {
+                    error(getScopeName() @ " " @ "- unknown happening subtype:" @ " " @ %item.subType @ " " @ "(" @ %item.type @ ")" @ " " @ getTrace());
+                }
+            }
+        }
     }
-    if ((%item.subType $= "aptEvent")) {
-        %mainPicUrl1 = %item.baseImageURL @ "?size=S";
-        %mainPicUrl2 = %item.baseImageURL @ "?size=M";
-        %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
-        %detailsURL = $Net::EventDetailURL @ urlEncode(%item.eventID);
-        %subTypeText = "event ";
-    }
-    if ((%item.subType $= "publicLocationEvent")) {
-        %mainPicUrl1 = %item.baseImageURL @ "?size=S";
-        %mainPicUrl2 = %item.baseImageURL @ "?size=M";
-        %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
-        %detailsURL = $Net::EventDetailURL @ urlEncode(%item.eventID);
-        %subTypeText = "public event ";
-    }
-    if ((%item.subType $= "")) {
-        error(getScopeName() @ " " @ "- empty happening subtype." @ " " @ "(" @ %item.type @ ")" @ " " @ getTrace());
-    }
-    error(getScopeName() @ " " @ "- unknown happening subtype:" @ " " @ %item.subType @ " " @ "(" @ %item.type @ ")" @ " " @ getTrace());
     %bitmap = %this.getEventTypePostItTagBitmap(%item);
     geTGF_deets_featured.setBitmap(%bitmap);
     if (%item.featured) {
@@ -575,18 +600,21 @@ function geTGF::getUserFacingAccessModeWithIcon(%this, %accessMode) {
     if ((%accessMode $= "OPEN")) {
         %bitmap = "";
         %text = "Open";
+    } else {
+        if ((%accessMode $= "FRIENDSONLY")) {
+            %bitmap = "platform/client/ui/tgf/tgf_heart_white";
+            %text = "Friends";
+        } else {
+            if ((%accessMode $= "PASSWORDPROTECTED")) {
+                %bitmap = "platform/client/ui/tgf/tgf_key_white";
+                %text = "Door Code";
+            } else {
+                error(getScopeName() @ " " @ "- unknown access mode '" @ %accessMode @ "' -" @ " " @ getTrace());
+                %bitmap = "";
+                %text = "(?)";
+            }
+        }
     }
-    if ((%accessMode $= "FRIENDSONLY")) {
-        %bitmap = "platform/client/ui/tgf/tgf_heart_white";
-        %text = "Friends";
-    }
-    if ((%accessMode $= "PASSWORDPROTECTED")) {
-        %bitmap = "platform/client/ui/tgf/tgf_key_white";
-        %text = "Door Code";
-    }
-    error(getScopeName() @ " " @ "- unknown access mode '" @ %accessMode @ "' -" @ " " @ getTrace());
-    %bitmap = "";
-    %text = "(?)";
     if (!(%bitmap $= "")) {
         %bitmap = "<bitmap:" @ %bitmap @ "> ";
     }
@@ -631,6 +659,7 @@ function geTGF::fillDetailsContainer_Venue(%this, %container, %item) {
 function geTGF_deets_venueText::onURL(%this, %url) {
     geDeetsLayer.setVisible(0);
     if ((firstWord(%url) $= "gamelink")) {
+    } else {
     }
     %url = %url;
     restWords(%url);
@@ -639,8 +668,9 @@ function geTGF_deets_venueText::onURL(%this, %url) {
         %city = restWords(%url);
         geTGF.openToTabName("map");
         WorldMap.selectCity(%city);
+    } else {
+        Parent::onURL(%this, %url);
     }
-    Parent::onURL(%this, %url);
 };
 $gTextAllTimeVPointsLink = "<spush><b><linkcolor:ffffff><a:gamelink " @ $Net::HelpURL_VPoints @ ">All-time <bitmap:platform/client/ui/vpoints_14></a><spop>";
 function geTGF::fillDetailsContainer_Person(%this, %container, %item) {
@@ -665,9 +695,11 @@ function geTGF::fillDetailsContainer_Person(%this, %container, %item) {
     %goThereText = mlStyle(%goThereText, "tgfDeets_Visit");
     %text = %tableSettings;
     if ((%text @ "Age" @ "\t" @ ": " @ " " @ %item.age $= "")) {
+    } else {
     }
     %text = "(not shown)" @ %item.age;
     if ((%text @ "<br>" @ "Location" @ "\t" @ ": " @ " " @ %item.locationIRL $= "")) {
+    } else {
     }
     %text = "(not shown)" @ %item.locationIRL;
     %text = %text @ "<br>" @ "Level" @ "\t" @ ": " @ respektLevelToNameWithoutArticle(respektScoreToLevel(%item.score));
@@ -680,26 +712,32 @@ function geTGF::fillDetailsContainer_Person(%this, %container, %item) {
     %text = %text @ "<br>" @ "      " @ %readMoreText @ "    |    " @ %goThereText;
     geTGF_deets_stats.setTextWithStyle(%text, "");
     if ((%item.headline $= "")) {
+    } else {
     }
     geTGF_deets_stats_headline.setTextWithStyle("(none)", %item.headline, "");
 };
 function geTGF::DoDetails(%this, %tabName, %item) {
     if ((%tabName $= "main")) {
         %container = %this.main_GetAndOpenDetailsContainer(%item);
+    } else {
+        if ((%tabName $= "hotspots")) {
+            %container = %this.hotspots_GetAndOpenDetailsContainer(%item);
+        } else {
+            if ((%tabName $= "friends")) {
+                %container = %this.friends_GetAndOpenDetailsContainer(%item);
+            } else {
+                if ((%tabName $= "map")) {
+                    %container = %this.map_GetAndOpenDetailsContainer(%item);
+                } else {
+                    if ((%tabName $= "myplace")) {
+                        %container = %this.myplace_GetAndOpenDetailsContainer(%item);
+                    } else {
+                        error(getScopeName() @ " " @ "- unknown tabName:" @ " " @ %tabName @ " " @ getTrace());
+                    }
+                }
+            }
+        }
     }
-    if ((%tabName $= "hotspots")) {
-        %container = %this.hotspots_GetAndOpenDetailsContainer(%item);
-    }
-    if ((%tabName $= "friends")) {
-        %container = %this.friends_GetAndOpenDetailsContainer(%item);
-    }
-    if ((%tabName $= "map")) {
-        %container = %this.map_GetAndOpenDetailsContainer(%item);
-    }
-    if ((%tabName $= "myplace")) {
-        %container = %this.myplace_GetAndOpenDetailsContainer(%item);
-    }
-    error(getScopeName() @ " " @ "- unknown tabName:" @ " " @ %tabName @ " " @ getTrace());
     %itemList = %item.itemList;
     %itemList.currentItem = %item;
     %this.currentItem = %item;
@@ -716,8 +754,9 @@ function geTGF::getPrevItem(%this, %listName, %type) {
     }
     if ((%newNdx < %itemList.count())) {
         %ret = %itemList.getValue(%newNdx);
+    } else {
+        %ret = "";
     }
-    %ret = "";
     return %ret;
 };
 function geTGF::getNextItem(%this, %listName, %type) {
@@ -731,21 +770,24 @@ function geTGF::getNextItem(%this, %listName, %type) {
     }
     if ((%newNdx < %itemList.count())) {
         %ret = %itemList.getValue(%newNdx);
+    } else {
+        %ret = "";
     }
-    %ret = "";
     return %ret;
 };
 function geTGF_deets_NavLinks::onURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
+    } else {
     }
     %url = %url;
     restWords(%url);
     %s = firstWord(%url);
     if ((%s $= "prev")) {
         %item = geTGF.getPrevItem(geTGF.currentItem.listName, geTGF.currentItem.type);
-    }
-    if ((%s $= "next")) {
-        %item = geTGF.getNextItem(geTGF.currentItem.listName, geTGF.currentItem.type);
+    } else {
+        if ((%s $= "next")) {
+            %item = geTGF.getNextItem(geTGF.currentItem.listName, geTGF.currentItem.type);
+        }
     }
     if (isObject(%item)) {
         geTGF.DoDetails(geTGF_tabs.getCurrentTab().name, %item);
@@ -809,8 +851,9 @@ function geTGF::findItem(%this, %listName, %type, %id) {
     if ((%indx < 0.0)) {
         error(getScopeName() @ " " @ "- item not found:" @ " " @ %type @ " " @ %id @ " " @ getTrace());
         return "";
+    } else {
+        return %list.getValue(%indx);
     }
-    return %list.getValue(%indx);
 };
 function geTGF::dumpItemList(%this, %listName, %type) {
     %itemList = %this.getItemList(%listName, %type);

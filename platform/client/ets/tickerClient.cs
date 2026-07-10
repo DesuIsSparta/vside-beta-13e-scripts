@@ -46,19 +46,22 @@ function ticker_tick() {
     if (geTicker_TextContainer.isVisible()) {
         ticker_doScroll();
         $gTicker_TimerID = schedule($gTicker_TimerPeriodMS, 0, "ticker_tick");
+    } else {
+        ticker_newMessage();
     }
-    ticker_newMessage();
 };
 function ticker_doScroll() {
     ticker_createUI();
     if (geTicker_TextContainer.cursorInControl()) {
         $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
         return;
+    } else {
+        if (!isForegroundWindow()) {
+            $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
+        } else {
+            $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
+        }
     }
-    if (!isForegroundWindow()) {
-        $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
-    }
-    $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
     %curX = getWord(geTicker_Text.getPosition(), 0);
     %curY = getWord(geTicker_Text.getPosition(), 1);
     %pixelsToScroll = (($gTicker_TimerPixelsPerSecond * $gTicker_TimerPeriodMS) / 1000.0);
@@ -66,9 +69,10 @@ function ticker_doScroll() {
     %newY = %curY;
     if (((%newX + getWord(geTicker_Text.getExtent(), 0)) < 0.0)) {
         geTicker_TextContainer.setVisible(0);
+    } else {
+        geTicker_Text.reposition(%newX, %newY);
+        %curX = getWord(geTicker_Text.getPosition(), 0);
     }
-    geTicker_Text.reposition(%newX, %newY);
-    %curX = getWord(geTicker_Text.getPosition(), 0);
 };
 function ticker_newMessage() {
     %msg = "";
@@ -100,8 +104,9 @@ function ticker_newMessage() {
         geTicker_Text.resize((getStrWidth(%unmarkedText) + 26.0), 14);
         geTicker_Text.setTextWithStyle(%markedText);
         ticker_tick();
+    } else {
+        geTicker.delete();
     }
-    geTicker.delete();
 };
 function ticker_createUI() {
     if (!isObject(ButtonBar)) {

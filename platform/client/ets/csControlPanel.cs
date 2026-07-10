@@ -16,9 +16,10 @@ function CSControlPanelTabs::setup(%this) {
 function CSControlPanelTabs::tabSelected(%this, %tab) {
     if ((%tab.name $= "MODEL_APT")) {
         %this.fillModelAptTab(%tab);
-    }
-    if ((%tab.name $= "SKIP_TUTORIAL")) {
-        %this.fillSkipTutorialTab(%tab);
+    } else {
+        if ((%tab.name $= "SKIP_TUTORIAL")) {
+            %this.fillSkipTutorialTab(%tab);
+        }
     }
 };
 function CSControlPanelTabs::fillModelAptTab(%this, %theTab) {
@@ -69,16 +70,18 @@ function CSControlPanelTabs::updateSkipTutorialTab(%this) {
         CSControlPanel.open();
         CSControlPanelTabs.selectTabWithName("SKIP_TUTORIAL");
         CSSpaceSkipTutorialText.setText("<font:BauhausStd-Demi:18><linkcolor:eeffaa>To skip Gateway, <a:gamelink SKIP_TUTORIAL>Click Here</a>.");
-    }
-    if ((CSControlPanelTabs.getCurrentTab() == CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL"))) {
-        CSControlPanel.close();
+    } else {
+        if ((CSControlPanelTabs.getCurrentTab() == CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL"))) {
+            CSControlPanel.close();
+        }
     }
 };
 function CSSpaceSkipTutorialText::onURL(%this, %url) {
     if ((%url $= "gamelink SKIP_TUTORIAL")) {
         gatewayExitTransition(1, 1);
+    } else {
+        error(getScopeName() @ " " @ "- unknown option" @ " " @ %url);
     }
-    error(getScopeName() @ " " @ "- unknown option" @ " " @ %url);
 };
 function CSControlPanel::open(%this) {
     CSControlPanelTabs.setup();
@@ -97,8 +100,9 @@ function CSControlPanel::close(%this) {
 function CSControlPanel::toggle(%this) {
     if (%this.isVisible()) {
         %this.close();
+    } else {
+        %this.open();
     }
-    %this.open();
 };
 function CSControlPanel::update(%this) {
 };
@@ -122,15 +126,18 @@ function CSSpaceModelAptText::update(%this) {
     if (($CSSpaceInfo == 0.0)) {
         %this.lineSpacing = 0;
         %text = "Waiting for apartment info...";
+    } else {
+        %myLevel = respektScoreToLevel($gMyRespektPoints);
+        if (($CSSpaceInfo.floorplan.minLevel > %myLevel)) {
+            %text = "You must be at least<spush><color:ffbbdd> " @ respektLevelToNameWithIndefiniteArticle($CSSpaceInfo.floorplan.minLevel) @ "<spop> to purchase an apartment like this.";
+        } else {
+            %this.lineSpacing = 4;
+            if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName)) {
+                %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
+            } else {
+                %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
+            }
+        }
     }
-    %myLevel = respektScoreToLevel($gMyRespektPoints);
-    if (($CSSpaceInfo.floorplan.minLevel > %myLevel)) {
-        %text = "You must be at least<spush><color:ffbbdd> " @ respektLevelToNameWithIndefiniteArticle($CSSpaceInfo.floorplan.minLevel) @ "<spop> to purchase an apartment like this.";
-    }
-    %this.lineSpacing = 4;
-    if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName)) {
-        %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
-    }
-    %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
     %this.setText(%text);
 };

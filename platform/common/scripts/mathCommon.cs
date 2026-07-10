@@ -153,11 +153,13 @@ function daysToSeconds(%val) {
 };
 function min(%a, %b) {
     if ((%a < %b)) {
+    } else {
     }
     return %b;
 };
 function max(%a, %b) {
     if ((%a > %b)) {
+    } else {
     }
     return %b;
 };

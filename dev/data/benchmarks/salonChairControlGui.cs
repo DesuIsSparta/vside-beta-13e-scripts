@@ -26,8 +26,9 @@ function salonChairControlGui::tryTarget(%this, %shape) {
     %name = admin::getTargetName(%shape);
     if (isObject(%shape)) {
         %classname = admin::getFormattedClassName(%shape.getClassName());
+    } else {
+        %classname = admin::getFormattedClassName("special");
     }
-    %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
     salonChairControlTargetsPopup.setText(%targetName);
 };
@@ -49,15 +50,18 @@ function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item) {
     %action = detag(%actionTagged);
     if ((%action $= "begin")) {
         $gSalonChairControlTargetsList = "";
-    }
-    if ((%action $= "add")) {
-        if (($gSalonChairControlTargetsList $= "")) {
-            $gSalonChairControlTargetsList = %item;
+    } else {
+        if ((%action $= "add")) {
+            if (($gSalonChairControlTargetsList $= "")) {
+                $gSalonChairControlTargetsList = %item;
+            } else {
+                $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
+            }
+        } else {
+            if ((%action $= "finish")) {
+                salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
+            }
         }
-        $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
-    }
-    if ((%action $= "finish")) {
-        salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
     }
 };
 function salonChairControlGui::onGotTargetsList(%this, %theList) {
@@ -80,6 +84,7 @@ function salonChairControlGui::onGotTargetsList(%this, %theList) {
     salonChairControlTargetsPopup.sort();
     if (!((%n < %num) @ " " @ %this.defaultTarget $= "")) {
         salonChairControlTargetsPopup.setText(%this.defaultTarget);
+    } else {
+        salonChairControlTargetsPopup.setText(%nextItem);
     }
-    salonChairControlTargetsPopup.setText(%nextItem);
 };

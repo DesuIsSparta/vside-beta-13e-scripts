@@ -15,9 +15,10 @@ package dev {
         echo("Binary version: " @ " " @ $dev_check_version);
         if (!($dev_kit_check_Version $= $dev_check_version)) {
             echo("Bad Dev Kit. You need to swap to the Dev Kit for this version.");
+        } else {
+            echo("Dev Kit authorised.");
+            $dev_kit_auth = 1;
         }
-        echo("Dev Kit authorised.");
-        $dev_kit_auth = 1;
         $JournalRecordFile = "";
         $JournalPlayFile = "";
         $JournalPlayAndBreakFile = "";
@@ -82,11 +83,12 @@ package dev {
             if ($dev_kit_auth) {
                 enableWinConsole(1);
             }
-        }
-        if ($Console) {
-        }
-        if ($dev_kit_auth) {
-            enableWinConsole(1);
+        } else {
+            if ($Console) {
+            }
+            if ($dev_kit_auth) {
+                enableWinConsole(1);
+            }
         }
         if ($Game::Compile) {
             $Server::Dedicated = 1;
@@ -99,14 +101,16 @@ package dev {
         if (!($JournalRecordFile $= "")) {
             saveJournal($JournalRecordFile);
             log("initialization", "info", "saving event log to journal: " @ $JournalRecordFile);
-        }
-        if (!($JournalPlayFile $= "")) {
-            playJournal($JournalPlayFile, 0);
-            log("initialization", "info", "playing event log from journal: " @ $JournalPlayFile);
-        }
-        if (!($JournalPlayAndBreakFile $= "")) {
-            playJournal($JournalPlayAndBreakFile, 1);
-            log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
+        } else {
+            if (!($JournalPlayFile $= "")) {
+                playJournal($JournalPlayFile, 0);
+                log("initialization", "info", "playing event log from journal: " @ $JournalPlayFile);
+            } else {
+                if (!($JournalPlayAndBreakFile $= "")) {
+                    playJournal($JournalPlayAndBreakFile, 1);
+                    log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
+                }
+            }
         }
     };
     function onStart() {
@@ -116,23 +120,26 @@ package dev {
             log("initialization", "info", "--------- Initializing MOD: Dev ---------");
             if ($Game::Compile) {
                 compileAndQuit();
+            } else {
+                if ($GenRegistration) {
+                    generateRegistrationStart();
+                    return;
+                } else {
+                    exec("dev/data/devDefaults.cs");
+                    exec("dev/data/devPrefs.cs");
+                    exec("./data/initNonReloadable.cs");
+                    exec("./data/initReloadable.cs");
+                    if (!($EvalString $= "")) {
+                        eval($EvalString);
+                    }
+                    if (!($ExecScript $= "")) {
+                        exec("./data/" @ $ExecScript);
+                    }
+                }
             }
-            if ($GenRegistration) {
-                generateRegistrationStart();
-                return;
-            }
-            exec("dev/data/devDefaults.cs");
-            exec("dev/data/devPrefs.cs");
-            exec("./data/initNonReloadable.cs");
-            exec("./data/initReloadable.cs");
-            if (!($EvalString $= "")) {
-                eval($EvalString);
-            }
-            if (!($ExecScript $= "")) {
-                exec("./data/" @ $ExecScript);
-            }
+        } else {
+            log("initialization", "info", "--------- NOT Initializing MOD: Dev ---------");
         }
-        log("initialization", "info", "--------- NOT Initializing MOD: Dev ---------");
     };
     function onExit() {
         $ETS::devMode = 0;
@@ -150,9 +157,10 @@ package dev {
         if (%success) {
             log("initialization", "info", "all script files compiled successfully");
             quit();
+        } else {
+            log("initialization", "info", "there were compile errors, exiting with non-zero status");
+            exit(1);
         }
-        log("initialization", "info", "there were compile errors, exiting with non-zero status");
-        exit(1);
     };
     function generateRegistrationStart() {
         %request = safeNewScriptObject("ManagerRequest", "", 0);

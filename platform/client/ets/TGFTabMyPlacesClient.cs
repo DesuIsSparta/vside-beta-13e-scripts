@@ -165,10 +165,11 @@ function geTGF_OnCompleted_MyPlace(%tracker) {
         %listName = "myplace";
         %guiTable = geTGF_MyPlaceGuiTable;
         %properOwnerName = $Player::Name;
+    } else {
+        %listName = "otherplaces";
+        %guiTable = geTGF_OtherPlacesGuiTable;
+        %properOwnerName = "The-Manager";
     }
-    %listName = "otherplaces";
-    %guiTable = geTGF_OtherPlacesGuiTable;
-    %properOwnerName = "The-Manager";
     geTGF.clearItemList(%listName, "happening");
     %count = %tracker.getCount();
     %n = 0;
@@ -176,28 +177,30 @@ function geTGF_OnCompleted_MyPlace(%tracker) {
         %itemObj = %tracker.getObject(%n);
         if (!(%itemObj.get("owner") $= %properOwnerName)) {
             error(getScopeName() @ " " @ "- improper owner. should be \"" @ %properOwnerName @ "\" but is \"" @ %itemObj.get("owner") @ "\". skipping." @ " " @ getTrace());
+        } else {
+            if ((%guiTable.getId() == geTGF_OtherPlacesGuiTable.getId())) {
+            }
+            if (!(%itemObj.get("type") $= "MODEL")) {
+                echo(getScopeName() @ " " @ "- skipping space" @ " " @ %itemObj.get("description"));
+            } else {
+                %id = %itemObj.get("description") @ " " @ formatInt("%0.3d", %n);
+                %item = geTGF.createNewItem(%listName, "happening", %id);
+                %item.accessMode = %itemObj.get("access");
+                %item.baseImageURL = %itemObj.get("baseImageURL");
+                %item.eventID = %itemObj.get("eventId");
+                %item.featured = %itemObj.get("featured");
+                %item.occupancy = %itemObj.get("occupancy");
+                %item.friendOccupancy = %itemObj.get("friendOccupancy");
+                %item.goThereVURL = %itemObj.get("URI");
+                %item.headline = %itemObj.get("description");
+                %item.hostUserName = %itemObj.get("owner");
+                %item.location_areaName = %itemObj.get("location.areaName");
+                %item.location_buildingName = %itemObj.get("location.buildingName");
+                %item.location_serverName = %itemObj.get("location.serverName");
+                %item.moreInfoURL = %itemObj.get("moreInfoURL");
+                %item.subType = (%item.eventID $= "") ? "apt" : "aptEvent";
+            }
         }
-        if ((%guiTable.getId() == geTGF_OtherPlacesGuiTable.getId())) {
-        }
-        if (!(%itemObj.get("type") $= "MODEL")) {
-            echo(getScopeName() @ " " @ "- skipping space" @ " " @ %itemObj.get("description"));
-        }
-        %id = %itemObj.get("description") @ " " @ formatInt("%0.3d", %n);
-        %item = geTGF.createNewItem(%listName, "happening", %id);
-        %item.accessMode = %itemObj.get("access");
-        %item.baseImageURL = %itemObj.get("baseImageURL");
-        %item.eventID = %itemObj.get("eventId");
-        %item.featured = %itemObj.get("featured");
-        %item.occupancy = %itemObj.get("occupancy");
-        %item.friendOccupancy = %itemObj.get("friendOccupancy");
-        %item.goThereVURL = %itemObj.get("URI");
-        %item.headline = %itemObj.get("description");
-        %item.hostUserName = %itemObj.get("owner");
-        %item.location_areaName = %itemObj.get("location.areaName");
-        %item.location_buildingName = %itemObj.get("location.buildingName");
-        %item.location_serverName = %itemObj.get("location.serverName");
-        %item.moreInfoURL = %itemObj.get("moreInfoURL");
-        %item.subType = (%item.eventID $= "") ? "apt" : "aptEvent";
         %n = (%n + 1.0);
     }
     if (geTGF.testItemList("myplace", "happening")) {
@@ -233,6 +236,7 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
     while ((%n < %count)) {
         %item = %itemList.getValue(%n);
         if ((%item.baseImageURL $= "")) {
+        } else {
         }
         %imageURL = %item.baseImageURL @ "?size=S";
         "";
@@ -242,29 +246,35 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType) {
         if ((%item.eventID $= "")) {
             %eventValue = "notAnEvent";
             %eventFmt = "<modulationColor:ffffff60>";
+        } else {
+            if ((%item.subType $= "publicLocationEvent")) {
+                error(getScopeName() @ " " @ "- public location. odd.");
+                %eventValue = "publicEvent";
+                %eventFmt = "";
+            } else {
+                if (%item.featured) {
+                    %eventValue = "featuredEvent";
+                    %eventFmt = "";
+                } else {
+                    %eventValue = "regularEvent";
+                    %eventFmt = "";
+                }
+            }
         }
-        if ((%item.subType $= "publicLocationEvent")) {
-            error(getScopeName() @ " " @ "- public location. odd.");
-            %eventValue = "publicEvent";
-            %eventFmt = "";
-        }
-        if (%item.featured) {
-            %eventValue = "featuredEvent";
-            %eventFmt = "";
-        }
-        %eventValue = "regularEvent";
-        %eventFmt = "";
         %occupancyText = geTGF.formatOccupancy(%item.occupancy, "<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         %friendOccupancyText = geTGF.formatOccupancy(%item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         if ((%item.occupancy >= 0.0)) {
+        } else {
         }
         %occupancySortVal = 99999;
         %item.occupancy;
         if ((%item.friendOccupancy >= 0.0)) {
+        } else {
         }
         %friendOccupancySortVal = 99999;
         %item.friendOccupancy;
         if ((%item.hostUserName $= $Player::Name)) {
+        } else {
         }
         %hostUserName = %item.hostUserName;
         "you!";
@@ -323,17 +333,21 @@ function geTGF_MyPlaceEitherGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %
     %showDeets = 0;
     if ((%mouseClickCount == -(1.0))) {
         %showDeets = 0;
+    } else {
+        if ((%mouseClickCount == 0.0)) {
+            %showDeets = 1;
+        } else {
+            if ((%mouseClickCount == 1.0)) {
+                %showDeets = 1;
+            } else {
+                if ((%mouseClickCount == 2.0)) {
+                    %showDeets = 1;
+                } else {
+                    %showDeets = 0;
+                }
+            }
+        }
     }
-    if ((%mouseClickCount == 0.0)) {
-        %showDeets = 1;
-    }
-    if ((%mouseClickCount == 1.0)) {
-        %showDeets = 1;
-    }
-    if ((%mouseClickCount == 2.0)) {
-        %showDeets = 1;
-    }
-    %showDeets = 0;
     if (%showDeets) {
         %item = geTGF.findItem(%listName, "happening", %itemID);
         geTGF.DoDetails("myplace", %item);
@@ -343,10 +357,11 @@ function geTGF_MyPlaceGuiTable::onKeyDown(%this, %modifier, %keyCode) {
     %modifierStr = %this.getStringFromModifier(%modifier);
     %keyCodeStr = %this.getStringFromKeyCode(%keyCode);
     if ((%modifierStr @ %keyCodeStr $= "\t")) {
-    }
-    if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
-        geTGF_FriendsFilterBox.makeFirstResponder(1);
-        return 1;
+    } else {
+        if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
+            geTGF_FriendsFilterBox.makeFirstResponder(1);
+            return 1;
+        }
     }
     return 0;
 };

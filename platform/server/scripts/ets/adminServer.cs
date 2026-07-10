@@ -19,15 +19,18 @@ function serverCmdAdminAction(%senderConnection, %action, %target, %message) {
     warn("AdminAction:" @ " " @ %adminName @ " " @ %action @ " " @ "object" @ " " @ %target @ " " @ %targetName);
     if ((%action $= "Boot")) {
         admin::doBoot(%target, %message, %senderConnection.Player);
-    }
-    if ((%action $= "Ban")) {
-        admin::doBan(%target, %message, %senderConnection.Player);
-    }
-    if ((%action $= "Message")) {
-        admin::doMessage(%target, %message, %senderConnection.Player);
-    }
-    if ((%action $= "Throw Voice")) {
-        admin::doThrowVoice(%target, %message, %senderConnection.Player);
+    } else {
+        if ((%action $= "Ban")) {
+            admin::doBan(%target, %message, %senderConnection.Player);
+        } else {
+            if ((%action $= "Message")) {
+                admin::doMessage(%target, %message, %senderConnection.Player);
+            } else {
+                if ((%action $= "Throw Voice")) {
+                    admin::doThrowVoice(%target, %message, %senderConnection.Player);
+                }
+            }
+        }
     }
     return;
 };
@@ -71,13 +74,14 @@ function admin::doMessage(%target, %message, %adminPlayer) {
     %msg = admin::composeSystemMessage(%target, %message, %adminPlayer);
     if ((%target == 0.0)) {
         messageAll('MsgSystemMessage', %msg);
+    } else {
+        %targetClient = %target.getControllingClient();
+        if (!isObject(%targetClient)) {
+            error("Attempting to message clientless target:" @ " " @ %target @ " " @ %targetName);
+            return;
+        }
+        messageClient(%targetClient, 'MsgSystemMessage', %msg);
     }
-    %targetClient = %target.getControllingClient();
-    if (!isObject(%targetClient)) {
-        error("Attempting to message clientless target:" @ " " @ %target @ " " @ %targetName);
-        return;
-    }
-    messageClient(%targetClient, 'MsgSystemMessage', %msg);
     return;
 };
 function admin::doThrowVoice(%target, %message, %adminPlayer) {
@@ -86,8 +90,9 @@ function admin::doThrowVoice(%target, %message, %adminPlayer) {
     %msg = %message;
     if ((%target == 0.0)) {
         NPCManager.doThrowVoice(%message, %adminPlayer);
+    } else {
+        ServersideChatMessage(%target, 0, %msg);
     }
-    ServersideChatMessage(%target, 0, %msg);
     return;
 };
 function NPCManager::doThrowVoice(%this, %msg, %adminPlayer) {

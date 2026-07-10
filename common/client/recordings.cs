@@ -26,10 +26,11 @@ function StartSelectedDemo() {
         Canvas.setContent(PlayGui);
         Canvas.popDialog(recordingsDlg);
         ServerConnection.prepDemoPlayback();
-    }
-    MessageBoxOK("Playback Failed", "Demo playback failed for file '" @ %file @ "'.", "");
-    if (isObject(ServerConnection)) {
-        ServerConnection.delete();
+    } else {
+        MessageBoxOK("Playback Failed", "Demo playback failed for file '" @ %file @ "'.", "");
+        if (isObject(ServerConnection)) {
+            ServerConnection.delete();
+        }
     }
 };
 function startDemoRecord() {
@@ -38,7 +39,7 @@ function startDemoRecord() {
         return;
     }
     %i = 0;
-    while ((%i < 1000.0)) {
+    if ((%i < 1000.0)) {
         %num = %i;
         if ((%num < 10.0)) {
             %num = 0 @ %num;
@@ -48,8 +49,9 @@ function startDemoRecord() {
         }
         %file = $currentMod @ "/recordings/demo" @ %num @ ".rec";
         if (!isFile(%file)) {
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     if ((%i == 1000.0)) {
         return (%i < 1000.0);

@@ -119,16 +119,18 @@ function GameList::refreshInspectTab(%this) {
     if ((%game.gamestatus == $gameMgr::GameStatus::STARTED)) {
         if (!gameMgrClient.areWePlaying(%game)) {
             %upperText = %upperText @ "You're not in this game. <a:game join " @ %game.serversideID @ ">Join it!</a><br>";
+        } else {
+            if (!(%ourRecord.status $= "")) {
+                %upperText = %upperText @ "<spush><b>our status:<spop> " @ %statusStr @ "<br>";
+            }
+            %upperText = %upperText @ "<spush><b>our score:<spop> " @ %ourRecord.score @ "<br>";
         }
-        if (!(%ourRecord.status $= "")) {
-            %upperText = %upperText @ "<spush><b>our status:<spop> " @ %statusStr @ "<br>";
-        }
-        %upperText = %upperText @ "<spush><b>our score:<spop> " @ %ourRecord.score @ "<br>";
         %upperText = %upperText @ "Top " @ $gameMgr::InspectTab::MAX_PLAYERS @ " Players:";
-    }
-    %upperText = %upperText @ "Waiting players (" @ %game.readyCount @ " ready):";
-    if ((%game.playercount > $gameMgr::InspectTab::MAX_PLAYERS)) {
-        %upperText = %upperText @ "<br>(only showing " @ $gameMgr::InspectTab::MAX_PLAYERS @ ")";
+    } else {
+        %upperText = %upperText @ "Waiting players (" @ %game.readyCount @ " ready):";
+        if ((%game.playercount > $gameMgr::InspectTab::MAX_PLAYERS)) {
+            %upperText = %upperText @ "<br>(only showing " @ $gameMgr::InspectTab::MAX_PLAYERS @ ")";
+        }
     }
     %this.UpperContent.setText(%upperText);
     %this.PlayerList.clear();
@@ -138,12 +140,14 @@ function GameList::refreshInspectTab(%this) {
         %record = %game.PlayerRecords.getObject(%n);
         if ((%game.gamestatus == $gameMgr::GameStatus::STARTED)) {
             %this.PlayerList.addRow(%n, "#" @ (%n + 1.0) @ "- " @ %record.name @ "\t" @ %record.status @ "\t" @ %record.score, %n);
+        } else {
+            if (%record.ready) {
+                %ready = "ready";
+            } else {
+                %ready = "not ready";
+            }
+            %this.PlayerList.addRow(%n, %record.name @ "\t" @ %ready @ "\t" @ "", %n);
         }
-        if (%record.ready) {
-            %ready = "ready";
-        }
-        %ready = "not ready";
-        %this.PlayerList.addRow(%n, %record.name @ "\t" @ %ready @ "\t" @ "", %n);
         %n = (%n + 1.0);
     }
     %lowerText = "";
@@ -151,28 +155,31 @@ function GameList::refreshInspectTab(%this) {
     %lowerText = %lowerText @ "Game status: ";
     if ((%game.gamestatus == $gameMgr::GameStatus::CANT_START)) {
         %lowerText = %lowerText @ "Can't start.";
-    }
-    if ((%game.gamestatus == $gameMgr::GameStatus::WAITING)) {
-        %lowerText = %lowerText @ "Waiting on players.";
-    }
-    if ((%game.gamestatus == $gameMgr::GameStatus::STARTED)) {
-        %lowerText = %lowerText @ "Game started!";
+    } else {
+        if ((%game.gamestatus == $gameMgr::GameStatus::WAITING)) {
+            %lowerText = %lowerText @ "Waiting on players.";
+        } else {
+            if ((%game.gamestatus == $gameMgr::GameStatus::STARTED)) {
+                %lowerText = %lowerText @ "Game started!";
+            }
+        }
     }
     %lowerText = %lowerText @ "<br>";
     %lowerText = %lowerText @ "<spush><b>Actions:<spop><br>";
     if (!gameMgrClient.areWePlaying(%game)) {
         %lowerText = %lowerText @ "Not playing yet...<a:game join " @ %game.serversideID @ ">[Join game]</a><br>";
-    }
-    if ((%game.gamestatus != $gameMgr::GameStatus::STARTED)) {
-    }
-    if (!%this.postgameView) {
-        %readyText = !%game.ourRecord.ready ? "[I'm ready]" : "[I'm not ready]";
-        %lowerText = %lowerText @ "Change readiness:<a:game changeReady " @ %game.serversideID @ " " @ !%game.ourRecord.ready @ ">" @ %readyText @ "</a><br>";
-        if ((%game.host $= $player.getShapeName())) {
-            %lowerText = %lowerText @ "You're the host. <a:game startGame " @ %game.serversideID @ ">" @ "[start game]" @ "</a><br>";
+    } else {
+        if ((%game.gamestatus != $gameMgr::GameStatus::STARTED)) {
         }
+        if (!%this.postgameView) {
+            %readyText = !%game.ourRecord.ready ? "[I'm ready]" : "[I'm not ready]";
+            %lowerText = %lowerText @ "Change readiness:<a:game changeReady " @ %game.serversideID @ " " @ !%game.ourRecord.ready @ ">" @ %readyText @ "</a><br>";
+            if ((%game.host $= $player.getShapeName())) {
+                %lowerText = %lowerText @ "You're the host. <a:game startGame " @ %game.serversideID @ ">" @ "[start game]" @ "</a><br>";
+            }
+        }
+        %lowerText = %lowerText @ "<a:game quit " @ %game.serversideID @ ">[Quit game]</a><br>";
     }
-    %lowerText = %lowerText @ "<a:game quit " @ %game.serversideID @ ">[Quit game]</a><br>";
     %lowerText = %lowerText @ "<br><br>" @ "<a:game stopInspecting>[stop inspecting]</a>";
     %lowerText = %lowerText @ "<br>Want more people to play in this game? When it's inspected like this, right-click people or their name-links and choose \"Invite to game.\"";
     %this.LowerContent.setText(%lowerText);
@@ -188,29 +195,35 @@ function GameMgrMLText::onURL(%this, %url) {
     %firstWord = getWord(%url, 0);
     if ((%firstWord $= "gamelink")) {
         onLeftClickPlayerName(getWords(%url, 2), "");
-    }
-    if (!(%firstWord $= "game")) {
-        warn("GameMgrMLText received an unrecognized link URL=" @ %url @ ". Returning!<-" @ getScopeName());
-        return;
+    } else {
+        if (!(%firstWord $= "game")) {
+            warn("GameMgrMLText received an unrecognized link URL=" @ %url @ ". Returning!<-" @ getScopeName());
+            return;
+        }
     }
     %command = getWord(%url, 1);
     %arguments = getWords(%url, 2);
     if ((%command $= "join")) {
         gameMgrClient.playerJoinGame(%arguments);
+    } else {
+        if ((%command $= "quit")) {
+            gameMgrClient.playerQuitGame(%arguments);
+        } else {
+            if ((%command $= "changeReady")) {
+                gameMgrClient.playerChangeReadyStatus(getWord(%arguments, 0), getWord(%arguments, 1));
+            } else {
+                if ((%command $= "startGame")) {
+                    gameMgrClient.playerRequestStartGame(%arguments);
+                } else {
+                    if ((%command $= "stopInspecting")) {
+                        gameMgrClient.inspectNothing();
+                    } else {
+                        error("GameMgr action link with unrecognized action=" @ %command @ ". <- " @ getScopeName());
+                    }
+                }
+            }
+        }
     }
-    if ((%command $= "quit")) {
-        gameMgrClient.playerQuitGame(%arguments);
-    }
-    if ((%command $= "changeReady")) {
-        gameMgrClient.playerChangeReadyStatus(getWord(%arguments, 0), getWord(%arguments, 1));
-    }
-    if ((%command $= "startGame")) {
-        gameMgrClient.playerRequestStartGame(%arguments);
-    }
-    if ((%command $= "stopInspecting")) {
-        gameMgrClient.inspectNothing();
-    }
-    error("GameMgr action link with unrecognized action=" @ %command @ ". <- " @ getScopeName());
 };
 function GameMgrHudTabs::tabSelected(%this, %tab) {
     if ((%tab.name $= "INSPECT")) {
@@ -446,8 +459,9 @@ function GameList::CreateTabResetDefaults(%this) {
 function GameList::GetDefaultGameName(%this) {
     if (isObject($player)) {
         return $player.getShapeName() @ "'s Game";
+    } else {
+        return "A Fun Game";
     }
-    return "A Fun Game";
 };
 function GameList::CreateTabCreateGame(%this) {
     %this = GameMgrHudTabs.CreateTab;
@@ -460,11 +474,12 @@ function GameList::CreateTabCreateGame(%this) {
     GameList.CreateTabResetDefaults();
     %gameType = %this.gameTypesDropdown.getText();
     %n = 0;
-    while ((%n < $gameMgr::GAME_TYPES_COUNT)) {
+    if ((%n < $gameMgr::GAME_TYPES_COUNT)) {
         if ((%n[$gameMgr::GAME_TYPES @ %n].INST_TITLE $= %gameType)) {
             %gameType = %n;
+        } else {
+            %n = (%n + 1.0);
         }
-        %n = (%n + 1.0);
     }
     if (((%n < $gameMgr::GAME_TYPES_COUNT) @ " " @ %gameType $= %this.gameTypesDropdown.getText())) {
         handleSystemMessage("msgInfoMessage", %errorMsgPrepend @ " " @ "we're having a problem with that game type.");
@@ -510,12 +525,13 @@ function GameList::onURL(%this, %url) {
     if ((getWord(%url, 1) $= "game")) {
         %SID = getWord(%url, 2);
         onLeftClickGameName(%SID);
-    }
-    if ((getWord(%url, 1) $= "list")) {
-        %listName = getWords(%url, 2);
-        echo("handling a list \"" @ %listName @ "\" <-" @ getScopeName());
-        %listName.collapsed = !%listName.collapsed;
-        GameList.refresh();
+    } else {
+        if ((getWord(%url, 1) $= "list")) {
+            %listName = getWords(%url, 2);
+            echo("handling a list \"" @ %listName @ "\" <-" @ getScopeName());
+            %listName.collapsed = !%listName.collapsed;
+            GameList.refresh();
+        }
     }
 };
 function GameList::onRightURL(%this, %url) {
@@ -539,8 +555,9 @@ function onLeftClickGameName(%SID) {
             cancel($gLeftClickTimer);
             $gLeftClickTimer = 0;
         }
+    } else {
+        $gLeftClickTimer = schedule(450, 0, "onSingleClickGameName", %SID);
     }
-    $gLeftClickTimer = schedule(450, 0, "onSingleClickGameName", %SID);
     $gLastNameClickTime = %curTime;
     $gLastNameClickName = %SID;
 };
@@ -575,32 +592,38 @@ function GameList::refresh(%this) {
         %outString = %outString @ "<spush><linkcolor:" @ $gameMgr::ListColors::LIST_HEADER @ ">";
         if ((%aList.collapsed == 0.0)) {
             %listPrefix = "-";
+        } else {
+            %listPrefix = "+";
         }
-        %listPrefix = "+";
         %outString = %outString @ "<a:gamelink list " @ %aList @ " >" @ %listPrefix @ " " @ %aList[$gameMgr::GAME_TYPES @ %aList.gametype].title @ " " @ "(" @ %aList.getCount() @ " games)</a><spop><br>";
         if ((%aList.collapsed == 1.0)) {
             echo("the list is collapsed <-" @ getScopeName());
-        }
-        %i = (%aList.getCount() - 1.0);
-        while ((%i >= 0.0)) {
-            echo("printing #" @ %i @ " game in the current list.<-" @ getScopeName());
-            %aGame = %aList.getObject(%i);
-            if ((%aGame.gamestatus == $gameMgr::GameStatus::CANT_START)) {
-                %color = $gameMgr::ListColors::CANT_START;
+        } else {
+            %i = (%aList.getCount() - 1.0);
+            while ((%i >= 0.0)) {
+                echo("printing #" @ %i @ " game in the current list.<-" @ getScopeName());
+                %aGame = %aList.getObject(%i);
+                if ((%aGame.gamestatus == $gameMgr::GameStatus::CANT_START)) {
+                    %color = $gameMgr::ListColors::CANT_START;
+                } else {
+                    if ((%aGame.gamestatus == $gameMgr::GameStatus::WAITING)) {
+                        %color = $gameMgr::ListColors::WAITING;
+                    } else {
+                        if ((%aGame.gamestatus == $gameMgr::GameStatus::STARTED)) {
+                            %color = $gameMgr::ListColors::STARTED;
+                        } else {
+                            %color = $gameMgr::ListColors::ELSE;
+                        }
+                    }
+                }
+                if (%aGame.deepUpdated) {
+                    %changed = "<spush><color:FF0000>*<spop>";
+                } else {
+                    %changed = "";
+                }
+                %outString = %outString @ %indent @ "<spush><linkcolor:" @ %color @ "><a:gamelink game " @ %aGame.serversideID @ " >" @ %aGame.gname @ " " @ "(" @ %aGame.playercount @ " players)</a><spop>" @ %changed @ "<br>";
+                %i = (%i - 1.0);
             }
-            if ((%aGame.gamestatus == $gameMgr::GameStatus::WAITING)) {
-                %color = $gameMgr::ListColors::WAITING;
-            }
-            if ((%aGame.gamestatus == $gameMgr::GameStatus::STARTED)) {
-                %color = $gameMgr::ListColors::STARTED;
-            }
-            %color = $gameMgr::ListColors::ELSE;
-            if (%aGame.deepUpdated) {
-                %changed = "<spush><color:FF0000>*<spop>";
-            }
-            %changed = "";
-            %outString = %outString @ %indent @ "<spush><linkcolor:" @ %color @ "><a:gamelink game " @ %aGame.serversideID @ " >" @ %aGame.gname @ " " @ "(" @ %aGame.playercount @ " players)</a><spop>" @ %changed @ "<br>";
-            %i = (%i - 1.0);
         }
         %n = (%n - 1.0);
         (%i >= 0.0);

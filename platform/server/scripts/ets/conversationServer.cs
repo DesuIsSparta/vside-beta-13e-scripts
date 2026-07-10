@@ -18,8 +18,9 @@ function leaveListening(%senderPlayer, %conversation) {
     if (isObject(%conversation)) {
         %conversation.removeListener(%senderPlayer);
         %senderPlayer.setConversation(0);
+    } else {
+        echo("..oops - NULL conversation");
     }
-    echo("..oops - NULL conversation");
     return;
 };
 function leaveConversation(%senderPlayer) {
@@ -42,9 +43,10 @@ function findConversation(%senderPlayer, %targetPlayer) {
     if (!%conv.hasParticipant(%targetPlayer)) {
         if (isObject(%senderPlayer.getConversation())) {
             %conv = %senderPlayer.getConversation();
+        } else {
+            %conv = newConversation(%senderPlayer, %targetPlayer);
+            CONVBUB_DEBUG("new conversation: " @ getDebugString(%conv));
         }
-        %conv = newConversation(%senderPlayer, %targetPlayer);
-        CONVBUB_DEBUG("new conversation: " @ getDebugString(%conv));
     }
     return %conv;
 };
@@ -149,11 +151,13 @@ function Player::joinConversation(%this, %conv, %asParticipant) {
     if (isObject(%oldConv)) {
         if (%oldConv.hasListener(%this)) {
             %oldConv.removeListener(%this);
+        } else {
+            if (%oldConv.hasParticipant(%this)) {
+                %oldConv.removeParticipant(%this);
+            } else {
+                error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
+            }
         }
-        if (%oldConv.hasParticipant(%this)) {
-            %oldConv.removeParticipant(%this);
-        }
-        error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
     }
     if (!isObject(%conv)) {
         return;
@@ -161,9 +165,10 @@ function Player::joinConversation(%this, %conv, %asParticipant) {
     if (%asParticipant) {
         %conv.addParticipant(%this);
         %tmp = "participant";
+    } else {
+        %conv.addListener(%this);
+        %tmp = "listener";
     }
-    %conv.addListener(%this);
-    %tmp = "listener";
     CONVBUB_DEBUG(getDebugString(%this) @ " " @ "joined" @ " " @ getDebugString(%conv) @ " " @ "as a" @ " " @ %tmp);
     %this.setConversation(%conv);
     return;

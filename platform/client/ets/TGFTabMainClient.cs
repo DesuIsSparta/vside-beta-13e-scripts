@@ -623,14 +623,16 @@ function onDoneOrErrorCallback_GetMainVenues(%request) {
 function geTGF::main_onGotDataOfType(%this, %type) {
     if ((%type $= "happening")) {
         %control = geTGF_main_happenings;
+    } else {
+        if ((%type $= "person")) {
+            %control = geTGF_main_people;
+            %control.onGotData();
+            return;
+        } else {
+            error("unknown type:" @ " " @ %type @ " " @ getTrace());
+            return;
+        }
     }
-    if ((%type $= "person")) {
-        %control = geTGF_main_people;
-        %control.onGotData();
-        return;
-    }
-    error("unknown type:" @ " " @ %type @ " " @ getTrace());
-    return;
     %list = %this.getItemList("main", %type);
     %num = %list.count();
     %control.setNumChildren(%num);
@@ -648,8 +650,9 @@ function geTGF::main_onGotDataOfType(%this, %type) {
     (%n < %num);
     if ((%num <= 0.0)) {
         %text = %statusTextCtrl.textNothing;
+    } else {
+        %text = "";
     }
-    %text = "";
     %statusTextCtrl.setText(%text);
 };
 function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
@@ -714,11 +717,13 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     %cont.add(%ctrl);
     if ((%item.occupancy == -(1.0))) {
         %occupancyText = "";
+    } else {
+        if ((%item.occupancy == 0.0)) {
+            %occupancyText = "(empty) ";
+        } else {
+            %occupancyText = "<b>" @ %item.occupancy @ " P ";
+        }
     }
-    if ((%item.occupancy == 0.0)) {
-        %occupancyText = "(empty) ";
-    }
-    %occupancyText = "<b>" @ %item.occupancy @ " P ";
     %ctrl = new GuiMLTextCtrl("") {
         profile = "ETSNonModalProfile";
         position = 0 @ " " @ (getWord(%cont.getExtent(), 1) - 38.0);
@@ -746,6 +751,7 @@ function geTGF_main_people::onGotData(%this) {
     %num = %list.size();
     %statusTextCtrl = %this.child("emptyText");
     if ((%num <= 0.0)) {
+    } else {
     }
     %text = "";
     %statusTextCtrl.textNothing;
@@ -776,13 +782,15 @@ function geTGF_main_people::tryUpdateWorldmapSummaries(%this) {
         %areaName = getWord(%areaNames, %n);
         if (!(%areaName $= "pvt")) {
             %userCount = WorldAreaSummaries.get(%areaName).occupancy;
+        } else {
+            %userCount = WorldAreaSummaries.totalOccupancy[%areaName];
         }
-        %userCount = WorldAreaSummaries.totalOccupancy[%areaName];
         %link = "TGF_GOTO" @ " " @ %areaName;
         if ((%areaName $= "pvt")) {
             %areaName = "Personal Spaces";
+        } else {
+            %areaName = DestinationList::GetAreaNameUserFacingName(DestinationList::GetAreaNameCity(%areaName));
         }
-        %areaName = DestinationList::GetAreaNameUserFacingName(DestinationList::GetAreaNameCity(%areaName));
         %text = %text @ %delim @ "<spush><just:left><a:gamelink:" @ %link @ ">" @ %areaName @ "" @ "\t" @ "<just:right>" @ commaify(%userCount) @ "</a><spop>";
         %total = (%total + %userCount);
         %delim = "<br>";
@@ -803,20 +811,24 @@ function geTGF_main_people_locationsText::onURL(%this, %url) {
     %areaName = restWords(%url);
     if ((%areaName $= "pvt")) {
         geTGF.openToTabName("HOTSPOTS");
+    } else {
+        if ((%areaName $= "lga")) {
+            geTGF.openToTabName("MAP");
+            WorldMap.getCityButton(%areaName, 1, 0).performClick();
+        } else {
+            if ((%areaName $= "nv")) {
+                geTGF.openToTabName("MAP");
+                WorldMap.getCityButton(%areaName, 1, 0).performClick();
+            } else {
+                if ((%areaName $= "rj")) {
+                    geTGF.openToTabName("MAP");
+                    WorldMap.getCityButton(%areaName, 1, 0).performClick();
+                } else {
+                    error(getScopeName() @ " " @ "- unknown areaname" @ " " @ %areaName @ " " @ getTrace());
+                }
+            }
+        }
     }
-    if ((%areaName $= "lga")) {
-        geTGF.openToTabName("MAP");
-        WorldMap.getCityButton(%areaName, 1, 0).performClick();
-    }
-    if ((%areaName $= "nv")) {
-        geTGF.openToTabName("MAP");
-        WorldMap.getCityButton(%areaName, 1, 0).performClick();
-    }
-    if ((%areaName $= "rj")) {
-        geTGF.openToTabName("MAP");
-        WorldMap.getCityButton(%areaName, 1, 0).performClick();
-    }
-    error(getScopeName() @ " " @ "- unknown areaname" @ " " @ %areaName @ " " @ getTrace());
 };
 function encodeMOTDString(%text) {
     %text = strreplace(%text, "\n", "<br>");
@@ -847,14 +859,16 @@ function MOTDRequest::onDone(%this) {
     if (!(%status $= "success")) {
         geTGF_tabs.onMOTDPostFailed();
         log("communication", "warn", "MOTDRequest::onDone status: " @ %status);
+    } else {
+        %text = %this.getValue("message");
+        if (!(%text $= "")) {
+            %text = decodeMOTDString(%text);
+            MOTDText.setText(%text);
+            MOTDText.qotdID = "";
+        } else {
+            geTGF_tabs.onMOTDPostFailed();
+        }
     }
-    %text = %this.getValue("message");
-    if (!(%text $= "")) {
-        %text = decodeMOTDString(%text);
-        MOTDText.setText(%text);
-        MOTDText.qotdID = "";
-    }
-    geTGF_tabs.onMOTDPostFailed();
 };
 function geTGF_tabs::refreshQOTD(%this) {
     if (isObject(QOTDRequest)) {
@@ -889,8 +903,9 @@ function QOTDRequest::onDone(%this) {
     if (!(%text $= "")) {
         MOTDText.setText(%text);
         MOTDText.qotdID = %qID;
+    } else {
+        geTGF_tabs.refreshMOTD();
     }
-    geTGF_tabs.refreshMOTD();
 };
 function MOTDText::onURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
@@ -921,8 +936,9 @@ function geTGF_tabs::onMOTDPostFailed(%this) {
             %text = %text @ %fo.readLine() @ "\n";
         }
         MOTDText.setText(%text);
+    } else {
+        error("unable to find default motd: " @ %fileName);
     }
-    error("unable to find default motd: " @ %fileName);
     %fo.delete();
 };
 function geTGF::onProfile(%this) {

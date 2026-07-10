@@ -30,8 +30,9 @@ function openMonitorSocket() {
     %mon = new TCPObject(Monitor);
     if (($Pref::Server::MonitorPort != 0.0)) {
         %mon.listen($Pref::Server::MonitorPort);
+    } else {
+        %mon.listen(28000);
     }
-    %mon.listen(28000);
 };
 function initDedicated() {
     enableWinConsole(1);
@@ -40,8 +41,9 @@ function initDedicated() {
     if (!($missionArg $= "")) {
         openMonitorSocket();
         createServer("MultiPlayer", $missionArg);
+    } else {
+        echo("No mission specified (use -mission filename)");
     }
-    echo("No mission specified (use -mission filename)");
 };
 function quitApp() {
     echo("Server quitting");
@@ -49,8 +51,9 @@ function quitApp() {
     }
     if ($AmServer) {
         stopServer();
+    } else {
+        doQuit();
     }
-    doQuit();
 };
 function stopServer() {
     %stopRequest = new HTTPObject(StopRequest);

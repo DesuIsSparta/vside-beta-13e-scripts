@@ -73,10 +73,11 @@ function Player::onDelete(%this) {
             %this.forceField.delete();
         }
         giftingCurrency_Server_OnPlayerDeleted(%this);
-    }
-    %this.removeFromPlayerInstanceDict();
-    if (isObject(geMapHud2DTheOrthoMap)) {
-        geMapHud2DTheOrthoMap.playerRemove(%this);
+    } else {
+        %this.removeFromPlayerInstanceDict();
+        if (isObject(geMapHud2DTheOrthoMap)) {
+            geMapHud2DTheOrthoMap.playerRemove(%this);
+        }
     }
     %this.destroyGlobalFields();
     if (isObject(gUserPropMgrServer)) {
@@ -99,15 +100,17 @@ function Player::getOtherGender(%this) {
     %g = %this.getGender();
     if ((%g $= "f")) {
         %g = "m";
-    }
-    if ((%g $= "m")) {
-        %g = "f";
+    } else {
+        if ((%g $= "m")) {
+            %g = "f";
+        }
     }
     return %g;
 };
 function Player::onAnimationDone(%this, %anim) {
     if (%this.isServerObject()) {
         return %this.onAnimationDoneServer(%anim);
+    } else {
+        return %this.onAnimationDoneClient(%anim);
     }
-    return %this.onAnimationDoneClient(%anim);
 };

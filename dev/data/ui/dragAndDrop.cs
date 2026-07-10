@@ -54,10 +54,11 @@ function DragAndDropExampleList::onDragAndDropMove(%this, %dragCtrl, %mousePos) 
     Canvas.getContent().pushToBack(%marker);
     if (isObject(%ctrl)) {
         %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5.0), ((getWord(%ctrl.getScreenPosition(), 1) - %this.spacing) - 1.0));
-    }
-    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) - (getWord(%this.childrenExtent, 1) / 2.0)));
-    if (isObject(%ctrl)) {
-        %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5.0), ((getWord(%ctrl.getScreenPosition(), 1) + getWord(%this.childrenExtent, 1)) - 1.0));
+    } else {
+        %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) - (getWord(%this.childrenExtent, 1) / 2.0)));
+        if (isObject(%ctrl)) {
+            %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5.0), ((getWord(%ctrl.getScreenPosition(), 1) + getWord(%this.childrenExtent, 1)) - 1.0));
+        }
     }
     %marker.setVisible(1);
 };

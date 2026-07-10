@@ -22,8 +22,9 @@ function loadMission(%missionName, %isFirstMission) {
     }
     if (((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer")) {
         loadMissionStage2();
+    } else {
+        schedule($MissionLoadPause, ServerGroup, loadMissionStage2);
     }
-    schedule($MissionLoadPause, ServerGroup, loadMissionStage2);
     return;
 };
 function loadMissionStage2() {

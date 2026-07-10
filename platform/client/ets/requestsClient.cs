@@ -110,8 +110,9 @@ function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandl
     if (isObject(%requestName)) {
         if (%requestName.doAnother) {
             echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
+        } else {
+            echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         }
-        echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         %requestName.doAnother = 1;
         return "";
     }
@@ -137,8 +138,9 @@ function sendRequest_GetOnlineFriends(%maxCount, %sortCriteria, %callbackHandler
     if (isObject(%requestName)) {
         if (%requestName.doAnother) {
             echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
+        } else {
+            echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         }
-        echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         %requestName.doAnother = 1;
         return "";
     }
@@ -166,8 +168,9 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler) {
     if (isObject(%requestName)) {
         if (%requestName.doAnother) {
             echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
+        } else {
+            echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         }
-        echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
         %requestName.doAnother = 1;
         return "";
     }
@@ -187,50 +190,52 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler) {
     }
     if (!$StandAlone) {
         %request.start();
-    }
-    echo(getScopeName() @ " " @ "- using fake data.");
-    %num = 100;
-    %request.putValue("status", "success");
-    %request.putValue("userCount", %num);
-    %n = 0;
-    while ((%n < %num)) {
-        %keyBase = "user" @ %n @ ".";
-        %request.putValue(%keyBase @ "userName", getRandomUserName());
-        %request.putValue(%keyBase @ "relationType", (getRandom(0, 99) < 20.0) ? "friend" : "");
-        if ((getRandom(0, 1) == 0.0)) {
+    } else {
+        echo(getScopeName() @ " " @ "- using fake data.");
+        %num = 100;
+        %request.putValue("status", "success");
+        %request.putValue("userCount", %num);
+        %n = 0;
+        while ((%n < %num)) {
+            %keyBase = "user" @ %n @ ".";
+            %request.putValue(%keyBase @ "userName", getRandomUserName());
+            %request.putValue(%keyBase @ "relationType", (getRandom(0, 99) < 20.0) ? "friend" : "");
+            if ((getRandom(0, 1) == 0.0)) {
+            } else {
+            }
+            %request.putValue(%keyBase @ "age", getRandom(13, 25), "");
+            %request.putValue(%keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
+            %request.putValue(%keyBase @ "currentLocation.areaName", "lga_yachts");
+            %request.putValue(%keyBase @ "currentLocation.buildingName", "LGAHarbor");
+            %request.putValue(%keyBase @ "currentLocation.serverName", "Yacht_LargeSouth");
+            %request.putValue(%keyBase @ "levelName", "Da Shiznit");
+            %request.putValue(%keyBase @ "gender", getRandomWord("f m"));
+            %request.putValue(%keyBase @ "headline", "4 times the timmy 100% less fat 100% muscle ;)");
+            %request.putValue(%keyBase @ "onlineStatus", "InworldOnEnvserver");
+            %request.putValue(%keyBase @ "score", 694040);
+            %request.putValue(%keyBase @ "homeLocation.buildingName", "LGAHarbor");
+            %n = (%n + 1.0);
         }
-        %request.putValue(%keyBase @ "age", getRandom(13, 25), "");
-        %request.putValue(%keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
-        %request.putValue(%keyBase @ "currentLocation.areaName", "lga_yachts");
-        %request.putValue(%keyBase @ "currentLocation.buildingName", "LGAHarbor");
-        %request.putValue(%keyBase @ "currentLocation.serverName", "Yacht_LargeSouth");
-        %request.putValue(%keyBase @ "levelName", "Da Shiznit");
-        %request.putValue(%keyBase @ "gender", getRandomWord("f m"));
-        %request.putValue(%keyBase @ "headline", "4 times the timmy 100% less fat 100% muscle ;)");
-        %request.putValue(%keyBase @ "onlineStatus", "InworldOnEnvserver");
-        %request.putValue(%keyBase @ "score", 694040);
-        %request.putValue(%keyBase @ "homeLocation.buildingName", "LGAHarbor");
+        %n = 0;
+        (%n < %num);
+        %request.putValue("location" @ %n @ ".areaName", "nv");
+        %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
         %n = (%n + 1.0);
+        %request.putValue("location" @ %n @ ".areaName", "rj");
+        %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
+        %n = (%n + 1.0);
+        %request.putValue("location" @ %n @ ".areaName", "lga");
+        %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
+        %n = (%n + 1.0);
+        %request.putValue("location" @ %n @ ".areaName", "pvt");
+        %request.putValue("location" @ %n @ ".userCount", getRandom(50, 1500));
+        %n = (%n + 1.0);
+        %request.putValue("location" @ %n @ ".areaName", "gw");
+        %request.putValue("location" @ %n @ ".userCount", getRandom(0, 30));
+        %n = (%n + 1.0);
+        %request.putValue("locationCount", %n);
+        %request.schedule(500, "onDoneOrError");
     }
-    %n = 0;
-    (%n < %num);
-    %request.putValue("location" @ %n @ ".areaName", "nv");
-    %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
-    %n = (%n + 1.0);
-    %request.putValue("location" @ %n @ ".areaName", "rj");
-    %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
-    %n = (%n + 1.0);
-    %request.putValue("location" @ %n @ ".areaName", "lga");
-    %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
-    %n = (%n + 1.0);
-    %request.putValue("location" @ %n @ ".areaName", "pvt");
-    %request.putValue("location" @ %n @ ".userCount", getRandom(50, 1500));
-    %n = (%n + 1.0);
-    %request.putValue("location" @ %n @ ".areaName", "gw");
-    %request.putValue("location" @ %n @ ".userCount", getRandom(0, 30));
-    %n = (%n + 1.0);
-    %request.putValue("locationCount", %n);
-    %request.schedule(500, "onDoneOrError");
     return %request;
 };
 function sendRequest_GetHappeningsInProgress(%userName, %callbackHandler) {
@@ -342,8 +347,9 @@ function sendRequest_UpdateUserInventoryCollection(%userName, %collectionName, %
             %request.putValue("status", "success");
             schedule(500, 0, %callbackHandler, %request);
         }
+    } else {
+        %request.start();
     }
-    %request.start();
     return %request;
 };
 function sendRequest_GetHighGameScores(%userName, %gameName, %firstIndex, %maxCount, %callbackHandler) {
@@ -423,14 +429,17 @@ function sendRequest_GetMainVenues(%maxCount, %callbackHandler) {
     while ((%n < %maxCount)) {
         if ((getRandom(0, 2) == 0.0)) {
             %type = "venue";
+        } else {
+            if ((getRandom(0, 2) == 1.0)) {
+                %type = "shop";
+            } else {
+                if ((getRandom(0, 2) == 2.0)) {
+                    %type = "residence";
+                } else {
+                    %type = "venue";
+                }
+            }
         }
-        if ((getRandom(0, 2) == 1.0)) {
-            %type = "shop";
-        }
-        if ((getRandom(0, 2) == 2.0)) {
-            %type = "residence";
-        }
-        %type = "venue";
         %venue = DestinationList::GetRandomDestinationForTGF(%type, %notThese);
         %notThese = %notThese @ " " @ %venue;
         fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
@@ -484,6 +493,7 @@ function sendRequest_Boot(%callbackHandler) {
 };
 function sendRequest_UpdateUserStates(%statesList, %callbackHandler) {
     if (isDefined("%callbackHandler")) {
+    } else {
     }
     %callbackHandler = "";
     %callbackHandler;
@@ -558,8 +568,9 @@ function sendRequest_UploadPhoto(%fileName, %caption, %peopleInViewList, %type, 
     if (!(CustomSpaceClient::GetSpaceImIn() $= "")) {
         %request.setURLParam("apartmentOwner", $CSSpaceInfo.owner);
         %request.setURLParam("vurl", $CSSpaceInfo.vurl);
+    } else {
+        %request.setURLParam("vurl", "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
     }
-    %request.setURLParam("vurl", "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
     %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
@@ -579,9 +590,10 @@ function sendRequest_PublishToTicker(%message, %priority, %callbackHandler) {
     }
     if (!$StandAlone) {
         %request.start();
+    } else {
+        echo(getScopeName() @ " " @ "- using fake data. yep");
+        %request.setResult("status", "success");
+        %request.schedule(500, "onDoneOrError");
     }
-    echo(getScopeName() @ " " @ "- using fake data. yep");
-    %request.setResult("status", "success");
-    %request.schedule(500, "onDoneOrError");
     return %request;
 };

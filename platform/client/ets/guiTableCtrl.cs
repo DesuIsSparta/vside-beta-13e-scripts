@@ -9,25 +9,30 @@ function GuiTableCtrl::Initialize(%this) {
         %scroll = %this.getScrollCtrl();
         %bodyArray = %this.getBodyArrayCtrl();
         if (isObject(%bodyArray)) {
+        } else {
         }
         %bodyArrayContainer = "";
         %this.getBodyArrayCtrl().getParent();
         if (isObject(%headerArray)) {
             %this.doSetupColumnHeaders(%headerArray);
+        } else {
+            warn(getScopeName() @ " " @ "- missing gui table header array -" @ " " @ getTrace());
         }
-        warn(getScopeName() @ " " @ "- missing gui table header array -" @ " " @ getTrace());
         if (isObject(%scroll)) {
             %this.doSetupBodyScroll(%scroll);
+        } else {
+            warn(getScopeName() @ " " @ "- missing gui table body scroll -" @ " " @ getTrace());
         }
-        warn(getScopeName() @ " " @ "- missing gui table body scroll -" @ " " @ getTrace());
         if (isObject(%bodyArrayContainer)) {
             %this.doSetupBodyContainer(%bodyArrayContainer);
+        } else {
+            warn(getScopeName() @ " " @ "- missing gui table body array container -" @ " " @ getTrace());
         }
-        warn(getScopeName() @ " " @ "- missing gui table body array container -" @ " " @ getTrace());
         if (isObject(%bodyArray)) {
             %this.doSetupArrayOfRows(%bodyArray);
+        } else {
+            warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
         }
-        warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
     }
 };
 function GuiTableCtrl::doSetupColumnHeaders(%this, %headerArray) {
@@ -103,6 +108,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseUp(%this) {
     }
     if (%this.pointInControl(%this.globalToLocal(Canvas.getCursorPos()))) {
         %headerCell.setProfile(GuiTableHeaderCell_H_Profile);
+    } else {
+        %headerCell.setProfile(GuiTableHeaderCell_N_Profile);
     }
-    %headerCell.setProfile(GuiTableHeaderCell_N_Profile);
 };

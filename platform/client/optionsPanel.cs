@@ -1653,6 +1653,7 @@ function OptionsPanelTabs::restoreTabsDefaults(%this) {
     $Defaults::UserPref::HudTabs::AutoClose["tutorial"][$UserPref::HudTabs::AutoClose @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoClose["tutorial"];
     %currentTab = HudTabs.getCurrentTab();
     if ((%currentTab $= "")) {
+    } else {
     }
     %tabName = %currentTab.name;
     "";
@@ -1682,9 +1683,10 @@ function OptionsPanelTabs::onChangedHideChat(%this) {
     if ($UserPref::Display::hideChat) {
         ConvBub.close(0);
         SystemMessageDialog.close();
-    }
-    if ((ConvBubVecCtrlMsgVec.getNumLines() > 0.0)) {
-        ConvBub.open();
+    } else {
+        if ((ConvBubVecCtrlMsgVec.getNumLines() > 0.0)) {
+            ConvBub.open();
+        }
     }
     schedulePersist();
 };
@@ -1707,11 +1709,12 @@ function OptionsPanel::open(%this) {
     }
     if ($player.rolesPermissionCheckNoWarn("quietHUD") || $player.rolesPermissionCheckNoWarn("farNameOpacity")) {
         OptionsPanelTabs.showTabWithName("vip");
+    } else {
+        if ((OptionsPanelTabs.getCurrentTab().name $= "vip")) {
+            OptionsPanelTabs.selectTabAtIndex(0);
+        }
+        OptionsPanelTabs.hideTabWithName("vip");
     }
-    if ((OptionsPanelTabs.getCurrentTab().name $= "vip")) {
-        OptionsPanelTabs.selectTabAtIndex(0);
-    }
-    OptionsPanelTabs.hideTabWithName("vip");
     OptionsPanelTabs.selectCurrentTab();
 };
 function OptionsPanel::close(%this) {
@@ -1937,8 +1940,9 @@ function DefaultAwayMsgEdit::applySettings(%this) {
             $UserPref::Player::awayMessage = $Pref::Player::defaultAwayMessage;
         }
         %this.setValue($UserPref::Player::awayMessage);
+    } else {
+        $UserPref::Player::awayMessage = %newAwayMsg;
     }
-    $UserPref::Player::awayMessage = %newAwayMsg;
     if (isIdle()) {
         setIdle(1, $UserPref::Player::awayMessage);
     }
@@ -2030,14 +2034,16 @@ function setShapeNameFontSize(%val) {
     if ((%val == 0.0)) {
         %prof = SmallShapeNameHudProfile;
         %otherProf = BoldSmallShapeNameHudProfile;
-    }
-    if ((%val == 1.0)) {
-        %prof = MediumShapeNameHudProfile;
-        %otherProf = BoldMediumShapeNameHudProfile;
-    }
-    if ((%val == 2.0)) {
-        %prof = LargeShapeNameHudProfile;
-        %otherProf = BoldLargeShapeNameHudProfile;
+    } else {
+        if ((%val == 1.0)) {
+            %prof = MediumShapeNameHudProfile;
+            %otherProf = BoldMediumShapeNameHudProfile;
+        } else {
+            if ((%val == 2.0)) {
+                %prof = LargeShapeNameHudProfile;
+                %otherProf = BoldLargeShapeNameHudProfile;
+            }
+        }
     }
     TheShapeNameHud.setProfile(%prof);
     TheShapeNameHud.otherProfile = %otherProf;
@@ -2067,6 +2073,7 @@ function updateHudTabsHiding() {
     %currentTab = HudTabs.getCurrentTab();
     (%i < HudTabs.numTabs);
     if ((%currentTab $= "")) {
+    } else {
     }
     %tabName = %currentTab.name;
     "";

@@ -12,26 +12,28 @@ function MissionMarkerData::Create(%block) {
             dataBlock = %block;
         };
         return %obj;
-    }
-    if ((%block $= "SpawnSphereMarker")) {
-        %obj = new SpawnSphere("") {
-            dataBlock = %block;
-        };
-        return %obj;
-    }
-    if ((%block $= "SeatMarker")) {
-        %obj = new MissionMarker("") {
-            dataBlock = %block;
-            sitOffset = %block.sitOffset;
-            sitAnim = %block.sitAnim;
-            standAnim = %block.standAnim;
-            sitIdle = %block.sitIdle;
-            idleDelay = %block.idleDelay;
-            listeningStation = %block.listeningStation;
-            sitSound = %block.sitSound;
-            standSound = %block.standSound;
-        };
-        return %obj;
+    } else {
+        if ((%block $= "SpawnSphereMarker")) {
+            %obj = new SpawnSphere("") {
+                dataBlock = %block;
+            };
+            return %obj;
+        } else {
+            if ((%block $= "SeatMarker")) {
+                %obj = new MissionMarker("") {
+                    dataBlock = %block;
+                    sitOffset = %block.sitOffset;
+                    sitAnim = %block.sitAnim;
+                    standAnim = %block.standAnim;
+                    sitIdle = %block.sitIdle;
+                    idleDelay = %block.idleDelay;
+                    listeningStation = %block.listeningStation;
+                    sitSound = %block.sitSound;
+                    standSound = %block.standSound;
+                };
+                return %obj;
+            }
+        }
     }
     return -(1.0);
 };

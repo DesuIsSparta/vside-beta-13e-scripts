@@ -12,10 +12,12 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %isRentabot = rentabot_isRentabotName(%playerName);
     %sameServer = isObject(%playerClicked) || (UserListFriends.get(%playerName).serverName $= $ServerName);
     if (isObject(%playerClicked)) {
+    } else {
     }
     %isRealPlayer = 0;
     !%playerClicked.isClassAIPlayer();
     if (isObject(%playerClicked)) {
+    } else {
     }
     %isIdle = 0;
     %playerClicked.getAFK();
@@ -54,16 +56,19 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             %this.add("View Profile", %n = (%n + 1.0), %schemeProfile);
             if ((%friendStatus $= "friends")) {
                 %this.add("Remove from Friends", %n = (%n + 1.0), %schemeFavorite);
-            }
-            if ((%friendStatus $= "favorite")) {
-                %this.add("Cancel Friend Request", %n = (%n + 1.0), %schemeFavorite);
-            }
-            if ((%friendStatus $= "fan")) {
-                %this.add("Accept Friend Request", %n = (%n + 1.0), %schemeFavorite);
-                %this.add("Decline Friend Request", %n = (%n + 1.0), %schemeFavorite);
-            }
-            if ((%friendStatus $= "none")) {
-                %this.add("Add to Friends", %n = (%n + 1.0), %schemeFavorite);
+            } else {
+                if ((%friendStatus $= "favorite")) {
+                    %this.add("Cancel Friend Request", %n = (%n + 1.0), %schemeFavorite);
+                } else {
+                    if ((%friendStatus $= "fan")) {
+                        %this.add("Accept Friend Request", %n = (%n + 1.0), %schemeFavorite);
+                        %this.add("Decline Friend Request", %n = (%n + 1.0), %schemeFavorite);
+                    } else {
+                        if ((%friendStatus $= "none")) {
+                            %this.add("Add to Friends", %n = (%n + 1.0), %schemeFavorite);
+                        }
+                    }
+                }
             }
             if (%onlineHere) {
                 %this.add("Whisper", %n = (%n + 1.0), %schemePM);
@@ -81,12 +86,14 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!%isIdle) {
                     %this.add("Two-Player Action..", %n = (%n + 1.0), %schemeNormal);
-                }
-                if (!geGiftingPanel.isInRange(%playerClicked)) {
-                    %this.add("Two-Player Action.. - Too Far!", %n = (%n + 1.0), %schemeDisabled);
-                }
-                if (%isIdle) {
-                    %this.add("Two-Player Action.. - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                } else {
+                    if (!geGiftingPanel.isInRange(%playerClicked)) {
+                        %this.add("Two-Player Action.. - Too Far!", %n = (%n + 1.0), %schemeDisabled);
+                    } else {
+                        if (%isIdle) {
+                            %this.add("Two-Player Action.. - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                        }
+                    }
                 }
             }
             if (!rentabot_isRentabotName(%playerName)) {
@@ -100,12 +107,14 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!%isIdle) {
                     %this.add("Give vCurrency", %n = (%n + 1.0), %schemeNormal);
-                }
-                if (!geGiftingPanel.isInRange(%playerClicked)) {
-                    %this.add("Give vCurrency - Too Far!", %n = (%n + 1.0), %schemeDisabled);
-                }
-                if (%isIdle) {
-                    %this.add("Give vCurrency - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                } else {
+                    if (!geGiftingPanel.isInRange(%playerClicked)) {
+                        %this.add("Give vCurrency - Too Far!", %n = (%n + 1.0), %schemeDisabled);
+                    } else {
+                        if (%isIdle) {
+                            %this.add("Give vCurrency - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                        }
+                    }
                 }
             }
             if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drink")) {
@@ -121,12 +130,14 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!%isIdle) {
                     %this.add("Give Drink", %n = (%n + 1.0), %schemeNormal);
-                }
-                if (!geGiftingPanel.isInRange(%playerClicked)) {
-                    %this.add("Give Drink - Too Far!", %n = (%n + 1.0), %schemeDisabled);
-                }
-                if (%isIdle) {
-                    %this.add("Give Drink - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                } else {
+                    if (!geGiftingPanel.isInRange(%playerClicked)) {
+                        %this.add("Give Drink - Too Far!", %n = (%n + 1.0), %schemeDisabled);
+                    } else {
+                        if (%isIdle) {
+                            %this.add("Give Drink - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                        }
+                    }
                 }
             }
             %this.add("Give Gift", %n = (%n + 1.0), %schemeNormal);
@@ -143,12 +154,14 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (!%isIdle) {
                     %this.add("Make Drink", %n = (%n + 1.0), %schemeNormal);
-                }
-                if (!geGiftingPanel.isInRange(%playerClicked)) {
-                    %this.add("Make Drink - Too Far!", %n = (%n + 1.0), %schemeDisabled);
-                }
-                if (%isIdle) {
-                    %this.add("Make Drink - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                } else {
+                    if (!geGiftingPanel.isInRange(%playerClicked)) {
+                        %this.add("Make Drink - Too Far!", %n = (%n + 1.0), %schemeDisabled);
+                    } else {
+                        if (%isIdle) {
+                            %this.add("Make Drink - Idle!", %n = (%n + 1.0), %schemeDisabled);
+                        }
+                    }
                 }
             }
             if (isObject(%playerClicked)) {
@@ -163,8 +176,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 if ($player.isHost() && %isRealPlayer) {
                     if (%playerClicked.isCohost()) {
                         %this.add("This Space: Unmake Co-Host", %n = (%n + 1.0), %schemeNormal);
+                    } else {
+                        %this.add("This Space: Make Co-Host", %n = (%n + 1.0), %schemeNormal);
                     }
-                    %this.add("This Space: Make Co-Host", %n = (%n + 1.0), %schemeNormal);
                 }
                 if (%isRealPlayer) {
                 }
@@ -176,8 +190,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 if ($player.isHost()) {
                     if ((findField($CSBlockedList, %playerName) == -(1.0))) {
                         %this.add("This Space: Block", %n = (%n + 1.0), %schemeNormal);
+                    } else {
+                        %this.add("This Space: Unblock", %n = (%n + 1.0), %schemeNormal);
                     }
-                    %this.add("This Space: Unblock", %n = (%n + 1.0), %schemeNormal);
                 }
                 if (isObject(%playerClicked)) {
                     if (CustomSpaceClient::isOwner()) {
@@ -200,8 +215,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             if (%ignorable) {
                 if (%isIgnore) {
                     %this.add("Unignore", %n = (%n + 1.0), %schemeIgnore);
+                } else {
+                    %this.add("Ignore", %n = (%n + 1.0), %schemeIgnore);
                 }
-                %this.add("Ignore", %n = (%n + 1.0), %schemeIgnore);
             }
             if (CustomSpaceClient::isOwner()) {
             }
@@ -242,55 +258,63 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                     %this.addIfPermitted("answerHelpMe", "Turn off Help Request", %n = (%n + 1.0), %schemeNormal);
                 }
             }
-        }
-        if (isObject(%playerClicked) && !(getWearingItemWithMoreInfo(%playerClicked) $= "")) {
-            %this.add("** Look At My Clothes **", %n = (%n + 1.0), 0);
-        }
-        %this.add("My Profile & Account (web)", %n = (%n + 1.0), 0);
-        %this.add("Edit Away Message", %n = (%n + 1.0), 0);
-        if (isIdle()) {
-            %this.add("Back From Idle", %n = (%n + 1.0), 0);
-        }
-        %this.add("Go Idle", %n = (%n + 1.0), 0);
-        if ($UserPref::Player::TeleportBlock) {
-            %this.add("Allow Teleports", %n = (%n + 1.0), 0);
-        }
-        %this.add("Refuse Teleports", %n = (%n + 1.0), 0);
-        if ($UserPref::Player::WhisperBlock) {
-            %this.add("Allow Whispers", %n = (%n + 1.0), 0);
-        }
-        %this.add("Refuse Whispers", %n = (%n + 1.0), 0);
-        if ($UserPref::Player::YellBlock) {
-            %this.add("Allow Yells", %n = (%n + 1.0), 0);
-        }
-        %this.add("Refuse Yells", %n = (%n + 1.0), 0);
-        %this.add("Respawn Me!", %n = (%n + 1.0), 0);
-        if (%playerClicked.isCohost()) {
-            %this.add("Stop being Co-Host", %n = (%n + 1.0), 0);
-        }
-        %text = "";
-        if (%playerClicked.isHost()) {
-            %sku = getSpecialSKU(%playerClicked, "hostBadge");
-            if (hasWord(%playerClicked.getActiveSKUs(), %sku)) {
-                %text = "Hide Host Badge";
+        } else {
+            if (isObject(%playerClicked) && !(getWearingItemWithMoreInfo(%playerClicked) $= "")) {
+                %this.add("** Look At My Clothes **", %n = (%n + 1.0), 0);
             }
-            %text = "Wear Host Badge";
-        }
-        if (%playerClicked.isCohost()) {
-            %sku = getSpecialSKU(%playerClicked, "cohostBadge");
-            if (hasWord(%playerClicked.getActiveSKUs(), %sku)) {
-                %text = "Hide Cohost Badge";
+            %this.add("My Profile & Account (web)", %n = (%n + 1.0), 0);
+            %this.add("Edit Away Message", %n = (%n + 1.0), 0);
+            if (isIdle()) {
+                %this.add("Back From Idle", %n = (%n + 1.0), 0);
+            } else {
+                %this.add("Go Idle", %n = (%n + 1.0), 0);
             }
-            %text = "Wear Cohost Badge";
-        }
-        if (!(%text $= "")) {
-            %this.add(%text, %n = (%n + 1.0), 0);
-        }
-        if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drinkMaker")) {
-            %this.add("Make Drink", %n = (%n + 1.0), %schemeNormal);
-        }
-        if (%playerClicked.hasMicrophone()) {
-            %this.add("Drop Microphone", %n = (%n + 1.0), 0);
+            if ($UserPref::Player::TeleportBlock) {
+                %this.add("Allow Teleports", %n = (%n + 1.0), 0);
+            } else {
+                %this.add("Refuse Teleports", %n = (%n + 1.0), 0);
+            }
+            if ($UserPref::Player::WhisperBlock) {
+                %this.add("Allow Whispers", %n = (%n + 1.0), 0);
+            } else {
+                %this.add("Refuse Whispers", %n = (%n + 1.0), 0);
+            }
+            if ($UserPref::Player::YellBlock) {
+                %this.add("Allow Yells", %n = (%n + 1.0), 0);
+            } else {
+                %this.add("Refuse Yells", %n = (%n + 1.0), 0);
+            }
+            %this.add("Respawn Me!", %n = (%n + 1.0), 0);
+            if (%playerClicked.isCohost()) {
+                %this.add("Stop being Co-Host", %n = (%n + 1.0), 0);
+            }
+            %text = "";
+            if (%playerClicked.isHost()) {
+                %sku = getSpecialSKU(%playerClicked, "hostBadge");
+                if (hasWord(%playerClicked.getActiveSKUs(), %sku)) {
+                    %text = "Hide Host Badge";
+                } else {
+                    %text = "Wear Host Badge";
+                }
+            } else {
+                if (%playerClicked.isCohost()) {
+                    %sku = getSpecialSKU(%playerClicked, "cohostBadge");
+                    if (hasWord(%playerClicked.getActiveSKUs(), %sku)) {
+                        %text = "Hide Cohost Badge";
+                    } else {
+                        %text = "Wear Cohost Badge";
+                    }
+                }
+            }
+            if (!(%text $= "")) {
+                %this.add(%text, %n = (%n + 1.0), 0);
+            }
+            if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drinkMaker")) {
+                %this.add("Make Drink", %n = (%n + 1.0), %schemeNormal);
+            }
+            if (%playerClicked.hasMicrophone()) {
+                %this.add("Drop Microphone", %n = (%n + 1.0), 0);
+            }
         }
         if (gameMgrClient.areWeInspecting()) {
             if ((%playerClicked != $player)) {
@@ -312,11 +336,13 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
         if (isObject(%playerClicked)) {
             if (%playerClicked.hasRoleString("snooped")) {
                 %this.addIfPermitted("snoop", "unSnoop", %n = (%n + 1.0), %schemeNormal);
+            } else {
+                %this.addIfPermitted("snoop", "Snoop", %n = (%n + 1.0), %schemeNormal);
             }
+        } else {
             %this.addIfPermitted("snoop", "Snoop", %n = (%n + 1.0), %schemeNormal);
+            %this.addIfPermitted("snoop", "unSnoop", %n = (%n + 1.0), %schemeNormal);
         }
-        %this.addIfPermitted("snoop", "Snoop", %n = (%n + 1.0), %schemeNormal);
-        %this.addIfPermitted("snoop", "unSnoop", %n = (%n + 1.0), %schemeNormal);
         %this.addIfPermitted("track", "Teleport To", %n = (%n + 1.0), %schemeTeleport);
         %this.addIfPermitted("summon", "Respawn", %n = (%n + 1.0), %schemeNormal);
         %this.addIfPermitted("summon", "Summon", %n = (%n + 1.0), %schemeNormal);
@@ -325,8 +351,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
         if (isObject(%playerClicked)) {
             if (%playerClicked.hasMicrophone()) {
                 %this.add("Revoke Microphone", %n = (%n + 1.0), %schemeNormal);
+            } else {
+                %this.add("Give Microphone", %n = (%n + 1.0), %schemeNormal);
             }
-            %this.add("Give Microphone", %n = (%n + 1.0), %schemeNormal);
         }
         if ($player.isDebugging()) {
             %this.add("        --- debug --- (" @ %playerClicked @ ")", %n = (%n + 1.0), %schemeDisabled);
@@ -409,8 +436,9 @@ function PlayerContextMenu::addIfPermitted(%this, %permName, %text, %n, %scheme)
 function PlayerContextMenu::initWithPlayerName(%this, %playerName) {
     if ((%playerName $= $player.getShapeName())) {
         %playerObj = $player;
+    } else {
+        %playerObj = 0;
     }
-    %playerObj = 0;
     %this.init(%playerName, BuddyHudWin.getFriendStatus(%playerName), BuddyHudWin.getIgnoreStatus(%playerName), %playerObj);
 };
 function PlayerContextMenu::initWithPlayer(%this, %player) {
@@ -426,158 +454,206 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
         %handled = 1;
         if ((%text $= "View Profile")) {
             doUserProfile(%playerName);
+        } else {
+            if ((%text $= "Remove from Friends")) {
+                doUserFavorite(%playerName, "remove");
+            } else {
+                if ((%text $= "Cancel Friend Request")) {
+                    doUserFavorite(%playerName, "cancel");
+                } else {
+                    if ((%text $= "Accept Friend Request")) {
+                        doUserFavorite(%playerName, "accept");
+                    } else {
+                        if ((%text $= "Decline Friend Request")) {
+                            doUserFavorite(%playerName, "decline");
+                        } else {
+                            if ((%text $= "Add to Friends")) {
+                                doUserFavorite(%playerName, "add");
+                            } else {
+                                if ((%text $= "Whisper")) {
+                                    openUserWhisper(%playerName);
+                                } else {
+                                    if ((%text $= "Two-Player Action..")) {
+                                        TwoPlayerEmotesPanel.open(%playerName);
+                                    } else {
+                                        if ((%text $= "Give vCurrency")) {
+                                            geGiftingPanel.open(%playerName, "initiate");
+                                        } else {
+                                            if ((%text $= "Give Drink")) {
+                                                drinks_confirmInitiateGift(%playerName);
+                                            } else {
+                                                if ((%text $= "Give Gift")) {
+                                                    gotoWebPage("http://www.vside.com/app/gifting/user/" @ urlEncode(%playerName) @ "/", 0);
+                                                } else {
+                                                    if ((%text $= "Make Drink")) {
+                                                        $gSalonChairCurrent = "";
+                                                        ShowSalonMenu("drinks", "n", %playerName);
+                                                    } else {
+                                                        if ((%text $= "Request Music")) {
+                                                            gotoWebPage($Net::MusicURL);
+                                                        } else {
+                                                            if ((%text $= "Invite to game")) {
+                                                                gameMgrClient.invitePlayerToInspectedGame(%playerName);
+                                                            } else {
+                                                                if ((%text $= "Change score")) {
+                                                                    gameMgrClient.doHostPopupChangeScore(%playerName);
+                                                                } else {
+                                                                    if ((%text $= "Change status")) {
+                                                                        gameMgrClient.doHostPopupChangeStatus(%playerName);
+                                                                    } else {
+                                                                        %handled = 0;
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        if ((%text $= "Remove from Friends")) {
-            doUserFavorite(%playerName, "remove");
-        }
-        if ((%text $= "Cancel Friend Request")) {
-            doUserFavorite(%playerName, "cancel");
-        }
-        if ((%text $= "Accept Friend Request")) {
-            doUserFavorite(%playerName, "accept");
-        }
-        if ((%text $= "Decline Friend Request")) {
-            doUserFavorite(%playerName, "decline");
-        }
-        if ((%text $= "Add to Friends")) {
-            doUserFavorite(%playerName, "add");
-        }
-        if ((%text $= "Whisper")) {
-            openUserWhisper(%playerName);
-        }
-        if ((%text $= "Two-Player Action..")) {
-            TwoPlayerEmotesPanel.open(%playerName);
-        }
-        if ((%text $= "Give vCurrency")) {
-            geGiftingPanel.open(%playerName, "initiate");
-        }
-        if ((%text $= "Give Drink")) {
-            drinks_confirmInitiateGift(%playerName);
-        }
-        if ((%text $= "Give Gift")) {
-            gotoWebPage("http://www.vside.com/app/gifting/user/" @ urlEncode(%playerName) @ "/", 0);
-        }
-        if ((%text $= "Make Drink")) {
-            $gSalonChairCurrent = "";
-            ShowSalonMenu("drinks", "n", %playerName);
-        }
-        if ((%text $= "Request Music")) {
-            gotoWebPage($Net::MusicURL);
-        }
-        if ((%text $= "Invite to game")) {
-            gameMgrClient.invitePlayerToInspectedGame(%playerName);
-        }
-        if ((%text $= "Change score")) {
-            gameMgrClient.doHostPopupChangeScore(%playerName);
-        }
-        if ((%text $= "Change status")) {
-            gameMgrClient.doHostPopupChangeStatus(%playerName);
-        }
-        %handled = 0;
     }
     if (!%handled) {
         %handled = 1;
         if ((%text $= "This Space: Make Co-Host")) {
             CustomSpaceClient::setCoHostHood(%playerName, 1);
+        } else {
+            if ((%text $= "This Space: Unmake Co-Host")) {
+                CustomSpaceClient::setCoHostHood(%playerName, 0);
+            } else {
+                if ((%text $= "Stop being Co-Host")) {
+                    CustomSpaceClient::setCoHostHood(%playerName, 0);
+                } else {
+                    if ((%text $= "Hide Host Badge")) {
+                        delayedRemoveSku(getSpecialSKU($player, "hostBadge"));
+                    } else {
+                        if ((%text $= "Wear Host Badge")) {
+                            delayedWearSku(getSpecialSKU($player, "hostBadge"));
+                        } else {
+                            if ((%text $= "Hide Cohost Badge")) {
+                                delayedRemoveSku(getSpecialSKU($player, "cohostBadge"));
+                            } else {
+                                if ((%text $= "Wear Cohost Badge")) {
+                                    delayedWearSku(getSpecialSKU($player, "cohostBadge"));
+                                } else {
+                                    if ((%text $= "This Space: Kick")) {
+                                        CustomSpaceClient::doOwnerAction("kick", %playerName);
+                                    } else {
+                                        if ((%text $= "This Space: Block")) {
+                                            CustomSpaceClient::TryBlockUserFromSpace(%playerName, 0);
+                                        } else {
+                                            if ((%text $= "This Space: Unblock")) {
+                                                CustomSpaceClient::TryBlockUserFromSpace(%playerName, 1);
+                                            } else {
+                                                if ((%text $= "This Space: Summon")) {
+                                                    CustomSpaceClient::doOwnerAction("summon", %playerName);
+                                                } else {
+                                                    if ((%text $= "This Space: Respawn")) {
+                                                        CustomSpaceClient::doOwnerAction("respawn", %playerName);
+                                                    } else {
+                                                        if ((%text $= "This Space: Teleport To")) {
+                                                            CustomSpaceClient::doOwnerAction("teleport", %playerName);
+                                                        } else {
+                                                            if ((%text $= "This Space: Customize")) {
+                                                                rentabotClient_customizeBot(%player);
+                                                            } else {
+                                                                if ((%text $= "Ignore")) {
+                                                                    doUserIgnore(%playerName, "add");
+                                                                } else {
+                                                                    if ((%text $= "Unignore")) {
+                                                                        doUserIgnore(%playerName, "remove");
+                                                                    } else {
+                                                                        if ((%text $= "Act Like Me")) {
+                                                                            doUserMimic(%player);
+                                                                        } else {
+                                                                            if ((%text $= "Report Abuse")) {
+                                                                                doUserReport(%playerName, "abuse");
+                                                                            } else {
+                                                                                if ((%text $= "My Profile & Account (web)")) {
+                                                                                    doEditProfile();
+                                                                                } else {
+                                                                                    if ((%text $= "Edit Away Message")) {
+                                                                                        doEditAwayMessage();
+                                                                                    } else {
+                                                                                        if ((%text $= "Go Idle")) {
+                                                                                            setIdle(1);
+                                                                                        } else {
+                                                                                            if ((%text $= "Back From Idle")) {
+                                                                                                setIdle(0);
+                                                                                            } else {
+                                                                                                if ((%text $= "Allow Teleports")) {
+                                                                                                    TeleportBlockCheckBox.setValue(0);
+                                                                                                    doTeleportBlock();
+                                                                                                } else {
+                                                                                                    if ((%text $= "Refuse Teleports")) {
+                                                                                                        TeleportBlockCheckBox.setValue(1);
+                                                                                                        doTeleportBlock();
+                                                                                                    } else {
+                                                                                                        if ((%text $= "Allow Whispers")) {
+                                                                                                            WhisperBlockCheckBox.setValue(0);
+                                                                                                            doWhisperBlock(1);
+                                                                                                        } else {
+                                                                                                            if ((%text $= "Refuse Whispers")) {
+                                                                                                                WhisperBlockCheckBox.setValue(1);
+                                                                                                                doWhisperBlock(1);
+                                                                                                            } else {
+                                                                                                                if ((%text $= "Allow Yells")) {
+                                                                                                                    YellBlockCheckBox.setValue(0);
+                                                                                                                } else {
+                                                                                                                    if ((%text $= "Refuse Yells")) {
+                                                                                                                        YellBlockCheckBox.setValue(1);
+                                                                                                                    } else {
+                                                                                                                        if ((%text $= "Respawn Me!")) {
+                                                                                                                            doRespawnMe();
+                                                                                                                        } else {
+                                                                                                                            if ((%text $= "Drop Microphone")) {
+                                                                                                                                doDropMic();
+                                                                                                                            } else {
+                                                                                                                                if ((%text $= "** Look At My Clothes **")) {
+                                                                                                                                    doLookAtMyClothes(%player);
+                                                                                                                                } else {
+                                                                                                                                    if ((%text $= "Applaud For Me!")) {
+                                                                                                                                        doCheerFor(%playerName);
+                                                                                                                                    } else {
+                                                                                                                                        %handled = 0;
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
+            }
         }
-        if ((%text $= "This Space: Unmake Co-Host")) {
-            CustomSpaceClient::setCoHostHood(%playerName, 0);
-        }
-        if ((%text $= "Stop being Co-Host")) {
-            CustomSpaceClient::setCoHostHood(%playerName, 0);
-        }
-        if ((%text $= "Hide Host Badge")) {
-            delayedRemoveSku(getSpecialSKU($player, "hostBadge"));
-        }
-        if ((%text $= "Wear Host Badge")) {
-            delayedWearSku(getSpecialSKU($player, "hostBadge"));
-        }
-        if ((%text $= "Hide Cohost Badge")) {
-            delayedRemoveSku(getSpecialSKU($player, "cohostBadge"));
-        }
-        if ((%text $= "Wear Cohost Badge")) {
-            delayedWearSku(getSpecialSKU($player, "cohostBadge"));
-        }
-        if ((%text $= "This Space: Kick")) {
-            CustomSpaceClient::doOwnerAction("kick", %playerName);
-        }
-        if ((%text $= "This Space: Block")) {
-            CustomSpaceClient::TryBlockUserFromSpace(%playerName, 0);
-        }
-        if ((%text $= "This Space: Unblock")) {
-            CustomSpaceClient::TryBlockUserFromSpace(%playerName, 1);
-        }
-        if ((%text $= "This Space: Summon")) {
-            CustomSpaceClient::doOwnerAction("summon", %playerName);
-        }
-        if ((%text $= "This Space: Respawn")) {
-            CustomSpaceClient::doOwnerAction("respawn", %playerName);
-        }
-        if ((%text $= "This Space: Teleport To")) {
-            CustomSpaceClient::doOwnerAction("teleport", %playerName);
-        }
-        if ((%text $= "This Space: Customize")) {
-            rentabotClient_customizeBot(%player);
-        }
-        if ((%text $= "Ignore")) {
-            doUserIgnore(%playerName, "add");
-        }
-        if ((%text $= "Unignore")) {
-            doUserIgnore(%playerName, "remove");
-        }
-        if ((%text $= "Act Like Me")) {
-            doUserMimic(%player);
-        }
-        if ((%text $= "Report Abuse")) {
-            doUserReport(%playerName, "abuse");
-        }
-        if ((%text $= "My Profile & Account (web)")) {
-            doEditProfile();
-        }
-        if ((%text $= "Edit Away Message")) {
-            doEditAwayMessage();
-        }
-        if ((%text $= "Go Idle")) {
-            setIdle(1);
-        }
-        if ((%text $= "Back From Idle")) {
-            setIdle(0);
-        }
-        if ((%text $= "Allow Teleports")) {
-            TeleportBlockCheckBox.setValue(0);
-            doTeleportBlock();
-        }
-        if ((%text $= "Refuse Teleports")) {
-            TeleportBlockCheckBox.setValue(1);
-            doTeleportBlock();
-        }
-        if ((%text $= "Allow Whispers")) {
-            WhisperBlockCheckBox.setValue(0);
-            doWhisperBlock(1);
-        }
-        if ((%text $= "Refuse Whispers")) {
-            WhisperBlockCheckBox.setValue(1);
-            doWhisperBlock(1);
-        }
-        if ((%text $= "Allow Yells")) {
-            YellBlockCheckBox.setValue(0);
-        }
-        if ((%text $= "Refuse Yells")) {
-            YellBlockCheckBox.setValue(1);
-        }
-        if ((%text $= "Respawn Me!")) {
-            doRespawnMe();
-        }
-        if ((%text $= "Drop Microphone")) {
-            doDropMic();
-        }
-        if ((%text $= "** Look At My Clothes **")) {
-            doLookAtMyClothes(%player);
-        }
-        if ((%text $= "Applaud For Me!")) {
-            doCheerFor(%playerName);
-        }
-        %handled = 0;
     }
     if (!%handled) {
         %handled = 1;
@@ -585,127 +661,165 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
             if ($StandAlone) {
                 PlayerDict.get(%playerName).setHeight(1.15);
             }
-        }
-        if ((%text $= "Set Height: tall")) {
-            if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(1.075);
+        } else {
+            if ((%text $= "Set Height: tall")) {
+                if ($StandAlone) {
+                    PlayerDict.get(%playerName).setHeight(1.075);
+                }
+            } else {
+                if ((%text $= "Set Height: medium")) {
+                    if ($StandAlone) {
+                        PlayerDict.get(%playerName).setHeight(1);
+                    }
+                } else {
+                    if ((%text $= "Set Height: short")) {
+                        if ($StandAlone) {
+                            PlayerDict.get(%playerName).setHeight(0.93);
+                        }
+                    } else {
+                        if ((%text $= "Set Height: really short")) {
+                            if ($StandAlone) {
+                                PlayerDict.get(%playerName).setHeight(0.86);
+                            }
+                        } else {
+                            if ((%text $= "Puppetry: Speak")) {
+                                doUserSaySomething(%playerName);
+                            } else {
+                                if ((%text $= "Puppetry: Whisper")) {
+                                    doUserWhisperSomething(%playerName);
+                                } else {
+                                    if ((%text $= "Puppetry: Yell")) {
+                                        doUserYellSomething(%playerName);
+                                    } else {
+                                        if ((%text $= "Puppetry: SOS")) {
+                                            doUserSosSomething(%playerName);
+                                        } else {
+                                            if ((%text $= "Puppetry: Dance")) {
+                                                doUserAutoEmote(%playerName, "dance");
+                                            } else {
+                                                if ((%text $= "Puppetry: Emote")) {
+                                                    doUserAutoEmote(%playerName, "emote");
+                                                } else {
+                                                    if ((%text $= "Puppetry: Blend Spaz")) {
+                                                        doUserAutoEmoteRate(%playerName, "blend", 300, 200);
+                                                    } else {
+                                                        if ((%text $= "Puppetry: Be Still")) {
+                                                            doUserAutoEmote(%playerName, "");
+                                                        } else {
+                                                            if ((%text $= "Puppetry: Puppy")) {
+                                                                doUserPuppy(%playerName);
+                                                            } else {
+                                                                if ((%text $= "Puppetry: Badge")) {
+                                                                    doUserBadge(%playerName);
+                                                                } else {
+                                                                    if ((%text $= "Puppetry: Dance With")) {
+                                                                        doDanceWith(%player);
+                                                                    } else {
+                                                                        if ((%text $= "Puppetry: Kiss")) {
+                                                                            doKiss(%player);
+                                                                        } else {
+                                                                            if ((%text $= "Puppetry: Copy Skus")) {
+                                                                                doUserCopySkus(%playerName);
+                                                                            } else {
+                                                                                if ((%text $= "Puppetry: Paste Skus")) {
+                                                                                    doUserPasteSkus(%playerName);
+                                                                                } else {
+                                                                                    if ((%text $= "Body Mod")) {
+                                                                                        doUserBodyMod(%player);
+                                                                                    } else {
+                                                                                        if ((%text $= "Relative Transform")) {
+                                                                                            doUserRelativeTransform(%player);
+                                                                                        } else {
+                                                                                            if ((%text $= "Teleport To")) {
+                                                                                                teleportOperation(%playerName);
+                                                                                            } else {
+                                                                                                if ((%text $= "Fly To")) {
+                                                                                                    doUserFlyTo(%playerName);
+                                                                                                } else {
+                                                                                                    if ((%text $= "Peek at GameState")) {
+                                                                                                        doUserPeekAtGameState(%playerName);
+                                                                                                    } else {
+                                                                                                        if ((%text $= "Track")) {
+                                                                                                            doUserTrack(%playerName);
+                                                                                                        } else {
+                                                                                                            if ((%text $= "Snoop")) {
+                                                                                                                doUserSnoop(%playerName, 1);
+                                                                                                            } else {
+                                                                                                                if ((%text $= "unSnoop")) {
+                                                                                                                    doUserSnoop(%playerName, 0);
+                                                                                                                } else {
+                                                                                                                    if ((%text $= "Respawn")) {
+                                                                                                                        doUserRespawn(%playerName);
+                                                                                                                    } else {
+                                                                                                                        if ((%text $= "Summon")) {
+                                                                                                                            doUserSummon(%playerName);
+                                                                                                                        } else {
+                                                                                                                            if ((%text $= "Ban...")) {
+                                                                                                                                doUserBan(%playerName);
+                                                                                                                            } else {
+                                                                                                                                if ((%text $= "Manage on Web")) {
+                                                                                                                                    doUserManage(%playerName);
+                                                                                                                                } else {
+                                                                                                                                    if ((%text $= "Take Flower")) {
+                                                                                                                                        doTakeFlower(%playerName);
+                                                                                                                                    } else {
+                                                                                                                                        if ((%text $= "Give Flower")) {
+                                                                                                                                            doGiveFlower(%playerName);
+                                                                                                                                        } else {
+                                                                                                                                            if ((%text $= "Turn off Help Request")) {
+                                                                                                                                                doTurnOffHelpme(%playerName);
+                                                                                                                                            } else {
+                                                                                                                                                if ((%text $= "Revoke Microphone")) {
+                                                                                                                                                    doMicrophoneGiveOrRevoke(%playerName, 0);
+                                                                                                                                                } else {
+                                                                                                                                                    if ((%text $= "Give Microphone")) {
+                                                                                                                                                        doMicrophoneGiveOrRevoke(%playerName, 1);
+                                                                                                                                                    } else {
+                                                                                                                                                        if ((%text $= "Message")) {
+                                                                                                                                                            AIMConvManager.talkTo(%aimName);
+                                                                                                                                                        } else {
+                                                                                                                                                            if ((%text $= "Send Invite")) {
+                                                                                                                                                                AimInviteDialog.open(%aimName);
+                                                                                                                                                            } else {
+                                                                                                                                                                %handled = 0;
+                                                                                                                                                            }
+                                                                                                                                                        }
+                                                                                                                                                    }
+                                                                                                                                                }
+                                                                                                                                            }
+                                                                                                                                        }
+                                                                                                                                    }
+                                                                                                                                }
+                                                                                                                            }
+                                                                                                                        }
+                                                                                                                    }
+                                                                                                                }
+                                                                                                            }
+                                                                                                        }
+                                                                                                    }
+                                                                                                }
+                                                                                            }
+                                                                                        }
+                                                                                    }
+                                                                                }
+                                                                            }
+                                                                        }
+                                                                    }
+                                                                }
+                                                            }
+                                                        }
+                                                    }
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+                    }
+                }
             }
         }
-        if ((%text $= "Set Height: medium")) {
-            if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(1);
-            }
-        }
-        if ((%text $= "Set Height: short")) {
-            if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(0.93);
-            }
-        }
-        if ((%text $= "Set Height: really short")) {
-            if ($StandAlone) {
-                PlayerDict.get(%playerName).setHeight(0.86);
-            }
-        }
-        if ((%text $= "Puppetry: Speak")) {
-            doUserSaySomething(%playerName);
-        }
-        if ((%text $= "Puppetry: Whisper")) {
-            doUserWhisperSomething(%playerName);
-        }
-        if ((%text $= "Puppetry: Yell")) {
-            doUserYellSomething(%playerName);
-        }
-        if ((%text $= "Puppetry: SOS")) {
-            doUserSosSomething(%playerName);
-        }
-        if ((%text $= "Puppetry: Dance")) {
-            doUserAutoEmote(%playerName, "dance");
-        }
-        if ((%text $= "Puppetry: Emote")) {
-            doUserAutoEmote(%playerName, "emote");
-        }
-        if ((%text $= "Puppetry: Blend Spaz")) {
-            doUserAutoEmoteRate(%playerName, "blend", 300, 200);
-        }
-        if ((%text $= "Puppetry: Be Still")) {
-            doUserAutoEmote(%playerName, "");
-        }
-        if ((%text $= "Puppetry: Puppy")) {
-            doUserPuppy(%playerName);
-        }
-        if ((%text $= "Puppetry: Badge")) {
-            doUserBadge(%playerName);
-        }
-        if ((%text $= "Puppetry: Dance With")) {
-            doDanceWith(%player);
-        }
-        if ((%text $= "Puppetry: Kiss")) {
-            doKiss(%player);
-        }
-        if ((%text $= "Puppetry: Copy Skus")) {
-            doUserCopySkus(%playerName);
-        }
-        if ((%text $= "Puppetry: Paste Skus")) {
-            doUserPasteSkus(%playerName);
-        }
-        if ((%text $= "Body Mod")) {
-            doUserBodyMod(%player);
-        }
-        if ((%text $= "Relative Transform")) {
-            doUserRelativeTransform(%player);
-        }
-        if ((%text $= "Teleport To")) {
-            teleportOperation(%playerName);
-        }
-        if ((%text $= "Fly To")) {
-            doUserFlyTo(%playerName);
-        }
-        if ((%text $= "Peek at GameState")) {
-            doUserPeekAtGameState(%playerName);
-        }
-        if ((%text $= "Track")) {
-            doUserTrack(%playerName);
-        }
-        if ((%text $= "Snoop")) {
-            doUserSnoop(%playerName, 1);
-        }
-        if ((%text $= "unSnoop")) {
-            doUserSnoop(%playerName, 0);
-        }
-        if ((%text $= "Respawn")) {
-            doUserRespawn(%playerName);
-        }
-        if ((%text $= "Summon")) {
-            doUserSummon(%playerName);
-        }
-        if ((%text $= "Ban...")) {
-            doUserBan(%playerName);
-        }
-        if ((%text $= "Manage on Web")) {
-            doUserManage(%playerName);
-        }
-        if ((%text $= "Take Flower")) {
-            doTakeFlower(%playerName);
-        }
-        if ((%text $= "Give Flower")) {
-            doGiveFlower(%playerName);
-        }
-        if ((%text $= "Turn off Help Request")) {
-            doTurnOffHelpme(%playerName);
-        }
-        if ((%text $= "Revoke Microphone")) {
-            doMicrophoneGiveOrRevoke(%playerName, 0);
-        }
-        if ((%text $= "Give Microphone")) {
-            doMicrophoneGiveOrRevoke(%playerName, 1);
-        }
-        if ((%text $= "Message")) {
-            AIMConvManager.talkTo(%aimName);
-        }
-        if ((%text $= "Send Invite")) {
-            AimInviteDialog.open(%aimName);
-        }
-        %handled = 0;
     }
 };
 function PlayerContextMenu::showComingSoon(%this, %featureName) {
@@ -720,8 +834,9 @@ function BuddyHudRequestsList::onRightMouseUp(%this) {
     if (!(%text $= "")) {
         PlayerContextMenu.initWithPlayerName(%text);
         PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
+    } else {
+        warn("Got empty player name from right click on FavoritesList");
     }
-    warn("Got empty player name from right click on FavoritesList");
 };
 function doUserMimic(%player) {
     commandToServer('EtsPlayerClickedSharedAnim', %player.getGhostID());
@@ -784,8 +899,9 @@ function getWearingItemWithMoreInfo(%player) {
         if (%fo.openForRead(%inspectFile)) {
             %fo.delete();
             return %inspectFile;
+        } else {
+            %fo.delete();
         }
-        %fo.delete();
         %i = (%i + 1.0);
     }
     return "";

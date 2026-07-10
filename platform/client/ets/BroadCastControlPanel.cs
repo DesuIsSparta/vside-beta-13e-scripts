@@ -72,24 +72,28 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot() {
     }
     if (($Platform::Version::Major == 6.0)) {
         waitAFrameAndCall("waitAFrameAndCall(\"BroadSnapshotButton_doTakeSnapshot\");");
+    } else {
+        waitAFrameAndCall("BroadSnapshotButton_doTakeSnapshot");
     }
-    waitAFrameAndCall("BroadSnapshotButton_doTakeSnapshot");
 };
 function BroadSnapshotButton_doTakeSnapshot() {
     BroadSnapshotButton.setActive(0);
     %photoFileName = $DC::LocalAvatarFolder @ "/lastSnapshotTaken";
     if (($Pref::Video::screenShotFormat $= "JPEG")) {
         %ext = ".jpg";
+    } else {
+        if (($Pref::Video::screenShotFormat $= "PNG")) {
+            %ext = ".png";
+        } else {
+            %ext = ".png";
+        }
     }
-    if (($Pref::Video::screenShotFormat $= "PNG")) {
-        %ext = ".png";
-    }
-    %ext = ".png";
     %regionControl = 0;
     if (BroadcastFullScreenCheckbox.getValue()) {
         %regionControl = PlayGui.getId();
+    } else {
+        %regionControl = BroadCastRegionControl.getId();
     }
-    %regionControl = BroadCastRegionControl.getId();
     if ((%regionControl != 0.0)) {
     }
     %tookPhoto = snapshotTool::snapControl(%regionControl, %photoFileName @ %ext);
@@ -117,12 +121,13 @@ function BroadSnapshotButton_doTakeSnapshot() {
         BroadCastPreview.setVisible(1);
         alxPlay(AudioProfile_Shutter);
         commandToServer('FireEventPlayerTakesAPicture');
+    } else {
+        BroadCastCrossHairsFrame.setVisible(1);
+        BroadCastPreview.setVisible(0);
+        BroadCastPreview.setBitmap("");
+        MessageBoxOK("Can't take snapshot!", "Unable to create snapshot. Please let a Mod know, or post a note in the forums. Thank you!", "");
+        BroadSnapshotButton.setActive(1);
     }
-    BroadCastCrossHairsFrame.setVisible(1);
-    BroadCastPreview.setVisible(0);
-    BroadCastPreview.setBitmap("");
-    MessageBoxOK("Can't take snapshot!", "Unable to create snapshot. Please let a Mod know, or post a note in the forums. Thank you!", "");
-    BroadSnapshotButton.setActive(1);
     BroadcastCloseButtonContainer.setVisible(1);
     BroadSnapshotButton.setActive(1);
     BroadSnapshotButton_ShowSnoop();
@@ -183,16 +188,18 @@ function BroadSnapshotUploadButton::doBroadCastSnapshot(%this, %callbackSink) {
     }
     if (BroadcastCaptionSetBCastCtrl.getValue()) {
         BroadCastPreview.curl.setURLParam("broadcast", "BroadcastScreens");
+    } else {
+        BroadCastPreview.curl.setURLParam("broadcast", "");
     }
-    BroadCastPreview.curl.setURLParam("broadcast", "");
     BroadCastPreview.curl.setCompletedCallback("BroadSnapshotUploadButtonOnCompleted");
     if (!BroadCastPreview.curl.start()) {
         BroadCastControlPanel.enterErrorUploadingMode();
+    } else {
+        if (isObject(CURLSimGroup)) {
+            CURLSimGroup.add(BroadCastPreview.curl);
+        }
+        BroadCastControlPanel.enterUploadingMode();
     }
-    if (isObject(CURLSimGroup)) {
-        CURLSimGroup.add(BroadCastPreview.curl);
-    }
-    BroadCastControlPanel.enterUploadingMode();
 };
 function BroadSnapshotUploadButton::onProgress(%this, %uploader) {
 };
@@ -200,8 +207,9 @@ function BroadSnapshotUploadButtonOnCompleted(%request, %result) {
     %callbackSink = %request.callBackSink;
     if ((%result == 0.0)) {
         %callbackSink.onDone(%request);
+    } else {
+        %callbackSink.onError(%request);
     }
-    %callbackSink.onError(%request);
 };
 function BroadSnapshotUploadButton::onError(%this, %uploader) {
     BroadCastControlPanel.currentlyUploading = 0;
@@ -316,8 +324,9 @@ function BroadCastControlPanel::enterFillCURLMode(%this, %photoFileName, %ext, %
     if (!(CustomSpaceClient::GetSpaceImIn() $= "")) {
         BroadCastPreview.curl.setURLParam("apartmentOwner", $CSSpaceInfo.owner);
         BroadCastPreview.curl.setURLParam("vurl", $CSSpaceInfo.vurl);
+    } else {
+        BroadCastPreview.curl.setURLParam("vurl", "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
     }
-    BroadCastPreview.curl.setURLParam("vurl", "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
     BroadCastPreview.curl.setURL($Net::UploadPhotoURL);
     BroadCastPreview.curl.setPostFile("imageBody", %photoFileName @ %ext);
     BroadCastControlPanel.photoFileName = %photoFileName;
@@ -339,10 +348,11 @@ function BroadCastControlPanel::enterTookPhotoMode(%this) {
         BroadSnapshotUploadButton.setVisible(0);
         BroadSnapshotUploadButtonApartment.setVisible(1);
         BroadcastTakePhotoLabel.setText("Take a snapshot for your apartment album!");
+    } else {
+        BroadSnapshotUploadButtonApartment.setVisible(0);
+        BroadSnapshotUploadButton.setVisible(1);
+        BroadcastTakePhotoLabel.setText("Take a snapshot for your web album!");
     }
-    BroadSnapshotUploadButtonApartment.setVisible(0);
-    BroadSnapshotUploadButton.setVisible(1);
-    BroadcastTakePhotoLabel.setText("Take a snapshot for your web album!");
     BroadSnapshotUploadButton.setActive(1);
     BroadSnapshotUploadButtonApartment.setActive(1);
     BroadSnapshotCancelButton.setVisible(1);

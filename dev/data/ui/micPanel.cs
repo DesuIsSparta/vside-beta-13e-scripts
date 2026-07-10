@@ -82,12 +82,14 @@ function micPanelMLTextCtrl::onUrl(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
         %name = unmunge(getWords(%url, 1));
         onLeftClickPlayerName(%name, "");
-    }
-    if ((getSubStr(%url, 0, 7) $= "http://")) {
-        gotoWebPage(%url);
-    }
-    if ((getSubStr(%url, 0, 7) $= "vside:/")) {
-        vurlOperation(%url);
+    } else {
+        if ((getSubStr(%url, 0, 7) $= "http://")) {
+            gotoWebPage(%url);
+        } else {
+            if ((getSubStr(%url, 0, 7) $= "vside:/")) {
+                vurlOperation(%url);
+            }
+        }
     }
 };
 function doServerCommandGetMicHolders() {
@@ -120,19 +122,22 @@ function ClientCmdGotMicHolder(%playerName) {
             micPanel.addMicHolder(%playerName);
             $gExpectedNumberOfMicHolders = ($gExpectedNumberOfMicHolders - 1.0);
             micPanel.updateGetMicHoldersListStatus();
+        } else {
+            $gMicHoldersPendingAddition.put(%playerName, "");
         }
-        $gMicHoldersPendingAddition.put(%playerName, "");
     }
 };
 function micPanel::updateGetMicHoldersListStatus(%this) {
     if (($gExpectedNumberOfMicHolders == -(1.0))) {
         MicPanelRefreshListLabel.setText("Starting...");
         MicPanelRefreshListButton.setActive(0);
+    } else {
+        if (($gExpectedNumberOfMicHolders == 0.0)) {
+            MicPanelRefreshListLabel.setText("Done");
+            MicPanelRefreshListButton.setActive(1);
+        } else {
+            MicPanelRefreshListLabel.setText("Getting list...");
+            MicPanelRefreshListButton.setActive(0);
+        }
     }
-    if (($gExpectedNumberOfMicHolders == 0.0)) {
-        MicPanelRefreshListLabel.setText("Done");
-        MicPanelRefreshListButton.setActive(1);
-    }
-    MicPanelRefreshListLabel.setText("Getting list...");
-    MicPanelRefreshListButton.setActive(0);
 };

@@ -48,8 +48,9 @@ function TriggersPanel::setLocalURLMapping(%this) {
     }
     if (!(%newUrl $= "")) {
         MessageBoxYesNo("Set Stream", "Are you sure you want to set stream \"" @ %stream @ "\" to \"" @ %newUrl @ "\"?", "TriggersPanel.setLocalURLMappingReally();", "");
+    } else {
+        MessageBoxOK("Test URL", "Please provide a value for both Stream and URL", "");
     }
-    MessageBoxOK("Test URL", "Please provide a value for both Stream and URL", "");
 };
 function TriggersPanel::setLocalURLMappingReally(%this) {
     %stream = $TriggersPanel::NewStreamName;
@@ -73,8 +74,9 @@ function TriggersPanel::setURLMapping(%this) {
     }
     if (!(%newUrl $= "")) {
         MessageBoxYesNo("Set Stream", "Are you sure you want to set stream \"" @ %stream @ "\" to \"" @ %newUrl @ "\"?", "TriggersPanel.setURLMappingReally();", "");
+    } else {
+        MessageBoxOK("Test URL", "Please provide a value for both Stream and URL", "");
     }
-    MessageBoxOK("Test URL", "Please provide a value for both Stream and URL", "");
 };
 function TriggersPanel::setURLMappingReally(%this) {
     %stream = $TriggersPanel::NewStreamName;
@@ -116,17 +118,19 @@ function ChangeStreamIDMappingRequest::onDone(%this) {
 function TriggersPanel::testURL(%this) {
     if ((TriggersPanelTestUrl.getText() $= "Test URL")) {
         TriggersPanelTestUrl.setText("Stop Test");
-    }
-    if ((TriggersPanelTestUrl.getText() $= "Stop Test")) {
-        FMod.popStream("TriggersPanelTest");
-        TriggersPanelTestUrl.setText("Test URL");
-        return;
+    } else {
+        if ((TriggersPanelTestUrl.getText() $= "Stop Test")) {
+            FMod.popStream("TriggersPanelTest");
+            TriggersPanelTestUrl.setText("Test URL");
+            return;
+        }
     }
     %newUrl = $TriggersPanel::NewURL;
     if (!(%newUrl $= "")) {
         FMod.pushStreamWithVolume("TriggersPanelTest", %newUrl, 0.8, "");
+    } else {
+        MessageBoxOK("Test URL", "Please specify a URL to test.", "");
     }
-    MessageBoxOK("Test URL", "Please specify a URL to test.", "");
 };
 function TriggersPanel::selectTrigger(%this) {
     %selected = triggersPanelTextList.getValue();
@@ -165,8 +169,9 @@ function ClientCmdTriggerUnset(%triggerDesc) {
     %idx = triggersPanelTextList.findTextIndex(%triggerDesc);
     if ((%idx >= 0.0)) {
         triggersPanelTextList.removeRow(%idx);
+    } else {
+        warn(getScopeName() @ "Couldn't match a trigger description to delete it! desc = " @ %triggerDesc);
     }
-    warn(getScopeName() @ "Couldn't match a trigger description to delete it! desc = " @ %triggerDesc);
 };
 function ClientCmdTriggerSetByList(%set) {
     %num = getFieldCount(%set);

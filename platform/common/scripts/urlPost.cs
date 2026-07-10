@@ -46,17 +46,19 @@ function URLPostObject::addUserAndToken(%this, %userName) {
         echoDebug(getScopeName() @ " " @ "- called in standalone. Setting token to \"" @ $TokenStandalone @ "\"." @ " " @ getTrace());
         %this.setURLParam("user", %userName);
         %this.setURLParam("token", $TokenStandalone);
-    }
-    if (!($Token $= "")) {
-        if (!(%userName $= $Player::Name)) {
-            error(getScopeName() @ " " @ "- got username not equal this user!" @ " " @ %userName @ " " @ $Player::Name @ " " @ getTrace());
-            return;
+    } else {
+        if (!($Token $= "")) {
+            if (!(%userName $= $Player::Name)) {
+                error(getScopeName() @ " " @ "- got username not equal this user!" @ " " @ %userName @ " " @ $Player::Name @ " " @ getTrace());
+                return;
+            }
+            %this.setURLParam("user", %userName);
+            %this.setURLParam("token", $Token);
+        } else {
+            %this.setURLParam("user", %userName);
+            %this.setURLParam("token", getClientToken(%userName));
         }
-        %this.setURLParam("user", %userName);
-        %this.setURLParam("token", $Token);
     }
-    %this.setURLParam("user", %userName);
-    %this.setURLParam("token", getClientToken(%userName));
 };
 function URLPostObject::setURLParamIfNotEmpty(%this, %paramName, %paramValue) {
     if ((%paramValue $= "")) {

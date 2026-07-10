@@ -39,18 +39,20 @@ function LoadingGui::setTransitioning(%this, %flag) {
         LoadingCenterFrame.add(LoadingProgressBrackets);
         LoadingCenterFrame.add(LoadingProgressHolder);
         LoadingCenterFrame.add(LoadingProgressText);
+    } else {
+        LoadingBottomRightFrame.add(LoadingProgressBrackets);
+        LoadingBottomRightFrame.add(LoadingProgressHolder);
+        LoadingBottomRightFrame.add(LoadingProgressText);
     }
-    LoadingBottomRightFrame.add(LoadingProgressBrackets);
-    LoadingBottomRightFrame.add(LoadingProgressHolder);
-    LoadingBottomRightFrame.add(LoadingProgressText);
 };
 function LoadingGui::doTheTipThing(%this) {
     cancel($SCHEDULE_SHOWANOTHER);
     %resWidth = getWord($UserPref::Video::Resolution, 0);
     if ((%resWidth < 640.0)) {
         LoadingTipsHud.setVisible(0);
+    } else {
+        LoadingTipsHud.loadATip();
     }
-    LoadingTipsHud.loadATip();
     $SCHEDULE_SHOWANOTHER = %this.schedule($SCHEDULE_TIPTIMEDELAY, "doTheTipThing");
 };
 function LoadingGui::onSleep(%this) {
@@ -83,9 +85,10 @@ function LoadingTipsHud::onMouseDown(%this) {
 $TIP_CATEGORY = "ADVANCED";
 if (($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 2.0)) {
     $TIP_CATEGORY = "NEWBIE";
-}
-if (($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 5.0)) {
-    $TIP_CATEGORY = "MEDIUM";
+} else {
+    if (($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 5.0)) {
+        $TIP_CATEGORY = "MEDIUM";
+    }
 }
 $UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] = ($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] + 1.0);
 $SCHEDULE_TIPTIMEDELAY = 8000;
@@ -116,10 +119,11 @@ function LoadingTipsHud::initTipsList(%this) {
     while (!%fo.isEOF()) {
         %file = %fo.readLine();
         if ((strstr(%file, $TIP_CATEGORY) == -(1.0))) {
+        } else {
+            %this.tipFile[%file,%fileCount] = %base_path;
+            %this.tipFileShown[%fileCount] = 0;
+            %fileCount = (%fileCount + 1.0);
         }
-        %this.tipFile[%file,%fileCount] = %base_path;
-        %this.tipFileShown[%fileCount] = 0;
-        %fileCount = (%fileCount + 1.0);
     }
     %fo.close();
     %this.tipFileCount = !%fo.isEOF() @ %fileCount;

@@ -140,12 +140,14 @@ function HudTabs::setTabAtIndexVisible(%this, %tabIndex, %visible) {
     if (%visible) {
         %tab.setVisible(1);
         %tab.setTrgPosition(%posX, %posY);
+    } else {
+        %tab.setTrgPosition((%posX - getWord(%tab.getExtent(), 0)), %posY);
     }
-    %tab.setTrgPosition((%posX - getWord(%tab.getExtent(), 0)), %posY);
 };
 function HudTabs::autoHide(%this) {
     %currentTab = %this.getCurrentTab();
     if ((%currentTab $= "")) {
+    } else {
     }
     %tabName = %currentTab.name;
     "";
@@ -220,6 +222,7 @@ function HudTabs::fillTabs(%this) {
             maxLength = 255;
         };);
         if ((%tab.title $= "")) {
+        } else {
         }
         %title = %tab.title;
         %tab.name;
@@ -407,8 +410,9 @@ function HudTabs::fillMusicTab(%this) {
 function MusicTabToggleSoundTxt::updateText(%this) {
     if ($UserPref::Audio::mute) {
         %soundTxt = "(off)";
+    } else {
+        %soundTxt = "(on)";
     }
-    %soundTxt = "(on)";
     %this.setText(%soundTxt);
 };
 function MusicRatingControl::updatePosition(%this) {
@@ -690,11 +694,13 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify) {
         }
         if ((%level == 1.0)) {
             %code = "LEVELCHANGE1";
+        } else {
+            if ((%level == 2.0)) {
+                %code = "LEVELCHANGE2";
+            } else {
+                %code = "LEVELCHANGE";
+            }
         }
-        if ((%level == 2.0)) {
-            %code = "LEVELCHANGE2";
-        }
-        %code = "LEVELCHANGE";
         schedule(5000, 0, "respektHandle", "", %points, (%points - %this.previousRespektPoints), %code, 0, 1);
         HudTabs.schedule(5100, "pulseTabWithName", "scores");
     }
@@ -708,8 +714,9 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify) {
 function HudScoresContent::setRespektRank(%this, %rank) {
     if ((%rank $= "")) {
         %text = "(unknown)";
+    } else {
+        %text = "#" @ %rank;
     }
-    %text = "#" @ %rank;
     if (isObject(%this.respektRankLabel)) {
         %this.respektRankLabel.setText(%text);
     }
@@ -753,9 +760,10 @@ function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total) {
     if ((%sofar == 0.0)) {
         %this.collectionsSet.remove(%ourCopy);
         %ourCopy.delete();
+    } else {
+        %ourCopy.sofar = %sofar;
+        %ourCopy.total = %total;
     }
-    %ourCopy.sofar = %sofar;
-    %ourCopy.total = %total;
     %this.refreshCollections();
 };
 function HudScoresContent::getCollectionObject(%this, %name) {
@@ -782,13 +790,16 @@ function HudScoresContent::refreshCollections(%this) {
             %append = formatFloat("%1.3f", %ratio) @ "\t" @ %collection.getId();
             if (!(%stringToSort $= "")) {
                 %stringToSort = %stringToSort @ " " @ %append;
+            } else {
+                %stringToSort = %append;
             }
-            %stringToSort = %append;
+        } else {
+            if (!(%completed $= "")) {
+                %completed = %completed @ " " @ %collection.getId();
+            } else {
+                %completed = %collection.getId();
+            }
         }
-        if (!(%completed $= "")) {
-            %completed = %completed @ " " @ %collection.getId();
-        }
-        %completed = %collection.getId();
         %i = (%i - 1.0);
     }
     %stringToSort = SortWords(%stringToSort);
@@ -934,11 +945,13 @@ function PrivSpaceHud::onClose(%this) {
 function PrivSpaceHudToggleOP::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "OPon")) {
         PrivSpaceHud.showOP();
+    } else {
+        if ((getWord(%url, 0) $= "OPoff")) {
+            PrivSpaceHud.hideOP();
+        } else {
+            error("Url in PrivSpaceHud.toggleOP is broken.<-" @ getScopeName());
+        }
     }
-    if ((getWord(%url, 0) $= "OPoff")) {
-        PrivSpaceHud.hideOP();
-    }
-    error("Url in PrivSpaceHud.toggleOP is broken.<-" @ getScopeName());
 };
 function PrivSpaceHud::enableOPlink(%this) {
     %this.toggleOP.setVisible(1);
@@ -972,9 +985,10 @@ function PrivSpaceHud::updateMusic(%this, %newStreamID) {
             error("Stream ID (\"" @ %newStreamID @ "\") not in music stream id -> name mapping! <-" @ getScopeName());
             %newStreamName = %newStreamID;
         }
+    } else {
+        warn("the music stream ID map was not initialized.  This should have been done in GameConnection::etsInit()");
+        %newStreamName = %newStreamID;
     }
-    warn("the music stream ID map was not initialized.  This should have been done in GameConnection::etsInit()");
-    %newStreamName = %newStreamID;
     OPSpaceHud.updateMusic(%newStreamName);
     NonOPSpaceHud.updateMusic(%newStreamName);
 };
@@ -1137,9 +1151,10 @@ function OPSpaceHud::MusicSelected(%this) {
         if (isObject($musicStreamNameMap)) {
             log("communication", "debug", "getting the stream name from the musicStreamMap which is" @ " " @ $musicStreamNameMap);
             %streamID = $musicStreamNameMap.get(%selection);
+        } else {
+            warn("the MusicStreamMap variable is not defined. We cannot get the music stream mapping.. so using PrivateSpace (the default)");
+            %streamID = "PrivateSpace";
         }
-        warn("the MusicStreamMap variable is not defined. We cannot get the music stream mapping.. so using PrivateSpace (the default)");
-        %streamID = "PrivateSpace";
         echo("setting music stream id = " @ %streamID);
         customSpace::SetMusicStreamID(%streamID);
     }
@@ -1156,8 +1171,9 @@ function OPSpaceHud::updateMusic(%this, %newStreamName) {
             warn("Some music streams are loaded, but the latest update is not in the dropdown!<-" @ getScopeName());
         }
         %this.MusicStreamDropdown.SetSelected(%index);
+    } else {
+        warn("Tried to set selected music stream on updating OPSpaceHud settings, but the music wasn't loaded!<-" @ getScopeName());
     }
-    warn("Tried to set selected music stream on updating OPSpaceHud settings, but the music wasn't loaded!<-" @ getScopeName());
 };
 function OPSpaceHud::updateStreams(%this, %streamList) {
     %this.MusicStreamDropdown.fillFromList(%streamList);
@@ -1173,12 +1189,14 @@ function OPSpaceHud::updateSettings(%this, %name, %description, %accessMode) {
     %this.accessLevel = %accessMode;
     if ((%accessMode $= "Open")) {
         %this.AccessOptAnyone.performClick();
+    } else {
+        if ((%accessMode $= "FriendsOnly")) {
+            %this.AccessOptFriends.performClick();
+        } else {
+            %this.accessLevel = "Open";
+            %this.AccessOptAnyone.performClick();
+        }
     }
-    if ((%accessMode $= "FriendsOnly")) {
-        %this.AccessOptFriends.performClick();
-    }
-    %this.accessLevel = "Open";
-    %this.AccessOptAnyone.performClick();
     %this.spaceNameField.setText(%name);
 };
 function NonOPSpaceHud::setup(%this) {
@@ -1300,8 +1318,9 @@ function NonOPSpaceHud::setup(%this) {
 function NonOPSpaceHud::updateSettings(%this, %name, %description, %owner) {
     if (!(%owner $= "")) {
         %this.spaceOwnerField.setText("<a:owner " @ munge(%owner) @ ">" @ %owner @ "</a>");
+    } else {
+        %this.spaceOwnerField.setText("<a:noowner >Take Control</a>");
     }
-    %this.spaceOwnerField.setText("<a:noowner >Take Control</a>");
     %this.spaceDescField.setText(%description);
     %this.spaceNameField.setText(%name);
 };
@@ -1320,16 +1339,18 @@ function GuiPopUp2MenuCtrl::fillFromList(%this, %list) {
 function NonOPSpaceHudOwnerField::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "noowner")) {
         CustomSpaceSettings::changeSpaceOwnership(CustomSpaceClient::GetSpaceImIn(), 1);
-    }
-    if ((getWord(%url, 0) $= "owner")) {
-        onLeftClickPlayerName(unmunge(getWords(%url, 1)), "");
+    } else {
+        if ((getWord(%url, 0) $= "owner")) {
+            onLeftClickPlayerName(unmunge(getWords(%url, 1)), "");
+        }
     }
 };
 function NonOPSpaceHudOwnerField::onRightURL(%this, %url) {
     if ((getWord(%url, 0) $= "noowner")) {
-    }
-    if ((getWord(%url, 0) $= "owner")) {
-        onRightClickPlayerName(unmunge(getWords(%url, 1)));
+    } else {
+        if ((getWord(%url, 0) $= "owner")) {
+            onRightClickPlayerName(unmunge(getWords(%url, 1)));
+        }
     }
 };
 function CustomSpaceSettings::saveSettings(%spaceName, %description, %accessMode, %password, %audioStream, %videoStream) {
@@ -1421,14 +1442,17 @@ function ChangeSpaceOwnershipRequest::onDone(%this) {
     log("network", "info", getScopeName() @ ":" @ %status @ " - msg: " @ %statusMsg);
     if ((%status $= "success")) {
         HudTabs.selectTabWithName("private space");
+    } else {
+        if ((trim(getWords(%statusMsg, 0, 1)) $= "fail already-owned")) {
+            handleSystemMessage("msgInfoMessage", "Sorry, the space is already owned by someone else.");
+        } else {
+            if ((trim(getWords(%statusMsg, 0, 1)) $= "fail respekt")) {
+                handleSystemMessage("msgInfoMessage", "Sorry, you must be at least a " @ getWord(%statusMsg, 2) @ " to own this space.");
+            } else {
+                handleSystemMessage("msgInfoMessage", "Sorry, you couldn't change the ownership of the space.");
+            }
+        }
     }
-    if ((trim(getWords(%statusMsg, 0, 1)) $= "fail already-owned")) {
-        handleSystemMessage("msgInfoMessage", "Sorry, the space is already owned by someone else.");
-    }
-    if ((trim(getWords(%statusMsg, 0, 1)) $= "fail respekt")) {
-        handleSystemMessage("msgInfoMessage", "Sorry, you must be at least a " @ getWord(%statusMsg, 2) @ " to own this space.");
-    }
-    handleSystemMessage("msgInfoMessage", "Sorry, you couldn't change the ownership of the space.");
     %this.schedule(0, "delete");
 };
 function CustomSpaceSettings::onError(%this, %unused, %errMsg) {

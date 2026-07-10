@@ -5,8 +5,9 @@ function StringMap::hasValue(%this, %value) {
     %idx = %this.findValue(%value);
     if ((%idx < 0.0)) {
         return 0;
+    } else {
+        return 1;
     }
-    return 1;
 };
 function StringMap::saveToLocalStorage(%this, %fileName) {
     %fileName = %this.getLocalStorageFilename(%fileName);
@@ -27,8 +28,9 @@ function StringMap::saveTo(%this, %fileName) {
         %file.close();
         %ret = 1;
         (%n < %this.size());
+    } else {
+        error(getScopeName() @ " " @ "- can't open file for write:" @ " " @ %fileName);
     }
-    error(getScopeName() @ " " @ "- can't open file for write:" @ " " @ %fileName);
     %file.delete();
     return %ret;
 };
@@ -50,8 +52,9 @@ function StringMap::loadFrom(%this, %fileName, %errorLogLevel) {
         %file.close();
         %ret = 1;
         !%file.isEOF();
+    } else {
+        log("general", %errorLogLevel, getScopeName() @ " " @ "- can't open file for read:" @ " " @ %fileName @ " " @ getTrace());
     }
-    log("general", %errorLogLevel, getScopeName() @ " " @ "- can't open file for read:" @ " " @ %fileName @ " " @ getTrace());
     %file.delete();
     return %ret;
 };

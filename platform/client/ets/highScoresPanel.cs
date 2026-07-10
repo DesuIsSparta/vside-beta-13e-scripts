@@ -117,18 +117,20 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
             if (%global) {
                 %hrGameName = HumanReadableGameNamesMap.get(geHighScoresPanel.gameName);
                 %text = "You have no score for " @ %hrGameName @ ".";
+            } else {
+                %text = "You have no score on this machine.";
             }
-            %text = "You have no score on this machine.";
             %tab.noScoreText.setText(%text);
             %tab.noScoreText.setVisible(1);
             %tab.userScoresPanel.setVisible(0);
+        } else {
+            %tab.usernameField.setText("<clip:111>" @ $Player::Name);
+            %tab.bestScoreField.setText(%userScore);
+            %tab.rankField.setText(%userRanking);
+            %tab.dateField.setText(%userScoreDate);
+            %tab.noScoreText.setVisible(0);
+            %tab.userScoresPanel.setVisible(1);
         }
-        %tab.usernameField.setText("<clip:111>" @ $Player::Name);
-        %tab.bestScoreField.setText(%userScore);
-        %tab.rankField.setText(%userRanking);
-        %tab.dateField.setText(%userScoreDate);
-        %tab.noScoreText.setVisible(0);
-        %tab.userScoresPanel.setVisible(1);
     }
 };
 function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name) {

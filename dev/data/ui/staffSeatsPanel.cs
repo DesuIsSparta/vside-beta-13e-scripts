@@ -31,8 +31,9 @@ function waitForStandingBeforeSit(%seatNumber) {
     if ($player.isSitting()) {
         cancel($staffSeatsWaitingSchedule);
         $staffSeatsWaitingSchedule = schedule($staffSeatsWaitForStandingRecheckDelay, 0, waitForStandingBeforeSit, %seatNumber);
+    } else {
+        schedule(1000, 0, doNextSeatSit, %seatNumber);
     }
-    schedule(1000, 0, doNextSeatSit, %seatNumber);
 };
 function staffSeatsPanel::testSeat(%this, %seatNumber) {
     cancel($staffSeatsWaitingSchedule);
@@ -40,8 +41,9 @@ function staffSeatsPanel::testSeat(%this, %seatNumber) {
     if ($player.isSitting()) {
         SendStandCommand(1);
         $staffSeatsWaitingSchedule = schedule($staffSeatsWaitForStandingRecheckDelay, 0, waitForStandingBeforeSit, %seatNumber);
+    } else {
+        doNextSeatSit(%seatNumber);
     }
-    doNextSeatSit(%seatNumber);
 };
 function staffSeatsPanel::testNextSeat(%this) {
     if (($staffSeatsPanel_TOTALNUM > 0.0)) {

@@ -42,8 +42,9 @@ function initAdLogFile() {
         %file.writeLine("");
         %file.close();
         echo("AdLog started:" @ " " @ $adLogFileName);
+    } else {
+        echo("Error opening logfile:" @ " " @ $adLogFileName);
     }
-    echo("Error opening logfile:" @ " " @ $adLogFileName);
     %file.delete();
     return $adLogFileName;
 };
@@ -53,9 +54,10 @@ function appendAdLogLine(%line) {
     if (%file.openForAppend(%fn)) {
         %file.writeLine(%line);
         %file.close();
+    } else {
+        echo("Error opening logfile:" @ " " @ %fn);
+        echo(%line);
     }
-    echo("Error opening logfile:" @ " " @ %fn);
-    echo(%line);
     %file.delete();
     return;
 };
@@ -153,8 +155,9 @@ function AdManager::think(%this) {
     }
     if ((%this.periodSecs > 0.0)) {
         %this.schedule((%this.periodSecs * 1000.0), think);
+    } else {
+        echo("Putting AdManager to sleep..");
     }
-    echo("Putting AdManager to sleep..");
     return;
 };
 function AdManager::newAdGroup(%this) {

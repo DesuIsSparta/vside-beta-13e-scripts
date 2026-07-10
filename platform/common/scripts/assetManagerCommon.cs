@@ -24,10 +24,11 @@ function AssetManager::getPackageOrder() {
         %map.put("projects/vside/worlds/lounge.zip", 3);
         %map.put("projects/vside/worlds/raijuku.zip", 4);
         %map.put("projects/vside/worlds/lga.zip", 2);
+    } else {
+        %map.put("projects/vside/worlds/lounge.zip", 2);
+        %map.put("projects/vside/worlds/raijuku.zip", 3);
+        %map.put("projects/vside/worlds/lga.zip", 4);
     }
-    %map.put("projects/vside/worlds/lounge.zip", 2);
-    %map.put("projects/vside/worlds/raijuku.zip", 3);
-    %map.put("projects/vside/worlds/lga.zip", 4);
     %map.put("projects/common.zip", 0);
     return %map;
 };
@@ -127,30 +128,38 @@ function AssetManager::rehashSet(%map) {
 function AssetManager::cityToPackage(%str) {
     if ((%str $= "nv")) {
         return "projects/vside/worlds/lounge.zip";
+    } else {
+        if ((%str $= "lga")) {
+            return "projects/vside/worlds/lga.zip";
+        } else {
+            if ((%str $= "rj")) {
+                return "projects/vside/worlds/raijuku.zip";
+            } else {
+                if ((%str $= "gw")) {
+                    return "projects/vside/worlds/gateway.zip";
+                } else {
+                    return "";
+                }
+            }
+        }
     }
-    if ((%str $= "lga")) {
-        return "projects/vside/worlds/lga.zip";
-    }
-    if ((%str $= "rj")) {
-        return "projects/vside/worlds/raijuku.zip";
-    }
-    if ((%str $= "gw")) {
-        return "projects/vside/worlds/gateway.zip";
-    }
-    return "";
 };
 function AssetManager::packageToCity(%str) {
     if ((%str $= "lounge.zip")) {
         return "nv";
+    } else {
+        if ((%str $= "lga.zip")) {
+            return "lga";
+        } else {
+            if ((%str $= "raijuku.zip")) {
+                return "rj";
+            } else {
+                if ((%str $= "gateway.zip")) {
+                    return "gw";
+                } else {
+                    return "";
+                }
+            }
+        }
     }
-    if ((%str $= "lga.zip")) {
-        return "lga";
-    }
-    if ((%str $= "raijuku.zip")) {
-        return "rj";
-    }
-    if ((%str $= "gateway.zip")) {
-        return "gw";
-    }
-    return "";
 };

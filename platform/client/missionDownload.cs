@@ -98,11 +98,12 @@ function handleLoadInfoMessage(%unused, %msgString) {
             %line = (%line + 1.0);
         }
         LoadingGui.qLineCount = (%line < LoadingGui.qLineCount) @ 0;
-    }
-    if (PlayGui.isAwake()) {
-        LoadingGui.setTransitioning(1);
-        Canvas.setContent("LoadingGui");
-        LoadingGui.setScreenshotBitmap($TransitionScreenshot);
+    } else {
+        if (PlayGui.isAwake()) {
+            LoadingGui.setTransitioning(1);
+            Canvas.setContent("LoadingGui");
+            LoadingGui.setScreenshotBitmap($TransitionScreenshot);
+        }
     }
 };
 function handleLoadDescriptionMessage(%unused, %msgString) {

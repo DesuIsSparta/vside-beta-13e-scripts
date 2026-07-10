@@ -9,8 +9,9 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName) {
     $CurrentMission = %missionName;
     if ($CacheFlagIsSet) {
         %crc = ServerConnection.getCacheCRC(%missionName);
+    } else {
+        %crc = -(1.0);
     }
-    %crc = -(1.0);
     log("network", "debug", "client cache CRC:" @ " " @ %crc);
     if ($CacheFlagIsSet) {
     }
@@ -33,8 +34,9 @@ function clientCmdStartCache(%missionSequence, %missionName, %musicTrack) {
     %success = ServerConnection.startCache(%missionName);
     if (%success) {
         log("network", "info", "cache writing started successfully");
+    } else {
+        log("network", "error", "failed to open cache file for write: " @ %missionName);
     }
-    log("network", "error", "failed to open cache file for write: " @ %missionName);
     commandToServer('StartCacheAck', %missionSequence);
 };
 function clientCmdLoadLocalCache(%missionSequence, %missionName, %musicTrack) {
@@ -61,9 +63,10 @@ function clientCmdStartGhostAlways(%missionSequence, %missionName) {
     }
     if (!$GeneratingCacheNow) {
         ServerConnection.loadCachePhase2(%missionSequence, %missionName);
+    } else {
+        log("network", "debug", "not using cache, acking server to start ghost always phase");
+        commandToServer('StartGhostAlwaysAck', %missionSequence);
     }
-    log("network", "debug", "not using cache, acking server to start ghost always phase");
-    commandToServer('StartGhostAlwaysAck', %missionSequence);
 };
 function onCachePhase2Started(%missionSequence, %ghostCount) {
     log("network", "info", "loading cache phase2 started with" @ " " @ %ghostCount @ " " @ "ghosts in the cache");
@@ -81,8 +84,9 @@ function onGhostAlwaysStarted(%ghostCount) {
     if ($CacheFlagIsSet) {
     }
     if (!$GeneratingCacheNow) {
+    } else {
+        $GhostsRecvd = 0;
     }
-    $GhostsRecvd = 0;
 };
 function onGhostAlwaysObjectReceived() {
     $GhostsRecvd = ($GhostsRecvd + 1.0);
@@ -108,12 +112,13 @@ function clientCmdMissionStartPhase3(%missionSequence, %missionName) {
     if ($NoDisplay) {
         log("initialization", "debug", "$NoDisplay set, not lighting scene");
         sceneLightingComplete();
-    }
-    if (lightScene("sceneLightingComplete", "")) {
-        log("initialization", "info", "Lighting mission...");
-        schedule(1, 0, "updateLightingProgress");
-        onMissionDownloadPhase3(%missionName);
-        $lightingMission = 1;
+    } else {
+        if (lightScene("sceneLightingComplete", "")) {
+            log("initialization", "info", "Lighting mission...");
+            schedule(1, 0, "updateLightingProgress");
+            onMissionDownloadPhase3(%missionName);
+            $lightingMission = 1;
+        }
     }
 };
 function updateLightingProgress() {

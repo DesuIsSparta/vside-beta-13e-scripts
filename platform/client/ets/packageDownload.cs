@@ -49,15 +49,16 @@ function packageDownload::reinit(%this, %missingArray) {
     %newMissingArray.push_back(%currentKey, 0);
     if ((%missingArray.getKey(0) $= %currentKey)) {
         echo("Currently downloading " @ %currentKey @ ". Will truncate current download session.");
+    } else {
+        %i = 0;
+        while ((%i < %missingArray.count())) {
+            %key = %missingArray.getKey(%i);
+            %newStatusMap.put(%key, "incomplete");
+            %newMissingArray.push_back(%key, (%i + 1.0));
+            %i = (%i + 1.0);
+        }
+        %newMissingArray.sorta();
     }
-    %i = 0;
-    while ((%i < %missingArray.count())) {
-        %key = %missingArray.getKey(%i);
-        %newStatusMap.put(%key, "incomplete");
-        %newMissingArray.push_back(%key, (%i + 1.0));
-        %i = (%i + 1.0);
-    }
-    %newMissingArray.sorta();
     echo("Shifting currentItem to start. Putting new lists in place.");
     %this.wasInterrupted = (%i < %missingArray.count()) @ 1;
     %this.currentItem = 1;
@@ -116,8 +117,9 @@ function packageDownload::getEstimatedSize(%this) {
     while ((%i < %this.statusMap.size())) {
         if ((%this.statusMap.getKey(%i) $= $AssetManager::COMMONPACKAGE)) {
             %total = (%total + $PackageDownload::GuestimatedCommonSize);
+        } else {
+            %total = (%total + $PackageDownload::GuestimatedSize);
         }
-        %total = (%total + $PackageDownload::GuestimatedSize);
         %i = (%i + 1.0);
     }
     return %total;
@@ -198,16 +200,18 @@ function packageDownload::onError(%this, %request, %errNo) {
         echo("Retrying timed-out file " @ %request.getDownloadFile() @ " (Attempt #" @ (%this.retryCount + 1.0) @ ")");
         %this.retryCount = (%this.retryCount + 1.0);
         %request.restart();
+    } else {
+        %this.statusMap.put(%request.getDownloadFile(), "error");
+        %request.schedule(0, delete);
+        %this.downloadFile();
     }
-    %this.statusMap.put(%request.getDownloadFile(), "error");
-    %request.schedule(0, delete);
-    %this.downloadFile();
 };
 function packageDownload_onCompletedDownload(%request, %result) {
     if ((%result == 0.0)) {
         packageDownload.onDone(%request.packageName);
+    } else {
+        packageDownload.onError(%request, %result);
     }
-    packageDownload.onError(%request, %result);
 };
 function packageDownload::onDone(%this, %packageName) {
     echo("Got file " @ %packageName);
@@ -229,13 +233,14 @@ function packageDownload::onProgress(%this, %this2, %dltotal, %dlnow) {
             $seenUnThrottleMessage = 0;
         }
         %this.CURLObject.setMaxDownloadSpeed($PackageDownload::ConcurrentTextureMaxBytes);
+    } else {
+        if (!$seenUnThrottleMessage) {
+            echo("Texture DownloadQueuedCount is < " @ $PackageDownload::ConcurrentTextureThreshold @ ". Un-throttling city download.");
+            $seenUnThrottleMessage = 1;
+            $seenThrottleMessage = 0;
+        }
+        %this.CURLObject.setMaxDownloadSpeed(0);
     }
-    if (!$seenUnThrottleMessage) {
-        echo("Texture DownloadQueuedCount is < " @ $PackageDownload::ConcurrentTextureThreshold @ ". Un-throttling city download.");
-        $seenUnThrottleMessage = 1;
-        $seenThrottleMessage = 0;
-    }
-    %this.CURLObject.setMaxDownloadSpeed(0);
 };
 function packageDownload::getCurrentItem(%this) {
     return %this.missingPackages.getKey((%this.currentItem - 1.0));
@@ -261,8 +266,9 @@ function packageDownload::getCurrentCityName(%this) {
 function packageDownload::getItemStatus(%this, %package) {
     if (isObject(%this.statusMap)) {
         return %this.statusMap.get(%package);
+    } else {
+        return "incomplete";
     }
-    return "incomplete";
 };
 function packageDownload::getCurrentItemStatus(%this) {
     return %this.statusMap.get(%this.getCurrentItem());
@@ -283,8 +289,9 @@ function packageDownload::getPercentComplete(%this, %city) {
     }
     if ((%package $= $AssetManager::COMMONPACKAGE)) {
         %percent = (%currentDownloaded / $PackageDownload::GuestimatedCommonSize);
+    } else {
+        %percent = (%currentDownloaded / $PackageDownload::GuestimatedSize);
     }
-    %percent = (%currentDownloaded / $PackageDownload::GuestimatedSize);
     return %percent;
 };
 function packageDownload::getStatus(%this) {
@@ -298,8 +305,9 @@ function packageDownload::getStatusForCity(%this, %city) {
     }
     if ((%common_status $= "") || (%city $= "gw") || (%common_status $= "done")) {
         return "done";
+    } else {
+        return %status;
     }
-    return %status;
 };
 function checkForPackageUpdates(%startDownload) {
     if (!isValidHostAddress($Net::DownloadHost)) {
@@ -313,8 +321,9 @@ function checkForPackageUpdates(%startDownload) {
     }
     if (%startDownload) {
         %request.startDownload = %startDownload;
+    } else {
+        %request.startDownload = 0;
     }
-    %request.startDownload = 0;
     %request.setURL($Asset::DownloadURL @ "/checksums_resp.txt");
     %request.start();
 };
@@ -355,15 +364,16 @@ function packageDownloadCheck::onDone(%this) {
         MissionCleanup.add(%tempOrderArray);
     }
     %n = 0;
-    while ((%n < %orderMap.size())) {
+    if ((%n < %orderMap.size())) {
         %key = %map.getKey(%n);
         if ((%key $= "")) {
+        } else {
+            %remoteValue = %this.getValue(%key);
+            if (!packageUpToDate(%map.get(%key), %remoteValue)) {
+                %tempOrderArray.push_back(%key, %orderMap.get(%key));
+            }
+            %n = (%n + 1.0);
         }
-        %remoteValue = %this.getValue(%key);
-        if (!packageUpToDate(%map.get(%key), %remoteValue)) {
-            %tempOrderArray.push_back(%key, %orderMap.get(%key));
-        }
-        %n = (%n + 1.0);
     }
     %tempOrderArray.sorta();
     %n = 0;

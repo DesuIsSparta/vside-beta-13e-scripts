@@ -335,6 +335,7 @@ function MessageBox::reflow(%this) {
 };
 function MessageBox::close(%this) {
     if (%this.doCallbackOnEscape) {
+    } else {
     }
     %callback = "";
     %this.callback[(%this.numButtons - 1.0)];
@@ -358,6 +359,7 @@ function MessageBox_SetDontShow(%key, %val) {
 };
 function MessageBox_GetKey(%title, %message, %key) {
     if (!(%key $= "")) {
+    } else {
     }
     %key = stripVeryAgressively(%title @ "\t" @ %message);
     %key;

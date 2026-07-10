@@ -2,8 +2,9 @@ $CSLayoutSelector::NumLayouts = 3;
 function CSLayoutSelector::toggle(%this) {
     if (%this.isVisible()) {
         %this.close();
+    } else {
+        %this.open();
     }
-    %this.open();
 };
 function CSLayoutSelector::open(%this) {
     if ($ETS::devMode) {
@@ -103,18 +104,22 @@ function CSLayoutSelectorLink::onURL(%this, %url) {
     %args = restWords(%url);
     if ((%cmd $= "CLONE")) {
         CSLayoutSelector.cloneLayout(%args);
-    }
-    if ((%cmd $= "MODE")) {
-        CSLayoutSelector.setMode(trim(%args));
-    }
-    if ((%cmd $= "ERASE")) {
-        customSpace::ConfirmEraseLayout(CSLayoutSelector.selectedLayout);
-    }
-    if ((%cmd $= "DEFAULT")) {
-        customSpace::ConfirmResetLayoutToDefault(CSLayoutSelector.selectedLayout);
-    }
-    if ((%cmd $= "SAVE_AS_DEFAULT")) {
-        customSpace::ConfirmSaveLayoutAsDefault(CSLayoutSelector.selectedLayout);
+    } else {
+        if ((%cmd $= "MODE")) {
+            CSLayoutSelector.setMode(trim(%args));
+        } else {
+            if ((%cmd $= "ERASE")) {
+                customSpace::ConfirmEraseLayout(CSLayoutSelector.selectedLayout);
+            } else {
+                if ((%cmd $= "DEFAULT")) {
+                    customSpace::ConfirmResetLayoutToDefault(CSLayoutSelector.selectedLayout);
+                } else {
+                    if ((%cmd $= "SAVE_AS_DEFAULT")) {
+                        customSpace::ConfirmSaveLayoutAsDefault(CSLayoutSelector.selectedLayout);
+                    }
+                }
+            }
+        }
     }
 };
 function CSLayoutSelector::setMode(%this, %mode) {
@@ -125,13 +130,14 @@ function CSLayoutSelector::setMode(%this, %mode) {
         %eraseLink = "";
         %defaultLink = "";
         %this.layMode = "COPY";
+    } else {
+        %titleText = "<color:ffffff>Layouts";
+        %descText = "<color:ffffff>Use different layouts for your space!";
+        %copyLink = "<a:gamelink MODE COPY>[copy]</a>";
+        %eraseLink = "<a:gamelink ERASE>[erase]</a>";
+        %defaultLink = "<a:gamelink DEFAULT>[default]</a>";
+        %this.layMode = "";
     }
-    %titleText = "<color:ffffff>Layouts";
-    %descText = "<color:ffffff>Use different layouts for your space!";
-    %copyLink = "<a:gamelink MODE COPY>[copy]</a>";
-    %eraseLink = "<a:gamelink ERASE>[erase]</a>";
-    %defaultLink = "<a:gamelink DEFAULT>[default]</a>";
-    %this.layMode = "";
     CSLayoutSelectorTitleText.setText(%titleText);
     CSLayoutSelectorDescText.setText(%descText);
     CSLayoutSelectorCopyLink.setText(%copyLink);
@@ -178,8 +184,9 @@ function CSLayoutSelector::copyLayout(%this, %layoutFrom, %layoutTo, %texturesCh
     %title = strreplace(%title, "[DST]", (%layoutTo + 1.0));
     if (!(%texturesChnged $= 1)) {
         %body = %texturesChnged[$MsgCat::custSpace TAB "LAYOUT_COPY" @ "BODY"];
+    } else {
+        %body = $MsgCat::custSpace["LAYOUT_COPY","BODY_LOSE_TEX"];
     }
-    %body = $MsgCat::custSpace["LAYOUT_COPY","BODY_LOSE_TEX"];
     %body = strreplace(%body, "[SRC]", (%layoutFrom + 1.0));
     %body = strreplace(%body, "[DST]", (%layoutTo + 1.0));
     %normalModeCmd = "CSLayoutSelector.setMode(\"\");";
@@ -224,8 +231,9 @@ function customSpace::ConfirmSaveLayoutAsDefault(%layoutIdx) {
     %body = "Do you want to make layout " @ (%layoutIdx + 1.0) @ " in your current space the default layout " @ (%layoutIdx + 1.0) @ " for new apartments of";
     if ($StandAlone) {
         %body = %body @ " type " @ MissionInfo.modelID;
+    } else {
+        %body = %body @ " this type";
     }
-    %body = %body @ " this type";
     %body = %body @ "? The previous default layout " @ (%layoutIdx + 1.0) @ " will be replaced locally.";
     %cbOkay = "csSaveLayoutAsDefault(" @ %layoutIdx @ ");";
     %cbCancel = "";

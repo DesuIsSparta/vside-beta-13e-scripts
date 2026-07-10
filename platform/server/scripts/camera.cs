@@ -10,19 +10,21 @@ function Observer::onTrigger(%this, %obj, %unused, %state) {
     }
     %client = %obj.getControllingClient();
     if ((%obj.mode $= "Observer")) {
-    }
-    if ((%obj.mode $= "Corpse")) {
-        %client.spawnPlayer();
-        %this.setMode(%obj, "Observer");
+    } else {
+        if ((%obj.mode $= "Corpse")) {
+            %client.spawnPlayer();
+            %this.setMode(%obj, "Observer");
+        }
     }
 };
 function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3) {
     if ((%mode $= "Observer")) {
         %obj.setFlyMode();
-    }
-    if ((%mode $= "Corpse")) {
-        %transform = %arg1.getTransform();
-        %obj.setOrbitMode(%arg1, %transform, 0.5, 4.5, 4.5);
+    } else {
+        if ((%mode $= "Corpse")) {
+            %transform = %arg1.getTransform();
+            %obj.setOrbitMode(%arg1, %transform, 0.5, 4.5, 4.5);
+        }
     }
     %obj.mode = %mode;
 };

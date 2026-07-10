@@ -28,9 +28,10 @@ function walk() {
         logout(0);
         WorldMap.exit();
         schedule(6000, 0, doLogin);
+    } else {
+        schedule(5000, 0, stopAndTalk);
+        schedule(10000, 0, approveFriendRequests);
     }
-    schedule(5000, 0, stopAndTalk);
-    schedule(10000, 0, approveFriendRequests);
 };
 function stopAndTalk() {
     $mvYawLeftSpeed = 0;
@@ -49,14 +50,16 @@ function stopAndTalk() {
         if (!$videoURLUpdated) {
             updateApartment();
         }
+    } else {
+        if (($failureCount == 30.0)) {
+            echo("LOAD: Giving up. Lost PChat object.");
+            echo("LOAD: Quit()-ing...");
+            logoffAndQuit();
+        } else {
+            echo("LOAD: Lost PChat... Gonna try again.");
+            $failureCount = ($failureCount + 1.0);
+        }
     }
-    if (($failureCount == 30.0)) {
-        echo("LOAD: Giving up. Lost PChat object.");
-        echo("LOAD: Quit()-ing...");
-        logoffAndQuit();
-    }
-    echo("LOAD: Lost PChat... Gonna try again.");
-    $failureCount = ($failureCount + 1.0);
     schedule(5000, 0, walk);
 };
 function logoffAndQuit() {

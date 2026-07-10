@@ -7,6 +7,7 @@ function ClientCmdEnterLeaveSpace(%internalName, %isEnter) {
 };
 function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter) {
     if (%isEnter) {
+    } else {
     }
     %dry = %this.onLeaveText;
     %this.onEntryText;
@@ -21,6 +22,7 @@ function SpaceDef::onEnterLeaveDoStore(%this, %isEnter) {
     }
     if (%isEnter) {
         clientCmdOnEnterStore(%this.storeID);
+    } else {
+        clientCmdOnLeaveStore(%this.storeID);
     }
-    clientCmdOnLeaveStore(%this.storeID);
 };

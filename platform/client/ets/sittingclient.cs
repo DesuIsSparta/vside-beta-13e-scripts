@@ -46,8 +46,9 @@ function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat)
     }
     if (!(%isKissingSeat $= "")) {
         $player.isKissSeat = 1;
+    } else {
+        $player.isKissSeat = 0;
     }
-    $player.isKissSeat = 0;
 };
 function clientCmdStandRequestSuccessful(%unused) {
     if ((ApplauseMeterGui.applauseMeterUse $= "blockgame")) {

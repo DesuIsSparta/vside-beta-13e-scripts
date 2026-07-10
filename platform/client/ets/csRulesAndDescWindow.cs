@@ -1,8 +1,9 @@
 function CSRulesAndDescWindow::toggle(%this) {
     if (%this.isVisible()) {
         %this.close();
+    } else {
+        %this.open();
     }
-    %this.open();
 };
 function CSRulesAndDescWindow::open(%this) {
     %this.setup();
@@ -55,8 +56,9 @@ function CSRulesAndDescWindow::saveRulesSettings(%this) {
     }
     if ((%doorCode $= "")) {
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", "OPEN", "", "", "");
+    } else {
+        CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", %access, %doorCode, "", "");
     }
-    CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", %access, %doorCode, "", "");
 };
 function CSRulesAndDescWindow::checkSaveRulesSettings(%this) {
     %this.saveRulesSettings();
@@ -71,17 +73,21 @@ function CSRulesAndDescWindow::updateSettings(%this, %accessMode, %password, %de
     %this.accessLevel = strupr(%accessMode);
     if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 0.0)) {
         CSRulesAccessPopup.SetSelected(0);
+    } else {
+        if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 1.0)) {
+            CSRulesAccessPopup.SetSelected(1);
+        } else {
+            if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 2.0)) {
+                CSRulesAccessPopup.SetSelected(2);
+            } else {
+                if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 3.0)) {
+                    CSRulesAccessPopup.SetSelected(2);
+                } else {
+                    %this.accessLevel = "OPEN";
+                }
+            }
+        }
     }
-    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 1.0)) {
-        CSRulesAccessPopup.SetSelected(1);
-    }
-    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 2.0)) {
-        CSRulesAccessPopup.SetSelected(2);
-    }
-    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 3.0)) {
-        CSRulesAccessPopup.SetSelected(2);
-    }
-    %this.accessLevel = "OPEN";
     %this.update();
 };
 function CSRulesAndDescWindow::update(%this) {

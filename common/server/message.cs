@@ -24,7 +24,8 @@ function spamAlert(%client, %speechType) {
         admin::doSystemMessagePlayer(%client.Player, %speechType[$floodFilter::message @ %speechType], 'MsgInfoMessage');
         %ret = %client.isSpamming;
         %client.isSpamming = 1;
+    } else {
+        %client.isSpamming = 0;
     }
-    %client.isSpamming = 0;
     return %ret;
 };

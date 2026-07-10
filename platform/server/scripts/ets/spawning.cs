@@ -92,8 +92,9 @@ function Player::teleportToRandomSpawnSphere(%this) {
     %chosen = "";
     if (!isObject(PlayerDropPoints)) {
         %chosen = EntrySpawn;
+    } else {
+        %chosen = PlayerDropPoints.getObject(getRandom(0, (PlayerDropPoints.getCount() - 1.0)));
     }
-    %chosen = PlayerDropPoints.getObject(getRandom(0, (PlayerDropPoints.getCount() - 1.0)));
     if (!isObject(%chosen)) {
         error("This is all messed up. No known spawn spheres!");
     }

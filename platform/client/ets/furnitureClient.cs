@@ -8,8 +8,9 @@ function getFurnitureSkus() {
         %sku = $Player::furnitureInventory.getKey(%index);
         if ((%index != 0.0)) {
             %skulist = %skulist @ " " @ %sku;
+        } else {
+            %skulist = %sku;
         }
-        %skulist = %sku;
         %index = (%index + 1.0);
     }
     return %skulist;
@@ -117,10 +118,11 @@ function useAnotherFurnitureSku(%sku) {
     if ((%owned == %inUse)) {
         log("inventory", "warn", "No more " @ %sku @ " available");
         return 0;
-    }
-    if ((%owned < %inUse)) {
-        log("inventory", "error", "More of " @ %sku @ " in use than owned!");
-        return 0;
+    } else {
+        if ((%owned < %inUse)) {
+            log("inventory", "error", "More of " @ %sku @ " in use than owned!");
+            return 0;
+        }
     }
     %inUse = (%inUse + 1.0);
     %value = %owned @ " " @ %inUse;
@@ -139,10 +141,11 @@ function putAwayAnotherFurnitureSku(%sku) {
     if ((%inUse == 0.0)) {
         log("inventory", "warn", "No more " @ %sku @ " available");
         return 0;
-    }
-    if ((%inUse < 0.0)) {
-        log("inventory", "error", "Negative number (" @ %inUse @ ") of " @ %sku @ " in use!");
-        return 0;
+    } else {
+        if ((%inUse < 0.0)) {
+            log("inventory", "error", "Negative number (" @ %inUse @ ") of " @ %sku @ " in use!");
+            return 0;
+        }
     }
     %inUse = (%inUse - 1.0);
     %value = %owned @ " " @ %inUse;
@@ -202,8 +205,9 @@ function getOwnedFurniture() {
     %request.setURL(%url);
     if ($StandAlone || $Player::bFakeFurnitureInventory) {
         %request.schedule(1000, "fakeOnDone");
+    } else {
+        %request.start();
     }
-    %request.start();
 };
 function FurnitureRequest::onError(%this, %unused, %unused) {
 };

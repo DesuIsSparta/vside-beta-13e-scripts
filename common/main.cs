@@ -18,7 +18,7 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch) {
     log("initialization", "debug", "find arg: looking for " @ %argToFind);
     %found = 0;
     %i = 1;
-    while ((%i < $Game::argc)) {
+    if ((%i < $Game::argc)) {
         %arg = %i[$Game::argv @ %i];
         %nextArg = "";
         if ((%i < ($Game::argc - 1.0))) {
@@ -32,25 +32,29 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch) {
                     eval(%valToSet @ "=true;");
                     log("initialization", "debug", "setting switch " @ %valToSet);
                     %found = 1;
+                } else {
+                    if (%hasNextArg) {
+                        %evalString = strreplace(%nextArg, "\\", "\\\\");
+                        %evalString = strreplace(%evalString, "\"", "\\\"");
+                        %evalString = "\"" @ %evalString @ "\"";
+                        %evalString = %valToSet @ "=" @ %evalString @ ";";
+                        %evalString = strreplace(%evalString, ";;", ";");
+                        log("initialization", "debug", "evalString: " @ %evalString);
+                        eval(%evalString);
+                        log("initialization", "debug", "setting value " @ %valToSet);
+                        %i[$Game::ArgUsed @ (%i + 1.0)] = (%i[$Game::ArgUsed @ (%i + 1.0)] + 1.0);
+                        %found = 1;
+                    } else {
+                        %found = 0;
+                        error("initialization", "Error: " @ %errorMsg);
+                    }
                 }
-                if (%hasNextArg) {
-                    %evalString = strreplace(%nextArg, "\\", "\\\\");
-                    %evalString = strreplace(%evalString, "\"", "\\\"");
-                    %evalString = "\"" @ %evalString @ "\"";
-                    %evalString = %valToSet @ "=" @ %evalString @ ";";
-                    %evalString = strreplace(%evalString, ";;", ";");
-                    log("initialization", "debug", "evalString: " @ %evalString);
-                    eval(%evalString);
-                    log("initialization", "debug", "setting value " @ %valToSet);
-                    %i[$Game::ArgUsed @ (%i + 1.0)] = (%i[$Game::ArgUsed @ (%i + 1.0)] + 1.0);
-                    %found = 1;
-                }
-                %found = 0;
-                error("initialization", "Error: " @ %errorMsg);
+            } else {
+                %found = 1;
             }
-            %found = 1;
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     return %found;
 };
@@ -96,10 +100,11 @@ function doStart() {
         enableWinConsole(1);
         displayHelp();
         quit();
+    } else {
+        onStart();
+        log("initialization", "info", "Engine initialized...");
+        $Platform::CanSleepInBackground = 1;
     }
-    onStart();
-    log("initialization", "info", "Engine initialized...");
-    $Platform::CanSleepInBackground = 1;
     checkUnusedArgs();
 };
 package Help {

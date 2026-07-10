@@ -29,9 +29,10 @@ function gePaperDollMakins::paperDoll_refresh(%this) {
     if (!isObject($player)) {
         %genderText = "(none)";
         %gender = "X";
+    } else {
+        %genderText = ($player.getGender() $= "f") ? "female" : "male";
+        %gender = $player.getGender();
     }
-    %genderText = ($player.getGender() $= "f") ? "female" : "male";
-    %gender = $player.getGender();
     %text = "";
     %text = %text @ "num F =" @ " " @ %numf;
     %text = %text @ "\n" @ "num M =" @ " " @ %numm;
@@ -106,14 +107,16 @@ function paperDoll_callingTakeCurrentSnapshot() {
     if (($gPaperDoll_CurIndex < ($gPaperDoll_SkuArray.size() - 1.0))) {
         $gPaperDoll_CurIndex = ($gPaperDoll_CurIndex + 1.0);
         paperDoll_prepareNextSnapshot();
+    } else {
+        paperDoll_finishedSnapshots();
     }
-    paperDoll_finishedSnapshots();
 };
 function paperDoll_getBaseFilepath() {
     if (gePaperDollWhichSetup_Client.getValue()) {
         %ret = "platform/client/ui/paperdolls/";
+    } else {
+        %ret = "web/paperdolls/";
     }
-    %ret = "web/paperdolls/";
     return %ret;
 };
 function paperDoll_takeCurrentSnapshot() {
@@ -179,11 +182,13 @@ function paperDoll_CurOutfitSet(%val) {
     %firstChar = getSubStr(%val, 0, 1);
     if ((%firstChar $= "-")) {
         %newVal = ($gPaperDoll_CurIndex + %val);
+    } else {
+        if ((%firstChar $= "+")) {
+            %newVal = ($gPaperDoll_CurIndex + getSubStr(%val, 1, 100));
+        } else {
+            %newVal = %val;
+        }
     }
-    if ((%firstChar $= "+")) {
-        %newVal = ($gPaperDoll_CurIndex + getSubStr(%val, 1, 100));
-    }
-    %newVal = %val;
     paperDoll_prepareOneSnapshot(%newVal);
 };
 function gePaperDollCurOutfitSlider::valueChanged(%this) {
@@ -309,8 +314,9 @@ function paperDoll_generateJSON() {
                     %sku = getWord(%valueSkus, %skunum);
                     if (((%skunum + 1.0) == getWordCount(%valueSkus))) {
                         %file.writeLineIndented("\"" @ %sku @ "\"");
+                    } else {
+                        %file.writeLineIndented("\"" @ %sku @ "\",");
                     }
-                    %file.writeLineIndented("\"" @ %sku @ "\",");
                     %skunum = (%skunum + 1.0);
                 }
                 %file.unindent();
@@ -318,8 +324,9 @@ function paperDoll_generateJSON() {
                 %file.unindent();
                 if (((%valueNum + 1.0) == paperDoll_getParamValuesNum(%gender, %paramNum))) {
                     %file.writeLineIndented("}");
+                } else {
+                    %file.writeLineIndented("},");
                 }
-                %file.writeLineIndented("},");
                 %valueNum = (%valueNum + 1.0);
                 (%skunum < getWordCount(%valueSkus));
             }
@@ -328,8 +335,9 @@ function paperDoll_generateJSON() {
             %file.unindent();
             if (((%paramNum + 1.0) == paperDoll_getParamsNum(%gender))) {
                 %file.writeLineIndented("}");
+            } else {
+                %file.writeLineIndented("},");
             }
-            %file.writeLineIndented("},");
             %paramNum = (%paramNum + 1.0);
             (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum));
         }
@@ -338,8 +346,9 @@ function paperDoll_generateJSON() {
         %file.unindent();
         if (((%n + 1.0) == getWordCount(%genders))) {
             %file.writeLineIndented("}");
+        } else {
+            %file.writeLineIndented("},");
         }
-        %file.writeLineIndented("},");
         %n = (%n + 1.0);
         (%paramNum < paperDoll_getParamsNum(%gender));
     }
@@ -392,8 +401,9 @@ function paperDoll_generateManifest_Recurse(%file, %gender, %initialDepth, %valu
             %file.writeShortTag("filename", "", %imgFilename);
             %file.writeShortTag("skus", "", %skusEntire);
             %file.writeCloseTag("permutation", "");
+        } else {
+            paperDoll_generateManifest_Recurse(%file, %gender, (%initialDepth + 1.0), %valList);
         }
-        paperDoll_generateManifest_Recurse(%file, %gender, (%initialDepth + 1.0), %valList);
         %valueNum = (%valueNum + 1.0);
     }
 };

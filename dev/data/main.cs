@@ -72,9 +72,10 @@ package dev {
         if ($NoDisplay) {
             disableDisplay();
             enableWinConsole(1);
-        }
-        if ($Console) {
-            enableWinConsole(1);
+        } else {
+            if ($Console) {
+                enableWinConsole(1);
+            }
         }
         if ($Game::Compile) {
             $Server::Dedicated = 1;
@@ -87,14 +88,16 @@ package dev {
         if (!($JournalRecordFile $= "")) {
             saveJournal($JournalRecordFile);
             log("initialization", "info", "saving event log to journal: " @ $JournalRecordFile);
-        }
-        if (!($JournalPlayFile $= "")) {
-            playJournal($JournalPlayFile, 0);
-            log("initialization", "info", "playing event log from journal: " @ $JournalPlayFile);
-        }
-        if (!($JournalPlayAndBreakFile $= "")) {
-            playJournal($JournalPlayAndBreakFile, 1);
-            log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
+        } else {
+            if (!($JournalPlayFile $= "")) {
+                playJournal($JournalPlayFile, 0);
+                log("initialization", "info", "playing event log from journal: " @ $JournalPlayFile);
+            } else {
+                if (!($JournalPlayAndBreakFile $= "")) {
+                    playJournal($JournalPlayAndBreakFile, 1);
+                    log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
+                }
+            }
         }
     };
     function onStart() {
@@ -103,20 +106,22 @@ package dev {
         log("initialization", "info", "--------- Initializing MOD: Dev ---------");
         if ($Game::Compile) {
             compileAndQuit();
-        }
-        if ($GenRegistration) {
-            generateRegistrationStart();
-            return;
-        }
-        exec("dev/devDefaults.cs");
-        exec("dev/devPrefs.cs");
-        exec("./initNonReloadable.cs");
-        exec("./initReloadable.cs");
-        if (!($EvalString $= "")) {
-            eval($EvalString);
-        }
-        if (!($ExecScript $= "")) {
-            exec("./" @ $ExecScript);
+        } else {
+            if ($GenRegistration) {
+                generateRegistrationStart();
+                return;
+            } else {
+                exec("dev/devDefaults.cs");
+                exec("dev/devPrefs.cs");
+                exec("./initNonReloadable.cs");
+                exec("./initReloadable.cs");
+                if (!($EvalString $= "")) {
+                    eval($EvalString);
+                }
+                if (!($ExecScript $= "")) {
+                    exec("./" @ $ExecScript);
+                }
+            }
         }
     };
     function onExit() {
@@ -135,9 +140,10 @@ package dev {
         if (%success) {
             log("initialization", "info", "all script files compiled successfully");
             quit();
+        } else {
+            log("initialization", "info", "there were compile errors, exiting with non-zero status");
+            exit(1);
         }
-        log("initialization", "info", "there were compile errors, exiting with non-zero status");
-        exit(1);
     };
     function generateRegistrationStart() {
         %request = safeNewScriptObject("ManagerRequest", "", 0);

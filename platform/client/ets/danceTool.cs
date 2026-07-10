@@ -119,24 +119,28 @@ function danceTool::playNextStep(%this) {
             if ((%this.stepTimes[%n] <= %curDanceTime)) {
                 %playStep = %n;
                 %playStepTime = %this.stepTimes[%n];
+            } else {
+                %tooFar = 1;
             }
-            %tooFar = 1;
             %n = (%n + 1.0);
             if ((%n < %this.numSteps)) {
             }
         }
+    } else {
+        %playStep = 0;
+        !%tooFar;
     }
-    %playStep = 0;
-    !%tooFar;
     if ((%playStep >= (%this.numSteps - 1.0))) {
         if (guiDanceToolCheckBoxLoop.getValue()) {
             %this.play();
             $gDanceToolTimeStart = ($gDanceToolTimeStart + (%curDanceTime - %playStepTime));
+        } else {
+            %this.stop();
         }
-        %this.stop();
-    }
-    if ((%playStep >= 0.0)) {
-        %this.playStep(%playStep);
+    } else {
+        if ((%playStep >= 0.0)) {
+            %this.playStep(%playStep);
+        }
     }
 };
 function danceTool::playStep(%this, %stepNum) {
@@ -193,12 +197,14 @@ function clientCmdDisableDanceTool(%unused) {
 function danceTool::setGender(%this, %gender) {
     if ((%gender $= $player.getGender())) {
         %colorTag = "";
+    } else {
+        %colorTag = "<color:ff0000ff>";
     }
-    %colorTag = "<color:ff0000ff>";
     if ((%gender $= "f")) {
         %genderFull = "females";
+    } else {
+        %genderFull = "males";
     }
-    %genderFull = "males";
     %txt = "Designed for:" @ " " @ %colorTag @ %genderFull;
     guiDanceToolTextGender.setText(%txt);
 };
@@ -248,11 +254,12 @@ function danceTool::initialcontent(%this) {
         %content = %content @ "The Nevada\n";
         %content = %content @ "f\n";
         %content = %content @ "hdnc1 2.61\nhdnc2 2.75\nhdnc3 3.61\nhdnc1 4.108\nidnc1 1.86\nidnc2 1.312\nidnc1 1.28\nidnc2 1.112\nidnc1 0.42\nidnc2 0.656\nidnc1 0.424\nidnc2 0.468\nidnc3 7.984\nhdncb1 5.624\nhdncb2 1.688\nhdncb3 3.594\nhdncb4 1.922\nhdncb1 2.5\nnmjlih 1.938\nnmjspin 4.422\nbusy 0.6\ncool 0.6\nbusy 0.6\ncool 0.6\nbusy 0.6\ncool 0.6\nhdnc1 2.704\n";
+    } else {
+        %content = %content @ $ETS::AppName @ "\n";
+        %content = %content @ "Whack\n";
+        %content = %content @ "m\n";
+        %content = %content @ "nmjlih 0.258\nnmjspin 1.409\nhdnc2 1.004\nhdnc4 1.119\nnmjzstep 0.921\nidnc2 1.128\nhdnc1 0.854\nnmjlih 0.427\nhdnc1 0.409\nnmjlih 0.363\nhdnc1 0.59\nnmjlih 0.501\nhdnc1 0.594\nnmjlih 0.334\nhdnc1 0.449\nidnc2 0.441\nhdnc1 0.445\nidnc2 0.522\nnmjzstep 0.574\npdnc1 0.41\nnmjzstep 0.413\npdnc1 0.454\nnmjzstep 0.48\npdnc1 1.005\nhdnc4 1.419\nhdnc2 0.975\nhdnc4 0.462\nhdnc2 0.1\nnmjspin 0.917\nhdnc2 0.362\nnmjspin 0.524\nnmjlih 0.965\nhdnc1 0.684\nnmjlih 0.355\nhdnc1 0.43\nnmjlih 0.434\nnmjspin 1.46\nhdnc2 1.024\nhdnc4 0.966\npdnc1 0.491\nhdnc4 0.301\npdnc1 0.595\nhdnc4 0.376\npdnc1 0.467\nhdnc4 0.449\npdnc1 0.622\nhdnc4 0.367\npdnc1 0.743\nhdnc4 0.356\npdnc1 0.495\nhdnc4 0.316\npdnc1 0.492\nnmjzstep 0.489\nidnc2 0.448\nnmjzstep 0.585\nidnc2 0.37\nnmjzstep 0.494\nidnc2 0.499\nnmjzstep 0.52\nidnc2 0.438\nnmjzstep 0.465\nidnc2 0.487\nnmjzstep 0.422\nidnc2 0.426\nhdnc1 0.476\nnmjlih 0.446\nhdnc1 0.304\nnmjlih 0.264\nhdnc1 0.226\nnmjlih 0.184\nhdnc1 0.158\nnmjlih 0.204\nhdnc1 0.161\nnmjlih 0.159\nhdnc1 0.188\nnmjlih 0.157\nhdnc1 0.161\nnmjlih 0.137\nhdnc1 0.1\nnmjzstep 1.371\npdnc1 0.24\nnmjzstep 0.138\npdnc1 0.13\nnmjzstep 0.132\npdnc1 0.12\nnmjzstep 0.112\npdnc1 0.125\nnmjzstep 0.1\npdnc1 0.123\nnmjzstep 0.125\npdnc1 0.345\nhdnc4 0.263\nhdnc4 0.1\npdnc1 0.145\npdnc1 0.144\nhdnc4 0.167\npdnc1 0.139\npdnc1 0.163\nhdnc4 0.207\npdnc1 0.225\nhdnc4 0.254\npdnc1 0.199\npdnc1 0.1\nhdnc4 0.173\npdnc1 0.226\nhdnc4 0.4\npdnc1 0.107\nhdnc4 0.126\npdnc1 0.165\npdnc1 0.1\nhdnc4 0.311\nhdnc4 0.141\nhdnc2 0.483\nnmjspin 0.424\nnmjlih 0.397\nnmjspin 0.553\nnmjlih 0.306\nnmjspin 1.68\nnmjspin 1.868\nhdnc4 0.503\nhdnc2 0.39\nhdnc4 0.583\nhdnc2 0.485\nhdnc4 0.494\nhdnc2 0.348\nhdnc4 0.521\nhdnc2 0.35\nhdnc4 0.321\nhdnc4 0.171\npdnc1 0.545\nnmjzstep 0.969\nnmjzstep 0.563\npdnc1 0.388\nnmjzstep 0.51\nhdnc1 0.425\nidnc2 0.222\nidnc2 0.1\nhdnc1 0.223\nidnc2 0.186\nhdnc1 0.184\nidnc2 0.179\nhdnc1 0.124\nidnc2 0.127\nidnc2 0.1\nhdnc1 0.226\nidnc2 0.124\nhdnc1 0.184\nidnc2 0.119\nhdnc1 0.172\nidnc2 0.11\nhdnc1 0.163\nidnc2 0.114\nhdnc1 0.138\nidnc2 0.105\nhdnc1 0.24\nnmjlih 0.355\nhdnc1 0.268\nnmjlih 0.245\nhdnc1 0.209\nnmjlih 0.519\npdnc1 0.181\nhdnc4 0.922\npdnc1 0.489\nnmjzstep 0.399\npdnc1 0.427\nnmjzstep 0.465\npdnc1 0.518\nnmjlih 2.064\nnmjspin 1.808\nhdncb3 2.411\nhdncb2 2.967\nhdncb4 4.251\nhdnc1 2.409\nnmjlih 0.397\nnmjlih 4.307\n";
     }
-    %content = %content @ $ETS::AppName @ "\n";
-    %content = %content @ "Whack\n";
-    %content = %content @ "m\n";
-    %content = %content @ "nmjlih 0.258\nnmjspin 1.409\nhdnc2 1.004\nhdnc4 1.119\nnmjzstep 0.921\nidnc2 1.128\nhdnc1 0.854\nnmjlih 0.427\nhdnc1 0.409\nnmjlih 0.363\nhdnc1 0.59\nnmjlih 0.501\nhdnc1 0.594\nnmjlih 0.334\nhdnc1 0.449\nidnc2 0.441\nhdnc1 0.445\nidnc2 0.522\nnmjzstep 0.574\npdnc1 0.41\nnmjzstep 0.413\npdnc1 0.454\nnmjzstep 0.48\npdnc1 1.005\nhdnc4 1.419\nhdnc2 0.975\nhdnc4 0.462\nhdnc2 0.1\nnmjspin 0.917\nhdnc2 0.362\nnmjspin 0.524\nnmjlih 0.965\nhdnc1 0.684\nnmjlih 0.355\nhdnc1 0.43\nnmjlih 0.434\nnmjspin 1.46\nhdnc2 1.024\nhdnc4 0.966\npdnc1 0.491\nhdnc4 0.301\npdnc1 0.595\nhdnc4 0.376\npdnc1 0.467\nhdnc4 0.449\npdnc1 0.622\nhdnc4 0.367\npdnc1 0.743\nhdnc4 0.356\npdnc1 0.495\nhdnc4 0.316\npdnc1 0.492\nnmjzstep 0.489\nidnc2 0.448\nnmjzstep 0.585\nidnc2 0.37\nnmjzstep 0.494\nidnc2 0.499\nnmjzstep 0.52\nidnc2 0.438\nnmjzstep 0.465\nidnc2 0.487\nnmjzstep 0.422\nidnc2 0.426\nhdnc1 0.476\nnmjlih 0.446\nhdnc1 0.304\nnmjlih 0.264\nhdnc1 0.226\nnmjlih 0.184\nhdnc1 0.158\nnmjlih 0.204\nhdnc1 0.161\nnmjlih 0.159\nhdnc1 0.188\nnmjlih 0.157\nhdnc1 0.161\nnmjlih 0.137\nhdnc1 0.1\nnmjzstep 1.371\npdnc1 0.24\nnmjzstep 0.138\npdnc1 0.13\nnmjzstep 0.132\npdnc1 0.12\nnmjzstep 0.112\npdnc1 0.125\nnmjzstep 0.1\npdnc1 0.123\nnmjzstep 0.125\npdnc1 0.345\nhdnc4 0.263\nhdnc4 0.1\npdnc1 0.145\npdnc1 0.144\nhdnc4 0.167\npdnc1 0.139\npdnc1 0.163\nhdnc4 0.207\npdnc1 0.225\nhdnc4 0.254\npdnc1 0.199\npdnc1 0.1\nhdnc4 0.173\npdnc1 0.226\nhdnc4 0.4\npdnc1 0.107\nhdnc4 0.126\npdnc1 0.165\npdnc1 0.1\nhdnc4 0.311\nhdnc4 0.141\nhdnc2 0.483\nnmjspin 0.424\nnmjlih 0.397\nnmjspin 0.553\nnmjlih 0.306\nnmjspin 1.68\nnmjspin 1.868\nhdnc4 0.503\nhdnc2 0.39\nhdnc4 0.583\nhdnc2 0.485\nhdnc4 0.494\nhdnc2 0.348\nhdnc4 0.521\nhdnc2 0.35\nhdnc4 0.321\nhdnc4 0.171\npdnc1 0.545\nnmjzstep 0.969\nnmjzstep 0.563\npdnc1 0.388\nnmjzstep 0.51\nhdnc1 0.425\nidnc2 0.222\nidnc2 0.1\nhdnc1 0.223\nidnc2 0.186\nhdnc1 0.184\nidnc2 0.179\nhdnc1 0.124\nidnc2 0.127\nidnc2 0.1\nhdnc1 0.226\nidnc2 0.124\nhdnc1 0.184\nidnc2 0.119\nhdnc1 0.172\nidnc2 0.11\nhdnc1 0.163\nidnc2 0.114\nhdnc1 0.138\nidnc2 0.105\nhdnc1 0.24\nnmjlih 0.355\nhdnc1 0.268\nnmjlih 0.245\nhdnc1 0.209\nnmjlih 0.519\npdnc1 0.181\nhdnc4 0.922\npdnc1 0.489\nnmjzstep 0.399\npdnc1 0.427\nnmjzstep 0.465\npdnc1 0.518\nnmjlih 2.064\nnmjspin 1.808\nhdncb3 2.411\nhdncb2 2.967\nhdncb4 4.251\nhdnc1 2.409\nnmjlih 0.397\nnmjlih 4.307\n";
     %this.setContent(%content);
     $gDanceToolInitialized = 1;
 };

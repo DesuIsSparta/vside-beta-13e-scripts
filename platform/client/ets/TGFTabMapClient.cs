@@ -258,15 +258,16 @@ function geTGF_tabs::Maps_changedCityFilter(%this, %cityName) {
             TGFDestinations.resize(getWord(%ext, 0), (getWord(%ext, 1) - TGFDestinations.childHeightDelta));
             TGFDestinations.setTrgPosition(getWord(%pos, 0) @ " " @ (getWord(%pos, 1) + TGFDestinations.childHeightDelta));
             TGFWorldMapMultiCitySmall.setVisible(1);
-        }
-        if ((%cityName $= "")) {
-        }
-        if ((TGFWorldMapMultiCitySmall.isVisible() == 1.0)) {
-            %pos = TGFDestinations.getPosition();
-            %ext = TGFDestinations.getExtent();
-            TGFDestinations.resize(getWord(%ext, 0), (getWord(%ext, 1) + TGFDestinations.childHeightDelta));
-            TGFDestinations.setTrgPosition(getWord(%pos, 0) @ " " @ (getWord(%pos, 1) - TGFDestinations.childHeightDelta));
-            TGFWorldMapMultiCitySmall.setVisible(0);
+        } else {
+            if ((%cityName $= "")) {
+            }
+            if ((TGFWorldMapMultiCitySmall.isVisible() == 1.0)) {
+                %pos = TGFDestinations.getPosition();
+                %ext = TGFDestinations.getExtent();
+                TGFDestinations.resize(getWord(%ext, 0), (getWord(%ext, 1) + TGFDestinations.childHeightDelta));
+                TGFDestinations.setTrgPosition(getWord(%pos, 0) @ " " @ (getWord(%pos, 1) - TGFDestinations.childHeightDelta));
+                TGFWorldMapMultiCitySmall.setVisible(0);
+            }
         }
     }
     %this.Maps_filterDestinations(%this.Maps_filterType, %cityName);
@@ -335,8 +336,9 @@ function geTGF_tabs::Maps_filterDestinations(%this, %type, %city) {
         %destCode = getWord(%dests, %idx);
         if (DestinationList::IsDestinationInMyContiguousSpace(%destCode)) {
             %neardests = %neardests @ " " @ %destCode;
+        } else {
+            %fardests = %fardests @ " " @ %destCode;
         }
-        %fardests = %fardests @ " " @ %destCode;
         %idx = (%idx + 1.0);
     }
     %neardests = trim(%neardests);
@@ -357,10 +359,12 @@ function geTGF_tabs::Maps_filterDestinations(%this, %type, %city) {
             %child.schedule((%bitmapDelay + (%bitmapInc * %idx)), "setBitmap", %thumbnail);
             if (($geTGF::DestinationThumbnails $= "")) {
                 $geTGF::DestinationThumbnails = %thumbnail;
+            } else {
+                $geTGF::DestinationThumbnails = $geTGF::DestinationThumbnails @ " " @ %thumbnail;
             }
-            $geTGF::DestinationThumbnails = $geTGF::DestinationThumbnails @ " " @ %thumbnail;
+        } else {
+            %child.setBitmap(%thumbnail);
         }
-        %child.setBitmap(%thumbnail);
         %child.button.command = "geTGF_tabs::Maps_clickLocation(\"" @ %destCode @ "\");";
         %child.contiguous.visible = DestinationList::IsDestinationInMyContiguousSpace(%destCode);
         %citname = strupr(DestinationList::getDestinationContiguousSpace(%destCode));

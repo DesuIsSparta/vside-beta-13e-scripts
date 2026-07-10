@@ -34,8 +34,9 @@ function VideoRenderer::unloadVideoRenderer(%this) {
     }
     if (%this.getPlayWithPlaylist()) {
         VideoPlaylist.popStream();
+    } else {
+        %this.unload();
     }
-    %this.unload();
     %this.startFModMusic();
     if (!(%this.videoRetryScdId $= "") || (%this.videoRetryScdId != 0.0)) {
         cancel(%this.videoRetryScdId);
@@ -52,8 +53,9 @@ function VideoRenderer::onLoad(%this) {
     }
     if (!fmodIsPlaying()) {
         %this.startMetadataDisplay(0);
+    } else {
+        %this.stopFModMusic();
     }
-    %this.stopFModMusic();
     %this.play();
 };
 function VideoRenderer::onComplete(%this) {
@@ -166,17 +168,19 @@ function VideoRenderer::VideoRetry(%this) {
     }
     if (%this.getPlayWithPlaylist()) {
         error("trying to retry video and playwithplaylist = true - function not supported");
-    }
-    if (%this.getEnabled()) {
-        %this.unload();
-        %this.load();
+    } else {
+        if (%this.getEnabled()) {
+            %this.unload();
+            %this.load();
+        }
     }
 };
 function clientCmdOnMediaTogglerClick() {
     if (CustomSpaceClient::isOwner()) {
         toggleCSPanel(CSMediaDisplay);
+    } else {
+        MusicHud.show();
     }
-    MusicHud.show();
 };
 function FFMPEGRenderer::onUse(%this) {
     if (%this.isServerObject()) {
@@ -184,8 +188,9 @@ function FFMPEGRenderer::onUse(%this) {
     }
     if (CustomSpaceClient::isOwner()) {
         toggleCSPanel(CSMediaDisplay);
+    } else {
+        MusicHud.show();
     }
-    MusicHud.show();
 };
 function clientCmdStartVideoPlaying(%videoGhost, %playIndex, %videoURL) {
     doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, 1);
@@ -210,9 +215,10 @@ function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry) {
             %mediaType = "";
             if (strstr(%videoURL, "v=")) {
                 %mediaType = "VIDEO";
-            }
-            if (strstr(%videoURL, "p=")) {
-                %mediaType = "VIDEO_PLAYLIST";
+            } else {
+                if (strstr(%videoURL, "p=")) {
+                    %mediaType = "VIDEO_PLAYLIST";
+                }
             }
             if (!(%mediaType $= "")) {
                 csRecordMediaView(%videoURL, %mediaType);
@@ -223,10 +229,11 @@ function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry) {
         if (!(%videoURL $= "")) {
             CSMediaDisplay.syncPlayingMediaStream(%videoURL);
         }
-    }
-    if ((%retry > 0.0)) {
-        log("media", "info", "client not ready for doStartVideoPlaying. Rescheduling.");
-        schedule(1000, 0, doStartVideoPlaying, %videoGhost, %playIndex, %videoURL, (%retry - 1.0));
+    } else {
+        if ((%retry > 0.0)) {
+            log("media", "info", "client not ready for doStartVideoPlaying. Rescheduling.");
+            schedule(1000, 0, doStartVideoPlaying, %videoGhost, %playIndex, %videoURL, (%retry - 1.0));
+        }
     }
 };
 function doStartSlavePlaying(%slaveGhost, %videoGhost, %retry) {
@@ -236,10 +243,11 @@ function doStartSlavePlaying(%slaveGhost, %videoGhost, %retry) {
         %slave.unloadVideoRenderer();
         %slave.setMediaFile(%videoGhost);
         %slave.loadVideoRenderer();
-    }
-    if ((%retry > 0.0)) {
-        log("media", "info", "client not ready for doStartSlavePlaying. Rescheduling.");
-        schedule(1000, 0, doStartSlavePlaying, %slaveGhost, %videoGhost, (%retry - 1.0));
+    } else {
+        if ((%retry > 0.0)) {
+            log("media", "info", "client not ready for doStartSlavePlaying. Rescheduling.");
+            schedule(1000, 0, doStartSlavePlaying, %slaveGhost, %videoGhost, (%retry - 1.0));
+        }
     }
 };
 function clientCmdStopVideoPlaying(%videoGhost) {

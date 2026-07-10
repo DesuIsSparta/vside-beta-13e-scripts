@@ -76,13 +76,14 @@ function MenuLayer::setActiveButton(%this, %ctrl) {
                 %i = (%i + 1.0);
             }
         }
-    }
-    if ((%this.activeButton.getId() != %ctrl.getId())) {
-        %this.activeButton.depressed = (%i < %count) @ 0;
-        %this.activeButton.menu.hide();
-        %this.activeButton = %ctrl.getId();
-        %this.activeButton.depressed = 1;
-        %this.activeButton.menu.showRelativeTo(%this.activeButton, 1);
+    } else {
+        if ((%this.activeButton.getId() != %ctrl.getId())) {
+            %this.activeButton.depressed = (%i < %count) @ 0;
+            %this.activeButton.menu.hide();
+            %this.activeButton = %ctrl.getId();
+            %this.activeButton.depressed = 1;
+            %this.activeButton.menu.showRelativeTo(%this.activeButton, 1);
+        }
     }
 };
 function MenuLayer::nextActiveButton(%this) {
@@ -90,11 +91,12 @@ function MenuLayer::nextActiveButton(%this) {
         %next = 0;
         %count = %this.clones.getCount();
         %i = 0;
-        while ((%i < %count)) {
+        if ((%i < %count)) {
             if ((%this.clones.getObject(%i).original == %this.activeButton.getId())) {
                 %next = %this.clones.getObject(((%i + 1.0) % %count)).original;
+            } else {
+                %i = (%i + 1.0);
             }
-            %i = (%i + 1.0);
         }
         %this.setActiveButton(%next);
     }
@@ -104,11 +106,12 @@ function MenuLayer::previousActiveButton(%this) {
         %prev = 0;
         %count = %this.clones.getCount();
         %i = 0;
-        while ((%i < %count)) {
+        if ((%i < %count)) {
             if ((%this.clones.getObject(%i).original == %this.activeButton.getId())) {
                 %prev = %this.clones.getObject((((%i - 1.0) + %count) % %count)).original;
+            } else {
+                %i = (%i + 1.0);
             }
-            %i = (%i + 1.0);
         }
         %this.setActiveButton(%prev);
     }
@@ -305,10 +308,11 @@ function MenuControl::onKeyDown(%this, %unused, %keyCode) {
         if ((%this.getStringFromKeyCode(%keyCode) $= "left")) {
             %this.layer.previousActiveButton();
             return 1;
-        }
-        if ((%this.getStringFromKeyCode(%keyCode) $= "right")) {
-            %this.layer.nextActiveButton();
-            return 1;
+        } else {
+            if ((%this.getStringFromKeyCode(%keyCode) $= "right")) {
+                %this.layer.nextActiveButton();
+                return 1;
+            }
         }
     }
     return 0;
@@ -388,31 +392,35 @@ function MenuControl::positionRelativeTo(%this, %baseCtrl, %vertical) {
             %top = %ctrlBottom;
             %width = getWord(%scrollCtrl.getExtent(), 0);
             %height = (%menuHeight + 2.0);
+        } else {
+            if ((%topMargin >= %bottomMargin)) {
+                %height = mMin(%topMargin, (getWord(%this.getExtent(), 1) + 2.0));
+                %left = %leftMargin;
+                %top = ((%topMargin - %height) - 6.0);
+                %width = getWord(%scrollCtrl.getExtent(), 0);
+            } else {
+                %left = %leftMargin;
+                %top = %ctrlBottom;
+                %width = getWord(%scrollCtrl.getExtent(), 0);
+                %height = %bottomMargin;
+            }
         }
-        if ((%topMargin >= %bottomMargin)) {
-            %height = mMin(%topMargin, (getWord(%this.getExtent(), 1) + 2.0));
-            %left = %leftMargin;
-            %top = ((%topMargin - %height) - 6.0);
+    } else {
+        %menuWidth = getWord(%this.getExtent(), 0);
+        %ctrlRight = (getWord(%baseCtrl.getExtent(), 0) + %leftMargin);
+        %rightMargin = (%screenWidth - %ctrlRight);
+        if ((%menuWidth <= %rightMargin) || (%rightMargin >= %leftMargin)) {
+            %left = %ctrlRight;
+            %top = %topMargin;
             %width = getWord(%scrollCtrl.getExtent(), 0);
+            %height = (getWord(%this.getExtent(), 1) + 2.0);
+        } else {
+            %left = (%leftMargin - getWord(%scrollCtrl.getExtent(), 0));
+            %top = %topMargin;
+            %width = getWord(%scrollCtrl.getExtent(), 0);
+            %height = (getWord(%this.getExtent(), 1) + 2.0);
         }
-        %left = %leftMargin;
-        %top = %ctrlBottom;
-        %width = getWord(%scrollCtrl.getExtent(), 0);
-        %height = %bottomMargin;
     }
-    %menuWidth = getWord(%this.getExtent(), 0);
-    %ctrlRight = (getWord(%baseCtrl.getExtent(), 0) + %leftMargin);
-    %rightMargin = (%screenWidth - %ctrlRight);
-    if ((%menuWidth <= %rightMargin) || (%rightMargin >= %leftMargin)) {
-        %left = %ctrlRight;
-        %top = %topMargin;
-        %width = getWord(%scrollCtrl.getExtent(), 0);
-        %height = (getWord(%this.getExtent(), 1) + 2.0);
-    }
-    %left = (%leftMargin - getWord(%scrollCtrl.getExtent(), 0));
-    %top = %topMargin;
-    %width = getWord(%scrollCtrl.getExtent(), 0);
-    %height = (getWord(%this.getExtent(), 1) + 2.0);
     %width = mMin(%width, %screenWidth);
     %height = mMin(%height, %screenHeight);
     %onscreen = onscreenCoordinates(%left, %top, %width, %height);
@@ -446,9 +454,10 @@ function MenuItem::onHilite(%this) {
     %targetRow = getWord(%this.Parent.hilitedCell, 1);
     if ((%targetRow < %closestRow)) {
         %scroll.scrollTo(0, ((%cellHeight * %targetRow) + %this.Parent.spacing));
-    }
-    if ((%targetRow > ((%closestRow + %numRowsVisible) - 1.0))) {
-        %scroll.scrollTo(0, (%cellHeight * ((%targetRow - %numRowsVisible) + 1.0)));
+    } else {
+        if ((%targetRow > ((%closestRow + %numRowsVisible) - 1.0))) {
+            %scroll.scrollTo(0, (%cellHeight * ((%targetRow - %numRowsVisible) + 1.0)));
+        }
     }
     %layer = %this.Parent.layer;
     if (isObject(%layer)) {
@@ -464,11 +473,12 @@ function MenuItem::onHilite(%this) {
                 %count = %parentMenu.getCount();
                 %cellIdx = -(1.0);
                 %i = 0;
-                while ((%i < %count)) {
+                if ((%i < %count)) {
                     if ((%parentMenu.getObject(%i).submenu == %currentMenu.getId())) {
                         %cellIdx = %i;
+                    } else {
+                        %i = (%i + 1.0);
                     }
-                    %i = (%i + 1.0);
                 }
                 if ((%cellIdx != -(1.0))) {
                     %parentMenu.hiliteCell(0, %cellIdx);
@@ -488,9 +498,10 @@ function MenuItem::onSelect(%this) {
     eval(%this.command);
     if (isObject(%this.submenu)) {
         %this.openSubmenu();
-    }
-    if (isObject(%this.Parent.layer)) {
-        %this.Parent.layer.hide();
+    } else {
+        if (isObject(%this.Parent.layer)) {
+            %this.Parent.layer.hide();
+        }
     }
 };
 function MenuItem::openSubmenu(%this) {
@@ -502,16 +513,18 @@ function MenuItem::openSubmenu(%this) {
             %this.Parent.layer.popToMenu(%this.Parent);
             %this.submenu.showRelativeTo(%this, 0);
         }
+    } else {
+        %this.Parent.layer.popToMenu(%this.Parent);
     }
-    %this.Parent.layer.popToMenu(%this.Parent);
 };
 function MenuItem::onMouseEnterBounds(%this) {
     %count = %this.Parent.getCount();
     %i = 0;
-    while ((%i < %count)) {
+    if ((%i < %count)) {
         if ((%this.getId() == %this.Parent.getObject(%i))) {
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     %this.Parent.hiliteCell(0, %i);
 };

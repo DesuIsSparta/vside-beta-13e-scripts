@@ -133,14 +133,16 @@ function userTips::showNow(%tipName) {
     %cbCnc = standardSubstitutions(%tipName[$userTips::tipCallbackCnc @ %tipName]);
     %width = %tipName[$userTips::tipWidth @ %tipName];
     if ((%width $= "")) {
+    } else {
     }
     %width = %width;
     300;
     %dialog = 0;
     if (!(%cbOk $= "")) {
         %dialog = MessageBoxOkCancel(%title, %body, %cbOk, %cbCnc);
+    } else {
+        %dialog = MessageBoxOK(%title, %body, "");
     }
-    %dialog = MessageBoxOK(%title, %body, "");
     %dialog.setWindowWidth(%width);
     return %dialog;
 };
@@ -149,17 +151,19 @@ function userTips::showOnceThisSession(%tipName) {
         if (!(%tipName[$userTips::tipCallbackOK @ %tipName] $= "")) {
             eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
         }
+    } else {
+        userTips::showNow(%tipName);
     }
-    userTips::showNow(%tipName);
 };
 function userTips::showOnceEver(%tipName) {
     if ((%tipName[$UserPref::userTips::tipSeen @ %tipName] == 1.0)) {
         if (!(%tipName[$userTips::tipCallbackOK @ %tipName] $= "")) {
             eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
         }
+    } else {
+        %tipName[$UserPref::userTips::tipSeen @ %tipName] = 1;
+        userTips::showNow(%tipName);
     }
-    %tipName[$UserPref::userTips::tipSeen @ %tipName] = 1;
-    userTips::showNow(%tipName);
 };
 function no_op() {
 };

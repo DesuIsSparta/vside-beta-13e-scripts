@@ -170,6 +170,7 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request) {
         %item = %itemList.getValue(%n);
         %isFriend = (BuddyHudWin.getFriendStatus(%item.hostUserName) $= "friends");
         if ((%item.baseImageURL $= "")) {
+        } else {
         }
         %imageURL = %item.baseImageURL @ "?size=S";
         "";
@@ -179,24 +180,29 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request) {
         if ((%item.eventID $= "")) {
             %eventValue = "notAnEvent";
             %eventFmt = "<modulationColor:ffffff60>";
+        } else {
+            if ((%item.subType $= "publicLocationEvent")) {
+                %eventValue = "publicEvent";
+                %eventFmt = "";
+            } else {
+                if (%item.featured) {
+                    %eventValue = "featuredEvent";
+                    %eventFmt = "";
+                } else {
+                    %eventValue = "regularEvent";
+                    %eventFmt = "";
+                }
+            }
         }
-        if ((%item.subType $= "publicLocationEvent")) {
-            %eventValue = "publicEvent";
-            %eventFmt = "";
-        }
-        if (%item.featured) {
-            %eventValue = "featuredEvent";
-            %eventFmt = "";
-        }
-        %eventValue = "regularEvent";
-        %eventFmt = "";
         %occupancyText = geTGF.formatOccupancy(%item.occupancy, "<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         %friendOccupancyText = geTGF.formatOccupancy(%item.friendOccupancy, "<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
         if ((%item.occupancy >= 0.0)) {
+        } else {
         }
         %occupancySortVal = 99999;
         %item.occupancy;
         if ((%item.friendOccupancy >= 0.0)) {
+        } else {
         }
         %friendOccupancySortVal = 99999;
         %item.friendOccupancy;
@@ -239,24 +245,29 @@ function geTGF_tabs::hotSpotsTab_formatLocation2(%location) {
 function geTGF_tabs::hotSpotsTab_formatAccess(%access, %isFriend) {
     if ((%access $= "OPEN")) {
         return "open";
+    } else {
+        if ((%access $= "FRIENDSONLY")) {
+        }
+        if (%isFriend) {
+            return "friendsOnlyOfFriend";
+        } else {
+            if ((%access $= "FRIENDSONLY")) {
+                return "friendsOnlyOfNonFriend";
+            } else {
+                if ((%access $= "PASSWORDPROTECTED")) {
+                }
+                if (%isFriend) {
+                    return "doorcodeOfFriend";
+                } else {
+                    if ((%access $= "PASSWORDPROTECTED")) {
+                        return "doorcodeOfNonFriend";
+                    } else {
+                        return "";
+                    }
+                }
+            }
+        }
     }
-    if ((%access $= "FRIENDSONLY")) {
-    }
-    if (%isFriend) {
-        return "friendsOnlyOfFriend";
-    }
-    if ((%access $= "FRIENDSONLY")) {
-        return "friendsOnlyOfNonFriend";
-    }
-    if ((%access $= "PASSWORDPROTECTED")) {
-    }
-    if (%isFriend) {
-        return "doorcodeOfFriend";
-    }
-    if ((%access $= "PASSWORDPROTECTED")) {
-        return "doorcodeOfNonFriend";
-    }
-    return "";
 };
 function geTGF::hotspots_GetAndOpenDetailsContainer(%this, %item) {
     %dataRowIndex = geTGF_HotSpotsDataTable.getRowIndexByCriteria("username" @ "\t" @ %item.hostUserName);
@@ -279,17 +290,21 @@ function geTGF_HotSpotsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unuse
     %showDeets = 0;
     if ((%mouseClickCount == -(1.0))) {
         %showDeets = 0;
+    } else {
+        if ((%mouseClickCount == 0.0)) {
+            %showDeets = 1;
+        } else {
+            if ((%mouseClickCount == 1.0)) {
+                %showDeets = 1;
+            } else {
+                if ((%mouseClickCount == 2.0)) {
+                    %showDeets = 1;
+                } else {
+                    %showDeets = 0;
+                }
+            }
+        }
     }
-    if ((%mouseClickCount == 0.0)) {
-        %showDeets = 1;
-    }
-    if ((%mouseClickCount == 1.0)) {
-        %showDeets = 1;
-    }
-    if ((%mouseClickCount == 2.0)) {
-        %showDeets = 1;
-    }
-    %showDeets = 0;
     if (%showDeets) {
         %item = geTGF.findItem("hotspots", "happening", %userName);
         geTGF.DoDetails("hotspots", %item);
@@ -299,10 +314,11 @@ function geTGF_HotSpotsGuiTable::onKeyDown(%this, %modifier, %keyCode) {
     %modifierStr = %this.getStringFromModifier(%modifier);
     %keyCodeStr = %this.getStringFromKeyCode(%keyCode);
     if ((%modifierStr @ %keyCodeStr $= "\t")) {
-    }
-    if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
-        geTGF_HotSpotsFilterBox.makeFirstResponder(1);
-        return 1;
+    } else {
+        if ((%modifierStr @ %keyCodeStr $= "ctrl F")) {
+            geTGF_HotSpotsFilterBox.makeFirstResponder(1);
+            return 1;
+        }
     }
     return 0;
 };

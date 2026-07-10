@@ -2,14 +2,16 @@ function skeletonClient_postJoinAction() {
     if (isObject($player)) {
         echo("LOAD: Logged in. Calling " @ $skeletonClient::joinAction);
         schedule(2000, 0, skeletonClient_doPostJoinAction);
+    } else {
+        if (($iterationsWaited == 200.0)) {
+            error("LOAD: Giving up. Waited for 10 minutes and nothing happened.");
+            skeletonClient::quit();
+        } else {
+            echo("LOAD: Waiting ...");
+            $iterationsWaited = ($iterationsWaited + 1.0);
+            schedule(3000, 0, skeletonClient_postJoinAction);
+        }
     }
-    if (($iterationsWaited == 200.0)) {
-        error("LOAD: Giving up. Waited for 10 minutes and nothing happened.");
-        skeletonClient::quit();
-    }
-    echo("LOAD: Waiting ...");
-    $iterationsWaited = ($iterationsWaited + 1.0);
-    schedule(3000, 0, skeletonClient_postJoinAction);
 };
 function fakeFrameCount() {
     $Canvas::frameCount = ($Canvas::frameCount + 1.0);
@@ -62,8 +64,9 @@ function doLoginButton() {
 function skeletonClient::doLogin(%this, %destinationCity) {
     if (!(%destinationCity $= "")) {
         $skeletonClient::targetCity = %destinationCity;
+    } else {
+        $skeletonClient::targetCity = "NewVeneziaNorth";
     }
-    $skeletonClient::targetCity = "NewVeneziaNorth";
     echo("LOAD: Setting targetCity to " @ $skeletonClient::targetCity);
     LoginUserNameField.setValue(%this.userName);
     LoginPasswordField.setValue(%this.password);
@@ -103,21 +106,24 @@ function BootRequest::onDone(%this) {
     if ((%status $= "success")) {
         echo("LOAD: Boot suceeded.");
         schedule(2000, 0, doLoginButton);
-    }
-    if ((%status $= "fail")) {
-        echo("LOAD: Boot failed.");
-        skeletonClient::quit();
-    }
-    if ((%status $= "error")) {
-        echo("LOAD: Boot errored.");
-        skeletonClient::quit();
+    } else {
+        if ((%status $= "fail")) {
+            echo("LOAD: Boot failed.");
+            skeletonClient::quit();
+        } else {
+            if ((%status $= "error")) {
+                echo("LOAD: Boot errored.");
+                skeletonClient::quit();
+            }
+        }
     }
 };
 function LoginRequest::onError(%this, %errorNum, %unused) {
     if ((%errorNum == $CURL::CouldNotResolveHost)) {
         echo("LOAD: CURL::CouldNotResolveHost");
+    } else {
+        echo("LOAD: OtherError");
     }
-    echo("LOAD: OtherError");
     echo("LOAD: Couldn't login to envmanager. Giving up.");
     skeletonClient::quit();
 };
@@ -139,33 +145,37 @@ function LoginRequest::onDone(%this) {
                 LoginRequest::handleBoot();
                 $skeletonClient::bootAttempted = 1;
                 %this.schedule(1000, skeletonClient, checkStatus);
+            } else {
+                error("LOAD: Boot failed. Giving up.");
+                echo("LOAD: Quit()-ing...");
+                skeletonClient::quit();
             }
-            error("LOAD: Boot failed. Giving up.");
-            echo("LOAD: Quit()-ing...");
+        } else {
+            error("LOAD: Login [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
             skeletonClient::quit();
         }
-        error("LOAD: Login [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
-        skeletonClient::quit();
-    }
-    if ((%status $= "success")) {
-        %this.parseResponse();
-        outfits_init();
-        outfits_retrieve();
-        WorldMap.setNotConnectedToServer();
-        WorldMap.initCityMaps();
-        WorldMap.open();
-        $Login::loggedIn = 1;
-        schedule(2000, 0, joinServer);
-    }
-    if ((%status $= "upgrade_available")) {
-        %this.parseResponse();
-        outfits_init();
-        outfits_retrieve();
-        WorldMap.setNotConnectedToServer();
-        WorldMap.initCityMaps();
-        WorldMap.open();
-        $Login::loggedIn = 1;
-        schedule(2000, 0, joinServer);
+    } else {
+        if ((%status $= "success")) {
+            %this.parseResponse();
+            outfits_init();
+            outfits_retrieve();
+            WorldMap.setNotConnectedToServer();
+            WorldMap.initCityMaps();
+            WorldMap.open();
+            $Login::loggedIn = 1;
+            schedule(2000, 0, joinServer);
+        } else {
+            if ((%status $= "upgrade_available")) {
+                %this.parseResponse();
+                outfits_init();
+                outfits_retrieve();
+                WorldMap.setNotConnectedToServer();
+                WorldMap.initCityMaps();
+                WorldMap.open();
+                $Login::loggedIn = 1;
+                schedule(2000, 0, joinServer);
+            }
+        }
     }
 };
 function joinServer() {
@@ -184,28 +194,30 @@ function skeletonClient::joinServer() {
         schedule(15000, 0, skeletonClient_postJoinAction);
         WorldMap.close();
         return;
-    }
-    if (($skeletonClient::targetCity $= "MyApartment")) {
-        echo("LOAD: Logging into my apartment!");
-        WorldMap.close();
-        doTeleportToMyApartment();
-        schedule(15000, 0, skeletonClient_postJoinAction);
-        return;
+    } else {
+        if (($skeletonClient::targetCity $= "MyApartment")) {
+            echo("LOAD: Logging into my apartment!");
+            WorldMap.close();
+            doTeleportToMyApartment();
+            schedule(15000, 0, skeletonClient_postJoinAction);
+            return;
+        }
     }
     %spawn = skeletonClient::getHWSpawns();
     %targetVurl = "vside:/location/generic/" @ %spawn;
     echo("LOAD: Using spawn point" @ " " @ %spawn @ " " @ "in" @ " " @ $skeletonClient::targetCity);
     %foundCity = 0;
     %i = 0;
-    while ((%i < WorldMapServers.getCount())) {
+    if ((%i < WorldMapServers.getCount())) {
         if ((WorldMapServers.getObject(%i).get("name") $= $skeletonClient::targetCity)) {
             %foundCity = 1;
             WorldMap.join(WorldMapServers.getObject(%i), 0, %targetVurl);
             echo("LOAD: Joined server " @ WorldMapServers.getObject(%i).get("name"));
             echo("LOAD: Login completed");
             schedule(15000, 0, skeletonClient_postJoinAction);
+        } else {
+            %i = (%i + 1.0);
         }
-        %i = (%i + 1.0);
     }
     if (!%foundCity) {
         echo("LOAD: Did not find targetCity " @ $skeletonClient::targetCity @ ". Giving up.");

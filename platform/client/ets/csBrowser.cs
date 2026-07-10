@@ -175,9 +175,10 @@ function CSBrowser::modifyListViewForSku(%this, %sku, %menuItem) {
             %leftIcon.setBitmap(%lIconBmp);
             %menuItem.menuText.reposition(33, getWord(%menuItem.menuText.getPosition(), 1));
         }
+    } else {
+        %leftIcon.setBitmap($CSBrowser::FurnishingFolderBitmap);
+        %menuItem.menuText.reposition(33, getWord(%menuItem.menuText.getPosition(), 1));
     }
-    %leftIcon.setBitmap($CSBrowser::FurnishingFolderBitmap);
-    %menuItem.menuText.reposition(33, getWord(%menuItem.menuText.getPosition(), 1));
 };
 function CSBrowser::onCreatedChild(%this, %child, %x, %y) {
     Parent::onCreatedChild(%this, %child, %x, %y);
@@ -213,9 +214,11 @@ function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y) {
 function CSBrowserNextPrevLink::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "gamelink")) {
         %dir = getWord(%url, 1);
+    } else {
+        return;
     }
-    return;
     if ((%dir $= "prev")) {
+    } else {
     }
     %this.browser.selectNextLeaf(-(1.0), 1, 0);
 };

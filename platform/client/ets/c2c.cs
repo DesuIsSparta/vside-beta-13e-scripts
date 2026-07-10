@@ -12,8 +12,9 @@ function handleC2CCmd(%commandName, %senderUserName, %param1, %param2) {
     echoDebug(getScopeName() @ " " @ "-" @ " " @ %commandName @ " " @ %senderUserName @ " " @ %param1 @ " " @ %param2);
     if ((%commandName $= "finishedGateway")) {
         handleInviteeFinishedGateway(%senderUserName, %param1);
+    } else {
+        error("unknown c2c cmd:" @ " " @ %commandName @ " " @ "from" @ " " @ %senderUserName);
     }
-    error("unknown c2c cmd:" @ " " @ %commandName @ " " @ "from" @ " " @ %senderUserName);
 };
 function handleInviteeFinishedGateway(%otherPlayerName, %otherPlayerGender) {
     %msg = $MsgCat::invitation["INVITEE-INWORLD"];

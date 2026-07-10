@@ -60,8 +60,9 @@ function ratingControl::update(%this) {
     while ((%i < %this.gradations)) {
         if ((%i <= %cutoff)) {
             %this.images[%i].setImageSuffix(%suffix);
+        } else {
+            %this.images[%i].setImageSuffix("_n");
         }
-        %this.images[%i].setImageSuffix("_n");
         %i = (%i + 1.0);
     }
 };

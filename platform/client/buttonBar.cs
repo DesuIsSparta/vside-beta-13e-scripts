@@ -251,22 +251,23 @@ function ButtonBar::update(%this) {
         (%i < %maxCount);
         %newBgExt = ((%xoffset - %startingOffset) + $ButtonBarVar::dotPadding) @ " " @ $ButtonBarVar::buttonBarActivatorHeight;
         %newBgPos = (%startingOffset - $ButtonBarVar::dotPadding) @ " " @ (%bbHeight - $ButtonBarVar::buttonBarActivatorHeight);
+    } else {
+        %xoffset = $ButtonBarVar::buttonBarSideBorder;
+        %yoffset = mFloor(((%bbHeight - $ButtonBarVar::buttonHeight) / 2.0));
+        %maxCount = %this.getCount();
+        %i = 1;
+        while ((%i < %maxCount)) {
+            %currentButton = %this.getObject(%i);
+            %currentButton.setVisible(1);
+            %currentButton.setTrgPosition(%xoffset, %yoffset);
+            %currentButton.setTrgExtent($ButtonBarVar::buttonWidth, $ButtonBarVar::buttonHeight);
+            %xoffset = (%xoffset + ($ButtonBarVar::buttonWidth + $ButtonBarVar::buttonPadding));
+            %i = (%i + 1.0);
+        }
+        %newBgExt = %newWidth @ " " @ %bbHeight;
+        (%i < %maxCount);
+        %newBgPos = "0 0";
     }
-    %xoffset = $ButtonBarVar::buttonBarSideBorder;
-    %yoffset = mFloor(((%bbHeight - $ButtonBarVar::buttonHeight) / 2.0));
-    %maxCount = %this.getCount();
-    %i = 1;
-    while ((%i < %maxCount)) {
-        %currentButton = %this.getObject(%i);
-        %currentButton.setVisible(1);
-        %currentButton.setTrgPosition(%xoffset, %yoffset);
-        %currentButton.setTrgExtent($ButtonBarVar::buttonWidth, $ButtonBarVar::buttonHeight);
-        %xoffset = (%xoffset + ($ButtonBarVar::buttonWidth + $ButtonBarVar::buttonPadding));
-        %i = (%i + 1.0);
-    }
-    %newBgExt = %newWidth @ " " @ %bbHeight;
-    (%i < %maxCount);
-    %newBgPos = "0 0";
     ButtonBarActivator.resize(mFloor((((%screenWidth - %newWidth) / 2.0) + 1.0)), (%screenHeight - $ButtonBarVar::buttonBarActivatorHeight), %newWidth, $ButtonBarVar::buttonBarActivatorHeight);
     if (isObject(%this.background)) {
         %this.background.setTrgExtent(%newBgExt);
@@ -326,9 +327,10 @@ function ButtonBar::setAutoHiding(%this, %flag) {
     if (%flag) {
         $UserPref::ETS::ButtonBar::AutoHide = 1;
         %this.hide();
+    } else {
+        $UserPref::ETS::ButtonBar::AutoHide = 0;
+        %this.show();
     }
-    $UserPref::ETS::ButtonBar::AutoHide = 0;
-    %this.show();
 };
 function ButtonBar::showButton(%this, %button) {
     %this.insertButton(%button);
@@ -345,8 +347,9 @@ function ButtonBar::handleContiguousSpace(%this) {
         %showPlaces = ($gContiguousSpaceName $= "gw") ? 0 : 1;
         if (%showPlaces) {
             %this.showButton(PlacesButton);
+        } else {
+            %this.hideButton(PlacesButton);
         }
-        %this.hideButton(PlacesButton);
     }
     if (isObject(MessageHudShoutOutIcon)) {
         %isGW = ($gContiguousSpaceName $= "gw");
