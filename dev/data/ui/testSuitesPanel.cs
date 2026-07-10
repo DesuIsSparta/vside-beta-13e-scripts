@@ -28,7 +28,7 @@ function TestPanelTestList::onSelect(%this, %unused, %text) {
     RunTestSuite(%text);
 };
 function testSuitesPanel::loadAvailableTests(%this) {
-    // unhandled opcode 280 at 0x000000FD
+    %list = TestPanelTestList;
     %list.clear();
     %i = 0;
     while ((%i < DeclaredTestSuiteCount())) {

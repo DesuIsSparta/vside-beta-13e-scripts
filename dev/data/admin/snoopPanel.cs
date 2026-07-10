@@ -97,7 +97,6 @@ function stringToInteger(%string, %maxInteger) {
         %a = getSubStr(%a, %chars, 10000000);
     }
     %val = (%val % %maxInteger);
-    !(%a $= "");
     return %val;
 };
 function snoopPanelTextCtrl::onRightURL(%this, %url) {

@@ -25,8 +25,8 @@ function toggleAdminDialog(%action, %target) {
     if (!(isDefined("%target"))) {
         %target = "";
     }
-    defaultAction = %action @ adminGui;
-    defaultTarget = %target @ adminGui;
+    adminGui.defaultAction = %action;
+    adminGui.defaultTarget = %target;
     if (!(%action $= "")) {
     }
     if (!(%target $= "")) {
@@ -61,38 +61,27 @@ function adminGui::initMenu(%this, %unused) {
     %n = 0;
     %disabled = 0;
     %itemText = "Message";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Boot";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "BootQuiet";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Ban";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Fly To";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Track";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Snoop Toggle";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Teleport To";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Respawn";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Summon";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %itemText = "Throw Voice";
-    %n = (%n + 1.0);
-    %disabled.add(adminActionPopup, %itemText, );
+    %disabled.add(adminActionPopup, %itemText, %n = (%n + 1.0));
     %prevItem.setText(adminActionPopup);
 };
 function adminGui::tryTarget(%this, %shape) {

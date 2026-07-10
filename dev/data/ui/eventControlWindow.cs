@@ -105,13 +105,13 @@ function eventControlWindow::populateDoorsList(%this) {
 function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName, %doorToLockName, %enable) {
     %container = EventControlsDoorsArray.addChild();
     %ctrl = new GuiTextCtrl("") {
-        position = 0 @ "0 0";
+        position = "0 0";
         extent = "122 17";
         text = %title;
     };
     %ctrl.add(%container);
     %ctrl = new GuiButtonCtrl("") {
-        profile = 0 @ "GuiClickLabelProfile";
+        profile = "GuiClickLabelProfile";
         position = "122 0";
         extent = "19 17";
         text = "go";
@@ -119,7 +119,7 @@ function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName
     };
     %ctrl.add(%container);
     %ctrl = new GuiButtonCtrl("") {
-        profile = 0 @ "GuiClickLabelProfile";
+        profile = "GuiClickLabelProfile";
         position = "141 0";
         extent = "19 17";
         text = "(X)";
@@ -127,7 +127,7 @@ function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName
     };
     %ctrl.add(%container);
     %ctrl = new GuiButtonCtrl("") {
-        profile = 0 @ "GuiClickLabelProfile";
+        profile = "GuiClickLabelProfile";
         position = "161 0";
         extent = "19 17";
         text = "( )";
@@ -136,7 +136,7 @@ function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName
     %ctrl.add(%container);
     if (!(%enable)) {
         %ctrl = new GuiControl("") {
-            profile = 0 @ "GuiTranslucentProfile";
+            profile = "GuiTranslucentProfile";
             position = "0 0";
             extent = %container.extent;
         };
@@ -148,8 +148,7 @@ function clientCmdbeginZombieScores() {
     if (isObject($ZombieGamePointsCollector)) {
         $ZombieGamePointsCollector.delete();
     }
-    $ZombieGamePointsCollector = new StringMap("");;
-    0;
+    $ZombieGamePointsCollector = new StringMap("");
     echo("recieving zombie scores....");
 };
 function clientCmdnextZombieGameScore(%name, %points) {

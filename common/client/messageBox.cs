@@ -105,7 +105,7 @@ function MessageBoxTextEntryWithBitmapWithCancel(%title, %message, %callback, %d
     %extX = ((getWord(%container.extent, 0) - %posX) - %spacing);
     %extY = %extX;
     %ctrl = new GuiBitmapCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = %extX @ " " @ %extY;
         bitmap = %bitmapPath;
     };
@@ -179,7 +179,7 @@ function MessageBoxCustom(%title, %message, %buttonList) {
 };
 function MessageBox::newDialog(%buttonList) {
     %dialog = new GuiControl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -189,7 +189,7 @@ function MessageBox::newDialog(%buttonList) {
         visible = 1;
     };
     %ctrl = new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -209,14 +209,13 @@ function MessageBox::newDialog(%buttonList) {
     %i = 0;
     while ((%i < %dialog.numButtons)) {
         %buttonName = getField(%buttonList, %i);
-        %buttonWidth = mMax(%minButtonWidth, GuiFocusableVWButtonProfile, (%padding + getStrWidth(%buttonName)));
+        %buttonWidth = mMax(%minButtonWidth, (%padding + getStrWidth(%buttonName, GuiFocusableVWButtonProfile)));
         %allButtonsWidth = (%allButtonsWidth + (%buttonWidth + %padding));
         %i = (%i + 1.0);
     }
     %windowWidth = mMax(300, %allButtonsWidth);
-    (%i < %dialog.numButtons);
     %window = new GuiWindowCtrl("") {
-        profile = 0 @ "GuiMessageWindowProfile";
+        profile = (%i < %dialog.numButtons) @ "GuiMessageWindowProfile";
         horizSizing = "center";
         vertSizing = "center";
         position = "170 175";
@@ -236,7 +235,7 @@ function MessageBox::newDialog(%buttonList) {
     };
     %dialog.targetWidth = %windowWidth;
     %text = new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiMessageTextProfile";
+        profile = "GuiMessageTextProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = %padding @ " " @ 29;
@@ -253,7 +252,7 @@ function MessageBox::newDialog(%buttonList) {
     %xPos = mFloor((0.5 * (%windowWidth - %allButtonsWidth)));
     %ypos = 48;
     %buttonContainer = new GuiControl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "center";
         vertSizing = "top";
         position = %xPos @ " " @ %ypos;
@@ -268,9 +267,9 @@ function MessageBox::newDialog(%buttonList) {
     %i = 0;
     while ((%i < %dialog.numButtons)) {
         %buttonName = getField(%buttonList, %i);
-        %buttonWidth = mMax(%minButtonWidth, GuiFocusableVWButtonProfile, (%padding + getStrWidth(%buttonName)));
+        %buttonWidth = mMax(%minButtonWidth, (%padding + getStrWidth(%buttonName, GuiFocusableVWButtonProfile)));
         %button = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "GuiFocusableVWButtonProfile";
+            profile = "GuiFocusableVWButtonProfile";
             horizSizing = "right";
             vertSizing = "top";
             position = %xPos @ " " @ %ypos;
@@ -337,7 +336,6 @@ function MessageBox::close(%this) {
     if (%this.doCallbackOnEscape) {
     }
     %callback = "";
-    %this.callback;
     MessageCallback(%this, %callback);
 };
 function MessageBox_TryDontShow(%title, %message, %callback, %canStopShowing, %key) {
@@ -360,14 +358,13 @@ function MessageBox_GetKey(%title, %message, %key) {
     if (!(%key $= "")) {
     }
     %key = stripVeryAgressively(%title @ "\t" @ %message);
-    %key;
     return %key;
 };
 function MessageBox::tryAddStopShowing(%this, %title, %message, %canStopShowing, %key) {
     if (!(%canStopShowing $= "")) {
         %key = MessageBox_GetKey(%title, %message, %key);
         %ctrl = new GuiCheckBoxCtrl("") {
-            profile = 0 @ ETSLoginSmallCheckBoxProfile;
+            profile = ETSLoginSmallCheckBoxProfile;
             position = 9 @ " " @ (getWord(%this.window.getExtent(), 1) - 19.0);
             extent = 50 @ " " @ 15;
             text = "show";

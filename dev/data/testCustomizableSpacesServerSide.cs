@@ -17,14 +17,14 @@ function TestSuite_CSServerSideTests2::setup(%this) {
 function TestSuite_CSServerSideTests2::TearDown(%this) {
 };
 function TEST_CS_DoubleActivateSpace::runTest(%this) {
-    "This Test should only be run in a private space grid".assertSameString(%this, MissionInfo, mode, "PrivateSpaceGrid");
+    "This Test should only be run in a private space grid".assertSameString(%this, MissionInfo.mode, "PrivateSpaceGrid");
     %freeGridNumber = CustomizableSpaceServerGrid::GetNextUnActivatedSpaceGridNumber();
     "I couldn't find any free grid space to run this test with".assert(%this, (%freeGridNumber > 0.0));
     %this.lastFreeNumber = %freeGridNumber;
     %client = 0.getObject(ClientGroup);
     %userName = %client.nameBase;
     %player = %client.Player;
-    %apartmentName = GetServerNameSpaceTaggedName(MissionInfo, %client.building) @ "." @ %userName;
+    %apartmentName = GetServerNameSpaceTaggedName(MissionInfo.building) @ "." @ %userName;
     %theSpaceTrigger = "PRIVATESPACE_AREA_" @ %freeGridNumber;
     CustomizableSpaceServerGrid::ActivateSpace(%userName, %apartmentName, %theSpaceTrigger, %player);
     CustomizableSpaceServerGrid::ActivateSpace(%userName, %apartmentName, %theSpaceTrigger, %player);
@@ -36,11 +36,11 @@ function TEST_CS_DoubleActivateSpace::delayedEval(%this) {
     "I expected to have taken that grid space, but it is still marked as free".assert(%this, (%this.lastFreeNumber != %freeGridNumber));
 };
 function TEST_CS_DoubleActivateSpaceType2::runTest(%this) {
-    "This Test should only be run in a private space grid".assertSameString(%this, MissionInfo, %this.mode, "PrivateSpaceGrid");
+    "This Test should only be run in a private space grid".assertSameString(%this, MissionInfo.mode, "PrivateSpaceGrid");
     %client = 0.getObject(ClientGroup);
     %userName = %client.nameBase;
     %player = %client.Player;
-    %apartmentName = GetServerNameSpaceTaggedName(MissionInfo, %client.building) @ "." @ %userName;
+    %apartmentName = GetServerNameSpaceTaggedName(MissionInfo.building) @ "." @ %userName;
     %freeGridNumber = CustomizableSpaceServerGrid::GetNextUnActivatedSpaceGridNumber();
     "I couldn't find any free grid space to run this test with".assert(%this, (%freeGridNumber > 0.0));
     %this.lastFreeNumber = %freeGridNumber;

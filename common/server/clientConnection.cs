@@ -56,7 +56,7 @@ function sendJoinRequest(%callback, %name, %token) {
         return;
     }
     %joinRequest = new ManagerRequest("") {
-        className = 0 @ "JoinRequest";
+        className = "JoinRequest";
     };
     if (isObject(MissionCleanup)) {
         %joinRequest.add(MissionCleanup);
@@ -72,8 +72,8 @@ function sendJoinRequest(%callback, %name, %token) {
 };
 function JoinRequest::onError(%this, %errorNum, %errorName) {
     log("login", "error", "JoinRequest for" @ " " @ %this.name @ " " @ "failed due to " @ " " @ %errorNum @ " " @ "-" @ " " @ %errorName);
-    0.schedule(%this);
-    return delete;
+    delete.schedule(%this, 0);
+    return;
 };
 function JoinRequest::onDone(%this) {
     %status = findRequestStatus(%this);
@@ -125,13 +125,13 @@ function JoinRequest::onDone(%this) {
         }
         serverSideTeleportToPlayer2(%me, %trgPlayer);
     }
-    0.schedule(%this);
-    return delete;
+    delete.schedule(%this, 0);
+    return;
 };
 function DropRequest::onError(%this, %errorNum, %errorName) {
     log("drop", "error", "DropRequest for " @ %this.name @ " failed due to " @ %errorNum @ " - " @ %errorName);
-    0.schedule(%this);
-    return delete;
+    delete.schedule(%this, 0);
+    return;
 };
 function DropRequest::onDone(%this) {
     %status = findRequestStatus(%this);
@@ -141,8 +141,8 @@ function DropRequest::onDone(%this) {
     if (!(%this.client.ignoreResponse)) {
         "CLIENT_REQUEST".delete(%this.client);
     }
-    0.schedule(%this);
-    return delete;
+    delete.schedule(%this, 0);
+    return;
 };
 function serverCmdDisconnectRequest(%client) {
     "".postClientDrop(%client, 0);
@@ -185,7 +185,7 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
     log("login", "debug", "adding validate timeout" @ " " @ %timeout @ " " @ "for" @ " " @ %name);
     (%curSimTime + 25000.0).put(PendingValidate, %name);
     %validateRequest = new ManagerRequest("") {
-        className = 0 @ "ValidateRequest";
+        className = "ValidateRequest";
     };
     if (isObject(MissionCleanup)) {
         %validateRequest.add(MissionCleanup);
@@ -237,10 +237,8 @@ function GameConnection::onConnect(%client, %name, %token) {
     %client.skin = addTaggedString("base");
     %name.setPlayerName(%client);
     %client.score = 0;
-    // unhandled opcode 1317 at 0x00000B76
-    %client = ServerGroup;
-    // unhandled opcode 1317 at 0x00000B7C
-    %client = MissionCleanup;
+    $instantGroup = ServerGroup;
+    $instantGroup = MissionCleanup;
     log("login", "info", "GameConnection::onConnect: " @ %client @ " " @ %client.getAddress());
     messageClient(%client, 'MsgClientJoin', '\x03Welcome to Intersection, %1.', %client.name, %client, %client.sendGuid, %client.score, %client.isAIControlled(), %client.isAdmin, %client.isSuperAdmin);
     if ($missionRunning) {
@@ -274,7 +272,7 @@ function GameConnection::postClientDrop(%this, %ignoreResponse, %reason) {
         return;
     }
     %dropRequest = new ManagerRequest("") {
-        className = 0 @ "DropRequest";
+        className = "DropRequest";
     };
     if (isObject(MissionCleanup)) {
         %dropRequest.add(MissionCleanup);

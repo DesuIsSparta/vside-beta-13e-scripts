@@ -25,9 +25,8 @@ function MOTDEditGui::onCopyBasicTo(%this, %messageType) {
 };
 function MOTDEditGui::onCopyTo(%this) {
     %text = MOTDText.getValue();
-    if (!(MOTDText @ " " @ qotdID $= "")) {
-        %id = qotdID;
-        MOTDText;
+    if (!(MOTDText.qotdID $= "")) {
+        %id = MOTDText.qotdID;
         %text = %id @ "\n" @ %text;
     }
     setClipboard(%text);
@@ -38,13 +37,13 @@ function MOTDEditGui::onPasteFrom(%this, %messageType) {
         $UserPref::QOTD::answered = "";
         %qID = trim(getWords(%text, 0, 0));
         %text = getWords(%text, 1);
-        qotdID = %qID @ MOTDText;
+        MOTDText.qotdID = %qID;
     }
-    qotdID = "" @ MOTDText;
+    MOTDText.qotdID = "";
     %text.setText(MOTDText);
 };
 function MOTDEditGui::onAction(%this, %messageType) {
-    messageType = %messageType @ MOTDEditGui;
+    MOTDEditGui.messageType = %messageType;
     "confirm: submit as" @ " " @ %messageType.setText(MOTDEditGuiButtonConfirm);
     0.setVisible(MOTDEditGuiButtonDoIt);
     0.setVisible(MOTDEditGuiButtonDoIt2);
@@ -79,7 +78,7 @@ function MOTDEditGui::onConfirm(%this) {
     log("communication", "debug", "sending request to set the current" @ " " @ %this.messageType @ " " @ "message: " @ %url);
     %url.setURL(MOTDEditRequest);
     MOTDEditRequest.start();
-    %this.messageType = %this.messageType @ MOTDEditRequest;
+    MOTDEditRequest.messageType = %this.messageType;
 };
 function MOTDEditRequest::onError(%this, %unused, %unused) {
     MessageBoxOK("Server Unavailable", "The server is currently unavailable." @ " " @ %this.messageType @ " " @ "NOT submitted.", "");

@@ -38,7 +38,7 @@ function gePaperDollMakins::paperDoll_refresh(%this) {
     %text = %text @ "\n" @ "currently:" @ " " @ %genderText;
     %text.setText(gePaperDollInfo);
     getWord($gPaperDollImgSize, 1).resize(gePaperDollEraser, getWord($gPaperDollImgSize, 0));
-    eraserColor = $gPaperDollBackground @ gePaperDollEraser;
+    gePaperDollEraser.eraserColor = $gPaperDollBackground;
     paperDoll_generateXML();
     paperDoll_generateJSON();
     paperDoll_generateManifest();
@@ -47,13 +47,12 @@ function gePaperDollMakins::paperDoll_refresh(%this) {
     $gPaperDoll_SkuArray.dumpValues();
 };
 function paperDoll_StartTakingSnaps() {
-    // unhandled opcode 892 at 0x00000268
+    $gPaperDoll_ObjViewCtrl = gePaperDollObjectView;
     $gPaperDoll_CurIndex = 0;
     $gPaperDoll_CancelRun = 0;
     $gPaperDoll_PreviewFile = "";
     if (1) {
-        $gPaperDoll_PreviewFile = new FileObject("");;
-        0;
+        $gPaperDoll_PreviewFile = new FileObject("");
         %fileName = paperDoll_getBaseFilepath();
         %fileName = %fileName @ "index_" @ $player.getGender() @ ".html";
         %fileName.openForWrite($gPaperDoll_PreviewFile);
@@ -90,14 +89,13 @@ function paperDoll_prepareOneSnapshot(%index) {
     }
     $gPaperDoll_CurSkus = getField(%index.get($gPaperDoll_SkuArray), 0);
     $gPaperDoll_CurName = getField(%index.get($gPaperDoll_SkuArray), 1);
-    %skus = $gPaperDoll_CurSkus.overlaySkus(SkuManager);
+    %skus = $gPaperDoll_CurSkus.overlaySkus(SkuManager, );
     %skus.setSkus($gPaperDoll_ObjViewCtrl);
     %index.setValue(gePaperDollCurOutfitField);
-    %tmp = altCommand;
-    gePaperDollCurOutfitSlider;
-    altCommand = "" @ gePaperDollCurOutfitSlider;
+    %tmp = gePaperDollCurOutfitSlider.altCommand;
+    gePaperDollCurOutfitSlider.altCommand = "";
     (1.0 - (%index / ($gPaperDoll_SkuArray.size() - 1.0))).setValue(gePaperDollCurOutfitSlider);
-    altCommand = %tmp @ gePaperDollCurOutfitSlider;
+    gePaperDollCurOutfitSlider.altCommand = %tmp;
     $gPaperDoll_CurIndex = %index;
 };
 function paperDoll_Permute_Cancel() {
@@ -196,8 +194,7 @@ function gePaperDollCurOutfitSlider::valueChanged(%this) {
 };
 function paperDoll_generateXML() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.xml";
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if (!(%fileName.openForWrite(%file))) {
         error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
@@ -248,15 +245,12 @@ function paperDoll_generateXML() {
                 }
                 "Value".writeCloseTag(%file);
                 %valueNum = (%valueNum + 1.0);
-                (%skunum < getWordCount(%valueSkus));
             }
             "Param".writeCloseTag(%file);
             %paramNum = (%paramNum + 1.0);
-            (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum));
         }
         "Gender".writeCloseTag(%file);
         %n = (%n + 1.0);
-        (%paramNum < paperDoll_getParamsNum(%gender));
     }
     "Permutations".writeCloseTag(%file);
     %file.close();
@@ -264,8 +258,7 @@ function paperDoll_generateXML() {
 };
 function paperDoll_generateJSON() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.json";
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if (!(%fileName.openForWrite(%file))) {
         error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
@@ -327,7 +320,6 @@ function paperDoll_generateJSON() {
                 }
                 "},".writeLineIndented(%file);
                 %valueNum = (%valueNum + 1.0);
-                (%skunum < getWordCount(%valueSkus));
             }
             %file.unindent();
             "]".writeLineIndented(%file);
@@ -337,7 +329,6 @@ function paperDoll_generateJSON() {
             }
             "},".writeLineIndented(%file);
             %paramNum = (%paramNum + 1.0);
-            (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum));
         }
         %file.unindent();
         "]".writeLineIndented(%file);
@@ -347,7 +338,6 @@ function paperDoll_generateJSON() {
         }
         "},".writeLineIndented(%file);
         %n = (%n + 1.0);
-        (%paramNum < paperDoll_getParamsNum(%gender));
     }
     %file.unindent();
     "]".writeLineIndented(%file);
@@ -358,8 +348,7 @@ function paperDoll_generateJSON() {
 };
 function paperDoll_generateManifest() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations_manifest.txt";
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if (!(%fileName.openForWrite(%file))) {
         error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();

@@ -23,12 +23,12 @@ function loadMission(%missionName, %isFirstMission) {
     if (((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer")) {
         loadMissionStage2();
     }
-    schedule($MissionLoadPause);
-    return loadMissionStage2;
+    schedule($MissionLoadPause, ServerGroup, loadMissionStage2);
+    return;
 };
 function loadMissionStage2() {
     echo("*** Stage 2 load");
-    // unhandled opcode 329 at 0x000000E9
+    $instantGroup = ServerGroup;
     %file = $Server::MissionFile;
     %ofile = %file;
     if (!(strchr(%file, "\\") $= "")) {
@@ -46,10 +46,10 @@ function loadMissionStage2() {
     exec(%file);
     if (!(isObject(MissionGroup))) {
         error("No 'MissionGroup' found in mission \"" @ $missionName @ "\".");
-        schedule(3000);
-        return CycleMissions;
+        schedule(3000, ServerGroup, CycleMissions);
+        return;
     }
-    // unhandled opcode 329 at 0x0000019F
+    $instantGroup = MissionCleanup;
     pathOnMissionLoadDone();
     echo("*** Mission loaded");
     $missionRunning = 1;
@@ -79,16 +79,15 @@ function endMission() {
     MissionGroup.delete();
     MissionCleanup.delete();
     $ServerGroup.delete();
-    $ServerGroup = new SimGroup(ServerGroup);;
-    (%clientIndex < ClientGroup.getCount());
-    return;
+    $ServerGroup = new SimGroup(ServerGroup);
+    return (%clientIndex < ClientGroup.getCount());
 };
 function resetMission() {
     echo("*** MISSION RESET");
     MissionCleanup.delete();
-    // unhandled opcode 329 at 0x000002D4
+    $instantGroup = ServerGroup;
     new SimGroup(MissionCleanup);
-    // unhandled opcode 329 at 0x000002EC
+    $instantGroup = MissionCleanup;
     onMissionReset();
     return;
 };

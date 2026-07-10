@@ -27,7 +27,7 @@ function interiorRenderModeTextChange() {
     interiorRenderModeSet(guiCtrlInteriorRenderMode.getValue());
 };
 function gui_DevOpts_ShowCamPos() {
-    showHere = $UserPref::ETS::ShowCamPos @ TheShapeNameHud;
+    TheShapeNameHud.showHere = $UserPref::ETS::ShowCamPos;
 };
 function gui_DevOpts_Toggle_WorldTextureLobotomyFile() {
     if (($DevPref::OpenGL::WorldTextureLobotomyFile $= "")) {
@@ -46,6 +46,6 @@ function gui_DevOpts_Toggle_PlayerTextureLobotomyFile() {
     gui_DevOpts_SetTexturesButtons();
 };
 function gui_DevOpts_SetTexturesButtons() {
-    (ge_LocalOpts_WorldTextures @ " " @ $DevPref::OpenGL::WorldTextureLobotomyFile $= "").setValue();
-    (ge_LocalOpts_PlayerTextures @ " " @ $DevPref::OpenGL::PlayerTextureLobotomyFile $= "").setValue();
+    ($DevPref::OpenGL::WorldTextureLobotomyFile $= "").setValue(ge_LocalOpts_WorldTextures);
+    ($DevPref::OpenGL::PlayerTextureLobotomyFile $= "").setValue(ge_LocalOpts_PlayerTextures);
 };

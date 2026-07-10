@@ -17,13 +17,13 @@ function TestLoginRequest::onDone(%this, %unused) {
     echo("hasemail:        " @ "hasemail".getValue(%this));
 };
 function TestBootRequest::onDone(%this) {
-    schedule(1000, 0);
+    schedule(1000, 0, Login);
 };
 function bootThenLogin() {
     if (isObject(TestBootRequest)) {
         TestBootRequest.delete();
     }
-    %bootRequest = new ManagerRequest(TestBootRequest);;
+    %bootRequest = new ManagerRequest(TestBootRequest);
     if (isObject(MissionCleanup)) {
         %bootRequest.add(MissionCleanup);
     }
@@ -40,7 +40,7 @@ function Login() {
     if (isObject(TestLoginRequest)) {
         TestLoginRequest.delete();
     }
-    %loginRequest = new ManagerRequest(TestLoginRequest);;
+    %loginRequest = new ManagerRequest(TestLoginRequest);
     if (isObject(MissionCleanup)) {
         %loginRequest.add(MissionCleanup);
     }

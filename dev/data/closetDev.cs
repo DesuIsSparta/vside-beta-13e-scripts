@@ -6,12 +6,12 @@ $gSnapping_CurSku = 0;
 $gSnapping_BaseSkus = "";
 function ClosetStaffPanel::snapShotAll(%this) {
     %skus = $player.getGender().filterSkusGender(SkuManager, SkuManager.getSkus());
-    ClosetMainObjectView.setSkus();
+    .setSkus(ClosetMainObjectView);
     %skus.snapShotSkuList(%this);
 };
 function ClosetStaffPanel::snapShotSkuList(%this, %skus) {
     0.setVisible(ClosetStaffPanel);
-    ClosetMainObjectView;
+    $gSnapping_ObjViewCtrl = ClosetMainObjectView;
     $gSnapping_BaseSkus = ClosetMainObjectView.getSkus();
     %skusBody = "";
     %skusClothing = "";
@@ -25,7 +25,6 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus) {
         %n = (%n - 1.0);
     }
     %skus = %skusBody @ " " @ %skusClothing;
-    (%n >= 0.0);
     $gSnapping_SkuList = %skus;
     $gSnapping_CurIndex = 0;
     $gSnapping_MaxIndex = (getWordCount($gSnapping_SkuList) - 1.0);
@@ -87,20 +86,20 @@ function ClosetStaffPanel::viewAll(%this) {
     $gClosetThumbnailsDrawersPrevious = "";
     ClosetTabs.selectCurrentTab();
     if ((ClosetTabs.getCurrentTab().name $= "BODY")) {
-        if (!(ClosetTabs.getCurrentTab().tabBodyInitialized)) {
+        if (!(ClosetTabs.tabBodyInitialized)) {
             ClosetTabs.fillBodyTab();
         }
         BodyFeaturesPopup.rebuildPopupList();
         BodyItemsFrame.update();
     }
-    if ((ClosetTabs @ " " @ ClosetTabs.getCurrentTab().name $= "CLOSET")) {
-        if (!(ClosetTabs.getCurrentTab().tabClosetInitialized)) {
+    if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
+        if (!(ClosetTabs.tabClosetInitialized)) {
             ClosetTabs.fillClosetTab();
         }
         ClosetItemsFrame.update();
     }
-    if ((ClosetTabs @ " " @ ClosetTabs.getCurrentTab().name $= "SHOPS")) {
-        if (!(ClosetTabs.getCurrentTab().tabShopsInitialized)) {
+    if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
+        if (!(ClosetTabs.tabShopsInitialized)) {
             ClosetTabs.fillStoreTab();
         }
         ClosetTabs.refreshStoreTab();

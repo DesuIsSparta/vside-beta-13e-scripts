@@ -44,10 +44,9 @@ function Editor::onAdd(%unused) {
 function Editor::checkActiveLoadDone() {
     if (isObject(EditorGui)) {
     }
-    if (loadingMission) {
+    if (EditorGui.loadingMission) {
         EditorGui.setContent(Canvas);
-        loadingMission = 0 @ EditorGui;
-        EditorGui;
+        EditorGui.loadingMission = 0;
         return 1;
     }
     return 0;

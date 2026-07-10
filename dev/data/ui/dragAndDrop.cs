@@ -10,10 +10,10 @@ function DragAndDropExampleList::Initialize(%this) {
     }
 };
 function DragAndDropExampleList::onCreatedChild(%this, %child, %unused, %yPos) {
-    %child.setProfile();
-    %child.contentText = DraggableProfile @ %yPos;
+    DraggableProfile.setProfile(%child);
+    %child.contentText = %yPos;
     new GuiTextCtrl("") {
-        profile = 0 @ VPointsTextProfile;
+        profile = VPointsTextProfile;
         position = "10 8";
         extent = "200 50";
         text = %child.contentText;
@@ -33,7 +33,7 @@ function DragAndDropExampleList::onDragAndDropLeave(%this, %dragCtrl) {
 function DragAndDropExampleList::getHiliteMarker(%this) {
     if (!(isObject(%this.hiliteMarker))) {
         %this.hiliteMarker = new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "width";
             vertSizing = "top";
             position = "0 0";
@@ -77,7 +77,7 @@ function DragAndDropExampleDraggable::onDragReleased(%this) {
 };
 function DragAndDropExampleDraggable::makeVisualClone(%this) {
     return new GuiControl("") {
-        profile = 0 @ %this.profile;
+        profile = %this.profile;
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";

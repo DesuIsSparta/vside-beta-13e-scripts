@@ -131,8 +131,7 @@ function sceneLightingComplete() {
     $GeneratingCacheNow = 0;
 };
 function connect(%server) {
-    %conn = new GameConnection("");;
-    0;
+    %conn = new GameConnection("");
     "".setCommonPreconnectClientSettings(%conn);
     %server.connect(%conn);
 };

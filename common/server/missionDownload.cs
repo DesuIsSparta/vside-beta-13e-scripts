@@ -24,11 +24,11 @@ function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, 
     if ((%hasStandaloneCache == 1.0)) {
         log("network", "debug", "tell client to load local cache");
         %client.readingCache = 1;
-        commandToClient(%client, 'LoadLocalCache', $MissionSequence, $Server::MissionFile, MissionGroup, %client.musicTrack);
+        commandToClient(%client, 'LoadLocalCache', $MissionSequence, $Server::MissionFile, MissionGroup.musicTrack);
     }
     log("network", "debug", "tell client to start caching our data");
     %client.readingCache = 0;
-    commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, MissionGroup, %client.musicTrack);
+    commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, MissionGroup.musicTrack);
     return;
 };
 function serverCmdStartCacheAck(%client, %missionSequence) {

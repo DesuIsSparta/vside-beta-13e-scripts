@@ -1,7 +1,7 @@
 if (isObject(MessageFuncDict)) {
     MessageFuncDict.delete();
 }
-$MessageFuncDict = new StringMap(MessageFuncDict);;
+$MessageFuncDict = new StringMap(MessageFuncDict);
 if (isObject(MissionCleanup)) {
     MessageFuncDict.add(MissionCleanup);
 }
@@ -15,22 +15,18 @@ function clientCmdServerMessage(%msgType, %msgString) {
     %defFuncList = "".get(MessageFuncDict);
     if (isObject(%defFuncList)) {
         %i = 0;
-        %func = %defFuncList.func;
-        while (!(%i $= "")) {
+        while (!((%i @ " " @ %func = %defFuncList.func) $= "")) {
             call(%func, %msgType, %msgString);
             %i = (%i + 1.0);
-            %func = %defFuncList.func;
         }
     }
-    if (!(!(%i $= "") @ " " @ %tag $= "")) {
+    if (!((!((%i @ " " @ %func = %defFuncList.func) $= "") @ " " @ %tag) $= "")) {
         %funcList = %tag.get(MessageFuncDict);
         if (isObject(%funcList)) {
             %i = 0;
-            %func = %funcList.func;
-            while (!(%i $= "")) {
+            while (!((%i @ " " @ %func = %funcList.func) $= "")) {
                 call(%func, %msgType, %msgString);
                 %i = (%i + 1.0);
-                %func = %funcList.func;
             }
         }
     }
@@ -44,12 +40,11 @@ function addMessageCallback(%msgType, %func) {
         }
         %m.func = !(%i @ " " @ %m.func $= "") @ %func @ %i;
     }
-    %m = new SimObject("");;
-    0;
+    %m = new SimObject("");
     %m.put(MessageFuncDict, %msgType);
     %m.func = %func @ 0;
 };
 function defaultMessageCallback(%msgType, %msgString) {
     onServerMessage(detag(%msgString));
 };
-addMessageCallback("");
+addMessageCallback("", defaultMessageCallback);

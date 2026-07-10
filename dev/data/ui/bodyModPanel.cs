@@ -81,13 +81,13 @@ function bodyModPanel::createBodyModInfoCell(%realRow, %realCol, %boneIndex, %in
         %buttonProfile.setProfile(%gcObj);
         %gcObj.boneIndex = %boneIndex;
         %childGcObj = new GuiTextCtrl("") {
-            profile = 0 @ %buttonProfile;
+            profile = %buttonProfile;
             position = "3 30";
             extent = "114 19";
         };
         %childGcObj.add(%gcObj);
         %childGcObj = new GuiButtonCtrl(%gcResetScaleButton) {
-            profile = 0 @ %buttonProfile;
+            profile = %buttonProfile;
             position = "4 4";
             extent = "68 19";
             text = "Reset Scale";
@@ -95,21 +95,21 @@ function bodyModPanel::createBodyModInfoCell(%realRow, %realCol, %boneIndex, %in
         };
         %childGcObj.add(%gcObj);
         %childGcObj = new GuiTextCtrl("") {
-            profile = 0 @ %buttonProfile;
+            profile = %buttonProfile;
             position = "71 6";
             extent = "35 14";
             text = "antiS";
         };
         %childGcObj.add(%gcObj);
         %childGcObj = new GuiCheckBoxCtrl(%gcAntiScaleCheckBox) {
-            profile = 0 @ "GuiCheckBoxProfile";
+            profile = "GuiCheckBoxProfile";
             position = "103 7";
             extent = "14 14";
             buttonType = "ToggleButton";
         };
         %childGcObj.add(%gcObj);
         %childGcObj = new GuiButtonCtrl(%gcResetOffsetButton) {
-            profile = 0 @ %buttonProfile;
+            profile = %buttonProfile;
             position = "4 57";
             extent = "68 19";
             text = "Reset Offset";
@@ -165,7 +165,7 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
         %scrollProfile.setProfile(%gcObj);
         %gcObj.boneIndex = %boneIndex;
         %childGcObj = new GuiSliderCtrl(%gcScaleSliderName) {
-            profile = 0 @ %scrollProfile;
+            profile = %scrollProfile;
             position = "4 2";
             extent = "102 16";
             altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
@@ -173,14 +173,14 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
         };
         %childGcObj.add(%gcObj);
         %childGcObj = new GuiTextEditCtrl(%gcScaleTEName) {
-            profile = 0 @ %TEProfile;
+            profile = %TEProfile;
             position = "23 19";
             extent = "64 18";
             altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
         };
         %childGcObj.add(%gcObj);
         %childGcObj = new GuiSliderCtrl(%gcOffsetSliderName) {
-            profile = 0 @ %scrollProfile;
+            profile = %scrollProfile;
             position = "4 39";
             extent = "102 18";
             altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
@@ -188,7 +188,7 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
         };
         %childGcObj.add(%gcObj);
         %childGcObj = new GuiTextEditCtrl(%gcOffsetTEName) {
-            profile = 0 @ %TEProfile;
+            profile = %TEProfile;
             position = "23 58";
             extent = "64 18";
             altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
@@ -218,8 +218,7 @@ function bodyModPanel::open(%this) {
     if ((%numNodes == -(1.0))) {
         return;
     }
-    %cells = (%numNodes * %gcOffsetSliderName.numRowsOrCols);
-    bodyModPanelArray;
+    %cells = (%numNodes * bodyModPanelArray.numRowsOrCols);
     %col = 0;
     %row = 0;
     %boneIndex = 0;
@@ -265,7 +264,6 @@ function bodyModPanel::open(%this) {
         %realCol = 0;
     }
     %n = (bodyModPanelArray.getCount() - 1.0);
-    (%col < %cells);
     while ((%n >= 0.0)) {
         %ctrl = %n.getObject(bodyModPanelArray);
         if (!(hasWord(%ctrl.getNamespaceList(), "bmCellBG"))) {

@@ -27,10 +27,10 @@ function walk() {
     if (($walkIterations == 5.0)) {
         logout(0);
         WorldMap.exit();
-        schedule(6000, 0);
+        schedule(6000, 0, doLogin);
     }
-    schedule(5000, 0);
-    schedule(10000, 0);
+    schedule(5000, 0, stopAndTalk);
+    schedule(10000, 0, approveFriendRequests);
 };
 function stopAndTalk() {
     $mvYawLeftSpeed = 0;
@@ -43,8 +43,8 @@ function stopAndTalk() {
             geTGF.closeFully();
         }
         0.say(pChat, "Hello from" @ " " @ $Hostname @ ".", 0);
-        schedule(4000, 0);
-        if ((changeClothes @ " " @ $DestServerName $= "MyApartment")) {
+        schedule(4000, 0, changeClothes);
+        if (($DestServerName $= "MyApartment")) {
         }
         if (!($videoURLUpdated)) {
             updateApartment();
@@ -57,13 +57,13 @@ function stopAndTalk() {
     }
     echo("LOAD: Lost PChat... Gonna try again.");
     $failureCount = ($failureCount + 1.0);
-    schedule(5000, 0);
+    schedule(5000, 0, walk);
 };
 function logoffAndQuit() {
     echo("LOAD: Logging off and quit()-ing...");
     echo("LOAD: Login::loggedIn:" @ " " @ $Login::loggedIn);
     logout(0);
-    schedule(1000, 0);
+    schedule(1000, 0, doQuit);
 };
 function updateApartment() {
     "http://www.youtube.com/watch?v=_qkmrKa74ts".setText(CSMediaVideoTextBox);
@@ -80,10 +80,9 @@ function changeClothes() {
     }
 };
 function approveFriendRequests() {
-    %fansHere = buddyLists;
-    FansHere @ BuddyHudWin;
+    %fansHere = BuddyHudWin.buddyLists;
     if (!(isObject(%fansHere))) {
-        return;
+        return FansHere;
     }
     if ((%fansHere.size() == 0.0)) {
         echo("LOAD: There are no waiting requests.");

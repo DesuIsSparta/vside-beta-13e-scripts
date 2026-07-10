@@ -51,6 +51,6 @@ function doScreenShot(%val) {
     %ext = ".png";
     %fmt = "PNG";
     ScreenShot(%name @ %ext, %fmt);
-    doSaveScreenShotMetaData(%name, %ext);
+    doSaveScreenShotMetaData(%name, %ext, PlayGui);
 };
-"ctrl-alt s".bind(GlobalActionMap, keyboard);
+doScreenShot.bind(GlobalActionMap, keyboard, "ctrl-alt s");

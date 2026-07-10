@@ -7,8 +7,7 @@ function clearLoadInfo() {
 function buildLoadInfo(%mission) {
     clearLoadInfo();
     %infoObject = "";
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if (%mission.openForRead(%file)) {
         %inInfoBlock = 0;
         while (!(%file.isEOF())) {
@@ -34,21 +33,21 @@ function buildLoadInfo(%mission) {
     return !(%file.isEOF());
 };
 function dumpLoadInfo() {
-    echo("Mission Name: ", MissionInfo @ name);
+    echo("Mission Name: " @ MissionInfo.name);
     echo("Mission Description:");
     %i = 0;
-    while (!(%i @ MissionInfo @ " " @ desc $= "")) {
-        echo("   ", %i @ MissionInfo @ desc);
+    while (!(%i @ " " @ MissionInfo.desc $= "")) {
+        echo("   " @ %i @ MissionInfo.desc);
         %i = (%i + 1.0);
     }
 };
 function sendLoadInfoToClient(%client) {
-    messageClient(%client, 'MsgLoadInfo', MissionInfo, name);
+    messageClient(%client, 'MsgLoadInfo', MissionInfo.name);
     %i = 0;
-    while (!(%i @ MissionInfo @ " " @ desc $= "")) {
-        messageClient(%client, 'MsgLoadDescripition', %i @ MissionInfo, desc);
+    while (!(%i @ " " @ MissionInfo.desc $= "")) {
+        messageClient(%client, 'MsgLoadDescripition', %i, MissionInfo.desc);
         %i = (%i + 1.0);
     }
     messageClient(%client, 'MsgLoadInfoDone', "");
-    return !(%i @ MissionInfo @ " " @ desc $= "");
+    return !(%i @ " " @ MissionInfo.desc $= "");
 };

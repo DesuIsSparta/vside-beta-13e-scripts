@@ -88,7 +88,7 @@ function TriggersPanel::setURLMappingReally(%this) {
 };
 function TriggersPanel::urlsToEnvmanager(%this, %stream, %musicURL) {
     %request = new ManagerRequest("") {
-        className = 0 @ "ChangeStreamIDMappingRequest";
+        className = "ChangeStreamIDMappingRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);

@@ -116,7 +116,6 @@ function testOutfits_MasterDoNext() {
             %n = (%n + 1.0);
         }
         %level = ($testOutfits_testCount == $testOutfits_passCount) ? "info" : "warn";
-        (%n < $testOutfits_testCount);
         log("network", %level, "testOutfitsMaster() results:" @ " " @ $testOutfits_passCount @ " " @ "of" @ " " @ $testOutfits_testCount @ " " @ "passed," @ " " @ ($testOutfits_testCount - $testOutfits_passCount) @ " " @ "failed.");
         if ($testOutfits::quitWhenDone) {
             quit();

@@ -1,6 +1,5 @@
-schedule(3000, 0);
+schedule(3000, 0, doLoginCheck);
 $iterationsWaited = 0;
-doLoginCheck;
 $gSpaceNumber = 0;
 $gSpaceNumberMax = 5;
 function teleportToNextSpace() {
@@ -8,18 +7,17 @@ function teleportToNextSpace() {
 };
 function teleportToSpaceLocal(%space) {
     if ((%space >= $gSpaceNumberMax)) {
-        schedule(5000, 0);
+        schedule(5000, 0, quit);
     }
     teleportToSpaceNumber(%space);
-    schedule(5000, 0);
+    schedule(5000, 0, teleportToNextSpace);
     $gSpaceNumber = ($gSpaceNumber + 1.0);
-    teleportToNextSpace;
 };
 function doLoginCheck() {
     if (isObject(pChat)) {
-        if (!(MissionInfo @ " " @ mode $= "PrivateSpaceGrid")) {
+        if (!(MissionInfo.mode $= "PrivateSpaceGrid")) {
             echo("Not a grid. Quiting...");
-            schedule(3000, 0);
+            schedule(3000, 0, quit);
         }
         teleportToNextSpace(0);
     }
@@ -29,6 +27,5 @@ function doLoginCheck() {
     }
     echo("CACHE: Nothing yet....");
     $iterationsWaited = ($iterationsWaited + 1.0);
-    quit;
-    schedule(3000, 0);
+    schedule(3000, 0, doLoginCheck);
 };

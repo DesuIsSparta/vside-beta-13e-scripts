@@ -54,7 +54,7 @@ function RunTestRunner(%runnername) {
 };
 function TestSuiteRunner::construct(%name) {
     %ret = new ScriptObject(%name) {
-        class = 0 @ "TestSuiteRunner";
+        class = "TestSuiteRunner";
         testSuiteCount = 0;
         quitWhenDone = 0;
     };
@@ -93,8 +93,7 @@ function TestSuiteRunner::ProcessLoop(%this) {
         return;
     }
     %testSuiteName = %this.Suite;
-    %this.nextSuite;
-    %this.currentSuite = TestSuite::construct(%testSuiteName);
+    %this.currentSuite = %this.nextSuite @ TestSuite::construct(%testSuiteName);
     %this.currentSuite.execute();
     %this.TimerProcess = "ProcessLoop".schedule(%this, 100);
 };
@@ -113,7 +112,6 @@ function TestSuiteRunner::reportResults(%this) {
     %i = 0;
     while ((%i < %this.testSuiteCount)) {
         %testname = %this.Suite;
-        %i;
         %message = "    " @ %testname.errorCount @ " " @ "errors" @ " " @ %testname.assertCount @ " " @ "asserts" @ " " @ "reported by" @ " " @ %testname;
         %level = "info";
         if ((%testname.errorCount > 0.0)) {
@@ -126,7 +124,7 @@ function TestSuiteRunner::reportResults(%this) {
 };
 function TestSuite::construct(%name) {
     %ret = new ScriptObject(%name) {
-        class = 0 @ "TestSuite";
+        class = "TestSuite";
         testCount = 0;
         quitWhenDone = 0;
     };
@@ -175,13 +173,11 @@ function TestSuite::ExecNextTest(%this) {
         return;
     }
     %testname = %this.test;
-    %this.nextTest;
     %delay = %this.TestDelay;
-    %this.nextTest;
     TestCase::construct(%testname);
     if ((%delay == 0.0)) {
         %testname.execute();
-        %this.TimerNextTest = "ExecNextTest".schedule(%this, 0);
+        %this.TimerNextTest = %this.nextTest @ %this.nextTest @ "ExecNextTest".schedule(%this, 0);
         return;
     }
     %testname.executeStartForDelay();
@@ -204,8 +200,8 @@ function TestSuite::reportResults(%this) {
     %i = 0;
     while ((%i < %this.testCount)) {
         %testname = %this.test;
-        %i;
         %this.errorCount = (%this.errorCount + %testname.errorCount);
+        %i;
         %this.assertCount = (%this.assertCount + %testname.assertCount);
         %message = "    " @ %testname.errorCount @ " " @ "errors" @ " " @ %testname.assertCount @ " " @ "asserts" @ " " @ "reported by" @ " " @ %testname;
         %level = "info";
@@ -219,7 +215,7 @@ function TestSuite::reportResults(%this) {
 };
 function TestCase::construct(%name) {
     %ret = new ScriptObject(%name) {
-        class = 0 @ "TestCase";
+        class = "TestCase";
         errorCount = 0;
         assertCount = 0;
     };

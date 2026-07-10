@@ -48,27 +48,25 @@ function EStatusHud::GetSelectTypeDisplayText(%this, %type) {
     return "All Types";
 };
 function EStatusHud::updateStatus(%this) {
-    100.schedule(EStatusHud);
+    realUpdateStatus.schedule(EStatusHud, 100);
 };
 function EStatusHud::initialUpdateStatus(%this) {
-    1000.schedule(EStatusHud);
+    realUpdateStatus.schedule(EStatusHud, 1000);
 };
 function EStatusHud::realUpdateStatus(%this) {
     %c2 = "\x06";
     %selected = %c2 @ EWorldEditor.getSelectionSize() @ "\x02\x01 world objects selected";
-    %seltype = "\x02\x01type: " @ %c2 @ selectType.GetSelectTypeDisplayText(%this, EWorldEditor);
+    %seltype = "\x02\x01type: " @ %c2 @ EWorldEditor.selectType.GetSelectTypeDisplayText(%this);
     %addto = "\x02\x01addgroup: " @ %c2 @ $instantGroup @ ":" @ $instantGroup.getName();
     %viewerTrans = LocalClientConnection.getControlObject().getTransform();
     %camera = "\x02\x01cam pos: " @ %c2 @ "( " @ getWord(%viewerTrans, 0) @ " , " @ getWord(%viewerTrans, 1) @ " , " @ getWord(%viewerTrans, 2) @ " )";
-    %scale = EWorldEditor @ mouseMoveScale;
-    "\x02\x01move scale: " @ %c2;
-    %grid = EWorldEditor @ snapToGrid;
-    EWorldEditor @ gridSize @ "\x02\x01,  grid snap: " @ %c2;
-    %this.charWidth = "\x02\x01grid size: " @ %c2 @ mMax(strlen(%selected), strlen(%addto));
-    %this.charWidth = mMax(strlen(this, %this.charWidth), strlen(%seltype));
-    %this.charWidth = mMax(strlen(this, %this.charWidth), strlen(%camera));
-    %this.charWidth = mMax(strlen(this, %this.charWidth), strlen(%scale));
-    %this.charWidth = mMax(strlen(this, %this.charWidth), strlen(%grid));
+    %scale = "\x02\x01move scale: " @ %c2 @ EWorldEditor.mouseMoveScale;
+    %grid = "\x02\x01grid size: " @ %c2 @ EWorldEditor.gridSize @ "\x02\x01,  grid snap: " @ %c2 @ EWorldEditor.snapToGrid;
+    %this.charWidth = mMax(strlen(%selected), strlen(%addto));
+    %this.charWidth = mMax(strlen(this.charWidth), strlen(%seltype));
+    %this.charWidth = mMax(strlen(this.charWidth), strlen(%camera));
+    %this.charWidth = mMax(strlen(this.charWidth), strlen(%scale));
+    %this.charWidth = mMax(strlen(this.charWidth), strlen(%grid));
     %text = %selected @ "\n" @ %seltype @ "\n" @ %addto @ "\n" @ %camera @ "\n" @ %scale @ "\n" @ %grid;
     %text.setStatusText(%this);
 };
@@ -158,131 +156,91 @@ function EStatusHud::onMouseEnterBounds(%this) {
 $sgEditorItemNames::sgMenu = "Synapse Gaming Tools";
 $sgEditorItemNames::sgMenu[$sgEditorItemNames::sgMenuItem @ 0] = "Lighting Pack Light Editor";
 function EditorGui::getPrefs() {
-    %this.dropType = getPrefSetting($Pref::WorldEditor::dropType, "atCamera") @ EWorldEditor;
-    %this.planarMovement = getPrefSetting($pref::WorldEditor::planarMovement, 1) @ EWorldEditor;
-    %this.undoLimit = getPrefSetting($pref::WorldEditor::undoLimit, 40) @ EWorldEditor;
-    %this.dropType = getPrefSetting($Pref::WorldEditor::dropType, "screenCenter") @ EWorldEditor;
-    %this.projectDistance = getPrefSetting($pref::WorldEditor::projectDistance, 2000) @ EWorldEditor;
-    %this.boundingBoxCollision = getPrefSetting($pref::WorldEditor::boundingBoxCollision, 1) @ EWorldEditor;
-    %this.renderPlane = getPrefSetting($pref::WorldEditor::renderPlane, 1) @ EWorldEditor;
-    %this.renderPlaneHashes = getPrefSetting($pref::WorldEditor::renderPlaneHashes, 1) @ EWorldEditor;
-    %this.gridColor = getPrefSetting($pref::WorldEditor::gridColor, "255 255 255 20") @ EWorldEditor;
-    %this.planeDim = getPrefSetting($pref::WorldEditor::planeDim, 500) @ EWorldEditor;
-    %this.gridSize = getPrefSetting($pref::WorldEditor::gridSize, "10 10 10") @ EWorldEditor;
-    %this.renderPopupBackground = getPrefSetting($pref::WorldEditor::renderPopupBackground, 1) @ EWorldEditor;
-    %this.popupBackgroundColor = getPrefSetting($pref::WorldEditor::popupBackgroundColor, "100 100 100") @ EWorldEditor;
-    %this.popupTextColor = getPrefSetting($pref::WorldEditor::popupTextColor, "255 255 0") @ EWorldEditor;
-    %this.selectHandle = getPrefSetting($pref::WorldEditor::selectHandle, "gui/Editor_SelectHandle.png") @ EWorldEditor;
-    %this.defaultHandle = getPrefSetting($pref::WorldEditor::defaultHandle, "gui/Editor_DefaultHandle.png") @ EWorldEditor;
-    %this.lockedHandle = getPrefSetting($pref::WorldEditor::lockedHandle, "gui/Editor_LockedHandle.png") @ EWorldEditor;
-    %this.objectTextColor = getPrefSetting($pref::WorldEditor::objectTextColor, "255 255 255") @ EWorldEditor;
-    %this.objectsUseBoxCenter = getPrefSetting($pref::WorldEditor::objectsUseBoxCenter, 1) @ EWorldEditor;
-    %this.axisGizmoMaxScreenLen = getPrefSetting($pref::WorldEditor::axisGizmoMaxScreenLen, 200) @ EWorldEditor;
-    %this.axisGizmoActive = getPrefSetting($pref::WorldEditor::axisGizmoActive, 1) @ EWorldEditor;
-    %this.mouseMoveScale = getPrefSetting($pref::WorldEditor::mouseMoveScale, 0.01) @ EWorldEditor;
-    %this.mouseRotateScale = getPrefSetting($pref::WorldEditor::mouseRotateScale, 0.01) @ EWorldEditor;
-    %this.mouseScaleScale = getPrefSetting($pref::WorldEditor::mouseScaleScale, 0.01) @ EWorldEditor;
-    %this.objSelectFillAlpha = getPrefSetting($pref::WorldEditor::objSelectFillAlpha, 100) @ EWorldEditor;
-    %this.minScaleFactor = getPrefSetting($pref::WorldEditor::minScaleFactor, 0.1) @ EWorldEditor;
-    %this.maxScaleFactor = getPrefSetting($pref::WorldEditor::maxScaleFactor, 4000) @ EWorldEditor;
-    %this.objSelectColor = getPrefSetting($pref::WorldEditor::objSelectColor, "255 0 0") @ EWorldEditor;
-    %this.objMouseOverSelectColor = getPrefSetting($pref::WorldEditor::objMouseOverSelectColor, "0 0 255") @ EWorldEditor;
-    %this.objMouseOverColor = getPrefSetting($pref::WorldEditor::objMouseOverColor, "0 255 0") @ EWorldEditor;
-    %this.showMousePopupInfo = getPrefSetting($pref::WorldEditor::showMousePopupInfo, 1) @ EWorldEditor;
-    %this.dragRectColor = getPrefSetting($pref::WorldEditor::dragRectColor, "255 255 0") @ EWorldEditor;
-    %this.renderObjText = getPrefSetting($pref::WorldEditor::renderObjText, 0) @ EWorldEditor;
-    %this.renderObjHandle = getPrefSetting($pref::WorldEditor::renderObjHandle, 0) @ EWorldEditor;
-    %this.faceSelectColor = getPrefSetting($pref::WorldEditor::faceSelectColor, "0 0 100 100") @ EWorldEditor;
-    %this.renderSelectionBox = getPrefSetting($pref::WorldEditor::renderSelectionBox, 0) @ EWorldEditor;
-    %this.selectionBoxColor = getPrefSetting($pref::WorldEditor::selectionBoxColor, "255 255 0") @ EWorldEditor;
-    %this.snapToGrid = getPrefSetting($pref::WorldEditor::snapToGrid, 0) @ EWorldEditor;
-    %this.snapRotations = getPrefSetting($pref::WorldEditor::snapRotations, 0) @ EWorldEditor;
-    %this.rotationSnap = getPrefSetting($pref::WorldEditor::rotationSnap, 15) @ EWorldEditor;
-    %this.softSelecting = 1 @ ETerrainEditor;
-    %this.currentAction = "raiseHeight" @ ETerrainEditor;
-    %this.currentMode = "select" @ ETerrainEditor;
+    EWorldEditor.dropType = getPrefSetting($Pref::WorldEditor::dropType, "atCamera");
+    EWorldEditor.planarMovement = getPrefSetting($pref::WorldEditor::planarMovement, 1);
+    EWorldEditor.undoLimit = getPrefSetting($pref::WorldEditor::undoLimit, 40);
+    EWorldEditor.dropType = getPrefSetting($Pref::WorldEditor::dropType, "screenCenter");
+    EWorldEditor.projectDistance = getPrefSetting($pref::WorldEditor::projectDistance, 2000);
+    EWorldEditor.boundingBoxCollision = getPrefSetting($pref::WorldEditor::boundingBoxCollision, 1);
+    EWorldEditor.renderPlane = getPrefSetting($pref::WorldEditor::renderPlane, 1);
+    EWorldEditor.renderPlaneHashes = getPrefSetting($pref::WorldEditor::renderPlaneHashes, 1);
+    EWorldEditor.gridColor = getPrefSetting($pref::WorldEditor::gridColor, "255 255 255 20");
+    EWorldEditor.planeDim = getPrefSetting($pref::WorldEditor::planeDim, 500);
+    EWorldEditor.gridSize = getPrefSetting($pref::WorldEditor::gridSize, "10 10 10");
+    EWorldEditor.renderPopupBackground = getPrefSetting($pref::WorldEditor::renderPopupBackground, 1);
+    EWorldEditor.popupBackgroundColor = getPrefSetting($pref::WorldEditor::popupBackgroundColor, "100 100 100");
+    EWorldEditor.popupTextColor = getPrefSetting($pref::WorldEditor::popupTextColor, "255 255 0");
+    EWorldEditor.selectHandle = getPrefSetting($pref::WorldEditor::selectHandle, "gui/Editor_SelectHandle.png");
+    EWorldEditor.defaultHandle = getPrefSetting($pref::WorldEditor::defaultHandle, "gui/Editor_DefaultHandle.png");
+    EWorldEditor.lockedHandle = getPrefSetting($pref::WorldEditor::lockedHandle, "gui/Editor_LockedHandle.png");
+    EWorldEditor.objectTextColor = getPrefSetting($pref::WorldEditor::objectTextColor, "255 255 255");
+    EWorldEditor.objectsUseBoxCenter = getPrefSetting($pref::WorldEditor::objectsUseBoxCenter, 1);
+    EWorldEditor.axisGizmoMaxScreenLen = getPrefSetting($pref::WorldEditor::axisGizmoMaxScreenLen, 200);
+    EWorldEditor.axisGizmoActive = getPrefSetting($pref::WorldEditor::axisGizmoActive, 1);
+    EWorldEditor.mouseMoveScale = getPrefSetting($pref::WorldEditor::mouseMoveScale, 0.01);
+    EWorldEditor.mouseRotateScale = getPrefSetting($pref::WorldEditor::mouseRotateScale, 0.01);
+    EWorldEditor.mouseScaleScale = getPrefSetting($pref::WorldEditor::mouseScaleScale, 0.01);
+    EWorldEditor.objSelectFillAlpha = getPrefSetting($pref::WorldEditor::objSelectFillAlpha, 100);
+    EWorldEditor.minScaleFactor = getPrefSetting($pref::WorldEditor::minScaleFactor, 0.1);
+    EWorldEditor.maxScaleFactor = getPrefSetting($pref::WorldEditor::maxScaleFactor, 4000);
+    EWorldEditor.objSelectColor = getPrefSetting($pref::WorldEditor::objSelectColor, "255 0 0");
+    EWorldEditor.objMouseOverSelectColor = getPrefSetting($pref::WorldEditor::objMouseOverSelectColor, "0 0 255");
+    EWorldEditor.objMouseOverColor = getPrefSetting($pref::WorldEditor::objMouseOverColor, "0 255 0");
+    EWorldEditor.showMousePopupInfo = getPrefSetting($pref::WorldEditor::showMousePopupInfo, 1);
+    EWorldEditor.dragRectColor = getPrefSetting($pref::WorldEditor::dragRectColor, "255 255 0");
+    EWorldEditor.renderObjText = getPrefSetting($pref::WorldEditor::renderObjText, 0);
+    EWorldEditor.renderObjHandle = getPrefSetting($pref::WorldEditor::renderObjHandle, 0);
+    EWorldEditor.faceSelectColor = getPrefSetting($pref::WorldEditor::faceSelectColor, "0 0 100 100");
+    EWorldEditor.renderSelectionBox = getPrefSetting($pref::WorldEditor::renderSelectionBox, 0);
+    EWorldEditor.selectionBoxColor = getPrefSetting($pref::WorldEditor::selectionBoxColor, "255 255 0");
+    EWorldEditor.snapToGrid = getPrefSetting($pref::WorldEditor::snapToGrid, 0);
+    EWorldEditor.snapRotations = getPrefSetting($pref::WorldEditor::snapRotations, 0);
+    EWorldEditor.rotationSnap = getPrefSetting($pref::WorldEditor::rotationSnap, 15);
+    ETerrainEditor.softSelecting = 1;
+    ETerrainEditor.currentAction = "raiseHeight";
+    ETerrainEditor.currentMode = "select";
 };
 function EditorGui::setPrefs() {
-    $Pref::WorldEditor::dropType = %this.dropType;
-    EWorldEditor;
-    $pref::WorldEditor::planarMovement = %this.planarMovement;
-    EWorldEditor;
-    $pref::WorldEditor::undoLimit = %this.undoLimit;
-    EWorldEditor;
-    $Pref::WorldEditor::dropType = %this.dropType;
-    EWorldEditor;
-    $pref::WorldEditor::projectDistance = %this.projectDistance;
-    EWorldEditor;
-    $pref::WorldEditor::boundingBoxCollision = %this.boundingBoxCollision;
-    EWorldEditor;
-    $pref::WorldEditor::renderPlane = %this.renderPlane;
-    EWorldEditor;
-    $pref::WorldEditor::renderPlaneHashes = %this.renderPlaneHashes;
-    EWorldEditor;
-    $pref::WorldEditor::gridColor = %this.gridColor;
-    EWorldEditor;
-    $pref::WorldEditor::planeDim = %this.planeDim;
-    EWorldEditor;
-    $pref::WorldEditor::gridSize = %this.gridSize;
-    EWorldEditor;
-    $pref::WorldEditor::renderPopupBackground = %this.renderPopupBackground;
-    EWorldEditor;
-    $pref::WorldEditor::popupBackgroundColor = %this.popupBackgroundColor;
-    EWorldEditor;
-    $pref::WorldEditor::popupTextColor = %this.popupTextColor;
-    EWorldEditor;
-    $pref::WorldEditor::selectHandle = %this.selectHandle;
-    EWorldEditor;
-    $pref::WorldEditor::defaultHandle = %this.defaultHandle;
-    EWorldEditor;
-    $pref::WorldEditor::lockedHandle = %this.lockedHandle;
-    EWorldEditor;
-    $pref::WorldEditor::objectTextColor = %this.objectTextColor;
-    EWorldEditor;
-    $pref::WorldEditor::objectsUseBoxCenter = %this.objectsUseBoxCenter;
-    EWorldEditor;
-    $pref::WorldEditor::axisGizmoMaxScreenLen = %this.axisGizmoMaxScreenLen;
-    EWorldEditor;
-    $pref::WorldEditor::axisGizmoActive = %this.axisGizmoActive;
-    EWorldEditor;
-    $pref::WorldEditor::mouseMoveScale = %this.mouseMoveScale;
-    EWorldEditor;
-    $pref::WorldEditor::mouseRotateScale = %this.mouseRotateScale;
-    EWorldEditor;
-    $pref::WorldEditor::mouseScaleScale = %this.mouseScaleScale;
-    EWorldEditor;
-    $pref::WorldEditor::objSelectFillAlpha = %this.objSelectFillAlpha;
-    EWorldEditor;
-    $pref::WorldEditor::minScaleFactor = %this.minScaleFactor;
-    EWorldEditor;
-    $pref::WorldEditor::maxScaleFactor = %this.maxScaleFactor;
-    EWorldEditor;
-    $pref::WorldEditor::objSelectColor = %this.objSelectColor;
-    EWorldEditor;
-    $pref::WorldEditor::objMouseOverSelectColor = %this.objMouseOverSelectColor;
-    EWorldEditor;
-    $pref::WorldEditor::objMouseOverColor = %this.objMouseOverColor;
-    EWorldEditor;
-    $pref::WorldEditor::showMousePopupInfo = %this.showMousePopupInfo;
-    EWorldEditor;
-    $pref::WorldEditor::dragRectColor = %this.dragRectColor;
-    EWorldEditor;
-    $pref::WorldEditor::renderObjText = %this.renderObjText;
-    EWorldEditor;
-    $pref::WorldEditor::renderObjHandle = %this.renderObjHandle;
-    EWorldEditor;
-    $pref::WorldEditor::raceSelectColor = %this.faceSelectColor;
-    EWorldEditor;
-    $pref::WorldEditor::renderSelectionBox = %this.renderSelectionBox;
-    EWorldEditor;
-    $pref::WorldEditor::selectionBoxColor = %this.selectionBoxColor;
-    EWorldEditor;
-    $pref::WorldEditor::snapToGrid = %this.snapToGrid;
-    EWorldEditor;
-    $pref::WorldEditor::snapRotations = %this.snapRotations;
-    EWorldEditor;
-    $pref::WorldEditor::rotationSnap = %this.rotationSnap;
-    EWorldEditor;
+    $Pref::WorldEditor::dropType = EWorldEditor.dropType;
+    $pref::WorldEditor::planarMovement = EWorldEditor.planarMovement;
+    $pref::WorldEditor::undoLimit = EWorldEditor.undoLimit;
+    $Pref::WorldEditor::dropType = EWorldEditor.dropType;
+    $pref::WorldEditor::projectDistance = EWorldEditor.projectDistance;
+    $pref::WorldEditor::boundingBoxCollision = EWorldEditor.boundingBoxCollision;
+    $pref::WorldEditor::renderPlane = EWorldEditor.renderPlane;
+    $pref::WorldEditor::renderPlaneHashes = EWorldEditor.renderPlaneHashes;
+    $pref::WorldEditor::gridColor = EWorldEditor.gridColor;
+    $pref::WorldEditor::planeDim = EWorldEditor.planeDim;
+    $pref::WorldEditor::gridSize = EWorldEditor.gridSize;
+    $pref::WorldEditor::renderPopupBackground = EWorldEditor.renderPopupBackground;
+    $pref::WorldEditor::popupBackgroundColor = EWorldEditor.popupBackgroundColor;
+    $pref::WorldEditor::popupTextColor = EWorldEditor.popupTextColor;
+    $pref::WorldEditor::selectHandle = EWorldEditor.selectHandle;
+    $pref::WorldEditor::defaultHandle = EWorldEditor.defaultHandle;
+    $pref::WorldEditor::lockedHandle = EWorldEditor.lockedHandle;
+    $pref::WorldEditor::objectTextColor = EWorldEditor.objectTextColor;
+    $pref::WorldEditor::objectsUseBoxCenter = EWorldEditor.objectsUseBoxCenter;
+    $pref::WorldEditor::axisGizmoMaxScreenLen = EWorldEditor.axisGizmoMaxScreenLen;
+    $pref::WorldEditor::axisGizmoActive = EWorldEditor.axisGizmoActive;
+    $pref::WorldEditor::mouseMoveScale = EWorldEditor.mouseMoveScale;
+    $pref::WorldEditor::mouseRotateScale = EWorldEditor.mouseRotateScale;
+    $pref::WorldEditor::mouseScaleScale = EWorldEditor.mouseScaleScale;
+    $pref::WorldEditor::objSelectFillAlpha = EWorldEditor.objSelectFillAlpha;
+    $pref::WorldEditor::minScaleFactor = EWorldEditor.minScaleFactor;
+    $pref::WorldEditor::maxScaleFactor = EWorldEditor.maxScaleFactor;
+    $pref::WorldEditor::objSelectColor = EWorldEditor.objSelectColor;
+    $pref::WorldEditor::objMouseOverSelectColor = EWorldEditor.objMouseOverSelectColor;
+    $pref::WorldEditor::objMouseOverColor = EWorldEditor.objMouseOverColor;
+    $pref::WorldEditor::showMousePopupInfo = EWorldEditor.showMousePopupInfo;
+    $pref::WorldEditor::dragRectColor = EWorldEditor.dragRectColor;
+    $pref::WorldEditor::renderObjText = EWorldEditor.renderObjText;
+    $pref::WorldEditor::renderObjHandle = EWorldEditor.renderObjHandle;
+    $pref::WorldEditor::raceSelectColor = EWorldEditor.faceSelectColor;
+    $pref::WorldEditor::renderSelectionBox = EWorldEditor.renderSelectionBox;
+    $pref::WorldEditor::selectionBoxColor = EWorldEditor.selectionBoxColor;
+    $pref::WorldEditor::snapToGrid = EWorldEditor.snapToGrid;
+    $pref::WorldEditor::snapRotations = EWorldEditor.snapRotations;
+    $pref::WorldEditor::rotationSnap = EWorldEditor.rotationSnap;
     EStatusHud.updateStatus();
 };
 function EditorGui::onSleep(%this) {
@@ -294,7 +252,6 @@ function EditorGui::init(%this) {
         new Terraformer("terraformer");
     }
     $SelectedOperation = -(1.0);
-    0;
     $NextOperationId = 1;
     $HeightfieldDirtyRow = -(1.0);
     EditorMenuBar.clearMenus();
@@ -513,98 +470,93 @@ function EditorGui::init(%this) {
     TextureInit();
     EditorTree.init();
     ObjectBuilderGui.init();
-    %this.isDirty = 0 @ EditorTree;
-    %this.isDirty = 0 @ EWorldEditor;
-    %this.isDirty = 0 @ ETerrainEditor;
-    %this.isMissionDirty = 0 @ ETerrainEditor;
-    %this.saveAs = 0 @ EditorGui;
+    EditorTree.isDirty = 0;
+    EWorldEditor.isDirty = 0;
+    ETerrainEditor.isDirty = 0;
+    ETerrainEditor.isMissionDirty = 0;
+    EditorGui.saveAs = 0;
 };
 function EditorNewMission() {
-    if (%this.isMissionDirty) {
+    if (ETerrainEditor.isMissionDirty) {
     }
-    if (%this.isDirty) {
+    if (ETerrainEditor.isDirty) {
     }
-    if (%this.isDirty) {
+    if (EWorldEditor.isDirty) {
     }
-    if (%this.isDirty) {
+    if (EditorTree.isDirty) {
         MessageBoxYesNo("Mission Modified", "Would you like to save changes to the current mission \"" @ $Server::MissionFile @ "\" before creating a new mission?", "EditorDoNewMission(true);", "EditorDoNewMission(false);");
     }
     EditorDoNewMission(0);
 };
 function EditorSaveMissionMenu() {
-    if (%this.saveAs) {
+    if (EditorGui.saveAs) {
         EditorSaveMissionAs();
     }
     EditorSaveMission();
 };
 function EditorSaveMission() {
-    if (%this.isDirty) {
+    if (EWorldEditor.isDirty) {
     }
-    if (%this.isDirty) {
+    if (EditorTree.isDirty) {
     }
-    if (%this.isMissionDirty) {
+    if (ETerrainEditor.isMissionDirty) {
     }
     if (!(isWriteableFileName($Server::MissionFile))) {
         MessageBoxOK("Error", "Mission file \"" @ $Server::MissionFile @ "\" is read-only.", "");
         return 0;
     }
-    if (%this.isDirty) {
+    if (ETerrainEditor.isDirty) {
     }
-    if (!(isWriteableFileName(Terrain, %this.terrainFile))) {
-        MessageBoxOK("Error", "Terrain file \"", Terrain @ %this.terrainFile @ "\" is read-only.", "");
+    if (!(isWriteableFileName(Terrain.terrainFile))) {
+        MessageBoxOK("Error", "Terrain file \"" @ Terrain.terrainFile @ "\" is read-only.", "");
         return 0;
     }
     %errorCount = RunTestCase("TEST_MISSIONGROUPINTEGRITY", "WARNING: About that mission file you just saved...");
-    if (%this.isDirty) {
+    if (EWorldEditor.isDirty) {
     }
-    if (%this.isDirty) {
+    if (EditorTree.isDirty) {
     }
-    if (%this.isMissionDirty) {
-        if ((MissionInfo @ " " @ %this.mode $= "PrivateSpaceDesign")) {
+    if (ETerrainEditor.isMissionDirty) {
+        if ((MissionInfo.mode $= "PrivateSpaceDesign")) {
             if (isObject(PRIVATESPACE_GROUP)) {
                 PRIVATESPACE_GROUP.add(RootGroup);
             }
             error("PrivateSpaceDesign mode, no PRIVATESPACE_GROUP object");
         }
         $Server::MissionFile.save(MissionGroup);
-        if ((MissionInfo @ " " @ %this.mode $= "PrivateSpaceDesign") && isObject(PRIVATESPACE_GROUP)) {
+        if ((MissionInfo.mode $= "PrivateSpaceDesign") && isObject(PRIVATESPACE_GROUP)) {
             %spaceForGridFileName = getSubStr($Server::MissionFile, 0, (strlen($Server::MissionFile) - 4.0)) @ "_generated.cs";
-            ETerrainEditor;
             %spaceForGridFileName.save(PRIVATESPACE_GROUP);
             echo("PrivateSpaceDesign mode saving to space for grid, file named:" @ " " @ %spaceForGridFileName);
             PRIVATESPACE_GROUP.add(MissionGroup);
         }
     }
-    if ((MissionInfo @ " " @ %this.mode $= "PrivateSpaceDesign") && isObject(PRIVATESPACE_GROUP)) {
+    if ((MissionInfo.mode $= "PrivateSpaceDesign") && isObject(PRIVATESPACE_GROUP)) {
         %spaceForGridFileName = getSubStr($Server::MissionFile, 0, (strlen($Server::MissionFile) - 4.0)) @ "_generated.cs";
-        EditorTree;
         %spaceForGridFileName.save(PRIVATESPACE_GROUP);
         echo("PrivateSpaceDesign mode saving to space for grid, file named:" @ " " @ %spaceForGridFileName);
     }
-    if (%this.isDirty) {
-        %this.terrainFile.save(Terrain, Terrain);
+    if (ETerrainEditor.isDirty) {
+        Terrain.terrainFile.save(Terrain);
     }
-    %this.isDirty = 0 @ EditorTree;
-    ETerrainEditor;
-    %this.isDirty = 0 @ EWorldEditor;
-    EWorldEditor;
-    %this.isDirty = 0 @ ETerrainEditor;
-    %this.isMissionDirty = 0 @ ETerrainEditor;
-    %this.saveAs = 0 @ EditorGui;
+    EditorTree.isDirty = 0;
+    EWorldEditor.isDirty = 0;
+    ETerrainEditor.isDirty = 0;
+    ETerrainEditor.isMissionDirty = 0;
+    EditorGui.saveAs = 0;
     return 1;
 };
 function EditorDoSaveAs(%missionName) {
-    %this.isDirty = 1 @ ETerrainEditor;
-    %this.isDirty = 1 @ EWorldEditor;
-    %this.isDirty = 1 @ EditorTree;
+    ETerrainEditor.isDirty = 1;
+    EWorldEditor.isDirty = 1;
+    EditorTree.isDirty = 1;
     %saveMissionFile = $Server::MissionFile;
-    %saveTerrName = %this.terrainFile;
-    Terrain;
+    %saveTerrName = Terrain.terrainFile;
     $Server::MissionFile = %missionName;
-    %this.terrainFile = filePath(%missionName) @ "/" @ fileBase(%missionName) @ ".ter" @ Terrain;
+    Terrain.terrainFile = filePath(%missionName) @ "/" @ fileBase(%missionName) @ ".ter";
     if (!(EditorSaveMission())) {
         $Server::MissionFile = %saveMissionFile;
-        %this.terrainFile = %saveTerrName @ Terrain;
+        Terrain.terrainFile = %saveTerrName;
     }
 };
 function EditorSaveMissionAs() {
@@ -615,7 +567,7 @@ function EditorDoLoadMission(%file) {
     loadMission(%file, 1);
     Editor::Create();
     Editor.add(MissionCleanup);
-    %this.loadingMission = 1 @ EditorGui;
+    EditorGui.loadingMission = 1;
     Editor.open();
 };
 function EditorSaveBeforeLoad() {
@@ -633,19 +585,19 @@ function EditorDoNewMission(%saveFirst) {
         return;
     }
     EditorDoLoadMission(%file);
-    %this.saveAs = 1 @ EditorGui;
-    %this.isDirty = 1 @ EWorldEditor;
-    %this.isDirty = 1 @ ETerrainEditor;
-    %this.isDirty = 1 @ EditorTree;
+    EditorGui.saveAs = 1;
+    EWorldEditor.isDirty = 1;
+    ETerrainEditor.isDirty = 1;
+    EditorTree.isDirty = 1;
 };
 function EditorOpenMission() {
-    if (%this.isMissionDirty) {
+    if (ETerrainEditor.isMissionDirty) {
     }
-    if (%this.isDirty) {
+    if (ETerrainEditor.isDirty) {
     }
-    if (%this.isDirty) {
+    if (EWorldEditor.isDirty) {
     }
-    if (%this.isDirty) {
+    if (EditorTree.isDirty) {
         MessageBoxYesNo("Mission Modified", "Would you like to save changes to the current mission \"" @ $Server::MissionFile @ "\" before opening a new mission?", "EditorSaveBeforeLoad();", "getLoadFilename(\"*.mis\", \"EditorDoLoadMission\");");
     }
     getLoadFilename("*.mis", "EditorDoLoadMission");
@@ -656,13 +608,13 @@ function EditorMenuBar::onMenuSelect(%this, %unused, %menu) {
         }
         %editingHeightfield = EHeightField.isVisible();
         %editingHeightfield.setMenuItemEnable(EditorMenuBar, "File", "Export Terraform Bitmap...");
-        if (%this.isDirty) {
+        if (ETerrainEditor.isDirty) {
         }
-        if (%this.isMissionDirty) {
+        if (ETerrainEditor.isMissionDirty) {
         }
-        if (%this.isDirty) {
+        if (EWorldEditor.isDirty) {
         }
-        %this.isDirty.setMenuItemEnable(EditorMenuBar, "File", "Save Mission...", ETerrainEditor, ETerrainEditor, EWorldEditor, EditorTree);
+        EditorTree.isDirty.setMenuItemEnable(EditorMenuBar, "File", "Save Mission...");
     }
     if ((%menu $= "Edit")) {
         %selSize = EWorldEditor.getSelectionSize();
@@ -789,62 +741,62 @@ function EditorMenuBar::onCameraMenuItemSelect(%this, %itemId, %item) {
 function EditorMenuBar::onActionMenuItemSelect(%this, %itemId, %item) {
     1.setMenuItemChecked(EditorMenuBar, "Action", %item);
     if ((%item $= "Select")) {
-        %this.currentMode = "select" @ ETerrainEditor;
-        %this.selectionHidden = 0 @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentMode = "select";
+        ETerrainEditor.selectionHidden = 0;
+        ETerrainEditor.renderVertexSelection = 1;
         "select".setAction(ETerrainEditor);
     }
     if ((%item $= "Adjust Selection")) {
-        %this.currentMode = "adjust" @ ETerrainEditor;
-        %this.selectionHidden = 0 @ ETerrainEditor;
+        ETerrainEditor.currentMode = "adjust";
+        ETerrainEditor.selectionHidden = 0;
         "adjustHeight".setAction(ETerrainEditor);
-        %this.currentAction = brushAdjustHeight @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = brushAdjustHeight;
+        ETerrainEditor.renderVertexSelection = 1;
     }
-    %this.currentMode = "paint" @ ETerrainEditor;
-    %this.selectionHidden = 1 @ ETerrainEditor;
-    %this.currentAction.setAction(ETerrainEditor, ETerrainEditor);
+    ETerrainEditor.currentMode = "paint";
+    ETerrainEditor.selectionHidden = 1;
+    ETerrainEditor.currentAction.setAction(ETerrainEditor);
     if ((%item $= "Add Dirt")) {
-        %this.currentAction = raiseHeight @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = raiseHeight;
+        ETerrainEditor.renderVertexSelection = 1;
     }
     if ((%item $= "Paint Material")) {
-        %this.currentAction = paintMaterial @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = paintMaterial;
+        ETerrainEditor.renderVertexSelection = 1;
     }
     if ((%item $= "Excavate")) {
-        %this.currentAction = lowerHeight @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = lowerHeight;
+        ETerrainEditor.renderVertexSelection = 1;
     }
     if ((%item $= "Set Height")) {
-        %this.currentAction = setHeight @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = setHeight;
+        ETerrainEditor.renderVertexSelection = 1;
     }
     if ((%item $= "Adjust Height")) {
-        %this.currentAction = brushAdjustHeight @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = brushAdjustHeight;
+        ETerrainEditor.renderVertexSelection = 1;
     }
     if ((%item $= "Flatten")) {
-        %this.currentAction = flattenHeight @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = flattenHeight;
+        ETerrainEditor.renderVertexSelection = 1;
     }
     if ((%item $= "Smooth")) {
-        %this.currentAction = smoothHeight @ ETerrainEditor;
-        %this.renderVertexSelection = 1 @ ETerrainEditor;
+        ETerrainEditor.currentAction = smoothHeight;
+        ETerrainEditor.renderVertexSelection = 1;
     }
     if ((%item $= "Set Empty")) {
-        %this.currentAction = setEmpty @ ETerrainEditor;
-        %this.renderVertexSelection = 0 @ ETerrainEditor;
+        ETerrainEditor.currentAction = setEmpty;
+        ETerrainEditor.renderVertexSelection = 0;
     }
     if ((%item $= "Clear Empty")) {
-        %this.currentAction = clearEmpty @ ETerrainEditor;
-        %this.renderVertexSelection = 0 @ ETerrainEditor;
+        ETerrainEditor.currentAction = clearEmpty;
+        ETerrainEditor.renderVertexSelection = 0;
     }
-    if ((ETerrainEditor @ " " @ %this.currentMode $= "select")) {
-        %this.currentAction.processAction(ETerrainEditor, ETerrainEditor);
+    if ((ETerrainEditor.currentMode $= "select")) {
+        ETerrainEditor.currentAction.processAction(ETerrainEditor);
     }
-    if ((ETerrainEditor @ " " @ %this.currentMode $= "paint")) {
-        %this.currentAction.setAction(ETerrainEditor, ETerrainEditor);
+    if ((ETerrainEditor.currentMode $= "paint")) {
+        ETerrainEditor.currentAction.setAction(ETerrainEditor);
     }
 };
 function EditorMenuBar::onBrushMenuItemSelect(%this, %itemId, %item) {
@@ -856,12 +808,12 @@ function EditorMenuBar::onBrushMenuItemSelect(%this, %itemId, %item) {
         ellipse.setBrushType(ETerrainEditor);
     }
     if ((%item $= "Soft Brush")) {
-        %this.enableSoftBrushes = 1 @ ETerrainEditor;
+        ETerrainEditor.enableSoftBrushes = 1;
     }
     if ((%item $= "Hard Brush")) {
-        %this.enableSoftBrushes = 0 @ ETerrainEditor;
+        ETerrainEditor.enableSoftBrushes = 0;
     }
-    %this.brushSize = %itemId @ ETerrainEditor;
+    ETerrainEditor.brushSize = %itemId;
     %itemId.setBrushSize(ETerrainEditor, %itemId);
 };
 function EditorMenuBar::onRenderModeMenuItemSelect(%this, %itemId, %item) {
@@ -917,27 +869,27 @@ function EditorMenuBar::onSelectTypeMenuItemSelect(%this, %itemId, %item) {
         %classname.selectAllObjectsOfClassName(EWorldEditor);
     }
     if ((%item $= "All Types")) {
-        %this.selectType = $TypeMasks::ALLTYPES @ EWorldEditor;
+        EWorldEditor.selectType = $TypeMasks::ALLTYPES;
     }
     if ((%item $= "Triggers")) {
-        %this.selectType = $TypeMasks::TriggerObjectType @ EWorldEditor;
+        EWorldEditor.selectType = $TypeMasks::TriggerObjectType;
     }
     if ((%item $= "Interiors")) {
-        %this.selectType = $TypeMasks::InteriorObjectType @ EWorldEditor;
+        EWorldEditor.selectType = $TypeMasks::InteriorObjectType;
     }
     if ((%item $= "Audio Emitters")) {
-        %this.selectType = $TypeMasks::MarkerObjectType @ EWorldEditor;
+        EWorldEditor.selectType = $TypeMasks::MarkerObjectType;
     }
     if ((%item $= "Shapes and Sit Markers")) {
-        %this.selectType = ($TypeMasks::ShapeBaseObjectType | $TypeMasks::StaticTSObjectType) @ EWorldEditor;
+        EWorldEditor.selectType = ($TypeMasks::ShapeBaseObjectType | $TypeMasks::StaticTSObjectType);
     }
     if ((%item $= "Items")) {
-        %this.selectType = $TypeMasks::ItemObjectType @ EWorldEditor;
+        EWorldEditor.selectType = $TypeMasks::ItemObjectType;
     }
     if ((%item $= "Antiportals")) {
-        %this.selectType = $TypeMasks::AntiPortalObjectType @ EWorldEditor;
+        EWorldEditor.selectType = $TypeMasks::AntiPortalObjectType;
     }
-    %this.selectType = $TypeMasks::ALLTYPES @ EWorldEditor;
+    EWorldEditor.selectType = $TypeMasks::ALLTYPES;
     1.setMenuItemChecked(EditorMenuBar, "Select Type", %item);
     EStatusHud.updateStatus();
 };
@@ -978,25 +930,25 @@ function EditorMenuBar::onWorldMenuItemSelect(%this, %itemId, %item) {
     }
     1.setMenuItemChecked(EditorMenuBar, "World", %item);
     if ((%item $= "Drop at Origin")) {
-        %this.dropType = "atOrigin" @ EWorldEditor;
+        EWorldEditor.dropType = "atOrigin";
     }
     if ((%item $= "Drop at Camera")) {
-        %this.dropType = "atCamera" @ EWorldEditor;
+        EWorldEditor.dropType = "atCamera";
     }
     if ((%item $= "Drop at Camera w/Rot")) {
-        %this.dropType = "atCameraRot" @ EWorldEditor;
+        EWorldEditor.dropType = "atCameraRot";
     }
     if ((%item $= "Drop below Camera")) {
-        %this.dropType = "belowCamera" @ EWorldEditor;
+        EWorldEditor.dropType = "belowCamera";
     }
     if ((%item $= "Drop at Screen Center")) {
-        %this.dropType = "screenCenter" @ EWorldEditor;
+        EWorldEditor.dropType = "screenCenter";
     }
     if ((%item $= "Drop to Ground")) {
-        %this.dropType = "toGround" @ EWorldEditor;
+        EWorldEditor.dropType = "toGround";
     }
     if ((%item $= "Drop at Centroid")) {
-        %this.dropType = "atCentroid" @ EWorldEditor;
+        EWorldEditor.dropType = "atCentroid";
     }
 };
 function EditorMenuBar::OnSnapToMenuItemSelect(%this, %itemId, %item) {
@@ -1013,16 +965,14 @@ function EditorMenuBar::onEditMenuItemSelect(%this, %itemId, %item) {
         99.pushDialog(Canvas, TerrainEditorValuesSettingsGui);
     }
     if ((%item $= "Relight Scene")) {
-        lightScene("");
+        lightScene("", forceAlways);
     }
-    if ((forceAlways @ " " @ %item $= "Increase Move Scale")) {
+    if ((%item $= "Increase Move Scale")) {
         EWorldEditor.increaseMoveScale();
     }
     if ((%item $= "Toggle Grid Visibility")) {
-        %this.renderPlane = !(%this.renderPlane) @ EWorldEditor;
-        EWorldEditor;
-        %this.renderPlaneHashes = !(%this.renderPlaneHashes) @ EWorldEditor;
-        EWorldEditor;
+        EWorldEditor.renderPlane = !(EWorldEditor.renderPlane);
+        EWorldEditor.renderPlaneHashes = !(EWorldEditor.renderPlaneHashes);
     }
     if ((%item $= "Status Hud Toggle")) {
         toggleStatusHud();
@@ -1188,35 +1138,31 @@ function EditorGui::getHelpPage(%this) {
     }
 };
 function ETerrainEditor::setPaintMaterial(%this, %matIndex) {
-    %this.paintMaterial = %this.mat @ ETerrainEditor;
-    %matIndex @ EPainter;
+    ETerrainEditor.paintMaterial = %matIndex @ EPainter.mat;
 };
 function ETerrainEditor::changeMaterial(%this, %matIndex) {
-    %this.matIndex = %matIndex @ EPainter;
-    getLoadFilename("*/terrains/*.png\t*/terrains/*.jpg");
+    EPainter.matIndex = %matIndex;
+    getLoadFilename("*/terrains/*.png\t*/terrains/*.jpg", EPainterChangeMat);
 };
 function EPainterChangeMat(%file) {
     %file = filePath(%file) @ "/" @ fileBase(%file);
     %i = 0;
     while ((%i < 6.0)) {
-        if ((%i @ EPainter @ " " @ %this.mat $= %file)) {
+        if ((%i @ " " @ EPainter.mat $= %file)) {
             return;
         }
         %i = (%i + 1.0);
     }
-    %this.mat = EPainter @ %this.matIndex @ EPainter;
-    %file;
+    EPainter.mat = (%i < 6.0) @ %file @ EPainter.matIndex;
     %mats = "";
-    (%i < 6.0);
     %i = 0;
     while ((%i < 6.0)) {
-        %mats = %i @ EPainter @ %this.mat @ "\n";
-        %mats;
+        %mats = %mats @ %i @ EPainter.mat @ "\n";
         %i = (%i + 1.0);
     }
     %mats.setTerrainMaterials(ETerrainEditor);
     EPainter.setup();
-    EPainter @ %this.matIndex.performClick("ETerrainMaterialPaint");
+    "ETerrainMaterialPaint" @ EPainter.matIndex.performClick();
 };
 function EPainter::setup(%this) {
     "Paint Material".onActionMenuItemSelect(EditorMenuBar, 0);
@@ -1301,21 +1247,17 @@ function WorldEditor::invertSelection(%this) {
 };
 function WorldEditor::increaseMoveScale(%this) {
     %max = 10;
-    %this.mouseMoveScale = (%this.mouseMoveScale * EWorldEditor);
-    2.0;
-    if ((%this.mouseMoveScale > EWorldEditor)) {
-        %this.mouseMoveScale = %max @ EWorldEditor;
-        %max;
+    EWorldEditor.mouseMoveScale = (EWorldEditor.mouseMoveScale * 2.0);
+    if ((EWorldEditor.mouseMoveScale > %max)) {
+        EWorldEditor.mouseMoveScale = %max;
     }
     EditorGui.setPrefs();
 };
 function WorldEditor::decreaseMoveScale(%this) {
     %min = 0.001;
-    %this.mouseMoveScale = (%this.mouseMoveScale / EWorldEditor);
-    2.0;
-    if ((%this.mouseMoveScale < EWorldEditor)) {
-        %this.mouseMoveScale = %min @ EWorldEditor;
-        %min;
+    EWorldEditor.mouseMoveScale = (EWorldEditor.mouseMoveScale / 2.0);
+    if ((EWorldEditor.mouseMoveScale < %min)) {
+        EWorldEditor.mouseMoveScale = %min;
     }
     EditorGui.setPrefs();
 };
@@ -1349,10 +1291,10 @@ function WorldEditor::onClearSelection(%this) {
     "".updateGeneralInfo(EWorldEditor);
 };
 function EditorTree::onDragDrop(%this) {
-    %this.isDirty = 1 @ EditorTree;
+    EditorTree.isDirty = 1;
 };
 function EditorTree::onObjectDeleteCompleted(%this) {
-    %this.isDirty = 1 @ EditorTree;
+    EditorTree.isDirty = 1;
     EWorldEditor.copySelection();
     EWorldEditor.deleteSelection();
     inspector.uninspect();
@@ -1417,14 +1359,13 @@ function EditorTree::onUnSelect(%this, %obj) {
 };
 function ETContextPopup::onSelect(%this, %index, %unused) {
     if ((%index == 0.0)) {
-        %obj.contextObj.delete(EditorTree);
+        EditorTree.contextObj.delete();
     }
 };
 function WorldEditor::init(%this) {
-    %this.ignoreObjClass();
-    %this.numEditModes = AIObjective @ 3;
-    Sky;
-    %this.editMode = TerrainBlock @ "move" @ 0;
+    AIObjective.ignoreObjClass(%this, TerrainBlock, Sky);
+    %this.numEditModes = 3;
+    %this.editMode = "move" @ 0;
     %this.editMode = "rotate" @ 1;
     %this.editMode = "scale" @ 2;
     new GuiControl(WEContextPopupDlg) {
@@ -1569,7 +1510,7 @@ function WorldEditor::snapTo(%this, %snapType, %objTarget, %objToSnap) {
     }
 };
 function WorldEditor::snapToX(%this, %objTarget, %objToSnap) {
-    setWord(%objToSnap.getTransform(), 0, EWorldEditor, (getWord(%objTarget.getTransform(), 0) + %obj.snapGapX)).setTransform(%objToSnap);
+    setWord(%objToSnap.getTransform(), 0, (getWord(%objTarget.getTransform(), 0) + EWorldEditor.snapGapX)).setTransform(%objToSnap);
 };
 function WorldEditor::snapToXPos(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 0) - getWord(%objToSnap.getTransform(), 0)));
@@ -1582,7 +1523,7 @@ function WorldEditor::snapToXNeg(%this, %objTarget, %objToSnap) {
     setWord(%objToSnap.getTransform(), 0, %transformWithOffset).setTransform(%objToSnap);
 };
 function WorldEditor::snapToY(%this, %objTarget, %objToSnap) {
-    setWord(%objToSnap.getTransform(), 1, EWorldEditor, (getWord(%objTarget.getTransform(), 1) + %obj.snapGapY)).setTransform(%objToSnap);
+    setWord(%objToSnap.getTransform(), 1, (getWord(%objTarget.getTransform(), 1) + EWorldEditor.snapGapY)).setTransform(%objToSnap);
 };
 function WorldEditor::snapToYPos(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 1) - getWord(%objToSnap.getTransform(), 1)));
@@ -1595,7 +1536,7 @@ function WorldEditor::snapToYNeg(%this, %objTarget, %objToSnap) {
     setWord(%objToSnap.getTransform(), 1, %transformWithOffset).setTransform(%objToSnap);
 };
 function WorldEditor::snapToZ(%this, %objTarget, %objToSnap) {
-    setWord(%objToSnap.getTransform(), 2, EWorldEditor, (getWord(%objTarget.getTransform(), 2) + %obj.snapGapZ)).setTransform(%objToSnap);
+    setWord(%objToSnap.getTransform(), 2, (getWord(%objTarget.getTransform(), 2) + EWorldEditor.snapGapZ)).setTransform(%objToSnap);
 };
 function WorldEditor::snapToZPos(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 2) - getWord(%objToSnap.getTransform(), 2)));
@@ -1711,7 +1652,6 @@ function WorldEditor::CloneTo(%this, %snapType) {
         %i = (%i + 1.0);
     }
     %i = 0;
-    (%i < %selSize);
     while ((%i < %selSize)) {
         %this.clearSelection();
         %objTarget = %i[%origObjects @ %i];
@@ -1719,13 +1659,12 @@ function WorldEditor::CloneTo(%this, %snapType) {
         %this.copySelection();
         %this.pasteSelection();
         %objToSnap = 0.getSelectedObject(%this);
-        %i[%newObjects @ %i] = %objToSnap;
+        %i[%newObjects @ %i] = (%i < %selSize) @ %objToSnap;
         %objToSnap.snapTo(%this, %snapType, %objTarget);
         %i = (%i + 1.0);
     }
     %this.clearSelection();
     %i = 0;
-    (%i < %selSize);
     while ((%i < %selSize)) {
         %i[%newObjects @ %i].selectObject(%this);
         %i = (%i + 1.0);
@@ -1747,13 +1686,13 @@ function WorldEditor::dropCameraToSelection(%this) {
         return;
     }
     %pos = %this.getSelectionCentroid();
-    %cam = %obj.Camera.getTransform(LocalClientConnection);
+    %cam = LocalClientConnection.Camera.getTransform();
     %cam = setWord(%cam, 0, getWord(%pos, 0));
     %cam = setWord(%cam, 1, getWord(%pos, 1));
     %cam = setWord(%cam, 2, getWord(%pos, 2));
-    %cam.setTransform(LocalClientConnection, %obj.Camera);
+    %cam.setTransform(LocalClientConnection.Camera);
     %control = LocalClientConnection.getControlObject();
-    if ((%control != %obj.Camera)) {
+    if ((%control != LocalClientConnection.Camera)) {
         toggleCamera();
     }
 };
@@ -1762,8 +1701,7 @@ function WorldEditor::dropCameraWithSelectionInView(%this) {
         return;
     }
     %curCam = LocalClientConnection.getControlObject();
-    %camera = %obj.Camera;
-    LocalClientConnection;
+    %camera = LocalClientConnection.Camera;
     %pos = %this.getSelectionBoxCentroid();
     %rad = %this.getSelectionBoxRadius();
     %rad = (%rad * 1.5);
@@ -1843,19 +1781,17 @@ function Creator::init(%this) {
             %i = (%i + 1.0);
         }
         %create = "createInterior(" @ "\"" @ %file @ "\"" @ ");";
-        (%i < %dirCount);
         "Interior".insertItem(%this, %parentId, fileBase(%file), %create);
         %file = findNextFile("*.dif");
     }
     echo(" Creator::init  loading shapes");
     %base = "Shapes".insertItem(%this, 0);
-    !(%file $= "");
     %dataGroup = "DataBlockGroup";
     %i = 0;
     while ((%i < %dataGroup.getCount())) {
         %obj = %i.getObject(%dataGroup);
         echo("Obj: " @ %obj.getName() @ " - " @ %obj.category);
-        if (!(%obj.category $= "")) {
+        if (!(!((%i < %dirCount) @ " " @ %file $= "") @ " " @ %obj.category $= "")) {
         }
         if ((%obj.category != 0.0)) {
             %id = %obj.category.findItemByName(%this);
@@ -1869,10 +1805,9 @@ function Creator::init(%this) {
     }
     echo(" Creator::init  loading static shapes");
     %base = "Static Shapes".insertItem(%this, 0);
-    (%i < %dataGroup.getCount());
     %staticId = "";
     %file = findFirstFile("*.dts");
-    while (!(%file $= "")) {
+    while (!((%i < %dataGroup.getCount()) @ " " @ %file $= "")) {
         %split = strreplace(%file, "/", " ");
         %dirCount = (getWordCount(%split) - 1.0);
         %parentId = %base;
@@ -1886,15 +1821,13 @@ function Creator::init(%this) {
             %i = (%i + 1.0);
         }
         %create = "TSStatic::create(\"" @ %file @ "\");";
-        (%i < %dirCount);
         "TSStatic".insertItem(%this, %parentId, fileBase(%file), %create);
         %file = findNextFile("*.dts");
     }
     %base = "Dynamic Shapes".insertItem(%this, 0);
-    !(%file $= "");
     %dynamicID = "";
     %file = findFirstFile("*.dts");
-    while (!(%file $= "")) {
+    while (!(!((%i < %dirCount) @ " " @ %file $= "") @ " " @ %file $= "")) {
         %split = strreplace(%file, "/", " ");
         %dirCount = (getWordCount(%split) - 1.0);
         %parentId = %base;
@@ -1908,78 +1841,55 @@ function Creator::init(%this) {
             %i = (%i + 1.0);
         }
         %create = "TSDynamic::create(\"" @ %file @ "\");";
-        (%i < %dirCount);
         "TSDynamic".insertItem(%this, %parentId, fileBase(%file), %create);
         %file = findNextFile("*.dts");
     }
-    %file[%objGroup @ 0] = !(%file $= "") @ "Environment";
+    %file[%objGroup @ 0] = !((%i < %dirCount) @ " " @ %file $= "") @ "Environment";
     %file[%objGroup @ 0][%objGroup @ 1] = "Mission";
     %file[%objGroup @ 0][%objGroup @ 1][%objGroup @ 2] = "System";
     %env_item_idx = -(1.0);
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["Sky" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["Sun" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["Lightning" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["Water" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["Terrain" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["AudioEmitter" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["Precipitation" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["ParticleEmitter" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["fxSunLight" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["fxShapeReplicator" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["fxFoliageReplicator" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["fxLight" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["TSText" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["sgUniversalStaticLight" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["sgMissionLightingFilter" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["sgDecalProjector" @ %Environment_Item] = ;
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["volumeLight" @ %Environment_Item] = ;
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Sky";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Sun";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Lightning";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Water";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Terrain";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "AudioEmitter";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Precipitation";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "ParticleEmitter";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxSunLight";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxShapeReplicator";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxFoliageReplicator";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxLight";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "TSText";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "sgUniversalStaticLight";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "sgMissionLightingFilter";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "sgDecalProjector";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "volumeLight";
     if (isFunction("Using_DF")) {
     }
     if (Using_DF()) {
-        %env_item_idx = (%env_item_idx + 1.0);
-        %env_item_idx["DFTextureAdvert" @ %Environment_Item] = ;
+        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "DFTextureAdvert";
     }
     if (Using_DShow()) {
-        %env_item_idx = (%env_item_idx + 1.0);
-        %env_item_idx["DSRenderer" @ %Environment_Item] = ;
+        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "DSRenderer";
     }
     if (Using_Theora()) {
-        %env_item_idx = (%env_item_idx + 1.0);
-        %env_item_idx["TheoraRenderer" @ %Environment_Item] = ;
+        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "TheoraRenderer";
     }
     if (Using_FFMPEG()) {
-        %env_item_idx = (%env_item_idx + 1.0);
-        %env_item_idx["FFMPEGRenderer" @ %Environment_Item] = ;
+        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "FFMPEGRenderer";
     }
-    %env_item_idx = (%env_item_idx + 1.0);
-    %env_item_idx["SlaveRenderer" @ %Environment_Item] = ;
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0] = "MissionArea";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1] = "Path";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2] = "PathMarker";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3] = "Trigger";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4] = "PhysicalZone";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5] = "Camera";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6] = "AntiPortal";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6] = "ZoneBox";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6][%System_Item @ 0] = "SimGroup";
-    %env_item_idx["SlaveRenderer" @ %Environment_Item][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6][%System_Item @ 0][%System_Item @ 1] = "SimSpace";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "SlaveRenderer";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0] = "MissionArea";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1] = "Path";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2] = "PathMarker";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3] = "Trigger";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4] = "PhysicalZone";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5] = "Camera";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6] = "AntiPortal";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6] = "ZoneBox";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6][%System_Item @ 0] = "SimGroup";
+    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6][%System_Item @ 0][%System_Item @ 1] = "SimSpace";
     echo(" Creator::init  loading mission objects");
     %base = "Mission Objects".insertItem(%this, 0);
     %i = 0;
@@ -1997,13 +1907,12 @@ function Creator::init(%this) {
             %j = (%j + 1.0);
         }
         %i = (%i + 1.0);
-        !(%done);
     }
     echo(" Creator::init  finished");
 };
 function createInterior(%name) {
     %obj = new InteriorInstance("") {
-        position = 0 @ "0 0 0";
+        position = "0 0 0";
         rotation = "0 0 0";
         interiorFile = %name;
     };
@@ -2088,13 +1997,13 @@ function Creator::Create(%this, %sel) {
     EWorldEditor.dropSelection();
 };
 function TSStatic::Create(%shapeName) {
-    if ((MissionInfo @ " " @ %obj.mode $= "InventoryDesigner")) {
+    if ((MissionInfo.mode $= "InventoryDesigner")) {
     }
-    if ((MissionInfo @ " " @ %obj.mode $= "PrivateSpaceDesign")) {
+    if ((MissionInfo.mode $= "PrivateSpaceDesign")) {
         MessageBoxOK("Warning", "You should use TSDynamic for inventory items and in private spaces instead of TSStatic," @ "\n" @ "I'll still make it for you, but you should change it to the TSDynamic!" @ "\n" @ "look under \"Dynamic Shapes\" for the same thing there. thanks!", "");
     }
     %obj = new TSStatic("") {
-        shapeName = 0 @ %shapeName;
+        shapeName = %shapeName;
     };
     return %obj;
 };
@@ -2102,7 +2011,7 @@ function TSStatic::Damage(%this) {
 };
 function TSDynamic::Create(%shapeName) {
     %obj = new TSDynamic("") {
-        shapeName = 0 @ %shapeName;
+        shapeName = %shapeName;
     };
     return %obj;
 };
@@ -2161,7 +2070,6 @@ function TextureInit() {
             %op = (%op + 1.0);
         }
         %row = (%row + 1.0);
-        (%op < %opCount);
     }
     texture::previewMaterial();
 };
@@ -2171,28 +2079,24 @@ function Texture_material_menu::onSelect(%this, %id, %text) {
     "Materials".setText(%this);
     texture::saveMaterial();
     texture::hideTab();
-    $nextTextureRegister = ($nextTextureRegister + 1.0);
-    %id = texture::addMaterial(%text @ "\t");
+    %id = texture::addMaterial(%text @ "\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0));
     if ((%id != -(1.0))) {
         %id.setSelectedById(Texture_material);
-        $nextTextureRegister = ($nextTextureRegister + 1.0);
-        texture::addOperation("Fractal Distortion\ttab_DistortMask\t" @ "\t0\tdmask_interval\t20\tdmask_rough\t0\tdmask_seed\t" @ Terraformer.generateSeed() @ "\tdmask_filter\t0.00000 0.00000 0.13750 0.487500 0.86250 1.00000 1.00000");
+        texture::addOperation("Fractal Distortion\ttab_DistortMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t0\tdmask_interval\t20\tdmask_rough\t0\tdmask_seed\t" @ Terraformer.generateSeed() @ "\tdmask_filter\t0.00000 0.00000 0.13750 0.487500 0.86250 1.00000 1.00000");
     }
 };
 function texture::addMaterialTexture() {
-    %root = filePath(Terrain, terrainFile);
-    getLoadFilename("*/terrains/*.png\t*/terrains/*.jpg");
+    %root = filePath(Terrain.terrainFile);
+    getLoadFilename("*/terrains/*.png\t*/terrains/*.jpg", addLoadedMaterial);
 };
 function addLoadedMaterial(%file) {
     texture::saveMaterial();
     texture::hideTab();
     %text = filePath(%file) @ "/" @ fileBase(%file);
-    $nextTextureRegister = ($nextTextureRegister + 1.0);
-    %id = texture::addMaterial(%text @ "\t");
+    %id = texture::addMaterial(%text @ "\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0));
     if ((%id != -(1.0))) {
         %id.setSelectedById(Texture_material);
-        $nextTextureRegister = ($nextTextureRegister + 1.0);
-        texture::addOperation("Fractal Distortion\ttab_DistortMask\t" @ "\t0\tdmask_interval\t20\tdmask_rough\t0\tdmask_seed\t" @ Terraformer.generateSeed() @ "\tdmask_filter\t0.00000 0.00000 0.13750 0.487500 0.86250 1.00000 1.00000");
+        texture::addOperation("Fractal Distortion\ttab_DistortMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t0\tdmask_interval\t20\tdmask_rough\t0\tdmask_seed\t" @ Terraformer.generateSeed() @ "\tdmask_filter\t0.00000 0.00000 0.13750 0.487500 0.86250 1.00000 1.00000");
     }
     texture::save();
 };
@@ -2205,7 +2109,7 @@ function Texture_material::onSelect(%this, %id, %text) {
         texture::restoreMaterial(%id);
     }
     %matName = getField(%text, 0);
-    paintMaterial = %matName @ ETerrainEditor;
+    ETerrainEditor.paintMaterial = %matName;
     texture::previewMaterial(%id);
     $selectedMaterial = %id;
     $selectedTextureOperation = -(1.0);
@@ -2219,20 +2123,16 @@ function Texture_operation_menu::onSelect(%this, %id, %text) {
     }
     %dreg = getField(0.getRowText(Texture_operation), 2);
     if ((%text $= "Place by Fractal")) {
-        $nextTextureRegister = ($nextTextureRegister + 1.0);
-        %id = texture::addOperation("Place by Fractal\ttab_FractalMask\t" @ "\t" @ %dreg @ "\tfbmmask_interval\t16\tfbmmask_rough\t0.000\tfbmmask_seed\t" @ Terraformer.generateSeed() @ "\tfbmmask_filter\t0.000000 0.166667 0.333333 0.500000 0.666667 0.833333 1.000000\tfBmDistort\ttrue");
+        %id = texture::addOperation("Place by Fractal\ttab_FractalMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t" @ %dreg @ "\tfbmmask_interval\t16\tfbmmask_rough\t0.000\tfbmmask_seed\t" @ Terraformer.generateSeed() @ "\tfbmmask_filter\t0.000000 0.166667 0.333333 0.500000 0.666667 0.833333 1.000000\tfBmDistort\ttrue");
     }
     if ((%text $= "Place by Height")) {
-        $nextTextureRegister = ($nextTextureRegister + 1.0);
-        %id = texture::addOperation("Place by Height\ttab_HeightMask\t" @ "\t" @ %dreg @ "\ttextureHeightFilter\t0 0.2 0.4 0.6 0.8 1.0\theightDistort\ttrue");
+        %id = texture::addOperation("Place by Height\ttab_HeightMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t" @ %dreg @ "\ttextureHeightFilter\t0 0.2 0.4 0.6 0.8 1.0\theightDistort\ttrue");
     }
     if ((%text $= "Place by Slope")) {
-        $nextTextureRegister = ($nextTextureRegister + 1.0);
-        %id = texture::addOperation("Place by Slope\ttab_SlopeMask\t" @ "\t" @ %dreg @ "\ttextureSlopeFilter\t0 0.2 0.4 0.6 0.8 1.0\tslopeDistort\ttrue");
+        %id = texture::addOperation("Place by Slope\ttab_SlopeMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t" @ %dreg @ "\ttextureSlopeFilter\t0 0.2 0.4 0.6 0.8 1.0\tslopeDistort\ttrue");
     }
     if ((%text $= "Place by Water Level")) {
-        $nextTextureRegister = ($nextTextureRegister + 1.0);
-        %id = texture::addOperation("Place by Water Level\ttab_WaterMask\t" @ "\t" @ %dreg @ "\twaterDistort\ttrue");
+        %id = texture::addOperation("Place by Water Level\ttab_WaterMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t" @ %dreg @ "\twaterDistort\ttrue");
     }
     texture::hideTab();
     if ((%id != -(1.0))) {
@@ -2412,8 +2312,7 @@ function texture::restoreMaterial(%id) {
     %record = 1;
     while ((%record < %recordCount)) {
         %entry = getRecord(%data, %record);
-        $nextTextureId = ($nextTextureId + 1.0);
-        %entry.addRow(Texture_operation);
+        %entry.addRow(Texture_operation, $nextTextureId = ($nextTextureId + 1.0));
         %record = (%record + 1.0);
     }
 };
@@ -2483,8 +2382,7 @@ function texture::saveOperation() {
     texture::save();
 };
 function texture::addMaterial(%entry) {
-    $nextTextureId = ($nextTextureId + 1.0);
-    %id = ;
+    %id = $nextTextureId = ($nextTextureId + 1.0);
     %entry.addRow(Texture_material, %id);
     %reg = getField(%entry, 1);
     %reg[$dirtyTexture @ %reg] = 1;
@@ -2492,8 +2390,7 @@ function texture::addMaterial(%entry) {
     return %id;
 };
 function texture::addOperation(%entry) {
-    $nextTextureId = ($nextTextureId + 1.0);
-    %id = ;
+    %id = $nextTextureId = ($nextTextureId + 1.0);
     %entry.addRow(Texture_operation, %id);
     %reg = getField(%entry, 2);
     %reg[$dirtyTexture @ %reg] = 1;
@@ -2513,8 +2410,7 @@ function texture::save() {
         %row = (%row + 1.0);
     }
     %script.setTextureScript(Terrain);
-    isDirty = 1 @ ETerrainEditor;
-    (%row < %rowCount);
+    ETerrainEditor.isDirty = (%row < %rowCount) @ 1;
 };
 function texture::import() {
     getLoadFilename("*.ter", "Texture::doLoadTexture");
@@ -2528,11 +2424,9 @@ function texture::loadFromScript(%script) {
     %rec = getRecord(%script, %i);
     while (!(%rec $= "")) {
         texture::addMaterial(collapseEscape(%rec));
-        %i = (%i + 1.0);
-        %rec = getRecord(%script, );
+        %rec = getRecord(%script, %i = (%i + 1.0));
     }
     $nextTextureRegister = 1000;
-    !(%rec $= "");
     %rowCount = Texture_material.rowCount();
     %row = 0;
     while ((%row < %rowCount)) {
@@ -2557,17 +2451,15 @@ function texture::loadFromScript(%script) {
             %op = (%op + 1.0);
         }
         %id = %row.getRowId(Texture_material);
-        (%op < %opCount);
         %data.setRowById(Texture_material, %id);
         %row = (%row + 1.0);
     }
     $selectedMaterial = -(1.0);
-    (%row < %rowCount);
     0.getRowId(Texture_material).setSelectedById(Texture_material);
 };
 function texture::doLoadTexture(%name) {
     %newTerr = new TerrainBlock("") {
-        position = 0 @ "0 0 0";
+        position = "0 0 0";
         terrainFile = %name;
         squareSize = 8;
         visibleDistance = 100;
@@ -2623,8 +2515,7 @@ function tab_terrainFile::reset(%this) {
     %filespec = $TerraformerHeightfieldDir @ "/*.ter";
     %file = findFirstFile(%filespec);
     while (!(%file $= "")) {
-        %i = (%i + 1.0);
-        fileBase(%file) @ fileExt(%file).addRow(terrainFile_textList);
+        fileBase(%file) @ fileExt(%file).addRow(terrainFile_textList, %i = (%i + 1.0));
         %file = findNextFile(%filespec);
     }
 };
@@ -2759,12 +2650,10 @@ function Heightfield::eval(%id) {
     %row = %id.getRowNumById(Heightfield_operation);
     echo("Heightfield::eval:" @ %row @ "  " @ %label);
     if ((%label $= "General")) {
-        if ((squareSize > Terrain)) {
-            %size = squareSize;
-            Terrain;
+        if ((Terrain.squareSize > 0.0)) {
+            %size = Terrain.squareSize;
         }
         %size = 8;
-        0.0;
         getField(%data, 7).setTerrainInfo(Terraformer, 256, %size, getField(%data, 3), getField(%data, 5));
         getField(%data, 11).setShift(Terraformer, getField(%data, 9));
         %row.terrainData(Terraformer);
@@ -2831,8 +2720,7 @@ function Heightfield::eval(%id) {
 function Heightfield::add(%entry) {
     Heightfield::saveTab();
     Heightfield::hideTab();
-    $NextOperationId = ($NextOperationId + 1.0);
-    %id = ;
+    %id = $NextOperationId = ($NextOperationId + 1.0);
     if (($SelectedOperation != -(1.0))) {
         %row = ($SelectedOperation.getRowNumById(Heightfield_operation) + 1.0);
         %entry = %row @ " " @ %entry;
@@ -2847,7 +2735,6 @@ function Heightfield::add(%entry) {
         }
     }
     %entry = Heightfield_operation.rowCount() @ " " @ %entry;
-    (%i < Heightfield_operation.rowCount());
     %entry.addRow(Heightfield_operation, %id);
     %row = %id.getRowNumById(Heightfield_operation);
     if ((%row <= $HeightfieldDirtyRow)) {
@@ -2875,7 +2762,6 @@ function Heightfield::onDelete(%id) {
     }
     if (($HeightfieldDirtyRow >= %row)) {
         $HeightfieldDirtyRow = %row;
-        (%i < Heightfield_operation.rowCount());
     }
     %rowCount = (Heightfield_operation.rowCount() - 1.0);
     if ((%row > %rowCount)) {
@@ -2971,7 +2857,7 @@ function Heightfield::apply(%id) {
     Heightfield::refresh(%row);
     %row.setTerrain(Terraformer);
     0.setCameraPosition(Terraformer, 0, 0);
-    isDirty = 1 @ ETerrainEditor;
+    ETerrainEditor.isDirty = 1;
 };
 $TerraformerSaveRegister = 0;
 function Heightfield::saveBitmap(%name) {
@@ -2996,8 +2882,7 @@ function Heightfield::save() {
         %row = (%row + 1.0);
     }
     %script.setHeightfieldScript(Terrain);
-    isDirty = 1 @ ETerrainEditor;
-    (%row < %rowCount);
+    ETerrainEditor.isDirty = (%row < %rowCount) @ 1;
 };
 function Heightfield::import() {
     getLoadFilename("*.ter", "Heightfield::doLoadHeightfield");
@@ -3011,15 +2896,13 @@ function Heightfield::loadFromScript(%script, %leaveCamera) {
     %rec = getRecord(%script, %i);
     while (!(%rec $= "")) {
         Heightfield::add(collapseEscape(%rec));
-        %i = (%i + 1.0);
-        %rec = getRecord(%script, );
+        %rec = getRecord(%script, %i = (%i + 1.0));
     }
     if ((Heightfield_operation.rowCount() == 0.0)) {
         Heightfield_operation.clear();
         Heightfield::add("General\tTab_general\tgeneral_min_height\t50\tgeneral_scale\t300\tgeneral_water\t0.000\tgeneral_centerx\t0\tgeneral_centery\t0");
     }
     %data = restWords(0.getRowText(Heightfield_operation));
-    !(%rec $= "");
     %x = getField(%data, 7);
     %y = getField(%data, 9);
     %y.setOrigin(HeightfieldPreview, %x);
@@ -3037,7 +2920,7 @@ function strip(%stripStr, %strToStrip) {
 };
 function Heightfield::doLoadHeightfield(%name) {
     %newTerr = new TerrainBlock("") {
-        position = 0 @ "0 0 -1000";
+        position = "0 0 -1000";
         terrainFile = strip("terrains/", %name);
         squareSize = 8;
         visibleDistance = 100;
@@ -3134,12 +3017,9 @@ function TELoadTerrainButton::gotFileName(%this, %name) {
     %squareSize = 8;
     %visibleDistance = 1200;
     if (isObject(Terrain)) {
-        %pos = %this.position;
-        Terrain;
-        %squareSize = %this.squareSize;
-        Terrain;
-        %visibleDistance = %this.visibleDistance;
-        Terrain;
+        %pos = Terrain.position;
+        %squareSize = Terrain.squareSize;
+        %visibleDistance = Terrain.visibleDistance;
         Terrain.delete();
     }
     new TerrainBlock(Terrain) {
@@ -3151,13 +3031,13 @@ function TELoadTerrainButton::gotFileName(%this, %name) {
     ETerrainEditor.attachTerrain();
 };
 function TerrainEditorSettingsGui::onWake(%this) {
-    softSelectFilter.setValue(TESoftSelectFilter, ETerrainEditor);
+    ETerrainEditor.softSelectFilter.setValue(TESoftSelectFilter);
 };
 function TerrainEditorSettingsGui::onSleep(%this) {
-    softSelectFilter = TESoftSelectFilter.getValue() @ ETerrainEditor;
+    ETerrainEditor.softSelectFilter = TESoftSelectFilter.getValue();
 };
 function TESettingsApplyButton::onAction(%this) {
-    softSelectFilter = TESoftSelectFilter.getValue() @ ETerrainEditor;
+    ETerrainEditor.softSelectFilter = TESoftSelectFilter.getValue();
     1.resetSelWeights(ETerrainEditor);
     "softSelect".processAction(ETerrainEditor);
 };
@@ -3168,9 +3048,8 @@ function getPrefSetting(%pref, %default) {
     return %pref;
 };
 function onNeedRelight() {
-    if ((visible == RelightMessage)) {
-        visible = 1 @ RelightMessage;
-        0.0;
+    if ((RelightMessage.visible == 0.0)) {
+        RelightMessage.visible = 1;
     }
 };
 function Editor::open(%this) {
@@ -3204,10 +3083,8 @@ function EWorldEditor::updateGeneralInfo(%this, %optObj) {
         return;
     }
     %obj = 0.getSelectedObject(%this);
-    %clientID = -(1.0);
-    %serverID = ;
-    %clientValid = 0;
-    %serverValid = ;
+    %serverID = %clientID = -(1.0);
+    %serverValid = %clientValid = 0;
     %client = $Player::Name.get(ClientDict);
     if (!(isObject(%client))) {
         error(getScopeName() @ "-> can't get $Player::Name's client object form ClientDict!");
@@ -3255,20 +3132,16 @@ function EWorldEditor::updateGeneralInfo(%this, %optObj) {
     if (%serverValid) {
     }
     %serverText = %serverID;
-    %serverID.getDebugString();
     if (%clientValid) {
     }
     %clientText = %clientID;
-    %clientID.getDebugString();
     %text = %color @ "<linkcolor:775533><linkcolorhl:ddff00>";
     if (%serverValid) {
     }
     %text = %serverText @ -(1.0) @ ">" @ %serverText @ "</a>\n";
-    %text @ "<just:left>" @ "Server:<a:gamelink COPYTOCLIP ";
     if (%clientValid) {
     }
     %text = %clientText @ -(1.0) @ ">" @ %clientText @ "</a>";
-    %text @ "Client:  <a:gamelink COPYTOCLIP ";
     %text.setText(WorldEditorGeneralInfoMLText);
 };
 function WorldEditorGeneralInfoMLText::onUrl(%this, %url) {

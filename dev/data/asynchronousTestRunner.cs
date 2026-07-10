@@ -52,8 +52,7 @@ function asyncTestsMasterOnTimeout(%testNum) {
     $asyncTests::timer = 0;
     %testname = %testNum[$asyncTests::testNames @ %testNum];
     log("general", "debug", "asyncTests: evaluating test" @ " " @ %testname @ "..");
-    %testNum[$asyncTests::testRslts @ %testNum] = call(asyncTestMasterGetFuncNameEval(%testname));
-    %result = ;
+    %result = %testNum[$asyncTests::testRslts @ %testNum] = call(asyncTestMasterGetFuncNameEval(%testname));
     if ((%result $= "pass")) {
         log("general", "debug", "asyncTests: test passed:" @ " " @ %testname);
     }
@@ -91,6 +90,5 @@ function asyncTestsMasterFinished() {
         %n = (%n + 1.0);
     }
     %level = (%countPass == $asyncTests::testsNum) ? "info" : "error";
-    (%n < $asyncTests::testsNum);
     log("general", %level, "tests finished." @ " " @ $asyncTests::testsNum @ " " @ "total," @ " " @ %countPass @ " " @ "passed," @ " " @ %countFail @ " " @ "failed," @ " " @ %countNA @ " " @ "did not initialize.");
 };

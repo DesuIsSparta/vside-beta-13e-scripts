@@ -1,6 +1,6 @@
-soundButtonOver = "AudioButtonOver" @ GuiButtonProfile;
-fontColorLink = "255   0 153 255" @ GuiTextProfile;
-fontColorLinkHL = "255   0 153 255" @ GuiTextProfile;
+GuiButtonProfile.soundButtonOver = "AudioButtonOver";
+GuiTextProfile.fontColorLink = "255   0 153 255";
+GuiTextProfile.fontColorLinkHL = "255   0 153 255";
 $RegistrationTextColor = " 30  30  30 255";
 $RegistrationErrorColor = "250 215  20 255";
 $ClosetHiliteLt = "102 102 102 255";
@@ -1443,8 +1443,8 @@ new GuiControlProfile(BracketButton13Profile : BracketButton19Profile) {
     fontSize = 13;
 };
 new GuiControlProfile(ETSMessageTextProfile : GuiMessageTextProfile) {
-    fontColorLink = BracketButton19Profile @ fontColor;
-    fontColorLinkHL = 6 @ BracketButton19Profile @ fontColors;
+    fontColorLink = BracketButton19Profile.fontColor;
+    fontColorLinkHL = 6 @ BracketButton19Profile.fontColors;
 };
 new GuiControlProfile(MapLargeLabelProfile : GuiTextProfile) {
     fontType = "Arial";

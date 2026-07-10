@@ -16,8 +16,7 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     }
     if ((%found == -(1.0))) {
         %found = new_ScriptArray("");
-        (%n >= 0.0);
-        %found.name = %listName;
+        %found.name = (%n >= 0.0) @ %listName;
         %found.append(%masterList);
     }
     %num = getWordCount(%skus);
@@ -42,7 +41,6 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
         %n = (%n + 1.0);
     }
     %skus = trim(%skus);
-    (%n < %num);
     %skus @ "\t" @ %skusName.append(%found);
 };
 $gPaperDoll_Initialized = 0;
@@ -64,8 +62,7 @@ function paperDoll_InitPermutations() {
     %param = "";
     %option = "";
     %optionName = "";
-    %fo = new FileObject("");;
-    0;
+    %fo = new FileObject("");
     %lineNum = 0;
     %requiredTokens = "";
     %requiredTokens = %requiredTokens @ "size" @ " ";
@@ -112,7 +109,6 @@ function paperDoll_InitPermutations() {
             error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
         }
         %n = (getWordCount(%unseenTokens) - 1.0);
-        !(%fo.isEOF());
         while ((%n >= 0.0)) {
             error(getScopeName() @ " " @ "- unseen command:" @ " " @ getWord(%unseenTokens, %n));
             %n = (%n - 1.0);
@@ -195,6 +191,5 @@ function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList) {
         %n = (%n + 1.0);
     }
     %skus = trim(%skus);
-    (%n < %num);
     return %fileName @ "\t" @ %skus;
 };

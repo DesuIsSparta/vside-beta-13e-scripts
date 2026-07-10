@@ -12,7 +12,7 @@ function MessageHud::open(%this, %text) {
     1.setVisible(%this);
     1.makeFirstResponder(MessageHudEdit);
     MessageHudEdit.reinjectOpenEvent();
-    100.schedule(MessageHud);
+    updatePosition.schedule(MessageHud, 100);
     if (isObject(ConvBubVecCtrlMsgVec) && (ConvBubVecCtrlMsgVec.getNumLines() > 0.0)) {
         ConvBub.open();
     }
@@ -142,17 +142,17 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
     }
     if ((%modeIconName $= "")) {
         0.setVisible(MessageHudModeIcon);
-        position = $gMessageHudEditOriginalPosition @ MessageHudEdit;
-        extent = $gMessageHudEditOriginalExtent @ MessageHudEdit;
+        MessageHudEdit.position = $gMessageHudEditOriginalPosition;
+        MessageHudEdit.extent = $gMessageHudEditOriginalExtent;
     }
     %bitmap = "platform/client/buttons/" @ %modeIconName;
     %positionNew = VectorAdd($gMessageHudEditOriginalPosition, $gMessageHudEditModeIconOffset);
-    position = %positionNew @ MessageHudEdit;
+    MessageHudEdit.position = %positionNew;
     %extentNew = VectorSub($gMessageHudEditOriginalExtent, $gMessageHudEditModeIconOffset);
-    extent = %extentNew @ MessageHudEdit;
+    MessageHudEdit.extent = %extentNew;
     %bitmap.setBitmap(MessageHudModeIcon);
     1.setVisible(MessageHudModeIcon);
-    command = %modeIconCommand @ MessageHudModeIcon;
+    MessageHudModeIcon.command = %modeIconCommand;
 };
 function displayMicrophoneHelp() {
     if ((Canvas.getContent() != PlayGui.getId())) {
@@ -162,9 +162,9 @@ function displayMicrophoneHelp() {
 };
 function startTextEntry() {
     if (!(MessageHud.isVisible())) {
-        lastkey.open(MessageHud, moveMap);
+        moveMap.lastkey.open(MessageHud);
     }
-    moveMap @ lastkey.setText(MessageHudEdit, MessageHudEdit.getValue());
+    MessageHudEdit.getValue() @ moveMap.lastkey.setText(MessageHudEdit);
     1.makeFirstResponder(MessageHudEdit);
 };
 function finishTextEntry(%text) {

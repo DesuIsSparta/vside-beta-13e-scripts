@@ -17,11 +17,10 @@ function benchmarksGui::close(%this, %unused) {
 };
 gSetField(gui_Benchs_Metrics_Menu1, populated, 0);
 function gui_Benchs_Metrics_Menu1::populate(%this) {
-    if (!(gGetField(%this))) {
+    if (!(gGetField(%this, populated))) {
         gSetField(%this, populated, 1);
         %this.clear();
         %num = getWordCount($metricsNamesList);
-        populated;
         %n = 0;
         while ((%n < %num)) {
             %text = getWord($metricsNamesList, %n);

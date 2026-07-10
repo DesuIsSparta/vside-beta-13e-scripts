@@ -1,6 +1,6 @@
 $httpObjTestRequest = 0;
 function httpObjTest::init() {
-    %httpObj = new HTTPObject(httpObjTestRequest);;
+    %httpObj = new HTTPObject(httpObjTestRequest);
     %httpObj.gotEOF = 0;
     %httpObj.numLines = 0;
     %httpObj.numChars = 0;

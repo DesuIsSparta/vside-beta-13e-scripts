@@ -6,9 +6,8 @@ function GuiEditLazy(%val) {
     }
     GuiEdit(%val);
 };
-"alt F10".bind(GlobalActionMap, keyboard);
+GuiEditLazy.bind(GlobalActionMap, keyboard, "alt F10");
 $gWorldEditorExeced = 0;
-GuiEditLazy;
 function toggleEditorLazy(%val) {
     if (!($gWorldEditorExeced)) {
         exec("dev/data/ui/editor/editor.cs");
@@ -16,10 +15,10 @@ function toggleEditorLazy(%val) {
     }
     toggleEditor(%val);
 };
-"alt F11".bind(GlobalActionMap, keyboard);
+toggleEditorLazy.bind(GlobalActionMap, keyboard, "alt F11");
 function canvasExecMisc() {
     if (!($AmClient)) {
-        return toggleEditorLazy;
+        return;
     }
     exec("common/ui/InspectDlg.gui");
     exec("common/ui/LoadFileDlg.gui");

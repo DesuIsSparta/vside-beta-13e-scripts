@@ -1,5 +1,5 @@
 function rf_TrySetup() {
-    if (!(MissionInfo @ " " @ name $= "renderFarm")) {
+    if (!(MissionInfo.name $= "renderFarm")) {
         return;
     }
     rf_getGE().setContent(Canvas);
@@ -24,6 +24,7 @@ function rf_getGE() {
         safeNewScriptObject("Array", "gRFQueue", 1);
         $gRF_CurrentRequest = "";
     }
+    return geRenderFarm;
 };
 function httpServer_Render(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom) {
     return rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom);
@@ -93,7 +94,6 @@ function rf_beginRender(%request) {
     if ((%gender $= "f")) {
     }
     %player = $gRFPlayerM;
-    $gRFPlayerF;
     %request.skus.setActiveSKUs(%player);
     %request.height.setHeight(%player);
     %player.setSimObject(geRenderFarmObjectView);
@@ -142,9 +142,8 @@ function rf_generateTestSkus(%num, %forJavascript) {
             if (%drawerName.isOptionalDrawer(SkuManager)) {
             }
             %prob = 1.0;
-            0.1;
             if ((getRandom() <= %prob)) {
-                if ((%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
+                if ((%gender[0.1 @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
                     %skus = %drawerName.getSkusDrwr(SkuManager);
                     %skus = %gender.filterSkusGender(SkuManager, %skus);
                     %gender[%skus @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] = ;
@@ -157,7 +156,6 @@ function rf_generateTestSkus(%num, %forJavascript) {
             %d = (%d - 1.0);
         }
         %skulist = trim(%skulist);
-        (%d >= 0.0);
         if (%forJavascript) {
             %ret = %ret @ "   gSkusList[gSkusList.length] = \"";
         }
@@ -170,7 +168,6 @@ function rf_generateTestSkus(%num, %forJavascript) {
     }
     if (%forJavascript) {
         %ret = %ret @ "}\n";
-        (%n < %num);
     }
     return %ret;
 };

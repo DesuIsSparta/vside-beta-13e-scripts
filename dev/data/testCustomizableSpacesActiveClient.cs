@@ -76,8 +76,7 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this) {
     }
     %rand = getRandom(0, %this.ownedFurnitureToTestCount);
     %skuToTest = %this.ownedFurnitureToTest;
-    %rand;
-    %this.lastNumUsed = numUsingFurnitureSku(%skuToTest);
+    %this.lastNumUsed = %rand @ numUsingFurnitureSku(%skuToTest);
     %this.lastSkuTested = %skuToTest;
     "we got a bad sku for this".assert(%this, (%skuToTest > 0.0));
     %alreadyHave = numUsingFurnitureAll();
@@ -145,7 +144,6 @@ function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this) {
     %i = 0;
     while ((%i < %this.ownedFurnitureToTestCount)) {
         %sku = %this.ownedFurnitureToTest;
-        %i;
         %inUse = numUsingFurnitureSku(%sku);
         %numOwned = numOwnedFurnitureSku(%sku);
         %numToMake = (%numOwned - %inUse);
@@ -154,12 +152,11 @@ function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this) {
             %alreadyHave = numUsingFurnitureAll();
             if ((%alreadyHave >= $CSMaximumSlots)) {
                 "We are already using the max furniture we can place in this space: (" @ " " @ %alreadyHave @ " " @ "out of" @ " " @ $CSMaximumSlots @ " " @ ")".assert(%this, 0);
-                return;
+                return %i;
             }
             CustomSpaceClient::placeSkuInWorld(%sku);
             %j = (%j + 1.0);
         }
         %i = (%i + 1.0);
-        (%j < %numToMake);
     }
 };

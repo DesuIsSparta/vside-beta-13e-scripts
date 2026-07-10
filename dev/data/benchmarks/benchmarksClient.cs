@@ -114,7 +114,6 @@ function benchmarks::runCameraTestsReps() {
             %n = (%n + 1.0);
         }
         $benchmarks::camera::repsRemaining = $pref::benchmarks::fps::reps;
-        (%n < cameraTestsGroup.getCount());
     }
     if (($benchmarks::camera::repsRemaining > 0.0)) {
         benchmarks::runCameraTests();
@@ -163,7 +162,7 @@ function benchmarks::runCameraTests() {
     GLEnableMetrics(1);
     %repNum = ($pref::benchmarks::fps::reps - $benchmarks::camera::repsRemaining);
     echoBenchmarksCamera("rep" @ " " @ (%repNum + 1.0) @ " " @ "of" @ " " @ $pref::benchmarks::fps::reps);
-    $benchmarks::camera::originalSpot = %obj.Camera.getTransform(LocalClientConnection);
+    $benchmarks::camera::originalSpot = LocalClientConnection.Camera.getTransform();
     if (!(isObject(cameraTestsGroup))) {
     }
     if ((cameraTestsGroup.getCount() < 1.0)) {
@@ -214,8 +213,7 @@ function benchmarksRunNextCameraTest() {
         $benchmarks::camera::minFPS = mMin($benchmarks::camera::minFPS, $fps::real);
         if ($pref::benchmarks::cameraScreenshots) {
             %screenshotFolder = $pref::benchmarks::dataPath;
-            %screenshotFileName = MissionInfo @ %theMark.name @ "_" @ %theMark.spotName @ ".jpg";
-            %screenshotFolder @ "/" @ $benchmarks::currentTimeStamp @ "_";
+            %screenshotFileName = %screenshotFolder @ "/" @ $benchmarks::currentTimeStamp @ "_" @ MissionInfo.name @ "_" @ %theMark.spotName @ ".jpg";
             if (isWriteableFileName(%screenshotFileName)) {
                 ScreenShot(%screenshotFileName, "JPEG");
             }
@@ -260,9 +258,9 @@ function benchmarks::addNewCameraTestPoint(%name) {
     }
     cameraTestsGroup.add(MissionGroup);
     %spot = new MissionMarker("") {
-        dataBlock = 0 @ "CameraWayPointMarker";
+        dataBlock = "CameraWayPointMarker";
     };
-    Camera.getTransform(LocalClientConnection).setTransform(%spot);
+    LocalClientConnection.Camera.getTransform().setTransform(%spot);
     %spot.fov = getFovCur();
     %spot.spotName = %name;
     %spot.add(cameraTestsGroup);

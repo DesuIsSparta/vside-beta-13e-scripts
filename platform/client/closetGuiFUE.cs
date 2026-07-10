@@ -4,8 +4,7 @@ function ClosetGuiFUE::open(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEOpenSched");
         cancel(%sched);
-        %sched = 250.schedule(%this);
-        open;
+        %sched = open.schedule(%this, 250);
         gSetField(%this, "closetGuiFUEOpenSched", %sched);
         return;
     }
@@ -24,8 +23,7 @@ function ClosetGuiFUE::show(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEShowSched");
         cancel(%sched);
-        %sched = 250.schedule(%this);
-        show;
+        %sched = show.schedule(%this, 250);
         gSetField(%this, "closetGuiFUEShowSched", %sched);
         return;
     }
@@ -36,14 +34,13 @@ function ClosetGuiFUE::hide(%this) {
     0.setVisible(%this);
 };
 function ClosetGuiFUE::reposition(%this) {
-    %this.position = (((getWord(ClosetGuiPositioner, ClosetTabs.getCurrentTab().extent, 0) - 960.0) / 2.0) + 1.0) @ " " @ ((((getWord(ClosetGuiPositioner, ClosetTabs.getCurrentTab().extent, 1) - 576.0) - 32.0) / 2.0) + 1.0);
+    %this.position = (((getWord(ClosetGuiPositioner.extent, 0) - 960.0) / 2.0) + 1.0) @ " " @ ((((getWord(ClosetGuiPositioner.extent, 1) - 576.0) - 32.0) / 2.0) + 1.0);
 };
 function ClosetGuiFUE::showAllAsInactive(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEShowAllAsInactiveSched");
         cancel(%sched);
-        %sched = 250.schedule(%this);
-        showAllAsInactive;
+        %sched = showAllAsInactive.schedule(%this, 250);
         gSetField(%this, "closetGuiFUEShowAllAsInactiveSched", %sched);
         return;
     }
@@ -114,14 +111,13 @@ function ClosetGuiFUE::goToStepByName(%this, %stepName) {
     }
     %this.hideCurrentStep();
     if ((%stepName $= "Shops")) {
-        (closetGuiFUEShopsDirBitmap @ " " @ $gCurrentStoreName $= "").setVisible();
-        !(StoreShoppingBag @ " " @ $gCurrentStoreName $= "").setVisible();
-        !(StoreAddItemsButton @ " " @ $gCurrentStoreName $= "").setVisible();
+        ($gCurrentStoreName $= "").setVisible(closetGuiFUEShopsDirBitmap);
+        !($gCurrentStoreName $= "").setVisible(StoreShoppingBag);
+        !($gCurrentStoreName $= "").setVisible(StoreAddItemsButton);
         0.setLeaveStoreControlsVisible(ClosetTabs);
     }
     0.setVisible(closetGuiFUEShopsDirBitmap);
     $gClosetGuiFueCurrentStep = %this.stepNumbersByName;
-    strlwr(%stepName);
     %this.showCurrentStep();
 };
 function ClosetGuiFUE::goToStepByNumber(%this, %stepNumber) {
@@ -142,8 +138,7 @@ function ClosetGuiFUE::showCurrentStep(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEShowCurrentStepSched");
         cancel(%sched);
-        %sched = 250.schedule(%this);
-        showCurrentStep;
+        %sched = showCurrentStep.schedule(%this, 250);
         gSetField(%this, "closetGuiFUEShowCurrentStepSched", %sched);
         return;
     }
@@ -164,8 +159,7 @@ function ClosetGuiFUE::refresh(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUERefreshSched");
         cancel(%sched);
-        %sched = 250.schedule(%this);
-        refresh;
+        %sched = refresh.schedule(%this, 250);
         gSetField(%this, "closetGuiFUERefreshSched", %sched);
         return;
     }
@@ -201,16 +195,17 @@ function ClosetGuiFUE::Initialize(%this) {
     %this.hideTipsCtrl.add(%this);
     %buttonPosition = "Body".getTabWithName(ClosetTabs).button.getPosition();
     %newActiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+        profile = "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    new GuiBitmapCtrl(closetGuiFUEWelcomeImage) {
+    %newInactiveStep = new GuiControl("") {
+        profile = new GuiBitmapCtrl(closetGuiFUEWelcomeImage) {
         profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -229,18 +224,19 @@ function ClosetGuiFUE::Initialize(%this) {
         minExtent = "20 20";
         visible = 1;
         bitmap = "platform/client/ui/welcomeBodyPanel";
-    };
-    %newInactiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+    }; @ "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    new GuiBitmapCtrl("") {
+    "Body".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    %buttonPosition = "Closet".getTabWithName(ClosetTabs).button.getPosition();
+    %newActiveStep = new GuiControl("") {
+        profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -250,20 +246,15 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step3_inactive";
-    };
-    "Body".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %buttonPosition = "Closet".getTabWithName(ClosetTabs).button.getPosition();
-    %newActiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+    }; @ "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    new GuiBitmapCtrl(closetGuiFUEWelcomeImage_b : closetGuiFUEWelcomeImage);
     new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -276,16 +267,23 @@ function ClosetGuiFUE::Initialize(%this) {
         bitmap = "platform/client/ui/closetGuiFUE_step2_active";
     };
     %newInactiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+        profile = new GuiBitmapCtrl(closetGuiFUEWelcomeImage_b : closetGuiFUEWelcomeImage); @ "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    new GuiBitmapCtrl("") {
+    "Closet".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    if (!(ClosetTabs.tabShopsInitialized)) {
+        ClosetTabs.fillStoreTab();
+    }
+    %button = "Shops".getTabWithName(ClosetTabs).button;
+    %buttonPosition = %button.getPosition();
+    %newActiveStep = new GuiControl("") {
+        profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -295,38 +293,28 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step2_inactive";
-    };
-    "Closet".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    if (!(tabShopsInitialized)) {
-        ClosetTabs.fillStoreTab();
-    }
-    %button = "Shops".getTabWithName(ClosetTabs).button;
-    ClosetTabs;
-    %buttonPosition = %button.getPosition();
-    %newActiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+    }; @ "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
-    };
-    new GuiBitmapCtrl("") {
-        profile = "ETSNonModalProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
-        extent = "123 82";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        bitmap = "platform/client/ui/closetGuiFUE_step1_active";
     };
     if (!(isObject(closetGuiFUEShopsDirBitmap))) {
         %this.shopsDirBitmap = new GuiBitmapCtrl(closetGuiFUEShopsDirBitmap) {
+            profile = new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+            extent = "123 82";
+            minExtent = "1 1";
+            sluggishness = -1;
+            visible = 1;
+            bitmap = "platform/client/ui/closetGuiFUE_step1_active";
+        }; @ "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "35 125";
@@ -353,16 +341,19 @@ function ClosetGuiFUE::Initialize(%this) {
     };
     %credsBitmapCtrl.add(%newActiveStep);
     %newInactiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+        profile = "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    new GuiBitmapCtrl("") {
+    "Shops".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    %buttonPosition = "Snapshot".getTabWithName(ClosetTabs).button.getPosition();
+    %newActiveStep = new GuiControl("") {
+        profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -372,20 +363,17 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step1_inactive";
-    };
-    "Shops".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %buttonPosition = "Snapshot".getTabWithName(ClosetTabs).button.getPosition();
-    %newActiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+    }; @ "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    new GuiBitmapCtrl("") {
+    %newInactiveStep = new GuiControl("") {
+        profile = new GuiBitmapCtrl("") {
         profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -405,18 +393,17 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step5_active";
-    };
-    %newInactiveStep = new GuiControl("") {
-        profile = 0 @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE @ horizSizing;
-        vertSizing = ClosetGuiFUE @ vertSizing;
+    }; @ "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
-        extent = ClosetGuiFUE @ extent;
-        minExtent = ClosetGuiFUE @ minExtent;
-        sluggishness = ClosetGuiFUE @ sluggishness;
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    new GuiBitmapCtrl("") {
+    "Snapshot".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    %this.refreshingOrInitializing = new GuiBitmapCtrl("") {
         profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -436,9 +423,7 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step5_inactive";
-    };
-    "Snapshot".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %this.refreshingOrInitializing = 0;
+    }; @ 0;
     %this.initialized = 1;
 };
 function closetGuiFUEHideTipsCtrl::onAction(%this) {
@@ -448,39 +433,35 @@ function closetGuiFUEHideTipsCtrl::onAction(%this) {
     %this.showTips();
 };
 function closetGuiFUEHideTipsCtrl::hideTips(%this) {
-    if (%this.refreshingOrInitializing) {
+    if (ClosetGuiFUE.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched");
-        ClosetGuiFUE;
         cancel(%sched);
-        %sched = 250.schedule(%this);
-        showOrHideTips;
+        %sched = showOrHideTips.schedule(%this, 250);
         gSetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched", %sched);
         return;
     }
     %i = 0;
     while ((%i < $gClosetGuiFueStepCount)) {
-        0.setVisible(%i @ "active" @ ClosetGuiFUE, %this.stepContainers);
-        if (isObject(%i @ "inactive" @ ClosetGuiFUE, %this.stepContainers)) {
-            0.setVisible(%i @ "inactive" @ ClosetGuiFUE, %this.stepContainers);
+        0.setVisible(%i @ "active", ClosetGuiFUE.stepContainers);
+        if (isObject(%i @ "inactive", ClosetGuiFUE.stepContainers)) {
+            0.setVisible(%i @ "inactive", ClosetGuiFUE.stepContainers);
         }
         %i = (%i + 1.0);
     }
 };
 function closetGuiFUEHideTipsCtrl::showTips(%this) {
-    if (%this.refreshingOrInitializing) {
+    if (ClosetGuiFUE.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched");
-        ClosetGuiFUE;
         cancel(%sched);
-        %sched = 250.schedule(%this);
-        showOrHideTips;
+        %sched = showOrHideTips.schedule(%this, 250);
         gSetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched", %sched);
         return;
     }
     %i = 0;
     while ((%i < $gClosetGuiFueStepCount)) {
-        (%i == $gClosetGuiFueCurrentStep).setVisible(%i @ "active" @ ClosetGuiFUE, %this.stepContainers);
-        if (isObject(%i @ "inactive" @ ClosetGuiFUE, %this.stepContainers)) {
-            (%i != $gClosetGuiFueCurrentStep).setVisible(%i @ "inactive" @ ClosetGuiFUE, %this.stepContainers);
+        (%i == $gClosetGuiFueCurrentStep).setVisible(%i @ "active", ClosetGuiFUE.stepContainers);
+        if (isObject(%i @ "inactive", ClosetGuiFUE.stepContainers)) {
+            (%i != $gClosetGuiFueCurrentStep).setVisible(%i @ "inactive", ClosetGuiFUE.stepContainers);
         }
         %i = (%i + 1.0);
     }

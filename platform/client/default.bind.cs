@@ -4,36 +4,36 @@ function initActionMaps() {
     }
     new ActionMap(moveMap);
     new ActionMap(functionMap);
-    "xaxis".bind(moveMap, mouse);
-    "yaxis".bind(moveMap, mouse);
-    "zaxis".bind(moveMap, mouse);
-    "shift zaxis".bind(moveMap, mouse);
-    "ctrl zaxis".bind(moveMap, mouse);
-    "ctrl-shift zaxis".bind(moveMap, mouse);
-    "alt zaxis".bind(moveMap, mouse);
-    "shift-alt zaxis".bind(moveMap, mouse);
+    yaw.bind(moveMap, mouse, "xaxis");
+    pitch.bind(moveMap, mouse, "yaxis");
+    changeCameraDist.bind(moveMap, mouse, "zaxis");
+    changeCameraDistFine.bind(moveMap, mouse, "shift zaxis");
+    changeCameraFOV.bind(moveMap, mouse, "ctrl zaxis");
+    changeCameraFOVFine.bind(moveMap, mouse, "ctrl-shift zaxis");
+    changeCameraDistAndFOV.bind(moveMap, mouse, "alt zaxis");
+    changeCameraDistAndFOVFine.bind(moveMap, mouse, "shift-alt zaxis");
     mouseFire.bind(moveMap, mouse, button0);
-    "ctrl space".bind(moveMap, keyboard);
-    "space".bind(moveMap, keyboard);
-    "enter".bind(moveMap, keyboard);
-    "numpadenter".bind(moveMap, keyboard);
-    "up".bind(moveMap, keyboard);
-    "shift up".bind(moveMap, keyboard);
-    "rshift".bind(moveMap, keyboard);
-    "lshift".bind(moveMap, keyboard);
-    "down".bind(moveMap, keyboard);
-    "right".bind(moveMap, keyboard);
-    "left".bind(moveMap, keyboard);
-    "ctrl w".bind(moveMap, keyboard);
-    "ctrl-shift w".bind(moveMap, keyboard);
-    "ctrl s".bind(moveMap, keyboard);
-    "ctrl a".bind(moveMap, keyboard);
-    "ctrl d".bind(moveMap, keyboard);
-    "ctrl up".bind(moveMap, keyboard);
-    "ctrl down".bind(moveMap, keyboard);
-    "ctrl left".bind(moveMap, keyboard);
-    "ctrl right".bind(moveMap, keyboard);
-    "ctrl x".bind(moveMap, keyboard);
+    onActionKey.bind(moveMap, keyboard, "ctrl space");
+    onThrowBall.bind(moveMap, keyboard, "space");
+    onActionKey.bind(moveMap, keyboard, "enter");
+    onActionKey.bind(moveMap, keyboard, "numpadenter");
+    moveforward.bind(moveMap, keyboard, "up");
+    moveforwardFast.bind(moveMap, keyboard, "shift up");
+    moveFaster.bind(moveMap, keyboard, "rshift");
+    moveFaster.bind(moveMap, keyboard, "lshift");
+    movebackward.bind(moveMap, keyboard, "down");
+    turnRight.bind(moveMap, keyboard, "right");
+    turnLeft.bind(moveMap, keyboard, "left");
+    moveforward.bind(moveMap, keyboard, "ctrl w");
+    moveforwardFast.bind(moveMap, keyboard, "ctrl-shift w");
+    movebackward.bind(moveMap, keyboard, "ctrl s");
+    turnLeft.bind(moveMap, keyboard, "ctrl a");
+    turnRight.bind(moveMap, keyboard, "ctrl d");
+    panUp.bind(moveMap, keyboard, "ctrl up");
+    panDown.bind(moveMap, keyboard, "ctrl down");
+    moveleft.bind(moveMap, keyboard, "ctrl left");
+    moveright.bind(moveMap, keyboard, "ctrl right");
+    toggleZoom.bind(moveMap, keyboard, "ctrl x");
     "stopZoom();".bindCmd(moveMap, keyboard, "ctrl =", "startDollyIn();");
     "stopZoom();".bindCmd(moveMap, keyboard, "ctrl-shift =", "startDollyIn(0.3);");
     "stopZoom();".bindCmd(moveMap, keyboard, "ctrl -", "startDollyOut();");
@@ -128,9 +128,8 @@ function escapeFromGame() {
         ToggleConsoleReally(1);
         return;
     }
-    if ((currentTabIndex >= HudTabs)) {
-        overrideLockedOpen = 1 @ HudTabs;
-        0.0;
+    if ((HudTabs.currentTabIndex >= 0.0)) {
+        HudTabs.overrideLockedOpen = 1;
         HudTabs.close();
         return;
     }
@@ -323,7 +322,6 @@ function turnLeft(%val) {
     if (%val) {
     }
     $mvYawRightSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
     $mvYawRightSpeedBase = $mvYawRightSpeed;
 };
 function turnRight(%val) {
@@ -336,7 +334,6 @@ function turnRight(%val) {
     if (%val) {
     }
     $mvYawLeftSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
     $mvYawLeftSpeedBase = $mvYawLeftSpeed;
 };
 function panUp(%val) {
@@ -348,7 +345,6 @@ function panUp(%val) {
     if (%val) {
     }
     $mvPitchDownSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
 };
 function panDown(%val) {
     if (!($IN_ORBIT_CAM)) {
@@ -359,7 +355,6 @@ function panDown(%val) {
     if (%val) {
     }
     $mvPitchUpSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
 };
 function getMouseAdjustAmount(%val) {
     return ((%val * ($cameraFov / 90.0)) * 0.01);
@@ -442,12 +437,11 @@ function doPropAction(%actionNum) {
         %actionNum = 0;
     }
     if (ClosetGui.isVisible()) {
-        if (!(%db.isDoingPropAction)) {
-            %db.isDoingPropAction = 1 @ ClosetGui;
-            ClosetGui;
+        if (!(ClosetGui.isDoingPropAction)) {
+            ClosetGui.isDoingPropAction = 1;
             %propAnimation = %actionNum.getPropAnimationFromSkus($player, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
             if ((%propAnimation $= "")) {
-                %db.isDoingPropAction = 0 @ ClosetGui;
+                ClosetGui.isDoingPropAction = 0;
             }
             %propAnimation.playAnim($player);
         }
@@ -456,9 +450,8 @@ function doPropAction(%actionNum) {
 };
 function stopPropAction() {
     if (ClosetGui.isVisible()) {
-        if (%db.isDoingPropAction) {
-            %db.isDoingPropAction = 0 @ ClosetGui;
-            ClosetGui;
+        if (ClosetGui.isDoingPropAction) {
+            ClosetGui.isDoingPropAction = 0;
             %anim = $player.getGender() @ $player.getGenre() @ "idl1b";
             %anim.playAnim($player);
         }
@@ -612,9 +605,8 @@ function toggleBuddyHud() {
 };
 function toggleBuddyHudForTab(%tabName) {
     %wasOpen = 1;
-    if (!(%db.visible)) {
+    if (!(BuddyHudWin.visible)) {
         %wasOpen = 0;
-        BuddyHudWin;
         BuddyHudWin.open();
     }
     %currentTabName = BuddyHudTabs.getCurrentTab().name;
@@ -648,8 +640,8 @@ function toggleOptionsPanel() {
     toggleVisibleState(OptionsPanel);
 };
 function okToOpenClosetGui() {
-    if (isObject(ApplauseMeterGui) && (ApplauseMeterGui @ " " @ BuddyHudTabs.getCurrentTab().applauseMeterUse $= "sumo")) {
-        if ((ApplauseMeterGui @ " " @ BuddyHudTabs.getCurrentTab().sumoGameType $= "PillowFightGame")) {
+    if (isObject(ApplauseMeterGui) && (ApplauseMeterGui.applauseMeterUse $= "sumo")) {
+        if ((ApplauseMeterGui.sumoGameType $= "PillowFightGame")) {
             MessageBoxOK(, , "");
         }
         MessageBoxOK(, , "");
@@ -685,8 +677,7 @@ function toggleClosetGui() {
     toggleVisibleState(ClosetGui);
     if (ClosetGui.isVisible()) {
         if (($gCurrentStoreName $= "")) {
-            %tabToOpen = BuddyHudTabs.getCurrentTab().lastTabOpened;
-            ClosetGui;
+            %tabToOpen = ClosetGui.lastTabOpened;
             if ((%tabToOpen $= "")) {
                 %tabToOpen = "Closet";
             }
@@ -702,11 +693,11 @@ function refreshCSSelector() {
     }
 };
 function toggleBuildingDirectory() {
-    if (BuddyHudTabs.getCurrentTab().visible) {
+    if (CustomSpacesSelectorContainer.visible) {
         CustomSpacesSelector.close();
     }
-    if (!(BuildingDirectoryButton @ " " @ BuddyHudTabs.getCurrentTab().lastBuildingEntered $= "")) {
-        BuddyHudTabs.getCurrentTab().lastBuildingEntered.open(CustomSpacesSelector, BuildingDirectoryButton);
+    if (!(BuildingDirectoryButton.lastBuildingEntered $= "")) {
+        BuildingDirectoryButton.lastBuildingEntered.open(CustomSpacesSelector);
     }
 };
 function toggleClosetItemCategory(%category) {
@@ -714,7 +705,7 @@ function toggleClosetItemCategory(%category) {
         return;
     }
     toggleVisibleState(ClosetGui);
-    if (BuddyHudTabs.getCurrentTab().visible) {
+    if (ClosetGui.visible) {
         "CLOSET".selectTabWithName(ClosetTabs);
         %category.onSelect(ClosetItemPopup, 0);
     }
@@ -726,7 +717,7 @@ function toggleStore() {
     if (($gCurrentStoreName $= "")) {
     }
     toggleVisibleState(ClosetGui);
-    if (BuddyHudTabs.getCurrentTab().visible) {
+    if (ClosetGui.visible) {
         "SHOPS".selectTabWithName(ClosetTabs);
     }
 };
@@ -844,12 +835,12 @@ function cycleDebugRenderMode() {
     }
     echo("Debug render modes only available when running a Debug build.");
 };
-"alt tilde".bind(GlobalActionMap, keyboard);
-"ctrl capslock".bind(GlobalActionMap, keyboard);
+ToggleConsoleReally.bind(GlobalActionMap, keyboard, "alt tilde");
+ToggleConsoleReally.bind(GlobalActionMap, keyboard, "ctrl capslock");
 "".bindCmd(GlobalActionMap, keyboard, "alt F9", "cycleDebugRenderMode();");
 "escapeFromGame();".bindCmd(GlobalActionMap, keyboard, "escape", "");
 "".bindCmd(GlobalActionMap, keyboard, "alt F4", "");
-if ((ToggleConsoleReally @ " " @ $Platform $= "macos")) {
+if (($Platform $= "macos")) {
     "onDragAndDropCtrl".bind(GlobalActionMap, keyboard, "alt");
 }
 "onDragAndDropCtrl".bind(GlobalActionMap, keyboard, "lcontrol");
@@ -892,7 +883,7 @@ new ActionMap(tgfMapMap);
 "".bindCmd(tgfMapMap, keyboard, "F5", "geTGF.onRefresh();");
 new ActionMap(csFurnitureMap);
 "".bindCmd(csFurnitureMap, keyboard, "delete", "csTestFreeSelectedItem();");
-if ((ToggleConsoleReally @ " " @ $Platform $= "macos")) {
+if (($Platform $= "macos")) {
     "".bindCmd(csFurnitureMap, keyboard, "backspace", "csTestFreeSelectedItem();");
     "".bindCmd(csFurnitureMap, keyboard, "delete", "csTestFreeSelectedItem();");
     "".bindCmd(csFurnitureMap, keyboard, "opt x", "CSFurnitureMover.doCut();");

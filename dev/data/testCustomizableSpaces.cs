@@ -320,10 +320,10 @@ function TEST_CS_ConstrainMovementToSpace::runTest(%this) {
 };
 function TEST_CS_EditPermissions::runTest(%this) {
     %mockPlayerA = new ScriptObject("") {
-        class = 0 @ "MockTestPlayer";
+        class = "MockTestPlayer";
     };
     %mockPlayerB = new ScriptObject("") {
-        class = 0 @ "MockTestPlayer";
+        class = "MockTestPlayer";
     };
     %name = "Blah Blah Space";
     %manager = SpaceManager::GetInstance();
@@ -380,8 +380,7 @@ function TEST_CS_SpaceDeleteUnownedObjects::runTest(%this) {
     "".CreateInventoryItem(%thespace, %sku, 1, %createPos, %createOrient);
     "".CreateInventoryItem(%thespace, %sku, 1, %createPos, %createOrient);
     "after loading the configuration and adding 3 more, we should have 5 now".assert(%this, (%thespace.nuggets.getCount() == 5.0));
-    %deleteTheseMap = new StringMap("");;
-    0;
+    %deleteTheseMap = new StringMap("");
     if (isObject(MissionCleanup)) {
         %deleteTheseMap.add(MissionCleanup);
     }

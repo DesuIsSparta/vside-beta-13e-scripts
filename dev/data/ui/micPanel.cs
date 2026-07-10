@@ -17,7 +17,7 @@ function micPanel::close(%this) {
     playGui.focusTopWindow();
     return 1;
 };
-micHolders = "" @ micPanel;
+micPanel.micHolders = "";
 function micPanel::addMicHolder(%this, %playerName) {
     %index = findField(%this.micHolders, %playerName);
     if ((%index >= 0.0)) {
@@ -37,7 +37,7 @@ function micPanel::delMicHolder(%this, %playerName) {
     %this.updateMicHoldersList();
 };
 function micPanel::updateMicHoldersList(%this) {
-    // unhandled opcode 330 at 0x00000164
+    %theArray = micPanelArray;
     %theArray.deleteMembers();
     %theArray.childrenClassName = "GuiControl";
     %theArray.childrenExtent = getWord(%theArray.getParent().getExtent(), 0) @ " " @ 16;
@@ -57,7 +57,7 @@ function micPanel::updateMicHoldersList(%this) {
 function micPanel::updateMicHolderCell(%this, %cellCtrl, %index) {
     %holderName = getField(%this.micHolders, %index);
     %bttnCtrl = new GuiButtonCtrl("") {
-        profile = 0 @ "GuiClickLabelProfile";
+        profile = "GuiClickLabelProfile";
         command = "doMicrophoneGiveOrRevoke(\"" @ %holderName @ "\", false);";
         text = "Revoke";
         position = "0 0";
@@ -91,11 +91,10 @@ function micPanelMLTextCtrl::onUrl(%this, %url) {
     }
 };
 function doServerCommandGetMicHolders() {
-    micHolders = "" @ micPanel;
+    micPanel.micHolders = "";
     micPanel.updateMicHoldersList();
     $gExpectedNumberOfMicHolders = -(1.0);
-    $gMicHoldersPendingAddition = new StringMap("");;
-    0;
+    $gMicHoldersPendingAddition = new StringMap("");
     micPanel.updateGetMicHoldersListStatus();
     commandToServer('GetMicrophoneHoldersList');
 };
@@ -111,7 +110,6 @@ function ClientCmdStartGetMicHolders(%numberOfMicHolders) {
         $gMicHoldersPendingAddition.clear();
         $gMicHoldersPendingAddition.delete();
         $gMicHoldersPendingAddition = 0;
-        (%i >= 0.0);
     }
     micPanel.updateGetMicHoldersListStatus();
 };

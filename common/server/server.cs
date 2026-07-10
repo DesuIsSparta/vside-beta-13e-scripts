@@ -7,7 +7,6 @@ function portInit(%port) {
         %failCount = (%failCount + 1.0);
     }
     $Net::BoundPort = %port;
-    !(setNetPort(%port));
     return %failCount;
 };
 function createServer(%serverType, %mission) {
@@ -23,11 +22,11 @@ function createServer(%serverType, %mission) {
         portInit($Pref::Server::Port);
         allowConnections(1);
     }
-    $ServerGroup = new SimGroup(ServerGroup);;
-    $ClientDict = new StringMap(ClientDict);;
-    $PlayerDict = new StringMap(PlayerDict);;
-    $TokenDict = new StringMap(TokenDict);;
-    $PendingValidate = new StringMap(PendingValidate);;
+    $ServerGroup = new SimGroup(ServerGroup);
+    $ClientDict = new StringMap(ClientDict);
+    $PlayerDict = new StringMap(PlayerDict);
+    $TokenDict = new StringMap(TokenDict);
+    $PendingValidate = new StringMap(PendingValidate);
     ClientDict.allowInstanceMethods();
     PlayerDict.allowInstanceMethods();
     TokenDict.allowInstanceMethods();
@@ -56,10 +55,9 @@ function destroyServer() {
         %client.delete();
     }
     $Server::GuidList = "";
-    ClientGroup.getCount();
     deleteDataBlocks();
     purgeResources();
-    return;
+    return ClientGroup.getCount();
 };
 function resetServerDefaults() {
     echo("Resetting server defaults...");
@@ -80,8 +78,7 @@ function addToServerGuidList(%guid) {
     if (((%i < %count) @ " " @ $Server::GuidList $= "")) {
     }
     $Server::GuidList = $Server::GuidList;
-    %guid;
-    return;
+    return %guid;
 };
 function removeFromServerGuidList(%guid) {
     %count = getFieldCount($Server::GuidList);

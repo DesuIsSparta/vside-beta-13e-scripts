@@ -100,7 +100,7 @@ if (!(isObject(GuiContentProfile))) {
 }
 if (!(isObject(GuiModelessDialogProfile))) {
     new GuiControlProfile("GuiModelessDialogProfile") {
-        modal = 0 @ 0;
+        modal = 0;
     };
 }
 if (!(isObject(GuiButtonProfile))) {
@@ -333,14 +333,14 @@ if (!(isObject(GuiEditorClassProfile))) {
 }
 if (!(isObject(LoadTextProfile))) {
     new GuiControlProfile("LoadTextProfile") {
-        fontColor = 0 @ "66 219 234";
+        fontColor = "66 219 234";
         autoSizeWidth = 1;
         autoSizeHeight = 1;
     };
 }
 if (!(isObject(GuiMLTextProfile))) {
     new GuiControlProfile("GuiMLTextProfile") {
-        fontColorLink = 0 @ "255  96  96";
+        fontColorLink = "255  96  96";
         fontColorLinkHL = "0     0 255";
         fontColorHL = "150 200 255 200";
         fillColorHL = "255 200 230  50";
@@ -353,7 +353,7 @@ new GuiControlProfile(GuiMLTextModelessProfile : GuiMLTextProfile) {
 };
 if (!(isObject(GuiMLTextNoSelectProfile))) {
     new GuiControlProfile("GuiMLTextNoSelectProfile") {
-        fontColorLink = 0 @ "255 96 96";
+        fontColorLink = "255 96 96";
         fontColorLinkHL = "0 0 255";
         modal = 0;
     };
@@ -375,7 +375,7 @@ if (!(isObject(GuiMLTextEditProfile))) {
 }
 if (!(isObject(GuiConsoleProfile))) {
     new GuiControlProfile("GuiConsoleProfile") {
-        fontType = (0 @ " " @ $Platform $= "macos") ? "Courier New" : "Lucida Console";
+        fontType = ($Platform $= "macos") ? "Courier New" : "Lucida Console";
         fontSize = ($Platform $= "macos") ? 14 : 12;
         fontColor = "0 0 0";
         fontColorHL = "130 130 130";
@@ -389,7 +389,7 @@ if (!(isObject(GuiConsoleProfile))) {
 }
 if (!(isObject(GuiProgressProfile))) {
     new GuiControlProfile("GuiProgressProfile") {
-        opaque = 0 @ 0;
+        opaque = 0;
         fillColor = "44 152 162 100";
         border = 1;
         borderColor = "78 88 120";
@@ -397,7 +397,7 @@ if (!(isObject(GuiProgressProfile))) {
 }
 if (!(isObject(GuiProgressTextProfile))) {
     new GuiControlProfile("GuiProgressTextProfile") {
-        fontColor = 0 @ "0 0 0";
+        fontColor = "0 0 0";
         justify = "center";
     };
 }
@@ -432,7 +432,7 @@ if (!(isObject(GuiInspectorDynamicFieldProfile))) {
 }
 if (!(isObject(GuiInspectorTextEditProfile))) {
     new GuiControlProfile("GuiInspectorTextEditProfile") {
-        opaque = 0 @ 0;
+        opaque = 0;
         border = 0;
         tab = 1;
         canKeyFocus = 1;

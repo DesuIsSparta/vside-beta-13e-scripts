@@ -23,21 +23,20 @@ function TEST_MISSIONGROUPINTEGRITY::objectInstanceMustHaveUniqueName(%this, %ob
     return (%index >= 0.0);
 };
 function TEST_MISSIONGROUPINTEGRITY::InitializeNPCNames(%this) {
-    if (!(MissionInfo @ " " @ %this.skipNPCCheck $= "")) {
+    if (!(MissionInfo.skipNPCCheck $= "")) {
     }
-    if ((%this.skipNPCCheck == MissionInfo)) {
+    if ((MissionInfo.skipNPCCheck == 1.0)) {
         log("general", "debug", "Skipping NPC name check.");
-        %this.NPCNameMap = 1.0 @ 0;
+        %this.NPCNameMap = 0;
         return;
     }
     %this.NPCNameMap = new StringMap("") {
-        ignoreCase = 0 @ 1;
+        ignoreCase = 1;
     };
     if (isObject(MissionCleanup)) {
         %this.NPCNameMap.add(MissionCleanup);
     }
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if ("dev/data/npc_usernames.txt".openForRead(%file)) {
         while (!(%file.isEOF())) {
             %npcName = %file.readLine();
@@ -196,7 +195,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckBuildingTransitionSetup(%this) {
 };
 function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this) {
     "There is no MissionInfo scriptobject, This is used to determine various things about the missions and should exist in this one too".assertCount(%this, "MissionInfo", 1);
-    if ((MissionInfo @ " " @ %parsedVURLobject.mode $= "PrivateSpaceDesign")) {
+    if ((MissionInfo.mode $= "PrivateSpaceDesign")) {
         if (isObject(PRIVATESPACE_OFFSETMARKER)) {
             "private space missions must have only ONE PRIVATESPACE_OFFSETMARKER, this is optional and if found it will be used as the root position for the private space instead of the customizable area".assertCount(%this, "PRIVATESPACE_OFFSETMARKER", 1);
         }
@@ -241,14 +240,14 @@ function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this) {
             " PRIVATESPACE_AREA  must be entirely inside of PRIVATESPACE_ZONEBOX, it looks like the area is outside in this mission, make sure the zonebox surrounds it completely. thanks!".assert(%this, %contained);
         }
     }
-    if ((MissionInfo @ " " @ %parsedVURLobject.mode $= "PrivateSpaceGrid")) {
-        "For privatespace grid servers, a modelID must be specified in MissionInfo, this is the type of floorplan supported by this server".assertDifferentString(%this, MissionInfo, %parsedVURLobject.modelID, "");
-        "For privatespace grid servers, a building must be specified in MissionInfo, this is the building that connects to this grid server".assertDifferentString(%this, MissionInfo, %parsedVURLobject.building, "");
-        "For privatespace grid servers, a spacePrefix must be specified in MissionInfo, this is the prefix that will be used to name each space".assertDifferentString(%this, MissionInfo, %parsedVURLobject.spacePrefix, "");
+    if ((MissionInfo.mode $= "PrivateSpaceGrid")) {
+        "For privatespace grid servers, a modelID must be specified in MissionInfo, this is the type of floorplan supported by this server".assertDifferentString(%this, MissionInfo.modelID, "");
+        "For privatespace grid servers, a building must be specified in MissionInfo, this is the building that connects to this grid server".assertDifferentString(%this, MissionInfo.building, "");
+        "For privatespace grid servers, a spacePrefix must be specified in MissionInfo, this is the prefix that will be used to name each space".assertDifferentString(%this, MissionInfo.spacePrefix, "");
     }
 };
 function TEST_MISSIONGROUPINTEGRITY::CheckDatablockSetup(%this) {
-    // unhandled opcode 1645 at 0x00000B2E
+    %group = DataBlockGroup;
     if ("no DataBlockGroup!".assert(%this, isObject(%group))) {
         return;
     }
@@ -264,8 +263,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckDatablockSetup(%this) {
     }
 };
 function TEST_MISSIONGROUPINTEGRITY::CheckUniqueObjectNames(%this) {
-    // unhandled opcode 1645 at 0x00000BC9
-    %n = MissionGroup;
+    %group = MissionGroup;
     if ("no MissionGroup!".assert(%this, isObject(%group))) {
         return;
     }
@@ -351,17 +349,15 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         }
     }
     %classname = %obj.getClassName();
-    (%n < %num);
     %belongs = 0;
     %i = 0;
     while ((%i < %this.okClassCount)) {
-        if ((%i @ " " @ %this.okClass $= %classname)) {
+        if (((%n < %num) @ %i @ " " @ %this.okClass $= %classname)) {
             %belongs = 1;
         }
         %i = (%i + 1.0);
     }
     %actionNeeded = "This object does not belong and should probably be deleted";
-    (%i < %this.okClassCount);
     %ableToNotCache = %obj.IsAbleToNotCache(%this);
     if ((%ableToNotCache == 0.0)) {
         %exceptions = "SimGroup SimSet SimSpace ScriptObject";
@@ -371,7 +367,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         }
     }
     if (%obj.isClassSimSpace()) {
-        if (!(getSubStr(%obj.getName(), 0, 9) $= "SimSpace_")) {
+        if (!((%i < %this.okClassCount) @ " " @ getSubStr(%obj.getName(), 0, 9) $= "SimSpace_")) {
             %belongs = 0;
             %actionNeeded = "SimSpaces should be named starting with \"SimSpace_\"." @ " " @ %obj.getName() @ " " @ "is breakin' the law!";
         }
@@ -437,7 +433,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
             %parentGroupName @ " " @ ", the object " @ %myDoor @ " is not a datablock based door, you should make the datablock first and place that in the world, not a Static, look in Shapes->Doors for your datablock name, this is the door referenced by" @ " " @ getDebugString(%obj).assert(%this, !(%doorsDataBlock $= ""));
         }
     }
-    if ((MissionInfo @ " " @ %obj.mode $= "PrivateSpaceDesign")) {
+    if ((MissionInfo.mode $= "PrivateSpaceDesign")) {
         if ((%classname $= "TSStatic")) {
             %belongs = 0;
             %actionNeeded = "Static Shapes should not be used in individual Private spaces,  instead you should use Dynamic Shapes,   these are TSDynamic instead of TSStatic";
@@ -511,7 +507,6 @@ function FixOldStyleSeatingAreaProblems() {
         %i = (%i + 1.0);
     }
     $OLDSEATAREA_KILLER_COUNT = 0;
-    (%i < $OLDSEATAREA_KILLER_COUNT);
     echo("done----------------------");
 };
 function Utility::ListDataBlocksNotUsed() {
@@ -532,7 +527,6 @@ function Utility::ListDataBlocksNotUsed() {
             error(%v.theList @ " " @ "not used");
         }
         %i = (%i + 1.0);
-        %i @ %i;
     }
     echo("");
     error("-----------------------------------------------------");

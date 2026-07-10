@@ -7,8 +7,7 @@ function recordingsDlg::onWake() {
     while (!(%file $= "")) {
         %fileName = fileBase(%file);
         if ((strstr(%file, "/CVS/") == -(1.0))) {
-            %i = (%i + 1.0);
-            %fileName.addRow(RecordingsDlgList);
+            %fileName.addRow(RecordingsDlgList, %i = (%i + 1.0));
         }
         %file = findNextFile(%filespec);
     }

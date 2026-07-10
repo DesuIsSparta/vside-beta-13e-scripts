@@ -1,4 +1,4 @@
-initialized = 0 @ animatorPanel;
+animatorPanel.initialized = 0;
 function toggleAnimatorPanel(%target) {
     if (!("debugActive".rolesPermissionCheckNoWarn($player))) {
         return;
@@ -6,7 +6,7 @@ function toggleAnimatorPanel(%target) {
     if (!(isDefined("%target"))) {
         %target = "";
     }
-    defaultTarget = %target @ animatorPanel;
+    animatorPanel.defaultTarget = %target;
     if (!(%target $= "")) {
         animatorPanel.open();
     }
@@ -82,16 +82,14 @@ function animatorPanel::onGotPossibleGenres(%this, %possibleGenres) {
                 }
             }
             %g = (%g + 1.0);
-            (%j < %numAnimations);
         }
         %i = (%i + 1.0);
-        (%g < 2.0);
     }
     animatorPanelAnimsPopup.sort();
 };
 function animatorPanelAnimsPopup::onSelect(%this, %unused, %text) {
-    if (isObject(animatorPanel, %this.lastTextBox)) {
-        %text.setText(animatorPanel, %this.lastTextBox);
+    if (isObject(animatorPanel.lastTextBox)) {
+        %text.setText(animatorPanel.lastTextBox);
     }
 };
 function animatorPanel::onRefreshTargetsList(%this) {
