@@ -3,14 +3,20 @@
 %registry.bindClassName("InstrumentRegistryClient");
 %registry.setName("InstrumentRegistryClient");
 function InstrumentRegistryClient::initializeRegistry(%this) {
-    warn(getScopeName() @ " " @ "- registry already intialized");
-    return initialized;
+    if (initialized) {
+        warn(getScopeName() @ " " @ "- registry already intialized");
+        return %this;
+    }
     instrumentsList = StringMap @ new ""() @ %this;
     0;
-    instrumentsList.add();
+    if (isObject()) {
+        instrumentsList.add();
+    }
     keyBindings = StringMap @ new ""() @ %this;
     0;
-    keyBindings.add();
+    if (isObject()) {
+        keyBindings.add();
+    }
     %this.initializeRegistryCommon();
     initialized = %this @ 1 @ %this;
     MissionCleanup;
@@ -18,29 +24,45 @@ function InstrumentRegistryClient::initializeRegistry(%this) {
 initialized = 0 @ InstrumentRegistryClient;
 initializeRegistry();
 function InstrumentRegistryClient::clearRegistry(%this) {
-    %i = (%this - instrumentsList.size());
-    1.0;
-    %instrument = instrumentsList.getValue(%i);
-    %this;
-    animationMaps.clear();
-    animationMaps.delete();
-    animationMaps.clear();
-    animationMaps.delete();
-    %instrument.delete();
-    %i = (1.0 - %i);
-    isObject(animationMaps) @ "m" @ %instrument @ "m" @ %instrument;
-    instrumentsList.clear();
-    keyBindings.clear();
+    if (isObject(instrumentsList)) {
+        %i = (%this - instrumentsList.size());
+        1.0;
+        if ((0.0 >= %i)) {
+            %instrument = instrumentsList.getValue(%i);
+            %this;
+            if (isObject(%instrument)) {
+                if (isObject(animationMaps)) {
+                    animationMaps.clear();
+                    animationMaps.delete();
+                }
+                if (isObject(animationMaps)) {
+                    animationMaps.clear();
+                    animationMaps.delete();
+                }
+                %instrument.delete();
+            }
+            %i = (1.0 - %i);
+            %this @ "f" @ %instrument @ "f" @ %instrument @ "f" @ %instrument @ "m" @ %instrument @ "m" @ %instrument @ "m" @ %instrument;
+        }
+        instrumentsList.clear();
+    }
+    if (isObject(keyBindings)) {
+        keyBindings.clear();
+    }
     %this.clearRegistryCommon();
 };
 function InstrumentRegistryClient::closeRegistry(%this) {
     %this.clearRegistry();
-    instrumentsList.delete();
-    instrumentsList = %this @ "" @ %this;
-    isObject(instrumentsList);
-    keyBindings.delete();
-    keyBindings = %this @ "" @ %this;
-    isObject(keyBindings);
+    if (isObject(instrumentsList)) {
+        instrumentsList.delete();
+        instrumentsList = %this @ "" @ %this;
+        %this;
+    }
+    if (isObject(keyBindings)) {
+        keyBindings.delete();
+        keyBindings = %this @ "" @ %this;
+        %this;
+    }
     %this.closeRegistryCommon();
 };
 function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %instrumentGameTitleText, %instrumentGameBodyText, %instrumentGameDisabledText, %instrumentGameActiveIconA, %instrumentGameActiveIconB, %instrumentGameIdleIcon, %instrumentGameUnfocusedIcon) {
@@ -57,26 +79,43 @@ function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %i
     instrumentsList.put(%instrumentName, %instrument);
 };
 function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrumentName, %keyBinding, %animationName) {
-    error(getScopeName() @ " " @ "- cannot bind nonempty keyBinding for empty instrumentName");
-    return !(((%instrumentName $= "") SPC %keyBinding $= ""));
-    error(getScopeName() @ " " @ "- cannot bind empty animationName");
-    return (%animationName $= "");
-    warn(%this @ !(instrumentsList.hasKey(%instrumentName)) @ getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
-    return !((%instrumentName $= ""));
+    if ((%instrumentName $= "")) {
+    }
+    if (!(%keyBinding $= "")) {
+        error(getScopeName() @ " " @ "- cannot bind nonempty keyBinding for empty instrumentName");
+        return;
+    }
+    if ((%animationName $= "")) {
+        error(getScopeName() @ " " @ "- cannot bind empty animationName");
+        return;
+    }
+    if (!(%instrumentName $= "")) {
+    }
+    if (!(instrumentsList.hasKey(%instrumentName))) {
+        warn(%this @ getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+        return;
+    }
     %keyBinding = %this.normalizeKeyBinding(%instrumentName, %keyBinding);
     keyBindings.put(%keyBinding, %animationName);
 };
 function InstrumentRegistryClient::getAnimation(%this, %instrumentName, %keyBinding) {
-    warn(!(%this.isInstrument(%instrumentName)) @ getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
-    return;
-    return %this.getStopAnimation(%instrumentName);
+    if (!(%this.isInstrument(%instrumentName))) {
+        warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+        return;
+    }
+    if ((%keyBinding $= "")) {
+        return %this.getStopAnimation(%instrumentName);
+    }
     %keyBinding = %this.normalizeKeyBinding(%instrumentName, %keyBinding);
-    return "";
+    if (!(keyBindings.hasKey(%keyBinding))) {
+        return "";
+    }
     return keyBindings.get(%keyBinding);
 };
 function InstrumentRegistryClient::normalizeKeyBinding(%this, %instrumentName, %keyBinding) {
-    %keyBinding = "stop";
-    (%keyBinding $= "");
+    if ((%keyBinding $= "")) {
+        %keyBinding = "stop";
+    }
     %keyBinding = strlwr(%keyBinding);
     return %instrumentName @ "\t" @ %keyBinding;
 };

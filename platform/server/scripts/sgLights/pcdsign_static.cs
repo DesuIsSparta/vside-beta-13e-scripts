@@ -1,6 +1,5 @@
-className = pcdsign_static @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(pcdsign_static) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 6;
 Brightness = 0.793103;
 Colour = "1.000000 0.082353 0.250980 1.000000";

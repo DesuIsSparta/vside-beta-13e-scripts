@@ -1,6 +1,5 @@
-className = sgTowerFireLightDataBlock @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(sgTowerFireLightDataBlock) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 5;
 Brightness = 1;
 Colour = "1.000000 1.000000 1.000000 1.000000";

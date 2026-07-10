@@ -4,8 +4,10 @@ function TestSuite_GiftBox::setup(%this) {
     %this.addTestCase("TEST_GiftBox_LoadFromFile");
 };
 function TEST_GiftBox_BASICS::runTest(%this) {
-    %this.assert(0, "this test must be run in $standalone");
-    return !($StandAlone);
+    if (!($StandAlone)) {
+        %this.assert(0, "this test must be run in $standalone");
+        return;
+    }
     %testGiftBoxData = "dev/testData/giftbox.txt";
     %gb = GiftBoxData::construct();
     %ret = %gb.add(100, "VPOINTS", 5);
@@ -32,18 +34,24 @@ function TEST_GiftBox_BASICS::runTest(%this) {
     %giftString = %gb.GetAGift();
     %this.assert((2.0 >= getWordCount(%giftString)), "expected at least 2 words in the gift string");
     %type = getWord(%giftString, 0);
-    %this.assert(((%type $= "SKUS") SPC %type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
+    if ((%type $= "SKUS")) {
+    }
+    %this.assert((%type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
     %gb.delete();
 };
 function TEST_GiftBox_LoadFromFile::runTest(%this) {
-    %this.assert(0, "this test must be run in $standalone");
-    return !($StandAlone);
+    if (!($StandAlone)) {
+        %this.assert(0, "this test must be run in $standalone");
+        return;
+    }
     %testGiftBoxData = "dev/testData/giftbox.txt";
     %gb = GiftBoxData::ConstructFromFile(%testGiftBoxData);
     %this.assert((601.0 == %gb.totalGiftsInBox()), "expected 601 total possible gifts in the box but got:" @ " " @ %gb.totalGiftsInBox());
     %giftString = %gb.GetAGift();
     %this.assert((2.0 >= getWordCount(%giftString)), "expected at least 2 words in the gift string");
     %type = getWord(%giftString, 0);
-    %this.assert(((%type $= "SKUS") SPC %type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
+    if ((%type $= "SKUS")) {
+    }
+    %this.assert((%type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
     %gb.delete();
 };

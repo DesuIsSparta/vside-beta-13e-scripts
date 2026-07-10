@@ -1,6 +1,5 @@
-className = pinkoverall @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(pinkoverall) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 10;
 Brightness = 0.724138;
 Colour = "0.873563 0.172414 0.390805 1.000000";

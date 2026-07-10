@@ -9,27 +9,36 @@ function snapControl(%ctrl, %fileName) {
     shootscreen(%fileName, %rect);
 };
 function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
-    %fileName = (%fileName $= "") @ "screenshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ $screenShotNum;
+    if ((%fileName $= "")) {
+        %fileName = "screenshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ $screenShotNum;
+    }
     %fn_orig = %fileName;
-    %ext = ".jpg";
-    ($Pref::Video::screenShotFormat $= "JPEG");
-    %ext = ".png";
-    ($Pref::Video::screenShotFormat $= "PNG");
+    if (($Pref::Video::screenShotFormat $= "JPEG")) {
+        %ext = ".jpg";
+    }
+    if (($Pref::Video::screenShotFormat $= "PNG")) {
+        %ext = ".png";
+    }
     %ext = ".png";
     %fileName = %fileName @ %ext;
     %uploader = "";
-    $screenShotNum = (1.0 + $screenShotNum);
-    snapshotTool::snapRegion(%region, %fileName);
-    %uploader = new ""();
-    URLPostObject;
-    %uploader.setProgress(1);
-    %uploader.setURL($Net::UploadPhotoURL);
-    %uploader.setURLParam("user", $Player::Name);
-    %uploader.setURLParam("token", $Token);
-    %uploader.setURLParam("type", "avatar");
-    %uploader.setPostFile("imageBody", %fileName);
-    %uploader.add();
-    error("Unable to upload avatar photo." @ " " @ getTrace());
+    if (snapshotTool::snapRegion(%region, %fileName)) {
+        $screenShotNum = (1.0 + $screenShotNum);
+        %uploader = new ""();
+        URLPostObject;
+        %uploader.setProgress(1);
+        %uploader.setURL($Net::UploadPhotoURL);
+        %uploader.setURLParam("user", $Player::Name);
+        %uploader.setURLParam("token", $Token);
+        %uploader.setURLParam("type", "avatar");
+        %uploader.setPostFile("imageBody", %fileName);
+        if (%uploader.start()) {
+            if (isObject()) {
+                %uploader.add();
+            }
+        }
+        error("Unable to upload avatar photo." @ " " @ getTrace());
+    }
     error("Unable to capture region." @ " " @ getTrace());
     return %uploader;
 };
@@ -40,7 +49,9 @@ function snapshot::snapRegion(%region, %fileName) {
     shootscreen(%fileName, %region);
 };
 function getScreenShotMetaData(%guiTSCtrl) {
-    return getScreenShotMetaDataOrtho(%guiTSCtrl);
+    if ((1.0 != $pref::Render::orthoScale)) {
+        return getScreenShotMetaDataOrtho(%guiTSCtrl);
+    }
     %cameraTransform = getLastCameraTransform();
     PlayGui;
     %numPts = 0;
@@ -60,22 +71,23 @@ function getScreenShotMetaData(%guiTSCtrl) {
     %ret = %ret @ "\n" @ "// %cameraTransform =" @ " " @ %cameraTransform;
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %n = 0;
-    %windowCoord = VectorConvolve(%n[%samplePts @ %n], %ctrlExtent);
-    (%numPts < %n);
-    %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
-    %camVec = VectorSub(%worldCoord1, %cameraTransform);
-    %camVec = VectorNormalize(%camVec);
-    %camVec = VectorScale(%camVec, 5000);
-    %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
-    %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
-    %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
-    %mask = ($TypeMasks::InteriorObjectType | $TypeMasks::WaterObjectType);
-    %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
-    %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "anyhit:   \"" @ getWords(%hit, 1, 3) @ "\"";
-    %mask = $TypeMasks::WaterObjectType;
-    %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
-    %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "waterhit: \"" @ getWords(%hit, 1, 3) @ "\"";
-    %n = (1.0 + %n);
+    if ((%numPts < %n)) {
+        %windowCoord = VectorConvolve(%n[%samplePts @ %n], %ctrlExtent);
+        %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
+        %camVec = VectorSub(%worldCoord1, %cameraTransform);
+        %camVec = VectorNormalize(%camVec);
+        %camVec = VectorScale(%camVec, 5000);
+        %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
+        %mask = ($TypeMasks::InteriorObjectType | $TypeMasks::WaterObjectType);
+        %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "anyhit:   \"" @ getWords(%hit, 1, 3) @ "\"";
+        %mask = $TypeMasks::WaterObjectType;
+        %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "waterhit: \"" @ getWords(%hit, 1, 3) @ "\"";
+        %n = (1.0 + %n);
+    }
     return %ret;
 };
 function getScreenShotMetaDataOrtho(%guiTSCtrl) {
@@ -109,34 +121,37 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %summary = "";
     %n = 0;
-    %windowCoord = %n[%samplePts @ %n];
-    (%numPts < %n);
-    %windowCoord = VectorAdd(%windowCoord, "-0.5 -0.5");
-    %windowCoord = VectorScale(%windowCoord, $pref::Render::orthoScale);
-    %windowCoord = VectorAdd(%windowCoord, "0.5 0.5");
-    %windowCoord = VectorConvolve(%windowCoord, %ctrlExtent);
-    %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
-    %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
-    %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
-    %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
-    %hit = intersectPlaneLine("0 0 0", "0 0 1", %worldCoord1, %worldCoord2);
-    %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "XY plane: \"" @ %hit @ "\"";
-    %summary = %summary @ "\n" @ formatString("%-15s:", %n[%sampleName @ %n]) @ " " @ %hit;
-    %n[%resultPts @ %n] = %hit;
-    %mh = %hit;
-    (getCount() < %n);
-    %mh = setWord(%mh, 2, 0);
-    moWorldCornerMarkers;
-    %marker = %n.getObject();
-    moWorldCornerMarkers;
-    %marker.setTransform(%mh);
-    %marker.setScale("1 1 1");
-    %n = (1.0 + %n);
-    isObject();
+    if ((%numPts < %n)) {
+        %windowCoord = %n[%samplePts @ %n];
+        %windowCoord = VectorAdd(%windowCoord, "-0.5 -0.5");
+        %windowCoord = VectorScale(%windowCoord, $pref::Render::orthoScale);
+        %windowCoord = VectorAdd(%windowCoord, "0.5 0.5");
+        %windowCoord = VectorConvolve(%windowCoord, %ctrlExtent);
+        %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
+        %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
+        %hit = intersectPlaneLine("0 0 0", "0 0 1", %worldCoord1, %worldCoord2);
+        %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "XY plane: \"" @ %hit @ "\"";
+        %summary = %summary @ "\n" @ formatString("%-15s:", %n[%sampleName @ %n]) @ " " @ %hit;
+        %n[%resultPts @ %n] = %hit;
+        if (isObject()) {
+            if ((getCount() < %n)) {
+                %mh = %hit;
+                moWorldCornerMarkers;
+                %mh = setWord(%mh, 2, 0);
+                moWorldCornerMarkers;
+                %marker = %n.getObject();
+                moWorldCornerMarkers;
+                %marker.setTransform(%mh);
+                %marker.setScale("1 1 1");
+            }
+        }
+        %n = (1.0 + %n);
+    }
     %p1 = "0 0 0";
     (%numPts < %n);
     %p2 = VectorAdd(%p1, %camVec);
-    moWorldCornerMarkers;
     %pA = intersectPlaneLine("0 0 0", "0 0 1", %p1, %p2);
     %p1 = VectorAdd(%p1, "0 0 1");
     %p2 = VectorAdd(%p1, %camVec);
@@ -147,11 +162,15 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     return %command @ "\n" @ %summary @ "\n" @ %ret;
 };
 function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
-    return (1.0 <= $pref::Render::orthoScale);
+    if ((1.0 <= $pref::Render::orthoScale)) {
+        return;
+    }
     %fn = %name @ ".cs";
     %file = new ""();
     FileObject;
-    %file.writeLine(getScreenShotMetaData(%guiCtrl));
+    if (%file.openForWrite(%fn)) {
+        %file.writeLine(getScreenShotMetaData(%guiCtrl));
+    }
     error(getScopeName() @ " " @ "- could not open file for write:" @ " " @ %fn);
     %file.delete();
 };

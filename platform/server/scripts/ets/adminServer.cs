@@ -1,42 +1,61 @@
 function serverCmdAdminAction(%senderConnection, %action, %target, %message) {
-    error("null player sending boot command:" @ " " @ %senderConnection);
-    return !(isObject(Player));
-    error(%senderConnection @ Player.getShapeName());
-    return "non-staff player sending admin action:" @ " ";
-    %target = %senderConnection.resolveObjectFromGhostIndex(%target);
-    (0.0 != %target);
-    error(%senderConnection @ Player.getShapeName() @ " " @ "action =" @ " " @ %action @ " " @ "target =" @ " " @ %target);
-    return "Got invalid target/action in serverCmdAdminAction() - sender =" @ " ";
+    if (!(isObject(Player))) {
+        error("null player sending boot command:" @ " " @ %senderConnection);
+        return %senderConnection;
+    }
+    if (!(Player.isStaff())) {
+        error(%senderConnection @ Player.getShapeName());
+        return "non-staff player sending admin action:" @ " ";
+    }
+    if ((0.0 != %target)) {
+        %target = %senderConnection.resolveObjectFromGhostIndex(%target);
+    }
+    if (!(admin::isActionable(%target, %action))) {
+        error(%senderConnection @ Player.getShapeName() @ " " @ "action =" @ " " @ %action @ " " @ "target =" @ " " @ %target);
+        return "Got invalid target/action in serverCmdAdminAction() - sender =" @ " ";
+    }
     %adminName = Player.getShapeName();
     %senderConnection;
     %targetName = admin::getTargetName(%target);
     warn("AdminAction:" @ " " @ %adminName @ " " @ %action @ " " @ "object" @ " " @ %target @ " " @ %targetName);
-    admin::doBoot(%target, %message, Player);
-    admin::doBan(%target, %message, Player);
-    admin::doMessage(%target, %message, Player);
-    admin::doThrowVoice(%target, %message, Player);
+    if ((%action $= "Boot")) {
+        admin::doBoot(%target, %message, Player);
+    }
+    if ((%senderConnection SPC %action $= "Ban")) {
+        admin::doBan(%target, %message, Player);
+    }
+    if ((%senderConnection SPC %action $= "Message")) {
+        admin::doMessage(%target, %message, Player);
+    }
+    if ((%senderConnection SPC %action $= "Throw Voice")) {
+        admin::doThrowVoice(%target, %message, Player);
+    }
     return %senderConnection;
 };
 function admin::doBoot(%target, %message, %adminPlayer) {
     %client = %target.getControllingClient();
-    %target.delete();
-    return (0.0 == %client);
+    if ((0.0 == %client)) {
+        %target.delete();
+        return;
+    }
     commandToClient(%client, 'beingBooted', %message);
     %client.schedule(1000, "delete", %message);
     return;
 };
 function BanRequest::onLine(%this, %line) {
-    error(%this @ user);
+    if (!(%line $= "success")) {
+        error(%this @ user);
+    }
     return "ban failed:" @ " ";
 };
 function admin::doBan(%target, %message, %adminPlayer) {
     %client = %target.getControllingClient();
-    %target.delete();
-    return (0.0 == %client);
-    %banRequest = new ();
-    BanRequest;
-    user = CURLObject @ %target.getShapeName() @ %banRequest;
-    0;
+    if ((0.0 == %client)) {
+        %target.delete();
+        return;
+    }
+    %banRequest = new CURLObject(BanRequest);
+    user = %target.getShapeName() @ %banRequest;
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=ban";
@@ -52,11 +71,14 @@ function admin::doMessage(%target, %message, %adminPlayer) {
     %adminName = %adminPlayer.getShapeName();
     %targetName = admin::getTargetName(%target);
     %msg = admin::composeSystemMessage(%target, %message, %adminPlayer);
-    messageAll('MsgSystemMessage', %msg);
+    if ((0.0 == %target)) {
+        messageAll('MsgSystemMessage', %msg);
+    }
     %targetClient = %target.getControllingClient();
-    (0.0 == %target);
-    error("Attempting to message clientless target:" @ " " @ %target @ " " @ %targetName);
-    return !(isObject(%targetClient));
+    if (!(isObject(%targetClient))) {
+        error("Attempting to message clientless target:" @ " " @ %target @ " " @ %targetName);
+        return;
+    }
     messageClient(%targetClient, 'MsgSystemMessage', %msg);
     return;
 };
@@ -64,17 +86,23 @@ function admin::doThrowVoice(%target, %message, %adminPlayer) {
     %adminName = %adminPlayer.getShapeName();
     %targetName = admin::getTargetName(%target);
     %msg = %message;
-    %message.doThrowVoice(%adminPlayer);
+    if ((0.0 == %target)) {
+        %message.doThrowVoice(%adminPlayer);
+    }
     ServersideChatMessage(%target, 0, %msg);
     return NPCManager;
 };
 function NPCManager::doThrowVoice(%this, %msg, %adminPlayer) {
-    warn("No NPC group..");
-    return !(isObject(NPCGroup));
+    if (!(isObject(NPCGroup))) {
+        warn("No NPC group..");
+        return %this;
+    }
     %NPCNum = NPCGroup.getCount();
     %this;
     %n = 0;
-    ServersideChatMessage(NPCGroup.getObject(%n), 0, %msg);
-    %n = (1.0 + %n);
-    %this;
+    if ((%NPCNum < %n)) {
+        ServersideChatMessage(NPCGroup.getObject(%n), 0, %msg);
+        %n = (1.0 + %n);
+        %this;
+    }
 };

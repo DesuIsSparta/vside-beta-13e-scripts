@@ -9,8 +9,10 @@ function Array::size(%this) {
 };
 function Array::get(%this, %key) {
     %ndx = %this.getIndexFromKey(%key);
-    error((0.0 < %ndx) @ getScopeName() @ " " @ "- no such key: \"" @ %key @ "\"." @ " " @ getTrace());
-    return "";
+    if ((0.0 < %ndx)) {
+        error(getScopeName() @ " " @ "- no such key: \"" @ %key @ "\"." @ " " @ getTrace());
+        return "";
+    }
     return %this.getValue(%ndx);
 };
 function Array::put(%this, %key, %value) {

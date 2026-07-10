@@ -74,13 +74,16 @@ function makeAnimationMapZombie(%map, %src, %gender) {
     %map.put("root", %gender @ "nzidl1");
 };
 function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim) {
-    // unhandled opcode 1134 at 0x0000046B
+    if ((%gender $= "f")) {
+        // unhandled opcode 1134 at 0x0000046B
+    }
     // unhandled opcode 1066 at 0x0000046F
     %gender = animationMapMP;
     animationMapFP;
-    %animationMapName = (%gender $= "f") @ "animationMap" @ %gender @ %genre;
-    %map = %animationMapName.getId();
-    isObject(%animationMapName);
+    %animationMapName = "animationMap" @ %gender @ %genre;
+    if (isObject(%animationMapName)) {
+        %map = %animationMapName.getId();
+    }
     %map = new %animationMapName();
     StringMap;
     copyAnimationMap(%map, %src);
@@ -297,42 +300,60 @@ function makeAnimationMapBlueMana(%map, %src, %gender) {
     %map.put("lidl2a", %gender @ "e" @ "lidl2a");
 };
 function initializeAnimationMapAnimal(%map, %gender, %genre) {
-    new %map();
-    %map.add();
-    %map.put("root", isObject() @ MissionCleanup @ %gender @ %genre @ "idle1");
-    %map.put("run", StringMap @ MissionCleanup @ %gender @ %genre @ "wlkf");
-    %map.put("back", !(isObject(%map)) @ 0 @ %gender @ %genre @ "wlkf");
+    if (!(isObject(%map))) {
+        new %map();
+    }
+    if (isObject()) {
+        %map.add();
+    }
+    %map.put("root", MissionCleanup @ MissionCleanup @ %gender @ %genre @ "idle1");
+    %map.put("run", 0 @ StringMap @ %gender @ %genre @ "wlkf");
+    %map.put("back", %gender @ %genre @ "wlkf");
     %map.put("idl1a", %gender @ %genre @ "idle1");
     %map.put("idl1b", %gender @ %genre @ "idle2");
     %map.put("idl1c", %gender @ %genre @ "idle3");
     %map.put("idl1d", %gender @ %genre @ "idle4");
 };
 function initializeAnimationMap(%map, %gender, %genre) {
-    new %map();
-    %map.add();
+    if (!(isObject(%map))) {
+        new %map();
+    }
+    if (isObject()) {
+        %map.add();
+    }
     addGenreSpecificAnimations(%map, %gender, %genre);
     addGenreNeutralAnimations(%map, %gender);
 };
 function copyAnimationMap(%map, %src) {
-    new %map();
-    %map.add();
+    if (!(isObject(%map))) {
+        new %map();
+    }
+    if (isObject()) {
+        %map.add();
+    }
     %map.duplicate(%src);
 };
 $gKnownAnimationTags = "dance";
 function addAnimationToMap(%map, %mapThis, %toThis, %tags) {
     %map.put(%mapThis, %toThis);
     %n = getWordCount(%tags);
-    %tag = getWord(%tags, %n);
-    (0.0 >= %n);
-    error((%tag $= "") @ !(hasWord($gKnownAnimationTags, %tag)) @ getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
-    safeEnsureScriptObject("StringMap", "gAnimationTags");
-    %animTags = %toThis.get();
-    gAnimationTags;
-    %animTags = %tag @ " " @ %animTags;
-    hasWord(%animTags, %tag);
-    %toThis.put(%animTags);
-    %n = (1.0 - %n);
-    gAnimationTags;
+    if ((0.0 >= %n)) {
+        %tag = getWord(%tags, %n);
+        if ((%tag $= "")) {
+        }
+        if (!(hasWord($gKnownAnimationTags, %tag))) {
+            error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
+        }
+        safeEnsureScriptObject("StringMap", "gAnimationTags");
+        %animTags = %toThis.get();
+        gAnimationTags;
+        if (hasWord(%animTags, %tag)) {
+        }
+        %animTags = %tag @ " " @ %animTags;
+        %toThis.put(%animTags);
+        %n = (1.0 - %n);
+        gAnimationTags;
+    }
 };
 function addGenreSpecificAnimations(%map, %gender, %genre) {
     addAnimationToMap(%map, "root", %gender @ %genre @ "idl1a", "");
@@ -370,7 +391,11 @@ function addGenreSpecificAnimations(%map, %gender, %genre) {
     addAnimationToMap(%map, "lol", %gender @ %genre @ "lol", "");
     addAnimationToMap(%map, "bow", %gender @ %genre @ "bow", "");
     addAnimationToMap(%map, "jump", %gender @ "njmp", "");
-    addAnimationToMap(%map, "root", ((%gender $= "f") SPC %genre $= "p") @ %gender @ %genre @ "idl1b", "");
+    if ((%gender $= "f")) {
+    }
+    if ((%genre $= "p")) {
+        addAnimationToMap(%map, "root", %gender @ %genre @ "idl1b", "");
+    }
 };
 function addGenreNeutralAnimations(%map, %gender) {
     addAnimationToMap(%map, "sumopowerdefend", %gender @ "nsumopowerdefend", "");
@@ -776,25 +801,28 @@ function addGenreNeutralAnimations(%map, %gender) {
     %coanims = "";
     %delim = "";
     %n = (1.0 - $gCoAnimDictionary.size());
-    %animName = getField($gCoAnimDictionary.getValue(%n), 0);
-    (0.0 >= %n);
-    %coanims = %coanims @ %delim @ %animName;
-    %delim = " ";
-    %n = (1.0 - %n);
+    if ((0.0 >= %n)) {
+        %animName = getField($gCoAnimDictionary.getValue(%n), 0);
+        %coanims = %coanims @ %delim @ %animName;
+        %delim = " ";
+        %n = (1.0 - %n);
+    }
     %coanimCount = getWordCount(%coanims);
     (0.0 >= %n);
     %prefixes = "sti mti mmi msi tsi str mtr mmr msr tsr";
     %prefixCount = getWordCount(%prefixes);
     %i = 0;
-    %coanim = getWord(%coanims, %i);
-    (%coanimCount < %i);
-    %j = 0;
-    %prefix = getWord(%prefixes, %j);
-    (%prefixCount < %j);
-    addAnimationToMap(%map, %prefix @ "_" @ %coanim, %gender @ "n" @ %prefix @ "_" @ %coanim, "");
-    %j = (1.0 + %j);
-    %i = (1.0 + %i);
-    (%prefixCount < %j);
+    if ((%coanimCount < %i)) {
+        %coanim = getWord(%coanims, %i);
+        %j = 0;
+        if ((%prefixCount < %j)) {
+            %prefix = getWord(%prefixes, %j);
+            addAnimationToMap(%map, %prefix @ "_" @ %coanim, %gender @ "n" @ %prefix @ "_" @ %coanim, "");
+            %j = (1.0 + %j);
+        }
+        %i = (1.0 + %i);
+        (%prefixCount < %j);
+    }
 };
 function initNoAutoEmoteList() {
     addNoAutoEmoteWord("angry");
@@ -859,13 +887,19 @@ function initNoAutoEmoteList() {
 };
 $gNoAutoEmoteWords = 0;
 function addNoAutoEmoteWord(%word) {
-    $gNoAutoEmoteWords = new ""();
-    StringMap;
-    $gNoAutoEmoteWords.add();
+    if (!(isObject($gNoAutoEmoteWords))) {
+        $gNoAutoEmoteWords = new ""();
+        StringMap;
+        if (isObject()) {
+            $gNoAutoEmoteWords.add();
+        }
+    }
     $gNoAutoEmoteWords.put(%word, 1);
 };
 function isNoAutoEmoteWord(%word) {
-    initNoAutoEmoteList();
+    if (!(isObject($gNoAutoEmoteWords))) {
+        initNoAutoEmoteList();
+    }
     return $gNoAutoEmoteWords.get(%word);
 };
 initializeAnimationMaps();

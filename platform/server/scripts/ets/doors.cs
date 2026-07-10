@@ -1,51 +1,47 @@
-className = BaseDoorData @ datablock () @ "DoorShapeData";
-StaticShapeData;
-category = 0 @ "Doors";
-shapeFile = SlidingDoor @ datablock ( : BaseDoorData) @ "projects/common/worlds/slidingDoor.dts";
-StaticShapeData;
-0;
-shapeFile = ClubMainDoor @ datablock ( : BaseDoorData) @ "projects/common/worlds/clubmaindoor.dts";
-StaticShapeData;
-0;
-shapeFile = Deckdoor @ datablock ( : BaseDoorData) @ "projects/common/worlds/deckdoor.dts";
-StaticShapeData;
-0;
-shapeFile = Ps1upperdoor @ datablock ( : BaseDoorData) @ "projects/common/worlds/ps1upperdoor.dts";
-StaticShapeData;
-0;
-shapeFile = SecretSteps @ datablock ( : BaseDoorData) @ "projects/common/worlds/secretsteps.dts";
-StaticShapeData;
-0;
+className = datablock StaticShapeData(BaseDoorData) @ "DoorShapeData";
+category = "Doors";
+shapeFile = datablock StaticShapeData(SlidingDoor : BaseDoorData) @ "projects/common/worlds/slidingDoor.dts";
+shapeFile = datablock StaticShapeData(ClubMainDoor : BaseDoorData) @ "projects/common/worlds/clubmaindoor.dts";
+shapeFile = datablock StaticShapeData(Deckdoor : BaseDoorData) @ "projects/common/worlds/deckdoor.dts";
+shapeFile = datablock StaticShapeData(Ps1upperdoor : BaseDoorData) @ "projects/common/worlds/ps1upperdoor.dts";
+shapeFile = datablock StaticShapeData(SecretSteps : BaseDoorData) @ "projects/common/worlds/secretsteps.dts";
 function DoorShapeData::onAdd(%this, %obj) {
     doorOpen = 0 @ %obj;
     insideCount = 0 @ %obj;
     return;
 };
 function DoorShapeData::openDoor(%obj) {
-    %obj.setThreadDir(0, 1);
-    %obj.playThread(0, "open");
-    doorOpen = !(doorOpen) @ 1 @ %obj;
-    %obj;
+    if (!(doorOpen)) {
+        %obj.setThreadDir(0, 1);
+        %obj.playThread(0, "open");
+        doorOpen = %obj @ 1 @ %obj;
+    }
     return;
 };
 function DoorShapeData::closeDoor(%obj) {
-    %obj.setThreadDir(0, 0);
-    %obj.playThread(0, "open");
-    doorOpen = doorOpen @ 0 @ %obj;
-    %obj;
+    if (doorOpen) {
+        %obj.setThreadDir(0, 0);
+        %obj.playThread(0, "open");
+        doorOpen = %obj @ 0 @ %obj;
+    }
     return;
 };
-tickPeriodMS = DoorTrigger @ datablock () @ 200;
-TriggerData;
-door = 0 @ "ReplaceMeWith a Door Name";
+tickPeriodMS = datablock TriggerData(DoorTrigger) @ 200;
+door = "ReplaceMeWith a Door Name";
 function DoorTrigger::onEnterTrigger(%this, %trigger, %player) {
     Parent::onEnterTrigger(%this, %trigger, %player);
     %client = client;
     %player;
-    return !(isObject(%client));
-    error("DoorTrigger::onEnterTrigger:  Did not find door member. must have a door dynamic var to work");
-    return !(isObject(door));
-    DoorShapeData::openDoor(door);
+    if (!(isObject(%client))) {
+        return;
+    }
+    if (!(isObject(door))) {
+        error("DoorTrigger::onEnterTrigger:  Did not find door member. must have a door dynamic var to work");
+        return %trigger;
+    }
+    if (!(doorOpen)) {
+        DoorShapeData::openDoor(door);
+    }
     insideCount = %trigger @ door;
     %trigger @ (door + insideCount);
     return 1.0;
@@ -58,11 +54,19 @@ function DoorTrigger::onLeaveTrigger(%this, %trigger, %player) {
     Parent::onLeaveTrigger(%this, %trigger, %player);
     %client = client;
     %player;
-    return !(isObject(%client));
-    error("DoorTrigger::onEnterTrigger:  Did not find door member. must have a door dynamic var to work");
-    return !(isObject(door));
+    if (!(isObject(%client))) {
+        return;
+    }
+    if (!(isObject(door))) {
+        error("DoorTrigger::onEnterTrigger:  Did not find door member. must have a door dynamic var to work");
+        return %trigger;
+    }
     insideCount = %trigger @ door;
     %trigger @ (door - insideCount);
-    DoorShapeData::closeDoor(door);
+    if ((door == insideCount)) {
+    }
+    if (doorOpen) {
+        DoorShapeData::closeDoor(door);
+    }
     return %trigger;
 };

@@ -18,32 +18,40 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch) {
     log("initialization", "debug", "find arg: looking for " @ %argToFind);
     %found = 0;
     %i = 1;
-    %arg = %i[$Game::argv @ %i];
-    ($Game::argc < %i);
-    %nextArg = "";
-    %nextArg = %i[$Game::argv @ (1.0 + %i)];
-    ((1.0 - $Game::argc) < %i);
-    %hasNextArg = (1.0 > (%i - $Game::argc));
-    %i[$Game::ArgUsed @ %i] = (1.0 + %i[$Game::ArgUsed @ %i]);
-    (%arg $= %argToFind);
-    eval(%isSwitch @ %valToSet @ "=true;");
-    log("initialization", "debug", !((%valToSet $= "")) @ "setting switch " @ %valToSet);
-    %found = 1;
-    %evalString = strreplace(%nextArg, "\\", "\\\\");
-    %hasNextArg;
-    %evalString = strreplace(%evalString, "\"", "\\\"");
-    %evalString = "\"" @ %evalString @ "\"";
-    %evalString = %valToSet @ "=" @ %evalString @ ";";
-    %evalString = strreplace(%evalString, ";;", ";");
-    log("initialization", "debug", "evalString: " @ %evalString);
-    eval(%evalString);
-    log("initialization", "debug", "setting value " @ %valToSet);
-    %i[$Game::ArgUsed @ (1.0 + %i)] = (1.0 + %i[$Game::ArgUsed @ (1.0 + %i)]);
-    %found = 1;
-    %found = 0;
-    error("initialization", "Error: " @ %errorMsg);
-    %found = 1;
-    %i = (1.0 + %i);
+    if (($Game::argc < %i)) {
+        %arg = %i[$Game::argv @ %i];
+        %nextArg = "";
+        if (((1.0 - $Game::argc) < %i)) {
+            %nextArg = %i[$Game::argv @ (1.0 + %i)];
+        }
+        %hasNextArg = (1.0 > (%i - $Game::argc));
+        if ((%arg $= %argToFind)) {
+            %i[$Game::ArgUsed @ %i] = (1.0 + %i[$Game::ArgUsed @ %i]);
+            if (!(%valToSet $= "")) {
+                if (%isSwitch) {
+                    eval(%valToSet @ "=true;");
+                    log("initialization", "debug", "setting switch " @ %valToSet);
+                    %found = 1;
+                }
+                if (%hasNextArg) {
+                    %evalString = strreplace(%nextArg, "\\", "\\\\");
+                    %evalString = strreplace(%evalString, "\"", "\\\"");
+                    %evalString = "\"" @ %evalString @ "\"";
+                    %evalString = %valToSet @ "=" @ %evalString @ ";";
+                    %evalString = strreplace(%evalString, ";;", ";");
+                    log("initialization", "debug", "evalString: " @ %evalString);
+                    eval(%evalString);
+                    log("initialization", "debug", "setting value " @ %valToSet);
+                    %i[$Game::ArgUsed @ (1.0 + %i)] = (1.0 + %i[$Game::ArgUsed @ (1.0 + %i)]);
+                    %found = 1;
+                }
+                %found = 0;
+                error("initialization", "Error: " @ %errorMsg);
+            }
+            %found = 1;
+        }
+        %i = (1.0 + %i);
+    }
     return %found;
 };
 function parseMainArgs() {
@@ -54,23 +62,27 @@ function parseArgs() {
 function getAllArgs() {
     %ret = "";
     %n = 1;
-    %sep = " ";
-    "";
-    %ret = ($Game::argc < %n) @ (1.0 == %n) @ %ret @ %sep @ %n[$Game::argv @ %n];
-    %n = (1.0 + %n);
+    if (($Game::argc < %n)) {
+        %sep = (1.0 == %n) ? "" : " ";
+        %ret = %ret @ %sep @ %n[$Game::argv @ %n];
+        %n = (1.0 + %n);
+    }
     return %ret;
 };
 %ret[$gKnownUnusedArgsLogLevel @ "-debug"] = "info";
 function checkUnusedArgs() {
     %i = 1;
-    %arg = %i[$Game::argv @ %i];
-    !(%i[$Game::ArgUsed @ %i]);
-    %level = %arg[$gKnownUnusedArgsLogLevel @ %arg];
-    ($Game::argc < %i);
-    %level = "error";
-    (%level $= "");
-    log("initialization", %level, "unknown (or possibly duplicated) command line argument: " @ %arg);
-    %i = (1.0 + %i);
+    if (($Game::argc < %i)) {
+        if (!(%i[$Game::ArgUsed @ %i])) {
+            %arg = %i[$Game::argv @ %i];
+            %level = %arg[$gKnownUnusedArgsLogLevel @ %arg];
+            if ((%level $= "")) {
+                %level = "error";
+            }
+            log("initialization", %level, "unknown (or possibly duplicated) command line argument: " @ %arg);
+        }
+        %i = (1.0 + %i);
+    }
 };
 function doStart() {
     log("initialization", "info", "--------- Args ---------");
@@ -80,13 +92,14 @@ function doStart() {
     log("initialization", "info", "--------- Parsing Arguments ---------");
     parseArgs();
     checkUnusedArgs();
-    enableWinConsole(1);
-    displayHelp();
-    quit();
+    if ($DisplayHelp) {
+        enableWinConsole(1);
+        displayHelp();
+        quit();
+    }
     onStart();
     log("initialization", "info", "Engine initialized...");
     $Platform::CanSleepInBackground = 1;
-    $DisplayHelp;
     checkUnusedArgs();
 };
 package Help {
@@ -101,26 +114,35 @@ function displayHelp() {
 function loadMods(%modPath) {
     %modPath = NextToken(%modPath, ";");
     token;
-    loadMods(%modPath);
-    log("initialization", "info", !((%modPath $= "")) @ "--------- Loading MOD: " @ %token @ "---------");
+    if (!(%modPath $= "")) {
+        loadMods(%modPath);
+    }
+    log("initialization", "info", "--------- Loading MOD: " @ %token @ "---------");
     exec(%token @ "/main.cs");
 };
 function dumpMods(%modPath) {
     %modPath = NextToken(%modPath, ";");
     token;
-    dumpMods(%modPath);
-    log("initialization", "info", !((%modPath $= "")) @ %token @ "/main.cs");
+    if (!(%modPath $= "")) {
+        dumpMods(%modPath);
+    }
+    log("initialization", "info", %token @ "/main.cs");
 };
 function doreloadModScripts(%modPath) {
     %modPath = NextToken(%modPath, ";");
     token;
-    doreloadModScripts(%modPath);
-    %fileName = !((%modPath $= "")) @ %token @ "/initReloadable.cs";
-    exec(%fileName);
+    if (!(%modPath $= "")) {
+        doreloadModScripts(%modPath);
+    }
+    %fileName = %token @ "/initReloadable.cs";
+    if (isFile(%fileName)) {
+        exec(%fileName);
+    }
 };
 function reloadModScripts(%modPath) {
-    %modPath = $modPath;
-    (%modPath $= "");
+    if ((%modPath $= "")) {
+        %modPath = $modPath;
+    }
     doreloadModScripts(%modPath);
 };
 $baseMods = "common";
@@ -198,13 +220,18 @@ package common {
 };
 
 function findRequestStatus(%managerRequest) {
-    return %managerRequest.getValue("status");
+    if (%managerRequest.hasKey("status")) {
+        return %managerRequest.getValue("status");
+    }
     %stati = "invalid fail serverfail inactive alreadyloggedin banned suspended upgrade_required upgrade_available success overloaded sendstart boot";
     %count = getWordCount(%stati);
     %i = 0;
-    %astatus = getWord(%stati, %i);
-    (%count <= %i);
-    return %astatus;
-    %i = (1.0 + %i);
+    if ((%count <= %i)) {
+        %astatus = getWord(%stati, %i);
+        if (%managerRequest.hasKey(%astatus)) {
+            return %astatus;
+        }
+        %i = (1.0 + %i);
+    }
     return "";
 };

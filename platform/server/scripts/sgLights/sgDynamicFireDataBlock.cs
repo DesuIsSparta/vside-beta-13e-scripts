@@ -1,6 +1,5 @@
-className = sgDynamicFireDataBlock @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(sgDynamicFireDataBlock) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 3.5;
 Brightness = 0.448276;
 Colour = "1.000000 0.368627 0.000000 1.000000";

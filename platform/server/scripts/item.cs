@@ -11,11 +11,18 @@ function Item::schedulePop(%this) {
     %this.schedule($Item::PopTime, "delete");
 };
 function ItemData::onThrow(%this, %user, %amount) {
-    %amount = 1;
-    (%amount $= "");
-    %amount = maxInventory;
-    %this;
-    return 0;
+    if ((%amount $= "")) {
+        %amount = 1;
+    }
+    if (!(%this SPC maxInventory $= "")) {
+        if ((maxInventory > %amount)) {
+            %amount = maxInventory;
+            %this;
+        }
+    }
+    if (!(%amount)) {
+        return 0;
+    }
     %user.decInventory(%this, %amount);
     dataBlock = Item @ new ""() @ %this;
     0;
@@ -29,12 +36,22 @@ function ItemData::onThrow(%this, %user, %amount) {
 function ItemData::onPickup(%this, %obj, %user, %amount) {
     %count = count;
     %obj;
-    %count = maxInventory;
-    return !(%this);
-    %count = 1;
+    if ((%count $= "")) {
+        if (!(%this SPC maxInventory $= "")) {
+            %count = maxInventory;
+            if (!(%this)) {
+                return;
+            }
+        }
+        %count = 1;
+    }
     %user.incInventory(%this, %count);
-    messageClient(client, 'MsgItemPickup', '\x02\x01You picked up %1', pickUpName);
-    %obj.respawn();
+    if (client) {
+        messageClient(client, 'MsgItemPickup', '\x02\x01You picked up %1', pickUpName);
+    }
+    if (%obj.isStatic()) {
+        %obj.respawn();
+    }
     %obj.delete();
     return 1;
 };

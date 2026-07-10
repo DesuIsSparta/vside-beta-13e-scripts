@@ -1,6 +1,5 @@
-className = largewater @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(largewater) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 8;
 Brightness = 0.528736;
 Colour = "0.114943 0.517241 0.632184 1.000000";

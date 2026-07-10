@@ -1,6 +1,7 @@
 function fakeBuddyInfo(%friends, %faves, %fans) {
-    $ServerName = "Raijuku";
-    ($ServerName $= "");
+    if (($ServerName $= "")) {
+        $ServerName = "Raijuku";
+    }
     safeEnsureScriptObjectWithInit("StringMap", "UserListFriends", "{ ignoreCase = true; }");
     safeEnsureScriptObjectWithInit("StringMap", "UserListFavorites", "{ ignoreCase = true; }");
     safeEnsureScriptObjectWithInit("StringMap", "UserListFans", "{ ignoreCase = true; }");
@@ -9,38 +10,41 @@ function fakeBuddyInfo(%friends, %faves, %fans) {
     deleteValuesAsObjects();
     %n = 0;
     UserListFans;
-    %record = getFakeBuddyRecord("fakefriend" @ " " @ formatInt("%0.4d", (%n - %friends)));
-    (%friends < %n);
-    name.put(%record);
-    %n = (1.0 + %n);
-    %record;
+    if ((%friends < %n)) {
+        %record = getFakeBuddyRecord("fakefriend" @ " " @ formatInt("%0.4d", (%n - %friends)));
+        UserListFavorites;
+        name.put(%record);
+        %n = (1.0 + %n);
+        %record;
+    }
     %n = 0;
     (%friends < %n);
-    %record = getFakeBuddyRecord("fakeFave" @ " " @ formatInt("%0.4d", %n));
-    (%faves < %n);
-    name.put(%record);
-    %n = (1.0 + %n);
-    %record;
+    if ((%faves < %n)) {
+        %record = getFakeBuddyRecord("fakeFave" @ " " @ formatInt("%0.4d", %n));
+        UserListFriends;
+        name.put(%record);
+        %n = (1.0 + %n);
+        %record;
+    }
     %n = 0;
     (%faves < %n);
-    %record = getFakeBuddyRecord("fakeFan" @ " " @ formatInt("%0.4d", %n));
-    (%fans < %n);
-    name.put(%record);
-    %n = (1.0 + %n);
-    %record;
+    if ((%fans < %n)) {
+        %record = getFakeBuddyRecord("fakeFan" @ " " @ formatInt("%0.4d", %n));
+        UserListFavorites;
+        name.put(%record);
+        %n = (1.0 + %n);
+        %record;
+    }
 };
 function getFakeBuddyRecord(%name) {
     %words = "a A b B c C";
     %record = new ""();
     ScriptObject;
-    loggedIn = 1 @ 0 @ %record;
-    getRandom(0, 1);
-    name = 0 @ getRandomWord(%words) @ " " @ %name @ %record;
-    serverName = "Raijuku" @ "" @ %record;
-    loggedIn;
-    roles = %record @ 0 @ %record;
-    isIdle = 1 @ 0 @ %record;
-    getRandom(0, 1);
+    loggedIn = 0 @ getRandom(0, 1) ? 1 : 0 @ %record;
+    name = getRandomWord(%words) @ " " @ %name @ %record;
+    serverName = %record @ loggedIn ? "Raijuku" : "" @ %record;
+    roles = 0 @ %record;
+    isIdle = getRandom(0, 1) ? 1 : 0 @ %record;
     isNPC = 0 @ %record;
     csn = "rj" @ %record;
     return %record;
@@ -54,102 +58,124 @@ function dev_TestMLText(%onOrOff, %method) {
     %lineLong[%lineText @ 2] = %lineLong;
     %lineLong[%lineText @ 2][%lineText @ 3] = "";
     %lineLong[%lineText @ 2][%lineText @ 3][%lineText @ 4] = "platform/client/ui/evilbunny";
-    delete();
-    extent = new () @ playGui @ getExtent();
+    if (isObject()) {
+        delete();
+    }
+    extent = new GuiMLTextCtrl(geMLTest) @ playGui @ getExtent();
     geMLTest;
-    profile = GuiMLTextCtrl @ ETSNonModalProfile;
-    0;
-    geMLTest;
+    profile = geMLTest @ ETSNonModalProfile;
     add();
-    delete();
-    extent = new () @ playGui @ getExtent();
+    if (isObject()) {
+        delete();
+    }
+    extent = new GuiArray2Ctrl(geMLTestArray) @ playGui @ getExtent();
     geMLTestArray;
-    spacing = 0 @ GuiArray2Ctrl @ 0;
-    geMLTestArray;
-    inRows = geMLTestArray @ isObject() @ 0;
-    geMLTest;
-    profile = playGui @ ETSNonModalProfile;
-    isObject();
-    geMLTest;
-    add();
-    %text = "";
-    (0.0 == %method);
-    %n = 0;
-    %onOrOff;
-    %text = geMLTestArray @ (%numLines < %n) @ %text @ %method[%lineText @ %method] @ "\n";
+    spacing = geMLTest @ geMLTestArray @ 0;
     playGui;
-    %n = (1.0 + %n);
-    %text.setText();
-    childrenExtent = 1.0 @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-    %onOrOff;
-    numRowsOrCols = (1.0 == %method) @ 1 @ geMLTestArray;
-    geMLTest;
-    childrenClassName = (%numLines < %n) @ "GuiMLTextCtrl" @ geMLTestArray;
-    %numLines.setNumChildren();
-    %n = 0;
-    geMLTestArray;
-    %child = %n.getObject();
-    geMLTestArray;
-    profile = ETSNonModalProfile @ %child;
-    (%numLines < %n);
-    %child.setText(%method[%lineText @ %method]);
-    %n = (1.0 + %n);
-    childrenExtent = 1.0 @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-    %onOrOff;
-    numRowsOrCols = (2.0 == %method) @ 1 @ geMLTestArray;
-    (%numLines < %n);
-    childrenClassName = "GuiTextCtrl" @ geMLTestArray;
-    %numLines.setNumChildren();
-    %n = 0;
-    geMLTestArray;
-    %child = %n.getObject();
-    geMLTestArray;
-    profile = ETSNonModalProfile @ %child;
-    (%numLines < %n);
-    %child.setText(%method[%lineText @ %method]);
-    %n = (1.0 + %n);
-    childrenExtent = %numCols @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-    %onOrOff;
-    numRowsOrCols = (3.0 == %method) @ %numCols @ geMLTestArray;
-    (%numLines < %n);
-    childrenClassName = "GuiButtonCtrl" @ geMLTestArray;
-    (%numCols * %numLines).setNumChildren();
-    %n = 0;
-    geMLTestArray;
-    %child = %n.getObject();
-    geMLTestArray;
-    profile = ETSNonModalProfile @ %child;
-    ((%numCols * %numLines) < %n);
-    %child.setText(%method[%lineText @ %method]);
-    %n = (1.0 + %n);
-    childrenExtent = %numCols @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
-    %onOrOff;
-    numRowsOrCols = (4.0 == %method) @ %numCols @ geMLTestArray;
-    ((%numCols * %numLines) < %n);
-    childrenClassName = "GuiBitmapCtrl" @ geMLTestArray;
-    (%numCols * %numLines).setNumChildren();
-    %n = 0;
-    geMLTestArray;
-    %child = %n.getObject();
-    geMLTestArray;
-    profile = ETSNonModalProfile @ %child;
-    ((%numCols * %numLines) < %n);
-    %child.setBitmap(%method[%lineText @ %method]);
-    %n = (1.0 + %n);
+    inRows = 0;
+    profile = ETSNonModalProfile;
+    add();
+    if ((0.0 == %method)) {
+        %text = "";
+        geMLTestArray;
+        if (%onOrOff) {
+            %n = 0;
+            playGui;
+            if ((%numLines < %n)) {
+                %text = %text @ %method[%lineText @ %method] @ "\n";
+                %n = (1.0 + %n);
+            }
+        }
+        %text.setText();
+    }
+    if ((1.0 == %method)) {
+        if (%onOrOff) {
+            childrenExtent = 1.0 @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
+            geMLTest;
+            numRowsOrCols = (%numLines < %n) @ 1 @ geMLTestArray;
+            childrenClassName = "GuiMLTextCtrl" @ geMLTestArray;
+            %numLines.setNumChildren();
+            %n = 0;
+            geMLTestArray;
+            if ((%numLines < %n)) {
+                %child = %n.getObject();
+                geMLTestArray;
+                profile = ETSNonModalProfile @ %child;
+                %child.setText(%method[%lineText @ %method]);
+                %n = (1.0 + %n);
+            }
+        }
+    }
+    if ((2.0 == %method)) {
+        if (%onOrOff) {
+            childrenExtent = 1.0 @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
+            (%numLines < %n);
+            numRowsOrCols = 1 @ geMLTestArray;
+            childrenClassName = "GuiTextCtrl" @ geMLTestArray;
+            %numLines.setNumChildren();
+            %n = 0;
+            geMLTestArray;
+            if ((%numLines < %n)) {
+                %child = %n.getObject();
+                geMLTestArray;
+                profile = ETSNonModalProfile @ %child;
+                %child.setText(%method[%lineText @ %method]);
+                %n = (1.0 + %n);
+            }
+        }
+    }
+    if ((3.0 == %method)) {
+        if (%onOrOff) {
+            childrenExtent = %numCols @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
+            (%numLines < %n);
+            numRowsOrCols = %numCols @ geMLTestArray;
+            childrenClassName = "GuiButtonCtrl" @ geMLTestArray;
+            (%numCols * %numLines).setNumChildren();
+            %n = 0;
+            geMLTestArray;
+            if (((%numCols * %numLines) < %n)) {
+                %child = %n.getObject();
+                geMLTestArray;
+                profile = ETSNonModalProfile @ %child;
+                %child.setText(%method[%lineText @ %method]);
+                %n = (1.0 + %n);
+            }
+        }
+    }
+    if ((4.0 == %method)) {
+        if (%onOrOff) {
+            childrenExtent = %numCols @ (playGui / getWord(getExtent(), 0)) @ " " @ 16 @ geMLTestArray;
+            ((%numCols * %numLines) < %n);
+            numRowsOrCols = %numCols @ geMLTestArray;
+            childrenClassName = "GuiBitmapCtrl" @ geMLTestArray;
+            (%numCols * %numLines).setNumChildren();
+            %n = 0;
+            geMLTestArray;
+            if (((%numCols * %numLines) < %n)) {
+                %child = %n.getObject();
+                geMLTestArray;
+                profile = ETSNonModalProfile @ %child;
+                %child.setBitmap(%method[%lineText @ %method]);
+                %n = (1.0 + %n);
+            }
+        }
+    }
 };
 $gClientSideSceneObjectsTimer = "";
 $gClientSideSceneObjectsTickNum = 0;
 $gClientSideSceneObjectsGroup = "";
 function dev_clientSideSceneObjectsTick() {
     cancel($gClientSideSceneObjectsTimer);
-    $gClientSideSceneObjectsGroup = new ""();
-    SimGroup;
-    $gClientSideSceneObjectsGroup.add();
-    dataBlock = StaticShape @ new ""() @ "db_CounterDie";
-    0;
-    %a = ServerConnection;
-    0;
-    $gClientSideSceneObjectsGroup.add(%a);
+    if (!(isObject($gClientSideSceneObjectsGroup))) {
+        $gClientSideSceneObjectsGroup = new ""();
+        SimGroup;
+        $gClientSideSceneObjectsGroup.add();
+        dataBlock = StaticShape @ new ""() @ "db_CounterDie";
+        0;
+        %a = ServerConnection;
+        0;
+        $gClientSideSceneObjectsGroup.add(%a);
+    }
     %windowCoord = getCursorPos();
     Canvas;
     %startPoint = %windowCoord.unproject();
@@ -157,7 +183,6 @@ function dev_clientSideSceneObjectsTick() {
     %camTran = getLastCameraTransform();
     playGui;
     %camPos = getWords(%camTran, 0, 2);
-    !(isObject($gClientSideSceneObjectsGroup));
     %camPtVec = VectorSub(%startPoint, %camPos);
     %camPtVec = VectorNormalize(%camPtVec);
     %checkDistance = 200;
@@ -166,8 +191,9 @@ function dev_clientSideSceneObjectsTick() {
     %possibleColiders = ($TypeMasks::WaterObjectType | ($TypeMasks::InteriorObjectType | 0));
     %result = containerRayCast(%startPoint, %endPoint, %possibleColiders, $player, 1);
     %hitObject = getWord(%result, 0);
-    %hitPosition = getWords(%result, 1, 3);
-    isObject(%hitObject);
+    if (isObject(%hitObject)) {
+        %hitPosition = getWords(%result, 1, 3);
+    }
     %hitPosition = VectorAdd(%startPoint, VectorScale(%camPtVec, 4));
     %t = (0.1 * $gClientSideSceneObjectsTickNum);
     %a = $gClientSideSceneObjectsGroup.getObject(0);
@@ -175,9 +201,10 @@ function dev_clientSideSceneObjectsTick() {
     %a.setTransform(%hitPosition @ " " @ "0 0 1" @ " " @ %t);
     $gClientSideSceneObjectsTickNum = (1.0 + $gClientSideSceneObjectsTickNum);
     playGui;
-    // unhandled opcode 1167 at 0x00000816
-    $gClientSideSceneObjectsTickNum = unitCubeGreyDataBlock;
-    (0.0 == (2 % $gClientSideSceneObjectsTickNum));
+    if ((0.0 == (2 % $gClientSideSceneObjectsTickNum))) {
+        // unhandled opcode 1167 at 0x00000816
+        $gClientSideSceneObjectsTickNum = unitCubeGreyDataBlock;
+    }
     // unhandled opcode 1167 at 0x0000081E
     $gClientSideSceneObjectsTickNum = unitCubeBlueDataBlock;
     $gClientSideSceneObjectsTimer = schedule(100, 0, "dev_clientSideSceneObjectsTick");
@@ -190,8 +217,9 @@ function standardizeWindowAspect() {
     %currentBPP = getWord($UserPref::Video::Resolution, 2);
     %proportionX = (%standardX / %currentX);
     %proportionY = (%standardY / %currentY);
-    %currentY = (%standardY * %proportionX);
-    (%proportionY > %proportionX);
+    if ((%proportionY > %proportionX)) {
+        %currentY = (%standardY * %proportionX);
+    }
     %currentX = (%standardX * %proportionY);
     setScreenMode(%currentX, %currentY, %currentBPP, 0);
 };
@@ -205,20 +233,23 @@ function tryArray() {
     %arrayCtrl.add();
 };
 function tryGuiTable() {
-    delete();
-    position = erezG @ new () @ "30 30";
-    GuiTableCtrl;
-    extent = erezG @ 0 @ "400 400";
-    isObject();
-    visible = erezG @ 1;
+    if (isObject()) {
+        delete();
+    }
+    position = erezG @ new GuiTableCtrl(erezG) @ "30 30";
+    erezG;
+    extent = "400 400";
+    visible = 1;
     childrenClassName = "GuiMLTextCtrl";
     spacing = 2;
     %table = ;
     %table.add();
 };
 function tryDataTable() {
-    delete();
-    %table = new ();
+    if (isObject()) {
+        delete();
+    }
+    %table = new DataTable(erezD);
     erezD;
 };
 function tryTable() {
@@ -703,14 +734,16 @@ function animTest_Again() {
 };
 function animTest_Next() {
     $gAnimTestCur = (1.0 + $gAnimTestCur);
-    $gAnimTestCur = 0;
-    ($gAnimTestNum >= $gAnimTestCur);
+    if (($gAnimTestNum >= $gAnimTestCur)) {
+        $gAnimTestCur = 0;
+    }
     animTest_Again();
 };
 function animTest_Prev() {
     $gAnimTestCur = (1.0 - $gAnimTestCur);
-    $gAnimTestCur = (1.0 - $gAnimTestCur);
-    (0.0 < $gAnimTestCur);
+    if ((0.0 < $gAnimTestCur)) {
+        $gAnimTestCur = (1.0 - $gAnimTestCur);
+    }
     animTest_Again();
 };
 function timeTest_tare() {
@@ -749,22 +782,29 @@ function sendRequest_ArbitraryTestUrl(%url, %callbackHandler) {
 };
 function dev_testURLEncode() {
     %n = 0;
-    %c = intToChar(%n);
-    (256.0 < %n);
-    %d = urlEncode(%c);
-    %e = urlDecode(%d);
-    echo(formatInt("%3d", %n) @ " " @ %c @ " " @ "->" @ " " @ %d);
-    echo(formatInt("%3d", %n) @ " " @ %e @ " " @ "<-" @ " " @ %d);
-    %gnarly = (20.0 > %n) @ %gnarly @ %c;
-    %n = (1.0 + %n);
+    if ((256.0 < %n)) {
+        %c = intToChar(%n);
+        %d = urlEncode(%c);
+        %e = urlDecode(%d);
+        echo(formatInt("%3d", %n) @ " " @ %c @ " " @ "->" @ " " @ %d);
+        echo(formatInt("%3d", %n) @ " " @ %e @ " " @ "<-" @ " " @ %d);
+        if ((20.0 > %n)) {
+            %gnarly = %gnarly @ %c;
+        }
+        %n = (1.0 + %n);
+    }
     echo(%gnarly);
     return %gnarly;
 };
 function dev_ensureRandomItemManager() {
-    new ();
-    add();
-    numItems = gRandomItemManager @ 0 @ gRandomItemManager;
-    MissionCleanup;
+    if (!(isObject())) {
+        new ScriptObject(gRandomItemManager);
+        if (isObject()) {
+            add();
+            numItems = gRandomItemManager @ 0 @ gRandomItemManager;
+            MissionCleanup;
+        }
+    }
 };
 function dev_clearRandomItems() {
     dev_ensureRandomItemManager();
@@ -782,21 +822,28 @@ function dev_declareRandomItem(%itemName, %itemWeight) {
 };
 function dev_getRandomItem() {
     dev_ensureRandomItemManager();
-    weightsNeedNormalizing = weightsNeedNormalizing @ 0 @ gRandomItemManager;
-    gRandomItemManager;
-    %totalWeight = 0;
-    %n = 0;
-    itemWeightCumulative = gRandomItemManager @ (numItems < %n) @ (%totalWeight @ %n @ gRandomItemManager + itemWeight) @ %n @ gRandomItemManager;
-    %totalWeight = (itemWeight + %totalWeight);
-    %n @ gRandomItemManager;
-    %n = (1.0 + %n);
-    totalWeight = (numItems < %n) @ %totalWeight @ gRandomItemManager;
-    gRandomItemManager;
+    if (weightsNeedNormalizing) {
+        weightsNeedNormalizing = gRandomItemManager @ 0 @ gRandomItemManager;
+        %totalWeight = 0;
+        %n = 0;
+        if ((numItems < %n)) {
+            itemWeightCumulative = gRandomItemManager @ (%totalWeight @ %n @ gRandomItemManager + itemWeight) @ %n @ gRandomItemManager;
+            %totalWeight = (itemWeight + %totalWeight);
+            %n @ gRandomItemManager;
+            %n = (1.0 + %n);
+        }
+        totalWeight = (numItems < %n) @ %totalWeight @ gRandomItemManager;
+        gRandomItemManager;
+    }
     %rand = getRandom(0, (gRandomItemManager - totalWeight));
     1.0;
     %n = 0;
-    return itemName;
-    %n = (1.0 + %n);
+    if ((numItems < %n)) {
+        if ((itemWeightCumulative < %rand)) {
+            return itemName;
+        }
+        %n = (1.0 + %n);
+    }
     error("something went wrong.");
     return "";
 };
@@ -807,10 +854,11 @@ function dev_testRandomItems(%iterations) {
     dev_declareRandomItem("C", 1);
     dev_declareRandomItem("D", 3);
     %n = 0;
-    %item = dev_getRandomItem();
-    (%iterations < %n);
-    %item[%totals @ %item] = (1.0 + %item[%totals @ %item]);
-    %n = (1.0 + %n);
+    if ((%iterations < %n)) {
+        %item = dev_getRandomItem();
+        %item[%totals @ %item] = (1.0 + %item[%totals @ %item]);
+        %n = (1.0 + %n);
+    }
     echo("A -" @ " " @ %n[%totals @ "A"]);
     echo((%iterations < %n) @ "B -" @ " ");
     echo("C -" @ " ");
@@ -819,74 +867,47 @@ function dev_testRandomItems(%iterations) {
 function SimObject::getTypeStrings(%this) {
     %types = "";
     %mask = %this.getType();
-    %types = "StaticObjectType " @ "";
-    ($TypeMasks::StaticObjectType & %mask);
-    %types = "EnvironmentObjectType " @ "";
-    ($TypeMasks::EnvironmentObjectType & %mask);
-    %types = "TerrainObjectType " @ "";
-    ($TypeMasks::TerrainObjectType & %mask);
-    %types = "InteriorObjectType " @ "";
-    ($TypeMasks::InteriorObjectType & %mask);
-    %types = "WaterObjectType " @ "";
-    ($TypeMasks::WaterObjectType & %mask);
-    %types = "TriggerObjectType " @ "";
-    ($TypeMasks::TriggerObjectType & %mask);
-    %types = "AntiPortalObjectType " @ "";
-    ($TypeMasks::AntiPortalObjectType & %mask);
-    %types = "ZoneBoxObjectType " @ "";
-    ($TypeMasks::ZoneBoxObjectType & %mask);
-    %types = "MarkerObjectType " @ "";
-    ($TypeMasks::MarkerObjectType & %mask);
-    %types = "GameBaseObjectType " @ "";
-    ($TypeMasks::GameBaseObjectType & %mask);
-    %types = "ShapeBaseObjectType " @ "";
-    ($TypeMasks::ShapeBaseObjectType & %mask);
-    %types = "CameraObjectType " @ "";
-    ($TypeMasks::CameraObjectType & %mask);
-    %types = "StaticShapeObjectType " @ "";
-    ($TypeMasks::StaticShapeObjectType & %mask);
-    %types = "PlayerObjectType " @ "";
-    ($TypeMasks::PlayerObjectType & %mask);
-    %types = "ItemObjectType " @ "";
-    ($TypeMasks::ItemObjectType & %mask);
-    %types = "VehicleObjectType " @ "";
-    ($TypeMasks::VehicleObjectType & %mask);
-    %types = "VehicleBlockerObjectType " @ "";
-    ($TypeMasks::VehicleBlockerObjectType & %mask);
-    %types = "ProjectileObjectType " @ "";
-    ($TypeMasks::ProjectileObjectType & %mask);
-    %types = "ExplosionObjectType " @ "";
-    ($TypeMasks::ExplosionObjectType & %mask);
-    %types = "CorpseObjectType " @ "";
-    ($TypeMasks::CorpseObjectType & %mask);
-    %types = "DebrisObjectType " @ "";
-    ($TypeMasks::DebrisObjectType & %mask);
-    %types = "PhysicalZoneObjectType " @ "";
-    ($TypeMasks::PhysicalZoneObjectType & %mask);
-    %types = "StaticTSObjectType " @ "";
-    ($TypeMasks::StaticTSObjectType & %mask);
-    %types = "StaticRenderedObjectType " @ "";
-    ($TypeMasks::StaticRenderedObjectType & %mask);
-    %types = "DamagableItemObjectType " @ "";
-    ($TypeMasks::DamagableItemObjectType & %mask);
-    %types = "AdvertObjectType " @ "";
-    ($TypeMasks::AdvertObjectType & %mask);
-    %types = "ConversationObjectType " @ "";
-    ($TypeMasks::ConversationObjectType & %mask);
-    %types = "UsableObjectType " @ "";
-    ($TypeMasks::UsableObjectType & %mask);
+    %types = %types @ ($TypeMasks::StaticObjectType & %mask) ? "StaticObjectType " : "";
+    %types = %types @ ($TypeMasks::EnvironmentObjectType & %mask) ? "EnvironmentObjectType " : "";
+    %types = %types @ ($TypeMasks::TerrainObjectType & %mask) ? "TerrainObjectType " : "";
+    %types = %types @ ($TypeMasks::InteriorObjectType & %mask) ? "InteriorObjectType " : "";
+    %types = %types @ ($TypeMasks::WaterObjectType & %mask) ? "WaterObjectType " : "";
+    %types = %types @ ($TypeMasks::TriggerObjectType & %mask) ? "TriggerObjectType " : "";
+    %types = %types @ ($TypeMasks::AntiPortalObjectType & %mask) ? "AntiPortalObjectType " : "";
+    %types = %types @ ($TypeMasks::ZoneBoxObjectType & %mask) ? "ZoneBoxObjectType " : "";
+    %types = %types @ ($TypeMasks::MarkerObjectType & %mask) ? "MarkerObjectType " : "";
+    %types = %types @ ($TypeMasks::GameBaseObjectType & %mask) ? "GameBaseObjectType " : "";
+    %types = %types @ ($TypeMasks::ShapeBaseObjectType & %mask) ? "ShapeBaseObjectType " : "";
+    %types = %types @ ($TypeMasks::CameraObjectType & %mask) ? "CameraObjectType " : "";
+    %types = %types @ ($TypeMasks::StaticShapeObjectType & %mask) ? "StaticShapeObjectType " : "";
+    %types = %types @ ($TypeMasks::PlayerObjectType & %mask) ? "PlayerObjectType " : "";
+    %types = %types @ ($TypeMasks::ItemObjectType & %mask) ? "ItemObjectType " : "";
+    %types = %types @ ($TypeMasks::VehicleObjectType & %mask) ? "VehicleObjectType " : "";
+    %types = %types @ ($TypeMasks::VehicleBlockerObjectType & %mask) ? "VehicleBlockerObjectType " : "";
+    %types = %types @ ($TypeMasks::ProjectileObjectType & %mask) ? "ProjectileObjectType " : "";
+    %types = %types @ ($TypeMasks::ExplosionObjectType & %mask) ? "ExplosionObjectType " : "";
+    %types = %types @ ($TypeMasks::CorpseObjectType & %mask) ? "CorpseObjectType " : "";
+    %types = %types @ ($TypeMasks::DebrisObjectType & %mask) ? "DebrisObjectType " : "";
+    %types = %types @ ($TypeMasks::PhysicalZoneObjectType & %mask) ? "PhysicalZoneObjectType " : "";
+    %types = %types @ ($TypeMasks::StaticTSObjectType & %mask) ? "StaticTSObjectType " : "";
+    %types = %types @ ($TypeMasks::StaticRenderedObjectType & %mask) ? "StaticRenderedObjectType " : "";
+    %types = %types @ ($TypeMasks::DamagableItemObjectType & %mask) ? "DamagableItemObjectType " : "";
+    %types = %types @ ($TypeMasks::AdvertObjectType & %mask) ? "AdvertObjectType " : "";
+    %types = %types @ ($TypeMasks::ConversationObjectType & %mask) ? "ConversationObjectType " : "";
+    %types = %types @ ($TypeMasks::UsableObjectType & %mask) ? "UsableObjectType " : "";
     %types = trim(%types);
-    %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types @ %types;
     return %types;
 };
 $gTwitterText = "";
 $gTwitterTextCount = 1;
 function twitterTest1(%text) {
-    %text = "hey there";
-    !(isDefined("%text"));
-    $gTwitterTextCount = (1.0 + $gTwitterTextCount);
-    (%text $= $gTwitterText);
-    %text = %text @ " " @ $gTwitterTextCount;
+    if (!(isDefined("%text"))) {
+        %text = "hey there";
+    }
+    if ((%text $= $gTwitterText)) {
+        $gTwitterTextCount = (1.0 + $gTwitterTextCount);
+        %text = %text @ " " @ $gTwitterTextCount;
+    }
     $gTwitterText = %text;
     $gTwitterTextCount = 1;
     %request = new ""();
@@ -905,16 +926,20 @@ function GuiControl::snapAndUpToTwitter(%this, %userName, %password, %asBackgrou
 function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %password, %asBackground, %tile) {
     isDefined("%asBackground", 0);
     isDefined("%tile", 0);
-    %fileName = (%fileName $= "") @ "screenshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_twitter_" @ $screenShotNum;
+    if ((%fileName $= "")) {
+        %fileName = "screenshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_twitter_" @ $screenShotNum;
+    }
     %fn_orig = %fileName;
     %fileName = %fileName @ ".jpg";
-    %url = "http://twitter.com/account/update_profile_background_image.html";
-    %asBackground;
+    if (%asBackground) {
+        %url = "http://twitter.com/account/update_profile_background_image.html";
+    }
     %url = "http://twitter.com/account/update_profile_image.xml";
     %uploader = "";
-    error(getScopeName() @ " " @ "- Unable to capture region." @ " " @ %region @ " " @ %fileName @ " " @ getTrace());
+    if (!(snapshotTool::snapRegion(%region, %fileName))) {
+        error(getScopeName() @ " " @ "- Unable to capture region." @ " " @ %region @ " " @ %fileName @ " " @ getTrace());
+    }
     $screenShotNum = (1.0 + $screenShotNum);
-    !(snapshotTool::snapRegion(%region, %fileName));
     %uploader = new ""();
     URLPostObject;
     %uploader.setProgress(1);
@@ -922,7 +947,11 @@ function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %pass
     %uploader.setUserNameAndPassword(0 @ %userName @ ":" @ %password);
     %uploader.setPostFile("image", %fileName);
     %uploader.setCustomHeaders("Expect:");
-    %uploader.setBodyParam("tile", "true");
-    error(getScopeName() @ " " @ "- Unable to upload photo." @ " " @ %fileName @ " " @ %url @ " " @ getTrace());
+    if (%tile) {
+        %uploader.setBodyParam("tile", "true");
+    }
+    if (!(%uploader.start())) {
+        error(getScopeName() @ " " @ "- Unable to upload photo." @ " " @ %fileName @ " " @ %url @ " " @ getTrace());
+    }
     return %uploader;
 };

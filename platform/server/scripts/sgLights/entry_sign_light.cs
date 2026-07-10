@@ -1,6 +1,5 @@
-className = entry_sign_light @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(entry_sign_light) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 12;
 Brightness = 0.701149;
 Colour = "0.862069 0.103448 0.333333 1.000000";

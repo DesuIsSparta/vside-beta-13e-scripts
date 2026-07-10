@@ -5,10 +5,12 @@ function testPermissions_Master() {
     asyncTestsMasterRun();
 };
 function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess) {
-    %result = "pass";
-    (%actualSuccess == %expectedSuccess);
-    %result = "should have succeeded but did not.";
-    %expectedSuccess;
+    if ((%actualSuccess == %expectedSuccess)) {
+        %result = "pass";
+    }
+    if (%expectedSuccess) {
+        %result = "should have succeeded but did not.";
+    }
     %result = "should not have succeeded but did.";
     return %result;
 };
@@ -25,10 +27,11 @@ function testPermissions_AddABot_Evaluate() {
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 1;
+    if ($StandAlone) {
+    }
     %expectedDelta = (1.0 * %expectedDelta);
     2.0;
     %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
-    $StandAlone;
     %actualSuccess = ((%expectedDelta + $gTestPermissions_Num_Dry) == $gTestPermissions_Num_Wet);
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
@@ -46,10 +49,11 @@ function testPermissions_AddABotArmy_Evaluate() {
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 8;
+    if ($StandAlone) {
+    }
     %expectedDelta = (1.0 * %expectedDelta);
     2.0;
     %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
-    $StandAlone;
     %actualSuccess = ((%expectedDelta + $gTestPermissions_Num_Dry) == $gTestPermissions_Num_Wet);
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;

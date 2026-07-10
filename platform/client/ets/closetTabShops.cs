@@ -1,31 +1,40 @@
 function ClosetTabs::refreshStoreTab(%this) {
     clear();
-    "Loading ...".add();
-    return StoreCategoryPopup;
+    if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
+        "Loading ...".add();
+        return StoreCategoryPopup;
+    }
     %allCategories = "All Items" @ "\t" @ "All Garments" @ "\t" @ "All Accessories" @ "\t" @ "Tops" @ "\t" @ "Bottoms" @ "\t" @ "Hair" @ "\t" @ "Face" @ "\t" @ "Skin" @ "\t" @ "Shoes" @ "\t" @ "Ear" @ "\t" @ "Neck" @ "\t" @ "Waist" @ "\t" @ "Hands" @ "\t" @ "Bags" @ "\t" @ "Glasses" @ "\t" @ "Props" @ "\t" @ "Misc" @ "\t" @ "BodyMod";
     %storeDrwrs = Inventory::getCurrentStoreSkus().filterSkusGender($player.getGender()).getSkuDrwrs();
     SkuManager;
-    update();
+    if ((SkuManager SPC %storeDrwrs $= "")) {
+        update();
+    }
     %n = 0;
     StoreItemsFrame;
-    %cat = getField(%allCategories, %n);
-    (getFieldCount(%allCategories) < %n);
-    %catDrwrs = strlwr(%cat).get();
-    ThumbCategories;
-    %m = 0;
-    (SkuManager SPC %storeDrwrs $= "");
-    %found = findWord(%storeDrwrs, getWord(%catDrwrs, %m));
-    (getWordCount(%catDrwrs) < %m);
-    %cat.add();
-    %m = (1.0 + %m);
-    StoreCategoryPopup;
-    %n = (1.0 + %n);
-    (getWordCount(%catDrwrs) < %m);
+    if ((getFieldCount(%allCategories) < %n)) {
+        %cat = getField(%allCategories, %n);
+        %catDrwrs = strlwr(%cat).get();
+        ThumbCategories;
+        %m = 0;
+        if ((getWordCount(%catDrwrs) < %m)) {
+            %found = findWord(%storeDrwrs, getWord(%catDrwrs, %m));
+            if ((0.0 >= %found)) {
+                %cat.add();
+            }
+            %m = (1.0 + %m);
+            StoreCategoryPopup;
+        }
+        %n = (1.0 + %n);
+        (getWordCount(%catDrwrs) < %m);
+    }
     loadStorePosition();
 };
 function ClosetTabs::fillStoreTab(%this) {
     %theTab = %this.getTabWithName("SHOPS");
-    return !(isObject(%theTab));
+    if (!(isObject(%theTab))) {
+        return;
+    }
     profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
     0;
     horizSizing = "right";
@@ -39,9 +48,8 @@ function ClosetTabs::fillStoreTab(%this) {
     %theTab.add();
     %tabWidth = getWord(%theTab.getExtent(), 0);
     %tabHeight = getWord(%theTab.getExtent(), 1);
-    profile = StoreSpecificBackground @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
-    horizSizing = 0 @ "center";
+    profile = new GuiBitmapCtrl(StoreSpecificBackground) @ "GuiDefaultProfile";
+    horizSizing = "center";
     vertSizing = "center";
     position = (256.0 - (2.0 / %tabWidth)) @ " " @ (256.0 - (2.0 / %tabHeight));
     extent = "512 512";
@@ -75,9 +83,8 @@ function ClosetTabs::fillStoreTab(%this) {
     maxChars = -1;
     text = "";
     %storeDesc = ;
-    profile = StoreNameDescFrame @ new () @ "GuiDefaultProfile";
-    GuiControl;
-    horizSizing = 0 @ "right";
+    profile = new GuiControl(StoreNameDescFrame) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "26 66";
     extent = "251 59";
@@ -90,9 +97,8 @@ function ClosetTabs::fillStoreTab(%this) {
     %nameDescFrame.add(%storename);
     %nameDescFrame.add(%storeDesc);
     %theTab.add(%nameDescFrame);
-    profile = StoreCategoryLabel @ new () @ "ClosetTitleProfile";
-    GuiTextCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiTextCtrl(StoreCategoryLabel) @ "ClosetTitleProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "181 64";
     extent = "75 20";
@@ -103,9 +109,8 @@ function ClosetTabs::fillStoreTab(%this) {
     maxLength = 255;
     %categoryLabel = ;
     %theTab.add(%categoryLabel);
-    profile = StoreCategoryPopup @ new () @ "ClosetPopupProfile";
-    GuiPopUp2MenuCtrl;
-    scrollProfile = 0 @ "DottedScrollProfile";
+    profile = new GuiPopUp2MenuCtrl(StoreCategoryPopup) @ "ClosetPopupProfile";
+    scrollProfile = "DottedScrollProfile";
     winProfile = "ClosetPopupWindowProfile";
     horizSizing = "right";
     vertSizing = "bottom";
@@ -119,9 +124,8 @@ function ClosetTabs::fillStoreTab(%this) {
     allowReverse = 0;
     %categoryPopup = ;
     %theTab.add(%categoryPopup);
-    position = StoreExpirationLegend @ new () @ "26 465";
-    GuiControl;
-    extent = 0 @ "260 20";
+    position = new GuiControl(StoreExpirationLegend) @ "26 465";
+    extent = "260 20";
     visible = 0;
     lastStore = "";
     profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
@@ -146,9 +150,8 @@ function ClosetTabs::fillStoreTab(%this) {
     maxLength = 255;
     %ctrl = ;
     %theTab.add(%ctrl);
-    profile = StoreItemsFrame @ new () @ "GuiDefaultProfile";
-    GuiControl;
-    horizSizing = 0 @ "right";
+    profile = new GuiControl(StoreItemsFrame) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "22 120";
     extent = "467 350";
@@ -198,9 +201,8 @@ function ClosetTabs::fillStoreTab(%this) {
     %itemsScroll = ;
     %itemsScroll.bindClassName("ClosetItemsScroll");
     itemsScroll = %itemsScroll @ %theTab;
-    class = ClosetThumbnailsShop @ new () @ "ClosetThumbnails";
-    GuiArray2Ctrl;
-    profile = 0 @ "FocusableDefaultProfile";
+    class = new GuiArray2Ctrl(ClosetThumbnailsShop) @ "ClosetThumbnails";
+    profile = "FocusableDefaultProfile";
     childrenClassName = "GuiMouseEventCtrl";
     childrenExtent = "109 159";
     spacing = 2;
@@ -217,9 +219,8 @@ function ClosetTabs::fillStoreTab(%this) {
     thumbnails = %thumbnails @ %itemsFrame;
     %theTab.add(%itemsFrame);
     thumbnails = %thumbnails @ %theTab;
-    profile = StoreDirectoryLink @ new () @ "BracketButton13Profile";
-    GuiVariableWidthButtonCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiVariableWidthButtonCtrl(StoreDirectoryLink) @ "BracketButton13Profile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "26 124";
     extent = "126 13";
@@ -230,9 +231,8 @@ function ClosetTabs::fillStoreTab(%this) {
     drawText = 1;
     command = "transferFromShopToDestinationsDirectory();";
     %theTab.add();
-    profile = StoreDirectoryLinkBigText @ new () @ "ClosetLeftInfoProfile";
-    GuiMLTextCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiMLTextCtrl(StoreDirectoryLinkBigText) @ "ClosetLeftInfoProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "26 124";
     extent = "350 17";
@@ -243,9 +243,8 @@ function ClosetTabs::fillStoreTab(%this) {
     maxChars = -1;
     text = ;
     %theTab.add();
-    profile = StoreDirectoryLinkBig @ new () @ "GuiDefaultProfile";
-    GuiBitmapButtonCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiBitmapButtonCtrl(StoreDirectoryLinkBig) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "100 200";
     extent = "300 50";
@@ -255,17 +254,15 @@ function ClosetTabs::fillStoreTab(%this) {
     bitmap = "platform/client/buttons/closet_shopsDirButton";
     command = "transferFromShopToDestinationsDirectory();";
     %theTab.add();
-    profile = StoreBannerFrame @ new () @ "GuiDefaultProfile";
-    GuiControl;
-    horizSizing = 0 @ "right";
+    profile = new GuiControl(StoreBannerFrame) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "26 483";
     extent = "464 69";
     minExtent = "1 1";
     sluggishness = -1;
     visible = 1;
-    profile = StoreBannerBrackets @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
+    profile = new GuiBitmapCtrl(StoreBannerBrackets) @ "GuiDefaultProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "0 0";
@@ -274,8 +271,7 @@ function ClosetTabs::fillStoreTab(%this) {
     sluggishness = -1;
     visible = 0;
     bitmap = "platform/client/ui/banner_bracket";
-    profile = StoreBanner @ new () @ "GuiButtonProfile";
-    GuiBitmapButtonCtrl;
+    profile = new GuiBitmapButtonCtrl(StoreBanner) @ "GuiButtonProfile";
     horizSizing = "left";
     vertSizing = "bottom";
     position = "8 6";
@@ -300,8 +296,7 @@ function ClosetTabs::fillStoreTab(%this) {
     sluggishness = -1;
     visible = 1;
     bitmap = "platform/client/ui/balance_bracket";
-    profile = StoreBalanceText @ new () @ "ClosetLargeLinkProfile";
-    GuiMLTextCtrl;
+    profile = new GuiMLTextCtrl(StoreBalanceText) @ "ClosetLargeLinkProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "9 5";
@@ -312,9 +307,8 @@ function ClosetTabs::fillStoreTab(%this) {
     maxChars = -1;
     text = "";
     %theTab.add();
-    profile = StoreItemDescFrame @ new () @ "DottedWindowProfile";
-    GuiWindowCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiWindowCtrl(StoreItemDescFrame) @ "DottedWindowProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "689 84";
     extent = "245 110";
@@ -328,15 +322,13 @@ function ClosetTabs::fillStoreTab(%this) {
     canMinimize = 0;
     canMaximize = 0;
     closeCommand = "";
-    profile = StoreShortDescText @ new () @ "ClosetLeftInfoProfile";
-    GuiMLTextCtrl;
+    profile = new GuiMLTextCtrl(StoreShortDescText) @ "ClosetLeftInfoProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "3 0";
     extent = "242 25";
     lineSpacing = -3;
-    profile = StoreLongDescText @ new () @ "ClosetLeftInfoProfile";
-    GuiMLTextCtrl;
+    profile = new GuiMLTextCtrl(StoreLongDescText) @ "ClosetLeftInfoProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "3 22";
@@ -344,9 +336,8 @@ function ClosetTabs::fillStoreTab(%this) {
     lineSpacing = -3;
     %itemDescFrame = ;
     %theTab.add(%itemDescFrame);
-    profile = StoreItemDescHiliteFrame @ new () @ "StoreHiliteFrameProfile";
-    GuiWindowCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiWindowCtrl(StoreItemDescHiliteFrame) @ "StoreHiliteFrameProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "679 80";
     extent = "263 124";
@@ -361,9 +352,8 @@ function ClosetTabs::fillStoreTab(%this) {
     canMaximize = 0;
     closeCommand = "";
     %theTab.add();
-    profile = StoreFloatingHiliteFrame @ new () @ "StoreHiliteFrameProfile";
-    GuiWindowCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiWindowCtrl(StoreFloatingHiliteFrame) @ "StoreHiliteFrameProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "0 0";
     extent = "119 143";
@@ -378,9 +368,8 @@ function ClosetTabs::fillStoreTab(%this) {
     canMaximize = 0;
     closeCommand = "";
     %theTab.add();
-    profile = StoreShoppingBag @ new () @ "DottedWindowProfile";
-    GuiWindowCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiWindowCtrl(StoreShoppingBag) @ "DottedWindowProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "689 207";
     extent = "245 281";
@@ -413,8 +402,7 @@ function ClosetTabs::fillStoreTab(%this) {
     visible = 1;
     text = "Shopping Cart";
     maxLength = 255;
-    profile = StoreNoItemsText @ new () @ "ClosetLeftInfoProfile";
-    GuiMLTextCtrl;
+    profile = new GuiMLTextCtrl(StoreNoItemsText) @ "ClosetLeftInfoProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "5 28";
@@ -434,8 +422,7 @@ function ClosetTabs::fillStoreTab(%this) {
     visible = 1;
     text = "Buy All For";
     maxLength = 255;
-    profile = StorePointsTotalText @ new () @ "ClosetPointsProfile";
-    GuiMLTextCtrl;
+    profile = new GuiMLTextCtrl(StorePointsTotalText) @ "ClosetPointsProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "90 261";
@@ -444,8 +431,7 @@ function ClosetTabs::fillStoreTab(%this) {
     sluggishness = -1;
     visible = 1;
     maxLength = 255;
-    profile = StoreBuxTotalText @ new () @ "ClosetBuxProfile";
-    GuiMLTextCtrl;
+    profile = new GuiMLTextCtrl(StoreBuxTotalText) @ "ClosetBuxProfile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "162 261";
@@ -454,8 +440,7 @@ function ClosetTabs::fillStoreTab(%this) {
     sluggishness = -1;
     visible = 1;
     maxLength = 255;
-    profile = StoreTotalButton @ new () @ "HiddenBracketButton15Profile";
-    GuiVariableWidthButtonCtrl;
+    profile = new GuiVariableWidthButtonCtrl(StoreTotalButton) @ "HiddenBracketButton15Profile";
     horizSizing = "right";
     vertSizing = "bottom";
     position = "85 261";
@@ -482,9 +467,8 @@ function ClosetTabs::fillStoreTab(%this) {
     canMaximize = 0;
     closeCommand = "";
     %shoppingBag = ;
-    profile = StoreAddItemsButton @ new () @ "BracketButton15NonDefaultProfile";
-    GuiVariableWidthButtonCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiVariableWidthButtonCtrl(StoreAddItemsButton) @ "BracketButton15NonDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "689 491";
     extent = "213 19";
@@ -523,9 +507,8 @@ function ClosetTabs::fillStoreTab(%this) {
     constantThumbHeight = 1;
     scrollMultiplier = 2.5;
     %shoppingScroll = ;
-    profile = StoreShoppingList @ new () @ "GuiDefaultProfile";
-    GuiArray2Ctrl;
-    childrenClassName = 0 @ "GuiMouseEventCtrl";
+    profile = new GuiArray2Ctrl(StoreShoppingList) @ "GuiDefaultProfile";
+    childrenClassName = "GuiMouseEventCtrl";
     childrenExtent = "233 36";
     spacing = 2;
     numRowsOrCols = 1;
@@ -580,10 +563,16 @@ function ClosetTabs::setStoreControlsVisible(%this, %flag) {
     %flag.setVisible();
     %flag.setVisible();
     %flag.setVisible();
+    if (%flag) {
+    }
     !(isInFUE()).setVisible();
-    %flag.setVisible();
-    %flag.setVisible();
-    !(%flag).setVisible();
+    if (!(%flag)) {
+        %flag.setVisible();
+        %flag.setVisible();
+    }
+    if (isInFUE()) {
+        !(%flag).setVisible();
+    }
 };
 function ClosetTabs::setLeaveStoreControlsVisible(%this, %flag) {
     %flag.setVisible();
@@ -710,14 +699,22 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
     bux = "-" @ %child;
     sku = 0 @ %child;
     shoppingList = %this @ %child;
-    %child.bindClassName("StoreShoppingListItem");
+    if (!(getWord(%child.getNamespaceList(), 0) $= "StoreShoppingListItem")) {
+        %child.bindClassName("StoreShoppingListItem");
+    }
 };
 function StoreShoppingList::addSku(%this, %sku) {
-    return (0.0 >= findWord($Player::inventory, %sku));
+    if ((0.0 >= findWord($Player::inventory, %sku))) {
+        return;
+    }
     %count = %this.getCount();
     %idx = 0;
-    return (%this.getObject(%idx) SPC sku $= %sku);
-    %idx = (1.0 + %idx);
+    if ((%count < %idx)) {
+        if ((%this.getObject(%idx) SPC sku $= %sku)) {
+            return;
+        }
+        %idx = (1.0 + %idx);
+    }
     %child = %this.addChild();
     (%count < %idx);
     sku = %sku @ %child;
@@ -732,19 +729,25 @@ function StoreShoppingList::addSku(%this, %sku) {
     bux = %child @ Inventory::getVBuxPriceForSku(sku) @ %child;
     pointsLink.setText(%child @ points);
     buxLink.setText(%child @ bux);
-    expiringIcon.setBitmap("platform/client/ui/expiring_icon");
-    expiringIcon.setVisible(1);
+    if (!(%si SPC expireTime $= "")) {
+        expiringIcon.setBitmap("platform/client/ui/expiring_icon");
+        expiringIcon.setVisible(1);
+    }
     expiringIcon.setBitmap("");
     expiringIcon.setVisible(0);
     %count = thumbnails.getCount();
     StoreItemsFrame;
     %i = 0;
     %child;
-    %obj = thumbnails.getObject(%i);
-    StoreItemsFrame;
-    toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
-    %i = (1.0 + %i);
-    %obj;
+    if ((%count < %i)) {
+        %obj = thumbnails.getObject(%i);
+        StoreItemsFrame;
+        if ((%obj == sku)) {
+            toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
+        }
+        %i = (1.0 + %i);
+        %obj;
+    }
     %this.update();
     %this.hiliteCell(0, (1.0 - %this.getCount()));
 };
@@ -752,37 +755,48 @@ function StoreShoppingList::addSkus(%this, %skulist) {
     %skulist = trim(%skulist);
     %count = getWordCount(%skulist);
     %i = 0;
-    %this.addSku(getWord(%skulist, %i));
-    %i = (1.0 + %i);
-    (%count < %i);
+    if ((%count < %i)) {
+        %this.addSku(getWord(%skulist, %i));
+        %i = (1.0 + %i);
+    }
 };
 function StoreShoppingList::removeSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
-    %obj = %this.getObject(%i);
-    (%count < %i);
-    %obj.delete();
-    %i = (1.0 + %i);
-    (%obj == sku);
+    if ((%count < %i)) {
+        %obj = %this.getObject(%i);
+        if ((%obj == sku)) {
+            %obj.delete();
+        }
+        %i = (1.0 + %i);
+        %sku;
+    }
     %count = thumbnails.getCount();
     StoreItemsFrame;
     %i = 0;
     (%count < %i);
-    %obj = thumbnails.getObject(%i);
-    StoreItemsFrame;
-    toggleCartButton.setBitmap("platform/client/buttons/add2cart");
-    %i = (1.0 + %i);
-    %obj;
-    1.setActive();
+    if ((%count < %i)) {
+        %obj = thumbnails.getObject(%i);
+        StoreItemsFrame;
+        if ((%obj == sku)) {
+            toggleCartButton.setBitmap("platform/client/buttons/add2cart");
+        }
+        %i = (1.0 + %i);
+        %obj;
+    }
+    if ((-(1.0) != findWord($StoreSkusLayer, %sku))) {
+        1.setActive();
+    }
     %this.update();
 };
 function StoreShoppingList::removeSkus(%this, %skulist) {
     %skulist = trim(%skulist);
     %count = getWordCount(%skulist);
     %i = 0;
-    %this.removeSku(getWord(%skulist, %i));
-    %i = (1.0 + %i);
-    (%count < %i);
+    if ((%count < %i)) {
+        %this.removeSku(getWord(%skulist, %i));
+        %i = (1.0 + %i);
+    }
 };
 function StoreShoppingList::clear(%this) {
     %this.removeSkus(%this.getSkus());
@@ -790,26 +804,32 @@ function StoreShoppingList::clear(%this) {
 function StoreShoppingList::containsSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
-    return 1;
-    %i = (1.0 + %i);
+    if ((%count < %i)) {
+        if ((%this.getObject(%i) == sku)) {
+            return 1;
+        }
+        %i = (1.0 + %i);
+    }
     return 0;
 };
 function StoreShoppingList::getSkus(%this) {
     %skus = "";
     %count = %this.getCount();
     %i = 0;
-    %skus = %this.getObject(%i) @ sku;
-    %skus @ " ";
-    %i = (1.0 + %i);
-    (%count < %i);
+    if ((%count < %i)) {
+        %skus = %this.getObject(%i) @ sku;
+        %skus @ " ";
+        %i = (1.0 + %i);
+    }
     return trim(%skus);
 };
 function StoreShoppingList::addItemsYoureWearing(%this) {
     %count = getWordCount($StoreSkusLayer);
     %i = 0;
-    %this.addSku(getWord($StoreSkusLayer, %i));
-    %i = (1.0 + %i);
-    (%count < %i);
+    if ((%count < %i)) {
+        %this.addSku(getWord($StoreSkusLayer, %i));
+        %i = (1.0 + %i);
+    }
     0.setActive();
 };
 function StoreShoppingList::clear(%this) {
@@ -823,30 +843,36 @@ function StoreShoppingList::update(%this) {
     %count = %this.getCount();
     StoreNoItemsText;
     %i = 0;
-    %child = %this.getObject(%i);
-    (%count < %i);
-    // unhandled opcode 8756 at 0x00002231
-    background.setProfile();
-    %i = (1.0 + %i);
-    ClosetDkBackgroundProfile;
+    if ((%count < %i)) {
+        %child = %this.getObject(%i);
+        if ((0.0 == (2 % %i))) {
+            // unhandled opcode 8756 at 0x00002231
+        }
+        background.setProfile();
+        %i = (1.0 + %i);
+        ClosetDkBackgroundProfile;
+    }
 };
 function StoreShoppingList::sumPrices(%this) {
     %pointsSum = 0;
     %buxSum = 0;
     %count = %this.getCount();
     %idx = 0;
-    %child = %this.getObject(%idx);
-    (%count < %idx);
-    %pointsSum = (points + %pointsSum);
-    %child;
-    %buxSum = (bux + %buxSum);
-    %child;
-    %idx = (1.0 + %idx);
-    !((%child SPC bux $= "-"));
+    if ((%count < %idx)) {
+        %child = %this.getObject(%idx);
+        if (!(%child SPC points $= "-")) {
+            %pointsSum = (points + %pointsSum);
+            %child;
+        }
+        if (!(%child SPC bux $= "-")) {
+            %buxSum = (bux + %buxSum);
+            %child;
+        }
+        %idx = (1.0 + %idx);
+    }
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
     (%count < %idx);
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
-    !((%child SPC points $= "-"));
     StorePointsTotalText @ %pointsIcon @ " " @ %pointsSum.setText();
     StoreBuxTotalText @ %buxIcon @ " " @ %buxSum.setText();
     pointsTotal = %pointsSum @ %this;
@@ -854,19 +880,24 @@ function StoreShoppingList::sumPrices(%this) {
 };
 function StoreShoppingList::scrollToItem(%this, %item) {
     %idx = %this.getObjectIndex(%item);
-    %scroll = scroll;
-    %this;
-    %cellHeight = (%this + getWord(childrenExtent, 1));
-    spacing;
-    %numRowsVisible = (%cellHeight / getWord(%scroll.getExtent(), 1));
-    %this;
-    %ypos = (getWord(%this.getPosition(), 1) - 1.0);
-    (0.0 >= %idx);
-    %closestRow = (%cellHeight / %ypos);
-    %targetRow = getWord(hilitedCell, 1);
-    %this;
-    %scroll.scrollTo(0, (%targetRow * %cellHeight));
-    %scroll.scrollTo(0, ((spacing * 2.0) + ((1.0 + (%numRowsVisible - %targetRow)) * %cellHeight)));
+    if ((0.0 >= %idx)) {
+        %scroll = scroll;
+        %this;
+        %cellHeight = (%this + getWord(childrenExtent, 1));
+        spacing;
+        %numRowsVisible = (%cellHeight / getWord(%scroll.getExtent(), 1));
+        %this;
+        %ypos = (getWord(%this.getPosition(), 1) - 1.0);
+        %closestRow = (%cellHeight / %ypos);
+        %targetRow = getWord(hilitedCell, 1);
+        %this;
+        if ((%closestRow < %targetRow)) {
+            %scroll.scrollTo(0, (%targetRow * %cellHeight));
+        }
+        if (((1.0 - (%numRowsVisible + %closestRow)) >= %targetRow)) {
+            %scroll.scrollTo(0, ((spacing * 2.0) + ((1.0 + (%numRowsVisible - %targetRow)) * %cellHeight)));
+        }
+    }
 };
 function StoreShoppingListItem::onMouseEnterBounds(%this) {
     %idx = shoppingList.getObjectIndex(%this);
@@ -877,18 +908,30 @@ function StoreShoppingListItem::onMouseLeaveBounds(%this) {
     %this.onUnhilite();
 };
 function StoreShoppingListItem::onHilite(%this) {
-    sku.getShortSkuDesc().setDesc();
-    sku.getLongSkuDesc().setDesc();
-    sku.updateAuthorWidget();
+    if (0) {
+    }
+    if (isObject()) {
+        sku.getShortSkuDesc().setDesc();
+        sku.getLongSkuDesc().setDesc();
+        sku.updateAuthorWidget();
+    }
     %this.scrollToItem();
     hiliteCtrl.setVisible(1);
 };
 function StoreShoppingListItem::onUnhilite(%this) {
-    showBaseDesc();
-    showBaseDesc();
-    "".updateAuthorWidget();
-    0.setVisible();
-    0.setVisible();
+    if (0) {
+    }
+    if (isObject()) {
+        showBaseDesc();
+        showBaseDesc();
+        "".updateAuthorWidget();
+    }
+    if (isObject()) {
+        0.setVisible();
+    }
+    if (isObject()) {
+        0.setVisible();
+    }
     hiliteCtrl.setVisible(0);
 };
 function StoreBalanceText::update(%this) {
@@ -899,13 +942,18 @@ function StoreBalanceText::update(%this) {
     %this.setText("You Have   " @ "<spush><font:Arial Bold:16><color:159fe7>" @ %pointsIcon @ " " @ commaify($Player::VPoints) @ "<spop>" @ "   " @ "<spush><font:Arial Bold:16><color:13b93c>" @ %buxIcon @ " " @ commaify($Player::VBux) @ "<spop>" @ "<br>" @ "<font:Arial Bold:13>" @ %pointsInfoLink @ "   " @ %getBuxLink);
 };
 function StoreBalanceText::onURL(%this, %url) {
-    %url = getWords(%url, 1);
-    (getWord(%url, 0) $= "gamelink");
+    if ((getWord(%url, 0) $= "gamelink")) {
+        %url = getWords(%url, 1);
+    }
     Parent::onURL(%this, %url);
 };
 function StoreItemsFrame::update(%this) {
-    infoText.setText("Loading store inventory...");
-    infoText.setText("Nothing in stock!");
+    if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
+        infoText.setText("Loading store inventory...");
+    }
+    if ((thumbnails SPC Inventory::getCurrentStoreSkus() $= "")) {
+        infoText.setText("Nothing in stock!");
+    }
     infoText.setText("No matching items.");
     thumbnails.setDrawers(strlwr(category).get());
 };
@@ -919,8 +967,10 @@ function StoreCategoryPopup::onSelect(%this, %unused, %entries) {
 function StoreLongDescText::setBaseDesc(%this, %desc) {
     baseText = %desc @ %this;
     %this.setText(%desc);
-    0.setVisible();
-    0.setVisible();
+    if ((%desc $= "")) {
+        0.setVisible();
+        0.setVisible();
+    }
 };
 function StoreLongDescText::setDesc(%this, %desc) {
     %this.setText(%desc);
@@ -939,26 +989,37 @@ function StoreShortDescText::showBaseDesc(%this) {
 };
 function getCurrentStoreID() {
     %storename = stripChars($gCurrentStoreName, 0123456789);
-    %storename = "edoc";
-    (%storename $= "edocsecret");
-    return $gCurrentStoreName;
+    if ((%storename $= "edocsecret")) {
+        %storename = "edoc";
+    }
+    if ((%storename $= "")) {
+        return $gCurrentStoreName;
+    }
     return %storename;
 };
 function StoreBanner::doAction(%this) {
     %storename = getCurrentStoreID();
-    gotoWebPage(!((%storename $= "")) @ $Net::PartnerURL @ "/" @ %storename, 0);
+    if (!(%storename $= "")) {
+        gotoWebPage($Net::PartnerURL @ "/" @ %storename, 0);
+    }
 };
 function updateAccountBalanceDisplays() {
-    update();
-    update();
+    if (isObject()) {
+        update();
+    }
+    if (isObject()) {
+        update();
+    }
 };
 function clientCmdUpdateAccountBalances(%newPoints, %newBux) {
-    BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, 1);
-    $Player::VBux = mFloor(%newBux);
-    !((%newBux $= ""));
-    BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, 1);
-    $Player::VPoints = mFloor(%newPoints);
-    !((%newPoints $= ""));
+    if (!(%newBux $= "")) {
+        BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, 1);
+        $Player::VBux = mFloor(%newBux);
+    }
+    if (!(%newPoints $= "")) {
+        BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, 1);
+        $Player::VPoints = mFloor(%newPoints);
+    }
     updateAccountBalanceDisplays();
 };
 function clientCmdRefreshVPoints() {
@@ -984,10 +1045,13 @@ $Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpe
 $Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vPoints"] = 4;
 function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify) {
     %delta = (%oldVal - %newVal);
-    schedule(3000, 0, "floatBalanceChange", %whichBalance, %delta, $player);
+    if (%notify) {
+        schedule(3000, 0, "floatBalanceChange", %whichBalance, %delta, $player);
+    }
     %threshhold1 = %whichBalance[$gBalanceUpdateSpecialEffect_Threshhold1 @ %whichBalance];
-    %notify;
-    return (%threshhold1 < %delta);
+    if ((%threshhold1 < %delta)) {
+        return;
+    }
     %delay = %whichBalance[$gBalanceUpdateSpecialEffect_Delay @ %whichBalance];
     %threshhold2 = %whichBalance[$gBalanceUpdateSpecialEffect_Threshhold2 @ %whichBalance];
     %sound1 = %whichBalance[$gBalanceUpdateSpecialEffect_Sound1 @ %whichBalance];
@@ -996,41 +1060,43 @@ function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify) {
     %guiControl2 = %whichBalance[$gBalanceUpdateSpecialEffect_GuiControl2 @ %whichBalance];
     %pulseCount1 = %whichBalance[$gBalanceUpdateSpecialEffect_PulseCount1 @ %whichBalance];
     %pulseCount2 = %whichBalance[$gBalanceUpdateSpecialEffect_PulseCount2 @ %whichBalance];
-    %sound = %sound1;
-    (%threshhold2 < %delta);
-    %pulseCount = %pulseCount1;
+    if ((%threshhold2 < %delta)) {
+        %sound = %sound1;
+        %pulseCount = %pulseCount1;
+    }
     %sound = %sound2;
     %pulseCount = %pulseCount2;
     alxPlay(%sound);
     %guiControl1.schedule(%delay, "blinkSet", "bounce", 150, 100, "0 -1 0 0", 5);
-    %guiControl2.startPulse(%pulseCount);
+    if (isObject(%guiControl2)) {
+        %guiControl2.startPulse(%pulseCount);
+    }
 };
 function floatBalanceChange(%whichBalance, %change, %player) {
     %threshhold = 1;
-    return (%threshhold < %change);
-    error(getScopeName() @ " " @ "- can't find player!" @ " " @ getTrace());
-    return !(isObject(%player));
-    error(getScopeName() @ " " @ "- no hudCtrl to attach to!" @ " " @ getTrace());
-    return !(isObject(hudCtrl));
+    if ((%threshhold < %change)) {
+        return;
+    }
+    if (!(isObject(%player))) {
+        error(getScopeName() @ " " @ "- can't find player!" @ " " @ getTrace());
+        return;
+    }
+    if (!(isObject(hudCtrl))) {
+        error(getScopeName() @ " " @ "- no hudCtrl to attach to!" @ " " @ getTrace());
+        return %player;
+    }
     %isVPoints = (%whichBalance $= "vPoints");
-    %alot = 100;
-    1000;
+    %alot = %isVPoints ? 1000 : 100;
     %amountNorm = mClampF((%alot / %change), 0, 1);
-    %isVPoints;
     %amountNorm = (((%amountNorm - 1.0) * (%amountNorm - 1.0)) - 1.0);
     %isALot = (0.95 > %amountNorm);
     %speed = (3.0 + (2.0 * (%amountNorm - 1.0)));
-    %fontTag = "<font:arial:14>";
-    "<font:arial:18>";
-    %currencyText = "vBux";
-    "vPoints";
-    %text = %isVPoints @ %fontTag @ "<b><outline>+" @ " " @ %change @ " " @ %currencyText;
-    %isALot;
+    %fontTag = %isALot ? "<font:arial:18>" : "<font:arial:14>";
+    %currencyText = %isVPoints ? "vPoints" : "vBux";
+    %text = %fontTag @ "<b><outline>+" @ " " @ %change @ " " @ %currencyText;
     %maxAge = (70.0 + (70.0 * %amountNorm));
-    %baseColor = "22dd44";
-    "55eeff";
+    %baseColor = %isVPoints ? "55eeff" : "22dd44";
     %baseAlpha = (0.6 + (0.4 * %amountNorm));
-    %isVPoints;
     %player.floatText(%text, %maxAge, %speed, %baseColor, %baseAlpha);
 };
 function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha) {
@@ -1052,16 +1118,18 @@ function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha
     doTick();
 };
 function Player::floatTextSimple(%this, %text, %style) {
-    %style = "";
-    !(isDefined("%style"));
-    %style = "default";
-    (%style $= "");
-    error(getScopeName() @ " " @ "- unknown style:" @ " " @ %style @ " " @ %text @ " " @ getTrace());
-    %style = "default";
-    (%style[$gFloatingTextStyles TAB "font" @ %style] $= "");
-    %outline = "";
-    "<b><outline>";
-    %text = %style[%style[$gFloatingTextStyles TAB "outline" @ %style] @ "<font:" @ $gFloatingTextStyles TAB "font" @ %style] @ ">" @ %text;
+    if (!(isDefined("%style"))) {
+        %style = "";
+    }
+    if ((%style $= "")) {
+        %style = "default";
+    }
+    if ((%style[$gFloatingTextStyles TAB "font" @ %style] $= "")) {
+        error(getScopeName() @ " " @ "- unknown style:" @ " " @ %style @ " " @ %text @ " " @ getTrace());
+        %style = "default";
+    }
+    %outline = %style[$gFloatingTextStyles TAB "outline" @ %style] ? "<b><outline>" : "";
+    %text = %style["<font:" @ $gFloatingTextStyles TAB "font" @ %style] @ ">" @ %text;
     %text = %outline @ %text;
     %text = %style[$gFloatingTextStyles TAB "prepend" @ %style] @ %text;
     %text = %style[%text @ $gFloatingTextStyles TAB "append" @ %style];
@@ -1074,73 +1142,88 @@ function Player::floatTextSimple(%this, %text, %style) {
 function ClientCmdFloatText(%playerGhostID, %text, %style) {
     %player = %playerGhostID.resolveGhostID();
     ServerConnection;
-    error(getScopeName() @ " " @ "- could not resolve ghost" @ " " @ %playerGhostID @ " " @ %text);
-    return !(isObject(%player));
+    if (!(isObject(%player))) {
+        error(getScopeName() @ " " @ "- could not resolve ghost" @ " " @ %playerGhostID @ " " @ %text);
+        return;
+    }
     %player.floatTextSimple(%text, %style);
 };
 function ThePointsFloaterHud::doTick(%this) {
     cancel(timerID);
     timerID = %this @ "" @ %this;
     %numChildren = %this.getCount();
-    return (1.0 < %numChildren);
+    if ((1.0 < %numChildren)) {
+        return;
+    }
     %n = (1.0 - %numChildren);
-    %ctrl = %this.getObject(%n);
-    (0.0 >= %n);
-    %ageNorm = (%ctrl / age);
-    maxAge;
-    %ctrl.delete();
-    age = (%ctrl + age);
-    1.0;
-    %x = getWord(position, 0);
-    %ctrl;
-    %y = getWord(position, 1);
-    %ctrl;
-    %x = (((0.2 - %ageNorm) * (%ctrl * speed)) + %x);
-    3.0;
-    %y = (speed - %y);
-    %ctrl;
-    %ctrl.reposition(%x, %y);
-    %alpha = (baseAlpha * (%ageNorm - 1.0));
-    %ctrl;
-    %alpha = (((0.5 + (0.5 * mSin((0.03 * getSimTime())))) * %alpha) - 1.0);
-    (0.2 < %ageNorm);
-    %alpha1 = formatInt("%0.2X", (255.0 * %alpha));
-    (0.2 > %ageNorm);
-    %alpha2 = formatInt("%0.2X", (255.0 * 1.0));
-    (1.0 > %ageNorm);
-    %alpha2 = 00;
-    (0.2 > %ageNorm);
-    %colorTag = %ctrl @ "<color:" @ %ctrl @ BaseColor @ %alpha1 @ ">";
-    %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
-    %ctrl.setText(%ctrl @ baseText);
-    %n = (1.0 - %n);
-    %shadowTag @ %colorTag;
+    if ((0.0 >= %n)) {
+        %ctrl = %this.getObject(%n);
+        %ageNorm = (%ctrl / age);
+        maxAge;
+        if ((1.0 > %ageNorm)) {
+            %ctrl.delete();
+        }
+        age = (%ctrl + age);
+        1.0;
+        %x = getWord(position, 0);
+        %ctrl;
+        %y = getWord(position, 1);
+        %ctrl;
+        if ((0.2 > %ageNorm)) {
+            %x = (((0.2 - %ageNorm) * (%ctrl * speed)) + %x);
+            3.0;
+            %y = (speed - %y);
+            %ctrl;
+        }
+        %ctrl.reposition(%x, %y);
+        %alpha = (baseAlpha * (%ageNorm - 1.0));
+        %ctrl;
+        if ((0.2 < %ageNorm)) {
+            %alpha = (((0.5 + (0.5 * mSin((0.03 * getSimTime())))) * %alpha) - 1.0);
+            %ctrl;
+        }
+        %alpha1 = formatInt("%0.2X", (255.0 * %alpha));
+        %alpha2 = formatInt("%0.2X", (255.0 * 1.0));
+        if ((0.2 > %ageNorm)) {
+            %alpha2 = 00;
+        }
+        %colorTag = "<color:" @ %ctrl @ BaseColor @ %alpha1 @ ">";
+        %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
+        %ctrl.setText(%ctrl @ baseText);
+        %n = (1.0 - %n);
+        %shadowTag @ %colorTag;
+    }
     timerID = %this @ %this.schedule(tickPeriodMS, "doTick") @ %this;
     (0.0 >= %n);
 };
 function clientCmdUpdateVPoints(%newPoints, %notify) {
-    %notify = 1;
-    !(isDefined("%notify"));
-    BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, %notify);
-    $Player::VPoints = mFloor(%newPoints);
-    !((%newPoints $= ""));
-    updateAccountBalanceDisplays();
+    if (!(isDefined("%notify"))) {
+        %notify = 1;
+    }
+    if (!(%newPoints $= "")) {
+        BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, %notify);
+        $Player::VPoints = mFloor(%newPoints);
+        updateAccountBalanceDisplays();
+    }
 };
 function clientCmdUpdateVBux(%newBux, %notify) {
-    %notify = 1;
-    !(isDefined("%notify"));
-    BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, %notify);
-    $Player::VBux = mFloor(%newBux);
-    !((%newBux $= ""));
-    updateAccountBalanceDisplays();
+    if (!(isDefined("%notify"))) {
+        %notify = 1;
+    }
+    if (!(%newBux $= "")) {
+        BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, %notify);
+        $Player::VBux = mFloor(%newBux);
+        updateAccountBalanceDisplays();
+    }
 };
 function ClosetGUI_ToggleSku_Shops(%sku) {
     %wordLoc = findWord($StoreSkusLayer, %sku);
-    $StoreSkusLayer = removeWord($StoreSkusLayer, %wordLoc);
-    (0.0 >= %wordLoc);
-    "".setBaseDesc();
-    "".setBaseDesc();
-    "".updateAuthorWidget();
+    if ((0.0 >= %wordLoc)) {
+        $StoreSkusLayer = removeWord($StoreSkusLayer, %wordLoc);
+        "".setBaseDesc();
+        "".setBaseDesc();
+        "".updateAuthorWidget();
+    }
     $StoreSkusLayer = $StoreSkusLayer.overlaySkus(%sku);
     SkuManager;
     %sku.getShortSkuDesc().setBaseDesc();
@@ -1152,11 +1235,15 @@ function ClosetGUI_ToggleSku_Shops(%sku) {
     ClosetTabs;
     %i = 0;
     StoreLongDescText;
-    %sku2 = getWord($StoreSkusLayer, %i);
-    (%count < %i);
-    %itemsToAdd = 1;
-    !(%sku2.containsSku());
-    %i = (1.0 + %i);
-    StoreShoppingList;
+    if ((%count < %i)) {
+        %sku2 = getWord($StoreSkusLayer, %i);
+        ClosetTabs;
+        if (!(%sku2.containsSku())) {
+            %itemsToAdd = 1;
+            StoreShoppingList;
+        }
+        %i = (1.0 + %i);
+        StoreShortDescText;
+    }
     %itemsToAdd.setActive();
 };

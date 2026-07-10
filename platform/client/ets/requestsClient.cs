@@ -28,8 +28,10 @@ function sendRequest_GetBalancesAndScores(%userName, %callbackHandler) {
     %request = safeEnsureScriptObject("ManagerRequest", "");
     %request.bindClassName("UniformManagerRequest");
     %request.setName("request_GetBalancesAndScores");
-    warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
-    return %request.isOpen();
+    if (%request.isOpen()) {
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+        return;
+    }
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetBalancesAndScores";
@@ -46,8 +48,12 @@ function sendRequest_GetCustomSpaceInfo(%buildingName, %spaceName, %ownerName, %
     %url = %url @ "/GetCustomSpaceInfo";
     %request.setURL(%url);
     %request.addUserAndToken($Player::Name);
-    error(getScopeName() @ " " @ "- either buildingName or ownerName must have a value." @ " " @ getTrace());
-    return "";
+    if ((%buildingName $= "")) {
+    }
+    if ((%ownerName $= "")) {
+        error(getScopeName() @ " " @ "- either buildingName or ownerName must have a value." @ " " @ getTrace());
+        return "";
+    }
     %request.setURLParamIfNotEmpty("building", %buildingName);
     %request.setURLParamIfNotEmpty("space", %spaceName);
     %request.setURLParamIfNotEmpty("owner", %ownerName);
@@ -99,11 +105,16 @@ function sendRequest_GetUserInventoryCollection(%userName, %collectionName, %cal
 };
 function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandler) {
     %requestName = "request_GetUserRelations";
-    echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
-    echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
-    doAnother = doAnother @ 1 @ %requestName;
-    %requestName;
-    return "";
+    if ((%singleUserName $= "")) {
+    }
+    if (isObject(%requestName)) {
+        if (doAnother) {
+            echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
+        }
+        echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
+        doAnother = %requestName @ 1 @ %requestName;
+        return "";
+    }
     %request = safeNewScriptObject("ManagerRequest", "", 0);
     %request.bindClassName("UniformManagerRequest");
     %request.setName(%requestName);
@@ -112,8 +123,10 @@ function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandl
     %url = %url @ "/GetUserRelations";
     %request.setURL(%url);
     %request.addUserAndToken(%userName);
-    %request.addUrlParam("buddy", %singleUserName);
-    callbackHandler = !((%singleUserName $= "")) @ %callbackHandler @ %request;
+    if (!(%singleUserName $= "")) {
+        %request.addUrlParam("buddy", %singleUserName);
+    }
+    callbackHandler = %callbackHandler @ %request;
     singleUserName = %singleUserName @ %request;
     doAnother = 0 @ %request;
     %request.start();
@@ -121,11 +134,14 @@ function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandl
 };
 function sendRequest_GetOnlineFriends(%maxCount, %sortCriteria, %callbackHandler) {
     %requestName = "request_GetOnlineFriends";
-    echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
-    echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
-    doAnother = doAnother @ 1 @ %requestName;
-    %requestName;
-    return "";
+    if (isObject(%requestName)) {
+        if (doAnother) {
+            echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
+        }
+        echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
+        doAnother = %requestName @ 1 @ %requestName;
+        return "";
+    }
     %request = safeNewScriptObject("ManagerRequest", "", 0);
     %request.bindClassName("UniformManagerRequest");
     %request.setName(%requestName);
@@ -134,20 +150,27 @@ function sendRequest_GetOnlineFriends(%maxCount, %sortCriteria, %callbackHandler
     %url = %url @ "/GetOnlineFriends";
     %request.setURL(%url);
     %request.addUserAndToken($Player::Name);
-    %request.addUrlParam("maxCount", %maxCount);
-    %request.addUrlParam("sortCriteria", %sortCriteria);
-    callbackHandler = !((!((%maxCount $= "")) SPC %sortCriteria $= "")) @ %callbackHandler @ %request;
+    if (!(%maxCount $= "")) {
+        %request.addUrlParam("maxCount", %maxCount);
+    }
+    if (!(%sortCriteria $= "")) {
+        %request.addUrlParam("sortCriteria", %sortCriteria);
+    }
+    callbackHandler = %callbackHandler @ %request;
     doAnother = 0 @ %request;
     %request.start();
     return %request;
 };
 function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler) {
     %requestName = "request_GetOnlineUsers";
-    echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
-    echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
-    doAnother = doAnother @ 1 @ %requestName;
-    %requestName;
-    return "";
+    if (isObject(%requestName)) {
+        if (doAnother) {
+            echo(getScopeName() @ " " @ "- got overlapping requests, dropping intermediate." @ " " @ getTrace());
+        }
+        echo(getScopeName() @ " " @ "- got overlapping requests." @ " " @ getTrace());
+        doAnother = %requestName @ 1 @ %requestName;
+        return "";
+    }
     %request = safeNewScriptObject("ManagerRequest", "", 0);
     %request.bindClassName("UniformManagerRequest");
     %request.setName(%requestName);
@@ -160,29 +183,35 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler) {
     doAnother = 0 @ %request;
     %request.addUrlParam("maxCount", %maxCount);
     %isImplemented = 1;
-    %request.start();
+    if (%isImplemented) {
+    }
+    if (!($StandAlone)) {
+        %request.start();
+    }
     echo(getScopeName() @ " " @ "- using fake data.");
     %num = 100;
-    !($StandAlone);
     %request.putValue("status", "success");
     %request.putValue("userCount", %num);
     %n = 0;
-    %isImplemented;
-    %keyBase = (%num < %n) @ "user" @ %n @ ".";
-    %request.putValue(%keyBase @ "userName", getRandomUserName());
-    %request.putValue(%keyBase @ "relationType", "");
-    %request.putValue("friend" @ %keyBase @ "age", "");
-    %request.putValue(getRandom(13, 25) @ %keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
-    %request.putValue((0.0 == getRandom(0, 1)) @ %keyBase @ "currentLocation.areaName", "lga_yachts");
-    %request.putValue((20.0 < getRandom(0, 99)) @ %keyBase @ "currentLocation.buildingName", "LGAHarbor");
-    %request.putValue(%keyBase @ "currentLocation.serverName", "Yacht_LargeSouth");
-    %request.putValue(%keyBase @ "levelName", "Da Shiznit");
-    %request.putValue(%keyBase @ "gender", getRandomWord("f m"));
-    %request.putValue(%keyBase @ "headline", "4 times the timmy 100% less fat 100% muscle ;)");
-    %request.putValue(%keyBase @ "onlineStatus", "InworldOnEnvserver");
-    %request.putValue(%keyBase @ "score", 694040);
-    %request.putValue(%keyBase @ "homeLocation.buildingName", "LGAHarbor");
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %keyBase = "user" @ %n @ ".";
+        %request.putValue(%keyBase @ "userName", getRandomUserName());
+        %request.putValue(%keyBase @ "relationType", (20.0 < getRandom(0, 99)) ? "friend" : "");
+        if ((0.0 == getRandom(0, 1))) {
+        }
+        %request.putValue(%keyBase @ "age", "");
+        %request.putValue(getRandom(13, 25) @ %keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
+        %request.putValue(%keyBase @ "currentLocation.areaName", "lga_yachts");
+        %request.putValue(%keyBase @ "currentLocation.buildingName", "LGAHarbor");
+        %request.putValue(%keyBase @ "currentLocation.serverName", "Yacht_LargeSouth");
+        %request.putValue(%keyBase @ "levelName", "Da Shiznit");
+        %request.putValue(%keyBase @ "gender", getRandomWord("f m"));
+        %request.putValue(%keyBase @ "headline", "4 times the timmy 100% less fat 100% muscle ;)");
+        %request.putValue(%keyBase @ "onlineStatus", "InworldOnEnvserver");
+        %request.putValue(%keyBase @ "score", 694040);
+        %request.putValue(%keyBase @ "homeLocation.buildingName", "LGAHarbor");
+        %n = (1.0 + %n);
+    }
     %n = 0;
     (%num < %n);
     %request.putValue("location" @ %n @ ".areaName", "nv");
@@ -235,15 +264,20 @@ function sendRequest_PurchaseInventory(%userName, %skusArray, %payWith, %storena
     %skusNum = %skusArray.count();
     %request.addUrlParam("itemsToBuyCount", %skusNum);
     %n = 0;
-    error("trying to buy a non-unit quantity of a sku." @ " " @ %skusArray.getKey(%n) @ " " @ %skusArray.getValue(%n));
-    %skusArray.setValue(%n, 1);
-    %n = (1.0 + %n);
-    (1.0 != %skusArray.getValue(%n));
+    if ((%skusNum < %n)) {
+        if ((1.0 != %skusArray.getValue(%n))) {
+            error("trying to buy a non-unit quantity of a sku." @ " " @ %skusArray.getKey(%n) @ " " @ %skusArray.getValue(%n));
+            %skusArray.setValue(%n, 1);
+        }
+        %n = (1.0 + %n);
+    }
     %n = 0;
     (%skusNum < %n);
-    %request.addBodyParam((%skusNum < %n) @ (%skusNum < %n) @ "itemsToBuy" @ %n @ ".sku", %skusArray.getKey(%n));
-    %request.addBodyParam("itemsToBuy" @ %n @ ".quantity", %skusArray.getValue(%n));
-    %n = (1.0 + %n);
+    if ((%skusNum < %n)) {
+        %request.addBodyParam("itemsToBuy" @ %n @ ".sku", %skusArray.getKey(%n));
+        %request.addBodyParam("itemsToBuy" @ %n @ ".quantity", %skusArray.getValue(%n));
+        %n = (1.0 + %n);
+    }
     payWith = (%skusNum < %n) @ %payWith @ %request;
     callbackHandler = %callbackHandler @ %request;
     %request.start();
@@ -274,9 +308,11 @@ function sendRequest_SaveClientUserProperties(%userName, %stringMap, %callbackHa
     %num = %stringMap.size();
     %request.setBodyParam("propertyCount", %num);
     %n = 0;
-    %request.setBodyParam((%num < %n) @ "property" @ %n @ ".key", %stringMap.getKey(%n));
-    %request.setBodyParam("property" @ %n @ ".value", %stringMap.getValue(%n));
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %request.setBodyParam("property" @ %n @ ".key", %stringMap.getKey(%n));
+        %request.setBodyParam("property" @ %n @ ".value", %stringMap.getValue(%n));
+        %n = (1.0 + %n);
+    }
     %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
@@ -294,13 +330,19 @@ function sendRequest_UpdateUserInventoryCollection(%userName, %collectionName, %
     %num = %propertyMap.size();
     %request.addUrlParam("propertyCount", %num);
     %n = 0;
-    %request.addUrlParam((%num < %n) @ "property" @ %n @ ".key", %propertyMap.getKey(%n));
-    %request.addUrlParam("property" @ %n @ ".value", %propertyMap.getValue(%n));
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %request.addUrlParam("property" @ %n @ ".key", %propertyMap.getKey(%n));
+        %request.addUrlParam("property" @ %n @ ".value", %propertyMap.getValue(%n));
+        %n = (1.0 + %n);
+    }
     callbackHandler = (%num < %n) @ %callbackHandler @ %request;
-    warn(getScopeName() @ " " @ "- standalone: faking success" @ " " @ getTrace());
-    %request.putValue("status", "success");
-    schedule(500, 0, %callbackHandler, %request);
+    if ($StandAlone) {
+        if (!(%callbackHandler $= "")) {
+            warn(getScopeName() @ " " @ "- standalone: faking success" @ " " @ getTrace());
+            %request.putValue("status", "success");
+            schedule(500, 0, %callbackHandler, %request);
+        }
+    }
     %request.start();
     return %request;
 };
@@ -378,18 +420,22 @@ function sendRequest_GetMainVenues(%maxCount, %callbackHandler) {
     fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
     %n = (1.0 + %n);
     %n = %n;
-    %type = "venue";
-    (0.0 == getRandom(0, 2));
-    %type = "shop";
-    (1.0 == getRandom(0, 2));
-    %type = "residence";
-    (2.0 == getRandom(0, 2));
-    %type = "venue";
-    (%maxCount < %n);
-    %venue = DestinationList::GetRandomDestinationForTGF(%type, %notThese);
-    %notThese = %notThese @ " " @ %venue;
-    fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
-    %n = (1.0 + %n);
+    if ((%maxCount < %n)) {
+        if ((0.0 == getRandom(0, 2))) {
+            %type = "venue";
+        }
+        if ((1.0 == getRandom(0, 2))) {
+            %type = "shop";
+        }
+        if ((2.0 == getRandom(0, 2))) {
+            %type = "residence";
+        }
+        %type = "venue";
+        %venue = DestinationList::GetRandomDestinationForTGF(%type, %notThese);
+        %notThese = %notThese @ " " @ %venue;
+        fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
+        %n = (1.0 + %n);
+    }
     %request.schedule(100, "onDoneOrError");
 };
 function fakeRequestListItem_GetMainVenues(%request, %listNameBase, %listIndex, %venueCodeName) {
@@ -437,10 +483,11 @@ function sendRequest_Boot(%callbackHandler) {
     return %request;
 };
 function sendRequest_UpdateUserStates(%statesList, %callbackHandler) {
+    if (isDefined("%callbackHandler")) {
+    }
     %callbackHandler = "";
     %callbackHandler;
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    isDefined("%callbackHandler");
     %request.bindClassName("UniformManagerRequest");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
@@ -474,7 +521,7 @@ function sendRequest_GiftCurrency(%targetUserName, %currencyType, %currencyAmoun
     %request.addUserAndToken($Player::Name);
     %request.setBodyParam("password", MD5($Player::Password));
     %request.setURLParam("payee", %targetUserName);
-    %request.setURLParam("currencyType", "VBUX");
+    %request.setURLParam("currencyType", (%currencyType $= "vPoints") ? "VPOINTS" : "VBUX");
     %request.setURLParam("amount", %currencyAmount);
     %request.setURLParam("dryRun", %dryRun, 1);
     %request.setCompletedCallback(%callbackHandler);
@@ -494,10 +541,8 @@ function sendRequest_GetUserProfileInfo(%targetUser, %callbackHandler) {
     return %request;
 };
 function sendRequest_UploadPhoto(%fileName, %caption, %peopleInViewList, %type, %location, %featured, %callbackHandler) {
-    %featured = "false";
-    "true";
+    %featured = %featured ? "true" : "false";
     %request = safeNewScriptObject("URLPostObject", "", 0);
-    %featured;
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/uploadPhoto";
@@ -510,8 +555,10 @@ function sendRequest_UploadPhoto(%fileName, %caption, %peopleInViewList, %type, 
     %request.setURLParam("location", %location);
     %request.setURLParam("inView", %peopleInViewList);
     %request.setPostFile("imageBody", %fileName);
-    %request.setURLParam("apartmentOwner", owner);
-    %request.setURLParam("vurl", vurl);
+    if (!(CustomSpaceClient::GetSpaceImIn() $= "")) {
+        %request.setURLParam("apartmentOwner", owner);
+        %request.setURLParam("vurl", vurl);
+    }
     %request.setURLParam("vurl", $CSSpaceInfo @ $CSSpaceInfo @ "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
     %request.setCompletedCallback(%callbackHandler);
     %request.start();
@@ -528,7 +575,11 @@ function sendRequest_PublishToTicker(%message, %priority, %callbackHandler) {
     %request.setURLParam("text", %message);
     %request.setURLParam("priority", %priority);
     %isImplementedOnBackEnd = 1;
-    %request.start();
+    if (%isImplementedOnBackEnd) {
+    }
+    if (!($StandAlone)) {
+        %request.start();
+    }
     echo(getScopeName() @ " " @ "- using fake data. yep");
     %request.setResult("status", "success");
     %request.schedule(500, "onDoneOrError");

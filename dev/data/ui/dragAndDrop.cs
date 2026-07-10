@@ -1,10 +1,11 @@
-modal = DraggableProfile @ new ( : ToolTipProfile) @ 1;
-GuiControlProfile;
-0;
+if (!(isObject())) {
+    modal = DraggableProfile @ new GuiControlProfile(DraggableProfile : ToolTipProfile) @ 1;
+}
 function DragAndDropExampleList::Initialize(%this) {
-    %this.setNumChildren(10);
-    initialized = !(initialized) @ 1 @ %this;
-    %this;
+    if (!(initialized)) {
+        %this.setNumChildren(10);
+        initialized = %this @ 1 @ %this;
+    }
 };
 function DragAndDropExampleList::onCreatedChild(%this, %child, %unused, %yPos) {
     %child.setProfile();
@@ -15,7 +16,9 @@ function DragAndDropExampleList::onCreatedChild(%this, %child, %unused, %yPos) {
     extent = "200 50";
     text = %child @ contentText;
     %child.add();
-    %child.bindClassName("DragAndDropExampleDraggable");
+    if (!(getWord(%child.getNamespaceList(), 0) $= "DragAndDropExampleDraggable")) {
+        %child.bindClassName("DragAndDropExampleDraggable");
+    }
 };
 function DragAndDropExampleList::onDragAndDropEnter(%this, %dragCtrl) {
     hiliteControl(%this, 1);
@@ -26,18 +29,20 @@ function DragAndDropExampleList::onDragAndDropLeave(%this, %dragCtrl) {
     %marker.setVisible(0);
 };
 function DragAndDropExampleList::getHiliteMarker(%this) {
-    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
-    0;
-    horizSizing = %this @ !(isObject(hiliteMarker)) @ "width";
-    vertSizing = "top";
-    position = "0 0";
-    extent = "40 6";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    bitmap = "dev/data/ui/hiliteSeparator";
-    wrap = 1;
-    hiliteMarker = %this;
+    if (!(isObject(hiliteMarker))) {
+        profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
+        0;
+        horizSizing = %this @ "width";
+        vertSizing = "top";
+        position = "0 0";
+        extent = "40 6";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        bitmap = "dev/data/ui/hiliteSeparator";
+        wrap = 1;
+        hiliteMarker = %this;
+    }
     return hiliteMarker;
 };
 function DragAndDropExampleList::onDragAndDropMove(%this, %dragCtrl, %mousePos) {
@@ -46,10 +51,14 @@ function DragAndDropExampleList::onDragAndDropMove(%this, %dragCtrl, %mousePos) 
     %marker = %this.getHiliteMarker();
     getContent().add(%marker);
     getContent().pushToBack(%marker);
-    %marker.reposition((5.0 + getWord(%ctrl.getScreenPosition(), 0)), (%this - (spacing - getWord(%ctrl.getScreenPosition(), 1))));
+    if (isObject(%ctrl)) {
+        %marker.reposition((5.0 + getWord(%ctrl.getScreenPosition(), 0)), (%this - (spacing - getWord(%ctrl.getScreenPosition(), 1))));
+    }
     %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), ((%this / getWord(childrenExtent, 1)) - getWord(%mousePos, 1)));
     2.0;
-    %marker.reposition((5.0 + getWord(%ctrl.getScreenPosition(), 0)), (%this - (getWord(childrenExtent, 1) + getWord(%ctrl.getScreenPosition(), 1))));
+    if (isObject(%ctrl)) {
+        %marker.reposition((5.0 + getWord(%ctrl.getScreenPosition(), 0)), (%this - (getWord(childrenExtent, 1) + getWord(%ctrl.getScreenPosition(), 1))));
+    }
     %marker.setVisible(1);
 };
 function DragAndDropExampleList::onDragAndDropDrop(%this, %dragCtrl, %mousePos) {

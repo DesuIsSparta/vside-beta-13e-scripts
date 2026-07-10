@@ -2,9 +2,13 @@ function geMiscHudsPanel::toggle(%this) {
     %this.showRaiseOrHide();
 };
 function geMiscHudsPanel::open(%this) {
-    return !($player.rolesPermissionCheckNoWarn("debugPassive"));
-    %this.setVisible(1);
-    %this.focusAndRaise();
+    if (!($player.rolesPermissionCheckNoWarn("debugPassive"))) {
+        return;
+    }
+    if (!(%this.isVisible())) {
+        %this.setVisible(1);
+        %this.focusAndRaise();
+    }
 };
 function geMiscHudsPanel::close(%this) {
     %this.setVisible(0);

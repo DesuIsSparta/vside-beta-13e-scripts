@@ -7,9 +7,13 @@ function danceTool::open(%this) {
     %this.focusAndRaise();
     userTips::showOnceEver("DanceToolUsage");
     %this.initialcontent();
-    $gDanceToolSequence = new ""();
-    StringMap;
-    $gDanceToolSequence.add();
+    if (!(isObject($gDanceToolSequence))) {
+        $gDanceToolSequence = new ""();
+        StringMap;
+        if (isObject()) {
+            $gDanceToolSequence.add();
+        }
+    }
 };
 function danceTool::close(%this) {
     %this.setVisible(0);
@@ -19,7 +23,9 @@ function danceTool::close(%this) {
     return 1;
 };
 function toggleDanceTool() {
-    showRaiseOrHide();
+    if (showDanceTool()) {
+        showRaiseOrHide();
+    }
 };
 function danceTool::record(%this) {
     0.setVisible();
@@ -64,11 +70,13 @@ function danceTool::stop(%this) {
     1.setVisible();
     1.setVisible();
     commandToServer('DanceSequenceDone');
-    %this.finishRecordingPreviousStep();
-    recording = recording @ 0 @ %this;
-    %this;
-    playing = guiDanceToolCheckBoxLoop @ 0 @ %this;
-    guiDanceToolButtonCopyFrom;
+    if (recording) {
+        %this.finishRecordingPreviousStep();
+    }
+    recording = %this @ 0 @ %this;
+    guiDanceToolCheckBoxLoop;
+    playing = guiDanceToolButtonCopyFrom @ 0 @ %this;
+    guiDanceToolButtonStop;
     %this.stopTimer();
 };
 function danceTool::startTimer(%this) {
@@ -81,7 +89,9 @@ function danceTool::stopTimer(%this) {
     $gDanceToolTimer = 0;
 };
 function danceTool::timerTick(%this) {
-    return !(playing);
+    if (!(playing)) {
+        return %this;
+    }
     %this.playNextStep();
     $gDanceToolTimer = %this.schedule($gDanceToolTimerPeriod, "timerTick");
 };
@@ -90,17 +100,19 @@ function danceTool::constructSequence(%this, %lines) {
     %totalT = 0;
     numSteps = getRecordCount(%lines) @ %this;
     %n = 0;
-    %line = getRecord(%lines, %n);
-    (numSteps < %n);
-    %wc = getWordCount(%line);
-    %this;
-    %stepName = getWords(%line, 0, (%numFields - %wc));
-    (%numFields >= %wc);
-    %stepDuration = getWord(%line, (1.0 - %wc));
-    stepTimes = %totalT @ %n @ %this;
-    stepNames = %stepName @ %n @ %this;
-    %totalT = (%stepDuration + %totalT);
-    %n = (1.0 + %n);
+    if ((numSteps < %n)) {
+        %line = getRecord(%lines, %n);
+        %this;
+        %wc = getWordCount(%line);
+        if ((%numFields >= %wc)) {
+            %stepName = getWords(%line, 0, (%numFields - %wc));
+            %stepDuration = getWord(%line, (1.0 - %wc));
+            stepTimes = %totalT @ %n @ %this;
+            stepNames = %stepName @ %n @ %this;
+            %totalT = (%stepDuration + %totalT);
+        }
+        %n = (1.0 + %n);
+    }
     stepTimes = (numSteps < %n) @ %totalT @ %this @ numSteps @ %this;
     %this;
     stepNames = "(finished)" @ %this @ numSteps @ %this;
@@ -112,33 +124,53 @@ function danceTool::playNextStep(%this) {
     %curDanceTime = (0.001 * %curDanceTime);
     %playStep = -(1.0);
     %tooFar = 0;
-    %n = (%this + prevStep);
-    1.0;
-    %playStep = %n;
-    (%curDanceTime @ %n @ %this <= stepTimes);
-    %playStepTime = stepTimes;
-    !(%tooFar) @ %n @ %this;
-    %tooFar = 1;
-    (numSteps < %n);
-    %n = (1.0 + %n);
-    %this;
+    if ((%this >= prevStep)) {
+        %n = (%this + prevStep);
+        1.0;
+        if ((numSteps < %n)) {
+        }
+        if (!(%tooFar)) {
+            if ((%curDanceTime @ %n @ %this <= stepTimes)) {
+                %playStep = %n;
+                %this;
+                %playStepTime = stepTimes;
+                0.0 @ %n @ %this;
+            }
+            %tooFar = 1;
+            %n = (1.0 + %n);
+            if ((numSteps < %n)) {
+            }
+        }
+    }
     %playStep = 0;
     !(%tooFar);
-    %this.play();
-    $gDanceToolTimeStart = ((%playStepTime - %curDanceTime) + $gDanceToolTimeStart);
-    getValue();
-    %this.stop();
-    %this.playStep(%playStep);
+    if (((%this - numSteps) >= %playStep)) {
+        if (getValue()) {
+            %this.play();
+            $gDanceToolTimeStart = ((%playStepTime - %curDanceTime) + $gDanceToolTimeStart);
+            guiDanceToolCheckBoxLoop;
+        }
+        %this.stop();
+    }
+    if ((0.0 >= %playStep)) {
+        %this.playStep(%playStep);
+    }
 };
 function danceTool::playStep(%this, %stepNum) {
-    error(%this @ numSteps);
-    %this.stop();
-    return "invalid step index" @ " " @ %stepNum @ " " @ " - we have" @ " ";
+    if ((0.0 < %stepNum)) {
+    }
+    if ((numSteps >= %stepNum)) {
+        error(%this @ numSteps);
+        %this.stop();
+        return "invalid step index" @ " " @ %stepNum @ " " @ " - we have" @ " ";
+    }
     %stepName = stepNames;
     %stepNum @ %this;
     prevStep = %stepNum @ %this;
     %animName = %this.getAnimName(%stepName);
-    return !(%this.canRecordAnim(%animName));
+    if (!(%this.canRecordAnim(%animName))) {
+        return;
+    }
     sendDanceToolAnimToServer(%animName);
 };
 function danceTool::getAnimName(%this, %stepName) {
@@ -146,25 +178,34 @@ function danceTool::getAnimName(%this, %stepName) {
 };
 function danceTool::canRecordAnim(%this, %nameInternal) {
     %cantRecordList = "mnapls01 mnapls02 mnapls03 mngtrglr1e mngtrglr2e mngtrglr3e mngtrglr4e mngtrglr5e mngtrglr6e mngtrglr7e mngtrglr8a mngtrglr9a mngtrglr10a" @ " " @ "mngtrglr11a mngtrglr12a mngtrglr13a mngtrglr14a mngtrglr15b mngtrglr16b mngtrglr17b mngtrglr18b mngtrglr19b mngtrglr20b mngtrglridl1 mngtrglrwlkf01" @ " " @ "mngtrglrwlkb01 mngtrglrside01 mngtrglrjmp01 mnjmp mnfall mnrent mnrext mnridl1 mnwidl1 mnwent2 mnwext2 mnwidl2 mnsidl1 mnsent mnsext mnhtidl1 mnlsnidl1" @ " " @ "mnlsnent mnlsnext mnclbent mnclbext mnclbidl1 mnbhop mnbedentr mnbedextr mnbedextl mnbedentl mnbedslpbk mnbedslpsdl mnbedrlx mnchzlngidl1 mnpckride" @ " " @ "mnreachdown mnspinbottle mndrumr1e mnbassr1e mnsumowlks mnsumoshortstun mnsumolongstun mnsumoidle mnsumojabattack mnsumopowerattack mnsumobbattack" @ " " @ "mnsumojabdefend mnsumopowerdefend mnsumotaunt01 mnsumotaunt02 mnsumoidl mnsumowlkf mnsumowlkb mnsumosde mnsumojmp mnsumoattack mnsumodefend mnsumostumble" @ " " @ "mnsumowin mnsumoloose mngtrgr1e mngtrgr2e mngtrgr3e mngtrgr5e mngtrgr6e mngtrgr7e mngtrgr8e mngtrgr9e mngtrgr10e mngtrgr11e mngtrgr12a mngtrgr13a mngtrgr14a" @ " " @ "mngtrgr15a mngtrgr17a mngtrgr18a mngtrgr22a mngtrgr25b mngtrgr28b mngtrgr29b mnarcadeidl fnapls01 fnapls02 fnapls03 fngtrglr1e fngtrglr2e fngtrglr3e fngtrglr4e" @ " " @ "mnbhop mnbedentr mnbedextr mnbedextl mnbedentl mnbedslpbk mnbedslpsdr mnbedslpsdl mnbedrlx mnchzlngidl1" @ " " @ "mnpckride mnreachdown mnspinbottle mndrumr1e mnbassr1e mnarcadeidl mnssentr mnssext mnssidl1 mnstyl1" @ " " @ "mycut1 mybdry mywatrpt myidl1a mywlkf1 mysde mywlkb1 myjmp mycidl1a mycidl2a mylidl1a mylidl2a mylidl3a" @ " " @ "mybrush myclip myhpick myshears mygunsling mymime mnswmidl1 mnswmf1 mnswmb1 mnswmsde" @ " " @ "mnpwidle mnpwwlkf mnpwwlkb mnpwsde mnpwjmp mnpwjabattack mnpwpowerattack mnpwbbattack mnpwjabdefend mnpwpowerdefend" @ " " @ "mnpwshortstun mnpwlongstun mnpwtaunt01 mnpwtaunt02" @ " " @ "mntapglass mnsmentr mnsmexit mnsmcidl1 mnsmanidl1 mysmanfl mysmanpnt" @ " " @ "mnspcentr mnspcexit mnspcidl1 mnspedentr mnspedexit mnspedidl myspedfl myspedpnt mynailpolish" @ " " @ "mnmmi_handshake mnmmr_handshake mnmsi_handshake mnmsr_handshake mnmti_handshake mnmtr_handshake mnsti_handshake" @ " " @ "mnstr_handshake mntsi_handshake mntsr_handshake" @ " " @ "mnmmi_hug mnmmr_hug mnmsi_hug mnmsr_hug mnmti_hug mnmtr_hug mnsti_hug mnstr_hug mntsi_hug mntsr_hug" @ " " @ "mnmmi_kiss mnmmr_kiss mnmsi_kiss mnmsr_kiss mnmti_kiss mnmtr_kiss mnsti_kiss mnstr_kiss mntsi_kiss mntsr_kiss" @ " " @ "mnmmi_giveloot mnmmr_giveloot mnmsi_giveloot mnmsr_giveloot mnmti_giveloot mnmtr_giveloot mnsti_giveloot mnstr_giveloot mntsi_giveloot mntsr_giveloot" @ " " @ "mynailfile mybowarrow myscissorhand myswitchcomb" @ " " @ "myadjwrench mypipewrench mypiercegun myforcepa myforcepb mypliera myplierb" @ " " @ "fngtrglr5e fngtrglr6e fngtrglr7e fngtrglr8a fngtrglr9a fngtrglr10a fngtrglr11a fngtrglr12a fngtrglr13a fngtrglr14a fngtrglr15b fngtrglr16b fngtrglr17b fngtrglr18b" @ " " @ "fngtrglr19b fngtrglr20b fngtrglridl1 fngtrglrwlkf01 fngtrglrwlkb01 fngtrglrside01 fngtrglrjmp01 fnjmp fnfall fnrent fnrext fnridl1 fnwidl1 fnwent2 fnwext2 fnwidl2" @ " " @ "fnsidl1 fnsent fnsext fnhtidl1 fnlsnidl1 fnlsnent fnlsnext fnclbent fnclbext fnclbidl1 fnbhop fnbedentr fnbedextr fnbedextl fnbedentl fnbedslpbk fnbedslpsdl fnbedrlx" @ " " @ "fnchzlngidl1 fnpckride fnreachdown fnspinbottle fndrumr1e fnbassr1e fnsumowlks fnsumoshortstun fnsumolongstun fnsumoidle fnsumojabattack fnsumopowerattack" @ " " @ "fnsumobbattack fnsumojabdefend fnsumopowerdefend fnsumotaunt01 fnsumotaunt02 fnsumoidl fnsumowlkf fnsumowlkb fnsumosde fnsumojmp fnsumoattack fnsumodefend fnsumostumble" @ " " @ "fnsumowin fnsumoloose fngtrgr1e fngtrgr2e fngtrgr3e fngtrgr5e fngtrgr6e fngtrgr7e fngtrgr8e fngtrgr9e fngtrgr10e fngtrgr11e fngtrgr12a fngtrgr13a fngtrgr14a" @ " " @ "fngtrgr15a fngtrgr17a fngtrgr18a fngtrgr22a fngtrgr25b fngtrgr28b fngtrgr29b fnarcadeidl fnswmb1 fnswmsde fnswmidl1 fnswmf1 mnswmb1 mnswmsde mnswmidl1 mnswmf1" @ " " @ "fnbhop fnbedentr fnbedextr fnbedextl fnbedentl fnbedslpbk fnbedslpsdr fnbedslpsdl fnbedrlx fnchzlngidl1" @ " " @ "fnpckride fnreachdown fnspinbottle fndrumr1e fnbassr1e fnarcadeidl fnssentr fnssext fnssidl1 fnstyl1" @ " " @ "fycut1 fybdry fywatrpt fyidl1a fywlkf1 fysde fywlkb1 fyjmp fycidl1a fycidl2a fylidl1a fylidl2a fylidl3a" @ " " @ "fybrush fyclip fyhpick fyshears fygunsling fymime fnswmidl1 fnswmf1 fnswmb1 fnswmsde" @ " " @ "fnpwidle fnpwwlkf fnpwwlkb fnpwsde fnpwjmp fnpwjabattack fnpwpowerattack fnpwbbattack fnpwjabdefend fnpwpowerdefend" @ " " @ "fnpwshortstun fnpwlongstun fnpwtaunt01 fnpwtaunt02" @ " " @ "fntapglass fnsmentr fnsmexit fnsmcidl1 fnsmanidl1 fysmanfl fysmanpnt" @ " " @ "fnspcentr fnspcexit fnspcidl1 fnspedentr fnspedexit fnspedidl fyspedfl fyspedpnt fynailpolish" @ " " @ "fnmmi_handshake fnmmr_handshake fnmsi_handshake fnmsr_handshake fnmti_handshake fnmtr_handshake fnsti_handshake" @ " " @ "fnstr_handshake fntsi_handshake fntsr_handshake" @ " " @ "fnmmi_hug fnmmr_hug fnmsi_hug fnmsr_hug fnmti_hug fnmtr_hug fnsti_hug fnstr_hug fntsi_hug fntsr_hug" @ " " @ "fnmmi_kiss fnmmr_kiss fnmsi_kiss fnmsr_kiss fnmti_kiss fnmtr_kiss fnsti_kiss fnstr_kiss fntsi_kiss fntsr_kiss" @ " " @ "fnmmi_giveloot fnmmr_giveloot fnmsi_giveloot fnmsr_giveloot fnmti_giveloot fnmtr_giveloot fnsti_giveloot fnstr_giveloot fntsi_giveloot fntsr_giveloot" @ " " @ "fynailfile fybowarrow fyscissorhand fyswitchcomb" @ " " @ "fyadjwrench fypipewrench fypiercegun fyforcepa fyforcepb fypliera fyplierb" @ " " @ "gtrglr5e gtrglr6e gtrglr7e gtrglr8a gtrglr9a gtrglr10a gtrglr11a gtrglr12a gtrglr13a gtrglr14a gtrglr15b gtrglr16b gtrglr17b gtrglr18b" @ " " @ "gtrglr19b gtrglr20b gtrglridl1 gtrglrwlkf01 gtrglrwlkb01 gtrglrside01 gtrglrjmp01 jmp fall rent rext ridl1 widl1 went2 wext2 widl2" @ " " @ "sidl1 sent sext htidl1 lsnidl1 lsnent lsnext clbent clbext clbidl1 bhop bedentr bedextr bedextl bedentl bedslpbk bedslpsdl bedrlx" @ " " @ "chzlngidl1 pckride reachdown spinbottle drumr1e bassr1e sumowlks sumoshortstun sumolongstun sumoidle sumojabattack sumopowerattack" @ " " @ "sumobbattack sumojabdefend sumopowerdefend sumotaunt01 sumotaunt02 sumoidl sumowlkf sumowlkb sumosde sumojmp sumoattack sumodefend sumostumble" @ " " @ "sumowin sumoloose gtrgr1e gtrgr2e gtrgr3e gtrgr5e gtrgr6e gtrgr7e gtrgr8e gtrgr9e gtrgr10e gtrgr11e gtrgr12a gtrgr13a gtrgr14a" @ " " @ "gtrgr15a gtrgr17a gtrgr18a gtrgr22a gtrgr25b gtrgr28b gtrgr29b arcadeidl swmb1 swmsde swmidl1 swmf1 mnswmb1 mnswmsde mnswmidl1 mnswmf1" @ " " @ "bhop bedentr bedextr bedextl bedentl bedslpbk bedslpsdr bedslpsdl bedrlx chzlngidl1" @ " " @ "pckride reachdown spinbottle drumr1e bassr1e arcadeidl ssentr ssext ssidl1 styl1" @ " " @ "cut1 bdry watrpt idl1a wlkf1 sde wlkb1 jmp cidl1a cidl2a lidl1a lidl2a lidl3a" @ " " @ "brush clip hpick shears gunsling mime swmidl1 swmf1 swmb1 swmsde" @ " " @ "pwidle pwwlkf pwwlkb pwsde pwjmp pwjabattack pwpowerattack pwbbattack pwjabdefend pwpowerdefend" @ " " @ "pwshortstun pwlongstun pwtaunt01 pwtaunt02" @ " " @ "tapglass smentr smexit smcidl1 smanidl1 smanfl smanpnt" @ " " @ "spcentr spcexit spcidl1 spedentr spedexit spedidl spedfl spedpnt nailpolish" @ " " @ "mmi_handshake mmr_handshake msi_handshake msr_handshake mti_handshake mtr_handshake sti_handshake" @ " " @ "str_handshake tsi_handshake tsr_handshake" @ " " @ "mmi_hug mmr_hug msi_hug msr_hug mti_hug mtr_hug sti_hug str_hug tsi_hug tsr_hug" @ " " @ "mmi_kiss mmr_kiss msi_kiss msr_kiss mti_kiss mtr_kiss sti_kiss str_kiss tsi_kiss tsr_kiss" @ " " @ "mmi_giveloot mmr_giveloot msi_giveloot msr_giveloot mti_giveloot mtr_giveloot sti_giveloot str_giveloot tsi_giveloot tsr_giveloot" @ " " @ "nailfile bowarrow scissorhand switchcomb" @ " " @ "adjwrench pipewrench piercegun forcepa forcepb pliera plierb";
-    return 1;
+    if ((-(1.0) == findWord(%cantRecordList, %nameInternal))) {
+        return 1;
+    }
     return 0;
 };
 function danceTool::addStep(%this, %nameInternal) {
-    return !(recording);
-    return !(%this.canRecordAnim(%nameInternal));
+    if (!(recording)) {
+        return %this;
+    }
+    if (!(%this.canRecordAnim(%nameInternal))) {
+        return;
+    }
     %animName = %nameInternal;
     %this.finishRecordingPreviousStep();
     %animName.addText(1, 1);
 };
 function danceTool::finishRecordingPreviousStep(%this) {
     %t = getSimTime();
-    %dt = (prevStepTime - %t);
-    %this;
-    %dt = (0.001 * mFloor(%dt));
-    (%this != prevStepTime);
-    %dt = 0.1;
-    (0.1 < %dt);
-    -(1.0) @ guiDanceToolMLTextBody @ " " @ %dt @ "\n".addText(1, 1);
+    if ((%this != prevStepTime)) {
+        %dt = (prevStepTime - %t);
+        %this;
+        %dt = (0.001 * mFloor(%dt));
+        -(1.0);
+        if ((0.1 < %dt)) {
+            %dt = 0.1;
+        }
+        guiDanceToolMLTextBody @ " " @ %dt @ "\n".addText(1, 1);
+    }
     prevStepTime = %t @ %this;
 };
 function clientCmdDisableDanceTool(%unused) {
@@ -172,11 +213,13 @@ function clientCmdDisableDanceTool(%unused) {
     handleSystemMessage("msgInfoMessage", "");
 };
 function danceTool::setGender(%this, %gender) {
-    %colorTag = "";
-    (%gender $= $player.getGender());
+    if ((%gender $= $player.getGender())) {
+        %colorTag = "";
+    }
     %colorTag = "<color:ff0000ff>";
-    %genderFull = "females";
-    (%gender $= "f");
+    if ((%gender $= "f")) {
+        %genderFull = "females";
+    }
     %genderFull = "males";
     %txt = "Designed for:" @ " " @ %colorTag @ %genderFull;
     %txt.setText();
@@ -207,8 +250,10 @@ function danceTool::setContent(%this, %content) {
     %content = trim(removeRecord(%content, 0));
     %gender = trim(getRecord(%content, 0));
     %content = trim(removeRecord(%content, 0));
-    MessageBoxOK("Wrong Version!", !((%version $= $gDanceToolVersionString)) @ "" @ $gDanceToolVersionString @ "\nand you're trying to use a dance from\n" @ " " @ %version, "");
-    return;
+    if (!(%version $= $gDanceToolVersionString)) {
+        MessageBoxOK("Wrong Version!", "" @ $gDanceToolVersionString @ "\nand you're trying to use a dance from\n" @ " " @ %version, "");
+        return;
+    }
     %author.setValue();
     %title.setValue();
     %this.setGender(%gender);
@@ -216,13 +261,17 @@ function danceTool::setContent(%this, %content) {
 };
 $gDanceToolInitialized = 0;
 function danceTool::initialcontent(%this) {
-    return $gDanceToolInitialized;
+    if ($gDanceToolInitialized) {
+        return;
+    }
     %content = "";
     %content = %content @ $gDanceToolVersionString @ "\n";
-    %content = ($player.getGender() $= "f") @ %content @ $ETS::AppName @ "\n";
-    %content = %content @ "The Nevada\n";
-    %content = %content @ "f\n";
-    %content = %content @ "hdnc1 2.61\nhdnc2 2.75\nhdnc3 3.61\nhdnc1 4.108\nidnc1 1.86\nidnc2 1.312\nidnc1 1.28\nidnc2 1.112\nidnc1 0.42\nidnc2 0.656\nidnc1 0.424\nidnc2 0.468\nidnc3 7.984\nhdncb1 5.624\nhdncb2 1.688\nhdncb3 3.594\nhdncb4 1.922\nhdncb1 2.5\nnmjlih 1.938\nnmjspin 4.422\nbusy 0.6\ncool 0.6\nbusy 0.6\ncool 0.6\nbusy 0.6\ncool 0.6\nhdnc1 2.704\n";
+    if (($player.getGender() $= "f")) {
+        %content = %content @ $ETS::AppName @ "\n";
+        %content = %content @ "The Nevada\n";
+        %content = %content @ "f\n";
+        %content = %content @ "hdnc1 2.61\nhdnc2 2.75\nhdnc3 3.61\nhdnc1 4.108\nidnc1 1.86\nidnc2 1.312\nidnc1 1.28\nidnc2 1.112\nidnc1 0.42\nidnc2 0.656\nidnc1 0.424\nidnc2 0.468\nidnc3 7.984\nhdncb1 5.624\nhdncb2 1.688\nhdncb3 3.594\nhdncb4 1.922\nhdncb1 2.5\nnmjlih 1.938\nnmjspin 4.422\nbusy 0.6\ncool 0.6\nbusy 0.6\ncool 0.6\nbusy 0.6\ncool 0.6\nhdnc1 2.704\n";
+    }
     %content = %content @ $ETS::AppName @ "\n";
     %content = %content @ "Whack\n";
     %content = %content @ "m\n";

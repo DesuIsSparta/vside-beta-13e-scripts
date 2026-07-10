@@ -6,24 +6,29 @@ function messageAll(%msgType, %msgString) {
     %count = getCount();
     ClientGroup;
     %cl = 0;
-    %client = %cl.getObject();
-    ClientGroup;
-    messageClient(%client, %msgType, %msgString);
-    %cl = (1.0 + %cl);
-    (%count < %cl);
+    if ((%count < %cl)) {
+        %client = %cl.getObject();
+        ClientGroup;
+        messageClient(%client, %msgType, %msgString);
+        %cl = (1.0 + %cl);
+    }
 };
 function GameConnection::spamReset(%this) {
     isSpamming = 0 @ %this;
     return;
 };
 function spamAlert(%client, %speechType) {
-    return 0;
+    if (!(isObject(%client))) {
+        return 0;
+    }
     %ret = 0;
-    admin::doSystemMessagePlayer(Player, %speechType[$floodFilter::message @ %speechType], 'MsgInfoMessage');
-    %ret = isSpamming;
-    %client;
-    isSpamming = %client @ 1 @ %client;
-    testFlooding(Player, %speechType, 1);
-    isSpamming = %client @ 0 @ %client;
+    if (testFlooding(Player, %speechType, 1)) {
+        admin::doSystemMessagePlayer(Player, %speechType[$floodFilter::message @ %speechType], 'MsgInfoMessage');
+        %ret = isSpamming;
+        %client;
+        isSpamming = %client @ 1 @ %client;
+        %client;
+    }
+    isSpamming = 0 @ %client;
     return %ret;
 };

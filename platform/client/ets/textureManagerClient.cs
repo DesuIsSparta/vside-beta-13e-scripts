@@ -1,15 +1,19 @@
 function TextureManager_OnDelayedLoad(%num) {
     textureLoadingIndicator_initialize();
-    1.setVisible();
-    setProfile();
-    resume();
+    if ((0.0 > %num)) {
+        1.setVisible();
+        setProfile();
+        resume();
+    }
     0.setVisible();
     setProfile();
     stop();
     update();
 };
 function textureLoadingIndicator_initialize() {
-    return isObject();
+    if (isObject()) {
+        return geTexturesLoadingIcon;
+    }
     %wi = AnimCtrl::newAnimCtrl((geTextureLoadingContainer - getWord(getExtent(), 0)) @ " " @ 0, "18 18");
     19.0;
     %wi.setDelay(120);
@@ -23,10 +27,9 @@ function textureLoadingIndicator_initialize() {
     %wi.addFrame("platform/client/ui/wait7.png");
     %wi.setName("geTexturesLoadingIcon");
     %wi.add();
-    profile = geTGF_deets_eventTxtr @ new () @ "InfoWindowTextProfile";
-    GuiMLTextCtrl;
-    position = geTextureLoadingContainer @ 0 @ "0 0";
+    profile = geTextureLoadingContainer @ new GuiMLTextCtrl(geTGF_deets_eventTxtr) @ "InfoWindowTextProfile";
     geTextureLoadingContainer;
+    position = "0 0";
     extent = (2.0 - getWord(%wi.getPosition(), 0)) @ " " @ 18;
     horizSizing = "width";
     vertSizing = "bottom";

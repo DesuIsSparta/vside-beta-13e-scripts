@@ -1,7 +1,8 @@
 function ReportAbuseDlg::open(%this, %targetName) {
     %this.pushDialog(0);
-    %targetName = "foo";
-    (Canvas SPC %targetName $= "");
+    if ((Canvas SPC %targetName $= "")) {
+        %targetName = "foo";
+    }
     targetName = %targetName @ %this;
     pushScreenSize(640, 363, 0, 1, 1);
     %this.setVisible(1);
@@ -47,12 +48,20 @@ function ReportAbuseDlg::report(%this) {
     AbuseTypePopup;
     %desc = getText();
     ReportDescription;
-    MessageBoxOK("Error", (((AbuseTypePopup SPC %occurrence $= "Please Select") SPC %abuseType $= "Please Select") SPC %desc $= ""), "");
-    return OccurrencePopup;
+    if ((AbuseTypePopup SPC %occurrence $= "Please Select")) {
+    }
+    if ((OccurrencePopup SPC %abuseType $= "Please Select")) {
+    }
+    if ((%desc $= "")) {
+        MessageBoxOK("Error", , "");
+        return;
+    }
     %messageVector = getAttached();
     ConvBubVecCtrl;
-    echo("valid message vector");
-    %messageVector.dumpToFile("./chatbub.txt", "", 200);
+    if (isObject(%messageVector)) {
+        echo("valid message vector");
+        %messageVector.dumpToFile("./chatbub.txt", "", 200);
+    }
     echo("creating dummy message vector");
     %messageVector = new ""();
     MessageVector;
@@ -63,12 +72,15 @@ function ReportAbuseDlg::report(%this) {
     targetName = %this @ targetName @ %request;
     %this;
     dlg = 0 @ MessageBoxOK("Reporting Abuse", "Your abuse report is being sent..", "") @ %request;
-    isObject(%messageVector);
     %this.close();
 };
 function onDoneOrErrorCallback_AbuseReport(%request) {
-    MessageBoxOK("Report Abuse", !((%request.checkSuccess() SPC $CSSpaceName $= "")), "");
-    MessageBoxOK("Report Abuse", , "");
+    if (%request.checkSuccess()) {
+        if (!($CSSpaceName $= "")) {
+            MessageBoxOK("Report Abuse", , "");
+        }
+        MessageBoxOK("Report Abuse", , "");
+    }
     MessageBoxOK("Server Unavailable", , "");
     commandToServer('NotifyAbuseReport', targetName, getSubStr(getText(), 0, 64));
     $gSecondsToWaitBetweenReportAbuseAndUnignore = (60.0 * 10.0);
@@ -76,15 +88,21 @@ function onDoneOrErrorCallback_AbuseReport(%request) {
     safeEnsureScriptObjectWithInit("StringMap", "cantUnignoreList", "{ ignoreCase = true; }");
     targetName.put(((1000.0 * $gSecondsToWaitBetweenReportAbuseAndUnignore) + getSimTime()));
     dlg.close();
-    deleteFile("./chatbub.txt");
+    if (isFile("./chatbub.txt")) {
+        deleteFile("./chatbub.txt");
+    }
 };
 function doUserReport(%targetName, %reportType) {
     targetName = %targetName @ ReportAbuseDlg;
-    %ignored = %targetName.getIgnoreStatus();
-    BuddyHudWin;
-    %dlg = MessageBoxCustom("WARNING", (%reportType $= "abuse") @ !(%ignored) @ "You must ignore " @ %targetName @ " before you can report abuse against them.\nWould you like to report abuse against " @ %targetName @ " now?", "No, just ignore" @ "\t" @ "Yes, ignore and report abuse" @ "\t" @ "Cancel");
-    callback = "doUserIgnore(\"" @ %targetName @ "\", \"add\");" @ 0 @ %dlg;
-    callback = "doUserIgnore(\"" @ %targetName @ "\", \"add\"); ReportAbuseDlg.open(\"" @ %targetName @ "\"); " @ %dlg.getId() @ ".close();" @ 1 @ %dlg;
-    callback = "" @ 2 @ %dlg;
-    %targetName.open();
+    if ((%reportType $= "abuse")) {
+        %ignored = %targetName.getIgnoreStatus();
+        BuddyHudWin;
+        if (!(%ignored)) {
+            %dlg = MessageBoxCustom("WARNING", "You must ignore " @ %targetName @ " before you can report abuse against them.\nWould you like to report abuse against " @ %targetName @ " now?", "No, just ignore" @ "\t" @ "Yes, ignore and report abuse" @ "\t" @ "Cancel");
+            callback = "doUserIgnore(\"" @ %targetName @ "\", \"add\");" @ 0 @ %dlg;
+            callback = "doUserIgnore(\"" @ %targetName @ "\", \"add\"); ReportAbuseDlg.open(\"" @ %targetName @ "\"); " @ %dlg.getId() @ ".close();" @ 1 @ %dlg;
+            callback = "" @ 2 @ %dlg;
+        }
+        %targetName.open();
+    }
 };

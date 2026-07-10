@@ -1,1 +1,3 @@
-exec("./maps/initReloadable.cs");
+if ($AmClient) {
+    exec("./maps/initReloadable.cs");
+}

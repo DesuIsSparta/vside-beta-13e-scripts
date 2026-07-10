@@ -1,6 +1,5 @@
-className = sgFirePitPSDataBlock @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(sgFirePitPSDataBlock) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 3.25;
 Brightness = 1;
 Colour = "1.000000 1.000000 1.000000 1.000000";

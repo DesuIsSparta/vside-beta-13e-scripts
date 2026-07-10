@@ -520,10 +520,13 @@ function SalonDefineStyles() {
 SalonDefineStyles();
 function SalonDoesListContainAnySalonRewardSKUs(%skus) {
     %i = 0;
-    %skuToCheck = %i[$SALON_STYLE_SKU @ %i];
-    ($NUM_SALON_STYLES < %i);
-    %wordLoc = findWord(%skus, %skuToCheck);
-    return 1;
-    %i = (1.0 + %i);
+    if (($NUM_SALON_STYLES < %i)) {
+        %skuToCheck = %i[$SALON_STYLE_SKU @ %i];
+        %wordLoc = findWord(%skus, %skuToCheck);
+        if ((0.0 >= %wordLoc)) {
+            return 1;
+        }
+        %i = (1.0 + %i);
+    }
     return 0;
 };

@@ -1,5 +1,7 @@
 function GuiControl::newContextMenu(%this, %menuName) {
-    return %menuName;
+    if (isObject(%menuName)) {
+        return %menuName;
+    }
     profile = GuiPopUp2MenuCtrl @ new ""() @ "ETSRightClickProfile";
     0;
     scrollProfile = "ETSScrollProfile";
@@ -42,19 +44,25 @@ function ContextMenu::showAtCursor(%this) {
 function onscreenCoordinates(%left, %top, %width, %height) {
     %screenWidth = getWord(getRes(), 0);
     %screenHeight = getWord(getRes(), 1);
-    %left = (%width - %screenWidth);
-    (%screenWidth > (%width + %left));
-    %top = (%height - %screenHeight);
-    (%screenHeight > (%height + %top));
-    %left = 0;
-    (0.0 < %left);
-    %top = 0;
-    (0.0 < %top);
+    if ((%screenWidth > (%width + %left))) {
+        %left = (%width - %screenWidth);
+    }
+    if ((%screenHeight > (%height + %top))) {
+        %top = (%height - %screenHeight);
+    }
+    if ((0.0 < %left)) {
+        %left = 0;
+    }
+    if ((0.0 < %top)) {
+        %top = 0;
+    }
     return %left @ " " @ %top;
 };
 "EditContextMenu".newContextMenu();
 function GuiTextEditCtrl::onRightMouseUp(%this) {
-    return password;
+    if (password) {
+        return %this;
+    }
     %this.makeFirstResponder(1);
     %this.init();
     showAtCursor();
@@ -76,26 +84,39 @@ function EditContextMenu::init(%this, %ctrl) {
     %modifiable = !(readOnly);
     %ctrl;
     %canCopy = (0.0 > (%start - %end));
+    if (%modifiable) {
+    }
     %canCut = %canCopy;
-    %modifiable;
-    %canPaste = !((%modifiable SPC getClipboard() $= ""));
+    if (%modifiable) {
+    }
+    %canPaste = !(getClipboard() $= "");
     %n = -(1.0);
     %n = (1.0 + %n);
+    if (%modifiable) {
+    }
     %this.add("Undo", , %schemeDisabled);
     %n = (1.0 + %n);
     %this.add("---", %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
-    %this.add("Cut", %modifiable, %schemeDisabled);
+    if (%canCut) {
+    }
+    %this.add("Cut", , %schemeDisabled);
     %n = (1.0 + %n);
+    if (%canCopy) {
+    }
     %this.add("Copy", %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
+    if (%canPaste) {
+    }
     %this.add("Paste", %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
+    if (%canCut) {
+    }
     %this.add("Delete", %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
     %this.add("---", %schemeNormal, %schemeDisabled);
     %n = (1.0 + %n);
-    %this.add("Select All", %canCut, %schemeNormal);
+    %this.add("Select All", , %schemeNormal);
 };
 function EditContextMenu::onCancel(%this) {
     showCursor = %this @ ctrl;
@@ -104,11 +125,25 @@ function EditContextMenu::onCancel(%this) {
 function EditContextMenu::onSelect(%this, %unused, %text) {
     showCursor = %this @ ctrl;
     0;
-    return !(isObject(ctrl));
-    ctrl.doUndo();
-    ctrl.doCut();
-    ctrl.doCopy();
-    ctrl.doPaste();
-    ctrl.deleteSelection();
-    ctrl.selectAll();
+    if (!(isObject(ctrl))) {
+        return %this;
+    }
+    if ((%text $= "Undo")) {
+        ctrl.doUndo();
+    }
+    if ((%this SPC %text $= "Cut")) {
+        ctrl.doCut();
+    }
+    if ((%this SPC %text $= "Copy")) {
+        ctrl.doCopy();
+    }
+    if ((%this SPC %text $= "Paste")) {
+        ctrl.doPaste();
+    }
+    if ((%this SPC %text $= "Delete")) {
+        ctrl.deleteSelection();
+    }
+    if ((%this SPC %text $= "Select All")) {
+        ctrl.selectAll();
+    }
 };

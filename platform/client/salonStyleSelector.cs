@@ -1,35 +1,43 @@
 function SalonStyleSelector::open(%this) {
     %this.ensureAdded();
     %this.Initialize();
-    %this.setVisible(1);
+    if (!(%this.isVisible())) {
+        %this.setVisible(1);
+    }
     %this.focusAndRaise();
 };
 function SalonStyleSelector::close(%this) {
-    return 1;
+    if ((0.0 != $gSalonChairCurrent)) {
+        return 1;
+    }
     %this.setVisible(0);
     focusTopWindow();
     return 1;
 };
 function SalonStyleSelector::Initialize(%this) {
-    return initialized;
+    if (initialized) {
+        return %this;
+    }
     initialized = 1 @ %this;
-    skuGuiList.delete();
-    noSkuGuiText.delete();
+    if (isObject(skuGuiList)) {
+        skuGuiList.delete();
+    }
+    if (isObject(noSkuGuiText)) {
+        noSkuGuiText.delete();
+    }
     %SSS_Height = 200;
     SalonStyleSelector;
     %SSS_Width = 220;
-    isObject(noSkuGuiText);
+    SalonStyleSelector;
     %SSS_ButtonWidth = 20;
     SalonStyleSelector;
     %SSS_ButtonSpacing = 6;
     SalonStyleSelector;
     %SSS_ButtonMargin = ((%SSS_ButtonSpacing * 2.0) + %SSS_ButtonWidth);
-    isObject(skuGuiList);
-    minExtent = SalonStyleSelector @ %SSS_Width @ " " @ 110 @ %this;
+    minExtent = %SSS_Width @ " " @ 110 @ %this;
     %this.resize(%SSS_Width, %SSS_Height);
-    profile = gePropsWindowTitle @ new () @ "ETSShadowTextNonModalProfile";
-    GuiTextCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiTextCtrl(gePropsWindowTitle) @ "ETSShadowTextNonModalProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "5 0";
     extent = (10.0 - %SSS_Width) @ " " @ 18;
@@ -68,9 +76,8 @@ function SalonStyleSelector::Initialize(%this) {
     %gc = ;
     %this.add(%gc);
     closeButton = %gc @ %this;
-    profile = SalonStyleSelectorChair @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiBitmapCtrl(SalonStyleSelectorChair) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = %SSS_ButtonSpacing @ " " @ 22;
     extent = "20 20";
@@ -81,9 +88,8 @@ function SalonStyleSelector::Initialize(%this) {
     tooltip = "Your Salon Station";
     %gc = ;
     %this.add(%gc);
-    profile = ShowPropsButton @ new () @ "BracketButton19Profile";
-    GuiVariableWidthButtonCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiVariableWidthButtonCtrl(ShowPropsButton) @ "BracketButton19Profile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = %SSS_ButtonMargin @ " " @ 22;
     extent = ((%SSS_ButtonMargin * 2.0) - %SSS_Width) @ " " @ 19;
@@ -105,9 +111,8 @@ function SalonStyleSelector::Initialize(%this) {
     tooltiptimer = 0;
     %gc = ;
     %this.add(%gc);
-    profile = SalonStyleSelectorProp @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiBitmapCtrl(SalonStyleSelectorProp) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = (%SSS_ButtonSpacing - (%SSS_ButtonWidth - %SSS_Width)) @ " " @ 22;
     extent = "20 20";
@@ -179,13 +184,16 @@ function SalonStyleSelector::Initialize(%this) {
     %this.reposition(%left, %top);
 };
 function ShowPropsButton::onClick(%this) {
-    toggleClosetItemCategory("props");
+    if ($player.hasAvailableProp()) {
+        toggleClosetItemCategory("props");
+    }
     %salonCode = $SALON_CHAIR_DEF_DESTCODE;
-    $player.hasAvailableProp();
     %amInSalon = ($gCurrentStoreName $= %salonCode);
     %callback = "";
-    %msg = %salonCode[%amInSalon @ $MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-IN"];
-    %callback = "toggleStore();";
+    if (%amInSalon) {
+        %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-IN"];
+        %callback = "toggleStore();";
+    }
     %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-OUT"];
     %callback = "vurlOperation(\"" @ %salonCode[$gDestinationVurls @ %salonCode] @ "\");";
     MessageBoxYesNo(%salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-TITLE"], %msg, %callback, "");

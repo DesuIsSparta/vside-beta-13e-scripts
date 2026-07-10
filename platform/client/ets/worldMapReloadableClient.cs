@@ -7,40 +7,45 @@ function WorldMap::TabulateWorldAreaSummary(%unused) {
     totalOccupancy = 0 @ "gw" @ WorldAreaSummaries;
     totalOccupancy = 0 @ "pvt" @ WorldAreaSummaries;
     totalOccupancy = 0 @ "city" @ WorldAreaSummaries;
-    error(getScopeName() @ " " @ "- no WorldMapServers object." @ " " @ getTrace());
-    return !(isObject());
+    if (!(isObject())) {
+        error(getScopeName() @ " " @ "- no WorldMapServers object." @ " " @ getTrace());
+        return WorldMapServers;
+    }
     %n = (WorldMapServers - getCount());
     1.0;
-    %serverObj = %n.getObject();
-    WorldMapServers;
-    %serverAreaName = %serverObj.get("city");
-    (0.0 >= %n);
-    %serverCapacity = %serverObj.get("capacity");
-    %serverOccupancy = %serverObj.get("load");
-    %areaSummaryObj = %serverAreaName.get();
-    WorldAreaSummaries;
-    %areaSummaryObj = new ""();
-    SimObject;
-    %serverAreaName.put(%areaSummaryObj);
-    areaName = WorldAreaSummaries @ %serverAreaName @ %areaSummaryObj;
-    0;
-    occupancy = !(isObject(%areaSummaryObj)) @ 0 @ %areaSummaryObj;
-    capacity = 0 @ %areaSummaryObj;
-    numServers = 0 @ %areaSummaryObj;
-    areaType = "city" @ "pvt" @ %areaSummaryObj;
-    hasWord("lga nv rj", %serverAreaName);
-    areaType = %areaSummaryObj @ areaType @ %areaSummaryObj;
-    "gw";
-    occupancy = (%areaSummaryObj + occupancy);
-    %serverOccupancy;
-    capacity = (%areaSummaryObj + capacity);
-    %serverCapacity;
-    numServers = (%areaSummaryObj + numServers);
-    1.0;
-    totalOccupancy = (%areaSummaryObj @ areaType @ WorldAreaSummaries + totalOccupancy);
-    %serverOccupancy;
-    totalCapacity = (%areaSummaryObj @ areaType @ WorldAreaSummaries + totalCapacity);
-    %serverCapacity;
-    %n = (1.0 - %n);
-    hasWord("gw", %serverAreaName);
+    if ((0.0 >= %n)) {
+        %serverObj = %n.getObject();
+        WorldMapServers;
+        %serverAreaName = %serverObj.get("city");
+        %serverCapacity = %serverObj.get("capacity");
+        %serverOccupancy = %serverObj.get("load");
+        %areaSummaryObj = %serverAreaName.get();
+        WorldAreaSummaries;
+        if (!(isObject(%areaSummaryObj))) {
+            %areaSummaryObj = new ""();
+            SimObject;
+            %serverAreaName.put(%areaSummaryObj);
+            areaName = WorldAreaSummaries @ %serverAreaName @ %areaSummaryObj;
+            0;
+            occupancy = 0 @ %areaSummaryObj;
+            capacity = 0 @ %areaSummaryObj;
+            numServers = 0 @ %areaSummaryObj;
+            areaType = hasWord("lga nv rj", %serverAreaName) ? "city" : "pvt" @ %areaSummaryObj;
+            if (hasWord("gw", %serverAreaName)) {
+            }
+            areaType = %areaSummaryObj @ areaType @ %areaSummaryObj;
+            "gw";
+        }
+        occupancy = (%areaSummaryObj + occupancy);
+        %serverOccupancy;
+        capacity = (%areaSummaryObj + capacity);
+        %serverCapacity;
+        numServers = (%areaSummaryObj + numServers);
+        1.0;
+        totalOccupancy = (%areaSummaryObj @ areaType @ WorldAreaSummaries + totalOccupancy);
+        %serverOccupancy;
+        totalCapacity = (%areaSummaryObj @ areaType @ WorldAreaSummaries + totalCapacity);
+        %serverCapacity;
+        %n = (1.0 - %n);
+    }
 };

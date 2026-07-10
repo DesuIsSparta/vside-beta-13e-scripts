@@ -109,15 +109,17 @@ function userTips::initUserTips() {
 };
 function userTips::resetSeenThisSession() {
     %n = 0;
-    %n[$userTips::allTips @ %n][$userTips::tipSeen @ %n[$userTips::allTips @ %n]] = 0;
-    ($userTips::numTips < %n);
-    %n = (1.0 + %n);
+    if (($userTips::numTips < %n)) {
+        %n[$userTips::allTips @ %n][$userTips::tipSeen @ %n[$userTips::allTips @ %n]] = 0;
+        %n = (1.0 + %n);
+    }
 };
 function userTips::resetSeenEver() {
     %n = 0;
-    %n[$userTips::allTips @ %n][$UserPref::userTips::tipSeen @ %n[$userTips::allTips @ %n]] = 0;
-    ($userTips::numTips < %n);
-    %n = (1.0 + %n);
+    if (($userTips::numTips < %n)) {
+        %n[$userTips::allTips @ %n][$UserPref::userTips::tipSeen @ %n[$userTips::allTips @ %n]] = 0;
+        %n = (1.0 + %n);
+    }
 };
 function userTips::resetSeenAll() {
     userTips::resetSeenThisSession();
@@ -130,24 +132,33 @@ function userTips::showNow(%tipName) {
     %cbOk = standardSubstitutions(%tipName[$userTips::tipCallbackOK @ %tipName]);
     %cbCnc = standardSubstitutions(%tipName[$userTips::tipCallbackCnc @ %tipName]);
     %width = %tipName[$userTips::tipWidth @ %tipName];
+    if ((%width $= "")) {
+    }
     %width = %width;
     300;
     %dialog = 0;
-    (%width $= "");
-    %dialog = MessageBoxOkCancel(%title, %body, %cbOk, %cbCnc);
-    !((%cbOk $= ""));
+    if (!(%cbOk $= "")) {
+        %dialog = MessageBoxOkCancel(%title, %body, %cbOk, %cbCnc);
+    }
     %dialog = MessageBoxOK(%title, %body, "");
     %dialog.setWindowWidth(%width);
     return %dialog;
 };
 function userTips::showOnceThisSession(%tipName) {
-    eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
+    if ((0.0 != %tipName[$userTips::tipSeen @ %tipName])) {
+        if (!(%tipName[$userTips::tipCallbackOK @ %tipName] $= "")) {
+            eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
+        }
+    }
     userTips::showNow(%tipName);
 };
 function userTips::showOnceEver(%tipName) {
-    eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
+    if ((1.0 == %tipName[$UserPref::userTips::tipSeen @ %tipName])) {
+        if (!(%tipName[$userTips::tipCallbackOK @ %tipName] $= "")) {
+            eval(%tipName[$userTips::tipCallbackOK @ %tipName]);
+        }
+    }
     %tipName[$UserPref::userTips::tipSeen @ %tipName] = 1;
-    !(((1.0 == %tipName[$UserPref::userTips::tipSeen @ %tipName]) SPC %tipName[$userTips::tipCallbackOK @ %tipName] $= ""));
     userTips::showNow(%tipName);
 };
 function no_op() {

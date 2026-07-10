@@ -1,7 +1,9 @@
 function geTGF_tabs::fillTabMain(%this) {
     %tabName = "main";
     %tab = %this.getTabWithName(%tabName);
-    return filled;
+    if (filled) {
+        return %tab;
+    }
     filled = 1 @ %tab;
     %this.fillTabGeneric(%tab);
     profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
@@ -13,9 +15,8 @@ function geTGF_tabs::fillTabMain(%this) {
     bitmap = "platform/client/ui/tgf/tgf_bkgd_rightside";
     %ctrl = ;
     %tab.add(%ctrl);
-    profile = geTGF_profilePic @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
-    horizSizing = 0 @ "left";
+    profile = new GuiBitmapCtrl(geTGF_profilePic) @ "GuiDefaultProfile";
+    horizSizing = "left";
     vertSizing = "top";
     position = "708 310";
     extent = "100 100";
@@ -85,9 +86,8 @@ function geTGF_tabs::fillTabMain(%this) {
     text = mlStyle("FAQs", "tgfWebLink_Light");
     %ctrl = ;
     %tab.add(%ctrl);
-    profile = geTGF_main_BalancesContainer @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
-    horizSizing = 0 @ "width";
+    profile = new GuiBitmapCtrl(geTGF_main_BalancesContainer) @ "GuiDefaultProfile";
+    horizSizing = "width";
     vertSizing = "height";
     position = "687 8";
     extent = "268 68";
@@ -98,15 +98,13 @@ function geTGF_tabs::fillTabMain(%this) {
     position = "6 9";
     extent = "117 16";
     text = "Your Balances:";
-    horizSizing = geTGF_main_OfflineIncomeNotification @ new () @ "right";
-    GuiMLTextCtrl;
+    horizSizing = new GuiMLTextCtrl(geTGF_main_OfflineIncomeNotification) @ "right";
     vertSizing = "bottom";
     position = "6 37";
     extent = "257 36";
     style = "tgf_General_Medium";
-    profile = new () @ ETSNonModalProfile;
-    AccountBalanceContents;
-    horizSizing = GuiControl @ "left";
+    profile = new GuiControl(AccountBalanceContents) @ ETSNonModalProfile;
+    horizSizing = "left";
     vertSizing = "bottom";
     position = "108 0";
     extent = "162 39";
@@ -123,8 +121,7 @@ function geTGF_tabs::fillTabMain(%this) {
     groupNum = -1;
     buttonType = "PushButton";
     tooltip = "vPoints balance";
-    profile = AccountBalanceVPointsText @ new () @ "VPointsTextProfile";
-    GuiTextCtrl;
+    profile = new GuiTextCtrl(AccountBalanceVPointsText) @ "VPointsTextProfile";
     horizSizing = "left";
     vertSizing = "bottom";
     position = "27 4";
@@ -147,8 +144,7 @@ function geTGF_tabs::fillTabMain(%this) {
     groupNum = -1;
     buttonType = "PushButton";
     tooltip = "vBux balance";
-    profile = AccountBalanceVBuxText @ new () @ "VBuxTextProfile";
-    GuiTextCtrl;
+    profile = new GuiTextCtrl(AccountBalanceVBuxText) @ "VBuxTextProfile";
     horizSizing = "left";
     vertSizing = "bottom";
     position = "114 4";
@@ -167,8 +163,7 @@ function geTGF_tabs::fillTabMain(%this) {
     sluggishness = -1;
     visible = 1;
     bitmap = "platform/client/ui/next_level";
-    profile = AccountBalancePBContainer @ new () @ "GuiDefaultProfile";
-    GuiControl;
+    profile = new GuiControl(AccountBalancePBContainer) @ "GuiDefaultProfile";
     horizSizing = "left";
     vertSizing = "bottom";
     position = "58 29";
@@ -178,9 +173,8 @@ function geTGF_tabs::fillTabMain(%this) {
     visible = 1;
     %ctrl = ;
     %tab.add(%ctrl);
-    profile = MOTDHud @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
-    horizSizing = 0 @ "width";
+    profile = new GuiBitmapCtrl(MOTDHud) @ "GuiDefaultProfile";
+    horizSizing = "width";
     vertSizing = "height";
     position = "687 80";
     extent = "268 228";
@@ -200,8 +194,7 @@ function geTGF_tabs::fillTabMain(%this) {
     saneDrag = 1;
     scrollMultiplier = 1;
     stickyBottom = 0;
-    profile = MOTDText @ new () @ "ETSLoginMLTextProfile";
-    GuiMLTextCtrl;
+    profile = new GuiMLTextCtrl(MOTDText) @ "ETSLoginMLTextProfile";
     horizSizing = "width";
     vertSizing = "height";
     position = "1 1";
@@ -215,20 +208,21 @@ function geTGF_tabs::fillTabMain(%this) {
     stripTagsOnCopy = 1;
     %ctrl = ;
     %tab.add(%ctrl);
-    profile = EditMOTDStaffOnly @ new () @ "BracketButtonLt19Profile";
-    GuiVariableWidthButtonCtrl;
-    horizSizing = $ETS::devMode @ 0 @ "left";
-    vertSizing = "top";
-    position = "691 292";
-    extent = "190 21";
-    minExtent = "8 2";
-    visible = 1;
-    command = "toggleMOTDEditDialog();";
-    text = "devmod: Edit MOTD/QOTD";
-    groupNum = -1;
-    buttonType = "PushButton";
-    %ctrl = ;
-    %tab.add(%ctrl);
+    if ($ETS::devMode) {
+        profile = new GuiVariableWidthButtonCtrl(EditMOTDStaffOnly) @ "BracketButtonLt19Profile";
+        horizSizing = "left";
+        vertSizing = "top";
+        position = "691 292";
+        extent = "190 21";
+        minExtent = "8 2";
+        visible = 1;
+        command = "toggleMOTDEditDialog();";
+        text = "devmod: Edit MOTD/QOTD";
+        groupNum = -1;
+        buttonType = "PushButton";
+        %ctrl = ;
+        %tab.add(%ctrl);
+    }
     profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
     0;
     bitmap = "platform/client/ui/tgf/tgf_main_sectionOutlines";
@@ -248,8 +242,7 @@ function geTGF_tabs::fillTabMain(%this) {
     childMargin = "0 0";
     saneDrag = 1;
     scrollMultiplier = 1;
-    profile = geTGF_main_happenings @ new () @ "EtsNonModalProfile";
-    GuiArray2Ctrl;
+    profile = new GuiArray2Ctrl(geTGF_main_happenings) @ "EtsNonModalProfile";
     position = "0 0";
     extent = "580 340";
     inRows = 0;
@@ -265,9 +258,8 @@ function geTGF_tabs::fillTabMain(%this) {
     textLoading = mlStyle("<just:left>" @ "fetching.." @ "<just:right>", "tgfItem_Happening");
     %ctrl = ;
     %tab.add(%ctrl);
-    profile = geTGF_main_people @ new () @ "EtsNonModalProfile";
-    GuiControl;
-    position = 0 @ "40 367";
+    profile = new GuiControl(geTGF_main_people) @ "EtsNonModalProfile";
+    position = "40 367";
     extent = "625 129";
     profile = GuiScrollCtrl @ new ""() @ "DottedScrollProfile";
     horizSizing = "width";
@@ -281,8 +273,7 @@ function geTGF_tabs::fillTabMain(%this) {
     saneDrag = 1;
     scrollMultiplier = 1;
     stickyBottom = 0;
-    position = geTGF_main_people_locationsText @ new () @ "3 2";
-    GuiMLTextCtrl;
+    position = new GuiMLTextCtrl(geTGF_main_people_locationsText) @ "3 2";
     extent = "164 1";
     style = "tgfPeopleCounts";
     lineSpacing = -(1.0);
@@ -297,8 +288,7 @@ function geTGF_tabs::fillTabMain(%this) {
     lineSpacing = -(1.0);
     stripGamelink = 1;
     text = mlStyle(, "tgfMainInvite");
-    profile = geTGF_main_PeopleGoRound_Container @ new () @ "ETSNonModalProfile";
-    GuiControl;
+    profile = new GuiControl(geTGF_main_PeopleGoRound_Container) @ "ETSNonModalProfile";
     position = "158 2";
     extent = "467 125";
     internalName = GuiMLTextCtrl @ new ""() @ "emptyText";
@@ -412,11 +402,13 @@ function geTGF_tabs::refreshTabMain(%this) {
     %tabName = "main";
     %tab = %this.getTabWithName(%tabName);
     %this.refreshQOTD();
-    "platform/client/ui/tgf/tgf_profile_default".setBitmap();
-    fitInParentAsBitmap();
+    if (!(geTGF_tabs SPC previousProfileName $= $Player::Name)) {
+        "platform/client/ui/tgf/tgf_profile_default".setBitmap();
+        fitInParentAsBitmap();
+    }
     previousProfileName = geTGF_profilePic @ $Player::Name @ geTGF_tabs;
     geTGF_profilePic;
-    %url = !((geTGF_tabs SPC previousProfileName $= $Player::Name)) @ $Net::AvatarURL @ urlEncode($Player::Name) @ "?size=M";
+    %url = $Net::AvatarURL @ urlEncode($Player::Name) @ "?size=M";
     %url.downloadAndApplyBitmap();
     main_sendRequests();
 };
@@ -437,78 +429,90 @@ function geTGF::main_sendRequests(%this) {
     refresh();
 };
 function onDoneOrErrorCallback_GetMainHappenings(%request, %unused) {
-    cancel(geTGF_Refresh_Schedule);
-    1.setActive();
+    if ((getCurrentTab() SPC name $= "main")) {
+        cancel(geTGF_Refresh_Schedule);
+        1.setActive();
+    }
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %itemType = "happening";
     geTGF_Refresh;
     "main".clearItemList(%itemType);
-    %itemType.main_onGotDataOfType();
-    return geTGF;
+    if (!(%request.checkSuccess())) {
+        %itemType.main_onGotDataOfType();
+        return geTGF;
+    }
     %listBase = "happenings";
     %count = %request.getResult(%listBase @ "Count");
     %n = 0;
-    %listItem = (%count < %n) @ %listBase @ %n;
-    %id = %request.getResult(%listItem @ ".hostUserName");
-    %item = "main".createNewItem(%itemType, %id);
-    geTGF;
-    %request.copyListValueIntoObject(%item, %listItem, "accessMode");
-    %request.copyListValueIntoObject(%item, %listItem, "occupancy");
-    %request.copyListValueIntoObject(%item, %listItem, "baseImageURL");
-    %request.copyListValueIntoObject(%item, %listItem, "eventId");
-    %request.copyListValueIntoObject(%item, %listItem, "featured");
-    %request.copyListValueIntoObject(%item, %listItem, "friendOccupancy");
-    %request.copyListValueIntoObject(%item, %listItem, "goThereVURL");
-    %request.copyListValueIntoObject(%item, %listItem, "headline");
-    %request.copyListValueIntoObject(%item, %listItem, "hostUserName");
-    %request.copyListValueIntoObject(%item, %listItem, "moreInfoURL");
-    %request.copyListValueIntoObject(%item, %listItem, "apt");
-    %request.copyListValueIntoObject(%item, %listItem, "location.areaName");
-    %request.copyListValueIntoObject(%item, %listItem, "location.buildingName");
-    %request.copyListValueIntoObject(%item, %listItem, "location.serverName");
-    subType = %request.getResult(%listItem @ ".type") @ %item;
-    goThereVURL = %item @ vurlClearResolution(goThereVURL) @ %item;
-    %n = (1.0 + %n);
+    if ((%count < %n)) {
+        %listItem = %listBase @ %n;
+        %id = %request.getResult(%listItem @ ".hostUserName");
+        %item = "main".createNewItem(%itemType, %id);
+        geTGF;
+        %request.copyListValueIntoObject(%item, %listItem, "accessMode");
+        %request.copyListValueIntoObject(%item, %listItem, "occupancy");
+        %request.copyListValueIntoObject(%item, %listItem, "baseImageURL");
+        %request.copyListValueIntoObject(%item, %listItem, "eventId");
+        %request.copyListValueIntoObject(%item, %listItem, "featured");
+        %request.copyListValueIntoObject(%item, %listItem, "friendOccupancy");
+        %request.copyListValueIntoObject(%item, %listItem, "goThereVURL");
+        %request.copyListValueIntoObject(%item, %listItem, "headline");
+        %request.copyListValueIntoObject(%item, %listItem, "hostUserName");
+        %request.copyListValueIntoObject(%item, %listItem, "moreInfoURL");
+        %request.copyListValueIntoObject(%item, %listItem, "apt");
+        %request.copyListValueIntoObject(%item, %listItem, "location.areaName");
+        %request.copyListValueIntoObject(%item, %listItem, "location.buildingName");
+        %request.copyListValueIntoObject(%item, %listItem, "location.serverName");
+        subType = %request.getResult(%listItem @ ".type") @ %item;
+        goThereVURL = %item @ vurlClearResolution(goThereVURL) @ %item;
+        %n = (1.0 + %n);
+    }
     "main".removeItemsWithFieldValueFromList(%itemType, "hostUserName", "The-Manager");
     %itemType.main_onGotDataOfType();
 };
 function onDoneOrErrorCallback_GetOnlineFriends_Main(%request) {
-    cancel(geTGF_Refresh_Schedule);
-    1.setActive();
+    if ((getCurrentTab() SPC name $= "main")) {
+        cancel(geTGF_Refresh_Schedule);
+        1.setActive();
+    }
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %itemType = "person";
     geTGF_Refresh;
     "main".clearItemList(%itemType);
-    %itemType.main_onGotDataOfType();
-    return geTGF;
+    if (!(%request.checkSuccess())) {
+        %itemType.main_onGotDataOfType();
+        return geTGF;
+    }
     %listBase = "friends";
     %count = %request.getValue(%listBase @ "Count");
     %n = 0;
-    %listItem = (%count < %n) @ %listBase @ %n;
-    %id = %request.getValue(%listItem @ ".userName");
-    %item = "main".createNewItem(%itemType, %id);
-    geTGF;
-    %request.copyListValueIntoObject(%item, %listItem, "age");
-    %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
-    %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
-    %request.copyListValueIntoObject(%item, %listItem, "currentLocation.buildingName");
-    %request.copyListValueIntoObject(%item, %listItem, "currentLocation.serverName");
-    %request.copyListValueIntoObject(%item, %listItem, "gender");
-    %request.copyListValueIntoObject(%item, %listItem, "headline");
-    %request.copyListValueIntoObject(%item, %listItem, "homeLocation.areaName");
-    %request.copyListValueIntoObject(%item, %listItem, "homeLocation.buildingName");
-    %request.copyListValueIntoObject(%item, %listItem, "homeLocation.serverName");
-    %request.copyListValueIntoObject(%item, %listItem, "ignored");
-    %request.copyListValueIntoObject(%item, %listItem, "locationIRL");
-    %request.copyListValueIntoObject(%item, %listItem, "onlineStatus");
-    %request.copyListValueIntoObject(%item, %listItem, "permissionsMask");
-    %request.copyListValueIntoObject(%item, %listItem, "profileViewCount");
-    %request.copyListValueIntoObject(%item, %listItem, "profileViewRanking");
-    %request.copyListValueIntoObject(%item, %listItem, "relationType");
-    %request.copyListValueIntoObject(%item, %listItem, "score");
-    %request.copyListValueIntoObject(%item, %listItem, "userName");
-    goThereVURL = "vside:/user/" @ %item @ userName @ %item;
-    %n = (1.0 + %n);
+    if ((%count < %n)) {
+        %listItem = %listBase @ %n;
+        %id = %request.getValue(%listItem @ ".userName");
+        %item = "main".createNewItem(%itemType, %id);
+        geTGF;
+        %request.copyListValueIntoObject(%item, %listItem, "age");
+        %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
+        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
+        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.buildingName");
+        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.serverName");
+        %request.copyListValueIntoObject(%item, %listItem, "gender");
+        %request.copyListValueIntoObject(%item, %listItem, "headline");
+        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.areaName");
+        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.buildingName");
+        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.serverName");
+        %request.copyListValueIntoObject(%item, %listItem, "ignored");
+        %request.copyListValueIntoObject(%item, %listItem, "locationIRL");
+        %request.copyListValueIntoObject(%item, %listItem, "onlineStatus");
+        %request.copyListValueIntoObject(%item, %listItem, "permissionsMask");
+        %request.copyListValueIntoObject(%item, %listItem, "profileViewCount");
+        %request.copyListValueIntoObject(%item, %listItem, "profileViewRanking");
+        %request.copyListValueIntoObject(%item, %listItem, "relationType");
+        %request.copyListValueIntoObject(%item, %listItem, "score");
+        %request.copyListValueIntoObject(%item, %listItem, "userName");
+        goThereVURL = "vside:/user/" @ %item @ userName @ %item;
+        %n = (1.0 + %n);
+    }
     %itemType.main_onGotDataOfType();
 };
 function onDoneOrErrorCallback_GetOnlineUsers(%request) {
@@ -518,98 +522,111 @@ function onDoneOrErrorCallback_GetOnlineUsers(%request) {
     %statusTextCtrl.setText("");
     %itemType = "person";
     "main".clearItemList(%itemType);
-    %itemType.main_onGotDataOfType();
-    return geTGF;
+    if (!(%request.checkSuccess())) {
+        %itemType.main_onGotDataOfType();
+        return geTGF;
+    }
     %listBase = "user";
     %count = %request.getValue(%listBase @ "Count");
     %n = 0;
-    %listItem = (%count < %n) @ %listBase @ %n;
-    %id = %request.getValue(%listItem @ ".userName");
-    %item = "main".createNewItem(%itemType, %id);
-    geTGF;
-    %request.copyListValueIntoObject(%item, %listItem, "age");
-    %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
-    %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
-    %request.copyListValueIntoObject(%item, %listItem, "currentLocation.buildingName");
-    %request.copyListValueIntoObject(%item, %listItem, "currentLocation.serverName");
-    %request.copyListValueIntoObject(%item, %listItem, "gender");
-    %request.copyListValueIntoObject(%item, %listItem, "headline");
-    %request.copyListValueIntoObject(%item, %listItem, "homeLocation.areaName");
-    %request.copyListValueIntoObject(%item, %listItem, "homeLocation.buildingName");
-    %request.copyListValueIntoObject(%item, %listItem, "homeLocation.serverName");
-    %request.copyListValueIntoObject(%item, %listItem, "ignored");
-    %request.copyListValueIntoObject(%item, %listItem, "locationIRL");
-    %request.copyListValueIntoObject(%item, %listItem, "onlineStatus");
-    %request.copyListValueIntoObject(%item, %listItem, "permissionsMask");
-    %request.copyListValueIntoObject(%item, %listItem, "profileViewCount");
-    %request.copyListValueIntoObject(%item, %listItem, "profileViewRanking");
-    %request.copyListValueIntoObject(%item, %listItem, "relationType");
-    %request.copyListValueIntoObject(%item, %listItem, "score");
-    %request.copyListValueIntoObject(%item, %listItem, "userName");
-    goThereVURL = "vside:/user/" @ %item @ userName @ %item;
-    %n = (1.0 + %n);
+    if ((%count < %n)) {
+        %listItem = %listBase @ %n;
+        %id = %request.getValue(%listItem @ ".userName");
+        %item = "main".createNewItem(%itemType, %id);
+        geTGF;
+        %request.copyListValueIntoObject(%item, %listItem, "age");
+        %request.copyListValueIntoObject(%item, %listItem, "currentActivities");
+        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.areaName");
+        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.buildingName");
+        %request.copyListValueIntoObject(%item, %listItem, "currentLocation.serverName");
+        %request.copyListValueIntoObject(%item, %listItem, "gender");
+        %request.copyListValueIntoObject(%item, %listItem, "headline");
+        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.areaName");
+        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.buildingName");
+        %request.copyListValueIntoObject(%item, %listItem, "homeLocation.serverName");
+        %request.copyListValueIntoObject(%item, %listItem, "ignored");
+        %request.copyListValueIntoObject(%item, %listItem, "locationIRL");
+        %request.copyListValueIntoObject(%item, %listItem, "onlineStatus");
+        %request.copyListValueIntoObject(%item, %listItem, "permissionsMask");
+        %request.copyListValueIntoObject(%item, %listItem, "profileViewCount");
+        %request.copyListValueIntoObject(%item, %listItem, "profileViewRanking");
+        %request.copyListValueIntoObject(%item, %listItem, "relationType");
+        %request.copyListValueIntoObject(%item, %listItem, "score");
+        %request.copyListValueIntoObject(%item, %listItem, "userName");
+        goThereVURL = "vside:/user/" @ %item @ userName @ %item;
+        %n = (1.0 + %n);
+    }
     %itemType.main_onGotDataOfType();
 };
 function onDoneOrErrorCallback_GetMainVenues(%request) {
-    cancel(geTGF_Refresh_Schedule);
-    1.setActive();
+    if ((getCurrentTab() SPC name $= "main")) {
+        cancel(geTGF_Refresh_Schedule);
+        1.setActive();
+    }
     log("network", "debug", geTGF_Refresh @ "FAKE REQUEST: " @ getScopeName() @ " " @ "- url =" @ " " @ %request.getURL());
     %request.putValue("statusMsg", "fakeSuccess");
     timeFinish = geTGF @ getSimTime() @ %request;
-    (getCurrentTab() SPC name $= "main");
-    %itemType = "venue";
     geTGF_tabs;
+    %itemType = "venue";
     "main".clearItemList(%itemType);
-    %itemType.main_onGotDataOfType();
-    return geTGF;
+    if (!(%request.checkSuccess())) {
+        %itemType.main_onGotDataOfType();
+        return geTGF;
+    }
     %listBase = "venues";
     %count = %request.getValue(%listBase @ "Count");
     %n = 0;
-    %listItem = (%count < %n) @ %listBase @ %n;
-    %id = %request.getValue(%listItem @ ".name");
-    %item = "main".createNewItem(%itemType, %id);
-    geTGF;
-    %request.copyListValueIntoObject(%item, %listItem, "codeName");
-    %request.copyListValueIntoObject(%item, %listItem, "fullName");
-    %request.copyListValueIntoObject(%item, %listItem, "location.areaName");
-    %request.copyListValueIntoObject(%item, %listItem, "location.buildingName");
-    %request.copyListValueIntoObject(%item, %listItem, "location.serverName");
-    %request.copyListValueIntoObject(%item, %listItem, "headline");
-    %request.copyListValueIntoObject(%item, %listItem, "occupancy");
-    %request.copyListValueIntoObject(%item, %listItem, "friendOccupancy");
-    %request.copyListValueIntoObject(%item, %listItem, "goThereVURL");
-    %n = (1.0 + %n);
+    if ((%count < %n)) {
+        %listItem = %listBase @ %n;
+        %id = %request.getValue(%listItem @ ".name");
+        %item = "main".createNewItem(%itemType, %id);
+        geTGF;
+        %request.copyListValueIntoObject(%item, %listItem, "codeName");
+        %request.copyListValueIntoObject(%item, %listItem, "fullName");
+        %request.copyListValueIntoObject(%item, %listItem, "location.areaName");
+        %request.copyListValueIntoObject(%item, %listItem, "location.buildingName");
+        %request.copyListValueIntoObject(%item, %listItem, "location.serverName");
+        %request.copyListValueIntoObject(%item, %listItem, "headline");
+        %request.copyListValueIntoObject(%item, %listItem, "occupancy");
+        %request.copyListValueIntoObject(%item, %listItem, "friendOccupancy");
+        %request.copyListValueIntoObject(%item, %listItem, "goThereVURL");
+        %n = (1.0 + %n);
+    }
     %itemType.main_onGotDataOfType();
 };
 function geTGF::main_onGotDataOfType(%this, %type) {
-    // unhandled opcode 2109 at 0x00001F67
-    %type = geTGF_main_happenings;
-    (%type $= "happening");
-    // unhandled opcode 2109 at 0x00001F78
-    %type = geTGF_main_people;
-    (%type $= "person");
-    %control.onGotData();
-    return;
+    if ((%type $= "happening")) {
+        // unhandled opcode 2109 at 0x00001F67
+        %type = geTGF_main_happenings;
+    }
+    if ((%type $= "person")) {
+        // unhandled opcode 2109 at 0x00001F78
+        %type = geTGF_main_people;
+        %control.onGotData();
+        return;
+    }
     error("unknown type:" @ " " @ %type @ " " @ getTrace());
     return;
     %list = %this.getItemList("main", %type);
     %num = %list.count();
     %control.setNumChildren(%num);
     %n = 0;
-    %cell = %control.getObject(%n);
-    (%num < %n);
-    %item = %list.getValue(%n);
-    Item = %item @ %cell;
-    %cell.setProfile();
-    isInviteFriendsButton = ETSDarkBoxNonModalProfile @ 0 @ %cell;
-    %control.updateCellFromItsItem(%cell);
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %cell = %control.getObject(%n);
+        %item = %list.getValue(%n);
+        Item = %item @ %cell;
+        %cell.setProfile();
+        isInviteFriendsButton = ETSDarkBoxNonModalProfile @ 0 @ %cell;
+        %control.updateCellFromItsItem(%cell);
+        %n = (1.0 + %n);
+    }
     %statusTextCtrl = %control.getParent().child("emptyText");
     (%num < %n);
-    %text = textNothing;
-    %statusTextCtrl;
+    if ((0.0 <= %num)) {
+        %text = textNothing;
+        %statusTextCtrl;
+    }
     %text = "";
-    (0.0 <= %num);
     %statusTextCtrl.setText(%text);
 };
 function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
@@ -628,8 +645,9 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     %cell.getParent();
     %h = getWord(childrenExtent, 1);
     %cell.getParent();
-    %w = %h;
-    (%item SPC eventID $= "");
+    if ((%item SPC eventID $= "")) {
+        %w = %h;
+    }
     profile = GuiBitmapCtrl @ new ""() @ "EtsNonModalProfile";
     0;
     extent = %w @ " " @ %h;
@@ -641,15 +659,15 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     %cont.add(%ctrl);
     %url = baseImageURL;
     %item;
-    %url = %item @ urlEncode(hostUserName);
-    (%url $= "") @ $Net::BuildDirPhotoURL;
-    %url = "M" @ "M";
-    !((%item SPC eventID $= ""));
+    if ((%url $= "")) {
+        %url = %item @ urlEncode(hostUserName);
+        $Net::BuildDirPhotoURL;
+    }
+    %url = %url @ "?size=" @ !(%item SPC eventID $= "") ? "M" : "M";
     %ctrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
     %ctrl.fitInParentAsBitmap();
     %ctrl.downloadAndApplyBitmap(%url);
     %tmp = 20;
-    %url @ "?size=";
     profile = GuiControl @ new ""() @ "EtsDarkBorderlessBoxProfile";
     0;
     extent = getWord(%cont.getExtent(), 0) @ " " @ %tmp;
@@ -676,12 +694,15 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     lineSpacing = 0;
     %ctrl = ;
     %cont.add(%ctrl);
-    %occupancyText = "";
-    (%item == occupancy);
-    %occupancyText = "(empty) ";
-    (%item == occupancy);
-    %occupancyText = 0.0 @ "<b>" @ %item @ occupancy @ " P ";
-    -(1.0);
+    if ((%item == occupancy)) {
+        %occupancyText = "";
+        -(1.0);
+    }
+    if ((%item == occupancy)) {
+        %occupancyText = "(empty) ";
+        0.0;
+    }
+    %occupancyText = "<b>" @ %item @ occupancy @ " P ";
     profile = GuiMLTextCtrl @ new ""() @ "ETSNonModalProfile";
     0;
     position = 0 @ " " @ (38.0 - getWord(%cont.getExtent(), 1));
@@ -691,84 +712,103 @@ function geTGF_main_happenings::updateCellFromItsItem(%this, %cell) {
     vertSizing = "top";
     %ctrl = ;
     %cont.add(%ctrl);
-    %bitmap = %item.getEventTypePostItTagBitmap();
-    geTGF;
-    bitmap = GuiBitmapCtrl @ new ""() @ %bitmap;
-    0;
-    profile = !((%item SPC eventID $= "")) @ "EtsNonModalProfile";
-    extent = "82 19";
-    position = (0.0 - (82.0 - getWord(%cont.getExtent(), 0))) @ " " @ 0;
-    horizSizing = "left";
-    vertSizing = "bottom";
-    %ctrl = ;
-    %cont.add(%ctrl);
+    if (!(%item SPC eventID $= "")) {
+        %bitmap = %item.getEventTypePostItTagBitmap();
+        geTGF;
+        bitmap = GuiBitmapCtrl @ new ""() @ %bitmap;
+        0;
+        profile = "EtsNonModalProfile";
+        extent = "82 19";
+        position = (0.0 - (82.0 - getWord(%cont.getExtent(), 0))) @ " " @ 0;
+        horizSizing = "left";
+        vertSizing = "bottom";
+        %ctrl = ;
+        %cont.add(%ctrl);
+    }
 };
 function geTGF_main_people::onGotData(%this) {
     %list = "main".getItemList("person");
     geTGF;
     %num = %list.size();
     %statusTextCtrl = %this.child("emptyText");
+    if ((0.0 <= %num)) {
+    }
     %text = "";
     textNothing;
     %statusTextCtrl.setText(%text);
-    newTGFGoRound().add();
-    "".reparentSameSize();
-    mDeetsMinWidth = geTGF_main_PeopleGoRound_Container @ 0 @ geTGFGoRound;
-    geTGFGoRound;
-    mLilThumbPadding = geTGFGoRound @ 5 @ geTGFGoRound;
-    geTGF_main_PeopleGoRound_Container;
-    mLilThumbHeight = geTGFGoRound @ calcMaximumThumbHeight() @ geTGFGoRound;
-    !(isObject());
-    mTickPeriodMS = geTGFGoRound @ 4500 @ geTGFGoRound;
-    %statusTextCtrl;
-    rebuild();
+    if (!(isObject())) {
+        newTGFGoRound().add();
+        "".reparentSameSize();
+        mDeetsMinWidth = geTGF_main_PeopleGoRound_Container @ 0 @ geTGFGoRound;
+        geTGFGoRound;
+        mLilThumbPadding = geTGFGoRound @ 5 @ geTGFGoRound;
+        geTGF_main_PeopleGoRound_Container;
+        mLilThumbHeight = geTGFGoRound @ calcMaximumThumbHeight() @ geTGFGoRound;
+        geTGFGoRound;
+        mTickPeriodMS = %statusTextCtrl @ 4500 @ geTGFGoRound;
+        rebuild();
+    }
     %list.setItemList();
     %this.tryUpdateWorldmapSummaries();
 };
 function geTGF_main_people::tryUpdateWorldmapSummaries(%this) {
     "".setTextWithStyle();
-    %this.schedule(1000, "tryUpdateWorldmapSummaries");
+    if (isObject()) {
+        %this.schedule(1000, "tryUpdateWorldmapSummaries");
+    }
     %areaNames = "lga nv rj pvt";
-    isObject();
-    %total = 0;
     MapRequest;
-    %text = "";
+    %total = 0;
     geTGF_main_people_locationsText;
+    %text = "";
     %delim = "";
     %n = 0;
-    %areaName = getWord(%areaNames, %n);
+    if ((getWordCount(%areaNames) < %n)) {
+        %areaName = getWord(%areaNames, %n);
+        if (!(%areaName $= "pvt")) {
+            %userCount = occupancy;
+            %areaName.get();
+        }
+        %userCount = totalOccupancy;
+        WorldAreaSummaries @ %areaName @ WorldAreaSummaries;
+        %link = "TGF_GOTO" @ " " @ %areaName;
+        if ((%areaName $= "pvt")) {
+            %areaName = "Personal Spaces";
+        }
+        %areaName = DestinationList::GetAreaNameUserFacingName(DestinationList::GetAreaNameCity(%areaName));
+        %text = %text @ %delim @ "<spush><just:left><a:gamelink:" @ %link @ ">" @ %areaName @ "" @ "\t" @ "<just:right>" @ commaify(%userCount) @ "</a><spop>";
+        %total = (%userCount + %total);
+        %delim = "<br>";
+        %n = (1.0 + %n);
+    }
+    %withS = (1.0 == %total) ? "" : "s";
     (getWordCount(%areaNames) < %n);
-    %userCount = occupancy;
-    %areaName.get();
-    %userCount = totalOccupancy;
-    WorldAreaSummaries @ %areaName @ WorldAreaSummaries;
-    %link = "TGF_GOTO" @ " " @ %areaName;
-    !((%areaName $= "pvt"));
-    %areaName = "Personal Spaces";
-    (%areaName $= "pvt");
-    %areaName = DestinationList::GetAreaNameUserFacingName(DestinationList::GetAreaNameCity(%areaName));
-    %text = %text @ %delim @ "<spush><just:left><a:gamelink:" @ %link @ ">" @ %areaName @ "" @ "\t" @ "<just:right>" @ commaify(%userCount) @ "</a><spop>";
-    %total = (%userCount + %total);
-    %delim = "<br>";
-    %n = (1.0 + %n);
-    %withS = "s";
-    "";
-    %text = (getWordCount(%areaNames) < %n) @ (1.0 == %total) @ "<spush><just:center><font:arial:16>" @ commaify(%total) @ " vSider" @ %withS @ " In-World:<spop><br>" @ %text;
+    %text = "<spush><just:center><font:arial:16>" @ commaify(%total) @ " vSider" @ %withS @ " In-World:<spop><br>" @ %text;
     %text = "<tab:100>" @ %text;
     %text.setTextWithStyle();
 };
 function geTGF_main_people_locationsText::onURL(%this, %url) {
     %cmd = firstWord(%url);
-    error(getScopeName() @ " " @ "- unknown command" @ " " @ %cmd @ " " @ getTrace());
-    return !((%cmd $= "TGF_GOTO"));
+    if (!(%cmd $= "TGF_GOTO")) {
+        error(getScopeName() @ " " @ "- unknown command" @ " " @ %cmd @ " " @ getTrace());
+        return;
+    }
     %areaName = restWords(%url);
-    "HOTSPOTS".openToTabName();
-    "MAP".openToTabName();
-    %areaName.getCityButton(1, 0).performClick();
-    "MAP".openToTabName();
-    %areaName.getCityButton(1, 0).performClick();
-    "MAP".openToTabName();
-    %areaName.getCityButton(1, 0).performClick();
+    if ((%areaName $= "pvt")) {
+        "HOTSPOTS".openToTabName();
+    }
+    if ((geTGF SPC %areaName $= "lga")) {
+        "MAP".openToTabName();
+        %areaName.getCityButton(1, 0).performClick();
+    }
+    if ((WorldMap SPC %areaName $= "nv")) {
+        "MAP".openToTabName();
+        %areaName.getCityButton(1, 0).performClick();
+    }
+    if ((WorldMap SPC %areaName $= "rj")) {
+        "MAP".openToTabName();
+        %areaName.getCityButton(1, 0).performClick();
+    }
     error(getScopeName() @ " " @ "- unknown areaname" @ " " @ %areaName @ " " @ getTrace());
 };
 function encodeMOTDString(%text) {
@@ -780,43 +820,51 @@ function decodeMOTDString(%text) {
     return %text;
 };
 function geTGF_tabs::refreshMOTD(%this) {
-    delete();
-    new ();
-    add();
+    if (isObject()) {
+        delete();
+    }
+    new ManagerRequest(MOTDRequest);
+    if (isObject()) {
+        add();
+    }
     %url = MOTDRequest @ $Net::ClientServiceURL @ "/GlobalMessage";
     MissionCleanup;
-    %url = MissionCleanup @ isObject() @ %url @ "?user=" @ urlEncode($Player::Name);
+    %url = MOTDRequest @ MissionCleanup @ %url @ "?user=" @ urlEncode($Player::Name);
     MOTDRequest;
-    %url = 0 @ ManagerRequest @ %url @ "&token=" @ urlEncode($Token);
-    MOTDRequest;
-    %url = MOTDRequest @ isObject() @ %url @ "&type=" @ urlEncode("motd");
+    %url = %url @ "&token=" @ urlEncode($Token);
+    %url = %url @ "&type=" @ urlEncode("motd");
     log("communication", "debug", "sending request to get current motd: " @ %url);
     %url.setURL();
     start();
 };
 function MOTDRequest::onDone(%this) {
     %status = findRequestStatus(%this);
-    onMOTDPostFailed();
-    log("communication", "warn", geTGF_tabs @ "MOTDRequest::onDone status: " @ %status);
+    if (!(%status $= "success")) {
+        onMOTDPostFailed();
+        log("communication", "warn", geTGF_tabs @ "MOTDRequest::onDone status: " @ %status);
+    }
     %text = %this.getValue("message");
-    !((%status $= "success"));
-    %text = decodeMOTDString(%text);
-    !((%text $= ""));
-    %text.setText();
-    qotdID = MOTDText @ "" @ MOTDText;
+    if (!(%text $= "")) {
+        %text = decodeMOTDString(%text);
+        %text.setText();
+        qotdID = MOTDText @ "" @ MOTDText;
+    }
     onMOTDPostFailed();
 };
 function geTGF_tabs::refreshQOTD(%this) {
-    delete();
-    new ();
-    add();
+    if (isObject()) {
+        delete();
+    }
+    new ManagerRequest(QOTDRequest);
+    if (isObject()) {
+        add();
+    }
     %url = QOTDRequest @ $Net::ClientServiceURL @ "/GlobalMessage";
     MissionCleanup;
-    %url = MissionCleanup @ isObject() @ %url @ "?user=" @ urlEncode($Player::Name);
+    %url = QOTDRequest @ MissionCleanup @ %url @ "?user=" @ urlEncode($Player::Name);
     QOTDRequest;
-    %url = 0 @ ManagerRequest @ %url @ "&token=" @ urlEncode($Token);
-    QOTDRequest;
-    %url = QOTDRequest @ isObject() @ %url @ "&type=" @ urlEncode("qotd");
+    %url = %url @ "&token=" @ urlEncode($Token);
+    %url = %url @ "&type=" @ urlEncode("qotd");
     log("communication", "debug", "sending request to get current qotd: " @ %url);
     %url.setURL();
     start();
@@ -824,25 +872,31 @@ function geTGF_tabs::refreshQOTD(%this) {
 function QOTDRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     %text = "";
-    %text = %this.getValue("message");
-    (%status $= "success");
-    %text = decodeMOTDString(%text);
-    %qID = trim(getWords(%text, 0, 0));
-    %text = getWords(%text, 1);
-    %alreadyAnswered = hasSubString($UserPref::QOTD::answered, %qID);
-    echoDebug(getScopeName() @ " " @ "- already answered" @ " " @ %qID);
-    %text = "";
-    %alreadyAnswered;
-    %text.setText();
-    qotdID = MOTDText @ %qID @ MOTDText;
-    !((%text $= ""));
+    if ((%status $= "success")) {
+        %text = %this.getValue("message");
+        %text = decodeMOTDString(%text);
+        %qID = trim(getWords(%text, 0, 0));
+        %text = getWords(%text, 1);
+        %alreadyAnswered = hasSubString($UserPref::QOTD::answered, %qID);
+        if (%alreadyAnswered) {
+            echoDebug(getScopeName() @ " " @ "- already answered" @ " " @ %qID);
+            %text = "";
+        }
+    }
+    if (!(%text $= "")) {
+        %text.setText();
+        qotdID = MOTDText @ %qID @ MOTDText;
+    }
     refreshMOTD();
 };
 function MOTDText::onURL(%this, %url) {
-    %url = restWords(%url);
-    (firstWord(%url) $= "gamelink");
-    Parent::onURL(%this, %url);
-    return (0.0 != strstr(%url, "answer:"));
+    if ((firstWord(%url) $= "gamelink")) {
+        %url = restWords(%url);
+    }
+    if ((0.0 != strstr(%url, "answer:"))) {
+        Parent::onURL(%this, %url);
+        return;
+    }
     %answer = getSubStr(%url, strlen("answer:"), 100000);
     %trackURL = "";
     %trackURL = %trackURL @ "/client/qotd";
@@ -862,10 +916,14 @@ function geTGF_tabs::onMOTDPostFailed(%this) {
     MOTDText;
     %fo = new ""();
     FileObject;
-    %text = "";
-    %fo.openForRead(%fileName);
-    %text = 0 @ !(%fo.isEOF()) @ %text @ %fo.readLine() @ "\n";
-    %text.setText();
+    if (%fo.openForRead(%fileName)) {
+        %text = "";
+        0;
+        if (!(%fo.isEOF())) {
+            %text = %text @ %fo.readLine() @ "\n";
+        }
+        %text.setText();
+    }
     error(MOTDText @ "unable to find default motd: " @ %fileName);
     %fo.delete();
 };

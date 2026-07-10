@@ -19,15 +19,19 @@ function snapshotTool::doSnap(%this) {
 };
 function snapshotTool::waitForNextFrameToSnap(%this) {
     cancel(gGetField(%this));
-    gSetField(%this, %this.schedule(10, "waitForNextFrameToSnap"));
-    return waitForFrameSchedule;
+    if ((gGetField(%this) <= $Canvas::frameCount)) {
+        gSetField(%this, %this.schedule(10, "waitForNextFrameToSnap"));
+        return waitForFrameSchedule;
+    }
     %this.doSnap2();
 };
 function snapshotTool::doSnap2(%this) {
     %snapshot = snapshot::snapAndUpControlRegion($player.getShapeName(), "y");
     snapshotToolActiveRegion;
-    error("Snapshot", "Problem taking snapshot");
-    return !(isObject(%snapshot));
+    if (!(isObject(%snapshot))) {
+        error("Snapshot", "Problem taking snapshot");
+        return;
+    }
     saveObject = %this @ %snapshot;
     %snapshot.setCompletedCallback("snapshotToolonComplete");
     0.setVisible();
@@ -44,9 +48,15 @@ function snapshotTool::onProgress(%this, %snapshot) {
 function snapshotToolonComplete(%request, %result) {
     %snapshot = saveObject;
     %request;
-    1.setVisible();
-    0.setVisible();
-    gotoWebPage(visitWhenDoneUrl);
+    if ((0.0 == %result)) {
+        1.setVisible();
+        0.setVisible();
+        if (!(%snapshot SPC visitWhenDoneUrl $= "")) {
+        }
+        if ($UserPref::Snapshots::View) {
+            gotoWebPage(visitWhenDoneUrl);
+        }
+    }
     1.setVisible();
     0.setVisible();
 };

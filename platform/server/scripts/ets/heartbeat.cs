@@ -1,15 +1,15 @@
 function serverStart() {
-    %initRequest = new ();
-    InitRequest;
-    %host = 0 @ CURLObject @ $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
+    %initRequest = new CURLObject(InitRequest);
+    %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=start";
     %bindAddress = "address=" @ urlEncode($Pref::Net::BindAddress);
     %bindPort = "port=" @ urlEncode($BoundPort);
     %name = "name=" @ urlEncode($Pref::Server::Name);
     %location = strreplace($Pref::Net::Location, ",", " ");
-    %location = generateRandomMapLocation();
-    (%location $= "");
+    if ((%location $= "")) {
+        %location = generateRandomMapLocation();
+    }
     %location = "location=" @ urlEncode(%location);
     %description = "description=" @ urlEncode($Pref::Server::Info);
     %capacity = "capacity=" @ urlEncode($Pref::Server::MaxPlayers);
@@ -21,19 +21,21 @@ function serverStart() {
     return;
 };
 function serverHeartBeat() {
-    error("StandAlone - turning off serverHeartBeat.");
-    return $StandAlone;
-    %initRequest = new ();
-    InitRequest;
-    %host = 0 @ CURLObject @ $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
+    if ($StandAlone) {
+        error("StandAlone - turning off serverHeartBeat.");
+        return;
+    }
+    %initRequest = new CURLObject(InitRequest);
+    %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=heartbeat";
     %bindAddress = "address=" @ urlEncode($Pref::Net::BindAddress);
     %bindPort = "port=" @ urlEncode($Pref::Server::Port);
     %name = "name=" @ urlEncode($Pref::Server::Name);
     %location = strreplace($Pref::Net::Location, ",", " ");
-    %location = generateRandomMapLocation();
-    (%location $= "");
+    if ((%location $= "")) {
+        %location = generateRandomMapLocation();
+    }
     %location = "location=" @ urlEncode(%location);
     %description = "description=" @ urlEncode($Pref::Server::Info);
     %capacity = "capacity=" @ urlEncode($Pref::Server::MaxPlayers);
@@ -42,13 +44,16 @@ function serverHeartBeat() {
     "load=";
     %users = "users=";
     %i = 0;
-    %users = (0.0 > %i) @ %users @ ",";
-    (%count < %i);
-    %client = %i.getObject();
-    ClientGroup;
-    %users = %client @ urlEncode(nameBase);
-    %users;
-    %i = (1.0 + %i);
+    if ((%count < %i)) {
+        if ((0.0 > %i)) {
+            %users = %users @ ",";
+        }
+        %client = %i.getObject();
+        ClientGroup;
+        %users = %client @ urlEncode(nameBase);
+        %users;
+        %i = (1.0 + %i);
+    }
     %post = (%count < %i) @ %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version @ "&" @ %load @ "&" @ %users;
     echo("sending server heartbeat to: " @ %host);
     %initRequest.post(%host, %uri, %query, %post);
@@ -62,7 +67,9 @@ function generateRandomMapLocation() {
     return $Pref::Net::Location;
 };
 function InitRequest::onStatus(%unused, %status) {
-    error((200.0 != %status) @ "heartbeat HTTP status: " @ %status);
+    if ((200.0 != %status)) {
+        error("heartbeat HTTP status: " @ %status);
+    }
     return;
 };
 function InitRequest::onConnected(%unused) {
@@ -78,11 +85,15 @@ function InitRequest::onLine(%unused, %line) {
     name;
     %line = NextToken(%line, "=");
     value;
-    %connection = %value.get();
-    ClientDict;
-    echo(%connection @ nameBase);
-    %connection.delete("You have connected in another location.");
-    return (0.0 != %connection) @ "received boot for player ";
+    if ((%name $= "boot")) {
+        %connection = %value.get();
+        ClientDict;
+        if ((0.0 != %connection)) {
+            echo(%connection @ nameBase);
+            %connection.delete("You have connected in another location.");
+        }
+    }
+    return "received boot for player ";
 };
 function InitRequest::onDNSResolved(%unused) {
     return;

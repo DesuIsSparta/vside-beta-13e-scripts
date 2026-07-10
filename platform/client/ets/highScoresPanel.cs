@@ -1,7 +1,9 @@
-class = geHighScoresPanelTabs @ new () @ "TabControl";
-ScriptObject;
-0;
-add();
+if (!(isObject())) {
+    class = geHighScoresPanelTabs @ new ScriptObject(geHighScoresPanelTabs) @ "TabControl";
+    if (isObject()) {
+        add();
+    }
+}
 function toggleHighScoresPanel() {
     toggleVisibleState();
 };
@@ -20,12 +22,12 @@ function geHighScoresPanel::open(%this, %gameName, %gameStationId) {
     HumanReadableGameNamesMap;
     %humanReadableGameName = gameName.get();
     %this;
-    %colon = ": ";
-    "";
-    (HumanReadableGameNamesMap SPC %humanReadableGameName $= "") @ geHighScoresTitleText @ "High Scores" @ %colon @ %humanReadableGameName.setText();
+    %colon = (HumanReadableGameNamesMap SPC %humanReadableGameName $= "") ? "" : ": ";
+    HumanReadableGameNamesMap;
+    geHighScoresTitleText @ "High Scores" @ %colon @ %humanReadableGameName.setText();
     %request = sendRequest_GetHighGameScores($Player::Name, gameName, 0, 25, "onDoneOrErrorCallback_GetHighGameScores");
     %this;
-    global = HumanReadableGameNamesMap @ 1 @ %request;
+    global = 1 @ %request;
     %this.requestStarted();
     %request = sendRequest_GetHighGameScoresForStation($Player::Name, gameStationId, 0, 25, "onDoneOrErrorCallback_GetHighGameScores");
     %this;
@@ -42,20 +44,22 @@ function geHighScoresPanel::close(%this) {
 };
 function geHighScoresPanel::Initialize(%this) {
     setup();
-    requestsPending = !(isObject(waitIcon)) @ 0 @ %this;
-    %this;
-    waitIcon = geHighScoresPanelTabs @ AnimCtrl::newAnimCtrl("457 24", "18 18") @ %this;
-    waitIcon.setDelay(60);
-    waitIcon.addFrame("platform/client/ui/wait0.png");
-    waitIcon.addFrame("platform/client/ui/wait1.png");
-    waitIcon.addFrame("platform/client/ui/wait2.png");
-    waitIcon.addFrame("platform/client/ui/wait3.png");
-    waitIcon.addFrame("platform/client/ui/wait4.png");
-    waitIcon.addFrame("platform/client/ui/wait5.png");
-    waitIcon.addFrame("platform/client/ui/wait6.png");
-    waitIcon.addFrame("platform/client/ui/wait7.png");
-    waitIcon.setVisible(0);
-    %this.add(waitIcon);
+    if (!(isObject(waitIcon))) {
+        requestsPending = %this @ 0 @ %this;
+        geHighScoresPanelTabs;
+        waitIcon = AnimCtrl::newAnimCtrl("457 24", "18 18") @ %this;
+        waitIcon.setDelay(60);
+        waitIcon.addFrame("platform/client/ui/wait0.png");
+        waitIcon.addFrame("platform/client/ui/wait1.png");
+        waitIcon.addFrame("platform/client/ui/wait2.png");
+        waitIcon.addFrame("platform/client/ui/wait3.png");
+        waitIcon.addFrame("platform/client/ui/wait4.png");
+        waitIcon.addFrame("platform/client/ui/wait5.png");
+        waitIcon.addFrame("platform/client/ui/wait6.png");
+        waitIcon.addFrame("platform/client/ui/wait7.png");
+        waitIcon.setVisible(0);
+        %this.add(waitIcon);
+    }
 };
 function geHighScoresPanel::requestStarted(%this) {
     requestsPending = (%this + requestsPending);
@@ -66,66 +70,78 @@ function geHighScoresPanel::requestStarted(%this) {
 function geHighScoresPanel::requestStopped(%this) {
     requestsPending = (%this - requestsPending);
     1.0;
-    requestsPending = (%this <= requestsPending) @ 0 @ %this;
-    0.0;
-    waitIcon.stop();
-    waitIcon.setVisible(0);
+    if ((%this <= requestsPending)) {
+        requestsPending = 0.0 @ 0 @ %this;
+        waitIcon.stop();
+        waitIcon.setVisible(0);
+    }
 };
 function onDoneOrErrorCallback_GetHighGameScores(%request) {
     requestStopped();
-    %global = global;
-    %request;
-    %tabName = "This Machine";
-    "Global";
-    %tab = %tabName.getTabWithName();
-    geHighScoresPanelTabs;
-    error(getTrace() @ " " @ "tab with name" @ " " @ %tabName @ " " @ "not found!");
-    return !(isObject(%tab));
-    %dataTable = DataTable;
-    %tab;
-    %dataTable.removeRowsByIndex(0, %dataTable.getRowCount());
-    %count = %request.getValue("scores.scoresCount");
-    %dataTable.addRows(%count);
-    %userRanking = "";
-    %userScore = "";
-    %userScoreDate = "";
-    %i = 0;
-    %prefix = (%count < %i) @ "scores.scores" @ %i;
-    %score = %request.getValue(%prefix @ ".score");
-    %scoreRanking = %request.getValue(%prefix @ ".scoreRanking");
-    %userName = %request.getValue(%prefix @ ".userName");
-    %dateAttained = %request.getValue(%prefix @ ".dateAttained");
-    %userRanking = %scoreRanking;
-    ((%userName $= $Player::Name) SPC %userRanking $= "");
-    %userScore = %score;
-    %userScoreDate = %dateAttained;
-    %style = "UserName_Normal";
-    "UserName_Friend";
-    %rowData = "rank" @ "\t" @ %scoreRanking @ "\t" @ %scoreRanking @ "\n" @ "avatar" @ "\t" @ %userName @ "\t" @ "platform/client/ui/tgf/tgf_profile_default" @ "\n" @ "username" @ "\t" @ %userName @ "\t" @ mlStyle(%userName, %style) @ "\n" @ "date" @ "\t" @ %dateAttained @ "\t" @ %dateAttained @ "\n" @ "score" @ "\t" @ %score @ "\t" @ %score;
-    (BuddyHudWin SPC %userName.getFriendStatus() $= "friends");
-    %dataTable.setRowDataByIndex(%i, %rowData);
-    %rowData = "avatar" @ "\t" @ %userName @ "\t" @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=S";
-    %dataTable.setRowDataByIndex(%i, %rowData);
-    %i = (1.0 + %i);
-    %dataTable.updateListeners();
-    %userRanking = %request.getValue("scores.userRanking");
-    ((%count < %i) SPC %userRanking $= "");
-    %userScore = %request.getValue("scores.userScore");
-    %userScoreDate = %request.getValue("scores.userScoreDate");
-    %hrGameName = gameName.get();
-    geHighScoresPanel;
-    %text = %global @ HumanReadableGameNamesMap @ "You have no score for " @ %hrGameName @ ".";
-    (%userRanking $= "");
-    %text = "You have no score on this machine.";
-    noScoreText.setText(%text);
-    noScoreText.setVisible(1);
-    userScoresPanel.setVisible(0);
-    usernameField.setText(%tab @ "<clip:111>" @ $Player::Name);
-    bestScoreField.setText(%userScore);
-    rankField.setText(%userRanking);
-    dateField.setText(%userScoreDate);
-    noScoreText.setVisible(0);
-    userScoresPanel.setVisible(1);
+    if (%request.checkSuccess()) {
+        %global = global;
+        %request;
+        %tabName = %global ? "Global" : "This Machine";
+        geHighScoresPanel;
+        %tab = %tabName.getTabWithName();
+        geHighScoresPanelTabs;
+        if (!(isObject(%tab))) {
+            error(getTrace() @ " " @ "tab with name" @ " " @ %tabName @ " " @ "not found!");
+            return;
+        }
+        %dataTable = DataTable;
+        %tab;
+        %dataTable.removeRowsByIndex(0, %dataTable.getRowCount());
+        %count = %request.getValue("scores.scoresCount");
+        %dataTable.addRows(%count);
+        %userRanking = "";
+        %userScore = "";
+        %userScoreDate = "";
+        %i = 0;
+        if ((%count < %i)) {
+            %prefix = "scores.scores" @ %i;
+            %score = %request.getValue(%prefix @ ".score");
+            %scoreRanking = %request.getValue(%prefix @ ".scoreRanking");
+            %userName = %request.getValue(%prefix @ ".userName");
+            %dateAttained = %request.getValue(%prefix @ ".dateAttained");
+            if ((%userName $= $Player::Name)) {
+            }
+            if ((%userRanking $= "")) {
+                %userRanking = %scoreRanking;
+                %userScore = %score;
+                %userScoreDate = %dateAttained;
+            }
+            %style = (BuddyHudWin SPC %userName.getFriendStatus() $= "friends") ? "UserName_Friend" : "UserName_Normal";
+            %rowData = "rank" @ "\t" @ %scoreRanking @ "\t" @ %scoreRanking @ "\n" @ "avatar" @ "\t" @ %userName @ "\t" @ "platform/client/ui/tgf/tgf_profile_default" @ "\n" @ "username" @ "\t" @ %userName @ "\t" @ mlStyle(%userName, %style) @ "\n" @ "date" @ "\t" @ %dateAttained @ "\t" @ %dateAttained @ "\n" @ "score" @ "\t" @ %score @ "\t" @ %score;
+            %dataTable.setRowDataByIndex(%i, %rowData);
+            %rowData = "avatar" @ "\t" @ %userName @ "\t" @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=S";
+            %dataTable.setRowDataByIndex(%i, %rowData);
+            %i = (1.0 + %i);
+        }
+        %dataTable.updateListeners();
+        if (((%count < %i) SPC %userRanking $= "")) {
+            %userRanking = %request.getValue("scores.userRanking");
+            %userScore = %request.getValue("scores.userScore");
+            %userScoreDate = %request.getValue("scores.userScoreDate");
+        }
+        if ((%userRanking $= "")) {
+            if (%global) {
+                %hrGameName = gameName.get();
+                geHighScoresPanel;
+                %text = HumanReadableGameNamesMap @ "You have no score for " @ %hrGameName @ ".";
+            }
+            %text = "You have no score on this machine.";
+            noScoreText.setText(%text);
+            noScoreText.setVisible(1);
+            userScoresPanel.setVisible(0);
+        }
+        usernameField.setText(%tab @ "<clip:111>" @ $Player::Name);
+        bestScoreField.setText(%userScore);
+        rankField.setText(%userRanking);
+        dateField.setText(%userScoreDate);
+        noScoreText.setVisible(0);
+        userScoresPanel.setVisible(1);
+    }
 };
 function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name) {
     profile = GuiBitmapButtonCtrl @ new ""() @ "ClipboardTabButtonProfile";
@@ -147,11 +163,13 @@ function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name) {
     return;
 };
 function geHighScoresPanelTabs::setup(%this) {
-    %this.Initialize("109 25", "", "0 0", "horizontal");
-    %this.newTab("This Machine", "platform/client/buttons/clipboard_tab");
-    %this.newTab("Global", "platform/client/buttons/clipboard_tab");
-    %this.selectTabWithName("This Machine");
-    %this.fillTabs();
+    if (!(initialized)) {
+        %this.Initialize("109 25", "", "0 0", "horizontal");
+        %this.newTab("This Machine", "platform/client/buttons/clipboard_tab");
+        %this.newTab("Global", "platform/client/buttons/clipboard_tab");
+        %this.selectTabWithName("This Machine");
+        %this.fillTabs();
+    }
 };
 function geHighScoresPanelTabs::fillTabs(%this) {
     %this.fillTabWithName("This Machine");
@@ -159,7 +177,9 @@ function geHighScoresPanelTabs::fillTabs(%this) {
 };
 function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     %tab = %this.getTabWithName(%tabName);
-    return !(isObject(%tab));
+    if (!(isObject(%tab))) {
+        return;
+    }
     %tab.setProfile();
     %dataTable = new ""();
     DataTable;
@@ -320,7 +340,9 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
 function geHighScoresGuiTable::doSetupRowGuiArray(%this, %rowArray) {
     Parent::doSetupRowGuiArray(%this, %rowArray);
     DataTable = %this.getDataTable() @ %rowArray;
-    %rowArray.bindClassName("geHighScoresGuiTableRow");
+    if (!(getWord(%child.getNamespaceList(), 0) $= "geHighScoresGuiTableRow")) {
+        %rowArray.bindClassName("geHighScoresGuiTableRow");
+    }
 };
 function geHighScoresGuiTable::onRowSelected(%this, %unused, %rowIndex, %unused, %unused) {
     %cellIndex = %this.getDataTable().getColumnIndex("username");

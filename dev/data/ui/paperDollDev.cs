@@ -3,35 +3,47 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     %masterList = %gender[$gPaperDollPermutationLists @ %gender];
     %found = -(1.0);
     %n = (1.0 - %masterList.size());
-    %candidate = %masterList.get(%n);
-    (0.0 >= %n);
-    %found = %candidate;
-    (%candidate SPC name $= %listName);
-    %n = (1.0 - %n);
-    (-(1.0) == %found);
-    %found = new_ScriptArray("");
-    (-(1.0) == %found);
-    name = (0.0 >= %n) @ %listName @ %found;
-    (-(1.0) == %found);
-    %masterList.append(%found);
+    if ((-(1.0) == %found)) {
+    }
+    if ((0.0 >= %n)) {
+        %candidate = %masterList.get(%n);
+        if ((%candidate SPC name $= %listName)) {
+            %found = %candidate;
+        }
+        %n = (1.0 - %n);
+        if ((-(1.0) == %found)) {
+        }
+    }
+    if ((-(1.0) == %found)) {
+        %found = new_ScriptArray("");
+        (0.0 >= %n);
+        name = %listName @ %found;
+        %masterList.append(%found);
+    }
     %num = getWordCount(%skus);
     %skusDry = %skus;
     %skus = "";
     %n = 0;
-    %sku = getWord(%skusDry, %n);
-    (%num < %n);
-    %okay = 1;
-    error(%sku.findBySku() @ descShrt);
-    %okay = 0;
-    SkuManager;
-    error(%sku.findBySku() @ descShrt);
-    %okay = 0;
-    SkuManager;
-    %skus = getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku requires roles:" @ " " @ %sku @ " " @ %okay @ %skus @ %sku @ " ";
-    !((SkuManager SPC %sku.filterSkusRoles(0) $= %sku));
-    MessageBoxOK("Error", %sku.findBySku() @ descShrt, "");
-    %n = (1.0 + %n);
-    SkuManager;
+    if ((%num < %n)) {
+        %sku = getWord(%skusDry, %n);
+        %okay = 1;
+        if (!(SkuManager SPC %sku.filterSkusBornWith(1) $= %sku)) {
+            error(%sku.findBySku() @ descShrt);
+            %okay = 0;
+            SkuManager;
+        }
+        if (!(SkuManager SPC %sku.filterSkusRoles(0) $= %sku)) {
+            error(%sku.findBySku() @ descShrt);
+            %okay = 0;
+            SkuManager;
+        }
+        if (%okay) {
+            %skus = getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku is not bornWith:" @ " " @ %sku @ " " @ getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku requires roles:" @ " " @ %sku @ " " @ %skus @ %sku @ " ";
+        }
+        MessageBoxOK("Error", %sku.findBySku() @ descShrt, "");
+        %n = (1.0 + %n);
+        SkuManager;
+    }
     %skus = trim(%skus);
     (%num < %n);
     %found.append(%skus @ "\t" @ %skusName);
@@ -42,7 +54,9 @@ function paperDoll_InitPermutationsForce() {
     paperDoll_InitPermutations();
 };
 function paperDoll_InitPermutations() {
-    return $gPaperDoll_Initialized;
+    if ($gPaperDoll_Initialized) {
+        return;
+    }
     $gPaperDoll_Initialized = 1;
     $gPaperDoll_Initialized[$gPaperDollPermutationLists @ "f"].clear();
     .clear();
@@ -65,38 +79,51 @@ function paperDoll_InitPermutations() {
     %requiredTokens = %requiredTokens @ "parameter" @ " ";
     %requiredTokens = %requiredTokens @ "option" @ " ";
     %unseenTokens = %requiredTokens;
-    %line = %fo.readLine();
-    !(%fo.isEOF());
-    %line = trim(collapseWhiteSpace(%line));
-    %fo.openForRead(%fileName);
-    %lineNum = (1.0 + %lineNum);
-    %word = firstWord(%line);
-    (getSubStr(%line, 0, 1) $= "#");
-    %unseenTokens = findAndRemoveAllOccurrencesOfWord(%unseenTokens, %word);
-    $gPaperDollImgSize = trim(restWords(%line));
-    ((%word $= "") SPC %word $= "size");
-    $gPaperDollBackground = trim(restWords(%line));
-    (%word $= "background");
-    %gender = trim(restWords(%line));
-    (%word $= "gender");
-    %gender[$gPaperDoll_BaseSkus @ %gender] = (%word $= "baseSkus") @ trim(restWords(%line));
-    %param = trim(restWords(%line));
-    (%word $= "parameter");
-    %s = trim(restWords(%line));
-    (%word $= "option");
-    %s = NextToken(%s, ":");
-    optionName;
-    %s = NextToken(%s, ":");
-    option;
-    %option = trim(%option);
-    %optionName = trim(%optionName);
-    paperDoll_AddPermutation(%gender, %param, %option, %optionName);
-    error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
-    %n = (1.0 - getWordCount(%unseenTokens));
-    !(%fo.isEOF());
-    error(getScopeName() @ " " @ "- unseen command:" @ " " @ getWord(%unseenTokens, %n));
-    %n = (1.0 - %n);
-    (0.0 >= %n);
+    if (%fo.openForRead(%fileName)) {
+        if (!(%fo.isEOF())) {
+            %line = %fo.readLine();
+            %line = trim(collapseWhiteSpace(%line));
+            %lineNum = (1.0 + %lineNum);
+            if ((getSubStr(%line, 0, 1) $= "#")) {
+            }
+            %word = firstWord(%line);
+            %unseenTokens = findAndRemoveAllOccurrencesOfWord(%unseenTokens, %word);
+            if ((%word $= "")) {
+            }
+            if ((%word $= "size")) {
+                $gPaperDollImgSize = trim(restWords(%line));
+            }
+            if ((%word $= "background")) {
+                $gPaperDollBackground = trim(restWords(%line));
+            }
+            if ((%word $= "gender")) {
+                %gender = trim(restWords(%line));
+            }
+            if ((%word $= "baseSkus")) {
+                %gender[$gPaperDoll_BaseSkus @ %gender] = trim(restWords(%line));
+            }
+            if ((%word $= "parameter")) {
+                %param = trim(restWords(%line));
+            }
+            if ((%word $= "option")) {
+                %s = trim(restWords(%line));
+                %s = NextToken(%s, ":");
+                optionName;
+                %s = NextToken(%s, ":");
+                option;
+                %option = trim(%option);
+                %optionName = trim(%optionName);
+                paperDoll_AddPermutation(%gender, %param, %option, %optionName);
+            }
+            error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
+        }
+        %n = (1.0 - getWordCount(%unseenTokens));
+        !(%fo.isEOF());
+        if ((0.0 >= %n)) {
+            error(getScopeName() @ " " @ "- unseen command:" @ " " @ getWord(%unseenTokens, %n));
+            %n = (1.0 - %n);
+        }
+    }
     error((0.0 >= %n) @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for read.");
     %fo.delete();
 };
@@ -137,35 +164,43 @@ function paperDoll_getParamValuesNum(%gender, %paramNum) {
     return %paramValuesNum;
 };
 function paperDoll_getNumPermutations(%gender) {
-    return 0;
+    if ((1.0 < paperDoll_getParamsNum(%gender))) {
+        return 0;
+    }
     %numPermutations = 1;
     %paramNum = (1.0 - paperDoll_getParamsNum(%gender));
-    %numValues = (1.0 + paperDoll_getParamValueMax(%gender, %paramNum));
-    (0.0 >= %paramNum);
-    %numPermutations = (%numValues * %numPermutations);
-    echoDebug(getScopeName() @ " " @ "-" @ " " @ paperDoll_getParamName(%gender, %paramNum) @ " " @ %numValues);
-    %paramNum = (1.0 - %paramNum);
+    if ((0.0 >= %paramNum)) {
+        %numValues = (1.0 + paperDoll_getParamValueMax(%gender, %paramNum));
+        %numPermutations = (%numValues * %numPermutations);
+        echoDebug(getScopeName() @ " " @ "-" @ " " @ paperDoll_getParamName(%gender, %paramNum) @ " " @ %numValues);
+        %paramNum = (1.0 - %paramNum);
+    }
     return %numPermutations;
 };
 function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList) {
     paperDoll_InitPermutations();
     %masterList = %gender[$gPaperDollPermutationLists @ %gender];
     %num = getWordCount(%optionIndexList);
-    error((%masterList.size() != %num) @ getScopeName() @ " " @ "- list has" @ " " @ %num @ " " @ "entries, but should have" @ " " @ %masterList.size() @ "." @ " " @ %gender @ " " @ %optionIndexList @ " " @ getTrace());
-    return;
+    if ((%masterList.size() != %num)) {
+        error(getScopeName() @ " " @ "- list has" @ " " @ %num @ " " @ "entries, but should have" @ " " @ %masterList.size() @ "." @ " " @ %gender @ " " @ %optionIndexList @ " " @ getTrace());
+        return;
+    }
     %skus = "";
     %fileName = %gender;
     %n = 0;
-    %optionIndex = getWord(%optionIndexList, %n);
-    (%num < %n);
-    %subList = %masterList.get(%n);
-    error((%subList.size() >= %optionIndex) @ getScopeName() @ " " @ "- " @ %n @ "'th value is out of range:" @ " " @ %optionIndex);
-    return "";
-    %optionName = getField(%subList.get(%optionIndex), 1);
-    %optionSkus = getField(%subList.get(%optionIndex), 0);
-    %fileName = %fileName @ "_" @ %optionName;
-    %skus = %skus @ %optionSkus @ " ";
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %optionIndex = getWord(%optionIndexList, %n);
+        %subList = %masterList.get(%n);
+        if ((%subList.size() >= %optionIndex)) {
+            error(getScopeName() @ " " @ "- " @ %n @ "'th value is out of range:" @ " " @ %optionIndex);
+            return "";
+        }
+        %optionName = getField(%subList.get(%optionIndex), 1);
+        %optionSkus = getField(%subList.get(%optionIndex), 0);
+        %fileName = %fileName @ "_" @ %optionName;
+        %skus = %skus @ %optionSkus @ " ";
+        %n = (1.0 + %n);
+    }
     %skus = trim(%skus);
     (%num < %n);
     return %fileName @ "\t" @ %skus;

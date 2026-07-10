@@ -9,8 +9,16 @@ exec("./systemCommon.cs");
 exec("./playerCommon.cs");
 exec("./proximityChatCommon.cs");
 exec("./skuManagerCommon.cs");
-exec("./skusInitGenerated.cs");
-exec("./skusInitFurnishingsGenerated.cs");
+if (!(exec("./skusInitGenerated_" @ $ETS::ProjectName @ ".cs", 0))) {
+    if (!(exec("./skusInitGenerated_vside.cs", 0))) {
+        exec("./skusInitGenerated.cs");
+    }
+}
+if (!(exec("./skusInitFurnishingsGenerated_" @ $ETS::ProjectName @ ".cs", 0))) {
+    if (!(exec("./skusInitFurnishingsGenerated_vside.cs", 0))) {
+        exec("./skusInitFurnishingsGenerated.cs");
+    }
+}
 exec("./skusInitCommon.cs");
 exec("./emote.cs");
 exec("./blendConfig.cs");

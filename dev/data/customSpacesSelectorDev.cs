@@ -7,11 +7,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %buildingInfo = ;
     %floorplan = new ""();
     SimObject;
-    %floorplan.add();
+    if (isObject()) {
+        %floorplan.add();
+    }
     name = MissionCleanup @ "floorPlan007" @ %floorplan;
-    isObject();
-    description = MissionCleanup @ "floorPlanDescription" @ %floorplan;
-    0;
+    MissionCleanup;
+    description = 0 @ "floorPlanDescription" @ %floorplan;
     capacity = 999 @ %floorplan;
     minLevel = -1 @ %floorplan;
     priceVBux = 50 @ %floorplan;
@@ -21,11 +22,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     floorplan = %floorplan @ 0 @ %buildingInfo;
     %floorplan = new ""();
     SimObject;
-    %floorplan.add();
+    if (isObject()) {
+        %floorplan.add();
+    }
     name = MissionCleanup @ "floorPlan007vpointsonly" @ %floorplan;
-    isObject();
-    description = MissionCleanup @ "floorPlanDescription" @ %floorplan;
-    0;
+    MissionCleanup;
+    description = 0 @ "floorPlanDescription" @ %floorplan;
     capacity = 999 @ %floorplan;
     minLevel = -1 @ %floorplan;
     priceVBux = -1 @ %floorplan;
@@ -35,11 +37,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     floorplan = %floorplan @ 1 @ %buildingInfo;
     %floorplan = new ""();
     SimObject;
-    %floorplan.add();
+    if (isObject()) {
+        %floorplan.add();
+    }
     name = MissionCleanup @ "floorPlan007vbuxonly" @ %floorplan;
-    isObject();
-    description = MissionCleanup @ "floorPlanDescription" @ %floorplan;
-    0;
+    MissionCleanup;
+    description = 0 @ "floorPlanDescription" @ %floorplan;
     capacity = 999 @ %floorplan;
     minLevel = -1 @ %floorplan;
     priceVBux = 50 @ %floorplan;
@@ -49,11 +52,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     floorplan = %floorplan @ 2 @ %buildingInfo;
     %floorplan = new ""();
     SimObject;
-    %floorplan.add();
+    if (isObject()) {
+        %floorplan.add();
+    }
     name = MissionCleanup @ "floorPlan007noavailable" @ %floorplan;
-    isObject();
-    description = MissionCleanup @ "floorPlanDescription" @ %floorplan;
-    0;
+    MissionCleanup;
+    description = 0 @ "floorPlanDescription" @ %floorplan;
     capacity = 999 @ %floorplan;
     minLevel = -1 @ %floorplan;
     priceVBux = -1 @ %floorplan;

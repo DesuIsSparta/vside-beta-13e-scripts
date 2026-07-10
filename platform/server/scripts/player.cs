@@ -1,83 +1,64 @@
 exec("projects/common/characters/initReloadable.cs");
-fileName = FootLightSoftSound @ datablock () @ "projects/common/sound/footstep_soft.wav";
-AudioProfile;
-description = 0 @ AudioClosest3d;
+fileName = datablock AudioProfile(FootLightSoftSound) @ "projects/common/sound/footstep_soft.wav";
+description = AudioClosest3d;
 preload = 1;
-fileName = FootLightHardSound @ datablock () @ "projects/common/sound/footstep_hard.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(FootLightHardSound) @ "projects/common/sound/footstep_hard.wav";
+description = AudioClose3d;
 preload = 1;
-fileName = FootLightMetalSound @ datablock () @ "projects/common/sound/footstep_hard.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(FootLightMetalSound) @ "projects/common/sound/footstep_hard.wav";
+description = AudioClose3d;
 preload = 1;
-fileName = FootLightSnowSound @ datablock () @ "projects/common/sound/footstep_soft.wav";
-AudioProfile;
-description = 0 @ AudioClosest3d;
+fileName = datablock AudioProfile(FootLightSnowSound) @ "projects/common/sound/footstep_soft.wav";
+description = AudioClosest3d;
 preload = 1;
-fileName = FootLightShallowSplashSound @ datablock () @ "projects/common/sound/footstep_water.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(FootLightShallowSplashSound) @ "projects/common/sound/footstep_water.wav";
+description = AudioClose3d;
 preload = 1;
-fileName = FootLightWadingSound @ datablock () @ "projects/common/sound/footstep_water.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(FootLightWadingSound) @ "projects/common/sound/footstep_water.wav";
+description = AudioClose3d;
 preload = 1;
-fileName = FootLightUnderwaterSound @ datablock () @ "projects/common/sound/footstep_water.wav";
-AudioProfile;
-description = 0 @ AudioClosest3d;
+fileName = datablock AudioProfile(FootLightUnderwaterSound) @ "projects/common/sound/footstep_water.wav";
+description = AudioClosest3d;
 preload = 1;
-fileName = FootLightBubblesSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(FootLightBubblesSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClose3d;
 preload = 1;
-fileName = ArmorMoveBubblesSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioCloseLooping3d;
+fileName = datablock AudioProfile(ArmorMoveBubblesSound) @ "projects/common/sound/replaceme.wav";
+description = AudioCloseLooping3d;
 preload = 1;
-fileName = WaterBreathMaleSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClosestLooping3d;
+fileName = datablock AudioProfile(WaterBreathMaleSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClosestLooping3d;
 preload = 1;
-fileName = ImpactLightSoftSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(ImpactLightSoftSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClose3d;
 preload = 1;
 effect = ImpactSoftEffect;
-fileName = ImpactLightHardSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(ImpactLightHardSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClose3d;
 preload = 1;
 effect = ImpactHardEffect;
-fileName = ImpactLightMetalSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(ImpactLightMetalSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClose3d;
 preload = 1;
 effect = ImpactMetalEffect;
-fileName = ImpactLightSnowSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClosest3d;
+fileName = datablock AudioProfile(ImpactLightSnowSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClosest3d;
 preload = 1;
 effect = ImpactSnowEffect;
-fileName = ImpactLightWaterEasySound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(ImpactLightWaterEasySound) @ "projects/common/sound/replaceme.wav";
+description = AudioClose3d;
 preload = 1;
-fileName = ImpactLightWaterMediumSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(ImpactLightWaterMediumSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClose3d;
 preload = 1;
-fileName = ImpactLightWaterHardSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioDefault3d;
+fileName = datablock AudioProfile(ImpactLightWaterHardSound) @ "projects/common/sound/replaceme.wav";
+description = AudioDefault3d;
 preload = 1;
-fileName = ExitingWaterLightSound @ datablock () @ "projects/common/sound/replaceme.wav";
-AudioProfile;
-description = 0 @ AudioClose3d;
+fileName = datablock AudioProfile(ExitingWaterLightSound) @ "projects/common/sound/replaceme.wav";
+description = AudioClose3d;
 preload = 1;
-dragCoefficient = PlayerSplashMist @ datablock () @ 2;
-ParticleData;
-gravityCoefficient = 0 @ -(0.05);
+dragCoefficient = datablock ParticleData(PlayerSplashMist) @ 2;
+gravityCoefficient = -(0.05);
 inheritedVelFactor = 0;
 constantAcceleration = 0;
 lifetimeMS = 400;
@@ -95,9 +76,8 @@ sizes = 0.8 @ 2;
 times = 0 @ 0;
 times = 0.5 @ 1;
 times = 1 @ 2;
-ejectionPeriodMS = PlayerSplashMistEmitter @ datablock () @ 5;
-ParticleEmitterData;
-periodVarianceMS = 0 @ 0;
+ejectionPeriodMS = datablock ParticleEmitterData(PlayerSplashMistEmitter) @ 5;
+periodVarianceMS = 0;
 ejectionVelocity = 3;
 velocityVariance = 2;
 ejectionOffset = 0;
@@ -108,9 +88,8 @@ phiVariance = 360;
 overrideAdvance = 0;
 lifetimeMS = 250;
 particles = "PlayerSplashMist";
-dragCoefficient = PlayerBubbleParticle @ datablock () @ 0;
-ParticleData;
-gravityCoefficient = 0 @ -(0.5);
+dragCoefficient = datablock ParticleData(PlayerBubbleParticle) @ 0;
+gravityCoefficient = -(0.5);
 inheritedVelFactor = 0;
 constantAcceleration = 0;
 lifetimeMS = 400;
@@ -126,9 +105,8 @@ sizes = 0.3 @ 2;
 times = 0 @ 0;
 times = 0.5 @ 1;
 times = 1 @ 2;
-ejectionPeriodMS = PlayerBubbleEmitter @ datablock () @ 1;
-ParticleEmitterData;
-periodVarianceMS = 0 @ 0;
+ejectionPeriodMS = datablock ParticleEmitterData(PlayerBubbleEmitter) @ 1;
+periodVarianceMS = 0;
 ejectionVelocity = 2;
 ejectionOffset = 0.5;
 velocityVariance = 0.5;
@@ -138,9 +116,8 @@ phiReferenceVel = 0;
 phiVariance = 360;
 overrideAdvance = 0;
 particles = "PlayerBubbleParticle";
-dragCoefficient = PlayerFoamParticle @ datablock () @ 2;
-ParticleData;
-gravityCoefficient = 0 @ -(0.05);
+dragCoefficient = datablock ParticleData(PlayerFoamParticle) @ 2;
+gravityCoefficient = -(0.05);
 inheritedVelFactor = 0;
 constantAcceleration = 0;
 lifetimeMS = 400;
@@ -158,9 +135,8 @@ sizes = 1.6 @ 2;
 times = 0 @ 0;
 times = 0.5 @ 1;
 times = 1 @ 2;
-ejectionPeriodMS = PlayerFoamEmitter @ datablock () @ 10;
-ParticleEmitterData;
-periodVarianceMS = 0 @ 0;
+ejectionPeriodMS = datablock ParticleEmitterData(PlayerFoamEmitter) @ 10;
+periodVarianceMS = 0;
 ejectionVelocity = 3;
 velocityVariance = 1;
 ejectionOffset = 0;
@@ -170,9 +146,8 @@ phiReferenceVel = 0;
 phiVariance = 360;
 overrideAdvance = 0;
 particles = "PlayerFoamParticle";
-dragCoefficient = PlayerFoamDropletsParticle @ datablock () @ 1;
-ParticleData;
-gravityCoefficient = 0 @ 0.2;
+dragCoefficient = datablock ParticleData(PlayerFoamDropletsParticle) @ 1;
+gravityCoefficient = 0.2;
 inheritedVelFactor = 0.2;
 constantAcceleration = -(0.0);
 lifetimeMS = 600;
@@ -187,9 +162,8 @@ sizes = 0 @ 2;
 times = 0 @ 0;
 times = 0.5 @ 1;
 times = 1 @ 2;
-ejectionPeriodMS = PlayerFoamDropletsEmitter @ datablock () @ 7;
-ParticleEmitterData;
-periodVarianceMS = 0 @ 0;
+ejectionPeriodMS = datablock ParticleEmitterData(PlayerFoamDropletsEmitter) @ 7;
+periodVarianceMS = 0;
 ejectionVelocity = 2;
 velocityVariance = 1;
 ejectionOffset = 0;
@@ -200,9 +174,8 @@ phiVariance = 360;
 overrideAdvance = 0;
 orientParticles = 1;
 particles = "PlayerFoamDropletsParticle";
-dragCoefficient = PlayerSplashParticle @ datablock () @ 1;
-ParticleData;
-gravityCoefficient = 0 @ 0.2;
+dragCoefficient = datablock ParticleData(PlayerSplashParticle) @ 1;
+gravityCoefficient = 0.2;
 inheritedVelFactor = 0.2;
 constantAcceleration = -(0.0);
 lifetimeMS = 600;
@@ -216,9 +189,8 @@ sizes = 0.5 @ 2;
 times = 0 @ 0;
 times = 0.5 @ 1;
 times = 1 @ 2;
-ejectionPeriodMS = PlayerSplashEmitter @ datablock () @ 1;
-ParticleEmitterData;
-periodVarianceMS = 0 @ 0;
+ejectionPeriodMS = datablock ParticleEmitterData(PlayerSplashEmitter) @ 1;
+periodVarianceMS = 0;
 ejectionVelocity = 3;
 velocityVariance = 1;
 ejectionOffset = 0;
@@ -230,9 +202,8 @@ overrideAdvance = 0;
 orientParticles = 1;
 lifetimeMS = 100;
 particles = "PlayerSplashParticle";
-numSegments = PlayerSplash @ datablock () @ 15;
-SplashData;
-ejectionFreq = 0 @ 15;
+numSegments = datablock SplashData(PlayerSplash) @ 15;
+ejectionFreq = 15;
 ejectionAngle = 40;
 ringLifetime = 0.5;
 lifetimeMS = 300;
@@ -251,9 +222,8 @@ times = 0 @ 0;
 times = 0.4 @ 1;
 times = 0.8 @ 2;
 times = 1 @ 3;
-dragCoefficient = LightPuff @ datablock () @ 2;
-ParticleData;
-gravityCoefficient = 0 @ -(0.01);
+dragCoefficient = datablock ParticleData(LightPuff) @ 2;
+gravityCoefficient = -(0.01);
 inheritedVelFactor = 0.6;
 constantAcceleration = 0;
 lifetimeMS = 800;
@@ -267,9 +237,8 @@ sizes = 0.1 @ 0;
 sizes = 0.8 @ 1;
 times = 0.3 @ 0;
 times = 1 @ 1;
-ejectionPeriodMS = LightPuffEmitter @ datablock () @ 35;
-ParticleEmitterData;
-periodVarianceMS = 0 @ 10;
+ejectionPeriodMS = datablock ParticleEmitterData(LightPuffEmitter) @ 35;
+periodVarianceMS = 10;
 ejectionVelocity = 0.2;
 velocityVariance = 0.1;
 ejectionOffset = 0;
@@ -280,9 +249,8 @@ phiVariance = 360;
 overrideAdvance = 0;
 useEmitterColors = 1;
 particles = "LightPuff";
-dragCoefficient = LiftoffDust @ datablock () @ 1;
-ParticleData;
-gravityCoefficient = 0 @ -(0.01);
+dragCoefficient = datablock ParticleData(LiftoffDust) @ 1;
+gravityCoefficient = -(0.01);
 inheritedVelFactor = 0;
 constantAcceleration = 0;
 lifetimeMS = 1000;
@@ -293,9 +261,8 @@ spinRandomMax = 500;
 colors = "1.0 1.0 1.0 1.0" @ 0;
 sizes = 1 @ 0;
 times = 1 @ 0;
-ejectionPeriodMS = LiftoffDustEmitter @ datablock () @ 5;
-ParticleEmitterData;
-periodVarianceMS = 0 @ 0;
+ejectionPeriodMS = datablock ParticleEmitterData(LiftoffDustEmitter) @ 5;
+periodVarianceMS = 0;
 ejectionVelocity = 2;
 velocityVariance = 0;
 ejectionOffset = 0;
@@ -306,13 +273,11 @@ phiVariance = 360;
 overrideAdvance = 0;
 useEmitterColors = 1;
 particles = "LiftoffDust";
-sizeX = PlayerFootprint @ datablock () @ 0.25;
-DecalData;
-sizeY = 0 @ 0.25;
+sizeX = datablock DecalData(PlayerFootprint) @ 0.25;
+sizeY = 0.25;
 textureName = "projects/common/characters/footprint";
-explodeOnMaxBounce = PlayerDebris @ datablock () @ 0;
-DebrisData;
-elasticity = 0 @ 0.15;
+explodeOnMaxBounce = datablock DebrisData(PlayerDebris) @ 0;
+elasticity = 0.15;
 friction = 0.5;
 lifetime = 4;
 lifetimeVariance = 0;
@@ -326,9 +291,8 @@ useRadiusMass = 1;
 baseRadius = 1;
 velocity = 20;
 velocityVariance = 12;
-renderFirstPerson = PlayerBody @ datablock () @ 0;
-PlayerData;
-emap = 0 @ 1;
+renderFirstPerson = datablock PlayerData(PlayerBody) @ 0;
+emap = 1;
 className = armor;
 shapeFile = "projects/common/characters/f_player/f_player.dts";
 cameraMaxDist = 3;
@@ -463,15 +427,13 @@ maxInv = 50 @ CrossbowAmmo;
 maxInv = 1 @ Crossbow;
 maxInv = 1 @ Rifle;
 gender = "";
-possibleGenders = PlayerF @ datablock ( : PlayerBody) @ "fmn";
-PlayerData;
-possibleGenres = 0 @ "hipn";
+possibleGenders = datablock PlayerData(PlayerF : PlayerBody) @ "fmn";
+possibleGenres = "hipn";
 gender = "f";
 shapeFile = "projects/common/characters/f_player/f_player.dts";
 wardrobeInitFunc = "wardrobeInitF()";
-possibleGenders = PlayerM @ datablock ( : PlayerBody) @ "mfn";
-PlayerData;
-possibleGenres = 0 @ "hipn";
+possibleGenders = datablock PlayerData(PlayerM : PlayerBody) @ "mfn";
+possibleGenres = "hipn";
 gender = "m";
 shapeFile = "projects/common/characters/m_player/m_player.dts";
 wardrobeInitFunc = "wardrobeInitM()";
@@ -482,30 +444,42 @@ function armor::onAdd(%this, %obj) {
     return %this;
 };
 function armor::onRemove(%this, %obj) {
-    Player = %obj @ client;
-    (client == Player) @ 0;
-    %obj.stopDance();
-    freeSeat(mySeat);
+    if ((client == Player)) {
+        Player = %obj @ client;
+        %obj @ 0;
+    }
+    if (isDancing) {
+        %obj.stopDance();
+    }
+    if (isSitting) {
+        freeSeat(mySeat);
+    }
     return %obj;
 };
 function armor::onNewDataBlock(%this, %obj) {
     return;
 };
 function armor::onMount(%this, %obj, %vehicle, %node) {
-    %obj.setTransform("0 0 0 0 0 1 0");
-    %obj.setActionThread(mountPose, 1, 1);
-    lastWeapon = (0.0 == %node) @ %node @ %vehicle.getDataBlock() @ %obj.getMountedImage($WeaponSlot) @ %obj;
-    %obj.unmountImage($WeaponSlot);
-    %obj.setControlObject(%vehicle);
-    client.setObjectActiveImage(%vehicle, 2);
+    if ((0.0 == %node)) {
+        %obj.setTransform("0 0 0 0 0 1 0");
+        %obj.setActionThread(mountPose, 1, 1);
+        lastWeapon = %node @ %vehicle.getDataBlock() @ %obj.getMountedImage($WeaponSlot) @ %obj;
+        %obj.unmountImage($WeaponSlot);
+        %obj.setControlObject(%vehicle);
+        client.setObjectActiveImage(%vehicle, 2);
+    }
     return %obj;
 };
 function armor::onUnmount(%this, %obj, %vehicle, %node) {
-    %obj.mountImage(lastWeapon, $WeaponSlot);
+    if ((0.0 == %node)) {
+        %obj.mountImage(lastWeapon, $WeaponSlot);
+    }
     return %obj;
 };
 function armor::doDismount(%this, %obj, %forced) {
-    return !(%obj.isMounted());
+    if (!(%obj.isMounted())) {
+        return;
+    }
     %pos = getWords(%obj.getTransform(), 0, 2);
     %oldPos = %pos;
     %oldPos[%vec @ 0] = " 0  0  1";
@@ -518,14 +492,20 @@ function armor::doDismount(%this, %obj, %forced) {
     %numAttempts = 5;
     %success = -(1.0);
     %i = 0;
-    %pos = VectorAdd(%oldPos, VectorScale(%i[%vec @ %i], 3));
-    (%numAttempts < %i);
-    %success = %i;
-    %obj.checkDismountPoint(%oldPos, %pos);
-    %impulseVec = %i[%vec @ %i];
-    %i = (1.0 + %i);
-    %pos = %oldPos;
-    (-(1.0) == %success);
+    if ((%numAttempts < %i)) {
+        %pos = VectorAdd(%oldPos, VectorScale(%i[%vec @ %i], 3));
+        if (%obj.checkDismountPoint(%oldPos, %pos)) {
+            %success = %i;
+            %impulseVec = %i[%vec @ %i];
+        }
+        %i = (1.0 + %i);
+    }
+    if (%forced) {
+    }
+    if ((-(1.0) == %success)) {
+        %pos = %oldPos;
+        (%numAttempts < %i);
+    }
     gSetField(%this, 0);
     %obj.schedule(4000, "mountVehicles", 1);
     %obj.setTransform(%pos);
@@ -533,43 +513,66 @@ function armor::doDismount(%this, %obj, %forced) {
     %obj.setPilot(0);
     vehicleTurret = %obj.getDataBlock() @ "" @ %obj;
     mountVehicle;
-    return %forced;
+    return;
 };
 function armor::onCollision(%this, %obj, %col) {
-    return (%obj.getState() $= "Dead");
-    %obj.pickup(%col);
+    if ((%obj.getState() $= "Dead")) {
+        return;
+    }
+    if ((%col.getClassName() $= "Item")) {
+        %obj.pickup(%col);
+    }
     %this = %col.getDataBlock();
-    (%col.getClassName() $= "Item");
-    %node = 0;
-    mountable;
-    %col.mountObject(%obj, %node);
-    mVehicle = %col @ %col @ %obj;
-    (mountVehicle SPC %obj.getState() $= "Move");
-    return %obj;
+    if (WheeledVehicleData) {
+    }
+    if (mountVehicle) {
+    }
+    if ((%obj SPC %obj.getState() $= "Move")) {
+    }
+    if (mountable) {
+        %node = 0;
+        %col;
+        %col.mountObject(%obj, %node);
+        mVehicle = %this SPC className @ %col @ %obj;
+    }
+    return;
 };
 function armor::onImpact(%this, %obj, %unused, %vec, %vecLen) {
     %obj.Damage(0, VectorAdd(%obj.getPosition(), %vec), (speedDamageScale * %vecLen), "Impact");
     return %this;
 };
 function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType) {
-    return (%obj.getState() $= "Dead");
+    if ((%obj.getState() $= "Dead")) {
+        return;
+    }
     %obj.applyDamage(%damage);
     %location = "Body";
     %client = client;
     %obj;
+    if (%sourceObject) {
+    }
     %sourceClient = 0;
     %sourceObject;
-    %client.onDeath(%sourceObject, %sourceClient, %damageType, %location);
-    return (%sourceObject SPC %obj.getState() $= "Dead");
+    if ((%obj.getState() $= "Dead")) {
+        %client.onDeath(%sourceObject, %sourceClient, %damageType, %location);
+    }
+    return;
 };
 function armor::onDamage(%this, %obj, %delta) {
-    %flash = ((%this * (maxDamage / %delta)) + %obj.getDamageFlash());
-    2.0;
-    %flash = 0.75;
-    (0.75 > %flash);
-    %obj.setDamageFlash(%flash);
-    %obj.playPain();
-    return (10.0 > %delta);
+    if ((0.0 > %delta)) {
+    }
+    if (!(%obj.getState() $= "Dead")) {
+        %flash = ((%this * (maxDamage / %delta)) + %obj.getDamageFlash());
+        2.0;
+        if ((0.75 > %flash)) {
+            %flash = 0.75;
+        }
+        %obj.setDamageFlash(%flash);
+        if ((10.0 > %delta)) {
+            %obj.playPain();
+        }
+    }
+    return;
 };
 function armor::onDisabled(%this, %obj, %unused) {
     %obj.playDeathCry();
@@ -581,17 +584,35 @@ function armor::onDisabled(%this, %obj, %unused) {
     return;
 };
 function armor::onLeaveMissionArea(%this, %obj) {
-    client.onLeaveMissionArea();
+    if (isObject(client)) {
+        client.onLeaveMissionArea();
+    }
     return %obj;
 };
 function armor::onEnterMissionArea(%this, %obj) {
-    client.onEnterMissionArea();
+    if (isObject(client)) {
+        client.onEnterMissionArea();
+    }
     return %obj;
 };
 function armor::onEnterLiquid(%this, %obj, %unused, %type) {
-    %obj.setDamageDt(%this, $DamageLava, "Lava");
-    %obj.setDamageDt(%this, $DamageHotLava, "Lava");
-    %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
+    if ((0.0 == %type)) {
+    }
+    if ((1.0 == %type)) {
+    }
+    if ((2.0 == %type)) {
+    }
+    if ((3.0 == %type)) {
+    }
+    if ((4.0 == %type)) {
+        %obj.setDamageDt(%this, $DamageLava, "Lava");
+    }
+    if ((5.0 == %type)) {
+        %obj.setDamageDt(%this, $DamageHotLava, "Lava");
+    }
+    if ((6.0 == %type)) {
+        %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
+    }
     return (7.0 == %type);
 };
 function armor::onLeaveLiquid(%this, %obj, %type) {
@@ -614,24 +635,33 @@ function Player::mountVehicles(%this, %bool) {
 };
 function Player::isPilot(%this) {
     %vehicle = %this.getObjectMount();
-    return 1;
+    if (%vehicle) {
+        if ((%this == %vehicle.getMountNodeObject(0))) {
+            return 1;
+        }
+    }
     return 0;
 };
 function Player::playCelAnimation(%this, %anim) {
-    %this.setActionThread(!((%this.getState() $= "Dead")) @ "emote_" @ %anim);
+    if (!(%this.getState() $= "Dead")) {
+        %this.setActionThread("emote_" @ %anim);
+    }
     return;
 };
 function Player::playAnim(%this, %anim) {
-    %this.setActionThread(%anim);
-    return !((%this.getState() $= "Dead"));
+    if (!(%this.getState() $= "Dead")) {
+        %this.setActionThread(%anim);
+    }
+    return;
 };
 function Player::onNewDataBlock(%this, %obj) {
     echo("ON NEW DATABLOCK" @ " " @ %this @ " " @ %obj);
     return;
 };
 function AddDance(%danceObj, %sequence, %timeTillSwitch, %transitionTime) {
-    count = !(count) @ 0 @ %danceObj;
-    %danceObj;
+    if (!(count)) {
+        count = %danceObj @ 0 @ %danceObj;
+    }
     anim = %sequence @ %danceObj @ count @ %danceObj;
     time = %timeTillSwitch @ %danceObj @ count @ %danceObj;
     transition = %transitionTime @ %danceObj @ count @ %danceObj;
@@ -642,23 +672,29 @@ $DANCE_PULSE_FREQ = 100;
 function Player::dancePulse(%player) {
     %playerVel = %player.getVelocity();
     %vel = VectorLen(%playerVel);
-    %player.stopDance();
-    return (0.1 > %vel);
+    if ((0.1 > %vel)) {
+        %player.stopDance();
+        return;
+    }
     danceTimeRemaining = $DANCE_PULSE_FREQ @ (%player - danceTimeRemaining) @ %player;
-    echo("choosing new dance");
-    %dNum = getRandom(0, (danceObj - count));
-    %player;
-    %player.setActionThread(anim, 0, 1, (%player @ danceObj / transition));
-    danceTimeRemaining = %player @ danceObj @ time @ %player;
-    1000.0 @ %dNum @ %dNum;
-    echo(0.0 @ (%player <= danceTimeRemaining) @ 1.0 @ %dNum @ %player @ danceObj @ "number " @ %dNum @ " chose anime" @ %dNum @ %player @ danceObj @ anim @ " for " @ %player @ danceTimeRemaining @ " milliseconds");
+    if ((%player <= danceTimeRemaining)) {
+        echo("choosing new dance");
+        %dNum = getRandom(0, (danceObj - count));
+        %player;
+        %player.setActionThread(anim, 0, 1, (%player @ danceObj / transition));
+        danceTimeRemaining = %player @ danceObj @ time @ %player;
+        1000.0 @ %dNum @ %dNum;
+        echo(0.0 @ 1.0 @ %dNum @ %player @ danceObj @ "number " @ %dNum @ " chose anime" @ %dNum @ %player @ danceObj @ anim @ " for " @ %player @ danceTimeRemaining @ " milliseconds");
+    }
     danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse") @ %player;
     return;
 };
 function Player::startDance(%player) {
     echo("Player::startDance");
-    echo("already dancing");
-    %player.stopDance();
+    if (isDancing) {
+        echo("already dancing");
+        %player.stopDance();
+    }
     echo("setting up dance moves");
     danceObj = ScriptObject @ new ""() @ %player;
     0;
@@ -671,16 +707,17 @@ function Player::startDance(%player) {
     %player;
     danceSchedule = %player @ %player.schedule($DANCE_PULSE_FREQ, "dancePulse") @ %player;
     %player;
-    return isDancing;
+    return %player;
 };
 function Player::stopDance(%player) {
     echo("Player::stopDance");
     cancel(danceSchedule);
-    danceObj.delete();
+    if (isObject(danceObj)) {
+        danceObj.delete();
+    }
     danceObj = %player @ 0 @ %player;
-    isObject(danceObj);
-    danceTimeRemaining = %player @ 0 @ %player;
     %player;
+    danceTimeRemaining = %player @ 0 @ %player;
     isDancing = 0 @ %player;
     return;
 };

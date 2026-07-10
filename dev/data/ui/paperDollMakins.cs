@@ -7,9 +7,15 @@ function gePaperDollMakins::open(%this) {
     $UserPref::Video::ConstrainWindowDimensions = 0;
     %this.pushDialog(0);
     setScreenMode(1048, 1048, getWord($UserPref::Video::Resolution, 2), 0);
-    performClick();
+    if (!(getValue())) {
+    }
+    if (!(getValue())) {
+        performClick();
+    }
     %this.paperDoll_refresh();
-    $player.setSimObject();
+    if (isObject($player)) {
+        $player.setSimObject();
+    }
     "<color:ffffff>" @ "\n" @ "Welcome to the paper doll making interface." @ "\n" @ "This runs on two different folders." @ "\n" @ "for the client:<spush><b>platform/client/ui/paperdolls/<spop>" @ "\n" @ "for the web:<spush><b>web/paperdolls/<spop>." @ "\n" @ "in each of those, <spush><b>permutations.txt<spop> sets up everything." @ "\n" @ "When you click \"refresh\", <spush><b>permutations.xml<spop> and <spush><b>permutations_manifest.txt<spop> are generated." @ "\n" @ "" @ "\n" @ "The client and the web can have different setup files. eg, you can have [many] more options on the web, if you want." @ "\n" @ "" @ "\n" @ "The size of the avatar area is set in permutations.txt." @ "\n" @ "Since the alpha channel is not anti-aliased, i recommend setting the avatar area to twice the actual desired image size, and then using photoshop or similar to batch-process the images down to size." @ "\n" @ "" @ "\n" @ "Also, surfaces which have alpha (such as glasses or some hair) will be saved transparent in those regions, which looks weird. To fix this, again use batch processing in photoshop to simply duplicate the layer of the image several times, building up the opacity." @ "\n" @ "" @ "\n" @ "During a real run, the images are saved out to <spush><b>images/source<spop>." @ "\n" @ "<spush><color:77FF44><b>For the client, these must be copied into just plain \"images/\"!<spop>" @ "\n" @ "For the web, they may need to be copied elsewhere as well; that process hasn't been worked out yet." @ "\n" @ "" @ "\n" @ "Don't check in the images in \"source/\", only the ones from \"images\"." @ "\n" @ "" @ "\n" @ "During a real or dry run, HTML files are also generated previewing all the images." @ "\n" @ "" @ "\n" @ "<spush><color:77FF44><b>To get alpha, the -alphaBuffer option must be used on the command line.<spop>".setText();
 };
 function gePaperDollMakins::close(%this) {
@@ -20,13 +26,12 @@ function gePaperDollMakins::paperDoll_refresh(%this) {
     paperDoll_InitPermutationsForce();
     %numf = paperDoll_getNumPermutations("f");
     %numm = paperDoll_getNumPermutations("m");
-    %genderText = "(none)";
-    !(isObject($player));
-    %gender = "X";
-    %genderText = "male";
-    "female";
+    if (!(isObject($player))) {
+        %genderText = "(none)";
+        %gender = "X";
+    }
+    %genderText = ($player.getGender() $= "f") ? "female" : "male";
     %gender = $player.getGender();
-    ($player.getGender() $= "f");
     %text = "";
     %text = %text @ "num F =" @ " " @ %numf;
     %text = %text @ "\n" @ "num M =" @ " " @ %numm;
@@ -47,13 +52,15 @@ function paperDoll_StartTakingSnaps() {
     $gPaperDoll_CurIndex = 0;
     $gPaperDoll_CancelRun = 0;
     $gPaperDoll_PreviewFile = "";
-    $gPaperDoll_PreviewFile = new ""();
-    FileObject;
-    %fileName = paperDoll_getBaseFilepath();
-    0;
-    %fileName = 1 @ %fileName @ "index_" @ $player.getGender() @ ".html";
-    $gPaperDoll_PreviewFile.openForWrite(%fileName);
-    $gPaperDoll_PreviewFile.writeLine("<html>\n<body background=\"greychecks.png\">");
+    if (1) {
+        $gPaperDoll_PreviewFile = new ""();
+        FileObject;
+        %fileName = paperDoll_getBaseFilepath();
+        0;
+        %fileName = %fileName @ "index_" @ $player.getGender() @ ".html";
+        $gPaperDoll_PreviewFile.openForWrite(%fileName);
+        $gPaperDoll_PreviewFile.writeLine("<html>\n<body background=\"greychecks.png\">");
+    }
     0.setVisible();
     0.setVisible();
     1.setVisible();
@@ -63,11 +70,12 @@ function paperDoll_StartTakingSnaps() {
     paperDoll_prepareNextSnapshot();
 };
 function paperDoll_finishedSnapshots() {
-    $gPaperDoll_PreviewFile.writeLine("</body>\n</html>");
-    $gPaperDoll_PreviewFile.close();
-    $gPaperDoll_PreviewFile.delete();
-    $gPaperDoll_PreviewFile = "";
-    isObject($gPaperDoll_PreviewFile);
+    if (isObject($gPaperDoll_PreviewFile)) {
+        $gPaperDoll_PreviewFile.writeLine("</body>\n</html>");
+        $gPaperDoll_PreviewFile.close();
+        $gPaperDoll_PreviewFile.delete();
+        $gPaperDoll_PreviewFile = "";
+    }
     1.setVisible();
     1.setVisible();
     0.setVisible();
@@ -78,7 +86,11 @@ function paperDoll_prepareNextSnapshot() {
     waitAFrameAndCall("paperDoll_callingTakeCurrentSnapshot");
 };
 function paperDoll_prepareOneSnapshot(%index) {
-    return ($gPaperDoll_SkuArray.size() >= %index);
+    if ((0.0 < %index)) {
+    }
+    if (($gPaperDoll_SkuArray.size() >= %index)) {
+        return;
+    }
     $gPaperDoll_CurSkus = getField($gPaperDoll_SkuArray.get(%index), 0);
     $gPaperDoll_CurName = getField($gPaperDoll_SkuArray.get(%index), 1);
     %skus = SkuManager.overlaySkus($gPaperDoll_CurSkus);
@@ -96,24 +108,32 @@ function paperDoll_Permute_Cancel() {
 };
 function paperDoll_callingTakeCurrentSnapshot() {
     paperDoll_takeCurrentSnapshot();
-    $gPaperDoll_CurIndex = (1.0 + $gPaperDoll_CurIndex);
-    ((1.0 - $gPaperDoll_SkuArray.size()) < $gPaperDoll_CurIndex);
-    paperDoll_prepareNextSnapshot();
+    if (!($gPaperDoll_CancelRun)) {
+    }
+    if (((1.0 - $gPaperDoll_SkuArray.size()) < $gPaperDoll_CurIndex)) {
+        $gPaperDoll_CurIndex = (1.0 + $gPaperDoll_CurIndex);
+        paperDoll_prepareNextSnapshot();
+    }
     paperDoll_finishedSnapshots();
 };
 function paperDoll_getBaseFilepath() {
-    %ret = "platform/client/ui/paperdolls/";
-    getValue();
+    if (getValue()) {
+        %ret = "platform/client/ui/paperdolls/";
+        gePaperDollWhichSetup_Client;
+    }
     %ret = "web/paperdolls/";
-    gePaperDollWhichSetup_Client;
     return %ret;
 };
 function paperDoll_takeCurrentSnapshot() {
     %justFileName = $gPaperDoll_CurName;
     %justFileName = %justFileName @ "." @ $gPaperDoll_ImgExtension;
     %fileName = paperDoll_getBaseFilepath() @ "images/source/" @ %justFileName;
-    $gPaperDoll_ObjViewCtrl.snapshot(%fileName);
-    $gPaperDoll_PreviewFile.writeLine(!($gPaperDoll_DryRun) @ isObject($gPaperDoll_PreviewFile) @ "<img src=\"images/" @ %justFileName @ "\">");
+    if (!($gPaperDoll_DryRun)) {
+        $gPaperDoll_ObjViewCtrl.snapshot(%fileName);
+    }
+    if (isObject($gPaperDoll_PreviewFile)) {
+        $gPaperDoll_PreviewFile.writeLine("<img src=\"images/" @ %justFileName @ "\">");
+    }
     $gPaperDoll_NumRemaining = (1.0 - $gPaperDoll_NumRemaining);
     "Remaining:" @ " " @ $gPaperDoll_NumRemaining.setText();
 };
@@ -123,15 +143,19 @@ function paperDoll_MakePermutations(%gender) {
 function paperDoll_RecursePermutations(%gender, %currentSkus, %currentNames, %startingDepth, %array) {
     %masterList = %gender[$gPaperDollPermutationLists @ %gender];
     %masterListSize = %masterList.size();
-    %array.append(%currentSkus @ "\t" @ %currentNames);
-    return (%masterListSize >= %startingDepth);
+    if ((%masterListSize >= %startingDepth)) {
+        %array.append(%currentSkus @ "\t" @ %currentNames);
+        return;
+    }
     %subList = %masterList.get(%startingDepth);
     %subListSize = %subList.size();
     %n = 0;
-    %skus = (%subListSize < %n) @ %currentSkus @ getField(%subList.get(%n), 0) @ " ";
-    %names = %currentNames @ "_" @ getField(%subList.get(%n), 1);
-    paperDoll_RecursePermutations(%gender, %skus, %names, (1.0 + %startingDepth), %array);
-    %n = (1.0 + %n);
+    if ((%subListSize < %n)) {
+        %skus = %currentSkus @ getField(%subList.get(%n), 0) @ " ";
+        %names = %currentNames @ "_" @ getField(%subList.get(%n), 1);
+        paperDoll_RecursePermutations(%gender, %skus, %names, (1.0 + %startingDepth), %array);
+        %n = (1.0 + %n);
+    }
 };
 function paperDoll_PermuteWithDialog() {
     userTips::showOnceThisSession("PaperDollPermute");
@@ -161,10 +185,12 @@ function paperDoll_NudgeSet(%vec) {
 };
 function paperDoll_CurOutfitSet(%val) {
     %firstChar = getSubStr(%val, 0, 1);
-    %newVal = (%val + $gPaperDoll_CurIndex);
-    (%firstChar $= "-");
-    %newVal = (getSubStr(%val, 1, 100) + $gPaperDoll_CurIndex);
-    (%firstChar $= "+");
+    if ((%firstChar $= "-")) {
+        %newVal = (%val + $gPaperDoll_CurIndex);
+    }
+    if ((%firstChar $= "+")) {
+        %newVal = (getSubStr(%val, 1, 100) + $gPaperDoll_CurIndex);
+    }
     %newVal = %val;
     paperDoll_prepareOneSnapshot(%newVal);
 };
@@ -176,9 +202,11 @@ function paperDoll_generateXML() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.xml";
     %file = new ""();
     FileObject;
-    error(0 @ !(%file.openForWrite(%fileName)) @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
-    %file.delete();
-    return;
+    if (!(%file.openForWrite(%fileName))) {
+        error(0 @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
+        %file.delete();
+        return;
+    }
     indent = "" @ %file;
     indentString = "    " @ %file;
     %file.writeLineIndented("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
@@ -198,38 +226,42 @@ function paperDoll_generateXML() {
     %file.writeOpenTag("Permutations", "xmlns=\"http://www.doppelganger.com/datamodel\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.doppelganger.com/datamodel schema/initial_avatar_permutations.xsd\"");
     %file.writeCommentTag("Nikita: need schema description in previous ?");
     %n = 0;
-    %gender = getWord(%genders, %n);
-    (getWordCount(%genders) < %n);
-    %genderLong = %gender[%gendersLong @ %gender];
-    %file.writeLineIndented("");
-    %file.writeOpenTag("Gender", "name=\"" @ %gender @ "\"");
-    %file.writeCommentTag("Parameters for gender" @ " " @ %genderLong);
-    %paramNum = 0;
-    %paramName = paperDoll_getParamName(%gender, %paramNum);
-    (paperDoll_getParamsNum(%gender) < %paramNum);
-    %file.writeLineIndented("");
-    %file.writeOpenTag("Param", "name=\"" @ %paramName @ "\"");
-    %file.writeCommentTag("Possible values for" @ " " @ %genderLong @ " " @ "parameter" @ " " @ %paramName);
-    %valueNum = 0;
-    %file.writeLineIndented("");
-    %valuename = paperDoll_getParamValueName(%gender, %paramNum, %valueNum);
-    (paperDoll_getParamValuesNum(%gender, %paramNum) < %valueNum);
-    %valueSkus = paperDoll_getParamValueSkus(%gender, %paramNum, %valueNum);
-    %file.writeOpenTag("Value", "name=\"" @ %valuename @ "\"");
-    %skunum = 0;
-    %sku = getWord(%valueSkus, %skunum);
-    (getWordCount(%valueSkus) < %skunum);
-    %file.writeShortTag("sku", "", %sku);
-    %skunum = (1.0 + %skunum);
-    %file.writeCloseTag("Value");
-    %valueNum = (1.0 + %valueNum);
-    (getWordCount(%valueSkus) < %skunum);
-    %file.writeCloseTag("Param");
-    %paramNum = (1.0 + %paramNum);
-    (paperDoll_getParamValuesNum(%gender, %paramNum) < %valueNum);
-    %file.writeCloseTag("Gender");
-    %n = (1.0 + %n);
-    (paperDoll_getParamsNum(%gender) < %paramNum);
+    if ((getWordCount(%genders) < %n)) {
+        %gender = getWord(%genders, %n);
+        %genderLong = %gender[%gendersLong @ %gender];
+        %file.writeLineIndented("");
+        %file.writeOpenTag("Gender", "name=\"" @ %gender @ "\"");
+        %file.writeCommentTag("Parameters for gender" @ " " @ %genderLong);
+        %paramNum = 0;
+        if ((paperDoll_getParamsNum(%gender) < %paramNum)) {
+            %paramName = paperDoll_getParamName(%gender, %paramNum);
+            %file.writeLineIndented("");
+            %file.writeOpenTag("Param", "name=\"" @ %paramName @ "\"");
+            %file.writeCommentTag("Possible values for" @ " " @ %genderLong @ " " @ "parameter" @ " " @ %paramName);
+            %valueNum = 0;
+            if ((paperDoll_getParamValuesNum(%gender, %paramNum) < %valueNum)) {
+                %file.writeLineIndented("");
+                %valuename = paperDoll_getParamValueName(%gender, %paramNum, %valueNum);
+                %valueSkus = paperDoll_getParamValueSkus(%gender, %paramNum, %valueNum);
+                %file.writeOpenTag("Value", "name=\"" @ %valuename @ "\"");
+                %skunum = 0;
+                if ((getWordCount(%valueSkus) < %skunum)) {
+                    %sku = getWord(%valueSkus, %skunum);
+                    %file.writeShortTag("sku", "", %sku);
+                    %skunum = (1.0 + %skunum);
+                }
+                %file.writeCloseTag("Value");
+                %valueNum = (1.0 + %valueNum);
+                (getWordCount(%valueSkus) < %skunum);
+            }
+            %file.writeCloseTag("Param");
+            %paramNum = (1.0 + %paramNum);
+            (paperDoll_getParamValuesNum(%gender, %paramNum) < %valueNum);
+        }
+        %file.writeCloseTag("Gender");
+        %n = (1.0 + %n);
+        (paperDoll_getParamsNum(%gender) < %paramNum);
+    }
     %file.writeCloseTag("Permutations");
     %file.close();
     %file.delete();
@@ -238,9 +270,11 @@ function paperDoll_generateJSON() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.json";
     %file = new ""();
     FileObject;
-    error(0 @ !(%file.openForWrite(%fileName)) @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
-    %file.delete();
-    return;
+    if (!(%file.openForWrite(%fileName))) {
+        error(0 @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
+        %file.delete();
+        return;
+    }
     indent = "" @ %file;
     indentString = "    " @ %file;
     %genders = "f m";
@@ -252,61 +286,73 @@ function paperDoll_generateJSON() {
     %file.writeLineIndented("[");
     %file.indent();
     %n = 0;
-    %gender = getWord(%genders, %n);
-    (getWordCount(%genders) < %n);
-    %genderLong = %gender[%gendersLong @ %gender];
-    %file.writeLineIndented("{");
-    %file.indent();
-    %file.writeLineIndented("\"Gender\": \"" @ %gender @ "\",");
-    %file.writeLineIndented("\"Parameters\":");
-    %file.writeLineIndented("[");
-    %file.indent();
-    %paramNum = 0;
-    %paramName = paperDoll_getParamName(%gender, %paramNum);
-    (paperDoll_getParamsNum(%gender) < %paramNum);
-    %file.writeLineIndented("{");
-    %file.indent();
-    %file.writeLineIndented("\"Parameter\": \"" @ %paramName @ "\",");
-    %file.writeLineIndented("\"Values\":");
-    %file.writeLineIndented("[");
-    %file.indent();
-    %valueNum = 0;
-    %valuename = paperDoll_getParamValueName(%gender, %paramNum, %valueNum);
-    (paperDoll_getParamValuesNum(%gender, %paramNum) < %valueNum);
-    %valueSkus = paperDoll_getParamValueSkus(%gender, %paramNum, %valueNum);
-    %file.writeLineIndented("{");
-    %file.indent();
-    %file.writeLineIndented("\"Value\": \"" @ %valuename @ "\",");
-    %file.writeLineIndented("\"skus\":");
-    %file.writeLineIndented("[");
-    %file.indent();
-    %skunum = 0;
-    %sku = getWord(%valueSkus, %skunum);
-    (getWordCount(%valueSkus) < %skunum);
-    %file.writeLineIndented((getWordCount(%valueSkus) == (1.0 + %skunum)) @ "\"" @ %sku @ "\"");
-    %file.writeLineIndented("\"" @ %sku @ "\",");
-    %skunum = (1.0 + %skunum);
-    %file.unindent();
-    %file.writeLineIndented("]");
-    %file.unindent();
-    %file.writeLineIndented("}");
-    %file.writeLineIndented("},");
-    %valueNum = (1.0 + %valueNum);
-    (paperDoll_getParamValuesNum(%gender, %paramNum) == (1.0 + %valueNum));
-    %file.unindent();
-    %file.writeLineIndented("]");
-    %file.unindent();
-    %file.writeLineIndented("}");
-    %file.writeLineIndented("},");
-    %paramNum = (1.0 + %paramNum);
-    (paperDoll_getParamsNum(%gender) == (1.0 + %paramNum));
-    %file.unindent();
-    %file.writeLineIndented("]");
-    %file.unindent();
-    %file.writeLineIndented("}");
-    %file.writeLineIndented("},");
-    %n = (1.0 + %n);
-    (getWordCount(%genders) == (1.0 + %n));
+    if ((getWordCount(%genders) < %n)) {
+        %gender = getWord(%genders, %n);
+        %genderLong = %gender[%gendersLong @ %gender];
+        %file.writeLineIndented("{");
+        %file.indent();
+        %file.writeLineIndented("\"Gender\": \"" @ %gender @ "\",");
+        %file.writeLineIndented("\"Parameters\":");
+        %file.writeLineIndented("[");
+        %file.indent();
+        %paramNum = 0;
+        if ((paperDoll_getParamsNum(%gender) < %paramNum)) {
+            %paramName = paperDoll_getParamName(%gender, %paramNum);
+            %file.writeLineIndented("{");
+            %file.indent();
+            %file.writeLineIndented("\"Parameter\": \"" @ %paramName @ "\",");
+            %file.writeLineIndented("\"Values\":");
+            %file.writeLineIndented("[");
+            %file.indent();
+            %valueNum = 0;
+            if ((paperDoll_getParamValuesNum(%gender, %paramNum) < %valueNum)) {
+                %valuename = paperDoll_getParamValueName(%gender, %paramNum, %valueNum);
+                %valueSkus = paperDoll_getParamValueSkus(%gender, %paramNum, %valueNum);
+                %file.writeLineIndented("{");
+                %file.indent();
+                %file.writeLineIndented("\"Value\": \"" @ %valuename @ "\",");
+                %file.writeLineIndented("\"skus\":");
+                %file.writeLineIndented("[");
+                %file.indent();
+                %skunum = 0;
+                if ((getWordCount(%valueSkus) < %skunum)) {
+                    %sku = getWord(%valueSkus, %skunum);
+                    if ((getWordCount(%valueSkus) == (1.0 + %skunum))) {
+                        %file.writeLineIndented("\"" @ %sku @ "\"");
+                    }
+                    %file.writeLineIndented("\"" @ %sku @ "\",");
+                    %skunum = (1.0 + %skunum);
+                }
+                %file.unindent();
+                %file.writeLineIndented("]");
+                %file.unindent();
+                if ((paperDoll_getParamValuesNum(%gender, %paramNum) == (1.0 + %valueNum))) {
+                    %file.writeLineIndented("}");
+                }
+                %file.writeLineIndented("},");
+                %valueNum = (1.0 + %valueNum);
+                (getWordCount(%valueSkus) < %skunum);
+            }
+            %file.unindent();
+            %file.writeLineIndented("]");
+            %file.unindent();
+            if ((paperDoll_getParamsNum(%gender) == (1.0 + %paramNum))) {
+                %file.writeLineIndented("}");
+            }
+            %file.writeLineIndented("},");
+            %paramNum = (1.0 + %paramNum);
+            (paperDoll_getParamValuesNum(%gender, %paramNum) < %valueNum);
+        }
+        %file.unindent();
+        %file.writeLineIndented("]");
+        %file.unindent();
+        if ((getWordCount(%genders) == (1.0 + %n))) {
+            %file.writeLineIndented("}");
+        }
+        %file.writeLineIndented("},");
+        %n = (1.0 + %n);
+        (paperDoll_getParamsNum(%gender) < %paramNum);
+    }
     %file.unindent();
     %file.writeLineIndented("]");
     %file.unindent();
@@ -318,42 +364,48 @@ function paperDoll_generateManifest() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations_manifest.txt";
     %file = new ""();
     FileObject;
-    error(0 @ !(%file.openForWrite(%fileName)) @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
-    %file.delete();
-    return;
+    if (!(%file.openForWrite(%fileName))) {
+        error(0 @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
+        %file.delete();
+        return;
+    }
     %genders = "f m";
     %file.writeOpenTag("permutations", "");
     %file.writeCommentTag("permutations manifest");
     %file.writeCommentTag("total number of permutations =" @ " " @ (paperDoll_getNumPermutations("m") + paperDoll_getNumPermutations("f")));
     %file.writeLineIndented("");
     %n = 0;
-    %gender = getWord(%genders, %n);
-    (getWordCount(%genders) < %n);
-    %file.writeLineIndented("");
-    %file.writeOpenTag("gender", "");
-    %file.writeCommentTag("number of permutations =" @ " " @ paperDoll_getNumPermutations(%gender));
-    paperDoll_generateManifest_Recurse(%file, %gender, 0, "");
-    %file.writeCloseTag("gender");
-    %n = (1.0 + %n);
+    if ((getWordCount(%genders) < %n)) {
+        %gender = getWord(%genders, %n);
+        %file.writeLineIndented("");
+        %file.writeOpenTag("gender", "");
+        %file.writeCommentTag("number of permutations =" @ " " @ paperDoll_getNumPermutations(%gender));
+        paperDoll_generateManifest_Recurse(%file, %gender, 0, "");
+        %file.writeCloseTag("gender");
+        %n = (1.0 + %n);
+    }
     %file.writeCloseTag("permutations");
     %file.close();
     %file.delete();
 };
 function paperDoll_generateManifest_Recurse(%file, %gender, %initialDepth, %valueIndicesList) {
     %valueNum = 0;
-    %valList = (paperDoll_getParamValuesNum(%gender, %initialDepth) < %valueNum) @ %valueIndicesList @ %valueNum @ " ";
-    %s = paperDoll_getPermutationFilenameAndSkus(%gender, %valList);
-    ((1.0 - paperDoll_getParamsNum(%gender)) >= %initialDepth);
-    %imgFilename = getField(%s, 0);
-    %imgFilename = %imgFilename @ "." @ $gPaperDoll_ImgExtension;
-    %skus = getField(%s, 1);
-    %skusEntire = %gender[$gPaperDoll_BaseSkus @ %gender].overlaySkus(%skus);
-    SkuManager;
-    %file.writeLineIndented("");
-    %file.writeOpenTag("permutation", "");
-    %file.writeShortTag("filename", "", %imgFilename);
-    %file.writeShortTag("skus", "", %skusEntire);
-    %file.writeCloseTag("permutation", "");
-    paperDoll_generateManifest_Recurse(%file, %gender, (1.0 + %initialDepth), %valList);
-    %valueNum = (1.0 + %valueNum);
+    if ((paperDoll_getParamValuesNum(%gender, %initialDepth) < %valueNum)) {
+        %valList = %valueIndicesList @ %valueNum @ " ";
+        if (((1.0 - paperDoll_getParamsNum(%gender)) >= %initialDepth)) {
+            %s = paperDoll_getPermutationFilenameAndSkus(%gender, %valList);
+            %imgFilename = getField(%s, 0);
+            %imgFilename = %imgFilename @ "." @ $gPaperDoll_ImgExtension;
+            %skus = getField(%s, 1);
+            %skusEntire = %gender[$gPaperDoll_BaseSkus @ %gender].overlaySkus(%skus);
+            SkuManager;
+            %file.writeLineIndented("");
+            %file.writeOpenTag("permutation", "");
+            %file.writeShortTag("filename", "", %imgFilename);
+            %file.writeShortTag("skus", "", %skusEntire);
+            %file.writeCloseTag("permutation", "");
+        }
+        paperDoll_generateManifest_Recurse(%file, %gender, (1.0 + %initialDepth), %valList);
+        %valueNum = (1.0 + %valueNum);
+    }
 };

@@ -141,13 +141,15 @@ function initGenderedDances() {
 };
 $gDanceMaps = "";
 function getRandomDance() {
-    $gDanceMaps = ($gDanceMaps $= "") @ $gDanceMaps @ $dancesMap_Lounge_F @ "\t";
-    $gDanceMaps = $gDanceMaps @ $dancesMap_Break_F @ "\t";
-    $gDanceMaps = $gDanceMaps @ $dancesMap_Goth_F @ "\t";
-    $gDanceMaps = $gDanceMaps @ $dancesMap_Thrilla @ "\t";
-    $gDanceMaps = $gDanceMaps @ $dancesMap_GoGo @ "\t";
-    $gDanceMaps = $gDanceMaps @ $dancesMap_HipHop @ "\t";
-    $gDanceMaps = $gDanceMaps @ $dancesMap_JB @ "\t";
+    if (($gDanceMaps $= "")) {
+        $gDanceMaps = $gDanceMaps @ $dancesMap_Lounge_F @ "\t";
+        $gDanceMaps = $gDanceMaps @ $dancesMap_Break_F @ "\t";
+        $gDanceMaps = $gDanceMaps @ $dancesMap_Goth_F @ "\t";
+        $gDanceMaps = $gDanceMaps @ $dancesMap_Thrilla @ "\t";
+        $gDanceMaps = $gDanceMaps @ $dancesMap_GoGo @ "\t";
+        $gDanceMaps = $gDanceMaps @ $dancesMap_HipHop @ "\t";
+        $gDanceMaps = $gDanceMaps @ $dancesMap_JB @ "\t";
+    }
     %num = (2.0 / getFieldCount($gDanceMaps));
     %n = (1.0 + (2.0 * getRandom(0, (1.0 - %num))));
     return getField($gDanceMaps, %n);
@@ -155,20 +157,22 @@ function getRandomDance() {
 function insertPlainToCodedListIntoMap(%srcList, %trgMap) {
     %num = (2.0 / getFieldCount(%srcList));
     %n = 0;
-    %plain = getField(%srcList, (2.0 * %n));
-    (%num < %n);
-    %coded = getField(%srcList, (1.0 + (2.0 * %n)));
-    %trgMap.put(%plain, %coded);
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %plain = getField(%srcList, (2.0 * %n));
+        %coded = getField(%srcList, (1.0 + (2.0 * %n)));
+        %trgMap.put(%plain, %coded);
+        %n = (1.0 + %n);
+    }
 };
 function removePlainToCodedListFromMap(%srcList, %trgMap) {
     %num = (2.0 / getFieldCount(%srcList));
     %n = 0;
-    %plain = getField(%srcList, (2.0 * %n));
-    (%num < %n);
-    %coded = getField(%srcList, (1.0 + (2.0 * %n)));
-    %trgMap.remove(%plain);
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %plain = getField(%srcList, (2.0 * %n));
+        %coded = getField(%srcList, (1.0 + (2.0 * %n)));
+        %trgMap.remove(%plain);
+        %n = (1.0 + %n);
+    }
 };
 function initializeEmoteDictPublic(%dict) {
     initGenderedDances();
@@ -307,20 +311,26 @@ function initializeEmoteDictProtected(%dict) {
     %dict.put("pocketbike-ride", "pckride");
 };
 function initializeEmoteDict() {
-    delete();
-    ignoreCase = EmoteDict @ new () @ 1;
-    StringMap;
-    0;
-    add();
+    if (isObject()) {
+        delete();
+    }
+    ignoreCase = EmoteDict @ new StringMap(EmoteDict) @ 1;
+    EmoteDict;
+    if (isObject()) {
+        add();
+    }
     initializeEmoteDictPublic();
 };
 initializeEmoteDict();
 function intializeSharedEmoteDict() {
-    delete();
-    ignoreCase = SharedEmoteDict @ new () @ 1;
-    StringMap;
-    0;
-    add();
+    if (isObject()) {
+        delete();
+    }
+    ignoreCase = SharedEmoteDict @ new StringMap(SharedEmoteDict) @ 1;
+    SharedEmoteDict;
+    if (isObject()) {
+        add();
+    }
     // unhandled opcode 465 at 0x000013B2
     SharedEmoteDict;
     %dict.put("dnc1", "dnc2");
@@ -346,11 +356,14 @@ function getSharedEmote(%theirEmote) {
 };
 intializeSharedEmoteDict();
 function initializeProtectedAnims() {
-    delete();
-    ignoreCase = ProtectedAnimsDict @ new () @ 1;
-    StringMap;
-    0;
-    add();
+    if (isObject()) {
+        delete();
+    }
+    ignoreCase = ProtectedAnimsDict @ new StringMap(ProtectedAnimsDict) @ 1;
+    ProtectedAnimsDict;
+    if (isObject()) {
+        add();
+    }
     // unhandled opcode 465 at 0x00001519
     %got = ProtectedAnimsDict;
     ProtectedAnimsDict;
@@ -478,11 +491,14 @@ function initializeProtectedAnims() {
 };
 initializeProtectedAnims();
 function intializeDrinkExcludedAnims() {
-    delete();
-    ignoreCase = DrinkExcludedAnimsDict @ new () @ 1;
-    StringMap;
-    0;
-    add();
+    if (isObject()) {
+        delete();
+    }
+    ignoreCase = DrinkExcludedAnimsDict @ new StringMap(DrinkExcludedAnimsDict) @ 1;
+    DrinkExcludedAnimsDict;
+    if (isObject()) {
+        add();
+    }
     // unhandled opcode 465 at 0x00001D03
     DrinkExcludedAnimsDict;
     %dict.put("rotfl", 2);

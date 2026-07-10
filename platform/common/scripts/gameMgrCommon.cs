@@ -11,17 +11,19 @@ INST_TITLE = "a custom game";
 description = "Whatever game you want to play. The host and players pick the goal, the rules, everything, and the host acts as referee, enforcing the rules, assigning points/player status, and deciding when the game is over. Use your imagination!";
 USER_CREATE = 1;
 $gameMgr::CUSTOM_GAME = 1;
-%n = 0;
-isObject();
-%n[$gameMgr::GAME_TYPES @ %n].add();
-%n = (1.0 + %n);
-MissionCleanup;
+if (isObject()) {
+    %n = 0;
+    MissionCleanup;
+    if (($gameMgr::GAME_TYPES_COUNT < %n)) {
+        %n[$gameMgr::GAME_TYPES @ %n].add();
+        %n = (1.0 + %n);
+        MissionCleanup;
+    }
+}
 $gameMgr::InspectTab::MAX_PLAYERS = 10;
 ($gameMgr::GAME_TYPES_COUNT < %n);
 $gameMgr::MAX_SCORE_DIGITS = 6;
-($gameMgr::GAME_TYPES_COUNT < %n);
 $gameMgr::ListColors::CANT_START = ColorIToHex("255 0 0");
-MissionCleanup;
 $gameMgr::ListColors::WAITING = ColorIToHex("127 200 220");
 $gameMgr::ListColors::STARTED = ColorIToHex("0 220 0");
 $gameMgr::ListColors::ELSE = ColorIToHex("220 200 0");

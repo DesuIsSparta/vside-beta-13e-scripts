@@ -1,7 +1,11 @@
-delete();
-$MessageFuncDict = new ();
+if (isObject()) {
+    delete();
+}
+$MessageFuncDict = new StringMap(MessageFuncDict);
 MessageFuncDict;
-add();
+if (isObject()) {
+    add();
+}
 function clientCmdChatMessage(%unused, %voice, %pitch, %msgString) {
     onChatMessage(detag(%msgString), %voice, %pitch);
 };
@@ -11,31 +15,39 @@ function clientCmdServerMessage(%msgType, %msgString) {
     %tag = getWord(%msgType, 0);
     %defFuncList = "".get();
     MessageFuncDict;
-    %i = 0;
-    isObject(%defFuncList);
-    %func = func;
-    call(%func, %msgType, %msgString);
-    %i = (1.0 + %i);
-    !((%i @ %defFuncList $= ""));
-    %func = func;
-    %funcList = %tag.get();
-    MessageFuncDict;
-    %i = 0;
-    isObject(%funcList);
-    %func = func;
-    call(%func, %msgType, %msgString);
-    %i = (1.0 + %i);
-    !((!((!((%i @ %defFuncList $= "")) SPC %tag $= "")) @ %i @ %funcList $= ""));
-    %func = func;
+    if (isObject(%defFuncList)) {
+        %i = 0;
+        %func = func;
+        if (!(%i @ %defFuncList $= "")) {
+            call(%func, %msgType, %msgString);
+            %i = (1.0 + %i);
+            %func = func;
+        }
+    }
+    if (!(!(%i @ %defFuncList $= "") SPC %tag $= "")) {
+        %funcList = %tag.get();
+        MessageFuncDict;
+        if (isObject(%funcList)) {
+            %i = 0;
+            %func = func;
+            if (!(%i @ %funcList $= "")) {
+                call(%func, %msgType, %msgString);
+                %i = (1.0 + %i);
+                %func = func;
+            }
+        }
+    }
 };
 function addMessageCallback(%msgType, %func) {
     %m = %msgType.get();
     MessageFuncDict;
-    %i = 0;
-    isObject(%m);
-    %i = (1.0 + %i);
-    !((%i @ %m SPC func $= ""));
-    func = !((%i @ %m SPC func $= "")) @ %func @ %i @ %m;
+    if (isObject(%m)) {
+        %i = 0;
+        if (!(%i @ %m SPC func $= "")) {
+            %i = (1.0 + %i);
+        }
+        func = !(%i @ %m SPC func $= "") @ %func @ %i @ %m;
+    }
     %m = new ""();
     SimObject;
     %msgType.put(%m);

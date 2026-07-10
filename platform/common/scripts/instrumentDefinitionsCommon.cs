@@ -2,21 +2,29 @@ function InstrumentRegistry::initializeRegistryCommon(%this) {
     defaultStopAnimation = "idl1a" @ %this;
     stopAnimationsList = StringMap @ new ""() @ %this;
     0;
-    stopAnimationsList.add();
+    if (isObject()) {
+        stopAnimationsList.add();
+    }
 };
 function InstrumentRegistry::clearRegistryCommon(%this) {
-    stopAnimationsList.clear();
+    if (isObject(stopAnimationsList)) {
+        stopAnimationsList.clear();
+    }
 };
 function InstrumentRegistry::closeRegistryCommon(%this) {
-    stopAnimationsList.delete();
-    stopAnimationsList = %this @ "" @ %this;
-    isObject(stopAnimationsList);
+    if (isObject(stopAnimationsList)) {
+        stopAnimationsList.delete();
+        stopAnimationsList = %this @ "" @ %this;
+        %this;
+    }
 };
 function InstrumentRegistry::registerCommonInstrumentProperties(%this, %instrumentName, %instrumentFemaleSku, %instrumentMaleSku, %instrumentNeuterSku, %instrumentGenre, %animationGenrePrefix, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim) {
     %instrument = instrumentsList.get(%instrumentName);
     %this;
-    warn(!(isObject(%instrument)) @ getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
-    return;
+    if (!(isObject(%instrument))) {
+        warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+        return;
+    }
     skus = %instrumentFemaleSku @ "f" @ %instrument;
     skus = %instrumentMaleSku @ "m" @ %instrument;
     skus = %instrumentNeuterSku @ "n" @ %instrument;
@@ -29,66 +37,102 @@ function InstrumentRegistry::getInstrumentCount(%this) {
     return instrumentsList.size();
 };
 function InstrumentRegistry::getInstrumentByIndex(%this, %index) {
-    warn(getScopeName() @ " " @ "- bad index value =" @ " " @ %index);
-    return "";
+    if ((0.0 < %index)) {
+    }
+    if ((instrumentsList.size() >= %index)) {
+        warn(getScopeName() @ " " @ "- bad index value =" @ " " @ %index);
+        return "";
+    }
     return instrumentsList.getValue(%index);
 };
 function InstrumentRegistry::getInstrumentBySku(%this, %sku) {
-    return "";
+    if ((%sku $= "")) {
+        return "";
+    }
     %i = (1.0 - %this.getInstrumentCount());
-    %instrument = %this.getInstrumentByIndex(%i);
-    (0.0 >= %i);
-    return %instrument;
-    %i = (1.0 - %i);
+    if ((0.0 >= %i)) {
+        %instrument = %this.getInstrumentByIndex(%i);
+        if (("f" @ %instrument SPC skus $= %sku)) {
+        }
+        if (("m" @ %instrument SPC skus $= %sku)) {
+        }
+        if (("n" @ %instrument SPC skus $= %sku)) {
+            return %instrument;
+        }
+        %i = (1.0 - %i);
+    }
     return "";
 };
 function InstrumentRegistry::getInstrumentObject(%this, %instrumentName) {
     %instrument = instrumentsList.get(%instrumentName);
     %this;
-    warn(!(isObject(%instrument)) @ getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
-    return "";
+    if (!(isObject(%instrument))) {
+        warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+        return "";
+    }
     return %instrument;
 };
 function InstrumentRegistry::isInstrument(%this, %instrumentNameOrObject) {
-    %instrumentName = name;
-    %instrumentNameOrObject;
+    if (isObject(%instrumentNameOrObject)) {
+        %instrumentName = name;
+        %instrumentNameOrObject;
+    }
     %instrumentName = %instrumentNameOrObject;
-    isObject(%instrumentNameOrObject);
     return instrumentsList.hasKey(%instrumentName);
 };
 function InstrumentRegistry::isInstrumentGenre(%this, %genre) {
-    return 0;
+    if ((%genre $= "")) {
+        return 0;
+    }
     %i = (1.0 - %this.getInstrumentCount());
-    %instrument = %this.getInstrumentByIndex(%i);
-    (0.0 >= %i);
-    return 1;
-    %i = (1.0 - %i);
+    if ((0.0 >= %i)) {
+        %instrument = %this.getInstrumentByIndex(%i);
+        if ((%instrument SPC genre $= %genre)) {
+            return 1;
+        }
+        %i = (1.0 - %i);
+    }
     return 0;
 };
 function InstrumentRegistry::isInstrumentSku(%this, %sku) {
-    return 0;
+    if ((%sku $= "")) {
+        return 0;
+    }
     %i = (1.0 - %this.getInstrumentCount());
-    %instrument = %this.getInstrumentByIndex(%i);
-    (0.0 >= %i);
-    return 1;
-    %i = (1.0 - %i);
+    if ((0.0 >= %i)) {
+        %instrument = %this.getInstrumentByIndex(%i);
+        if (("f" @ %instrument SPC skus $= %sku)) {
+        }
+        if (("m" @ %instrument SPC skus $= %sku)) {
+        }
+        if (("n" @ %instrument SPC skus $= %sku)) {
+            return 1;
+        }
+        %i = (1.0 - %i);
+    }
     return 0;
 };
 function InstrumentRegistry::isStopAnimation(%this, %animationName) {
     return stopAnimationsList.hasValue(%animationName);
 };
 function InstrumentRegistry::getStopAnimation(%this, %instrumentName) {
-    error(!(%this.isInstrument(%instrumentName)) @ getScopeName() @ " " @ "- could not find instrument '" @ %instrumentName @ "'");
-    return "";
-    error(%this @ !(stopAnimationsList.hasKey(%instrumentName)) @ getScopeName() @ " " @ "- could not find stopAnimation for existing instrument '" @ %instrumentName @ "'");
-    return "";
+    if (!(%this.isInstrument(%instrumentName))) {
+        error(getScopeName() @ " " @ "- could not find instrument '" @ %instrumentName @ "'");
+        return "";
+    }
+    if (!(stopAnimationsList.hasKey(%instrumentName))) {
+        error(%this @ getScopeName() @ " " @ "- could not find stopAnimation for existing instrument '" @ %instrumentName @ "'");
+        return "";
+    }
     return stopAnimationsList.get(%instrumentName);
 };
 function InstrumentRegistry::getSku(%this, %instrumentName, %gender) {
     %instrument = instrumentsList.get(%instrumentName);
     %this;
-    warn(!(isObject(%instrument)) @ getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
-    return "";
+    if (!(isObject(%instrument))) {
+        warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+        return "";
+    }
     return skus;
 };
 function InstrumentRegistry::registerCommonProperties(%this) {

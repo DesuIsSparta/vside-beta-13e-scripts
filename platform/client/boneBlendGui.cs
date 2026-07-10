@@ -8,19 +8,23 @@ groupOffset1 = "120 0" @ boneBlendGui;
 function boneBlendGui::open(%this) {
     %this.setVisible(1);
     %this.focusAndRaise();
-    %i = 0;
-    !(runOnce);
-    %index = ($FIRST_FREE_BLEND_INDEX + %i);
-    ($MAX_FREE_BONE_BLENDS < %i);
-    $player.setBoneBlendOffsetByIndex(%index, getValue());
-    $player.setBoneBlendRateByIndex(%index, getValue());
-    $player.setBoneBlendScaleByIndex(%index, getValue());
-    %i = (1.0 + %i);
-    blendScaleSliderUniqueField;
-    $player.setBoneBlendRate(getValue());
-    $player.setBoneBlendScale(getValue());
-    runOnce = blendScaleSlider @ 1 @ %this;
-    blendRateSlider;
+    if (!(runOnce)) {
+        %i = 0;
+        %this;
+        if (($MAX_FREE_BONE_BLENDS < %i)) {
+            %index = ($FIRST_FREE_BLEND_INDEX + %i);
+            PlayGui;
+            $player.setBoneBlendOffsetByIndex(%index, getValue());
+            $player.setBoneBlendRateByIndex(%index, getValue());
+            $player.setBoneBlendScaleByIndex(%index, getValue());
+            %i = (1.0 + %i);
+            blendScaleSliderUniqueField;
+        }
+        $player.setBoneBlendRate(getValue());
+        $player.setBoneBlendScale(getValue());
+        runOnce = blendScaleSlider @ 1 @ %this;
+        blendRateSlider;
+    }
 };
 function boneBlendGui::close(%this) {
     %this.setVisible(0);

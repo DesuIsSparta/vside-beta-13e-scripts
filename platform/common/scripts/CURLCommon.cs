@@ -2,15 +2,19 @@ $gCURLGlobalDelayMS = 0;
 function CURLObject::onDonePreDelay(%this) {
     %totalDelayMS = (%this + delayMS);
     $gCURLGlobalDelayMS;
-    %this.onDone();
-    log("network", "warn", (0.0 <= %totalDelayMS) @ getDebugString(%this) @ " " @ "- delaying call to onDone()  by" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
+    if ((0.0 <= %totalDelayMS)) {
+        %this.onDone();
+    }
+    log("network", "warn", getDebugString(%this) @ " " @ "- delaying call to onDone()  by" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
     %this.schedule(%totalDelayMS, "onDonePostDelay", %totalDelayMS);
 };
 function CURLObject::onErrorPreDelay(%this, %val, %name) {
     %totalDelayMS = (%this + delayMS);
     $gCURLGlobalDelayMS;
-    %this.onError(%val, %name);
-    log("network", "warn", (0.0 <= %totalDelayMS) @ getDebugString(%this) @ " " @ "- delaying call to onError() by" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
+    if ((0.0 <= %totalDelayMS)) {
+        %this.onError(%val, %name);
+    }
+    log("network", "warn", getDebugString(%this) @ " " @ "- delaying call to onError() by" @ " " @ %totalDelayMS @ "ms. URL =" @ " " @ %this.getURL());
     %this.schedule(%totalDelayMS, "onErrorPostDelay", %totalDelayMS, %val, %name);
 };
 function CURLObject::onDonePostDelay(%this, %totalDelayMS) {

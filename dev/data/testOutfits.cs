@@ -38,8 +38,10 @@ function testOutfits_MasterNoQuit() {
     testOutfits_Master();
 };
 function testOutfits_Master() {
-    error(getScopeName() @ " " @ "- must be logged into envManager. aborting tests.");
-    return ($Token $= "");
+    if (($Token $= "")) {
+        error(getScopeName() @ " " @ "- must be logged into envManager. aborting tests.");
+        return;
+    }
     $testOutfits_testCount = 0;
     $testOutfits_passCount = 0;
     $testOutfits_nextTest = 0;
@@ -74,8 +76,10 @@ function testOutfits_Master() {
     $testOutfits_testCount[$testOutfits_test @ $testOutfits_testCount] = "testOutfits_UpToEnvManager";
     $testOutfits_testCount = (1.0 + $testOutfits_testCount);
     %n = 0;
-    %n[$testOutfits_result @ %n] = ($testOutfits_testCount < %n) @ "NA  ";
-    %n = (1.0 + %n);
+    if (($testOutfits_testCount < %n)) {
+        %n[$testOutfits_result @ %n] = "NA  ";
+        %n = (1.0 + %n);
+    }
     testOutfits_MasterDoNext();
 };
 function testOutfits::getBodyAndOutfitSkus(%setName) {
@@ -92,26 +96,34 @@ function testOutfits::skuListsAreEqual(%skusA, %skusB) {
 function testOutfits::skuListHasDuplicates(%skus) {
     %skus = SortNumbers(%skus);
     %n = (2.0 - getWordCount(%skus));
-    return 1;
-    %n = (1.0 - %n);
+    if ((0.0 >= %n)) {
+        if ((getWord(%skus, %n) $= getWord(%skus, (1.0 + %n)))) {
+            return 1;
+        }
+        %n = (1.0 - %n);
+    }
     return 0;
 };
 function testOutfits_MasterDoNext() {
     cancel($testOutfits::timer);
     $testOutfits::timer = 0;
-    echo(($testOutfits_testCount >= $testOutfits_nextTest) @ "testOutfitsMaster() complete. User=" @ $player.getShapeName() @ " " @ "Gender=" @ $player.getGender() @ " " @ "Roles=" @ roles::getRoleStrings($player.getRolesMask()));
-    %n = 0;
-    %level = "error";
-    "info";
-    log("network", %level, (($testOutfits_testCount < %n) SPC %n[$testOutfits_result @ %n] $= "pass") @ "testOutfitsMaster()" @ " " @ %n[$testOutfits_result @ %n] @ ":" @ " " @ %n[$testOutfits_test @ %n]);
-    %n = (1.0 + %n);
-    %level = "warn";
-    "info";
-    log("network", %level, "testOutfitsMaster() results:" @ " " @ $testOutfits_passCount @ " " @ "of" @ " " @ $testOutfits_testCount @ " " @ "passed," @ " " @ ($testOutfits_passCount - $testOutfits_testCount) @ " " @ "failed.");
-    quit();
+    if (($testOutfits_testCount >= $testOutfits_nextTest)) {
+        echo("testOutfitsMaster() complete. User=" @ $player.getShapeName() @ " " @ "Gender=" @ $player.getGender() @ " " @ "Roles=" @ roles::getRoleStrings($player.getRolesMask()));
+        %n = 0;
+        if (($testOutfits_testCount < %n)) {
+            %level = (%n[$testOutfits_result @ %n] $= "pass") ? "info" : "error";
+            log("network", %level, "testOutfitsMaster()" @ " " @ %n[$testOutfits_result @ %n] @ ":" @ " " @ %n[$testOutfits_test @ %n]);
+            %n = (1.0 + %n);
+        }
+        %level = ($testOutfits_passCount == $testOutfits_testCount) ? "info" : "warn";
+        ($testOutfits_testCount < %n);
+        log("network", %level, "testOutfitsMaster() results:" @ " " @ $testOutfits_passCount @ " " @ "of" @ " " @ $testOutfits_testCount @ " " @ "passed," @ " " @ ($testOutfits_passCount - $testOutfits_testCount) @ " " @ "failed.");
+        if ($testOutfits::quitWhenDone) {
+            quit();
+        }
+    }
     call($testOutfits_nextTest[$testOutfits_test @ $testOutfits_nextTest]);
     $testOutfits_nextTest = (1.0 + $testOutfits_nextTest);
-    $testOutfits::quitWhenDone;
 };
 function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout) {
     %skusGot = $player.getActiveSKUs();
@@ -119,12 +131,15 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout) {
     %skusSent = SortNumbers(%skusSent);
     %skusExpected = SortNumbers(%skusExpected);
     %succ = testOutfits::skuListsAreEqual(%skusGot, %skusExpected);
-    %noChange = "(no change)";
-    (%skusGot $= $testOutfits::badSkus);
+    if ((%skusGot $= $testOutfits::badSkus)) {
+        %noChange = "(no change)";
+    }
     %noChange = "";
-    log("network", "info", %succ @ "outfit test succeeded after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ ".");
-    $testOutfits_passCount = (1.0 + $testOutfits_passCount);
-    $testOutfits_nextTest[$testOutfits_result @ (1.0 - $testOutfits_nextTest)] = "pass";
+    if (%succ) {
+        log("network", "info", "outfit test succeeded after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ ".");
+        $testOutfits_passCount = (1.0 + $testOutfits_passCount);
+        $testOutfits_nextTest[$testOutfits_result @ (1.0 - $testOutfits_nextTest)] = "pass";
+    }
     log("network", "warn", "outfit test failed    after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ "." @ " " @ %noChange);
     log("network", "warn", "sent    " @ " " @ %skusSent);
     log("network", "warn", "got     " @ " " @ %skusGot);
@@ -264,15 +279,18 @@ function putInSets(%nums, %delim, %indent, %setSize) {
     %inum = getWordCount(%nums);
     %prevNum = getWord(%nums, 0);
     %i = 0;
-    %num = getWord(%nums, %i);
-    (%inum < %i);
-    %dif = (%prevNum - %num);
-    %out = (%setSize >= %dif) @ %out @ %delim @ "\n";
-    %prevNum = %num;
-    %d = %indent;
-    %out = %out @ %d @ %num;
-    %d = %delim;
-    %i = (1.0 + %i);
+    if ((%inum < %i)) {
+        %num = getWord(%nums, %i);
+        %dif = (%prevNum - %num);
+        if ((%setSize >= %dif)) {
+            %out = %out @ %delim @ "\n";
+            %prevNum = %num;
+            %d = %indent;
+        }
+        %out = %out @ %d @ %num;
+        %d = %delim;
+        %i = (1.0 + %i);
+    }
     return %out;
 };
 function testOutfits_dumpSkusStaff() {

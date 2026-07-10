@@ -1,7 +1,7 @@
 function testNamespace() {
-    new ();
-    new ();
-    new ();
+    new SimObject(mySimObject);
+    new SimObject(mySimObject2);
+    new GuiControl(myGuiControl);
     allowInstanceMethods();
     func1();
     func1();

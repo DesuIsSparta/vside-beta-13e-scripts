@@ -5,20 +5,27 @@ function Player::UseHeightRandom(%this) {
 };
 function Player::setHeight(%this, %height) {
     %c = getSubStr(%height, 0, 1);
-    %h = getWord(%this.getScale(), 2);
-    ((%c $= "+") SPC %c $= "-");
-    %h = (%height + %h);
-    %h = $Pref::Server::playerHeightMax;
-    ($Pref::Server::playerHeightMax > %h);
-    %h = $Pref::Server::playerHeightMin;
-    ($Pref::Server::playerHeightMin < %h);
+    if ((%c $= "+")) {
+    }
+    if ((%c $= "-")) {
+        %h = getWord(%this.getScale(), 2);
+        %h = (%height + %h);
+        if (($Pref::Server::playerHeightMax > %h)) {
+            %h = $Pref::Server::playerHeightMax;
+        }
+        if (($Pref::Server::playerHeightMin < %h)) {
+            %h = $Pref::Server::playerHeightMin;
+        }
+    }
     %h = %height;
     %sxy = (1.0 + ($Pref::Server::playerHeightWidthFactor * (1.0 - %h)));
     %this.setScale(%sxy @ " " @ %sxy @ " " @ %h);
     return;
 };
 function serverCmdSetHeight(%client, %height) {
-    return !(isObject(Player));
+    if (!(isObject(Player))) {
+        return %client;
+    }
     Player.setHeight(%height);
     return %client;
 };
@@ -43,8 +50,9 @@ function Player::orientTowardsOverTime(%this, %obj, %milliseconds) {
     %rotCur = getWords(%this.getTransform(), 3, 6);
     orientTickPeriod;
     %rotA = getWord(%rotCur, 3);
-    %rotA = (-(1.0) * %rotA);
-    (0.0 < getWord(%rotCur, 2));
+    if ((0.0 < getWord(%rotCur, 2))) {
+        %rotA = (-(1.0) * %rotA);
+    }
     %angle = %this.getAngleTowards(%obj);
     %dA = (%rotA - %angle);
     %period = gGetField(%this);
@@ -58,6 +66,8 @@ function Player::orientTowardsTicker(%this, %curA, %dltA, %ticksLeft) {
     %curA = (%dltA + %curA);
     %ticksLeft = (1.0 - %ticksLeft);
     %this.setTransform(%this.getPosition() @ " " @ "0 0 1" @ " " @ %curA);
-    %this.schedule(gGetField(%this), "orientTowardsTicker", %curA, %dltA, %ticksLeft);
+    if ((0.0 > %ticksLeft)) {
+        %this.schedule(gGetField(%this), "orientTowardsTicker", %curA, %dltA, %ticksLeft);
+    }
     return orientTickPeriod;
 };

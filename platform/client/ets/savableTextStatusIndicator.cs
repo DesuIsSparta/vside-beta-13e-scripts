@@ -1,8 +1,12 @@
 function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %controlToGetValueFrom, %callbackForSecondaryVisualUpdates, %acceptEmptyString, %arrowDescription) {
-    error(isObject(%indicatorName) @ getScopeName() @ " " @ "- object with name '" @ %indicatorName @ "' already exists");
-    return 0;
-    error(!(isObject(%controlToGetValueFrom)) @ getScopeName() @ " " @ "- requires object parameter - '" @ %controlToGetValueFrom @ "' is not an object");
-    return 0;
+    if (isObject(%indicatorName)) {
+        error(getScopeName() @ " " @ "- object with name '" @ %indicatorName @ "' already exists");
+        return 0;
+    }
+    if (!(isObject(%controlToGetValueFrom))) {
+        error(getScopeName() @ " " @ "- requires object parameter - '" @ %controlToGetValueFrom @ "' is not an object");
+        return 0;
+    }
     %obj = safeEnsureScriptObjectWithClassBindingsAndInit("GuiControl", %indicatorName, "SavableTextStatusIndicator", "{      profile      = \"GuiDefaultProfile\";" @ " " @ "horizSizing  = \"right\";" @ " " @ "vertSizing   = \"bottom\";" @ " " @ "position     = \"" @ %position @ "\";" @ " " @ "extent       = \"14 14\";" @ " " @ "minExtent    = \"14 14\";" @ " " @ "visible      = true; }");
     acceptEmptyString = %acceptEmptyString @ %obj;
     controlToGetValueFrom = %controlToGetValueFrom @ %obj;
@@ -30,10 +34,12 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
     bitmap = "platform/client/ui/ellipsis_yellow";
     visible = 0;
     savingBitmap = %obj;
-    %arrowBitmap = "platform/client/ui/arrow_red_right";
-    (%arrowDescription $= "right");
-    %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
-    (%arrowDescription $= "downAndRight");
+    if ((%arrowDescription $= "right")) {
+        %arrowBitmap = "platform/client/ui/arrow_red_right";
+    }
+    if ((%arrowDescription $= "downAndRight")) {
+        %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
+    }
     %arrowBitmap = "platform/client/ui/arrow_red_right";
     profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
     0;
@@ -51,15 +57,20 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
     return %obj;
 };
 function SavableTextStatusIndicator::setInitialValue(%this, %initialValue) {
-    warn(getScopeName() @ " " @ "- initial value already set -" @ " " @ getTrace());
-    lastValueSaved = initialValueSet @ %initialValue @ %this;
-    %this;
+    if (initialValueSet) {
+        warn(getScopeName() @ " " @ "- initial value already set -" @ " " @ getTrace());
+    }
+    lastValueSaved = %this @ %initialValue @ %this;
     initialValueSet = 1 @ %this;
 };
 function SavableTextStatusIndicator::incrementRequestCount(%this) {
     %newValue = controlToGetValueFrom.getValue();
     %this;
-    return (!(acceptEmptyString) SPC %newValue $= "");
+    if (!(acceptEmptyString)) {
+    }
+    if ((%this SPC %newValue $= "")) {
+        return;
+    }
     lastValueSaved = %newValue @ %this;
     initialValueSet = 1 @ %this;
     requestsPendingCount = (%this + requestsPendingCount);
@@ -74,12 +85,20 @@ function SavableTextStatusIndicator::decrementRequestCount(%this) {
 function SavableTextStatusIndicator::update(%this, %doCallback) {
     %valueSaved = (%this == requestsPendingCount);
     0.0;
-    %valueChanged = !((%this $= controlToGetValueFrom.getValue()));
+    %valueChanged = !(%this $= controlToGetValueFrom.getValue());
     %this SPC lastValueSaved;
+    if (%valueSaved) {
+    }
     savedBitmap.setVisible(!(%valueChanged));
+    if (!(%valueSaved)) {
+    }
     savingBitmap.setVisible(!(%valueChanged));
     changedBitmap.setVisible(%valueChanged);
-    eval(callbackForUpdates);
+    if (%doCallback) {
+    }
+    if (!(%this SPC callbackForUpdates $= "")) {
+        eval(callbackForUpdates);
+    }
 };
 function SavableTextStatusIndicator::reset(%this) {
     requestsPendingCount = 0 @ %this;

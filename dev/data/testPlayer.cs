@@ -9,13 +9,17 @@ function testPlayer_AddInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory1;
     $player.addInventorySKUs($testPlayer::sampleSKUsTwo);
     echo("testPlayer_AddInventoryTest(): " @ $Player::inventory);
-    log("network", "error", "testPlayer_AddInventoryTest(): failed");
+    if (!($Player::inventory $= $testPlayer::sampleSKUsTwo) @ " " @ $testPlayer::sampleInitialInventory1) {
+        log("network", "error", "testPlayer_AddInventoryTest(): failed");
+    }
 };
 function testPlayer_RemoveInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory2;
     $player.removeInventorySKUs($testPlayer::sampleSKUsTwo);
     echo("testPlayer_RemoveInventoryTest(): " @ $Player::inventory);
-    log("network", "error", "testPlayer_RemoveInventoryTest(): failed");
+    if (!($Player::inventory $= $testPlayer::sampleInitialInventory1)) {
+        log("network", "error", "testPlayer_RemoveInventoryTest(): failed");
+    }
 };
 function testPlayer_AddInventoryMultiTest() {
     error("inside testPlayer_AddInventoryMultiTest");
@@ -41,11 +45,13 @@ function testPlayer_RemoveInventoryMultiTest() {
 };
 function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname) {
     %pass = (%wetExpected $= %wetActual);
-    log("wardrobe", "error", "failed:" @ " " @ %testname);
-    log("wardrobe", "debug", !(%pass) @ "dry         = \"" @ %dry @ "\"");
-    log("wardrobe", "debug", "delta       = \"" @ %delta @ "\"");
-    log("wardrobe", "debug", "wetActual   = \"" @ %wetActual @ "\"");
-    log("wardrobe", "debug", "wetExpected = \"" @ %wetExpected @ "\"");
+    if (!(%pass)) {
+        log("wardrobe", "error", "failed:" @ " " @ %testname);
+        log("wardrobe", "debug", "dry         = \"" @ %dry @ "\"");
+        log("wardrobe", "debug", "delta       = \"" @ %delta @ "\"");
+        log("wardrobe", "debug", "wetActual   = \"" @ %wetActual @ "\"");
+        log("wardrobe", "debug", "wetExpected = \"" @ %wetExpected @ "\"");
+    }
     log("wardrobe", "debug", "passed:" @ " " @ %testname);
     return %pass;
 };

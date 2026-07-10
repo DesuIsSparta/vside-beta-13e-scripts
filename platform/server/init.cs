@@ -27,28 +27,34 @@ function Monitor::onConnectRequest(%unused, %unused, %id) {
     echo("Monitor Accept: " @ %id);
 };
 function openMonitorSocket() {
-    %mon = new ();
-    Monitor;
-    %mon.listen($Pref::Server::MonitorPort);
+    %mon = new TCPObject(Monitor);
+    if ((0.0 != $Pref::Server::MonitorPort)) {
+        %mon.listen($Pref::Server::MonitorPort);
+    }
     %mon.listen(28000);
 };
 function initDedicated() {
     enableWinConsole(1);
     echo("\n--------- Starting Dedicated Server ---------");
     $Server::Dedicated = 1;
-    openMonitorSocket();
-    createServer("MultiPlayer", $missionArg);
+    if (!($missionArg $= "")) {
+        openMonitorSocket();
+        createServer("MultiPlayer", $missionArg);
+    }
     echo("No mission specified (use -mission filename)");
 };
 function quitApp() {
     echo("Server quitting");
-    stopServer();
+    if (!($StandAlone)) {
+    }
+    if ($AmServer) {
+        stopServer();
+    }
     doQuit();
 };
 function stopServer() {
-    %stopRequest = new ();
-    StopRequest;
-    %host = 0 @ HTTPObject @ $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
+    %stopRequest = new HTTPObject(StopRequest);
+    %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=stop";
     %post = "";

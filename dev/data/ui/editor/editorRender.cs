@@ -1,5 +1,7 @@
 function SpawnSphere::onEditorRender(%this, %editor, %unused, %unused) {
-    return noShow;
+    if (noShow) {
+        return %this;
+    }
     %center = %this.getWorldBoxCenter();
     consoleLineWidth = 1 @ %editor;
     consoleFrameColor = "255 0 0 50" @ %editor;

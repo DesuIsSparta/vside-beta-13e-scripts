@@ -203,21 +203,32 @@ function dumpProps() {
     %num = size();
     PropInternalDescriptionMap;
     %n = 0;
-    %sku = %n.getKey();
-    PropInternalDescriptionMap;
-    %desc = %n.getValue();
-    PropInternalDescriptionMap;
-    %anims = %sku.get();
-    PropAnimationMap;
-    %genre = %sku.get();
-    PropGenreMap;
-    echo("|" @ " " @ formatString("%-8s", %sku) @ " " @ "|" @ " " @ %genre @ " " @ "|" @ " " @ formatString("%-30s", %anims) @ " " @ "|" @ " " @ formatString("%-30s", %desc) @ " " @ "|");
-    %n = (1.0 + %n);
-    (%num < %n);
+    if ((%num < %n)) {
+        %sku = %n.getKey();
+        PropInternalDescriptionMap;
+        %desc = %n.getValue();
+        PropInternalDescriptionMap;
+        %anims = %sku.get();
+        PropAnimationMap;
+        %genre = %sku.get();
+        PropGenreMap;
+        echo("|" @ " " @ formatString("%-8s", %sku) @ " " @ "|" @ " " @ %genre @ " " @ "|" @ " " @ formatString("%-30s", %anims) @ " " @ "|" @ " " @ formatString("%-30s", %desc) @ " " @ "|");
+        %n = (1.0 + %n);
+    }
 };
 initializePropAnimationMap();
 function canHavePropsInGenre(%genre) {
-    return 0;
+    if ((%genre $= "k")) {
+    }
+    if ((%genre $= "w")) {
+    }
+    if ((%genre $= "o")) {
+    }
+    if ((%genre $= "l")) {
+    }
+    if ((%genre $= "s")) {
+        return 0;
+    }
     return 1;
 };
 function Player::getActivePropSku(%this) {
@@ -240,7 +251,9 @@ function Player::getPropAnimation(%this, %actionNum) {
     return %this.getPropAnimationFromSku(%propSku, %actionNum);
 };
 function Player::getPropAnimationFromSku(%this, %propSku, %actionNum) {
-    return "";
+    if ((%propSku $= "")) {
+        return "";
+    }
     %anim = %propSku.get();
     PropAnimationMap;
     %anim = getWord(%anim, %actionNum);
@@ -254,11 +267,12 @@ function Player::getPropAnimationFromSkus(%this, %skus, %animNum) {
 };
 function Player::hasAvailableProp(%this) {
     %propSku = getActivePropSku();
-    return !((%propSku $= ""));
+    return !(%propSku $= "");
 };
 function Player::dropProp(%this) {
     %propSku = %this.getActivePropSku();
-    %activeSkus = findAndRemoveFirstOccurrenceOfWord(%this.getActiveSKUs(), %propSku);
-    !((%propSku $= ""));
-    %this.setActiveSKUs(%activeSkus);
+    if (!(%propSku $= "")) {
+        %activeSkus = findAndRemoveFirstOccurrenceOfWord(%this.getActiveSKUs(), %propSku);
+        %this.setActiveSKUs(%activeSkus);
+    }
 };

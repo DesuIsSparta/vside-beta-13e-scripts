@@ -1,11 +1,15 @@
 function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
     %fo = new ""();
     FileObject;
-    %text = "";
-    %fo.openForRead(%mlTextfileName);
-    %text = 0 @ !(%fo.isEOF()) @ %text @ %fo.readLine() @ "\n";
-    %text.setText();
-    %this.open();
+    if (%fo.openForRead(%mlTextfileName)) {
+        %text = "";
+        0;
+        if (!(%fo.isEOF())) {
+            %text = %text @ %fo.readLine() @ "\n";
+        }
+        %text.setText();
+        %this.open();
+    }
     InspectPanelMLText @ "I can't find the file: " @ %mlTextfileName.setText();
     %fo.delete();
 };
@@ -25,30 +29,38 @@ function MLScrollInspectPanel::updateSize(%this) {
     %posY = 0;
     %width = 358;
     %height = 243;
-    %height = 243;
-    (480.0 == %screenWidth);
-    %width = 358;
-    (272.0 == %screenHeight);
-    %posX = (2.0 / (%width - %screenWidth));
-    %posY = 0;
-    %height = (2.0 * 161.0);
-    (640.0 == %screenWidth);
-    %width = (3.0 * 161.0);
-    (363.0 == %screenHeight);
-    %posX = (2.0 / (%width - %screenWidth));
-    %posY = 0;
-    %height = (2.0 * 242.0);
-    (960.0 == %screenWidth);
-    %width = (3.0 * 242.0);
-    (544.0 == %screenHeight);
-    %posX = (2.0 / (%width - %screenWidth));
-    %posY = 0;
-    %height = (2.0 * 317.0);
-    (1260.0 == %screenWidth);
-    %width = (3.0 * 317.0);
-    (714.0 == %screenHeight);
-    %posX = (2.0 / (%width - %screenWidth));
-    %posY = 0;
+    if ((272.0 == %screenHeight)) {
+    }
+    if ((480.0 == %screenWidth)) {
+        %height = 243;
+        %width = 358;
+        %posX = (2.0 / (%width - %screenWidth));
+        %posY = 0;
+    }
+    if ((363.0 == %screenHeight)) {
+    }
+    if ((640.0 == %screenWidth)) {
+        %height = (2.0 * 161.0);
+        %width = (3.0 * 161.0);
+        %posX = (2.0 / (%width - %screenWidth));
+        %posY = 0;
+    }
+    if ((544.0 == %screenHeight)) {
+    }
+    if ((960.0 == %screenWidth)) {
+        %height = (2.0 * 242.0);
+        %width = (3.0 * 242.0);
+        %posX = (2.0 / (%width - %screenWidth));
+        %posY = 0;
+    }
+    if ((714.0 == %screenHeight)) {
+    }
+    if ((1260.0 == %screenWidth)) {
+        %height = (2.0 * 317.0);
+        %width = (3.0 * 317.0);
+        %posX = (2.0 / (%width - %screenWidth));
+        %posY = 0;
+    }
     %this.resize(%posX, %posY, %width, %height);
     scrollToTop();
 };

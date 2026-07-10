@@ -1,6 +1,5 @@
-className = eric @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(eric) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 55;
 Brightness = 1;
 Colour = "1.000000 1.000000 1.000000 1.000000";

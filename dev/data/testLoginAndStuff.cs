@@ -601,9 +601,8 @@ function initTeleports() {
 };
 function testLoginAndStay() {
     $loginLogout = 0;
-    userName = skeletonClient @ new () @ $UserPref::Player::Name;
-    ScriptObject;
-    password = 0 @ $UserPref::Player::Password;
+    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
+    password = $UserPref::Player::Password;
     joinAction = "doSomething";
     quitOnError = "true";
     %testLogin = ;
@@ -621,52 +620,74 @@ function doSomething() {
 };
 function do_emote() {
     %i = getRandom(1, 2);
-    $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
-    (%i $= 1);
-    $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
-    (%i $= 2);
+    if ((%i $= 1)) {
+        $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
+    }
+    if ((%i $= 2)) {
+        $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
+    }
     $mvForwardAction = 0;
     $rand_emote = getRandom(0, (EmoteDict - size())).getValue();
     1.0;
     $rand_genre = getRandom(1, $GenresCount);
     EmoteDict;
     commandToServer('EtsPlayAnimName', $rand_emote);
-    $rand_genre[pChat @ $rand_genre[isObject() @ pChat @ "(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote.say(0, 0);
+    if (isObject()) {
+        $rand_genre[$rand_genre[pChat @ pChat @ "(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote.say(0, 0);
+    }
     commandToServer('setGenre', $rand_genre[$Genres @ $rand_genre]);
     schedule(5000, 0);
     schedule(30000, 0);
 };
 function stopAndTalk() {
-    close();
-    closeFully();
-    $mvYawLeftSpeed = 0;
-    geTGF;
-    $mvYawRightSpeed = 0;
-    isVisible();
-    $mvForwardAction = 0;
-    geTGF;
-    %rand_teleport_NV = getRandom(1, $teleportsNVCount);
-    ClosetGui;
-    %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
-    isVisible();
-    %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
-    ClosetGui;
-    %command = %rand_teleport_NV[((isObject() SPC $DestServerName $= "NewVeneziaNorth") SPC $DestServerName $= "NewVeneziaSouth") @ $teleportsNV TAB %rand_teleport_NV @ 0];
-    pChat;
-    %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
-    %command = %rand_teleport_LGA[(($DestServerName $= "LaGenoaAiresNorth") SPC $DestServerName $= "LaGenoaAiresSouth") @ $teleportsLGA TAB %rand_teleport_LGA @ 0];
-    %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
-    %command = %rand_teleport_RJ[(($DestServerName $= "RaijukuNorth") SPC $DestServerName $= "RaijukuSouth") @ $teleportsRJ TAB %rand_teleport_RJ @ 0];
-    %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
-    pChat @ "(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination.say(0, 0);
-    commandToServer(%command, %destination);
-    schedule(4000, 0);
-    echo("LOAD: Giving up. Lost PChat object.");
-    echo("LOAD: Quit()-ing...");
-    logoffAndQuit();
+    if (isObject()) {
+        if (isVisible()) {
+            close();
+        }
+        if (isVisible()) {
+            closeFully();
+        }
+        $mvYawLeftSpeed = 0;
+        geTGF;
+        $mvYawRightSpeed = 0;
+        geTGF;
+        $mvForwardAction = 0;
+        ClosetGui;
+        %rand_teleport_NV = getRandom(1, $teleportsNVCount);
+        ClosetGui;
+        %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
+        pChat;
+        %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
+        if (($DestServerName $= "NewVeneziaNorth")) {
+        }
+        if (($DestServerName $= "NewVeneziaSouth")) {
+            %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
+            %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
+        }
+        if (($DestServerName $= "LaGenoaAiresNorth")) {
+        }
+        if (($DestServerName $= "LaGenoaAiresSouth")) {
+            %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
+            %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
+        }
+        if (($DestServerName $= "RaijukuNorth")) {
+        }
+        if (($DestServerName $= "RaijukuSouth")) {
+            %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
+            %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
+        }
+        pChat @ "(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination.say(0, 0);
+        commandToServer(%command, %destination);
+        schedule(4000, 0);
+    }
+    if ((5.0 == $failureCount)) {
+        echo("LOAD: Giving up. Lost PChat object.");
+        echo("LOAD: Quit()-ing...");
+        logoffAndQuit();
+    }
     echo("LOAD: Lost PChat... Gonna try again.");
     $failureCount = (1.0 + $failureCount);
-    (5.0 == $failureCount);
+    changeClothes;
     schedule(10000, 0);
 };
 function logoffAndQuit() {
@@ -693,15 +714,20 @@ function changeClothes() {
 function approveFriendRequests() {
     %fansHere = buddyLists;
     FansHere @ BuddyHudWin;
-    return !(isObject(%fansHere));
-    echo("LOAD: There are no waiting requests.");
-    return (0.0 == %fansHere.size());
+    if (!(isObject(%fansHere))) {
+        return;
+    }
+    if ((0.0 == %fansHere.size())) {
+        echo("LOAD: There are no waiting requests.");
+        return;
+    }
     %n = (1.0 - %fansHere.size());
-    %playerName = %fansHere.getKey(%n);
-    (0.0 >= %n);
-    echo("LOAD: Friend" @ " " @ %playerName);
-    %action = "accept";
-    doUserFavorite(%playerName, %action);
-    pChat @ "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
-    %n = (1.0 - %n);
+    if ((0.0 >= %n)) {
+        %playerName = %fansHere.getKey(%n);
+        echo("LOAD: Friend" @ " " @ %playerName);
+        %action = "accept";
+        doUserFavorite(%playerName, %action);
+        pChat @ "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
+        %n = (1.0 - %n);
+    }
 };

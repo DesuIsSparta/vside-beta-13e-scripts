@@ -1,9 +1,8 @@
 exec("./skeletonClient.cs");
 function testLoginTimes() {
     $loginLogout = 0;
-    userName = skeletonClient @ new () @ $UserPref::Player::Name;
-    ScriptObject;
-    password = 0 @ $UserPref::Player::Password;
+    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
+    password = $UserPref::Player::Password;
     joinAction = "doSomething";
     quitOnError = "true";
     %testLogin = ;
@@ -13,12 +12,16 @@ function testLoginTimes() {
     $cityIndex = (1.0 + $cityIndex);
 };
 function doSomething() {
-    close();
+    if (isVisible()) {
+        close();
+    }
     "Hello!".say(0, 0);
     "Goodbye!".say(0, 0);
     logout(0);
     exit();
-    schedule(3000, 0);
+    if (($maxCities <= $cityIndex)) {
+        schedule(3000, 0);
+    }
     skeletonClient::reallyQuit();
 };
 function initCities() {

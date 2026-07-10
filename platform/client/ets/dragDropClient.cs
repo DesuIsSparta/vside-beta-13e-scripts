@@ -1,20 +1,44 @@
 function Canvas::onSystemDragDropEvent(%this, %text, %isDrop, %pt) {
-    return 0;
-    return 0;
+    if (!(isURL(%text))) {
+        return 0;
+    }
+    if ((getId() == %this.getId())) {
+        if (!(isObject($player))) {
+        }
+        if (!($player.isHost())) {
+            return 0;
+        }
+    }
     return Parent::onSystemDragDropEvent(%this, %text, %isDrop, %pt);
 };
 function Canvas::onSystemDragDroppedEvent(%this, %url, %pt) {
-    error(getScopeName() @ " " @ "- CSMediaDisplay not initialized." @ " " @ getTrace());
-    return !(isObject());
+    if (!(isObject())) {
+        error(getScopeName() @ " " @ "- CSMediaDisplay not initialized." @ " " @ getTrace());
+        return CSMediaDisplay;
+    }
     %url.playMediaStream();
 };
 function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt) {
-    return 0;
+    if (!(%this.acceptsSystemDragDropContent(%text))) {
+        return 0;
+    }
     %this.setSystemDragTargetControl();
-    hiliteControl(%this);
-    hiliteControl("");
-    hiliteControl("");
-    %this.onSystemDragDroppedEvent(%text, %pt);
+    if ((Canvas SPC %eventType $= "MAKE")) {
+        hiliteControl(%this);
+    }
+    if ((%eventType $= "MOVE")) {
+    }
+    if ((%eventType $= "LEAVE")) {
+        if (%this.isHiliteCtrl()) {
+            hiliteControl("");
+        }
+    }
+    if ((%eventType $= "BREAK")) {
+        if (%this.isHiliteCtrl()) {
+            hiliteControl("");
+        }
+        %this.onSystemDragDroppedEvent(%text, %pt);
+    }
     return 1;
 };
 function GuiControl::acceptsSystemDragDropContent(%this, %text) {

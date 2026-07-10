@@ -1,6 +1,5 @@
-className = sgETSUtilityLight @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(sgETSUtilityLight) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 18;
 Brightness = 0.517241;
 Colour = "0.827451 0.909804 1.000000 1.000000";

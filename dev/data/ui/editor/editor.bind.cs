@@ -1,4 +1,4 @@
-new ();
+new ActionMap(EditorMap);
 "f2".bindCmd("editor.setEditor(WorldEditor);", "");
 "f3".bindCmd("editor.setEditor(TerrainEditor);", "");
 "f4".bindCmd("editor.setEditor(Terraformer);", "");
@@ -8,15 +8,19 @@ new ();
 "escape".bindCmd("editor.close();", "");
 %i = 0;
 keyboard;
-keyboard @ "alt " @ %i.bindCmd((9.0 < %i) @ EditorMap @ "editor.setBookmark(" @ %i @ ");", "");
-%i = (1.0 + %i);
-EditorMap;
+if ((9.0 < %i)) {
+    keyboard @ "alt " @ %i.bindCmd(EditorMap @ EditorMap @ "editor.setBookmark(" @ %i @ ");", "");
+    %i = (1.0 + %i);
+    keyboard;
+}
 %i = 0;
 (9.0 < %i);
-keyboard @ "ctrl " @ %i.bindCmd((9.0 < %i) @ EditorMap @ "editor.gotoBookmark(" @ %i @ ");", "");
-%i = (1.0 + %i);
-keyboard;
-new ();
+if ((9.0 < %i)) {
+    keyboard @ "ctrl " @ %i.bindCmd(EditorMap @ EditorMap @ "editor.gotoBookmark(" @ %i @ ");", "");
+    %i = (1.0 + %i);
+    keyboard;
+}
+new ActionMap(WorldEditorMap);
 "space".bindCmd("wEditor.nextMode();", "");
 "delete".bindCmd("wEditor.copySelection();wEditor.deleteSelection();Inspector.uninspect();", "");
 "ctrl c".bindCmd("wEditor.copySelection();", "");
@@ -32,7 +36,7 @@ new ();
 "ctrl r".bindCmd("wEditor.resetTransforms();", "");
 "i".bindCmd("Canvas.pushDialog(interiorDebugDialog, 0);", "");
 "o".bindCmd("Canvas.pushDialog(WorldEditorSettingsDlg, 0);", "");
-new ();
+new ActionMap(TerrainEditorMap);
 "ctrl z".bindCmd("tEditor.undo();", "");
 "ctrl y".bindCmd("tEditor.redo();", "");
 "left".bindCmd("tEditor.offsetBrush(-1, 0);", "");
@@ -64,7 +68,7 @@ new ();
 "o".bindCmd("Canvas.pushDialog(TerrainEditorValuesSettingsGui, 99);", "");
 "m".bindCmd("Canvas.pushDialog(TerrainEditorTextureSelectGui, 99);", "");
 "backspace".bindCmd("tEditor.clearSelection();", "");
-new ();
+new ActionMap(AIEditorMap);
 "space".bindCmd("aiEdit.nextMode();", "");
 "delete".bindCmd("aiEdit.copySelection();aiEdit.deleteSelection();", "");
 "ctrl c".bindCmd("aiEdit.copySelection();", "");

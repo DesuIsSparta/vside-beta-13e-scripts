@@ -1,6 +1,14 @@
 function getGender(%obj) {
-    return %obj;
-    return "n";
+    if ((%obj $= "f")) {
+    }
+    if ((%obj $= "m")) {
+    }
+    if ((%obj $= "n")) {
+        return %obj;
+    }
+    if (!(isPlayerObject(%obj))) {
+        return "n";
+    }
     return %obj.getGender();
 };
 function getPronounHeSheIt(%obj) {
@@ -31,7 +39,6 @@ function getPronounHisHersTheirs(%obj) {
     return;
 };
 function getPronounItThem(%quantity) {
-    %ret = "them";
-    "it";
+    %ret = (1.0 == %quantity) ? "it" : "them";
     return %ret;
 };

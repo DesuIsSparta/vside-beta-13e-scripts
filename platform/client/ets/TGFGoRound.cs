@@ -60,24 +60,32 @@ function TGFGoRound::rebuildContainer_Deets(%this, %container) {
     %container.deleteMembers();
 };
 function TGFGoRound::newContentLilThumb(%this, %container) {
-    error(getScopeName() @ " " @ "- no list" @ " " @ getTrace());
-    return !(isObject(mItemsList));
+    if (!(isObject(mItemsList))) {
+        error(getScopeName() @ " " @ "- no list" @ " " @ getTrace());
+        return %this;
+    }
     %item = mItemsList.getValue(mCurrentItem);
     mItemsList;
-    error(mItemsList @ mCurrentItem @ " " @ getTrace());
-    mCurrentItem = %this @ mItemsList;
-    %this @ 0;
-    return getScopeName() @ " " @ "- bad item" @ " ";
-    relationType = userName.hasKey() @ "friend" @ %item;
-    %item;
+    if (!(isObject(%item))) {
+        error(mItemsList @ mCurrentItem @ " " @ getTrace());
+        mCurrentItem = %this @ mItemsList;
+        %this @ 0;
+        return getScopeName() @ " " @ "- bad item" @ " ";
+    }
+    if ((%item SPC relationType $= "")) {
+    }
+    if (userName.hasKey()) {
+        relationType = %item @ "friend" @ %item;
+        UserListFriends;
+    }
     %userName = userName;
     %item;
     %isFriend = (%item SPC relationType $= "friend");
-    UserListFriends;
-    %friendColorTag = "";
-    "<color:00ee00ee>";
-    %avatarPicURL = (%item SPC relationType $= "") @ !((%isFriend SPC %userName $= "")) @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=M";
-    mBitmapCtrl.downloadAndApplyBitmap(%avatarPicURL);
+    %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
+    if (!(%userName $= "")) {
+        %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=M";
+        mBitmapCtrl.downloadAndApplyBitmap(%avatarPicURL);
+    }
     mBitmapCtrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
     mTextCtrl.setTextWithStyle(%container @ %friendColorTag @ %userName);
     mItem = %container @ %item @ %container;
@@ -94,10 +102,11 @@ function TGFGoRound::newContentBigThumb(%this) {
     %userName = userName;
     %item;
     %isFriend = (%item SPC relationType $= "friend");
-    %friendColorTag = "";
-    "<color:00ee00ee>";
-    %avatarPicURL = !((%isFriend SPC %userName $= "")) @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=L";
-    %container.getObject(0).downloadAndApplyBitmap(%avatarPicURL);
+    %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
+    if (!(%userName $= "")) {
+        %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=L";
+        %container.getObject(0).downloadAndApplyBitmap(%avatarPicURL);
+    }
     mBitmapCtrl.setBitmap(mBitmapCtrl.getBitmap());
     mTextCtrl.setTextWithStyle(%container @ %friendColorTag @ %userName);
     mItem = %lilThumbContainer @ %item @ %container;
@@ -115,8 +124,10 @@ function TGFGoRound::viewItem(%this, %item) {
 };
 function geTGFGoRound_DeetsMLText::onURL(%this, %url) {
     %type = firstWord(%url);
-    error(getScopeName() @ " " @ "- unknown type" @ " " @ %type @ " " @ getTrace());
-    return !((%type $= "PROFILE"));
+    if (!(%type $= "PROFILE")) {
+        error(getScopeName() @ " " @ "- unknown type" @ " " @ %type @ " " @ getTrace());
+        return;
+    }
     %userName = restWords(%url);
     %userName.viewProfile();
 };
@@ -124,10 +135,12 @@ function TGFGoRound::setItemList(%this, %list) {
     mItemsList = %list @ %this;
     mCurrentItem = 0 @ %list;
     %n = 0;
-    %lilThumbContainer = mLilThumbsContainer.getObject(%n);
-    %this;
-    %this.newContentLilThumb(%lilThumbContainer);
-    %n = (1.0 + %n);
-    ((%this * mLilThumbsNumAcross) < %n);
+    if (((%this * mLilThumbsNumAcross) < %n)) {
+        %lilThumbContainer = mLilThumbsContainer.getObject(%n);
+        %this;
+        %this.newContentLilThumb(%lilThumbContainer);
+        %n = (1.0 + %n);
+        2.0;
+    }
     %this.newContentBigThumb();
 };

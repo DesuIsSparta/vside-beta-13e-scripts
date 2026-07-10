@@ -1,5 +1,7 @@
 function SAD(%password) {
-    commandToServer('SAD', %password);
+    if (!(%password $= "")) {
+        commandToServer('SAD', %password);
+    }
 };
 function SADSetPassword(%password) {
     commandToServer('SADSetPassword', %password);

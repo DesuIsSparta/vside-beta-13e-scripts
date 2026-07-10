@@ -1,6 +1,5 @@
-className = stairlight2 @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(stairlight2) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 8;
 Brightness = 0.735632;
 Colour = "1.000000 0.275862 0.563218 1.000000";

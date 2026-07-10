@@ -1,37 +1,40 @@
 function ratingControl::Initialize(%this, %gradations, %buttonSize, %buttonBitmap) {
-    gradations = !(initialized) @ %gradations @ %this;
-    %this;
-    buttonSize = %buttonSize @ %this;
-    buttonBitmap = %buttonBitmap @ %this;
-    rating = 0 @ %this;
-    mouseOver = -(1.0) @ %this;
-    mouseDown = 0 @ %this;
-    %this.buildButtons();
-    %this.update();
-    initialized = 1 @ %this;
+    if (!(initialized)) {
+        gradations = %this @ %gradations @ %this;
+        buttonSize = %buttonSize @ %this;
+        buttonBitmap = %buttonBitmap @ %this;
+        rating = 0 @ %this;
+        mouseOver = -(1.0) @ %this;
+        mouseDown = 0 @ %this;
+        %this.buildButtons();
+        %this.update();
+        initialized = 1 @ %this;
+    }
 };
 function ratingControl::buildButtons(%this) {
     %xPos = 0;
     %ypos = 0;
     %i = 0;
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
-    0;
-    horizSizing = %this @ (gradations < %i) @ "right";
-    vertSizing = "bottom";
-    position = %xPos @ " " @ %ypos;
-    extent = %this @ buttonSize;
-    minExtent = "1 1";
-    sluggishness = -(1.0);
-    visible = 1;
-    bitmap = %this @ buttonBitmap @ "_n";
-    bitmapBase = %this @ buttonBitmap;
-    images = %i @ %this;
-    images.bindClassName("RatingControlImage");
-    %this.add(images);
-    %xPos = (getWord(buttonSize, 0) + %xPos);
-    %this;
-    %i = (1.0 + %i);
-    %i @ %this @ %i @ %this;
+    if ((gradations < %i)) {
+        profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+        0;
+        horizSizing = %this @ "right";
+        vertSizing = "bottom";
+        position = %xPos @ " " @ %ypos;
+        extent = %this @ buttonSize;
+        minExtent = "1 1";
+        sluggishness = -(1.0);
+        visible = 1;
+        bitmap = %this @ buttonBitmap @ "_n";
+        bitmapBase = %this @ buttonBitmap;
+        images = %i @ %this;
+        images.bindClassName("RatingControlImage");
+        %this.add(images);
+        %xPos = (getWord(buttonSize, 0) + %xPos);
+        %this;
+        %i = (1.0 + %i);
+        %i @ %this @ %i @ %this;
+    }
     profile = GuiMouseEventCtrl @ new ""() @ "GuiDefaultProfile";
     0;
     horizSizing = %this @ (gradations < %i) @ "right";
@@ -51,21 +54,31 @@ function ratingControl::update(%this) {
     %cutoff = (%this - rating);
     1.0;
     %suffix = "_d";
-    %cutoff = mouseOver;
-    %this;
-    %suffix = "_h";
-    !(mouseDown);
+    if ((%this >= mouseOver)) {
+        %cutoff = mouseOver;
+        %this;
+        if (!(mouseDown)) {
+            %suffix = "_h";
+            %this;
+        }
+    }
     %i = 0;
-    %this;
-    images.setImageSuffix(%suffix);
-    images.setImageSuffix("_n");
-    %i = (1.0 + %i);
-    (%cutoff <= %i) @ %i @ %this @ %i @ %this;
+    0.0;
+    if ((gradations < %i)) {
+        if ((%cutoff <= %i)) {
+            images.setImageSuffix(%suffix);
+        }
+        images.setImageSuffix("_n");
+        %i = (1.0 + %i);
+        %this @ %i @ %this @ %i @ %this;
+    }
 };
 function ratingControl::setRating(%this, %rating, %saveToManager) {
     rating = %rating @ %this;
     %this.update();
-    Music::rateSong(%rating);
+    if (%saveToManager) {
+        Music::rateSong(%rating);
+    }
 };
 function ratingControl::setMouseOver(%this, %level) {
     mouseOver = %level @ %this;

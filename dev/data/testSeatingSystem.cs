@@ -6,8 +6,10 @@ function testSeatingSystem_Master() {
     RunTestSuite_QuiteWhenDone("TestSuite_SeatingSystemSmokeTests");
 };
 function TestSuite_SeatingSystemSmokeTests::setup(%this) {
-    delete();
-    new ();
+    if (isObject()) {
+        delete();
+    }
+    new SimSet(TestSeatingSystemTestSet);
     add();
     recursiveCollectSeatsFromSimGroup();
     commandToServer('dropCameraAtPlayer');
@@ -19,7 +21,9 @@ function TestSuite_SeatingSystemSmokeTests::setup(%this) {
     %this.addTestCaseDelayed("TEST_TeleportAway", 500);
 };
 function TestSuite_SeatingSystemSmokeTests::TearDown(%this) {
-    delete();
+    if (isObject()) {
+        delete();
+    }
 };
 function TEST_SeatAvailable::runTest(%this) {
     %seatID = 0.getObject();

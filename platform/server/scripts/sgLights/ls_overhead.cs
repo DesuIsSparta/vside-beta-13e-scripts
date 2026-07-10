@@ -1,6 +1,5 @@
-className = ls_overhead @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(ls_overhead) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 2.5;
 Brightness = 0.91954;
 Colour = "1.000000 1.000000 1.000000 1.000000";

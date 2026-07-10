@@ -1,7 +1,13 @@
 function toggleSalonChairControlDialog() {
-    return !($StandAlone);
-    return !(($gContiguousSpaceName $= "minimal"));
-    return !($player.rolesPermissionCheckNoWarn("manageUsersBasic"));
+    if (!($StandAlone)) {
+        return;
+    }
+    if (!($gContiguousSpaceName $= "minimal")) {
+        return;
+    }
+    if (!($player.rolesPermissionCheckNoWarn("manageUsersBasic"))) {
+        return;
+    }
     toggleVisibleState();
 };
 function salonChairControlGui::open(%this) {
@@ -14,10 +20,13 @@ function salonChairControlGui::close(%this, %unused) {
     %this.setVisible(0);
 };
 function salonChairControlGui::tryTarget(%this, %shape) {
-    return !(%this.isVisible());
+    if (!(%this.isVisible())) {
+        return;
+    }
     %name = admin::getTargetName(%shape);
-    %classname = admin::getFormattedClassName(%shape.getClassName());
-    isObject(%shape);
+    if (isObject(%shape)) {
+        %classname = admin::getFormattedClassName(%shape.getClassName());
+    }
     %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
     %targetName.setText();
@@ -41,28 +50,40 @@ function salonChairControlGui::onRefreshTargetsList(%this) {
 };
 function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item) {
     %action = detag(%actionTagged);
-    $gSalonChairControlTargetsList = "";
-    (%action $= "begin");
-    $gSalonChairControlTargetsList = %item;
-    ((%action $= "add") SPC $gSalonChairControlTargetsList $= "");
-    $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
-    $gSalonChairControlTargetsList.onGotTargetsList();
+    if ((%action $= "begin")) {
+        $gSalonChairControlTargetsList = "";
+    }
+    if ((%action $= "add")) {
+        if (($gSalonChairControlTargetsList $= "")) {
+            $gSalonChairControlTargetsList = %item;
+        }
+        $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
+    }
+    if ((%action $= "finish")) {
+        $gSalonChairControlTargetsList.onGotTargetsList();
+    }
 };
 function salonChairControlGui::onGotTargetsList(%this, %theList) {
     clear();
     %num = getRecordCount(%theList);
     salonChairControlTargetsPopup;
-    error("apparently nobody is here. this is bad.");
-    return (1.0 < %num);
+    if ((1.0 < %num)) {
+        error("apparently nobody is here. this is bad.");
+        return;
+    }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    %entry = getRecord(%theList, %n);
-    (%num < %n);
-    %entry.add(%n);
-    %nextItem = %entry;
-    (salonChairControlTargetsPopup SPC %entry $= $gSalonChairControlGuiPrevMenuTarget);
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %entry = getRecord(%theList, %n);
+        %entry.add(%n);
+        if ((salonChairControlTargetsPopup SPC %entry $= $gSalonChairControlGuiPrevMenuTarget)) {
+            %nextItem = %entry;
+        }
+        %n = (1.0 + %n);
+    }
     sort();
-    defaultTarget.setText();
+    if (!(%this SPC defaultTarget $= "")) {
+        defaultTarget.setText();
+    }
     %nextItem.setText();
 };

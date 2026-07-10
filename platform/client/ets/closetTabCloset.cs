@@ -1,6 +1,8 @@
 function ClosetTabs::fillClosetTab(%this) {
     %theTab = %this.getTabWithName("CLOSET");
-    return !(isObject(%theTab));
+    if (!(isObject(%theTab))) {
+        return;
+    }
     profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
     0;
     horizSizing = "right";
@@ -12,9 +14,8 @@ function ClosetTabs::fillClosetTab(%this) {
     visible = 1;
     bitmap = "platform/client/ui/closet_tabs_bracket";
     %theTab.add();
-    profile = NoItemInBrandNameLabel @ new () @ "ClosetLeftInfoProfile";
-    GuiMLTextCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiMLTextCtrl(NoItemInBrandNameLabel) @ "ClosetLeftInfoProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "26 111";
     extent = "457 17";
@@ -38,9 +39,8 @@ function ClosetTabs::fillClosetTab(%this) {
     maxLength = 255;
     %itemLabel = ;
     %theTab.add(%itemLabel);
-    profile = ClosetItemPopup @ new () @ "ClosetPopupProfile";
-    GuiPopUp2MenuCtrl;
-    scrollProfile = 0 @ "DottedScrollProfile";
+    profile = new GuiPopUp2MenuCtrl(ClosetItemPopup) @ "ClosetPopupProfile";
+    scrollProfile = "DottedScrollProfile";
     winProfile = "ClosetPopupWindowProfile";
     horizSizing = "right";
     vertSizing = "bottom";
@@ -58,11 +58,13 @@ function ClosetTabs::fillClosetTab(%this) {
     possibleCategoryList = %categoryList @ %itemPopup;
     displayedCategoryList = %categoryList @ %itemPopup;
     %n = 0;
-    %category = getField(%categoryList, %n);
-    (getFieldCount(%categoryList) < %n);
-    %itemPopup.add(%category);
-    %n = (1.0 + %n);
-    Closet::skuListHasCategory($Player::inventory, %category);
+    if ((getFieldCount(%categoryList) < %n)) {
+        %category = getField(%categoryList, %n);
+        if (Closet::skuListHasCategory($Player::inventory, %category)) {
+            %itemPopup.add(%category);
+        }
+        %n = (1.0 + %n);
+    }
     profile = GuiTextCtrl @ new ""() @ "ClosetTitleProfile";
     0;
     horizSizing = (getFieldCount(%categoryList) < %n) @ "right";
@@ -76,9 +78,8 @@ function ClosetTabs::fillClosetTab(%this) {
     maxLength = 255;
     %brandLabel = ;
     %theTab.add(%brandLabel);
-    profile = ClosetBrandPopup @ new () @ "ClosetPopupProfile";
-    GuiPopUp2MenuCtrl;
-    scrollProfile = 0 @ "DottedScrollProfile";
+    profile = new GuiPopUp2MenuCtrl(ClosetBrandPopup) @ "ClosetPopupProfile";
+    scrollProfile = "DottedScrollProfile";
     winProfile = "ClosetPopupWindowProfile";
     horizSizing = "right";
     vertSizing = "bottom";
@@ -92,9 +93,8 @@ function ClosetTabs::fillClosetTab(%this) {
     allowReverse = 0;
     %brandPopup = ;
     %theTab.add(%brandPopup);
-    profile = ClosetItemsFrame @ new () @ "GuiDefaultProfile";
-    GuiControl;
-    horizSizing = 0 @ "right";
+    profile = new GuiControl(ClosetItemsFrame) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "22 120";
     extent = "467 306";
@@ -144,9 +144,8 @@ function ClosetTabs::fillClosetTab(%this) {
     %itemsScroll = ;
     %itemsScroll.bindClassName("ClosetItemsScroll");
     itemsScroll = %itemsScroll @ %theTab;
-    class = ClosetThumbnailsCloset @ new () @ "ClosetThumbnails";
-    GuiArray2Ctrl;
-    profile = 0 @ "FocusableDefaultProfile";
+    class = new GuiArray2Ctrl(ClosetThumbnailsCloset) @ "ClosetThumbnails";
+    profile = "FocusableDefaultProfile";
     childrenClassName = "GuiMouseEventCtrl";
     childrenExtent = "109 138";
     spacing = 2;
@@ -163,25 +162,22 @@ function ClosetTabs::fillClosetTab(%this) {
     thumbnails = %thumbnails @ %itemsFrame;
     %theTab.add(%itemsFrame);
     thumbnails = %thumbnails @ %theTab;
-    profile = ClosetShortDescText @ new () @ "ClosetLeftInfoProfile";
-    GuiMLTextCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiMLTextCtrl(ClosetShortDescText) @ "ClosetLeftInfoProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "692 84";
     extent = "242 25";
     lineSpacing = -(3.0);
     %theTab.add();
-    profile = ClosetLongDescText @ new () @ "ClosetLeftInfoProfile";
-    GuiMLTextCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiMLTextCtrl(ClosetLongDescText) @ "ClosetLeftInfoProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "692 106";
     extent = "173 32";
     lineSpacing = -(3.0);
     %theTab.add();
-    profile = ClosetMyOutfitsFrame @ new () @ "GuiDefaultProfile";
-    GuiControl;
-    horizSizing = 0 @ "right";
+    profile = new GuiControl(ClosetMyOutfitsFrame) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "5 430";
     extent = "498 112";
@@ -199,9 +195,8 @@ function ClosetTabs::fillClosetTab(%this) {
     visible = 1;
     bitmap = "platform/client/ui/outfits";
     %myOutfitsFrame = ;
-    profile = ClosetHangersFrame @ new () @ "GuiDefaultProfile";
-    GuiMouseEventCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiMouseEventCtrl(ClosetHangersFrame) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "21 0";
     extent = "471 112";
@@ -214,58 +209,60 @@ function ClosetTabs::fillClosetTab(%this) {
     %xPos = 0;
     %ypos = 0;
     %i = 0;
-    profile = 0 @ new GuiObjectView @ "ClosetOutfitObjectView" @ %i() @ "GuiDefaultProfile";
-    ($gClosetNumOutfits < %i);
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = %xPos @ " " @ %ypos;
-    extent = "46 112";
-    minExtent = "1 1";
-    sluggishness = -1;
-    CamSluggishness = 0.0000001;
-    visible = 1;
-    %objectView = ;
-    %objectView.setSimObject($player);
-    %objectView.setRotation(0.2, 0, 2.8);
-    %objectView.setLookAtNudge("0.2 -1 0.15");
-    toonLineWidth = isObject($player) @ 2 @ %objectView;
-    profile = GuiMLTextCtrl @ new ""() @ "ETSNonModalProfile";
-    0;
-    position = "10 0";
-    extent = "30 15";
-    text = "<font:Arial:16><color:ffffff><b><outline><just:right>" @ " " @ (1.0 + %i) @ " ";
-    visible = 0;
-    %label = ;
-    profile = GuiBitmapButtonCtrl @ new ""() @ "ClosetHangerButtonProfile";
-    0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = %xPos @ " " @ %ypos;
-    extent = "39 112";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    command = "ClosetMyOutfitsFrame.hangerSelected(" @ %i @ ");";
-    text = (1.0 + %i);
-    groupNum = $ClosetHangersGroup;
-    buttonType = "RadioButton";
-    bitmap = "platform/client/buttons/outfit";
-    drawText = 0;
-    index = %i;
-    %button = ;
-    %button.bindClassName("ClosetOutfitButton");
-    %button.setName("ClosetOutfitButton" @ %i);
-    %button.add(%label);
-    label = %label @ %button;
-    %hangers.add(%objectView);
-    %hangers.add(%button);
-    button = %button @ %i @ %hangers;
-    %xPos = (39.0 + %xPos);
-    %i = (1.0 + %i);
+    if (($gClosetNumOutfits < %i)) {
+        profile = 0 @ new GuiObjectView @ "ClosetOutfitObjectView" @ %i() @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = %xPos @ " " @ %ypos;
+        extent = "46 112";
+        minExtent = "1 1";
+        sluggishness = -1;
+        CamSluggishness = 0.0000001;
+        visible = 1;
+        %objectView = ;
+        if (isObject($player)) {
+            %objectView.setSimObject($player);
+        }
+        %objectView.setRotation(0.2, 0, 2.8);
+        %objectView.setLookAtNudge("0.2 -1 0.15");
+        toonLineWidth = 2 @ %objectView;
+        profile = GuiMLTextCtrl @ new ""() @ "ETSNonModalProfile";
+        0;
+        position = "10 0";
+        extent = "30 15";
+        text = "<font:Arial:16><color:ffffff><b><outline><just:right>" @ " " @ (1.0 + %i) @ " ";
+        visible = 0;
+        %label = ;
+        profile = GuiBitmapButtonCtrl @ new ""() @ "ClosetHangerButtonProfile";
+        0;
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = %xPos @ " " @ %ypos;
+        extent = "39 112";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        command = "ClosetMyOutfitsFrame.hangerSelected(" @ %i @ ");";
+        text = (1.0 + %i);
+        groupNum = $ClosetHangersGroup;
+        buttonType = "RadioButton";
+        bitmap = "platform/client/buttons/outfit";
+        drawText = 0;
+        index = %i;
+        %button = ;
+        %button.bindClassName("ClosetOutfitButton");
+        %button.setName("ClosetOutfitButton" @ %i);
+        %button.add(%label);
+        label = %label @ %button;
+        %hangers.add(%objectView);
+        %hangers.add(%button);
+        button = %button @ %i @ %hangers;
+        %xPos = (39.0 + %xPos);
+        %i = (1.0 + %i);
+    }
     %theTab.add(%myOutfitsFrame);
-    profile = ClosetWhatYourWearingContainer @ new () @ "ETSNonModalProfile";
-    GuiControl;
-    horizSizing = ($gClosetNumOutfits < %i) @ 0 @ "right";
+    profile = ($gClosetNumOutfits < %i) @ new GuiControl(ClosetWhatYourWearingContainer) @ "ETSNonModalProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "689 207";
     extent = "245 281";
@@ -329,7 +326,9 @@ function ClosetTabs::doCopyOutfit(%this, %src, %dest) {
     %body = %title[$MsgCat::closet TAB "MSG-COPY-OUTFIT-WARN" @ "BODY"];
     %body = strreplace(%body, "[SRC]", (1.0 + %src));
     %body = strreplace(%body, "[DST]", (1.0 + %dest));
-    %body = ($gSwimsuitOutfitIndex == %dest) @ %body[%body @ "\n" @ "" @ "\n" @ $MsgCat::closet TAB "MSG-COPY-OUTFIT-WARN" @ "SWIM"];
+    if (($gSwimsuitOutfitIndex == %dest)) {
+        %body = %body[%body @ "\n" @ "" @ "\n" @ $MsgCat::closet TAB "MSG-COPY-OUTFIT-WARN" @ "SWIM"];
+    }
     MessageBoxYesNo(%title, %body, "ClosetTabs.doCopyOutfitReally(" @ %src @ ", " @ %dest @ ");", "");
 };
 function ClosetTabs::doCopyOutfitReally(%this, %src, %dest) {
@@ -342,10 +341,13 @@ function ClosetTabs::doCopyOutfitReally(%this, %src, %dest) {
     %dest.getOutfitButton().performClick();
 };
 function ClosetTabs::doSwapOutfits(%this, %src, %dest) {
-    %title = %dest[($gSwimsuitOutfitIndex == %dest) @ $MsgCat::closet TAB "MSG-SWAP-OUTFIT-WARN" @ "TITLE"];
-    ($gSwimsuitOutfitIndex == %src);
-    %body = %title[$MsgCat::closet TAB "MSG-SWAP-OUTFIT-WARN" @ "BODY"];
-    MessageBoxYesNo(%title, %body, "ClosetTabs.doSwapOutfitsReally(" @ %src @ ", " @ %dest @ ");", "");
+    if (($gSwimsuitOutfitIndex == %src)) {
+    }
+    if (($gSwimsuitOutfitIndex == %dest)) {
+        %title = %dest[$MsgCat::closet TAB "MSG-SWAP-OUTFIT-WARN" @ "TITLE"];
+        %body = %title[$MsgCat::closet TAB "MSG-SWAP-OUTFIT-WARN" @ "BODY"];
+        MessageBoxYesNo(%title, %body, "ClosetTabs.doSwapOutfitsReally(" @ %src @ ", " @ %dest @ ");", "");
+    }
     %this.doSwapOutfitsReally(%src, %dest);
 };
 function ClosetTabs::doSwapOutfitsReally(%this, %src, %dest) {
@@ -366,11 +368,14 @@ function ClosetOutfitButton::onMouseDown(%this) {
 function ClosetOutfitButton::onMouseDragged(%this, %modifier) {
     %vec = VectorSub(origin, getCursorPos());
     Canvas;
-    return 0;
+    if (((10.0 * 10.0) < VectorLenSquared(%vec))) {
+        return 0;
+    }
+    if (($Platform $= "macos")) {
+    }
     %mask = $EventModifier::CTRL;
     $EventModifier::ALT;
-    operation = "COPY" @ "SWAP" @ %this;
-    (%mask & %modifier);
+    operation = (%mask & %modifier) ? "COPY" : "SWAP" @ %this;
     %this.setAsDragControl(1);
     return 1;
 };
@@ -386,10 +391,12 @@ function ClosetOutfitButton::makeVisualClone(%this) {
     CamSluggishness = 0.0000001;
     visible = 1;
     %objectView = ;
-    %objectView.setSimObject($player);
+    if (isObject($player)) {
+        %objectView.setSimObject($player);
+    }
     %objectView.setRotation(0.2, 0, 2.8);
     %objectView.setLookAtNudge("0.2 -1 0.15");
-    toonLineWidth = isObject($player) @ 2 @ %objectView;
+    toonLineWidth = 2 @ %objectView;
     %objectView.setSkus($ClosetSkusOutfit @ ClosetMyOutfitsFrame);
     profile = GuiMLTextCtrl @ new ""() @ "ETSNonModalProfile";
     0;
@@ -397,7 +404,9 @@ function ClosetOutfitButton::makeVisualClone(%this) {
     extent = "30 15";
     text = "<font:Arial:16><color:ffffff><b><outline><just:right>" @ " " @ 1.0 @ (%this + index) @ " ";
     %label = ;
-    operation = (%this SPC operation $= "") @ "SWAP" @ %this;
+    if ((%this SPC operation $= "")) {
+        operation = "SWAP" @ %this;
+    }
     profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
     0;
     horizSizing = "right";
@@ -422,7 +431,9 @@ function ClosetOutfitButton::makeVisualClone(%this) {
     return %clone;
 };
 function ClosetOutfitButton::dragAndDropCtrl(%this, %make) {
-    operation = %make @ "COPY" @ %this;
+    if (%make) {
+        operation = "COPY" @ %this;
+    }
     operation = "SWAP" @ %this;
     operationIcon.setBitmap(%this @ operation);
 };
@@ -430,9 +441,11 @@ function ClosetOutfitButton::onDragSet(%this) {
     depressed = 1 @ %this;
     %i = 0;
     %button = %i.getOutfitButton();
-    mouseOver = isObject(ClosetTabs) @ 0 @ %button;
-    %i = (1.0 + %i);
-    %button = %i.getOutfitButton();
+    if (isObject(ClosetTabs)) {
+        mouseOver = 0 @ %button;
+        %i = (1.0 + %i);
+        %button = %i.getOutfitButton();
+    }
     centerDragHiliteAroundCursor();
     mouseOver = %this @ clone;
     Canvas @ 1;
@@ -441,78 +454,110 @@ function ClosetOutfitButton::onDragReleased(%this) {
     depressed = 0 @ %this;
 };
 function ClosetOutfitButton::onDragAndDropEnter(%this, %dragCtrl) {
-    return (-(1.0) == findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton"));
-    hiliteControl(%this, 1);
-    depressed = (%dragCtrl != %this) @ 1 @ %this;
-    operationIcon.setVisible(1);
-    label.setVisible(1);
+    if ((-(1.0) == findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton"))) {
+        return;
+    }
+    if ((%dragCtrl != %this)) {
+        hiliteControl(%this, 1);
+        depressed = 1 @ %this;
+        operationIcon.setVisible(1);
+        label.setVisible(1);
+    }
 };
 function ClosetOutfitButton::onDragAndDropLeave(%this, %dragCtrl) {
-    hiliteControl(0);
-    depressed = (%dragCtrl != %this) @ 0 @ %this;
-    operationIcon.setVisible(0);
-    label.setVisible(0);
+    if ((%dragCtrl != %this)) {
+        hiliteControl(0);
+        depressed = 0 @ %this;
+        operationIcon.setVisible(0);
+        label.setVisible(0);
+    }
 };
 function ClosetOutfitButton::onDragAndDropDrop(%this, %dragCtrl, %unused) {
-    return 0;
-    return 0;
-    index.doCopyOutfit(index);
-    index.doSwapOutfits(index);
+    if ((-(1.0) == findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton"))) {
+        return 0;
+    }
+    if ((%dragCtrl == %this)) {
+        return 0;
+    }
+    if ((%dragCtrl SPC operation $= "COPY")) {
+        index.doCopyOutfit(index);
+    }
+    if ((%dragCtrl SPC operation $= "SWAP")) {
+        index.doSwapOutfits(index);
+    }
     return 1;
 };
 function ClosetBrandPopup::update(%this, %skus) {
     %this.clear();
     %i = 0;
-    %brand = getField($gClosetBrands, %i);
-    (getFieldCount($gClosetBrands) < %i);
-    %this.add(%brand);
-    %i = (1.0 + %i);
-    %skus.skusHaveBrands(SkuManager @ %brand[$gClosetBrandsIntrnl @ %brand] @ " ");
+    if ((getFieldCount($gClosetBrands) < %i)) {
+        %brand = getField($gClosetBrands, %i);
+        if (%skus.skusHaveBrands(SkuManager @ %brand[$gClosetBrandsIntrnl @ %brand] @ " ")) {
+            %this.add(%brand);
+        }
+        %i = (1.0 + %i);
+    }
 };
 function ClosetItemPopup::update(%this, %skus) {
     "".setText();
     %prevSelText = %this.getTextById(%this.GetSelected());
     NoItemInBrandNameLabel;
-    %newList = "";
-    !((%skus $= ""));
-    %n = 0;
-    %category = getField(possibleCategoryList, %n);
-    %this;
-    %newList = %newList @ "\t" @ %category;
-    Closet::skuListHasCategory(%skus, %category);
-    %n = (1.0 + %n);
-    (getFieldCount(possibleCategoryList) < %n);
-    %newList = trim(%newList);
-    (getFieldCount(possibleCategoryList) < %n);
-    return (%this $= displayedCategoryList);
+    if (!(%skus $= "")) {
+        %newList = "";
+        %n = 0;
+        if ((getFieldCount(possibleCategoryList) < %n)) {
+            %category = getField(possibleCategoryList, %n);
+            %this;
+            if (Closet::skuListHasCategory(%skus, %category)) {
+                %newList = %newList @ "\t" @ %category;
+                %this;
+            }
+            %n = (1.0 + %n);
+        }
+        %newList = trim(%newList);
+        (getFieldCount(possibleCategoryList) < %n);
+        if ((%this $= displayedCategoryList)) {
+            return %this SPC %newList;
+        }
+    }
     %newList = getField(possibleCategoryList, 0);
     %this;
     displayedCategoryList = %newList @ %this;
     %prevSelText = %this.getTextById(%this.GetSelected());
     %this.clear();
     %n = 0;
-    %this.add(getField(%newList, %n));
-    %n = (1.0 + %n);
-    (getFieldCount(%newList) < %n);
+    if ((getFieldCount(%newList) < %n)) {
+        %this.add(getField(%newList, %n));
+        %n = (1.0 + %n);
+    }
     %newSel = %this.findText(%prevSelText);
     (getFieldCount(%newList) < %n);
-    %this.SetSelected(0);
-    %brandString = "";
-    (ClosetBrandPopup SPC getText() $= "All");
-    %brandString = " basic";
-    (ClosetBrandPopup SPC getText() $= "Basic");
-    %brandString = ClosetBrandPopup @ getText() @ " " @ "brand";
-    (0.0 < %newSel) @ " ";
-    %categoryString = strlwr(%prevSelText);
-    restWords(%prevSelText);
-    %categoryString = "clothes";
-    ((firstWord(%prevSelText) $= "All") SPC %categoryString $= "");
-    %msg = %categoryString[$MsgCat::closet @ "H-NO-BRAND-ITEMS1"] @ %brandString @ " " @ %categoryString @ %categoryString[$MsgCat::closet @ "H-NO-BRAND-ITEMS2"] @ %brandString @ " " @ %brandString[$MsgCat::closet @ "H-NO-BRAND-ITEMS3"];
-    %msg.setText();
+    if ((0.0 < %newSel)) {
+        %this.SetSelected(0);
+        if ((ClosetBrandPopup SPC getText() $= "All")) {
+            %brandString = "";
+        }
+        if ((ClosetBrandPopup SPC getText() $= "Basic")) {
+            %brandString = " basic";
+        }
+        %brandString = ClosetBrandPopup @ getText() @ " " @ "brand";
+        " ";
+        if ((firstWord(%prevSelText) $= "All")) {
+        }
+        %categoryString = strlwr(%prevSelText);
+        restWords(%prevSelText);
+        if ((%categoryString $= "")) {
+            %categoryString = "clothes";
+        }
+        %msg = %categoryString[$MsgCat::closet @ "H-NO-BRAND-ITEMS1"] @ %brandString @ " " @ %categoryString @ %categoryString[$MsgCat::closet @ "H-NO-BRAND-ITEMS2"] @ %brandString @ " " @ %brandString[$MsgCat::closet @ "H-NO-BRAND-ITEMS3"];
+        %msg.setText();
+    }
     %this.setText(%prevSelText);
 };
 function ClosetItemsFrame::update(%this) {
-    thumbnails.setDrawers("");
+    if ((getCurrentTab() SPC name $= "CLOSET")) {
+        thumbnails.setDrawers("");
+    }
 };
 function ClosetMyOutfitsFrame::getOutfitNameForHanger(%this, %hanger) {
     return getWord(, %hanger);
@@ -521,22 +566,33 @@ function ClosetMyOutfitsFrame::hangerSelected(%this, %hanger) {
     currentHanger = %hanger @ %this;
     $ClosetOutfitName = %this.getOutfitNameForHanger(%hanger);
     update();
-    thumbnails.setSelectedThumbs();
+    if ((getCurrentTab() SPC name $= "CLOSET")) {
+        thumbnails.setSelectedThumbs();
+    }
     updateVisibleAvatar();
 };
 function ClosetItemPopup::onSelect(%this, %unused, %entries) {
-    return (ClosetItemsFrame SPC category $= %entries);
+    if ((ClosetItemsFrame SPC category $= %entries)) {
+        return;
+    }
     category = %entries @ ClosetItemsFrame;
-    $gUpdatingClosetItemPopupFromThumbnailsSetDrawers = 0;
-    $gUpdatingClosetItemPopupFromThumbnailsSetDrawers;
-    return;
-    update();
+    if ($gUpdatingClosetItemPopupFromThumbnailsSetDrawers) {
+        $gUpdatingClosetItemPopupFromThumbnailsSetDrawers = 0;
+        return;
+    }
+    if (tabClosetInitialized) {
+        update();
+    }
     getParent().scrollToTop();
 };
 function ClosetBrandPopup::onSelect(%this, %unused, %entries) {
-    return (ClosetItemsFrame SPC brand $= %entries);
+    if ((ClosetItemsFrame SPC brand $= %entries)) {
+        return;
+    }
     brand = %entries @ ClosetItemsFrame;
-    update();
+    if (tabClosetInitialized) {
+        update();
+    }
     getParent().scrollToTop();
 };
 function ClosetWhatYoureWearingList::onCreatedChild(%this, %child) {
@@ -618,7 +674,9 @@ function ClosetWhatYoureWearingList::onCreatedChild(%this, %child) {
     horizSizing = "right";
     vertSizing = "bottom";
     position = "80 18";
-    extent = (%currentTabName $= "MY DESIGNS") @ 18.0 @ (0.0 - 146.0) @ " " @ 15;
+    if ((%currentTabName $= "MY DESIGNS")) {
+    }
+    extent = 18.0 @ (0.0 - 146.0) @ " " @ 15;
     %authorText = ;
     %child.add(%background);
     %child.add(%hilite);
@@ -635,38 +693,55 @@ function ClosetWhatYoureWearingList::onCreatedChild(%this, %child) {
     closeBox = %closeBox @ %child;
     authorText = %authorText @ %child;
     sku = 0 @ %child;
-    %child.bindClassName("ClosetWhatYoureWearingItem");
+    if (!(getWord(%child.getNamespaceList(), 0) $= "ClosetWhatYoureWearingItem")) {
+        %child.bindClassName("ClosetWhatYoureWearingItem");
+    }
 };
 $gNoSkuList = "400 850 875 900 950 5400 5850 5875 5900 5950 5980";
 function ClosetWhatYoureWearingList::addSku(%this, %sku) {
-    return (-(1.0) != findWord($gNoSkuList, %sku));
+    if ((-(1.0) != findWord($gNoSkuList, %sku))) {
+        return;
+    }
     %drawerAction = "";
     %child = %this.addChild();
     sku = %sku @ %child;
     %si = %sku.findBySku();
     SkuManager;
-    %drawerAction = "  (no animation)";
-    %sku.isInstrumentSku();
-    %drawerAction = "  <a:gamelink stopPropAction>stop animation</a>";
-    isDoingPropAction;
-    %drawerAction = "  <a:gamelink startPropAction>start animation</a>";
-    ClosetGui;
-    desc.setText(!((SkuManager SPC %sku.getPropSkus() $= "")) @ InstrumentRegistryClient @ %child @ "<a:gamelink " @ %sku @ ">" @ %si @ descShrt @ "</a>" @ "<br><spush><font:Arial:12><color:00000099>" @ %si.getUserFacingDrawerName() @ %drawerAction @ "<spop>");
-    %playerEncoded = urlEncode(stripUnprintables(author));
-    %si;
-    %profileURL = !((%si SPC author $= "")) @ $Net::ProfileURL @ %playerEncoded;
-    authorText.setText(%child @ "<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "by <a:gamelink " @ %profileURL @ ">" @ %si @ author @ "</a>");
+    if (!(SkuManager SPC %sku.getPropSkus() $= "")) {
+        if (%sku.isInstrumentSku()) {
+            %drawerAction = "  (no animation)";
+            InstrumentRegistryClient;
+        }
+        if (isDoingPropAction) {
+            %drawerAction = "  <a:gamelink stopPropAction>stop animation</a>";
+            ClosetGui;
+        }
+        %drawerAction = "  <a:gamelink startPropAction>start animation</a>";
+    }
+    desc.setText(%child @ "<a:gamelink " @ %sku @ ">" @ %si @ descShrt @ "</a>" @ "<br><spush><font:Arial:12><color:00000099>" @ %si.getUserFacingDrawerName() @ %drawerAction @ "<spop>");
+    if (!(%si SPC author $= "")) {
+        %playerEncoded = urlEncode(stripUnprintables(author));
+        %si;
+        %profileURL = $Net::ProfileURL @ %playerEncoded;
+        authorText.setText(%child @ "<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "by <a:gamelink " @ %profileURL @ ">" @ %si @ author @ "</a>");
+    }
     authorText.setText("");
-    expiringIcon.setBitmap("platform/client/ui/expiring_icon");
-    expiringIcon.setVisible(1);
+    if (!(%si SPC expireTime $= "")) {
+        expiringIcon.setBitmap("platform/client/ui/expiring_icon");
+        expiringIcon.setVisible(1);
+    }
     expiringIcon.setVisible(0);
     %currentTabName = name;
     getCurrentTab();
-    ugcStatusIcon.setBitmap(ClosetGui_MyShop_GetSkuUGCStatusIcon(%sku));
-    ugcStatusIcon.setVisible(1);
+    if ((ClosetTabs SPC %currentTabName $= "MY DESIGNS")) {
+        ugcStatusIcon.setBitmap(ClosetGui_MyShop_GetSkuUGCStatusIcon(%sku));
+        ugcStatusIcon.setVisible(1);
+    }
     ugcStatusIcon.setVisible(0);
-    %showRemoveButton = drwrName.isOptionalDrawer();
-    %si;
+    if (filterByRemovable) {
+        %showRemoveButton = drwrName.isOptionalDrawer();
+        %si;
+    }
     %showRemoveButton = 1;
     SkuManager;
     closeBox.setActive(%showRemoveButton);
@@ -676,28 +751,43 @@ function ClosetWhatYoureWearingList::addSku(%this, %sku) {
 function ClosetWhatYoureWearingList::setSkus(%this, %skus) {
     %propSku = $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].getFirstPropSku();
     SkuManager;
-    stopPropAction();
-    lastPropSku = (%this != lastPropSku) @ %propSku @ %this;
-    %propSku;
-    $player.setGenre("p");
+    if ((%propSku $= "")) {
+    }
+    if ((%this != lastPropSku)) {
+        stopPropAction();
+    }
+    lastPropSku = %propSku @ %propSku @ %this;
+    if ((%propSku $= "")) {
+        $player.setGenre("p");
+    }
     %instrument = %propSku.getInstrumentBySku();
     InstrumentRegistryClient;
-    $player.setGenre("p");
+    if ((%instrument $= "")) {
+        $player.setGenre("p");
+    }
     $player.setGenre(genre);
     %this.setNumChildren(0);
-    "(wearing none)".setTextWithStyle();
-    0.setVisible();
+    if ((0.0 == getWordCount(%skus))) {
+        "(wearing none)".setTextWithStyle();
+        if (isObject()) {
+            0.setVisible();
+        }
+    }
     "".setTextWithStyle();
-    1.setVisible();
+    if (isObject()) {
+        1.setVisible();
+    }
     %skus = %skus.sortSkusByDrawer();
     SkuManager;
     %count = getWordCount(%skus);
     MyShopCopyToOutfitText;
     %i = 0;
-    isObject();
-    %this.addSku(getWord(%skus, %i));
-    %i = (1.0 + %i);
-    (%count < %i);
+    MyShopCopyToOutfitText;
+    if ((%count < %i)) {
+        %this.addSku(getWord(%skus, %i));
+        %i = (1.0 + %i);
+        ClosetWhatYoureWearingNone;
+    }
     skus = (%count < %i) @ %skus @ %this;
     MyShopCopyToOutfitText;
 };
@@ -705,35 +795,54 @@ function ClosetWhatYoureWearingList::refresh(%this, %skus) {
     %skus.setSkus();
 };
 function ClosetWhatYoureWearingButton::onURL(%this, %url) {
-    %url = getWords(%url, 1);
-    (getWord(%url, 0) $= "gamelink");
-    "".zoomToSKU();
-    doPropAction();
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].refresh();
-    stopPropAction();
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].refresh();
-    scroll.scrollToSku(%url);
-    ClosetGui_MyShop_ToggleCurrentSku(%url);
+    if ((getWord(%url, 0) $= "gamelink")) {
+        %url = getWords(%url, 1);
+    }
+    if ((%url $= "startPropAction")) {
+        "".zoomToSKU();
+        doPropAction();
+        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].refresh();
+    }
+    if ((ClosetWhatYoureWearingList SPC %url $= "stopPropAction")) {
+        stopPropAction();
+        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].refresh();
+    }
+    if ((getCurrentTab() SPC name $= "CLOSET")) {
+        scroll.scrollToSku(%url);
+    }
+    if ((getCurrentTab() SPC name $= "MY DESIGNS")) {
+        ClosetGui_MyShop_ToggleCurrentSku(%url);
+    }
 };
 function ClosetGUI_ToggleSku_Closet(%sku) {
     %drawer = drwrName;
     %sku.findBySku();
     %removable = %drawer.isOptionalDrawer();
     SkuManager;
-    %wordLoc = findWord($ClosetSkusBody, %sku);
-    %sku.isBodySku();
-    $ClosetSkusBody = removeWord($ClosetSkusBody, %wordLoc);
-    %removable;
-    $ClosetSkusBody = $ClosetSkusBody.overlaySkus(%sku);
-    SkuManager;
-    %wordLoc = findWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %sku);
-    %sku.isOutfitSku();
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = (0.0 >= %wordLoc) @ %removable @ removeWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %wordLoc);
-    SkuManager;
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = (0.0 >= %wordLoc) @ SkuManager @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].overlaySkus(%sku);
-    SkuManager;
-    %outfitNum = findWord(SkuManager, $ClosetOutfitName);
-    %objectView = %outfitNum.getOutfitObjectView();
-    ClosetTabs;
-    %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+    if (%sku.isBodySku()) {
+        %wordLoc = findWord($ClosetSkusBody, %sku);
+        SkuManager;
+        if ((0.0 >= %wordLoc)) {
+            if (%removable) {
+                $ClosetSkusBody = removeWord($ClosetSkusBody, %wordLoc);
+                SkuManager;
+            }
+        }
+        $ClosetSkusBody = $ClosetSkusBody.overlaySkus(%sku);
+        SkuManager;
+    }
+    if (%sku.isOutfitSku()) {
+        %wordLoc = findWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %sku);
+        SkuManager;
+        if ((0.0 >= %wordLoc)) {
+            if (%removable) {
+                $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = removeWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %wordLoc);
+            }
+        }
+        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].overlaySkus(%sku);
+        %outfitNum = findWord(, $ClosetOutfitName);
+        %objectView = %outfitNum.getOutfitObjectView();
+        ClosetTabs;
+        %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+    }
 };

@@ -1,6 +1,5 @@
-className = balconybar1 @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(balconybar1) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 10;
 Brightness = 0.666667;
 Colour = "0.898039 0.000000 0.113725 1.000000";

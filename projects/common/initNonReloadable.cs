@@ -33,7 +33,13 @@ function cityInfoAddVenue(%cityInfo, %venueName, %coords, %button, %spawnPointsG
     button = %button @ %venueInfo;
     spawnName = %spawnPointsGroup @ %venueInfo;
     venues.put(name, %venueInfo);
-    error(name @ " " @ "- unknown spawnPointGroup:" @ " " @ %spawnPointsGroup @ " " @ %venueName);
+    if ($StandAlone) {
+    }
+    if ((%cityInfo SPC name $= $gContiguousSpaceName)) {
+    }
+    if (!(isObject(%spawnPointsGroup))) {
+        error(name @ " " @ "- unknown spawnPointGroup:" @ " " @ %spawnPointsGroup @ " " @ %venueName);
+    }
 };
 function fillCityInfoMap(%map) {
     %map.clear();

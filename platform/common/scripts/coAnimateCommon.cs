@@ -11,25 +11,35 @@ function initCoAnimList() {
 };
 $gCoAnimDictionary = 0;
 function addCoAnim(%coAnimName, %anim, %delayA, %delayB, %range, %relativeTransform, %minLevel, %requestText, %moveMode) {
-    $gCoAnimDictionary = new ""();
-    StringMap;
-    $gCoAnimDictionary.add();
+    if (!(isObject($gCoAnimDictionary))) {
+        $gCoAnimDictionary = new ""();
+        StringMap;
+        if (isObject()) {
+            $gCoAnimDictionary.add();
+        }
+    }
     %entry = MissionCleanup @ "" @ %anim @ "\t" @ %delayA @ "\t" @ %delayB @ "\t" @ %range @ "\t" @ %relativeTransform @ "\t" @ %minLevel @ "\t" @ %requestText @ "\t" @ %moveMode;
-    isObject();
+    MissionCleanup;
     setCoAnimEntry(%coAnimName, %entry);
 };
 function setCoAnimSkuPeriod(%coAnimName, %whichPlayer, %specialSkuName, %startMS, %stopMS) {
     %entry = findCoAnimEntry(%coAnimName);
-    error(getScopeName() @ " " @ "- no such coAnim:" @ " " @ %coAnimName @ " " @ getTrace());
-    return (%entry $= "");
+    if ((%entry $= "")) {
+        error(getScopeName() @ " " @ "- no such coAnim:" @ " " @ %coAnimName @ " " @ getTrace());
+        return;
+    }
     %skuPeriods = getField(%entry, 6);
-    %skuPeriods = !((%skuPeriods $= "")) @ %skuPeriods @ " ";
+    if (!(%skuPeriods $= "")) {
+        %skuPeriods = %skuPeriods @ " ";
+    }
     %skuPeriods = %skuPeriods @ %whichPlayer @ " " @ %specialSkuName @ " " @ %startMS @ " " @ %stopMS;
     %entry = setField(%entry, %skuPeriods);
     setCoAnimEntry(%coAnimName, %entry);
 };
 function findCoAnimEntry(%name) {
-    return "";
+    if (!(isObject($gCoAnimDictionary))) {
+        return "";
+    }
     return $gCoAnimDictionary.get(%name);
 };
 function setCoAnimEntry(%name, %value) {
@@ -37,15 +47,19 @@ function setCoAnimEntry(%name, %value) {
 };
 initCoAnimList();
 function getAllCoAnims() {
-    return "";
+    if (!(isObject($gCoAnimDictionary))) {
+        return "";
+    }
     %list = "";
     %count = $gCoAnimDictionary.size();
     %i = 0;
-    %userFacingName = $gCoAnimDictionary.getKey(%i);
-    (%count < %i);
-    %list = %list @ "\t" @ %userFacingName;
-    !((%userFacingName $= ""));
-    %i = (1.0 + %i);
+    if ((%count < %i)) {
+        %userFacingName = $gCoAnimDictionary.getKey(%i);
+        if (!(%userFacingName $= "")) {
+            %list = %list @ "\t" @ %userFacingName;
+        }
+        %i = (1.0 + %i);
+    }
     return trim(%list);
 };
 function getAllUserTriggerableCoAnims() {
@@ -53,12 +67,15 @@ function getAllUserTriggerableCoAnims() {
     %delim = "";
     %list = getAllCoAnims();
     %n = (1.0 - getFieldCount(%list));
-    %entryKey = getField(%list, %n);
-    (0.0 >= %n);
-    %entryVal = $gCoAnimDictionary.get(%entryKey);
-    %wantsTo = getField(%entryVal, 6);
-    %retList = !((%wantsTo $= "")) @ %entryKey @ %delim @ %retList;
-    %delim = "\t";
-    %n = (1.0 - %n);
+    if ((0.0 >= %n)) {
+        %entryKey = getField(%list, %n);
+        %entryVal = $gCoAnimDictionary.get(%entryKey);
+        %wantsTo = getField(%entryVal, 6);
+        if (!(%wantsTo $= "")) {
+            %retList = %entryKey @ %delim @ %retList;
+            %delim = "\t";
+        }
+        %n = (1.0 - %n);
+    }
     return %retList;
 };

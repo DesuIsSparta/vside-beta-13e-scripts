@@ -3,11 +3,15 @@ $gAfxSelectedAvatar = -(1.0);
 $gAfxSelectronStyle = 0;
 $gAfxSelectronStyleCount = 1;
 $gAfxTestViaBots = 0;
+if (!($gAfxEffectsEnabledClient)) {
+}
 function afxInitKeybinds() {
     afxAddEffect("LevelUpSpell", "ctrl-shift u");
 };
 function afxRequestEffect(%effectName) {
-    commandToServer('TriggerEffect', %effectName, afxGetSelectedAvatarGhost(), $gAfxTestViaBots);
+    if ($player.isDebugging()) {
+        commandToServer('TriggerEffect', %effectName, afxGetSelectedAvatarGhost(), $gAfxTestViaBots);
+    }
 };
 function afxAddEffect(%effectName, %keyBinding) {
     %keyBinding.bindCmd(moveMap @ keyboard @ "afxRequestEffect(\"" @ %effectName @ "\");", "");
@@ -18,34 +22,51 @@ function afxGetSelectedAvatar() {
     return $gAfxSelectedAvatar;
 };
 function afxGetSelectedAvatarGhost() {
+    if ((-(1.0) != $gAfxSelectedAvatar)) {
+    }
     return -(1.0);
 };
 function afxSelectAvatarByName(%name) {
-    return !($player.isDebugging());
+    if (!($player.isDebugging())) {
+        return;
+    }
     %avatar = Player::findPlayerInstance(%name);
-    return !(isObject(%avatar));
+    if (!(isObject(%avatar))) {
+        return;
+    }
     %start_new_sele = (%avatar != $gAfxSelectedAvatar);
-    sele.stopSelectron();
-    $gAfxSelectedAvatar = -(1.0);
-    $gAfxSelectedAvatar;
-    %sele = startSelectron(%avatar, $gAfxSelectronStyle);
-    %start_new_sele;
-    %sele.addConstraint(%avatar, "selected");
-    sele = isObject(%sele) @ %sele @ %avatar;
-    (-(1.0) != $gAfxSelectedAvatar);
-    $gAfxSelectedAvatar = %avatar;
+    if ((-(1.0) != $gAfxSelectedAvatar)) {
+        sele.stopSelectron();
+        $gAfxSelectedAvatar = -(1.0);
+        $gAfxSelectedAvatar;
+    }
+    if (%start_new_sele) {
+        %sele = startSelectron(%avatar, $gAfxSelectronStyle);
+        if (isObject(%sele)) {
+            %sele.addConstraint(%avatar, "selected");
+            sele = %sele @ %avatar;
+            $gAfxSelectedAvatar = %avatar;
+        }
+    }
 };
 function afxNextSelectronStyle() {
-    return !($player.isDebugging());
+    if (!($player.isDebugging())) {
+        return;
+    }
     $gAfxSelectronStyle = (1.0 + $gAfxSelectronStyle);
-    $gAfxSelectronStyle = 0;
-    ($gAfxSelectronStyleCount >= $gAfxSelectronStyle);
-    return (-(1.0) == $gAfxSelectedAvatar);
+    if (($gAfxSelectronStyleCount >= $gAfxSelectronStyle)) {
+        $gAfxSelectronStyle = 0;
+    }
+    if ((-(1.0) == $gAfxSelectedAvatar)) {
+        return;
+    }
     sele.stopSelectron();
     %sele = startSelectron($gAfxSelectedAvatar, $gAfxSelectronStyle);
     $gAfxSelectedAvatar;
-    %sele.addConstraint($gAfxSelectedAvatar, "selected");
-    sele = isObject(%sele) @ %sele @ $gAfxSelectedAvatar;
+    if (isObject(%sele)) {
+        %sele.addConstraint($gAfxSelectedAvatar, "selected");
+        sele = %sele @ $gAfxSelectedAvatar;
+    }
 };
 afxInitKeybinds();
 $gAfxSelectedAvatar["AudioProfile_AFX_TeleIn" @ $gAfxClientSounds TAB "TeleIn" @ "profile"] = ;
@@ -56,8 +77,12 @@ function ClientCmdAfxClientSpecificSound(%soundID) {
     %soundID = detag(%soundID);
     %profile = %soundID[$gAfxClientSounds TAB %soundID @ "profile"];
     %delay = %soundID[$gAfxClientSounds TAB %soundID @ "delay"];
-    error(getScopeName() @ " " @ "- could not find sound profile for" @ " " @ %soundID);
-    return !(isObject(%profile));
-    schedule(%delay, 0, "alxPlay", %profile);
+    if (!(isObject(%profile))) {
+        error(getScopeName() @ " " @ "- could not find sound profile for" @ " " @ %soundID);
+        return;
+    }
+    if ((0.0 > %delay)) {
+        schedule(%delay, 0, "alxPlay", %profile);
+    }
     alxPlay(%profile);
 };

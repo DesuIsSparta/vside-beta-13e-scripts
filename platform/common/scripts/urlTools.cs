@@ -4,42 +4,56 @@ function URLInfo::parse(%this) {
     %this;
     %work = NextToken(%work, "protocol", ":");
     protocol = %protocol @ %this;
-    return 0;
+    if ((0.0 != strncmp(%work, "//", 2))) {
+        return 0;
+    }
     %work = getSubStr(%work, 2, strlen(%work));
     %params = NextToken(%work, "hostAndPath", "?");
     %path = NextToken(%hostAndPath, "hostAndPort", "/");
     %port = NextToken(%hostAndPort, "host", ":");
     host = %host @ %this;
-    port = !((%port $= "")) @ %port @ %this;
+    if (!(%port $= "")) {
+        port = %port @ %this;
+    }
     Path = %path @ %this;
-    %params = strreplace(%params, "&", " ");
-    !((%params $= ""));
-    %count = getWordCount(%params);
-    paramCount = %count @ %this;
-    %idx = 0;
-    %nvPair = getWord(%params, %idx);
-    (%count < %idx);
-    %value = NextToken(%nvPair, "name", "=");
-    paramName = %name @ %idx @ %this;
-    param = %value @ %name @ %this;
-    %idx = (1.0 + %idx);
+    if (!(%params $= "")) {
+        %params = strreplace(%params, "&", " ");
+        %count = getWordCount(%params);
+        paramCount = %count @ %this;
+        %idx = 0;
+        if ((%count < %idx)) {
+            %nvPair = getWord(%params, %idx);
+            %value = NextToken(%nvPair, "name", "=");
+            paramName = %name @ %idx @ %this;
+            param = %value @ %name @ %this;
+            %idx = (1.0 + %idx);
+        }
+    }
     paramCount = (%count < %idx) @ 0 @ %this;
     parsed = 1 @ %this;
     return 1;
 };
 function URLInfo::reconstruct(%this) {
-    return "";
+    if (!(parsed)) {
+        return "";
+    }
     %newUrl = %this @ host;
     %this @ protocol @ "://";
-    %newUrl = %this @ Path;
-    !((%this SPC Path $= "")) @ %newUrl @ "/";
-    %newUrl = (%this > paramCount) @ %newUrl @ "?";
-    0.0;
-    %idx = 0;
-    %newUrl = (0.0 > %idx) @ %newUrl @ "&";
-    (paramCount < %idx);
-    %name = paramName;
-    %this @ %idx @ %this;
-    %newUrl = %newUrl @ %name @ "=" @ %name @ %this @ param;
-    %idx = (1.0 + %idx);
+    if (!(%this SPC Path $= "")) {
+        %newUrl = %this @ Path;
+        %newUrl @ "/";
+    }
+    if ((%this > paramCount)) {
+        %newUrl = 0.0 @ %newUrl @ "?";
+        %idx = 0;
+        if ((paramCount < %idx)) {
+            if ((0.0 > %idx)) {
+                %newUrl = %this @ %newUrl @ "&";
+            }
+            %name = paramName;
+            %idx @ %this;
+            %newUrl = %newUrl @ %name @ "=" @ %name @ %this @ param;
+            %idx = (1.0 + %idx);
+        }
+    }
 };

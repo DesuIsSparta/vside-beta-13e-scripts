@@ -1,16 +1,20 @@
 function doAIMSignIn() {
     $Player::AIMName = trim($Player::AIMName);
     $Player::AIMName.setValue();
-    $UserPref::Player::AIMName = $Player::AIMName;
-    $UserPref::AIM::RememberMe;
-    $UserPref::Player::AIMPassword = $Player::AIMPassword;
-    !((AIMScreenNameField SPC $Player::AIMName $= ""));
-    $UserPref::Player::AIMName = "";
-    $UserPref::Player::AIMPassword = "";
-    0.setActive();
-    warn("Tried connecting to AIM when already connected.  Disconnecting.");
-    aimDisconnect();
-    aimConnect($Player::AIMName, $Player::AIMPassword);
+    if (!(AIMScreenNameField SPC $Player::AIMName $= "")) {
+        if ($UserPref::AIM::RememberMe) {
+            $UserPref::Player::AIMName = $Player::AIMName;
+            $UserPref::Player::AIMPassword = $Player::AIMPassword;
+        }
+        $UserPref::Player::AIMName = "";
+        $UserPref::Player::AIMPassword = "";
+        0.setActive();
+        if ((0.0 == aimGetState())) {
+            warn("Tried connecting to AIM when already connected.  Disconnecting.");
+            aimDisconnect();
+        }
+        aimConnect($Player::AIMName, $Player::AIMPassword);
+    }
 };
 function doAIMSignOff() {
     %aimTab = "AIM".getTabWithName();
@@ -23,7 +27,9 @@ function doAIMSignOff() {
     aimDisconnect();
 };
 function silentAIMDisconnect() {
-    aimDisconnect();
+    if ((0.0 == aimGetState())) {
+        aimDisconnect();
+    }
 };
 function aimLoginCallback() {
     %aimTab = "AIM".getTabWithName();
@@ -35,45 +41,79 @@ function aimLoginCallback() {
     Initialize();
 };
 function onAIMStateChange(%state) {
-    1.setActive();
-    MessageBoxOK("AIM Login Failed", AIMSignInButton, "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
-    1.setActive();
-    MessageBoxOK("AIM Disconnected", AIMSignInButton, "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
-    echo("AIM connecting");
-    echo("AIM challenging");
-    echo("AIM validating");
-    echo("AIM secure ID");
-    echo("AIM secure ID next key");
-    echo("AIM transferring");
-    echo("AIM negotiating");
-    echo("AIM starting");
-    echo("AIM online");
-    aimLoginCallback();
+    if ((0.0 == %state)) {
+        if ((AIMLoginFrame == AIMState)) {
+            1.setActive();
+            MessageBoxOK("AIM Login Failed", AIMSignInButton, "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
+        }
+    }
+    if ((50.0 == %state)) {
+        1.setActive();
+        MessageBoxOK("AIM Disconnected", AIMSignInButton, "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
+    }
+    if ((100.0 == %state)) {
+        echo("AIM connecting");
+    }
+    if ((150.0 == %state)) {
+        echo("AIM challenging");
+    }
+    if ((200.0 == %state)) {
+        echo("AIM validating");
+    }
+    if ((210.0 == %state)) {
+        echo("AIM secure ID");
+    }
+    if ((211.0 == %state)) {
+        echo("AIM secure ID next key");
+    }
+    if ((300.0 == %state)) {
+        echo("AIM transferring");
+    }
+    if ((350.0 == %state)) {
+        echo("AIM negotiating");
+    }
+    if ((400.0 == %state)) {
+        echo("AIM starting");
+    }
+    if ((500.0 == %state)) {
+        echo("AIM online");
+        aimLoginCallback();
+    }
     AIMState = (600.0 == %state) @ %state @ AIMLoginFrame;
-    (500.0 == %state);
+    200.0;
 };
 function AIMLoginFrame::setup(%this) {
-    $UserPref::Player::AIMName.setText();
-    $UserPref::Player::AIMPassword.setText();
+    if ($UserPref::AIM::RememberMe) {
+        $UserPref::Player::AIMName.setText();
+        $UserPref::Player::AIMPassword.setText();
+    }
     "".setText();
     "".setText();
     %this.update();
 };
 function AIMLoginFrame::update(%this) {
-    1.setActive();
-    1.setActive();
+    if (getValue()) {
+        1.setActive();
+        if (getValue()) {
+            1.setActive();
+        }
+        0.setActive();
+        0.setValue();
+    }
     0.setActive();
     0.setValue();
     0.setActive();
     0.setValue();
-    0.setActive();
-    0.setValue();
-    $UserPref::Player::AIMName = $Player::AIMName;
-    getValue();
+    if (getValue()) {
+        $UserPref::Player::AIMName = $Player::AIMName;
+        AIMRememberMeCheckbox;
+    }
     $UserPref::Player::AIMName = "";
-    AIMRememberMeCheckbox;
-    $UserPref::Player::AIMPassword = $Player::AIMPassword;
-    getValue();
+    AIMAutoSigninCheckbox;
+    if (getValue()) {
+        $UserPref::Player::AIMPassword = $Player::AIMPassword;
+        AIMSavePasswordCheckbox;
+    }
     $UserPref::Player::AIMPassword = "";
-    AIMSavePasswordCheckbox;
+    AIMAutoSigninCheckbox;
 };

@@ -9,20 +9,22 @@ function CityDownloadGui::onDone(%this) {
     $lastVURL.doServerJoin();
 };
 function CityDownloadGui::onProgress(%this, %dltotal, %dlnow) {
-    %dltotal = getEstimatedSize();
-    packageDownload;
-    $CityDownloadGui::lastCityIndex = getCurrentPackageIndex();
-    packageDownload;
-    $CityDownloadGui::lastDLNow = 0;
-    (packageDownload > getCurrentPackageIndex());
-    %part = ($CityDownloadGui::lastDLNow - %dlnow);
-    $CityDownloadGui::lastCityIndex;
-    $CityDownloadGui::lastDLNow = %dlnow;
-    isObject();
-    $CityDownloadGui::totalDownloaded = (%part + $CityDownloadGui::totalDownloaded);
-    DLLoadingPBController;
-    %progressValue = (%dltotal / $CityDownloadGui::totalDownloaded);
-    %progressValue.setValue();
+    if (isObject()) {
+        %dltotal = getEstimatedSize();
+        packageDownload;
+        if ((packageDownload > getCurrentPackageIndex())) {
+            $CityDownloadGui::lastCityIndex = getCurrentPackageIndex();
+            packageDownload;
+            $CityDownloadGui::lastDLNow = 0;
+            $CityDownloadGui::lastCityIndex;
+        }
+        %part = ($CityDownloadGui::lastDLNow - %dlnow);
+        DLLoadingPBController;
+        $CityDownloadGui::lastDLNow = %dlnow;
+        $CityDownloadGui::totalDownloaded = (%part + $CityDownloadGui::totalDownloaded);
+        %progressValue = (%dltotal / $CityDownloadGui::totalDownloaded);
+        %progressValue.setValue();
+    }
 };
 function CityDownloadGui::open(%this) {
     $Video::allowResize = 0;
@@ -36,16 +38,24 @@ function CityDownloadGui::close(%this) {
 };
 function CityDownloadGui::onWake(%this) {
     $Platform::CanSleepInBackground = 0;
-    class = DLLoadingPBController @ new () @ "ProgressBarController";
-    ScriptObject;
-    0;
-    add();
+    if (!(isObject())) {
+        class = DLLoadingPBController @ new ScriptObject(DLLoadingPBController) @ "ProgressBarController";
+        if (isObject()) {
+            add();
+        }
+    }
     "platform/client/ui/progress_empty".Initialize("platform/client/ui/progress_fill", "", "");
-    error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
-    MessageBoxOK("Error", !($missionRunning) @ " " @ $MissionArg, "quit();", "");
-    callBackSink = $StandAlone @ %this @ packageDownload;
-    DLLoadingProgressHolder;
-    start();
+    if ($StandAlone) {
+    }
+    if (!($missionRunning)) {
+        error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
+        MessageBoxOK("Error", DLLoadingProgressHolder @ " " @ $MissionArg, "quit();", "");
+    }
+    callBackSink = DLLoadingPBController @ %this @ packageDownload;
+    DLLoadingPBController;
+    if (!(isActive())) {
+        start();
+    }
 };
 function CityDownloadGui::onSleep(%this) {
     $Platform::CanSleepInBackground = 1;

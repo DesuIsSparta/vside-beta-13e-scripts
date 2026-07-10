@@ -1,9 +1,7 @@
 $httpObjTestRequest = 0;
 function httpObjTest::init() {
-    %httpObj = new ();
-    httpObjTestRequest;
-    gotEOF = HTTPObject @ 0 @ %httpObj;
-    0;
+    %httpObj = new HTTPObject(httpObjTestRequest);
+    gotEOF = 0 @ %httpObj;
     numLines = 0 @ %httpObj;
     numChars = 0 @ %httpObj;
     requestingClient = 0 @ %httpObj;
@@ -18,11 +16,15 @@ function testHTTPObjectReal(%client) {
     %httpObj.get("winbuild:80", "/scripts/orion/tests/pi.txt", "");
 };
 function serverCmdTestHTTPObject(%client) {
-    return !(%client.hasPlayerObjectAndPermission_Warn("debugActive"));
+    if (!(%client.hasPlayerObjectAndPermission_Warn("debugActive"))) {
+        return;
+    }
     testHTTPObjectReal(%client);
 };
 function httpObjTestRequest::onLine(%this, %line) {
-    gotEOF = (%line $= "EOF") @ 1 @ %this;
+    if ((%line $= "EOF")) {
+        gotEOF = 1 @ %this;
+    }
     numLines = (%this + numLines);
     1.0;
     numChars = (%this + numChars);
@@ -30,10 +32,10 @@ function httpObjTestRequest::onLine(%this, %line) {
     log("network", "debug", "HTTPObjTestRequest::onLine:" @ " " @ %line);
 };
 function httpObjTestRequest::onDisconnect(%this) {
-    %wwo = "without";
-    "with";
-    %lvl = "error";
-    "debug";
+    %wwo = gotEOF ? "with" : "without";
+    %this;
+    %lvl = gotEOF ? "debug" : "error";
+    %this;
     %line = %this @ numChars;
     %this @ numLines @ " " @ "chars =" @ " ";
     log("network", %lvl, %line);
@@ -50,5 +52,7 @@ function httpObjTestRequest::onConnected(%this) {
     %this.notifyRequestingClient(%line);
 };
 function httpObjTestRequest::notifyRequestingClient(%this, %line) {
-    admin::doSystemMessagePlayer(Player, %line, 'MsgInfoMessage');
+    if (isObject(requestingClient)) {
+        admin::doSystemMessagePlayer(Player, %line, 'MsgInfoMessage');
+    }
 };

@@ -2,7 +2,9 @@ function debugPanel::toggle(%this) {
     %this.showRaiseOrHide();
 };
 function debugPanel::open(%this) {
-    return !($player.rolesPermissionCheckWarn("debugActive"));
+    if (!($player.rolesPermissionCheckWarn("debugActive"))) {
+        return;
+    }
     %this.setVisible(1);
     %this.focusAndRaise();
 };
@@ -14,7 +16,11 @@ function debugPanel::close(%this) {
 function debugPanel::onWake(%this) {
     getWord($UserPref::Video::Resolution, 0).setValue();
     getWord($UserPref::Video::Resolution, 1).setValue();
-    0.setActive();
+    if (isObject()) {
+    }
+    if (!(isFunction("skuSnapshot_isSkuSnapshot"))) {
+        0.setActive();
+    }
 };
 function debugPanel::resizeApp(%this) {
     $UserPref::Video::ConstrainWindowDimensions = 0;
@@ -30,13 +36,17 @@ function debugPanel::resizeApp(%this) {
 function debugPanel::advanceGPTime(%time) {
     echo(getScopeName() @ "-> trying to advance by %time=" @ %time @ " hours");
     %space = CustomSpaceClient::GetSpaceImIn();
-    handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
-    return (%space $= "");
+    if ((%space $= "")) {
+        handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
+        return;
+    }
     commandToServer('GPDebugAdvanceTimeByXHours', CustomSpaceClient::GetSpaceImIn(), %time);
 };
 function debugPanel::getGPInfo() {
     %spaceName = CustomSpaceClient::GetSpaceImIn();
-    handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
-    return (%spaceName $= "");
+    if ((%spaceName $= "")) {
+        handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
+        return;
+    }
     commandToServer('GPDebugGetInfo', CustomSpaceClient::GetSpaceImIn());
 };

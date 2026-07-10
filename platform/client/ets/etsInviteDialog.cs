@@ -22,10 +22,12 @@ function EtsInviteDialog::setControlsActive(%this, %flag) {
 };
 function EtsInviteDialog::onWake(%this) {
     %this.setControlsActive(1);
-    class = SendInvitePBController @ new () @ "ProgressBarController";
-    ScriptObject;
-    0;
-    add();
+    if (!(isObject())) {
+        class = SendInvitePBController @ new ScriptObject(SendInvitePBController) @ "ProgressBarController";
+        if (isObject()) {
+            add();
+        }
+    }
 };
 function EtsInviteDialog::initializeWithDefaults(%this) {
     "".setValue();
@@ -38,35 +40,40 @@ function EtsInviteDialog::sendInvite(%this) {
     ETSInviteToTextCtrl;
     %note = trim(getText());
     ETSInviteNoteTextCtrl;
-    MessageBoxOK(%to[$MsgCat::invitation @ "E-SEND-TITLE"], (%to $= ""), "");
-    return;
+    if ((%to $= "")) {
+        MessageBoxOK(%to[$MsgCat::invitation @ "E-SEND-TITLE"], , "");
+        return;
+    }
     %this.sendInviteRequestToEnvManager(%to, %note);
 };
 function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message) {
-    delete();
-    %inviteRequest = new ();
+    if (isObject()) {
+        delete();
+    }
+    %inviteRequest = new ManagerRequest(EtsInviteRequest);
     EtsInviteRequest;
-    %inviteRequest.add();
+    if (isObject()) {
+        %inviteRequest.add();
+    }
     %url = MissionCleanup @ $Net::SecureURL @ "?cmd=invite_email";
-    isObject();
-    %token = MissionCleanup @ "&token=" @ urlEncode($Token);
-    ManagerRequest;
+    MissionCleanup;
+    %token = EtsInviteRequest @ "&token=" @ urlEncode($Token);
     %to = strreplace(%to, " ", "");
-    0;
     %to = strreplace(%to, ",", " ");
-    EtsInviteRequest;
     %to = trim(%to);
-    isObject();
     %count = getWordCount(%to);
-    EtsInviteRequest;
     %numTargetMails = "&numEmails=" @ %count;
     %targetMails = "";
     %i = 0;
-    %targetMails = (%count < %i) @ %targetMails @ "&email" @ %i @ "=" @ urlEncode(getWord(%to, %i));
-    %i = (1.0 + %i);
+    if ((%count < %i)) {
+        %targetMails = %targetMails @ "&email" @ %i @ "=" @ urlEncode(getWord(%to, %i));
+        %i = (1.0 + %i);
+    }
     %note = "";
     (%count < %i);
-    %note = !((%message $= "")) @ "&noteFromSender=" @ urlEncode(%message);
+    if (!(%message $= "")) {
+        %note = "&noteFromSender=" @ urlEncode(%message);
+    }
     %url = %url @ %token @ %numTargetMails @ %targetMails @ %note;
     log("network", "debug", "send invite command: " @ %url);
     %inviteRequest.setURL(%url);
@@ -76,8 +83,9 @@ function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message) {
     %inviteRequest.start();
 };
 function EtsInviteDialog::onConnectFailed(%this, %msg) {
-    %msg = "Could not connect";
-    (%msg $= "");
+    if ((%msg $= "")) {
+        %msg = "Could not connect";
+    }
     %this.setControlsActive(1);
     0.setValue();
 };
@@ -85,15 +93,18 @@ function EtsInviteDialog::onInviteSuccess(%this) {
     MessageBoxOK(, , "EtsInviteDialog.close();");
 };
 function EtsInviteDialog::onInviteError(%this, %errorMsg) {
-    %errorMsg = "no error message specified. try again later";
-    (%errorMsg $= "");
+    if ((%errorMsg $= "")) {
+        %errorMsg = "no error message specified. try again later";
+    }
     MessageBoxOK(%errorMsg[$MsgCat::invitation @ "E-SEND-TITLE"], %errorMsg, "");
 };
 function EtsInviteRequest::onError(%this, %errorNum, %unused) {
-    "Could not reach server".onConnectFailed();
-    MessageBoxOK("Could Not Find Server", EtsInviteDialog, "");
+    if (($CURL::CouldNotResolveHost == %errorNum)) {
+        "Could not reach server".onConnectFailed();
+        MessageBoxOK("Could Not Find Server", EtsInviteDialog, "");
+    }
     "Could not connect".onConnectFailed();
-    MessageBoxOK("Could not connect", ($CURL::CouldNotResolveHost == %errorNum) @ EtsInviteDialog @ "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
+    MessageBoxOK("Could not connect", EtsInviteDialog @ "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
 };
 function EtsInviteRequest::onConnected(%this) {
     0.5.setValue();
@@ -101,13 +112,21 @@ function EtsInviteRequest::onConnected(%this) {
 function EtsInviteRequest::onDone(%this) {
     1.setControlsActive();
     1.setValue();
-    "Error communicating with server".onConnectFailed();
-    log("communication", "error", EtsInviteDialog @ "client HTTP code: " @ %this.statusCode());
-    MessageBoxOK("Server Unavailable", ($HTTP::StatusOK != %this.statusCode()), "");
-    return SendInvitePBController;
+    if (($HTTP::StatusOK != %this.statusCode())) {
+        "Error communicating with server".onConnectFailed();
+        log("communication", "error", EtsInviteDialog @ "client HTTP code: " @ %this.statusCode());
+        MessageBoxOK("Server Unavailable", SendInvitePBController, "");
+        return EtsInviteDialog;
+    }
     %status = findRequestStatus(%this);
     log("network", "debug", "EtsInviteRequest::onDone status: " @ %status);
-    %this.getValue("statusMsg").onInviteError();
-    %this.getValue("statusMsg").onInviteError();
-    onInviteSuccess();
+    if ((%status $= "fail")) {
+        %this.getValue("statusMsg").onInviteError();
+    }
+    if ((EtsInviteDialog SPC %status $= "error")) {
+        %this.getValue("statusMsg").onInviteError();
+    }
+    if ((EtsInviteDialog SPC %status $= "success")) {
+        onInviteSuccess();
+    }
 };

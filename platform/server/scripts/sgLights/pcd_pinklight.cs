@@ -1,6 +1,5 @@
-className = pcd_pinklight @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(pcd_pinklight) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 8;
 Brightness = 0.850575;
 Colour = "0.886275 0.231373 0.690196 1.000000";

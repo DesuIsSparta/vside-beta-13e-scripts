@@ -1,6 +1,8 @@
 $DestinationList::DestinationInfoInitialized = 0;
 function DestinationList::InitDestinationInfo() {
-    return $DestinationList::DestinationInfoInitialized;
+    if ($DestinationList::DestinationInfoInitialized) {
+        return;
+    }
     $DestinationList::DestinationInfoInitialized = 1;
     %trailerEmpty = "";
     %trailerShopping = " - press F5 or click \"Shop\" to start shopping!";

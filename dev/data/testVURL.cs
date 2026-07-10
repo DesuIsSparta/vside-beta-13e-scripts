@@ -9,8 +9,10 @@ function TEST_VURL_PARSE_USER::runTest(%this) {
     class = ScriptObject @ new ""() @ "VURL";
     0;
     %theVurl = ;
-    %this.assertSameString(targetType, "user", "the target type should have been user");
-    %this.assertSameString(targetPath, "Bob", "the target type is wrong");
+    if (%theVurl.setVURL(%aVurlString)) {
+        %this.assertSameString(targetType, "user", "the target type should have been user");
+        %this.assertSameString(targetPath, "Bob", "the target type is wrong");
+    }
     %this.assert(0, "setVURL failed for this vurl:" @ " " @ %aVurlString);
     %theVurl.delete();
 };
@@ -19,9 +21,11 @@ function TEST_VURL_PARSE_APARTMENT::runTest(%this) {
     class = ScriptObject @ new ""() @ "VURL";
     0;
     %theVurl = ;
-    %this.assertSameString(targetType, "apartment", "the target type should have been apartment");
-    %this.assertSameString(targetDest, "an_apartment", "the targetDest is wrong");
-    %this.assertSameString(targetCity, "a_building", "the targetCity is wrong");
+    if (%theVurl.setVURL(%aVurlString)) {
+        %this.assertSameString(targetType, "apartment", "the target type should have been apartment");
+        %this.assertSameString(targetDest, "an_apartment", "the targetDest is wrong");
+        %this.assertSameString(targetCity, "a_building", "the targetCity is wrong");
+    }
     %this.assert(0, "setVURL failed for this vurl:" @ " " @ %aVurlString);
     %theVurl.delete();
 };

@@ -1,6 +1,5 @@
-className = dancelight2 @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(dancelight2) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 14;
 Brightness = 0.597701;
 Colour = "0.929412 0.125490 0.403922 1.000000";

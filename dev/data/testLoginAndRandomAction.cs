@@ -1,9 +1,8 @@
 exec("./skeletonClient.cs");
 function testLoginAndStay() {
     $loginLogout = 0;
-    userName = skeletonClient @ new () @ $UserPref::Player::Name;
-    ScriptObject;
-    password = 0 @ $UserPref::Player::Password;
+    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
+    password = $UserPref::Player::Password;
     joinAction = "walk";
     quitOnError = "true";
     %testLogin = ;
@@ -88,12 +87,15 @@ function test::doDance() {
 function test::getRandomGenre() {
     %num = getRandom(2);
     $genre = "";
-    $genre = "i";
-    (0.0 == %num);
-    $genre = "h";
-    (1.0 == %num);
-    $genre = "p";
-    (2.0 == %num);
+    if ((0.0 == %num)) {
+        $genre = "i";
+    }
+    if ((1.0 == %num)) {
+        $genre = "h";
+    }
+    if ((2.0 == %num)) {
+        $genre = "p";
+    }
     return $genre;
 };
 function test::doWhisper() {
@@ -107,11 +109,20 @@ function test::doRemoveBuddy() {
 };
 function doAction() {
     %num = getRandom(4);
-    $genre = test::getRandomGenre();
-    (0.0 == %num);
-    $genre.selectGenre();
-    test::doDance();
-    test::doWhisper();
-    test::doAddBuddy();
-    test::doRemoveBuddy();
+    if ((0.0 == %num)) {
+        $genre = test::getRandomGenre();
+        $genre.selectGenre();
+    }
+    if ((1.0 == %num)) {
+        test::doDance();
+    }
+    if ((2.0 == %num)) {
+        test::doWhisper();
+    }
+    if ((3.0 == %num)) {
+        test::doAddBuddy();
+    }
+    if ((4.0 == %num)) {
+        test::doRemoveBuddy();
+    }
 };

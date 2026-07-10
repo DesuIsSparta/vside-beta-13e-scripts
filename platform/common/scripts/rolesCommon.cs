@@ -2,6 +2,8 @@ function Player::hasRoleMask(%this, %mask) {
     return roles::maskHasRole(%this.getRolesMask(), %mask);
 };
 function Player::hasAnyRoleInMask(%this, %mask) {
+    if ((0.0 == %mask)) {
+    }
     return roles::masksOverlap(%this.getRolesMask(), %mask);
 };
 function Player::isStaff(%this) {
@@ -11,22 +13,34 @@ function Player::isModerator(%this) {
     return %this.hasRoleString("moderator");
 };
 function Player::isStaffOrModerator(%this) {
+    if (%this.isStaff()) {
+    }
     return %this.isModerator();
 };
 function Player::isCeleb(%this) {
     return %this.hasRoleString("celeb");
 };
 function Player::mayConnectToFullServer(%this) {
+    if (%this.isStaff()) {
+    }
+    if (%this.isModerator()) {
+    }
     return %this.isCeleb();
 };
 function Player::isDebugging(%this) {
+    if (isDefined("$UserPref::ETS::Debugging")) {
+    }
     %debugging = 0;
     $UserPref::ETS::Debugging;
+    if (%this.isStaff()) {
+    }
     return %debugging;
 };
 function Player::hasRoleString(%this, %roleString) {
     %roleBits = roleGet(%roleString);
-    return 0;
+    if ((0.0 == %roleBits)) {
+        return 0;
+    }
     return %this.hasRoleMask(%roleBits);
 };
 function Player::getRoleStrings(%this) {
@@ -37,9 +51,10 @@ function Player::toggleRoleString(%this, %roleString) {
     return %this.toggleRoleMask(%roleBits);
 };
 function Player::toggleRoleMask(%this, %roleBits) {
-    %this.removeRoleByMask(%roleBits);
-    %ret = 0;
-    %this.hasRoleMask(%roleBits);
+    if (%this.hasRoleMask(%roleBits)) {
+        %this.removeRoleByMask(%roleBits);
+        %ret = 0;
+    }
     %this.addRoleByMask(%roleBits);
     %ret = 1;
     return %ret;
@@ -58,8 +73,9 @@ function roles::getRoleStrings(%mask) {
 };
 function roles::getRolesMaskFromStrings(%rolesStrings) {
     %rolesMask = 0;
-    %rolesStrings = NextToken(%rolesStrings, "roleString", " ");
-    !((%rolesStrings $= ""));
-    %rolesMask = (roleGet(%roleString) | %rolesMask);
+    if (!(%rolesStrings $= "")) {
+        %rolesStrings = NextToken(%rolesStrings, "roleString", " ");
+        %rolesMask = (roleGet(%roleString) | %rolesMask);
+    }
     return %rolesMask;
 };

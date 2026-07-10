@@ -1,6 +1,5 @@
-className = pcd_storespot @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(pcd_storespot) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 5;
 Brightness = 0.574713;
 Colour = "0.758621 0.781609 0.781609 1.000000";

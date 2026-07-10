@@ -2,7 +2,9 @@ function testSuitesPanel::toggle(%this) {
     %this.showRaiseOrHide();
 };
 function testSuitesPanel::open(%this) {
-    return !($player.rolesPermissionCheckWarn("TestSuites"));
+    if (!($player.rolesPermissionCheckWarn("TestSuites"))) {
+        return;
+    }
     %this.loadAvailableTests();
     %this.setVisible(1);
     %this.focusAndRaise();
@@ -14,8 +16,12 @@ function testSuitesPanel::close(%this) {
 };
 $G_LAST_SUITE_RUNNING = 0;
 function TestPanelTestList::onSelect(%this, %unused, %text) {
-    MessageBoxOK("Test Suite", $G_LAST_SUITE_RUNNING @ " " @ "is still running.", "");
-    return running;
+    if (isObject($G_LAST_SUITE_RUNNING)) {
+        if (running) {
+            MessageBoxOK("Test Suite", $G_LAST_SUITE_RUNNING @ " " @ "is still running.", "");
+            return $G_LAST_SUITE_RUNNING;
+        }
+    }
     $G_LAST_SUITE_RUNNING = %text;
     ToggleConsoleReally(1);
     echo("");
@@ -27,9 +33,10 @@ function testSuitesPanel::loadAvailableTests(%this) {
     // unhandled opcode 280 at 0x000000FD
     %list.clear();
     %i = 0;
-    %name = DeclaredTestSuiteGet(%i);
-    (DeclaredTestSuiteCount() < %i);
-    %list.addRow(%name, %name);
-    %i = (1.0 + %i);
+    if ((DeclaredTestSuiteCount() < %i)) {
+        %name = DeclaredTestSuiteGet(%i);
+        %list.addRow(%name, %name);
+        %i = (1.0 + %i);
+    }
     %list.sort(0);
 };

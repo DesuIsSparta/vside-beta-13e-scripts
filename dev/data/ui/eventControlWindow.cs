@@ -1,9 +1,13 @@
 function toggleEventControlWindow() {
-    return !($player.rolesPermissionCheckNoWarn("events"));
+    if (!($player.rolesPermissionCheckNoWarn("events"))) {
+        return;
+    }
     showRaiseOrHide();
 };
 function eventControlWindow::open(%this) {
-    return !($player.rolesPermissionCheckNoWarn("events"));
+    if (!($player.rolesPermissionCheckNoWarn("events"))) {
+        return;
+    }
     %this.setVisible(1);
     %this.focusAndRaise();
     %this.populateDoorsList();
@@ -101,8 +105,10 @@ function eventControlWindow::populateDoorsList(%this) {
     deleteMembers();
     %n = 0;
     EventControlsDoorsArray;
-    %this.addDoorControl(%n[$gDoorNames @ %n], %n[$gDoorGroupNames @ %n], %n[$gDoorZoneNames @ %n], %n[$gDoorToLockNames @ %n], (($gDoorsNum < %n) SPC %n[$gDoorCSN @ %n] $= $gContiguousSpaceName));
-    %n = (1.0 + %n);
+    if (($gDoorsNum < %n)) {
+        %this.addDoorControl(%n[$gDoorNames @ %n], %n[$gDoorGroupNames @ %n], %n[$gDoorZoneNames @ %n], %n[$gDoorToLockNames @ %n], (%n[$gDoorCSN @ %n] $= $gContiguousSpaceName));
+        %n = (1.0 + %n);
+    }
 };
 function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName, %doorToLockName, %enable) {
     %container = addChild();
@@ -137,16 +143,20 @@ function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName
     command = "CommandToServer('GenericDoors', 0, \"" @ %groupName @ "\",\"" @ %zoneName @ "\",\"" @ %doorToLockName @ "\");";
     %ctrl = ;
     %container.add(%ctrl);
-    profile = GuiControl @ new ""() @ "GuiTranslucentProfile";
-    0;
-    position = !(%enable) @ "0 0";
-    extent = %container @ extent;
-    %ctrl = ;
-    %container.add(%ctrl);
+    if (!(%enable)) {
+        profile = GuiControl @ new ""() @ "GuiTranslucentProfile";
+        0;
+        position = "0 0";
+        extent = %container @ extent;
+        %ctrl = ;
+        %container.add(%ctrl);
+    }
     reseatChildren();
 };
 function clientCmdbeginZombieScores() {
-    $ZombieGamePointsCollector.delete();
+    if (isObject($ZombieGamePointsCollector)) {
+        $ZombieGamePointsCollector.delete();
+    }
     $ZombieGamePointsCollector = new ""();
     StringMap;
     echo("recieving zombie scores....");
@@ -174,5 +184,7 @@ function clientCmdendZombieScores() {
     error("==================");
     error("==================");
     setClipboard($gZombieScoresString);
-    $ZombieGamePointsCollector.delete();
+    if (isObject($ZombieGamePointsCollector)) {
+        $ZombieGamePointsCollector.delete();
+    }
 };

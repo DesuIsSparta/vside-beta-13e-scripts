@@ -10,8 +10,9 @@ function OpenALInit() {
     alxListenerf($UserPref::Audio::masterVolume);
     %channel = 1;
     AL_GAIN_LINEAR;
-    alxSetChannelVolume(%channel, %channel[$UserPref::Audio::channelVolume @ %channel]);
-    %channel = (1.0 + %channel);
-    (8.0 <= %channel);
+    if ((8.0 <= %channel)) {
+        alxSetChannelVolume(%channel, %channel[$UserPref::Audio::channelVolume @ %channel]);
+        %channel = (1.0 + %channel);
+    }
     echo("");
 };

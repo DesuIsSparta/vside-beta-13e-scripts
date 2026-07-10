@@ -1,6 +1,5 @@
-className = dj_spot @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(dj_spot) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 5;
 Brightness = 0.574713;
 Colour = "0.756863 0.780392 0.780392 1.000000";

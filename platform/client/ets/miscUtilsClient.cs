@@ -1,6 +1,8 @@
 function gotoWebPage(%url, %useToken) {
     %url = strreplace(%url, "[BASEDOMAIN]", $Net::BaseDomain);
-    gotoWebPageReally(%url, %useToken);
+    if (isDefined("%useToken")) {
+        gotoWebPageReally(%url, %useToken);
+    }
     gotoWebPageReally(%url);
 };
 $gScreenSizeStack = "";
@@ -12,20 +14,26 @@ function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnla
     %bpp = getWord(%oldScreenMode, 2);
     %newWidth = %curWidth;
     %newHeight = %curHeight;
+    if (%onlyEnlarge) {
+        if ((%width < %curWidth)) {
+            %newWidth = %width;
+        }
+        if ((%height < %curHeight)) {
+            %newHeight = %height;
+        }
+    }
     %newWidth = %width;
-    (%width < %curWidth);
     %newHeight = %height;
-    (%height < %curHeight);
-    %newWidth = %width;
-    %onlyEnlarge;
-    %newHeight = %height;
-    $Video::allowResize = 1;
-    (%curHeight != %newHeight);
-    setScreenMode(%newWidth, %newHeight, %bpp, 0);
-    $UserPref::Video::Resolution = %oldPrefs;
-    %keepOldPrefs;
+    if ((%curWidth != %newWidth)) {
+    }
+    if ((%curHeight != %newHeight)) {
+        $Video::allowResize = 1;
+        setScreenMode(%newWidth, %newHeight, %bpp, 0);
+    }
+    if (%keepOldPrefs) {
+        $UserPref::Video::Resolution = %oldPrefs;
+    }
     $Video::allowResize = %allowResize;
-    (%curWidth != %newWidth);
 };
 function pushScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlarge) {
     %curRes = getRes();
@@ -37,10 +45,11 @@ function pushScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlar
 };
 function popScreenSize() {
     %stackSize = getFieldCount($gScreenSizeStack);
-    %width = getWord($UserPref::Video::Resolution, 0);
-    (0.0 == %stackSize);
-    %height = getWord($UserPref::Video::Resolution, 1);
-    %allowResize = 1;
+    if ((0.0 == %stackSize)) {
+        %width = getWord($UserPref::Video::Resolution, 0);
+        %height = getWord($UserPref::Video::Resolution, 1);
+        %allowResize = 1;
+    }
     %frame = getField($gScreenSizeStack, (1.0 - %stackSize));
     %width = getWord(%frame, 0);
     %height = getWord(%frame, 1);
@@ -55,10 +64,14 @@ function resetScreenSize() {
     clearScreenSizeStack();
     $Video::allowResize = 1;
     %oldScreenMode = getRes();
-    setScreenMode(getWord($UserPref::Video::Resolution, 0), getWord($UserPref::Video::Resolution, 1), getWord($UserPref::Video::Resolution, 2), 0);
+    if (!(%oldScreenMode $= $UserPref::Video::Resolution)) {
+        setScreenMode(getWord($UserPref::Video::Resolution, 0), getWord($UserPref::Video::Resolution, 1), getWord($UserPref::Video::Resolution, 2), 0);
+    }
 };
 function tryStandardizeScreenAspect() {
-    standardizeScreenAspect();
+    if ($UserPref::Video::ConstrainWindowDimensions) {
+        standardizeScreenAspect();
+    }
 };
 function standardizeScreenAspect() {
     %standardX = 960;
@@ -68,13 +81,16 @@ function standardizeScreenAspect() {
     %currentBPP = getWord($UserPref::Video::Resolution, 2);
     %proportionX = (%standardX / %currentX);
     %proportionY = (%standardY / %currentY);
-    %proportionX = 1;
-    (1.0 < %proportionX);
-    %currentX = (%standardX * %proportionX);
-    (%proportionY < %proportionX);
-    %currentY = (%standardY * %proportionX);
-    %proportionY = 1;
-    (1.0 < %proportionY);
+    if ((%proportionY < %proportionX)) {
+        if ((1.0 < %proportionX)) {
+            %proportionX = 1;
+        }
+        %currentX = (%standardX * %proportionX);
+        %currentY = (%standardY * %proportionX);
+    }
+    if ((1.0 < %proportionY)) {
+        %proportionY = 1;
+    }
     %currentX = (%standardX * %proportionY);
     %currentY = (%standardY * %proportionY);
     %currentX = mFloor((0.5 + %currentX));

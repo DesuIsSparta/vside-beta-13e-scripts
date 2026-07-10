@@ -1,5 +1,7 @@
 function TreeBrowserControl::newControl(%parent, %name) {
-    return !(isObject(%parent));
+    if (!(isObject(%parent))) {
+        return;
+    }
     profile = GuiArray2Ctrl @ new ""() @ "GuiDefaultProfile";
     0;
     position = "0 0";
@@ -33,7 +35,9 @@ function TreeBrowserControl::newControl(%parent, %name) {
     0;
     root = %ctrl;
     nodeDictionary = safeNewScriptObject("StringMap", "", 0) @ %ctrl;
-    root.add();
+    if (isObject()) {
+        root.add();
+    }
     Path = %ctrl @ "" @ %ctrl;
     RootGroup;
     %ctrl.goToPath("");
@@ -42,34 +46,46 @@ function TreeBrowserControl::newControl(%parent, %name) {
 function TreeBrowserControl::onResized(%this) {
     %curMenu = %this.getCurrentMenu();
     %hilitedIdx = -(1.0);
-    %hilitedCell = %curMenu.getHilitedCell();
-    isObject(%curMenu);
-    %hilitedIdx = %curMenu.getObjectIndex(%hilitedCell);
-    isObject(%hilitedCell);
+    if (isObject(%curMenu)) {
+        %hilitedCell = %curMenu.getHilitedCell();
+        if (isObject(%hilitedCell)) {
+            %hilitedIdx = %curMenu.getObjectIndex(%hilitedCell);
+        }
+    }
     %parentExtent = %this.getParent().getTrgExtent();
-    collapsedParentExtent = %this @ getWords(VectorSub(%parentExtent @ " " @ 0, expandDelta @ " " @ 0), 0, 1) @ %this;
-    isExpanded;
-    childrenExtent = %this @ %parentExtent @ %this;
+    if (isExpanded) {
+        collapsedParentExtent = %this @ getWords(VectorSub(%parentExtent @ " " @ 0, expandDelta @ " " @ 0), 0, 1) @ %this;
+        %this;
+    }
+    childrenExtent = %parentExtent @ %this;
     %this.setNumChildren(0);
     %this.goToCurrentPath();
-    %curMenu = %this.getCurrentMenu();
-    (0.0 >= %hilitedIdx);
-    %curMenu.hiliteCell(%curMenu.getObject(%hilitedIdx));
+    if ((0.0 >= %hilitedIdx)) {
+        %curMenu = %this.getCurrentMenu();
+        if (isObject(%curMenu)) {
+            if ((%hilitedIdx > %curMenu.getCount())) {
+                %curMenu.hiliteCell(%curMenu.getObject(%hilitedIdx));
+            }
+        }
+    }
 };
 function TreeBrowserControl::onCreatedChild(%this, %child, %x, %unused) {
     %leftPadding = (buttonPadding * (%this + buttonWidth));
     %this;
+    if (isExpanded) {
+    }
     %contentsExtentX = (getWord(collapsedParentExtent, 0) - getWord(%child.getExtent(), 0));
     %this;
+    if (isExpanded) {
+    }
     %contentsExtentY = getWord(%child.getExtent(), 1);
     getWord(collapsedParentExtent, 1);
     profile = GuiControl @ new ""() @ "FocusableDefaultProfile";
     0;
-    horizSizing = isExpanded @ %this @ "width";
+    horizSizing = %this @ %this @ "width";
     %this;
-    vertSizing = %this @ isExpanded @ "height";
-    %leftPadding;
-    position = %x @ "0 0";
+    vertSizing = %x @ %leftPadding @ "height";
+    position = "0 0";
     extent = %child.getExtent();
     minExtent = "1 1";
     sluggishness = -1;
@@ -109,14 +125,16 @@ function TreeBrowserControl::onCreatedChild(%this, %child, %x, %unused) {
     scroll = %child;
     %menuCellSpacing = 2;
     %menuTrgCellHeight = 24;
-    %numCanFit = mFloor(((%menuCellSpacing + %menuTrgCellHeight) / %contentsExtentY));
-    adjustMenuCellHeight;
-    %menuTrgCellHeight = (%menuCellSpacing - (%numCanFit / %contentsExtentY));
-    %this;
-    %d = (mFloor(%menuTrgCellHeight) - %menuTrgCellHeight);
-    %menuTrgCellHeight = mCeil(%menuTrgCellHeight);
-    (0.5 >= %d);
-    %menuTrgCellHeight = mFloor(%menuTrgCellHeight);
+    if (adjustMenuCellHeight) {
+        %numCanFit = mFloor(((%menuCellSpacing + %menuTrgCellHeight) / %contentsExtentY));
+        %this;
+        %menuTrgCellHeight = (%menuCellSpacing - (%numCanFit / %contentsExtentY));
+        %d = (mFloor(%menuTrgCellHeight) - %menuTrgCellHeight);
+        if ((0.5 >= %d)) {
+            %menuTrgCellHeight = mCeil(%menuTrgCellHeight);
+        }
+        %menuTrgCellHeight = mFloor(%menuTrgCellHeight);
+    }
     profile = new ""() @ %this @ menuProfile;
     GuiArray2Ctrl;
     childrenClassName = 0 @ "GuiMouseEventCtrl";
@@ -149,8 +167,9 @@ function TreeBrowserControl::scrollToLevel(%this, %level) {
     %this.setTrgPosition((getWord(childrenExtent, 0) * -(%level)), 0);
 };
 function TreeBrowserControl::goToCurrentPath(%this, %focus) {
-    %focus = 1;
-    !(isDefined("%focus"));
+    if (!(isDefined("%focus"))) {
+        %focus = 1;
+    }
     %this.goToPath(Path, %focus);
 };
 function TreeBrowserControl::goToParentPath(%this) {
@@ -164,66 +183,102 @@ function TreeBrowserControl::goToParentPath(%this) {
     %count = %menu.getCount();
     %this;
     %i = 0;
-    %menuItem = %menu.getObject(%i);
-    (%count < %i);
-    %menu.hiliteCell(0, %i);
-    %i = (1.0 + %i);
-    (%menuItem SPC name $= %currentNodeName);
+    if ((%count < %i)) {
+        %menuItem = %menu.getObject(%i);
+        if ((%menuItem SPC name $= %currentNodeName)) {
+            %menu.hiliteCell(0, %i);
+        }
+        %i = (1.0 + %i);
+    }
 };
 function TreeBrowserControl::getMenuText(%this, %text) {
     return %text;
 };
 function TreeBrowserControl::goToPath(%this, %path, %focus) {
-    %focus = 1;
-    !(isDefined("%focus"));
+    if (!(isDefined("%focus"))) {
+        %focus = 1;
+    }
     %path = trim(%path);
     %node = %this.getNode(%path);
-    return 0;
-    %pathchanged = !((%this SPC Path $= %path));
+    if (!(isObject(%node))) {
+        return 0;
+    }
+    %pathchanged = !(%this SPC Path $= %path);
     Path = %path @ %this;
     %oldLevel = level;
     %this;
     level = getFieldCount(%path) @ %this;
     %level = ;
-    %this.setNumChildren((1.0 + %level));
+    if ((%level <= %this.getCount())) {
+        %this.setNumChildren((1.0 + %level));
+    }
     %this.scrollToLevel(%level);
     %leafNode = 0;
-    (%level <= %this.getCount());
     %expanded = %this.isNodeExpanded(Path);
     %this;
-    %oldChild = %this.getChild(%oldLevel, 0);
-    (%oldLevel != %level);
-    expandedPane.clear();
-    %expandDelta = %this.getFieldValue("expandDelta");
-    !(isExpanded);
-    warn((%this SPC %expandDelta $= "") @ getScopeName() @ "->trying to expand view but no expandDelta is set. returning!");
-    %this.expandView(%expandDelta);
-    return %expanded;
-    %this.collapseView();
-    %this.focusCurrentFrame();
-    return !(%expanded);
+    if (isExpanded) {
+    }
+    if ((%oldLevel != %level)) {
+        %oldChild = %this.getChild(%oldLevel, 0);
+        %this;
+        expandedPane.clear();
+    }
+    if (%expanded) {
+    }
+    if (!(isExpanded)) {
+        %expandDelta = %this.getFieldValue("expandDelta");
+        %this;
+        if ((%oldChild SPC %expandDelta $= "")) {
+            warn(getScopeName() @ "->trying to expand view but no expandDelta is set. returning!");
+        }
+        %this.expandView(%expandDelta);
+        return;
+    }
+    if (isExpanded) {
+    }
+    if (!(%expanded)) {
+        %this.collapseView();
+        %this.focusCurrentFrame();
+        return %this;
+    }
     %child = %this.getChild(%level, 0);
     %count = %node.getCount();
-    contentPane.setVisible(1);
-    scroll.setVisible(0);
-    menu.setVisible(0);
-    %leafNode = 1;
-    %child;
-    node = %child @ contentPane;
-    %child @ %node;
-    contentPane.clear();
-    %this.fillLeafPane(contentPane);
-    expandedPane.clear();
-    expandedPane.setVisible(1);
-    %this.fillExpandedContentPane(expandedPane);
-    expandedPane.setVisible(0);
-    contentPane.makeFirstResponder(1);
+    if ((0.0 == %count)) {
+        contentPane.setVisible(1);
+        scroll.setVisible(0);
+        menu.setVisible(0);
+        %leafNode = 1;
+        %child;
+        node = %child @ contentPane;
+        %child @ %node;
+        contentPane.clear();
+        %this.fillLeafPane(contentPane);
+        if (%expanded) {
+        }
+        if (isExpanded) {
+            expandedPane.clear();
+            expandedPane.setVisible(1);
+            %this.fillExpandedContentPane(expandedPane);
+        }
+        expandedPane.setVisible(0);
+        if (%focus) {
+        }
+        if (%this.isVisibleRecursive()) {
+        }
+        if (%pathchanged) {
+            contentPane.makeFirstResponder(1);
+        }
+    }
     contentPane.setVisible(0);
     scroll.setVisible(1);
     menu.setVisible(1);
-    expandedPane.clear();
-    expandedPane.setVisible(1);
-    %this.fillExpandedFrame(expandedPane);
+    if (%expanded) {
+    }
+    if (isExpanded) {
+        expandedPane.clear();
+        expandedPane.setVisible(1);
+        %this.fillExpandedFrame(expandedPane);
+    }
     expandedPane.setVisible(0);
     %currentCount = menu.getCount();
     %child;
@@ -235,123 +290,155 @@ function TreeBrowserControl::goToPath(%this, %path, %focus) {
     %child;
     %n = (1.0 - %node.getCount());
     %child;
-    %subNode = %node.getObject(%n);
-    (0.0 >= %n);
-    passesFilter = %this @ %this.nodePassesFilter(%subNode, filterText) @ %subNode;
-    isExpanded;
-    %count = (1.0 + %count);
-    passesFilter;
-    %n = (1.0 - %n);
-    %subNode;
-    Path = (%count != %currentCount) @ "ForceUpdatePlease!!!" @ %child;
-    (0.0 >= %n);
-    menu.clear();
-    deferReseat = %child @ menu;
-    %child @ 1;
-    %totalCount = %node.getCount();
-    !((%child SPC Path $= %path));
-    %n = 0;
-    %this;
-    %subNode = %node.getObject(%n);
-    (%totalCount < %n);
-    %menuItem = menu.addMenuItem(%this.getMenuText(name), %child @ %subNode @ %this.getId() @ ".select(\"" @ %subNode @ name @ "\");", "", "");
-    passesFilter;
-    name = %subNode @ name @ %menuItem;
-    %subNode;
-    %n = (1.0 + %n);
-    %expanded;
-    menu.reseatChildren();
-    menu.hiliteCell(0, 0);
-    menu.makeFirstResponder(1);
+    if ((0.0 >= %n)) {
+        %subNode = %node.getObject(%n);
+        %this;
+        passesFilter = %this @ %this.nodePassesFilter(%subNode, filterText) @ %subNode;
+        %child;
+        if (passesFilter) {
+            %count = (1.0 + %count);
+            %subNode;
+        }
+        %n = (1.0 - %n);
+        %child;
+    }
+    if ((%count != %currentCount)) {
+        Path = (0.0 >= %n) @ "ForceUpdatePlease!!!" @ %child;
+        %child;
+    }
+    if (!(%child SPC Path $= %path)) {
+        menu.clear();
+        deferReseat = %child @ menu;
+        %child @ 1;
+        %totalCount = %node.getCount();
+        %child;
+        %n = 0;
+        %child;
+        if ((%totalCount < %n)) {
+            %subNode = %node.getObject(%n);
+            %child;
+            if (passesFilter) {
+                %menuItem = menu.addMenuItem(%this.getMenuText(name), %child @ %subNode @ %this.getId() @ ".select(\"" @ %subNode @ name @ "\");", "", "");
+                %subNode;
+                name = %subNode @ name @ %menuItem;
+                %child;
+            }
+            %n = (1.0 + %n);
+            %child;
+        }
+        menu.reseatChildren();
+        menu.hiliteCell(0, 0);
+    }
+    if (%focus) {
+    }
+    if (%this.isVisibleRecursive()) {
+    }
+    if (%pathchanged) {
+        menu.makeFirstResponder(1);
+    }
     Path = %child @ %path @ %child;
-    %pathchanged;
+    %child;
+    if (%leafNode) {
+    }
     %numButtons = %level;
     (1.0 - %level);
     %offset = 0;
-    %leafNode;
+    %child;
+    if (isExpanded) {
+    }
     %height = getWord(%this.getExtent(), 1);
     getWord(collapsedParentExtent, 1);
     %i = 0;
     %this;
-    profile = GuiBitmapButtonCtrl @ new ""() @ "ETSVerticalButtonProfile";
-    0;
-    horizSizing = (%numButtons < %i) @ %i @ %this @ !(isObject(button)) @ "right";
-    (mMax(%numButtons, numButtons) < %i);
-    vertSizing = isExpanded @ %this @ "bottom";
-    %this;
-    position = %focus @ %this.isVisibleRecursive() @ %offset @ " " @ 0;
-    %child;
-    extent = %child @ %this @ buttonWidth @ " " @ %height;
-    (%totalCount < %n);
-    minExtent = %child @ %child @ "1 1";
-    %child;
-    sluggishness = %pathchanged @ %child @ -1;
-    %this.isVisibleRecursive();
-    visible = %child @ %focus @ 1;
-    %child;
-    command = %child @ %child @ "";
-    isExpanded;
-    text = %expanded @ %this @ "";
-    %child;
-    groupNum = %child @ %child @ -1;
-    (0.0 == %count);
-    buttonType = "PushButton";
-    bitmap = "platform/client/buttons/vbutton";
-    drawText = 1;
-    textRotation = 90;
-    button = %i @ %this;
-    Parent.add(button);
-    button.resize(buttonWidth, %height);
-    %button = button;
-    %this @ %i @ %this;
-    %button.setVisible(1);
-    command = %this @ %i @ %this @ %i @ %this SPC button.getExtent() @ !((%this $= buttonWidth @ " " @ %height)) @ %i @ %this @ %this.getId() @ ".goToPath(\"" @ %this @ getFields(Path, 0, %i) @ "\");" @ %button;
-    text = %this @ getField(Path, %i) @ %button;
-    %button.setActive(((1.0 - %level) < %i));
-    button.setVisible(0);
-    %offset = ((%this + buttonWidth) + %offset);
-    buttonPadding;
-    %i = (1.0 + %i);
-    %this;
+    if ((mMax(%numButtons, numButtons) < %i)) {
+        if ((%numButtons < %i)) {
+            if (!(isObject(button))) {
+                profile = GuiBitmapButtonCtrl @ new ""() @ "ETSVerticalButtonProfile";
+                0;
+                horizSizing = %this @ %this @ %i @ %this @ "right";
+                (%totalCount < %n);
+                vertSizing = %child @ %this @ "bottom";
+                %child;
+                position = %child @ %offset @ " " @ 0;
+                extent = %this @ buttonWidth @ " " @ %height;
+                minExtent = "1 1";
+                sluggishness = -1;
+                visible = 1;
+                command = "";
+                text = "";
+                groupNum = -1;
+                buttonType = "PushButton";
+                bitmap = "platform/client/buttons/vbutton";
+                drawText = 1;
+                textRotation = 90;
+                button = %i @ %this;
+                Parent.add(button);
+            }
+            if (!(%this $= buttonWidth @ " " @ %height)) {
+                button.resize(buttonWidth, %height);
+            }
+            %button = button;
+            %this @ %i @ %this;
+            %button.setVisible(1);
+            command = %this @ %i @ %this @ %i @ %this SPC button.getExtent() @ %i @ %this @ %this.getId() @ ".goToPath(\"" @ %this @ getFields(Path, 0, %i) @ "\");" @ %button;
+            text = %this @ getField(Path, %i) @ %button;
+            %button.setActive(((1.0 - %level) < %i));
+        }
+        button.setVisible(0);
+        %offset = ((%this + buttonWidth) + %offset);
+        buttonPadding;
+        %i = (1.0 + %i);
+        %this;
+    }
     numButtons = (mMax(%numButtons, numButtons) < %i) @ %numButtons @ %this;
     %this;
     return 1;
 };
 function TreeBrowserControl::nodePassesFilter(%this, %node, %filterText) {
-    return 1;
+    if ((%filterText $= "")) {
+        return 1;
+    }
     %searchText = %this.getNodeSearchText(%node);
     %ret = (0.0 >= strstr(%searchText, %filterText));
     return %ret;
 };
 function TreeBrowserControl::getNodeSearchText(%this, %node) {
-    return searchText;
+    if (!(%node SPC searchText $= "")) {
+        return searchText;
+    }
     %sku = sku;
     %node;
-    %ret = searchText;
-    %sku.findBySku();
+    if (!(%sku $= "")) {
+        %ret = searchText;
+        %sku.findBySku();
+    }
     %ret = name;
     %node;
     %n = (1.0 - %node.getCount());
     SkuManager;
-    %subNode = %node.getObject(%n);
-    (0.0 >= %n);
-    %subNodeSearchText = %this.getNodeSearchText(%subNode);
-    !((%sku $= ""));
-    %w = (1.0 - getWordCount(%subNodeSearchText));
-    %word = getWord(%subNodeSearchText, %w);
-    (0.0 >= %w);
-    %ret = %ret @ " " @ %word;
-    !(hasWord(%ret, %word));
-    %w = (1.0 - %w);
-    %n = (1.0 - %n);
-    (0.0 >= %w);
+    if ((0.0 >= %n)) {
+        %subNode = %node.getObject(%n);
+        %subNodeSearchText = %this.getNodeSearchText(%subNode);
+        %w = (1.0 - getWordCount(%subNodeSearchText));
+        if ((0.0 >= %w)) {
+            %word = getWord(%subNodeSearchText, %w);
+            if (!(hasWord(%ret, %word))) {
+                %ret = %ret @ " " @ %word;
+            }
+            %w = (1.0 - %w);
+        }
+        %n = (1.0 - %n);
+        (0.0 >= %w);
+    }
     %ret = trim(%ret);
     (0.0 >= %n);
     searchText = %ret @ %node;
     return %ret;
 };
 function TreeBrowserControl::expandView(%this, %delta) {
-    return isExpanded;
+    if (isExpanded) {
+        return %this;
+    }
     isExpanded = 1 @ %this;
     %collapsedParentExtent = %this.getParent().getTrgExtent();
     %this.resizeParentsBy(%delta);
@@ -367,7 +454,9 @@ function TreeBrowserControl::resizeParentsBy(%this, %delta) {
     %this.getParent().resize(getWord(%newExtent, 0), getWord(%newExtent, 1));
 };
 function TreeBrowserControl::collapseView(%this) {
-    return !(isExpanded);
+    if (!(isExpanded)) {
+        return %this;
+    }
     isExpanded = 0 @ %this;
     %delta = VectorSub(collapsedParentExtent @ " " @ 0, %this.getParent().getTrgExtent() @ " " @ 0);
     %this;
@@ -427,53 +516,76 @@ function TreeBrowserControl::select(%this, %value) {
 function TreeBrowserControl::selectNextLeaf(%this, %forward, %slide) {
     %path = %this.getNextLeaf(Path, %forward);
     %this;
-    %level = getFieldCount(%path);
-    isDefined("%slide");
-    level = (%this != getFieldCount(Path)) @ %level @ %this;
-    %level;
-    %this.reposition((getWord(childrenExtent, 0) * -(%level)), 0);
-    %this.goToPath(%path);
+    if (!(%path $= "")) {
+        if (isDefined("%slide")) {
+            %level = getFieldCount(%path);
+            if (!(%slide)) {
+            }
+            if ((%this != getFieldCount(Path))) {
+                level = %level @ %level @ %this;
+                %this.reposition((getWord(childrenExtent, 0) * -(%level)), 0);
+            }
+        }
+        %this.goToPath(%path);
+    }
 };
 function TreeBrowserControl::getNextLeaf(%this, %path, %forward) {
     %node = %this.getNode(%path);
-    return "";
-    %foundChildBearingNode = 1;
-    (0.0 > %node.getCount());
+    if (!(isObject(%node))) {
+        return "";
+    }
+    if ((0.0 > %node.getCount())) {
+        %foundChildBearingNode = 1;
+    }
     %foundChildBearingNode = 0;
-    %depth = getFieldCount(%path);
-    !(%foundChildBearingNode);
-    %name = getField(%path, (1.0 - %depth));
-    return "";
-    %ppath = getFields(%path, 0, (2.0 - %depth));
-    %pnode = %this.getNode(%ppath);
-    %childCount = %pnode.getCount();
-    %nidx = -(1.0);
-    %i = 0;
-    %child = %pnode.getObject(%i);
-    (%childCount < %i);
-    %nidx = %i;
-    (%child SPC name $= %name);
-    %i = (1.0 + %i);
-    error((0.0 < %nidx) @ getScopeName() @ "->nidx < 0.");
-    return "";
-    %tidx = (%forward + %nidx);
-    %node = %pnode.getObject(%tidx);
-    (%childCount < %tidx);
-    %path = %node @ name;
-    %ppath @ "\t";
-    %foundChildBearingNode = 1;
-    (0.0 > %node.getCount());
-    return %path;
-    %node = %pnode;
-    %path = %ppath;
+    if (!(%foundChildBearingNode)) {
+        %depth = getFieldCount(%path);
+        %name = getField(%path, (1.0 - %depth));
+        if ((1.0 <= %depth)) {
+            return "";
+        }
+        %ppath = getFields(%path, 0, (2.0 - %depth));
+        %pnode = %this.getNode(%ppath);
+        %childCount = %pnode.getCount();
+        %nidx = -(1.0);
+        %i = 0;
+        if ((%childCount < %i)) {
+            %child = %pnode.getObject(%i);
+            if ((%child SPC name $= %name)) {
+                %nidx = %i;
+            }
+            %i = (1.0 + %i);
+        }
+        if ((0.0 < %nidx)) {
+            error((%childCount < %i) @ getScopeName() @ "->nidx < 0.");
+            return "";
+        }
+        %tidx = (%forward + %nidx);
+        if ((0.0 >= %tidx)) {
+        }
+        if ((%childCount < %tidx)) {
+            %node = %pnode.getObject(%tidx);
+            %path = %node @ name;
+            %ppath @ "\t";
+            if ((0.0 > %node.getCount())) {
+                %foundChildBearingNode = 1;
+            }
+            return %path;
+        }
+        %node = %pnode;
+        %path = %ppath;
+    }
     %cnt = %node.getCount();
-    %slot = (1.0 - %cnt);
-    0;
-    %node = %node.getObject(%slot);
-    (0.0 > %forward);
-    %path = %node @ name;
-    %path @ "\t";
-    %cnt = %node.getCount();
+    if ((!(%foundChildBearingNode) > 0.0)) {
+        if ((0.0 > %forward)) {
+        }
+        %slot = (1.0 - %cnt);
+        0;
+        %node = %node.getObject(%slot);
+        %path = %node @ name;
+        %path @ "\t";
+        %cnt = %node.getCount();
+    }
     return %path;
 };
 function TreeBrowserControl::addNode(%this, %path) {
@@ -483,107 +595,143 @@ function TreeBrowserControl::addNodeAt(%this, %prefix, %subpath) {
     %prefix = trim(%prefix);
     %subpath = trim(%subpath);
     %baseNode = %this.getNode(%prefix);
-    return 0;
+    if (!(isObject(%baseNode))) {
+        return 0;
+    }
     %childNodeName = getField(%subpath, 0);
-    return %baseNode;
+    if ((%childNodeName $= "")) {
+        return %baseNode;
+    }
     %fullPath = %prefix @ "\t" @ %childNodeName;
     %childNode = nodeDictionary.get(%fullPath);
     %this;
-    name = SimGroup @ new ""() @ %childNodeName;
-    0;
-    %newSet = !(isObject(%childNode));
-    %baseNode.add(%newSet);
-    nodeDictionary.put(%fullPath, %newSet);
+    if (!(isObject(%childNode))) {
+        name = SimGroup @ new ""() @ %childNodeName;
+        0;
+        %newSet = ;
+        %baseNode.add(%newSet);
+        nodeDictionary.put(%fullPath, %newSet);
+    }
     return %this.addNodeAt(%fullPath, getFields(%subpath, 1));
 };
 function TreeBrowserControl::getNodePath(%this, %node) {
     %path = "";
     %delim = "";
-    %path = !((%node SPC name $= "")) @ %node @ name @ %delim @ %path;
-    isObject(%node);
-    %delim = "\t";
-    %node = "";
-    (%this $= root.getId());
-    %node = %node.getGroup();
-    %node.getId();
+    if (isObject(%node)) {
+    }
+    if (!(%node SPC name $= "")) {
+        %path = %node @ name @ %delim @ %path;
+        %delim = "\t";
+        if ((%this $= root.getId())) {
+            %node = "";
+            %node.getId();
+        }
+        %node = %node.getGroup();
+        if (isObject(%node)) {
+        }
+    }
     return %path;
 };
 function TreeBrowserControl::deleteNodeAtPath(%this, %path) {
     %node = %this.getNode(%path);
-    return !(isObject(%node));
+    if (!(isObject(%node))) {
+        return;
+    }
     %this.deleteNode(%node);
-    %depth = getFieldCount(%path);
-    %this.isInSubdirOfPath(%path);
-    %this.goToPath(getFields(%path, 0, (2.0 - %depth)));
+    if (%this.isInSubdirOfPath(%path)) {
+        %depth = getFieldCount(%path);
+        %this.goToPath(getFields(%path, 0, (2.0 - %depth)));
+    }
 };
 function TreeBrowserControl::deleteNode(%this, %node) {
-    return !(isObject(%node));
+    if (!(isObject(%node))) {
+        return;
+    }
     %i = (1.0 - %node.getCount());
-    %this.deleteNode(%node.getObject(%i));
-    %i = (1.0 - %i);
-    (0.0 >= %i);
+    if ((0.0 >= %i)) {
+        %this.deleteNode(%node.getObject(%i));
+        %i = (1.0 - %i);
+    }
     %node.delete();
 };
 function TreeBrowserControl::addMenuData(%this, %prefix, %list) {
     %node = %this.getNode(%prefix);
-    return !(isObject(%node));
+    if (!(isObject(%node))) {
+        return;
+    }
     %listCount = getFieldCount(%list);
     %i = 0;
-    %itemName = getField(%list, %i);
-    (%listCount < %i);
-    name = SimGroup @ new ""() @ %itemName;
-    0;
-    %node.add(!((%itemName $= "")));
-    %i = (1.0 + %i);
+    if ((%listCount < %i)) {
+        %itemName = getField(%list, %i);
+        if (!(%itemName $= "")) {
+            name = SimGroup @ new ""() @ %itemName;
+            0;
+            %node.add();
+        }
+        %i = (1.0 + %i);
+    }
     %this.goToCurrentPath();
 };
 function TreeBrowserControl::setDataTree(%this, %tree) {
-    title = %tree @ text @ %this;
-    !((%tree SPC text $= ""));
-    %this.addMenuData("", title);
-    %this.addDataTree(%tree, title);
-    %this.goToPath(title);
+    if (isObject(%tree)) {
+    }
+    if (!(%tree SPC text $= "")) {
+        title = %tree @ text @ %this;
+        %this.addMenuData("", title);
+        %this.addDataTree(%tree, title);
+        %this.goToPath(title);
+    }
 };
 function TreeBrowserControl::addDataTree(%this, %tree, %prefix) {
     %count = %tree.getCount();
     %items = "";
     %i = 0;
-    %obj = %tree.getObject(%i);
-    (%count < %i);
-    %items = %obj @ text;
-    %items @ "\t";
-    %i = (1.0 + %i);
+    if ((%count < %i)) {
+        %obj = %tree.getObject(%i);
+        %items = %obj @ text;
+        %items @ "\t";
+        %i = (1.0 + %i);
+    }
     %this.addMenuData(%prefix, %items);
     %i = 0;
     (%count < %i);
-    %obj = %tree.getObject(%i);
-    (%count < %i);
-    %this.addDataTree(%obj, %obj @ text);
-    %i = (1.0 + %i);
-    %prefix @ "\t";
+    if ((%count < %i)) {
+        %obj = %tree.getObject(%i);
+        %this.addDataTree(%obj, %obj @ text);
+        %i = (1.0 + %i);
+        %prefix @ "\t";
+    }
 };
 function TreeBrowserControl::getNode(%this, %path) {
     %node = nodeDictionary.get(%path);
     %this;
-    return %node;
+    if (isObject(%node)) {
+        return %node;
+    }
     %pathCount = getFieldCount(%path);
     %node = root;
     %this;
     %i = 0;
-    %dirName = getField(%path, %i);
-    (%pathCount < %i);
-    %nodeCount = %node.getCount();
-    (%dirName $= "");
-    %match = 0;
-    %j = 0;
-    %subNode = %node.getObject(%j);
-    (%nodeCount < %j);
-    %node = %subNode;
-    (%subNode SPC name $= %dirName);
-    %match = 1;
-    %j = (1.0 + %j);
-    return 0;
-    %i = (1.0 + %i);
+    if ((%pathCount < %i)) {
+        %dirName = getField(%path, %i);
+        if ((%dirName $= "")) {
+        }
+        %nodeCount = %node.getCount();
+        %match = 0;
+        %j = 0;
+        if ((%nodeCount < %j)) {
+            %subNode = %node.getObject(%j);
+            if ((%subNode SPC name $= %dirName)) {
+                %node = %subNode;
+                %match = 1;
+            }
+            %j = (1.0 + %j);
+        }
+        if (!(%match)) {
+            return 0;
+        }
+        %i = (1.0 + %i);
+    }
     nodeDictionary.put(%path, %node);
     return %node;
 };
@@ -605,32 +753,50 @@ function TreeBrowserControl::getCurrentContentPane(%this) {
     return contentPane;
 };
 function TreeBrowserControl::focusCurrentFrame(%this) {
-    return !(%this.isVisible());
+    if (!(%this.isVisible())) {
+        return;
+    }
     %frame = %this.getCurrentFrame();
     %contentPane = %this.getCurrentContentPane();
     %menu = %this.getCurrentMenu();
-    %menu.makeFirstResponder(1);
-    %contentPane.makeFirstResponder(1);
+    if (%menu.isVisibleRecursive()) {
+        %menu.makeFirstResponder(1);
+    }
+    if (%contentPane.isVisibleRecursive()) {
+        %contentPane.makeFirstResponder(1);
+    }
 };
 function TreeBrowserFrame::onCreatedChild(%this, %child) {
     Parent::onCreatedChild(%this, %child);
     menuText.reposition(5, 2);
-    %child.bindClassName("TreeBrowserItem");
+    if (!(%child SPC getWord(%child.getNamespaceList(), 0) $= "TreeBrowserItem")) {
+        %child.bindClassName("TreeBrowserItem");
+    }
 };
 function TreeBrowserFrame::onKeyDown(%this, %unused, %keyCode) {
-    treeBrowser.goToParentPath();
-    return 1;
-    %this.getHilitedCell().onSelect();
-    return 1;
+    if ((%this.getStringFromKeyCode(%keyCode) $= "left")) {
+        treeBrowser.goToParentPath();
+        return 1;
+    }
+    if ((%this.getStringFromKeyCode(%keyCode) $= "right")) {
+        %this.getHilitedCell().onSelect();
+        return 1;
+    }
     return 0;
 };
 function TreeBrowserContentPane::onKeyDown(%this, %unused, %keyCode) {
-    treeBrowser.goToParentPath();
-    return 1;
-    treeBrowser.selectNextLeaf(-(1.0), 0);
-    return 1;
-    treeBrowser.selectNextLeaf(1, 0);
-    return 1;
+    if ((%this.getStringFromKeyCode(%keyCode) $= "left")) {
+        treeBrowser.goToParentPath();
+        return 1;
+    }
+    if ((%this.getStringFromKeyCode(%keyCode) $= "up")) {
+        treeBrowser.selectNextLeaf(-(1.0), 0);
+        return 1;
+    }
+    if ((%this.getStringFromKeyCode(%keyCode) $= "down")) {
+        treeBrowser.selectNextLeaf(1, 0);
+        return 1;
+    }
     return 0;
 };
 function TreeBrowserControl::makeSomeTreeData() {
@@ -648,13 +814,14 @@ function TreeBrowserControl::makeSomeTreeData() {
     text = SimGroup @ new ""() @ "Glow in the dark stars";
     text = SimGroup @ new ""() @ "Appliances";
     %root = ;
-    %root.add();
+    if (isObject()) {
+        %root.add();
+    }
     return %root;
 };
 function TreeBrowserControl::test() {
-    position = BrowserParent @ new () @ "50 50";
-    GuiControl;
-    extent = 0 @ "250 100";
+    position = new GuiControl(BrowserParent) @ "50 50";
+    extent = "250 100";
     %rootCtrl = getContent();
     Canvas;
     %rootCtrl.add();
@@ -672,18 +839,20 @@ function dumpSubtree(%subtree, %prefix) {
     %count = %subtree.getCount();
     %prefix;
     %i = 0;
-    %obj = %subtree.getObject(%i);
-    (%count < %i);
-    dumpSubtree(%obj, %prefix @ "   ");
-    %i = (1.0 + %i);
+    if ((%count < %i)) {
+        %obj = %subtree.getObject(%i);
+        dumpSubtree(%obj, %prefix @ "   ");
+        %i = (1.0 + %i);
+    }
 };
 function deleteTree(%tree) {
     %count = %tree.getCount();
     %i = 0;
-    %obj = %tree.getObject(0);
-    (%count < %i);
-    deleteTree(%obj);
-    %i = (1.0 + %i);
+    if ((%count < %i)) {
+        %obj = %tree.getObject(0);
+        deleteTree(%obj);
+        %i = (1.0 + %i);
+    }
     %tree.delete();
 };
 function textToTree(%text) {
@@ -700,13 +869,16 @@ function textToTree(%text) {
 };
 function treeToText(%tree) {
     %text = "";
-    %text = isObject(%tree) @ "[\"" @ %tree @ text @ "\"";
-    %count = %tree.getCount();
-    %i = 0;
-    %obj = %tree.getObject(%i);
-    (%count < %i);
-    %text = %text @ treeToText(%obj);
-    %i = (1.0 + %i);
-    %text = (%count < %i) @ %text @ "]";
+    if (isObject(%tree)) {
+        %text = "[\"" @ %tree @ text @ "\"";
+        %count = %tree.getCount();
+        %i = 0;
+        if ((%count < %i)) {
+            %obj = %tree.getObject(%i);
+            %text = %text @ treeToText(%obj);
+            %i = (1.0 + %i);
+        }
+        %text = (%count < %i) @ %text @ "]";
+    }
     return %text;
 };

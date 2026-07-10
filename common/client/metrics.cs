@@ -47,37 +47,50 @@ $metricsNamesList = $metricsNamesList @ " " @ "video";
 $metricsNamesList = $metricsNamesList @ " " @ "water";
 function metrics(%expr) {
     %cb = "";
-    %cb = "audioMetricsCallback()";
-    (%expr $= "audio");
-    %cb = "debugMetricsCallback()";
-    (%expr $= "debug");
-    $fps::virtual = 0;
-    (%expr $= "interior");
-    $Interior::numPolys = 0;
-    $Interior::numTextures = 0;
-    $Interior::numTexels = 0;
-    $Interior::numLightmaps = 0;
-    $Interior::numLumels = 0;
-    %cb = "interiorMetricsCallback()";
-    %cb = "fpsMetricsCallback()";
-    (%expr $= "fps");
-    %cb = "keyboardMetricsCallback()";
-    (%expr $= "keyboard");
-    %cb = "timeMetricsCallback()";
-    (%expr $= "time");
-    %cb = "terrainMetricsCallback()";
-    (%expr $= "terrain");
-    GLEnableMetrics(1);
-    %cb = "textureMetricsCallback()";
-    (%expr $= "texture");
-    %cb = "videoMetricsCallback()";
-    (%expr $= "video");
-    %cb = "vehicleMetricsCallback()";
-    (%expr $= "vehicle");
-    %cb = "waterMetricsCallback()";
-    (%expr $= "water");
-    1000.pushDialog();
-    %cb.setValue();
+    if ((%expr $= "audio")) {
+        %cb = "audioMetricsCallback()";
+    }
+    if ((%expr $= "debug")) {
+        %cb = "debugMetricsCallback()";
+    }
+    if ((%expr $= "interior")) {
+        $fps::virtual = 0;
+        $Interior::numPolys = 0;
+        $Interior::numTextures = 0;
+        $Interior::numTexels = 0;
+        $Interior::numLightmaps = 0;
+        $Interior::numLumels = 0;
+        %cb = "interiorMetricsCallback()";
+    }
+    if ((%expr $= "fps")) {
+        %cb = "fpsMetricsCallback()";
+    }
+    if ((%expr $= "keyboard")) {
+        %cb = "keyboardMetricsCallback()";
+    }
+    if ((%expr $= "time")) {
+        %cb = "timeMetricsCallback()";
+    }
+    if ((%expr $= "terrain")) {
+        %cb = "terrainMetricsCallback()";
+    }
+    if ((%expr $= "texture")) {
+        GLEnableMetrics(1);
+        %cb = "textureMetricsCallback()";
+    }
+    if ((%expr $= "video")) {
+        %cb = "videoMetricsCallback()";
+    }
+    if ((%expr $= "vehicle")) {
+        %cb = "vehicleMetricsCallback()";
+    }
+    if ((%expr $= "water")) {
+        %cb = "waterMetricsCallback()";
+    }
+    if (!(%cb $= "")) {
+        1000.pushDialog();
+        %cb.setValue();
+    }
     GLEnableMetrics(0);
     popDialog();
 };

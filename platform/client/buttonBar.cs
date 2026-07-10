@@ -16,14 +16,15 @@ function ButtonBarActivator::onMouseEnter(%this) {
     show();
 };
 function ButtonBar::Initialize(%this) {
-    return $ButtonBarVar::Initialized;
+    if ($ButtonBarVar::Initialized) {
+        return;
+    }
     $ButtonBarVar::Initialized = 1;
     %this.clear();
     clear();
     buttons = ButtonBarActivator @ 0 @ "count" @ %this;
-    profile = ButtonBarBackground @ new () @ "GuiDefaultProfile";
-    GuiBitmapCtrl;
-    horizSizing = 0 @ "right";
+    profile = new GuiBitmapCtrl(ButtonBarBackground) @ "GuiDefaultProfile";
+    horizSizing = "right";
     vertSizing = "bottom";
     position = "0 0";
     extent = %this.getExtent();
@@ -50,7 +51,9 @@ function ButtonBar::Initialize(%this) {
     PrivateSpacePopupMenu;
     %this.addButton("PlacesButton", "toggleTGF();", "platform/client/buttons/bb_places", 1);
     %this.addButtonWithPopupMenu("MePopupMenu", "platform/client/buttons/bb_avatar", 1);
-    "Reload Textures".addMenuItem("playerTexturesReload();", "platform/client/buttons/bb_avatar_hanger", "");
+    if ($UserPref::UI::ShowReloadTextures) {
+        "Reload Textures".addMenuItem("playerTexturesReload();", "platform/client/buttons/bb_avatar_hanger", "");
+    }
     "View".addMenuItem("nextPlayerCamMode();", "platform/client/buttons/bb_avatar_view", "F7");
     "Body".addMenuItem("toggleBodyTab();", "platform/client/buttons/bb_avatar_body", "");
     "Closet".addMenuItem("toggleClosetTab();", "platform/client/buttons/bb_avatar_hanger", "F5");
@@ -77,12 +80,12 @@ function ButtonBar::Initialize(%this) {
     MePopupMenu;
     %item = %thisMenuName.addMenuItem("Forums", MePopupMenu @ MePopupMenu @ "gotoWebPage(\"" @ $Net::ForumsURL @ "\" );", "platform/client/buttons/bb_help_info", "");
     MePopupMenu;
-    %item = %thisMenuName.addMenuItem("Events", PrivateSpacePopupMenu @ $UserPref::UI::ShowReloadTextures @ "gotoWebPage(\"" @ $Net::EventsURL @ "\" );", "platform/client/buttons/bb_help_info", "");
+    %item = %thisMenuName.addMenuItem("Events", PrivateSpacePopupMenu @ PrivateSpacePopupMenu @ "gotoWebPage(\"" @ $Net::EventsURL @ "\" );", "platform/client/buttons/bb_help_info", "");
     PrivateSpacePopupMenu;
     %this.addButtonWithPopupMenu("HelpPopupMenu", "platform/client/buttons/bb_help", 1, "", "");
     %item = "Info for parents".addMenuItem(PrivateSpacePopupMenu @ HelpPopupMenu @ "gotoWebPage(\"" @ $Net::HelpURL_Parents @ "\");", "platform/client/buttons/bb_help_info", "");
     PrivateSpacePopupMenu;
-    %item = "House Rules".addMenuItem(PrivateSpacePopupMenu @ HelpPopupMenu @ "gotoWebPage(\"" @ $Net::HelpURL_Guidelines @ "\");", "platform/client/buttons/bb_help_info", "");
+    %item = "House Rules".addMenuItem(HelpPopupMenu @ "gotoWebPage(\"" @ $Net::HelpURL_Guidelines @ "\");", "platform/client/buttons/bb_help_info", "");
     %item = "FAQ: Designing your own clothes".addMenuItem(HelpPopupMenu @ "gotoWebPage(\"" @ $Net::HelpURL_VHD @ "\");", "platform/client/buttons/bb_help_faq", "");
     %item = "FAQ: Moving, dancing, and chatting".addMenuItem(HelpPopupMenu @ "gotoWebPage(\"" @ $Net::HelpURL_Navigation @ "\");", "platform/client/buttons/bb_help_faq", "");
     %item = "FAQ: Music and events".addMenuItem(HelpPopupMenu @ "gotoWebPage(\"" @ $Net::HelpURL_MusicNEvents @ "\");", "platform/client/buttons/bb_help_faq", "");
@@ -141,7 +144,9 @@ function ButtonBar::addButton(%this, %buttonName, %command, %bitmap, %insertUpon
     buttons = "count" @ %this @ buttons TAB %buttonName @ "buttonIndex" @ %this;
     buttons = %this.makeNewDot() TAB %buttonName @ "dot" @ %this;
     buttons = (1.0 @ "count" @ %this + buttons);
-    %this.insertButton(%buttonName);
+    if (%insertUponCreate) {
+        %this.insertButton(%buttonName);
+    }
 };
 function ButtonBar::addButtonWithPopupMenu(%this, %menuName, %bitmap, %insertUponCreate) {
     %menu = MenuLayer::newMenu(%menuName);
@@ -154,7 +159,9 @@ function ButtonBar::addButtonWithPopupMenu(%this, %menuName, %bitmap, %insertUpo
     buttons = "count" @ %this @ buttons TAB %buttonName @ "buttonIndex" @ %this;
     buttons = %this.makeNewDot() TAB %buttonName @ "dot" @ %this;
     buttons = (1.0 @ "count" @ %this + buttons);
-    %this.insertButton(%buttonName);
+    if (%insertUponCreate) {
+        %this.insertButton(%buttonName);
+    }
 };
 function ButtonBar::insertButton(%this, %buttonName) {
     %buttonToInsert = buttons;
@@ -163,7 +170,9 @@ function ButtonBar::insertButton(%this, %buttonName) {
     %buttonName @ "buttonIndex" @ %this;
     %dotToInsert = buttons;
     %buttonName @ "dot" @ %this;
-    return (-(1.0) != %this.getObjectIndex(%buttonToInsert));
+    if ((-(1.0) != %this.getObjectIndex(%buttonToInsert))) {
+        return;
+    }
     %dotToInsert.add();
     %dummyContainer = new ""();
     GuiControl;
@@ -171,24 +180,31 @@ function ButtonBar::insertButton(%this, %buttonName) {
     0;
     %i = (1.0 - %maxCount);
     ButtonBarActivator;
-    %currentButton = %this.getObject(%i);
-    (0.0 > %i);
-    %this.remove(%currentButton);
-    %dummyContainer.add(%currentButton);
-    %i = (1.0 - %i);
+    if ((0.0 > %i)) {
+        %currentButton = %this.getObject(%i);
+        %this.remove(%currentButton);
+        %dummyContainer.add(%currentButton);
+        %i = (1.0 - %i);
+    }
     %buttonHasBeenInserted = 0;
     (0.0 > %i);
     %maxCount = %dummyContainer.getCount();
     %i = (1.0 - %maxCount);
-    %currentButton = %dummyContainer.getObject(%i);
-    (0.0 >= %i);
-    %dummyContainer.remove(%currentButton);
-    %this.add(%buttonToInsert);
-    %buttonHasBeenInserted = 1;
-    (!(%buttonHasBeenInserted) @ %buttonIndex TAB %currentButton.getName() @ "buttonIndex" @ %this > buttons);
-    %this.add(%currentButton);
-    %i = (1.0 - %i);
-    %this.add(%buttonToInsert);
+    if ((0.0 >= %i)) {
+        %currentButton = %dummyContainer.getObject(%i);
+        %dummyContainer.remove(%currentButton);
+        if (!(%buttonHasBeenInserted)) {
+        }
+        if ((%buttonIndex TAB %currentButton.getName() @ "buttonIndex" @ %this > buttons)) {
+            %this.add(%buttonToInsert);
+            %buttonHasBeenInserted = 1;
+        }
+        %this.add(%currentButton);
+        %i = (1.0 - %i);
+    }
+    if (!(%buttonHasBeenInserted)) {
+        %this.add(%buttonToInsert);
+    }
     %dummyContainer.delete();
     %this.update();
 };
@@ -197,9 +213,13 @@ function ButtonBar::removeButton(%this, %buttonName) {
     %buttonName @ "button" @ %this;
     %dotToRemove = buttons;
     %buttonName @ "dot" @ %this;
-    return !(isObject(%buttonToRemove));
+    if (!(isObject(%buttonToRemove))) {
+        return;
+    }
     %indexOfButton = %this.getObjectIndex(%buttonToRemove);
-    return (-(1.0) == %indexOfButton);
+    if ((-(1.0) == %indexOfButton)) {
+        return;
+    }
     %this.remove(%buttonToRemove);
     %dotToRemove.remove();
     %this.update();
@@ -212,58 +232,67 @@ function ButtonBar::update(%this) {
     %bbHeight = getWord(extent, 1);
     %this;
     %newWidth = %bbWidth;
-    %numButtons = (1.0 - %this.getCount());
-    !($ButtonBarVar::Hidden);
-    %newWidth = (($ButtonBarVar::buttonPadding * (1.0 + %numButtons)) + (($ButtonBarVar::buttonWidth * %numButtons) + ($ButtonBarVar::buttonBarSideBorder * 2.0)));
+    if (!($ButtonBarVar::Hidden)) {
+        %numButtons = (1.0 - %this.getCount());
+        %newWidth = (($ButtonBarVar::buttonPadding * (1.0 + %numButtons)) + (($ButtonBarVar::buttonWidth * %numButtons) + ($ButtonBarVar::buttonBarSideBorder * 2.0)));
+    }
     %this.resize(mFloor((1.0 + (2.0 / (%newWidth - %screenWidth)))), (%bbHeight - %screenHeight), %newWidth, %bbHeight);
     $ButtonBarVar::VerticalAdjustment = 0;
-    %widthPerButton = ($ButtonBarVar::dotPadding + $ButtonBarVar::dotWidth);
-    $ButtonBarVar::Hidden;
-    %xoffset = mFloor((2.0 / ($ButtonBarVar::dotPadding + (((1.0 - %this.getCount()) * %widthPerButton) - %bbWidth))));
-    %startingOffset = ;
-    %yoffset = ($ButtonBarVar::buttonMiniTopBorder - %bbHeight);
-    %maxCount = %this.getCount();
-    %i = 1;
-    %currentButton = %this.getObject(%i);
-    (%maxCount < %i);
-    %currentButton.setTrgPosition(%xoffset, %yoffset);
-    %currentButton.setTrgExtent($ButtonBarVar::dotWidth, $ButtonBarVar::buttonMiniHeight);
-    %xoffset = (($ButtonBarVar::dotPadding + $ButtonBarVar::dotWidth) + %xoffset);
-    %i = (1.0 + %i);
-    %xoffset = %startingOffset;
-    (%maxCount < %i);
-    %yoffset = $ButtonBarVar::buttonBarActivatorTopBorder;
-    %maxCount = getCount();
-    ButtonBarActivator;
-    %i = 0;
-    %currentDot = %i.getObject();
-    ButtonBarActivator;
-    %currentDot.setTrgPosition(%xoffset, %yoffset);
-    %xoffset = (($ButtonBarVar::dotPadding + $ButtonBarVar::dotWidth) + %xoffset);
-    (%maxCount < %i);
-    %i = (1.0 + %i);
-    $ButtonBarVar::VerticalAdjustment = ($ButtonBarVar::buttonMiniHeight - $ButtonBarVar::buttonHeight);
-    (%maxCount < %i);
-    %newBgExt = ($ButtonBarVar::dotPadding + (%startingOffset - %xoffset)) @ " " @ $ButtonBarVar::buttonBarActivatorHeight;
-    %newBgPos = ($ButtonBarVar::dotPadding - %startingOffset) @ " " @ ($ButtonBarVar::buttonBarActivatorHeight - %bbHeight);
+    if ($ButtonBarVar::Hidden) {
+        %widthPerButton = ($ButtonBarVar::dotPadding + $ButtonBarVar::dotWidth);
+        %xoffset = mFloor((2.0 / ($ButtonBarVar::dotPadding + (((1.0 - %this.getCount()) * %widthPerButton) - %bbWidth))));
+        %startingOffset = ;
+        %yoffset = ($ButtonBarVar::buttonMiniTopBorder - %bbHeight);
+        %maxCount = %this.getCount();
+        %i = 1;
+        if ((%maxCount < %i)) {
+            %currentButton = %this.getObject(%i);
+            %currentButton.setTrgPosition(%xoffset, %yoffset);
+            %currentButton.setTrgExtent($ButtonBarVar::dotWidth, $ButtonBarVar::buttonMiniHeight);
+            %xoffset = (($ButtonBarVar::dotPadding + $ButtonBarVar::dotWidth) + %xoffset);
+            %i = (1.0 + %i);
+        }
+        %xoffset = %startingOffset;
+        (%maxCount < %i);
+        %yoffset = $ButtonBarVar::buttonBarActivatorTopBorder;
+        %maxCount = getCount();
+        ButtonBarActivator;
+        %i = 0;
+        if ((%maxCount < %i)) {
+            %currentDot = %i.getObject();
+            ButtonBarActivator;
+            %currentDot.setTrgPosition(%xoffset, %yoffset);
+            %xoffset = (($ButtonBarVar::dotPadding + $ButtonBarVar::dotWidth) + %xoffset);
+            %i = (1.0 + %i);
+        }
+        $ButtonBarVar::VerticalAdjustment = ($ButtonBarVar::buttonMiniHeight - $ButtonBarVar::buttonHeight);
+        (%maxCount < %i);
+        %newBgExt = ($ButtonBarVar::dotPadding + (%startingOffset - %xoffset)) @ " " @ $ButtonBarVar::buttonBarActivatorHeight;
+        %newBgPos = ($ButtonBarVar::dotPadding - %startingOffset) @ " " @ ($ButtonBarVar::buttonBarActivatorHeight - %bbHeight);
+    }
     %xoffset = $ButtonBarVar::buttonBarSideBorder;
     %yoffset = mFloor((2.0 / ($ButtonBarVar::buttonHeight - %bbHeight)));
     %maxCount = %this.getCount();
     %i = 1;
-    %currentButton = %this.getObject(%i);
-    (%maxCount < %i);
-    %currentButton.setVisible(1);
-    %currentButton.setTrgPosition(%xoffset, %yoffset);
-    %currentButton.setTrgExtent($ButtonBarVar::buttonWidth, $ButtonBarVar::buttonHeight);
-    %xoffset = (($ButtonBarVar::buttonPadding + $ButtonBarVar::buttonWidth) + %xoffset);
-    %i = (1.0 + %i);
+    if ((%maxCount < %i)) {
+        %currentButton = %this.getObject(%i);
+        %currentButton.setVisible(1);
+        %currentButton.setTrgPosition(%xoffset, %yoffset);
+        %currentButton.setTrgExtent($ButtonBarVar::buttonWidth, $ButtonBarVar::buttonHeight);
+        %xoffset = (($ButtonBarVar::buttonPadding + $ButtonBarVar::buttonWidth) + %xoffset);
+        %i = (1.0 + %i);
+    }
     %newBgExt = %newWidth @ " " @ %bbHeight;
     (%maxCount < %i);
     %newBgPos = "0 0";
     mFloor((1.0 + (2.0 / (%newWidth - %screenWidth)))).resize(($ButtonBarVar::buttonBarActivatorHeight - %screenHeight), %newWidth, $ButtonBarVar::buttonBarActivatorHeight);
-    background.setTrgExtent(%newBgExt);
-    background.setTrgPosition(%newBgPos);
-    update();
+    if (isObject(background)) {
+        background.setTrgExtent(%newBgExt);
+        background.setTrgPosition(%newBgPos);
+    }
+    if (isObject()) {
+        update();
+    }
 };
 function ButtonBar::onMouseLeaveBounds(%this) {
     %this.hide();
@@ -274,7 +303,9 @@ function ButtonBar::onMouseEnterBounds(%this) {
 };
 function ButtonBar::show(%this) {
     $ButtonBarVar::scheduled = 0;
-    return !($ButtonBarVar::Hidden);
+    if (!($ButtonBarVar::Hidden)) {
+        return;
+    }
     $ButtonBarVar::Hidden = 0;
     %this.setVisible(1);
     0.setVisible();
@@ -285,8 +316,12 @@ function ButtonBar::show(%this) {
     updatePosition();
 };
 function ButtonBar::hide(%this) {
-    return $ButtonBarVar::Hidden;
-    return !($UserPref::ETS::ButtonBar::AutoHide);
+    if ($ButtonBarVar::Hidden) {
+        return;
+    }
+    if (!($UserPref::ETS::ButtonBar::AutoHide)) {
+        return;
+    }
     $ButtonBarVar::Hidden = 1;
     bringToFront();
     pushToBack();
@@ -297,7 +332,9 @@ function ButtonBar::hide(%this) {
     updatePosition();
 };
 function ButtonBar::scheduledHide(%this) {
-    %this.hide();
+    if ($ButtonBarVar::scheduled) {
+        %this.hide();
+    }
 };
 function ButtonBar::showAndHide(%this) {
     %this.show();
@@ -305,9 +342,10 @@ function ButtonBar::showAndHide(%this) {
     $ButtonBarVar::scheduled = 1;
 };
 function ButtonBar::setAutoHiding(%this, %flag) {
-    $UserPref::ETS::ButtonBar::AutoHide = 1;
-    %flag;
-    %this.hide();
+    if (%flag) {
+        $UserPref::ETS::ButtonBar::AutoHide = 1;
+        %this.hide();
+    }
     $UserPref::ETS::ButtonBar::AutoHide = 0;
     %this.show();
 };
@@ -316,25 +354,35 @@ function ButtonBar::showButton(%this, %button) {
     %this.showAndHide();
 };
 function ButtonBar::hideButton(%this, %button) {
-    hide();
+    if (isObject()) {
+        hide();
+    }
     %this.removeButton(%button);
 };
 function ButtonBar::handleContiguousSpace(%this) {
-    %showPlaces = 1;
-    0;
-    %this.showButton();
-    %this.hideButton();
-    %isGW = (isObject() SPC $gContiguousSpaceName $= "gw");
-    MessageHudShoutOutIcon;
-    !(%isGW).setVisible();
+    if (isObject()) {
+        %showPlaces = (PlacesButton SPC $gContiguousSpaceName $= "gw") ? 0 : 1;
+        if (%showPlaces) {
+            %this.showButton();
+        }
+        %this.hideButton();
+    }
+    if (isObject()) {
+        %isGW = (MessageHudShoutOutIcon SPC $gContiguousSpaceName $= "gw");
+        PlacesButton;
+        !(%isGW).setVisible();
+    }
 };
 function ButtonBarBackground::onReachedTarget(%this) {
-    %maxCount = getCount();
-    ButtonBar;
-    %i = 1;
-    $ButtonBarVar::Hidden;
-    %i.getObject().setVisible(0);
-    %i = (1.0 + %i);
-    ButtonBar;
-    1.setVisible();
+    if ($ButtonBarVar::Hidden) {
+        %maxCount = getCount();
+        ButtonBar;
+        %i = 1;
+        if ((%maxCount < %i)) {
+            %i.getObject().setVisible(0);
+            %i = (1.0 + %i);
+            ButtonBar;
+        }
+        1.setVisible();
+    }
 };

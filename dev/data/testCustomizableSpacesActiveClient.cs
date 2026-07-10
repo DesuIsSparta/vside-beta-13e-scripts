@@ -1,16 +1,28 @@
 function doCSTestCreateRandomThingIOwn() {
-    echo("I'm not in a private space, or I'm in one that I don't own, not running the test");
-    return (!(CustomSpaceClient::isOwner()) SPC CustomSpaceClient::GetSpaceImIn() $= "");
+    if (!(CustomSpaceClient::isOwner())) {
+    }
+    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+        echo("I'm not in a private space, or I'm in one that I don't own, not running the test");
+        return;
+    }
     RunTestSuite("TestSuite_CSActive_CreateRandom");
 };
 function doCSTestCreateEveryThingIOwn() {
-    echo("I'm not in a private space, or I'm in one that I don't own, not running the test");
-    return (!(CustomSpaceClient::isOwner()) SPC CustomSpaceClient::GetSpaceImIn() $= "");
+    if (!(CustomSpaceClient::isOwner())) {
+    }
+    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+        echo("I'm not in a private space, or I'm in one that I don't own, not running the test");
+        return;
+    }
     RunTestSuite("TestSuite_CSActive_CreateAllOwned");
 };
 function doCSTestTryoutRandomThing() {
-    echo("I'm not in a private space, or I'm in one that I don't own, not running the test");
-    return (!(CustomSpaceClient::isOwner()) SPC CustomSpaceClient::GetSpaceImIn() $= "");
+    if (!(CustomSpaceClient::isOwner())) {
+    }
+    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+        echo("I'm not in a private space, or I'm in one that I don't own, not running the test");
+        return;
+    }
     RunTestSuite("TestSuite_CSActive_TryOut");
 };
 DeclareTestSuite("TestSuite_CSActive_CreateRandom");
@@ -38,22 +50,31 @@ function TEST_CSActive_RequestToEdit::delayedEval(%this) {
     %this.assert((0.0 > $CSMaximumSlots), "this space thinks we can't put any furniture items in it still");
 };
 function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this) {
-    %this.assert(!((CustomSpaceClient::GetSpaceImIn() $= "")), "We are not in a custom space, this test will not work");
+    %this.assert(!(CustomSpaceClient::GetSpaceImIn() $= ""), "We are not in a custom space, this test will not work");
     %this.assert(CustomSpaceClient::isOwner(), "We are not the owner of the space we are in, this test will not work");
-    return (!(CustomSpaceClient::isOwner()) SPC CustomSpaceClient::GetSpaceImIn() $= "");
+    if (!(CustomSpaceClient::isOwner())) {
+    }
+    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+        return;
+    }
     ownedFurnitureToTestCount = 0 @ %this;
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    %sku = $Player::furnitureInventory.getKey(%index);
-    (%count < %index);
-    %inUse = numUsingFurnitureSku(%sku);
-    %numOwned = numOwnedFurnitureSku(%sku);
-    ownedFurnitureToTest = (%inUse > %numOwned) @ %sku @ %this @ ownedFurnitureToTestCount @ %this;
-    ownedFurnitureToTestCount = (%this + ownedFurnitureToTestCount);
-    1.0;
-    %index = (1.0 + %index);
-    %this.assert(0, "we do not own any furniture that we can test with");
-    return (%this <= ownedFurnitureToTestCount);
+    if ((%count < %index)) {
+        %sku = $Player::furnitureInventory.getKey(%index);
+        %inUse = numUsingFurnitureSku(%sku);
+        %numOwned = numOwnedFurnitureSku(%sku);
+        if ((%inUse > %numOwned)) {
+            ownedFurnitureToTest = %sku @ %this @ ownedFurnitureToTestCount @ %this;
+            ownedFurnitureToTestCount = (%this + ownedFurnitureToTestCount);
+            1.0;
+        }
+        %index = (1.0 + %index);
+    }
+    if ((%this <= ownedFurnitureToTestCount)) {
+        %this.assert(0, "we do not own any furniture that we can test with");
+        return 0.0;
+    }
     %rand = getRandom(0, ownedFurnitureToTestCount);
     %this;
     %skuToTest = ownedFurnitureToTest;
@@ -62,8 +83,10 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this) {
     lastSkuTested = %skuToTest @ %this;
     %this.assert((0.0 > %skuToTest), "we got a bad sku for this");
     %alreadyHave = numUsingFurnitureAll();
-    %this.assert(0, "We are already using the max furniture we can place in this space: (" @ " " @ %alreadyHave @ " " @ "out of" @ " " @ $CSMaximumSlots @ " " @ ")");
-    return ($CSMaximumSlots >= %alreadyHave);
+    if (($CSMaximumSlots >= %alreadyHave)) {
+        %this.assert(0, "We are already using the max furniture we can place in this space: (" @ " " @ %alreadyHave @ " " @ "out of" @ " " @ $CSMaximumSlots @ " " @ ")");
+        return;
+    }
     CustomSpaceClient::placeSkuInWorld(%skuToTest);
 };
 function TEST_CS_CreateRandomOwnedFurnitureItem::delayedEval(%this) {
@@ -77,13 +100,19 @@ function TEST_CSActive_DoneEditing::runTest(%this) {
 function TEST_CSActive_DoneEditing::delayedEval(%this) {
 };
 function TEST_CS_TryOutRandomOwnedFurnitureItem::runTest(%this) {
-    %this.assert(!((CustomSpaceClient::GetSpaceImIn() $= "")), "We are not in a custom space, this test will not work");
+    %this.assert(!(CustomSpaceClient::GetSpaceImIn() $= ""), "We are not in a custom space, this test will not work");
     %this.assert(CustomSpaceClient::isOwner(), "We are not the owner of the space we are in, this test will not work");
-    return (!(CustomSpaceClient::isOwner()) SPC CustomSpaceClient::GetSpaceImIn() $= "");
+    if (!(CustomSpaceClient::isOwner())) {
+    }
+    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+        return;
+    }
     UnOwnedFurnitureToTestCount = 0 @ %this;
     %count = $Player::furnitureInventory.count();
-    %this.assert(0, "we did not find any furniture we can test!");
-    return (0.0 <= %count);
+    if ((0.0 <= %count)) {
+        %this.assert(0, "we did not find any furniture we can test!");
+        return;
+    }
     %rand = getRandom(0, %count);
     %skuToTest = $Player::furnitureInventory.getKey(%rand);
     %this.assert((0.0 > %skuToTest), "we got a bad sku for this");
@@ -92,36 +121,49 @@ function TEST_CS_TryOutRandomOwnedFurnitureItem::runTest(%this) {
 function TEST_CS_TryOutRandomOwnedFurnitureItem::delayedEval(%this) {
 };
 function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this) {
-    %this.assert(!((CustomSpaceClient::GetSpaceImIn() $= "")), "We are not in a custom space, this test will not work");
+    %this.assert(!(CustomSpaceClient::GetSpaceImIn() $= ""), "We are not in a custom space, this test will not work");
     %this.assert(CustomSpaceClient::isOwner(), "We are not the owner of the space we are in, this test will not work");
-    return (!(CustomSpaceClient::isOwner()) SPC CustomSpaceClient::GetSpaceImIn() $= "");
+    if (!(CustomSpaceClient::isOwner())) {
+    }
+    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+        return;
+    }
     ownedFurnitureToTestCount = 0 @ %this;
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    %sku = $Player::furnitureInventory.getKey(%index);
-    (%count < %index);
-    %inUse = numUsingFurnitureSku(%sku);
-    %numOwned = numOwnedFurnitureSku(%sku);
-    ownedFurnitureToTest = (%inUse > %numOwned) @ %sku @ %this @ ownedFurnitureToTestCount @ %this;
-    ownedFurnitureToTestCount = (%this + ownedFurnitureToTestCount);
-    1.0;
-    %index = (1.0 + %index);
-    echo("we either don't own any furniture or hav eplaced it all, not making any new stuff");
-    return (%this <= ownedFurnitureToTestCount);
+    if ((%count < %index)) {
+        %sku = $Player::furnitureInventory.getKey(%index);
+        %inUse = numUsingFurnitureSku(%sku);
+        %numOwned = numOwnedFurnitureSku(%sku);
+        if ((%inUse > %numOwned)) {
+            ownedFurnitureToTest = %sku @ %this @ ownedFurnitureToTestCount @ %this;
+            ownedFurnitureToTestCount = (%this + ownedFurnitureToTestCount);
+            1.0;
+        }
+        %index = (1.0 + %index);
+    }
+    if ((%this <= ownedFurnitureToTestCount)) {
+        echo("we either don't own any furniture or hav eplaced it all, not making any new stuff");
+        return 0.0;
+    }
     %i = 0;
-    %sku = ownedFurnitureToTest;
-    (ownedFurnitureToTestCount < %i) @ %i @ %this;
-    %inUse = numUsingFurnitureSku(%sku);
-    %this;
-    %numOwned = numOwnedFurnitureSku(%sku);
-    %numToMake = (%inUse - %numOwned);
-    %j = 0;
-    %alreadyHave = numUsingFurnitureAll();
-    (%numToMake < %j);
-    %this.assert(0, "We are already using the max furniture we can place in this space: (" @ " " @ %alreadyHave @ " " @ "out of" @ " " @ $CSMaximumSlots @ " " @ ")");
-    return ($CSMaximumSlots >= %alreadyHave);
-    CustomSpaceClient::placeSkuInWorld(%sku);
-    %j = (1.0 + %j);
-    %i = (1.0 + %i);
-    (%numToMake < %j);
+    if ((ownedFurnitureToTestCount < %i)) {
+        %sku = ownedFurnitureToTest;
+        %this @ %i @ %this;
+        %inUse = numUsingFurnitureSku(%sku);
+        %numOwned = numOwnedFurnitureSku(%sku);
+        %numToMake = (%inUse - %numOwned);
+        %j = 0;
+        if ((%numToMake < %j)) {
+            %alreadyHave = numUsingFurnitureAll();
+            if (($CSMaximumSlots >= %alreadyHave)) {
+                %this.assert(0, "We are already using the max furniture we can place in this space: (" @ " " @ %alreadyHave @ " " @ "out of" @ " " @ $CSMaximumSlots @ " " @ ")");
+                return;
+            }
+            CustomSpaceClient::placeSkuInWorld(%sku);
+            %j = (1.0 + %j);
+        }
+        %i = (1.0 + %i);
+        (%numToMake < %j);
+    }
 };

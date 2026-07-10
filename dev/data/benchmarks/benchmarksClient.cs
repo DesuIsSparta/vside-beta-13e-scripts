@@ -33,13 +33,16 @@ function benchmarks::doAllTests() {
 };
 function benchmarksTryNextTest() {
     cancel($benchmarks::testsSchedule);
-    echo(($benchmarks::testsListNum >= $benchmarks::currentTest) @ "finished all tests, success =" @ " " @ $benchmarks::successCount @ "/" @ $benchmarks::testsListNum);
-    $benchmarks::currentRunningTest = (1.0 - $benchmarks::currentRunningTest);
-    benchmarks::finishedAllTests();
-    return;
-    benchmarks::runNextTest();
+    if (($benchmarks::testsListNum >= $benchmarks::currentTest)) {
+        echo("finished all tests, success =" @ " " @ $benchmarks::successCount @ "/" @ $benchmarks::testsListNum);
+        $benchmarks::currentRunningTest = (1.0 - $benchmarks::currentRunningTest);
+        benchmarks::finishedAllTests();
+        return;
+    }
+    if (($benchmarks::currentTest < $benchmarks::currentRunningTest)) {
+        benchmarks::runNextTest();
+    }
     $benchmarks::testsSchedule = schedule(1000, 0, "benchmarksTryNextTest");
-    ($benchmarks::currentTest < $benchmarks::currentRunningTest);
 };
 function benchmarks::runNextTest() {
     echo("running  test " @ $benchmarks::currentTest @ ": \"" @ $benchmarks::currentTest[$benchmarks::testNamesList @ $benchmarks::currentTest] @ "\"");
@@ -47,14 +50,19 @@ function benchmarks::runNextTest() {
     $benchmarks::currentRunningTest = (1.0 + $benchmarks::currentRunningTest);
 };
 function benchmarks::finishedCurrentTest(%result) {
-    return (0.0 < $benchmarks::currentRunningTest);
-    $benchmarks::successCount = (1.0 + $benchmarks::successCount);
-    (%result $= "success");
+    if ((0.0 < $benchmarks::currentRunningTest)) {
+        return;
+    }
+    if ((%result $= "success")) {
+        $benchmarks::successCount = (1.0 + $benchmarks::successCount);
+    }
     echo("finished test " @ $benchmarks::currentTest @ ": \"" @ $benchmarks::currentTest[$benchmarks::testNamesList @ $benchmarks::currentTest] @ "\" result = " @ %result);
     $benchmarks::currentTest = (1.0 + $benchmarks::currentTest);
 };
 function benchmarks::finishedAllTests(%result) {
-    eval($benchmarks::callbackOnAllComplete);
+    if (!($benchmarks::callbackOnAllComplete $= "")) {
+        eval($benchmarks::callbackOnAllComplete);
+    }
 };
 function benchmarks::runSampleTest1() {
     GLEnableMetrics(0);
@@ -73,11 +81,15 @@ function benchmarks::runSampleTest2() {
 };
 $echoBenchmarksCamera_DO = 1;
 function echoBenchmarksCamera(%text) {
-    echo("Benchmarks::Camera" @ " " @ %text);
-    $benchmarks::camera::resultString = $echoBenchmarksCamera_DO @ $benchmarks::camera::resultString @ %text @ "\n";
+    if ($echoBenchmarksCamera_DO) {
+        echo("Benchmarks::Camera" @ " " @ %text);
+    }
+    $benchmarks::camera::resultString = $benchmarks::camera::resultString @ %text @ "\n";
 };
 function benchmarks::MessageBoxOK(%title, %body) {
-    MessageBoxOK(%title, %body, "");
+    if (benchmarks::isInteractive()) {
+        MessageBoxOK(%title, %body, "");
+    }
 };
 function benchmarks::loadCameraTests() {
 };
@@ -91,19 +103,25 @@ function benchmarks::runCameraTestsReps() {
     $benchmarks::camera::maxFPSSum = 0;
     $benchmarks::camera::avgFPSSum = 0;
     $benchmarks::camera::repsDone = 0;
-    %n = 0;
-    (cameraTestsGroup > getCount());
-    %obj = %n.getObject();
-    cameraTestsGroup;
-    totalFPS = (getCount() < %n) @ 0 @ %obj;
-    cameraTestsGroup;
-    totalTests = 0.0 @ 0 @ %obj;
-    isObject();
-    %n = (1.0 + %n);
-    cameraTestsGroup;
-    $benchmarks::camera::repsRemaining = $pref::benchmarks::fps::reps;
-    (getCount() < %n);
-    benchmarks::runCameraTests();
+    if (isObject()) {
+    }
+    if ((cameraTestsGroup > getCount())) {
+        %n = 0;
+        0.0;
+        if ((getCount() < %n)) {
+            %obj = %n.getObject();
+            cameraTestsGroup;
+            totalFPS = cameraTestsGroup @ 0 @ %obj;
+            cameraTestsGroup;
+            totalTests = 0 @ %obj;
+            %n = (1.0 + %n);
+        }
+        $benchmarks::camera::repsRemaining = $pref::benchmarks::fps::reps;
+        (getCount() < %n);
+    }
+    if ((0.0 > $benchmarks::camera::repsRemaining)) {
+        benchmarks::runCameraTests();
+    }
     echoBenchmarksCamera("no reps!");
     benchmarks::finishedCameraTestsReps("no reps");
 };
@@ -114,24 +132,33 @@ function benchmarks::finishedCameraTestsRep(%result) {
     $benchmarks::camera::maxFPSSum = ($benchmarks::camera::maxFPS + $benchmarks::camera::maxFPSSum);
     $benchmarks::camera::avgFPSSum = ($benchmarks::camera::avgFPS + $benchmarks::camera::avgFPSSum);
     $benchmarks::camera::repsDone = (1.0 + $benchmarks::camera::repsDone);
-    echoBenchmarksCamera("");
-    benchmarks::runCameraTests();
+    if ((%result $= "success")) {
+    }
+    if ((0.0 > $benchmarks::camera::repsRemaining)) {
+        echoBenchmarksCamera("");
+        benchmarks::runCameraTests();
+    }
     benchmarks::finishedCameraTestsReps(%result);
 };
 function benchmarks::finishedCameraTestsReps(%result) {
     echoBenchmarksCamera("");
     echoBenchmarksCamera("Completed" @ " " @ $benchmarks::camera::repsDone @ " " @ "of" @ " " @ $pref::benchmarks::fps::reps @ " " @ "reps.");
-    $benchmarks::camera::avgTrisAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::avgTrisSum);
-    (0.0 > $benchmarks::camera::repsDone);
-    $benchmarks::camera::minFPSAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::minFPSSum);
-    $benchmarks::camera::maxFPSAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::maxFPSSum);
-    $benchmarks::camera::avgFPSAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::avgFPSSum);
-    echoBenchmarksCamera($pref::benchmarks::fps::countTris @ "avgTrisAvg:" @ $benchmarks::camera::avgTrisAvg);
-    echoBenchmarksCamera("minFPSAvg:" @ $benchmarks::camera::minFPSAvg);
-    echoBenchmarksCamera("maxFPSAvg:" @ $benchmarks::camera::maxFPSAvg);
-    echoBenchmarksCamera("avgFPSAvg:" @ $benchmarks::camera::avgFPSAvg);
+    if ((0.0 > $benchmarks::camera::repsDone)) {
+        $benchmarks::camera::avgTrisAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::avgTrisSum);
+        $benchmarks::camera::minFPSAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::minFPSSum);
+        $benchmarks::camera::maxFPSAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::maxFPSSum);
+        $benchmarks::camera::avgFPSAvg = ($benchmarks::camera::repsDone / $benchmarks::camera::avgFPSSum);
+        if ($pref::benchmarks::fps::countTris) {
+            echoBenchmarksCamera("avgTrisAvg:" @ $benchmarks::camera::avgTrisAvg);
+        }
+        echoBenchmarksCamera("minFPSAvg:" @ $benchmarks::camera::minFPSAvg);
+        echoBenchmarksCamera("maxFPSAvg:" @ $benchmarks::camera::maxFPSAvg);
+        echoBenchmarksCamera("avgFPSAvg:" @ $benchmarks::camera::avgFPSAvg);
+    }
     benchmarks::finishedCurrentTest(%result);
-    onFinishedCameraTests();
+    if (isObject()) {
+        onFinishedCameraTests();
+    }
 };
 function benchmarks::runCameraTests() {
     $gBenchmarksStoreOriginalCanSleepInBackground = $Platform::CanSleepInBackground;
@@ -141,10 +168,14 @@ function benchmarks::runCameraTests() {
     echoBenchmarksCamera("rep" @ " " @ (1.0 + %repNum) @ " " @ "of" @ " " @ $pref::benchmarks::fps::reps);
     $benchmarks::camera::originalSpot = Camera.getTransform();
     LocalClientConnection;
-    echoBenchmarksCamera("No Tests!");
-    benchmarks::MessageBoxOK("Benchmark Results", $benchmarks::camera::resultString);
-    benchmarks::finishedCurrentTest("cameraTestsGroup not defined or empty");
-    return (cameraTestsGroup < getCount());
+    if (!(isObject())) {
+    }
+    if ((cameraTestsGroup < getCount())) {
+        echoBenchmarksCamera("No Tests!");
+        benchmarks::MessageBoxOK("Benchmark Results", $benchmarks::camera::resultString);
+        benchmarks::finishedCurrentTest("cameraTestsGroup not defined or empty");
+        return 1.0;
+    }
     echoBenchmarksCamera("Window Resolution and Depth:" @ " " @ $UserPref::Video::Resolution);
     echoBenchmarksCamera(cameraTestsGroup @ getCount() @ " " @ "tests, period =" @ " " @ (0.001 * $pref::benchmarks::cameraPeriod) @ " " @ "seconds");
     $benchmarks::camera::totalFPS = 0;
@@ -166,31 +197,43 @@ function benchmarks::cancelCameraTests() {
 function benchmarksRunNextCameraTest() {
     cancel($benchmarks::camera::testSchedule);
     $benchmarks::camera::testSchedule = 0;
-    benchmarks::finishedCurrentTest("cameraTestsGroup not defined or empty");
-    return (cameraTestsGroup < getCount());
-    %theMark = $benchmarks::camera::curPoint.getObject();
-    cameraTestsGroup;
-    %tris = ($OpenGL::triCount3 + ($OpenGL::triCount2 + ($OpenGL::triCount1 + $OpenGL::triCount0)));
-    (0.0 >= $benchmarks::camera::curPoint);
-    echoBenchmarksCamera("fps  " @ (1.0 + $benchmarks::camera::curPoint) @ ":" @ %theMark @ spotName @ ":" @ $fps::real);
-    echoBenchmarksCamera($pref::benchmarks::fps::countTris @ "tris " @ (1.0 + $benchmarks::camera::curPoint) @ ":" @ %theMark @ spotName @ ":" @ %tris);
-    totalFPS = (%theMark + totalFPS);
-    $fps::real;
-    totalTests = (%theMark + totalTests);
-    1.0;
-    $benchmarks::camera::totalFPS = ($fps::real + $benchmarks::camera::totalFPS);
-    $benchmarks::camera::totalTris = (%tris + $benchmarks::camera::totalTris);
-    $benchmarks::camera::totalTests = (1.0 + $benchmarks::camera::totalTests);
-    $benchmarks::camera::maxFPS = mMax($benchmarks::camera::maxFPS, $fps::real);
-    $benchmarks::camera::minFPS = mMin($benchmarks::camera::minFPS, $fps::real);
-    %screenshotFolder = $pref::benchmarks::dataPath;
-    $pref::benchmarks::cameraScreenshots;
-    %screenshotFileName = %screenshotFolder @ "/" @ $benchmarks::currentTimeStamp @ "_" @ MissionInfo @ name @ "_" @ %theMark @ spotName @ ".jpg";
-    ScreenShot(%screenshotFileName, "JPEG");
-    error("Cannot write to file" @ " " @ %screenshotFileName);
-    benchmarks::nextCameraTestPoint();
-    $benchmarks::camera::testSchedule = schedule($pref::benchmarks::cameraPeriod, 0, "benchmarksRunNextCameraTest");
-    ((cameraTestsGroup - getCount()) < $benchmarks::camera::curPoint);
+    if (!(isObject())) {
+    }
+    if ((cameraTestsGroup < getCount())) {
+        benchmarks::finishedCurrentTest("cameraTestsGroup not defined or empty");
+        return 1.0;
+    }
+    if ((0.0 >= $benchmarks::camera::curPoint)) {
+        %theMark = $benchmarks::camera::curPoint.getObject();
+        cameraTestsGroup;
+        %tris = ($OpenGL::triCount3 + ($OpenGL::triCount2 + ($OpenGL::triCount1 + $OpenGL::triCount0)));
+        echoBenchmarksCamera("fps  " @ (1.0 + $benchmarks::camera::curPoint) @ ":" @ %theMark @ spotName @ ":" @ $fps::real);
+        if ($pref::benchmarks::fps::countTris) {
+            echoBenchmarksCamera("tris " @ (1.0 + $benchmarks::camera::curPoint) @ ":" @ %theMark @ spotName @ ":" @ %tris);
+        }
+        totalFPS = (%theMark + totalFPS);
+        $fps::real;
+        totalTests = (%theMark + totalTests);
+        1.0;
+        $benchmarks::camera::totalFPS = ($fps::real + $benchmarks::camera::totalFPS);
+        $benchmarks::camera::totalTris = (%tris + $benchmarks::camera::totalTris);
+        $benchmarks::camera::totalTests = (1.0 + $benchmarks::camera::totalTests);
+        $benchmarks::camera::maxFPS = mMax($benchmarks::camera::maxFPS, $fps::real);
+        $benchmarks::camera::minFPS = mMin($benchmarks::camera::minFPS, $fps::real);
+        if ($pref::benchmarks::cameraScreenshots) {
+            %screenshotFolder = $pref::benchmarks::dataPath;
+            %screenshotFileName = %screenshotFolder @ "/" @ $benchmarks::currentTimeStamp @ "_" @ MissionInfo @ name @ "_" @ %theMark @ spotName @ ".jpg";
+            if (isWriteableFileName(%screenshotFileName)) {
+                ScreenShot(%screenshotFileName, "JPEG");
+            }
+            error("Cannot write to file" @ " " @ %screenshotFileName);
+        }
+    }
+    if (((cameraTestsGroup - getCount()) < $benchmarks::camera::curPoint)) {
+        benchmarks::nextCameraTestPoint();
+        $benchmarks::camera::testSchedule = schedule($pref::benchmarks::cameraPeriod, 0, "benchmarksRunNextCameraTest");
+        1.0;
+    }
     benchmarks::finishedCameraTests("success");
 };
 function benchmarks::finishedCameraTests(%result) {
@@ -199,8 +242,10 @@ function benchmarks::finishedCameraTests(%result) {
     $benchmarks::camera::avgFPS = ($benchmarks::camera::totalTests / $benchmarks::camera::totalFPS);
     $benchmarks::camera::avgTris = ($benchmarks::camera::totalTests / $benchmarks::camera::totalTris);
     echoBenchmarksCamera(cameraTestsGroup @ getCount() @ " " @ "tests, period =" @ " " @ (0.001 * $pref::benchmarks::cameraPeriod) @ " " @ "seconds");
-    echoBenchmarksCamera($pref::benchmarks::fps::countTris @ "Avg Tris:" @ $benchmarks::camera::avgTris);
-    echoBenchmarksCamera("Completed" @ " " @ $benchmarks::camera::totalTests @ " " @ "of" @ " " @ "Min FPS:" @ $benchmarks::camera::minFPS);
+    if ($pref::benchmarks::fps::countTris) {
+        echoBenchmarksCamera("Completed" @ " " @ $benchmarks::camera::totalTests @ " " @ "of" @ " " @ "Avg Tris:" @ $benchmarks::camera::avgTris);
+    }
+    echoBenchmarksCamera("Min FPS:" @ $benchmarks::camera::minFPS);
     echoBenchmarksCamera("Max FPS:" @ $benchmarks::camera::maxFPS);
     echoBenchmarksCamera("Avg FPS:" @ $benchmarks::camera::avgFPS);
     commandToServer('dropCameraAtTransform', $benchmarks::camera::originalSpot);
@@ -209,12 +254,18 @@ function benchmarks::finishedCameraTests(%result) {
     benchmarks::finishedCameraTestsRep(%result);
 };
 function benchmarks::onVideoDeactivate() {
-    return (0.0 == $benchmarks::camera::testSchedule);
+    if ((0.0 == $benchmarks::camera::testSchedule)) {
+        return;
+    }
     echoBenchmarksCamera("benchmark: window lost focus during test.");
 };
 function benchmarks::addNewCameraTestPoint(%name) {
-    new ();
-    add();
+    if (!(isObject())) {
+        new SimGroup(cameraTestsGroup);
+        if (isObject()) {
+            add();
+        }
+    }
     add();
     dataBlock = MissionMarker @ new ""() @ "CameraWayPointMarker";
     0;
@@ -224,31 +275,45 @@ function benchmarks::addNewCameraTestPoint(%name) {
     fov = LocalClientConnection @ getFovCur() @ %spot;
     cameraTestsGroup;
     spotName = MissionCleanup @ %name @ %spot;
-    isObject();
+    MissionCleanup;
     %spot.add();
     $benchmarks::camera::curPoint = 0;
     cameraTestsGroup;
     benchmarks::prevCameraTestPoint();
 };
 function benchmarks::prevCameraTestPoint() {
-    error("cameraTestsGroup not defined or empty");
-    return (cameraTestsGroup < getCount());
+    if (!(isObject())) {
+    }
+    if ((cameraTestsGroup < getCount())) {
+        error("cameraTestsGroup not defined or empty");
+        return 1.0;
+    }
     $benchmarks::camera::curPoint = (1.0 - $benchmarks::camera::curPoint);
-    $benchmarks::camera::curPoint = (cameraTestsGroup - getCount());
-    1.0;
+    if ((0.0 < $benchmarks::camera::curPoint)) {
+        $benchmarks::camera::curPoint = (cameraTestsGroup - getCount());
+        1.0;
+    }
     benchmarks::gotoCameraTestPoint($benchmarks::camera::curPoint.getObject());
 };
 function benchmarks::nextCameraTestPoint() {
-    error("cameraTestsGroup not defined or empty");
-    return (cameraTestsGroup < getCount());
+    if (!(isObject())) {
+    }
+    if ((cameraTestsGroup < getCount())) {
+        error("cameraTestsGroup not defined or empty");
+        return 1.0;
+    }
     $benchmarks::camera::curPoint = (1.0 + $benchmarks::camera::curPoint);
-    $benchmarks::camera::curPoint = 0;
-    (getCount() >= $benchmarks::camera::curPoint);
+    if ((getCount() >= $benchmarks::camera::curPoint)) {
+        $benchmarks::camera::curPoint = 0;
+        cameraTestsGroup;
+    }
     benchmarks::gotoCameraTestPoint($benchmarks::camera::curPoint.getObject());
 };
 function benchmarks::clearCameraTests() {
-    error("cameraTestsGroup not defined");
-    return !(isObject());
+    if (!(isObject())) {
+        error("cameraTestsGroup not defined");
+        return cameraTestsGroup;
+    }
     delete();
     $benchmarks::camera::curPoint = -(1.0);
     cameraTestsGroup;
@@ -260,18 +325,28 @@ function benchmarks::gotoCameraTestPoint(%obj) {
     benchmarks::cameraToGui();
 };
 function benchmarks::cameraToGui() {
-    return !(benchmarks::isInteractive());
+    if (!(benchmarks::isInteractive())) {
+        return;
+    }
     $benchmarks::camera::curPoint.setText();
     %txt = "-";
     gui_Benchs_Cam_Cur;
     %obj = 0;
-    %obj = $benchmarks::camera::curPoint.getObject();
-    cameraTestsGroup;
-    %txt = spotName;
-    %obj;
+    if (isObject()) {
+    }
+    if ((0.0 >= $benchmarks::camera::curPoint)) {
+        %obj = $benchmarks::camera::curPoint.getObject();
+        cameraTestsGroup;
+    }
+    if (isObject(%obj)) {
+        %txt = spotName;
+        %obj;
+    }
     %txt.setText();
     updateProgressBars();
 };
 function benchmarks::isInteractive() {
+    if (isObject()) {
+    }
     return isVisible();
 };

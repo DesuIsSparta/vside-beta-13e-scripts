@@ -17,14 +17,22 @@ function selectAdminAction(%text) {
     %isBanCommand.setVisible();
 };
 function toggleAdminDialog(%action, %target) {
-    return !($player.rolesPermissionCheckNoWarn("manageUsersBasic"));
-    %action = "";
-    !(isDefined("%action"));
-    %target = "";
-    !(isDefined("%target"));
+    if (!($player.rolesPermissionCheckNoWarn("manageUsersBasic"))) {
+        return;
+    }
+    if (!(isDefined("%action"))) {
+        %action = "";
+    }
+    if (!(isDefined("%target"))) {
+        %target = "";
+    }
     defaultAction = %action @ adminGui;
     defaultTarget = %target @ adminGui;
-    open();
+    if (!(%action $= "")) {
+    }
+    if (!(%target $= "")) {
+        open();
+    }
     toggleVisibleState();
 };
 function adminGui::open(%this) {
@@ -34,7 +42,9 @@ function adminGui::open(%this) {
     1.makeFirstResponder();
     selectAll();
     %this.initMenu();
-    selectAdminAction(defaultAction);
+    if (!(%this SPC defaultAction $= "")) {
+        selectAdminAction(defaultAction);
+    }
     %this.onRefreshTargetsList();
 };
 function adminGui::close(%this, %unused) {
@@ -44,8 +54,9 @@ function adminGui::close(%this, %unused) {
 function adminGui::initMenu(%this, %unused) {
     %prevItem = getText();
     adminActionPopup;
-    %prevItem = "Message";
-    (%prevItem $= "");
+    if ((%prevItem $= "")) {
+        %prevItem = "Message";
+    }
     clear();
     %grey = "0 0 0 128";
     adminActionPopup;
@@ -89,11 +100,16 @@ function adminGui::initMenu(%this, %unused) {
     %prevItem.setText();
 };
 function adminGui::tryTarget(%this, %shape) {
-    return !(%this.isVisible());
-    return isVisible();
+    if (!(%this.isVisible())) {
+        return;
+    }
+    if (isVisible()) {
+        return adminGuiButtonConfirm;
+    }
     %name = admin::getTargetName(%shape);
-    %classname = admin::getFormattedClassName(%shape.getClassName());
-    isObject(%shape);
+    if (isObject(%shape)) {
+        %classname = admin::getFormattedClassName(%shape.getClassName());
+    }
     %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
     %targetName.setText();
@@ -124,10 +140,12 @@ function adminGui::onConfirm(%this) {
     adminBanUserName;
     %duration = getValue();
     adminGuiEditDuration;
-    %internalMsg = getValue();
-    adminGuiEditInternalMessage;
+    if ((adminGuiButtonCancel SPC %action $= "Ban")) {
+        %internalMsg = getValue();
+        adminGuiEditInternalMessage;
+    }
     %internalMsg = "";
-    (adminGuiButtonCancel SPC %action $= "Ban");
+    adminGuiButtonConfirm;
     warn(adminTargetsPopup @ getText() @ " " @ "with message:" @ " " @ %message);
     commandToServer('AdminAction', %action, getText(), %message, %banUser, %duration, %internalMsg);
 };
@@ -141,18 +159,24 @@ function adminGui::onGotTargetsList(%this, %theList) {
     clear();
     %num = getRecordCount(%theList);
     adminTargetsPopup;
-    error("apparently nobody is here. this is bad.");
-    return (1.0 < %num);
+    if ((1.0 < %num)) {
+        error("apparently nobody is here. this is bad.");
+        return;
+    }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    %entry = getRecord(%theList, %n);
-    (%num < %n);
-    %entry.add(%n);
-    %nextItem = %entry;
-    (adminTargetsPopup SPC %entry $= $gAdminGuiPrevMenuTarget);
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %entry = getRecord(%theList, %n);
+        %entry.add(%n);
+        if ((adminTargetsPopup SPC %entry $= $gAdminGuiPrevMenuTarget)) {
+            %nextItem = %entry;
+        }
+        %n = (1.0 + %n);
+    }
     sort();
-    defaultTarget.setText();
+    if (!(%this SPC defaultTarget $= "")) {
+        defaultTarget.setText();
+    }
     %nextItem.setText();
 };
 function adminTargetsPopup::onSelect(%this, %unused, %text) {
@@ -163,10 +187,16 @@ function adminTargetsPopup::onSelect(%this, %unused, %text) {
 $adminTargetsList = "";
 function clientCmdBuildTargetsList(%actionTagged, %item) {
     %action = detag(%actionTagged);
-    $adminTargetsList = "";
-    (%action $= "begin");
-    $adminTargetsList = %item;
-    ((%action $= "add") SPC $adminTargetsList $= "");
-    $adminTargetsList = $adminTargetsList @ "\n" @ %item;
-    $adminTargetsList.onGotTargetsList();
+    if ((%action $= "begin")) {
+        $adminTargetsList = "";
+    }
+    if ((%action $= "add")) {
+        if (($adminTargetsList $= "")) {
+            $adminTargetsList = %item;
+        }
+        $adminTargetsList = $adminTargetsList @ "\n" @ %item;
+    }
+    if ((%action $= "finish")) {
+        $adminTargetsList.onGotTargetsList();
+    }
 };

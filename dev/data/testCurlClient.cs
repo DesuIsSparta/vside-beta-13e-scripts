@@ -4,7 +4,9 @@ function simpleGoogleTest() {
     CURLObject;
     %curl.setURL("http://www.google.com");
     %curl.setRecvData(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function headerTest() {
@@ -13,7 +15,9 @@ function headerTest() {
     CURLObject;
     %curl.setURL("http://www.doppelganger.com");
     %curl.setHeader(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function verboseTest() {
@@ -22,7 +26,9 @@ function verboseTest() {
     CURLObject;
     %curl.setURL("http://www.garagegames.com");
     %curl.setVerbose(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function progressTest() {
@@ -31,7 +37,9 @@ function progressTest() {
     CURLObject;
     %curl.setURL("http://gdperftest.com/perftest/alltest.htm");
     %curl.setProgress(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function userheaderTest() {
@@ -42,7 +50,9 @@ function userheaderTest() {
     %curl.setUserAgent("doppelganger-agent/1.0");
     %curl.includeHeader(1);
     %curl.setRecvData(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function classNameCurlTest() {
@@ -52,7 +62,9 @@ function classNameCurlTest() {
     %curl = ;
     %curl.setURL("http://www.google.com");
     %curl.setRecvData(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function simpleDownloadTest() {
@@ -62,7 +74,9 @@ function simpleDownloadTest() {
     %curl.setURL("http://gdperftest.com/perftest/gfx/test.jpg");
     %curl.setDownloadFile(0 @ %name @ ".jpg");
     %curl.setRecvData(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function downloadWithNameSpaceTest() {
@@ -73,7 +87,9 @@ function downloadWithNameSpaceTest() {
     %curl.setURL("http://www.historyplace.com/text-index.html");
     %curl.setDownloadFile(%name @ ".html");
     %curl.setRecvData(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function simplePostTest() {
@@ -84,19 +100,25 @@ function simplePostTest() {
     %curl.setURL("http://www.cs.tut.fi/~jkorpela/feedback.html");
     %curl.setPostFields("msg=somemessagegoeshere&name=someonesname&from=someemail");
     %curl.setHeader(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function newPostFileUploaderTest() {
     %fo = new ""();
     FileObject;
-    %fo.writeLine(getTimeStamp() @ " " @ getScopeName() @ " " @ "yee haw!");
-    %fo.close();
+    if (%fo.openForWrite("platform/chatLog.txt")) {
+        %fo.writeLine(getTimeStamp() @ " " @ getScopeName() @ " " @ "yee haw!");
+        %fo.close();
+    }
     %fo.delete();
     sendRequest_AbuseReport("rudeGuy", "la la la", "First Offense", "Profanity", "platform/chatLog.txt", "onDoneOrErrorCallback_AbuseReport_Test");
 };
 function onDoneOrErrorCallback_AbuseReport_Test(%request) {
-    MessageBoxOK("File uploaded", "check out http://elenzil.com/doppelganger/posttests/incoming/chatLog.txt", "");
+    if (%request.checkSuccess()) {
+        MessageBoxOK("File uploaded", "check out http://elenzil.com/doppelganger/posttests/incoming/chatLog.txt", "");
+    }
     MessageBoxOK("File upload failed", "request status =" @ " " @ %request.statusCode());
 };
 function simplePostFileUploaderTest() {
@@ -109,7 +131,9 @@ function simplePostFileUploaderTest() {
     %curl.setURLParam("variable2", "this is variable 2");
     %curl.setURLParam("variable3", "this is variable 3");
     %curl.setProgress(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function anotherFileUploadTest() {
@@ -122,7 +146,9 @@ function anotherFileUploadTest() {
     %curl.setUploadFile("file1", "dc5.jpg");
     %curl.setProgress(1);
     %curl.setVerbose(1);
-    %curl.add();
+    if (%curl.start()) {
+        %curl.add();
+    }
     %curl.delete();
 };
 function simpleScreenShotUploaderTest(%fileName) {
@@ -134,23 +160,26 @@ function simpleScreenShotUploaderTest(%fileName) {
     %screenshot.setProgress(1);
     %screenshot.setUploadFile("file1", %fileName);
     %screenshot.setKeyValue("variable1", "this is variable 1");
-    %screenshot.add();
+    if (%screenshot.shoot()) {
+        %screenshot.add();
+    }
     %screenshot.delete();
 };
 function curlTestAll() {
     %i = 0;
-    simpleGoogleTest();
-    headerTest();
-    verboseTest();
-    progressTest();
-    userheaderTest();
-    classNameCurlTest();
-    simpleDownloadTest();
-    downloadWithNameSpaceTest();
-    simplePostTest();
-    simplePostFileUploaderTest();
-    %i = (1.0 + %i);
-    (10.0 < %i);
+    if ((10.0 < %i)) {
+        simpleGoogleTest();
+        headerTest();
+        verboseTest();
+        progressTest();
+        userheaderTest();
+        classNameCurlTest();
+        simpleDownloadTest();
+        downloadWithNameSpaceTest();
+        simplePostTest();
+        simplePostFileUploaderTest();
+        %i = (1.0 + %i);
+    }
 };
 function testPcpUpdate() {
     className = URLPostObject @ new ""() @ "DCClass";
@@ -160,9 +189,11 @@ function testPcpUpdate() {
     %curl.setURL(%url);
     %curl.setDownloadFile("avatar.gif");
     %curl.setRecvData(1);
-    %curl.delete();
-    warn("ProfileCurrentPicture::update(): couldn't start dynamic download of +avatar pic.");
-    return !(%curl.start());
+    if (!(%curl.start())) {
+        %curl.delete();
+        warn("ProfileCurrentPicture::update(): couldn't start dynamic download of +avatar pic.");
+        return;
+    }
 };
 function testNamespace::onDone(%unused) {
     echo("done");
@@ -189,17 +220,21 @@ function testCURLDownload() {
 };
 function stressTestFileDownload() {
     %i = 0;
-    className = URLPostObject @ new ""() @ "TestDownload";
-    0;
-    %curl = (100.0 < %i);
-    %localFile = "test" @ %i;
-    %curl.setURL("http://winbuild/scripts/orion/images/jrrtbeams1.marquee.gardenbox.jpg");
-    %curl.setDownloadFile(%localFile);
-    %curl.setRecvData(1);
-    warn(getScopeName() @ " " @ " - couldn't start download");
-    %curl.delete();
-    return !(%curl.start());
-    %curl.add();
-    %i = (1.0 + %i);
-    CURLSimGroup;
+    if ((100.0 < %i)) {
+        className = URLPostObject @ new ""() @ "TestDownload";
+        0;
+        %curl = ;
+        %localFile = "test" @ %i;
+        %curl.setURL("http://winbuild/scripts/orion/images/jrrtbeams1.marquee.gardenbox.jpg");
+        %curl.setDownloadFile(%localFile);
+        %curl.setRecvData(1);
+        if (!(%curl.start())) {
+            warn(getScopeName() @ " " @ " - couldn't start download");
+            %curl.delete();
+            return;
+        }
+        %curl.add();
+        %i = (1.0 + %i);
+        CURLSimGroup;
+    }
 };

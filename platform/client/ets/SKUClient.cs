@@ -1,10 +1,14 @@
 function Player::onGotSKUs(%this) {
     currentBaseActiveSkus = %this.getActiveSKUs() @ %this;
-    %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
-    %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
+    if (%this.hasMicrophone()) {
+        %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
+        %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
+    }
     %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0);
     %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 0, 0);
-    return !((%this.hasMicrophone() SPC %this.getShapeName() $= $Player::Name));
+    if (!(%this.getShapeName() $= $Player::Name)) {
+        return;
+    }
     %skus = %this.getActiveSKUs();
     %gender = %this.getGender();
     %outfitName = $gOutfits.get("currentOutfit");
@@ -12,96 +16,170 @@ function Player::onGotSKUs(%this) {
     $gOutfits.put(SkuManager @ %gender @ %outfitName, %skus.filterSkusForClothing());
     $Player::IsInHelpMeMode = %this.isInHelpMeMode();
     SkuManager;
-    refreshAvailableStyles();
+    if (isObject()) {
+    }
+    if (isVisible()) {
+        refreshAvailableStyles();
+    }
     %instrumentGenre = "";
     SalonStyleSelector;
-    %usingInstrument = 0;
-    isObject();
-    %i = (InstrumentRegistryClient - getInstrumentCount());
-    1.0;
-    %instrument = %i.getInstrumentByIndex();
-    InstrumentRegistryClient;
-    "instrument".open(name);
-    %instrumentGenre = genre;
-    %instrument;
-    %usingInstrument = 1;
-    %instrument;
-    %i = (1.0 - %i);
-    ApplauseMeterGui;
-    closingFromServer = (ApplauseMeterGui SPC applauseMeterUse $= "instrument") @ 1 @ ApplauseMeterGui;
-    !(%usingInstrument);
-    close();
+    if (isObject()) {
+        %usingInstrument = 0;
+        ApplauseMeterGui;
+        %i = (InstrumentRegistryClient - getInstrumentCount());
+        1.0;
+        if ((0.0 >= %i)) {
+        }
+        if (!(%usingInstrument)) {
+            %instrument = %i.getInstrumentByIndex();
+            InstrumentRegistryClient;
+            if (hasWord(%skus, skus)) {
+                "instrument".open(name);
+                %instrumentGenre = genre;
+                %instrument;
+                %usingInstrument = 1;
+                %instrument;
+            }
+            %i = (1.0 - %i);
+            ApplauseMeterGui;
+            if ((0.0 >= %i)) {
+            }
+        }
+        if (!(%usingInstrument)) {
+        }
+        if ((ApplauseMeterGui SPC applauseMeterUse $= "instrument")) {
+            closingFromServer = !(%usingInstrument) @ 1 @ ApplauseMeterGui;
+            SalonStyleSelector @ %gender @ %instrument;
+            close();
+        }
+    }
     %propSku = %this.getActivePropSku();
     ApplauseMeterGui;
     %currentGenre = %this.getGenre();
-    !(%usingInstrument);
-    %propGenre = %currentGenre;
-    isPropGenre(%currentGenre);
-    %propGenre = "y";
-    ((0.0 >= %i) SPC %propSku $= "");
+    SalonStyleSelector;
+    if ((%propSku $= "")) {
+        if (isPropGenre(%currentGenre)) {
+            %propGenre = %currentGenre;
+        }
+        %propGenre = "y";
+    }
     %propGenre = %propSku.get();
     PropGenreMap;
-    error(getScopeName() @ " " @ "- could not find genre for sku" @ " " @ %propSku @ " " @ "using y." @ " " @ getTrace());
-    %propGenre = "y";
-    (hasWord(%skus, skus) SPC %propGenre $= "");
+    if ((%propGenre $= "")) {
+        error(getScopeName() @ " " @ "- could not find genre for sku" @ " " @ %propSku @ " " @ "using y." @ " " @ getTrace());
+        %propGenre = "y";
+    }
     %currentGenreIsInstrumentGenre = %currentGenre.isInstrumentGenre();
     InstrumentRegistryClient;
     %currentGenreIsPropGenre = isPropGenre(%currentGenre);
-    !(%usingInstrument) @ %gender @ %instrument;
-    commandToServer('EnterSpecialGenre', %instrumentGenre);
-    commandToServer('ExitSpecialGenre', %currentGenre);
-    commandToServer('EnterSpecialGenre', %propGenre);
-    commandToServer('ExitSpecialGenre', %propGenre);
-    commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
-    commandToServer('setGenre', $UserPref::Player::Genre);
+    if (!(%instrumentGenre $= "")) {
+    }
+    if (!(%currentGenre $= %instrumentGenre)) {
+        commandToServer('EnterSpecialGenre', %instrumentGenre);
+    }
+    if ((%propSku $= "")) {
+    }
+    if (%currentGenreIsInstrumentGenre) {
+        commandToServer('ExitSpecialGenre', %currentGenre);
+    }
+    if (!(%propSku $= "")) {
+    }
+    if ((%instrumentGenre $= "")) {
+    }
+    if (!(%currentGenreIsPropGenre)) {
+        commandToServer('EnterSpecialGenre', %propGenre);
+    }
+    if ((%propSku $= "")) {
+    }
+    if (%currentGenreIsPropGenre) {
+        commandToServer('ExitSpecialGenre', %propGenre);
+    }
+    if (!(%propSku $= "")) {
+    }
+    if (%currentGenreIsPropGenre) {
+    }
+    if (!(%currentGenre $= %propGenre)) {
+        commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
+    }
+    if ((%propSku $= "")) {
+        if (%currentGenreIsPropGenre) {
+        }
+        if (%currentGenreIsInstrumentGenre) {
+        }
+    }
+    if (!(%instrumentGenre $= "")) {
+    }
+    if (!(%currentGenre $= $UserPref::Player::Genre)) {
+        commandToServer('setGenre', $UserPref::Player::Genre);
+    }
     updateHelpMeModeMenu();
     updateModeIcon();
     %this.resetSkuEffectsClient();
     %n = (1.0 - getWordCount(%skus));
     MessageHud;
-    %sku = getWord(%skus, %n);
-    (0.0 >= %n);
-    trySkuNotification(%sku);
-    %this.trySkuEffectsClient(%sku);
-    %n = (1.0 - %n);
-    !(hasWord(prevActiveSkus, %sku));
+    if ((0.0 >= %n)) {
+        %sku = getWord(%skus, %n);
+        if (!(hasWord(prevActiveSkus, %sku))) {
+            trySkuNotification(%sku);
+        }
+        %this.trySkuEffectsClient(%sku);
+        %n = (1.0 - %n);
+        %this;
+    }
     prevActiveSkus = (0.0 >= %n) @ %this.getActiveSKUs() @ %this;
-    %this;
 };
 function Player::applySkuBadge(%this, %skunum) {
     %prevSkuBadge = gGetField(%this);
     prevSkuBadge;
-    return (%skunum == %prevSkuBadge);
+    if ((%skunum == %prevSkuBadge)) {
+        return;
+    }
     gSetField(%this, %skunum);
     %this.updateMapIcon();
     %hudCtrl = hudCtrl;
     %this;
-    return !(isObject(%hudCtrl));
-    trySkuNotification(%skunum);
-    badge.setVisible(0);
-    return %hudCtrl;
+    if (!(isObject(%hudCtrl))) {
+        return prevSkuBadge;
+    }
+    if (($player == %this)) {
+        trySkuNotification(%skunum);
+    }
+    if ((0.0 == %skunum)) {
+    }
+    if (%this.rolesPermissionCheckNoWarn("hideBadges")) {
+        if (isObject(badge)) {
+            badge.setVisible(0);
+        }
+        return %hudCtrl;
+    }
     %si = %skunum.findBySku();
     SkuManager;
-    return !(isObject(%si));
-    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
-    0;
-    horizSizing = %hudCtrl @ !(isObject(badge)) @ "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "64 64";
-    minExtent = "64 64";
-    sluggishness = -1;
-    visible = 1;
-    %ctrl = ;
-    %hudCtrl.add(%ctrl);
-    badge = %ctrl @ %hudCtrl;
+    if (!(isObject(%si))) {
+        return;
+    }
+    if (!(isObject(badge))) {
+        profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
+        0;
+        horizSizing = %hudCtrl @ "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "64 64";
+        minExtent = "64 64";
+        sluggishness = -1;
+        visible = 1;
+        %ctrl = ;
+        %hudCtrl.add(%ctrl);
+        badge = %ctrl @ %hudCtrl;
+    }
     %bitmap = getBitmapFilename("badge", getWord(%si.getTxtrNames(), 0));
     badge.setBitmap(%bitmap);
     badge.setVisible(1);
 };
 $gSkuNotificationsMap = 0;
 function initSkuNotificationsMap() {
-    return isObject($gSkuNotificationsMap);
+    if (isObject($gSkuNotificationsMap)) {
+        return;
+    }
     $gSkuNotificationsMap = safeNewScriptObject("StringMap", "", 1);
     $gSkuNotificationsMap.put(17002, "displayMicrophoneHelp();");
     $gSkuNotificationsMap.put(27002, "displayMicrophoneHelp();");
@@ -109,7 +187,9 @@ function initSkuNotificationsMap() {
 function trySkuNotification(%skunum) {
     initSkuNotificationsMap();
     %cmd = $gSkuNotificationsMap.get(%skunum);
-    eval(%cmd);
+    if (!(%cmd $= "")) {
+        eval(%cmd);
+    }
 };
 function Player::resetSkuEffectsClient(%this) {
     %this.staggerSetAmount(0);
@@ -117,13 +197,23 @@ function Player::resetSkuEffectsClient(%this) {
 function Player::trySkuEffectsClient(%this, %sku) {
     %si = %sku.findBySku();
     SkuManager;
-    %this.staggerSetAmount(0.1);
-    %this.staggerSetAmount(0.05);
-    %this.staggerSetAmount(0.01);
+    if (0) {
+    }
+    if (hasWord(tags, "stagger3")) {
+        %this.staggerSetAmount(0.1);
+    }
+    if (hasWord(tags, "stagger2")) {
+        %this.staggerSetAmount(0.05);
+    }
+    if (hasWord(tags, "stagger1")) {
+        %this.staggerSetAmount(0.01);
+    }
 };
 function SkuItem::getBitmapPath(%this) {
-    %ret = getBitmapFilename(skuType, getWord(%this.getTxtrNames(), 1));
-    %this;
+    if ((%this SPC skuType $= "swatch")) {
+        %ret = getBitmapFilename(skuType, getWord(%this.getTxtrNames(), 1));
+        %this;
+    }
     %ret = getBitmapFilename(skuType, getWord(%this.getTxtrNames(), 0));
     %this;
 };

@@ -371,24 +371,31 @@ function setupMessages() {
 };
 $gMessagesSeen = "";
 function hasMessageBeenSeenThisSession(%msgID) {
-    %seen = 0;
-    1;
-    $gMessagesSeen = !((!(%seen) SPC $gMessagesSeen $= "")) @ $gMessagesSeen @ "\t";
-    (0.0 >= findField($gMessagesSeen, %msgID));
-    $gMessagesSeen = $gMessagesSeen @ %msgID;
+    %seen = (0.0 >= findField($gMessagesSeen, %msgID)) ? 1 : 0;
+    if (!(%seen)) {
+        if (!($gMessagesSeen $= "")) {
+            $gMessagesSeen = $gMessagesSeen @ "\t";
+        }
+        $gMessagesSeen = $gMessagesSeen @ %msgID;
+    }
     return %seen;
 };
 function msgCatOK(%msgID) {
     %body = %msgID[$MsgCat @ %msgID];
-    error(getScopeName() @ " " @ "- no body for message" @ " " @ %msgID);
-    return (%body $= "");
+    if ((%body $= "")) {
+        error(getScopeName() @ " " @ "- no body for message" @ " " @ %msgID);
+        return;
+    }
     %title = %msgID[$MsgCatTitles @ %msgID];
-    error(getScopeName() @ " " @ "- no title for message" @ " " @ %msgID);
-    %title = "Guess What?";
-    (%title $= "");
+    if ((%title $= "")) {
+        error(getScopeName() @ " " @ "- no title for message" @ " " @ %msgID);
+        %title = "Guess What?";
+    }
     MessageBoxOK(%title, %body, "");
 };
 function msgCatOKOnceThisSession(%msgID) {
-    return hasMessageBeenSeenThisSession(%msgID);
+    if (hasMessageBeenSeenThisSession(%msgID)) {
+        return;
+    }
     msgCatOK(%msgID);
 };

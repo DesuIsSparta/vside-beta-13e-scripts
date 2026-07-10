@@ -8,14 +8,24 @@ function addLockableDoor(%contiguousSpaceName, %doorName, %initiallyLocked, %gro
     $gDoorsNum[$gDoorInitLocked @ $gDoorsNum] = %initiallyLocked;
     $gDoorsNum[$gDoorVURL @ $gDoorsNum] = %vurl;
     $gDoorsNum = (1.0 + $gDoorsNum);
-    eval(!((!(("" $= %zoneName)) SPC "" $= %vurl)) @ %zoneName @ ".vurl = \"" @ %vurl @ "\";");
+    if (!("" $= %zoneName)) {
+    }
+    if (!("" $= %vurl)) {
+        eval(%zoneName @ ".vurl = \"" @ %vurl @ "\";");
+    }
 };
 function findLockableDoorIndexByZoneName(%zoneName) {
     %found = -(1.0);
     %n = 0;
-    %found = %n;
-    ((-(1.0) == %found) SPC %n[$gDoorZoneNames @ %n] $= %zoneName);
-    %n = (1.0 + %n);
-    ($gDoorsNum < %n);
+    if (($gDoorsNum < %n)) {
+    }
+    if ((-(1.0) == %found)) {
+        if ((%n[$gDoorZoneNames @ %n] $= %zoneName)) {
+            %found = %n;
+        }
+        %n = (1.0 + %n);
+        if (($gDoorsNum < %n)) {
+        }
+    }
     return %found;
 };

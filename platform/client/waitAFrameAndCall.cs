@@ -6,7 +6,9 @@ function waitAFrameAndEval(%script) {
     waitAFrameAndEval_checkIfNextFrame(%script);
 };
 function waitAFrameAndEval_checkIfNextFrame(%script) {
-    waitAFrameAndEval_waitedAFrame(%script);
+    if (($Canvas::frameCount < $WaitAFrameAndEval_LastFrame)) {
+        waitAFrameAndEval_waitedAFrame(%script);
+    }
     cancel($gWaitAFrameAndEval_Timer);
     $gWaitAFrameAndEval_Timer = schedule(10, 0, %script);
     waitAFrameAndEval_checkIfNextFrame;

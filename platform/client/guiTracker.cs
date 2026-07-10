@@ -1,28 +1,41 @@
 function GuiTracker::updateLocation(%this, %guiJustOpened) {
-    %sched = gGetField(%this, "guiTrackerUpdateLocation");
-    inTransit;
-    cancel(%sched);
-    %sched = %this.schedule(200, %guiJustOpened);
-    updateLocation;
-    gSetField(%this, "guiTrackerUpdateLocation", %sched);
-    return %this;
-    previouslyOpened = %this @ currentlyOpen @ %this;
-    (%this SPC destination.getId() $= %guiJustOpened.getId());
-    currentlyOpen = (%this SPC destination $= "") @ %guiJustOpened @ %this;
-    destination = "" @ %this;
+    if (inTransit) {
+        %sched = gGetField(%this, "guiTrackerUpdateLocation");
+        %this;
+        cancel(%sched);
+        %sched = %this.schedule(200, %guiJustOpened);
+        updateLocation;
+        gSetField(%this, "guiTrackerUpdateLocation", %sched);
+        return;
+    }
+    if ((%this SPC destination $= "")) {
+    }
+    if ((%this SPC destination.getId() $= %guiJustOpened.getId())) {
+        previouslyOpened = %this @ currentlyOpen @ %this;
+        currentlyOpen = %guiJustOpened @ %this;
+        destination = "" @ %this;
+    }
 };
 function GuiTracker::setDestination(%this, %destination) {
     destination = %destination @ %this;
 };
 function GuiTracker::goBack(%this) {
     inTransit = 1 @ %this;
-    currentlyOpen.close(0);
-    previouslyOpened.open();
+    if (!(%this SPC currentlyOpen $= "")) {
+    }
+    if (!(%this SPC currentlyOpen.getName() $= "playGui")) {
+        currentlyOpen.close(0);
+    }
+    if (!(%this SPC previouslyOpened $= "")) {
+    }
+    if (!(%this SPC previouslyOpened.getName() $= "playGui")) {
+        previouslyOpened.open();
+    }
     inTransit = %this @ 0 @ %this;
-    !((%this SPC previouslyOpened.getName() $= "playGui"));
+    %this;
 };
 function GuiTracker::canGoBack(%this) {
-    return !((%this SPC previouslyOpened $= ""));
+    return !(%this SPC previouslyOpened $= "");
 };
 function GuiTracker::Initialize(%this) {
     currentlyOpen = "" @ %this;
@@ -30,5 +43,7 @@ function GuiTracker::Initialize(%this) {
     destination = "" @ %this;
     inTransit = 0 @ %this;
 };
-new ();
-Initialize();
+if (!(isObject())) {
+    new GuiControl(GuiTracker);
+    Initialize();
+}

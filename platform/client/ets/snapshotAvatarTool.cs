@@ -15,8 +15,10 @@ function snapshotAvatarTool::close(%this) {
     return 1;
 };
 function snapshotAvatarToolActiveRegion::initStuff(%this) {
-    warn("Snapshot", "initstuff: $player invalid");
-    return !(isObject($player));
+    if (!(isObject($player))) {
+        warn("Snapshot", "initstuff: $player invalid");
+        return;
+    }
     %this.setSimObject($player);
     cameraXRotMin = -(0.3) @ %this;
     cameraXRotMax = 0.1 @ %this;
@@ -43,15 +45,19 @@ function snapshotAvatarTool::doSnap(%this) {
 };
 function snapshotAvatarTool::waitForNextFrameToSnap(%this) {
     cancel(gGetField(%this));
-    gSetField(%this, %this.schedule(10, "waitForNextFrameToSnap"));
-    return waitForFrameSchedule;
+    if ((gGetField(%this) <= $Canvas::frameCount)) {
+        gSetField(%this, %this.schedule(10, "waitForNextFrameToSnap"));
+        return waitForFrameSchedule;
+    }
     %this.doSnap2();
 };
 function snapshotAvatarTool::doSnap2(%this) {
     %snapshot = snapshot::snapAndUpControlRegion($player.getShapeName(), "y");
     snapshotAvatarToolActiveRegion;
-    error("Snapshot", "Problem taking snapshot");
-    return !(isObject(%snapshot));
+    if (!(isObject(%snapshot))) {
+        error("Snapshot", "Problem taking snapshot");
+        return;
+    }
     saveObject = %this @ %snapshot;
     %snapshot.setCompletedCallback("snapshotAvatarToolonCompleted");
     0.setVisible();
@@ -67,9 +73,15 @@ function snapshotAvatarTool::onProgress(%this, %snapshot) {
 function snapshotAvatarToolonCompleted(%request, %result) {
     %snapshot = saveObject;
     %request;
-    1.setVisible();
-    0.setVisible();
-    gotoWebPage(visitWhenDoneUrl);
+    if ((0.0 == %result)) {
+        1.setVisible();
+        0.setVisible();
+        if (!(%snapshot SPC visitWhenDoneUrl $= "")) {
+        }
+        if ($UserPref::Snapshots::View) {
+            gotoWebPage(visitWhenDoneUrl);
+        }
+    }
     1.setVisible();
     0.setVisible();
 };

@@ -1,6 +1,5 @@
-className = littlelight @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(littlelight) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 1.2;
 Brightness = 0.574713;
 Colour = "0.952941 0.564706 0.529412 1.000000";

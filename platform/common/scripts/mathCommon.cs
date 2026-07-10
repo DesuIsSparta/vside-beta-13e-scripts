@@ -7,8 +7,9 @@ function Math::isInRange(%pos1, %pos2, %range) {
 };
 function Math::isInLineOfSight(%src, %trg, %exempt, %checkForPlayers, %onClient) {
     %mask = (0 | ($TypeMasks::WaterObjectType | ($TypeMasks::VehicleObjectType | ($TypeMasks::ItemObjectType | ($TypeMasks::StaticShapeObjectType | ($TypeMasks::InteriorObjectType | ($TypeMasks::TerrainObjectType | 0)))))));
-    %mask = ($TypeMasks::PlayerObjectType | %mask);
-    %checkForPlayers;
+    if (%checkForPlayers) {
+        %mask = ($TypeMasks::PlayerObjectType | %mask);
+    }
     return !(containerRayCast(%src, %trg, %mask, %exempt, %onClient));
 };
 function SceneObject::localToWorldTransform(%this, %dry) {
@@ -74,7 +75,9 @@ $gSecondsPerMinute = 60;
 $gSecondsPerHour = ($gSecondsPerMinute * 60.0);
 $gSecondsPerDay = ($gSecondsPerHour * 24.0);
 function secondsToDaysHoursMinutesSeconds(%seconds) {
-    return %seconds @ " " @ "seconds";
+    if ((1.0 < %seconds)) {
+        return %seconds @ " " @ "seconds";
+    }
     %days = mFloor(($gSecondsPerDay / %seconds));
     %seconds = (($gSecondsPerDay * %days) - %seconds);
     %hours = mFloor(($gSecondsPerHour / %seconds));
@@ -83,26 +86,28 @@ function secondsToDaysHoursMinutesSeconds(%seconds) {
     %seconds = (($gSecondsPerMinute * %minutes) - %seconds);
     %ret = "";
     %delim = "";
-    %ret = (0.0 > %days) @ %ret @ %delim @ %days @ " " @ "day";
-    %ret = "s" @ "";
-    (1.0 > %days);
-    %delim = ", ";
-    %ret;
-    %ret = (0.0 > %hours) @ %ret @ %delim @ %hours @ " " @ "hour";
-    %ret = "s" @ "";
-    (1.0 > %hours);
-    %delim = ", ";
-    %ret;
-    %ret = (0.0 > %minutes) @ %ret @ %delim @ %minutes @ " " @ "minute";
-    %ret = "s" @ "";
-    (1.0 > %minutes);
-    %delim = ", ";
-    %ret;
-    %delim = " and ";
-    !(((0.0 > %seconds) SPC %delim $= ""));
-    %ret = %ret @ %delim @ %seconds @ " " @ "second";
-    %ret = "s" @ "";
-    (1.0 > %seconds);
+    if ((0.0 > %days)) {
+        %ret = %ret @ %delim @ %days @ " " @ "day";
+        %ret = %ret @ (1.0 > %days) ? "s" : "";
+        %delim = ", ";
+    }
+    if ((0.0 > %hours)) {
+        %ret = %ret @ %delim @ %hours @ " " @ "hour";
+        %ret = %ret @ (1.0 > %hours) ? "s" : "";
+        %delim = ", ";
+    }
+    if ((0.0 > %minutes)) {
+        %ret = %ret @ %delim @ %minutes @ " " @ "minute";
+        %ret = %ret @ (1.0 > %minutes) ? "s" : "";
+        %delim = ", ";
+    }
+    if ((0.0 > %seconds)) {
+        if (!(%delim $= "")) {
+            %delim = " and ";
+        }
+        %ret = %ret @ %delim @ %seconds @ " " @ "second";
+        %ret = %ret @ (1.0 > %seconds) ? "s" : "";
+    }
     return %ret;
 };
 function secondsToHHMMSS(%seconds) {
@@ -121,15 +126,19 @@ function secondsToHHMMSS(%seconds) {
     return %ret;
 };
 function SMHDtoSeconds(%seconds, %minutes, %hours, %days) {
-    %days = 0;
-    !(isDefined("%days"));
-    %hours = 0;
-    !(isDefined("%hours"));
-    %minutes = 0;
-    !(isDefined("%minutes"));
-    %seconds = 0;
-    !(isDefined("%seconds"));
-    error(getScopeName() @ " " @ "- no arguments." @ " " @ getTrace());
+    if (!(isDefined("%days"))) {
+        %days = 0;
+    }
+    if (!(isDefined("%hours"))) {
+        %hours = 0;
+    }
+    if (!(isDefined("%minutes"))) {
+        %minutes = 0;
+    }
+    if (!(isDefined("%seconds"))) {
+        %seconds = 0;
+        error(getScopeName() @ " " @ "- no arguments." @ " " @ getTrace());
+    }
     %ret = (%seconds + ((60.0 * %minutes) + ((60.0 * (60.0 * %hours)) + (24.0 * (60.0 * (60.0 * %days))))));
     return %ret;
 };
@@ -143,8 +152,12 @@ function daysToSeconds(%val) {
     return (24.0 * (60.0 * (60.0 * %val)));
 };
 function min(%a, %b) {
+    if ((%b < %a)) {
+    }
     return %b;
 };
 function max(%a, %b) {
+    if ((%b > %a)) {
+    }
     return %b;
 };

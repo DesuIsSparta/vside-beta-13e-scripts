@@ -1,6 +1,8 @@
 function PlantDetailsGui::open(%this) {
     %this.ensureAdded();
-    %this.setVisible(1);
+    if (!(%this.isVisible())) {
+        %this.setVisible(1);
+    }
     %this.focusAndRaise();
 };
 function PlantDetailsGui::close(%this) {
@@ -21,14 +23,18 @@ function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %curr
     faqURL = PlantProgressBackgroundBMP @ %faqURL @ %this;
 };
 function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL) {
-    %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsHappy"];
-    (%status $= "HAPPY");
-    %info = %currentState[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsFullyGrown"];
-    (%totalStates == %currentState);
-    %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDry"];
-    (%status $= "DRY");
-    %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
-    (%status $= "DEAD");
+    if ((%status $= "HAPPY")) {
+        %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsHappy"];
+        if ((%totalStates == %currentState)) {
+            %info = %currentState[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsFullyGrown"];
+        }
+    }
+    if ((%status $= "DRY")) {
+        %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDry"];
+    }
+    if ((%status $= "DEAD")) {
+        %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
+    }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
     open();
     %plantSKU.showDetails(%plantName, %info, %currentState, %totalStates, %faqURL);

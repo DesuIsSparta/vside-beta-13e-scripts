@@ -1,68 +1,118 @@
 function onMissionDownloadPhase1(%unused, %unused) {
-    0.setValue();
-    "Loading data".setValue();
-    0.setValue();
+    if (isObject()) {
+        0.setValue();
+        "Loading data".setValue();
+    }
+    if (isObject()) {
+        0.setValue();
+    }
 };
 function onPhase1Progress(%progress) {
-    (0.33 * %progress).setValue();
-    (0.33 * %progress).setValue();
+    if (isObject()) {
+        (0.33 * %progress).setValue();
+    }
+    if (isObject()) {
+        (0.33 * %progress).setValue();
+    }
 };
 function onPhase1Complete() {
-    0.33.setValue();
+    if (isObject()) {
+        0.33.setValue();
+    }
 };
 function onMissionDownloadPhase2() {
     $Client::MissionLoadTimeStart = getSimTime();
-    "Loading objects".setValue();
-    "Loading objects".setValue();
+    if (isObject()) {
+        "Loading objects".setValue();
+    }
+    if (isObject()) {
+        "Loading objects".setValue();
+    }
 };
 function onPhase2ProgressUpdateStatusDisplay(%progress) {
-    (0.33 + (0.33 * %progress)).setValue();
-    (0.33 + (0.33 * %progress)).setValue();
+    if (isObject()) {
+        (0.33 + (0.33 * %progress)).setValue();
+    }
+    if (isObject()) {
+        (0.33 + (0.33 * %progress)).setValue();
+    }
 };
 function onPhase2Complete() {
 };
 function onFileChunkReceived(%fileName, %ofs, %size) {
-    (%size / %ofs).setValue();
-    LoadingPBController @ LoadingProgressTxt @ "Downloading " @ %fileName @ "...".setValue();
-    (%size / %ofs).setValue();
+    if (isObject()) {
+        (%size / %ofs).setValue();
+        LoadingPBController @ LoadingProgressTxt @ "Downloading " @ %fileName @ "...".setValue();
+    }
+    if (isObject()) {
+        (%size / %ofs).setValue();
+    }
 };
 function onMissionDownloadPhase3() {
-    "Lighting".setValue();
+    if (isObject()) {
+        "Lighting".setValue();
+    }
 };
 function onPhase3Progress(%progress) {
-    (0.66 + (0.33 * %progress)).setValue();
-    (0.66 + (0.33 * %progress)).setValue();
+    if (isObject()) {
+        (0.66 + (0.33 * %progress)).setValue();
+    }
+    if (isObject()) {
+        (0.66 + (0.33 * %progress)).setValue();
+    }
 };
 function onPhase3Complete() {
-    1.setValue();
-    1.setValue();
+    if (isObject()) {
+        1.setValue();
+    }
+    if (isObject()) {
+        1.setValue();
+    }
     $lightingMission = 0;
     TransitionPBController;
 };
 function onMissionDownloadComplete() {
     InitClientSittingSystem();
-    startDFZone();
+    if (isFunction("Using_DF")) {
+    }
+    if (Using_DF()) {
+        startDFZone();
+    }
     setMissionLoaded(1);
 };
 addMessageCallback('MsgLoadInfo');
 addMessageCallback('MsgLoadDescripition');
 addMessageCallback('MsgLoadInfoDone');
-addMessageCallback('MsgDFZoneName');
+if (isFunction("Using_DF")) {
+}
+if (Using_DF()) {
+    addMessageCallback('MsgDFZoneName');
+}
 function handleLoadInfoMessage(%unused, %msgString) {
     0.setVisible();
-    0.setTransitioning();
-    "LoadingGui".setContent();
-    %line = 0;
-    Canvas;
-    qLine = LoadingGui @ (qLineCount < %line) @ "" @ %line @ LoadingGui;
-    LoadingGui;
-    %line = (1.0 + %line);
-    $StandAlone;
-    qLineCount = (qLineCount < %line) @ 0 @ LoadingGui;
-    LoadingGui;
-    1.setTransitioning();
-    "LoadingGui".setContent();
-    $TransitionScreenshot.setScreenshotBitmap();
+    if (isAwake()) {
+    }
+    if (isAwake()) {
+    }
+    if ($StandAlone) {
+        0.setTransitioning();
+        "LoadingGui".setContent();
+        %line = 0;
+        Canvas;
+        if ((qLineCount < %line)) {
+            qLine = LoadingGui @ LoadingGui @ "" @ %line @ LoadingGui;
+            LoginGui;
+            %line = (1.0 + %line);
+            WorldMap;
+        }
+        qLineCount = (qLineCount < %line) @ 0 @ LoadingGui;
+        LoadingGui;
+    }
+    if (isAwake()) {
+        1.setTransitioning();
+        "LoadingGui".setContent();
+        $TransitionScreenshot.setScreenshotBitmap();
+    }
 };
 function handleLoadDescriptionMessage(%unused, %msgString) {
     qLine = %msgString @ LoadingGui @ qLineCount @ LoadingGui;
@@ -70,13 +120,19 @@ function handleLoadDescriptionMessage(%unused, %msgString) {
     1.0;
     %text = "<spush><font:Arial:16>";
     %line = 0;
-    %text = 1.0 @ ((LoadingGui - qLineCount) < %line) @ %text @ %line @ LoadingGui @ qLine @ " ";
-    %line = (1.0 + %line);
+    if (((LoadingGui - qLineCount) < %line)) {
+        %text = 1.0 @ %text @ %line @ LoadingGui @ qLine @ " ";
+        %line = (1.0 + %line);
+    }
     %text = 1.0 @ ((LoadingGui - qLineCount) < %line) @ %text @ %line @ LoadingGui @ qLine @ "<spop>";
 };
 function handleLoadInfoDoneMessage(%unused, %msgString) {
 };
 function handleMsgDFZoneNameMessage(%unused, %msgString) {
-    return !(Using_DF());
+    if (!(isFunction("Using_DF"))) {
+    }
+    if (!(Using_DF())) {
+        return;
+    }
     setDFZoneName(%msgString);
 };

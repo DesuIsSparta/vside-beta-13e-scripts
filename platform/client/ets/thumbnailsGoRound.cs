@@ -1,6 +1,7 @@
 function newThumbnailsGoRound_base(%name) {
-    %name = "";
-    !(isDefined("%name"));
+    if (!(isDefined("%name"))) {
+        %name = "";
+    }
     %name = ETSNonModalProfile;
     position = GuiControl @ new %name() @ "0 0";
     0;
@@ -73,42 +74,49 @@ function thumbnailsGoRound::calcMaximumThumbHeight(%this) {
 function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container) {
     %container.deleteMembers();
     %m = 0;
-    %dx = (mLilThumbHeight * (%this + mLilThumbPadding));
-    %this;
-    %posX = (1.0 + (%dx + getWord(%container.getExtent(), 0)));
-    -(1.0);
-    %posY = (mLilThumbHeight - getWord(%container.getExtent(), 1));
-    %this;
-    %dx = (%this + mLilThumbPadding);
-    mLilThumbHeight;
-    %posX = mLilThumbPadding;
-    %this;
-    %posY = 0;
-    %this;
-    %n = (%this - mLilThumbsNumAcross);
-    1.0;
-    position = GuiControl @ new ""() @ %posX @ " " @ %posY;
-    0;
-    basePosition = (0.0 == %m) @ (0.0 >= %n) @ %posX @ " " @ %posY;
-    (2.0 < %m);
-    extent = %this @ mLilThumbHeight @ " " @ %this @ mLilThumbHeight;
-    sluggishness = 0.3;
-    %ctrl = ;
-    %container.add(%ctrl);
-    %posX = (%dx + %posX);
-    %n = (1.0 - %n);
-    %m = (1.0 + %m);
-    (0.0 >= %n);
+    if ((2.0 < %m)) {
+        if ((0.0 == %m)) {
+            %dx = (mLilThumbHeight * (%this + mLilThumbPadding));
+            %this;
+            %posX = (1.0 + (%dx + getWord(%container.getExtent(), 0)));
+            -(1.0);
+            %posY = (mLilThumbHeight - getWord(%container.getExtent(), 1));
+            %this;
+        }
+        %dx = (%this + mLilThumbPadding);
+        mLilThumbHeight;
+        %posX = mLilThumbPadding;
+        %this;
+        %posY = 0;
+        %this;
+        %n = (%this - mLilThumbsNumAcross);
+        1.0;
+        if ((0.0 >= %n)) {
+            position = GuiControl @ new ""() @ %posX @ " " @ %posY;
+            0;
+            basePosition = %posX @ " " @ %posY;
+            extent = %this @ mLilThumbHeight @ " " @ %this @ mLilThumbHeight;
+            sluggishness = 0.3;
+            %ctrl = ;
+            %container.add(%ctrl);
+            %posX = (%dx + %posX);
+            %n = (1.0 - %n);
+        }
+        %m = (1.0 + %m);
+        (0.0 >= %n);
+    }
     %num = %container.getCount();
     (2.0 < %m);
     %n = 0;
-    %ctrl = %container.getObject(%n);
-    (%num < %n);
-    %this.rebuildContainer_LilThumb(%ctrl);
-    %this.addWidget_LilThumbButton(%ctrl);
-    mInPosition = mClickableThumbs @ %n @ %ctrl;
-    %this;
-    %n = (1.0 + %n);
+    if ((%num < %n)) {
+        %ctrl = %container.getObject(%n);
+        %this.rebuildContainer_LilThumb(%ctrl);
+        if (mClickableThumbs) {
+            %this.addWidget_LilThumbButton(%ctrl);
+        }
+        mInPosition = %this @ %n @ %ctrl;
+        %n = (1.0 + %n);
+    }
     mOldestThumbnail = (%num < %n) @ (1.0 - %container.getCount()) @ %container;
 };
 function thumbnailsGoRound::getThumbnailIndexInSlot(%this, %slotIndex) {
@@ -118,9 +126,10 @@ function thumbnailsGoRound::getThumbnailIndexInSlot(%this, %slotIndex) {
     1.0;
     %n = 0;
     %num;
-    %ndx = (%num % (1.0 + %ndx));
-    (%slotIndex < %n);
-    %n = (1.0 + %n);
+    if ((%slotIndex < %n)) {
+        %ndx = (%num % (1.0 + %ndx));
+        %n = (1.0 + %n);
+    }
     return %ndx;
 };
 function thumbnailsGoRound::getThumbnailInSlot(%this, %slotIndex) {
@@ -130,9 +139,11 @@ function thumbnailsGoRound::getThumbnailInSlot(%this, %slotIndex) {
 };
 function thumbnailsGoRound::onRebuilt(%this) {
     %n = 0;
-    %this.tick();
-    %n = (1.0 + %n);
-    ((%this * mLilThumbsNumAcross) < %n);
+    if (((%this * mLilThumbsNumAcross) < %n)) {
+        %this.tick();
+        %n = (1.0 + %n);
+        2.0;
+    }
 };
 function thumbnailsGoRound::tick(%this) {
     cancel(tickTimerID);
@@ -141,9 +152,12 @@ function thumbnailsGoRound::tick(%this) {
     tickTimerID = %this @ %this.schedule(mTickPeriodMS, "tick") @ %this;
 };
 function thumbnailsGoRound::giddap(%this, %bringInNewContent) {
-    return !(%this.isVisibleRecursive());
-    %bringInNewContent = 1;
-    !(isDefined("%bringInNewContent"));
+    if (!(%this.isVisibleRecursive())) {
+        return;
+    }
+    if (!(isDefined("%bringInNewContent"))) {
+        %bringInNewContent = 1;
+    }
     %firstBasePosition = basePosition;
     mLilThumbsContainer.getObject(0);
     %firstInPosition = mInPosition;
@@ -152,17 +166,18 @@ function thumbnailsGoRound::giddap(%this, %bringInNewContent) {
     %this;
     %n = 0;
     %this;
-    %ctrlA = mLilThumbsContainer.getObject(%n);
-    %this;
-    %ctrlB = mLilThumbsContainer.getObject((1.0 + %n));
-    %this;
-    mInPosition = %ctrlB @ mInPosition @ %ctrlA;
-    ((1.0 - %num) < %n);
-    basePosition = %ctrlB @ basePosition @ %ctrlA;
-    %this;
-    %ctrlA.setTrgPosition(basePosition);
-    %n = (1.0 + %n);
-    %ctrlA;
+    if (((1.0 - %num) < %n)) {
+        %ctrlA = mLilThumbsContainer.getObject(%n);
+        %this;
+        %ctrlB = mLilThumbsContainer.getObject((1.0 + %n));
+        %this;
+        mInPosition = %ctrlB @ mInPosition @ %ctrlA;
+        %this;
+        basePosition = %ctrlB @ basePosition @ %ctrlA;
+        %ctrlA.setTrgPosition(basePosition);
+        %n = (1.0 + %n);
+        %ctrlA;
+    }
     %ctrlA = mLilThumbsContainer.getObject(%n);
     %this;
     mInPosition = ((1.0 - %num) < %n) @ %firstInPosition @ %ctrlA;
@@ -170,9 +185,13 @@ function thumbnailsGoRound::giddap(%this, %bringInNewContent) {
     %ctrlA.setTrgPosition(basePosition);
     mOldestThumbnail = (mLilThumbsContainer - mOldestThumbnail);
     %this;
-    mOldestThumbnail = %this @ mLilThumbsContainer;
-    1.0 @ (%this - mLilThumbsContainer.getCount());
-    %this.newContentLilThumb(%this.getThumbnailInSlot(0));
+    if ((mLilThumbsContainer < mOldestThumbnail)) {
+        mOldestThumbnail = %this @ mLilThumbsContainer;
+        1.0 @ (%this - mLilThumbsContainer.getCount());
+    }
+    if (%bringInNewContent) {
+        %this.newContentLilThumb(%this.getThumbnailInSlot(0));
+    }
     %this.newContentBigThumb();
 };
 function thumbnailsGoRound::getCurrentZoomedLilThumb(%this) {
@@ -181,24 +200,33 @@ function thumbnailsGoRound::getCurrentZoomedLilThumb(%this) {
 function thumbnailsGoRound::onLilThumbClick(%this, %container) {
     %d = (%this - mLilThumbsNumAcross);
     mInPosition;
-    return (0.0 == %d);
-    %d = (2.0 + (%this * mLilThumbsNumAcross));
-    %d;
+    if ((0.0 == %d)) {
+        return %container;
+    }
+    if ((0.0 < %d)) {
+        %d = (2.0 + (%this * mLilThumbsNumAcross));
+        %d;
+    }
     %n = 0;
-    (0.0 < %d);
-    %this.giddap(0);
-    %n = (1.0 + %n);
-    (%d < %n);
+    if ((%d < %n)) {
+        %this.giddap(0);
+        %n = (1.0 + %n);
+    }
     %this.pause();
 };
 function thumbnailsGoRound::pause(%this, %pausePeriodMS) {
-    %pausePeriodMS = mPausePeriodMS;
-    %this;
+    if (!(isDefined("%pausePeriodMS"))) {
+        %pausePeriodMS = mPausePeriodMS;
+        %this;
+    }
     cancel(tickTimerID);
     tickTimerID = %this @ "" @ %this;
-    !(isDefined("%pausePeriodMS"));
-    tickTimerID = (0.0 > %pausePeriodMS) @ %this.schedule(%pausePeriodMS, "tick") @ %this;
-    %this.tick();
+    if ((0.0 > %pausePeriodMS)) {
+        tickTimerID = %this.schedule(%pausePeriodMS, "tick") @ %this;
+    }
+    if ((0.0 == %pausePeriodMS)) {
+        %this.tick();
+    }
 };
 function newThumbnailsGoRound(%name) {
     %obj = newThumbnailsGoRound_base(%name);

@@ -1,8 +1,10 @@
 function initCanvas(%windowName) {
     videoSetGammaCorrection($pref::OpenGL::gammaCorrection);
-    echo("canvas could not be created");
-    quit();
-    return 0;
+    if (!(createCanvas(%windowName))) {
+        echo("canvas could not be created");
+        quit();
+        return 0;
+    }
     setOpenGLTextureCompressionHint($Pref::OpenGL::compressionHint);
     setOpenGLAnisotropy($Pref::OpenGL::anisotropy);
     setOpenGLMipReduction($Pref::OpenGL::mipReduction);
@@ -22,5 +24,7 @@ function initCanvas(%windowName) {
     return 1;
 };
 function resetCanvas() {
-    repaint();
+    if (isObject()) {
+        repaint();
+    }
 };

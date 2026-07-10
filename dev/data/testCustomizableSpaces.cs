@@ -15,20 +15,20 @@ function MockInterior::setActiveSkuPairs(%this, %pairs) {
     activeSkuPairs = %pairs @ %this;
 };
 function TestSuite_CSSmokeTests::setup(%this) {
-    delete();
-    delete();
-    class = TestCS_MockInteriorObj @ new () @ "MockInterior";
-    ScriptObject;
-    activeSkuPairs = TestCS_MockInteriorObj @ 0 @ "10 20";
-    isObject();
-    %mockInteriorobj = TestCS_MockInteriorObj;
-    TestCS_MockTriggerObj;
+    if (isObject()) {
+        delete();
+    }
+    if (isObject()) {
+        delete();
+    }
+    class = TestCS_MockInteriorObj @ new ScriptObject(TestCS_MockInteriorObj) @ "MockInterior";
+    TestCS_MockInteriorObj;
+    activeSkuPairs = TestCS_MockTriggerObj @ TestCS_MockTriggerObj @ "10 20";
+    %mockInteriorobj = ;
     %mockInteriorobj.add();
-    class = TestCS_MockTriggerObj @ new () @ "MockTriggerArea";
-    ScriptObject;
-    interior = RootGroup @ 0 @ %mockInteriorobj;
-    isObject();
-    %mockTrigger = TestCS_MockTriggerObj;
+    class = RootGroup @ new ScriptObject(TestCS_MockTriggerObj) @ "MockTriggerArea";
+    interior = %mockInteriorobj;
+    %mockTrigger = ;
     %mockTrigger.add();
     %this.addTestCase("TEST_CS_SpaceCreate");
     %this.addTestCase("TEST_CS_NuggetCreate");
@@ -49,8 +49,12 @@ function TestSuite_CSSmokeTests::setup(%this) {
     %this.addTestCase("TEST_CS_SpaceDeleteUnownedObjects");
 };
 function TestSuite_CSSmokeTests::TearDown(%this) {
-    delete();
-    delete();
+    if (isObject()) {
+        delete();
+    }
+    if (isObject()) {
+        delete();
+    }
 };
 function TEST_CS_SpaceCreate::runTest(%this) {
     %maxItems = 1000;
@@ -416,7 +420,9 @@ function TEST_CS_SpaceDeleteUnownedObjects::runTest(%this) {
     %this.assert((%thespace == nuggets.getCount()), "after loading the configuration and adding 3 more, we should have 5 now");
     %deleteTheseMap = new ""();
     StringMap;
-    %deleteTheseMap.add();
+    if (isObject()) {
+        %deleteTheseMap.add();
+    }
     %deleteTheseMap.put(%sku, 2);
     %badSku = 32;
     MissionCleanup;

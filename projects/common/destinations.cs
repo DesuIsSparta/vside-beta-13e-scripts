@@ -10,20 +10,28 @@ function DestinationList::AddDestinationInfo(%codeName, %filters, %contiguousSpa
     %codeName[$gDestinationVurls @ %codeName] = %vurl;
     $gDestinationNamesInternal = $gDestinationNamesInternal @ %codeName @ " ";
     %i = (1.0 - getWordCount(%filters));
-    %filter = getWord(%filters, %i);
-    (0.0 >= %i);
-    %codeName[$gStoreStockCacheSkus @ %codeName] = (%filter $= "shop") @ "";
-    %codeName[$gStoreStockRevision @ %codeName] = "";
-    $gDestinationFiltersInUse = (0.0 < findWord($gDestinationFiltersInUse, %filter)) @ $gDestinationFiltersInUse @ %filter @ " ";
-    DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF);
-    %i = (1.0 - %i);
-    (0.0 >= findWord($gDestinationFiltersInDirectory, %filter));
+    if ((0.0 >= %i)) {
+        %filter = getWord(%filters, %i);
+        if ((%filter $= "shop")) {
+            %codeName[$gStoreStockCacheSkus @ %codeName] = "";
+            %codeName[$gStoreStockRevision @ %codeName] = "";
+        }
+        if ((0.0 < findWord($gDestinationFiltersInUse, %filter))) {
+            $gDestinationFiltersInUse = $gDestinationFiltersInUse @ %filter @ " ";
+        }
+        if ((0.0 >= findWord($gDestinationFiltersInDirectory, %filter))) {
+            DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF);
+        }
+        %i = (1.0 - %i);
+    }
 };
 function DestinationList::getDestinationContiguousSpace(%codeName) {
     return %codeName[$gDestinationSpaces @ %codeName];
 };
 function DestinationList::IsDestinationInMyContiguousSpace(%codeName) {
-    return 0;
+    if (($gContiguousSpaceName $= "")) {
+        return 0;
+    }
     return (0.0 >= findWord(DestinationList::getDestinationContiguousSpace(%codeName), $gContiguousSpaceName));
 };
 function DestinationList::getCityNameForDestination(%codeName) {
@@ -31,9 +39,13 @@ function DestinationList::getCityNameForDestination(%codeName) {
     return getContiguousSpaceFullName(%dest);
 };
 function DestinationList::getBitmapLocation(%codeName) {
-    return 0;
+    if (("" $= %codeName)) {
+        return 0;
+    }
     %filter = getWord(%codeName[$gDestinationFilters @ %codeName], 0);
-    return 0;
+    if (("" $= %filter)) {
+        return 0;
+    }
     return "platform/client/buttons/" @ %filter @ "ads/" @ %filter @ "ad_" @ %codeName;
 };
 function DestinationList::getOccluderBitmapLocation() {
@@ -44,54 +56,74 @@ function DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF) {
     %isNewEntry = (%codeName[$gDestinationAdsNumByName @ %codeName] $= "");
     $gDestinationAdsNum[%codeName @ $gDestinationAds TAB $gDestinationAdsNum @ "codename"] = ;
     $gDestinationAdsNum[%okayForTGF @ $gDestinationAds TAB $gDestinationAdsNum @ "okayForTGF"] = ;
-    %codeName[$gDestinationAdsNumByName @ %codeName] = %isNewEntry @ $gDestinationAdsNum;
-    $gDestinationAdsNum = (1.0 + $gDestinationAdsNum);
+    if (%isNewEntry) {
+        %codeName[$gDestinationAdsNumByName @ %codeName] = $gDestinationAdsNum;
+        $gDestinationAdsNum = (1.0 + $gDestinationAdsNum);
+    }
 };
 function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
-    %butNotThese = "interscope_lounge";
-    !(isDefined("%butNotThese"));
+    if (!(isDefined("%butNotThese"))) {
+        %butNotThese = "interscope_lounge";
+    }
     %candidates = "";
     %delim = "";
     %n = 0;
-    %eligible = %n[($gDestinationAdsNum < %n) @ $gDestinationAds TAB %n @ "okayForTGF"];
-    %codeName = %n[!(%eligible) @ $gDestinationAds TAB %n @ "codename"];
-    %filters = %codeName[$gDestinationFilters @ %codeName];
-    hasWord(%butNotThese, %codeName);
-    %candidates = hasWord(%filters, %filter) @ %candidates @ %delim @ %codeName;
-    %delim = " ";
-    %n = (1.0 + %n);
-    error((($gDestinationAdsNum < %n) SPC %candidates $= "") @ "Unable to find any candidates for filter \"" @ %filter @ "\"." @ " " @ getTrace());
-    return "";
+    if (($gDestinationAdsNum < %n)) {
+        %eligible = %n[$gDestinationAds TAB %n @ "okayForTGF"];
+        if (!(%eligible)) {
+        }
+        %codeName = %n[$gDestinationAds TAB %n @ "codename"];
+        if (hasWord(%butNotThese, %codeName)) {
+        }
+        %filters = %codeName[$gDestinationFilters @ %codeName];
+        if (hasWord(%filters, %filter)) {
+            %candidates = %candidates @ %delim @ %codeName;
+            %delim = " ";
+        }
+        %n = (1.0 + %n);
+    }
+    if ((($gDestinationAdsNum < %n) SPC %candidates $= "")) {
+        error("Unable to find any candidates for filter \"" @ %filter @ "\"." @ " " @ getTrace());
+        return "";
+    }
     return getRandomWord(%candidates);
 };
 function DestinationList::goToDestination(%codeName) {
-    return (0.0 < findWord($gDestinationNamesInternal, %codeName));
+    if ((0.0 < findWord($gDestinationNamesInternal, %codeName))) {
+        return;
+    }
     %vurl = %codeName[$gDestinationVurls @ %codeName];
-    error(getScopeName() @ " " @ "- no vurl for destination" @ " " @ %codeName);
-    return (%vurl $= "");
+    if ((%vurl $= "")) {
+        error(getScopeName() @ " " @ "- no vurl for destination" @ " " @ %codeName);
+        return;
+    }
     %command = "geTGF.close();" @ " " @ "vurlOperation(\"" @ %vurl @ "\");";
-    %title = !(DestinationList::IsDestinationInMyContiguousSpace(%codeName));
-    %body = strreplace(%title[$MsgCat::destinations @ "REMOTE-BODY"], "[NAME]", %codeName[$gDestinationNames @ %codeName]);
-    MessageBoxOkCancel(%title, %body, %command, "");
+    if (!(DestinationList::IsDestinationInMyContiguousSpace(%codeName))) {
+        %title = ;
+        %body = strreplace(%title[$MsgCat::destinations @ "REMOTE-BODY"], "[NAME]", %codeName[$gDestinationNames @ %codeName]);
+        MessageBoxOkCancel(%title, %body, %command, "");
+    }
     eval(%command);
 };
 function transferFromShopToDestinationsDirectory() {
     transferFromShopToDestinationsDirectoryPart2(1, 0);
 };
 function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave) {
-    %askForSave = userHasChangedBodyOrOutfit();
-    ClosetGui;
-    %title = "Save Your Changes";
-    %askForSave;
-    %text = "You've made some changes to your appearance.\nWould you like to save your changes?";
-    %askForSave;
-    %buttons = "Yes" @ "\t" @ "No" @ "\t" @ "Cancel";
-    %dlg = MessageBoxCustom(%title, %text, %buttons);
-    callback = "transferFromShopToDestinationsDirectoryPart2(false, true);" @ 0 @ %dlg;
-    callback = "transferFromShopToDestinationsDirectoryPart2(false, false);" @ 1 @ %dlg;
-    callback = "" @ 2 @ %dlg;
-    return;
-    %doSave = 0;
+    if (%askForSave) {
+        %askForSave = userHasChangedBodyOrOutfit();
+        ClosetGui;
+        if (%askForSave) {
+            %title = "Save Your Changes";
+            %text = "You've made some changes to your appearance.\nWould you like to save your changes?";
+            %buttons = "Yes" @ "\t" @ "No" @ "\t" @ "Cancel";
+            %dlg = MessageBoxCustom(%title, %text, %buttons);
+            callback = "transferFromShopToDestinationsDirectoryPart2(false, true);" @ 0 @ %dlg;
+            callback = "transferFromShopToDestinationsDirectoryPart2(false, false);" @ 1 @ %dlg;
+            callback = "" @ 2 @ %dlg;
+            return;
+        }
+        %doSave = 0;
+    }
     !(%doSave).doClose(0);
     toggleTGFMapFiltered("shop");
 };
@@ -110,7 +142,9 @@ function DestinationList::GetRandomAreaName() {
     return getRandomWord($gAreaNamesInternalList);
 };
 function DestinationList::GetAreaNameByIndex(%index) {
-    return "";
+    if (($gAreaNamesInternalList $= "")) {
+        return "";
+    }
     return getWord($gAreaNamesInternalList, %index);
 };
 function DestinationList::GetAreaNameShortName(%areaName) {
@@ -125,19 +159,25 @@ function DestinationList::GetAreaNameUserFacingName(%areaName) {
 function DestinationList::GetAreaNameUserFacingNameCityAndBuildingShort(%areaName, %delimiter) {
     %cityName = DestinationList::GetAreaNameCity(%areaName);
     %cityName = strupr(%cityName);
-    return %cityName;
+    if ((%cityName $= %areaName)) {
+        return %cityName;
+    }
     %bldgName = DestinationList::GetAreaNameShortName(%areaName);
-    %delimiter = " - ";
-    !(isDefined("%delimiter"));
+    if (!(isDefined("%delimiter"))) {
+        %delimiter = " - ";
+    }
     return %cityName @ %delimiter @ %bldgName;
 };
 function DestinationList::GetAreaNameUserFacingNameCityAndBuilding(%areaName, %delimiter) {
     %cityName = DestinationList::GetAreaNameCity(%areaName);
     %cityName = strupr(%cityName);
-    return %cityName;
+    if ((%cityName $= %areaName)) {
+        return %cityName;
+    }
     %bldgName = DestinationList::GetAreaNameUserFacingName(%areaName);
-    %delimiter = " - ";
-    !(isDefined("%delimiter"));
+    if (!(isDefined("%delimiter"))) {
+        %delimiter = " - ";
+    }
     return %cityName @ %delimiter @ %bldgName;
 };
 function DestinationList::GetAreaNameIconPath(%areaName) {

@@ -1,6 +1,5 @@
-className = pcd_troughlight @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(pcd_troughlight) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 1.25;
 Brightness = 1;
 Colour = "0.873563 0.264368 0.517241 1.000000";

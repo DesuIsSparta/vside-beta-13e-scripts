@@ -1,6 +1,5 @@
-className = citycardlight @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(citycardlight) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 18;
 Brightness = 1;
 Colour = "1.000000 1.000000 1.000000 1.000000";

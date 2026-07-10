@@ -1,13 +1,25 @@
 function formatImageNumber(%number) {
-    %number = (10.0 < %number) @ 0 @ %number;
-    %number = (100.0 < %number) @ 0 @ %number;
-    %number = (1000.0 < %number) @ 0 @ %number;
-    %number = (10000.0 < %number) @ 0 @ %number;
+    if ((10.0 < %number)) {
+        %number = 0 @ %number;
+    }
+    if ((100.0 < %number)) {
+        %number = 0 @ %number;
+    }
+    if ((1000.0 < %number)) {
+        %number = 0 @ %number;
+    }
+    if ((10000.0 < %number)) {
+        %number = 0 @ %number;
+    }
     return %number;
 };
 function formatSessionNumber(%number) {
-    %number = (10.0 < %number) @ 0 @ %number;
-    %number = (100.0 < %number) @ 0 @ %number;
+    if ((10.0 < %number)) {
+        %number = 0 @ %number;
+    }
+    if ((100.0 < %number)) {
+        %number = 0 @ %number;
+    }
     return %number;
 };
 function recordMovie(%movieName, %fps) {
@@ -26,14 +38,18 @@ function stopMovie() {
 };
 $screenshotNumber = 0;
 function doScreenShot(%val) {
-    return !(%val);
+    if (!(%val)) {
+        return;
+    }
     %name = "screenshots/screen_" @ getTimeStamp();
-    %ext = ".jpg";
-    ($Pref::Video::screenShotFormat $= "JPEG");
-    %fmt = "JPEG";
-    %ext = ".png";
-    ($Pref::Video::screenShotFormat $= "PNG");
-    %fmt = "PNG";
+    if (($Pref::Video::screenShotFormat $= "JPEG")) {
+        %ext = ".jpg";
+        %fmt = "JPEG";
+    }
+    if (($Pref::Video::screenShotFormat $= "PNG")) {
+        %ext = ".png";
+        %fmt = "PNG";
+    }
     %ext = ".png";
     %fmt = "PNG";
     ScreenShot(%name @ %ext, %fmt);

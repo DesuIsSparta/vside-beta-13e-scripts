@@ -1,8 +1,7 @@
 function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     doLocalChangeRelation(%client, %other, %relType, %oper);
-    %relRequest = new ();
-    RelRequest;
-    %host = 0 @ CURLObject @ $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
+    %relRequest = new CURLObject(RelRequest);
+    %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=relate";
     %user = nameBase;
@@ -11,7 +10,9 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     PlayerDict;
     %otherId = %other.get();
     PlayerDict;
-    return (0.0 == %userId);
+    if ((0.0 == %userId)) {
+        return;
+    }
     userId = %userId @ RelRequest;
     otherId = %otherId @ RelRequest;
     relType = %relType @ RelRequest;
@@ -33,7 +34,9 @@ function RelRequest::onConnectFailed(%this) {
     return;
 };
 function RelRequest::onLine(%this, %line) {
-    changeRelation(userId, otherId, relType, oper);
+    if ((%line $= "success")) {
+        changeRelation(userId, otherId, relType, oper);
+    }
     return (%this SPC %line $= "fail");
 };
 function RelRequest::onDNSResolved(%this) {
@@ -51,10 +54,13 @@ function doLocalChangeRelation(%client, %other, %relType, %oper) {
     %client;
     %otherId = %other.get();
     PlayerDict;
-    error("bad other in doLocalChangeRelation:" @ " " @ getDebugString(%otherId) @ " " @ "from" @ " " @ getDebugString(%sender));
-    return !(isPlayerObject(%otherId));
-    %opCode = 0;
-    (%oper $= "add");
+    if (!(isPlayerObject(%otherId))) {
+        error("bad other in doLocalChangeRelation:" @ " " @ getDebugString(%otherId) @ " " @ "from" @ " " @ getDebugString(%sender));
+        return;
+    }
+    if ((%oper $= "add")) {
+        %opCode = 0;
+    }
     %opCode = 1;
     changeRelation(%sender, %otherId, %relType, %opCode);
     return;

@@ -1,6 +1,5 @@
-className = sgSpotDataBlock @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(sgSpotDataBlock) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 4;
 Brightness = 0.62069;
 Colour = "1.000000 1.000000 1.000000 1.000000";

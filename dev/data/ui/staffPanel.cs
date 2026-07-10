@@ -2,7 +2,9 @@ function staffPanel::toggle(%this) {
     %this.showRaiseOrHide();
 };
 function staffPanel::open(%this) {
-    return !($player.rolesPermissionCheckNoWarn("debugPassive"));
+    if (!($player.rolesPermissionCheckNoWarn("debugPassive"))) {
+        return;
+    }
     %this.setVisible(1);
     %this.focusAndRaise();
 };

@@ -2,7 +2,9 @@ function botControlPanel::toggle(%this) {
     %this.showRaiseOrHide();
 };
 function botControlPanel::open(%this) {
-    return !($player.rolesPermissionCheckWarn("bots"));
+    if (!($player.rolesPermissionCheckWarn("bots"))) {
+        return;
+    }
     %this.setVisible(1);
     %this.focusAndRaise();
 };
@@ -21,9 +23,12 @@ function botControlPanel::loadBots(%this) {
 };
 function botControlPanel::getSaveFilename(%this) {
     %filebase = $DevPref::Mod::botSaveFileName;
-    %filebase = (%filebase $= "") @ $player.getShapeName() @ 1;
-    %filebase = "default";
-    (%filebase $= "");
+    if ((%filebase $= "")) {
+        %filebase = $player.getShapeName() @ 1;
+    }
+    if ((%filebase $= "")) {
+        %filebase = "default";
+    }
     $DevPref::Mod::botSaveFileName = %filebase;
     %filebase.setValue();
     return %filebase;

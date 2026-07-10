@@ -1,22 +1,27 @@
 $gGuiEditorGuiExeced = 0;
 function GuiEditLazy(%val) {
-    exec("dev/data/ui/GuiEditorGui.gui");
-    $gGuiEditorGuiExeced = 1;
-    !($gGuiEditorGuiExeced);
+    if (!($gGuiEditorGuiExeced)) {
+        exec("dev/data/ui/GuiEditorGui.gui");
+        $gGuiEditorGuiExeced = 1;
+    }
     GuiEdit(%val);
 };
 "alt F10".bind();
 $gWorldEditorExeced = 0;
 GuiEditLazy;
 function toggleEditorLazy(%val) {
-    exec("dev/data/ui/editor/editor.cs");
-    $gWorldEditorExeced = 1;
-    !($gWorldEditorExeced);
+    if (!($gWorldEditorExeced)) {
+        exec("dev/data/ui/editor/editor.cs");
+        $gWorldEditorExeced = 1;
+        keyboard;
+    }
     toggleEditor(%val);
 };
 "alt F11".bind();
 function canvasExecMisc() {
-    return !($AmClient);
+    if (!($AmClient)) {
+        return toggleEditorLazy;
+    }
     exec("common/ui/InspectDlg.gui");
     exec("common/ui/LoadFileDlg.gui");
     exec("common/ui/ColorPickerDlg.gui");

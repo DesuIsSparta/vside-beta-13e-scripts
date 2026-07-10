@@ -119,8 +119,10 @@ function initEmoticonMap(%map) {
     %map.put("#:-S", "whew");
     %map.put("phew", "whew");
 };
-ignoreCase = EmoticonMap @ new () @ 1;
-StringMap;
-0;
-add();
+if (!(isObject())) {
+    ignoreCase = EmoticonMap @ new StringMap(EmoticonMap) @ 1;
+}
+if (isObject()) {
+    add();
+}
 initEmoticonMap();

@@ -28,11 +28,14 @@ function TwoPlayerEmotesPanel::refresh(%this) {
     %anims = getAllUserTriggerableCoAnims();
     %count = getFieldCount(%anims);
     %i = 0;
-    %list.addRow(%i, getField(%anims, %i));
-    %i = (1.0 + %i);
-    (%count < %i);
+    if ((%count < %i)) {
+        %list.addRow(%i, getField(%anims, %i));
+        %i = (1.0 + %i);
+    }
 };
 function TwoPlayerEmotesList::onSelect(%this, %id, %text) {
-    doCoAnim(%text, playerName);
-    close();
+    if ((0.0 >= %id)) {
+        doCoAnim(%text, playerName);
+        close();
+    }
 };

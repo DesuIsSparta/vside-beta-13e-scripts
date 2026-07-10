@@ -6,15 +6,23 @@ function onAIMReceive(%sender, %msg) {
     %sender.receivedMessage(%msg);
 };
 function MessageHud::open(%this, %text) {
-    return %this.isVisible();
+    if (%this.isVisible()) {
+        return;
+    }
     %this.setVisible(1);
     1.makeFirstResponder();
     reinjectOpenEvent();
     100.schedule();
-    open();
+    if (isObject()) {
+        if ((ConvBubVecCtrlMsgVec > getNumLines())) {
+            open();
+        }
+    }
 };
 function MessageHud::close(%this) {
-    return !(%this.isVisible());
+    if (!(%this.isVisible())) {
+        return;
+    }
     %this.setVisible(0);
     0.makeFirstResponder();
     "".setValue();
@@ -33,37 +41,60 @@ function MessageHud::updatePosition(%this) {
 function MessageHudEdit::eval(%this) {
     %text = trim(StripMLControlChars(%this.getValue()));
     finishTextEntry();
-    return (%text $= "");
-    %curAnim = $player.getCurrActionName();
-    !(processCommand(%text));
-    %curBase = getSubStr(%curAnim, 2, 100);
-    isCommand(%text);
-    %curProt = %curBase.get();
-    ProtectedAnimsDict;
-    commandToServer('RequestToStand', 0, 0);
+    if ((%text $= "")) {
+        return;
+    }
+    if (isCommand(%text)) {
+        if (!(processCommand(%text))) {
+            %curAnim = $player.getCurrActionName();
+            %curBase = getSubStr(%curAnim, 2, 100);
+            %curProt = %curBase.get();
+            ProtectedAnimsDict;
+            if ((1.0 == %curProt)) {
+                commandToServer('RequestToStand', 0, 0);
+            }
+            emote(%text);
+        }
+    }
     emote(%text);
-    emote(%text);
-    %text.say(0, 0);
+    if (isObject()) {
+        %text.say(0, 0);
+    }
     say(%text);
 };
 function MessageHudEdit::scanForAutoCommands(%this) {
-    return (1.0 != getWordCount(%this.getValue()));
+    if ((1.0 != getWordCount(%this.getValue()))) {
+        return;
+    }
     %firstWord = getWord(%this.getValue(), 0);
-    return (0.0 < strpos(%this.getValue(), " "));
-    %replace = %firstWord.get();
-    CommandAbbreviationMap;
-    %this.setValue(setWord(%this.getValue(), 0, %replace));
-    %this.setCursorPos(40000);
+    if ((0.0 < strpos(%this.getValue(), " "))) {
+        return;
+    }
+    if (isObject()) {
+        %replace = %firstWord.get();
+        CommandAbbreviationMap;
+        if (!(CommandAbbreviationMap SPC %replace $= "")) {
+            %this.setValue(setWord(%this.getValue(), 0, %replace));
+            %this.setCursorPos(40000);
+        }
+    }
     %firstWord = getWord(%this.getValue(), 0);
-    !((isObject() SPC %replace $= ""));
-    replyOperation();
+    if ((%firstWord $= "/reply")) {
+        replyOperation();
+    }
+    if ((%firstWord $= "/sos")) {
+    }
 };
 $gChatPreviewTimer = 0;
 function MessageHudEdit::onKeystroke(%this) {
     %text = trim(StripMLControlChars(%this.getValue()));
-    setIdle(0);
+    if (!(%text $= "")) {
+        setIdle(0);
+    }
     %this.scanForAutoCommands();
-    return (0.0 != $gChatPreviewTimer);
+    if ((0.0 != $gChatPreviewTimer)) {
+        return;
+    }
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
     $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
 };
@@ -78,22 +109,30 @@ function MessageHudEdit::sendPreviewText(%this) {
     $player.sendPreviewText(%this.getValue());
 };
 function removeLastWordIfNotFollowedByWhiteSpace(%dry) {
-    return %dry;
+    if (!(%dry $= rtrim(%dry))) {
+        return %dry;
+    }
     %num = getWordCount(%dry);
-    return "";
+    if ((1.0 < %num)) {
+        return "";
+    }
     %lastWordSize = strlen(getWord(%dry, (1.0 - %num)));
     %wet = getSubStr(%dry, 0, (%lastWordSize - strlen(%dry)));
     return %wet;
 };
 function MessageHud::setGrayed(%this, %value) {
-    %this.setBitmap("platform/client/ui/messageHudGray");
+    if (%value) {
+        %this.setBitmap("platform/client/ui/messageHudGray");
+    }
     %this.setBitmap("platform/client/ui/messageHud");
 };
 function MessageHud::updateModeIcon(%this) {
-    %modeIconName = "bb_microphone";
-    $player.hasMicrophone();
-    %modeIconCommand = "displayMicrophoneHelp();";
-    isObject($player);
+    if (isObject($player)) {
+    }
+    if ($player.hasMicrophone()) {
+        %modeIconName = "bb_microphone";
+        %modeIconCommand = "displayMicrophoneHelp();";
+    }
     %modeIconName = "";
     %modeIconCommand = "";
     %this.setModeIconName(%modeIconName, %modeIconCommand);
@@ -102,14 +141,17 @@ $gMessageHudEditOriginalPosition = "";
 $gMessageHudEditOriginalExtent = "";
 $gMessageHudEditModeIconOffset = "22 0";
 function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
-    $gMessageHudEditOriginalPosition = getPosition();
-    MessageHudEdit;
-    $gMessageHudEditOriginalExtent = getExtent();
-    MessageHudEdit;
-    0.setVisible();
-    position = MessageHudModeIcon @ $gMessageHudEditOriginalPosition @ MessageHudEdit;
-    (($gMessageHudEditOriginalPosition $= "") SPC %modeIconName $= "");
-    extent = $gMessageHudEditOriginalExtent @ MessageHudEdit;
+    if (($gMessageHudEditOriginalPosition $= "")) {
+        $gMessageHudEditOriginalPosition = getPosition();
+        MessageHudEdit;
+        $gMessageHudEditOriginalExtent = getExtent();
+        MessageHudEdit;
+    }
+    if ((%modeIconName $= "")) {
+        0.setVisible();
+        position = MessageHudModeIcon @ $gMessageHudEditOriginalPosition @ MessageHudEdit;
+        extent = $gMessageHudEditOriginalExtent @ MessageHudEdit;
+    }
     %bitmap = "platform/client/buttons/" @ %modeIconName;
     %positionNew = VectorAdd($gMessageHudEditOriginalPosition, $gMessageHudEditModeIconOffset);
     position = %positionNew @ MessageHudEdit;
@@ -121,11 +163,15 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
     MessageHudModeIcon;
 };
 function displayMicrophoneHelp() {
-    return (Canvas != getContent());
+    if ((Canvas != getContent())) {
+        return getId();
+    }
     userTips::showNow("GotMic");
 };
 function startTextEntry() {
-    lastkey.open();
+    if (!(isVisible())) {
+        lastkey.open();
+    }
     moveMap @ lastkey.setText();
     1.makeFirstResponder();
 };

@@ -1,6 +1,5 @@
-className = sgGooDataBlock @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(sgGooDataBlock) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 48;
 Brightness = 0.885057;
 Colour = "0.301961 0.898039 0.301961 1.000000";

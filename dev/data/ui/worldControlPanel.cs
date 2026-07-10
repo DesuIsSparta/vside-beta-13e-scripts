@@ -1,5 +1,7 @@
 function worldControlPanel::open(%this) {
-    return !($player.rolesPermissionCheckNoWarn("staffPanelMain"));
+    if (!($player.rolesPermissionCheckNoWarn("staffPanelMain"))) {
+        return;
+    }
     %this.setVisible(1);
     %this.focusAndRaise();
     gui_DevOpts_SetTexturesButtons();
@@ -28,15 +30,17 @@ function gui_DevOpts_ShowCamPos() {
     showHere = $UserPref::ETS::ShowCamPos @ TheShapeNameHud;
 };
 function gui_DevOpts_Toggle_WorldTextureLobotomyFile() {
-    $DevPref::OpenGL::WorldTextureLobotomyFile = "platform/client/ui/paperdolls/greychecks";
-    ($DevPref::OpenGL::WorldTextureLobotomyFile $= "");
+    if (($DevPref::OpenGL::WorldTextureLobotomyFile $= "")) {
+        $DevPref::OpenGL::WorldTextureLobotomyFile = "platform/client/ui/paperdolls/greychecks";
+    }
     $DevPref::OpenGL::WorldTextureLobotomyFile = "";
     MessageBoxOK("lobotomize textures", "you will need to restart vSide for this to take effect", "");
     gui_DevOpts_SetTexturesButtons();
 };
 function gui_DevOpts_Toggle_PlayerTextureLobotomyFile() {
-    $DevPref::OpenGL::PlayerTextureLobotomyFile = "projects/common/worlds/disco_floor";
-    ($DevPref::OpenGL::PlayerTextureLobotomyFile $= "");
+    if (($DevPref::OpenGL::PlayerTextureLobotomyFile $= "")) {
+        $DevPref::OpenGL::PlayerTextureLobotomyFile = "projects/common/worlds/disco_floor";
+    }
     $DevPref::OpenGL::PlayerTextureLobotomyFile = "";
     MessageBoxOK("lobotomize textures", "you will need to restart vSide for this to take effect", "");
     gui_DevOpts_SetTexturesButtons();

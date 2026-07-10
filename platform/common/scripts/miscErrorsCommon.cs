@@ -3,7 +3,11 @@ function onObjectNameStomped(%name, %stompeeID, %likeleyStomperID) {
     size() @ " " @ %name.put(%stompeeID @ " " @ %likeleyStomperID);
 };
 function displayStompedObjectNameErrors() {
-    return (gStompedObjectNames == size());
+    if (!($ETS::devMode)) {
+    }
+    if ((gStompedObjectNames == size())) {
+        return 0.0;
+    }
     schedule(0, 0, "displayStompedObjectNameErrorsReally");
 };
 function displayStompedObjectNameErrorsReally() {
@@ -16,28 +20,33 @@ function displayStompedObjectNameErrorsReally() {
     gStompedObjectNames;
     %realCount = 0;
     %n = 0;
-    %name = getWord(%n.getKey(), 1);
-    gStompedObjectNames;
-    %skip = 0;
-    (%count < %n);
-    %skip = 1;
-    (%name $= "ClientSeatDisplayData");
-    %skip = 1;
-    (%name $= "ClientSeatListeningDisplayData");
-    %realCount = (1.0 + %realCount);
-    !(%skip);
-    %body = %body @ "\n" @ "";
-    %body = %body @ %n;
-    %body = %body @ " " @ "\"" @ %name @ "\"";
-    %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 1));
-    %body @ " " @ "-" @ " ";
-    %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 0));
-    %body @ " " @ "stomped" @ " ";
-    %n = (1.0 + %n);
-    %mb = window;
-    MessageBoxOK(%title, %body, "");
-    %mb.resize(800, 200);
-    resizeWidth = (0.0 > %realCount) @ 1 @ %mb;
-    (%count < %n);
-    resizeHeight = 1 @ %mb;
+    if ((%count < %n)) {
+        %name = getWord(%n.getKey(), 1);
+        gStompedObjectNames;
+        %skip = 0;
+        if ((%name $= "ClientSeatDisplayData")) {
+            %skip = 1;
+        }
+        if ((%name $= "ClientSeatListeningDisplayData")) {
+            %skip = 1;
+        }
+        if (!(%skip)) {
+            %realCount = (1.0 + %realCount);
+            %body = %body @ "\n" @ "";
+            %body = %body @ %n;
+            %body = %body @ " " @ "\"" @ %name @ "\"";
+            %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 1));
+            %body @ " " @ "-" @ " ";
+            %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 0));
+            %body @ " " @ "stomped" @ " ";
+        }
+        %n = (1.0 + %n);
+    }
+    if ((0.0 > %realCount)) {
+        %mb = window;
+        MessageBoxOK(%title, %body, "");
+        %mb.resize(800, 200);
+        resizeWidth = (%count < %n) @ 1 @ %mb;
+        resizeHeight = 1 @ %mb;
+    }
 };

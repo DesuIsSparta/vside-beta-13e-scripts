@@ -1,3 +1,1 @@
-shapeFile = MyBot @ datablock ( : MyPlayer) @ "~/data/shapes/characters/f_player/f_player.dts";
-PlayerData;
-0;
+shapeFile = datablock PlayerData(MyBot : MyPlayer) @ "~/data/shapes/characters/f_player/f_player.dts";

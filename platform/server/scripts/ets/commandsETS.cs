@@ -1,29 +1,41 @@
 $gAwayDebug = 1;
 function AWAY_DEBUG(%text) {
-    echo(%text);
-    return $gAwayDebug;
+    if ($gAwayDebug) {
+        echo(%text);
+    }
+    return;
 };
 function serverCmdSetAfkOn(%client, %msgTagged) {
-    error("serverCmdSetAfkOn: null client player" @ " " @ getDebugString(%client));
-    return !(isObject(Player));
+    if (!(isObject(Player))) {
+        error("serverCmdSetAfkOn: null client player" @ " " @ getDebugString(%client));
+        return %client;
+    }
     Player.setAFK(1);
     Player.setAwayMessage(detag(%msgTagged));
     return %client;
 };
 function serverCmdSetAfkOff(%client) {
-    Player.setAFK(0);
+    if (isObject(Player)) {
+        Player.setAFK(0);
+    }
     return %client;
 };
 function serverCmdTypingStarted(%client) {
-    Player.setTyping(1);
+    if (isObject(Player)) {
+        Player.setTyping(1);
+    }
     return %client;
 };
 function serverCmdTypingFinished(%client) {
-    Player.setTyping(0);
+    if (isObject(Player)) {
+        Player.setTyping(0);
+    }
     return %client;
 };
 function serverCmdEtsPlayAnimName(%client, %animName) {
-    Player.playAnim(%animName);
+    if (isObject(Player)) {
+        Player.playAnim(%animName);
+    }
     return %client;
 };
 function playRandomEmote(%player) {
@@ -37,7 +49,9 @@ function Player::cardinalPosition(%this, %num) {
     return;
 };
 function ServerCmdCardinalPosition(%client, %num) {
-    Player.cardinalPosition(%num);
+    if (isObject(Player)) {
+        Player.cardinalPosition(%num);
+    }
     return %client;
 };
 function etsReloadServer() {
@@ -45,7 +59,9 @@ function etsReloadServer() {
     return;
 };
 function ServerCmdSetGenre(%client, %genre) {
-    return !(isObject(Player));
+    if (!(isObject(Player))) {
+        return %client;
+    }
     Player.setGenre(%genre);
     return %client;
 };

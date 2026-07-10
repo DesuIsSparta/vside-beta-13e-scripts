@@ -18,13 +18,15 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus) {
     %skusBody = "";
     %skusClothing = "";
     %n = (1.0 - getWordCount(%skus));
-    %sku = getWord(%skus, %n);
-    (0.0 >= %n);
-    %skusBody = %sku @ " " @ %skusBody;
-    %sku.isBodySku();
-    %skusClothing = %sku @ " " @ %skusClothing;
-    SkuManager;
-    %n = (1.0 - %n);
+    if ((0.0 >= %n)) {
+        %sku = getWord(%skus, %n);
+        if (%sku.isBodySku()) {
+            %skusBody = %sku @ " " @ %skusBody;
+            SkuManager;
+        }
+        %skusClothing = %sku @ " " @ %skusClothing;
+        %n = (1.0 - %n);
+    }
     %skus = %skusBody @ " " @ %skusClothing;
     (0.0 >= %n);
     $gSnapping_SkuList = %skus;
@@ -43,7 +45,9 @@ function snapping_prepareNextSnapshot() {
 function snapping_callingTakeCurrentSnapshot() {
     snapping_takeCurrentSnapshot();
     $gSnapping_CurIndex = (1.0 + $gSnapping_CurIndex);
-    snapping_prepareNextSnapshot();
+    if (($gSnapping_MaxIndex < $gSnapping_CurIndex)) {
+        snapping_prepareNextSnapshot();
+    }
     $gSnapping_ObjViewCtrl.setSkus($gSnapping_BaseSkus);
     0.setVisible();
 };
@@ -67,18 +71,23 @@ function ClosetStaffPanel::adjustLOD(%this, %direction) {
     %val = %direction.changeDetailLevel();
     ClosetMainObjectView;
     (-(1.0) * %val).setText();
-    return !(isObject(itemsScroll));
+    if (!(isObject(itemsScroll))) {
+        return getCurrentTab();
+    }
     %array = thumbnails;
     itemsScroll;
-    error(getScopeName() @ " " @ "- no array");
-    return !(isObject(%array));
+    if (!(isObject(%array))) {
+        error(getScopeName() @ " " @ "- no array");
+        return getCurrentTab();
+    }
     %n = (1.0 - %array.getCount());
-    %cell = %array.getObject(%n);
-    (0.0 >= %n);
-    %objectView = objectView;
-    %cell;
-    %objectView.changeDetailLevel(%direction);
-    %n = (1.0 - %n);
+    if ((0.0 >= %n)) {
+        %cell = %array.getObject(%n);
+        %objectView = objectView;
+        %cell;
+        %objectView.changeDetailLevel(%direction);
+        %n = (1.0 - %n);
+    }
 };
 function ClosetStaffPanel::viewAll(%this) {
     $Player::inventory = getSkus();
@@ -89,11 +98,23 @@ function ClosetStaffPanel::viewAll(%this) {
     SkuManager;
     $gClosetThumbnailsDrawersPrevious = "";
     selectCurrentTab();
-    fillBodyTab();
-    rebuildPopupList();
-    update();
-    fillClosetTab();
-    update();
-    fillStoreTab();
-    refreshStoreTab();
+    if ((getCurrentTab() SPC name $= "BODY")) {
+        if (!(tabBodyInitialized)) {
+            fillBodyTab();
+        }
+        rebuildPopupList();
+        update();
+    }
+    if ((getCurrentTab() SPC name $= "CLOSET")) {
+        if (!(tabClosetInitialized)) {
+            fillClosetTab();
+        }
+        update();
+    }
+    if ((getCurrentTab() SPC name $= "SHOPS")) {
+        if (!(tabShopsInitialized)) {
+            fillStoreTab();
+        }
+        refreshStoreTab();
+    }
 };

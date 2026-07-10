@@ -23,8 +23,10 @@ function TEST_SIMPLE_LOADGAME::CheckGameCount(%this, %shouldHaveCount, %message)
     %this.assert((%shouldHaveCount == %count), %message @ " " @ "- loaded game count should be" @ " " @ %shouldHaveCount @ " " @ ", but it was" @ " " @ %count);
 };
 function TEST_SIMPLE_LOADGAME::runTest(%this) {
-    %this.assert(0, "this test must be run in $standalone");
-    return !($StandAlone);
+    if (!($StandAlone)) {
+        %this.assert(0, "this test must be run in $standalone");
+        return;
+    }
     %count = gameplay::LoadedGamePlayGameCount();
     testGame = GameGenericCollection::LoadGame("ASimpleCollectionTestGame") @ %this;
     %this.CheckGameCount((1.0 + %count), "should have one more after loading this");
@@ -40,8 +42,10 @@ function TEST_SIMPLE_COLLECTION::CheckState(%this, %player, %shouldBeDone, %shou
     %this.assert((%shouldHaveCount == %collected), %message @ " " @ "- collected count should be" @ " " @ %shouldHaveCount @ " " @ ", but it was" @ " " @ %collected);
 };
 function TEST_SIMPLE_COLLECTION::runTest(%this) {
-    %this.assert(0, "this test must be run in $standalone");
-    return !($StandAlone);
+    if (!($StandAlone)) {
+        %this.assert(0, "this test must be run in $standalone");
+        return;
+    }
     testGame = GameGenericCollection::LoadGame("ASimpleCollectionTestGame") @ %this;
     %player = $StandaloneServerPlayer;
     %this.CheckState(%player, 0, 0, "state before we start collecting");

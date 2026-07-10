@@ -3,8 +3,10 @@ function TestSuite_GameMetrics::setup(%this) {
     %this.addTestCase("TEST_GAMEMETRICS_BASICS");
 };
 function TEST_GAMEMETRICS_BASICS::runTest(%this) {
-    %this.assert(0, "this test must be run in $standalone");
-    return !($StandAlone);
+    if (!($StandAlone)) {
+        %this.assert(0, "this test must be run in $standalone");
+        return;
+    }
     %player = $StandaloneServerPlayer;
     GMetrics::GamePlayStartEvent("TEST", "TEST_GAMEMETRICS_BASICS_ONE", %player);
     GMetrics::GamePlayStopEvent("TEST", "TEST_GAMEMETRICS_BASICS_ONE", %player, 0);

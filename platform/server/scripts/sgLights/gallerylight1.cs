@@ -1,6 +1,5 @@
-className = gallerylight1 @ datablock () @ "sgUniversalStaticLightData";
-sgUniversalStaticLightData;
-LightOn = 0 @ 1;
+className = datablock sgUniversalStaticLightData(gallerylight1) @ "sgUniversalStaticLightData";
+LightOn = 1;
 Radius = 6;
 Brightness = 0.551724;
 Colour = "1.000000 0.873563 0.758621 1.000000";

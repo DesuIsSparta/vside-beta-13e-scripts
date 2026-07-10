@@ -1,6 +1,5 @@
-Colour = sgRedLightDataBlock @ datablock () @ "0.6 0.0 0.0";
-sgUniversalStaticLightData;
-Radius = 0 @ 10;
+Colour = datablock sgUniversalStaticLightData(sgRedLightDataBlock) @ "0.6 0.0 0.0";
+Radius = 10;
 FlareOn = 0;
 SpotLight = 0;
 StaticLight = 1;

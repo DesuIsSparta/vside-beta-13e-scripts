@@ -1,20 +1,31 @@
 function setDFEnabled(%val) {
-    return !(Using_DF());
-    DFManagerInit();
+    if (!(isFunction("Using_DF"))) {
+    }
+    if (!(Using_DF())) {
+        return;
+    }
+    if (%val) {
+        DFManagerInit();
+    }
     DFManagerDestroy();
 };
 function clientCmdSetDFEnabled(%val) {
-    return !(Using_DF());
+    if (!(isFunction("Using_DF"))) {
+    }
+    if (!(Using_DF())) {
+        return;
+    }
     setDFEnabled(%val);
 };
 $gDFNotify = 0;
 $gDFNotifyCode = "";
 function onDFEngineStartError(%errorCode) {
-    commandToServer('DFStart', 0, %errorCode);
+    if (isObject()) {
+        commandToServer('DFStart', 0, %errorCode);
+    }
     $gDFNotify = 1;
-    isObject();
-    $gDFNotifyCode = %errorCode;
     ServerConnection;
+    $gDFNotifyCode = %errorCode;
 };
 function onDFEngineStarted() {
     commandToServer('DFStart', 1, "");
@@ -25,29 +36,40 @@ $gDFDebugNeedsRefresh = 1;
 $gDFDebugAdvertsList = new_ScriptArray("");
 $gDFDebugCurrAdvert = "-";
 function DFDebugRefresh() {
-    return !($gDFDebugNeedsRefresh);
+    if (!($gDFDebugNeedsRefresh)) {
+        return;
+    }
     $gDFDebugNeedsRefresh = 0;
     $gDFDebugAdvertsList.clear();
     %num = getCount();
     ServerConnection;
     %n = 0;
-    %obj = %n.getObject();
-    ServerConnection;
-    $gDFDebugAdvertsList.append(%obj);
-    %n = (1.0 + %n);
-    ((%num < %n) SPC %obj.getClassName() $= "DFTextureAdvert");
+    if ((%num < %n)) {
+        %obj = %n.getObject();
+        ServerConnection;
+        if ((%obj.getClassName() $= "DFTextureAdvert")) {
+            $gDFDebugAdvertsList.append(%obj);
+        }
+        %n = (1.0 + %n);
+    }
     $gDFDebugCurrAdvert = "-";
     (%num < %n);
     DFDebugUpdateGuiStatus();
 };
 function DFDebugUpdateGuiStatus() {
+    if ((1.0 < $gDFDebugCurrAdvert)) {
+    }
+    if ((0.0 > $gDFDebugAdvertsList.size())) {
+    }
     %obj = $gDFDebugAdvertsList.get((1.0 - $gDFDebugCurrAdvert));
     "";
     %objText = "";
-    (0.0 > $gDFDebugAdvertsList.size());
-    %objText = isObject(%obj) @ %objText @ "-" @ " " @ %obj.getDFObjectName();
-    (1.0 < $gDFDebugCurrAdvert);
-    %objText = !((%obj.getName() $= "")) @ %objText @ "-" @ " " @ %obj.getName();
+    if (isObject(%obj)) {
+        %objText = %objText @ "-" @ " " @ %obj.getDFObjectName();
+        if (!(%obj.getName() $= "")) {
+            %objText = %objText @ "-" @ " " @ %obj.getName();
+        }
+    }
     $gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText.setValue();
 };
 function DFDebugRefreshForce() {
@@ -55,31 +77,39 @@ function DFDebugRefreshForce() {
     DFDebugRefresh();
 };
 function DFDebugPrev() {
-    return !($Pref::DF::debugMode);
+    if (!($Pref::DF::debugMode)) {
+        return;
+    }
     DFDebugRefresh();
     DFDebugGotoAdvert((1.0 - $gDFDebugCurrAdvert));
 };
 function DFDebugNext() {
-    return !($Pref::DF::debugMode);
+    if (!($Pref::DF::debugMode)) {
+        return;
+    }
     DFDebugRefresh();
     DFDebugGotoAdvert((1.0 + $gDFDebugCurrAdvert));
 };
 function DFDebugGotoAdvert(%advertNumber) {
     %advertObj = "";
-    %advertNumber = 1;
-    ($gDFDebugAdvertsList.size() > %advertNumber);
-    %advertNumber = $gDFDebugAdvertsList.size();
-    (1.0 < %advertNumber);
-    %advertNumber = "-";
-    (1.0 < %advertNumber);
+    if (($gDFDebugAdvertsList.size() > %advertNumber)) {
+        %advertNumber = 1;
+    }
+    if ((1.0 < %advertNumber)) {
+        %advertNumber = $gDFDebugAdvertsList.size();
+    }
+    if ((1.0 < %advertNumber)) {
+        %advertNumber = "-";
+    }
     %advertObj = $gDFDebugAdvertsList.get((1.0 - %advertNumber));
     $gDFDebugCurrAdvert = %advertNumber;
     DFDebugUpdateGuiStatus();
-    %trans = %advertObj.localToWorldTransform("0 0 0 0 0 1 -3.14159");
-    isObject(%advertObj);
-    %offset = %advertObj.localToWorldVector("0 5 0");
-    %point = %advertObj.getWorldBoxCenter();
-    %point = VectorAdd(%offset, %point);
-    %trans = %point @ " " @ getWords(%trans, 3, 100);
-    commandToServer('DropCameraAtTransform', %trans);
+    if (isObject(%advertObj)) {
+        %trans = %advertObj.localToWorldTransform("0 0 0 0 0 1 -3.14159");
+        %offset = %advertObj.localToWorldVector("0 5 0");
+        %point = %advertObj.getWorldBoxCenter();
+        %point = VectorAdd(%offset, %point);
+        %trans = %point @ " " @ getWords(%trans, 3, 100);
+        commandToServer('DropCameraAtTransform', %trans);
+    }
 };

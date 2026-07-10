@@ -6,18 +6,22 @@ function getFurnitureSkus() {
     %count = $Player::furnitureInventory.count();
     %skulist = "";
     %index = 0;
-    %sku = $Player::furnitureInventory.getKey(%index);
-    (%count < %index);
-    %skulist = %skulist @ " " @ %sku;
-    (0.0 != %index);
-    %skulist = %sku;
-    %index = (1.0 + %index);
+    if ((%count < %index)) {
+        %sku = $Player::furnitureInventory.getKey(%index);
+        if ((0.0 != %index)) {
+            %skulist = %skulist @ " " @ %sku;
+        }
+        %skulist = %sku;
+        %index = (1.0 + %index);
+    }
     return %skulist;
 };
 function addFurnitureSku(%sku, %quantity) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    $Player::furnitureInventory.push_back(%sku, %quantity @ " " @ 0);
-    return (-(1.0) == %index);
+    if ((-(1.0) == %index)) {
+        $Player::furnitureInventory.push_back(%sku, %quantity @ " " @ 0);
+        return;
+    }
     %value = $Player::furnitureInventory.getValue(%index);
     %owned = getWord(%value, 0);
     %inUse = getWord(%value, 1);
@@ -27,35 +31,49 @@ function addFurnitureSku(%sku, %quantity) {
 };
 function removeFurnitureSku(%sku, %quantity) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    echo((-(1.0) == %index) @ "Player does not own sku #" @ %sku);
-    return;
+    if ((-(1.0) == %index)) {
+        echo("Player does not own sku #" @ %sku);
+        return;
+    }
     %value = $Player::furnitureInventory.getValue(%index);
     %owned = getWord(%value, 0);
     %inUse = getWord(%value, 1);
-    echo((%quantity <= %owned) @ (%quantity < %owned) @ "Player only onws " @ %owned @ " items of type " @ %sku @ ". Removing them all.");
-    $Player::furnitureInventory.erase(%index);
-    return;
+    if ((%quantity <= %owned)) {
+        if ((%quantity < %owned)) {
+            echo("Player only onws " @ %owned @ " items of type " @ %sku @ ". Removing them all.");
+        }
+        $Player::furnitureInventory.erase(%index);
+        return;
+    }
     %owned = (%quantity - %owned);
-    log("inventory", "warn", (%inUse < %owned) @ "Player now owns fewer (" @ %owned @ ") items of type " @ %sku @ " than are in use (" @ %inUse @ ")");
+    if ((%inUse < %owned)) {
+        log("inventory", "warn", "Player now owns fewer (" @ %owned @ ") items of type " @ %sku @ " than are in use (" @ %inUse @ ")");
+    }
     %value = %owned @ " " @ %inUse;
     $Player::furnitureInventory.setValue(%value, %index);
 };
 function removeAllFurnitureSku(%sku) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    echo((-(1.0) == %index) @ "Player does not own sku #" @ %sku);
-    return;
+    if ((-(1.0) == %index)) {
+        echo("Player does not own sku #" @ %sku);
+        return;
+    }
     $Player::furnitureInventory.erase(%index);
 };
 function numOwnedFurnitureSku(%sku) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    return 0;
+    if ((-(1.0) == %index)) {
+        return 0;
+    }
     %value = $Player::furnitureInventory.getValue(%index);
     %owned = getWord(%value, 0);
     return %owned;
 };
 function numUsingFurnitureSku(%sku) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    return 0;
+    if ((-(1.0) == %index)) {
+        return 0;
+    }
     %value = $Player::furnitureInventory.getValue(%index);
     %inUse = getWord(%value, 1);
     return %inUse;
@@ -64,37 +82,48 @@ function numUsingFurnitureAll() {
     %total = 0;
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    %value = $Player::furnitureInventory.getValue(%index);
-    (%count < %index);
-    %inUse = getWord(%value, 1);
-    %total = (%inUse + %total);
-    %index = (1.0 + %index);
+    if ((%count < %index)) {
+        %value = $Player::furnitureInventory.getValue(%index);
+        %inUse = getWord(%value, 1);
+        %total = (%inUse + %total);
+        %index = (1.0 + %index);
+    }
     return %total;
 };
 function useFurnitureSku(%sku, %quantity) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    log("inventory", "warn", (-(1.0) == %index) @ "Player does not own " @ %sku);
-    return;
+    if ((-(1.0) == %index)) {
+        log("inventory", "warn", "Player does not own " @ %sku);
+        return;
+    }
     %value = $Player::furnitureInventory.getValue(%index);
     %owned = getWord(%value, 0);
     %inUse = getWord(%value, 1);
-    log("inventory", "warn", (%quantity < %owned) @ "Player does not own " @ %quantity @ " of " @ %sku @ "(" @ %owned @ ")");
-    %quantity = %owned;
+    if ((%quantity < %owned)) {
+        log("inventory", "warn", "Player does not own " @ %quantity @ " of " @ %sku @ "(" @ %owned @ ")");
+        %quantity = %owned;
+    }
     %value = %owned @ " " @ %quantity;
     echo("putting " @ %value @ " for sku=" @ %sku);
     $Player::furnitureInventory.setValue(%value, %index);
 };
 function useAnotherFurnitureSku(%sku) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    log("inventory", "warn", (-(1.0) == %index) @ "Player does not own " @ %sku);
-    return 0;
+    if ((-(1.0) == %index)) {
+        log("inventory", "warn", "Player does not own " @ %sku);
+        return 0;
+    }
     %value = $Player::furnitureInventory.getValue(%index);
     %owned = getWord(%value, 0);
     %inUse = getWord(%value, 1);
-    log("inventory", "warn", (%inUse == %owned) @ "No more " @ %sku @ " available");
-    return 0;
-    log("inventory", "error", (%inUse < %owned) @ "More of " @ %sku @ " in use than owned!");
-    return 0;
+    if ((%inUse == %owned)) {
+        log("inventory", "warn", "No more " @ %sku @ " available");
+        return 0;
+    }
+    if ((%inUse < %owned)) {
+        log("inventory", "error", "More of " @ %sku @ " in use than owned!");
+        return 0;
+    }
     %inUse = (1.0 + %inUse);
     %value = %owned @ " " @ %inUse;
     $Player::furnitureInventory.setValue(%value, %index);
@@ -102,15 +131,21 @@ function useAnotherFurnitureSku(%sku) {
 };
 function putAwayAnotherFurnitureSku(%sku) {
     %index = $Player::furnitureInventory.getIndexFromKey(%sku);
-    log("inventory", "warn", (-(1.0) == %index) @ "Player does not own " @ %sku);
-    return 0;
+    if ((-(1.0) == %index)) {
+        log("inventory", "warn", "Player does not own " @ %sku);
+        return 0;
+    }
     %value = $Player::furnitureInventory.getValue(%index);
     %owned = getWord(%value, 0);
     %inUse = getWord(%value, 1);
-    log("inventory", "warn", (0.0 == %inUse) @ "No more " @ %sku @ " available");
-    return 0;
-    log("inventory", "error", (0.0 < %inUse) @ "Negative number (" @ %inUse @ ") of " @ %sku @ " in use!");
-    return 0;
+    if ((0.0 == %inUse)) {
+        log("inventory", "warn", "No more " @ %sku @ " available");
+        return 0;
+    }
+    if ((0.0 < %inUse)) {
+        log("inventory", "error", "Negative number (" @ %inUse @ ") of " @ %sku @ " in use!");
+        return 0;
+    }
     %inUse = (1.0 - %inUse);
     %value = %owned @ " " @ %inUse;
     $Player::furnitureInventory.setValue(%value, %index);
@@ -119,67 +154,90 @@ function putAwayAnotherFurnitureSku(%sku) {
 function putAwayAllFurniture() {
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    %value = $Player::furnitureInventory.getValue(%index);
-    (%count < %index);
-    %owned = getWord(%value, 0);
-    $Player::furnitureInventory.setValue(%owned @ " " @ 0, %index);
-    %index = (1.0 + %index);
+    if ((%count < %index)) {
+        %value = $Player::furnitureInventory.getValue(%index);
+        %owned = getWord(%value, 0);
+        $Player::furnitureInventory.setValue(%owned @ " " @ 0, %index);
+        %index = (1.0 + %index);
+    }
 };
 function dumpFurniture() {
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    %val = $Player::furnitureInventory.getValue(%index);
-    (%count < %index);
-    %sku = $Player::furnitureInventory.getKey(%index);
-    %si = %sku.findBySku();
-    SkuManager;
-    echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si @ descShrt @ ")");
-    %index = (1.0 + %index);
+    if ((%count < %index)) {
+        %val = $Player::furnitureInventory.getValue(%index);
+        %sku = $Player::furnitureInventory.getKey(%index);
+        %si = %sku.findBySku();
+        SkuManager;
+        echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si @ descShrt @ ")");
+        %index = (1.0 + %index);
+    }
 };
 function dumpFurnitureInUse() {
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    %val = $Player::furnitureInventory.getValue(%index);
-    (%count < %index);
-    %sku = $Player::furnitureInventory.getKey(%index);
-    %numInUse = getWord(%val, 1);
-    %si = %sku.findBySku();
-    SkuManager;
-    echo((0.0 > %numInUse) @ %sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si @ descShrt @ ")");
-    %index = (1.0 + %index);
+    if ((%count < %index)) {
+        %val = $Player::furnitureInventory.getValue(%index);
+        %sku = $Player::furnitureInventory.getKey(%index);
+        %numInUse = getWord(%val, 1);
+        if ((0.0 > %numInUse)) {
+            %si = %sku.findBySku();
+            SkuManager;
+            echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si @ descShrt @ ")");
+        }
+        %index = (1.0 + %index);
+    }
 };
 function clearOwnedFurniture() {
     $Player::furnitureInventory.empty();
 };
 function getOwnedFurniture() {
     %request = safeEnsureScriptObject("ManagerRequest", "FurnitureRequest");
-    warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
-    doAnother = %request.isOpen() @ 1 @ %request;
-    return;
-    %request.add();
-    %url = MissionCleanup @ isObject() @ MissionCleanup @ $Net::ClientServiceURL @ "/GetUserInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "skuType=furnishing";
+    if (%request.isOpen()) {
+        warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+        doAnother = 1 @ %request;
+        return;
+    }
+    if (isObject()) {
+        %request.add();
+    }
+    %url = MissionCleanup @ MissionCleanup @ $Net::ClientServiceURL @ "/GetUserInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "skuType=furnishing";
     log("network", "debug", "FurnitureRequest: " @ %url);
     %request.setURL(%url);
-    %request.schedule(1000, "fakeOnDone");
+    if ($StandAlone) {
+    }
+    if ($Player::bFakeFurnitureInventory) {
+        %request.schedule(1000, "fakeOnDone");
+    }
     %request.start();
 };
 function FurnitureRequest::onError(%this, %unused, %unused) {
 };
 function FurnitureRequest::onDone(%this) {
-    return !(CustomSpaceClient::isOwner());
+    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+    }
+    if (!(CustomSpaceClient::isOwner())) {
+        return;
+    }
     %status = findRequestStatus(%this);
     log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
-    error(getScopeName() @ " " @ "- status =" @ " " @ %status);
-    return !((%status $= "success"));
+    if (!(%status $= "success")) {
+        error(getScopeName() @ " " @ "- status =" @ " " @ %status);
+        return;
+    }
     clearOwnedFurniture();
     %count = %this.getValue("itemsCount");
-    log("network", "debug", getScopeName() @ " " @ "- Nothing in furniture inventory.");
-    return (1.0 < %count);
+    if ((1.0 < %count)) {
+        log("network", "debug", getScopeName() @ " " @ "- Nothing in furniture inventory.");
+        return;
+    }
     %index = 0;
-    %sku = %this.getValue((%count < %index) @ "items" @ %index @ ".sku");
-    %qty = %this.getValue("items" @ %index @ ".quantity");
-    addFurnitureSku(%sku, %qty);
-    %index = (1.0 + %index);
+    if ((%count < %index)) {
+        %sku = %this.getValue("items" @ %index @ ".sku");
+        %qty = %this.getValue("items" @ %index @ ".quantity");
+        addFurnitureSku(%sku, %qty);
+        %index = (1.0 + %index);
+    }
     %request = safeNewScriptObject("ScriptObject", "Request_GetActiveFurnitureSkus", 1);
     (%count < %index);
     result = "" @ %request;
@@ -190,21 +248,28 @@ function clientCmdOnFurniturePlaced(%sku, %quantity) {
 };
 $gGotFurnitureCallback = "";
 function clientCmdGotFurnitureSkus(%skulistchunk, %requestId, %complete) {
-    warn("network", "results for deleted request: GotFurnitureSkus");
-    return !(isObject(%requestId));
+    if (!(isObject(%requestId))) {
+        warn("network", "results for deleted request: GotFurnitureSkus");
+        return;
+    }
     result = %requestId @ result @ %skulistchunk @ %requestId;
-    return (0.0 == %complete);
+    if ((0.0 == %complete)) {
+        return;
+    }
     %skulist = result;
     %requestId;
     %requestId.delete();
-    %value = firstWord(%skulist);
-    !((%skulist $= ""));
-    %skulist = restWords(%skulist);
-    %value = strreplace(%value, "|", " ");
-    %sku = getWord(%value, 0);
-    %quantity = getWord(%value, 1);
-    useFurnitureSku(%sku, %quantity);
-    eval($gGotFurnitureCallback);
+    if (!(%skulist $= "")) {
+        %value = firstWord(%skulist);
+        %skulist = restWords(%skulist);
+        %value = strreplace(%value, "|", " ");
+        %sku = getWord(%value, 0);
+        %quantity = getWord(%value, 1);
+        useFurnitureSku(%sku, %quantity);
+    }
+    if (!(!(%skulist $= "") SPC $gGotFurnitureCallback $= "")) {
+        eval($gGotFurnitureCallback);
+    }
 };
 function refreshActiveFurniture() {
     putAwayAllFurniture();
@@ -222,10 +287,14 @@ function getNuggetIdList(%callback) {
     commandToServer('CSGetNuggetIdList', CustomSpaceClient::GetSpaceImIn(), %request.getId());
 };
 function clientCmdGotNuggetIdList(%nuggetchunk, %requestId, %completed) {
-    warn("network", "results for deleted request: GotNuggetIdList");
-    return !(isObject(%requestId));
+    if (!(isObject(%requestId))) {
+        warn("network", "results for deleted request: GotNuggetIdList");
+        return;
+    }
     result = %requestId @ result @ %nuggetchunk @ %requestId;
-    return (0.0 == %completed);
+    if ((0.0 == %completed)) {
+        return;
+    }
     %cmd = %requestId @ callback @ "( \"" @ %requestId @ result @ "\");";
     %requestId.delete();
     eval(%cmd);
@@ -237,21 +306,26 @@ function getNuggetGhostList(%callback) {
     commandToServer('CSGetNuggetGhostList', CustomSpaceClient::GetSpaceImIn(), %request.getId());
 };
 function clientCmdGotNuggetGhostList(%ghostchunk, %requestId, %completed) {
-    warn("network", "results for deleted request: GotNuggetGhostList");
-    return !(isObject(%requestId));
+    if (!(isObject(%requestId))) {
+        warn("network", "results for deleted request: GotNuggetGhostList");
+        return;
+    }
     result = %requestId @ result @ %ghostchunk @ %requestId;
-    return (0.0 == %completed);
+    if ((0.0 == %completed)) {
+        return;
+    }
     %ghostlist = result;
     %requestId;
     %objectList = "";
-    %ghostID = firstWord(%ghostlist);
-    !((%ghostlist $= ""));
-    %ghostlist = restWords(%ghostlist);
-    %objID = %ghostID.resolveGhostID();
-    ServerConnection;
-    %objectList = %objectList @ " " @ %objID;
+    if (!(%ghostlist $= "")) {
+        %ghostID = firstWord(%ghostlist);
+        %ghostlist = restWords(%ghostlist);
+        %objID = %ghostID.resolveGhostID();
+        ServerConnection;
+        %objectList = %objectList @ " " @ %objID;
+    }
     %objectList = trim(%objectList);
-    !((%ghostlist $= ""));
+    !(%ghostlist $= "");
     %requestId.delete();
     CSFurnitureMover::refreshGhostList(%objectList);
 };
@@ -262,11 +336,12 @@ function FurnitureRequest::fakeOnDone(%this) {
     %count = getWordCount(%fakeInventory);
     %this.putValue("itemsCount", %count);
     %idx = 0;
-    %sku = getWord(%fakeInventory, %idx);
-    (%count < %idx);
-    %qty = 50;
-    %this.putValue("items" @ %idx @ ".sku", %sku);
-    %this.putValue("items" @ %idx @ ".quantity", %qty);
-    %idx = (1.0 + %idx);
+    if ((%count < %idx)) {
+        %sku = getWord(%fakeInventory, %idx);
+        %qty = 50;
+        %this.putValue("items" @ %idx @ ".sku", %sku);
+        %this.putValue("items" @ %idx @ ".quantity", %qty);
+        %idx = (1.0 + %idx);
+    }
     %this.onDone();
 };

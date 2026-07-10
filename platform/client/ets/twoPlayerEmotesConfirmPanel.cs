@@ -1,7 +1,9 @@
 function geTwoPlayerEmotesConfirmPanel::open(%this, %otherPlayerName, %coAnimName, %requestId) {
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-    error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName @ " " @ getTrace());
-    return !(isObject(%otherPlayer));
+    if (!(isObject(%otherPlayer))) {
+        error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName @ " " @ getTrace());
+        return;
+    }
     add();
     1.setVisible();
     getWord(getExtent(), 0).resize(getWord(getExtent(), 1));
@@ -25,15 +27,21 @@ function geTwoPlayerEmotesConfirmPanel::close(%this, %accepted, %messageCode) {
     focusTopWindow();
     0.setVisible();
     setActionMapsEnabled(1);
-    %accepted = 0;
-    !(isDefined("%accepted"));
-    %messageCode = "DECLINE MANUAL";
-    !(isDefined("%messageCode"));
+    if (!(isDefined("%accepted"))) {
+        %accepted = 0;
+        geTwoPlayerEmotesConfirmPanelBackground;
+    }
+    if (!(isDefined("%messageCode"))) {
+        %messageCode = "DECLINE MANUAL";
+        PlayGui;
+    }
     %this.doAccept(%accepted, %messageCode);
     return 1;
 };
 function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemainingMS) {
-    countdownMSRemaining = isDefined("%resetTimeRemainingMS") @ %resetTimeRemainingMS @ %this;
+    if (isDefined("%resetTimeRemainingMS")) {
+        countdownMSRemaining = %resetTimeRemainingMS @ %this;
+    }
     %tickPeriod = 100;
     countdownMSRemaining = (%this - countdownMSRemaining);
     %tickPeriod;
@@ -44,19 +52,21 @@ function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemaining
     %text = %text @ "..";
     %text.setTextWithStyle();
     cancel(countdownTimerID);
-    countdownTimerID = %this.isVisible() @ %this.schedule(%tickPeriod, "countdownTick") @ %this;
-    (%this > countdownMSRemaining);
+    if ((%this > countdownMSRemaining)) {
+    }
+    if (%this.isVisible()) {
+        countdownTimerID = 0.0 @ %this.schedule(%tickPeriod, "countdownTick") @ %this;
+        %this;
+    }
     %this.close(0, "DECLINE TIMEOUT");
     %coAnimEntry = findCoAnimEntry(coAnimName);
     %this;
     %actionDesc = getField(%coAnimEntry, 6);
-    0.0;
+    geTwoPlayerEmotesConfirmClock_readout;
     %text = %actionDesc[$MsgCat::coanim @ "E-TOOSLOW"];
-    %this;
     %text = strreplace(%text, "[OTHERPLAYER]", otherPlayerName);
     %this;
     %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
-    geTwoPlayerEmotesConfirmClock_readout;
     handleSystemMessage("msgInfoMessage", %text);
 };
 function geTwoPlayerEmotesConfirmPanel::doAccept(%this, %accepted, %messageCode) {
@@ -66,9 +76,11 @@ function geTwoPlayerEmotesConfirmPanel::doAccept(%this, %accepted, %messageCode)
 function geTwoPlayerEmotesConfirmPanel::refresh(%this) {
     %otherPlayer = Player::findPlayerInstance(otherPlayerName);
     %this;
-    error(%this @ otherPlayerName);
-    %this.close();
-    return getScopeName() @ " " @ "- couldn't find target player:" @ " ";
+    if (!(isObject(%otherPlayer))) {
+        error(%this @ otherPlayerName);
+        %this.close();
+        return getScopeName() @ " " @ "- couldn't find target player:" @ " ";
+    }
     %text = %this @ otherPlayerName;
     "<just:right><clip:1000>";
     %text.setTextWithStyle();

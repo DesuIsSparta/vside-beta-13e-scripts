@@ -89,8 +89,16 @@ function creditsTick() {
     LoginCreditsText;
     %h = getWord(extent, 1);
     LoginCreditsText;
-    return (0.0 < (%h + %y));
-    return (157.0 > %y);
+    if ((0.0 < $gCreditsTickDirection)) {
+    }
+    if ((0.0 < (%h + %y))) {
+        return;
+    }
+    if ((0.0 > $gCreditsTickDirection)) {
+    }
+    if ((157.0 > %y)) {
+        return;
+    }
     %y = (($gCreditsTickDirection * $gCreditsTickPixels) + %y);
     0.reposition(%y);
     $gCreditsTimerID = schedule($gCreditsTickPeriod, 0, "creditsTick");

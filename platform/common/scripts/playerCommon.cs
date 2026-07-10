@@ -1,11 +1,17 @@
 function Player::playCelAnimation(%this, %anim) {
-    %this.setActionThread(!((%this.getState() $= "Dead")) @ "emote_" @ %anim);
+    if (!(%this.getState() $= "Dead")) {
+        %this.setActionThread("emote_" @ %anim);
+    }
 };
 function Player::playAnim(%this, %anim) {
-    %this.setActionThread(%anim);
+    if (!(%this.getState() $= "Dead")) {
+        %this.setActionThread(%anim);
+    }
 };
 function Player::playAnimPreRoll(%this, %anim, %preRollMS) {
-    %this.setActionThreadPreRoll(%anim, %preRollMS);
+    if (!(%this.getState() $= "Dead")) {
+        %this.setActionThreadPreRoll(%anim, %preRollMS);
+    }
 };
 function Player::initGlobalFields(%this) {
     globalFieldsInited = 1 @ %this;
@@ -41,7 +47,9 @@ function Player::destroyGlobalFields(%this) {
     gSetField(%this, 0);
     %x = gGetField(%this);
     triggerSet;
-    %x.delete();
+    if (isObject(%x)) {
+        %x.delete();
+    }
     gSetField(%this, 0);
     gGetField(%this).delete();
     gSetField(%this, 0);
@@ -53,7 +61,9 @@ function Player::destroyGlobalFields(%this) {
     gSetField(%this, "notifyRefuseWhispers", 0);
     %x = gGetField(%this, "gameStateMap");
     respektPoints;
-    %x.delete();
+    if (isObject(%x)) {
+        %x.delete();
+    }
     gSetField(%this, "gameStateMap", "");
     gSetField(%this, 0);
     gSetField(%this, "mapCtrl", "");
@@ -61,17 +71,27 @@ function Player::destroyGlobalFields(%this) {
     gSetField(%this, "balancesAndScoresRevision", "");
 };
 function Player::onDelete(%this) {
-    forceField.delete();
-    giftingCurrency_Server_OnPlayerDeleted(%this);
+    if (%this.isServerObject()) {
+        if (isObject(forceField)) {
+            forceField.delete();
+        }
+        giftingCurrency_Server_OnPlayerDeleted(%this);
+    }
     %this.removeFromPlayerInstanceDict();
-    %this.playerRemove();
+    if (isObject()) {
+        %this.playerRemove();
+    }
     %this.destroyGlobalFields();
-    %this.getShapeName().forgetProperties();
+    if (isObject()) {
+        %this.getShapeName().forgetProperties();
+    }
 };
 function Player::isInHelpMeMode(%this) {
     return %this.hasActiveSKU(getSpecialSKU(%this, "helpmebadge"));
 };
 function Player::isHostOrCohost(%this) {
+    if (%this.isHost()) {
+    }
     return %this.isCohost();
 };
 function Player::isHost(%this) {
@@ -82,13 +102,17 @@ function Player::isCohost(%this) {
 };
 function Player::getOtherGender(%this) {
     %g = %this.getGender();
-    %g = "m";
-    (%g $= "f");
-    %g = "f";
-    (%g $= "m");
+    if ((%g $= "f")) {
+        %g = "m";
+    }
+    if ((%g $= "m")) {
+        %g = "f";
+    }
     return %g;
 };
 function Player::onAnimationDone(%this, %anim) {
-    return %this.onAnimationDoneServer(%anim);
+    if (%this.isServerObject()) {
+        return %this.onAnimationDoneServer(%anim);
+    }
     return %this.onAnimationDoneClient(%anim);
 };

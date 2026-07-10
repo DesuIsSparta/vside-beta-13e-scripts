@@ -1,15 +1,22 @@
 function toggleEditor(%make) {
-    MessageBoxOK("Mission Required", "You must load a mission before starting the Mission Editor.", "");
-    return !($missionRunning);
-    Editor::Create();
-    add();
-    close();
-    open();
+    if (%make) {
+        if (!($missionRunning)) {
+            MessageBoxOK("Mission Required", "You must load a mission before starting the Mission Editor.", "");
+            return !($player.rolesPermissionCheckNoWarn("gameEditors"));
+        }
+        if (!(isObject())) {
+            Editor::Create();
+            add();
+        }
+        if ((Canvas == getContent())) {
+            close();
+        }
+        open();
+    }
 };
 function Editor::Create() {
-    profile = Editor @ new () @ "GuiContentProfile";
-    EditManager;
-    horizSizing = 0 @ "right";
+    profile = new EditManager(Editor) @ "GuiContentProfile";
+    horizSizing = "right";
     vertSizing = "top";
     position = "0 0";
     extent = "640 480";
@@ -33,9 +40,13 @@ function Editor::onAdd(%unused) {
     exec("./editorRender.cs");
 };
 function Editor::checkActiveLoadDone() {
-    setContent();
-    loadingMission = EditorGui @ 0 @ EditorGui;
-    Canvas;
-    return 1;
+    if (isObject()) {
+    }
+    if (loadingMission) {
+        setContent();
+        loadingMission = EditorGui @ 0 @ EditorGui;
+        Canvas;
+        return 1;
+    }
     return 0;
 };

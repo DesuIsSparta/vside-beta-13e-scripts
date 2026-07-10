@@ -1,57 +1,74 @@
 function setHighFidelityCull(%on) {
-    $pref::Player::highFidelityCullMask = $TypeMasks::InteriorObjectType;
-    %on;
+    if (%on) {
+        $pref::Player::highFidelityCullMask = $TypeMasks::InteriorObjectType;
+    }
     $pref::Player::highFidelityCullMask = 0;
 };
 $closeConfirmDlg = 0;
 function onAppCloseButton() {
     commandToServer('SetLookAt', -(1.0), 0, 0);
-    %isShowingNow = visible;
-    $closeConfirmDlg;
-    $closeConfirmDlg.close();
-    confirmQuitOnYes();
-    return %isShowingNow;
+    if (isObject($closeConfirmDlg)) {
+        %isShowingNow = visible;
+        $closeConfirmDlg;
+        $closeConfirmDlg.close();
+        if (%isShowingNow) {
+            confirmQuitOnYes();
+            return;
+        }
+    }
     %noCmd = "";
-    ToggleConsole(1);
-    %noCmd = "ToggleConsole(true);";
-    $ConsoleActive;
+    if ($ConsoleActive) {
+        ToggleConsole(1);
+        %noCmd = "ToggleConsole(true);";
+    }
     $closeConfirmDlg = MessageBoxYesNo("Quit vSide", , "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
     %dialog = ;
-    %yesButtonPos = button.getParent().getPosition();
-    !(($gLastLoggedInThisSessionAs $= "")) @ 0 @ %dialog;
-    profile = GuiCheckBoxCtrl @ new ""() @ "ETSCheckBoxProfile";
-    0;
-    position = getWord(%yesButtonPos, 0) @ " " @ (23.0 - getWord(%yesButtonPos, 1));
-    extent = "110 20";
-    horizSizing = "center";
-    vertSizing = "top";
-    text = "Visit my web profile";
-    %ctrl = ;
-    %ctrl.setValue($UserPref::General::onQuitVisitWebProfile);
-    %window = window;
-    %dialog;
-    %window.add(%ctrl);
-    visitProfileOptionCtrl = %ctrl @ %dialog;
-    %width = getWord(%window.getExtent(), 0);
-    %height = getWord(%window.getExtent(), 1);
-    %window.resize(%width, (20.0 + %height));
+    if (!($gLastLoggedInThisSessionAs $= "")) {
+        %yesButtonPos = button.getParent().getPosition();
+        0 @ %dialog;
+        profile = GuiCheckBoxCtrl @ new ""() @ "ETSCheckBoxProfile";
+        0;
+        position = getWord(%yesButtonPos, 0) @ " " @ (23.0 - getWord(%yesButtonPos, 1));
+        extent = "110 20";
+        horizSizing = "center";
+        vertSizing = "top";
+        text = "Visit my web profile";
+        %ctrl = ;
+        %ctrl.setValue($UserPref::General::onQuitVisitWebProfile);
+        %window = window;
+        %dialog;
+        %window.add(%ctrl);
+        visitProfileOptionCtrl = %ctrl @ %dialog;
+        %width = getWord(%window.getExtent(), 0);
+        %height = getWord(%window.getExtent(), 1);
+        %window.resize(%width, (20.0 + %height));
+    }
 };
 function confirmQuitOnYes() {
-    $UserPref::General::onQuitVisitWebProfile = visitProfileOptionCtrl.getValue();
-    $closeConfirmDlg;
-    doUserProfile($gLastLoggedInThisSessionAs);
+    if (!($gLastLoggedInThisSessionAs $= "")) {
+        $UserPref::General::onQuitVisitWebProfile = visitProfileOptionCtrl.getValue();
+        $closeConfirmDlg;
+        if ($UserPref::General::onQuitVisitWebProfile) {
+            doUserProfile($gLastLoggedInThisSessionAs);
+        }
+    }
     cleanUpAndQuit();
 };
 function confirmQuitOnNo() {
-    $UserPref::General::onQuitVisitWebProfile = visitProfileOptionCtrl.getValue();
-    $closeConfirmDlg;
+    if (!($gLastLoggedInThisSessionAs $= "")) {
+        $UserPref::General::onQuitVisitWebProfile = visitProfileOptionCtrl.getValue();
+        $closeConfirmDlg;
+    }
     $closeConfirmDlg = 0;
-    !(($gLastLoggedInThisSessionAs $= ""));
 };
 function cleanUpAndQuit() {
-    $UserPref::ETS::Console::Dim = ConsoleWindow @ getExtent();
-    getPosition() @ " ";
-    storeDims();
+    if (isObject()) {
+        $UserPref::ETS::Console::Dim = ConsoleWindow @ getExtent();
+        getPosition() @ " ";
+    }
+    if (isObject()) {
+        storeDims();
+    }
     quit();
 };
 $gContiguousSpaceName = "";
@@ -65,8 +82,10 @@ function onGotContiguousSpaceName(%contiguousSpaceName) {
     %contiguousSpaceName.onSpaceChange();
     updateSkipTutorialTab();
     handleContiguousSpace();
-    %name = !((ButtonBar SPC %contiguousSpaceName $= "")) @ %contiguousSpaceName @ "[" @ $ServerName @ "]";
-    CSControlPanelTabs;
+    if (!(ButtonBar SPC %contiguousSpaceName $= "")) {
+    }
+    %name = CSControlPanelTabs @ %contiguousSpaceName @ "[" @ $ServerName @ "]";
+    geLocalMapContainer;
     $Player::Name.incrementIntegerProperty("level started count" @ " " @ %name, 1);
 };
 function getContiguousSpaceFullName(%code) {
