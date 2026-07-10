@@ -23,11 +23,11 @@ function Player::setHeight(%this, %height) {
     return;
 };
 function serverCmdSetHeight(%client, %height) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.setHeight(%height);
-    return %client;
+    %client.Player.setHeight(%height);
+    return;
 };
 function Player::getAngleTowards(%this, %obj) {
     %posA = %this.getPosition();

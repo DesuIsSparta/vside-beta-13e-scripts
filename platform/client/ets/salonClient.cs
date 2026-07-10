@@ -1,49 +1,49 @@
 function SalonStyleSelector::refreshAvailableStyles(%this) {
-    ShowSalonMenu(lastTypeOfSalon, lastClientGender);
+    ShowSalonMenu(%this.lastTypeOfSalon, %this.lastClientGender);
 };
 function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
     if (!(isDefined("%targetPlayerName"))) {
         %targetPlayerName = "";
     }
-    lastTypeOfSalon = %typeOfSalon @ SalonStyleSelector;
-    lastClientGender = %clientGender @ SalonStyleSelector;
-    open();
-    if ((SalonStyleSelector SPC %targetPlayerName $= "")) {
+    %this.lastTypeOfSalon = %typeOfSalon @ SalonStyleSelector;
+    %this.lastClientGender = %clientGender @ SalonStyleSelector;
+    SalonStyleSelector.open();
+    if ((%targetPlayerName $= "")) {
     }
     %targetPlayer = Player::findPlayerInstance(%targetPlayerName);
     "";
-    targetPlayer = %targetPlayer @ SalonStyleSelector;
+    %this.targetPlayer = %targetPlayer @ SalonStyleSelector;
     %thumbsDirectory = "platform/client/ui/salon/salonthumbs_";
-    SalonStyleSelectorChair @ %thumbsDirectory @ %typeOfSalon.setBitmap();
+    %thumbsDirectory @ %typeOfSalon.setBitmap();
     %text = "Choose" @ " " @ %typeOfSalon[$SALON_CHAIR_DEF_PROPDESC @ %typeOfSalon] @ " " @ "Prop";
+    SalonStyleSelectorChair;
     %text.setText();
     %text = %typeOfSalon[$SALON_CHAIR_DEF_SALONMENUDESC @ %typeOfSalon];
     ShowPropsButton;
     %text = strreplace(%text, "[TARGET]", %targetPlayerName);
     %text.setText();
-    closeButton.setVisible(%typeOfSalon[$SALON_CHAIR_DEF_CANCLOSE @ %typeOfSalon]);
+    %this.closeButton.setVisible(%typeOfSalon[$SALON_CHAIR_DEF_CANCLOSE @ %typeOfSalon]);
     %propSku = $player.getActivePropSku();
     SalonStyleSelector;
     %propThumbsDir = "platform/client/ui/props/propthumbs_";
     gePropsWindowTitle;
     if ((%propSku $= "")) {
     }
-    %propThumbFile = "" @ %propThumbsDir @ %propSku;
+    %propThumbFile = %propThumbsDir @ %propSku;
+    "";
     if ((%propThumbFile $= "")) {
     }
     if (!(isFile(%propThumbFile @ ".png"))) {
         "".setBitmap();
     }
     %propThumbFile.setBitmap();
-    %list = skuGuiList;
+    %list = %this.skuGuiList;
     SalonStyleSelector;
     %list.setNumChildren(0);
-    childrenExtent = %list @ ((spacing * 2.0) - getWord(%list.getExtent(), 0)) @ " " @ 40 @ %list;
+    %list.childrenExtent = SalonStyleSelectorProp @ ((%list.spacing * 2.0) - getWord(%list.getExtent(), 0)) @ " " @ 40;
     SalonStyleSelectorProp;
-    %width = getWord(childrenExtent, 0);
-    %list;
+    %width = getWord(%list.childrenExtent, 0);
     %i = 0;
-    SalonStyleSelectorProp;
     if (($NUM_SALON_STYLES < %i)) {
         %skunum = %i[$SALON_STYLE_SKU @ %i];
         %grouping = %i[$SALON_STYLE_GROUPING @ %i];
@@ -57,30 +57,33 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
         %si = %skunum.findBySku();
         SkuManager;
         if (isObject(%si)) {
-            if ((%si SPC gender $= %clientGender)) {
+            if ((%si.gender $= %clientGender)) {
             }
-            if ((%si SPC gender $= "n")) {
+            if ((%si.gender $= "n")) {
                 %iconPath = %thumbsDirectory @ %skunum;
                 %linkStart = "<a:gamelink chooseStyle" @ " " @ %i @ ">";
                 %thumbnail = "";
-                %description = descShrt;
-                %si;
+                %description = %si.descShrt;
                 %text = %linkStart @ %thumbnail @ " " @ "<clip:" @ %width @ ">" @ %description @ "</clip></a>";
                 %text = mlStyle(%text, "salonPanel");
                 %item = %list.addChild();
-                extent = GuiBitmapCtrl @ new ""() @ "46 40";
                 0;
-                bitmap = %iconPath;
-                position = GuiBitmapButtonCtrl @ new ""() @ "1 1";
-                extent = "44 38";
-                bitmap = "platform/client/buttons/tgf/tgf_buttonframe_190x109";
-                command = "SalonChooseStyle(" @ %i @ ");";
-                %iconCtrl = ;
-                position = GuiMLTextCtrl @ new ""() @ "50 13";
+                %iconCtrl = new ""() {
+                    extent = GuiBitmapCtrl @ "46 40";
+                    bitmap = %iconPath;
+                };
+                new ""() {
+                    position = GuiBitmapButtonCtrl @ "1 1";
+                    extent = "44 38";
+                    bitmap = "platform/client/buttons/tgf/tgf_buttonframe_190x109";
+                    command = "SalonChooseStyle(" @ %i @ ");";
+                };
                 0;
-                extent = "142 20";
-                bitmap = %iconPath;
-                %textCtrl = ;
+                %textCtrl = new ""() {
+                    position = GuiMLTextCtrl @ "50 13";
+                    extent = "142 20";
+                    bitmap = %iconPath;
+                };
                 %item.add(%iconCtrl);
                 %item.add(%textCtrl);
                 %textCtrl.bindClassName("SalonStyleSelectorRow");
@@ -93,8 +96,8 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
     }
     %list.reseatChildren();
     if ((0.0 == %list.getNumChildren())) {
-        %msg = (($NUM_SALON_STYLES < %i) SPC $player.getActivePropSku() $= "") ? "No styles available.\nTry choosing a prop." : "No styles available.\nChoose another prop.";
-        noSkuGuiText.setText(SalonStyleSelector @ "<just:center>" @ %msg);
+        %msg = (($NUM_SALON_STYLES < %i) @ " " @ $player.getActivePropSku() $= "") ? "No styles available.\nTry choosing a prop." : "No styles available.\nChoose another prop.";
+        noSkuGuiText.setText("<just:center>" @ %msg);
     }
     noSkuGuiText.setText("");
 };
@@ -118,7 +121,7 @@ function clientCmdHideSalonMenu(%salonChair) {
     cancel($gSalonStylistAnimSchedule);
     $gSalonStylistAnimSchedule = 0;
     $gSalonChairCurrent = 0;
-    close();
+    SalonStyleSelector.close();
 };
 function SalonGiveTheStyleToClient(%styleNumber) {
     cancel($gSalonStylistAnimSchedule);
@@ -140,7 +143,7 @@ function SalonChooseStyle(%styleNumber) {
             return;
         }
     }
-    if ((SalonStyleSelector SPC lastTypeOfSalon $= "drinks")) {
+    if ((SalonStyleSelector @ " " @ lastTypeOfSalon $= "drinks")) {
         drinks_confirmInitiateMake(targetPlayer.getShapeName(), %sku);
     }
     commandToServer('EtsPlayAnimName', %anim);

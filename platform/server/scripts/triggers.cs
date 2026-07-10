@@ -1,4 +1,6 @@
-tickPeriodMS = datablock TriggerData(DefaultTrigger) @ 100;
+datablock TriggerData(DefaultTrigger) {
+    tickPeriodMS = 100;
+};
 function DefaultTrigger::onEnterTrigger(%this, %trigger, %obj) {
     Parent::onEnterTrigger(%this, %trigger, %obj);
 };
@@ -8,16 +10,20 @@ function DefaultTrigger::onLeaveTrigger(%this, %trigger, %obj) {
 function DefaultTrigger::onTickTrigger(%this, %trigger) {
     Parent::onTickTrigger(%this, %trigger);
 };
-tickPeriodMS = datablock TriggerData(MusicTrigger) @ 500;
-targetSpawnSphere = datablock TriggerData(RespawnTriggerDB) @ "";
+datablock TriggerData(MusicTrigger) {
+    tickPeriodMS = 500;
+};
+datablock TriggerData(RespawnTriggerDB) {
+    targetSpawnSphere = "";
+};
 function MusicTrigger::onEnterTrigger(%this, %trigger, %obj) {
-    %cmd = addTaggedString(%trigger.getName() @ "Enter");
-    commandToClient(client, %cmd);
+    %cmd = addTaggedString(RespawnTriggerDB.getName(%trigger) @ "Enter");
+    commandToClient(%obj.client, %cmd);
     Parent::onEnterTrigger(%this, %trigger, %obj);
 };
 function MusicTrigger::onLeaveTrigger(%this, %trigger, %obj) {
     %cmd = addTaggedString(%trigger.getName() @ "Exit");
-    commandToClient(client, %cmd);
+    commandToClient(%obj.client, %cmd);
     Parent::onLeaveTrigger(%this, %trigger, %obj);
 };
 function RespawnTriggerDB::onEnterTrigger(%this, %trigger, %obj) {

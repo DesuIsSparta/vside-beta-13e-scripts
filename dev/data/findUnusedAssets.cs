@@ -16,8 +16,8 @@ function teleportToSpaceLocal(%space) {
     teleportToNextSpace;
 };
 function doLoginCheck() {
-    if (isObject()) {
-        if (!(MissionInfo SPC mode $= "PrivateSpaceGrid")) {
+    if (isObject(pChat)) {
+        if (!(MissionInfo @ " " @ mode $= "PrivateSpaceGrid")) {
             echo("Not a grid. Quiting...");
             schedule(3000, 0);
         }

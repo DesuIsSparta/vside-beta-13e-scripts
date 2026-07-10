@@ -15,7 +15,7 @@ function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cut
     $NUM_SALON_STYLES[$SALON_STYLE_REQUREDSKUSMESSAGE @ $NUM_SALON_STYLES] = %requiredActiveSkusMessage;
     %si = %sku.findBySku();
     SkuManager;
-    salonStyleIndex = $NUM_SALON_STYLES @ %si;
+    %si.salonStyleIndex = $NUM_SALON_STYLES;
     $NUM_SALON_STYLES = (1.0 + $NUM_SALON_STYLES);
 };
 $NUM_SALON_STYLES[$SALON_STYLE_BALD_SKU @ "f"] = 20315;

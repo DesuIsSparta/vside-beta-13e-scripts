@@ -5,9 +5,9 @@ function outfits_init() {
         $gOutfits.delete();
         $gOutfitsDefault.delete();
     }
-    $gOutfits = new ""();
+    $gOutfits = new ""();;
     StringMap;
-    $gOutfitsDefault = new ""();
+    $gOutfitsDefault = new ""();;
     StringMap;
     outfits_makeDefault($gOutfitsDefault);
     $gOutfits.duplicate($gOutfitsDefault);
@@ -29,7 +29,8 @@ function outfits_makeDefault(%stringMap) {
             %stringMap.put(%name, %name[$gNewStockOutfits @ %name]);
             %n = (1.0 - %n);
         }
-        %name = (0.0 >= %n) @ %gender @ "Body";
+        %name = %gender @ "Body";
+        (0.0 >= %n);
         %stringMap.put(%name, %gender[$gDefaultBodyAttrs @ %gender]);
         %m = (1.0 - %m);
     }
@@ -82,7 +83,7 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
         return;
     }
     $gRetrievedOutfits = 1;
-    %stringMap = new ""();
+    %stringMap = new ""();;
     StringMap;
     %num = %request.getValue("propertyCount");
     0;
@@ -96,11 +97,11 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
     }
     echo("Retrieved outfit settings:");
     %stringMap.dumpValues();
-    if (!((%num < %n) SPC %stringMap.get("initialOutfitAndBody") $= "")) {
+    if (!((%num < %n) @ " " @ %stringMap.get("initialOutfitAndBody") $= "")) {
     }
     if ((%stringMap.get("currentOutfit") $= "")) {
         $Player::Name[$userpref::player::initialSkus @ $Player::Name] = %stringMap.get("initialOutfitAndBody");
-        if (!(SkuManager SPC $Player::Name[$userpref::player::initialSkus @ $Player::Name].filterSkusGender("f") $= $Player::Name[$userpref::player::initialSkus @ $Player::Name])) {
+        if (!(SkuManager @ " " @ $Player::Name[$userpref::player::initialSkus @ $Player::Name].filterSkusGender("f") $= $Player::Name[$userpref::player::initialSkus @ $Player::Name])) {
             %skusGender = "m";
         }
         %skusGender = "f";

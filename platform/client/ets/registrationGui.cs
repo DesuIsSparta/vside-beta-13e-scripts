@@ -27,28 +27,26 @@ function RegistrationGui::tryOpenOrWebPage(%this) {
     gotoWebPage($Net::ReregisterURL);
 };
 function RegistrationGui::init(%this) {
-    if (!(initialized)) {
-        waitIcon = %this @ AnimCtrl::newAnimCtrl("300 98", "18 18") @ %this;
-        waitIcon.setDelay(60);
-        waitIcon.addFrame("platform/client/ui/wait0.png");
-        waitIcon.addFrame("platform/client/ui/wait1.png");
-        waitIcon.addFrame("platform/client/ui/wait2.png");
-        waitIcon.addFrame("platform/client/ui/wait3.png");
-        waitIcon.addFrame("platform/client/ui/wait4.png");
-        waitIcon.addFrame("platform/client/ui/wait5.png");
-        waitIcon.addFrame("platform/client/ui/wait6.png");
-        waitIcon.addFrame("platform/client/ui/wait7.png");
-        waitIcon.add();
-        waitIcon.setVisible(0);
-        initialized = %this @ 1 @ %this;
-        %this;
+    if (!(%this.initialized)) {
+        %this.waitIcon = AnimCtrl::newAnimCtrl("300 98", "18 18");
+        %this.waitIcon.setDelay(60);
+        %this.waitIcon.addFrame("platform/client/ui/wait0.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait1.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait2.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait3.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait4.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait5.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait6.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait7.png");
+        %this.waitIcon.add();
+        %this.waitIcon.setVisible(0);
+        %this.initialized = RegistrationCenteredFrame @ 1;
     }
 };
 function RegistrationGui::completeRegistration(%this) {
-    waitIcon.setVisible(1);
-    waitIcon.start();
+    %this.waitIcon.setVisible(1);
+    %this.waitIcon.start();
     %request = sendRequest_CompleteClientRegistration($Net::RegistrationID, "onDoneOrErrorCallback_CompleteClientRegistration");
-    %this;
     "<spush><font:BauhausStd-Demi:20><just:center>Fetching your info..<spop>".setValue();
 };
 function RegistrationGui::markCurrentRegistrationAsCompleted(%this) {
@@ -59,14 +57,13 @@ function RegistrationGui::markCurrentRegistrationAsCompleted(%this) {
 };
 function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
     '8';
-    waitIcon.stop();
-    waitIcon.setVisible(0);
+    %this.waitIcon.stop();
+    %this.waitIcon.setVisible(0);
     if (%request.checkSuccess()) {
         $UserPref::Player::Name = %request.getValue("userName");
-        %this;
+        RegistrationGui;
         $UserPref::Player::Password = %request.getValue("password");
-        %this;
-        if ((RegistrationGui SPC %request.getValue("gender") $= "")) {
+        if ((%request.getValue("gender") $= "")) {
         }
         $UserPref::Player::gender = %request.getValue("gender");
         $UserPref::Player::gender;
@@ -78,22 +75,20 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
         %analytic = getAnalytic();
         LoginPasswordField;
         %analytic.trackPageView("/client/registration/success");
-        doLoginButton();
+        LoginGui.doLoginButton();
     }
     %errorCode = %request.getValue("errorCode");
-    LoginGui;
-    %analytic = getAnalytic();
     LoginUserNameField;
+    %analytic = getAnalytic();
     %analytic.trackPageView("/client/registration/failed/" @ %errorCode);
     if ((%errorCode $= "UNKNOWN_ID")) {
         %errorMessage = %errorCode[$MsgCat::login @ "E-REG-UNKNOWN-ID"];
         error(getScopeName() @ " " @ "- unknown registration ID -" @ " " @ $Net::RegistrationID);
-        markCurrentRegistrationAsCompleted();
-        close();
+        RegistrationGui.markCurrentRegistrationAsCompleted();
+        RegistrationGui.close();
     }
-    if ((RegistrationGui SPC %errorCode $= "INCOMPLETE")) {
+    if ((%errorCode $= "INCOMPLETE")) {
         %errorMessage = %errorCode[$MsgCat::login @ "E-REG-INCOMPLETE"];
-        RegistrationGui;
     }
     %errorMessage = %errorMessage[$MsgCat::login @ "E-REG-UNKNOWN"];
     %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
@@ -101,13 +96,13 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
 };
 function RegistrationGui::close(%this) {
     popScreenSize();
-    setContent();
+    Canvas.setContent(LoginGui);
 };
 function RegistrationLink::onURL(%this, %url) {
     if ((%url $= "HAVE_ACCOUNT")) {
-        close();
+        RegistrationGui.close();
     }
-    if ((RegistrationGui SPC %url $= "REREGISTER")) {
+    if ((%url $= "REREGISTER")) {
         gotoWebPage($Net::ReregisterURL);
     }
     if ((%url $= "FINISH_REGISTRATION")) {

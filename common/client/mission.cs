@@ -1,6 +1,6 @@
 function clientCmdMissionStart(%seq) {
     log("network", "debug", "clientCmdMissionStart seq:" @ " " @ %seq);
-    if (!(isObject())) {
+    if (!(isObject(FMod))) {
         Music::init();
     }
 };

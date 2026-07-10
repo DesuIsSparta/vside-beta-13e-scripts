@@ -84,10 +84,10 @@ function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideA
     if (isObject(%animationMapName)) {
         %map = %animationMapName.getId();
     }
-    %map = new %animationMapName();
+    %map = new %animationMapName();;
     StringMap;
     copyAnimationMap(%map, %src);
-    %map.put("root", 0 @ %gender @ %rootAnim);
+    %map.put("root", %gender @ %rootAnim);
     %map.put("run", %gender @ %runAnim);
     %map.put("side", %gender @ %sideAnim);
     %map.put("back", %gender @ %backAnim);
@@ -303,11 +303,11 @@ function initializeAnimationMapAnimal(%map, %gender, %genre) {
     if (!(isObject(%map))) {
         new %map();
     }
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %map.add();
     }
-    %map.put("root", MissionCleanup @ MissionCleanup @ %gender @ %genre @ "idle1");
-    %map.put("run", 0 @ StringMap @ %gender @ %genre @ "wlkf");
+    %map.put("root", %gender @ %genre @ "idle1");
+    %map.put("run", %gender @ %genre @ "wlkf");
     %map.put("back", %gender @ %genre @ "wlkf");
     %map.put("idl1a", %gender @ %genre @ "idle1");
     %map.put("idl1b", %gender @ %genre @ "idle2");
@@ -318,7 +318,7 @@ function initializeAnimationMap(%map, %gender, %genre) {
     if (!(isObject(%map))) {
         new %map();
     }
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %map.add();
     }
     addGenreSpecificAnimations(%map, %gender, %genre);
@@ -328,7 +328,7 @@ function copyAnimationMap(%map, %src) {
     if (!(isObject(%map))) {
         new %map();
     }
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %map.add();
     }
     %map.duplicate(%src);
@@ -888,9 +888,9 @@ function initNoAutoEmoteList() {
 $gNoAutoEmoteWords = 0;
 function addNoAutoEmoteWord(%word) {
     if (!(isObject($gNoAutoEmoteWords))) {
-        $gNoAutoEmoteWords = new ""();
+        $gNoAutoEmoteWords = new ""();;
         StringMap;
-        if (isObject()) {
+        if (isObject(MissionCleanup)) {
             $gNoAutoEmoteWords.add();
         }
     }

@@ -8,23 +8,22 @@ function danceTool::open(%this) {
     userTips::showOnceEver("DanceToolUsage");
     %this.initialcontent();
     if (!(isObject($gDanceToolSequence))) {
-        $gDanceToolSequence = new ""();
+        $gDanceToolSequence = new ""();;
         StringMap;
-        if (isObject()) {
+        if (isObject(MissionCleanup)) {
             $gDanceToolSequence.add();
         }
     }
 };
 function danceTool::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     $gDanceToolTimer = 0;
-    PlayGui;
     return 1;
 };
 function toggleDanceTool() {
     if (showDanceTool()) {
-        showRaiseOrHide();
+        PlayGui.showRaiseOrHide(danceTool);
     }
 };
 function danceTool::record(%this) {
@@ -34,13 +33,13 @@ function danceTool::record(%this) {
     "STOP (recording)".setText();
     0.setVisible();
     0.setVisible();
-    recording = guiDanceToolCheckBoxLoop @ 1 @ %this;
+    %this.recording = guiDanceToolCheckBoxLoop @ 1;
     guiDanceToolButtonCopyFrom;
-    playing = guiDanceToolButtonStop @ 0 @ %this;
+    %this.playing = guiDanceToolButtonStop @ 0;
     guiDanceToolButtonStop;
-    nextStep = guiDanceToolButtonPlay @ 0 @ %this;
+    %this.nextStep = guiDanceToolButtonPlay @ 0;
     guiDanceToolButtonRecord;
-    prevStepTime = -(1.0) @ %this;
+    %this.prevStepTime = -(1.0);
     "".setText();
     $player.getShapeName().setText();
     "my cool dance".setText();
@@ -54,13 +53,13 @@ function danceTool::play(%this) {
     "STOP (playing)".setText();
     0.setVisible();
     1.setVisible();
-    %this.constructSequence(getText());
-    recording = guiDanceToolMLTextBody @ 0 @ %this;
-    guiDanceToolCheckBoxLoop;
-    playing = guiDanceToolButtonCopyFrom @ 1 @ %this;
+    %this.constructSequence(guiDanceToolMLTextBody.getText());
+    %this.recording = guiDanceToolCheckBoxLoop @ 0;
+    guiDanceToolButtonCopyFrom;
+    %this.playing = guiDanceToolButtonStop @ 1;
     guiDanceToolButtonStop;
-    prevStep = guiDanceToolButtonStop @ -(1.0) @ %this;
-    guiDanceToolButtonPlay;
+    %this.prevStep = guiDanceToolButtonPlay @ -(1.0);
+    guiDanceToolButtonRecord;
     %this.startTimer();
 };
 function danceTool::stop(%this) {
@@ -70,13 +69,13 @@ function danceTool::stop(%this) {
     1.setVisible();
     1.setVisible();
     commandToServer('DanceSequenceDone');
-    if (recording) {
+    if (%this.recording) {
         %this.finishRecordingPreviousStep();
     }
-    recording = %this @ 0 @ %this;
-    guiDanceToolCheckBoxLoop;
-    playing = guiDanceToolButtonCopyFrom @ 0 @ %this;
-    guiDanceToolButtonStop;
+    %this.recording = guiDanceToolCheckBoxLoop @ 0;
+    guiDanceToolButtonCopyFrom;
+    %this.playing = guiDanceToolButtonStop @ 0;
+    guiDanceToolButtonPlay;
     %this.stopTimer();
 };
 function danceTool::startTimer(%this) {
@@ -89,8 +88,8 @@ function danceTool::stopTimer(%this) {
     $gDanceToolTimer = 0;
 };
 function danceTool::timerTick(%this) {
-    if (!(playing)) {
-        return %this;
+    if (!(%this.playing)) {
+        return;
     }
     %this.playNextStep();
     $gDanceToolTimer = %this.schedule($gDanceToolTimerPeriod, "timerTick");
@@ -98,57 +97,51 @@ function danceTool::timerTick(%this) {
 function danceTool::constructSequence(%this, %lines) {
     %numFields = 2;
     %totalT = 0;
-    numSteps = getRecordCount(%lines) @ %this;
+    %this.numSteps = getRecordCount(%lines);
     %n = 0;
-    if ((numSteps < %n)) {
+    if ((%this.numSteps < %n)) {
         %line = getRecord(%lines, %n);
-        %this;
         %wc = getWordCount(%line);
         if ((%numFields >= %wc)) {
             %stepName = getWords(%line, 0, (%numFields - %wc));
             %stepDuration = getWord(%line, (1.0 - %wc));
-            stepTimes = %totalT @ %n @ %this;
-            stepNames = %stepName @ %n @ %this;
+            %this.stepTimes = %totalT @ %n;
+            %this.stepNames = %stepName @ %n;
             %totalT = (%stepDuration + %totalT);
         }
         %n = (1.0 + %n);
     }
-    stepTimes = (numSteps < %n) @ %totalT @ %this @ numSteps @ %this;
-    %this;
-    stepNames = "(finished)" @ %this @ numSteps @ %this;
-    numSteps = (%this + numSteps);
-    1.0;
+    %this.stepTimes = (%this.numSteps < %n) @ %totalT @ %this.numSteps;
+    %this.stepNames = "(finished)" @ %this.numSteps;
+    %this.numSteps = (1.0 + %this.numSteps);
 };
 function danceTool::playNextStep(%this) {
     %curDanceTime = ($gDanceToolTimeStart - getSimTime());
     %curDanceTime = (0.001 * %curDanceTime);
     %playStep = -(1.0);
     %tooFar = 0;
-    if ((%this >= prevStep)) {
-        %n = (%this + prevStep);
-        1.0;
-        if ((numSteps < %n)) {
+    if ((0.0 >= %this.prevStep)) {
+        %n = (1.0 + %this.prevStep);
+        if ((%this.numSteps < %n)) {
         }
         if (!(%tooFar)) {
-            if ((%curDanceTime @ %n @ %this <= stepTimes)) {
+            if ((%curDanceTime @ %n <= %this.stepTimes)) {
                 %playStep = %n;
-                %this;
-                %playStepTime = stepTimes;
-                0.0 @ %n @ %this;
+                %playStepTime = %this.stepTimes;
+                %n;
             }
             %tooFar = 1;
             %n = (1.0 + %n);
-            if ((numSteps < %n)) {
+            if ((%this.numSteps < %n)) {
             }
         }
     }
     %playStep = 0;
     !(%tooFar);
-    if (((%this - numSteps) >= %playStep)) {
-        if (getValue()) {
+    if (((1.0 - %this.numSteps) >= %playStep)) {
+        if (guiDanceToolCheckBoxLoop.getValue()) {
             %this.play();
             $gDanceToolTimeStart = ((%playStepTime - %curDanceTime) + $gDanceToolTimeStart);
-            guiDanceToolCheckBoxLoop;
         }
         %this.stop();
     }
@@ -159,14 +152,14 @@ function danceTool::playNextStep(%this) {
 function danceTool::playStep(%this, %stepNum) {
     if ((0.0 < %stepNum)) {
     }
-    if ((numSteps >= %stepNum)) {
-        error(%this @ numSteps);
+    if ((%this.numSteps >= %stepNum)) {
+        error("invalid step index" @ " " @ %stepNum @ " " @ " - we have" @ " " @ %this.numSteps);
         %this.stop();
-        return "invalid step index" @ " " @ %stepNum @ " " @ " - we have" @ " ";
+        return;
     }
-    %stepName = stepNames;
-    %stepNum @ %this;
-    prevStep = %stepNum @ %this;
+    %stepName = %this.stepNames;
+    %stepNum;
+    %this.prevStep = %stepNum;
     %animName = %this.getAnimName(%stepName);
     if (!(%this.canRecordAnim(%animName))) {
         return;
@@ -184,8 +177,8 @@ function danceTool::canRecordAnim(%this, %nameInternal) {
     return 0;
 };
 function danceTool::addStep(%this, %nameInternal) {
-    if (!(recording)) {
-        return %this;
+    if (!(%this.recording)) {
+        return;
     }
     if (!(%this.canRecordAnim(%nameInternal))) {
         return;
@@ -196,20 +189,18 @@ function danceTool::addStep(%this, %nameInternal) {
 };
 function danceTool::finishRecordingPreviousStep(%this) {
     %t = getSimTime();
-    if ((%this != prevStepTime)) {
-        %dt = (prevStepTime - %t);
-        %this;
+    if ((-(1.0) != %this.prevStepTime)) {
+        %dt = (%this.prevStepTime - %t);
         %dt = (0.001 * mFloor(%dt));
-        -(1.0);
         if ((0.1 < %dt)) {
             %dt = 0.1;
         }
-        guiDanceToolMLTextBody @ " " @ %dt @ "\n".addText(1, 1);
+        " " @ %dt @ "\n".addText(1, 1);
     }
-    prevStepTime = %t @ %this;
+    %this.prevStepTime = guiDanceToolMLTextBody @ %t;
 };
 function clientCmdDisableDanceTool(%unused) {
-    stop();
+    danceTool.stop();
     handleSystemMessage("msgInfoMessage", "");
 };
 function danceTool::setGender(%this, %gender) {
@@ -234,11 +225,10 @@ function danceTool::clipboardPasteFrom(%this) {
 function danceTool::getContent(%this) {
     %content = "";
     %content = %content @ $gDanceToolVersionString @ "\n";
-    %content = %content @ guiDanceToolTextAuthor @ getValue() @ "\n";
-    %content = %content @ guiDanceToolTextTitle @ getValue() @ "\n";
+    %content = %content @ guiDanceToolTextAuthor.getValue() @ "\n";
+    %content = %content @ guiDanceToolTextTitle.getValue() @ "\n";
     %content = %content @ $player.getGender() @ "\n";
-    %content = guiDanceToolMLTextBody @ getValue();
-    %content;
+    %content = %content @ guiDanceToolMLTextBody.getValue();
     return %content;
 };
 function danceTool::setContent(%this, %content) {

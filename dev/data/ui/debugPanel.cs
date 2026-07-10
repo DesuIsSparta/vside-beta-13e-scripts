@@ -10,13 +10,13 @@ function debugPanel::open(%this) {
 };
 function debugPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 function debugPanel::onWake(%this) {
     getWord($UserPref::Video::Resolution, 0).setValue();
     getWord($UserPref::Video::Resolution, 1).setValue();
-    if (isObject()) {
+    if (isObject(debugPanel_SkuSnapButton)) {
     }
     if (!(isFunction("skuSnapshot_isSkuSnapshot"))) {
         0.setActive();
@@ -25,12 +25,10 @@ function debugPanel::onWake(%this) {
 function debugPanel::resizeApp(%this) {
     $UserPref::Video::ConstrainWindowDimensions = 0;
     $UserPref::Video::ConstrainWindowDimensions.setValue();
-    %x = getValue();
-    gui_DevOpts_ResX;
-    %y = getValue();
-    gui_DevOpts_ResY;
-    %bpp = getWord($UserPref::Video::Resolution, 2);
+    %x = gui_DevOpts_ResX.getValue();
     gui_DevOpts_Constrain;
+    %y = gui_DevOpts_ResY.getValue();
+    %bpp = getWord($UserPref::Video::Resolution, 2);
     setScreenMode(%x, %y, %bpp, 0);
 };
 function debugPanel::advanceGPTime(%time) {

@@ -1,8 +1,8 @@
 function toggleHelpMeMode(%this) {
-    if (isObject()) {
-        if ((ApplauseMeterGui SPC applauseMeterUse $= "sumo")) {
-            if ((ApplauseMeterGui SPC sumoGameType $= "PillowFightGame")) {
-                MessageBoxOK(ApplauseMeterGui, , "");
+    if (isObject(ApplauseMeterGui)) {
+        if ((ApplauseMeterGui @ " " @ applauseMeterUse $= "sumo")) {
+            if ((ApplauseMeterGui @ " " @ sumoGameType $= "PillowFightGame")) {
+                MessageBoxOK(, , "");
             }
             MessageBoxOK(, , "");
             return;
@@ -14,8 +14,8 @@ function toggleHelpMeMode(%this) {
     setHelpMeMode();
 };
 function updateHelpMeModeMenu() {
-    if (!(isObject())) {
-        return HelpPopupMenu;
+    if (!(isObject(HelpPopupMenu))) {
+        return;
     }
     %item = "helpMe".findObjectByInternalName();
     HelpPopupMenu;
@@ -31,7 +31,7 @@ function updateHelpMeModeMenu() {
     }
     %text = "Ask other vSiders for Help";
     %item.setMenuItemText(%text);
-    command = %command @ %item;
+    %item.command = %command;
 };
 $gHelpMeModeDuration = (1000.0 * (60.0 * 3.0));
 $gHelpMeModeAutoOffTimer = 0;
@@ -82,19 +82,19 @@ function Player::onAnimationStart(%this, %animName) {
 function Player::onAnimationSku(%this, %state, %animName, %animInternalName) {
     %animSkus = %this.getAnimationSkus(%animInternalName);
     if ((%animSkus $= "")) {
-        if (!(%this SPC currentBaseActiveSkus $= "")) {
-            if (!(%this SPC currentBaseActiveSkus $= %this.getActiveSKUs())) {
-                %this.setActiveSKUs(currentBaseActiveSkus);
+        if (!(%this.currentBaseActiveSkus $= "")) {
+            if (!(%this.currentBaseActiveSkus $= %this.getActiveSKUs())) {
+                %this.setActiveSKUs(%this.currentBaseActiveSkus);
             }
         }
-        return %this;
+        return;
     }
     %activeSkus = %this.getActiveSKUs();
     if (%state) {
         %activeSkus = %activeSkus.overlaySkus(%animSkus);
         SkuManager;
     }
-    %activeSkus = currentBaseActiveSkus.overlaySkus(%activeSkus.skusRemove(%animSkus));
+    %activeSkus = %this.currentBaseActiveSkus.overlaySkus(%activeSkus.skusRemove(%animSkus));
     SkuManager;
     %this.setActiveSKUs(%activeSkus);
 };
@@ -102,7 +102,7 @@ function Player::getAnimationSkus(%this, %animInternalName) {
     if ((%animInternalName $= "")) {
         return "";
     }
-    if ((%animInternalName @ %this SPC animationSkus $= "")) {
+    if ((%animInternalName @ " " @ %this.animationSkus $= "")) {
         %skusIndex = strstr(%animInternalName, "_skus_");
         if ((-(1.0) == %skusIndex)) {
             %skus = "";
@@ -112,9 +112,9 @@ function Player::getAnimationSkus(%this, %animInternalName) {
         %skus = restWords(restWords(%skusString));
         %skus = %skus.filterSkusGender(%this.getGender());
         SkuManager;
-        animationSkus = %skus @ %animInternalName @ %this;
+        %this.animationSkus = %skus @ %animInternalName;
     }
-    return animationSkus;
+    return %this.animationSkus;
 };
 $gPlayerStaggerTimer = "";
 $gPlayerStaggerTimerPeriod = 300;
@@ -165,13 +165,12 @@ function Player::onAnimationDoneClient(%this, %unused) {
     if (($player.getId() != %this.getId())) {
         return;
     }
-    if (isObject()) {
+    if (isObject(ClosetGui)) {
     }
-    if (isVisible()) {
-        isDoingPropAction = ClosetGui @ 0 @ ClosetGui;
-        ClosetGui;
-        if (isObject()) {
-            skus.refresh();
+    if (ClosetGui.isVisible()) {
+        %this.isDoingPropAction = 0 @ ClosetGui;
+        if (isObject(ClosetWhatYoureWearingList)) {
+            %this.skus.refresh();
         }
     }
 };

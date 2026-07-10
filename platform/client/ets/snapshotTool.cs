@@ -1,5 +1,5 @@
 function toggleSnapshotTool() {
-    showRaiseOrHide();
+    PlayGui.showRaiseOrHide(snapshotTool);
 };
 function snapshotTool::open(%this) {
     %this.setVisible(1);
@@ -7,13 +7,13 @@ function snapshotTool::open(%this) {
 };
 function snapshotTool::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function snapshotTool::doSnap(%this) {
     gSetField(%this, $Canvas::frameCount);
     gSetField(%this, profile);
-    setProfile();
+    ClosetMainObjectView.setProfile(ETSSnapshotBackgroundProfile);
     0.setVisible();
     %this.waitForNextFrameToSnap();
 };
@@ -32,7 +32,7 @@ function snapshotTool::doSnap2(%this) {
         error("Snapshot", "Problem taking snapshot");
         return;
     }
-    saveObject = %this @ %snapshot;
+    %snapshot.saveObject = %this;
     %snapshot.setCompletedCallback("snapshotToolonComplete");
     0.setVisible();
     1.setVisible();
@@ -41,20 +41,18 @@ function snapshotTool::doSnap2(%this) {
     gGetField(%this).setProfile();
 };
 function snapshotTool::onProgress(%this, %snapshot) {
-    %percent = (%snapshot / ulNow);
-    ulTotal;
+    %percent = (%snapshot.ulTotal / %snapshot.ulNow);
     %percent.setValue();
 };
 function snapshotToolonComplete(%request, %result) {
-    %snapshot = saveObject;
-    %request;
+    %snapshot = %request.saveObject;
     if ((0.0 == %result)) {
         1.setVisible();
         0.setVisible();
-        if (!(%snapshot SPC visitWhenDoneUrl $= "")) {
+        if (!(snapshotToolSet2 @ " " @ %snapshot.visitWhenDoneUrl $= "")) {
         }
         if ($UserPref::Snapshots::View) {
-            gotoWebPage(visitWhenDoneUrl);
+            gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
     }
     1.setVisible();

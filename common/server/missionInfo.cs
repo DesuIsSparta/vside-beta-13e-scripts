@@ -1,13 +1,13 @@
 function clearLoadInfo() {
-    if (isObject()) {
-        delete();
+    if (isObject(MissionInfo)) {
+        MissionInfo.delete();
     }
-    return MissionInfo;
+    return;
 };
 function buildLoadInfo(%mission) {
     clearLoadInfo();
     %infoObject = "";
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     if (%file.openForRead(%mission)) {
         %inInfoBlock = 0;
@@ -39,20 +39,21 @@ function dumpLoadInfo() {
     echo("Mission Description:");
     %i = 0;
     "Mission Name: ";
-    if (!(%i @ MissionInfo SPC desc $= "")) {
-        echo("   " @ %i @ MissionInfo @ desc);
+    if (!(%i @ MissionInfo @ " " @ desc $= "")) {
+        echo(%i @ MissionInfo @ desc);
         %i = (1.0 + %i);
+        "   ";
     }
 };
 function sendLoadInfoToClient(%client) {
     messageClient(%client, 'MsgLoadInfo', name);
     %i = 0;
     MissionInfo;
-    if (!(%i @ MissionInfo SPC desc $= "")) {
+    if (!(%i @ MissionInfo @ " " @ desc $= "")) {
         messageClient(%client, 'MsgLoadDescripition', desc);
         %i = (1.0 + %i);
         %i @ MissionInfo;
     }
     messageClient(%client, 'MsgLoadInfoDone', "");
-    return !(%i @ MissionInfo SPC desc $= "");
+    return !(%i @ MissionInfo @ " " @ desc $= "");
 };

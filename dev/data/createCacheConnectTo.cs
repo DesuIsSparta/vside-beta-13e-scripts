@@ -4,7 +4,7 @@ schedule(3000, 0);
 $iterationsWaited = 0;
 doLoginCheck;
 function doLoginCheck() {
-    if (isObject()) {
+    if (isObject(pChat)) {
         echo("CACHE: We found PChat. Quitting in 2 seconds...");
         schedule(2000, 0);
         echo("CACHE: Telling server to shutdown.");
@@ -23,6 +23,6 @@ function doLoginCheck() {
 };
 function logoutAndQuit() {
     logout(0);
-    exit();
+    WorldMap.exit();
     quit();
 };

@@ -4,27 +4,26 @@ function geTwoPlayerEmotesConfirmPanel::open(%this, %otherPlayerName, %coAnimNam
         error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName @ " " @ getTrace());
         return;
     }
-    add();
+    PlayGui.add(geTwoPlayerEmotesConfirmPanelBackground);
     1.setVisible();
-    getWord(getExtent(), 0).resize(getWord(getExtent(), 1));
+    getWord(PlayGui.getExtent(), 0).resize(getWord(PlayGui.getExtent(), 1));
     0.reposition(0);
-    focusAndRaise();
+    PlayGui.focusAndRaise(geTwoPlayerEmotesConfirmPanelBackground);
     %this.ensureAdded();
     %this.setVisible(1);
     %this.focusAndRaise();
     setActionMapsEnabled(0);
-    otherPlayerName = PlayGui @ %otherPlayerName @ %this;
+    %this.otherPlayerName = PlayGui @ %otherPlayerName;
     PlayGui;
-    coAnimName = geTwoPlayerEmotesConfirmPanelBackground @ %coAnimName @ %this;
-    PlayGui;
-    requestID = geTwoPlayerEmotesConfirmPanelBackground @ %requestId @ %this;
-    PlayGui;
+    %this.coAnimName = geTwoPlayerEmotesConfirmPanelBackground @ %coAnimName;
+    geTwoPlayerEmotesConfirmPanelBackground;
+    %this.requestID = geTwoPlayerEmotesConfirmPanelBackground @ %requestId;
     %this.countdownTick((1000.0 * 15.0));
     %this.refresh();
 };
 function geTwoPlayerEmotesConfirmPanel::close(%this, %accepted, %messageCode) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     0.setVisible();
     setActionMapsEnabled(1);
     if (!(isDefined("%accepted"))) {
@@ -33,71 +32,61 @@ function geTwoPlayerEmotesConfirmPanel::close(%this, %accepted, %messageCode) {
     }
     if (!(isDefined("%messageCode"))) {
         %messageCode = "DECLINE MANUAL";
-        PlayGui;
     }
     %this.doAccept(%accepted, %messageCode);
     return 1;
 };
 function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemainingMS) {
     if (isDefined("%resetTimeRemainingMS")) {
-        countdownMSRemaining = %resetTimeRemainingMS @ %this;
+        %this.countdownMSRemaining = %resetTimeRemainingMS;
     }
     %tickPeriod = 100;
-    countdownMSRemaining = (%this - countdownMSRemaining);
-    %tickPeriod;
-    rotRadians = 6.0 @ (0.001 / (%this * countdownMSRemaining)) @ geTwoPlayerEmotesConfirmClock_littleHand;
-    rotRadians = 0.001 @ (%this * countdownMSRemaining) @ geTwoPlayerEmotesConfirmClock_bigHand;
-    %text = mFloor((0.001 + (%this * countdownMSRemaining)));
-    0.5;
+    %this.countdownMSRemaining = (%tickPeriod - %this.countdownMSRemaining);
+    %this.rotRadians = (6.0 / (0.001 * %this.countdownMSRemaining)) @ geTwoPlayerEmotesConfirmClock_littleHand;
+    %this.rotRadians = (0.001 * %this.countdownMSRemaining) @ geTwoPlayerEmotesConfirmClock_bigHand;
+    %text = mFloor((0.5 + (0.001 * %this.countdownMSRemaining)));
     %text = %text @ "..";
     %text.setTextWithStyle();
-    cancel(countdownTimerID);
-    if ((%this > countdownMSRemaining)) {
+    cancel(%this.countdownTimerID);
+    if ((0.0 > %this.countdownMSRemaining)) {
     }
     if (%this.isVisible()) {
-        countdownTimerID = 0.0 @ %this.schedule(%tickPeriod, "countdownTick") @ %this;
-        %this;
+        %this.countdownTimerID = geTwoPlayerEmotesConfirmClock_readout @ %this.schedule(%tickPeriod, "countdownTick");
     }
     %this.close(0, "DECLINE TIMEOUT");
-    %coAnimEntry = findCoAnimEntry(coAnimName);
-    %this;
+    %coAnimEntry = findCoAnimEntry(%this.coAnimName);
     %actionDesc = getField(%coAnimEntry, 6);
-    geTwoPlayerEmotesConfirmClock_readout;
     %text = %actionDesc[$MsgCat::coanim @ "E-TOOSLOW"];
-    %text = strreplace(%text, "[OTHERPLAYER]", otherPlayerName);
-    %this;
+    %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
     %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
     handleSystemMessage("msgInfoMessage", %text);
 };
 function geTwoPlayerEmotesConfirmPanel::doAccept(%this, %accepted, %messageCode) {
-    cancel(countdownTimerID);
-    commandToServer('CoAnimRespond', requestID, %messageCode);
+    cancel(%this.countdownTimerID);
+    commandToServer('CoAnimRespond', %this.requestID, %messageCode);
 };
 function geTwoPlayerEmotesConfirmPanel::refresh(%this) {
-    %otherPlayer = Player::findPlayerInstance(otherPlayerName);
-    %this;
+    %otherPlayer = Player::findPlayerInstance(%this.otherPlayerName);
     if (!(isObject(%otherPlayer))) {
-        error(%this @ otherPlayerName);
+        error(getScopeName() @ " " @ "- couldn't find target player:" @ " " @ %this.otherPlayerName);
         %this.close();
-        return getScopeName() @ " " @ "- couldn't find target player:" @ " ";
+        return;
     }
-    %text = %this @ otherPlayerName;
-    "<just:right><clip:1000>";
+    %text = "<just:right><clip:1000>" @ %this.otherPlayerName;
     %text.setTextWithStyle();
-    %otherPlayerPortraitUrl = geTwoPlayerEmotesConfirmOtherPlayerName @ $Net::AvatarURL @ %this @ urlEncode(otherPlayerName) @ "?size=M";
-    geTwoPlayerEmotesConfirmOtherPlayerPortrait @ "platform/client/ui/tgf/tgf_profile_default_" @ %otherPlayer.getGender().setBitmap();
+    %otherPlayerPortraitUrl = $Net::AvatarURL @ urlEncode(%this.otherPlayerName) @ "?size=M";
+    geTwoPlayerEmotesConfirmOtherPlayerName;
+    "platform/client/ui/tgf/tgf_profile_default_" @ %otherPlayer.getGender().setBitmap();
     %otherPlayerPortraitUrl.downloadAndApplyBitmap();
-    %text = %this @ coAnimName;
-    "Two-Player Action -" @ " ";
-    %text.setTextWithStyle();
-    %coAnimEntry = findCoAnimEntry(coAnimName);
-    %this;
-    %actionDesc = getField(%coAnimEntry, 6);
-    geTwoPlayerEmotesConfirmTitle;
-    %text = %actionDesc[$MsgCat::coanim @ "ACCEPT-OR-DECLINE"];
+    %text = "Two-Player Action -" @ " " @ %this.coAnimName;
     geTwoPlayerEmotesConfirmOtherPlayerPortrait;
-    %text = strreplace(%text, "[OTHERPLAYER]", otherPlayerName);
-    %this;
+    %text.setTextWithStyle();
+    %coAnimEntry = findCoAnimEntry(%this.coAnimName);
+    geTwoPlayerEmotesConfirmTitle;
+    %actionDesc = getField(%coAnimEntry, 6);
+    geTwoPlayerEmotesConfirmOtherPlayerPortrait;
+    %text = %actionDesc[$MsgCat::coanim @ "ACCEPT-OR-DECLINE"];
+    %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
     %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
     %text.setTextWithStyle();
 };

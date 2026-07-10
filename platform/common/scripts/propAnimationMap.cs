@@ -200,8 +200,7 @@ function isPropGenre(%genre) {
 };
 function dumpProps() {
     echo(getTrace());
-    %num = size();
-    PropInternalDescriptionMap;
+    %num = PropInternalDescriptionMap.size();
     %n = 0;
     if ((%num < %n)) {
         %sku = %n.getKey();

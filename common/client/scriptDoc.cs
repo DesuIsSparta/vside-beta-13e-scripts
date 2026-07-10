@@ -1,10 +1,10 @@
 function writeOutFunctions() {
     new "scriptFunctions.txt"(0);
     dumpConsoleFunctions();
-    delete();
+    0.delete(Logger);
 };
 function writeOutClasses() {
     new "scriptClasses.txt"(0);
     dumpConsoleClasses();
-    delete();
+    0.delete(Logger);
 };

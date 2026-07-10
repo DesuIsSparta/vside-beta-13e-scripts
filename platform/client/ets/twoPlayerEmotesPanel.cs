@@ -2,21 +2,20 @@ function TwoPlayerEmotesPanel::open(%this, %playerName) {
     %this.ensureAdded();
     %this.setVisible(1);
     %this.focusAndRaise();
-    playerName = PlayGui @ %playerName @ %this;
+    %this.playerName = PlayGui @ %playerName;
     PlayGui;
-    TwoPlayerEmotesText @ "Target: " @ %playerName.setText();
+    "Target: " @ %playerName.setText();
     %this.refresh();
 };
 function TwoPlayerEmotesPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function TwoPlayerEmotesPanel::refresh(%this) {
     %width = getWord(%this.getExtent(), 0);
     %height = getWord(%this.getExtent(), 1);
-    %cursorPos = getCursorPos();
-    Canvas;
+    %cursorPos = Canvas.getCursorPos();
     %targetX = (20.0 - getWord(%cursorPos, 0));
     %targetY = (5.0 - getWord(%cursorPos, 1));
     %pos = onscreenCoordinates(%targetX, %targetY, %width, %height);
@@ -35,7 +34,7 @@ function TwoPlayerEmotesPanel::refresh(%this) {
 };
 function TwoPlayerEmotesList::onSelect(%this, %id, %text) {
     if ((0.0 >= %id)) {
-        doCoAnim(%text, playerName);
-        close();
+        doCoAnim(%text, %this.playerName);
+        TwoPlayerEmotesPanel.close();
     }
 };

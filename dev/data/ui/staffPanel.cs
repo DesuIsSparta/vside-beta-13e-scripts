@@ -10,6 +10,6 @@ function staffPanel::open(%this) {
 };
 function staffPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };

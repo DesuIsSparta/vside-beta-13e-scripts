@@ -1,46 +1,45 @@
 function new_ScriptArray(%name) {
-    %obj = new ""();
+    %obj = new ""();;
     ScriptObject;
     %obj.bindClassName("ScriptArray");
-    numElements = 0 @ 0 @ %obj;
+    %obj.numElements = 0 @ 0;
     %obj.setName(%name);
     return %obj;
 };
 function ScriptArray::append(%this, %value) {
-    Array = %value @ %this @ numElements @ %this;
-    numElements = (%this + numElements);
-    1.0;
+    %this.Array = %value @ %this.numElements;
+    %this.numElements = (1.0 + %this.numElements);
 };
 function ScriptArray::get(%this, %index) {
     if ((0.0 < %index)) {
     }
-    if ((numElements >= %index)) {
+    if ((%this.numElements >= %index)) {
         error("ScriptArray::get()" @ " " @ "- Subscript out of range:" @ " " @ %index @ " " @ getTrace());
         return "";
     }
-    return Array;
+    return %this.Array;
 };
 function ScriptArray::set(%this, %index, %value) {
-    if ((numElements > %index)) {
+    if ((%this.numElements > %index)) {
         error("ScriptArray::set()" @ " " @ "- Subscript out of range:" @ " " @ %index @ " " @ "value:" @ " " @ %value @ " " @ getTrace());
-        return %this;
+        return;
     }
-    if ((numElements == %index)) {
+    if ((%this.numElements == %index)) {
         %this.append(%value);
     }
-    Array = %this @ %value @ %index @ %this;
+    %this.Array = %value @ %index;
 };
 function ScriptArray::size(%this) {
-    return numElements;
+    return %this.numElements;
 };
 function ScriptArray::clear(%this) {
-    numElements = 0 @ %this;
+    %this.numElements = 0;
 };
 function ScriptArray::deleteMembers(%this) {
     %n = 0;
-    if ((numElements < %n)) {
-        %element = Array;
-        %this @ %n @ %this;
+    if ((%this.numElements < %n)) {
+        %element = %this.Array;
+        %n;
         if (isObject(%element)) {
             %element.delete();
         }
@@ -51,9 +50,8 @@ function ScriptArray::deleteMembers(%this) {
 };
 function ScriptArray::dumpValues(%this) {
     %n = 0;
-    if ((numElements < %n)) {
+    if ((%this.numElements < %n)) {
         echo(%n @ " " @ %this.get(%n));
         %n = (1.0 + %n);
-        %this;
     }
 };

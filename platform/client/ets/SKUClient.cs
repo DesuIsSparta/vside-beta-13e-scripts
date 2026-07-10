@@ -1,5 +1,5 @@
 function Player::onGotSKUs(%this) {
-    currentBaseActiveSkus = %this.getActiveSKUs() @ %this;
+    %this.currentBaseActiveSkus = %this.getActiveSKUs();
     if (%this.hasMicrophone()) {
         %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
         %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
@@ -13,50 +13,45 @@ function Player::onGotSKUs(%this) {
     %gender = %this.getGender();
     %outfitName = $gOutfits.get("currentOutfit");
     $gOutfits.put(%gender @ "Body", %skus.filterSkusForBody());
-    $gOutfits.put(SkuManager @ %gender @ %outfitName, %skus.filterSkusForClothing());
+    $gOutfits.put(%gender @ %outfitName, %skus.filterSkusForClothing());
     $Player::IsInHelpMeMode = %this.isInHelpMeMode();
     SkuManager;
-    if (isObject()) {
+    if (isObject(SalonStyleSelector)) {
     }
-    if (isVisible()) {
-        refreshAvailableStyles();
+    if (SalonStyleSelector.isVisible()) {
+        SalonStyleSelector.refreshAvailableStyles();
     }
     %instrumentGenre = "";
-    SalonStyleSelector;
-    if (isObject()) {
+    SkuManager;
+    if (isObject(ApplauseMeterGui)) {
         %usingInstrument = 0;
-        ApplauseMeterGui;
-        %i = (InstrumentRegistryClient - getInstrumentCount());
-        1.0;
+        %i = (1.0 - InstrumentRegistryClient.getInstrumentCount());
         if ((0.0 >= %i)) {
         }
         if (!(%usingInstrument)) {
             %instrument = %i.getInstrumentByIndex();
             InstrumentRegistryClient;
-            if (hasWord(%skus, skus)) {
-                "instrument".open(name);
-                %instrumentGenre = genre;
-                %instrument;
+            if (hasWord(%skus, %instrument.skus)) {
+                "instrument".open(%instrument.name);
+                %instrumentGenre = %instrument.genre;
+                ApplauseMeterGui;
                 %usingInstrument = 1;
-                %instrument;
+                %gender;
             }
             %i = (1.0 - %i);
-            ApplauseMeterGui;
             if ((0.0 >= %i)) {
             }
         }
         if (!(%usingInstrument)) {
         }
-        if ((ApplauseMeterGui SPC applauseMeterUse $= "instrument")) {
-            closingFromServer = !(%usingInstrument) @ 1 @ ApplauseMeterGui;
-            SalonStyleSelector @ %gender @ %instrument;
-            close();
+        if ((ApplauseMeterGui @ " " @ %instrument.applauseMeterUse $= "instrument")) {
+            %instrument.closingFromServer = 1 @ ApplauseMeterGui;
+            !(%usingInstrument);
+            ApplauseMeterGui.close();
         }
     }
     %propSku = %this.getActivePropSku();
-    ApplauseMeterGui;
     %currentGenre = %this.getGenre();
-    SalonStyleSelector;
     if ((%propSku $= "")) {
         if (isPropGenre(%currentGenre)) {
             %propGenre = %currentGenre;
@@ -113,20 +108,18 @@ function Player::onGotSKUs(%this) {
         commandToServer('setGenre', $UserPref::Player::Genre);
     }
     updateHelpMeModeMenu();
-    updateModeIcon();
+    MessageHud.updateModeIcon();
     %this.resetSkuEffectsClient();
     %n = (1.0 - getWordCount(%skus));
-    MessageHud;
     if ((0.0 >= %n)) {
         %sku = getWord(%skus, %n);
-        if (!(hasWord(prevActiveSkus, %sku))) {
+        if (!(hasWord(%this.prevActiveSkus, %sku))) {
             trySkuNotification(%sku);
         }
         %this.trySkuEffectsClient(%sku);
         %n = (1.0 - %n);
-        %this;
     }
-    prevActiveSkus = (0.0 >= %n) @ %this.getActiveSKUs() @ %this;
+    %this.prevActiveSkus = (0.0 >= %n) @ %this.getActiveSKUs();
 };
 function Player::applySkuBadge(%this, %skunum) {
     %prevSkuBadge = gGetField(%this);
@@ -136,10 +129,10 @@ function Player::applySkuBadge(%this, %skunum) {
     }
     gSetField(%this, %skunum);
     %this.updateMapIcon();
-    %hudCtrl = hudCtrl;
-    %this;
+    %hudCtrl = %this.hudCtrl;
+    prevSkuBadge;
     if (!(isObject(%hudCtrl))) {
-        return prevSkuBadge;
+        return;
     }
     if (($player == %this)) {
         trySkuNotification(%skunum);
@@ -147,33 +140,34 @@ function Player::applySkuBadge(%this, %skunum) {
     if ((0.0 == %skunum)) {
     }
     if (%this.rolesPermissionCheckNoWarn("hideBadges")) {
-        if (isObject(badge)) {
-            badge.setVisible(0);
+        if (isObject(%hudCtrl.badge)) {
+            %hudCtrl.badge.setVisible(0);
         }
-        return %hudCtrl;
+        return;
     }
     %si = %skunum.findBySku();
     SkuManager;
     if (!(isObject(%si))) {
         return;
     }
-    if (!(isObject(badge))) {
-        profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
+    if (!(isObject(%hudCtrl.badge))) {
         0;
-        horizSizing = %hudCtrl @ "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "64 64";
-        minExtent = "64 64";
-        sluggishness = -1;
-        visible = 1;
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = "64 64";
+            minExtent = "64 64";
+            sluggishness = -1;
+            visible = 1;
+        };
         %hudCtrl.add(%ctrl);
-        badge = %ctrl @ %hudCtrl;
+        %hudCtrl.badge = %ctrl;
     }
     %bitmap = getBitmapFilename("badge", getWord(%si.getTxtrNames(), 0));
-    badge.setBitmap(%bitmap);
-    badge.setVisible(1);
+    %hudCtrl.badge.setBitmap(%bitmap);
+    %hudCtrl.badge.setVisible(1);
 };
 $gSkuNotificationsMap = 0;
 function initSkuNotificationsMap() {
@@ -199,21 +193,19 @@ function Player::trySkuEffectsClient(%this, %sku) {
     SkuManager;
     if (0) {
     }
-    if (hasWord(tags, "stagger3")) {
+    if (hasWord(%si.tags, "stagger3")) {
         %this.staggerSetAmount(0.1);
     }
-    if (hasWord(tags, "stagger2")) {
+    if (hasWord(%si.tags, "stagger2")) {
         %this.staggerSetAmount(0.05);
     }
-    if (hasWord(tags, "stagger1")) {
+    if (hasWord(%si.tags, "stagger1")) {
         %this.staggerSetAmount(0.01);
     }
 };
 function SkuItem::getBitmapPath(%this) {
-    if ((%this SPC skuType $= "swatch")) {
-        %ret = getBitmapFilename(skuType, getWord(%this.getTxtrNames(), 1));
-        %this;
+    if ((%this.skuType $= "swatch")) {
+        %ret = getBitmapFilename(%this.skuType, getWord(%this.getTxtrNames(), 1));
     }
-    %ret = getBitmapFilename(skuType, getWord(%this.getTxtrNames(), 0));
-    %this;
+    %ret = getBitmapFilename(%this.skuType, getWord(%this.getTxtrNames(), 0));
 };

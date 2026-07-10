@@ -4,28 +4,30 @@ function toggleEditor(%make) {
             MessageBoxOK("Mission Required", "You must load a mission before starting the Mission Editor.", "");
             return !($player.rolesPermissionCheckNoWarn("gameEditors"));
         }
-        if (!(isObject())) {
+        if (!(isObject(Editor))) {
             Editor::Create();
-            add();
+            MissionCleanup.add(Editor);
         }
-        if ((Canvas == getContent())) {
-            close();
+        if ((EditorGui.getId() == Canvas.getContent())) {
+            Editor.close();
         }
-        open();
+        Editor.open();
     }
 };
 function Editor::Create() {
-    profile = new EditManager(Editor) @ "GuiContentProfile";
-    horizSizing = "right";
-    vertSizing = "top";
-    position = "0 0";
-    extent = "640 480";
-    minExtent = "8 8";
-    visible = 1;
-    setFirstResponder = 0;
-    modal = 1;
-    helpTag = 0;
-    open = 0;
+    new EditManager(Editor) {
+        profile = "GuiContentProfile";
+        horizSizing = "right";
+        vertSizing = "top";
+        position = "0 0";
+        extent = "640 480";
+        minExtent = "8 8";
+        visible = 1;
+        setFirstResponder = 0;
+        modal = 1;
+        helpTag = 0;
+        open = 0;
+    };
 };
 function Editor::onAdd(%unused) {
     exec("./cursors.cs");
@@ -35,17 +37,17 @@ function Editor::onAdd(%unused) {
     exec("./EditorGui.cs");
     exec("./WorldEditorSettingsDlg.gui");
     exec("./TerrainEditorVSettingsGui.gui");
-    "fxShapeReplicatedStatic".ignoreObjClass();
-    init();
+    Editor.ignoreObjClass("fxShapeReplicatedStatic");
+    Editor.init(EditorGui);
     exec("./editorRender.cs");
 };
 function Editor::checkActiveLoadDone() {
-    if (isObject()) {
+    if (isObject(EditorGui)) {
     }
     if (loadingMission) {
-        setContent();
-        loadingMission = EditorGui @ 0 @ EditorGui;
-        Canvas;
+        Canvas.setContent(EditorGui);
+        loadingMission = 0 @ EditorGui;
+        EditorGui;
         return 1;
     }
     return 0;

@@ -11,11 +11,11 @@ function MessageHud::open(%this, %text) {
     }
     %this.setVisible(1);
     1.makeFirstResponder();
-    reinjectOpenEvent();
+    MessageHudEdit.reinjectOpenEvent();
     100.schedule();
-    if (isObject()) {
-        if ((ConvBubVecCtrlMsgVec > getNumLines())) {
-            open();
+    if (isObject(ConvBubVecCtrlMsgVec)) {
+        if ((0.0 > ConvBubVecCtrlMsgVec.getNumLines())) {
+            ConvBub.open();
         }
     }
 };
@@ -33,8 +33,7 @@ function MessageHudEdit::onEscape(%this) {
 function MessageHud::updatePosition(%this) {
     %resWidth = getWord($UserPref::Video::Resolution, 0);
     %trgX = ((getWord(%this.getExtent(), 0) - %resWidth) * 0.5);
-    %trgY = (35.0 + (ButtonBar - getWord(getTrgPosition(), 1)));
-    $ButtonBarVar::VerticalAdjustment;
+    %trgY = ($ButtonBarVar::VerticalAdjustment + (35.0 - getWord(ButtonBar.getTrgPosition(), 1)));
     %this.setTrgPosition(%trgX, %trgY);
     %this.pushToBack();
 };
@@ -57,7 +56,7 @@ function MessageHudEdit::eval(%this) {
         }
     }
     emote(%text);
-    if (isObject()) {
+    if (isObject(pChat)) {
         %text.say(0, 0);
     }
     say(%text);
@@ -70,10 +69,10 @@ function MessageHudEdit::scanForAutoCommands(%this) {
     if ((0.0 < strpos(%this.getValue(), " "))) {
         return;
     }
-    if (isObject()) {
+    if (isObject(CommandAbbreviationMap)) {
         %replace = %firstWord.get();
         CommandAbbreviationMap;
-        if (!(CommandAbbreviationMap SPC %replace $= "")) {
+        if (!(%replace $= "")) {
             %this.setValue(setWord(%this.getValue(), 0, %replace));
             %this.setCursorPos(40000);
         }
@@ -142,14 +141,13 @@ $gMessageHudEditOriginalExtent = "";
 $gMessageHudEditModeIconOffset = "22 0";
 function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
     if (($gMessageHudEditOriginalPosition $= "")) {
-        $gMessageHudEditOriginalPosition = getPosition();
-        MessageHudEdit;
-        $gMessageHudEditOriginalExtent = getExtent();
-        MessageHudEdit;
+        $gMessageHudEditOriginalPosition = MessageHudEdit.getPosition();
+        $gMessageHudEditOriginalExtent = MessageHudEdit.getExtent();
     }
     if ((%modeIconName $= "")) {
         0.setVisible();
-        position = MessageHudModeIcon @ $gMessageHudEditOriginalPosition @ MessageHudEdit;
+        position = $gMessageHudEditOriginalPosition @ MessageHudEdit;
+        MessageHudModeIcon;
         extent = $gMessageHudEditOriginalExtent @ MessageHudEdit;
     }
     %bitmap = "platform/client/buttons/" @ %modeIconName;
@@ -159,27 +157,26 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
     extent = %extentNew @ MessageHudEdit;
     %bitmap.setBitmap();
     1.setVisible();
-    command = MessageHudModeIcon @ %modeIconCommand @ MessageHudModeIcon;
+    command = %modeIconCommand @ MessageHudModeIcon;
     MessageHudModeIcon;
 };
 function displayMicrophoneHelp() {
-    if ((Canvas != getContent())) {
-        return getId();
+    if ((PlayGui.getId() != Canvas.getContent())) {
+        return;
     }
     userTips::showNow("GotMic");
 };
 function startTextEntry() {
-    if (!(isVisible())) {
+    if (!(MessageHud.isVisible())) {
         lastkey.open();
     }
     moveMap @ lastkey.setText();
     1.makeFirstResponder();
 };
 function finishTextEntry(%text) {
-    close();
+    MessageHud.close();
     cancel($gChatPreviewTimer);
     $gChatPreviewTimer = 0;
-    MessageHud;
     $player.onGotTypingSomething("");
     $player.sendPreviewText("");
     "".setValue();

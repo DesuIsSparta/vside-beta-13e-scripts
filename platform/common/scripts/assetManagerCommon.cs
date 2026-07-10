@@ -14,14 +14,14 @@ function AssetManager::getPackageOrder() {
     if (!($Net::userOwner $= "")) {
         %userOwner = $Net::userOwner;
     }
-    %map = new ""();
+    %map = new ""();;
     StringMap;
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %map.add();
     }
     %map.put("projects/vside/worlds/common.zip", 0);
     %map.put("projects/vside/worlds/gateway.zip", 1);
-    if ((MissionCleanup SPC %userOwner $= "degrassi")) {
+    if ((MissionCleanup @ " " @ %userOwner $= "degrassi")) {
         %map.put("projects/vside/worlds/lounge.zip", 3);
         %map.put("projects/vside/worlds/raijuku.zip", 4);
         %map.put("projects/vside/worlds/lga.zip", 2);
@@ -39,12 +39,12 @@ function AssetManager::commonInit() {
     AssetManager::initPackages();
 };
 function AssetManager::getMissingAssets() {
-    %map = new ""();
+    %map = new ""();;
     StringMap;
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %map.add();
     }
-    if ((MissionCleanup SPC $AssetManager::missingAssets $= "")) {
+    if ((MissionCleanup @ " " @ $AssetManager::missingAssets $= "")) {
         return %map;
     }
     %num = getFieldCount($AssetManager::missingAssets);
@@ -70,18 +70,17 @@ function AssetManager::MapToString(%map) {
     }
 };
 function AssetManager::StringToMap(%str) {
-    %map = new ""();
+    %map = new ""();;
     StringMap;
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %map.add();
     }
     %num = getFieldCount(%str);
     MissionCleanup;
     %n = 0;
-    MissionCleanup;
+    0;
     if ((%num < %n)) {
         %tag = getField(%str, %n);
-        0;
         %fs = strstr(%tag, "=");
         %value = getSubStr(strrchr(%tag, "="), 1, 10000);
         %key = getSubStr(%tag, 0, %fs);
@@ -91,18 +90,17 @@ function AssetManager::StringToMap(%str) {
     return %map;
 };
 function AssetManager::StringToArray(%str) {
-    %array = new ""();
+    %array = new ""();;
     Array;
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %array.add();
     }
     %num = getFieldCount(%str);
     MissionCleanup;
     %n = 0;
-    MissionCleanup;
+    0;
     if ((%num < %n)) {
         %tag = getField(%str, %n);
-        0;
         %fs = strstr(%tag, "=");
         %value = getSubStr(strrchr(%tag, "="), 1, 10000);
         %key = getSubStr(%tag, 0, %fs);

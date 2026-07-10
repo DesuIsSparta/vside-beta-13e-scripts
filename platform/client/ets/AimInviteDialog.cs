@@ -1,29 +1,29 @@
 function AimInviteDialog::open(%this, %buddyName) {
-    if ((%this SPC buddyNames $= "")) {
-        buddyNames = %buddyName @ %this;
+    if ((%this.buddyNames $= "")) {
+        %this.buddyNames = %buddyName;
         %this.initWithName(%buddyName);
         %this.setVisible(1);
         %this.focusAndRaise();
         %this.refreshBuddyDropdown();
         0.SetSelected();
     }
-    if ((%this == findField(buddyNames, %buddyName))) {
-        buddyNames = %this @ buddyNames @ "\t" @ %buddyName @ %this;
-        -(1.0);
+    if ((-(1.0) == findField(%this.buddyNames, %buddyName))) {
+        %this.buddyNames = AimInviteBuddyDropDown @ %this.buddyNames @ "\t" @ %buddyName;
+        PlayGui;
         %this.refreshBuddyDropdown();
         0.SetSelected();
     }
 };
 function AimInviteDialog::initWithName(%this, %buddyName) {
-    buddyNames = %buddyName @ %this;
+    %this.buddyNames = %buddyName;
     %this.refreshBuddyDropdown();
-    AimInviteMessageField @ "Come join " @ $ETS::AppName @ "!".setText();
+    "Come join " @ $ETS::AppName @ "!".setText();
 };
 function AimInviteDialog::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
-    buddyNames = PlayGui @ "" @ %this;
-    close();
+    PlayGui.focusTopWindow();
+    %this.buddyNames = "";
+    AimInviteAddBuddyDialog.close();
     return 1;
 };
 function AimInviteDialog::setControlsActive(%this, %flag) {
@@ -33,12 +33,11 @@ function AimInviteDialog::onWake(%this) {
     %this.setControlsActive(1);
 };
 function AimInviteDialog::refreshBuddyDropdown(%this) {
-    if ((AimInviteBuddyDropDown SPC getText $= "All buddies!")) {
+    if ((AimInviteBuddyDropDown @ " " @ %this.getText $= "All buddies!")) {
         return;
     }
-    clear();
-    %count = getFieldCount(buddyNames);
-    %this;
+    AimInviteBuddyDropDown.clear();
+    %count = getFieldCount(%this.buddyNames);
     if ((0.0 == %count)) {
         "No buddy selected.".add();
     }
@@ -48,9 +47,9 @@ function AimInviteDialog::refreshBuddyDropdown(%this) {
     %n = 0;
     AimInviteBuddyDropDown;
     if ((%count < %n)) {
-        getField(buddyNames, %n).add();
+        getField(%this.buddyNames, %n).add();
         %n = (1.0 + %n);
-        %this;
+        AimInviteBuddyDropDown;
     }
     "-------------------".add();
     "Add Buddies".add();
@@ -61,42 +60,37 @@ function AimInviteBuddyDropDown::selectBuddy(%this, %aBuddyName) {
     %this.SetSelected(%n);
 };
 function AimInviteDialog::buddyDropdownChanged(%this) {
-    %selection = getText();
-    AimInviteBuddyDropDown;
+    %selection = AimInviteBuddyDropDown.getText();
     if ((%selection $= "Add Buddies")) {
-        open();
+        AimInviteAddBuddyDialog.open();
         0.SetSelected();
     }
-    if ((AimInviteBuddyDropDown SPC %selection $= "Invite all buddies!")) {
-        clear();
+    if ((AimInviteBuddyDropDown @ " " @ %selection $= "Invite all buddies!")) {
+        AimInviteBuddyDropDown.clear();
         "All buddies!".add();
         0.SetSelected();
     }
-    if ((AimInviteBuddyDropDown SPC %selection $= "-------------------")) {
+    if ((AimInviteBuddyDropDown @ " " @ %selection $= "-------------------")) {
         0.SetSelected();
     }
 };
 function AimInviteDialog::sendInvite(%this) {
-    %selectedDropdown = getText();
-    AimInviteBuddyDropDown;
-    %count = getFieldCount(buddyNames);
-    %this;
+    %selectedDropdown = AimInviteBuddyDropDown.getText();
+    %count = getFieldCount(%this.buddyNames);
     if ((%selectedDropdown $= "All buddies!")) {
-        getText().inviteAll();
+        AimInviteMessageField.getText().inviteAll();
     }
     if ((0.0 == %count)) {
-        return AimInviteMessageField;
+        return AIMConvManager;
     }
-    buddyNames.prepareToSendInvites(getText());
+    %this.buddyNames.prepareToSendInvites(AimInviteMessageField.getText());
     %this.close();
 };
 function AimInviteAddBuddyDialog::open(%this) {
-    %inviteWinPos = getPosition();
-    AimInviteDialog;
-    %inviteWinExtent = getExtent();
-    AimInviteDialog;
+    %inviteWinPos = AimInviteDialog.getPosition();
+    %inviteWinExtent = AimInviteDialog.getExtent();
     %this.reposition((getWord(%inviteWinExtent, 0) + getWord(%inviteWinPos, 0)), getWord(%inviteWinPos, 1));
-    if ((%this == visible)) {
+    if ((0.0 == %this.visible)) {
         %this.refresh();
         %this.setVisible(1);
         %this.focusAndRaise();
@@ -105,12 +99,11 @@ function AimInviteAddBuddyDialog::open(%this) {
 };
 function AimInviteAddBuddyDialog::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
 };
 function AimInviteAddBuddyDialog::refresh(%this) {
-    clear();
+    AimInviteAddBuddyList.clear();
     %buddyCount = aimBuddyCount();
-    AimInviteAddBuddyList;
     %i = 0;
     if ((%buddyCount < %i)) {
         %buddyName = aimGetBuddyName(%i);
@@ -120,7 +113,7 @@ function AimInviteAddBuddyDialog::refresh(%this) {
         if ((2.0 == %buddyState)) {
         }
         if ((3.0 == %buddyState)) {
-            if ((AimInviteDialog == findField(buddyNames, %buddyName))) {
+            if ((AimInviteDialog == findField(%this.buddyNames, %buddyName))) {
                 %i.addRow(%buddyName, %i);
             }
         }
@@ -129,15 +122,13 @@ function AimInviteAddBuddyDialog::refresh(%this) {
     }
 };
 function AimInviteAddBuddyDialog::addSelected(%this) {
-    %id = getSelectedId();
-    AimInviteAddBuddyList;
+    %id = AimInviteAddBuddyList.getSelectedId();
     %selected = %id.getRowTextById();
     AimInviteAddBuddyList;
     %row = %id.getRowNumById();
     AimInviteAddBuddyList;
-    if ((rowCount() == %row)) {
+    if ((AimInviteAddBuddyList.rowCount() == %row)) {
         %row = 0;
-        AimInviteAddBuddyList;
     }
     if (!(%selected $= "")) {
         %id.removeRowById();

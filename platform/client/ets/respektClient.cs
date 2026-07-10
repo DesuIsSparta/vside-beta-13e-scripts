@@ -67,22 +67,22 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code) {
     return %msg;
 };
 function clientCmdInitialScores(%respektPoints, %respektRank) {
-    if (isObject()) {
+    if (isObject(HudScoresContent)) {
         %respektRank.setRespektRank();
-        previousRespektPoints = HudScoresContent @ %respektPoints @ HudScoresContent;
+        previousRespektPoints = %respektPoints @ HudScoresContent;
         HudScoresContent;
     }
     $gMyBalancesAndScoresRevision = 0;
     setMyRespektPoints(%respektPoints, 0);
-    if (isObject()) {
-        update();
+    if (isObject(AccountBalanceHud)) {
+        AccountBalanceHud.update();
     }
     setMyRespektRank(%respektRank);
 };
 $gMyRespektPoints = 0;
 function setMyRespektPoints(%points, %notify) {
     $gMyRespektPoints = %points;
-    if (isObject()) {
+    if (isObject(HudScoresContent)) {
         %points.setRespektPoints(%notify);
     }
 };
@@ -95,7 +95,7 @@ function setMyRespektRank(%rank) {
     if ((0.0 <= %rank)) {
         return;
     }
-    if (isObject()) {
+    if (isObject(HudScoresContent)) {
         %rank.setRespektRank();
     }
 };
@@ -117,12 +117,11 @@ function getBalancesAndScores(%callback) {
         log("general", "debug", getScopeName() @ " " @ "- no token. skipping request.");
         return;
     }
-    if (!(isObject())) {
+    if (!(isObject(ServerConnection))) {
         log("general", "debug", getScopeName() @ " " @ "- no server connection." @ " " @ getTrace());
     }
     %request = sendRequest_GetBalancesAndScores($Player::Name, "OnGotDoneOrError_GetBalancesAndScores");
-    ServerConnection;
-    otherCallback = %callback @ %request;
+    %request.otherCallback = %callback;
 };
 $gMyBalancesAndScoresRevision = 0;
 function OnGotDoneOrError_GetBalancesAndScores(%request) {
@@ -140,9 +139,9 @@ function OnGotDoneOrError_GetBalancesAndScores(%request) {
     $Player::VPoints = mFloor(%request.getValue("vpoints"));
     setMyRespektPoints(mFloor(%request.getValue("respekt")), 0);
     updateAccountBalanceDisplays();
-    if (!(%request SPC otherCallback $= "")) {
-        echoDebug(getScopeName() @ " " @ "- eval(" @ %request @ otherCallback @ "):");
-        eval(otherCallback);
+    if (!(%request.otherCallback $= "")) {
+        echoDebug(getScopeName() @ " " @ "- eval(" @ %request.otherCallback @ "):");
+        eval(%request.otherCallback);
     }
 };
 function checkPointsEarnedSinceLastLogin() {
@@ -161,36 +160,39 @@ function checkPointsEarnedSinceLastLogin() {
         %msg = %dVB[$MsgCat::TGF @ "currencyEarnedOffline"];
         if ((0.0 != %dVP)) {
         }
-        %msg = %msg @ " " @ %dVP @ " " @ "vPoints" @ "";
+        %msg = " " @ %dVP @ " " @ "vPoints" @ "";
+        %msg;
         if ((0.0 != %dVP)) {
         }
         if ((0.0 != %dVB)) {
         }
-        %msg = %msg @ " " @ "and" @ "";
+        %msg = " " @ "and" @ "";
+        %msg;
         if ((0.0 != %dVB)) {
         }
-        %msg = %msg @ " " @ %dVB @ " " @ "vBux" @ "";
+        %msg = " " @ %dVB @ " " @ "vBux" @ "";
+        %msg;
         %msg = %msg @ "!";
     }
     %msg = "";
     %msg.setTextWithStyle();
 };
 function moveAccountBalanceHud(%toWhere) {
-    if (!(isObject())) {
+    if (!(isObject(PlayGui))) {
         error(getScopeName() @ " " @ "- PlayGUI not instantiated!" @ " " @ getTrace());
-        return PlayGui;
+        return;
     }
-    if (!(isObject())) {
+    if (!(isObject(AccountBalanceContents))) {
         error(getScopeName() @ " " @ "- AccountBalanceContents not instantiated!" @ " " @ getTrace());
-        return AccountBalanceContents;
+        return;
     }
-    if (!(isObject())) {
+    if (!(isObject(geTGF_tabs))) {
         error(getScopeName() @ " " @ "- No TGF_tabs !" @ " " @ getTrace());
-        return geTGF_tabs;
+        return;
     }
-    if (!(isObject())) {
+    if (!(isObject(geTGF_main_BalancesContainer))) {
         error(getScopeName() @ " " @ "- No main tab !" @ " " @ getTrace());
-        return geTGF_main_BalancesContainer;
+        return;
     }
     if ((%toWhere $= "TGF")) {
         // unhandled opcode 1558 at 0x00000794

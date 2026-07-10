@@ -1,11 +1,10 @@
 function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     doLocalChangeRelation(%client, %other, %relType, %oper);
-    %relRequest = new CURLObject(RelRequest);
+    %relRequest = new CURLObject(RelRequest);;
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=relate";
-    %user = nameBase;
-    %client;
+    %user = %client.nameBase;
     %userId = %user.get();
     PlayerDict;
     %otherId = %other.get();
@@ -13,10 +12,10 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     if ((0.0 == %userId)) {
         return;
     }
-    userId = %userId @ RelRequest;
-    otherId = %otherId @ RelRequest;
-    relType = %relType @ RelRequest;
-    oper = %oper @ RelRequest;
+    %client.userId = %userId @ RelRequest;
+    %client.otherId = %otherId @ RelRequest;
+    %client.relType = %relType @ RelRequest;
+    %client.oper = %oper @ RelRequest;
     %userValue = "user=" @ urlEncode(%user);
     %otherValue = "other=" @ urlEncode(%other);
     %relTypeValue = "type=" @ urlEncode(%relType);
@@ -35,9 +34,9 @@ function RelRequest::onConnectFailed(%this) {
 };
 function RelRequest::onLine(%this, %line) {
     if ((%line $= "success")) {
-        changeRelation(userId, otherId, relType, oper);
+        changeRelation(%this.userId, %this.otherId, %this.relType, %this.oper);
     }
-    return (%this SPC %line $= "fail");
+    return (%line $= "fail");
 };
 function RelRequest::onDNSResolved(%this) {
     return;
@@ -50,8 +49,7 @@ function RelRequest::onDisconnect(%this) {
     return;
 };
 function doLocalChangeRelation(%client, %other, %relType, %oper) {
-    %sender = Player;
-    %client;
+    %sender = %client.Player;
     %otherId = %other.get();
     PlayerDict;
     if (!(isPlayerObject(%otherId))) {

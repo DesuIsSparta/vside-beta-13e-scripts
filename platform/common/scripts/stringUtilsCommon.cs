@@ -127,7 +127,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths) {
                 %atEndOfLine = 1;
             }
         }
-        if ((!(%atEndOfLine) SPC %outputText $= "")) {
+        if ((!(%atEndOfLine) @ " " @ %outputText $= "")) {
             %outputText = %thisLine;
         }
         %outputText = %outputText @ "\n" @ %thisLine;

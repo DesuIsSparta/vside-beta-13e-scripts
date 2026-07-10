@@ -19,11 +19,11 @@ function clientVersion::checkForUpgrades() {
     }
     %url = $Net::downloadURL @ "/version_resp.txt";
     new ManagerRequest(clientVersionCheck);
-    if (isObject()) {
-        add();
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(clientVersionCheck);
     }
-    %url.setURL();
-    start();
+    clientVersionCheck.setURL(%url);
+    clientVersionCheck.start(clientVersionCheck);
 };
 function clientVersionCheck::onDone(%this, %unused) {
     %status = findRequestStatus(%this);

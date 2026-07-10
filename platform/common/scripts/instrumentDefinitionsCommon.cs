@@ -1,49 +1,47 @@
 function InstrumentRegistry::initializeRegistryCommon(%this) {
-    defaultStopAnimation = "idl1a" @ %this;
-    stopAnimationsList = StringMap @ new ""() @ %this;
+    %this.defaultStopAnimation = "idl1a";
+    %this.stopAnimationsList = StringMap @ new ""();;
     0;
-    if (isObject()) {
-        stopAnimationsList.add();
+    if (isObject(MissionCleanup)) {
+        %this.stopAnimationsList.add();
     }
 };
 function InstrumentRegistry::clearRegistryCommon(%this) {
-    if (isObject(stopAnimationsList)) {
-        stopAnimationsList.clear();
+    if (isObject(%this.stopAnimationsList)) {
+        %this.stopAnimationsList.clear();
     }
 };
 function InstrumentRegistry::closeRegistryCommon(%this) {
-    if (isObject(stopAnimationsList)) {
-        stopAnimationsList.delete();
-        stopAnimationsList = %this @ "" @ %this;
-        %this;
+    if (isObject(%this.stopAnimationsList)) {
+        %this.stopAnimationsList.delete();
+        %this.stopAnimationsList = "";
     }
 };
 function InstrumentRegistry::registerCommonInstrumentProperties(%this, %instrumentName, %instrumentFemaleSku, %instrumentMaleSku, %instrumentNeuterSku, %instrumentGenre, %animationGenrePrefix, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim) {
-    %instrument = instrumentsList.get(%instrumentName);
-    %this;
+    %instrument = %this.instrumentsList.get(%instrumentName);
     if (!(isObject(%instrument))) {
         warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return;
     }
-    skus = %instrumentFemaleSku @ "f" @ %instrument;
-    skus = %instrumentMaleSku @ "m" @ %instrument;
-    skus = %instrumentNeuterSku @ "n" @ %instrument;
-    genre = %instrumentGenre @ %instrument;
-    animationMaps = makeAnimationMapInstrument("f", %instrumentGenre, %animationGenrePrefix @ %rootAnim, %animationGenrePrefix @ %runAnim, %animationGenrePrefix @ %sideAnim, %animationGenrePrefix @ %backAnim, %animationGenrePrefix @ %jumpAnim) @ "f" @ %instrument;
-    animationMaps = makeAnimationMapInstrument("m", %instrumentGenre, %animationGenrePrefix @ %rootAnim, %animationGenrePrefix @ %runAnim, %animationGenrePrefix @ %sideAnim, %animationGenrePrefix @ %backAnim, %animationGenrePrefix @ %jumpAnim) @ "m" @ %instrument;
-    stopAnimationsList.put(%instrumentName, %rootAnim);
+    %instrument.skus = %instrumentFemaleSku @ "f";
+    %instrument.skus = %instrumentMaleSku @ "m";
+    %instrument.skus = %instrumentNeuterSku @ "n";
+    %instrument.genre = %instrumentGenre;
+    %instrument.animationMaps = makeAnimationMapInstrument("f", %instrumentGenre, %animationGenrePrefix @ %rootAnim, %animationGenrePrefix @ %runAnim, %animationGenrePrefix @ %sideAnim, %animationGenrePrefix @ %backAnim, %animationGenrePrefix @ %jumpAnim) @ "f";
+    %instrument.animationMaps = makeAnimationMapInstrument("m", %instrumentGenre, %animationGenrePrefix @ %rootAnim, %animationGenrePrefix @ %runAnim, %animationGenrePrefix @ %sideAnim, %animationGenrePrefix @ %backAnim, %animationGenrePrefix @ %jumpAnim) @ "m";
+    %this.stopAnimationsList.put(%instrumentName, %rootAnim);
 };
 function InstrumentRegistry::getInstrumentCount(%this) {
-    return instrumentsList.size();
+    return %this.instrumentsList.size();
 };
 function InstrumentRegistry::getInstrumentByIndex(%this, %index) {
     if ((0.0 < %index)) {
     }
-    if ((instrumentsList.size() >= %index)) {
+    if ((%this.instrumentsList.size() >= %index)) {
         warn(getScopeName() @ " " @ "- bad index value =" @ " " @ %index);
         return "";
     }
-    return instrumentsList.getValue(%index);
+    return %this.instrumentsList.getValue(%index);
 };
 function InstrumentRegistry::getInstrumentBySku(%this, %sku) {
     if ((%sku $= "")) {
@@ -52,11 +50,11 @@ function InstrumentRegistry::getInstrumentBySku(%this, %sku) {
     %i = (1.0 - %this.getInstrumentCount());
     if ((0.0 >= %i)) {
         %instrument = %this.getInstrumentByIndex(%i);
-        if (("f" @ %instrument SPC skus $= %sku)) {
+        if (("f" @ " " @ %instrument.skus $= %sku)) {
         }
-        if (("m" @ %instrument SPC skus $= %sku)) {
+        if (("m" @ " " @ %instrument.skus $= %sku)) {
         }
-        if (("n" @ %instrument SPC skus $= %sku)) {
+        if (("n" @ " " @ %instrument.skus $= %sku)) {
             return %instrument;
         }
         %i = (1.0 - %i);
@@ -64,8 +62,7 @@ function InstrumentRegistry::getInstrumentBySku(%this, %sku) {
     return "";
 };
 function InstrumentRegistry::getInstrumentObject(%this, %instrumentName) {
-    %instrument = instrumentsList.get(%instrumentName);
-    %this;
+    %instrument = %this.instrumentsList.get(%instrumentName);
     if (!(isObject(%instrument))) {
         warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return "";
@@ -74,11 +71,10 @@ function InstrumentRegistry::getInstrumentObject(%this, %instrumentName) {
 };
 function InstrumentRegistry::isInstrument(%this, %instrumentNameOrObject) {
     if (isObject(%instrumentNameOrObject)) {
-        %instrumentName = name;
-        %instrumentNameOrObject;
+        %instrumentName = %instrumentNameOrObject.name;
     }
     %instrumentName = %instrumentNameOrObject;
-    return instrumentsList.hasKey(%instrumentName);
+    return %this.instrumentsList.hasKey(%instrumentName);
 };
 function InstrumentRegistry::isInstrumentGenre(%this, %genre) {
     if ((%genre $= "")) {
@@ -87,7 +83,7 @@ function InstrumentRegistry::isInstrumentGenre(%this, %genre) {
     %i = (1.0 - %this.getInstrumentCount());
     if ((0.0 >= %i)) {
         %instrument = %this.getInstrumentByIndex(%i);
-        if ((%instrument SPC genre $= %genre)) {
+        if ((%instrument.genre $= %genre)) {
             return 1;
         }
         %i = (1.0 - %i);
@@ -101,11 +97,11 @@ function InstrumentRegistry::isInstrumentSku(%this, %sku) {
     %i = (1.0 - %this.getInstrumentCount());
     if ((0.0 >= %i)) {
         %instrument = %this.getInstrumentByIndex(%i);
-        if (("f" @ %instrument SPC skus $= %sku)) {
+        if (("f" @ " " @ %instrument.skus $= %sku)) {
         }
-        if (("m" @ %instrument SPC skus $= %sku)) {
+        if (("m" @ " " @ %instrument.skus $= %sku)) {
         }
-        if (("n" @ %instrument SPC skus $= %sku)) {
+        if (("n" @ " " @ %instrument.skus $= %sku)) {
             return 1;
         }
         %i = (1.0 - %i);
@@ -113,27 +109,26 @@ function InstrumentRegistry::isInstrumentSku(%this, %sku) {
     return 0;
 };
 function InstrumentRegistry::isStopAnimation(%this, %animationName) {
-    return stopAnimationsList.hasValue(%animationName);
+    return %this.stopAnimationsList.hasValue(%animationName);
 };
 function InstrumentRegistry::getStopAnimation(%this, %instrumentName) {
     if (!(%this.isInstrument(%instrumentName))) {
         error(getScopeName() @ " " @ "- could not find instrument '" @ %instrumentName @ "'");
         return "";
     }
-    if (!(stopAnimationsList.hasKey(%instrumentName))) {
-        error(%this @ getScopeName() @ " " @ "- could not find stopAnimation for existing instrument '" @ %instrumentName @ "'");
+    if (!(%this.stopAnimationsList.hasKey(%instrumentName))) {
+        error(getScopeName() @ " " @ "- could not find stopAnimation for existing instrument '" @ %instrumentName @ "'");
         return "";
     }
-    return stopAnimationsList.get(%instrumentName);
+    return %this.stopAnimationsList.get(%instrumentName);
 };
 function InstrumentRegistry::getSku(%this, %instrumentName, %gender) {
-    %instrument = instrumentsList.get(%instrumentName);
-    %this;
+    %instrument = %this.instrumentsList.get(%instrumentName);
     if (!(isObject(%instrument))) {
         warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return "";
     }
-    return skus;
+    return %instrument.skus;
 };
 function InstrumentRegistry::registerCommonProperties(%this) {
     %this.registerCommonInstrumentProperties("lguitar", 6051, 33704, "", "g", "n", "gtrglridl1", "gtrglrwlkf01", "gtrglrside01", "gtrglrwlkb01", "gtrglrjmp01");

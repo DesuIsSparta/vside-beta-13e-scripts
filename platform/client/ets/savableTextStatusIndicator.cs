@@ -8,32 +8,34 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         return 0;
     }
     %obj = safeEnsureScriptObjectWithClassBindingsAndInit("GuiControl", %indicatorName, "SavableTextStatusIndicator", "{      profile      = \"GuiDefaultProfile\";" @ " " @ "horizSizing  = \"right\";" @ " " @ "vertSizing   = \"bottom\";" @ " " @ "position     = \"" @ %position @ "\";" @ " " @ "extent       = \"14 14\";" @ " " @ "minExtent    = \"14 14\";" @ " " @ "visible      = true; }");
-    acceptEmptyString = %acceptEmptyString @ %obj;
-    controlToGetValueFrom = %controlToGetValueFrom @ %obj;
-    callbackForUpdates = %callbackForSecondaryVisualUpdates @ %obj;
-    requestsPendingCount = 0 @ %obj;
-    lastValueSaved = "" @ %obj;
-    initialValueSet = 0 @ %obj;
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    %obj.acceptEmptyString = %acceptEmptyString;
+    %obj.controlToGetValueFrom = %controlToGetValueFrom;
+    %obj.callbackForUpdates = %callbackForSecondaryVisualUpdates;
+    %obj.requestsPendingCount = 0;
+    %obj.lastValueSaved = "";
+    %obj.initialValueSet = 0;
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "14 14";
-    minExtent = "1 1";
-    bitmap = "platform/client/ui/checkmark_green";
-    visible = 0;
-    savedBitmap = %obj;
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    %obj.savedBitmap = new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "14 14";
+        minExtent = "1 1";
+        bitmap = "platform/client/ui/checkmark_green";
+        visible = 0;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "14 14";
-    minExtent = "1 1";
-    bitmap = "platform/client/ui/ellipsis_yellow";
-    visible = 0;
-    savingBitmap = %obj;
+    %obj.savingBitmap = new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "14 14";
+        minExtent = "1 1";
+        bitmap = "platform/client/ui/ellipsis_yellow";
+        visible = 0;
+    };
     if ((%arrowDescription $= "right")) {
         %arrowBitmap = "platform/client/ui/arrow_red_right";
     }
@@ -41,66 +43,62 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
     }
     %arrowBitmap = "platform/client/ui/arrow_red_right";
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "14 14";
-    minExtent = "1 1";
-    bitmap = %arrowBitmap;
-    visible = 0;
-    changedBitmap = %obj;
-    %obj.add(savedBitmap);
-    %obj.add(savingBitmap);
-    %obj.add(changedBitmap);
+    %obj.changedBitmap = new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "14 14";
+        minExtent = "1 1";
+        bitmap = %arrowBitmap;
+        visible = 0;
+    };
+    %obj.add(%obj.savedBitmap);
+    %obj.add(%obj.savingBitmap);
+    %obj.add(%obj.changedBitmap);
     return %obj;
 };
 function SavableTextStatusIndicator::setInitialValue(%this, %initialValue) {
-    if (initialValueSet) {
+    if (%this.initialValueSet) {
         warn(getScopeName() @ " " @ "- initial value already set -" @ " " @ getTrace());
     }
-    lastValueSaved = %this @ %initialValue @ %this;
-    initialValueSet = 1 @ %this;
+    %this.lastValueSaved = %initialValue;
+    %this.initialValueSet = 1;
 };
 function SavableTextStatusIndicator::incrementRequestCount(%this) {
-    %newValue = controlToGetValueFrom.getValue();
-    %this;
-    if (!(acceptEmptyString)) {
+    %newValue = %this.controlToGetValueFrom.getValue();
+    if (!(%this.acceptEmptyString)) {
     }
-    if ((%this SPC %newValue $= "")) {
+    if ((%newValue $= "")) {
         return;
     }
-    lastValueSaved = %newValue @ %this;
-    initialValueSet = 1 @ %this;
-    requestsPendingCount = (%this + requestsPendingCount);
-    1.0;
+    %this.lastValueSaved = %newValue;
+    %this.initialValueSet = 1;
+    %this.requestsPendingCount = (1.0 + %this.requestsPendingCount);
     %this.update(1);
 };
 function SavableTextStatusIndicator::decrementRequestCount(%this) {
-    requestsPendingCount = (%this - requestsPendingCount);
-    1.0;
+    %this.requestsPendingCount = (1.0 - %this.requestsPendingCount);
     %this.update(1);
 };
 function SavableTextStatusIndicator::update(%this, %doCallback) {
-    %valueSaved = (%this == requestsPendingCount);
-    0.0;
-    %valueChanged = !(%this $= controlToGetValueFrom.getValue());
-    %this SPC lastValueSaved;
+    %valueSaved = (0.0 == %this.requestsPendingCount);
+    %valueChanged = !(%this.lastValueSaved $= %this.controlToGetValueFrom.getValue());
     if (%valueSaved) {
     }
-    savedBitmap.setVisible(!(%valueChanged));
+    %this.savedBitmap.setVisible(!(%valueChanged));
     if (!(%valueSaved)) {
     }
-    savingBitmap.setVisible(!(%valueChanged));
-    changedBitmap.setVisible(%valueChanged);
+    %this.savingBitmap.setVisible(!(%valueChanged));
+    %this.changedBitmap.setVisible(%valueChanged);
     if (%doCallback) {
     }
-    if (!(%this SPC callbackForUpdates $= "")) {
-        eval(callbackForUpdates);
+    if (!(%this.callbackForUpdates $= "")) {
+        eval(%this.callbackForUpdates);
     }
 };
 function SavableTextStatusIndicator::reset(%this) {
-    requestsPendingCount = 0 @ %this;
-    lastValueSaved = "" @ %this;
+    %this.requestsPendingCount = 0;
+    %this.lastValueSaved = "";
 };

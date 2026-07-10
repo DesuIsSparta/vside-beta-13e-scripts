@@ -79,8 +79,8 @@ function testFlooding(%player, %eventType, %testExempt) {
             return 0;
         }
     }
-    %erOld = eventRecord;
-    %eventType @ %player;
+    %erOld = %player.eventRecord;
+    %eventType;
     %erNew = "";
     %newNum = 0;
     %expiredTime = (%eventType[$floodFilter::inPeriod @ %eventType] - getSimTime());
@@ -98,11 +98,11 @@ function testFlooding(%player, %eventType, %testExempt) {
             %erNew = (%eventType[$floodFilter::penalty @ %eventType] + getSimTime()) @ " " @ %erNew;
             (0.0 >= %n);
         }
-        eventRecord = %erNew @ %eventType @ %player;
+        %player.eventRecord = %erNew @ %eventType;
         return 1;
     }
     %erNew = getSimTime() @ " " @ %erNew;
-    eventRecord = %erNew @ %eventType @ %player;
+    %player.eventRecord = %erNew @ %eventType;
     return 0;
 };
 function testFloodingExempt(%player, %eventType) {

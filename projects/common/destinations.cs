@@ -82,7 +82,7 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
         }
         %n = (1.0 + %n);
     }
-    if ((($gDestinationAdsNum < %n) SPC %candidates $= "")) {
+    if ((($gDestinationAdsNum < %n) @ " " @ %candidates $= "")) {
         error("Unable to find any candidates for filter \"" @ %filter @ "\"." @ " " @ getTrace());
         return "";
     }
@@ -110,16 +110,15 @@ function transferFromShopToDestinationsDirectory() {
 };
 function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave) {
     if (%askForSave) {
-        %askForSave = userHasChangedBodyOrOutfit();
-        ClosetGui;
+        %askForSave = ClosetGui.userHasChangedBodyOrOutfit();
         if (%askForSave) {
             %title = "Save Your Changes";
             %text = "You've made some changes to your appearance.\nWould you like to save your changes?";
             %buttons = "Yes" @ "\t" @ "No" @ "\t" @ "Cancel";
             %dlg = MessageBoxCustom(%title, %text, %buttons);
-            callback = "transferFromShopToDestinationsDirectoryPart2(false, true);" @ 0 @ %dlg;
-            callback = "transferFromShopToDestinationsDirectoryPart2(false, false);" @ 1 @ %dlg;
-            callback = "" @ 2 @ %dlg;
+            %dlg.callback = "transferFromShopToDestinationsDirectoryPart2(false, true);" @ 0;
+            %dlg.callback = "transferFromShopToDestinationsDirectoryPart2(false, false);" @ 1;
+            %dlg.callback = "" @ 2;
             return;
         }
         %doSave = 0;

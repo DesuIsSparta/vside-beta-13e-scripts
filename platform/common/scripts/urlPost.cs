@@ -1,5 +1,5 @@
 function URLPostObject::onComplete(%this, %unused) {
-    if (!(NoAutoDelete)) {
+    if (!(%this.NoAutoDelete)) {
         %this.schedule(0);
     }
 };

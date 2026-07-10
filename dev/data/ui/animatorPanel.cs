@@ -8,9 +8,9 @@ function toggleAnimatorPanel(%target) {
     }
     defaultTarget = %target @ animatorPanel;
     if (!(%target $= "")) {
-        open();
+        animatorPanel.open();
     }
-    toggleVisibleState();
+    toggleVisibleState(animatorPanel);
 };
 function animatorPanel::open(%this) {
     %this.init();
@@ -19,12 +19,12 @@ function animatorPanel::open(%this) {
     %this.onRefreshTargetsList();
 };
 function animatorPanel::init(%this) {
-    if (initialized) {
-        return %this;
+    if (%this.initialized) {
+        return;
     }
     %this.onRefreshAnimsList();
-    lastTextBox = "" @ %this;
-    initialized = 1 @ %this;
+    %this.lastTextBox = "";
+    %this.initialized = 1;
 };
 function animatorPanel::close(%this, %unused) {
     %this.popDialog();
@@ -43,8 +43,7 @@ function animatorPanel::tryTarget(%this, %shape) {
     %targetName.setText();
 };
 function animatorPanel::doAnimToTarget(%this, %animTextBox) {
-    %playerName = getField(getText(), 1);
-    animatorPanelTargetsPopup;
+    %playerName = getField(animatorPanelTargetsPopup.getText(), 1);
     if ((%playerName $= "")) {
     }
     if (!(isObject(%animTextBox))) {
@@ -60,9 +59,8 @@ function clientCmdRefreshAnimatorPanel(%possibleGenres) {
     %possibleGenres.onGotPossibleGenres();
 };
 function animatorPanel::onGotPossibleGenres(%this, %possibleGenres) {
-    clear();
+    animatorPanelAnimsPopup.clear();
     %animIndex = 0;
-    animatorPanelAnimsPopup;
     %numGenres = strlen(%possibleGenres);
     %i = 0;
     if ((%numGenres < %i)) {
@@ -91,23 +89,21 @@ function animatorPanel::onGotPossibleGenres(%this, %possibleGenres) {
         %i = (1.0 + %i);
         (2.0 < %g);
     }
-    sort();
+    animatorPanelAnimsPopup.sort();
 };
 function animatorPanelAnimsPopup::onSelect(%this, %unused, %text) {
-    if (isObject(lastTextBox)) {
-        lastTextBox.setText(%text);
+    if (isObject(%this.lastTextBox)) {
+        %this.lastTextBox.setText(%text);
     }
 };
 function animatorPanel::onRefreshTargetsList(%this) {
-    $gAnimatorGuiPrevMenuTarget = getText();
-    animatorPanelTargetsPopup;
+    $gAnimatorGuiPrevMenuTarget = animatorPanelTargetsPopup.getText();
     "getting list..".setText();
     commandToServer('AnimatorGetTargets');
 };
 function animatorPanel::onGotTargetsList(%this, %theList) {
-    clear();
+    animatorPanelTargetsPopup.clear();
     %num = getRecordCount(%theList);
-    animatorPanelTargetsPopup;
     if ((1.0 < %num)) {
         error("apparently nobody is here. this is bad.");
         return;
@@ -117,14 +113,14 @@ function animatorPanel::onGotTargetsList(%this, %theList) {
     if ((%num < %n)) {
         %entry = getRecord(%theList, %n);
         %entry.add(%n);
-        if ((animatorPanelTargetsPopup SPC %entry $= $gAnimatorGuiPrevMenuTarget)) {
+        if ((animatorPanelTargetsPopup @ " " @ %entry $= $gAnimatorGuiPrevMenuTarget)) {
             %nextItem = %entry;
         }
         %n = (1.0 + %n);
     }
-    sort();
-    if (!(%this SPC defaultTarget $= "")) {
-        defaultTarget.setText();
+    animatorPanelTargetsPopup.sort();
+    if (!((%num < %n) @ " " @ %this.defaultTarget $= "")) {
+        %this.defaultTarget.setText();
     }
     %nextItem.setText();
 };

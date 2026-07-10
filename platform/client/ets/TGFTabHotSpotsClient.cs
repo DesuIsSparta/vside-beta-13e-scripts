@@ -1,15 +1,15 @@
 function geTGF_tabs::fillTabHotSpots(%this) {
     %tabName = "hotspots";
     %tab = %this.getTabWithName(%tabName);
-    if (filled) {
-        if (isObject(GuiTable)) {
-            GuiTable.makeFirstResponder(1);
+    if (%tab.filled) {
+        if (isObject(%tab.GuiTable)) {
+            %tab.GuiTable.makeFirstResponder(1);
         }
-        return %tab;
+        return;
     }
-    filled = 1 @ %tab;
+    %tab.filled = 1;
     %this.fillTabGeneric(%tab);
-    %dataTable = new DataTable(geTGF_HotSpotsDataTable);
+    %dataTable = new DataTable(geTGF_HotSpotsDataTable);;
     %dataTable.addColumn("event", "", "icon", 20, 1, 1, 0);
     %dataTable.addColumn("description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", 290, 1, 1, 1);
     %dataTable.addColumn("poster", "", "image", 50, 0, 1, 0);
@@ -30,77 +30,84 @@ function geTGF_tabs::fillTabHotSpots(%this) {
     %dataTable.addIconToColumn("access", "friendsonly", "platform/client/ui/tgf/tgf_door_heart_white");
     %dataTable.addIconToColumn("access", "passwordprotected", "platform/client/ui/tgf/tgf_door_key_white");
     %dataTable.doSort("event");
-    position = new GuiTableCtrl(geTGF_HotSpotsGuiTable) @ "2 20";
-    extent = "955 430";
-    visible = 1;
-    spacing = 2;
-    %guiTable = ;
+    %guiTable = new GuiTableCtrl(geTGF_HotSpotsGuiTable) {
+        position = "2 20";
+        extent = "955 430";
+        visible = 1;
+        spacing = 2;
+    };
     %guiTable.setHeaderCellUniformExtent(22);
     %guiTable.setHeaderMLTextBoxTopMargin(0);
     %guiTable.setChildrenExtents(18);
     %guiTable.setDataTable(%dataTable);
-    GuiTable = %guiTable @ %tab;
+    %tab.GuiTable = %guiTable;
     %tab.add(%guiTable);
-    profile = GuiMLTextCtrl @ new ""() @ "GuiDefaultProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "75 49";
-    extent = "800 40";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    alternativeTextCtrl = %guiTable;
-    %tab.add(alternativeTextCtrl);
-    alternativeTextCtrl.setText(mlStyle("Fetching...", "tgfTables_DataCell_Text"));
-    profile = GuiMLTextCtrl @ new ""() @ "ETSNonModalProfile";
+    %guiTable.alternativeTextCtrl = new ""() {
+        profile = GuiMLTextCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "75 49";
+        extent = "800 40";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+    };
+    %tab.add(%guiTable.alternativeTextCtrl);
+    %guiTable.alternativeTextCtrl.setText(mlStyle("Fetching...", "tgfTables_DataCell_Text"));
     0;
-    horizSizing = %guiTable @ %guiTable @ "right";
-    vertSizing = "bottom";
-    position = "7 473";
-    extent = "30 20";
-    text = mlStyle("Find:", "tgfTables_DataCell_Text");
-    %filterLabel = ;
+    %filterLabel = new ""() {
+        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "7 473";
+        extent = "30 20";
+        text = mlStyle("Find:", "tgfTables_DataCell_Text");
+    };
     %tab.add(%filterLabel);
-    profile = GuiControl @ new ""() @ "ETSLightBoxProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "top";
-    position = "37 470";
-    extent = "186 22";
-    minExtent = "186 22";
-    sluggishness = -1;
-    visible = 1;
-    canHilite = 0;
-    allowAutoFirstResponderUpdates = 0;
-    %filterBox = ;
+    %filterBox = new ""() {
+        profile = GuiControl @ "ETSLightBoxProfile";
+        horizSizing = "right";
+        vertSizing = "top";
+        position = "37 470";
+        extent = "186 22";
+        minExtent = "186 22";
+        sluggishness = -1;
+        visible = 1;
+        canHilite = 0;
+        allowAutoFirstResponderUpdates = 0;
+    };
     %tab.add(%filterBox);
-    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
     0;
-    bitmap = "platform/client/ui/magnifying_glass";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "3 4";
-    extent = "18 17";
-    %filterBox.add();
-    profile = new GuiTextEditCtrl(geTGF_HotSpotsFilterBox) @ "InfoWindowTextEditInvisibleProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "20 1";
-    extent = "168 20";
-    sluggishness = -1;
-    visible = 1;
-    text = "";
-    maxLength = 29;
-    canHilite = 0;
-    filterDoItReallySchedule = "";
-    filterDoItReallyTimeoutMS = 400;
-    %filterBox.add();
-    position = GuiMLTextCtrl @ new ""() @ "250 473";
+    %filterBox.add(new ""() {
+        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+        bitmap = "platform/client/ui/magnifying_glass";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "3 4";
+        extent = "18 17";
+    };);
+    %filterBox.add(new GuiTextEditCtrl(geTGF_HotSpotsFilterBox) {
+        profile = "InfoWindowTextEditInvisibleProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "20 1";
+        extent = "168 20";
+        sluggishness = -1;
+        visible = 1;
+        text = "";
+        maxLength = 29;
+        canHilite = 0;
+        filterDoItReallySchedule = "";
+        filterDoItReallyTimeoutMS = 400;
+    };);
     0;
-    extent = "600 30";
-    text = mlStyle(, "tgfTables_Invite");
-    %invite = ;
+    %invite = new ""() {
+        position = GuiMLTextCtrl @ "250 473";
+        extent = "600 30";
+        text = mlStyle(, "tgfTables_Invite");
+    };
     %tab.add(%invite);
     %this.refreshTabHotSpots();
 };
@@ -117,8 +124,8 @@ function geTGF_tabs::refreshTabHotSpots(%this) {
     geTGF_HotSpotsGuiTable;
 };
 function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request) {
-    if ((getCurrentTab() SPC name $= "hotspots")) {
-        cancel(geTGF_Refresh_Schedule);
+    if ((geTGF_tabs.getCurrentTab().name $= "hotspots")) {
+        cancel(geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
         1.setActive();
     }
     if (!(isObject(%request))) {
@@ -147,15 +154,15 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request) {
         %request.copyListValueIntoObject(%item, %listItem, "location.serverName");
         %request.copyListValueIntoObject(%item, %listItem, "moreInfoURL");
         %request.copyListValueIntoObject(%item, %listItem, "apt");
-        subType = %request.getValue(%listItem @ ".type") @ %item;
+        %item.subType = %request.getValue(%listItem @ ".type");
         if (!(1)) {
-            occupancy = -(1.0) @ %item;
-            friendOccupancy = -(1.0) @ %item;
-            subType = "publicLocationEvent" @ %item;
-            featured = 1 @ %item;
-            eventID = 1234 @ %item;
+            %item.occupancy = -(1.0);
+            %item.friendOccupancy = -(1.0);
+            %item.subType = "publicLocationEvent";
+            %item.featured = 1;
+            %item.eventID = 1234;
         }
-        goThereVURL = %item @ vurlClearResolution(goThereVURL) @ %item;
+        %item.goThereVURL = vurlClearResolution(%item.goThereVURL);
         %n = (1.0 + %n);
     }
     "hotspots".removeItemsWithFieldValueFromList("happening", "hostUserName", "The-Manager");
@@ -163,78 +170,65 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request) {
     geTGF;
     %count = %itemList.count();
     geTGF;
-    0.removeRowsByIndex(getRowCount());
+    0.removeRowsByIndex(geTGF_HotSpotsDataTable.getRowCount());
     %count.addRows();
-    alternativeTextCtrl.setVisible((0.0 == %count));
-    alternativeTextCtrl.setText(mlStyle("More parties and events coming soon!", "tgfTables_DataCell_Text"));
+    %item.alternativeTextCtrl.setVisible((0.0 == %count));
+    %item.alternativeTextCtrl.setText(mlStyle("More parties and events coming soon!", "tgfTables_DataCell_Text"));
     %n = 0;
     geTGF_HotSpotsGuiTable;
     if ((%count < %n)) {
         %item = %itemList.getValue(%n);
         geTGF_HotSpotsGuiTable;
-        %isFriend = (%item SPC hostUserName.getFriendStatus() $= "friends");
-        BuddyHudWin;
-        if ((%item SPC baseImageURL $= "")) {
-        }
-        %imageURL = %item @ baseImageURL @ "?size=S";
-        "";
-        if (!(geTGF_HotSpotsDataTable SPC $ServerName $= "")) {
-        }
-        %sameServer = (%item SPC location_serverName $= $ServerName) ? "true" : "false";
+        %isFriend = (BuddyHudWin @ " " @ %item.hostUserName.getFriendStatus() $= "friends");
         geTGF_HotSpotsDataTable;
-        if ((%item SPC eventID $= "")) {
-            %eventValue = "notAnEvent";
-            geTGF_HotSpotsDataTable;
-            %eventFmt = "<modulationColor:ffffff60>";
-            (%count < %n);
+        if ((geTGF_HotSpotsDataTable @ " " @ %item.baseImageURL $= "")) {
         }
-        if ((%item SPC subType $= "publicLocationEvent")) {
+        %imageURL = %item.baseImageURL @ "?size=S";
+        "";
+        if (!((%count < %n) @ " " @ $ServerName $= "")) {
+        }
+        %sameServer = (%item.location_serverName $= $ServerName) ? "true" : "false";
+        if ((%item.eventID $= "")) {
+            %eventValue = "notAnEvent";
+            %eventFmt = "<modulationColor:ffffff60>";
+        }
+        if ((%item.subType $= "publicLocationEvent")) {
             %eventValue = "publicEvent";
             %eventFmt = "";
         }
-        if (featured) {
+        if (%item.featured) {
             %eventValue = "featuredEvent";
-            %item;
             %eventFmt = "";
         }
         %eventValue = "regularEvent";
         %eventFmt = "";
-        %occupancyText = occupancy.formatOccupancy("<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
-        %item;
-        %friendOccupancyText = friendOccupancy.formatOccupancy("<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
-        %item;
-        if ((%item >= occupancy)) {
+        %occupancyText = %item.occupancy.formatOccupancy("<b>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
+        geTGF;
+        %friendOccupancyText = %item.friendOccupancy.formatOccupancy("<b><color:40ff40>", "<color:ffffff60>(unknown)", "<color:ffffff60>-");
+        geTGF;
+        if ((0.0 >= %item.occupancy)) {
         }
         %occupancySortVal = 99999;
-        occupancy;
-        if ((%item >= friendOccupancy)) {
+        %item.occupancy;
+        if ((0.0 >= %item.friendOccupancy)) {
         }
         %friendOccupancySortVal = 99999;
-        friendOccupancy;
+        %item.friendOccupancy;
         %rowData = "poster" @ "\t" @ "" @ "\t" @ %imageURL;
-        %item;
-        %rowData = %item @ geTGF_tabs::hotSpotsTab_formatDescription(headline);
-        %item @ headline @ "\t";
-        %rowData = %item @ geTGF_tabs::hotSpotsTab_formatUserName(hostUserName, %isFriend);
-        %item @ hostUserName @ "\t";
-        %rowData = %item @ geTGF_tabs::hotSpotsTab_formatLocation(location_areaName);
-        %item @ location_areaName @ "\t";
-        %rowData = %rowData @ "\n" @ "location" @ "\t" @ %rowData @ "\n" @ "population" @ "\t" @ %occupancySortVal @ "\t" @ "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%occupancyText);
-        %rowData @ "\n" @ "username" @ "\t";
-        %rowData = %rowData @ "\n" @ "description" @ "\t" @ %rowData @ "\n" @ "friends" @ "\t" @ %friendOccupancySortVal @ "\t" @ "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%friendOccupancyText);
-        0.0;
+        %rowData = %rowData @ "\n" @ "description" @ "\t" @ %item.headline @ "\t" @ geTGF_tabs::hotSpotsTab_formatDescription(%item.headline);
+        %rowData = %rowData @ "\n" @ "username" @ "\t" @ %item.hostUserName @ "\t" @ geTGF_tabs::hotSpotsTab_formatUserName(%item.hostUserName, %isFriend);
+        %rowData = %rowData @ "\n" @ "location" @ "\t" @ %item.location_areaName @ "\t" @ geTGF_tabs::hotSpotsTab_formatLocation(%item.location_areaName);
+        %rowData = %rowData @ "\n" @ "population" @ "\t" @ %occupancySortVal @ "\t" @ "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%occupancyText);
+        %rowData = %rowData @ "\n" @ "friends" @ "\t" @ %friendOccupancySortVal @ "\t" @ "<just:left>" @ geTGF_tabs::hotSpotsTab_formatDescription(%friendOccupancyText);
         %rowData = %rowData @ "\n" @ "sameServer" @ "\t" @ %sameServer @ "\t" @ "<just:left>[ICON]";
-        %item;
-        %rowData = %item @ accessMode @ "\t" @ "<just:left>[ICON]";
-        %rowData @ "\n" @ "access" @ "\t";
-        %rowData = geTGF @ 0.0 @ %rowData @ "\n" @ "event" @ "\t" @ %eventValue @ "\t" @ "<just:right>" @ %eventFmt @ "[ICON]";
-        geTGF;
+        %rowData = %rowData @ "\n" @ "access" @ "\t" @ %item.accessMode @ "\t" @ "<just:left>[ICON]";
+        %rowData = %rowData @ "\n" @ "event" @ "\t" @ %eventValue @ "\t" @ "<just:right>" @ %eventFmt @ "[ICON]";
         %n.setRowDataByIndex(%rowData);
         %n = (1.0 + %n);
         geTGF_HotSpotsDataTable;
     }
-    doFilter();
-    updateListeners();
+    geTGF_HotSpotsDataTable.doFilter();
+    geTGF_HotSpotsDataTable.updateListeners();
 };
 function geTGF_tabs::hotSpotsTab_formatDescription(%desc) {
     return mlStyle(%desc, "tgfTables_DataCell_Text");
@@ -280,8 +274,8 @@ function geTGF_tabs::hotSpotsTab_formatAccess(%access, %isFriend) {
     return "";
 };
 function geTGF::hotspots_GetAndOpenDetailsContainer(%this, %item) {
-    %dataRowIndex = %item @ hostUserName.getRowIndexByCriteria();
-    "username" @ "\t";
+    %dataRowIndex = "username" @ "\t" @ %item.hostUserName.getRowIndexByCriteria();
+    geTGF_HotSpotsDataTable;
     %guiRowIndex = %dataRowIndex.getGuiRowIndexForDataRowIndex();
     geTGF_HotSpotsGuiTable;
     if ((0.0 >= %guiRowIndex)) {
@@ -332,9 +326,8 @@ function geTGF_HotSpotsGuiTable::onKeyDown(%this, %modifier, %keyCode) {
     return 0;
 };
 function geTGF_HotSpotsFilterBox::onKeyUp(%this, %modifier, %keyCode) {
-    cancel(filterDoItReallySchedule);
-    filterDoItReallySchedule = %this @ %this.schedule(filterDoItReallyTimeoutMS, "doApplyFilterReally") @ %this;
-    %this;
+    cancel(%this.filterDoItReallySchedule);
+    %this.filterDoItReallySchedule = %this.schedule(%this.filterDoItReallyTimeoutMS, "doApplyFilterReally");
     return 0;
 };
 function geTGF_HotSpotsFilterBox::onKeyDown(%this, %modifier, %keyCode) {
@@ -346,10 +339,10 @@ function geTGF_HotSpotsFilterBox::onKeyDown(%this, %modifier, %keyCode) {
     return 0;
 };
 function geTGF_HotSpotsFilterBox::doApplyFilterReally(%this) {
-    cancel(filterDoItReallySchedule);
-    filterDoItReallySchedule = %this @ "" @ %this;
+    cancel(%this.filterDoItReallySchedule);
+    %this.filterDoItReallySchedule = "";
     %this.getText().setFilterText();
-    updateListeners();
+    geTGF_HotSpotsDataTable.updateListeners();
 };
 function geTGF::openForBuildingDirectory(%this, %buildingName) {
     %buildingName = trim(%buildingName);
@@ -358,20 +351,19 @@ function geTGF::openForBuildingDirectory(%this, %buildingName) {
     }
     %areaName = Buildings::GetAreaName(%buildingName);
     %fitlerText = DestinationList::GetAreaNameUserFacingNameCityAndBuildingShort(%areaName, "");
-    %updateListeners = isObject();
-    geTGF_HotSpotsDataTable;
+    %updateListeners = isObject(geTGF_HotSpotsDataTable);
     "hotspots".openToTabName();
     %fitlerText.setText();
     %fitlerText.setFilterText();
     if (%updateListeners) {
-        doFilter();
-        updateListeners();
+        geTGF_HotSpotsDataTable.doFilter();
+        geTGF_HotSpotsDataTable.updateListeners();
     }
 };
 function onDoneOrErrorCallback_GetUserRelations_ForHotSpots(%request) {
     onDoneOrErrorCallback_GetUserRelations_ProcessOnly(%request);
-    if (!(isObject())) {
-        return geTGF_HotSpotsDataTable;
+    if (!(isObject(geTGF_HotSpotsDataTable))) {
+        return;
     }
     %itemList = "hotspots".getItemList("happening");
     geTGF;
@@ -379,17 +371,14 @@ function onDoneOrErrorCallback_GetUserRelations_ForHotSpots(%request) {
     %n = 0;
     if ((%count < %n)) {
         %item = %itemList.getValue(%n);
-        %isFriend = (%item SPC hostUserName.getFriendStatus() $= "friends");
-        BuddyHudWin;
+        %isFriend = (BuddyHudWin @ " " @ %item.hostUserName.getFriendStatus() $= "friends");
         if (%isFriend) {
-            %oldRowData = %item @ hostUserName;
-            "username" @ "\t";
-            %newRowData = %item @ geTGF_tabs::hotSpotsTab_formatUserName(hostUserName, %isFriend);
-            %item @ hostUserName @ "\t";
+            %oldRowData = "username" @ "\t" @ %item.hostUserName;
+            %newRowData = "username" @ "\t" @ %item.hostUserName @ "\t" @ geTGF_tabs::hotSpotsTab_formatUserName(%item.hostUserName, %isFriend);
             %oldRowData.setRowDataByCriteria(%newRowData);
         }
         %n = (1.0 + %n);
         geTGF_HotSpotsDataTable;
     }
-    updateListeners();
+    geTGF_HotSpotsDataTable.updateListeners();
 };

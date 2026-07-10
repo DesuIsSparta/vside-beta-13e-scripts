@@ -10,7 +10,7 @@ function staffSeatsPanel::open(%this) {
 };
 function staffSeatsPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 $staffSeatsPanel_TOTALNUM = 0;
@@ -26,7 +26,7 @@ function doNextSeatSit(%seatNumber) {
     StaffSeatsPanelTestSet;
     commandToServer('RequestToSit', %id);
     (1.0 + %seatNumber).setText();
-    echo(staffSeatsGuiCurNumber @ "testing seat #" @ (1.0 + %seatNumber) @ "id: " @ %id);
+    echo("testing seat #" @ (1.0 + %seatNumber) @ "id: " @ %id);
 };
 function waitForStandingBeforeSit(%seatNumber) {
     if ($player.isSitting()) {
@@ -104,20 +104,18 @@ function staffSeatsPanel::startTestingSeats(%this) {
     if (!($StandAlone)) {
         return;
     }
-    if (!(isObject())) {
+    if (!(isObject(MissionGroup))) {
         error("startTestingSeats no missiongroup!");
-        return MissionGroup;
+        return;
     }
-    if (isObject()) {
-        delete();
+    if (isObject(StaffSeatsPanelTestSet)) {
+        StaffSeatsPanelTestSet.delete();
     }
     new SimSet(StaffSeatsPanelTestSet);
-    add();
-    recursiveCollectSeatsFromSimGroup();
-    $staffSeatsPanel_TOTALNUM = getCount();
-    StaffSeatsPanelTestSet;
+    MissionCleanup.add(StaffSeatsPanelTestSet);
+    recursiveCollectSeatsFromSimGroup(MissionGroup, StaffSeatsPanelTestSet);
+    $staffSeatsPanel_TOTALNUM = StaffSeatsPanelTestSet.getCount(StaffSeatsPanelTestSet);
     $staffSeatsPanel_CUR = 0;
-    StaffSeatsPanelTestSet;
     $staffSeatsPanel_CUR.setText();
     $staffSeatsPanel_TOTALNUM.setText();
 };

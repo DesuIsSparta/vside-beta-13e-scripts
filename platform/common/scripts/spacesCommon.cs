@@ -1,29 +1,29 @@
 function SpaceDef::defaultValues(%this) {
-    audioStreamID = "" @ %this;
-    audioStreamVolume = $Pref::AudioVolume @ %this;
-    audioStreamAttenuation = "" @ %this;
-    owners = "" @ %this;
-    ops = "" @ %this;
-    dynamicAccess = 0 @ %this;
-    accessRoles = "" @ %this;
-    accessSkus = "" @ %this;
-    accessLevels = "" @ %this;
-    accessPersonalMode = "any" @ %this;
-    accessSecretCodes = "" @ %this;
-    accessBlackList = "" @ %this;
-    locked = "false" @ %this;
-    accessFunction = "" @ %this;
-    shortName = "" @ %this;
-    onEntryText = "" @ %this;
-    onLeaveText = "" @ %this;
-    shoppingUIText = "" @ %this;
-    notAllowedText = "Sorry [PLAYERFIRSTNAME], you're not allowed in [SHORTNAME] - [REASON]." @ %this;
-    Visibility = "none" @ %this;
-    storeID = "" @ %this;
-    shoppingLongText = "" @ %this;
-    contiguousSpaceName = "" @ %this;
-    visitID = "" @ %this;
-    partnerURL = "" @ %this;
+    %this.audioStreamID = "";
+    %this.audioStreamVolume = $Pref::AudioVolume;
+    %this.audioStreamAttenuation = "";
+    %this.owners = "";
+    %this.ops = "";
+    %this.dynamicAccess = 0;
+    %this.accessRoles = "";
+    %this.accessSkus = "";
+    %this.accessLevels = "";
+    %this.accessPersonalMode = "any";
+    %this.accessSecretCodes = "";
+    %this.accessBlackList = "";
+    %this.locked = "false";
+    %this.accessFunction = "";
+    %this.shortName = "";
+    %this.onEntryText = "";
+    %this.onLeaveText = "";
+    %this.shoppingUIText = "";
+    %this.notAllowedText = "Sorry [PLAYERFIRSTNAME], you're not allowed in [SHORTNAME] - [REASON].";
+    %this.Visibility = "none";
+    %this.storeID = "";
+    %this.shoppingLongText = "";
+    %this.contiguousSpaceName = "";
+    %this.visitID = "";
+    %this.partnerURL = "";
 };
 function spaces_Init() {
     safeEnsureScriptObject("SimGroup", "spaceDefsGroup");
@@ -37,10 +37,11 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE) {
     if (!(%createIfDNE)) {
         return 0;
     }
-    class = ScriptObject @ new %fullName() @ "SpaceDef";
     0;
-    internalName = %internalName;
-    %spaceDef = ;
+    %spaceDef = new %fullName() {
+        class = ScriptObject @ "SpaceDef";
+        internalName = %internalName;
+    };
     %spaceDef.defaultValues();
     %spaceDef.add();
     return %spaceDef.getId();
@@ -51,14 +52,13 @@ function spaces_HasSpaceDef(%internalName) {
 };
 function spaces_FindSpaceDefWithStoreID(%storeID) {
     %found = 0;
-    %n = (spaceDefsGroup - getCount());
-    1.0;
+    %n = (1.0 - spaceDefsGroup.getCount());
     if ((0.0 >= %n)) {
     }
     if ((0.0 == %found)) {
         %found = %n.getObject();
         spaceDefsGroup;
-        if (!(%found SPC storeID $= %storeID)) {
+        if (!(%found.storeID $= %storeID)) {
             %found = 0;
         }
         %n = (1.0 - %n);
@@ -74,14 +74,14 @@ function initTokenSubstitutions() {
     %map = safeEnsureScriptObject("StringMap", "gTokenSubstitutionTable");
     if (0) {
     }
-    if (initialized) {
+    if (%map.initialized) {
         return %map;
     }
     %map.put("[PLAYERNAME]", "          %player     .getShapeName()");
     %map.put("[PLAYERFIRSTNAME]", "firstWord(%player     .getShapeName())");
     %map.put("[REASON]", "          %this       .lastReason");
     %map.put("[SHORTNAME]", "          %this       .shortName");
-    initialized = 1 @ %map;
+    %map.initialized = 1;
     return %map;
 };
 function SpaceDef::doTokenSubstitution(%this, %dry, %player) {

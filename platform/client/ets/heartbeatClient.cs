@@ -24,7 +24,7 @@ function onDoneOrErrorCallback_ClientHeartbeat(%request) {
             error(getScopeName() @ " " @ "- heartbeat failed due to invalid token, logging out.");
             %msg = ;
             logout(0);
-            disconnectedCleanup();
+            disconnectedCleanup(LoginGui);
             MessageBoxOK("DISCONNECT", %msg, "");
         }
     }

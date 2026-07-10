@@ -15,6 +15,6 @@ function performerPanel::open(%this) {
 };
 function performerPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };

@@ -92,5 +92,5 @@ function metrics(%expr) {
         %cb.setValue();
     }
     GLEnableMetrics(0);
-    popDialog();
+    Canvas.popDialog(FrameOverlayGui);
 };

@@ -1,12 +1,12 @@
 function clientCmdBlockGameEngage(%gameType) {
     setFOV(90);
     "blockgame".open(%gameType);
-    chooseProfile();
+    ConvBub.chooseProfile();
     getUserActivityMgr().setActivityActive("gaming", 1);
 };
 function clientCmdBlockGameDisengage() {
     closingFromServer = 1 @ ApplauseMeterGui;
-    close();
-    chooseProfile();
+    ApplauseMeterGui.close();
+    ConvBub.chooseProfile();
     getUserActivityMgr().setActivityActive("gaming", 0);
 };

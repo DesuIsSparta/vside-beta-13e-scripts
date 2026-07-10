@@ -1,50 +1,62 @@
-className = datablock StaticShapeData(BaseDoorData) @ "DoorShapeData";
-category = "Doors";
-shapeFile = datablock StaticShapeData(SlidingDoor : BaseDoorData) @ "projects/common/worlds/slidingDoor.dts";
-shapeFile = datablock StaticShapeData(ClubMainDoor : BaseDoorData) @ "projects/common/worlds/clubmaindoor.dts";
-shapeFile = datablock StaticShapeData(Deckdoor : BaseDoorData) @ "projects/common/worlds/deckdoor.dts";
-shapeFile = datablock StaticShapeData(Ps1upperdoor : BaseDoorData) @ "projects/common/worlds/ps1upperdoor.dts";
-shapeFile = datablock StaticShapeData(SecretSteps : BaseDoorData) @ "projects/common/worlds/secretsteps.dts";
+datablock StaticShapeData(BaseDoorData) {
+    className = "DoorShapeData";
+    category = "Doors";
+};
+datablock StaticShapeData(SlidingDoor : BaseDoorData) {
+    shapeFile = "projects/common/worlds/slidingDoor.dts";
+};
+datablock StaticShapeData(ClubMainDoor : BaseDoorData) {
+    shapeFile = "projects/common/worlds/clubmaindoor.dts";
+};
+datablock StaticShapeData(Deckdoor : BaseDoorData) {
+    shapeFile = "projects/common/worlds/deckdoor.dts";
+};
+datablock StaticShapeData(Ps1upperdoor : BaseDoorData) {
+    shapeFile = "projects/common/worlds/ps1upperdoor.dts";
+};
+datablock StaticShapeData(SecretSteps : BaseDoorData) {
+    shapeFile = "projects/common/worlds/secretsteps.dts";
+};
 function DoorShapeData::onAdd(%this, %obj) {
-    doorOpen = 0 @ %obj;
-    insideCount = 0 @ %obj;
+    %obj.doorOpen = 0;
+    %obj.insideCount = 0;
     return;
 };
 function DoorShapeData::openDoor(%obj) {
-    if (!(doorOpen)) {
+    if (!(%obj.doorOpen)) {
         %obj.setThreadDir(0, 1);
         %obj.playThread(0, "open");
-        doorOpen = %obj @ 1 @ %obj;
+        %obj.doorOpen = 1;
     }
     return;
 };
 function DoorShapeData::closeDoor(%obj) {
-    if (doorOpen) {
+    if (%obj.doorOpen) {
         %obj.setThreadDir(0, 0);
         %obj.playThread(0, "open");
-        doorOpen = %obj @ 0 @ %obj;
+        %obj.doorOpen = 0;
     }
     return;
 };
-tickPeriodMS = datablock TriggerData(DoorTrigger) @ 200;
-door = "ReplaceMeWith a Door Name";
+datablock TriggerData(DoorTrigger) {
+    tickPeriodMS = 200;
+    door = "ReplaceMeWith a Door Name";
+};
 function DoorTrigger::onEnterTrigger(%this, %trigger, %player) {
     Parent::onEnterTrigger(%this, %trigger, %player);
-    %client = client;
-    %player;
+    %client = %player.client;
     if (!(isObject(%client))) {
         return;
     }
-    if (!(isObject(door))) {
+    if (!(isObject(%trigger.door))) {
         error("DoorTrigger::onEnterTrigger:  Did not find door member. must have a door dynamic var to work");
-        return %trigger;
+        return;
     }
-    if (!(doorOpen)) {
-        DoorShapeData::openDoor(door);
+    if (!(%trigger.door.doorOpen)) {
+        DoorShapeData::openDoor(%trigger.door);
     }
-    insideCount = %trigger @ door;
-    %trigger @ (door + insideCount);
-    return 1.0;
+    %trigger.door.insideCount = (1.0 + %trigger.door.insideCount);
+    return;
 };
 function DoorTrigger::onTickTrigger(%this, %trigger) {
     Parent::onTickTrigger(%this, %trigger);
@@ -52,21 +64,19 @@ function DoorTrigger::onTickTrigger(%this, %trigger) {
 };
 function DoorTrigger::onLeaveTrigger(%this, %trigger, %player) {
     Parent::onLeaveTrigger(%this, %trigger, %player);
-    %client = client;
-    %player;
+    %client = %player.client;
     if (!(isObject(%client))) {
         return;
     }
-    if (!(isObject(door))) {
+    if (!(isObject(%trigger.door))) {
         error("DoorTrigger::onEnterTrigger:  Did not find door member. must have a door dynamic var to work");
-        return %trigger;
+        return;
     }
-    insideCount = %trigger @ door;
-    %trigger @ (door - insideCount);
-    if ((door == insideCount)) {
+    %trigger.door.insideCount = (1.0 - %trigger.door.insideCount);
+    if ((0.0 == %trigger.door.insideCount)) {
     }
-    if (doorOpen) {
-        DoorShapeData::closeDoor(door);
+    if (%trigger.door.doorOpen) {
+        DoorShapeData::closeDoor(%trigger.door);
     }
-    return %trigger;
+    return;
 };

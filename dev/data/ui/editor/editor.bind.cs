@@ -9,14 +9,14 @@ new ActionMap(EditorMap);
 %i = 0;
 keyboard;
 if ((9.0 < %i)) {
-    keyboard @ "alt " @ %i.bindCmd(EditorMap @ EditorMap @ "editor.setBookmark(" @ %i @ ");", "");
+    "alt " @ %i.bindCmd("editor.setBookmark(" @ %i @ ");", "");
     %i = (1.0 + %i);
     keyboard;
 }
 %i = 0;
 (9.0 < %i);
 if ((9.0 < %i)) {
-    keyboard @ "ctrl " @ %i.bindCmd(EditorMap @ EditorMap @ "editor.gotoBookmark(" @ %i @ ");", "");
+    "ctrl " @ %i.bindCmd("editor.gotoBookmark(" @ %i @ ");", "");
     %i = (1.0 + %i);
     keyboard;
 }

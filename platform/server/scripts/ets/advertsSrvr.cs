@@ -33,7 +33,7 @@ function initAdLogFile() {
     %ts = getSubStr(%ts, 0, 17);
     $adLogFileName = getAdLogName(%ts);
     $adLogCreationTimestamp = %ts;
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     if (%file.openForAppend($adLogFileName)) {
         %file.writeLine("# Evil Twin Ads Log File");
@@ -50,7 +50,7 @@ function initAdLogFile() {
 };
 function appendAdLogLine(%line) {
     %fn = initAdLogFile();
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     if (%file.openForAppend(%fn)) {
         %file.writeLine(%line);
@@ -62,8 +62,7 @@ function appendAdLogLine(%line) {
     return 0;
 };
 function serverCmdAdvertClick(%client, %ghostIndexClnt, %pt) {
-    %playerName = detag(Player.getShapeName());
-    %client;
+    %playerName = detag(%client.Player.getShapeName());
     %obj = %client.resolveObjectFromGhostIndex(%ghostIndexClnt);
     %tex = %obj.getSkinName();
     %line = "AdClick: ";
@@ -76,8 +75,7 @@ function serverCmdAdvertClick(%client, %ghostIndexClnt, %pt) {
     return;
 };
 function serverCmdAdvertFollow(%client, %url) {
-    %playerName = detag(Player.getShapeName());
-    %client;
+    %playerName = detag(%client.Player.getShapeName());
     %line = "AdFollow:";
     %line = %line @ "\t" @ getTimeStamp();
     %line = %line @ "\t" @ stripUnprintables(%playerName);
@@ -86,64 +84,57 @@ function serverCmdAdvertFollow(%client, %url) {
     return;
 };
 function AdGroup::init(%this) {
-    num = 0 @ %this;
-    dtsNum = 0 @ %this;
-    sort = forward @ %this;
-    offset = 0 @ %this;
+    %this.num = 0;
+    %this.dtsNum = 0;
+    %this.sort = forward;
+    %this.offset = 0;
     return;
 };
 function AdGroup::addAd(%this, %texture, %title, %url) {
-    textures = %texture @ %this @ num @ %this;
-    titles = %title @ %this @ num @ %this;
-    urls = %url @ %this @ num @ %this;
-    num = 1.0 @ (%this + num) @ %this;
+    %this.textures = %texture @ %this.num;
+    %this.titles = %title @ %this.num;
+    %this.urls = %url @ %this.num;
+    %this.num = (1.0 + %this.num);
     return;
 };
 function AdGroup::addDTSGroup(%this, %grp) {
-    dtss = %grp @ %this @ dtsNum @ %this;
-    dtsNum = 1.0 @ (%this + dtsNum) @ %this;
+    %this.dtss = %grp @ %this.dtsNum;
+    %this.dtsNum = (1.0 + %this.dtsNum);
     return;
 };
 function AdGroup::doSwap(%this) {
-    offset = 1.0 @ (%this + offset) @ %this;
-    if ((%this >= offset)) {
-        offset = num @ 0 @ %this;
-        %this;
+    %this.offset = (1.0 + %this.offset);
+    if ((%this.num >= %this.offset)) {
+        %this.offset = 0;
     }
-    %adNum = offset;
-    %this;
+    %adNum = %this.offset;
     %numAds = 0;
     %gn = 0;
-    if ((dtsNum < %gn)) {
-        %dtsGrp = dtss;
-        %this @ %gn @ %this;
+    if ((%this.dtsNum < %gn)) {
+        %dtsGrp = %this.dtss;
+        %gn;
         %dtsNum = %dtsGrp.getCount();
         %numAds = (%dtsNum + %numAds);
         %dn = 0;
         if ((%dtsNum < %dn)) {
             %dts = %dtsGrp.getObject(%dn);
-            if ((%this SPC sort $= "random")) {
-                %adNum = getRandom((%this - num));
-                1.0;
-                if ((prevAdNum == %adNum)) {
-                    %adNum = getRandom((%this - num));
-                    1.0;
+            if ((%this.sort $= "random")) {
+                %adNum = getRandom((1.0 - %this.num));
+                if ((%dts.prevAdNum == %adNum)) {
+                    %adNum = getRandom((1.0 - %this.num));
                 }
-                if ((prevAdNum == %adNum)) {
-                    %adNum = getRandom((%this - num));
-                    1.0;
+                if ((%dts.prevAdNum == %adNum)) {
+                    %adNum = getRandom((1.0 - %this.num));
                 }
-                prevAdNum = %dts @ %adNum @ %dts;
-                %dts;
+                %dts.prevAdNum = %adNum;
             }
-            %dts.setSkinName(textures);
-            %dts.setTitle(titles);
-            %dts.setBasicURL(urls);
+            %dts.setSkinName(%this.textures);
+            %dts.setTitle(%this.titles);
+            %dts.setBasicURL(%this.urls);
             %adNum = (1.0 + %adNum);
-            %adNum @ %this @ %adNum @ %this @ %adNum @ %this;
-            if ((num >= %adNum)) {
+            %adNum @ %adNum @ %adNum;
+            if ((%this.num >= %adNum)) {
                 %adNum = 0;
-                %this;
             }
             %dn = (1.0 + %dn);
         }
@@ -155,9 +146,9 @@ function AdGroup::doSwap(%this) {
 function AdManager::doSwap(%this) {
     %numAds = 0;
     %g = 0;
-    if ((adGrpsNum < %g)) {
-        %numAds = (adGrps.doSwap() + %numAds);
-        %this @ %g @ %this;
+    if ((%this.adGrpsNum < %g)) {
+        %numAds = (%this.adGrps.doSwap() + %numAds);
+        %g;
         %g = (1.0 + %g);
     }
     return %numAds;
@@ -165,19 +156,20 @@ function AdManager::doSwap(%this) {
 function AdManager::think(%this) {
     if ((0.0 > %this.doSwap())) {
     }
-    if ((%this > periodSecs)) {
-        %this.schedule((%this * periodSecs));
+    if ((0.0 > %this.periodSecs)) {
+        %this.schedule((1000.0 * %this.periodSecs));
     }
     echo("Putting AdManager to sleep..");
     return think;
 };
 function AdManager::newAdGroup(%this) {
-    class = new ""() @ AdGroup;
-    ScriptObject;
-    manager = 0 @ %this;
-    %adGrp = ;
+    0;
+    %adGrp = new ""() {
+        class = ScriptObject @ AdGroup;
+        manager = %this;
+    };
     %adGrp.init();
-    adGrps = %adGrp @ %this @ adGrpsNum @ %this;
-    adGrpsNum = 1.0 @ (%this + adGrpsNum) @ %this;
+    %this.adGrps = %adGrp @ %this.adGrpsNum;
+    %this.adGrpsNum = (1.0 + %this.adGrpsNum);
     return %adGrp;
 };

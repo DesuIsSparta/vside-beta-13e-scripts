@@ -81,25 +81,26 @@ function initClient() {
         log("general", "info", "--------- Starting standalone ---------");
         startStandAlone();
     }
-    if (!(Canvas SPC $JoinGameAddress $= "")) {
+    if (!(Canvas @ " " @ $JoinGameAddress $= "")) {
         log("general", "info", "--------- Joining: " @ $JoinGameAddress @ "---------");
         join($JoinGameAddress);
     }
     checkForPackageUpdates($AutoDownloadPackages);
     loadMainMenu();
-    className = ScreenShotUploader @ new ""() @ "ScreenShotUploaderClass";
     0;
-    $TransitionScreenshot = ;
+    $TransitionScreenshot = new ""() {
+        className = ScreenShotUploader @ "ScreenShotUploaderClass";
+    };
     HudTabs::setup();
     enableManualWindowResize(1);
     dlMgr::smInit();
     loadAlwaysLoadManifest();
 };
 function shutdownClient() {
-    shutDown();
+    dlMgr.shutDown();
 };
 function loadMainMenu() {
-    setContent();
+    Canvas.setContent(LoginGui);
     if ($Audio::initFailed) {
         MessageBoxOK("Audio Initialization Failed", "A sound card must be installed to hear audio playback.  If a soundcard is already present please ensure the drivers are installed properly.", "");
     }
@@ -121,9 +122,9 @@ function startStandAlone() {
 function startStandAlone_Part2() {
     outfits_init();
     createServer("SinglePlayer", $MissionArg);
-    $GameConnection = new GameConnection(ServerConnection);
+    $GameConnection = new GameConnection(ServerConnection);;
     $GameConnection.setCommonPreconnectClientSettings("");
-    add();
+    RootGroup.add(ServerConnection);
     $GameConnection.connectLocal();
     log("initialization", "info", "end connectLocal()");
 };
@@ -131,13 +132,13 @@ function join(%joinGameAddress) {
     loadMainMenu();
     echo("join:: connecting to: " @ %joinGameAddress);
     $lastJoinedServer = %joinGameAddress;
-    $GameConnection = new GameConnection(ServerConnection);
+    $GameConnection = new GameConnection(ServerConnection);;
     $GameConnection.setCommonPreconnectClientSettings("");
     $GameConnection.connect(%joinGameAddress);
 };
 function showLicense() {
     %file = findFirstFile("*/license.txt");
-    %fo = new ""();
+    %fo = new ""();;
     FileObject;
     %fo.openForRead(%file);
     %text = "";
@@ -150,11 +151,10 @@ function showLicense() {
 };
 function onVideoDeactivate() {
     stopMoving();
-    if (isObject()) {
+    if (isObject(cameraTestsGroup)) {
         benchmarks::onVideoDeactivate();
     }
     $Video::Inactive = 1;
-    cameraTestsGroup;
 };
 function onVideoReactivate() {
     $Video::Inactive = 0;
@@ -173,16 +173,15 @@ function quitApp() {
 function logout(%doQuit) {
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/logout/" @ %doQuit);
-    if (isObject()) {
-        close();
+    if (isObject(ApplauseMeterGui)) {
+        ApplauseMeterGui.close();
     }
-    if (isObject()) {
+    if (isObject(SalonStyleSelector)) {
         $gSalonChairCurrent = 0;
-        SalonStyleSelector;
-        close();
+        SalonStyleSelector.close();
     }
-    if (isObject()) {
-        close();
+    if (isObject(PlantDetailsGui)) {
+        PlantDetailsGui.close();
     }
     CustomSpaceClient::OnClientDisconnect();
     if (isObject($player)) {
@@ -191,40 +190,40 @@ function logout(%doQuit) {
     silentAIMDisconnect();
     if (!($UserPref::AIM::RememberMe)) {
     }
-    if (isObject()) {
+    if (isObject(AIMScreenNameField)) {
         "".setText();
     }
     if (!($UserPref::AIM::SavePassword)) {
     }
-    if (isObject()) {
+    if (isObject(AIMPasswordField)) {
         "".setText();
     }
-    setNotConnectedToServer();
-    if (isObject()) {
+    WorldMap.setNotConnectedToServer();
+    if (isObject(ConvBub)) {
         0.close();
     }
-    if (isObject()) {
-        close();
+    if (isObject(BuddyHudWin)) {
+        BuddyHudWin.close();
     }
-    if (isObject()) {
-        clear();
+    if (isObject(UserListFriends)) {
+        UserListFriends.clear();
     }
-    if (isObject()) {
-        clear();
+    if (isObject(UserListFavorites)) {
+        UserListFavorites.clear();
     }
-    if (isObject()) {
-        clear();
+    if (isObject(UserListFans)) {
+        UserListFans.clear();
     }
-    if (isObject()) {
-        clearText();
-        close();
+    if (isObject(SystemMessageDialog)) {
+        SystemMessageTextCtrl.clearText();
+        SystemMessageDialog.close();
     }
     setWindowTitle(generateWindowTitle($ServerName));
     if (!($Login::loggedIn)) {
-        return SystemMessageDialog;
+        return ConvBub;
     }
-    if (isObject()) {
-        return LogoutRequest;
+    if (isObject(LogoutRequest)) {
+        return;
     }
     %cmd = "logoutPart2(" @ %doQuit @ ");";
     "".setText();
@@ -234,12 +233,11 @@ function logout(%doQuit) {
     $Player::Name.persistReally(%cmd);
 };
 function logoutPart2(%doQuit) {
-    %logout = new ManagerRequest(LogoutRequest);
-    if (isObject()) {
+    %logout = new ManagerRequest(LogoutRequest);;
+    if (isObject(MissionCleanup)) {
         %logout.add();
     }
-    doQuit = MissionCleanup @ %doQuit @ %logout;
-    MissionCleanup;
+    %logout.doQuit = MissionCleanup @ %doQuit;
     %url = $Net::ClientServiceURL @ "/logout";
     if (($Player::Name $= "")) {
         log("login", "error", getScopeName() @ " " @ "- logout called with empty player name" @ " " @ getTrace());
@@ -251,9 +249,9 @@ function logoutPart2(%doQuit) {
     }
     %userValue = "?user=" @ urlEncode($Player::Name);
     %tokenValue = "&token=" @ urlEncode($Token);
-    if (isObject()) {
-        %aimMessagesSentValue = AIMConvManager @ urlEncode(totalMessagesSent);
-        AIMConvManager @ "&aimMessagesSent=";
+    if (isObject(AIMConvManager)) {
+        %aimMessagesSentValue = AIMConvManager @ urlEncode(%logout.totalMessagesSent);
+        "&aimMessagesSent=";
     }
     %url = %url @ %userValue @ %tokenValue @ %aimMessagesSentValue;
     log("login", "debug", "logout: " @ %url);
@@ -261,7 +259,7 @@ function logoutPart2(%doQuit) {
     %logout.start();
 };
 function LogoutRequest::onError(%this, %errorNum, %errorName) {
-    if (doQuit) {
+    if (%this.doQuit) {
         doQuit();
     }
     %this.delete();
@@ -269,18 +267,17 @@ function LogoutRequest::onError(%this, %errorNum, %errorName) {
 function LogoutRequest::onDone(%this) {
     $Login::loggedIn = 0;
     $Player::inventory = "";
-    if (isObject()) {
-        close();
+    if (isObject(geTGF)) {
+        geTGF.close();
     }
-    if (isObject()) {
-        exit();
+    if (isObject(WorldMap)) {
+        WorldMap.exit();
     }
-    if (isObject()) {
-        previousRespektPoints = HudScoresContent @ 0 @ HudScoresContent;
-        WorldMap;
+    if (isObject(HudScoresContent)) {
+        %this.previousRespektPoints = 0 @ HudScoresContent;
     }
     log("login", "debug", "logout done");
-    if (doQuit) {
+    if (%this.doQuit) {
         doQuit();
     }
     %this.delete();
@@ -320,18 +317,18 @@ function StatusRequest::onDone(%this) {
         $gVPointsRatio = 50;
     }
     $gLoginStatusMessage = $gVPointsRatio[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $gVPointsRatio[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
-    update();
+    LoginGui.update();
 };
 function StatusRequest::onError(%this, %errorNum, %errorName) {
     if (($CURL::CouldNotResolveHost == %errorNum)) {
         $gLoginStatusMessage = %errorNum[$MsgCat::network @ "E-SERVER-DNS"];
     }
     $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $gLoginStatusMessage[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
-    update();
+    LoginGui.update();
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onError:" @ " " @ %errorName);
 };
 function StatusRequest::getInfoString(%this) {
-    return %this @ connection @ " " @ %this @ name @ "]";
+    return "[" @ %this.connection @ " " @ %this.name @ "]";
 };
 function sendStatusRequest() {
     %request = safeEnsureScriptObject("ManagerRequest", "StatusRequest");
@@ -344,7 +341,7 @@ function sendStatusRequest() {
     %request.setURL(%url);
     %request.start();
     $gLoginStatusMessage = ;
-    update();
+    LoginGui.update();
 };
 function FirstLaunchRequest::onDone(%this) {
     log("login", "info", %this.getInfoString() @ " " @ "FirstLaunchRequest::onDone");
@@ -353,7 +350,7 @@ function FirstLaunchRequest::onError(%this, %errorNum, %errorName) {
     log("login", "info", %this.getInfoString() @ " " @ "FirstLaunchRequest::onError:" @ " " @ %errorName);
 };
 function FirstLaunchRequest::getInfoString(%this) {
-    return %this @ connection @ " " @ %this @ name @ "]";
+    return "[" @ %this.connection @ " " @ %this.name @ "]";
 };
 function sendFirstLaunchRequest() {
     %request = safeEnsureScriptObject("ManagerRequest", "FirstLaunchRequest");

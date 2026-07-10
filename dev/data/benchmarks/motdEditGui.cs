@@ -1,5 +1,5 @@
 function toggleMOTDEditDialog() {
-    toggleVisibleState();
+    toggleVisibleState(MOTDEditGui);
 };
 function MOTDEditGui::open(%this) {
     %this.pushDialog(0);
@@ -11,11 +11,10 @@ function MOTDEditGui::close(%this, %unused) {
 };
 function MOTDEditGui::refresh(%this, %messageType) {
     if ((%messageType $= "MOTD")) {
-        refreshMOTD();
+        geTGF_tabs.refreshMOTD();
     }
     $UserPref::QOTD::answered = "";
-    geTGF_tabs;
-    refreshQOTD();
+    geTGF_tabs.refreshQOTD();
 };
 function MOTDEditGui::onCopyBasicTo(%this, %messageType) {
     if ((%messageType $= "MOTD")) {
@@ -25,9 +24,8 @@ function MOTDEditGui::onCopyBasicTo(%this, %messageType) {
     setClipboard(%text);
 };
 function MOTDEditGui::onCopyTo(%this) {
-    %text = getValue();
-    MOTDText;
-    if (!(MOTDText SPC qotdID $= "")) {
+    %text = MOTDText.getValue();
+    if (!(MOTDText @ " " @ qotdID $= "")) {
         %id = qotdID;
         MOTDText;
         %text = %id @ "\n" @ %text;
@@ -67,37 +65,36 @@ function MOTDEditGui::onConfirm(%this) {
     0.setVisible();
     %message = getClipboard();
     MOTDEditGuiButtonCancel;
-    if (isObject()) {
-        delete();
+    if (isObject(MOTDEditRequest)) {
+        MOTDEditRequest.delete();
     }
     new ManagerRequest(MOTDEditRequest);
-    if (isObject()) {
-        add();
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(MOTDEditRequest);
     }
-    %url = MOTDEditRequest @ $Net::ClientServiceURL @ "/GlobalMessage";
-    MissionCleanup;
-    %url = MOTDEditRequest @ MissionCleanup @ %url @ "?user=" @ urlEncode($Player::Name);
-    MOTDEditRequest;
-    %url = MOTDEditGuiButtonDoIt2 @ MOTDEditGuiButtonConfirm @ %url @ "&token=" @ urlEncode($Token);
+    %url = $Net::ClientServiceURL @ "/GlobalMessage";
+    MOTDEditGuiButtonConfirm;
+    %url = %url @ "?user=" @ urlEncode($Player::Name);
+    MOTDEditGuiButtonDoIt2;
+    %url = %url @ "&token=" @ urlEncode($Token);
     MOTDEditGuiButtonDoIt;
     %url = %url @ "&message=" @ encodeMOTDString(%message);
-    %url = %this @ urlEncode(messageType);
-    %url @ "&type=";
-    log("communication", "debug", "sending request to set the current" @ " " @ %this @ messageType @ " " @ "message: " @ %url);
+    %url = %url @ "&type=" @ urlEncode(%this.messageType);
+    log("communication", "debug", "sending request to set the current" @ " " @ %this.messageType @ " " @ "message: " @ %url);
     %url.setURL();
-    start();
-    messageType = %this @ messageType @ MOTDEditRequest;
+    MOTDEditRequest.start();
+    %this.messageType = %this.messageType @ MOTDEditRequest;
     MOTDEditRequest;
 };
 function MOTDEditRequest::onError(%this, %unused, %unused) {
-    MessageBoxOK("Server Unavailable", %this @ messageType @ " " @ "NOT submitted.", "");
+    MessageBoxOK("Server Unavailable", "The server is currently unavailable." @ " " @ %this.messageType @ " " @ "NOT submitted.", "");
 };
 function MOTDEditRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     if ((%status $= "success")) {
-        MessageBoxOK("Success", messageType @ " " @ "submitted, test it out to make sure it's what you wanted.", "");
+        MessageBoxOK("Success", %this.messageType @ " " @ "submitted, test it out to make sure it's what you wanted.", "");
     }
-    if ((%this SPC %status $= "fail")) {
+    if ((%status $= "fail")) {
         MessageBoxOK("Uh Oh", "It didn't work! here's why:" @ "\n" @ %this.getValue("statusMsg"), "");
         log("communication", "warn", "MOTDEditRequest::onDone(): fail");
     }

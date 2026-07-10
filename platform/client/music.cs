@@ -1,13 +1,12 @@
 $musicStreamNameMap = 0;
 $musicStreamIDMap = 0;
 function Music::init() {
-    %fmod = new ScriptObject(FMod);
-    if (isObject()) {
-        add();
+    %fmod = new ScriptObject(FMod);;
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(FMod);
     }
     %fmod.init($UserPref::Audio::mute);
     $Music::lastPos = "0 0 0";
-    FMod;
 };
 function Music::setService(%service) {
     $Music::service = %service;
@@ -52,7 +51,7 @@ function Music::toggleMute() {
     alxListenerf(($UserPref::Audio::masterVolume * %multiplier));
     if (isObject($Music::service)) {
     }
-    if (!(AL_GAIN_LINEAR SPC $Music::service $= "")) {
+    if (!(AL_GAIN_LINEAR @ " " @ $Music::service $= "")) {
     }
     if ((-(1.0) == strstr($Music::service.getNamespaceList(), "VideoRenderer"))) {
         $Music::service.setMute($UserPref::Audio::mute);
@@ -60,15 +59,15 @@ function Music::toggleMute() {
     }
     fmodSetMute($UserPref::Audio::mute);
     $UserPref::Audio::mute.setMuted();
-    updateText();
-    if (isObject()) {
+    MusicTabToggleSoundTxt.updateText();
+    if (isObject(MuteCheckBox)) {
         $UserPref::Audio::mute.setValue();
     }
     if (Using_FFMPEG()) {
         ffmpegSetMasterVolume(($UserPref::Audio::channelVolume1 * ($UserPref::Audio::masterVolume * %multiplier)));
     }
     schedulePersist();
-    update();
+    MusicHud.update();
 };
 function doRateSong(%rating) {
     Music::rateSong(%rating);
@@ -77,11 +76,11 @@ function Music::rateSong(%rating) {
     %request = safeEnsureScriptObject("ManagerRequest", "RatingRequest");
     if (%request.isOpen()) {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
-        cancel(timer);
-        timer = %request @ schedule(100, 0, "doRateSong", %rating) @ %request;
+        cancel(%request.timer);
+        %request.timer = schedule(100, 0, "doRateSong", %rating);
         return;
     }
-    user_rating = %rating @ %request;
+    %request.user_rating = %rating;
     %url = $Net::ClientServiceURL @ "/RateSong?";
     %val1 = "user=" @ urlEncode($Player::Name);
     %val2 = "&token=" @ urlEncode($Token);
@@ -117,7 +116,7 @@ function Music::fetchRatings(%artist, %title, %album) {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. aborting. url =" @ " " @ %request.getURL());
         return;
     }
-    user_rating = 0 @ %request;
+    %request.user_rating = 0;
     %url = $Net::ClientServiceURL @ "/GetSongRating?";
     %val1 = "user=" @ urlEncode($Player::Name);
     %val2 = "&token=" @ urlEncode($Token);
@@ -138,40 +137,39 @@ function RatingRequest::onDone(%this) {
     log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
     if (!(%status $= "success")) {
         0.setRating();
-        update();
+        MusicHud.update();
         error(getScopeName() @ " " @ "- status =" @ " " @ %status);
         return MusicHud;
     }
-    community_rating = %this.getValue("communityRating") @ %this;
-    community_rating = %this @ mRoundTo(community_rating, 0.1) @ %this;
-    num_ratings = %this.getValue("voteCount") @ %this;
+    %this.community_rating = %this.getValue("communityRating");
+    %this.community_rating = mRoundTo(%this.community_rating, 0.1);
+    %this.num_ratings = %this.getValue("voteCount");
     %userRating = %this.getValue("individualRating");
     if (!(%userRating $= "")) {
-        user_rating = %userRating @ %this;
+        %this.user_rating = %userRating;
     }
-    user_rating.setRating();
-    update();
+    %this.user_rating.setRating();
+    MusicHud.update();
 };
 function Music::createGetMusicStreamsRequest() {
     if (!(haveValidManagerHost())) {
         return;
     }
-    if (isObject()) {
-        return GetMusicStreamsRequest;
+    if (isObject(GetMusicStreamsRequest)) {
+        return;
     }
     new ManagerRequest(GetMusicStreamsRequest);
-    if (isObject()) {
-        add();
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(GetMusicStreamsRequest);
     }
-    %url = GetMusicStreamsRequest @ $Net::ClientServiceURL @ "/GetUserFacingMusicStreams";
-    MissionCleanup;
-    %val1 = MissionCleanup @ "?user=" @ urlEncode($Player::Name);
+    %url = $Net::ClientServiceURL @ "/GetUserFacingMusicStreams";
+    %val1 = "?user=" @ urlEncode($Player::Name);
     %val2 = "&token=" @ urlEncode($Token);
     %url = %url @ %val1 @ %val2;
     log("communication", "info", "sending GetMusicStreamsRequest for getMusicStreamMapping: " @ %url);
     %url.setURL();
-    if (!(start())) {
-        log("communication", "debug", GetMusicStreamsRequest @ "failed to send GetMusicStreamsRequest for getMusicStreamMapping: " @ %url);
+    if (!(GetMusicStreamsRequest.start())) {
+        log("communication", "debug", "failed to send GetMusicStreamsRequest for getMusicStreamMapping: " @ %url);
     }
 };
 function GetMusicStreamsRequest::onError(%this, %unused, %unused) {
@@ -186,28 +184,29 @@ function GetMusicStreamsRequest::onDone(%this) {
     }
     log("communication", "debug", "GetMusicStreamsRequest::onDone:" @ " " @ %status);
     %count = %this.getValue("mountCount");
-    $musicStreamNameMap = new ""();
+    $musicStreamNameMap = new ""();;
     StringMap;
     if (isObject($musicStreamNameMap)) {
     }
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         $musicStreamNameMap.add();
     }
-    $musicStreamIDMap = new ""();
+    $musicStreamIDMap = new ""();;
     StringMap;
     if (isObject($musicStreamIDMap)) {
     }
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         $musicStreamIDMap.add();
     }
     %streamField = "";
     MissionCleanup;
     %i = 0;
-    MissionCleanup;
+    0;
     if ((%count < %i)) {
-        %prefix = MissionCleanup @ 0 @ "mount" @ %i @ ".";
+        %prefix = "mount" @ %i @ ".";
         MissionCleanup;
-        %streamID = %this.getValue(0 @ %prefix @ "key");
+        %streamID = %this.getValue(%prefix @ "key");
+        0;
         %streamName = %this.getValue(%prefix @ "value");
         $musicStreamNameMap.put(getWords(%streamName, 1), %streamID);
         $musicStreamIDMap.put(%streamID, getWords(%streamName, 1));
@@ -228,7 +227,7 @@ function GetMusicStreamsRequest::onDone(%this) {
     $musicStreamNameMap.put($CSMediaMusicOffName, $CSMediaMusicOffID);
     $musicStreamIDMap.put($CSMediaMusicOffID, $CSMediaMusicOffName);
     %streamField.updateStations();
-    updateRadioStreams();
+    CSMediaDisplay.updateRadioStreams();
     %this.schedule(0, "delete");
 };
 function MuteButton::setMuted(%this, %flag) {

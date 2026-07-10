@@ -39,26 +39,24 @@ function echoError(%line) {
     log("general", "error", %line);
 };
 function FileObject::indent(%this) {
-    if ((%this SPC indentString $= "")) {
-        indentString = "   " @ %this;
+    if ((%this.indentString $= "")) {
+        %this.indentString = "   ";
     }
-    indent = %this @ indent @ %this @ indentString @ %this;
+    %this.indent = %this.indent @ %this.indentString;
 };
 function FileObject::unindent(%this) {
-    if ((%this SPC indentString $= "")) {
-        indentString = "   " @ %this;
+    if ((%this.indentString $= "")) {
+        %this.indentString = "   ";
     }
-    indent = %this @ getSubStr(indent, strlen(indentString), -(1.0)) @ %this;
-    %this;
+    %this.indent = getSubStr(%this.indent, strlen(%this.indentString), -(1.0));
 };
 function FileObject::writeLineIndented(%this, %line) {
-    %line = %this @ indent @ %line;
-    %line = strreplace(%line, "\n", %this @ indent);
-    "\n" @ %this @ indent;
+    %line = %this.indent @ %line;
+    %line = strreplace(%line, "\n", "\n" @ %this.indent @ %this.indent);
     %this.writeLine(%line);
 };
 function FileObject::writeOpenTag(%this, %tagName, %tagValues) {
-    %this.writeLineIndented(("<" @ %tagName SPC %tagValues $= "") ? "" : " " @ %tagValues @ ">");
+    %this.writeLineIndented(("<" @ %tagName @ " " @ %tagValues $= "") ? "" : " " @ %tagValues @ ">");
     %this.indent();
 };
 function FileObject::writeCloseTag(%this, %tagName) {
@@ -66,7 +64,7 @@ function FileObject::writeCloseTag(%this, %tagName) {
     %this.writeLineIndented("</" @ %tagName @ ">");
 };
 function FileObject::writeShortTag(%this, %tagName, %tagValues, %tagContent) {
-    %line = ("<" @ %tagName SPC %tagValues $= "") ? "" : " " @ %tagValues @ ">";
+    %line = ("<" @ %tagName @ " " @ %tagValues $= "") ? "" : " " @ %tagValues @ ">";
     %line = %line @ %tagContent;
     %line = %line @ "</" @ %tagName @ ">";
     %this.writeLineIndented(%line);

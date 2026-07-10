@@ -9,17 +9,13 @@ function CityDownloadGui::onDone(%this) {
     $lastVURL.doServerJoin();
 };
 function CityDownloadGui::onProgress(%this, %dltotal, %dlnow) {
-    if (isObject()) {
-        %dltotal = getEstimatedSize();
-        packageDownload;
-        if ((packageDownload > getCurrentPackageIndex())) {
-            $CityDownloadGui::lastCityIndex = getCurrentPackageIndex();
-            packageDownload;
+    if (isObject(DLLoadingPBController)) {
+        %dltotal = packageDownload.getEstimatedSize();
+        if (($CityDownloadGui::lastCityIndex > packageDownload.getCurrentPackageIndex())) {
+            $CityDownloadGui::lastCityIndex = packageDownload.getCurrentPackageIndex();
             $CityDownloadGui::lastDLNow = 0;
-            $CityDownloadGui::lastCityIndex;
         }
         %part = ($CityDownloadGui::lastDLNow - %dlnow);
-        DLLoadingPBController;
         $CityDownloadGui::lastDLNow = %dlnow;
         $CityDownloadGui::totalDownloaded = (%part + $CityDownloadGui::totalDownloaded);
         %progressValue = (%dltotal / $CityDownloadGui::totalDownloaded);
@@ -38,10 +34,12 @@ function CityDownloadGui::close(%this) {
 };
 function CityDownloadGui::onWake(%this) {
     $Platform::CanSleepInBackground = 0;
-    if (!(isObject())) {
-        class = DLLoadingPBController @ new ScriptObject(DLLoadingPBController) @ "ProgressBarController";
-        if (isObject()) {
-            add();
+    if (!(isObject(DLLoadingPBController))) {
+        new ScriptObject(DLLoadingPBController) {
+            class = "ProgressBarController";
+        };
+        if (isObject(MissionCleanup)) {
+            MissionCleanup.add(DLLoadingPBController);
         }
     }
     "platform/client/ui/progress_empty".Initialize("platform/client/ui/progress_fill", "", "");
@@ -51,10 +49,10 @@ function CityDownloadGui::onWake(%this) {
         error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
         MessageBoxOK("Error", DLLoadingProgressHolder @ " " @ $MissionArg, "quit();", "");
     }
-    callBackSink = DLLoadingPBController @ %this @ packageDownload;
+    callBackSink = %this @ packageDownload;
     DLLoadingPBController;
-    if (!(isActive())) {
-        start();
+    if (!(packageDownload.isActive())) {
+        packageDownload.start();
     }
 };
 function CityDownloadGui::onSleep(%this) {

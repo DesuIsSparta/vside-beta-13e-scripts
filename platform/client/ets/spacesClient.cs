@@ -8,20 +8,19 @@ function ClientCmdEnterLeaveSpace(%internalName, %isEnter) {
 function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter) {
     if (%isEnter) {
     }
-    %dry = onLeaveText;
-    %this;
+    %dry = %this.onLeaveText;
+    %this.onEntryText;
     %wet = %this.doTokenSubstitution(%dry, $player);
-    onEntryText;
-    if (!(%this SPC %wet $= "")) {
+    if (!(%wet $= "")) {
         handleSystemMessage("msgInfoMessage", %wet);
     }
 };
 function SpaceDef::onEnterLeaveDoStore(%this, %isEnter) {
-    if ((%this SPC storeID $= "")) {
+    if ((%this.storeID $= "")) {
         return;
     }
     if (%isEnter) {
-        clientCmdOnEnterStore(storeID);
+        clientCmdOnEnterStore(%this.storeID);
     }
-    clientCmdOnLeaveStore(storeID);
+    clientCmdOnLeaveStore(%this.storeID);
 };

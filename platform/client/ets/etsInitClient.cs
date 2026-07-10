@@ -3,60 +3,53 @@ function GameConnection::etsInit(%this) {
     $gWorldMapJoiningServer = 0;
     WorldMap;
     resetScreenSize();
-    Initialize();
+    ButtonBar.Initialize();
     1000.schedule("showAndHide");
     $gClientGameConnection = %this;
     ButtonBar;
     $player = %this.getPlayerObject();
-    ButtonBar;
     $IN_ORBIT_CAM = %this.getControlObject().isClassCamera();
     $Client::MissionLoadTimeFinish = getSimTime();
     echo("client-side load time total:  " @ " " @ (0.001 * $Client::MissionLoadTimeFinish) @ " " @ "seconds.");
     echo("client-side load time mission:" @ " " @ (0.001 * ($Client::MissionLoadTimeStart - $Client::MissionLoadTimeFinish)) @ " " @ "seconds.");
     echo("client-side player init:" @ " " @ getDebugString($player));
-    prevRolesMask = -(1.0) @ $player;
+    $player.prevRolesMask = -(1.0);
     $player.onGotRoles($player.getRolesMask());
     Inventory::fetchPlayerInventoryIfNeedTo($player);
-    playersNotifiedOfIdleStatus = StringMap @ new ""() @ $player;
+    $player.playersNotifiedOfIdleStatus = StringMap @ new ""();;
     0;
     if (($UserPref::Player::Genre $= "")) {
         %rand = getRandom(0, 2);
-        $UserPref::Player::Genre = getSubStr(possibleGenres, %rand, 1);
-        $player.getDataBlock();
+        $UserPref::Player::Genre = getSubStr($player.getDataBlock().possibleGenres, %rand, 1);
         echo("Chose random genre:" @ " " @ $UserPref::Player::Genre);
     }
     sendAnimToServer("root");
     sendInitialPrefsToServer();
-    gender = $player.getDataBlock() @ getSubStr(possibleGenders, 0, 1) @ $player;
-    $UserPref::Player::gender = gender;
-    $player;
+    $player.gender = getSubStr($player.getDataBlock().possibleGenders, 0, 1);
+    $UserPref::Player::gender = $player.gender;
     $player.startImpressionsTimer();
     echo("setting master volume to" @ " " @ $UserPref::Audio::masterVolume);
     $UserPref::Audio::mute.setMuted();
-    Initialize();
-    Initialize();
-    if (isFunction()) {
+    OptionsPanel.Initialize();
+    WindowManager.Initialize();
+    if (isFunction(gui_DevOpts_ShowCamPos)) {
         gui_DevOpts_ShowCamPos();
     }
-    if (isObject()) {
-        refreshLists();
+    if (isObject(EmoteHudTabs)) {
+        EmoteHudTabs.refreshLists();
     }
     $player.configBoneBlends();
     $StoreSkusLayer = "";
-    EmoteHudTabs;
-    %startingOutfit = EmoteHudTabs @ $player.getGender() @ $gOutfits.get("currentOutfit");
-    gui_DevOpts_ShowCamPos;
+    MuteButton;
+    %startingOutfit = $player.getGender() @ $gOutfits.get("currentOutfit");
     $player.setActiveSKUs(outfits_getCurrentSkus());
     commandToServer('setActiveSkus', $player.getActiveSKUs());
     $gClosetGuiNeedsOpen = 0;
-    WindowManager;
     if (!($StandAlone)) {
     }
     if (!($gRetrievedOutfits)) {
         $gClosetGuiNeedsOpen = 1;
-        OptionsPanel;
         $gRetrievedOutfits = 1;
-        MuteButton;
     }
     afterEtsInit();
     if ($UserPref::AIM::AutoSignin) {
@@ -67,27 +60,26 @@ function GameConnection::etsInit(%this) {
     if ($DevPref::reportTriggers) {
         commandToServer('reportTriggers', 1);
     }
-    refreshFavoritesList();
-    log("general", "info", BuddyHudWin @ "ets_init_memory=" @ (1024.0 / getCurrentMemoryUsage()));
+    BuddyHudWin.refreshFavoritesList();
+    log("general", "info", "ets_init_memory=" @ (1024.0 / getCurrentMemoryUsage()));
     Music::createGetMusicStreamsRequest();
-    addPermissionBasedContent();
+    HudTabs.addPermissionBasedContent();
     setWindowTitle(generateWindowTitle($ServerName));
     getBalancesAndScores();
     if ($gDFNotify) {
         commandToServer('DFStart', 0, $gDFNotifyCode);
         $gDFNotify = 0;
-        HudTabs;
         $gDFNotifyCode = "";
     }
     setIdle(0);
     getUserActivityMgr().setActivityActive("traveling", 0);
-    if (isFunction()) {
+    if (isFunction(rf_TrySetup)) {
         rf_TrySetup();
     }
     setNowRendering();
 };
 function Player::startImpressionsTimer(%this) {
-    lastImpressionCount = -(1.0) @ %this;
+    %this.lastImpressionCount = -(1.0);
 };
 function Player::takeImpressionsTimer(%this) {
     if (%this.takeImpressions()) {
@@ -101,9 +93,9 @@ function Player::takeImpressions(%this) {
         return 0;
     }
     %imps = $GameConnection.takeImpressions();
-    if ((lastImpressionCount != %imps)) {
+    if ((%this.lastImpressionCount != %imps)) {
         SayConv("Impressions:" @ " " @ %imps);
-        lastImpressionCount = %this @ %imps @ %this;
+        %this.lastImpressionCount = %imps;
     }
     return 1;
 };
@@ -149,20 +141,20 @@ function Player::onAddClient(%this) {
     }
     %this.initGlobalFields();
     gSetField(%this, 0);
-    if (isAdded) {
-        return %this;
+    if (%this.isAdded) {
+        return prevSkuBadge;
     }
-    isAdded = 1 @ %this;
+    %this.isAdded = 1;
     gSetField(%this, 0);
     gSetField(%this, "");
     %this.addToPlayerInstanceDict();
     %relation = %this.getShapeName().getFriendStatus();
     BuddyHudWin;
-    if ((lastTypingSomethingText SPC %relation $= "friends")) {
+    if ((lastTypingSomethingText @ " " @ %relation $= "friends")) {
         %this.setBuddy(1);
         %this.setAmFave(1);
     }
-    if ((affinityLevel SPC %relation $= "favorite")) {
+    if ((affinityLevel @ " " @ %relation $= "favorite")) {
         %this.setBuddy(1);
     }
     if ((%relation $= "fan")) {
@@ -170,7 +162,7 @@ function Player::onAddClient(%this) {
     }
     %this.setIgnore(%this.getShapeName().getIgnoreStatus());
     %this.rebuildHudCtrl();
-    if (isObject()) {
+    if (isObject(geMapHud2DTheOrthoMap)) {
         %this.playerAdd();
     }
 };
@@ -195,50 +187,49 @@ function getBitmapFilename(%category, %fileName) {
     return %rootPath @ %fileName;
 };
 function Player::rebuildHudCtrl(%this) {
-    if (!(isObject(hudCtrl))) {
-        profile = Gui3DProjectionCtrl @ new ""() @ "ETSNonModalProfile";
+    if (!(isObject(%this.hudCtrl))) {
         0;
-        horizSizing = %this @ "right";
-        vertSizing = "bottom";
-        position = "10 10";
-        extent = "64 64";
-        minExtent = "8 2";
-        sluggishness = -1;
-        worldSluggishness = 0.4;
-        visible = 1;
-        offsetObject = "0 -0.2 0.24";
-        offsetScreen = "0 -36";
-        useEyePoint = "1 1";
-        visibleDist = $pref::TS::distBadgesVis;
-        hudCtrl = %this;
-        %hudCtrl = hudCtrl;
-        %this;
+        %this.hudCtrl = new ""() {
+            profile = Gui3DProjectionCtrl @ "ETSNonModalProfile";
+            horizSizing = "right";
+            vertSizing = "bottom";
+            position = "10 10";
+            extent = "64 64";
+            minExtent = "8 2";
+            sluggishness = -1;
+            worldSluggishness = 0.4;
+            visible = 1;
+            offsetObject = "0 -0.2 0.24";
+            offsetScreen = "0 -36";
+            useEyePoint = "1 1";
+            visibleDist = $pref::TS::distBadgesVis;
+        };
+        %hudCtrl = %this.hudCtrl;
         %hudCtrl.setAttachedTo(%this);
         %hudCtrl.add();
-        profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
         0;
-        horizSizing = TheBadgesHud @ "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "64 64";
-        minExtent = "64 64";
-        sluggishness = -1;
-        visible = 1;
-        bitmap = "";
-        %ctrl = ;
-        roleCtrl = %ctrl @ %hudCtrl;
-        %hudCtrl.add(roleCtrl);
+        %ctrl = new ""() {
+            profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+            horizSizing = TheBadgesHud @ "right";
+            vertSizing = "bottom";
+            position = "0 0";
+            extent = "64 64";
+            minExtent = "64 64";
+            sluggishness = -1;
+            visible = 1;
+            bitmap = "";
+        };
+        %hudCtrl.roleCtrl = %ctrl;
+        %hudCtrl.add(%hudCtrl.roleCtrl);
     }
-    %hudCtrl = hudCtrl;
-    %this;
+    %hudCtrl = %this.hudCtrl;
     %bitmap = "";
-    %hudCtrl;
     if (isObject($player)) {
         %localPlayerIsStaffOrMod = $player.isStaffOrModerator();
     }
     %localPlayerIsStaffOrMod = 0;
     %bitmapName = %this.getBadgeBitmapName();
-    roleCtrl.setBitmap(%bitmapName);
+    %hudCtrl.roleCtrl.setBitmap(%bitmapName);
 };
 function Player::getBadgeBitmapName(%this) {
     %ret = "";

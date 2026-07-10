@@ -19,8 +19,8 @@ function getSkuShortName(%sku) {
     if (!(isObject(%si))) {
         return %sku;
     }
-    if ((%si SPC descShrt $= "")) {
+    if ((%si.descShrt $= "")) {
         return %sku;
     }
-    return descShrt;
+    return %si.descShrt;
 };

@@ -3,16 +3,15 @@ function TabbedTextControl::newControlWithScroll(%name, %fieldWidths, %padding) 
     if (!(getWord(%ctrl.getNamespaceList(), 0) $= "TabbedTextControl")) {
         %ctrl.bindClassName("TabbedTextControl");
     }
-    lastClicked = 0 @ %ctrl;
+    %ctrl.lastClicked = 0;
     %ctrl.setFieldWidths(%fieldWidths, %padding);
-    hScrollBar = %ctrl @ scroll;
-    "dynamic";
-    scroll.setVisible(1);
+    %ctrl.scroll.hScrollBar = "dynamic";
+    %ctrl.scroll.setVisible(1);
     return %ctrl;
 };
 function TabbedTextControl::setFieldWidths(%this, %fieldWidths, %padding) {
-    fieldWidths = %fieldWidths @ %this;
-    Padding = %padding @ %this;
+    %this.fieldWidths = %fieldWidths;
+    %this.Padding = %padding;
     %sum = %padding;
     %numFields = getWordCount(%fieldWidths);
     %i = 0;
@@ -21,63 +20,57 @@ function TabbedTextControl::setFieldWidths(%this, %fieldWidths, %padding) {
         %i = (1.0 + %i);
     }
     %this.resize(%sum, getWord(%this.getExtent(), 1));
-    childrenExtent = %sum @ " " @ %this @ getWord(childrenExtent, 1) @ %this;
-    (%numFields < %i);
+    %this.childrenExtent = (%numFields < %i) @ %sum @ " " @ getWord(%this.childrenExtent, 1);
 };
 function TabbedTextControl::addLine(%this, %fields) {
     %line = %this.addChild();
     %this.reseatChildren();
-    %numFields = getWordCount(fieldWidths);
-    %this;
+    %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
     if ((%numFields < %i)) {
-        field.setText(getField(%fields, %i));
+        %line.field.setText(getField(%fields, %i));
         %i = (1.0 + %i);
-        %i @ %line;
+        %i;
     }
-    command = (%numFields < %i) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");" @ %line;
+    %line.command = (%numFields < %i) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
 };
 function TabbedTextControl::addLineNoReseat(%this, %fields) {
     %line = %this.addChild();
-    %numFields = getWordCount(fieldWidths);
-    %this;
+    %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
     if ((%numFields < %i)) {
-        field.setText(getField(%fields, %i));
+        %line.field.setText(getField(%fields, %i));
         %i = (1.0 + %i);
-        %i @ %line;
+        %i;
     }
-    command = (%numFields < %i) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");" @ %line;
+    %line.command = (%numFields < %i) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
 };
 function TabbedTextControl::onCreatedChild(%this, %child) {
-    Parent = %this @ %child;
+    %child.Parent = %this;
     %child.clear();
-    if ((%this SPC paddingAboveText $= "")) {
-        paddingAboveText = 2 @ %this;
+    if ((%this.paddingAboveText $= "")) {
+        %this.paddingAboveText = 2;
     }
-    %xoffset = Padding;
-    %this;
-    %numFields = getWordCount(fieldWidths);
-    %this;
+    %xoffset = %this.Padding;
+    %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
     if ((%numFields < %i)) {
-        %fieldWidth = getWord(fieldWidths, %i);
-        %this;
-        profile = new ""() @ %this @ menuTextProfile;
-        GuiMLTextCtrl;
-        position = 0 @ %xoffset @ " " @ %this @ paddingAboveText;
-        extent = %fieldWidth @ " " @ 20;
-        lineSpacing = 1;
-        allowColorChars = 1;
-        stripTagsOnCopy = 1;
-        field = %i @ %child;
-        %child.add(field);
-        %xoffset = ((Padding + %fieldWidth) + %xoffset);
-        %this;
+        %fieldWidth = getWord(%this.fieldWidths, %i);
+        0;
+        %child.field = new ""() {
+            profile = GuiMLTextCtrl @ %this.menuTextProfile;
+            position = %xoffset @ " " @ %this.paddingAboveText;
+            extent = %fieldWidth @ " " @ 20;
+            lineSpacing = 1;
+            allowColorChars = 1;
+            stripTagsOnCopy = 1;
+        }; @ %i
+        %child.add(%child.field);
+        %xoffset = ((%this.Padding + %fieldWidth) + %xoffset);
+        %i;
         %i = (1.0 + %i);
-        %i @ %child;
     }
     %child.bindClassName("MenuItem");
     %child.bindClassName("TabbedTextLine");
@@ -92,9 +85,8 @@ function TabbedTextLine::onMouseDown(%this) {
 function TabbedTextLine::onMouseUp(%this, %unused, %unused, %clickCount) {
     if ((2.0 == %clickCount)) {
     }
-    if ((Parent == lastClicked)) {
+    if ((%this == %this.Parent.lastClicked)) {
         %this.onSelect();
     }
-    lastClicked = %this @ Parent;
-    %this @ %this;
+    %this.Parent.lastClicked = %this;
 };

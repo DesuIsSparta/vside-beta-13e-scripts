@@ -1,9 +1,10 @@
 exec("./skeletonClient.cs");
 function testLogin() {
-    userName = new ScriptObject(testLogin) @ $UserPref::Player::Name;
-    password = $UserPref::Player::Password;
-    joinAction = "joinAction";
-    %testLogin = ;
+    %testLogin = new ScriptObject(testLogin) {
+        userName = $UserPref::Player::Name;
+        password = $UserPref::Player::Password;
+        joinAction = "joinAction";
+    };
     %testLogin.init();
     %testLogin.doLogin("NewVenezia");
 };

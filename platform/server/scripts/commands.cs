@@ -1,55 +1,52 @@
 function serverCmdToggleCamera(%client) {
     %control = %client.getControlObject();
-    if ((Player == %control)) {
-        %control = Camera;
-        %client;
-        mode = toggleCameraFly @ %control;
-        %client;
+    if ((%client.Player == %control)) {
+        %control = %client.Camera;
+        %control.mode = toggleCameraFly;
     }
-    %control = Player;
-    %client;
-    mode = observerFly @ %control;
-    Camera.setFlyMode();
+    %control = %client.Player;
+    %control.mode = observerFly;
+    %client.Camera.setFlyMode();
     %client.setControlObject(%control);
 };
 function serverCmdDropPlayerAtCamera(%client) {
-    if (!(Player.isStaff())) {
-        return %client;
+    if (!(%client.Player.isStaff())) {
+        return;
     }
     if ($Server::TestCheats) {
     }
-    if (isObject()) {
-        Player.setTransform(Camera.getTransform());
-        Player.setVelocity("0 0 0");
-        %client.setControlObject(Player);
+    if (isObject(EditorGui)) {
+        %client.Player.setTransform(%client.Camera.getTransform());
+        %client.Player.setVelocity("0 0 0");
+        %client.setControlObject(%client.Player);
     }
 };
 function serverCmdDropCameraAtPlayer(%client) {
-    if (!(Player.isStaff())) {
-        return %client;
+    if (!(%client.Player.isStaff())) {
+        return;
     }
-    Camera.setTransform(Player.getEyeTransform());
-    Camera.setVelocity("0 0 0");
-    %client.setControlObject(Camera);
-    Camera.setFlyMode();
+    %client.Camera.setTransform(%client.Player.getEyeTransform());
+    %client.Camera.setVelocity("0 0 0");
+    %client.setControlObject(%client.Camera);
+    %client.Camera.setFlyMode();
 };
 function serverCmdSuicide(%client) {
-    if (isObject(Player)) {
-        Player.kill("Suicide");
+    if (isObject(%client.Player)) {
+        %client.Player.kill("Suicide");
     }
 };
 function serverCmdPlayCel(%client, %anim) {
-    if (isObject(Player)) {
-        Player.playCelAnimation(%anim);
+    if (isObject(%client.Player)) {
+        %client.Player.playCelAnimation(%anim);
     }
 };
 function serverCmdPlayAnim(%client, %anim) {
-    if (isObject(Player)) {
-        Player.playAnim(%anim);
+    if (isObject(%client.Player)) {
+        %client.Player.playAnim(%anim);
     }
 };
 function serverCmdPlayDeath(%client) {
-    if (isObject(Player)) {
-        Player.playDeathAnimation();
+    if (isObject(%client.Player)) {
+        %client.Player.playDeathAnimation();
     }
 };

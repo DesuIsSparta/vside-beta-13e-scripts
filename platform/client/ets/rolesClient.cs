@@ -4,16 +4,15 @@ function Player::onGotRoles(%this, %rolesMask) {
         %this.rebuildHudCtrl();
         return;
     }
-    if ((%this == prevRolesMask)) {
-        return %rolesMask;
+    if ((%rolesMask == %this.prevRolesMask)) {
+        return;
     }
-    prevRolesMask = %rolesMask @ %this;
+    %this.prevRolesMask = %rolesMask;
     if (%this.rolesPermissionCheckNoWarn("snoop")) {
         $TSControl::objSelRange = 1000;
     }
     $TSControl::objSelRange = $pref::TS::distMouseOver;
-    %playerObjects = findObjectsPlayer();
-    ServerConnection;
+    %playerObjects = ServerConnection.findObjectsPlayer();
     %n = (1.0 - getWordCount(%playerObjects));
     if ((0.0 >= %n)) {
         %po = getWord(%playerObjects, %n);

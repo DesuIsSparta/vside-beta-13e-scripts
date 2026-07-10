@@ -1,6 +1,6 @@
 function simpleGoogleTest() {
     %name = "simpleGoogleTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     CURLObject;
     %curl.setURL("http://www.google.com");
     %curl.setRecvData(1);
@@ -11,7 +11,7 @@ function simpleGoogleTest() {
 };
 function headerTest() {
     %name = "headerTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     CURLObject;
     %curl.setURL("http://www.doppelganger.com");
     %curl.setHeader(1);
@@ -22,7 +22,7 @@ function headerTest() {
 };
 function verboseTest() {
     %name = "verboseTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     CURLObject;
     %curl.setURL("http://www.garagegames.com");
     %curl.setVerbose(1);
@@ -33,7 +33,7 @@ function verboseTest() {
 };
 function progressTest() {
     %name = "progressTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     CURLObject;
     %curl.setURL("http://gdperftest.com/perftest/alltest.htm");
     %curl.setProgress(1);
@@ -44,7 +44,7 @@ function progressTest() {
 };
 function userheaderTest() {
     %name = "userheaderTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     CURLObject;
     %curl.setURL("http://www.google.com");
     %curl.setUserAgent("doppelganger-agent/1.0");
@@ -57,9 +57,10 @@ function userheaderTest() {
 };
 function classNameCurlTest() {
     %name = "classNameCurlTest" @ getRandom(0, 100000);
-    className = CURLObject @ new %name() @ "CurlClassNameTest";
     0;
-    %curl = ;
+    %curl = new %name() {
+        className = CURLObject @ "CurlClassNameTest";
+    };
     %curl.setURL("http://www.google.com");
     %curl.setRecvData(1);
     if (%curl.start()) {
@@ -69,10 +70,10 @@ function classNameCurlTest() {
 };
 function simpleDownloadTest() {
     %name = "simpleDownloadTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     URLPostObject;
     %curl.setURL("http://gdperftest.com/perftest/gfx/test.jpg");
-    %curl.setDownloadFile(0 @ %name @ ".jpg");
+    %curl.setDownloadFile(%name @ ".jpg");
     %curl.setRecvData(1);
     if (%curl.start()) {
         %curl.add();
@@ -81,9 +82,10 @@ function simpleDownloadTest() {
 };
 function downloadWithNameSpaceTest() {
     %name = "downloadWithNameSpaceTest" @ getRandom(0, 100000);
-    className = URLPostObject @ new %name() @ "CurlDownloadClassName";
     0;
-    %curl = ;
+    %curl = new %name() {
+        className = URLPostObject @ "CurlDownloadClassName";
+    };
     %curl.setURL("http://www.historyplace.com/text-index.html");
     %curl.setDownloadFile(%name @ ".html");
     %curl.setRecvData(1);
@@ -94,9 +96,10 @@ function downloadWithNameSpaceTest() {
 };
 function simplePostTest() {
     %name = "simplePostTest" @ getRandom(0, 100000);
-    className = CURLPost @ new %name() @ "PostTestClass";
     0;
-    %curl = ;
+    %curl = new %name() {
+        className = CURLPost @ "PostTestClass";
+    };
     %curl.setURL("http://www.cs.tut.fi/~jkorpela/feedback.html");
     %curl.setPostFields("msg=somemessagegoeshere&name=someonesname&from=someemail");
     %curl.setHeader(1);
@@ -106,7 +109,7 @@ function simplePostTest() {
     %curl.delete();
 };
 function newPostFileUploaderTest() {
-    %fo = new ""();
+    %fo = new ""();;
     FileObject;
     if (%fo.openForWrite("platform/chatLog.txt")) {
         %fo.writeLine(getTimeStamp() @ " " @ getScopeName() @ " " @ "yee haw!");
@@ -123,7 +126,7 @@ function onDoneOrErrorCallback_AbuseReport_Test(%request) {
 };
 function simplePostFileUploaderTest() {
     %name = "simplePostFileUploaderTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     URLPostObject;
     %curl.setURL("http://adam.codedv.com/examples/post_dump.php");
     %curl.setPostFile("file1", "EULA.txt");
@@ -140,7 +143,7 @@ function anotherFileUploadTest() {
     %upurl = "http://www.lateralpunks.com/dc/post_dump.php";
     %local = "dc5.jpg";
     %name = "anotherFileUploadTest" @ getRandom(0, 100000);
-    %curl = new %name();
+    %curl = new %name();;
     CURLPostFileUploader;
     %curl.setURL(%upurl);
     %curl.setUploadFile("file1", "dc5.jpg");
@@ -153,9 +156,10 @@ function anotherFileUploadTest() {
 };
 function simpleScreenShotUploaderTest(%fileName) {
     %name = "simpleScreenShotUploaderTest" @ getRandom(0, 100000);
-    className = ScreenShotUploader @ new %name() @ "ScreenShotUploaderClass";
     0;
-    %screenshot = ;
+    %screenshot = new %name() {
+        className = ScreenShotUploader @ "ScreenShotUploaderClass";
+    };
     %screenshot.setURL("http://adam.codedv.com/examples/post_dump.php");
     %screenshot.setProgress(1);
     %screenshot.setUploadFile("file1", %fileName);
@@ -182,9 +186,10 @@ function curlTestAll() {
     }
 };
 function testPcpUpdate() {
-    className = URLPostObject @ new ""() @ "DCClass";
     0;
-    %curl = ;
+    %curl = new ""() {
+        className = URLPostObject @ "DCClass";
+    };
     %url = "http://s-website.eviltwinstudios.net/get_avatar?userId=" @ urlEncode("frida kahlo");
     %curl.setURL(%url);
     %curl.setDownloadFile("avatar.gif");
@@ -202,17 +207,19 @@ function testNamespace::onRecvData(%unused, %unused) {
     echo("recvData");
 };
 function testCURLNamespace() {
-    className = CURLObject @ new ""() @ "TestNamespace";
     0;
-    %curl = ;
+    %curl = new ""() {
+        className = CURLObject @ "TestNamespace";
+    };
     %curl.setRecvData(1);
     %curl.setURL("http://www.google.com");
     %curl.start();
 };
 function testCURLDownload() {
-    className = URLPostObject @ new ""() @ "TestDownload";
     0;
-    %curl = ;
+    %curl = new ""() {
+        className = URLPostObject @ "TestDownload";
+    };
     %curl.setURL("http://www.historyplace.com/text-index.html");
     %curl.setDownloadFile("testCURLDownload.html");
     %curl.setRecvData(1);
@@ -221,9 +228,10 @@ function testCURLDownload() {
 function stressTestFileDownload() {
     %i = 0;
     if ((100.0 < %i)) {
-        className = URLPostObject @ new ""() @ "TestDownload";
         0;
-        %curl = ;
+        %curl = new ""() {
+            className = URLPostObject @ "TestDownload";
+        };
         %localFile = "test" @ %i;
         %curl.setURL("http://winbuild/scripts/orion/images/jrrtbeams1.marquee.gardenbox.jpg");
         %curl.setDownloadFile(%localFile);

@@ -1,5 +1,5 @@
 function serverStart() {
-    %initRequest = new CURLObject(InitRequest);
+    %initRequest = new CURLObject(InitRequest);;
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=start";
@@ -25,7 +25,7 @@ function serverHeartBeat() {
         error("StandAlone - turning off serverHeartBeat.");
         return;
     }
-    %initRequest = new CURLObject(InitRequest);
+    %initRequest = new CURLObject(InitRequest);;
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=heartbeat";
@@ -40,8 +40,7 @@ function serverHeartBeat() {
     %description = "description=" @ urlEncode($Pref::Server::Info);
     %capacity = "capacity=" @ urlEncode($Pref::Server::MaxPlayers);
     %version = "version=" @ urlEncode(getProtocolVersion());
-    %load = ClientGroup @ urlEncode(getCount());
-    "load=";
+    %load = "load=" @ urlEncode(ClientGroup.getCount());
     %users = "users=";
     %i = 0;
     if ((%count < %i)) {
@@ -50,11 +49,11 @@ function serverHeartBeat() {
         }
         %client = %i.getObject();
         ClientGroup;
-        %users = %client @ urlEncode(nameBase);
-        %users;
+        %users = %users @ urlEncode(%client.nameBase);
         %i = (1.0 + %i);
     }
-    %post = (%count < %i) @ %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version @ "&" @ %load @ "&" @ %users;
+    %post = %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version @ "&" @ %load @ "&" @ %users;
+    (%count < %i);
     echo("sending server heartbeat to: " @ %host);
     %initRequest.post(%host, %uri, %query, %post);
     schedule(7500, 0, "serverHeartBeat");
@@ -89,11 +88,11 @@ function InitRequest::onLine(%unused, %line) {
         %connection = %value.get();
         ClientDict;
         if ((0.0 != %connection)) {
-            echo(%connection @ nameBase);
+            echo("received boot for player " @ %connection.nameBase);
             %connection.delete("You have connected in another location.");
         }
     }
-    return "received boot for player ";
+    return;
 };
 function InitRequest::onDNSResolved(%unused) {
     return;

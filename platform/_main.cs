@@ -184,7 +184,7 @@ package platform {
                 %line = NextToken(%line, ":");
                 host;
                 NextToken(%line, " ");
-                if ((port SPC %port $= 80)) {
+                if ((port @ " " @ %port $= 80)) {
                     $Net::SecureManagerHost = %host @ ":443";
                 }
                 $Net::SecureManagerHost = %host @ ":8443";
@@ -275,11 +275,10 @@ package platform {
         %CityNameString = " in" @ " " @ $ETS::cityName;
         "";
         %LongCityNameString = "";
-        if (isObject()) {
+        if (isObject(WorldMap)) {
             %areaName = %ServerName.cityNameForServerName();
             WorldMap;
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
-            WorldMap;
             if ((%locationName $= "")) {
             }
             %LongCityNameString = " - in" @ " " @ %locationName;
@@ -360,9 +359,9 @@ package platform {
         hasArg("-webConfigFile");
     };
     function startInitialSSLConnection() {
-        %curl = new ""();
+        %curl = new ""();;
         URLPostObject;
-        %curl.setURL(0 @ "https://" @ $Net::SecureManagerHost);
+        %curl.setURL("https://" @ $Net::SecureManagerHost);
         %curl.setBody(0);
         %curl.start();
     };
@@ -383,7 +382,7 @@ package platform {
             initDedicated();
         }
         initClient();
-        if (isObject()) {
+        if (isObject(ConsoleEntry)) {
             "platform/client/consoleHistory.txt".loadHistory();
         }
         echo("---no ConsoleEntry not loading history");
@@ -413,13 +412,13 @@ package platform {
         $gConsoleHistoryDumpTimer = schedule($gConsoleHistoryPeriod, 0, "dumpConsoleHistoryReally");
     };
     function dumpConsoleHistoryReally() {
-        if (isObject()) {
+        if (isObject(ConsoleEntry)) {
         }
         if (!($NonInteractive)) {
             "platform/client/consoleHistory.txt".dumpHistory();
         }
         echo("---no ConsoleEntry not dumping history");
     };
-    activatePackage();
+    activatePackage(platform);
 };
 

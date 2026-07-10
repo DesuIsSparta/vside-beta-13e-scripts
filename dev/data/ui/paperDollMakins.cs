@@ -7,10 +7,10 @@ function gePaperDollMakins::open(%this) {
     $UserPref::Video::ConstrainWindowDimensions = 0;
     %this.pushDialog(0);
     setScreenMode(1048, 1048, getWord($UserPref::Video::Resolution, 2), 0);
-    if (!(getValue())) {
+    if (!(gePaperDollWhichSetup_Client.getValue())) {
     }
-    if (!(getValue())) {
-        performClick();
+    if (!(gePaperDollWhichSetup_Web.getValue())) {
+        gePaperDollWhichSetup_Client.performClick();
     }
     %this.paperDoll_refresh();
     if (isObject($player)) {
@@ -38,12 +38,13 @@ function gePaperDollMakins::paperDoll_refresh(%this) {
     %text = %text @ "\n" @ "currently:" @ " " @ %genderText;
     %text.setText();
     getWord($gPaperDollImgSize, 0).resize(getWord($gPaperDollImgSize, 1));
-    eraserColor = gePaperDollEraser @ $gPaperDollBackground @ gePaperDollEraser;
-    gePaperDollInfo;
+    eraserColor = $gPaperDollBackground @ gePaperDollEraser;
+    gePaperDollEraser;
     paperDoll_generateXML();
     paperDoll_generateJSON();
     paperDoll_generateManifest();
     $gPaperDoll_SkuArray = new_ScriptArray("");
+    gePaperDollInfo;
     paperDoll_RecursePermutations(%gender, "", %gender, 0, $gPaperDoll_SkuArray);
     $gPaperDoll_SkuArray.dumpValues();
 };
@@ -53,7 +54,7 @@ function paperDoll_StartTakingSnaps() {
     $gPaperDoll_CancelRun = 0;
     $gPaperDoll_PreviewFile = "";
     if (1) {
-        $gPaperDoll_PreviewFile = new ""();
+        $gPaperDoll_PreviewFile = new ""();;
         FileObject;
         %fileName = paperDoll_getBaseFilepath();
         0;
@@ -98,9 +99,11 @@ function paperDoll_prepareOneSnapshot(%index) {
     %index.setValue();
     %tmp = altCommand;
     gePaperDollCurOutfitSlider;
-    altCommand = gePaperDollCurOutfitField @ "" @ gePaperDollCurOutfitSlider;
+    altCommand = "" @ gePaperDollCurOutfitSlider;
+    gePaperDollCurOutfitField;
     (((1.0 - $gPaperDoll_SkuArray.size()) / %index) - 1.0).setValue();
-    altCommand = gePaperDollCurOutfitSlider @ %tmp @ gePaperDollCurOutfitSlider;
+    altCommand = %tmp @ gePaperDollCurOutfitSlider;
+    gePaperDollCurOutfitSlider;
     $gPaperDoll_CurIndex = %index;
 };
 function paperDoll_Permute_Cancel() {
@@ -117,9 +120,8 @@ function paperDoll_callingTakeCurrentSnapshot() {
     paperDoll_finishedSnapshots();
 };
 function paperDoll_getBaseFilepath() {
-    if (getValue()) {
+    if (gePaperDollWhichSetup_Client.getValue()) {
         %ret = "platform/client/ui/paperdolls/";
-        gePaperDollWhichSetup_Client;
     }
     %ret = "web/paperdolls/";
     return %ret;
@@ -200,15 +202,15 @@ function gePaperDollCurOutfitSlider::valueChanged(%this) {
 };
 function paperDoll_generateXML() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.xml";
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     if (!(%file.openForWrite(%fileName))) {
-        error(0 @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
+        error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
-        return;
+        return 0;
     }
-    indent = "" @ %file;
-    indentString = "    " @ %file;
+    %file.indent = "";
+    %file.indentString = "    ";
     %file.writeLineIndented("<?xml version=\"1.0\" encoding=\"UTF-8\"?>");
     %file.writeLineIndented("");
     %file.writeLineIndented("<!--");
@@ -268,15 +270,15 @@ function paperDoll_generateXML() {
 };
 function paperDoll_generateJSON() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations.json";
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     if (!(%file.openForWrite(%fileName))) {
-        error(0 @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
+        error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
-        return;
+        return 0;
     }
-    indent = "" @ %file;
-    indentString = "    " @ %file;
+    %file.indent = "";
+    %file.indentString = "    ";
     %genders = "f m";
     %genders[%gendersLong @ "f"] = "female";
     %genders[%gendersLong @ "f"][%gendersLong @ "m"] = "male";
@@ -362,12 +364,12 @@ function paperDoll_generateJSON() {
 };
 function paperDoll_generateManifest() {
     %fileName = paperDoll_getBaseFilepath() @ "permutations_manifest.txt";
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     if (!(%file.openForWrite(%fileName))) {
-        error(0 @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
+        error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for write.");
         %file.delete();
-        return;
+        return 0;
     }
     %genders = "f m";
     %file.writeOpenTag("permutations", "");

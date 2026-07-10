@@ -5,11 +5,11 @@ function handleConnectionErrorMessage(%unused, %msgString) {
 };
 function GameConnection::initialControlSet(%this) {
     echo("*** Initial Control Object");
-    if (!(isObject())) {
+    if (!(isObject(EditorGui))) {
     }
     if (!(Editor::checkActiveLoadDone())) {
-        if ((Canvas != getContent())) {
-            setContent();
+        if ((PlayGui.getId() != Canvas.getContent())) {
+            Canvas.setContent(PlayGui);
         }
     }
     %this.etsInit();
@@ -18,7 +18,7 @@ function GameConnection::setLagIcon(%this, %state) {
     if ((%this.getAddress() $= "local")) {
         return;
     }
-    (LagIcon SPC %state $= "true").setVisible();
+    (LagIcon @ " " @ %state $= "true").setVisible();
 };
 function GameConnection::onConnectionAccepted(%this) {
     0.setVisible();
@@ -34,25 +34,25 @@ function GameConnection::onServerConnectionRestored(%this) {
     warn("Restored connection to server.");
 };
 function GameConnection::onServerConnectionTimedOut(%this) {
-    disconnectedCleanup();
-    MessageBoxOK("TIMED OUT", geTGF, "");
+    disconnectedCleanup(geTGF);
+    MessageBoxOK("TIMED OUT", , "");
 };
 function GameConnection::onConnectionDropped(%this, %msg) {
     %msg = standardSubstitutions(%msg);
-    if (waitForDisconnect) {
-        waitForDisconnect = %this @ 0 @ %this;
+    if (%this.waitForDisconnect) {
+        %this.waitForDisconnect = 0;
         disconnectedCleanup("");
         1.schedule("doServerJoin", $SpawnTargetSavedVURL);
         return WorldMap;
     }
     if ((getField(%msg, 0) $= "bootToMap")) {
-        %currentCity = currentCity;
+        %currentCity = %this.currentCity;
         WorldMap;
-        setNotConnectedToServer();
+        WorldMap.setNotConnectedToServer();
         "map".openToTabName();
         %levelOrCityName = getField(%msg, 1);
         geTGF;
-        if ((WorldMap SPC %levelOrCityName $= 0)) {
+        if ((%levelOrCityName $= 0)) {
         }
         if ((%levelOrCityName $= 1)) {
             %currentCity.selectCity();
@@ -61,8 +61,8 @@ function GameConnection::onConnectionDropped(%this, %msg) {
         MessageBoxOK("BOOTED TO MAP", getFields(%msg, 2), "");
     }
     logout(0);
-    disconnectedCleanup();
-    MessageBoxOK("DISCONNECT", WorldMap @ LoginGui @ %msg, "");
+    disconnectedCleanup(LoginGui);
+    MessageBoxOK("DISCONNECT", WorldMap @ %msg, "");
 };
 function GameConnection::onConnectionError(%this, %msg) {
     if ($CacheFlagIsSet) {
@@ -70,8 +70,8 @@ function GameConnection::onConnectionError(%this, %msg) {
         $CurrentMission = "";
         ServerConnection;
     }
-    disconnectedCleanup();
-    MessageBoxOK("DISCONNECT", geTGF @ $ServerConnectionErrorMessage @ " (" @ %msg @ ")", "");
+    disconnectedCleanup(geTGF);
+    MessageBoxOK("DISCONNECT", $ServerConnectionErrorMessage @ " (" @ %msg @ ")", "");
 };
 function GameConnection::onConnectRequestRejected(%this, %msg, %extra) {
     // unhandled opcode 871 at 0x00000270
@@ -165,9 +165,9 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra) {
     %error = geTGF;
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/connectionRejected/" @ %msg);
-    if ((getId() == %destGui.getId())) {
+    if ((LoginGui.getId() == %destGui.getId())) {
     }
-    if (!(LoginGui SPC %msg $= "CR_ASSETS_MISSING")) {
+    if (!(%msg $= "CR_ASSETS_MISSING")) {
         logout(0);
     }
     disconnectedCleanup(%destGui);
@@ -177,12 +177,12 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra) {
     }
 };
 function GameConnection::onConnectRequestTimedOut(%this) {
-    disconnectedCleanup();
-    MessageBoxOK("TIMED OUT", geTGF, "");
+    disconnectedCleanup(geTGF);
+    MessageBoxOK("TIMED OUT", , "");
 };
 function disconnect(%screen) {
-    if (isObject()) {
-        delete();
+    if (isObject(ServerConnection)) {
+        ServerConnection.delete();
     }
     disconnectedCleanup(%screen);
     destroyServer();
@@ -190,8 +190,8 @@ function disconnect(%screen) {
 function disconnectedStop() {
     0.close();
     alxStopAll();
-    if (isObject()) {
-        stop();
+    if (isObject(MusicPlayer)) {
+        MusicPlayer.stop();
     }
 };
 function disconnectedCleanup(%screen) {
@@ -199,13 +199,13 @@ function disconnectedCleanup(%screen) {
     disconnectedStop();
     0.setVisible();
     if (isObject(%screen)) {
-        if ((getId() == %screen.getId())) {
-            setNotConnectedToServer();
-            open();
+        if ((geTGF.getId() == %screen.getId())) {
+            WorldMap.setNotConnectedToServer();
+            geTGF.open();
         }
         %screen.setContent();
     }
-    closeFully();
+    geTGF.closeFully();
     clearTextureHolds();
     purgeResources();
     textureDownloadPurgeCallbacks();
@@ -213,19 +213,19 @@ function disconnectedCleanup(%screen) {
     fmodClose();
     TransitionCancel(0);
     CustomSpaceClient::OnClientDisconnect();
-    if (isObject()) {
-        close();
+    if (isObject(ApplauseMeterGui)) {
+        ApplauseMeterGui.close();
     }
-    if (isObject()) {
+    if (isObject(SalonStyleSelector)) {
         $gSalonChairCurrent = 0;
-        SalonStyleSelector;
-        close();
+        Canvas;
+        SalonStyleSelector.close();
     }
-    if (isObject()) {
-        close();
+    if (isObject(PlantDetailsGui)) {
+        PlantDetailsGui.close();
     }
     $StoreSkusLayer = "";
-    PlantDetailsGui;
+    LagIcon;
     clientCmdOnLeaveStore("");
     leaveAllTutorialSpaces();
     afxEndMissionNotify();

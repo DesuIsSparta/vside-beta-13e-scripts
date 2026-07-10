@@ -1,5 +1,5 @@
 function toggleSnoopPanel() {
-    toggle();
+    SnoopPanel.toggle();
 };
 function SnoopPanel::toggle(%this) {
     %this.ensureAdded();
@@ -19,7 +19,7 @@ function SnoopPanel::open(%this) {
 function SnoopPanel::close(%this) {
     %this.ensureAdded();
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     %this.storeDims();
 };
 function SnoopPanel::restoreDims(%this) {
@@ -37,11 +37,11 @@ function SnoopPanel::addLine(%this, %text) {
         %this.open();
     }
     %timeStamp = SystemMessageDialog::getTimeStampNice(getTimeStamp()) @ " ";
-    if (!(snoopPanelTextCtrl SPC getText() $= "")) {
+    if (!(snoopPanelTextCtrl.getText() $= "")) {
         %newLine = "\n";
     }
     %newLine = "";
-    snoopPanelTextCtrl @ %newLine @ %timeStamp @ %text.addText(1, isAtBottom());
+    %newLine @ %timeStamp @ %text.addText(1, SnoopPanelScroll.isAtBottom());
 };
 function SnoopPanel::addLine2(%this, %line) {
     %this.addLine(%line);
@@ -59,10 +59,10 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
     %this.addLine2(%text);
     if ($DevPref::Audio::NotifySnoop) {
         if ((%speechType $= "sos")) {
-            alxPlay();
+            alxPlay(Audio_SOSMessageIn);
         }
-        if ((Audio_SOSMessageIn SPC %speechType $= "abuse")) {
-            alxPlay();
+        if ((%speechType $= "abuse")) {
+            alxPlay(Audio_SOSMessageIn);
         }
     }
 };
@@ -121,7 +121,7 @@ function snoopPanelTextCtrl::onUrl(%this, %url) {
     }
 };
 function SnoopPanel::copyToClipboard(%this) {
-    setClipboard(StripMLControlChars(getText()));
+    setClipboard(StripMLControlChars(snoopPanelTextCtrl.getText()));
 };
 function doUserSnoop(%playerName, %on) {
     commandToServer('SnoopPlayer', %playerName, %on);

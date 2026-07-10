@@ -7,13 +7,12 @@ function drinks_confirmInitiateGift(%otherPlayerName) {
     %si = %sku.findBySku();
     SkuManager;
     %msg = %si[$MsgCat::giftingItems @ "DLG-BODY-GIVE-CONFIRM"];
-    %msg = strreplace(%msg, "[ITEMNAME]", descShrt);
-    %si;
+    %msg = strreplace(%msg, "[ITEMNAME]", %si.descShrt);
     %msg = strreplace(%msg, "[OTHERPLAYER]", %otherPlayerName);
     %dlg = MessageBoxYesNo(%msg[$MsgCat::giftingItems @ "DLG-TITLE-GIVE-CONFIRM"], %msg, "giftingItems_onInitiate($gThisDialog);", "");
-    otherPlayerName = %otherPlayerName @ %dlg;
-    giftSkus = %sku @ %dlg;
-    making = 0 @ %dlg;
+    %dlg.otherPlayerName = %otherPlayerName;
+    %dlg.giftSkus = %sku;
+    %dlg.making = 0;
 };
 function drinks_confirmInitiateMake(%otherPlayerName, %sku) {
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
@@ -27,24 +26,21 @@ function drinks_confirmInitiateMake(%otherPlayerName, %sku) {
         %msg = $Player::Name[$MsgCat::giftingItems @ "DLG-BODY-MAKE-SELF-CONFIRM"];
     }
     %msg = %msg[$MsgCat::giftingItems @ "DLG-BODY-MAKE-CONFIRM"];
-    %msg = strreplace(%msg, "[ITEMNAME]", descShrt);
-    %si;
+    %msg = strreplace(%msg, "[ITEMNAME]", %si.descShrt);
     %msg = strreplace(%msg, "[OTHERPLAYER]", %otherPlayerName);
     %dlg = MessageBoxYesNo(%msg[$MsgCat::giftingItems @ "DLG-TITLE-MAKE-CONFIRM"], %msg, "giftingItems_onInitiate($gThisDialog);", "");
-    otherPlayerName = %otherPlayerName @ %dlg;
-    giftSkus = %sku @ %dlg;
-    making = 1 @ %dlg;
+    %dlg.otherPlayerName = %otherPlayerName;
+    %dlg.giftSkus = %sku;
+    %dlg.making = 1;
 };
 function giftingItems_onInitiate(%dlg) {
     %transactionID = MD5(getRandom(0, 1000000));
-    commandToServer('GiftingItems_Initiated', otherPlayerName, %transactionID, giftSkus, making);
-    if ((%dlg SPC otherPlayerName $= $Player::Name)) {
+    commandToServer('GiftingItems_Initiated', %dlg.otherPlayerName, %transactionID, %dlg.giftSkus, %dlg.making);
+    if ((%dlg.otherPlayerName $= $Player::Name)) {
         %otherDlg = "";
-        %dlg;
     }
-    %otherDlg = MessageBoxOK("The Gift of Libation", "<br>Checking with" @ " " @ %dlg @ otherPlayerName @ "..<br>", "");
-    %dlg;
-    giftingItems_registerPendingTransactionGiver(%transactionID, otherPlayerName, giftSkus, %otherDlg, making);
+    %otherDlg = MessageBoxOK("The Gift of Libation", "<br>Checking with" @ " " @ %dlg.otherPlayerName @ "..<br>", "");
+    giftingItems_registerPendingTransactionGiver(%transactionID, %dlg.otherPlayerName, %dlg.giftSkus, %otherDlg, %dlg.making);
 };
 function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID, %making) {
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
@@ -68,15 +64,15 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
         GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-AUTO");
     }
     if ((%acceptMode $= "ask")) {
-        if (isVisible()) {
+        if (geGiftingPanel.isVisible()) {
             GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
         }
         giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
-        giftTransactionID = geGiftingPanel @ %transactionID @ geGiftingPanel;
-        personalMessage = "" @ geGiftingPanel;
-        skus = %skus @ geGiftingPanel;
-        GiftType = "items" @ geGiftingPanel;
-        making = %making @ geGiftingPanel;
+        %dlg.giftTransactionID = %transactionID @ geGiftingPanel;
+        %dlg.personalMessage = "" @ geGiftingPanel;
+        %dlg.skus = %skus @ geGiftingPanel;
+        %dlg.GiftType = "items" @ geGiftingPanel;
+        %dlg.making = %making @ geGiftingPanel;
         %otherPlayerName.open("items_acceptDecline");
     }
 };
@@ -89,18 +85,15 @@ function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %acce
         error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
         return;
     }
-    if (isObject(dlg)) {
-        dlg.close();
+    if (isObject(%pendingTransactionRecord.dlg)) {
+        %pendingTransactionRecord.dlg.close();
     }
     if (!(%accepted)) {
-        %otherPlayerName = targetPlayerName;
-        %pendingTransactionRecord;
+        %otherPlayerName = %pendingTransactionRecord.targetPlayerName;
         %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-        %pendingTransactionRecord;
         if (!(isObject(%otherPlayer))) {
             error(getScopeName() @ " " @ "- can't find other player:" @ " " @ %otherPlayerName @ " " @ %transactionID);
             %messageCode = "E-TARGET-MISSING";
-            %pendingTransactionRecord;
         }
         %text = strreplace(%messageCode[$MsgCat::gifting @ %messageCode], "[OTHERPLAYER]", "<linkcolor:ffddeeff><a:gamelink " @ munge(%otherPlayerName) @ ">" @ StripMLControlChars(%otherPlayerName) @ "</a>");
         %text = strreplace(%text, "[OTHERPLAYER_HIM_HER_IT]", getPronounHimHerIt(%otherPlayer));
@@ -115,15 +108,13 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded) {
         error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
         return;
     }
-    %amSource = (%transactionRecord SPC sourcePlayerName $= $Player::Name);
+    %amSource = (%transactionRecord.sourcePlayerName $= $Player::Name);
     if (%amSource) {
     }
-    %otherPlayerName = sourcePlayerName;
-    %transactionRecord;
-    %amAlphaAndOmega = (targetPlayerName SPC %otherPlayerName $= $Player::Name);
-    %transactionRecord;
-    %skus = skus;
-    %transactionRecord;
+    %otherPlayerName = %transactionRecord.sourcePlayerName;
+    %transactionRecord.targetPlayerName;
+    %amAlphaAndOmega = (%otherPlayerName $= $Player::Name);
+    %skus = %transactionRecord.skus;
     if (%succeeded) {
         if (%amAlphaAndOmega) {
             schedule(3000, 0, "updateInventorySkus", %skus, "", 1, 1, %otherPlayerName);
@@ -131,15 +122,13 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded) {
         if (%amSource) {
             updateInventorySkus("", %skus, 0, 1, %otherPlayerName);
         }
-        %autoAccepted = autoAccepted;
-        %transactionRecord;
+        %autoAccepted = %transactionRecord.autoAccepted;
         updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
     }
     %msg = ;
     MessageBoxOK("Woops...", %msg);
     if (%amSource) {
-        %dlg = dlg;
-        %transactionRecord;
+        %dlg = %transactionRecord.dlg;
         if (isObject(%dlg)) {
             %dlg.close();
         }

@@ -3,7 +3,7 @@ $gRandomUserNameIdx = 0;
 function sampleData_initUserNames() {
     if ((0.0 < $gRandomUserNamesNum)) {
         %fn = ExpandFilename("./sampleUserNames.txt");
-        %fo = new ""();
+        %fo = new ""();;
         FileObject;
         if (!(%fo.openForRead(%fn))) {
             error("could not open" @ " " @ %fn);
@@ -36,7 +36,7 @@ $gSequentialBannerID = 0;
 function sampleData_initBannerIDs() {
     if ((0.0 < $gRandomBannerIDsNum)) {
         %fn = ExpandFilename("./sampleBannerIDs.txt");
-        %fo = new ""();
+        %fo = new ""();;
         FileObject;
         if (!(%fo.openForRead(%fn))) {
             error("could not open" @ " " @ %fn);
@@ -68,7 +68,7 @@ $gRandomApartmentPhotoIDsNum = -(1.0);
 function getRandomApartmentPhotoID() {
     if ((0.0 < $gRandomApartmentPhotoIDsNum)) {
         %fn = ExpandFilename("./sampleApartmentPhotoIDs.txt");
-        %fo = new ""();
+        %fo = new ""();;
         FileObject;
         if (!(%fo.openForRead(%fn))) {
             error("could not open" @ " " @ %fn);

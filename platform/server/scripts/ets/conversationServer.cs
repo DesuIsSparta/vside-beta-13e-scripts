@@ -1,14 +1,14 @@
-if (!(isObject())) {
+if (!(isObject(ConversationList))) {
     new SimGroup(ConversationList);
 }
 function newConversation(%senderPlayer, %targetPlayer) {
-    %senderPos = %senderPlayer.getPosition();
-    ConversationList;
+    %senderPos = ConversationList.getPosition(%senderPlayer);
     %conversationPos = %senderPos;
-    dataBlock = Conversation @ new ""() @ "release_conv";
     0;
-    position = %conversationPos;
-    %newConversation = ;
+    %newConversation = new ""() {
+        dataBlock = Conversation @ "release_conv";
+        position = %conversationPos;
+    };
     %senderPlayer.setConversation(%newConversation);
     %newConversation.addParticipant(%senderPlayer);
     %newConversation.add();
@@ -50,8 +50,7 @@ function findConversation(%senderPlayer, %targetPlayer) {
     return %conv;
 };
 function updateConversationLocations() {
-    %count = getCount();
-    ConversationList;
+    %count = ConversationList.getCount();
     CONVBUB_DEBUG("ConversationList has" @ " " @ %count);
     %i = 0;
     if ((%count < %i)) {
@@ -82,8 +81,7 @@ function serverCmdChatMessage(%senderConnection, %targetPlayer, %message) {
     if ((0.0 != %targetPlayer)) {
         %targetPlayer = %senderConnection.resolveObjectFromGhostIndex(%targetPlayer);
     }
-    %senderPlayer = Player;
-    %senderConnection;
+    %senderPlayer = %senderConnection.Player;
     ServersideChatMessage(%senderPlayer, %targetPlayer, %message);
     return;
 };
@@ -119,8 +117,7 @@ function serverCmdEavesdrop(%senderConnection, %newTarget) {
     if ((0.0 != %newTarget)) {
         %newTarget = %senderConnection.resolveObjectFromGhostIndex(%newTarget);
     }
-    %senderPlayer = Player;
-    %senderConnection;
+    %senderPlayer = %senderConnection.Player;
     serverSideEavesdrop(%senderPlayer, %newTarget);
     return;
 };
@@ -188,8 +185,7 @@ function Conversation::onParticipantLeft(%this, %player) {
     return;
 };
 function serverCmdLeaveConversation(%senderConnection) {
-    %senderPlayer = Player;
-    %senderConnection;
+    %senderPlayer = %senderConnection.Player;
     CONVBUB_DEBUG("LEAVECONVERSATION: " @ getDebugString(%senderPlayer));
     leaveConversation(%senderPlayer);
     return;

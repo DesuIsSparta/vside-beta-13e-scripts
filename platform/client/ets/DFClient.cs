@@ -20,11 +20,10 @@ function clientCmdSetDFEnabled(%val) {
 $gDFNotify = 0;
 $gDFNotifyCode = "";
 function onDFEngineStartError(%errorCode) {
-    if (isObject()) {
+    if (isObject(ServerConnection)) {
         commandToServer('DFStart', 0, %errorCode);
     }
     $gDFNotify = 1;
-    ServerConnection;
     $gDFNotifyCode = %errorCode;
 };
 function onDFEngineStarted() {
@@ -41,8 +40,7 @@ function DFDebugRefresh() {
     }
     $gDFDebugNeedsRefresh = 0;
     $gDFDebugAdvertsList.clear();
-    %num = getCount();
-    ServerConnection;
+    %num = ServerConnection.getCount();
     %n = 0;
     if ((%num < %n)) {
         %obj = %n.getObject();

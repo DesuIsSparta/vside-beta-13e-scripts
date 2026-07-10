@@ -6,12 +6,12 @@ function testSeatingSystem_Master() {
     RunTestSuite_QuiteWhenDone("TestSuite_SeatingSystemSmokeTests");
 };
 function TestSuite_SeatingSystemSmokeTests::setup(%this) {
-    if (isObject()) {
-        delete();
+    if (isObject(TestSeatingSystemTestSet)) {
+        TestSeatingSystemTestSet.delete();
     }
     new SimSet(TestSeatingSystemTestSet);
-    add();
-    recursiveCollectSeatsFromSimGroup();
+    MissionCleanup.add(TestSeatingSystemTestSet);
+    recursiveCollectSeatsFromSimGroup(MissionGroup, TestSeatingSystemTestSet);
     commandToServer('dropCameraAtPlayer');
     commandToServer('dropPlayerAtCamera');
     %this.addTestCase("TEST_SeatAvailable");
@@ -21,12 +21,12 @@ function TestSuite_SeatingSystemSmokeTests::setup(%this) {
     %this.addTestCaseDelayed("TEST_TeleportAway", 500);
 };
 function TestSuite_SeatingSystemSmokeTests::TearDown(%this) {
-    if (isObject()) {
-        delete();
+    if (isObject(TestSeatingSystemTestSet)) {
+        TestSeatingSystemTestSet.delete(TestSeatingSystemTestSet);
     }
 };
 function TEST_SeatAvailable::runTest(%this) {
-    %seatID = 0.getObject();
+    %seatID = TestSeatingSystemTestSet.getObject(0);
     TestSeatingSystemTestSet;
     %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is not available, it was expected to be");
 };
@@ -61,8 +61,8 @@ function TEST_TeleportAway::delayedEval(%this) {
     %seatID = 0.getObject();
     TestSeatingSystemTestSet;
     %this.assert(!(%seatID.isSeatTaken()), %seatID @ " " @ "is taken, but it should be available after we stand up");
-    animName = $PLAYER_FORCE_IDLE_ANIM @ %this;
-    expectedAnimName = $player.getGender() @ $player.getGenre() @ %this @ animName @ %this;
+    %this.animName = $PLAYER_FORCE_IDLE_ANIM;
+    %this.expectedAnimName = $player.getGender() @ $player.getGenre() @ %this.animName;
     %curr = $player.getCurrActionName();
-    %this.assertSameString(%curr, expectedAnimName, "expected the player to be in the force idle anim after we teleport away");
+    %this.assertSameString(%curr, %this.expectedAnimName, "expected the player to be in the force idle anim after we teleport away");
 };

@@ -1,5 +1,5 @@
 function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
-    %fo = new ""();
+    %fo = new ""();;
     FileObject;
     if (%fo.openForRead(%mlTextfileName)) {
         %text = "";
@@ -10,7 +10,7 @@ function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
         %text.setText();
         %this.open();
     }
-    InspectPanelMLText @ "I can't find the file: " @ %mlTextfileName.setText();
+    "I can't find the file: " @ %mlTextfileName.setText();
     %fo.delete();
 };
 function clientCmdShowInspectionPanel(%mlTextfileName) {
@@ -62,7 +62,7 @@ function MLScrollInspectPanel::updateSize(%this) {
         %posY = 0;
     }
     %this.resize(%posX, %posY, %width, %height);
-    scrollToTop();
+    InspectPanelScrollControl.scrollToTop();
 };
 function MLScrollInspectPanel::open(%this) {
     %this.setVisible(1);
@@ -73,6 +73,6 @@ function MLScrollInspectPanel::open(%this) {
 };
 function MLScrollInspectPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };

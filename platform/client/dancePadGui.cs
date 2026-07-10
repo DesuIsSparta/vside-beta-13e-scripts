@@ -6,7 +6,7 @@ function DancePadGui::open(%this) {
 };
 function DancePadGui::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function DancePadGui::fillDanceButtonOptions(%this) {
@@ -61,26 +61,26 @@ function dancePadDoEmote(%list) {
     emote(%emote);
 };
 function dancePadButton1::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton1List);
 };
 function dancePadButton2::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton2List);
 };
 function dancePadButton3::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton3List);
 };
 function dancePadButton4::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton4List);
 };
 function dancePadButton5::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton5List);
 };
 function dancePadButton6::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton6List);
 };
 function dancePadButton7::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton7List);
 };
 function dancePadButton8::onMouseEnter(%this) {
-    dancePadDoEmote();
+    dancePadDoEmote(danceButton8List);
 };

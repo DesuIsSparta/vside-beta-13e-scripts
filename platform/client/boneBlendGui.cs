@@ -8,73 +8,71 @@ groupOffset1 = "120 0" @ boneBlendGui;
 function boneBlendGui::open(%this) {
     %this.setVisible(1);
     %this.focusAndRaise();
-    if (!(runOnce)) {
+    if (!(%this.runOnce)) {
         %i = 0;
-        %this;
+        PlayGui;
         if (($MAX_FREE_BONE_BLENDS < %i)) {
             %index = ($FIRST_FREE_BLEND_INDEX + %i);
-            PlayGui;
-            $player.setBoneBlendOffsetByIndex(%index, getValue());
-            $player.setBoneBlendRateByIndex(%index, getValue());
-            $player.setBoneBlendScaleByIndex(%index, getValue());
+            $player.setBoneBlendOffsetByIndex(%index, blendOffsetSliderUniqueField.getValue());
+            $player.setBoneBlendRateByIndex(%index, blendRateSliderUniqueField.getValue());
+            $player.setBoneBlendScaleByIndex(%index, blendScaleSliderUniqueField.getValue());
             %i = (1.0 + %i);
-            blendScaleSliderUniqueField;
         }
-        $player.setBoneBlendRate(getValue());
-        $player.setBoneBlendScale(getValue());
-        runOnce = blendScaleSlider @ 1 @ %this;
-        blendRateSlider;
+        $player.setBoneBlendRate(blendRateSlider.getValue());
+        $player.setBoneBlendScale(blendScaleSlider.getValue());
+        %this.runOnce = ($MAX_FREE_BONE_BLENDS < %i) @ 1;
     }
 };
 function boneBlendGui::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
-currentSliderIndex = -(1.0) @ boneBlendGui;
+%this.currentSliderIndex = -(1.0) @ boneBlendGui;
 function blendUpperPitch::onMouseEnter(%this) {
     %this.positionDynamicCtrls();
-    currentSliderIndex = boneBlendGui @ $BB_UPPR_PITCH @ boneBlendGui;
-    getGroup().setBitmap("platform/client/ui/messageHud");
-    getGroup().setBitmap("");
-    getGroup().setBitmap("");
+    %this.currentSliderIndex = $BB_UPPR_PITCH @ boneBlendGui;
+    boneBlendGui;
+    blendUpperPitch.getGroup().setBitmap("platform/client/ui/messageHud");
+    blendUpperYaw.getGroup().setBitmap("");
+    blendUpperRoll.getGroup().setBitmap("");
 };
 function blendUpperYaw::onMouseEnter(%this) {
     %this.positionDynamicCtrls();
-    currentSliderIndex = boneBlendGui @ $BB_UPPR_YAW @ boneBlendGui;
-    getGroup().setBitmap("platform/client/ui/messageHud");
-    getGroup().setBitmap("");
-    getGroup().setBitmap("");
+    %this.currentSliderIndex = $BB_UPPR_YAW @ boneBlendGui;
+    boneBlendGui;
+    blendUpperYaw.getGroup().setBitmap("platform/client/ui/messageHud");
+    blendUpperPitch.getGroup().setBitmap("");
+    blendUpperRoll.getGroup().setBitmap("");
 };
 function blendUpperRoll::onMouseEnter(%this) {
     %this.positionDynamicCtrls();
-    currentSliderIndex = boneBlendGui @ $BB_UPPR_ROLL @ boneBlendGui;
-    getGroup().setBitmap("");
-    getGroup().setBitmap("platform/client/ui/messageHud");
-    getGroup().setBitmap("");
+    %this.currentSliderIndex = $BB_UPPR_ROLL @ boneBlendGui;
+    boneBlendGui;
+    blendUpperPitch.getGroup().setBitmap("");
+    blendUpperRoll.getGroup().setBitmap("platform/client/ui/messageHud");
+    blendUpperYaw.getGroup().setBitmap("");
 };
 function boneBlendGui::positionDynamicCtrls(%this, %contextControl) {
-    %groupPosition = VectorAdd(position, groupOffset1);
+    %groupPosition = VectorAdd(%contextControl.getGroup().position, %contextControl.getGroup().groupOffset1);
     boneBlendGui;
-    position = %contextControl.getGroup() @ %groupPosition @ blendCyclicsGroup;
-    %Position1 = VectorAdd(position, sliderOffset1);
+    %contextControl.getGroup().position = %groupPosition @ blendCyclicsGroup;
+    %Position1 = VectorAdd(%contextControl.getGroup().position, %contextControl.getGroup().sliderOffset1);
     boneBlendGui;
-    %Position2 = VectorAdd(position, sliderOffset2);
+    %Position2 = VectorAdd(%contextControl.getGroup().position, %contextControl.getGroup().sliderOffset2);
     boneBlendGui;
-    %Position3 = VectorAdd(position, sliderOffset3);
+    %Position3 = VectorAdd(%contextControl.getGroup().position, %contextControl.getGroup().sliderOffset3);
     boneBlendGui;
-    position = %contextControl.getGroup() @ %Position1 @ blendScaleSliderUniqueField;
-    %contextControl.getGroup();
-    position = %contextControl.getGroup() @ %Position2 @ blendRateSliderUniqueField;
-    position = %Position3 @ blendOffsetSliderUniqueField;
-    %Position1 = VectorAdd(position, labelOffset1);
+    %contextControl.getGroup().position = %Position1 @ blendScaleSliderUniqueField;
+    %contextControl.getGroup().position = %Position2 @ blendRateSliderUniqueField;
+    %contextControl.getGroup().position = %Position3 @ blendOffsetSliderUniqueField;
+    %Position1 = VectorAdd(%contextControl.getGroup().position, %contextControl.getGroup().labelOffset1);
     boneBlendGui;
-    %Position2 = VectorAdd(position, labelOffset2);
+    %Position2 = VectorAdd(%contextControl.getGroup().position, %contextControl.getGroup().labelOffset2);
     boneBlendGui;
-    %Position3 = VectorAdd(position, labelOffset3);
+    %Position3 = VectorAdd(%contextControl.getGroup().position, %contextControl.getGroup().labelOffset3);
     boneBlendGui;
-    position = %contextControl.getGroup() @ %Position1 @ blendScaleLabel;
-    %contextControl.getGroup();
-    position = %contextControl.getGroup() @ %Position2 @ blendRateLabel;
-    position = %Position3 @ blendOffsetLabel;
+    %contextControl.getGroup().position = %Position1 @ blendScaleLabel;
+    %contextControl.getGroup().position = %Position2 @ blendRateLabel;
+    %contextControl.getGroup().position = %Position3 @ blendOffsetLabel;
 };

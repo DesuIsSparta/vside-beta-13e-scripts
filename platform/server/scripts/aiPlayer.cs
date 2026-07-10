@@ -1,29 +1,32 @@
-shootingDelay = datablock PlayerData(DemoPlayer : PlayerM) @ 2000;
+datablock PlayerData(DemoPlayer : PlayerM) {
+    shootingDelay = 2000;
+};
 function DemoPlayer::onReachDestination(%this, %obj) {
-    if (!(%obj SPC Path $= "")) {
-        if ((%obj == currentNode)) {
-            %this.onEndOfPath(%obj, Path);
+    if (!(%obj.Path $= "")) {
+        if ((%obj.targetNode == %obj.currentNode)) {
+            %this.onEndOfPath(%obj, %obj.Path);
         }
-        %obj.moveToNextNode();
+        DemoPlayer.moveToNextNode(%obj);
     }
 };
 function DemoPlayer::onEndOfPath(%this, %obj, %path) {
-    %obj.nextTask();
+    DemoPlayer.nextTask(%obj);
 };
 function DemoPlayer::onEndSequence(%this, %obj, %slot) {
     echo("Sequence Done!");
     %obj.stopThread(%slot);
-    %obj.nextTask();
+    DemoPlayer.nextTask(%obj);
 };
 function AIPlayer::spawn(%name, %spawnPoint) {
     if ((0.0 == getRandom(0, 1))) {
         // unhandled opcode 205 at 0x000000C4
     }
     // unhandled opcode 205 at 0x000000CC
-    dataBlock = AIPlayer @ new ""() @ %botDB;
     0;
-    Path = "";
-    %player = ;
+    %player = new ""() {
+        dataBlock = AIPlayer @ %botDB;
+        Path = "";
+    };
     %player.add();
     %player.setShapeName(%name);
     %player.setTransform(%spawnPoint);
@@ -52,74 +55,70 @@ function AIPlayer::spawnOnPath(%name, %path) {
 function AIPlayer::followPath(%this, %path, %node) {
     %this.stopThread(0);
     if (!(isObject(%path))) {
-        Path = "" @ %this;
+        %this.Path = "";
         return;
     }
     if (((1.0 - %path.getCount()) > %node)) {
-        targetNode = (1.0 - %path.getCount()) @ %this;
+        %this.targetNode = (1.0 - %path.getCount());
     }
-    targetNode = %node @ %this;
-    if ((%this SPC Path $= %path)) {
-        %this.moveToNode(currentNode);
+    %this.targetNode = %node;
+    if ((%this.Path $= %path)) {
+        %this.moveToNode(%this.currentNode);
     }
-    Path = %this @ %path @ %this;
+    %this.Path = %path;
     %this.moveToNode(0);
 };
 function AIPlayer::moveToNextNode(%this) {
-    if ((%this < targetNode)) {
+    if ((0.0 < %this.targetNode)) {
     }
-    if ((%this < currentNode)) {
-        if ((%this < currentNode)) {
-            %this.moveToNode((%this + currentNode));
+    if ((%this.targetNode < %this.currentNode)) {
+        if (((1.0 - %this.Path.getCount()) < %this.currentNode)) {
+            %this.moveToNode((1.0 + %this.currentNode));
         }
         %this.moveToNode(0);
     }
-    if ((%this == currentNode)) {
-        %this.moveToNode((%this - Path.getCount()));
+    if ((0.0 == %this.currentNode)) {
+        %this.moveToNode((1.0 - %this.Path.getCount()));
     }
-    %this.moveToNode((%this - currentNode));
+    %this.moveToNode((1.0 - %this.currentNode));
 };
 function AIPlayer::moveToNode(%this, %index) {
-    currentNode = %index @ %this;
-    %node = Path.getObject(%index);
-    %this;
-    %this.setMoveDestination(%node.getTransform(), (targetNode == %index));
+    %this.currentNode = %index;
+    %node = %this.Path.getObject(%index);
+    %this.setMoveDestination(%node.getTransform(), (%this.targetNode == %index));
 };
 function AIPlayer::pushTask(%this, %method) {
-    if ((%this SPC taskIndex $= "")) {
-        taskIndex = 0 @ %this;
-        taskCurrent = -(1.0) @ %this;
+    if ((%this.taskIndex $= "")) {
+        %this.taskIndex = 0;
+        %this.taskCurrent = -(1.0);
     }
-    task = %method @ %this @ taskIndex @ %this;
-    taskIndex = (%this + taskIndex);
-    1.0;
-    if ((%this == taskCurrent)) {
-        %this.executeTask((%this - taskIndex));
+    %this.task = %method @ %this.taskIndex;
+    %this.taskIndex = (1.0 + %this.taskIndex);
+    if ((-(1.0) == %this.taskCurrent)) {
+        %this.executeTask((1.0 - %this.taskIndex));
     }
 };
 function AIPlayer::clearTasks(%this) {
-    taskIndex = 0 @ %this;
-    taskCurrent = -(1.0) @ %this;
+    %this.taskIndex = 0;
+    %this.taskCurrent = -(1.0);
 };
 function AIPlayer::nextTask(%this) {
-    if ((%this != taskCurrent)) {
-        if ((%this < taskCurrent)) {
-            taskCurrent = (%this + taskCurrent);
-            %this.executeTask(1.0);
+    if ((-(1.0) != %this.taskCurrent)) {
+        if (((1.0 - %this.taskIndex) < %this.taskCurrent)) {
+            %this.taskCurrent = (1.0 + %this.taskCurrent);
+            %this.executeTask();
         }
-        taskCurrent = (%this - taskIndex) @ -(1.0) @ %this;
-        1.0;
+        %this.taskCurrent = -(1.0);
     }
 };
 function AIPlayer::executeTask(%this, %index) {
-    taskCurrent = %index @ %this;
-    eval(%this.getId() @ "." @ %index @ %this @ task @ ";");
+    %this.taskCurrent = %index;
+    eval(%this.getId() @ "." @ %index @ %this.task @ ";");
 };
 function AIPlayer::singleShot(%this) {
     %this.setImageTrigger(0, 1);
     %this.setImageTrigger(0, 0);
-    Trigger = singleShot @ %this.schedule(shootingDelay) @ %this;
-    %this;
+    %this.Trigger = singleShot @ %this.schedule(%this.shootingDelay);
 };
 function AIPlayer::wait(%this, %time) {
     %this.schedule((1000.0 * %time), "nextTask");
@@ -129,10 +128,10 @@ function AIPlayer::done(%this, %time) {
 };
 function AIPlayer::fire(%this, %bool) {
     if (%bool) {
-        cancel(Trigger);
+        cancel(%this.Trigger);
         %this.singleShot();
     }
-    cancel(Trigger);
+    cancel(%this.Trigger);
     %this.nextTask();
 };
 function AIPlayer::aimAt(%this, %object) {
@@ -153,122 +152,138 @@ function AIPlayer::thinkETS(%this, %periodMS) {
     if ((%this.getMoveState() $= "stop")) {
         %this.doRandomEmote();
     }
-    if (BotsMove) {
+    if (%this.BotsMove) {
         if ((getRandom(0, (%secondsBetweenMoves * 1000.0)) > %periodMS)) {
             %this.doAutoMoveEntry();
         }
     }
-    if (BotsBlahBlah) {
+    if (%this.BotsBlahBlah) {
         if ((getRandom(0, (%secondsBetweenWords * 1000.0)) > %periodMS)) {
-            %this.doBlahBlah(botEavesdropTarget);
+            %this.doBlahBlah(%this.botEavesdropTarget);
         }
     }
-    if (BotsEavesdrop) {
+    if (%this.BotsEavesdrop) {
         if ((getRandom(0, (%secondsBetweenEavesdrops * 1000.0)) > %periodMS)) {
             %this.doEavesdropChange();
         }
     }
 };
 function AIPlayer::doBlahBlah(%this, %target) {
-    if ((AIManager == blahblahsNum)) {
-        blahblahsNum = 0.0 @ 1 @ AIManager;
-        blahblahs = "i am a bot !" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+    if ((AIManager == %this.blahblahsNum)) {
+        %this.blahblahsNum = 1 @ AIManager;
+        0.0;
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "i am a bot !";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "do you like cheese ?" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "do you like cheese ?";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = ".. yeah." @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        ".. yeah.";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "dancing is the BEST." @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "dancing is the BEST.";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "ASL ?" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "ASL ?";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "let's go dance." @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "let's go dance.";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "cool!" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "cool!";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = ";)" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        ";)";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "this rocks." @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "this rocks.";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "where's the party ?" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "where's the party ?";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "yawn zzzz.." @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "yawn zzzz..";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "nice outfit." @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "nice outfit.";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "will you be my friend ?" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "will you be my friend ?";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "lol !" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "lol !";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "rotfl !" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "rotfl !";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahs = "flirt" @ AIManager @ blahblahsNum @ AIManager;
-        blahblahsNum = (AIManager + blahblahsNum);
+        %this.blahblahs = AIManager @ %this.blahblahsNum @ AIManager;
+        "flirt";
+        %this.blahblahsNum = (AIManager + %this.blahblahsNum);
         1.0;
-        blahblahsNum = (AIManager - blahblahsNum);
+        %this.blahblahsNum = (AIManager - %this.blahblahsNum);
         1.0;
     }
-    %num = getRandom(1, blahblahsNum);
+    %num = getRandom(1, %this.blahblahsNum);
     AIManager;
-    %msg = blahblahs;
+    %msg = %this.blahblahs;
     %num @ AIManager;
     ServersideChatMessage(%this, %target, %msg);
-    CONV_DEBUG(AIManager @ blahblahsNum @ " " @ ")");
+    CONV_DEBUG(AIManager @ %this.blahblahsNum @ " " @ ")");
 };
 function AIManager::BotsBlahBlahOneShot(%this, %player) {
     %i = 0;
-    if ((numBots < %i)) {
-        bots.doBlahBlah(%player);
+    if ((%this.numBots < %i)) {
+        %this.bots.doBlahBlah(%player);
         %i = (1.0 + %i);
-        %this @ %i @ %this;
+        %i;
     }
 };
 function AIPlayer::doEavesdropChange(%this) {
-    %newEavesdropTarget = bots;
-    1.0 @ getRandom(0, (AIManager - numBots)) @ AIManager;
+    %newEavesdropTarget = %this.bots;
+    getRandom(0, (AIManager - %this.numBots)) @ AIManager;
     if ((%this == %newEavesdropTarget)) {
         %newEavesdropTarget = 0;
+        1.0;
     }
-    CONV_DEBUG(%this @ botEavesdropTarget @ " " @ "to" @ " " @ %newEavesdropTarget);
-    serverSideEavesdrop(%this, botEavesdropTarget, %newEavesdropTarget);
-    CONV_DEBUG(%this @ botEavesdropTarget @ " " @ "to" @ " " @ %newEavesdropTarget);
-    botEavesdropTarget = "Bot" @ " " @ %this @ " " @ "-Switched eavesdrop from" @ " " @ %newEavesdropTarget @ %this;
-    %this;
+    CONV_DEBUG("Bot" @ " " @ %this @ " " @ "Switching eavesdrop from" @ " " @ %this.botEavesdropTarget @ " " @ "to" @ " " @ %newEavesdropTarget);
+    serverSideEavesdrop(%this, %this.botEavesdropTarget, %newEavesdropTarget);
+    CONV_DEBUG("Bot" @ " " @ %this @ " " @ "-Switched eavesdrop from" @ " " @ %this.botEavesdropTarget @ " " @ "to" @ " " @ %newEavesdropTarget);
+    %this.botEavesdropTarget = %newEavesdropTarget;
 };
 function AIPlayer::doRandomEmote(%this) {
     playRandomEmote(%this);
 };
 function AIPlayer::doAutoMove(%this) {
     %amount = 700;
-    if ((0.0 @ 0 @ %this == autoMoveList)) {
-        autoMoveList = %amount @ " " @ "0 0" @ 0 @ %this;
-        autoMoveList = 0 @ " " @ %amount @ " " @ 0 @ 1 @ %this;
-        autoMoveList = -(%amount) @ " " @ "0 0" @ 2 @ %this;
-        autoMoveList = 0 @ " " @ -(%amount) @ " " @ 0 @ 3 @ %this;
-        autoMoveNum = 0 @ %this;
+    if ((0.0 @ 0 == %this.autoMoveList)) {
+        %this.autoMoveList = %amount @ " " @ "0 0" @ 0;
+        %this.autoMoveList = 0 @ " " @ %amount @ " " @ 0 @ 1;
+        %this.autoMoveList = -(%amount) @ " " @ "0 0" @ 2;
+        %this.autoMoveList = 0 @ " " @ -(%amount) @ " " @ 0 @ 3;
+        %this.autoMoveNum = 0;
     }
-    %move = autoMoveList;
-    %this @ autoMoveNum @ %this;
+    %move = %this.autoMoveList;
+    %this.autoMoveNum;
     %this.applyImpulse("0 0 0", %move);
-    autoMoveNum = (%this + autoMoveNum);
-    1.0;
-    if ((%this > autoMoveNum)) {
-        autoMoveNum = 3.0 @ 0 @ %this;
+    %this.autoMoveNum = (1.0 + %this.autoMoveNum);
+    if ((3.0 > %this.autoMoveNum)) {
+        %this.autoMoveNum = 0;
     }
 };
 function AIManager::doBotsSurfing(%this, %periodMS) {
@@ -279,43 +294,40 @@ function AIManager::doBotsSurfing(%this, %periodMS) {
         return;
     }
     %add = 1;
-    if ((%this <= numBots)) {
+    if ((%minBots <= %this.numBots)) {
         %add = 1;
-        %minBots;
     }
-    if ((%this >= numBots)) {
+    if ((%maxBots >= %this.numBots)) {
         %add = 0;
-        %maxBots;
     }
     %add = getRandom(0, 1);
     if ((1.0 == %add)) {
         %this.addOneBot();
     }
     %this.delOneBot();
-    echo(%this @ numBots);
+    echo("NumBots is now" @ " " @ %this.numBots);
 };
 function AIManager::addOneBot(%this) {
     echo("adding one bot...");
     1.spawnBots(1);
 };
 function AIManager::delOneBot(%this) {
-    if ((%this <= numBots)) {
-        return 0.0;
+    if ((0.0 <= %this.numBots)) {
+        return;
     }
     echo("removing one bot...");
-    numBots = (%this - numBots);
-    1.0;
-    bots.delete();
+    %this.numBots = (1.0 - %this.numBots);
+    %this.bots.delete();
 };
 function AIManager::think(%this) {
     %period = 500;
     %i = 0;
-    if ((numBots < %i)) {
-        bots.thinkETS(%period);
+    if ((%this.numBots < %i)) {
+        %this.bots.thinkETS(%period);
         %i = (1.0 + %i);
-        %this @ %i @ %this;
+        %i;
     }
-    if (BotsSurfing) {
+    if (%this.BotsSurfing) {
         %this.doBotsSurfing(%period);
     }
     %this.schedule(%period);
@@ -329,10 +341,8 @@ function AIManager::spawn(%this) {
     if ((%BotRows < %j)) {
         %i = 0;
         if ((%BotCols < %i)) {
-            numBots = (%this + numBots);
-            1.0;
-            %player = AIPlayer::spawn(%this @ numBots, %XPosition @ " " @ %YPosition @ " " @ "216 0 0 1 3.14");
-            "hi!" @ " ";
+            %this.numBots = (1.0 + %this.numBots);
+            %player = AIPlayer::spawn("hi!" @ " " @ %this.numBots, %XPosition @ " " @ %YPosition @ " " @ "216 0 0 1 3.14");
             %XPosition = (1.0 + %XPosition);
             %i = (1.0 + %i);
         }
@@ -348,24 +358,22 @@ function AIManager::spawn(%this) {
     return %player;
 };
 function AIManager::SpawnETS(%this, %transform) {
-    if (!(numBots)) {
-        numBots = %this @ 0 @ %this;
+    if (!(%this.numBots)) {
+        %this.numBots = 0;
     }
     %name = "";
-    %name = 1.0 @ (%this + numBots);
-    "bot";
+    %name = "bot" @ (1.0 + %this.numBots);
     %player = AIPlayer::spawn(%name, %transform);
-    bots = %player @ %this @ numBots @ %this;
-    numBots = (%this + numBots);
-    1.0;
-    gender = %player.getDataBlock() @ getSubStr(possibleGenders, 0, 1) @ %player;
+    %this.bots = %player @ %this.numBots;
+    %this.numBots = (1.0 + %this.numBots);
+    %player.gender = getSubStr(%player.getDataBlock().possibleGenders, 0, 1);
     %player.randomizeOutfit();
     %rand = getRandom(0, 2);
-    %player.setGenre(getSubStr(possibleGenres, %rand, 1));
-    botChatTarget = %player.getDataBlock() @ 0 @ %player;
+    %player.setGenre(getSubStr(%player.getDataBlock().possibleGenres, %rand, 1));
+    %player.botChatTarget = 0;
     %player.setAwayMessage(getRandomAwayMessage());
     %name.put(%player);
-    %player.MeshOff(%player @ gender @ ".headphones.dj");
+    %player.MeshOff(%player.gender @ ".headphones.dj");
     echo("bot entered:   \x03" @ " " @ getDebugString(%player));
     return %player;
 };
@@ -397,30 +405,31 @@ function AIManager::SpawnArmyETS(%this, %transform) {
 };
 function AIManager::RandomizeBots(%this) {
     %i = 0;
-    if ((numBots < %i)) {
-        bots.randomizeOutfit();
+    if ((%this.numBots < %i)) {
+        %this.bots.randomizeOutfit();
         %rand = getRandom(0, 2);
-        %this @ %i @ %this;
-        bots.setGenre(getSubStr(possibleGenres, %rand, 1));
-        bots.setAwayMessage(getRandomAwayMessage());
+        %i;
+        %this.bots.setGenre(getSubStr(%this.bots.getDataBlock().possibleGenres, %rand, 1));
+        %this.bots.setAwayMessage(getRandomAwayMessage());
         %i = (1.0 + %i);
-        bots.getDataBlock() @ %i @ %this;
+        %i @ %i @ %i;
     }
 };
 function ServerCmdNextToonModeBots(%client) {
     %i = 0;
-    if ((numBots < %i)) {
-        %clientBotID = %client.getGhostID(bots);
-        AIManager @ %i @ AIManager;
+    if ((%this.numBots < %i)) {
+        %clientBotID = %client.getGhostID(%this.bots);
+        %i @ AIManager;
         commandToClient(%client, 'matchToonModeToPlayer', %clientBotID);
         %i = (1.0 + %i);
+        AIManager;
     }
 };
 function AIManager::BotsStress(%this, %val) {
-    BotsMove = %val @ %this;
-    BotsBlahBlah = %val @ %this;
-    BotsEavesdrop = %val @ %this;
-    BotsSurfing = %val @ %this;
+    %this.BotsMove = %val;
+    %this.BotsBlahBlah = %val;
+    %this.BotsEavesdrop = %val;
+    %this.BotsSurfing = %val;
 };
 $randomAwayMessagesNum = 0;
 function getRandomAwayMessage() {

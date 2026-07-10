@@ -7,7 +7,7 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     }
     if ((0.0 >= %n)) {
         %candidate = %masterList.get(%n);
-        if ((%candidate SPC name $= %listName)) {
+        if ((%candidate.name $= %listName)) {
             %found = %candidate;
         }
         %n = (1.0 - %n);
@@ -17,7 +17,7 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     if ((-(1.0) == %found)) {
         %found = new_ScriptArray("");
         (0.0 >= %n);
-        name = %listName @ %found;
+        %found.name = %listName;
         %masterList.append(%found);
     }
     %num = getWordCount(%skus);
@@ -27,22 +27,22 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     if ((%num < %n)) {
         %sku = getWord(%skusDry, %n);
         %okay = 1;
-        if (!(SkuManager SPC %sku.filterSkusBornWith(1) $= %sku)) {
-            error(%sku.findBySku() @ descShrt);
+        if (!(SkuManager @ " " @ %sku.filterSkusBornWith(1) $= %sku)) {
+            error(SkuManager @ %sku.findBySku().descShrt);
             %okay = 0;
-            SkuManager;
+            getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku is not bornWith:" @ " " @ %sku @ " ";
         }
-        if (!(SkuManager SPC %sku.filterSkusRoles(0) $= %sku)) {
-            error(%sku.findBySku() @ descShrt);
+        if (!(SkuManager @ " " @ %sku.filterSkusRoles(0) $= %sku)) {
+            error(SkuManager @ %sku.findBySku().descShrt);
             %okay = 0;
-            SkuManager;
+            getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku requires roles:" @ " " @ %sku @ " ";
         }
         if (%okay) {
-            %skus = getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku is not bornWith:" @ " " @ %sku @ " " @ getScopeName() @ " " @ "-" @ " " @ formatString("%-30s", %skusName) @ " " @ "- sku requires roles:" @ " " @ %sku @ " " @ %skus @ %sku @ " ";
+            %skus = %skus @ %sku @ " ";
         }
-        MessageBoxOK("Error", %sku.findBySku() @ descShrt, "");
+        MessageBoxOK("Error", SkuManager @ %sku.findBySku().descShrt, "");
         %n = (1.0 + %n);
-        SkuManager;
+        "invalid sku" @ " " @ %sku @ " " @ "in paper doll list\nsee console.log for\"" @ " " @ getScopeName() @ " " @ "\"" @ "\n" @ %skusName @ "\n" @ %sku @ " ";
     }
     %skus = trim(%skus);
     (%num < %n);
@@ -67,7 +67,7 @@ function paperDoll_InitPermutations() {
     %param = "";
     %option = "";
     %optionName = "";
-    %fo = new ""();
+    %fo = new ""();;
     FileObject;
     %lineNum = 0;
     0;
@@ -124,7 +124,7 @@ function paperDoll_InitPermutations() {
             %n = (1.0 - %n);
         }
     }
-    error((0.0 >= %n) @ getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for read.");
+    error(getScopeName() @ " " @ "- unable to open \"" @ %fileName @ "\" for read.");
     %fo.delete();
 };
 function paperDoll_getParamsNum(%gender) {
@@ -140,8 +140,7 @@ function paperDoll_getParamList(%gender, %paramNum) {
 };
 function paperDoll_getParamName(%gender, %paramNum) {
     %subList = paperDoll_getParamList(%gender, %paramNum);
-    %paramName = name;
-    %subList;
+    %paramName = %subList.name;
     return %paramName;
 };
 function paperDoll_getParamValueName(%gender, %paramNum, %paramValue) {

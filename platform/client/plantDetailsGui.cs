@@ -7,20 +7,22 @@ function PlantDetailsGui::open(%this) {
 };
 function PlantDetailsGui::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function PlantDetailsGui::onClickFAQButton(%this) {
-    gotoWebPage(faqURL);
+    gotoWebPage(%this.faqURL);
 };
 function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL) {
     %this.open();
     %plantName.setText();
     (%totalStates / %currentState).setValue();
     %info.setText();
-    %bmp = PlantDetailsTitle @ PlantDetailsProgressBar @ PlantDetailsStatusText @ "projects/common/inventory/" @ %plantSKU @ "/progress" @ %plantSKU @ ".png";
+    %bmp = "projects/common/inventory/" @ %plantSKU @ "/progress" @ %plantSKU @ ".png";
+    PlantDetailsStatusText;
     %bmp.setBitmap();
-    faqURL = PlantProgressBackgroundBMP @ %faqURL @ %this;
+    %this.faqURL = PlantProgressBackgroundBMP @ %faqURL;
+    PlantDetailsProgressBar;
 };
 function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL) {
     if ((%status $= "HAPPY")) {
@@ -36,6 +38,6 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
         %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
     }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
-    open();
+    PlantDetailsGui.open();
     %plantSKU.showDetails(%plantName, %info, %currentState, %totalStates, %faqURL);
 };

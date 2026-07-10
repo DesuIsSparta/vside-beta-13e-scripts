@@ -1,24 +1,25 @@
 exec("./skeletonClient.cs");
 function testLoginTimes() {
     $loginLogout = 0;
-    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
-    password = $UserPref::Player::Password;
-    joinAction = "doSomething";
-    quitOnError = "true";
-    %testLogin = ;
+    %testLogin = new ScriptObject(skeletonClient) {
+        userName = $UserPref::Player::Name;
+        password = $UserPref::Player::Password;
+        joinAction = "doSomething";
+        quitOnError = "true";
+    };
     %testLogin.init();
     echo("LOAD: Logging into " @ $cityIndex[$Cities @ $cityIndex]);
     %testLogin.doLogin($cityIndex[$Cities @ $cityIndex]);
     $cityIndex = (1.0 + $cityIndex);
 };
 function doSomething() {
-    if (isVisible()) {
-        close();
+    if (ClosetGui.isVisible()) {
+        ClosetGui.close();
     }
     "Hello!".say(0, 0);
     "Goodbye!".say(0, 0);
     logout(0);
-    exit();
+    WorldMap.exit();
     if (($maxCities <= $cityIndex)) {
         schedule(3000, 0);
     }

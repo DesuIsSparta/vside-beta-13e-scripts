@@ -1,19 +1,19 @@
 function geLocalMapContainer::open(%this) {
     %this.setVisible(1);
     %this.focusAndRaise();
-    update();
+    WindowManager.update();
 };
 function geLocalMapContainer::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
-    update();
+    PlayGui.focusTopWindow();
+    WindowManager.update();
     return 1;
 };
 function geLocalMapContainer::onSpaceChange(%this, %spaceName) {
-    if ((%this SPC spaceName $= %spaceName)) {
+    if ((%this.spaceName $= %spaceName)) {
         return;
     }
-    spaceName = %spaceName @ %this;
+    %this.spaceName = %spaceName;
     %mapObj = getSpace2DMap(%spaceName);
     %this.setMap2D(%mapObj);
     if ($UserPref::UI::Radar::AutoOpen) {
@@ -23,7 +23,7 @@ function geLocalMapContainer::onSpaceChange(%this, %spaceName) {
     }
 };
 function geLocalMapContainer::setMap2D(%this, %mapObj) {
-    mapObj = %mapObj @ %this;
+    %this.mapObj = %mapObj;
     if (!(isObject(%mapObj))) {
         1.setVisible();
         0.setVisible();
@@ -36,27 +36,27 @@ function geLocalMapContainer::setMap2D(%this, %mapObj) {
     0.setVisible();
     0.setVisible();
     0.setVisible();
-    mapFile.setBitmap();
-    fitSize();
-    %w = getWord(getExtent(), 0);
+    %mapObj.mapFile.setBitmap();
+    geMapHud2DTheBitMap.fitSize();
+    %w = getWord(geMapHud2DTheBitMap.getExtent(), 0);
     geMapHud2DTheBitMap;
-    %h = getWord(getExtent(), 1);
-    geMapHud2DTheBitMap;
+    %h = getWord(geMapHud2DTheBitMap.getExtent(), 1);
+    geMapHud2DCustomSpaceModeText;
     %w = (0.4 * %w);
-    geMapHud2DTheBitMap;
+    geMapHud2DCustomSpaceModeTitle;
     %h = (0.4 * %h);
-    %mapObj;
+    geMapHud2DNotAvail;
     %w.resize(%h);
-    inspectPostApply();
+    geMapHud2DDragNZoom.inspectPostApply();
     %w.resize(%h);
     0.reposition(0);
-    upperLeft = %mapObj @ coordUpperLeft @ geMapHud2DTheOrthoMap;
+    %mapObj.upperLeft = %mapObj.coordUpperLeft @ geMapHud2DTheOrthoMap;
     geMapHud2DTheBitMap;
-    upperRight = %mapObj @ coordUpperRight @ geMapHud2DTheOrthoMap;
+    %mapObj.upperRight = %mapObj.coordUpperRight @ geMapHud2DTheOrthoMap;
     geMapHud2DTheBitMap;
-    lowerLeft = %mapObj @ coordLowerLeft @ geMapHud2DTheOrthoMap;
+    %mapObj.lowerLeft = %mapObj.coordLowerLeft @ geMapHud2DTheOrthoMap;
     geMapHud2DDragNZoom;
-    unitAltitudeOffset = %mapObj @ altitudeOffset @ geMapHud2DTheOrthoMap;
+    %mapObj.unitAltitudeOffset = %mapObj.altitudeOffset @ geMapHud2DTheOrthoMap;
     geMapHud2DDragNZoom;
 };
 function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text) {
@@ -77,8 +77,7 @@ function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text) 
     waitAFrameAndCall("geLocalMapContainer_repositionTitleText");
 };
 function geLocalMapContainer_repositionTitleText() {
-    %newTitleTop = (getWord(getExtent(), 1) / (geMapHud2DCustomSpaceModeTitleContainer - getWord(getExtent(), 1)));
-    geMapHud2DCustomSpaceModeTitle;
+    %newTitleTop = (2.0 / (getWord(geMapHud2DCustomSpaceModeTitle.getExtent(), 1) - getWord(geMapHud2DCustomSpaceModeTitleContainer.getExtent(), 1)));
     if ((1.0 < %newTitleTop)) {
     }
     %newTitleTop = %newTitleTop;
@@ -135,10 +134,10 @@ function getSpace2DMap(%spaceName) {
     if ((%spaceName $= "")) {
         return "";
     }
-    if (!(isObject())) {
+    if (!(isObject(space2DMapsMap))) {
     }
     if ((space2DMapsMap < %spaceName.findKey())) {
-        echo(space2DMapsMap @ 0.0 @ getScopeName() @ " " @ "- no 2D map: \"" @ %spaceName @ "\".");
+        echo(getScopeName() @ " " @ "- no 2D map: \"" @ %spaceName @ "\".");
         return "";
     }
     return %spaceName.get();
@@ -150,10 +149,11 @@ function geMapHud2DTheOrthoMap::playerAdd(%this, %player) {
 function Player::updateMapIcon(%this) {
     %ctrl = gGetField(%this, "mapCtrl");
     if (!(isObject(%ctrl))) {
-        extent = GuiBitmapCtrl @ new ""() @ "32 32";
         0;
-        %ctrl = ;
-        worldObject = %this @ %ctrl;
+        %ctrl = new ""() {
+            extent = GuiBitmapCtrl @ "32 32";
+        };
+        %ctrl.worldObject = %this;
         gSetField(%this, "mapCtrl", %ctrl);
         %ctrl.add();
         if (isObject($gGeLocalMapIcon_ME)) {

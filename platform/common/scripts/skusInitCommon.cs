@@ -1,7 +1,7 @@
 function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %brand, %drwrName, %meshName, %txtrNames, %descShrt, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime_TAB_tags, %author) {
     %expireTime = getField(%expireTime_TAB_tags, 0);
     %tags = getField(%expireTime_TAB_tags, 1);
-    %si = new ""();
+    %si = new ""();;
     SkuItem;
     if (!(%avail)) {
         %rolesMask = 2147483648;
@@ -29,59 +29,56 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     if ((%descLong $= %descShrt)) {
         %descLong = "";
     }
-    skuNumber = %skunum @ %si;
-    skuType = %skuType @ %si;
-    drwrName = %drwrName @ %si;
-    meshName = %meshName @ %si;
+    %si.skuNumber = %skunum;
+    %si.skuType = %skuType;
+    %si.drwrName = %drwrName;
+    %si.meshName = %meshName;
     %si.setTxtrNames(%txtrNames);
-    originalTxtrNames = %txtrNames @ %si;
-    rolesMask = %rolesMask @ %si;
-    gender = %gender @ %si;
-    descShrt = %descShrt @ %si;
-    brand = %brand @ %si;
-    descLong = %descLong @ %si;
-    stores = %stores @ %si;
-    bornWith = %bornWith @ %si;
-    price = %price @ %si;
-    qtyMfr = %qtyMfr @ %si;
-    qty = %qtyMfr @ %si;
-    rspk = %rspk @ %si;
-    expireTime = %expireTime @ %si;
-    usageShrt = %usageShrt @ %si;
-    tags = %tags @ %si;
-    salonStyleIndex = -(1.0) @ %si;
-    author = %author @ %si;
-    %prev = %this.findBySku(skuNumber);
-    %si;
+    %si.originalTxtrNames = %txtrNames;
+    %si.rolesMask = %rolesMask;
+    %si.gender = %gender;
+    %si.descShrt = %descShrt;
+    %si.brand = %brand;
+    %si.descLong = %descLong;
+    %si.stores = %stores;
+    %si.bornWith = %bornWith;
+    %si.price = %price;
+    %si.qtyMfr = %qtyMfr;
+    %si.qty = %qtyMfr;
+    %si.rspk = %rspk;
+    %si.expireTime = %expireTime;
+    %si.usageShrt = %usageShrt;
+    %si.tags = %tags;
+    %si.salonStyleIndex = -(1.0);
+    %si.author = %author;
+    %prev = %this.findBySku(%si.skuNumber);
     if (isObject(%prev)) {
-        error("SkuManager::addItem() - duplicate sku." @ " " @ %prev @ skuNumber @ " " @ "\"" @ %si @ descShrt @ "\"" @ " " @ "loses to" @ " " @ "\"" @ %prev @ descShrt @ "\"");
+        error("SkuManager::addItem() - duplicate sku." @ " " @ %prev.skuNumber @ " " @ "\"" @ %si.descShrt @ "\"" @ " " @ "loses to" @ " " @ "\"" @ %prev.descShrt @ "\"");
     }
     %this.add(%si);
     %n = (1.0 - getWordCount(%stores));
     if ((0.0 >= %n)) {
         %storeID = getWord(%stores, %n);
         if ($StandAlone) {
-            storeSkus = %storeID @ %this @ storeSkus @ %skunum @ " " @ %storeID @ %this;
-            storeQtys = %storeID @ %this @ storeQtys @ %qtyMfr @ " " @ %storeID @ %this;
+            %this.storeSkus = %storeID @ %this.storeSkus @ %skunum @ " " @ %storeID;
+            %this.storeQtys = %storeID @ %this.storeQtys @ %qtyMfr @ " " @ %storeID;
         }
-        if ((%this < findWord(storeIDs, %storeID))) {
-            storeIDs = 0.0 @ %this @ storeIDs @ %storeID @ " " @ %this;
+        if ((0.0 < findWord(%this.storeIDs, %storeID))) {
+            %this.storeIDs = %this.storeIDs @ %storeID @ " ";
         }
         %n = (1.0 - %n);
     }
     if (%bornWith) {
-        bornWithSkus = (0.0 >= %n) @ %this @ bornWithSkus @ %skunum @ " " @ %this;
+        %this.bornWithSkus = (0.0 >= %n) @ %this.bornWithSkus @ %skunum @ " ";
     }
-    notBornWithSkus = %this @ notBornWithSkus @ %skunum @ " " @ %this;
+    %this.notBornWithSkus = %this.notBornWithSkus @ %skunum @ " ";
     %n = (1.0 - getWordCount(%tags));
     if ((0.0 >= %n)) {
         %tag = getWord(%tags, %n);
-        %skus = skuTags.get(%tag);
-        %this;
+        %skus = %this.skuTags.get(%tag);
         %skus = trim(%skus @ " " @ %skunum);
-        skuTags.put(%tag, %skus);
+        %this.skuTags.put(%tag, %skus);
         %n = (1.0 - %n);
-        %this;
     }
     %n = (1.0 - getWordCount(%meshName));
     (0.0 >= %n);
@@ -98,15 +95,14 @@ function SkuManager::init(%this) {
     %t1 = getSimTime();
     %this.clear();
     %n = 0;
-    if ((getWordCount(storeIDs) < %n)) {
-        storeSkus = %this @ "" @ %this @ getWord(storeIDs, %n) @ %this;
+    if ((getWordCount(%this.storeIDs) < %n)) {
+        %this.storeSkus = "" @ getWord(%this.storeIDs, %n);
         %n = (1.0 + %n);
     }
-    storeIDs = (getWordCount(storeIDs) < %n) @ "" @ %this;
-    %this;
-    bornWithSkus = "" @ %this;
-    notBornWithSkus = "" @ %this;
-    skuTags = safeNewScriptObject("StringMap", "", 0) @ %this;
+    %this.storeIDs = (getWordCount(%this.storeIDs) < %n) @ "";
+    %this.bornWithSkus = "";
+    %this.notBornWithSkus = "";
+    %this.skuTags = safeNewScriptObject("StringMap", "", 0);
     skusInit();
     skusInitFurnishings();
     %this.clearValueCache();
@@ -167,19 +163,19 @@ function SkuManager::getStoreSkus(%this, %storeID) {
     if (!($StandAlone)) {
         error(getScopeName() @ " " @ "- should only be called in standalone.");
     }
-    return storeSkus;
+    return %this.storeSkus;
 };
 function SkuManager::getStoreQtys(%this, %storeID) {
     if (!($StandAlone)) {
         error(getScopeName() @ " " @ "- should only be called in standalone.");
     }
-    return storeQtys;
+    return %this.storeQtys;
 };
 function SkuManager::getBornWithSkus(%this) {
-    return bornWithSkus;
+    return %this.bornWithSkus;
 };
 function SkuManager::getNotBornWithSkus(%this) {
-    return notBornWithSkus;
+    return %this.notBornWithSkus;
 };
 function SkuManager::isDrawerExclusive(%this, %drwr) {
     return !(%this.getTopExclusionLevelForDrawer(%drwr) $= "");
@@ -190,7 +186,7 @@ function SkuManager::getExclusionDrawerForSku(%this, %sku) {
         error(getScopeName() @ "->unknown sku, returning empty string. trace = " @ getTrace());
         return "";
     }
-    return %this.getTopExclusionLevelForDrawer(drwrName);
+    return %this.getTopExclusionLevelForDrawer(%si.drwrName);
 };
 function SkuManager::getTopExclusionLevelForDrawer(%this, %drwr) {
     %tabbedDrwr = strreplace(%drwr, "/", "\t");
@@ -203,9 +199,9 @@ function SkuManager::getTopExclusionLevelForDrawer(%this, %drwr) {
     if ((%cnt < %i)) {
         %folder = getField(%tabbedDrwr, %i);
         %incStr = %incStr @ %folder;
-        %idx = findRecord(exclusiveDrwrs, %incStr);
-        if ((-(1.0) != %this)) {
-            return getRecord(exclusiveDrwrs, %idx);
+        %idx = findRecord(%this.exclusiveDrwrs, %incStr);
+        if (( != -(1.0))) {
+            return getRecord(%this.exclusiveDrwrs, %idx);
         }
         %incStr = %incStr @ "/";
         %i = (1.0 + %i);
@@ -216,7 +212,7 @@ function SkuManager::setDrawerExclusive(%this, %drwr) {
     if (%this.isDrawerExclusive(%drwr)) {
         warn(getScopeName() @ "-> drawer \"" @ %drwr @ "\" already exclusive or - for furnishing - a subdrawer of an already exclusive drawer.");
     }
-    exclusiveDrwrs = %this @ exclusiveDrwrs @ %drwr @ "\n" @ %this;
+    %this.exclusiveDrwrs = %this.exclusiveDrwrs @ %drwr @ "\n";
 };
 %this[mA] = "400 554 600 701 850 875 900 950" @ $gNewStockOutfits;
 %this[mA][mB] = "403 502 33763 31600 31034" @ $gNewStockOutfits;
@@ -244,6 +240,6 @@ function SkuManager::setDrawerExclusive(%this, %drwr) {
 %this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL] = "5400 5528 5617 5714 5850 5980" @ $gNewStockOutfits;
 %this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL][m] = "121 200 303 801" @ $gDefaultBodyAttrs;
 %this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL][m][f] = "5100 5200 5303 5801" @ $gDefaultBodyAttrs;
-init();
+SkuManager.init();
 "AV/Videoscreens".setDrawerExclusive();
 "Activities/Games/PlayAreas".setDrawerExclusive();

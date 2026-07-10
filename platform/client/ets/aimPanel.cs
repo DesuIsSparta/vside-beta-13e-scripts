@@ -1,7 +1,7 @@
 function doAIMSignIn() {
     $Player::AIMName = trim($Player::AIMName);
     $Player::AIMName.setValue();
-    if (!(AIMScreenNameField SPC $Player::AIMName $= "")) {
+    if (!(AIMScreenNameField @ " " @ $Player::AIMName $= "")) {
         if ($UserPref::AIM::RememberMe) {
             $UserPref::Player::AIMName = $Player::AIMName;
             $UserPref::Player::AIMPassword = $Player::AIMPassword;
@@ -19,10 +19,10 @@ function doAIMSignIn() {
 function doAIMSignOff() {
     %aimTab = "AIM".getTabWithName();
     BuddyHudTabs;
-    aimListScroll.setVisible(0);
-    signOffButton.setVisible(0);
-    inviteButton.setVisible(0);
-    loginFrame.setVisible(1);
+    %aimTab.aimListScroll.setVisible(0);
+    %aimTab.signOffButton.setVisible(0);
+    %aimTab.inviteButton.setVisible(0);
+    %aimTab.loginFrame.setVisible(1);
     1.setActive();
     aimDisconnect();
 };
@@ -34,15 +34,15 @@ function silentAIMDisconnect() {
 function aimLoginCallback() {
     %aimTab = "AIM".getTabWithName();
     BuddyHudTabs;
-    aimListScroll.setVisible(1);
-    signOffButton.setVisible(1);
-    inviteButton.setVisible(1);
-    loginFrame.setVisible(0);
-    Initialize();
+    %aimTab.aimListScroll.setVisible(1);
+    %aimTab.signOffButton.setVisible(1);
+    %aimTab.inviteButton.setVisible(1);
+    %aimTab.loginFrame.setVisible(0);
+    AIMConvManager.Initialize();
 };
 function onAIMStateChange(%state) {
     if ((0.0 == %state)) {
-        if ((AIMLoginFrame == AIMState)) {
+        if ((AIMLoginFrame == %aimTab.AIMState)) {
             1.setActive();
             MessageBoxOK("AIM Login Failed", AIMSignInButton, "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
         }
@@ -79,8 +79,8 @@ function onAIMStateChange(%state) {
         echo("AIM online");
         aimLoginCallback();
     }
-    AIMState = (600.0 == %state) @ %state @ AIMLoginFrame;
-    200.0;
+    %aimTab.AIMState = %state @ AIMLoginFrame;
+    (600.0 == %state);
 };
 function AIMLoginFrame::setup(%this) {
     if ($UserPref::AIM::RememberMe) {
@@ -92,9 +92,9 @@ function AIMLoginFrame::setup(%this) {
     %this.update();
 };
 function AIMLoginFrame::update(%this) {
-    if (getValue()) {
+    if (AIMRememberMeCheckbox.getValue()) {
         1.setActive();
-        if (getValue()) {
+        if (AIMSavePasswordCheckbox.getValue()) {
             1.setActive();
         }
         0.setActive();
@@ -104,16 +104,16 @@ function AIMLoginFrame::update(%this) {
     0.setValue();
     0.setActive();
     0.setValue();
-    if (getValue()) {
+    if (AIMRememberMeCheckbox.getValue()) {
         $UserPref::Player::AIMName = $Player::AIMName;
-        AIMRememberMeCheckbox;
+        AIMAutoSigninCheckbox;
     }
     $UserPref::Player::AIMName = "";
     AIMAutoSigninCheckbox;
-    if (getValue()) {
+    if (AIMSavePasswordCheckbox.getValue()) {
         $UserPref::Player::AIMPassword = $Player::AIMPassword;
         AIMSavePasswordCheckbox;
     }
     $UserPref::Player::AIMPassword = "";
-    AIMAutoSigninCheckbox;
+    AIMSavePasswordCheckbox;
 };

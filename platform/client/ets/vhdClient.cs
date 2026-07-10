@@ -1,6 +1,5 @@
 function playerTexturesReload() {
-    %n = (PlayerInstanceDict - size());
-    1.0;
+    %n = (1.0 - PlayerInstanceDict.size());
     if ((0.0 >= %n)) {
         %player = %n.getValue();
         PlayerInstanceDict;

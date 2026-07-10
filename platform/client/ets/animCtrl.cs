@@ -1,66 +1,63 @@
 function AnimCtrl::newAnimCtrl(%pos, %ext) {
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = %pos;
-    extent = %ext;
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "";
-    wrap = 0;
-    %ctrl = ;
+    %ctrl = new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = %pos;
+        extent = %ext;
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "";
+        wrap = 0;
+    };
     %ctrl.bindClassName("AnimCtrl");
-    numFrames = 0 @ %ctrl;
-    currentFrame = 0 @ %ctrl;
-    delay = 60 @ %ctrl;
-    loop = 1 @ %ctrl;
-    timer = 0 @ %ctrl;
+    %ctrl.numFrames = 0;
+    %ctrl.currentFrame = 0;
+    %ctrl.delay = 60;
+    %ctrl.loop = 1;
+    %ctrl.timer = 0;
     return %ctrl;
 };
 function AnimCtrl::addFrame(%this, %frame) {
-    if ((%this == numFrames)) {
+    if ((0.0 == %this.numFrames)) {
         %this.setBitmap(%frame);
     }
-    frame = 0.0 @ %frame @ %this @ numFrames @ %this;
-    numFrames = (%this + numFrames);
-    1.0;
+    %this.frame = %frame @ %this.numFrames;
+    %this.numFrames = (1.0 + %this.numFrames);
 };
 function AnimCtrl::setDelay(%this, %delay) {
-    delay = %delay @ %this;
+    %this.delay = %delay;
 };
 function AnimCtrl::start(%this) {
-    currentFrame = 0 @ %this;
+    %this.currentFrame = 0;
     %this.resume();
 };
 function AnimCtrl::resume(%this) {
-    if ((%this <= numFrames)) {
-        return 0.0;
+    if ((0.0 <= %this.numFrames)) {
+        return;
     }
-    if ((%this != timer)) {
-        cancel(timer);
-        timer = %this @ 0 @ %this;
-        0.0;
+    if ((0.0 != %this.timer)) {
+        cancel(%this.timer);
+        %this.timer = 0;
     }
     %this.tick();
 };
 function AnimCtrl::stop(%this) {
-    cancel(timer);
-    timer = %this @ 0 @ %this;
+    cancel(%this.timer);
+    %this.timer = 0;
 };
 function AnimCtrl::tick(%this) {
-    if ((%this > delay)) {
-        timer = %this @ %this.schedule(delay, "tick") @ %this;
-        0.0;
+    if ((0.0 > %this.delay)) {
+        %this.timer = %this.schedule(%this.delay, "tick");
     }
-    %this.setBitmap(frame);
-    currentFrame = (%this + currentFrame);
-    1.0;
-    if ((%this == currentFrame)) {
-        if (loop) {
-            currentFrame = %this @ 0 @ %this;
-            numFrames;
+    %this.setBitmap(%this.frame);
+    %this.currentFrame = (1.0 + %this.currentFrame);
+    %this.currentFrame;
+    if ((%this.numFrames == %this.currentFrame)) {
+        if (%this.loop) {
+            %this.currentFrame = 0;
         }
         %this.stop();
     }
@@ -68,9 +65,9 @@ function AnimCtrl::tick(%this) {
 function AnimCtrl::setCurrentFrame(%this, %frame) {
     if ((0.0 < %frame)) {
     }
-    if ((numFrames >= %frame)) {
-        return %this;
+    if ((%this.numFrames >= %frame)) {
+        return;
     }
-    currentFrame = %frame @ %this;
-    %this.setBitmap(frame);
+    %this.currentFrame = %frame;
+    %this.setBitmap(%this.frame);
 };

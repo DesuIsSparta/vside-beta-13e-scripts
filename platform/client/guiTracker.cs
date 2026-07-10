@@ -1,49 +1,47 @@
 function GuiTracker::updateLocation(%this, %guiJustOpened) {
-    if (inTransit) {
+    if (%this.inTransit) {
         %sched = gGetField(%this, "guiTrackerUpdateLocation");
-        %this;
         cancel(%sched);
         %sched = %this.schedule(200, %guiJustOpened);
         updateLocation;
         gSetField(%this, "guiTrackerUpdateLocation", %sched);
         return;
     }
-    if ((%this SPC destination $= "")) {
+    if ((%this.destination $= "")) {
     }
-    if ((%this SPC destination.getId() $= %guiJustOpened.getId())) {
-        previouslyOpened = %this @ currentlyOpen @ %this;
-        currentlyOpen = %guiJustOpened @ %this;
-        destination = "" @ %this;
+    if ((%this.destination.getId() $= %guiJustOpened.getId())) {
+        %this.previouslyOpened = %this.currentlyOpen;
+        %this.currentlyOpen = %guiJustOpened;
+        %this.destination = "";
     }
 };
 function GuiTracker::setDestination(%this, %destination) {
-    destination = %destination @ %this;
+    %this.destination = %destination;
 };
 function GuiTracker::goBack(%this) {
-    inTransit = 1 @ %this;
-    if (!(%this SPC currentlyOpen $= "")) {
+    %this.inTransit = 1;
+    if (!(%this.currentlyOpen $= "")) {
     }
-    if (!(%this SPC currentlyOpen.getName() $= "playGui")) {
-        currentlyOpen.close(0);
+    if (!(%this.currentlyOpen.getName() $= "playGui")) {
+        %this.currentlyOpen.close(0);
     }
-    if (!(%this SPC previouslyOpened $= "")) {
+    if (!(%this.previouslyOpened $= "")) {
     }
-    if (!(%this SPC previouslyOpened.getName() $= "playGui")) {
-        previouslyOpened.open();
+    if (!(%this.previouslyOpened.getName() $= "playGui")) {
+        %this.previouslyOpened.open();
     }
-    inTransit = %this @ 0 @ %this;
-    %this;
+    %this.inTransit = 0;
 };
 function GuiTracker::canGoBack(%this) {
-    return !(%this SPC previouslyOpened $= "");
+    return !(%this.previouslyOpened $= "");
 };
 function GuiTracker::Initialize(%this) {
-    currentlyOpen = "" @ %this;
-    previouslyOpened = "" @ %this;
-    destination = "" @ %this;
-    inTransit = 0 @ %this;
+    %this.currentlyOpen = "";
+    %this.previouslyOpened = "";
+    %this.destination = "";
+    %this.inTransit = 0;
 };
-if (!(isObject())) {
+if (!(isObject(GuiTracker))) {
     new GuiControl(GuiTracker);
-    Initialize();
+    GuiTracker.Initialize(GuiTracker);
 }

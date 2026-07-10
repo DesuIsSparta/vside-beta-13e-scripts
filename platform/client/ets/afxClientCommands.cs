@@ -14,7 +14,7 @@ function afxRequestEffect(%effectName) {
     }
 };
 function afxAddEffect(%effectName, %keyBinding) {
-    %keyBinding.bindCmd(moveMap @ keyboard @ "afxRequestEffect(\"" @ %effectName @ "\");", "");
+    %keyBinding.bindCmd("afxRequestEffect(\"" @ %effectName @ "\");", "");
     safeEnsureScriptObject("StringMap", "afxEffectsCatalog");
     %effectName.put(%keyBinding);
 };
@@ -36,15 +36,14 @@ function afxSelectAvatarByName(%name) {
     }
     %start_new_sele = (%avatar != $gAfxSelectedAvatar);
     if ((-(1.0) != $gAfxSelectedAvatar)) {
-        sele.stopSelectron();
+        $gAfxSelectedAvatar.sele.stopSelectron();
         $gAfxSelectedAvatar = -(1.0);
-        $gAfxSelectedAvatar;
     }
     if (%start_new_sele) {
         %sele = startSelectron(%avatar, $gAfxSelectronStyle);
         if (isObject(%sele)) {
             %sele.addConstraint(%avatar, "selected");
-            sele = %sele @ %avatar;
+            %avatar.sele = %sele;
             $gAfxSelectedAvatar = %avatar;
         }
     }
@@ -60,12 +59,11 @@ function afxNextSelectronStyle() {
     if ((-(1.0) == $gAfxSelectedAvatar)) {
         return;
     }
-    sele.stopSelectron();
+    $gAfxSelectedAvatar.sele.stopSelectron();
     %sele = startSelectron($gAfxSelectedAvatar, $gAfxSelectronStyle);
-    $gAfxSelectedAvatar;
     if (isObject(%sele)) {
         %sele.addConstraint($gAfxSelectedAvatar, "selected");
-        sele = %sele @ $gAfxSelectedAvatar;
+        $gAfxSelectedAvatar.sele = %sele;
     }
 };
 afxInitKeybinds();

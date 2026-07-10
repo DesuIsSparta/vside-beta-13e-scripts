@@ -10,7 +10,7 @@ function botControlPanel::open(%this) {
 };
 function botControlPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 function botControlPanel::saveBots(%this) {

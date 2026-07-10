@@ -24,9 +24,8 @@ function rentabotClient_customizeBot(%obj) {
     %okayCmd = "CustomizeBotDialog_onOkay();";
     %dlg = MessageBoxOkCancel(%okayCmd[$MsgCat::furniture @ "BOTCUST-TITLE"], , %okayCmd, "");
     $gCustomizeBotDialog = %dlg;
-    %window = window;
-    %dlg;
-    rentabot = %obj @ %window;
+    %window = %dlg.window;
+    %window.rentabot = %obj;
     %winWidth = 400;
     %winHeight = 240;
     %window.resize(%winWidth, %winHeight);
@@ -41,83 +40,92 @@ function rentabotClient_customizeBot(%obj) {
     %tipStyle = "<color:ffffff88>";
     %validCharsName = "abcdefghijklmnopqrstuvwxyz" @ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" @ 0123456789 @ "_[]" @ "";
     %validCharsMsgs = "abcdefghijklmnopqrstuvwxyz" @ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" @ 0123456789 @ "_[]" @ " " @ ",./?:\"'+=-(){}|*&!@#$%" @ "";
-    profile = GuiMLTextCtrl @ new ""() @ "GuiMessageTextProfile";
     0;
-    position = %col1 @ " " @ %row;
-    extent = %col1Size @ " " @ %rowSize;
-    text = "<just:right>Name:";
-    %ctrl = ;
+    %ctrl = new ""() {
+        profile = GuiMLTextCtrl @ "GuiMessageTextProfile";
+        position = %col1 @ " " @ %row;
+        extent = %col1Size @ " " @ %rowSize;
+        text = "<just:right>Name:";
+    };
     %window.add(%ctrl);
-    profile = GuiTextEditCtrl @ new ""() @ "ETSDarkTextEditProfile";
     0;
-    position = %col2 @ " " @ %row;
-    extent = %col2Size @ " " @ %rowSize;
-    text = %name;
-    validInputChars = %validCharsName;
-    maxLength = 20;
-    %ctrl = ;
+    %ctrl = new ""() {
+        profile = GuiTextEditCtrl @ "ETSDarkTextEditProfile";
+        position = %col2 @ " " @ %row;
+        extent = %col2Size @ " " @ %rowSize;
+        text = %name;
+        validInputChars = %validCharsName;
+        maxLength = 20;
+    };
     %window.add(%ctrl);
-    ctrlName = %ctrl @ %window;
+    %window.ctrlName = %ctrl;
     %row = (%rowSize + %row);
-    profile = GuiMLTextCtrl @ new ""() @ "GuiMessageTextProfile";
     0;
-    position = %col2 @ " " @ %row;
-    extent = %col2Size @ " " @ %rowSize;
-    text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-NAME"];
-    %ctrl = ;
+    %ctrl = new ""() {
+        profile = GuiMLTextCtrl @ "GuiMessageTextProfile";
+        position = %col2 @ " " @ %row;
+        extent = %col2Size @ " " @ %rowSize;
+        text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-NAME"];
+    };
     %window.add(%ctrl);
     %row = ((%rowSpacing + %rowSize) + %row);
     if (%obj.getCanSpew()) {
-        profile = GuiMLTextCtrl @ new ""() @ "GuiMessageTextProfile";
         0;
-        position = %col1 @ " " @ %row;
-        extent = %col1Size @ " " @ %rowSize;
-        text = "<just:right>Blab:";
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiMLTextCtrl @ "GuiMessageTextProfile";
+            position = %col1 @ " " @ %row;
+            extent = %col1Size @ " " @ %rowSize;
+            text = "<just:right>Blab:";
+        };
         %window.add(%ctrl);
-        profile = GuiTextEditCtrl @ new ""() @ "ETSDarkTextEditProfile";
         0;
-        position = %col2 @ " " @ %row;
-        extent = %col2Size @ " " @ %rowSize;
-        text = %msgBlab;
-        validInputChars = %validCharsMsgs;
-        maxLength = 100;
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiTextEditCtrl @ "ETSDarkTextEditProfile";
+            position = %col2 @ " " @ %row;
+            extent = %col2Size @ " " @ %rowSize;
+            text = %msgBlab;
+            validInputChars = %validCharsMsgs;
+            maxLength = 100;
+        };
         %window.add(%ctrl);
-        ctrlBlab = %ctrl @ %window;
+        %window.ctrlBlab = %ctrl;
         %row = (%rowSize + %row);
-        profile = GuiMLTextCtrl @ new ""() @ "GuiMessageTextProfile";
         0;
-        position = %col2 @ " " @ %row;
-        extent = %col2Size @ " " @ %rowSize;
-        text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-BLAB"];
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiMLTextCtrl @ "GuiMessageTextProfile";
+            position = %col2 @ " " @ %row;
+            extent = %col2Size @ " " @ %rowSize;
+            text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-BLAB"];
+        };
         %window.add(%ctrl);
         %row = ((%rowSpacing + %rowSize) + %row);
-        profile = GuiMLTextCtrl @ new ""() @ "GuiMessageTextProfile";
         0;
-        position = %col1 @ " " @ %row;
-        extent = %col1Size @ " " @ %rowSize;
-        text = "<just:right>Whisper:";
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiMLTextCtrl @ "GuiMessageTextProfile";
+            position = %col1 @ " " @ %row;
+            extent = %col1Size @ " " @ %rowSize;
+            text = "<just:right>Whisper:";
+        };
         %window.add(%ctrl);
-        profile = GuiTextEditCtrl @ new ""() @ "ETSDarkTextEditProfile";
         0;
-        position = %col2 @ " " @ %row;
-        extent = %col2Size @ " " @ %rowSize;
-        text = %msgWhisper;
-        validInputChars = %validCharsMsgs;
-        maxLength = 100;
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiTextEditCtrl @ "ETSDarkTextEditProfile";
+            position = %col2 @ " " @ %row;
+            extent = %col2Size @ " " @ %rowSize;
+            text = %msgWhisper;
+            validInputChars = %validCharsMsgs;
+            maxLength = 100;
+        };
         %window.add(%ctrl);
-        ctrlWhisper = %ctrl @ %window;
+        %window.ctrlWhisper = %ctrl;
         %row = (%rowSize + %row);
-        profile = GuiMLTextCtrl @ new ""() @ "GuiMessageTextProfile";
         0;
-        position = %col2 @ " " @ %row;
-        extent = %col2Size @ " " @ %rowSize;
-        text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-WHISPER"];
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiMLTextCtrl @ "GuiMessageTextProfile";
+            position = %col2 @ " " @ %row;
+            extent = %col2Size @ " " @ %rowSize;
+            text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-WHISPER"];
+        };
         %window.add(%ctrl);
         %row = ((%rowSpacing + %rowSize) + %row);
     }
@@ -126,72 +134,69 @@ function rentabotClient_customizeBot(%obj) {
         }
     }
     if (%obj.getDressUpRead()) {
-        profile = GuiMLTextCtrl @ new ""() @ "GuiMessageTextProfile";
         0;
-        position = %col1 @ " " @ %row;
-        extent = %col1Size @ " " @ %rowSize;
-        text = "<just:right>Dress:";
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiMLTextCtrl @ "GuiMessageTextProfile";
+            position = %col1 @ " " @ %row;
+            extent = %col1Size @ " " @ %rowSize;
+            text = "<just:right>Dress:";
+        };
         %window.add(%ctrl);
         if (%obj.getDressUpRead()) {
-            profile = GuiVariableWidthButtonCtrl @ new ""() @ "GuiFocusableVWButtonProfile";
             0;
-            position = %col2 @ " " @ %row;
-            extent = (3.0 / ((2.0 * %colSpacing) - %col2Size)) @ " " @ %rowSize;
-            text = "Dress me like it!";
-            command = "rentabotClient_DressUpRead(" @ %obj @ ");";
-            %ctrl = ;
+            %ctrl = new ""() {
+                profile = GuiVariableWidthButtonCtrl @ "GuiFocusableVWButtonProfile";
+                position = %col2 @ " " @ %row;
+                extent = (3.0 / ((2.0 * %colSpacing) - %col2Size)) @ " " @ %rowSize;
+                text = "Dress me like it!";
+                command = "rentabotClient_DressUpRead(" @ %obj @ ");";
+            };
             %window.add(%ctrl);
         }
         if (%obj.getDressUpWrite()) {
-            profile = GuiVariableWidthButtonCtrl @ new ""() @ "GuiFocusableVWButtonProfile";
             0;
-            position = (mFloor((3.0 / (%colSpacing + %col2Size))) + %col2) @ " " @ %row;
-            extent = (3.0 / ((2.0 * %colSpacing) - %col2Size)) @ " " @ %rowSize;
-            text = "Dress it like me!";
-            command = "rentabotClient_DressUpWrite(" @ %obj @ ");";
-            %ctrl = ;
+            %ctrl = new ""() {
+                profile = GuiVariableWidthButtonCtrl @ "GuiFocusableVWButtonProfile";
+                position = (mFloor((3.0 / (%colSpacing + %col2Size))) + %col2) @ " " @ %row;
+                extent = (3.0 / ((2.0 * %colSpacing) - %col2Size)) @ " " @ %rowSize;
+                text = "Dress it like me!";
+                command = "rentabotClient_DressUpWrite(" @ %obj @ ");";
+            };
             %window.add(%ctrl);
-            profile = GuiVariableWidthButtonCtrl @ new ""() @ "GuiFocusableVWButtonProfile";
             0;
-            position = ((2.0 * mFloor((3.0 / (%colSpacing + %col2Size)))) + %col2) @ " " @ %row;
-            extent = (3.0 / ((2.0 * %colSpacing) - %col2Size)) @ " " @ %rowSize;
-            text = "Reset";
-            command = "rentabotClient_DressUpReset(" @ %obj @ ");";
-            %ctrl = ;
+            %ctrl = new ""() {
+                profile = GuiVariableWidthButtonCtrl @ "GuiFocusableVWButtonProfile";
+                position = ((2.0 * mFloor((3.0 / (%colSpacing + %col2Size)))) + %col2) @ " " @ %row;
+                extent = (3.0 / ((2.0 * %colSpacing) - %col2Size)) @ " " @ %rowSize;
+                text = "Reset";
+                command = "rentabotClient_DressUpReset(" @ %obj @ ");";
+            };
             %window.add(%ctrl);
         }
         %row = ((%rowSpacing + %rowSize) + %row);
     }
-    ctrlName.makeFirstResponder(1);
-    ctrlName.setSelection(0, 1000);
-    if (isObject(ctrlBlab)) {
-        altCommand = %window @ ctrlName;
-        %window @ %window @ ctrlBlab @ ".makeFirstResponder(true);";
+    %window.ctrlName.makeFirstResponder(1);
+    %window.ctrlName.setSelection(0, 1000);
+    if (isObject(%window.ctrlBlab)) {
+        %window.ctrlName.altCommand = %window.ctrlBlab @ ".makeFirstResponder(true);";
     }
-    altCommand = %window @ ctrlName;
-    %window @ %window @ %okayCmd @ " " @ %dlg @ ".close();";
-    altCommand = %window @ ctrlBlab;
-    %window @ ctrlWhisper @ ".makeFirstResponder(true);";
-    altCommand = %window @ ctrlWhisper;
-    %okayCmd @ " " @ %dlg @ ".close();";
+    %window.ctrlName.altCommand = %okayCmd @ " " @ %dlg @ ".close();";
+    %window.ctrlBlab.altCommand = %window.ctrlWhisper @ ".makeFirstResponder(true);";
+    %window.ctrlWhisper.altCommand = %okayCmd @ " " @ %dlg @ ".close();";
 };
 function CustomizeBotDialog_onOkay() {
-    %window = window;
-    $gCustomizeBotDialog;
-    %obj = rentabot;
-    %window;
-    %name = ctrlName.getValue();
-    %window;
+    %window = $gCustomizeBotDialog.window;
+    %obj = %window.rentabot;
+    %name = %window.ctrlName.getValue();
     %name = rentabot_getCoreName(%name);
     if (%obj.getCanSpew()) {
     }
     %msgBlab = "";
-    ctrlBlab.getValue();
+    %window.ctrlBlab.getValue();
     if (%obj.getCanSpew()) {
     }
     %msgWhisper = "";
-    ctrlWhisper.getValue();
+    %window.ctrlWhisper.getValue();
     commandToServer('Rentabot_Customize', CustomSpaceClient::GetSpaceImIn(), %obj.getGhostID(), %name, %msgBlab, %msgWhisper);
 };
 function rentabotClient_DressUpRead(%obj) {
@@ -255,18 +260,17 @@ function rentabotClient_reignore() {
         %bot = getWord($gRentabotIgnores, %n);
         if (isObject(%bot)) {
             %bot.setIgnore(1);
-            %record = new ""();
+            %record = new ""();;
             ScriptObject;
-            name = 0 @ $ServerName @ %record;
-            serverName = $Pref::Server::Name @ %record;
+            %record.name = 0 @ $ServerName;
+            %record.serverName = $Pref::Server::Name;
             %roled = 0;
-            loggedIn = 0 @ %record;
-            isIdle = 0 @ %record;
-            isNPC = 1 @ %record;
-            loggedIn = 0 @ %record;
-            csn = %record @ serverName.getCityNameForServerName() @ %record;
-            BuddyHudTabs;
-            activities = "" @ %record;
+            %record.loggedIn = 0;
+            %record.isIdle = 0;
+            %record.isNPC = 1;
+            %record.loggedIn = 0;
+            %record.csn = BuddyHudTabs @ %record.serverName.getCityNameForServerName();
+            %record.activities = "";
             %bot.getShapeName().put(%record);
         }
         $gRentabotIgnores = findAndRemoveAllOccurrencesOfWord($gRentabotIgnores, %bot);

@@ -255,8 +255,7 @@ function testOutfits_UpToEnvManagerOwned() {
     testOutfits_FireEnvManagerTest(%skusDry, %skusWet);
 };
 function testOutfits_dumpSkusInteresting() {
-    %skus = getSkus();
-    SkuManager;
+    %skus = SkuManager.getSkus();
     testOutfits_dumpSkusRoles(%skus, "");
     testOutfits_dumpSkusRoles(%skus, "staff");
     testOutfits_dumpSkusRoles(%skus, "moderator");

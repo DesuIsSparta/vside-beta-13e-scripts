@@ -18,17 +18,17 @@ function GameConnection::onServerConnectionTimedOut(%this) {
 error("Test user login");
 schedule(3000, 0);
 function doLoginButton() {
-    doLoginButton();
+    LoginGui.doLoginButton();
 };
 function doLogin() {
     $testUser.setValue();
     "etspass".setValue();
-    isAwake();
-    doLoginButton();
+    LoginGui.isAwake();
+    LoginGui.doLoginButton();
     schedule(7000, 0);
 };
 function checkStatus() {
-    if (!(isObject())) {
+    if (!(isObject(LoginRequest))) {
         echo("LOAD: No LoginRequest object yet. Trying again in 5 seconds.");
         schedule(7000, 0);
         return checkStatus;
@@ -49,7 +49,7 @@ function BootRequest::onDone(%this) {
         echo("LOAD: Boot suceeded.");
         schedule(7000, 0);
     }
-    if ((doLoginButton SPC %status $= "fail")) {
+    if ((doLoginButton @ " " @ %status $= "fail")) {
         echo("LOAD: Boot failed.");
         quit();
     }
@@ -70,25 +70,24 @@ function LoginRequest::onDone(%this) {
     %status = findStatus(%this);
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
     if ((%status $= "success")) {
-        stopAnimation();
+        LoginGui.stopAnimation();
         %this.parseResponse();
-        setNotConnectedToServer();
-        open();
+        WorldMap.setNotConnectedToServer();
+        WorldMap.open();
         schedule(2000, 0);
     }
-    if ((joinServer SPC %status $= "upgrade_available")) {
-        stopAnimation();
+    if ((joinServer @ " " @ %status $= "upgrade_available")) {
+        LoginGui.stopAnimation();
         %this.parseResponse();
-        setNotConnectedToServer();
-        open();
+        WorldMap.setNotConnectedToServer();
+        WorldMap.open();
         schedule(2000, 0);
     }
-    if ((joinServer SPC %status $= "alreadyloggedin")) {
+    if ((joinServer @ " " @ %status $= "alreadyloggedin")) {
         if ((0.0 == $bootAttempted)) {
             echo("LOAD: Test login auto-booting from previously joined server");
             LoginRequest::handleBoot();
             $bootAttempted = 1;
-            WorldMap;
             schedule(7000, 0);
         }
         error("LOAD: Boot failed. Giving up.");
@@ -100,15 +99,15 @@ function LoginRequest::onDone(%this) {
     quit();
 };
 function joinServer() {
-    echo(servers @ getCount());
-    if ((servers == getCount())) {
+    echo("Servers.getCount() = " @ " " @ servers.getCount());
+    if ((0.0 == servers.getCount())) {
         echo("LOAD: We got 0 servers. Trying again in 5 seconds.");
         schedule(5000, 0);
         return joinServer;
     }
     %i = 0;
-    if ((getCount() < %i)) {
-        if ((servers SPC %i.getObject().get("name") $= "TestTown")) {
+    if ((servers.getCount() < %i)) {
+        if ((servers @ " " @ %i.getObject().get("name") $= "TestTown")) {
             %i.getObject().join();
             echo(servers @ %i.getObject().get("name"));
             echo("LOAD: Test login completed");

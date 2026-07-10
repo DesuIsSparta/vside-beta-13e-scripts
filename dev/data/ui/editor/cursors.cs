@@ -1,17 +1,35 @@
-hotSpot = new GuiCursor(EditorHandCursor) @ "7 0";
-bitmapName = "./CUR_hand.png";
-hotSpot = new GuiCursor(EditorRotateCursor) @ "11 18";
-bitmapName = "./CUR_rotate.png";
-hotSpot = new GuiCursor(EditorMoveCursor) @ "9 13";
-bitmapName = "./CUR_grab.png";
-hotSpot = new GuiCursor(EditorArrowCursor) @ "0 0";
-bitmapName = "./CUR_3darrow.png";
-hotSpot = new GuiCursor(EditorUpDownCursor) @ "5 10";
-bitmapName = "./CUR_3dupdown.png";
-hotSpot = new GuiCursor(EditorLeftRightCursor) @ "9 5";
-bitmapName = "./CUR_3dleftright.png";
-hotSpot = new GuiCursor(EditorDiagRightCursor) @ "8 8";
-bitmapName = "./CUR_3ddiagright.png";
-hotSpot = new GuiCursor(EditorDiagLeftCursor) @ "8 8";
-bitmapName = "./CUR_3ddiagleft.png";
-profile = new GuiControl(EmptyControl) @ "GuiButtonProfile";
+new GuiCursor(EditorHandCursor) {
+    hotSpot = "7 0";
+    bitmapName = "./CUR_hand.png";
+};
+new GuiCursor(EditorRotateCursor) {
+    hotSpot = "11 18";
+    bitmapName = "./CUR_rotate.png";
+};
+new GuiCursor(EditorMoveCursor) {
+    hotSpot = "9 13";
+    bitmapName = "./CUR_grab.png";
+};
+new GuiCursor(EditorArrowCursor) {
+    hotSpot = "0 0";
+    bitmapName = "./CUR_3darrow.png";
+};
+new GuiCursor(EditorUpDownCursor) {
+    hotSpot = "5 10";
+    bitmapName = "./CUR_3dupdown.png";
+};
+new GuiCursor(EditorLeftRightCursor) {
+    hotSpot = "9 5";
+    bitmapName = "./CUR_3dleftright.png";
+};
+new GuiCursor(EditorDiagRightCursor) {
+    hotSpot = "8 8";
+    bitmapName = "./CUR_3ddiagright.png";
+};
+new GuiCursor(EditorDiagLeftCursor) {
+    hotSpot = "8 8";
+    bitmapName = "./CUR_3ddiagleft.png";
+};
+new GuiControl(EmptyControl) {
+    profile = "GuiButtonProfile";
+};

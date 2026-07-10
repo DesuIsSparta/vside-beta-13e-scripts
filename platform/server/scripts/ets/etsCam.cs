@@ -1,19 +1,18 @@
 function GameConnection::nextCamMode(%this) {
-    etsCamMode = 1.0 @ (%this + etsCamMode) @ %this;
-    etsCamMode = %this;
-    if ((%this > etsCamMode)) {
-        etsCamMode = 1.0 @ 0 @ %this;
+    %this.etsCamMode = (1.0 + %this.etsCamMode);
+    %this.etsCamMode = ;
+    if ((1.0 > %this.etsCamMode)) {
+        %this.etsCamMode = 0;
     }
-    if ((%this == etsCamMode)) {
-        %this.setControlObject(Player);
+    if ((0.0 == %this.etsCamMode)) {
+        %this.setControlObject(%this.Player);
     }
-    if ((%this == etsCamMode)) {
-        %rot = getOrientationRelativeToObject(Player, 3.14159, 0.5);
-        %this;
-        Camera.setOrbitMode(Player, "0 0 0" @ " " @ %rot, 0.5, 2.5, 1.5, 1);
-        %this.setControlObject(Camera);
+    if ((1.0 == %this.etsCamMode)) {
+        %rot = getOrientationRelativeToObject(%this.Player, 3.14159, 0.5);
+        %this.Camera.setOrbitMode(%this.Player, "0 0 0" @ " " @ %rot, 0.5, 2.5, 1.5, 1);
+        %this.setControlObject(%this.Camera);
     }
-    return %this;
+    return;
 };
 function getOrientationRelativeToObject(%obj, %theta, %phi) {
     %trans = "0 0 0" @ " " @ getWords(%obj.getTransform(), 3, 6);

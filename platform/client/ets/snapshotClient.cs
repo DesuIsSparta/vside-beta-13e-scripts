@@ -24,7 +24,7 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
     %uploader = "";
     if (snapshotTool::snapRegion(%region, %fileName)) {
         $screenShotNum = (1.0 + $screenShotNum);
-        %uploader = new ""();
+        %uploader = new ""();;
         URLPostObject;
         %uploader.setProgress(1);
         %uploader.setURL($Net::UploadPhotoURL);
@@ -33,7 +33,7 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
         %uploader.setURLParam("type", "avatar");
         %uploader.setPostFile("imageBody", %fileName);
         if (%uploader.start()) {
-            if (isObject()) {
+            if (isObject(CURLSimGroup)) {
                 %uploader.add();
             }
         }
@@ -52,8 +52,7 @@ function getScreenShotMetaData(%guiTSCtrl) {
     if ((1.0 != $pref::Render::orthoScale)) {
         return getScreenShotMetaDataOrtho(%guiTSCtrl);
     }
-    %cameraTransform = getLastCameraTransform();
-    PlayGui;
+    %cameraTransform = PlayGui.getLastCameraTransform();
     %numPts = 0;
     %numPts[%samplePts @ %numPts] = "0 0";
     %numPts = (1.0 + %numPts);
@@ -91,8 +90,7 @@ function getScreenShotMetaData(%guiTSCtrl) {
     return %ret;
 };
 function getScreenShotMetaDataOrtho(%guiTSCtrl) {
-    %cameraTransform = getLastCameraTransform();
-    PlayGui;
+    %cameraTransform = PlayGui.getLastCameraTransform();
     %numPts = 0;
     %numPts[%sampleName @ %numPts] = "upper left";
     %numPts[%samplePts @ %numPts] = "0 0";
@@ -135,12 +133,10 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "XY plane: \"" @ %hit @ "\"";
         %summary = %summary @ "\n" @ formatString("%-15s:", %n[%sampleName @ %n]) @ " " @ %hit;
         %n[%resultPts @ %n] = %hit;
-        if (isObject()) {
-            if ((getCount() < %n)) {
+        if (isObject(moWorldCornerMarkers)) {
+            if ((moWorldCornerMarkers.getCount() < %n)) {
                 %mh = %hit;
-                moWorldCornerMarkers;
                 %mh = setWord(%mh, 2, 0);
-                moWorldCornerMarkers;
                 %marker = %n.getObject();
                 moWorldCornerMarkers;
                 %marker.setTransform(%mh);
@@ -166,7 +162,7 @@ function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
         return;
     }
     %fn = %name @ ".cs";
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     if (%file.openForWrite(%fn)) {
         %file.writeLine(getScreenShotMetaData(%guiCtrl));

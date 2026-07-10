@@ -27,12 +27,10 @@ function clientCmdsetStaffSnapshotObj(%id) {
     %obj.getDCObject().startDCUpload();
 };
 function dlMgrCallback_GetNewSkin(%dlItem, %unused) {
-    %dlData = callbackData;
-    %dlItem;
-    %fileName = localFilename;
-    %dlData;
+    %dlData = %dlItem.callbackData;
+    %fileName = %dlData.localFilename;
     echoDebug("dlMgrCallback_GetNewSkin: Successfully completed dynamic download: " @ %fileName);
-    setNewSkin(%fileName, shapebaseobj);
+    setNewSkin(%fileName, %dlData.shapebaseobj);
 };
 function clientCmdgetNewSkin(%skinName, %shapebaseobj) {
     %shapebaseobj = %shapebaseobj.resolveGhostID();
@@ -40,10 +38,10 @@ function clientCmdgetNewSkin(%skinName, %shapebaseobj) {
     %skinName = getTaggedString(%skinName);
     %fileName = %skinName @ ".jpg";
     %url = $DC::RemoteSkinsFolder @ "/" @ %fileName;
-    %item = new ""();
+    %item = new ""();;
     ScriptObject;
-    skinName = 0 @ %skinName @ %item;
-    shapebaseobj = %shapebaseobj @ %item;
+    %item.skinName = 0 @ %skinName;
+    %item.shapebaseobj = %shapebaseobj;
     %url.applyUrl("dlMgrCallback_GetNewSkin", "", %item, "");
 };
 function setNewSkin(%skinName, %shapebaseobj) {

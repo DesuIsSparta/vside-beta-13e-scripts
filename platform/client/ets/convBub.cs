@@ -10,8 +10,8 @@ function ResizeBub(%text, %reset, %ctrl) {
     return %ctrl.autoResize(%reset, 0);
 };
 function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
-    if (!(autoSize)) {
-        return %this;
+    if (!(%this.autoSize)) {
+        return;
     }
     %msgVec = %this.getObject(0).getObject(0).getAttached();
     if (!(isObject(%msgVec))) {
@@ -22,8 +22,7 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
     %longest = %msgVec.getLongestLineLength(10, 1);
     %pixelsPerCharacter = 7.3;
     %maxWidth = getWord(%this.getParent().getExtent(), 0);
-    %minWidth = getWord(minExtent, 0);
-    %this;
+    %minWidth = getWord(%this.minExtent, 0);
     %newW = (%longest * %pixelsPerCharacter);
     %newW = (20.0 + %newW);
     if (%makewidest) {
@@ -35,25 +34,20 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
         %youngest = 0;
     }
     %parentHeight = getWord(%this.getParent().getExtent(), 1);
-    if ((vTime2 > %youngest)) {
-        %extY = (vPercent2 * %parentHeight);
-        %this;
+    if ((%this.vTime2 > %youngest)) {
+        %extY = (%this.vPercent2 * %parentHeight);
     }
-    if ((vTime1 > %youngest)) {
-        %extY = (vPercent1 * %parentHeight);
-        %this;
+    if ((%this.vTime1 > %youngest)) {
+        %extY = (%this.vPercent1 * %parentHeight);
     }
-    %extY = (vPercent0 * %parentHeight);
-    %this;
+    %extY = (%this.vPercent0 * %parentHeight);
     %textHeight = getWord(%this.getObject(0).getObject(0).getExtent(), 1);
-    %this;
     %extY = mClamp(%extY, 0, (30.0 + %textHeight));
-    %this;
     %this.setTrgExtent(%newW, %extY);
 };
 function GuiConvBubbleCtrl::AutosizeTimer(%this) {
     gSetField(%this, 0);
-    if (isAtBottom()) {
+    if (ConvBubScroll.isAtBottom()) {
         %this.autoResize(0, 0);
     }
     cancel(gGetField(%this));
@@ -83,12 +77,10 @@ function ConvBub::onMouseLeaveBounds(%this) {
     cancel($gConvBubChillTimer);
     $gConvBubChillTimer = 0;
 };
-AutosizeTimer();
+ConvBub.AutosizeTimer();
 function ConvBub::updateAutoMargins(%this) {
-    %clientRectPosition = getClientRectPosition();
-    WindowManager;
-    %clientRectExtent = getClientRectExtent();
-    WindowManager;
+    %clientRectPosition = WindowManager.getClientRectPosition();
+    %clientRectExtent = WindowManager.getClientRectExtent();
     %clientRectExtent.setTrgExtent();
     %clientRectPosition.setTrgPosition();
 };
@@ -96,8 +88,8 @@ function ConvBub::close(%this, %keepHistory) {
     0.setVisible();
     if (!(%keepHistory)) {
     }
-    if (isObject()) {
-        clearHistory();
+    if (isObject(pChat)) {
+        pChat.clearHistory();
     }
     0.makeFirstResponder();
 };
@@ -107,13 +99,13 @@ function ConvBub::open(%this) {
         return;
     }
     %this.setVisible(1);
-    %this.restartAutoCloseTimer(autoCloseTimeout);
+    %this.restartAutoCloseTimer(%this.autoCloseTimeout);
     %this.chooseProfile();
 };
 function ConvBub::chooseProfile(%this) {
-    if (isObject()) {
+    if (isObject(ApplauseMeterGui)) {
     }
-    if (downplayChatBubble()) {
+    if (ApplauseMeterGui.downplayChatBubble()) {
         %this.setProfile();
     }
     if ($player.hasRoleString("hween")) {
@@ -142,7 +134,7 @@ function ConvBub::onMouseDown(%this) {
     15.reexpand();
 };
 function ConvBubVecCtrl::onMouseDown(%this) {
-    onMouseDown();
+    ConvBub.onMouseDown();
 };
 function ConvBubVecCtrl::onRightURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
@@ -150,8 +142,8 @@ function ConvBubVecCtrl::onRightURL(%this, %url) {
         onRightClickPlayerName(%name);
     }
     %url.initWithURL();
-    showAtCursor();
-    if (!(selectionActive)) {
+    LinkContextMenu.showAtCursor();
+    if (!(%this.selectionActive)) {
         1.makeFirstResponder();
     }
 };
@@ -166,18 +158,18 @@ function ConvBubVecCtrl::onURL(%this, %url) {
     if ((getSubStr(%url, 0, 7) $= "vside:/")) {
         vurlOperation(%url);
     }
-    if (!(selectionActive)) {
+    if (!(%this.selectionActive)) {
         1.makeFirstResponder();
     }
 };
 function ConvBubScroll::onScrolledToBottom(%this) {
-    if (isEavesdrop) {
+    if (%this.isEavesdrop) {
         %this.setProfile();
     }
     %this.setProfile();
 };
 function ConvBubScroll::onMouseDown(%this) {
-    onMouseDown();
+    ConvBub.onMouseDown();
 };
 function LinkContextMenu::initWithURL(%this, %url) {
     %this.initWithURLAndTitle(%url, %url);
@@ -185,7 +177,7 @@ function LinkContextMenu::initWithURL(%this, %url) {
 function LinkContextMenu::initWithURLAndTitle(%this, %url, %title) {
     %this.clear();
     %this.setText(%title);
-    url = %url @ %this;
+    %this.url = %url;
     %n = (1.0 + %n);
     %this.add("Visit Link", , 0);
     %n = (1.0 + %n);
@@ -193,14 +185,14 @@ function LinkContextMenu::initWithURLAndTitle(%this, %url, %title) {
 };
 function LinkContextMenu::onSelect(%this, %unused, %text) {
     if ((%text $= "Visit Link")) {
-        if ((%this SPC getSubStr(url, 0, 7) $= "http://")) {
-            gotoWebPage(url);
+        if ((getSubStr(%this.url, 0, 7) $= "http://")) {
+            gotoWebPage(%this.url);
         }
-        if ((%this SPC getSubStr(url, 0, 7) $= "vside:/")) {
-            vurlOperation(url);
+        if ((getSubStr(%this.url, 0, 7) $= "vside:/")) {
+            vurlOperation(%this.url);
         }
     }
-    if ((%this SPC %text $= "Copy Link")) {
-        setClipboard(url);
+    if ((%text $= "Copy Link")) {
+        setClipboard(%this.url);
     }
 };

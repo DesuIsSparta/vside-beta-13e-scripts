@@ -19,13 +19,12 @@ function VideoRenderer::loadVideoRenderer(%this) {
     if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
         return;
     }
-    if (!(%this SPC videoRetryScdId $= "")) {
+    if (!(%this.videoRetryScdId $= "")) {
     }
-    if ((%this != videoRetryScdId)) {
-        cancel(videoRetryScdId);
+    if ((0.0 != %this.videoRetryScdId)) {
+        cancel(%this.videoRetryScdId);
     }
-    videoRetryScdId = %this @ 0 @ %this;
-    0.0;
+    %this.videoRetryScdId = 0;
     %this.load();
 };
 function VideoRenderer::unloadVideoRenderer(%this) {
@@ -36,19 +35,17 @@ function VideoRenderer::unloadVideoRenderer(%this) {
         return;
     }
     if (%this.getPlayWithPlaylist()) {
-        popStream();
+        VideoPlaylist.popStream();
     }
     %this.unload();
     %this.startFModMusic();
-    if (!(%this SPC videoRetryScdId $= "")) {
+    if (!(%this.videoRetryScdId $= "")) {
     }
-    if ((%this != videoRetryScdId)) {
-        cancel(videoRetryScdId);
+    if ((0.0 != %this.videoRetryScdId)) {
+        cancel(%this.videoRetryScdId);
     }
-    videoRetryScdId = %this @ 0 @ %this;
-    0.0;
+    %this.videoRetryScdId = 0;
     %inactTextureName = %this.getInactiveTextureName();
-    VideoPlaylist;
     if (!(%inactTextureName $= "")) {
         %this.setTextureFile(%inactTextureName);
     }
@@ -67,8 +64,8 @@ function VideoRenderer::onComplete(%this) {
     if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
         return;
     }
-    if (!(%this SPC completeCallback $= "")) {
-        eval(completeCallback);
+    if (!(%this.completeCallback $= "")) {
+        eval(%this.completeCallback);
     }
     %this.startFModMusic();
 };
@@ -98,10 +95,9 @@ function VideoRenderer::startMetadataDisplay(%this, %fadeoutVolume) {
         }
         Music::setService(%this);
         if (%fadeoutVolume) {
-            FadeOutVolume();
+            FMod.FadeOutVolume();
         }
         $ETS::VideoRenderer::MusicStopped = 1;
-        FMod;
         if (!(%this.getPlayWithPlaylist())) {
             if (($ETS::VideoRenderer::MetadataTimer == 0.0)) {
                 $ETS::VideoRenderer::MetadataTimer = %this.schedule(500, "updateVideoMetadata");
@@ -123,13 +119,12 @@ function VideoRenderer::startFModMusic(%this) {
         return;
     }
     if (!(fmodIsPlaying())) {
-        FadeInVolume();
-        Music::setService();
+        FMod.FadeInVolume();
+        Music::setService(FMod);
         cancel($ETS::VideoRenderer::MetadataTimer);
         $ETS::VideoRenderer::MetadataTimer = 0;
-        FMod;
-        videoMetaData = FMod @ "" @ %this;
-        timer();
+        %this.videoMetaData = "";
+        FMod.timer();
     }
 };
 function VideoRenderer::updateVideoMetadata(%this) {
@@ -141,9 +136,9 @@ function VideoRenderer::updateVideoMetadata(%this) {
     %title = %this.getTitle();
     %album = %this.getAlbum();
     %current = %artist @ " " @ %title @ " " @ %album;
-    if ((%this != strcmp(videoMetaData, %current))) {
-        videoMetaData = 0.0 @ %current @ %this;
-        if ((%this != strcmp(videoMetaData, ""))) {
+    if ((0.0 != strcmp(%this.videoMetaData, %current))) {
+        %this.videoMetaData = %current;
+        if ((0.0 != strcmp(%this.videoMetaData, ""))) {
             %artist.displayMetaData(%title, %album, "", %this.isDoppelgangerSite());
         }
     }
@@ -152,24 +147,22 @@ function VideoRenderer::updateVideoMetadata(%this) {
     MusicHud;
     if ((-(1.0) == strstr(%this.getNamespaceList(), "FFMPEGRenderer"))) {
         $ETS::VideoRenderer::MetadataTimer = %this.schedule(2000, "updateVideoMetadata");
-        0.0;
     }
 };
 function VideoRenderer::onError(%this) {
     if ((-(1.0) == strstr(%this.getNamespaceList(), "VideoRenderer"))) {
         return;
     }
-    if (!(%this SPC videoRetryScdId $= "")) {
+    if (!(%this.videoRetryScdId $= "")) {
     }
-    if ((%this != videoRetryScdId)) {
-        cancel(videoRetryScdId);
+    if ((0.0 != %this.videoRetryScdId)) {
+        cancel(%this.videoRetryScdId);
     }
-    videoRetryScdId = %this @ 0 @ %this;
-    0.0;
+    %this.videoRetryScdId = 0;
     if ((0.0 > $VideoRendererLoadable)) {
     }
     if (!(%this.getPlayWithPlaylist())) {
-        videoRetryScdId = %this.schedule(10000, "VideoRetry") @ %this;
+        %this.videoRetryScdId = %this.schedule(10000, "VideoRetry");
     }
     %this.startFModMusic();
 };
@@ -190,18 +183,18 @@ function VideoRenderer::VideoRetry(%this) {
 };
 function clientCmdOnMediaTogglerClick() {
     if (CustomSpaceClient::isOwner()) {
-        toggleCSPanel();
+        toggleCSPanel(CSMediaDisplay);
     }
-    show();
+    MusicHud.show();
 };
 function FFMPEGRenderer::onUse(%this) {
     if (%this.isServerObject()) {
         return;
     }
     if (CustomSpaceClient::isOwner()) {
-        toggleCSPanel();
+        toggleCSPanel(CSMediaDisplay);
     }
-    show();
+    MusicHud.show();
 };
 function clientCmdStartVideoPlaying(%videoGhost, %playIndex, %videoURL) {
     doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, 1);
@@ -215,7 +208,7 @@ function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry) {
     log("media", "debug", "doStartVideoPlaying(" @ %video @ ", " @ %playIndex @ ", \"" @ %videoURL @ "\")");
     if (isObject(%video)) {
         if ((0.0 != $CSSpaceInfo)) {
-            videoplayer = %video @ $CSSpaceInfo;
+            $CSSpaceInfo.videoplayer = %video;
         }
         %video.unloadVideoRenderer();
         if (!(%videoURL $= "")) {

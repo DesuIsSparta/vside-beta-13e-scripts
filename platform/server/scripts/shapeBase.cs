@@ -4,14 +4,14 @@ function ShapeBase::Damage(%this, %sourceObject, %position, %damage, %damageType
 function ShapeBase::setDamageDt(%this, %damageAmount, %damageType) {
     if (!(%obj.getState() $= "Dead")) {
         %this.Damage(0, "0 0 0", %damageAmount, %damageType);
-        damageSchedule = %obj.schedule(50, "setDamageDt", %damageAmount, %damageType) @ %obj;
+        %obj.damageSchedule = %obj.schedule(50, "setDamageDt", %damageAmount, %damageType);
     }
-    damageSchedule = "" @ %obj;
+    %obj.damageSchedule = "";
 };
 function ShapeBase::clearDamageDt(%this) {
-    if (!(%obj SPC damageSchedule $= "")) {
-        cancel(damageSchedule);
-        damageSchedule = %obj @ "" @ %obj;
+    if (!(%obj.damageSchedule $= "")) {
+        cancel(%obj.damageSchedule);
+        %obj.damageSchedule = "";
     }
 };
 function ShapeBaseData::Damage(%this, %obj, %position, %unused, %unused, %damageType) {

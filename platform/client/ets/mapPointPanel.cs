@@ -9,6 +9,6 @@ function MapPointPanel::open(%this) {
 };
 function MapPointPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };

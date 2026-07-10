@@ -1,19 +1,10 @@
 $gameMgr::GAME_TYPES_COUNT = 1;
-title = ScriptObject @ new ""() @ "the lounge race";
 0;
-INST_TITLE = "a lounge race";
-description = "A checkpoint race against your friends! First to get all the checkpoints in order wins!";
-USER_CREATE = 0;
 $gameMgr::GAME_TYPES_COUNT = (1.0 + $gameMgr::GAME_TYPES_COUNT);
-title = ScriptObject @ new ""() @ "custom game";
 0;
-INST_TITLE = "a custom game";
-description = "Whatever game you want to play. The host and players pick the goal, the rules, everything, and the host acts as referee, enforcing the rules, assigning points/player status, and deciding when the game is over. Use your imagination!";
-USER_CREATE = 1;
 $gameMgr::CUSTOM_GAME = 1;
-if (isObject()) {
+if (isObject(MissionCleanup)) {
     %n = 0;
-    MissionCleanup;
     if (($gameMgr::GAME_TYPES_COUNT < %n)) {
         %n[$gameMgr::GAME_TYPES @ %n].add();
         %n = (1.0 + %n);

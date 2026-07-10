@@ -1,15 +1,15 @@
 function geTGF_tabs::fillTabFriends(%this) {
     %tabName = "friends";
     %tab = %this.getTabWithName(%tabName);
-    if (filled) {
-        if (isObject(GuiTable)) {
-            GuiTable.makeFirstResponder(1);
+    if (%tab.filled) {
+        if (isObject(%tab.GuiTable)) {
+            %tab.GuiTable.makeFirstResponder(1);
         }
-        return %tab;
+        return;
     }
-    filled = 1 @ %tab;
+    %tab.filled = 1;
     %this.fillTabGeneric(%tab);
-    %dataTable = new DataTable(geTGF_FriendsDataTable);
+    %dataTable = new DataTable(geTGF_FriendsDataTable);;
     %dataTable.addColumn("statusmsg", mlStyle("Status", "tgfTables_ColumnHeader"), "string", 290, 1, 1, 1);
     %dataTable.addColumn("avatar", "", "image", 50, 0, 1, 0);
     %dataTable.addColumn("username", mlStyle("Name", "tgfTables_ColumnHeader"), "string", 150, 1, 1, 1);
@@ -20,77 +20,84 @@ function geTGF_tabs::fillTabFriends(%this) {
     %dataTable.addIconToColumn("sameServer", "true", "platform/client/ui/tgf/tgf_tele_lightning_white");
     %dataTable.addIconToColumn("sameServer", "false", "platform/client/ui/tgf/tgf_tele_subway_white");
     %dataTable.doSort("username");
-    position = new GuiTableCtrl(geTGF_FriendsGuiTable) @ "24 20";
-    extent = "933 430";
-    visible = 1;
-    spacing = 2;
-    %guiTable = ;
+    %guiTable = new GuiTableCtrl(geTGF_FriendsGuiTable) {
+        position = "24 20";
+        extent = "933 430";
+        visible = 1;
+        spacing = 2;
+    };
     %guiTable.setHeaderCellUniformExtent(22);
     %guiTable.setHeaderMLTextBoxTopMargin(0);
     %guiTable.setChildrenExtents(18);
     %guiTable.setDataTable(%dataTable);
-    GuiTable = %guiTable @ %tab;
+    %tab.GuiTable = %guiTable;
     %tab.add(%guiTable);
-    profile = GuiMLTextCtrl @ new ""() @ "GuiDefaultProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "75 49";
-    extent = "800 40";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    alternativeTextCtrl = %guiTable;
-    %tab.add(alternativeTextCtrl);
-    alternativeTextCtrl.setText(mlStyle("Fetching...", "tgfTables_DataCell_Text"));
-    profile = GuiMLTextCtrl @ new ""() @ "ETSNonModalProfile";
+    %guiTable.alternativeTextCtrl = new ""() {
+        profile = GuiMLTextCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "75 49";
+        extent = "800 40";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+    };
+    %tab.add(%guiTable.alternativeTextCtrl);
+    %guiTable.alternativeTextCtrl.setText(mlStyle("Fetching...", "tgfTables_DataCell_Text"));
     0;
-    horizSizing = %guiTable @ %guiTable @ "right";
-    vertSizing = "bottom";
-    position = "7 473";
-    extent = "30 20";
-    text = mlStyle("Find:", "tgfTables_DataCell_Text");
-    %filterLabel = ;
+    %filterLabel = new ""() {
+        profile = GuiMLTextCtrl @ "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "7 473";
+        extent = "30 20";
+        text = mlStyle("Find:", "tgfTables_DataCell_Text");
+    };
     %tab.add(%filterLabel);
-    profile = GuiControl @ new ""() @ "ETSLightBoxProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "top";
-    position = "37 470";
-    extent = "186 22";
-    minExtent = "186 22";
-    sluggishness = -1;
-    visible = 1;
-    canHilite = 0;
-    allowAutoFirstResponderUpdates = 0;
-    %filterBox = ;
+    %filterBox = new ""() {
+        profile = GuiControl @ "ETSLightBoxProfile";
+        horizSizing = "right";
+        vertSizing = "top";
+        position = "37 470";
+        extent = "186 22";
+        minExtent = "186 22";
+        sluggishness = -1;
+        visible = 1;
+        canHilite = 0;
+        allowAutoFirstResponderUpdates = 0;
+    };
     %tab.add(%filterBox);
-    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
     0;
-    bitmap = "platform/client/ui/magnifying_glass";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "3 4";
-    extent = "18 17";
-    %filterBox.add();
-    profile = new GuiTextEditCtrl(geTGF_FriendsFilterBox) @ "InfoWindowTextEditInvisibleProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "20 1";
-    extent = "168 20";
-    sluggishness = -1;
-    visible = 1;
-    text = "";
-    maxLength = 29;
-    canHilite = 0;
-    filterDoItReallySchedule = "";
-    filterDoItReallyTimeoutMS = 400;
-    %filterBox.add();
-    position = GuiMLTextCtrl @ new ""() @ "250 473";
+    %filterBox.add(new ""() {
+        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+        bitmap = "platform/client/ui/magnifying_glass";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "3 4";
+        extent = "18 17";
+    };);
+    %filterBox.add(new GuiTextEditCtrl(geTGF_FriendsFilterBox) {
+        profile = "InfoWindowTextEditInvisibleProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "20 1";
+        extent = "168 20";
+        sluggishness = -1;
+        visible = 1;
+        text = "";
+        maxLength = 29;
+        canHilite = 0;
+        filterDoItReallySchedule = "";
+        filterDoItReallyTimeoutMS = 400;
+    };);
     0;
-    extent = "600 30";
-    text = mlStyle(, "tgfTables_Invite");
-    %invite = ;
+    %invite = new ""() {
+        position = GuiMLTextCtrl @ "250 473";
+        extent = "600 30";
+        text = mlStyle(, "tgfTables_Invite");
+    };
     %tab.add(%invite);
     %this.refreshTabFriends();
 };
@@ -106,8 +113,8 @@ function geTGF_tabs::refreshTabFriends(%this) {
     sendRequest_GetOnlineFriends("", "", "geTGF_OnGotDoneOrError_GetOnlineFriends");
 };
 function geTGF_OnGotDoneOrError_GetOnlineFriends(%request) {
-    if ((getCurrentTab() SPC name $= "friends")) {
-        cancel(geTGF_Refresh_Schedule);
+    if ((geTGF_tabs.getCurrentTab().name $= "friends")) {
+        cancel(geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
         1.setActive();
     }
     if (!(isObject(%request))) {
@@ -123,33 +130,33 @@ function geTGF_OnGotDoneOrError_GetOnlineFriends(%request) {
         %id = %request.getValue(%friendLabel @ ".userName");
         %item = "friends".createNewItem("person", %id);
         geTGF;
-        userName = %request.getValue(%friendLabel @ ".userName") @ %item;
-        currentActivities = %request.getValue(%friendLabel @ ".currentActivities") @ %item;
-        currentLocation_areaName = %request.getValue(%friendLabel @ ".currentLocation.areaName") @ %item;
-        currentLocation_serverName = %request.getValue(%friendLabel @ ".currentLocation.serverName") @ %item;
-        headline = %request.getValue(%friendLabel @ ".headline") @ %item;
-        relationType = %request.getValue(%friendLabel @ ".relationType") @ %item;
-        age = %request.getValue(%friendLabel @ ".age") @ %item;
-        currentLocation_buildingName = %request.getValue(%friendLabel @ ".currentLocation.buildingName") @ %item;
-        gender = %request.getValue(%friendLabel @ ".gender") @ %item;
-        homeLocation_areaName = %request.getValue(%friendLabel @ ".homeLocation.areaName") @ %item;
-        homeLocation_buildingName = %request.getValue(%friendLabel @ ".homeLocation.buildingName") @ %item;
-        homeLocation_serverName = %request.getValue(%friendLabel @ ".homeLocation.serverName") @ %item;
-        ignored = %request.getValue(%friendLabel @ ".ignored") @ %item;
-        onlineStatus = %request.getValue(%friendLabel @ ".onlineStatus") @ %item;
-        profileViewCount = %request.getValue(%friendLabel @ ".profileViewCount") @ %item;
-        profileViewRanking = %request.getValue(%friendLabel @ ".profileViewRanking") @ %item;
-        score = %request.getValue(%friendLabel @ ".score") @ %item;
+        %item.userName = %request.getValue(%friendLabel @ ".userName");
+        %item.currentActivities = %request.getValue(%friendLabel @ ".currentActivities");
+        %item.currentLocation_areaName = %request.getValue(%friendLabel @ ".currentLocation.areaName");
+        %item.currentLocation_serverName = %request.getValue(%friendLabel @ ".currentLocation.serverName");
+        %item.headline = %request.getValue(%friendLabel @ ".headline");
+        %item.relationType = %request.getValue(%friendLabel @ ".relationType");
+        %item.age = %request.getValue(%friendLabel @ ".age");
+        %item.currentLocation_buildingName = %request.getValue(%friendLabel @ ".currentLocation.buildingName");
+        %item.gender = %request.getValue(%friendLabel @ ".gender");
+        %item.homeLocation_areaName = %request.getValue(%friendLabel @ ".homeLocation.areaName");
+        %item.homeLocation_buildingName = %request.getValue(%friendLabel @ ".homeLocation.buildingName");
+        %item.homeLocation_serverName = %request.getValue(%friendLabel @ ".homeLocation.serverName");
+        %item.ignored = %request.getValue(%friendLabel @ ".ignored");
+        %item.onlineStatus = %request.getValue(%friendLabel @ ".onlineStatus");
+        %item.profileViewCount = %request.getValue(%friendLabel @ ".profileViewCount");
+        %item.profileViewRanking = %request.getValue(%friendLabel @ ".profileViewRanking");
+        %item.score = %request.getValue(%friendLabel @ ".score");
         %n = (1.0 + %n);
     }
     %itemList = "friends".getItemList("person");
     geTGF;
     %count = %itemList.count();
     (%count < %n);
-    0.removeRowsByIndex(getRowCount());
+    0.removeRowsByIndex(geTGF_FriendsDataTable.getRowCount());
     %count.addRows();
-    alternativeTextCtrl.setVisible((0.0 == %count));
-    alternativeTextCtrl.setText(mlStyle("You're the first one here.  There are lots of new friends to meet on vSide.", "tgfTables_DataCell_Text"));
+    %item.alternativeTextCtrl.setVisible((0.0 == %count));
+    %item.alternativeTextCtrl.setText(mlStyle("You're the first one here.  There are lots of new friends to meet on vSide.", "tgfTables_DataCell_Text"));
     %uaw = getUserActivityMgr();
     geTGF_FriendsGuiTable;
     %n = 0;
@@ -157,42 +164,34 @@ function geTGF_OnGotDoneOrError_GetOnlineFriends(%request) {
     if ((%count < %n)) {
         %item = %itemList.getValue(%n);
         geTGF_FriendsDataTable;
-        %isFriend = (%item SPC relationType $= "friend");
-        geTGF_FriendsDataTable;
-        if (!(geTGF_FriendsDataTable SPC $ServerName $= "")) {
+        %isFriend = (geTGF_FriendsDataTable @ " " @ %item.relationType $= "friend");
+        if (!($ServerName $= "")) {
         }
-        %sameServer = (%item SPC currentLocation_serverName $= $ServerName) ? "true" : "false";
-        %activities = %uaw.getActivitiesMLText(currentActivities, 3);
-        %item;
+        %sameServer = (%item.currentLocation_serverName $= $ServerName) ? "true" : "false";
+        %activities = %uaw.getActivitiesMLText(%item.currentActivities, 3);
         %rowData = "avatar" @ "\t" @ "" @ "\t" @ "platform/client/ui/tgf/tgf_profile_default";
-        %rowData = %item @ geTGF_tabs::friendsTab_formatUserName(userName, %isFriend);
-        %item @ userName @ "\t";
-        %rowData = %item @ geTGF_tabs::friendsTab_formatLocation(currentLocation_areaName);
-        %item @ currentLocation_areaName @ "\t";
+        %rowData = %rowData @ "\n" @ "username" @ "\t" @ %item.userName @ "\t" @ geTGF_tabs::friendsTab_formatUserName(%item.userName, %isFriend);
+        %rowData = %rowData @ "\n" @ "location" @ "\t" @ %item.currentLocation_areaName @ "\t" @ geTGF_tabs::friendsTab_formatLocation(%item.currentLocation_areaName);
         %rowData = %rowData @ "\n" @ "sameServer" @ "\t" @ %sameServer @ "\t" @ "[ICON]";
-        %rowData @ "\n" @ "location" @ "\t";
         %rowData = %rowData @ "\n" @ "activities" @ "\t" @ %activities @ "\t" @ %activities;
-        %rowData @ "\n" @ "username" @ "\t";
-        %rowData = %item @ geTGF_tabs::friendsTab_formatStatusMsg(headline);
-        %item @ headline @ "\t";
+        %rowData = %rowData @ "\n" @ "statusmsg" @ "\t" @ %item.headline @ "\t" @ geTGF_tabs::friendsTab_formatStatusMsg(%item.headline);
         %n.setRowDataByIndex(%rowData);
         %n = (1.0 + %n);
         geTGF_FriendsDataTable;
     }
-    updateListeners();
+    geTGF_FriendsDataTable.updateListeners();
     %n = 0;
-    geTGF_FriendsDataTable;
+    (%count < %n);
     if ((%count < %n)) {
         %item = %itemList.getValue(%n);
-        (%count < %n);
-        %avatar = %rowData @ "\n" @ "statusmsg" @ "\t" @ $Net::AvatarURL @ %item @ urlEncode(userName) @ "?size=S";
+        %avatar = $Net::AvatarURL @ urlEncode(%item.userName) @ "?size=S";
         %rowData = "avatar" @ "\t" @ "" @ "\t" @ %avatar;
         %n.setRowDataByIndex(%rowData);
         %n = (1.0 + %n);
         geTGF_FriendsDataTable;
     }
-    doFilter();
-    updateListeners();
+    geTGF_FriendsDataTable.doFilter();
+    geTGF_FriendsDataTable.updateListeners();
 };
 function geTGF_tabs::friendsTab_formatUserName(%name, %isFriend) {
     return geTGF_tabs::hotSpotsTab_formatUserName(%name, %isFriend);
@@ -204,8 +203,8 @@ function geTGF_tabs::friendsTab_formatStatusMsg(%msg) {
     return geTGF_tabs::hotSpotsTab_formatDescription(%msg);
 };
 function geTGF::friends_GetAndOpenDetailsContainer(%this, %item) {
-    %dataRowIndex = %item @ userName.getRowIndexByCriteria();
-    "username" @ "\t";
+    %dataRowIndex = "username" @ "\t" @ %item.userName.getRowIndexByCriteria();
+    geTGF_FriendsDataTable;
     %guiRowIndex = %dataRowIndex.getGuiRowIndexForDataRowIndex();
     geTGF_FriendsGuiTable;
     if ((0.0 >= %guiRowIndex)) {
@@ -256,9 +255,8 @@ function geTGF_FriendsGuiTable::onKeyDown(%this, %modifier, %keyCode) {
     return 0;
 };
 function geTGF_FriendsFilterBox::onKeyUp(%this, %modifier, %keyCode) {
-    cancel(filterDoItReallySchedule);
-    filterDoItReallySchedule = %this @ %this.schedule(filterDoItReallyTimeoutMS, "doApplyFilterReally") @ %this;
-    %this;
+    cancel(%this.filterDoItReallySchedule);
+    %this.filterDoItReallySchedule = %this.schedule(%this.filterDoItReallyTimeoutMS, "doApplyFilterReally");
     return 0;
 };
 function geTGF_FriendsFilterBox::onKeyDown(%this, %modifier, %keyCode) {
@@ -270,8 +268,8 @@ function geTGF_FriendsFilterBox::onKeyDown(%this, %modifier, %keyCode) {
     return 0;
 };
 function geTGF_FriendsFilterBox::doApplyFilterReally(%this) {
-    cancel(filterDoItReallySchedule);
-    filterDoItReallySchedule = %this @ "" @ %this;
+    cancel(%this.filterDoItReallySchedule);
+    %this.filterDoItReallySchedule = "";
     %this.getText().setFilterText();
-    updateListeners();
+    geTGF_FriendsDataTable.updateListeners();
 };

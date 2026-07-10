@@ -1,7 +1,7 @@
 $gUserProperties_BackendImplemented = 1;
 function userPropertiesMgr::getProperty(%this, %userName, %propertyName, %default) {
-    %smValue = propertiesValue;
-    %userName @ %this;
+    %smValue = %this.propertiesValue;
+    %userName;
     if (!(isObject(%smValue))) {
         error(getScopeName() @ " " @ "- properties not fetched yet:" @ " " @ %userName @ " " @ %propertyName @ " " @ getTrace());
         return %default;
@@ -13,8 +13,8 @@ function userPropertiesMgr::getProperty(%this, %userName, %propertyName, %defaul
     return %smValue.get(%propertyName);
 };
 function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %propertyValue) {
-    %smValue = propertiesValue;
-    %userName @ %this;
+    %smValue = %this.propertiesValue;
+    %userName;
     if (!(isObject(%smValue))) {
         error(getScopeName() @ " " @ "- not initialized for" @ " " @ %userName @ " " @ getTrace());
         return;
@@ -36,8 +36,8 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
     %this.persistSchedule(%userName);
 };
 function userPropertiesMgr::hasProperty(%this, %userName, %propertyName) {
-    %smValue = propertiesValue;
-    %userName @ %this;
+    %smValue = %this.propertiesValue;
+    %userName;
     if (!(isObject(%smValue))) {
         error(getScopeName() @ " " @ "- properties not fetched yet:" @ " " @ %userName @ " " @ %propertyName @ " " @ getTrace());
         return %default;
@@ -45,8 +45,8 @@ function userPropertiesMgr::hasProperty(%this, %userName, %propertyName) {
     return %smValue.hasKey(%propertyName);
 };
 function userPropertiesMgr::dumpProperties(%this, %userName) {
-    %smValue = propertiesValue;
-    %userName @ %this;
+    %smValue = %this.propertiesValue;
+    %userName;
     if (!(isObject(%smValue))) {
         error(getScopeName() @ " " @ "- not initialized for" @ " " @ %userName @ " " @ getTrace());
         return;
@@ -60,8 +60,8 @@ function userPropertiesMgr::clearPropertyIfExists(%this, %userName, %propertyNam
     %this._clearProperty(%userName, %propertyName, 0);
 };
 function userPropertiesMgr::_clearProperty(%this, %userName, %propertyName, %warn) {
-    %smValue = propertiesValue;
-    %userName @ %this;
+    %smValue = %this.propertiesValue;
+    %userName;
     if (!(isObject(%smValue))) {
         error(getScopeName() @ " " @ "- not initialized for" @ " " @ %userName @ " " @ getTrace());
         return;
@@ -81,26 +81,26 @@ function userPropertiesMgr::incrementIntegerProperty(%this, %userName, %property
     return %newVal;
 };
 function userPropertiesMgr::haveProperties(%this, %userName) {
-    %smValue = propertiesValue;
-    %userName @ %this;
+    %smValue = %this.propertiesValue;
+    %userName;
     return isObject(%smValue);
 };
 function userPropertiesMgr::persistSchedule(%this, %userName) {
-    if (!(%userName @ %this SPC propertiesPersistSchedule $= "")) {
-        cancel(propertiesPersistSchedule);
+    if (!(%userName @ " " @ %this.propertiesPersistSchedule $= "")) {
+        cancel(%this.propertiesPersistSchedule);
     }
-    propertiesPersistSchedule = %userName @ %this @ %this @ %this.schedule(persistPeriodMS, "persistReally", %userName) @ %userName @ %this;
+    %this.propertiesPersistSchedule = %userName @ %this.schedule(%this.persistPeriodMS, "persistReally", %userName) @ %userName;
 };
 function userPropertiesMgr::persistReally(%this, %userName, %callback) {
     if (!(isDefined("%callback"))) {
         %callback = "";
     }
-    if (!(%userName @ %this SPC propertiesPersistSchedule $= "")) {
-        cancel(propertiesPersistSchedule);
-        propertiesPersistSchedule = %userName @ %this @ "" @ %userName @ %this;
+    if (!(%userName @ " " @ %this.propertiesPersistSchedule $= "")) {
+        cancel(%this.propertiesPersistSchedule);
+        %this.propertiesPersistSchedule = %userName @ "" @ %userName;
     }
-    %smValue = propertiesValue;
-    %userName @ %this;
+    %smValue = %this.propertiesValue;
+    %userName;
     if (!(isObject(%smValue))) {
         error(getScopeName() @ " " @ "- not initialized!" @ " " @ %userName @ " " @ getTrace());
         return;
@@ -115,29 +115,28 @@ function userPropertiesMgr::persistReally(%this, %userName, %callback) {
         return;
     }
     if (!(haveValidManagerHost())) {
-        warn(%this @ clientOrServer @ " " @ %userName);
-        return getScopeName() @ " " @ "- not connected to backend - properties not persisted." @ " ";
+        warn(getScopeName() @ " " @ "- not connected to backend - properties not persisted." @ " " @ %this.clientOrServer @ " " @ %userName);
+        return;
     }
-    if (isObject(saveUserPropertiesRequest)) {
+    if (isObject(%this.saveUserPropertiesRequest)) {
         warn(getScopeName() @ " " @ "- already have a post outstanding!" @ " " @ getTrace());
         %this.persistSchedule(%userName);
     }
     if (%this.isClient()) {
         %request = sendRequest_SaveClientUserProperties(%userName, %smValue, "onDoneOrErrorCallback_SetClientOrServerUserProperties");
-        %userName @ %this;
+        %userName;
     }
     %request = sendRequest_SaveServerUserProperties(%userName, %smValue, "onDoneOrErrorCallback_SetClientOrServerUserProperties");
-    userPropertiesMgr = %this @ %request;
-    userName = %userName @ %request;
-    otherCallback = %callback @ %request;
-    saveUserPropertiesRequest = %request @ %userName @ %this;
+    %request.userPropertiesMgr = %this;
+    %request.userName = %userName;
+    %request.otherCallback = %callback;
+    %this.saveUserPropertiesRequest = %request @ %userName;
 };
 function onDoneOrErrorCallback_SetClientOrServerUserProperties(%request) {
-    saveUserPropertiesRequest = %request @ userName @ %request @ userPropertiesMgr;
-    "";
-    if (!(%request SPC otherCallback $= "")) {
-        echoDebug(getScopeName() @ " " @ "- eval(" @ %request @ otherCallback @ "):");
-        eval(otherCallback);
+    %request.userPropertiesMgr.saveUserPropertiesRequest = "" @ %request.userName;
+    if (!(%request.otherCallback $= "")) {
+        echoDebug(getScopeName() @ " " @ "- eval(" @ %request.otherCallback @ "):");
+        eval(%request.otherCallback);
     }
 };
 function userProperties_makeManager(%name, %isClient) {
@@ -147,29 +146,29 @@ function userProperties_makeManager(%name, %isClient) {
     %mgr = safeNewScriptObject("ScriptObject", "", 0);
     %mgr.bindClassName("userPropertiesMgr");
     %mgr.setName(%name);
-    persistPeriodMS = 4000 @ %mgr;
-    clientOrServer = %isClient ? "client" : "server" @ %mgr;
+    %mgr.persistPeriodMS = 4000;
+    %mgr.clientOrServer = %isClient ? "client" : "server";
     return %mgr;
 };
 function userPropertiesMgr::isClient(%this) {
-    return (%this SPC clientOrServer $= "client");
+    return (%this.clientOrServer $= "client");
 };
 function userPropertiesMgr::isServer() {
     return !(%this.isClient());
 };
 function userPropertiesMgr::requestProperties(%this, %userName, %callback) {
-    if (isObject(propertiesValue)) {
+    if (isObject(%this.propertiesValue)) {
         warn(getScopeName() @ " " @ "- Requesting user properties when we've already got them." @ " " @ %userName @ " " @ getTrace());
-        if (!(%userName @ %this SPC %callback $= "")) {
+        if (!(%userName @ " " @ %callback $= "")) {
             eval(%callback);
         }
         return;
     }
     if ($StandAlone) {
         %fileName = %this.getStandaloneFilename(%userName);
-        propertiesValue = safeNewScriptObject("StringMap", "", 0) @ %userName @ %this;
-        propertiesValue.loadFromLocalStorage(%fileName, "debug");
-        if (!(%userName @ %this SPC %callback $= "")) {
+        %this.propertiesValue = safeNewScriptObject("StringMap", "", 0) @ %userName;
+        %this.propertiesValue.loadFromLocalStorage(%fileName, "debug");
+        if (!(%userName @ " " @ %callback $= "")) {
             schedule(200, 0, "eval", %callback);
         }
         echo(getScopeName() @ " " @ "- standalone! loaded from" @ " " @ %fileName);
@@ -180,41 +179,41 @@ function userPropertiesMgr::requestProperties(%this, %userName, %callback) {
         }
     }
     if (!(haveValidToken())) {
-        warn(%this @ clientOrServer @ " " @ %userName);
-        if (!(isObject(propertiesValue))) {
-            propertiesValue = getScopeName() @ " " @ "- not connected to backend - properties not retrieved." @ " " @ %userName @ %this @ safeNewScriptObject("StringMap", "", 0) @ %userName @ %this;
+        warn(getScopeName() @ " " @ "- not connected to backend - properties not retrieved." @ " " @ %this.clientOrServer @ " " @ %userName);
+        if (!(isObject(%this.propertiesValue))) {
+            %this.propertiesValue = %userName @ safeNewScriptObject("StringMap", "", 0) @ %userName;
         }
         eval(%callback);
         return;
     }
-    if (isObject(getUserPropertiesRequest)) {
-        return %userName @ %this;
+    if (isObject(%this.getUserPropertiesRequest)) {
+        return %userName;
     }
     if (%this.isClient()) {
         %request = sendRequest_GetClientUserProperties(%userName, "onDoneOrErrorCallback_GetClientOrServerUserProperties");
     }
     %request = sendRequest_GetServerUserProperties(%userName, "onDoneOrErrorCallback_GetClientOrServerUserProperties");
-    userPropertiesMgr = %this @ %request;
-    userName = %userName @ %request;
-    otherCallback = %callback @ %request;
-    retryTotal = 4 @ %request;
-    retryDelay = 500 @ %request;
+    %request.userPropertiesMgr = %this;
+    %request.userName = %userName;
+    %request.otherCallback = %callback;
+    %request.retryTotal = 4;
+    %request.retryDelay = 500;
 };
 function onDoneOrErrorCallback_GetClientOrServerUserProperties(%request) {
     if (%request.checkSuccess()) {
-        userPropertiesMgr.parseRequest(%request);
+        %request.userPropertiesMgr.parseRequest(%request);
     }
-    if (!(%request SPC otherCallback $= "")) {
-        echoDebug(%request @ getScopeName() @ " " @ "- eval(" @ %request @ otherCallback @ "):");
-        eval(otherCallback);
+    if (!(%request.otherCallback $= "")) {
+        echoDebug(getScopeName() @ " " @ "- eval(" @ %request.otherCallback @ "):");
+        eval(%request.otherCallback);
     }
 };
 function userPropertiesMgr::parseRequest(%this, %request) {
-    if (!(isObject(propertiesValue))) {
-        propertiesValue = %request @ userName @ %this @ safeNewScriptObject("StringMap", "", 0) @ %request @ userName @ %this;
+    if (!(isObject(%this.propertiesValue))) {
+        %this.propertiesValue = %request.userName @ safeNewScriptObject("StringMap", "", 0) @ %request.userName;
     }
-    %smValue = propertiesValue;
-    %request @ userName @ %this;
+    %smValue = %this.propertiesValue;
+    %request.userName;
     %smValue.clear();
     %num = %request.getValue("propertyCount");
     %n = 0;
@@ -234,18 +233,18 @@ function userPropertiesMgr::parseRequest(%this, %request) {
     }
 };
 function userPropertiesMgr::requestPropertiesForce(%this, %userName, %callback) {
-    if (isObject(propertiesValue)) {
-        propertiesValue.delete();
-        propertiesValue = %userName @ %this @ %userName @ %this @ 0 @ %userName @ %this;
+    if (isObject(%this.propertiesValue)) {
+        %this.propertiesValue.delete();
+        %this.propertiesValue = %userName @ %userName @ 0 @ %userName;
     }
     %this.requestProperties(%userName, %callback);
 };
 function userPropertiesMgr::forgetProperties(%this, %userName) {
-    if (isObject(propertiesValue)) {
-        propertiesValue.delete();
-        propertiesValue = %userName @ %this @ %userName @ %this @ "" @ %userName @ %this;
+    if (isObject(%this.propertiesValue)) {
+        %this.propertiesValue.delete();
+        %this.propertiesValue = %userName @ %userName @ "" @ %userName;
     }
 };
 function userPropertiesMgr::getStandaloneFilename(%this, %userName) {
-    %ret = "userprops_" @ %this @ clientOrServer @ "_" @ %userName;
+    %ret = "userprops_" @ %this.clientOrServer @ "_" @ %userName;
 };

@@ -13,22 +13,22 @@ function afxPanel::open(%this) {
 };
 function afxPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 function afxPanel::initEffectsList(%this) {
-    if (!(isObject())) {
+    if (!(isObject(afxEffectsCatalog))) {
         "".setText();
         return afxPanelEffectList;
     }
     %list = "";
     %n = 0;
-    if ((size() < %n)) {
+    if ((afxEffectsCatalog.size() < %n)) {
         %effectName = %n.getKey();
         afxEffectsCatalog;
         %keyBinding = %effectName.get();
         afxEffectsCatalog;
-        %entry = afxEffectsCatalog @ "<just:left><a:gamelink" @ " " @ %effectName @ ">" @ %effectName @ "</a><just:right>" @ %keyBinding;
+        %entry = "<just:left><a:gamelink" @ " " @ %effectName @ ">" @ %effectName @ "</a><just:right>" @ %keyBinding;
         %list = %list @ %entry;
         %list = %list @ "\n";
         %n = (1.0 + %n);

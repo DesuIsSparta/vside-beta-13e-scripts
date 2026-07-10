@@ -1,4 +1,4 @@
-$Player::furnitureInventory = new ""();
+$Player::furnitureInventory = new ""();;
 Array;
 $Player::bFakeFurnitureInventory = 0;
 0;
@@ -169,7 +169,7 @@ function dumpFurniture() {
         %sku = $Player::furnitureInventory.getKey(%index);
         %si = %sku.findBySku();
         SkuManager;
-        echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si @ descShrt @ ")");
+        echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si.descShrt @ ")");
         %index = (1.0 + %index);
     }
 };
@@ -183,7 +183,7 @@ function dumpFurnitureInUse() {
         if ((0.0 > %numInUse)) {
             %si = %sku.findBySku();
             SkuManager;
-            echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si @ descShrt @ ")");
+            echo(%sku @ " - owned: " @ getWord(%val, 0) @ ", in use: " @ getWord(%val, 1) @ " (" @ %si.descShrt @ ")");
         }
         %index = (1.0 + %index);
     }
@@ -195,13 +195,14 @@ function getOwnedFurniture() {
     %request = safeEnsureScriptObject("ManagerRequest", "FurnitureRequest");
     if (%request.isOpen()) {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
-        doAnother = 1 @ %request;
+        %request.doAnother = 1;
         return;
     }
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %request.add();
     }
-    %url = MissionCleanup @ MissionCleanup @ $Net::ClientServiceURL @ "/GetUserInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "skuType=furnishing";
+    %url = $Net::ClientServiceURL @ "/GetUserInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "skuType=furnishing";
+    MissionCleanup;
     log("network", "debug", "FurnitureRequest: " @ %url);
     %request.setURL(%url);
     if ($StandAlone) {
@@ -240,7 +241,7 @@ function FurnitureRequest::onDone(%this) {
     }
     %request = safeNewScriptObject("ScriptObject", "Request_GetActiveFurnitureSkus", 1);
     (%count < %index);
-    result = "" @ %request;
+    %request.result = "";
     commandToServer('GetActiveFurnitureSkus', CustomSpaceClient::GetSpaceImIn(), %request.getId());
 };
 function clientCmdOnFurniturePlaced(%sku, %quantity) {
@@ -252,12 +253,11 @@ function clientCmdGotFurnitureSkus(%skulistchunk, %requestId, %complete) {
         warn("network", "results for deleted request: GotFurnitureSkus");
         return;
     }
-    result = %requestId @ result @ %skulistchunk @ %requestId;
+    %requestId.result = %requestId.result @ %skulistchunk;
     if ((0.0 == %complete)) {
         return;
     }
-    %skulist = result;
-    %requestId;
+    %skulist = %requestId.result;
     %requestId.delete();
     if (!(%skulist $= "")) {
         %value = firstWord(%skulist);
@@ -267,14 +267,14 @@ function clientCmdGotFurnitureSkus(%skulistchunk, %requestId, %complete) {
         %quantity = getWord(%value, 1);
         useFurnitureSku(%sku, %quantity);
     }
-    if (!(!(%skulist $= "") SPC $gGotFurnitureCallback $= "")) {
+    if (!(!(%skulist $= "") @ " " @ $gGotFurnitureCallback $= "")) {
         eval($gGotFurnitureCallback);
     }
 };
 function refreshActiveFurniture() {
     putAwayAllFurniture();
     %request = safeNewScriptObject("ScriptObject", "Request_GetActiveFurnitureSkus", 1);
-    result = "" @ %request;
+    %request.result = "";
     commandToServer('GetActiveFurnitureSkus', CustomSpaceClient::GetSpaceImIn(), %request.getId());
 };
 function getFurnitureStore(%callback) {
@@ -282,8 +282,8 @@ function getFurnitureStore(%callback) {
 };
 function getNuggetIdList(%callback) {
     %request = safeNewScriptObject("ScriptObject", "Request_CSGetNuggetIdList", 1);
-    result = "" @ %request;
-    callback = %callback @ %request;
+    %request.result = "";
+    %request.callback = %callback;
     commandToServer('CSGetNuggetIdList', CustomSpaceClient::GetSpaceImIn(), %request.getId());
 };
 function clientCmdGotNuggetIdList(%nuggetchunk, %requestId, %completed) {
@@ -291,18 +291,18 @@ function clientCmdGotNuggetIdList(%nuggetchunk, %requestId, %completed) {
         warn("network", "results for deleted request: GotNuggetIdList");
         return;
     }
-    result = %requestId @ result @ %nuggetchunk @ %requestId;
+    %requestId.result = %requestId.result @ %nuggetchunk;
     if ((0.0 == %completed)) {
         return;
     }
-    %cmd = %requestId @ callback @ "( \"" @ %requestId @ result @ "\");";
+    %cmd = %requestId.callback @ "( \"" @ %requestId.result @ "\");";
     %requestId.delete();
     eval(%cmd);
 };
 function getNuggetGhostList(%callback) {
     %request = safeNewScriptObject("ScriptObject", "Request_CSGetNuggetGhostList", 1);
-    result = "" @ %request;
-    callback = %callback @ %request;
+    %request.result = "";
+    %request.callback = %callback;
     commandToServer('CSGetNuggetGhostList', CustomSpaceClient::GetSpaceImIn(), %request.getId());
 };
 function clientCmdGotNuggetGhostList(%ghostchunk, %requestId, %completed) {
@@ -310,12 +310,11 @@ function clientCmdGotNuggetGhostList(%ghostchunk, %requestId, %completed) {
         warn("network", "results for deleted request: GotNuggetGhostList");
         return;
     }
-    result = %requestId @ result @ %ghostchunk @ %requestId;
+    %requestId.result = %requestId.result @ %ghostchunk;
     if ((0.0 == %completed)) {
         return;
     }
-    %ghostlist = result;
-    %requestId;
+    %ghostlist = %requestId.result;
     %objectList = "";
     if (!(%ghostlist $= "")) {
         %ghostID = firstWord(%ghostlist);

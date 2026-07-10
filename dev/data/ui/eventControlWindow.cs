@@ -2,7 +2,7 @@ function toggleEventControlWindow() {
     if (!($player.rolesPermissionCheckNoWarn("events"))) {
         return;
     }
-    showRaiseOrHide();
+    playGui.showRaiseOrHide(eventControlWindow);
 };
 function eventControlWindow::open(%this) {
     if (!($player.rolesPermissionCheckNoWarn("events"))) {
@@ -14,7 +14,7 @@ function eventControlWindow::open(%this) {
 };
 function eventControlWindow::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 function eventControlWindow::toggleChristmas(%this) {
@@ -64,20 +64,13 @@ function SlideshowGui::stop() {
     commandToServer('SlideshowStop');
 };
 function SlideshowGui::GuiToPrefs() {
-    $userPref::slideshow::objName = getValue();
-    guiSlideShowFieldObjName;
-    $userPref::slideshow::baseURL = getValue();
-    guiSlideShowFieldBaseUrl;
-    $userPref::slideshow::picMin = getValue();
-    guiSlideShowFieldPicMin;
-    $userPref::slideshow::picMax = getValue();
-    guiSlideShowFieldPicMax;
-    $userPref::slideshow::fileName = getValue();
-    guiSlideShowFieldFilename;
-    $userPref::slideshow::periodSecs = getValue();
-    guiSlideShowFieldPeriodSecs;
-    $UserPref::slideshow::random = getValue();
-    guiSlideShowFieldRandom;
+    $userPref::slideshow::objName = guiSlideShowFieldObjName.getValue();
+    $userPref::slideshow::baseURL = guiSlideShowFieldBaseUrl.getValue();
+    $userPref::slideshow::picMin = guiSlideShowFieldPicMin.getValue();
+    $userPref::slideshow::picMax = guiSlideShowFieldPicMax.getValue();
+    $userPref::slideshow::fileName = guiSlideShowFieldFilename.getValue();
+    $userPref::slideshow::periodSecs = guiSlideShowFieldPeriodSecs.getValue();
+    $UserPref::slideshow::random = guiSlideShowFieldRandom.getValue();
 };
 function SlideshowGui::previewParams() {
     SlideshowGui::GuiToPrefs();
@@ -89,7 +82,7 @@ function SlideshowGui::previewParams() {
 };
 function SlideshowGui::viewSampleImage() {
     SlideshowGui::previewParams();
-    gotoWebPage(getValue(), 0);
+    gotoWebPage(guiSlideShowFieldExample.getValue(), 0);
 };
 function SlideshowGui::sampleSettings() {
     "http://s-download/content/events/tyera/slides/".setValue();
@@ -102,62 +95,65 @@ function SlideshowGui::sampleSettings() {
 };
 $gEventControlsWindow::initialized = 0;
 function eventControlWindow::populateDoorsList(%this) {
-    deleteMembers();
+    EventControlsDoorsArray.deleteMembers();
     %n = 0;
-    EventControlsDoorsArray;
     if (($gDoorsNum < %n)) {
         %this.addDoorControl(%n[$gDoorNames @ %n], %n[$gDoorGroupNames @ %n], %n[$gDoorZoneNames @ %n], %n[$gDoorToLockNames @ %n], (%n[$gDoorCSN @ %n] $= $gContiguousSpaceName));
         %n = (1.0 + %n);
     }
 };
 function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName, %doorToLockName, %enable) {
-    %container = addChild();
-    EventControlsDoorsArray;
-    position = GuiTextCtrl @ new ""() @ "0 0";
+    %container = EventControlsDoorsArray.addChild();
     0;
-    extent = "122 17";
-    text = %title;
-    %ctrl = ;
+    %ctrl = new ""() {
+        position = GuiTextCtrl @ "0 0";
+        extent = "122 17";
+        text = %title;
+    };
     %container.add(%ctrl);
-    profile = GuiButtonCtrl @ new ""() @ "GuiClickLabelProfile";
     0;
-    position = "122 0";
-    extent = "19 17";
-    text = "go";
-    command = "CommandToServer('GenericDoors', 2, \"" @ %groupName @ "\",\"" @ %zoneName @ "\",\"" @ %doorToLockName @ "\");";
-    %ctrl = ;
+    %ctrl = new ""() {
+        profile = GuiButtonCtrl @ "GuiClickLabelProfile";
+        position = "122 0";
+        extent = "19 17";
+        text = "go";
+        command = "CommandToServer('GenericDoors', 2, \"" @ %groupName @ "\",\"" @ %zoneName @ "\",\"" @ %doorToLockName @ "\");";
+    };
     %container.add(%ctrl);
-    profile = GuiButtonCtrl @ new ""() @ "GuiClickLabelProfile";
     0;
-    position = "141 0";
-    extent = "19 17";
-    text = "(X)";
-    command = "CommandToServer('GenericDoors', 1, \"" @ %groupName @ "\",\"" @ %zoneName @ "\",\"" @ %doorToLockName @ "\");";
-    %ctrl = ;
+    %ctrl = new ""() {
+        profile = GuiButtonCtrl @ "GuiClickLabelProfile";
+        position = "141 0";
+        extent = "19 17";
+        text = "(X)";
+        command = "CommandToServer('GenericDoors', 1, \"" @ %groupName @ "\",\"" @ %zoneName @ "\",\"" @ %doorToLockName @ "\");";
+    };
     %container.add(%ctrl);
-    profile = GuiButtonCtrl @ new ""() @ "GuiClickLabelProfile";
     0;
-    position = "161 0";
-    extent = "19 17";
-    text = "( )";
-    command = "CommandToServer('GenericDoors', 0, \"" @ %groupName @ "\",\"" @ %zoneName @ "\",\"" @ %doorToLockName @ "\");";
-    %ctrl = ;
+    %ctrl = new ""() {
+        profile = GuiButtonCtrl @ "GuiClickLabelProfile";
+        position = "161 0";
+        extent = "19 17";
+        text = "( )";
+        command = "CommandToServer('GenericDoors', 0, \"" @ %groupName @ "\",\"" @ %zoneName @ "\",\"" @ %doorToLockName @ "\");";
+    };
     %container.add(%ctrl);
     if (!(%enable)) {
-        profile = GuiControl @ new ""() @ "GuiTranslucentProfile";
         0;
-        position = "0 0";
-        extent = %container @ extent;
-        %ctrl = ;
+        %ctrl = new ""() {
+            profile = GuiControl @ "GuiTranslucentProfile";
+            position = "0 0";
+            extent = %container.extent;
+        };
         %container.add(%ctrl);
     }
-    reseatChildren();
+    EventControlsDoorsArray.reseatChildren();
 };
 function clientCmdbeginZombieScores() {
     if (isObject($ZombieGamePointsCollector)) {
         $ZombieGamePointsCollector.delete();
     }
-    $ZombieGamePointsCollector = new ""();
+    $ZombieGamePointsCollector = new ""();;
     StringMap;
     echo("recieving zombie scores....");
 };

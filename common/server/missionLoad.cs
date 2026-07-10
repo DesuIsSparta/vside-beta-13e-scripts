@@ -9,8 +9,7 @@ function loadMission(%missionName, %isFirstMission) {
     $missionRunning = 0;
     $Server::MissionFile = %missionName;
     buildLoadInfo(%missionName);
-    %count = getCount();
-    ClientGroup;
+    %count = ClientGroup.getCount();
     %cl = 0;
     if ((%count < %cl)) {
         %client = %cl.getObject();
@@ -22,7 +21,7 @@ function loadMission(%missionName, %isFirstMission) {
     }
     if (%isFirstMission) {
     }
-    if (((%count < %cl) SPC $Server::ServerType $= "SinglePlayer")) {
+    if (((%count < %cl) @ " " @ $Server::ServerType $= "SinglePlayer")) {
         loadMissionStage2();
     }
     schedule($MissionLoadPause);
@@ -46,8 +45,8 @@ function loadMissionStage2() {
     $missionCRC = 0;
     new SimGroup(MissionCleanup);
     exec(%file);
-    if (!(isObject())) {
-        error(MissionGroup @ "No 'MissionGroup' found in mission \"" @ $missionName @ "\".");
+    if (!(isObject(MissionGroup))) {
+        error("No 'MissionGroup' found in mission \"" @ $missionName @ "\".");
         schedule(3000);
         return CycleMissions;
     }
@@ -56,43 +55,41 @@ function loadMissionStage2() {
     echo("*** Mission loaded");
     $missionRunning = 1;
     %clientIndex = 0;
-    if ((getCount() < %clientIndex)) {
+    if ((ClientGroup.getCount() < %clientIndex)) {
         %clientIndex.getObject().loadMission();
         %clientIndex = (1.0 + %clientIndex);
         ClientGroup;
     }
     onMissionLoaded();
     purgeResources();
-    return (getCount() < %clientIndex);
+    return (ClientGroup.getCount() < %clientIndex);
 };
 function endMission() {
-    if (!(isObject())) {
-        return MissionGroup;
+    if (!(isObject(MissionGroup))) {
+        return;
     }
     echo("*** ENDING MISSION");
     onMissionEnded();
     %clientIndex = 0;
-    if ((getCount() < %clientIndex)) {
+    if ((ClientGroup.getCount() < %clientIndex)) {
         %cl = %clientIndex.getObject();
         ClientGroup;
         %cl.endMission();
         %cl.resetGhosting();
         %cl.clearPaths();
         %clientIndex = (1.0 + %clientIndex);
-        ClientGroup;
     }
-    delete();
-    delete();
+    MissionGroup.delete();
+    MissionCleanup.delete();
     $ServerGroup.delete();
-    $ServerGroup = new SimGroup(ServerGroup);
-    MissionCleanup;
-    return MissionGroup;
+    $ServerGroup = new SimGroup(ServerGroup);;
+    (ClientGroup.getCount() < %clientIndex);
+    return;
 };
 function resetMission() {
     echo("*** MISSION RESET");
-    delete();
+    MissionCleanup.delete();
     // unhandled opcode 329 at 0x000002D4
-    MissionCleanup;
     new SimGroup(MissionCleanup);
     // unhandled opcode 329 at 0x000002EC
     onMissionReset();

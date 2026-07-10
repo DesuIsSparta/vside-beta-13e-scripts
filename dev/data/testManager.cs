@@ -20,17 +20,16 @@ function TestBootRequest::onDone(%this) {
     schedule(1000, 0);
 };
 function bootThenLogin() {
-    if (isObject()) {
-        delete();
+    if (isObject(TestBootRequest)) {
+        TestBootRequest.delete();
     }
-    %bootRequest = new ManagerRequest(TestBootRequest);
-    TestBootRequest;
-    if (isObject()) {
+    %bootRequest = new ManagerRequest(TestBootRequest);;
+    if (isObject(MissionCleanup)) {
         %bootRequest.add();
     }
-    %url = MissionCleanup @ $Net::SecureClientServiceURL @ "/Boot";
+    %url = $Net::SecureClientServiceURL @ "/Boot";
     MissionCleanup;
-    %url = TestBootRequest @ %url @ "?user=doppeladmin&password=doppeladmin";
+    %url = %url @ "?user=doppeladmin&password=doppeladmin";
     %bootRequest.setURL(%url);
     %bootRequest.setVerbose(1);
     if (%bootRequest.start()) {
@@ -39,12 +38,11 @@ function bootThenLogin() {
     %bootRequest.delete();
 };
 function Login() {
-    if (isObject()) {
-        delete();
+    if (isObject(TestLoginRequest)) {
+        TestLoginRequest.delete();
     }
-    %loginRequest = new ManagerRequest(TestLoginRequest);
-    TestLoginRequest;
-    if (isObject()) {
+    %loginRequest = new ManagerRequest(TestLoginRequest);;
+    if (isObject(MissionCleanup)) {
         %loginRequest.add();
     }
     %loginRequest.setURL("http://s-envmanager.eviltwinstudios.net/envmanager/envclient/login?user=doppeladmin&password=doppeladmin&build=unknown&version=unknown");

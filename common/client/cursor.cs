@@ -9,7 +9,7 @@ package CanvasCursor {
         %i = 0;
         if ((%this.getCount() < %i)) {
             %control = %this.getObject(%i);
-            if ((%control SPC noCursor $= "")) {
+            if ((%control.noCursor $= "")) {
                 %cursorShouldBeOn = 1;
             }
             %i = (1.0 + %i);
@@ -37,6 +37,6 @@ package CanvasCursor {
         Parent::popLayer(%this, %layer);
         %this.checkCursor();
     };
-    activatePackage();
+    activatePackage(CanvasCursor);
 };
 

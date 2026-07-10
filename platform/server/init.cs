@@ -27,7 +27,7 @@ function Monitor::onConnectRequest(%unused, %unused, %id) {
     echo("Monitor Accept: " @ %id);
 };
 function openMonitorSocket() {
-    %mon = new TCPObject(Monitor);
+    %mon = new TCPObject(Monitor);;
     if ((0.0 != $Pref::Server::MonitorPort)) {
         %mon.listen($Pref::Server::MonitorPort);
     }
@@ -53,7 +53,7 @@ function quitApp() {
     doQuit();
 };
 function stopServer() {
-    %stopRequest = new HTTPObject(StopRequest);
+    %stopRequest = new HTTPObject(StopRequest);;
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=stop";

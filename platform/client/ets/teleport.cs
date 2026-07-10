@@ -13,20 +13,20 @@ function clientCmdTeleportSuccessful() {
 };
 function clientCmdTeleportFailure(%retry) {
     if (isObject($VURL::curVURL)) {
-        echo($VURL::curVURL @ vurl);
+        echo("VURL Teleport Failed. VURL=" @ $VURL::curVURL.vurl);
         if ((0.0 != %retry)) {
             log("network", "info", "Attempting Retry.");
             if ($VURL::curVURL.execute()) {
-                return "VURL Teleport Failed. VURL=";
+                return;
             }
             log("network", "warn", "VURL Teleportion faild, retries exausted.");
         }
-        reopen();
+        geTGF.reopen();
         $VURL::curVURL.doReportError("FAIL", "");
         $VURL::curVURL.delete();
     }
     echo("Teleport failed");
-    reopen();
+    geTGF.reopen();
 };
 function clientCmdNotifyOfRefuseTeleport() {
     handleSystemMessage("msgInfoMessage", );
@@ -69,8 +69,8 @@ function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus) 
     if ((%vurl $= "")) {
         handleSystemMessage("msgInfoMessage", "You do not appear to own an appartment.");
     }
-    if (isVisible()) {
-        close();
+    if (CustomSpacesSelector.isVisible()) {
+        CustomSpacesSelector.close();
     }
     vurlOperation(%vurl, %ignoreDownloadStatus);
 };
@@ -79,8 +79,8 @@ function getApartmentVURL(%callback, %ignoreDownloadStatus) {
     if (%request.isOpen()) {
         return;
     }
-    callback = %callback @ %request;
-    ignoreDownloadStatus = %ignoreDownloadStatus @ %request;
+    %request.callback = %callback;
+    %request.ignoreDownloadStatus = %ignoreDownloadStatus;
     %url = $Net::ClientServiceURL @ "/GetSpaceVURL" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&owner=" @ urlEncode($Player::Name);
     log("network", "debug", "GetSpaceVURL: " @ %url);
     %request.setURL(%url);
@@ -99,8 +99,8 @@ function GetMyApartmentVURLCommand::onDone(%this) {
     log("network", "debug", "GetMyApartmentAddress::onDone: " @ %status);
     %vurl = %this.getValue("vurl");
     $Player::myPlaceVURL = %vurl;
-    if (!(%this SPC callback $= "")) {
-        %cmd = %this @ callback @ "(\"" @ %status @ "\", \"" @ %vurl @ "\", \"" @ %this @ ignoreDownloadStatus @ "\");";
+    if (!(%this.callback $= "")) {
+        %cmd = %this.callback @ "(\"" @ %status @ "\", \"" @ %vurl @ "\", \"" @ %this.ignoreDownloadStatus @ "\");";
         eval(%cmd);
     }
 };

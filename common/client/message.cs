@@ -1,10 +1,9 @@
-if (isObject()) {
-    delete();
+if (isObject(MessageFuncDict)) {
+    MessageFuncDict.delete();
 }
-$MessageFuncDict = new StringMap(MessageFuncDict);
-MessageFuncDict;
-if (isObject()) {
-    add();
+$MessageFuncDict = new StringMap(MessageFuncDict);;
+if (isObject(MissionCleanup)) {
+    MissionCleanup.add(MessageFuncDict);
 }
 function clientCmdChatMessage(%unused, %voice, %pitch, %msgString) {
     onChatMessage(detag(%msgString), %voice, %pitch);
@@ -17,23 +16,23 @@ function clientCmdServerMessage(%msgType, %msgString) {
     MessageFuncDict;
     if (isObject(%defFuncList)) {
         %i = 0;
-        %func = func;
-        if (!(%i @ %defFuncList $= "")) {
+        %func = %defFuncList.func;
+        if (!(%i $= "")) {
             call(%func, %msgType, %msgString);
             %i = (1.0 + %i);
-            %func = func;
+            %func = %defFuncList.func;
         }
     }
-    if (!(!(%i @ %defFuncList $= "") SPC %tag $= "")) {
+    if (!(!(%i $= "") @ " " @ %tag $= "")) {
         %funcList = %tag.get();
         MessageFuncDict;
         if (isObject(%funcList)) {
             %i = 0;
-            %func = func;
-            if (!(%i @ %funcList $= "")) {
+            %func = %funcList.func;
+            if (!(%i $= "")) {
                 call(%func, %msgType, %msgString);
                 %i = (1.0 + %i);
-                %func = func;
+                %func = %funcList.func;
             }
         }
     }
@@ -43,15 +42,16 @@ function addMessageCallback(%msgType, %func) {
     MessageFuncDict;
     if (isObject(%m)) {
         %i = 0;
-        if (!(%i @ %m SPC func $= "")) {
+        if (!(%i @ " " @ %m.func $= "")) {
             %i = (1.0 + %i);
         }
-        func = !(%i @ %m SPC func $= "") @ %func @ %i @ %m;
+        %m.func = !(%i @ " " @ %m.func $= "") @ %func @ %i;
     }
-    %m = new ""();
+    %m = new ""();;
     SimObject;
     %msgType.put(%m);
-    func = 0 @ MessageFuncDict @ %func @ 0 @ %m;
+    %m.func = MessageFuncDict @ %func @ 0;
+    0;
 };
 function defaultMessageCallback(%msgType, %msgString) {
     onServerMessage(detag(%msgString));

@@ -2,14 +2,14 @@ function toggleBenchmarksDialog() {
     if (!($player.rolesPermissionCheckWarn("gameEditors"))) {
         return;
     }
-    toggleVisibleState();
+    toggleVisibleState(benchmarksGui);
 };
 function benchmarksGui::open(%this) {
     %this.pushDialog(0);
     %this.setVisible(1);
     benchmarks::loadCameraTests();
     benchmarks::cameraToGui();
-    populate();
+    gui_Benchs_Metrics_Menu1.populate();
 };
 function benchmarksGui::close(%this, %unused) {
     %this.popDialog();
@@ -61,11 +61,11 @@ function benchmarksGui::runCameraTests(%this) {
     1.setVisible();
     0.setVisible();
     1.setVisible();
-    $benchmarks::originalMetrics = getValue();
-    gui_Benchs_Metrics_Menu1;
+    $benchmarks::originalMetrics = gui_Benchs_Metrics_Menu1.getValue();
+    gui_Benchs_Cam_Cancel;
     if (!($pref::benchmarks::metricsLock)) {
         "video".setValue();
-        0.onSelect(getValue());
+        0.onSelect(gui_Benchs_Metrics_Menu1.getValue());
     }
 };
 function benchmarksGui::runCameraTestsReps(%this) {
@@ -75,11 +75,11 @@ function benchmarksGui::runCameraTestsReps(%this) {
     1.setVisible();
     0.setVisible();
     1.setVisible();
-    $benchmarks::originalMetrics = getValue();
-    gui_Benchs_Metrics_Menu1;
+    $benchmarks::originalMetrics = gui_Benchs_Metrics_Menu1.getValue();
+    gui_Benchs_Cam_Cancel;
     if (!($pref::benchmarks::metricsLock)) {
         "video".setValue();
-        0.onSelect(getValue());
+        0.onSelect(gui_Benchs_Metrics_Menu1.getValue());
     }
 };
 function benchmarksGui::onFinishedCameraTests(%this) {
@@ -88,7 +88,7 @@ function benchmarksGui::onFinishedCameraTests(%this) {
     0.setVisible();
     0.setVisible();
     $benchmarks::originalMetrics.setValue();
-    0.onSelect(getValue());
+    0.onSelect(gui_Benchs_Metrics_Menu1.getValue());
     if (!(benchmarks::isInteractive())) {
         return gui_Benchs_Metrics_Menu1;
     }
@@ -103,7 +103,7 @@ function benchmarksGui::cancelCameraTests(%this) {
     benchmarks::cancelCameraTests();
 };
 function benchmarksGui::updateProgressBars(%this) {
-    (getCount() / (1.0 + $benchmarks::camera::curPoint)).setValue();
+    (cameraTestsGroup.getCount() / (1.0 + $benchmarks::camera::curPoint)).setValue();
     ($pref::benchmarks::fps::reps / (1.0 + $benchmarks::camera::repsDone)).setValue();
 };
 function benchmarksGui::addNewCameraTestPoint1(%this) {
@@ -112,7 +112,7 @@ function benchmarksGui::addNewCameraTestPoint1(%this) {
     1.setVisible();
     0.setVisible();
     1.setVisible();
-    selectAll();
+    gui_Benchs_Cam_NameIn.selectAll();
     0.setVisible();
     0.setVisible();
     1.makeFirstResponder();
@@ -124,7 +124,7 @@ function benchmarksGui::addNewCameraTestPoint2(%this) {
     0.setVisible();
     1.setVisible();
     0.setVisible();
-    benchmarks::addNewCameraTestPoint(getValue());
+    benchmarks::addNewCameraTestPoint(gui_Benchs_Cam_NameIn.getValue());
 };
 function benchmarksGui::addNewCameraTestPoint3(%this) {
     1.setVisible();

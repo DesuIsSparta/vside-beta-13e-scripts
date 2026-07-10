@@ -3,27 +3,27 @@ function BroadCastControlPanel::toggle(%this) {
     %this.showRaiseOrHide();
 };
 function BroadCastControlPanel::open(%this) {
-    (BroadCastRegionControl - getWord(getExtent(), 0)).resize((BroadCastRegionControl - getWord(getExtent(), 1)));
-    getWord(getExtent(), 0).resize(getWord(getExtent(), 1));
+    (1.0 - getWord(BroadCastRegionControl.getExtent(), 0)).resize((1.0 - getWord(BroadCastRegionControl.getExtent(), 1)));
+    getWord(BroadCastRegionControl.getExtent(), 0).resize(getWord(BroadCastRegionControl.getExtent(), 1));
     %this.setVisible(1);
     %this.setConstrained(1);
-    currentlyUploading = BroadCastRegionControl @ 0 @ %this;
-    BroadCastRegionControl;
-    hasError = BroadCastCrossHairsFrame @ 0 @ %this;
-    1.0;
+    %this.currentlyUploading = BroadCastCrossHairsFrame @ 0;
+    BroadCastCrossHairsFrame;
+    %this.hasError = 0;
     %this.enterFirstTimeMode();
     %this.focusAndRaise();
 };
 function BroadCastControlPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     0.setVisible();
     "".setBitmap();
-    photoFileName = BroadCastPreview @ "" @ BroadCastControlPanel;
+    %this.photoFileName = "" @ BroadCastControlPanel;
     BroadCastPreview;
-    photoFileNameExt = PlayGui @ "" @ BroadCastControlPanel;
-    photoTransform = "" @ BroadCastControlPanel;
-    photoInhabitants = "" @ BroadCastControlPanel;
+    %this.photoFileNameExt = "" @ BroadCastControlPanel;
+    BroadCastPreview;
+    %this.photoTransform = "" @ BroadCastControlPanel;
+    %this.photoInhabitants = "" @ BroadCastControlPanel;
     return 1;
 };
 function BroadSnapshotButton_prepareForDoTakeSnapshot() {
@@ -34,50 +34,50 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot() {
     0.setActive();
     0.setActive();
     BroadSnapshotButton_HideSnoop();
-    if (getValue()) {
-        if ((BroadCastControlPanel == temporaryGUIControlContainer)) {
-            temporaryGUIControlContainer = GuiControl @ new ""() @ BroadCastControlPanel;
-            0;
+    if (BroadcastHideHUDsCheckbox.getValue()) {
+        if ((BroadCastControlPanel == %this.temporaryGUIControlContainer)) {
+            %this.temporaryGUIControlContainer = new ""(); @ BroadCastControlPanel;
+            GuiControl;
         }
-        temporaryGUIControlContainer.setVisible(0);
-        %orderedChildren = playGuiControlsToHide.getChildrenInOrder();
+        %this.temporaryGUIControlContainer.setVisible(0);
+        %orderedChildren = %this.playGuiControlsToHide.getChildrenInOrder();
         BroadCastControlPanel;
         %i = (1.0 - getWordCount(%orderedChildren));
         PlayGui;
         if ((0.0 >= %i)) {
             %ctrl = getWord(%orderedChildren, %i);
             BroadCastControlPanel;
-            temporaryGUIControlContainer.add(%ctrl);
+            %this.temporaryGUIControlContainer.add(%ctrl);
             %i = (1.0 - %i);
             BroadCastControlPanel;
         }
     }
-    if (getValue()) {
-        if ((BroadCastControlPanel == temporaryGUIControlContainer)) {
-            temporaryGUIControlContainer = GuiControl @ new ""() @ BroadCastControlPanel;
-            0;
+    if (BroadcastHideChatCheckbox.getValue()) {
+        if ((BroadCastControlPanel == %this.temporaryGUIControlContainer)) {
+            %this.temporaryGUIControlContainer = new ""(); @ BroadCastControlPanel;
+            GuiControl;
         }
-        temporaryGUIControlContainer.setVisible(0);
-        temporaryGUIControlContainer.add();
+        %this.temporaryGUIControlContainer.setVisible(0);
+        %this.temporaryGUIControlContainer.add();
     }
-    if (getValue()) {
+    if (BroadcastHideSelfCheckbox.getValue()) {
     }
-    if (isVisible()) {
+    if (BroadcastHideSelfCheckbox.isVisible()) {
         if (!($IN_ORBIT_CAM)) {
         }
         if (!($firstPerson)) {
             $player.MeshOff("*");
             $player.setShapeName("");
-            if (isObject(hudCtrl)) {
-                hudCtrl.setVisible(0);
+            if (isObject($player.hudCtrl)) {
+                $player.hudCtrl.setVisible(0);
             }
             0.setVisible();
         }
     }
-    if (getValue()) {
+    if (BroadcastFullScreenCheckbox.getValue()) {
         0.setVisible();
     }
-    if ((BroadCastControlPanel SPC $Platform $= "windows")) {
+    if ((BroadCastControlPanel @ " " @ $Platform $= "windows")) {
     }
     if ((6.0 == $Platform::Version::Major)) {
         waitAFrameAndCall("waitAFrameAndCall(\"BroadSnapshotButton_doTakeSnapshot\");");
@@ -86,7 +86,8 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot() {
 };
 function BroadSnapshotButton_doTakeSnapshot() {
     0.setActive();
-    %photoFileName = BroadSnapshotButton @ $DC::LocalAvatarFolder @ "/lastSnapshotTaken";
+    %photoFileName = $DC::LocalAvatarFolder @ "/lastSnapshotTaken";
+    BroadSnapshotButton;
     if (($Pref::Video::screenShotFormat $= "JPEG")) {
         %ext = ".jpg";
     }
@@ -95,15 +96,13 @@ function BroadSnapshotButton_doTakeSnapshot() {
     }
     %ext = ".png";
     %regionControl = 0;
-    if (getValue()) {
-        %regionControl = getId();
-        PlayGui;
+    if (BroadcastFullScreenCheckbox.getValue()) {
+        %regionControl = PlayGui.getId();
     }
-    %regionControl = getId();
-    BroadCastRegionControl;
+    %regionControl = BroadCastRegionControl.getId();
     if ((0.0 != %regionControl)) {
     }
-    %tookPhoto = snapshotTool::snapControl(%regionControl, BroadcastFullScreenCheckbox @ %photoFileName @ %ext);
+    %tookPhoto = snapshotTool::snapControl(%regionControl, %photoFileName @ %ext);
     if (%tookPhoto) {
         %topMargin = 60;
         %bottomMargin = -(10.0);
@@ -121,13 +120,13 @@ function BroadSnapshotButton_doTakeSnapshot() {
         %playerNames = trim(%playerNames);
         (%numPlayers < %n);
         %photoFileName.enterFillCURLMode(%ext, $player.getTransform(), %playerNames);
-        enterTookPhotoMode();
-        removeFile(BroadCastControlPanel @ %photoFileName @ %ext);
-        addFile(BroadCastControlPanel @ %photoFileName @ %ext);
+        BroadCastControlPanel.enterTookPhotoMode();
+        removeFile(%photoFileName @ %ext);
+        addFile(%photoFileName @ %ext);
         "".setBitmap();
         %photoFileName.setBitmap();
         1.setVisible();
-        alxPlay();
+        alxPlay(AudioProfile_Shutter);
         commandToServer('FireEventPlayerTakesAPicture');
     }
     1.setVisible();
@@ -138,38 +137,38 @@ function BroadSnapshotButton_doTakeSnapshot() {
     1.setVisible();
     1.setActive();
     BroadSnapshotButton_ShowSnoop();
-    if (getValue()) {
-        %i = (BroadCastControlPanel - temporaryGUIControlContainer.getCount());
+    if (BroadcastHideHUDsCheckbox.getValue()) {
+        %i = (BroadCastControlPanel - $player.temporaryGUIControlContainer.getCount());
         1.0;
         if ((0.0 >= %i)) {
-            %ctrl = temporaryGUIControlContainer.getObject(%i);
+            %ctrl = $player.temporaryGUIControlContainer.getObject(%i);
             BroadCastControlPanel;
             %ctrl.add();
             %i = (1.0 - %i);
             PlayGui;
         }
     }
-    if (getValue()) {
-        add();
+    if (BroadcastHideChatCheckbox.getValue()) {
+        PlayGui.add(ConvBub);
     }
-    if (getValue()) {
+    if (BroadcastHideHUDsCheckbox.getValue()) {
     }
-    if (getValue()) {
-        temporaryGUIControlContainer.delete();
-        temporaryGUIControlContainer = BroadCastControlPanel @ 0 @ BroadCastControlPanel;
-        BroadcastHideChatCheckbox;
+    if (BroadcastHideChatCheckbox.getValue()) {
+        $player.temporaryGUIControlContainer.delete();
+        $player.temporaryGUIControlContainer = 0 @ BroadCastControlPanel;
+        BroadCastControlPanel;
     }
-    if (getValue()) {
+    if (BroadcastHideSelfCheckbox.getValue()) {
     }
-    if (isVisible()) {
+    if (BroadcastHideSelfCheckbox.isVisible()) {
         $player.setActiveSKUs($player.getActiveSKUs());
         $player.setShapeName($Player::Name);
-        if (isObject(hudCtrl)) {
-            hudCtrl.setVisible(1);
+        if (isObject($player.hudCtrl)) {
+            $player.hudCtrl.setVisible(1);
         }
         1.setVisible();
     }
-    if (getValue()) {
+    if (BroadcastFullScreenCheckbox.getValue()) {
         1.setVisible();
     }
     1.setActive();
@@ -179,14 +178,14 @@ function BroadSnapshotButton_doTakeSnapshot() {
     }
     !($firstPerson).setVisible();
     1.setActive();
-    focusAndRaise();
+    PlayGui.focusAndRaise(BroadCastControlPanel);
     if (%tookPhoto) {
-        focusAndRaise();
-        selectAll();
+        BroadcastPhotoControls.focusAndRaise(BroadcastCaptionCtrl);
+        BroadcastCaptionCtrl.selectAll();
     }
 };
 function BroadcastCaptionCtrl::doOnPressEnter(%this) {
-    if (isVisible()) {
+    if (BroadSnapshotUploadButton.isVisible()) {
         // unhandled opcode 1824 at 0x0000071D
     }
     // unhandled opcode 1611 at 0x00000721
@@ -195,71 +194,70 @@ function BroadcastCaptionCtrl::doOnPressEnter(%this) {
     %button.performClick();
 };
 function BroadSnapshotUploadButton::doBroadCastSnapshot(%this, %callbackSink) {
-    photoFileName.enterFillCURLMode(photoFileNameExt, photoTransform, photoInhabitants);
-    %caption = getText();
-    BroadcastCaptionCtrl;
-    if ((BroadCastControlPanel SPC %caption $= "enter caption here..")) {
+    $player.photoFileName.enterFillCURLMode($player.photoFileNameExt, $player.photoTransform, $player.photoInhabitants);
+    %caption = BroadcastCaptionCtrl.getText();
+    BroadCastControlPanel;
+    if ((BroadCastControlPanel @ " " @ %caption $= "enter caption here..")) {
         %caption = "";
         BroadCastControlPanel;
     }
-    curl.setURLParam("caption", %caption);
-    curl.setURLParam("featured", "false");
-    if (visible) {
+    $player.curl.setURLParam("caption", %caption);
+    $player.curl.setURLParam("featured", "false");
+    if ($player.visible) {
     }
-    if (getValue()) {
-        curl.setURLParam("broadcast", "BroadcastScreens");
+    if (BroadcastCaptionSetBCastCtrl.getValue()) {
+        $player.curl.setURLParam("broadcast", "BroadcastScreens");
     }
-    curl.setURLParam("broadcast", "");
-    curl.setCompletedCallback("BroadSnapshotUploadButtonOnCompleted");
-    if (!(curl.start())) {
-        enterErrorUploadingMode();
+    $player.curl.setURLParam("broadcast", "");
+    $player.curl.setCompletedCallback("BroadSnapshotUploadButtonOnCompleted");
+    if (!($player.curl.start())) {
+        BroadCastControlPanel.enterErrorUploadingMode();
     }
-    if (isObject()) {
-        curl.add();
+    if (isObject(CURLSimGroup)) {
+        $player.curl.add();
     }
-    enterUploadingMode();
+    BroadCastControlPanel.enterUploadingMode();
 };
 function BroadSnapshotUploadButton::onProgress(%this, %uploader) {
 };
 function BroadSnapshotUploadButtonOnCompleted(%request, %result) {
-    %callbackSink = callBackSink;
-    %request;
+    %callbackSink = %request.callBackSink;
     if ((0.0 == %result)) {
         %callbackSink.onDone(%request);
     }
     %callbackSink.onError(%request);
 };
 function BroadSnapshotUploadButton::onError(%this, %uploader) {
-    currentlyUploading = 0 @ BroadCastControlPanel;
-    hasError = 1 @ BroadCastControlPanel;
-    enterErrorUploadingMode();
-    curl.stop();
+    %request.currentlyUploading = 0 @ BroadCastControlPanel;
+    %request.hasError = 1 @ BroadCastControlPanel;
+    BroadCastControlPanel.enterErrorUploadingMode();
+    %request.curl.stop();
     error("Broadcast failed to upload");
 };
 function BroadSnapshotUploadButton::onDone(%this, %uploader) {
-    currentlyUploading = 0 @ BroadCastControlPanel;
+    %request.currentlyUploading = 0 @ BroadCastControlPanel;
     if ((0.0 != $gBroadSnapshotUploadTimeOutSched)) {
         cancel($gBroadSnapshotUploadTimeOutSched);
         $gBroadSnapshotUploadTimeOutSched = 0;
     }
     $gNumPhotosTaken = (1.0 + $gNumPhotosTaken);
     if (!(%uploader.getResult("status") $= "success")) {
-        if (!(hasError)) {
+        if (!(%request.hasError)) {
             %this.onError(%uploader);
         }
         return BroadCastControlPanel;
     }
-    enterTakePhotoMode();
+    BroadCastControlPanel.enterTakePhotoMode();
     echo("Broadcast done. photoURL =" @ " " @ %uploader.getResult("photoURL"));
     0.setVisible();
     "".setBitmap();
-    %shareFB = getValue();
-    BroadcastCaptionShareFcBookCtrl;
+    %shareFB = BroadcastCaptionShareFcBookCtrl.getValue();
+    BroadCastPreview;
     if (%shareFB) {
         %uploader.getResult("photoURL").shareFcBook();
     }
-    %gaURL = BroadCastControlPanel @ "/client/facebookShare/snapshot/" @ %shareFB ? "yes" : "no";
-    BroadCastPreview;
+    %gaURL = "/client/facebookShare/snapshot/" @ %shareFB ? "yes" : "no";
+    BroadCastControlPanel;
     getAnalytic().trackPageView(%gaURL);
 };
 function BroadSnapshotCancelButton::doCancel(%this) {
@@ -267,40 +265,35 @@ function BroadSnapshotCancelButton::doCancel(%this) {
         cancel($gBroadSnapshotUploadTimeOutSched);
         $gBroadSnapshotUploadTimeOutSched = 0;
     }
-    enterFirstTimeMode();
+    BroadCastControlPanel.enterFirstTimeMode();
     echo("Broadcast cancelled");
     0.setVisible();
     "".setBitmap();
-    if (isObject(curl)) {
-        curl.delete();
+    if (isObject(%request.curl)) {
+        %request.curl.delete();
     }
     1.setActive();
 };
 function BroadSnapshotButton_HideSnoop() {
-    %n = (TheBadgesHud - getCount());
-    1.0;
+    %n = (1.0 - TheBadgesHud.getCount());
     if ((0.0 >= %n)) {
         %projCtrl = %n.getObject();
         TheBadgesHud;
-        %roleCtrl = roleCtrl;
-        %projCtrl;
+        %roleCtrl = %projCtrl.roleCtrl;
         if (isObject(%roleCtrl)) {
-            if ((%roleCtrl >= strpos(bitmap, "neighborhoodwatch"))) {
+            if ((0.0 >= strpos(%roleCtrl.bitmap, "neighborhoodwatch"))) {
                 %roleCtrl.setVisible(0);
             }
         }
         %n = (1.0 - %n);
-        0.0;
     }
 };
 function BroadSnapshotButton_ShowSnoop() {
-    %n = (TheBadgesHud - getCount());
-    1.0;
+    %n = (1.0 - TheBadgesHud.getCount());
     if ((0.0 >= %n)) {
         %projCtrl = %n.getObject();
         TheBadgesHud;
-        %roleCtrl = roleCtrl;
-        %projCtrl;
+        %roleCtrl = %projCtrl.roleCtrl;
         if (isObject(%roleCtrl)) {
             %roleCtrl.setVisible(1);
         }
@@ -317,11 +310,13 @@ function BroadCastControlPanel::enterFirstTimeMode(%this) {
     0.setVisible();
     1.setVisible();
     1.setVisible();
-    photoFileName = BroadCastCrossHairsFrame @ "" @ BroadCastControlPanel;
+    %projCtrl.photoFileName = "" @ BroadCastControlPanel;
+    BroadCastCrossHairsFrame;
+    %projCtrl.photoFileNameExt = "" @ BroadCastControlPanel;
     BroadcastCloseButtonContainer;
-    photoFileNameExt = BroadCastFrameForPreview @ "" @ BroadCastControlPanel;
-    photoTransform = "" @ BroadCastControlPanel;
-    photoInhabitants = "" @ BroadCastControlPanel;
+    %projCtrl.photoTransform = "" @ BroadCastControlPanel;
+    BroadCastFrameForPreview;
+    %projCtrl.photoInhabitants = "" @ BroadCastControlPanel;
     1.setVisible();
     mlStyle(BroadcastViewAlbumLink, "plainOnBlack").setValue();
     0.setVisible();
@@ -339,34 +334,34 @@ function BroadCastControlPanel::enterFillCURLMode(%this, %photoFileName, %ext, %
         %this.enterFirstTimeMode();
         return;
     }
-    if (isObject(curl)) {
-        curl.delete();
+    if (isObject(%projCtrl.curl)) {
+        %projCtrl.curl.delete();
     }
-    curl = URLPostObject @ new ""() @ BroadCastPreview;
+    %projCtrl.curl = new ""(); @ BroadCastPreview;
+    URLPostObject;
+    %projCtrl.curl.callBackSink = BroadSnapshotUploadButton @ BroadCastPreview;
     0;
-    callBackSink = BroadCastPreview @ curl;
-    BroadSnapshotUploadButton;
-    curl.setProgress(1);
-    curl.setRecvData(1);
-    curl.setURLParam("user", $Player::Name);
-    curl.setURLParam("token", $Token);
-    curl.setURLParam("type", "screenshot");
-    curl.setURLParam("location", %transform);
-    curl.setURLParam("inView", %playerNames);
-    if (!(BroadCastPreview SPC CustomSpaceClient::GetSpaceImIn() $= "")) {
-        curl.setURLParam("apartmentOwner", owner);
-        curl.setURLParam("vurl", vurl);
+    %projCtrl.curl.curl.setProgress(1);
+    %projCtrl.curl.curl.setRecvData(1);
+    %projCtrl.curl.curl.setURLParam("user", $Player::Name);
+    %projCtrl.curl.curl.setURLParam("token", $Token);
+    %projCtrl.curl.curl.setURLParam("type", "screenshot");
+    %projCtrl.curl.curl.setURLParam("location", %transform);
+    %projCtrl.curl.curl.setURLParam("inView", %playerNames);
+    if (!(BroadCastPreview @ " " @ CustomSpaceClient::GetSpaceImIn() $= "")) {
+        %projCtrl.curl.curl.setURLParam("apartmentOwner", $CSSpaceInfo.owner);
+        $CSSpaceInfo.curl.setURLParam("vurl", $CSSpaceInfo.vurl);
     }
-    curl.setURLParam("vurl", $CSSpaceInfo @ BroadCastPreview @ "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
-    curl.setURL($Net::UploadPhotoURL);
-    curl.setPostFile("imageBody", BroadCastPreview @ %photoFileName @ %ext);
-    photoFileName = BroadCastPreview @ %photoFileName @ BroadCastControlPanel;
+    $CSSpaceInfo.curl.setURLParam("vurl", "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
+    $CSSpaceInfo.curl.setURL($Net::UploadPhotoURL);
+    $CSSpaceInfo.curl.setPostFile("imageBody", %photoFileName @ %ext);
+    $CSSpaceInfo.photoFileName = %photoFileName @ BroadCastControlPanel;
     BroadCastPreview;
-    photoFileNameExt = $CSSpaceInfo @ %ext @ BroadCastControlPanel;
+    $CSSpaceInfo.photoFileNameExt = %ext @ BroadCastControlPanel;
     BroadCastPreview;
-    photoTransform = BroadCastPreview @ %transform @ BroadCastControlPanel;
+    $CSSpaceInfo.photoTransform = %transform @ BroadCastControlPanel;
     BroadCastPreview;
-    photoInhabitants = BroadCastPreview @ %playerNames @ BroadCastControlPanel;
+    $CSSpaceInfo.photoInhabitants = %playerNames @ BroadCastControlPanel;
     BroadCastPreview;
 };
 function BroadCastControlPanel::enterTookPhotoMode(%this) {
@@ -377,7 +372,7 @@ function BroadCastControlPanel::enterTookPhotoMode(%this) {
     1.setVisible();
     0.setVisible();
     0.setVisible();
-    if (!(BroadcastUploadFailedLabel SPC CustomSpaceClient::GetSpaceImIn() $= "")) {
+    if (!(BroadcastUploadFailedLabel @ " " @ CustomSpaceClient::GetSpaceImIn() $= "")) {
     }
     if (CustomSpaceClient::isOwner()) {
         0.setVisible();
@@ -395,8 +390,8 @@ function BroadCastControlPanel::enterTookPhotoMode(%this) {
     1.setVisible();
 };
 function BroadCastControlPanel::enterUploadingMode(%this) {
-    currentlyUploading = 1 @ %this;
-    hasError = 0 @ %this;
+    %this.currentlyUploading = 1;
+    %this.hasError = 0;
     if ((0.0 != $gBroadSnapshotUploadTimeOutSched)) {
         cancel($gBroadSnapshotUploadTimeOutSched);
         $gBroadSnapshotUploadTimeOutSched = 0;
@@ -433,11 +428,13 @@ function BroadCastControlPanel::enterTakePhotoMode(%this) {
     0.setVisible();
     1.setVisible();
     1.setVisible();
-    photoFileName = BroadCastCrossHairsFrame @ "" @ BroadCastControlPanel;
+    %this.photoFileName = "" @ BroadCastControlPanel;
+    BroadCastCrossHairsFrame;
+    %this.photoFileNameExt = "" @ BroadCastControlPanel;
     BroadcastCloseButtonContainer;
-    photoFileNameExt = BroadCastFrameForPreview @ "" @ BroadCastControlPanel;
-    photoTransform = "" @ BroadCastControlPanel;
-    photoInhabitants = "" @ BroadCastControlPanel;
+    %this.photoTransform = "" @ BroadCastControlPanel;
+    BroadCastFrameForPreview;
+    %this.photoInhabitants = "" @ BroadCastControlPanel;
     0.setVisible();
     1.setVisible();
     0.setVisible();
@@ -446,7 +443,7 @@ function BroadCastControlPanel::enterTakePhotoMode(%this) {
 function BroadCastControlPanel::automateSnapshotUpload(%this) {
     %this.open();
     BroadSnapshotButton_doTakeSnapshot();
-    doBroadCastSnapshot();
+    BroadSnapshotUploadButton.doBroadCastSnapshot(BroadSnapshotUploadButton);
     %this.close();
 };
 function BroadCastControlPanel::shareFcBook(%this, %photoURL) {

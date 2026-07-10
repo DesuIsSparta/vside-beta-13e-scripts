@@ -3,11 +3,12 @@ function testLoginAndStay() {
     $changeClothesCount = 0;
     $videoURLUpdated = 0;
     $loginLogout = 0;
-    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
-    password = $UserPref::Player::Password;
-    joinAction = "doSomething";
-    quitOnError = "true";
-    %testLogin = ;
+    %testLogin = new ScriptObject(skeletonClient) {
+        userName = $UserPref::Player::Name;
+        password = $UserPref::Player::Password;
+        joinAction = "doSomething";
+        quitOnError = "true";
+    };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
@@ -25,7 +26,7 @@ function walk() {
     }
     if ((5.0 == $walkIterations)) {
         logout(0);
-        exit();
+        WorldMap.exit();
         schedule(6000, 0);
     }
     schedule(5000, 0);
@@ -34,16 +35,16 @@ function walk() {
 function stopAndTalk() {
     $mvYawLeftSpeed = 0;
     $mvForwardAction = 0;
-    if (isObject()) {
-        if (isVisible()) {
-            close();
+    if (isObject(pChat)) {
+        if (ClosetGui.isVisible()) {
+            ClosetGui.close();
         }
-        if (isVisible()) {
-            closeFully();
+        if (geTGF.isVisible()) {
+            geTGF.closeFully();
         }
-        pChat @ "Hello from" @ " " @ $Hostname @ ".".say(0, 0);
+        "Hello from" @ " " @ $Hostname @ ".".say(0, 0);
         schedule(4000, 0);
-        if ((changeClothes SPC $DestServerName $= "MyApartment")) {
+        if ((changeClothes @ " " @ $DestServerName $= "MyApartment")) {
         }
         if (!($videoURLUpdated)) {
             updateApartment();
@@ -56,7 +57,7 @@ function stopAndTalk() {
     }
     echo("LOAD: Lost PChat... Gonna try again.");
     $failureCount = (1.0 + $failureCount);
-    geTGF;
+    pChat;
     schedule(5000, 0);
 };
 function logoffAndQuit() {
@@ -67,10 +68,10 @@ function logoffAndQuit() {
 };
 function updateApartment() {
     "http://www.youtube.com/watch?v=_qkmrKa74ts".setText();
-    stopVideo();
-    playVideo();
+    CSMediaWindow.stopVideo();
+    CSMediaWindow.playVideo();
     $videoURLUpdated = 1;
-    CSMediaWindow;
+    CSMediaVideoTextBox;
 };
 function changeClothes() {
     if ((2.0 < $changeClothesCount)) {

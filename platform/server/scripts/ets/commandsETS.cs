@@ -6,62 +6,62 @@ function AWAY_DEBUG(%text) {
     return;
 };
 function serverCmdSetAfkOn(%client, %msgTagged) {
-    if (!(isObject(Player))) {
+    if (!(isObject(%client.Player))) {
         error("serverCmdSetAfkOn: null client player" @ " " @ getDebugString(%client));
-        return %client;
+        return;
     }
-    Player.setAFK(1);
-    Player.setAwayMessage(detag(%msgTagged));
-    return %client;
+    %client.Player.setAFK(1);
+    %client.Player.setAwayMessage(detag(%msgTagged));
+    return;
 };
 function serverCmdSetAfkOff(%client) {
-    if (isObject(Player)) {
-        Player.setAFK(0);
+    if (isObject(%client.Player)) {
+        %client.Player.setAFK(0);
     }
-    return %client;
+    return;
 };
 function serverCmdTypingStarted(%client) {
-    if (isObject(Player)) {
-        Player.setTyping(1);
+    if (isObject(%client.Player)) {
+        %client.Player.setTyping(1);
     }
-    return %client;
+    return;
 };
 function serverCmdTypingFinished(%client) {
-    if (isObject(Player)) {
-        Player.setTyping(0);
+    if (isObject(%client.Player)) {
+        %client.Player.setTyping(0);
     }
-    return %client;
+    return;
 };
 function serverCmdEtsPlayAnimName(%client, %animName) {
-    if (isObject(Player)) {
-        Player.playAnim(%animName);
+    if (isObject(%client.Player)) {
+        %client.Player.playAnim(%animName);
     }
-    return %client;
+    return;
 };
 function playRandomEmote(%player) {
-    %animName = getRandom(0, (EmoteDict - size())).getValue();
-    1.0;
+    %animName = getRandom(0, (1.0 - EmoteDict.size())).getValue();
+    EmoteDict;
     %player.playAnim(%animName);
-    return EmoteDict;
+    return;
 };
 function Player::cardinalPosition(%this, %num) {
     %this.setTransform("56.1625 -22.954 2.38509 0 0 -1 0.931784");
     return;
 };
 function ServerCmdCardinalPosition(%client, %num) {
-    if (isObject(Player)) {
-        Player.cardinalPosition(%num);
+    if (isObject(%client.Player)) {
+        %client.Player.cardinalPosition(%num);
     }
-    return %client;
+    return;
 };
 function etsReloadServer() {
     exec($userMods @ "/server/scripts/ets/init.cs");
     return;
 };
 function ServerCmdSetGenre(%client, %genre) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.setGenre(%genre);
-    return %client;
+    %client.Player.setGenre(%genre);
+    return;
 };

@@ -8,7 +8,7 @@ function worldControlPanel::open(%this) {
 };
 function worldControlPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 function interiorRenderModeNext() {
@@ -24,7 +24,7 @@ function interiorRenderModeSet(%mode) {
     %mode[$interiorRenderModeNames @ %mode].setValue();
 };
 function interiorRenderModeTextChange() {
-    interiorRenderModeSet(getValue());
+    interiorRenderModeSet(guiCtrlInteriorRenderMode.getValue());
 };
 function gui_DevOpts_ShowCamPos() {
     showHere = $UserPref::ETS::ShowCamPos @ TheShapeNameHud;
@@ -46,6 +46,6 @@ function gui_DevOpts_Toggle_PlayerTextureLobotomyFile() {
     gui_DevOpts_SetTexturesButtons();
 };
 function gui_DevOpts_SetTexturesButtons() {
-    (ge_LocalOpts_WorldTextures SPC $DevPref::OpenGL::WorldTextureLobotomyFile $= "").setValue();
-    (ge_LocalOpts_PlayerTextures SPC $DevPref::OpenGL::PlayerTextureLobotomyFile $= "").setValue();
+    (ge_LocalOpts_WorldTextures @ " " @ $DevPref::OpenGL::WorldTextureLobotomyFile $= "").setValue();
+    (ge_LocalOpts_PlayerTextures @ " " @ $DevPref::OpenGL::PlayerTextureLobotomyFile $= "").setValue();
 };

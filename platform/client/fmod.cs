@@ -5,7 +5,7 @@ $Fmod::randomStreamID = "";
 $Fmod::randomStreamName = "";
 function clientCmdMusicSpaceEnter(%spaceId, %streamUrl, %volume, %attenuation) {
     log("communication", "info", "MusicSpaceEnter: spaceId:" @ " " @ %spaceId @ " " @ "URL:" @ " " @ %streamUrl @ " " @ "attenuation:" @ " " @ %attenuation @ " " @ getScopeName(1));
-    Music::setService();
+    Music::setService(FMod);
     %streamUrl.setStreamUrl();
     %spaceId.pushStreamWithVolume(%streamUrl, %volume, %attenuation);
 };
@@ -41,20 +41,20 @@ function FMod::init(%this, %mute) {
     %this.setMute(%mute);
 };
 function FMod::isMusicOn(%this) {
-    if (!(%this SPC streamUrl $= "")) {
+    if (!(%this.streamUrl $= "")) {
         %value = fmodIsTopChannelAvailable();
         return %value;
     }
     return 0;
 };
 function FMod::setStreamUrl(%this, %streamUrl) {
-    streamUrl = %streamUrl @ %this;
+    %this.streamUrl = %streamUrl;
 };
 function FMod::getStreamUrl(%this) {
-    return streamUrl;
+    return %this.streamUrl;
 };
 function FMod::clearMetaData(%this) {
-    metaData = "" @ %this;
+    %this.metaData = "";
 };
 function FMod::setMute(%this, %bool) {
     fmodSetMute(%bool);
@@ -102,7 +102,7 @@ function FMod::pushStreamWithVolume(%this, %spaceId, %streamUrl, %volume, %atten
             musicAttenuationTimer();
         }
         fmodSetTopChannelVolume(%volume);
-        update();
+        MusicHud.update();
     }
 };
 function FMod::popStream(%this, %spaceId) {
@@ -113,7 +113,7 @@ function FMod::popStream(%this, %spaceId) {
     }
     fmodSetTopChannelVolume(fmodGetSourceVolume());
     fmodSetAttenuation(%attenuation);
-    update();
+    MusicHud.update();
 };
 function FMod::timer(%this) {
     %this.checkMetaData();
@@ -126,9 +126,9 @@ function FMod::checkMetaData(%this) {
     %album = %this.getAlbum();
     %comment = %this.getComment();
     %current = %artist @ " " @ %title @ " " @ %album @ " " @ %comment;
-    if ((%this != strcmp(metaData, %current))) {
-        metaData = 0.0 @ %current @ %this;
-        if ((%this != strcmp(metaData, ""))) {
+    if ((0.0 != strcmp(%this.metaData, %current))) {
+        %this.metaData = %current;
+        if ((0.0 != strcmp(%this.metaData, ""))) {
             %artist.displayMetaData(%title, %album, %comment, 1);
         }
     }

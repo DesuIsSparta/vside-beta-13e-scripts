@@ -19,13 +19,13 @@ function giftingItems_registerPendingTransaction(%registry, %transactionID, %sou
         return;
     }
     %pendingTransactionRecord = safeNewScriptObject("ScriptObject", "", 0);
-    transactionID = %transactionID @ %pendingTransactionRecord;
-    skus = %skus @ %pendingTransactionRecord;
-    sourcePlayerName = %sourcePlayerName @ %pendingTransactionRecord;
-    targetPlayerName = %targetPlayerName @ %pendingTransactionRecord;
-    dlg = %dlg @ %pendingTransactionRecord;
-    autoAccepted = %autoAccepted @ %pendingTransactionRecord;
-    making = %making @ %pendingTransactionRecord;
+    %pendingTransactionRecord.transactionID = %transactionID;
+    %pendingTransactionRecord.skus = %skus;
+    %pendingTransactionRecord.sourcePlayerName = %sourcePlayerName;
+    %pendingTransactionRecord.targetPlayerName = %targetPlayerName;
+    %pendingTransactionRecord.dlg = %dlg;
+    %pendingTransactionRecord.autoAccepted = %autoAccepted;
+    %pendingTransactionRecord.making = %making;
     %registry.put(%transactionID, %pendingTransactionRecord);
     %line = getScopeName() @ " " @ "- Initiated:" @ " " @ %transactionID @ " " @ %skus @ " " @ %sourcePlayerName @ " " @ "->" @ " " @ %targetPlayerName;
     if ($AmServer) {

@@ -14,16 +14,14 @@ function SpawnSphere::choosePointOnCenterPlane(%this) {
         }
         %n = (1.0 + %n);
     }
-    %posX = ((radius * (0.001 * %tryX)) + %posX);
-    %this;
-    %posY = ((radius * (0.001 * %tryY)) + %posY);
-    %this;
+    %posX = ((%this.radius * (0.001 * %tryX)) + %posX);
+    (10.0 < %n);
+    %posY = ((%this.radius * (0.001 * %tryY)) + %posY);
     return %posX @ " " @ %posY @ " " @ %posZ;
 };
 function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphere) {
     %minSep2 = (%minSeparation * %minSeparation);
-    %num = getCount();
-    MissionCleanup;
+    %num = MissionCleanup.getCount();
     %retries = 20;
     %good = 0;
     %m = 0;
@@ -82,10 +80,8 @@ function SpawnSphere::spawnBots(%this, %num, %sep) {
     }
 };
 function SpawnSphere::spawnBotsDensity(%this, %density, %sep) {
-    %spnArea = (radius * (%this * radius));
-    %this;
+    %spnArea = (3.14159 * (%this.radius * %this.radius));
     %botArea = (2.0 / %sep);
-    3.14159;
     %botArea = (3.14159 * (%botArea * %botArea));
     %num = (%density * (0.9 * (%botArea / %spnArea)));
     echo("spawning" @ " " @ %num @ " " @ "bots..");
@@ -98,18 +94,16 @@ function serverCmdAddBotsToSpawnSphere(%unused, %unused, %num, %sep) {
 };
 function Player::teleportToRandomSpawnSphere(%this) {
     %chosen = "";
-    if (!(isObject())) {
+    if (!(isObject(PlayerDropPoints))) {
         // unhandled opcode 508 at 0x0000039B
         %chosen = EntrySpawn;
-        PlayerDropPoints;
     }
-    %chosen = getRandom(0, (PlayerDropPoints - getCount())).getObject();
-    1.0;
+    %chosen = getRandom(0, (1.0 - PlayerDropPoints.getCount())).getObject();
+    PlayerDropPoints;
     if (!(isObject(%chosen))) {
         error("This is all messed up. No known spawn spheres!");
     }
     %pos = %chosen.getEmptySpot(1, 0, 0);
-    PlayerDropPoints;
     %rot = getWords(%this.getTransform(), 3, 4);
     %this.setTransform(%pos @ " " @ %rot);
     %this.setVelocity("0 0 5");

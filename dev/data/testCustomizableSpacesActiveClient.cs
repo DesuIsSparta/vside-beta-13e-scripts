@@ -57,7 +57,7 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this) {
     if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
         return;
     }
-    ownedFurnitureToTestCount = 0 @ %this;
+    %this.ownedFurnitureToTestCount = 0;
     %count = $Player::furnitureInventory.count();
     %index = 0;
     if ((%count < %index)) {
@@ -65,22 +65,20 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this) {
         %inUse = numUsingFurnitureSku(%sku);
         %numOwned = numOwnedFurnitureSku(%sku);
         if ((%inUse > %numOwned)) {
-            ownedFurnitureToTest = %sku @ %this @ ownedFurnitureToTestCount @ %this;
-            ownedFurnitureToTestCount = (%this + ownedFurnitureToTestCount);
-            1.0;
+            %this.ownedFurnitureToTest = %sku @ %this.ownedFurnitureToTestCount;
+            %this.ownedFurnitureToTestCount = (1.0 + %this.ownedFurnitureToTestCount);
         }
         %index = (1.0 + %index);
     }
-    if ((%this <= ownedFurnitureToTestCount)) {
+    if ((0.0 <= %this.ownedFurnitureToTestCount)) {
         %this.assert(0, "we do not own any furniture that we can test with");
-        return 0.0;
+        return (%count < %index);
     }
-    %rand = getRandom(0, ownedFurnitureToTestCount);
-    %this;
-    %skuToTest = ownedFurnitureToTest;
-    %rand @ %this;
-    lastNumUsed = numUsingFurnitureSku(%skuToTest) @ %this;
-    lastSkuTested = %skuToTest @ %this;
+    %rand = getRandom(0, %this.ownedFurnitureToTestCount);
+    %skuToTest = %this.ownedFurnitureToTest;
+    %rand;
+    %this.lastNumUsed = numUsingFurnitureSku(%skuToTest);
+    %this.lastSkuTested = %skuToTest;
     %this.assert((0.0 > %skuToTest), "we got a bad sku for this");
     %alreadyHave = numUsingFurnitureAll();
     if (($CSMaximumSlots >= %alreadyHave)) {
@@ -90,9 +88,8 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this) {
     CustomSpaceClient::placeSkuInWorld(%skuToTest);
 };
 function TEST_CS_CreateRandomOwnedFurnitureItem::delayedEval(%this) {
-    %numUsedNow = numUsingFurnitureSku(lastSkuTested);
-    %this;
-    %this.assert(((%this + lastNumUsed) == %numUsedNow), %this @ lastNumUsed @ " " @ ", using now:" @ " " @ %numUsedNow @ " " @ ", note this could just be because we are checking too soon, and it hasn't filtered back to us yet, if envmanager is being slow");
+    %numUsedNow = numUsingFurnitureSku(%this.lastSkuTested);
+    %this.assert(((1.0 + %this.lastNumUsed) == %numUsedNow), "We should be using one more sku that when we started but we are not. started with:" @ " " @ %this.lastNumUsed @ " " @ ", using now:" @ " " @ %numUsedNow @ " " @ ", note this could just be because we are checking too soon, and it hasn't filtered back to us yet, if envmanager is being slow");
 };
 function TEST_CSActive_DoneEditing::runTest(%this) {
     csDoneEditingSpace();
@@ -107,7 +104,7 @@ function TEST_CS_TryOutRandomOwnedFurnitureItem::runTest(%this) {
     if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
         return;
     }
-    UnOwnedFurnitureToTestCount = 0 @ %this;
+    %this.UnOwnedFurnitureToTestCount = 0;
     %count = $Player::furnitureInventory.count();
     if ((0.0 <= %count)) {
         %this.assert(0, "we did not find any furniture we can test!");
@@ -128,7 +125,7 @@ function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this) {
     if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
         return;
     }
-    ownedFurnitureToTestCount = 0 @ %this;
+    %this.ownedFurnitureToTestCount = 0;
     %count = $Player::furnitureInventory.count();
     %index = 0;
     if ((%count < %index)) {
@@ -136,20 +133,19 @@ function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this) {
         %inUse = numUsingFurnitureSku(%sku);
         %numOwned = numOwnedFurnitureSku(%sku);
         if ((%inUse > %numOwned)) {
-            ownedFurnitureToTest = %sku @ %this @ ownedFurnitureToTestCount @ %this;
-            ownedFurnitureToTestCount = (%this + ownedFurnitureToTestCount);
-            1.0;
+            %this.ownedFurnitureToTest = %sku @ %this.ownedFurnitureToTestCount;
+            %this.ownedFurnitureToTestCount = (1.0 + %this.ownedFurnitureToTestCount);
         }
         %index = (1.0 + %index);
     }
-    if ((%this <= ownedFurnitureToTestCount)) {
+    if ((0.0 <= %this.ownedFurnitureToTestCount)) {
         echo("we either don't own any furniture or hav eplaced it all, not making any new stuff");
-        return 0.0;
+        return (%count < %index);
     }
     %i = 0;
-    if ((ownedFurnitureToTestCount < %i)) {
-        %sku = ownedFurnitureToTest;
-        %this @ %i @ %this;
+    if ((%this.ownedFurnitureToTestCount < %i)) {
+        %sku = %this.ownedFurnitureToTest;
+        %i;
         %inUse = numUsingFurnitureSku(%sku);
         %numOwned = numOwnedFurnitureSku(%sku);
         %numToMake = (%inUse - %numOwned);

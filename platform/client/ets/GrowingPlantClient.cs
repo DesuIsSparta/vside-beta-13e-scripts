@@ -12,17 +12,15 @@ function GrowingPlantClient::onPlantCreated(%nuggetId) {
         return;
     }
     $DlgNameAPlant = MessageBoxTextEntryWithCancel(, , "GrowingPlantClient::NamePlantDialogSubmit", "Planty", 32);
-    plantNuggetID = %nuggetId @ $DlgNameAPlant;
+    $DlgNameAPlant.plantNuggetID = %nuggetId;
 };
 function GrowingPlantClient::NamePlantDialogSubmit(%newName) {
-    commandToServer('GrowingPlant_NamePlant', CustomSpaceClient::GetSpaceImIn(), plantNuggetID, %newName);
+    commandToServer('GrowingPlant_NamePlant', CustomSpaceClient::GetSpaceImIn(), $DlgNameAPlant.plantNuggetID, %newName);
 };
 function GrowingPlantClient::isPlant(%plantSkuOrObject) {
     if (isObject(%plantSkuOrObject)) {
-        %sku = sku;
-        nugget;
+        %sku = %plantSkuOrObject.nugget.sku;
     }
     %sku = %plantSkuOrObject;
-    %plantSkuOrObject;
     return (0.0 >= findWord($gGrowingPlantSkuList, %sku));
 };

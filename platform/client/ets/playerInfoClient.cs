@@ -7,19 +7,19 @@ function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %locati
         return 0;
     }
     %playerInfo = safeEnsureScriptObject("ScriptObject", "");
-    age = %age @ %playerInfo;
-    gender = %gender @ %playerInfo;
-    location = %location @ %playerInfo;
-    hereToSee = %hereToSee @ %playerInfo;
-    tags = %tags @ %playerInfo;
-    affinity = %affinity @ %playerInfo;
-    respekt = %respekt @ %playerInfo;
-    respektRank = %respektRank @ %playerInfo;
-    activities = "" @ %playerInfo;
+    %playerInfo.age = %age;
+    %playerInfo.gender = %gender;
+    %playerInfo.location = %location;
+    %playerInfo.hereToSee = %hereToSee;
+    %playerInfo.tags = %tags;
+    %playerInfo.affinity = %affinity;
+    %playerInfo.respekt = %respekt;
+    %playerInfo.respektRank = %respektRank;
+    %playerInfo.activities = "";
     %entry = %playerName.get();
     UserListFriends;
     if (isObject(%entry)) {
-        activities = %entry @ activities @ %playerInfo;
+        %playerInfo.activities = %entry.activities;
     }
     %this.put(%playerName, %playerInfo.getId());
     if (!(%playerName $= $Player::Name)) {
@@ -47,7 +47,7 @@ function PlayerInfoMap::removeAllInfo(%this) {
     %this.clear();
 };
 function clientCmdClearPlayerInfoCache() {
-    removeAllInfo();
+    PlayerInfoMap.removeAllInfo();
 };
 function getPlayerNamesInRadius(%radius) {
     if (!(isObject($player))) {
@@ -80,8 +80,8 @@ function requestPlayerInfoForWithCallback(%playerName, %callback, %data) {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
         return;
     }
-    callback = %callback @ %request;
-    callbackData = %data @ %request;
+    %request.callback = %callback;
+    %request.callbackData = %data;
     %url = $Net::ClientServiceURL @ "/getProximalPlayerInfo";
     %user = "user=" @ urlEncode($Player::Name);
     %token = "token=" @ urlEncode($Token);
@@ -89,8 +89,8 @@ function requestPlayerInfoForWithCallback(%playerName, %callback, %data) {
     %url = %url @ "?" @ %user;
     %url = %url @ "&" @ %token;
     %url = %url @ "&" @ %proximalPlayers;
-    requestPlayerInfoFor = %playerName @ %request;
-    askedForPlayers = "" @ %request;
+    %request.requestPlayerInfoFor = %playerName;
+    %request.askedForPlayers = "";
     log("relations", "debug", "requestPlayerInfoFor: " @ %url);
     %request.setURL(%url);
     if (!(haveValidManagerHost())) {
@@ -103,21 +103,19 @@ function requestPlayerInfoForWithCallback(%playerName, %callback, %data) {
 };
 function PlayerInfoRequest::onError(%this, %errorNum, %errorName) {
     log("network", "warn", getScopeName() @ ": " @ %errorNum @ " " @ %errorName);
-    if (isObject()) {
+    if (isObject(InfoPopupDlg)) {
     }
-    if (isShowing()) {
-        stopAnimation();
+    if (InfoPopupDlg.isShowing()) {
+        InfoPopupDlg.stopAnimation();
     }
-    callback = InfoPopupDlg @ "" @ %this;
-    InfoPopupDlg;
+    %this.callback = "";
 };
 function PlayerInfoRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     if ((%status $= "success")) {
         %numUsers = %this.getValue("numUsers");
         $ETS::PlayerInfo::NoTags = %this.getValue("notags");
-        %failedPlayers = askedForPlayers;
-        %this;
+        %failedPlayers = %this.askedForPlayers;
         %i = 0;
         if ((%numUsers < %i)) {
             %name = %this.getValue("proximalPlayers" @ %i @ ".userName");
@@ -150,45 +148,41 @@ function PlayerInfoRequest::onDone(%this) {
                 PlayerInfoMap;
             }
         }
-        if ((%this SPC callback $= "")) {
-            if (isObject()) {
-                stopAnimation();
+        if (((%num < %i) @ " " @ %this.callback $= "")) {
+            if (isObject(InfoPopupDlg)) {
+                InfoPopupDlg.stopAnimation();
             }
             if ((0.0 == %numUsers)) {
-                if (!(%this SPC requestPlayerInfoFor $= "")) {
-                    showPlayerNotFound();
+                if (!(%this.requestPlayerInfoFor $= "")) {
+                    InfoPopupDlg.showPlayerNotFound();
                 }
             }
-            if (isObject()) {
-                if (!(%this SPC requestPlayerInfoFor $= "")) {
+            if (isObject(InfoPopupDlg)) {
+                if (!(%this.requestPlayerInfoFor $= "")) {
                 }
-                if ((%this SPC requestPlayerInfoFor.get() $= "")) {
-                    showPlayerNotFound();
+                if ((PlayerInfoMap @ " " @ %this.requestPlayerInfoFor.get() $= "")) {
+                    InfoPopupDlg.showPlayerNotFound();
                 }
-                tryShowPlayerInfo();
+                InfoPopupDlg.tryShowPlayerInfo();
             }
         }
         if ((0.0 > %numUsers)) {
-            %playinfo = requestPlayerInfoFor.get();
-            %this;
+            %playinfo = %this.requestPlayerInfoFor.get();
+            PlayerInfoMap;
         }
         %playinfo = 0;
-        PlayerInfoMap;
-        %cmd = InfoPopupDlg @ PlayerInfoMap @ InfoPopupDlg @ InfoPopupDlg @ %this @ callback @ "(" @ %this @ requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this @ callbackData @ ");";
-        InfoPopupDlg;
+        %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this.callbackData @ ");";
         eval(%cmd);
     }
-    if ((%this SPC callback $= "")) {
-        if (isObject()) {
+    if ((%this.callback $= "")) {
+        if (isObject(InfoPopupDlg)) {
         }
-        if (isShowing()) {
-            stopAnimation();
+        if (InfoPopupDlg.isShowing()) {
+            InfoPopupDlg.stopAnimation();
         }
     }
-    %cmd = InfoPopupDlg @ InfoPopupDlg @ %this @ callback @ "(" @ %this @ requestPlayerInfoFor @ ",0," @ %this @ callbackData @ ");";
-    InfoPopupDlg;
+    %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
     eval(%cmd);
-    requestPlayerInfoFor = InfoPopupDlg @ "" @ %this;
-    InfoPopupDlg;
-    callback = (%num < %i) @ "" @ %this;
+    %this.requestPlayerInfoFor = "";
+    %this.callback = "";
 };

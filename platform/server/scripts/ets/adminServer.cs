@@ -1,36 +1,35 @@
 function serverCmdAdminAction(%senderConnection, %action, %target, %message) {
-    if (!(isObject(Player))) {
+    if (!(isObject(%senderConnection.Player))) {
         error("null player sending boot command:" @ " " @ %senderConnection);
-        return %senderConnection;
+        return;
     }
-    if (!(Player.isStaff())) {
-        error(%senderConnection @ Player.getShapeName());
-        return "non-staff player sending admin action:" @ " ";
+    if (!(%senderConnection.Player.isStaff())) {
+        error("non-staff player sending admin action:" @ " " @ %senderConnection.Player.getShapeName());
+        return;
     }
     if ((0.0 != %target)) {
         %target = %senderConnection.resolveObjectFromGhostIndex(%target);
     }
     if (!(admin::isActionable(%target, %action))) {
-        error(%senderConnection @ Player.getShapeName() @ " " @ "action =" @ " " @ %action @ " " @ "target =" @ " " @ %target);
-        return "Got invalid target/action in serverCmdAdminAction() - sender =" @ " ";
+        error("Got invalid target/action in serverCmdAdminAction() - sender =" @ " " @ %senderConnection.Player.getShapeName() @ " " @ "action =" @ " " @ %action @ " " @ "target =" @ " " @ %target);
+        return;
     }
-    %adminName = Player.getShapeName();
-    %senderConnection;
+    %adminName = %senderConnection.Player.getShapeName();
     %targetName = admin::getTargetName(%target);
     warn("AdminAction:" @ " " @ %adminName @ " " @ %action @ " " @ "object" @ " " @ %target @ " " @ %targetName);
     if ((%action $= "Boot")) {
-        admin::doBoot(%target, %message, Player);
+        admin::doBoot(%target, %message, %senderConnection.Player);
     }
-    if ((%senderConnection SPC %action $= "Ban")) {
-        admin::doBan(%target, %message, Player);
+    if ((%action $= "Ban")) {
+        admin::doBan(%target, %message, %senderConnection.Player);
     }
-    if ((%senderConnection SPC %action $= "Message")) {
-        admin::doMessage(%target, %message, Player);
+    if ((%action $= "Message")) {
+        admin::doMessage(%target, %message, %senderConnection.Player);
     }
-    if ((%senderConnection SPC %action $= "Throw Voice")) {
-        admin::doThrowVoice(%target, %message, Player);
+    if ((%action $= "Throw Voice")) {
+        admin::doThrowVoice(%target, %message, %senderConnection.Player);
     }
-    return %senderConnection;
+    return;
 };
 function admin::doBoot(%target, %message, %adminPlayer) {
     %client = %target.getControllingClient();
@@ -44,9 +43,9 @@ function admin::doBoot(%target, %message, %adminPlayer) {
 };
 function BanRequest::onLine(%this, %line) {
     if (!(%line $= "success")) {
-        error(%this @ user);
+        error("ban failed:" @ " " @ %this.user);
     }
-    return "ban failed:" @ " ";
+    return;
 };
 function admin::doBan(%target, %message, %adminPlayer) {
     %client = %target.getControllingClient();
@@ -54,13 +53,12 @@ function admin::doBan(%target, %message, %adminPlayer) {
         %target.delete();
         return;
     }
-    %banRequest = new CURLObject(BanRequest);
-    user = %target.getShapeName() @ %banRequest;
+    %banRequest = new CURLObject(BanRequest);;
+    %banRequest.user = %target.getShapeName();
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=ban";
-    %userValue = %banRequest @ urlEncode(user);
-    "user=";
+    %userValue = "user=" @ urlEncode(%banRequest.user);
     %post = %userValue @ "&" @ "ban=true";
     %banRequest.post(%host, %uri, %query, %post);
     commandToClient(%client, 'beingBanned', %message);
@@ -93,16 +91,14 @@ function admin::doThrowVoice(%target, %message, %adminPlayer) {
     return NPCManager;
 };
 function NPCManager::doThrowVoice(%this, %msg, %adminPlayer) {
-    if (!(isObject(NPCGroup))) {
+    if (!(isObject(%this.NPCGroup))) {
         warn("No NPC group..");
-        return %this;
+        return;
     }
-    %NPCNum = NPCGroup.getCount();
-    %this;
+    %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
     if ((%NPCNum < %n)) {
-        ServersideChatMessage(NPCGroup.getObject(%n), 0, %msg);
+        ServersideChatMessage(%this.NPCGroup.getObject(%n), 0, %msg);
         %n = (1.0 + %n);
-        %this;
     }
 };

@@ -12,8 +12,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %isRentabot = rentabot_isRentabotName(%playerName);
     if (isObject(%playerClicked)) {
     }
-    %sameServer = (%playerName.get() SPC serverName $= $ServerName);
-    UserListFriends;
+    %sameServer = (UserListFriends @ " " @ %playerName.get().serverName $= $ServerName);
     if (isObject(%playerClicked)) {
     }
     %isRealPlayer = 0;
@@ -30,8 +29,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %schemeDisabled = 1;
     %schemeProfile = 0;
     %schemeFavorite = 0;
-    %schemePM = isObject() ? 0 : 1;
-    pChat;
+    %schemePM = isObject(pChat) ? 0 : 1;
     %schemeIgnore = 0;
     %schemeReport = 0;
     %schemeTeleport = 0;
@@ -366,23 +364,23 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             %n = (1.0 + %n);
             %this.add("Drop Microphone", , 0);
         }
-        if (areWeInspecting()) {
+        if (gameMgrClient.areWeInspecting()) {
             if (($player != %playerClicked)) {
                 %this.add("Invite to game");
             }
-            if (inCustomGame()) {
+            if (gameMgrClient.inCustomGame()) {
             }
-            if (areWeHostOfInspectedGame()) {
+            if (gameMgrClient.areWeHostOfInspectedGame()) {
                 %this.add("Change score");
                 %this.add("Change status");
             }
         }
         %n = (1.0 + %n);
-        %this.addIfPermitted("snoop", "        --- mod/staff ---", gameMgrClient, %schemeDisabled);
+        %this.addIfPermitted("snoop", "        --- mod/staff ---", , %schemeDisabled);
         %n = (1.0 + %n);
-        %this.addIfPermitted("manageUsersBasic", "Ban...", gameMgrClient, %schemeNormal);
+        %this.addIfPermitted("manageUsersBasic", "Ban...", , %schemeNormal);
         %n = (1.0 + %n);
-        %this.addIfPermitted("manageUsersBasic", "Manage on Web", gameMgrClient, %schemeNormal);
+        %this.addIfPermitted("manageUsersBasic", "Manage on Web", , %schemeNormal);
         %n = (1.0 + %n);
         %this.addIfPermitted("track", "Fly To", , %schemeFlyTo);
         %n = (1.0 + %n);
@@ -446,21 +444,21 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             %this.add("Puppetry: Copy Skus", , %schemeSaySumpn);
             %n = (1.0 + %n);
             %this.add("Puppetry: Paste Skus", , %schemeSaySumpn);
-            if (isObject()) {
+            if (isObject(pChat)) {
                 %n = (1.0 + %n);
-                %this.add("Puppetry: Speak", pChat, %schemeSaySumpn);
+                %this.add("Puppetry: Speak", , %schemeSaySumpn);
             }
-            if (isObject()) {
+            if (isObject(pChat)) {
                 %n = (1.0 + %n);
-                %this.add("Puppetry: Whisper", pChat, %schemeWhisper);
+                %this.add("Puppetry: Whisper", , %schemeWhisper);
             }
-            if (isObject()) {
+            if (isObject(pChat)) {
                 %n = (1.0 + %n);
-                %this.add("Puppetry: Yell", pChat, %schemeSaySumpn);
+                %this.add("Puppetry: Yell", , %schemeSaySumpn);
             }
-            if (isObject()) {
+            if (isObject(pChat)) {
                 %n = (1.0 + %n);
-                %this.add("Puppetry: SOS", pChat, %schemeSaySumpn);
+                %this.add("Puppetry: SOS", , %schemeSaySumpn);
             }
             if ((%playerClicked.getClassName() $= "AIPlayer")) {
                 %n = (1.0 + %n);
@@ -472,9 +470,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 %n = (1.0 + %n);
                 %this.add("Puppetry: Puppy", , %schemeSaySumpn);
             }
-            if (isObject()) {
+            if (isObject(pChat)) {
                 %n = (1.0 + %n);
-                %this.add("Puppetry: Badge", pChat, %schemeSaySumpn);
+                %this.add("Puppetry: Badge", , %schemeSaySumpn);
             }
             %n = (1.0 + %n);
             %this.add("Puppetry: Dance With", , %schemeSaySumpn);
@@ -564,10 +562,10 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
         if ((%text $= "Two-Player Action..")) {
             %playerName.open();
         }
-        if ((TwoPlayerEmotesPanel SPC %text $= "Give vCurrency")) {
+        if ((TwoPlayerEmotesPanel @ " " @ %text $= "Give vCurrency")) {
             %playerName.open("initiate");
         }
-        if ((geGiftingPanel SPC %text $= "Give Drink")) {
+        if ((geGiftingPanel @ " " @ %text $= "Give Drink")) {
             drinks_confirmInitiateGift(%playerName);
         }
         if ((%text $= "Give Gift")) {
@@ -583,10 +581,10 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
         if ((%text $= "Invite to game")) {
             %playerName.invitePlayerToInspectedGame();
         }
-        if ((gameMgrClient SPC %text $= "Change score")) {
+        if ((gameMgrClient @ " " @ %text $= "Change score")) {
             %playerName.doHostPopupChangeScore();
         }
-        if ((gameMgrClient SPC %text $= "Change status")) {
+        if ((gameMgrClient @ " " @ %text $= "Change status")) {
             %playerName.doHostPopupChangeStatus();
         }
         %handled = 0;
@@ -664,25 +662,25 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
             0.setValue();
             doTeleportBlock();
         }
-        if ((TeleportBlockCheckBox SPC %text $= "Refuse Teleports")) {
+        if ((TeleportBlockCheckBox @ " " @ %text $= "Refuse Teleports")) {
             1.setValue();
             doTeleportBlock();
         }
-        if ((TeleportBlockCheckBox SPC %text $= "Allow Whispers")) {
+        if ((TeleportBlockCheckBox @ " " @ %text $= "Allow Whispers")) {
             0.setValue();
             doWhisperBlock(1);
         }
-        if ((WhisperBlockCheckBox SPC %text $= "Refuse Whispers")) {
+        if ((WhisperBlockCheckBox @ " " @ %text $= "Refuse Whispers")) {
             1.setValue();
             doWhisperBlock(1);
         }
-        if ((WhisperBlockCheckBox SPC %text $= "Allow Yells")) {
+        if ((WhisperBlockCheckBox @ " " @ %text $= "Allow Yells")) {
             0.setValue();
         }
-        if ((YellBlockCheckBox SPC %text $= "Refuse Yells")) {
+        if ((YellBlockCheckBox @ " " @ %text $= "Refuse Yells")) {
             1.setValue();
         }
-        if ((YellBlockCheckBox SPC %text $= "Respawn Me!")) {
+        if ((YellBlockCheckBox @ " " @ %text $= "Respawn Me!")) {
             doRespawnMe();
         }
         if ((%text $= "Drop Microphone")) {
@@ -703,27 +701,27 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
                 %playerName.get().setHeight(1.15);
             }
         }
-        if ((PlayerDict SPC %text $= "Set Height: tall")) {
+        if ((PlayerDict @ " " @ %text $= "Set Height: tall")) {
             if ($StandAlone) {
                 %playerName.get().setHeight(1.075);
             }
         }
-        if ((PlayerDict SPC %text $= "Set Height: medium")) {
+        if ((PlayerDict @ " " @ %text $= "Set Height: medium")) {
             if ($StandAlone) {
                 %playerName.get().setHeight(1);
             }
         }
-        if ((PlayerDict SPC %text $= "Set Height: short")) {
+        if ((PlayerDict @ " " @ %text $= "Set Height: short")) {
             if ($StandAlone) {
                 %playerName.get().setHeight(0.93);
             }
         }
-        if ((PlayerDict SPC %text $= "Set Height: really short")) {
+        if ((PlayerDict @ " " @ %text $= "Set Height: really short")) {
             if ($StandAlone) {
                 %playerName.get().setHeight(0.86);
             }
         }
-        if ((PlayerDict SPC %text $= "Puppetry: Speak")) {
+        if ((PlayerDict @ " " @ %text $= "Puppetry: Speak")) {
             doUserSaySomething(%playerName);
         }
         if ((%text $= "Puppetry: Whisper")) {
@@ -819,7 +817,7 @@ function PlayerContextMenu::onSelect(%this, %unused, %text) {
         if ((%text $= "Message")) {
             %aimName.talkTo();
         }
-        if ((AIMConvManager SPC %text $= "Send Invite")) {
+        if ((AIMConvManager @ " " @ %text $= "Send Invite")) {
             %aimName.open();
         }
         %handled = 0;
@@ -831,13 +829,13 @@ function PlayerContextMenu::showComingSoon(%this, %featureName) {
 };
 function PlayGui::onRMBPlayer(%this, %obj) {
     %obj.initWithPlayer();
-    getCursorPos().showAtPoint();
+    Canvas.getCursorPos().showAtPoint();
 };
 function BuddyHudRequestsList::onRightMouseUp(%this) {
     %text = stripUnprintables(%this.getRowText(%this.getMouseOverRow()));
     if (!(%text $= "")) {
         %text.initWithPlayerName();
-        getCursorPos().showAtPoint();
+        Canvas.getCursorPos().showAtPoint();
     }
     warn("Got empty player name from right click on FavoritesList");
 };
@@ -862,9 +860,9 @@ function doKiss(%obj) {
 $InspectSkusMap = 0;
 function getWearingItemWithMoreInfo(%player) {
     if (!(isObject($InspectSkusMap))) {
-        $InspectSkusMap = new ""();
+        $InspectSkusMap = new ""();;
         StringMap;
-        if (isObject()) {
+        if (isObject(MissionCleanup)) {
             $InspectSkusMap.add();
         }
         $InspectSkusMap.put(22228, "neptune");
@@ -891,9 +889,8 @@ function getWearingItemWithMoreInfo(%player) {
     %skusList = %player.getActiveSKUs();
     MissionCleanup;
     %num = getWordCount(%skusList);
-    MissionCleanup;
-    %inspectTextDir = "projects/common/inventoryInspect/";
     0;
+    %inspectTextDir = "projects/common/inventoryInspect/";
     %i = 0;
     if ((%num < %i)) {
         %skunum = getWord(%skusList, %i);
@@ -902,7 +899,7 @@ function getWearingItemWithMoreInfo(%player) {
             %skunum = %mapped;
         }
         %inspectFile = %inspectTextDir @ %skunum @ ".txt";
-        %fo = new ""();
+        %fo = new ""();;
         FileObject;
         if (%fo.openForRead(%inspectFile)) {
             %fo.delete();

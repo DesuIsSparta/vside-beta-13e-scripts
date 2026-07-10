@@ -1,11 +1,12 @@
 exec("./skeletonClient.cs");
 function testLoginAndStay() {
     $loginLogout = 0;
-    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
-    password = $UserPref::Player::Password;
-    joinAction = "walk";
-    quitOnError = "true";
-    %testLogin = ;
+    %testLogin = new ScriptObject(skeletonClient) {
+        userName = $UserPref::Player::Name;
+        password = $UserPref::Player::Password;
+        joinAction = "walk";
+        quitOnError = "true";
+    };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
@@ -69,7 +70,7 @@ function walk() {
 function stopAndTalk() {
     $mvYawLeftSpeed = 0;
     $mvForwardAction = 0;
-    pChat @ "Hello from" @ " " @ $Hostname @ ".".say(0, 0);
+    "Hello from" @ " " @ $Hostname @ ".".say(0, 0);
     schedule(1000, 0);
 };
 function stopAndDance() {

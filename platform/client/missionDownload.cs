@@ -1,71 +1,71 @@
 function onMissionDownloadPhase1(%unused, %unused) {
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         0.setValue();
         "Loading data".setValue();
     }
-    if (isObject()) {
+    if (isObject(TransitionPBController)) {
         0.setValue();
     }
 };
 function onPhase1Progress(%progress) {
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         (0.33 * %progress).setValue();
     }
-    if (isObject()) {
+    if (isObject(TransitionPBController)) {
         (0.33 * %progress).setValue();
     }
 };
 function onPhase1Complete() {
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         0.33.setValue();
     }
 };
 function onMissionDownloadPhase2() {
     $Client::MissionLoadTimeStart = getSimTime();
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         "Loading objects".setValue();
     }
-    if (isObject()) {
+    if (isObject(TransitionPBController)) {
         "Loading objects".setValue();
     }
 };
 function onPhase2ProgressUpdateStatusDisplay(%progress) {
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         (0.33 + (0.33 * %progress)).setValue();
     }
-    if (isObject()) {
+    if (isObject(TransitionPBController)) {
         (0.33 + (0.33 * %progress)).setValue();
     }
 };
 function onPhase2Complete() {
 };
 function onFileChunkReceived(%fileName, %ofs, %size) {
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         (%size / %ofs).setValue();
-        LoadingPBController @ LoadingProgressTxt @ "Downloading " @ %fileName @ "...".setValue();
+        "Downloading " @ %fileName @ "...".setValue();
     }
-    if (isObject()) {
+    if (isObject(TransitionPBController)) {
         (%size / %ofs).setValue();
     }
 };
 function onMissionDownloadPhase3() {
-    if (isObject()) {
+    if (isObject(LoadingProgressTxt)) {
         "Lighting".setValue();
     }
 };
 function onPhase3Progress(%progress) {
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         (0.66 + (0.33 * %progress)).setValue();
     }
-    if (isObject()) {
+    if (isObject(TransitionPBController)) {
         (0.66 + (0.33 * %progress)).setValue();
     }
 };
 function onPhase3Complete() {
-    if (isObject()) {
+    if (isObject(LoadingPBController)) {
         1.setValue();
     }
-    if (isObject()) {
+    if (isObject(TransitionPBController)) {
         1.setValue();
     }
     $lightingMission = 0;
@@ -90,9 +90,9 @@ if (Using_DF()) {
 }
 function handleLoadInfoMessage(%unused, %msgString) {
     0.setVisible();
-    if (isAwake()) {
+    if (WorldMap.isAwake()) {
     }
-    if (isAwake()) {
+    if (LoginGui.isAwake()) {
     }
     if ($StandAlone) {
         0.setTransitioning();
@@ -100,31 +100,35 @@ function handleLoadInfoMessage(%unused, %msgString) {
         %line = 0;
         Canvas;
         if ((qLineCount < %line)) {
-            qLine = LoadingGui @ LoadingGui @ "" @ %line @ LoadingGui;
-            LoginGui;
+            qLine = "" @ %line @ LoadingGui;
+            LoadingGui;
             %line = (1.0 + %line);
-            WorldMap;
+            LoadingGui;
         }
-        qLineCount = (qLineCount < %line) @ 0 @ LoadingGui;
-        LoadingGui;
+        qLineCount = 0 @ LoadingGui;
+        (qLineCount < %line);
     }
-    if (isAwake()) {
+    if (PlayGui.isAwake()) {
         1.setTransitioning();
         "LoadingGui".setContent();
         $TransitionScreenshot.setScreenshotBitmap();
     }
 };
 function handleLoadDescriptionMessage(%unused, %msgString) {
-    qLine = %msgString @ LoadingGui @ qLineCount @ LoadingGui;
+    qLine = LoadingGui @ qLineCount @ LoadingGui;
+    %msgString;
     qLineCount = (LoadingGui + qLineCount);
     1.0;
     %text = "<spush><font:Arial:16>";
     %line = 0;
     if (((LoadingGui - qLineCount) < %line)) {
-        %text = 1.0 @ %text @ %line @ LoadingGui @ qLine @ " ";
+        %text = %line @ LoadingGui @ qLine @ " ";
+        %text;
         %line = (1.0 + %line);
+        1.0;
     }
-    %text = 1.0 @ ((LoadingGui - qLineCount) < %line) @ %text @ %line @ LoadingGui @ qLine @ "<spop>";
+    %text = %line @ LoadingGui @ qLine @ "<spop>";
+    %text;
 };
 function handleLoadInfoDoneMessage(%unused, %msgString) {
 };

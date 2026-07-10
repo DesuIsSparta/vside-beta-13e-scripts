@@ -601,11 +601,12 @@ function initTeleports() {
 };
 function testLoginAndStay() {
     $loginLogout = 0;
-    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
-    password = $UserPref::Player::Password;
-    joinAction = "doSomething";
-    quitOnError = "true";
-    %testLogin = ;
+    %testLogin = new ScriptObject(skeletonClient) {
+        userName = $UserPref::Player::Name;
+        password = $UserPref::Player::Password;
+        joinAction = "doSomething";
+        quitOnError = "true";
+    };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
@@ -627,36 +628,30 @@ function do_emote() {
         $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
     }
     $mvForwardAction = 0;
-    $rand_emote = getRandom(0, (EmoteDict - size())).getValue();
-    1.0;
-    $rand_genre = getRandom(1, $GenresCount);
+    $rand_emote = getRandom(0, (1.0 - EmoteDict.size())).getValue();
     EmoteDict;
+    $rand_genre = getRandom(1, $GenresCount);
     commandToServer('EtsPlayAnimName', $rand_emote);
-    if (isObject()) {
-        $rand_genre[$rand_genre[pChat @ pChat @ "(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote.say(0, 0);
+    if (isObject(pChat)) {
+        $rand_genre[pChat @ $rand_genre["(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote.say(0, 0);
     }
     commandToServer('setGenre', $rand_genre[$Genres @ $rand_genre]);
     schedule(5000, 0);
     schedule(30000, 0);
 };
 function stopAndTalk() {
-    if (isObject()) {
-        if (isVisible()) {
-            close();
+    if (isObject(pChat)) {
+        if (ClosetGui.isVisible()) {
+            ClosetGui.close();
         }
-        if (isVisible()) {
-            closeFully();
+        if (geTGF.isVisible()) {
+            geTGF.closeFully();
         }
         $mvYawLeftSpeed = 0;
-        geTGF;
         $mvYawRightSpeed = 0;
-        geTGF;
         $mvForwardAction = 0;
-        ClosetGui;
         %rand_teleport_NV = getRandom(1, $teleportsNVCount);
-        ClosetGui;
         %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
-        pChat;
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
         if (($DestServerName $= "NewVeneziaNorth")) {
         }
@@ -676,7 +671,7 @@ function stopAndTalk() {
             %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
             %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
         }
-        pChat @ "(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination.say(0, 0);
+        "(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination.say(0, 0);
         commandToServer(%command, %destination);
         schedule(4000, 0);
     }
@@ -698,7 +693,7 @@ function logoffAndQuit() {
 };
 function takeSnapshot() {
     echo("LOAD: takeSnapshot");
-    automateSnapshotUpload();
+    BroadCastControlPanel.automateSnapshotUpload();
 };
 function useAndSaveRandomOutfit() {
     %drwrs = "glasses torso legs legsb feet ear neck neckb wristleft wristleftb wristright wristrightb purse hat";
@@ -727,7 +722,8 @@ function approveFriendRequests() {
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        pChat @ "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
+        "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
         %n = (1.0 - %n);
+        pChat;
     }
 };

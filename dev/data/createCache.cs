@@ -2,7 +2,7 @@ schedule(3000, 0);
 $iterationsWaited = 0;
 doLoginCheck;
 function doLoginCheck() {
-    if (isObject()) {
+    if (isObject(pChat)) {
         echo("CACHE: We found PChat. Quitting in 10 seconds...");
         schedule(10000, 0);
     }

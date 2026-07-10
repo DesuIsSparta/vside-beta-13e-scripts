@@ -13,7 +13,7 @@ function StringMap::saveToLocalStorage(%this, %fileName) {
     return %this.saveTo(%fileName);
 };
 function StringMap::saveTo(%this, %fileName) {
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     %ret = 0;
     0;
@@ -40,7 +40,7 @@ function StringMap::loadFromLocalStorage(%this, %fileName, %errorLogLevel) {
 };
 function StringMap::loadFrom(%this, %fileName, %errorLogLevel) {
     %this.clear();
-    %file = new ""();
+    %file = new ""();;
     FileObject;
     %ret = 0;
     0;
@@ -61,7 +61,7 @@ function StringMap::loadFrom(%this, %fileName, %errorLogLevel) {
 };
 function StringMap::getLocalStorageFilename(%this, %fileName) {
     %ret = "common/localStorage/";
-    %ret = urlEncode(%ret @ %fileName @ ".txt");
+    %ret = %ret @ urlEncode(%fileName @ ".txt");
     return %ret;
 };
 function StringMap::deleteValuesAsObjects(%this) {

@@ -1,30 +1,30 @@
 function serverCmdUseMesh(%client, %mesh) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.UseMesh(%mesh);
-    return %client;
+    %client.Player.UseMesh(%mesh);
+    return;
 };
 function serverCmdUseMeshRandom(%client, %category) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.UseMeshRandom(%category);
-    return %client;
+    %client.Player.UseMeshRandom(%category);
+    return;
 };
 function serverCmdUseSkinToneRandom(%client) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.UseSkinToneRandom();
-    return %client;
+    %client.Player.UseSkinToneRandom();
+    return;
 };
 function serverCmdUseSkinTone(%client, %tone) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.UseSkinTone(%tone);
-    return %client;
+    %client.Player.UseSkinTone(%tone);
+    return;
 };
 function Player::UseSkinTone(%this, %tone) {
     %this.setSkinName(%tone);
@@ -47,11 +47,11 @@ function Player::UseSkinToneRandom(%this) {
     return;
 };
 function serverCmdUseHairRandom(%client) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.UseHairRandom();
-    return %client;
+    %client.Player.UseHairRandom();
+    return;
 };
 function Player::UseHairRandom(%this) {
     if (!($numHairTones)) {
@@ -69,11 +69,11 @@ function Player::UseHairRandom(%this) {
     return;
 };
 function serverCmdUseClothesRandom(%client) {
-    if (!(isObject(Player))) {
-        return %client;
+    if (!(isObject(%client.Player))) {
+        return;
     }
-    Player.UseClothesRandom();
-    return %client;
+    %client.Player.UseClothesRandom();
+    return;
 };
 function Player::UseClothesRandom(%this) {
     %this.UseMeshRandom("feet");

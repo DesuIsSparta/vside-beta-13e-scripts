@@ -47,41 +47,37 @@ function startGame() {
         error("startGame: End the game first!");
         return;
     }
-    if (isObject()) {
-        restoreTransformsSet();
-        copyObjectNamesToShapeNamesSet();
-        registerInPlayerDictSet();
+    if (isObject(NPCGroup)) {
+        restoreTransformsSet(NPCGroup);
+        copyObjectNamesToShapeNamesSet(NPCGroup);
+        registerInPlayerDictSet(NPCGroup);
     }
     %clientIndex = 0;
-    NPCGroup;
-    if ((getCount() < %clientIndex)) {
+    if ((ClientGroup.getCount() < %clientIndex)) {
         %cl = %clientIndex.getObject();
         ClientGroup;
         commandToClient(%cl, 'GameStart');
-        score = ClientGroup @ 0 @ %cl;
-        NPCGroup;
+        %cl.score = 0;
         %clientIndex = (1.0 + %clientIndex);
-        NPCGroup;
     }
     new ScriptObject(AIManager);
-    add();
-    think();
+    MissionCleanup.add(AIManager);
+    AIManager.think(AIManager);
     new ScriptObject(AdManager);
-    add();
-    init();
-    think();
+    MissionCleanup.add(AdManager);
+    AdManager.init(AdManager);
+    AdManager.think(AdManager);
     new ScriptObject(NPCManager);
-    add();
-    init();
-    think();
+    MissionCleanup.add(NPCManager);
+    NPCManager.init(NPCManager);
+    NPCManager.think(NPCManager);
     InitSittingSystem();
     if ($Game::Duration) {
         $Game::Schedule = schedule((1000.0 * $Game::Duration), 0, "onGameDurationEnd");
-        NPCManager;
+        (ClientGroup.getCount() < %clientIndex);
     }
     $Game::Running = 1;
-    NPCManager;
-    return NPCManager;
+    return;
 };
 function endGame() {
     if (!($Game::Running)) {
@@ -90,25 +86,24 @@ function endGame() {
     }
     cancel($Game::Schedule);
     %clientIndex = 0;
-    if ((getCount() < %clientIndex)) {
+    if ((ClientGroup.getCount() < %clientIndex)) {
         %cl = %clientIndex.getObject();
         ClientGroup;
         commandToClient(%cl, 'GameEnd');
         %clientIndex = (1.0 + %clientIndex);
-        ClientGroup;
     }
     resetMission();
     $Game::Running = 0;
-    (getCount() < %clientIndex);
-    return ClientGroup;
+    (ClientGroup.getCount() < %clientIndex);
+    return;
 };
 function onGameDurationEnd() {
     if ($Game::Duration) {
     }
-    if (!(isObject())) {
+    if (!(isObject(EditorGui))) {
         cycleGame();
     }
-    return EditorGui;
+    return;
 };
 function cycleGame() {
     if (!($Game::Cycling)) {
@@ -140,26 +135,26 @@ function onCyclePauseEnd() {
 };
 function GameConnection::onClientEnterGame(%this) {
     commandToClient(%this, 'SyncClock', ($Game::StartTime - $Sim::Time));
-    dataBlock = new ""() @ Observer;
-    Camera;
-    Camera = 0 @ %this;
-    Camera.add();
-    Camera.scopeToClient(%this);
-    score = %this @ 0 @ %this;
-    %this;
+    0;
+    %this.Camera = new ""() {
+        dataBlock = Camera @ Observer;
+    };
+    %this.Camera.add();
+    %this.Camera.scopeToClient(%this);
+    %this.score = MissionCleanup @ 0;
     %this.spawnPlayer();
-    return MissionCleanup;
+    return;
 };
 function GameConnection::onClientLeaveGame(%this) {
-    nameBase.remove();
+    %this.nameBase.remove();
     %this.setPlayerObject(0);
-    if (isObject(Camera)) {
-        Camera.delete();
+    if (isObject(%this.Camera)) {
+        %this.Camera.delete();
     }
-    if (isObject(Player)) {
-        Player.delete();
+    if (isObject(%this.Player)) {
+        %this.Player.delete();
     }
-    return %this;
+    return PlayerDict;
 };
 function GameConnection::onLeaveMissionArea(%this) {
     return;
@@ -168,27 +163,26 @@ function GameConnection::onEnterMissionArea(%this) {
     return;
 };
 function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %unused) {
-    Player.setShapeName("");
-    if (isObject(Camera)) {
+    %this.Player.setShapeName("");
+    if (isObject(%this.Camera)) {
     }
-    if (isObject(Player)) {
-        Camera.setMode("Corpse", Player);
-        %this.setControlObject(Camera);
+    if (isObject(%this.Player)) {
+        %this.Camera.setMode("Corpse", %this.Player);
+        %this.setControlObject(%this.Camera);
     }
-    Player = %this @ 0 @ %this;
-    %this;
-    if ((%this SPC %damageType $= "Suicide")) {
+    %this.Player = 0;
+    if ((%damageType $= "Suicide")) {
     }
     if ((%this == %sourceClient)) {
         %this.incScore(-(1.0));
-        messageAll('MsgClientKilled', '%1 takes his own life!', name);
+        messageAll('MsgClientKilled', '%1 takes his own life!', %this.name);
     }
     %sourceClient.incScore(1);
-    messageAll('MsgClientKilled', '%1 gets nailed by %2!', name, name);
-    if ((%sourceClient >= score)) {
+    messageAll('MsgClientKilled', '%1 gets nailed by %2!', %this.name, %sourceClient.name);
+    if (($Game::EndGameScore >= %sourceClient.score)) {
         cycleGame();
     }
-    return $Game::EndGameScore;
+    return;
 };
 function GameConnection::spawnPlayer(%this) {
     %spawnPoint = pickSpawnPoint();
@@ -196,29 +190,30 @@ function GameConnection::spawnPlayer(%this) {
     return;
 };
 function GameConnection::createPlayer(%this, %spawnPoint) {
-    if ((%this > Player)) {
+    if ((0.0 > %this.Player)) {
         error("Attempting to create an angus ghost!");
-        return 0.0;
+        return;
     }
-    if ((%this SPC gender $= "f")) {
+    if ((%this.gender $= "f")) {
         // unhandled opcode 1141 at 0x00000601
         %this = PlayerF;
     }
-    if ((%this SPC gender $= "m")) {
+    if ((%this.gender $= "m")) {
         // unhandled opcode 1141 at 0x00000616
         %this = PlayerM;
     }
     if ((0.0 == getRandom(0, 1))) {
         // unhandled opcode 1141 at 0x0000062F
-        gender = "f" @ %this;
+        %this.gender = "f";
     }
     // unhandled opcode 1141 at 0x00000643
     %this = PlayerM;
-    gender = "m" @ %this;
-    dataBlock = Player @ new ""() @ %playerDB;
+    %this.gender = "m";
     0;
-    client = %this;
-    %player = ;
+    %player = new ""() {
+        dataBlock = Player @ %playerDB;
+        client = %this;
+    };
     %rand = getRandom(0, 2);
     if ((0.0 == %rand)) {
         %genre = "h";
@@ -229,41 +224,37 @@ function GameConnection::createPlayer(%this, %spawnPoint) {
     if ((2.0 == %rand)) {
         %genre = "p";
     }
-    %player.setGender(gender);
+    %player.setGender(%this.gender);
     %player.setGenre(%genre);
-    %player.MeshOff(%this @ gender @ ".headphones.dj");
-    %w = Wardrobe::findWardrobe(gender);
-    %this;
+    %player.MeshOff(%this.gender @ ".headphones.dj");
+    %w = Wardrobe::findWardrobe(%this.gender);
     if (%w) {
-        outfit = %this @ newOutfit(%w) @ %player;
-        outfit.assert(%player);
+        %player.outfit = newOutfit(%w);
+        %player.outfit.assert(%player);
     }
     %player.add();
     %player.setTransform(%spawnPoint);
-    %player.setShapeName(name);
+    %player.setShapeName(%this.name);
     %this.determinePermissions(%player);
-    Camera.setTransform(%player.getEyeTransform());
-    Player = %this @ %player @ %this;
-    %this;
+    %this.Camera.setTransform(%player.getEyeTransform());
+    %this.Player = MissionCleanup @ %player;
     %this.setControlObject(%player);
     %this.setPlayerObject(%player);
-    nameBase.put(Player);
+    %this.nameBase.put(%this.Player);
     %player.setAwayMessage($Pref::Player::defaultAwayMessage);
     echo(getDebugString(%player) @ " " @ "has away message" @ " " @ %player.getAwayMessage());
     %this.initPlayerRelations();
     echo("server-side player entered:\x03" @ " " @ getDebugString(%player));
-    return %this;
+    return PlayerDict;
 };
 function GameConnection::initPlayerRelations() {
-    if (isObject(request)) {
-        %request = request;
-        %this;
-        %buddyCount = buddyCount;
-        %request;
+    if (isObject(%this.request)) {
+        %request = %this.request;
+        %buddyCount = %request.buddyCount;
         %buddyCount = (0.0 >= (1.0 - %buddyCount));
-        if (%this) {
-            %buddyName = buddy;
-            %buddyCount @ %request;
+        if () {
+            %buddyName = %request.buddy;
+            %buddyCount;
             %buddyPlayer = %buddyName.get();
             PlayerDict;
             if (isObject(%buddyPlayer)) {
@@ -271,12 +262,11 @@ function GameConnection::initPlayerRelations() {
             }
             %buddyCount = (0.0 >= (1.0 - %buddyCount));
         }
-        %ignoreCount = ignoreCount;
-        %request;
+        %ignoreCount = %request.ignoreCount;
         %ignoreCount = (0.0 >= (1.0 - %ignoreCount));
         if () {
-            %ignoreName = ignore;
-            %ignoreCount @ %request;
+            %ignoreName = %request.ignore;
+            %ignoreCount;
             %ignorePlayer = %ignoreName.get();
             PlayerDict;
             if (isObject(%ignorePlayer)) {
@@ -284,12 +274,11 @@ function GameConnection::initPlayerRelations() {
             }
             %ignoreCount = (0.0 >= (1.0 - %ignoreCount));
         }
-        %onBuddyCount = onBuddyCount;
-        %request;
+        %onBuddyCount = %request.onBuddyCount;
         %onBuddyCount = (0.0 >= (1.0 - %onBuddyCount));
         if () {
-            %onBuddyName = onBuddy;
-            %onBuddyCount @ %request;
+            %onBuddyName = %request.onBuddy;
+            %onBuddyCount;
             %onBuddyPlayer = %onBuddyName.get();
             PlayerDict;
             if (isObject(%onBuddyPlayer)) {
@@ -298,12 +287,11 @@ function GameConnection::initPlayerRelations() {
             warn("no player object for on buddy " @ %onBuddyName);
             %onBuddyCount = (0.0 >= (1.0 - %onBuddyCount));
         }
-        %onIgnoreCount = onIgnoreCount;
-        %request;
+        %onIgnoreCount = %request.onIgnoreCount;
         %onIgnoreCount = (0.0 >= (1.0 - %onIgnoreCount));
         if () {
-            %onIgnoreName = onIgnore;
-            %onIgnoreCount @ %request;
+            %onIgnoreName = %request.onIgnore;
+            %onIgnoreCount;
             %onIgnorePlayer = %onIgnoreName.get();
             PlayerDict;
             if (isObject(%onIgnorePlayer)) {

@@ -1,5 +1,5 @@
 function ClosetTabs::refreshStoreTab(%this) {
-    clear();
+    StoreCategoryPopup.clear();
     if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
         "Loading ...".add();
         return StoreCategoryPopup;
@@ -7,11 +7,10 @@ function ClosetTabs::refreshStoreTab(%this) {
     %allCategories = "All Items" @ "\t" @ "All Garments" @ "\t" @ "All Accessories" @ "\t" @ "Tops" @ "\t" @ "Bottoms" @ "\t" @ "Hair" @ "\t" @ "Face" @ "\t" @ "Skin" @ "\t" @ "Shoes" @ "\t" @ "Ear" @ "\t" @ "Neck" @ "\t" @ "Waist" @ "\t" @ "Hands" @ "\t" @ "Bags" @ "\t" @ "Glasses" @ "\t" @ "Props" @ "\t" @ "Misc" @ "\t" @ "BodyMod";
     %storeDrwrs = Inventory::getCurrentStoreSkus().filterSkusGender($player.getGender()).getSkuDrwrs();
     SkuManager;
-    if ((SkuManager SPC %storeDrwrs $= "")) {
-        update();
+    if ((SkuManager @ " " @ %storeDrwrs $= "")) {
+        StoreItemsFrame.update();
     }
     %n = 0;
-    StoreItemsFrame;
     if ((getFieldCount(%allCategories) < %n)) {
         %cat = getField(%allCategories, %n);
         %catDrwrs = strlwr(%cat).get();
@@ -35,450 +34,496 @@ function ClosetTabs::fillStoreTab(%this) {
     if (!(isObject(%theTab))) {
         return;
     }
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "26 26";
-    extent = "571 37";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "platform/client/ui/closet_tabs_bracket";
-    %theTab.add();
+    %theTab.add(new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "26 26";
+        extent = "571 37";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/closet_tabs_bracket";
+    };);
     %tabWidth = getWord(%theTab.getExtent(), 0);
     %tabHeight = getWord(%theTab.getExtent(), 1);
-    profile = new GuiBitmapCtrl(StoreSpecificBackground) @ "GuiDefaultProfile";
-    horizSizing = "center";
-    vertSizing = "center";
-    position = (256.0 - (2.0 / %tabWidth)) @ " " @ (256.0 - (2.0 / %tabHeight));
-    extent = "512 512";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    bitmap = "";
-    %theTab.add();
-    profile = GuiTextCtrl @ new ""() @ "ClosetTitleProfile";
+    %theTab.add(new GuiBitmapCtrl(StoreSpecificBackground) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "center";
+        vertSizing = "center";
+        position = (256.0 - (2.0 / %tabWidth)) @ " " @ (256.0 - (2.0 / %tabHeight));
+        extent = "512 512";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        bitmap = "";
+    };);
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "237 17";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    text = "";
-    maxLength = 255;
-    %storename = ;
-    profile = GuiMLTextCtrl @ new ""() @ "ClosetLeftInfoProfile";
+    %storename = new ""() {
+        profile = GuiTextCtrl @ "ClosetTitleProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "237 17";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "";
+        maxLength = 255;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 23";
-    extent = "237 17";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    allowColorChars = 0;
-    maxChars = -1;
-    text = "";
-    %storeDesc = ;
-    profile = new GuiControl(StoreNameDescFrame) @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "26 66";
-    extent = "251 59";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    nameCtrl = %storename;
-    descCtrl = %storeDesc;
-    %nameDescFrame = ;
+    %storeDesc = new ""() {
+        profile = GuiMLTextCtrl @ "ClosetLeftInfoProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 23";
+        extent = "237 17";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        allowColorChars = 0;
+        maxChars = -1;
+        text = "";
+    };
+    %nameDescFrame = new GuiControl(StoreNameDescFrame) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "26 66";
+        extent = "251 59";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        nameCtrl = %storename;
+        descCtrl = %storeDesc;
+    };
     %nameDescFrame.add(%storename);
     %nameDescFrame.add(%storeDesc);
     %theTab.add(%nameDescFrame);
-    profile = new GuiTextCtrl(StoreCategoryLabel) @ "ClosetTitleProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "181 64";
-    extent = "75 20";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    text = "Item";
-    maxLength = 255;
-    %categoryLabel = ;
+    %categoryLabel = new GuiTextCtrl(StoreCategoryLabel) {
+        profile = "ClosetTitleProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "181 64";
+        extent = "75 20";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Item";
+        maxLength = 255;
+    };
     %theTab.add(%categoryLabel);
-    profile = new GuiPopUp2MenuCtrl(StoreCategoryPopup) @ "ClosetPopupProfile";
-    scrollProfile = "DottedScrollProfile";
-    winProfile = "ClosetPopupWindowProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "180 84";
-    extent = "150 17";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    maxLength = 255;
-    maxPopupHeight = 200;
-    allowReverse = 0;
-    %categoryPopup = ;
+    %categoryPopup = new GuiPopUp2MenuCtrl(StoreCategoryPopup) {
+        profile = "ClosetPopupProfile";
+        scrollProfile = "DottedScrollProfile";
+        winProfile = "ClosetPopupWindowProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "180 84";
+        extent = "150 17";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        maxLength = 255;
+        maxPopupHeight = 200;
+        allowReverse = 0;
+    };
     %theTab.add(%categoryPopup);
-    position = new GuiControl(StoreExpirationLegend) @ "26 465";
-    extent = "260 20";
-    visible = 0;
-    lastStore = "";
-    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "16 16";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "platform/client/ui/expiring_icon_small";
-    modulationColor = "255 255 255 255";
-    profile = GuiTextCtrl @ new ""() @ "ClosetLeftInfoProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "16 -1";
-    extent = "200 18";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    text = " = Expires after a certain amount of time.";
-    maxLength = 255;
-    %ctrl = ;
+    new ""() {
+        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "16 16";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/expiring_icon_small";
+        modulationColor = "255 255 255 255";
+    };
+    %ctrl = new GuiControl(StoreExpirationLegend) {
+        position = "26 465";
+        extent = "260 20";
+        visible = 0;
+        lastStore = "";
+    };
+    new ""() {
+        profile = GuiTextCtrl @ "ClosetLeftInfoProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "16 -1";
+        extent = "200 18";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = " = Expires after a certain amount of time.";
+        maxLength = 255;
+    };
     %theTab.add(%ctrl);
-    profile = new GuiControl(StoreItemsFrame) @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "22 120";
-    extent = "467 350";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    %itemsFrame = ;
-    profile = GuiTextCtrl @ new ""() @ "ClosetLeftInfoProfile";
+    %itemsFrame = new GuiControl(StoreItemsFrame) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "22 120";
+        extent = "467 350";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "1 30";
-    extent = "77 16";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    text = "no matching items";
-    maxLength = 255;
-    %itemsInfoText = ;
+    %itemsInfoText = new ""() {
+        profile = GuiTextCtrl @ "ClosetLeftInfoProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "1 30";
+        extent = "77 16";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        text = "no matching items";
+        maxLength = 255;
+    };
     %itemsFrame.add(%itemsInfoText);
-    profile = GuiTextCtrl @ new ""() @ "ClosetRightInfoProfile";
     0;
-    horizSizing = "left";
-    vertSizing = "bottom";
-    position = "313 1";
-    extent = "125 14";
-    minExtent = "125 1";
-    sluggishness = -1;
-    visible = 1;
-    text = "";
-    maxLength = 255;
-    %itemsRangeText = ;
+    %itemsRangeText = new ""() {
+        profile = GuiTextCtrl @ "ClosetRightInfoProfile";
+        horizSizing = "left";
+        vertSizing = "bottom";
+        position = "313 1";
+        extent = "125 14";
+        minExtent = "125 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "";
+        maxLength = 255;
+    };
     %itemsFrame.add(%itemsRangeText);
-    rangeText = %itemsRangeText @ %theTab;
-    profile = GuiScrollCtrl @ new ""() @ "ETSScrollProfile";
+    %theTab.rangeText = %itemsRangeText;
     0;
-    position = "0 20";
-    extent = "465 326";
-    minExtent = "1 1";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    visible = 1;
-    hScrollBar = "dynamic";
-    vScrollBar = "dynamic";
-    constantThumbHeight = 1;
-    scrollMultiplier = 16.1;
-    %itemsScroll = ;
+    %itemsScroll = new ""() {
+        profile = GuiScrollCtrl @ "ETSScrollProfile";
+        position = "0 20";
+        extent = "465 326";
+        minExtent = "1 1";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        visible = 1;
+        hScrollBar = "dynamic";
+        vScrollBar = "dynamic";
+        constantThumbHeight = 1;
+        scrollMultiplier = 16.1;
+    };
     %itemsScroll.bindClassName("ClosetItemsScroll");
-    itemsScroll = %itemsScroll @ %theTab;
-    class = new GuiArray2Ctrl(ClosetThumbnailsShop) @ "ClosetThumbnails";
-    profile = "FocusableDefaultProfile";
-    childrenClassName = "GuiMouseEventCtrl";
-    childrenExtent = "109 159";
-    spacing = 2;
-    numRowsOrCols = 4;
-    inRows = 0;
-    canHilite = 0;
-    infoText = %itemsInfoText;
-    tab = %theTab;
-    scroll = %itemsScroll;
-    %thumbnails = ;
+    %theTab.itemsScroll = %itemsScroll;
+    %thumbnails = new GuiArray2Ctrl(ClosetThumbnailsShop) {
+        class = "ClosetThumbnails";
+        profile = "FocusableDefaultProfile";
+        childrenClassName = "GuiMouseEventCtrl";
+        childrenExtent = "109 159";
+        spacing = 2;
+        numRowsOrCols = 4;
+        inRows = 0;
+        canHilite = 0;
+        infoText = %itemsInfoText;
+        tab = %theTab;
+        scroll = %itemsScroll;
+    };
     %itemsScroll.add(%thumbnails);
-    thumbnails = %thumbnails @ %itemsScroll;
+    %itemsScroll.thumbnails = %thumbnails;
     %itemsFrame.add(%itemsScroll);
-    thumbnails = %thumbnails @ %itemsFrame;
+    %itemsFrame.thumbnails = %thumbnails;
     %theTab.add(%itemsFrame);
-    thumbnails = %thumbnails @ %theTab;
-    profile = new GuiVariableWidthButtonCtrl(StoreDirectoryLink) @ "BracketButton13Profile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "26 124";
-    extent = "126 13";
-    minExtent = "1 1";
-    visible = 1;
-    text = "Go to Shops Directory";
-    buttonType = "PushButton";
-    drawText = 1;
-    command = "transferFromShopToDestinationsDirectory();";
-    %theTab.add();
-    profile = new GuiMLTextCtrl(StoreDirectoryLinkBigText) @ "ClosetLeftInfoProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "26 124";
-    extent = "350 17";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    allowColorChars = 0;
-    maxChars = -1;
-    text = ;
-    %theTab.add();
-    profile = new GuiBitmapButtonCtrl(StoreDirectoryLinkBig) @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "100 200";
-    extent = "300 50";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    bitmap = "platform/client/buttons/closet_shopsDirButton";
-    command = "transferFromShopToDestinationsDirectory();";
-    %theTab.add();
-    profile = new GuiControl(StoreBannerFrame) @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "26 483";
-    extent = "464 69";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    profile = new GuiBitmapCtrl(StoreBannerBrackets) @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "464 69";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    bitmap = "platform/client/ui/banner_bracket";
-    profile = new GuiBitmapButtonCtrl(StoreBanner) @ "GuiButtonProfile";
-    horizSizing = "left";
-    vertSizing = "bottom";
-    position = "8 6";
-    extent = "448 57";
-    minExtent = "2 2";
-    sluggishness = -1;
-    visible = 1;
-    command = "StoreBanner.doAction();";
-    text = "";
-    groupNum = -1;
-    buttonType = "PushButton";
-    bitmap = "";
-    drawText = 0;
-    %theTab.add();
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    %theTab.thumbnails = %thumbnails;
+    %theTab.add(new GuiVariableWidthButtonCtrl(StoreDirectoryLink) {
+        profile = "BracketButton13Profile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "26 124";
+        extent = "126 13";
+        minExtent = "1 1";
+        visible = 1;
+        text = "Go to Shops Directory";
+        buttonType = "PushButton";
+        drawText = 1;
+        command = "transferFromShopToDestinationsDirectory();";
+    };);
+    %theTab.add(new GuiMLTextCtrl(StoreDirectoryLinkBigText) {
+        profile = "ClosetLeftInfoProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "26 124";
+        extent = "350 17";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        allowColorChars = 0;
+        maxChars = -1;
+        text = ;
+    };);
+    %theTab.add(new GuiBitmapButtonCtrl(StoreDirectoryLinkBig) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "100 200";
+        extent = "300 50";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        bitmap = "platform/client/buttons/closet_shopsDirButton";
+        command = "transferFromShopToDestinationsDirectory();";
+    };);
+    %theTab.add(new GuiControl(StoreBannerFrame) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "26 483";
+        extent = "464 69";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+    };);
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "689 26";
-    extent = "245 45";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "platform/client/ui/balance_bracket";
-    profile = new GuiMLTextCtrl(StoreBalanceText) @ "ClosetLargeLinkProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "9 5";
-    extent = "228 42";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    maxChars = -1;
-    text = "";
-    %theTab.add();
-    profile = new GuiWindowCtrl(StoreItemDescFrame) @ "DottedWindowProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "689 84";
-    extent = "245 110";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    resizeWidth = 0;
-    resizeHeight = 0;
-    canMove = 0;
-    canClose = 0;
-    canMinimize = 0;
-    canMaximize = 0;
-    closeCommand = "";
-    profile = new GuiMLTextCtrl(StoreShortDescText) @ "ClosetLeftInfoProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "3 0";
-    extent = "242 25";
-    lineSpacing = -3;
-    profile = new GuiMLTextCtrl(StoreLongDescText) @ "ClosetLeftInfoProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "3 22";
-    extent = "173 16";
-    lineSpacing = -3;
-    %itemDescFrame = ;
+    new GuiBitmapButtonCtrl(StoreBanner) {
+        profile = "GuiButtonProfile";
+        horizSizing = "left";
+        vertSizing = "bottom";
+        position = "8 6";
+        extent = "448 57";
+        minExtent = "2 2";
+        sluggishness = -1;
+        visible = 1;
+        command = "StoreBanner.doAction();";
+        text = "";
+        groupNum = -1;
+        buttonType = "PushButton";
+        bitmap = "";
+        drawText = 0;
+    };
+    %theTab.add(new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = new GuiBitmapCtrl(StoreBannerBrackets) {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "464 69";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        bitmap = "platform/client/ui/banner_bracket";
+    }; @ "right";
+        vertSizing = "bottom";
+        position = "689 26";
+        extent = "245 45";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/balance_bracket";
+    };);
+    %itemDescFrame = new GuiWindowCtrl(StoreItemDescFrame) {
+        profile = new GuiMLTextCtrl(StoreBalanceText) {
+        profile = "ClosetLargeLinkProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "9 5";
+        extent = "228 42";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        maxChars = -1;
+        text = "";
+    }; @ "DottedWindowProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "689 84";
+        extent = "245 110";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        resizeWidth = 0;
+        resizeHeight = 0;
+        canMove = 0;
+        canClose = 0;
+        canMinimize = 0;
+        canMaximize = 0;
+        closeCommand = "";
+    };
+    new GuiMLTextCtrl(StoreLongDescText) {
+        profile = new GuiMLTextCtrl(StoreShortDescText) {
+        profile = "ClosetLeftInfoProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "3 0";
+        extent = "242 25";
+        lineSpacing = -3;
+    }; @ "ClosetLeftInfoProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "3 22";
+        extent = "173 16";
+        lineSpacing = -3;
+    };
     %theTab.add(%itemDescFrame);
-    profile = new GuiWindowCtrl(StoreItemDescHiliteFrame) @ "StoreHiliteFrameProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "679 80";
-    extent = "263 124";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    resizeWidth = 0;
-    resizeHeight = 0;
-    canMove = 0;
-    canClose = 0;
-    canMinimize = 0;
-    canMaximize = 0;
-    closeCommand = "";
-    %theTab.add();
-    profile = new GuiWindowCtrl(StoreFloatingHiliteFrame) @ "StoreHiliteFrameProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "119 143";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    resizeWidth = 0;
-    resizeHeight = 0;
-    canMove = 0;
-    canClose = 0;
-    canMinimize = 0;
-    canMaximize = 0;
-    closeCommand = "";
-    %theTab.add();
-    profile = new GuiWindowCtrl(StoreShoppingBag) @ "DottedWindowProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "689 207";
-    extent = "245 281";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    resizeWidth = 0;
-    resizeHeight = 0;
-    canMove = 0;
-    canClose = 0;
-    canMinimize = 0;
-    canMaximize = 0;
-    closeCommand = "";
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "7 4";
-    extent = "18 13";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "platform/client/ui/cart";
-    profile = GuiTextCtrl @ new ""() @ "ClosetTitleProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "28 1";
-    extent = "108 20";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    text = "Shopping Cart";
-    maxLength = 255;
-    profile = new GuiMLTextCtrl(StoreNoItemsText) @ "ClosetLeftInfoProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "5 28";
-    extent = "221 16";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    text = "No items in shopping cart.";
-    maxLength = 255;
-    profile = GuiMLTextCtrl @ new ""() @ "ShoppingBagItemProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "7 261";
-    extent = "60 16";
-    minExtent = "60 1";
-    sluggishness = -1;
-    visible = 1;
-    text = "Buy All For";
-    maxLength = 255;
-    profile = new GuiMLTextCtrl(StorePointsTotalText) @ "ClosetPointsProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "90 261";
-    extent = "60 16";
-    minExtent = "60 1";
-    sluggishness = -1;
-    visible = 1;
-    maxLength = 255;
-    profile = new GuiMLTextCtrl(StoreBuxTotalText) @ "ClosetBuxProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "162 261";
-    extent = "50 16";
-    minExtent = "50 1";
-    sluggishness = -1;
-    visible = 1;
-    maxLength = 255;
-    profile = new GuiVariableWidthButtonCtrl(StoreTotalButton) @ "HiddenBracketButton15Profile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "85 261";
-    extent = "132 16";
-    minExtent = "1 1";
-    visible = 1;
-    command = "ClosetGui.doCheckout();";
-    text = "";
-    buttonType = "PushButton";
-    drawText = 0;
-    profile = GuiWindowCtrl @ new ""() @ "DottedWindowProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "6 258";
-    extent = "233 1";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    resizeWidth = 0;
-    resizeHeight = 0;
-    canMove = 0;
-    canClose = 0;
-    canMinimize = 0;
-    canMaximize = 0;
-    closeCommand = "";
-    %shoppingBag = ;
-    profile = new GuiVariableWidthButtonCtrl(StoreAddItemsButton) @ "BracketButton15NonDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "689 491";
-    extent = "213 19";
-    minExtent = "1 1";
-    visible = 1;
-    command = "StoreShoppingList.addItemsYoureWearing();";
-    text = "Add Items You're Wearing To Cart";
-    buttonType = "PushButton";
-    drawText = 1;
-    %theTab.add();
+    %theTab.add(new GuiWindowCtrl(StoreItemDescHiliteFrame) {
+        profile = "StoreHiliteFrameProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "679 80";
+        extent = "263 124";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        resizeWidth = 0;
+        resizeHeight = 0;
+        canMove = 0;
+        canClose = 0;
+        canMinimize = 0;
+        canMaximize = 0;
+        closeCommand = "";
+    };);
+    %theTab.add(new GuiWindowCtrl(StoreFloatingHiliteFrame) {
+        profile = "StoreHiliteFrameProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "119 143";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+        resizeWidth = 0;
+        resizeHeight = 0;
+        canMove = 0;
+        canClose = 0;
+        canMinimize = 0;
+        canMaximize = 0;
+        closeCommand = "";
+    };);
+    new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "7 4";
+        extent = "18 13";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/cart";
+    };
+    new GuiMLTextCtrl(StoreNoItemsText) {
+        profile = new ""() {
+        profile = GuiTextCtrl @ "ClosetTitleProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "28 1";
+        extent = "108 20";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Shopping Cart";
+        maxLength = 255;
+    }; @ "ClosetLeftInfoProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "5 28";
+        extent = "221 16";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "No items in shopping cart.";
+        maxLength = 255;
+    };
+    new GuiVariableWidthButtonCtrl(StoreTotalButton) {
+        profile = new GuiMLTextCtrl(StoreBuxTotalText) {
+        profile = new GuiMLTextCtrl(StorePointsTotalText) {
+        profile = new ""() {
+        profile = GuiMLTextCtrl @ "ShoppingBagItemProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "7 261";
+        extent = "60 16";
+        minExtent = "60 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "Buy All For";
+        maxLength = 255;
+    }; @ "ClosetPointsProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "90 261";
+        extent = "60 16";
+        minExtent = "60 1";
+        sluggishness = -1;
+        visible = 1;
+        maxLength = 255;
+    }; @ "ClosetBuxProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "162 261";
+        extent = "50 16";
+        minExtent = "50 1";
+        sluggishness = -1;
+        visible = 1;
+        maxLength = 255;
+    }; @ "HiddenBracketButton15Profile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "85 261";
+        extent = "132 16";
+        minExtent = "1 1";
+        visible = 1;
+        command = "ClosetGui.doCheckout();";
+        text = "";
+        buttonType = "PushButton";
+        drawText = 0;
+    };
+    %shoppingBag = new GuiWindowCtrl(StoreShoppingBag) {
+        profile = "DottedWindowProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "689 207";
+        extent = "245 281";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        resizeWidth = 0;
+        resizeHeight = 0;
+        canMove = 0;
+        canClose = 0;
+        canMinimize = 0;
+        canMaximize = 0;
+        closeCommand = "";
+    };
+    new ""() {
+        profile = GuiWindowCtrl @ "DottedWindowProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "6 258";
+        extent = "233 1";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        resizeWidth = 0;
+        resizeHeight = 0;
+        canMove = 0;
+        canClose = 0;
+        canMinimize = 0;
+        canMaximize = 0;
+        closeCommand = "";
+    };
+    %theTab.add(new GuiVariableWidthButtonCtrl(StoreAddItemsButton) {
+        profile = "BracketButton15NonDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "689 491";
+        extent = "213 19";
+        minExtent = "1 1";
+        visible = 1;
+        command = "StoreShoppingList.addItemsYoureWearing();";
+        text = "Add Items You're Wearing To Cart";
+        buttonType = "PushButton";
+        drawText = 1;
+    };);
     0.setActive();
     %wi = AnimCtrl::newAnimCtrl("129 213", "18 18");
     StoreAddItemsButton;
@@ -492,65 +537,70 @@ function ClosetTabs::fillStoreTab(%this) {
     %wi.addFrame("platform/client/ui/wait6.png");
     %wi.addFrame("platform/client/ui/wait7.png");
     %wi.add();
-    waitIcon = StoreShoppingBag @ %wi @ StoreShoppingBag;
+    waitIcon = %wi @ StoreShoppingBag;
+    StoreShoppingBag;
     %wi.setVisible(0);
-    profile = GuiScrollCtrl @ new ""() @ "ETSScrollProfile";
     0;
-    position = "3 22";
-    extent = "239 232";
-    minExtent = "1 1";
-    horizSizing = "right";
-    vertSizing = "bottom";
-    visible = 1;
-    hScrollBar = "alwaysOff";
-    vScrollBar = "dynamic";
-    constantThumbHeight = 1;
-    scrollMultiplier = 2.5;
-    %shoppingScroll = ;
-    profile = new GuiArray2Ctrl(StoreShoppingList) @ "GuiDefaultProfile";
-    childrenClassName = "GuiMouseEventCtrl";
-    childrenExtent = "233 36";
-    spacing = 2;
-    numRowsOrCols = 1;
-    inRows = 0;
-    canHilite = 0;
-    scroll = %shoppingScroll;
-    %shoppingList = ;
+    %shoppingScroll = new ""() {
+        profile = GuiScrollCtrl @ "ETSScrollProfile";
+        position = "3 22";
+        extent = "239 232";
+        minExtent = "1 1";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        visible = 1;
+        hScrollBar = "alwaysOff";
+        vScrollBar = "dynamic";
+        constantThumbHeight = 1;
+        scrollMultiplier = 2.5;
+    };
+    %shoppingList = new GuiArray2Ctrl(StoreShoppingList) {
+        profile = "GuiDefaultProfile";
+        childrenClassName = "GuiMouseEventCtrl";
+        childrenExtent = "233 36";
+        spacing = 2;
+        numRowsOrCols = 1;
+        inRows = 0;
+        canHilite = 0;
+        scroll = %shoppingScroll;
+    };
     %shoppingScroll.add(%shoppingList);
     %shoppingBag.add(%shoppingScroll);
     %theTab.add(%shoppingBag);
-    profile = GuiVariableWidthButtonCtrl @ new ""() @ "BracketButton19Profile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "829 519";
-    extent = "43 19";
-    minExtent = "1 1";
-    visible = 1;
-    command = "ClosetGui.close(false);";
-    text = "Done";
-    buttonType = "PushButton";
-    drawText = 1;
-    %doneButton = ;
-    profile = GuiVariableWidthButtonCtrl @ new ""() @ "BracketButton19NonDefaultProfile";
+    %doneButton = new ""() {
+        profile = GuiVariableWidthButtonCtrl @ "BracketButton19Profile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "829 519";
+        extent = "43 19";
+        minExtent = "1 1";
+        visible = 1;
+        command = "ClosetGui.close(false);";
+        text = "Done";
+        buttonType = "PushButton";
+        drawText = 1;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "882 519";
-    extent = "52 19";
-    minExtent = "1 1";
-    visible = 1;
-    command = "ClosetGui.close(true);";
-    text = "Cancel";
-    buttonType = "PushButton";
-    drawText = 1;
-    %cancelButton = ;
+    %cancelButton = new ""() {
+        profile = GuiVariableWidthButtonCtrl @ "BracketButton19NonDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "882 519";
+        extent = "52 19";
+        minExtent = "1 1";
+        visible = 1;
+        command = "ClosetGui.close(true);";
+        text = "Cancel";
+        buttonType = "PushButton";
+        drawText = 1;
+    };
     %theTab.add(%doneButton);
-    doneButton = %doneButton @ %theTab;
+    %theTab.doneButton = %doneButton;
     %theTab.add(%cancelButton);
-    cancelButton = %cancelButton @ %theTab;
+    %theTab.cancelButton = %cancelButton;
     1.setStoreControlsVisible();
-    tabShopsInitialized = ClosetTabs @ 1 @ %this;
+    %this.tabShopsInitialized = ClosetTabs @ 1;
 };
 function ClosetTabs::setStoreControlsVisible(%this, %flag) {
     %flag.setVisible();
@@ -579,108 +629,116 @@ function ClosetTabs::setLeaveStoreControlsVisible(%this, %flag) {
     %flag.setVisible();
 };
 function StoreShoppingList::onCreatedChild(%this, %child) {
-    profile = GuiControl @ new ""() @ "ClosetLtBackgroundProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "233 36";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    %background = ;
-    profile = GuiControl @ new ""() @ "ClosetHiliteProfile";
+    %background = new ""() {
+        profile = GuiControl @ "ClosetLtBackgroundProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "233 36";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "233 36";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 0;
-    %hilite = ;
-    profile = GuiVariableWidthButtonCtrl @ new ""() @ "StoreItemButtonProfile";
+    %hilite = new ""() {
+        profile = GuiControl @ "ClosetHiliteProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "233 36";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 0;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "1 2";
-    extent = "208 15";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    text = "";
-    groupNum = -1;
-    buttonType = "PushButton";
-    command = "";
-    drawText = 1;
-    %itemDesc = ;
-    profile = GuiBitmapButtonCtrl @ new ""() @ "GuiDefaultProfile";
+    %itemDesc = new ""() {
+        profile = GuiVariableWidthButtonCtrl @ "StoreItemButtonProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "1 2";
+        extent = "208 15";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        text = "";
+        groupNum = -1;
+        buttonType = "PushButton";
+        command = "";
+        drawText = 1;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "213 4";
-    extent = "10 10";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    command = "StoreShoppingList.removeSku(" @ %child.getId() @ ".sku);";
-    text = "";
-    groupNum = -1;
-    buttonType = "PushButton";
-    bitmap = "platform/client/buttons/closet_close";
-    drawText = 0;
-    %closeBox = ;
-    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
+    %closeBox = new ""() {
+        profile = GuiBitmapButtonCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "213 4";
+        extent = "10 10";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        command = "StoreShoppingList.removeSku(" @ %child.getId() @ ".sku);";
+        text = "";
+        groupNum = -1;
+        buttonType = "PushButton";
+        bitmap = "platform/client/buttons/closet_close";
+        drawText = 0;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "208 16";
-    extent = "20 20";
-    minExtent = "1 1";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "";
-    modulationColor = "255 255 255 100";
-    %expiringIcon = ;
-    profile = GuiMLTextCtrl @ new ""() @ "ClosetPointsProfile";
+    %expiringIcon = new ""() {
+        profile = GuiBitmapCtrl @ "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "208 16";
+        extent = "20 20";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "";
+        modulationColor = "255 255 255 100";
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "6 18";
-    extent = "60 18";
-    minExtent = "60 1";
-    sluggishness = -1;
-    visible = 1;
-    allowColorChars = 0;
-    maxChars = -1;
-    text = "";
-    %pointsLink = ;
-    profile = GuiMLTextCtrl @ new ""() @ "ClosetBuxProfile";
+    %pointsLink = new ""() {
+        profile = GuiMLTextCtrl @ "ClosetPointsProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "6 18";
+        extent = "60 18";
+        minExtent = "60 1";
+        sluggishness = -1;
+        visible = 1;
+        allowColorChars = 0;
+        maxChars = -1;
+        text = "";
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "78 18";
-    extent = "50 18";
-    minExtent = "50 1";
-    sluggishness = -1;
-    visible = 1;
-    allowColorChars = 0;
-    maxChars = -1;
-    text = "";
-    %buxLink = ;
-    profile = GuiVariableWidthButtonCtrl @ new ""() @ "HiddenBracketButton15Profile";
+    %buxLink = new ""() {
+        profile = GuiMLTextCtrl @ "ClosetBuxProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "78 18";
+        extent = "50 18";
+        minExtent = "50 1";
+        sluggishness = -1;
+        visible = 1;
+        allowColorChars = 0;
+        maxChars = -1;
+        text = "";
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "1 18";
-    extent = "132 16";
-    minExtent = "1 1";
-    visible = 1;
-    command = "ClosetGui.purchaseSkus(" @ %child @ ".sku);";
-    text = "";
-    buttonType = "PushButton";
-    drawText = 0;
-    %totalButton = ;
+    %totalButton = new ""() {
+        profile = GuiVariableWidthButtonCtrl @ "HiddenBracketButton15Profile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "1 18";
+        extent = "132 16";
+        minExtent = "1 1";
+        visible = 1;
+        command = "ClosetGui.purchaseSkus(" @ %child @ ".sku);";
+        text = "";
+        buttonType = "PushButton";
+        drawText = 0;
+    };
     %child.add(%background);
     %child.add(%hilite);
     %child.add(%itemDesc);
@@ -689,16 +747,16 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
     %child.add(%pointsLink);
     %child.add(%totalButton);
     %child.add(%closeBox);
-    background = %background @ %child;
-    hiliteCtrl = %hilite @ %child;
-    desc = %itemDesc @ %child;
-    expiringIcon = %expiringIcon @ %child;
-    pointsLink = %pointsLink @ %child;
-    buxLink = %buxLink @ %child;
-    points = "-" @ %child;
-    bux = "-" @ %child;
-    sku = 0 @ %child;
-    shoppingList = %this @ %child;
+    %child.background = %background;
+    %child.hiliteCtrl = %hilite;
+    %child.desc = %itemDesc;
+    %child.expiringIcon = %expiringIcon;
+    %child.pointsLink = %pointsLink;
+    %child.buxLink = %buxLink;
+    %child.points = "-";
+    %child.bux = "-";
+    %child.sku = 0;
+    %child.shoppingList = %this;
     if (!(getWord(%child.getNamespaceList(), 0) $= "StoreShoppingListItem")) {
         %child.bindClassName("StoreShoppingListItem");
     }
@@ -710,43 +768,40 @@ function StoreShoppingList::addSku(%this, %sku) {
     %count = %this.getCount();
     %idx = 0;
     if ((%count < %idx)) {
-        if ((%this.getObject(%idx) SPC sku $= %sku)) {
+        if ((%this.getObject(%idx).sku $= %sku)) {
             return;
         }
         %idx = (1.0 + %idx);
     }
     %child = %this.addChild();
     (%count < %idx);
-    sku = %sku @ %child;
+    %child.sku = %sku;
     %si = %sku.findBySku();
     SkuManager;
-    desc.setText(descShrt);
-    command = %child @ desc;
-    %child @ %si @ "ClosetGui.toggleSku(" @ %sku @ ");" @ "ClosetThumbnailsShop.scroll.scrollToSku(" @ %sku @ ");";
+    %child.desc.setText(%si.descShrt);
+    %child.desc.command = "ClosetGui.toggleSku(" @ %sku @ ");" @ "ClosetThumbnailsShop.scroll.scrollToSku(" @ %sku @ ");";
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
-    points = %child @ Inventory::getVPointsPriceForSku(sku) @ %child;
-    bux = %child @ Inventory::getVBuxPriceForSku(sku) @ %child;
-    pointsLink.setText(%child @ points);
-    buxLink.setText(%child @ bux);
-    if (!(%si SPC expireTime $= "")) {
-        expiringIcon.setBitmap("platform/client/ui/expiring_icon");
-        expiringIcon.setVisible(1);
+    %child.points = Inventory::getVPointsPriceForSku(%child.sku);
+    %child.bux = Inventory::getVBuxPriceForSku(%child.sku);
+    %child.pointsLink.setText(%pointsIcon @ " " @ %child.points);
+    %child.buxLink.setText(%buxIcon @ " " @ %child.bux);
+    if (!(%si.expireTime $= "")) {
+        %child.expiringIcon.setBitmap("platform/client/ui/expiring_icon");
+        %child.expiringIcon.setVisible(1);
     }
-    expiringIcon.setBitmap("");
-    expiringIcon.setVisible(0);
-    %count = thumbnails.getCount();
+    %child.expiringIcon.setBitmap("");
+    %child.expiringIcon.setVisible(0);
+    %count = %child.thumbnails.getCount();
     StoreItemsFrame;
     %i = 0;
-    %child;
     if ((%count < %i)) {
-        %obj = thumbnails.getObject(%i);
+        %obj = %child.thumbnails.getObject(%i);
         StoreItemsFrame;
-        if ((%obj == sku)) {
-            toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
+        if ((%sku == %obj.sku)) {
+            %obj.toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
         }
         %i = (1.0 + %i);
-        %obj;
     }
     %this.update();
     %this.hiliteCell(0, (1.0 - %this.getCount()));
@@ -765,24 +820,22 @@ function StoreShoppingList::removeSku(%this, %sku) {
     %i = 0;
     if ((%count < %i)) {
         %obj = %this.getObject(%i);
-        if ((%obj == sku)) {
+        if ((%sku == %obj.sku)) {
             %obj.delete();
         }
         %i = (1.0 + %i);
-        %sku;
     }
-    %count = thumbnails.getCount();
+    %count = %obj.thumbnails.getCount();
     StoreItemsFrame;
     %i = 0;
     (%count < %i);
     if ((%count < %i)) {
-        %obj = thumbnails.getObject(%i);
+        %obj = %obj.thumbnails.getObject(%i);
         StoreItemsFrame;
-        if ((%obj == sku)) {
-            toggleCartButton.setBitmap("platform/client/buttons/add2cart");
+        if ((%sku == %obj.sku)) {
+            %obj.toggleCartButton.setBitmap("platform/client/buttons/add2cart");
         }
         %i = (1.0 + %i);
-        %obj;
     }
     if ((-(1.0) != findWord($StoreSkusLayer, %sku))) {
         1.setActive();
@@ -805,7 +858,7 @@ function StoreShoppingList::containsSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
     if ((%count < %i)) {
-        if ((%this.getObject(%i) == sku)) {
+        if ((%sku == %this.getObject(%i).sku)) {
             return 1;
         }
         %i = (1.0 + %i);
@@ -817,8 +870,7 @@ function StoreShoppingList::getSkus(%this) {
     %count = %this.getCount();
     %i = 0;
     if ((%count < %i)) {
-        %skus = %this.getObject(%i) @ sku;
-        %skus @ " ";
+        %skus = %skus @ " " @ %this.getObject(%i).sku;
         %i = (1.0 + %i);
     }
     return trim(%skus);
@@ -848,7 +900,7 @@ function StoreShoppingList::update(%this) {
         if ((0.0 == (2 % %i))) {
             // unhandled opcode 8756 at 0x00002231
         }
-        background.setProfile();
+        %child.background.setProfile();
         %i = (1.0 + %i);
         ClosetDkBackgroundProfile;
     }
@@ -860,49 +912,43 @@ function StoreShoppingList::sumPrices(%this) {
     %idx = 0;
     if ((%count < %idx)) {
         %child = %this.getObject(%idx);
-        if (!(%child SPC points $= "-")) {
-            %pointsSum = (points + %pointsSum);
-            %child;
+        if (!(%child.points $= "-")) {
+            %pointsSum = (%child.points + %pointsSum);
         }
-        if (!(%child SPC bux $= "-")) {
-            %buxSum = (bux + %buxSum);
-            %child;
+        if (!(%child.bux $= "-")) {
+            %buxSum = (%child.bux + %buxSum);
         }
         %idx = (1.0 + %idx);
     }
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
     (%count < %idx);
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
-    StorePointsTotalText @ %pointsIcon @ " " @ %pointsSum.setText();
-    StoreBuxTotalText @ %buxIcon @ " " @ %buxSum.setText();
-    pointsTotal = %pointsSum @ %this;
-    buxTotal = %buxSum @ %this;
+    %pointsIcon @ " " @ %pointsSum.setText();
+    %buxIcon @ " " @ %buxSum.setText();
+    %this.pointsTotal = StoreBuxTotalText @ %pointsSum;
+    StorePointsTotalText;
+    %this.buxTotal = %buxSum;
 };
 function StoreShoppingList::scrollToItem(%this, %item) {
     %idx = %this.getObjectIndex(%item);
     if ((0.0 >= %idx)) {
-        %scroll = scroll;
-        %this;
-        %cellHeight = (%this + getWord(childrenExtent, 1));
-        spacing;
+        %scroll = %this.scroll;
+        %cellHeight = (%this.spacing + getWord(%this.childrenExtent, 1));
         %numRowsVisible = (%cellHeight / getWord(%scroll.getExtent(), 1));
-        %this;
         %ypos = (getWord(%this.getPosition(), 1) - 1.0);
         %closestRow = (%cellHeight / %ypos);
-        %targetRow = getWord(hilitedCell, 1);
-        %this;
+        %targetRow = getWord(%this.hilitedCell, 1);
         if ((%closestRow < %targetRow)) {
             %scroll.scrollTo(0, (%targetRow * %cellHeight));
         }
         if (((1.0 - (%numRowsVisible + %closestRow)) >= %targetRow)) {
-            %scroll.scrollTo(0, ((spacing * 2.0) + ((1.0 + (%numRowsVisible - %targetRow)) * %cellHeight)));
+            %scroll.scrollTo(0, ((%this.Parent.spacing * 2.0) + ((1.0 + (%numRowsVisible - %targetRow)) * %cellHeight)));
         }
     }
 };
 function StoreShoppingListItem::onMouseEnterBounds(%this) {
-    %idx = shoppingList.getObjectIndex(%this);
-    %this;
-    shoppingList.hiliteCell(0, %idx);
+    %idx = %this.shoppingList.getObjectIndex(%this);
+    %this.shoppingList.hiliteCell(0, %idx);
 };
 function StoreShoppingListItem::onMouseLeaveBounds(%this) {
     %this.onUnhilite();
@@ -910,29 +956,29 @@ function StoreShoppingListItem::onMouseLeaveBounds(%this) {
 function StoreShoppingListItem::onHilite(%this) {
     if (0) {
     }
-    if (isObject()) {
-        sku.getShortSkuDesc().setDesc();
-        sku.getLongSkuDesc().setDesc();
-        sku.updateAuthorWidget();
+    if (isObject(StoreLongDescText)) {
+        %this.sku.getShortSkuDesc().setDesc();
+        %this.sku.getLongSkuDesc().setDesc();
+        %this.sku.updateAuthorWidget();
     }
     %this.scrollToItem();
-    hiliteCtrl.setVisible(1);
+    %this.hiliteCtrl.setVisible(1);
 };
 function StoreShoppingListItem::onUnhilite(%this) {
     if (0) {
     }
-    if (isObject()) {
-        showBaseDesc();
-        showBaseDesc();
+    if (isObject(StoreLongDescText)) {
+        StoreShortDescText.showBaseDesc();
+        StoreLongDescText.showBaseDesc();
         "".updateAuthorWidget();
     }
-    if (isObject()) {
+    if (isObject(StoreItemDescHiliteFrame)) {
         0.setVisible();
     }
-    if (isObject()) {
+    if (isObject(StoreFloatingHiliteFrame)) {
         0.setVisible();
     }
-    hiliteCtrl.setVisible(0);
+    %this.hiliteCtrl.setVisible(0);
 };
 function StoreBalanceText::update(%this) {
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_14>";
@@ -949,23 +995,23 @@ function StoreBalanceText::onURL(%this, %url) {
 };
 function StoreItemsFrame::update(%this) {
     if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
-        infoText.setText("Loading store inventory...");
+        %this.thumbnails.infoText.setText("Loading store inventory...");
     }
-    if ((thumbnails SPC Inventory::getCurrentStoreSkus() $= "")) {
-        infoText.setText("Nothing in stock!");
+    if ((Inventory::getCurrentStoreSkus() $= "")) {
+        %this.thumbnails.infoText.setText("Nothing in stock!");
     }
-    infoText.setText("No matching items.");
-    thumbnails.setDrawers(strlwr(category).get());
+    %this.thumbnails.infoText.setText("No matching items.");
+    %this.thumbnails.setDrawers(strlwr(%this.category).get());
 };
 function StoreCategoryPopup::onSelect(%this, %unused, %entries) {
-    category = %entries @ StoreItemsFrame;
-    update();
+    %this.category = %entries @ StoreItemsFrame;
+    StoreItemsFrame.update();
     0.schedule("setBaseDesc", "");
     0.schedule("setBaseDesc", "");
-    getParent().scrollToTop();
+    ClosetThumbnailsShop.getParent().scrollToTop();
 };
 function StoreLongDescText::setBaseDesc(%this, %desc) {
-    baseText = %desc @ %this;
+    %this.baseText = %desc;
     %this.setText(%desc);
     if ((%desc $= "")) {
         0.setVisible();
@@ -976,7 +1022,7 @@ function StoreLongDescText::setDesc(%this, %desc) {
     %this.setText(%desc);
 };
 function StoreLongDescText::showBaseDesc(%this) {
-    %this.setText(baseText);
+    %this.setText(%this.baseText);
 };
 function StoreShortDescText::setBaseDesc(%this, %desc) {
     StoreLongDescText::setBaseDesc(%this, %desc);
@@ -1004,11 +1050,11 @@ function StoreBanner::doAction(%this) {
     }
 };
 function updateAccountBalanceDisplays() {
-    if (isObject()) {
-        update();
+    if (isObject(StoreBalanceText)) {
+        StoreBalanceText.update();
     }
-    if (isObject()) {
-        update();
+    if (isObject(AccountBalanceHud)) {
+        AccountBalanceHud.update();
     }
 };
 function clientCmdUpdateAccountBalances(%newPoints, %newBux) {
@@ -1081,9 +1127,9 @@ function floatBalanceChange(%whichBalance, %change, %player) {
         error(getScopeName() @ " " @ "- can't find player!" @ " " @ getTrace());
         return;
     }
-    if (!(isObject(hudCtrl))) {
+    if (!(isObject(%player.hudCtrl))) {
         error(getScopeName() @ " " @ "- no hudCtrl to attach to!" @ " " @ getTrace());
-        return %player;
+        return;
     }
     %isVPoints = (%whichBalance $= "vPoints");
     %alot = %isVPoints ? 1000 : 100;
@@ -1100,22 +1146,22 @@ function floatBalanceChange(%whichBalance, %change, %player) {
     %player.floatText(%text, %maxAge, %speed, %baseColor, %baseAlpha);
 };
 function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha) {
-    hudCtrl.updatePosition();
-    %text = %this @ "<just:center>" @ %text;
+    %this.hudCtrl.updatePosition();
+    %text = "<just:center>" @ %text;
     %width = 600;
-    extent = GuiMLTextCtrl @ new ""() @ %width @ " " @ 18;
     0;
-    position = (hudCtrl - getWord(position, 0)) @ " " @ 100.0 @ %this @ (hudCtrl + getWord(position, 1));
-    %this;
-    age = (2.0 / %width) @ 0;
-    maxAge = %maxAge;
-    speed = %speed;
-    BaseColor = %baseColor;
-    baseText = %text;
-    baseAlpha = %baseAlpha;
-    %ctrl = ;
+    %ctrl = new ""() {
+        extent = GuiMLTextCtrl @ %width @ " " @ 18;
+        position = ((2.0 / %width) - getWord(%this.hudCtrl.position, 0)) @ " " @ (100.0 + getWord(%this.hudCtrl.position, 1));
+        age = 0;
+        maxAge = %maxAge;
+        speed = %speed;
+        BaseColor = %baseColor;
+        baseText = %text;
+        baseAlpha = %baseAlpha;
+    };
     %ctrl.add();
-    doTick();
+    ThePointsFloaterHud.doTick();
 };
 function Player::floatTextSimple(%this, %text, %style) {
     if (!(isDefined("%style"))) {
@@ -1149,8 +1195,8 @@ function ClientCmdFloatText(%playerGhostID, %text, %style) {
     %player.floatTextSimple(%text, %style);
 };
 function ThePointsFloaterHud::doTick(%this) {
-    cancel(timerID);
-    timerID = %this @ "" @ %this;
+    cancel(%this.timerID);
+    %this.timerID = "";
     %numChildren = %this.getCount();
     if ((1.0 < %numChildren)) {
         return;
@@ -1158,43 +1204,33 @@ function ThePointsFloaterHud::doTick(%this) {
     %n = (1.0 - %numChildren);
     if ((0.0 >= %n)) {
         %ctrl = %this.getObject(%n);
-        %ageNorm = (%ctrl / age);
-        maxAge;
+        %ageNorm = (%ctrl.maxAge / %ctrl.age);
         if ((1.0 > %ageNorm)) {
             %ctrl.delete();
         }
-        age = (%ctrl + age);
-        1.0;
-        %x = getWord(position, 0);
-        %ctrl;
-        %y = getWord(position, 1);
-        %ctrl;
+        %ctrl.age = (1.0 + %ctrl.age);
+        %x = getWord(%ctrl.position, 0);
+        %y = getWord(%ctrl.position, 1);
         if ((0.2 > %ageNorm)) {
-            %x = (((0.2 - %ageNorm) * (%ctrl * speed)) + %x);
-            3.0;
-            %y = (speed - %y);
-            %ctrl;
+            %x = ((3.0 * ((0.2 - %ageNorm) * %ctrl.speed)) + %x);
+            %y = (%ctrl.speed - %y);
         }
         %ctrl.reposition(%x, %y);
-        %alpha = (baseAlpha * (%ageNorm - 1.0));
-        %ctrl;
+        %alpha = (%ctrl.baseAlpha * (%ageNorm - 1.0));
         if ((0.2 < %ageNorm)) {
             %alpha = (((0.5 + (0.5 * mSin((0.03 * getSimTime())))) * %alpha) - 1.0);
-            %ctrl;
         }
         %alpha1 = formatInt("%0.2X", (255.0 * %alpha));
         %alpha2 = formatInt("%0.2X", (255.0 * 1.0));
         if ((0.2 > %ageNorm)) {
             %alpha2 = 00;
         }
-        %colorTag = "<color:" @ %ctrl @ BaseColor @ %alpha1 @ ">";
+        %colorTag = "<color:" @ %ctrl.BaseColor @ %alpha1 @ ">";
         %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
-        %ctrl.setText(%ctrl @ baseText);
+        %ctrl.setText(%shadowTag @ %colorTag @ %ctrl.baseText);
         %n = (1.0 - %n);
-        %shadowTag @ %colorTag;
     }
-    timerID = %this @ %this.schedule(tickPeriodMS, "doTick") @ %this;
-    (0.0 >= %n);
+    %this.timerID = (0.0 >= %n) @ %this.schedule(%this.tickPeriodMS, "doTick");
 };
 function clientCmdUpdateVPoints(%newPoints, %notify) {
     if (!(isDefined("%notify"))) {

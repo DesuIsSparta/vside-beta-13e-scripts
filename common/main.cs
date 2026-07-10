@@ -108,8 +108,8 @@ package Help {
 };
 
 function displayHelp() {
-    activatePackage();
-    print(Help @ "\nGeneral options:\n" @ "  -logMode <0|disable|1|append|2|overwrite>\n" @ "                             Set the logging mode\n" @ "  -logLevel <0|none|1|error|2|warn|3|info|4|debug>\n" @ "                             Sets the debug level\n" @ "  -help                      Display this help message\n" @ "  -version                   Display version information and exit\n");
+    activatePackage(Help);
+    print("\nGeneral options:\n" @ "  -logMode <0|disable|1|append|2|overwrite>\n" @ "                             Set the logging mode\n" @ "  -logLevel <0|none|1|error|2|warn|3|info|4|debug>\n" @ "                             Sets the debug level\n" @ "  -help                      Display this help message\n" @ "  -version                   Display version information and exit\n");
 };
 function loadMods(%modPath) {
     %modPath = NextToken(%modPath, ";");
@@ -216,7 +216,7 @@ package common {
     function onExit() {
         Parent::onExit();
     };
-    activatePackage();
+    activatePackage(common);
 };
 
 function findRequestStatus(%managerRequest) {

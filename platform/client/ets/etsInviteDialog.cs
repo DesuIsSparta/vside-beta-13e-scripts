@@ -11,35 +11,35 @@ function EtsInviteDialog::open(%this) {
 };
 function EtsInviteDialog::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function toggleEtsInviteDialog() {
-    showRaiseOrHide();
+    PlayGui.showRaiseOrHide(EtsInviteDialog);
 };
 function EtsInviteDialog::setControlsActive(%this, %flag) {
     %flag.setActive();
 };
 function EtsInviteDialog::onWake(%this) {
     %this.setControlsActive(1);
-    if (!(isObject())) {
-        class = SendInvitePBController @ new ScriptObject(SendInvitePBController) @ "ProgressBarController";
-        if (isObject()) {
-            add();
+    if (!(isObject(SendInvitePBController))) {
+        new ScriptObject(SendInvitePBController) {
+            class = "ProgressBarController";
+        };
+        if (isObject(MissionCleanup)) {
+            MissionCleanup.add(SendInvitePBController);
         }
     }
 };
 function EtsInviteDialog::initializeWithDefaults(%this) {
-    "".setValue();
+    SendInvitePBController.setValue("");
     %text = "";
     ETSInviteToTextCtrl;
     %text.setText();
 };
 function EtsInviteDialog::sendInvite(%this) {
-    %to = trim(getText());
-    ETSInviteToTextCtrl;
-    %note = trim(getText());
-    ETSInviteNoteTextCtrl;
+    %to = trim(ETSInviteToTextCtrl.getText());
+    %note = trim(ETSInviteNoteTextCtrl.getText());
     if ((%to $= "")) {
         MessageBoxOK(%to[$MsgCat::invitation @ "E-SEND-TITLE"], , "");
         return;
@@ -47,17 +47,16 @@ function EtsInviteDialog::sendInvite(%this) {
     %this.sendInviteRequestToEnvManager(%to, %note);
 };
 function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message) {
-    if (isObject()) {
-        delete();
+    if (isObject(EtsInviteRequest)) {
+        EtsInviteRequest.delete();
     }
-    %inviteRequest = new ManagerRequest(EtsInviteRequest);
-    EtsInviteRequest;
-    if (isObject()) {
+    %inviteRequest = new ManagerRequest(EtsInviteRequest);;
+    if (isObject(MissionCleanup)) {
         %inviteRequest.add();
     }
-    %url = MissionCleanup @ $Net::SecureURL @ "?cmd=invite_email";
+    %url = $Net::SecureURL @ "?cmd=invite_email";
     MissionCleanup;
-    %token = EtsInviteRequest @ "&token=" @ urlEncode($Token);
+    %token = "&token=" @ urlEncode($Token);
     %to = strreplace(%to, " ", "");
     %to = strreplace(%to, ",", " ");
     %to = trim(%to);
@@ -104,7 +103,7 @@ function EtsInviteRequest::onError(%this, %errorNum, %unused) {
         MessageBoxOK("Could Not Find Server", EtsInviteDialog, "");
     }
     "Could not connect".onConnectFailed();
-    MessageBoxOK("Could not connect", EtsInviteDialog @ "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
+    MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
 };
 function EtsInviteRequest::onConnected(%this) {
     0.5.setValue();
@@ -114,19 +113,19 @@ function EtsInviteRequest::onDone(%this) {
     1.setValue();
     if (($HTTP::StatusOK != %this.statusCode())) {
         "Error communicating with server".onConnectFailed();
-        log("communication", "error", EtsInviteDialog @ "client HTTP code: " @ %this.statusCode());
-        MessageBoxOK("Server Unavailable", SendInvitePBController, "");
-        return EtsInviteDialog;
+        log("communication", "error", "client HTTP code: " @ %this.statusCode());
+        MessageBoxOK("Server Unavailable", EtsInviteDialog, "");
+        return SendInvitePBController;
     }
     %status = findRequestStatus(%this);
     log("network", "debug", "EtsInviteRequest::onDone status: " @ %status);
     if ((%status $= "fail")) {
         %this.getValue("statusMsg").onInviteError();
     }
-    if ((EtsInviteDialog SPC %status $= "error")) {
+    if ((EtsInviteDialog @ " " @ %status $= "error")) {
         %this.getValue("statusMsg").onInviteError();
     }
-    if ((EtsInviteDialog SPC %status $= "success")) {
-        onInviteSuccess();
+    if ((EtsInviteDialog @ " " @ %status $= "success")) {
+        EtsInviteDialog.onInviteSuccess();
     }
 };

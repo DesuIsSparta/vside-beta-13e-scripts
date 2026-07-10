@@ -9,15 +9,15 @@ function isAIPlayerObject(%obj) {
     return !(!(%obj.getClassName() $= "AIPlayer"));
 };
 function isNPCObject(%obj) {
-    if (!(isObject())) {
+    if (!(isObject(NPCGroup))) {
     }
     if (!(isAIPlayerObject(%obj))) {
         return 0;
     }
-    return (getId() == %obj.getGroup().getId());
+    return (NPCGroup.getId() == %obj.getGroup().getId());
 };
 function isPlayerCharacter(%obj) {
-    return isObject(client);
+    return isObject(%obj.client);
 };
 function stripColorChars(%line) {
     return stripChars(%line, "\x10\x01\x02\x03\x04\x05\x06\x07\x0B\x0C\x0E");
@@ -54,8 +54,8 @@ function tmpFields(%obj) {
     %tmps = gGetField(%obj);
     tmpFields;
     if (!(isObject(%tmps))) {
-        %tmps = new ScriptObject(temporaryfields);
-        if (isObject()) {
+        %tmps = new ScriptObject(temporaryfields);;
+        if (isObject(MissionCleanup)) {
             %tmps.add();
         }
         gSetField(%obj, %tmps);
@@ -138,7 +138,7 @@ function safeNewScriptObject(%classname, %objectName, %deleteExisting) {
         %objectName.delete();
     }
     eval("%ret = new " @ %classname @ "(" @ %objectName @ ");");
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %ret.add();
     }
     return %ret;
@@ -180,7 +180,7 @@ function safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName,
         }
     }
     %ret.setName(%objectName);
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %ret.add();
     }
     return %ret;
@@ -263,9 +263,8 @@ function getPlayerMarkup(%player, %color, %isNameNotObject) {
         %result = %result @ makeLinkColorTag(%color);
     }
     %botString = "";
-    if (isObject()) {
+    if (isObject(PlayerInstanceDict)) {
         %playerObj = Player::findPlayerInstance(%playerName);
-        PlayerInstanceDict;
         if (isObject(%playerObj)) {
         }
         if (%playerObj.isClassAIPlayer()) {
@@ -443,5 +442,5 @@ function commaify(%num) {
         %result = %segment @ "," @ %result;
         %len = (3.0 - %len);
     }
-    return !(%num $= "") @ %sign @ %result;
+    return %sign @ %result;
 };

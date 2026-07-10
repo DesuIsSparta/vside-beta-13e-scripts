@@ -1,33 +1,31 @@
 function addSpace3DMap(%spaceName, %mapFile) {
-    if (!(isObject())) {
+    if (!(isObject(space3DMapsMap))) {
         new StringMap(space3DMapsMap);
-        if (isObject()) {
-            add();
+        if (isObject(MissionCleanup)) {
+            MissionCleanup.add(space3DMapsMap);
         }
     }
     %spaceName.put(%mapFile);
 };
 function addSpace2DMap(%spaceName, %mapFile, %coordUpperLeft, %coordUpperRight, %coordLowerLeft, %altitudeOffset) {
-    if (!(isObject())) {
+    if (!(isObject(space2DMapsMap))) {
         new StringMap(space2DMapsMap);
-        if (isObject()) {
-            add();
+        if (isObject(MissionCleanup)) {
+            MissionCleanup.add(space2DMapsMap);
         }
     }
-    %obj = new ""();
+    %obj = new ""();;
     SimObject;
-    if (isObject()) {
+    if (isObject(MissionCleanup)) {
         %obj.add();
     }
-    spaceName = MissionCleanup @ %spaceName @ %obj;
-    MissionCleanup;
-    mapFile = 0 @ %mapFile @ %obj;
-    space2DMapsMap;
-    coordUpperLeft = MissionCleanup @ %coordUpperLeft @ %obj;
-    MissionCleanup;
-    coordLowerLeft = space2DMapsMap @ %coordLowerLeft @ %obj;
-    coordUpperRight = %coordUpperRight @ %obj;
-    altitudeOffset = %altitudeOffset @ %obj;
-    radians = "" @ %obj;
+    %obj.spaceName = MissionCleanup @ %spaceName;
+    0;
+    %obj.mapFile = %mapFile;
+    %obj.coordUpperLeft = %coordUpperLeft;
+    %obj.coordLowerLeft = %coordLowerLeft;
+    %obj.coordUpperRight = %coordUpperRight;
+    %obj.altitudeOffset = %altitudeOffset;
+    %obj.radians = "";
     %spaceName.put(%obj);
 };

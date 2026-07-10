@@ -472,11 +472,12 @@ function initTeleports() {
 };
 function testLoginAndStay() {
     $loginLogout = 0;
-    userName = new ScriptObject(skeletonClient) @ $UserPref::Player::Name;
-    password = $UserPref::Player::Password;
-    joinAction = "doSomething";
-    quitOnError = "true";
-    %testLogin = ;
+    %testLogin = new ScriptObject(skeletonClient) {
+        userName = $UserPref::Player::Name;
+        password = $UserPref::Player::Password;
+        joinAction = "doSomething";
+        quitOnError = "true";
+    };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
@@ -531,23 +532,20 @@ function do_sumo() {
     schedule(30000, 0);
 };
 function stopAndTalk() {
-    if (isObject()) {
-        if (isVisible()) {
-            close();
+    if (isObject(pChat)) {
+        if (ClosetGui.isVisible()) {
+            ClosetGui.close();
         }
-        if (isVisible()) {
-            closeFully();
+        if (geTGF.isVisible()) {
+            geTGF.closeFully();
         }
         movement_stop();
         %rand_teleport_NV = getRandom(1, $teleportsNVCount);
-        geTGF;
         %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
-        geTGF;
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
-        ClosetGui;
-        if ((ClosetGui SPC $DestServerName $= "NewVeneziaNorth")) {
+        if (($DestServerName $= "NewVeneziaNorth")) {
         }
-        if ((pChat SPC $DestServerName $= "NewVeneziaSouth")) {
+        if (($DestServerName $= "NewVeneziaSouth")) {
             %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
             %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
         }
@@ -563,7 +561,7 @@ function stopAndTalk() {
             %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
             %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
         }
-        pChat @ "Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination.say(0, 0);
+        "Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination.say(0, 0);
         commandToServer(%command, %destination);
     }
     if ((5.0 == $failureCount)) {
@@ -573,6 +571,7 @@ function stopAndTalk() {
     }
     echo("LOAD: Lost PChat... Gonna try again.");
     $failureCount = (1.0 + $failureCount);
+    pChat;
     schedule(10000, 0);
 };
 function logoffAndQuit() {
@@ -597,7 +596,8 @@ function approveFriendRequests() {
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        pChat @ "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
+        "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.".whisper(%playerName);
         %n = (1.0 - %n);
+        pChat;
     }
 };

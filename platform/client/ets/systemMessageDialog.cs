@@ -1,11 +1,11 @@
 function SystemMessageDialog::isShowing(%this) {
-    return (getCurrentTab() SPC name $= "word");
+    return (HudTabs.getCurrentTab().name $= "word");
 };
 function toggleSystemMessageDialog() {
-    if (isShowing()) {
-        close();
+    if (SystemMessageDialog.isShowing()) {
+        SystemMessageDialog.close();
     }
-    open();
+    SystemMessageDialog.open();
 };
 function SystemMessageDialog::open(%this) {
     if () {
@@ -14,7 +14,7 @@ function SystemMessageDialog::open(%this) {
 };
 function SystemMessageDialog::close(%this) {
     if (%this.isShowing()) {
-        close();
+        HudTabs.close();
     }
 };
 function SystemMessageDialog::onClose(%this) {
@@ -24,7 +24,7 @@ addMessageCallback('MsgInfoMessage');
 addMessageCallback('MsgGamePlayOkMessage');
 addMessageCallback('MsgTickerMessage');
 function SystemMessageDialog::getTimeStampNice(%ts) {
-    if ((handleTickerMessage SPC %ts $= "")) {
+    if ((handleTickerMessage @ " " @ %ts $= "")) {
         %ts = getTimeStamp();
         handleGamePlayMessage;
     }
@@ -74,58 +74,57 @@ function handleSystemMessage(%msgType, %msgString) {
     %importanceLevel = getWord(%msgString, 0);
     %msgString = removeWord(%msgString, 0);
     if (!(%importanceLevel $= 3)) {
-        open();
+        SystemMessageDialog.open();
     }
-    if ((SystemMessageDialog SPC %importanceLevel $= 1)) {
-        dontCloseNextTime();
+    if ((%importanceLevel $= 1)) {
+        HudTabs.dontCloseNextTime();
     }
-    if ((HudTabs SPC %importanceLevel $= 2)) {
+    if ((%importanceLevel $= 2)) {
     }
     if ((%importanceLevel $= 3)) {
         "word".pulseTabWithName();
     }
-    %timeStamp = HudTabs @ "<spush><color:66aaffff>" @ %timeStamp @ "<spop>";
-    SystemMessageTextCtrl @ %timeStamp @ " " @ %msgString.addText(1, 1);
+    %timeStamp = "<spush><color:66aaffff>" @ %timeStamp @ "<spop>";
+    HudTabs;
+    %timeStamp @ " " @ %msgString.addText(1, 1);
     if ($UserPref::Audio::NotifyWhisper) {
-        alxPlay();
+        alxPlay(AudioIm_SystemMessageIn);
     }
 };
-bufferSize = 0 @ SystemMessageTextCtrl;
+HudTabs.getCurrentTab().bufferSize = 0 @ SystemMessageTextCtrl;
 function SystemMessageTextCtrl::addText(%this, %txtString) {
-    if ((%this SPC bufferSize $= "")) {
-        bufferSize = 0 @ %this;
+    if ((%this.bufferSize $= "")) {
+        %this.bufferSize = 0;
     }
-    if ((%this >= bufferSize)) {
+    if ((20.0 >= %this.bufferSize)) {
         %this.deleteOldestBufferLine();
     }
-    bufferMessage = 20.0 @ %txtString @ %this @ bufferSize @ %this;
-    bufferSize = (%this + bufferSize);
-    1.0;
+    %this.bufferMessage = %txtString @ %this.bufferSize;
+    %this.bufferSize = (1.0 + %this.bufferSize);
     %this.refresh();
 };
 function SystemMessageTextCtrl::clearText(%this) {
-    bufferSize = 0 @ %this;
-    %this.setText(DefaultMessage);
+    %this.bufferSize = 0;
+    %this.setText(%this.DefaultMessage);
 };
 function SystemMessageTextCtrl::deleteOldestBufferLine(%this) {
     %n = 0;
-    if ((bufferSize < %n)) {
-        bufferMessage = %this @ (1.0 + %n) @ %this @ bufferMessage @ %n @ %this;
+    if ((%this.bufferSize < %n)) {
+        %this.bufferMessage = (1.0 + %n) @ %this.bufferMessage @ %n;
         %n = (1.0 + %n);
     }
-    bufferSize = (%this - bufferSize);
-    1.0;
+    %this.bufferSize = (1.0 - %this.bufferSize);
+    (%this.bufferSize < %n);
 };
 function SystemMessageTextCtrl::refresh(%this) {
     %this.setText("");
-    %n = (%this - bufferSize);
-    1.0;
+    %n = (1.0 - %this.bufferSize);
     if ((0.0 >= %n)) {
         %curString = "<spush>";
-        if (((%this - bufferSize) == %n)) {
-            %curString = 1.0 @ %curString @ "<b>";
+        if (((1.0 - %this.bufferSize) == %n)) {
+            %curString = %curString @ "<b>";
         }
-        %curString = %curString @ "<color:" @ 1.0 @ %this.getMessageColor((%n - (%this - bufferSize))) @ ">" @ %n @ %this @ bufferMessage @ "<spop>\n";
+        %curString = %curString @ "<color:" @ %this.getMessageColor((1.0 - (%n - %this.bufferSize))) @ ">" @ %n @ %this.bufferMessage @ "<spop>\n";
         Parent::addText(%this, %curString, 0, 1);
         %n = (1.0 - %n);
     }
@@ -146,9 +145,9 @@ function SystemMessageTextCtrl::onRightURL(%this, %url) {
     }
     if ((getSubStr(%url, 0, 7) $= "vside:/")) {
         %url.initWithURL();
-        showAtCursor();
+        LinkContextMenu.showAtCursor();
     }
-    if (!(selectionActive)) {
+    if (!(%this.selectionActive)) {
         1.makeFirstResponder();
     }
 };
@@ -206,19 +205,18 @@ function SystemMessageTextCtrl::onURL(%this, %url) {
         %cmd = getWord(%url, 1);
         if ((%cmd $= "inspect")) {
             getWord(%url, 2).requestToInspectGame();
-            open();
+            GameMgrHudWin.open();
             "INSPECT".selectTabWithName();
         }
     }
-    if ((GameMgrHudTabs SPC getWord(%url, 0) $= "answerHelpMeMode")) {
+    if ((GameMgrHudTabs @ " " @ getWord(%url, 0) $= "answerHelpMeMode")) {
         %requestId = getWord(%url, 1);
-        GameMgrHudWin;
-        %newbName = unmunge(getWords(%url, 2, 11111));
         gameMgrClient;
+        %newbName = unmunge(getWords(%url, 2, 11111));
         answerHelpMeMode(%newbName, %requestId);
         %this.changeLinesEndingInString("<a:" @ %url, "- You answered the call!");
     }
-    if (!(selectionActive)) {
+    if (!(%this.selectionActive)) {
         1.makeFirstResponder();
     }
 };
@@ -255,16 +253,15 @@ function SystemMessageTextCtrl::updateTwoPlayerActionRequest(%this, %name, %coAn
     %this.changeLinesEndingInString(%linkStart, %acceptString);
 };
 function SystemMessageTextCtrl::changeLinesEndingInString(%this, %replaceThis, %withThis) {
-    %i = (%this - bufferSize);
-    1.0;
+    %i = (1.0 - %this.bufferSize);
     if ((0.0 >= %i)) {
-        %curLine = bufferMessage;
-        %i @ %this;
+        %curLine = %this.bufferMessage;
+        %i;
         %start = strstr(%curLine, %replaceThis);
         if ((0.0 < %start)) {
         }
         %newLine = getSubStr(%curLine, 0, %start) @ " " @ %withThis;
-        bufferMessage = %newLine @ %i @ %this;
+        %this.bufferMessage = %newLine @ %i;
         %i = (1.0 - %i);
     }
     %this.refresh();

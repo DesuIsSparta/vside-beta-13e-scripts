@@ -18,12 +18,11 @@ function onMouseOverSwatchObj(%obj) {
     }
     if (isObject(%obj)) {
         if (($TypeMasks::InteriorObjectType & %obj.getType())) {
-            $gDifSkusCurrentBaseSwatch = getLastRayCastTextureName().findByTexture();
-            PlayGui;
+            $gDifSkusCurrentBaseSwatch = PlayGui.getLastRayCastTextureName().findByTexture();
+            SkuManager;
         }
         if ((0.0 > %obj.getInventoryNuggetSKU())) {
             $gDifSkusCurrentBaseSwatch = "obj" @ " " @ %obj;
-            SkuManager;
         }
         $TSControl::objSelContinuous = 1;
     }
@@ -32,46 +31,53 @@ function onMouseOverSwatchObj(%obj) {
     updateSwatchBrush();
 };
 function updateSwatchBrush() {
-    if (!(isObject())) {
-        profile = geSwatchBrushContainer @ new GuiControl(geSwatchBrushContainer) @ "SwatchBrushProfile";
-        extent = "72 72";
-        profile = new GuiBitmapCtrl(geSwatchBrushBitmap) @ "ETSNonModalProfile";
-        extent = "70 70";
-        position = "1 1";
-        modulationColor = "255 255 255 200";
-        profile = new GuiBitmapCtrl(geSwatchBrushObjectShadowBitmap) @ "ETSNonModalProfile";
-        position = "1 34";
-        extent = "33 33";
-        modulationColor = "0 0 0 200";
-        profile = new GuiBitmapCtrl(geSwatchBrushObjectBitmap) @ "ETSNonModalProfile";
-        position = "0 34";
-        extent = "32 32";
-        modulationColor = "255 255 255 255";
-        profile = new GuiMLTextCtrl(geSwatchBrushText2) @ "GuiMLTextModelessProfile";
-        position = "2 57";
-        extent = "70 16";
-        profile = new GuiMLTextCtrl(geSwatchBrushText1) @ "GuiMLTextModelessProfile";
-        position = "1 58";
-        extent = "70 16";
-        add();
+    if (!(isObject(geSwatchBrushContainer))) {
+        new GuiBitmapCtrl(geSwatchBrushObjectBitmap) {
+            profile = new GuiBitmapCtrl(geSwatchBrushObjectShadowBitmap) {
+            profile = "ETSNonModalProfile";
+            position = "1 34";
+            extent = "33 33";
+            modulationColor = "0 0 0 200";
+        }; @ "ETSNonModalProfile";
+            position = "0 34";
+            extent = "32 32";
+            modulationColor = "255 255 255 255";
+        };
+        new GuiControl(geSwatchBrushContainer) {
+            profile = "SwatchBrushProfile";
+            extent = "72 72";
+        };
+        PlayGui.add(geSwatchBrushContainer);
     }
     if (!($gSwatchPaintingModeOn)) {
     }
     if (!(objectIsSwatchable($gDifSkusCurrentDif))) {
     }
-    if ((geSwatchBrushContainer SPC $gDifSkusCurrentBaseSwatch $= 0)) {
+    if ((new GuiMLTextCtrl(geSwatchBrushText1) {
+        profile = new GuiMLTextCtrl(geSwatchBrushText2) {
+        profile = new GuiBitmapCtrl(geSwatchBrushBitmap) {
+        profile = "ETSNonModalProfile";
+        extent = "70 70";
+        position = "1 1";
+        modulationColor = "255 255 255 200";
+    }; @ "GuiMLTextModelessProfile";
+        position = "2 57";
+        extent = "70 16";
+    }; @ "GuiMLTextModelessProfile";
+        position = "1 58";
+        extent = "70 16";
+    }; @ " " @ $gDifSkusCurrentBaseSwatch $= 0)) {
     }
-    if ((PlayGui SPC $gDifSkusCurrentSwatch $= 0)) {
-        0.setVisible();
-        setCursor();
-        return ETSDefaultCursor;
+    if (($gDifSkusCurrentSwatch $= 0)) {
+        geSwatchBrushContainer.setVisible(0);
+        Canvas.setCursor(ETSDefaultCursor);
+        return geSwatchBrushContainer;
     }
-    %pos = 15.0 @ (Canvas + getWord(getCursorPos(), 1));
-    ((geSwatchBrushContainer / getWord(getExtent(), 0)) + (Canvas - getWord(getCursorPos(), 0))) @ " ";
+    %pos = (2.0 + ((2.0 / getWord(geSwatchBrushContainer.getExtent(geSwatchBrushContainer), 0)) - getWord(geSwatchBrushContainer.getCursorPos(Canvas), 0))) @ " " @ (15.0 + getWord(geSwatchBrushContainer.getCursorPos(Canvas), 1));
     %pos.reposition();
     1.setVisible();
     getBitmapFilename("swatch", $gDifSkusCurrentSwatch.findBySku().getTxtrNames()).setBitmap();
-    if ((SkuManager SPC firstWord($gDifSkusCurrentBaseSwatch) $= "obj")) {
+    if ((SkuManager @ " " @ firstWord($gDifSkusCurrentBaseSwatch) $= "obj")) {
         %sku = $gDifSkusCurrentDif.getInventoryNuggetSKU();
         geSwatchBrushBitmap;
         %text = "";
@@ -80,18 +86,15 @@ function updateSwatchBrush() {
         geSwatchBrushContainer;
     }
     %sku = $gDifSkusCurrentBaseSwatch;
-    2.0;
     %siBase = %sku.findBySku();
     SkuManager;
-    %text = descShrt;
-    %siBase;
+    %text = %siBase.descShrt;
     %bitmap = "";
-    2.0;
-    geSwatchBrushText1 @ "<just:left> <color:ddff11>" @ %text.setText();
-    geSwatchBrushText2 @ "<just:left> <color:000000>" @ %text.setText();
+    "<just:left> <color:ddff11>" @ %text.setText();
+    "<just:left> <color:000000>" @ %text.setText();
     %bitmap.setBitmap();
     %bitmap.setBitmap();
-    setCursor();
+    Canvas.setCursor(ETSHandCursor);
 };
 function objectIsSwatchable(%obj) {
     if (!(isObject(%obj))) {
@@ -121,9 +124,9 @@ function onLeftClickSwatch(%obj) {
 function onRightClickDownInterior(%obj) {
 };
 function onRightClickUpInterior(%obj) {
-    if (isInEditMode()) {
-        initWithObject();
-        showAtCursor();
+    if (CSFurnitureMover.isInEditMode()) {
+        FurnitureItemContextMenu.initWithObject();
+        FurnitureItemContextMenu.showAtCursor();
     }
 };
 function onMouseWheelDifSkus(%val) {
@@ -156,13 +159,13 @@ function onMouseWheelDifSkus(%val) {
         %ndx = 0;
     }
     $gDifSkusCurrentSwatch = getWord($gDifSkusSwatchSkusViewable, %ndx);
-    if (isObject()) {
+    if (isObject(geSwatchesPanel)) {
     }
-    if (isVisible()) {
+    if (geSwatchesPanel.isVisible()) {
         $gDifSkusCurrentSwatch.selectSwatch();
     }
     updateSwatchBrush();
-    if (getMouseButtonDown()) {
+    if (Canvas.getMouseButtonDown()) {
         onLeftClickSwatch($gDifSkusCurrentDif);
     }
     return 1;

@@ -24,7 +24,7 @@ function initCanvas(%windowName) {
     return 1;
 };
 function resetCanvas() {
-    if (isObject()) {
-        repaint();
+    if (isObject(Canvas)) {
+        Canvas.repaint();
     }
 };

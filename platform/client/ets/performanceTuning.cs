@@ -133,7 +133,7 @@ function setExposureFilterValue(%val) {
     if ((0.0 == %val)) {
         0.showBrightnessControls();
         0.setVisible();
-        if (isObject()) {
+        if (isObject(EditorExposureFilter)) {
             0.setVisible();
         }
         0.setVisible();
@@ -141,7 +141,7 @@ function setExposureFilterValue(%val) {
     if ((1.0 == %val)) {
         1.showBrightnessControls();
         1.setVisible();
-        if (isObject()) {
+        if (isObject(EditorExposureFilter)) {
             1.setVisible();
         }
         1.setVisible();
@@ -149,7 +149,7 @@ function setExposureFilterValue(%val) {
     if ((2.0 == %val)) {
         1.showBrightnessControls();
         1.setVisible();
-        if (isObject()) {
+        if (isObject(EditorExposureFilter)) {
             1.setVisible();
         }
         1.setVisible();
@@ -158,14 +158,14 @@ function setExposureFilterValue(%val) {
         if ((0.0 == $renderQuality)) {
             0.showBrightnessControls();
             0.setVisible();
-            if (isObject()) {
+            if (isObject(EditorExposureFilter)) {
                 0.setVisible();
             }
             0.setVisible();
         }
         1.showBrightnessControls();
         1.setVisible();
-        if (isObject()) {
+        if (isObject(EditorExposureFilter)) {
             1.setVisible();
         }
         1.setVisible();

@@ -1,17 +1,17 @@
 function toggleSnapshotAvatarTool() {
-    showRaiseOrHide();
+    PlayGui.showRaiseOrHide(snapshotAvatarTool);
 };
 function snapshotAvatarTool::open(%this) {
     %this.setVisible(1);
     %this.focusAndRaise();
-    initStuff();
+    snapshotAvatarToolActiveRegion.initStuff();
 };
 function snapshotAvatarTool::onWake(%this) {
-    initStuff();
+    snapshotAvatarToolActiveRegion.initStuff();
 };
 function snapshotAvatarTool::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function snapshotAvatarToolActiveRegion::initStuff(%this) {
@@ -20,8 +20,8 @@ function snapshotAvatarToolActiveRegion::initStuff(%this) {
         return;
     }
     %this.setSimObject($player);
-    cameraXRotMin = -(0.3) @ %this;
-    cameraXRotMax = 0.1 @ %this;
+    %this.cameraXRotMin = -(0.3);
+    %this.cameraXRotMax = 0.1;
     %this.adjustForHeight($UserPref::Player::height, 0.3, 1.1);
     %this.setOrbitDistMin(0.4);
     %this.setOrbitDistMax(0.7);
@@ -39,8 +39,8 @@ function snapshotAvatarToolActiveRegion::adjustForHeight(%this, %height, %cMin, 
 };
 function snapshotAvatarTool::doSnap(%this) {
     gSetField(%this, $Canvas::frameCount);
-    gSetField(%this, profile);
-    setProfile();
+    gSetField(%this, %this.profile);
+    snapshotAvatarToolActiveRegion.setProfile(ETSSnapshotBackgroundProfile);
     %this.waitForNextFrameToSnap();
 };
 function snapshotAvatarTool::waitForNextFrameToSnap(%this) {
@@ -58,7 +58,7 @@ function snapshotAvatarTool::doSnap2(%this) {
         error("Snapshot", "Problem taking snapshot");
         return;
     }
-    saveObject = %this @ %snapshot;
+    %snapshot.saveObject = %this;
     %snapshot.setCompletedCallback("snapshotAvatarToolonCompleted");
     0.setVisible();
     1.setVisible();
@@ -66,20 +66,18 @@ function snapshotAvatarTool::doSnap2(%this) {
     gGetField(%this).setProfile();
 };
 function snapshotAvatarTool::onProgress(%this, %snapshot) {
-    %percent = (%snapshot / ulNow);
-    ulTotal;
+    %percent = (%snapshot.ulTotal / %snapshot.ulNow);
     %percent.setValue();
 };
 function snapshotAvatarToolonCompleted(%request, %result) {
-    %snapshot = saveObject;
-    %request;
+    %snapshot = %request.saveObject;
     if ((0.0 == %result)) {
         1.setVisible();
         0.setVisible();
-        if (!(%snapshot SPC visitWhenDoneUrl $= "")) {
+        if (!(snapshotAvatarToolSet2 @ " " @ %snapshot.visitWhenDoneUrl $= "")) {
         }
         if ($UserPref::Snapshots::View) {
-            gotoWebPage(visitWhenDoneUrl);
+            gotoWebPage(%snapshot.visitWhenDoneUrl);
         }
     }
     1.setVisible();

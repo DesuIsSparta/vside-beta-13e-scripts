@@ -11,15 +11,15 @@ function testSuitesPanel::open(%this) {
 };
 function testSuitesPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 $G_LAST_SUITE_RUNNING = 0;
 function TestPanelTestList::onSelect(%this, %unused, %text) {
     if (isObject($G_LAST_SUITE_RUNNING)) {
-        if (running) {
+        if ($G_LAST_SUITE_RUNNING.running) {
             MessageBoxOK("Test Suite", $G_LAST_SUITE_RUNNING @ " " @ "is still running.", "");
-            return $G_LAST_SUITE_RUNNING;
+            return;
         }
     }
     $G_LAST_SUITE_RUNNING = %text;

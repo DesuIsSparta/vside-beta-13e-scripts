@@ -1,7 +1,6 @@
 function recordingsDlg::onWake() {
-    clear();
+    RecordingsDlgList.clear();
     %i = 0;
-    RecordingsDlgList;
     %filespec = $currentMod @ "/recordings/*.rec";
     echo(%filespec);
     %file = findFirstFile(%filespec);
@@ -18,28 +17,27 @@ function recordingsDlg::onWake() {
     0.scrollVisible();
 };
 function StartSelectedDemo() {
-    %sel = getSelectedId();
-    RecordingsDlgList;
+    %sel = RecordingsDlgList.getSelectedId();
     %rowText = %sel.getRowTextById();
     RecordingsDlgList;
     %file = $currentMod @ "/recordings/" @ getField(%rowText, 0) @ ".rec";
     new GameConnection(ServerConnection);
-    "".setCommonPreconnectClientSettings();
-    add();
-    if (%file.playDemo()) {
-        setContent();
-        popDialog();
-        prepDemoPlayback();
+    ServerConnection.setCommonPreconnectClientSettings("");
+    RootGroup.add(ServerConnection);
+    if (ServerConnection.playDemo(%file)) {
+        Canvas.setContent(PlayGui);
+        Canvas.popDialog(recordingsDlg);
+        ServerConnection.prepDemoPlayback(ServerConnection);
     }
-    MessageBoxOK("Playback Failed", recordingsDlg @ ServerConnection @ "Demo playback failed for file '" @ %file @ "'.", "");
-    if (isObject()) {
-        delete();
+    MessageBoxOK("Playback Failed", "Demo playback failed for file '" @ %file @ "'.", "");
+    if (isObject(ServerConnection)) {
+        ServerConnection.delete(ServerConnection);
     }
 };
 function startDemoRecord() {
-    stopRecording();
-    if (isDemoPlaying()) {
-        return ServerConnection;
+    ServerConnection.stopRecording(ServerConnection);
+    if (ServerConnection.isDemoPlaying(ServerConnection)) {
+        return;
     }
     %i = 0;
     if ((1000.0 < %i)) {
@@ -59,20 +57,20 @@ function startDemoRecord() {
         return (1000.0 < %i);
     }
     $DemoFileName = %file;
-    ChatHud @ "\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
-    prepDemoRecord();
+    "\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
+    ServerConnection.prepDemoRecord();
     $DemoFileName.startRecording();
-    if (!(isDemoRecording())) {
+    if (!(ServerConnection.isDemoRecording())) {
         deleteFile($DemoFileName);
-        ServerConnection @ ChatHud @ "\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
+        "\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
         $DemoFileName = "";
-        ServerConnection;
+        ChatHud;
     }
 };
 function stopDemoRecord() {
-    if (isDemoRecording()) {
-        ServerConnection @ ChatHud @ "\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.".addLine();
-        stopRecording();
+    if (ServerConnection.isDemoRecording()) {
+        "\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.".addLine();
+        ServerConnection.stopRecording();
     }
 };
 function demoPlaybackComplete() {

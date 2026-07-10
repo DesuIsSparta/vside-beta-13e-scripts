@@ -1,37 +1,49 @@
-if (!(isObject())) {
-    fontColor = GuiBMPRed_Scroll @ new GuiControlProfile(GuiBMPRed_Scroll) @ "255 0 0";
-    justify = "center";
-    fillColor = "200 200 200 120";
-    border = 1;
-    borderColor = "255 0 0";
+if (!(isObject(GuiBMPRed_Scroll))) {
+    new GuiControlProfile(GuiBMPRed_Scroll) {
+        fontColor = "255 0 0";
+        justify = "center";
+        fillColor = "200 200 200 120";
+        border = 1;
+        borderColor = "255 0 0";
+    };
 }
-if (!(isObject())) {
-    fontColor = GuiBMPBlue_Scroll @ new GuiControlProfile(GuiBMPBlue_Scroll : GuiBMPRed_Scroll) @ "0 0 255";
-    borderColor = "0 0 255";
+if (!(isObject(GuiBMPBlue_Scroll))) {
+    new GuiControlProfile(GuiBMPBlue_Scroll : GuiBMPRed_Scroll) {
+        fontColor = "0 0 255";
+        borderColor = "0 0 255";
+    };
 }
-if (!(isObject())) {
-    fontColor = GuiBMPRed_TE @ new GuiControlProfile(GuiBMPRed_TE : GuiTextEditProfile) @ "255 0 0";
-    justify = "center";
-    tab = 0;
-    autoSizeHeight = 0;
-    fillColor = "200 200 200 120";
-    border = 1;
-    borderColorHL = "0 0 0";
-    borderColor = "255 0 0";
+if (!(isObject(GuiBMPRed_TE))) {
+    new GuiControlProfile(GuiBMPRed_TE : GuiTextEditProfile) {
+        fontColor = "255 0 0";
+        justify = "center";
+        tab = 0;
+        autoSizeHeight = 0;
+        fillColor = "200 200 200 120";
+        border = 1;
+        borderColorHL = "0 0 0";
+        borderColor = "255 0 0";
+    };
 }
-if (!(isObject())) {
-    fontColor = GuiBMPBlue_TE @ new GuiControlProfile(GuiBMPBlue_TE : GuiBMPRed_TE) @ "0 0 255";
-    borderColor = "0 0 255";
+if (!(isObject(GuiBMPBlue_TE))) {
+    new GuiControlProfile(GuiBMPBlue_TE : GuiBMPRed_TE) {
+        fontColor = "0 0 255";
+        borderColor = "0 0 255";
+    };
 }
-if (!(isObject())) {
-    fontColor = GuiBMPRed_Button @ new GuiControlProfile(GuiBMPRed_Button : GuiClickLabelProfile) @ "255 0 0";
-    border = 1;
-    borderColor = "255 0 0";
-    justify = "center";
+if (!(isObject(GuiBMPRed_Button))) {
+    new GuiControlProfile(GuiBMPRed_Button : GuiClickLabelProfile) {
+        fontColor = "255 0 0";
+        border = 1;
+        borderColor = "255 0 0";
+        justify = "center";
+    };
 }
-if (!(isObject())) {
-    fontColor = GuiBMPBlue_Button @ new GuiControlProfile(GuiBMPBlue_Button : GuiBMPRed_Button) @ "0 0 255";
-    borderColor = "0 0 255";
+if (!(isObject(GuiBMPBlue_Button))) {
+    new GuiControlProfile(GuiBMPBlue_Button : GuiBMPRed_Button) {
+        fontColor = "0 0 255";
+        borderColor = "0 0 255";
+    };
 }
 $bodyModPanel::BMBIGC = "BMBIGC";
 $bodyModPanel::BMBIResetScaleButton = "BMBIResetScaleButton";
@@ -64,65 +76,68 @@ function bodyModPanel::createBodyModInfoCell(%realRow, %realCol, %boneIndex, %in
     %gcAntiScaleCheckBox = bodyModPanel::getArrayGCName($bodyModPanel::BMBIAntiScaleCheckBox, %realRow, %realCol);
     %gcResetOffsetButton = bodyModPanel::getArrayGCName($bodyModPanel::BMBIResetOffsetButton, %realRow, %realCol);
     if (!(isObject(%gcGCName))) {
-        %gcObj = addChild();
-        bodyModPanelArray;
+        %gcObj = bodyModPanelArray.addChild();
         %gcObj.setName(%gcGCName);
         %gcObj.setProfile(%buttonProfile);
-        boneIndex = %boneIndex @ %gcObj;
-        profile = GuiTextCtrl @ new ""() @ %buttonProfile;
+        %gcObj.boneIndex = %boneIndex;
         0;
-        position = "3 30";
-        extent = "114 19";
-        %childGcObj = ;
+        %childGcObj = new ""() {
+            profile = GuiTextCtrl @ %buttonProfile;
+            position = "3 30";
+            extent = "114 19";
+        };
         %gcObj.add(%childGcObj);
-        profile = GuiButtonCtrl @ new %gcResetScaleButton() @ %buttonProfile;
         0;
-        position = "4 4";
-        extent = "68 19";
-        text = "Reset Scale";
-        command = "bodyModPanel::setModGCControllers(true,$ThisControl.boneIndex,\"xyz\",1);bodyModPanel::setAntiModToChildren(true,$ThisControl.boneIndex,\"xyz\",1);";
-        %childGcObj = ;
+        %childGcObj = new %gcResetScaleButton() {
+            profile = GuiButtonCtrl @ %buttonProfile;
+            position = "4 4";
+            extent = "68 19";
+            text = "Reset Scale";
+            command = "bodyModPanel::setModGCControllers(true,$ThisControl.boneIndex,\"xyz\",1);bodyModPanel::setAntiModToChildren(true,$ThisControl.boneIndex,\"xyz\",1);";
+        };
         %gcObj.add(%childGcObj);
-        profile = GuiTextCtrl @ new ""() @ %buttonProfile;
         0;
-        position = "71 6";
-        extent = "35 14";
-        text = "antiS";
-        %childGcObj = ;
+        %childGcObj = new ""() {
+            profile = GuiTextCtrl @ %buttonProfile;
+            position = "71 6";
+            extent = "35 14";
+            text = "antiS";
+        };
         %gcObj.add(%childGcObj);
-        profile = GuiCheckBoxCtrl @ new %gcAntiScaleCheckBox() @ "GuiCheckBoxProfile";
         0;
-        position = "103 7";
-        extent = "14 14";
-        buttonType = "ToggleButton";
-        %childGcObj = ;
+        %childGcObj = new %gcAntiScaleCheckBox() {
+            profile = GuiCheckBoxCtrl @ "GuiCheckBoxProfile";
+            position = "103 7";
+            extent = "14 14";
+            buttonType = "ToggleButton";
+        };
         %gcObj.add(%childGcObj);
-        profile = GuiButtonCtrl @ new %gcResetOffsetButton() @ %buttonProfile;
         0;
-        position = "4 57";
-        extent = "68 19";
-        text = "Reset Offset";
-        command = "bodyModPanel::setModGCControllers(false,$ThisControl.boneIndex,\"xyz\",0);bodyModPanel::setAntiModToChildren(false,$ThisControl.boneIndex,\"xyz\",0);";
-        %childGcObj = ;
+        %childGcObj = new %gcResetOffsetButton() {
+            profile = GuiButtonCtrl @ %buttonProfile;
+            position = "4 57";
+            extent = "68 19";
+            text = "Reset Offset";
+            command = "bodyModPanel::setModGCControllers(false,$ThisControl.boneIndex,\"xyz\",0);bodyModPanel::setAntiModToChildren(false,$ThisControl.boneIndex,\"xyz\",0);";
+        };
         %gcObj.add(%childGcObj);
     }
     %boneIndexStr = %boneIndex @ " " @ "-" @ " " @ %indexName;
     %gcGCName.getObject(0).setText(%boneIndexStr);
-    boneIndex = %boneIndex @ %gcResetScaleButton;
-    boneIndex = %boneIndex @ %gcResetOffsetButton;
+    %gcResetScaleButton.boneIndex = %boneIndex;
+    %gcResetOffsetButton.boneIndex = %boneIndex;
 };
 function bmCellBG::onMouseEnterBounds(%this) {
-    $pref::TS::highlightBone = boneIndex;
-    %this;
-    if ((%this SPC origProfile $= "")) {
-        origProfile = %this @ profile @ %this;
-        profile = GuiDefaultProfile @ %this;
+    $pref::TS::highlightBone = %this.boneIndex;
+    if ((%this.origProfile $= "")) {
+        %this.origProfile = %this.profile;
+        %this.profile = GuiDefaultProfile;
     }
 };
 function bmCellBG::onMouseLeaveBounds(%this) {
-    if (!(%this SPC origProfile $= "")) {
-        profile = %this @ origProfile @ %this;
-        origProfile = "" @ %this;
+    if (!(%this.origProfile $= "")) {
+        %this.profile = %this.origProfile;
+        %this.origProfile = "";
     }
 };
 function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, %scale, %offset, %scrollProfile, %TEProfile) {
@@ -150,48 +165,51 @@ function bodyModPanel::createBodyModCell(%axis, %realRow, %realCol, %boneIndex, 
     }
     return;
     if (!(isObject(%gcGCName))) {
-        %gcObj = addChild();
-        bodyModPanelArray;
+        %gcObj = bodyModPanelArray.addChild();
         %gcObj.setName(%gcGCName);
         %gcObj.setProfile(%scrollProfile);
-        boneIndex = %boneIndex @ %gcObj;
-        profile = GuiSliderCtrl @ new %gcScaleSliderName() @ %scrollProfile;
+        %gcObj.boneIndex = %boneIndex;
         0;
-        position = "4 2";
-        extent = "102 16";
-        altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
-        range = $bodyModPanel::scaleBoneRange;
-        %childGcObj = ;
+        %childGcObj = new %gcScaleSliderName() {
+            profile = GuiSliderCtrl @ %scrollProfile;
+            position = "4 2";
+            extent = "102 16";
+            altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
+            range = $bodyModPanel::scaleBoneRange;
+        };
         %gcObj.add(%childGcObj);
-        profile = GuiTextEditCtrl @ new %gcScaleTEName() @ %TEProfile;
         0;
-        position = "23 19";
-        extent = "64 18";
-        altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
-        %childGcObj = ;
+        %childGcObj = new %gcScaleTEName() {
+            profile = GuiTextEditCtrl @ %TEProfile;
+            position = "23 19";
+            extent = "64 18";
+            altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
+        };
         %gcObj.add(%childGcObj);
-        profile = GuiSliderCtrl @ new %gcOffsetSliderName() @ %scrollProfile;
         0;
-        position = "4 39";
-        extent = "102 18";
-        altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
-        range = $bodyModPanel::offsetBoneRange;
-        %childGcObj = ;
+        %childGcObj = new %gcOffsetSliderName() {
+            profile = GuiSliderCtrl @ %scrollProfile;
+            position = "4 39";
+            extent = "102 18";
+            altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
+            range = $bodyModPanel::offsetBoneRange;
+        };
         %gcObj.add(%childGcObj);
-        profile = GuiTextEditCtrl @ new %gcOffsetTEName() @ %TEProfile;
         0;
-        position = "23 58";
-        extent = "64 18";
-        altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
-        %childGcObj = ;
+        %childGcObj = new %gcOffsetTEName() {
+            profile = GuiTextEditCtrl @ %TEProfile;
+            position = "23 58";
+            extent = "64 18";
+            altCommand = "bodyModPanel::applyChangeFromGC($ThisControl);";
+        };
         %gcObj.add(%childGcObj);
     }
-    boneIndex = %boneIndex @ %gcOffsetTEName;
-    boneIndex = %gcOffsetSliderName;
-    boneIndex = %gcScaleTEName;
-    boneIndex = %gcScaleSliderName;
-    prevValue = %scale @ %gcScaleSliderName;
-    prevValue = %offset @ %gcOffsetSliderName;
+    %gcOffsetTEName.boneIndex = %boneIndex;
+    %gcOffsetSliderName.boneIndex = ;
+    %gcScaleTEName.boneIndex = ;
+    %gcScaleSliderName.boneIndex = ;
+    %gcScaleSliderName.prevValue = %scale;
+    %gcOffsetSliderName.prevValue = %offset;
     %gcScaleSliderName.setValue(%scale);
     %gcScaleTEName.setText(%scale);
     %gcOffsetSliderName.setValue(%offset);
@@ -210,7 +228,7 @@ function bodyModPanel::open(%this) {
     if ((-(1.0) == %numNodes)) {
         return;
     }
-    %cells = (numRowsOrCols * %numNodes);
+    %cells = (%gcOffsetSliderName.numRowsOrCols * %numNodes);
     bodyModPanelArray;
     %col = 0;
     %row = 0;
@@ -256,8 +274,8 @@ function bodyModPanel::open(%this) {
         %realRow = (1.0 + %realRow);
         %realCol = 0;
     }
-    %n = (bodyModPanelArray - getCount());
-    1.0;
+    %n = (1.0 - bodyModPanelArray.getCount());
+    (%cells < %col);
     if ((0.0 >= %n)) {
         %ctrl = %n.getObject();
         bodyModPanelArray;
@@ -265,15 +283,14 @@ function bodyModPanel::open(%this) {
             %ctrl.bindClassName("bmCellBG");
         }
         %n = (1.0 - %n);
-        (%cells < %col);
     }
-    reseatChildren();
+    bodyModPanelArray.reseatChildren();
     %this.setGCVisible($pref::TS::bodyMod);
 };
 function bodyModPanel::close(%this) {
     $pref::TS::highlightBone = -(1.0);
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 function bodyModPanel::setGCVisible(%this, %val) {
@@ -413,13 +430,13 @@ function bodyModPanel::setModGCControllers(%isScale, %boneIndex, %axis, %val) {
     }
     %scaleOffsetVal = ClassBodyMod::setBoneMod(%isScale, %boneIndex, %axis, %val);
     %xSlider.setValue(getWord(%scaleOffsetVal, 0));
-    prevValue = %xSlider.getValue() @ %xSlider;
+    %xSlider.prevValue = %xSlider.getValue();
     %xTEGC.setText(%xSlider.getValue());
     %ySlider.setValue(getWord(%scaleOffsetVal, 1));
-    prevValue = %ySlider.getValue() @ %ySlider;
+    %ySlider.prevValue = %ySlider.getValue();
     %yTEGC.setText(%ySlider.getValue());
     %zSlider.setValue(getWord(%scaleOffsetVal, 2));
-    prevValue = %zSlider.getValue() @ %zSlider;
+    %zSlider.prevValue = %zSlider.getValue();
     %zTEGC.setText(%zSlider.getValue());
 };
 function bodyModPanel::setAllBoneMods(%axis, %scaleVal, %offsetVal) {
@@ -521,13 +538,11 @@ function bodyModPanel::setBoneWithAntiMod(%isScale, %slider) {
     }
     return;
     %curParentValue = %slider.getValue();
-    %boneIndex = boneIndex;
-    %slider;
+    %boneIndex = %slider.boneIndex;
     ClassBodyMod::setBoneMod(%isScale, %boneIndex, %axis, %curParentValue);
-    %prevParentValue = prevValue;
-    %slider;
+    %prevParentValue = %slider.prevValue;
     %deltaParentValue = (%prevParentValue - %curParentValue);
-    prevValue = %curParentValue @ %slider;
+    %slider.prevValue = %curParentValue;
     %demo = %curParentValue;
     if ((0.0 == %demo)) {
         return;
@@ -593,7 +608,7 @@ function bodyModPanel::setBoneWithAntiMod(%isScale, %slider) {
         if ((%rangeMax > %newChildValue)) {
             %newChildValue = %rangeMax;
         }
-        prevValue = %sliderGC.getValue() @ %sliderGC;
+        %sliderGC.prevValue = %sliderGC.getValue();
         %sliderGC.setValue(%newChildValue);
         %teGC.setText(%newChildValue);
         ClassBodyMod::setBoneMod(%isScale, %childBoneIndex, %axis, %sliderGC.getValue());

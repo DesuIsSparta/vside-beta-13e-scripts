@@ -1,10 +1,11 @@
 exec("./skeletonClient.cs");
 function generateCacheRemote() {
-    userName = new ScriptObject(skeletonClient) @ "btuser";
-    password = "eviltwin";
-    joinAction = "doSomething";
-    quitOnError = "true";
-    %cacheGenerate = ;
+    %cacheGenerate = new ScriptObject(skeletonClient) {
+        userName = "btuser";
+        password = "eviltwin";
+        joinAction = "doSomething";
+        quitOnError = "true";
+    };
     $iterationsWaited = 0;
     %cacheGenerate.init();
     %cacheGenerate.doLogin("cache_host");
@@ -12,7 +13,7 @@ function generateCacheRemote() {
 echo("LOAD: starting via generateCacheRemote()");
 generateCacheRemote();
 function doSomething() {
-    if (isObject()) {
+    if (isObject(pChat)) {
         echo("CACHE: We found PChat. Quitting in 5 seconds...");
         schedule(5000, 0);
     }

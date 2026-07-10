@@ -192,7 +192,7 @@ package platform {
                 %line = NextToken(%line, ":");
                 host;
                 NextToken(%line, " ");
-                if ((port SPC %port $= 80)) {
+                if ((port @ " " @ %port $= 80)) {
                     $Net::SecureManagerHost = %host @ ":443";
                 }
                 $Net::SecureManagerHost = %host @ ":8443";
@@ -282,11 +282,10 @@ package platform {
         %ServerNameString = (%ServerName $= "") ? "" : " on server";
         %CityNameString = ($ETS::cityName $= "") ? "" : " in";
         %LongCityNameString = "";
-        if (isObject()) {
+        if (isObject(WorldMap)) {
             %areaName = %ServerName.cityNameForServerName();
             WorldMap;
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
-            WorldMap;
             %LongCityNameString = (%locationName $= "") ? "" : " - in";
         }
         echo(getScopeName() @ " " @ "No WorldMap, not getting long city name from server");
@@ -365,12 +364,12 @@ package platform {
         return;
     };
     function startInitialSSLConnection() {
-        %curl = new ""();
+        %curl = new ""();;
         URLPostObject;
-        %curl.setURL(0 @ "http://" @ $Net::SecureManagerHost);
+        %curl.setURL("http://" @ $Net::SecureManagerHost);
         %curl.setBody(0);
         %curl.start();
-        return;
+        return 0;
     };
     function onStart() {
         Parent::onStart();
@@ -389,7 +388,7 @@ package platform {
             initDedicated();
         }
         initClient();
-        if (isObject()) {
+        if (isObject(ConsoleEntry)) {
             "platform/client/consoleHistory.txt".loadHistory();
         }
         echo("---no ConsoleEntry not loading history");
@@ -422,7 +421,7 @@ package platform {
         return;
     };
     function dumpConsoleHistoryReally() {
-        if (isObject()) {
+        if (isObject(ConsoleEntry)) {
         }
         if (!($NonInteractive)) {
             "platform/client/consoleHistory.txt".dumpHistory();
@@ -430,6 +429,6 @@ package platform {
         echo("---no ConsoleEntry not dumping history");
         return ConsoleEntry;
     };
-    activatePackage();
+    activatePackage(platform);
 };
 

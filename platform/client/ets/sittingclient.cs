@@ -1,68 +1,66 @@
 function InitClientSittingSystem() {
 };
 function ETSSeatMarker::moveDisplayedSeat(%this, %pos) {
-    if (!(isObject(myDisplaySeat))) {
-        return %this;
+    if (!(isObject(%this.myDisplaySeat))) {
+        return;
     }
-    myDisplaySeat.setTransform(%pos);
+    %this.myDisplaySeat.setTransform(%pos);
 };
 function ETSSeatMarker::showSeat(%this, %seatID) {
-    if (isObject(myDisplaySeat)) {
-        seatID = %this @ myDisplaySeat;
-        %this @ %seatID;
+    if (isObject(%this.myDisplaySeat)) {
+        %this.myDisplaySeat.seatID = %seatID;
         return;
     }
     %type = "ClientSeatDisplayData";
     if (%this.isListeningStation()) {
         %type = "ClientSeatListeningDisplayData";
     }
-    dataBlock = EtsClientModel @ new ""() @ %type;
     0;
-    seatID = %seatID;
-    seatDisplay = 1;
-    notSoFast = 0;
-    notSoFastClearTime = 1000;
-    %seatDisplay = ;
+    %seatDisplay = new ""() {
+        dataBlock = EtsClientModel @ %type;
+        seatID = %seatID;
+        seatDisplay = 1;
+        notSoFast = 0;
+        notSoFastClearTime = 1000;
+    };
     %seatDisplay.setTransform(%this.getTransform());
-    myDisplaySeat = %seatDisplay @ %this;
+    %this.myDisplaySeat = %seatDisplay;
 };
 function ETSSeatMarker::hideSeat(%this) {
-    if (isObject(myDisplaySeat)) {
-        myDisplaySeat.delete();
-        myDisplaySeat = %this @ 0 @ %this;
-        %this;
+    if (isObject(%this.myDisplaySeat)) {
+        %this.myDisplaySeat.delete();
+        %this.myDisplaySeat = 0;
     }
 };
 function EtsClientModel::cancelNotSoFast(%this) {
-    notSoFast = 0 @ %this;
+    %this.notSoFast = 0;
 };
 function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat) {
     if (!(%autosit_outfit $= "")) {
-        outfitBeforeAutosit = $gOutfits.get("currentOutfit") @ $player;
+        $player.outfitBeforeAutosit = $gOutfits.get("currentOutfit");
         %success = $player.switchOutfitTo(%autosit_outfit);
         if (!(%success)) {
             error(getScopeName() @ "->Could not change outfit to trigger-specified autosit_outfit = " @ %autosit_outfit);
-            outfitBeforeAutosit = "" @ $player;
+            $player.outfitBeforeAutosit = "";
         }
         userTips::showOnceEver("AutoChangeToSwimWear");
     }
     if (!(%isKissingSeat $= "")) {
-        isKissSeat = 1 @ $player;
+        $player.isKissSeat = 1;
     }
-    isKissSeat = 0 @ $player;
+    $player.isKissSeat = 0;
 };
 function clientCmdStandRequestSuccessful(%unused) {
-    if ((ApplauseMeterGui SPC applauseMeterUse $= "blockgame")) {
-        close();
+    if ((ApplauseMeterGui @ " " @ $player.applauseMeterUse $= "blockgame")) {
+        ApplauseMeterGui.close();
     }
-    isKissSeat = ApplauseMeterGui @ 0 @ $player;
-    if (!($player SPC outfitBeforeAutosit $= "")) {
-        %success = $player.switchOutfitTo(outfitBeforeAutosit);
-        $player;
+    $player.isKissSeat = 0;
+    if (!($player.outfitBeforeAutosit $= "")) {
+        %success = $player.switchOutfitTo($player.outfitBeforeAutosit);
         if (!(%success)) {
-            error(getScopeName() @ "->Could not restore saved pre-autosit outfit! (previous outfit = " @ Player @ outfitBeforeAutosit @ ")");
+            error(Player @ $player.outfitBeforeAutosit @ ")");
         }
-        outfitBeforeAutosit = "" @ $player;
+        $player.outfitBeforeAutosit = getScopeName() @ "->Could not restore saved pre-autosit outfit! (previous outfit = " @ "";
     }
 };
 function SendStandCommand(%moveDir) {
@@ -71,15 +69,15 @@ function SendStandCommand(%moveDir) {
     }
 };
 function ClientSittingSystemOnClick(%obj) {
-    if ((%obj == notSoFast)) {
-        return 1.0;
+    if ((1.0 == %obj.notSoFast)) {
+        return;
     }
-    notSoFast = 1 @ %obj;
-    %obj.schedule(notSoFastClearTime);
-    if (isObject()) {
+    %obj.notSoFast = 1;
+    %obj.schedule(%obj.notSoFastClearTime);
+    if (isObject(CSFurnitureMover)) {
         -(1.0).SelectNuggetID();
     }
-    commandToServer('RequestToSit', seatID);
+    commandToServer('RequestToSit', %obj.seatID);
 };
 function clientCmdOnLeaveSittingTrigger(%autosit_outfit) {
 };

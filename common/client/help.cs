@@ -1,10 +1,10 @@
 function HelpDlg::onWake(%this) {
     entryCount = 0 @ HelpFileList;
-    clear();
+    HelpFileList.clear();
     %file = findFirstFile("*.hfl");
-    HelpFileList;
     if (!(%file $= "")) {
-        fileName = %file @ HelpFileList @ entryCount @ HelpFileList;
+        fileName = HelpFileList @ entryCount @ HelpFileList;
+        %file;
         entryCount.addRow(fileBase(%file));
         entryCount = (HelpFileList + entryCount);
         1.0;
@@ -19,7 +19,8 @@ function HelpDlg::onWake(%this) {
         HelpFileList;
         %text = %rowId.getRowTextById();
         HelpFileList;
-        %text = !(HelpFileList SPC %file $= "") @ HelpFileList @ (1.0 + %i) @ ". " @ restWords(%text);
+        %text = (1.0 + %i) @ ". " @ restWords(%text);
+        HelpFileList;
         %rowId.setRowById(%text);
         %i = (1.0 + %i);
         HelpFileList;
@@ -30,11 +31,11 @@ function HelpDlg::close(%this) {
     %this.popDialog();
 };
 function HelpFileList::onSelect(%this, %row) {
-    %fo = new ""();
+    %fo = new ""();;
     FileObject;
-    %fo.openForRead(fileName);
+    %fo.openForRead(%this.fileName);
     %text = "";
-    0 @ %row @ %this;
+    0 @ %row;
     if (!(%fo.isEOF())) {
         %text = %text @ %fo.readLine() @ "\n";
     }
@@ -44,7 +45,7 @@ function HelpFileList::onSelect(%this, %row) {
 };
 function getHelp(%helpName) {
     0.pushDialog();
-    if (!(HelpDlg SPC %helpName $= "")) {
+    if (!(HelpDlg @ " " @ %helpName $= "")) {
         %index = %helpName.findTextIndex();
         HelpFileList;
         %index.setSelectedRow();
@@ -52,19 +53,18 @@ function getHelp(%helpName) {
 };
 function contextHelp() {
     %i = 0;
-    if ((getCount() < %i)) {
+    if ((Canvas.getCount() < %i)) {
         if (HelpDlg) {
-            popDialog();
-            return HelpDlg;
+            Canvas.popDialog(HelpDlg);
+            return Canvas @ " " @ %i.getObject().getName();
         }
         %i = (1.0 + %i);
     }
-    %content = getContent();
-    Canvas;
+    %content = Canvas.getContent();
+    (Canvas.getCount() < %i);
     %helpPage = %content.getHelpPage();
-    (getCount() < %i);
     getHelp(%helpPage);
 };
 function GuiControl::getHelpPage(%this) {
-    return helpPage;
+    return %this.helpPage;
 };

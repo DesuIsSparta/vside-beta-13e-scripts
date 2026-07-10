@@ -23,18 +23,18 @@ function createServer(%serverType, %mission) {
         portInit($Pref::Server::Port);
         allowConnections(1);
     }
-    $ServerGroup = new SimGroup(ServerGroup);
-    $ClientDict = new StringMap(ClientDict);
-    $PlayerDict = new StringMap(PlayerDict);
-    $TokenDict = new StringMap(TokenDict);
-    $PendingValidate = new StringMap(PendingValidate);
-    allowInstanceMethods();
-    allowInstanceMethods();
-    allowInstanceMethods();
+    $ServerGroup = new SimGroup(ServerGroup);;
+    $ClientDict = new StringMap(ClientDict);;
+    $PlayerDict = new StringMap(PlayerDict);;
+    $TokenDict = new StringMap(TokenDict);;
+    $PendingValidate = new StringMap(PendingValidate);;
+    ClientDict.allowInstanceMethods();
+    PlayerDict.allowInstanceMethods();
+    TokenDict.allowInstanceMethods();
     new StringMap(PlayerNameLowerToRegMap);
     onServerCreated();
     loadMission(%mission, 1);
-    return TokenDict;
+    return;
 };
 function destroyServer() {
     $Server::ServerType = "";
@@ -42,25 +42,25 @@ function destroyServer() {
     $missionRunning = 0;
     endMission();
     onServerDestroyed();
-    if (isObject()) {
-        delete();
+    if (isObject(MissionGroup)) {
+        MissionGroup.delete();
     }
-    if (isObject()) {
-        delete();
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.delete();
     }
     if (isObject($ServerGroup)) {
         $ServerGroup.delete();
     }
-    if (getCount()) {
+    if (ClientGroup.getCount()) {
         %client = 0.getObject();
         ClientGroup;
         %client.delete();
     }
     $Server::GuidList = "";
-    getCount();
+    ClientGroup.getCount();
     deleteDataBlocks();
     purgeResources();
-    return ClientGroup;
+    return;
 };
 function resetServerDefaults() {
     echo("Resetting server defaults...");
@@ -78,7 +78,7 @@ function addToServerGuidList(%guid) {
         }
         %i = (1.0 + %i);
     }
-    if (((%count < %i) SPC $Server::GuidList $= "")) {
+    if (((%count < %i) @ " " @ $Server::GuidList $= "")) {
     }
     $Server::GuidList = $Server::GuidList;
     %guid;

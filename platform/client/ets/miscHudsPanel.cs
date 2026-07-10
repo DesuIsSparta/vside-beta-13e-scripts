@@ -12,13 +12,12 @@ function geMiscHudsPanel::open(%this) {
 };
 function geMiscHudsPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function geMiscHudsPanel::addHud(%this, %panelCtrl) {
-    %offsetX = getWord(getExtent(), 0);
-    geMiscHudsContainer;
-    (getWord(%panelCtrl.getExtent(), 0) + (%offsetX + 1.0)).resize(mMax(getWord(%panelCtrl.getExtent(), 1), getWord(getExtent(), 1)));
+    %offsetX = getWord(geMiscHudsContainer.getExtent(), 0);
+    (getWord(%panelCtrl.getExtent(), 0) + (%offsetX + 1.0)).resize(mMax(getWord(%panelCtrl.getExtent(), 1), getWord(geMiscHudsContainer.getExtent(), 1)));
     %panelCtrl.add();
     %panelCtrl.reposition(%offsetX, 0);
 };

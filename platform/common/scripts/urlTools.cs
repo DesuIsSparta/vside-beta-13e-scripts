@@ -1,9 +1,8 @@
 function URLInfo::parse(%this) {
-    parsed = 0 @ %this;
-    %work = trim(url);
-    %this;
+    %this.parsed = 0;
+    %work = trim(%this.url);
     %work = NextToken(%work, "protocol", ":");
-    protocol = %protocol @ %this;
+    %this.protocol = %protocol;
     if ((0.0 != strncmp(%work, "//", 2))) {
         return 0;
     }
@@ -11,48 +10,46 @@ function URLInfo::parse(%this) {
     %params = NextToken(%work, "hostAndPath", "?");
     %path = NextToken(%hostAndPath, "hostAndPort", "/");
     %port = NextToken(%hostAndPort, "host", ":");
-    host = %host @ %this;
+    %this.host = %host;
     if (!(%port $= "")) {
-        port = %port @ %this;
+        %this.port = %port;
     }
-    Path = %path @ %this;
+    %this.Path = %path;
     if (!(%params $= "")) {
         %params = strreplace(%params, "&", " ");
         %count = getWordCount(%params);
-        paramCount = %count @ %this;
+        %this.paramCount = %count;
         %idx = 0;
         if ((%count < %idx)) {
             %nvPair = getWord(%params, %idx);
             %value = NextToken(%nvPair, "name", "=");
-            paramName = %name @ %idx @ %this;
-            param = %value @ %name @ %this;
+            %this.paramName = %name @ %idx;
+            %this.param = %value @ %name;
             %idx = (1.0 + %idx);
         }
     }
-    paramCount = (%count < %idx) @ 0 @ %this;
-    parsed = 1 @ %this;
+    %this.paramCount = (%count < %idx) @ 0;
+    %this.parsed = 1;
     return 1;
 };
 function URLInfo::reconstruct(%this) {
-    if (!(parsed)) {
+    if (!(%this.parsed)) {
         return "";
     }
-    %newUrl = %this @ host;
-    %this @ protocol @ "://";
-    if (!(%this SPC Path $= "")) {
-        %newUrl = %this @ Path;
-        %newUrl @ "/";
+    %newUrl = %this.protocol @ "://" @ %this.host;
+    if (!(%this.Path $= "")) {
+        %newUrl = %newUrl @ "/" @ %this.Path;
     }
-    if ((%this > paramCount)) {
-        %newUrl = 0.0 @ %newUrl @ "?";
+    if ((0.0 > %this.paramCount)) {
+        %newUrl = %newUrl @ "?";
         %idx = 0;
-        if ((paramCount < %idx)) {
+        if ((%this.paramCount < %idx)) {
             if ((0.0 > %idx)) {
-                %newUrl = %this @ %newUrl @ "&";
+                %newUrl = %newUrl @ "&";
             }
-            %name = paramName;
-            %idx @ %this;
-            %newUrl = %newUrl @ %name @ "=" @ %name @ %this @ param;
+            %name = %this.paramName;
+            %idx;
+            %newUrl = %newUrl @ %name @ "=" @ %name @ %this.param;
             %idx = (1.0 + %idx);
         }
     }

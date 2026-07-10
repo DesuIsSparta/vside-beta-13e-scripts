@@ -311,28 +311,29 @@ function initializeEmoteDictProtected(%dict) {
     %dict.put("pocketbike-ride", "pckride");
 };
 function initializeEmoteDict() {
-    if (isObject()) {
-        delete();
+    if (isObject(EmoteDict)) {
+        EmoteDict.delete();
     }
-    ignoreCase = EmoteDict @ new StringMap(EmoteDict) @ 1;
-    EmoteDict;
-    if (isObject()) {
-        add();
+    new StringMap(EmoteDict) {
+        ignoreCase = 1;
+    };
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(EmoteDict);
     }
-    initializeEmoteDictPublic();
+    initializeEmoteDictPublic(EmoteDict);
 };
 initializeEmoteDict();
 function intializeSharedEmoteDict() {
-    if (isObject()) {
-        delete();
+    if (isObject(SharedEmoteDict)) {
+        EmoteDict.delete(SharedEmoteDict);
     }
-    ignoreCase = SharedEmoteDict @ new StringMap(SharedEmoteDict) @ 1;
-    SharedEmoteDict;
-    if (isObject()) {
-        add();
+    new StringMap(SharedEmoteDict) {
+        ignoreCase = 1;
+    };
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(SharedEmoteDict);
     }
     // unhandled opcode 465 at 0x000013B2
-    SharedEmoteDict;
     %dict.put("dnc1", "dnc2");
     %dict.put("dnc2", "dnc3");
     %dict.put("dnc3", "dnc4");
@@ -350,23 +351,23 @@ function intializeSharedEmoteDict() {
     %dict.put("hdncb3", "hdncb4");
 };
 function getSharedEmote(%theirEmote) {
-    %got = %theirEmote.get();
+    %got = SharedEmoteDict.get(%theirEmote);
     SharedEmoteDict;
     return %got;
 };
 intializeSharedEmoteDict();
 function initializeProtectedAnims() {
-    if (isObject()) {
-        delete();
+    if (isObject(ProtectedAnimsDict)) {
+        ProtectedAnimsDict.delete();
     }
-    ignoreCase = ProtectedAnimsDict @ new StringMap(ProtectedAnimsDict) @ 1;
-    ProtectedAnimsDict;
-    if (isObject()) {
-        add();
+    new StringMap(ProtectedAnimsDict) {
+        ignoreCase = 1;
+    };
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(ProtectedAnimsDict);
     }
     // unhandled opcode 465 at 0x00001519
     %got = ProtectedAnimsDict;
-    ProtectedAnimsDict;
     %dict.put("dnc1", 2);
     %dict.put("dnc2", 2);
     %dict.put("dnc3", 2);
@@ -491,16 +492,16 @@ function initializeProtectedAnims() {
 };
 initializeProtectedAnims();
 function intializeDrinkExcludedAnims() {
-    if (isObject()) {
-        delete();
+    if (isObject(DrinkExcludedAnimsDict)) {
+        DrinkExcludedAnimsDict.delete();
     }
-    ignoreCase = DrinkExcludedAnimsDict @ new StringMap(DrinkExcludedAnimsDict) @ 1;
-    DrinkExcludedAnimsDict;
-    if (isObject()) {
-        add();
+    new StringMap(DrinkExcludedAnimsDict) {
+        ignoreCase = 1;
+    };
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(DrinkExcludedAnimsDict);
     }
     // unhandled opcode 465 at 0x00001D03
-    DrinkExcludedAnimsDict;
     %dict.put("rotfl", 2);
 };
 intializeDrinkExcludedAnims();

@@ -58,7 +58,7 @@ function Player::onGotTypingSomething(%this, %text) {
     gSetField(%this, %text);
     cancel(gGetField(%this));
     cancel(gGetField(%this));
-    if ((TimeoutChatPreviewTimer SPC %text $= "")) {
+    if ((TimeoutChatPreviewTimer @ " " @ %text $= "")) {
         %this.setTyping(0);
     }
     %this.setTyping(1);
@@ -71,24 +71,24 @@ function Player::onGotTypingSomething(%this, %text) {
 function Player::talkingAnimTimer(%this, %startflag) {
     %whichAnim = 2;
     if (%startflag) {
-        if (!(talking)) {
+        if (!(%this.talking)) {
             %this.triggerBoneBlendAnimation($BB_HEAD_TALK, 1, 0);
-            talking = %this @ 1 @ %this;
+            %this.talking = 1;
             if (%this.hasMicrophone()) {
                 %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.75);
                 %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);
             }
         }
         %dur = %this.getBlendDuration($BB_HEAD_TALK);
-        if (!(%this SPC AnimationTalkingTimer $= "")) {
-            cancel(AnimationTalkingTimer);
-            AnimationTalkingTimer = %this @ "" @ %this;
+        if (!(%this.AnimationTalkingTimer $= "")) {
+            cancel(%this.AnimationTalkingTimer);
+            %this.AnimationTalkingTimer = "";
         }
-        AnimationTalkingTimer = talkingAnimTimer @ %this.schedule(%dur, 0) @ %this;
+        %this.AnimationTalkingTimer = talkingAnimTimer @ %this.schedule(%dur, 0);
     }
     %this.triggerBoneBlendAnimation($BB_HEAD_TALK, 0, 0);
-    AnimationTalkingTimer = "" @ %this;
-    talking = 0 @ %this;
+    %this.AnimationTalkingTimer = "";
+    %this.talking = 0;
     if (%this.hasMicrophone()) {
         %this.setBlendTargetValue($BB_UPPR_MICROPHONE, 0.2);
         %this.triggerBoneBlendAnimation($BB_UPPR_MICROPHONE, 1, 0);

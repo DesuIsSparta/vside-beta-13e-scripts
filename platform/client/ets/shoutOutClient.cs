@@ -7,10 +7,9 @@ function geShoutOutWindow::toggle(%this) {
 function geShoutOutWindow::open(%this) {
     %this.setVisible(1);
     %this.focusAndRaise();
-    if (!(alreadySeen)) {
+    if (!(%this.alreadySeen)) {
         %this.alignToCenterXY();
-        alreadySeen = %this @ 1 @ %this;
-        PlayGui;
+        %this.alreadySeen = PlayGui @ 1;
     }
     shoutOut_action_GroundState();
     %pricePhraseTicker = shoutout_getPriceVBux_Ticker() @ " " @ "vBux";
@@ -20,13 +19,13 @@ function geShoutOutWindow::open(%this) {
         0.setActive();
     }
     1.setActive();
-    getText().setText();
+    MessageHudEdit.getText().setText();
     1.makeFirstResponder();
-    onKeystroke();
-    if ((geShoutout_Credential_Twitter_Username SPC getText() $= "")) {
+    geShoutout_Snapshot_Message.onKeystroke();
+    if ((geShoutout_Snapshot_Message @ " " @ geShoutout_Credential_Twitter_Username.getText() $= "")) {
         $Player::Name.getProperty("twitter_un", "").setText();
     }
-    if ((geShoutout_Credential_Twitter_Password SPC getText() $= "")) {
+    if ((gUserPropMgrClient @ " " @ geShoutout_Credential_Twitter_Password.getText() $= "")) {
         $Player::Name.getProperty("twitter_pw", "").setText();
     }
     $Player::Name.getProperty("twitter_un_save", 1).setValue();
@@ -35,11 +34,11 @@ function geShoutOutWindow::open(%this) {
 };
 function geShoutOutWindow::close(%this) {
     %this.setVisible(0);
-    if (!(MessageHudEdit SPC getText() $= "")) {
+    if (!(MessageHudEdit.getText() $= "")) {
         1.setVisible();
         1.makeFirstResponder();
     }
-    focusTopWindow();
+    PlayGui.focusTopWindow();
     return 1;
 };
 function shoutout_open(%text) {
@@ -49,7 +48,7 @@ function shoutout_open(%text) {
         return;
     }
     0.setVisible();
-    open();
+    geShoutOutWindow.open();
     shoutout_setIncludeSnapshot($UserPref::UI::ShoutOut::Show::Pic);
     shoutout_takeSnapshot();
 };
@@ -57,16 +56,17 @@ function shoutout_getPriceVBux_Ticker() {
     %sku = ;
     %si = %sku.findBySku();
     SkuManager;
-    return price;
+    return %si.price;
 };
 function shoutout_setIncludeSnapshot(%includeIt) {
     %text = "Re-Take Snapshot";
     %text = "<color:ffffff><linkcolor:ffffff><linkcolorhl:e553ff><shadowcolor:000000><outline><a:gamelink:RETAKE>" @ %text @ "</a>";
     %text.setText();
     %includeIt.setVisible();
-    modulationColor = geShoutout_Snapshot_Opt_Pic_Options @ %includeIt ? "255 255 255 255" : "255 255 255 80" @ geShoutout_Snapshot;
-    geShoutout_Snapshot_Retake;
+    %si.modulationColor = %includeIt ? "255 255 255 255" : "255 255 255 80" @ geShoutout_Snapshot;
+    geShoutout_Snapshot_Opt_Pic_Options;
     $UserPref::UI::ShoutOut::Show::Pic = %includeIt;
+    geShoutout_Snapshot_Retake;
     shoutout_setTwitterInclude($UserPref::UI::ShoutOut::Twitter::Include);
 };
 function geShoutout_Snapshot_Retake::onURL(%this, %url) {
@@ -79,7 +79,7 @@ function geShoutout_Snapshot_Retake::onURL(%this, %url) {
 };
 function shoutout_takeSnapshot() {
     %ctrlList = "";
-    %ctrlList = BroadCastControlPanel @ playGuiControlsToHide;
+    %ctrlList = BroadCastControlPanel @ %si.playGuiControlsToHide;
     %ctrlList @ " ";
     %ctrlList = geShoutOutWindow;
     %ctrlList @ " ";
@@ -89,9 +89,10 @@ function shoutout_takeSnapshot() {
     %ctrlList @ " ";
     if ($UserPref::UI::ShoutOut::Show::Chat) {
     }
-    %ctrlList = "" @ " " @ ConvBub;
+    %ctrlList = " " @ ConvBub;
+    "";
+    %si.snap_hiddenCtrlList = %ctrlList @ geShoutout_Snapshot;
     %ctrlList;
-    snap_hiddenCtrlList = %ctrlList @ geShoutout_Snapshot;
     BroadSnapshotButton_HideSnoop();
     if (!($UserPref::UI::ShoutOut::Show::Me)) {
         if (!($IN_ORBIT_CAM)) {
@@ -99,22 +100,20 @@ function shoutout_takeSnapshot() {
         if (!($firstPerson)) {
             $player.MeshOff("*");
             $player.setShapeName("");
-            if (isObject(hudCtrl)) {
-                %ctrlList = $player @ hudCtrl;
-                %ctrlList @ " ";
+            if (isObject($player.hudCtrl)) {
+                %ctrlList = %ctrlList @ " " @ $player.hudCtrl;
             }
             %ctrlList = ThePointsFloaterHud;
             %ctrlList @ " ";
         }
     }
     %ctrlList = trim(%ctrlList);
-    $player;
     hideABunchOfControls(%ctrlList);
     1.setVisible();
-    snap_regionCtrl = Canvas @ geShoutout_Snapshot;
+    $player.snap_regionCtrl = Canvas @ geShoutout_Snapshot;
     geVSideWatermark;
-    snap_fnBase = $DC::LocalAvatarFolder @ "/shoutout" @ geShoutout_Snapshot;
-    snap_fnExt = ".jpg" @ geShoutout_Snapshot;
+    $player.snap_fnBase = $DC::LocalAvatarFolder @ "/shoutout" @ geShoutout_Snapshot;
+    $player.snap_fnExt = ".jpg" @ geShoutout_Snapshot;
     %cmd = "generic_takeSnapshotReally(geShoutout_Snapshot);";
     if (($Platform $= "windows")) {
     }
@@ -126,7 +125,7 @@ function shoutout_takeSnapshot() {
 function geShoutout_Snapshot::onSnapshotDone(%this, %unused) {
     0.setVisible();
     BroadSnapshotButton_ShowSnoop();
-    restoreABunchOfControls(snap_hiddenCtrlList);
+    restoreABunchOfControls($player.snap_hiddenCtrlList);
     if (!($UserPref::UI::ShoutOut::Show::Me)) {
         $player.setActiveSKUs($player.getActiveSKUs());
         $player.setShapeName($Player::Name);
@@ -144,14 +143,14 @@ function shoutout_setTickerInclude(%value) {
     shoutout_checkSendable();
 };
 function shoutout_setTwitterInclude(%value) {
-    maxLength = shoutout_getCurrentMaxCharacters() @ geShoutout_Snapshot_Message;
-    onKeystroke();
+    $player.maxLength = shoutout_getCurrentMaxCharacters() @ geShoutout_Snapshot_Message;
+    geShoutout_Snapshot_Message.onKeystroke();
     if (%value) {
         300.schedule("setVisible", 1);
-        0.setTrgPosition((geShoutout_Credentials_Twitter + getWord(getPosition(), 1)));
+        0.setTrgPosition((getWord(geShoutout_Credentials_Twitter.getExtent(), 1) + getWord(geShoutout_Credentials_Twitter.getPosition(), 1)));
     }
     0.schedule("setVisible", 0);
-    0.setTrgPosition((geShoutout_Credentials_Twitter + getWord(getPosition(), 1)));
+    0.setTrgPosition((2.0 + getWord(geShoutout_Credentials_Twitter.getPosition(), 1)));
     shoutout_checkSendable();
 };
 function shoutout_setFBInclude(%value) {
@@ -171,7 +170,7 @@ function geShoutout_Snapshot_Message::onKeystroke(%this) {
     %left.setTextWithStyle();
 };
 function geShoutout_Snapshot_Message::onEnter(%this) {
-    onClick();
+    geShoutout_Snapshot_SendButton.onClick();
 };
 function geShoutout_Snapshot_Message::onCtrlEnter(%this) {
     %this.onEnter();
@@ -209,33 +208,32 @@ function geShoutout_Snapshot_CancelButton::onClick(%this) {
     shoutOut_action_CleanupWithoutSend();
 };
 function shoutOut_action_testTwitterCredentialsIfNecessary() {
-    shoutOut_SetStatus("Checking..", getBitmap());
-    if (!(getValue())) {
+    shoutOut_SetStatus("Checking..", geShoutout_Avatar_Twitter.getBitmap());
+    if (!(geShoutout_Twitter_Include.getValue())) {
         shoutOut_action_testFBCredentialsIfNecessary();
     }
     shoutOut_action_testTwitterCredentials(0);
 };
 function shoutOut_action_testTwitterCredentials(%oneShot) {
-    if ((geShoutout_Credential_Twitter_Username SPC getText() $= "")) {
+    if ((geShoutout_Credential_Twitter_Username.getText() $= "")) {
     }
-    if ((geShoutout_Credential_Twitter_Password SPC getText() $= "")) {
+    if ((geShoutout_Credential_Twitter_Password.getText() $= "")) {
         "".setBitmap();
-        tooltip = geShoutout_Avatar_Twitter @ "" @ geShoutout_Avatar_Twitter;
+        $player.tooltip = "" @ geShoutout_Avatar_Twitter;
+        geShoutout_Avatar_Twitter;
         if (%oneShot) {
             shoutOut_action_GroundState();
         }
         MessageBoxOK("Need your Twitter 411", "Please enter your Twitter username and password..", "shoutOut_action_groundState();");
         return;
     }
-    %user = getText();
-    geShoutout_Credential_Twitter_Username;
-    %pass = getText();
-    geShoutout_Credential_Twitter_Password;
+    %user = geShoutout_Credential_Twitter_Username.getText();
+    %pass = geShoutout_Credential_Twitter_Password.getText();
     %request = sendRequest_Twitter_verify_credentials(%user, %pass, "onDoneOrErrorCallback_Twitter_verify_credentials");
-    oneShot = %oneShot @ %request;
+    %request.oneShot = %oneShot;
 };
 function onDoneOrErrorCallback_Twitter_verify_credentials(%request) {
-    %xmlDoc = new ""();
+    %xmlDoc = new ""();;
     XMLDoc;
     %xmlDoc.parseXML(%request.getResults());
     %xmlRoot = %xmlDoc.getRootElement();
@@ -244,27 +242,28 @@ function onDoneOrErrorCallback_Twitter_verify_credentials(%request) {
     }
     %succ = (%xmlRoot.getValue() $= "user");
     "platform/client/ui/external_portrait_unknown".setBitmap();
-    tooltip = geShoutout_Avatar_Twitter @ "problem accessing your twitter account" @ geShoutout_Avatar_Twitter;
+    %request.tooltip = "problem accessing your twitter account" @ geShoutout_Avatar_Twitter;
+    geShoutout_Avatar_Twitter;
     if (!(%succ)) {
-        if (!(oneShot)) {
+        if (!(%request.oneShot)) {
             MessageBoxOK("Problem with twitter", "Your twitter username or password may be wrong.", "");
             shoutOut_action_GroundState();
         }
     }
-    if (getValue()) {
-        $Player::Name.setProperty("twitter_un", getText());
+    if (geShoutout_Credential_Twitter_Username_Save.getValue()) {
+        $Player::Name.setProperty("twitter_un", geShoutout_Credential_Twitter_Username.getText());
     }
-    if (getValue()) {
-        $Player::Name.setProperty("twitter_pw", getText());
+    if (geShoutout_Credential_Twitter_Password_Save.getValue()) {
+        $Player::Name.setProperty("twitter_pw", geShoutout_Credential_Twitter_Password.getText());
     }
     %profile_image_url = %xmlRoot.getFirstChild("profile_image_url").getText();
-    geShoutout_Credential_Twitter_Password;
-    if (!(gUserPropMgrClient SPC %profile_image_url $= "")) {
+    gUserPropMgrClient;
+    if (!(gUserPropMgrClient @ " " @ %profile_image_url $= "")) {
         %profile_image_url.downloadAndApplyBitmap();
-        tooltip = geShoutout_Avatar_Twitter @ "twitter account verified" @ geShoutout_Avatar_Twitter;
-        geShoutout_Credential_Twitter_Password_Save;
+        %request.tooltip = "twitter account verified" @ geShoutout_Avatar_Twitter;
+        geShoutout_Avatar_Twitter;
     }
-    if (!(oneShot)) {
+    if (!(%request.oneShot)) {
         shoutOut_action_testFBCredentialsIfNecessary();
     }
     %xmlDoc.delete();
@@ -281,10 +280,10 @@ function shoutOut_action_savePhotoIfNecessary() {
         return;
     }
     shoutOut_SetStatus("Uploading..");
-    %fileName = geShoutout_Snapshot @ snap_fnExt;
-    geShoutout_Snapshot @ snap_fnBase;
-    %caption = getText();
-    geShoutout_Snapshot_Message;
+    %fileName = geShoutout_Snapshot @ %request.snap_fnExt;
+    %request.snap_fnBase;
+    %caption = geShoutout_Snapshot_Message.getText();
+    geShoutout_Snapshot;
     %peopleInViewList = "";
     error(getScopeName() @ " " @ "- todo: determine people in view");
     %type = "screenshot";
@@ -306,10 +305,10 @@ function onDoneOrErrorCallback_UploadPhoto_ShoutOut(%request) {
 function shoutOut_action_shortenPhotoURL() {
     shoutOut_SetStatus("Shortening..");
     %request = sendRequest_Bitly_shorten($gShoutOut_PhotoURL, "onDoneOrErrorCallback_Bitly_shorten");
-    photoURL = $gShoutOut_PhotoURL @ %request;
+    %request.photoURL = $gShoutOut_PhotoURL;
 };
 function onDoneOrErrorCallback_Bitly_shorten(%request) {
-    %xmlDoc = new ""();
+    %xmlDoc = new ""();;
     XMLDoc;
     %xmlDoc.parseXML(%request.getResults());
     %xmlRoot = %xmlDoc.getRootElement();
@@ -333,7 +332,7 @@ function onDoneOrErrorCallback_Bitly_shorten(%request) {
         return;
     }
     $gShoutOut_ShortPhotoURL = %xmlNode.getText();
-    shoutOut_action_sendPhase2(photoURL, $gShoutOut_ShortPhotoURL);
+    shoutOut_action_sendPhase2(%request.photoURL, $gShoutOut_ShortPhotoURL);
     %xmlDoc.delete();
 };
 function shoutOut_action_shortenPhotoURLFailed() {
@@ -354,17 +353,16 @@ function shoutOut_action_sendPhase2() {
     shoutOut_action_sendPhase3();
 };
 function shoutOut_action_sendTicker() {
-    shoutOut_SetStatus("Ticking..", getBitmap());
-    %messageText = getText();
-    geShoutout_Snapshot_Message;
-    if (!(geTGF_profilePic SPC $gShoutOut_ShortPhotoURL $= "")) {
+    shoutOut_SetStatus("Ticking..", geTGF_profilePic.getBitmap());
+    %messageText = geShoutout_Snapshot_Message.getText();
+    if (!($gShoutOut_ShortPhotoURL $= "")) {
         %link = " " @ $gShoutOut_ShortPhotoURL;
     }
     %link = "";
     %messageText = %messageText @ %link;
     %priority = 2;
     %request = sendRequest_PublishToTicker(%messageText, %priority, "onDoneOrErrorCallback_PublishToTicker");
-    messageText = %messageText @ %request;
+    %request.messageText = %messageText;
     %analytic = getAnalytic();
     %withPic = ($gShoutOut_ShortPhotoURL $= "") ? "" : "/photo";
     %analytic.trackPageView("/client/shoutout/ticker" @ %withPic);
@@ -376,7 +374,7 @@ function onDoneOrErrorCallback_PublishToTicker(%request) {
         return;
     }
     if ($StandAlone) {
-        commandToServer('fakeTicker', messageText);
+        commandToServer('fakeTicker', %request.messageText);
     }
     shoutOut_action_sendPhase3();
 };
@@ -385,7 +383,7 @@ function shoutOut_action_sendPhase3() {
         shoutOut_action_sendFB();
     }
     if ($UserPref::UI::ShoutOut::Twitter::Include) {
-        shoutOut_SetStatus("Tweeting..", getBitmap());
+        shoutOut_SetStatus("Tweeting..", geShoutout_Avatar_Twitter.getBitmap());
         shoutOut_action_sendTweet();
     }
     shoutOut_action_CleanupWithSend();
@@ -399,24 +397,21 @@ function shoutOut_action_sendFB() {
     %analytic.trackPageView("/client/shoutout/facebook" @ %withPic);
 };
 function shoutOut_action_sendTweet() {
-    %tweetText = getText();
-    geShoutout_Snapshot_Message;
+    %tweetText = geShoutout_Snapshot_Message.getText();
     if (!($gShoutOut_ShortPhotoURL $= "")) {
         %link = "(Sent from vSide:" @ " " @ $gShoutOut_ShortPhotoURL @ ")";
     }
     %link = "(Sent from vSide:" @ " " @ "http://" @ $Net::BaseDomain @ ")";
     %tweetText = %tweetText @ " " @ %link;
-    %user = getText();
-    geShoutout_Credential_Twitter_Username;
-    %pass = getText();
-    geShoutout_Credential_Twitter_Password;
+    %user = geShoutout_Credential_Twitter_Username.getText();
+    %pass = geShoutout_Credential_Twitter_Password.getText();
     %request = sendRequest_Twitter_statuses_update(%user, %pass, %tweetText, "onDoneOrErrorCallback_Twitter_statuses_update");
     %analytic = getAnalytic();
     %withPic = ($gShoutOut_ShortPhotoURL $= "") ? "" : "/photo";
     %analytic.trackPageView("/client/shoutout/twitter" @ %withPic);
 };
 function onDoneOrErrorCallback_Twitter_statuses_update(%request) {
-    %xmlDoc = new ""();
+    %xmlDoc = new ""();;
     XMLDoc;
     %xmlDoc.parseXML(%request.getResults());
     %xmlRoot = %xmlDoc.getRootElement();
@@ -430,7 +425,7 @@ function onDoneOrErrorCallback_Twitter_statuses_update(%request) {
             error(getScopeName() @ " " @ "- no tweet ID." @ " " @ %request.getResults());
             %msg = "<br>sent!";
         }
-        %tweetURL = $Net::TwitterBaseInsecure @ "/" @ geShoutout_Credential_Twitter_Username @ getText() @ "/status/" @ %tweetID;
+        %tweetURL = $Net::TwitterBaseInsecure @ "/" @ geShoutout_Credential_Twitter_Username.getText() @ "/status/" @ %tweetID;
         %msg = "<br><b><linkcolor:ffffffff><linkcolorhl:ffaaffdd><a:gamelink:" @ %tweetURL @ ">click here to view your tweet.</a><br>";
         MessageBoxOK("Success!", %msg, "", 1, "success" @ getScopeName());
         shoutOut_action_GroundState();
@@ -459,18 +454,18 @@ function shoutOut_SetStatus(%status, %avatarBitmap) {
         return geShoutOut_Sending_Container;
     }
     1.setVisible();
-    alignToCenterXY();
+    geShoutOut_Sending_Panel.alignToCenterXY();
     %status.setTextWithStyle();
     %avatarBitmap.setBitmap();
-    !(geShoutout_Sending_Avatar_Container SPC %avatarBitmap $= "").setVisible();
+    !(geShoutout_Sending_Avatar_Container @ " " @ %avatarBitmap $= "").setVisible();
 };
 function shoutOut_action_GroundState() {
     shoutOut_SetStatus("");
 };
 function shoutOut_action_CleanupWithSend() {
     "".setText();
-    close();
+    geShoutOutWindow.close();
 };
 function shoutOut_action_CleanupWithoutSend() {
-    close();
+    geShoutOutWindow.close();
 };

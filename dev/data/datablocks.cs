@@ -1,2 +1,6 @@
-shapeFile = datablock StaticShapeData(unitCubeGreyDataBlock) @ "projects/common/worlds/unitcubeGrey.dts";
-shapeFile = datablock StaticShapeData(unitCubeBlueDataBlock) @ "projects/common/worlds/unitcubeBlue.dts";
+datablock StaticShapeData(unitCubeGreyDataBlock) {
+    shapeFile = "projects/common/worlds/unitcubeGrey.dts";
+};
+datablock StaticShapeData(unitCubeBlueDataBlock) {
+    shapeFile = "projects/common/worlds/unitcubeBlue.dts";
+};

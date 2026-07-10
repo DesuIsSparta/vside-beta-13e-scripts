@@ -14,39 +14,36 @@ function micPanel::open(%this) {
 };
 function micPanel::close(%this) {
     %this.setVisible(0);
-    focusTopWindow();
+    playGui.focusTopWindow();
     return 1;
 };
 micHolders = "" @ micPanel;
 function micPanel::addMicHolder(%this, %playerName) {
-    %index = findField(micHolders, %playerName);
-    %this;
+    %index = findField(%this.micHolders, %playerName);
     if ((0.0 >= %index)) {
         return;
     }
-    %delim = (%this SPC micHolders $= "") ? "" : "\t";
-    micHolders = %this @ micHolders @ %delim @ %playerName @ %this;
-    micHolders = %this @ SortFields(micHolders) @ %this;
+    %delim = (%this.micHolders $= "") ? "" : "\t";
+    %this.micHolders = %this.micHolders @ %delim @ %playerName;
+    %this.micHolders = SortFields(%this.micHolders);
     %this.updateMicHoldersList();
 };
 function micPanel::delMicHolder(%this, %playerName) {
-    %index = findField(micHolders, %playerName);
-    %this;
+    %index = findField(%this.micHolders, %playerName);
     if ((0.0 < %index)) {
         return;
     }
-    micHolders = %this @ removeField(micHolders, %index) @ %this;
+    %this.micHolders = removeField(%this.micHolders, %index);
     %this.updateMicHoldersList();
 };
 function micPanel::updateMicHoldersList(%this) {
     // unhandled opcode 330 at 0x00000164
     %theArray.deleteMembers();
-    childrenClassName = "GuiControl" @ %theArray;
-    childrenExtent = getWord(%theArray.getParent().getExtent(), 0) @ " " @ 16 @ %theArray;
-    inRows = 0 @ %theArray;
-    numRowsOrCols = 1 @ %theArray;
-    %num = getFieldCount(micHolders);
-    %this;
+    %theArray.childrenClassName = "GuiControl";
+    %theArray.childrenExtent = getWord(%theArray.getParent().getExtent(), 0) @ " " @ 16;
+    %theArray.inRows = 0;
+    %theArray.numRowsOrCols = 1;
+    %num = getFieldCount(%this.micHolders);
     %theArray.setNumChildren(%num);
     %n = 0;
     if ((%num < %n)) {
@@ -58,18 +55,19 @@ function micPanel::updateMicHoldersList(%this) {
     }
 };
 function micPanel::updateMicHolderCell(%this, %cellCtrl, %index) {
-    %holderName = getField(micHolders, %index);
-    %this;
-    profile = GuiButtonCtrl @ new ""() @ "GuiClickLabelProfile";
+    %holderName = getField(%this.micHolders, %index);
     0;
-    command = "doMicrophoneGiveOrRevoke(\"" @ %holderName @ "\", false);";
-    text = "Revoke";
-    position = "0 0";
-    extent = "60 16";
-    %bttnCtrl = ;
-    profile = new GuiMLTextCtrl(micPanelMLTextCtrl) @ "ETSTextListProfile";
-    position = "62 0";
-    %textCtrl = ;
+    %bttnCtrl = new ""() {
+        profile = GuiButtonCtrl @ "GuiClickLabelProfile";
+        command = "doMicrophoneGiveOrRevoke(\"" @ %holderName @ "\", false);";
+        text = "Revoke";
+        position = "0 0";
+        extent = "60 16";
+    };
+    %textCtrl = new GuiMLTextCtrl(micPanelMLTextCtrl) {
+        profile = "ETSTextListProfile";
+        position = "62 0";
+    };
     %cellCtrl.deleteMembers();
     %cellCtrl.add(%bttnCtrl);
     %cellCtrl.add(%textCtrl);
@@ -95,12 +93,11 @@ function micPanelMLTextCtrl::onUrl(%this, %url) {
 };
 function doServerCommandGetMicHolders() {
     micHolders = "" @ micPanel;
-    updateMicHoldersList();
+    micPanel.updateMicHoldersList();
     $gExpectedNumberOfMicHolders = -(1.0);
-    micPanel;
-    $gMicHoldersPendingAddition = new ""();
+    $gMicHoldersPendingAddition = new ""();;
     StringMap;
-    updateGetMicHoldersListStatus();
+    micPanel.updateGetMicHoldersListStatus();
     commandToServer('GetMicrophoneHoldersList');
 };
 function ClientCmdStartGetMicHolders(%numberOfMicHolders) {
@@ -118,7 +115,7 @@ function ClientCmdStartGetMicHolders(%numberOfMicHolders) {
         $gMicHoldersPendingAddition = 0;
         (0.0 >= %i);
     }
-    updateGetMicHoldersListStatus();
+    micPanel.updateGetMicHoldersListStatus();
 };
 function ClientCmdGotMicHolder(%playerName) {
     if (!(%playerName $= "")) {
@@ -126,7 +123,7 @@ function ClientCmdGotMicHolder(%playerName) {
             %playerName.addMicHolder();
             $gExpectedNumberOfMicHolders = (1.0 - $gExpectedNumberOfMicHolders);
             micPanel;
-            updateGetMicHoldersListStatus();
+            micPanel.updateGetMicHoldersListStatus();
         }
         $gMicHoldersPendingAddition.put(%playerName, "");
     }

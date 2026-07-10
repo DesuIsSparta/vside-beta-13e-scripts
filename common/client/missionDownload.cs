@@ -2,11 +2,10 @@ $Client::DatablockCRC = 0;
 $Cache::ExtraNameTag = "";
 function clientCmdCheckCacheCRC(%missionSequence, %missionName) {
     log("network", "info", "check client cache CRC:" @ " " @ %missionName @ " " @ "seq:" @ " " @ %missionSequence @ " " @ "gender:" @ " " @ $UserPref::Player::gender);
-    if (!(isObject())) {
+    if (!(isObject(ServerConnection))) {
         log("network", "warn", "ServerConnection not valid in clientCmdMissionCheckCacheCRC");
     }
     $GeneratingCacheNow = 0;
-    ServerConnection;
     $CurrentMission = %missionName;
     if ($CacheFlagIsSet) {
         %crc = %missionName.getCacheCRC();
@@ -41,7 +40,7 @@ function clientCmdStartCache(%missionSequence, %missionName, %musicTrack) {
     commandToServer('StartCacheAck', %missionSequence);
 };
 function clientCmdLoadLocalCache(%missionSequence, %missionName, %musicTrack) {
-    if (!(isObject())) {
+    if (!(isObject(ServerConnection))) {
         log("network", "warn", "ServerConnection not valid in clientCmdMissionLoadLocalDatablocks");
     }
     log("network", "info", "loading local datablocks for mission:" @ " " @ %missionName @ " " @ "seq: " @ " " @ %missionSequence);
@@ -95,8 +94,7 @@ function onGhostAlwaysDone() {
     log("network", "debug", "ghost always done");
     if ($CacheFlagIsSet) {
         if ($GeneratingCacheNow) {
-            $Client::DatablockCRC = stopCache();
-            ServerConnection;
+            $Client::DatablockCRC = ServerConnection.stopCache();
             log("network", "debug", "ghost always done, computed CRC:" @ " " @ $Client::DatablockCRC);
         }
     }
@@ -137,7 +135,7 @@ function sceneLightingComplete() {
     $GeneratingCacheNow = 0;
 };
 function connect(%server) {
-    %conn = new ""();
+    %conn = new ""();;
     GameConnection;
     %conn.setCommonPreconnectClientSettings("");
     %conn.connect(%server);

@@ -1,198 +1,180 @@
-if (!(isObject())) {
+if (!(isObject(AIMConvManager))) {
     new ScriptObject(AIMConvManager);
-    if (isObject()) {
-        add();
+    if (isObject(MissionCleanup)) {
+        MissionCleanup.add(AIMConvManager);
     }
 }
 function AIMConvManager::Initialize(%this) {
-    if (!(initialized)) {
-        spamDict = StringMap @ new ""() @ %this;
+    if (!(%this.initialized)) {
+        %this.spamDict = StringMap @ new ""();;
         0;
-        if (isObject()) {
-            spamDict.add();
+        if (isObject(MissionCleanup)) {
+            %this.spamDict.add();
         }
-        numConvs = %this @ 0 @ %this;
-        MissionCleanup;
-        currentConvIndex = MissionCleanup @ -(1.0) @ %this;
-        %this;
-        if ((%this <= maxConvs)) {
-            maxConvs = 0.0 @ 20 @ %this;
-            AIMConvManager;
+        %this.numConvs = MissionCleanup @ 0;
+        %this.currentConvIndex = -(1.0);
+        if ((0.0 <= %this.maxConvs)) {
+            %this.maxConvs = 20;
         }
-        movingBars = MissionCleanup @ 0 @ %this;
-        MissionCleanup;
-        totalMessagesSent = AIMConvManager @ 0 @ %this;
-        initialized = 1 @ %this;
+        %this.movingBars = 0;
+        %this.totalMessagesSent = 0;
+        %this.initialized = 1;
     }
     %this.update();
 };
 function AIMConvManager::selectConvAtIndex(%this, %convIndex) {
-    if ((%this >= currentConvIndex)) {
+    if ((0.0 >= %this.currentConvIndex)) {
     }
-    if ((%this < currentConvIndex)) {
+    if ((%this.numConvs < %this.currentConvIndex)) {
     }
-    if ((%this != currentConvIndex)) {
-        contents.setVisible(0);
-        recipient.setProfile();
-        newMessage = %this @ currentConvIndex @ %this @ convs;
-        ETSAIMDeselectedProfile @ 0;
+    if ((%convIndex != %this.currentConvIndex)) {
+        %this.convs.contents.setVisible(0);
+        %this.convs.titlebar.recipient.setProfile();
+        %this.convs.newMessage = ETSAIMDeselectedProfile @ 0 @ %this.currentConvIndex;
+        %this.currentConvIndex @ %this.currentConvIndex;
     }
     if ((0.0 >= %convIndex)) {
     }
-    if ((numConvs < %convIndex)) {
-        recipient.setProfile();
-        newMessage = ETSAIMSelectedProfile @ 0 @ %convIndex @ %this @ convs;
-        titlebar;
+    if ((%this.numConvs < %convIndex)) {
+        %this.convs.titlebar.recipient.setProfile();
+        %this.convs.newMessage = ETSAIMSelectedProfile @ 0 @ %convIndex;
+        %convIndex;
     }
-    currentConvIndex = convs @ %convIndex @ %this;
-    %this @ %convIndex @ %this;
+    %this.currentConvIndex = %convIndex;
     %this.update();
 };
 function AIMConvManager::selectCurrentConv(%this) {
-    %this.selectConvAtIndex(currentConvIndex);
+    %this.selectConvAtIndex(%this.currentConvIndex);
 };
 function AIMConvManager::selectConv(%this, %convId) {
     %idx = 0;
-    if ((numConvs < %idx)) {
-        if ((%convId @ %idx @ %this == convs.getId())) {
+    if ((%this.numConvs < %idx)) {
+        if ((%convId @ %idx == %this.convs.getId())) {
             %this.selectConvAtIndex(%idx);
-            return %this;
+            return;
         }
         %idx = (1.0 + %idx);
     }
 };
 function AIMConvManager::nextConv(%this) {
-    if ((%this > numConvs)) {
-        %this.selectConvAtIndex((1.0 % (%this + currentConvIndex)));
+    if ((0.0 > %this.numConvs)) {
+        %this.selectConvAtIndex((%this.numConvs % (1.0 + %this.currentConvIndex)));
     }
 };
 function AIMConvManager::previousConv(%this) {
-    if ((%this > numConvs)) {
-        %this.selectConvAtIndex((numConvs % (1.0 + (%this - currentConvIndex))));
+    if ((0.0 > %this.numConvs)) {
+        %this.selectConvAtIndex((%this.numConvs % (%this.numConvs + (1.0 - %this.currentConvIndex))));
     }
 };
 function AIMConvManager::removeConvAtIndex(%this, %convIndex) {
     if ((0.0 >= %convIndex)) {
     }
-    if ((numConvs < %convIndex)) {
-        %conv = convs;
-        %this @ %convIndex @ %this;
-        contents.setVisible(0);
-        titlebar.setVisible(0);
-        contents.delete();
-        titlebar.delete();
+    if ((%this.numConvs < %convIndex)) {
+        %conv = %this.convs;
+        %convIndex;
+        %conv.contents.setVisible(0);
+        %conv.titlebar.setVisible(0);
+        %conv.contents.delete();
+        %conv.titlebar.delete();
         %conv.delete();
-        numConvs = (%this - numConvs);
-        1.0;
+        %this.numConvs = (1.0 - %this.numConvs);
         %idx = %convIndex;
-        %conv;
-        if ((numConvs < %idx)) {
-            convs = %conv @ %this @ (1.0 + %idx) @ %this @ convs @ %idx @ %this;
-            %conv;
+        if ((%this.numConvs < %idx)) {
+            %this.convs = (1.0 + %idx) @ %this.convs @ %idx;
             %idx = (1.0 + %idx);
-            %conv;
         }
-        convs = (numConvs < %idx) @ 0 @ %this @ numConvs @ %this;
-        %this;
-        if ((%this == numConvs)) {
-            currentConvIndex = 0.0 @ -(1.0) @ %this;
+        %this.convs = (%this.numConvs < %idx) @ 0 @ %this.numConvs;
+        if ((0.0 == %this.numConvs)) {
+            %this.currentConvIndex = -(1.0);
         }
-        if ((%this >= currentConvIndex)) {
-            %this.selectConvAtIndex((%this - numConvs));
+        if ((%this.numConvs >= %this.currentConvIndex)) {
+            %this.selectConvAtIndex((1.0 - %this.numConvs));
         }
-        if ((%this > currentConvIndex)) {
-            %this.selectConvAtIndex((%this - currentConvIndex));
+        if ((%convIndex > %this.currentConvIndex)) {
+            %this.selectConvAtIndex((1.0 - %this.currentConvIndex));
         }
-        if ((%this == currentConvIndex)) {
+        if ((%convIndex == %this.currentConvIndex)) {
             %this.selectCurrentConv();
         }
     }
     %this.update();
-    updateAutoMargins();
+    ConvBub.updateAutoMargins();
 };
 function AIMConvManager::removeConv(%this, %convId) {
     %idx = 0;
-    if ((numConvs < %idx)) {
-        if ((%convId @ %idx @ %this == convs.getId())) {
+    if ((%this.numConvs < %idx)) {
+        if ((%convId @ %idx == %this.convs.getId())) {
             %this.removeConvAtIndex(%idx);
-            return %this;
+            return;
         }
         %idx = (1.0 + %idx);
     }
 };
 function AIMConvManager::removeCurrentConv(%this) {
-    %this.removeConvAtIndex(currentConvIndex);
+    %this.removeConvAtIndex(%this.currentConvIndex);
 };
 function AIMConvManager::update(%this) {
-    if ((%this == numConvs)) {
+    if ((0.0 == %this.numConvs)) {
     }
-    if ((%this < currentConvIndex)) {
+    if ((0.0 < %this.currentConvIndex)) {
     }
-    if ((Canvas == getFirstResponder())) {
+    if ((0.0 == Canvas.getFirstResponder())) {
         1.makeFirstResponder();
     }
     %this.updateContainer();
     %ypos = 20;
     TheShapeNameHud;
-    movingBars = 0.0 @ 0 @ %this;
-    0.0;
+    %this.movingBars = 0;
     %idx = 0;
-    0.0;
-    if ((numConvs < %idx)) {
-        %conv = convs;
-        %this @ %idx @ %this;
-        %titlebar = titlebar;
-        %conv;
+    if ((%this.numConvs < %idx)) {
+        %conv = %this.convs;
+        %idx;
+        %titlebar = %conv.titlebar;
         %titlebar.setTrgPosition(0, %ypos);
         %ypos = (24.0 + %ypos);
-        movingBars = (%this + movingBars);
-        1.0;
-        %contents = contents;
-        %conv;
+        %this.movingBars = (1.0 + %this.movingBars);
+        %contents = %conv.contents;
         %contents.setTrgPosition(getWord(%contents.getTrgPosition(), 0), %ypos);
-        if ((currentConvIndex == %idx)) {
-            if (newMessage) {
+        if ((%this.currentConvIndex == %idx)) {
+            if (%conv.newMessage) {
             }
-            %status = status;
-            %conv;
-            status.setBitmap(%titlebar @ "platform/client/ui/AIM_sel_" @ %status);
-            status.resize(0, 0, 29, 26);
-            statusButton.resize(0, 0, 35, 26);
-            recipient.reposition(35, 2);
-            close.setBitmap("platform/client/buttons/close_m");
-            close.resize(180, 6, 13, 13);
+            %status = %conv.status;
+            "new_msg";
+            %titlebar.status.setBitmap("platform/client/ui/AIM_sel_" @ %status);
+            %titlebar.status.resize(0, 0, 29, 26);
+            %titlebar.statusButton.resize(0, 0, 35, 26);
+            %titlebar.recipient.reposition(35, 2);
+            %titlebar.close.setBitmap("platform/client/buttons/close_m");
+            %titlebar.close.resize(180, 6, 13, 13);
             %ypos = (getWord(%contents.getExtent(), 1) + %ypos);
-            %titlebar;
         }
-        if (newMessage) {
+        if (%conv.newMessage) {
         }
-        %status = status;
-        %conv;
-        status.setBitmap(%titlebar @ "platform/client/ui/AIM_" @ %status);
-        status.resize(11, 5, 30, 15);
-        statusButton.resize(0, 0, 45, 26);
-        recipient.reposition(45, 3);
-        close.setBitmap("platform/client/buttons/close_s");
-        close.resize((width + 57.0), 8, 11, 11);
+        %status = %conv.status;
+        "new_msg";
+        %titlebar.status.setBitmap("platform/client/ui/AIM_" @ %status);
+        %titlebar.status.resize(11, 5, 30, 15);
+        %titlebar.statusButton.resize(0, 0, 45, 26);
+        %titlebar.recipient.reposition(45, 3);
+        %titlebar.close.setBitmap("platform/client/buttons/close_s");
+        %titlebar.close.resize((%titlebar.recipient.width + 57.0), 8, 11, 11);
         %idx = (1.0 + %idx);
-        recipient;
     }
 };
 function AIMConvManager::finishUpdate(%this) {
-    %curConv = convs;
-    %this @ currentConvIndex @ %this;
+    %curConv = %this.convs;
+    %this.currentConvIndex;
     if (isObject(%curConv)) {
-        contents.setVisible(1);
-        if (!(isObject(getFirstResponder()))) {
-            textInput.makeFirstResponder(1);
+        %curConv.contents.setVisible(1);
+        if (!(isObject(Canvas.getFirstResponder()))) {
+            %curConv.contents.textInput.makeFirstResponder(1);
         }
     }
 };
 function AIMConvManager::titlebarReachedTarget(%this) {
-    if ((%this > movingBars)) {
-        movingBars = (%this - movingBars);
-        1.0;
-        if ((%this == movingBars)) {
+    if ((0.0 > %this.movingBars)) {
+        %this.movingBars = (1.0 - %this.movingBars);
+        if ((0.0 == %this.movingBars)) {
             %this.finishUpdate();
         }
     }
@@ -202,220 +184,232 @@ function AIMConvManager::newConv(%this, %aimName) {
     if (%conv) {
         return %conv;
     }
-    class = ScriptObject @ new ""() @ "AIMConversation";
     0;
-    %conv = ;
-    if (isObject()) {
+    %conv = new ""() {
+        class = ScriptObject @ "AIMConversation";
+    };
+    if (isObject(MissionCleanup)) {
         %conv.add();
     }
-    aimName = MissionCleanup @ %aimName @ %conv;
-    MissionCleanup;
-    status = "offline" @ %conv;
+    %conv.aimName = MissionCleanup @ %aimName;
+    %conv.status = "offline";
     %i = 0;
     if ((aimBuddyCount() < %i)) {
-        if ((%conv $= aimName)) {
+        if ((aimGetBuddyName(%i) $= %conv.aimName)) {
             %state = aimGetBuddyState(%i);
-            aimGetBuddyName(%i);
             if ((-(1.0) == %state)) {
                 %state = 0;
             }
-            status = %this @ getWord(stateMapping, %state) @ %conv;
+            %conv.status = getWord(%this.stateMapping, %state);
         }
         %i = (1.0 + %i);
     }
-    newMessage = (aimBuddyCount() < %i) @ 0 @ %conv;
-    profile = GuiTextEditCtrl @ new ""() @ "AIMTextEditProfile";
+    %conv.newMessage = (aimBuddyCount() < %i) @ 0;
     0;
-    horizSizing = "width";
-    vertSizing = "top";
-    position = "10 99";
-    extent = "149 18";
-    minExtent = "8 8";
-    visible = 1;
-    altCommand = "AIMConvManager.sendMessage();";
-    maxLength = 255;
-    historySize = 200;
-    password = 0;
-    tabComplete = 0;
-    sinkAllKeyEvents = 0;
-    willFirstRespond = 1;
-    cursorType = 2;
-    conv = %conv;
-    escCommand = "AIMConvManager.selectConvAtIndex(-1);";
-    %textInput = ;
-    profile = GuiScrollCtrl @ new ""() @ "ETSAimMessageScrollProfile";
+    %textInput = new ""() {
+        profile = GuiTextEditCtrl @ "AIMTextEditProfile";
+        horizSizing = "width";
+        vertSizing = "top";
+        position = "10 99";
+        extent = "149 18";
+        minExtent = "8 8";
+        visible = 1;
+        altCommand = "AIMConvManager.sendMessage();";
+        maxLength = 255;
+        historySize = 200;
+        password = 0;
+        tabComplete = 0;
+        sinkAllKeyEvents = 0;
+        willFirstRespond = 1;
+        cursorType = 2;
+        conv = %conv;
+        escCommand = "AIMConvManager.selectConvAtIndex(-1);";
+    };
     0;
-    horizSizing = "width";
-    vertSizing = "height";
-    position = "4 0";
-    extent = "160 94";
-    minExtent = "10 10";
-    visible = 1;
-    willFirstRespond = 1;
-    hScrollBar = "alwaysOff";
-    vScrollBar = "dynamic";
-    constantThumbHeight = 1;
-    childMargin = "0 0";
-    scrollMultiplier = 2.5;
-    %scroll = ;
-    profile = GuiMLTextCtrl @ new ""() @ "ETSAIMMessageProfile";
+    %scroll = new ""() {
+        profile = GuiScrollCtrl @ "ETSAimMessageScrollProfile";
+        horizSizing = "width";
+        vertSizing = "height";
+        position = "4 0";
+        extent = "160 94";
+        minExtent = "10 10";
+        visible = 1;
+        willFirstRespond = 1;
+        hScrollBar = "alwaysOff";
+        vScrollBar = "dynamic";
+        constantThumbHeight = 1;
+        childMargin = "0 0";
+        scrollMultiplier = 2.5;
+    };
     0;
-    horizSizing = "relative";
-    vertSizing = "relative";
-    position = "1 1";
-    extent = "147 92";
-    minExtent = "8 92";
-    visible = 1;
-    lineSpacing = 0;
-    allowColorChars = 1;
-    stripTagsOnCopy = 1;
-    %mlText = ;
+    %mlText = new ""() {
+        profile = GuiMLTextCtrl @ "ETSAIMMessageProfile";
+        horizSizing = "relative";
+        vertSizing = "relative";
+        position = "1 1";
+        extent = "147 92";
+        minExtent = "8 92";
+        visible = 1;
+        lineSpacing = 0;
+        allowColorChars = 1;
+        stripTagsOnCopy = 1;
+    };
     %scroll.add(%mlText);
-    profile = GuiControl @ new ""() @ "ETSAIMTabProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "30 0";
-    extent = "168 116";
-    minExtent = "64 64";
-    visible = 0;
-    sluggishness = 0.3;
-    textInput = %textInput;
-    mlText = %mlText;
-    scroll = %scroll;
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "top";
-    position = "2 101";
-    extent = "8 13";
-    minExtent = "8 13";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "./ui/AIM_bracket_left";
-    wrap = 0;
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
-    horizSizing = "right";
-    vertSizing = "top";
-    position = "157 101";
-    extent = "8 13";
-    minExtent = "8 13";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "./ui/AIM_bracket_right";
-    wrap = 0;
-    %contents = ;
+    new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "top";
+        position = "2 101";
+        extent = "8 13";
+        minExtent = "8 13";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "./ui/AIM_bracket_left";
+        wrap = 0;
+    };
+    %contents = new ""() {
+        profile = GuiControl @ "ETSAIMTabProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "30 0";
+        extent = "168 116";
+        minExtent = "64 64";
+        visible = 0;
+        sluggishness = 0.3;
+        textInput = %textInput;
+        mlText = %mlText;
+        scroll = %scroll;
+    };
+    new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "top";
+        position = "157 101";
+        extent = "8 13";
+        minExtent = "8 13";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "./ui/AIM_bracket_right";
+        wrap = 0;
+    };
     %contents.add(%textInput);
     %contents.add(%scroll);
-    profile = GuiTextCtrl @ new ""() @ "ETSAIMDeselectedProfile";
     0;
-    horizSizing = "left";
-    vertSizing = "top";
-    position = "0 0";
-    extent = "18 18";
-    minExtent = "11 11";
-    sluggishness = -1;
-    visible = 0;
-    maxLength = 255;
-    %dummy = ;
+    %dummy = new ""() {
+        profile = GuiTextCtrl @ "ETSAIMDeselectedProfile";
+        horizSizing = "left";
+        vertSizing = "top";
+        position = "0 0";
+        extent = "18 18";
+        minExtent = "11 11";
+        sluggishness = -1;
+        visible = 0;
+        maxLength = 255;
+    };
     %dummy.setText(%aimName);
     %recipWidth = getWord(%dummy.getExtent(), 0);
     %dummy.delete();
-    profile = GuiBitmapButtonCtrl @ new ""() @ "ETSAIMDeselectedProfile";
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "35 2";
-    extent = "140 18";
-    minExtent = "100 18";
-    sluggishness = -1;
-    visible = 1;
-    command = "AIMConvManager.convClicked(" @ %conv @ ");";
-    text = %aimName;
-    groupNum = -1;
-    buttonType = "PushButton";
-    bitmap = "./buttons/clear";
-    drawText = 1;
-    width = %recipWidth;
-    %recipient = ;
-    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    %recipient = new ""() {
+        profile = GuiBitmapButtonCtrl @ "ETSAIMDeselectedProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "35 2";
+        extent = "140 18";
+        minExtent = "100 18";
+        sluggishness = -1;
+        visible = 1;
+        command = "AIMConvManager.convClicked(" @ %conv @ ");";
+        text = %aimName;
+        groupNum = -1;
+        buttonType = "PushButton";
+        bitmap = "./buttons/clear";
+        drawText = 1;
+        width = %recipWidth;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "29 26";
-    minExtent = "8 8";
-    sluggishness = -1;
-    visible = 1;
-    bitmap = "./ui/AIM_sel_avail";
-    wrap = 0;
-    %status = ;
-    profile = GuiBitmapButtonCtrl @ new ""() @ "ETSAIMDeselectedProfile";
+    %status = new ""() {
+        profile = GuiBitmapCtrl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "29 26";
+        minExtent = "8 8";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "./ui/AIM_sel_avail";
+        wrap = 0;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 0";
-    extent = "35 26";
-    minExtent = "8 8";
-    sluggishness = -1;
-    visible = 1;
-    command = "AIMConvManager.convClicked(" @ %conv @ ");";
-    groupNum = -1;
-    buttonType = "PushButton";
-    bitmap = "./buttons/clear";
-    drawText = 0;
-    %statusButton = ;
-    profile = GuiBitmapButtonCtrl @ new ""() @ "GuiButtonProfile";
+    %statusButton = new ""() {
+        profile = GuiBitmapButtonCtrl @ "ETSAIMDeselectedProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 0";
+        extent = "35 26";
+        minExtent = "8 8";
+        sluggishness = -1;
+        visible = 1;
+        command = "AIMConvManager.convClicked(" @ %conv @ ");";
+        groupNum = -1;
+        buttonType = "PushButton";
+        bitmap = "./buttons/clear";
+        drawText = 0;
+    };
     0;
-    horizSizing = "left";
-    vertSizing = "bottom";
-    position = "180 0";
-    extent = "13 13";
-    minExtent = "2 2";
-    sluggishness = -1;
-    visible = 1;
-    command = "AIMConvManager.removeConv(" @ %conv @ ");";
-    text = "";
-    groupNum = -1;
-    buttonType = "PushButton";
-    bitmap = "./buttons/close_m";
-    drawText = 0;
-    %close = ;
-    profile = GuiControl @ new ""() @ "GuiDefaultProfile";
+    %close = new ""() {
+        profile = GuiBitmapButtonCtrl @ "GuiButtonProfile";
+        horizSizing = "left";
+        vertSizing = "bottom";
+        position = "180 0";
+        extent = "13 13";
+        minExtent = "2 2";
+        sluggishness = -1;
+        visible = 1;
+        command = "AIMConvManager.removeConv(" @ %conv @ ");";
+        text = "";
+        groupNum = -1;
+        buttonType = "PushButton";
+        bitmap = "./buttons/close_m";
+        drawText = 0;
+    };
     0;
-    horizSizing = "right";
-    vertSizing = "bottom";
-    position = "0 544";
-    extent = "200 26";
-    minExtent = "8 2";
-    visible = 1;
-    sluggishness = 0.3;
-    trgReachedCommand = "AIMConvManager.titlebarReachedTarget();";
-    recipient = %recipient;
-    status = %status;
-    statusButton = %statusButton;
-    close = %close;
-    %titlebar = ;
+    %titlebar = new ""() {
+        profile = GuiControl @ "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "0 544";
+        extent = "200 26";
+        minExtent = "8 2";
+        visible = 1;
+        sluggishness = 0.3;
+        trgReachedCommand = "AIMConvManager.titlebarReachedTarget();";
+        recipient = %recipient;
+        status = %status;
+        statusButton = %statusButton;
+        close = %close;
+    };
     %titlebar.add(%recipient);
     %titlebar.add(%status);
     %titlebar.add(%statusButton);
     %titlebar.add(%close);
-    %theFirstResponder = getFirstResponder();
-    Canvas;
-    titlebar = %titlebar @ %conv;
-    contents = %contents @ %conv;
-    convs = %conv @ %this @ numConvs @ %this;
+    %theFirstResponder = Canvas.getFirstResponder();
+    %conv.titlebar = %titlebar;
+    %conv.contents = %contents;
+    %this.convs = %conv @ %this.numConvs;
     %contents.add();
     %titlebar.add();
-    numConvs = (%this + numConvs);
-    1.0;
+    %this.numConvs = (1.0 + %this.numConvs);
+    AimConvContainer;
     if (isObject(%theFirstResponder)) {
         %theFirstResponder.makeFirstResponder(1);
     }
-    if ((%this == numConvs)) {
+    if ((1.0 == %this.numConvs)) {
         %this.selectConvAtIndex(0);
     }
     %this.update();
-    updateAutoMargins();
+    ConvBub.updateAutoMargins();
     return %conv;
 };
 function AIMConvManager::convClicked(%this, %conv) {
@@ -426,68 +420,63 @@ function AIMConvManager::convClicked(%this, %conv) {
         %this.selectConvAtIndex(-(1.0));
     }
     %this.selectConv(%conv);
-    textInput.makeFirstResponder(1);
+    %conv.contents.textInput.makeFirstResponder(1);
 };
 function AIMConvManager::getConvWithName(%this, %aimName) {
     %idx = 0;
-    if ((numConvs < %idx)) {
-        if ((convs SPC aimName $= %aimName)) {
-            return convs;
+    if ((%this.numConvs < %idx)) {
+        if ((%idx @ " " @ %this.convs.aimName $= %aimName)) {
+            return %this.convs;
         }
         %idx = (1.0 + %idx);
     }
     return 0;
 };
 function AIMConvManager::getCurrentText(%this) {
-    if ((%this > numConvs)) {
-        return textInput.getValue();
+    if ((0.0 > %this.numConvs)) {
+        return %this.convs.contents.textInput.getValue();
     }
     return "";
 };
 function AIMConvManager::clearCurrentText(%this) {
-    if ((%this > numConvs)) {
-        textInput.setValue("");
+    if ((0.0 > %this.numConvs)) {
+        %this.convs.contents.textInput.setValue("");
     }
 };
 function AIMConvManager::getCurrentConv(%this) {
-    if ((%this > numConvs)) {
-        return convs;
+    if ((0.0 > %this.numConvs)) {
+        return %this.convs;
     }
     return 0;
 };
 function AIMConvManager::wakeUp(%this) {
     %this.Initialize();
-    if ((%this > numConvs)) {
+    if ((0.0 > %this.numConvs)) {
         %this.selectCurrentConv();
     }
 };
 function AIMConvManager::updateContainer(%this) {
     %ypadding = 8;
-    if ((%this <= numConvs)) {
+    if ((0.0 <= %this.numConvs)) {
         0.setVisible();
-        update();
-        return WindowManager;
+        WindowManager.update();
+        return AimConvContainer;
     }
-    %titleHeight = getWord(titlebar.getExtent(), 1);
-    convs;
-    %height = (getWord(titlebar.getPosition(), 1) + (%titleHeight + (1.0 * (%this - numConvs))));
-    convs;
-    if ((%this == numConvs)) {
+    %titleHeight = getWord(%this.convs.titlebar.getExtent(), 1);
+    0;
+    %height = (%ypadding @ 0 + (getWord(%this.convs.titlebar.getPosition(), 1) + (%titleHeight * (1.0 - %this.numConvs))));
+    if ((1.0 == %this.numConvs)) {
         %height = (%ypadding + %titleHeight);
-        1.0;
     }
     %curConv = %this.getCurrentConv();
-    %ypadding @ 0 @ %this;
     if (isObject(%curConv)) {
-        %contentsExtent = contents.getExtent();
-        %curConv;
+        %contentsExtent = %curConv.contents.getExtent();
         %height = ((%titleHeight + getWord(%contentsExtent, 1)) + %height);
-        0 @ %this;
     }
     %height = (%titleHeight + %height);
-    getWord(getExtent(), 0).resize(%height);
+    getWord(AimConvContainer.getExtent(), 0).resize(%height);
     1.setVisible();
-    update();
+    WindowManager.update();
 };
 function AIMConvManager::buildSpamString(%this, %prepend, %aimName, %link, %message) {
     if (!(%message $= "")) {
@@ -513,24 +502,25 @@ function AIMConvManager::sendInvites(%this, %recipients, %links, %userMsg) {
     MessageBoxOK("Invites Sent", %count @ " " @ "buddies have been invited to join" @ " " @ $ETS::AppName, "");
 };
 function AIMConvManager::inviteAll(%this, %userMsg) {
-    %buddies = onlineBuddiesToString();
-    BuddyHudWin;
+    %buddies = BuddyHudWin.onlineBuddiesToString();
     %this.prepareToSendInvites(%buddies, %userMsg);
 };
 function AIMConvManager::prepareToSendInvites(%this, %recipients, %userMsg) {
-    className = ManagerRequest @ new ""() @ "GetAIMInviteURLsRequest";
     0;
-    userMsg = %userMsg;
-    %request = ;
-    if (isObject()) {
+    %request = new ""() {
+        className = ManagerRequest @ "GetAIMInviteURLsRequest";
+        userMsg = %userMsg;
+    };
+    if (isObject(MissionCleanup)) {
         %request.add();
     }
-    %url = MissionCleanup @ MissionCleanup @ $Net::ClientServiceURL @ "/GetAIMInviteURLs" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token);
+    %url = $Net::ClientServiceURL @ "/GetAIMInviteURLs" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token);
+    MissionCleanup;
     %count = getFieldCount(%recipients);
     %url = %url @ "&urlCount=" @ %count;
     log("network", "info", getScopeName() @ ":" @ %url);
     %request.setURL(%url);
-    recipients = %recipients @ %request;
+    %request.recipients = %recipients;
     %request.start();
 };
 function GetAIMInviteURLsRequest::onDone(%this) {
@@ -549,7 +539,7 @@ function GetAIMInviteURLsRequest::onDone(%this) {
         %links = %links @ "\t" @ %val;
         %i = (1.0 + %i);
     }
-    recipients.sendInvites(%links, userMsg);
+    %this.recipients.sendInvites(%links, %this.userMsg);
     %this.schedule(0, "delete");
 };
 function GetAIMInviteURLsRequest::onError(%this, %unused, %errMsg) {
@@ -561,17 +551,13 @@ function AIMConvManager::sendMessage(%this) {
     %message = %this.getCurrentText();
     if (!(%message $= "")) {
         %sendMessage = %this.filterMessage(%conv, %message);
-        spamDict.put(aimName, 1);
-        aimSend(aimName, %sendMessage);
-        %prefix = (contents SPC mlText.getText() $= "") ? "" : "\n";
-        %conv;
-        %toBottom = scroll.isAtBottom();
-        contents;
-        mlText.addText(%conv @ %conv @ contents @ %prefix @ "<spush><color:bebeee>" @ %message @ "<spop>", 1, %toBottom);
-        totalMessagesSent = (%this + totalMessagesSent);
-        1.0;
-        newMessage = %conv @ 0 @ %conv;
-        %conv;
+        %this.spamDict.put(%conv.aimName, 1);
+        aimSend(%conv.aimName, %sendMessage);
+        %prefix = (%conv.contents.mlText.getText() $= "") ? "" : "\n";
+        %toBottom = %conv.contents.scroll.isAtBottom();
+        %conv.contents.mlText.addText(%prefix @ "<spush><color:bebeee>" @ %message @ "<spop>", 1, %toBottom);
+        %this.totalMessagesSent = (1.0 + %this.totalMessagesSent);
+        %conv.newMessage = 0;
         %this.update();
     }
     %this.clearCurrentText();
@@ -580,19 +566,17 @@ function AIMConvManager::talkTo(%this, %aimName) {
     %conv = %this.newConv(%aimName);
     if (%conv) {
         %this.selectConv(%conv);
-        textInput.makeFirstResponder(1);
+        %conv.contents.textInput.makeFirstResponder(1);
     }
-    echo(%conv @ contents @ "Failed to talk to " @ %aimName @ ": too many conversations open");
+    echo("Failed to talk to " @ %aimName @ ": too many conversations open");
 };
 function AIMConvManager::receivedMessage(%this, %aimName, %message) {
     %conv = %this.newConv(%aimName);
     if (%conv) {
-        %prefix = (contents SPC mlText.getText() $= "") ? "" : "\n";
-        %conv;
-        %toBottom = scroll.isAtBottom();
-        contents;
-        mlText.addText(%conv @ %conv @ contents @ %prefix @ "<spush><color:ee8fee>" @ %message @ "<spop>", 1, %toBottom);
-        newMessage = 1 @ %conv;
+        %prefix = (%conv.contents.mlText.getText() $= "") ? "" : "\n";
+        %toBottom = %conv.contents.scroll.isAtBottom();
+        %conv.contents.mlText.addText(%prefix @ "<spush><color:ee8fee>" @ %message @ "<spop>", 1, %toBottom);
+        %conv.newMessage = 1;
         %this.update();
     }
     echo("Received message from " @ %aimName @ ": " @ %message);
@@ -600,28 +584,27 @@ function AIMConvManager::receivedMessage(%this, %aimName, %message) {
     }
     if (isIdle()) {
     }
-    if (!(canPlayerSeeWorld())) {
+    if (!(PlayGui.canPlayerSeeWorld())) {
         if ($UserPref::Audio::NotifyChat) {
-            alxPlay();
+            alxPlay(AudioIm_MessageIn);
         }
     }
 };
 function AIMConvManager::closeAllConvs(%this) {
-    %n = (%this - numConvs);
-    1.0;
+    %n = (1.0 - %this.numConvs);
     if ((0.0 >= %n)) {
         %this.removeConvAtIndex(%n);
         %n = (1.0 - %n);
     }
 };
-stateMapping = "offline avail away away" @ AIMConvManager;
+%this.stateMapping = "offline avail away away" @ AIMConvManager;
 function AIMConvManager::buddyStateChanged(%this, %name, %state) {
     %conv = %this.getConvWithName(%name);
     if (%conv) {
         if ((-(1.0) == %state)) {
             %state = 0;
         }
-        status = %this @ getWord(stateMapping, %state) @ %conv;
+        %conv.status = getWord(%this.stateMapping, %state);
         %this.update();
     }
 };

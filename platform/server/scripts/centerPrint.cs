@@ -6,8 +6,7 @@ function centerPrintAll(%message, %time, %lines) {
     if ((1.0 < %lines)) {
         %lines = 1;
     }
-    %count = getCount();
-    ClientGroup;
+    %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
         %cl = %i.getObject();
@@ -26,8 +25,7 @@ function bottomPrintAll(%message, %time, %lines) {
     if ((1.0 < %lines)) {
         %lines = 1;
     }
-    %count = getCount();
-    ClientGroup;
+    %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
         %cl = %i.getObject();
@@ -65,8 +63,7 @@ function clearBottomPrint(%client) {
     commandToClient(%client, 'ClearBottomPrint');
 };
 function clearCenterPrintAll() {
-    %count = getCount();
-    ClientGroup;
+    %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
         %cl = %i.getObject();
@@ -78,8 +75,7 @@ function clearCenterPrintAll() {
     }
 };
 function clearBottomPrintAll() {
-    %count = getCount();
-    ClientGroup;
+    %count = ClientGroup.getCount();
     %i = 0;
     if ((%count < %i)) {
         %cl = %i.getObject();

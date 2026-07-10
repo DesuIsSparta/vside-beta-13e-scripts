@@ -1,27 +1,23 @@
 function SpawnSphere::onEditorRender(%this, %editor, %unused, %unused) {
-    if (noShow) {
-        return %this;
+    if (%this.noShow) {
+        return;
     }
     %center = %this.getWorldBoxCenter();
-    consoleLineWidth = 1 @ %editor;
-    consoleFrameColor = "255 0 0 50" @ %editor;
-    consoleFillColor = "0 0 90 10" @ %editor;
-    %editor.renderSphere(%center, radius, 2);
-    consoleLineWidth = %this @ 7 @ %editor;
-    consoleFrameColor = "255 200 0 240" @ %editor;
-    consoleFillColor = "0 100 190 60" @ %editor;
+    %editor.consoleLineWidth = 1;
+    %editor.consoleFrameColor = "255 0 0 50";
+    %editor.consoleFillColor = "0 0 90 10";
+    %editor.renderSphere(%center, %this.radius, 2);
+    %editor.consoleLineWidth = 7;
+    %editor.consoleFrameColor = "255 200 0 240";
+    %editor.consoleFillColor = "0 100 190 60";
     %pos = %center;
     %pos = VectorAdd(%pos, "0 0 -0.005");
-    %editor.renderCircle(%pos, "0 0 1", radius);
-    %arrow1 = %this.localToWorldPoint(1.0 @ (-(0.5) + (%this * radius)) @ " " @ -0.01);
-    (%this * radius) @ " ";
-    %arrow2 = %this.localToWorldPoint(1.0 @ (-(0.5) + (%this * radius)) @ " " @ -0.01);
-    (%this * radius) @ " ";
-    %arrow3 = %this.localToWorldPoint(1.0 @ (0.9 + (%this * radius)) @ " " @ -0.01);
-    0 @ " ";
-    consoleLineWidth = -(0.25) @ 3 @ %editor;
-    0.25;
-    consoleFrameColor = %this @ "255 200 0 180" @ %editor;
-    consoleFillColor = "255 200 0 40" @ %editor;
+    %editor.renderCircle(%pos, "0 0 1", %this.radius);
+    %arrow1 = %this.localToWorldPoint((0.25 * %this.radius) @ " " @ (1.0 + (-(0.5) * %this.radius)) @ " " @ -0.01);
+    %arrow2 = %this.localToWorldPoint((-(0.25) * %this.radius) @ " " @ (1.0 + (-(0.5) * %this.radius)) @ " " @ -0.01);
+    %arrow3 = %this.localToWorldPoint(0 @ " " @ (1.0 + (0.9 * %this.radius)) @ " " @ -0.01);
+    %editor.consoleLineWidth = 3;
+    %editor.consoleFrameColor = "255 200 0 180";
+    %editor.consoleFillColor = "255 200 0 40";
     %editor.renderTriangle(%arrow1, %arrow2, %arrow3);
 };

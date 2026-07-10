@@ -14,7 +14,7 @@ function Player::playAnimPreRoll(%this, %anim, %preRollMS) {
     }
 };
 function Player::initGlobalFields(%this) {
-    globalFieldsInited = 1 @ %this;
+    %this.globalFieldsInited = 1;
     gSetField(%this, "");
     gSetField(%this, "");
     gSetField(%this, 0);
@@ -39,7 +39,7 @@ function Player::initGlobalFields(%this) {
     gSetField(%this, "balancesAndScoresRevision", 0);
 };
 function Player::destroyGlobalFields(%this) {
-    globalFieldsInited = 0 @ %this;
+    %this.globalFieldsInited = 0;
     gSetField(%this, 0);
     gSetField(%this, 0);
     gSetField(%this, 0);
@@ -72,17 +72,17 @@ function Player::destroyGlobalFields(%this) {
 };
 function Player::onDelete(%this) {
     if (%this.isServerObject()) {
-        if (isObject(forceField)) {
-            forceField.delete();
+        if (isObject(%this.forceField)) {
+            %this.forceField.delete();
         }
         giftingCurrency_Server_OnPlayerDeleted(%this);
     }
     %this.removeFromPlayerInstanceDict();
-    if (isObject()) {
+    if (isObject(geMapHud2DTheOrthoMap)) {
         %this.playerRemove();
     }
     %this.destroyGlobalFields();
-    if (isObject()) {
+    if (isObject(gUserPropMgrServer)) {
         %this.getShapeName().forgetProperties();
     }
 };

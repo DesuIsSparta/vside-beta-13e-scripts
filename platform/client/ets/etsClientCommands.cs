@@ -8,8 +8,7 @@ $closeConfirmDlg = 0;
 function onAppCloseButton() {
     commandToServer('SetLookAt', -(1.0), 0, 0);
     if (isObject($closeConfirmDlg)) {
-        %isShowingNow = visible;
-        $closeConfirmDlg;
+        %isShowingNow = $closeConfirmDlg.visible;
         $closeConfirmDlg.close();
         if (%isShowingNow) {
             confirmQuitOnYes();
@@ -24,21 +23,21 @@ function onAppCloseButton() {
     $closeConfirmDlg = MessageBoxYesNo("Quit vSide", , "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
     %dialog = ;
     if (!($gLastLoggedInThisSessionAs $= "")) {
-        %yesButtonPos = button.getParent().getPosition();
-        0 @ %dialog;
-        profile = GuiCheckBoxCtrl @ new ""() @ "ETSCheckBoxProfile";
+        %yesButtonPos = %dialog.button.getParent().getPosition();
         0;
-        position = getWord(%yesButtonPos, 0) @ " " @ (23.0 - getWord(%yesButtonPos, 1));
-        extent = "110 20";
-        horizSizing = "center";
-        vertSizing = "top";
-        text = "Visit my web profile";
-        %ctrl = ;
+        0;
+        %ctrl = new ""() {
+            profile = GuiCheckBoxCtrl @ "ETSCheckBoxProfile";
+            position = getWord(%yesButtonPos, 0) @ " " @ (23.0 - getWord(%yesButtonPos, 1));
+            extent = "110 20";
+            horizSizing = "center";
+            vertSizing = "top";
+            text = "Visit my web profile";
+        };
         %ctrl.setValue($UserPref::General::onQuitVisitWebProfile);
-        %window = window;
-        %dialog;
+        %window = %dialog.window;
         %window.add(%ctrl);
-        visitProfileOptionCtrl = %ctrl @ %dialog;
+        %dialog.visitProfileOptionCtrl = %ctrl;
         %width = getWord(%window.getExtent(), 0);
         %height = getWord(%window.getExtent(), 1);
         %window.resize(%width, (20.0 + %height));
@@ -46,8 +45,7 @@ function onAppCloseButton() {
 };
 function confirmQuitOnYes() {
     if (!($gLastLoggedInThisSessionAs $= "")) {
-        $UserPref::General::onQuitVisitWebProfile = visitProfileOptionCtrl.getValue();
-        $closeConfirmDlg;
+        $UserPref::General::onQuitVisitWebProfile = $closeConfirmDlg.visitProfileOptionCtrl.getValue();
         if ($UserPref::General::onQuitVisitWebProfile) {
             doUserProfile($gLastLoggedInThisSessionAs);
         }
@@ -56,18 +54,16 @@ function confirmQuitOnYes() {
 };
 function confirmQuitOnNo() {
     if (!($gLastLoggedInThisSessionAs $= "")) {
-        $UserPref::General::onQuitVisitWebProfile = visitProfileOptionCtrl.getValue();
-        $closeConfirmDlg;
+        $UserPref::General::onQuitVisitWebProfile = $closeConfirmDlg.visitProfileOptionCtrl.getValue();
     }
     $closeConfirmDlg = 0;
 };
 function cleanUpAndQuit() {
-    if (isObject()) {
-        $UserPref::ETS::Console::Dim = ConsoleWindow @ getExtent();
-        getPosition() @ " ";
+    if (isObject(ConsoleWindow)) {
+        $UserPref::ETS::Console::Dim = ConsoleWindow.getPosition() @ " " @ ConsoleWindow.getExtent();
     }
-    if (isObject()) {
-        storeDims();
+    if (isObject(SnoopPanel)) {
+        SnoopPanel.storeDims();
     }
     quit();
 };
@@ -80,12 +76,12 @@ function onGotContiguousSpaceName(%contiguousSpaceName) {
     $gContiguousSpaceName = %contiguousSpaceName;
     tutorials_Initialize();
     %contiguousSpaceName.onSpaceChange();
-    updateSkipTutorialTab();
-    handleContiguousSpace();
-    if (!(ButtonBar SPC %contiguousSpaceName $= "")) {
+    CSControlPanelTabs.updateSkipTutorialTab();
+    ButtonBar.handleContiguousSpace();
+    if (!(geLocalMapContainer @ " " @ %contiguousSpaceName $= "")) {
     }
-    %name = CSControlPanelTabs @ %contiguousSpaceName @ "[" @ $ServerName @ "]";
-    geLocalMapContainer;
+    %name = "[" @ $ServerName @ "]";
+    %contiguousSpaceName;
     $Player::Name.incrementIntegerProperty("level started count" @ " " @ %name, 1);
 };
 function getContiguousSpaceFullName(%code) {

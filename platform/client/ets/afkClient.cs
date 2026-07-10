@@ -15,17 +15,16 @@ function setIdle(%idle, %message) {
     if (!(isDefined("%message"))) {
         %message = "";
     }
-    if (isObject()) {
+    if (isObject(ServerConnection)) {
     }
-    if (!(isPresentAtBody())) {
+    if (!(ServerConnection.isPresentAtBody())) {
         %idle = 1;
-        ServerConnection;
     }
     if (!($Server::Dedicated)) {
         if ((1.0 == %idle)) {
             if (!(isIdle())) {
             }
-            if (!(ServerConnection SPC %message $= $gCurrentAwayMessage)) {
+            if (!(%message $= $gCurrentAwayMessage)) {
                 onIdle(%message);
             }
         }
@@ -56,15 +55,15 @@ function onUnidle() {
     }
     if ($GameConnection.isPresentAtBody()) {
         commandToServer('setAfkOff');
-        playersNotifiedOfIdleStatus.clear();
+        $player.playersNotifiedOfIdleStatus.clear();
     }
-    if (visible) {
+    if ($player.visible) {
         commandToServer('setAfkOn', $ClosetGuiOpenMessage);
     }
     getUserActivityMgr().setActivityActive("idle", 0);
 };
 function awayOperation(%line) {
-    applySettings();
+    DefaultAwayMsgEdit.applySettings();
     if (isDefined("%line")) {
         setIdle(1, %line);
     }

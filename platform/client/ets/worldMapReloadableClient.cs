@@ -1,18 +1,18 @@
 function WorldMap::TabulateWorldAreaSummary(%unused) {
     safeEnsureScriptObject("StringMap", 0);
-    deleteValuesAsObjects();
-    totalCapacity = WorldAreaSummaries @ WorldAreaSummaries @ 0 @ "gw" @ WorldAreaSummaries;
+    WorldAreaSummaries.deleteValuesAsObjects();
+    totalCapacity = 0 @ "gw" @ WorldAreaSummaries;
+    WorldAreaSummaries;
     totalCapacity = 0 @ "pvt" @ WorldAreaSummaries;
     totalCapacity = 0 @ "city" @ WorldAreaSummaries;
     totalOccupancy = 0 @ "gw" @ WorldAreaSummaries;
     totalOccupancy = 0 @ "pvt" @ WorldAreaSummaries;
     totalOccupancy = 0 @ "city" @ WorldAreaSummaries;
-    if (!(isObject())) {
+    if (!(isObject(WorldMapServers))) {
         error(getScopeName() @ " " @ "- no WorldMapServers object." @ " " @ getTrace());
-        return WorldMapServers;
+        return;
     }
-    %n = (WorldMapServers - getCount());
-    1.0;
+    %n = (1.0 - WorldMapServers.getCount());
     if ((0.0 >= %n)) {
         %serverObj = %n.getObject();
         WorldMapServers;
@@ -22,29 +22,25 @@ function WorldMap::TabulateWorldAreaSummary(%unused) {
         %areaSummaryObj = %serverAreaName.get();
         WorldAreaSummaries;
         if (!(isObject(%areaSummaryObj))) {
-            %areaSummaryObj = new ""();
+            %areaSummaryObj = new ""();;
             SimObject;
             %serverAreaName.put(%areaSummaryObj);
-            areaName = WorldAreaSummaries @ %serverAreaName @ %areaSummaryObj;
+            %areaSummaryObj.areaName = WorldAreaSummaries @ %serverAreaName;
             0;
-            occupancy = 0 @ %areaSummaryObj;
-            capacity = 0 @ %areaSummaryObj;
-            numServers = 0 @ %areaSummaryObj;
-            areaType = hasWord("lga nv rj", %serverAreaName) ? "city" : "pvt" @ %areaSummaryObj;
+            %areaSummaryObj.occupancy = 0;
+            %areaSummaryObj.capacity = 0;
+            %areaSummaryObj.numServers = 0;
+            %areaSummaryObj.areaType = hasWord("lga nv rj", %serverAreaName) ? "city" : "pvt";
             if (hasWord("gw", %serverAreaName)) {
             }
-            areaType = %areaSummaryObj @ areaType @ %areaSummaryObj;
-            "gw";
+            %areaSummaryObj.areaType = "gw" @ %areaSummaryObj.areaType;
         }
-        occupancy = (%areaSummaryObj + occupancy);
+        %areaSummaryObj.occupancy = (%serverOccupancy + %areaSummaryObj.occupancy);
+        %areaSummaryObj.capacity = (%serverCapacity + %areaSummaryObj.capacity);
+        %areaSummaryObj.numServers = (1.0 + %areaSummaryObj.numServers);
+        %areaSummaryObj.totalOccupancy = (%areaSummaryObj.areaType @ WorldAreaSummaries + %areaSummaryObj.totalOccupancy);
         %serverOccupancy;
-        capacity = (%areaSummaryObj + capacity);
-        %serverCapacity;
-        numServers = (%areaSummaryObj + numServers);
-        1.0;
-        totalOccupancy = (%areaSummaryObj @ areaType @ WorldAreaSummaries + totalOccupancy);
-        %serverOccupancy;
-        totalCapacity = (%areaSummaryObj @ areaType @ WorldAreaSummaries + totalCapacity);
+        %areaSummaryObj.totalCapacity = (%areaSummaryObj.areaType @ WorldAreaSummaries + %areaSummaryObj.totalCapacity);
         %serverCapacity;
         %n = (1.0 - %n);
     }

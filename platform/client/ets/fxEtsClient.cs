@@ -4,8 +4,8 @@ $fxEts::BrightnessFlashTimerPeriod = 100;
 $fxEts::BrightnessFlashTimerID = 0;
 $fxEts::BrightnessFlashDecay = 0.96;
 function fxEts::updateExposureFilter() {
-    if (!(isObject())) {
-        return ExposureFilter;
+    if (!(isObject(ExposureFilter))) {
+        return;
     }
     if ((0.0 == $UserPref::Video::exposureQualitySetting)) {
         return;
@@ -34,20 +34,19 @@ function fxEts::updateExposureFilter() {
     }
     !(%atNeutral).setVisible();
     !(%atNeutral).setVisible();
-    if (!(isObject())) {
-        return EditorExposureFilter;
+    if (!(isObject(EditorExposureFilter))) {
+        return ExposureFilterSelfView;
     }
     exposure = %colFin @ EditorExposureFilter;
     !(%atNeutral).setVisible();
 };
 function fxEts::updateTOD(%hod) {
     fxEts::updateTODColor(fxEts::getColorForTOD((60.0 * (60.0 * %hod))));
-    if (isObject()) {
+    if (isObject(DevOptsTextTOD)) {
         mFloor((0.5 + %hod)).setValue();
         %r = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 0)))));
         DevOptsTextTOD;
         %g = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 1)))));
-        DevOptsTextTOD;
         %b = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 2)))));
         %r @ " " @ %g @ " " @ %b.setValue();
     }
@@ -57,8 +56,8 @@ function fxEts::updateTODColor(%color) {
     fxEts::updateExposureFilter();
 };
 function fxEts::TODTick() {
-    if (!(isObject())) {
-        return ExposureFilter;
+    if (!(isObject(ExposureFilter))) {
+        return;
     }
     %cityTOD = ($Sim::TimeDeltaToCity + getSimTime());
     %cityHOD = ((1000.0 * (60.0 * 60.0)) / %cityTOD);
@@ -70,7 +69,7 @@ function fxEts::TODTick() {
         (24.0 > %cityHOD);
     }
     fxEts::updateTOD(%cityHOD);
-    if (isObject()) {
+    if (isObject(DevOptsSliderTOD)) {
         %cityHOD.setValue();
         mFloor((0.5 + %cityHOD)).setValue();
     }

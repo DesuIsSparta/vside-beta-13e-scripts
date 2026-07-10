@@ -1,13 +1,12 @@
 function GuiTableCtrl::Initialize(%this) {
     if (!(isDefined("%this.initialized"))) {
     }
-    if (!(initialized)) {
-        initialized = %this @ 1 @ %this;
+    if (!(%this.initialized)) {
+        %this.initialized = 1;
         %this.setProfile();
-        dataRowCellProfile = GuiTableBodyCellProfile @ %this;
-        GuiTableProfile;
-        dataRowHilitedProfile = GuiTableBodyRowHilitedProfile @ %this;
-        dataRowUnhilitedProfile = GuiTableBodyRowUnhilitedProfile @ %this;
+        %this.dataRowCellProfile = GuiTableProfile @ GuiTableBodyCellProfile;
+        %this.dataRowHilitedProfile = GuiTableBodyRowHilitedProfile;
+        %this.dataRowUnhilitedProfile = GuiTableBodyRowUnhilitedProfile;
         %headerArray = %this.getHeaderArrayCtrl();
         %scroll = %this.getScrollCtrl();
         %bodyArray = %this.getBodyArrayCtrl();
@@ -41,7 +40,7 @@ function GuiTableCtrl::doSetupColumnHeaders(%this, %headerArray) {
 };
 function GuiTableCtrl::doSetupBodyScroll(%this, %scroll) {
     %scroll.setProfile();
-    modulationColor = GuiTableScrollProfile @ "177 183 209 160" @ %scroll;
+    %scroll.modulationColor = GuiTableScrollProfile @ "177 183 209 160";
 };
 function GuiTableCtrl::doSetupBodyContainer(%this, %container) {
     %container.setProfile();
@@ -107,7 +106,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseUp(%this) {
     if ((0.0 == %headerCell.getParent().getObjectIndex(%headerCell))) {
         return;
     }
-    if (%this.pointInControl(%this.globalToLocal(getCursorPos()))) {
+    if (%this.pointInControl(%this.globalToLocal(Canvas.getCursorPos()))) {
         %headerCell.setProfile();
     }
     %headerCell.setProfile();

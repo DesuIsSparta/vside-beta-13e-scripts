@@ -1,7 +1,6 @@
 $gCURLGlobalDelayMS = 0;
 function CURLObject::onDonePreDelay(%this) {
-    %totalDelayMS = (%this + delayMS);
-    $gCURLGlobalDelayMS;
+    %totalDelayMS = ($gCURLGlobalDelayMS + %this.delayMS);
     if ((0.0 <= %totalDelayMS)) {
         %this.onDone();
     }
@@ -9,8 +8,7 @@ function CURLObject::onDonePreDelay(%this) {
     %this.schedule(%totalDelayMS, "onDonePostDelay", %totalDelayMS);
 };
 function CURLObject::onErrorPreDelay(%this, %val, %name) {
-    %totalDelayMS = (%this + delayMS);
-    $gCURLGlobalDelayMS;
+    %totalDelayMS = ($gCURLGlobalDelayMS + %this.delayMS);
     if ((0.0 <= %totalDelayMS)) {
         %this.onError(%val, %name);
     }

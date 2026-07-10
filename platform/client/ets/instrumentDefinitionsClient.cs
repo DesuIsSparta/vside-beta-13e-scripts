@@ -3,80 +3,77 @@
 %registry.bindClassName("InstrumentRegistryClient");
 %registry.setName("InstrumentRegistryClient");
 function InstrumentRegistryClient::initializeRegistry(%this) {
-    if (initialized) {
+    if (%this.initialized) {
         warn(getScopeName() @ " " @ "- registry already intialized");
-        return %this;
+        return;
     }
-    instrumentsList = StringMap @ new ""() @ %this;
+    %this.instrumentsList = StringMap @ new ""();;
     0;
-    if (isObject()) {
-        instrumentsList.add();
+    if (isObject(MissionCleanup)) {
+        %this.instrumentsList.add();
     }
-    keyBindings = StringMap @ new ""() @ %this;
+    %this.keyBindings = StringMap @ new ""();;
     0;
-    if (isObject()) {
-        keyBindings.add();
+    if (isObject(MissionCleanup)) {
+        %this.keyBindings.add();
     }
     %this.initializeRegistryCommon();
-    initialized = %this @ 1 @ %this;
+    %this.initialized = MissionCleanup @ 1;
     MissionCleanup;
 };
-initialized = 0 @ InstrumentRegistryClient;
-initializeRegistry();
+%this.initialized = 0 @ InstrumentRegistryClient;
+InstrumentRegistryClient.initializeRegistry();
 function InstrumentRegistryClient::clearRegistry(%this) {
-    if (isObject(instrumentsList)) {
-        %i = (%this - instrumentsList.size());
-        1.0;
+    if (isObject(%this.instrumentsList)) {
+        %i = (1.0 - %this.instrumentsList.size());
         if ((0.0 >= %i)) {
-            %instrument = instrumentsList.getValue(%i);
-            %this;
+            %instrument = %this.instrumentsList.getValue(%i);
             if (isObject(%instrument)) {
-                if (isObject(animationMaps)) {
-                    animationMaps.clear();
-                    animationMaps.delete();
+                if (isObject(%instrument.animationMaps)) {
+                    %instrument.animationMaps.clear();
+                    %instrument.animationMaps.delete();
                 }
-                if (isObject(animationMaps)) {
-                    animationMaps.clear();
-                    animationMaps.delete();
+                if (isObject(%instrument.animationMaps)) {
+                    %instrument.animationMaps.clear();
+                    %instrument.animationMaps.delete();
                 }
                 %instrument.delete();
             }
             %i = (1.0 - %i);
-            %this @ "f" @ %instrument @ "f" @ %instrument @ "f" @ %instrument @ "m" @ %instrument @ "m" @ %instrument @ "m" @ %instrument;
+            "f" @ "f" @ "f" @ "m" @ "m" @ "m";
         }
-        instrumentsList.clear();
+        %this.instrumentsList.clear();
     }
-    if (isObject(keyBindings)) {
-        keyBindings.clear();
+    if (isObject(%this.keyBindings)) {
+        %this.keyBindings.clear();
     }
     %this.clearRegistryCommon();
 };
 function InstrumentRegistryClient::closeRegistry(%this) {
     %this.clearRegistry();
-    if (isObject(instrumentsList)) {
-        instrumentsList.delete();
-        instrumentsList = %this @ "" @ %this;
-        %this;
+    if (isObject(%this.instrumentsList)) {
+        %this.instrumentsList.delete();
+        %this.instrumentsList = "";
     }
-    if (isObject(keyBindings)) {
-        keyBindings.delete();
-        keyBindings = %this @ "" @ %this;
-        %this;
+    if (isObject(%this.keyBindings)) {
+        %this.keyBindings.delete();
+        %this.keyBindings = "";
     }
     %this.closeRegistryCommon();
 };
 function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %instrumentGameTitleText, %instrumentGameBodyText, %instrumentGameDisabledText, %instrumentGameActiveIconA, %instrumentGameActiveIconB, %instrumentGameIdleIcon, %instrumentGameUnfocusedIcon) {
-    name = SimSet @ new ""() @ %instrumentName;
     0;
-    titleText = %instrumentGameTitleText;
-    bodyText = %instrumentGameBodyText;
-    disabledText = %instrumentGameDisabledText;
-    activeIconA = %instrumentGameActiveIconA;
-    activeIconB = %instrumentGameActiveIconB;
-    idleIcon = %instrumentGameIdleIcon;
-    unfocusedIcon = %instrumentGameUnfocusedIcon;
-    %instrument = ;
-    instrumentsList.put(%instrumentName, %instrument);
+    %instrument = new ""() {
+        name = SimSet @ %instrumentName;
+        titleText = %instrumentGameTitleText;
+        bodyText = %instrumentGameBodyText;
+        disabledText = %instrumentGameDisabledText;
+        activeIconA = %instrumentGameActiveIconA;
+        activeIconB = %instrumentGameActiveIconB;
+        idleIcon = %instrumentGameIdleIcon;
+        unfocusedIcon = %instrumentGameUnfocusedIcon;
+    };
+    %this.instrumentsList.put(%instrumentName, %instrument);
 };
 function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrumentName, %keyBinding, %animationName) {
     if ((%instrumentName $= "")) {
@@ -91,12 +88,12 @@ function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrume
     }
     if (!(%instrumentName $= "")) {
     }
-    if (!(instrumentsList.hasKey(%instrumentName))) {
-        warn(%this @ getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
+    if (!(%this.instrumentsList.hasKey(%instrumentName))) {
+        warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return;
     }
     %keyBinding = %this.normalizeKeyBinding(%instrumentName, %keyBinding);
-    keyBindings.put(%keyBinding, %animationName);
+    %this.keyBindings.put(%keyBinding, %animationName);
 };
 function InstrumentRegistryClient::getAnimation(%this, %instrumentName, %keyBinding) {
     if (!(%this.isInstrument(%instrumentName))) {
@@ -107,10 +104,10 @@ function InstrumentRegistryClient::getAnimation(%this, %instrumentName, %keyBind
         return %this.getStopAnimation(%instrumentName);
     }
     %keyBinding = %this.normalizeKeyBinding(%instrumentName, %keyBinding);
-    if (!(keyBindings.hasKey(%keyBinding))) {
+    if (!(%this.keyBindings.hasKey(%keyBinding))) {
         return "";
     }
-    return keyBindings.get(%keyBinding);
+    return %this.keyBindings.get(%keyBinding);
 };
 function InstrumentRegistryClient::normalizeKeyBinding(%this, %instrumentName, %keyBinding) {
     if ((%keyBinding $= "")) {
@@ -165,4 +162,4 @@ function InstrumentRegistryClient::normalizeKeyBinding(%this, %instrumentName, %
 "rguitar".registerInstrumentKeyBinding("p", "gtrgr17a");
 "bassa".registerInstrumentKeyBinding(1, "bassr1e");
 "druma".registerInstrumentKeyBinding(1, "drumr1e");
-registerCommonProperties();
+InstrumentRegistryClient.registerCommonProperties();

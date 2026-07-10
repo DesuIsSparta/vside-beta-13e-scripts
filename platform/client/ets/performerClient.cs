@@ -1,8 +1,8 @@
 $gPerformerMode = 0;
 function clientCmdSetPerformerMode(%pm, %nativePerformer) {
     $gPerformerMode = %pm;
-    if (!(isObject())) {
-        return ForceFieldCtrls;
+    if (!(isObject(ForceFieldCtrls))) {
+        return;
     }
     %pm.setVisible();
     %nativePerformer.setVisible();
@@ -11,11 +11,11 @@ function clientCmdSetPerformerMode(%pm, %nativePerformer) {
 function clientCmdSetPerformerMode_DEPRECATED(%pm, %nativePerformer) {
     $gPerformerMode = %pm;
     if (!($gPerformerMode)) {
-        close();
+        performerPanel.close();
     }
     if ($UserPref::Performer::AutoOpenPanel) {
-        if (!(isVisible())) {
-            open();
+        if (!(performerPanel.isVisible())) {
+            performerPanel.open();
         }
     }
     1.setVisible();
