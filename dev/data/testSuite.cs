@@ -1,5 +1,5 @@
 $G_DECLARED_TEST_COUNT = 0;
-$G_DECLARED_TEST_COUNT[$G_DECLARED_TEST @ 0] = 0;
+$G_DECLARED_TEST[0] = 0;
 function DeclareTestSuite(%name) {
     $G_DECLARED_TEST_COUNT[$G_DECLARED_TEST @ $G_DECLARED_TEST_COUNT] = %name;
     $G_DECLARED_TEST_COUNT = ($G_DECLARED_TEST_COUNT + 1.0);
@@ -93,7 +93,8 @@ function TestSuiteRunner::ProcessLoop(%this) {
         return;
     }
     %testSuiteName = %this.Suite;
-    %this.currentSuite = %this.nextSuite @ TestSuite::construct(%testSuiteName);
+    %this.nextSuite;
+    %this.currentSuite = TestSuite::construct(%testSuiteName);
     %this.currentSuite.execute();
     %this.TimerProcess = "ProcessLoop".schedule(%this, 100);
 };
@@ -112,6 +113,7 @@ function TestSuiteRunner::reportResults(%this) {
     %i = 0;
     while ((%i < %this.testSuiteCount)) {
         %testname = %this.Suite;
+        %i;
         %message = "    " @ %testname.errorCount @ " " @ "errors" @ " " @ %testname.assertCount @ " " @ "asserts" @ " " @ "reported by" @ " " @ %testname;
         %level = "info";
         if ((%testname.errorCount > 0.0)) {
@@ -173,11 +175,13 @@ function TestSuite::ExecNextTest(%this) {
         return;
     }
     %testname = %this.test;
+    %this.nextTest;
     %delay = %this.TestDelay;
+    %this.nextTest;
     TestCase::construct(%testname);
     if ((%delay == 0.0)) {
         %testname.execute();
-        %this.TimerNextTest = %this.nextTest @ %this.nextTest @ "ExecNextTest".schedule(%this, 0);
+        %this.TimerNextTest = "ExecNextTest".schedule(%this, 0);
         return;
     }
     %testname.executeStartForDelay();
@@ -200,8 +204,8 @@ function TestSuite::reportResults(%this) {
     %i = 0;
     while ((%i < %this.testCount)) {
         %testname = %this.test;
-        %this.errorCount = (%this.errorCount + %testname.errorCount);
         %i;
+        %this.errorCount = (%this.errorCount + %testname.errorCount);
         %this.assertCount = (%this.assertCount + %testname.assertCount);
         %message = "    " @ %testname.errorCount @ " " @ "errors" @ " " @ %testname.assertCount @ " " @ "asserts" @ " " @ "reported by" @ " " @ %testname;
         %level = "info";

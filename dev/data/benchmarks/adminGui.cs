@@ -1,3 +1,10 @@
+$gAdminActionDefaultMessages["Boot"] = "You have been booted by staff.";
+$gAdminActionDefaultMessages["BootQuiet"] = "You have been courteously booted by staff.";
+$gAdminActionDefaultMessages["Ban"] = "You have been suspended by staff.";
+$gAdminActionDefaultMessages["Message"] = "";
+$gAdminActionDefaultMessages["Summon"] = "You have been teleported!";
+$gAdminActionDefaultMessages["Respawn"] = "You have been teleported away!";
+$gAdminActionDefaultMessages["Throw Voice"] = "";
 function adminActionPopup::onSelect(%this, %unused, %text) {
     selectAdminAction(%text);
 };

@@ -317,12 +317,10 @@ function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired) {
         return;
     }
     if ((%justExpiredCount > 0.0)) {
-        // unhandled opcode 2149 at 0x00000C49
-        %justExpiredCount = AudioProfile_JustExpired;
+        %sound = AudioProfile_JustExpired;
     }
     if ((%aboutToExpireCount > 0.0)) {
-        // unhandled opcode 2149 at 0x00000C59
-        %aboutToExpireCount = AudioProfile_ExpiringSoon;
+        %sound = AudioProfile_ExpiringSoon;
     }
     schedule(500, 0, "alxPlay", %sound);
     %msg = "";
@@ -456,8 +454,7 @@ function removeAndReplaceSkuFromSkuList(%skusOutfit, %sku, %replaceSKU) {
         error(getScopeName() @ " " @ "sku is null can't remove from skusoutfits:" @ " " @ %skusOutfit @ " " @ "or replace with" @ " " @ %replaceSKU);
         return %skusOutfit;
     }
-    %idx = findWord(%skusOutfit, %sku);
-    if ((0.0 >= )) {
+    if (((%idx = findWord(%skusOutfit, %sku)) >= 0.0)) {
         %changes = (%changes + 1.0);
         %skusOutfit = removeWord(%skusOutfit, %idx);
         if (%replaceSKU) {
@@ -476,7 +473,8 @@ function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser) {
         error(getScopeName() @ " " @ "$player is not valid, cannot remove expired sku and replace with new one" @ " " @ %sku @ " " @ %newSku);
         return 0;
     }
-    %outfitNames = ;
+    %outfitNames = [$player.getGender()];
+    $Player::HangerNames;
     %i = 0;
     while ((%i < $gClosetNumOutfits)) {
         %name = getWord(%outfitNames, %i);
@@ -499,7 +497,8 @@ function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser) {
         (%n >= 0.0);
         %skusBody = %keyBody.get($gOutfits);
         %skusBody = removeAndReplaceSkuFromSkuList(%skusBody, %oldSku, %newSku);
-        %STOCKBody = ;
+        %STOCKBody = [$player.getGender()];
+        $gDefaultBodyAttrs;
         %n = (getWordCount(%STOCKBody) - 1.0);
         while ((%n >= 0.0)) {
             %sku = getWord(%STOCKBody, %n);
@@ -929,7 +928,8 @@ function Inventory::onGotPlayerInventory() {
     }
 };
 function Inventory::EnsurePlayerOwnsOutfitItems() {
-    %outfitNames = ;
+    %outfitNames = [$player.getGender()];
+    $Player::HangerNames;
     %anyRemoved = 0;
     %expiredSkus = "";
     %i = 0;
@@ -1024,8 +1024,7 @@ function InventoryRequest::onDone(%this) {
         error(getScopeName() @ "->InventoryRequest failed! Inventory = \"" @ $Player::inventory @ "\"");
         return;
     }
-    %array = new Array("");;
-    0;
+    %array = new Array("");
     "qtyOwned".parse_Inventory(%this, %array);
     $Player::inventory = "";
     %num = %array.count();

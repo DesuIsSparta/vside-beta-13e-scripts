@@ -3,8 +3,8 @@ function GuiTableCtrl::Initialize(%this) {
     }
     if (!(%this.initialized)) {
         %this.initialized = 1;
-        %this.setProfile();
-        %this.dataRowCellProfile = GuiTableProfile @ GuiTableBodyCellProfile;
+        GuiTableProfile.setProfile(%this);
+        %this.dataRowCellProfile = GuiTableBodyCellProfile;
         %this.dataRowHilitedProfile = GuiTableBodyRowHilitedProfile;
         %this.dataRowUnhilitedProfile = GuiTableBodyRowUnhilitedProfile;
         %headerArray = %this.getHeaderArrayCtrl();
@@ -33,31 +33,31 @@ function GuiTableCtrl::Initialize(%this) {
     }
 };
 function GuiTableCtrl::doSetupColumnHeaders(%this, %headerArray) {
-    %headerArray.setProfile();
-    %this.setHeaderCellProfile();
-    %this.setHeaderCellButtonProfile();
-    %this.setHeaderCellMLTextProfile();
+    GuiTableHeaderRowProfile.setProfile(%headerArray);
+    GuiTableHeaderCell_N_Profile.setHeaderCellProfile(%this);
+    GuiTableHeaderCellButtonProfile.setHeaderCellButtonProfile(%this);
+    GuiTableHeaderCellMLTextProfile.setHeaderCellMLTextProfile(%this);
 };
 function GuiTableCtrl::doSetupBodyScroll(%this, %scroll) {
-    %scroll.setProfile();
-    %scroll.modulationColor = GuiTableScrollProfile @ "177 183 209 160";
+    GuiTableScrollProfile.setProfile(%scroll);
+    %scroll.modulationColor = "177 183 209 160";
 };
 function GuiTableCtrl::doSetupBodyContainer(%this, %container) {
-    %container.setProfile();
+    GuiDefaultProfile.setProfile(%container);
 };
 function GuiTableCtrl::doSetupArrayOfRows(%this, %arrayOfRows) {
-    %arrayOfRows.setProfile();
+    GuiDefaultProfile.setProfile(%arrayOfRows);
 };
 function GuiTableCtrl::doSetupRowGuiArray(%this, %rowArray) {
-    %rowArray.setProfile();
+    GuiTableBodyRowUnhilitedProfile.setProfile(%rowArray);
 };
 function GuiTableBodyCellCtrl::doSetupBodyCellForText(%this, %mlTextCtrl) {
-    %this.setProfile();
-    %mlTextCtrl.setProfile();
+    GuiTableBodyCellProfile.setProfile(%this);
+    GuiTableBodyCellMLTextProfile.setProfile(%mlTextCtrl);
 };
 function GuiTableBodyCellCtrl::doSetupBodyCellForImage(%this, %bitmapCtrl) {
-    %this.setProfile();
-    %bitmapCtrl.setProfile();
+    GuiTableBodyCellProfile.setProfile(%this);
+    GuiTableBodyCellBitmapProfile.setProfile(%bitmapCtrl);
 };
 $gCurrentTableHeaderCellHighlight = "";
 function GuiTableRowCtrl::onMouseEnterBounds(%this) {
@@ -72,20 +72,18 @@ function GuiTableHeaderCellButtonCtrl::onMouseEnterBounds(%this) {
     if (isObject($gCurrentTableHeaderCellHighlight)) {
     }
     if (($gCurrentTableHeaderCellHighlight != %headerCell)) {
-        $gCurrentTableHeaderCellHighlight.setProfile();
+        GuiTableHeaderCell_N_Profile.setProfile($gCurrentTableHeaderCellHighlight);
     }
-    %headerCell.setProfile();
+    GuiTableHeaderCell_H_Profile.setProfile(%headerCell);
     $gCurrentTableHeaderCellHighlight = %headerCell;
-    GuiTableHeaderCell_H_Profile;
 };
 function GuiTableHeaderCellButtonCtrl::onMouseLeaveBounds(%this) {
     %headerCell = %this.getParent();
     if (!(%headerCell.getObjectIndex(%headerCell.getParent()).getColumnIsSortable(%headerCell.getParent().getParent().getDataTable()))) {
         return;
     }
-    %this.getParent().setProfile();
+    GuiTableHeaderCell_N_Profile.setProfile(%this.getParent());
     $gCurrentTableHeaderCellHighlight = "";
-    GuiTableHeaderCell_N_Profile;
 };
 function GuiTableHeaderCellButtonCtrl::onMouseDown(%this) {
     %headerCell = %this.getParent();
@@ -95,11 +93,10 @@ function GuiTableHeaderCellButtonCtrl::onMouseDown(%this) {
     if (isObject($gCurrentTableHeaderCellHighlight)) {
     }
     if (($gCurrentTableHeaderCellHighlight != %headerCell)) {
-        $gCurrentTableHeaderCellHighlight.setProfile();
+        GuiTableHeaderCell_N_Profile.setProfile($gCurrentTableHeaderCellHighlight);
     }
-    %headerCell.setProfile();
+    GuiTableHeaderCell_D_Profile.setProfile(%headerCell);
     $gCurrentTableHeaderCellHighlight = %headerCell;
-    GuiTableHeaderCell_D_Profile;
 };
 function GuiTableHeaderCellButtonCtrl::onMouseUp(%this) {
     %headerCell = %this.getParent();
@@ -107,7 +104,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseUp(%this) {
         return;
     }
     if (Canvas.getCursorPos().globalToLocal(%this).pointInControl(%this)) {
-        %headerCell.setProfile();
+        GuiTableHeaderCell_H_Profile.setProfile(%headerCell);
     }
-    %headerCell.setProfile();
+    GuiTableHeaderCell_N_Profile.setProfile(%headerCell);
 };

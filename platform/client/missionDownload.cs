@@ -79,13 +79,13 @@ function onMissionDownloadComplete() {
     }
     setMissionLoaded(1);
 };
-addMessageCallback('MsgLoadInfo');
-addMessageCallback('MsgLoadDescripition');
-addMessageCallback('MsgLoadInfoDone');
+addMessageCallback('MsgLoadInfo', handleLoadInfoMessage);
+addMessageCallback('MsgLoadDescripition', handleLoadDescriptionMessage);
+addMessageCallback('MsgLoadInfoDone', handleLoadInfoDoneMessage);
 if (isFunction("Using_DF")) {
 }
 if (Using_DF()) {
-    addMessageCallback('MsgDFZoneName');
+    addMessageCallback('MsgDFZoneName', handleMsgDFZoneNameMessage);
 }
 function handleLoadInfoMessage(%unused, %msgString) {
     0.setVisible(TransitionMessage);
@@ -97,15 +97,11 @@ function handleLoadInfoMessage(%unused, %msgString) {
         0.setTransitioning(LoadingGui);
         "LoadingGui".setContent(Canvas);
         %line = 0;
-        handleMsgDFZoneNameMessage;
-        while ((%line < qLineCount)) {
-            qLine = "" @ %line @ LoadingGui;
-            LoadingGui;
+        while ((%line < LoadingGui.qLineCount)) {
+            LoadingGui.qLine = "" @ %line;
             %line = (%line + 1.0);
-            handleLoadInfoDoneMessage;
         }
-        qLineCount = 0 @ LoadingGui;
-        (%line < qLineCount);
+        LoadingGui.qLineCount = (%line < LoadingGui.qLineCount) @ 0;
     }
     if (PlayGui.isAwake()) {
         1.setTransitioning(LoadingGui);
@@ -114,20 +110,16 @@ function handleLoadInfoMessage(%unused, %msgString) {
     }
 };
 function handleLoadDescriptionMessage(%unused, %msgString) {
-    qLine = LoadingGui @ qLineCount @ LoadingGui;
-    %msgString;
-    qLineCount = (qLineCount + LoadingGui);
-    1.0;
+    LoadingGui.qLine = %msgString @ LoadingGui.qLineCount;
+    LoadingGui.qLineCount = (LoadingGui.qLineCount + 1.0);
     %text = "<spush><font:Arial:16>";
     %line = 0;
-    while ((%line < (qLineCount - LoadingGui))) {
-        %text = %line @ LoadingGui @ qLine @ " ";
-        %text;
+    while ((%line < (LoadingGui.qLineCount - 1.0))) {
+        %text = %text @ %line @ LoadingGui.qLine @ " ";
         %line = (%line + 1.0);
-        1.0;
     }
-    %text = %line @ LoadingGui @ qLine @ "<spop>";
-    %text;
+    %text = %text @ %line @ LoadingGui.qLine @ "<spop>";
+    (%line < (LoadingGui.qLineCount - 1.0));
 };
 function handleLoadInfoDoneMessage(%unused, %msgString) {
 };

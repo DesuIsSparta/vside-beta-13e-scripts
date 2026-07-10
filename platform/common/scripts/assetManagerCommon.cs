@@ -14,8 +14,7 @@ function AssetManager::getPackageOrder() {
     if (!($Net::userOwner $= "")) {
         %userOwner = $Net::userOwner;
     }
-    %map = new StringMap("");;
-    0;
+    %map = new StringMap("");
     if (isObject(MissionCleanup)) {
         %map.add(MissionCleanup);
     }
@@ -39,8 +38,7 @@ function AssetManager::commonInit() {
     AssetManager::initPackages();
 };
 function AssetManager::getMissingAssets() {
-    %map = new StringMap("");;
-    0;
+    %map = new StringMap("");
     if (isObject(MissionCleanup)) {
         %map.add(MissionCleanup);
     }
@@ -70,8 +68,7 @@ function AssetManager::MapToString(%map) {
     }
 };
 function AssetManager::StringToMap(%str) {
-    %map = new StringMap("");;
-    0;
+    %map = new StringMap("");
     if (isObject(MissionCleanup)) {
         %map.add(MissionCleanup);
     }
@@ -88,8 +85,7 @@ function AssetManager::StringToMap(%str) {
     return %map;
 };
 function AssetManager::StringToArray(%str) {
-    %array = new Array("");;
-    0;
+    %array = new Array("");
     if (isObject(MissionCleanup)) {
         %array.add(MissionCleanup);
     }

@@ -80,7 +80,8 @@ function endMission() {
     MissionCleanup.delete();
     $ServerGroup.delete();
     $ServerGroup = new SimGroup(ServerGroup);
-    return (%clientIndex < ClientGroup.getCount());
+    (%clientIndex < ClientGroup.getCount());
+    return;
 };
 function resetMission() {
     echo("*** MISSION RESET");

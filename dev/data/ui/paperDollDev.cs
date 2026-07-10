@@ -1,3 +1,5 @@
+$gPaperDollPermutationLists["f"] = new_ScriptArray("");
+$gPaperDollPermutationLists["m"] = new_ScriptArray("");
 $gPaperDoll_SetupFile = "platform/client/ui/paperdolls/permutations.txt";
 function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     %masterList = %gender[$gPaperDollPermutationLists @ %gender];
@@ -16,7 +18,8 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
     }
     if ((%found == -(1.0))) {
         %found = new_ScriptArray("");
-        %found.name = (%n >= 0.0) @ %listName;
+        (%n >= 0.0);
+        %found.name = %listName;
         %found.append(%masterList);
     }
     %num = getWordCount(%skus);
@@ -41,6 +44,7 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName) {
         %n = (%n + 1.0);
     }
     %skus = trim(%skus);
+    (%n < %num);
     %skus @ "\t" @ %skusName.append(%found);
 };
 $gPaperDoll_Initialized = 0;
@@ -53,8 +57,8 @@ function paperDoll_InitPermutations() {
         return;
     }
     $gPaperDoll_Initialized = 1;
-    $gPaperDoll_Initialized[$gPaperDollPermutationLists @ "f"].clear();
-    .clear();
+    $gPaperDollPermutationLists["f"].clear();
+    $gPaperDollPermutationLists["m"].clear();
     $gPaperDollImgSize = "256 128";
     $gPaperDollBackground = "0 20 0 0";
     %fileName = $gPaperDoll_SetupFile;
@@ -109,6 +113,7 @@ function paperDoll_InitPermutations() {
             error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
         }
         %n = (getWordCount(%unseenTokens) - 1.0);
+        !(%fo.isEOF());
         while ((%n >= 0.0)) {
             error(getScopeName() @ " " @ "- unseen command:" @ " " @ getWord(%unseenTokens, %n));
             %n = (%n - 1.0);
@@ -191,5 +196,6 @@ function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList) {
         %n = (%n + 1.0);
     }
     %skus = trim(%skus);
+    (%n < %num);
     return %fileName @ "\t" @ %skus;
 };

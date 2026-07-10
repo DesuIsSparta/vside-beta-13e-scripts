@@ -1,6 +1,6 @@
 function URLPostObject::onComplete(%this, %unused) {
     if (!(%this.NoAutoDelete)) {
-        0.schedule(%this);
+        delete.schedule(%this, 0);
     }
 };
 function URLPostObject::checkSuccess(%this) {

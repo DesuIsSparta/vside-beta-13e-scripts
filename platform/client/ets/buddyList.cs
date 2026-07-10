@@ -6,13 +6,13 @@ if (!(isObject(BuddyHudTabs))) {
         BuddyHudTabs.add(MissionCleanup);
     }
 }
-vars = 0 @ "columnPadding" @ BuddyHudTabs;
-vars = 0 @ "rowPadding" @ BuddyHudTabs;
-vars = 22 @ "offlineFriendsTextboxHeight" @ BuddyHudTabs;
-vars = 28 @ "buddyListLegendTextboxHeight" @ BuddyHudTabs;
-vars = ColorIToHex($NameColorFriend) @ "normalTextColor" @ BuddyHudTabs;
-vars = ColorFToHex(ColorConvolve($NameColorFriendF, $NameColorIdleModulationF)) @ "idleTextColor" @ BuddyHudTabs;
-vars = ColorIToHex($NameColorHilite) @ "hilitedTextColor" @ BuddyHudTabs;
+BuddyHudTabs.vars = 0 @ "columnPadding";
+BuddyHudTabs.vars = 0 @ "rowPadding";
+BuddyHudTabs.vars = 22 @ "offlineFriendsTextboxHeight";
+BuddyHudTabs.vars = 28 @ "buddyListLegendTextboxHeight";
+BuddyHudTabs.vars = ColorIToHex($NameColorFriend) @ "normalTextColor";
+BuddyHudTabs.vars = ColorFToHex(ColorConvolve($NameColorFriendF, $NameColorIdleModulationF)) @ "idleTextColor";
+BuddyHudTabs.vars = ColorIToHex($NameColorHilite) @ "hilitedTextColor";
 function BuddyHudTabs::setup(%this) {
     if (!(%this.initialized)) {
         "horizontal".Initialize(%this, BuddyHudTabContainer, "25 25", "platform/client/ui/separator", "16 7");
@@ -27,13 +27,12 @@ function BuddyHudTabs::setup(%this) {
         %this.fillUhOhTab();
         gSetField(BuddyHudWin, favoritesTimer, 0);
         BuddyHudWin.refreshAIMBuddyList();
-        BuddyHudTabContainer;
         new GuiBitmapButtonCtrl("") {
-            position = 0 @ "115 4";
+            position = "115 4";
             extent = "42 21";
             bitmap = "platform/client/buttons/inviteFriends";
             command = "doInviteFriends();";
-        };.add(new GuiMLTextCtrl("") {
+        };.add(BuddyHudTabContainer, new GuiMLTextCtrl("") {
             position = "5 2";
             extent = "36 16";
             profile = "ETSNonModalProfile";
@@ -53,13 +52,12 @@ function BuddyHudTabs::OnETSInviteFriends(%this) {
 };
 function BuddyHudTabs::fillFriendsTab(%this) {
     %theTab = "friends".getTabWithName(%this);
-    getWord(%theTab.getExtent(), 0) @ " ";
     %scroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "top relative";
         position = "0 0";
-        extent = "buddyListLegendTextboxHeight" @ BuddyHudTabs @ vars @ (getWord(%theTab.getExtent(), 1) - (vars + "offlineFriendsTextboxHeight" @ BuddyHudTabs));
+        extent = getWord(%theTab.getExtent(), 0) @ " " @ "buddyListLegendTextboxHeight" @ (getWord(%theTab.getExtent(), 1) - (BuddyHudTabs.vars + BuddyHudTabs.vars @ "offlineFriendsTextboxHeight"));
         minExtent = "10 10";
         sluggishness = -1;
         visible = 1;
@@ -70,10 +68,10 @@ function BuddyHudTabs::fillFriendsTab(%this) {
         helpTag = 0;
     };
     %friendsList = new GuiArray2Ctrl("") {
-        profile = 0 @ "CSProfileListBox";
+        profile = "CSProfileListBox";
         childrenClassName = "GuiMouseEventCtrl";
         childrenExtent = "16 18";
-        spacing = "rowPadding" @ BuddyHudTabs @ vars;
+        spacing = "rowPadding" @ BuddyHudTabs.vars;
         numRowsOrCols = 1;
         inRows = 0;
         hilited = 0;
@@ -85,7 +83,7 @@ function BuddyHudTabs::fillFriendsTab(%this) {
         paddingAboveText = 0;
         horizSizing = "width";
         vertSizing = "bottom";
-        position = "columnPadding" @ BuddyHudTabs @ (0.0 - vars) @ " " @ 0;
+        position = "columnPadding" @ (0.0 - BuddyHudTabs.vars) @ " " @ 0;
         extent = %scroll.getExtent();
         minExtent = "1 1";
         sluggishness = -1;
@@ -100,32 +98,28 @@ function BuddyHudTabs::fillFriendsTab(%this) {
     %friendsList.teleFieldIndex = 0;
     %friendsList.nameFieldIndex = 1;
     %friendsList.cityFieldIndex = 2;
-    %friendsList.vars.setFieldWidths(%friendsList, %fieldWidths, "columnPadding" @ BuddyHudTabs);
+    BuddyHudTabs.vars.setFieldWidths(%friendsList, %fieldWidths, "columnPadding");
     %friendsList.clear();
     %friendsList.add(%scroll);
     %scroll.add(%theTab);
-    4 @ " ";
-    "offlineFriendsTextboxHeight" @ BuddyHudTabs;
     new GuiMLTextCtrl(BuddyHudFriendsListOfflineFriendsBox) {
         profile = "ETSSmallTextListProfile";
         horizSizing = "width";
         vertSizing = "top";
-        position = "buddyListLegendTextboxHeight" @ BuddyHudTabs @ vars @ (getWord(%theTab.getExtent(), 1) - (vars + "offlineFriendsTextboxHeight" @ BuddyHudTabs));
-        extent = getWord(%theTab.getExtent(), 0) @ " " @ "offlineFriendsTextboxHeight" @ BuddyHudTabs @ vars;
-        minExtent = vars @ " " @ "offlineFriendsTextboxHeight" @ BuddyHudTabs @ vars;
+        position = 4 @ " " @ "buddyListLegendTextboxHeight" @ (getWord(%theTab.getExtent(), 1) - (BuddyHudTabs.vars + BuddyHudTabs.vars @ "offlineFriendsTextboxHeight"));
+        extent = getWord(%theTab.getExtent(), 0) @ " " @ "offlineFriendsTextboxHeight" @ BuddyHudTabs.vars;
+        minExtent = "offlineFriendsTextboxHeight" @ BuddyHudTabs.vars @ " " @ "offlineFriendsTextboxHeight" @ BuddyHudTabs.vars;
         sluggishness = -1;
         visible = 1;
         text = "";
     };.add(%theTab);
-    "buddyListLegendTextboxHeight" @ BuddyHudTabs;
-    "buddyListLegendTextboxHeight" @ BuddyHudTabs;
     new GuiMLTextCtrl(BuddyHudFriendsListLegendContainer) {
         profile = "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "top";
-        position = 4 @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs @ (getWord(%theTab.getExtent(), 1) - vars);
-        extent = getWord(%theTab.getExtent(), 0) @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs @ vars;
-        minExtent = vars @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs @ vars;
+        position = 4 @ " " @ "buddyListLegendTextboxHeight" @ (getWord(%theTab.getExtent(), 1) - BuddyHudTabs.vars);
+        extent = getWord(%theTab.getExtent(), 0) @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs.vars;
+        minExtent = "buddyListLegendTextboxHeight" @ BuddyHudTabs.vars @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs.vars;
     };.add(%theTab);
     new GuiScrollCtrl(BuddyHudFriendsInfo) {
         profile = new GuiBitmapCtrl("") {
@@ -134,11 +128,11 @@ function BuddyHudTabs::fillFriendsTab(%this) {
         horizSizing = "width";
         vertSizing = "top";
         position = "0 0";
-        extent = getWord(%theTab.getExtent(), 0) @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs @ vars;
-        minExtent = vars @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs @ vars;
+        extent = getWord(%theTab.getExtent(), 0) @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs.vars;
+        minExtent = "buddyListLegendTextboxHeight" @ BuddyHudTabs.vars @ " " @ "buddyListLegendTextboxHeight" @ BuddyHudTabs.vars;
         sluggishness = -1;
         visible = 1;
-        text = "<tab:20,90>" @ "<spush><color:" @ "idleTextColor" @ BuddyHudTabs @ vars @ ">Dim<spop>" @ "\t" @ "= Idle" @ "\t" @ "... = In Transit" @ "\n" @ " " @ "\t" @ "= Fast Teleport";
+        text = "<tab:20,90>" @ "<spush><color:" @ "idleTextColor" @ BuddyHudTabs.vars @ ">Dim<spop>" @ "\t" @ "= Idle" @ "\t" @ "... = In Transit" @ "\n" @ " " @ "\t" @ "= Fast Teleport";
     }; @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -169,7 +163,7 @@ function BuddyHudTabs::fillFriendsTab(%this) {
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
-        text = ;
+        text = $MsgCat::favorites["NO-FAVS-MSG"];
     };);
     if (showInviteFriend()) {
         %inviteButton = new GuiVariableWidthButtonCtrl(ETSInviteButton) {
@@ -192,7 +186,7 @@ function BuddyHudTabs::fillFriendsTab(%this) {
 function BuddyHudTabs::fillRequestsTab(%this) {
     %theTab = "requests".getTabWithName(%this);
     %requestsList = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSTextListProfile";
+        profile = "ETSTextListProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "0 0";
@@ -205,7 +199,7 @@ function BuddyHudTabs::fillRequestsTab(%this) {
     "BuddyHudRequestsList".setName(%requestsList);
     "BuddyHudRequestsList".bindClassName(%requestsList);
     %scroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "top relative";
         position = "0 0";
@@ -244,7 +238,7 @@ function BuddyHudTabs::fillRequestsTab(%this) {
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
-        text = ;
+        text = $MsgCat::favorites["NO-FRIEND-REQ-MSG"];
     };);
 };
 function BuddyHudTabs::fillAIMTab(%this) {
@@ -386,7 +380,7 @@ function BuddyHudTabs::fillAIMTab(%this) {
         buttonType = "PushButton";
     };
     %aimListScroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -463,19 +457,17 @@ function BuddyHudTabs::wakeUp(%this) {
 function AIMLoginFrame::nextControl(%this, %curControl) {
     %nextControl = "";
     %this.update();
-    if (AIMScreenNameField) {
-        // unhandled opcode 2014 at 0x000013F2
-        %curControl.getName();
+    if ((%curControl.getName() $= AIMScreenNameField)) {
+        %nextControl = AIMPasswordField;
     }
-    if (AIMPasswordField) {
-        // unhandled opcode 2014 at 0x00001409
-        %curControl.getName();
+    if ((%curControl.getName() $= AIMPasswordField)) {
+        %nextControl = AIMSignInButton;
     }
     if ((%nextControl $= "")) {
         error("nextControl got invalid arg" @ " " @ %curControl);
         return;
     }
-    if (AIMSignInButton) {
+    if ((%nextControl $= AIMSignInButton)) {
         doAIMSignIn();
     }
     1.makeFirstResponder(%nextControl);
@@ -488,7 +480,7 @@ function BuddyHudTabs::fillUhOhTab(%this) {
         return 0;
     }
     %scroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "top relative";
         position = "0 0";
@@ -503,7 +495,7 @@ function BuddyHudTabs::fillUhOhTab(%this) {
         helpTag = 0;
     };
     %body = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSTextListProfile";
+        profile = "ETSTextListProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "0 0";
@@ -511,7 +503,7 @@ function BuddyHudTabs::fillUhOhTab(%this) {
         minExtent = "10 10";
         sluggishness = -1;
         visible = 1;
-        text = ;
+        text = $MsgCat::UI["TOOMANYFRIENDS"];
     };
     %scroll.add(%theTab);
     %body.add(%scroll);
@@ -563,15 +555,15 @@ function BuddyMap::addToAIMList(%this, %key, %value) {
 function BuddyHudWin::refreshAIMBuddyList(%this) {
     if (isObject(AIMBuddyList)) {
         %onlineList = new StringMap("") {
-            class = 0 @ "BuddyMap";
+            class = "BuddyMap";
             ignoreCase = 1;
         };
         %idleAwayList = new StringMap("") {
-            class = 0 @ "BuddyMap";
+            class = "BuddyMap";
             ignoreCase = 1;
         };
         %offlineList = new StringMap("") {
-            class = 0 @ "BuddyMap";
+            class = "BuddyMap";
             ignoreCase = 1;
         };
         if (isObject(MissionCleanup)) {
@@ -621,8 +613,8 @@ function BuddyHudWin::clearSelections(%this) {
         -(1.0).setSelectedRow(AIMBuddyList);
     }
 };
-STATE_PARSE_RESULT = 1 @ BuddyHudWin;
-STATE_PARSE_BUDDIES = 2 @ BuddyHudWin;
+BuddyHudWin.STATE_PARSE_RESULT = 1;
+BuddyHudWin.STATE_PARSE_BUDDIES = 2;
 function BuddyHudFriendsList::onCreatedChild(%this, %child) {
     Parent::onCreatedChild(%this, %child);
     %position = %child.getPosition();
@@ -661,6 +653,10 @@ function BuddyHudFriendsListLine::onRightMouseUp(%this) {
     %name = unmunge(%this.linkText);
     onRightClickPlayerName(%name);
 };
+$gBuddyListTitles["FriendsOnline"] = "";
+$gBuddyListTitles["WaitingForYourApproval"] = "Waiting For Your Approval";
+$gBuddyListTitles["YourPendingRequests"] = "Requests by You";
+$gBuddyListTitles["InTransit"] = "In Transit";
 $gBuddyListLastPopulateTime = "";
 $gBuddyListPopulateTimer = "";
 $gBuddyListMinRepopulatePeriodMS = 4000;
@@ -729,16 +725,16 @@ function BuddyHudWin::populateBuddyListsReally(%this) {
     %nameAtTopOfFriendsList = "";
     %nameAtTopOfFriendsListisNPC = 0;
     %numberOfNamesInsertedAbove = 0;
-    %indexOfNameAtTopOfFriendsList.getObject(BuddyHudFriendsList).startingPos = BuddyHudFriendsList.getPosition() @ BuddyHudFriendsList;
+    BuddyHudFriendsList.startingPos = BuddyHudFriendsList.getPosition();
     BuddyHudFriendsList.deleteMembers();
     %botsFriendsList = new StringMap("") {
-        ignoreCase = 0 @ "true";
+        ignoreCase = "true";
     };
     %botsFriendsList.clear();
     if (isObject(MissionCleanup)) {
         %botsFriendsList.add(MissionCleanup);
     }
-    startingPos = BuddyHudRequestsList.getPosition() @ BuddyHudRequestsList;
+    BuddyHudRequestsList.startingPos = BuddyHudRequestsList.getPosition();
     "".setText(BuddyHudRequestsList);
     if (%timeIt) {
         error(getScopeName() @ " " @ "- B" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000.0)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000.0)));
@@ -830,14 +826,11 @@ function BuddyHudWin::populateBuddyListsReally(%this) {
             %boldTag = "";
             if (%friend.isIdle) {
             }
-            %colorTagDefault = "normalTextColor" @ BuddyHudTabs @ %friend.vars @ ">";
-            %friend.vars;
-            %colorTagHilited = "hilitedTextColor" @ BuddyHudTabs @ %friend.vars @ ">";
-            "<color:";
+            %colorTagDefault = BuddyHudTabs.vars @ "normalTextColor" @ BuddyHudTabs.vars @ ">";
+            "<color:" @ "idleTextColor";
+            %colorTagHilited = "<color:" @ "hilitedTextColor" @ BuddyHudTabs.vars @ ">";
             %visibleName = %npcOpen @ %friend.name @ %npcClose;
-            "idleTextColor" @ BuddyHudTabs;
             %friendNameTagDefault = "<clip:100>" @ %ignoreTag @ %boldTag @ %colorTagDefault @ %visibleName @ "</a></clip>";
-            "<color:";
             %friendNameTagHilited = "<clip:100>" @ %ignoreTag @ %boldTag @ %colorTagHilited @ %visibleName @ "</a></clip>";
             if ((%friend.activities $= "")) {
             }
@@ -845,16 +838,15 @@ function BuddyHudWin::populateBuddyListsReally(%this) {
             "";
             %activityBitmapMLText = %activityName.getActivityBitmapMLText(getUserActivityMgr());
             %activityColorDefault = %friend.isIdle ? "ffffff70" : "ffffff80";
-            %activityColorHilited = %friend.vars;
-            "hilitedTextColor" @ BuddyHudTabs;
+            %activityColorHilited = BuddyHudTabs.vars;
+            "hilitedTextColor";
             %activityDefault = "<modulationColor:" @ %activityColorDefault @ ">" @ %activityBitmapMLText;
             %activityHilited = "<modulationColor:" @ %activityColorHilited @ ">" @ %activityBitmapMLText;
             %entryDefault = %sameServerTagDefault @ "\t" @ %friendNameTagDefault @ "\t" @ %cityTagDefault @ %activityDefault;
             %entryHilited = %sameServerTagHilited @ "\t" @ %friendNameTagHilited @ "\t" @ %cityTagHilited @ %activityHilited;
             %comparisonToNameAtTopOfList = stricmp(%visibleName, %nameAtTopOfFriendsList);
             if (%friend.isNPC) {
-                %entryInfo = new SimObject("");;
-                0;
+                %entryInfo = new SimObject("");
                 %entryInfo.entryDefault = %entryDefault;
                 %entryInfo.entryHilited = %entryHilited;
                 %entryInfo.name = %friend.name;
@@ -901,7 +893,7 @@ function BuddyHudWin::populateBuddyListsReally(%this) {
     if ((BuddyHudFriendsList.getCount() > 0.0)) {
         %newVerticalPositionOfList = (%offsetForVerticalPositionOfList - (%heightOfRowInFriendsList * %numberOfNamesInsertedAbove));
         (%i < %botFriendsCount);
-        %line.startingPos = getWord(BuddyHudFriendsList, %line.startingPos, 0) @ " " @ %newVerticalPositionOfList @ BuddyHudFriendsList;
+        BuddyHudFriendsList.startingPos = getWord(BuddyHudFriendsList.startingPos, 0) @ " " @ %newVerticalPositionOfList;
     }
     if (%timeIt) {
         error(getScopeName() @ " " @ "- D" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000.0)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000.0)));
@@ -1024,20 +1016,19 @@ function BuddyHudWin::populateBuddyListsReally(%this) {
     }
     "".setText(BuddyHudFriendsListOfflineFriendsBox);
     "WaitingForYourApproval".setCurListName(%this);
-    "FansHere".putListIntoList(%this);
-    "FansThere".putListIntoList(%this);
-    "FansOffline".putListIntoList(%this);
+    BuddyHudRequestsList.putListIntoList(%this, "FansHere");
+    BuddyHudRequestsList.putListIntoList(%this, "FansThere");
+    BuddyHudRequestsList.putListIntoList(%this, "FansOffline");
     "YourPendingRequests".setCurListName(%this);
-    "FavesHere".putListIntoList(%this);
-    "FavesThere".putListIntoList(%this);
-    "FavesOffline".putListIntoList(%this);
+    BuddyHudRequestsList.putListIntoList(%this, "FavesHere");
+    BuddyHudRequestsList.putListIntoList(%this, "FavesThere");
+    BuddyHudRequestsList.putListIntoList(%this, "FavesOffline");
     if (%timeIt) {
         error(getScopeName() @ " " @ "- G" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000.0)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000.0)));
         %lastTime = getSimTime();
-        BuddyHudRequestsList;
     }
-    "requests".getTabWithName(BuddyHudTabs).startingPos.scrollToPos(BuddyHudFriendsList, BuddyHudFriendsList);
-    "requests".getTabWithName(BuddyHudTabs).startingPos.scrollToPos(BuddyHudRequestsList, BuddyHudRequestsList);
+    BuddyHudFriendsList.startingPos.scrollToPos(BuddyHudFriendsList);
+    BuddyHudRequestsList.startingPos.scrollToPos(BuddyHudRequestsList);
     (%friendCount == 0.0).setVisible(BuddyHudFriendsInfo);
     ((%favoriteCount + %fanCount) == 0.0).setVisible(BuddyHudRequestsInfo);
     BuddyHudTabs.setUhOhTabVisibility();
@@ -1045,7 +1036,6 @@ function BuddyHudWin::populateBuddyListsReally(%this) {
     if (%timeIt) {
         error(getScopeName() @ " " @ "- H" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000.0)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000.0)));
         %lastTime = getSimTime();
-        BuddyHudRequestsList;
     }
 };
 function BuddyHudWin::getNamesPendingMyApproval(%this) {
@@ -1077,11 +1067,11 @@ function BuddyHudWin::getNamesInLists(%this, %lists) {
 function BuddyHudWin::initializeBuddyList(%this, %listName) {
     if (!(isObject(%listName, %this.buddyLists))) {
         %this.buddyLists = new StringMap("") {
-            ignoreCase = 0 @ "true";
-        }; @ %listName
+            ignoreCase = "true";
+        }; @ %listName;
     }
     if (isObject(MissionCleanup)) {
-        %this.buddyLists.add(MissionCleanup @ %listName);
+        %this.buddyLists.add(MissionCleanup, %listName);
     }
     %list = %this.buddyLists;
     %listName;
@@ -1161,8 +1151,7 @@ function BuddyHudWin::putListIntoTab(%this, %listName, %destMLTextCtrl) {
     %outputText.setText(%destMLTextCtrl);
 };
 function StringMap::addToFavList(%this, %key, %value) {
-    %destList = %this.putIntoList;
-    BuddyHudWin;
+    %destList = BuddyHudWin.putIntoList;
     %destList.getText() @ %value @ "<br>".setText(%destList);
 };
 function BuddyHudWin::isFriendOrFavOnlineElsewhere(%this, %playerName) {
@@ -1295,9 +1284,8 @@ function onDoneOrErrorCallback_GetUserRelations_Full(%request) {
     if (InfoPopupDlg.isShowing()) {
         InfoPopupDlg.tryShowPlayerInfo();
     }
-    if (0 && %this.firstTime) {
-        %this.firstTime = 0 @ BuddyHudWin;
-        BuddyHudWin;
+    if (0 && BuddyHudWin.firstTime) {
+        BuddyHudWin.firstTime = 0;
         if (("fanCount".getValue(%request) > 0.0)) {
             BuddyHudWin.open();
             "requests".selectTabWithName(BuddyHudTabs);
@@ -1316,8 +1304,7 @@ function extractBuddyRecords(%request, %list, %type, %doIgnore) {
         %key = %type @ %n;
         %val = %key.getValue(%request);
         log("network", "debug", getScopeName() @ " " @ " -" @ " " @ %key @ " " @ "=" @ " " @ %val);
-        %record = new ScriptObject("");;
-        0;
+        %record = new ScriptObject("");
         parseBuddyRecord(%record, %val);
         %record.put(%list, %record.name);
         if (!(%record.serverName $= "")) {
@@ -1429,22 +1416,19 @@ function onDoneOrErrorCallback_GetUserRelations_Single(%request) {
     if (("friendCount".getValue(%request) > 0.0)) {
         %key = "friend0";
         %val = %key.getValue(%request);
-        // unhandled opcode 4020 at 0x00003B2C
-        %val = UserListFriends;
+        %list = UserListFriends;
         log("network", "debug", getScopeName() @ " " @ " -" @ " " @ %key @ " " @ "=" @ " " @ %val);
     }
     if (("favoriteCount".getValue(%request) > 0.0)) {
         %key = "favorite0";
         %val = "favorite0".getValue(%request);
-        // unhandled opcode 4020 at 0x00003B84
-        %val = UserListFavorites;
+        %list = UserListFavorites;
         log("network", "debug", getScopeName() @ " " @ " -" @ " " @ %key @ " " @ "=" @ " " @ %val);
     }
     if (("fanCount".getValue(%request) > 0.0)) {
         %key = "fan0";
         %val = "fan0".getValue(%request);
-        // unhandled opcode 4020 at 0x00003BDC
-        %val = UserListFans;
+        %list = UserListFans;
         log("network", "debug", getScopeName() @ " " @ " -" @ " " @ %key @ " " @ "=" @ " " @ %val);
     }
     log("network", "debug", getScopeName() @ " " @ "- lost relation" @ " " @ %val);
@@ -1463,8 +1447,7 @@ function onDoneOrErrorCallback_GetUserRelations_Single(%request) {
     if (!(%val $= "")) {
     }
     if (isObject(%list)) {
-        %record = new ScriptObject("");;
-        0;
+        %record = new ScriptObject("");
         parseBuddyRecord(%record, %val);
         %record.put(%list, %record.name);
         if (!(%record.serverName $= "")) {
@@ -1481,8 +1464,7 @@ function onDoneOrErrorCallback_GetUserRelations_Single(%request) {
     if (isObject(%ghost)) {
         0.setIgnore(%ghost);
     }
-    %oldIgnoreRecord = findRelatedPlayerRecordInList(%name);
-    UserListIgnores;
+    %oldIgnoreRecord = findRelatedPlayerRecordInList(%name, UserListIgnores);
     if (isObject(%oldIgnoreRecord)) {
         %name.remove(UserListIgnores);
         %oldIgnoreRecord.delete();
@@ -1491,8 +1473,7 @@ function onDoneOrErrorCallback_GetUserRelations_Single(%request) {
         echo("have an ignore record...");
         %key = "ignore0";
         %val = "ignore0".getValue(%request);
-        %record = new ScriptObject("");;
-        0;
+        %record = new ScriptObject("");
         parseBuddyRecord(%record, %val);
         %record.put(UserListIgnores, %record.name);
         if (isObject(%ghost)) {
@@ -1726,21 +1707,18 @@ function isRelatedPlayerRecordInList(%playerName, %list) {
     return isObject(%rec);
 };
 function findRelatedPlayerRecordList(%playerName) {
-    // unhandled opcode 4020 at 0x00004733
+    %list = UserListFriends;
     if (isRelatedPlayerRecordInList(%playerName, %list)) {
         return %list;
     }
-    // unhandled opcode 4020 at 0x0000474D
     %list = UserListFavorites;
     if (isRelatedPlayerRecordInList(%playerName, %list)) {
         return %list;
     }
-    // unhandled opcode 4020 at 0x00004767
     %list = UserListFans;
     if (isRelatedPlayerRecordInList(%playerName, %list)) {
         return %list;
     }
-    // unhandled opcode 4020 at 0x00004781
     %list = UserListIgnores;
     if (isRelatedPlayerRecordInList(%playerName, %list)) {
         return %list;

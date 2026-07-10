@@ -84,8 +84,8 @@ function doCredits() {
 $gCreditsTimerID = 0;
 function creditsTick() {
     cancel($gCreditsTimerID);
-    %y = getWord(LoginCreditsText, position, 1);
-    %h = getWord(LoginCreditsText, extent, 1);
+    %y = getWord(LoginCreditsText.position, 1);
+    %h = getWord(LoginCreditsText.extent, 1);
     if (($gCreditsTickDirection < 0.0)) {
     }
     if (((%y + %h) < 0.0)) {

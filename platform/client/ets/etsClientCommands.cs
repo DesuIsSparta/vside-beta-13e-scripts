@@ -20,12 +20,11 @@ function onAppCloseButton() {
         ToggleConsole(1);
         %noCmd = "ToggleConsole(true);";
     }
-    $closeConfirmDlg = MessageBoxYesNo("Quit vSide", , "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
-    %dialog = ;
+    %dialog = $closeConfirmDlg = MessageBoxYesNo("Quit vSide", $MsgCat::login["CONF-QUIT"], "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
     if (!($gLastLoggedInThisSessionAs $= "")) {
         %yesButtonPos = %dialog.button.getParent(0).getPosition();
         %ctrl = new GuiCheckBoxCtrl("") {
-            profile = 0 @ "ETSCheckBoxProfile";
+            profile = "ETSCheckBoxProfile";
             position = getWord(%yesButtonPos, 0) @ " " @ (getWord(%yesButtonPos, 1) - 23.0);
             extent = "110 20";
             horizSizing = "center";
@@ -82,6 +81,20 @@ function onGotContiguousSpaceName(%contiguousSpaceName) {
     %contiguousSpaceName;
     1.incrementIntegerProperty(gUserPropMgrClient, $Player::Name, "level started count" @ " " @ %name);
 };
+$gContiguousSpaceFullNames[""] = "vSide";
+$gContiguousSpaceOfferSkip[""] = 0;
+$gContiguousSpaceFullNames["gw"] = "Gateway";
+$gContiguousSpaceOfferSkip["gw"] = 1;
+$gContiguousSpaceFullNames["lga"] = "LaGenoaAires";
+$gContiguousSpaceOfferSkip["lga"] = 0;
+$gContiguousSpaceFullNames["min"] = "Minimal";
+$gContiguousSpaceOfferSkip["min"] = 1;
+$gContiguousSpaceFullNames["minimal"] = "Minimal";
+$gContiguousSpaceOfferSkip["minimal"] = 1;
+$gContiguousSpaceFullNames["nv"] = "NewVenezia";
+$gContiguousSpaceOfferSkip["nv"] = 0;
+$gContiguousSpaceFullNames["rj"] = "RaiJuku";
+$gContiguousSpaceOfferSkip["rj"] = 0;
 function getContiguousSpaceFullName(%code) {
     return %code[$gContiguousSpaceFullNames @ %code];
 };

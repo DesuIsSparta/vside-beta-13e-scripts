@@ -114,9 +114,9 @@ function ticker_createUI() {
         return;
     }
     new GuiBitmapCtrl(geTicker) {
-        extent = PlayGui @ "20 29";
+        extent = "20 29";
         bitmap = "platform/client/ui/ticker_background";
-    };.add(new GuiMLTextCtrl(geTicker_Text) {
+    };.add(PlayGui, new GuiMLTextCtrl(geTicker_Text) {
         horizSizing = "right";
         extent = 14 @ " " @ 16;
         position = 0 @ " " @ 0;

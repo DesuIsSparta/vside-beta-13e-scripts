@@ -11,8 +11,7 @@ function initClientCalls() {
     if (isObject($gClientCallsList)) {
         return;
     }
-    $gClientCallsList = new StringMap("");;
-    0;
+    $gClientCallsList = new StringMap("");
     "gatewayExitTransition".put($gClientCallsList, "gatewayExitTransition");
     %n = ($gClientCallsList.size() - 1.0);
     while ((%n >= 0.0)) {

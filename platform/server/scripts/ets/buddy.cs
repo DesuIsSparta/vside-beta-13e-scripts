@@ -1,6 +1,6 @@
 function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     doLocalChangeRelation(%client, %other, %relType, %oper);
-    %relRequest = new CURLObject(RelRequest);;
+    %relRequest = new CURLObject(RelRequest);
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=relate";
@@ -10,10 +10,10 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     if ((%userId == 0.0)) {
         return;
     }
-    %client.userId = %userId @ RelRequest;
-    %client.otherId = %otherId @ RelRequest;
-    %client.relType = %relType @ RelRequest;
-    %client.oper = %oper @ RelRequest;
+    RelRequest.userId = %userId;
+    RelRequest.otherId = %otherId;
+    RelRequest.relType = %relType;
+    RelRequest.oper = %oper;
     %userValue = "user=" @ urlEncode(%user);
     %otherValue = "other=" @ urlEncode(%other);
     %relTypeValue = "type=" @ urlEncode(%relType);

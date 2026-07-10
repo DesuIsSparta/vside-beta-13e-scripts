@@ -4,9 +4,9 @@ function DSAudioRenderer::onLoad(%this) {
     %this.play();
 };
 function DSAudioRenderer::onBuffer(%this, %val) {
-    if (!(%val) && (Playlist $= url)) {
+    if (!(%val) && (%this.getMediaFile() $= Playlist.url)) {
         log("general", "info", "DSAudioRenderer::onBuffer(): Starting to play: " @ %this.getMediaFile());
-        if (!(%this.getMediaFile() @ " " @ %this.bufferCallback $= "")) {
+        if (!(%this.bufferCallback $= "")) {
             %callback = %this.bufferCallback @ "(" @ %this.getId() @ ");";
             eval(%callback);
         }

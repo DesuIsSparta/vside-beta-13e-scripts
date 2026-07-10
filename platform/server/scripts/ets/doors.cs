@@ -25,7 +25,7 @@ function DoorShapeData::onAdd(%this, %obj) {
 function DoorShapeData::openDoor(%obj) {
     if (!(%obj.doorOpen)) {
         1.setThreadDir(%obj, 0);
-        "open".playThread(%obj, 0);
+        0.playThread("open", %obj);
         %obj.doorOpen = 1;
     }
     return;
@@ -33,7 +33,7 @@ function DoorShapeData::openDoor(%obj) {
 function DoorShapeData::closeDoor(%obj) {
     if (%obj.doorOpen) {
         0.setThreadDir(%obj, 0);
-        "open".playThread(%obj, 0);
+        0.playThread("open", %obj);
         %obj.doorOpen = 0;
     }
     return;

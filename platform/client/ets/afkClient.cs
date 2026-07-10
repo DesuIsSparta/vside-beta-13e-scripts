@@ -57,7 +57,7 @@ function onUnidle() {
         commandToServer('setAfkOff');
         $player.playersNotifiedOfIdleStatus.clear();
     }
-    if ($player.visible) {
+    if (ClosetGui.visible) {
         commandToServer('setAfkOn', $ClosetGuiOpenMessage);
     }
     0.setActivityActive(getUserActivityMgr(), "idle");

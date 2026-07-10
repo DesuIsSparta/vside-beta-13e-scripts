@@ -264,6 +264,7 @@ function bodyModPanel::open(%this) {
         %realCol = 0;
     }
     %n = (bodyModPanelArray.getCount() - 1.0);
+    (%col < %cells);
     while ((%n >= 0.0)) {
         %ctrl = %n.getObject(bodyModPanelArray);
         if (!(hasWord(%ctrl.getNamespaceList(), "bmCellBG"))) {

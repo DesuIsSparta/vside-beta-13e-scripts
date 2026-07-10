@@ -32,7 +32,7 @@ function ClosetTabs::fillStoreTab(%this) {
         return;
     }
     new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "26 26";
@@ -56,7 +56,7 @@ function ClosetTabs::fillStoreTab(%this) {
         bitmap = "";
     };.add(%theTab);
     %storename = new GuiTextCtrl("") {
-        profile = 0 @ "ClosetTitleProfile";
+        profile = "ClosetTitleProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -68,7 +68,7 @@ function ClosetTabs::fillStoreTab(%this) {
         maxLength = 255;
     };
     %storeDesc = new GuiMLTextCtrl("") {
-        profile = 0 @ "ClosetLeftInfoProfile";
+        profile = "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 23";
@@ -165,7 +165,7 @@ function ClosetTabs::fillStoreTab(%this) {
         visible = 1;
     };
     %itemsInfoText = new GuiTextCtrl("") {
-        profile = 0 @ "ClosetLeftInfoProfile";
+        profile = "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "1 30";
@@ -178,7 +178,7 @@ function ClosetTabs::fillStoreTab(%this) {
     };
     %itemsInfoText.add(%itemsFrame);
     %itemsRangeText = new GuiTextCtrl("") {
-        profile = 0 @ "ClosetRightInfoProfile";
+        profile = "ClosetRightInfoProfile";
         horizSizing = "left";
         vertSizing = "bottom";
         position = "313 1";
@@ -192,7 +192,7 @@ function ClosetTabs::fillStoreTab(%this) {
     %itemsRangeText.add(%itemsFrame);
     %theTab.rangeText = %itemsRangeText;
     %itemsScroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         position = "0 20";
         extent = "465 326";
         minExtent = "1 1";
@@ -249,7 +249,7 @@ function ClosetTabs::fillStoreTab(%this) {
         visible = 0;
         allowColorChars = 0;
         maxChars = -1;
-        text = ;
+        text = $MsgCat::closet["H-NOT-IN-STORE"];
     };.add(%theTab);
     new GuiBitmapButtonCtrl(StoreDirectoryLinkBig) {
         profile = "GuiDefaultProfile";
@@ -299,7 +299,7 @@ function ClosetTabs::fillStoreTab(%this) {
         bitmap = "platform/client/ui/banner_bracket";
     };);
     new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "689 26";
@@ -521,10 +521,10 @@ function ClosetTabs::fillStoreTab(%this) {
     "platform/client/ui/wait6.png".addFrame(%wi);
     "platform/client/ui/wait7.png".addFrame(%wi);
     %wi.add(StoreShoppingBag);
-    waitIcon = %wi @ StoreShoppingBag;
+    StoreShoppingBag.waitIcon = %wi;
     0.setVisible(%wi);
     %shoppingScroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         position = "3 22";
         extent = "239 232";
         minExtent = "1 1";
@@ -550,7 +550,7 @@ function ClosetTabs::fillStoreTab(%this) {
     %shoppingScroll.add(%shoppingBag);
     %shoppingBag.add(%theTab);
     %doneButton = new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton19Profile";
+        profile = "BracketButton19Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "829 519";
@@ -563,7 +563,7 @@ function ClosetTabs::fillStoreTab(%this) {
         drawText = 1;
     };
     %cancelButton = new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton19NonDefaultProfile";
+        profile = "BracketButton19NonDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "882 519";
@@ -610,7 +610,7 @@ function ClosetTabs::setLeaveStoreControlsVisible(%this, %flag) {
 };
 function StoreShoppingList::onCreatedChild(%this, %child) {
     %background = new GuiControl("") {
-        profile = 0 @ "ClosetLtBackgroundProfile";
+        profile = "ClosetLtBackgroundProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -620,7 +620,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         visible = 1;
     };
     %hilite = new GuiControl("") {
-        profile = 0 @ "ClosetHiliteProfile";
+        profile = "ClosetHiliteProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -630,7 +630,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         visible = 0;
     };
     %itemDesc = new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "StoreItemButtonProfile";
+        profile = "StoreItemButtonProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "1 2";
@@ -645,7 +645,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         drawText = 1;
     };
     %closeBox = new GuiBitmapButtonCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "213 4";
@@ -661,7 +661,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         drawText = 0;
     };
     %expiringIcon = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "208 16";
@@ -673,7 +673,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         modulationColor = "255 255 255 100";
     };
     %pointsLink = new GuiMLTextCtrl("") {
-        profile = 0 @ "ClosetPointsProfile";
+        profile = "ClosetPointsProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "6 18";
@@ -686,7 +686,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         text = "";
     };
     %buxLink = new GuiMLTextCtrl("") {
-        profile = 0 @ "ClosetBuxProfile";
+        profile = "ClosetBuxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "78 18";
@@ -699,7 +699,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         text = "";
     };
     %totalButton = new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "HiddenBracketButton15Profile";
+        profile = "HiddenBracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "1 18";
@@ -763,10 +763,10 @@ function StoreShoppingList::addSku(%this, %sku) {
     }
     "".setBitmap(%child.expiringIcon);
     0.setVisible(%child.expiringIcon);
-    %count = %child.thumbnails.getCount(StoreItemsFrame);
+    %count = StoreItemsFrame.thumbnails.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %obj = %i.getObject(StoreItemsFrame, %child.thumbnails);
+        %obj = %i.getObject(StoreItemsFrame.thumbnails);
         if ((%obj.sku == %sku)) {
             "platform/client/buttons/removeFromCart".setBitmap(%obj.toggleCartButton);
         }
@@ -794,11 +794,11 @@ function StoreShoppingList::removeSku(%this, %sku) {
         }
         %i = (%i + 1.0);
     }
-    %count = %obj.thumbnails.getCount(StoreItemsFrame);
+    %count = StoreItemsFrame.thumbnails.getCount();
     (%i < %count);
     %i = 0;
     while ((%i < %count)) {
-        %obj = %i.getObject(StoreItemsFrame, %obj.thumbnails);
+        %obj = %i.getObject(StoreItemsFrame.thumbnails);
         if ((%obj.sku == %sku)) {
             "platform/client/buttons/add2cart".setBitmap(%obj.toggleCartButton);
         }
@@ -863,12 +863,8 @@ function StoreShoppingList::update(%this) {
     %i = 0;
     while ((%i < %count)) {
         %child = %i.getObject(%this);
-        if (((%i % 2) == 0.0)) {
-            // unhandled opcode 8756 at 0x00002231
-        }
-        %child.background.setProfile();
+        ((%i % 2) == 0.0) ? ClosetLtBackgroundProfile : ClosetDkBackgroundProfile.setProfile(%child.background);
         %i = (%i + 1.0);
-        ClosetDkBackgroundProfile;
     }
 };
 function StoreShoppingList::sumPrices(%this) {
@@ -969,7 +965,7 @@ function StoreItemsFrame::update(%this) {
     strlwr(%this.category).get(ThumbCategories).setDrawers(%this.thumbnails);
 };
 function StoreCategoryPopup::onSelect(%this, %unused, %entries) {
-    %this.category = %entries @ StoreItemsFrame;
+    StoreItemsFrame.category = %entries;
     StoreItemsFrame.update();
     "".schedule(StoreShortDescText, 0, "setBaseDesc");
     "".schedule(StoreLongDescText, 0, "setBaseDesc");
@@ -1036,24 +1032,24 @@ function clientCmdUpdateAccountBalances(%newPoints, %newBux) {
 function clientCmdRefreshVPoints() {
     getBalancesAndScores();
 };
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"] = 150;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"] = 300;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"] = 1;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"] = 100;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"] = 1;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"] = 1000;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"] = "AudioIm_CaChing";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"] = "AudioIm_vPoints1";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"] = "AudioIm_CaChing";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"] = "AudioIm_vPoints2";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"] = "AccountBalanceVBuxText";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"] = "AccountBalanceVPointsText";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"] = "";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"] = "AccountBalanceHud";
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"] = 1;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vPoints"] = 1;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vBux"] = 4;
-$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vPoints"] = 4;
+$gBalanceUpdateSpecialEffect_Delay["vBux"] = 150;
+$gBalanceUpdateSpecialEffect_Delay["vPoints"] = 300;
+$gBalanceUpdateSpecialEffect_Threshhold1["vBux"] = 1;
+$gBalanceUpdateSpecialEffect_Threshhold1["vPoints"] = 100;
+$gBalanceUpdateSpecialEffect_Threshhold2["vBux"] = 1;
+$gBalanceUpdateSpecialEffect_Threshhold2["vPoints"] = 1000;
+$gBalanceUpdateSpecialEffect_Sound1["vBux"] = "AudioIm_CaChing";
+$gBalanceUpdateSpecialEffect_Sound1["vPoints"] = "AudioIm_vPoints1";
+$gBalanceUpdateSpecialEffect_Sound2["vBux"] = "AudioIm_CaChing";
+$gBalanceUpdateSpecialEffect_Sound2["vPoints"] = "AudioIm_vPoints2";
+$gBalanceUpdateSpecialEffect_GuiControl1["vBux"] = "AccountBalanceVBuxText";
+$gBalanceUpdateSpecialEffect_GuiControl1["vPoints"] = "AccountBalanceVPointsText";
+$gBalanceUpdateSpecialEffect_GuiControl2["vBux"] = "";
+$gBalanceUpdateSpecialEffect_GuiControl2["vPoints"] = "AccountBalanceHud";
+$gBalanceUpdateSpecialEffect_PulseCount1["vBux"] = 1;
+$gBalanceUpdateSpecialEffect_PulseCount1["vPoints"] = 1;
+$gBalanceUpdateSpecialEffect_PulseCount2["vBux"] = 4;
+$gBalanceUpdateSpecialEffect_PulseCount2["vPoints"] = 4;
 function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify) {
     %delta = (%newVal - %oldVal);
     if (%notify) {
@@ -1115,7 +1111,7 @@ function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha
     %text = "<just:center>" @ %text;
     %width = 600;
     %ctrl = new GuiMLTextCtrl("") {
-        extent = 0 @ %width @ " " @ 18;
+        extent = %width @ " " @ 18;
         position = (getWord(%this.hudCtrl.position, 0) - (%width / 2.0)) @ " " @ (getWord(%this.hudCtrl.position, 1) + 100.0);
         age = 0;
         maxAge = %maxAge;
@@ -1127,6 +1123,38 @@ function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha
     %ctrl.add(ThePointsFloaterHud);
     ThePointsFloaterHud.doTick();
 };
+$gFloatingTextStyles["font","default"] = "arial:14";
+$gFloatingTextStyles["outline","default"] = 1;
+$gFloatingTextStyles["color","default"] = "FFFFFF";
+$gFloatingTextStyles["baseAlpha","default"] = 0.7;
+$gFloatingTextStyles["maxAge","default"] = 100;
+$gFloatingTextStyles["speed","default"] = 5;
+$gFloatingTextStyles["prepend","default"] = "";
+$gFloatingTextStyles["append","default"] = "";
+$gFloatingTextStyles["font","emphatic1"] = "arial:14";
+$gFloatingTextStyles["outline","emphatic1"] = 1;
+$gFloatingTextStyles["color","emphatic1"] = "FFFFFF";
+$gFloatingTextStyles["baseAlpha","emphatic1"] = 0.8;
+$gFloatingTextStyles["maxAge","emphatic1"] = 200;
+$gFloatingTextStyles["speed","emphatic1"] = 4;
+$gFloatingTextStyles["prepend","emphatic1"] = "";
+$gFloatingTextStyles["append","emphatic1"] = "";
+$gFloatingTextStyles["font","light1"] = "arial:14";
+$gFloatingTextStyles["outline","light1"] = !(1);
+$gFloatingTextStyles["color","light1"] = "FFFFFF";
+$gFloatingTextStyles["baseAlpha","light1"] = 0.7;
+$gFloatingTextStyles["maxAge","light1"] = 20;
+$gFloatingTextStyles["speed","light1"] = 10;
+$gFloatingTextStyles["prepend","light1"] = "";
+$gFloatingTextStyles["append","light1"] = "";
+$gFloatingTextStyles["font","SUPERSLOWDRIP"] = "arial:14";
+$gFloatingTextStyles["outline","SUPERSLOWDRIP"] = 1;
+$gFloatingTextStyles["color","SUPERSLOWDRIP"] = "159FE7";
+$gFloatingTextStyles["baseAlpha","SUPERSLOWDRIP"] = 1.0;
+$gFloatingTextStyles["maxAge","SUPERSLOWDRIP"] = 100;
+$gFloatingTextStyles["speed","SUPERSLOWDRIP"] = 4;
+$gFloatingTextStyles["prepend","SUPERSLOWDRIP"] = "";
+$gFloatingTextStyles["append","SUPERSLOWDRIP"] = "";
 function Player::floatTextSimple(%this, %text, %style) {
     if (!(isDefined("%style"))) {
         %style = "";

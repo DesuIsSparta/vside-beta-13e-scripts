@@ -85,7 +85,7 @@ function PlayGui::onAdvertClick(%this, %obj, %pt) {
     if (%obj.init(ETSWhatsThisMenu)) {
         ETSWhatsThisMenu.showAtCursor();
     }
-    %this.description = %description @ ETSWhatsThisMenu;
+    ETSWhatsThisMenu.description = %description;
 };
 function PlayGui::tryOnInfoSignClick(%this, %obj, %pt) {
     %s = %obj.getTitle();
@@ -151,6 +151,9 @@ function convertPtToTextureSpace(%obj, %pt) {
     %yComp = %obj.getDataBlock().advertYComp;
     %xFlip = %obj.getDataBlock().advertXFlip;
     %yFlip = %obj.getDataBlock().advertYFlip;
+    %pt[0] = getWord(%pt, 0);
+    %pt[1] = getWord(%pt, 1);
+    %pt[2] = getWord(%pt, 2);
     %retX = %xComp[%pt @ %xComp];
     %retY = %yComp[%pt @ %yComp];
     if ((%xFlip >= 0.0)) {

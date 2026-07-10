@@ -15,12 +15,13 @@ function getUserActivityMgr() {
         echo(getScopeName() @ " " @ "- initializing");
         safeNewScriptObject("ScriptObject", "gUserActivityMgr", 0);
         "UserActivityMgr".bindClassName(gUserActivityMgr);
-        knownActivities = safeNewScriptObject("Array", "", 0) @ gUserActivityMgr;
-        currActivities = safeNewScriptObject("StringMap", "", 0) @ gUserActivityMgr;
-        reportTimer = "" @ gUserActivityMgr;
+        gUserActivityMgr.knownActivities = safeNewScriptObject("Array", "", 0);
+        gUserActivityMgr.currActivities = safeNewScriptObject("StringMap", "", 0);
+        gUserActivityMgr.reportTimer = "";
         gUserActivityMgr.defineActivities();
         gUserActivityMgr.reset();
     }
+    return gUserActivityMgr;
 };
 function UserActivityMgr::reset(%this) {
     echo(getScopeName());

@@ -14,8 +14,7 @@ function addSpace2DMap(%spaceName, %mapFile, %coordUpperLeft, %coordUpperRight, 
             space2DMapsMap.add(MissionCleanup);
         }
     }
-    %obj = new SimObject("");;
-    0;
+    %obj = new SimObject("");
     if (isObject(MissionCleanup)) {
         %obj.add(MissionCleanup);
     }

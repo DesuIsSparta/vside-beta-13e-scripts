@@ -52,7 +52,7 @@ function updateSwatchBrush() {
     }
     if (!(objectIsSwatchable($gDifSkusCurrentDif))) {
     }
-    if ((new GuiMLTextCtrl(geSwatchBrushText1) {
+    if (((new GuiMLTextCtrl(geSwatchBrushText1) {
         profile = new GuiMLTextCtrl(geSwatchBrushText2) {
         profile = new GuiBitmapCtrl(geSwatchBrushBitmap) {
         profile = "ETSNonModalProfile";
@@ -65,7 +65,7 @@ function updateSwatchBrush() {
     }; @ "GuiMLTextModelessProfile";
         position = "1 58";
         extent = "70 16";
-    }; @ " " @ $gDifSkusCurrentBaseSwatch $= 0)) {
+    }; @ " " @ $gDifSkusCurrentBaseSwatch) $= 0)) {
     }
     if (($gDifSkusCurrentSwatch $= 0)) {
         0.setVisible(geSwatchBrushContainer);
@@ -223,7 +223,7 @@ function objSkusToServer(%obj, %sku) {
     log("general", "debug", getScopeName() @ " " @ "setting swatches through object itself, not through custom space.." @ " " @ %sku);
 };
 function difSkusResetConfirm() {
-    MessageBoxYesNo("Default Materials & Surfaces", , "difSkusResetDefaults();", "");
+    MessageBoxYesNo("Default Materials & Surfaces", $MsgCat::custSpace["SWATCHES_RESET"], "difSkusResetDefaults();", "");
 };
 function difSkusReset() {
     %obj = $gDifSkusCurrentDif;
@@ -242,7 +242,7 @@ function difSkusResetDefaults() {
     commandToServer('CSSetDefaultSwatches', CustomSpaceClient::GetSpaceImIn());
 };
 function difSkusRandomizeConfirm() {
-    MessageBoxYesNo("Randomize Materials & Surfaces", , "difSkusRandomize();", "");
+    MessageBoxYesNo("Randomize Materials & Surfaces", $MsgCat::custSpace["SWATCHES_RANDOMIZE"], "difSkusRandomize();", "");
 };
 function difSkusRandomize() {
     %obj = $gDifSkusCurrentDif;

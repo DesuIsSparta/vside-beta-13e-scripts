@@ -15,10 +15,9 @@ function geTGF_tabs::fillTabMap(%this) {
     %tab.fillTabGeneric(%this);
     $geTGF::Map_PageTabVisited = 1;
     1.openTGF(WorldMap);
-    %tab.add();
+    WorldMap.add(%tab);
     "0 -47".reposition(WorldMap);
     %worldctrl = %tab.Maps_buildSmallWorldControl(%this);
-    WorldMap;
     %worldctrl.add(%tab);
     %destCtrl = %tab.Maps_buildDestControl(%this);
     %destCtrl.add(%tab);
@@ -28,20 +27,20 @@ function geTGF_tabs::fillTabMap(%this) {
     getWord($geTGF::DestinationFilterNames, 2).add(TGFDestinationTypeList);
     getWord($geTGF::DestinationFilterNames, 3).add(TGFDestinationTypeList);
     0.SetSelected(TGFDestinationTypeList);
-    %tab.visible = 0 @ TGFWorldMapMultiCitySmall;
+    TGFWorldMapMultiCitySmall.visible = 0;
     %this.Maps_filterType = "";
     %this.Maps_filterCity = "";
     %this.refreshTabMap();
 };
 function geTGF_tabs::onShowTabMap(%this) {
-    cancel(geTGF, %this.geTGF_Refresh_Schedule);
+    cancel(geTGF.geTGF_Refresh_Schedule);
     0.setVisible(geTGF_Refresh);
     0.setActive(geTGF_Refresh);
 };
 function geTGF_tabs::refreshTabMap(%this) {
     %this.Maps_filterCity.Maps_filterDestinations(%this, %this.Maps_filterType);
     WorldMap.refresh();
-    %this.mGeTabs.Maps_GetApartmentVURL(geTGF);
+    geTGF.mGeTabs.Maps_GetApartmentVURL();
 };
 function geTGF_tabs::Maps_buildDestControl(%this, %tab) {
     %padding = 4;
@@ -60,7 +59,7 @@ function geTGF_tabs::Maps_buildDestControl(%this, %tab) {
     %posX = (%padding + 4.0);
     %posY = 1;
     %textLabel = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         position = %posX @ " " @ %posY;
         extent = "65 20";
         text = mlStyle("<just:right>Show: ", "tgfWebLink_Light");
@@ -145,7 +144,7 @@ function geTGF_tabs::Maps_buildDestControl(%this, %tab) {
     %arrayWidth = (getWord(%scroll.extent, 0) - 12.0);
     %childWidth = mFloor(((%arrayWidth - (%padding * 3.0)) / 2.0));
     %childHeight = mFloor((%childWidth * %childRatio));
-    %scroll.childrenExtent = %childWidth @ " " @ %childHeight @ TGFDestinationsArray;
+    TGFDestinationsArray.childrenExtent = %childWidth @ " " @ %childHeight;
     %MainCtrl.childHeightDelta = (%childHeight + %padding);
     return %MainCtrl;
 };
@@ -166,7 +165,7 @@ function geTGF_tabs::Maps_buildSmallWorldControl(%this, %tab) {
         bitmap = "platform/client/ui/small_multi_city_bkgd";
     };
     %expandBtn = new GuiBitmapButtonCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = ((getWord(%ctrlExtent, 0) - getWord(%expbtnExt, 0)) - 2.0) @ " " @ ((getWord(%ctrlExtent, 1) - getWord(%expbtnExt, 1)) - 2.0);
@@ -199,7 +198,7 @@ function geTGF_tabs::Maps_buildSmallWorldControl(%this, %tab) {
 function TGFDestinationsArray::onCreatedChild(%this, %child) {
     %extent = %child.getExtent();
     %button = new GuiBitmapButtonCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         position = "0 0";
         extent = %extent;
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_125x152";
@@ -210,19 +209,19 @@ function TGFDestinationsArray::onCreatedChild(%this, %child) {
     %boxExtent = getWord(%child.getExtent(), 0) @ " " @ %height;
     %zoomExtent = "12 18";
     %box = new GuiControl("") {
-        profile = 0 @ "EtsDarkBorderlessBoxProfile";
+        profile = "EtsDarkBorderlessBoxProfile";
         extent = %boxExtent;
         position = 0 @ " " @ (getWord(%child.getExtent(), 1) - %height);
     };
     %cityName = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         position = "4 1";
         extent = ((getWord(%box.extent, 0) - getWord(%zoomExtent, 0)) + 1.0) @ " " @ 18;
         text = mlStyle("city", "tgfItem_DestinationCity");
     };
     %cityName.add(%box);
     %contiguous = new GuiBitmapCtrl("") {
-        extent = 0 @ %zoomExtent;
+        extent = %zoomExtent;
         position = ((getWord(%boxExtent, 0) - getWord(%zoomExtent, 0)) - 1.0) @ " " @ 1;
         profile = "EtsNonModalProfile";
         bitmap = "platform/client/ui/tgf/tgf_map_fasttravel";
@@ -256,8 +255,8 @@ function geTGF_tabs::Maps_changedCityFilter(%this, %cityName) {
         if ((TGFWorldMapMultiCitySmall.isVisible() == 0.0)) {
             %pos = TGFDestinations.getPosition();
             %ext = TGFDestinations.getExtent();
-            (getWord(%ext, 1) - %this.childHeightDelta).resize(TGFDestinations, getWord(%ext, 0), TGFDestinations);
-            TGFDestinations @ (getWord(%pos, 1) + %this.childHeightDelta).setTrgPosition(TGFDestinations, getWord(%pos, 0) @ " ");
+            (getWord(%ext, 1) - TGFDestinations.childHeightDelta).resize(TGFDestinations, getWord(%ext, 0));
+            getWord(%pos, 0) @ " " @ (getWord(%pos, 1) + TGFDestinations.childHeightDelta).setTrgPosition(TGFDestinations);
             1.setVisible(TGFWorldMapMultiCitySmall);
         }
         if ((%cityName $= "")) {
@@ -265,8 +264,8 @@ function geTGF_tabs::Maps_changedCityFilter(%this, %cityName) {
         if ((TGFWorldMapMultiCitySmall.isVisible() == 1.0)) {
             %pos = TGFDestinations.getPosition();
             %ext = TGFDestinations.getExtent();
-            (getWord(%ext, 1) + %this.childHeightDelta).resize(TGFDestinations, getWord(%ext, 0), TGFDestinations);
-            TGFDestinations @ (getWord(%pos, 1) - %this.childHeightDelta).setTrgPosition(TGFDestinations, getWord(%pos, 0) @ " ");
+            (getWord(%ext, 1) + TGFDestinations.childHeightDelta).resize(TGFDestinations, getWord(%ext, 0));
+            getWord(%pos, 0) @ " " @ (getWord(%pos, 1) - TGFDestinations.childHeightDelta).setTrgPosition(TGFDestinations);
             0.setVisible(TGFWorldMapMultiCitySmall);
         }
     }
@@ -325,12 +324,12 @@ function geTGF_tabs::Maps_filterDestinations(%this, %type, %city) {
     }
     %idx.SetSelected(TGFDestinationTypeList);
     if ((%count == 0.0)) {
-        %this.visible = 1 @ TGFDestinationsNowhere;
-        %this.visible = 0 @ TGFDestinationsScrollList;
+        TGFDestinationsNowhere.visible = 1;
+        TGFDestinationsScrollList.visible = 0;
         return;
     }
-    %this.visible = 0 @ TGFDestinationsNowhere;
-    %this.visible = 1 @ TGFDestinationsScrollList;
+    TGFDestinationsNowhere.visible = 0;
+    TGFDestinationsScrollList.visible = 1;
     %idx = 0;
     while ((%idx < %count)) {
         %destCode = getWord(%dests, %idx);
@@ -374,6 +373,7 @@ function geTGF_tabs::Maps_filterDestinations(%this, %type, %city) {
 function geTGF::map_GetAndOpenDetailsContainer(%this, %item) {
     %item.constructDeetsWindow(%this, geDeetsWindow);
     1.setVisible(geDeetsLayer);
+    return geDeetsWindow;
 };
 function geTGF_tabs::Maps_clickLocation(%destCode) {
     %item = %destCode.findItem(geTGF, "map", "venue");

@@ -74,18 +74,12 @@ function makeAnimationMapZombie(%map, %src, %gender) {
     %gender @ "nzidl1".put(%map, "root");
 };
 function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim) {
-    if ((%gender $= "f")) {
-        // unhandled opcode 1134 at 0x0000046B
-    }
-    // unhandled opcode 1066 at 0x0000046F
-    %gender = animationMapMP;
-    animationMapFP;
+    %src = (%gender $= "f") ? animationMapFP : animationMapMP;
     %animationMapName = "animationMap" @ %gender @ %genre;
     if (isObject(%animationMapName)) {
         %map = %animationMapName.getId();
     }
-    %map = new StringMap(%animationMapName);;
-    0;
+    %map = new StringMap(%animationMapName);
     copyAnimationMap(%map, %src);
     %gender @ %rootAnim.put(%map, "root");
     %gender @ %runAnim.put(%map, "run");
@@ -886,8 +880,7 @@ function initNoAutoEmoteList() {
 $gNoAutoEmoteWords = 0;
 function addNoAutoEmoteWord(%word) {
     if (!(isObject($gNoAutoEmoteWords))) {
-        $gNoAutoEmoteWords = new StringMap("");;
-        0;
+        $gNoAutoEmoteWords = new StringMap("");
         if (isObject(MissionCleanup)) {
             $gNoAutoEmoteWords.add(MissionCleanup);
         }

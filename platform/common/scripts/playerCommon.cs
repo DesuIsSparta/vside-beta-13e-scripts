@@ -44,13 +44,12 @@ function Player::destroyGlobalFields(%this) {
     gSetField(%this, puppyOwner, 0);
     gSetField(%this, puppyTimer, 0);
     gSetField(%this, reportTriggers, 0);
-    %x = gGetField(%this);
-    triggerSet;
+    %x = gGetField(%this, triggerSet);
     if (isObject(%x)) {
         %x.delete();
     }
     gSetField(%this, triggerSet, 0);
-    gGetField(%this).delete(snoopers);
+    gGetField(%this, snoopers).delete();
     gSetField(%this, snoopers, 0);
     gSetField(%this, isScaling, 0);
     gSetField(%this, SEAT_IDLE_SCHEDULE, 0);

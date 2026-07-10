@@ -40,14 +40,14 @@ function aimLoginCallback() {
 };
 function onAIMStateChange(%state) {
     if ((%state == 0.0)) {
-        if ((%aimTab.AIMState == AIMLoginFrame)) {
+        if ((AIMLoginFrame.AIMState == 200.0)) {
             1.setActive(AIMSignInButton);
-            MessageBoxOK("AIM Login Failed", 200.0, "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
+            MessageBoxOK("AIM Login Failed", $MsgCat::login["E-AIM-PASSWORD"], "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
         }
     }
     if ((%state == 50.0)) {
         1.setActive(AIMSignInButton);
-        MessageBoxOK("AIM Disconnected", , "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
+        MessageBoxOK("AIM Disconnected", $MsgCat::login["E-AIM-DISCONNECT"], "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
     }
     if ((%state == 100.0)) {
         echo("AIM connecting");
@@ -77,8 +77,7 @@ function onAIMStateChange(%state) {
         echo("AIM online");
         aimLoginCallback();
     }
-    %aimTab.AIMState = %state @ AIMLoginFrame;
-    (%state == 600.0);
+    AIMLoginFrame.AIMState = (%state == 600.0) @ %state;
 };
 function AIMLoginFrame::setup(%this) {
     if ($UserPref::AIM::RememberMe) {

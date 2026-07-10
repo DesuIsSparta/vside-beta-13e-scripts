@@ -9,8 +9,7 @@ function geGiftingPanel::open(%this, %otherPlayerName, %whichScreen) {
         return;
     }
     if ($StandAlone) {
-        %request = new ManagerRequest("");;
-        0;
+        %request = new ManagerRequest("");
         parseGiftingSettings(%request);
         %request.delete();
         error(getScopeName() @ " " @ "- using hardcoded daily caps.");
@@ -23,7 +22,7 @@ function geGiftingPanel::open(%this, %otherPlayerName, %whichScreen) {
     }
     if ((%whichScreen $= "initiate")) {
         if (!(%otherPlayer.isInRange(%this))) {
-            %text = ;
+            %text = $MsgCat::gifting["E-TARGET-TOOFAR"];
             %text = strreplace(%text, "[OTHERPLAYER]", %otherPlayerName);
             MessageBoxOK("Get Closer!", %text, "");
             return;
@@ -74,8 +73,8 @@ function geGiftingPanel::close(%this, %accepted, %messageCode) {
 };
 function geGiftingPanel::openFromPendingTransactionRecord(%this, %pendingTransactionRecord) {
     "initiate".open(geGiftingPanel, %pendingTransactionRecord.targetPlayerName);
-    (geGiftingCurrencyType_vPoints @ " " @ %pendingTransactionRecord.currencyType $= "vPoints").setValue();
-    (geGiftingCurrencyType_vBux @ " " @ %pendingTransactionRecord.currencyType $= "vBux").setValue();
+    (%pendingTransactionRecord.currencyType $= "vPoints").setValue(geGiftingCurrencyType_vPoints);
+    (%pendingTransactionRecord.currencyType $= "vBux").setValue(geGiftingCurrencyType_vBux);
     %pendingTransactionRecord.currencyAmount.setValue(geGiftingEditAmt);
     %pendingTransactionRecord.personalMessage.setValue(geGiftingEditMsg);
     geGiftingPanel.refresh();
@@ -139,8 +138,7 @@ function geGiftingPanel::refreshScreen_Initiate(%this) {
     %limitVbGet = getGiftingCapsForLevel(%level, "vPoints", "recv");
     %limitVbGive = getGiftingCapsForLevel(%level, "vBux", "give");
     %limitVbGet = getGiftingCapsForLevel(%level, "vBux", "recv");
-    %text = %this.textBody;
-    geGiftingTextLimits;
+    %text = geGiftingTextLimits.textBody;
     %text = strreplace(%text, "[LEVEL]", %level);
     %text = strreplace(%text, "[LEVELNAME]", %levelName);
     %text = strreplace(%text, "[VPGIVE]", %limitVpGive);
@@ -165,13 +163,13 @@ function geGiftingPanel::refreshScreen_Initiate(%this) {
     %enableVB = $gGiftingEnabled_vBux;
     %enableVP.setActive(geGiftingCurrencyType_vPoints);
     %enableVB.setActive(geGiftingCurrencyType_vBux);
-    geGiftingTextType @ %this.textBody.setTextWithStyle(geGiftingTextType, "<spush><font:Arial Bold:20>1.<spop> ");
+    "<spush><font:Arial Bold:20>1.<spop> " @ geGiftingTextType.textBody.setTextWithStyle(geGiftingTextType);
     if (%enableVP) {
     }
-    %this.textBodyI.setTextWithStyle(geGiftingText2, geGiftingText2, %this.textBody, geGiftingText2);
+    geGiftingText2.textBodyI.setTextWithStyle(geGiftingText2, geGiftingText2.textBody);
     if (%enableVB) {
     }
-    %this.textBodyI.setTextWithStyle(geGiftingText3, geGiftingText3, %this.textBody, geGiftingText3);
+    geGiftingText3.textBodyI.setTextWithStyle(geGiftingText3, geGiftingText3.textBody);
     if (geGiftingCurrencyType_vPoints.getValue()) {
     }
     if (geGiftingCurrencyType_vBux.getValue()) {
@@ -182,8 +180,7 @@ function geGiftingPanel::refreshScreen_Initiate(%this) {
         }
         %currencyText = "<spush><color:13b93c>" @ %vbText @ "<spop>";
         "<spush><color:159fe7>" @ %vpText @ "<spop> ";
-        %text = %this.textBody;
-        geGiftingTextAmt;
+        %text = geGiftingTextAmt.textBody;
         %text = strreplace(%text, "[GIFTTYPE]", %currencyText);
         %text = "<spush><font:Arial Bold:20>2.<spop> " @ %text;
         %vpText = (geGiftingEditAmt.getValue() == 1.0) ? "vPoint" : "vPoints";
@@ -205,7 +202,7 @@ function geGiftingPanel::refreshScreen_Initiate(%this) {
     if ((geGiftingEditAmt.getValue() > 0.0)) {
     }
     if ((%amountInTheBank >= geGiftingEditAmt.getValue())) {
-        geGiftingTextMsg @ %this.textBody.setTextWithStyle(geGiftingTextMsg, "<spush><font:Arial Bold:20>3.<spop> ");
+        "<spush><font:Arial Bold:20>3.<spop> " @ geGiftingTextMsg.textBody.setTextWithStyle(geGiftingTextMsg);
         1.setVisible(geGiftingEditMsg);
         1.setActive(geGiftingButtonNext);
     }
@@ -322,8 +319,8 @@ function geGiftingPanel::startCountdownTimer(%this, %milliseconds) {
 function geGiftingPanel::countdownTick(%this) {
     %tickPeriod = 100;
     $gGiftingPanelCountdownMSRemaining = ($gGiftingPanelCountdownMSRemaining - %tickPeriod);
-    %this.rotRadians = (($gGiftingPanelCountdownMSRemaining * 0.001) / 6.0) @ geGiftingAcceptDeclineClock_littleHand;
-    %this.rotRadians = ($gGiftingPanelCountdownMSRemaining * 0.001) @ geGiftingAcceptDeclineClock_bigHand;
+    geGiftingAcceptDeclineClock_littleHand.rotRadians = (($gGiftingPanelCountdownMSRemaining * 0.001) / 6.0);
+    geGiftingAcceptDeclineClock_bigHand.rotRadians = ($gGiftingPanelCountdownMSRemaining * 0.001);
     %text = mFloor((($gGiftingPanelCountdownMSRemaining * 0.001) + 0.5));
     %text = %text @ "..";
     %text.setTextWithStyle(geGiftingAcceptDeclineClock_readout);
@@ -353,7 +350,7 @@ function geGiftingEditMsg::validate(%this) {
 };
 function geGiftingEditMsg::onEnter(%this) {
     if (geGiftingButtonNext.isActive()) {
-        eval(geGiftingButtonNext, %this.command);
+        eval(geGiftingButtonNext.command);
     }
 };
 function geGiftingPanel::onNext(%this) {
@@ -405,8 +402,7 @@ function geGiftingPanel::onNext_Confirmation(%this) {
     if ($StandAlone) {
         %dlg.onDryRunSuccess(geGiftingPanel);
     }
-    %request = sendRequest_GiftCurrency(%this.targetPlayerName, %this.currencyType, %this.currencyAmount, 1);
-    onDoneOrErrorCallback_GiftCurrency;
+    %request = sendRequest_GiftCurrency(%this.targetPlayerName, %this.currencyType, %this.currencyAmount, 1, onDoneOrErrorCallback_GiftCurrency);
     %request.dlg = %dlg;
     %this.close();
 };
@@ -469,6 +465,9 @@ function geGiftingPanel::deletePendingTransaction(%this, %giftTransactionID) {
     %pendingTransactionRecord.delete();
     %giftTransactionID.remove(%this.PendingTransactionsList);
 };
+$gGiftAcceptModeStrings[0] = "accept";
+$gGiftAcceptModeStrings[1] = "ask";
+$gGiftAcceptModeStrings[2] = "decline";
 function ClientCmdGiftingCurrency_Initiated(%sourcePlayerName, %giftTransactionID, %personalMessage, %currencyType, %currencyAmount) {
     %sourcePlayer = Player::findPlayerInstance(%sourcePlayerName);
     if (!(isObject(%sourcePlayer))) {
@@ -492,11 +491,11 @@ function ClientCmdGiftingCurrency_Initiated(%sourcePlayerName, %giftTransactionI
         if (geGiftingPanel.isVisible()) {
             "DECLINED-BUSY".doAccept(geGiftingPanel, %sourcePlayerName, %giftTransactionID, 0);
         }
-        %this.giftTransactionID = %giftTransactionID @ geGiftingPanel;
-        %this.personalMessage = TryFixBadWords(%personalMessage) @ geGiftingPanel;
-        %this.currencyType = %currencyType @ geGiftingPanel;
-        %this.currencyAmount = %currencyAmount @ geGiftingPanel;
-        %this.GiftType = "currency" @ geGiftingPanel;
+        geGiftingPanel.giftTransactionID = %giftTransactionID;
+        geGiftingPanel.personalMessage = TryFixBadWords(%personalMessage);
+        geGiftingPanel.currencyType = %currencyType;
+        geGiftingPanel.currencyAmount = %currencyAmount;
+        geGiftingPanel.GiftType = "currency";
         "acceptDecline".open(geGiftingPanel, %sourcePlayerName);
     }
 };
@@ -529,8 +528,7 @@ function ClientCmdGiftingCurrency_AcceptedOrDeclinedOrInvalid(%giftTransactionID
         %giftTransactionID.deletePendingTransaction(geGiftingPanel);
         return;
     }
-    %request = sendRequest_GiftCurrency(%pendingTransactionRecord.targetPlayerName, %pendingTransactionRecord.currencyType, %pendingTransactionRecord.currencyAmount, 0);
-    onDoneOrErrorCallback_GiftCurrency;
+    %request = sendRequest_GiftCurrency(%pendingTransactionRecord.targetPlayerName, %pendingTransactionRecord.currencyType, %pendingTransactionRecord.currencyAmount, 0, onDoneOrErrorCallback_GiftCurrency);
     %request.giftTransactionID = %giftTransactionID;
     %request.personalMessage = %pendingTransactionRecord.personalMessage;
 };
@@ -547,7 +545,7 @@ function onDoneOrErrorCallback_GiftCurrency(%request) {
         }
         getBalancesAndScores();
         commandToServer('GiftingCurrency_Notify', %otherPlayerName, %request.giftTransactionID, %request.personalMessage, %currencyType, %currencyAmount);
-        %msg = ;
+        %msg = $MsgCat::gifting["ACCEPTED"];
     }
     if (isObject(%request.dlg)) {
         %request.dlg.close();
@@ -616,8 +614,8 @@ function giftOperation(%line) {
         if (!(%currencyType $= "")) {
             %playerName = getWords(%line, 2, 100);
             "initiate".open(geGiftingPanel, %playerName);
-            (geGiftingCurrencyType_vPoints @ " " @ %currencyType $= "vPoints").setValue();
-            (geGiftingCurrencyType_vBux @ " " @ %currencyType $= "vBux").setValue();
+            (%currencyType $= "vPoints").setValue(geGiftingCurrencyType_vPoints);
+            (%currencyType $= "vBux").setValue(geGiftingCurrencyType_vBux);
             %currencyAmount.setValue(geGiftingEditAmt);
             geGiftingPanel.refresh();
             if ((%currencyAmount > 0.0)) {

@@ -39,9 +39,8 @@ function Player::onGotSKUs(%this) {
         }
         if (!(%usingInstrument)) {
         }
-        if ((ApplauseMeterGui @ " " @ %instrument.applauseMeterUse $= "instrument")) {
-            %instrument.closingFromServer = 1 @ ApplauseMeterGui;
-            !(%usingInstrument);
+        if ((!(%usingInstrument) @ " " @ ApplauseMeterGui.applauseMeterUse $= "instrument")) {
+            ApplauseMeterGui.closingFromServer = 1;
             ApplauseMeterGui.close();
         }
     }
@@ -115,8 +114,7 @@ function Player::onGotSKUs(%this) {
     %this.prevActiveSkus = (%n >= 0.0) @ %this.getActiveSKUs();
 };
 function Player::applySkuBadge(%this, %skunum) {
-    %prevSkuBadge = gGetField(%this);
-    prevSkuBadge;
+    %prevSkuBadge = gGetField(%this, prevSkuBadge);
     if ((%prevSkuBadge == %skunum)) {
         return;
     }
@@ -143,7 +141,7 @@ function Player::applySkuBadge(%this, %skunum) {
     }
     if (!(isObject(%hudCtrl.badge))) {
         %ctrl = new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";

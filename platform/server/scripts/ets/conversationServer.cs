@@ -5,7 +5,7 @@ function newConversation(%senderPlayer, %targetPlayer) {
     %senderPos = %senderPlayer.getPosition();
     %conversationPos = %senderPos;
     %newConversation = new Conversation("") {
-        dataBlock = 0 @ "release_conv";
+        dataBlock = "release_conv";
         position = %conversationPos;
     };
     %newConversation.setConversation(%senderPlayer);
@@ -14,7 +14,7 @@ function newConversation(%senderPlayer, %targetPlayer) {
     return %newConversation;
 };
 function leaveListening(%senderPlayer, %conversation) {
-    CONVBUB_DEBUG((senderPlayer - ) @ "leaving listening on" @ " " @ %conversation);
+    CONVBUB_DEBUG(senderPlayer @ " " @ "leaving listening on" @ " " @ %conversation);
     if (isObject(%conversation)) {
         %senderPlayer.removeListener(%conversation);
         0.setConversation(%senderPlayer);
@@ -98,11 +98,11 @@ function ServersideChatMessage(%senderPlayer, %targetPlayer, %message) {
     CONVBUB_DEBUG("found conv:" @ " " @ %conv);
     %senderPlayer.addParticipant(%conv);
     %message.addMessage(%conv, %senderPlayer);
-    if (0 && (%conv.countParticipants() > 1.0) && (gGetField(%senderPlayer) != orientedConversation)) {
+    if (0 && (%conv.countParticipants() > 1.0) && (gGetField(%senderPlayer, orientedConversation) != %conv)) {
         700.orientTowardsOverTime(%senderPlayer, %conv);
         gSetField(%senderPlayer, orientedConversation, %conv);
     }
-    return %conv;
+    return;
 };
 function serverCmdEavesdrop(%senderConnection, %newTarget) {
     CONVBUB_DEBUG("EAVESDROP: " @ %newTarget);

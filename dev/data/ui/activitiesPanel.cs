@@ -37,19 +37,23 @@ function geActivitiesPanel::updateStates(%this) {
         if (%on) {
         }
         %style = "<linkcolor:" @ %baseColor @ "80><modulationColor:" @ %baseColor @ "40>";
+        "<linkcolor:" @ %baseColor @ "f0><modulationColor:" @ %baseColor @ "f0>";
         %style = %style @ "<color:" @ %baseColor @ "f0>";
         if (%isHighest) {
         }
         %style = %style;
+        "<b>" @ %style;
         %icon = %activityName.getActivityIconFilename(%uam);
         if ((%timeLeft <= 0.0)) {
         }
         %timeLeftText = " - " @ formatFloat("%0.1f", (%timeLeft / 1000.0));
+        "";
         %text = "<spush>" @ %style @ "<just:left><a:gamelink " @ %activityName @ ">" @ %activityUFName @ "</a>" @ %timeLeftText @ "<just:right><bitmap:" @ %icon @ "><spop>" @ %delim @ %text;
         %delim = "<br>";
         %n = (%n - 1.0);
     }
     %text = %text @ %delim;
+    (%n >= 0.0);
     %timeSinceLastReport = %uam.getLastReportAgeMS();
     %timeSinceLastReport = mFloor((%timeSinceLastReport / 1000.0));
     %text = %text @ %delim @ "<just:left><color:a09000>last report:" @ " " @ secondsToHHMMSS(%timeSinceLastReport);

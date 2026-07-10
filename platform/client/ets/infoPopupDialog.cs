@@ -1,6 +1,6 @@
 function InfoPopupDlg::open(%this) {
     %this.init();
-    if () {
+    if ($UserPref::HudTabs::AutoOpen["affinity"]) {
         "affinity".selectTabWithName(HudTabs);
     }
 };
@@ -220,7 +220,7 @@ function InfoPopupContents::onURL(%this, %url) {
     %first = getWord(%url, 0);
     %rest = getWords(%url, 1, 10000);
     if ((%first $= "PROFILE")) {
-        doUserProfile(InfoPopupDlg, %this.playerName);
+        doUserProfile(InfoPopupDlg.playerName);
     }
     if ((%first $= "EDIT_PROFILE")) {
         doEditProfile();
@@ -229,25 +229,25 @@ function InfoPopupContents::onURL(%this, %url) {
         doViewTag(unmunge(%rest));
     }
     if ((%first $= "FRIEND_ADD")) {
-        doUserFavorite(InfoPopupDlg, %this.playerName, "add");
+        doUserFavorite(InfoPopupDlg.playerName, "add");
     }
     if ((%first $= "FRIEND_REM")) {
-        doUserFavorite(InfoPopupDlg, %this.playerName, "remove");
+        doUserFavorite(InfoPopupDlg.playerName, "remove");
     }
     if ((%first $= "CANCEL_REQ")) {
-        doUserFavorite(InfoPopupDlg, %this.playerName, "cancel");
+        doUserFavorite(InfoPopupDlg.playerName, "cancel");
     }
     if ((%first $= "ACCEPT_REQ")) {
-        doUserFavorite(InfoPopupDlg, %this.playerName, "accept");
+        doUserFavorite(InfoPopupDlg.playerName, "accept");
     }
     if ((%first $= "DECLINE_REQ")) {
-        doUserFavorite(InfoPopupDlg, %this.playerName, "decline");
+        doUserFavorite(InfoPopupDlg.playerName, "decline");
     }
     if ((%first $= "ADDIGNR")) {
-        doUserIgnore(InfoPopupDlg, %this.playerName, "add");
+        doUserIgnore(InfoPopupDlg.playerName, "add");
     }
     if ((%first $= "REMIGNR")) {
-        doUserIgnore(InfoPopupDlg, %this.playerName, "remove");
+        doUserIgnore(InfoPopupDlg.playerName, "remove");
     }
 };
 function InfoPopupTagsText::onURL(%this, %url) {
@@ -259,7 +259,7 @@ function InfoPopupNameField::onURL(%this, %url) {
 function InfoPopupNameField::onRightURL(%this, %url) {
     %first = getWord(%url, 0);
     if ((%first $= "PROFILE")) {
-        onRightClickPlayerName(InfoPopupDlg, %this.playerName);
+        onRightClickPlayerName(InfoPopupDlg.playerName);
     }
 };
 function InfoPopupContents::sheduleBuddyRefreshIfNeeded(%this) {

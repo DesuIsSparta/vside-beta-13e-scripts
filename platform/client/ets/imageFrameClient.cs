@@ -1,3 +1,44 @@
+$ImageFrame_WhiteList[0] = "vside" @ " " @ "com";
+$ImageFrame_WhiteList[1] = "doppelganger" @ " " @ "com";
+$ImageFrame_WhiteList[2] = "flickr" @ " " @ "com";
+$ImageFrame_WhiteList[3] = "photobucket" @ " " @ "com";
+$ImageFrame_WhiteList[4] = "ctv" @ " " @ "ca";
+$ImageFrame_WhiteList[5] = "warnerbros" @ " " @ "com";
+$ImageFrame_WhiteList[6] = "nasa" @ " " @ "gov";
+$ImageFrame_WhiteList[7] = "go" @ " " @ "com";
+$ImageFrame_WhiteList[8] = "yimg" @ " " @ "com";
+$ImageFrame_WhiteList[9] = "weather" @ " " @ "com";
+$ImageFrame_WhiteList[10] = "nationalgeographic" @ " " @ "com";
+$ImageFrame_WhiteList[11] = "timeinc" @ " " @ "net";
+$ImageFrame_WhiteList[12] = "aolcdn" @ " " @ "com";
+$ImageFrame_WhiteList[13] = "turner" @ " " @ "com";
+$ImageFrame_WhiteList[14] = "imageshack" @ " " @ "us";
+$ImageFrame_WhiteList[15] = "deviantart" @ " " @ "com";
+$ImageFrame_WhiteList[16] = "seventeen" @ " " @ "com";
+$ImageFrame_WhiteList[17] = "lolcats" @ " " @ "com";
+$ImageFrame_WhiteList[18] = "facebook" @ " " @ "com";
+$ImageFrame_WhiteList[19] = "myspace" @ " " @ "com";
+$ImageFrame_WhiteList[20] = "myspacecdn" @ " " @ "com";
+$ImageFrame_WhiteList[21] = "msn" @ " " @ "com";
+$ImageFrame_WhiteList[22] = "starpulse" @ " " @ "com";
+$ImageFrame_WhiteList[23] = "americanidol" @ " " @ "com";
+$ImageFrame_WhiteList[24] = "elle" @ " " @ "com";
+$ImageFrame_WhiteList[25] = "eonline" @ " " @ "com";
+$ImageFrame_WhiteList[26] = "style" @ " " @ "com";
+$ImageFrame_WhiteList[27] = "famousartistsgallery" @ " " @ "com";
+$ImageFrame_WhiteList[28] = "wikipedia" @ " " @ "org";
+$ImageFrame_WhiteList[29] = "wikimedia" @ " " @ "org";
+$ImageFrame_WhiteList[30] = "webgalactic" @ " " @ "net";
+$ImageFrame_WhiteList[31] = "theworldofmichaelparkes" @ " " @ "com";
+$ImageFrame_WhiteList[32] = "galleryofart" @ " " @ "us";
+$ImageFrame_WhiteList[33] = "fbcdn" @ " " @ "net";
+$ImageFrame_BlackList[0] = "forums";
+$ImageFrame_DisplayName["unknown"] = "Image from the Web";
+$ImageFrame_DisplayName["vside"] = "vSide Gallery";
+$ImageFrame_DisplayName["vside"][$ImageFrame_DisplayName @ "doppelganger"] = $ImageFrame_DisplayName["vside"];
+$ImageFrame_DisplayName["flickr"] = "Flickr";
+$ImageFrame_DisplayName["photobucket"] = "Photobucket";
+$ImageFrame_DisplayName["vsideevent"] = "vSide Event";
 $ImageFrameBase::Type_User = 0;
 $ImageFrameBase::Type_Gallery = 1;
 $ImageFrameBase::Type_URL = 2;
@@ -23,8 +64,7 @@ function ImageFrameBase::onImageTagChanged(%this, %newUrl) {
 function ImageFrameBase::getImageTagType(%this, %imageTag) {
     %this.imageKey = "";
     %this.type = "";
-    %urlinfo = new ScriptObject("");;
-    0;
+    %urlinfo = new ScriptObject("");
     "URLInfo".bindClassName(%urlinfo);
     %urlinfo.url = %imageTag;
     %bValidURL = %urlinfo.parse();
@@ -96,14 +136,14 @@ function ImageFrameBase::onUse(%this) {
         InfoPopupDlg.open();
         return;
     }
-    $DlgPortraitSelect = MessageBoxTextEntryWithCancel(, , ImageFrameBase_SubmitPortrait, %this.getImageTag(), 0);
+    $DlgPortraitSelect = MessageBoxTextEntryWithCancel($MsgCat::furniture["IMAGEFRAME-TITLE"], $MsgCat::furniture["IMAGEFRAME-PROMPT"], ImageFrameBase_SubmitPortrait, %this.getImageTag(), 0);
     18.resize($DlgPortraitSelect.textEntry, 8, 68, 284);
     $DlgPortraitSelect.portrait = %this;
 };
 function ImageFrameBase_SubmitPortrait(%url) {
     %obj = $DlgPortraitSelect.portrait;
     if (isURL(%url) && !(ImageFrameBase_IsPermittedURL(%url))) {
-        MessageBoxOK(, , "");
+        MessageBoxOK($MsgCat::furniture["IMAGEFRAME-TITLENOTWLIST"], $MsgCat::furniture["IMAGEFRAME-NOTWHITELIST"], "");
         return;
     }
     commandToServer('SetUserPortrait', CustomSpaceClient::GetSpaceImIn(), %obj.getGhostID(), %url);
@@ -168,7 +208,7 @@ function ImageFrameBase::buildLinkURLAndCaption(%this, %imageTag, %type) {
         if (!(%host[$ImageFrame_DisplayName @ %host] $= "")) {
             %caption = %host[$ImageFrame_DisplayName @ %host];
         }
-        %caption = %caption[$ImageFrame_DisplayName @ "unknown"];
+        %caption = $ImageFrame_DisplayName["unknown"];
         %url = %imageTag;
     }
     if ((%type == $ImageFrameBase::Type_Event)) {
@@ -333,7 +373,7 @@ function ImageFrameBase_gotInfoPlayerSex(%playerName, %info, %frame) {
     if (isObject(%info)) {
         %info.showDefaultPlayerPortrait(%frame);
     }
-    %message = strreplace(, "[USER]", %playerName);
+    %message = strreplace($MsgCat::furniture["IMAGEFRAME-LOADFAILEDUSER"], "[USER]", %playerName);
     handleSystemMessage("msgInfoMessage", %message);
 };
 function ImageFrameBase::showDefaultPlayerPortrait(%this, %playerInfo) {

@@ -5,7 +5,7 @@ if (isObject($SystemMetric::ObjectCounts)) {
     $SystemMetric::ObjectCounts.delete();
 }
 $SystemMetric::ObjectCounts = new StringMap("") {
-    class = 0 @ "SystemMetric";
+    class = "SystemMetric";
 };
 if (isObject(MissionCleanup)) {
     $SystemMetric::ObjectCounts.add(MissionCleanup);
@@ -18,8 +18,7 @@ if (isObject($GMetricsLogFile)) {
 if ($StandAlone) {
 }
 if ($Server::Dedicated) {
-    $GMetricsLogFile = new FileLogger(GMetricsLogger);;
-    0;
+    $GMetricsLogFile = new FileLogger(GMetricsLogger);
     if (isObject(MissionCleanup)) {
         $GMetricsLogFile.add(MissionCleanup);
     }
@@ -121,8 +120,7 @@ function System::dumpObjects(%obj) {
 if (isObject($System::LoginLog)) {
     $System::LoginLog.delete();
 }
-$SystemMetric::loginLog = new StringMap("");;
-0;
+$SystemMetric::loginLog = new StringMap("");
 if (isObject(MissionCleanup)) {
     $SystemMetric::loginLog.add(MissionCleanup);
 }
@@ -347,8 +345,7 @@ function dumpClassInstances(%simGroup) {
     if (!(isObject(%simGroup))) {
         return;
     }
-    %container = new SimObject("");;
-    0;
+    %container = new SimObject("");
     %container.numClasses = 0;
     %total = 0;
     compileClassInstances(%simGroup, %container);

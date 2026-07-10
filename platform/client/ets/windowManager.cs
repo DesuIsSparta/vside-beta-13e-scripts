@@ -11,49 +11,49 @@ if (!(isObject(WindowManager))) {
     }
 }
 function WindowManager::Initialize(%this) {
-    leftMargin = safeEnsureScriptObject("SimObject", "WindowManagerLeftMargin") @ WindowManager;
-    leftMargin.bottomMargin = 225 @ WindowManager;
+    WindowManager.leftMargin = safeEnsureScriptObject("SimObject", "WindowManagerLeftMargin");
+    WindowManager.leftMargin.bottomMargin = 225;
     %n = 0;
-    leftMargin.leftMargin.windows = CSControlPanel @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSControlPanel @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.windows = CSFurnitureMover @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSFurnitureMover @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.windows = CSInventoryBrowserWindow @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSInventoryBrowserWindow @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.windows = CSShoppingBrowserWindow @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSShoppingBrowserWindow @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.windows = CSPaintingWindow @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSPaintingWindow @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.windows = CSMediaDisplay @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSMediaDisplay @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.windows = CSRulesAndDescWindow @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSRulesAndDescWindow @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.windows = CSLayoutSelector @ %n @ WindowManager;
+    WindowManager.leftMargin.windows = CSLayoutSelector @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.numWindows = %n @ WindowManager;
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.Padding = 4 @ WindowManager;
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin = safeEnsureScriptObject("SimObject", "WindowManagerRightMargin") @ WindowManager;
+    WindowManager.leftMargin.numWindows = %n;
+    WindowManager.leftMargin.Padding = 4;
+    WindowManager.rightMargin = safeEnsureScriptObject("SimObject", "WindowManagerRightMargin");
     %n = 0;
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.windows = AccountBalanceHud @ %n @ WindowManager;
+    WindowManager.rightMargin.windows = AccountBalanceHud @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.windows = BuddyHudWin @ %n @ WindowManager;
+    WindowManager.rightMargin.windows = BuddyHudWin @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.windows = EmoteHudWin @ %n @ WindowManager;
+    WindowManager.rightMargin.windows = EmoteHudWin @ %n;
     %n = (%n + 1.0);
     if (isObject(geActivitiesPanel)) {
-        leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.rightMargin.windows = geActivitiesPanel @ %n @ WindowManager;
+        WindowManager.rightMargin.windows = geActivitiesPanel @ %n;
         %n = (%n + 1.0);
     }
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.windows = GameMgrHudWin @ %n @ WindowManager;
+    WindowManager.rightMargin.windows = GameMgrHudWin @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.windows = geLocalMapContainer @ %n @ WindowManager;
+    WindowManager.rightMargin.windows = geLocalMapContainer @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.windows = BottomSpacerRTHudWin @ %n @ WindowManager;
+    WindowManager.rightMargin.windows = BottomSpacerRTHudWin @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.windows = DownloadProgressHudWin @ %n @ WindowManager;
+    WindowManager.rightMargin.windows = DownloadProgressHudWin @ %n;
     %n = (%n + 1.0);
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.numWindows = %n @ WindowManager;
-    leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.leftMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.rightMargin.Padding = 0 @ WindowManager;
+    WindowManager.rightMargin.numWindows = %n;
+    WindowManager.rightMargin.Padding = 0;
     $WindowManager::Initialized = 1;
 };
 function WindowManager::wakeUp(%this) {
@@ -67,12 +67,11 @@ function WindowManager::getRightMargin(%this) {
 $gWindowManagerMarginSpecialCasesRight = "";
 $gWindowManagerMarginSpecialCasesLeft = "AimConvContainer";
 function WindowManager::getRightMarginAtY(%this, %checkAtY) {
-    %windowWidth = getWord(getRes(), 0);
-    %position = ;
+    %position = %windowWidth = getWord(getRes(), 0);
     %n = 0;
     while ((%n < %this.rightMargin.numWindows)) {
-        %win = %this.rightMargin.rightMargin.windows;
-        %n @ WindowManager;
+        %win = WindowManager.rightMargin.windows;
+        %n;
         %pos = %win.getPosition();
         %posX = getWord(%pos, 0);
         %posY = getWord(%pos, 1);
@@ -121,8 +120,8 @@ function WindowManager::getLeftMarginAtY(%this, %checkAtY) {
     %width = 0;
     %n = 0;
     while ((%n < %this.leftMargin.numWindows)) {
-        %win = %this.leftMargin.leftMargin.windows;
-        %n @ WindowManager;
+        %win = WindowManager.leftMargin.windows;
+        %n;
         %pos = %win.getPosition();
         %posX = getWord(%pos, 0);
         %posY = getWord(%pos, 1);
@@ -179,7 +178,7 @@ function WindowManager::countVisibleRightMarginWindows(%this) {
     %count = 0;
     %n = 0;
     while ((%n < %this.rightMargin.numWindows)) {
-        if (%this.rightMargin.rightMargin.windows.isVisible(%n @ WindowManager)) {
+        if (WindowManager.rightMargin.windows.isVisible(%n)) {
             %count = (%count + 1.0);
         }
         %n = (%n + 1.0);

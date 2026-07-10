@@ -268,16 +268,19 @@ package platform {
         if ((%ServerName $= "")) {
         }
         %ServerNameString = " on server" @ " " @ %ServerName;
-        if (("" @ " " @ $ETS::cityName $= "")) {
+        "";
+        if (($ETS::cityName $= "")) {
         }
         %CityNameString = " in" @ " " @ $ETS::cityName;
+        "";
         %LongCityNameString = "";
         if (isObject(WorldMap)) {
             %areaName = %ServerName.cityNameForServerName(WorldMap);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
-            if (("" @ " " @ %locationName $= "")) {
+            if ((%locationName $= "")) {
             }
             %LongCityNameString = " - in" @ " " @ %locationName;
+            "";
         }
         echo(getScopeName() @ " " @ "No WorldMap, not getting long city name from server");
         if (hasArg("-staging")) {

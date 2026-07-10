@@ -29,23 +29,21 @@ function serverCmdBotsMove(%client, %val) {
     if (!(%client.Player.isStaff())) {
         return;
     }
-    %client.BotsMove = %val @ AIManager;
+    AIManager.BotsMove = %val;
     return;
 };
 function serverCmdToggleBotsMove(%client) {
     if (!(%client.Player.isStaff())) {
         return;
     }
-    %client.BotsMove = !(%client.BotsMove) @ AIManager;
-    AIManager;
+    AIManager.BotsMove = !(AIManager.BotsMove);
     return;
 };
 function serverCmdToggleBotsBlahBlah(%client) {
     if (!(%client.Player.isStaff())) {
         return;
     }
-    %client.BotsBlahBlah = !(%client.BotsBlahBlah) @ AIManager;
-    AIManager;
+    AIManager.BotsBlahBlah = !(AIManager.BotsBlahBlah);
     return;
 };
 function serverCmdOneShotBotsBlahBlah(%client, %toPlayer) {
@@ -62,16 +60,14 @@ function serverCmdToggleBotsEavesdrop(%client) {
     if (!(%client.Player.isStaff())) {
         return;
     }
-    %client.BotsEavesdrop = !(%client.BotsEavesdrop) @ AIManager;
-    AIManager;
+    AIManager.BotsEavesdrop = !(AIManager.BotsEavesdrop);
     return;
 };
 function serverCmdToggleBotsSurfing(%client) {
     if (!(%client.Player.isStaff())) {
         return;
     }
-    %client.BotsSurfing = !(%client.BotsSurfing) @ AIManager;
-    AIManager;
+    AIManager.BotsSurfing = !(AIManager.BotsSurfing);
     return;
 };
 function serverCmdOneLove(%client) {
@@ -79,13 +75,12 @@ function serverCmdOneLove(%client) {
         return;
     }
     %n = 0;
-    while ((%n < %client.numBots)) {
-        %client.bots.wardrobeStock(%n @ AIManager);
+    while ((%n < AIManager.numBots)) {
+        AIManager.bots.wardrobeStock(%n);
         %n = (%n + 1.0);
-        AIManager;
     }
     %client.Player.wardrobeStock();
-    return (%n < %client.numBots);
+    return (%n < AIManager.numBots);
 };
 function serverCmdZombiesAttack(%client, %position) {
     if (!(%client.Player.isStaff())) {

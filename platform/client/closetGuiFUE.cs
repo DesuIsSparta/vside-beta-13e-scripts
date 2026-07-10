@@ -118,6 +118,7 @@ function ClosetGuiFUE::goToStepByName(%this, %stepName) {
     }
     0.setVisible(closetGuiFUEShopsDirBitmap);
     $gClosetGuiFueCurrentStep = %this.stepNumbersByName;
+    strlwr(%stepName);
     %this.showCurrentStep();
 };
 function ClosetGuiFUE::goToStepByNumber(%this, %stepNumber) {
@@ -204,8 +205,7 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    %newInactiveStep = new GuiControl("") {
-        profile = new GuiBitmapCtrl(closetGuiFUEWelcomeImage) {
+    new GuiBitmapCtrl(closetGuiFUEWelcomeImage) {
         profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -224,7 +224,9 @@ function ClosetGuiFUE::Initialize(%this) {
         minExtent = "20 20";
         visible = 1;
         bitmap = "platform/client/ui/welcomeBodyPanel";
-    }; @ "ETSNonModalProfile";
+    };
+    %newInactiveStep = new GuiControl("") {
+        profile = "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
         vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
@@ -233,10 +235,7 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    "Body".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %buttonPosition = "Closet".getTabWithName(ClosetTabs).button.getPosition();
-    %newActiveStep = new GuiControl("") {
-        profile = new GuiBitmapCtrl("") {
+    new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -246,6 +245,31 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step3_inactive";
+    };
+    "Body".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    %buttonPosition = "Closet".getTabWithName(ClosetTabs).button.getPosition();
+    %newActiveStep = new GuiControl("") {
+        profile = "ETSNonModalProfile";
+        horizSizing = ClosetGuiFUE.horizSizing;
+        vertSizing = ClosetGuiFUE.vertSizing;
+        position = "0 0";
+        extent = ClosetGuiFUE.extent;
+        minExtent = ClosetGuiFUE.minExtent;
+        sluggishness = ClosetGuiFUE.sluggishness;
+        visible = 0;
+    };
+    new GuiBitmapCtrl(closetGuiFUEWelcomeImage_b : closetGuiFUEWelcomeImage);
+    %newInactiveStep = new GuiControl("") {
+        profile = new GuiBitmapCtrl("") {
+        profile = "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        extent = "123 82";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/closetGuiFUE_step2_active";
     }; @ "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
         vertSizing = ClosetGuiFUE.vertSizing;
@@ -264,17 +288,7 @@ function ClosetGuiFUE::Initialize(%this) {
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
-        bitmap = "platform/client/ui/closetGuiFUE_step2_active";
-    };
-    %newInactiveStep = new GuiControl("") {
-        profile = new GuiBitmapCtrl(closetGuiFUEWelcomeImage_b : closetGuiFUEWelcomeImage); @ "ETSNonModalProfile";
-        horizSizing = ClosetGuiFUE.horizSizing;
-        vertSizing = ClosetGuiFUE.vertSizing;
-        position = "0 0";
-        extent = ClosetGuiFUE.extent;
-        minExtent = ClosetGuiFUE.minExtent;
-        sluggishness = ClosetGuiFUE.sluggishness;
-        visible = 0;
+        bitmap = "platform/client/ui/closetGuiFUE_step2_inactive";
     };
     "Closet".addStepWithName(%this, %newActiveStep, %newInactiveStep);
     if (!(ClosetTabs.tabShopsInitialized)) {
@@ -283,17 +297,7 @@ function ClosetGuiFUE::Initialize(%this) {
     %button = "Shops".getTabWithName(ClosetTabs).button;
     %buttonPosition = %button.getPosition();
     %newActiveStep = new GuiControl("") {
-        profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
-        extent = "123 82";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        bitmap = "platform/client/ui/closetGuiFUE_step2_inactive";
-    }; @ "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
         vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
@@ -302,19 +306,20 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
+    new GuiBitmapCtrl("") {
+        profile = "ETSNonModalProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        extent = "123 82";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/closetGuiFUE_step1_active";
+    };
     if (!(isObject(closetGuiFUEShopsDirBitmap))) {
         %this.shopsDirBitmap = new GuiBitmapCtrl(closetGuiFUEShopsDirBitmap) {
-            profile = new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
-            horizSizing = "right";
-            vertSizing = "bottom";
-            position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
-            extent = "123 82";
-            minExtent = "1 1";
-            sluggishness = -1;
-            visible = 1;
-            bitmap = "platform/client/ui/closetGuiFUE_step1_active";
-        }; @ "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "35 125";
@@ -350,10 +355,7 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    "Shops".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %buttonPosition = "Snapshot".getTabWithName(ClosetTabs).button.getPosition();
-    %newActiveStep = new GuiControl("") {
-        profile = new GuiBitmapCtrl("") {
+    new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -363,7 +365,11 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step1_inactive";
-    }; @ "ETSNonModalProfile";
+    };
+    "Shops".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    %buttonPosition = "Snapshot".getTabWithName(ClosetTabs).button.getPosition();
+    %newActiveStep = new GuiControl("") {
+        profile = "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
         vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
@@ -372,8 +378,7 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    %newInactiveStep = new GuiControl("") {
-        profile = new GuiBitmapCtrl("") {
+    new GuiBitmapCtrl("") {
         profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -393,7 +398,9 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step5_active";
-    }; @ "ETSNonModalProfile";
+    };
+    %newInactiveStep = new GuiControl("") {
+        profile = "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
         vertSizing = ClosetGuiFUE.vertSizing;
         position = "0 0";
@@ -402,8 +409,7 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = ClosetGuiFUE.sluggishness;
         visible = 0;
     };
-    "Snapshot".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %this.refreshingOrInitializing = new GuiBitmapCtrl("") {
+    new GuiBitmapCtrl("") {
         profile = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -423,7 +429,9 @@ function ClosetGuiFUE::Initialize(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step5_inactive";
-    }; @ 0;
+    };
+    "Snapshot".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    %this.refreshingOrInitializing = 0;
     %this.initialized = 1;
 };
 function closetGuiFUEHideTipsCtrl::onAction(%this) {

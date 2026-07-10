@@ -24,8 +24,7 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
     %uploader = "";
     if (snapshotTool::snapRegion(%region, %fileName)) {
         $screenShotNum = ($screenShotNum + 1.0);
-        %uploader = new URLPostObject("");;
-        0;
+        %uploader = new URLPostObject("");
         1.setProgress(%uploader);
         $Net::UploadPhotoURL.setURL(%uploader);
         $Player::Name.setURLParam(%uploader, "user");
@@ -159,8 +158,7 @@ function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
         return;
     }
     %fn = %name @ ".cs";
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if (%fn.openForWrite(%file)) {
         getScreenShotMetaData(%guiCtrl).writeLine(%file);
     }

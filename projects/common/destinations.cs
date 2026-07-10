@@ -99,8 +99,8 @@ function DestinationList::goToDestination(%codeName) {
     }
     %command = "geTGF.close();" @ " " @ "vurlOperation(\"" @ %vurl @ "\");";
     if (!(DestinationList::IsDestinationInMyContiguousSpace(%codeName))) {
-        %title = ;
-        %body = strreplace(%title[$MsgCat::destinations @ "REMOTE-BODY"], "[NAME]", %codeName[$gDestinationNames @ %codeName]);
+        %title = $MsgCat::destinations["REMOTE-TITLE"];
+        %body = strreplace($MsgCat::destinations["REMOTE-BODY"], "[NAME]", %codeName[$gDestinationNames @ %codeName]);
         MessageBoxOkCancel(%title, %body, %command, "");
     }
     eval(%command);

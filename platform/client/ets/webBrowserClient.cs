@@ -148,8 +148,7 @@ function dlMgr::beginDownloadingItem(%this, %dlItem) {
     }
     %dlItem.localFilename = %dlItem.url.makeLocalFilename(%this);
     %dlItem.put(%this.outstanding, %dlItem.url);
-    %curl = new URLPostObject("");;
-    0;
+    %curl = new URLPostObject("");
     %curl.dlItem = %dlItem;
     %dlItem.url.setURL(%curl);
     %dlItem.localFilename.setDownloadFile(%curl);
@@ -238,7 +237,7 @@ function dlMgr::loadCacheIndex(%this) {
     "debug".loadFrom(%this.cacheIndex, %this.cacheIndexFilename);
 };
 function dlMgr::saveCacheIndex(%this) {
-    %this.cacheIndexFilename.saveTo(dlMgr, %this.cacheIndex, dlMgr);
+    dlMgr.cacheIndexFilename.saveTo(dlMgr.cacheIndex);
 };
 function dlMgr::clearCache(%this) {
     %n = (%this.cacheIndex.size() - 1.0);

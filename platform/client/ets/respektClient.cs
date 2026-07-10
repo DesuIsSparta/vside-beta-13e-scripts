@@ -67,7 +67,7 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code) {
 function clientCmdInitialScores(%respektPoints, %respektRank) {
     if (isObject(HudScoresContent)) {
         %respektRank.setRespektRank(HudScoresContent);
-        previousRespektPoints = %respektPoints @ HudScoresContent;
+        HudScoresContent.previousRespektPoints = %respektPoints;
     }
     $gMyBalancesAndScoresRevision = 0;
     setMyRespektPoints(%respektPoints, 0);
@@ -187,19 +187,15 @@ function moveAccountBalanceHud(%toWhere) {
         return;
     }
     if ((%toWhere $= "TGF")) {
-        // unhandled opcode 1558 at 0x00000794
-        %toWhere = geTGF_main_BalancesContainer;
-        // unhandled opcode 1572 at 0x0000079A
-        %toWhere = AccountBalanceContents;
+        %dstContainer = geTGF_main_BalancesContainer;
+        %childCtrl = AccountBalanceContents;
         %newProfile = "";
         %newPosition = "108 0";
         %newExtent = "162 39";
     }
     if ((%toWhere $= "PLAYGUI")) {
-        // unhandled opcode 1558 at 0x000007BD
-        %toWhere = AccountBalanceHud;
-        // unhandled opcode 1572 at 0x000007C3
-        %toWhere = AccountBalanceContents;
+        %dstContainer = AccountBalanceHud;
+        %childCtrl = AccountBalanceContents;
         %newProfile = "";
         %newPosition = "0 0";
         %newExtent = "162 39";

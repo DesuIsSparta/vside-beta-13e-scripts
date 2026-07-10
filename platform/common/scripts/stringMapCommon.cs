@@ -13,8 +13,7 @@ function StringMap::saveToLocalStorage(%this, %fileName) {
     return %fileName.saveTo(%this);
 };
 function StringMap::saveTo(%this, %fileName) {
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     %ret = 0;
     if (%fileName.openForWrite(%file)) {
         %n = 0;
@@ -39,8 +38,7 @@ function StringMap::loadFromLocalStorage(%this, %fileName, %errorLogLevel) {
 };
 function StringMap::loadFrom(%this, %fileName, %errorLogLevel) {
     %this.clear();
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     %ret = 0;
     if (%fileName.openForRead(%file)) {
         while (!(%file.isEOF())) {

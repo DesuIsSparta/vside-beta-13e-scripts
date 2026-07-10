@@ -1,12 +1,12 @@
 function WorldMap::TabulateWorldAreaSummary(%unused) {
     safeEnsureScriptObject("StringMap", WorldAreaSummaries, 0);
     WorldAreaSummaries.deleteValuesAsObjects();
-    totalCapacity = 0 @ "gw" @ WorldAreaSummaries;
-    totalCapacity = 0 @ "pvt" @ WorldAreaSummaries;
-    totalCapacity = 0 @ "city" @ WorldAreaSummaries;
-    totalOccupancy = 0 @ "gw" @ WorldAreaSummaries;
-    totalOccupancy = 0 @ "pvt" @ WorldAreaSummaries;
-    totalOccupancy = 0 @ "city" @ WorldAreaSummaries;
+    WorldAreaSummaries.totalCapacity = 0 @ "gw";
+    WorldAreaSummaries.totalCapacity = 0 @ "pvt";
+    WorldAreaSummaries.totalCapacity = 0 @ "city";
+    WorldAreaSummaries.totalOccupancy = 0 @ "gw";
+    WorldAreaSummaries.totalOccupancy = 0 @ "pvt";
+    WorldAreaSummaries.totalOccupancy = 0 @ "city";
     if (!(isObject(WorldMapServers))) {
         error(getScopeName() @ " " @ "- no WorldMapServers object." @ " " @ getTrace());
         return;
@@ -19,8 +19,7 @@ function WorldMap::TabulateWorldAreaSummary(%unused) {
         %serverOccupancy = "load".get(%serverObj);
         %areaSummaryObj = %serverAreaName.get(WorldAreaSummaries);
         if (!(isObject(%areaSummaryObj))) {
-            %areaSummaryObj = new SimObject("");;
-            0;
+            %areaSummaryObj = new SimObject("");
             %areaSummaryObj.put(WorldAreaSummaries, %serverAreaName);
             %areaSummaryObj.areaName = %serverAreaName;
             %areaSummaryObj.occupancy = 0;
@@ -34,10 +33,9 @@ function WorldMap::TabulateWorldAreaSummary(%unused) {
         %areaSummaryObj.occupancy = (%areaSummaryObj.occupancy + %serverOccupancy);
         %areaSummaryObj.capacity = (%areaSummaryObj.capacity + %serverCapacity);
         %areaSummaryObj.numServers = (%areaSummaryObj.numServers + 1.0);
-        %areaSummaryObj.totalOccupancy = (%areaSummaryObj.totalOccupancy + %areaSummaryObj.areaType @ WorldAreaSummaries);
-        %serverOccupancy;
-        %areaSummaryObj.totalCapacity = (%areaSummaryObj.totalCapacity + %areaSummaryObj.areaType @ WorldAreaSummaries);
-        %serverCapacity;
+        WorldAreaSummaries.totalOccupancy = (WorldAreaSummaries.totalOccupancy + %serverOccupancy @ %areaSummaryObj.areaType);
+        WorldAreaSummaries.totalCapacity = (WorldAreaSummaries.totalCapacity + %serverCapacity @ %areaSummaryObj.areaType);
         %n = (%n - 1.0);
     }
+    return WorldAreaSummaries;
 };

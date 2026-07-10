@@ -9,7 +9,7 @@ function geTGF_tabs::fillTabFriends(%this) {
     }
     %tab.filled = 1;
     %tab.fillTabGeneric(%this);
-    %dataTable = new DataTable(geTGF_FriendsDataTable);;
+    %dataTable = new DataTable(geTGF_FriendsDataTable);
     1.addColumn(%dataTable, "statusmsg", mlStyle("Status", "tgfTables_ColumnHeader"), "string", 290, 1, 1);
     0.addColumn(%dataTable, "avatar", "", "image", 50, 0, 1);
     1.addColumn(%dataTable, "username", mlStyle("Name", "tgfTables_ColumnHeader"), "string", 150, 1, 1);
@@ -33,7 +33,7 @@ function geTGF_tabs::fillTabFriends(%this) {
     %tab.GuiTable = %guiTable;
     %guiTable.add(%tab);
     %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "75 49";
@@ -45,7 +45,7 @@ function geTGF_tabs::fillTabFriends(%this) {
     %guiTable.alternativeTextCtrl.add(%tab);
     mlStyle("Fetching...", "tgfTables_DataCell_Text").setText(%guiTable.alternativeTextCtrl);
     %filterLabel = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "7 473";
@@ -54,7 +54,7 @@ function geTGF_tabs::fillTabFriends(%this) {
     };
     %filterLabel.add(%tab);
     %filterBox = new GuiControl("") {
-        profile = 0 @ "ETSLightBoxProfile";
+        profile = "ETSLightBoxProfile";
         horizSizing = "right";
         vertSizing = "top";
         position = "37 470";
@@ -67,7 +67,7 @@ function geTGF_tabs::fillTabFriends(%this) {
     };
     %filterBox.add(%tab);
     new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         bitmap = "platform/client/ui/magnifying_glass";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -89,27 +89,27 @@ function geTGF_tabs::fillTabFriends(%this) {
         filterDoItReallyTimeoutMS = 400;
     };.add(%filterBox);
     %invite = new GuiMLTextCtrl("") {
-        position = 0 @ "250 473";
+        position = "250 473";
         extent = "600 30";
-        text = mlStyle(, "tgfTables_Invite");
+        text = mlStyle($MsgCat::invitation["TEXT-TGF-FRIENDS"], "tgfTables_Invite");
     };
     %invite.add(%tab);
     %this.refreshTabFriends();
 };
 function geTGF_tabs::onShowTabFriends(%this) {
-    cancel(geTGF, geTGF_Refresh_Schedule);
+    cancel(geTGF.geTGF_Refresh_Schedule);
     1.setActive(geTGF_Refresh);
     1.setVisible(geTGF_Refresh);
     1.makeFirstResponder(geTGF_FriendsGuiTable);
 };
 function geTGF_tabs::refreshTabFriends(%this) {
-    1.setVisible(geTGF_FriendsGuiTable, alternativeTextCtrl);
-    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_FriendsGuiTable, alternativeTextCtrl);
+    1.setVisible(geTGF_FriendsGuiTable.alternativeTextCtrl);
+    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_FriendsGuiTable.alternativeTextCtrl);
     sendRequest_GetOnlineFriends("", "", "geTGF_OnGotDoneOrError_GetOnlineFriends");
 };
 function geTGF_OnGotDoneOrError_GetOnlineFriends(%request) {
     if ((geTGF_tabs.getCurrentTab().name $= "friends")) {
-        cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
+        cancel(geTGF.geTGF_Refresh_Schedule);
         1.setActive(geTGF_Refresh);
     }
     if (!(isObject(%request))) {
@@ -147,8 +147,8 @@ function geTGF_OnGotDoneOrError_GetOnlineFriends(%request) {
     %count = %itemList.count();
     geTGF_FriendsDataTable.getRowCount().removeRowsByIndex(geTGF_FriendsDataTable, 0);
     %count.addRows(geTGF_FriendsDataTable);
-    (%count == 0.0).setVisible(geTGF_FriendsGuiTable, %item.alternativeTextCtrl);
-    mlStyle("You're the first one here.  There are lots of new friends to meet on vSide.", "tgfTables_DataCell_Text").setText(geTGF_FriendsGuiTable, %item.alternativeTextCtrl);
+    (%count == 0.0).setVisible(geTGF_FriendsGuiTable.alternativeTextCtrl);
+    mlStyle("You're the first one here.  There are lots of new friends to meet on vSide.", "tgfTables_DataCell_Text").setText(geTGF_FriendsGuiTable.alternativeTextCtrl);
     %uaw = getUserActivityMgr();
     %n = 0;
     while ((%n < %count)) {
@@ -197,6 +197,7 @@ function geTGF::friends_GetAndOpenDetailsContainer(%this, %item) {
     }
     %item.constructDeetsWindow(%this, geDeetsWindow);
     1.setVisible(geDeetsLayer);
+    return geDeetsWindow;
 };
 function geTGF_FriendsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unused, %mouseClickCount) {
     if ((%rowIndex == -(1.0))) {

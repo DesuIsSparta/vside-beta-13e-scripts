@@ -150,8 +150,7 @@ function gameOperation(%msg) {
     %gameName = getWords(%msg, 1);
     if ((%gameName $= "")) {
         if (gameMgrClient.areWeInspecting()) {
-            %gameName = %this.inspectedGame.gname;
-            gameMgrClient;
+            %gameName = gameMgrClient.inspectedGame.gname;
         }
         if (!(%operation $= "help")) {
             handleSystemMessage("msgInfoMessage", "Either select a game in the game manager before typing the command or give the name, e.g. /game start awesome game");
@@ -337,7 +336,7 @@ function miscHudsOperation() {
 };
 function doUserProfile(%playerName) {
     if (rentabot_isRentabotName(%playerName)) {
-        %msg = ;
+        %msg = $MsgCat::rentabot["NO-PROFILE"];
         %msg = strreplace(%msg, "[NAME]", %playerName);
         handleSystemMessage("msgInfoMessage", %msg);
         return;
@@ -420,7 +419,7 @@ function doUserIgnore(%playerName, %op) {
         if (!("" $= %canUnignoreTime)) {
         }
         if ((%canUnignoreTime > getSimTime())) {
-            handleSystemMessage("msgInfoMessage", );
+            handleSystemMessage("msgInfoMessage", $MsgCat::abuse["WAIT-TO-UNIGNORE"]);
             return;
         }
     }
@@ -547,6 +546,7 @@ function confirmTwoPlayerEmote(%initiatingPlayerName, %coAnimName, %requestId, %
 function doUserBodyMod(%player) {
     bodyModPanel.toggle();
 };
+$userTips::tipSeen["SOSUsage"] = 0;
 function doUserSOS(%text) {
     %text = trim(%text);
     if ((%text $= "")) {

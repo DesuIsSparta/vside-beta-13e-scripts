@@ -1,12 +1,11 @@
 function getEmporium(%name, %callback) {
-    %storeInfo = new SimObject("");;
-    0;
+    %storeInfo = new SimObject("");
     "Emporium".bindClassName(%storeInfo);
     if (isObject(MissionCleanup)) {
         %storeInfo.add(MissionCleanup);
     }
     %storeInfo.storeName = %name;
-    %storeInfo.Inventory = 0 @ new Array("");;
+    %storeInfo.Inventory = new Array("");
     if (isObject(MissionCleanup)) {
         %storeInfo.Inventory.add(MissionCleanup);
     }
@@ -115,8 +114,7 @@ function Emporium::purchase(%this, %skulist, %currency, %callback) {
 function Emporium::purchaseCollated(%this, %skulist, %currency, %callback) {
     %currency = strlwr(%currency);
     %this.shoppingList = %skulist;
-    %purchaseArray = new Array("");;
-    0;
+    %purchaseArray = new Array("");
     echoDebug(getScopeName());
     while (!(%skulist $= "")) {
         %sku = firstWord(%skulist);

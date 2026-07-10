@@ -12,6 +12,7 @@ while ((%i < 9.0)) {
     %i = (%i + 1.0);
 }
 %i = 0;
+(%i < 9.0);
 while ((%i < 9.0)) {
     "".bindCmd(EditorMap, keyboard, "ctrl " @ %i, "editor.gotoBookmark(" @ %i @ ");");
     %i = (%i + 1.0);

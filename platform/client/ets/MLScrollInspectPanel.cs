@@ -1,6 +1,5 @@
 function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
-    %fo = new FileObject("");;
-    0;
+    %fo = new FileObject("");
     if (%mlTextfileName.openForRead(%fo)) {
         %text = "";
         while (!(%fo.isEOF())) {

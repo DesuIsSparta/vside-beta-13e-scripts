@@ -4,7 +4,7 @@ function ClosetTabs::fillBodyTab(%this) {
         return;
     }
     new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "26 26";
@@ -15,7 +15,7 @@ function ClosetTabs::fillBodyTab(%this) {
         bitmap = "platform/client/ui/closet_tabs_bracket";
     };.add(%theTab);
     %featuresLabel = new GuiTextCtrl("") {
-        profile = 0 @ "ClosetTitleProfile";
+        profile = "ClosetTitleProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "181 64";
@@ -153,7 +153,8 @@ function ClosetTabs::fillBodyTab(%this) {
         sluggishness = -1;
         visible = 0;
     };
-    new GuiVariableWidthButtonCtrl(BodyStanceButtonPreppy) {
+    %itemsInfoText = new GuiTextCtrl("") {
+        profile = new GuiVariableWidthButtonCtrl(BodyStanceButtonPreppy) {
         profile = new GuiVariableWidthButtonCtrl(BodyStanceButtonIndie) {
         profile = new GuiVariableWidthButtonCtrl(BodyStanceButtonHipHop) {
         profile = "BracketButton19NonDefaultProfile";
@@ -195,9 +196,7 @@ function ClosetTabs::fillBodyTab(%this) {
         buttonType = "RadioButton";
         helpTag = 0;
         drawText = 1;
-    };
-    %itemsInfoText = new GuiTextCtrl("") {
-        profile = 0 @ "ClosetLeftInfoProfile";
+    }; @ "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "1 30";
@@ -210,7 +209,7 @@ function ClosetTabs::fillBodyTab(%this) {
     };
     %itemsInfoText.add(%itemsFrame);
     %itemsRangeText = new GuiTextCtrl("") {
-        profile = 0 @ "ClosetRightInfoProfile";
+        profile = "ClosetRightInfoProfile";
         horizSizing = "left";
         vertSizing = "bottom";
         position = "313 1";
@@ -224,7 +223,7 @@ function ClosetTabs::fillBodyTab(%this) {
     %itemsRangeText.add(%itemsFrame);
     %theTab.rangeText = %itemsRangeText;
     %itemsScroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         position = "0 20";
         extent = "465 282";
         minExtent = "1 1";
@@ -274,7 +273,7 @@ function ClosetTabs::fillBodyTab(%this) {
         lineSpacing = -(3.0);
     };.add(%theTab);
     %doneButton = new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton19Profile";
+        profile = "BracketButton19Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "829 519";
@@ -287,7 +286,7 @@ function ClosetTabs::fillBodyTab(%this) {
         drawText = 1;
     };
     %cancelButton = new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton19NonDefaultProfile";
+        profile = "BracketButton19NonDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "882 519";
@@ -319,17 +318,18 @@ function BodyItemsFrame::update(%this) {
     1.makeFirstResponder(%this.thumbnails);
     if ((%this.features $= "Height")) {
         1.setVisible(BodyHeightFrame);
-        BodyHeightFrame.getParent().pushToBack();
+        BodyHeightFrame.pushToBack(BodyHeightFrame.getParent());
     }
     0.setVisible(BodyHeightFrame);
-    if ((BodyHeightFrame @ " " @ %this.features $= "Stance")) {
+    if ((%this.features $= "Stance")) {
         1.setVisible(BodyStanceButtons);
-        BodyStanceButtons.getParent().pushToBack();
+        BodyStanceButtons.pushToBack(BodyStanceButtons.getParent());
     }
     0.setVisible(BodyStanceButtons);
 };
 function BodyHeightDisplayText::update(%this) {
-    %myHeight = ($UserPref::Player::height * );
+    %myHeight = ($UserPref::Player::height * [$player.getGender()]);
+    $gClosetNeutralHeightInches;
     %myFeet = mFloor((%myHeight / 12.0));
     %myInches = mFloor((%myHeight - (%myFeet * 12.0)));
     %myFeet @ "'" @ " " @ %myInches @ "\"".setText(%this);
@@ -342,11 +342,11 @@ function BodyHeightSlider::valueChanged(%this) {
     BodyHeightDisplayText.update();
 };
 function BodyFeaturesPopup::onSelect(%this, %unused, %entries) {
-    if ((BodyItemsFrame @ " " @ %this.features $= %entries)) {
+    if ((BodyItemsFrame.features $= %entries)) {
         return;
     }
-    %this.features = %entries @ BodyItemsFrame;
-    if (%this.tabBodyInitialized) {
+    BodyItemsFrame.features = %entries;
+    if (ClosetTabs.tabBodyInitialized) {
         BodyItemsFrame.update();
     }
     ClosetThumbnailsBody.getParent().scrollToTop();

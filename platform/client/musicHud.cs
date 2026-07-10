@@ -27,9 +27,9 @@ function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %is
     %commentData.delete();
     %this.charWidth = mMax(mMax(mMax(strlen(%artist), (2.0 + strlen(%title))), strlen(%album)), strlen(%commentText));
     %this.update();
-    if ((%this.currentTabIndex < HudTabs)) {
+    if ((HudTabs.currentTabIndex < 0.0)) {
     }
-    if ((0.0 @ " " @ HudTabs.getCurrentTab().name $= "music")) {
+    if ((HudTabs.getCurrentTab().name $= "music")) {
     }
     if (!($UserPref::Audio::mute)) {
     }
@@ -90,7 +90,7 @@ function MusicHud::update(%this) {
     if (MusicText.isAwake()) {
         MusicText.forceReflow();
     }
-    %this.ratingControl.updatePosition(MusicHud);
+    MusicHud.ratingControl.updatePosition();
 };
 function MusicHud::updateRatingText(%this) {
     %ratingText = %this.ratingControl.descripText;
@@ -105,13 +105,11 @@ function MusicHud::updateRatingText(%this) {
     }
     if (%isObject) {
     }
-    if (!(RatingRequest @ " " @ %this.ratingControl.community_rating $= "")) {
-        %ratingText = RatingRequest @ %this.ratingControl.community_rating;
-        %ratingText @ "Avg. Rating: ";
-        if (!(RatingRequest @ " " @ %this.ratingControl.num_ratings $= "")) {
-            %plural = !(RatingRequest @ " " @ %this.ratingControl.num_ratings $= 1) ? "s" : "";
-            %ratingText = RatingRequest @ %this.ratingControl.num_ratings @ " vote" @ %plural @ ") ";
-            %ratingText @ " (";
+    if (!(RatingRequest.community_rating $= "")) {
+        %ratingText = %ratingText @ "Avg. Rating: " @ RatingRequest.community_rating;
+        if (!(RatingRequest.num_ratings $= "")) {
+            %plural = !(RatingRequest.num_ratings $= 1) ? "s" : "";
+            %ratingText = %ratingText @ " (" @ RatingRequest.num_ratings @ " vote" @ %plural @ ") ";
         }
     }
     %ratingText.setText(%this.ratingControl.label);
@@ -120,8 +118,7 @@ function MusicHud::setRating(%this, %rating) {
     0.setRating(%this.ratingControl, %rating);
 };
 function MusicHud::parseComment(%this, %comment) {
-    %map = new StringMap("");;
-    0;
+    %map = new StringMap("");
     if (isObject(MissionCleanup)) {
         %map.add(MissionCleanup);
     }

@@ -16,7 +16,7 @@ function handleC2CCmd(%commandName, %senderUserName, %param1, %param2) {
     error("unknown c2c cmd:" @ " " @ %commandName @ " " @ "from" @ " " @ %senderUserName);
 };
 function handleInviteeFinishedGateway(%otherPlayerName, %otherPlayerGender) {
-    %msg = ;
+    %msg = $MsgCat::invitation["INVITEE-INWORLD"];
     %msg = strreplace(%msg, "[OTHERPLAYER]", "<spush><b>" @ %otherPlayerName @ "<spop>");
     %msg = strreplace(%msg, "[OTHERPLAYER_HIM_HER_IT]", getPronounHimHerIt(%otherPlayerGender));
     MessageBoxOK("Someone you invited has arrived!", %msg, "");

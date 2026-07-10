@@ -322,6 +322,7 @@ function turnLeft(%val) {
     if (%val) {
     }
     $mvYawRightSpeed = 0;
+    $Pref::Input::KeyboardTurnSpeed;
     $mvYawRightSpeedBase = $mvYawRightSpeed;
 };
 function turnRight(%val) {
@@ -334,6 +335,7 @@ function turnRight(%val) {
     if (%val) {
     }
     $mvYawLeftSpeed = 0;
+    $Pref::Input::KeyboardTurnSpeed;
     $mvYawLeftSpeedBase = $mvYawLeftSpeed;
 };
 function panUp(%val) {
@@ -345,6 +347,7 @@ function panUp(%val) {
     if (%val) {
     }
     $mvPitchDownSpeed = 0;
+    $Pref::Input::KeyboardTurnSpeed;
 };
 function panDown(%val) {
     if (!($IN_ORBIT_CAM)) {
@@ -355,6 +358,7 @@ function panDown(%val) {
     if (%val) {
     }
     $mvPitchUpSpeed = 0;
+    $Pref::Input::KeyboardTurnSpeed;
 };
 function getMouseAdjustAmount(%val) {
     return ((%val * ($cameraFov / 90.0)) * 0.01);
@@ -642,9 +646,9 @@ function toggleOptionsPanel() {
 function okToOpenClosetGui() {
     if (isObject(ApplauseMeterGui) && (ApplauseMeterGui.applauseMeterUse $= "sumo")) {
         if ((ApplauseMeterGui.sumoGameType $= "PillowFightGame")) {
-            MessageBoxOK(, , "");
+            MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USER-NO-OPEN-CLOSET"], "");
         }
-        MessageBoxOK(, , "");
+        MessageBoxOK($MsgCat::applauseGui["MSG-SUMO-WARN"], $MsgCat::applauseGui["MSG-SUMO-USER-NO-OPEN-CLOSET"], "");
         return 0;
     }
     return 1;

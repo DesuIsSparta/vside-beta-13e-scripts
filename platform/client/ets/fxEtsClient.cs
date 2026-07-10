@@ -24,8 +24,8 @@ function fxEts::updateExposureFilter() {
     }
     %colFin = ColorAdd(%colSld, %colTOD);
     %colFin = ColorAdd(%colFin, $fxEts::BrightnessFlashColor);
-    exposure = %colFin @ ExposureFilter;
-    exposure = %colFin @ ExposureFilterSelfView;
+    ExposureFilter.exposure = %colFin;
+    ExposureFilterSelfView.exposure = %colFin;
     %atNeutral = 0;
     if ((VectorDist(%colFin, "0.5 0.5 0.5") < 0.01)) {
         %atNeutral = 1;
@@ -35,7 +35,7 @@ function fxEts::updateExposureFilter() {
     if (!(isObject(EditorExposureFilter))) {
         return;
     }
-    exposure = %colFin @ EditorExposureFilter;
+    EditorExposureFilter.exposure = %colFin;
     !(%atNeutral).setVisible(EditorExposureFilter);
 };
 function fxEts::updateTOD(%hod) {
@@ -91,8 +91,8 @@ function ClientCmdTODColorMods(%s) {
         %col = getWord(%s, ((%n * 4.0) + 2.0));
         %col = %col @ " " @ getWord(%s, ((%n * 4.0) + 3.0));
         %col = %col @ " " @ getWord(%s, ((%n * 4.0) + 4.0));
-        %n[$fxEts::TOD::ColorModSample TAB %n @ hour] = %hour;
-        %n[$fxEts::TOD::ColorModSample TAB %n @ color] = %col;
+        %n[%hour @ $fxEts::TOD::ColorModSample TAB %n @ hour] = ;
+        %n[%col @ $fxEts::TOD::ColorModSample TAB %n @ color] = ;
         %n = (%n + 1.0);
     }
     fxEts::TODTimer();
@@ -107,7 +107,7 @@ function fxEts::getColorForTOD(%sod) {
     %hod = (%sod / (60.0 * 60.0));
     %n = 0;
     while ((%n < $fxEts::TOD::ColorModSamplesNum)) {
-        %hour = (%n[$fxEts::TOD::ColorModSample TAB %n @ hour] % 24);
+        %hour = (%n[24 @ $fxEts::TOD::ColorModSample TAB %n @ hour] % );
         if ((%hour <= %hod)) {
         }
         if ((%hour > %lowerBound)) {

@@ -1,9 +1,9 @@
 function toggleHelpMeMode(%this) {
-    if (isObject(ApplauseMeterGui) && (ApplauseMeterGui @ " " @ applauseMeterUse $= "sumo")) {
-        if ((ApplauseMeterGui @ " " @ sumoGameType $= "PillowFightGame")) {
-            MessageBoxOK(, , "");
+    if (isObject(ApplauseMeterGui) && (ApplauseMeterGui.applauseMeterUse $= "sumo")) {
+        if ((ApplauseMeterGui.sumoGameType $= "PillowFightGame")) {
+            MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USER-NO-HELPME"], "");
         }
-        MessageBoxOK(, , "");
+        MessageBoxOK($MsgCat::applauseGui["MSG-SUMO-WARN"], $MsgCat::applauseGui["MSG-SUMO-USER-NO-HELPME"], "");
         return;
     }
     if ($player.isInHelpMeMode()) {
@@ -159,9 +159,9 @@ function Player::onAnimationDoneClient(%this, %unused) {
     if (isObject(ClosetGui)) {
     }
     if (ClosetGui.isVisible()) {
-        %this.isDoingPropAction = 0 @ ClosetGui;
+        ClosetGui.isDoingPropAction = 0;
         if (isObject(ClosetWhatYoureWearingList)) {
-            %this.skus.refresh(ClosetWhatYoureWearingList, ClosetWhatYoureWearingList);
+            ClosetWhatYoureWearingList.skus.refresh(ClosetWhatYoureWearingList);
         }
     }
 };

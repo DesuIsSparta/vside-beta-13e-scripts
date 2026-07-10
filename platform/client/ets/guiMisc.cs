@@ -186,20 +186,17 @@ function hiliteControl(%ctrl, %inParent) {
         if (%inParent) {
             %parent = %ctrl.getParent();
             if (isObject(%parent)) {
-                %parent.add();
-                %parent.pushToBack();
+                HiliteWindow.add(%parent);
+                HiliteWindow.pushToBack(%parent);
                 %offset = 1;
-                HiliteWindow;
                 %targetPosX = (getWord(%ctrl.getPosition(), 0) - %offset);
-                HiliteWindow;
                 %targetPosY = (getWord(%ctrl.getPosition(), 1) - %offset);
                 %targetExtX = (getWord(%ctrl.getExtent(), 0) + (2.0 * %offset));
                 %targetExtY = (getWord(%ctrl.getExtent(), 1) + (2.0 * %offset));
             }
         }
-        %ctrl.add();
+        HiliteWindow.add(%ctrl);
         %offset = 1;
-        HiliteWindow;
         %targetPosX = (0.0 - %offset);
         %targetPosY = (0.0 - %offset);
         %targetExtX = (getWord(%ctrl.getExtent(), 0) + (2.0 * %offset));
@@ -207,7 +204,7 @@ function hiliteControl(%ctrl, %inParent) {
         1.setVisible(HiliteWindow);
         %targetPosX @ " " @ %targetPosY.setTrgPosition(HiliteWindow);
         %targetExtX @ " " @ %targetExtY.setTrgExtent(HiliteWindow);
-        hiliteCtrl = %ctrl @ HiliteWindow;
+        HiliteWindow.hiliteCtrl = %ctrl;
     }
     if (isObject(HiliteWindow)) {
         HiliteWindow.delete();
@@ -225,7 +222,7 @@ function GuiControl::isHiliteCtrl(%this) {
     }
     if (HiliteWindow.isVisible()) {
     }
-    return (hiliteCtrl.getId(HiliteWindow) == %this.getId());
+    return (HiliteWindow.hiliteCtrl.getId() == %this.getId());
 };
 $gToolTipDelay = 500;
 function GuiControl::onMouseEnterBounds(%this) {
@@ -258,7 +255,7 @@ function GuiControl::showToolTip(%this, %toolTip) {
         extent = (%extX + 8.0) @ " " @ (%extY + 0.0);
         minExtent = "1 1";
     };
-    Canvas.getContent().add();
+    ToolTipCtrl.add(Canvas.getContent());
 };
 function GuiControl::hideToolTip(%this) {
     if (isObject(ToolTipCtrl)) {
@@ -359,7 +356,7 @@ function onDragAndDropCtrl(%make) {
 };
 function GuiControl::makeVisualClone(%this) {
     return new GuiControl("") {
-        profile = 0 @ "DragAndDropProfile";
+        profile = "DragAndDropProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -377,14 +374,10 @@ $Conv::AffinityCloseIndicatorState = -(1.0);
 function animateConversationTypingIndicator() {
     if (($Conv::TypingIndicatorState == -(1.0))) {
         %n = -(1.0);
-        %n = (%n + 1.0);
-        %n["_   " @ $Conv::TypingIndicators] = ;
-        %n = (%n + 1.0);
-        %n[" _  " @ $Conv::TypingIndicators] = ;
-        %n = (%n + 1.0);
-        %n["  _ " @ $Conv::TypingIndicators] = ;
-        %n = (%n + 1.0);
-        %n["   _" @ $Conv::TypingIndicators] = ;
+        $Conv::TypingIndicators[%n = (%n + 1.0)] = "_   ";
+        $Conv::TypingIndicators[%n = (%n + 1.0)] = " _  ";
+        $Conv::TypingIndicators[%n = (%n + 1.0)] = "  _ ";
+        $Conv::TypingIndicators[%n = (%n + 1.0)] = "   _";
         $Conv::TypingIndicatorsNum = (%n + 1.0);
         $Conv::TypingIndicatorState = ($Conv::TypingIndicatorsNum - 1.0);
     }
@@ -394,16 +387,11 @@ function animateConversationTypingIndicator() {
     if (%celebIndicatorOn) {
         if (($Conv::CelebOpenIndicatorState == -(1.0))) {
             %n = -(1.0);
-            %n = (%n + 1.0);
-            %n["" @ $Conv::CelebOpenIndicators] = ;
-            %n = (%n + 1.0);
-            %n["* " @ $Conv::CelebOpenIndicators] = ;
-            %n = (%n + 1.0);
-            %n["*  " @ $Conv::CelebOpenIndicators] = ;
-            %n = (%n + 1.0);
-            %n["*   " @ $Conv::CelebOpenIndicators] = ;
-            %n = (%n + 1.0);
-            %n["*    " @ $Conv::CelebOpenIndicators] = ;
+            $Conv::CelebOpenIndicators[%n = (%n + 1.0)] = "";
+            $Conv::CelebOpenIndicators[%n = (%n + 1.0)] = "* ";
+            $Conv::CelebOpenIndicators[%n = (%n + 1.0)] = "*  ";
+            $Conv::CelebOpenIndicators[%n = (%n + 1.0)] = "*   ";
+            $Conv::CelebOpenIndicators[%n = (%n + 1.0)] = "*    ";
             $Conv::CelebOpenIndicatorsNum = (%n + 1.0);
             $Conv::CelebOpenIndicatorState = ($Conv::CelebOpenIndicatorsNum - 1.0);
         }
@@ -411,16 +399,11 @@ function animateConversationTypingIndicator() {
         $Conv::celebOpenIndicator = $Conv::CelebOpenIndicatorState[$Conv::CelebOpenIndicators @ $Conv::CelebOpenIndicatorState];
         if (($Conv::CelebCloseIndicatorState == -(1.0))) {
             %n = -(1.0);
-            %n = (%n + 1.0);
-            %n["" @ $Conv::CelebCloseIndicators] = ;
-            %n = (%n + 1.0);
-            %n[" *" @ $Conv::CelebCloseIndicators] = ;
-            %n = (%n + 1.0);
-            %n["  *" @ $Conv::CelebCloseIndicators] = ;
-            %n = (%n + 1.0);
-            %n["   *" @ $Conv::CelebCloseIndicators] = ;
-            %n = (%n + 1.0);
-            %n["    *" @ $Conv::CelebCloseIndicators] = ;
+            $Conv::CelebCloseIndicators[%n = (%n + 1.0)] = "";
+            $Conv::CelebCloseIndicators[%n = (%n + 1.0)] = " *";
+            $Conv::CelebCloseIndicators[%n = (%n + 1.0)] = "  *";
+            $Conv::CelebCloseIndicators[%n = (%n + 1.0)] = "   *";
+            $Conv::CelebCloseIndicators[%n = (%n + 1.0)] = "    *";
             $Conv::CelebCloseIndicatorsNum = (%n + 1.0);
             $Conv::CelebCloseIndicatorState = ($Conv::CelebCloseIndicatorsNum - 1.0);
         }
@@ -429,20 +412,13 @@ function animateConversationTypingIndicator() {
     }
     if (($Conv::AffinityOpenIndicatorState == -(1.0))) {
         %n = -(1.0);
-        %n = (%n + 1.0);
-        %n["" @ $Conv::AffinityOpenIndicators] = ;
-        %n = (%n + 1.0);
-        %n["(" @ $Conv::AffinityOpenIndicators] = ;
-        %n = (%n + 1.0);
-        %n["(:" @ $Conv::AffinityOpenIndicators] = ;
-        %n = (%n + 1.0);
-        %n["(: " @ $Conv::AffinityOpenIndicators] = ;
-        %n = (%n + 1.0);
-        %n["(:  " @ $Conv::AffinityOpenIndicators] = ;
-        %n = (%n + 1.0);
-        %n["(:   " @ $Conv::AffinityOpenIndicators] = ;
-        %n = (%n + 1.0);
-        %n[":    " @ $Conv::AffinityOpenIndicators] = ;
+        $Conv::AffinityOpenIndicators[%n = (%n + 1.0)] = "";
+        $Conv::AffinityOpenIndicators[%n = (%n + 1.0)] = "(";
+        $Conv::AffinityOpenIndicators[%n = (%n + 1.0)] = "(:";
+        $Conv::AffinityOpenIndicators[%n = (%n + 1.0)] = "(: ";
+        $Conv::AffinityOpenIndicators[%n = (%n + 1.0)] = "(:  ";
+        $Conv::AffinityOpenIndicators[%n = (%n + 1.0)] = "(:   ";
+        $Conv::AffinityOpenIndicators[%n = (%n + 1.0)] = ":    ";
         $Conv::AffinityOpenIndicatorsNum = (%n + 1.0);
         $Conv::AffinityOpenIndicatorState = ($Conv::AffinityOpenIndicatorsNum - 1.0);
     }
@@ -450,20 +426,13 @@ function animateConversationTypingIndicator() {
     $Conv::affinityOpenIndicator = $Conv::AffinityOpenIndicatorState[$Conv::AffinityOpenIndicators @ $Conv::AffinityOpenIndicatorState];
     if (($Conv::AffinityCloseIndicatorState == -(1.0))) {
         %n = -(1.0);
-        %n = (%n + 1.0);
-        %n["" @ $Conv::AffinityCloseIndicators] = ;
-        %n = (%n + 1.0);
-        %n[")" @ $Conv::AffinityCloseIndicators] = ;
-        %n = (%n + 1.0);
-        %n[":)" @ $Conv::AffinityCloseIndicators] = ;
-        %n = (%n + 1.0);
-        %n[" :)" @ $Conv::AffinityCloseIndicators] = ;
-        %n = (%n + 1.0);
-        %n["  :)" @ $Conv::AffinityCloseIndicators] = ;
-        %n = (%n + 1.0);
-        %n["   :)" @ $Conv::AffinityCloseIndicators] = ;
-        %n = (%n + 1.0);
-        %n["    :" @ $Conv::AffinityCloseIndicators] = ;
+        $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = "";
+        $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = ")";
+        $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = ":)";
+        $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = " :)";
+        $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = "  :)";
+        $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = "   :)";
+        $Conv::AffinityCloseIndicators[%n = (%n + 1.0)] = "    :";
         $Conv::AffinityCloseIndicatorsNum = (%n + 1.0);
         $Conv::AffinityCloseIndicatorState = ($Conv::AffinityCloseIndicatorsNum - 1.0);
     }

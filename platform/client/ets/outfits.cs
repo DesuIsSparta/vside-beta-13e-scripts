@@ -5,10 +5,8 @@ function outfits_init() {
         $gOutfits.delete();
         $gOutfitsDefault.delete();
     }
-    $gOutfits = new StringMap("");;
-    0;
-    $gOutfitsDefault = new StringMap("");;
-    0;
+    $gOutfits = new StringMap("");
+    $gOutfitsDefault = new StringMap("");
     outfits_makeDefault($gOutfitsDefault);
     $gOutfitsDefault.duplicate($gOutfits);
     checkOutfitCorruption(0);
@@ -82,8 +80,7 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
         return;
     }
     $gRetrievedOutfits = 1;
-    %stringMap = new StringMap("");;
-    0;
+    %stringMap = new StringMap("");
     %num = "propertyCount".getValue(%request);
     %n = 0;
     while ((%n < %num)) {
@@ -168,7 +165,7 @@ function SaveOutfitAndBodySkusAsCurrent(%skus) {
     commandToServer('SetActiveSkus', %skus);
 };
 function Player::switchOutfitTo(%unused, %outfitName) {
-    %idx = findWord(, $player.getGender() @ %outfitName);
+    %idx = findWord($Player::HangerNames, [$player.getGender()], $player.getGender() @ %outfitName);
     if ((%idx == -(1.0))) {
         warn(getScopeName() @ "->Trying to change to an outfit not in $Player::HangerNames");
     }

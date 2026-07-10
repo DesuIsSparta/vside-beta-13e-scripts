@@ -557,12 +557,13 @@ function armor::doDismount(%this, %obj, %forced) {
     }
     %pos = getWords(%obj.getTransform(), 0, 2);
     %oldPos = %pos;
-    %oldPos[%vec @ 0] = " 0  0  1";
-    %oldPos[%vec @ 0][%vec @ 1] = " 0  0  1";
-    %oldPos[%vec @ 0][%vec @ 1][%vec @ 2] = " 0  0 -1";
-    %oldPos[%vec @ 0][%vec @ 1][%vec @ 2][%vec @ 3] = " 1  0  0";
-    %oldPos[%vec @ 0][%vec @ 1][%vec @ 2][%vec @ 3][%vec @ 4] = "-1  0  0";
+    %vec[0] = " 0  0  1";
+    %vec[1] = " 0  0  1";
+    %vec[2] = " 0  0 -1";
+    %vec[3] = " 1  0  0";
+    %vec[4] = "-1  0  0";
     %impulseVec = "0 0 0";
+    %vec[0] = MatrixMulVector(%obj.getTransform(), %vec[0]);
     %pos = "0 0 0";
     %numAttempts = 5;
     %success = -(1.0);
@@ -597,11 +598,11 @@ function armor::onCollision(%this, %obj, %col) {
         %col.pickup(%obj);
     }
     %this = %col.getDataBlock();
-    if (WheeledVehicleData) {
+    if ((%this.className $= WheeledVehicleData)) {
     }
     if (%obj.mountVehicle) {
     }
-    if ((%this.className @ " " @ %obj.getState() $= "Move")) {
+    if ((%obj.getState() $= "Move")) {
     }
     if (%col.mountable) {
         %node = 0;
@@ -763,7 +764,7 @@ function Player::startDance(%player) {
         %player.stopDance();
     }
     echo("setting up dance moves");
-    %player.danceObj = 0 @ new ScriptObject("");;
+    %player.danceObj = new ScriptObject("");
     AddDance(%player.danceObj, "idl3a", 3000, 500);
     AddDance(%player.danceObj, "idl3b", 3000, 500);
     AddDance(%player.danceObj, "idl3c", 3000, 500);

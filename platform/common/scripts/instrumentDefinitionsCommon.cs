@@ -1,6 +1,6 @@
 function InstrumentRegistry::initializeRegistryCommon(%this) {
     %this.defaultStopAnimation = "idl1a";
-    %this.stopAnimationsList = 0 @ new StringMap("");;
+    %this.stopAnimationsList = new StringMap("");
     if (isObject(MissionCleanup)) {
         %this.stopAnimationsList.add(MissionCleanup);
     }

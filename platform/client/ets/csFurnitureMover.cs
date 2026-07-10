@@ -138,7 +138,7 @@ function CSFurnitureMover::SelectNuggetID(%this, %id) {
     $CSSelectedIsOwned = 0;
     $CSSelectedGhost = 0;
     $CSSelectedFreeRotate = 0;
-    if (!(%this.initialized)) {
+    if (!(CSInventoryBrowserWindow.initialized)) {
         CSInventoryBrowserWindow.Initialize();
     }
     if (isObject(CSInventoryBrowser) && !($CSSelectedIsOwned)) {
@@ -351,7 +351,7 @@ function csTestRotateCW() {
     if ((%ref == -(1.0))) {
         return;
     }
-    commandToServer('SlotRotate', CustomSpaceClient::GetSpaceImIn(), %ref, CSFurnitureMover, %si.rotationAxis, ((csGetRotateClickSize() * $pi) / 180.0));
+    commandToServer('SlotRotate', CustomSpaceClient::GetSpaceImIn(), %ref, CSFurnitureMover.rotationAxis, ((csGetRotateClickSize() * $pi) / 180.0));
     setIdle(0);
 };
 function csTestRotateCCW() {
@@ -359,7 +359,7 @@ function csTestRotateCCW() {
     if ((%ref == -(1.0))) {
         return;
     }
-    commandToServer('SlotRotate', CustomSpaceClient::GetSpaceImIn(), %ref, CSFurnitureMover, %si.rotationAxis, ((-(csGetRotateClickSize()) * $pi) / 180.0));
+    commandToServer('SlotRotate', CustomSpaceClient::GetSpaceImIn(), %ref, CSFurnitureMover.rotationAxis, ((-(csGetRotateClickSize()) * $pi) / 180.0));
     setIdle(0);
 };
 function csTestMoveLeft() {
@@ -475,47 +475,34 @@ function FurnitureItemContextMenu::initWithObject(%this, %obj) {
         %si = %sku.findBySku(SkuManager);
         %si.descShrt.setText(%this);
         if (($CSSelectedGhost == %obj)) {
-            %n = (%n + 1.0);
-            %schemeNormal.add(%this, "Deselect", );
+            %schemeNormal.add(%this, "Deselect", %n = (%n + 1.0));
         }
-        %n = (%n + 1.0);
-        %schemeNormal.add(%this, "Select", );
+        %schemeNormal.add(%this, "Select", %n = (%n + 1.0));
         if (($CSSelectedGhost == %obj)) {
         }
         if ($CSboolPickedUp) {
-            %n = (%n + 1.0);
-            %schemeNormal.add(%this, "Drop", );
+            %schemeNormal.add(%this, "Drop", %n = (%n + 1.0));
         }
-        %n = (%n + 1.0);
-        %schemeNormal.add(%this, "Pick Up", );
+        %schemeNormal.add(%this, "Pick Up", %n = (%n + 1.0));
         if (%obj.getInventoryNuggetIsOwned()) {
-            %n = (%n + 1.0);
-            %schemeNormal.add(%this, "Put Away", );
-            %n = (%n + 1.0);
-            %schemeNormal.add(%this, "Cut", );
-            %n = (%n + 1.0);
-            %schemeNormal.add(%this, "Copy", );
+            %schemeNormal.add(%this, "Put Away", %n = (%n + 1.0));
+            %schemeNormal.add(%this, "Cut", %n = (%n + 1.0));
+            %schemeNormal.add(%this, "Copy", %n = (%n + 1.0));
             %schemeMoreAvailable = (numOwnedFurnitureSku(%sku) > numUsingFurnitureSku(%sku)) ? 0 : 1;
-            %n = (%n + 1.0);
-            %schemeMoreAvailable.add(%this, "Place Another", );
+            %schemeMoreAvailable.add(%this, "Place Another", %n = (%n + 1.0));
             %schemeCanBuy = (numOwnedFurnitureSku(%sku) != -(1.0)) ? 0 : 1;
-            %n = (%n + 1.0);
-            %schemeCanBuy.add(%this, "Buy Another", );
+            %schemeCanBuy.add(%this, "Buy Another", %n = (%n + 1.0));
             %schemeReset = (%obj.getActiveSku() > 0.0) ? 0 : 1;
-            %n = (%n + 1.0);
-            %schemeReset.add(%this, "Reset Material", );
+            %schemeReset.add(%this, "Reset Material", %n = (%n + 1.0));
         }
-        %n = (%n + 1.0);
-        %schemeNormal.add(%this, "Buy Now", );
-        %n = (%n + 1.0);
-        %schemeNormal.add(%this, "Done Test Driving", );
+        %schemeNormal.add(%this, "Buy Now", %n = (%n + 1.0));
+        %schemeNormal.add(%this, "Done Test Driving", %n = (%n + 1.0));
     }
     if (CSFurnitureMover.canPaste()) {
     }
     %schemeCanPaste = %schemeDisabled;
     %schemeNormal;
-    %n = (%n + 1.0);
-    %schemeCanPaste.add(%this, "Paste", );
+    %schemeCanPaste.add(%this, "Paste", %n = (%n + 1.0));
 };
 function FurnitureItemContextMenu::onSelect(%this, %id, %text) {
     if (isObject(%this.obj)) {

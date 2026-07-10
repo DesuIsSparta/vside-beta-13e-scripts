@@ -18,11 +18,10 @@ function AccountBalanceHud::Initialize(%this) {
             "platform/client/ui/vpoints_pulse/vpoints_pulse_" @ %num @ ".png".addFrame(%this.pulsar);
             %i = (%i + 1.0);
         }
-        %this.pulsar.setProfile();
+        ETSNonModalProfile.setProfile(%this.pulsar);
         0.setVisible(%this.pulsar);
         %this.pulsar.add(%this);
-        %this.initialized = ETSNonModalProfile @ 1;
-        (%i < getWordCount(%nums));
+        %this.initialized = (%i < getWordCount(%nums)) @ 1;
     }
     AccountBalanceHud.update();
 };

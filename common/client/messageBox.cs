@@ -214,8 +214,9 @@ function MessageBox::newDialog(%buttonList) {
         %i = (%i + 1.0);
     }
     %windowWidth = mMax(300, %allButtonsWidth);
+    (%i < %dialog.numButtons);
     %window = new GuiWindowCtrl("") {
-        profile = (%i < %dialog.numButtons) @ "GuiMessageWindowProfile";
+        profile = "GuiMessageWindowProfile";
         horizSizing = "center";
         vertSizing = "center";
         position = "170 175";
@@ -336,6 +337,7 @@ function MessageBox::close(%this) {
     if (%this.doCallbackOnEscape) {
     }
     %callback = "";
+    %this.callback;
     MessageCallback(%this, %callback);
 };
 function MessageBox_TryDontShow(%title, %message, %callback, %canStopShowing, %key) {
@@ -358,6 +360,7 @@ function MessageBox_GetKey(%title, %message, %key) {
     if (!(%key $= "")) {
     }
     %key = stripVeryAgressively(%title @ "\t" @ %message);
+    %key;
     return %key;
 };
 function MessageBox::tryAddStopShowing(%this, %title, %message, %canStopShowing, %key) {

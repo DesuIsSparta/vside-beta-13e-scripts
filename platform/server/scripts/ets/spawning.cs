@@ -93,7 +93,6 @@ function serverCmdAddBotsToSpawnSphere(%unused, %unused, %num, %sep) {
 function Player::teleportToRandomSpawnSphere(%this) {
     %chosen = "";
     if (!(isObject(PlayerDropPoints))) {
-        // unhandled opcode 508 at 0x0000039B
         %chosen = EntrySpawn;
     }
     %chosen = getRandom(0, (PlayerDropPoints.getCount() - 1.0)).getObject(PlayerDropPoints);

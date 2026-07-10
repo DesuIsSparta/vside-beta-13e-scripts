@@ -5,7 +5,7 @@ function clientCmdBlockGameEngage(%gameType) {
     1.setActivityActive(getUserActivityMgr(), "gaming");
 };
 function clientCmdBlockGameDisengage() {
-    closingFromServer = 1 @ ApplauseMeterGui;
+    ApplauseMeterGui.closingFromServer = 1;
     ApplauseMeterGui.close();
     ConvBub.chooseProfile();
     0.setActivityActive(getUserActivityMgr(), "gaming");

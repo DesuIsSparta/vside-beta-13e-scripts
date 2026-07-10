@@ -89,7 +89,7 @@ function paperDoll_prepareOneSnapshot(%index) {
     }
     $gPaperDoll_CurSkus = getField(%index.get($gPaperDoll_SkuArray), 0);
     $gPaperDoll_CurName = getField(%index.get($gPaperDoll_SkuArray), 1);
-    %skus = $gPaperDoll_CurSkus.overlaySkus(SkuManager, );
+    %skus = $gPaperDoll_CurSkus.overlaySkus(SkuManager, $gPaperDoll_BaseSkus, [$player.getGender()]);
     %skus.setSkus($gPaperDoll_ObjViewCtrl);
     %index.setValue(gePaperDollCurOutfitField);
     %tmp = gePaperDollCurOutfitSlider.altCommand;
@@ -213,8 +213,8 @@ function paperDoll_generateXML() {
     %file.unindent();
     "-->".writeLineIndented(%file);
     %genders = "f m";
-    %genders[%gendersLong @ "f"] = "female";
-    %genders[%gendersLong @ "f"][%gendersLong @ "m"] = "male";
+    %gendersLong["f"] = "female";
+    %gendersLong["m"] = "male";
     "".writeLineIndented(%file);
     "xmlns=\"http://www.doppelganger.com/datamodel\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.doppelganger.com/datamodel schema/initial_avatar_permutations.xsd\"".writeOpenTag(%file, "Permutations");
     "Nikita: need schema description in previous ?".writeCommentTag(%file);
@@ -245,12 +245,15 @@ function paperDoll_generateXML() {
                 }
                 "Value".writeCloseTag(%file);
                 %valueNum = (%valueNum + 1.0);
+                (%skunum < getWordCount(%valueSkus));
             }
             "Param".writeCloseTag(%file);
             %paramNum = (%paramNum + 1.0);
+            (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum));
         }
         "Gender".writeCloseTag(%file);
         %n = (%n + 1.0);
+        (%paramNum < paperDoll_getParamsNum(%gender));
     }
     "Permutations".writeCloseTag(%file);
     %file.close();
@@ -267,8 +270,8 @@ function paperDoll_generateJSON() {
     %file.indent = "";
     %file.indentString = "    ";
     %genders = "f m";
-    %genders[%gendersLong @ "f"] = "female";
-    %genders[%gendersLong @ "f"][%gendersLong @ "m"] = "male";
+    %gendersLong["f"] = "female";
+    %gendersLong["m"] = "male";
     "var avatarData = {".writeLineIndented(%file);
     %file.indent();
     "\"permutations\":".writeLineIndented(%file);
@@ -320,6 +323,7 @@ function paperDoll_generateJSON() {
                 }
                 "},".writeLineIndented(%file);
                 %valueNum = (%valueNum + 1.0);
+                (%skunum < getWordCount(%valueSkus));
             }
             %file.unindent();
             "]".writeLineIndented(%file);
@@ -329,6 +333,7 @@ function paperDoll_generateJSON() {
             }
             "},".writeLineIndented(%file);
             %paramNum = (%paramNum + 1.0);
+            (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum));
         }
         %file.unindent();
         "]".writeLineIndented(%file);
@@ -338,6 +343,7 @@ function paperDoll_generateJSON() {
         }
         "},".writeLineIndented(%file);
         %n = (%n + 1.0);
+        (%paramNum < paperDoll_getParamsNum(%gender));
     }
     %file.unindent();
     "]".writeLineIndented(%file);

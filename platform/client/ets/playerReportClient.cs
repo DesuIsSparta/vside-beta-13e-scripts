@@ -46,7 +46,7 @@ function ReportAbuseDlg::report(%this) {
     if ((%abuseType $= "Please Select")) {
     }
     if ((%desc $= "")) {
-        MessageBoxOK("Error", , "");
+        MessageBoxOK("Error", $MsgCat::abuse["E-ABUSE-TYPE"], "");
         return;
     }
     %messageVector = ConvBubVecCtrl.getAttached();
@@ -55,8 +55,7 @@ function ReportAbuseDlg::report(%this) {
         200.dumpToFile(%messageVector, "./chatbub.txt", "");
     }
     echo("creating dummy message vector");
-    %messageVector = new MessageVector("");;
-    0;
+    %messageVector = new MessageVector("");
     "./chatbub.txt".dumpToFile(%messageVector);
     %messageVector.delete();
     %request = sendRequest_AbuseReport(%this.targetName, stripUnprintables(ReportDescription.getText()), %occurrence, %abuseType, "./chatBub.txt", "onDoneOrErrorCallback_AbuseReport");
@@ -67,11 +66,11 @@ function ReportAbuseDlg::report(%this) {
 function onDoneOrErrorCallback_AbuseReport(%request) {
     if (%request.checkSuccess()) {
         if (!($CSSpaceName $= "")) {
-            MessageBoxOK("Report Abuse", , "");
+            MessageBoxOK("Report Abuse", $MsgCat::abuse["ABUSE-MSG-FROM-PRIVATE-SPACE"], "");
         }
-        MessageBoxOK("Report Abuse", , "");
+        MessageBoxOK("Report Abuse", $MsgCat::abuse["ABUSE-MSG"], "");
     }
-    MessageBoxOK("Server Unavailable", , "");
+    MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
     commandToServer('NotifyAbuseReport', %request.targetName, getSubStr(ReportDescription.getText(), 0, 64));
     $gSecondsToWaitBetweenReportAbuseAndUnignore = (10.0 * 60.0);
     safeEnsureScriptObjectWithInit("StringMap", "cantUnignoreList", "{ ignoreCase = true; }");
@@ -82,7 +81,7 @@ function onDoneOrErrorCallback_AbuseReport(%request) {
     }
 };
 function doUserReport(%targetName, %reportType) {
-    %request.targetName = %targetName @ ReportAbuseDlg;
+    ReportAbuseDlg.targetName = %targetName;
     if ((%reportType $= "abuse")) {
         %ignored = %targetName.getIgnoreStatus(BuddyHudWin);
         if (!(%ignored)) {

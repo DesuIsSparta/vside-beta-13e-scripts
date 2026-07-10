@@ -16,8 +16,8 @@ function PlayGui::onWake(%this) {
     WindowManager.wakeUp();
     AccountBalanceHud.Initialize();
     AccountBalanceHud.open();
-    rolesVIP = roles::getRolesMaskFromStrings("staff moderator celeb") @ TheShapeNameHud;
-    rolesCeleb = roles::getRolesMaskFromStrings("celeb") @ TheShapeNameHud;
+    TheShapeNameHud.rolesVIP = roles::getRolesMaskFromStrings("staff moderator celeb");
+    TheShapeNameHud.rolesCeleb = roles::getRolesMaskFromStrings("celeb");
     "resetFirstResponder".schedule(%this, 100);
     if (($RegisterObjectFailFlag == 1.0)) {
         schedule(0, 0, "MessageBoxOK", "DATABLOCK REGISTRATION OF OBJECT FAILED", "Do not continue editing this mission because you are missing datablocks and will destroy other people's work if you continue, but you probably just need to do an update of your working area.\n\nSearch the console.log for 'Register object failed'." @ "\n" @ $gRegisterObjectFailList, "");

@@ -188,7 +188,7 @@ function CSBrowser::onCreatedChild(%this, %child, %x, %y) {
 function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y) {
     Parent::onCreatedChild(%this, %child, %x, %y);
     %child.rightIcon = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = mMax((getWord(%child.getExtent(), 0) - 24.0), 0) @ " " @ 0;
@@ -200,7 +200,7 @@ function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y) {
     };
     %child.rightIcon.add(%child);
     %child.leftIcon = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -239,7 +239,7 @@ function CSBrowser::fillLeafPane(%this, %pane) {
         }
     }
     %itemText = new GuiMLTextCtrl("") {
-        profile = 0 @ "H2Profile";
+        profile = "H2Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "5 0";
@@ -256,7 +256,7 @@ function CSBrowser::fillLeafPane(%this, %pane) {
     %pane.itemText = %itemText;
     %itemText.forceReflow();
     %nextPrevText = new GuiMLTextCtrl("") {
-        class = 0 @ "CSBrowserNextPrevLink";
+        class = "CSBrowserNextPrevLink";
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -335,7 +335,7 @@ function CSBrowser::fillExpandedContentPane(%this, %expandedPane) {
         return;
     }
     %descText = new GuiMLTextCtrl("") {
-        position = 0 @ %rightEdgeOfContentPane @ " " @ %bottomOfItemText;
+        position = %rightEdgeOfContentPane @ " " @ %bottomOfItemText;
         extent = ((getWord(%expandedPane.getExtent(), 0) - %rightEdgeOfContentPane) - 5.0) @ " " @ 18;
         text = "<color:ffffff><spush><color:00ff00>" @ %si.descShrt @ "<spop>\n" @ %si.descLong;
         visible = 1;

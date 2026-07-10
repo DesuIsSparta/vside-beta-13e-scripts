@@ -17,7 +17,7 @@ function ratingControl::buildButtons(%this) {
     %i = 0;
     while ((%i < %this.gradations)) {
         %this.images = new GuiBitmapCtrl("") {
-            profile = 0 @ "GuiDefaultProfile";
+            profile = "GuiDefaultProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = %xPos @ " " @ %ypos;
@@ -27,15 +27,14 @@ function ratingControl::buildButtons(%this) {
             visible = 1;
             bitmap = %this.buttonBitmap @ "_n";
             bitmapBase = %this.buttonBitmap;
-        }; @ %i
+        }; @ %i;
         "RatingControlImage".bindClassName(%i, %this.images);
         %this.images.add(%this, %i);
         %xPos = (%xPos + getWord(%this.buttonSize, 0));
         %i = (%i + 1.0);
     }
-    (%i < %this.gradations);
     %this.eventCatcher = new GuiMouseEventCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = (%i < %this.gradations) @ "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";

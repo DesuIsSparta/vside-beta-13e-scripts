@@ -15,12 +15,14 @@ function fakeBuddyInfo(%friends, %faves, %fans) {
         %n = (%n + 1.0);
     }
     %n = 0;
+    (%n < %friends);
     while ((%n < %faves)) {
         %record = getFakeBuddyRecord("fakeFave" @ " " @ formatInt("%0.4d", %n));
         %record.put(UserListFavorites, %record.name);
         %n = (%n + 1.0);
     }
     %n = 0;
+    (%n < %faves);
     while ((%n < %fans)) {
         %record = getFakeBuddyRecord("fakeFan" @ " " @ formatInt("%0.4d", %n));
         %record.put(UserListFans, %record.name);
@@ -46,8 +48,8 @@ function dev_TestMLText(%onOrOff, %method) {
     %lineLong[%lineText @ 0] = "<color:ffff33>" @ %lineLong;
     %lineLong[%lineText @ 1] = "<color:22ff33>" @ %lineLong;
     %lineLong[%lineText @ 2] = %lineLong;
-    %lineLong[%lineText @ 2][%lineText @ 3] = "";
-    %lineLong[%lineText @ 2][%lineText @ 3][%lineText @ 4] = "platform/client/ui/evilbunny";
+    %lineText[3] = "";
+    %lineText[4] = "platform/client/ui/evilbunny";
     if (isObject(geMLTest)) {
         geMLTest.delete();
     }
@@ -786,10 +788,10 @@ function dev_getRandomItem() {
         while ((%n < gRandomItemManager.numItems)) {
             gRandomItemManager.itemWeightCumulative = (gRandomItemManager.itemWeight + %totalWeight @ %n) @ %n;
             %totalWeight = (%totalWeight + gRandomItemManager.itemWeight);
+            %n;
             %n = (%n + 1.0);
         }
         gRandomItemManager.totalWeight = (%n < gRandomItemManager.numItems) @ %totalWeight;
-        %n;
     }
     %rand = getRandom(0, (gRandomItemManager.totalWeight - 1.0));
     %n = 0;
@@ -803,6 +805,10 @@ function dev_getRandomItem() {
     return "";
 };
 function dev_testRandomItems(%iterations) {
+    %totals["A"] = 0;
+    %totals["B"] = 0;
+    %totals["C"] = 0;
+    %totals["D"] = 0;
     dev_clearRandomItems();
     dev_declareRandomItem("A", 1);
     dev_declareRandomItem("B", 1);
@@ -815,9 +821,9 @@ function dev_testRandomItems(%iterations) {
         %n = (%n + 1.0);
     }
     echo("A -" @ " " @ %n[%totals @ "A"]);
-    echo((%n < %iterations) @ "B -" @ " ");
-    echo("C -" @ " ");
-    echo("D -" @ " ");
+    echo("B -" @ " " @ %totals["B"]);
+    echo("C -" @ " " @ %totals["C"]);
+    echo("D -" @ " " @ %totals["D"]);
 };
 function SimObject::getTypeStrings(%this) {
     %types = "";

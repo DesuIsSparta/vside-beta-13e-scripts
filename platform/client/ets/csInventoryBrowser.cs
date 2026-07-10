@@ -28,18 +28,18 @@ function CSInventoryBrowserWindow::Initialize(%this) {
         %ctrl = TreeBrowserControl::newControl(CSInventoryBrowserContainer, "CSBrowser");
         "CSInventoryBrowser".bindClassName(%ctrl);
         "CSInventoryBrowser".setName(%ctrl);
-        %this.menuProfile = "ETSClearMenuProfile" @ CSInventoryBrowser;
-        %this.selectedProfile = "ETSSelectedMenuItemNoBorderProfile" @ CSInventoryBrowser;
+        CSInventoryBrowser.menuProfile = "ETSClearMenuProfile";
+        CSInventoryBrowser.selectedProfile = "ETSSelectedMenuItemNoBorderProfile";
         1.setNumChildren(CSInventoryBrowser);
-        %this.adjustMenuCellHeight = 1 @ CSInventoryBrowser;
-        %this.showMoreInfo = 1 @ CSInventoryBrowser;
-        %this.baseDir = "My Furnishings" @ CSInventoryBrowser;
-        %this.baseDir.addNode(CSInventoryBrowser, CSInventoryBrowser);
+        CSInventoryBrowser.adjustMenuCellHeight = 1;
+        CSInventoryBrowser.showMoreInfo = 1;
+        CSInventoryBrowser.baseDir = "My Furnishings";
+        CSInventoryBrowser.baseDir.addNode(CSInventoryBrowser);
         CSInventoryBrowser.loadAvailableSkus();
         $gGotFurnitureCallback = "CSInventoryBrowser.loadAvailableSkus();" @ "CSFurnitureMoverText.update();" @ "CSFurnitureMover.updateButtonStates();";
         %this.initialized = 1;
     }
-    %this.Path = "" @ CSInventoryBrowser;
+    CSInventoryBrowser.Path = "";
     CSInventoryBrowser.loadAvailableSkus();
 };
 function CSInventoryBrowserWindow::onResized(%this) {
@@ -76,12 +76,11 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
     }
     if (!(%desc $= %this.baseDir)) {
         %ypos = (getWord(%pane.itemText.getPosition(), 1) + getWord(%pane.itemText.getExtent(), 1));
-        %ypos = (%ypos + 3.0);
         %qtyText = new GuiMLTextCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = 5 @ " ";
+            position = 5 @ " " @ %ypos = (%ypos + 3.0);
             extent = (%paneWidth - 5.0) @ " " @ 18;
             minExtent = "1 1";
             sluggishness = -1;
@@ -93,7 +92,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         };
         %ypos = (%ypos + getWord(%qtyText.getExtent(), 1));
         %distributionText = new GuiMLTextCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = 5 @ " " @ %ypos;
@@ -111,7 +110,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         %xPos = ((%paneWidth - %buttonWidth) - 3.0);
         %rightYPos = 18;
         %placeButton = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "BracketButton15Profile";
+            profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = %xPos @ " " @ %rightYPos;
@@ -125,12 +124,11 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
             buttonType = "PushButton";
         };
         %rightYPos = (%rightYPos + getWord(%placeButton.getExtent(), 1));
-        %rightYPos = (%rightYPos + 4.0);
         %putAwayButton = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "BracketButton15Profile";
+            profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %xPos @ " ";
+            position = %xPos @ " " @ %rightYPos = (%rightYPos + 4.0);
             extent = %buttonWidth @ " " @ 15;
             minExtent = "1 1";
             sluggishness = -1;
@@ -141,12 +139,11 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
             buttonType = "PushButton";
         };
         %rightYPos = (%rightYPos + getWord(%putAwayButton.getExtent(), 1));
-        %rightYPos = (%rightYPos + 4.0);
         %buyButton = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "BracketButton15Profile";
+            profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %xPos @ " ";
+            position = %xPos @ " " @ %rightYPos = (%rightYPos + 4.0);
             extent = %buttonWidth @ " " @ 15;
             minExtent = "1 1";
             sluggishness = -1;
@@ -161,12 +158,11 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1.0)), "|"), 1);
         %si = %sku.findBySku(SkuManager);
         if (!(%si.descLong $= "")) {
-            %rightYPos = (%rightYPos + 4.0);
             %moreInfoButton = new GuiVariableWidthButtonCtrl("") {
-                profile = 0 @ "BracketButton15RedProfile";
+                profile = "BracketButton15RedProfile";
                 horizSizing = "right";
                 vertSizing = "bottom";
-                position = %xPos @ " ";
+                position = %xPos @ " " @ %rightYPos = (%rightYPos + 4.0);
                 extent = %buttonWidth @ " " @ 15;
                 minExtent = "1 1";
                 sluggishness = -1;
@@ -186,7 +182,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         }
         %maxThumbnailDim = mMin(((%paneHeight - %ypos) - 3.0), (%xPos - 2.0));
         %thumbnail = new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "top";
             position = 0 @ " " @ (%ypos + 2.0);
@@ -215,7 +211,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         %pane.update();
     }
     %noItemText = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "25 20";
@@ -275,7 +271,7 @@ function CSInventoryBrowserFilterField::OnTextChanged(%this) {
     cancel($gCSInventoryBrowserFilterFieldTimerID);
     $gCSInventoryBrowserFilterFieldTimerID = "onTimer".schedule(%this, %this.timeoutMS);
     %this.getValue().setValue(CSShoppingBrowserFilterField);
-    %this.filterText = %this.getValue() @ CSShoppingBrowser;
+    CSShoppingBrowser.filterText = %this.getValue();
 };
 function CSInventoryBrowserFilterField::OnEnterKey(%this) {
     %this.refilter();
@@ -291,9 +287,9 @@ function CSInventoryBrowserFilterField::refilter(%this) {
         return;
     }
     %this.prevFilterText = %filterText;
-    %this.filterText = %filterText @ CSInventoryBrowser;
+    CSInventoryBrowser.filterText = %filterText;
     CSInventoryBrowser.goToCurrentPath();
     %filterText.setValue(CSShoppingBrowserFilterField);
-    %this.filterText = %filterText @ CSShoppingBrowser;
+    CSShoppingBrowser.filterText = %filterText;
     CSShoppingBrowser.goToCurrentPath();
 };

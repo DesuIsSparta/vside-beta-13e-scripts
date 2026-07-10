@@ -1,5 +1,5 @@
 function AmbientAnimateShapeData::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     return;
 };
 datablock StaticShapeData(BasicAmbientAnimateShapeData) {

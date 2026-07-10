@@ -81,8 +81,9 @@ function changeClothes() {
 };
 function approveFriendRequests() {
     %fansHere = BuddyHudWin.buddyLists;
+    FansHere;
     if (!(isObject(%fansHere))) {
-        return FansHere;
+        return;
     }
     if ((%fansHere.size() == 0.0)) {
         echo("LOAD: There are no waiting requests.");

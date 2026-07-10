@@ -52,7 +52,6 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths) {
         return "";
     }
     if ((%profile $= "")) {
-        // unhandled opcode 222 at 0x000001F9
         %profile = GuiDefaultProfile;
     }
     %inputWordCount = getWordCount(%text);
@@ -147,7 +146,7 @@ function standardSubstitutions(%dry) {
     %wet = strreplace(%wet, "[PLAYERNAME]", $Player::Name);
     %wet = strreplace(%wet, "[PLAYERNAME_URL]", urlEncode($Player::Name));
     %wet = strreplace(%wet, "[TARGETPLAYERNAME]", $gTargetPlayerName);
-    %wet = strreplace(%wet, "[READTOU]", );
+    %wet = strreplace(%wet, "[READTOU]", $MsgCat::login["E-DONT-KNOW-RULES"]);
     if (isDefined("$Net::RegistrationID")) {
         %wet = strreplace(%wet, "[REGISTRATIONID]", $Net::RegistrationID);
     }

@@ -51,10 +51,9 @@ function gGetFieldWithDefault(%object, %name, %def) {
     return %def;
 };
 function tmpFields(%obj) {
-    %tmps = gGetField(%obj);
-    tmpFields;
+    %tmps = gGetField(%obj, tmpFields);
     if (!(isObject(%tmps))) {
-        %tmps = new ScriptObject(temporaryfields);;
+        %tmps = new ScriptObject(temporaryfields);
         if (isObject(MissionCleanup)) {
             %tmps.add(MissionCleanup);
         }
@@ -291,18 +290,14 @@ function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize) {
     while ((%idx < %len)) {
         %segStart = %idx;
         %lastGoodIdx = %len;
-        if (((%len - %segStart) > %segmentSize)) {
-            %idx = strpos(%masterList, %delimiter, %idx);
-            while (((%segStart - %segmentSize) < )) {
-                if ((%idx < 0.0)) {
-                }
-                %lastGoodIdx = %idx;
-                %idx = (%idx + 1.0);
-                %idx = strpos(%masterList, %delimiter, %idx);
+        if (((%len - %segStart) > %segmentSize) && (((%idx = strpos(%masterList, %delimiter, %idx)) - %segStart) < %segmentSize)) {
+            if ((%idx < 0.0)) {
             }
+            %lastGoodIdx = %idx;
+            %idx = (%idx + 1.0);
         }
         %currentList = getSubStr(%masterList, %segStart, (%lastGoodIdx - %segStart));
-        ((%segStart - %segmentSize) < );
+        (((%idx = strpos(%masterList, %delimiter, %idx)) - %segStart) < %segmentSize);
         %idx = (%lastGoodIdx + 1.0);
         if (!(%outString $= "")) {
             %outString = %outString @ %segmentDelimiter @ %currentList;

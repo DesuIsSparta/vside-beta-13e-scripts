@@ -9,7 +9,7 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     }
     %tab.filled = 1;
     %tab.fillTabGeneric(%this);
-    %dataTable = new DataTable(geTGF_MyPlaceDataTable);;
+    %dataTable = new DataTable(geTGF_MyPlaceDataTable);
     0.addColumn(%dataTable, "event", "", "icon", 20, 1, 1);
     1.addColumn(%dataTable, "description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", 342, 1, 1);
     1.addColumn(%dataTable, "username", mlStyle("Host", "tgfTables_ColumnHeader"), "string", 150, 1, 1);
@@ -26,13 +26,13 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     "platform/client/ui/tgf/tgf_door_heart_white".addIconToColumn(%dataTable, "access", "friendsonly");
     "platform/client/ui/tgf/tgf_door_key_white".addIconToColumn(%dataTable, "access", "passwordprotected");
     %container = new GuiControl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         position = "0 7";
         extent = "946 240";
     };
     %container.add(%tab);
     %dottedWindow = new GuiWindowCtrl("") {
-        profile = 0 @ DottedWindowProfile;
+        profile = DottedWindowProfile;
         position = "7 16";
         extent = "936 222";
         canHilite = 0;
@@ -45,7 +45,7 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     };
     %dottedWindow.add(%container);
     %label = new GuiMLTextCtrl("") {
-        position = 0 @ "2 2";
+        position = "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
@@ -64,12 +64,12 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     %tab.GuiTable = %guiTable;
     %guiTable.add(%container);
     %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
-        position = 0 @ "226 4";
+        position = "226 4";
         extent = "717 18";
         noEntriesText = ".. Strange, something went wrong. Try pressing refresh in a few seconds.";
     };
     %guiTable.alternativeTextCtrl.add(%container);
-    %dataTable = new DataTable(geTGF_OtherPlacesDataTable);;
+    %dataTable = new DataTable(geTGF_OtherPlacesDataTable);
     0.addColumn(%dataTable, "event", "", "icon", 20, 1, 1);
     1.addColumn(%dataTable, "description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", ((342.0 + 150.0) + %guiTable.spacing), 1, 1);
     1.addColumn(%dataTable, "location", mlStyle("Where", "tgfTables_ColumnHeader"), "string", 202, 1, 1);
@@ -85,13 +85,13 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     "platform/client/ui/tgf/tgf_door_heart_white".addIconToColumn(%dataTable, "access", "friendsonly");
     "platform/client/ui/tgf/tgf_door_key_white".addIconToColumn(%dataTable, "access", "passwordprotected");
     %container = new GuiControl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         position = "0 250";
         extent = "946 240";
     };
     %container.add(%tab);
     %dottedWindow = new GuiWindowCtrl("") {
-        profile = 0 @ DottedWindowProfile;
+        profile = DottedWindowProfile;
         position = "7 16";
         extent = "936 224";
         canHilite = 0;
@@ -104,7 +104,7 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     };
     %dottedWindow.add(%container);
     %label = new GuiMLTextCtrl("") {
-        position = 0 @ "2 2";
+        position = "2 2";
         extent = "400 20";
         style = "tgfTables_Label";
     };
@@ -122,39 +122,39 @@ function geTGF_tabs::fillTabMyPlace(%this) {
     %tab.GuiTable = %guiTable;
     %guiTable.add(%container);
     %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
-        position = 0 @ "226 4";
+        position = "226 4";
         extent = "717 18";
         noEntriesText = ".. You own them all!";
     };
     %guiTable.alternativeTextCtrl.add(%container);
     if (0) {
         %invite = new GuiMLTextCtrl("") {
-            position = 0 @ "250 473";
+            position = "250 473";
             extent = "600 30";
-            text = mlStyle(, "tgfTables_Invite");
+            text = mlStyle($MsgCat::invitation["TEXT-TGF-MYPLACE"], "tgfTables_Invite");
         };
         %invite.add(%tab);
     }
     %this.refreshTabMyPlace();
 };
 function geTGF_tabs::onShowTabMyPlace(%this) {
-    cancel(geTGF, geTGF_Refresh_Schedule);
+    cancel(geTGF.geTGF_Refresh_Schedule);
     1.setActive(geTGF_Refresh);
     1.setVisible(geTGF_Refresh);
     1.makeFirstResponder(geTGF_MyPlaceGuiTable);
 };
 $gHaveGottenManagerSpaces = 0;
 function geTGF_tabs::refreshTabMyPlace(%this) {
-    1.setVisible(geTGF_MyPlaceGuiTable, alternativeTextCtrl);
-    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_MyPlaceGuiTable, alternativeTextCtrl);
+    1.setVisible(geTGF_MyPlaceGuiTable.alternativeTextCtrl);
+    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_MyPlaceGuiTable.alternativeTextCtrl);
     getOwnerSpacesInfo($Player::Name, "geTGF_OnCompleted_MyPlace");
-    1.setVisible(geTGF_OtherPlacesGuiTable, alternativeTextCtrl);
-    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_OtherPlacesGuiTable, alternativeTextCtrl);
+    1.setVisible(geTGF_OtherPlacesGuiTable.alternativeTextCtrl);
+    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_OtherPlacesGuiTable.alternativeTextCtrl);
     getOwnerSpacesInfo("The-Manager", "geTGF_OnCompleted_MyPlace");
 };
 function geTGF_OnCompleted_MyPlace(%tracker) {
     if ((geTGF_tabs.getCurrentTab().name $= "myplace")) {
-        cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
+        cancel(geTGF.geTGF_Refresh_Schedule);
         1.setActive(geTGF_Refresh);
     }
     if (!(isObject(%tracker))) {
@@ -163,13 +163,11 @@ function geTGF_OnCompleted_MyPlace(%tracker) {
     }
     if ((%tracker.ownerName $= $Player::Name)) {
         %listName = "myplace";
-        // unhandled opcode 515 at 0x000008DC
-        %listName = geTGF_MyPlaceGuiTable;
+        %guiTable = geTGF_MyPlaceGuiTable;
         %properOwnerName = $Player::Name;
     }
     %listName = "otherplaces";
-    // unhandled opcode 515 at 0x000008F1
-    %listName = geTGF_OtherPlacesGuiTable;
+    %guiTable = geTGF_OtherPlacesGuiTable;
     %properOwnerName = "The-Manager";
     "happening".clearItemList(geTGF, %listName);
     %count = %tracker.getCount();
@@ -304,6 +302,7 @@ function geTGF::myplace_GetAndOpenDetailsContainer(%this, %item) {
     }
     %item.constructDeetsWindow(%this, geDeetsWindow);
     1.setVisible(geDeetsLayer);
+    return geDeetsWindow;
 };
 function geTGF_MyPlaceGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %alreadySelected, %mouseClickCount) {
     %listName = "myplace";

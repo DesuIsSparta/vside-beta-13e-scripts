@@ -32,7 +32,7 @@ function CSLayoutSelector::layoutSelected(%this, %newLayoutSelection) {
         return;
     }
     %undoClickCmd = "CSLayoutButtonsArray.getChild(" @ %this.selectedLayout @ ",0).buttonSelect.performClick();";
-    MessageBoxYesNo(%undoClickCmd[$MsgCat::custSpace TAB "LAYOUT_CHANGE" @ "TITLE"], , "CSLayoutSelector.layoutSelectedAndConfirmed(" @ %newLayoutSelection @ ");", %undoClickCmd);
+    MessageBoxYesNo($MsgCat::custSpace["LAYOUT_CHANGE","TITLE"], $MsgCat::custSpace["LAYOUT_CHANGE","BODY"], "CSLayoutSelector.layoutSelectedAndConfirmed(" @ %newLayoutSelection @ ");", %undoClickCmd);
 };
 function CSLayoutSelector::layoutSelectedAndConfirmed(%this, %newLayoutSelection) {
     0.setSelectionState(%this, %this.selectedLayout);
@@ -65,8 +65,8 @@ function CSLayoutSelector::updateSettings(%this, %numLayouts, %curLayout) {
     }
 };
 function CSLayoutSelector::cloneLayout(%this, %sourceLayout) {
-    %title = ;
-    %body = %title[$MsgCat::custSpace TAB "LAYOUT_CLONE" @ "BODY"];
+    %title = $MsgCat::custSpace["LAYOUT_CLONE","TITLE"];
+    %body = $MsgCat::custSpace["LAYOUT_CLONE","BODY"];
     %body = strreplace(%body, "[SRC]", (%sourceLayout + 1.0));
     %body = strreplace(%body, "[DST]", (%this.selectedLayout + 1.0));
     MessageBoxYesNo(%title, %body, "CSLayoutSelector.cloneLayoutConfirmed(" @ %sourceLayout @ ");", "");
@@ -77,7 +77,7 @@ function CSLayoutSelector::cloneLayoutConfirmed(%this, %sourceLayout) {
 function CSLayoutButtonsArray::onCreatedChild(%this, %child) {
     %num = (%this.getCount() - 1.0);
     %ctrl = new GuiBitmapButtonCtrl("") {
-        position = 0 @ "3 0";
+        position = "3 0";
         extent = "35 35";
         profile = "GuiClickLabelProfile";
         command = CSLayoutSelector.getId() @ ".layoutSelected(" @ %num @ ");";
@@ -108,13 +108,13 @@ function CSLayoutSelectorLink::onURL(%this, %url) {
         trim(%args).setMode(CSLayoutSelector);
     }
     if ((%cmd $= "ERASE")) {
-        customSpace::ConfirmEraseLayout(CSLayoutSelector, %child.selectedLayout);
+        customSpace::ConfirmEraseLayout(CSLayoutSelector.selectedLayout);
     }
     if ((%cmd $= "DEFAULT")) {
-        customSpace::ConfirmResetLayoutToDefault(CSLayoutSelector, %child.selectedLayout);
+        customSpace::ConfirmResetLayoutToDefault(CSLayoutSelector.selectedLayout);
     }
     if ((%cmd $= "SAVE_AS_DEFAULT")) {
-        customSpace::ConfirmSaveLayoutAsDefault(CSLayoutSelector, %child.selectedLayout);
+        customSpace::ConfirmSaveLayoutAsDefault(CSLayoutSelector.selectedLayout);
     }
 };
 function CSLayoutSelector::setMode(%this, %mode) {
@@ -163,7 +163,7 @@ function CSLayoutSelector::gotCopyTargetInfo(%this, %infoStr) {
         %title = %numFurnishings[$MsgCat::custSpace TAB "LAYOUT_COPY_TRG_INVAL" @ "TITLE"];
         %title = strreplace(%title, "[SRC]", %layoutFrom);
         %title = strreplace(%title, "[DST]", %layoutTo);
-        %body = %title[$MsgCat::custSpace TAB "LAYOUT_COPY_TRG_INVAL" @ "BODY"];
+        %body = $MsgCat::custSpace["LAYOUT_COPY_TRG_INVAL","BODY"];
         %body = strreplace(%body, "[SRC]", %layoutFrom);
         %body = strreplace(%body, "[DST]", %layoutTo);
         MessageBoxOK(%title, %body, "");
@@ -173,22 +173,22 @@ function CSLayoutSelector::gotCopyTargetInfo(%this, %infoStr) {
     %texturesChnged.copyLayout(%this, %this.sourceLayout, %layoutNum);
 };
 function CSLayoutSelector::copyLayout(%this, %layoutFrom, %layoutTo, %texturesChnged) {
-    %title = ;
+    %title = $MsgCat::custSpace["LAYOUT_COPY","TITLE"];
     %title = strreplace(%title, "[SRC]", (%layoutFrom + 1.0));
     %title = strreplace(%title, "[DST]", (%layoutTo + 1.0));
     if (!(%texturesChnged $= 1)) {
         %body = %texturesChnged[$MsgCat::custSpace TAB "LAYOUT_COPY" @ "BODY"];
     }
-    %body = %body[$MsgCat::custSpace TAB "LAYOUT_COPY" @ "BODY_LOSE_TEX"];
+    %body = $MsgCat::custSpace["LAYOUT_COPY","BODY_LOSE_TEX"];
     %body = strreplace(%body, "[SRC]", (%layoutFrom + 1.0));
     %body = strreplace(%body, "[DST]", (%layoutTo + 1.0));
     %normalModeCmd = "CSLayoutSelector.setMode(\"\");";
     MessageBoxYesNo(%title, %body, "csCopyLayoutFromTo(" @ %layoutFrom @ ", " @ %layoutTo @ ");" @ %normalModeCmd, %normalModeCmd);
 };
 function customSpace::ConfirmEraseLayout(%layoutNum) {
-    %title = ;
+    %title = $MsgCat::custSpace["LAYOUT_ERASE","TITLE"];
     %title = strreplace(%title, "[TRG]", (%layoutNum + 1.0));
-    %body = %title[$MsgCat::custSpace TAB "LAYOUT_ERASE" @ "BODY"];
+    %body = $MsgCat::custSpace["LAYOUT_ERASE","BODY"];
     %body = strreplace(%body, "[TRG]", (%layoutNum + 1.0));
     %cbOkay = "CustomSpace::EraseLayout(" @ %layoutNum @ ");";
     %cbCancel = "";
@@ -203,9 +203,9 @@ function customSpace::EraseLayout(%layoutNum) {
     setIdle(0);
 };
 function customSpace::ConfirmResetLayoutToDefault(%layoutNum) {
-    %title = ;
+    %title = $MsgCat::custSpace["LAYOUT_DEFAULT","TITLE"];
     %title = strreplace(%title, "[TRG]", (%layoutNum + 1.0));
-    %body = %title[$MsgCat::custSpace TAB "LAYOUT_DEFAULT" @ "BODY"];
+    %body = $MsgCat::custSpace["LAYOUT_DEFAULT","BODY"];
     %body = strreplace(%body, "[TRG]", (%layoutNum + 1.0));
     %cbOkay = "CustomSpace::ResetLayoutToDefault(" @ %layoutNum @ ");";
     %cbCancel = "";
@@ -223,8 +223,7 @@ function customSpace::ConfirmSaveLayoutAsDefault(%layoutIdx) {
     %title = "Save Layout " @ (%layoutIdx + 1.0) @ " To Default Apartment";
     %body = "Do you want to make layout " @ (%layoutIdx + 1.0) @ " in your current space the default layout " @ (%layoutIdx + 1.0) @ " for new apartments of";
     if ($StandAlone) {
-        %body = MissionInfo @ %this.modelID;
-        %body @ " type ";
+        %body = %body @ " type " @ MissionInfo.modelID;
     }
     %body = %body @ " this type";
     %body = %body @ "? The previous default layout " @ (%layoutIdx + 1.0) @ " will be replaced locally.";
@@ -245,7 +244,7 @@ function CSLayoutButton::onMouseDragged(%this) {
 };
 function CSLayoutButton::makeVisualClone(%this) {
     return new GuiBitmapButtonCtrl("") {
-        position = 0 @ "0 0";
+        position = "0 0";
         extent = %this.getExtent();
         bitmap = %this.bitmap;
     };;

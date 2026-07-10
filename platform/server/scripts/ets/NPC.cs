@@ -2,7 +2,7 @@ function NPCManager::init(%this) {
     if (isObject(%this.animSets)) {
         %this.animSets.delete();
     }
-    %this.animSets = 0 @ new StringMap("");;
+    %this.animSets = new StringMap("");
     %this.animSets.add(MissionCleanup);
     %as = %this.animSets;
     %this.thinkPeriod = 1311;
@@ -203,7 +203,7 @@ function restoreTransformsSet(%simSet) {
     %n = 0;
     while ((%n < %num)) {
         %obj = %n.getObject(%simSet);
-        gGetField(%obj).setTransform(%obj, origTransform);
+        gGetField(%obj, origTransform).setTransform(%obj);
         %n = (%n + 1.0);
     }
 };
@@ -310,8 +310,8 @@ function NPCManager::think(%this) {
         %n.getObject(%this.NPCGroup).thinkNPC(%this);
         %n = (%n + 1.0);
     }
-    %this.thinkPeriod.schedule(%this);
-    return think;
+    think.schedule(%this, %this.thinkPeriod);
+    return (%n < %NPCNum);
 };
 function NPCManager::thinkNPC(%this, %npc) {
     %setName = %npc.getDataBlock().animSetName;
@@ -322,8 +322,7 @@ function NPCManager::thinkNPC(%this, %npc) {
         return;
     }
     %curTime = getSimTime();
-    %nat = gGetField(%npc);
-    nextAnimTime;
+    %nat = gGetField(%npc, nextAnimTime);
     if (!(%nat $= "")) {
     }
     if ((%curTime < %nat)) {

@@ -32,7 +32,7 @@ function AimInviteDialog::onWake(%this) {
     1.setControlsActive(%this);
 };
 function AimInviteDialog::refreshBuddyDropdown(%this) {
-    if ((AimInviteBuddyDropDown @ " " @ %this.getText $= "All buddies!")) {
+    if ((AimInviteBuddyDropDown.getText $= "All buddies!")) {
         return;
     }
     AimInviteBuddyDropDown.clear();
@@ -109,7 +109,7 @@ function AimInviteAddBuddyDialog::refresh(%this) {
         }
         if ((%buddyState == 2.0)) {
         }
-        if ((%buddyState == 3.0) && (findField(AimInviteDialog, %this.buddyNames, %buddyName) == -(1.0))) {
+        if ((%buddyState == 3.0) && (findField(AimInviteDialog.buddyNames, %buddyName) == -(1.0))) {
             %i.addRow(AimInviteAddBuddyList, %i, %buddyName);
         }
         %i = (%i + 1.0);

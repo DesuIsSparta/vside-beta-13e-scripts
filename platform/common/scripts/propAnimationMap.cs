@@ -1,9 +1,9 @@
 safeEnsureScriptObject("StringMap", "PropAnimationMap", 1);
 safeEnsureScriptObject("StringMap", "PropGenreMap", 1);
 safeEnsureScriptObject("StringMap", "PropInternalDescriptionMap", 1);
-ignoreCase = 1 @ PropAnimationMap;
-ignoreCase = 1 @ PropGenreMap;
-ignoreCase = 1 @ PropInternalDescriptionMap;
+PropAnimationMap.ignoreCase = 1;
+PropGenreMap.ignoreCase = 1;
+PropInternalDescriptionMap.ignoreCase = 1;
 function initializePropAnimationMap() {
     setupPropAnimations(8002, "ywatrpt", "y", "the watering can         - f");
     setupPropAnimations(8010, "ygunsling", "y", "6-shooters               - f");

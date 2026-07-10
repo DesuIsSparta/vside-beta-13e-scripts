@@ -270,7 +270,7 @@ function vurl::clearResolution(%this) {
 };
 function vurl::doResolveVURL(%this) {
     %request = new ManagerRequest("") {
-        className = 0 @ "ResolveVURLRequest";
+        className = "ResolveVURLRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -301,7 +301,7 @@ function vurl::doReportError(%this, %errorCode, %errorText) {
 };
 function vurl::doReportSuccessExpected(%this) {
     if (geTGF.isVisible()) {
-        %this.doreopen = 1 @ geTGF;
+        geTGF.doreopen = 1;
     }
     geTGF.closeFully();
     log("network", "info", "VURL Teleport success expected. VURL=" @ %this.vurl);
@@ -349,16 +349,16 @@ function vurl::DefaultReportError(%vurl, %errorCode, %errorText) {
             %errorCode = "NOSPACE";
         }
     }
-    %errorMessage = ;
+    %errorMessage = $MsgCat::VURLError["ERROR_",strupr(%errorCode)];
     handleSystemMessage("msgInfoMessage", %errorMessage);
     if (geTGF.isVisible()) {
     }
-    if ((%vurl.loggedIn == WorldMap)) {
+    if ((WorldMap.loggedIn == 0.0)) {
         MessageBoxOK("Whoa!", %errorMessage, "");
     }
 };
 function vurl::DefaultRequestPassword(%this) {
-    MessageBoxTextEntryWithCancel(, , VURL_ResumbmitWithPassword, "", 0);
+    MessageBoxTextEntryWithCancel($MsgCat::VURLText["PASSWORD_REQUIRED_TITLE"], $MsgCat::VURLText["PASSWORD_REQUIRED_TEXT"], VURL_ResumbmitWithPassword, "", 0);
     $VURL::saveVurlForPasswordCheck = %this.vurl;
 };
 function VURL_ResumbmitWithPassword(%newPassword) {
@@ -438,8 +438,7 @@ function vurlOperation(%line, %ignoreDownloadStatus) {
         %ignoreDownloadStatus = 0;
     }
     log("network", "debug", "vurlOperation, vurl=\"" @ %line @ "\"");
-    %vurl = new ScriptObject("");;
-    0;
+    %vurl = new ScriptObject("");
     "VURL".bindClassName(%vurl);
     %ignoreDownloadStatus.setIgnoreDownloadStatus(%vurl);
     if (%line.setVURL(%vurl)) {
@@ -454,8 +453,7 @@ function vurlOperation(%line, %ignoreDownloadStatus) {
 };
 function vurlClearResolutionAndExecute(%line) {
     log("network", "debug", "vurlClearResolutionAndExecute, vurl=\"" @ %line @ "\"");
-    %vurl = new ScriptObject("");;
-    0;
+    %vurl = new ScriptObject("");
     "VURL".bindClassName(%vurl);
     if (%line.setVURL(%vurl)) {
         %vurl.clearResolution();
@@ -476,7 +474,7 @@ function vurlClearResolution(%line) {
 };
 function vurlGetParsedVurl(%aVurlString) {
     %theVurl = new ScriptObject("") {
-        class = 0 @ "VURL";
+        class = "VURL";
     };
     if (%aVurlString.setVURL(%theVurl)) {
         log("login", "debug", getScopeName() @ " " @ "- parsed VURL");

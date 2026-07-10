@@ -4,7 +4,7 @@ datablock StaticShapeData(AcePetrolRoof) {
     isPlaying = 1;
 };
 function AcePetrolRoof::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     echo("onAdd");
     %obj.isPlaying = 1;
 };
@@ -14,7 +14,7 @@ datablock StaticShapeData(AcePetrolWall) {
     isPlaying = 1;
 };
 function AcePetrolWall::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     echo("onAdd");
     %obj.isPlaying = 1;
 };
@@ -24,7 +24,7 @@ datablock StaticShapeData(Cowboy) {
     isPlaying = 1;
 };
 function Cowboy::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     echo("onAdd");
     %obj.isPlaying = 1;
 };
@@ -34,7 +34,7 @@ datablock StaticShapeData(flipcom) {
     isPlaying = 1;
 };
 function flipcom::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     echo("onAdd");
     %obj.isPlaying = 1;
 };
@@ -44,7 +44,7 @@ datablock StaticShapeData(HotelSign1) {
     isPlaying = 1;
 };
 function HotelSign1::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     echo("onAdd");
     %obj.isPlaying = 1;
 };
@@ -54,7 +54,7 @@ datablock StaticShapeData(HotelSign2) {
     isPlaying = 1;
 };
 function HotelSign2::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     echo("onAdd");
     %obj.isPlaying = 1;
 };
@@ -64,7 +64,7 @@ datablock StaticShapeData(Tire) {
     isPlaying = 1;
 };
 function Tire::onAdd(%unused, %obj) {
-    "ambient".playThread(%obj, 0);
+    0.playThread("ambient", %obj);
     echo("onAdd");
     %obj.isPlaying = 1;
 };

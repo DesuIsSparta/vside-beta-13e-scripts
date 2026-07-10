@@ -22,7 +22,7 @@ function ItemData::onThrow(%this, %user, %amount) {
     }
     %amount.decInventory(%user, %this);
     %obj = new Item("") {
-        dataBlock = 0 @ %this;
+        dataBlock = %this;
         rotation = "0 0 1 " @ (getRandom() * 360.0);
         count = %amount;
     };
@@ -34,8 +34,7 @@ function ItemData::onPickup(%this, %obj, %user, %amount) {
     %count = %obj.count;
     if ((%count $= "")) {
         if (!(%this.maxInventory $= "")) {
-            %count = %this.maxInventory;
-            if (!()) {
+            if (!(%count = %this.maxInventory)) {
                 return;
             }
         }
@@ -53,7 +52,7 @@ function ItemData::onPickup(%this, %obj, %user, %amount) {
 };
 function ItemData::create(%data) {
     %obj = new Item("") {
-        dataBlock = 0 @ %data;
+        dataBlock = %data;
         static = 1;
         rotate = 1;
     };

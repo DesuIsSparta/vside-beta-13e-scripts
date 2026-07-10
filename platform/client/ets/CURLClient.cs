@@ -21,7 +21,7 @@ function CURLObject::onRecvData(%this, %data) {
 function CURLObject::onDone(%this) {
     log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done!");
     %this.remove(CURLSimGroup);
-    0.schedule(%this);
+    delete.schedule(%this, 0);
     if (isObject(%this.callBackSink)) {
         %this.onDone(%this.callBackSink);
     }
@@ -30,7 +30,7 @@ function CURLObject::onError(%this, %errorNum, %errorName) {
     log("communication", "error", getScopeName() @ " " @ "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
     if (!(%this.noDeleteOnError)) {
         %this.remove(CURLSimGroup);
-        0.schedule(%this);
+        delete.schedule(%this, 0);
     }
     if (isObject(%this.callBackSink)) {
         %errorName.onError(%this.callBackSink, %this, %errorNum);
@@ -63,19 +63,19 @@ function CurlClassNameTest::onRecvData(%this, %data) {
 function CurlDownloadClassName::onDone(%this) {
     log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done in CurlDownloadClassName!");
     %this.remove(CURLSimGroup);
-    0.schedule(%this);
+    delete.schedule(%this, 0);
     log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
 };
 function PostTestClass::onDone(%this) {
     log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done!");
     %this.remove(CURLSimGroup);
-    0.schedule(%this);
+    delete.schedule(%this, 0);
     log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
 };
 function PostTestClass::onError(%this, %errorNum, %errorName) {
     log("communication", "error", getScopeName() @ " " @ "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
     %this.remove(CURLSimGroup);
-    0.schedule(%this);
+    delete.schedule(%this, 0);
     log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
 };
 function ScreenShotUploaderClass::onProgress(%this, %dltotal, %dlnow, %ultotal, %ulnow) {
@@ -93,7 +93,7 @@ function ScreenShotUploaderClass::onProgress(%this, %dltotal, %dlnow, %ultotal, 
 function ScreenShotUploaderClass::onDone(%this) {
     log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " is done!");
     %this.remove(CURLSimGroup);
-    0.schedule(%this);
+    delete.schedule(%this, 0);
     log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
     if (isObject(%this.callBackSink)) {
         %this.onDone(%this.callBackSink);
@@ -102,7 +102,7 @@ function ScreenShotUploaderClass::onDone(%this) {
 function ScreenShotUploaderClass::onError(%this, %errorNum, %errorName) {
     log("communication", "error", getScopeName() @ " " @ "- " @ %this.getName() @ " received error \"" @ %errorName @ "\"!");
     %this.remove(CURLSimGroup);
-    0.schedule(%this);
+    delete.schedule(%this, 0);
     log("communication", "debug", getScopeName() @ " " @ "- Currently, " @ CURLSimGroup.getCount() @ " CURLObjects remaining in the system.");
     if (isObject(%this.callBackSink)) {
         %this.onError(%this.callBackSink);

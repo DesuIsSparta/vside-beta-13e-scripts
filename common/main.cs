@@ -86,7 +86,7 @@ function checkUnusedArgs() {
 };
 function doStart() {
     log("initialization", "info", "--------- Args ---------");
-    log("initialization", "info",  @ " " @ getAllArgs());
+    log("initialization", "info", $Game::argv[0] @ " " @ getAllArgs());
     log("initialization", "info", "--------- Parsing Arg MOD: Main ---------");
     parseMainArgs();
     log("initialization", "info", "--------- Parsing Arguments ---------");

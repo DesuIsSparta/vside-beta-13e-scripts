@@ -6,19 +6,19 @@ function newTGFGoRound(%name) {
 function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
     %container.deleteMembers();
     %ctrl = new GuiBitmapCtrl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         extent = %container.getExtent();
     };
     %ctrl.add(%container);
     %container.mBitmapCtrl = %ctrl;
     %ctrlB = new GuiControl("") {
-        profile = 0 @ EtsDarkBorderlessBoxProfile;
+        profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
         position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 10.0);
     };
     %ctrlB.add(%container);
     %ctrl = new GuiMLTextCtrl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundLilThumb";
     };
@@ -28,27 +28,27 @@ function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
 function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
     %container.deleteMembers();
     %ctrl = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         position = "0 0";
         extent = %container.getExtent();
     };
     %ctrl.add(%container);
     %container.mBitmapCtrl = %ctrl;
     %ctrlB = new GuiControl("") {
-        profile = 0 @ EtsDarkBorderlessBoxProfile;
+        profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
         position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 18.0);
     };
     %ctrlB.add(%container);
     %ctrl = new GuiMLTextCtrl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundBigThumb";
     };
     %ctrl.add(%ctrlB);
     %container.mTextCtrl = %ctrl;
     %ctrl = new GuiBitmapButtonCtrl("") {
-        position = 0 @ "-2 -2";
+        position = "-2 -2";
         extent = VectorAdd(%container.getExtent(), "4 4");
         command = %this @ ".onBigThumbClick(" @ %container @ ");";
         canHilite = 0;

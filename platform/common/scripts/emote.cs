@@ -333,7 +333,7 @@ function intializeSharedEmoteDict() {
     if (isObject(MissionCleanup)) {
         SharedEmoteDict.add(MissionCleanup);
     }
-    // unhandled opcode 465 at 0x000013B2
+    %dict = SharedEmoteDict;
     "dnc2".put(%dict, "dnc1");
     "dnc3".put(%dict, "dnc2");
     "dnc4".put(%dict, "dnc3");
@@ -365,8 +365,7 @@ function initializeProtectedAnims() {
     if (isObject(MissionCleanup)) {
         ProtectedAnimsDict.add(MissionCleanup);
     }
-    // unhandled opcode 465 at 0x00001519
-    %got = ProtectedAnimsDict;
+    %dict = ProtectedAnimsDict;
     2.put(%dict, "dnc1");
     2.put(%dict, "dnc2");
     2.put(%dict, "dnc3");
@@ -500,7 +499,7 @@ function intializeDrinkExcludedAnims() {
     if (isObject(MissionCleanup)) {
         DrinkExcludedAnimsDict.add(MissionCleanup);
     }
-    // unhandled opcode 465 at 0x00001D03
+    %dict = DrinkExcludedAnimsDict;
     2.put(%dict, "rotfl");
 };
 intializeDrinkExcludedAnims();

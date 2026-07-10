@@ -56,9 +56,9 @@ function ApplauseMeterGui::scheduleApplaudMeterGuiClose(%this) {
 function ApplauseMeterGui::closeByUser(%this) {
     if ((%this.applauseMeterUse $= "sumo")) {
         if ((%this.sumoGameType $= "PillowFightGame")) {
-            MessageBoxOK(%this[$MsgCat::applauseGui @ "MSG-PILLOW-WARN"], , "");
+            MessageBoxOK(%this[$MsgCat::applauseGui @ "MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USERCLOSE"], "");
         }
-        MessageBoxOK(, , "");
+        MessageBoxOK($MsgCat::applauseGui["MSG-SUMO-WARN"], $MsgCat::applauseGui["MSG-SUMO-USERCLOSE"], "");
         return 0;
     }
     return %this.close();
@@ -175,11 +175,11 @@ function ApplauseMeterGui::onBlockGameKeys(%this, %keyCodeStr, %isKeyDown) {
 function ApplauseMeterGui::openForSumo(%this, %gameType) {
     %this.sumoGameType = %gameType;
     if ((%this.sumoGameType $= "PillowFightGame")) {
-        .setText(ApplauseMeterGui);
-        .setText(ApplauseMeterInfoText);
+        $MsgCat::applauseGui["TITLE-PILLOW"].setText(ApplauseMeterGui);
+        $MsgCat::applauseGui["BODYTEXT-PILLOW"].setText(ApplauseMeterInfoText);
     }
-    .setText(ApplauseMeterGui);
-    .setText(ApplauseMeterInfoText);
+    $MsgCat::applauseGui["TITLE-SUMO"].setText(ApplauseMeterGui);
+    $MsgCat::applauseGui["BODYTEXT-SUMO"].setText(ApplauseMeterInfoText);
     %this.nonIdleStateA = 0;
     ApplauseMeterGui.alignToBottom();
     1.setActivityActive(getUserActivityMgr(), "wrestling");
@@ -236,8 +236,8 @@ function ApplauseMeterGui::onSumoKeys(%this, %keyCodeStr, %isKeyDown) {
 function ApplauseMeterGui::openForApplause(%this, %playerName) {
     gSetField(%this, "applaudeGoIdleSched", "");
     gSetField(%this, "closeApplauseMeterGuiSched", "");
-    .setText(ApplauseMeterGui);
-     @ " " @ %playerName.setText(ApplauseMeterInfoText);
+    $MsgCat::applauseGui["TITLE-APPLAUSE"].setText(ApplauseMeterGui);
+    $MsgCat::applauseGui["BODYTEXT-APPLAUSE"] @ " " @ %playerName.setText(ApplauseMeterInfoText);
     commandToServer('SetMyApplauseTarget', %playerName);
     1.setVisible(ApplauseMeterActionIconContainer);
     %this.nonIdleStateA = 0;

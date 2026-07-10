@@ -11,7 +11,7 @@ function GrowingPlantClient::onPlantCreated(%nuggetId) {
         warn(getScopeName() @ "->passed empty nuggetID");
         return;
     }
-    $DlgNameAPlant = MessageBoxTextEntryWithCancel(, , "GrowingPlantClient::NamePlantDialogSubmit", "Planty", 32);
+    $DlgNameAPlant = MessageBoxTextEntryWithCancel($MsgCat::furniture["NAMEPLANT-TITLE"], $MsgCat::furniture["NAMEPLANT-PROMPT"], "GrowingPlantClient::NamePlantDialogSubmit", "Planty", 32);
     $DlgNameAPlant.plantNuggetID = %nuggetId;
 };
 function GrowingPlantClient::NamePlantDialogSubmit(%newName) {

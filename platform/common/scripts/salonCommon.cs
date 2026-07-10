@@ -17,9 +17,9 @@ function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cut
     %si.salonStyleIndex = $NUM_SALON_STYLES;
     $NUM_SALON_STYLES = ($NUM_SALON_STYLES + 1.0);
 };
-$NUM_SALON_STYLES[$SALON_STYLE_BALD_SKU @ "f"] = 20315;
-$NUM_SALON_STYLES[$SALON_STYLE_BALD_SKU @ "f"][$SALON_STYLE_BALD_SKU @ "m"] = 177;
-$NUM_SALON_STYLES[$SALON_STYLE_BALD_SKU @ "f"][$SALON_STYLE_BALD_SKU @ "m"][$SALON_STYLE_BALD_SKU @ "n"] = "";
+$SALON_STYLE_BALD_SKU["f"] = 20315;
+$SALON_STYLE_BALD_SKU["m"] = 177;
+$SALON_STYLE_BALD_SKU["n"] = "";
 function SalonDefineStyles() {
     SalonDefineChair("basicHair", "vSalon - choose a style!", "styling", "La Bonita Salon in LGA", "salon", 0);
     SalonDefineStyle("basicHair", 20359, "8006 18006", "hpick", 9000, "");

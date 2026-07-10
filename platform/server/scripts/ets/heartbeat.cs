@@ -1,5 +1,5 @@
 function serverStart() {
-    %initRequest = new CURLObject(InitRequest);;
+    %initRequest = new CURLObject(InitRequest);
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=start";
@@ -25,7 +25,7 @@ function serverHeartBeat() {
         error("StandAlone - turning off serverHeartBeat.");
         return;
     }
-    %initRequest = new CURLObject(InitRequest);;
+    %initRequest = new CURLObject(InitRequest);
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=heartbeat";

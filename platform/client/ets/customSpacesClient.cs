@@ -386,7 +386,7 @@ function CustomSpaceClient::ReallyTryBlockUserFromSpace(%playerName, %unblock) {
     %blockText = (%unblock == 0.0) ? "block" : "unblock";
     %space = CustomSpaceClient::GetSpaceImIn();
     %request = new ManagerRequest("") {
-        className = 0 @ "BanFromSpaceRequest";
+        className = "BanFromSpaceRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -434,7 +434,7 @@ function CustomSpaceClient::TryBootAllUsersFromSpace(%space) {
         %space = CustomSpaceClient::GetSpaceImIn();
     }
     %request = new ManagerRequest("") {
-        className = 0 @ "BootAllFromSpaceRequest";
+        className = "BootAllFromSpaceRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -472,8 +472,7 @@ function teleportToSpaceNumber(%number) {
     commandToServer('GoToSpaceNumber', %number);
 };
 function getBuildingDirectory(%buildingName, %callbackFn, %callbackFail) {
-    %BuildingDirRequest = new SimObject("");;
-    0;
+    %BuildingDirRequest = new SimObject("");
     if (isObject(MissionCleanup)) {
         %BuildingDirRequest.add(MissionCleanup);
     }
@@ -487,8 +486,7 @@ function getBuildingDirectory(%buildingName, %callbackFn, %callbackFail) {
     doGetSpaceInfo(%BuildingDirRequest);
 };
 function getBuildingSpaceInfo(%buildingName, %spaceName, %callbackFn, %callbackFail) {
-    %BuildingDirRequest = new SimObject("");;
-    0;
+    %BuildingDirRequest = new SimObject("");
     if (isObject(MissionCleanup)) {
         %BuildingDirRequest.add(MissionCleanup);
     }
@@ -695,7 +693,7 @@ function GetBuildingInfoRequest(%tracker) {
         return;
     }
     %request = new ManagerRequest("") {
-        className = 0 @ "GetBuildingInfo";
+        className = "GetBuildingInfo";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -721,8 +719,7 @@ function GetBuildingInfo::onDone(%this) {
             eval(%command);
         }
     }
-    %buildingInfo = new SimObject("");;
-    0;
+    %buildingInfo = new SimObject("");
     if (isObject(MissionCleanup)) {
         %buildingInfo.add(MissionCleanup);
     }
@@ -732,8 +729,7 @@ function GetBuildingInfo::onDone(%this) {
     %buildingInfo.floorPlanCount = "floorPlansCount".getValue(%this);
     %idx = 0;
     while ((%idx < %buildingInfo.floorPlanCount)) {
-        %floorplan = new SimObject("");;
-        0;
+        %floorplan = new SimObject("");
         if (isObject(MissionCleanup)) {
             %floorplan.add(MissionCleanup);
         }
@@ -783,7 +779,7 @@ function doGetSpaceInfo(%tracker) {
         return;
     }
     %request = new ManagerRequest("") {
-        className = 0 @ "GetSpaceInfo";
+        className = "GetSpaceInfo";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -819,11 +815,10 @@ function GetSpaceInfo::onDone(%this) {
     }
     %this.tracker.spaceBuildingName = "building".getValue(%this);
     %this.tracker.spaceCount = "spaceCount".getValue(%this);
-    %this.tracker.spaces = 0 @ new SimGroup("");;
+    %this.tracker.spaces = new SimGroup("");
     %idx = 0;
     while ((%idx < %this.tracker.spaceCount)) {
-        %space = new SimObject("");;
-        0;
+        %space = new SimObject("");
         if (isObject(MissionCleanup)) {
             %space.add(MissionCleanup);
         }
@@ -882,7 +877,7 @@ function GetSpaceInfo::onError(%this, %unused, %errMsg) {
 };
 function purchaseApartmentRequest(%space, %useBux, %unused, %callback, %callbackFail) {
     %request = new ManagerRequest("") {
-        className = 0 @ "PurchaseSpaceRequest";
+        className = "PurchaseSpaceRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -932,7 +927,7 @@ function PurchaseSpaceRequest::onError(%this, %unused, %errMsg) {
 };
 function getCustomSpacePurchaseInfo(%space, %callback) {
     %request = new ManagerRequest("") {
-        className = 0 @ "CustomSpacePurchaseInfo";
+        className = "CustomSpacePurchaseInfo";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -992,7 +987,7 @@ function csCopyLayoutFromTo(%from, %to) {
 };
 function clientCmdCSGotLayoutVitals(%infoStr) {
     %layoutNum = getField(%infoStr, 0);
-    if ((%this.copyTarget == CSLayoutSelector)) {
+    if ((CSLayoutSelector.copyTarget == %layoutNum)) {
         %infoStr.gotCopyTargetInfo(CSLayoutSelector);
     }
 };
@@ -1016,7 +1011,7 @@ function csSaveMediaFavorites() {
 };
 function csRequestHotMedia() {
     %request = new ManagerRequest("") {
-        className = 0 @ "GetUrlRatingListRequest";
+        className = "GetUrlRatingListRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -1061,7 +1056,7 @@ function GetUrlRatingListRequest::onError(%this, %unused, %errMsg) {
 };
 function csRequestMediaStatistics(%mediaURL) {
     %request = new ManagerRequest("") {
-        className = 0 @ "GetUrlRatingRequest";
+        className = "GetUrlRatingRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -1091,7 +1086,7 @@ function GetUrlRatingRequest::onError(%this, %unused, %errMsg) {
 };
 function csRecordMediaShow(%mediaURL, %type) {
     %request = new ManagerRequest("") {
-        className = 0 @ "RecordUrlShowRequest";
+        className = "RecordUrlShowRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -1116,7 +1111,7 @@ function RecordUrlShowRequest::onError(%this, %unused, %errMsg) {
 };
 function csRecordMediaView(%mediaURL, %type) {
     %request = new ManagerRequest("") {
-        className = 0 @ "RecordUrlViewRequest";
+        className = "RecordUrlViewRequest";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);

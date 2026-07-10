@@ -50,18 +50,17 @@ function GuiConvBubbleCtrl::AutosizeTimer(%this) {
     if (ConvBubScroll.isAtBottom()) {
         0.autoResize(%this, 0);
     }
-    cancel(resizeTimer, gGetField(%this));
+    cancel(gGetField(%this, resizeTimer));
     gSetField(%this, resizeTimer, "AutosizeTimer".schedule(%this, 1000));
 };
 $gConvBubOrigSlug = -(123.0);
 $gConvBubChillTimer = 0;
 function GuiConvBubbleCtrl::reexpand(%this, %howLongSecs) {
-    cancel(resizeTimer, gGetField(%this));
+    cancel(gGetField(%this, resizeTimer));
     gSetField(%this, resizeTimer, "AutosizeTimer".schedule(%this, (%howLongSecs * 1000.0)));
-    if (!(gGetField(%this))) {
+    if (!(gGetField(%this, expanded))) {
         if (($gConvBubOrigSlug == -(123.0))) {
             $gConvBubOrigSlug = %this.getSluggishness();
-            expanded;
         }
         gSetField(%this, expanded, 1);
         0.5.setSluggishness(%this);
@@ -105,12 +104,12 @@ function ConvBub::chooseProfile(%this) {
     if (isObject(ApplauseMeterGui)) {
     }
     if (ApplauseMeterGui.downplayChatBubble()) {
-        %this.setProfile();
+        ConvBubFadedProfile.setProfile(%this);
     }
     if ("hween".hasRoleString($player)) {
-        %this.setProfile();
+        ConvBubSpookyProfile.setProfile(%this);
     }
-    %this.setProfile();
+    ConvBubProfile.setProfile(%this);
 };
 $gConvBubAutoCloseTimer = 0;
 function ConvBub::restartAutoCloseTimer(%this, %timeout) {
@@ -162,10 +161,10 @@ function ConvBubVecCtrl::onURL(%this, %url) {
     }
 };
 function ConvBubScroll::onScrolledToBottom(%this) {
-    if (%this.isEavesdrop) {
-        %this.setProfile();
+    if (ConvBub.isEavesdrop) {
+        ETSScrollDimProfile.setProfile(%this);
     }
-    %this.setProfile();
+    ETSScrollDarkProfile.setProfile(%this);
 };
 function ConvBubScroll::onMouseDown(%this) {
     ConvBub.onMouseDown();
@@ -177,10 +176,8 @@ function LinkContextMenu::initWithURLAndTitle(%this, %url, %title) {
     %this.clear();
     %title.setText(%this);
     %this.url = %url;
-    %n = (%n + 1.0);
-    0.add(%this, "Visit Link", );
-    %n = (%n + 1.0);
-    0.add(%this, "Copy Link", );
+    0.add(%this, "Visit Link", %n = (%n + 1.0));
+    0.add(%this, "Copy Link", %n = (%n + 1.0));
 };
 function LinkContextMenu::onSelect(%this, %unused, %text) {
     if ((%text $= "Visit Link")) {

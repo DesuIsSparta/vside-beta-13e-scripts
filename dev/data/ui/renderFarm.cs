@@ -94,6 +94,7 @@ function rf_beginRender(%request) {
     if ((%gender $= "f")) {
     }
     %player = $gRFPlayerM;
+    $gRFPlayerF;
     %request.skus.setActiveSKUs(%player);
     %request.height.setHeight(%player);
     %player.setSimObject(geRenderFarmObjectView);
@@ -142,8 +143,9 @@ function rf_generateTestSkus(%num, %forJavascript) {
             if (%drawerName.isOptionalDrawer(SkuManager)) {
             }
             %prob = 1.0;
+            0.1;
             if ((getRandom() <= %prob)) {
-                if ((%gender[0.1 @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
+                if ((%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
                     %skus = %drawerName.getSkusDrwr(SkuManager);
                     %skus = %gender.filterSkusGender(SkuManager, %skus);
                     %gender[%skus @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] = ;
@@ -156,6 +158,7 @@ function rf_generateTestSkus(%num, %forJavascript) {
             %d = (%d - 1.0);
         }
         %skulist = trim(%skulist);
+        (%d >= 0.0);
         if (%forJavascript) {
             %ret = %ret @ "   gSkusList[gSkusList.length] = \"";
         }
@@ -168,6 +171,7 @@ function rf_generateTestSkus(%num, %forJavascript) {
     }
     if (%forJavascript) {
         %ret = %ret @ "}\n";
+        (%n < %num);
     }
     return %ret;
 };

@@ -23,7 +23,7 @@ function queuePackageUpdates(%missing) {
     if (!(isObject(%missing))) {
         %missing = AssetManager::getMissingAssets();
     }
-    missingPackages = %missing @ packageDownload;
+    packageDownload.missingPackages = %missing;
     packageDownload.init();
 };
 function downloadPackageUpdates(%missing) {
@@ -37,13 +37,11 @@ function downloadPackageUpdates(%missing) {
 function packageDownload::reinit(%this, %missingArray) {
     %realCurrentItem = (%this.currentItem - 1.0);
     %currentKey = %realCurrentItem.getKey(%this.missingPackages);
-    %newMissingArray = new Array("");;
-    0;
+    %newMissingArray = new Array("");
     if (isObject(MissionCleanup)) {
         %newMissingArray.add(MissionCleanup);
     }
-    %newStatusMap = new StringMap("");;
-    0;
+    %newStatusMap = new StringMap("");
     if (isObject(MissionCleanup)) {
         %newStatusMap.add(MissionCleanup);
     }
@@ -71,11 +69,11 @@ function packageDownload::reinit(%this, %missingArray) {
 function packageDownload::init(%this) {
     %this.currentItem = 0;
     %this.wasInterrupted = 0;
-    %this.statusMap = 0 @ new StringMap("");;
+    %this.statusMap = new StringMap("");
     if (isObject(MissionCleanup)) {
         %this.statusMap.add(MissionCleanup);
     }
-    %this.bytesDownloadedMap = 0 @ new StringMap("");;
+    %this.bytesDownloadedMap = new StringMap("");
     if (isObject(MissionCleanup)) {
         %this.bytesDownloadedMap.add(MissionCleanup);
     }
@@ -158,8 +156,7 @@ function packageDownload::downloadFile(%this) {
         return;
     }
     %name = "packageDownloadClass" @ getRandom(0, 1000);
-    %curl = new URLPostObject(%name);;
-    0;
+    %curl = new URLPostObject(%name);
     if (isObject(MissionCleanup)) {
         %curl.add(MissionCleanup);
     }
@@ -205,7 +202,7 @@ function packageDownload::onError(%this, %request, %errNo) {
         %request.restart();
     }
     "error".put(%this.statusMap, %request.getDownloadFile());
-    0.schedule(%request);
+    delete.schedule(%request, 0);
     %this.downloadFile();
 };
 function packageDownload_onCompletedDownload(%request, %result) {
@@ -226,7 +223,7 @@ function packageDownload::onProgress(%this, %this2, %dltotal, %dlnow) {
     if (isObject(%this.callBackSink)) {
         %dlnow.onProgress(%this.callBackSink, %dltotal);
     }
-    %dlnow.put(packageDownload, %this.bytesDownloadedMap, %this2.packageName);
+    %dlnow.put(packageDownload.bytesDownloadedMap, %this2.packageName);
     if ((textureDownloadQueuedCount() > $PackageDownload::ConcurrentTextureThreshold)) {
         if (!($seenThrottleMessage)) {
             echo("textureDownloadQueuedCount is > " @ $PackageDownload::ConcurrentTextureThreshold @ ". Throttling city download.");
@@ -315,7 +312,7 @@ function checkForPackageUpdates(%startDownload) {
         return;
     }
     %request = new ManagerRequest("") {
-        className = 0 @ "packageDownloadCheck";
+        className = "packageDownloadCheck";
     };
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
@@ -331,7 +328,7 @@ function packageDownloadCheck::onError(%this, %unused, %errorName) {
     log("Admin", "error", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- error = " @ " " @ %errorName @ " " @ "url = " @ " " @ %this.getURL());
     log("Admin", "error", "Could not contact download site. Turning off package download.");
     $AutoDownloadPackages = 0;
-    0.schedule(%this);
+    delete.schedule(%this, 0);
 };
 function packageDownloadCheck::onDone(%this) {
     %status = findRequestStatus(%this);
@@ -340,12 +337,11 @@ function packageDownloadCheck::onDone(%this) {
         log("Admin", "error", getScopeName() @ " " @ "- status =" @ " " @ %status);
         log("Admin", "error", "Could not contact download site. Turning off package download.");
         $AutoDownloadPackages = 0;
-        0.schedule(%this);
-        return delete;
+        delete.schedule(%this, 0);
+        return;
     }
     %map = AssetManager::StringToMap(AssetManager::getCurrentAssetSet());
-    %badpackages = new Array("");;
-    0;
+    %badpackages = new Array("");
     if (isObject(MissionCleanup)) {
         %badpackages.add(MissionCleanup);
     }
@@ -360,8 +356,7 @@ function packageDownloadCheck::onDone(%this) {
         return;
     }
     %orderMap = AssetManager::getPackageOrder();
-    %tempOrderArray = new Array("");;
-    0;
+    %tempOrderArray = new Array("");
     if (isObject(MissionCleanup)) {
         %tempOrderArray.add(MissionCleanup);
     }
@@ -391,5 +386,5 @@ function packageDownloadCheck::onDone(%this) {
         echo("Starting download of package updates.");
         downloadPackageUpdates();
     }
-    0.schedule(%this);
+    delete.schedule(%this, 0);
 };

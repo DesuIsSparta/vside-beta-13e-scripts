@@ -28,8 +28,7 @@ function initSeatsTakenSet() {
     if (isObject($SeatsTakenSet)) {
         $SeatsTakenSet.delete();
     }
-    $SeatsTakenSet = new SimSet("");;
-    0;
+    $SeatsTakenSet = new SimSet("");
     $SeatsTakenSet.add(MissionCleanup);
     return;
 };
@@ -103,7 +102,7 @@ function TurnOnSitCam(%player) {
     if (isObject(%client)) {
         if (!(isObject(%client.sitCam))) {
             %client.sitCam = new Camera("") {
-                dataBlock = 0 @ SittingObserver;
+                dataBlock = SittingObserver;
             };
             %client.sitCam.add(MissionCleanup);
             %client.scopeToClient(%client.sitCam);
@@ -298,7 +297,7 @@ function Player::sitDown(%this) {
     }
     %seat.sitSound.playAudio(%this, 0);
     if (isObject(%seat.listeningStation)) {
-        "start".playThread(%seat.listeningStation, 0);
+        0.playThread("start", %seat.listeningStation);
         %meshName = %this.getDataBlock().gender @ ".headphones.dj";
         %meshName.MeshOn(%this);
         if (!(%seat.listeningStation.stream $= "")) {
@@ -325,7 +324,7 @@ function Player::standUp(%this) {
     0.setActionThread(%this, %seat.standAnim, 0);
     if (isObject(%seat.listeningStation)) {
         0.stopThread(%seat.listeningStation);
-        "ambient".playThread(%seat.listeningStation, 0);
+        0.playThread("ambient", %seat.listeningStation);
         %meshName = %this.getDataBlock().gender @ ".headphones.dj";
         %meshName.MeshOff(%this);
         if (!(%seat.listeningStation.stream $= "")) {

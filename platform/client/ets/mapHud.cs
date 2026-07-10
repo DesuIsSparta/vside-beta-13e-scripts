@@ -46,10 +46,10 @@ function geLocalMapContainer::setMap2D(%this, %mapObj) {
     geMapHud2DDragNZoom.inspectPostApply();
     %h.resize(geMapHud2DTheBitMap, %w);
     0.reposition(geMapHud2DTheBitMap, 0);
-    %mapObj.upperLeft = %mapObj.coordUpperLeft @ geMapHud2DTheOrthoMap;
-    %mapObj.upperRight = %mapObj.coordUpperRight @ geMapHud2DTheOrthoMap;
-    %mapObj.lowerLeft = %mapObj.coordLowerLeft @ geMapHud2DTheOrthoMap;
-    %mapObj.unitAltitudeOffset = %mapObj.altitudeOffset @ geMapHud2DTheOrthoMap;
+    geMapHud2DTheOrthoMap.upperLeft = %mapObj.coordUpperLeft;
+    geMapHud2DTheOrthoMap.upperRight = %mapObj.coordUpperRight;
+    geMapHud2DTheOrthoMap.lowerLeft = %mapObj.coordLowerLeft;
+    geMapHud2DTheOrthoMap.unitAltitudeOffset = %mapObj.altitudeOffset;
 };
 function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text) {
     if ((%text $= "")) {
@@ -141,7 +141,7 @@ function Player::updateMapIcon(%this) {
     %ctrl = gGetField(%this, "mapCtrl");
     if (!(isObject(%ctrl))) {
         %ctrl = new GuiBitmapCtrl("") {
-            extent = 0 @ "32 32";
+            extent = "32 32";
         };
         %ctrl.worldObject = %this;
         gSetField(%this, "mapCtrl", %ctrl);

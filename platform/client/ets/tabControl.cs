@@ -36,7 +36,7 @@ function TabControl::Initialize(%this, %container, %buttonSize, %sepBitmap, %sep
     %this.initialized = 1;
     if (%this.hasButtons) {
         %this.hiddenButton = new GuiBitmapButtonCtrl("") {
-            profile = 0 @ "GuiClickLabelProfile";
+            profile = "GuiClickLabelProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
@@ -95,7 +95,7 @@ function TabControl::calculateTabDims(%this) {
 };
 function TabControl::drawSeparator(%this) {
     %this.separator = new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = 0 @ " " @ getWord(%this.buttonSize, 1);
@@ -370,7 +370,7 @@ function TabControl::update(%this) {
 };
 function TabControl::CreateTab(%this, %name) {
     return new GuiControl("") {
-        profile = 0 @ "ETSTabProfile";
+        profile = "ETSTabProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = %this.tabPosition;
@@ -393,7 +393,7 @@ function TabControl::createButton(%this, %bitmapName, %tab, %name) {
         %horizSizing = "left";
     }
     return new GuiBitmapButtonCtrl("") {
-        profile = 0 @ "GuiClickLabelProfile";
+        profile = "GuiClickLabelProfile";
         horizSizing = %horizSizing;
         vertSizing = %vertSizing;
         position = "0 0";

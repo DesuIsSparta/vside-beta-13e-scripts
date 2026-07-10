@@ -9,14 +9,12 @@ function MenuLayer::Initialize() {
             minExtent = "1 1";
             visible = 0;
         };
-        stack = "" @ MenuLayer;
-        justOpened = 0 @ MenuLayer;
-        activeButton = 0 @ MenuLayer;
-        activeMenu = 0 @ MenuLayer;
-        menus = new SimSet(""); @ MenuLayer;
-        0;
-        clones = new SimSet(""); @ MenuLayer;
-        0;
+        MenuLayer.stack = "";
+        MenuLayer.justOpened = 0;
+        MenuLayer.activeButton = 0;
+        MenuLayer.activeMenu = 0;
+        MenuLayer.menus = new SimSet("");
+        MenuLayer.clones = new SimSet("");
     }
 };
 function MenuLayer::show(%this) {
@@ -34,7 +32,7 @@ function MenuLayer::shownForAWhile(%this) {
 };
 function MenuLayer::addCloneOf(%this, %ctrl) {
     %clone = new GuiMouseEventCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %ctrl.getScreenPosition();
@@ -149,7 +147,7 @@ function MenuLayer::popToMenu(%this, %menu) {
     if ((%idx > 0.0)) {
         %i = 0;
         while ((%i < %idx)) {
-            0.setVisible(getWord(MenuLayer, %this.stack, %i).scroll);
+            0.setVisible(getWord(MenuLayer.stack, %i).scroll);
             %i = (%i + 1.0);
         }
     }
@@ -186,7 +184,7 @@ function MenuLayer::newMenu(%menuName) {
     %menu = MenuControl::newMenuWithScroll(%menuName);
     %menu.layer = MenuLayer;
     %menu.scroll.add(MenuLayer);
-    %menu.add(MenuLayer, %menu.menus);
+    %menu.add(MenuLayer.menus);
     return %menu;
 };
 function MenuButtonClone::onMouseEnter(%this) {
@@ -205,7 +203,7 @@ function MenuControl::newMenuWithScroll(%menuName) {
         return %menuName.getId();
     }
     %scroll = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -220,7 +218,7 @@ function MenuControl::newMenuWithScroll(%menuName) {
         childMargin = "0 0";
     };
     %menu = new GuiArray2Ctrl("") {
-        profile = 0 @ "ETSMenuProfile";
+        profile = "ETSMenuProfile";
         childrenClassName = "GuiMouseEventCtrl";
         childrenExtent = "210 24";
         spacing = 2;
@@ -242,7 +240,7 @@ function MenuControl::newMenuWithScroll(%menuName) {
 };
 function MenuControl::onCreatedChild(%this, %child) {
     %icon = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -255,7 +253,7 @@ function MenuControl::onCreatedChild(%this, %child) {
     %icon.add(%child);
     %child.icon = %icon;
     %menuText = new GuiTextCtrl("") {
-        profile = 0 @ %this.menuTextProfile;
+        profile = %this.menuTextProfile;
         horizSizing = "right";
         vertSizing = "bottom";
         position = "30 2";
@@ -269,7 +267,7 @@ function MenuControl::onCreatedChild(%this, %child) {
     %menuText.add(%child);
     %child.menuText = %menuText;
     %accelText = new GuiTextCtrl("") {
-        profile = 0 @ %this.menuTextProfile;
+        profile = %this.menuTextProfile;
         horizSizing = "right";
         vertSizing = "bottom";
         position = (getWord(%child.getExtent(), 0) - 35.0) @ " " @ 2;
@@ -285,7 +283,7 @@ function MenuControl::onCreatedChild(%this, %child) {
     %width = getWord(%child.getExtent(), 0);
     %height = getWord(%child.getExtent(), 1);
     %subArrow = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "left";
         vertSizing = "center";
         position = (%width - 10.0) @ " " @ ((%height / 2.0) - 5.0);

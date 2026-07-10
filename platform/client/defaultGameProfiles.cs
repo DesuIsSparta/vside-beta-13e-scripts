@@ -52,6 +52,8 @@ $NameColorOfflineF = ColorIToColorF($NameColorOffline);
 $NameColorHilite = "255   0 153 255";
 $NameColorHiliteF = ColorIToColorF($NameColorHilite);
 $NameColorIdleModulationF = "0.5 0.5 0.5 1.0";
+$gMlStyle["UserName_Normal"] = "<color:" @ ColorIToHex($NameColorNormal) @ ">";
+$gMlStyle["UserName_Friend"] = "<color:" @ ColorIToHex($NameColorFriend) @ ">";
 new GuiControlProfile(ETSNonModalProfile : GuiDefaultProfile) {
     modal = 0;
 };

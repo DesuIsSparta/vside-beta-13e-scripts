@@ -7,6 +7,7 @@ function portInit(%port) {
         %failCount = (%failCount + 1.0);
     }
     $Net::BoundPort = %port;
+    !(setNetPort(%port));
     return %failCount;
 };
 function createServer(%serverType, %mission) {
@@ -55,9 +56,10 @@ function destroyServer() {
         %client.delete();
     }
     $Server::GuidList = "";
+    ClientGroup.getCount();
     deleteDataBlocks();
     purgeResources();
-    return ClientGroup.getCount();
+    return;
 };
 function resetServerDefaults() {
     echo("Resetting server defaults...");
@@ -78,7 +80,8 @@ function addToServerGuidList(%guid) {
     if (((%i < %count) @ " " @ $Server::GuidList $= "")) {
     }
     $Server::GuidList = $Server::GuidList;
-    return %guid;
+    %guid;
+    return;
 };
 function removeFromServerGuidList(%guid) {
     %count = getFieldCount($Server::GuidList);

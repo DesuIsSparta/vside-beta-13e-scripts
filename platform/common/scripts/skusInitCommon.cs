@@ -1,8 +1,7 @@
 function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %brand, %drwrName, %meshName, %txtrNames, %descShrt, %descLong, %stores, %bornWith, %price, %avail, %qtyMfr, %rspk, %expireTime_TAB_tags, %author) {
     %expireTime = getField(%expireTime_TAB_tags, 0);
     %tags = getField(%expireTime_TAB_tags, 1);
-    %si = new SkuItem("");;
-    0;
+    %si = new SkuItem("");
     if (!(%avail)) {
         %rolesMask = 2147483648;
     }
@@ -117,11 +116,12 @@ function SkuManager::sanityCheckStockOutfits(%this) {
     while ((%g >= 0.0)) {
         %o = (getWordCount(%outfits) - 1.0);
         while ((%o >= 0.0)) {
-            %skus = ;
+            %skus = $gNewStockOutfits[getWord(%genders, %g),getWord(%outfits, %o)];
             %skus.sanityCheckSkus(%this);
             %o = (%o - 1.0);
         }
-        %skus = (%o >= 0.0);
+        %skus = $gDefaultBodyAttrs[getWord(%genders, %g)];
+        (%o >= 0.0);
         %skus.sanityCheckSkus(%this);
         %g = (%g - 1.0);
     }
@@ -196,8 +196,7 @@ function SkuManager::getTopExclusionLevelForDrawer(%this, %drwr) {
     while ((%i < %cnt)) {
         %folder = getField(%tabbedDrwr, %i);
         %incStr = %incStr @ %folder;
-        %idx = findRecord(%this.exclusiveDrwrs, %incStr);
-        if ((-(1.0) != )) {
+        if (((%idx = findRecord(%this.exclusiveDrwrs, %incStr)) != -(1.0))) {
             return getRecord(%this.exclusiveDrwrs, %idx);
         }
         %incStr = %incStr @ "/";
@@ -211,32 +210,32 @@ function SkuManager::setDrawerExclusive(%this, %drwr) {
     }
     %this.exclusiveDrwrs = %this.exclusiveDrwrs @ %drwr @ "\n";
 };
-%this[mA] = "400 554 600 701 850 875 900 950" @ $gNewStockOutfits;
-%this[mA][mB] = "403 502 33763 31600 31034" @ $gNewStockOutfits;
-%this[mA][mB][mC] = "33424 32098 906 606 31018" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD] = "33402 32403 31522 31072" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE] = "32404 604 31088" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF] = "33406 32131 649 31048" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG] = "400 500 635 700 850 875 900 950" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH] = "400 525 619 701 850 875 900 950" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI] = "400 604 722 850 875 900 950 504" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ] = "400 608 702 850 875 900 950 524" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK] = "400 513 619 702 850 875 900 950" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL] = "400 32092 635 722 850 875 900 950" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA] = "5400 5527 5600 5702 5850 5900 5950 5980" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB] = "5522 5876 5901 21519 5702" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC] = "5414 22350 5881 5907 21615 21628 21049" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD] = "5408 5894 22351 15917 21627 21071" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE] = "5863 22352 15918 6107 6108 21602 21068" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF] = "5412 5851 22166 15882 5963 21555 21049" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG] = "5400 5510 5626 5708 5850 5980" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH] = "5400 5519 5600 5702 5850 5900 5950 5980" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI] = "5400 5529 21519 5702 5850 5900 5950 5980 5903" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ] = "5400 5504 5617 5718 5850 5903 5980" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK] = "5400 5517 5607 5702 5850 5980" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL] = "5400 5528 5617 5714 5850 5980" @ $gNewStockOutfits;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL][m] = "121 200 303 801" @ $gDefaultBodyAttrs;
-%this[mA][mB][mC][mD][mE][mF][mG][mH][mI][mJ][mK][mL][fA][fB][fC][fD][fE][fF][fG][fH][fI][fJ][fK][fL][m][f] = "5100 5200 5303 5801" @ $gDefaultBodyAttrs;
+%this[$gNewStockOutfits @ mA] = "400 554 600 701 850 875 900 950";
+$gNewStockOutfits[mB] = "403 502 33763 31600 31034";
+$gNewStockOutfits[mC] = "33424 32098 906 606 31018";
+$gNewStockOutfits[mD] = "33402 32403 31522 31072";
+$gNewStockOutfits[mE] = "32404 604 31088";
+$gNewStockOutfits[mF] = "33406 32131 649 31048";
+$gNewStockOutfits[mG] = "400 500 635 700 850 875 900 950";
+$gNewStockOutfits[mH] = "400 525 619 701 850 875 900 950";
+$gNewStockOutfits[mI] = "400 604 722 850 875 900 950 504";
+$gNewStockOutfits[mJ] = "400 608 702 850 875 900 950 524";
+$gNewStockOutfits[mK] = "400 513 619 702 850 875 900 950";
+$gNewStockOutfits[mL] = "400 32092 635 722 850 875 900 950";
+$gNewStockOutfits[fA] = "5400 5527 5600 5702 5850 5900 5950 5980";
+$gNewStockOutfits[fB] = "5522 5876 5901 21519 5702";
+$gNewStockOutfits[fC] = "5414 22350 5881 5907 21615 21628 21049";
+$gNewStockOutfits[fD] = "5408 5894 22351 15917 21627 21071";
+$gNewStockOutfits[fE] = "5863 22352 15918 6107 6108 21602 21068";
+$gNewStockOutfits[fF] = "5412 5851 22166 15882 5963 21555 21049";
+$gNewStockOutfits[fG] = "5400 5510 5626 5708 5850 5980";
+$gNewStockOutfits[fH] = "5400 5519 5600 5702 5850 5900 5950 5980";
+$gNewStockOutfits[fI] = "5400 5529 21519 5702 5850 5900 5950 5980 5903";
+$gNewStockOutfits[fJ] = "5400 5504 5617 5718 5850 5903 5980";
+$gNewStockOutfits[fK] = "5400 5517 5607 5702 5850 5980";
+$gNewStockOutfits[fL] = "5400 5528 5617 5714 5850 5980";
+$gDefaultBodyAttrs[m] = "121 200 303 801";
+$gDefaultBodyAttrs[f] = "5100 5200 5303 5801";
 SkuManager.init();
 "AV/Videoscreens".setDrawerExclusive(SkuManager);
 "Activities/Games/PlayAreas".setDrawerExclusive(SkuManager);

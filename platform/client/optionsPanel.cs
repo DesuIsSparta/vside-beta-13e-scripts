@@ -25,11 +25,10 @@ function OptionsPanelTabs::fillTabs(%this) {
     while ((%i < %this.numTabs)) {
         %tab = %this.tabs;
         %i;
-        %tab.setProfile();
+        ETSNonModalProfile.setProfile(%tab);
         %tab.clear();
-        ETSNonModalProfile;
         new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
@@ -40,7 +39,7 @@ function OptionsPanelTabs::fillTabs(%this) {
             bitmap = "./ui/settings_bracket_left";
         };.add(%tab);
         new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "375 0";
@@ -75,7 +74,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     %indent1 = 10;
     %indent2 = 160;
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -108,7 +107,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton15Profile";
+        profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -122,7 +121,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
         buttonType = "PushButton";
     };.add(%tab);
     new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton15Profile";
+        profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + 60.0) @ " " @ %posY;
@@ -154,7 +153,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     %posY = (%posY + %dPosYSmall);
     %posX = (%posX - %indent1);
     new GuiTextCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -275,7 +274,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     %posY = (%posY + %dPosYSmall);
     %posX = (%posX - %indent1);
     new GuiTextCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -288,7 +287,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     };.add(%tab);
     %posX = (%posX + 120.0);
     new GuiTextCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -314,7 +313,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     };.add(%tab);
     %posX = (%posX + 120.0);
     new GuiTextCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -342,7 +341,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     %posY = (%posY + %dPosY);
     %posY = (%posY + 5.0);
     new GuiTextCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -355,7 +354,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     };.add(%tab);
     %posX = (%posX + 120.0);
     new GuiTextCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -381,7 +380,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     };.add(%tab);
     %posX = (%posX + 120.0);
     new GuiTextCtrl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -409,7 +408,7 @@ function OptionsPanelTabs::fillSocialTab(%this) {
     %posY = (%posY + %dPosY);
     %posX = (%posX - %indent1);
     new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton15Profile";
+        profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %originX @ " " @ 215;
@@ -434,7 +433,7 @@ function OptionsPanelTabs::fillAudioTab(%this) {
     %dPosY = 20;
     %indent = 38;
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSRightJustifiedShadowTextProfile";
+        profile = "ETSRightJustifiedShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -461,7 +460,7 @@ function OptionsPanelTabs::fillAudioTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSRightJustifiedShadowTextProfile";
+        profile = "ETSRightJustifiedShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -489,7 +488,7 @@ function OptionsPanelTabs::fillAudioTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSRightJustifiedShadowTextProfile";
+        profile = "ETSRightJustifiedShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -535,7 +534,7 @@ function OptionsPanelTabs::fillAudioTab(%this) {
     %posX = (%posX - %indent);
     %posY = (%posY + %dPosY);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -582,7 +581,7 @@ function OptionsPanelTabs::fillAudioTab(%this) {
     %posY = (%posY + %dPosY);
     %posX = (%posX - %indent);
     new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton15Profile";
+        profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %originX @ " " @ 215;
@@ -606,7 +605,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
     %dPosY = 20;
     %indent = 14;
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -631,7 +630,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -656,7 +655,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -681,7 +680,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -706,7 +705,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -739,7 +738,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
         extent = "31 18";
         minExtent = "8 2";
         sluggishness = -1;
-        visible = OptionsPanel @ showBrightnessControls;
+        visible = OptionsPanel.showBrightnessControls;
         text = "Brightness:";
         maxLength = 255;
     };.add(%tab);
@@ -751,7 +750,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
         extent = "97 21";
         minExtent = "8 2";
         sluggishness = -1;
-        visible = OptionsPanel @ showBrightnessControls;
+        visible = OptionsPanel.showBrightnessControls;
         variable = "$UserPref::Video::Exposure";
         altCommand = "BrightnessSlider.applySettings();";
         range = "0.200000 1.0";
@@ -779,7 +778,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
         buttonType = "ToggleButton";
     };.add(%tab);
     new GuiMLTextCtrl("") {
-        profile = 0 @ "InfoTextProfile";
+        profile = "InfoTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + 60.0) @ " " @ (%posY + 2.0);
@@ -795,7 +794,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
     %posY = (%posY + %dPosY);
     %posX = (%posX + %indent);
     new GuiTextCtrl("") {
-        profile = 0 @ "ETSShadowTextProfile";
+        profile = "ETSShadowTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -945,7 +944,7 @@ function OptionsPanelTabs::fillVisualTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton15Profile";
+        profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %originX @ " " @ 215;
@@ -972,7 +971,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
     %indent2 = 90;
     %indent3 = 140;
     new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + %indent2) @ " " @ %posY;
@@ -986,7 +985,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
         text = "<color:ffffff>Auto Open";
     };.add(%tab);
     new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + %indent3) @ " " @ %posY;
@@ -1001,7 +1000,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiControl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "36 29";
         visible = 1;
     };.add(%tab, new GuiBitmapCtrl("") {
@@ -1016,7 +1015,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
         bitmap = "./buttons/hud_music_n";
     };);
     new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + %indent1) @ " " @ (%posY + 9.0);
@@ -1061,7 +1060,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiControl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "36 29";
         visible = 1;
     };.add(%tab, new GuiBitmapCtrl("") {
@@ -1076,7 +1075,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
         bitmap = "./buttons/hud_affinity_n";
     };);
     new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + %indent1) @ " " @ (%posY + 9.0);
@@ -1121,7 +1120,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiControl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "36 29";
         visible = 1;
     };.add(%tab, new GuiBitmapCtrl("") {
@@ -1136,7 +1135,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
         bitmap = "./buttons/hud_scores_n";
     };);
     new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + %indent1) @ " " @ (%posY + 9.0);
@@ -1181,7 +1180,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiControl("") {
-        position = 0 @ %posX @ " " @ %posY;
+        position = %posX @ " " @ %posY;
         extent = "36 29";
         visible = 1;
     };.add(%tab, new GuiBitmapCtrl("") {
@@ -1196,7 +1195,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
         bitmap = "./buttons/hud_word_n";
     };);
     new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = (%posX + %indent1) @ " " @ (%posY + 9.0);
@@ -1244,7 +1243,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
     %posY = %originY;
     %posY = (%posY + %dPosY);
     new GuiMLTextCtrl("") {
-        profile = 0 @ "InfoTextProfile";
+        profile = "InfoTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -1259,7 +1258,7 @@ function OptionsPanelTabs::fillTabsTab(%this) {
     };.add(%tab);
     %posY = (%posY + %dPosY);
     new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton15Profile";
+        profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %originX @ " " @ 215;
@@ -1283,7 +1282,7 @@ function OptionsPanelTabs::fillVIPTab(%this) {
     %dPosY = 20;
     %indent = 10;
     new GuiMLTextCtrl("") {
-        profile = 0 @ "InfoTextProfile";
+        profile = "InfoTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %posX @ " " @ %posY;
@@ -1534,7 +1533,8 @@ function OptionsPanelTabs::fillVIPTab(%this) {
         extent = 190 @ " " @ (%dPosY * 3.0);
         visible = $gPerformerMode;
     };.add(%tab);
-    new GuiRadioCtrl(optionsPanelAlertOnErrorCheckBox) {
+    new GuiVariableWidthButtonCtrl("") {
+        profile = new GuiRadioCtrl(optionsPanelAlertOnErrorCheckBox) {
         profile = new GuiRadioCtrl(optionsPanelAlertOnWarningCheckBox) {
         profile = new GuiTextCtrl("") {
         position = 0 @ " " @ (%dPosY * 0.0);
@@ -1574,9 +1574,7 @@ function OptionsPanelTabs::fillVIPTab(%this) {
         groupNum = -1;
         buttonType = "ToggleButton";
         mouseOver = 0;
-    };
-    new GuiVariableWidthButtonCtrl("") {
-        profile = 0 @ "BracketButton15Profile";
+    }; @ "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %originX @ " " @ 215;
@@ -1644,6 +1642,16 @@ function OptionsPanelTabs::restoreVisualDefaults(%this) {
     schedulePersist();
 };
 function OptionsPanelTabs::restoreTabsDefaults(%this) {
+    $Defaults::UserPref::HudTabs::AutoOpen["music"][$UserPref::HudTabs::AutoOpen @ "music"] = $Defaults::UserPref::HudTabs::AutoOpen["music"];
+    $Defaults::UserPref::HudTabs::AutoClose["music"][$UserPref::HudTabs::AutoClose @ "music"] = $Defaults::UserPref::HudTabs::AutoClose["music"];
+    $Defaults::UserPref::HudTabs::AutoOpen["affinity"][$UserPref::HudTabs::AutoOpen @ "affinity"] = $Defaults::UserPref::HudTabs::AutoOpen["affinity"];
+    $Defaults::UserPref::HudTabs::AutoClose["affinity"][$UserPref::HudTabs::AutoClose @ "affinity"] = $Defaults::UserPref::HudTabs::AutoClose["affinity"];
+    $Defaults::UserPref::HudTabs::AutoOpen["scores"][$UserPref::HudTabs::AutoOpen @ "scores"] = $Defaults::UserPref::HudTabs::AutoOpen["scores"];
+    $Defaults::UserPref::HudTabs::AutoClose["scores"][$UserPref::HudTabs::AutoClose @ "scores"] = $Defaults::UserPref::HudTabs::AutoClose["scores"];
+    $Defaults::UserPref::HudTabs::AutoOpen["word"][$UserPref::HudTabs::AutoOpen @ "word"] = $Defaults::UserPref::HudTabs::AutoOpen["word"];
+    $Defaults::UserPref::HudTabs::AutoClose["word"][$UserPref::HudTabs::AutoClose @ "word"] = $Defaults::UserPref::HudTabs::AutoClose["word"];
+    $Defaults::UserPref::HudTabs::AutoOpen["tutorial"][$UserPref::HudTabs::AutoOpen @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoOpen["tutorial"];
+    $Defaults::UserPref::HudTabs::AutoClose["tutorial"][$UserPref::HudTabs::AutoClose @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoClose["tutorial"];
     %currentTab = HudTabs.getCurrentTab();
     if ((%currentTab $= "")) {
     }
@@ -1786,14 +1794,14 @@ function persistOptionsPanelSettingsToManager() {
     $UserPref::Display::hideChat.setProperty(gUserPropMgrClient, $Player::Name, "hideChat");
     $UserPref::Display::hideNames.setProperty(gUserPropMgrClient, $Player::Name, "hideNames");
     $UserPref::ETS::ButtonBar::AutoHide.setProperty(gUserPropMgrClient, $Player::Name, "hideButtonBar");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabMusic");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabMusic");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabAffinity");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabAffinity");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabScores");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabScores");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabWord");
-    .setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabWord");
+    $UserPref::HudTabs::AutoOpen["music"].setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabMusic");
+    $UserPref::HudTabs::AutoClose["music"].setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabMusic");
+    $UserPref::HudTabs::AutoOpen["affinity"].setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabAffinity");
+    $UserPref::HudTabs::AutoClose["affinity"].setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabAffinity");
+    $UserPref::HudTabs::AutoOpen["scores"].setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabScores");
+    $UserPref::HudTabs::AutoClose["scores"].setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabScores");
+    $UserPref::HudTabs::AutoOpen["word"].setProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabWord");
+    $UserPref::HudTabs::AutoClose["word"].setProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabWord");
     $UserPref::Player::TeleportBlock.setProperty(gUserPropMgrClient, $Player::Name, "refuseTeleports");
     $UserPref::Player::WhisperBlock.setProperty(gUserPropMgrClient, $Player::Name, "refuseWhispers");
     $UserPref::Player::YellBlock.setProperty(gUserPropMgrClient, $Player::Name, "refuseYells");
@@ -1846,7 +1854,7 @@ function legacyPersistOptionsPanelSettingsToManager() {
     if (!(haveValidToken())) {
         return;
     }
-    %request = new ManagerRequest(LegacySaveSettingsRequest);;
+    %request = new ManagerRequest(LegacySaveSettingsRequest);
     if (isObject(MissionCleanup)) {
         %request.add(MissionCleanup);
     }
@@ -1899,14 +1907,14 @@ function OptionsPanel::readSettings(%this) {
     $UserPref::UI::ShowTooltips.setValue(OptionsVisualShowTooltipsCheckbox);
     %curScreenMode = getRes();
     %curScreenScale = (getWord(%curScreenMode, 0) / 16.0);
-    %curScreenScale[$UserPref::HudTabs::AutoOpen @ "music"].setValue(HudMusicAutoOpenCheckBox);
-    HudMusicAutoCloseCheckBox.setValue();
-    HudAffinityAutoOpenCheckBox.setValue();
-    HudAffinityAutoCloseCheckBox.setValue();
-    HudScoresAutoOpenCheckBox.setValue();
-    HudScoresAutoCloseCheckBox.setValue();
-    HudWordAutoOpenCheckBox.setValue();
-    HudWordAutoCloseCheckBox.setValue();
+    $UserPref::HudTabs::AutoOpen["music"].setValue(HudMusicAutoOpenCheckBox);
+    $UserPref::HudTabs::AutoClose["music"].setValue(HudMusicAutoCloseCheckBox);
+    $UserPref::HudTabs::AutoOpen["affinity"].setValue(HudAffinityAutoOpenCheckBox);
+    $UserPref::HudTabs::AutoClose["affinity"].setValue(HudAffinityAutoCloseCheckBox);
+    $UserPref::HudTabs::AutoOpen["scores"].setValue(HudScoresAutoOpenCheckBox);
+    $UserPref::HudTabs::AutoClose["scores"].setValue(HudScoresAutoCloseCheckBox);
+    $UserPref::HudTabs::AutoOpen["word"].setValue(HudWordAutoOpenCheckBox);
+    $UserPref::HudTabs::AutoClose["word"].setValue(HudWordAutoCloseCheckBox);
     !($UserPref::Display::hideNames).setValue(HUDShowNamesCheckBox);
     $UserPref::Display::hideChat.setValue(HUDHideChatCheckBox);
     $UserPref::Display::farNameOpacity.setValue(FarNameOpacityTextEditCtrl);
@@ -1942,8 +1950,7 @@ function DefaultAwayMsgEdit::applySettings(%this) {
     schedulePersist();
 };
 function VolumeSlider::applySettings(%this) {
-    $UserPref::Audio::masterVolume = %this.value;
-    VolumeSlider;
+    $UserPref::Audio::masterVolume = VolumeSlider.value;
     %multiplier = $UserPref::Audio::mute ? 0 : 1;
     alxListenerf(AL_GAIN_LINEAR, (%multiplier * $UserPref::Audio::masterVolume));
     fmodSetMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
@@ -1963,8 +1970,7 @@ function VolumeMusicSlider::applySettings(%this) {
     schedulePersist();
 };
 function VolumeSFXSlider::applySettings(%this) {
-    $UserPref::Audio::channelVolume2 = %this.value;
-    VolumeSFXSlider;
+    $UserPref::Audio::channelVolume2 = VolumeSFXSlider.value;
     alxSetChannelVolume(2, $UserPref::Audio::channelVolume2);
     schedulePersist();
 };
@@ -2029,25 +2035,19 @@ function setShapeNameFontSize(%val) {
     }
     $UserPref::Video::shapeNameFontSize = %val;
     if ((%val == 0.0)) {
-        // unhandled opcode 7130 at 0x0000524D
-        %val = SmallShapeNameHudProfile;
-        // unhandled opcode 7165 at 0x00005253
-        %val = BoldSmallShapeNameHudProfile;
+        %prof = SmallShapeNameHudProfile;
+        %otherProf = BoldSmallShapeNameHudProfile;
     }
     if ((%val == 1.0)) {
-        // unhandled opcode 7130 at 0x00005263
-        %val = MediumShapeNameHudProfile;
-        // unhandled opcode 7165 at 0x00005269
-        %val = BoldMediumShapeNameHudProfile;
+        %prof = MediumShapeNameHudProfile;
+        %otherProf = BoldMediumShapeNameHudProfile;
     }
     if ((%val == 2.0)) {
-        // unhandled opcode 7130 at 0x00005279
-        %val = LargeShapeNameHudProfile;
-        // unhandled opcode 7165 at 0x0000527F
-        %val = BoldLargeShapeNameHudProfile;
+        %prof = LargeShapeNameHudProfile;
+        %otherProf = BoldLargeShapeNameHudProfile;
     }
     %prof.setProfile(TheShapeNameHud);
-    %this.otherProfile = %otherProf @ TheShapeNameHud;
+    TheShapeNameHud.otherProfile = %otherProf;
 };
 setShapeNameFontSize($UserPref::Video::shapeNameFontSize);
 function toggleAutoHideButtonBar() {
@@ -2055,18 +2055,25 @@ function toggleAutoHideButtonBar() {
     schedulePersist();
 };
 function updateHudTabsHiding() {
+    $UserPref::HudTabs::AutoOpen["music"] = HudMusicAutoOpenCheckBox.getValue();
+    $UserPref::HudTabs::AutoClose["music"] = HudMusicAutoCloseCheckBox.getValue();
+    $UserPref::HudTabs::AutoOpen["affinity"] = HudAffinityAutoOpenCheckBox.getValue();
+    $UserPref::HudTabs::AutoClose["affinity"] = HudAffinityAutoCloseCheckBox.getValue();
+    $UserPref::HudTabs::AutoOpen["scores"] = HudScoresAutoOpenCheckBox.getValue();
+    $UserPref::HudTabs::AutoClose["scores"] = HudScoresAutoCloseCheckBox.getValue();
+    $UserPref::HudTabs::AutoOpen["word"] = HudWordAutoOpenCheckBox.getValue();
+    $UserPref::HudTabs::AutoClose["word"] = HudWordAutoCloseCheckBox.getValue();
     %i = 0;
-    while ((%i < %this.numTabs)) {
+    while ((%i < HudTabs.numTabs)) {
         %tab = %i.getTabAtIndex(HudTabs);
-        HudTabs;
         if (!(%tab.name $= "tutorial")) {
             %tab.autoHide = %tab[$UserPref::HudTabs::AutoClose @ %tab.name];
         }
         %i = (%i + 1.0);
     }
     %currentTab = HudTabs.getCurrentTab();
-    (%i < %tab.numTabs);
-    if ((HudTabs @ " " @ %currentTab $= "")) {
+    (%i < HudTabs.numTabs);
+    if ((%currentTab $= "")) {
     }
     %tabName = %currentTab.name;
     "";

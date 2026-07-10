@@ -39,8 +39,8 @@ function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemaining
     }
     %tickPeriod = 100;
     %this.countdownMSRemaining = (%this.countdownMSRemaining - %tickPeriod);
-    %this.rotRadians = ((%this.countdownMSRemaining * 0.001) / 6.0) @ geTwoPlayerEmotesConfirmClock_littleHand;
-    %this.rotRadians = (%this.countdownMSRemaining * 0.001) @ geTwoPlayerEmotesConfirmClock_bigHand;
+    geTwoPlayerEmotesConfirmClock_littleHand.rotRadians = ((%this.countdownMSRemaining * 0.001) / 6.0);
+    geTwoPlayerEmotesConfirmClock_bigHand.rotRadians = (%this.countdownMSRemaining * 0.001);
     %text = mFloor(((%this.countdownMSRemaining * 0.001) + 0.5));
     %text = %text @ "..";
     %text.setTextWithStyle(geTwoPlayerEmotesConfirmClock_readout);
@@ -53,7 +53,7 @@ function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemaining
     "DECLINE TIMEOUT".close(%this, 0);
     %coAnimEntry = findCoAnimEntry(%this.coAnimName);
     %actionDesc = getField(%coAnimEntry, 6);
-    %text = %actionDesc[$MsgCat::coanim @ "E-TOOSLOW"];
+    %text = $MsgCat::coanim["E-TOOSLOW"];
     %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
     %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
     handleSystemMessage("msgInfoMessage", %text);
@@ -78,7 +78,7 @@ function geTwoPlayerEmotesConfirmPanel::refresh(%this) {
     %text.setTextWithStyle(geTwoPlayerEmotesConfirmTitle);
     %coAnimEntry = findCoAnimEntry(%this.coAnimName);
     %actionDesc = getField(%coAnimEntry, 6);
-    %text = %actionDesc[$MsgCat::coanim @ "ACCEPT-OR-DECLINE"];
+    %text = $MsgCat::coanim["ACCEPT-OR-DECLINE"];
     %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
     %text = strreplace(%text, "[ACTIONDESC]", %actionDesc);
     %text.setTextWithStyle(geTwoPlayerEmotesConfirmTextAcceptDecline);

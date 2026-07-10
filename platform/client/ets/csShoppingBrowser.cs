@@ -36,21 +36,21 @@ function CSShoppingBrowserWindow::Initialize(%this) {
         %ctrl = TreeBrowserControl::newControl(CSShoppingBrowserContainer, "CSBrowser");
         "CSShoppingBrowser".bindClassName(%ctrl);
         "CSShoppingBrowser".setName(%ctrl);
-        %this.menuProfile = "ETSClearMenuProfile" @ CSShoppingBrowser;
-        %this.selectedProfile = "ETSSelectedMenuItemNoBorderProfile" @ CSShoppingBrowser;
+        CSShoppingBrowser.menuProfile = "ETSClearMenuProfile";
+        CSShoppingBrowser.selectedProfile = "ETSSelectedMenuItemNoBorderProfile";
         1.setNumChildren(CSShoppingBrowser);
-        %this.adjustMenuCellHeight = 1 @ CSShoppingBrowser;
-        %this.showMoreInfo = 1 @ CSInventoryBrowser;
+        CSShoppingBrowser.adjustMenuCellHeight = 1;
+        CSInventoryBrowser.showMoreInfo = 1;
         if (isObject("button0".getFieldValue(CSShoppingBrowser))) {
-            %this.button.delete(0 @ CSShoppingBrowser);
+            CSShoppingBrowser.button.delete(0);
         }
         %container = CSShoppingBrowser.getParent();
-        button = new GuiBitmapButtonCtrl("") {
-            profile = 0 @ "ETSShopVerticalButtonProfile";
+        CSShoppingBrowser.button = new GuiBitmapButtonCtrl("") {
+            profile = "ETSShopVerticalButtonProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
-            extent = CSShoppingBrowser @ buttonWidth @ " " @ getWord(%container.getExtent(), 1);
+            extent = CSShoppingBrowser.buttonWidth @ " " @ getWord(%container.getExtent(), 1);
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -61,10 +61,10 @@ function CSShoppingBrowserWindow::Initialize(%this) {
             bitmap = "platform/client/buttons/vbutton";
             drawText = 1;
             textRotation = 90;
-        }; @ 0 @ CSShoppingBrowser
-        button.add(%container, 0 @ CSShoppingBrowser);
-        vBuxIcon = new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+        }; @ 0;
+        CSShoppingBrowser.button.add(%container, 0);
+        CSShoppingBrowser.vBuxIcon = new GuiBitmapCtrl("") {
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "top";
             position = "3 20";
@@ -73,11 +73,11 @@ function CSShoppingBrowserWindow::Initialize(%this) {
             sluggishness = -1;
             visible = 1;
             bitmap = "platform/client/ui/vbux_14";
-        }; @ CSShoppingBrowser
-        vBuxIcon.add(%container, CSShoppingBrowser);
-        baseDir = "Shop" @ CSShoppingBrowser;
-        baseDir.addNode(CSShoppingBrowser, CSShoppingBrowser);
-        storeInfo = 0 @ CSShoppingBrowser;
+        };
+        CSShoppingBrowser.vBuxIcon.add(%container);
+        CSShoppingBrowser.baseDir = "Shop";
+        CSShoppingBrowser.baseDir.addNode(CSShoppingBrowser);
+        CSShoppingBrowser.storeInfo = 0;
         CSShoppingBrowser.refreshInventory();
         CSShoppingBrowser.loadAvailableSkus();
         %this.initialized = 1;
@@ -123,12 +123,11 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
         %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1.0)), "|"), 1);
         %si = %sku.findBySku(SkuManager);
         if (!(%si.descLong $= "")) {
-            %rightYPos = (%rightYPos + %rmVPadding);
             %moreButton = new GuiVariableWidthButtonCtrl("") {
-                profile = 0 @ "BracketButton15Profile";
+                profile = "BracketButton15Profile";
                 horizSizing = "right";
                 vertSizing = "bottom";
-                position = (%rightXPos - 4.0) @ " ";
+                position = (%rightXPos - 4.0) @ " " @ %rightYPos = (%rightYPos + %rmVPadding);
                 extent = %buttonWidth @ " " @ 15;
                 minExtent = "1 1";
                 sluggishness = -1;
@@ -147,7 +146,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
             %pane.moreButton = %moreButton;
         }
         %testDriveButton = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "BracketButton15Profile";
+            profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = (%rightXPos - 4.0) @ " " @ %rightYPos;
@@ -161,12 +160,11 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
             buttonType = "PushButton";
         };
         %rightYPos = (%rightYPos + getWord(%testDriveButton.getExtent(), 1));
-        %rightYPos = (%rightYPos + %rmVPadding);
         %buyButton = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "BracketButton15Profile";
+            profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = (%rightXPos - 4.0) @ " ";
+            position = (%rightXPos - 4.0) @ " " @ %rightYPos = (%rightYPos + %rmVPadding);
             extent = %buttonWidth @ " " @ 15;
             minExtent = "1 1";
             sluggishness = -1;
@@ -179,7 +177,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
         %rightYPos = (%rightYPos + getWord(%buyButton.getExtent(), 1));
         %smallButtonWidth = 15;
         %buyFewerButton = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "BracketButton15Profile";
+            profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = (((%rightXPos - 4.0) + %buttonWidth) - ((%smallButtonWidth * 2.0) + 5.0)) @ " " @ (%rightYPos + %rmVPadding);
@@ -188,7 +186,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
             text = "-";
         };
         %buyMoreButton = new GuiVariableWidthButtonCtrl("") {
-            profile = 0 @ "BracketButton15Profile";
+            profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = (((%rightXPos - 4.0) + %buttonWidth) - %smallButtonWidth) @ " " @ (%rightYPos + %rmVPadding);
@@ -199,7 +197,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
         %rightYPos = (%rightYPos + getWord(%buyMoreButton.getExtent(), 1));
         %rightYPos = (%rightYPos + %rmVPadding);
         %priceTextVPoints = new GuiMLTextCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = (%rightXPos - 4.0) @ " " @ %rightYPos;
@@ -216,7 +214,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
         %pane.priceTextVPoints = %priceTextVPoints;
         %rightYPos = (%rightYPos + getWord(%priceTextVPoints.getExtent(), 1));
         %priceTextVBux = new GuiMLTextCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = (%rightXPos - 4.0) @ " " @ %rightYPos;
@@ -240,7 +238,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
         %ypos = mCeil(%ypos);
         %xPos = 0;
         %thumbnail = new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "top";
             position = %xPos @ " " @ %ypos;
@@ -267,7 +265,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane) {
         %pane.update();
     }
     %noItemText = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "25 20";
@@ -386,7 +384,7 @@ function CSShoppingBrowser::goToPath(%this, %path, %focus) {
         }
         %i = (%i + 1.0);
     }
-    (getWord(%this.getExtent(), 1) - 20.0).reposition(CSShoppingBrowser, %menuItem.vBuxIcon, 3);
+    (getWord(%this.getExtent(), 1) - 20.0).reposition(CSShoppingBrowser.vBuxIcon, 3);
     %pathSku = getSubStr(strchr(%path, "|"), 1);
     (%i < %count);
     if (($CSSelectedSku != -(1.0))) {
@@ -454,7 +452,7 @@ function CSShoppingBrowser::refreshInventory(%this) {
 };
 function CSShoppingBrowser::onGotFurnishingsStore(%storeInfo, %status) {
     if ((%status $= "success")) {
-        %this.storeInfo = %storeInfo @ CSShoppingBrowser;
+        CSShoppingBrowser.storeInfo = %storeInfo;
         CSShoppingBrowser.loadAvailableSkus();
     }
 };
@@ -522,9 +520,9 @@ function CSShoppingBrowserFilterField::refilter(%this) {
         return;
     }
     %this.prevFilterText = %filterText;
-    %this.filterText = %filterText @ CSShoppingBrowser;
+    CSShoppingBrowser.filterText = %filterText;
     CSShoppingBrowser.goToCurrentPath();
     %filterText.setValue(CSInventoryBrowserFilterField);
-    %this.filterText = %filterText @ CSInventoryBrowser;
+    CSInventoryBrowser.filterText = %filterText;
     CSInventoryBrowser.goToCurrentPath();
 };

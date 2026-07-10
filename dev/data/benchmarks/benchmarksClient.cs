@@ -114,6 +114,7 @@ function benchmarks::runCameraTestsReps() {
             %n = (%n + 1.0);
         }
         $benchmarks::camera::repsRemaining = $pref::benchmarks::fps::reps;
+        (%n < cameraTestsGroup.getCount());
     }
     if (($benchmarks::camera::repsRemaining > 0.0)) {
         benchmarks::runCameraTests();

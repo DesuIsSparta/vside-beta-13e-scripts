@@ -24,8 +24,8 @@ $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
 $gClosetStanceEmotesNum[$gClosetStanceEmotes @ $gClosetStanceEmotesNum] = "ttth";
 $gClosetStanceEmotesNum = ($gClosetStanceEmotesNum + 1.0);
 $gClosetStanceEmotesLast = "";
-$gClosetStanceEmotesLast[$gClosetNeutralHeightInches @ "f"] = ((5.0 * 12.0) + 7.0);
-$gClosetStanceEmotesLast[$gClosetNeutralHeightInches @ "f"][$gClosetNeutralHeightInches @ "m"] = ((5.0 * 12.0) + 7.0);
+$gClosetNeutralHeightInches["f"] = ((5.0 * 12.0) + 7.0);
+$gClosetNeutralHeightInches["m"] = ((5.0 * 12.0) + 7.0);
 new StringMap(ThumbCategories) {
     ignoreCase = 1;
 };
@@ -214,31 +214,31 @@ $tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "waist"] @ $ThumbCamParam
 $tmpGender["0.7 -0.1 0.15 1.5 18" @ $ThumbCamParams TAB $tmpGender @ "props"] = ;
 $tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "badges"] = ;
 $tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"] = ;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"][$shopBannerCacheCleared @ "roca"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"][$shopBannerCacheCleared @ "roca"][$shopBannerCacheCleared @ "salon"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"][$shopBannerCacheCleared @ "roca"][$shopBannerCacheCleared @ "salon"][$shopBannerCacheCleared @ "starstyle"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"][$shopBannerCacheCleared @ "roca"][$shopBannerCacheCleared @ "salon"][$shopBannerCacheCleared @ "starstyle"][$shopBannerCacheCleared @ "threezee"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"][$shopBannerCacheCleared @ "roca"][$shopBannerCacheCleared @ "salon"][$shopBannerCacheCleared @ "starstyle"][$shopBannerCacheCleared @ "threezee"][$shopBannerCacheCleared @ "yjl"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"][$shopBannerCacheCleared @ "roca"][$shopBannerCacheCleared @ "salon"][$shopBannerCacheCleared @ "starstyle"][$shopBannerCacheCleared @ "threezee"][$shopBannerCacheCleared @ "yjl"][$shopBannerCacheCleared @ "vhd"] = 0;
-$tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"][$shopBannerCacheCleared @ 121][$shopBannerCacheCleared @ "aar"][$shopBannerCacheCleared @ "amap"][$shopBannerCacheCleared @ "amidol"][$shopBannerCacheCleared @ "clover"][$shopBannerCacheCleared @ "cos"][$shopBannerCacheCleared @ "dega"][$shopBannerCacheCleared @ "downtown"][$shopBannerCacheCleared @ "drezz"][$shopBannerCacheCleared @ "kitson"][$shopBannerCacheCleared @ "goth"][$shopBannerCacheCleared @ "kawaii"][$shopBannerCacheCleared @ "kenna"][$shopBannerCacheCleared @ "kong"][$shopBannerCacheCleared @ "leet"][$shopBannerCacheCleared @ "myet"][$shopBannerCacheCleared @ "modpodz"][$shopBannerCacheCleared @ "pcd"][$shopBannerCacheCleared @ "roca"][$shopBannerCacheCleared @ "salon"][$shopBannerCacheCleared @ "starstyle"][$shopBannerCacheCleared @ "threezee"][$shopBannerCacheCleared @ "yjl"][$shopBannerCacheCleared @ "vhd"][$shopBannerCacheCleared @ "vbar"] = 0;
+$shopBannerCacheCleared[121] = 0;
+$shopBannerCacheCleared["aar"] = 0;
+$shopBannerCacheCleared["amap"] = 0;
+$shopBannerCacheCleared["amidol"] = 0;
+$shopBannerCacheCleared["clover"] = 0;
+$shopBannerCacheCleared["cos"] = 0;
+$shopBannerCacheCleared["dega"] = 0;
+$shopBannerCacheCleared["downtown"] = 0;
+$shopBannerCacheCleared["drezz"] = 0;
+$shopBannerCacheCleared["kitson"] = 0;
+$shopBannerCacheCleared["goth"] = 0;
+$shopBannerCacheCleared["kawaii"] = 0;
+$shopBannerCacheCleared["kenna"] = 0;
+$shopBannerCacheCleared["kong"] = 0;
+$shopBannerCacheCleared["leet"] = 0;
+$shopBannerCacheCleared["myet"] = 0;
+$shopBannerCacheCleared["modpodz"] = 0;
+$shopBannerCacheCleared["pcd"] = 0;
+$shopBannerCacheCleared["roca"] = 0;
+$shopBannerCacheCleared["salon"] = 0;
+$shopBannerCacheCleared["starstyle"] = 0;
+$shopBannerCacheCleared["threezee"] = 0;
+$shopBannerCacheCleared["yjl"] = 0;
+$shopBannerCacheCleared["vhd"] = 0;
+$shopBannerCacheCleared["vbar"] = 0;
 if (!(isObject(ClosetTabs))) {
     new ScriptObject(ClosetTabs) {
         class = "TabControl";
@@ -372,7 +372,8 @@ function ClosetTabs::tabSelected(%this, %tab) {
         "You Are Wearing".setTextWithStyle(ClosetWhatYoureWearingTitle);
         ClosetWhatYoureWearingList.filterByRemovable = 1;
         ClosetMainObjectView.systemDragDrop = 0;
-        %outfitNames = ;
+        %outfitNames = [$player.getGender()];
+        $Player::HangerNames;
         %i = 0;
         while ((%i < $gClosetNumOutfits)) {
             %name = getWord(%outfitNames, %i);
@@ -381,7 +382,8 @@ function ClosetTabs::tabSelected(%this, %tab) {
             $ClosetSkusBody @ " " @ %name[$ClosetSkusOutfit @ %name].setSkus(%objectView);
             %i = (%i + 1.0);
         }
-        %outfitNum = findWord((%i < $gClosetNumOutfits), $ClosetOutfitName);
+        %outfitNum = findWord($Player::HangerNames, [$player.getGender()], $ClosetOutfitName);
+        (%i < $gClosetNumOutfits);
         %outfitNum.getOutfitButton(ClosetTabs).performClick();
     }
     if ((%tab.name $= "SHOPS")) {
@@ -885,7 +887,7 @@ function ClosetThumbnails::setDrawers(%this, %drwrNames) {
     }
     if (isObject(ClosetBrandPopup)) {
         if (!(ClosetItemsFrame.brand $= "")) {
-            %skus = .filterSkusBrand(SkuManager, %skus);
+            %skus = $gClosetBrandsIntrnl[ClosetItemsFrame.brand].filterSkusBrand(SkuManager, %skus);
         }
         $gUpdatingClosetItemPopupFromThumbnailsSetDrawers = 1;
         %skus.update(ClosetItemPopup);
@@ -908,6 +910,7 @@ function ClosetThumbnails::setDrawers(%this, %drwrNames) {
         %n = (%n - 1.0);
     }
     %skus = trim(%skusTmp);
+    (%n >= 0.0);
     %skus.setSkus(%this);
 };
 function ClosetThumbnails::setUnfilteredSkus(%this, %skus) {
@@ -935,6 +938,7 @@ function ClosetThumbnails::setSkus(%this, %skus) {
         if (isObject(ClosetFilterField)) {
         }
         %userFilterText = "";
+        ClosetFilterField.getValue();
         %skus = %userFilterText.filterSkusDescription(SkuManager, %skus);
     }
     if (isObject(%this.otherGenderText)) {
@@ -945,12 +949,13 @@ function ClosetThumbnails::setSkus(%this, %skus) {
         if ((%numSkusOtherGender == 0.0)) {
         }
         %text = "<just:right>(" @ %numSkusOtherGender @ " in other gender)";
+        "";
         %text.setText(%this.otherGenderText);
     }
     %numSkus = getWordCount(%skus);
     %numSkus.setNumChildren(%this);
     if (isObject(%this.infoText)) {
-        if ((%numSkus != 0.0) && ("" @ " " @ ClosetTabs.getCurrentTab().name $= "BODY") && !(ClosetFilterField.getValue() @ " " @ BodyItemsFrame.features $= "Height")) {
+        if ((%numSkus != 0.0) && (ClosetTabs.getCurrentTab().name $= "BODY") && !(BodyItemsFrame.features $= "Height")) {
         }
         if (!(BodyItemsFrame.features $= "Stance")) {
             0.setVisible(%this.infoText);
@@ -991,6 +996,7 @@ function ClosetThumbnails::setSkus(%this, %skus) {
         %n = (%n + 1.0);
     }
     %dkBackground = 0;
+    (%n < %numSkus);
     %currentDrwrName = "";
     %expiringItemsCount = 0;
     %n = 0;
@@ -999,7 +1005,7 @@ function ClosetThumbnails::setSkus(%this, %skus) {
         %skunum = getWord(%skus, %n);
         %skuItem = %skunum.findBySku(SkuManager);
         %skuItem.descShrt.setText(%cell.descCtrl);
-        if (((%n < %numSkus) @ " " @ %skuItem.brand $= "roca")) {
+        if ((%skuItem.brand $= "roca")) {
             "platform/client/ui/roca_logo_small".setBitmap(%cell.logo);
         }
         if ((%skuItem.brand $= "myet")) {
@@ -1404,9 +1410,9 @@ function ClosetFrameButton::onMouseEnter(%this) {
     %row.hiliteCell(%thumbnails, %col);
 };
 $gAllOutfits = "A B C D E F G H I J K L";
-$gAllOutfits[$Player::HangerNames @ "f"] = "fA fB fC fD fE fF fG fH fI fJ fK fL";
-$gAllOutfits[$Player::HangerNames @ "f"][$Player::HangerNames @ "m"] = "mA mB mC mD mE mF mG mH mI mJ mK mL";
-$gClosetNumOutfits = getWordCount($gAllOutfits[$Player::HangerNames @ "f"][$Player::HangerNames @ "m"][$Player::HangerNames @ "f"]);
+$Player::HangerNames["f"] = "fA fB fC fD fE fF fG fH fI fJ fK fL";
+$Player::HangerNames["m"] = "mA mB mC mD mE mF mG mH mI mJ mK mL";
+$gClosetNumOutfits = getWordCount($Player::HangerNames["f"]);
 $ClosetOutfitName = "";
 function ClosetGui::open(%this) {
     echo(getScopeName() @ "->debug for ETS-8039, $ClosetOutfitName at closet opening is: " @ $ClosetOutfitName);
@@ -1424,7 +1430,8 @@ function ClosetGui::open(%this) {
     DestroyMessageBoxes();
     $ClosetOutfitName = $player.getGender() @ "currentOutfit".get($gOutfits);
     $ClosetSkusBody = $player.getGender() @ "Body".get($gOutfits);
-    %outfitNames = ;
+    %outfitNames = [$player.getGender()];
+    $Player::HangerNames;
     %i = 0;
     while ((%i < $gClosetNumOutfits)) {
         %name = getWord(%outfitNames, %i);
@@ -1542,7 +1549,7 @@ function ClosetGui::doClose(%this, %cancel, %allowMsgBoxOnExit) {
     }
     if (!($StandAlone)) {
         $Player::hasSeenTakeAvatarPhotoDialog = 1;
-        MessageBoxYesNo($Player::hasSeenTakeAvatarPhotoDialog[$MsgCat::closet @ "MSG-NO-AVATAR-PHOTO-TITLE"], , "ClosetTabs.selectTabWithName(\"SNAPSHOT\");", "ClosetGui.reallyClose(" @ %cancel @ ");");
+        MessageBoxYesNo($MsgCat::closet["MSG-NO-AVATAR-PHOTO-TITLE"], $MsgCat::closet["MSG-NO-AVATAR-PHOTO"], "ClosetTabs.selectTabWithName(\"SNAPSHOT\");", "ClosetGui.reallyClose(" @ %cancel @ ");");
         return 0;
     }
     %cancel.reallyClose(%this);
@@ -1581,7 +1588,7 @@ function ClosetGui::reallyClose(%this, %cancel) {
     }
     if ($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].hasPropSku(SkuManager)) {
         1.setProperty(gUserPropMgrClient, $Player::Name, "hasSeenPropUseAdvisory");
-        MessageBoxOK(, , "");
+        MessageBoxOK($MsgCat::closet["MSG-USE-PROP-TITLE"], $MsgCat::closet["MSG-USE-PROP-BODY"], "");
     }
     Inventory::fetchPlayerInventoryIfEmpty();
 };
@@ -1602,7 +1609,8 @@ function ClosetGui::doResetGenre(%this) {
 function ClosetGui::doResetAll(%this) {
     $UserPref::Player::height = %this.oldHeight;
     $ClosetOutfitName = $player.getGender() @ "currentOutfit".get($gOutfits);
-    %outfitNames = ;
+    %outfitNames = [$player.getGender()];
+    $Player::HangerNames;
     %i = 0;
     while ((%i < $gClosetNumOutfits)) {
         %name = getWord(%outfitNames, %i);
@@ -1610,6 +1618,7 @@ function ClosetGui::doResetAll(%this) {
         %i = (%i + 1.0);
     }
     $ClosetSkusBody = $player.getGender() @ "Body".get($gOutfits);
+    (%i < $gClosetNumOutfits);
     %this.updateVisibleAvatar();
     "".zoomToSKU(ClosetMainObjectView);
     ClosetTabs.updateBodyTabDisplay();
@@ -1624,7 +1633,8 @@ function ClosetGui::doCancel(%this) {
 function ClosetGui::doOkay(%this) {
     strupr(getSubStr($ClosetOutfitName, 1, 1)).put($gOutfits, "currentOutfit");
     $ClosetSkusBody.put($gOutfits, $player.getGender() @ "Body");
-    %outfitNames = ;
+    %outfitNames = [$player.getGender()];
+    $Player::HangerNames;
     %n = ($gClosetNumOutfits - 1.0);
     while ((%n >= 0.0)) {
         %name = getWord(%outfitNames, %n);
@@ -1680,8 +1690,8 @@ function ClosetGui::askUserToDropProp(%this) {
     if ((%this.currentOverrideGenre $= "s")) {
         %activity = "strutting your stuff";
     }
-    %body = %activity[$MsgCat::closet @ "MSG-NO-PROP-IN-THIS-GENRE-BODY1"] @ " " @ %activity @ %activity[$MsgCat::closet @ "MSG-NO-PROP-IN-THIS-GENRE-BODY2"];
-    MessageBoxYesNo(%body[$MsgCat::closet @ "MSG-NO-PROP-IN-THIS-GENRE-TITLE"], %body, "$ClosetSkusOutfit[$ClosetOutfitName] = \"" @ %outfitWithoutProp @ "\"; ClosetGui.reallyClose(false);", "");
+    %body = $MsgCat::closet["MSG-NO-PROP-IN-THIS-GENRE-BODY1"] @ " " @ %activity @ %activity[$MsgCat::closet @ "MSG-NO-PROP-IN-THIS-GENRE-BODY2"];
+    MessageBoxYesNo($MsgCat::closet["MSG-NO-PROP-IN-THIS-GENRE-TITLE"], %body, "$ClosetSkusOutfit[$ClosetOutfitName] = \"" @ %outfitWithoutProp @ "\"; ClosetGui.reallyClose(false);", "");
     return 1;
 };
 function ClosetGui::userHasChangedBodyOrOutfit(%this) {
@@ -1691,7 +1701,8 @@ function ClosetGui::userHasChangedBodyOrOutfit(%this) {
     if (!("currentOutfit".get($gOutfits) $= strupr(getSubStr($ClosetOutfitName, 1, 1)))) {
         return 1;
     }
-    %outfitNames = ;
+    %outfitNames = [$player.getGender()];
+    $Player::HangerNames;
     %n = ($gClosetNumOutfits - 1.0);
     while ((%n >= 0.0)) {
         %name = getWord(%outfitNames, %n);
@@ -1729,13 +1740,14 @@ function ShowPurchaseSkusConfirmationDialog(%skus, %cbPoints, %cbBux, %cbCancel)
     if ((%numSkus == 1.0)) {
     }
     %itemsStr = "these" @ " " @ %numSkus @ " " @ "items";
+    "this item";
     %pointsTotal = Inventory::getTotalPrice("vPoints", %skus);
     %buxTotal = Inventory::getTotalPrice("vBux", %skus);
     if ((%pointsTotal == 0.0)) {
     }
     if ((%numSkusValidPoints > 0.0)) {
         eval(%cbBux);
-        return "this item";
+        return;
     }
     if ((%buxTotal == 0.0)) {
     }
@@ -1910,7 +1922,8 @@ function ClosetGui::purchaseSkusReally(%this, %skus, %currency) {
         %n = (%n - 1.0);
     }
     %request = sendRequest_PurchaseInventory($Player::Name, %array, %currency, $gCurrentStoreName, "closet_onDoneOrErrorCallback_PurchaseInventory");
-    %request.currency = (%n >= 0.0) @ %currency;
+    (%n >= 0.0);
+    %request.currency = %currency;
     %request.callbackData = %this;
     %request.timedOutAlready = 0;
     %array.delete();
@@ -1920,7 +1933,7 @@ function ClosetGui::purchaseSkusReally(%this, %skus, %currency) {
     %tab = "SHOPS".getTabWithName(ClosetTabs);
     !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.doneButton);
     !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.cancelButton);
-    %this.checkoutPopup = MessageBoxOK(, , "");
+    %this.checkoutPopup = MessageBoxOK($MsgCat::closet["MSG-PROCESSING-PURCHASE-TITLE"], $MsgCat::closet["MSG-PROCESSING-PURCHASE"], "");
     %request.schedule(%this, 30000, purchaseSkusRequestTimedOut);
 };
 function ClosetGui::purchaseSkusRequestTimedOut(%this, %request) {
@@ -1934,7 +1947,7 @@ function ClosetGui::purchaseSkusRequestTimedOut(%this, %request) {
     %tab = "SHOPS".getTabWithName(ClosetTabs);
     !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.doneButton);
     !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.cancelButton);
-    %this.processingTimeoutPopup = MessageBoxOK(, , "");
+    %this.processingTimeoutPopup = MessageBoxOK($MsgCat::closet["MSG-PROCESSING-TIMEOUT-TITLE"], $MsgCat::closet["MSG-PROCESSING-TIMEOUT"], "");
 };
 function ClosetGui::isWaitingForPurchaseCompletion(%this) {
     return (%this.numberOfPurchasesAwaitingCompletion > %this.numberOfPurchasesPastTimeout);
@@ -1962,6 +1975,11 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
         error(getScopeName() @ " " @ "- no request! this may be because we didn't send it in alpha 1");
         return;
     }
+    %skuResults["pass"] = "";
+    %skuResults["NotForSale"] = "";
+    %skuResults["OutOfStock"] = "";
+    %skuResults["NoUsageRights"] = "";
+    %skuResults["InsufficientFunds"] = "";
     %n = ("itemsCount".getValue(%request) - 1.0);
     while ((%n >= 0.0)) {
         %sku = "items" @ %n @ ".sku".getValue(%request);
@@ -1973,27 +1991,29 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
             %m = (%m - 1.0);
         }
         %n = (%n - 1.0);
+        (%m >= 0.0);
     }
     if (!(%request.checkSuccess())) {
         %errorCode = "errorCode".getValue(%request);
-        if (((%n >= 0.0) @ " " @ %errorCode $= "staleInventory")) {
+        (%n >= 0.0);
+        if ((%errorCode $= "staleInventory")) {
             %request = sendRequest_GetStoreInventory($Player::Name, $gCurrentStoreName, "OnGotDoneOrError_GetStoreInventory");
-            %request.shoppingCartSkus = (%m >= 0.0) @ StoreShoppingList.getSkus();
+            %request.shoppingCartSkus = StoreShoppingList.getSkus();
             StoreShoppingList.clear();
         }
         if ((%errorCode $= "insufficientTotalFunds")) {
             %msgName = (%request.currency $= "vpoints") ? "E-NO-VPOINTS" : "E-NO-VBUX";
-            MessageBoxOK(%msgName[$MsgCat::commerce @ "E-TITLE"], %msgName[$MsgCat::commerce @ %msgName], "");
+            MessageBoxOK($MsgCat::commerce["E-TITLE"], %msgName[$MsgCat::commerce @ %msgName], "");
         }
         if ((%errorCode $= "unacquirableItems")) {
             if (!(%errorCode[%skuResults @ "OutOfStock"] $= "")) {
-                MessageBoxYesNo(%errorCode[%skuResults @ "OutOfStock"][$MsgCat::commerce @ "E-TITLE"], , "StoreShoppingList.removeSkus(\"" @ "\");", "");
+                MessageBoxYesNo(%errorCode[%skuResults @ "OutOfStock"][$MsgCat::commerce @ "E-TITLE"], $MsgCat::commerce["E-SOLDOUT"], "StoreShoppingList.removeSkus(\"" @ %skuResults["OutOfStock"] @ "\");", "");
             }
-            MessageBoxOK(, , "");
+            MessageBoxOK($MsgCat::commerce["E-TITLE"], $MsgCat::commerce["E-UNKNOWN"], "");
         }
-        MessageBoxOK(, , "");
+        MessageBoxOK($MsgCat::commerce["E-TITLE"], $MsgCat::commerce["E-UNKNOWN"], "");
     }
-    %request.timedOutAlready.handleAnyPurchasedSkus(%this, );
+    %request.timedOutAlready.handleAnyPurchasedSkus(%this, %skuResults["pass"]);
 };
 function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed) {
     %skusToFlatten = "";
@@ -2016,9 +2036,9 @@ function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed) {
     if (!((%n >= 0.0) @ " " @ %skulist $= "")) {
         %callback = "StoreShoppingList.removeSkus(\"" @ %skusPurchased @ "\");";
         if (%delayed) {
-            MessageBoxOK("Purchase Complete", , %callback);
+            MessageBoxOK("Purchase Complete", $MsgCat::commerce["S-PURCHASE-DELAYED"], %callback);
         }
-        MessageBoxOK("Purchase Complete", , %callback);
+        MessageBoxOK("Purchase Complete", $MsgCat::commerce["S-PURCHASE"], %callback);
     }
     if (!(%skusToFlatten $= "")) {
         %skusToFlatten = trim(%skusToFlatten);
@@ -2032,9 +2052,10 @@ function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed) {
             %n = (%n - 1.0);
         }
         $StoreSkusLayer = trim(%newStoreSkus);
+        (%n >= 0.0);
         %skusToFlattenClothing = %skusToFlatten.filterSkusForClothing(SkuManager);
         %skusToFlattenBody = %skusToFlatten.filterSkusForBody(SkuManager);
-        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = (%n >= 0.0) @ %skusToFlattenClothing.overlaySkus(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = %skusToFlattenClothing.overlaySkus(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
         $ClosetSkusBody = %skusToFlattenBody.overlaySkus(SkuManager, $ClosetSkusBody);
     }
     StoreItemsFrame.update();
@@ -2047,7 +2068,7 @@ function CheckoutRequest::onError(%this, %unused, %unused) {
     if (isObject(ClosetGui.checkoutPopup)) {
         ClosetGui.checkoutPopup.close();
     }
-    MessageBoxOK("Connection Error", , "");
+    MessageBoxOK("Connection Error", $MsgCat::network["E-SERVER-CONNECT"], "");
     %this.onClosed();
 };
 function CheckoutRequest::onDone(%this) {
@@ -2112,6 +2133,7 @@ function CheckoutRequest::onDone(%this) {
             %i = (%i + 1.0);
         }
         %msg = "";
+        1;
         if (%ownsAlready) {
             %msg = %msg @ %msg[$MsgCat::commerce @ "E-ALREADYOWN"] @ "\n\n";
         }
@@ -2124,17 +2146,17 @@ function CheckoutRequest::onDone(%this) {
         if (%buyFailed) {
             %msg = %msg @ %msg[$MsgCat::commerce @ "F-PURCHASE"] @ "\n\n";
         }
-        if (!(1 @ " " @ %skusAborted $= "")) {
+        if (!(%skusAborted $= "")) {
             %msg = %msg @ %msg[$MsgCat::commerce @ "E-ABORTED"] @ "\n\n";
         }
         if (!(%msg $= "")) {
             MessageBoxOK("Notice", %msg, "");
         }
         if (!(%skusSoldOut $= "")) {
-            MessageBoxYesNo("Sold Out", , "StoreShoppingList.removeSkus(\"" @ %skusSoldOut @ "\");", "");
+            MessageBoxYesNo("Sold Out", $MsgCat::commerce["E-SOLDOUT"], "StoreShoppingList.removeSkus(\"" @ %skusSoldOut @ "\");", "");
         }
         if (!(%skusPurchased $= "")) {
-            MessageBoxOK("Purchase Complete", , "StoreShoppingList.removeSkus(\"" @ %skusPurchased @ "\");");
+            MessageBoxOK("Purchase Complete", $MsgCat::commerce["S-PURCHASE"], "StoreShoppingList.removeSkus(\"" @ %skusPurchased @ "\");");
         }
         if (!(%skusToFlatten $= "")) {
             %skusToFlatten = trim(%skusToFlatten);
@@ -2148,9 +2170,10 @@ function CheckoutRequest::onDone(%this) {
                 %i = (%i + 1.0);
             }
             $StoreSkusLayer = trim(%newStoreSkus);
+            (%i < getWordCount($StoreSkusLayer));
             %skusToFlattenClothing = %skusToFlatten.filterSkusForClothing(SkuManager);
             %skusToFlattenBody = %skusToFlatten.filterSkusForBody(SkuManager);
-            $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = (%i < getWordCount($StoreSkusLayer)) @ %skusToFlattenClothing.overlaySkus(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+            $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = %skusToFlattenClothing.overlaySkus(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
             $ClosetSkusBody = %skusToFlattenBody.overlaySkus(SkuManager, $ClosetSkusBody);
         }
         StoreItemsFrame.update();
@@ -2159,17 +2182,18 @@ function CheckoutRequest::onDone(%this) {
 };
 function ClosetGui::selectGenre(%this, %val) {
     $UserPref::Player::Genre = %val;
-    %anim = ;
+    %anim = $gClosetStanceEmotes[getRandom(0, ($gClosetStanceEmotesNum - 1.0))];
     %triesLeft = 10;
     if ((%triesLeft > 0.0)) {
     }
     while ((%anim $= $gClosetStanceEmotesLast)) {
-        %anim = ;
+        %anim = $gClosetStanceEmotes[getRandom(0, ($gClosetStanceEmotesNum - 1.0))];
         %triesLeft = (%triesLeft - 1.0);
         if ((%triesLeft > 0.0)) {
         }
     }
     $gClosetStanceEmotesLast = %anim;
+    (%anim $= $gClosetStanceEmotesLast);
     $player.getGender() @ %val @ %anim.playAnim($player);
 };
 function ClosetGui::updateVisibleAvatar(%this) {
@@ -2359,7 +2383,7 @@ function checkOutfitCorruption(%checkClosetVariables) {
     }
     %max = $gClosetNumOutfits;
     if (%checkClosetVariables) {
-        if ((findWord(0.0, $ClosetOutfitName) < )) {
+        if ((findWord($Player::HangerNames, [$player.getGender()], $ClosetOutfitName) < 0.0)) {
             error(getScopeName() @ "-> can't find $ClosetOutfitName in $Player::HangerNames for this gender! $ClosetOutfitName = \"" @ $ClosetOutfitName @ "\"");
             %errMsg = %errMsg @ " " @ "($ClosetOutfitName = \"" @ $ClosetOutfitName @ "\")";
         }
@@ -2375,6 +2399,7 @@ function checkOutfitCorruption(%checkClosetVariables) {
         if ((%outfitsCorrupted > 0.0)) {
             error(getScopeName() @ "-> " @ %outfitsCorrupted @ " blank outfits detected!");
             %errMsg = %errMsg @ " " @ "(" @ %outfitsCorrupted @ " blank outfits)";
+            (%n >= 0.0);
         }
     }
     if ((%outfitsCorrupted > 0.0)) {
@@ -2399,7 +2424,7 @@ function outfitsCorruptedNotify() {
 function outfitsAndInventoryDebugLog() {
     warn(getScopeName() @ "->gOutfits:");
     $gOutfits.dumpValues();
-    warn("->$Player::HangerNames[$player.getGender]:");
+    warn("->$Player::HangerNames[$player.getGender]:", $Player::HangerNames @ [$player.getGender()]);
     warn(getScopeName() @ "->player inventory: " @ $Player::inventory);
 };
 function filterOutSkusToHideInCloset(%skus) {
@@ -2504,9 +2529,10 @@ function ClosetTabs::updateAuthorWidget(%this, %sku) {
     if (!(%sku $= "")) {
     }
     %si = "";
+    %sku.findBySku(SkuManager);
     %filled = 0;
     if (isObject(%si)) {
-        if (!(%sku.findBySku(SkuManager) @ " " @ %si.author $= "")) {
+        if (!(%si.author $= "")) {
             %filled = 1;
             if ((%si.author $= "?")) {
                 "platform/client/ui/tgf/tgf_profile_default_" @ $player.getGender().setBitmap(ClosetAuthorPicture);
@@ -2569,8 +2595,7 @@ function ClosetTabs::createWhatYourWearingPanel(%this) {
         canMaximize = 0;
         closeCommand = "";
     };
-    %whatYoureWearingScroll = new GuiScrollCtrl("") {
-        profile = new GuiMLTextCtrl(ClosetWhatYoureWearingNone) {
+    new GuiMLTextCtrl(ClosetWhatYoureWearingNone) {
         horizSizing = new GuiMLTextCtrl(ClosetWhatYoureWearingTitle) {
         profile = "ClosetTitleProfile";
         horizSizing = "width";
@@ -2591,7 +2616,9 @@ function ClosetTabs::createWhatYourWearingPanel(%this) {
         style = "faintOnWhite";
         lineSpacing = -(1.0);
         stripGamelink = 1;
-    }; @ "ETSScrollProfile";
+    };
+    %whatYoureWearingScroll = new GuiScrollCtrl("") {
+        profile = "ETSScrollProfile";
         position = "3 18";
         extent = "239 259";
         minExtent = "1 1";

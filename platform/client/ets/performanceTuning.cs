@@ -172,6 +172,9 @@ function setExposureFilterValue(%val) {
     }
 };
 function ClientCmdRenderModsVD(%s) {
+    $Settings::VisibleDistances[0] = getWord(%s, 0);
+    $Settings::VisibleDistances[1] = getWord(%s, 1);
+    $Settings::VisibleDistances[2] = getWord(%s, 2);
 };
 function ClientCmdRenderModsSelfViewModifier(%s) {
     $Settings::selfviewmodifier = %s;

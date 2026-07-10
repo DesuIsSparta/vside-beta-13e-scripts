@@ -68,13 +68,13 @@ function AIMConvManager::removeConvAtIndex(%this, %convIndex) {
     }
     if ((%convIndex < %this.numConvs)) {
         %conv = %this.convs;
+        %convIndex;
         0.setVisible(%conv.contents);
         0.setVisible(%conv.titlebar);
         %conv.contents.delete();
         %conv.titlebar.delete();
         %conv.delete();
         %this.numConvs = (%this.numConvs - 1.0);
-        %convIndex;
         %idx = %convIndex;
         while ((%idx < %this.numConvs)) {
             %this.convs = (%idx + 1.0) @ %this.convs @ %idx;
@@ -124,17 +124,18 @@ function AIMConvManager::update(%this) {
     %idx = 0;
     while ((%idx < %this.numConvs)) {
         %conv = %this.convs;
+        %idx;
         %titlebar = %conv.titlebar;
         %ypos.setTrgPosition(%titlebar, 0);
         %ypos = (%ypos + 24.0);
         %this.movingBars = (%this.movingBars + 1.0);
-        %idx;
         %contents = %conv.contents;
         %ypos.setTrgPosition(%contents, getWord(%contents.getTrgPosition(), 0));
         if ((%idx == %this.currentConvIndex)) {
             if (%conv.newMessage) {
             }
             %status = %conv.status;
+            "new_msg";
             "platform/client/ui/AIM_sel_" @ %status.setBitmap(%titlebar.status);
             26.resize(%titlebar.status, 0, 0, 29);
             26.resize(%titlebar.statusButton, 0, 0, 35);
@@ -146,6 +147,7 @@ function AIMConvManager::update(%this) {
         if (%conv.newMessage) {
         }
         %status = %conv.status;
+        "new_msg";
         "platform/client/ui/AIM_" @ %status.setBitmap(%titlebar.status);
         15.resize(%titlebar.status, 11, 5, 30);
         26.resize(%titlebar.statusButton, 0, 0, 45);
@@ -157,6 +159,7 @@ function AIMConvManager::update(%this) {
 };
 function AIMConvManager::finishUpdate(%this) {
     %curConv = %this.convs;
+    %this.currentConvIndex;
     if (isObject(%curConv)) {
         1.setVisible(%curConv.contents);
         if (!(isObject(Canvas.getFirstResponder()))) {
@@ -257,10 +260,7 @@ function AIMConvManager::newConv(%this, %aimName) {
         mlText = %mlText;
         scroll = %scroll;
     };
-    %textInput.add(%contents);
-    %scroll.add(%contents);
-    %dummy = new GuiTextCtrl("") {
-        profile = new GuiBitmapCtrl("") {
+    new GuiBitmapCtrl("") {
         profile = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -282,7 +282,11 @@ function AIMConvManager::newConv(%this, %aimName) {
         visible = 1;
         bitmap = "./ui/AIM_bracket_right";
         wrap = 0;
-    }; @ "ETSAIMDeselectedProfile";
+    };
+    %textInput.add(%contents);
+    %scroll.add(%contents);
+    %dummy = new GuiTextCtrl("") {
+        profile = "ETSAIMDeselectedProfile";
         horizSizing = "left";
         vertSizing = "top";
         position = "0 0";

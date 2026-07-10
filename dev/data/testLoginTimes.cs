@@ -27,13 +27,13 @@ function doSomething() {
 };
 function initCities() {
     %i = 0;
-    %i[$Cities @ %i = (%i + 1.0)] = "NewVeneziaNorth";
-    %i[$Cities @ %i = (%i + 1.0)] = "LaGenoaAiresNorth";
-    %i[$Cities @ %i = (%i + 1.0)] = "RaijukuNorth";
-    %i[$Cities @ %i = (%i + 1.0)] = "IIR Raijuku";
-    %i[$Cities @ %i = (%i + 1.0)] = "LaBoca Apartments";
-    %i[$Cities @ %i = (%i + 1.0)] = "Warehouse Loft";
-    %i[$Cities @ %i = (%i + 1.0)] = "BeatUp";
+    $Cities[%i = (%i + 1.0)] = "NewVeneziaNorth";
+    $Cities[%i = (%i + 1.0)] = "LaGenoaAiresNorth";
+    $Cities[%i = (%i + 1.0)] = "RaijukuNorth";
+    $Cities[%i = (%i + 1.0)] = "IIR Raijuku";
+    $Cities[%i = (%i + 1.0)] = "LaBoca Apartments";
+    $Cities[%i = (%i + 1.0)] = "Warehouse Loft";
+    $Cities[%i = (%i + 1.0)] = "BeatUp";
     $maxCities = %i;
     $cityIndex = 1;
 };

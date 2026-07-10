@@ -11,8 +11,8 @@ function CSRulesAndDescWindow::open(%this) {
     %this.focusAndRaise(PlayGui);
     WindowManager.update();
     CustomSpaceClient::checkEditingSpace();
-    if (!(CSRulesPasswordSavedIndicator @ " " @ lastValueSaved $= "")) {
-        lastValueSaved.setValue(CSRulesPasswordField, CSRulesPasswordSavedIndicator);
+    if (!(CSRulesPasswordSavedIndicator.lastValueSaved $= "")) {
+        CSRulesPasswordSavedIndicator.lastValueSaved.setValue(CSRulesPasswordField);
     }
 };
 function CSRulesAndDescWindow::close(%this) {
@@ -32,12 +32,11 @@ function CSRulesAndDescWindow::setup(%this) {
         "Door Code".add(CSRulesAccessPopup);
         0.SetSelected(CSRulesAccessPopup);
         SavableTextStatusIndicatorCreator::make("CSRulesDescSavedIndicator", "210 72", CSDescTaglineTextBox, "CSRulesAndDescWindow.update();", 0, "right");
-        %this.add();
+        CSRulesDescSavedIndicator.add(%this);
         SavableTextStatusIndicatorCreator::make("CSRulesPasswordSavedIndicator", "210 125", CSRulesPasswordField, "CSRulesAndDescWindow.update();", 1, "right");
-        %this.add();
+        CSRulesPasswordSavedIndicator.add(%this);
         %this.update();
-        %this.initialized = CSRulesPasswordSavedIndicator @ 1;
-        CSRulesDescSavedIndicator;
+        %this.initialized = 1;
     }
 };
 function CSRulesAndDescWindow::descriptionChanged(%this) {
@@ -90,18 +89,15 @@ function CSRulesAndDescWindow::update(%this) {
     %flag = (CSRulesAccessPopup.GetSelected() == findWord($gCSRulesAccessCodes, "PASSWORDPROTECTED"));
     !(%flag).setVisible(CSRulesDescTextForLocked);
     %flag.setVisible(CSRulesPasswordLabel);
-    %this.text = CSRulesPasswordField.getValue() @ CSRulesPasswordField;
-    if (%flag) {
-        // unhandled opcode 975 at 0x000003CC
-    }
-    InfoWindowTextEditInactiveProfile.setProfile(CSRulesPasswordField, InfoWindowTextEditProfile);
+    CSRulesPasswordField.text = CSRulesPasswordField.getValue();
+    %flag ? InfoWindowTextEditProfile : InfoWindowTextEditInactiveProfile.setProfile(CSRulesPasswordField);
     %flag.setVisible(CSRulesPasswordField);
     %flag.setActive(CSRulesPasswordButton);
     %flag.setVisible(CSRulesPasswordButton);
     %flag.setVisible(CSRulesPasswordDescText);
     if (%flag) {
     }
-    (CSRulesPasswordFieldOverlay @ " " @ CSRulesPasswordField.getValue() $= "").setVisible();
+    (CSRulesPasswordField.getValue() $= "").setVisible(CSRulesPasswordFieldOverlay);
     0.update(CSRulesDescSavedIndicator);
     %flag.setVisible(CSRulesPasswordSavedIndicator);
     0.update(CSRulesPasswordSavedIndicator);
@@ -118,7 +114,7 @@ function CSRulesPasswordField::onKeyUp(%this, %unused, %unused) {
     if ((%fieldIsVisible != CSRulesPasswordSavedIndicator.isVisible())) {
         %fieldIsVisible.setVisible(CSRulesPasswordSavedIndicator);
     }
-    (CSRulesPasswordFieldOverlay @ " " @ %this.getValue() $= "").setVisible();
+    (%this.getValue() $= "").setVisible(CSRulesPasswordFieldOverlay);
     0.update(CSRulesPasswordSavedIndicator);
     return 0;
 };

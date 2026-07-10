@@ -5,7 +5,7 @@ function clientCmdTeleportSuccessful() {
         $VURL::curVURL = "";
     }
     echo("Teleport successful");
-    doreopen = 0 @ geTGF;
+    geTGF.doreopen = 0;
     setIdle(0);
     if (isObject($player)) {
         $player.adjustHorizontalScale();
@@ -29,7 +29,7 @@ function clientCmdTeleportFailure(%retry) {
     geTGF.reopen();
 };
 function clientCmdNotifyOfRefuseTeleport() {
-    handleSystemMessage("msgInfoMessage", );
+    handleSystemMessage("msgInfoMessage", $MsgCat::teleport["NOTIFY-REFUSING-TELEPORTS"]);
 };
 if (!(isObject($pi))) {
     $pi = 3.1415926536;
@@ -37,15 +37,14 @@ if (!(isObject($pi))) {
 function Player::adjustHorizontalScale(%this) {
     %hScale = getWord(%this.getScale(), 0);
     %vScale = getWord(%this.getScale(), 2);
-    if (!(gGetField(%this))) {
+    if (!(gGetField(%this, isScaling))) {
         gSetField(%this, isScaling, 1);
         gSetField(%this, baseHorizScale, %hScale);
         %hScale = 0.05;
-        isScaling;
     }
-    %hScale = mMin((%hScale + 0.05), baseHorizScale, gGetField(%this));
+    %hScale = mMin((%hScale + 0.05), gGetField(%this, baseHorizScale));
     %hScale @ " " @ %hScale @ " " @ %vScale.setScale(%this);
-    if ((%hScale < gGetField(%this))) {
+    if ((%hScale < gGetField(%this, baseHorizScale))) {
         "adjustHorizontalScale".schedule(%this, 25);
     }
     gSetField(%this, isScaling, 0);

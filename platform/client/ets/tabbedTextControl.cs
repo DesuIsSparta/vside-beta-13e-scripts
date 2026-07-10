@@ -57,13 +57,13 @@ function TabbedTextControl::onCreatedChild(%this, %child) {
     while ((%i < %numFields)) {
         %fieldWidth = getWord(%this.fieldWidths, %i);
         %child.field = new GuiMLTextCtrl("") {
-            profile = 0 @ %this.menuTextProfile;
+            profile = %this.menuTextProfile;
             position = %xoffset @ " " @ %this.paddingAboveText;
             extent = %fieldWidth @ " " @ 20;
             lineSpacing = 1;
             allowColorChars = 1;
             stripTagsOnCopy = 1;
-        }; @ %i
+        }; @ %i;
         %child.field.add(%child, %i);
         %xoffset = (%xoffset + (%fieldWidth + %this.Padding));
         %i = (%i + 1.0);

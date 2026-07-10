@@ -27,12 +27,12 @@ function textureLoadingIndicator_initialize() {
     "geTexturesLoadingIcon".setName(%wi);
     %wi.add(geTextureLoadingContainer);
     new GuiMLTextCtrl(geTGF_deets_eventTxtr) {
-        profile = geTextureLoadingContainer @ "InfoWindowTextProfile";
+        profile = "InfoWindowTextProfile";
         position = "0 0";
         extent = (getWord(%wi.getPosition(), 0) - 2.0) @ " " @ 18;
         horizSizing = "width";
         vertSizing = "bottom";
         text = mlStyle("<just:right>loading.. ", "loadingHUD");
         autoDetectLinks = 0;
-    };.add();
+    };.add(geTextureLoadingContainer);
 };

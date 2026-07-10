@@ -38,18 +38,18 @@ function skeletonClient::init(%this) {
 };
 function skeletonClient::initSpawnPoints(%this) {
     %i = 0;
-    %i[$Spawns @ %i = (%i + 1.0)] = "DanceFloorSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "PlazaSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "ShoppingSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "LoungeSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "RailwaySpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "LobbySpawns_NV255Lofts";
-    %i[$Spawns @ %i = (%i + 1.0)] = "GariSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "LAXSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "DanceFloorSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "ShoppingSpawns_sf1972";
-    %i[$Spawns @ %i = (%i + 1.0)] = "TeaHouseSpawns";
-    %i[$Spawns @ %i = (%i + 1.0)] = "SkyBarSpawns";
+    $Spawns[%i = (%i + 1.0)] = "DanceFloorSpawns";
+    $Spawns[%i = (%i + 1.0)] = "PlazaSpawns";
+    $Spawns[%i = (%i + 1.0)] = "ShoppingSpawns";
+    $Spawns[%i = (%i + 1.0)] = "LoungeSpawns";
+    $Spawns[%i = (%i + 1.0)] = "RailwaySpawns";
+    $Spawns[%i = (%i + 1.0)] = "LobbySpawns_NV255Lofts";
+    $Spawns[%i = (%i + 1.0)] = "GariSpawns";
+    $Spawns[%i = (%i + 1.0)] = "LAXSpawns";
+    $Spawns[%i = (%i + 1.0)] = "DanceFloorSpawns";
+    $Spawns[%i = (%i + 1.0)] = "ShoppingSpawns_sf1972";
+    $Spawns[%i = (%i + 1.0)] = "TeaHouseSpawns";
+    $Spawns[%i = (%i + 1.0)] = "SkyBarSpawns";
     $SpawnsCount = %i;
 };
 function skeletonClient::getHWSpawns() {

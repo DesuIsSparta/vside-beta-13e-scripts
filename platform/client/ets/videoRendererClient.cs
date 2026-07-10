@@ -13,7 +13,7 @@ function VideoRenderer::loadVideoRenderer(%this) {
         %loadTextureName.setTextureFile(%this);
     }
     if (%this.getPlayWithPlaylist()) {
-        renderer = %this @ VideoPlaylist;
+        VideoPlaylist.renderer = %this;
     }
     $VideoRendererLoadable = ($VideoRendererLoadable + 1.0);
     if ((strstr(%this.getNamespaceList(), "VideoRenderer") == -(1.0))) {

@@ -362,8 +362,7 @@ package platform {
         return;
     };
     function startInitialSSLConnection() {
-        %curl = new URLPostObject("");;
-        0;
+        %curl = new URLPostObject("");
         "http://" @ $Net::SecureManagerHost.setURL(%curl);
         0.setBody(%curl);
         %curl.start();

@@ -7,18 +7,18 @@ function InstrumentRegistryClient::initializeRegistry(%this) {
         warn(getScopeName() @ " " @ "- registry already intialized");
         return;
     }
-    %this.instrumentsList = 0 @ new StringMap("");;
+    %this.instrumentsList = new StringMap("");
     if (isObject(MissionCleanup)) {
         %this.instrumentsList.add(MissionCleanup);
     }
-    %this.keyBindings = 0 @ new StringMap("");;
+    %this.keyBindings = new StringMap("");
     if (isObject(MissionCleanup)) {
         %this.keyBindings.add(MissionCleanup);
     }
     %this.initializeRegistryCommon();
     %this.initialized = 1;
 };
-%this.initialized = 0 @ InstrumentRegistryClient;
+InstrumentRegistryClient.initialized = 0;
 InstrumentRegistryClient.initializeRegistry();
 function InstrumentRegistryClient::clearRegistry(%this) {
     if (isObject(%this.instrumentsList)) {
@@ -59,7 +59,7 @@ function InstrumentRegistryClient::closeRegistry(%this) {
 };
 function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %instrumentGameTitleText, %instrumentGameBodyText, %instrumentGameDisabledText, %instrumentGameActiveIconA, %instrumentGameActiveIconB, %instrumentGameIdleIcon, %instrumentGameUnfocusedIcon) {
     %instrument = new SimSet("") {
-        name = 0 @ %instrumentName;
+        name = %instrumentName;
         titleText = %instrumentGameTitleText;
         bodyText = %instrumentGameBodyText;
         disabledText = %instrumentGameDisabledText;

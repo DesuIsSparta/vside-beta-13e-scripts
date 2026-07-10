@@ -14,7 +14,7 @@ function GameConnection::etsInit(%this) {
     $player.prevRolesMask = -(1.0);
     $player.getRolesMask().onGotRoles($player);
     Inventory::fetchPlayerInventoryIfNeedTo($player);
-    $player.playersNotifiedOfIdleStatus = 0 @ new StringMap("");;
+    $player.playersNotifiedOfIdleStatus = new StringMap("");
     if (($UserPref::Player::Genre $= "")) {
         %rand = getRandom(0, 2);
         $UserPref::Player::Genre = getSubStr($player.getDataBlock().possibleGenres, %rand, 1);
@@ -166,7 +166,7 @@ function Player::addToPlayerInstanceDict(%this) {
     %this.put(%dict, %this.getShapeName());
 };
 function Player::removeFromPlayerInstanceDict(%this) {
-    // unhandled opcode 1954 at 0x0000063F
+    %dict = PlayerInstanceDict;
     %this.getShapeName().remove(%dict);
 };
 function Player::findPlayerInstance(%playerName) {
@@ -184,7 +184,7 @@ function getBitmapFilename(%category, %fileName) {
 function Player::rebuildHudCtrl(%this) {
     if (!(isObject(%this.hudCtrl))) {
         %this.hudCtrl = new Gui3DProjectionCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "10 10";
@@ -202,7 +202,7 @@ function Player::rebuildHudCtrl(%this) {
         %this.setAttachedTo(%hudCtrl);
         %hudCtrl.add(TheBadgesHud);
         %ctrl = new GuiBitmapCtrl("") {
-            profile = 0 @ "ETSNonModalProfile";
+            profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = "0 0";
@@ -235,8 +235,7 @@ function Player::getBadgeBitmapName(%this) {
     return %ret;
 };
 function Player::getAffinityBadgeBitmapName(%this) {
-    %level = gGetField(%this);
-    affinityLevel;
+    %level = gGetField(%this, affinityLevel);
     if ((%level != 0.0)) {
         %level = 1;
     }

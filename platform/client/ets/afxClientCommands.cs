@@ -68,9 +68,9 @@ function afxNextSelectronStyle() {
 };
 afxInitKeybinds();
 $gAfxSelectedAvatar["AudioProfile_AFX_TeleIn" @ $gAfxClientSounds TAB "TeleIn" @ "profile"] = ;
-$gAfxSelectedAvatar["AudioProfile_AFX_TeleIn" @ $gAfxClientSounds TAB "TeleIn" @ "profile"][300 @ $gAfxClientSounds TAB "TeleIn" @ "delay"] = ;
-$gAfxSelectedAvatar["AudioProfile_AFX_TeleIn" @ $gAfxClientSounds TAB "TeleIn" @ "profile"][300 @ $gAfxClientSounds TAB "TeleIn" @ "delay"]["AudioProfile_AFX_TeleOut" @ $gAfxClientSounds TAB "TeleOut" @ "profile"] = ;
-$gAfxSelectedAvatar["AudioProfile_AFX_TeleIn" @ $gAfxClientSounds TAB "TeleIn" @ "profile"][300 @ $gAfxClientSounds TAB "TeleIn" @ "delay"]["AudioProfile_AFX_TeleOut" @ $gAfxClientSounds TAB "TeleOut" @ "profile"][200 @ $gAfxClientSounds TAB "TeleOut" @ "delay"] = ;
+$gAfxClientSounds["TeleIn","delay"] = 300;
+$gAfxClientSounds["TeleOut","profile"] = "AudioProfile_AFX_TeleOut";
+$gAfxClientSounds["TeleOut","delay"] = 200;
 function ClientCmdAfxClientSpecificSound(%soundID) {
     %soundID = detag(%soundID);
     %profile = %soundID[$gAfxClientSounds TAB %soundID @ "profile"];

@@ -88,7 +88,7 @@ function initClient() {
     checkForPackageUpdates($AutoDownloadPackages);
     loadMainMenu();
     $TransitionScreenshot = new ScreenShotUploader("") {
-        className = 0 @ "ScreenShotUploaderClass";
+        className = "ScreenShotUploaderClass";
     };
     HudTabs::setup();
     enableManualWindowResize(1);
@@ -121,7 +121,7 @@ function startStandAlone() {
 function startStandAlone_Part2() {
     outfits_init();
     createServer("SinglePlayer", $MissionArg);
-    $GameConnection = new GameConnection(ServerConnection);;
+    $GameConnection = new GameConnection(ServerConnection);
     "".setCommonPreconnectClientSettings($GameConnection);
     ServerConnection.add(RootGroup);
     $GameConnection.connectLocal();
@@ -131,14 +131,13 @@ function join(%joinGameAddress) {
     loadMainMenu();
     echo("join:: connecting to: " @ %joinGameAddress);
     $lastJoinedServer = %joinGameAddress;
-    $GameConnection = new GameConnection(ServerConnection);;
+    $GameConnection = new GameConnection(ServerConnection);
     "".setCommonPreconnectClientSettings($GameConnection);
     %joinGameAddress.connect($GameConnection);
 };
 function showLicense() {
     %file = findFirstFile("*/license.txt");
-    %fo = new FileObject("");;
-    0;
+    %fo = new FileObject("");
     %file.openForRead(%fo);
     %text = "";
     while (!(%fo.isEOF())) {
@@ -231,7 +230,7 @@ function logout(%doQuit) {
     %cmd.persistReally(gUserPropMgrClient, $Player::Name);
 };
 function logoutPart2(%doQuit) {
-    %logout = new ManagerRequest(LogoutRequest);;
+    %logout = new ManagerRequest(LogoutRequest);
     if (isObject(MissionCleanup)) {
         %logout.add(MissionCleanup);
     }
@@ -248,7 +247,7 @@ function logoutPart2(%doQuit) {
     %userValue = "?user=" @ urlEncode($Player::Name);
     %tokenValue = "&token=" @ urlEncode($Token);
     if (isObject(AIMConvManager)) {
-        %aimMessagesSentValue = "&aimMessagesSent=" @ urlEncode(AIMConvManager, %logout.totalMessagesSent);
+        %aimMessagesSentValue = "&aimMessagesSent=" @ urlEncode(AIMConvManager.totalMessagesSent);
     }
     %url = %url @ %userValue @ %tokenValue @ %aimMessagesSentValue;
     log("login", "debug", "logout: " @ %url);
@@ -271,7 +270,7 @@ function LogoutRequest::onDone(%this) {
         WorldMap.exit();
     }
     if (isObject(HudScoresContent)) {
-        %this.previousRespektPoints = 0 @ HudScoresContent;
+        HudScoresContent.previousRespektPoints = 0;
     }
     log("login", "debug", "logout done");
     if (%this.doQuit) {
@@ -313,14 +312,14 @@ function StatusRequest::onDone(%this) {
         $gVPointsRatio = "vPointsRatio".getValue(%this);
         $gVPointsRatio = 50;
     }
-    $gLoginStatusMessage = $gVPointsRatio[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $gVPointsRatio[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
+    $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     LoginGui.update();
 };
 function StatusRequest::onError(%this, %errorNum, %errorName) {
     if ((%errorNum == $CURL::CouldNotResolveHost)) {
         $gLoginStatusMessage = %errorNum[$MsgCat::network @ "E-SERVER-DNS"];
     }
-    $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $gLoginStatusMessage[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
+    $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     LoginGui.update();
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onError:" @ " " @ %errorName);
 };
@@ -337,7 +336,7 @@ function sendStatusRequest() {
     log("login", "info", "sending system status request: " @ %url);
     %url.setURL(%request);
     %request.start();
-    $gLoginStatusMessage = ;
+    $gLoginStatusMessage = $MsgCat::network["H-SEARCHING"];
     LoginGui.update();
 };
 function FirstLaunchRequest::onDone(%this) {

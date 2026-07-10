@@ -2,11 +2,11 @@ function EmoteHudWin::open(%this) {
     1.setVisible(%this);
     %this.focusAndRaise(PlayGui);
     WindowManager.update();
-    currentEmote = "" @ EmoteHudList;
+    EmoteHudList.currentEmote = "";
     0.setEditMode(EmoteHudList);
 };
 function EmoteHudWin::close(%this) {
-    if (!(EmoteHudList @ " " @ currentEmote $= "")) {
+    if (!(EmoteHudList.currentEmote $= "")) {
         EmoteHudList.reset();
         return;
     }
@@ -17,11 +17,11 @@ function EmoteHudWin::close(%this) {
 };
 function clientCmdActivateDanceList(%listName) {
     %listName.dynamicAddList(EmoteHudTabs);
-    insertPlainToCodedListIntoMap(%listName);
+    insertPlainToCodedListIntoMap(%listName, EmoteDict);
 };
 function clientCmdDeActivateDanceList(%listName) {
     emote("/whew");
-    removePlainToCodedListFromMap(%listName);
+    removePlainToCodedListFromMap(%listName, EmoteDict);
     %listName.dynamicRemoveList(EmoteHudTabs);
 };
 function EmoteHudTabs::dynamicAddList(%this, %dancesList) {
@@ -56,6 +56,17 @@ function EmoteHudTabs::wakeUp(%this) {
 function EmoteHudWin::wakeUp(%this) {
     EmoteHudList.setup();
 };
+$gEmoteListTitles["Mood"] = "Mood";
+$gEmoteListTitles["FavoriteActions"] = "Favorite Actions";
+$gEmoteListTitles["Expressions"] = "Expressions";
+$gEmoteListTitles["Gestures"] = "Gestures";
+$gEmoteListTitles["DancesLounge"] = "Lounge Dances";
+$gEmoteListTitles["DancesBreak"] = "Break Dances";
+$gEmoteListTitles["DancesThrilla"] = "Thrilla Dances";
+$gEmoteListTitles["DancesGoGo"] = "Go-Go Dances";
+$gEmoteListTitles["DancesHipHop"] = "HipHop Dances";
+$gEmoteListTitles["DancesJB"] = "JB Dances";
+$gEmoteListTitles["DancesGoth"] = "Goth Dances";
 function EmoteHudList::setup(%this) {
     safeEnsureScriptObjectWithInit("StringMap", "EmoteBindingMap", "{ ignoreCase = true; }");
     EmoteBindingMap.clear();
@@ -68,7 +79,7 @@ function EmoteHudList::setup(%this) {
             %m = (getWordCount(%keys) - 1.0);
             while ((%m >= 0.0)) {
                 %key = getWord(%keys, %m);
-                %emote = ;
+                %emote = $UserPref::emotes[%gender,normalizeKey(%key)];
                 if (!(%emote $= "")) {
                     %key.put(EmoteBindingMap, %emote);
                 }
@@ -228,8 +239,8 @@ function EmoteHudList::getMLDisplayForMood(%this, %mood) {
 function EmoteHudList::initializeList(%this, %listName) {
     if (!(isObject(%listName, %this.lists))) {
         %this.lists = new StringMap("") {
-            ignoreCase = 0 @ 1;
-        }; @ %listName
+            ignoreCase = 1;
+        }; @ %listName;
     }
     %this.lists.clear(%listName);
 };
@@ -352,7 +363,7 @@ function EmoteHudList::rebind(%this, %binding, %emote) {
         return;
     }
     "".setEmoteForBinding(%this, %emote.get(EmoteBindingMap));
-    %binding2[EmoteBindingMap @ $UserPref::emotes TAB $UserPref::Player::gender @ %binding2].remove();
+    %binding2[$UserPref::emotes TAB $UserPref::Player::gender @ %binding2].remove(EmoteBindingMap);
     %binding2[%emote @ $UserPref::emotes TAB $UserPref::Player::gender @ %binding2] = ;
     if (!(%emote $= "")) {
         %binding2.put(EmoteBindingMap, %emote);

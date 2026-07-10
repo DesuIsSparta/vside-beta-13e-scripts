@@ -33,8 +33,7 @@ function initAdLogFile() {
     %ts = getSubStr(%ts, 0, 17);
     $adLogFileName = getAdLogName(%ts);
     $adLogCreationTimestamp = %ts;
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if ($adLogFileName.openForAppend(%file)) {
         "# Evil Twin Ads Log File".writeLine(%file);
         "#" @ " " @ $adLogFileName.writeLine(%file);
@@ -50,8 +49,7 @@ function initAdLogFile() {
 };
 function appendAdLogLine(%line) {
     %fn = initAdLogFile();
-    %file = new FileObject("");;
-    0;
+    %file = new FileObject("");
     if (%fn.openForAppend(%file)) {
         %line.writeLine(%file);
         %file.close();
@@ -155,14 +153,14 @@ function AdManager::think(%this) {
     if ((%this.doSwap() > 0.0)) {
     }
     if ((%this.periodSecs > 0.0)) {
-        (%this.periodSecs * 1000.0).schedule(%this);
+        think.schedule(%this, (%this.periodSecs * 1000.0));
     }
     echo("Putting AdManager to sleep..");
-    return think;
+    return;
 };
 function AdManager::newAdGroup(%this) {
     %adGrp = new ScriptObject("") {
-        class = 0 @ AdGroup;
+        class = AdGroup;
         manager = %this;
     };
     %adGrp.init();

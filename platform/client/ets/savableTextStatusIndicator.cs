@@ -15,7 +15,7 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
     %obj.lastValueSaved = "";
     %obj.initialValueSet = 0;
     %obj.savedBitmap = new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -25,7 +25,7 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         visible = 0;
     };
     %obj.savingBitmap = new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -42,7 +42,7 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
     }
     %arrowBitmap = "platform/client/ui/arrow_red_right";
     %obj.changedBitmap = new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";

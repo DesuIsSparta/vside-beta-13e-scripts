@@ -1,6 +1,6 @@
 function AnimCtrl::newAnimCtrl(%pos, %ext) {
     %ctrl = new GuiBitmapCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = %pos;

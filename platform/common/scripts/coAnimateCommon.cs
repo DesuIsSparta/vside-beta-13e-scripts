@@ -12,8 +12,7 @@ function initCoAnimList() {
 $gCoAnimDictionary = 0;
 function addCoAnim(%coAnimName, %anim, %delayA, %delayB, %range, %relativeTransform, %minLevel, %requestText, %moveMode) {
     if (!(isObject($gCoAnimDictionary))) {
-        $gCoAnimDictionary = new StringMap("");;
-        0;
+        $gCoAnimDictionary = new StringMap("");
         if (isObject(MissionCleanup)) {
             $gCoAnimDictionary.add(MissionCleanup);
         }

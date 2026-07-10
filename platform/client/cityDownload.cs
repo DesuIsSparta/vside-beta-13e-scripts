@@ -47,7 +47,7 @@ function CityDownloadGui::onWake(%this) {
     }
     if (!($missionRunning)) {
         error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
-        MessageBoxOK("Error",  @ " " @ $MissionArg, "quit();", "");
+        MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();", "");
     }
     packageDownload.callBackSink = %this;
     if (!(packageDownload.isActive())) {

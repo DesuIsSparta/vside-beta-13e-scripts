@@ -38,7 +38,7 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE) {
         return 0;
     }
     %spaceDef = new ScriptObject(%fullName) {
-        class = 0 @ "SpaceDef";
+        class = "SpaceDef";
         internalName = %internalName;
     };
     %spaceDef.defaultValues();

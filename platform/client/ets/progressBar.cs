@@ -18,7 +18,7 @@ function ProgressBarController::Initialize(%this, %parentCtrl, %emptyBitmap, %fi
 };
 function ProgressBarController::makeBackground(%this, %bitmap) {
     %this.background = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = %this.leftMargin @ " " @ 0;
@@ -33,7 +33,7 @@ function ProgressBarController::makeBackground(%this, %bitmap) {
 };
 function ProgressBarController::makeForeground(%this, %bitmap) {
     %this.foreground = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "0 0";
@@ -55,7 +55,7 @@ function ProgressBarController::makeLeftCap(%this, %bitmap) {
         return;
     }
     %this.leftCap = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";
@@ -78,7 +78,7 @@ function ProgressBarController::makeRightCap(%this, %bitmap) {
         return;
     }
     %this.rightCap = new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "left";
         vertSizing = "bottom";
         position = "0 0";

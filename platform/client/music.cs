@@ -1,7 +1,7 @@
 $musicStreamNameMap = 0;
 $musicStreamIDMap = 0;
 function Music::init() {
-    %fmod = new ScriptObject(FMod);;
+    %fmod = new ScriptObject(FMod);
     if (isObject(MissionCleanup)) {
         FMod.add(MissionCleanup);
     }
@@ -184,15 +184,13 @@ function GetMusicStreamsRequest::onDone(%this) {
     }
     log("communication", "debug", "GetMusicStreamsRequest::onDone:" @ " " @ %status);
     %count = "mountCount".getValue(%this);
-    $musicStreamNameMap = new StringMap("");;
-    0;
+    $musicStreamNameMap = new StringMap("");
     if (isObject($musicStreamNameMap)) {
     }
     if (isObject(MissionCleanup)) {
         $musicStreamNameMap.add(MissionCleanup);
     }
-    $musicStreamIDMap = new StringMap("");;
-    0;
+    $musicStreamIDMap = new StringMap("");
     if (isObject($musicStreamIDMap)) {
     }
     if (isObject(MissionCleanup)) {

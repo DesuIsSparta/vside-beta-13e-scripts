@@ -82,8 +82,10 @@ function animatorPanel::onGotPossibleGenres(%this, %possibleGenres) {
                 }
             }
             %g = (%g + 1.0);
+            (%j < %numAnimations);
         }
         %i = (%i + 1.0);
+        (%g < 2.0);
     }
     animatorPanelAnimsPopup.sort();
 };

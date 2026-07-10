@@ -52,12 +52,12 @@ function Player::onGotChatPreview(%this, %dry) {
     %wet.onGotTypingSomething(%this);
 };
 function Player::onGotTypingSomething(%this, %text) {
-    if ((lastTypingSomethingText $= gGetField(%this))) {
-        return %text;
+    if ((%text $= gGetField(%this, lastTypingSomethingText))) {
+        return;
     }
     gSetField(%this, lastTypingSomethingText, %text);
-    cancel(IsNoLongerTypingTimer, gGetField(%this));
-    cancel(TimeoutChatPreviewTimer, gGetField(%this));
+    cancel(gGetField(%this, IsNoLongerTypingTimer));
+    cancel(gGetField(%this, TimeoutChatPreviewTimer));
     if ((%text $= "")) {
         0.setTyping(%this);
     }

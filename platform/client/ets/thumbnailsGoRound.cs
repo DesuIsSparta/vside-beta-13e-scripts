@@ -2,9 +2,9 @@ function newThumbnailsGoRound_base(%name) {
     if (!(isDefined("%name"))) {
         %name = "";
     }
-    %name = ETSNonModalProfile;
+    %profile = ETSNonModalProfile;
     %mainContainer = new GuiControl(%name) {
-        position = 0 @ "0 0";
+        position = "0 0";
         extent = "400 100";
         profile = %profile;
         mDeetsMinWidth = 100;
@@ -15,17 +15,17 @@ function newThumbnailsGoRound_base(%name) {
         mClickableThumbs = 1;
     };
     %ctrl = new GuiControl("") {
-        profile = 0 @ %profile;
+        profile = %profile;
     };
     %ctrl.add(%mainContainer);
     %mainContainer.mDeetsContainer = %ctrl;
     %ctrl = new GuiControl("") {
-        profile = 0 @ %profile;
+        profile = %profile;
     };
     %ctrl.add(%mainContainer);
     %mainContainer.mBigThumbContainer = %ctrl;
     %ctrl = new GuiControl("") {
-        profile = 0 @ %profile;
+        profile = %profile;
     };
     %ctrl.add(%mainContainer);
     %mainContainer.mLilThumbsContainer = %ctrl;
@@ -75,7 +75,7 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container) {
         %n = (%this.mLilThumbsNumAcross - 1.0);
         while ((%n >= 0.0)) {
             %ctrl = new GuiControl("") {
-                position = 0 @ %posX @ " " @ %posY;
+                position = %posX @ " " @ %posY;
                 basePosition = %posX @ " " @ %posY;
                 extent = %this.mLilThumbHeight @ " " @ %this.mLilThumbHeight;
                 sluggishness = 0.3;
@@ -200,14 +200,14 @@ function newThumbnailsGoRound(%name) {
 function thumbnailsGoRound::rebuildContainer_LilThumb(%this, %container) {
     %container.deleteMembers();
     %ctrl = new GuiBitmapCtrl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         extent = %container.getExtent();
         bitmap = "platform/client/ui/white_16x16";
     };
     %ctrl.add(%container);
     %container.mBitmapCtrl = %ctrl;
     %ctrl = new GuiMLTextCtrl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         extent = %container.getExtent();
         value = "<font:arial:16><color:white>lilThumb";
     };
@@ -216,7 +216,7 @@ function thumbnailsGoRound::rebuildContainer_LilThumb(%this, %container) {
 };
 function thumbnailsGoRound::addWidget_LilThumbButton(%this, %container) {
     %ctrl = new GuiBitmapButtonCtrl("") {
-        extent = 0 @ %container.getExtent();
+        extent = %container.getExtent();
         command = %this @ ".onLilThumbClick(" @ %container @ ");";
         canHilite = 0;
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_50x50";
@@ -226,14 +226,14 @@ function thumbnailsGoRound::addWidget_LilThumbButton(%this, %container) {
 function thumbnailsGoRound::rebuildContainer_BigThumb(%this, %container) {
     %container.deleteMembers();
     %ctrl = new GuiBitmapCtrl("") {
-        profile = 0 @ ETSNonModalProfile;
+        profile = ETSNonModalProfile;
         extent = %container.getExtent();
         bitmap = "platform/client/ui/white_16x16";
     };
     %ctrl.add(%container);
     %container.mBitmapCtrl = %ctrl;
     %ctrl = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         position = "0 0";
         extent = %container.getExtent();
         value = "<font:arial:20><color:white>bigThumb";
@@ -244,7 +244,7 @@ function thumbnailsGoRound::rebuildContainer_BigThumb(%this, %container) {
 function thumbnailsGoRound::rebuildContainer_Deets(%this, %container) {
     %container.deleteMembers();
     %ctrl = new GuiMLTextCtrl("") {
-        position = 0 @ "0 0";
+        position = "0 0";
         extent = %container.getExtent();
         value = "<font:arial:20><color:white>Deets";
     };

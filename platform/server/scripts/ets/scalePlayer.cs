@@ -54,8 +54,7 @@ function Player::orientTowardsOverTime(%this, %obj, %milliseconds) {
     }
     %angle = %obj.getAngleTowards(%this);
     %dA = (%angle - %rotA);
-    %period = gGetField(%this);
-    orientTickPeriod;
+    %period = gGetField(%this, orientTickPeriod);
     %numTicks = (%milliseconds / %period);
     %dA2 = (%dA / %numTicks);
     %numTicks.orientTowardsTicker(%this, %rotA, %dA2);
@@ -66,7 +65,7 @@ function Player::orientTowardsTicker(%this, %curA, %dltA, %ticksLeft) {
     %ticksLeft = (%ticksLeft - 1.0);
     %this.getPosition() @ " " @ "0 0 1" @ " " @ %curA.setTransform(%this);
     if ((%ticksLeft > 0.0)) {
-        %ticksLeft.schedule(%this, orientTickPeriod, gGetField(%this), "orientTowardsTicker", %curA, %dltA);
+        %ticksLeft.schedule(%this, gGetField(%this, orientTickPeriod), "orientTowardsTicker", %curA, %dltA);
     }
     return;
 };

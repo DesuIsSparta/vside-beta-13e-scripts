@@ -12,16 +12,16 @@ function snapshotTool::close(%this) {
 };
 function snapshotTool::doSnap(%this) {
     gSetField(%this, lastFrame, $Canvas::frameCount);
-    gSetField(%this, origProfile, ClosetMainObjectView, profile);
+    gSetField(%this, origProfile, ClosetMainObjectView.profile);
     ETSSnapshotBackgroundProfile.setProfile(ClosetMainObjectView);
     0.setVisible(snapshotToolActiveRegion);
     %this.waitForNextFrameToSnap();
 };
 function snapshotTool::waitForNextFrameToSnap(%this) {
-    cancel(waitForFrameSchedule, gGetField(%this));
-    if (($Canvas::frameCount <= gGetField(%this))) {
+    cancel(gGetField(%this, waitForFrameSchedule));
+    if (($Canvas::frameCount <= gGetField(%this, lastFrame))) {
         gSetField(%this, waitForFrameSchedule, "waitForNextFrameToSnap".schedule(%this, 10));
-        return lastFrame;
+        return;
     }
     %this.doSnap2();
 };
@@ -37,7 +37,7 @@ function snapshotTool::doSnap2(%this) {
     1.setVisible(snapshotToolSet2);
     1.setVisible(snapshotToolActiveRegion);
     0.setValue(snapshotToolProgressBar);
-    gGetField(%this).setProfile(ClosetMainObjectView, origProfile);
+    gGetField(%this, origProfile).setProfile(ClosetMainObjectView);
 };
 function snapshotTool::onProgress(%this, %snapshot) {
     %percent = (%snapshot.ulNow / %snapshot.ulTotal);

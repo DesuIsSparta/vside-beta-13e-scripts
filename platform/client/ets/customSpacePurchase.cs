@@ -12,7 +12,7 @@ function CSSpacePurchasePriceConfirmation(%space) {
     %title = "Get a Room (Step 1 of 2)";
     %finalVPoints = mFloor(%space.floorplan.priceVPoints);
     %finalVBux = mFloor(%space.floorplan.priceVBux);
-    %text = "<just:left>" @ "\n" @ %finalVBux[$MsgCat::custSpace @ "PURCHASE_INTRO"];
+    %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["PURCHASE_INTRO"];
     %price = CSSpacePurchasePriceFormatting(%space.floorplan.priceVPoints, %space.floorplan.priceVBux);
     %tradein = CSSpacePurchasePriceFormatting(%space.floorplan.tradeInValueVPoints, %space.floorplan.tradeInValueVBux);
     %final = CSSpacePurchasePriceFormatting(%finalVPoints, %finalVBux);
@@ -66,7 +66,7 @@ function CSSpacePurchasePriceConfirmation(%space) {
 };
 function CSSpacePurchaseDoConfirm(%space, %useBux) {
     %title = "Get a Room (Step 2 of 2)";
-    %text = %title[$MsgCat::custSpace @ "PURCHASE_CONFIRM"];
+    %text = $MsgCat::custSpace["PURCHASE_CONFIRM"];
     if (%useBux) {
     }
     %priceFinal = %space.floorplan.priceVPoints;
@@ -81,7 +81,7 @@ function CSSpacePurchaseDowngradeCheck(%space, %useBux, %priceFinal, %lossVPoint
     }
     if ((%lossVBux > 0.0)) {
         %loss = CSSpacePurchasePriceFormatting(%lossVPoints, %lossVBux);
-        %text = "<just:left>" @ "\n" @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_A"] @ " " @ %loss @ " " @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_B"] @ "\n";
+        %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["TRADE_IN_DOWN_A"] @ " " @ %loss @ " " @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_B"] @ "\n";
         %buttons = "Yes - Trade in" @ "\t" @ "No - Cancel";
         %dlg = MessageBoxCustom("Warning", %text, %buttons);
         %dlg.callback = "purchaseApartmentRequest( " @ %space @ ", " @ %useBux @ ", " @ %priceFinal @ ",  \"CSSpacePurchaseSuccess\", \"CSSpacePurchaseFailed\");" @ 0;
@@ -91,14 +91,14 @@ function CSSpacePurchaseDowngradeCheck(%space, %useBux, %priceFinal, %lossVPoint
 };
 function CSSpacePurchaseCancel() {
     %title = "Purchase Cancelled";
-    %text = "<just:center>" @ "\n" @ %title[$MsgCat::custSpace @ "PURCHASE_ABORTED"] @ "\n";
+    %text = "<just:center>" @ "\n" @ $MsgCat::custSpace["PURCHASE_ABORTED"] @ "\n";
     MessageBoxOK(%title, %text, "");
 };
 function CSSpacePurchaseSuccess(%unused, %unused, %vurl) {
     $Player::myPlaceVURL = %vurl;
     %title = "Get a Room (Complete!)";
     1.setProperty(gUserPropMgrClient, $Player::Name, "ShowOwnerTip");
-    %text = "<just:left>" @ "\n" @ "\n";
+    %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["PURCHASE_DONE"] @ "\n";
     %buttons = "Go there now" @ "\t" @ "Close";
     %dlg = MessageBoxCustom(%title, %text, %buttons);
     %dlg.callback = "vurlOperation( \"" @ %vurl @ "\");" @ 0;

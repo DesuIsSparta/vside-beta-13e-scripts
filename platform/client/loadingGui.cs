@@ -20,7 +20,7 @@ function LoadingGui::onWake(%this) {
     }
     if (!($missionRunning)) {
         error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
-        MessageBoxOK("Error",  @ " " @ $MissionArg, "quit();");
+        MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();");
     }
 };
 function LoadingGui::updateLogoutButton(%this) {
@@ -81,16 +81,13 @@ function LoadingTipsHud::onMouseDown(%this) {
     LoadingGui.doTheTipThing();
 };
 $TIP_CATEGORY = "ADVANCED";
-if (($TIP_CATEGORY[LOADINGTIPS_TIMES_RUN] < $UserPref::userTips::tipSeen)) {
+if (($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 2.0)) {
     $TIP_CATEGORY = "NEWBIE";
-    2.0;
 }
-if (($TIP_CATEGORY[LOADINGTIPS_TIMES_RUN] < $UserPref::userTips::tipSeen)) {
+if (($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 5.0)) {
     $TIP_CATEGORY = "MEDIUM";
-    5.0;
 }
-$TIP_CATEGORY[LOADINGTIPS_TIMES_RUN] = ($TIP_CATEGORY[LOADINGTIPS_TIMES_RUN] + $UserPref::userTips::tipSeen);
-1.0;
+$UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] = ($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] + 1.0);
 $SCHEDULE_TIPTIMEDELAY = 8000;
 $SCHEDULE_SHOWANOTHER = 0;
 function LoadingTipsHud::initTipsList(%this) {
@@ -100,17 +97,16 @@ function LoadingTipsHud::initTipsList(%this) {
     if (!(%file $= "")) {
         if (%file.loadTipImage(%this)) {
         }
-        if (!(%this.transitioning)) {
+        if (!(LoadingGui.transitioning)) {
             1.setVisible(LoadingTipsHud);
         }
         warn("LoadingTipsHud loading override tip file" @ " " @ %file);
         MessageBoxOK("Warning", "loading override test tip file:" @ " " @ %file, "");
-        return LoadingGui;
+        return;
     }
     %base_path = %projectTipsDir @ "/";
     %tips_fileName = %base_path @ "tips.txt";
-    %fo = new FileObject("");;
-    0;
+    %fo = new FileObject("");
     if (!(%tips_fileName.openForRead(%fo))) {
         error("Could not open" @ " " @ %tips_fileName);
         %this.tipFileCount = %fileCount;
@@ -156,9 +152,9 @@ function LoadingTipsHud::loadATip(%this) {
     }
     if (%fileName.loadTipImage(%this)) {
     }
-    if (!(%this.transitioning)) {
+    if (!(LoadingGui.transitioning)) {
         1.setVisible(LoadingTipsHud);
-        %this.tipFileShown = LoadingGui @ 1 @ %tipNum;
+        %this.tipFileShown = 1 @ %tipNum;
     }
 };
 function LoadingTipsHud::loadTipImage(%this, %fileName) {

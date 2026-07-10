@@ -4,6 +4,9 @@ function clientCmdBeingBooted(%message) {
 function clientCmdBeingBanned(%message) {
     echo("i got banned!" @ " " @ %message);
 };
+$gModNotificationHandlers["deleted"] = "onModNotificationDeleted";
+$gModNotificationHandlers["micStatus"] = "onModNotificationMicStatus";
+$gModNotificationHandlers["cussing"] = "onModNotificationCussing";
 function clientCmdModNotification(%taggedNotifyType, %param1, %param2) {
     %notifyType = detag(%taggedNotifyType);
     %handler = %notifyType[$gModNotificationHandlers @ %notifyType];

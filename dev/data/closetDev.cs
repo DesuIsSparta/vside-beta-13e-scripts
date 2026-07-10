@@ -6,7 +6,7 @@ $gSnapping_CurSku = 0;
 $gSnapping_BaseSkus = "";
 function ClosetStaffPanel::snapShotAll(%this) {
     %skus = $player.getGender().filterSkusGender(SkuManager, SkuManager.getSkus());
-    .setSkus(ClosetMainObjectView);
+    $player.getGender()["F"].setSkus(ClosetMainObjectView, $gNewStockOutfits);
     %skus.snapShotSkuList(%this);
 };
 function ClosetStaffPanel::snapShotSkuList(%this, %skus) {
@@ -25,6 +25,7 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus) {
         %n = (%n - 1.0);
     }
     %skus = %skusBody @ " " @ %skusClothing;
+    (%n >= 0.0);
     $gSnapping_SkuList = %skus;
     $gSnapping_CurIndex = 0;
     $gSnapping_MaxIndex = (getWordCount($gSnapping_SkuList) - 1.0);

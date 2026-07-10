@@ -29,11 +29,11 @@ function clientVersionCheck::onDone(%this, %unused) {
     %status = findRequestStatus(%this);
     if (!(%status $= "success")) {
         log("Admin", "error", getScopeName() @ " " @ "- status =" @ " " @ %status);
-        0.schedule(%this);
-        return delete;
+        delete.schedule(%this, 0);
+        return;
     }
     isUpToDate("client_version".getValue(%this));
-    0.schedule(%this);
+    delete.schedule(%this, 0);
 };
 function isUpToDate(%available) {
     %buildVersion = formatInt("%d", getBuildVersion());
@@ -59,5 +59,5 @@ function clientVersionCheck::onError(%this) {
     $Net::upgradeAvailable = 0;
     log("Admin", "error", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- error = " @ " " @ %errorName @ " " @ "url = " @ " " @ %this.getURL());
     $Net::upgradeAvailable = 0;
-    0.schedule(%this);
+    delete.schedule(%this, 0);
 };

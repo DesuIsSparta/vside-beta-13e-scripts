@@ -39,15 +39,15 @@ function snapshotAvatarToolActiveRegion::adjustForHeight(%this, %height, %cMin, 
 };
 function snapshotAvatarTool::doSnap(%this) {
     gSetField(%this, lastFrame, $Canvas::frameCount);
-    gSetField(%this, origProfile, snapshotAvatarToolActiveRegion, %this.profile);
+    gSetField(%this, origProfile, snapshotAvatarToolActiveRegion.profile);
     ETSSnapshotBackgroundProfile.setProfile(snapshotAvatarToolActiveRegion);
     %this.waitForNextFrameToSnap();
 };
 function snapshotAvatarTool::waitForNextFrameToSnap(%this) {
-    cancel(waitForFrameSchedule, gGetField(%this));
-    if (($Canvas::frameCount <= gGetField(%this))) {
+    cancel(gGetField(%this, waitForFrameSchedule));
+    if (($Canvas::frameCount <= gGetField(%this, lastFrame))) {
         gSetField(%this, waitForFrameSchedule, "waitForNextFrameToSnap".schedule(%this, 10));
-        return lastFrame;
+        return;
     }
     %this.doSnap2();
 };
@@ -62,7 +62,7 @@ function snapshotAvatarTool::doSnap2(%this) {
     0.setVisible(snapshotAvatarToolSet1);
     1.setVisible(snapshotAvatarToolSet2);
     0.setValue(snapshotAvatarToolProgressBar);
-    gGetField(%this).setProfile(snapshotAvatarToolActiveRegion, origProfile);
+    gGetField(%this, origProfile).setProfile(snapshotAvatarToolActiveRegion);
 };
 function snapshotAvatarTool::onProgress(%this, %snapshot) {
     %percent = (%snapshot.ulNow / %snapshot.ulTotal);

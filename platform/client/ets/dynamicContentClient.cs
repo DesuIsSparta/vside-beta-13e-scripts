@@ -13,8 +13,7 @@ function clientCmdsetStaffSnapshotObj(%id) {
         log("general", "warn", "clientCmdsetStaffSnapshotObj: this is not a valid DC object to take a snapshot on.");
         return;
     }
-    $screenShotNum = ($screenShotNum + 1.0);
-    %fileName = "staffsnapshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ ".jpg";
+    %fileName = "staffsnapshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ $screenShotNum = ($screenShotNum + 1.0) @ ".jpg";
     %uplocal = $DC::dcFolder @ "/" @ %fileName;
     shootscreen(%uplocal, $DC::staffSnapshotRegion);
     %downurl = $DC::DownloadFolder @ "/" @ %fileName;
@@ -36,8 +35,7 @@ function clientCmdgetNewSkin(%skinName, %shapebaseobj) {
     %skinName = getTaggedString(%skinName);
     %fileName = %skinName @ ".jpg";
     %url = $DC::RemoteSkinsFolder @ "/" @ %fileName;
-    %item = new ScriptObject("");;
-    0;
+    %item = new ScriptObject("");
     %item.skinName = %skinName;
     %item.shapebaseobj = %shapebaseobj;
     "".applyUrl(dlMgr, %url, "dlMgrCallback_GetNewSkin", "", %item);
@@ -52,8 +50,7 @@ function setNewSkin(%skinName, %shapebaseobj) {
 $DC::marqueeSeq1 = 0;
 $DC::marqueeSeq2 = 1;
 function pushMarquee(%unused) {
-    $DC::marqueeSeq1 = ($DC::marqueeSeq1 + 1.0);
-    %fileName = "announcement" @ ".marquee.gardenbox.png";
+    %fileName = "announcement" @ $DC::marqueeSeq1 = ($DC::marqueeSeq1 + 1.0) @ ".marquee.gardenbox.png";
     commandToServer('PushNewMarquee', addTaggedString(%fileName));
     if (($DC::marqueeSeq1 == 5.0)) {
         $DC::marqueeSeq1 = 0;

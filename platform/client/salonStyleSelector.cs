@@ -19,11 +19,11 @@ function SalonStyleSelector::Initialize(%this) {
         return;
     }
     %this.initialized = 1;
-    if (isObject(SalonStyleSelector, %this.skuGuiList)) {
-        %this.skuGuiList.delete(SalonStyleSelector);
+    if (isObject(SalonStyleSelector.skuGuiList)) {
+        SalonStyleSelector.skuGuiList.delete();
     }
-    if (isObject(SalonStyleSelector, %this.noSkuGuiText)) {
-        %this.noSkuGuiText.delete(SalonStyleSelector);
+    if (isObject(SalonStyleSelector.noSkuGuiText)) {
+        SalonStyleSelector.noSkuGuiText.delete();
     }
     %SSS_Height = 200;
     %SSS_Width = 220;
@@ -49,7 +49,7 @@ function SalonStyleSelector::Initialize(%this) {
     };
     %gc.add(%this);
     %gc = new GuiWindowCtrl("") {
-        profile = 0 @ "DottedWindowDkProfile";
+        profile = "DottedWindowDkProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 18";
@@ -66,7 +66,7 @@ function SalonStyleSelector::Initialize(%this) {
     };
     %gc.add(%this);
     %gc = new GuiBitmapButtonCtrl("") {
-        position = 0 @ (%SSS_Width - 18.0) @ " " @ 5;
+        position = (%SSS_Width - 18.0) @ " " @ 5;
         extent = 13 @ " " @ 13;
         bitmap = "platform/client/buttons/close_m";
         command = "SalonStyleSelector.close();";
@@ -124,7 +124,7 @@ function SalonStyleSelector::Initialize(%this) {
     };
     %gc.add(%this);
     %gc = new GuiScrollCtrl("") {
-        profile = 0 @ "ETSScrollProfile";
+        profile = "ETSScrollProfile";
         horizSizing = "width";
         vertSizing = "height";
         position = "7 48";
@@ -144,8 +144,8 @@ function SalonStyleSelector::Initialize(%this) {
         stickyBottom = 0;
         tooltiptimer = 0;
     };
-    skuGuiList = new GuiArray2Ctrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+    SalonStyleSelector.skuGuiList = new GuiArray2Ctrl("") {
+        profile = "GuiDefaultProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
@@ -160,10 +160,10 @@ function SalonStyleSelector::Initialize(%this) {
         inRows = 0;
         numRowsOrCols = 1;
         spacing = 5;
-    }; @ SalonStyleSelector
-    skuGuiList.add(%gc, SalonStyleSelector);
-    noSkuGuiText = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSShadowTextNonModalProfile";
+    };
+    SalonStyleSelector.skuGuiList.add(%gc);
+    SalonStyleSelector.noSkuGuiText = new GuiMLTextCtrl("") {
+        profile = "ETSShadowTextNonModalProfile";
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
@@ -174,8 +174,8 @@ function SalonStyleSelector::Initialize(%this) {
         canHilite = 1;
         allowAutoFirstResponderUpdates = 1;
         text = "";
-    }; @ SalonStyleSelector
-    noSkuGuiText.add(%gc, SalonStyleSelector);
+    };
+    SalonStyleSelector.noSkuGuiText.add(%gc);
     %gc.add(%this);
     %left = 50;
     %top = ((getWord(PlayGui.getExtent(), 1) - getWord(%this.getExtent(), 1)) / 2.0);
@@ -185,7 +185,7 @@ function ShowPropsButton::onClick(%this) {
     if ($player.hasAvailableProp()) {
         toggleClosetItemCategory("props");
     }
-    %salonCode = $SALON_CHAIR_DEF_DESTCODE;
+    %salonCode = $SALON_CHAIR_DEF_DESTCODE[SalonStyleSelector.lastTypeOfSalon];
     %amInSalon = ($gCurrentStoreName $= %salonCode);
     %callback = "";
     if (%amInSalon) {

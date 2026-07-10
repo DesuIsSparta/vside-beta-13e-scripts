@@ -55,12 +55,11 @@ function RegistrationGui::markCurrentRegistrationAsCompleted(%this) {
     $UserPref::Login::completedRegistrations = trim($UserPref::Login::completedRegistrations @ "\t" @ $Net::RegistrationID);
 };
 function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
-    '8';
+    %this = RegistrationGui;
     %this.waitIcon.stop();
     0.setVisible(%this.waitIcon);
     if (%request.checkSuccess()) {
         $UserPref::Player::Name = "userName".getValue(%request);
-        RegistrationGui;
         $UserPref::Player::Password = "password".getValue(%request);
         if (("gender".getValue(%request) $= "")) {
         }
@@ -87,7 +86,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
     if ((%errorCode $= "INCOMPLETE")) {
         %errorMessage = %errorCode[$MsgCat::login @ "E-REG-INCOMPLETE"];
     }
-    %errorMessage = %errorMessage[$MsgCat::login @ "E-REG-UNKNOWN"];
+    %errorMessage = $MsgCat::login["E-REG-UNKNOWN"];
     %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
     %errorMessage.setValue(geRegistrationStatusText);
 };

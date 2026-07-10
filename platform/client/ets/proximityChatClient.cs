@@ -184,7 +184,7 @@ function pChat::ProcessIncomingLine(%text, %senderPlayer, %name, %whisperedTo, %
     ConvBub.open();
     gSetField(ConvBub, expanded, 0);
     if (!(ConvBubScroll.isAtBottom())) {
-        if (isEavesdrop) {
+        if (ConvBub.isEavesdrop) {
             ETSScrollDimProfile.setProfile(ConvBubScroll);
         }
         ETSHiScrollProfile.setProfile(ConvBubScroll);

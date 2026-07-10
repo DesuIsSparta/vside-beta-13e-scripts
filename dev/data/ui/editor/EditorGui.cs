@@ -154,7 +154,7 @@ function EStatusHud::onMouseEnterBounds(%this) {
     }
 };
 $sgEditorItemNames::sgMenu = "Synapse Gaming Tools";
-$sgEditorItemNames::sgMenu[$sgEditorItemNames::sgMenuItem @ 0] = "Lighting Pack Light Editor";
+$sgEditorItemNames::sgMenuItem[0] = "Lighting Pack Light Editor";
 function EditorGui::getPrefs() {
     EWorldEditor.dropType = getPrefSetting($Pref::WorldEditor::dropType, "atCamera");
     EWorldEditor.planarMovement = getPrefSetting($pref::WorldEditor::planarMovement, 1);
@@ -457,7 +457,7 @@ function EditorGui::init(%this) {
     1.addMenuItem(EditorMenuBar, %debugMenuName, "next mode", 13, "=");
     1.addMenuItem(EditorMenuBar, %debugMenuName, "prev mode", 14, "-");
     8.addMenu(EditorMenuBar, $sgEditorItemNames::sgMenu);
-    "F12".addMenuItem(EditorMenuBar, $sgEditorItemNames::sgMenu, , 2);
+    "F12".addMenuItem(EditorMenuBar, $sgEditorItemNames::sgMenu, $sgEditorItemNames::sgMenuItem[0], 2);
     "Adjust Height".onActionMenuItemSelect(EditorMenuBar, 0);
     "Circle Brush".onBrushMenuItemSelect(EditorMenuBar, 0);
     "Soft Brush".onBrushMenuItemSelect(EditorMenuBar, 0);
@@ -1652,6 +1652,7 @@ function WorldEditor::CloneTo(%this, %snapType) {
         %i = (%i + 1.0);
     }
     %i = 0;
+    (%i < %selSize);
     while ((%i < %selSize)) {
         %this.clearSelection();
         %objTarget = %i[%origObjects @ %i];
@@ -1659,12 +1660,13 @@ function WorldEditor::CloneTo(%this, %snapType) {
         %this.copySelection();
         %this.pasteSelection();
         %objToSnap = 0.getSelectedObject(%this);
-        %i[%newObjects @ %i] = (%i < %selSize) @ %objToSnap;
+        %i[%newObjects @ %i] = %objToSnap;
         %objToSnap.snapTo(%this, %snapType, %objTarget);
         %i = (%i + 1.0);
     }
     %this.clearSelection();
     %i = 0;
+    (%i < %selSize);
     while ((%i < %selSize)) {
         %i[%newObjects @ %i].selectObject(%this);
         %i = (%i + 1.0);
@@ -1781,17 +1783,19 @@ function Creator::init(%this) {
             %i = (%i + 1.0);
         }
         %create = "createInterior(" @ "\"" @ %file @ "\"" @ ");";
+        (%i < %dirCount);
         "Interior".insertItem(%this, %parentId, fileBase(%file), %create);
         %file = findNextFile("*.dif");
     }
     echo(" Creator::init  loading shapes");
     %base = "Shapes".insertItem(%this, 0);
+    !(%file $= "");
     %dataGroup = "DataBlockGroup";
     %i = 0;
     while ((%i < %dataGroup.getCount())) {
         %obj = %i.getObject(%dataGroup);
         echo("Obj: " @ %obj.getName() @ " - " @ %obj.category);
-        if (!(!((%i < %dirCount) @ " " @ %file $= "") @ " " @ %obj.category $= "")) {
+        if (!(%obj.category $= "")) {
         }
         if ((%obj.category != 0.0)) {
             %id = %obj.category.findItemByName(%this);
@@ -1805,9 +1809,10 @@ function Creator::init(%this) {
     }
     echo(" Creator::init  loading static shapes");
     %base = "Static Shapes".insertItem(%this, 0);
+    (%i < %dataGroup.getCount());
     %staticId = "";
     %file = findFirstFile("*.dts");
-    while (!((%i < %dataGroup.getCount()) @ " " @ %file $= "")) {
+    while (!(%file $= "")) {
         %split = strreplace(%file, "/", " ");
         %dirCount = (getWordCount(%split) - 1.0);
         %parentId = %base;
@@ -1821,13 +1826,15 @@ function Creator::init(%this) {
             %i = (%i + 1.0);
         }
         %create = "TSStatic::create(\"" @ %file @ "\");";
+        (%i < %dirCount);
         "TSStatic".insertItem(%this, %parentId, fileBase(%file), %create);
         %file = findNextFile("*.dts");
     }
     %base = "Dynamic Shapes".insertItem(%this, 0);
+    !(%file $= "");
     %dynamicID = "";
     %file = findFirstFile("*.dts");
-    while (!(!((%i < %dirCount) @ " " @ %file $= "") @ " " @ %file $= "")) {
+    while (!(%file $= "")) {
         %split = strreplace(%file, "/", " ");
         %dirCount = (getWordCount(%split) - 1.0);
         %parentId = %base;
@@ -1841,55 +1848,56 @@ function Creator::init(%this) {
             %i = (%i + 1.0);
         }
         %create = "TSDynamic::create(\"" @ %file @ "\");";
+        (%i < %dirCount);
         "TSDynamic".insertItem(%this, %parentId, fileBase(%file), %create);
         %file = findNextFile("*.dts");
     }
-    %file[%objGroup @ 0] = !((%i < %dirCount) @ " " @ %file $= "") @ "Environment";
-    %file[%objGroup @ 0][%objGroup @ 1] = "Mission";
-    %file[%objGroup @ 0][%objGroup @ 1][%objGroup @ 2] = "System";
+    %file[%objGroup @ 0] = !(%file $= "") @ "Environment";
+    %objGroup[1] = "Mission";
+    %objGroup[2] = "System";
     %env_item_idx = -(1.0);
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Sky";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Sun";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Lightning";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Water";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Terrain";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "AudioEmitter";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "Precipitation";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "ParticleEmitter";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxSunLight";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxShapeReplicator";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxFoliageReplicator";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "fxLight";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "TSText";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "sgUniversalStaticLight";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "sgMissionLightingFilter";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "sgDecalProjector";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "volumeLight";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "Sky";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "Sun";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "Lightning";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "Water";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "Terrain";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "AudioEmitter";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "Precipitation";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "ParticleEmitter";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "fxSunLight";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "fxShapeReplicator";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "fxFoliageReplicator";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "fxLight";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "TSText";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "sgUniversalStaticLight";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "sgMissionLightingFilter";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "sgDecalProjector";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "volumeLight";
     if (isFunction("Using_DF")) {
     }
     if (Using_DF()) {
-        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "DFTextureAdvert";
+        %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "DFTextureAdvert";
     }
     if (Using_DShow()) {
-        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "DSRenderer";
+        %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "DSRenderer";
     }
     if (Using_Theora()) {
-        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "TheoraRenderer";
+        %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "TheoraRenderer";
     }
     if (Using_FFMPEG()) {
-        %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "FFMPEGRenderer";
+        %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "FFMPEGRenderer";
     }
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)] = "SlaveRenderer";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0] = "MissionArea";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1] = "Path";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2] = "PathMarker";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3] = "Trigger";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4] = "PhysicalZone";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5] = "Camera";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6] = "AntiPortal";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6] = "ZoneBox";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6][%System_Item @ 0] = "SimGroup";
-    %env_item_idx[%Environment_Item @ %env_item_idx = (%env_item_idx + 1.0)][%Mission_Item @ 0][%Mission_Item @ 1][%Mission_Item @ 2][%Mission_Item @ 3][%Mission_Item @ 4][%Mission_Item @ 5][%Mission_Item @ 6][%Mission_Item @ 6][%System_Item @ 0][%System_Item @ 1] = "SimSpace";
+    %Environment_Item[%env_item_idx = (%env_item_idx + 1.0)] = "SlaveRenderer";
+    %Mission_Item[0] = "MissionArea";
+    %Mission_Item[1] = "Path";
+    %Mission_Item[2] = "PathMarker";
+    %Mission_Item[3] = "Trigger";
+    %Mission_Item[4] = "PhysicalZone";
+    %Mission_Item[5] = "Camera";
+    %Mission_Item[6] = "AntiPortal";
+    %Mission_Item[6] = "ZoneBox";
+    %System_Item[0] = "SimGroup";
+    %System_Item[1] = "SimSpace";
     echo(" Creator::init  loading mission objects");
     %base = "Mission Objects".insertItem(%this, 0);
     %i = 0;
@@ -1907,6 +1915,7 @@ function Creator::init(%this) {
             %j = (%j + 1.0);
         }
         %i = (%i + 1.0);
+        !(%done);
     }
     echo(" Creator::init  finished");
 };
@@ -2070,6 +2079,7 @@ function TextureInit() {
             %op = (%op + 1.0);
         }
         %row = (%row + 1.0);
+        (%op < %opCount);
     }
     texture::previewMaterial();
 };
@@ -2376,6 +2386,7 @@ function texture::saveOperation() {
         %r = 1;
         while ((%r < %rowCount)) {
             %data = %r.getRowText(Texture_operation);
+            $dirtyTexture[getField(%data, 2)] = 1;
             %r = (%r + 1.0);
         }
     }
@@ -2427,6 +2438,7 @@ function texture::loadFromScript(%script) {
         %rec = getRecord(%script, %i = (%i + 1.0));
     }
     $nextTextureRegister = 1000;
+    !(%rec $= "");
     %rowCount = Texture_material.rowCount();
     %row = 0;
     while ((%row < %rowCount)) {
@@ -2451,10 +2463,12 @@ function texture::loadFromScript(%script) {
             %op = (%op + 1.0);
         }
         %id = %row.getRowId(Texture_material);
+        (%op < %opCount);
         %data.setRowById(Texture_material, %id);
         %row = (%row + 1.0);
     }
     $selectedMaterial = -(1.0);
+    (%row < %rowCount);
     0.getRowId(Texture_material).setSelectedById(Texture_material);
 };
 function texture::doLoadTexture(%name) {
@@ -2735,6 +2749,7 @@ function Heightfield::add(%entry) {
         }
     }
     %entry = Heightfield_operation.rowCount() @ " " @ %entry;
+    (%i < Heightfield_operation.rowCount());
     %entry.addRow(Heightfield_operation, %id);
     %row = %id.getRowNumById(Heightfield_operation);
     if ((%row <= $HeightfieldDirtyRow)) {
@@ -2762,6 +2777,7 @@ function Heightfield::onDelete(%id) {
     }
     if (($HeightfieldDirtyRow >= %row)) {
         $HeightfieldDirtyRow = %row;
+        (%i < Heightfield_operation.rowCount());
     }
     %rowCount = (Heightfield_operation.rowCount() - 1.0);
     if ((%row > %rowCount)) {
@@ -2903,6 +2919,7 @@ function Heightfield::loadFromScript(%script, %leaveCamera) {
         Heightfield::add("General\tTab_general\tgeneral_min_height\t50\tgeneral_scale\t300\tgeneral_water\t0.000\tgeneral_centerx\t0\tgeneral_centery\t0");
     }
     %data = restWords(0.getRowText(Heightfield_operation));
+    !(%rec $= "");
     %x = getField(%data, 7);
     %y = getField(%data, 9);
     %y.setOrigin(HeightfieldPreview, %x);
@@ -3132,16 +3149,20 @@ function EWorldEditor::updateGeneralInfo(%this, %optObj) {
     if (%serverValid) {
     }
     %serverText = %serverID;
+    %serverID.getDebugString();
     if (%clientValid) {
     }
     %clientText = %clientID;
+    %clientID.getDebugString();
     %text = %color @ "<linkcolor:775533><linkcolorhl:ddff00>";
     if (%serverValid) {
     }
     %text = %serverText @ -(1.0) @ ">" @ %serverText @ "</a>\n";
+    %text @ "<just:left>" @ "Server:<a:gamelink COPYTOCLIP ";
     if (%clientValid) {
     }
     %text = %clientText @ -(1.0) @ ">" @ %clientText @ "</a>";
+    %text @ "Client:  <a:gamelink COPYTOCLIP ";
     %text.setText(WorldEditorGeneralInfoMLText);
 };
 function WorldEditorGeneralInfoMLText::onUrl(%this, %url) {

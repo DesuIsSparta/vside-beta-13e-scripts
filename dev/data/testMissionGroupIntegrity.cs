@@ -349,15 +349,17 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         }
     }
     %classname = %obj.getClassName();
+    (%n < %num);
     %belongs = 0;
     %i = 0;
     while ((%i < %this.okClassCount)) {
-        if (((%n < %num) @ %i @ " " @ %this.okClass $= %classname)) {
+        if ((%i @ " " @ %this.okClass $= %classname)) {
             %belongs = 1;
         }
         %i = (%i + 1.0);
     }
     %actionNeeded = "This object does not belong and should probably be deleted";
+    (%i < %this.okClassCount);
     %ableToNotCache = %obj.IsAbleToNotCache(%this);
     if ((%ableToNotCache == 0.0)) {
         %exceptions = "SimGroup SimSet SimSpace ScriptObject";
@@ -367,7 +369,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         }
     }
     if (%obj.isClassSimSpace()) {
-        if (!((%i < %this.okClassCount) @ " " @ getSubStr(%obj.getName(), 0, 9) $= "SimSpace_")) {
+        if (!(getSubStr(%obj.getName(), 0, 9) $= "SimSpace_")) {
             %belongs = 0;
             %actionNeeded = "SimSpaces should be named starting with \"SimSpace_\"." @ " " @ %obj.getName() @ " " @ "is breakin' the law!";
         }
@@ -507,6 +509,7 @@ function FixOldStyleSeatingAreaProblems() {
         %i = (%i + 1.0);
     }
     $OLDSEATAREA_KILLER_COUNT = 0;
+    (%i < $OLDSEATAREA_KILLER_COUNT);
     echo("done----------------------");
 };
 function Utility::ListDataBlocksNotUsed() {
@@ -527,6 +530,7 @@ function Utility::ListDataBlocksNotUsed() {
             error(%v.theList @ " " @ "not used");
         }
         %i = (%i + 1.0);
+        %i @ %i;
     }
     echo("");
     error("-----------------------------------------------------");

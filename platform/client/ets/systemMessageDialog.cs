@@ -8,7 +8,7 @@ function toggleSystemMessageDialog() {
     SystemMessageDialog.open();
 };
 function SystemMessageDialog::open(%this) {
-    if () {
+    if ($UserPref::HudTabs::AutoOpen["word"]) {
         "word".selectTabWithName(HudTabs);
     }
 };
@@ -19,19 +19,16 @@ function SystemMessageDialog::close(%this) {
 };
 function SystemMessageDialog::onClose(%this) {
 };
-addMessageCallback('MsgSystemMessage');
-addMessageCallback('MsgInfoMessage');
-addMessageCallback('MsgGamePlayOkMessage');
-addMessageCallback('MsgTickerMessage');
+addMessageCallback('MsgSystemMessage', handleSystemMessage);
+addMessageCallback('MsgInfoMessage', handleSystemMessage);
+addMessageCallback('MsgGamePlayOkMessage', handleGamePlayMessage);
+addMessageCallback('MsgTickerMessage', handleTickerMessage);
 function SystemMessageDialog::getTimeStampNice(%ts) {
-    if ((handleTickerMessage @ " " @ %ts $= "")) {
+    if ((%ts $= "")) {
         %ts = getTimeStamp();
-        handleGamePlayMessage;
     }
     %hr = getSubStr(%ts, 9, 2);
-    handleSystemMessage;
     %mn = getSubStr(%ts, 12, 2);
-    handleSystemMessage;
     %sc = getSubStr(%ts, 15, 2);
     %ap = "am";
     if ((%hr >= 12.0)) {
@@ -48,10 +45,8 @@ function SystemMessageDialog::getTimeStampNice(%ts) {
     return %tm;
 };
 function handleGamePlayMessage(%msgType, %msgString) {
-    // unhandled opcode 398 at 0x00000174
-    %tm = SystemMessageDialogProfile;
-    // unhandled opcode 435 at 0x0000017A
-    %tm = SystemMessageTextProfile;
+    %profileDlg = SystemMessageDialogProfile;
+    %profileTxt = SystemMessageTextProfile;
     %timeStamp = SystemMessageDialog::getTimeStampNice(getTimeStamp()) @ " ";
     if ((detag(%msgType) $= "MsgGamePlayOkMessage")) {
         return MessageBoxOK("vSide - Notice", %msgString, "");
@@ -60,11 +55,9 @@ function handleGamePlayMessage(%msgType, %msgString) {
 function formatMessagePriority(%msgString) {
     %lastMsgLvl = "MSGLEVEL2";
     %idx = 0;
-    %idx = strstr(%msgString, "MSGLEVEL");
-    while ((0.0 >= )) {
+    while (((%idx = strstr(%msgString, "MSGLEVEL")) >= 0.0)) {
         %lastMsgLvl = getSubStr(%msgString, %idx, 9);
         %msgString = getSubStr(%msgString, 0, %idx) @ getSubStr(%msgString, (%idx + 9.0), 1000);
-        %idx = strstr(%msgString, "MSGLEVEL");
     }
     return getSubStr(%lastMsgLvl, 8, 1) @ " " @ %msgString;
 };
@@ -90,7 +83,7 @@ function handleSystemMessage(%msgType, %msgString) {
         alxPlay(AudioIm_SystemMessageIn);
     }
 };
-HudTabs.getCurrentTab().bufferSize = 0 @ SystemMessageTextCtrl;
+SystemMessageTextCtrl.bufferSize = 0;
 function SystemMessageTextCtrl::addText(%this, %txtString) {
     if ((%this.bufferSize $= "")) {
         %this.bufferSize = 0;
@@ -129,6 +122,10 @@ function SystemMessageTextCtrl::refresh(%this) {
     }
     %this.scrollToTop();
 };
+$gAgedMessageColors[0] = "ffddffff";
+$gAgedMessageColors[1] = "ffeeffcc";
+$gAgedMessageColors[2] = "ffffff99";
+$gAgedMessageColors[3] = "ffffff77";
 function SystemMessageTextCtrl::getMessageColor(%this, %age) {
     if ((%age > 3.0)) {
         %age = 3;

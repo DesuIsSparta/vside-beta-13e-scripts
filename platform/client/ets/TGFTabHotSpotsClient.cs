@@ -9,7 +9,7 @@ function geTGF_tabs::fillTabHotSpots(%this) {
     }
     %tab.filled = 1;
     %tab.fillTabGeneric(%this);
-    %dataTable = new DataTable(geTGF_HotSpotsDataTable);;
+    %dataTable = new DataTable(geTGF_HotSpotsDataTable);
     0.addColumn(%dataTable, "event", "", "icon", 20, 1, 1);
     1.addColumn(%dataTable, "description", mlStyle("Description", "tgfTables_ColumnHeader"), "string", 290, 1, 1);
     0.addColumn(%dataTable, "poster", "", "image", 50, 0, 1);
@@ -43,7 +43,7 @@ function geTGF_tabs::fillTabHotSpots(%this) {
     %tab.GuiTable = %guiTable;
     %guiTable.add(%tab);
     %guiTable.alternativeTextCtrl = new GuiMLTextCtrl("") {
-        profile = 0 @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "75 49";
@@ -55,7 +55,7 @@ function geTGF_tabs::fillTabHotSpots(%this) {
     %guiTable.alternativeTextCtrl.add(%tab);
     mlStyle("Fetching...", "tgfTables_DataCell_Text").setText(%guiTable.alternativeTextCtrl);
     %filterLabel = new GuiMLTextCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "7 473";
@@ -64,7 +64,7 @@ function geTGF_tabs::fillTabHotSpots(%this) {
     };
     %filterLabel.add(%tab);
     %filterBox = new GuiControl("") {
-        profile = 0 @ "ETSLightBoxProfile";
+        profile = "ETSLightBoxProfile";
         horizSizing = "right";
         vertSizing = "top";
         position = "37 470";
@@ -77,7 +77,7 @@ function geTGF_tabs::fillTabHotSpots(%this) {
     };
     %filterBox.add(%tab);
     new GuiBitmapCtrl("") {
-        profile = 0 @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         bitmap = "platform/client/ui/magnifying_glass";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -99,27 +99,27 @@ function geTGF_tabs::fillTabHotSpots(%this) {
         filterDoItReallyTimeoutMS = 400;
     };.add(%filterBox);
     %invite = new GuiMLTextCtrl("") {
-        position = 0 @ "250 473";
+        position = "250 473";
         extent = "600 30";
-        text = mlStyle(, "tgfTables_Invite");
+        text = mlStyle($MsgCat::invitation["TEXT-TGF-HOTSPOTS"], "tgfTables_Invite");
     };
     %invite.add(%tab);
     %this.refreshTabHotSpots();
 };
 function geTGF_tabs::onShowTabHotSpots(%this) {
-    cancel(geTGF, geTGF_Refresh_Schedule);
+    cancel(geTGF.geTGF_Refresh_Schedule);
     1.setActive(geTGF_Refresh);
     1.setVisible(geTGF_Refresh);
     1.makeFirstResponder(geTGF_HotSpotsGuiTable);
 };
 function geTGF_tabs::refreshTabHotSpots(%this) {
-    1.setVisible(geTGF_HotSpotsGuiTable, alternativeTextCtrl);
-    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_HotSpotsGuiTable, alternativeTextCtrl);
+    1.setVisible(geTGF_HotSpotsGuiTable.alternativeTextCtrl);
+    mlStyle("Fetching..", "tgfTables_DataCell_Text").setText(geTGF_HotSpotsGuiTable.alternativeTextCtrl);
     %request = sendRequest_GetHappeningsInProgress($Player::Name, "geTGF_OnGotDoneOrError_GetHappeningsInProgress");
 };
 function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request) {
     if ((geTGF_tabs.getCurrentTab().name $= "hotspots")) {
-        cancel(geTGF, geTGF_tabs.getCurrentTab().geTGF_Refresh_Schedule);
+        cancel(geTGF.geTGF_Refresh_Schedule);
         1.setActive(geTGF_Refresh);
     }
     if (!(isObject(%request))) {
@@ -163,8 +163,8 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request) {
     %count = %itemList.count();
     geTGF_HotSpotsDataTable.getRowCount().removeRowsByIndex(geTGF_HotSpotsDataTable, 0);
     %count.addRows(geTGF_HotSpotsDataTable);
-    (%count == 0.0).setVisible(geTGF_HotSpotsGuiTable, %item.alternativeTextCtrl);
-    mlStyle("More parties and events coming soon!", "tgfTables_DataCell_Text").setText(geTGF_HotSpotsGuiTable, %item.alternativeTextCtrl);
+    (%count == 0.0).setVisible(geTGF_HotSpotsGuiTable.alternativeTextCtrl);
+    mlStyle("More parties and events coming soon!", "tgfTables_DataCell_Text").setText(geTGF_HotSpotsGuiTable.alternativeTextCtrl);
     %n = 0;
     while ((%n < %count)) {
         %item = %n.getValue(%itemList);
@@ -266,6 +266,7 @@ function geTGF::hotspots_GetAndOpenDetailsContainer(%this, %item) {
     }
     %item.constructDeetsWindow(%this, geDeetsWindow);
     1.setVisible(geDeetsLayer);
+    return geDeetsWindow;
 };
 function geTGF_HotSpotsGuiTable::onRowSelected(%this, %guiRow, %rowIndex, %unused, %mouseClickCount) {
     if ((%rowIndex == -(1.0))) {

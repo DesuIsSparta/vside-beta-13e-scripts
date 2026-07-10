@@ -167,7 +167,7 @@ function SkuManager::allClosetDrawers(%this) {
 function SkuManager::commonDrawers(%this) {
     return "hair face faceb earl labret lftauricle lftconch lfteyebrow lftlobe lftorbital lftpinna lftrook lfttragus rghauricle rghconch rgheyebrow rghlobe rghorbital rghpinna rghrook rghtragus lowlip madonna medusa nostril septum eyes glasses torso torsob legs legsb feet skin ear neck neckb neckc chest wristleft wristleftb wristright wristrightb fingerleft fingerright toeleft toeright purse hat props badges";
 };
-%this.userFacingDrawerNamesNum = 0 @ SkuManager;
+SkuManager.userFacingDrawerNamesNum = 0;
 function SkuManager::addUserFacingDrawerName(%this, %internalName, %userFacingName) {
     %paddedNum = formatInt("%0.5d", %this.userFacingDrawerNamesNum);
     %this.userFacingDrawerName = %paddedNum @ "\t" @ %internalName @ "\t" @ %userFacingName @ %internalName;
@@ -468,16 +468,11 @@ function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeU
 function SkuManager::dumpSkuList(%this, %skus) {
     %skus = SortNumbers(%skus);
     %line = "sku num";
-    %line = drawer;
-    %line @ " - ";
-    %line = desc;
-    %line @ " - ";
-    %line = mesh;
-    %line @ " - ";
-    %line = textures;
-    %line @ " - ";
-    %line = roles;
-    %line @ " - ";
+    %line = %line @ " - " @ drawer;
+    %line = %line @ " - " @ desc;
+    %line = %line @ " - " @ mesh;
+    %line = %line @ " - " @ textures;
+    %line = %line @ " - " @ roles;
     echo("wardrobe", %line);
     %num = getWordCount(%skus);
     %n = 0;

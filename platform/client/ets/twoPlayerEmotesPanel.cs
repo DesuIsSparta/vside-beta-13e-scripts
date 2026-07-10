@@ -21,7 +21,7 @@ function TwoPlayerEmotesPanel::refresh(%this) {
     %posX = getWord(%pos, 0);
     %posY = getWord(%pos, 1);
     %posY.reposition(%this, %posX);
-    // unhandled opcode 308 at 0x00000131
+    %list = TwoPlayerEmotesList;
     %list.clear();
     %anims = getAllUserTriggerableCoAnims();
     %count = getFieldCount(%anims);
@@ -33,7 +33,7 @@ function TwoPlayerEmotesPanel::refresh(%this) {
 };
 function TwoPlayerEmotesList::onSelect(%this, %id, %text) {
     if ((%id >= 0.0)) {
-        doCoAnim(%text, TwoPlayerEmotesPanel, %this.playerName);
+        doCoAnim(%text, TwoPlayerEmotesPanel.playerName);
         TwoPlayerEmotesPanel.close();
     }
 };

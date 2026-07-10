@@ -10,6 +10,7 @@ function HelpDlg::onWake(%this) {
     }
     0.sortNumerical(HelpFileList);
     %i = 0;
+    !(%file $= "");
     while ((%i < HelpFileList.entryCount)) {
         %rowId = %i.getRowId(HelpFileList);
         %text = %rowId.getRowTextById(HelpFileList);
@@ -50,6 +51,7 @@ function contextHelp() {
         %i = (%i + 1.0);
     }
     %content = Canvas.getContent();
+    (%i < Canvas.getCount());
     %helpPage = %content.getHelpPage();
     getHelp(%helpPage);
 };

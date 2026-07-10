@@ -3,7 +3,7 @@ function GuiControl::newContextMenu(%this, %menuName) {
         return %menuName;
     }
     %cm = new GuiPopUp2MenuCtrl("") {
-        profile = 0 @ "ETSRightClickProfile";
+        profile = "ETSRightClickProfile";
         scrollProfile = "ETSScrollProfile";
         winProfile = "ETSRightClickWindowProfile";
         horizSizing = "right";
@@ -87,32 +87,24 @@ function EditContextMenu::init(%this, %ctrl) {
     }
     %canPaste = !(getClipboard() $= "");
     %n = -(1.0);
-    %n = (%n + 1.0);
     if (%modifiable) {
     }
-    %schemeDisabled.add(%this, "Undo", , %schemeNormal);
-    %n = (%n + 1.0);
-    %schemeDisabled.add(%this, "---", );
-    %n = (%n + 1.0);
+    %schemeDisabled.add(%this, "Undo", %n = (%n + 1.0), %schemeNormal);
+    %schemeDisabled.add(%this, "---", %n = (%n + 1.0));
     if (%canCut) {
     }
-    %schemeDisabled.add(%this, "Cut", , %schemeNormal);
-    %n = (%n + 1.0);
+    %schemeDisabled.add(%this, "Cut", %n = (%n + 1.0), %schemeNormal);
     if (%canCopy) {
     }
-    %schemeDisabled.add(%this, "Copy", , %schemeNormal);
-    %n = (%n + 1.0);
+    %schemeDisabled.add(%this, "Copy", %n = (%n + 1.0), %schemeNormal);
     if (%canPaste) {
     }
-    %schemeDisabled.add(%this, "Paste", , %schemeNormal);
-    %n = (%n + 1.0);
+    %schemeDisabled.add(%this, "Paste", %n = (%n + 1.0), %schemeNormal);
     if (%canCut) {
     }
-    %schemeDisabled.add(%this, "Delete", , %schemeNormal);
-    %n = (%n + 1.0);
-    %schemeDisabled.add(%this, "---", );
-    %n = (%n + 1.0);
-    %schemeNormal.add(%this, "Select All", );
+    %schemeDisabled.add(%this, "Delete", %n = (%n + 1.0), %schemeNormal);
+    %schemeDisabled.add(%this, "---", %n = (%n + 1.0));
+    %schemeNormal.add(%this, "Select All", %n = (%n + 1.0));
 };
 function EditContextMenu::onCancel(%this) {
     %this.ctrl.showCursor = 0;

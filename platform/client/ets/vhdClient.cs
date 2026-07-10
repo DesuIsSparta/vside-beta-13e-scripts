@@ -7,7 +7,7 @@ function playerTexturesReload() {
     }
 };
 function changedShowReloadTextures() {
-    MessageBoxOK("Restart required", , "");
+    MessageBoxOK("Restart required", $MsgCat::VHDClient["A-RESTART"], "");
     %n = 0;
     while ((%n < 4.0)) {
         0.schedule(MePopupMenuButton, (%n * 300.0), "setVisible");

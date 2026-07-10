@@ -110,6 +110,7 @@ function ClientCmdStartGetMicHolders(%numberOfMicHolders) {
         $gMicHoldersPendingAddition.clear();
         $gMicHoldersPendingAddition.delete();
         $gMicHoldersPendingAddition = 0;
+        (%i >= 0.0);
     }
     micPanel.updateGetMicHoldersListStatus();
 };
