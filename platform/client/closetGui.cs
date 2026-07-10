@@ -411,7 +411,6 @@ function ClosetTabs::tabSelected(%this, %tab)
                 %i = %i + 1;
             }
             %outfitNum = findWord($Player::HangerNames, [$player.getGender()], $ClosetOutfitName);
-            %i < $gClosetNumOutfits;
             ClosetTabs.getOutfitButton(%outfitNum).performClick();
         }
         if (%tab.name $= "SHOPS")
@@ -1007,7 +1006,6 @@ function ClosetThumbnails::setDrawers(%this, %drwrNames)
         %n = %n - 1;
     }
     %skus = trim(%skusTmp);
-    %n >= 0;
     %this.setSkus(%skus);
 }
 function ClosetThumbnails::setUnfilteredSkus(%this, %skus)
@@ -1031,14 +1029,7 @@ function ClosetThumbnails::setSkus(%this, %skus)
     %skus = trim(%skus);
     if ((%currentTabName $= "CLOSET") || (%currentTabName $= "SHOPS") || (%currentTabName $= "BODY") || (%currentTabName $= "MY DESIGNS"))
     {
-        if (isObject(ClosetFilterField))
-        {
-        }
-        else
-        {
-        }
-        %userFilterText = "";
-        ClosetFilterField.getValue();
+        %userFilterText = isObject(ClosetFilterField) ? ClosetFilterField.getValue() : "";
         %skus = SkuManager.filterSkusDescription(%skus, %userFilterText);
     }
     if (isObject(%this.otherGenderText))
@@ -1064,7 +1055,7 @@ function ClosetThumbnails::setSkus(%this, %skus)
     %this.setNumChildren(%numSkus);
     if (isObject(%this.infoText))
     {
-        if (!(BodyItemsFrame.features $= "Height") || (ClosetTabs.getCurrentTab().name $= "BODY") && (%numSkus != 0) || !(BodyItemsFrame.features $= "Stance"))
+        if ((((%numSkus != 0) || (ClosetTabs.getCurrentTab().name $= "BODY")) && !(BodyItemsFrame.features $= "Height")) || !(BodyItemsFrame.features $= "Stance"))
         {
             %this.infoText.setVisible(0);
             %this.scroll.setVisible(1);
@@ -1101,7 +1092,6 @@ function ClosetThumbnails::setSkus(%this, %skus)
         %n = %n + 1;
     }
     %dkBackground = 0;
-    %n < %numSkus;
     %currentDrwrName = "";
     %expiringItemsCount = 0;
     %n = 0;
@@ -1221,7 +1211,7 @@ function ClosetThumbnails::setSkus(%this, %skus)
         %cell.background.setProfile(%dkBackground ? ClosetDkBackgroundProfile : ClosetLtBackgroundProfile);
         %n = %n + 1;
     }
-    if (((%n < %numSkus) @ " " @ %currentTabName $= "SHOPS") && (%expiringItemsCount > 0))
+    if ((%currentTabName $= "SHOPS") && (%expiringItemsCount > 0))
     {
         StoreExpirationLegend.setVisible(1);
     }
@@ -1674,7 +1664,7 @@ function ClosetGui::open(%this)
     ClosetGui.updateVisibleAvatar();
     ClosetMainObjectView.zoomToSKU("");
     ClosetStaffPanelContainer.setVisible($player.rolesPermissionCheckNoWarn("debugPassive"));
-    if (((%i < $gClosetNumOutfits) @ " " @ $UserPref::Player::Genre $= "h") || ($UserPref::Player::Genre $= "i") || ($UserPref::Player::Genre $= "p") || ($UserPref::Player::Genre $= "t") || ($UserPref::Player::Genre $= "s"))
+    if (($UserPref::Player::Genre $= "h") || ($UserPref::Player::Genre $= "i") || ($UserPref::Player::Genre $= "p") || ($UserPref::Player::Genre $= "t") || ($UserPref::Player::Genre $= "s"))
     {
         ClosetGui.selectGenre($UserPref::Player::Genre);
     }
@@ -1744,7 +1734,7 @@ function ClosetGui::doClose(%this, %cancel, %allowMsgBoxOnExit)
         }
         saveStorePosition();
     }
-    if (%allowMsgBoxOnExit && ((%i >= 0) @ " " @ ClosetTabs.getCurrentTab().name $= "SHOPS") && (StoreShoppingList.getCount() > 0) && !(Inventory::getCurrentStoreName() $= ""))
+    if (%allowMsgBoxOnExit && (ClosetTabs.getCurrentTab().name $= "SHOPS") && (StoreShoppingList.getCount() > 0) && !(Inventory::getCurrentStoreName() $= ""))
     {
         MessageBoxYesNo("Leave the Store?", "You still have items in your shopping cart that you haven't bought." @ "\n" @ "<spush><b>Do you really want to return to the world?<spop>" @ "\n" @ "(The items will stay in your cart.)", "ClosetGui.reallyClose(" @ %cancel @ ");", "");
         return 0;
@@ -1848,7 +1838,6 @@ function ClosetGui::doResetAll(%this)
         %i = %i + 1;
     }
     $ClosetSkusBody = $gOutfits.get($player.getGender() @ "Body");
-    %i < $gClosetNumOutfits;
     %this.updateVisibleAvatar();
     ClosetMainObjectView.zoomToSKU("");
     ClosetTabs.updateBodyTabDisplay();
@@ -2226,7 +2215,6 @@ function ClosetGui::purchaseSkusReally(%this, %skus, %currency)
         %n = %n - 1;
     }
     %request = sendRequest_PurchaseInventory($Player::Name, %array, %currency, $gCurrentStoreName, "closet_onDoneOrErrorCallback_PurchaseInventory");
-    %n >= 0;
     %request.currency = %currency;
     %request.callbackData = %this;
     %request.timedOutAlready = 0;
@@ -2304,12 +2292,10 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request)
             %m = %m - 1;
         }
         %n = %n - 1;
-        %m >= 0;
     }
     if (!%request.checkSuccess())
     {
         %errorCode = %request.getValue("errorCode");
-        %n >= 0;
         if (%errorCode $= "staleInventory")
         {
             %request = sendRequest_GetStoreInventory($Player::Name, $gCurrentStoreName, "OnGotDoneOrError_GetStoreInventory");
@@ -2362,7 +2348,7 @@ function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed)
         }
         %n = %n - 1;
     }
-    if (!((%n >= 0) @ " " @ %skulist $= ""))
+    if (!(%skulist $= ""))
     {
         %callback = "StoreShoppingList.removeSkus(\"" @ %skusPurchased @ "\");";
         if (%delayed)
@@ -2386,7 +2372,6 @@ function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed)
             %n = %n - 1;
         }
         $StoreSkusLayer = trim(%newStoreSkus);
-        %n >= 0;
         %skusToFlattenClothing = SkuManager.filterSkusForClothing(%skusToFlatten);
         %skusToFlattenBody = SkuManager.filterSkusForBody(%skusToFlatten);
         $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], %skusToFlattenClothing);
@@ -2494,7 +2479,6 @@ function CheckoutRequest::onDone(%this)
                 %i = %i + 1;
             }
             %msg = "";
-            1;
             if (%ownsAlready)
             {
                 %msg = %msg @ %msg[$MsgCat::commerce @ "E-ALREADYOWN"] @ "\n\n";
@@ -2542,7 +2526,6 @@ function CheckoutRequest::onDone(%this)
                     %i = %i + 1;
                 }
                 $StoreSkusLayer = trim(%newStoreSkus);
-                %i < getWordCount($StoreSkusLayer);
                 %skusToFlattenClothing = SkuManager.filterSkusForClothing(%skusToFlatten);
                 %skusToFlattenBody = SkuManager.filterSkusForBody(%skusToFlatten);
                 $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], %skusToFlattenClothing);
@@ -2564,7 +2547,6 @@ function ClosetGui::selectGenre(%this, %val)
         %triesLeft = %triesLeft - 1;
     }
     $gClosetStanceEmotesLast = %anim;
-    (%triesLeft > 0) && (%anim $= $gClosetStanceEmotesLast);
     $player.playAnim($player.getGender() @ %val @ %anim);
 }
 function ClosetGui::updateVisibleAvatar(%this)
@@ -2831,7 +2813,6 @@ function checkOutfitCorruption(%checkClosetVariables)
         {
             error(getScopeName() @ "-> " @ %outfitsCorrupted @ " blank outfits detected!");
             %errMsg = %errMsg @ " " @ "(" @ %outfitsCorrupted @ " blank outfits)";
-            %n >= 0;
         }
     }
     if ((%outfitsCorrupted > 0) || %numOutfitNamesBroken || %noCurrentOutfit || %playerObjNullInCloset)
@@ -2978,14 +2959,7 @@ function ClosetTabs::updateAuthorWidget(%this, %sku)
     {
         return;
     }
-    if (!(%sku $= ""))
-    {
-    }
-    else
-    {
-    }
-    %si = "";
-    SkuManager.findBySku(%sku);
+    %si = !(%sku $= "") ? SkuManager.findBySku(%sku) : "";
     %filled = 0;
     if (isObject(%si))
     {

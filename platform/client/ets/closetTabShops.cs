@@ -30,7 +30,6 @@ function ClosetTabs::refreshStoreTab(%this)
                 %m = %m + 1;
             }
             %n = %n + 1;
-            %m < getWordCount(%catDrwrs);
         }
     }
     loadStorePosition();
@@ -765,7 +764,6 @@ function StoreShoppingList::addSku(%this, %sku)
         %idx = %idx + 1;
     }
     %child = %this.addChild();
-    %idx < %count;
     %child.sku = %sku;
     %si = SkuManager.findBySku(%sku);
     %child.desc.setText(%si.descShrt);
@@ -825,7 +823,6 @@ function StoreShoppingList::removeSku(%this, %sku)
         %i = %i + 1;
     }
     %count = StoreItemsFrame.thumbnails.getCount();
-    %i < %count;
     %i = 0;
     while (%i < %count)
     {
@@ -933,7 +930,6 @@ function StoreShoppingList::sumPrices(%this)
         %idx = %idx + 1;
     }
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
-    %idx < %count;
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
     StorePointsTotalText.setText(%pointsIcon @ " " @ %pointsSum);
     StoreBuxTotalText.setText(%buxIcon @ " " @ %buxSum);
@@ -1337,7 +1333,7 @@ function ThePointsFloaterHud::doTick(%this)
         }
         %n = %n - 1;
     }
-    %this.timerID = (%n >= 0) @ %this.schedule(%this.tickPeriodMS, "doTick");
+    %this.timerID = %this.schedule(%this.tickPeriodMS, "doTick");
 }
 function clientCmdUpdateVPoints(%newPoints, %notify)
 {

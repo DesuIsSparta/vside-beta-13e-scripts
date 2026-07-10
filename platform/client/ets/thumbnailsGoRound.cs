@@ -96,10 +96,8 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container)
             %n = %n - 1;
         }
         %m = %m + 1;
-        %n >= 0;
     }
     %num = %container.getCount();
-    %m < 2;
     %n = 0;
     while (%n < %num)
     {
@@ -112,7 +110,7 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container)
         %ctrl.mInPosition = %n;
         %n = %n + 1;
     }
-    %container.mOldestThumbnail = (%n < %num) @ (%container.getCount() - 1);
+    %container.mOldestThumbnail = %container.getCount() - 1;
 }
 function thumbnailsGoRound::getThumbnailIndexInSlot(%this, %slotIndex)
 {
@@ -171,7 +169,6 @@ function thumbnailsGoRound::giddap(%this, %bringInNewContent)
         %n = %n + 1;
     }
     %ctrlA = %this.mLilThumbsContainer.getObject(%n);
-    %n < (%num - 1);
     %ctrlA.mInPosition = %firstInPosition;
     %ctrlA.basePosition = %firstBasePosition;
     %ctrlA.setTrgPosition(%ctrlA.basePosition);

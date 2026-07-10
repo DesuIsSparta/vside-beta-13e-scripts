@@ -330,7 +330,6 @@ function geTGF_tabs::Maps_filterDestinations(%this, %type, %city)
         %idx = %idx + 1;
     }
     %dests = trim(%dests);
-    %idx < %count;
     %neardests = "";
     %fardests = "";
     %count = getWordCount(%dests);
@@ -370,7 +369,6 @@ function geTGF_tabs::Maps_filterDestinations(%this, %type, %city)
         %idx = %idx + 1;
     }
     %neardests = trim(%neardests);
-    %idx < %count;
     %fardests = trim(%fardests);
     %dests = trim(%neardests @ " " @ %fardests);
     %count = getWordCount(%dests);

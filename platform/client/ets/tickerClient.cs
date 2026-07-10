@@ -103,7 +103,7 @@ function ticker_newMessage()
         }
         %n = %n - 1;
     }
-    if (!((%n >= 0) && (%msg $= "") @ " " @ %msg $= ""))
+    if (!(%msg $= ""))
     {
         %senderName = getField(%msg, 0);
         %body = getField(%msg, 1);

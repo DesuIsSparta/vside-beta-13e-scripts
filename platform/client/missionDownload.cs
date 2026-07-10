@@ -125,7 +125,7 @@ function handleLoadInfoMessage(%unused, %msgString)
             LoadingGui.qLine[%line] = "";
             %line = %line + 1;
         }
-        LoadingGui.qLineCount = (%line < LoadingGui.qLineCount) @ 0;
+        LoadingGui.qLineCount = 0;
     }
     else
     {
@@ -149,7 +149,6 @@ function handleLoadDescriptionMessage(%unused, %msgString)
         %line = %line + 1;
     }
     %text = %text @ LoadingGui.qLine[%line] @ "<spop>";
-    %line < (LoadingGui.qLineCount - 1);
 }
 function handleLoadInfoDoneMessage(%unused, %msgString)
 {

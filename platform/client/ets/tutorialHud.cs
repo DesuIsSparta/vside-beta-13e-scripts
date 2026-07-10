@@ -315,13 +315,7 @@ function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDel
     {
         if (%promoteToParentDelta)
         {
-            if (%delta < 0)
-            {
-            }
-            else
-            {
-            }
-            %this.goToTutorialByDelta(-(1), 1, 1);
+            %this.goToTutorialByDelta((%delta < 0) ? -(1) : 1, 1);
         }
     }
 }
@@ -633,7 +627,6 @@ function TutorialsCatalogClient::doCancelAllNagSchedules(%this)
             }
         }
         %i = %i - 1;
-        %j >= 0;
     }
 }
 function leaveAllTutorialSpaces()

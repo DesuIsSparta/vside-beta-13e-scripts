@@ -104,7 +104,6 @@ function EmoteHudList::setup(%this)
             }
         }
         %n = %n - 1;
-        %m >= 0;
     }
     EmoteHudList.setEditMode(0);
 }
@@ -132,7 +131,6 @@ function EmoteHudList::populateLists(%this)
         %i = %i + 1;
     }
     %list = %this.lists["FavoriteActions"];
-    %i < %numMoods;
     %size = EmoteBindingMap.size();
     %i = 0;
     while (%i < %size)
@@ -146,7 +144,6 @@ function EmoteHudList::populateLists(%this)
         %i = %i + 1;
     }
     %expressions = "angry" @ "\t" @ "confused" @ "\t" @ "cry" @ "\t" @ "embarrassed" @ "\t" @ "flirt" @ "\t" @ "hmm" @ "\t" @ "in-love" @ "\t" @ "lol" @ "\t" @ "rotfl" @ "\t" @ "sad" @ "\t" @ "scared" @ "\t" @ "sleepy" @ "\t" @ "smile" @ "\t" @ "surprised" @ "\t" @ "thinking";
-    %i < %size;
     %this.populateList(%this.lists["Expressions"], %expressions);
     %gestures = "yes" @ "\t" @ "no" @ "\t" @ "applause" @ "\t" @ "applaud for" @ "\t" @ "bow" @ "\t" @ "boo" @ "\t" @ "busy" @ "\t" @ "come-here" @ "\t" @ "cool" @ "\t" @ "crowd-wave" @ "\t" @ "doh" @ "\t" @ "hiFive-initiate" @ "\t" @ "hiFive-finish" @ "\t" @ "hug-initiate" @ "\t" @ "hug-finish" @ "\t" @ "kiss" @ "\t" @ "lol" @ "\t" @ "loser" @ "\t" @ "not-listening" @ "\t" @ "o-my-nails" @ "\t" @ "point" @ "\t" @ "reauxshambeaux synch" @ "\t" @ "reaux" @ "\t" @ "sham" @ "\t" @ "beaux" @ "\t" @ "rotfl" @ "\t" @ "shhh" @ "\t" @ "sit" @ "\t" @ "shake-fist-at" @ "\t" @ "shoo" @ "\t" @ "shrug" @ "\t" @ "sleepy" @ "\t" @ "supermodel-turn" @ "\t" @ "talk-to-the-hand" @ "\t" @ "thumbs-up" @ "\t" @ "tapglass" @ "\t" @ "thumbs-down" @ "\t" @ "vomit" @ "\t" @ "vside" @ "\t" @ "waiting" @ "\t" @ "wave" @ "\t" @ "whew";
     %this.populateList(%this.lists["Gestures"], %gestures);
@@ -397,7 +394,6 @@ function EmoteHudList::onURL(%this, %url)
             }
             %this.setText(%this.getText() @ "<br>");
             %binding = EmoteBindingMap.get(%this.currentEmote);
-            %i < %count;
             if (!(%binding $= ""))
             {
                 %this.setText(%this.getText() @ "<a:gamelink unbind " @ %binding @ ">[ Unbind " @ %binding @ " ]</a>  ");

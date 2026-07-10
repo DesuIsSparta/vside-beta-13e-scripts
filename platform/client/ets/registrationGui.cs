@@ -73,14 +73,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
     {
         $UserPref::Player::Name = %request.getValue("userName");
         $UserPref::Player::Password = %request.getValue("password");
-        if (%request.getValue("gender") $= "")
-        {
-        }
-        else
-        {
-        }
-        $UserPref::Player::gender = %request.getValue("gender");
-        $UserPref::Player::gender;
+        $UserPref::Player::gender = (%request.getValue("gender") $= "") ? $UserPref::Player::gender : %request.getValue("gender");
         $Player::Name = $UserPrefPlayer::Name;
         $Player::Password = $UserPrefPlayer::Password;
         LoginUserNameField.setValue($Player::Name);

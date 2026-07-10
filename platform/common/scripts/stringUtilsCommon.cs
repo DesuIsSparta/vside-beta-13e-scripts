@@ -40,7 +40,6 @@ function wordsNotInWords(%haystack, %needles)
         %n = %n - 1;
     }
     %ret = trim(%ret);
-    %n >= 0;
     return %ret;
 }
 function stripSurroundingQuotes(%text)
@@ -131,7 +130,6 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                         %i = %i + 1;
                     }
                     %thisLine = %partialWord;
-                    (%i <= %wordLength) && !%wordDone;
                     if (%beginningOfNextWord > 0)
                     {
                         %text = setWord(%text, %currentWordIndex, getSubStr(%currentWord, %beginningOfNextWord, %wordLength));
@@ -161,7 +159,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                 %atEndOfLine = 1;
             }
         }
-        if (!%atEndOfLine @ " " @ %outputText $= "")
+        if (%outputText $= "")
         {
             %outputText = %thisLine;
         }

@@ -225,13 +225,7 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
             %keyBase = "user" @ %n @ ".";
             %request.putValue(%keyBase @ "userName", getRandomUserName());
             %request.putValue(%keyBase @ "relationType", (getRandom(0, 99) < 20) ? "friend" : "");
-            if (getRandom(0, 1) == 0)
-            {
-            }
-            else
-            {
-            }
-            %request.putValue(%keyBase @ "age", getRandom(13, 25), "");
+            %request.putValue(%keyBase @ "age", (getRandom(0, 1) == 0) ? getRandom(13, 25) : "");
             %request.putValue(%keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
             %request.putValue(%keyBase @ "currentLocation.areaName", "lga_yachts");
             %request.putValue(%keyBase @ "currentLocation.buildingName", "LGAHarbor");
@@ -245,7 +239,6 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
             %n = %n + 1;
         }
         %n = 0;
-        %n < %num;
         %request.putValue("location" @ %n @ ".areaName", "nv");
         %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
         %n = %n + 1;
@@ -309,14 +302,13 @@ function sendRequest_PurchaseInventory(%userName, %skusArray, %payWith, %storena
         %n = %n + 1;
     }
     %n = 0;
-    %n < %skusNum;
     while (%n < %skusNum)
     {
         %request.addBodyParam("itemsToBuy" @ %n @ ".sku", %skusArray.getKey(%n));
         %request.addBodyParam("itemsToBuy" @ %n @ ".quantity", %skusArray.getValue(%n));
         %n = %n + 1;
     }
-    %request.payWith = (%n < %skusNum) @ %payWith;
+    %request.payWith = %payWith;
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -378,7 +370,7 @@ function sendRequest_UpdateUserInventoryCollection(%userName, %collectionName, %
         %request.addUrlParam("property" @ %n @ ".value", %propertyMap.getValue(%n));
         %n = %n + 1;
     }
-    %request.callbackHandler = (%n < %num) @ %callbackHandler;
+    %request.callbackHandler = %callbackHandler;
     if ($StandAlone)
     {
         if (!(%callbackHandler $= ""))
@@ -547,14 +539,7 @@ function sendRequest_Boot(%callbackHandler)
 }
 function sendRequest_UpdateUserStates(%statesList, %callbackHandler)
 {
-    if (isDefined("%callbackHandler"))
-    {
-    }
-    else
-    {
-    }
-    %callbackHandler = "";
-    %callbackHandler;
+    %callbackHandler = isDefined("%callbackHandler") ? %callbackHandler : "";
     %request = safeNewScriptObject("ManagerRequest", "", 0);
     %request.bindClassName("UniformManagerRequest");
     %url = "";

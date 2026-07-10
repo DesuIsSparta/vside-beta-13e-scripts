@@ -98,6 +98,5 @@ function getRandomApartmentPhotoID()
         echo("read" @ " " @ $gRandomApartmentPhotoIDsNum @ " " @ "names..");
     }
     %num = getRandom(0, ($gRandomApartmentPhotoIDsNum - 1));
-    !%fo.isEOF();
     return $gRandomApartmentPhotoIDs[%num];
 }

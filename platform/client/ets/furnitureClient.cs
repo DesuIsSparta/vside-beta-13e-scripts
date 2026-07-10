@@ -290,7 +290,6 @@ function FurnitureRequest::onDone(%this)
         %index = %index + 1;
     }
     %request = safeNewScriptObject("ScriptObject", "Request_GetActiveFurnitureSkus", 1);
-    %index < %count;
     %request.result = "";
     commandToServer('GetActiveFurnitureSkus', CustomSpaceClient::GetSpaceImIn(), %request.getId());
 }
@@ -322,7 +321,7 @@ function clientCmdGotFurnitureSkus(%skulistchunk, %requestId, %complete)
         %quantity = getWord(%value, 1);
         useFurnitureSku(%sku, %quantity);
     }
-    if (!(!(%skulist $= "") @ " " @ $gGotFurnitureCallback $= ""))
+    if (!($gGotFurnitureCallback $= ""))
     {
         eval($gGotFurnitureCallback);
     }
@@ -390,7 +389,6 @@ function clientCmdGotNuggetGhostList(%ghostchunk, %requestId, %completed)
         %objectList = %objectList @ " " @ %objID;
     }
     %objectList = trim(%objectList);
-    !(%ghostlist $= "");
     %requestId.delete();
     CSFurnitureMover::refreshGhostList(%objectList);
 }

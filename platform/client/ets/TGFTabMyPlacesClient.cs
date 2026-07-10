@@ -218,7 +218,6 @@ function geTGF_OnCompleted_MyPlace(%tracker)
         %n = %n + 1;
     }
     %bothListsExist = geTGF.testItemList("myplace", "happening") && geTGF.testItemList("otherplaces", "happening");
-    %n < %count;
     if (%bothListsExist)
     {
         geTGF_OnCompleted_MyPlaceRemoveOwnedSpacesFromAvailableList();

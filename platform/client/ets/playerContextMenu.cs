@@ -14,22 +14,8 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
     %isNPC = isNPCName(%playerName);
     %isRentabot = rentabot_isRentabotName(%playerName);
     %sameServer = isObject(%playerClicked) || (UserListFriends.get(%playerName).serverName $= $ServerName);
-    if (isObject(%playerClicked))
-    {
-    }
-    else
-    {
-    }
-    %isRealPlayer = 0;
-    !%playerClicked.isClassAIPlayer();
-    if (isObject(%playerClicked))
-    {
-    }
-    else
-    {
-    }
-    %isIdle = 0;
-    %playerClicked.getAFK();
+    %isRealPlayer = isObject(%playerClicked) ? !%playerClicked.isClassAIPlayer() : 0;
+    %isIdle = isObject(%playerClicked) ? %playerClicked.getAFK() : 0;
     %grey = "255 255 255 128";
     %white = "255 255 255 255";
     %this.addScheme(1, %grey, %grey, %grey);
@@ -93,7 +79,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if (!rentabot_isRentabotName(%playerName))
             {
-                if (!%isNPC || %sameServer && $StandAlone && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
+                if (%sameServer && !%isNPC || $StandAlone && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Two-Player Action..", %n = %n + 1, %schemeNormal);
                 }
@@ -188,7 +174,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                     {
                         %this.add("This Space: Customize", %n = %n + 1, %schemeNormal);
                     }
-                    if (!%playerClicked.isHost() && $player.isHost() || $player.isHostOrCohost() && !%playerClicked.rolesPermissionCheckNoWarn("customspaceImmune") && !%playerClicked.isClassAIPlayer())
+                    if ($player.isHostOrCohost() && !%playerClicked.rolesPermissionCheckNoWarn("customspaceImmune") && $player.isHost() || !%playerClicked.isHost() && !%playerClicked.isClassAIPlayer())
                     {
                         %this.add("This Space: Summon", %n = %n + 1, %schemeNormal);
                         %this.add("This Space: Respawn", %n = %n + 1, %schemeNormal);
@@ -203,7 +189,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 %this.add("Ignore", %n = %n + 1, %schemeIgnore);
             }
-            if (CustomSpaceClient::isOwner() && isObject(%playerClicked) && (%friendStatus $= "friends") || %isNPC || (%playerClicked != $player))
+            if ((%friendStatus $= "friends") || %isNPC || CustomSpaceClient::isOwner() && isObject(%playerClicked) && (%playerClicked != $player))
             {
                 %this.add("Teleport To", %n = %n + 1, %schemeTeleport);
             }

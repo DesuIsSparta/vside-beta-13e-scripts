@@ -241,7 +241,6 @@ function GetMusicStreamsRequest::onDone(%this)
         %i = %i + 1;
     }
     %streamField = SortFields(%streamField);
-    %i < %count;
     %sortedStreamField = "";
     %fieldCount = getFieldCount(%streamField);
     %i = 0;
@@ -251,7 +250,6 @@ function GetMusicStreamsRequest::onDone(%this)
         %i = %i + 1;
     }
     %streamField = %sortedStreamField;
-    %i < %fieldCount;
     $musicStreamNameMap.put($CSMediaMusicOffName, $CSMediaMusicOffID);
     $musicStreamIDMap.put($CSMediaMusicOffID, $CSMediaMusicOffName);
     MusicHud.updateStations(%streamField);

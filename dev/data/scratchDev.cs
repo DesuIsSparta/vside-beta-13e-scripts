@@ -18,7 +18,6 @@ function fakeBuddyInfo(%friends, %faves, %fans)
         %n = %n + 1;
     }
     %n = 0;
-    %n < %friends;
     while (%n < %faves)
     {
         %record = getFakeBuddyRecord("fakeFave" @ " " @ formatInt("%0.4d", %n));
@@ -26,7 +25,6 @@ function fakeBuddyInfo(%friends, %faves, %fans)
         %n = %n + 1;
     }
     %n = 0;
-    %n < %faves;
     while (%n < %fans)
     {
         %record = getFakeBuddyRecord("fakeFan" @ " " @ formatInt("%0.4d", %n));
@@ -93,7 +91,7 @@ function dev_TestMLText(%onOrOff, %method)
     }
     if (%method == 1 && %onOrOff)
     {
-        geMLTestArray.childrenExtent = (%n < %numLines) @ (getWord(playGui.getExtent(), 0) / 1) @ " " @ 16;
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / 1) @ " " @ 16;
         geMLTestArray.numRowsOrCols = 1;
         geMLTestArray.childrenClassName = "GuiMLTextCtrl";
         geMLTestArray.setNumChildren(%numLines);
@@ -108,7 +106,7 @@ function dev_TestMLText(%onOrOff, %method)
     }
     if (%method == 2 && %onOrOff)
     {
-        geMLTestArray.childrenExtent = (%n < %numLines) @ (getWord(playGui.getExtent(), 0) / 1) @ " " @ 16;
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / 1) @ " " @ 16;
         geMLTestArray.numRowsOrCols = 1;
         geMLTestArray.childrenClassName = "GuiTextCtrl";
         geMLTestArray.setNumChildren(%numLines);
@@ -123,7 +121,7 @@ function dev_TestMLText(%onOrOff, %method)
     }
     if (%method == 3 && %onOrOff)
     {
-        geMLTestArray.childrenExtent = (%n < %numLines) @ (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
         geMLTestArray.numRowsOrCols = %numCols;
         geMLTestArray.childrenClassName = "GuiButtonCtrl";
         geMLTestArray.setNumChildren((%numLines * %numCols));
@@ -138,7 +136,7 @@ function dev_TestMLText(%onOrOff, %method)
     }
     if (%method == 4 && %onOrOff)
     {
-        geMLTestArray.childrenExtent = (%n < (%numLines * %numCols)) @ (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
+        geMLTestArray.childrenExtent = (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
         geMLTestArray.numRowsOrCols = %numCols;
         geMLTestArray.childrenClassName = "GuiBitmapCtrl";
         geMLTestArray.setNumChildren((%numLines * %numCols));
@@ -857,7 +855,7 @@ function dev_getRandomItem()
             %totalWeight = %totalWeight + gRandomItemManager.itemWeight[%n];
             %n = %n + 1;
         }
-        gRandomItemManager.totalWeight = (%n < gRandomItemManager.numItems) @ %totalWeight;
+        gRandomItemManager.totalWeight = %totalWeight;
     }
     %rand = getRandom(0, (gRandomItemManager.totalWeight - 1));
     %n = 0;

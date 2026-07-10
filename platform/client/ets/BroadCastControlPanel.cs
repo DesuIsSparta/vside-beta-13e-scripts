@@ -55,7 +55,7 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot()
     {
         if (BroadCastControlPanel.temporaryGUIControlContainer == 0)
         {
-            BroadCastControlPanel.temporaryGUIControlContainer = (%i >= 0) @ new GuiControl("");
+            BroadCastControlPanel.temporaryGUIControlContainer = new GuiControl("");
         }
         BroadCastControlPanel.temporaryGUIControlContainer.setVisible(0);
         BroadCastControlPanel.temporaryGUIControlContainer.add(ConvBub);
@@ -125,7 +125,6 @@ function BroadSnapshotButton_doTakeSnapshot()
             %n = %n + 1;
         }
         %playerNames = trim(%playerNames);
-        %n < %numPlayers;
         BroadCastControlPanel.enterFillCURLMode(%photoFileName, %ext, $player.getTransform(), %playerNames);
         BroadCastControlPanel.enterTookPhotoMode();
         removeFile(%photoFileName @ %ext);
@@ -164,7 +163,7 @@ function BroadSnapshotButton_doTakeSnapshot()
     if (BroadcastHideHUDsCheckbox.getValue() || BroadcastHideChatCheckbox.getValue())
     {
         BroadCastControlPanel.temporaryGUIControlContainer.delete();
-        BroadCastControlPanel.temporaryGUIControlContainer = (%i >= 0) @ 0;
+        BroadCastControlPanel.temporaryGUIControlContainer = 0;
     }
     if (BroadcastHideSelfCheckbox.getValue() && BroadcastHideSelfCheckbox.isVisible())
     {

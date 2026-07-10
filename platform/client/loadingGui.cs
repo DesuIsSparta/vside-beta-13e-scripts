@@ -80,7 +80,7 @@ function LoadingGui::onSleep(%this)
             %line = %line + 1;
         }
     }
-    %this.qLineCount = (%line < %this.qLineCount) @ 0;
+    %this.qLineCount = 0;
     LoadingProgressTxt.setValue("");
     LoadingPBController.setValue(0);
 }
@@ -155,7 +155,7 @@ function LoadingTipsHud::initTipsList(%this)
         }
     }
     %fo.close();
-    %this.tipFileCount = !%fo.isEOF() @ %fileCount;
+    %this.tipFileCount = %fileCount;
     if (%fileCount == 0)
     {
         echo("No tips found. We will now stop loading them. Add some and run again");
@@ -177,7 +177,6 @@ function LoadingTipsHud::loadATip(%this)
         %n = %n + 1;
     }
     %fileName = %this.tipFile[%tipNum];
-    (%n < 10) && (%this.tipFileShown[%tipNum] == 1);
     if (%fileName $= "")
     {
         error("Got a bad tip filename. Skipping...");

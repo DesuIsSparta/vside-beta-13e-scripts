@@ -34,14 +34,12 @@ function outfits_makeDefault(%stringMap)
             %n = %n - 1;
         }
         %name = %gender @ "Body";
-        %n >= 0;
         %stringMap.put(%name, $gDefaultBodyAttrs[%gender]);
         %m = %m - 1;
     }
     if (isObject($player))
     {
         %gender = $player.getGender();
-        %m >= 0;
     }
     else
     {
@@ -114,7 +112,7 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request)
     }
     echo("Retrieved outfit settings:");
     %stringMap.dumpValues();
-    if (!((%n < %num) @ " " @ %stringMap.get("initialOutfitAndBody") $= "") && (%stringMap.get("currentOutfit") $= ""))
+    if (!(%stringMap.get("initialOutfitAndBody") $= "") && (%stringMap.get("currentOutfit") $= ""))
     {
         $userpref::player::initialSkus[$Player::Name] = %stringMap.get("initialOutfitAndBody");
         if (!(SkuManager.filterSkusGender($userpref::player::initialSkus[$Player::Name], "f") $= $userpref::player::initialSkus[$Player::Name]))
@@ -182,7 +180,6 @@ function outfits_filterSKUList(%skulist)
         %idx = %idx + 1;
     }
     %filtered = trim(%filtered);
-    %idx < getWordCount(%skulist);
     return %filtered;
 }
 function SaveOutfitAndBodySkusAsCurrent(%skus)

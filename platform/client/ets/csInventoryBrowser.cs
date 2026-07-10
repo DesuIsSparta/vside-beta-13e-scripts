@@ -76,7 +76,7 @@ function CSInventoryBrowser::loadAvailableSkus(%this)
         %this.addSku(getWord(%skulist, %i));
         %i = %i + 1;
     }
-    if (((%i < %numSkus) @ " " @ %this.Path $= "") || (%this.Path $= %this.baseDir))
+    if ((%this.Path $= "") || (%this.Path $= %this.baseDir))
     {
         %this.goToPath(%this.baseDir, 0);
     }

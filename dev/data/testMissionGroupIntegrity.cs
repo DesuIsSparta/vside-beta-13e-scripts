@@ -55,7 +55,7 @@ function TEST_MISSIONGROUPINTEGRITY::InitializeNPCNames(%this)
     else
     {
         %file.delete();
-        return !%file.isEOF();
+        return;
     }
     %file.close();
     %file.delete();
@@ -396,7 +396,6 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         }
     }
     %classname = %obj.getClassName();
-    %n < %num;
     %belongs = 0;
     %i = 0;
     while (%i < %this.okClassCount)
@@ -408,7 +407,6 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
         %i = %i + 1;
     }
     %actionNeeded = "This object does not belong and should probably be deleted";
-    %i < %this.okClassCount;
     %ableToNotCache = %this.IsAbleToNotCache(%obj);
     if (%ableToNotCache == 0)
     {
@@ -564,7 +562,7 @@ function RecursivelyFixOldStyleSeatingAreaProblems(%obj)
             RecursivelyFixOldStyleSeatingAreaProblems(%obj.getObject(%n));
             %n = %n + 1;
         }
-        return %n < %num;
+        return;
     }
     %classname = %obj.getClassName();
     if (%classname $= "ETSSeatMarker" && (%obj.listeningStation $= 0))
@@ -597,7 +595,6 @@ function FixOldStyleSeatingAreaProblems()
         %i = %i + 1;
     }
     $OLDSEATAREA_KILLER_COUNT = 0;
-    %i < $OLDSEATAREA_KILLER_COUNT;
     echo("done----------------------");
 }
 function Utility::ListDataBlocksNotUsed()

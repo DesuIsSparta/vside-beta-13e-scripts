@@ -1,6 +1,6 @@
 function centerPrintAll(%message, %time, %lines)
 {
-    if ((%lines > 3) || (%lines $= "") || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }
@@ -18,7 +18,7 @@ function centerPrintAll(%message, %time, %lines)
 }
 function bottomPrintAll(%message, %time, %lines)
 {
-    if ((%lines > 3) || (%lines $= "") || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }
@@ -36,7 +36,7 @@ function bottomPrintAll(%message, %time, %lines)
 }
 function centerPrint(%client, %message, %time, %lines)
 {
-    if ((%lines > 3) || (%lines $= "") || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }
@@ -44,7 +44,7 @@ function centerPrint(%client, %message, %time, %lines)
 }
 function bottomPrint(%client, %message, %time, %lines)
 {
-    if ((%lines > 3) || (%lines $= "") || (%lines < 1))
+    if ((%lines $= "") || (%lines > 3) || (%lines < 1))
     {
         %lines = 1;
     }

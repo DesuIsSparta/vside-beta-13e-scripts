@@ -21,7 +21,7 @@ function CSSpacePurchasePriceConfirmation(%space)
     %tradein = CSSpacePurchasePriceFormatting(%space.floorplan.tradeInValueVPoints, %space.floorplan.tradeInValueVBux);
     %final = CSSpacePurchasePriceFormatting(%finalVPoints, %finalVBux);
     %text = %text @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"] @ "\n<tab:30>" @ "\n" @ "\t" @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"][$MsgCat::custSpace @ "PURCHASE_SPACEPRICE"] @ " " @ %price @ "\n" @ " " @ "\n" @ "\t" @ %price[$MsgCat::custSpace @ "PURCHASE_NOTINCLUDED"] @ "\n" @ "<spop>";
-    if (($Player::VBux >= %finalVBux) && ($Player::VPoints >= %finalVPoints) && (%finalVPoints >= 0) && (%finalVBux >= 0))
+    if (($Player::VPoints >= %finalVPoints) && (%finalVPoints >= 0) && ($Player::VBux >= %finalVBux) && (%finalVBux >= 0))
     {
         %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_CHOICE"] @ "\n";
     }

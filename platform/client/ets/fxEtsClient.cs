@@ -78,7 +78,6 @@ function fxEts::TODTick()
     while (%cityHOD < 0)
     {
         %cityHOD = %cityHOD + 24;
-        %cityHOD > 24;
     }
     fxEts::updateTOD(%cityHOD);
     if (isObject(DevOptsSliderTOD))
@@ -148,7 +147,6 @@ function fxEts::getColorForTOD(%sod)
     if (%upperBound == 1000)
     {
         %upperBound = %n - 1;
-        %n < $fxEts::TOD::ColorModSamplesNum;
     }
     if (%lowerBound == -(1))
     {

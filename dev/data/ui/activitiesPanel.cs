@@ -71,7 +71,6 @@ function geActivitiesPanel::updateStates(%this)
         %n = %n - 1;
     }
     %text = %text @ %delim;
-    %n >= 0;
     %timeSinceLastReport = %uam.getLastReportAgeMS();
     %timeSinceLastReport = mFloor((%timeSinceLastReport / 1000));
     %text = %text @ %delim @ "<just:left><color:a09000>last report:" @ " " @ secondsToHHMMSS(%timeSinceLastReport);

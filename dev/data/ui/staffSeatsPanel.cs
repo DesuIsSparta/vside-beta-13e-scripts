@@ -111,7 +111,7 @@ function recursiveCollectSeatsFromSimGroup(%obj, %seatSet)
             recursiveCollectSeatsFromSimGroup(%obj.getObject(%n), %seatSet);
             %n = %n + 1;
         }
-        return %n < %num;
+        return;
     }
     if ((%obj.getClassName() $= "MissionMarker") || (%obj.getClassName() $= "ETSSeatMarker"))
     {

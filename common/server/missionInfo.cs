@@ -42,7 +42,7 @@ function buildLoadInfo(%mission)
     }
     eval(%infoObject);
     %file.delete();
-    return !%file.isEOF();
+    return;
 }
 function dumpLoadInfo()
 {
@@ -65,5 +65,5 @@ function sendLoadInfoToClient(%client)
         %i = %i + 1;
     }
     messageClient(%client, 'MsgLoadInfoDone', "");
-    return !(MissionInfo.desc[%i] $= "");
+    return;
 }

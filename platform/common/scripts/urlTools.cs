@@ -35,7 +35,7 @@ function URLInfo::parse(%this)
     }
     else
     {
-        %this.paramCount = (%idx < %count) @ 0;
+        %this.paramCount = 0;
     }
     %this.parsed = 1;
     return 1;

@@ -100,7 +100,6 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY)
         %n = %n + 1;
     }
     %n = getWordCount($gWindowManagerMarginSpecialCasesRight) - 1;
-    %n < %this.rightMargin.numWindows;
     while (%n >= 0)
     {
         %ctrl = getWord($gWindowManagerMarginSpecialCasesRight, %n);
@@ -157,7 +156,6 @@ function WindowManager::getLeftMarginAtY(%this, %checkAtY)
         %n = %n + 1;
     }
     %n = getWordCount($gWindowManagerMarginSpecialCasesLeft) - 1;
-    %n < %this.leftMargin.numWindows;
     while (%n >= 0)
     {
         %ctrl = getWord($gWindowManagerMarginSpecialCasesLeft, %n);
@@ -275,7 +273,6 @@ function WindowManager::repositionWindows(%this, %windowSet)
         }
         DEBUG_WM("total weight: " @ %totalWeight);
         %ypos = %padding;
-        %i < %windowSet.numWindows;
         %i = 0;
         while (%i < %windowSet.numWindows)
         {
@@ -294,42 +291,21 @@ function WindowManager::repositionWindows(%this, %windowSet)
                         %weight = $gWindowManagerSpacerWeight;
                     }
                 }
-                if (%totalWeight == 0)
-                {
-                }
-                else
-                {
-                }
-                %ratio = %weight / %totalWeight;
-                0;
-                if (%ratio > 0)
-                {
-                }
-                else
-                {
-                }
-                %height = getWord(%win.getExtent(), 1);
-                %ratio * %residualHeight;
+                %ratio = (%totalWeight == 0) ? 0 : (%weight / %totalWeight);
+                %height = (%ratio > 0) ? (%ratio * %residualHeight) : getWord(%win.getExtent(), 1);
                 %minHeight = getWord(%win.minExtent, 1);
-                if (%height < %minHeight)
-                {
-                }
-                else
-                {
-                }
-                %height[%i] = %minHeight @ %height;
+                %height[%i] = (%height < %minHeight) ? %minHeight : %height;
                 %ypos = %ypos + (%height[%i] + %padding);
             }
             %i = %i + 1;
         }
-        if ((%ypos > (getWord($UserPref::Video::Resolution, 1) - %windowSet.getFieldValue("bottomMargin"))) && !((%i < %windowSet.numWindows) @ " " @ %oldestWin $= ""))
+        if ((%ypos > (getWord($UserPref::Video::Resolution, 1) - %windowSet.getFieldValue("bottomMargin"))) && !(%oldestWin $= ""))
         {
             %recomputing = 1;
             %oldestWin.close();
         }
     }
     %ypos = %padding;
-    %recomputing;
     %i = 0;
     while (%i < %windowSet.numWindows)
     {
@@ -353,7 +329,7 @@ function WindowManager::repositionWindows(%this, %windowSet)
         }
         %i = %i + 1;
     }
-    %windowSet.bottom = (%i < %windowSet.numWindows) @ %ypos;
+    %windowSet.bottom = %ypos;
 }
 function WindowManager::update(%this)
 {

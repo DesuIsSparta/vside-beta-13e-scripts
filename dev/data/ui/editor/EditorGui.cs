@@ -1351,7 +1351,7 @@ function EditorGui::setEditor(%this, %editor)
 }
 function EditorGui::getHelpPage(%this)
 {
-    if ((%this.currentEditor $= "World Editor Inspector") || (%this.currentEditor $= "World Editor") || (%this.currentEditor $= "World Editor Creator"))
+    if ((%this.currentEditor $= "World Editor") || (%this.currentEditor $= "World Editor Inspector") || (%this.currentEditor $= "World Editor Creator"))
     {
         return "5. World Editor";
     }
@@ -1400,7 +1400,7 @@ function EPainterChangeMat(%file)
         }
         %i = %i + 1;
     }
-    EPainter.mat[EPainter.matIndex] = (%i < 6) @ %file;
+    EPainter.mat[EPainter.matIndex] = %file;
     %mats = "";
     %i = 0;
     while (%i < 6)
@@ -2033,7 +2033,6 @@ function WorldEditor::CloneTo(%this, %snapType)
         %i = %i + 1;
     }
     %i = 0;
-    %i < %selSize;
     while (%i < %selSize)
     {
         %this.clearSelection();
@@ -2048,7 +2047,6 @@ function WorldEditor::CloneTo(%this, %snapType)
     }
     %this.clearSelection();
     %i = 0;
-    %i < %selSize;
     while (%i < %selSize)
     {
         %this.selectObject(%newObjects[%i]);
@@ -2192,13 +2190,11 @@ function Creator::init(%this)
             %i = %i + 1;
         }
         %create = "createInterior(" @ "\"" @ %file @ "\"" @ ");";
-        %i < %dirCount;
         %this.insertItem(%parentId, fileBase(%file), %create, "Interior");
         %file = findNextFile("*.dif");
     }
     echo(" Creator::init  loading shapes");
     %base = %this.insertItem(0, "Shapes");
-    !(%file $= "");
     %dataGroup = "DataBlockGroup";
     %i = 0;
     while (%i < %dataGroup.getCount())
@@ -2219,7 +2215,6 @@ function Creator::init(%this)
     }
     echo(" Creator::init  loading static shapes");
     %base = %this.insertItem(0, "Static Shapes");
-    %i < %dataGroup.getCount();
     %staticId = "";
     %file = findFirstFile("*.dts");
     while (!(%file $= ""))
@@ -2239,12 +2234,10 @@ function Creator::init(%this)
             %i = %i + 1;
         }
         %create = "TSStatic::create(\"" @ %file @ "\");";
-        %i < %dirCount;
         %this.insertItem(%parentId, fileBase(%file), %create, "TSStatic");
         %file = findNextFile("*.dts");
     }
     %base = %this.insertItem(0, "Dynamic Shapes");
-    !(%file $= "");
     %dynamicID = "";
     %file = findFirstFile("*.dts");
     while (!(%file $= ""))
@@ -2264,11 +2257,10 @@ function Creator::init(%this)
             %i = %i + 1;
         }
         %create = "TSDynamic::create(\"" @ %file @ "\");";
-        %i < %dirCount;
         %this.insertItem(%parentId, fileBase(%file), %create, "TSDynamic");
         %file = findNextFile("*.dts");
     }
-    %file[%objGroup @ 0] = !(%file $= "") @ "Environment";
+    %file[%objGroup @ 0] = "Environment";
     %objGroup[1] = "Mission";
     %objGroup[2] = "System";
     %env_item_idx = -(1);
@@ -2339,7 +2331,6 @@ function Creator::init(%this)
             %j = %j + 1;
         }
         %i = %i + 1;
-        !%done;
     }
     echo(" Creator::init  finished");
 }
@@ -2547,7 +2538,6 @@ function TextureInit()
                 %op = %op + 1;
             }
             %row = %row + 1;
-            %op < %opCount;
         }
         texture::previewMaterial();
     }
@@ -2911,7 +2901,7 @@ function texture::saveOperation()
         %newData = %newData @ "\t" @ %obj @ "\t" @ %obj.getValue();
         %field = %field + 2;
     }
-    %dirty = !((%field < %fieldCount) @ " " @ %data $= %newData);
+    %dirty = !(%data $= %newData);
     %reg = getField(%data, 2);
     $dirtyTexture[%reg] = %dirty;
     Texture_operation.setRowById(%id, %newData);
@@ -2969,7 +2959,7 @@ function texture::save()
         %row = %row + 1;
     }
     Terrain.setTextureScript(%script);
-    ETerrainEditor.isDirty = (%row < %rowCount) @ 1;
+    ETerrainEditor.isDirty = 1;
 }
 function texture::import()
 {
@@ -2989,7 +2979,6 @@ function texture::loadFromScript(%script)
         %rec = getRecord(%script, %i = %i + 1);
     }
     $nextTextureRegister = 1000;
-    !(%rec $= "");
     %rowCount = Texture_material.rowCount();
     %row = 0;
     while (%row < %rowCount)
@@ -3017,12 +3006,10 @@ function texture::loadFromScript(%script)
             %op = %op + 1;
         }
         %id = Texture_material.getRowId(%row);
-        %op < %opCount;
         Texture_material.setRowById(%id, %data);
         %row = %row + 1;
     }
     $selectedMaterial = -(1);
-    %row < %rowCount;
     Texture_material.setSelectedById(Texture_material.getRowId(0));
 }
 function texture::doLoadTexture(%name)
@@ -3373,7 +3360,6 @@ function Heightfield::add(%entry)
     else
     {
         %entry = Heightfield_operation.rowCount() @ " " @ %entry;
-        %i < Heightfield_operation.rowCount();
         Heightfield_operation.addRow(%id, %entry);
     }
     %row = Heightfield_operation.getRowNumById(%id);
@@ -3408,7 +3394,6 @@ function Heightfield::onDelete(%id)
     if ($HeightfieldDirtyRow >= %row)
     {
         $HeightfieldDirtyRow = %row;
-        %i < Heightfield_operation.rowCount();
     }
     %rowCount = Heightfield_operation.rowCount() - 1;
     if (%row > %rowCount)
@@ -3468,7 +3453,7 @@ function Heightfield::saveTab()
         %newData = %newData @ "\t" @ %obj @ "\t" @ %obj.getValue();
         %field = %field + 2;
     }
-    if (!((%field < %fieldCount) @ " " @ %data $= %newData))
+    if (!(%data $= %newData))
     {
         %row = Heightfield_operation.getRowNumById($SelectedOperation);
         if ((%row <= $HeightfieldDirtyRow) && (%row > 0))
@@ -3555,7 +3540,7 @@ function Heightfield::save()
         %row = %row + 1;
     }
     Terrain.setHeightfieldScript(%script);
-    ETerrainEditor.isDirty = (%row < %rowCount) @ 1;
+    ETerrainEditor.isDirty = 1;
 }
 function Heightfield::import()
 {
@@ -3580,7 +3565,6 @@ function Heightfield::loadFromScript(%script, %leaveCamera)
         Heightfield::add("General\tTab_general\tgeneral_min_height\t50\tgeneral_scale\t300\tgeneral_water\t0.000\tgeneral_centerx\t0\tgeneral_centery\t0");
     }
     %data = restWords(Heightfield_operation.getRowText(0));
-    !(%rec $= "");
     %x = getField(%data, 7);
     %y = getField(%data, 9);
     HeightfieldPreview.setOrigin(%x, %y);
@@ -3874,39 +3858,11 @@ function EWorldEditor::updateGeneralInfo(%this, %optObj)
         %serverValid = 1;
         %clientID = "Not a net object! (assumed serverside)";
     }
-    if (%serverValid)
-    {
-    }
-    else
-    {
-    }
-    %serverText = %serverID;
-    %serverID.getDebugString();
-    if (%clientValid)
-    {
-    }
-    else
-    {
-    }
-    %clientText = %clientID;
-    %clientID.getDebugString();
+    %serverText = %serverValid ? %serverID.getDebugString() : %serverID;
+    %clientText = %clientValid ? %clientID.getDebugString() : %clientID;
     %text = %color @ "<linkcolor:775533><linkcolorhl:ddff00>";
-    if (%serverValid)
-    {
-    }
-    else
-    {
-    }
-    %text = %serverText @ -(1) @ ">" @ %serverText @ "</a>\n";
-    %text @ "<just:left>" @ "Server:<a:gamelink COPYTOCLIP ";
-    if (%clientValid)
-    {
-    }
-    else
-    {
-    }
-    %text = %clientText @ -(1) @ ">" @ %clientText @ "</a>";
-    %text @ "Client:  <a:gamelink COPYTOCLIP ";
+    %text = %text @ "<just:left>" @ "Server:<a:gamelink COPYTOCLIP " @ %serverValid ? %serverText : -(1) @ ">" @ %serverText @ "</a>\n";
+    %text = %text @ "Client:  <a:gamelink COPYTOCLIP " @ %clientValid ? %clientText : -(1) @ ">" @ %clientText @ "</a>";
     WorldEditorGeneralInfoMLText.setText(%text);
 }
 function WorldEditorGeneralInfoMLText::onUrl(%this, %url)

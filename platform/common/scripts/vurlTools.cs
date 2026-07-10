@@ -72,7 +72,7 @@ function vurl::parse(%this)
         %name = strlwr(%name);
         %this._[urlDecode(%name)] = %value;
     }
-    %this.isResolved = !(!(%parameters $= "") @ " " @ %this._server[0] $= "");
+    %this.isResolved = !(%this._server[0] $= "");
     if (%this.isResolved)
     {
         %this.reorderServerList();
@@ -104,7 +104,7 @@ function vurl::reconstructVURL(%this)
         %newVurl = %newVurl @ "server" @ %retryServer @ "=" @ urlEncode(%this._server[%retryServer]);
         %retryServer = %retryServer + 1;
     }
-    %this.vurl = !(%this._server[%retryServer] $= "") @ %newVurl;
+    %this.vurl = %newVurl;
     log("network", "debug", "Reconstructed VURL=\"" @ %this.vurl @ "\"");
     return 1;
 }
@@ -200,7 +200,7 @@ function vurl::execute(%this)
         %this.schedule(0, "delete");
         return 1;
     }
-    if ($StandAlone && (%this._server[%this.retryIndex] $= "") && !$StandAlone || !(%this.standAloneRetry $= ""))
+    if ((%this._server[%this.retryIndex] $= "") && !$StandAlone || $StandAlone && !(%this.standAloneRetry $= ""))
     {
         %this.doReportError("nomoreretry", "");
         return 0;
@@ -478,7 +478,7 @@ function vurl::reorderServerList(%this)
         }
         %idxSwapout = %idxSwapout + 1;
     }
-    if ((!(%this._server[%idxSwapout] $= "") @ " " @ %this._server[%idxSwapout] $= "") || (%idxSwapout == 0))
+    if ((%this._server[%idxSwapout] $= "") || (%idxSwapout == 0))
     {
         return;
     }
@@ -488,7 +488,7 @@ function vurl::reorderServerList(%this)
         %this._server[%idx] = %this._server[(%idx - 1)];
         %idx = %idx - 1;
     }
-    %this._server[0] = (%idx > 0) @ $ServerName;
+    %this._server[0] = $ServerName;
 }
 function vurlOperation(%line, %ignoreDownloadStatus)
 {

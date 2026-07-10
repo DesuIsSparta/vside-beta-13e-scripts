@@ -139,7 +139,6 @@ function getSuffixPos(%searchText, %suffix)
         %idx = strpos(%searchText, %suffix, (%idx + 1));
     }
     %idx = %last;
-    %idx >= 0;
     if ((%idx + strlen(%suffix)) != strlen(%searchText))
     {
         return -(1);
@@ -365,7 +364,6 @@ function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize)
             %idx = %idx + 1;
         }
         %currentList = getSubStr(%masterList, %segStart, (%lastGoodIdx - %segStart));
-        ((%idx = strpos(%masterList, %delimiter, %idx)) - %segStart) < %segmentSize;
         %idx = %lastGoodIdx + 1;
         if (!(%outString $= ""))
         {
@@ -408,7 +406,6 @@ function GuiControl::getChildrenInOrder(%this, %children)
         %i = %i + 1;
     }
     %ids = trim(%ids);
-    %i < %count;
     %toReturn = "";
     %count = %this.getCount();
     %i = 0;
@@ -471,44 +468,16 @@ function getExtension(%dry)
 {
     %wet = %dry;
     %wet = strrchr(%wet, "/");
-    if (%wet $= "")
-    {
-    }
-    else
-    {
-    }
-    %wet = %wet;
-    %dry;
+    %wet = (%wet $= "") ? %dry : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet, "?");
-    if (%wet $= "")
-    {
-    }
-    else
-    {
-    }
-    %wet = %wet;
-    %wet2;
+    %wet = (%wet $= "") ? %wet2 : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet, "&");
-    if (%wet $= "")
-    {
-    }
-    else
-    {
-    }
-    %wet = %wet;
-    %wet2;
+    %wet = (%wet $= "") ? %wet2 : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet, "=");
-    if (%wet $= "")
-    {
-    }
-    else
-    {
-    }
-    %wet = %wet;
-    %wet2;
+    %wet = (%wet $= "") ? %wet2 : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet2, ".");
     return %wet;

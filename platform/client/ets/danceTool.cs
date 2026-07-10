@@ -119,7 +119,7 @@ function danceTool::constructSequence(%this, %lines)
         }
         %n = %n + 1;
     }
-    %this.stepTimes[%this.numSteps] = (%n < %this.numSteps) @ %totalT;
+    %this.stepTimes[%this.numSteps] = %totalT;
     %this.stepNames[%this.numSteps] = "(finished)";
     %this.numSteps = %this.numSteps + 1;
 }
@@ -149,7 +149,6 @@ function danceTool::playNextStep(%this)
     else
     {
         %playStep = 0;
-        (%n < %this.numSteps) && !%tooFar;
     }
     if (%playStep >= (%this.numSteps - 1))
     {

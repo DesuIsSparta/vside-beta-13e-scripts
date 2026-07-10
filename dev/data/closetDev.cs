@@ -32,7 +32,6 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus)
         %n = %n - 1;
     }
     %skus = %skusBody @ " " @ %skusClothing;
-    %n >= 0;
     $gSnapping_SkuList = %skus;
     $gSnapping_CurIndex = 0;
     $gSnapping_MaxIndex = getWordCount($gSnapping_SkuList) - 1;

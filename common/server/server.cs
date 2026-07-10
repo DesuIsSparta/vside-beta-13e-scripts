@@ -9,7 +9,6 @@ function portInit(%port)
         %failCount = %failCount + 1;
     }
     $Net::BoundPort = %port;
-    !setNetPort(%port);
     return %failCount;
 }
 function createServer(%serverType, %mission)
@@ -66,7 +65,6 @@ function destroyServer()
         %client.delete();
     }
     $Server::GuidList = "";
-    ClientGroup.getCount();
     deleteDataBlocks();
     purgeResources();
     return;
@@ -91,14 +89,7 @@ function addToServerGuidList(%guid)
         }
         %i = %i + 1;
     }
-    if ((%i < %count) @ " " @ $Server::GuidList $= "")
-    {
-    }
-    else
-    {
-    }
-    $Server::GuidList = $Server::GuidList;
-    %guid;
+    $Server::GuidList = ($Server::GuidList $= "") ? %guid : $Server::GuidList;
     return;
 }
 function removeFromServerGuidList(%guid)

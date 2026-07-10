@@ -106,7 +106,7 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese)
         }
         %n = %n + 1;
     }
-    if ((%n < $gDestinationAdsNum) @ " " @ %candidates $= "")
+    if (%candidates $= "")
     {
         error("Unable to find any candidates for filter \"" @ %filter @ "\"." @ " " @ getTrace());
         return "";

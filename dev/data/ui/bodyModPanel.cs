@@ -295,7 +295,6 @@ function bodyModPanel::open(%this)
         %realCol = 0;
     }
     %n = bodyModPanelArray.getCount() - 1;
-    %col < %cells;
     while (%n >= 0)
     {
         %ctrl = bodyModPanelArray.getObject(%n);

@@ -26,7 +26,7 @@ function clientCmdServerMessage(%msgType, %msgString)
             %i = %i + 1;
         }
     }
-    if (!((!((%func = %defFuncList.func[%i]) $= "") @ " " @ %tag) $= ""))
+    if (!(%tag $= ""))
     {
         %funcList = MessageFuncDict.get(%tag);
         if (isObject(%funcList))
@@ -50,7 +50,7 @@ function addMessageCallback(%msgType, %func)
         {
             %i = %i + 1;
         }
-        %m.func[%i] = !(%m.func[%i] $= "") @ %func;
+        %m.func[%i] = %func;
     }
     else
     {

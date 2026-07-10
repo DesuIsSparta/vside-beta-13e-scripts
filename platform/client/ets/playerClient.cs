@@ -165,14 +165,7 @@ function Player::staggerTick(%this)
     if ((%fwdVel != 0) || (%sdeVel != 0))
     {
         %amt = getRandom(0, ($gPlayerStaggerAmount * 1000)) * 0.001;
-        if (getRandom(0, 1))
-        {
-        }
-        else
-        {
-        }
-        %amt = %amt * 1;
-        -(1);
+        %amt = %amt * getRandom(0, 1) ? -(1) : 1;
     }
     else
     {

@@ -1739,7 +1739,7 @@ function OptionsPanel::open(%this)
     %this.readSettings();
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
-    if ($player.rolesPermissionCheckNoWarn("quietHUD") || $player && $player.rolesPermissionCheckNoWarn("farNameOpacity"))
+    if ($player && $player.rolesPermissionCheckNoWarn("quietHUD") || $player.rolesPermissionCheckNoWarn("farNameOpacity"))
     {
         OptionsPanelTabs.showTabWithName("vip");
     }
@@ -1881,7 +1881,6 @@ function persistOptionsPanelSettingsToManager()
         %i = %i - 1;
     }
     $OptionsPanel::scheduledPersistID = 0;
-    %i >= 0;
     legacyPersistOptionsPanelSettingsToManager();
 }
 function LegacySaveSettingsRequest::onDone(%this)
@@ -2159,7 +2158,6 @@ function updateHudTabsHiding()
         %i = %i + 1;
     }
     %currentTab = HudTabs.getCurrentTab();
-    %i < HudTabs.numTabs;
     if (%currentTab $= "")
     {
     }

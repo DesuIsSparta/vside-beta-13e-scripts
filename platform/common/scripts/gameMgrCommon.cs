@@ -23,7 +23,6 @@ if (isObject(MissionCleanup))
     }
 }
 $gameMgr::InspectTab::MAX_PLAYERS = 10;
-%n < $gameMgr::GAME_TYPES_COUNT;
 $gameMgr::MAX_SCORE_DIGITS = 6;
 $gameMgr::ListColors::CANT_START = ColorIToHex("255 0 0");
 $gameMgr::ListColors::WAITING = ColorIToHex("127 200 220");

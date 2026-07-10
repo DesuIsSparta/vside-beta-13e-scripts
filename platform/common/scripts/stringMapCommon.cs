@@ -36,7 +36,6 @@ function StringMap::saveTo(%this, %fileName)
         }
         %file.close();
         %ret = 1;
-        %n < %this.size();
     }
     else
     {
@@ -66,7 +65,6 @@ function StringMap::loadFrom(%this, %fileName, %errorLogLevel)
         }
         %file.close();
         %ret = 1;
-        !%file.isEOF();
     }
     else
     {

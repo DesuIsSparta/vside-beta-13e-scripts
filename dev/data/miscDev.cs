@@ -23,6 +23,5 @@ function dumpOverlap(%group)
             %m = %m + 1;
         }
         %n = %n + 1;
-        %m < %num;
     }
 }

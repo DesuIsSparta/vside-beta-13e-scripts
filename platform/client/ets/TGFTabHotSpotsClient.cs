@@ -169,7 +169,6 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request)
     }
     geTGF.removeItemsWithFieldValueFromList("hotspots", "happening", "hostUserName", "The-Manager");
     %itemList = geTGF.getItemList("hotspots", "happening");
-    %n < %count;
     %count = %itemList.count();
     geTGF_HotSpotsDataTable.removeRowsByIndex(0, geTGF_HotSpotsDataTable.getRowCount());
     geTGF_HotSpotsDataTable.addRows(%count);

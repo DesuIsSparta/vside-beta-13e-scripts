@@ -29,13 +29,7 @@ function afxGetSelectedAvatar()
 }
 function afxGetSelectedAvatarGhost()
 {
-    if ($gAfxSelectedAvatar != -(1))
-    {
-    }
-    else
-    {
-    }
-    return -(1);
+    return ($gAfxSelectedAvatar != -(1)) ? ServerConnection.GetGhostIndex($gAfxSelectedAvatar) : -(1);
 }
 function afxSelectAvatarByName(%name)
 {

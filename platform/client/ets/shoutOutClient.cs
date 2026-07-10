@@ -216,25 +216,13 @@ function geShoutout_Credential_Twitter_Username_Save::onClick(%this)
 {
     %save = %this.getValue();
     gUserPropMgrClient.setProperty($Player::Name, "twitter_un_save", %save);
-    if (%save)
-    {
-    }
-    else
-    {
-    }
-    gUserPropMgrClient.setProperty($Player::Name, "twitter_un", geShoutout_Credential_Twitter_Username.getText(), "");
+    gUserPropMgrClient.setProperty($Player::Name, "twitter_un", %save ? geShoutout_Credential_Twitter_Username.getText() : "");
 }
 function geShoutout_Credential_Twitter_Password_Save::onClick(%this)
 {
     %save = %this.getValue();
     gUserPropMgrClient.setProperty($Player::Name, "twitter_pw_save", %save);
-    if (%save)
-    {
-    }
-    else
-    {
-    }
-    gUserPropMgrClient.setProperty($Player::Name, "twitter_pw", geShoutout_Credential_Twitter_Password.getText(), "");
+    gUserPropMgrClient.setProperty($Player::Name, "twitter_pw", %save ? geShoutout_Credential_Twitter_Password.getText() : "");
 }
 function geShoutout_Snapshot_SendButton::onClick(%this)
 {
@@ -534,14 +522,7 @@ function onDoneOrErrorCallback_Twitter_statuses_update(%request)
     else
     {
         shoutOut_SetStatus("");
-        if (isObject(%xmlRoot))
-        {
-        }
-        else
-        {
-        }
-        %twitterErr = "(could not connect)";
-        %xmlRoot.getFirstChild("error").getText();
+        %twitterErr = isObject(%xmlRoot) ? %xmlRoot.getFirstChild("error").getText() : "(could not connect)";
         %yesCmd = "shoutOut_action_sendTweet();";
         %noCmd = "";
         MessageBoxYesNo("Problem with twitter", "Hmm, something went wrong.<br>Twitter says: \"" @ %twitterErr @ "\"<br>Would you like to re-send ?", %yesCmd, %noCmd);

@@ -386,14 +386,7 @@ function turnLeft(%val)
     {
         setIdle(0);
     }
-    if (%val)
-    {
-    }
-    else
-    {
-    }
-    $mvYawRightSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
+    $mvYawRightSpeed = %val ? $Pref::Input::KeyboardTurnSpeed : 0;
     $mvYawRightSpeedBase = $mvYawRightSpeed;
 }
 function turnRight(%val)
@@ -403,14 +396,7 @@ function turnRight(%val)
     {
         setIdle(0);
     }
-    if (%val)
-    {
-    }
-    else
-    {
-    }
-    $mvYawLeftSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
+    $mvYawLeftSpeed = %val ? $Pref::Input::KeyboardTurnSpeed : 0;
     $mvYawLeftSpeedBase = $mvYawLeftSpeed;
 }
 function panUp(%val)
@@ -419,14 +405,7 @@ function panUp(%val)
     {
         setIdle(0);
     }
-    if (%val)
-    {
-    }
-    else
-    {
-    }
-    $mvPitchDownSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
+    $mvPitchDownSpeed = %val ? $Pref::Input::KeyboardTurnSpeed : 0;
 }
 function panDown(%val)
 {
@@ -434,14 +413,7 @@ function panDown(%val)
     {
         setIdle(0);
     }
-    if (%val)
-    {
-    }
-    else
-    {
-    }
-    $mvPitchUpSpeed = 0;
-    $Pref::Input::KeyboardTurnSpeed;
+    $mvPitchUpSpeed = %val ? $Pref::Input::KeyboardTurnSpeed : 0;
 }
 function getMouseAdjustAmount(%val)
 {

@@ -64,19 +64,11 @@ function DFDebugRefresh()
         %n = %n + 1;
     }
     $gDFDebugCurrAdvert = "-";
-    %n < %num;
     DFDebugUpdateGuiStatus();
 }
 function DFDebugUpdateGuiStatus()
 {
-    if (($gDFDebugCurrAdvert < 1) && ($gDFDebugAdvertsList.size() > 0))
-    {
-    }
-    else
-    {
-    }
-    %obj = $gDFDebugAdvertsList.get(($gDFDebugCurrAdvert - 1));
-    "";
+    %obj = ($gDFDebugCurrAdvert < 1) && ($gDFDebugAdvertsList.size() > 0) ? "" : $gDFDebugAdvertsList.get(($gDFDebugCurrAdvert - 1));
     %objText = "";
     if (isObject(%obj))
     {

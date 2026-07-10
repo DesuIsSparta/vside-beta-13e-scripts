@@ -99,28 +99,28 @@ function JoinRequest::onDone(%this)
         %this.buddy[%n),%n] = %this.getValue("favorite";
         %n = %n + 1;
     }
-    %this.ignoreCount = (%n <= %this.buddyCount) @ %this.getValue("numIgnores");
+    %this.ignoreCount = %this.getValue("numIgnores");
     %n = 1;
     while (%n <= %this.ignoreCount)
     {
         %this.ignore[%n),%n] = %this.getValue("ignore";
         %n = %n + 1;
     }
-    %this.onBuddyCount = (%n <= %this.ignoreCount) @ %this.getValue("numOnFavorites");
+    %this.onBuddyCount = %this.getValue("numOnFavorites");
     %n = 1;
     while (%n <= %this.onBuddyCount)
     {
         %this.onBuddy[%n),%n] = %this.getValue("onFavorite";
         %n = %n + 1;
     }
-    %this.onIgnoreCount = (%n <= %this.onBuddyCount) @ %this.getValue("numOnIgnores");
+    %this.onIgnoreCount = %this.getValue("numOnIgnores");
     %n = 1;
     while (%n <= %this.onIgnoreCount)
     {
         %this.onIgnore[%n),%n] = %this.getValue("onIgnore";
         %n = %n + 1;
     }
-    %this.registeredName = (%n <= %this.onIgnoreCount) @ %this.getValue("registered_user");
+    %this.registeredName = %this.getValue("registered_user");
     %this.curOutfitSkus["m"] = %this.getValue("cur_outfit_skus_m");
     log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"m\"] = " @ %this.curOutfitSkus["m"]);
     %this.curOutfitSkus["f"] = %this.getValue("cur_outfit_skus_f");

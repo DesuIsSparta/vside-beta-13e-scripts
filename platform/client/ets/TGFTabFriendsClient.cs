@@ -152,7 +152,6 @@ function geTGF_OnGotDoneOrError_GetOnlineFriends(%request)
         %n = %n + 1;
     }
     %itemList = geTGF.getItemList("friends", "person");
-    %n < %count;
     %count = %itemList.count();
     geTGF_FriendsDataTable.removeRowsByIndex(0, geTGF_FriendsDataTable.getRowCount());
     geTGF_FriendsDataTable.addRows(%count);
@@ -177,7 +176,6 @@ function geTGF_OnGotDoneOrError_GetOnlineFriends(%request)
     }
     geTGF_FriendsDataTable.updateListeners();
     %n = 0;
-    %n < %count;
     while (%n < %count)
     {
         %item = %itemList.getValue(%n);

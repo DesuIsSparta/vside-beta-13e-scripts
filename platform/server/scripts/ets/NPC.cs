@@ -351,7 +351,7 @@ function NPCManager::think(%this)
         %n = %n + 1;
     }
     %this.schedule(%this.thinkPeriod, think);
-    return %n < %NPCNum;
+    return;
 }
 function NPCManager::thinkNPC(%this, %npc)
 {
@@ -393,7 +393,6 @@ function NPCManager::dumpEts(%this)
             %animN = %animN + 1;
         }
         %setN = %setN + 1;
-        %animN < %animsNum;
     }
 }
 function NPCManager::handleTalkedToNPC(%this, %unused, %npc, %unused)

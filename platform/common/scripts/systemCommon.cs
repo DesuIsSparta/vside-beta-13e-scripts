@@ -65,7 +65,6 @@ function System::getClassInstanceCounts(%obj)
         %n = %n - 1;
     }
     %ret = %ret @ "Total objects =" @ " " @ $SystemMetric::totalObjectCount @ "\n" @ "";
-    %n >= 0;
     return %ret;
 }
 function System::dumpClassInstanceCounts(%obj)
@@ -117,7 +116,7 @@ function System::dumpObjectsRecurse(%obj, %depth)
     warn(%indent @ getDebugString(%obj));
     if (!%obj.isClassSimGroup())
     {
-        return %n > 0;
+        return;
     }
     if (%depth >= $Pref::System::dumpMetricsMaxRecurseDepth)
     {
@@ -212,7 +211,6 @@ function System::calculateLoginMetrics()
     }
     warn("current users finish");
     $SystemMetric::clientCount = $SystemMetric::userCountIdle + $SystemMetric::userCountNonIdle;
-    %n >= 0;
     $SystemMetric::uniqueLoginCount = $SystemMetric::loginLog.size();
     $SystemMetric::connectsMinusDisconnects = $SystemMetric::connectCount - $SystemMetric::disconnectCount;
     $SystemMetric::connectsMinusGameEntries = $SystemMetric::connectCount - $SystemMetric::enteredGameCount;
@@ -446,7 +444,6 @@ function dumpClassInstances(%simGroup)
         %n = %n + 1;
     }
     %line = formatString("%-40s", "Total object instances:") @ formatInt("%5d", %total);
-    %n < %container.numClasses;
     echo(%line);
     %container.delete();
 }
@@ -466,20 +463,12 @@ function compileClassInstances(%obj, %container)
     if (%found == -(1))
     {
         %found = %container.numClasses;
-        (%n < %container.numClasses) && (%found == -(1));
         %container.numClasses = %container.numClasses + 1;
         %container.instanceCounts[%found,"class"] = %classname;
     }
     %curr = %container.instanceCounts["count"];
     %found;
-    if (%curr $= "")
-    {
-    }
-    else
-    {
-    }
-    %curr = %curr;
-    0;
+    %curr = (%curr $= "") ? 0 : %curr;
     %container.instanceCounts[%found,"count"] = %curr + 1;
     if (%obj.isClassSimGroup())
     {

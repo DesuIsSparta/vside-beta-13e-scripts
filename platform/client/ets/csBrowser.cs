@@ -151,7 +151,7 @@ function CSBrowser::clearEmptyCategoriesAt(%this, %node)
         %this.clearEmptyCategoriesAt(%node.getObject(%i));
         %i = %i - 1;
     }
-    if ((%node.getCount() == 0) && ((%i >= 0) @ " " @ %node.sku $= ""))
+    if ((%node.getCount() == 0) && (%node.sku $= ""))
     {
         %this.deleteNode(%node);
     }
@@ -184,7 +184,7 @@ function CSBrowser::goToPath(%this, %path, %focus)
     }
     if ((%this.level == 1) && !%this.otherBrowsersVisible())
     {
-        %this.button[0].command = (%i < %count) @ %this.getId() @ ".switchToOtherBrowser();";
+        %this.button[0].command = %this.getId() @ ".switchToOtherBrowser();";
         %this.button[0].setActive(1);
     }
 }
@@ -262,13 +262,7 @@ function CSBrowserNextPrevLink::onURL(%this, %url)
     {
         return;
     }
-    if (%dir $= "prev")
-    {
-    }
-    else
-    {
-    }
-    %this.browser.selectNextLeaf(-(1), 1, 0);
+    %this.browser.selectNextLeaf((%dir $= "prev") ? -(1) : 1, 0);
 }
 function CSBrowser::fillLeafPane(%this, %pane)
 {
@@ -365,7 +359,7 @@ function CSBrowser::ShowMoreFor(%this, %sku)
         }
         %i = %i + 1;
     }
-    %this.showMoreInfo = (%i < %count) @ 1;
+    %this.showMoreInfo = 1;
     %this.goToPath(%pathToUse);
 }
 function CSBrowser::isNodeExpanded(%this, %path)

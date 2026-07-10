@@ -36,7 +36,6 @@ function DancePadGui::fillDanceButtonOptions(%this)
         }
         %theList.sort();
         %sel = getRandom(1, (%num - 1));
-        %n < %num;
         %theList.SetSelected(%sel);
         if ($UserPref::DancePad::dancePadSeen == 0)
         {
@@ -48,7 +47,6 @@ function DancePadGui::fillDanceButtonOptions(%this)
     if ($UserPref::DancePad::dancePadSeen == 0)
     {
         $UserPref::DancePad::dancePadSeen = 1;
-        %listNum <= %numlists;
         return;
     }
     danceButton1List.SetSelected($UserPref::DancePad::Button1);

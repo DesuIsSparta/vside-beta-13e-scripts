@@ -292,15 +292,12 @@ function paperDoll_generateXML()
                 }
                 %file.writeCloseTag("Value");
                 %valueNum = %valueNum + 1;
-                %skunum < getWordCount(%valueSkus);
             }
             %file.writeCloseTag("Param");
             %paramNum = %paramNum + 1;
-            %valueNum < paperDoll_getParamValuesNum(%gender, %paramNum);
         }
         %file.writeCloseTag("Gender");
         %n = %n + 1;
-        %paramNum < paperDoll_getParamsNum(%gender);
     }
     %file.writeCloseTag("Permutations");
     %file.close();
@@ -384,7 +381,6 @@ function paperDoll_generateJSON()
                     %file.writeLineIndented("},");
                 }
                 %valueNum = %valueNum + 1;
-                %skunum < getWordCount(%valueSkus);
             }
             %file.unindent();
             %file.writeLineIndented("]");
@@ -398,7 +394,6 @@ function paperDoll_generateJSON()
                 %file.writeLineIndented("},");
             }
             %paramNum = %paramNum + 1;
-            %valueNum < paperDoll_getParamValuesNum(%gender, %paramNum);
         }
         %file.unindent();
         %file.writeLineIndented("]");
@@ -412,7 +407,6 @@ function paperDoll_generateJSON()
             %file.writeLineIndented("},");
         }
         %n = %n + 1;
-        %paramNum < paperDoll_getParamsNum(%gender);
     }
     %file.unindent();
     %file.writeLineIndented("]");

@@ -103,7 +103,6 @@ function testFlooding(%player, %eventType, %testExempt)
         if ($floodFilter::penalty[%eventType] > 0)
         {
             %erNew = (getSimTime() + $floodFilter::penalty[%eventType]) @ " " @ %erNew;
-            %n >= 0;
         }
         %player.eventRecord[%eventType] = %erNew;
         return 1;

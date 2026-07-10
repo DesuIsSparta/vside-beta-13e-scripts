@@ -65,14 +65,7 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
     error("// oxe 20090219 - todo - decide if this is good or if we want a new one");
     %acceptModeStrangers = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionStrangers];
     %acceptModeFriends = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionFriends];
-    if (%otherPlayer.isFriend())
-    {
-    }
-    else
-    {
-    }
-    %acceptMode = %acceptModeStrangers;
-    %acceptModeFriends;
+    %acceptMode = %otherPlayer.isFriend() ? %acceptModeFriends : %acceptModeStrangers;
     if (%acceptMode $= "accept")
     {
         giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 1, %making);

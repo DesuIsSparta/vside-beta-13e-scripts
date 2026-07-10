@@ -38,7 +38,7 @@ function ratingControl::buildButtons(%this)
         %i = %i + 1;
     }
     %this.eventCatcher = new GuiMouseEventCtrl("") {
-        profile = (%i < %this.gradations) @ "GuiDefaultProfile";
+        profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "0 0";

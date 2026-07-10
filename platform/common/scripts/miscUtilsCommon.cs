@@ -12,7 +12,6 @@ function SimSet::sortByInternalName(%this, %recurse)
         %n = %n - 1;
     }
     %chilluns = SortRecords(%chilluns);
-    %n >= 0;
     %n = getRecordCount(%chilluns) - 1;
     while (%n >= 0)
     {
@@ -23,7 +22,6 @@ function SimSet::sortByInternalName(%this, %recurse)
     if (%recurse)
     {
         %n = %this.getCount() - 1;
-        %n >= 0;
         while (%n >= 0)
         {
             %obj = %this.getObject(%n);

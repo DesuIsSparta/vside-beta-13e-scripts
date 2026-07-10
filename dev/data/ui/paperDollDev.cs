@@ -18,7 +18,6 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName)
     if (%found == -(1))
     {
         %found = new_ScriptArray("");
-        (%found == -(1)) && (%n >= 0);
         %found.name = %listName;
         %masterList.append(%found);
     }
@@ -51,7 +50,6 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName)
         %n = %n + 1;
     }
     %skus = trim(%skus);
-    %n < %num;
     %found.append(%skus @ "\t" @ %skusName);
 }
 $gPaperDoll_Initialized = 0;
@@ -136,7 +134,6 @@ function paperDoll_InitPermutations()
             }
         }
         %n = getWordCount(%unseenTokens) - 1;
-        !%fo.isEOF();
         while (%n >= 0)
         {
             error(getScopeName() @ " " @ "- unseen command:" @ " " @ getWord(%unseenTokens, %n));
@@ -237,6 +234,5 @@ function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList)
         %n = %n + 1;
     }
     %skus = trim(%skus);
-    %n < %num;
     return %fileName @ "\t" @ %skus;
 }

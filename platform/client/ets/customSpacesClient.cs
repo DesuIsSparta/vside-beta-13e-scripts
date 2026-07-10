@@ -166,13 +166,7 @@ function CustomSpacesClient::setMap2DText()
     else
     {
     }
-    if ($CSSpaceInfo.name @ $CSSpaceInfo.owner @ "\n\tBuilding:\t" @ " " @ Buildings::GetDescription($CSBuildingName) $= "")
-    {
-    }
-    else
-    {
-    }
-    geLocalMapContainer.setMap2DForCustomSpacesMode("<color:ffffff><just:center><b>" @ TryFixBadWords($CSSpaceInfo.description), $CSBuildingName @ Buildings::GetDescription($CSBuildingName) @ "\n\tCity:\t" @ getContiguousSpaceFullName(Buildings::GetContiguousSpace($CSBuildingName)));
+    geLocalMapContainer.setMap2DForCustomSpacesMode("<color:ffffff><just:center><b>" @ TryFixBadWords($CSSpaceInfo.description), ($CSSpaceInfo.name @ $CSSpaceInfo.owner @ "\n\tBuilding:\t" @ " " @ Buildings::GetDescription($CSBuildingName) $= "") ? $CSBuildingName : Buildings::GetDescription($CSBuildingName) @ "\n\tCity:\t" @ getContiguousSpaceFullName(Buildings::GetContiguousSpace($CSBuildingName)));
 }
 $CSSpaceOwner = 0;
 function CustomSpaceClient::SetUpOwnership(%isOwner)
@@ -780,7 +774,7 @@ function onDoneOrErrorCallback_GetCustomSpaceInfo(%request, %result)
             %m = %m + 1;
         }
         %request.copyListValuesIntoMap(%map, %listItemNameBase, %fields);
-        %map.URI = (%m < %map.get("banCount")) @ vurlClearResolution(%map.URI);
+        %map.URI = vurlClearResolution(%map.URI);
         %tracker.add(%map);
         %n = %n + 1;
     }
@@ -788,7 +782,7 @@ function onDoneOrErrorCallback_GetCustomSpaceInfo(%request, %result)
     {
         CSSpaceModelAptText.update();
     }
-    if (!((%n < %numSpaces) @ " " @ %tracker.onCompleteFN $= ""))
+    if (!(%tracker.onCompleteFN $= ""))
     {
         call(%tracker.onCompleteFN, %tracker);
     }
@@ -929,7 +923,7 @@ function GetBuildingInfo::onDone(%this)
         log("network", "debug", "Got building info for \"" @ %buildingInfo.name @ "\" with " @ %buildingInfo.floorPlanCount @ " floor plans");
         if (isObject(%this.tracker))
         {
-            %this.tracker.buildingInfo = (%idx < %buildingInfo.floorPlanCount) @ %buildingInfo;
+            %this.tracker.buildingInfo = %buildingInfo;
             %this.tracker.doneBuildingInfo = 1;
         }
         log("network", "warn", "%this.tracker is not an object.");
@@ -1061,14 +1055,14 @@ function GetSpaceInfo::onDone(%this)
                 }
                 %k = %k + 1;
             }
-            %space.blockedList = (%k < %banCount) @ trim(%space.blockedList);
+            %space.blockedList = trim(%space.blockedList);
             %this.tracker.spaces.add(%space);
             %idx = %idx + 1;
         }
     }
     if (isObject(%this.tracker))
     {
-        %this.tracker.doneCSList = (%idx < %this.tracker.spaceCount) @ 1;
+        %this.tracker.doneCSList = 1;
         checkDoneBuildingDirectory(%this.tracker);
     }
     %this.schedule(0, "delete");
@@ -1203,14 +1197,7 @@ function clientCmdCSLayoutSelected(%unused, %audioStream, %videoStream)
 {
     refreshActiveFurniture();
     CSFurnitureMover.SelectNuggetID(-(1));
-    if (%videoStream $= "")
-    {
-    }
-    else
-    {
-    }
-    %envMgrVideoStr = %videoStream;
-    "no-video";
+    %envMgrVideoStr = (%videoStream $= "") ? "no-video" : %videoStream;
     CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", "", "", %audioStream, %envMgrVideoStr);
 }
 function csCopyLayoutFromTo(%from, %to)

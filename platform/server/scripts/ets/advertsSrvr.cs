@@ -165,7 +165,6 @@ function AdGroup::doSwap(%this)
             %dn = %dn + 1;
         }
         %gn = %gn + 1;
-        %dn < %dtsNum;
     }
     return %numAds;
 }

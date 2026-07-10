@@ -168,7 +168,6 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl)
         %n = %n + 1;
     }
     %p1 = "0 0 0";
-    %n < %numPts;
     %p2 = VectorAdd(%p1, %camVec);
     %pA = intersectPlaneLine("0 0 0", "0 0 1", %p1, %p2);
     %p1 = VectorAdd(%p1, "0 0 1");

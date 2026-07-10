@@ -72,7 +72,7 @@ function ClosetTabs::fillClosetTab(%this)
         %n = %n + 1;
     }
     %brandLabel = new GuiTextCtrl("") {
-        profile = (%n < getFieldCount(%categoryList)) @ "ClosetTitleProfile";
+        profile = "ClosetTitleProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "27 64";
@@ -280,7 +280,7 @@ function ClosetTabs::fillClosetTab(%this)
     }
     %theTab.add(%myOutfitsFrame);
     %whatYoureWearingContainer = new GuiControl(ClosetWhatYourWearingContainer) {
-        profile = (%i < $gClosetNumOutfits) @ "ETSNonModalProfile";
+        profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "689 207";
@@ -397,14 +397,7 @@ function ClosetOutfitButton::onMouseDragged(%this, %modifier)
     {
         return 0;
     }
-    if ($Platform $= "macos")
-    {
-    }
-    else
-    {
-    }
-    %mask = $EventModifier::CTRL;
-    $EventModifier::ALT;
+    %mask = ($Platform $= "macos") ? $EventModifier::ALT : $EventModifier::CTRL;
     %this.operation = (%modifier & %mask) ? "COPY" : "SWAP";
     %this.setAsDragControl(1);
     return 1;
@@ -485,7 +478,7 @@ function ClosetOutfitButton::onDragSet(%this)
         %i = %i + 1;
     }
     Canvas.centerDragHiliteAroundCursor();
-    %this.clone.mouseOver = isObject(%button = ClosetTabs.getOutfitButton(%i)) @ 1;
+    %this.clone.mouseOver = 1;
 }
 function ClosetOutfitButton::onDragReleased(%this)
 {
@@ -570,7 +563,6 @@ function ClosetItemPopup::update(%this, %skus)
             %n = %n + 1;
         }
         %newList = trim(%newList);
-        %n < getFieldCount(%this.possibleCategoryList);
         if (%newList $= %this.displayedCategoryList)
         {
             return;
@@ -590,7 +582,6 @@ function ClosetItemPopup::update(%this, %skus)
         %n = %n + 1;
     }
     %newSel = %this.findText(%prevSelText);
-    %n < getFieldCount(%newList);
     if (%newSel < 0)
     {
         %this.SetSelected(0);
@@ -606,13 +597,7 @@ function ClosetItemPopup::update(%this, %skus)
             }
             %brandString = " " @ ClosetBrandPopup.getText() @ " " @ "brand";
         }
-        if (firstWord(%prevSelText) $= "All")
-        {
-        }
-        else
-        {
-        }
-        %categoryString = strlwr(restWords(%prevSelText), %prevSelText);
+        %categoryString = strlwr((firstWord(%prevSelText) $= "All") ? restWords(%prevSelText) : %prevSelText);
         if (%categoryString $= "")
         {
             %categoryString = "clothes";
@@ -755,18 +740,12 @@ function ClosetWhatYoureWearingList::onCreatedChild(%this, %child)
         bitmap = "";
         modulationColor = "255 255 255 100";
     };
-    if (%currentTabName $= "MY DESIGNS")
-    {
-    }
-    else
-    {
-    }
     %authorText = new GuiMLTextCtrl("") {
         profile = "ClosetSmallLinkProfile";
         horizSizing = "right";
         vertSizing = "bottom";
         position = "80 18";
-        extent = 18 @ (146 - 0) @ " " @ 15;
+        extent = (146 - (%currentTabName $= "MY DESIGNS") ? 18 : 0) @ " " @ 15;
     };
     %child.add(%background);
     %child.add(%hilite);
@@ -899,7 +878,7 @@ function ClosetWhatYoureWearingList::setSkus(%this, %skus)
         %this.addSku(getWord(%skus, %i));
         %i = %i + 1;
     }
-    %this.skus = (%i < %count) @ %skus;
+    %this.skus = %skus;
 }
 function ClosetWhatYoureWearingList::refresh(%this, %skus)
 {

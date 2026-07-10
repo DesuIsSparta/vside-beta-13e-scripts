@@ -41,14 +41,7 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
 function ManagerRequest::checkSuccess(%this)
 {
     %status = findRequestStatus(%this);
-    if (%this.hasKey("statusMsg"))
-    {
-    }
-    else
-    {
-    }
-    %statusMsg = "(unknown)";
-    %this.getValue("statusMsg");
+    %statusMsg = %this.hasKey("statusMsg") ? %this.getValue("statusMsg") : "(unknown)";
     log("network", "debug", getScopeName(1) @ " " @ "- status =" @ " " @ %status @ " " @ "statusMsg =" @ " " @ %statusMsg @ " " @ "url =" @ " " @ %this.getURL());
     if (!(%status $= "success"))
     {

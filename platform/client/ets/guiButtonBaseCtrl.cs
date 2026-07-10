@@ -15,13 +15,7 @@ function GuiButtonBaseCtrl::onMouseDown(%this, %modifier, %point, %clickCount)
             }
             if (%this.tickPeriodMS < $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions)
             {
-                if (getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "")
-                {
-                }
-                else
-                {
-                }
-                warn(%this.getId() @ %this.getName() @ " " @ "has invalid tickPeriodMS=" @ %this.tickPeriodMS @ ", changing value to" @ " " @ $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions @ " " @ "ms");
+                warn((getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "") ? %this.getId() : %this.getName() @ " " @ "has invalid tickPeriodMS=" @ %this.tickPeriodMS @ ", changing value to" @ " " @ $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions @ " " @ "ms");
                 %this.tickPeriodMS = $gGuiButtonBaseCtrl_MinimumIntervalBetweenEventRepetitions;
             }
         }
@@ -40,13 +34,7 @@ function GuiButtonBaseCtrl::onMouseDown(%this, %modifier, %point, %clickCount)
             }
             if (%this.repeatDelayMS < %this.tickPeriodMS)
             {
-                if (getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "")
-                {
-                }
-                else
-                {
-                }
-                warn(%this.getId() @ %this.getName() @ " " @ "has invalid repeatDelayMS=" @ %this.repeatDelayMS @ ", changing value to" @ " " @ %this.tickPeriodMS @ " " @ "ms (tickPeriodMS)");
+                warn((getScopeName() @ " " @ "- button" @ " " @ " " @ %this.getName() $= "") ? %this.getId() : %this.getName() @ " " @ "has invalid repeatDelayMS=" @ %this.repeatDelayMS @ ", changing value to" @ " " @ %this.tickPeriodMS @ " " @ "ms (tickPeriodMS)");
                 %this.repeatDelayMS = %this.tickPeriodMS;
             }
         }

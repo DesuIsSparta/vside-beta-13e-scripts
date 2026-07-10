@@ -22,22 +22,8 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
         error(getScopeName() @ " " @ "- not initialized for" @ " " @ %userName @ " " @ getTrace());
         return;
     }
-    if (%propertyValue $= "false")
-    {
-    }
-    else
-    {
-    }
-    %propertyValue = %propertyValue;
-    0;
-    if (%propertyValue $= "true")
-    {
-    }
-    else
-    {
-    }
-    %propertyValue = %propertyValue;
-    1;
+    %propertyValue = (%propertyValue $= "false") ? 0 : %propertyValue;
+    %propertyValue = (%propertyValue $= "true") ? 1 : %propertyValue;
     if (%smValue.hasKey(%propertyName) && (%smValue.get(%propertyName) $= %propertyValue))
     {
         return;
@@ -218,7 +204,7 @@ function userPropertiesMgr::requestProperties(%this, %userName, %callback)
         echo(getScopeName() @ " " @ "- standalone! loaded from" @ " " @ %fileName);
         return;
     }
-    if (%this.isClient() && !haveValidManagerHost() || !haveValidToken())
+    if (!haveValidManagerHost() || %this.isClient() && !haveValidToken())
     {
         warn(getScopeName() @ " " @ "- not connected to backend - properties not retrieved." @ " " @ %this.clientOrServer @ " " @ %userName);
         if (!isObject(%this.propertiesValue[%userName]))
@@ -272,22 +258,8 @@ function userPropertiesMgr::parseRequest(%this, %request)
     {
         %key = utf8Decode(%request.getValue("property" @ %n @ ".key"));
         %value = utf8Decode(%request.getValue("property" @ %n @ ".value"));
-        if (%value $= "false")
-        {
-        }
-        else
-        {
-        }
-        %value = %value;
-        0;
-        if (%value $= "true")
-        {
-        }
-        else
-        {
-        }
-        %value = %value;
-        1;
+        %value = (%value $= "false") ? 0 : %value;
+        %value = (%value $= "true") ? 1 : %value;
         %smValue.put(%key, %value);
         %n = %n + 1;
     }

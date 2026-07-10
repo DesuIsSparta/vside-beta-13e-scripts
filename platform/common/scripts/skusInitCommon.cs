@@ -75,7 +75,7 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
         }
         if (%bornWith)
         {
-            %this.bornWithSkus = (%n >= 0) @ %this.bornWithSkus @ %skunum @ " ";
+            %this.bornWithSkus = %this.bornWithSkus @ %skunum @ " ";
         }
         else
         {
@@ -91,7 +91,6 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
             %n = %n - 1;
         }
         %n = getWordCount(%meshName) - 1;
-        %n >= 0;
         while (%n >= 0)
         {
             %meshN = getWord(%meshName, %n);
@@ -114,7 +113,7 @@ function SkuManager::init(%this)
         %this.storeSkus[getWord(%this.storeIDs, %n)] = "";
         %n = %n + 1;
     }
-    %this.storeIDs = (%n < getWordCount(%this.storeIDs)) @ "";
+    %this.storeIDs = "";
     %this.bornWithSkus = "";
     %this.notBornWithSkus = "";
     %this.skuTags = safeNewScriptObject("StringMap", "", 0);
@@ -141,7 +140,6 @@ function SkuManager::sanityCheckStockOutfits(%this)
             %o = %o - 1;
         }
         %skus = $gDefaultBodyAttrs[getWord(%genders, %g)];
-        %o >= 0;
         %this.sanityCheckSkus(%skus);
         %g = %g - 1;
     }

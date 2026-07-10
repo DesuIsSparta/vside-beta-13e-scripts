@@ -843,7 +843,6 @@ function BuddyHudWin::populateBuddyListsReally(%this)
     {
         error(getScopeName() @ " " @ "- X" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000)));
         %lastTime = getSimTime();
-        %i < %friendCount;
     }
     %friendCountOnline = 0;
     %i = 0;
@@ -1000,7 +999,6 @@ function BuddyHudWin::populateBuddyListsReally(%this)
     {
         error(getScopeName() @ " " @ "- C" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000)));
         %lastTime = getSimTime();
-        %i < %friendCount;
     }
     %botFriendsCount = %botsFriendsList.size();
     %i = 0;
@@ -1020,7 +1018,6 @@ function BuddyHudWin::populateBuddyListsReally(%this)
     if (BuddyHudFriendsList.getCount() > 0)
     {
         %newVerticalPositionOfList = %offsetForVerticalPositionOfList - (%heightOfRowInFriendsList * %numberOfNamesInsertedAbove);
-        %i < %botFriendsCount;
         BuddyHudFriendsList.startingPos = getWord(BuddyHudFriendsList.startingPos, 0) @ " " @ %newVerticalPositionOfList;
     }
     if (%timeIt)
@@ -1084,7 +1081,6 @@ function BuddyHudWin::populateBuddyListsReally(%this)
     {
         error(getScopeName() @ " " @ "- E" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000)));
         %lastTime = getSimTime();
-        %i < %favoriteCount;
     }
     %fanCount = UserListFans.size();
     %i = 0;
@@ -1163,7 +1159,6 @@ function BuddyHudWin::populateBuddyListsReally(%this)
         %i = %i + 1;
     }
     %dict = safeEnsureScriptObjectWithInit("StringMap", "PlayerInstanceDict", "{ ignoreCase = true; }");
-    %i < %fanCount;
     %playerCount = %dict.size();
     %i = 0;
     while (%i < %playerCount)
@@ -1180,7 +1175,6 @@ function BuddyHudWin::populateBuddyListsReally(%this)
     {
         error(getScopeName() @ " " @ "- F" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000)));
         %lastTime = getSimTime();
-        %i < %playerCount;
     }
     %bitmap = (UserListFans.size() > 0) ? "platform/client/buttons/pending_active" : "platform/client/buttons/pending";
     %elButton = BuddyHudTabs.getTabWithName("requests").button;
@@ -1245,7 +1239,6 @@ function BuddyHudWin::getNamesInLists(%this, %lists)
             }
         }
         %n = %n - 1;
-        %m >= 0;
     }
     return %ret;
 }
@@ -1655,7 +1648,7 @@ $gRefreshEvenIfBuddyHudWinClosed = 1;
 function clientCmdRefreshBuddies(%status)
 {
     log("relations", "debug", "clientCmdRefreshBuddies(" @ %status @ ")");
-    if ($gRefreshEvenIfBuddyHudWinClosed || %status && BuddyHudWin.isVisible())
+    if (%status && $gRefreshEvenIfBuddyHudWinClosed || BuddyHudWin.isVisible())
     {
         BuddyHudWin.refreshFavoritesList();
         $gRefreshEvenIfBuddyHudWinClosed = 0;
@@ -1793,22 +1786,8 @@ function BuddyHudTabs::setBuddyActivities(%this, %buddyName, %activitiesList)
 function clientCmdUpdateBuddy(%source, %target, %action)
 {
     log("relations", "debug", "clientCmdUpdateBuddy(source=" @ %source @ ", target=" @ %target @ ", action=" @ %action @ ")");
-    if (%target $= $player.getShapeName())
-    {
-    }
-    else
-    {
-    }
-    %other = %target;
-    %source;
-    if (%target $= $player.getShapeName())
-    {
-    }
-    else
-    {
-    }
-    %self = %source;
-    %target;
+    %other = (%target $= $player.getShapeName()) ? %source : %target;
+    %self = (%target $= $player.getShapeName()) ? %target : %source;
     if (%action $= "userJoined")
     {
         sendBuddyStatusRequest(%other);

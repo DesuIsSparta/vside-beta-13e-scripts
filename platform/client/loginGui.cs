@@ -669,7 +669,6 @@ function LoginRequest::onGotUserProperties(%this)
     if (%maxNumberKeyCombos[%numberOfUnboundKeyCombinations @ "f"] == %maxNumberKeyCombos)
     {
         %m = %maxNumberKeyCombos - 1;
-        %m >= 0;
         while (%m >= 0)
         {
             %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
@@ -680,7 +679,6 @@ function LoginRequest::onGotUserProperties(%this)
     if (%maxNumberKeyCombos[%numberOfUnboundKeyCombinations @ "m"] == %maxNumberKeyCombos)
     {
         %m = %maxNumberKeyCombos - 1;
-        %m >= 0;
         while (%m >= 0)
         {
             %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);

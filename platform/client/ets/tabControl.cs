@@ -4,13 +4,7 @@ function TabControl::Initialize(%this, %container, %buttonSize, %sepBitmap, %sep
     {
         return;
     }
-    if (isObject(%container))
-    {
-    }
-    else
-    {
-    }
-    %this.container = %container @ 0;
+    %this.container = isObject(%container) ? %container : 0;
     %this.buttonSize = %buttonSize;
     %this.hasButtons = 1;
     if (%buttonSize $= "")
@@ -323,7 +317,7 @@ function TabControl::removeTabAtIndex(%this, %tabIndex)
             }
             %t = %t + 1;
         }
-        %this.tabs[%this.numTabs] = (%t < %this.numTabs) @ 0;
+        %this.tabs[%this.numTabs] = 0;
         if (%this.hasButtons)
         {
             %this.buttons[%this.numTabs] = 0;
@@ -440,7 +434,7 @@ function TabControl::update(%this)
             }
             %idx = %idx + 1;
         }
-        %this.visibleTabsWidth = (%idx < %this.numTabs) @ ((%xoffset - %this.getPadding()) - getWord(%this.buttonOffset, 0));
+        %this.visibleTabsWidth = (%xoffset - %this.getPadding()) - getWord(%this.buttonOffset, 0);
         %this.hiddenButton.setVisible((%this.currentTabIndex >= 0));
     }
     if (%this.numTabs > 0)

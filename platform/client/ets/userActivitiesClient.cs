@@ -37,22 +37,8 @@ function UserActivityMgr::reset(%this)
 }
 function UserActivityMgr::defineActivity(%this, %activityName, %userFacingName, %duration)
 {
-    if (isDefined("%userFacingName"))
-    {
-    }
-    else
-    {
-    }
-    %userFacingName = %activityName;
-    %userFacingName;
-    if (isDefined("%duration"))
-    {
-    }
-    else
-    {
-    }
-    %duration = -(1);
-    %duration;
+    %userFacingName = isDefined("%userFacingName") ? %userFacingName : %activityName;
+    %duration = isDefined("%duration") ? %duration : -(1);
     %params = %userFacingName @ "\t" @ %duration;
     %this.knownActivities.put(%activityName, %params);
     if (!(isFile(%this.getActivityIconFilename(%activityName) @ ".png")))
@@ -289,7 +275,6 @@ function UserActivityMgr::getActivitiesMLText(%this, %activitiesList, %numToShow
         }
     }
     %ret = "<spush>" @ %ret @ "<spop>";
-    %m < %numToShow;
     return %ret;
 }
 function ClientCmdBuddyActivitiesChanged(%userName, %activitiesTagged)

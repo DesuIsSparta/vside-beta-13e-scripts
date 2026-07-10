@@ -21,7 +21,7 @@ function loadMission(%missionName, %isFirstMission)
         }
         %cl = %cl + 1;
     }
-    if (%isFirstMission && ((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer"))
+    if (%isFirstMission && ($Server::ServerType $= "SinglePlayer"))
     {
         loadMissionStage2();
     }
@@ -71,7 +71,7 @@ function loadMissionStage2()
     }
     onMissionLoaded();
     purgeResources();
-    return %clientIndex < ClientGroup.getCount();
+    return;
 }
 function endMission()
 {
@@ -94,7 +94,6 @@ function endMission()
     MissionCleanup.delete();
     $ServerGroup.delete();
     $ServerGroup = new SimGroup(ServerGroup);
-    %clientIndex < ClientGroup.getCount();
     return;
 }
 function resetMission()

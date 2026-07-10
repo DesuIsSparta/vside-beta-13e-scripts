@@ -95,42 +95,12 @@ function EditContextMenu::init(%this, %ctrl)
     %canCut = %modifiable && %canCopy;
     %canPaste = %modifiable && !(getClipboard() $= "");
     %n = -(1);
-    if (%modifiable)
-    {
-    }
-    else
-    {
-    }
-    %this.add("Undo", %n = %n + 1, %schemeNormal, %schemeDisabled);
+    %this.add("Undo", %n = %n + 1, %modifiable ? %schemeNormal : %schemeDisabled);
     %this.add("---", %n = %n + 1, %schemeDisabled);
-    if (%canCut)
-    {
-    }
-    else
-    {
-    }
-    %this.add("Cut", %n = %n + 1, %schemeNormal, %schemeDisabled);
-    if (%canCopy)
-    {
-    }
-    else
-    {
-    }
-    %this.add("Copy", %n = %n + 1, %schemeNormal, %schemeDisabled);
-    if (%canPaste)
-    {
-    }
-    else
-    {
-    }
-    %this.add("Paste", %n = %n + 1, %schemeNormal, %schemeDisabled);
-    if (%canCut)
-    {
-    }
-    else
-    {
-    }
-    %this.add("Delete", %n = %n + 1, %schemeNormal, %schemeDisabled);
+    %this.add("Cut", %n = %n + 1, %canCut ? %schemeNormal : %schemeDisabled);
+    %this.add("Copy", %n = %n + 1, %canCopy ? %schemeNormal : %schemeDisabled);
+    %this.add("Paste", %n = %n + 1, %canPaste ? %schemeNormal : %schemeDisabled);
+    %this.add("Delete", %n = %n + 1, %canCut ? %schemeNormal : %schemeDisabled);
     %this.add("---", %n = %n + 1, %schemeDisabled);
     %this.add("Select All", %n = %n + 1, %schemeNormal);
 }

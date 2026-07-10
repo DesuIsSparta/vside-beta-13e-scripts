@@ -22,7 +22,7 @@ function boneBlendGui::open(%this)
         }
         $player.setBoneBlendRate(blendRateSlider.getValue());
         $player.setBoneBlendScale(blendScaleSlider.getValue());
-        %this.runOnce = (%i < $MAX_FREE_BONE_BLENDS) @ 1;
+        %this.runOnce = 1;
     }
 }
 function boneBlendGui::close(%this)

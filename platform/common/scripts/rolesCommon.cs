@@ -28,14 +28,7 @@ function Player::mayConnectToFullServer(%this)
 }
 function Player::isDebugging(%this)
 {
-    if (isDefined("$UserPref::ETS::Debugging"))
-    {
-    }
-    else
-    {
-    }
-    %debugging = 0;
-    $UserPref::ETS::Debugging;
+    %debugging = isDefined("$UserPref::ETS::Debugging") ? $UserPref::ETS::Debugging : 0;
     return %this.isStaff() && %debugging;
 }
 function Player::hasRoleString(%this, %roleString)

@@ -278,15 +278,8 @@ function PlayGui::onMouseOver(%this, %obj)
             %obj.SetHighlighted(1);
             Canvas.setCursor(ETSHandCursor);
             %type = %obj.getType();
-            if (%obj.hasMethod("getDataBlock"))
-            {
-            }
-            else
-            {
-            }
-            %datablock = 0;
-            %obj.getDataBlock();
-            if (isObject(%datablock) && 1 && %obj.isGhost() && (%type & $TypeMasks::UsableObjectType) && !(%datablock.playerAnimReach $= "") && !$CS_EditingCustomSpace)
+            %datablock = %obj.hasMethod("getDataBlock") ? %obj.getDataBlock() : 0;
+            if (1 && %obj.isGhost() && (%type & $TypeMasks::UsableObjectType) && isObject(%datablock) && !(%datablock.playerAnimReach $= "") && !$CS_EditingCustomSpace)
             {
                 commandToServer('UsableObjectReach', %obj.getGhostID());
             }

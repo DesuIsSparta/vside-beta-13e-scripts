@@ -239,7 +239,6 @@ function MessageBox::newDialog(%buttonList)
         %i = %i + 1;
     }
     %windowWidth = mMax(300, %allButtonsWidth);
-    %i < %dialog.numButtons;
     %window = new GuiWindowCtrl("") {
         profile = "GuiMessageWindowProfile";
         horizSizing = "center";
@@ -321,7 +320,7 @@ function MessageBox::newDialog(%buttonList)
     }
     %window.add(%text);
     %dialog.add(%window);
-    %dialog.window = (%i < %dialog.numButtons) @ %window;
+    %dialog.window = %window;
     %dialog.text = %text;
     %dialog.doCallbackOnEscape = 1;
     %dialog.bindClassName("MessageBox");

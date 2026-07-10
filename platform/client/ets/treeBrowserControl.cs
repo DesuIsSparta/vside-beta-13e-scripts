@@ -318,7 +318,7 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
         }
         if (%currentCount != %count)
         {
-            %child.Path = (%n >= 0) @ "ForceUpdatePlease!!!";
+            %child.Path = "ForceUpdatePlease!!!";
         }
         if (!(%child.Path $= %path))
         {
@@ -344,15 +344,8 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
             %child.menu.makeFirstResponder(1);
         }
     }
-    %child.Path = (%n < %totalCount) @ %path;
-    if (%leafNode)
-    {
-    }
-    else
-    {
-    }
-    %numButtons = %level;
-    %level - 1;
+    %child.Path = %path;
+    %numButtons = %leafNode ? (%level - 1) : %level;
     %offset = 0;
     if (%this.isExpanded)
     {
@@ -408,7 +401,7 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
         %offset = %offset + (%this.buttonWidth + %this.buttonPadding);
         %i = %i + 1;
     }
-    %this.numButtons = (%i < mMax(%numButtons, %this.numButtons)) @ %numButtons;
+    %this.numButtons = %numButtons;
     return 1;
 }
 function TreeBrowserControl::nodePassesFilter(%this, %node, %filterText)
@@ -451,11 +444,9 @@ function TreeBrowserControl::getNodeSearchText(%this, %node)
                 %w = %w - 1;
             }
             %n = %n - 1;
-            %w >= 0;
         }
     }
     %ret = trim(%ret);
-    %n >= 0;
     %node.searchText = %ret;
     return %ret;
 }
@@ -625,16 +616,8 @@ function TreeBrowserControl::getNextLeaf(%this, %path, %forward)
     }
     while ((%cnt = %node.getCount()) > 0)
     {
-        if (%forward > 0)
-        {
-        }
-        else
-        {
-        }
-        %slot = %cnt - 1;
-        0;
+        %slot = (%forward > 0) ? 0 : (%cnt - 1);
         %node = %node.getObject(%slot);
-        !%foundChildBearingNode;
         %path = %path @ "\t" @ %node.name;
     }
     return %path;
@@ -764,7 +747,6 @@ function TreeBrowserControl::addDataTree(%this, %tree, %prefix)
     }
     %this.addMenuData(%prefix, %items);
     %i = 0;
-    %i < %count;
     while (%i < %count)
     {
         %obj = %tree.getObject(%i);
@@ -1010,7 +992,6 @@ function treeToText(%tree)
             %i = %i + 1;
         }
         %text = %text @ "]";
-        %i < %count;
     }
     return %text;
 }

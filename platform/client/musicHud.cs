@@ -52,7 +52,7 @@ function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %is
 }
 function MusicHud::hasMusicData(%this)
 {
-    return !(%this.musicService.getArtist() $= "") || !(%this.musicService $= "") && !(%this.musicService.getTitle() $= "");
+    return !(%this.musicService $= "") && !(%this.musicService.getArtist() $= "") || !(%this.musicService.getTitle() $= "");
 }
 function MusicHud::update(%this)
 {
@@ -264,7 +264,7 @@ function MusicHud::updateStations(%this, %stations)
         }
         %i = %i + 1;
     }
-    if ((%i < getFieldCount(%stations)) @ " " @ %this.station $= "")
+    if (%this.station $= "")
     {
         MusicHudStationPopup.SetSelected(0);
     }

@@ -840,7 +840,6 @@ function addGenreNeutralAnimations(%map, %gender)
         %n = %n - 1;
     }
     %coanimCount = getWordCount(%coanims);
-    %n >= 0;
     %prefixes = "sti mti mmi msi tsi str mtr mmr msr tsr";
     %prefixCount = getWordCount(%prefixes);
     %i = 0;
@@ -855,7 +854,6 @@ function addGenreNeutralAnimations(%map, %gender)
             %j = %j + 1;
         }
         %i = %i + 1;
-        %j < %prefixCount;
     }
 }
 function initNoAutoEmoteList()

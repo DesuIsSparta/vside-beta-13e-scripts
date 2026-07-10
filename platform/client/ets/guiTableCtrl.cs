@@ -10,14 +10,7 @@ function GuiTableCtrl::Initialize(%this)
         %headerArray = %this.getHeaderArrayCtrl();
         %scroll = %this.getScrollCtrl();
         %bodyArray = %this.getBodyArrayCtrl();
-        if (isObject(%bodyArray))
-        {
-        }
-        else
-        {
-        }
-        %bodyArrayContainer = "";
-        %this.getBodyArrayCtrl().getParent();
+        %bodyArrayContainer = isObject(%bodyArray) ? %this.getBodyArrayCtrl().getParent() : "";
         if (isObject(%headerArray))
         {
             %this.doSetupColumnHeaders(%headerArray);

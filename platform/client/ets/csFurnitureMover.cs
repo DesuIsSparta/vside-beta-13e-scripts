@@ -171,7 +171,7 @@ function CSFurnitureMover::SelectNuggetID(%this, %id)
     {
         CSInventoryBrowserWindow.Initialize();
     }
-    if ((%lastSelectedID != -(1)) || !$CSSelectedIsOwned || isObject(CSInventoryBrowser) && !%wasSelectedOwned && ($CSSelectedSku != -(1)))
+    if (isObject(CSInventoryBrowser) && !$CSSelectedIsOwned || !%wasSelectedOwned && (%lastSelectedID != -(1)) || ($CSSelectedSku != -(1)))
     {
         CSInventoryBrowser.update();
     }
@@ -366,7 +366,7 @@ function CSFurnitureMoverText::onURL(%this, %url)
     }
     else
     {
-        if ((%i < %numGhosts) @ " " @ getWord(%url, 0) $= "PREV")
+        if (getWord(%url, 0) $= "PREV")
         {
             %numGhosts = getWordCount($gCSGhostList);
             %i = 0;
@@ -611,14 +611,7 @@ function FurnitureItemContextMenu::initWithObject(%this, %obj)
     }
     else
     {
-        if (CSFurnitureMover.canPaste())
-        {
-        }
-        else
-        {
-        }
-        %schemeCanPaste = %schemeDisabled;
-        %schemeNormal;
+        %schemeCanPaste = CSFurnitureMover.canPaste() ? %schemeNormal : %schemeDisabled;
         %this.add("Paste", %n = %n + 1, %schemeCanPaste);
     }
 }

@@ -187,7 +187,6 @@ function ButtonBar::insertButton(%this, %buttonName)
         %i = %i - 1;
     }
     %buttonHasBeenInserted = 0;
-    %i > 0;
     %maxCount = %dummyContainer.getCount();
     %i = %maxCount - 1;
     while (%i >= 0)
@@ -258,7 +257,6 @@ function ButtonBar::update(%this)
             %i = %i + 1;
         }
         %xoffset = %startingOffset;
-        %i < %maxCount;
         %yoffset = $ButtonBarVar::buttonBarActivatorTopBorder;
         %maxCount = ButtonBarActivator.getCount();
         %i = 0;
@@ -270,7 +268,6 @@ function ButtonBar::update(%this)
             %i = %i + 1;
         }
         $ButtonBarVar::VerticalAdjustment = $ButtonBarVar::buttonHeight - $ButtonBarVar::buttonMiniHeight;
-        %i < %maxCount;
         %newBgExt = ((%xoffset - %startingOffset) + $ButtonBarVar::dotPadding) @ " " @ $ButtonBarVar::buttonBarActivatorHeight;
         %newBgPos = (%startingOffset - $ButtonBarVar::dotPadding) @ " " @ (%bbHeight - $ButtonBarVar::buttonBarActivatorHeight);
     }
@@ -290,7 +287,6 @@ function ButtonBar::update(%this)
             %i = %i + 1;
         }
         %newBgExt = %newWidth @ " " @ %bbHeight;
-        %i < %maxCount;
         %newBgPos = "0 0";
     }
     ButtonBarActivator.resize(mFloor((((%screenWidth - %newWidth) / 2) + 1)), (%screenHeight - $ButtonBarVar::buttonBarActivatorHeight), %newWidth, $ButtonBarVar::buttonBarActivatorHeight);

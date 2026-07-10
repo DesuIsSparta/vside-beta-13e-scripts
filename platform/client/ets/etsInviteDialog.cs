@@ -81,7 +81,6 @@ function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message)
         %i = %i + 1;
     }
     %note = "";
-    %i < %count;
     if (!(%message $= ""))
     {
         %note = "&noteFromSender=" @ urlEncode(%message);

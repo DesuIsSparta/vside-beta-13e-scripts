@@ -73,7 +73,7 @@ function packageDownload::reinit(%this, %missingArray)
         %newMissingArray.sorta();
     }
     echo("Shifting currentItem to start. Putting new lists in place.");
-    %this.wasInterrupted = (%i < %missingArray.count()) @ 1;
+    %this.wasInterrupted = 1;
     %this.currentItem = 1;
     %this.statusMap.delete();
     %this.statusMap = %newStatusMap;
@@ -374,7 +374,7 @@ function packageDownload::getStatusForCity(%this, %city)
     %package = AssetManager::cityToPackage(%city);
     %status = %this.getItemStatus(%package);
     %common_status = %this.getItemStatus($AssetManager::COMMONPACKAGE);
-    if ((%common_status $= "") || (%city $= "gw") || (%status $= "") || (%status $= "done") && (%common_status $= "done"))
+    if ((%status $= "") || (%status $= "done") && (%city $= "gw") || (%common_status $= "") || (%common_status $= "done"))
     {
         return "done";
     }
@@ -463,7 +463,6 @@ function packageDownloadCheck::onDone(%this)
     }
     %tempOrderArray.sorta();
     %n = 0;
-    %n < %orderMap.size();
     while (%n < %tempOrderArray.count())
     {
         %key = %tempOrderArray.getKey(%n);

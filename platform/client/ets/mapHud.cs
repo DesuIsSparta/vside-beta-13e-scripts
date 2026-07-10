@@ -81,14 +81,7 @@ function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text)
 function geLocalMapContainer_repositionTitleText()
 {
     %newTitleTop = (getWord(geMapHud2DCustomSpaceModeTitleContainer.getExtent(), 1) - getWord(geMapHud2DCustomSpaceModeTitle.getExtent(), 1)) / 2;
-    if (%newTitleTop < 1)
-    {
-    }
-    else
-    {
-    }
-    %newTitleTop = %newTitleTop;
-    1;
+    %newTitleTop = (%newTitleTop < 1) ? 1 : %newTitleTop;
     geMapHud2DCustomSpaceModeTitle.reposition(0, %newTitleTop);
 }
 $gDragNZoomIsReallySmooth = 1;
@@ -147,14 +140,7 @@ function geMapHud2DDragNZoom::zoomTick(%this, %isZoomIn)
         cancel($gGeMapHud2DDragNZoomTimer);
     }
     %amount = ($gGeMapHud2DDragNZoomTickPeriodMS / 1000) * $gGeMapHud2DDragNZoomRateAmountPerSecond;
-    if (%isZoomIn)
-    {
-    }
-    else
-    {
-    }
-    %amount = 1 - %amount;
-    1 + %amount;
+    %amount = %isZoomIn ? (1 + %amount) : (1 - %amount);
     geMapHud2DDragNZoom.doScale(%amount);
     $gGeMapHud2DDragNZoomTimer = %this.schedule($gGeMapHud2DDragNZoomTickPeriodMS, "zoomTick", %isZoomIn);
 }
@@ -193,50 +179,15 @@ function Player::updateMapIcon(%this)
         }
     }
     %bitmap = "";
-    if ((%this == $player) || isObject($player) && %this.getShowOnRadar() || $player.rolesPermissionCheckNoWarn("radarSeeAll"))
+    if (((%this.getShowOnRadar() || isObject($player)) && (%this == $player)) || $player.rolesPermissionCheckNoWarn("radarSeeAll"))
     {
         %gender = %this.getGender();
-        if (%this.getShapeName() $= $Player::Name)
-        {
-        }
-        else
-        {
-        }
-        %relation = %this.isFriend() ? "friend" : "other";
-        "self";
+        %relation = (%this.getShapeName() $= $Player::Name) ? "self" : %this.isFriend() ? "friend" : "other";
         %mode = "reg";
-        if (%this.hasRoleString("celeb"))
-        {
-        }
-        else
-        {
-        }
-        %mode = %mode;
-        "celeb";
-        if (%this.isClassAIPlayer())
-        {
-        }
-        else
-        {
-        }
-        %mode = %mode;
-        "robot";
-        if (%this.hasSpecialSku("guidebadge"))
-        {
-        }
-        else
-        {
-        }
-        %mode = %mode;
-        "guide";
-        if (!%this.getShowOnRadar())
-        {
-        }
-        else
-        {
-        }
-        %mode = %mode;
-        "hidden";
+        %mode = %this.hasRoleString("celeb") ? "celeb" : %mode;
+        %mode = %this.isClassAIPlayer() ? "robot" : %mode;
+        %mode = %this.hasSpecialSku("guidebadge") ? "guide" : %mode;
+        %mode = !%this.getShowOnRadar() ? "hidden" : %mode;
         %bitmap = "platform/client/ui/mapicons/";
         %bitmap = %bitmap @ %gender @ "_";
         %bitmap = %bitmap @ %relation @ "_";

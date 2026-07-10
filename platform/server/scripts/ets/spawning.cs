@@ -18,7 +18,6 @@ function SpawnSphere::choosePointOnCenterPlane(%this)
         %n = %n + 1;
     }
     %posX = %posX + ((%tryX * 0.001) * %this.radius);
-    %n < 10;
     %posY = %posY + ((%tryY * 0.001) * %this.radius);
     return %posX @ " " @ %posY @ " " @ %posZ;
 }
@@ -57,12 +56,10 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
         if (!%tooClose)
         {
             %good = 1;
-            %n < %num;
         }
         %m = %m + 1;
     }
     %rot = "0 0 1";
-    %m < %retries;
     if (%m >= %retries)
     {
         echo("\x03 could not find empty spot");

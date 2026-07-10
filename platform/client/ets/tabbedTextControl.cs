@@ -24,7 +24,7 @@ function TabbedTextControl::setFieldWidths(%this, %fieldWidths, %padding)
         %i = %i + 1;
     }
     %this.resize(%sum, getWord(%this.getExtent(), 1));
-    %this.childrenExtent = (%i < %numFields) @ %sum @ " " @ getWord(%this.childrenExtent, 1);
+    %this.childrenExtent = %sum @ " " @ getWord(%this.childrenExtent, 1);
 }
 function TabbedTextControl::addLine(%this, %fields)
 {
@@ -37,7 +37,7 @@ function TabbedTextControl::addLine(%this, %fields)
         %line.field[%i].setText(getField(%fields, %i));
         %i = %i + 1;
     }
-    %line.command = (%i < %numFields) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
+    %line.command = %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
 }
 function TabbedTextControl::addLineNoReseat(%this, %fields)
@@ -50,7 +50,7 @@ function TabbedTextControl::addLineNoReseat(%this, %fields)
         %line.field[%i].setText(getField(%fields, %i));
         %i = %i + 1;
     }
-    %line.command = (%i < %numFields) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
+    %line.command = %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
 }
 function TabbedTextControl::onCreatedChild(%this, %child)

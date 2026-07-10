@@ -593,7 +593,6 @@ function armor::doDismount(%this, %obj, %forced)
     if (%forced && (%success == -(1)))
     {
         %pos = %oldPos;
-        %i < %numAttempts;
     }
     gSetField(%this, mountVehicle, 0);
     %obj.schedule(4000, "mountVehicles", 1);
@@ -636,14 +635,7 @@ function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType
     %obj.applyDamage(%damage);
     %location = "Body";
     %client = %obj.client;
-    if (%sourceObject)
-    {
-    }
-    else
-    {
-    }
-    %sourceClient = 0;
-    %sourceObject;
+    %sourceClient = %sourceObject ? %sourceObject : 0;
     if (%obj.getState() $= "Dead")
     {
         %client.onDeath(%sourceObject, %sourceClient, %damageType, %location);

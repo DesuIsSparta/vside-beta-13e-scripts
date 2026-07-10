@@ -83,7 +83,6 @@ function startGame()
     if ($Game::Duration)
     {
         $Game::Schedule = schedule(($Game::Duration * 1000), 0, "onGameDurationEnd");
-        %clientIndex < ClientGroup.getCount();
     }
     $Game::Running = 1;
     return;
@@ -105,7 +104,6 @@ function endGame()
     }
     resetMission();
     $Game::Running = 0;
-    %clientIndex < ClientGroup.getCount();
     return;
 }
 function onGameDurationEnd()
@@ -149,7 +147,7 @@ function onCyclePauseEnd()
         %file = findNextFile(%search);
     }
     loadMission(%file);
-    return !(%file $= "");
+    return;
 }
 function GameConnection::onClientEnterGame(%this)
 {
@@ -301,7 +299,6 @@ function GameConnection::initPlayerRelations()
             }
         }
         %ignoreCount = %request.ignoreCount;
-        %buddyCount = (%buddyCount - 1) >= 0;
         while (%ignoreCount = (%ignoreCount - 1) >= 0)
         {
             %ignoreName = %request.ignore[%ignoreCount];
@@ -312,7 +309,6 @@ function GameConnection::initPlayerRelations()
             }
         }
         %onBuddyCount = %request.onBuddyCount;
-        %ignoreCount = (%ignoreCount - 1) >= 0;
         while (%onBuddyCount = (%onBuddyCount - 1) >= 0)
         {
             %onBuddyName = %request.onBuddy[%onBuddyCount];
@@ -327,7 +323,6 @@ function GameConnection::initPlayerRelations()
             }
         }
         %onIgnoreCount = %request.onIgnoreCount;
-        %onBuddyCount = (%onBuddyCount - 1) >= 0;
         while (%onIgnoreCount = (%onIgnoreCount - 1) >= 0)
         {
             %onIgnoreName = %request.onIgnore[%onIgnoreCount];

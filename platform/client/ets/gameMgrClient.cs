@@ -330,7 +330,7 @@ function gameMgrClient::inspectUpdatePlayersStatus(%this, %serversideID, %player
         }
         %i = %i + 1;
     }
-    if ((%i < %playersCount) @ " " @ %dontSortAndRefresh $= "")
+    if (%dontSortAndRefresh $= "")
     {
         %this.sortAndPurgePlayerRecords(%this.inspectedGame);
         GameList.refreshInspectTab();
@@ -422,7 +422,7 @@ function gameMgrClient::inspectChangeReadyStatus(%this, %serversideID, %readyVal
         }
         %i = %i + 1;
     }
-    %this.inspectedGame.readyCount = (%i < %playerCount) @ %totalReady;
+    %this.inspectedGame.readyCount = %totalReady;
     GameList.refreshInspectTab();
 }
 function gameMgrClient::inspectNothing(%this)
@@ -707,7 +707,7 @@ function gameMgrClient::addGame(%this, %serversideID, %gname, %gameType, %host, 
     if (%listFound <= 0)
     {
         %newList = new SimSet("") {
-            gametype = (%n >= 0) @ %newGame.gametype;
+            gametype = %newGame.gametype;
             collapsed = 0;
         };
         if (isObject(MissionCleanup))
@@ -810,7 +810,6 @@ function gameMgrClient::sortAndPurgePlayerRecords(%this, %aGameObj)
         %n = %n - 1;
     }
     %stringToSort = SortWords(%stringToSort);
-    %n >= 0;
     %count = getFieldCount(%stringToSort);
     if ((%count - 1) != %numRecords)
     {

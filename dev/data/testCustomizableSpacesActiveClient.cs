@@ -80,7 +80,7 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this)
     if (%this.ownedFurnitureToTestCount <= 0)
     {
         %this.assert(0, "we do not own any furniture that we can test with");
-        return %index < %count;
+        return;
     }
     %rand = getRandom(0, %this.ownedFurnitureToTestCount);
     %skuToTest = %this.ownedFurnitureToTest[%rand];
@@ -156,7 +156,7 @@ function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this)
     if (%this.ownedFurnitureToTestCount <= 0)
     {
         echo("we either don't own any furniture or hav eplaced it all, not making any new stuff");
-        return %index < %count;
+        return;
     }
     %i = 0;
     while (%i < %this.ownedFurnitureToTestCount)
@@ -178,6 +178,5 @@ function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this)
             %j = %j + 1;
         }
         %i = %i + 1;
-        %j < %numToMake;
     }
 }

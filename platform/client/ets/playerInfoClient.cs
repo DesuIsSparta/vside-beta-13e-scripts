@@ -155,7 +155,6 @@ function PlayerInfoRequest::onDone(%this)
             %i = %i + 1;
         }
         %num = getFieldCount(%failedPlayers);
-        %i < %numUsers;
         if (%num > 0)
         {
             error("Communication", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- failed to get information for" @ " " @ %num @ " " @ "players:" @ " " @ %failedPlayers);
@@ -168,7 +167,7 @@ function PlayerInfoRequest::onDone(%this)
                 %i = %i + 1;
             }
         }
-        if ((%i < %num) @ " " @ %this.callback $= "")
+        if (%this.callback $= "")
         {
             if (isObject(InfoPopupDlg))
             {

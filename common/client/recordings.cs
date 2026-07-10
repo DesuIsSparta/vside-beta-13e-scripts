@@ -68,7 +68,7 @@ function startDemoRecord()
     }
     if (%i == 1000)
     {
-        return %i < 1000;
+        return;
     }
     $DemoFileName = %file;
     ChatHud.addLine("\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].");

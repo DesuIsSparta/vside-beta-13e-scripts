@@ -122,7 +122,7 @@ function onDoneOrErrorCallback_GetHighGameScores(%request)
             %i = %i + 1;
         }
         %dataTable.updateListeners();
-        if ((%i < %count) @ " " @ %userRanking $= "")
+        if (%userRanking $= "")
         {
             %userRanking = %request.getValue("scores.userRanking");
             %userScore = %request.getValue("scores.userScore");

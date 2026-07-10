@@ -619,7 +619,7 @@ function doUserPasteSkusReally(%playerName)
         }
         %n = %n - 1;
     }
-    if (!((%n >= 0) @ " " @ %crap $= ""))
+    if (!(%crap $= ""))
     {
         MessageBoxOK("Crap in clipboard", "Sorry, there was stuff in the clipboard that wasn't SKUs. Not sent.", "");
         return;
@@ -667,14 +667,7 @@ function clientCmdConfirmCoAnim(%initiatingPlayerName, %coAnimName, %requestId)
         commandToServer('CoAnimRespond', %requestId, "DECLINE IGNORED");
         return;
     }
-    if (BuddyHudWin.getFriendStatus(%initiatingPlayerName) $= "friends")
-    {
-    }
-    else
-    {
-    }
-    %permission = $UserPref::Player::EmotesPermissionStrangers;
-    $UserPref::Player::EmotesPermissionFriends;
+    %permission = (BuddyHudWin.getFriendStatus(%initiatingPlayerName) $= "friends") ? $UserPref::Player::EmotesPermissionFriends : $UserPref::Player::EmotesPermissionStrangers;
     if (%permission == 0)
     {
         if (!isIdle())

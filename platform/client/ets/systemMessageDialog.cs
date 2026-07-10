@@ -140,7 +140,6 @@ function SystemMessageTextCtrl::deleteOldestBufferLine(%this)
         %n = %n + 1;
     }
     %this.bufferSize = %this.bufferSize - 1;
-    %n < %this.bufferSize;
 }
 function SystemMessageTextCtrl::refresh(%this)
 {

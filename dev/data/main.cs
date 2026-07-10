@@ -246,11 +246,9 @@ package dev
                 %file = findNextFile(%ext);
             }
             %n = %n + 1;
-            !(%file $= "");
         }
         log("initialization", "info", "compiled" @ " " @ %sucCount @ " " @ "out of" @ " " @ %tryCount @ " " @ "files");
         %n = 1;
-        %n < getWordCount(%extensions);
         while (%n <= (%tryCount - %sucCount))
         {
             error("initialization", "compile failed:" @ " " @ %fails[%n]);

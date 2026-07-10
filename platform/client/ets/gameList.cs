@@ -177,7 +177,6 @@ function GameList::refreshInspectTab(%this)
         %n = %n + 1;
     }
     %lowerText = "";
-    %n < %recordCount;
     %lowerText = %lowerText @ "Game status: ";
     if (%game.gamestatus == $gameMgr::GameStatus::CANT_START)
     {
@@ -537,7 +536,7 @@ function GameList::CreateTabCreateGame(%this)
         }
         %n = %n + 1;
     }
-    if ((%n < $gameMgr::GAME_TYPES_COUNT) @ " " @ %gameType $= %this.gameTypesDropdown.getText())
+    if (%gameType $= %this.gameTypesDropdown.getText())
     {
         handleSystemMessage("msgInfoMessage", %errorMsgPrepend @ " " @ "we're having a problem with that game type.");
         error("Couldn't translate gametype text to commonID !! aborting create game<-" @ getScopeName());
@@ -719,7 +718,6 @@ function GameList::refresh(%this)
             }
         }
         %n = %n - 1;
-        %i >= 0;
     }
     %this.setText(%outString);
 }

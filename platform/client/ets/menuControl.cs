@@ -96,7 +96,7 @@ function MenuLayer::setActiveButton(%this, %ctrl)
     {
         if (%this.activeButton.getId() != %ctrl.getId())
         {
-            %this.activeButton.depressed = (%i < %count) @ 0;
+            %this.activeButton.depressed = 0;
             %this.activeButton.menu.hide();
             %this.activeButton = %ctrl.getId();
             %this.activeButton.depressed = 1;
@@ -155,7 +155,7 @@ function MenuLayer::hide(%this)
         %this.getObject(%i).setVisible(0);
         %i = %i + 1;
     }
-    %this.stack = (%i < %count) @ "";
+    %this.stack = "";
     if (isObject(%this.activeButton))
     {
         %this.activeButton.depressed = 0;
@@ -188,7 +188,7 @@ function MenuLayer::popToMenu(%this, %menu)
             %i = %i + 1;
         }
     }
-    %this.stack = (%i < %idx) @ getWords(%this.stack, %idx);
+    %this.stack = getWords(%this.stack, %idx);
     %nextHighest = getWord(%this.stack, 0);
     if (isObject(%nextHighest))
     {
@@ -436,7 +436,7 @@ function MenuControl::hide(%this)
                 getWord(%this.layer.stack, %i).scroll.setVisible(0);
                 %i = %i + 1;
             }
-            %this.layer.stack = (%i < %idx) @ getWords(%this.layer.stack, (%idx + 1));
+            %this.layer.stack = getWords(%this.layer.stack, (%idx + 1));
         }
     }
     %this.makeFirstResponder(0);

@@ -61,7 +61,6 @@ function geSwatchesPanel::init(%this)
             %n = %n + 1;
         }
         $gDifSkusSwatchSkus = collapseWhiteSpace($gDifSkusSwatchSkus);
-        %n < %numberOfNondisplayedSkus;
     }
     %this.populateSwatchPanel();
     %this.refresh();
@@ -101,7 +100,7 @@ function geSwatchesPanel::populateSwatchPanel(%this)
         }
         %i = %i - 1;
     }
-    %this.swatchDrawerNames = (%i >= 0) @ collapseWhiteSpace(%this.swatchDrawerNames);
+    %this.swatchDrawerNames = collapseWhiteSpace(%this.swatchDrawerNames);
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
     if (%numberOfDrawers > 0)
     {
@@ -178,7 +177,7 @@ function geSwatchesPanel::putListIntoDrawer(%this, %drawerName)
         %this.initSwatchCell(%destDrawer.getObject(%n), getWord(%skus, ((%num - %n) - 1)), %drawerName);
         %n = %n + 1;
     }
-    geSwatchesPanel.collapsedDrawers[%drawerName] = (%n < %num) @ 0;
+    geSwatchesPanel.collapsedDrawers[%drawerName] = 0;
 }
 function geSwatchesPanel::initSwatchCell(%this, %cell, %skunum, %drawerName)
 {
@@ -270,7 +269,6 @@ function geSwatchesPanel::refresh(%this)
         %i = %i + 1;
     }
     %expandAllText = "<color:999999>" @ %allAreExpanded ? "" : "<a:gamelink expandAll>" @ "[ Expand all ]" @ %allAreExpanded ? "" : "</a>";
-    %i < %numberOfDrawers;
     %collapseAllText = "<color:999999>" @ %allAreCollapsed ? "" : "<a:gamelink collapseAll>" @ "[ Collapse all ]" @ %allAreCollapsed ? "" : "</a>";
     %this.expandCollapse.setText(%expandAllText @ "    " @ %collapseAllText);
     if (%cellArray.isVisible())
@@ -385,7 +383,6 @@ function geSwatchesPanel::selectSwatch(%this, %skunum)
             %n = %n - 1;
         }
         %i = %i + 1;
-        (%n >= 0) && (%cell == -(1));
     }
     if (isObject(%cell))
     {

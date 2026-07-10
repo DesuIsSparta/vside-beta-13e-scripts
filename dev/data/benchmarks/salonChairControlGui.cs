@@ -108,7 +108,7 @@ function salonChairControlGui::onGotTargetsList(%this, %theList)
         %n = %n + 1;
     }
     salonChairControlTargetsPopup.sort();
-    if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))
+    if (!(%this.defaultTarget $= ""))
     {
         salonChairControlTargetsPopup.setText(%this.defaultTarget);
     }

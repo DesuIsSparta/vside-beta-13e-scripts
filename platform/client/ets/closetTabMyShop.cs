@@ -821,7 +821,7 @@ function ClosetGui_MyShop_GetSkuUGCStatus(%sku)
         }
         %n = %n - 1;
     }
-    %si.ugcStatus = (%status $= "") && (%n >= 0) @ %status;
+    %si.ugcStatus = %status;
     if (%status $= "")
     {
         error(getScopeName() @ " " @ "- no UGC status for sku" @ " " @ %sku @ " " @ getTrace());
@@ -967,7 +967,7 @@ function ClosetGui_MyShop_SetCurrentSku(%sku)
     MyShopItemDeetsPanel.setSkuBaseTextures(%sku);
     MyShopItemDeets_DescShort.setText("");
     MyShopItemDeets_DescShort.setText("");
-    if ((%n >= 0) @ " " @ %sku $= "")
+    if (%sku $= "")
     {
         MyShopItemDeets_DescShort.setText("no current item");
         MyShopItemDeets_DescLong.setText("");
@@ -1035,7 +1035,6 @@ function MyShopItemDeetsPanel::setSkuBaseTextures(%this, %sku)
     else
     {
         %num = 0;
-        %n < %num;
     }
     %stepX = getWord(%this.geTextureTarget[1].getPosition(), 0) - getWord(%this.geTextureTarget[0].getPosition(), 0);
     %padding = %stepX - getWord(%this.geTextureTarget[0].getExtent(), 0);
@@ -1402,7 +1401,7 @@ function MyShopStartNewButton::onClick(%this)
         fileCopy(%srcFile, %trgFile);
         %n = %n - 1;
     }
-    if (((%n >= 0) @ " " @ $Platform $= "windows") && ($Platform::Version::Major >= 6))
+    if (($Platform $= "windows") && ($Platform::Version::Major >= 6))
     {
         %vsDir = getVirtualStoreDir() @ "/" @ %trgdir;
         if (platformIsFile(%vsDir @ "/readme.txt"))

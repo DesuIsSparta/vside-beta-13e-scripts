@@ -47,7 +47,6 @@ function Emporium::getSkus(%this)
         %index = %index + 1;
     }
     %skus = trim(%skus);
-    %index < %count;
     return %skus;
 }
 function Emporium::getItemByIndex(%this, %index)
@@ -125,7 +124,6 @@ function GetStoreInventory::onDone(%this)
         %index = %index + 1;
     }
     %cmd = %this.callback @ "(" @ %storeInfo @ ", \"success\");";
-    %index < %count;
     eval(%cmd);
     %this.schedule(0, "delete");
 }
@@ -162,7 +160,6 @@ function Emporium::purchaseCollated(%this, %skulist, %currency, %callback)
         }
     }
     %request = safeEnsureScriptObject("ManagerRequest", "PurchaseInventory");
-    !(%skulist $= "");
     %request.callback = %callback;
     %request.store = %this;
     %url = $Net::ClientServiceURL @ "/PurchaseInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "storeRevisionDate=" @ urlEncode(%this.inventoryRevision) @ "&" @ "payWith=" @ urlEncode(%currency) @ "&" @ "storeName=" @ urlEncode(%this.storeName) @ "&";
@@ -178,7 +175,7 @@ function Emporium::purchaseCollated(%this, %skulist, %currency, %callback)
     }
     %request.setURL(%url);
     %request.start();
-    %request.purchaseArray = (%index < %count) @ %purchaseArray;
+    %request.purchaseArray = %purchaseArray;
 }
 function Emporium::purchaseUncollated(%this, %skulist, %currency, %callback)
 {
@@ -237,7 +234,6 @@ function PurchaseInventory::onDone(%this)
         if (%index == 0)
         {
             %skuStatuslist = %value;
-            %n < %qty;
         }
         else
         {
@@ -246,7 +242,6 @@ function PurchaseInventory::onDone(%this)
         %index = %index + 1;
     }
     %cmd = %this.callback @ "(" @ %status @ ", \"" @ %skuStatuslist @ "\");";
-    %index < %count;
     eval(%cmd);
     %this.purchaseArray.delete();
     %this.schedule(0, "delete");

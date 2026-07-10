@@ -107,10 +107,8 @@ function animatorPanel::onGotPossibleGenres(%this, %possibleGenres)
                 }
             }
             %g = %g + 1;
-            %j < %numAnimations;
         }
         %i = %i + 1;
-        %g < 2;
     }
     animatorPanelAnimsPopup.sort();
 }
@@ -149,7 +147,7 @@ function animatorPanel::onGotTargetsList(%this, %theList)
         %n = %n + 1;
     }
     animatorPanelTargetsPopup.sort();
-    if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))
+    if (!(%this.defaultTarget $= ""))
     {
         animatorPanelTargetsPopup.setText(%this.defaultTarget);
     }

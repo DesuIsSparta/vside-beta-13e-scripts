@@ -566,22 +566,8 @@ function geTGF::fillDetailsContainer(%this, %container, %item)
     %this.getItemList(%item.listName, %item.type).currentItem = %item;
     %hasPrevItem = isObject(%this.getPrevItem(%item.listName, %item.type));
     %hasNextItem = isObject(%this.getNextItem(%item.listName, %item.type));
-    if (%hasPrevItem)
-    {
-    }
-    else
-    {
-    }
-    %prevLink = mlStyle("<a:gamelink prev><<</a>", tgfDeets_NavLinkActive) @ mlStyle("<<", tgfDeets_NavLinkInactive);
-    "<just:left>";
-    if (%hasNextItem)
-    {
-    }
-    else
-    {
-    }
-    %nextLink = mlStyle("<a:gamelink next>>></a>", tgfDeets_NavLinkActive) @ mlStyle(">>", tgfDeets_NavLinkInactive);
-    "<just:right>";
+    %prevLink = "<just:left>" @ %hasPrevItem ? mlStyle("<a:gamelink prev><<</a>", tgfDeets_NavLinkActive) : mlStyle("<<", tgfDeets_NavLinkInactive);
+    %nextLink = "<just:right>" @ %hasNextItem ? mlStyle("<a:gamelink next>>></a>", tgfDeets_NavLinkActive) : mlStyle(">>", tgfDeets_NavLinkInactive);
     geTGF_deets_NavLinks.setText(%prevLink @ %nextLink);
 }
 function geTGF::formatOccupancy(%this, %num, %interestingNumberFormat, %unknownString, %noneString)
@@ -731,7 +717,6 @@ function geTGF::fillDetailsContainer_Venue(%this, %container, %item)
         %n = %n - 1;
     }
     %subTypeText = "- venue ";
-    %n >= 0;
     geTGF_deets_Title.setTextWithStyle("<clip:560>" @ %item.fullName, "");
     geTGF_deets_subType.setTextWithStyle(%subTypeText);
     %bitmapName = DestinationList::getBitmapLocation(%item.codeName);
@@ -755,14 +740,7 @@ function geTGF::fillDetailsContainer_Venue(%this, %container, %item)
 function geTGF_deets_venueText::onURL(%this, %url)
 {
     geDeetsLayer.setVisible(0);
-    if (firstWord(%url) $= "gamelink")
-    {
-    }
-    else
-    {
-    }
-    %url = %url;
-    restWords(%url);
+    %url = (firstWord(%url) $= "gamelink") ? restWords(%url) : %url;
     %s = firstWord(%url);
     if (%s $= "MAP_CITY")
     {
@@ -901,14 +879,7 @@ function geTGF::getNextItem(%this, %listName, %type)
 }
 function geTGF_deets_NavLinks::onURL(%this, %url)
 {
-    if (firstWord(%url) $= "gamelink")
-    {
-    }
-    else
-    {
-    }
-    %url = %url;
-    restWords(%url);
+    %url = (firstWord(%url) $= "gamelink") ? restWords(%url) : %url;
     %s = firstWord(%url);
     if (%s $= "prev")
     {

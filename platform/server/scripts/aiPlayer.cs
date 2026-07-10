@@ -386,7 +386,6 @@ function AIManager::spawn(%this)
             %i = %i + 1;
         }
         %YPosition = %YPosition + 1;
-        %i < %BotCols;
         %XPosition = %XPosition - (1 * %BotCols);
         if ((%YPosition % 2) == 1)
         {
@@ -445,7 +444,6 @@ function AIManager::SpawnArmyETS(%this, %transform)
             %i = %i + 1;
         }
         %posY = %posY + %delt;
-        %i < %BotCols;
         %posX = %posX - (%delt * %BotCols);
         %j = %j + 1;
     }

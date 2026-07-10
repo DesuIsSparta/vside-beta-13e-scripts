@@ -12,7 +12,7 @@ function CSLayoutSelector::toggle(%this)
 }
 function CSLayoutSelector::open(%this)
 {
-    CSLayoutSelectorSaveAsDefaultLink.setVisible($player.rolesPermissionCheckNoWarn("debugActive") || $ETS::devMode && $StandAlone);
+    CSLayoutSelectorSaveAsDefaultLink.setVisible($ETS::devMode && $player.rolesPermissionCheckNoWarn("debugActive") || $StandAlone);
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     WindowManager.update();

@@ -190,7 +190,7 @@ function adminGui::onGotTargetsList(%this, %theList)
         %n = %n + 1;
     }
     adminTargetsPopup.sort();
-    if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))
+    if (!(%this.defaultTarget $= ""))
     {
         adminTargetsPopup.setText(%this.defaultTarget);
     }

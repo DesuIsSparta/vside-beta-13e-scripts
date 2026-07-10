@@ -67,7 +67,6 @@ function HudTabs::update(%this)
         %n = %n + 1;
     }
     %height = %height - %padding;
-    %n < %this.numTabs;
     %width = getWord(HudTabsCollapsed.getExtent(), 0);
     HudTabsCollapsed.resize(%width, %height);
 }
@@ -313,7 +312,7 @@ function HudTabs::fillTabs(%this)
         %tab.add(%content);
         %i = %i + 1;
     }
-    %this.filledPrivateSpaceTab = (%i < HudTabs.numTabs) @ 0;
+    %this.filledPrivateSpaceTab = 0;
     HudTabs.fillMusicTab();
     HudTabs.fillAffinityTab();
     HudTabs.fillScoresTab();
@@ -887,7 +886,6 @@ function HudScoresContent::refreshCollections(%this)
         %i = %i - 1;
     }
     %stringToSort = SortWords(%stringToSort);
-    %i >= 0;
     %count = getFieldCount(%stringToSort);
     %this.collectionsList.addText("<spush><just:left><b> In Progress:<spop><br>", 0);
     %i = %count - 1;
@@ -897,7 +895,7 @@ function HudScoresContent::refreshCollections(%this)
         %this.collectionsList.addText("<spush><just:left>   " @ %collection.name @ " " @ "<just:right>(" @ %collection.sofar @ "/" @ %collection.total @ ")<spop><br>", 0);
         %i = %i - 1;
     }
-    if ((%i > 0) @ " " @ %completed $= "")
+    if (%completed $= "")
     {
         return;
     }

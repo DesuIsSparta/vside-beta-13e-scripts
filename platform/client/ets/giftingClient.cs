@@ -600,14 +600,7 @@ function ClientCmdGiftingCurrency_Initiated(%sourcePlayerName, %giftTransactionI
     }
     %acceptModeStrangers = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionStrangers];
     %acceptModeFriends = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionFriends];
-    if (%sourcePlayer.isFriend())
-    {
-    }
-    else
-    {
-    }
-    %acceptMode = %acceptModeStrangers;
-    %acceptModeFriends;
+    %acceptMode = %sourcePlayer.isFriend() ? %acceptModeFriends : %acceptModeStrangers;
     if (%acceptMode $= "accept")
     {
         geGiftingPanel.doAccept(%sourcePlayerName, %giftTransactionID, 1, "ACCEPTED-AUTO");
@@ -758,14 +751,7 @@ function geGiftingPanel::getAmountInBankOfCurrentCurrency(%this)
     {
         return 0;
     }
-    if (geGiftingCurrencyType_vPoints.getValue())
-    {
-    }
-    else
-    {
-    }
-    %ret = $Player::VBux;
-    $Player::VPoints;
+    %ret = geGiftingCurrencyType_vPoints.getValue() ? $Player::VPoints : $Player::VBux;
     return %ret;
 }
 function giftOperation(%line)

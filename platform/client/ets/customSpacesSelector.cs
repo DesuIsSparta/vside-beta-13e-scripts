@@ -178,15 +178,11 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
                 }
                 else
                 {
-                    if (%entry.isFeatured)
-                    {
-                    }
                 }
-                %visitNowLinkText = %isFriend ? "<a:gamelink go><linkcolor:aaff00ff><linkcolorHL:f279f2ff>Visit Now</a>" : "<a:gamelink go><linkcolor:ffffffff><linkcolorHL:f279f2ff>Visit Now</a>";
-                "<a:gamelink go><linkcolor:f2ff16ff><linkcolorHL:f279f2ff>Visit Now</a>";
+                %visitNowLinkText = %entry.isFeatured ? "<a:gamelink go><linkcolor:f2ff16ff><linkcolorHL:f279f2ff>Visit Now</a>" : %isFriend ? "<a:gamelink go><linkcolor:aaff00ff><linkcolorHL:f279f2ff>Visit Now</a>" : "<a:gamelink go><linkcolor:ffffffff><linkcolorHL:f279f2ff>Visit Now</a>";
+                "<a:gamelink go><linkcolor:aaffffff><linkcolorHL:f279f2ff>Visit Now</a>";
             }
             %type = %entry.type;
-            "<a:gamelink go><linkcolor:aaffffff><linkcolorHL:f279f2ff>Visit Now</a>";
             if (%entry.isFeatured)
             {
                 %type = "FEATURED";
@@ -236,7 +232,6 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
             if (%accessIconIndex != -(1))
             {
                 %position = %line.getObject(%accessIconIndex).getPosition();
-                %i > %this.descriptionFieldNumber;
                 %position = getWord(%position, 0) @ " " @ (getWord(%position, 1) - 1);
                 %line.accessIcon = %this.createAccessIcon(%entry.access, %isFriend, %position);
                 if (!(%line.accessIcon $= ""))
@@ -254,7 +249,6 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
         %n = %n + 1;
     }
     %extentWidth = getWord(CSSelectorListCtrl.getExtent(), 0);
-    %n < %count;
     %extentHeight = (getWord(%this.getPosition(), 1) + getWord(%this.getExtent(), 1)) + CustomSpacesSelector.vars["textAreaPadding"];
     if (%extentHeight < (CustomSpacesSelector.vars["scrollBarHeight"] - 2))
     {
@@ -327,7 +321,6 @@ function CSSelectorCtrl::sortEntries(%this, %sortField, %increasing)
     }
     %this.entriesSet.clear(1);
     %count = %sortArray.count();
-    %n < %num;
     %i = 0;
     while (%i < %count)
     {
@@ -636,20 +629,7 @@ function CSSelectorLine::getDescriptionText(%entry, %bitmapText)
     }
     else
     {
-        if (%entry.isFeatured)
-        {
-        }
-        else
-        {
-        }
-        if ((stricmp(%entry.access, "PasswordProtected") == 0) || (stricmp(%entry.access, "Locked") == 0))
-        {
-        }
-        else
-        {
-        }
-        %titleLineWidth = (getWord(CustomSpacesSelector_GOBUTTON.getPosition(), 0) - getWord(CustomSpacesSelector_ENTERPASSWORDBUTTON.getPosition(), 0)) - 0;
-        35;
+        %titleLineWidth = ((stricmp(%entry.access, "PasswordProtected") == 0) || (stricmp(%entry.access, "Locked") == 0) ? getWord(CustomSpacesSelector_ENTERPASSWORDBUTTON.getPosition(), 0) : getWord(CustomSpacesSelector_GOBUTTON.getPosition(), 0) - %entry.isFeatured ? 35 : 0) - 5;
         if ("<spush>" @ %entry.isFeatured ? "<bitmap:platform/client/ui/buildingDir_featured_star_lg>" : "" @ %entry[$gMlStyle @ "CSProfileDescriptionTitleNormal"] @ " " @ %entry.type $= "CELEBSPACE")
         {
         }
@@ -657,7 +637,6 @@ function CSSelectorLine::getDescriptionText(%entry, %bitmapText)
         {
         }
         %desc = %entry.name @ chopTextToFitLineWidths(%entry.owner @ "'s Pad", CSProfileDescriptionTitleNormal, %titleLineWidth, "") @ "\n" @ $gMlStyle["CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.description) @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Currently Playing: " @ " " @ $gMlStyle["CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ csGetCurrentlyPlaying(%entry.audioStream, %entry.videoStream) @ "\n\n" @ %bitmapText @ "\n" @ %bitmapText[$gMlStyle @ "CSProfileDescriptionHeaderNormal"] @ "vURL: " @ " " @ %bitmapText[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ vurlClearResolution(%entry.vurl) @ "<a: ></a>" @ " " @ "(<a:COPY_VURL>copy</a>)" @ "\n\n" @ " " @ $gMlStyle["CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.longDescription) @ "<spop>";
-        5;
     }
     return %desc;
 }
@@ -1091,7 +1070,7 @@ function CustomSpacesSelector::clearHeaderAndListBoxes(%this)
         %this.vars["aptCategoryListBoxes",%i] = "";
         %i = %i + 1;
     }
-    %this.vars["aptCategoryCount"] = (%i < CustomSpacesSelector.vars["aptCategoryCount"]) @ 0;
+    %this.vars["aptCategoryCount"] = 0;
     %this.vars["aptCategoriesInUse"] = "";
 }
 function CustomSpacesSelector::setTypeIndexes(%this, %typeList)
@@ -1161,7 +1140,7 @@ function CustomSpacesSelector::rearrangeListBoxes(%this)
         }
         %i = %i + 1;
     }
-    %this.vars["aptCategories"] = (%i < (%numTypesAvailable - 1)) @ %typesAvailable;
+    %this.vars["aptCategories"] = %typesAvailable;
     %this.vars["aptCategoriesInUse"] = %typesInUse;
     %this.setTypeIndexes(%this.vars["aptCategoriesInUse"]);
     %this.adjustListBoxPositions(1);
@@ -1191,7 +1170,6 @@ function CustomSpacesSelector::adjustListBoxPositions(%this, %doSort)
         %i = %i + 1;
     }
     %newHeight = %lastListBoxBottomEdgeY + %this.vars["textAreaPadding"];
-    %i < %this.vars["aptCategoryCount"];
     CSSelectorListCtrl.resize(getWord(CSSelectorListCtrl.getPosition(), 0), getWord(CSSelectorListCtrl.getPosition(), 1), getWord(CSSelectorListCtrl.getExtent(), 0), %newHeight);
 }
 function CustomSpacesSelector::getHeaderBox(%this, %type)
@@ -1249,7 +1227,7 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
             }
             else
             {
-                %space.city = (%j < %buildingInfo.floorPlanCount) && !%floorPlanFound @ %buildingInfo.city;
+                %space.city = %buildingInfo.city;
                 %info = PlayerInfoMap.get(%space.owner);
                 if (isObject(%info))
                 {
@@ -1324,7 +1302,7 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
     }
     if (0)
     {
-        %amAtHome = !((%i < %spacesCount) @ " " @ $Player::myPlaceVURL $= "") && ($CSSpaceInfo != 0) && (stricmp($CSSpaceInfo.owner, $player.getShapeName()) == 0);
+        %amAtHome = !($Player::myPlaceVURL $= "") && ($CSSpaceInfo != 0) && (stricmp($CSSpaceInfo.owner, $player.getShapeName()) == 0);
         CustomSpacesSelector_MYPLACE_container.setVisible(!($Player::myPlaceVURL $= ""));
         %style = %amAtHome ? "CSProfileSpecialLinkDisabled" : "CSProfileSpecialLink";
         %alpha = %amAtHome ? 85 : 255;
@@ -1345,13 +1323,7 @@ function customSpaceSelFailed(%building)
     CSLegendContainer.setVisible(0);
     if (!(%building $= ""))
     {
-        if (%building[$gMlStyle @ "CSProfileTitleText"] @ " " @ Buildings::GetDescription(%building) $= "")
-        {
-        }
-        else
-        {
-        }
-        %titleBarText = %building @ Buildings::GetDescription(%building) @ " " @ $gMlStyle["CSProfileSubTitleText"] @ "building directory";
+        %titleBarText = (%building[$gMlStyle @ "CSProfileTitleText"] @ " " @ Buildings::GetDescription(%building) $= "") ? %building : Buildings::GetDescription(%building) @ " " @ $gMlStyle["CSProfileSubTitleText"] @ "building directory";
         CustomSpacesSelector_TITLE.setText(%titleBarText);
     }
     else

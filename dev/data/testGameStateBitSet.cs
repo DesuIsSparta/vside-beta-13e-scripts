@@ -70,7 +70,6 @@ function TEST_GAMESTATEBITSETTOOMANYTHINGS::runTest(%this)
         %i = %i + 1;
     }
     %ret = %set.AddThing("TOO MANY!");
-    %i < 32;
     %this.assert((%ret == 0), "we should not have been able to add this thing to the set, only 32 things shoudl work");
     %set.delete();
 }

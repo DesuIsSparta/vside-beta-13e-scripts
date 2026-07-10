@@ -110,7 +110,7 @@ function hideClientSeats(%seats, %client)
         }
         commandToClient(%client, 'HideSeats', %seatList);
     }
-    return %i < %count;
+    return;
 }
 function hidePossibleSeats(%seats, %client)
 {

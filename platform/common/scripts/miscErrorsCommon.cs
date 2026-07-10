@@ -50,7 +50,6 @@ function displayStompedObjectNameErrorsReally()
     if (%realCount > 0)
     {
         %mb = MessageBoxOK(%title, %body, "").window;
-        %n < %count;
         %mb.resize(800, 200);
         %mb.resizeWidth = 1;
         %mb.resizeHeight = 1;

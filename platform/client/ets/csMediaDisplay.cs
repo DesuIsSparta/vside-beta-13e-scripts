@@ -210,7 +210,6 @@ function CSMediaDisplay::setMediaList(%this, %mediaList, %startIdx, %maxIdx, %hi
     while (%idx < %maxIdx)
     {
         %child = %this.getChildDisplay((%idx + %startIdx));
-        %idx < %count;
         %this.updateMediaLinkTo(%child, "", 0);
         if (%hideEmpty)
         {
@@ -409,7 +408,6 @@ function CSMediaDisplay::setPlayingChild(%this, %child)
         %idx = %idx + 1;
     }
     %medialink = "";
-    %idx < %count;
     if (%child != 0)
     {
         %child.isPlaying = 1;
@@ -551,7 +549,6 @@ function CSMediaDisplay::setMediaLink(%this, %child, %medialink, %skipStatistics
         if (%idx < %count)
         {
             %newStreamName = $musicStreamNameMap.getKey(%idx);
-            %idx < %count;
             %index = %child.medialink.findText(%newStreamName);
             %child.medialink.SetSelected(%index);
         }
@@ -868,7 +865,7 @@ function CSMediaDisplay::requestYoutubeInfo(%this, %child)
             %idx = %idx + 1;
         }
     }
-    %child.thumbCount = (%idx < %child.thumbCount) @ "";
+    %child.thumbCount = "";
     %url = new ScriptObject("");
     if (isObject(MissionCleanup))
     {
@@ -1067,7 +1064,7 @@ function CSMediaDisplay::parseEntryNode(%this, %child, %entryNode, %setTitle)
         %ThumbnailIdx = %ThumbnailIdx + 1;
         %ThumbnailNode = %ThumbnailNode.getNext("media:thumbnail");
     }
-    %child.thumbCount = %ThumbnailNode @ %ThumbnailIdx;
+    %child.thumbCount = %ThumbnailIdx;
 }
 function CSMediaDisplay::parseFeedNode(%this, %child, %feedNode)
 {
@@ -1136,7 +1133,7 @@ function CSMediaDisplay::clearChildDisplay(%this, %child)
             %idx = %idx + 1;
         }
     }
-    %child.thumbCount = (%idx < %child.thumbCount) @ "";
+    %child.thumbCount = "";
 }
 function CSMediaDisplay::buildChildDisplayYouTube(%this, %child)
 {
@@ -1351,7 +1348,7 @@ function CSMediaDisplay::buildChildDisplayRadio(%this, %child, %url)
     if (%child.isReadOnly)
     {
         %blocker = new GuiMLTextCtrl("") {
-            profile = (%idx < %count) @ "GuiMessageTextProfile";
+            profile = "GuiMessageTextProfile";
             horizSizing = "width";
             vertSizing = "height";
             position = %dropdown.position;

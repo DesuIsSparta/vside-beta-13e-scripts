@@ -26,7 +26,7 @@ function AccountBalanceHud::Initialize(%this)
         %this.pulsar.setProfile(ETSNonModalProfile);
         %this.pulsar.setVisible(0);
         %this.add(%this.pulsar);
-        %this.initialized = (%i < getWordCount(%nums)) @ 1;
+        %this.initialized = 1;
     }
     AccountBalanceHud.update();
 }

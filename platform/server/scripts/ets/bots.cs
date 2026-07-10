@@ -107,7 +107,7 @@ function serverCmdOneLove(%client)
         %n = %n + 1;
     }
     %client.Player.wardrobeStock();
-    return %n < AIManager.numBots;
+    return;
 }
 function serverCmdZombiesAttack(%client, %position)
 {
@@ -229,7 +229,7 @@ function AIManager::killBots(%this)
         %this.bots[%i].delete();
         %i = %i + 1;
     }
-    %this.numBots = (%i < %this.numBots) @ 0;
+    %this.numBots = 0;
     return;
 }
 function serverCmdBotsIdlePercent(%client, %percent)

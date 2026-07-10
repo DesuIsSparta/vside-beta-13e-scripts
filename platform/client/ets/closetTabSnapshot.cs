@@ -610,13 +610,7 @@ function ProfileCurrentPicture::getLocalFileName(%this, %includeExtention)
         }
         %ext = ".png";
     }
-    if (%includeExtention)
-    {
-    }
-    else
-    {
-    }
-    return %ext @ "";
+    return $DC::LocalAvatarFolder @ "/avatar_" @ stripUnprintables($Player::Name) @ %includeExtention ? %ext : "";
 }
 function ProfileSnapRegion::prepareSnapshot(%this)
 {
@@ -732,7 +726,6 @@ function ProfileBackgroundChooser::Initialize(%this)
         }
         %this.setNumChildren(%numImages);
         %i = 0;
-        %i < %count;
         while (%i < %numImages)
         {
             %cell = %this.getObject(%i);
@@ -742,7 +735,7 @@ function ProfileBackgroundChooser::Initialize(%this)
             %cell.bitmapName = %bgdPath @ (%i + 1) @ ".jpg";
             %i = %i + 1;
         }
-        %this.selected = (%i < %numImages) @ -(1);
+        %this.selected = -(1);
         %this.selectThumbAtIndex(0);
         %this.initialized = 1;
     }

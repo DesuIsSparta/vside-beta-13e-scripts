@@ -41,7 +41,7 @@ function Player::onGotSKUs(%this)
             }
             %i = %i - 1;
         }
-        if (!%usingInstrument && ((%i >= 0) && !%usingInstrument @ " " @ ApplauseMeterGui.applauseMeterUse $= "instrument"))
+        if (!%usingInstrument && (ApplauseMeterGui.applauseMeterUse $= "instrument"))
         {
             ApplauseMeterGui.closingFromServer = 1;
             ApplauseMeterGui.close();
@@ -94,7 +94,7 @@ function Player::onGotSKUs(%this)
             commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
         }
     }
-    if (%currentGenreIsPropGenre || %currentGenreIsInstrumentGenre || (%propSku $= "") && !(%instrumentGenre $= "") && !(%currentGenre $= $UserPref::Player::Genre))
+    if ((%propSku $= "") && %currentGenreIsPropGenre || %currentGenreIsInstrumentGenre || !(%instrumentGenre $= "") && !(%currentGenre $= $UserPref::Player::Genre))
     {
         commandToServer('setGenre', $UserPref::Player::Genre);
     }
@@ -112,7 +112,7 @@ function Player::onGotSKUs(%this)
         %this.trySkuEffectsClient(%sku);
         %n = %n - 1;
     }
-    %this.prevActiveSkus = (%n >= 0) @ %this.getActiveSKUs();
+    %this.prevActiveSkus = %this.getActiveSKUs();
 }
 function Player::applySkuBadge(%this, %skunum)
 {

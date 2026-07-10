@@ -91,7 +91,7 @@ function AIMConvManager::removeConvAtIndex(%this, %convIndex)
             %this.convs[%idx] = %this.convs[(%idx + 1)];
             %idx = %idx + 1;
         }
-        %this.convs[%this.numConvs] = (%idx < %this.numConvs) @ 0;
+        %this.convs[%this.numConvs] = 0;
         if (%this.numConvs == 0)
         {
             %this.currentConvIndex = -(1);
@@ -239,7 +239,7 @@ function AIMConvManager::newConv(%this, %aimName)
         }
         %i = %i + 1;
     }
-    %conv.newMessage = (%i < aimBuddyCount()) @ 0;
+    %conv.newMessage = 0;
     %textInput = new GuiTextEditCtrl("") {
         profile = "AIMTextEditProfile";
         horizSizing = "width";

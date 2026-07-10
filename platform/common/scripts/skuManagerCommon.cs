@@ -265,7 +265,6 @@ function SkuManager::sortSkusByDrawer(%this, %drySkuList)
         %n = %n - 1;
     }
     %sortableList = trim(%sortableList);
-    %n >= 0;
     %sortedList = SortRecords(%sortableList);
     %wetSkuList = "";
     %n = getWordCount(%drySkuList) - 1;
@@ -276,7 +275,6 @@ function SkuManager::sortSkusByDrawer(%this, %drySkuList)
         %n = %n - 1;
     }
     %wetSkuList = trim(%wetSkuList);
-    %n >= 0;
     return %wetSkuList;
 }
 function SkuManager::getUserFacingDrawerName(%this, %internalDrawerName)
@@ -354,7 +352,6 @@ function SkuManager::filterSkusDescription(%this, %skus, %userFilterText)
         %n = %n - 1;
     }
     %wet = trim(%wet);
-    %n >= 0;
     return %wet;
 }
 function SkuManager::buildSkusSearchText(%this)
@@ -375,10 +372,8 @@ function SkuManager::buildSkusSearchText(%this)
             %m = %m - 1;
         }
         %n = %n - 1;
-        %m >= 0;
     }
     %n = %this.getCount() - 1;
-    %n >= 0;
     while (%n >= 0)
     {
         %si = %this.getObject(%n);
@@ -488,14 +483,7 @@ function SkuManager::skuListHasSku(%this, %list, %sku)
 }
 function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeUsage, %thumbnailWidth)
 {
-    if (isDefined("%thumbnailSize"))
-    {
-    }
-    else
-    {
-    }
-    %thumbnailSize = 0;
-    %thumbnailSize;
+    %thumbnailSize = isDefined("%thumbnailSize") ? %thumbnailSize : 0;
     %ret = "";
     %delim = "";
     %n = getWordCount(%skus) - 1;
@@ -636,7 +624,6 @@ function SkuManager::filterSkusAnyTags(%this, %skus, %tags)
         %n = %n - 1;
     }
     %ret = trim(%ret);
-    %n >= 0;
     return %ret;
 }
 function SkuManager::filterSkusTag(%this, %skus, %tag)
@@ -654,7 +641,6 @@ function SkuManager::filterSkusTag(%this, %skus, %tag)
         %n = %n - 1;
     }
     %ret = trim(%ret);
-    %n >= 0;
     return %ret;
 }
 function SkuManager::getSkuWithAnyTags(%this, %skus, %tags)
@@ -698,7 +684,6 @@ function SkuManager::filterSkusAllTags(%this, %skus, %tags)
         %n = %n - 1;
     }
     %ret = trim(%ret);
-    %n >= 0;
     return %ret;
 }
 function SkuManager::getSkuWithAllTags(%this, %skus, %tags)
@@ -752,7 +737,6 @@ function SkuManager::filterSkusDrwrs(%this, %skus, %drwrs)
         %n = %n - 1;
     }
     %ret = trim(%ret);
-    %n >= 0;
     return %ret;
 }
 function SkuManager::filterSkusStore(%this, %skus, %storename)
@@ -770,7 +754,6 @@ function SkuManager::filterSkusStore(%this, %skus, %storename)
         %n = %n - 1;
     }
     %ret = trim(%ret);
-    %n >= 0;
     return %ret;
 }
 function SkuManager::getPropSkus(%this, %skulist)
@@ -806,7 +789,6 @@ function Player::EnsureActiveSkus(%this, %skus)
         %n = %n - 1;
     }
     %currentSkus = trim(%activeSkus);
-    %n >= 0;
     %this.setActiveSKUs(%activeSkus);
 }
 function SkuItem::hasTag(%this, %tag)
@@ -834,7 +816,6 @@ function SkuItem::replaceTextureName(%this, %newTextureName)
         %n = %n + 1;
     }
     %newTextures = trim(%newTextures);
-    %n < %num;
     %this.setTxtrNames(%newTextures);
 }
 function SkuManager::findTemplateSku(%this, %sku)

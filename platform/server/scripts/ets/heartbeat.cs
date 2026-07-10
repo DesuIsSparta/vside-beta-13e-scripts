@@ -59,7 +59,6 @@ function serverHeartBeat()
         %i = %i + 1;
     }
     %post = %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version @ "&" @ %load @ "&" @ %users;
-    %i < %count;
     echo("sending server heartbeat to: " @ %host);
     %initRequest.post(%host, %uri, %query, %post);
     schedule(7500, 0, "serverHeartBeat");

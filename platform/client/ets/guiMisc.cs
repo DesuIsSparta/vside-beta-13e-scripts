@@ -60,14 +60,7 @@ function GuiControl::blinkSet(%this, %mode, %periodOffMS, %periodOnMS, %param)
     {
         %this.resize(getWord(%this.origPoint, 0), getWord(%this.origPoint, 1), getWord(%this.origExtnt, 0), getWord(%this.origExtnt, 1));
     }
-    if (%mode $= "none")
-    {
-    }
-    else
-    {
-    }
-    %mode = %mode;
-    "";
+    %mode = (%mode $= "none") ? "" : %mode;
     %this.blinkMode = %mode;
     %this.blinkPeriodOffMS = %periodOffMS;
     %this.blinkPeriodOnMS = %periodOnMS;
@@ -698,7 +691,6 @@ function generic_takeSnapshotReally(%previewBitmapCtrl)
             %n = %n + 1;
         }
         %playerNames = trim(%playerNames);
-        %n < %numPlayers;
         %previewBitmapCtrl.playersInViewNames = %playerNames;
         removeFile(%filenameBase @ %filenameExt);
         addFile(%filenameBase @ %filenameExt);

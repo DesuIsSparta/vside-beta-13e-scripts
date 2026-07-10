@@ -115,7 +115,7 @@ function CSShoppingBrowser::loadAvailableSkus(%this)
         %this.addSku(getWord(%skulist, %i));
         %i = %i + 1;
     }
-    if (((%i < %numSkus) @ " " @ %this.Path $= "") || (%this.Path $= %this.baseDir))
+    if ((%this.Path $= "") || (%this.Path $= %this.baseDir))
     {
         %this.goToPath(%this.baseDir, 0);
     }
@@ -449,7 +449,6 @@ function CSShoppingBrowser::goToPath(%this, %path, %focus)
     }
     CSShoppingBrowser.vBuxIcon.reposition(3, (getWord(%this.getExtent(), 1) - 20));
     %pathSku = getSubStr(strchr(%path, "|"), 1);
-    %i < %count;
     if (($CSSelectedSku != -(1)) && !$CSSelectedIsOwned && !(%path $= %oldPath) && !(%pathSku $= $CSSelectedSku))
     {
         csTestFreeSelectedItem();
@@ -550,7 +549,7 @@ function CSShoppingItemPane::update(%this)
         %delim = " ";
         %n = %n + 1;
     }
-    %this.testDriveButton.command = (%n < %this.buyQuantity) @ "CSShoppingBrowser.testDriveSku(\"" @ %sku @ "\");";
+    %this.testDriveButton.command = "CSShoppingBrowser.testDriveSku(\"" @ %sku @ "\");";
     %this.buyButton.command = "CSShoppingBrowser.purchaseSkus(\"" @ %skus @ "\");";
     if (%si.priceVPoints < 0)
     {

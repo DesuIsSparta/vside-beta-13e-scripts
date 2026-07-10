@@ -13,7 +13,6 @@ while (%i < 9)
     %i = %i + 1;
 }
 %i = 0;
-%i < 9;
 while (%i < 9)
 {
     EditorMap.bindCmd(keyboard, "ctrl " @ %i, "editor.gotoBookmark(" @ %i @ ");", "");

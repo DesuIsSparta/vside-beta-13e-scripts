@@ -37,14 +37,7 @@ function testPermissions_AddABot_Evaluate()
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 1;
-    if ($StandAlone)
-    {
-    }
-    else
-    {
-    }
-    %expectedDelta = %expectedDelta * 1;
-    2;
+    %expectedDelta = %expectedDelta * $StandAlone ? 2 : 1;
     %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
     %actualSuccess = $gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta);
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
@@ -66,14 +59,7 @@ function testPermissions_AddABotArmy_Evaluate()
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 8;
-    if ($StandAlone)
-    {
-    }
-    else
-    {
-    }
-    %expectedDelta = %expectedDelta * 1;
-    2;
+    %expectedDelta = %expectedDelta * $StandAlone ? 2 : 1;
     %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
     %actualSuccess = $gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta);
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
