@@ -44,7 +44,7 @@ function checkStatus()
 function BootRequest::onDone(%this)
 {
     log("login", "debug", "LOAD: BootRequest::onDone");
-    if ((%this.statusCode() != $HTTP::StatusOK))
+    if (%this.statusCode() != $HTTP::StatusOK)
     {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         quit();
@@ -58,32 +58,29 @@ function BootRequest::onDone(%this)
         %status = findStatus(%this);
     }
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
-    if ((%status $= "success"))
+    if (%status $= "success")
     {
         echo("LOAD: Boot suceeded.");
         schedule(7000, 0, doLoginButton);
     }
     else
     {
-        if ((%status $= "fail"))
+        if (%status $= "fail")
         {
             echo("LOAD: Boot failed.");
             quit();
         }
-        else
+        if (%status $= "error")
         {
-            if ((%status $= "error"))
-            {
-                echo("LOAD: Boot errored.");
-                quit();
-            }
+            echo("LOAD: Boot errored.");
+            quit();
         }
     }
 }
 function LoginRequest::onDone(%this)
 {
     log("login", "debug", "LOAD: LoginRequest::onDone");
-    if ((%this.statusCode() != $HTTP::StatusOK))
+    if (%this.statusCode() != $HTTP::StatusOK)
     {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         quit();
@@ -97,7 +94,7 @@ function LoginRequest::onDone(%this)
         %status = findStatus(%this);
     }
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
-    if ((%status $= "success"))
+    if (%status $= "success")
     {
         LoginGui.stopAnimation();
         %this.parseResponse();
@@ -107,7 +104,7 @@ function LoginRequest::onDone(%this)
     }
     else
     {
-        if ((%status $= "upgrade_available"))
+        if (%status $= "upgrade_available")
         {
             LoginGui.stopAnimation();
             %this.parseResponse();
@@ -115,56 +112,47 @@ function LoginRequest::onDone(%this)
             WorldMap.open();
             schedule(2000, 0, joinServer);
         }
-        else
+        if (%status $= "alreadyloggedin")
         {
-            if ((%status $= "alreadyloggedin"))
+            if ($bootAttempted == 0)
             {
-                if (($bootAttempted == 0.0))
-                {
-                    echo("LOAD: Test login auto-booting from previously joined server");
-                    LoginRequest::handleBoot();
-                    $bootAttempted = 1;
-                    schedule(7000, 0, checkStatus);
-                }
-                else
-                {
-                    error("LOAD: Boot failed. Giving up.");
-                    echo("LOAD: Quit()-ing...");
-                    quit();
-                }
+                echo("LOAD: Test login auto-booting from previously joined server");
+                LoginRequest::handleBoot();
+                $bootAttempted = 1;
+                schedule(7000, 0, checkStatus);
             }
             else
             {
-                error("Login failed");
-                warn("Login failed for [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
+                error("LOAD: Boot failed. Giving up.");
+                echo("LOAD: Quit()-ing...");
                 quit();
             }
         }
+        error("Login failed");
+        warn("Login failed for [" @ $UserPref::Player::Name @ "/" @ $UserPref::Player::Password @ "] failed due to " @ LoginRequest.loginResult);
+        quit();
     }
 }
 function joinServer()
 {
     echo("Servers.getCount() = " @ " " @ servers.getCount());
-    if ((servers.getCount() == 0.0))
+    if (servers.getCount() == 0)
     {
         echo("LOAD: We got 0 servers. Trying again in 5 seconds.");
         schedule(5000, 0, joinServer);
         return;
     }
     %i = 0;
-    if ((%i < servers.getCount()))
+    while (%i < servers.getCount())
     {
-        if ((servers.getObject(%i).get("name") $= "TestTown"))
+        if (servers.getObject(%i).get("name") $= "TestTown")
         {
             WorldMap.join(servers.getObject(%i));
             echo("LOAD: Joined server " @ servers.getObject(%i).get("name"));
             echo("LOAD: Test login completed");
             schedule(11000, 0, doSomething);
         }
-        else
-        {
-            %i = (%i + 1.0);
-        }
+        %i = %i + 1;
     }
 }
 function checkActiveOutfit()

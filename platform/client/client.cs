@@ -15,10 +15,10 @@ function clientCmdSyncClock(%time)
 }
 function getServerSimTime()
 {
-    return (getSimTime() + $Sim::TimeDeltaToServer);
+    return getSimTime() + $Sim::TimeDeltaToServer;
 }
 function clientCmdSyncSolarTimeOfDay(%sod)
 {
-    echo("got solar HOD:" @ " " @ (%sod / (60.0 * 60.0)));
-    $Sim::TimeDeltaToCity = ((%sod * 1000.0) - getSimTime());
+    echo("got solar HOD:" @ " " @ (%sod / (60 * 60)));
+    $Sim::TimeDeltaToCity = (%sod * 1000) - getSimTime();
 }

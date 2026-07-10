@@ -15,7 +15,7 @@ function Player::onGotTextFields(%this)
     %this.setAwayMessage(TryFixBadWords(%this.getAwayMessage()));
     %this.updateMapIcon();
 }
-setIdleTimeout(((4.0 * 60.0) * 1000.0));
+setIdleTimeout(((4 * 60) * 1000));
 $gCurrentAwayMessage = "";
 function setIdle(%idle, %message)
 {
@@ -32,19 +32,16 @@ function setIdle(%idle, %message)
     }
     if (!$Server::Dedicated)
     {
-        if ((%idle == 1.0))
+        if (%idle == 1)
         {
             if (!isIdle() || !(%message $= $gCurrentAwayMessage))
             {
                 onIdle(%message);
             }
         }
-        else
+        if (isIdle())
         {
-            if (isIdle())
-            {
-                onUnidle();
-            }
+            onUnidle();
         }
     }
     setGameInterfaceIdle(%idle);
@@ -56,7 +53,7 @@ function onIdle(%message)
         return;
     }
     $gCurrentAwayMessage = %message;
-    if ((%message $= ""))
+    if (%message $= "")
     {
         %message = $UserPref::Player::awayMessage;
     }

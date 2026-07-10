@@ -7,39 +7,39 @@ function SpawnSphere::choosePointOnCenterPlane(%this)
     %retries = 7;
     %good = 0;
     %n = 0;
-    while ((%n < 10.0))
+    while (%n < 10)
     {
-        %tryX = getRandom(-(1000.0), 1000);
-        %tryY = getRandom(-(1000.0), 1000);
-        if ((((%tryX * %tryX) + (%tryY * %tryY)) < (1000.0 * 1000.0)))
+        %tryX = getRandom(-(1000), 1000);
+        %tryY = getRandom(-(1000), 1000);
+        if (((%tryX * %tryX) + (%tryY * %tryY)) < (1000 * 1000))
         {
             %good = 1;
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
-    %posX = (%posX + ((%tryX * 0.001) * %this.radius));
-    (%n < 10.0);
-    %posY = (%posY + ((%tryY * 0.001) * %this.radius));
+    %posX = %posX + ((%tryX * 0.001) * %this.radius);
+    %n < 10;
+    %posY = %posY + ((%tryY * 0.001) * %this.radius);
     return %posX @ " " @ %posY @ " " @ %posZ;
 }
 function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphere)
 {
-    %minSep2 = (%minSeparation * %minSeparation);
+    %minSep2 = %minSeparation * %minSeparation;
     %num = MissionCleanup.getCount();
     %retries = 20;
     %good = 0;
     %m = 0;
-    while ((%m < %retries))
+    while (%m < %retries)
     {
         %candidate = %this.choosePointOnCenterPlane();
         %cdX = getWord(%candidate, 0);
         %cdY = getWord(%candidate, 1);
         %tooClose = 0;
         %n = 0;
-        while ((%n < %num))
+        while (%n < %num)
         {
             %item = MissionCleanup.getObject(%n);
-            if ((%item != %exclude))
+            if (%item != %exclude)
             {
             }
             if ((%item.getClassName() $= "Player") || (%item.getClassName() $= "AIPlayer"))
@@ -47,31 +47,31 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
                 %itTrans = %item.getTransform();
                 %itX = getWord(%itTrans, 0);
                 %itY = getWord(%itTrans, 1);
-                %dx = (%itX - %cdX);
-                %dy = (%itY - %cdY);
-                %sep2 = ((%dx * %dx) + (%dy * %dy));
-                if ((%sep2 < %minSep2))
+                %dx = %itX - %cdX;
+                %dy = %itY - %cdY;
+                %sep2 = (%dx * %dx) + (%dy * %dy);
+                if (%sep2 < %minSep2)
                 {
                     %tooClose = 1;
                 }
             }
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
         if (!%tooClose)
         {
             %good = 1;
-            (%n < %num);
+            %n < %num;
         }
-        %m = (%m + 1.0);
+        %m = %m + 1;
     }
     %rot = "0 0 1";
-    (%m < %retries);
-    if ((%m >= %retries))
+    %m < %retries;
+    if (%m >= %retries)
     {
         echo("\x03 could not find empty spot");
         %rot = "0 0 -1";
     }
-    %theta = ((getRandom(0, 360) * 3.41593) / 180.0);
+    %theta = (getRandom(0, 360) * 3.41593) / 180;
     %rot = %rot @ " " @ %theta;
     if (%alignToSphere)
     {
@@ -83,18 +83,18 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
 function SpawnSphere::spawnBots(%this, %num, %sep)
 {
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         AIManager::SpawnETS(AIManager, %this.getEmptySpot(%sep, 0, 0));
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function SpawnSphere::spawnBotsDensity(%this, %density, %sep)
 {
-    %spnArea = ((%this.radius * %this.radius) * 3.14159);
-    %botArea = (%sep / 2.0);
-    %botArea = ((%botArea * %botArea) * 3.14159);
-    %num = (((%spnArea / %botArea) * 0.9) * %density);
+    %spnArea = (%this.radius * %this.radius) * 3.14159;
+    %botArea = %sep / 2;
+    %botArea = (%botArea * %botArea) * 3.14159;
+    %num = ((%spnArea / %botArea) * 0.9) * %density;
     echo("spawning" @ " " @ %num @ " " @ "bots..");
     %this.spawnBots(%num);
     return;
@@ -113,7 +113,7 @@ function Player::teleportToRandomSpawnSphere(%this)
     }
     else
     {
-        %chosen = PlayerDropPoints.getObject(getRandom(0, (PlayerDropPoints.getCount() - 1.0)));
+        %chosen = PlayerDropPoints.getObject(getRandom(0, (PlayerDropPoints.getCount() - 1)));
     }
     if (!isObject(%chosen))
     {

@@ -16,7 +16,7 @@ function selectAdminAction(%text)
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
-    %isBanCommand = (%text $= "Ban");
+    %isBanCommand = %text $= "Ban";
     adminGuiInternalMessage.setVisible(%isBanCommand);
     adminGuiEditInternalMessage.setVisible(%isBanCommand);
     adminBanUserName.setValue(0);
@@ -71,7 +71,7 @@ function adminGui::close(%this, %unused)
 function adminGui::initMenu(%this, %unused)
 {
     %prevItem = adminActionPopup.getText();
-    if ((%prevItem $= ""))
+    if (%prevItem $= "")
     {
         %prevItem = "Message";
     }
@@ -81,27 +81,27 @@ function adminGui::initMenu(%this, %unused)
     %n = 0;
     %disabled = 0;
     %itemText = "Message";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Boot";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "BootQuiet";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Ban";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Fly To";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Track";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Snoop Toggle";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Teleport To";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Respawn";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Summon";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     %itemText = "Throw Voice";
-    adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
+    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
     adminActionPopup.setText(%prevItem);
 }
 function adminGui::tryTarget(%this, %shape)
@@ -151,7 +151,7 @@ function adminGui::onConfirm(%this)
     %action = adminActionPopup.getText();
     %banUser = adminBanUserName.getValue();
     %duration = adminGuiEditDuration.getValue();
-    if ((%action $= "Ban"))
+    if (%action $= "Ban")
     {
         %internalMsg = adminGuiEditInternalMessage.getValue();
     }
@@ -172,22 +172,22 @@ function adminGui::onGotTargetsList(%this, %theList)
 {
     adminTargetsPopup.clear();
     %num = getRecordCount(%theList);
-    if ((%num < 1.0))
+    if (%num < 1)
     {
         error("apparently nobody is here. this is bad.");
         return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %entry = getRecord(%theList, %n);
         adminTargetsPopup.add(%entry, %n);
-        if ((%entry $= $gAdminGuiPrevMenuTarget))
+        if (%entry $= $gAdminGuiPrevMenuTarget)
         {
             %nextItem = %entry;
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     adminTargetsPopup.sort();
     if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))
@@ -209,15 +209,15 @@ $adminTargetsList = "";
 function clientCmdBuildTargetsList(%actionTagged, %item)
 {
     %action = detag(%actionTagged);
-    if ((%action $= "begin"))
+    if (%action $= "begin")
     {
         $adminTargetsList = "";
     }
     else
     {
-        if ((%action $= "add"))
+        if (%action $= "add")
         {
-            if (($adminTargetsList $= ""))
+            if ($adminTargetsList $= "")
             {
                 $adminTargetsList = %item;
             }
@@ -226,12 +226,9 @@ function clientCmdBuildTargetsList(%actionTagged, %item)
                 $adminTargetsList = $adminTargetsList @ "\n" @ %item;
             }
         }
-        else
+        if (%action $= "finish")
         {
-            if ((%action $= "finish"))
-            {
-                adminGui.onGotTargetsList($adminTargetsList);
-            }
+            adminGui.onGotTargetsList($adminTargetsList);
         }
     }
 }

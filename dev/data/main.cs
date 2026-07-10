@@ -123,13 +123,10 @@ package dev
                 playJournal($JournalPlayFile, 0);
                 log("initialization", "info", "playing event log from journal: " @ $JournalPlayFile);
             }
-            else
+            if (!($JournalPlayAndBreakFile $= ""))
             {
-                if (!($JournalPlayAndBreakFile $= ""))
-                {
-                    playJournal($JournalPlayAndBreakFile, 1);
-                    log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
-                }
+                playJournal($JournalPlayAndBreakFile, 1);
+                log("initialization", "info", "playing event log from journal (with breaks): " @ $JournalPlayAndBreakFile);
             }
         }
     }
@@ -149,20 +146,17 @@ package dev
                 generateRegistrationStart();
                 return;
             }
-            else
+            exec("dev/devDefaults.cs");
+            exec("dev/devPrefs.cs");
+            exec("./initNonReloadable.cs");
+            exec("./initReloadable.cs");
+            if (!($EvalString $= ""))
             {
-                exec("dev/devDefaults.cs");
-                exec("dev/devPrefs.cs");
-                exec("./initNonReloadable.cs");
-                exec("./initReloadable.cs");
-                if (!($EvalString $= ""))
-                {
-                    eval($EvalString);
-                }
-                if (!($ExecScript $= ""))
-                {
-                    exec("./" @ $ExecScript);
-                }
+                eval($EvalString);
+            }
+            if (!($ExecScript $= ""))
+            {
+                exec("./" @ $ExecScript);
             }
         }
     }
@@ -219,7 +213,7 @@ package dev
             exit(1);
         }
         %registrationID = %request.getValue("registrationID");
-        if ((%registrationID $= ""))
+        if (%registrationID $= "")
         {
             error(getScopeName() @ " " @ "- no registration ID!");
             exit(2);
@@ -239,33 +233,33 @@ package dev
         %tryCount = 0;
         %sucCount = 0;
         %n = 0;
-        while ((%n < getWordCount(%extensions)))
+        while (%n < getWordCount(%extensions))
         {
             %ext = getWord(%extensions, %n);
             %file = findFirstFile(%ext);
             while (!(%file $= ""))
             {
                 %suc = compile(%file);
-                %tryCount = (%tryCount + 1.0);
-                %sucCount = (%sucCount + %suc);
+                %tryCount = %tryCount + 1;
+                %sucCount = %sucCount + %suc;
                 if (!%suc)
                 {
                     %tryCount[%fails @ (%tryCount - %sucCount)] = %file;
                 }
                 %file = findNextFile(%ext);
             }
-            %n = (%n + 1.0);
+            %n = %n + 1;
             !(%file $= "");
         }
         log("initialization", "info", "compiled" @ " " @ %sucCount @ " " @ "out of" @ " " @ %tryCount @ " " @ "files");
         %n = 1;
-        (%n < getWordCount(%extensions));
-        while ((%n <= (%tryCount - %sucCount)))
+        %n < getWordCount(%extensions);
+        while (%n <= (%tryCount - %sucCount))
         {
             error("initialization", "compile failed:" @ " " @ %fails[%n]);
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
-        if ((%tryCount == %sucCount))
+        if (%tryCount == %sucCount)
         {
             return 1;
         }

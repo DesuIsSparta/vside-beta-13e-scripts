@@ -64,7 +64,7 @@ function DoorTrigger::onEnterTrigger(%this, %trigger, %player)
     {
         DoorShapeData::openDoor(%trigger.door);
     }
-    %trigger.door.insideCount = (%trigger.door.insideCount + 1.0);
+    %trigger.door.insideCount = %trigger.door.insideCount + 1;
     return;
 }
 function DoorTrigger::onTickTrigger(%this, %trigger)
@@ -85,8 +85,8 @@ function DoorTrigger::onLeaveTrigger(%this, %trigger, %player)
         error("DoorTrigger::onEnterTrigger:  Did not find door member. must have a door dynamic var to work");
         return;
     }
-    %trigger.door.insideCount = (%trigger.door.insideCount - 1.0);
-    if ((%trigger.door.insideCount == 0.0))
+    %trigger.door.insideCount = %trigger.door.insideCount - 1;
+    if (%trigger.door.insideCount == 0)
     {
     }
     if (%trigger.door.doorOpen)

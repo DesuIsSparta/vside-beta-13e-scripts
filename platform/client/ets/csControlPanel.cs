@@ -19,13 +19,13 @@ function CSControlPanelTabs::setup(%this)
 }
 function CSControlPanelTabs::tabSelected(%this, %tab)
 {
-    if ((%tab.name $= "MODEL_APT"))
+    if (%tab.name $= "MODEL_APT")
     {
         %this.fillModelAptTab(%tab);
     }
     else
     {
-        if ((%tab.name $= "SKIP_TUTORIAL"))
+        if (%tab.name $= "SKIP_TUTORIAL")
         {
             %this.fillSkipTutorialTab(%tab);
         }
@@ -88,7 +88,7 @@ function CSControlPanelTabs::updateSkipTutorialTab(%this)
     }
     else
     {
-        if ((CSControlPanelTabs.getCurrentTab() == CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL")))
+        if (CSControlPanelTabs.getCurrentTab() == CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL"))
         {
             CSControlPanel.close();
         }
@@ -96,7 +96,7 @@ function CSControlPanelTabs::updateSkipTutorialTab(%this)
 }
 function CSSpaceSkipTutorialText::onURL(%this, %url)
 {
-    if ((%url $= "gamelink SKIP_TUTORIAL"))
+    if (%url $= "gamelink SKIP_TUTORIAL")
     {
         gatewayExitTransition(1, 1);
     }
@@ -146,11 +146,11 @@ function CSSpaceModelAptText::onURL(%this, %url)
         return;
     }
     %this.userHasClickedMe = 1;
-    if ((getWord(%url, 0) $= "gamelink"))
+    if (getWord(%url, 0) $= "gamelink")
     {
         %url = getWords(%url, 1);
     }
-    if ((getWord(%url, 0) $= "PURCHASESPACE"))
+    if (getWord(%url, 0) $= "PURCHASESPACE")
     {
         CSSpacePurchase($CSSpaceInfo);
     }
@@ -158,7 +158,7 @@ function CSSpaceModelAptText::onURL(%this, %url)
 }
 function CSSpaceModelAptText::update(%this)
 {
-    if (($CSSpaceInfo == 0.0))
+    if ($CSSpaceInfo == 0)
     {
         %this.lineSpacing = 0;
         %text = "Waiting for apartment info...";
@@ -166,22 +166,16 @@ function CSSpaceModelAptText::update(%this)
     else
     {
         %myLevel = respektScoreToLevel($gMyRespektPoints);
-        if (($CSSpaceInfo.floorplan.minLevel > %myLevel))
+        if ($CSSpaceInfo.floorplan.minLevel > %myLevel)
         {
             %text = "You must be at least<spush><color:ffbbdd> " @ respektLevelToNameWithIndefiniteArticle($CSSpaceInfo.floorplan.minLevel) @ "<spop> to purchase an apartment like this.";
         }
-        else
+        %this.lineSpacing = 4;
+        if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName))
         {
-            %this.lineSpacing = 4;
-            if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName))
-            {
-                %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
-            }
-            else
-            {
-                %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
-            }
+            %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
         }
+        %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
     }
     %this.setText(%text);
 }

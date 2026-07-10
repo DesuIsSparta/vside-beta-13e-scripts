@@ -101,7 +101,7 @@ datablock ParticleData(PlayerSplashMist) {
     lifetimeMS = 400;
     lifetimeVarianceMS = 100;
     useInvAlpha = 0;
-    spinRandomMin = -(90.0);
+    spinRandomMin = -(90);
     spinRandomMax = 500;
     textureName = "projects/common/characters/splash";
     colors = "0.7 0.8 1.0 1.0";
@@ -168,7 +168,7 @@ datablock ParticleData(PlayerFoamParticle) {
     lifetimeMS = 400;
     lifetimeVarianceMS = 100;
     useInvAlpha = 0;
-    spinRandomMin = -(90.0);
+    spinRandomMin = -(90);
     spinRandomMax = 500;
     textureName = "projects/common/characters/splash";
     colors = "0.7 0.8 1.0 0.20";
@@ -198,7 +198,7 @@ datablock ParticleData(PlayerFoamDropletsParticle) {
     dragCoefficient = 1;
     gravityCoefficient = 0.2;
     inheritedVelFactor = 0.2;
-    constantAcceleration = -(0.0);
+    constantAcceleration = -(0);
     lifetimeMS = 600;
     lifetimeVarianceMS = 0;
     textureName = "projects/common/characters/splash";
@@ -230,7 +230,7 @@ datablock ParticleData(PlayerSplashParticle) {
     dragCoefficient = 1;
     gravityCoefficient = 0.2;
     inheritedVelFactor = 0.2;
-    constantAcceleration = -(0.0);
+    constantAcceleration = -(0);
     lifetimeMS = 600;
     lifetimeVarianceMS = 0;
     colors = "0.7 0.8 1.0 1.0";
@@ -266,7 +266,7 @@ datablock SplashData(PlayerSplash) {
     lifetimeMS = 300;
     velocity = 4;
     startRadius = 0;
-    acceleration = -(3.0);
+    acceleration = -(3);
     texWrap = 5;
     texture = "projects/common/characters/splash";
     emitter = PlayerSplashEmitter;
@@ -288,7 +288,7 @@ datablock ParticleData(LightPuff) {
     lifetimeMS = 800;
     lifetimeVarianceMS = 100;
     useInvAlpha = 1;
-    spinRandomMin = -(35.0);
+    spinRandomMin = -(35);
     spinRandomMax = 35;
     colors = "1.0 1.0 1.0 1.0";
     colors = "1.0 1.0 1.0 0.0";
@@ -319,7 +319,7 @@ datablock ParticleData(LiftoffDust) {
     lifetimeMS = 1000;
     lifetimeVarianceMS = 100;
     useInvAlpha = 1;
-    spinRandomMin = -(90.0);
+    spinRandomMin = -(90);
     spinRandomMax = 500;
     colors = "1.0 1.0 1.0 1.0";
     sizes = 1;
@@ -405,7 +405,7 @@ datablock PlayerData(PlayerBody) {
     debrisShapeName = "";
     Debris = PlayerDebris;
     aiAvoidThis = 1;
-    minLookAngle = -(1.0);
+    minLookAngle = -(1);
     maxLookAngle = 1.6;
     maxFreelookAngle = 3;
     maxTimeScale = 1.2;
@@ -419,7 +419,7 @@ datablock PlayerData(PlayerBody) {
     repairRate = 0.33;
     energyPerDamagePoint = 75;
     rechargeRate = 0.256;
-    runForce = (48.0 * 90.0);
+    runForce = (48 * 90);
     runEnergyDrain = 0;
     minRunEnergy = 0;
     minForwardSpeed = 3;
@@ -430,7 +430,7 @@ datablock PlayerData(PlayerBody) {
     maxUnderwaterForwardSpeed = 8.4;
     maxUnderwaterBackwardSpeed = 7.8;
     maxUnderwaterSideSpeed = 7.8;
-    jumpForce = (8.3 * 90.0);
+    jumpForce = (8.3 * 90);
     jumpEnergyDrain = 0;
     minJumpEnergy = 0;
     jumpDelay = 12;
@@ -522,7 +522,7 @@ function armor::onAdd(%this, %obj)
 }
 function armor::onRemove(%this, %obj)
 {
-    if ((%obj.client.Player == %obj))
+    if (%obj.client.Player == %obj)
     {
         %obj.client.Player = 0;
     }
@@ -542,7 +542,7 @@ function armor::onNewDataBlock(%this, %obj)
 }
 function armor::onMount(%this, %obj, %vehicle, %node)
 {
-    if ((%node == 0.0))
+    if (%node == 0)
     {
         %obj.setTransform("0 0 0 0 0 1 0");
         %obj.setActionThread(%vehicle.getDataBlock().mountPose[%node], 1, 1);
@@ -555,7 +555,7 @@ function armor::onMount(%this, %obj, %vehicle, %node)
 }
 function armor::onUnmount(%this, %obj, %vehicle, %node)
 {
-    if ((%node == 0.0))
+    if (%node == 0)
     {
         %obj.mountImage(%obj.lastWeapon, $WeaponSlot);
     }
@@ -578,9 +578,9 @@ function armor::doDismount(%this, %obj, %forced)
     %vec[0] = MatrixMulVector(%obj.getTransform(), %vec[0]);
     %pos = "0 0 0";
     %numAttempts = 5;
-    %success = -(1.0);
+    %success = -(1);
     %i = 0;
-    if ((%i < %numAttempts))
+    while (%i < %numAttempts)
     {
         %pos = VectorAdd(%oldPos, VectorScale(%vec[%i], 3));
         if (%obj.checkDismountPoint(%oldPos, %pos))
@@ -588,18 +588,15 @@ function armor::doDismount(%this, %obj, %forced)
             %success = %i;
             %impulseVec = %vec[%i];
         }
-        else
-        {
-            %i = (%i + 1.0);
-        }
+        %i = %i + 1;
     }
     if (%forced)
     {
     }
-    if ((%success == -(1.0)))
+    if (%success == -(1))
     {
         %pos = %oldPos;
-        (%i < %numAttempts);
+        %i < %numAttempts;
     }
     gSetField(%this, mountVehicle, 0);
     %obj.schedule(4000, "mountVehicles", 1);
@@ -611,22 +608,22 @@ function armor::doDismount(%this, %obj, %forced)
 }
 function armor::onCollision(%this, %obj, %col)
 {
-    if ((%obj.getState() $= "Dead"))
+    if (%obj.getState() $= "Dead")
     {
         return;
     }
-    if ((%col.getClassName() $= "Item"))
+    if (%col.getClassName() $= "Item")
     {
         %obj.pickup(%col);
     }
     %this = %col.getDataBlock();
-    if ((%this.className $= WheeledVehicleData))
+    if (%this.className $= WheeledVehicleData)
     {
     }
     if (%obj.mountVehicle)
     {
     }
-    if ((%obj.getState() $= "Move"))
+    if (%obj.getState() $= "Move")
     {
     }
     if (%col.mountable)
@@ -644,7 +641,7 @@ function armor::onImpact(%this, %obj, %unused, %vec, %vecLen)
 }
 function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType)
 {
-    if ((%obj.getState() $= "Dead"))
+    if (%obj.getState() $= "Dead")
     {
         return;
     }
@@ -659,7 +656,7 @@ function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType
     }
     %sourceClient = 0;
     %sourceObject;
-    if ((%obj.getState() $= "Dead"))
+    if (%obj.getState() $= "Dead")
     {
         %client.onDeath(%sourceObject, %sourceClient, %damageType, %location);
     }
@@ -667,18 +664,18 @@ function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType
 }
 function armor::onDamage(%this, %obj, %delta)
 {
-    if ((%delta > 0.0))
+    if (%delta > 0)
     {
     }
     if (!(%obj.getState() $= "Dead"))
     {
-        %flash = (%obj.getDamageFlash() + ((%delta / %this.maxDamage) * 2.0));
-        if ((%flash > 0.75))
+        %flash = %obj.getDamageFlash() + ((%delta / %this.maxDamage) * 2);
+        if (%flash > 0.75)
         {
             %flash = 0.75;
         }
         %obj.setDamageFlash(%flash);
-        if ((%delta > 10.0))
+        if (%delta > 10)
         {
             %obj.playPain();
         }
@@ -691,7 +688,7 @@ function armor::onDisabled(%this, %obj, %unused)
     %obj.playDeathAnimation();
     %obj.setDamageFlash(0.75);
     %obj.setImageTrigger(0, 0);
-    %obj.schedule(($CorpseTimeoutValue - 1000.0), "startFade", 1000, 0, 1);
+    %obj.schedule(($CorpseTimeoutValue - 1000), "startFade", 1000, 0, 1);
     %obj.schedule($CorpseTimeoutValue, "delete");
     return;
 }
@@ -713,52 +710,34 @@ function armor::onEnterMissionArea(%this, %obj)
 }
 function armor::onEnterLiquid(%this, %obj, %unused, %type)
 {
-    if ((%type == 0.0))
+    if (%type == 0)
     {
     }
     else
     {
-        if ((%type == 1.0))
+        if (%type == 1)
         {
         }
-        else
+        if (%type == 2)
         {
-            if ((%type == 2.0))
-            {
-            }
-            else
-            {
-                if ((%type == 3.0))
-                {
-                }
-                else
-                {
-                    if ((%type == 4.0))
-                    {
-                        %obj.setDamageDt(%this, $DamageLava, "Lava");
-                    }
-                    else
-                    {
-                        if ((%type == 5.0))
-                        {
-                            %obj.setDamageDt(%this, $DamageHotLava, "Lava");
-                        }
-                        else
-                        {
-                            if ((%type == 6.0))
-                            {
-                                %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
-                            }
-                            else
-                            {
-                            }
-                        }
-                    }
-                }
-            }
+        }
+        if (%type == 3)
+        {
+        }
+        if (%type == 4)
+        {
+            %obj.setDamageDt(%this, $DamageLava, "Lava");
+        }
+        if (%type == 5)
+        {
+            %obj.setDamageDt(%this, $DamageHotLava, "Lava");
+        }
+        if (%type == 6)
+        {
+            %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
         }
     }
-    return (%type == 7.0);
+    return %type == 7;
 }
 function armor::onLeaveLiquid(%this, %obj, %type)
 {
@@ -822,7 +801,7 @@ function AddDance(%danceObj, %sequence, %timeTillSwitch, %transitionTime)
     %danceObj.anim[%danceObj.count] = %sequence;
     %danceObj.time[%danceObj.count] = %timeTillSwitch;
     %danceObj.transition[%danceObj.count] = %transitionTime;
-    %danceObj.count = (%danceObj.count + 1.0);
+    %danceObj.count = %danceObj.count + 1;
     return;
 }
 $DANCE_PULSE_FREQ = 100;
@@ -830,17 +809,17 @@ function Player::dancePulse(%player)
 {
     %playerVel = %player.getVelocity();
     %vel = VectorLen(%playerVel);
-    if ((%vel > 0.1))
+    if (%vel > 0.1)
     {
         %player.stopDance();
         return;
     }
-    %player.danceTimeRemaining = (%player.danceTimeRemaining - $DANCE_PULSE_FREQ);
-    if ((%player.danceTimeRemaining <= 0.0))
+    %player.danceTimeRemaining = %player.danceTimeRemaining - $DANCE_PULSE_FREQ;
+    if (%player.danceTimeRemaining <= 0)
     {
         echo("choosing new dance");
-        %dNum = getRandom(0, (%player.danceObj.count - 1.0));
-        %player.setActionThread(%player.danceObj.anim[%dNum], 0, 1, (%player.danceObj.transition[%dNum] / 1000.0));
+        %dNum = getRandom(0, (%player.danceObj.count - 1));
+        %player.setActionThread(%player.danceObj.anim[%dNum], 0, 1, (%player.danceObj.transition[%dNum] / 1000));
         %player.danceTimeRemaining = %player.danceObj.time[%dNum];
         echo("number " @ %dNum @ " chose anime" @ %player.danceObj.anim[%dNum] @ " for " @ %player.danceTimeRemaining @ " milliseconds");
     }

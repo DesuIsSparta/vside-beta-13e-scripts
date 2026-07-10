@@ -5,7 +5,7 @@ function BroadCastControlPanel::toggle(%this)
 }
 function BroadCastControlPanel::open(%this)
 {
-    BroadCastCrossHairsFrame.resize((getWord(BroadCastRegionControl.getExtent(), 0) - 1.0), (getWord(BroadCastRegionControl.getExtent(), 1) - 1.0));
+    BroadCastCrossHairsFrame.resize((getWord(BroadCastRegionControl.getExtent(), 0) - 1), (getWord(BroadCastRegionControl.getExtent(), 1) - 1));
     BroadCastCrossHairsFrame.resize(getWord(BroadCastRegionControl.getExtent(), 0), getWord(BroadCastRegionControl.getExtent(), 1));
     %this.setVisible(1);
     %this.setConstrained(1);
@@ -37,25 +37,25 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot()
     BroadSnapshotButton_HideSnoop();
     if (BroadcastHideHUDsCheckbox.getValue())
     {
-        if ((BroadCastControlPanel.temporaryGUIControlContainer == 0.0))
+        if (BroadCastControlPanel.temporaryGUIControlContainer == 0)
         {
             BroadCastControlPanel.temporaryGUIControlContainer = new GuiControl("");
         }
         BroadCastControlPanel.temporaryGUIControlContainer.setVisible(0);
         %orderedChildren = PlayGui.getChildrenInOrder(BroadCastControlPanel.playGuiControlsToHide);
-        %i = (getWordCount(%orderedChildren) - 1.0);
-        while ((%i >= 0.0))
+        %i = getWordCount(%orderedChildren) - 1;
+        while (%i >= 0)
         {
             %ctrl = getWord(%orderedChildren, %i);
             BroadCastControlPanel.temporaryGUIControlContainer.add(%ctrl);
-            %i = (%i - 1.0);
+            %i = %i - 1;
         }
     }
     if (BroadcastHideChatCheckbox.getValue())
     {
-        if ((BroadCastControlPanel.temporaryGUIControlContainer == 0.0))
+        if (BroadCastControlPanel.temporaryGUIControlContainer == 0)
         {
-            BroadCastControlPanel.temporaryGUIControlContainer = (%i >= 0.0) @ new GuiControl("");
+            BroadCastControlPanel.temporaryGUIControlContainer = (%i >= 0) @ new GuiControl("");
         }
         BroadCastControlPanel.temporaryGUIControlContainer.setVisible(0);
         BroadCastControlPanel.temporaryGUIControlContainer.add(ConvBub);
@@ -83,10 +83,10 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot()
     {
         BroadCastControlPanel.setVisible(0);
     }
-    if (($Platform $= "windows"))
+    if ($Platform $= "windows")
     {
     }
-    if (($Platform::Version::Major == 6.0))
+    if ($Platform::Version::Major == 6)
     {
         waitAFrameAndCall("waitAFrameAndCall(\"BroadSnapshotButton_doTakeSnapshot\");");
     }
@@ -99,20 +99,17 @@ function BroadSnapshotButton_doTakeSnapshot()
 {
     BroadSnapshotButton.setActive(0);
     %photoFileName = $DC::LocalAvatarFolder @ "/lastSnapshotTaken";
-    if (($Pref::Video::screenShotFormat $= "JPEG"))
+    if ($Pref::Video::screenShotFormat $= "JPEG")
     {
         %ext = ".jpg";
     }
     else
     {
-        if (($Pref::Video::screenShotFormat $= "PNG"))
+        if ($Pref::Video::screenShotFormat $= "PNG")
         {
             %ext = ".png";
         }
-        else
-        {
-            %ext = ".png";
-        }
+        %ext = ".png";
     }
     %regionControl = 0;
     if (BroadcastFullScreenCheckbox.getValue())
@@ -123,27 +120,27 @@ function BroadSnapshotButton_doTakeSnapshot()
     {
         %regionControl = BroadCastRegionControl.getId();
     }
-    if ((%regionControl != 0.0))
+    if (%regionControl != 0)
     {
     }
     %tookPhoto = snapshotTool::snapControl(%regionControl, %photoFileName @ %ext);
     if (%tookPhoto)
     {
         %topMargin = 60;
-        %bottomMargin = -(10.0);
+        %bottomMargin = -(10);
         %leftMargin = 0;
         %rightMargin = 0;
         %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame((getWord(%regionControl.getScreenPosition(), 0) - %leftMargin), (getWord(%regionControl.getScreenPosition(), 1) - %topMargin), ((getWord(%regionControl.getExtent(), 0) + %leftMargin) + %rightMargin), ((getWord(%regionControl.getExtent(), 1) + %topMargin) + %bottomMargin));
         %numPlayers = getWordCount(%playerIDs);
         %playerNames = "";
         %n = 0;
-        while ((%n < %numPlayers))
+        while (%n < %numPlayers)
         {
             %playerNames = %playerNames @ "\t" @ getWord(%playerIDs, %n).getShapeName();
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
         %playerNames = trim(%playerNames);
-        (%n < %numPlayers);
+        %n < %numPlayers;
         BroadCastControlPanel.enterFillCURLMode(%photoFileName, %ext, $player.getTransform(), %playerNames);
         BroadCastControlPanel.enterTookPhotoMode();
         removeFile(%photoFileName @ %ext);
@@ -167,12 +164,12 @@ function BroadSnapshotButton_doTakeSnapshot()
     BroadSnapshotButton_ShowSnoop();
     if (BroadcastHideHUDsCheckbox.getValue())
     {
-        %i = (BroadCastControlPanel.temporaryGUIControlContainer.getCount() - 1.0);
-        while ((%i >= 0.0))
+        %i = BroadCastControlPanel.temporaryGUIControlContainer.getCount() - 1;
+        while (%i >= 0)
         {
             %ctrl = BroadCastControlPanel.temporaryGUIControlContainer.getObject(%i);
             PlayGui.add(%ctrl);
-            %i = (%i - 1.0);
+            %i = %i - 1;
         }
     }
     if (BroadcastHideChatCheckbox.getValue())
@@ -182,7 +179,7 @@ function BroadSnapshotButton_doTakeSnapshot()
     if (BroadcastHideHUDsCheckbox.getValue() || BroadcastHideChatCheckbox.getValue())
     {
         BroadCastControlPanel.temporaryGUIControlContainer.delete();
-        BroadCastControlPanel.temporaryGUIControlContainer = (%i >= 0.0) @ 0;
+        BroadCastControlPanel.temporaryGUIControlContainer = (%i >= 0) @ 0;
     }
     if (BroadcastHideSelfCheckbox.getValue())
     {
@@ -225,7 +222,7 @@ function BroadSnapshotUploadButton::doBroadCastSnapshot(%this, %callbackSink)
 {
     BroadCastControlPanel.enterFillCURLMode(BroadCastControlPanel.photoFileName, BroadCastControlPanel.photoFileNameExt, BroadCastControlPanel.photoTransform, BroadCastControlPanel.photoInhabitants);
     %caption = BroadcastCaptionCtrl.getText();
-    if ((%caption $= "enter caption here.."))
+    if (%caption $= "enter caption here..")
     {
         %caption = "";
     }
@@ -262,7 +259,7 @@ function BroadSnapshotUploadButton::onProgress(%this, %uploader)
 function BroadSnapshotUploadButtonOnCompleted(%request, %result)
 {
     %callbackSink = %request.callBackSink;
-    if ((%result == 0.0))
+    if (%result == 0)
     {
         %callbackSink.onDone(%request);
     }
@@ -282,12 +279,12 @@ function BroadSnapshotUploadButton::onError(%this, %uploader)
 function BroadSnapshotUploadButton::onDone(%this, %uploader)
 {
     BroadCastControlPanel.currentlyUploading = 0;
-    if (($gBroadSnapshotUploadTimeOutSched != 0.0))
+    if ($gBroadSnapshotUploadTimeOutSched != 0)
     {
         cancel($gBroadSnapshotUploadTimeOutSched);
         $gBroadSnapshotUploadTimeOutSched = 0;
     }
-    $gNumPhotosTaken = ($gNumPhotosTaken + 1.0);
+    $gNumPhotosTaken = $gNumPhotosTaken + 1;
     if (!(%uploader.getResult("status") $= "success"))
     {
         if (!BroadCastControlPanel.hasError)
@@ -310,7 +307,7 @@ function BroadSnapshotUploadButton::onDone(%this, %uploader)
 }
 function BroadSnapshotCancelButton::doCancel(%this)
 {
-    if (($gBroadSnapshotUploadTimeOutSched != 0.0))
+    if ($gBroadSnapshotUploadTimeOutSched != 0)
     {
         cancel($gBroadSnapshotUploadTimeOutSched);
         $gBroadSnapshotUploadTimeOutSched = 0;
@@ -327,22 +324,22 @@ function BroadSnapshotCancelButton::doCancel(%this)
 }
 function BroadSnapshotButton_HideSnoop()
 {
-    %n = (TheBadgesHud.getCount() - 1.0);
-    while ((%n >= 0.0))
+    %n = TheBadgesHud.getCount() - 1;
+    while (%n >= 0)
     {
         %projCtrl = TheBadgesHud.getObject(%n);
         %roleCtrl = %projCtrl.roleCtrl;
-        if (isObject(%roleCtrl) && (strpos(%roleCtrl.bitmap, "neighborhoodwatch") >= 0.0))
+        if (isObject(%roleCtrl) && (strpos(%roleCtrl.bitmap, "neighborhoodwatch") >= 0))
         {
             %roleCtrl.setVisible(0);
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
 }
 function BroadSnapshotButton_ShowSnoop()
 {
-    %n = (TheBadgesHud.getCount() - 1.0);
-    while ((%n >= 0.0))
+    %n = TheBadgesHud.getCount() - 1;
+    while (%n >= 0)
     {
         %projCtrl = TheBadgesHud.getObject(%n);
         %roleCtrl = %projCtrl.roleCtrl;
@@ -350,7 +347,7 @@ function BroadSnapshotButton_ShowSnoop()
         {
             %roleCtrl.setVisible(1);
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
 }
 $gNumPhotosTaken = 0;
@@ -378,13 +375,13 @@ function BroadCastControlPanel::enterFirstTimeMode(%this)
 }
 function BroadCastControlPanel::enterFillCURLMode(%this, %photoFileName, %ext, %transform, %playerNames)
 {
-    if ((%photoFileName $= ""))
+    if (%photoFileName $= "")
     {
         error("BroadCastControlPanel::enterFillCURLMode called with empty filename");
         %this.enterFirstTimeMode();
         return;
     }
-    if ((%ext $= ""))
+    if (%ext $= "")
     {
         error("BroadCastControlPanel::enterFillCURLMode called with empty file extention");
         %this.enterFirstTimeMode();
@@ -454,7 +451,7 @@ function BroadCastControlPanel::enterUploadingMode(%this)
 {
     %this.currentlyUploading = 1;
     %this.hasError = 0;
-    if (($gBroadSnapshotUploadTimeOutSched != 0.0))
+    if ($gBroadSnapshotUploadTimeOutSched != 0)
     {
         cancel($gBroadSnapshotUploadTimeOutSched);
         $gBroadSnapshotUploadTimeOutSched = 0;
@@ -512,7 +509,7 @@ function BroadCastControlPanel::shareFcBook(%this, %photoURL)
 {
     %preambleText = "/photoservice/";
     %preamblePos = strpos(%photoURL, %preambleText);
-    if ((%preamblePos < 0.0))
+    if (%preamblePos < 0)
     {
         error(getScopeName() @ " " @ "- invalid photo URL." @ " " @ %photoURL @ " " @ getTrace());
     }

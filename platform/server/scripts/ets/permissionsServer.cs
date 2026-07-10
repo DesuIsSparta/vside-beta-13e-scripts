@@ -31,15 +31,15 @@ function GameConnection::determinePermissions(%unused, %player)
     if (!(%name $= ""))
     {
     }
-    if ((findWord($Whitelist_Staff, %name) >= 0.0))
+    if (findWord($Whitelist_Staff, %name) >= 0)
     {
-        %perms = (%perms | $EtsPermissionTypes::Staff);
+        %perms = %perms | $EtsPermissionTypes::Staff;
         echo("Staff login:" @ " " @ %name);
     }
     if ($AmClient)
     {
         echo("Running standalone: setting staff.");
-        %perms = (%perms | $EtsPermissionTypes::Staff);
+        %perms = %perms | $EtsPermissionTypes::Staff;
     }
     echo("setting permissions for" @ " " @ getDebugString(%player) @ " " @ "to" @ " " @ %perms);
     %player.setEtsPermissions(%perms);

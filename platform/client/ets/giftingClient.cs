@@ -7,7 +7,7 @@ if ($StandAlone)
 }
 function geGiftingPanel::open(%this, %otherPlayerName, %whichScreen)
 {
-    if ((%otherPlayerName $= $Player::Name))
+    if (%otherPlayerName $= $Player::Name)
     {
         return;
     }
@@ -25,7 +25,7 @@ function geGiftingPanel::open(%this, %otherPlayerName, %whichScreen)
         error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName @ " " @ getTrace());
         return;
     }
-    if ((%whichScreen $= "initiate"))
+    if (%whichScreen $= "initiate")
     {
         if (!%this.isInRange(%otherPlayer))
         {
@@ -46,7 +46,7 @@ function geGiftingPanel::open(%this, %otherPlayerName, %whichScreen)
     PlayGui.focusAndRaise(%this);
     setActionMapsEnabled(0);
     %this.otherPlayerName = %otherPlayerName;
-    if ((%whichScreen $= "acceptDecline"))
+    if (%whichScreen $= "acceptDecline")
     {
         %this.sourcePlayerName = %otherPlayerName;
         %this.targetPlayerName = $Player::Name;
@@ -119,7 +119,7 @@ function geGiftingPanel::refresh(%this)
     %otherPlayerPortraitUrl = $Net::AvatarURL @ urlEncode(%this.otherPlayerName) @ "?size=M";
     geGiftingOtherPlayerPortrait.setBitmap("platform/client/ui/tgf/tgf_profile_default_" @ %ghost.getGender());
     geGiftingOtherPlayerPortrait.downloadAndApplyBitmap(%otherPlayerPortraitUrl);
-    if ((%this.currentScreen $= "initiate"))
+    if (%this.currentScreen $= "initiate")
     {
         geGiftingScreen_Initiate.setVisible(1);
         geGiftingScreen_Confirmation.setVisible(0);
@@ -128,37 +128,28 @@ function geGiftingPanel::refresh(%this)
     }
     else
     {
-        if ((%this.currentScreen $= "confirmation"))
+        if (%this.currentScreen $= "confirmation")
         {
             geGiftingScreen_Initiate.setVisible(0);
             geGiftingScreen_Confirmation.setVisible(1);
             geGiftingScreen_AcceptDecline.setVisible(0);
             %this.refreshScreen_Confirmation();
         }
-        else
+        if (%this.currentScreen $= "acceptDecline")
         {
-            if ((%this.currentScreen $= "acceptDecline"))
-            {
-                geGiftingScreen_Initiate.setVisible(0);
-                geGiftingScreen_Confirmation.setVisible(0);
-                geGiftingScreen_AcceptDecline.setVisible(1);
-                %this.refreshScreen_AcceptDecline();
-            }
-            else
-            {
-                if ((%this.currentScreen $= "items_acceptDecline"))
-                {
-                    geGiftingScreen_Initiate.setVisible(0);
-                    geGiftingScreen_Confirmation.setVisible(0);
-                    geGiftingScreen_AcceptDecline.setVisible(1);
-                    %this.refreshScreen_ItemsAcceptDecline();
-                }
-                else
-                {
-                    error(getScopeName() @ " " @ "- unknown currentScreen:" @ " " @ %this.currentScreen @ " " @ getTrace());
-                }
-            }
+            geGiftingScreen_Initiate.setVisible(0);
+            geGiftingScreen_Confirmation.setVisible(0);
+            geGiftingScreen_AcceptDecline.setVisible(1);
+            %this.refreshScreen_AcceptDecline();
         }
+        if (%this.currentScreen $= "items_acceptDecline")
+        {
+            geGiftingScreen_Initiate.setVisible(0);
+            geGiftingScreen_Confirmation.setVisible(0);
+            geGiftingScreen_AcceptDecline.setVisible(1);
+            %this.refreshScreen_ItemsAcceptDecline();
+        }
+        error(getScopeName() @ " " @ "- unknown currentScreen:" @ " " @ %this.currentScreen @ " " @ getTrace());
     }
 }
 function geGiftingPanel::refreshScreen_Initiate(%this)
@@ -191,20 +182,17 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
         {
             %text = %text @ "<br><color:ff3333>Gifting vPoints is temporarily disabled.";
         }
-        else
+        if (!$gGiftingEnabled_vBux)
         {
-            if (!$gGiftingEnabled_vBux)
-            {
-                %text = %text @ "<br><color:ff3333>Gifting vBux is temporarily disabled.";
-            }
+            %text = %text @ "<br><color:ff3333>Gifting vBux is temporarily disabled.";
         }
     }
     geGiftingTextLimits.setTextWithStyle(%text);
-    if ((%limitVpGive > 0.0))
+    if (%limitVpGive > 0)
     {
     }
     %enableVP = $gGiftingEnabled_vPoints;
-    if ((%limitVbGive > 0.0))
+    if (%limitVbGive > 0)
     {
     }
     %enableVB = $gGiftingEnabled_vBux;
@@ -241,8 +229,8 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
         %text = geGiftingTextAmt.textBody;
         %text = strreplace(%text, "[GIFTTYPE]", %currencyText);
         %text = "<spush><font:Arial Bold:20>2.<spop> " @ %text;
-        %vpText = (geGiftingEditAmt.getValue() == 1.0) ? "vPoint" : "vPoints";
-        %vbText = (geGiftingEditAmt.getValue() == 1.0) ? "vBuck" : "vBux";
+        %vpText = (geGiftingEditAmt.getValue() == 1) ? "vPoint" : "vPoints";
+        %vbText = (geGiftingEditAmt.getValue() == 1) ? "vBuck" : "vBux";
         if (geGiftingCurrencyType_vPoints.getValue())
         {
         }
@@ -251,7 +239,7 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
         }
         %currencyText = "<spush><color:13b93c>" @ %vbText @ "<spop>";
         "<spush><color:159fe7>" @ %vpText @ "<spop> ";
-        if ((%amountInTheBank < geGiftingEditAmt.getValue()))
+        if (%amountInTheBank < geGiftingEditAmt.getValue())
         {
             %currencyText = %currencyText @ " <spush><b><color:ff0000dd>.. you only have " @ %amountInTheBank @ "!";
         }
@@ -265,10 +253,10 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
         geGiftingTextCurrency.setTextWithStyle("");
         geGiftingEditAmt.setVisible(0);
     }
-    if ((geGiftingEditAmt.getValue() > 0.0))
+    if (geGiftingEditAmt.getValue() > 0)
     {
     }
-    if ((%amountInTheBank >= geGiftingEditAmt.getValue()))
+    if (%amountInTheBank >= geGiftingEditAmt.getValue())
     {
         geGiftingTextMsg.setTextWithStyle("<spush><font:Arial Bold:20>3.<spop> " @ geGiftingTextMsg.textBody);
         geGiftingEditMsg.setVisible(1);
@@ -289,7 +277,7 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
 }
 function geGiftingPanel::getGiftDescription(%this)
 {
-    if ((%this.GiftType $= "currency"))
+    if (%this.GiftType $= "currency")
     {
         %ret = gifting_composeGiftDescriptionCurrency(%this.currencyType, %this.currencyAmount);
     }
@@ -301,9 +289,9 @@ function geGiftingPanel::getGiftDescription(%this)
 }
 function gifting_composeGiftDescriptionCurrency(%currencyType, %currencyAmount)
 {
-    %vpText = (%currencyAmount == 1.0) ? "vPoint" : "vPoints";
-    %vbText = (%currencyAmount == 1.0) ? "vBuck" : "vBux";
-    if ((%currencyAmount @ " " @ " " @ %currencyType $= "VPOINTS"))
+    %vpText = (%currencyAmount == 1) ? "vPoint" : "vPoints";
+    %vbText = (%currencyAmount == 1) ? "vBuck" : "vBux";
+    if (%currencyAmount @ " " @ " " @ %currencyType $= "VPOINTS")
     {
     }
     else
@@ -314,11 +302,11 @@ function gifting_composeGiftDescriptionCurrency(%currencyType, %currencyAmount)
 }
 function gifting_composeGiftDescriptionCurrency2(%currencyType, %currencyAmount)
 {
-    %vpText = (%currencyAmount == 1.0) ? "vPoint" : "vPoints";
-    %vbText = (%currencyAmount == 1.0) ? "vBuck" : "vBux";
+    %vpText = (%currencyAmount == 1) ? "vPoint" : "vPoints";
+    %vbText = (%currencyAmount == 1) ? "vBuck" : "vBux";
     %aFew = (%currencyType $= "VPOINTS") ? 50 : 5;
     %sardonicism = (%currencyAmount < %aFew) ? "whole " : "";
-    if ((%currencyAmount @ " " @ %sardonicism @ " " @ %currencyType $= "VPOINTS"))
+    if (%currencyAmount @ " " @ %sardonicism @ " " @ %currencyType $= "VPOINTS")
     {
     }
     else
@@ -339,7 +327,7 @@ function geGiftingPanel::refreshScreen_Confirmation(%this)
     geGiftingButtonBack.setText("< Back");
     %this.personalMessage = geGiftingEditMsg.getValue();
     %this.personalMessage = StripMLControlChars(%this.personalMessage);
-    if ((%this.personalMessage $= ""))
+    if (%this.personalMessage $= "")
     {
         %this.personalMessage = "(no message)";
     }
@@ -377,7 +365,7 @@ function geGiftingPanel::refreshScreen_AcceptDecline(%this)
     %text = strreplace(%text, "[OTHERPLAYER_HIM_HER_IT]", getPronounHimHerIt(%otherPlayer));
     %text = strreplace(%text, "[IT_THEM]", getPronounItThem(%this.currencyAmount));
     geGiftingTextAcceptDecline.setTextWithStyle(%text);
-    %this.startCountdownTimer((30.0 * 1000.0));
+    %this.startCountdownTimer((30 * 1000));
 }
 function geGiftingPanel::refreshScreen_ItemsAcceptDecline(%this)
 {
@@ -405,7 +393,7 @@ function geGiftingPanel::refreshScreen_ItemsAcceptDecline(%this)
     %text = strreplace(%text, "[OTHERPLAYER_HIM_HER_IT]", getPronounHimHerIt(%otherPlayer));
     %text = strreplace(%text, "[IT_THEM]", getPronounItThem(%numItems));
     geGiftingTextAcceptDecline.setTextWithStyle(%text);
-    %this.startCountdownTimer((30.0 * 1000.0));
+    %this.startCountdownTimer((30 * 1000));
 }
 function geGiftingPanel::startCountdownTimer(%this, %milliseconds)
 {
@@ -415,14 +403,14 @@ function geGiftingPanel::startCountdownTimer(%this, %milliseconds)
 function geGiftingPanel::countdownTick(%this)
 {
     %tickPeriod = 100;
-    $gGiftingPanelCountdownMSRemaining = ($gGiftingPanelCountdownMSRemaining - %tickPeriod);
-    geGiftingAcceptDeclineClock_littleHand.rotRadians = (($gGiftingPanelCountdownMSRemaining * 0.001) / 6.0);
-    geGiftingAcceptDeclineClock_bigHand.rotRadians = ($gGiftingPanelCountdownMSRemaining * 0.001);
+    $gGiftingPanelCountdownMSRemaining = $gGiftingPanelCountdownMSRemaining - %tickPeriod;
+    geGiftingAcceptDeclineClock_littleHand.rotRadians = ($gGiftingPanelCountdownMSRemaining * 0.001) / 6;
+    geGiftingAcceptDeclineClock_bigHand.rotRadians = $gGiftingPanelCountdownMSRemaining * 0.001;
     %text = mFloor((($gGiftingPanelCountdownMSRemaining * 0.001) + 0.5));
     %text = %text @ "..";
     geGiftingAcceptDeclineClock_readout.setTextWithStyle(%text);
     cancel($gGiftingPanelAcceptDeclineTimerID);
-    if (($gGiftingPanelCountdownMSRemaining > 0.0))
+    if ($gGiftingPanelCountdownMSRemaining > 0)
     {
     }
     if (%this.isVisible())
@@ -466,66 +454,48 @@ function geGiftingEditMsg::onEnter(%this)
 }
 function geGiftingPanel::onNext(%this)
 {
-    if ((%this.currentScreen $= "initiate"))
+    if (%this.currentScreen $= "initiate")
     {
         %this.onNext_Initiate();
     }
     else
     {
-        if ((%this.currentScreen $= "confirmation"))
+        if (%this.currentScreen $= "confirmation")
         {
             %this.onNext_Confirmation();
         }
-        else
+        if (%this.currentScreen $= "acceptDecline")
         {
-            if ((%this.currentScreen $= "acceptDecline"))
-            {
-                %this.onNext_AcceptDecline();
-            }
-            else
-            {
-                if ((%this.currentScreen $= "items_acceptDecline"))
-                {
-                    %this.onNext_Items_AcceptDecline();
-                }
-                else
-                {
-                    error(getScopeName() @ " " @ "- unknown currentScreen:" @ " " @ %this.currentScreen @ " " @ getTrace());
-                }
-            }
+            %this.onNext_AcceptDecline();
         }
+        if (%this.currentScreen $= "items_acceptDecline")
+        {
+            %this.onNext_Items_AcceptDecline();
+        }
+        error(getScopeName() @ " " @ "- unknown currentScreen:" @ " " @ %this.currentScreen @ " " @ getTrace());
     }
 }
 function geGiftingPanel::onBack(%this)
 {
-    if ((%this.currentScreen $= "initiate"))
+    if (%this.currentScreen $= "initiate")
     {
         %this.onBack_Initiate();
     }
     else
     {
-        if ((%this.currentScreen $= "confirmation"))
+        if (%this.currentScreen $= "confirmation")
         {
             %this.onBack_Confirmation();
         }
-        else
+        if (%this.currentScreen $= "acceptDecline")
         {
-            if ((%this.currentScreen $= "acceptDecline"))
-            {
-                %this.onBack_AcceptDecline();
-            }
-            else
-            {
-                if ((%this.currentScreen $= "items_AcceptDecline"))
-                {
-                    %this.onBack_Items_AcceptDecline();
-                }
-                else
-                {
-                    error(getScopeName() @ " " @ "- unknown currentScreen:" @ " " @ %this.currentScreen @ " " @ getTrace());
-                }
-            }
+            %this.onBack_AcceptDecline();
         }
+        if (%this.currentScreen $= "items_AcceptDecline")
+        {
+            %this.onBack_Items_AcceptDecline();
+        }
+        error(getScopeName() @ " " @ "- unknown currentScreen:" @ " " @ %this.currentScreen @ " " @ getTrace());
     }
 }
 function geGiftingPanel::onNext_Initiate(%this)
@@ -533,7 +503,7 @@ function geGiftingPanel::onNext_Initiate(%this)
     %this.currencyType = geGiftingCurrencyType_vPoints.getValue() ? "vPoints" : "vBux";
     %this.currencyAmount = geGiftingEditAmt.getValue();
     %amountInTheBank = %this.getAmountInBankOfCurrentCurrency();
-    if ((%this.currencyAmount > %amountInTheBank))
+    if (%this.currencyAmount > %amountInTheBank)
     {
         geGiftingEditAmt.setValue("");
         error(getScopeName() @ " " @ "- trying to give more money than owned!" @ " " @ %this.currencyAmount @ " " @ %amountInTheBank @ " " @ getTrace());
@@ -608,7 +578,7 @@ function geGiftingPanel::getPendingTransaction(%this, %giftTransactionID)
         return "";
     }
     %pendingTransactionRecord = %this.PendingTransactionsList.get(%giftTransactionID);
-    if ((%pendingTransactionRecord $= ""))
+    if (%pendingTransactionRecord $= "")
     {
         error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %giftTransactionID @ " " @ getTrace());
         return "";
@@ -623,7 +593,7 @@ function geGiftingPanel::deletePendingTransaction(%this, %giftTransactionID)
         return "";
     }
     %pendingTransactionRecord = %this.PendingTransactionsList.get(%giftTransactionID);
-    if ((%pendingTransactionRecord $= ""))
+    if (%pendingTransactionRecord $= "")
     {
         error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %giftTransactionID @ " " @ getTrace());
         return "";
@@ -653,40 +623,34 @@ function ClientCmdGiftingCurrency_Initiated(%sourcePlayerName, %giftTransactionI
     }
     %acceptMode = %acceptModeStrangers;
     %acceptModeFriends;
-    if ((%acceptMode $= "accept"))
+    if (%acceptMode $= "accept")
     {
         geGiftingPanel.doAccept(%sourcePlayerName, %giftTransactionID, 1, "ACCEPTED-AUTO");
     }
     else
     {
-        if ((%acceptMode $= "decline"))
+        if (%acceptMode $= "decline")
         {
             geGiftingPanel.doAccept(%sourcePlayerName, %giftTransactionID, 0, "DECLINED-AUTO");
         }
-        else
+        if (%acceptMode $= "ask")
         {
-            if ((%acceptMode $= "ask"))
+            if (geGiftingPanel.isVisible())
             {
-                if (geGiftingPanel.isVisible())
-                {
-                    geGiftingPanel.doAccept(%sourcePlayerName, %giftTransactionID, 0, "DECLINED-BUSY");
-                }
-                else
-                {
-                    geGiftingPanel.giftTransactionID = %giftTransactionID;
-                    geGiftingPanel.personalMessage = TryFixBadWords(%personalMessage);
-                    geGiftingPanel.currencyType = %currencyType;
-                    geGiftingPanel.currencyAmount = %currencyAmount;
-                    geGiftingPanel.GiftType = "currency";
-                    geGiftingPanel.open(%sourcePlayerName, "acceptDecline");
-                }
+                geGiftingPanel.doAccept(%sourcePlayerName, %giftTransactionID, 0, "DECLINED-BUSY");
             }
+            geGiftingPanel.giftTransactionID = %giftTransactionID;
+            geGiftingPanel.personalMessage = TryFixBadWords(%personalMessage);
+            geGiftingPanel.currencyType = %currencyType;
+            geGiftingPanel.currencyAmount = %currencyAmount;
+            geGiftingPanel.GiftType = "currency";
+            geGiftingPanel.open(%sourcePlayerName, "acceptDecline");
         }
     }
 }
 function geGiftingPanel::doAccept(%this, %sourcePlayerName, %giftTransactionID, %accepted, %messageCode)
 {
-    if ((%this.currentScreen $= "items_acceptDecline"))
+    if (%this.currentScreen $= "items_acceptDecline")
     {
         commandToServer('GiftingItems_AcceptedOrDeclined', %sourcePlayerName, %giftTransactionID, %accepted, %messageCode);
     }
@@ -733,7 +697,7 @@ function onDoneOrErrorCallback_GiftCurrency(%request)
     %currencyType = %request.getURLParam("currencyType");
     %currencyAmount = %request.getURLParam("amount");
     %dryRun = %request.getURLParam("dryRun", 1);
-    %succeeded = (%request.getResult("status") $= "success");
+    %succeeded = %request.getResult("status") $= "success";
     if (%succeeded)
     {
         if (%dryRun)
@@ -755,12 +719,12 @@ function onDoneOrErrorCallback_GiftCurrency(%request)
             %request.dlg.close();
         }
         %errorCode = %request.getResult("errorCode");
-        if ((%errorCode $= ""))
+        if (%errorCode $= "")
         {
             %errorCode = "UNKNOWN";
         }
         %msg = $MsgCat::gifting["E-BACKEND-",%errorCode];
-        if ((%msg $= ""))
+        if (%msg $= "")
         {
             %msg = %msg[$MsgCat::gifting @ "E-BACKEND-UNKNOWN"];
         }
@@ -826,22 +790,19 @@ function giftOperation(%line)
 {
     %currencyAmount = getWord(%line, 0);
     %currencyType = getWord(%line, 1);
-    if ((formatInt("%d", %currencyAmount) == %currencyAmount))
+    if (formatInt("%d", %currencyAmount) == %currencyAmount)
     {
-        if ((getSubStr(%currencyType, 0, 2) $= "vB"))
+        if (getSubStr(%currencyType, 0, 2) $= "vB")
         {
             %currencyType = "vBux";
         }
         else
         {
-            if ((getSubStr(%currencyType, 0, 2) $= "vP"))
+            if (getSubStr(%currencyType, 0, 2) $= "vP")
             {
                 %currencyType = "vPoints";
             }
-            else
-            {
-                %currencyType = "";
-            }
+            %currencyType = "";
         }
         if (!(%currencyType $= ""))
         {
@@ -851,7 +812,7 @@ function giftOperation(%line)
             geGiftingCurrencyType_vBux.setValue((%currencyType $= "vBux"));
             geGiftingEditAmt.setValue(%currencyAmount);
             geGiftingPanel.refresh();
-            if ((%currencyAmount > 0.0))
+            if (%currencyAmount > 0)
             {
                 geGiftingEditMsg.makeFirstResponder(1);
             }
@@ -892,7 +853,7 @@ function parseGiftingSettings(%request)
     gGiftingCapTable.clear();
     %num = %request.getValue("giftingCapLevelCount");
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %level = %request.getValue("giftingCap" @ %n @ ".level");
         %vpGive = %request.getValue("giftingCap" @ %n @ ".vpGive");
@@ -900,7 +861,7 @@ function parseGiftingSettings(%request)
         %vbGive = %request.getValue("giftingCap" @ %n @ ".vbGive");
         %vbRecv = %request.getValue("giftingCap" @ %n @ ".vbRecv");
         gGiftingCapTable.put(%level, %vpGive @ " " @ %vpRecv @ " " @ %vbGive @ " " @ %vbRecv);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function addFakeGiftingSettings(%request)
@@ -965,30 +926,27 @@ function addFakeGiftingSettings(%request)
 function getGiftingCapsForLevel(%level, %currency, %giveOrRecv)
 {
     %s = gGiftingCapTable.get(%level);
-    if ((%s $= ""))
+    if (%s $= "")
     {
         error(getScopeName() @ " " @ "- unknown level:" @ " " @ %level @ " " @ getTrace());
         return 0;
     }
-    if ((%currency $= "vPoints"))
+    if (%currency $= "vPoints")
     {
         %idx = 0;
     }
     else
     {
-        if ((%currency $= "vBux"))
+        if (%currency $= "vBux")
         {
             %idx = 2;
         }
-        else
-        {
-            error(getScopeName() @ " " @ "- unknown currency:" @ " " @ %currency @ " " @ getTrace());
-            return 0;
-        }
+        error(getScopeName() @ " " @ "- unknown currency:" @ " " @ %currency @ " " @ getTrace());
+        return 0;
     }
-    if ((%giveOrRecv $= "recv"))
+    if (%giveOrRecv $= "recv")
     {
-        %idx = (%idx + 1.0);
+        %idx = %idx + 1;
     }
     %ret = getWord(%s, %idx);
     return %ret;

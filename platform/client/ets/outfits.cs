@@ -22,26 +22,26 @@ function outfits_makeDefault(%stringMap)
     %stringMap.clear();
     %genders = "f m";
     %outfits = $gAllOutfits;
-    %m = (getWordCount(%genders) - 1.0);
-    while ((%m >= 0.0))
+    %m = getWordCount(%genders) - 1;
+    while (%m >= 0)
     {
         %gender = getWord(%genders, %m);
-        %n = (getWordCount(%outfits) - 1.0);
-        while ((%n >= 0.0))
+        %n = getWordCount(%outfits) - 1;
+        while (%n >= 0)
         {
             %name = %gender @ getWord(%outfits, %n);
             %stringMap.put(%name, $gNewStockOutfits[%name]);
-            %n = (%n - 1.0);
+            %n = %n - 1;
         }
         %name = %gender @ "Body";
-        (%n >= 0.0);
+        %n >= 0;
         %stringMap.put(%name, $gDefaultBodyAttrs[%gender]);
-        %m = (%m - 1.0);
+        %m = %m - 1;
     }
     if (isObject($player))
     {
         %gender = $player.getGender();
-        (%m >= 0.0);
+        %m >= 0;
     }
     else
     {
@@ -77,10 +77,10 @@ function outfits_dumpCurrent()
     %skus = outfits_getCurrentSkus();
     %num = getWordCount(%skus);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         SkuManager.findBySku(getWord(%skus, %n)).dumpEts();
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function outfits_getCurrentSkus()
@@ -104,20 +104,20 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request)
     %stringMap = new StringMap("");
     %num = %request.getValue("propertyCount");
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %key = %request.getValue("property" @ %n @ ".key");
         %value = %request.getValue("property" @ %n @ ".value");
         %value = outfits_filterSKUList(%value);
         %stringMap.put(%key, %value);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     echo("Retrieved outfit settings:");
     %stringMap.dumpValues();
     if (!((%n < %num) @ " " @ %stringMap.get("initialOutfitAndBody") $= ""))
     {
     }
-    if ((%stringMap.get("currentOutfit") $= ""))
+    if (%stringMap.get("currentOutfit") $= "")
     {
         $userpref::player::initialSkus[$Player::Name] = %stringMap.get("initialOutfitAndBody");
         if (!(SkuManager.filterSkusGender($userpref::player::initialSkus[$Player::Name], "f") $= $userpref::player::initialSkus[$Player::Name]))
@@ -135,12 +135,12 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request)
         $userpref::player::initialSkusGender[$Player::Name] = $UserPref::Player::gender;
         %stringMap.clear();
     }
-    if ((%stringMap.size() == 0.0))
+    if (%stringMap.size() == 0)
     {
     }
     if (!($userpref::player::initialSkus[$Player::Name] $= ""))
     {
-        if (($userpref::player::initialSkusGender[$Player::Name] $= $UserPref::Player::gender))
+        if ($userpref::player::initialSkusGender[$Player::Name] $= $UserPref::Player::gender)
         {
             %skusBody = SkuManager.filterSkusForBody($userpref::player::initialSkus[$Player::Name]);
             %skusOutfit = SkuManager.filterSkusForClothing($userpref::player::initialSkus[$Player::Name]);
@@ -178,17 +178,17 @@ function outfits_filterSKUList(%skulist)
     %filtered = "";
     %skulist = trim(%skulist);
     %idx = 0;
-    while ((%idx < getWordCount(%skulist)))
+    while (%idx < getWordCount(%skulist))
     {
         %sku = getWord(%skulist, %idx);
         if (!(%sku $= %helpmesku))
         {
             %filtered = %filtered @ " " @ %sku;
         }
-        %idx = (%idx + 1.0);
+        %idx = %idx + 1;
     }
     %filtered = trim(%filtered);
-    (%idx < getWordCount(%skulist));
+    %idx < getWordCount(%skulist);
     return %filtered;
 }
 function SaveOutfitAndBodySkusAsCurrent(%skus)
@@ -208,7 +208,7 @@ function SaveOutfitAndBodySkusAsCurrent(%skus)
 function Player::switchOutfitTo(%unused, %outfitName)
 {
     %idx = findWord($Player::HangerNames, [$player.getGender()], $player.getGender() @ %outfitName);
-    if ((%idx == -(1.0)))
+    if (%idx == -(1))
     {
         warn(getScopeName() @ "->Trying to change to an outfit not in $Player::HangerNames");
     }
@@ -217,7 +217,7 @@ function Player::switchOutfitTo(%unused, %outfitName)
         error(getScopeName() @ "->No key in $gOutfits for requested outfit! Cancelling outfit change!");
         return 0;
     }
-    if (($gOutfits.get("currentOutfit") $= %outfitName))
+    if ($gOutfits.get("currentOutfit") $= %outfitName)
     {
         echo(getScopeName() @ "->Trying to change outfit to already selected outfit, returning.");
         return 1;
@@ -230,14 +230,14 @@ function Player::switchOutfitTo(%unused, %outfitName)
     %idx = findWord(%activeSkus, %helpmesku);
     if ($player.isInHelpMeMode())
     {
-        if ((%idx == -(1.0)))
+        if (%idx == -(1))
         {
             %activeSkus = %activeSkus @ " " @ %helpmesku;
         }
     }
     else
     {
-        if ((%idx >= 0.0))
+        if (%idx >= 0)
         {
             %activeSkus = removeWord(%activeSkus, %idx);
         }

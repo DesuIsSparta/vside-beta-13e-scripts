@@ -17,8 +17,8 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus)
     $gSnapping_BaseSkus = ClosetMainObjectView.getSkus();
     %skusBody = "";
     %skusClothing = "";
-    %n = (getWordCount(%skus) - 1.0);
-    while ((%n >= 0.0))
+    %n = getWordCount(%skus) - 1;
+    while (%n >= 0)
     {
         %sku = getWord(%skus, %n);
         if (SkuManager.isBodySku(%sku))
@@ -29,13 +29,13 @@ function ClosetStaffPanel::snapShotSkuList(%this, %skus)
         {
             %skusClothing = %sku @ " " @ %skusClothing;
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     %skus = %skusBody @ " " @ %skusClothing;
-    (%n >= 0.0);
+    %n >= 0;
     $gSnapping_SkuList = %skus;
     $gSnapping_CurIndex = 0;
-    $gSnapping_MaxIndex = (getWordCount($gSnapping_SkuList) - 1.0);
+    $gSnapping_MaxIndex = getWordCount($gSnapping_SkuList) - 1;
     snapping_prepareNextSnapshot();
 }
 function snapping_prepareNextSnapshot()
@@ -49,8 +49,8 @@ function snapping_prepareNextSnapshot()
 function snapping_callingTakeCurrentSnapshot()
 {
     snapping_takeCurrentSnapshot();
-    $gSnapping_CurIndex = ($gSnapping_CurIndex + 1.0);
-    if (($gSnapping_CurIndex < $gSnapping_MaxIndex))
+    $gSnapping_CurIndex = $gSnapping_CurIndex + 1;
+    if ($gSnapping_CurIndex < $gSnapping_MaxIndex)
     {
         snapping_prepareNextSnapshot();
     }
@@ -78,7 +78,7 @@ function snapping_takeCurrentSnapshot()
 function ClosetStaffPanel::adjustLOD(%this, %direction)
 {
     %val = ClosetMainObjectView.changeDetailLevel(%direction);
-    closetStaffLODLabelButton.setText((%val * -(1.0)));
+    closetStaffLODLabelButton.setText((%val * -(1)));
     if (!isObject(ClosetTabs.getCurrentTab().itemsScroll))
     {
         return;
@@ -89,13 +89,13 @@ function ClosetStaffPanel::adjustLOD(%this, %direction)
         error(getScopeName() @ " " @ "- no array");
         return;
     }
-    %n = (%array.getCount() - 1.0);
-    while ((%n >= 0.0))
+    %n = %array.getCount() - 1;
+    while (%n >= 0)
     {
         %cell = %array.getObject(%n);
         %objectView = %cell.objectView;
         %objectView.changeDetailLevel(%direction);
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
 }
 function ClosetStaffPanel::viewAll(%this)
@@ -105,7 +105,7 @@ function ClosetStaffPanel::viewAll(%this)
     $Player::inventory = SkuManager.filterSkusRoles($Player::inventory, (4294967295 & ~(2147483648)));
     $gClosetThumbnailsDrawersPrevious = "";
     ClosetTabs.selectCurrentTab();
-    if ((ClosetTabs.getCurrentTab().name $= "BODY"))
+    if (ClosetTabs.getCurrentTab().name $= "BODY")
     {
         if (!ClosetTabs.tabBodyInitialized)
         {
@@ -114,7 +114,7 @@ function ClosetStaffPanel::viewAll(%this)
         BodyFeaturesPopup.rebuildPopupList();
         BodyItemsFrame.update();
     }
-    if ((ClosetTabs.getCurrentTab().name $= "CLOSET"))
+    if (ClosetTabs.getCurrentTab().name $= "CLOSET")
     {
         if (!ClosetTabs.tabClosetInitialized)
         {
@@ -122,7 +122,7 @@ function ClosetStaffPanel::viewAll(%this)
         }
         ClosetItemsFrame.update();
     }
-    if ((ClosetTabs.getCurrentTab().name $= "SHOPS"))
+    if (ClosetTabs.getCurrentTab().name $= "SHOPS")
     {
         if (!ClosetTabs.tabShopsInitialized)
         {

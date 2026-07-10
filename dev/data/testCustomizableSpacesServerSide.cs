@@ -26,7 +26,7 @@ function TEST_CS_DoubleActivateSpace::runTest(%this)
 {
     %this.assertSameString(MissionInfo.mode, "PrivateSpaceGrid", "This Test should only be run in a private space grid");
     %freeGridNumber = CustomizableSpaceServerGrid::GetNextUnActivatedSpaceGridNumber();
-    %this.assert((%freeGridNumber > 0.0), "I couldn't find any free grid space to run this test with");
+    %this.assert((%freeGridNumber > 0), "I couldn't find any free grid space to run this test with");
     %this.lastFreeNumber = %freeGridNumber;
     %client = ClientGroup.getObject(0);
     %userName = %client.nameBase;
@@ -39,7 +39,7 @@ function TEST_CS_DoubleActivateSpace::runTest(%this)
 function TEST_CS_DoubleActivateSpace::delayedEval(%this)
 {
     %numActiveSpaces = CustomizableSpaceServerGrid::GetNumActiveSpacesInGrid();
-    %this.assert((%numActiveSpaces == 2.0), "I expected to have a model apartment and one other space active, for a total of only 2 but I have" @ " " @ %numActiveSpaces);
+    %this.assert((%numActiveSpaces == 2), "I expected to have a model apartment and one other space active, for a total of only 2 but I have" @ " " @ %numActiveSpaces);
     %freeGridNumber = CustomizableSpaceServerGrid::GetNextUnActivatedSpaceGridNumber();
     %this.assert((%this.lastFreeNumber != %freeGridNumber), "I expected to have taken that grid space, but it is still marked as free");
 }
@@ -51,7 +51,7 @@ function TEST_CS_DoubleActivateSpaceType2::runTest(%this)
     %player = %client.Player;
     %apartmentName = GetServerNameSpaceTaggedName(MissionInfo.building) @ "." @ %userName;
     %freeGridNumber = CustomizableSpaceServerGrid::GetNextUnActivatedSpaceGridNumber();
-    %this.assert((%freeGridNumber > 0.0), "I couldn't find any free grid space to run this test with");
+    %this.assert((%freeGridNumber > 0), "I couldn't find any free grid space to run this test with");
     %this.lastFreeNumber = %freeGridNumber;
     %theSpaceTrigger = "PRIVATESPACE_AREA_" @ %freeGridNumber;
     CustomizableSpaceServerGrid::ActivateSpace(%userName, %apartmentName, %theSpaceTrigger, %player);
@@ -63,7 +63,7 @@ function TEST_CS_DoubleActivateSpaceType2::runTest(%this)
 function TEST_CS_DoubleActivateSpaceType2::delayedEval(%this)
 {
     %numActiveSpaces = CustomizableSpaceServerGrid::GetNumActiveSpacesInGrid();
-    %this.assert((%numActiveSpaces == 2.0), "I expected to have a model apartment and one other space active, for a total of only 2 but I have" @ " " @ %numActiveSpaces);
+    %this.assert((%numActiveSpaces == 2), "I expected to have a model apartment and one other space active, for a total of only 2 but I have" @ " " @ %numActiveSpaces);
     %freeGridNumber = CustomizableSpaceServerGrid::GetNextUnActivatedSpaceGridNumber();
     %this.assert((%this.lastFreeNumber != %freeGridNumber), "I expected to have taken that grid space, but it is still marked as free");
 }

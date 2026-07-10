@@ -15,9 +15,9 @@ function SpawnSphere::onEditorRender(%this, %editor, %unused, %unused)
     %pos = %center;
     %pos = VectorAdd(%pos, "0 0 -0.005");
     %editor.renderCircle(%pos, "0 0 1", %this.radius);
-    %arrow1 = %this.localToWorldPoint((%this.radius * 0.25) @ " " @ ((%this.radius * -(0.5)) + 1.0) @ " " @ -0.01);
-    %arrow2 = %this.localToWorldPoint((%this.radius * -(0.25)) @ " " @ ((%this.radius * -(0.5)) + 1.0) @ " " @ -0.01);
-    %arrow3 = %this.localToWorldPoint(0 @ " " @ ((%this.radius * 0.9) + 1.0) @ " " @ -0.01);
+    %arrow1 = %this.localToWorldPoint((%this.radius * 0.25) @ " " @ ((%this.radius * -(0.5)) + 1) @ " " @ -0.01);
+    %arrow2 = %this.localToWorldPoint((%this.radius * -(0.25)) @ " " @ ((%this.radius * -(0.5)) + 1) @ " " @ -0.01);
+    %arrow3 = %this.localToWorldPoint(0 @ " " @ ((%this.radius * 0.9) + 1) @ " " @ -0.01);
     %editor.consoleLineWidth = 3;
     %editor.consoleFrameColor = "255 200 0 180";
     %editor.consoleFillColor = "255 200 0 40";

@@ -151,21 +151,21 @@ function LoginStartHerePopup::selectUserPreferred(%this)
 {
     %size = %this.size();
     %i = 0;
-    while ((%i < %size))
+    while (%i < %size)
     {
-        if ((%this.getTextById(%i) $= $UserPref::Login::StartHere))
+        if (%this.getTextById(%i) $= $UserPref::Login::StartHere)
         {
             %this.SetSelected(%i);
             return;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %this.SetSelected(0);
 }
 function LoginStartHerePopup::onSelect(%this, %id, %entries)
 {
     $UserPref::Login::StartHere = %entries;
-    if ((%entries $= "Degrassi"))
+    if (%entries $= "Degrassi")
     {
         $VURLcmd = gLoginPartnersInfo.get("degrassi").vurl;
     }
@@ -176,46 +176,40 @@ function LoginStartHerePopup::onSelect(%this, %id, %entries)
 }
 function LoginRegistrationLinks::onURL(%this, %url)
 {
-    if ((getWord(%url, 0) $= "gamelink"))
+    if (getWord(%url, 0) $= "gamelink")
     {
         %url = getWords(%url, 1);
     }
-    if ((%url $= "REGISTER"))
+    if (%url $= "REGISTER")
     {
         RegistrationGui.tryOpenOrWebPage();
     }
     else
     {
-        if ((getSubStr(%url, 0, 7) $= "vside:/"))
+        if (getSubStr(%url, 0, 7) $= "vside:/")
         {
             vurlOperation(%url);
         }
-        else
-        {
-            gotoWebPage(%url);
-        }
+        gotoWebPage(%url);
     }
 }
 function LoginHelpLinks::onURL(%this, %url)
 {
-    if ((getWord(%url, 0) $= "gamelink"))
+    if (getWord(%url, 0) $= "gamelink")
     {
         %url = getWords(%url, 1);
     }
-    if ((%url $= "REGISTER"))
+    if (%url $= "REGISTER")
     {
         RegistrationGui.tryOpenOrWebPage();
     }
     else
     {
-        if ((getSubStr(%url, 0, 7) $= "vside:/"))
+        if (getSubStr(%url, 0, 7) $= "vside:/")
         {
             vurlOperation(%url);
         }
-        else
-        {
-            gotoWebPage(%url);
-        }
+        gotoWebPage(%url);
     }
 }
 function LoginCreditsLink::onURL(%this, %url)
@@ -246,12 +240,12 @@ function LoginGui::doLoginButton(%this)
 {
     $Player::Name = LoginUserNameField.getValue();
     $Player::Password = LoginPasswordField.getValue();
-    if (($Player::Name $= ""))
+    if ($Player::Name $= "")
     {
         MessageBoxOK("No User Name", "Please enter a user name.", "");
         return;
     }
-    if (($Player::Password $= ""))
+    if ($Player::Password $= "")
     {
         MessageBoxOK("No Password", "Please enter a password.", "");
         return;
@@ -259,7 +253,7 @@ function LoginGui::doLoginButton(%this)
     if ($ETS::devMode)
     {
     }
-    if (($Player::Name $= "debug"))
+    if ($Player::Name $= "debug")
     {
         loginDebugPanel.open();
         return;
@@ -313,7 +307,7 @@ function LoginGui::envManagerLogin(%this)
 function LoginGui::onConnectFailed(%this, %msg)
 {
     sendStatusRequest();
-    if ((%msg $= ""))
+    if (%msg $= "")
     {
         %msg = "Could not connect";
     }
@@ -324,23 +318,23 @@ function LoginGui::onConnectFailed(%this, %msg)
 function LoginGui::nextControl(%this, %curControl)
 {
     %nextControl = "";
-    if ((%curControl.getName() $= LoginUserNameField))
+    if (%curControl.getName() $= LoginUserNameField)
     {
         %nextControl = LoginPasswordField;
     }
     else
     {
-        if ((%curControl.getName() $= LoginPasswordField))
+        if (%curControl.getName() $= LoginPasswordField)
         {
             %nextControl = LoginLoginButton;
         }
     }
-    if ((%nextControl $= ""))
+    if (%nextControl $= "")
     {
         error("nextControl got invalid arg" @ " " @ %curControl);
         return;
     }
-    if ((%nextControl $= LoginLoginButton))
+    if (%nextControl $= LoginLoginButton)
     {
         $Login::newAccount = 0;
         LoginGui.doLoginButton();
@@ -353,7 +347,7 @@ function LoginGui::nextControl(%this, %curControl)
 }
 function LoginRequest::onError(%this, %errorNum, %unused)
 {
-    if ((%errorNum == $CURL::CouldNotResolveHost))
+    if (%errorNum == $CURL::CouldNotResolveHost)
     {
         LoginGui.onConnectFailed("Could not reach server");
         MessageBoxOK("Could Not Find Server", $MsgCat::network["E-SERVER-DNS"], "");
@@ -372,7 +366,7 @@ function LoginRequest::onDone(%this)
 {
     LoginGui.setControlsActive(1);
     LoginPBController.setValue(1);
-    if ((%this.statusCode() != $HTTP::StatusOK))
+    if (%this.statusCode() != $HTTP::StatusOK)
     {
         LoginGui.onConnectFailed("Error communicating with server");
         log("communication", "error", "client HTTP code: " @ %this.statusCode());
@@ -386,101 +380,77 @@ function LoginRequest::onDone(%this)
         %errorCode = %this.getValue("errorCode");
         %errorCode = strlwr(%errorCode);
         log("login", "error", "errorCode = " @ %errorCode);
-        if ((%errorCode $= "invalid"))
+        if (%errorCode $= "invalid")
         {
             LoginGui.onConnectFailed("Wrong name or password");
             MessageBoxOK("Invalid Login", $MsgCat::login["E-PASSWORD"], "");
         }
         else
         {
-            if ((%errorCode $= "overloaded"))
+            if (%errorCode $= "overloaded")
             {
                 LoginGui.onConnectFailed("Overcrowded");
                 MessageBoxOK("No More Room", $ETS::AppName @ $ETS::AppName[$MsgCat::server @ "E-SERVER-FULL"], "");
             }
-            else
+            if (%errorCode $= "serverfail")
             {
-                if ((%errorCode $= "serverfail"))
-                {
-                    LoginGui.onConnectFailed("There was a server error");
-                    MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
-                }
-                else
-                {
-                    if ((%errorCode $= "inactive"))
-                    {
-                        LoginGui.onConnectFailed("Activation required");
-                        MessageBoxOK("Activation Required", "You have not yet activated your account.  Check your email for the message with the activation link.  If you have not received an activation message, you can get another copy sent to you at <a:" @ $Net::ActivationURL @ ">the registration site</a>.", "");
-                    }
-                    else
-                    {
-                        if ((%errorCode $= "alreadyloggedin"))
-                        {
-                            LoginGui.onConnectFailed("You are already logged in on another connection.");
-                            MessageBoxYesNo("Already Logged In", $MsgCat::login["E-ALREADY-IN"], "LoginRequest::handleBoot();", "LoginRequest::cancelBoot();");
-                        }
-                        else
-                        {
-                            if ((%errorCode $= "banned"))
-                            {
-                                LoginGui.onConnectFailed("Banned");
-                                MessageBoxOK("Banned", $MsgCat::login["E-BANNED"] @ $MsgCat::login["E-BANNED"][$MsgCat::login @ "E-DONT-KNOW-RULES"], "");
-                            }
-                            else
-                            {
-                                if ((%errorCode $= "suspended"))
-                                {
-                                    LoginGui.onConnectFailed("Banned");
-                                    %msg = "";
-                                    %msg = %msg @ %msg[$MsgCat::login @ "E-SUSPENDED"];
-                                    %msg = %msg @ "\n";
-                                    %msg = %msg @ "\n";
-                                    %msg = %msg @ %this.getValue("suspensionReason");
-                                    %msg = strreplace(%msg, "[READTOU]", "");
-                                    %msg = %msg @ "[READTOU]";
-                                    %secs = %this.getValue("suspensionSecondsRemaining");
-                                    %secs = ((%secs + 60.0) - (%secs % 60));
-                                    %msg = %msg @ "\n";
-                                    %msg = %msg @ "\n";
-                                    %msg = %msg @ "Timeout Remaining:" @ " " @ secondsToDaysHoursMinutesSeconds(%secs);
-                                    %msg = standardSubstitutions(%msg);
-                                    MessageBoxOK("Suspended", %msg, "");
-                                }
-                                else
-                                {
-                                    if ((%errorCode $= "upgrade_required"))
-                                    {
-                                        LoginGui.onConnectFailed("Upgrade required");
-                                        MessageBoxOK("Upgrade Required", $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-2"], "");
-                                    }
-                                    else
-                                    {
-                                        LoginGui.onConnectFailed("There was a server error");
-                                        MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                LoginGui.onConnectFailed("There was a server error");
+                MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
             }
+            if (%errorCode $= "inactive")
+            {
+                LoginGui.onConnectFailed("Activation required");
+                MessageBoxOK("Activation Required", "You have not yet activated your account.  Check your email for the message with the activation link.  If you have not received an activation message, you can get another copy sent to you at <a:" @ $Net::ActivationURL @ ">the registration site</a>.", "");
+            }
+            if (%errorCode $= "alreadyloggedin")
+            {
+                LoginGui.onConnectFailed("You are already logged in on another connection.");
+                MessageBoxYesNo("Already Logged In", $MsgCat::login["E-ALREADY-IN"], "LoginRequest::handleBoot();", "LoginRequest::cancelBoot();");
+            }
+            if (%errorCode $= "banned")
+            {
+                LoginGui.onConnectFailed("Banned");
+                MessageBoxOK("Banned", $MsgCat::login["E-BANNED"] @ $MsgCat::login["E-BANNED"][$MsgCat::login @ "E-DONT-KNOW-RULES"], "");
+            }
+            if (%errorCode $= "suspended")
+            {
+                LoginGui.onConnectFailed("Banned");
+                %msg = "";
+                %msg = %msg @ %msg[$MsgCat::login @ "E-SUSPENDED"];
+                %msg = %msg @ "\n";
+                %msg = %msg @ "\n";
+                %msg = %msg @ %this.getValue("suspensionReason");
+                %msg = strreplace(%msg, "[READTOU]", "");
+                %msg = %msg @ "[READTOU]";
+                %secs = %this.getValue("suspensionSecondsRemaining");
+                %secs = (%secs + 60) - (%secs % 60);
+                %msg = %msg @ "\n";
+                %msg = %msg @ "\n";
+                %msg = %msg @ "Timeout Remaining:" @ " " @ secondsToDaysHoursMinutesSeconds(%secs);
+                %msg = standardSubstitutions(%msg);
+                MessageBoxOK("Suspended", %msg, "");
+            }
+            if (%errorCode $= "upgrade_required")
+            {
+                LoginGui.onConnectFailed("Upgrade required");
+                MessageBoxOK("Upgrade Required", $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-2"], "");
+            }
+            LoginGui.onConnectFailed("There was a server error");
+            MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
         }
         %analytic = getAnalytic();
         %analytic.trackPageView("/client/login/error/" @ %errorCode);
     }
     else
     {
-        if ((%status $= "upgrade_available"))
+        if (%status $= "upgrade_available")
         {
             LoginRequest::commonLogin(%this);
             MessageBoxOK("Upgrade Available", "There is a new version of" @ " " @ $ETS::AppName @ " " @ "available.  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-3"], "");
         }
-        else
+        if (%status $= "success")
         {
-            if ((%status $= "success"))
-            {
-                LoginRequest::commonLogin(%this);
-            }
+            LoginRequest::commonLogin(%this);
         }
     }
 }
@@ -518,9 +488,9 @@ function LoginRequest::commonLogin_Part2(%this)
     $Player::attemptsToAutoUploadAvatarSnapshot = 0;
     $Player::hasSeenTakeAvatarPhotoDialog = 0;
     %vurl = getSkipMapVurl(0);
-    if ((%vurl $= "") && ($Player::activated != 1.0))
+    if (%vurl $= "" && ($Player::activated != 1))
     {
-        if (($Player::hasEmail == 1.0))
+        if ($Player::hasEmail == 1)
         {
             if ($Login::newAccount)
             {
@@ -531,12 +501,9 @@ function LoginRequest::commonLogin_Part2(%this)
                 MessageBoxYesNo("Email Not Verified", $MsgCat::login["CONF-NAG"], "gotoWebPage(\"" @ $Net::ActivationURL @ "\");", "");
             }
         }
-        else
+        if (!$Login::newAccount)
         {
-            if (!$Login::newAccount)
-            {
-                MessageBoxYesNo("No Email Address", $MsgCat::login["NO-EMAIL-NAG"], "gotoWebPage(\"" @ $Net::AccountEditURL @ "\");", "");
-            }
+            MessageBoxYesNo("No Email Address", $MsgCat::login["NO-EMAIL-NAG"], "gotoWebPage(\"" @ $Net::AccountEditURL @ "\");", "");
         }
     }
     %validCharacters = "abcdefghijklmnopqrstuvwxyz" @ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" @ "0123456789-_ ";
@@ -654,7 +621,7 @@ function LoginRequest::onGotUserProperties(%this)
     $UserPref::Video::visibledistanceQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoVisibleDistance", $Defaults::UserPref::Video::visibledistanceQuality);
     $UserPref::Video::waterreflectionQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoWaterReflection", $Defaults::UserPref::Video::waterreflectionQuality);
     $UserPref::Video::ConstrainWindowDimensions = gUserPropMgrClient.getProperty($Player::Name, "videoConstrainWindowDimensions", $Defaults::UserPref::Video::ConstrainWindowDimensions);
-    if (($UserPref::Player::Genre $= ""))
+    if ($UserPref::Player::Genre $= "")
     {
     }
     if (isObject($player))
@@ -669,65 +636,65 @@ function LoginRequest::onGotUserProperties(%this)
     %maxNumberKeyCombos = getFieldCount($Defaults::UserPref::emotes::defaultKeyCombinations);
     %numberOfUnboundKeyCombinations["f"] = 0;
     %numberOfUnboundKeyCombinations["m"] = 0;
-    %m = (%maxNumberKeyCombos - 1.0);
-    while ((%m >= 0.0))
+    %m = %maxNumberKeyCombos - 1;
+    while (%m >= 0)
     {
         %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
-        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, -(1.0));
-        if ((%action == -(1.0)) || (%action $= ""))
+        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, -(1));
+        if ((%action == -(1)) || (%action $= ""))
         {
-            %action[%numberOfUnboundKeyCombinations @ "f"] = (%action[%numberOfUnboundKeyCombinations @ "f"] + 1.0);
-            ""[$UserPref::emotes,"f",%keyCombo] = ;
+            %action[%numberOfUnboundKeyCombinations @ "f"] = %action[%numberOfUnboundKeyCombinations @ "f"] + 1;
+            ""[$UserPref::emotes,"f",%keyCombo] =;
         }
         else
         {
             if (!(%keyCombo $= ""))
             {
                 EmoteBindingMap.put(%action, %keyCombo);
-                %action[$UserPref::emotes,"f",%keyCombo] = ;
+                %action[$UserPref::emotes,"f",%keyCombo] =;
             }
         }
-        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, -(1.0));
-        if ((%action == -(1.0)) || (%action $= ""))
+        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, -(1));
+        if ((%action == -(1)) || (%action $= ""))
         {
-            %action[%numberOfUnboundKeyCombinations @ "m"] = (%action[%numberOfUnboundKeyCombinations @ "m"] + 1.0);
-            ""[$UserPref::emotes,"m",%keyCombo] = ;
+            %action[%numberOfUnboundKeyCombinations @ "m"] = %action[%numberOfUnboundKeyCombinations @ "m"] + 1;
+            ""[$UserPref::emotes,"m",%keyCombo] =;
         }
         else
         {
             if (!(%keyCombo $= ""))
             {
                 EmoteBindingMap.put(%action, %keyCombo);
-                %action[$UserPref::emotes,"m",%keyCombo] = ;
+                %action[$UserPref::emotes,"m",%keyCombo] =;
             }
         }
-        %m = (%m - 1.0);
+        %m = %m - 1;
     }
-    if ((EmoteBindingMap.size() == 0.0))
+    if (EmoteBindingMap.size() == 0)
     {
         EmoteHudList.setup();
     }
     EmoteHudList.populateLists();
-    if ((%maxNumberKeyCombos[%numberOfUnboundKeyCombinations @ "f"] == %maxNumberKeyCombos))
+    if (%maxNumberKeyCombos[%numberOfUnboundKeyCombinations @ "f"] == %maxNumberKeyCombos)
     {
-        %m = (%maxNumberKeyCombos - 1.0);
-        (%m >= 0.0);
-        while ((%m >= 0.0))
+        %m = %maxNumberKeyCombos - 1;
+        %m >= 0;
+        while (%m >= 0)
         {
             %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
-            $Defaults::UserPref::emotes["f",%keyCombo][$UserPref::emotes,"f",%keyCombo] = ;
-            %m = (%m - 1.0);
+            $Defaults::UserPref::emotes["f",%keyCombo][$UserPref::emotes,"f",%keyCombo] =;
+            %m = %m - 1;
         }
     }
-    if ((%maxNumberKeyCombos[%numberOfUnboundKeyCombinations @ "m"] == %maxNumberKeyCombos))
+    if (%maxNumberKeyCombos[%numberOfUnboundKeyCombinations @ "m"] == %maxNumberKeyCombos)
     {
-        %m = (%maxNumberKeyCombos - 1.0);
-        (%m >= 0.0);
-        while ((%m >= 0.0))
+        %m = %maxNumberKeyCombos - 1;
+        %m >= 0;
+        while (%m >= 0)
         {
             %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
-            $Defaults::UserPref::emotes["m",%keyCombo][$UserPref::emotes,"m",%keyCombo] = ;
-            %m = (%m - 1.0);
+            $Defaults::UserPref::emotes["m",%keyCombo][$UserPref::emotes,"m",%keyCombo] =;
+            %m = %m - 1;
         }
     }
 }
@@ -738,34 +705,28 @@ function LoginRequest::handleBoot(%this)
 function onDoneOrErrorCallback_Boot(%request)
 {
     %status = %request.getResult("status");
-    if ((%status $= "success"))
+    if (%status $= "success")
     {
         LoginGui.setControlsActive(0);
         LoginGui.envManagerLogin();
     }
     else
     {
-        if ((%status $= "fail"))
+        if (%status $= "fail")
         {
             error("client boot HTTP status: " @ %status);
             LoginGui.onConnectFailed("Could not disconnect");
             MessageBoxOK("Could Not Disconnect", $MsgCat::login["E-DISCONNECT"], "");
         }
-        else
+        if (%status $= "error")
         {
-            if ((%status $= "error"))
-            {
-                error("client boot HTTP status: " @ %status);
-                LoginGui.onConnectFailed("There was a problem with the login server");
-                MessageBoxOK("Problem Connecting", $MsgCat::login["E-CONNECT"], "");
-            }
-            else
-            {
-                error("client boot HTTP status: " @ %status);
-                LoginGui.onConnectFailed("Error communicating with server");
-                MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
-            }
+            error("client boot HTTP status: " @ %status);
+            LoginGui.onConnectFailed("There was a problem with the login server");
+            MessageBoxOK("Problem Connecting", $MsgCat::login["E-CONNECT"], "");
         }
+        error("client boot HTTP status: " @ %status);
+        LoginGui.onConnectFailed("Error communicating with server");
+        MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
     }
 }
 function LoginGui::update(%this, %unused)
@@ -812,7 +773,7 @@ function LoginGui::animate(%this)
         %this.hideBitmapSet(%this.bitmapSet);
     }
     %this.firstAnimation = 0;
-    %this.bitmapSet = (%this.bitmapSet == 0.0) ? 1 : 0;
+    %this.bitmapSet = (%this.bitmapSet == 0) ? 1 : 0;
     %this.schedule(500, "showBitmapSet", %this.bitmapSet);
     cancel(%this.animateTimer);
     %this.animateTimer = %this.schedule(45000, "animate");
@@ -838,7 +799,7 @@ function LoginGui::stopAnimation(%this)
 }
 function LoginGui::showBitmapSet(%this, %set)
 {
-    if ((%set == 0.0))
+    if (%set == 0)
     {
         %this.schedule(0, "fadeInBitmap", 0, 0);
         %this.schedule(1000, "fadeInBitmap", 0, 1);
@@ -854,7 +815,7 @@ function LoginGui::showBitmapSet(%this, %set)
 }
 function LoginGui::hideBitmapSet(%this, %set)
 {
-    if ((%set == 0.0))
+    if (%set == 0)
     {
         %this.schedule(0, "fadeOutBitmap", 0, 0);
         %this.schedule(1000, "fadeOutBitmap", 0, 1);
@@ -870,12 +831,12 @@ function LoginGui::hideBitmapSet(%this, %set)
 }
 function checkForClientUpgrades()
 {
-    if (($Platform $= "macos"))
+    if ($Platform $= "macos")
     {
         log("login", "debug", "No support for starting upgrade from within OSX client.");
         return;
     }
-    if (($Net::UpgradeToolAvailable == 0.0))
+    if ($Net::UpgradeToolAvailable == 0)
     {
         return;
     }

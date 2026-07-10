@@ -5,7 +5,7 @@ function serverCmdSAD(%client, %password)
     if (!(%password $= ""))
     {
     }
-    if ((%password $= $Pref::Server::AdminPassword))
+    if (%password $= $Pref::Server::AdminPassword)
     {
         %client.isAdmin = 1;
         %client.isSuperAdmin = 1;
@@ -27,7 +27,7 @@ function serverCmdTeamMessageSent(%client, %text)
 {
     error("TeamMessageSent not supported");
     return;
-    if ((strlen(%text) >= $Pref::Server::MaxChatLen))
+    if (strlen(%text) >= $Pref::Server::MaxChatLen)
     {
         %text = getSubStr(%text, 0, $Pref::Server::MaxChatLen);
     }

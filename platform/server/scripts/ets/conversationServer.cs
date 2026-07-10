@@ -57,11 +57,8 @@ function findConversation(%senderPlayer, %targetPlayer)
         {
             %conv = %senderPlayer.getConversation();
         }
-        else
-        {
-            %conv = newConversation(%senderPlayer, %targetPlayer);
-            CONVBUB_DEBUG("new conversation: " @ getDebugString(%conv));
-        }
+        %conv = newConversation(%senderPlayer, %targetPlayer);
+        CONVBUB_DEBUG("new conversation: " @ getDebugString(%conv));
     }
     return %conv;
 }
@@ -70,7 +67,7 @@ function updateConversationLocations()
     %count = ConversationList.getCount();
     CONVBUB_DEBUG("ConversationList has" @ " " @ %count);
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
         %conversation = ConversationList.getObject(%i);
         if (!%conversation.updateLocation())
@@ -78,7 +75,7 @@ function updateConversationLocations()
             ConversationList.remove(%conversation);
             %conversation.delete();
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 $Conv::updateLocationsTimerID = 0;
@@ -92,14 +89,14 @@ function updateConvLocationsTimer()
 updateConvLocationsTimer();
 function serverCmdChatMessage(%senderConnection, %targetPlayer, %message)
 {
-    if ((%message $= ""))
+    if (%message $= "")
     {
     }
     if (spamAlert(%senderConnection))
     {
         return;
     }
-    if ((%targetPlayer != 0.0))
+    if (%targetPlayer != 0)
     {
         %targetPlayer = %senderConnection.resolveObjectFromGhostIndex(%targetPlayer);
     }
@@ -109,7 +106,7 @@ function serverCmdChatMessage(%senderConnection, %targetPlayer, %message)
 }
 function ServersideChatMessage(%senderPlayer, %targetPlayer, %message)
 {
-    if ((strlen(%message) >= $Pref::Server::MaxChatLen))
+    if (strlen(%message) >= $Pref::Server::MaxChatLen)
     {
         %message = getSubStr(%message, 0, $Pref::Server::MaxChatLen);
     }
@@ -127,7 +124,7 @@ function ServersideChatMessage(%senderPlayer, %targetPlayer, %message)
     CONVBUB_DEBUG("found conv:" @ " " @ %conv);
     %conv.addParticipant(%senderPlayer);
     %conv.addMessage(%senderPlayer, %message);
-    if (0 && (%conv.countParticipants() > 1.0) && (gGetField(%senderPlayer, orientedConversation) != %conv))
+    if (0 && (%conv.countParticipants() > 1) && (gGetField(%senderPlayer, orientedConversation) != %conv))
     {
         %senderPlayer.orientTowardsOverTime(%conv, 700);
         gSetField(%senderPlayer, orientedConversation, %conv);
@@ -137,7 +134,7 @@ function ServersideChatMessage(%senderPlayer, %targetPlayer, %message)
 function serverCmdEavesdrop(%senderConnection, %newTarget)
 {
     CONVBUB_DEBUG("EAVESDROP: " @ %newTarget);
-    if ((%newTarget != 0.0))
+    if (%newTarget != 0)
     {
         %newTarget = %senderConnection.resolveObjectFromGhostIndex(%newTarget);
     }
@@ -153,7 +150,7 @@ function serverSideEavesdrop(%senderPlayer, %targetPlayer)
         error("serverSideEavesdrop: got Non-player sender:" @ " " @ getDebugString(%senderPlayer));
         return;
     }
-    if ((%targetPlayer != 0.0))
+    if (%targetPlayer != 0)
     {
     }
     if (!isPlayerObject(%targetPlayer))
@@ -182,7 +179,7 @@ function serverSideEavesdrop(%senderPlayer, %targetPlayer)
 function Player::joinConversation(%this, %conv, %asParticipant)
 {
     %oldConv = %this.getConversation();
-    if ((%oldConv == %conv))
+    if (%oldConv == %conv)
     {
         CONVBUB_DEBUG("no change in conversation" @ " " @ getDebugString(%oldConv));
         return;
@@ -193,17 +190,11 @@ function Player::joinConversation(%this, %conv, %asParticipant)
         {
             %oldConv.removeListener(%this);
         }
-        else
+        if (%oldConv.hasParticipant(%this))
         {
-            if (%oldConv.hasParticipant(%this))
-            {
-                %oldConv.removeParticipant(%this);
-            }
-            else
-            {
-                error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
-            }
+            %oldConv.removeParticipant(%this);
         }
+        error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
     }
     if (!isObject(%conv))
     {

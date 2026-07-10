@@ -20,11 +20,11 @@ function PlayGui::onWake(%this)
     TheShapeNameHud.rolesVIP = roles::getRolesMaskFromStrings("staff moderator celeb");
     TheShapeNameHud.rolesCeleb = roles::getRolesMaskFromStrings("celeb");
     %this.schedule(100, "resetFirstResponder");
-    if (($RegisterObjectFailFlag == 1.0))
+    if ($RegisterObjectFailFlag == 1)
     {
         schedule(0, 0, "MessageBoxOK", "DATABLOCK REGISTRATION OF OBJECT FAILED", "Do not continue editing this mission because you are missing datablocks and will destroy other people's work if you continue, but you probably just need to do an update of your working area.\n\nSearch the console.log for 'Register object failed'." @ "\n" @ $gRegisterObjectFailList, "");
     }
-    if ((getNumMissingTextures() > $gPrevNumMissing))
+    if (getNumMissingTextures() > $gPrevNumMissing)
     {
     }
     if ($ETS::devMode)
@@ -157,28 +157,19 @@ function PlayGui::onMouseDownObj(%this, %obj, %pt, %worldVec)
     }
     else
     {
-        if ((%type & $TypeMasks::AdvertObjectType))
+        if (%type & $TypeMasks::AdvertObjectType)
         {
             %this.onAdvertClick(%obj, %pt);
         }
-        else
+        if (%type & $TypeMasks::UsableObjectType)
         {
-            if ((%type & $TypeMasks::UsableObjectType))
-            {
-                %this.onUsableObjectClick(%obj, %pt);
-            }
-            else
-            {
-                if ((%type & $TypeMasks::PlayerObjectType))
-                {
-                    onLeftClickPlayerName(%obj.getShapeName(), %obj);
-                }
-                else
-                {
-                    echoDebug("got a clicked object but didn't find a proper typemask:" @ " " @ %type @ " " @ getDebugString(%obj));
-                }
-            }
+            %this.onUsableObjectClick(%obj, %pt);
         }
+        if (%type & $TypeMasks::PlayerObjectType)
+        {
+            onLeftClickPlayerName(%obj.getShapeName(), %obj);
+        }
+        echoDebug("got a clicked object but didn't find a proper typemask:" @ " " @ %type @ " " @ getDebugString(%obj));
     }
 }
 function PlayGui::onRightMouseDown(%this, %obj, %pt)
@@ -188,7 +179,7 @@ function PlayGui::onRightMouseDown(%this, %obj, %pt)
     {
         %type = %obj.getType();
     }
-    if ((%type & $TypeMasks::InteriorObjectType))
+    if (%type & $TypeMasks::InteriorObjectType)
     {
         onRightClickDownInterior(%obj);
     }
@@ -200,29 +191,23 @@ function PlayGui::onRightMouseUp(%this, %obj)
     {
         %type = %obj.getType();
     }
-    if ((%type & $TypeMasks::AdvertObjectType))
+    if (%type & $TypeMasks::AdvertObjectType)
     {
         %this.onAdvertClick(%obj, %pt);
     }
     else
     {
-        if ((%type & $TypeMasks::UsableObjectType))
+        if (%type & $TypeMasks::UsableObjectType)
         {
             %this.onUsableObjectRightClick(%obj);
         }
-        else
+        if (%type & $TypeMasks::PlayerObjectType)
         {
-            if ((%type & $TypeMasks::PlayerObjectType))
-            {
-                %this.onRMBPlayer(%obj);
-            }
-            else
-            {
-                if ((%type & $TypeMasks::InteriorObjectType))
-                {
-                    onRightClickUpInterior(%obj);
-                }
-            }
+            %this.onRMBPlayer(%obj);
+        }
+        if (%type & $TypeMasks::InteriorObjectType)
+        {
+            onRightClickUpInterior(%obj);
         }
     }
 }
@@ -236,7 +221,7 @@ function PlayGui::onUsableObjectClick(%this, %obj, %pt)
     }
     else
     {
-        if ((%nuggetId >= 0.0))
+        if (%nuggetId >= 0)
         {
             if ($CS_EditingCustomSpace)
             {
@@ -257,23 +242,20 @@ function PlayGui::onUsableObjectClick(%this, %obj, %pt)
                 }
             }
         }
-        else
+        if (checkInteractOK(%obj))
         {
-            if (checkInteractOK(%obj))
+            if (%obj.hasMethod("onUse"))
             {
-                if (%obj.hasMethod("onUse"))
-                {
-                    %obj.onUse($player);
-                }
-                commandToServer('usableObjectClick', %obj.getGhostID());
+                %obj.onUse($player);
             }
+            commandToServer('usableObjectClick', %obj.getGhostID());
         }
     }
 }
 function PlayGui::onUsableObjectRightClick(%this, %obj)
 {
     %nuggetId = %obj.getInventoryNuggetID();
-    if ((%nuggetId >= 0.0))
+    if (%nuggetId >= 0)
     {
     }
     if ($CS_EditingCustomSpace)
@@ -283,7 +265,7 @@ function PlayGui::onUsableObjectRightClick(%this, %obj)
     }
     else
     {
-        if ((%obj != 0.0))
+        if (%obj != 0)
         {
             if (checkInteractOK(%obj))
             {
@@ -303,7 +285,7 @@ function PlayGui::onMouseOver(%this, %obj)
         $TSControl::objSelLastMouseOver.SetHighlighted(0);
     }
     Canvas.setCursor(ETSDefaultCursor);
-    if ((%obj == 0.0))
+    if (%obj == 0)
     {
         onMouseOverSwatchObj(0);
         return;
@@ -334,7 +316,7 @@ function PlayGui::onMouseOver(%this, %obj)
             if (%obj.isGhost())
             {
             }
-            if ((%type & $TypeMasks::UsableObjectType) && isObject(%datablock))
+            if (%type & $TypeMasks::UsableObjectType && isObject(%datablock))
             {
             }
             if (!(%datablock.playerAnimReach $= ""))
@@ -349,9 +331,9 @@ function PlayGui::onMouseOver(%this, %obj)
 }
 function checkInteractOK(%obj)
 {
-    %activateDistance = 0.0;
+    %activateDistance = 0;
     %interactOK = 1;
-    if ((%obj.getType() & $TypeMasks::InteriorObjectType))
+    if (%obj.getType() & $TypeMasks::InteriorObjectType)
     {
         return 0;
     }
@@ -359,7 +341,7 @@ function checkInteractOK(%obj)
     {
         %activateDistance = %obj.getActivationRange();
     }
-    if ((%activateDistance == 0.0))
+    if (%activateDistance == 0)
     {
     }
     if (%obj.hasMethod("getDataBlock"))
@@ -367,11 +349,11 @@ function checkInteractOK(%obj)
         %datablock = %obj.getDataBlock();
         %activateDistance = %datablock.activateRange;
     }
-    if ((%activateDistance > 0.0))
+    if (%activateDistance > 0)
     {
-        %rangeVal = (%activateDistance * %activateDistance);
+        %rangeVal = %activateDistance * %activateDistance;
         %distVal = VectorDistSquared($player.getPosition(), %obj.getPosition());
-        if ((%rangeVal < %distVal))
+        if (%rangeVal < %distVal)
         {
             %interactOK = 0;
         }
@@ -386,8 +368,8 @@ function GuiControl::getTopNthWindow(%this, %ndex)
 {
     %count = %this.getCount();
     %num = 0;
-    %idx = (%count - 1.0);
-    while ((%idx >= 0.0))
+    %idx = %count - 1;
+    while (%idx >= 0)
     {
         %obj = %this.getObject(%idx);
         if (%obj.profile.canKeyFocus)
@@ -396,20 +378,17 @@ function GuiControl::getTopNthWindow(%this, %ndex)
         if (%obj.isVisible())
         {
         }
-        if ((%obj.getId() != TheShapeNameHud.getId()))
+        if (%obj.getId() != TheShapeNameHud.getId())
         {
-            if ((%num >= %ndex))
+            if (%num >= %ndex)
             {
                 return %obj;
             }
-            else
-            {
-                %num = (%num + 1.0);
-            }
+            %num = %num + 1;
         }
-        %idx = (%idx - 1.0);
+        %idx = %idx - 1;
     }
-    return -(1.0);
+    return -(1);
 }
 function GuiControl::focusTopWindow(%this)
 {
@@ -427,24 +406,21 @@ function GuiControl::closeTopClosableWindow(%this)
 {
     %closedOne = 0;
     %n = 0;
-    if (!%closedOne)
+    while (!%closedOne)
     {
         %obj = %this.getTopNthWindow(%n);
         if (!isObject(%obj))
         {
         }
+        if (!(%obj.closeCommand $= ""))
+        {
+            eval("%closedOne =" @ " " @ %obj.closeCommand);
+        }
         else
         {
-            if (!(%obj.closeCommand $= ""))
-            {
-                eval("%closedOne =" @ " " @ %obj.closeCommand);
-            }
-            else
-            {
-                %closedOne = %obj.close();
-            }
-            %n = (%n + 1.0);
+            %closedOne = %obj.close();
         }
+        %n = %n + 1;
     }
     %this.focusTopWindow();
     return %closedOne;
@@ -452,17 +428,14 @@ function GuiControl::closeTopClosableWindow(%this)
 function GuiControl::dumpTopWindows(%this)
 {
     %n = 0;
-    if (1)
+    while (1)
     {
         %obj = %this.getTopNthWindow(%n);
         if (!isObject(%obj))
         {
         }
-        else
-        {
-            echo(getDebugString(%obj));
-            %n = (%n + 1.0);
-        }
+        echo(getDebugString(%obj));
+        %n = %n + 1;
     }
 }
 function GuiControl::showRaiseOrHide(%this, %ctrl)
@@ -470,7 +443,7 @@ function GuiControl::showRaiseOrHide(%this, %ctrl)
     if (%ctrl.isVisible())
     {
         %top = %this.getTopWindow();
-        if ((%top.getId() == %ctrl.getId()))
+        if (%top.getId() == %ctrl.getId())
         {
             %ctrl.close();
         }
@@ -489,7 +462,7 @@ function GuiControl::showRaise(%this, %ctrl)
     if (%ctrl.isVisible())
     {
         %top = %this.getTopWindow();
-        if ((%top.getId() != %ctrl.getId()))
+        if (%top.getId() != %ctrl.getId())
         {
             %this.focusAndRaise(%ctrl);
         }
@@ -507,7 +480,7 @@ function GuiControl::focusAndRaise(%this, %ctrl)
 }
 function GuiControl::ensureAdded(%this, %panel)
 {
-    if ((%panel.getParent() == %this.getId()))
+    if (%panel.getParent() == %this.getId())
     {
         return;
     }
@@ -528,9 +501,9 @@ function checkDistance(%a, %b)
         %ay = getWord(%apos, 1);
         %bx = getWord(%bpos, 0);
         %by = getWord(%bpos, 1);
-        %distx = (%bx - %ax);
-        %disty = (%by - %ay);
-        %dist = ((%distx * %distx) + (%disty * %disty));
+        %distx = %bx - %ax;
+        %disty = %by - %ay;
+        %dist = (%distx * %distx) + (%disty * %disty);
     }
     return %dist;
 }

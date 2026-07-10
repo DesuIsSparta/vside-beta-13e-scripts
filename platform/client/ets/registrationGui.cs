@@ -82,7 +82,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
     {
         $UserPref::Player::Name = %request.getValue("userName");
         $UserPref::Player::Password = %request.getValue("password");
-        if ((%request.getValue("gender") $= ""))
+        if (%request.getValue("gender") $= "")
         {
         }
         else
@@ -104,7 +104,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
         %errorCode = %request.getValue("errorCode");
         %analytic = getAnalytic();
         %analytic.trackPageView("/client/registration/failed/" @ %errorCode);
-        if ((%errorCode $= "UNKNOWN_ID"))
+        if (%errorCode $= "UNKNOWN_ID")
         {
             %errorMessage = %errorCode[$MsgCat::login @ "E-REG-UNKNOWN-ID"];
             error(getScopeName() @ " " @ "- unknown registration ID -" @ " " @ $Net::RegistrationID);
@@ -113,14 +113,11 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
         }
         else
         {
-            if ((%errorCode $= "INCOMPLETE"))
+            if (%errorCode $= "INCOMPLETE")
             {
                 %errorMessage = %errorCode[$MsgCat::login @ "E-REG-INCOMPLETE"];
             }
-            else
-            {
-                %errorMessage = $MsgCat::login["E-REG-UNKNOWN"];
-            }
+            %errorMessage = $MsgCat::login["E-REG-UNKNOWN"];
         }
         %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
         geRegistrationStatusText.setValue(%errorMessage);
@@ -133,22 +130,19 @@ function RegistrationGui::close(%this)
 }
 function RegistrationLink::onURL(%this, %url)
 {
-    if ((%url $= "HAVE_ACCOUNT"))
+    if (%url $= "HAVE_ACCOUNT")
     {
         RegistrationGui.close();
     }
     else
     {
-        if ((%url $= "REREGISTER"))
+        if (%url $= "REREGISTER")
         {
             gotoWebPage($Net::ReregisterURL);
         }
-        else
+        if (%url $= "FINISH_REGISTRATION")
         {
-            if ((%url $= "FINISH_REGISTRATION"))
-            {
-                gotoWebPage(standardSubstitutions($Net::FinishRegistrationURL));
-            }
+            gotoWebPage(standardSubstitutions($Net::FinishRegistrationURL));
         }
     }
 }

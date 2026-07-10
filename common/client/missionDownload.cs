@@ -15,7 +15,7 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName)
     }
     else
     {
-        %crc = -(1.0);
+        %crc = -(1);
     }
     log("network", "debug", "client cache CRC:" @ " " @ %crc);
     if ($CacheFlagIsSet)
@@ -24,7 +24,7 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName)
     if ($StandAlone)
     {
     }
-    %hasStandaloneCache = (%crc != -(1.0));
+    %hasStandaloneCache = %crc != -(1);
     $Client::TempMissionFile = %missionName;
     prepLighting();
     commandToServer('MissionCRC', %missionSequence, %missionName, %crc, $UserPref::Player::gender, %hasStandaloneCache);
@@ -117,7 +117,7 @@ function onGhostAlwaysStarted(%ghostCount)
 }
 function onGhostAlwaysObjectReceived()
 {
-    $GhostsRecvd = ($GhostsRecvd + 1.0);
+    $GhostsRecvd = $GhostsRecvd + 1;
     onPhase2ProgressUpdateStatusDisplay(($GhostsRecvd / $GhostCount));
 }
 function onGhostAlwaysDone()
@@ -137,7 +137,7 @@ function clientCmdMissionStartPhase3(%missionSequence, %missionName)
     StartFoliageReplication();
     purgeResources();
     log("network", "info", "phase 3" @ " " @ %missionName);
-    log("general", "info", "phase_3_memory=" @ (getCurrentMemoryUsage() / 1024.0));
+    log("general", "info", "phase_3_memory=" @ (getCurrentMemoryUsage() / 1024));
     $MSeq = %missionSequence;
     $Client::MissionFile = %missionName;
     if ($NoDisplay)
@@ -167,7 +167,7 @@ function updateLightingProgress()
 function sceneLightingComplete()
 {
     log("network", "info", "scene lighting complete");
-    log("general", "info", "lighting_complete_memory=" @ (getCurrentMemoryUsage() / 1024.0));
+    log("general", "info", "lighting_complete_memory=" @ (getCurrentMemoryUsage() / 1024));
     onPhase3Complete();
     onMissionDownloadComplete();
     commandToServer('MissionStartPhase3Ack', $MSeq);

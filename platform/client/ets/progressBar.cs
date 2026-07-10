@@ -57,7 +57,7 @@ function ProgressBarController::makeLeftCap(%this, %bitmap)
     {
         %this.leftCap.delete();
     }
-    if ((%bitmap $= ""))
+    if (%bitmap $= "")
     {
         %this.leftCap = 0;
         return;
@@ -83,7 +83,7 @@ function ProgressBarController::makeRightCap(%this, %bitmap)
     {
         %this.rightCap.delete();
     }
-    if ((%bitmap $= ""))
+    if (%bitmap $= "")
     {
         %this.rightCap = 0;
         return;
@@ -122,7 +122,7 @@ function ProgressBarController::reseatCaps(%this)
 function ProgressBarController::setValue(%this, %value)
 {
     %this.value = mMax(mMin(%value, 1), 0);
-    %effectiveWidth = (%this.width - (%this.leftMargin + %this.rightMargin));
+    %effectiveWidth = %this.width - (%this.leftMargin + %this.rightMargin);
     %this.foreground.resize(%this.leftMargin, 0, mFloor((%this.value * %effectiveWidth)), %this.height);
     %this.reseatCaps();
 }

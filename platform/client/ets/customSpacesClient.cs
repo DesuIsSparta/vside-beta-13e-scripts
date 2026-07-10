@@ -17,7 +17,7 @@ function CustomSpaceClient::GetSpaceImIn()
 }
 function CustomSpaceClient::SetSpaceImIn(%buildingName, %spaceName)
 {
-    if (($CSSpaceName $= %spaceName))
+    if ($CSSpaceName $= %spaceName)
     {
         if (!($CSSpaceName $= ""))
         {
@@ -28,10 +28,10 @@ function CustomSpaceClient::SetSpaceImIn(%buildingName, %spaceName)
     $CSBuildingName = %buildingName;
     $CSSpaceName = %spaceName;
     $CSBlockedList = "";
-    if ((%buildingName $= ""))
+    if (%buildingName $= "")
     {
     }
-    if ((%spaceName $= ""))
+    if (%spaceName $= "")
     {
         return;
     }
@@ -80,12 +80,12 @@ function CustomSpaceClient::SetupClientAsNotInSpace()
     {
         CSControlPanel.close();
     }
-    if ((HudTabs.getCurrentTab().name $= "private space"))
+    if (HudTabs.getCurrentTab().name $= "private space")
     {
         HudTabs.close();
     }
     HudTabs.hideTabWithName("private space");
-    if (($CSSpaceInfo != 0.0))
+    if ($CSSpaceInfo != 0)
     {
         destroySpaceInfo($CSSpaceInfo);
     }
@@ -117,7 +117,7 @@ function CustomSpaceClient::stopEditingSpace()
 }
 function CustomSpaceClient::checkEditingSpace()
 {
-    if ((numCSPanelsOpen() > 0.0))
+    if (numCSPanelsOpen() > 0)
     {
         CustomSpaceClient::startEditingSpace();
     }
@@ -129,11 +129,11 @@ function CustomSpaceClient::checkEditingSpace()
 function GotCustomSpaceInfo(%buildingInfo, %spaceGroup)
 {
     echo("received custom space info");
-    if ((%spaceGroup.getCount() != 1.0))
+    if (%spaceGroup.getCount() != 1)
     {
         log("network", "error", "GotCustomSpaceInfo returned a strange number of spaces (" @ %spaceGroup.getCount() @ ")");
     }
-    if (($CSSpaceInfo != 0.0))
+    if ($CSSpaceInfo != 0)
     {
     }
     if (isObject($CSSpaceInfo))
@@ -147,7 +147,7 @@ function GotCustomSpaceInfo(%buildingInfo, %spaceGroup)
     %isOwner = 0;
     if (isObject($player))
     {
-        %isOwner = (stricmp($CSSpaceInfo.owner, $player.getShapeName()) == 0.0);
+        %isOwner = stricmp($CSSpaceInfo.owner, $player.getShapeName()) == 0;
     }
     else
     {
@@ -155,7 +155,7 @@ function GotCustomSpaceInfo(%buildingInfo, %spaceGroup)
     }
     CustomSpaceClient::SetUpOwnership(%isOwner);
     CSRulesAndDescWindow.updateSettings($CSSpaceInfo.access, $CSSpaceInfo.password, $CSSpaceInfo.description);
-    if ((stricmp($CSSpaceInfo.type, "model") == 0.0))
+    if (stricmp($CSSpaceInfo.type, "model") == 0)
     {
         CSControlPanel.open();
         CSSpaceModelAptText.update();
@@ -166,13 +166,13 @@ function GotCustomSpaceInfo(%buildingInfo, %spaceGroup)
 }
 function CustomSpacesClient::setMap2DText()
 {
-    if (("<color:ffffff><tab:15,60>\tOwner:\t" @ " " @ $CSSpaceInfo.type $= "CELEBSPACE"))
+    if ("<color:ffffff><tab:15,60>\tOwner:\t" @ " " @ $CSSpaceInfo.type $= "CELEBSPACE")
     {
     }
     else
     {
     }
-    if (($CSSpaceInfo.name @ $CSSpaceInfo.owner @ "\n\tBuilding:\t" @ " " @ Buildings::GetDescription($CSBuildingName) $= ""))
+    if ($CSSpaceInfo.name @ $CSSpaceInfo.owner @ "\n\tBuilding:\t" @ " " @ Buildings::GetDescription($CSBuildingName) $= "")
     {
     }
     else
@@ -185,7 +185,7 @@ function CustomSpaceClient::SetUpOwnership(%isOwner)
 {
     %wasOwner = $CSSpaceOwner;
     log("network", "debug", "setting space ownership to " @ %isOwner);
-    if ((%isOwner == 0.0))
+    if (%isOwner == 0)
     {
         if (isObject(PrivSpaceHud))
         {
@@ -194,18 +194,15 @@ function CustomSpaceClient::SetUpOwnership(%isOwner)
         }
         if (isObject(CSControlPanel))
         {
-            if (($CSSpaceInfo != 0.0))
+            if ($CSSpaceInfo != 0)
             {
             }
-            if ((stricmp($CSSpaceInfo.type, "model") == 0.0))
+            if (stricmp($CSSpaceInfo.type, "model") == 0)
             {
                 CSControlPanel.open();
                 CSControlPanelTabs.selectTabWithName("MODEL_APT");
             }
-            else
-            {
-                CSControlPanel.close();
-            }
+            CSControlPanel.close();
         }
         if (isObject(MusicHud))
         {
@@ -238,7 +235,7 @@ function CustomSpaceClient::isOwner()
 }
 function CustomSpaceClient::placeSkuInWorld(%sku, %position, %orientation)
 {
-    if ((%sku <= 0.0))
+    if (%sku <= 0)
     {
         error(getScopeName() @ " " @ "No sku selected");
         return;
@@ -251,11 +248,11 @@ function CustomSpaceClient::placeSkuInWorld(%sku, %position, %orientation)
     {
         %orientation = "";
     }
-    if ((numUsingFurnitureSku(%sku) >= numOwnedFurnitureSku(%sku)))
+    if (numUsingFurnitureSku(%sku) >= numOwnedFurnitureSku(%sku))
     {
         return;
     }
-    if ((numUsingFurnitureAll() >= $CSMaximumSlots))
+    if (numUsingFurnitureAll() >= $CSMaximumSlots)
     {
         %title = "Sorry, Can't Do That";
         %body = "This space can only have" @ " " @ $CSMaximumSlots @ " " @ "items in it at a time.  Put something away to make more room.";
@@ -309,9 +306,9 @@ function clientCmdCSRequestToEditAccepted(%spaceName, %numberOfSlots)
 }
 function clientCmdCSOnUnownedInventoryTimeOut(%referenceID)
 {
-    if ((%referenceID == $CSSelectedID))
+    if (%referenceID == $CSSelectedID)
     {
-        CSFurnitureMover.SelectNuggetID(-(1.0));
+        CSFurnitureMover.SelectNuggetID(-(1));
         $CSInstaTestDrive = 0;
     }
     getNuggetGhostList("CSFurnitureMover::refreshGhostList");
@@ -322,7 +319,7 @@ function clientCmdCSRequestToEditDenied(%spaceName, %msg)
 }
 function customSpace::SetMusicStreamID(%streamID, %displayId)
 {
-    if ((CustomSpaceClient::GetSpaceImIn() $= ""))
+    if (CustomSpaceClient::GetSpaceImIn() $= "")
     {
         return;
     }
@@ -334,7 +331,7 @@ function customSpace::SetMusicStreamID(%streamID, %displayId)
 }
 function customSpace::SetVideoURL(%videoURL)
 {
-    if ((CustomSpaceClient::GetSpaceImIn() $= ""))
+    if (CustomSpaceClient::GetSpaceImIn() $= "")
     {
         return;
     }
@@ -379,7 +376,7 @@ function late_OnEnterSpace(%spaceName, %musicStreamId, %videoURL, %building, %Cu
 }
 function clientCmdCS_OnLeaveSpace(%spaceName)
 {
-    if ((CustomSpaceClient::GetCurrentSpaceName() $= %spaceName))
+    if (CustomSpaceClient::GetCurrentSpaceName() $= %spaceName)
     {
         %analyticSpace = strreplace(%spaceName, ".", " ");
         %analytic = getAnalytic();
@@ -428,7 +425,7 @@ function clientCmdCS_OnInventoryCreated(%sku, %referenceName, %isOwned, %freeRot
 function clientCmdCS_OnInventoryCreationFailed(%sku, %isOwned)
 {
     refreshActiveFurniture();
-    CSFurnitureMover.SelectNuggetID(-(1.0));
+    CSFurnitureMover.SelectNuggetID(-(1));
 }
 function clientCmdCS_OnEnterEntryPortal(%buildingName)
 {
@@ -437,13 +434,13 @@ function clientCmdCS_OnEnterEntryPortal(%buildingName)
 }
 function CustomSpaceClient::CheckBlockUserFromSpace(%playerName, %unblock)
 {
-    %blockText = (%unblock $= "") || (%unblock == 0.0) ? "block" : "unblock";
-    if ((CustomSpaceClient::GetSpaceImIn() $= ""))
+    %blockText = (%unblock $= "") || (%unblock == 0) ? "block" : "unblock";
+    if (CustomSpaceClient::GetSpaceImIn() $= "")
     {
         handleSystemMessage("msgInfoMessage", "Sorry, you must be in a space to " @ %blockText @ " users from it.");
         return 0;
     }
-    if ((%playerName $= ""))
+    if (%playerName $= "")
     {
         handleSystemMessage("msgInfoMessage", "You didn't specify anyone to " @ %blockText);
         return 0;
@@ -508,7 +505,7 @@ function CustomSpaceClient::ReallyTryBlockUserFromSpace(%playerName, %unblock)
     {
         return;
     }
-    %blockText = (%unblock $= "") || (%unblock == 0.0) ? "block" : "unblock";
+    %blockText = (%unblock $= "") || (%unblock == 0) ? "block" : "unblock";
     %space = CustomSpaceClient::GetSpaceImIn();
     %request = new ManagerRequest("") {
         className = "BanFromSpaceRequest";
@@ -520,7 +517,7 @@ function CustomSpaceClient::ReallyTryBlockUserFromSpace(%playerName, %unblock)
     %request.blockedPlayer = %playerName;
     %request.blockText = %blockText;
     %url = $Net::ClientServiceURL @ "/BanFromSpace" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&space=" @ urlEncode(%space) @ "&userToBan=" @ urlEncode(%playerName);
-    if ((%unblock == 1.0))
+    if (%unblock == 1)
     {
     }
     if (!(%unblock $= ""))
@@ -542,7 +539,7 @@ function BanFromSpaceRequest::onDone(%this)
     else
     {
         handleSystemMessage("msgInfoMessage", "" @ getPlayerMarkup(%this.blockedPlayer, "", 1) @ " was " @ %this.blockText @ "ed from this space.");
-        if ((%this.blockText $= "block"))
+        if (%this.blockText $= "block")
         {
             if (!($CSBlockedList $= ""))
             {
@@ -553,10 +550,7 @@ function BanFromSpaceRequest::onDone(%this)
                 $CSBlockedList = %this.blockedPlayer;
             }
         }
-        else
-        {
-            $CSBlockedList = removeField($CSBlockedList, findField($CSBlockedList, %this.blockedPlayer));
-        }
+        $CSBlockedList = removeField($CSBlockedList, findField($CSBlockedList, %this.blockedPlayer));
     }
 }
 function CustomSpaceClient::TryBootAllUsersFromSpace(%space)
@@ -568,17 +562,17 @@ function CustomSpaceClient::TryBootAllUsersFromSpace(%space)
     {
         return;
     }
-    if ((%space $= ""))
+    if (%space $= "")
     {
     }
-    if ((CustomSpaceClient::GetSpaceImIn() $= ""))
+    if (CustomSpaceClient::GetSpaceImIn() $= "")
     {
         handleSystemMessage("msgInfoMessage", "You must either specify a space or be in one to boot all users.");
         return;
     }
     else
     {
-        if ((%space $= ""))
+        if (%space $= "")
         {
             %space = CustomSpaceClient::GetSpaceImIn();
         }
@@ -614,7 +608,7 @@ function CustomSpaceClient::doOwnerAction(%action, %target)
 }
 function teleportToAdjacentSpace(%next)
 {
-    if (($player.getControlObject() == $player.client.Camera))
+    if ($player.getControlObject() == $player.client.Camera)
     {
         if (%next)
         {
@@ -675,7 +669,7 @@ function doCheckForBuildingInfo(%BuildingDirRequest, %forceupdate)
 {
     safeEnsureScriptObject("SimSet", "BuildingInfos");
     %buildingInfo = findBuildingInfo(%BuildingDirRequest.buildingName);
-    if ((%buildingInfo != 0.0))
+    if (%buildingInfo != 0)
     {
         if (!%forceupdate)
         {
@@ -684,10 +678,7 @@ function doCheckForBuildingInfo(%BuildingDirRequest, %forceupdate)
             checkDoneBuildingDirectory(%BuildingDirRequest);
             return;
         }
-        else
-        {
-            clearBuildingInfo(%buildingInfo);
-        }
+        clearBuildingInfo(%buildingInfo);
     }
     GetBuildingInfoRequest(%BuildingDirRequest);
 }
@@ -717,12 +708,12 @@ function linkSpaces(%buildingInfo, %spaceGroup)
 {
     log("network", "debug", "linking " @ %spaceGroup.getCount() @ " apartments to building info and floor plans");
     %idx = 0;
-    while ((%idx < %spaceGroup.getCount()))
+    while (%idx < %spaceGroup.getCount())
     {
         %space = %spaceGroup.getObject(%idx);
         %space.buildingInfo = %buildingInfo;
         %space.floorplan = findFloorPlan(%buildingInfo, %space.floorPlanName);
-        %idx = (%idx + 1.0);
+        %idx = %idx + 1;
     }
 }
 function getOwnerSpacesInfo(%ownerName, %onCompleteFN)
@@ -736,22 +727,22 @@ function ownerHasSpaceWithFloorplan(%ownerName, %floorplanName)
 {
     %tracker = getOwnerSpaceInfoTracker(%ownerName);
     %count = %tracker.getCount();
-    if ((%count < 1.0))
+    if (%count < 1)
     {
         error(getScopeName() @ " " @ "- user owns no spaces! (tracker not filled yet, probably)" @ " " @ %ownerName @ " " @ getTrace());
         return 0;
     }
     %n = 0;
-    while ((%n < %count))
+    while (%n < %count)
     {
         %space = %tracker.getObject(%n);
         %space.dumpValues();
         %fpn = %space.get("floorPlan");
-        if ((%fpn $= %floorplanName))
+        if (%fpn $= %floorplanName)
         {
             return 1;
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     return 0;
 }
@@ -789,7 +780,7 @@ function onDoneOrErrorCallback_GetCustomSpaceInfo(%request, %result)
     %listBase = "space";
     %numSpaces = %request.getResult(%listBase @ "Count");
     %n = 0;
-    while ((%n < %numSpaces))
+    while (%n < %numSpaces)
     {
         %map = safeNewScriptObject("StringMap", "", 0);
         %listItemNameBase = %listBase @ %n;
@@ -816,15 +807,15 @@ function onDoneOrErrorCallback_GetCustomSpaceInfo(%request, %result)
         %request.copyListValuesIntoMap(%map, %listItemNameBase, %fields);
         %fields = "";
         %m = 0;
-        while ((%m < %map.get("banCount")))
+        while (%m < %map.get("banCount"))
         {
             %fields = %fields @ "\t" @ "ban" @ %m;
-            %m = (%m + 1.0);
+            %m = %m + 1;
         }
         %request.copyListValuesIntoMap(%map, %listItemNameBase, %fields);
         %map.URI = (%m < %map.get("banCount")) @ vurlClearResolution(%map.URI);
         %tracker.add(%map);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     if (isObject(CSSpaceModelAptText))
     {
@@ -849,16 +840,16 @@ function findBuildingInfo(%buildingName)
     %count = BuildingInfos.getCount();
     log("network", "debug", "Searching for \"" @ %buildingName @ "\" in cache (" @ %count @ " items)");
     %idx = 0;
-    while ((%idx < %count))
+    while (%idx < %count)
     {
         %buildingInfo = BuildingInfos.getObject(%idx);
-        if ((stricmp(%buildingInfo.name, %buildingName) == 0.0))
+        if (stricmp(%buildingInfo.name, %buildingName) == 0)
         {
             log("network", "debug", "Found item at index " @ %idx);
             BuildingInfos.bringToFront(%buildingInfo);
             return %buildingInfo;
         }
-        %idx = (%idx + 1.0);
+        %idx = %idx + 1;
     }
     log("network", "debug", "Item not found in cache");
     return 0;
@@ -868,24 +859,24 @@ function clearBuildingInfo(%buildingInfo)
     safeEnsureScriptObject("SimGroup", "BuildingInfos");
     BuildingInfos.remove(%buildingInfo);
     %idx = 0;
-    while ((%idx < %buildingInfo.floorPlanCount))
+    while (%idx < %buildingInfo.floorPlanCount)
     {
         %buildingInfo.floorplan[%idx].delete();
-        %idx = (%idx + 1.0);
+        %idx = %idx + 1;
     }
     %buildingInfo.schedule(0, "delete");
 }
 function findFloorPlan(%buildingInfo, %floorplanName)
 {
     %idx = 0;
-    while ((%idx < %buildingInfo.floorPlanCount))
+    while (%idx < %buildingInfo.floorPlanCount)
     {
         %floorplan = %buildingInfo.floorplan[%idx];
-        if ((0.0 == stricmp(%floorplanName, %floorplan.name)))
+        if (0 == stricmp(%floorplanName, %floorplan.name))
         {
             return %floorplan;
         }
-        %idx = (%idx + 1.0);
+        %idx = %idx + 1;
     }
     return 0;
 }
@@ -921,7 +912,7 @@ function GetBuildingInfo::onDone(%this)
     echo(getScopeName());
     %status = findRequestStatus(%this);
     log("network", "debug", "GetBuildingInfo status: " @ %status);
-    if ((%status $= "fail"))
+    if (%status $= "fail")
     {
         echo(getScopeName() @ "->failed");
         %statusMsg = %this.getValue("statusMsg");
@@ -945,7 +936,7 @@ function GetBuildingInfo::onDone(%this)
         %buildingInfo.description = urlDecode(%this.getValue("description"));
         %buildingInfo.floorPlanCount = %this.getValue("floorPlansCount");
         %idx = 0;
-        while ((%idx < %buildingInfo.floorPlanCount))
+        while (%idx < %buildingInfo.floorPlanCount)
         {
             %floorplan = new SimObject("");
             if (isObject(MissionCleanup))
@@ -958,14 +949,14 @@ function GetBuildingInfo::onDone(%this)
             %floorplan.minLevel = %this.getValue("floorPlans" @ %idx @ ".minLevel");
             %floorplan.priceVBux = %this.getValue("floorPlans" @ %idx @ ".priceVBux");
             %floorplan.priceVPoints = %this.getValue("floorPlans" @ %idx @ ".priceVPoints");
-            %floorplan.isUpgrade = (stricmp(%this.getValue("floorPlans" @ %idx @ ".upgrade"), "true") == 0.0);
+            %floorplan.isUpgrade = stricmp(%this.getValue("floorPlans" @ %idx @ ".upgrade"), "true") == 0;
             %floorplan.numAvailable = %this.getValue("floorPlans" @ %idx @ ".numAvailable");
             if (isObject(%buildingInfo.floorplan[%idx]))
             {
                 %buildingInfo.floorplan[%idx].delete();
             }
             %buildingInfo.floorplan[%idx] = %floorplan;
-            %idx = (%idx + 1.0);
+            %idx = %idx + 1;
         }
         addBuildingInfo(%buildingInfo);
         log("network", "debug", "Got building info for \"" @ %buildingInfo.name @ "\" with " @ %buildingInfo.floorPlanCount @ " floor plans");
@@ -974,10 +965,7 @@ function GetBuildingInfo::onDone(%this)
             %this.tracker.buildingInfo = (%idx < %buildingInfo.floorPlanCount) @ %buildingInfo;
             %this.tracker.doneBuildingInfo = 1;
         }
-        else
-        {
-            log("network", "warn", "%this.tracker is not an object.");
-        }
+        log("network", "warn", "%this.tracker is not an object.");
     }
     if (isObject(%this.tracker))
     {
@@ -1040,7 +1028,7 @@ function GetSpaceInfo::onDone(%this)
 {
     %status = findRequestStatus(%this);
     log("network", "debug", "GetSpaceInfo status: " @ %status);
-    if ((%status $= "fail"))
+    if (%status $= "fail")
     {
         %statusMsg = %this.getValue("statusMsg");
         error(getScopeName() @ " " @ "- failed w/" @ " " @ %statusMsg);
@@ -1057,7 +1045,7 @@ function GetSpaceInfo::onDone(%this)
         %this.tracker.spaceCount = %this.getValue("spaceCount");
         %this.tracker.spaces = new SimGroup("");
         %idx = 0;
-        while ((%idx < %this.tracker.spaceCount))
+        while (%idx < %this.tracker.spaceCount)
         {
             %space = new SimObject("");
             if (isObject(MissionCleanup))
@@ -1067,7 +1055,7 @@ function GetSpaceInfo::onDone(%this)
             %space.access = %this.getValue("space" @ %idx @ ".access");
             %space.audioStream = %this.getValue("space" @ %idx @ ".audioStream");
             %space.description = %this.getValue("space" @ %idx @ ".description");
-            %space.isFeatured = (%this.getValue("space" @ %idx @ ".featured") $= "true");
+            %space.isFeatured = %this.getValue("space" @ %idx @ ".featured") $= "true";
             %space.floorPlanName = %this.getValue("space" @ %idx @ ".floorPlan");
             %space.longDescription = %this.getValue("space" @ %idx @ ".longDescription");
             %space.name = %this.getValue("space" @ %idx @ ".name");
@@ -1080,41 +1068,35 @@ function GetSpaceInfo::onDone(%this)
             %space.buildingName = %this.getValue("space" @ %idx @ ".building");
             %space.blockedList = "";
             %banCount = %this.getValue("space" @ %idx @ ".banCount");
-            if ((%banCount $= ""))
+            if (%banCount $= "")
             {
                 %banCount = 0;
             }
             %k = 0;
-            while ((%k < %banCount))
+            while (%k < %banCount)
             {
                 %blockedUser = %this.getValue("space" @ %idx @ ".ban" @ %k);
-                if ((%blockedUser $= ""))
+                if (%blockedUser $= "")
                 {
                     warn(getScopeName() @ "->banned user #" @ %k @ " out of " @ %banCount @ ", was NULL!");
                 }
                 else
                 {
-                    if ((findField(%space.blockedList, %blockedUser) >= 0.0))
+                    if (findField(%space.blockedList, %blockedUser) >= 0)
                     {
                         warn(getScopeName() @ "->banned user #" @ %k @ " OUT OF " @ %banCount @ ", is a duplicate entry! entry = " @ %blockedUser @ " .");
                     }
-                    else
+                    if (!(%space.blockedList $= ""))
                     {
-                        if (!(%space.blockedList $= ""))
-                        {
-                            %space.blockedList = %space.blockedList @ "\t" @ %blockedUser;
-                        }
-                        else
-                        {
-                            %space.blockedList = %blockedUser;
-                        }
+                        %space.blockedList = %space.blockedList @ "\t" @ %blockedUser;
                     }
+                    %space.blockedList = %blockedUser;
                 }
-                %k = (%k + 1.0);
+                %k = %k + 1;
             }
             %space.blockedList = (%k < %banCount) @ trim(%space.blockedList);
             %this.tracker.spaces.add(%space);
-            %idx = (%idx + 1.0);
+            %idx = %idx + 1;
         }
     }
     if (isObject(%this.tracker))
@@ -1156,12 +1138,12 @@ function PurchaseSpaceRequest::onDone(%this)
     echo(getScopeName());
     %status = findRequestStatus(%this);
     log("network", "info", "PurchaseSpaceRequest status: " @ %status);
-    if ((%status $= "success"))
+    if (%status $= "success")
     {
         %name = %this.getValue("name");
         %building = %this.getValue("building");
         %vurl = %this.getValue("vurl");
-        if ((%vurl $= ""))
+        if (%vurl $= "")
         {
             warn("Server not returning space VURL in .vurl parameter.");
             %vurl = %this.getValue("URI");
@@ -1235,7 +1217,7 @@ function CustomSpacePurchaseInfo::onDone(%this)
     %floorplan.tradeInValueVBux = %this.getValue("tradeInCreditVBux");
     %floorplan.tradeInValueVPoints = %this.getValue("tradeInCreditVPoints");
     %floorplan.expectedError = %this.getValue("expectedError");
-    %floorplan.isUpgrade = (%floorplan.tradeInValueVBux > 0.0) || (%floorplan.tradeInValueVPoints > 0.0);
+    %floorplan.isUpgrade = (%floorplan.tradeInValueVBux > 0) || (%floorplan.tradeInValueVPoints > 0);
     if (!(%this.callback $= ""))
     {
         %cmd = %this.callback @ "(" @ %this.space @ ");";
@@ -1253,8 +1235,8 @@ function csSelectLayout(%layoutToSelect)
 function clientCmdCSLayoutSelected(%unused, %audioStream, %videoStream)
 {
     refreshActiveFurniture();
-    CSFurnitureMover.SelectNuggetID(-(1.0));
-    if ((%videoStream $= ""))
+    CSFurnitureMover.SelectNuggetID(-(1));
+    if (%videoStream $= "")
     {
     }
     else
@@ -1266,7 +1248,7 @@ function clientCmdCSLayoutSelected(%unused, %audioStream, %videoStream)
 }
 function csCopyLayoutFromTo(%from, %to)
 {
-    if ((%from == %to))
+    if (%from == %to)
     {
         error(getScopeName() @ "->being asked to copy current layout into itself! returning.");
         return;
@@ -1276,7 +1258,7 @@ function csCopyLayoutFromTo(%from, %to)
 function clientCmdCSGotLayoutVitals(%infoStr)
 {
     %layoutNum = getField(%infoStr, 0);
-    if ((CSLayoutSelector.copyTarget == %layoutNum))
+    if (CSLayoutSelector.copyTarget == %layoutNum)
     {
         CSLayoutSelector.gotCopyTargetInfo(%infoStr);
     }
@@ -1329,28 +1311,25 @@ function GetUrlRatingListRequest::onDone(%this)
     %mediaList = "";
     %count = %this.getValue("mediaCount");
     %idx = 0;
-    if ((%idx < %count))
+    if (%idx < %count)
     {
     }
-    while ((%idx < $CSMediaDisplay::DefaultFavoriteCount))
+    while (%idx < $CSMediaDisplay::DefaultFavoriteCount)
     {
         %mediaURL = urlDecode(%this.getValue("media" @ %idx @ ".url"));
         %viewCount = %this.getValue("media" @ %idx @ ".viewCount");
         %showCount = %this.getValue("media" @ %idx @ ".showCount");
-        if ((%showCount > 0.0))
+        if (%showCount > 0)
         {
             %mediaInfo = %mediaURL @ " " @ %viewCount @ " " @ %showCount;
-            if ((%mediaList $= ""))
+            if (%mediaList $= "")
             {
                 %mediaList = %mediaInfo;
             }
-            else
-            {
-                %mediaList = %mediaList @ "\t" @ %mediaInfo;
-            }
+            %mediaList = %mediaList @ "\t" @ %mediaInfo;
         }
-        %idx = (%idx + 1.0);
-        if ((%idx < %count))
+        %idx = %idx + 1;
+        if (%idx < %count)
         {
         }
     }

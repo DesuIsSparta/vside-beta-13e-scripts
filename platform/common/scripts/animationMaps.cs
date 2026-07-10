@@ -362,10 +362,10 @@ function addAnimationToMap(%map, %mapThis, %toThis, %tags)
 {
     %map.put(%mapThis, %toThis);
     %n = getWordCount(%tags);
-    while ((%n >= 0.0))
+    while (%n >= 0)
     {
         %tag = getWord(%tags, %n);
-        if ((%tag $= ""))
+        if (%tag $= "")
         {
         }
         else
@@ -374,21 +374,15 @@ function addAnimationToMap(%map, %mapThis, %toThis, %tags)
             {
                 error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
             }
-            else
+            safeEnsureScriptObject("StringMap", "gAnimationTags");
+            %animTags = gAnimationTags.get(%toThis);
+            if (hasWord(%animTags, %tag))
             {
-                safeEnsureScriptObject("StringMap", "gAnimationTags");
-                %animTags = gAnimationTags.get(%toThis);
-                if (hasWord(%animTags, %tag))
-                {
-                }
-                else
-                {
-                    %animTags = %tag @ " " @ %animTags;
-                    gAnimationTags.put(%toThis, %animTags);
-                }
             }
+            %animTags = %tag @ " " @ %animTags;
+            gAnimationTags.put(%toThis, %animTags);
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
 }
 function addGenreSpecificAnimations(%map, %gender, %genre)
@@ -428,10 +422,10 @@ function addGenreSpecificAnimations(%map, %gender, %genre)
     addAnimationToMap(%map, "lol", %gender @ %genre @ "lol", "");
     addAnimationToMap(%map, "bow", %gender @ %genre @ "bow", "");
     addAnimationToMap(%map, "jump", %gender @ "njmp", "");
-    if ((%gender $= "f"))
+    if (%gender $= "f")
     {
     }
-    if ((%genre $= "p"))
+    if (%genre $= "p")
     {
         addAnimationToMap(%map, "root", %gender @ %genre @ "idl1b", "");
     }
@@ -840,31 +834,31 @@ function addGenreNeutralAnimations(%map, %gender)
     addAnimationToMap(%map, "djidl1", %gender @ "ndjidl1", "");
     %coanims = "";
     %delim = "";
-    %n = ($gCoAnimDictionary.size() - 1.0);
-    while ((%n >= 0.0))
+    %n = $gCoAnimDictionary.size() - 1;
+    while (%n >= 0)
     {
         %animName = getField($gCoAnimDictionary.getValue(%n), 0);
         %coanims = %coanims @ %delim @ %animName;
         %delim = " ";
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     %coanimCount = getWordCount(%coanims);
-    (%n >= 0.0);
+    %n >= 0;
     %prefixes = "sti mti mmi msi tsi str mtr mmr msr tsr";
     %prefixCount = getWordCount(%prefixes);
     %i = 0;
-    while ((%i < %coanimCount))
+    while (%i < %coanimCount)
     {
         %coanim = getWord(%coanims, %i);
         %j = 0;
-        while ((%j < %prefixCount))
+        while (%j < %prefixCount)
         {
             %prefix = getWord(%prefixes, %j);
             addAnimationToMap(%map, %prefix @ "_" @ %coanim, %gender @ "n" @ %prefix @ "_" @ %coanim, "");
-            %j = (%j + 1.0);
+            %j = %j + 1;
         }
-        %i = (%i + 1.0);
-        (%j < %prefixCount);
+        %i = %i + 1;
+        %j < %prefixCount;
     }
 }
 function initNoAutoEmoteList()

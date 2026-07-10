@@ -1,8 +1,8 @@
 function addPlainToCoded(%list, %plain, %coded)
 {
     %num = getFieldCount(%list);
-    %list = setField(%list, (%num + 0.0), %plain);
-    %list = setField(%list, (%num + 1.0), %coded);
+    %list = setField(%list, (%num + 0), %plain);
+    %list = setField(%list, (%num + 1), %coded);
     return %list;
 }
 function initGenderedDances()
@@ -144,7 +144,7 @@ function initGenderedDances()
 $gDanceMaps = "";
 function getRandomDance()
 {
-    if (($gDanceMaps $= ""))
+    if ($gDanceMaps $= "")
     {
         $gDanceMaps = $gDanceMaps @ $dancesMap_Lounge_F @ "\t";
         $gDanceMaps = $gDanceMaps @ $dancesMap_Break_F @ "\t";
@@ -154,32 +154,32 @@ function getRandomDance()
         $gDanceMaps = $gDanceMaps @ $dancesMap_HipHop @ "\t";
         $gDanceMaps = $gDanceMaps @ $dancesMap_JB @ "\t";
     }
-    %num = (getFieldCount($gDanceMaps) / 2.0);
-    %n = ((getRandom(0, (%num - 1.0)) * 2.0) + 1.0);
+    %num = getFieldCount($gDanceMaps) / 2;
+    %n = (getRandom(0, (%num - 1)) * 2) + 1;
     return getField($gDanceMaps, %n);
 }
 function insertPlainToCodedListIntoMap(%srcList, %trgMap)
 {
-    %num = (getFieldCount(%srcList) / 2.0);
+    %num = getFieldCount(%srcList) / 2;
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
-        %plain = getField(%srcList, (%n * 2.0));
-        %coded = getField(%srcList, ((%n * 2.0) + 1.0));
+        %plain = getField(%srcList, (%n * 2));
+        %coded = getField(%srcList, ((%n * 2) + 1));
         %trgMap.put(%plain, %coded);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function removePlainToCodedListFromMap(%srcList, %trgMap)
 {
-    %num = (getFieldCount(%srcList) / 2.0);
+    %num = getFieldCount(%srcList) / 2;
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
-        %plain = getField(%srcList, (%n * 2.0));
-        %coded = getField(%srcList, ((%n * 2.0) + 1.0));
+        %plain = getField(%srcList, (%n * 2));
+        %coded = getField(%srcList, ((%n * 2) + 1));
         %trgMap.remove(%plain);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function initializeEmoteDictPublic(%dict)

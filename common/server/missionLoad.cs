@@ -6,25 +6,25 @@ function loadMission(%missionName, %isFirstMission)
     echo("*** Stage 1 load");
     clearCenterPrintAll();
     clearBottomPrintAll();
-    $MissionSequence = ($MissionSequence + 1.0);
+    $MissionSequence = $MissionSequence + 1;
     $missionRunning = 0;
     $Server::MissionFile = %missionName;
     buildLoadInfo(%missionName);
     %count = ClientGroup.getCount();
     %cl = 0;
-    while ((%cl < %count))
+    while (%cl < %count)
     {
         %client = ClientGroup.getObject(%cl);
         if (!%client.isAIControlled())
         {
             sendLoadInfoToClient(%client);
         }
-        %cl = (%cl + 1.0);
+        %cl = %cl + 1;
     }
     if (%isFirstMission)
     {
     }
-    if (((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer"))
+    if ((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer")
     {
         loadMissionStage2();
     }
@@ -67,14 +67,14 @@ function loadMissionStage2()
     echo("*** Mission loaded");
     $missionRunning = 1;
     %clientIndex = 0;
-    while ((%clientIndex < ClientGroup.getCount()))
+    while (%clientIndex < ClientGroup.getCount())
     {
         ClientGroup.getObject(%clientIndex).loadMission();
-        %clientIndex = (%clientIndex + 1.0);
+        %clientIndex = %clientIndex + 1;
     }
     onMissionLoaded();
     purgeResources();
-    return (%clientIndex < ClientGroup.getCount());
+    return %clientIndex < ClientGroup.getCount();
 }
 function endMission()
 {
@@ -85,19 +85,19 @@ function endMission()
     echo("*** ENDING MISSION");
     onMissionEnded();
     %clientIndex = 0;
-    while ((%clientIndex < ClientGroup.getCount()))
+    while (%clientIndex < ClientGroup.getCount())
     {
         %cl = ClientGroup.getObject(%clientIndex);
         %cl.endMission();
         %cl.resetGhosting();
         %cl.clearPaths();
-        %clientIndex = (%clientIndex + 1.0);
+        %clientIndex = %clientIndex + 1;
     }
     MissionGroup.delete();
     MissionCleanup.delete();
     $ServerGroup.delete();
     $ServerGroup = new SimGroup(ServerGroup);
-    (%clientIndex < ClientGroup.getCount());
+    %clientIndex < ClientGroup.getCount();
     return;
 }
 function resetMission()

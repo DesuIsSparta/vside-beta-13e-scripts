@@ -18,7 +18,7 @@ function buildLoadInfo(%mission)
         {
             %line = %file.readLine();
             %line = trim(%line);
-            if ((%line $= "new ScriptObject(MissionInfo) {"))
+            if (%line $= "new ScriptObject(MissionInfo) {")
             {
                 %inInfoBlock = 1;
             }
@@ -27,7 +27,7 @@ function buildLoadInfo(%mission)
                 if (%inInfoBlock)
                 {
                 }
-                if ((%line $= "};"))
+                if (%line $= "};")
                 {
                     %inInfoBlock = 0;
                     %infoObject = %infoObject @ %line;
@@ -55,7 +55,7 @@ function dumpLoadInfo()
     while (!(MissionInfo.desc[%i] $= ""))
     {
         echo("   " @ MissionInfo.desc[%i]);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function sendLoadInfoToClient(%client)
@@ -65,7 +65,7 @@ function sendLoadInfoToClient(%client)
     while (!(MissionInfo.desc[%i] $= ""))
     {
         messageClient(%client, 'MsgLoadDescripition', MissionInfo.desc[%i]);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     messageClient(%client, 'MsgLoadInfoDone', "");
     return !(MissionInfo.desc[%i] $= "");

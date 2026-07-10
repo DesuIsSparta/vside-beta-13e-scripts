@@ -18,8 +18,8 @@ function TwoPlayerEmotesPanel::refresh(%this)
     %width = getWord(%this.getExtent(), 0);
     %height = getWord(%this.getExtent(), 1);
     %cursorPos = Canvas.getCursorPos();
-    %targetX = (getWord(%cursorPos, 0) - 20.0);
-    %targetY = (getWord(%cursorPos, 1) - 5.0);
+    %targetX = getWord(%cursorPos, 0) - 20;
+    %targetY = getWord(%cursorPos, 1) - 5;
     %pos = onscreenCoordinates(%targetX, %targetY, %width, %height);
     %posX = getWord(%pos, 0);
     %posY = getWord(%pos, 1);
@@ -29,15 +29,15 @@ function TwoPlayerEmotesPanel::refresh(%this)
     %anims = getAllUserTriggerableCoAnims();
     %count = getFieldCount(%anims);
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
         %list.addRow(%i, getField(%anims, %i));
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function TwoPlayerEmotesList::onSelect(%this, %id, %text)
 {
-    if ((%id >= 0.0))
+    if (%id >= 0)
     {
         doCoAnim(%text, TwoPlayerEmotesPanel.playerName);
         TwoPlayerEmotesPanel.close();

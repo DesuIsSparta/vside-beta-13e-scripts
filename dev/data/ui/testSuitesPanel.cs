@@ -38,11 +38,11 @@ function testSuitesPanel::loadAvailableTests(%this)
     %list = TestPanelTestList;
     %list.clear();
     %i = 0;
-    while ((%i < DeclaredTestSuiteCount()))
+    while (%i < DeclaredTestSuiteCount())
     {
         %name = DeclaredTestSuiteGet(%i);
         %list.addRow(%name, %name);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %list.sort(0);
 }

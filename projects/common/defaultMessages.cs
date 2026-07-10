@@ -113,7 +113,7 @@ function setupDefaultMessages()
     $MsgCat::custSpace["LAYOUT_CLONE","BODY"] = "\nThis will replace the current layout (layout [DST])\nwith a copy of layout [SRC].\n\n<spush><b>There is no Undo!<spop>\n\nPeople in your space might get temporarily stuck and have to respawn themselves.\n(It's easy - just type \"/respawn\")\n\nAre you sure?\n";
     $MsgCat::custSpace["LAYOUT_COPY","TITLE"] = "Copy Layout [SRC] to layout [DST]?";
     $MsgCat::custSpace["LAYOUT_COPY","BODY"] = "\nThis will copy layout [SRC] to layout [DST]. Layout [DST] is empty, so you won't lose anything.\n\nAre you sure?";
-    $MsgCat::custSpace["LAYOUT_COPY","BODY"][$MsgCat::custSpace["LAYOUT_COPY","BODY"] @ "\n" @ "\n<spush><color:ff0000>WARNING:<spop> You will lose the materials & surfaces you've chosen in layout [DST]." @ $MsgCat::custSpace TAB "LAYOUT_COPY" @ "BODY_LOSE_TEX"] = ;
+    $MsgCat::custSpace["LAYOUT_COPY","BODY"][$MsgCat::custSpace["LAYOUT_COPY","BODY"] @ "\n" @ "\n<spush><color:ff0000>WARNING:<spop> You will lose the materials & surfaces you've chosen in layout [DST]." @ $MsgCat::custSpace TAB "LAYOUT_COPY" @ "BODY_LOSE_TEX"] =;
     $MsgCat::custSpace["LAYOUT_ERASE","TITLE"] = "Clear Layout [TRG]?";
     $MsgCat::custSpace["LAYOUT_ERASE","BODY"] = "\nThis will put everything in this layout (layout [TRG]) back into storage, erase the <spush><b>surfaces and materials<spop>, and <spush><b>clear any video/music selections<spop> you have for layout [TRG]!\n\n<spush><b>THERE IS NO UNDO!<spop>\n\nAre you sure?";
     $MsgCat::custSpace["LAYOUT_DEFAULT","TITLE"] = "Reset Layout [TRG] ?";
@@ -286,9 +286,9 @@ function setupDefaultMessages()
     $MsgCat::login["E-REG-UNKNOWN-ID"] = "Uh oh, something went wrong creating your account.\n\nPlease <a:REREGISTER>click here</a> to try again.";
     $MsgCat::login["E-REG-INCOMPLETE"] = "Your registration isn't quite complete.\n\nPlease <a:FINISH_REGISTRATION>click here</a> to finish it.";
     $MsgCat::login["E-REG-UNKNOWN"] = "Something went wrong creating your account.\n\nPlease <a:REREGISTER>click here</a> to try again.";
-    $Net::HelpURL_MyShop["You haven't created any items yet.<br><a:" @ $Net::HelpURL_MyShop @ ">Click here</a> to learn how to make your own items!" @ $MsgCat::MyShop TAB "EMPTYLIST" @ "ACCEPTED"] = ;
-    $Net::HelpURL_MyShop["You have no items waiting for approval.<br><a:" @ $Net::HelpURL_MyShop @ ">Click here</a> to learn how to make and sell your own items!" @ $MsgCat::MyShop TAB "EMPTYLIST" @ "PENDING"] = ;
-    $Net::HelpURL_MyShop["You have no items that have been rejected from vSide.<br><a:" @ $Net::HelpURL_MyShop @ ">Click here</a> to learn how to make and sell your own items!" @ $MsgCat::MyShop TAB "EMPTYLIST" @ "REJECTED"] = ;
+    $Net::HelpURL_MyShop["You haven't created any items yet.<br><a:" @ $Net::HelpURL_MyShop @ ">Click here</a> to learn how to make your own items!" @ $MsgCat::MyShop TAB "EMPTYLIST" @ "ACCEPTED"] =;
+    $Net::HelpURL_MyShop["You have no items waiting for approval.<br><a:" @ $Net::HelpURL_MyShop @ ">Click here</a> to learn how to make and sell your own items!" @ $MsgCat::MyShop TAB "EMPTYLIST" @ "PENDING"] =;
+    $Net::HelpURL_MyShop["You have no items that have been rejected from vSide.<br><a:" @ $Net::HelpURL_MyShop @ ">Click here</a> to learn how to make and sell your own items!" @ $MsgCat::MyShop TAB "EMPTYLIST" @ "REJECTED"] =;
     $MsgCat::MyShop["EMPTYLIST","INCOMING"] = "Nothing here!<br><br><br>Way to go!<br><br><br>Time for some chocolate!";
     $MsgCat::network["E-SERVER-UNAVAIL"] = "Couldn't complete your request :(";
     $MsgCat::network["E-SERVER-CONNECT"] = "Couldn't connect to vSide :(" @ "\n" @ "Give it another try.";
@@ -375,7 +375,7 @@ function setupMessages()
 $gMessagesSeen = "";
 function hasMessageBeenSeenThisSession(%msgID)
 {
-    %seen = (findField($gMessagesSeen, %msgID) >= 0.0) ? 1 : 0;
+    %seen = (findField($gMessagesSeen, %msgID) >= 0) ? 1 : 0;
     if (!%seen)
     {
         if (!($gMessagesSeen $= ""))
@@ -389,13 +389,13 @@ function hasMessageBeenSeenThisSession(%msgID)
 function msgCatOK(%msgID)
 {
     %body = $MsgCat[%msgID];
-    if ((%body $= ""))
+    if (%body $= "")
     {
         error(getScopeName() @ " " @ "- no body for message" @ " " @ %msgID);
         return;
     }
     %title = $MsgCatTitles[%msgID];
-    if ((%title $= ""))
+    if (%title $= "")
     {
         error(getScopeName() @ " " @ "- no title for message" @ " " @ %msgID);
         %title = "Guess What?";

@@ -65,10 +65,10 @@ function CSRulesAndDescWindow::saveRulesSettings(%this)
     %this.update();
     %access = getWord($gCSRulesAccessCodes, CSRulesAccessPopup.GetSelected());
     %doorCode = CSRulesPasswordField.getValue();
-    if ((%access $= "PASSWORDPROTECTED"))
+    if (%access $= "PASSWORDPROTECTED")
     {
     }
-    if ((%doorCode $= ""))
+    if (%doorCode $= "")
     {
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", "OPEN", "", "", "");
     }
@@ -90,41 +90,32 @@ function CSRulesAndDescWindow::updateSettings(%this, %accessMode, %password, %de
     CSRulesPasswordField.setText(%password);
     CSRulesPasswordSavedIndicator.setInitialValue(%password);
     %this.accessLevel = strupr(%accessMode);
-    if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 0.0))
+    if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 0)
     {
         CSRulesAccessPopup.SetSelected(0);
     }
     else
     {
-        if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 1.0))
+        if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 1)
         {
             CSRulesAccessPopup.SetSelected(1);
         }
-        else
+        if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 2)
         {
-            if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 2.0))
-            {
-                CSRulesAccessPopup.SetSelected(2);
-            }
-            else
-            {
-                if ((findWord($gCSRulesAccessCodes, %this.accessLevel) == 3.0))
-                {
-                    CSRulesAccessPopup.SetSelected(2);
-                }
-                else
-                {
-                    %this.accessLevel = "OPEN";
-                }
-            }
+            CSRulesAccessPopup.SetSelected(2);
         }
+        if (findWord($gCSRulesAccessCodes, %this.accessLevel) == 3)
+        {
+            CSRulesAccessPopup.SetSelected(2);
+        }
+        %this.accessLevel = "OPEN";
     }
     %this.update();
 }
 function CSRulesAndDescWindow::update(%this)
 {
     %this.setup();
-    %flag = (CSRulesAccessPopup.GetSelected() == findWord($gCSRulesAccessCodes, "PASSWORDPROTECTED"));
+    %flag = CSRulesAccessPopup.GetSelected() == findWord($gCSRulesAccessCodes, "PASSWORDPROTECTED");
     CSRulesDescTextForLocked.setVisible(!%flag);
     CSRulesPasswordLabel.setVisible(%flag);
     CSRulesPasswordField.text = CSRulesPasswordField.getValue();
@@ -153,7 +144,7 @@ function CSRulesPasswordField::onKeyDown(%this, %unused, %unused)
 function CSRulesPasswordField::onKeyUp(%this, %unused, %unused)
 {
     %fieldIsVisible = %this.isVisible();
-    if ((%fieldIsVisible != CSRulesPasswordSavedIndicator.isVisible()))
+    if (%fieldIsVisible != CSRulesPasswordSavedIndicator.isVisible())
     {
         CSRulesPasswordSavedIndicator.setVisible(%fieldIsVisible);
     }

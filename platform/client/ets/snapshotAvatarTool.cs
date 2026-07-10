@@ -40,8 +40,8 @@ function snapshotAvatarToolActiveRegion::adjustForHeight(%this, %height, %cMin, 
 {
     %hMin = 0.7;
     %hMax = 1.2;
-    %h = ((%height - %hMin) / (%hMax - %hMin));
-    %c = ((%h * (%cMax - %cMin)) + %cMin);
+    %h = (%height - %hMin) / (%hMax - %hMin);
+    %c = (%h * (%cMax - %cMin)) + %cMin;
     %this.setLookAtNudge("0 0" @ " " @ %c);
 }
 function snapshotAvatarTool::doSnap(%this)
@@ -54,7 +54,7 @@ function snapshotAvatarTool::doSnap(%this)
 function snapshotAvatarTool::waitForNextFrameToSnap(%this)
 {
     cancel(gGetField(%this, waitForFrameSchedule));
-    if (($Canvas::frameCount <= gGetField(%this, lastFrame)))
+    if ($Canvas::frameCount <= gGetField(%this, lastFrame))
     {
         gSetField(%this, waitForFrameSchedule, %this.schedule(10, "waitForNextFrameToSnap"));
         return;
@@ -78,13 +78,13 @@ function snapshotAvatarTool::doSnap2(%this)
 }
 function snapshotAvatarTool::onProgress(%this, %snapshot)
 {
-    %percent = (%snapshot.ulNow / %snapshot.ulTotal);
+    %percent = %snapshot.ulNow / %snapshot.ulTotal;
     snapshotAvatarToolProgressBar.setValue(%percent);
 }
 function snapshotAvatarToolonCompleted(%request, %result)
 {
     %snapshot = %request.saveObject;
-    if ((%result == 0.0))
+    if (%result == 0)
     {
         snapshotAvatarToolSet1.setVisible(1);
         snapshotAvatarToolSet2.setVisible(0);

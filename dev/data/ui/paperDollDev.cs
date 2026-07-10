@@ -4,27 +4,27 @@ $gPaperDoll_SetupFile = "platform/client/ui/paperdolls/permutations.txt";
 function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName)
 {
     %masterList = $gPaperDollPermutationLists[%gender];
-    %found = -(1.0);
-    %n = (%masterList.size() - 1.0);
-    if ((%found == -(1.0)))
+    %found = -(1);
+    %n = %masterList.size() - 1;
+    if (%found == -(1))
     {
     }
-    while ((%n >= 0.0))
+    while (%n >= 0)
     {
         %candidate = %masterList.get(%n);
-        if ((%candidate.name $= %listName))
+        if (%candidate.name $= %listName)
         {
             %found = %candidate;
         }
-        %n = (%n - 1.0);
-        if ((%found == -(1.0)))
+        %n = %n - 1;
+        if (%found == -(1))
         {
         }
     }
-    if ((%found == -(1.0)))
+    if (%found == -(1))
     {
         %found = new_ScriptArray("");
-        (%n >= 0.0);
+        %n >= 0;
         %found.name = %listName;
         %masterList.append(%found);
     }
@@ -32,7 +32,7 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName)
     %skusDry = %skus;
     %skus = "";
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %sku = getWord(%skusDry, %n);
         %okay = 1;
@@ -54,10 +54,10 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName)
         {
             MessageBoxOK("Error", "invalid sku" @ " " @ %sku @ " " @ "in paper doll list\nsee console.log for\"" @ " " @ getScopeName() @ " " @ "\"" @ "\n" @ %skusName @ "\n" @ %sku @ " " @ SkuManager.findBySku(%sku).descShrt, "");
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %skus = trim(%skus);
-    (%n < %num);
+    %n < %num;
     %found.append(%skus @ "\t" @ %skusName);
 }
 $gPaperDoll_Initialized = 0;
@@ -98,76 +98,55 @@ function paperDoll_InitPermutations()
         {
             %line = %fo.readLine();
             %line = trim(collapseWhiteSpace(%line));
-            %lineNum = (%lineNum + 1.0);
-            if ((getSubStr(%line, 0, 1) $= "#"))
+            %lineNum = %lineNum + 1;
+            if (getSubStr(%line, 0, 1) $= "#")
             {
             }
             else
             {
                 %word = firstWord(%line);
                 %unseenTokens = findAndRemoveAllOccurrencesOfWord(%unseenTokens, %word);
-                if ((%word $= ""))
+                if (%word $= "")
                 {
                 }
-                else
+                if (%word $= "size")
                 {
-                    if ((%word $= "size"))
-                    {
-                        $gPaperDollImgSize = trim(restWords(%line));
-                    }
-                    else
-                    {
-                        if ((%word $= "background"))
-                        {
-                            $gPaperDollBackground = trim(restWords(%line));
-                        }
-                        else
-                        {
-                            if ((%word $= "gender"))
-                            {
-                                %gender = trim(restWords(%line));
-                            }
-                            else
-                            {
-                                if ((%word $= "baseSkus"))
-                                {
-                                    $gPaperDoll_BaseSkus[%gender] = trim(restWords(%line));
-                                }
-                                else
-                                {
-                                    if ((%word $= "parameter"))
-                                    {
-                                        %param = trim(restWords(%line));
-                                    }
-                                    else
-                                    {
-                                        if ((%word $= "option"))
-                                        {
-                                            %s = trim(restWords(%line));
-                                            %s = NextToken(%s, optionName, ":");
-                                            %s = NextToken(%s, option, ":");
-                                            %option = trim(%option);
-                                            %optionName = trim(%optionName);
-                                            paperDoll_AddPermutation(%gender, %param, %option, %optionName);
-                                        }
-                                        else
-                                        {
-                                            error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
+                    $gPaperDollImgSize = trim(restWords(%line));
                 }
+                if (%word $= "background")
+                {
+                    $gPaperDollBackground = trim(restWords(%line));
+                }
+                if (%word $= "gender")
+                {
+                    %gender = trim(restWords(%line));
+                }
+                if (%word $= "baseSkus")
+                {
+                    $gPaperDoll_BaseSkus[%gender] = trim(restWords(%line));
+                }
+                if (%word $= "parameter")
+                {
+                    %param = trim(restWords(%line));
+                }
+                if (%word $= "option")
+                {
+                    %s = trim(restWords(%line));
+                    %s = NextToken(%s, optionName, ":");
+                    %s = NextToken(%s, option, ":");
+                    %option = trim(%option);
+                    %optionName = trim(%optionName);
+                    paperDoll_AddPermutation(%gender, %param, %option, %optionName);
+                }
+                error(getScopeName() @ " " @ "- Unknown command:" @ " " @ %word @ " " @ "at line" @ " " @ %lineNum @ " " @ "of" @ " " @ %fileName);
             }
         }
-        %n = (getWordCount(%unseenTokens) - 1.0);
+        %n = getWordCount(%unseenTokens) - 1;
         !%fo.isEOF();
-        while ((%n >= 0.0))
+        while (%n >= 0)
         {
             error(getScopeName() @ " " @ "- unseen command:" @ " " @ getWord(%unseenTokens, %n));
-            %n = (%n - 1.0);
+            %n = %n - 1;
         }
     }
     else
@@ -209,7 +188,7 @@ function paperDoll_getParamValueSkus(%gender, %paramNum, %paramValue)
 function paperDoll_getParamValueMax(%gender, %paramNum)
 {
     %subList = paperDoll_getParamList(%gender, %paramNum);
-    %paramValueMax = (%subList.size() - 1.0);
+    %paramValueMax = %subList.size() - 1;
     return %paramValueMax;
 }
 function paperDoll_getParamValuesNum(%gender, %paramNum)
@@ -220,18 +199,18 @@ function paperDoll_getParamValuesNum(%gender, %paramNum)
 }
 function paperDoll_getNumPermutations(%gender)
 {
-    if ((paperDoll_getParamsNum(%gender) < 1.0))
+    if (paperDoll_getParamsNum(%gender) < 1)
     {
         return 0;
     }
     %numPermutations = 1;
-    %paramNum = (paperDoll_getParamsNum(%gender) - 1.0);
-    while ((%paramNum >= 0.0))
+    %paramNum = paperDoll_getParamsNum(%gender) - 1;
+    while (%paramNum >= 0)
     {
-        %numValues = (paperDoll_getParamValueMax(%gender, %paramNum) + 1.0);
-        %numPermutations = (%numPermutations * %numValues);
+        %numValues = paperDoll_getParamValueMax(%gender, %paramNum) + 1;
+        %numPermutations = %numPermutations * %numValues;
         echoDebug(getScopeName() @ " " @ "-" @ " " @ paperDoll_getParamName(%gender, %paramNum) @ " " @ %numValues);
-        %paramNum = (%paramNum - 1.0);
+        %paramNum = %paramNum - 1;
     }
     return %numPermutations;
 }
@@ -240,7 +219,7 @@ function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList)
     paperDoll_InitPermutations();
     %masterList = $gPaperDollPermutationLists[%gender];
     %num = getWordCount(%optionIndexList);
-    if ((%num != %masterList.size()))
+    if (%num != %masterList.size())
     {
         error(getScopeName() @ " " @ "- list has" @ " " @ %num @ " " @ "entries, but should have" @ " " @ %masterList.size() @ "." @ " " @ %gender @ " " @ %optionIndexList @ " " @ getTrace());
         return;
@@ -248,11 +227,11 @@ function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList)
     %skus = "";
     %fileName = %gender;
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %optionIndex = getWord(%optionIndexList, %n);
         %subList = %masterList.get(%n);
-        if ((%optionIndex >= %subList.size()))
+        if (%optionIndex >= %subList.size())
         {
             error(getScopeName() @ " " @ "- " @ %n @ "'th value is out of range:" @ " " @ %optionIndex);
             return "";
@@ -261,9 +240,9 @@ function paperDoll_getPermutationFilenameAndSkus(%gender, %optionIndexList)
         %optionSkus = getField(%subList.get(%optionIndex), 0);
         %fileName = %fileName @ "_" @ %optionName;
         %skus = %skus @ %optionSkus @ " ";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %skus = trim(%skus);
-    (%n < %num);
+    %n < %num;
     return %fileName @ "\t" @ %skus;
 }

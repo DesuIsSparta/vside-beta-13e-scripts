@@ -28,11 +28,11 @@ function gui_Benchs_Metrics_Menu1::populate(%this)
         %this.clear();
         %num = getWordCount($metricsNamesList);
         %n = 0;
-        while ((%n < %num))
+        while (%n < %num)
         {
             %text = getWord($metricsNamesList, %n);
             %this.add(%text);
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
         %this.setText("none");
     }
@@ -118,8 +118,8 @@ function benchmarksGui::cancelCameraTests(%this)
 }
 function benchmarksGui::updateProgressBars(%this)
 {
-    gui_Benchs_Cam_Prog1.setValue((($benchmarks::camera::curPoint + 1.0) / cameraTestsGroup.getCount()));
-    gui_Benchs_Cam_Prog2.setValue((($benchmarks::camera::repsDone + 1.0) / $pref::benchmarks::fps::reps));
+    gui_Benchs_Cam_Prog1.setValue((($benchmarks::camera::curPoint + 1) / cameraTestsGroup.getCount()));
+    gui_Benchs_Cam_Prog2.setValue((($benchmarks::camera::repsDone + 1) / $pref::benchmarks::fps::reps));
 }
 function benchmarksGui::addNewCameraTestPoint1(%this)
 {

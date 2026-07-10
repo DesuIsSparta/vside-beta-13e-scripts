@@ -8,13 +8,13 @@ function teleportToNextSpace()
 }
 function teleportToSpaceLocal(%space)
 {
-    if ((%space >= $gSpaceNumberMax))
+    if (%space >= $gSpaceNumberMax)
     {
         schedule(5000, 0, quit);
     }
     teleportToSpaceNumber(%space);
     schedule(5000, 0, teleportToNextSpace);
-    $gSpaceNumber = ($gSpaceNumber + 1.0);
+    $gSpaceNumber = $gSpaceNumber + 1;
 }
 function doLoginCheck()
 {
@@ -29,16 +29,13 @@ function doLoginCheck()
     }
     else
     {
-        if (($iterationsWaited == 400.0))
+        if ($iterationsWaited == 400)
         {
             error("CACHE->ERROR : Giving up. Waited for 20 minutes and nothing happended");
             quit();
         }
-        else
-        {
-            echo("CACHE: Nothing yet....");
-            $iterationsWaited = ($iterationsWaited + 1.0);
-            schedule(3000, 0, doLoginCheck);
-        }
+        echo("CACHE: Nothing yet....");
+        $iterationsWaited = $iterationsWaited + 1;
+        schedule(3000, 0, doLoginCheck);
     }
 }

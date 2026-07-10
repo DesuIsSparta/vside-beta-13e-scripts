@@ -53,10 +53,10 @@ function sendRequest_GetCustomSpaceInfo(%buildingName, %spaceName, %ownerName, %
     %url = %url @ "/GetCustomSpaceInfo";
     %request.setURL(%url);
     %request.addUserAndToken($Player::Name);
-    if ((%buildingName $= ""))
+    if (%buildingName $= "")
     {
     }
-    if ((%ownerName $= ""))
+    if (%ownerName $= "")
     {
         error(getScopeName() @ " " @ "- either buildingName or ownerName must have a value." @ " " @ getTrace());
         return "";
@@ -116,7 +116,7 @@ function sendRequest_GetUserInventoryCollection(%userName, %collectionName, %cal
 function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandler)
 {
     %requestName = "request_GetUserRelations";
-    if ((%singleUserName $= ""))
+    if (%singleUserName $= "")
     {
     }
     if (isObject(%requestName))
@@ -229,12 +229,12 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
         %request.putValue("status", "success");
         %request.putValue("userCount", %num);
         %n = 0;
-        while ((%n < %num))
+        while (%n < %num)
         {
             %keyBase = "user" @ %n @ ".";
             %request.putValue(%keyBase @ "userName", getRandomUserName());
-            %request.putValue(%keyBase @ "relationType", (getRandom(0, 99) < 20.0) ? "friend" : "");
-            if ((getRandom(0, 1) == 0.0))
+            %request.putValue(%keyBase @ "relationType", (getRandom(0, 99) < 20) ? "friend" : "");
+            if (getRandom(0, 1) == 0)
             {
             }
             else
@@ -251,25 +251,25 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
             %request.putValue(%keyBase @ "onlineStatus", "InworldOnEnvserver");
             %request.putValue(%keyBase @ "score", 694040);
             %request.putValue(%keyBase @ "homeLocation.buildingName", "LGAHarbor");
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
         %n = 0;
-        (%n < %num);
+        %n < %num;
         %request.putValue("location" @ %n @ ".areaName", "nv");
         %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
-        %n = (%n + 1.0);
+        %n = %n + 1;
         %request.putValue("location" @ %n @ ".areaName", "rj");
         %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
-        %n = (%n + 1.0);
+        %n = %n + 1;
         %request.putValue("location" @ %n @ ".areaName", "lga");
         %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
-        %n = (%n + 1.0);
+        %n = %n + 1;
         %request.putValue("location" @ %n @ ".areaName", "pvt");
         %request.putValue("location" @ %n @ ".userCount", getRandom(50, 1500));
-        %n = (%n + 1.0);
+        %n = %n + 1;
         %request.putValue("location" @ %n @ ".areaName", "gw");
         %request.putValue("location" @ %n @ ".userCount", getRandom(0, 30));
-        %n = (%n + 1.0);
+        %n = %n + 1;
         %request.putValue("locationCount", %n);
         %request.schedule(500, "onDoneOrError");
     }
@@ -308,22 +308,22 @@ function sendRequest_PurchaseInventory(%userName, %skusArray, %payWith, %storena
     %skusNum = %skusArray.count();
     %request.addUrlParam("itemsToBuyCount", %skusNum);
     %n = 0;
-    while ((%n < %skusNum))
+    while (%n < %skusNum)
     {
-        if ((%skusArray.getValue(%n) != 1.0))
+        if (%skusArray.getValue(%n) != 1)
         {
             error("trying to buy a non-unit quantity of a sku." @ " " @ %skusArray.getKey(%n) @ " " @ %skusArray.getValue(%n));
             %skusArray.setValue(%n, 1);
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %n = 0;
-    (%n < %skusNum);
-    while ((%n < %skusNum))
+    %n < %skusNum;
+    while (%n < %skusNum)
     {
         %request.addBodyParam("itemsToBuy" @ %n @ ".sku", %skusArray.getKey(%n));
         %request.addBodyParam("itemsToBuy" @ %n @ ".quantity", %skusArray.getValue(%n));
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %request.payWith = (%n < %skusNum) @ %payWith;
     %request.callbackHandler = %callbackHandler;
@@ -357,11 +357,11 @@ function sendRequest_SaveClientUserProperties(%userName, %stringMap, %callbackHa
     %num = %stringMap.size();
     %request.setBodyParam("propertyCount", %num);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %request.setBodyParam("property" @ %n @ ".key", %stringMap.getKey(%n));
         %request.setBodyParam("property" @ %n @ ".value", %stringMap.getValue(%n));
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %request.setCompletedCallback(%callbackHandler);
     %request.start();
@@ -381,11 +381,11 @@ function sendRequest_UpdateUserInventoryCollection(%userName, %collectionName, %
     %num = %propertyMap.size();
     %request.addUrlParam("propertyCount", %num);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %request.addUrlParam("property" @ %n @ ".key", %propertyMap.getKey(%n));
         %request.addUrlParam("property" @ %n @ ".value", %propertyMap.getValue(%n));
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %request.callbackHandler = (%n < %num) @ %callbackHandler;
     if ($StandAlone)
@@ -471,44 +471,38 @@ function sendRequest_GetMainVenues(%maxCount, %callbackHandler)
     %venue = "interscope_lounge";
     %notThese = %venue;
     fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
-    %n = (%n + 1.0);
+    %n = %n + 1;
     %venue = DestinationList::GetRandomDestinationForTGF("venue", %notThese);
     %notThese = %notThese @ " " @ %venue;
     fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
-    %n = (%n + 1.0);
+    %n = %n + 1;
     %venue = DestinationList::GetRandomDestinationForTGF("shop", %notThese);
     %notThese = %notThese @ " " @ %venue;
     fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
-    %n = (%n + 1.0);
+    %n = %n + 1;
     %n = %n;
-    while ((%n < %maxCount))
+    while (%n < %maxCount)
     {
-        if ((getRandom(0, 2) == 0.0))
+        if (getRandom(0, 2) == 0)
         {
             %type = "venue";
         }
         else
         {
-            if ((getRandom(0, 2) == 1.0))
+            if (getRandom(0, 2) == 1)
             {
                 %type = "shop";
             }
-            else
+            if (getRandom(0, 2) == 2)
             {
-                if ((getRandom(0, 2) == 2.0))
-                {
-                    %type = "residence";
-                }
-                else
-                {
-                    %type = "venue";
-                }
+                %type = "residence";
             }
+            %type = "venue";
         }
         %venue = DestinationList::GetRandomDestinationForTGF(%type, %notThese);
         %notThese = %notThese @ " " @ %venue;
         fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %request.schedule(100, "onDoneOrError");
 }

@@ -46,10 +46,7 @@ function GuiTableCtrl::Initialize(%this)
         {
             %this.doSetupArrayOfRows(%bodyArray);
         }
-        else
-        {
-            warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
-        }
+        warn(getScopeName() @ " " @ "- missing gui table body array -" @ " " @ getTrace());
     }
 }
 function GuiTableCtrl::doSetupColumnHeaders(%this, %headerArray)
@@ -103,7 +100,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseEnterBounds(%this)
     if (isObject($gCurrentTableHeaderCellHighlight))
     {
     }
-    if (($gCurrentTableHeaderCellHighlight != %headerCell))
+    if ($gCurrentTableHeaderCellHighlight != %headerCell)
     {
         $gCurrentTableHeaderCellHighlight.setProfile(GuiTableHeaderCell_N_Profile);
     }
@@ -123,14 +120,14 @@ function GuiTableHeaderCellButtonCtrl::onMouseLeaveBounds(%this)
 function GuiTableHeaderCellButtonCtrl::onMouseDown(%this)
 {
     %headerCell = %this.getParent();
-    if ((%headerCell.getParent().getObjectIndex(%headerCell) == 0.0))
+    if (%headerCell.getParent().getObjectIndex(%headerCell) == 0)
     {
         return;
     }
     if (isObject($gCurrentTableHeaderCellHighlight))
     {
     }
-    if (($gCurrentTableHeaderCellHighlight != %headerCell))
+    if ($gCurrentTableHeaderCellHighlight != %headerCell)
     {
         $gCurrentTableHeaderCellHighlight.setProfile(GuiTableHeaderCell_N_Profile);
     }
@@ -140,7 +137,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseDown(%this)
 function GuiTableHeaderCellButtonCtrl::onMouseUp(%this)
 {
     %headerCell = %this.getParent();
-    if ((%headerCell.getParent().getObjectIndex(%headerCell) == 0.0))
+    if (%headerCell.getParent().getObjectIndex(%headerCell) == 0)
     {
         return;
     }

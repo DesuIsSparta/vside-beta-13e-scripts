@@ -6,7 +6,7 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
     }
     %num = %this.getValue("itemsCount");
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %sku = %this.getValue("items" @ %n @ ".sku");
         %qty = %this.getValue("items" @ %n @ ".quantity");
@@ -22,25 +22,22 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
                 %si.setFieldValue(%qtyFieldInterpretation, %qty);
             }
             %array.push_back(%n, %si);
-            if ((%qty > 1.0))
+            if (%qty > 1)
             {
                 if (!(%si.skuType $= "furnishing"))
                 {
                     error(getScopeName() @ " " @ "- more than one non-furnishing SKU owned::" @ " " @ %sku @ " " @ %qty @ " " @ %si.skuType);
                 }
             }
-            else
+            if (%qty < 1)
             {
-                if ((%qty < 1.0))
-                {
-                }
-                if ((%qty != -(1.0)))
-                {
-                    error(getScopeName() @ " " @ "- invalid sku quantity:" @ " " @ %sku @ " " @ %qty);
-                }
+            }
+            if (%qty != -(1))
+            {
+                error(getScopeName() @ " " @ "- invalid sku quantity:" @ " " @ %sku @ " " @ %qty);
             }
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     return 1;
 }
@@ -85,12 +82,9 @@ function ManagerRequest::onDoneOrError(%this)
         {
             %this.callbackHandler.onDoneOrErrorCallback_GetStoreInventory(%this);
         }
-        else
-        {
-            %cmd = %this.callbackHandler @ "(" @ %this.getId() @ ");";
-            log("Communication", "debug", getScopeName() @ " " @ "-" @ " " @ getDebugString(%this) @ " " @ "executing callback" @ " " @ %cmd);
-            eval(%cmd);
-        }
+        %cmd = %this.callbackHandler @ "(" @ %this.getId() @ ");";
+        log("Communication", "debug", getScopeName() @ " " @ "-" @ " " @ getDebugString(%this) @ " " @ "executing callback" @ " " @ %cmd);
+        eval(%cmd);
     }
     %this.schedule(0, "delete");
 }
@@ -114,24 +108,21 @@ function ManagerRequest::addUserAndToken(%this, %userName)
             %this.addUrlParam("user", %userName);
             %this.addUrlParam("token", $Token);
         }
-        else
-        {
-            %this.addUrlParam("user", %userName);
-            %this.addUrlParam("token", getClientToken(%userName));
-        }
+        %this.addUrlParam("user", %userName);
+        %this.addUrlParam("token", getClientToken(%userName));
     }
 }
 function UniformManagerRequest::start(%this)
 {
     %this.timeStart = getSimTime();
-    if ((%this.retryTotal $= ""))
+    if (%this.retryTotal $= "")
     {
     }
     else
     {
     }
     %this.retryTotal = 0 @ %this.retryTotal;
-    if ((%this.retryDelay $= ""))
+    if (%this.retryDelay $= "")
     {
     }
     else
@@ -156,10 +147,10 @@ function UniformManagerRequest::start(%this)
 function UniformManagerRequest::onDoneOrError(%this)
 {
     %this.timeFinish = getSimTime();
-    %this.duration = (%this.timeFinish - %this.timeStart);
-    %level = (%this.duration < 1000.0) ? "debug" : "warn";
-    log("Communication", "debug", "Request duration" @ " " @ formatFloat("%7.3f", (%this.duration / 1000.0)) @ " " @ "seconds:" @ " " @ %this.getURL());
-    if ((%this.retryCount $= ""))
+    %this.duration = %this.timeFinish - %this.timeStart;
+    %level = (%this.duration < 1000) ? "debug" : "warn";
+    log("Communication", "debug", "Request duration" @ " " @ formatFloat("%7.3f", (%this.duration / 1000)) @ " " @ "seconds:" @ " " @ %this.getURL());
+    if (%this.retryCount $= "")
     {
     }
     else
@@ -169,9 +160,9 @@ function UniformManagerRequest::onDoneOrError(%this)
     if (!(findRequestStatus(%this) $= "success"))
     {
         log("Communication", "debug", getScopeName() @ " " @ "checking retries.." @ " " @ %this.retryCount @ "/" @ %this.retryTotal @ " " @ %this.getURL());
-        if ((%this.retryCount < %this.retryTotal))
+        if (%this.retryCount < %this.retryTotal)
         {
-            %this.retryCount = (%this.retryCount + 1.0);
+            %this.retryCount = %this.retryCount + 1;
             %this.schedule(%this.retryDelay, "start");
             return;
         }
@@ -182,7 +173,7 @@ function UniformManagerRequest::onDoneOrError(%this)
     }
     else
     {
-        if ((%this.retryCount > 0.0))
+        if (%this.retryCount > 0)
         {
             log("Communication", "warn", getScopeName() @ " " @ "- succeeded after" @ " " @ %this.retryCount @ " " @ "retries." @ " " @ %this.getURL());
         }
@@ -208,11 +199,11 @@ function UniformManagerRequest::onDone(%this)
 function UniformManagerRequest::copyValueIntoObject(%this, %object, %requestFieldName, %objectFieldName)
 {
     %value = %this.getValue(%requestFieldName);
-    if ((%value $= "true"))
+    if (%value $= "true")
     {
         %value = 1;
     }
-    if ((%value $= "false"))
+    if (%value $= "false")
     {
         %value = 0;
     }

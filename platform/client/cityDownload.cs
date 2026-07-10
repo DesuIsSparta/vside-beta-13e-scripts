@@ -14,15 +14,15 @@ function CityDownloadGui::onProgress(%this, %dltotal, %dlnow)
     if (isObject(DLLoadingPBController))
     {
         %dltotal = packageDownload.getEstimatedSize();
-        if ((packageDownload.getCurrentPackageIndex() > $CityDownloadGui::lastCityIndex))
+        if (packageDownload.getCurrentPackageIndex() > $CityDownloadGui::lastCityIndex)
         {
             $CityDownloadGui::lastCityIndex = packageDownload.getCurrentPackageIndex();
             $CityDownloadGui::lastDLNow = 0;
         }
-        %part = (%dlnow - $CityDownloadGui::lastDLNow);
+        %part = %dlnow - $CityDownloadGui::lastDLNow;
         $CityDownloadGui::lastDLNow = %dlnow;
-        $CityDownloadGui::totalDownloaded = ($CityDownloadGui::totalDownloaded + %part);
-        %progressValue = ($CityDownloadGui::totalDownloaded / %dltotal);
+        $CityDownloadGui::totalDownloaded = $CityDownloadGui::totalDownloaded + %part;
+        %progressValue = $CityDownloadGui::totalDownloaded / %dltotal;
         DLLoadingPBController.setValue(%progressValue);
     }
 }

@@ -52,7 +52,7 @@ function TEST_CSActive_RequestToEdit::runTest(%this)
 }
 function TEST_CSActive_RequestToEdit::delayedEval(%this)
 {
-    %this.assert(($CSMaximumSlots > 0.0), "this space thinks we can't put any furniture items in it still");
+    %this.assert(($CSMaximumSlots > 0), "this space thinks we can't put any furniture items in it still");
 }
 function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this)
 {
@@ -65,30 +65,30 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this)
     %this.ownedFurnitureToTestCount = 0;
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    while ((%index < %count))
+    while (%index < %count)
     {
         %sku = $Player::furnitureInventory.getKey(%index);
         %inUse = numUsingFurnitureSku(%sku);
         %numOwned = numOwnedFurnitureSku(%sku);
-        if ((%numOwned > %inUse))
+        if (%numOwned > %inUse)
         {
             %this.ownedFurnitureToTest[%this.ownedFurnitureToTestCount] = %sku;
-            %this.ownedFurnitureToTestCount = (%this.ownedFurnitureToTestCount + 1.0);
+            %this.ownedFurnitureToTestCount = %this.ownedFurnitureToTestCount + 1;
         }
-        %index = (%index + 1.0);
+        %index = %index + 1;
     }
-    if ((%this.ownedFurnitureToTestCount <= 0.0))
+    if (%this.ownedFurnitureToTestCount <= 0)
     {
         %this.assert(0, "we do not own any furniture that we can test with");
-        return (%index < %count);
+        return %index < %count;
     }
     %rand = getRandom(0, %this.ownedFurnitureToTestCount);
     %skuToTest = %this.ownedFurnitureToTest[%rand];
     %this.lastNumUsed = numUsingFurnitureSku(%skuToTest);
     %this.lastSkuTested = %skuToTest;
-    %this.assert((%skuToTest > 0.0), "we got a bad sku for this");
+    %this.assert((%skuToTest > 0), "we got a bad sku for this");
     %alreadyHave = numUsingFurnitureAll();
-    if ((%alreadyHave >= $CSMaximumSlots))
+    if (%alreadyHave >= $CSMaximumSlots)
     {
         %this.assert(0, "We are already using the max furniture we can place in this space: (" @ " " @ %alreadyHave @ " " @ "out of" @ " " @ $CSMaximumSlots @ " " @ ")");
         return;
@@ -98,7 +98,7 @@ function TEST_CS_CreateRandomOwnedFurnitureItem::runTest(%this)
 function TEST_CS_CreateRandomOwnedFurnitureItem::delayedEval(%this)
 {
     %numUsedNow = numUsingFurnitureSku(%this.lastSkuTested);
-    %this.assert((%numUsedNow == (%this.lastNumUsed + 1.0)), "We should be using one more sku that when we started but we are not. started with:" @ " " @ %this.lastNumUsed @ " " @ ", using now:" @ " " @ %numUsedNow @ " " @ ", note this could just be because we are checking too soon, and it hasn't filtered back to us yet, if envmanager is being slow");
+    %this.assert((%numUsedNow == (%this.lastNumUsed + 1)), "We should be using one more sku that when we started but we are not. started with:" @ " " @ %this.lastNumUsed @ " " @ ", using now:" @ " " @ %numUsedNow @ " " @ ", note this could just be because we are checking too soon, and it hasn't filtered back to us yet, if envmanager is being slow");
 }
 function TEST_CSActive_DoneEditing::runTest(%this)
 {
@@ -117,14 +117,14 @@ function TEST_CS_TryOutRandomOwnedFurnitureItem::runTest(%this)
     }
     %this.UnOwnedFurnitureToTestCount = 0;
     %count = $Player::furnitureInventory.count();
-    if ((%count <= 0.0))
+    if (%count <= 0)
     {
         %this.assert(0, "we did not find any furniture we can test!");
         return;
     }
     %rand = getRandom(0, %count);
     %skuToTest = $Player::furnitureInventory.getKey(%rand);
-    %this.assert((%skuToTest > 0.0), "we got a bad sku for this");
+    %this.assert((%skuToTest > 0), "we got a bad sku for this");
     commandToServer('CreateInventoryBySkuJustTestingItOut', CustomSpaceClient::GetSpaceImIn(), %skuToTest);
 }
 function TEST_CS_TryOutRandomOwnedFurnitureItem::delayedEval(%this)
@@ -141,43 +141,43 @@ function TEST_CS_CreateAllOwnedFurnitureItems::runTest(%this)
     %this.ownedFurnitureToTestCount = 0;
     %count = $Player::furnitureInventory.count();
     %index = 0;
-    while ((%index < %count))
+    while (%index < %count)
     {
         %sku = $Player::furnitureInventory.getKey(%index);
         %inUse = numUsingFurnitureSku(%sku);
         %numOwned = numOwnedFurnitureSku(%sku);
-        if ((%numOwned > %inUse))
+        if (%numOwned > %inUse)
         {
             %this.ownedFurnitureToTest[%this.ownedFurnitureToTestCount] = %sku;
-            %this.ownedFurnitureToTestCount = (%this.ownedFurnitureToTestCount + 1.0);
+            %this.ownedFurnitureToTestCount = %this.ownedFurnitureToTestCount + 1;
         }
-        %index = (%index + 1.0);
+        %index = %index + 1;
     }
-    if ((%this.ownedFurnitureToTestCount <= 0.0))
+    if (%this.ownedFurnitureToTestCount <= 0)
     {
         echo("we either don't own any furniture or hav eplaced it all, not making any new stuff");
-        return (%index < %count);
+        return %index < %count;
     }
     %i = 0;
-    while ((%i < %this.ownedFurnitureToTestCount))
+    while (%i < %this.ownedFurnitureToTestCount)
     {
         %sku = %this.ownedFurnitureToTest[%i];
         %inUse = numUsingFurnitureSku(%sku);
         %numOwned = numOwnedFurnitureSku(%sku);
-        %numToMake = (%numOwned - %inUse);
+        %numToMake = %numOwned - %inUse;
         %j = 0;
-        while ((%j < %numToMake))
+        while (%j < %numToMake)
         {
             %alreadyHave = numUsingFurnitureAll();
-            if ((%alreadyHave >= $CSMaximumSlots))
+            if (%alreadyHave >= $CSMaximumSlots)
             {
                 %this.assert(0, "We are already using the max furniture we can place in this space: (" @ " " @ %alreadyHave @ " " @ "out of" @ " " @ $CSMaximumSlots @ " " @ ")");
                 return;
             }
             CustomSpaceClient::placeSkuInWorld(%sku);
-            %j = (%j + 1.0);
+            %j = %j + 1;
         }
-        %i = (%i + 1.0);
-        (%j < %numToMake);
+        %i = %i + 1;
+        %j < %numToMake;
     }
 }

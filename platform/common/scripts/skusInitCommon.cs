@@ -17,23 +17,23 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     {
         warn("Wardrobe", getScopeName() @ " " @ "- bornWith sku in a store." @ " " @ %skunum @ " " @ %descShrt @ " " @ %stores);
     }
-    if (($ETS::ProjectName $= "vmtv"))
+    if ($ETS::ProjectName $= "vmtv")
     {
     }
-    if ((%brand $= "myet"))
+    if (%brand $= "myet")
     {
         %brand = "";
     }
-    if ((%expireTime <= 0.0))
+    if (%expireTime <= 0)
     {
         %expireTime = "";
     }
     %usageShrt = "";
-    if ((%drwrName $= "props"))
+    if (%drwrName $= "props")
     {
         %usageShrt = "ctrl-enter to use";
     }
-    if ((%descLong $= %descShrt))
+    if (%descLong $= %descShrt)
     {
         %descLong = "";
     }
@@ -57,7 +57,7 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     %si.expireTime = %expireTime;
     %si.usageShrt = %usageShrt;
     %si.tags = %tags;
-    %si.salonStyleIndex = -(1.0);
+    %si.salonStyleIndex = -(1);
     %si.author = %author;
     %prev = %this.findBySku(%si.skuNumber);
     if (isObject(%prev))
@@ -67,8 +67,8 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     else
     {
         %this.add(%si);
-        %n = (getWordCount(%stores) - 1.0);
-        while ((%n >= 0.0))
+        %n = getWordCount(%stores) - 1;
+        while (%n >= 0)
         {
             %storeID = getWord(%stores, %n);
             if ($StandAlone)
@@ -76,36 +76,36 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
                 %this.storeSkus[%skunum," ",%storeID] = %this.storeSkus[%storeID];
                 %this.storeQtys[%qtyMfr," ",%storeID] = %this.storeQtys[%storeID];
             }
-            if ((findWord(%this.storeIDs, %storeID) < 0.0))
+            if (findWord(%this.storeIDs, %storeID) < 0)
             {
                 %this.storeIDs = %this.storeIDs @ %storeID @ " ";
             }
-            %n = (%n - 1.0);
+            %n = %n - 1;
         }
         if (%bornWith)
         {
-            %this.bornWithSkus = (%n >= 0.0) @ %this.bornWithSkus @ %skunum @ " ";
+            %this.bornWithSkus = (%n >= 0) @ %this.bornWithSkus @ %skunum @ " ";
         }
         else
         {
             %this.notBornWithSkus = %this.notBornWithSkus @ %skunum @ " ";
         }
-        %n = (getWordCount(%tags) - 1.0);
-        while ((%n >= 0.0))
+        %n = getWordCount(%tags) - 1;
+        while (%n >= 0)
         {
             %tag = getWord(%tags, %n);
             %skus = %this.skuTags.get(%tag);
             %skus = trim(%skus @ " " @ %skunum);
             %this.skuTags.put(%tag, %skus);
-            %n = (%n - 1.0);
+            %n = %n - 1;
         }
-        %n = (getWordCount(%meshName) - 1.0);
-        (%n >= 0.0);
-        while ((%n >= 0.0))
+        %n = getWordCount(%meshName) - 1;
+        %n >= 0;
+        while (%n >= 0)
         {
             %meshN = getWord(%meshName, %n);
             %this.addKnownMeshName(%meshN);
-            %n = (%n - 1.0);
+            %n = %n - 1;
         }
     }
 }
@@ -118,10 +118,10 @@ function SkuManager::init(%this)
     %t1 = getSimTime();
     %this.clear();
     %n = 0;
-    while ((%n < getWordCount(%this.storeIDs)))
+    while (%n < getWordCount(%this.storeIDs))
     {
         %this.storeSkus[getWord(%this.storeIDs, %n)] = "";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.storeIDs = (%n < getWordCount(%this.storeIDs)) @ "";
     %this.bornWithSkus = "";
@@ -132,27 +132,27 @@ function SkuManager::init(%this)
     %this.clearValueCache();
     %this.sanityCheckStockOutfits();
     %t2 = getSimTime();
-    %dt = (%t2 - %t1);
-    echo(getScopeName() @ " " @ "-" @ " " @ (%dt / 1000.0) @ " " @ "seconds");
+    %dt = %t2 - %t1;
+    echo(getScopeName() @ " " @ "-" @ " " @ (%dt / 1000) @ " " @ "seconds");
 }
 function SkuManager::sanityCheckStockOutfits(%this)
 {
     %genders = "m f";
     %outfits = "A B C D E F G H I J K L";
-    %g = (getWordCount(%genders) - 1.0);
-    while ((%g >= 0.0))
+    %g = getWordCount(%genders) - 1;
+    while (%g >= 0)
     {
-        %o = (getWordCount(%outfits) - 1.0);
-        while ((%o >= 0.0))
+        %o = getWordCount(%outfits) - 1;
+        while (%o >= 0)
         {
             %skus = $gNewStockOutfits[getWord(%genders, %g),getWord(%outfits, %o)];
             %this.sanityCheckSkus(%skus);
-            %o = (%o - 1.0);
+            %o = %o - 1;
         }
         %skus = $gDefaultBodyAttrs[getWord(%genders, %g)];
-        (%o >= 0.0);
+        %o >= 0;
         %this.sanityCheckSkus(%skus);
-        %g = (%g - 1.0);
+        %g = %g - 1;
     }
 }
 function SkuManager::sanityCheckSkus(%this, %skusDry)
@@ -178,15 +178,15 @@ function SkuManager::sanityCheckSkus(%this, %skusDry)
 function SkuManager::getMissingSkus(%this, %skusFull, %skusSubset)
 {
     %ret = "";
-    %n = (getWordCount(%skusFull) - 1.0);
-    while ((%n >= 0.0))
+    %n = getWordCount(%skusFull) - 1;
+    while (%n >= 0)
     {
         %sku = getWord(%skusFull, %n);
-        if ((findWord(%skusSubset, %sku) < 0.0))
+        if (findWord(%skusSubset, %sku) < 0)
         {
             %ret = %ret @ %sku @ " ";
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     return %ret;
 }
@@ -233,21 +233,21 @@ function SkuManager::getTopExclusionLevelForDrawer(%this, %drwr)
     %tabbedDrwr = strreplace(%drwr, "/", "\t");
     %cnt = getFieldCount(%tabbedDrwr);
     %incStr = "";
-    if ((%this.getFieldValue("exclusiveDrwrs") $= ""))
+    if (%this.getFieldValue("exclusiveDrwrs") $= "")
     {
         return "";
     }
     %i = 0;
-    while ((%i < %cnt))
+    while (%i < %cnt)
     {
         %folder = getField(%tabbedDrwr, %i);
         %incStr = %incStr @ %folder;
-        if (((%idx = findRecord(%this.exclusiveDrwrs, %incStr)) != -(1.0)))
+        if ((%idx = findRecord(%this.exclusiveDrwrs, %incStr)) != -(1))
         {
             return getRecord(%this.exclusiveDrwrs, %idx);
         }
         %incStr = %incStr @ "/";
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     return "";
 }

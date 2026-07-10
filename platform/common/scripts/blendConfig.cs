@@ -314,18 +314,18 @@ new ScriptObject(blendAnim_22) {
 $gBlendAnimsTitlesMap = 0;
 function Player::configBoneBlends(%this)
 {
-    if (($gBlendAnimsTitlesMap == 0.0))
+    if ($gBlendAnimsTitlesMap == 0)
     {
         $gBlendAnimsTitlesMap = safeEnsureScriptObject("StringMap", "");
     }
     %i = 0;
-    while ((%i < $MAX_FREE_BONE_BLENDS))
+    while (%i < $MAX_FREE_BONE_BLENDS)
     {
-        %index = (%i + $FIRST_FREE_BLEND_INDEX);
+        %index = %i + $FIRST_FREE_BLEND_INDEX;
         %sobj = "blendAnim_" @ %i;
         %this.configBoneBlendAnimation(%index, %sobj.sequence, %sobj.flavor, %sobj.defaultPosition, %sobj.attackTime, %sobj.decayTime, %sobj.attackRate, %sobj.decayRate, %sobj.isReplacement, %sobj.holdPosition);
         $gBlendAnimsTitlesMap.put(%sobj.title, %i);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function Player::getBoneBlendIndexFromTitle(%this, %title)
@@ -336,20 +336,20 @@ function Player::getBoneBlendIndexFromTitle(%this, %title)
         %this.configBoneBlends();
     }
     %ret = $gBlendAnimsTitlesMap.get(%title);
-    if ((%ret $= ""))
+    if (%ret $= "")
     {
-        %ret = -(1.0);
+        %ret = -(1);
     }
     else
     {
-        %ret = (%ret + $FIRST_FREE_BLEND_INDEX);
+        %ret = %ret + $FIRST_FREE_BLEND_INDEX;
     }
     return %ret;
 }
 function Player::triggerBlendAnimByTitle(%this, %title, %doit)
 {
     %index = %this.getBoneBlendIndexFromTitle(%title);
-    if ((%index < 0.0))
+    if (%index < 0)
     {
         error(getScopeName() @ " " @ "- blend anim not found:" @ " " @ %title);
         return;

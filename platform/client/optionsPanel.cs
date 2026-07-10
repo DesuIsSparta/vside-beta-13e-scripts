@@ -27,7 +27,7 @@ function OptionsPanelTabs::setup(%this)
 function OptionsPanelTabs::fillTabs(%this)
 {
     %i = 0;
-    while ((%i < %this.numTabs))
+    while (%i < %this.numTabs)
     {
         %tab = %this.tabs[%i];
         %tab.setProfile(ETSNonModalProfile);
@@ -54,7 +54,7 @@ function OptionsPanelTabs::fillTabs(%this)
             visible = 1;
             bitmap = "./ui/settings_bracket_right";
         };);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %this.fillSocialTab();
     %this.fillAudioTab();
@@ -93,8 +93,8 @@ function OptionsPanelTabs::fillSocialTab(%this)
         text = "Away Message:";
         maxLength = 255;
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %indent1);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %indent1;
     %tab.add(new GuiTextEditCtrl(DefaultAwayMsgEdit) {
         profile = "ETSDarkTextEditProfile";
         horizSizing = "right";
@@ -113,7 +113,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         sinkAllKeyEvents = 0;
         cursorType = 1;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton15Profile";
         horizSizing = "right";
@@ -132,7 +132,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         profile = "BracketButton15Profile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 60.0) @ " " @ %posY;
+        position = (%posX + 60) @ " " @ %posY;
         extent = "51 15";
         minExtent = "1 1";
         sluggishness = -1;
@@ -146,7 +146,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 120.0) @ " " @ (%posY - 1.0);
+        position = (%posX + 120) @ " " @ (%posY - 1);
         extent = "200 18";
         minExtent = "8 2";
         sluggishness = -1;
@@ -157,9 +157,9 @@ function OptionsPanelTabs::fillSocialTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
-    %posY = (%posY + %dPosYSmall);
-    %posX = (%posX - %indent1);
+    %posY = %posY + %dPosY;
+    %posY = %posY + %dPosYSmall;
+    %posX = %posX - %indent1;
     %tab.add(new GuiTextCtrl("") {
         position = %posX @ " " @ %posY;
         extent = "94 18";
@@ -172,8 +172,8 @@ function OptionsPanelTabs::fillSocialTab(%this)
         text = "General Options:";
         maxLength = 255;
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %indent1);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %indent1;
     %text = "Show My Typing";
     %tab.add(new GuiCheckBoxCtrl(ShowTypingCheckBox) {
         profile = "ETSCheckBoxProfile";
@@ -208,7 +208,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         buttonType = "ToggleButton";
         tooltip = "Don't allow people to teleport to me";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %text = "Filter Profanity";
     %tab.add(new GuiCheckBoxCtrl(FilterProfanityCheckBox) {
         profile = "ETSCheckBoxProfile";
@@ -243,7 +243,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         buttonType = "ToggleButton";
         tooltip = "Don't allow people to whisper to me";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %text = "Show Me on Radar";
     %tab.add(new GuiCheckBoxCtrl(ShowOnRadarCheckBox) {
         profile = "ETSCheckBoxProfile";
@@ -278,9 +278,9 @@ function OptionsPanelTabs::fillSocialTab(%this)
         buttonType = "ToggleButton";
         tooltip = "Don't show yells in the chat bubble";
     };);
-    %posY = (%posY + %dPosY);
-    %posY = (%posY + %dPosYSmall);
-    %posX = (%posX - %indent1);
+    %posY = %posY + %dPosY;
+    %posY = %posY + %dPosYSmall;
+    %posX = %posX - %indent1;
     %tab.add(new GuiTextCtrl("") {
         position = %posX @ " " @ %posY;
         extent = "94 18";
@@ -293,7 +293,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         text = "Two-Player Actions:";
         maxLength = 255;
     };);
-    %posX = (%posX + 120.0);
+    %posX = %posX + 120;
     %tab.add(new GuiTextCtrl("") {
         position = %posX @ " " @ %posY;
         extent = "94 18";
@@ -310,7 +310,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 42.0) @ " " @ %posY;
+        position = (%posX + 42) @ " " @ %posY;
         extent = "54 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -319,7 +319,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         maxPopupHeight = 200;
         tooltip = "Choose what happens when a friend does a two-player action with me";
     };);
-    %posX = (%posX + 120.0);
+    %posX = %posX + 120;
     %tab.add(new GuiTextCtrl("") {
         position = %posX @ " " @ %posY;
         extent = "94 18";
@@ -336,7 +336,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 65.0) @ " " @ %posY;
+        position = (%posX + 65) @ " " @ %posY;
         extent = "54 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -345,9 +345,9 @@ function OptionsPanelTabs::fillSocialTab(%this)
         maxPopupHeight = 200;
         tooltip = "Choose what happens when a stranger does a two-player action with me";
     };);
-    %posX = (%posX - 240.0);
-    %posY = (%posY + %dPosY);
-    %posY = (%posY + 5.0);
+    %posX = %posX - 240;
+    %posY = %posY + %dPosY;
+    %posY = %posY + 5;
     %tab.add(new GuiTextCtrl("") {
         position = %posX @ " " @ %posY;
         extent = "94 18";
@@ -360,7 +360,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         text = "Gifts:";
         maxLength = 255;
     };);
-    %posX = (%posX + 120.0);
+    %posX = %posX + 120;
     %tab.add(new GuiTextCtrl("") {
         position = %posX @ " " @ %posY;
         extent = "94 18";
@@ -377,7 +377,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 42.0) @ " " @ %posY;
+        position = (%posX + 42) @ " " @ %posY;
         extent = "54 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -386,7 +386,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         maxPopupHeight = 200;
         tooltip = "Choose what happens when a friend wants to give me vBux or vPoints";
     };);
-    %posX = (%posX + 120.0);
+    %posX = %posX + 120;
     %tab.add(new GuiTextCtrl("") {
         position = %posX @ " " @ %posY;
         extent = "94 18";
@@ -403,7 +403,7 @@ function OptionsPanelTabs::fillSocialTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 65.0) @ " " @ %posY;
+        position = (%posX + 65) @ " " @ %posY;
         extent = "54 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -412,9 +412,9 @@ function OptionsPanelTabs::fillSocialTab(%this)
         maxPopupHeight = 200;
         tooltip = "Choose what happens when a stranger wants to give me vBux or vPoints";
     };);
-    %posX = (%posX - 240.0);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX - %indent1);
+    %posX = %posX - 240;
+    %posY = %posY + %dPosY;
+    %posX = %posX - %indent1;
     %tab.add(new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton15Profile";
         horizSizing = "right";
@@ -457,7 +457,7 @@ function OptionsPanelTabs::fillAudioTab(%this)
         profile = "ETSSliderProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 55.0) @ " " @ %posY;
+        position = (%posX + 55) @ " " @ %posY;
         extent = "106 21";
         minExtent = "8 2";
         sluggishness = -1;
@@ -467,7 +467,7 @@ function OptionsPanelTabs::fillAudioTab(%this)
         ticks = 10;
         value = 1;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSRightJustifiedShadowTextProfile";
         horizSizing = "right";
@@ -484,7 +484,7 @@ function OptionsPanelTabs::fillAudioTab(%this)
         profile = "ETSSliderProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 55.0) @ " " @ %posY;
+        position = (%posX + 55) @ " " @ %posY;
         extent = "106 21";
         minExtent = "8 2";
         sluggishness = -1;
@@ -495,7 +495,7 @@ function OptionsPanelTabs::fillAudioTab(%this)
         ticks = 10;
         value = 0;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSRightJustifiedShadowTextProfile";
         horizSizing = "right";
@@ -512,7 +512,7 @@ function OptionsPanelTabs::fillAudioTab(%this)
         profile = "ETSSliderProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 55.0) @ " " @ %posY;
+        position = (%posX + 55) @ " " @ %posY;
         extent = "106 21";
         minExtent = "8 2";
         sluggishness = -1;
@@ -523,8 +523,8 @@ function OptionsPanelTabs::fillAudioTab(%this)
         ticks = 10;
         value = 0.897959;
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %indent);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %indent;
     %tab.add(new GuiCheckBoxCtrl(MuteCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -539,9 +539,9 @@ function OptionsPanelTabs::fillAudioTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX - %indent);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
+    %posX = %posX - %indent;
+    %posY = %posY + %dPosY;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -554,8 +554,8 @@ function OptionsPanelTabs::fillAudioTab(%this)
         text = "Play Sound On:";
         maxLength = 255;
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %indent);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %indent;
     %tab.add(new GuiCheckBoxCtrl(NotifyChatCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -571,7 +571,7 @@ function OptionsPanelTabs::fillAudioTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(NotifyWhisperCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -587,8 +587,8 @@ function OptionsPanelTabs::fillAudioTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX - %indent);
+    %posY = %posY + %dPosY;
+    %posX = %posX - %indent;
     %tab.add(new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton15Profile";
         horizSizing = "right";
@@ -630,7 +630,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 96.0) @ " " @ %posY;
+        position = (%posX + 96) @ " " @ %posY;
         extent = "63 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -638,7 +638,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         maxLength = 255;
         maxPopupHeight = 200;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -655,7 +655,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 96.0) @ " " @ %posY;
+        position = (%posX + 96) @ " " @ %posY;
         extent = "63 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -663,7 +663,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         maxLength = 255;
         maxPopupHeight = 200;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -680,7 +680,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 96.0) @ " " @ %posY;
+        position = (%posX + 96) @ " " @ %posY;
         extent = "63 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -688,7 +688,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         maxLength = 255;
         maxPopupHeight = 200;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -705,7 +705,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 96.0) @ " " @ %posY;
+        position = (%posX + 96) @ " " @ %posY;
         extent = "63 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -713,7 +713,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         maxLength = 255;
         maxPopupHeight = 200;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -730,7 +730,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 96.0) @ " " @ %posY;
+        position = (%posX + 96) @ " " @ %posY;
         extent = "63 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -738,8 +738,8 @@ function OptionsPanelTabs::fillVisualTab(%this)
         maxLength = 255;
         maxPopupHeight = 200;
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %indent);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %indent;
     %tab.add(new GuiTextCtrl(BrightnessLabel) {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -756,7 +756,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "ETSSliderProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 55.0) @ " " @ %posY;
+        position = (%posX + 55) @ " " @ %posY;
         extent = "97 21";
         minExtent = "8 2";
         sluggishness = -1;
@@ -770,8 +770,8 @@ function OptionsPanelTabs::fillVisualTab(%this)
         snapToDefaultRangeRatio = 0.1;
         displayValue = 0;
     };);
-    %posY = (%posY + (2.0 * %dPosY));
-    %posX = (%posX - %indent);
+    %posY = %posY + (2 * %dPosY);
+    %posX = %posX - %indent;
     %tab.add(new GuiCheckBoxCtrl(HUDShowNamesCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -791,7 +791,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "InfoTextProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 60.0) @ " " @ (%posY + 2.0);
+        position = (%posX + 60) @ " " @ (%posY + 2);
         extent = "305 42";
         minExtent = "1 1";
         sluggishness = -1;
@@ -801,8 +801,8 @@ function OptionsPanelTabs::fillVisualTab(%this)
         maxChars = -1;
         text = "Show people's names above their heads";
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %indent);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %indent;
     %tab.add(new GuiTextCtrl("") {
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -819,7 +819,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         profile = "ETSDarkPopUpMenuProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 60.0) @ " " @ %posY;
+        position = (%posX + 60) @ " " @ %posY;
         extent = "53 16";
         minExtent = "8 2";
         sluggishness = -1;
@@ -827,10 +827,10 @@ function OptionsPanelTabs::fillVisualTab(%this)
         maxLength = 255;
         maxPopupHeight = 200;
     };);
-    %posY = (%posY + (2.0 * %dPosY));
-    %posX = (%posX - %indent);
-    %posX = (%posX + %dPosX);
-    %posY = (%originY - 12.0);
+    %posY = %posY + (2 * %dPosY);
+    %posX = %posX - %indent;
+    %posX = %posX + %dPosX;
+    %posY = %originY - 12;
     %tab.add(new GuiCheckBoxCtrl(AutoHideButtonBarCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -847,7 +847,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         buttonType = "ToggleButton";
     };);
     AutoHideButtonBarCheckBox.setValue($UserPref::ETS::ButtonBar::AutoHide);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(AutoOpenLocalMapCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -864,7 +864,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         command = "toggleAutoOpenLocalMap();";
     };);
     AutoOpenLocalMapCheckBox.setValue($UserPref::UI::Radar::AutoOpen);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(DisplayFlashTaskBarCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -880,7 +880,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(ShowAccountHudCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -896,7 +896,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(ConstrainWindowDimensions) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -912,7 +912,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(OptionsVisualShowTooltipsCheckbox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -928,7 +928,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(OptionsVisualShowReloadTexturesCheckbox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -940,7 +940,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         text = "Show Reload Textures";
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(DisableVideosCheckBox) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -952,7 +952,7 @@ function OptionsPanelTabs::fillVisualTab(%this)
         variable = "$UserPref::ETS::VideoRenderer::Disable";
         tooltip = "Only check this if you are having trouble with videos";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton15Profile";
         horizSizing = "right";
@@ -1009,7 +1009,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         maxChars = -1;
         text = "<color:ffffff>Auto Close";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -1029,7 +1029,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + %indent1) @ " " @ (%posY + 9.0);
+        position = (%posX + %indent1) @ " " @ (%posY + 9);
         extent = "50 14";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1043,7 +1043,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent2) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent2) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1058,7 +1058,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent3) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent3) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1069,7 +1069,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -1089,7 +1089,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + %indent1) @ " " @ (%posY + 9.0);
+        position = (%posX + %indent1) @ " " @ (%posY + 9);
         extent = "50 14";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1103,7 +1103,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent2) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent2) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1118,7 +1118,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent3) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent3) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1129,7 +1129,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -1149,7 +1149,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + %indent1) @ " " @ (%posY + 9.0);
+        position = (%posX + %indent1) @ " " @ (%posY + 9);
         extent = "50 14";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1163,7 +1163,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent2) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent2) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1178,7 +1178,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent3) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent3) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1189,7 +1189,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -1209,7 +1209,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + %indent1) @ " " @ (%posY + 9.0);
+        position = (%posX + %indent1) @ " " @ (%posY + 9);
         extent = "50 14";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1223,7 +1223,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent2) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent2) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1238,7 +1238,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = ((%posX + %indent3) + 6.0) @ " " @ (%posY + 8.0);
+        position = ((%posX + %indent3) + 6) @ " " @ (%posY + 8);
         extent = "18 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1249,10 +1249,10 @@ function OptionsPanelTabs::fillTabsTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %dPosX);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %dPosX;
     %posY = %originY;
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiMLTextCtrl("") {
         profile = "InfoTextProfile";
         horizSizing = "right";
@@ -1267,7 +1267,7 @@ function OptionsPanelTabs::fillTabsTab(%this)
         maxChars = -1;
         text = "Auto Open:<br>Tab will open by itself when new information comes in.  Note that the Scores tab never auto-opens.<br><br>Auto Close:<br>Tab will close by itself after it's been open for a few seconds.";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton15Profile";
         horizSizing = "right";
@@ -1307,19 +1307,19 @@ function OptionsPanelTabs::fillVIPTab(%this)
         maxChars = -1;
         text = "<spush><b>Note:<spop> Only VIPs and staff have these settings.";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiControl(ForceFieldCtrls) {
         position = %posX @ " " @ %posY;
-        extent = 94 @ " " @ (%dPosY * 5.0);
+        extent = 94 @ " " @ (%dPosY * 5);
         visible = $gPerformerMode;
     };);
-    %posY = (%posY + (6.0 * %dPosY));
+    %posY = %posY + (6 * %dPosY);
     new GuiRadioCtrl(performerPanelRadioButtonForceField3) {
         profile = new GuiRadioCtrl(performerPanelRadioButtonForceField2) {
         profile = new GuiRadioCtrl(performerPanelRadioButtonForceField1) {
         profile = new GuiRadioCtrl(performerPanelRadioButtonForceField0) {
         profile = new GuiTextCtrl("") {
-        position = 0 @ " " @ (%dPosY * 0.0);
+        position = 0 @ " " @ (%dPosY * 0);
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -1331,7 +1331,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
     }; @ "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 10 @ " " @ (%dPosY * 1.0);
+        position = 10 @ " " @ (%dPosY * 1);
         extent = "84 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1345,7 +1345,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
     }; @ "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 10 @ " " @ (%dPosY * 2.0);
+        position = 10 @ " " @ (%dPosY * 2);
         extent = "84 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1359,7 +1359,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
     }; @ "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 10 @ " " @ (%dPosY * 3.0);
+        position = 10 @ " " @ (%dPosY * 3);
         extent = "84 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1373,7 +1373,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
     }; @ "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 10 @ " " @ (%dPosY * 4.0);
+        position = 10 @ " " @ (%dPosY * 4);
         extent = "84 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1401,7 +1401,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiCheckBoxCtrl(geDFDebugMode) {
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
@@ -1420,7 +1420,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
         profile = "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (%posX + 150.0) @ " " @ %posY;
+        position = (%posX + 150) @ " " @ %posY;
         extent = "150 18";
         minExtent = "8 2";
         sluggishness = -1;
@@ -1430,8 +1430,8 @@ function OptionsPanelTabs::fillVIPTab(%this)
         groupNum = -1;
         buttonType = "ToggleButton";
     };);
-    %posY = (%posY + %dPosY);
-    %posX = (%posX + %indent);
+    %posY = %posY + %dPosY;
+    %posX = %posX + %indent;
     %tab.add(new GuiControl(geDFDebugCtrls) {
         horizSizing = "right";
         vertSizing = "bottom";
@@ -1439,7 +1439,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
         extent = "300 20";
         visible = $Pref::DF::debugMode;
     };);
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     new GuiTextCtrl(geDFDebugStatusText) {
         profile = new GuiVariableWidthButtonCtrl("") {
         profile = new GuiVariableWidthButtonCtrl("") {
@@ -1485,10 +1485,10 @@ function OptionsPanelTabs::fillVIPTab(%this)
         visible = 1;
         text = "";
     };
-    %posX = (%posX - %indent);
-    %posX = (%posX + %dPosX);
+    %posX = %posX - %indent;
+    %posX = %posX + %dPosX;
     %posY = %originY;
-    %posY = (%posY + %dPosY);
+    %posY = %posY + %dPosY;
     %tab.add(new GuiControl(FarNameOpacityCtrl) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -1498,7 +1498,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
         minExtent = "8 2";
         visible = 0;
     };);
-    %posY = (%posY + (%dPosY * 4.0));
+    %posY = %posY + (%dPosY * 4);
     new GuiMLTextCtrl("") {
         profile = new GuiTextEditCtrl(FarNameOpacityTextEditCtrl) {
         profile = new GuiTextCtrl("") {
@@ -1542,14 +1542,14 @@ function OptionsPanelTabs::fillVIPTab(%this)
     };
     %tab.add(new GuiControl(optionsPanelAlertOnLogCtrl) {
         position = %posX @ " " @ %posY;
-        extent = 190 @ " " @ (%dPosY * 3.0);
+        extent = 190 @ " " @ (%dPosY * 3);
         visible = $gPerformerMode;
     };);
     %tab.add(new GuiVariableWidthButtonCtrl("") {
         profile = new GuiRadioCtrl(optionsPanelAlertOnErrorCheckBox) {
         profile = new GuiRadioCtrl(optionsPanelAlertOnWarningCheckBox) {
         profile = new GuiTextCtrl("") {
-        position = 0 @ " " @ (%dPosY * 0.0);
+        position = 0 @ " " @ (%dPosY * 0);
         extent = "94 18";
         profile = "ETSShadowTextProfile";
         horizSizing = "right";
@@ -1561,7 +1561,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
     }; @ "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 10 @ " " @ (%dPosY * 1.0);
+        position = 10 @ " " @ (%dPosY * 1);
         extent = "84 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1575,7 +1575,7 @@ function OptionsPanelTabs::fillVIPTab(%this)
     }; @ "ETSCheckBoxProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = 80 @ " " @ (%dPosY * 1.0);
+        position = 80 @ " " @ (%dPosY * 1);
         extent = "84 18";
         minExtent = "1 1";
         sluggishness = -1;
@@ -1627,7 +1627,7 @@ function OptionsPanelTabs::restoreAudioDefaults(%this)
     $UserPref::Audio::masterVolume = $Defaults::UserPref::Audio::masterVolume;
     $UserPref::Audio::channelVolume1 = $Defaults::UserPref::Audio::channelVolume1;
     $UserPref::Audio::channelVolume2 = $Defaults::UserPref::Audio::channelVolume2;
-    if (($UserPref::Audio::mute != $Defaults::UserPref::Audio::mute))
+    if ($UserPref::Audio::mute != $Defaults::UserPref::Audio::mute)
     {
         Music::toggleMute();
     }
@@ -1672,7 +1672,7 @@ function OptionsPanelTabs::restoreTabsDefaults(%this)
     $Defaults::UserPref::HudTabs::AutoOpen["tutorial"][$UserPref::HudTabs::AutoOpen @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoOpen["tutorial"];
     $Defaults::UserPref::HudTabs::AutoClose["tutorial"][$UserPref::HudTabs::AutoClose @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoClose["tutorial"];
     %currentTab = HudTabs.getCurrentTab();
-    if ((%currentTab $= ""))
+    if (%currentTab $= "")
     {
     }
     else
@@ -1713,7 +1713,7 @@ function OptionsPanelTabs::onChangedHideChat(%this)
     }
     else
     {
-        if ((ConvBubVecCtrlMsgVec.getNumLines() > 0.0))
+        if (ConvBubVecCtrlMsgVec.getNumLines() > 0)
         {
             ConvBub.open();
         }
@@ -1748,7 +1748,7 @@ function OptionsPanel::open(%this)
     }
     else
     {
-        if ((OptionsPanelTabs.getCurrentTab().name $= "vip"))
+        if (OptionsPanelTabs.getCurrentTab().name $= "vip")
         {
             OptionsPanelTabs.selectTabAtIndex(0);
         }
@@ -1817,7 +1817,7 @@ function OptionsPanel::Initialize(%this)
 }
 function schedulePersist()
 {
-    if (($OptionsPanel::scheduledPersistID != 0.0))
+    if ($OptionsPanel::scheduledPersistID != 0)
     {
         cancel($OptionsPanel::scheduledPersistID);
     }
@@ -1875,16 +1875,16 @@ function persistOptionsPanelSettingsToManager()
     gUserPropMgrClient.setProperty($Player::Name, "alertOnLogWarning", $UserPref::debug::alertOnLogWarning);
     gUserPropMgrClient.setProperty($Player::Name, "alertOnLogError", $UserPref::debug::alertOnLogError);
     %maxNumberKeyCombos = getFieldCount($Defaults::UserPref::emotes::defaultKeyCombinations);
-    %i = (%maxNumberKeyCombos - 1.0);
-    while ((%i >= 0.0))
+    %i = %maxNumberKeyCombos - 1;
+    while (%i >= 0)
     {
         %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %i);
         gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, $UserPref::emotes["f",%keyCombo]);
         gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, $UserPref::emotes["m",%keyCombo]);
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
     $OptionsPanel::scheduledPersistID = 0;
-    (%i >= 0.0);
+    %i >= 0;
     legacyPersistOptionsPanelSettingsToManager();
 }
 function LegacySaveSettingsRequest::onDone(%this)
@@ -1957,7 +1957,7 @@ function OptionsPanel::readSettings(%this)
     ShowAccountHudCheckBox.setValue($UserPref::UI::ShowAccountHud);
     OptionsVisualShowTooltipsCheckbox.setValue($UserPref::UI::ShowTooltips);
     %curScreenMode = getRes();
-    %curScreenScale = (getWord(%curScreenMode, 0) / 16.0);
+    %curScreenScale = getWord(%curScreenMode, 0) / 16;
     HudMusicAutoOpenCheckBox.setValue($UserPref::HudTabs::AutoOpen["music"]);
     HudMusicAutoCloseCheckBox.setValue($UserPref::HudTabs::AutoClose["music"]);
     HudAffinityAutoOpenCheckBox.setValue($UserPref::HudTabs::AutoOpen["affinity"]);
@@ -1993,9 +1993,9 @@ function DefaultAwayMsgEdit::applySettings(%this)
 {
     %this.setValue(trim(%this.getValue()));
     %newAwayMsg = %this.getValue();
-    if ((%newAwayMsg $= ""))
+    if (%newAwayMsg $= "")
     {
-        if (($UserPref::Player::awayMessage $= ""))
+        if ($UserPref::Player::awayMessage $= "")
         {
             $UserPref::Player::awayMessage = $Pref::Player::defaultAwayMessage;
         }
@@ -2044,7 +2044,7 @@ function VolumeSFXSlider::applySettings(%this)
 function TwoPlayerActionsFriendsPopup::onSelect(%this, %id, %unused)
 {
     $UserPref::Player::EmotesPermissionFriends = %id;
-    if (($UserPref::Player::EmotesPermissionStrangers < %id))
+    if ($UserPref::Player::EmotesPermissionStrangers < %id)
     {
         TwoPlayerActionsStrangersPopup.SetSelected(%id);
     }
@@ -2053,7 +2053,7 @@ function TwoPlayerActionsFriendsPopup::onSelect(%this, %id, %unused)
 function TwoPlayerActionsStrangersPopup::onSelect(%this, %id, %unused)
 {
     $UserPref::Player::EmotesPermissionStrangers = %id;
-    if (($UserPref::Player::EmotesPermissionFriends > %id))
+    if ($UserPref::Player::EmotesPermissionFriends > %id)
     {
         TwoPlayerActionsFriendsPopup.SetSelected(%id);
     }
@@ -2062,7 +2062,7 @@ function TwoPlayerActionsStrangersPopup::onSelect(%this, %id, %unused)
 function GiftsFriendsPopup::onSelect(%this, %id, %unused)
 {
     $UserPref::Player::GiftsPermissionFriends = %id;
-    if (($UserPref::Player::GiftsPermissionStrangers < %id))
+    if ($UserPref::Player::GiftsPermissionStrangers < %id)
     {
         GiftsStrangersPopup.SetSelected(%id);
     }
@@ -2071,7 +2071,7 @@ function GiftsFriendsPopup::onSelect(%this, %id, %unused)
 function GiftsStrangersPopup::onSelect(%this, %id, %unused)
 {
     $UserPref::Player::GiftsPermissionStrangers = %id;
-    if (($UserPref::Player::GiftsPermissionFriends > %id))
+    if ($UserPref::Player::GiftsPermissionFriends > %id)
     {
         GiftsFriendsPopup.SetSelected(%id);
     }
@@ -2111,31 +2111,28 @@ function BrightnessSlider::applySettings(%this)
 }
 function setShapeNameFontSize(%val)
 {
-    if ((%val < 0.0) || (%val > 2.0))
+    if ((%val < 0) || (%val > 2))
     {
         error("Unknown font size:" @ " " @ %val);
         return;
     }
     $UserPref::Video::shapeNameFontSize = %val;
-    if ((%val == 0.0))
+    if (%val == 0)
     {
         %prof = SmallShapeNameHudProfile;
         %otherProf = BoldSmallShapeNameHudProfile;
     }
     else
     {
-        if ((%val == 1.0))
+        if (%val == 1)
         {
             %prof = MediumShapeNameHudProfile;
             %otherProf = BoldMediumShapeNameHudProfile;
         }
-        else
+        if (%val == 2)
         {
-            if ((%val == 2.0))
-            {
-                %prof = LargeShapeNameHudProfile;
-                %otherProf = BoldLargeShapeNameHudProfile;
-            }
+            %prof = LargeShapeNameHudProfile;
+            %otherProf = BoldLargeShapeNameHudProfile;
         }
     }
     TheShapeNameHud.setProfile(%prof);
@@ -2158,18 +2155,18 @@ function updateHudTabsHiding()
     $UserPref::HudTabs::AutoOpen["word"] = HudWordAutoOpenCheckBox.getValue();
     $UserPref::HudTabs::AutoClose["word"] = HudWordAutoCloseCheckBox.getValue();
     %i = 0;
-    while ((%i < HudTabs.numTabs))
+    while (%i < HudTabs.numTabs)
     {
         %tab = HudTabs.getTabAtIndex(%i);
         if (!(%tab.name $= "tutorial"))
         {
             %tab.autoHide = %tab[$UserPref::HudTabs::AutoClose @ %tab.name];
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %currentTab = HudTabs.getCurrentTab();
-    (%i < HudTabs.numTabs);
-    if ((%currentTab $= ""))
+    %i < HudTabs.numTabs;
+    if (%currentTab $= "")
     {
     }
     else

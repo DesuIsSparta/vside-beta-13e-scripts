@@ -7,11 +7,11 @@ function messageAll(%msgType, %msgString)
 {
     %count = ClientGroup.getCount();
     %cl = 0;
-    while ((%cl < %count))
+    while (%cl < %count)
     {
         %client = ClientGroup.getObject(%cl);
         messageClient(%client, %msgType, %msgString);
-        %cl = (%cl + 1.0);
+        %cl = %cl + 1;
     }
 }
 function GameConnection::spamReset(%this)

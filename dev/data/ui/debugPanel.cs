@@ -42,7 +42,7 @@ function debugPanel::advanceGPTime(%time)
 {
     echo(getScopeName() @ "-> trying to advance by %time=" @ %time @ " hours");
     %space = CustomSpaceClient::GetSpaceImIn();
-    if ((%space $= ""))
+    if (%space $= "")
     {
         handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
         return;
@@ -52,7 +52,7 @@ function debugPanel::advanceGPTime(%time)
 function debugPanel::getGPInfo()
 {
     %spaceName = CustomSpaceClient::GetSpaceImIn();
-    if ((%spaceName $= ""))
+    if (%spaceName $= "")
     {
         handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
         return;

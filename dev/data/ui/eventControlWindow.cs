@@ -122,10 +122,10 @@ function eventControlWindow::populateDoorsList(%this)
 {
     EventControlsDoorsArray.deleteMembers();
     %n = 0;
-    while ((%n < $gDoorsNum))
+    while (%n < $gDoorsNum)
     {
         %this.addDoorControl($gDoorNames[%n], $gDoorGroupNames[%n], $gDoorZoneNames[%n], $gDoorToLockNames[%n], ($gDoorCSN[%n] $= $gContiguousSpaceName));
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function eventControlWindow::addDoorControl(%this, %title, %groupName, %zoneName, %doorToLockName, %enable)

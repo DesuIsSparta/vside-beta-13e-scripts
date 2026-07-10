@@ -269,7 +269,7 @@ new GuiControlProfile(ConvBubProfile) {
     tailAgeMin = 0;
     tailAgeHld = 14;
     tailAgeMax = 25;
-    tailLenMin = -(1.0);
+    tailLenMin = -(1);
     tailLenHld = 18;
     tailLenMax = 100;
 };
@@ -714,12 +714,12 @@ new GuiControlProfile(InfoTextSmallProfile : InfoTextProfile) {
     fontSize = 13;
 };
 new GuiControlProfile(MusicMLTextProfile : H1Profile) {
-    lineSpacing = -(2.0);
+    lineSpacing = -(2);
     modal = 1;
 };
 new GuiControlProfile(MusicMLTextProfileMedium : MusicMLTextProfile) {
     fontSize = 18;
-    lineSpacing = -(1.0);
+    lineSpacing = -(1);
 };
 new GuiControlProfile(MusicMLTextProfileSmall : MusicMLTextProfile) {
     fontSize = 16;

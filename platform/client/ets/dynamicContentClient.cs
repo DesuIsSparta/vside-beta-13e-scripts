@@ -17,7 +17,7 @@ function clientCmdsetStaffSnapshotObj(%id)
         log("general", "warn", "clientCmdsetStaffSnapshotObj: this is not a valid DC object to take a snapshot on.");
         return;
     }
-    %fileName = "staffsnapshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ $screenShotNum = ($screenShotNum + 1.0) @ ".jpg";
+    %fileName = "staffsnapshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ $screenShotNum = $screenShotNum + 1 @ ".jpg";
     %uplocal = $DC::dcFolder @ "/" @ %fileName;
     shootscreen(%uplocal, $DC::staffSnapshotRegion);
     %downurl = $DC::DownloadFolder @ "/" @ %fileName;
@@ -59,16 +59,16 @@ $DC::marqueeSeq1 = 0;
 $DC::marqueeSeq2 = 1;
 function pushMarquee(%unused)
 {
-    %fileName = "announcement" @ $DC::marqueeSeq1 = ($DC::marqueeSeq1 + 1.0) @ ".marquee.gardenbox.png";
+    %fileName = "announcement" @ $DC::marqueeSeq1 = $DC::marqueeSeq1 + 1 @ ".marquee.gardenbox.png";
     commandToServer('PushNewMarquee', addTaggedString(%fileName));
-    if (($DC::marqueeSeq1 == 5.0))
+    if ($DC::marqueeSeq1 == 5)
     {
         $DC::marqueeSeq1 = 0;
     }
     %fileName = $DC::marqueeSeq2 @ ".marqueeBorder.png";
     commandToServer('PushNewMarquee', addTaggedString(%fileName));
-    $DC::marqueeSeq2 = ($DC::marqueeSeq2 + 1.0);
-    if (($DC::marqueeSeq2 > 2.0))
+    $DC::marqueeSeq2 = $DC::marqueeSeq2 + 1;
+    if ($DC::marqueeSeq2 > 2)
     {
         $DC::marqueeSeq2 = 1;
     }

@@ -139,7 +139,7 @@ function ClosetTabs::fillProfileTab(%this)
         horizSizing = "right";
         vertSizing = "bottom";
         position = "-195 -700";
-        extent = 759 @ " " @ (859.0 * 2.0);
+        extent = 759 @ " " @ (859 * 2);
         minExtent = "1 1";
         sluggishness = 1;
         visible = 1;
@@ -548,7 +548,7 @@ function ProfileCurrentPicture::update(%this, %url)
     }
     %curl = new URLPostObject("");
     %curl.setName("ProfileAvatarPictureRequest");
-    if ((%url $= ""))
+    if (%url $= "")
     {
         %url = $Net::AvatarURL @ urlEncode($player.getShapeName());
     }
@@ -573,7 +573,7 @@ function ProfileCurrentPicture::update(%this, %url)
 }
 function ProfileAvatarPictureRequestOnCompleted(%request, %result)
 {
-    if ((%result == 0.0))
+    if (%result == 0)
     {
         gUserPropMgrClient.setProperty($Player::Name, "hasTakenAvatarPhoto", 1);
         %fileName = %request.getDownloadFile();
@@ -592,35 +592,32 @@ function ProfileAvatarPictureRequestOnCompleted(%request, %result)
         if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0))
         {
         }
-        if (($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount))
+        if ($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount)
         {
         }
-        if ((ClosetGui.lastTabOpened $= "SNAPSHOT"))
+        if (ClosetGui.lastTabOpened $= "SNAPSHOT")
         {
         }
         if (ClosetGui.isVisible())
         {
             ProfileSnapRegion.schedule(200, prepareSnapshot);
-            $Player::attemptsToAutoUploadAvatarSnapshot = ($Player::attemptsToAutoUploadAvatarSnapshot + 1.0);
+            $Player::attemptsToAutoUploadAvatarSnapshot = $Player::attemptsToAutoUploadAvatarSnapshot + 1;
         }
     }
 }
 function ProfileCurrentPicture::getLocalFileName(%this, %includeExtention)
 {
-    if (($Pref::Video::screenShotFormat $= "JPEG"))
+    if ($Pref::Video::screenShotFormat $= "JPEG")
     {
         %ext = ".jpg";
     }
     else
     {
-        if (($Pref::Video::screenShotFormat $= "PNG"))
+        if ($Pref::Video::screenShotFormat $= "PNG")
         {
             %ext = ".png";
         }
-        else
-        {
-            %ext = ".png";
-        }
+        %ext = ".png";
     }
     if (%includeExtention)
     {
@@ -664,7 +661,7 @@ function ProfileSnapRegion::onProgress(%this, %unused)
 function ProfileSnapRegionOnCompleted(%request, %result)
 {
     %snapRegion = %request.saveObject;
-    if ((%result == 0.0))
+    if (%result == 0)
     {
         echo("Profile pic upload done -- downloading");
         echo("photoURL =" @ " " @ %request.getResult("photoURL"));
@@ -725,50 +722,47 @@ function ProfileBackgroundChooser::Initialize(%this)
         %count = getFieldCount(%images);
         %numImages = 0;
         %i = 0;
-        while ((%i < %count))
+        while (%i < %count)
         {
             %fileName = fileName(getField(%images, %i));
-            if ((getSubStr(%fileName, 0, 3) $= "sm_"))
+            if (getSubStr(%fileName, 0, 3) $= "sm_")
             {
                 %extension = strrchr(%fileName, ".");
-                if ((%extension $= ".jpg"))
+                if (%extension $= ".jpg")
                 {
-                    %numImages = (%numImages + 1.0);
+                    %numImages = %numImages + 1;
                 }
-                else
+                if (%extension $= ".png")
                 {
-                    if ((%extension $= ".png"))
-                    {
-                        %numImages = (%numImages + 1.0);
-                    }
+                    %numImages = %numImages + 1;
                 }
             }
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
         %this.setNumChildren(%numImages);
         %i = 0;
-        (%i < %count);
-        while ((%i < %numImages))
+        %i < %count;
+        while (%i < %numImages)
         {
             %cell = %this.getObject(%i);
             %cell.index = %i;
-            %cell.thumb.setBitmap(%bgdPath @ "sm_" @ (%i + 1.0));
-            %cell.thumbBitmapName = %bgdPath @ "sm_" @ (%i + 1.0);
-            %cell.bitmapName = %bgdPath @ (%i + 1.0) @ ".jpg";
-            %i = (%i + 1.0);
+            %cell.thumb.setBitmap(%bgdPath @ "sm_" @ (%i + 1));
+            %cell.thumbBitmapName = %bgdPath @ "sm_" @ (%i + 1);
+            %cell.bitmapName = %bgdPath @ (%i + 1) @ ".jpg";
+            %i = %i + 1;
         }
-        %this.selected = (%i < %numImages) @ -(1.0);
+        %this.selected = (%i < %numImages) @ -(1);
         %this.selectThumbAtIndex(0);
         %this.initialized = 1;
     }
 }
 function ProfileBackgroundChooser::selectThumbAtIndex(%this, %index)
 {
-    if ((%this.selected == %index))
+    if (%this.selected == %index)
     {
         return;
     }
-    if ((%this.selected >= 0.0))
+    if (%this.selected >= 0)
     {
         %cell = %this.getObject(%this.selected);
         if (isObject(%cell))
@@ -813,13 +807,13 @@ function ProfileBackgroundChooser::moveBy(%this, %numSlots)
     %pos = %this.getTrgPosition();
     %xPos = getWord(%pos, 0);
     %ypos = getWord(%pos, 1);
-    %slotWidth = (getWord(%this.childrenExtent, 0) + %this.spacing);
-    %min = (-((%this.getCount() - 6.0)) * %slotWidth);
+    %slotWidth = getWord(%this.childrenExtent, 0) + %this.spacing;
+    %min = -((%this.getCount() - 6)) * %slotWidth;
     %max = 0;
     if (ProfilePreviousBackgroundButton.isActive())
     {
     }
-    if (((%xPos + (%slotWidth * %numSlots)) >= %max))
+    if ((%xPos + (%slotWidth * %numSlots)) >= %max)
     {
         ProfilePreviousBackgroundButton.setActive(0);
     }
@@ -833,7 +827,7 @@ function ProfileBackgroundChooser::moveBy(%this, %numSlots)
     if (ProfileNextBackgroundButton.isActive())
     {
     }
-    if (((%xPos + (%slotWidth * %numSlots)) <= %min))
+    if ((%xPos + (%slotWidth * %numSlots)) <= %min)
     {
         ProfileNextBackgroundButton.setActive(0);
     }
@@ -852,17 +846,17 @@ function ProfileObjectView::moveBy(%this, %dx, %dy)
 {
     %nudge = ($player.getGender() $= "f") ? "0.4 -0.3 0.8" : "0 -0.1 0.8";
     %this.setLookAtNudge(%nudge);
-    %dx = (%dx * 0.25);
-    %dy = (%dy * 0.25);
-    %x = mMin(3, mMax(-(3.0), (%this.xPos + %dx)));
-    %y = mMin(4, mMax(-(13.0), (%this.yPos + %dy)));
+    %dx = %dx * 0.25;
+    %dy = %dy * 0.25;
+    %x = mMin(3, mMax(-(3), (%this.xPos + %dx)));
+    %y = mMin(4, mMax(-(13), (%this.yPos + %dy)));
     %this.setMove(%x @ " " @ %y);
 }
 function ProfileObjectView::setMove(%this, %pos)
 {
     %this.xPos = getWord(%pos, 0);
     %this.yPos = getWord(%pos, 1);
-    %this.setTrgPosition((-(195.0) + (50.0 * %this.xPos)), (-(700.0) + (50.0 * %this.yPos)));
+    %this.setTrgPosition((-(195) + (50 * %this.xPos)), (-(700) + (50 * %this.yPos)));
 }
 $gProfileObjectView_Views["default","f"] = "-0 0 2.4";
 $gProfileObjectView_Views["default","m"] = "-0 0 2.4";
@@ -876,7 +870,7 @@ function ProfileObjectView::setView(%this, %viewName)
 {
     %view = [$player.getGender()];
     $gProfileObjectView_Views @ %viewName;
-    if ((%view $= ""))
+    if (%view $= "")
     {
         error(getScopeName() @ " " @ "- unknown view" @ " " @ %viewName @ " " @ getTrace());
         %view = [$player.getGender()];

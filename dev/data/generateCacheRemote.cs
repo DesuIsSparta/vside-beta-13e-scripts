@@ -22,15 +22,12 @@ function doSomething()
     }
     else
     {
-        if (($iterationsWaited == 200.0))
+        if ($iterationsWaited == 200)
         {
             error("CACHE->ERROR : Giving up. Waited for 10 minutes and nothing happended");
         }
-        else
-        {
-            echo("CACHE: Nothing yet....");
-            $iterationsWaited = ($iterationsWaited + 1.0);
-            schedule(3000, 0, doSomething);
-        }
+        echo("CACHE: Nothing yet....");
+        $iterationsWaited = $iterationsWaited + 1;
+        schedule(3000, 0, doSomething);
     }
 }

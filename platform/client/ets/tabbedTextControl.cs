@@ -18,10 +18,10 @@ function TabbedTextControl::setFieldWidths(%this, %fieldWidths, %padding)
     %sum = %padding;
     %numFields = getWordCount(%fieldWidths);
     %i = 0;
-    while ((%i < %numFields))
+    while (%i < %numFields)
     {
-        %sum = (%sum + (getWord(%fieldWidths, %i) + %padding));
-        %i = (%i + 1.0);
+        %sum = %sum + (getWord(%fieldWidths, %i) + %padding);
+        %i = %i + 1;
     }
     %this.resize(%sum, getWord(%this.getExtent(), 1));
     %this.childrenExtent = (%i < %numFields) @ %sum @ " " @ getWord(%this.childrenExtent, 1);
@@ -32,10 +32,10 @@ function TabbedTextControl::addLine(%this, %fields)
     %this.reseatChildren();
     %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
-    while ((%i < %numFields))
+    while (%i < %numFields)
     {
         %line.field[%i].setText(getField(%fields, %i));
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %line.command = (%i < %numFields) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
@@ -45,10 +45,10 @@ function TabbedTextControl::addLineNoReseat(%this, %fields)
     %line = %this.addChild();
     %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
-    while ((%i < %numFields))
+    while (%i < %numFields)
     {
         %line.field[%i].setText(getField(%fields, %i));
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %line.command = (%i < %numFields) @ %this.getId() @ ".childSelected(" @ %line.getId() @ ");";
     return %line;
@@ -57,14 +57,14 @@ function TabbedTextControl::onCreatedChild(%this, %child)
 {
     %child.Parent = %this;
     %child.clear();
-    if ((%this.paddingAboveText $= ""))
+    if (%this.paddingAboveText $= "")
     {
         %this.paddingAboveText = 2;
     }
     %xoffset = %this.Padding;
     %numFields = getWordCount(%this.fieldWidths);
     %i = 0;
-    while ((%i < %numFields))
+    while (%i < %numFields)
     {
         %fieldWidth = getWord(%this.fieldWidths, %i);
         %child.field[" ",%this.paddingAboveText;
@@ -76,8 +76,8 @@ function TabbedTextControl::onCreatedChild(%this, %child)
             profile = %this.menuTextProfile;
             position = %xoffset;
         %child.add(%child.field[%i]);
-        %xoffset = (%xoffset + (%fieldWidth + %this.Padding));
-        %i = (%i + 1.0);
+        %xoffset = %xoffset + (%fieldWidth + %this.Padding);
+        %i = %i + 1;
     }
     %child.bindClassName("MenuItem");
     %child.bindClassName("TabbedTextLine");
@@ -94,10 +94,10 @@ function TabbedTextLine::onMouseDown(%this)
 }
 function TabbedTextLine::onMouseUp(%this, %unused, %unused, %clickCount)
 {
-    if ((%clickCount == 2.0))
+    if (%clickCount == 2)
     {
     }
-    if ((%this.Parent.lastClicked == %this))
+    if (%this.Parent.lastClicked == %this)
     {
         %this.onSelect();
     }

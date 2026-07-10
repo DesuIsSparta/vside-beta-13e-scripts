@@ -13,8 +13,8 @@ function WorldMap::TabulateWorldAreaSummary(%unused)
         error(getScopeName() @ " " @ "- no WorldMapServers object." @ " " @ getTrace());
         return;
     }
-    %n = (WorldMapServers.getCount() - 1.0);
-    while ((%n >= 0.0))
+    %n = WorldMapServers.getCount() - 1;
+    while (%n >= 0)
     {
         %serverObj = WorldMapServers.getObject(%n);
         %serverAreaName = %serverObj.get("city");
@@ -38,12 +38,12 @@ function WorldMap::TabulateWorldAreaSummary(%unused)
             }
             %areaSummaryObj.areaType = "gw" @ %areaSummaryObj.areaType;
         }
-        %areaSummaryObj.occupancy = (%areaSummaryObj.occupancy + %serverOccupancy);
-        %areaSummaryObj.capacity = (%areaSummaryObj.capacity + %serverCapacity);
-        %areaSummaryObj.numServers = (%areaSummaryObj.numServers + 1.0);
-        WorldAreaSummaries.totalOccupancy[%areaSummaryObj.areaType] = (WorldAreaSummaries.totalOccupancy[%areaSummaryObj.areaType] + %serverOccupancy);
-        WorldAreaSummaries.totalCapacity[%areaSummaryObj.areaType] = (WorldAreaSummaries.totalCapacity[%areaSummaryObj.areaType] + %serverCapacity);
-        %n = (%n - 1.0);
+        %areaSummaryObj.occupancy = %areaSummaryObj.occupancy + %serverOccupancy;
+        %areaSummaryObj.capacity = %areaSummaryObj.capacity + %serverCapacity;
+        %areaSummaryObj.numServers = %areaSummaryObj.numServers + 1;
+        WorldAreaSummaries.totalOccupancy[%areaSummaryObj.areaType] = WorldAreaSummaries.totalOccupancy[%areaSummaryObj.areaType] + %serverOccupancy;
+        WorldAreaSummaries.totalCapacity[%areaSummaryObj.areaType] = WorldAreaSummaries.totalCapacity[%areaSummaryObj.areaType] + %serverCapacity;
+        %n = %n - 1;
     }
     return WorldAreaSummaries;
 }

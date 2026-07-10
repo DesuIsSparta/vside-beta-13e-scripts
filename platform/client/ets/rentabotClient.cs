@@ -36,10 +36,10 @@ function rentabotClient_customizeBot(%obj)
     %colSpacing = 10;
     %col1 = %colSpacing;
     %col1Size = 45;
-    %col2 = ((%col1 + %col1Size) + %colSpacing);
-    %col2Size = ((%winWidth - %colSpacing) - %col2);
+    %col2 = (%col1 + %col1Size) + %colSpacing;
+    %col2Size = (%winWidth - %colSpacing) - %col2;
     %rowSpacing = 4;
-    %row = (46.0 + %rowSpacing);
+    %row = 46 + %rowSpacing;
     %rowSize = 18;
     %tipStyle = "<color:ffffff88>";
     %validCharsName = "abcdefghijklmnopqrstuvwxyz" @ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" @ 0123456789 @ "_[]" @ "";
@@ -61,7 +61,7 @@ function rentabotClient_customizeBot(%obj)
     };
     %window.add(%ctrl);
     %window.ctrlName = %ctrl;
-    %row = (%row + %rowSize);
+    %row = %row + %rowSize;
     %ctrl = new GuiMLTextCtrl("") {
         profile = "GuiMessageTextProfile";
         position = %col2 @ " " @ %row;
@@ -69,7 +69,7 @@ function rentabotClient_customizeBot(%obj)
         text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-NAME"];
     };
     %window.add(%ctrl);
-    %row = (%row + (%rowSize + %rowSpacing));
+    %row = %row + (%rowSize + %rowSpacing);
     if (%obj.getCanSpew())
     {
         %ctrl = new GuiMLTextCtrl("") {
@@ -89,7 +89,7 @@ function rentabotClient_customizeBot(%obj)
         };
         %window.add(%ctrl);
         %window.ctrlBlab = %ctrl;
-        %row = (%row + %rowSize);
+        %row = %row + %rowSize;
         %ctrl = new GuiMLTextCtrl("") {
             profile = "GuiMessageTextProfile";
             position = %col2 @ " " @ %row;
@@ -97,7 +97,7 @@ function rentabotClient_customizeBot(%obj)
             text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-BLAB"];
         };
         %window.add(%ctrl);
-        %row = (%row + (%rowSize + %rowSpacing));
+        %row = %row + (%rowSize + %rowSpacing);
         %ctrl = new GuiMLTextCtrl("") {
             profile = "GuiMessageTextProfile";
             position = %col1 @ " " @ %row;
@@ -115,7 +115,7 @@ function rentabotClient_customizeBot(%obj)
         };
         %window.add(%ctrl);
         %window.ctrlWhisper = %ctrl;
-        %row = (%row + %rowSize);
+        %row = %row + %rowSize;
         %ctrl = new GuiMLTextCtrl("") {
             profile = "GuiMessageTextProfile";
             position = %col2 @ " " @ %row;
@@ -123,9 +123,9 @@ function rentabotClient_customizeBot(%obj)
             text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-WHISPER"];
         };
         %window.add(%ctrl);
-        %row = (%row + (%rowSize + %rowSpacing));
+        %row = %row + (%rowSize + %rowSpacing);
     }
-    if ((%obj.getGender() $= $player.getGender()))
+    if (%obj.getGender() $= $player.getGender())
     {
     }
     if (%obj.getDressUpWrite() || %obj.getDressUpRead())
@@ -142,7 +142,7 @@ function rentabotClient_customizeBot(%obj)
             %ctrl = new GuiVariableWidthButtonCtrl("") {
                 profile = "GuiFocusableVWButtonProfile";
                 position = %col2 @ " " @ %row;
-                extent = ((%col2Size - (%colSpacing * 2.0)) / 3.0) @ " " @ %rowSize;
+                extent = ((%col2Size - (%colSpacing * 2)) / 3) @ " " @ %rowSize;
                 text = "Dress me like it!";
                 command = "rentabotClient_DressUpRead(" @ %obj @ ");";
             };
@@ -152,22 +152,22 @@ function rentabotClient_customizeBot(%obj)
         {
             %ctrl = new GuiVariableWidthButtonCtrl("") {
                 profile = "GuiFocusableVWButtonProfile";
-                position = (%col2 + mFloor(((%col2Size + %colSpacing) / 3.0))) @ " " @ %row;
-                extent = ((%col2Size - (%colSpacing * 2.0)) / 3.0) @ " " @ %rowSize;
+                position = (%col2 + mFloor(((%col2Size + %colSpacing) / 3))) @ " " @ %row;
+                extent = ((%col2Size - (%colSpacing * 2)) / 3) @ " " @ %rowSize;
                 text = "Dress it like me!";
                 command = "rentabotClient_DressUpWrite(" @ %obj @ ");";
             };
             %window.add(%ctrl);
             %ctrl = new GuiVariableWidthButtonCtrl("") {
                 profile = "GuiFocusableVWButtonProfile";
-                position = (%col2 + (mFloor(((%col2Size + %colSpacing) / 3.0)) * 2.0)) @ " " @ %row;
-                extent = ((%col2Size - (%colSpacing * 2.0)) / 3.0) @ " " @ %rowSize;
+                position = (%col2 + (mFloor(((%col2Size + %colSpacing) / 3)) * 2)) @ " " @ %row;
+                extent = ((%col2Size - (%colSpacing * 2)) / 3) @ " " @ %rowSize;
                 text = "Reset";
                 command = "rentabotClient_DressUpReset(" @ %obj @ ");";
             };
             %window.add(%ctrl);
         }
-        %row = (%row + (%rowSize + %rowSpacing));
+        %row = %row + (%rowSize + %rowSpacing);
     }
     %window.ctrlName.makeFirstResponder(1);
     %window.ctrlName.setSelection(0, 1000);
@@ -218,24 +218,21 @@ function rentabotClient_DressUpRead(%obj)
     %otherSkusGender = SkuManager.filterSkusGender(%otherSkusOutfit, $player.getGender());
     %otherSkusNotOwned = wordsNotInWords($Player::inventory, %otherSkusGender);
     %otherSkusAllGood = wordsNotInWords(%otherSkusNotOwned, %otherSkusGender);
-    %numLostGender = (getWordCount(%otherSkusOutfit) - getWordCount(%otherSkusGender));
-    %numLostOwnership = (getWordCount(%otherSkusGender) - getWordCount(%otherSkusAllGood));
+    %numLostGender = getWordCount(%otherSkusOutfit) - getWordCount(%otherSkusGender);
+    %numLostOwnership = getWordCount(%otherSkusGender) - getWordCount(%otherSkusAllGood);
     %msg = "";
-    if ((%numLostGender > 0.0))
+    if (%numLostGender > 0)
     {
         %otherGender = (%obj.getGender() $= "f") ? "female" : "male";
         %msg = %msg @ "Some of those items are for" @ " " @ %otherGender @ " " @ "players";
     }
-    if ((%numLostOwnership > 0.0))
+    if (%numLostOwnership > 0)
     {
-        if ((%msg $= ""))
+        if (%msg $= "")
         {
             %msg = %msg @ "You don't own some of those items";
         }
-        else
-        {
-            %msg = %msg @ ", and you don't own some of those items";
-        }
+        %msg = %msg @ ", and you don't own some of those items";
     }
     if (!(%msg $= ""))
     {
@@ -277,8 +274,8 @@ function rentabotClient_DressUpResetConfirmed(%obj)
 }
 function rentabotClient_reignore()
 {
-    %n = (getWordCount($gRentabotIgnores) - 1.0);
-    while ((%n >= 0.0))
+    %n = getWordCount($gRentabotIgnores) - 1;
+    while (%n >= 0)
     {
         %bot = getWord($gRentabotIgnores, %n);
         if (isObject(%bot))
@@ -300,6 +297,6 @@ function rentabotClient_reignore()
         {
             $gRentabotIgnores = findAndRemoveAllOccurrencesOfWord($gRentabotIgnores, %bot);
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
 }

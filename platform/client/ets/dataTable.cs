@@ -4,5 +4,5 @@ function DataTable::clear(%this)
 }
 function DataTable::hasColumnNamed(%this, %name)
 {
-    return (%this.getColumnIndex(%name) >= 0.0);
+    return %this.getColumnIndex(%name) >= 0;
 }

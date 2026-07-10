@@ -126,10 +126,10 @@ function handleLoadInfoMessage(%unused, %msgString)
         LoadingGui.setTransitioning(0);
         Canvas.setContent("LoadingGui");
         %line = 0;
-        while ((%line < LoadingGui.qLineCount))
+        while (%line < LoadingGui.qLineCount)
         {
             LoadingGui.qLine[%line] = "";
-            %line = (%line + 1.0);
+            %line = %line + 1;
         }
         LoadingGui.qLineCount = (%line < LoadingGui.qLineCount) @ 0;
     }
@@ -146,16 +146,16 @@ function handleLoadInfoMessage(%unused, %msgString)
 function handleLoadDescriptionMessage(%unused, %msgString)
 {
     LoadingGui.qLine[LoadingGui.qLineCount] = %msgString;
-    LoadingGui.qLineCount = (LoadingGui.qLineCount + 1.0);
+    LoadingGui.qLineCount = LoadingGui.qLineCount + 1;
     %text = "<spush><font:Arial:16>";
     %line = 0;
-    while ((%line < (LoadingGui.qLineCount - 1.0)))
+    while (%line < (LoadingGui.qLineCount - 1))
     {
         %text = %text @ LoadingGui.qLine[%line] @ " ";
-        %line = (%line + 1.0);
+        %line = %line + 1;
     }
     %text = %text @ LoadingGui.qLine[%line] @ "<spop>";
-    (%line < (LoadingGui.qLineCount - 1.0));
+    %line < (LoadingGui.qLineCount - 1);
 }
 function handleLoadInfoDoneMessage(%unused, %msgString)
 {

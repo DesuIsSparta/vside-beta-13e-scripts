@@ -14,7 +14,7 @@ function sendC2CCmd(%commandName, %targetUserName, %param1, %param2)
 function handleC2CCmd(%commandName, %senderUserName, %param1, %param2)
 {
     echoDebug(getScopeName() @ " " @ "-" @ " " @ %commandName @ " " @ %senderUserName @ " " @ %param1 @ " " @ %param2);
-    if ((%commandName $= "finishedGateway"))
+    if (%commandName $= "finishedGateway")
     {
         handleInviteeFinishedGateway(%senderUserName, %param1);
     }

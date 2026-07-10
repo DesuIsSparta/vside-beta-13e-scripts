@@ -101,13 +101,13 @@ function serverCmdOneLove(%client)
         return;
     }
     %n = 0;
-    while ((%n < AIManager.numBots))
+    while (%n < AIManager.numBots)
     {
         AIManager.bots[%n].wardrobeStock();
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %client.Player.wardrobeStock();
-    return (%n < AIManager.numBots);
+    return %n < AIManager.numBots;
 }
 function serverCmdZombiesAttack(%client, %position)
 {
@@ -115,7 +115,7 @@ function serverCmdZombiesAttack(%client, %position)
     {
         return;
     }
-    if ((%position $= ""))
+    if (%position $= "")
     {
         %position = %client.Player.getTransform();
     }
@@ -142,24 +142,24 @@ function serverCmdZombiesEmote(%client)
 }
 function AIManager::zombiesAttack(%this, %position, %obj)
 {
-    if ((%this.numBots < 1.0))
+    if (%this.numBots < 1)
     {
         return;
     }
     %this.BotsMove = 0;
     %botRadius = 0.6;
-    %radius = (1.0 + ((%botRadius * %this.numBots) / (2.0 * 3.14159)));
+    %radius = 1 + ((%botRadius * %this.numBots) / (2 * 3.14159));
     %theta = 0;
-    %dTheta = ((2.0 * 3.14159) / %this.numBots);
+    %dTheta = (2 * 3.14159) / %this.numBots;
     %i = 0;
-    while ((%i < %this.numBots))
+    while (%i < %this.numBots)
     {
         %v1 = mCos(%theta) @ " " @ mSin(%theta) @ " " @ 0;
         %v1 = VectorScale(%v1, %radius);
         %v1 = VectorAdd(%v1, %position);
         %this.bots[%i].zombieAttack(%v1, %position, %obj, %theta);
-        %theta = (%theta + %dTheta);
-        %i = (%i + 1.0);
+        %theta = %theta + %dTheta;
+        %i = %i + 1;
     }
 }
 function AIPlayer::zombieAttack(%this, %position, %aimAt, %obj, %theta)
@@ -178,30 +178,30 @@ function AIPlayer::zombieAttack(%this, %position, %aimAt, %obj, %theta)
 }
 function AIManager::zombiesDance(%this, %param)
 {
-    if ((%this.numBots < 1.0))
+    if (%this.numBots < 1)
     {
         return;
     }
     %this.BotsMove = 0;
     %i = 0;
-    while ((%i < %this.numBots))
+    while (%i < %this.numBots)
     {
         %this.bots[%i].playAnim("dnc" @ getRandom(1, 4));
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function AIManager::zombiesEmote(%this)
 {
-    if ((%this.numBots < 1.0))
+    if (%this.numBots < 1)
     {
         return;
     }
     %this.BotsMove = 0;
     %i = 0;
-    while ((%i < %this.numBots))
+    while (%i < %this.numBots)
     {
         %this.bots[%i].doRandomEmote();
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function AIPlayer::doAutoMoveEntry(%this)
@@ -219,15 +219,15 @@ function serverCmdKillBots(%client)
 }
 function AIManager::killBots(%this)
 {
-    if ((%this.numBots < 1.0))
+    if (%this.numBots < 1)
     {
         return;
     }
     %i = 0;
-    while ((%i < %this.numBots))
+    while (%i < %this.numBots)
     {
         %this.bots[%i].delete();
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %this.numBots = (%i < %this.numBots) @ 0;
     return;
@@ -240,9 +240,9 @@ function serverCmdBotsIdlePercent(%client, %percent)
 function AIManager::IdleBots(%this, %percent)
 {
     %i = 0;
-    while ((%i < %this.numBots))
+    while (%i < %this.numBots)
     {
         %this.bots[%i].setAFK((getRandom(1, 99) < %percent));
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }

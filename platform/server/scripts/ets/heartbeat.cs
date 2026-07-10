@@ -8,7 +8,7 @@ function serverStart()
     %bindPort = "port=" @ urlEncode($BoundPort);
     %name = "name=" @ urlEncode($Pref::Server::Name);
     %location = strreplace($Pref::Net::Location, ",", " ");
-    if ((%location $= ""))
+    if (%location $= "")
     {
         %location = generateRandomMapLocation();
     }
@@ -37,7 +37,7 @@ function serverHeartBeat()
     %bindPort = "port=" @ urlEncode($Pref::Server::Port);
     %name = "name=" @ urlEncode($Pref::Server::Name);
     %location = strreplace($Pref::Net::Location, ",", " ");
-    if ((%location $= ""))
+    if (%location $= "")
     {
         %location = generateRandomMapLocation();
     }
@@ -48,18 +48,18 @@ function serverHeartBeat()
     %load = "load=" @ urlEncode(ClientGroup.getCount());
     %users = "users=";
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
-        if ((%i > 0.0))
+        if (%i > 0)
         {
             %users = %users @ ",";
         }
         %client = ClientGroup.getObject(%i);
         %users = %users @ urlEncode(%client.nameBase);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %post = %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version @ "&" @ %load @ "&" @ %users;
-    (%i < %count);
+    %i < %count;
     echo("sending server heartbeat to: " @ %host);
     %initRequest.post(%host, %uri, %query, %post);
     schedule(7500, 0, "serverHeartBeat");
@@ -67,14 +67,14 @@ function serverHeartBeat()
 }
 function generateRandomMapLocation()
 {
-    %x = ((getRandom() * 0.6) + 0.2);
-    %y = ((getRandom() * 0.6) + 0.2);
+    %x = (getRandom() * 0.6) + 0.2;
+    %y = (getRandom() * 0.6) + 0.2;
     $Pref::Net::Location = %x @ " " @ %y;
     return $Pref::Net::Location;
 }
 function InitRequest::onStatus(%unused, %status)
 {
-    if ((%status != 200.0))
+    if (%status != 200)
     {
         error("heartbeat HTTP status: " @ %status);
     }
@@ -94,10 +94,10 @@ function InitRequest::onLine(%unused, %line)
 {
     %line = NextToken(%line, name, "=");
     %line = NextToken(%line, value, "=");
-    if ((%name $= "boot"))
+    if (%name $= "boot")
     {
         %connection = ClientDict.get(%value);
-        if ((%connection != 0.0))
+        if (%connection != 0)
         {
             echo("received boot for player " @ %connection.nameBase);
             %connection.delete("You have connected in another location.");

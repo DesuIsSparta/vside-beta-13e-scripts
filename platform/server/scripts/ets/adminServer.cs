@@ -10,7 +10,7 @@ function serverCmdAdminAction(%senderConnection, %action, %target, %message)
         error("non-staff player sending admin action:" @ " " @ %senderConnection.Player.getShapeName());
         return;
     }
-    if ((%target != 0.0))
+    if (%target != 0)
     {
         %target = %senderConnection.resolveObjectFromGhostIndex(%target);
     }
@@ -22,29 +22,23 @@ function serverCmdAdminAction(%senderConnection, %action, %target, %message)
     %adminName = %senderConnection.Player.getShapeName();
     %targetName = admin::getTargetName(%target);
     warn("AdminAction:" @ " " @ %adminName @ " " @ %action @ " " @ "object" @ " " @ %target @ " " @ %targetName);
-    if ((%action $= "Boot"))
+    if (%action $= "Boot")
     {
         admin::doBoot(%target, %message, %senderConnection.Player);
     }
     else
     {
-        if ((%action $= "Ban"))
+        if (%action $= "Ban")
         {
             admin::doBan(%target, %message, %senderConnection.Player);
         }
-        else
+        if (%action $= "Message")
         {
-            if ((%action $= "Message"))
-            {
-                admin::doMessage(%target, %message, %senderConnection.Player);
-            }
-            else
-            {
-                if ((%action $= "Throw Voice"))
-                {
-                    admin::doThrowVoice(%target, %message, %senderConnection.Player);
-                }
-            }
+            admin::doMessage(%target, %message, %senderConnection.Player);
+        }
+        if (%action $= "Throw Voice")
+        {
+            admin::doThrowVoice(%target, %message, %senderConnection.Player);
         }
     }
     return;
@@ -52,7 +46,7 @@ function serverCmdAdminAction(%senderConnection, %action, %target, %message)
 function admin::doBoot(%target, %message, %adminPlayer)
 {
     %client = %target.getControllingClient();
-    if ((%client == 0.0))
+    if (%client == 0)
     {
         %target.delete();
         return;
@@ -72,7 +66,7 @@ function BanRequest::onLine(%this, %line)
 function admin::doBan(%target, %message, %adminPlayer)
 {
     %client = %target.getControllingClient();
-    if ((%client == 0.0))
+    if (%client == 0)
     {
         %target.delete();
         return;
@@ -94,7 +88,7 @@ function admin::doMessage(%target, %message, %adminPlayer)
     %adminName = %adminPlayer.getShapeName();
     %targetName = admin::getTargetName(%target);
     %msg = admin::composeSystemMessage(%target, %message, %adminPlayer);
-    if ((%target == 0.0))
+    if (%target == 0)
     {
         messageAll('MsgSystemMessage', %msg);
     }
@@ -115,7 +109,7 @@ function admin::doThrowVoice(%target, %message, %adminPlayer)
     %adminName = %adminPlayer.getShapeName();
     %targetName = admin::getTargetName(%target);
     %msg = %message;
-    if ((%target == 0.0))
+    if (%target == 0)
     {
         NPCManager.doThrowVoice(%message, %adminPlayer);
     }
@@ -134,9 +128,9 @@ function NPCManager::doThrowVoice(%this, %msg, %adminPlayer)
     }
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
-    while ((%n < %NPCNum))
+    while (%n < %NPCNum)
     {
         ServersideChatMessage(%this.NPCGroup.getObject(%n), 0, %msg);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }

@@ -22,7 +22,7 @@ function clientCmdTeleportFailure(%retry)
     if (isObject($VURL::curVURL))
     {
         echo("VURL Teleport Failed. VURL=" @ $VURL::curVURL.vurl);
-        if ((%retry != 0.0))
+        if (%retry != 0)
         {
             log("network", "info", "Attempting Retry.");
             if ($VURL::curVURL.execute())
@@ -64,7 +64,7 @@ function Player::adjustHorizontalScale(%this)
     }
     %hScale = mMin((%hScale + 0.05), gGetField(%this, baseHorizScale));
     %this.setScale(%hScale @ " " @ %hScale @ " " @ %vScale);
-    if ((%hScale < gGetField(%this, baseHorizScale)))
+    if (%hScale < gGetField(%this, baseHorizScale))
     {
         %this.schedule(25, "adjustHorizontalScale");
     }
@@ -83,32 +83,26 @@ function doTeleportToMyApartment(%ignoreDownloadStatus)
 }
 function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus)
 {
-    if ((%status $= "fail"))
+    if (%status $= "fail")
     {
         handleSystemMessage("msgInfoMessage", "We could not find your apartment at this time.");
     }
     else
     {
-        if ((%status $= "noOwnedSpace"))
+        if (%status $= "noOwnedSpace")
         {
             %statusMsg = GetMyApartmentVURLCommand.getValue("statusMsg");
             handleSystemMessage("msgInfoMessage", "We could not find your apartment." @ "\n" @ %statusMsg);
         }
-        else
+        if (%vurl $= "")
         {
-            if ((%vurl $= ""))
-            {
-                handleSystemMessage("msgInfoMessage", "You do not appear to own an appartment.");
-            }
-            else
-            {
-                if (CustomSpacesSelector.isVisible())
-                {
-                    CustomSpacesSelector.close();
-                }
-                vurlOperation(%vurl, %ignoreDownloadStatus);
-            }
+            handleSystemMessage("msgInfoMessage", "You do not appear to own an appartment.");
         }
+        if (CustomSpacesSelector.isVisible())
+        {
+            CustomSpacesSelector.close();
+        }
+        vurlOperation(%vurl, %ignoreDownloadStatus);
     }
 }
 function getApartmentVURL(%callback, %ignoreDownloadStatus)
@@ -130,7 +124,7 @@ function GetMyApartmentVURLCommand::onDone(%this)
     echo(getScopeName());
     %status = findRequestStatus(%this);
     log("network", "debug", "GetMyApartmentAddress status: " @ %status);
-    if ((%status $= "fail"))
+    if (%status $= "fail")
     {
         echo(getScopeName() @ "->failed");
         %statusMsg = %this.getValue("statusMsg");

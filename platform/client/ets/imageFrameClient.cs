@@ -46,7 +46,7 @@ $ImageFrameBase::Type_Event = 3;
 $ImageFrameBase::Type_Gallery2 = 4;
 function ImageFrameBase::onImageTagChanged(%this, %newUrl)
 {
-    if ((strlen(%newUrl) == 0.0))
+    if (strlen(%newUrl) == 0)
     {
         %this.setPortraitTexture("");
         return;
@@ -68,7 +68,7 @@ function ImageFrameBase::getImageTagType(%this, %imageTag)
     %urlinfo.bindClassName("URLInfo");
     %urlinfo.url = %imageTag;
     %bValidURL = %urlinfo.parse();
-    if ((%bValidURL == 0.0))
+    if (%bValidURL == 0)
     {
         %urlinfo.delete();
         %this.imageKey = %imageTag;
@@ -83,24 +83,21 @@ function ImageFrameBase::getImageTagType(%this, %imageTag)
     %mainhost = getWord(strreplace($Net::BaseDomain, ":", " "), 0);
     %retVal = $ImageFrameBase::Type_URL;
     %hostwords = strreplace(%urlinfo.host, ".", " ");
-    %this.urlhost = getWord(%hostwords, (getWordCount(%hostwords) - 2.0));
-    if ((stricmp(%mainhost, %urlinfo.host) == 0.0))
+    %this.urlhost = getWord(%hostwords, (getWordCount(%hostwords) - 2));
+    if (stricmp(%mainhost, %urlinfo.host) == 0)
     {
         %path = trim(strreplace(%urlinfo.Path, "/", " "));
-        %pathIntro = getWords(%path, 0, (getWordCount(%path) - 2.0));
-        %key = getWord(%path, (getWordCount(%path) - 1.0));
-        if ((stricmp(%pathIntro, "app photo id") == 0.0))
+        %pathIntro = getWords(%path, 0, (getWordCount(%path) - 2));
+        %key = getWord(%path, (getWordCount(%path) - 1));
+        if (stricmp(%pathIntro, "app photo id") == 0)
         {
             %retVal = $ImageFrameBase::Type_Gallery2;
             %this.imageKey = %key;
         }
-        else
+        if (stricmp(%pathIntro, "app event detail id") == 0)
         {
-            if ((stricmp(%pathIntro, "app event detail id") == 0.0))
-            {
-                %retVal = $ImageFrameBase::Type_Event;
-                %this.imageKey = %key;
-            }
+            %retVal = $ImageFrameBase::Type_Event;
+            %this.imageKey = %key;
         }
     }
     %urlinfo.delete();
@@ -123,13 +120,13 @@ function ImageFrameBase::onUse(%this)
     if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner() || ($Keyboard::modifierKeys & $EventModifier::CTRL))
     {
         %imageTag = %this.getImageTag();
-        if ((%imageTag $= ""))
+        if (%imageTag $= "")
         {
             return;
         }
         if ((%this.type == $ImageFrameBase::Type_Gallery) || (%this.type == $ImageFrameBase::Type_URL) || (%this.type == $ImageFrameBase::Type_Event) || (%this.type == $ImageFrameBase::Type_Gallery2))
         {
-            if ((%this.url $= ""))
+            if (%this.url $= "")
             {
                 return;
             }
@@ -162,17 +159,17 @@ function ImageFrameBase_SubmitPortrait(%url)
 function ImageFrameBase::onRightUse(%this)
 {
     %imageTag = %this.getImageTag();
-    if ((%imageTag $= ""))
+    if (%imageTag $= "")
     {
         return;
     }
-    if ((%this.type == $ImageFrameBase::Type_URL))
+    if (%this.type == $ImageFrameBase::Type_URL)
     {
         return;
     }
     if ((%this.type == $ImageFrameBase::Type_Gallery) || (%this.type == $ImageFrameBase::Type_Event) || (%this.type == $ImageFrameBase::Type_Gallery2))
     {
-        if ((%this.url $= ""))
+        if (%this.url $= "")
         {
             return;
         }
@@ -193,86 +190,68 @@ function ImageFrameBase::onRightUse(%this)
 }
 function ImageFrameBase::buildImageURL(%this, %imageTag, %type)
 {
-    if ((%type == $ImageFrameBase::Type_User))
+    if (%type == $ImageFrameBase::Type_User)
     {
         %url = $Net::AvatarURL @ urlEncode(stripUnprintables(%imageTag)) @ "?size=M256";
     }
     else
     {
-        if ((%type == $ImageFrameBase::Type_Gallery))
+        if (%type == $ImageFrameBase::Type_Gallery)
         {
             %url = $Net::GalleryPhotoURL @ %imageTag @ "?size=M";
         }
-        else
+        if (%type == $ImageFrameBase::Type_URL)
         {
-            if ((%type == $ImageFrameBase::Type_URL))
-            {
-                %url = %imageTag;
-            }
-            else
-            {
-                if ((%type == $ImageFrameBase::Type_Event))
-                {
-                    %this.GetEventInfo(%this.imageKey);
-                    %url = "";
-                }
-                else
-                {
-                    if ((%type == $ImageFrameBase::Type_Gallery2))
-                    {
-                        %url = $Net::GalleryPhotoURL @ %this.imageKey @ "?size=M";
-                    }
-                }
-            }
+            %url = %imageTag;
+        }
+        if (%type == $ImageFrameBase::Type_Event)
+        {
+            %this.GetEventInfo(%this.imageKey);
+            %url = "";
+        }
+        if (%type == $ImageFrameBase::Type_Gallery2)
+        {
+            %url = $Net::GalleryPhotoURL @ %this.imageKey @ "?size=M";
         }
     }
     return %url;
 }
 function ImageFrameBase::buildLinkURLAndCaption(%this, %imageTag, %type)
 {
-    if ((%type == $ImageFrameBase::Type_User))
+    if (%type == $ImageFrameBase::Type_User)
     {
         %caption = %imageTag;
         %url = "";
     }
     else
     {
-        if ((%type == $ImageFrameBase::Type_Gallery))
+        if (%type == $ImageFrameBase::Type_Gallery)
         {
             %caption = %type[$ImageFrame_DisplayName @ "vside"];
             %url = $Net::PhotoPageURL @ %imageTag;
         }
-        else
+        if (%type == $ImageFrameBase::Type_URL)
         {
-            if ((%type == $ImageFrameBase::Type_URL))
+            %host = %this.urlhost;
+            if (!($ImageFrame_DisplayName[%host] $= ""))
             {
-                %host = %this.urlhost;
-                if (!($ImageFrame_DisplayName[%host] $= ""))
-                {
-                    %caption = $ImageFrame_DisplayName[%host];
-                }
-                else
-                {
-                    %caption = $ImageFrame_DisplayName["unknown"];
-                }
-                %url = %imageTag;
+                %caption = $ImageFrame_DisplayName[%host];
             }
             else
             {
-                if ((%type == $ImageFrameBase::Type_Event))
-                {
-                    %caption = %type[$ImageFrame_DisplayName @ "vsideevent"];
-                    %url = %imageTag;
-                }
-                else
-                {
-                    if ((%type == $ImageFrameBase::Type_Gallery2))
-                    {
-                        %caption = %type[$ImageFrame_DisplayName @ "vside"];
-                        %url = $Net::PhotoPageURL @ %this.imageKey;
-                    }
-                }
+                %caption = $ImageFrame_DisplayName["unknown"];
             }
+            %url = %imageTag;
+        }
+        if (%type == $ImageFrameBase::Type_Event)
+        {
+            %caption = %type[$ImageFrame_DisplayName @ "vsideevent"];
+            %url = %imageTag;
+        }
+        if (%type == $ImageFrameBase::Type_Gallery2)
+        {
+            %caption = %type[$ImageFrame_DisplayName @ "vside"];
+            %url = $Net::PhotoPageURL @ %this.imageKey;
         }
     }
     %this.Caption = %caption;
@@ -324,33 +303,33 @@ function ImageFrameBase_IsPermittedURL(%url)
         return 1;
     }
     %start = strpos(%url, ":");
-    %start = (%start + 3.0);
+    %start = %start + 3;
     %testUrl = getSubStr(%url, %start);
     %cut = strpos(%testUrl, "/");
-    if ((%cut > -(1.0)))
+    if (%cut > -(1))
     {
         %testUrl = getSubStr(%testUrl, 0, %cut);
     }
     %cut = strpos(%testUrl, ":");
-    if ((%cut > -(1.0)))
+    if (%cut > -(1))
     {
         %testUrl = getSubStr(%testUrl, 0, %cut);
     }
     %testUrl = strlwr(strreplace(%testUrl, ".", " "));
     %count = getWordCount(%testUrl);
-    if ((%count < 2.0))
+    if (%count < 2)
     {
         return 0;
     }
-    %host = getWords(%testUrl, (%count - 2.0));
+    %host = getWords(%testUrl, (%count - 2));
     %idx = 0;
     while (!($ImageFrame_WhiteList[%idx] $= ""))
     {
-        if ((stricmp(%host, $ImageFrame_WhiteList[%idx]) == 0.0))
+        if (stricmp(%host, $ImageFrame_WhiteList[%idx]) == 0)
         {
             return 1;
         }
-        %idx = (%idx + 1.0);
+        %idx = %idx + 1;
     }
     return 0;
 }
@@ -364,33 +343,33 @@ function isURL(%url)
 }
 function ImageFrameBase::isImageGUID(%this, %guid)
 {
-    if ((strlen(%guid) != 36.0))
+    if (strlen(%guid) != 36)
     {
         return 0;
     }
     %guid = strreplace(%guid, "-", " ");
     %count = getWordCount(%guid);
-    if ((%count != 5.0))
+    if (%count != 5)
     {
         return 0;
     }
-    if ((strlen(getWord(%guid, 0)) != 8.0))
+    if (strlen(getWord(%guid, 0)) != 8)
     {
         return 0;
     }
-    if ((strlen(getWord(%guid, 1)) != 4.0))
+    if (strlen(getWord(%guid, 1)) != 4)
     {
         return 0;
     }
-    if ((strlen(getWord(%guid, 2)) != 4.0))
+    if (strlen(getWord(%guid, 2)) != 4)
     {
         return 0;
     }
-    if ((strlen(getWord(%guid, 3)) != 4.0))
+    if (strlen(getWord(%guid, 3)) != 4)
     {
         return 0;
     }
-    if ((strlen(getWord(%guid, 4)) != 12.0))
+    if (strlen(getWord(%guid, 4)) != 12)
     {
         return 0;
     }
@@ -411,7 +390,7 @@ function onDoneOrErrorCallback_EventInfo(%request)
         return;
     }
     %imageURL = %request.getValue("photo.url");
-    if ((%imageURL $= ""))
+    if (%imageURL $= "")
     {
         %imageURL = "http://" @ $Net::BaseDomain @ "/images/events/default_banner_L.jpg";
     }
@@ -427,7 +406,7 @@ function dlMgrErrorCallback_ImageFrameBase(%dlItem)
     if ((CustomSpaceClient::GetSpaceImIn() $= "") || CustomSpaceClient::isOwner())
     {
         %imgTag = %obj.getImageTag();
-        if ((%obj.type == $ImageFrameBase::Type_URL))
+        if (%obj.type == $ImageFrameBase::Type_URL)
         {
             %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDURL"], "[URL]", %imgTag);
         }
@@ -437,26 +416,20 @@ function dlMgrErrorCallback_ImageFrameBase(%dlItem)
             {
                 %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDGALLERY"], "[GUID]", %imgTag);
             }
+            if (%obj.type == $ImageFrameBase::Type_Event)
+            {
+                %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDEVENT"], "[EVENT]", %imgTag);
+            }
+            %info = PlayerInfoMap.get(%imgTag);
+            if (isObject(%info))
+            {
+                %obj.showDefaultPlayerPortrait(%info);
+            }
             else
             {
-                if ((%obj.type == $ImageFrameBase::Type_Event))
-                {
-                    %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDEVENT"], "[EVENT]", %imgTag);
-                }
-                else
-                {
-                    %info = PlayerInfoMap.get(%imgTag);
-                    if (isObject(%info))
-                    {
-                        %obj.showDefaultPlayerPortrait(%info);
-                    }
-                    else
-                    {
-                        requestPlayerInfoForWithCallback(%imgTag, "ImageFrameBase_gotInfoPlayerSex", %obj);
-                    }
-                    %message = "";
-                }
+                requestPlayerInfoForWithCallback(%imgTag, "ImageFrameBase_gotInfoPlayerSex", %obj);
             }
+            %message = "";
         }
         if (!(%message $= ""))
         {

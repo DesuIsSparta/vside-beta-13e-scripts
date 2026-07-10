@@ -37,20 +37,17 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         bitmap = "platform/client/ui/ellipsis_yellow";
         visible = 0;
     };
-    if ((%arrowDescription $= "right"))
+    if (%arrowDescription $= "right")
     {
         %arrowBitmap = "platform/client/ui/arrow_red_right";
     }
     else
     {
-        if ((%arrowDescription $= "downAndRight"))
+        if (%arrowDescription $= "downAndRight")
         {
             %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
         }
-        else
-        {
-            %arrowBitmap = "platform/client/ui/arrow_red_right";
-        }
+        %arrowBitmap = "platform/client/ui/arrow_red_right";
     }
     %obj.changedBitmap = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
@@ -85,23 +82,23 @@ function SavableTextStatusIndicator::incrementRequestCount(%this)
     if (!%this.acceptEmptyString)
     {
     }
-    if ((%newValue $= ""))
+    if (%newValue $= "")
     {
         return;
     }
     %this.lastValueSaved = %newValue;
     %this.initialValueSet = 1;
-    %this.requestsPendingCount = (%this.requestsPendingCount + 1.0);
+    %this.requestsPendingCount = %this.requestsPendingCount + 1;
     %this.update(1);
 }
 function SavableTextStatusIndicator::decrementRequestCount(%this)
 {
-    %this.requestsPendingCount = (%this.requestsPendingCount - 1.0);
+    %this.requestsPendingCount = %this.requestsPendingCount - 1;
     %this.update(1);
 }
 function SavableTextStatusIndicator::update(%this, %doCallback)
 {
-    %valueSaved = (%this.requestsPendingCount == 0.0);
+    %valueSaved = %this.requestsPendingCount == 0;
     %valueChanged = !(%this.lastValueSaved $= %this.controlToGetValueFrom.getValue());
     if (%valueSaved)
     {

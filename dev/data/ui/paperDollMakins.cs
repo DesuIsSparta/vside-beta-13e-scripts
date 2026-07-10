@@ -98,7 +98,7 @@ function paperDoll_prepareNextSnapshot()
 }
 function paperDoll_prepareOneSnapshot(%index)
 {
-    if ((%index < 0.0) || (%index >= $gPaperDoll_SkuArray.size()))
+    if ((%index < 0) || (%index >= $gPaperDoll_SkuArray.size()))
     {
         return;
     }
@@ -109,7 +109,7 @@ function paperDoll_prepareOneSnapshot(%index)
     gePaperDollCurOutfitField.setValue(%index);
     %tmp = gePaperDollCurOutfitSlider.altCommand;
     gePaperDollCurOutfitSlider.altCommand = "";
-    gePaperDollCurOutfitSlider.setValue((1.0 - (%index / ($gPaperDoll_SkuArray.size() - 1.0))));
+    gePaperDollCurOutfitSlider.setValue((1 - (%index / ($gPaperDoll_SkuArray.size() - 1))));
     gePaperDollCurOutfitSlider.altCommand = %tmp;
     $gPaperDoll_CurIndex = %index;
 }
@@ -123,9 +123,9 @@ function paperDoll_callingTakeCurrentSnapshot()
     if (!$gPaperDoll_CancelRun)
     {
     }
-    if (($gPaperDoll_CurIndex < ($gPaperDoll_SkuArray.size() - 1.0)))
+    if ($gPaperDoll_CurIndex < ($gPaperDoll_SkuArray.size() - 1))
     {
-        $gPaperDoll_CurIndex = ($gPaperDoll_CurIndex + 1.0);
+        $gPaperDoll_CurIndex = $gPaperDoll_CurIndex + 1;
         paperDoll_prepareNextSnapshot();
     }
     else
@@ -158,7 +158,7 @@ function paperDoll_takeCurrentSnapshot()
     {
         $gPaperDoll_PreviewFile.writeLine("<img src=\"images/" @ %justFileName @ "\">");
     }
-    $gPaperDoll_NumRemaining = ($gPaperDoll_NumRemaining - 1.0);
+    $gPaperDoll_NumRemaining = $gPaperDoll_NumRemaining - 1;
     gePaperDollInfo_Running.setText("Remaining:" @ " " @ $gPaperDoll_NumRemaining);
 }
 function paperDoll_MakePermutations(%gender)
@@ -169,7 +169,7 @@ function paperDoll_RecursePermutations(%gender, %currentSkus, %currentNames, %st
 {
     %masterList = $gPaperDollPermutationLists[%gender];
     %masterListSize = %masterList.size();
-    if ((%startingDepth >= %masterListSize))
+    if (%startingDepth >= %masterListSize)
     {
         %array.append(%currentSkus @ "\t" @ %currentNames);
         return;
@@ -177,12 +177,12 @@ function paperDoll_RecursePermutations(%gender, %currentSkus, %currentNames, %st
     %subList = %masterList.get(%startingDepth);
     %subListSize = %subList.size();
     %n = 0;
-    while ((%n < %subListSize))
+    while (%n < %subListSize)
     {
         %skus = %currentSkus @ getField(%subList.get(%n), 0) @ " ";
         %names = %currentNames @ "_" @ getField(%subList.get(%n), 1);
-        paperDoll_RecursePermutations(%gender, %skus, %names, (%startingDepth + 1.0), %array);
-        %n = (%n + 1.0);
+        paperDoll_RecursePermutations(%gender, %skus, %names, (%startingDepth + 1), %array);
+        %n = %n + 1;
     }
 }
 function paperDoll_PermuteWithDialog()
@@ -220,26 +220,23 @@ function paperDoll_NudgeSet(%vec)
 function paperDoll_CurOutfitSet(%val)
 {
     %firstChar = getSubStr(%val, 0, 1);
-    if ((%firstChar $= "-"))
+    if (%firstChar $= "-")
     {
-        %newVal = ($gPaperDoll_CurIndex + %val);
+        %newVal = $gPaperDoll_CurIndex + %val;
     }
     else
     {
-        if ((%firstChar $= "+"))
+        if (%firstChar $= "+")
         {
-            %newVal = ($gPaperDoll_CurIndex + getSubStr(%val, 1, 100));
+            %newVal = $gPaperDoll_CurIndex + getSubStr(%val, 1, 100);
         }
-        else
-        {
-            %newVal = %val;
-        }
+        %newVal = %val;
     }
     paperDoll_prepareOneSnapshot(%newVal);
 }
 function gePaperDollCurOutfitSlider::valueChanged(%this)
 {
-    %val = mFloor((($gPaperDoll_SkuArray.size() - 1.0) * (1.0 - %this.getValue())));
+    %val = mFloor((($gPaperDoll_SkuArray.size() - 1) * (1 - %this.getValue())));
     paperDoll_prepareOneSnapshot(%val);
 }
 function paperDoll_generateXML()
@@ -271,7 +268,7 @@ function paperDoll_generateXML()
     %file.writeOpenTag("Permutations", "xmlns=\"http://www.doppelganger.com/datamodel\" xmlns:xsi=\"http://www.w3.org/2001/XMLSchema-instance\" xsi:schemaLocation=\"http://www.doppelganger.com/datamodel schema/initial_avatar_permutations.xsd\"");
     %file.writeCommentTag("Nikita: need schema description in previous ?");
     %n = 0;
-    while ((%n < getWordCount(%genders)))
+    while (%n < getWordCount(%genders))
     {
         %gender = getWord(%genders, %n);
         %genderLong = %gendersLong[%gender];
@@ -279,37 +276,37 @@ function paperDoll_generateXML()
         %file.writeOpenTag("Gender", "name=\"" @ %gender @ "\"");
         %file.writeCommentTag("Parameters for gender" @ " " @ %genderLong);
         %paramNum = 0;
-        while ((%paramNum < paperDoll_getParamsNum(%gender)))
+        while (%paramNum < paperDoll_getParamsNum(%gender))
         {
             %paramName = paperDoll_getParamName(%gender, %paramNum);
             %file.writeLineIndented("");
             %file.writeOpenTag("Param", "name=\"" @ %paramName @ "\"");
             %file.writeCommentTag("Possible values for" @ " " @ %genderLong @ " " @ "parameter" @ " " @ %paramName);
             %valueNum = 0;
-            while ((%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum)))
+            while (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum))
             {
                 %file.writeLineIndented("");
                 %valuename = paperDoll_getParamValueName(%gender, %paramNum, %valueNum);
                 %valueSkus = paperDoll_getParamValueSkus(%gender, %paramNum, %valueNum);
                 %file.writeOpenTag("Value", "name=\"" @ %valuename @ "\"");
                 %skunum = 0;
-                while ((%skunum < getWordCount(%valueSkus)))
+                while (%skunum < getWordCount(%valueSkus))
                 {
                     %sku = getWord(%valueSkus, %skunum);
                     %file.writeShortTag("sku", "", %sku);
-                    %skunum = (%skunum + 1.0);
+                    %skunum = %skunum + 1;
                 }
                 %file.writeCloseTag("Value");
-                %valueNum = (%valueNum + 1.0);
-                (%skunum < getWordCount(%valueSkus));
+                %valueNum = %valueNum + 1;
+                %skunum < getWordCount(%valueSkus);
             }
             %file.writeCloseTag("Param");
-            %paramNum = (%paramNum + 1.0);
-            (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum));
+            %paramNum = %paramNum + 1;
+            %valueNum < paperDoll_getParamValuesNum(%gender, %paramNum);
         }
         %file.writeCloseTag("Gender");
-        %n = (%n + 1.0);
-        (%paramNum < paperDoll_getParamsNum(%gender));
+        %n = %n + 1;
+        %paramNum < paperDoll_getParamsNum(%gender);
     }
     %file.writeCloseTag("Permutations");
     %file.close();
@@ -336,7 +333,7 @@ function paperDoll_generateJSON()
     %file.writeLineIndented("[");
     %file.indent();
     %n = 0;
-    while ((%n < getWordCount(%genders)))
+    while (%n < getWordCount(%genders))
     {
         %gender = getWord(%genders, %n);
         %genderLong = %gendersLong[%gender];
@@ -347,7 +344,7 @@ function paperDoll_generateJSON()
         %file.writeLineIndented("[");
         %file.indent();
         %paramNum = 0;
-        while ((%paramNum < paperDoll_getParamsNum(%gender)))
+        while (%paramNum < paperDoll_getParamsNum(%gender))
         {
             %paramName = paperDoll_getParamName(%gender, %paramNum);
             %file.writeLineIndented("{");
@@ -357,7 +354,7 @@ function paperDoll_generateJSON()
             %file.writeLineIndented("[");
             %file.indent();
             %valueNum = 0;
-            while ((%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum)))
+            while (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum))
             {
                 %valuename = paperDoll_getParamValueName(%gender, %paramNum, %valueNum);
                 %valueSkus = paperDoll_getParamValueSkus(%gender, %paramNum, %valueNum);
@@ -368,10 +365,10 @@ function paperDoll_generateJSON()
                 %file.writeLineIndented("[");
                 %file.indent();
                 %skunum = 0;
-                while ((%skunum < getWordCount(%valueSkus)))
+                while (%skunum < getWordCount(%valueSkus))
                 {
                     %sku = getWord(%valueSkus, %skunum);
-                    if (((%skunum + 1.0) == getWordCount(%valueSkus)))
+                    if ((%skunum + 1) == getWordCount(%valueSkus))
                     {
                         %file.writeLineIndented("\"" @ %sku @ "\"");
                     }
@@ -379,12 +376,12 @@ function paperDoll_generateJSON()
                     {
                         %file.writeLineIndented("\"" @ %sku @ "\",");
                     }
-                    %skunum = (%skunum + 1.0);
+                    %skunum = %skunum + 1;
                 }
                 %file.unindent();
                 %file.writeLineIndented("]");
                 %file.unindent();
-                if (((%valueNum + 1.0) == paperDoll_getParamValuesNum(%gender, %paramNum)))
+                if ((%valueNum + 1) == paperDoll_getParamValuesNum(%gender, %paramNum))
                 {
                     %file.writeLineIndented("}");
                 }
@@ -392,13 +389,13 @@ function paperDoll_generateJSON()
                 {
                     %file.writeLineIndented("},");
                 }
-                %valueNum = (%valueNum + 1.0);
-                (%skunum < getWordCount(%valueSkus));
+                %valueNum = %valueNum + 1;
+                %skunum < getWordCount(%valueSkus);
             }
             %file.unindent();
             %file.writeLineIndented("]");
             %file.unindent();
-            if (((%paramNum + 1.0) == paperDoll_getParamsNum(%gender)))
+            if ((%paramNum + 1) == paperDoll_getParamsNum(%gender))
             {
                 %file.writeLineIndented("}");
             }
@@ -406,13 +403,13 @@ function paperDoll_generateJSON()
             {
                 %file.writeLineIndented("},");
             }
-            %paramNum = (%paramNum + 1.0);
-            (%valueNum < paperDoll_getParamValuesNum(%gender, %paramNum));
+            %paramNum = %paramNum + 1;
+            %valueNum < paperDoll_getParamValuesNum(%gender, %paramNum);
         }
         %file.unindent();
         %file.writeLineIndented("]");
         %file.unindent();
-        if (((%n + 1.0) == getWordCount(%genders)))
+        if ((%n + 1) == getWordCount(%genders))
         {
             %file.writeLineIndented("}");
         }
@@ -420,8 +417,8 @@ function paperDoll_generateJSON()
         {
             %file.writeLineIndented("},");
         }
-        %n = (%n + 1.0);
-        (%paramNum < paperDoll_getParamsNum(%gender));
+        %n = %n + 1;
+        %paramNum < paperDoll_getParamsNum(%gender);
     }
     %file.unindent();
     %file.writeLineIndented("]");
@@ -446,7 +443,7 @@ function paperDoll_generateManifest()
     %file.writeCommentTag("total number of permutations =" @ " " @ (paperDoll_getNumPermutations("f") + paperDoll_getNumPermutations("m")));
     %file.writeLineIndented("");
     %n = 0;
-    while ((%n < getWordCount(%genders)))
+    while (%n < getWordCount(%genders))
     {
         %gender = getWord(%genders, %n);
         %file.writeLineIndented("");
@@ -454,7 +451,7 @@ function paperDoll_generateManifest()
         %file.writeCommentTag("number of permutations =" @ " " @ paperDoll_getNumPermutations(%gender));
         paperDoll_generateManifest_Recurse(%file, %gender, 0, "");
         %file.writeCloseTag("gender");
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %file.writeCloseTag("permutations");
     %file.close();
@@ -463,10 +460,10 @@ function paperDoll_generateManifest()
 function paperDoll_generateManifest_Recurse(%file, %gender, %initialDepth, %valueIndicesList)
 {
     %valueNum = 0;
-    while ((%valueNum < paperDoll_getParamValuesNum(%gender, %initialDepth)))
+    while (%valueNum < paperDoll_getParamValuesNum(%gender, %initialDepth))
     {
         %valList = %valueIndicesList @ %valueNum @ " ";
-        if ((%initialDepth >= (paperDoll_getParamsNum(%gender) - 1.0)))
+        if (%initialDepth >= (paperDoll_getParamsNum(%gender) - 1))
         {
             %s = paperDoll_getPermutationFilenameAndSkus(%gender, %valList);
             %imgFilename = getField(%s, 0);
@@ -481,8 +478,8 @@ function paperDoll_generateManifest_Recurse(%file, %gender, %initialDepth, %valu
         }
         else
         {
-            paperDoll_generateManifest_Recurse(%file, %gender, (%initialDepth + 1.0), %valList);
+            paperDoll_generateManifest_Recurse(%file, %gender, (%initialDepth + 1), %valList);
         }
-        %valueNum = (%valueNum + 1.0);
+        %valueNum = %valueNum + 1;
     }
 }

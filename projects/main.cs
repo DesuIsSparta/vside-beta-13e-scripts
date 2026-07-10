@@ -2,7 +2,7 @@ $ETS::ProjectName = "";
 $ETS::cityName = "";
 function getProjectFolders()
 {
-    if (($ETS::ProjectName $= ""))
+    if ($ETS::ProjectName $= "")
     {
         parseProjectArg();
     }
@@ -13,12 +13,12 @@ function initProjectsNonReloadable()
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %file = "./" @ getWord(%folders, %n) @ "/initNonReloadable.cs";
         log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function initProjectsReloadable()
@@ -26,12 +26,12 @@ function initProjectsReloadable()
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %file = "./" @ getWord(%folders, %n) @ "/initReloadable.cs";
         log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function initProjectsReloadableLate()
@@ -39,12 +39,12 @@ function initProjectsReloadableLate()
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %file = "./" @ getWord(%folders, %n) @ "/initReloadableLate.cs";
         log("initialization", "info", "Checking for" @ " " @ %file);
         exec(%file, 0);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function parseProjectArg()

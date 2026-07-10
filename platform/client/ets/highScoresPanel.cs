@@ -66,14 +66,14 @@ function geHighScoresPanel::Initialize(%this)
 }
 function geHighScoresPanel::requestStarted(%this)
 {
-    %this.requestsPending = (%this.requestsPending + 1.0);
+    %this.requestsPending = %this.requestsPending + 1;
     %this.waitIcon.setVisible(1);
     %this.waitIcon.start();
 }
 function geHighScoresPanel::requestStopped(%this)
 {
-    %this.requestsPending = (%this.requestsPending - 1.0);
-    if ((%this.requestsPending <= 0.0))
+    %this.requestsPending = %this.requestsPending - 1;
+    if (%this.requestsPending <= 0)
     {
         %this.requestsPending = 0;
         %this.waitIcon.stop();
@@ -101,17 +101,17 @@ function onDoneOrErrorCallback_GetHighGameScores(%request)
         %userScore = "";
         %userScoreDate = "";
         %i = 0;
-        while ((%i < %count))
+        while (%i < %count)
         {
             %prefix = "scores.scores" @ %i;
             %score = %request.getValue(%prefix @ ".score");
             %scoreRanking = %request.getValue(%prefix @ ".scoreRanking");
             %userName = %request.getValue(%prefix @ ".userName");
             %dateAttained = %request.getValue(%prefix @ ".dateAttained");
-            if ((%userName $= $Player::Name))
+            if (%userName $= $Player::Name)
             {
             }
-            if ((%userRanking $= ""))
+            if (%userRanking $= "")
             {
                 %userRanking = %scoreRanking;
                 %userScore = %score;
@@ -122,16 +122,16 @@ function onDoneOrErrorCallback_GetHighGameScores(%request)
             %dataTable.setRowDataByIndex(%i, %rowData);
             %rowData = "avatar" @ "\t" @ %userName @ "\t" @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=S";
             %dataTable.setRowDataByIndex(%i, %rowData);
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
         %dataTable.updateListeners();
-        if (((%i < %count) @ " " @ %userRanking $= ""))
+        if ((%i < %count) @ " " @ %userRanking $= "")
         {
             %userRanking = %request.getValue("scores.userRanking");
             %userScore = %request.getValue("scores.userScore");
             %userScoreDate = %request.getValue("scores.userScoreDate");
         }
-        if ((%userRanking $= ""))
+        if (%userRanking $= "")
         {
             if (%global)
             {
@@ -146,15 +146,12 @@ function onDoneOrErrorCallback_GetHighGameScores(%request)
             %tab.noScoreText.setVisible(1);
             %tab.userScoresPanel.setVisible(0);
         }
-        else
-        {
-            %tab.usernameField.setText("<clip:111>" @ $Player::Name);
-            %tab.bestScoreField.setText(%userScore);
-            %tab.rankField.setText(%userRanking);
-            %tab.dateField.setText(%userScoreDate);
-            %tab.noScoreText.setVisible(0);
-            %tab.userScoresPanel.setVisible(1);
-        }
+        %tab.usernameField.setText("<clip:111>" @ $Player::Name);
+        %tab.bestScoreField.setText(%userScore);
+        %tab.rankField.setText(%userRanking);
+        %tab.dateField.setText(%userScoreDate);
+        %tab.noScoreText.setVisible(0);
+        %tab.userScoresPanel.setVisible(1);
     }
 }
 function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name)

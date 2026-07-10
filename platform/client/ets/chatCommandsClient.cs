@@ -5,9 +5,9 @@ function commandMapAdd(%keyword, %functionName)
 function commandMapAddAbbreviation(%keyword, %abbreviation)
 {
     %functionName = CommandMap.get(%keyword);
-    if ((%functionName $= ""))
+    if (%functionName $= "")
     {
-        if ((%keyword $= "reply"))
+        if (%keyword $= "reply")
         {
         }
         else
@@ -135,12 +135,12 @@ function declineAllOperationReally()
 function acceptAllOperation()
 {
     %num = getFieldCount(BuddyHudWin.getNamesPendingMyApproval());
-    if ((%num <= 0.0))
+    if (%num <= 0)
     {
         return;
     }
     %title = "Accept All Pending Friend Requests";
-    if ((%num == 1.0))
+    if (%num == 1)
     {
         %body = "\nYou have one friend request.\nAre you sure you want to\n<spush><b>ACCEPT it<spop> ?";
     }
@@ -153,12 +153,12 @@ function acceptAllOperation()
 function declineAllOperation()
 {
     %num = getFieldCount(BuddyHudWin.getNamesPendingMyApproval());
-    if ((%num <= 0.0))
+    if (%num <= 0)
     {
         return;
     }
     %title = "Decline All Pending Friend Requests";
-    if ((%num == 1.0))
+    if (%num == 1)
     {
         %body = "\nYou have one friend request.\nAre you sure you want to\n<spush><b>DECLINE it<spop> ?";
     }
@@ -171,7 +171,7 @@ function declineAllOperation()
 function Player::haveNotifiedPlayerOfIdleStatus(%this, %name)
 {
     %notified = %this.playersNotifiedOfIdleStatus.get(%name);
-    if ((%notified $= ""))
+    if (%notified $= "")
     {
         %this.playersNotifiedOfIdleStatus.put(%name, "true");
         return 0;
@@ -182,53 +182,38 @@ function gameOperation(%msg)
 {
     %operation = getWord(%msg, 0);
     %gameName = getWords(%msg, 1);
-    if ((%gameName $= ""))
+    if (%gameName $= "")
     {
         if (gameMgrClient.areWeInspecting())
         {
             %gameName = gameMgrClient.inspectedGame.gname;
         }
-        else
+        if (!(%operation $= "help"))
         {
-            if (!(%operation $= "help"))
-            {
-                handleSystemMessage("msgInfoMessage", "Either select a game in the game manager before typing the command or give the name, e.g. /game start awesome game");
-            }
+            handleSystemMessage("msgInfoMessage", "Either select a game in the game manager before typing the command or give the name, e.g. /game start awesome game");
         }
     }
-    if ((%operation $= "start"))
+    if (%operation $= "start")
     {
         gameMgrClient.requestStartGameWithName(%gameName);
     }
     else
     {
-        if ((%operation $= "join"))
+        if (%operation $= "join")
         {
         }
-        else
+        if (%operation $= "quit")
         {
-            if ((%operation $= "quit"))
-            {
-                gameMgrClient.requestQuitGameWithName(%gameName);
-            }
-            else
-            {
-                if ((%operation $= "m"))
-                {
-                }
-                else
-                {
-                    if ((%operation $= "help"))
-                    {
-                        handleSystemMessage("msgInfoMessage", "Game Commands:\nStart/be ready for a game to start (/game start <name>), Quit a game (/game quit <name>), message everyone in the inspected game (/game m <message>) (not impl). If you don't give a game name, the inspected game will be used. ");
-                    }
-                    else
-                    {
-                        handleSystemMessage("msgInfoMessage", "Sorry, that isn't a valid game command! Type \"/game help\" for a list of valid game commands.");
-                    }
-                }
-            }
+            gameMgrClient.requestQuitGameWithName(%gameName);
         }
+        if (%operation $= "m")
+        {
+        }
+        if (%operation $= "help")
+        {
+            handleSystemMessage("msgInfoMessage", "Game Commands:\nStart/be ready for a game to start (/game start <name>), Quit a game (/game quit <name>), message everyone in the inspected game (/game m <message>) (not impl). If you don't give a game name, the inspected game will be used. ");
+        }
+        handleSystemMessage("msgInfoMessage", "Sorry, that isn't a valid game command! Type \"/game help\" for a list of valid game commands.");
     }
 }
 function identifyOperation(%msg)
@@ -251,7 +236,7 @@ function unignoreOperation(%playerName)
 function whisperOperation(%line)
 {
     %playerName = "";
-    if ((strpos(%line, "/") >= 0.0))
+    if (strpos(%line, "/") >= 0)
     {
         %line = NextToken(%line, playerName, "/");
     }
@@ -273,7 +258,7 @@ function whisperOperation(%line)
 $previousIncomingWhisperer = "";
 function replyOperation()
 {
-    if (($previousIncomingWhisperer $= ""))
+    if ($previousIncomingWhisperer $= "")
     {
         $previousIncomingWhisperer = $player.getShapeName();
     }
@@ -337,7 +322,7 @@ function enterCodeOperation(%code)
 }
 function respawnOperation(%playerName)
 {
-    if ((%playerName $= ""))
+    if (%playerName $= "")
     {
         doRespawnMe();
     }
@@ -347,15 +332,12 @@ function respawnOperation(%playerName)
         {
             doUserRespawn(%playerName);
         }
-        else
+        if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
         {
-            if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-            {
-            }
-            if ($player.isHostOrCohost())
-            {
-                CustomSpaceClient::doOwnerAction("respawn", %playerName);
-            }
+        }
+        if ($player.isHostOrCohost())
+        {
+            CustomSpaceClient::doOwnerAction("respawn", %playerName);
         }
     }
 }
@@ -449,10 +431,7 @@ function grantMicrophoneOperation(%playerName)
         {
             commandToServer('MicrophoneGiveOrRevoke', %playerName, 0);
         }
-        else
-        {
-            commandToServer('MicrophoneGiveOrRevoke', %playerName, 1);
-        }
+        commandToServer('MicrophoneGiveOrRevoke', %playerName, 1);
     }
 }
 function miscHudsOperation()
@@ -564,14 +543,14 @@ function doUserPuppy(%playerName)
 }
 function doUserIgnore(%playerName, %op)
 {
-    if (("remove" $= %op))
+    if ("remove" $= %op)
     {
         safeEnsureScriptObjectWithInit("StringMap", "cantUnignoreList", "{ ignoreCase = true; }");
         %canUnignoreTime = cantUnignoreList.get(%playerName);
         if (!("" $= %canUnignoreTime))
         {
         }
-        if ((%canUnignoreTime > getSimTime()))
+        if (%canUnignoreTime > getSimTime())
         {
             handleSystemMessage("msgInfoMessage", $MsgCat::abuse["WAIT-TO-UNIGNORE"]);
             return;
@@ -581,7 +560,7 @@ function doUserIgnore(%playerName, %op)
     {
         %ghost = Player::findPlayerInstance(%playerName);
         $gRentabotIgnores = findAndRemoveAllOccurrencesOfWord($gRentabotIgnores, %ghost);
-        if ((%op $= "add"))
+        if (%op $= "add")
         {
             $gRentabotIgnores = trim($gRentabotIgnores @ " " @ %ghost);
         }
@@ -644,8 +623,8 @@ function doUserPasteSkusReally(%playerName)
     %clipboard = getClipboard();
     %skus = "";
     %crap = "";
-    %n = (getWordCount(%clipboard) - 1.0);
-    while ((%n >= 0.0))
+    %n = getWordCount(%clipboard) - 1;
+    while (%n >= 0)
     {
         %sku = getWord(%clipboard, %n);
         if (SkuManager.isValidSku(%sku))
@@ -656,9 +635,9 @@ function doUserPasteSkusReally(%playerName)
         {
             %crap = %sku @ " " @ %crap;
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
-    if (!((%n >= 0.0) @ " " @ %crap $= ""))
+    if (!((%n >= 0) @ " " @ %crap $= ""))
     {
         MessageBoxOK("Crap in clipboard", "Sorry, there was stuff in the clipboard that wasn't SKUs. Not sent.", "");
         return;
@@ -709,7 +688,7 @@ function clientCmdConfirmCoAnim(%initiatingPlayerName, %coAnimName, %requestId)
         commandToServer('CoAnimRespond', %requestId, "DECLINE IGNORED");
         return;
     }
-    if ((BuddyHudWin.getFriendStatus(%initiatingPlayerName) $= "friends"))
+    if (BuddyHudWin.getFriendStatus(%initiatingPlayerName) $= "friends")
     {
     }
     else
@@ -717,7 +696,7 @@ function clientCmdConfirmCoAnim(%initiatingPlayerName, %coAnimName, %requestId)
     }
     %permission = $UserPref::Player::EmotesPermissionStrangers;
     $UserPref::Player::EmotesPermissionFriends;
-    if ((%permission == 0.0))
+    if (%permission == 0)
     {
         if (!isIdle())
         {
@@ -730,14 +709,11 @@ function clientCmdConfirmCoAnim(%initiatingPlayerName, %coAnimName, %requestId)
     }
     else
     {
-        if ((%permission == 1.0))
+        if (%permission == 1)
         {
             confirmTwoPlayerEmote(%initiatingPlayerName, %coAnimName, %requestId, 0);
         }
-        else
-        {
-            commandToServer('CoAnimRespond', %requestId, "DECLINE AUTO");
-        }
+        commandToServer('CoAnimRespond', %requestId, "DECLINE AUTO");
     }
 }
 function confirmTwoPlayerEmote(%initiatingPlayerName, %coAnimName, %requestId, %unused)
@@ -774,7 +750,7 @@ function tryOpenUserSOS()
     %winWidth = getWord(%dlg.window.getExtent(), 0);
     %buttonWidth = getWord(%dlg.window.okButton.getExtent(), 0);
     %ypos = getWord(%dlg.window.okButton.getPosition(), 1);
-    %dlg.window.okButton.reposition(((%winWidth - %buttonWidth) / 2.0), %ypos);
+    %dlg.window.okButton.reposition(((%winWidth - %buttonWidth) / 2), %ypos);
 }
 function openUserSOS()
 {
@@ -792,12 +768,12 @@ function cancelUserSOS()
 function isCommand(%text)
 {
     %index = strstr(%text, "/");
-    return (%index == 0.0);
+    return %index == 0;
 }
 function processCommand(%text)
 {
     %index = strstr(%text, "/");
-    if ((%index != 0.0))
+    if (%index != 0)
     {
         return 0;
     }
@@ -805,7 +781,7 @@ function processCommand(%text)
     %command = stripChars(%command, "/");
     if (!(%command $= ""))
     {
-        if ((findWord($gUnidleChatCommands, %command) != -(1.0)))
+        if (findWord($gUnidleChatCommands, %command) != -(1))
         {
             setIdle(0);
         }
@@ -840,11 +816,11 @@ function getLastEmoteAnim(%text)
     %isCmd = isCommand(%text);
     if (%isCmd)
     {
-        %text = getSubStr(%text, 1, (strlen(%text) - 1.0));
+        %text = getSubStr(%text, 1, (strlen(%text) - 1));
     }
     %wNum = getWordCount(%text);
-    %n = (%wNum - 1.0);
-    while ((%n >= 0.0))
+    %n = %wNum - 1;
+    while (%n >= 0)
     {
         %w = getWord(%text, %n);
         %anim = "";
@@ -865,7 +841,7 @@ function getLastEmoteAnim(%text)
         {
             return %anim;
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     if (%isCmd || !isNoAutoEmoteWord(%w))
     {
@@ -876,7 +852,7 @@ function getLastEmoteAnim(%text)
 function emote(%text)
 {
     %anim = getLastEmoteAnim(%text);
-    if ((%anim $= ""))
+    if (%anim $= "")
     {
         return 0;
     }
@@ -892,7 +868,7 @@ function sendAnimToServer(%anim)
     }
     commandToServer('EtsPlayAnimName', %anim);
 }
-$TEST_PREROLL = -(1.0);
+$TEST_PREROLL = -(1);
 function sendDanceToolAnimToServer(%anim)
 {
     commandToServer('PlayDanceToolAnim', %anim, $TEST_PREROLL);
@@ -927,169 +903,124 @@ function RelRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
     log("relations", "info", "RelRequest::onDone:" @ " " @ %status);
-    if ((%status $= "fail"))
+    if (%status $= "fail")
     {
         %errorCode = %this.getValue("errorCode");
         %errorMsg = "";
         %markedOtherName = getPlayerMarkup(%this.otherName, "", 1);
         %operationStr = %this.relType @ %this.oper;
-        if ((%operationStr $= "friendadd"))
+        if (%operationStr $= "friendadd")
         {
-            if ((%errorCode $= "invalid"))
+            if (%errorCode $= "invalid")
             {
                 %errorMsg = "Woops, we can't find anyone named " @ %this.otherName @ " to befriend.";
             }
             else
             {
-                if ((%errorCode $= "ALREADY_RELATED"))
+                if (%errorCode $= "ALREADY_RELATED")
                 {
                     %errorMsg = "Woops, you're already friends with " @ %markedOtherName @ ".";
                 }
-                else
+                if (%errorCode $= "DUPLICATE_REQUEST")
                 {
-                    if ((%errorCode $= "DUPLICATE_REQUEST"))
-                    {
-                        %errorMsg = "Woops, you're already asking " @ %markedOtherName @ " to be your friend.";
-                    }
-                    else
-                    {
-                        if ((%errorCode $= "NOT_ALLOWED"))
-                        {
-                            %errorMsg = "Sorry, you are not allowed to befriend " @ %markedOtherName @ ".";
-                        }
-                        else
-                        {
-                            if ((%errorCode $= "NOT_RELATED"))
-                            {
-                                error(getScopeName() @ "->unexpected error code for friendadd: NOT_RELATED");
-                            }
-                            else
-                            {
-                                if ((%errorCode $= "USER_IS_IGNORED"))
-                                {
-                                    %errorMsg = "Sorry, " @ %markedOtherName @ " will have to unignore you before you can add them as a friend.";
-                                }
-                            }
-                        }
-                    }
+                    %errorMsg = "Woops, you're already asking " @ %markedOtherName @ " to be your friend.";
+                }
+                if (%errorCode $= "NOT_ALLOWED")
+                {
+                    %errorMsg = "Sorry, you are not allowed to befriend " @ %markedOtherName @ ".";
+                }
+                if (%errorCode $= "NOT_RELATED")
+                {
+                    error(getScopeName() @ "->unexpected error code for friendadd: NOT_RELATED");
+                }
+                if (%errorCode $= "USER_IS_IGNORED")
+                {
+                    %errorMsg = "Sorry, " @ %markedOtherName @ " will have to unignore you before you can add them as a friend.";
                 }
             }
         }
         else
         {
-            if ((%operationStr $= "friendremove"))
+            if (%operationStr $= "friendremove")
             {
-                if ((%errorCode $= "invalid"))
+                if (%errorCode $= "invalid")
                 {
                     %errorMsg = "Woops, we can't find anyone named " @ %this.otherName @ " to unfriend.";
                 }
                 else
                 {
-                    if ((%errorCode $= "NOT_RELATED"))
+                    if (%errorCode $= "NOT_RELATED")
                     {
                         %errorMsg = "Woops, you're not friends with " @ %markedOtherName @ "!";
                     }
                 }
             }
-            else
+            if (%operationStr $= "friendcancel")
             {
-                if ((%operationStr $= "friendcancel"))
+                %errorMsg = "Woops, could not cancel friend request to " @ %markedOtherName @ " -- they may have already responded to your request.";
+            }
+            if (%operationStr $= "friendacceptall")
+            {
+                %errorMsg = "Woops, could not accept all friend requests.";
+            }
+            if (%operationStr $= "frienddeclineall")
+            {
+                %errorMsg = "Woops, could not decline all friend requests.";
+            }
+            if (%operationStr $= "ignoreadd")
+            {
+                if (%errorCode $= "invalid")
                 {
-                    %errorMsg = "Woops, could not cancel friend request to " @ %markedOtherName @ " -- they may have already responded to your request.";
+                    %errorMsg = "Woops, we can't find anyone named " @ %this.otherName @ " to ignore.";
                 }
                 else
                 {
-                    if ((%operationStr $= "friendacceptall"))
+                    if ((%errorCode $= "USER_IS_IGNORED") || (%errorCode $= "DUPLICATE_REQUEST"))
                     {
-                        %errorMsg = "Woops, could not accept all friend requests.";
+                        %errorMsg = "Woops, you're already ignoring " @ %markedOtherName @ ".";
                     }
-                    else
+                    if (%errorCode $= "NOT_ALLOWED")
                     {
-                        if ((%operationStr $= "frienddeclineall"))
-                        {
-                            %errorMsg = "Woops, could not decline all friend requests.";
-                        }
-                        else
-                        {
-                            if ((%operationStr $= "ignoreadd"))
-                            {
-                                if ((%errorCode $= "invalid"))
-                                {
-                                    %errorMsg = "Woops, we can't find anyone named " @ %this.otherName @ " to ignore.";
-                                }
-                                else
-                                {
-                                    if ((%errorCode $= "USER_IS_IGNORED") || (%errorCode $= "DUPLICATE_REQUEST"))
-                                    {
-                                        %errorMsg = "Woops, you're already ignoring " @ %markedOtherName @ ".";
-                                    }
-                                    else
-                                    {
-                                        if ((%errorCode $= "NOT_ALLOWED"))
-                                        {
-                                            %errorMsg = "Sorry, you're not allowed to ignore " @ %markedOtherName @ ".";
-                                        }
-                                    }
-                                }
-                            }
-                            else
-                            {
-                                if ((%operationStr $= "ignoreremove"))
-                                {
-                                    if ((%errorCode $= "invalid"))
-                                    {
-                                        %errorMsg = "Woops, we can't find anyone named " @ %markedOtherName @ " to unignore.";
-                                    }
-                                    else
-                                    {
-                                        if ((%errorCode $= "NOT_RELATED"))
-                                        {
-                                            %errorMsg = "Woops, you aren't ignoring " @ %markedOtherName @ ".";
-                                        }
-                                    }
-                                }
-                                else
-                                {
-                                    error(getScopeName() @ "->THERE ARE NO PLAYER-FACING FAILURE MESSAGES FOR RELATION OPERATION " @ %operationStr @ ", PLEASE ADD THEM");
-                                }
-                            }
-                        }
+                        %errorMsg = "Sorry, you're not allowed to ignore " @ %markedOtherName @ ".";
                     }
                 }
             }
+            if (%operationStr $= "ignoreremove")
+            {
+                if (%errorCode $= "invalid")
+                {
+                    %errorMsg = "Woops, we can't find anyone named " @ %markedOtherName @ " to unignore.";
+                }
+                else
+                {
+                    if (%errorCode $= "NOT_RELATED")
+                    {
+                        %errorMsg = "Woops, you aren't ignoring " @ %markedOtherName @ ".";
+                    }
+                }
+            }
+            error(getScopeName() @ "->THERE ARE NO PLAYER-FACING FAILURE MESSAGES FOR RELATION OPERATION " @ %operationStr @ ", PLEASE ADD THEM");
         }
-        if ((%errorMsg $= ""))
+        if (%errorMsg $= "")
         {
             warn(getScopeName() @ "->" @ %operationStr @ " errorcode (\"" @ %errorCode @ "\") unrecognized, sending generic " @ %operationStr @ " failure message!");
-            if ((%operationStr $= "friendadd"))
+            if (%operationStr $= "friendadd")
             {
                 %errorMsg = "Woops, could not create friend request to " @ %markedOtherName @ ".";
             }
-            else
+            if (%operationStr $= "friendremove")
             {
-                if ((%operationStr $= "friendremove"))
-                {
-                    %errorMsg = "Woops, could not remove " @ %markedOtherName @ " from your friends list.";
-                }
-                else
-                {
-                    if ((%operationStr $= "ignoreadd"))
-                    {
-                        %errorMsg = "Woops, could not ignore " @ %markedOtherName;
-                    }
-                    else
-                    {
-                        if ((%operationStr $= "ignoreremove"))
-                        {
-                            %errorMsg = "Woops, could not unignore " @ %markedOtherName;
-                        }
-                        else
-                        {
-                            error(getScopeName() @ "->" @ %operationStr @ " lacks generic failure message (for unrecognized errorcodes)");
-                        }
-                    }
-                }
+                %errorMsg = "Woops, could not remove " @ %markedOtherName @ " from your friends list.";
             }
+            if (%operationStr $= "ignoreadd")
+            {
+                %errorMsg = "Woops, could not ignore " @ %markedOtherName;
+            }
+            if (%operationStr $= "ignoreremove")
+            {
+                %errorMsg = "Woops, could not unignore " @ %markedOtherName;
+            }
+            error(getScopeName() @ "->" @ %operationStr @ " lacks generic failure message (for unrecognized errorcodes)");
         }
         if (!(%errorMsg $= ""))
         {
@@ -1098,13 +1029,13 @@ function RelRequest::onDone(%this)
     }
     else
     {
-        if ((%status $= "success"))
+        if (%status $= "success")
         {
             %comp = %this.relType @ %this.oper;
             if ((%comp $= "friendacceptall") || (%comp $= "frienddeclineall"))
             {
             }
-            if ((%this.otherName $= ""))
+            if (%this.otherName $= "")
             {
                 SystemMessageTextCtrl.updateFriendRequest(%this.otherName, (%comp $= "friendacceptall"));
             }

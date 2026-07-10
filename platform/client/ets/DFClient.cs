@@ -54,31 +54,31 @@ function DFDebugRefresh()
     $gDFDebugAdvertsList.clear();
     %num = ServerConnection.getCount();
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %obj = ServerConnection.getObject(%n);
-        if ((%obj.getClassName() $= "DFTextureAdvert"))
+        if (%obj.getClassName() $= "DFTextureAdvert")
         {
             $gDFDebugAdvertsList.append(%obj);
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     $gDFDebugCurrAdvert = "-";
-    (%n < %num);
+    %n < %num;
     DFDebugUpdateGuiStatus();
 }
 function DFDebugUpdateGuiStatus()
 {
-    if (($gDFDebugCurrAdvert < 1.0))
+    if ($gDFDebugCurrAdvert < 1)
     {
     }
-    if (($gDFDebugAdvertsList.size() > 0.0))
+    if ($gDFDebugAdvertsList.size() > 0)
     {
     }
     else
     {
     }
-    %obj = $gDFDebugAdvertsList.get(($gDFDebugCurrAdvert - 1.0));
+    %obj = $gDFDebugAdvertsList.get(($gDFDebugCurrAdvert - 1));
     "";
     %objText = "";
     if (isObject(%obj))
@@ -103,7 +103,7 @@ function DFDebugPrev()
         return;
     }
     DFDebugRefresh();
-    DFDebugGotoAdvert(($gDFDebugCurrAdvert - 1.0));
+    DFDebugGotoAdvert(($gDFDebugCurrAdvert - 1));
 }
 function DFDebugNext()
 {
@@ -112,26 +112,26 @@ function DFDebugNext()
         return;
     }
     DFDebugRefresh();
-    DFDebugGotoAdvert(($gDFDebugCurrAdvert + 1.0));
+    DFDebugGotoAdvert(($gDFDebugCurrAdvert + 1));
 }
 function DFDebugGotoAdvert(%advertNumber)
 {
     %advertObj = "";
-    if ((%advertNumber > $gDFDebugAdvertsList.size()))
+    if (%advertNumber > $gDFDebugAdvertsList.size())
     {
         %advertNumber = 1;
     }
-    if ((%advertNumber < 1.0))
+    if (%advertNumber < 1)
     {
         %advertNumber = $gDFDebugAdvertsList.size();
     }
-    if ((%advertNumber < 1.0))
+    if (%advertNumber < 1)
     {
         %advertNumber = "-";
     }
     else
     {
-        %advertObj = $gDFDebugAdvertsList.get((%advertNumber - 1.0));
+        %advertObj = $gDFDebugAdvertsList.get((%advertNumber - 1));
     }
     $gDFDebugCurrAdvert = %advertNumber;
     DFDebugUpdateGuiStatus();

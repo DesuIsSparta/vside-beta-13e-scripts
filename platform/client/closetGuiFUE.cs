@@ -1,5 +1,5 @@
 $gClosetGuiFueStepCount = 0;
-$gClosetGuiFueCurrentStep = -(1.0);
+$gClosetGuiFueCurrentStep = -(1);
 function ClosetGuiFUE::open(%this)
 {
     if (%this.refreshingOrInitializing)
@@ -42,7 +42,7 @@ function ClosetGuiFUE::hide(%this)
 }
 function ClosetGuiFUE::reposition(%this)
 {
-    %this.position = (((getWord(ClosetGuiPositioner.extent, 0) - 960.0) / 2.0) + 1.0) @ " " @ ((((getWord(ClosetGuiPositioner.extent, 1) - 576.0) - 32.0) / 2.0) + 1.0);
+    %this.position = (((getWord(ClosetGuiPositioner.extent, 0) - 960) / 2) + 1) @ " " @ ((((getWord(ClosetGuiPositioner.extent, 1) - 576) - 32) / 2) + 1);
 }
 function ClosetGuiFUE::showAllAsInactive(%this)
 {
@@ -55,14 +55,14 @@ function ClosetGuiFUE::showAllAsInactive(%this)
         return;
     }
     %i = 0;
-    while ((%i < $gClosetGuiFueStepCount))
+    while (%i < $gClosetGuiFueStepCount)
     {
         %i.setVisible(%this.stepContainers["active"], 0);
         if (isObject(%i, %this.stepContainers["inactive"]))
         {
             %i.setVisible(%this.stepContainers["inactive"], !%this.hideTipsCtrl.getValue());
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     ClosetGuiFUE.show();
 }
@@ -90,7 +90,7 @@ function ClosetGuiFUE::addStep(%this, %activeContainer, %inactiveContainer)
         %this.add(%inactiveContainer);
     }
     %this.stepContainers[$gClosetGuiFueStepCount,"inactive"] = %inactiveContainer;
-    $gClosetGuiFueStepCount = ($gClosetGuiFueStepCount + 1.0);
+    $gClosetGuiFueStepCount = $gClosetGuiFueStepCount + 1;
     return 1;
 }
 function ClosetGuiFUE::addStepWithName(%this, %activeContainer, %inactiveContainer, %stepName)
@@ -99,14 +99,14 @@ function ClosetGuiFUE::addStepWithName(%this, %activeContainer, %inactiveContain
     if (!%this.addStep(%activeContainer, %inactiveContainer))
     {
         warn(getScopeName() @ " " @ "- step" @ " " @ %stepName @ " " @ "not added -" @ " " @ getTrace());
-        %this.stepNumbersByName[strlwr(%stepName)] = -(1.0);
+        %this.stepNumbersByName[strlwr(%stepName)] = -(1);
         return 0;
     }
     return 1;
 }
 function ClosetGuiFUE::firstStep(%this)
 {
-    if (($gClosetGuiFueStepCount == 0.0))
+    if ($gClosetGuiFueStepCount == 0)
     {
         error(getScopeName() @ " " @ "- first step has not yet been set -" @ " " @ getTrace());
         return;
@@ -118,16 +118,16 @@ function ClosetGuiFUE::firstStep(%this)
 function ClosetGuiFUE::nextStep(%this)
 {
     %this.hideCurrentStep();
-    if (($gClosetGuiFueCurrentStep >= -(1.0)))
+    if ($gClosetGuiFueCurrentStep >= -(1))
     {
     }
-    if (($gClosetGuiFueCurrentStep < ($gClosetGuiFueStepCount - 1.0)))
+    if ($gClosetGuiFueCurrentStep < ($gClosetGuiFueStepCount - 1))
     {
-        $gClosetGuiFueCurrentStep = ($gClosetGuiFueCurrentStep + 1.0);
+        $gClosetGuiFueCurrentStep = $gClosetGuiFueCurrentStep + 1;
     }
     else
     {
-        $gClosetGuiFueCurrentStep = -(1.0);
+        $gClosetGuiFueCurrentStep = -(1);
     }
     %this.showCurrentStep();
 }
@@ -139,7 +139,7 @@ function ClosetGuiFUE::goToStepByName(%this, %stepName)
         return;
     }
     %this.hideCurrentStep();
-    if ((%stepName $= "Shops"))
+    if (%stepName $= "Shops")
     {
         closetGuiFUEShopsDirBitmap.setVisible(($gCurrentStoreName $= ""));
         StoreShoppingBag.setVisible(!($gCurrentStoreName $= ""));
@@ -155,7 +155,7 @@ function ClosetGuiFUE::goToStepByName(%this, %stepName)
 }
 function ClosetGuiFUE::goToStepByNumber(%this, %stepNumber)
 {
-    if ((%stepNumber < 0.0) || (%stepNumber >= $gClosetGuiFueStepCount))
+    if ((%stepNumber < 0) || (%stepNumber >= $gClosetGuiFueStepCount))
     {
         error(getScopeName() @ " " @ "- invalid stepNumber" @ " " @ %stepNumber @ " " @ "-" @ " " @ getTrace());
         return;
@@ -166,7 +166,7 @@ function ClosetGuiFUE::goToStepByNumber(%this, %stepNumber)
 }
 function ClosetGuiFUE::showCurrentStep(%this)
 {
-    if (($gClosetGuiFueCurrentStep == -(1.0)))
+    if ($gClosetGuiFueCurrentStep == -(1))
     {
         return;
     }
@@ -182,12 +182,12 @@ function ClosetGuiFUE::showCurrentStep(%this)
     $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["active"], !%this.hideTipsCtrl.getValue());
     if (!%this.arrivedAtFinalTip)
     {
-        %this.arrivedAtFinalTip = ($gClosetGuiFueCurrentStep == %this.stepNumbersByName[strlwr("Snapshot")]);
+        %this.arrivedAtFinalTip = $gClosetGuiFueCurrentStep == %this.stepNumbersByName[strlwr("Snapshot")];
     }
 }
 function ClosetGuiFUE::hideCurrentStep(%this)
 {
-    if (($gClosetGuiFueCurrentStep == -(1.0)))
+    if ($gClosetGuiFueCurrentStep == -(1))
     {
         return;
     }
@@ -207,7 +207,7 @@ function ClosetGuiFUE::refresh(%this)
     %this.refreshingOrInitializing = 1;
     ClosetGuiFUE.deleteMembers();
     $gClosetGuiFueStepCount = 0;
-    $gClosetGuiFueCurrentStep = -(1.0);
+    $gClosetGuiFueCurrentStep = -(1);
     %this.Initialize();
     if (%visible)
     {
@@ -256,7 +256,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -285,7 +285,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -310,7 +310,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -329,7 +329,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -357,7 +357,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -410,7 +410,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -434,7 +434,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -443,7 +443,7 @@ function ClosetGuiFUE::Initialize(%this)
     }; @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(ClosetTabContainer.getPosition(), 0) + 759.0) @ " " @ (getWord(ClosetTabContainer.getPosition(), 0) + 492.0);
+        position = (getWord(ClosetTabContainer.getPosition(), 0) + 759) @ " " @ (getWord(ClosetTabContainer.getPosition(), 0) + 492);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -465,7 +465,7 @@ function ClosetGuiFUE::Initialize(%this)
         profile = "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(%buttonPosition, 0) - 10.0) @ " " @ (getWord(%buttonPosition, 1) - 10.0);
+        position = (getWord(%buttonPosition, 0) - 10) @ " " @ (getWord(%buttonPosition, 1) - 10);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -474,7 +474,7 @@ function ClosetGuiFUE::Initialize(%this)
     }; @ "ETSNonModalProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = (getWord(ClosetTabContainer.getPosition(), 0) + 759.0) @ " " @ (getWord(ClosetTabContainer.getPosition(), 0) + 492.0);
+        position = (getWord(ClosetTabContainer.getPosition(), 0) + 759) @ " " @ (getWord(ClosetTabContainer.getPosition(), 0) + 492);
         extent = "123 82";
         minExtent = "1 1";
         sluggishness = -1;
@@ -507,14 +507,14 @@ function closetGuiFUEHideTipsCtrl::hideTips(%this)
         return;
     }
     %i = 0;
-    while ((%i < $gClosetGuiFueStepCount))
+    while (%i < $gClosetGuiFueStepCount)
     {
         %i.setVisible(ClosetGuiFUE.stepContainers["active"], 0);
         if (isObject(%i, ClosetGuiFUE.stepContainers["inactive"]))
         {
             %i.setVisible(ClosetGuiFUE.stepContainers["inactive"], 0);
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function closetGuiFUEHideTipsCtrl::showTips(%this)
@@ -528,13 +528,13 @@ function closetGuiFUEHideTipsCtrl::showTips(%this)
         return;
     }
     %i = 0;
-    while ((%i < $gClosetGuiFueStepCount))
+    while (%i < $gClosetGuiFueStepCount)
     {
         %i.setVisible(ClosetGuiFUE.stepContainers["active"], (%i == $gClosetGuiFueCurrentStep));
         if (isObject(%i, ClosetGuiFUE.stepContainers["inactive"]))
         {
             %i.setVisible(ClosetGuiFUE.stepContainers["inactive"], (%i != $gClosetGuiFueCurrentStep));
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }

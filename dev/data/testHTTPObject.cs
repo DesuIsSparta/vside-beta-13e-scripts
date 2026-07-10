@@ -28,12 +28,12 @@ function serverCmdTestHTTPObject(%client)
 }
 function httpObjTestRequest::onLine(%this, %line)
 {
-    if ((%line $= "EOF"))
+    if (%line $= "EOF")
     {
         %this.gotEOF = 1;
     }
-    %this.numLines = (%this.numLines + 1.0);
-    %this.numChars = (%this.numChars + strlen(%line));
+    %this.numLines = %this.numLines + 1;
+    %this.numChars = %this.numChars + strlen(%line);
     log("network", "debug", "HTTPObjTestRequest::onLine:" @ " " @ %line);
 }
 function httpObjTestRequest::onDisconnect(%this)

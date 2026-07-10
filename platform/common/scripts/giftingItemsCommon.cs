@@ -52,7 +52,7 @@ function giftingItems_getPendingTransactionServer(%transactionID)
 function giftingItems_getPendingTransaction(%registry, %transactionID)
 {
     %pendingTransactionRecord = %registry.get(%transactionID);
-    if ((%pendingTransactionRecord $= ""))
+    if (%pendingTransactionRecord $= "")
     {
         error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %transactionID @ " " @ getTrace());
         return "";
@@ -70,7 +70,7 @@ function giftingItems_deletePendingTransactionServer(%transactionID)
 function giftingItems_deletePendingTransaction(%registry, %transactionID)
 {
     %pendingTransactionRecord = %registry.get(%transactionID);
-    if ((%pendingTransactionRecord $= ""))
+    if (%pendingTransactionRecord $= "")
     {
         error(getScopeName() @ " " @ "- no such transaction:" @ " " @ %transactionID @ " " @ getTrace());
         return "";

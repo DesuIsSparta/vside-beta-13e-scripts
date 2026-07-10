@@ -5,7 +5,7 @@ function rentabot_getCoreName(%name)
         return %name;
     }
     %len = strlen(%name);
-    %cn = getSubStr(%name, 1, (%len - 2.0));
+    %cn = getSubStr(%name, 1, (%len - 2));
     return %cn;
 }
 function rentabot_isRentabotName(%name)

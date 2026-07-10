@@ -3,7 +3,7 @@ $adLogCreationTimestamp = "";
 function getAdLogName(%timeStamp)
 {
     %ServerName = stripVeryAgressively($Pref::Server::Name);
-    if ((%ServerName $= ""))
+    if (%ServerName $= "")
     {
         %ServerName = "unknownServer";
     }
@@ -17,13 +17,13 @@ function getAdLogName(%timeStamp)
 }
 function checkNewAdLogFile()
 {
-    if (($adLogCreationTimestamp $= ""))
+    if ($adLogCreationTimestamp $= "")
     {
         return;
     }
     %minsLog = getSubStr($adLogCreationTimestamp, 0, 8);
     %minsNow = getSubStr(getTimeStamp(), 0, 8);
-    if ((strcmp(%minsNow, %minsLog) > 0.0))
+    if (strcmp(%minsNow, %minsLog) > 0)
     {
         $adLogFileName = "";
         $adLogCreationTimestamp = "";
@@ -113,59 +113,59 @@ function AdGroup::addAd(%this, %texture, %title, %url)
     %this.textures[%this.num] = %texture;
     %this.titles[%this.num] = %title;
     %this.urls[%this.num] = %url;
-    %this.num = (%this.num + 1.0);
+    %this.num = %this.num + 1;
     return;
 }
 function AdGroup::addDTSGroup(%this, %grp)
 {
     %this.dtss[%this.dtsNum] = %grp;
-    %this.dtsNum = (%this.dtsNum + 1.0);
+    %this.dtsNum = %this.dtsNum + 1;
     return;
 }
 function AdGroup::doSwap(%this)
 {
-    %this.offset = (%this.offset + 1.0);
-    if ((%this.offset >= %this.num))
+    %this.offset = %this.offset + 1;
+    if (%this.offset >= %this.num)
     {
         %this.offset = 0;
     }
     %adNum = %this.offset;
     %numAds = 0;
     %gn = 0;
-    while ((%gn < %this.dtsNum))
+    while (%gn < %this.dtsNum)
     {
         %dtsGrp = %this.dtss[%gn];
         %dtsNum = %dtsGrp.getCount();
-        %numAds = (%numAds + %dtsNum);
+        %numAds = %numAds + %dtsNum;
         %dn = 0;
-        while ((%dn < %dtsNum))
+        while (%dn < %dtsNum)
         {
             %dts = %dtsGrp.getObject(%dn);
-            if ((%this.sort $= "random"))
+            if (%this.sort $= "random")
             {
-                %adNum = getRandom((%this.num - 1.0));
-                if ((%adNum == %dts.prevAdNum))
+                %adNum = getRandom((%this.num - 1));
+                if (%adNum == %dts.prevAdNum)
                 {
-                    %adNum = getRandom((%this.num - 1.0));
+                    %adNum = getRandom((%this.num - 1));
                 }
-                if ((%adNum == %dts.prevAdNum))
+                if (%adNum == %dts.prevAdNum)
                 {
-                    %adNum = getRandom((%this.num - 1.0));
+                    %adNum = getRandom((%this.num - 1));
                 }
                 %dts.prevAdNum = %adNum;
             }
             %dts.setSkinName(%this.textures[%adNum]);
             %dts.setTitle(%this.titles[%adNum]);
             %dts.setBasicURL(%this.urls[%adNum]);
-            %adNum = (%adNum + 1.0);
-            if ((%adNum >= %this.num))
+            %adNum = %adNum + 1;
+            if (%adNum >= %this.num)
             {
                 %adNum = 0;
             }
-            %dn = (%dn + 1.0);
+            %dn = %dn + 1;
         }
-        %gn = (%gn + 1.0);
-        (%dn < %dtsNum);
+        %gn = %gn + 1;
+        %dn < %dtsNum;
     }
     return %numAds;
 }
@@ -173,21 +173,21 @@ function AdManager::doSwap(%this)
 {
     %numAds = 0;
     %g = 0;
-    while ((%g < %this.adGrpsNum))
+    while (%g < %this.adGrpsNum)
     {
-        %numAds = (%numAds + %this.adGrps[%g].doSwap());
-        %g = (%g + 1.0);
+        %numAds = %numAds + %this.adGrps[%g].doSwap();
+        %g = %g + 1;
     }
     return %numAds;
 }
 function AdManager::think(%this)
 {
-    if ((%this.doSwap() > 0.0))
+    if (%this.doSwap() > 0)
     {
     }
-    if ((%this.periodSecs > 0.0))
+    if (%this.periodSecs > 0)
     {
-        %this.schedule((%this.periodSecs * 1000.0), think);
+        %this.schedule((%this.periodSecs * 1000), think);
     }
     else
     {
@@ -203,6 +203,6 @@ function AdManager::newAdGroup(%this)
     };
     %adGrp.init();
     %this.adGrps[%this.adGrpsNum] = %adGrp;
-    %this.adGrpsNum = (%this.adGrpsNum + 1.0);
+    %this.adGrpsNum = %this.adGrpsNum + 1;
     return %adGrp;
 }

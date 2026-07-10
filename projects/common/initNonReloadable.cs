@@ -42,7 +42,7 @@ function cityInfoAddVenue(%cityInfo, %venueName, %coords, %button, %spawnPointsG
     if ($StandAlone)
     {
     }
-    if ((%cityInfo.name $= $gContiguousSpaceName))
+    if (%cityInfo.name $= $gContiguousSpaceName)
     {
     }
     if (!isObject(%spawnPointsGroup))

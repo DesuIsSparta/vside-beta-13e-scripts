@@ -15,7 +15,7 @@ function GameConnection::loadMission(%this)
 function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, %hasStandaloneCache)
 {
     log("network", "info", "client cache CRC:" @ " " @ %crc @ " " @ "seq: " @ " " @ %missionSequence @ " " @ "gender:" @ " " @ %gender);
-    if ((%missionSequence != $MissionSequence))
+    if (%missionSequence != $MissionSequence)
     {
     }
     if (!$missionRunning)
@@ -27,10 +27,10 @@ function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, 
     %client.setMissionCRC($missionCRC);
     %client.setDatablockSequence(%missionSequence);
     %client.setGhostingSequence(%missionSequence);
-    if ((%crc == $Server::DatablockCRC))
+    if (%crc == $Server::DatablockCRC)
     {
     }
-    if ((%hasStandaloneCache == 1.0))
+    if (%hasStandaloneCache == 1)
     {
         log("network", "debug", "tell client to load local cache");
         %client.readingCache = 1;
@@ -53,7 +53,7 @@ function serverCmdStartCacheAck(%client, %missionSequence)
 function GameConnection::onDataBlocksDone(%this, %missionSequence)
 {
     log("network", "debug", "GameConnection::onDataBlocksDone seq:" @ " " @ %missionSequence);
-    if ((%missionSequence != $MissionSequence))
+    if (%missionSequence != $MissionSequence)
     {
     }
     if (!$missionRunning)
@@ -71,7 +71,7 @@ function GameConnection::onDataBlocksDone(%this, %missionSequence)
 function serverCmdStartGhostAlwaysAck(%client, %missionSequence)
 {
     log("network", "debug", "starting GhostAlways seq:" @ " " @ %missionSequence);
-    if ((%missionSequence != $MissionSequence))
+    if (%missionSequence != $MissionSequence)
     {
     }
     if (!$missionRunning)
@@ -105,7 +105,7 @@ function GameConnection::onGhostAlwaysObjectsReceived(%this, %crc)
 function serverCmdMissionStartPhase3Ack(%client, %missionSequence)
 {
     log("network", "debug", "client done loading:" @ " " @ %client @ " " @ "seq: " @ " " @ %missionSequence);
-    if ((%missionSequence != $MissionSequence))
+    if (%missionSequence != $MissionSequence)
     {
     }
     if (!$missionRunning)

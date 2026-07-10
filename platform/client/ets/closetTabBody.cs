@@ -264,7 +264,7 @@ function ClosetTabs::fillBodyTab(%this)
         vertSizing = "bottom";
         position = "692 84";
         extent = "242 25";
-        lineSpacing = -(3.0);
+        lineSpacing = -(3);
     };);
     %theTab.add(new GuiMLTextCtrl(BodyLongDescText) {
         profile = "ClosetLeftInfoProfile";
@@ -272,7 +272,7 @@ function ClosetTabs::fillBodyTab(%this)
         vertSizing = "bottom";
         position = "692 106";
         extent = "173 32";
-        lineSpacing = -(3.0);
+        lineSpacing = -(3);
     };);
     %doneButton = new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton19Profile";
@@ -321,7 +321,7 @@ function BodyItemsFrame::update(%this)
 {
     %this.thumbnails.setDrawers(ThumbCategories.get(strlwr(%this.features)));
     %this.thumbnails.makeFirstResponder(1);
-    if ((%this.features $= "Height"))
+    if (%this.features $= "Height")
     {
         BodyHeightFrame.setVisible(1);
         BodyHeightFrame.getParent().pushToBack(BodyHeightFrame);
@@ -330,7 +330,7 @@ function BodyItemsFrame::update(%this)
     {
         BodyHeightFrame.setVisible(0);
     }
-    if ((%this.features $= "Stance"))
+    if (%this.features $= "Stance")
     {
         BodyStanceButtons.setVisible(1);
         BodyStanceButtons.getParent().pushToBack(BodyStanceButtons);
@@ -342,23 +342,23 @@ function BodyItemsFrame::update(%this)
 }
 function BodyHeightDisplayText::update(%this)
 {
-    %myHeight = ($UserPref::Player::height * [$player.getGender()]);
+    %myHeight = $UserPref::Player::height * [$player.getGender()];
     $gClosetNeutralHeightInches;
-    %myFeet = mFloor((%myHeight / 12.0));
-    %myInches = mFloor((%myHeight - (%myFeet * 12.0)));
+    %myFeet = mFloor((%myHeight / 12));
+    %myInches = mFloor((%myHeight - (%myFeet * 12)));
     %this.setText(%myFeet @ "'" @ " " @ %myInches @ "\"");
 }
 function BodyHeightSlider::valueChanged(%this)
 {
     %h = %this.getValue();
     $UserPref::Player::height = %h;
-    %sxy = (((%h - 1.0) * $Pref::Wardrobe::playerHeightWidthFactor) + 1.0);
+    %sxy = ((%h - 1) * $Pref::Wardrobe::playerHeightWidthFactor) + 1;
     $player.setScale(%sxy @ " " @ %sxy @ " " @ %h);
     BodyHeightDisplayText.update();
 }
 function BodyFeaturesPopup::onSelect(%this, %unused, %entries)
 {
-    if ((BodyItemsFrame.features $= %entries))
+    if (BodyItemsFrame.features $= %entries)
     {
         return;
     }
@@ -374,14 +374,14 @@ function BodyFeaturesPopup::rebuildPopupList(%this)
     %this.clear();
     %categoryList = "All Features" @ "\t" @ "Skin" @ "\t" @ "Face" @ "\t" @ "Eyes" @ "\t" @ "Hair";
     %n = 0;
-    while ((%n < getFieldCount(%categoryList)))
+    while (%n < getFieldCount(%categoryList))
     {
         %category = getField(%categoryList, %n);
         if (Closet::skuListHasCategory($Player::inventory, %category))
         {
             %this.add(%category);
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.add("Height");
     %this.SetSelected(0);

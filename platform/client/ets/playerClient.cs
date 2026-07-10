@@ -2,7 +2,7 @@ function toggleHelpMeMode(%this)
 {
     if (isObject(ApplauseMeterGui) && (ApplauseMeterGui.applauseMeterUse $= "sumo"))
     {
-        if ((ApplauseMeterGui.sumoGameType $= "PillowFightGame"))
+        if (ApplauseMeterGui.sumoGameType $= "PillowFightGame")
         {
             MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USER-NO-HELPME"], "");
         }
@@ -48,7 +48,7 @@ function updateHelpMeModeMenu()
     %item.setMenuItemText(%text);
     %item.command = %command;
 }
-$gHelpMeModeDuration = ((3.0 * 60.0) * 1000.0);
+$gHelpMeModeDuration = (3 * 60) * 1000;
 $gHelpMeModeAutoOffTimer = 0;
 function setHelpMeMode()
 {
@@ -61,7 +61,7 @@ function clearHelpMeMode()
 {
     %mySkus = $player.getActiveSKUs();
     %idx = findWord(%mySkus, getSpecialSKU($player, "helpmebadge"));
-    if ((%idx >= 0.0))
+    if (%idx >= 0)
     {
         %mySkus = removeWord(%mySkus, %idx);
         commandToServer('setActiveSkus', %mySkus);
@@ -75,11 +75,11 @@ function clientCmdNotifyOfHelpMeMode(%newbName)
 {
     %name = getPlayerMarkup(%newbName, "ffffff", 1);
     handleSystemMessage("msgInfoMessage", "<linkcolor:ffddeeff>You are an active guide, and " @ %name @ " has just entered \"Help-Me\" Mode. <a:answerHelpMeMode " @ $gHelpMeRequestId @ " " @ munge(%newbName) @ ">Click Here</a> to answer the call!");
-    $gHelpMeRequestId = ($gHelpMeRequestId + 1.0);
+    $gHelpMeRequestId = $gHelpMeRequestId + 1;
 }
 function answerHelpMeMode(%newbName, %requestId)
 {
-    if ((findWord($gHelpMeRequestsAnswered, %requestId) >= 0.0))
+    if (findWord($gHelpMeRequestsAnswered, %requestId) >= 0)
     {
         msgCatOK("UI::HELPMEANSWERED");
         return;
@@ -92,7 +92,7 @@ function Player::onAnimationStart(%this, %animName)
     if (isObject($player))
     {
     }
-    if ((%this.getId() == $player.getId()))
+    if (%this.getId() == $player.getId())
     {
         %animTags = gAnimationTags.get(%animName);
         %dancing = hasWord(%animTags, "dance");
@@ -106,7 +106,7 @@ function Player::onAnimationStart(%this, %animName)
 function Player::onAnimationSku(%this, %state, %animName, %animInternalName)
 {
     %animSkus = %this.getAnimationSkus(%animInternalName);
-    if ((%animSkus $= ""))
+    if (%animSkus $= "")
     {
         if (!(%this.currentBaseActiveSkus $= "") && !(%this.currentBaseActiveSkus $= %this.getActiveSKUs()))
         {
@@ -127,14 +127,14 @@ function Player::onAnimationSku(%this, %state, %animName, %animInternalName)
 }
 function Player::getAnimationSkus(%this, %animInternalName)
 {
-    if ((%animInternalName $= ""))
+    if (%animInternalName $= "")
     {
         return "";
     }
-    if ((%this.animationSkus[%animInternalName] $= ""))
+    if (%this.animationSkus[%animInternalName] $= "")
     {
         %skusIndex = strstr(%animInternalName, "_skus_");
-        if ((%skusIndex == -(1.0)))
+        if (%skusIndex == -(1))
         {
             %skus = "";
         }
@@ -162,58 +162,55 @@ function Player::staggerTick(%this)
 {
     cancel($gPlayerStaggerTimer);
     $gPlayerStaggerTimer = "";
-    if (($gPlayerStaggerAmount == 0.0))
+    if ($gPlayerStaggerAmount == 0)
     {
         return;
     }
-    %fwdVel = ($mvForwardAction - $mvBackwardAction);
-    %sdeVel = ($mvLeftAction - $mvRightAction);
-    if ((%fwdVel != 0.0) || (%sdeVel != 0.0))
+    %fwdVel = $mvForwardAction - $mvBackwardAction;
+    %sdeVel = $mvLeftAction - $mvRightAction;
+    if ((%fwdVel != 0) || (%sdeVel != 0))
     {
-        %amt = (getRandom(0, ($gPlayerStaggerAmount * 1000.0)) * 0.001);
+        %amt = getRandom(0, ($gPlayerStaggerAmount * 1000)) * 0.001;
         if (getRandom(0, 1))
         {
         }
         else
         {
         }
-        %amt = (%amt * 1.0);
-        -(1.0);
+        %amt = %amt * 1;
+        -(1);
     }
     else
     {
         %amt = 0;
     }
-    %amt = (($gPlayerStaggerPrevAmt * 0.8) + (%amt * 0.2));
+    %amt = ($gPlayerStaggerPrevAmt * 0.8) + (%amt * 0.2);
     $gPlayerStaggerPrevAmt = %amt;
-    %speedBase = ($mvYawLeftSpeedBase - $mvYawRightSpeedBase);
-    %speed = (%speedBase + %amt);
-    if ((%speed > 0.00001))
+    %speedBase = $mvYawLeftSpeedBase - $mvYawRightSpeedBase;
+    %speed = %speedBase + %amt;
+    if (%speed > 0.00001)
     {
-        $mvYawLeftSpeed = (%speed * 1.0);
+        $mvYawLeftSpeed = %speed * 1;
         $mvYawRightSpeed = 0;
         %period = $gPlayerStaggerTimerPeriod;
     }
     else
     {
-        if ((%speed < -(0.00001)))
+        if (%speed < -(0.00001))
         {
             $mvYawLeftSpeed = 0;
-            $mvYawRightSpeed = (%speed * -(1.0));
+            $mvYawRightSpeed = %speed * -(1);
             %period = $gPlayerStaggerTimerPeriod;
         }
-        else
-        {
-            $mvYawLeftSpeed = 0;
-            $mvYawRightSpeed = 0;
-            %period = ($gPlayerStaggerTimerPeriod * 3.0);
-        }
+        $mvYawLeftSpeed = 0;
+        $mvYawRightSpeed = 0;
+        %period = $gPlayerStaggerTimerPeriod * 3;
     }
     $gPlayerStaggerTimer = %this.schedule(%period, "staggerTick");
 }
 function Player::onAnimationDoneClient(%this, %unused)
 {
-    if ((%this.getId() != $player.getId()))
+    if (%this.getId() != $player.getId())
     {
         return;
     }

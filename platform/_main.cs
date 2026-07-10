@@ -109,22 +109,19 @@ package platform
     function isValidHostAddress(%address)
     {
         %ret = 1;
-        if ((%address $= ""))
+        if (%address $= "")
         {
             %ret = 0;
         }
         else
         {
-            if ((%address $= 0))
+            if (%address $= 0)
             {
                 %ret = 0;
             }
-            else
+            if (%address $= "0:0")
             {
-                if ((%address $= "0:0"))
-                {
-                    %ret = 0;
-                }
+                %ret = 0;
             }
         }
         return %ret;
@@ -197,15 +194,12 @@ package platform
             {
                 serverRebaseHosts();
             }
-            else
+            clientRebaseHosts();
+            %testdomain = strreplace($Net::BaseDomain, ":", " ");
+            if (stricmp("www.vside.com", firstWord(%testdomain)))
             {
-                clientRebaseHosts();
-                %testdomain = strreplace($Net::BaseDomain, ":", " ");
-                if (stricmp("www.vside.com", firstWord(%testdomain)))
-                {
-                    %analytic = getAnalytic();
-                    %analytic.setDomainAndAccount("test.vside.com", "UA-324914-24");
-                }
+                %analytic = getAnalytic();
+                %analytic.setDomainAndAccount("test.vside.com", "UA-324914-24");
             }
         }
     }
@@ -216,7 +210,7 @@ package platform
         if (%haveManagerArg)
         {
             %colonPos = strstr($Net::ManagerHost, ":");
-            if ((%colonPos == -(1.0)))
+            if (%colonPos == -(1))
             {
                 if (!%haveSManagerArg)
                 {
@@ -231,28 +225,22 @@ package platform
                     $Net::ManagerHost = $Net::ManagerHost @ ":8080";
                 }
             }
-            else
+            if (!%haveSManagerArg)
             {
-                if (!%haveSManagerArg)
+                %line = $Net::ManagerHost;
+                %line = NextToken(%line, host, ":");
+                NextToken(%line, port, " ");
+                if (%port $= 80)
                 {
-                    %line = $Net::ManagerHost;
-                    %line = NextToken(%line, host, ":");
-                    NextToken(%line, port, " ");
-                    if ((%port $= 80))
-                    {
-                        $Net::SecureManagerHost = %host @ ":443";
-                    }
-                    else
-                    {
-                        $Net::SecureManagerHost = %host @ ":8443";
-                    }
+                    $Net::SecureManagerHost = %host @ ":443";
                 }
+                $Net::SecureManagerHost = %host @ ":8443";
             }
         }
         if (%haveSManagerArg)
         {
             %colonPos = strstr($Net::SecureManagerHost, ":");
-            if ((%colonPos == -(1.0)))
+            if (%colonPos == -(1))
             {
                 $Net::SecureManagerHost = $NetSecureManagerHost @ ":8443";
             }
@@ -318,17 +306,11 @@ package platform
             if (($Pref::Video::DisplayDevice $= "D3D") || ($Pref::Video::DisplayDevice $= "OpenGL"))
             {
             }
-            else
+            if ($Pref::Video::DisplayDevice $= "Auto")
             {
-                if (($Pref::Video::DisplayDevice $= "Auto"))
-                {
-                    $Pref::Video::DisplayDevice = "";
-                }
-                else
-                {
-                    error("initialization", "Error: " @ $Pref::Video::DisplayDevice @ " not one of OpenGL|D3D|Auto");
-                }
+                $Pref::Video::DisplayDevice = "";
             }
+            error("initialization", "Error: " @ $Pref::Video::DisplayDevice @ " not one of OpenGL|D3D|Auto");
         }
         if (hasArg("-notexdelay"))
         {
@@ -353,7 +335,7 @@ package platform
     }
     function generateWindowTitle(%ServerName)
     {
-        if ((%ServerName $= ""))
+        if (%ServerName $= "")
         {
         }
         else
@@ -361,7 +343,7 @@ package platform
         }
         %ServerNameString = " on server" @ " " @ %ServerName;
         "";
-        if (($ETS::cityName $= ""))
+        if ($ETS::cityName $= "")
         {
         }
         else
@@ -374,7 +356,7 @@ package platform
         {
             %areaName = WorldMap.cityNameForServerName(%ServerName);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
-            if ((%locationName $= ""))
+            if (%locationName $= "")
             {
             }
             else
@@ -397,29 +379,20 @@ package platform
             {
                 %title = $ETS::AppName @ " (StagingRC Build " @ getBuildVersion() @ %ServerNameString @ ")";
             }
-            else
+            if (hasArg("-alpha"))
             {
-                if (hasArg("-alpha"))
-                {
-                    %title = $ETS::AppName @ " (Alpha Build " @ getBuildVersion() @ %LongCityNameString @ ")";
-                }
-                else
-                {
-                    if (hasArg("-standalone"))
-                    {
-                        %alphabufferrequested = "";
-                        if (hasArg("-alphabuffer"))
-                        {
-                            %alphabufferrequested = " * Alpha Buffer Requested *";
-                        }
-                        %title = $ETS::AppName @ " (Standalone Build " @ getBuildVersion() @ %ServerNameString @ %CityNameString @ %alphabufferrequested @ ")";
-                    }
-                    else
-                    {
-                        %title = $ETS::AppName @ " - " @ $ETS::AppVersion @ %LongCityNameString;
-                    }
-                }
+                %title = $ETS::AppName @ " (Alpha Build " @ getBuildVersion() @ %LongCityNameString @ ")";
             }
+            if (hasArg("-standalone"))
+            {
+                %alphabufferrequested = "";
+                if (hasArg("-alphabuffer"))
+                {
+                    %alphabufferrequested = " * Alpha Buffer Requested *";
+                }
+                %title = $ETS::AppName @ " (Standalone Build " @ getBuildVersion() @ %ServerNameString @ %CityNameString @ %alphabufferrequested @ ")";
+            }
+            %title = $ETS::AppName @ " - " @ $ETS::AppVersion @ %LongCityNameString;
         }
         return %title;
     }

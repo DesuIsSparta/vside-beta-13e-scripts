@@ -63,15 +63,15 @@ function salonChairControlGui::onRefreshTargetsList(%this)
 function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item)
 {
     %action = detag(%actionTagged);
-    if ((%action $= "begin"))
+    if (%action $= "begin")
     {
         $gSalonChairControlTargetsList = "";
     }
     else
     {
-        if ((%action $= "add"))
+        if (%action $= "add")
         {
-            if (($gSalonChairControlTargetsList $= ""))
+            if ($gSalonChairControlTargetsList $= "")
             {
                 $gSalonChairControlTargetsList = %item;
             }
@@ -80,12 +80,9 @@ function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item)
                 $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
             }
         }
-        else
+        if (%action $= "finish")
         {
-            if ((%action $= "finish"))
-            {
-                salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
-            }
+            salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
         }
     }
 }
@@ -93,22 +90,22 @@ function salonChairControlGui::onGotTargetsList(%this, %theList)
 {
     salonChairControlTargetsPopup.clear();
     %num = getRecordCount(%theList);
-    if ((%num < 1.0))
+    if (%num < 1)
     {
         error("apparently nobody is here. this is bad.");
         return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %entry = getRecord(%theList, %n);
         salonChairControlTargetsPopup.add(%entry, %n);
-        if ((%entry $= $gSalonChairControlGuiPrevMenuTarget))
+        if (%entry $= $gSalonChairControlGuiPrevMenuTarget)
         {
             %nextItem = %entry;
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     salonChairControlTargetsPopup.sort();
     if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))

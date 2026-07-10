@@ -25,7 +25,7 @@ function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter)
 }
 function SpaceDef::onEnterLeaveDoStore(%this, %isEnter)
 {
-    if ((%this.storeID $= ""))
+    if (%this.storeID $= "")
     {
         return;
     }

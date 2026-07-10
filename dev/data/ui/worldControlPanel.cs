@@ -16,11 +16,11 @@ function worldControlPanel::close(%this)
 }
 function interiorRenderModeNext()
 {
-    interiorRenderModeSet((getInteriorRenderMode() + 1.0));
+    interiorRenderModeSet((getInteriorRenderMode() + 1));
 }
 function interiorRenderModePrev()
 {
-    interiorRenderModeSet((getInteriorRenderMode() - 1.0));
+    interiorRenderModeSet((getInteriorRenderMode() - 1));
 }
 $interiorRenderModeNames[0] = "normal";
 $interiorRenderModeNames[1] = "lines";
@@ -60,7 +60,7 @@ function gui_DevOpts_ShowCamPos()
 }
 function gui_DevOpts_Toggle_WorldTextureLobotomyFile()
 {
-    if (($DevPref::OpenGL::WorldTextureLobotomyFile $= ""))
+    if ($DevPref::OpenGL::WorldTextureLobotomyFile $= "")
     {
         $DevPref::OpenGL::WorldTextureLobotomyFile = "platform/client/ui/paperdolls/greychecks";
     }
@@ -73,7 +73,7 @@ function gui_DevOpts_Toggle_WorldTextureLobotomyFile()
 }
 function gui_DevOpts_Toggle_PlayerTextureLobotomyFile()
 {
-    if (($DevPref::OpenGL::PlayerTextureLobotomyFile $= ""))
+    if ($DevPref::OpenGL::PlayerTextureLobotomyFile $= "")
     {
         $DevPref::OpenGL::PlayerTextureLobotomyFile = "projects/common/worlds/disco_floor";
     }

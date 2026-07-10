@@ -17,11 +17,11 @@ function AccountBalanceHud::Initialize(%this)
         %this.pulsar.setDelay(40);
         %nums = "00 01 02 03 04 05 06 07 08 09 10 11";
         %i = 0;
-        while ((%i < getWordCount(%nums)))
+        while (%i < getWordCount(%nums))
         {
             %num = getWord(%nums, %i);
             %this.pulsar.addFrame("platform/client/ui/vpoints_pulse/vpoints_pulse_" @ %num @ ".png");
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
         %this.pulsar.setProfile(ETSNonModalProfile);
         %this.pulsar.setVisible(0);
@@ -88,6 +88,6 @@ function AccountBalanceHud::update(%this)
     {
         AccountBalanceVPointsText.setText(commaify($Player::VPoints));
         AccountBalanceVBuxText.setText(commaify($Player::VBux));
-        AccountBalancePBController.setValue((1.0 - respektPercentToNextLevel($gMyRespektPoints)));
+        AccountBalancePBController.setValue((1 - respektPercentToNextLevel($gMyRespektPoints)));
     }
 }

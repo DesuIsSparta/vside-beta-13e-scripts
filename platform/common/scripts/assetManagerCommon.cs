@@ -25,7 +25,7 @@ function AssetManager::getPackageOrder()
     }
     %map.put("projects/vside/worlds/common.zip", 0);
     %map.put("projects/vside/worlds/gateway.zip", 1);
-    if ((%userOwner $= "degrassi"))
+    if (%userOwner $= "degrassi")
     {
         %map.put("projects/vside/worlds/lounge.zip", 3);
         %map.put("projects/vside/worlds/raijuku.zip", 4);
@@ -55,20 +55,20 @@ function AssetManager::getMissingAssets()
     {
         MissionCleanup.add(%map);
     }
-    if (($AssetManager::missingAssets $= ""))
+    if ($AssetManager::missingAssets $= "")
     {
         return %map;
     }
     %num = getFieldCount($AssetManager::missingAssets);
     %orderMap = AssetManager::getPackageOrder();
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %key = getField($AssetManager::missingAssets, %n);
         %order = %orderMap.get(%key);
         echo("key: " @ %key @ " or: " @ %order);
         %map.put(%key, %order);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     return %map;
 }
@@ -77,11 +77,11 @@ function AssetManager::MapToString(%map)
     %str = "";
     %orderMap = AssetManager::getPackageOrder();
     %n = 0;
-    while ((%n < %orderMap.size()))
+    while (%n < %orderMap.size())
     {
         %key = %orderMap.getKey(%n);
         %str = %str @ %key @ "=" @ %map.getValue(%n) @ "\t" @ "";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function AssetManager::StringToMap(%str)
@@ -93,14 +93,14 @@ function AssetManager::StringToMap(%str)
     }
     %num = getFieldCount(%str);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %tag = getField(%str, %n);
         %fs = strstr(%tag, "=");
         %value = getSubStr(strrchr(%tag, "="), 1, 10000);
         %key = getSubStr(%tag, 0, %fs);
         %map.put(%key, %value);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     return %map;
 }
@@ -113,14 +113,14 @@ function AssetManager::StringToArray(%str)
     }
     %num = getFieldCount(%str);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %tag = getField(%str, %n);
         %fs = strstr(%tag, "=");
         %value = getSubStr(strrchr(%tag, "="), 1, 10000);
         %key = getSubStr(%tag, 0, %fs);
         %array.push_back(%key, %value);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     return %array;
 }
@@ -128,11 +128,11 @@ function AssetManager::dumpMap(%map)
 {
     echo("Map: " @ %map);
     %n = 0;
-    while ((%n < %map.size()))
+    while (%n < %map.size())
     {
         %key = %map.getKey(%n);
         echo(%key @ " = " @ %map.getValue(%n));
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function AssetManager::rehashSet(%map)
@@ -143,76 +143,58 @@ function AssetManager::rehashSet(%map)
     }
     assetManagerPurge();
     %n = 0;
-    while ((%n < %map.size()))
+    while (%n < %map.size())
     {
         %key = %map.getKey(%n);
         assetManagerInsert(%key);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     assetManagerHashPackages();
     return assetManagerMapString();
 }
 function AssetManager::cityToPackage(%str)
 {
-    if ((%str $= "nv"))
+    if (%str $= "nv")
     {
         return "projects/vside/worlds/lounge.zip";
     }
     else
     {
-        if ((%str $= "lga"))
+        if (%str $= "lga")
         {
             return "projects/vside/worlds/lga.zip";
         }
-        else
+        if (%str $= "rj")
         {
-            if ((%str $= "rj"))
-            {
-                return "projects/vside/worlds/raijuku.zip";
-            }
-            else
-            {
-                if ((%str $= "gw"))
-                {
-                    return "projects/vside/worlds/gateway.zip";
-                }
-                else
-                {
-                    return "";
-                }
-            }
+            return "projects/vside/worlds/raijuku.zip";
         }
+        if (%str $= "gw")
+        {
+            return "projects/vside/worlds/gateway.zip";
+        }
+        return "";
     }
 }
 function AssetManager::packageToCity(%str)
 {
-    if ((%str $= "lounge.zip"))
+    if (%str $= "lounge.zip")
     {
         return "nv";
     }
     else
     {
-        if ((%str $= "lga.zip"))
+        if (%str $= "lga.zip")
         {
             return "lga";
         }
-        else
+        if (%str $= "raijuku.zip")
         {
-            if ((%str $= "raijuku.zip"))
-            {
-                return "rj";
-            }
-            else
-            {
-                if ((%str $= "gateway.zip"))
-                {
-                    return "gw";
-                }
-                else
-                {
-                    return "";
-                }
-            }
+            return "rj";
         }
+        if (%str $= "gateway.zip")
+        {
+            return "gw";
+        }
+        return "";
     }
 }

@@ -21,7 +21,7 @@ function geShoutOutWindow::open(%this)
     shoutOut_action_GroundState();
     %pricePhraseTicker = shoutout_getPriceVBux_Ticker() @ " " @ "vBux";
     geShoutout_Ticker_Include.setText("vSide Ticker -" @ " " @ %pricePhraseTicker);
-    if (($Player::VBux < shoutout_getPriceVBux_Ticker()))
+    if ($Player::VBux < shoutout_getPriceVBux_Ticker())
     {
         geShoutout_Ticker_Include.setValue(0);
         geShoutout_Ticker_Include.setActive(0);
@@ -33,11 +33,11 @@ function geShoutOutWindow::open(%this)
     geShoutout_Snapshot_Message.setText(MessageHudEdit.getText());
     geShoutout_Snapshot_Message.makeFirstResponder(1);
     geShoutout_Snapshot_Message.onKeystroke();
-    if ((geShoutout_Credential_Twitter_Username.getText() $= ""))
+    if (geShoutout_Credential_Twitter_Username.getText() $= "")
     {
         geShoutout_Credential_Twitter_Username.setText(gUserPropMgrClient.getProperty($Player::Name, "twitter_un", ""));
     }
-    if ((geShoutout_Credential_Twitter_Password.getText() $= ""))
+    if (geShoutout_Credential_Twitter_Password.getText() $= "")
     {
         geShoutout_Credential_Twitter_Password.setText(gUserPropMgrClient.getProperty($Player::Name, "twitter_pw", ""));
     }
@@ -58,7 +58,7 @@ function geShoutOutWindow::close(%this)
 }
 function shoutout_open(%text)
 {
-    %isGW = ($gContiguousSpaceName $= "gw");
+    %isGW = $gContiguousSpaceName $= "gw";
     if (%isGW)
     {
         echo(getScopeName() @ " " @ "- no ticker in gateway");
@@ -88,7 +88,7 @@ function shoutout_setIncludeSnapshot(%includeIt)
 function geShoutout_Snapshot_Retake::onURL(%this, %url)
 {
     %cmd = firstWord(%url);
-    if ((%cmd $= "RETAKE"))
+    if (%cmd $= "RETAKE")
     {
         shoutout_takeSnapshot();
     }
@@ -138,10 +138,10 @@ function shoutout_takeSnapshot()
     geShoutout_Snapshot.snap_fnBase = $DC::LocalAvatarFolder @ "/shoutout";
     geShoutout_Snapshot.snap_fnExt = ".jpg";
     %cmd = "generic_takeSnapshotReally(geShoutout_Snapshot);";
-    if (($Platform $= "windows"))
+    if ($Platform $= "windows")
     {
     }
-    if (($Platform::Version::Major == 6.0))
+    if ($Platform::Version::Major == 6)
     {
         waitAFrameAndEval("waitAFrameAndEval(\"" @ %cmd @ "\");");
     }
@@ -166,11 +166,11 @@ function shoutout_getCurrentMaxCharacters()
     %max = $UserPref::UI::ShoutOut::Twitter::Include ? 140 : 200;
     if ($UserPref::UI::ShoutOut::Show::Pic)
     {
-        %max = (%max - (strlen("(Sent from )") + 19.0));
+        %max = %max - (strlen("(Sent from )") + 19);
     }
     else
     {
-        %max = (%max - strlen("(Sent from" @ " " @ "http://" @ $Net::BaseDomain) @ ")");
+        %max = %max - strlen("(Sent from" @ " " @ "http://" @ $Net::BaseDomain) @ ")";
     }
     return %max;
 }
@@ -190,7 +190,7 @@ function shoutout_setTwitterInclude(%value)
     else
     {
         geShoutout_Credentials_Twitter.schedule(0, "setVisible", 0);
-        geShoutout_Container_BelowTwitter.setTrgPosition(0, (getWord(geShoutout_Credentials_Twitter.getPosition(), 1) + 2.0));
+        geShoutout_Container_BelowTwitter.setTrgPosition(0, (getWord(geShoutout_Credentials_Twitter.getPosition(), 1) + 2));
     }
     shoutout_checkSendable();
 }
@@ -201,16 +201,16 @@ function shoutout_setFBInclude(%value)
 function shoutout_checkSendable()
 {
     %sendable = 0;
-    %sendable = (%sendable | $UserPref::UI::ShoutOut::Ticker::Include);
-    %sendable = (%sendable | $UserPref::UI::ShoutOut::Twitter::Include);
-    %sendable = (%sendable | $UserPref::UI::ShoutOut::FB::Include);
+    %sendable = %sendable | $UserPref::UI::ShoutOut::Ticker::Include;
+    %sendable = %sendable | $UserPref::UI::ShoutOut::Twitter::Include;
+    %sendable = %sendable | $UserPref::UI::ShoutOut::FB::Include;
     geShoutout_Snapshot_SendButton.setActive(%sendable);
 }
 function geShoutout_Snapshot_Message::onKeystroke(%this)
 {
     %max = shoutout_getCurrentMaxCharacters();
     %used = strlen(%this.getText());
-    %left = (%max - %used);
+    %left = %max - %used;
     geShoutout_Snapshot_Message_CharacterCount.setTextWithStyle(%left);
 }
 function geShoutout_Snapshot_Message::onEnter(%this)
@@ -312,7 +312,7 @@ function onDoneOrErrorCallback_Twitter_verify_credentials(%request)
     if (isObject(%xmlRoot))
     {
     }
-    %succ = (%xmlRoot.getValue() $= "user");
+    %succ = %xmlRoot.getValue() $= "user";
     geShoutout_Avatar_Twitter.setBitmap("platform/client/ui/external_portrait_unknown");
     geShoutout_Avatar_Twitter.tooltip = "problem accessing your twitter account";
     if (!%succ)
@@ -430,7 +430,7 @@ function shoutOut_action_sendPhase2()
     if ($UserPref::UI::ShoutOut::FB::Include)
     {
     }
-    if (($gShoutOut_PhotoURL $= ""))
+    if ($gShoutOut_PhotoURL $= "")
     {
         MessageBoxOK("sorry, i forgot to mention..", "To share on Facebook you have to use a snapshot.<br>This will be fixed in a future release,<br>but for now Try again!", "schedule(500, 0, \"shoutOut_action_forceSnapshot\");");
         shoutOut_action_GroundState();
@@ -531,11 +531,11 @@ function onDoneOrErrorCallback_Twitter_statuses_update(%request)
     if (isObject(%xmlRoot))
     {
     }
-    %succ = (%xmlRoot.getValue() $= "status");
+    %succ = %xmlRoot.getValue() $= "status";
     if (%succ)
     {
         %tweetID = %xmlRoot.getFirstChild("id").getText();
-        if ((%tweetID $= ""))
+        if (%tweetID $= "")
         {
             error(getScopeName() @ " " @ "- no tweet ID." @ " " @ %request.getResults());
             %msg = "<br>sent!";
@@ -576,7 +576,7 @@ function shoutOut_action_forceSnapshot()
 function shoutOut_SetStatus(%status, %avatarBitmap)
 {
     isDefined("%avatarBitmap", "");
-    if ((%status $= ""))
+    if (%status $= "")
     {
         geShoutOut_Sending_Container.setVisible(0);
         return;

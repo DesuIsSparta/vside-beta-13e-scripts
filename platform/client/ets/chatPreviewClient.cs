@@ -4,7 +4,7 @@ $gLastPreviewText = "";
 function Player::sendPreviewText(%this, %text)
 {
     %text = StripMLControlChars(%text);
-    if ((getSubStr(trim(%text), 0, 1) $= "/"))
+    if (getSubStr(trim(%text), 0, 1) $= "/")
     {
         return;
     }
@@ -14,7 +14,7 @@ function Player::sendPreviewText(%this, %text)
         %text = removeLastWordIfNotFollowedByWhiteSpace(%text);
     }
     %text = trim(%text);
-    if ((%text $= ""))
+    if (%text $= "")
     {
         if (!(%text $= $gLastPreviewText))
         {
@@ -25,14 +25,14 @@ function Player::sendPreviewText(%this, %text)
         return;
     }
     $gIsTyping = 1;
-    %numChars = ($Chat::Preview::Size + 1.0);
-    %start = (strlen(%text) - %numChars);
-    if ((%start < 0.0))
+    %numChars = $Chat::Preview::Size + 1;
+    %start = strlen(%text) - %numChars;
+    if (%start < 0)
     {
         %start = 0;
     }
     %text = getSubStr(%text, %start, %numChars);
-    if ((%text $= $gLastPreviewText))
+    if (%text $= $gLastPreviewText)
     {
         return;
     }
@@ -44,10 +44,7 @@ function Player::sendPreviewText(%this, %text)
         {
             %text = "";
         }
-        else
-        {
-            %text = " ";
-        }
+        %text = " ";
     }
     commandToServer('ChatPreview', %text);
     setIdle(0);
@@ -55,7 +52,7 @@ function Player::sendPreviewText(%this, %text)
 function Player::onGotChatPreview(%this, %dry)
 {
     %wet = TryFixBadWords(%dry);
-    if ((%this $= $player))
+    if (%this $= $player)
     {
         if ($Chat::Preview::ShowOwn)
         {
@@ -74,14 +71,14 @@ function Player::onGotChatPreview(%this, %dry)
 }
 function Player::onGotTypingSomething(%this, %text)
 {
-    if ((%text $= gGetField(%this, lastTypingSomethingText)))
+    if (%text $= gGetField(%this, lastTypingSomethingText))
     {
         return;
     }
     gSetField(%this, lastTypingSomethingText, %text);
     cancel(gGetField(%this, IsNoLongerTypingTimer));
     cancel(gGetField(%this, TimeoutChatPreviewTimer));
-    if ((%text $= ""))
+    if (%text $= "")
     {
         %this.setTyping(0);
     }

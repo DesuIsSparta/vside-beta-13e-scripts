@@ -1,7 +1,7 @@
 function serverCmdToggleCamera(%client)
 {
     %control = %client.getControlObject();
-    if ((%control == %client.Player))
+    if (%control == %client.Player)
     {
         %control = %client.Camera;
         %control.mode = toggleCameraFly;

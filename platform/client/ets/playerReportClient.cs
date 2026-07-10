@@ -1,7 +1,7 @@
 function ReportAbuseDlg::open(%this, %targetName)
 {
     Canvas.pushDialog(%this, 0);
-    if ((%targetName $= ""))
+    if (%targetName $= "")
     {
         %targetName = "foo";
     }
@@ -87,9 +87,9 @@ function onDoneOrErrorCallback_AbuseReport(%request)
         MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
     }
     commandToServer('NotifyAbuseReport', %request.targetName, getSubStr(ReportDescription.getText(), 0, 64));
-    $gSecondsToWaitBetweenReportAbuseAndUnignore = (10.0 * 60.0);
+    $gSecondsToWaitBetweenReportAbuseAndUnignore = 10 * 60;
     safeEnsureScriptObjectWithInit("StringMap", "cantUnignoreList", "{ ignoreCase = true; }");
-    cantUnignoreList.put(%request.targetName, (getSimTime() + ($gSecondsToWaitBetweenReportAbuseAndUnignore * 1000.0)));
+    cantUnignoreList.put(%request.targetName, (getSimTime() + ($gSecondsToWaitBetweenReportAbuseAndUnignore * 1000)));
     %request.dlg.close();
     if (isFile("./chatbub.txt"))
     {
@@ -99,7 +99,7 @@ function onDoneOrErrorCallback_AbuseReport(%request)
 function doUserReport(%targetName, %reportType)
 {
     ReportAbuseDlg.targetName = %targetName;
-    if ((%reportType $= "abuse"))
+    if (%reportType $= "abuse")
     {
         %ignored = BuddyHudWin.getIgnoreStatus(%targetName);
         if (!%ignored)
@@ -109,9 +109,6 @@ function doUserReport(%targetName, %reportType)
             %dlg.callback[%targetName,"\", \"add\"); ReportAbuseDlg.open(\"",%targetName,"\"); ",%dlg.getId(),".close();",1] = "doUserIgnore(\"";
             %dlg.callback[2] = "";
         }
-        else
-        {
-            ReportAbuseDlg.open(%targetName);
-        }
+        ReportAbuseDlg.open(%targetName);
     }
 }

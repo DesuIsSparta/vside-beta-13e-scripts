@@ -12,7 +12,7 @@ function setHighFidelityCull(%on)
 $closeConfirmDlg = 0;
 function onAppCloseButton()
 {
-    commandToServer('SetLookAt', -(1.0), 0, 0);
+    commandToServer('SetLookAt', -(1), 0, 0);
     if (isObject($closeConfirmDlg))
     {
         %isShowingNow = $closeConfirmDlg.visible;
@@ -35,7 +35,7 @@ function onAppCloseButton()
         %yesButtonPos = %dialog.button[0].getParent().getPosition();
         %ctrl = new GuiCheckBoxCtrl("") {
             profile = "ETSCheckBoxProfile";
-            position = getWord(%yesButtonPos, 0) @ " " @ (getWord(%yesButtonPos, 1) - 23.0);
+            position = getWord(%yesButtonPos, 0) @ " " @ (getWord(%yesButtonPos, 1) - 23);
             extent = "110 20";
             horizSizing = "center";
             vertSizing = "top";
@@ -47,7 +47,7 @@ function onAppCloseButton()
         %dialog.visitProfileOptionCtrl = %ctrl;
         %width = getWord(%window.getExtent(), 0);
         %height = getWord(%window.getExtent(), 1);
-        %window.resize(%width, (%height + 20.0));
+        %window.resize(%width, (%height + 20));
     }
 }
 function confirmQuitOnYes()

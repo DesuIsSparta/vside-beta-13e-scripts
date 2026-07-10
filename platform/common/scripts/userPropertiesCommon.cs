@@ -22,7 +22,7 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
         error(getScopeName() @ " " @ "- not initialized for" @ " " @ %userName @ " " @ getTrace());
         return;
     }
-    if ((%propertyValue $= "false"))
+    if (%propertyValue $= "false")
     {
     }
     else
@@ -30,7 +30,7 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
     }
     %propertyValue = %propertyValue;
     0;
-    if ((%propertyValue $= "true"))
+    if (%propertyValue $= "true")
     {
     }
     else
@@ -41,7 +41,7 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
     if (%smValue.hasKey(%propertyName))
     {
     }
-    if ((%smValue.get(%propertyName) $= %propertyValue))
+    if (%smValue.get(%propertyName) $= %propertyValue)
     {
         return;
     }
@@ -100,7 +100,7 @@ function userPropertiesMgr::_clearProperty(%this, %userName, %propertyName, %war
 function userPropertiesMgr::incrementIntegerProperty(%this, %userName, %propertyName, %incrementAmount)
 {
     %curVal = %this.getProperty(%userName, %propertyName, 0);
-    %newVal = (%curVal + %incrementAmount);
+    %newVal = %curVal + %incrementAmount;
     %this.setProperty(%userName, %propertyName, %newVal);
     return %newVal;
 }
@@ -192,7 +192,7 @@ function userProperties_makeManager(%name, %isClient)
 }
 function userPropertiesMgr::isClient(%this)
 {
-    return (%this.clientOrServer $= "client");
+    return %this.clientOrServer $= "client";
 }
 function userPropertiesMgr::isServer()
 {
@@ -274,11 +274,11 @@ function userPropertiesMgr::parseRequest(%this, %request)
     %smValue.clear();
     %num = %request.getValue("propertyCount");
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %key = utf8Decode(%request.getValue("property" @ %n @ ".key"));
         %value = utf8Decode(%request.getValue("property" @ %n @ ".value"));
-        if ((%value $= "false"))
+        if (%value $= "false")
         {
         }
         else
@@ -286,7 +286,7 @@ function userPropertiesMgr::parseRequest(%this, %request)
         }
         %value = %value;
         0;
-        if ((%value $= "true"))
+        if (%value $= "true")
         {
         }
         else
@@ -295,7 +295,7 @@ function userPropertiesMgr::parseRequest(%this, %request)
         %value = %value;
         1;
         %smValue.put(%key, %value);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function userPropertiesMgr::requestPropertiesForce(%this, %userName, %callback)

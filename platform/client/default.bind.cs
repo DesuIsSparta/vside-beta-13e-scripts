@@ -126,7 +126,7 @@ function escapeFromGame()
         Canvas.releaseDragControl();
         return;
     }
-    %topGui = Canvas.getObject((Canvas.getCount() - 1.0));
+    %topGui = Canvas.getObject((Canvas.getCount() - 1));
     %topName = %topGui.getName();
     if (!(%topName $= "playGui"))
     {
@@ -140,7 +140,7 @@ function escapeFromGame()
         }
         return;
     }
-    if ((HudTabs.currentTabIndex >= 0.0))
+    if (HudTabs.currentTabIndex >= 0)
     {
         HudTabs.overrideLockedOpen = 1;
         HudTabs.close();
@@ -154,7 +154,7 @@ function escapeFromGame()
             eval(%focused.escCommand);
             return;
         }
-        if ((%focused == MessageHudEdit.getId()))
+        if (%focused == MessageHudEdit.getId())
         {
             finishTextEntry();
             return;
@@ -166,17 +166,11 @@ function escapeFromGame()
         {
             finishTextEntry();
         }
-        else
+        if (ConvBub.isVisible())
         {
-            if (ConvBub.isVisible())
-            {
-                ConvBub.close(0);
-            }
-            else
-            {
-                AIMConvManager.selectConvAtIndex(-(1.0));
-            }
+            ConvBub.close(0);
         }
+        AIMConvManager.selectConvAtIndex(-(1));
     }
 }
 $movementSpeed = 1;
@@ -209,11 +203,11 @@ function stopMoving(%val)
 }
 function standOrLeaveOrbitModeIfAppropriate()
 {
-    if (($IN_FREEFLY_CAM != 1.0))
+    if ($IN_FREEFLY_CAM != 1)
     {
         SendStandCommand(1);
     }
-    if (($IN_ORBIT_CAM == 1.0))
+    if ($IN_ORBIT_CAM == 1)
     {
         togglePlayerCamMode();
     }
@@ -227,7 +221,7 @@ function moveleft(%val)
     {
         setIdle(0);
     }
-    $mvLeftAction = (%val * $movementSpeed);
+    $mvLeftAction = %val * $movementSpeed;
     if (%val)
     {
         standOrLeaveOrbitModeIfAppropriate();
@@ -242,7 +236,7 @@ function moveright(%val)
     {
         setIdle(0);
     }
-    $mvRightAction = (%val * $movementSpeed);
+    $mvRightAction = %val * $movementSpeed;
     if (%val)
     {
         standOrLeaveOrbitModeIfAppropriate();
@@ -297,7 +291,7 @@ function doubleTapCheckOnAction(%actionTag, %keyDown, %canDoubleTapInCamera, %re
             cancel($DoubleTapStopTimer[%actionTag]);
             $DoubleTapStopTimer[%actionTag] = 0;
         }
-        if (($DoubleTapActionAlreadyDone[%actionTag] == 0.0))
+        if ($DoubleTapActionAlreadyDone[%actionTag] == 0)
         {
             $DoubleTapActionAlreadyDone[%actionTag] = 1;
             return 0;
@@ -312,14 +306,11 @@ function doubleTapCheckOnAction(%actionTag, %keyDown, %canDoubleTapInCamera, %re
         if (!%canDoubleTapInCamera)
         {
         }
-        if (($IN_FREEFLY_CAM == 1.0))
+        if ($IN_FREEFLY_CAM == 1)
         {
             doubleTapActionStop(%actionTag);
         }
-        else
-        {
-            $DoubleTapStopTimer[%actionTag] = schedule(%resetDelayMS, 0, "doubleTapActionStop", %actionTag);
-        }
+        $DoubleTapStopTimer[%actionTag] = schedule(%resetDelayMS, 0, "doubleTapActionStop", %actionTag);
     }
 }
 doubleTapDeclareActionVariable("forward");
@@ -366,10 +357,7 @@ function nextPlayerCamMode()
         {
             toggleFirstPerson();
         }
-        else
-        {
-            togglePlayerCamMode();
-        }
+        togglePlayerCamMode();
     }
     if (isObject(BroadcastHideSelfCheckbox))
     {
@@ -392,7 +380,7 @@ function movebackward(%val)
     {
         setIdle(0);
     }
-    $mvBackwardAction = (%val * $movementSpeed);
+    $mvBackwardAction = %val * $movementSpeed;
     if (%val)
     {
         standOrLeaveOrbitModeIfAppropriate();
@@ -400,11 +388,11 @@ function movebackward(%val)
 }
 function moveup(%val)
 {
-    $mvUpAction = (%val * $movementSpeed);
+    $mvUpAction = %val * $movementSpeed;
 }
 function movedown(%val)
 {
-    $mvDownAction = (%val * $movementSpeed);
+    $mvDownAction = %val * $movementSpeed;
 }
 function turnLeft(%val)
 {
@@ -484,7 +472,7 @@ function panDown(%val)
 }
 function getMouseAdjustAmount(%val)
 {
-    return ((%val * ($cameraFov / 90.0)) * 0.01);
+    return (%val * ($cameraFov / 90)) * 0.01;
 }
 function yaw(%val)
 {
@@ -495,7 +483,7 @@ function yaw(%val)
     {
         setIdle(0);
     }
-    $mvYaw = ($mvYaw + getMouseAdjustAmount(%val));
+    $mvYaw = $mvYaw + getMouseAdjustAmount(%val);
 }
 function pitch(%val)
 {
@@ -506,7 +494,7 @@ function pitch(%val)
     {
         setIdle(0);
     }
-    $mvPitch = ($mvPitch + getMouseAdjustAmount(%val));
+    $mvPitch = $mvPitch + getMouseAdjustAmount(%val);
 }
 function changeCameraFOV(%val)
 {
@@ -515,14 +503,14 @@ function changeCameraFOV(%val)
         return;
     }
     %fov = getFovCur();
-    %fov = (%fov - (%val * 0.05));
+    %fov = %fov - (%val * 0.05);
     setFOV(%fov);
     $Pref::Player::CurrentFOV = %fov;
     $UserPref::Player::DefaultFOV = %fov;
 }
 $gCameraDistMin = 0.5;
-$gCameraDistStartFaceZoom = 2.0;
-$gCameraDistMax = 4.0;
+$gCameraDistStartFaceZoom = 2;
+$gCameraDistMax = 4;
 function changeCameraDist(%val)
 {
     if ($firstPerson || !$GameConnection.isPresentAtBody())
@@ -530,24 +518,24 @@ function changeCameraDist(%val)
         changeCameraFOV(%val);
         return;
     }
-    %val = (%val * -(0.001));
-    %val = (%val + 1.0);
-    %f = ($cameraDist * %val);
+    %val = %val * -(0.001);
+    %val = %val + 1;
+    %f = $cameraDist * %val;
     %f = max(%f, $gCameraDistMin);
     %f = min(%f, $gCameraDistMax);
     $cameraDist = %f;
 }
 function changeCameraDistAndFOV(%val)
 {
-    %val = (%val * -(0.001));
-    %val = (%val + 1.0);
+    %val = %val * -(0.001);
+    %val = %val + 1;
     %dollyMin = $gCameraDistMin;
     %dollyMax = $gCameraDistMax;
-    %f = ($cameraDist * %val);
+    %f = $cameraDist * %val;
     %f = max(%f, %dollyMin);
     %f = min(%f, %dollyMax);
     %db = $player.getDataBlock();
-    %fov = (((1.0 - ((%f - %dollyMin) / (%dollyMax - %dollyMin))) * ((%db.cameraMaxFov * 0.9) - %db.cameraMinFov)) + %db.cameraMinFov);
+    %fov = ((1 - ((%f - %dollyMin) / (%dollyMax - %dollyMin))) * ((%db.cameraMaxFov * 0.9) - %db.cameraMinFov)) + %db.cameraMinFov;
     $cameraDist = %f;
     setFOV(%fov);
 }
@@ -566,7 +554,7 @@ function changeCameraDistAndFOVFine(%val)
 function jump(%val)
 {
     setIdle(0);
-    $mvTriggerCount2 = ($mvTriggerCount2 + 1.0);
+    $mvTriggerCount2 = $mvTriggerCount2 + 1;
 }
 function jumpOnce()
 {
@@ -585,14 +573,11 @@ function doPropAction(%actionNum)
         {
             ClosetGui.isDoingPropAction = 1;
             %propAnimation = $player.getPropAnimationFromSkus($ClosetSkusOutfit[$ClosetOutfitName], %actionNum);
-            if ((%propAnimation $= ""))
+            if (%propAnimation $= "")
             {
                 ClosetGui.isDoingPropAction = 0;
             }
-            else
-            {
-                $player.playAnim(%propAnimation);
-            }
+            $player.playAnim(%propAnimation);
         }
     }
     else
@@ -618,11 +603,11 @@ function stopPropAction()
 }
 function mouseFire(%val)
 {
-    $mvTriggerCount0 = ($mvTriggerCount0 + 1.0);
+    $mvTriggerCount0 = $mvTriggerCount0 + 1;
 }
 function altTrigger(%val)
 {
-    $mvTriggerCount1 = ($mvTriggerCount1 + 1.0);
+    $mvTriggerCount1 = $mvTriggerCount1 + 1;
 }
 function toggleZoom(%val)
 {
@@ -663,45 +648,45 @@ function startZoomIn(%amt)
 {
     if (!isDefined("%amt"))
     {
-        %amt = 1.0;
+        %amt = 1;
     }
-    $cameraFOVAdjustment = (100.0 * %amt);
+    $cameraFOVAdjustment = 100 * %amt;
     zoomTick();
 }
 function startZoomOut(%amt)
 {
     if (!isDefined("%amt"))
     {
-        %amt = 1.0;
+        %amt = 1;
     }
-    $cameraFOVAdjustment = (-(100.0) * %amt);
+    $cameraFOVAdjustment = -(100) * %amt;
     zoomTick();
 }
 function startDollyIn(%amt)
 {
     if (!isDefined("%amt"))
     {
-        %amt = 1.0;
+        %amt = 1;
     }
-    $cameraDistAdjustment = (100.0 * %amt);
+    $cameraDistAdjustment = 100 * %amt;
     zoomTick();
 }
 function startDollyOut(%amt)
 {
     if (!isDefined("%amt"))
     {
-        %amt = 1.0;
+        %amt = 1;
     }
-    $cameraDistAdjustment = (-(100.0) * %amt);
+    $cameraDistAdjustment = -(100) * %amt;
     zoomTick();
 }
 function startDollyZoomIn(%amt)
 {
     if (!isDefined("%amt"))
     {
-        %amt = 1.0;
+        %amt = 1;
     }
-    $cameraFOVAdjustment = (100.0 * %amt);
+    $cameraFOVAdjustment = 100 * %amt;
     $cameraDistAdjustment = 1;
     zoomTick();
 }
@@ -709,9 +694,9 @@ function startDollyZoomOut(%amt)
 {
     if (!isDefined("%amt"))
     {
-        %amt = 1.0;
+        %amt = 1;
     }
-    $cameraFOVAdjustment = (-(100.0) * %amt);
+    $cameraFOVAdjustment = -(100) * %amt;
     $cameraDistAdjustment = 1;
     zoomTick();
 }
@@ -727,7 +712,7 @@ function zoomTick()
     {
         cancel($cameraFOVTimer);
     }
-    if ((($cameraFOVAdjustment * $cameraDistAdjustment) != 0.0))
+    if (($cameraFOVAdjustment * $cameraDistAdjustment) != 0)
     {
         changeCameraDistAndFOV($cameraFOVAdjustment);
     }
@@ -736,7 +721,7 @@ function zoomTick()
         changeCameraFOV($cameraFOVAdjustment);
         changeCameraDist($cameraDistAdjustment);
     }
-    if (($cameraFOVAdjustment != 0.0) || ($cameraDistAdjustment != 0.0))
+    if (($cameraFOVAdjustment != 0) || ($cameraDistAdjustment != 0))
     {
         $cameraFOVTimer = schedule(25, 0, "zoomTick");
     }
@@ -773,13 +758,13 @@ function closeCSPanelsInOtherCategories(%panel)
     %category = CSPanelCategories.get(%panel.getName());
     %size = CSPanelCategories.size();
     %i = 0;
-    while ((%i < %size))
+    while (%i < %size)
     {
         if (!(CSPanelCategories.getValue(%i) $= %category))
         {
             CSPanelCategories.getKey(%i).close();
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function numCSPanelsOpen()
@@ -787,13 +772,13 @@ function numCSPanelsOpen()
     %num = 0;
     %size = CSPanelCategories.size();
     %i = 0;
-    while ((%i < %size))
+    while (%i < %size)
     {
         if (CSPanelCategories.getKey(%i).isVisible())
         {
-            %num = (%num + 1.0);
+            %num = %num + 1;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     return %num;
 }
@@ -821,7 +806,7 @@ function toggleBuddyHudForTab(%tabName)
     if (%wasOpen)
     {
     }
-    if ((%tabName $= %currentTabName))
+    if (%tabName $= %currentTabName)
     {
         BuddyHudWin.close();
         return;
@@ -863,7 +848,7 @@ function okToOpenClosetGui()
 {
     if (isObject(ApplauseMeterGui) && (ApplauseMeterGui.applauseMeterUse $= "sumo"))
     {
-        if ((ApplauseMeterGui.sumoGameType $= "PillowFightGame"))
+        if (ApplauseMeterGui.sumoGameType $= "PillowFightGame")
         {
             MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USER-NO-OPEN-CLOSET"], "");
         }
@@ -911,19 +896,16 @@ function toggleClosetGui()
     toggleVisibleState(ClosetGui);
     if (ClosetGui.isVisible())
     {
-        if (($gCurrentStoreName $= ""))
+        if ($gCurrentStoreName $= "")
         {
             %tabToOpen = ClosetGui.lastTabOpened;
-            if ((%tabToOpen $= ""))
+            if (%tabToOpen $= "")
             {
                 %tabToOpen = "Closet";
             }
             ClosetTabs.selectTabWithName(%tabToOpen);
         }
-        else
-        {
-            ClosetTabs.selectTabWithName("Shops");
-        }
+        ClosetTabs.selectTabWithName("Shops");
     }
     scriptProfiler_LeaveScope();
 }
@@ -967,7 +949,7 @@ function toggleStore()
     {
         return;
     }
-    if (($gCurrentStoreName $= ""))
+    if ($gCurrentStoreName $= "")
     {
     }
     else
@@ -1012,10 +994,10 @@ function toggleBoneBlendGui()
 }
 function toggleTGF()
 {
-    if ((Canvas.getContent().getId() != geTGF.getId()))
+    if (Canvas.getContent().getId() != geTGF.getId())
     {
     }
-    if ((geTGF.getParent().getId() != PlayGui.getId()))
+    if (geTGF.getParent().getId() != PlayGui.getId())
     {
         geTGF.setVisible(0);
     }
@@ -1031,7 +1013,7 @@ function toggleCityMap()
 {
     geTGF.toggleToTabName("Map");
     geTGF_tabs.Maps_filterDestinationsByType("");
-    if (($CSBuildingInfo != 0.0))
+    if ($CSBuildingInfo != 0)
     {
         WorldMap.selectCity($CSBuildingInfo.city);
     }
@@ -1098,7 +1080,7 @@ function dropPlayerAtCamera()
 }
 function oxe_CameraSpeed(%val)
 {
-    $Camera::movementSpeed = (0.5 + ((%val - 1.0) * 1.0));
+    $Camera::movementSpeed = 0.5 + ((%val - 1) * 1);
 }
 $MFDebugRenderMode = 0;
 function cycleDebugRenderMode()
@@ -1107,31 +1089,28 @@ function cycleDebugRenderMode()
     {
         return;
     }
-    if ((getBuildString() $= "Debug"))
+    if (getBuildString() $= "Debug")
     {
-        if (($MFDebugRenderMode == 0.0))
+        if ($MFDebugRenderMode == 0)
         {
             $MFDebugRenderMode = 1;
             GLEnableOutline(1);
         }
         else
         {
-            if (($MFDebugRenderMode == 1.0))
+            if ($MFDebugRenderMode == 1)
             {
                 $MFDebugRenderMode = 2;
                 GLEnableOutline(0);
                 setInteriorRenderMode(7);
                 showInterior();
             }
-            else
+            if ($MFDebugRenderMode == 2)
             {
-                if (($MFDebugRenderMode == 2.0))
-                {
-                    $MFDebugRenderMode = 0;
-                    setInteriorRenderMode(0);
-                    GLEnableOutline(0);
-                    show();
-                }
+                $MFDebugRenderMode = 0;
+                setInteriorRenderMode(0);
+                GLEnableOutline(0);
+                show();
             }
         }
     }
@@ -1145,7 +1124,7 @@ GlobalActionMap.bind(keyboard, "ctrl capslock", ToggleConsoleReally);
 GlobalActionMap.bindCmd(keyboard, "alt F9", "cycleDebugRenderMode();", "");
 GlobalActionMap.bindCmd(keyboard, "escape", "", "escapeFromGame();");
 GlobalActionMap.bindCmd(keyboard, "alt F4", "", "");
-if (($Platform $= "macos"))
+if ($Platform $= "macos")
 {
     GlobalActionMap.bind(keyboard, "alt", "onDragAndDropCtrl");
 }
@@ -1192,7 +1171,7 @@ tgfMapMap.bindCmd(keyboard, "F2", "geTGF.closeFully();", "");
 tgfMapMap.bindCmd(keyboard, "F5", "geTGF.onRefresh();", "");
 new ActionMap(csFurnitureMap);
 csFurnitureMap.bindCmd(keyboard, "delete", "csTestFreeSelectedItem();", "");
-if (($Platform $= "macos"))
+if ($Platform $= "macos")
 {
     csFurnitureMap.bindCmd(keyboard, "backspace", "csTestFreeSelectedItem();", "");
     csFurnitureMap.bindCmd(keyboard, "delete", "csTestFreeSelectedItem();", "");

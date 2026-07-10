@@ -13,7 +13,7 @@ function DancePadGui::close(%this)
 }
 function DancePadGui::fillDanceButtonOptions(%this)
 {
-    if (($UserPref::Player::gender $= "f"))
+    if ($UserPref::Player::gender $= "f")
     {
         %dancesList = $dancesMapF;
     }
@@ -21,34 +21,34 @@ function DancePadGui::fillDanceButtonOptions(%this)
     {
         %dancesList = $dancesMapM;
     }
-    %num = (getFieldCount(%dancesList) / 2.0);
+    %num = getFieldCount(%dancesList) / 2;
     %numlists = 8;
     %listNum = 1;
-    while ((%listNum <= %numlists))
+    while (%listNum <= %numlists)
     {
         %theList = "danceButton" @ %listNum @ "List";
         %theList.clear();
         %n = 0;
-        while ((%n < %num))
+        while (%n < %num)
         {
-            %theList.add(getField(%dancesList, (%n * 2.0)), %n);
-            %n = (%n + 1.0);
+            %theList.add(getField(%dancesList, (%n * 2)), %n);
+            %n = %n + 1;
         }
         %theList.sort();
-        %sel = getRandom(1, (%num - 1.0));
-        (%n < %num);
+        %sel = getRandom(1, (%num - 1));
+        %n < %num;
         %theList.SetSelected(%sel);
-        if (($UserPref::DancePad::dancePadSeen == 0.0))
+        if ($UserPref::DancePad::dancePadSeen == 0)
         {
             %prefCmd = "$UserPref::DancePad::Button" @ %listNum @ " = " @ %sel @ ";";
             eval(%prefCmd);
         }
-        %listNum = (%listNum + 1.0);
+        %listNum = %listNum + 1;
     }
-    if (($UserPref::DancePad::dancePadSeen == 0.0))
+    if ($UserPref::DancePad::dancePadSeen == 0)
     {
         $UserPref::DancePad::dancePadSeen = 1;
-        (%listNum <= %numlists);
+        %listNum <= %numlists;
         return;
     }
     danceButton1List.SetSelected($UserPref::DancePad::Button1);
@@ -66,7 +66,7 @@ function dancePadDoEmote(%list)
     %curAnim = $player.getCurrActionName();
     %curBase = getSubStr(%curAnim, 2, 100);
     %curProt = ProtectedAnimsDict.get(%curBase);
-    if ((%curProt == 1.0))
+    if (%curProt == 1)
     {
         commandToServer('RequestToStand', 0, 0);
     }

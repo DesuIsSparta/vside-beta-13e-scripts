@@ -45,13 +45,13 @@ function Player::UseSkinToneRandom(%this)
     {
         $numSkinTones = 0;
         $skinTones[$numSkinTones] = "base";
-        $numSkinTones = ($numSkinTones + 1.0);
+        $numSkinTones = $numSkinTones + 1;
         $skinTones[$numSkinTones] = "tan";
-        $numSkinTones = ($numSkinTones + 1.0);
+        $numSkinTones = $numSkinTones + 1;
         $skinTones[$numSkinTones] = "dark";
-        $numSkinTones = ($numSkinTones + 1.0);
+        $numSkinTones = $numSkinTones + 1;
     }
-    %tone = $skinTones[getRandom(0, ($numSkinTones - 1.0))];
+    %tone = $skinTones[getRandom(0, ($numSkinTones - 1))];
     %face = getRandom(1, 4);
     %this.UseSkinTone(%tone @ ".body");
     %this.UseSkinTone(%tone @ %face @ ".face");
@@ -72,14 +72,14 @@ function Player::UseHairRandom(%this)
     {
         $numHairTones = 0;
         $hairTones[$numHairTones] = "base";
-        $numHairTones = ($numHairTones + 1.0);
+        $numHairTones = $numHairTones + 1;
         $hairTones[$numHairTones] = "red";
-        $numHairTones = ($numHairTones + 1.0);
+        $numHairTones = $numHairTones + 1;
         $hairTones[$numHairTones] = "black";
-        $numHairTones = ($numHairTones + 1.0);
+        $numHairTones = $numHairTones + 1;
     }
     %this.UseMeshRandom("hair");
-    %tone = $hairTones[getRandom(0, ($numHairTones - 1.0))];
+    %tone = $hairTones[getRandom(0, ($numHairTones - 1))];
     %this.UseSkinTone(%tone @ ".hair");
     return;
 }

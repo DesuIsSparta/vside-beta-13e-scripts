@@ -8,9 +8,9 @@ function recordingsDlg::onWake()
     while (!(%file $= ""))
     {
         %fileName = fileBase(%file);
-        if ((strstr(%file, "/CVS/") == -(1.0)))
+        if (strstr(%file, "/CVS/") == -(1))
         {
-            RecordingsDlgList.addRow(%i = (%i + 1.0), %fileName);
+            RecordingsDlgList.addRow(%i = %i + 1, %fileName);
         }
         %file = findNextFile(%filespec);
     }
@@ -49,14 +49,14 @@ function startDemoRecord()
         return;
     }
     %i = 0;
-    if ((%i < 1000.0))
+    while (%i < 1000)
     {
         %num = %i;
-        if ((%num < 10.0))
+        if (%num < 10)
         {
             %num = 0 @ %num;
         }
-        if ((%num < 100.0))
+        if (%num < 100)
         {
             %num = 0 @ %num;
         }
@@ -64,14 +64,11 @@ function startDemoRecord()
         if (!isFile(%file))
         {
         }
-        else
-        {
-            %i = (%i + 1.0);
-        }
+        %i = %i + 1;
     }
-    if ((%i == 1000.0))
+    if (%i == 1000)
     {
-        return (%i < 1000.0);
+        return %i < 1000;
     }
     $DemoFileName = %file;
     ChatHud.addLine("\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].");

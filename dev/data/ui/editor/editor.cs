@@ -12,14 +12,11 @@ function toggleEditor(%make)
             Editor::Create();
             MissionCleanup.add(Editor);
         }
-        if ((Canvas.getContent() == EditorGui.getId()))
+        if (Canvas.getContent() == EditorGui.getId())
         {
             Editor.close();
         }
-        else
-        {
-            Editor.open();
-        }
+        Editor.open();
     }
 }
 function Editor::Create()

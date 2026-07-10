@@ -8,7 +8,7 @@ datablock MissionMarkerData(SpawnSphereMarker) {
 };
 function MissionMarkerData::Create(%block)
 {
-    if ((%block $= "WayPointMarker"))
+    if (%block $= "WayPointMarker")
     {
         %obj = new WayPoint("") {
             dataBlock = %block;
@@ -17,31 +17,28 @@ function MissionMarkerData::Create(%block)
     }
     else
     {
-        if ((%block $= "SpawnSphereMarker"))
+        if (%block $= "SpawnSphereMarker")
         {
             %obj = new SpawnSphere("") {
                 dataBlock = %block;
             };
             return %obj;
         }
-        else
+        if (%block $= "SeatMarker")
         {
-            if ((%block $= "SeatMarker"))
-            {
-                %obj = new MissionMarker("") {
-                    dataBlock = %block;
-                    sitOffset = %block.sitOffset;
-                    sitAnim = %block.sitAnim;
-                    standAnim = %block.standAnim;
-                    sitIdle = %block.sitIdle;
-                    idleDelay = %block.idleDelay;
-                    listeningStation = %block.listeningStation;
-                    sitSound = %block.sitSound;
-                    standSound = %block.standSound;
-                };
-                return %obj;
-            }
+            %obj = new MissionMarker("") {
+                dataBlock = %block;
+                sitOffset = %block.sitOffset;
+                sitAnim = %block.sitAnim;
+                standAnim = %block.standAnim;
+                sitIdle = %block.sitIdle;
+                idleDelay = %block.idleDelay;
+                listeningStation = %block.listeningStation;
+                sitSound = %block.sitSound;
+                standSound = %block.standSound;
+            };
+            return %obj;
         }
     }
-    return -(1.0);
+    return -(1);
 }

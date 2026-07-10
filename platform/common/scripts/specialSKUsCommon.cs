@@ -51,7 +51,7 @@ function getSpecialSKU(%player, %skuName)
 function Player::hasSpecialSku(%this, %skuName)
 {
     %sku = getSpecialSKU(%this, %skuName);
-    if ((%sku == 0.0))
+    if (%sku == 0)
     {
         return 0;
     }
@@ -65,7 +65,7 @@ function getSkuShortName(%sku)
     {
         return %sku;
     }
-    if ((%si.descShrt $= ""))
+    if (%si.descShrt $= "")
     {
         return %sku;
     }

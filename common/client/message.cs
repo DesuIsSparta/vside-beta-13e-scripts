@@ -23,7 +23,7 @@ function clientCmdServerMessage(%msgType, %msgString)
         while (!((%func = %defFuncList.func[%i]) $= ""))
         {
             call(%func, %msgType, %msgString);
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
     }
     if (!((!((%func = %defFuncList.func[%i]) $= "") @ " " @ %tag) $= ""))
@@ -35,7 +35,7 @@ function clientCmdServerMessage(%msgType, %msgString)
             while (!((%func = %funcList.func[%i]) $= ""))
             {
                 call(%func, %msgType, %msgString);
-                %i = (%i + 1.0);
+                %i = %i + 1;
             }
         }
     }
@@ -48,7 +48,7 @@ function addMessageCallback(%msgType, %func)
         %i = 0;
         while (!(%m.func[%i] $= ""))
         {
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
         %m.func[%i] = !(%m.func[%i] $= "") @ %func;
     }

@@ -57,7 +57,7 @@ function CURLObject::onProgress(%this, %dltotal, %dlnow, %ultotal, %ulnow)
 {
     log("communication", "debug", getScopeName() @ " " @ "- " @ %this.getName() @ " just received progress data");
     log("communication", "debug", "downloaded: " @ %dlnow @ "/" @ %dltotal);
-    if ((%ulnow != 0.0) || (%ultotal != 0.0))
+    if ((%ulnow != 0) || (%ultotal != 0))
     {
         log("communication", "debug", "uploaded: " @ %ulnow @ "/" @ %ultotal);
     }

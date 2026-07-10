@@ -28,8 +28,8 @@ function InstrumentRegistryClient::clearRegistry(%this)
 {
     if (isObject(%this.instrumentsList))
     {
-        %i = (%this.instrumentsList.size() - 1.0);
-        while ((%i >= 0.0))
+        %i = %this.instrumentsList.size() - 1;
+        while (%i >= 0)
         {
             %instrument = %this.instrumentsList.getValue(%i);
             if (isObject(%instrument))
@@ -46,7 +46,7 @@ function InstrumentRegistryClient::clearRegistry(%this)
                 }
                 %instrument.delete();
             }
-            %i = (%i - 1.0);
+            %i = %i - 1;
         }
         %this.instrumentsList.clear();
     }
@@ -87,7 +87,7 @@ function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %i
 }
 function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrumentName, %keyBinding, %animationName)
 {
-    if ((%instrumentName $= ""))
+    if (%instrumentName $= "")
     {
     }
     if (!(%keyBinding $= ""))
@@ -95,7 +95,7 @@ function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrume
         error(getScopeName() @ " " @ "- cannot bind nonempty keyBinding for empty instrumentName");
         return;
     }
-    if ((%animationName $= ""))
+    if (%animationName $= "")
     {
         error(getScopeName() @ " " @ "- cannot bind empty animationName");
         return;
@@ -118,7 +118,7 @@ function InstrumentRegistryClient::getAnimation(%this, %instrumentName, %keyBind
         warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return;
     }
-    if ((%keyBinding $= ""))
+    if (%keyBinding $= "")
     {
         return %this.getStopAnimation(%instrumentName);
     }
@@ -131,7 +131,7 @@ function InstrumentRegistryClient::getAnimation(%this, %instrumentName, %keyBind
 }
 function InstrumentRegistryClient::normalizeKeyBinding(%this, %instrumentName, %keyBinding)
 {
-    if ((%keyBinding $= ""))
+    if (%keyBinding $= "")
     {
         %keyBinding = "stop";
     }

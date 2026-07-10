@@ -35,7 +35,7 @@ function Monitor::onConnectRequest(%unused, %unused, %id)
 function openMonitorSocket()
 {
     %mon = new TCPObject(Monitor);
-    if (($Pref::Server::MonitorPort != 0.0))
+    if ($Pref::Server::MonitorPort != 0)
     {
         %mon.listen($Pref::Server::MonitorPort);
     }

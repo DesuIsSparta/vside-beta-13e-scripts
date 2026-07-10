@@ -45,7 +45,7 @@ function respektHandle(%otherUser, %value, %dValue, %code, %ranking, %isCurrent)
     {
         %ret = "";
     }
-    if ((%ret $= ""))
+    if (%ret $= "")
     {
         %ret = respektHandle_Generic(%user, %otherUser, %value, %dValue, %code, %isCurrent);
     }
@@ -66,7 +66,7 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code)
     %otherUserProfileURL = $Net::ProfileURL @ urlEncode(stripUnprintables(%otherUser));
     %userWet = pChat.getPlayerMarkup(%user, "ffddeeff");
     %otherUserWet = pChat.getPlayerMarkup(%otherUser, "ffddeeff");
-    if ((%dValue > 0.0))
+    if (%dValue > 0)
     {
     }
     else
@@ -116,7 +116,7 @@ function getMyRespektPoints(%points)
 }
 function setMyRespektRank(%rank)
 {
-    if ((%rank $= "") || (%rank <= 0.0))
+    if ((%rank $= "") || (%rank <= 0))
     {
         return;
     }
@@ -125,7 +125,7 @@ function setMyRespektRank(%rank)
         HudScoresContent.setRespektRank(%rank);
     }
 }
-$gGetBalancesAndScoresDelay = (60.0 * 1000.0);
+$gGetBalancesAndScoresDelay = 60 * 1000;
 $gGetBalancesAndScoresTimer = 0;
 function getBalancesAndScores(%callback)
 {
@@ -142,7 +142,7 @@ function getBalancesAndScores(%callback)
         setMyRespektPoints(54321, 0);
         return;
     }
-    if (($Token $= ""))
+    if ($Token $= "")
     {
         log("general", "debug", getScopeName() @ " " @ "- no token. skipping request.");
         return;
@@ -181,17 +181,17 @@ function OnGotDoneOrError_GetBalancesAndScores(%request)
 }
 function checkPointsEarnedSinceLastLogin()
 {
-    %dVP = ($Player::VPoints - gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVPoints", 0));
-    %dVB = ($Player::VBux - gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVBux", 0));
+    %dVP = $Player::VPoints - gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVPoints", 0);
+    %dVB = $Player::VBux - gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVBux", 0);
     echo(getScopeName() @ " " @ "- offline earnings:" @ " " @ %dVP @ " " @ "vPoints and" @ " " @ %dVB @ " " @ "vBux");
     %firstLogin = !gUserPropMgrClient.hasProperty($Player::Name, "prevBalanceVPoints");
     if (!%firstLogin)
     {
     }
-    if ((%dVP != 0.0) || (%dVB != 0.0))
+    if ((%dVP != 0) || (%dVB != 0))
     {
         %msg = %dVB[$MsgCat::TGF @ "currencyEarnedOffline"];
-        if ((%dVP != 0.0))
+        if (%dVP != 0)
         {
         }
         else
@@ -199,10 +199,10 @@ function checkPointsEarnedSinceLastLogin()
         }
         %msg = " " @ %dVP @ " " @ "vPoints" @ "";
         %msg;
-        if ((%dVP != 0.0))
+        if (%dVP != 0)
         {
         }
-        if ((%dVB != 0.0))
+        if (%dVB != 0)
         {
         }
         else
@@ -210,7 +210,7 @@ function checkPointsEarnedSinceLastLogin()
         }
         %msg = " " @ "and" @ "";
         %msg;
-        if ((%dVB != 0.0))
+        if (%dVB != 0)
         {
         }
         else
@@ -248,7 +248,7 @@ function moveAccountBalanceHud(%toWhere)
         error(getScopeName() @ " " @ "- No main tab !" @ " " @ getTrace());
         return;
     }
-    if ((%toWhere $= "TGF"))
+    if (%toWhere $= "TGF")
     {
         %dstContainer = geTGF_main_BalancesContainer;
         %childCtrl = AccountBalanceContents;
@@ -258,7 +258,7 @@ function moveAccountBalanceHud(%toWhere)
     }
     else
     {
-        if ((%toWhere $= "PLAYGUI"))
+        if (%toWhere $= "PLAYGUI")
         {
             %dstContainer = AccountBalanceHud;
             %childCtrl = AccountBalanceContents;
@@ -266,11 +266,8 @@ function moveAccountBalanceHud(%toWhere)
             %newPosition = "0 0";
             %newExtent = "162 39";
         }
-        else
-        {
-            error(getScopeName() @ " " @ "- invalid destination code:" @ " " @ %toWhere @ " " @ getTrace());
-            return;
-        }
+        error(getScopeName() @ " " @ "- invalid destination code:" @ " " @ %toWhere @ " " @ getTrace());
+        return;
     }
     %childCtrl.reparent(%dstContainer, %newPosition, %newExtent, %newProfile);
 }

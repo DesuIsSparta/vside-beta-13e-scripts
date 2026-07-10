@@ -7,7 +7,7 @@ function testPermissions_Master()
 }
 function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess)
 {
-    if ((%expectedSuccess == %actualSuccess))
+    if (%expectedSuccess == %actualSuccess)
     {
         %result = "pass";
     }
@@ -17,10 +17,7 @@ function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess)
         {
             %result = "should have succeeded but did not.";
         }
-        else
-        {
-            %result = "should not have succeeded but did.";
-        }
+        %result = "should not have succeeded but did.";
     }
     return %result;
 }
@@ -46,10 +43,10 @@ function testPermissions_AddABot_Evaluate()
     else
     {
     }
-    %expectedDelta = (%expectedDelta * 1.0);
-    2.0;
+    %expectedDelta = %expectedDelta * 1;
+    2;
     %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
-    %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
+    %actualSuccess = $gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta);
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
 }
@@ -75,10 +72,10 @@ function testPermissions_AddABotArmy_Evaluate()
     else
     {
     }
-    %expectedDelta = (%expectedDelta * 1.0);
-    2.0;
+    %expectedDelta = %expectedDelta * 1;
+    2;
     %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
-    %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
+    %actualSuccess = $gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta);
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
 }

@@ -49,49 +49,49 @@ function geSwatchesPanel::init(%this)
     %this.cellSpacing = 4;
     %this.mlTitleTextPrefix = "<linkcolor:ffffff>" @ "<linkcolorhl:ffffff>" @ "<color:ffffff>";
     geSwatchesPanelMLOnOff.setText("<just:right><a:gamelink RANDOMIZE>[ Randomize! ]</a>    <a:gamelink RESET>[ Defaults ]</a> ");
-    if (($gDifSkusSwatchSkus $= ""))
+    if ($gDifSkusSwatchSkus $= "")
     {
         $gDifSkusSwatchSkus = SkuManager.getSkusType("swatch");
         %numberOfNondisplayedSkus = getWordCount($gDifSkusNotToDisplay);
         %n = 0;
-        while ((%n < %numberOfNondisplayedSkus))
+        while (%n < %numberOfNondisplayedSkus)
         {
             %elide = getWord($gDifSkusNotToDisplay, %n);
             %elide = $gDifSkusSwatchSkus = strreplace($gDifSkusSwatchSkus, %elide, "");
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
         $gDifSkusSwatchSkus = collapseWhiteSpace($gDifSkusSwatchSkus);
-        (%n < %numberOfNondisplayedSkus);
+        %n < %numberOfNondisplayedSkus;
     }
     %this.populateSwatchPanel();
     %this.refresh();
 }
 function geSwatchesPanel::populateSwatchPanel(%this)
 {
-    if (($gDifSkusSwatchSkus $= ""))
+    if ($gDifSkusSwatchSkus $= "")
     {
         error(getScopeName() @ " " @ "- no swatches to display!");
         return;
     }
     %this.swatchDrawerNames = "";
-    %i = (getWordCount($gDifSkusSwatchSkus) - 1.0);
-    while ((%i >= 0.0))
+    %i = getWordCount($gDifSkusSwatchSkus) - 1;
+    while (%i >= 0)
     {
         %sku = getWord($gDifSkusSwatchSkus, %i);
         %drawerName = SkuManager.findBySku(%sku).drwrName;
         %drawerName = trim(collapseWhiteSpace(%drawerName));
-        if ((%this.swatchDrawerNames $= ""))
+        if (%this.swatchDrawerNames $= "")
         {
             %this.swatchDrawerNames = %drawerName;
         }
         else
         {
-            if ((findField(%this.swatchDrawerNames, %drawerName) < 0.0))
+            if (findField(%this.swatchDrawerNames, %drawerName) < 0)
             {
                 %this.swatchDrawerNames = %drawerName @ "\t" @ %this.swatchDrawerNames;
             }
         }
-        if ((getWordCount(%this.swatchDrawers[%drawerName]) == 0.0))
+        if (getWordCount(%this.swatchDrawers[%drawerName]) == 0)
         {
             %this.swatchDrawers[%drawerName] = %sku;
         }
@@ -99,11 +99,11 @@ function geSwatchesPanel::populateSwatchPanel(%this)
         {
             %this.swatchDrawers[" ",%sku,%drawerName] = %this.swatchDrawers[%drawerName];
         }
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
-    %this.swatchDrawerNames = (%i >= 0.0) @ collapseWhiteSpace(%this.swatchDrawerNames);
+    %this.swatchDrawerNames = (%i >= 0) @ collapseWhiteSpace(%this.swatchDrawerNames);
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
-    if ((%numberOfDrawers > 0.0))
+    if (%numberOfDrawers > 0)
     {
         %this.expandCollapse = new GuiMLTextCtrl("") {
             profile = "InfoTextSmallProfile";
@@ -120,12 +120,12 @@ function geSwatchesPanel::populateSwatchPanel(%this)
         %this.add(%this.expandCollapse);
     }
     %i = 0;
-    while ((%i < %numberOfDrawers))
+    while (%i < %numberOfDrawers)
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         %this.swatchDrawerNames[%drawerName] = collapseWhiteSpace(%this.swatchDrawerNames[%drawerName]);
         %this.putListIntoDrawer(%drawerName);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %this.selectFirstCell();
 }
@@ -173,10 +173,10 @@ function geSwatchesPanel::putListIntoDrawer(%this, %drawerName)
     %num = getWordCount(%skus);
     %destDrawer.setNumChildren(%num);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
-        %this.initSwatchCell(%destDrawer.getObject(%n), getWord(%skus, ((%num - %n) - 1.0)), %drawerName);
-        %n = (%n + 1.0);
+        %this.initSwatchCell(%destDrawer.getObject(%n), getWord(%skus, ((%num - %n) - 1)), %drawerName);
+        %n = %n + 1;
     }
     geSwatchesPanel.collapsedDrawers[%drawerName] = (%n < %num) @ 0;
 }
@@ -213,7 +213,7 @@ function geSwatchesPanel::refresh(%this)
     %allAreCollapsed = 1;
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
     %i = 0;
-    while ((%i < %numberOfDrawers))
+    while (%i < %numberOfDrawers)
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         %headerBox = %this.swatchDrawerHeaderBoxes[%drawerName];
@@ -221,13 +221,13 @@ function geSwatchesPanel::refresh(%this)
         %collapsed = geSwatchesPanel.collapsedDrawers[%drawerName] ? "+" : "- ";
         %titleLine = %this.mlTitleTextPrefix @ "<a:gamelink list " @ %drawerName @ ">" @ %collapsed @ %drawerName @ "</a>";
         %headerBox.setText(%titleLine);
-        if ((%i == 0.0))
+        if (%i == 0)
         {
             %headerBox.reposition(geSwatchesPanel.headerBoxLeft, (geSwatchesPanel.headerBoxTop + geSwatchesPanel.cellSpacing));
         }
         else
         {
-            %previousDrawerName = getField(%this.swatchDrawerNames, (%i - 1.0));
+            %previousDrawerName = getField(%this.swatchDrawerNames, (%i - 1));
             %previousHeaderBox = %this.swatchDrawerHeaderBoxes[%previousDrawerName];
             %previousCellArray = %this.swatchDrawerCellArrays[%previousDrawerName];
             if (geSwatchesPanel.collapsedDrawers[%previousDrawerName])
@@ -240,55 +240,52 @@ function geSwatchesPanel::refresh(%this)
                 %previousVisibleControl = %previousCellArray;
                 %fudgeFactor = 0;
             }
-            %currentNewYPos = (((getWord(%previousVisibleControl.getPosition(), 1) + getWord(%previousVisibleControl.getExtent(), 1)) + geSwatchesPanel.headerBoxTop) + %fudgeFactor);
+            %currentNewYPos = ((getWord(%previousVisibleControl.getPosition(), 1) + getWord(%previousVisibleControl.getExtent(), 1)) + geSwatchesPanel.headerBoxTop) + %fudgeFactor;
             %headerBox.reposition(geSwatchesPanel.headerBoxLeft, %currentNewYPos);
         }
         if (geSwatchesPanel.collapsedDrawers[%drawerName])
         {
             %allAreExpanded = 0;
             %cellArray.setVisible(0);
-            if ((%drawerName $= %this.hilitedCell.drawerName))
+            if (%drawerName $= %this.hilitedCell.drawerName)
             {
-                geSwatchesPanel.selectCell(-(1.0));
+                geSwatchesPanel.selectCell(-(1));
                 geSwatchesPanelSelected.setVisible(0);
             }
         }
         else
         {
             %allAreCollapsed = 0;
-            %currentNewYPos = ((getWord(%headerBox.getPosition(), 1) + getWord(%headerBox.getExtent(), 1)) + geSwatchesPanel.cellArrayTop);
+            %currentNewYPos = (getWord(%headerBox.getPosition(), 1) + getWord(%headerBox.getExtent(), 1)) + geSwatchesPanel.cellArrayTop;
             %cellArray.reposition(geSwatchesPanel.cellArrayLeft, %currentNewYPos);
             %cellArray.setVisible(1);
             %cellArray.offsetForOtherRows = %currentNewYPos;
-            %cellArray.offsetForFirstRow = (%cellArray.offsetForOtherRows - geSwatchesPanel.headerBoxHeight);
-            if (($gDifSkusSwatchSkusViewable $= ""))
+            %cellArray.offsetForFirstRow = %cellArray.offsetForOtherRows - geSwatchesPanel.headerBoxHeight;
+            if ($gDifSkusSwatchSkusViewable $= "")
             {
                 $gDifSkusSwatchSkusViewable = %this.swatchDrawers[%drawerName];
             }
-            else
-            {
-                $gDifSkusSwatchSkusViewable = %this.swatchDrawers[%drawerName] @ " " @ $gDifSkusSwatchSkusViewable;
-            }
+            $gDifSkusSwatchSkusViewable = %this.swatchDrawers[%drawerName] @ " " @ $gDifSkusSwatchSkusViewable;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %expandAllText = "<color:999999>" @ %allAreExpanded ? "" : "<a:gamelink expandAll>" @ "[ Expand all ]" @ %allAreExpanded ? "" : "</a>";
-    (%i < %numberOfDrawers);
+    %i < %numberOfDrawers;
     %collapseAllText = "<color:999999>" @ %allAreCollapsed ? "" : "<a:gamelink collapseAll>" @ "[ Collapse all ]" @ %allAreCollapsed ? "" : "</a>";
     %this.expandCollapse.setText(%expandAllText @ "    " @ %collapseAllText);
     if (%cellArray.isVisible())
     {
-        %height = (getWord(%cellArray.getPosition(), 1) + getWord(%cellArray.getExtent(), 1));
+        %height = getWord(%cellArray.getPosition(), 1) + getWord(%cellArray.getExtent(), 1);
     }
     else
     {
-        %height = (getWord(%headerBox.getPosition(), 1) + getWord(%headerBox.getExtent(), 1));
+        %height = getWord(%headerBox.getPosition(), 1) + getWord(%headerBox.getExtent(), 1);
     }
     %width = getWord(geSwatchesPanelContainer.getParent().getExtent(), 0);
     geSwatchesPanelContainer.resize(%width, %height);
-    if (($gDifSkusSwatchSkusViewable $= ""))
+    if ($gDifSkusSwatchSkusViewable $= "")
     {
-        geSwatchesPanel.selectCell(-(1.0));
+        geSwatchesPanel.selectCell(-(1));
     }
 }
 function geSwatchesPanelHeaderBox::onURL(%this, %url)
@@ -297,14 +294,14 @@ function geSwatchesPanelHeaderBox::onURL(%this, %url)
     {
         return;
     }
-    if ((getWord(%url, 1) $= "list"))
+    if (getWord(%url, 1) $= "list")
     {
         %listName = getWords(%url, 2);
         geSwatchesPanel.collapsedDrawers[%listName] = !geSwatchesPanel.collapsedDrawers[%listName];
         if (!geSwatchesPanel.collapsedDrawers[%listName])
         {
         }
-        if ((geSwatchesPanel.hilitedCell.drawerName $= %listName))
+        if (geSwatchesPanel.hilitedCell.drawerName $= %listName)
         {
             geSwatchesPanel.selectCell(geSwatchesPanel.hilitedCell);
         }
@@ -315,54 +312,48 @@ function geSwatchesPanelHeaderBox::onURL(%this, %url)
     }
     else
     {
-        if ((getWord(%url, 1) $= "expandAll"))
+        if (getWord(%url, 1) $= "expandAll")
         {
             geSwatchesPanel.expandOrCollapseAll(1);
             geSwatchesPanel.selectCell(geSwatchesPanel.hilitedCell);
         }
-        else
+        if (getWord(%url, 1) $= "collapseAll")
         {
-            if ((getWord(%url, 1) $= "collapseAll"))
-            {
-                geSwatchesPanel.expandOrCollapseAll(0);
-            }
+            geSwatchesPanel.expandOrCollapseAll(0);
         }
     }
 }
 function geSwatchesPanel::expandOrCollapseAll(%this, %expand)
 {
-    %i = (getFieldCount(%this.swatchDrawerNames) - 1.0);
-    while ((%i >= 0.0))
+    %i = getFieldCount(%this.swatchDrawerNames) - 1;
+    while (%i >= 0)
     {
         %listName = getField(%this.swatchDrawerNames, %i);
         geSwatchesPanel.collapsedDrawers[%listName] = !%expand;
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
     geSwatchesPanel.refresh();
 }
 function geSwatchesPanelMLOnOff::onURL(%this, %url)
 {
-    if ((firstWord(%url) $= "gamelink"))
+    if (firstWord(%url) $= "gamelink")
     {
         %url = restWords(%url);
     }
-    if ((firstWord(%url) $= "PAINTINGMODE"))
+    if (firstWord(%url) $= "PAINTINGMODE")
     {
         $gSwatchPaintingModeOn = (restWords(%url) $= "on") ? 1 : 0;
         %this.update();
     }
     else
     {
-        if ((firstWord(%url) $= "RESET"))
+        if (firstWord(%url) $= "RESET")
         {
             difSkusResetConfirm();
         }
-        else
+        if (firstWord(%url) $= "RANDOMIZE")
         {
-            if ((firstWord(%url) $= "RANDOMIZE"))
-            {
-                difSkusRandomizeConfirm();
-            }
+            difSkusRandomizeConfirm();
         }
     }
 }
@@ -379,35 +370,35 @@ function geSwatchesPanel::inspectSku(%this, %skunum)
 function geSwatchesPanel::selectSwatch(%this, %skunum)
 {
     %this.init();
-    %cell = -(1.0);
+    %cell = -(1);
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
     %i = 0;
-    if ((%i < %numberOfDrawers))
+    if (%i < %numberOfDrawers)
     {
     }
-    while ((%cell == -(1.0)))
+    while (%cell == -(1))
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         %cellArray = %this.swatchDrawerCellArrays[%drawerName];
-        %n = (%cellArray.getCount() - 1.0);
-        if ((%n >= 0.0))
+        %n = %cellArray.getCount() - 1;
+        if (%n >= 0)
         {
         }
-        while ((%cell == -(1.0)))
+        while (%cell == -(1))
         {
             %cell = %cellArray.getObject(%n);
-            if ((%cell.skuNum != %skunum))
+            if (%cell.skuNum != %skunum)
             {
-                %cell = -(1.0);
+                %cell = -(1);
             }
-            %n = (%n - 1.0);
-            if ((%n >= 0.0))
+            %n = %n - 1;
+            if (%n >= 0)
             {
             }
         }
-        %i = (%i + 1.0);
-        (%cell == -(1.0));
-        if ((%i < %numberOfDrawers))
+        %i = %i + 1;
+        %cell == -(1);
+        if (%i < %numberOfDrawers)
         {
         }
     }
@@ -425,7 +416,7 @@ function geSwatchesPanel::selectCell(%this, %cell)
 {
     if (!isObject(%cell))
     {
-        %cell = -(1.0);
+        %cell = -(1);
         $gSwatchPaintingModeOn = 0;
         geSwatchesPanelInspectedBitmap.setBitmap("platform/client/ui/nobrush");
         geSwatchesPanelInspectedDesc.setText("");
@@ -446,15 +437,15 @@ function geSwatchesPanelCell::onHilite(%this)
     }
     %scrollHeight = getWord(geSwatchesPanelScroll.getExtent(), 1);
     %containerYPos = getWord(geSwatchesPanelContainer.getPosition(), 1);
-    %myYPosInContainer = (getWord(%this.getPosition(), 1) + getWord(%this.getParent().getPosition(), 1));
+    %myYPosInContainer = getWord(%this.getPosition(), 1) + getWord(%this.getParent().getPosition(), 1);
     %myHeight = getWord(%this.getExtent(), 1);
-    if (((%containerYPos + %myYPosInContainer) < 0.0))
+    if ((%containerYPos + %myYPosInContainer) < 0)
     {
         geSwatchesPanelScroll.scrollTo(0, (%myYPosInContainer - %this.getParent().spacing));
     }
     else
     {
-        if (((%myYPosInContainer + %myHeight) > (%scrollHeight - %containerYPos)))
+        if ((%myYPosInContainer + %myHeight) > (%scrollHeight - %containerYPos))
         {
             geSwatchesPanelScroll.scrollTo(0, (((%myYPosInContainer + %myHeight) + (1.5 * %this.getParent().spacing)) - %scrollHeight));
         }
@@ -477,7 +468,7 @@ function geSwatchesPanel::selectFirstCell(%this)
 {
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
     %i = 0;
-    while ((%i < %numberOfDrawers))
+    while (%i < %numberOfDrawers)
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         if (!geSwatchesPanel.collapsedDrawers[%drawerName])
@@ -486,7 +477,7 @@ function geSwatchesPanel::selectFirstCell(%this)
             %this.hiliteCell(%cellArray.getObject(0));
             return;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function geSwatchesPanel::hiliteCell(%this, %cell)
@@ -498,19 +489,19 @@ function geSwatchesPanel::hiliteCell(%this, %cell)
     }
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
     %i = 0;
-    while ((%i < %numberOfDrawers))
+    while (%i < %numberOfDrawers)
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         %cellArray = %this.swatchDrawerCellArrays[%drawerName];
         if (isObject(%cellArray))
         {
         }
-        if ((%cellArray.getObjectIndex(%cell) >= 0.0))
+        if (%cellArray.getObjectIndex(%cell) >= 0)
         {
             if (isObject(%this.hilitedCell))
             {
             }
-            if ((%this.hilitedCell != %cell))
+            if (%this.hilitedCell != %cell)
             {
                 %this.hilitedCell.onUnhilite();
             }
@@ -519,6 +510,6 @@ function geSwatchesPanel::hiliteCell(%this, %cell)
             %this.refresh();
             return;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }

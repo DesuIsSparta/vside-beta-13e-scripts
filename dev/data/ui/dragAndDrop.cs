@@ -58,27 +58,27 @@ function DragAndDropExampleList::getHiliteMarker(%this)
 }
 function DragAndDropExampleList::onDragAndDropMove(%this, %dragCtrl, %mousePos)
 {
-    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)));
+    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2)));
     %marker = %this.getHiliteMarker();
     Canvas.getContent().add(%marker);
     Canvas.getContent().pushToBack(%marker);
     if (isObject(%ctrl))
     {
-        %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5.0), ((getWord(%ctrl.getScreenPosition(), 1) - %this.spacing) - 1.0));
+        %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5), ((getWord(%ctrl.getScreenPosition(), 1) - %this.spacing) - 1));
     }
     else
     {
-        %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) - (getWord(%this.childrenExtent, 1) / 2.0)));
+        %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) - (getWord(%this.childrenExtent, 1) / 2)));
         if (isObject(%ctrl))
         {
-            %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5.0), ((getWord(%ctrl.getScreenPosition(), 1) + getWord(%this.childrenExtent, 1)) - 1.0));
+            %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5), ((getWord(%ctrl.getScreenPosition(), 1) + getWord(%this.childrenExtent, 1)) - 1));
         }
     }
     %marker.setVisible(1);
 }
 function DragAndDropExampleList::onDragAndDropDrop(%this, %dragCtrl, %mousePos)
 {
-    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)));
+    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2)));
     %this.reorderChild(%dragCtrl, %ctrl);
     return 1;
 }

@@ -11,7 +11,7 @@ function sgLibraryExec(%file)
     else
     {
         echo("Platform is" @ " " @ $Platform);
-        if (($Platform $= "macos"))
+        if ($Platform $= "macos")
         {
             %fullPath = %path @ "/bigEndian/" @ %name;
         }

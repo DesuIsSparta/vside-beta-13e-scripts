@@ -15,15 +15,12 @@ function doAIMSignIn()
             $UserPref::Player::AIMPassword = "";
         }
         AIMSignInButton.setActive(0);
-        if ((aimGetState() == 0.0))
+        if (aimGetState() == 0)
         {
             warn("Tried connecting to AIM when already connected.  Disconnecting.");
             aimDisconnect();
         }
-        else
-        {
-            aimConnect($Player::AIMName, $Player::AIMPassword);
-        }
+        aimConnect($Player::AIMName, $Player::AIMPassword);
     }
 }
 function doAIMSignOff()
@@ -38,7 +35,7 @@ function doAIMSignOff()
 }
 function silentAIMDisconnect()
 {
-    if ((aimGetState() == 0.0))
+    if (aimGetState() == 0)
     {
         aimDisconnect();
     }
@@ -54,9 +51,9 @@ function aimLoginCallback()
 }
 function onAIMStateChange(%state)
 {
-    if ((%state == 0.0))
+    if (%state == 0)
     {
-        if ((AIMLoginFrame.AIMState == 200.0))
+        if (AIMLoginFrame.AIMState == 200)
         {
             AIMSignInButton.setActive(1);
             MessageBoxOK("AIM Login Failed", $MsgCat::login["E-AIM-PASSWORD"], "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
@@ -64,80 +61,50 @@ function onAIMStateChange(%state)
     }
     else
     {
-        if ((%state == 50.0))
+        if (%state == 50)
         {
             AIMSignInButton.setActive(1);
             MessageBoxOK("AIM Disconnected", $MsgCat::login["E-AIM-DISCONNECT"], "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
         }
-        else
+        if (%state == 100)
         {
-            if ((%state == 100.0))
-            {
-                echo("AIM connecting");
-            }
-            else
-            {
-                if ((%state == 150.0))
-                {
-                    echo("AIM challenging");
-                }
-                else
-                {
-                    if ((%state == 200.0))
-                    {
-                        echo("AIM validating");
-                    }
-                    else
-                    {
-                        if ((%state == 210.0))
-                        {
-                            echo("AIM secure ID");
-                        }
-                        else
-                        {
-                            if ((%state == 211.0))
-                            {
-                                echo("AIM secure ID next key");
-                            }
-                            else
-                            {
-                                if ((%state == 300.0))
-                                {
-                                    echo("AIM transferring");
-                                }
-                                else
-                                {
-                                    if ((%state == 350.0))
-                                    {
-                                        echo("AIM negotiating");
-                                    }
-                                    else
-                                    {
-                                        if ((%state == 400.0))
-                                        {
-                                            echo("AIM starting");
-                                        }
-                                        else
-                                        {
-                                            if ((%state == 500.0))
-                                            {
-                                                echo("AIM online");
-                                                aimLoginCallback();
-                                            }
-                                            else
-                                            {
-                                            }
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+            echo("AIM connecting");
+        }
+        if (%state == 150)
+        {
+            echo("AIM challenging");
+        }
+        if (%state == 200)
+        {
+            echo("AIM validating");
+        }
+        if (%state == 210)
+        {
+            echo("AIM secure ID");
+        }
+        if (%state == 211)
+        {
+            echo("AIM secure ID next key");
+        }
+        if (%state == 300)
+        {
+            echo("AIM transferring");
+        }
+        if (%state == 350)
+        {
+            echo("AIM negotiating");
+        }
+        if (%state == 400)
+        {
+            echo("AIM starting");
+        }
+        if (%state == 500)
+        {
+            echo("AIM online");
+            aimLoginCallback();
         }
     }
-    AIMLoginFrame.AIMState = (%state == 600.0) @ %state;
+    AIMLoginFrame.AIMState = (%state == 600) @ %state;
 }
 function AIMLoginFrame::setup(%this)
 {

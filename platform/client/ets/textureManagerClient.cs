@@ -1,7 +1,7 @@
 function TextureManager_OnDelayedLoad(%num)
 {
     textureLoadingIndicator_initialize();
-    if ((%num > 0.0))
+    if (%num > 0)
     {
         geTextureLoadingContainer.setVisible(1);
         geTextureLoadingContainer.setProfile(HUDDarkProfile);
@@ -21,7 +21,7 @@ function textureLoadingIndicator_initialize()
     {
         return;
     }
-    %wi = AnimCtrl::newAnimCtrl((getWord(geTextureLoadingContainer.getExtent(), 0) - 19.0) @ " " @ 0, "18 18");
+    %wi = AnimCtrl::newAnimCtrl((getWord(geTextureLoadingContainer.getExtent(), 0) - 19) @ " " @ 0, "18 18");
     %wi.setDelay(120);
     %wi.addFrame("platform/client/ui/wait0.png");
     %wi.addFrame("platform/client/ui/wait1.png");
@@ -36,7 +36,7 @@ function textureLoadingIndicator_initialize()
     geTextureLoadingContainer.add(new GuiMLTextCtrl(geTGF_deets_eventTxtr) {
         profile = "InfoWindowTextProfile";
         position = "0 0";
-        extent = (getWord(%wi.getPosition(), 0) - 2.0) @ " " @ 18;
+        extent = (getWord(%wi.getPosition(), 0) - 2) @ " " @ 18;
         horizSizing = "width";
         vertSizing = "bottom";
         text = mlStyle("<just:right>loading.. ", "loadingHUD");

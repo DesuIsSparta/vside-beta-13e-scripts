@@ -12,31 +12,28 @@ function snapControl(%ctrl, %fileName)
 }
 function snapshot::snapAndUpRegion(%region, %fileName, %removeBG)
 {
-    if ((%fileName $= ""))
+    if (%fileName $= "")
     {
         %fileName = "screenshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ $screenShotNum;
     }
     %fn_orig = %fileName;
-    if (($Pref::Video::screenShotFormat $= "JPEG"))
+    if ($Pref::Video::screenShotFormat $= "JPEG")
     {
         %ext = ".jpg";
     }
     else
     {
-        if (($Pref::Video::screenShotFormat $= "PNG"))
+        if ($Pref::Video::screenShotFormat $= "PNG")
         {
             %ext = ".png";
         }
-        else
-        {
-            %ext = ".png";
-        }
+        %ext = ".png";
     }
     %fileName = %fileName @ %ext;
     %uploader = "";
     if (snapshotTool::snapRegion(%region, %fileName))
     {
-        $screenShotNum = ($screenShotNum + 1.0);
+        $screenShotNum = $screenShotNum + 1;
         %uploader = new URLPostObject("");
         %uploader.setProgress(1);
         %uploader.setURL($Net::UploadPhotoURL);
@@ -72,29 +69,29 @@ function snapshot::snapRegion(%region, %fileName)
 }
 function getScreenShotMetaData(%guiTSCtrl)
 {
-    if (($pref::Render::orthoScale != 1.0))
+    if ($pref::Render::orthoScale != 1)
     {
         return getScreenShotMetaDataOrtho(%guiTSCtrl);
     }
     %cameraTransform = PlayGui.getLastCameraTransform();
     %numPts = 0;
     %samplePts[%numPts] = "0 0";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %samplePts[%numPts] = "1 0";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %samplePts[%numPts] = "0 1";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %samplePts[%numPts] = "1 1";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %samplePts[%numPts] = "0.5 0.5";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %ctrlExtent = %guiTSCtrl.getExtent();
     %exempt = "";
     %ret = "";
     %ret = %ret @ "\n" @ "// %cameraTransform =" @ " " @ %cameraTransform;
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %n = 0;
-    while ((%n < %numPts))
+    while (%n < %numPts)
     {
         %windowCoord = VectorConvolve(%samplePts[%n], %ctrlExtent);
         %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
@@ -104,13 +101,13 @@ function getScreenShotMetaData(%guiTSCtrl)
         %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %samplePts[%n] @ "\"  \"" @ %windowCoord @ "\"";
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
-        %mask = ($TypeMasks::WaterObjectType | $TypeMasks::InteriorObjectType);
+        %mask = $TypeMasks::WaterObjectType | $TypeMasks::InteriorObjectType;
         %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "anyhit:   \"" @ getWords(%hit, 1, 3) @ "\"";
         %mask = $TypeMasks::WaterObjectType;
         %hit = containerRayCast(%cameraTransform, %worldCoord2, %mask, %exempt, 1);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "waterhit: \"" @ getWords(%hit, 1, 3) @ "\"";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     return %ret;
 }
@@ -120,19 +117,19 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl)
     %numPts = 0;
     %sampleName[%numPts] = "upper left";
     %samplePts[%numPts] = "0 0";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %sampleName[%numPts] = "upper right";
     %samplePts[%numPts] = "1 0";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %sampleName[%numPts] = "lower left";
     %samplePts[%numPts] = "0 1";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %sampleName[%numPts] = "lower right";
     %samplePts[%numPts] = "1 1";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %sampleName[%numPts] = "center";
     %samplePts[%numPts] = "0.5 0.5";
-    %numPts = (%numPts + 1.0);
+    %numPts = %numPts + 1;
     %ctrlExtent = %guiTSCtrl.getExtent();
     %exempt = "";
     %windowCoord = VectorConvolve("0.5 0.5", %ctrlExtent);
@@ -145,7 +142,7 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl)
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %summary = "";
     %n = 0;
-    while ((%n < %numPts))
+    while (%n < %numPts)
     {
         %windowCoord = %samplePts[%n];
         %windowCoord = VectorAdd(%windowCoord, "-0.5 -0.5");
@@ -168,10 +165,10 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl)
             %marker.setTransform(%mh);
             %marker.setScale("1 1 1");
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %p1 = "0 0 0";
-    (%n < %numPts);
+    %n < %numPts;
     %p2 = VectorAdd(%p1, %camVec);
     %pA = intersectPlaneLine("0 0 0", "0 0 1", %p1, %p2);
     %p1 = VectorAdd(%p1, "0 0 1");
@@ -184,7 +181,7 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl)
 }
 function doSaveScreenShotMetaData(%name, %ext, %guiCtrl)
 {
-    if (($pref::Render::orthoScale <= 1.0))
+    if ($pref::Render::orthoScale <= 1)
     {
         return;
     }

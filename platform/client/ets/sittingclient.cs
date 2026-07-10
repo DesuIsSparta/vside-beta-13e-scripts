@@ -67,7 +67,7 @@ function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat)
 }
 function clientCmdStandRequestSuccessful(%unused)
 {
-    if ((ApplauseMeterGui.applauseMeterUse $= "blockgame"))
+    if (ApplauseMeterGui.applauseMeterUse $= "blockgame")
     {
         ApplauseMeterGui.close();
     }
@@ -91,7 +91,7 @@ function SendStandCommand(%moveDir)
 }
 function ClientSittingSystemOnClick(%obj)
 {
-    if ((%obj.notSoFast == 1.0))
+    if (%obj.notSoFast == 1)
     {
         return;
     }
@@ -99,7 +99,7 @@ function ClientSittingSystemOnClick(%obj)
     %obj.schedule(%obj.notSoFastClearTime, cancelNotSoFast);
     if (isObject(CSFurnitureMover))
     {
-        CSFurnitureMover.SelectNuggetID(-(1.0));
+        CSFurnitureMover.SelectNuggetID(-(1));
     }
     commandToServer('RequestToSit', %obj.seatID);
 }

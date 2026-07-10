@@ -85,7 +85,7 @@ datablock ParticleData(FallingLeafParticle) {
     lifetimeMS = 2496;
     lifetimeVarianceMS = 0;
     spinSpeed = 0.04;
-    spinRandomMin = -(3.0);
+    spinRandomMin = -(3);
     spinRandomMax = 0.5;
     useInvAlpha = 1;
     textureName = "projects/vside/worlds/common/leaf";

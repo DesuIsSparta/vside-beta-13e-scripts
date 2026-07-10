@@ -21,72 +21,66 @@ function CSSpacePurchasePriceConfirmation(%space)
     %tradein = CSSpacePurchasePriceFormatting(%space.floorplan.tradeInValueVPoints, %space.floorplan.tradeInValueVBux);
     %final = CSSpacePurchasePriceFormatting(%finalVPoints, %finalVBux);
     %text = %text @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"] @ "\n<tab:30>" @ "\n" @ "\t" @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"][$MsgCat::custSpace @ "PURCHASE_SPACEPRICE"] @ " " @ %price @ "\n" @ " " @ "\n" @ "\t" @ %price[$MsgCat::custSpace @ "PURCHASE_NOTINCLUDED"] @ "\n" @ "<spop>";
-    if (($Player::VPoints >= %finalVPoints))
+    if ($Player::VPoints >= %finalVPoints)
     {
     }
-    if ((%finalVPoints >= 0.0) && ($Player::VBux >= %finalVBux))
+    if (%finalVPoints >= 0 && ($Player::VBux >= %finalVBux))
     {
     }
-    if ((%finalVBux >= 0.0))
+    if (%finalVBux >= 0)
     {
         %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_CHOICE"] @ "\n";
     }
     else
     {
-        if (($Player::VPoints >= %finalVPoints))
+        if ($Player::VPoints >= %finalVPoints)
         {
         }
-        if ((%finalVPoints >= 0.0))
+        if (%finalVPoints >= 0)
         {
             %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VPOINTSONLY"] @ "\n";
         }
-        else
+        if ($Player::VBux >= %finalVBux)
         {
-            if (($Player::VBux >= %finalVBux))
-            {
-            }
-            if ((%finalVBux >= 0.0))
-            {
-                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
-            }
-            else
-            {
-                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
-                MessageBoxOK(%title, %text, "");
-                return;
-            }
         }
+        if (%finalVBux >= 0)
+        {
+            %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
+        }
+        %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
+        MessageBoxOK(%title, %text, "");
+        return;
     }
     %buttons = "";
     %count = 0;
-    if (($Player::VPoints >= %finalVPoints))
+    if ($Player::VPoints >= %finalVPoints)
     {
     }
-    if ((%finalVPoints >= 0.0))
+    if (%finalVPoints >= 0)
     {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVPoints) @ " vPoints";
         %callback[%count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", false);";
-        %count = (%count + 1.0);
+        %count = %count + 1;
     }
-    if (($Player::VBux >= %finalVBux))
+    if ($Player::VBux >= %finalVBux)
     {
     }
-    if ((%finalVBux >= 0.0))
+    if (%finalVBux >= 0)
     {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVBux) @ " vBux";
         %callback[%count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", true );";
-        %count = (%count + 1.0);
+        %count = %count + 1;
     }
     %buttons = %buttons @ "\t" @ "Cancel";
     %callback[%count] = "CSSpacePurchaseCancel();";
-    %count = (%count + 1.0);
+    %count = %count + 1;
     %buttons = ltrim(%buttons);
     %dlg = MessageBoxCustom(%title, %text, %buttons);
     %index = 0;
-    while ((%index < %count))
+    while (%index < %count)
     {
         %dlg.callback[%index] = %callback[%index];
-        %index = (%index + 1.0);
+        %index = %index + 1;
     }
 }
 function CSSpacePurchaseDoConfirm(%space, %useBux)
@@ -108,7 +102,7 @@ function CSSpacePurchaseDoConfirm(%space, %useBux)
 }
 function CSSpacePurchaseDowngradeCheck(%space, %useBux, %priceFinal, %lossVPoints, %lossVBux)
 {
-    if ((%lossVPoints > 0.0) || (%lossVBux > 0.0))
+    if ((%lossVPoints > 0) || (%lossVBux > 0))
     {
         %loss = CSSpacePurchasePriceFormatting(%lossVPoints, %lossVBux);
         %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["TRADE_IN_DOWN_A"] @ " " @ %loss @ " " @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_B"] @ "\n";
@@ -142,7 +136,7 @@ function CSSpacePurchaseSuccess(%unused, %unused, %vurl)
 function CSSpacePurchaseFailed(%errorCode)
 {
     %errorCode = strupr(%errorCode);
-    if (($MsgCat::custSpace["ERROR_",%errorCode] $= ""))
+    if ($MsgCat::custSpace["ERROR_",%errorCode] $= "")
     {
         %errorCode = "GENERIC";
     }
@@ -152,18 +146,18 @@ function CSSpacePurchaseFailed(%errorCode)
 function CSSpacePurchasePriceFormatting(%vpoints, %vbux)
 {
     %result = "";
-    if ((%vpoints >= 0.0))
+    if (%vpoints >= 0)
     {
         %result = "<bitmap:platform/client/ui/vpoints_9> " @ commaify(%vpoints);
     }
-    if ((%vpoints >= 0.0))
+    if (%vpoints >= 0)
     {
     }
-    if ((%vbux >= 0.0))
+    if (%vbux >= 0)
     {
         %result = %result @ "  or  ";
     }
-    if ((%vbux >= 0.0))
+    if (%vbux >= 0)
     {
         %result = %result @ "<bitmap:platform/client/ui/vbux_9> " @ commaify(%vbux);
     }

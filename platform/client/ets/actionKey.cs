@@ -6,8 +6,8 @@ function onThrowBall(%val)
 {
     if (%val)
     {
-        $mvTriggerCount0 = ($mvTriggerCount0 + 1.0);
-        $mvTriggerCount0 = ($mvTriggerCount0 + 1.0);
+        $mvTriggerCount0 = $mvTriggerCount0 + 1;
+        $mvTriggerCount0 = $mvTriggerCount0 + 1;
     }
 }
 function onMouseUpThrowBall(%power, %worldVec)

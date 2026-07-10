@@ -1,11 +1,11 @@
 safeEnsureScriptObjectWithInit("StringMap", "PlayerInfoMap", "{ ignoreCase = true; }");
 function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank)
 {
-    if ((%playerName $= ""))
+    if (%playerName $= "")
     {
         return 0;
     }
-    if ((%this.findKey(%playerName) != -(1.0)))
+    if (%this.findKey(%playerName) != -(1))
     {
         return 0;
     }
@@ -33,11 +33,11 @@ function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %locati
 }
 function PlayerInfoMap::removePlayerInfo(%this, %playerName)
 {
-    if ((%playerName $= ""))
+    if (%playerName $= "")
     {
         return;
     }
-    if ((%this.findKey(%playerName) == -(1.0)))
+    if (%this.findKey(%playerName) == -(1))
     {
         return;
     }
@@ -48,10 +48,10 @@ function PlayerInfoMap::removeAllInfo(%this)
 {
     %size = %this.size();
     %i = 0;
-    while ((%i < %size))
+    while (%i < %size)
     {
         %this.getValue(%i).delete();
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %this.clear();
 }
@@ -67,18 +67,15 @@ function getPlayerNamesInRadius(%radius)
     }
     initContainerRadiusSearch($player.getTransform(), %radius, $TypeMasks::PlayerObjectType, 1);
     %names = "";
-    if (1)
+    while (1)
     {
         %player = containerSearchNext(1);
         if (!isObject(%player))
         {
         }
-        else
+        if (%player.getId() != $player.getId())
         {
-            if ((%player.getId() != $player.getId()))
-            {
-                %names = %names @ "\t" @ %player.getShapeName();
-            }
+            %names = %names @ "\t" @ %player.getShapeName();
         }
     }
     return trim(%names);
@@ -135,13 +132,13 @@ function PlayerInfoRequest::onError(%this, %errorNum, %errorName)
 function PlayerInfoRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
-    if ((%status $= "success"))
+    if (%status $= "success")
     {
         %numUsers = %this.getValue("numUsers");
         $ETS::PlayerInfo::NoTags = %this.getValue("notags");
         %failedPlayers = %this.askedForPlayers;
         %i = 0;
-        while ((%i < %numUsers))
+        while (%i < %numUsers)
         {
             %name = %this.getValue("proximalPlayers" @ %i @ ".userName");
             %age = %this.getValue("proximalPlayers" @ %i @ ".age");
@@ -154,33 +151,33 @@ function PlayerInfoRequest::onDone(%this)
             %respektRank = %this.getValue("proximalPlayers" @ %i @ ".respektRanking");
             PlayerInfoMap.addPlayerInfo(%name, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank);
             %askedForIndex = findField(%failedPlayers, %name);
-            if ((%askedForIndex >= 0.0))
+            if (%askedForIndex >= 0)
             {
                 %failedPlayers = removeField(%failedPlayers, %askedForIndex);
             }
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
         %num = getFieldCount(%failedPlayers);
-        (%i < %numUsers);
-        if ((%num > 0.0))
+        %i < %numUsers;
+        if (%num > 0)
         {
             error("Communication", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- failed to get information for" @ " " @ %num @ " " @ "players:" @ " " @ %failedPlayers);
             %i = 0;
-            while ((%i < %num))
+            while (%i < %num)
             {
                 %name = getField(%failedPlayers, %i);
                 warn("adding null player info for" @ " " @ %name);
                 PlayerInfoMap.addPlayerInfo(%name, "unknown", "unknown", "unknown", "", "", 0, "", "");
-                %i = (%i + 1.0);
+                %i = %i + 1;
             }
         }
-        if (((%i < %num) @ " " @ %this.callback $= ""))
+        if ((%i < %num) @ " " @ %this.callback $= "")
         {
             if (isObject(InfoPopupDlg))
             {
                 InfoPopupDlg.stopAnimation();
             }
-            if ((%numUsers == 0.0))
+            if (%numUsers == 0)
             {
                 if (!(%this.requestPlayerInfoFor $= ""))
                 {
@@ -194,20 +191,17 @@ function PlayerInfoRequest::onDone(%this)
                     if (!(%this.requestPlayerInfoFor $= ""))
                     {
                     }
-                    if ((PlayerInfoMap.get(%this.requestPlayerInfoFor) $= ""))
+                    if (PlayerInfoMap.get(%this.requestPlayerInfoFor) $= "")
                     {
                         InfoPopupDlg.showPlayerNotFound();
                     }
-                    else
-                    {
-                        InfoPopupDlg.tryShowPlayerInfo();
-                    }
+                    InfoPopupDlg.tryShowPlayerInfo();
                 }
             }
         }
         else
         {
-            if ((%numUsers > 0.0))
+            if (%numUsers > 0)
             {
                 %playinfo = PlayerInfoMap.get(%this.requestPlayerInfoFor);
             }
@@ -221,7 +215,7 @@ function PlayerInfoRequest::onDone(%this)
     }
     else
     {
-        if ((%this.callback $= ""))
+        if (%this.callback $= "")
         {
             if (isObject(InfoPopupDlg))
             {
@@ -231,11 +225,8 @@ function PlayerInfoRequest::onDone(%this)
                 InfoPopupDlg.stopAnimation();
             }
         }
-        else
-        {
-            %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
-            eval(%cmd);
-        }
+        %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
+        eval(%cmd);
     }
     %this.requestPlayerInfoFor = "";
     %this.callback = "";

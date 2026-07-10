@@ -13,7 +13,7 @@ function clientVersion::checkForUpgrades()
     {
         return;
     }
-    if (($Net::UpgradeToolAvailable == 0.0) || !platformIsFile("bin\\_update.exe"))
+    if (($Net::UpgradeToolAvailable == 0) || !platformIsFile("bin\\_update.exe"))
     {
         $Net::UpgradeToolAvailable = 0;
         echo("No upgrade tool to do upgrading. Skipping further work.");
@@ -44,16 +44,16 @@ function isUpToDate(%available)
 {
     %buildVersion = formatInt("%d", getBuildVersion());
     %protocolVersion = formatInt("%d", getProtocolVersion());
-    if ((%buildVersion <= 0.0) || (%protocolVersion <= 0.0))
+    if ((%buildVersion <= 0) || (%protocolVersion <= 0))
     {
         echo("We're not sure about our own versions. Returning...");
         $Net::upgradeAvailable = 0;
         return 0;
     }
-    if ((%available > %buildVersion))
+    if (%available > %buildVersion)
     {
     }
-    if ((%available > %protocolVersion))
+    if (%available > %protocolVersion)
     {
         echo("A new client version(" @ %available @ ") is available. We have " @ %buildVersion @ ".");
         $Net::upgradeAvailable = 1;

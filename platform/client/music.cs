@@ -23,7 +23,7 @@ function Music::adjustVolume()
         return;
     }
     %pos = $player.getPosition();
-    if ((%pos != $Music::lastPos))
+    if (%pos != $Music::lastPos)
     {
         Music::attenuate(%pos, %soundPos, 30, $Music::service.getSourceVolume());
         $Music::lastPos = %pos;
@@ -44,16 +44,16 @@ function musicAttenuationTimer()
 function Music::attenuate(%playerPos, %soundPos, %maxDistance, %maxVolume)
 {
     %dist = VectorLen(VectorDist(%playerPos, %soundPos));
-    if ((%dist > %maxDistance))
+    if (%dist > %maxDistance)
     {
         %dist = %maxDistance;
     }
-    %vol = ((1.0 - (%dist / %maxDistance)) * %maxVolume);
+    %vol = (1 - (%dist / %maxDistance)) * %maxVolume;
     $Music::service.setVolume(%vol);
 }
 function Music::setMuted(%flag)
 {
-    if ((%flag != $UserPref::Audio::mute))
+    if (%flag != $UserPref::Audio::mute)
     {
         Music::toggleMute();
     }
@@ -69,7 +69,7 @@ function Music::toggleMute()
     if (!($Music::service $= ""))
     {
     }
-    if ((strstr($Music::service.getNamespaceList(), "VideoRenderer") == -(1.0)))
+    if (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -(1))
     {
         $Music::service.setMute($UserPref::Audio::mute);
         $Music::service.setMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
@@ -113,10 +113,10 @@ function Music::rateSong(%rating)
     %val4 = "&album=" @ urlEncode($Music::service.getAlbum(), 255);
     %val5 = "&song=" @ urlEncode($Music::service.getTitle(), 255);
     %val6 = "&rating=" @ urlEncode(%rating);
-    if (("&artist=" $= %val3))
+    if ("&artist=" $= %val3)
     {
     }
-    if (("&song=" $= %val5))
+    if ("&song=" $= %val5)
     {
         warn("did not have artist and song name, not sending rating request: " @ %url);
         return;
@@ -245,7 +245,7 @@ function GetMusicStreamsRequest::onDone(%this)
     }
     %streamField = "";
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
         %prefix = "mount" @ %i @ ".";
         %streamID = %this.getValue(%prefix @ "key");
@@ -253,20 +253,20 @@ function GetMusicStreamsRequest::onDone(%this)
         $musicStreamNameMap.put(getWords(%streamName, 1), %streamID);
         $musicStreamIDMap.put(%streamID, getWords(%streamName, 1));
         %streamField = %streamField @ %streamName @ "\t";
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %streamField = SortFields(%streamField);
-    (%i < %count);
+    %i < %count;
     %sortedStreamField = "";
     %fieldCount = getFieldCount(%streamField);
     %i = 0;
-    while ((%i < %fieldCount))
+    while (%i < %fieldCount)
     {
         %sortedStreamField = %sortedStreamField @ getWords(getField(%streamField, %i), 1) @ "\t";
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %streamField = %sortedStreamField;
-    (%i < %fieldCount);
+    %i < %fieldCount;
     $musicStreamNameMap.put($CSMediaMusicOffName, $CSMediaMusicOffID);
     $musicStreamIDMap.put($CSMediaMusicOffID, $CSMediaMusicOffName);
     MusicHud.updateStations(%streamField);

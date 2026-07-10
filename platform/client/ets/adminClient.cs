@@ -13,7 +13,7 @@ function clientCmdModNotification(%taggedNotifyType, %param1, %param2)
 {
     %notifyType = detag(%taggedNotifyType);
     %handler = $gModNotificationHandlers[%notifyType];
-    if ((%handler $= ""))
+    if (%handler $= "")
     {
         error(getScopeName() @ " " @ "- Unknown notifyType" @ " " @ %notifyType);
         return;

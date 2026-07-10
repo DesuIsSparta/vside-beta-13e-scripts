@@ -16,7 +16,7 @@ function TGFGoRound::rebuildContainer_LilThumb(%this, %container)
     %ctrlB = new GuiControl("") {
         profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
-        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 10.0);
+        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 10);
     };
     %container.add(%ctrlB);
     %ctrl = new GuiMLTextCtrl("") {
@@ -40,7 +40,7 @@ function TGFGoRound::rebuildContainer_BigThumb(%this, %container)
     %ctrlB = new GuiControl("") {
         profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
-        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 18.0);
+        position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 18);
     };
     %container.add(%ctrlB);
     %ctrl = new GuiMLTextCtrl("") {
@@ -77,7 +77,7 @@ function TGFGoRound::newContentLilThumb(%this, %container)
         %this.mItemsList.mCurrentItem = 0;
         return;
     }
-    if ((%item.relationType $= ""))
+    if (%item.relationType $= "")
     {
     }
     if (UserListFriends.hasKey(%item.userName))
@@ -85,7 +85,7 @@ function TGFGoRound::newContentLilThumb(%this, %container)
         %item.relationType = "friend";
     }
     %userName = %item.userName;
-    %isFriend = (%item.relationType $= "friend");
+    %isFriend = %item.relationType $= "friend";
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
     if (!(%userName $= ""))
     {
@@ -95,7 +95,7 @@ function TGFGoRound::newContentLilThumb(%this, %container)
     %container.mBitmapCtrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
     %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
     %container.mItem = %item;
-    %this.mItemsList.mCurrentItem = ((%this.mItemsList.mCurrentItem + 1.0) % %this.mItemsList.size());
+    %this.mItemsList.mCurrentItem = (%this.mItemsList.mCurrentItem + 1) % %this.mItemsList.size();
 }
 function TGFGoRound::newContentBigThumb(%this)
 {
@@ -103,7 +103,7 @@ function TGFGoRound::newContentBigThumb(%this)
     %lilThumbContainer = %this.getCurrentZoomedLilThumb();
     %item = %lilThumbContainer.mItem;
     %userName = %item.userName;
-    %isFriend = (%item.relationType $= "friend");
+    %isFriend = %item.relationType $= "friend";
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
     if (!(%userName $= ""))
     {
@@ -143,11 +143,11 @@ function TGFGoRound::setItemList(%this, %list)
     %this.mItemsList = %list;
     %list.mCurrentItem = 0;
     %n = 0;
-    while ((%n < (%this.mLilThumbsNumAcross * 2.0)))
+    while (%n < (%this.mLilThumbsNumAcross * 2))
     {
         %lilThumbContainer = %this.mLilThumbsContainer.getObject(%n);
         %this.newContentLilThumb(%lilThumbContainer);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.newContentBigThumb();
 }

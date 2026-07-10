@@ -83,11 +83,11 @@ function animatorPanel::onGotPossibleGenres(%this, %possibleGenres)
     %animIndex = 0;
     %numGenres = strlen(%possibleGenres);
     %i = 0;
-    while ((%i < %numGenres))
+    while (%i < %numGenres)
     {
         %genre = strupr(getSubStr(%possibleGenres, %i, 1));
         %g = 0;
-        while ((%g < 2.0))
+        while (%g < 2)
         {
             %gender = %g ? "M" : "F";
             %animationMap = "animationMap" @ %gender @ %genre;
@@ -95,22 +95,22 @@ function animatorPanel::onGotPossibleGenres(%this, %possibleGenres)
             {
                 %numAnimations = %animationMap.size();
                 %j = 0;
-                while ((%j < %numAnimations))
+                while (%j < %numAnimations)
                 {
                     %anim = %animationMap.getValue(%j);
-                    if ((animatorPanelAnimsPopup.findText(%anim) < 0.0))
+                    if (animatorPanelAnimsPopup.findText(%anim) < 0)
                     {
                         animatorPanelAnimsPopup.add(%anim, %animIndex);
-                        %animIndex = (%animIndex + 1.0);
+                        %animIndex = %animIndex + 1;
                     }
-                    %j = (%j + 1.0);
+                    %j = %j + 1;
                 }
             }
-            %g = (%g + 1.0);
-            (%j < %numAnimations);
+            %g = %g + 1;
+            %j < %numAnimations;
         }
-        %i = (%i + 1.0);
-        (%g < 2.0);
+        %i = %i + 1;
+        %g < 2;
     }
     animatorPanelAnimsPopup.sort();
 }
@@ -131,22 +131,22 @@ function animatorPanel::onGotTargetsList(%this, %theList)
 {
     animatorPanelTargetsPopup.clear();
     %num = getRecordCount(%theList);
-    if ((%num < 1.0))
+    if (%num < 1)
     {
         error("apparently nobody is here. this is bad.");
         return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %entry = getRecord(%theList, %n);
         animatorPanelTargetsPopup.add(%entry, %n);
-        if ((%entry $= $gAnimatorGuiPrevMenuTarget))
+        if (%entry $= $gAnimatorGuiPrevMenuTarget)
         {
             %nextItem = %entry;
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     animatorPanelTargetsPopup.sort();
     if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))
@@ -165,15 +165,15 @@ $animatorPanelTargetsList = "";
 function clientCmdBuildAnimatorTargetsList(%actionTagged, %item)
 {
     %action = detag(%actionTagged);
-    if ((%action $= "begin"))
+    if (%action $= "begin")
     {
         $animatorPanelTargetsList = "";
     }
     else
     {
-        if ((%action $= "add"))
+        if (%action $= "add")
         {
-            if (($animatorPanelTargetsList $= ""))
+            if ($animatorPanelTargetsList $= "")
             {
                 $animatorPanelTargetsList = %item;
             }
@@ -182,12 +182,9 @@ function clientCmdBuildAnimatorTargetsList(%actionTagged, %item)
                 $animatorPanelTargetsList = $animatorPanelTargetsList @ "\n" @ %item;
             }
         }
-        else
+        if (%action $= "finish")
         {
-            if ((%action $= "finish"))
-            {
-                animatorPanel.onGotTargetsList($animatorPanelTargetsList);
-            }
+            animatorPanel.onGotTargetsList($animatorPanelTargetsList);
         }
     }
 }

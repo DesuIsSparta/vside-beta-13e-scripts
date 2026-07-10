@@ -14,7 +14,7 @@ function Buildings::GetSkuFromFloorPlanName(%floorplanName)
 function DeclareBuilding(%buildingName, %buildingDescription, %longDescription, %minlevelToOwn, %areaNames, %floorplans)
 {
     %areaNameCity = DestinationList::GetAreaNameCity(firstWord(%areaNames));
-    if ((%areaNameCity $= ""))
+    if (%areaNameCity $= "")
     {
     }
     if (!(%areaNames $= ""))
@@ -27,17 +27,17 @@ function DeclareBuilding(%buildingName, %buildingDescription, %longDescription, 
     $gBuildingVURL[%buildingName] = "vside:/location/" @ %areaNameCity @ "/" @ %buildingName @ "_ReturnSpawn";
     $gBuildingAreaNames[%buildingName] = %areaNames;
     $gBuildingFloorplans[%buildingName] = %floorplans;
-    %i = (getWordCount(%floorplans) - 1.0);
-    while ((%i >= 0.0))
+    %i = getWordCount(%floorplans) - 1;
+    while (%i >= 0)
     {
         %floorplanName = getWord(%floorplans, %i);
         %sku = Buildings::GetSkuFromFloorPlanName(%floorplanName);
-        if ((%sku $= ""))
+        if (%sku $= "")
         {
             error(getScopeName() @ " " @ "This Floorplan has not properly been declared yet, see DeclareFloorplan");
         }
         $gBuildingNamesFromFloorplans[%floorplanName] = %buildingName;
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
 }
 function Buildings::GetDescription(%name)
@@ -47,7 +47,7 @@ function Buildings::GetDescription(%name)
 function Buildings::GetLongDescription(%name)
 {
     %ret = $gBuildingLongDesc[%name];
-    if ((%ret $= ""))
+    if (%ret $= "")
     {
         %ret = %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"] @ "Looking for a hoppin' party?" @ "\n" @ %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ "Check out the directory to your left and pick an apartment with lots of people. Hop around!" @ "\n\n" @ %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"] @ "Looking to meet people?" @ "\n" @ %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ "Browse the directory and see who's home. Don't be shy!" @ "\n\n" @ %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"] @ "Want an apartment to call your own?" @ "\n" @ %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ "Visit the model apartment to get your own apartment! Stylize as you see fit and invite your friends over to meet up!" @ "\n\n" @ %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"] @ "Strut your stuff!" @ "\n" @ %ret[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"][$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ "Make your own jaw-dropping vSide party. Pick your favorite YouTube vids and jam!";
     }

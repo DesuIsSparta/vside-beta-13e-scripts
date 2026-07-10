@@ -27,7 +27,7 @@ function addCoAnim(%coAnimName, %anim, %delayA, %delayB, %range, %relativeTransf
 function setCoAnimSkuPeriod(%coAnimName, %whichPlayer, %specialSkuName, %startMS, %stopMS)
 {
     %entry = findCoAnimEntry(%coAnimName);
-    if ((%entry $= ""))
+    if (%entry $= "")
     {
         error(getScopeName() @ " " @ "- no such coAnim:" @ " " @ %coAnimName @ " " @ getTrace());
         return;
@@ -63,14 +63,14 @@ function getAllCoAnims()
     %list = "";
     %count = $gCoAnimDictionary.size();
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
         %userFacingName = $gCoAnimDictionary.getKey(%i);
         if (!(%userFacingName $= ""))
         {
             %list = %list @ "\t" @ %userFacingName;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     return trim(%list);
 }
@@ -79,8 +79,8 @@ function getAllUserTriggerableCoAnims()
     %retList = "";
     %delim = "";
     %list = getAllCoAnims();
-    %n = (getFieldCount(%list) - 1.0);
-    while ((%n >= 0.0))
+    %n = getFieldCount(%list) - 1;
+    while (%n >= 0)
     {
         %entryKey = getField(%list, %n);
         %entryVal = $gCoAnimDictionary.get(%entryKey);
@@ -90,7 +90,7 @@ function getAllUserTriggerableCoAnims()
             %retList = %entryKey @ %delim @ %retList;
             %delim = "\t";
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     return %retList;
 }

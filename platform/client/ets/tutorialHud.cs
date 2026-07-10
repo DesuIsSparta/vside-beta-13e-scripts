@@ -30,49 +30,37 @@ function TutorialsCatalogClient::GetTutorialsRoot()
 {
     %csn = $gContiguousSpaceName;
     %idx = strchrpos(%csn, "_");
-    if ((%idx >= 0.0))
+    if (%idx >= 0)
     {
         %csn = getSubStr(%csn, 0, %idx);
     }
-    if ((%csn $= "gw"))
+    if (%csn $= "gw")
     {
         %world = "gateway";
     }
     else
     {
-        if ((%csn $= "lga"))
+        if (%csn $= "lga")
         {
             %world = "lga";
         }
-        else
+        if (%csn $= "nv")
         {
-            if ((%csn $= "nv"))
-            {
-                %world = "lounge";
-            }
-            else
-            {
-                if ((%csn $= "rj"))
-                {
-                    %world = "raijuku";
-                }
-                else
-                {
-                    if ((%csn $= "minimal"))
-                    {
-                        %world = "dummy";
-                    }
-                    else
-                    {
-                        if (!($gContiguousSpaceName $= ""))
-                        {
-                            error(getScopeName() @ " " @ "- contiguous space name '" @ $gContiguousSpaceName @ "' not recognized!" @ " " @ getTrace());
-                        }
-                        return "";
-                    }
-                }
-            }
+            %world = "lounge";
         }
+        if (%csn $= "rj")
+        {
+            %world = "raijuku";
+        }
+        if (%csn $= "minimal")
+        {
+            %world = "dummy";
+        }
+        if (!($gContiguousSpaceName $= ""))
+        {
+            error(getScopeName() @ " " @ "- contiguous space name '" @ $gContiguousSpaceName @ "' not recognized!" @ " " @ getTrace());
+        }
+        return "";
     }
     %ret = "projects/" @ $ETS::ProjectName @ "/worlds/" @ %world @ "/tutorials/";
     return %ret;
@@ -83,7 +71,7 @@ function tutorials_Initialize()
     TutorialsCatalogClient.bindClassName("TutorialsObject");
     TutorialsCatalogClient.bindClassName("TutorialsCatalogClient");
     TutorialsCatalogClient.deleteMembers();
-    if ((TutorialsCatalogClient::GetTutorialsRoot() $= ""))
+    if (TutorialsCatalogClient::GetTutorialsRoot() $= "")
     {
         return;
     }
@@ -96,14 +84,11 @@ function tutorials_Initialize()
         {
             TutorialsCatalogServer.ValidateForStandAlone();
         }
-        else
-        {
-            error(getScopeName() @ " " @ "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
-        }
+        error(getScopeName() @ " " @ "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
     }
     geTutorialContainer.currentTutorialObj = "";
     HudTabs.hideTabWithName("tutorial");
-    if ((TutorialsCatalogClient.getCount() > 0.0))
+    if (TutorialsCatalogClient.getCount() > 0)
     {
         geTutorialContainer.goToTutorialByIndex(0, 1);
     }
@@ -127,8 +112,8 @@ function TutorialsCatalogClient::addContentItem(%this, %file)
     %stepName = stripExtension(%stepName);
     %tutorialObj = %this.getSubItemByName(%tutorialName, 1);
     %tutorialObj.tutorial = %tutorialObj;
-    %tutorialObj.isSecret = (getWord(%tutorialName, 0) $= "Secret");
-    if ((getWord(%stepName, 0) $= "Nag"))
+    %tutorialObj.isSecret = getWord(%tutorialName, 0) $= "Secret";
+    if (getWord(%stepName, 0) $= "Nag")
     {
         if (!isObject(%tutorialObj.nagsGroup))
         {
@@ -139,8 +124,8 @@ function TutorialsCatalogClient::addContentItem(%this, %file)
         %nagObj.bindClassName("TutorialsObject");
         %nagObj.bindClassName("NagObject");
         %nagObj.setInternalName(%stepName);
-        %nagObj.timeDelay = (getWord(%stepName, 1) * 1000.0);
-        %nagObj.timeDelayForFinalNagRepeat = (120.0 * 1000.0);
+        %nagObj.timeDelay = getWord(%stepName, 1) * 1000;
+        %nagObj.timeDelayForFinalNagRepeat = 120 * 1000;
         %nagObj.schedule = "";
         %tutorialObj.nagsGroup.add(%nagObj);
     }
@@ -169,7 +154,7 @@ function TutorialsObject::getSubItemByName(%this, %name, %createIfNotFound)
 }
 function TutorialsObject::getSubItemByIndex(%this, %ndx)
 {
-    if ((%ndx < 0.0) || (%ndx >= %this.getCount()))
+    if ((%ndx < 0) || (%ndx >= %this.getCount()))
     {
         return 0;
     }
@@ -185,41 +170,38 @@ function TutorialsObject::getIndex(%this)
 function TutorialsObject::getUserFacingName(%this)
 {
     %internalName = %this.getInternalName();
-    if ((getWord(%internalName, 0) $= "Nag"))
+    if (getWord(%internalName, 0) $= "Nag")
     {
         %userFacingName = restWords(restWords(%internalName));
     }
     else
     {
-        if ((getWord(%internalName, 0) $= "Secret"))
+        if (getWord(%internalName, 0) $= "Secret")
         {
             %userFacingName = restWords(restWords(%internalName));
         }
-        else
-        {
-            %userFacingName = restWords(%internalName);
-        }
+        %userFacingName = restWords(%internalName);
     }
     return %userFacingName;
 }
 function TutorialsObject::getChildByUserFacingName(%this, %name)
 {
-    %n = (%this.getCount() - 1.0);
-    while ((%n >= 0.0))
+    %n = %this.getCount() - 1;
+    while (%n >= 0)
     {
         %obj = %this.getObject(%n);
-        if ((%obj.getUserFacingName() $= %name))
+        if (%obj.getUserFacingName() $= %name)
         {
             return %obj;
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     return 0;
 }
 function TutorialsObject::getSiblingByDelta(%this, %delta)
 {
     %ndx = %this.getIndex();
-    %ndx = (%ndx + %delta);
+    %ndx = %ndx + %delta;
     return %this.getGroup().getSubItemByIndex(%ndx);
 }
 function TutorialsObject::getFirstSibling(%this)
@@ -228,7 +210,7 @@ function TutorialsObject::getFirstSibling(%this)
 }
 function TutorialsObject::getLastSibling(%this)
 {
-    return %this.getGroup().getSubItemByIndex((%this.getGroup().getCount() - 1.0));
+    return %this.getGroup().getSubItemByIndex((%this.getGroup().getCount() - 1));
 }
 function geTutorialContainer::getCurrentTutorialObj(%this)
 {
@@ -283,7 +265,7 @@ function geTutorialContainer::goToTutorialByDelta(%this, %delta, %promoteToParen
     if (isObject(%new))
     {
         %this.goToTutorialByIndex(%new.getIndex(), 1);
-        if ((%delta < 0.0))
+        if (%delta < 0)
         {
             %this.goToLastStep();
         }
@@ -333,13 +315,13 @@ function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDel
     {
         if (%promoteToParentDelta)
         {
-            if ((%delta < 0.0))
+            if (%delta < 0)
             {
             }
             else
             {
             }
-            %this.goToTutorialByDelta(-(1.0), 1, 1);
+            %this.goToTutorialByDelta(-(1), 1, 1);
         }
     }
 }
@@ -360,7 +342,7 @@ function geTutorialContainer::goToLastStep(%this)
 }
 function geTutorialContainer::doUpdateButtons(%this, %tutorialsObject)
 {
-    if ((getWord(%tutorialsObject.getInternalName(), 0) $= "Nag"))
+    if (getWord(%tutorialsObject.getInternalName(), 0) $= "Nag")
     {
         geTutorialMLNavNext.setVisible(0);
         geTutorialMLNavPrev.setVisible(0);
@@ -372,8 +354,8 @@ function geTutorialContainer::doUpdateButtons(%this, %tutorialsObject)
         geTutorialMLReturnToTutorialButton.setVisible(0);
         geTutorialMLRepeatTheTutorialButton.setVisible(0);
         %stepCount = %tutorialsObject.getCount();
-        geTutorialMLNavNext.setVisible((%stepCount > 1.0));
-        geTutorialMLNavPrev.setVisible((%stepCount > 1.0));
+        geTutorialMLNavNext.setVisible((%stepCount > 1));
+        geTutorialMLNavPrev.setVisible((%stepCount > 1));
     }
 }
 function geTutorialContainer::setMainBitmap(%this, %path)
@@ -392,7 +374,7 @@ function geTutorialContainer::setMainBitmap(%this, %path)
 function geTutorialContainer::setMetaData(%this, %stepObj)
 {
     %stepName = %stepObj.getUserFacingName();
-    %stepNum = (%stepObj.getIndex() + 1.0);
+    %stepNum = %stepObj.getIndex() + 1;
     %stepTTL = %stepObj.getGroup().getCount();
     %tutorialObj = %stepObj.getGroup().tutorial;
     %tutorialName = %tutorialObj.getUserFacingName();
@@ -402,10 +384,10 @@ function geTutorialContainer::setMetaData(%this, %stepObj)
     if ((%stepObj.getGroup() == %stepObj.getGroup().tutorial) || %stepObj.getGroup().tutorial.isSecret)
     {
     }
-    if ((%stepObj.getGroup().getCount() > 1.0))
+    if (%stepObj.getGroup().getCount() > 1)
     {
         %labelText = %labelText @ "<just:right>" @ $gTutorialsFontSmall @ "step " @ %stepNum @ " of " @ %stepTTL;
-        if ((%stepNum < %stepTTL))
+        if (%stepNum < %stepTTL)
         {
             geTutorialMLNavNext.setText(geTutorialMLNavNext.activeText);
         }
@@ -413,14 +395,11 @@ function geTutorialContainer::setMetaData(%this, %stepObj)
         {
             geTutorialMLNavNext.setText(geTutorialMLNavNext.inactiveText);
         }
-        if ((%stepNum > 1.0))
+        if (%stepNum > 1)
         {
             geTutorialMLNavPrev.setText(geTutorialMLNavPrev.activeText);
         }
-        else
-        {
-            geTutorialMLNavPrev.setText(geTutorialMLNavPrev.inactiveText);
-        }
+        geTutorialMLNavPrev.setText(geTutorialMLNavPrev.inactiveText);
     }
     geTutorialMLBot.setText(%labelText);
 }
@@ -434,7 +413,7 @@ function geTutorialMLNavNext::onURL(%this, %url)
     }
     %restartNags = 1;
     %stepNdx = %stepObj.getIndex();
-    if ((firstWord(%url) $= "gamelink"))
+    if (firstWord(%url) $= "gamelink")
     {
         %word = restWords(%url);
     }
@@ -442,47 +421,35 @@ function geTutorialMLNavNext::onURL(%this, %url)
     {
         %word = %url;
     }
-    if ((%word $= "prev2x"))
+    if (%word $= "prev2x")
     {
-        if ((%stepNdx == 0.0))
+        if (%stepNdx == 0)
         {
-            geTutorialContainer.goToTutorialByDelta(-(1.0), 1);
+            geTutorialContainer.goToTutorialByDelta(-(1), 1);
         }
         geTutorialContainer.goToFirstStep();
     }
     else
     {
-        if ((%word $= "next2x"))
+        if (%word $= "next2x")
         {
             geTutorialContainer.goToTutorialByDelta(1, 1);
         }
-        else
+        if (%word $= "prev")
         {
-            if ((%word $= "prev"))
-            {
-                geTutorialContainer.goToStepByDelta(-(1.0), !1);
-            }
-            else
-            {
-                if ((%word $= "next"))
-                {
-                    geTutorialContainer.goToStepByDelta(1, !1);
-                }
-                else
-                {
-                    if ((%word $= "repeat"))
-                    {
-                        commandToServer('respawnPlayerAtTutorialBeginning', $gCurrentMainTutorial.getUserFacingName());
-                    }
-                    else
-                    {
-                        if ((%word $= "return"))
-                        {
-                            geTutorialContainer.goToCurrentStep();
-                        }
-                    }
-                }
-            }
+            geTutorialContainer.goToStepByDelta(-(1), !1);
+        }
+        if (%word $= "next")
+        {
+            geTutorialContainer.goToStepByDelta(1, !1);
+        }
+        if (%word $= "repeat")
+        {
+            commandToServer('respawnPlayerAtTutorialBeginning', $gCurrentMainTutorial.getUserFacingName());
+        }
+        if (%word $= "return")
+        {
+            geTutorialContainer.goToCurrentStep();
         }
     }
 }
@@ -512,7 +479,7 @@ function clientCmdEnterTutorialSpace(%name, %forceRestartTutorial)
 }
 function TutorialsObject::doStartTutorial(%this, %forceRestartTutorial)
 {
-    if ((%this == $gCurrentMainTutorial))
+    if (%this == $gCurrentMainTutorial)
     {
     }
     %returningToMainTutorialFromSecretTutorial = geTutorialContainer.getCurrentTutorialObj().isSecret;
@@ -527,12 +494,12 @@ function TutorialsObject::doRestartNags(%this)
     TutorialsCatalogClient.doCancelAllNagSchedules();
     if (isObject(%this.nagsGroup))
     {
-        %i = (%this.nagsGroup.getCount() - 1.0);
-        while ((%i >= 0.0))
+        %i = %this.nagsGroup.getCount() - 1;
+        while (%i >= 0)
         {
             %nagObj = %this.nagsGroup.getObject(%i);
             %nagObj.schedule = %nagObj.schedule(%nagObj.timeDelay, doUpdateDisplay);
-            %i = (%i - 1.0);
+            %i = %i - 1;
         }
     }
 }
@@ -561,7 +528,7 @@ function TutorialsObject::forceNextNag(%this)
     {
         %nagsCount = %this.nagsGroup.getCount();
         %i = 0;
-        while ((%i < %nagsCount))
+        while (%i < %nagsCount)
         {
             %nagObj = %this.nagsGroup.getObject(%i);
             if (%nagObj.schedule)
@@ -569,7 +536,7 @@ function TutorialsObject::forceNextNag(%this)
                 %nagObj.doUpdateDisplay();
                 return;
             }
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
     }
     handleSystemMessage("msgInfoMessage", "No nags exist for the current tutorial.");
@@ -579,7 +546,7 @@ function TutorialsObject::doUpdateDisplay(%this, %showPanel, %restartTutorial)
     if (%showPanel)
     {
         geTutorialContainer.doUpdateButtons(%this);
-        if (($gTutorialOpenTimer $= ""))
+        if ($gTutorialOpenTimer $= "")
         {
             HudTabs.overrideLockedOpen = 1;
             HudTabs.close();
@@ -626,7 +593,7 @@ function clientCmdLeaveTutorialSpace(%name)
 }
 function TutorialsObject::doFinishTutorial(%this)
 {
-    if (($gCurrentMainTutorial == %this))
+    if ($gCurrentMainTutorial == %this)
     {
         TutorialsCatalogClient.doCancelAllNagSchedules();
         %this.doUpdateDisplay(0, 1);
@@ -636,7 +603,7 @@ function NagObject::doUpdateDisplay(%this)
 {
     cancel(%this.schedule);
     %this.schedule = "";
-    if (!isObject(%this.getGroup().tutorial) || (TutorialsCatalogClient.getObjectIndex(%this.getGroup().tutorial) < 0.0) || ($gCurrentMainTutorial != %this.getGroup().tutorial.getId()))
+    if (!isObject(%this.getGroup().tutorial) || (TutorialsCatalogClient.getObjectIndex(%this.getGroup().tutorial) < 0) || ($gCurrentMainTutorial != %this.getGroup().tutorial.getId()))
     {
         return;
     }
@@ -652,27 +619,27 @@ function NagObject::doUpdateDisplay(%this)
 }
 function NagObject::isLastNag(%this)
 {
-    return (%this.getGroup().getObjectIndex(%this) == (%this.getGroup().getCount() - 1.0));
+    return %this.getGroup().getObjectIndex(%this) == (%this.getGroup().getCount() - 1);
 }
 function TutorialsCatalogClient::doCancelAllNagSchedules(%this)
 {
-    %i = (%this.getCount() - 1.0);
-    while ((%i >= 0.0))
+    %i = %this.getCount() - 1;
+    while (%i >= 0)
     {
         %tutorialObj = %this.getObject(%i);
         if (isObject(%tutorialObj.nagsGroup))
         {
-            %j = (%tutorialObj.nagsGroup.getCount() - 1.0);
-            while ((%j >= 0.0))
+            %j = %tutorialObj.nagsGroup.getCount() - 1;
+            while (%j >= 0)
             {
                 %nagObj = %tutorialObj.nagsGroup.getObject(%j);
                 cancel(%nagObj.schedule);
                 %nagObj.schedule = "";
-                %j = (%j - 1.0);
+                %j = %j - 1;
             }
         }
-        %i = (%i - 1.0);
-        (%j >= 0.0);
+        %i = %i - 1;
+        %j >= 0;
     }
 }
 function leaveAllTutorialSpaces()

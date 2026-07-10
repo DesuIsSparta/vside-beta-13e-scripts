@@ -1,12 +1,12 @@
 function Player::onGotRoles(%this, %rolesMask)
 {
     %this.updateMapIcon();
-    if ((%this != $player))
+    if (%this != $player)
     {
         %this.rebuildHudCtrl();
         return;
     }
-    if ((%this.prevRolesMask == %rolesMask))
+    if (%this.prevRolesMask == %rolesMask)
     {
         return;
     }
@@ -20,12 +20,12 @@ function Player::onGotRoles(%this, %rolesMask)
         $TSControl::objSelRange = $pref::TS::distMouseOver;
     }
     %playerObjects = ServerConnection.findObjectsPlayer();
-    %n = (getWordCount(%playerObjects) - 1.0);
-    while ((%n >= 0.0))
+    %n = getWordCount(%playerObjects) - 1;
+    while (%n >= 0)
     {
         %po = getWord(%playerObjects, %n);
         %po.rebuildHudCtrl();
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     HUDHideChatCheckBox.setVisible(%this.rolesPermissionCheckNoWarn("quietHUD"));
     FarNameOpacityCtrl.setVisible(%this.rolesPermissionCheckNoWarn("farNameOpacity"));
@@ -40,11 +40,8 @@ function Player::onGotRoles(%this, %rolesMask)
         {
             schedule(2000, 0, "delayedWearSku", getSpecialSKU($player, "cohostBadge"));
         }
-        else
-        {
-            schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "hostBadge"));
-            schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "cohostBadge"));
-        }
+        schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "hostBadge"));
+        schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "cohostBadge"));
     }
 }
 function delayedWearSku(%sku)

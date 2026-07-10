@@ -4,7 +4,7 @@ function Canvas::onSystemDragDropEvent(%this, %text, %isDrop, %pt)
     {
         return 0;
     }
-    if ((%this.getId() == Canvas.getId()) && !isObject($player) || !$player.isHost())
+    if (%this.getId() == Canvas.getId() && !isObject($player) || !$player.isHost())
     {
         return 0;
     }
@@ -26,35 +26,29 @@ function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt)
         return 0;
     }
     Canvas.setSystemDragTargetControl(%this);
-    if ((%eventType $= "MAKE"))
+    if (%eventType $= "MAKE")
     {
         hiliteControl(%this);
     }
     else
     {
-        if ((%eventType $= "MOVE"))
+        if (%eventType $= "MOVE")
         {
         }
-        else
+        if (%eventType $= "LEAVE")
         {
-            if ((%eventType $= "LEAVE"))
+            if (%this.isHiliteCtrl())
             {
-                if (%this.isHiliteCtrl())
-                {
-                    hiliteControl("");
-                }
+                hiliteControl("");
             }
-            else
+        }
+        if (%eventType $= "BREAK")
+        {
+            if (%this.isHiliteCtrl())
             {
-                if ((%eventType $= "BREAK"))
-                {
-                    if (%this.isHiliteCtrl())
-                    {
-                        hiliteControl("");
-                    }
-                    %this.onSystemDragDroppedEvent(%text, %pt);
-                }
+                hiliteControl("");
             }
+            %this.onSystemDragDroppedEvent(%text, %pt);
         }
     }
     return 1;

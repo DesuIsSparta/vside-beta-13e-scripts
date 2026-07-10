@@ -135,7 +135,7 @@ function ChangeStreamIDMappingRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
     log("network", "info", getScopeName() @ ":" @ %status);
-    if ((%status $= "fail"))
+    if (%status $= "fail")
     {
         warn("network", getScopeName() @ " request failed: " @ %this.getValue("statusMessage"));
     }
@@ -148,13 +148,13 @@ function ChangeStreamIDMappingRequest::onDone(%this)
 }
 function TriggersPanel::testURL(%this)
 {
-    if ((TriggersPanelTestUrl.getText() $= "Test URL"))
+    if (TriggersPanelTestUrl.getText() $= "Test URL")
     {
         TriggersPanelTestUrl.setText("Stop Test");
     }
     else
     {
-        if ((TriggersPanelTestUrl.getText() $= "Stop Test"))
+        if (TriggersPanelTestUrl.getText() $= "Stop Test")
         {
             FMod.popStream("TriggersPanelTest");
             TriggersPanelTestUrl.setText("Test URL");
@@ -174,13 +174,13 @@ function TriggersPanel::testURL(%this)
 function TriggersPanel::selectTrigger(%this)
 {
     %selected = triggersPanelTextList.getValue();
-    if ((strstr(%selected, "MusicTrigger") < 0.0))
+    if (strstr(%selected, "MusicTrigger") < 0)
     {
         return;
     }
     %wc = getWordCount(%selected);
-    %trigger = getWord(%selected, (%wc - 3.0));
-    %stream = getWord(%selected, (%wc - 1.0));
+    %trigger = getWord(%selected, (%wc - 3));
+    %stream = getWord(%selected, (%wc - 1));
     TriggersPanelTriggerPopup.setValue(%trigger);
     TriggersPanelStreamPopup.setValue(%stream);
     commandToServer('getUrl', %stream, addTaggedString("GetTriggersPanelURLCallback"));
@@ -200,7 +200,7 @@ function setShowOnlyMusicTriggers()
 }
 function ClientCmdTriggerSet(%triggerDesc)
 {
-    %isMusicTrigger = (strstr(%triggerDesc, "MusicTrigger") >= 0.0);
+    %isMusicTrigger = strstr(%triggerDesc, "MusicTrigger") >= 0;
     %displayTrigger = !$DevPref::showOnlyMusicTriggers || %isMusicTrigger;
     if (%displayTrigger)
     {
@@ -215,7 +215,7 @@ function ClientCmdTriggerSet(%triggerDesc)
 function ClientCmdTriggerUnset(%triggerDesc)
 {
     %idx = triggersPanelTextList.findTextIndex(%triggerDesc);
-    if ((%idx >= 0.0))
+    if (%idx >= 0)
     {
         triggersPanelTextList.removeRow(%idx);
     }
@@ -229,16 +229,16 @@ function ClientCmdTriggerSetByList(%set)
     %num = getFieldCount(%set);
     %rowNum = triggersPanelTextList.rowCount();
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %desc = getField(%set, %n);
-        %isMusicTrigger = (strstr(%desc, "MusicTrigger") >= 0.0);
+        %isMusicTrigger = strstr(%desc, "MusicTrigger") >= 0;
         %displayTrigger = !$DevPref::showOnlyMusicTriggers || %isMusicTrigger;
         if (%displayTrigger)
         {
             triggersPanelTextList.addRow((%n + %rowNum), %desc, (%n + %rowNum));
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     if ($DevPref::autoOpenTriggers)
     {
@@ -249,28 +249,28 @@ function clientCmdGetMusicTriggerNamesCallback(%names)
 {
     %count = getFieldCount(%names);
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
         %name = getField(%names, %i);
         if (!(%name $= ""))
         {
             TriggersPanelTriggerPopup.add(%name);
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function clientCmdGetStreamIDsCallback(%names)
 {
     %count = getFieldCount(%names);
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
         %name = getField(%names, %i);
         if (!(%name $= ""))
         {
             TriggersPanelStreamPopup.add(%name);
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function TriggersPanelStreamPopup::streamSelected(%this)
@@ -296,7 +296,7 @@ function clientCmdGetStreamIDCallback(%stream)
 }
 function clientCmdGetTriggersPanelURLCallback(%url)
 {
-    if ((%url $= ""))
+    if (%url $= "")
     {
         %url = "<blank>";
     }

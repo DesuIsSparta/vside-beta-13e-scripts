@@ -14,7 +14,7 @@ function asyncTestsMasterAdd(%testname, %waitTimeMS)
     $asyncTests::testNames[$asyncTests::testsNum] = %testname;
     $asyncTests::testTimes[$asyncTests::testsNum] = %waitTimeMS;
     $asyncTests::testRslts[$asyncTests::testsNum] = $asyncTests::untestedResult;
-    $asyncTests::testsNum = ($asyncTests::testsNum + 1.0);
+    $asyncTests::testsNum = $asyncTests::testsNum + 1;
 }
 function asyncTestsMasterRun()
 {
@@ -28,8 +28,8 @@ function asyncTestsMasterDoNext()
     cancel($asyncTests::timer);
     $asyncTests::timer = 0;
     %thisTestNum = $asyncTests::nextTest;
-    $asyncTests::nextTest = ($asyncTests::nextTest + 1.0);
-    if ((%thisTestNum >= $asyncTests::testsNum))
+    $asyncTests::nextTest = $asyncTests::nextTest + 1;
+    if (%thisTestNum >= $asyncTests::testsNum)
     {
         asyncTestsMasterFinished();
         return;
@@ -61,7 +61,7 @@ function asyncTestsMasterOnTimeout(%testNum)
     %testname = $asyncTests::testNames[%testNum];
     log("general", "debug", "asyncTests: evaluating test" @ " " @ %testname @ "..");
     %result = $asyncTests::testRslts[%testNum] = call(asyncTestMasterGetFuncNameEval(%testname));
-    if ((%result $= "pass"))
+    if (%result $= "pass")
     {
         log("general", "debug", "asyncTests: test passed:" @ " " @ %testname);
     }
@@ -90,31 +90,28 @@ function asyncTestsMasterFinished()
     %countNA = 0;
     log("general", "info", "tests finished..");
     %n = 0;
-    while ((%n < $asyncTests::testsNum))
+    while (%n < $asyncTests::testsNum)
     {
         %testname = $asyncTests::testNames[%n];
         %testRslt = $asyncTests::testRslts[%n];
-        if ((%testRslt $= "pass"))
+        if (%testRslt $= "pass")
         {
-            %countPass = (%countPass + 1.0);
+            %countPass = %countPass + 1;
             log("general", "info", "test          passed:" @ " " @ %testname);
         }
         else
         {
-            if ((%testRslt $= $asyncTests::untestedResult))
+            if (%testRslt $= $asyncTests::untestedResult)
             {
-                %countNA = (%countNA + 1.0);
+                %countNA = %countNA + 1;
                 log("general", "error", "test failed to init:" @ " " @ %testname);
             }
-            else
-            {
-                %countFail = (%countFail + 1.0);
-                log("general", "error", "test         failed:" @ " " @ %testname @ " " @ %testRslt);
-            }
+            %countFail = %countFail + 1;
+            log("general", "error", "test         failed:" @ " " @ %testname @ " " @ %testRslt);
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %level = (%countPass == $asyncTests::testsNum) ? "info" : "error";
-    (%n < $asyncTests::testsNum);
+    %n < $asyncTests::testsNum;
     log("general", %level, "tests finished." @ " " @ $asyncTests::testsNum @ " " @ "total," @ " " @ %countPass @ " " @ "passed," @ " " @ %countFail @ " " @ "failed," @ " " @ %countNA @ " " @ "did not initialize.");
 }

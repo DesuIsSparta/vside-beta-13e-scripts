@@ -66,34 +66,28 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
 {
     %text = pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
     %text = strreplace(%text, "<color:000000", "<color:ffffff");
-    if ((%speechType $= "sos"))
+    if (%speechType $= "sos")
     {
         %text = "<spush><color:dd0000>sos<spop>  " @ " " @ %text;
     }
     else
     {
-        if ((%speechType $= "abuse"))
+        if (%speechType $= "abuse")
         {
             %text = "<spush><color:dd0000>abuse<spop>  " @ " " @ %text;
         }
-        else
-        {
-            %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
-        }
+        %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
     }
     %this.addLine2(%text);
     if ($DevPref::Audio::NotifySnoop)
     {
-        if ((%speechType $= "sos"))
+        if (%speechType $= "sos")
         {
             alxPlay(Audio_SOSMessageIn);
         }
-        else
+        if (%speechType $= "abuse")
         {
-            if ((%speechType $= "abuse"))
-            {
-                alxPlay(Audio_SOSMessageIn);
-            }
+            alxPlay(Audio_SOSMessageIn);
         }
     }
 }
@@ -118,7 +112,7 @@ function onModNotificationCussing(%playerName, %param2)
 }
 function stringToInteger(%string, %maxInteger)
 {
-    if ((%maxInteger <= 0.0))
+    if (%maxInteger <= 0)
     {
         error("%maxInteger must be positive" @ " " @ getTrace());
         return 0;
@@ -130,16 +124,16 @@ function stringToInteger(%string, %maxInteger)
         %chars = 4;
         %b = getSubStr(%a, 0, %chars);
         eval("%b = 0x" @ %b @ ";");
-        %val = (%val ^ %b);
+        %val = %val ^ %b;
         %a = getSubStr(%a, %chars, 10000000);
     }
-    %val = (%val % %maxInteger);
+    %val = %val % %maxInteger;
     !(%a $= "");
     return %val;
 }
 function snoopPanelTextCtrl::onRightURL(%this, %url)
 {
-    if ((firstWord(%url) $= "gamelink"))
+    if (firstWord(%url) $= "gamelink")
     {
         %name = unmunge(getWords(%url, 1));
         onRightClickPlayerName(%name);
@@ -147,23 +141,20 @@ function snoopPanelTextCtrl::onRightURL(%this, %url)
 }
 function snoopPanelTextCtrl::onUrl(%this, %url)
 {
-    if ((firstWord(%url) $= "gamelink"))
+    if (firstWord(%url) $= "gamelink")
     {
         %name = unmunge(getWords(%url, 1));
         onLeftClickPlayerName(%name, "");
     }
     else
     {
-        if ((getSubStr(%url, 0, 7) $= "http://"))
+        if (getSubStr(%url, 0, 7) $= "http://")
         {
             gotoWebPage(%url);
         }
-        else
+        if (getSubStr(%url, 0, 7) $= "vside:/")
         {
-            if ((getSubStr(%url, 0, 7) $= "vside:/"))
-            {
-                vurlOperation(%url);
-            }
+            vurlOperation(%url);
         }
     }
 }

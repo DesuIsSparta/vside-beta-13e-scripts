@@ -24,7 +24,7 @@ function dlMgr::reset(%this)
     %this.setPolicyValue("default", "useStale", 1);
     %this.setPolicyValue("default", "cacheDuration", daysToSeconds(14));
     %this.setPolicyValue("avatar", "expirationDuration", minutesToSeconds(1));
-    %this.setPolicyValue("youtube", "expirationDuration", minutesToSeconds(((24.0 * 60.0) * 2.0)));
+    %this.setPolicyValue("youtube", "expirationDuration", minutesToSeconds(((24 * 60) * 2)));
     %this.maxOutstanding = 10;
     %this.maxFailures = 3;
     %this.retryDelay = 2;
@@ -67,22 +67,22 @@ function dlMgr::getPolicy(%this, %policyName)
 function dlMgr::applyUrl(%this, %url, %callback, %errorCallback, %callbackData, %policyName)
 {
     %dlItem = %this.buildDLItem(%url, %callback, %errorCallback, %callbackData, %policyName);
-    if ((%dlItem.localFilename $= ""))
+    if (%dlItem.localFilename $= "")
     {
         %this.enqueueItem(%dlItem);
         return;
     }
     %isFresh = 1;
     %record = %this.cacheIndex.get(%dlItem.url);
-    if ((%record $= ""))
+    if (%record $= "")
     {
         error(getScopeName() @ " " @ "- no entry in cache index." @ " " @ %dlItem.url @ " " @ getTrace());
     }
     else
     {
         %accessTime = getField(%record, 1);
-        %age = (getTime() - %accessTime);
-        if ((%age > %this.getPolicyValue(%policyName, "expirationDuration")))
+        %age = getTime() - %accessTime;
+        if (%age > %this.getPolicyValue(%policyName, "expirationDuration"))
         {
             %isFresh = 0;
         }
@@ -99,7 +99,7 @@ function dlMgr::buildDLItem(%this, %url, %callback, %errorCallback, %callbackDat
     {
         %errorCallback = "";
     }
-    if ((%callback $= ""))
+    if (%callback $= "")
     {
         %callback = "dlMgrDefaultCallback";
     }
@@ -128,44 +128,41 @@ function dlMgr::enqueueItem(%this, %dlItem)
 }
 function dlMgr::serviceToDownloadQueue(%this)
 {
-    if ((%this.outstanding.size() >= %this.maxOutstanding))
+    if (%this.outstanding.size() >= %this.maxOutstanding)
     {
         echoDebug(getScopeName() @ " " @ "- too many outstanding already:" @ " " @ %this.outstanding.size() @ " " @ getTrace());
         return;
     }
-    if ((%this.outstanding.size() < %this.maxOutstanding))
+    while (%this.outstanding.size() < %this.maxOutstanding)
     {
         %dlItem = %this.getAndRemoveFirstActionableItemInToDownloadQueue();
         if (!isObject(%dlItem))
         {
         }
-        else
-        {
-            %this.beginDownloadingItem(%dlItem);
-        }
+        %this.beginDownloadingItem(%dlItem);
     }
 }
 function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this)
 {
     %num = %this.toDownload.count();
-    %found = -(1.0);
+    %found = -(1);
     %n = 0;
-    if ((%n < %num))
+    if (%n < %num)
     {
     }
-    while ((%found == -(1.0)))
+    while (%found == -(1))
     {
         %dlItem = %this.toDownload.getKey(%n);
         if (!%this.isUrlOutstanding(%dlItem.url))
         {
             %found = %n;
         }
-        %n = (%n + 1.0);
-        if ((%n < %num))
+        %n = %n + 1;
+        if (%n < %num)
         {
         }
     }
-    if ((%found == -(1.0)))
+    if (%found == -(1))
     {
         return "";
     }
@@ -180,7 +177,7 @@ function dlMgr::isUrlOutstanding(%this, %url)
 function dlMgr::beginDownloadingItem(%this, %dlItem)
 {
     %failCount = %this.failCounts.get(%dlItem.url);
-    if ((%failCount >= %this.maxFailures))
+    if (%failCount >= %this.maxFailures)
     {
         %dlItem.delete();
         return;
@@ -205,7 +202,7 @@ function dlMgr::makeLocalFilename(%this, %url)
 function dlMgrRequest_onCompletedDownload(%request, %result)
 {
     %dlItem = %request.dlItem;
-    if ((%result == 0.0))
+    if (%result == 0)
     {
         dlMgr.downloadSucceeded(%dlItem);
     }
@@ -219,9 +216,9 @@ function dlMgr::downloadFailed(%this, %dlItem, %curl, %error)
     error(getScopeName() @ " " @ "-" @ " " @ %error @ " " @ %curl.statusCode() @ " " @ %curl.resultCodeToString(%error));
     %this.outstanding.remove(%dlItem.url);
     %failCount = %this.failCounts.get(%dlItem.url);
-    %failCount = (%failCount + 1.0);
+    %failCount = %failCount + 1;
     %this.failCounts.put(%dlItem.url, %failCount);
-    if ((%curl.statusCode() == 302.0))
+    if (%curl.statusCode() == 302)
     {
         %this.failCounts.put(%dlItem.url, %this.maxFailures);
         if (!(%dlItem.errorCallback $= ""))
@@ -232,19 +229,16 @@ function dlMgr::downloadFailed(%this, %dlItem, %curl, %error)
     }
     else
     {
-        if ((%failCount < %this.maxFailures))
+        if (%failCount < %this.maxFailures)
         {
-            %this.schedule((%this.retryDelay * 1000.0), "enqueueItem", %dlItem);
+            %this.schedule((%this.retryDelay * 1000), "enqueueItem", %dlItem);
         }
-        else
+        error(getScopeName() @ " " @ "- failed" @ " " @ %failCount @ " " @ "times; giving up on" @ " " @ %dlItem.url);
+        if (!(%dlItem.errorCallback $= ""))
         {
-            error(getScopeName() @ " " @ "- failed" @ " " @ %failCount @ " " @ "times; giving up on" @ " " @ %dlItem.url);
-            if (!(%dlItem.errorCallback $= ""))
-            {
-                call(%dlItem.errorCallback, %dlItem);
-            }
-            %dlItem.delete();
+            call(%dlItem.errorCallback, %dlItem);
         }
+        %dlItem.delete();
     }
     %this.serviceToDownloadQueue();
 }
@@ -262,7 +256,7 @@ function dlMgr::downloadSucceeded(%this, %dlItem)
 }
 function dlMgr::applyItem(%this, %dlItem, %isFresh)
 {
-    if ((%dlItem.callback $= ""))
+    if (%dlItem.callback $= "")
     {
         error(getScopeName() @ " " @ "- no callback!" @ " " @ %dlItem.url @ " " @ getTrace());
         %dlItem.delete();
@@ -277,7 +271,7 @@ function dlMgr::applyItem(%this, %dlItem, %isFresh)
         call(%dlItem.callback, %dlItem, %isFresh);
     }
     %record = %this.cacheIndex.get(%dlItem.url);
-    if ((%record $= ""))
+    if (%record $= "")
     {
         error(getScopeName() @ " " @ "- no entry in cache index." @ " " @ %dlItem.url @ " " @ getTrace());
     }
@@ -311,12 +305,12 @@ function dlMgr::saveCacheIndex(%this)
 }
 function dlMgr::clearCache(%this)
 {
-    %n = (%this.cacheIndex.size() - 1.0);
-    while ((%n >= 0.0))
+    %n = %this.cacheIndex.size() - 1;
+    while (%n >= 0)
     {
         %localFile = getField(%this.cacheIndex.getValue(%n), 0);
         deleteFile(%localFile);
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     %this.cacheIndex.clear();
     %this.saveCacheIndex();
@@ -325,8 +319,8 @@ function dlMgr::purgeCache(%this)
 {
     %num = %this.cacheIndex.size();
     %purgedCount = 0;
-    %n = (%num - 1.0);
-    while ((%n >= 0.0))
+    %n = %num - 1;
+    while (%n >= 0)
     {
         %url = %this.cacheIndex.getKey(%n);
         %record = %this.cacheIndex.getValue(%n);
@@ -338,12 +332,12 @@ function dlMgr::purgeCache(%this)
         %time = getTime();
         %aAge = mSubS32(%time, %aTime);
         %cAge = mSubS32(%time, %cTime);
-        if ((%aAge > %cacheDuration))
+        if (%aAge > %cacheDuration)
         {
-            %purgedCount = (%purgedCount + 1.0);
+            %purgedCount = %purgedCount + 1;
             %this.purgeCacheEntry(%url);
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     echo(getScopeName() @ " " @ "- purged" @ " " @ %purgedCount @ " " @ "out of" @ " " @ %num @ " " @ "files.");
     %this.saveCacheIndex();
@@ -365,7 +359,7 @@ function dlMgr::dumpCache(%this)
 {
     %num = %this.cacheIndex.size();
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %url = %this.cacheIndex.getKey(%n);
         %record = %this.cacheIndex.getValue(%n);
@@ -388,7 +382,7 @@ function dlMgr::dumpCache(%this)
         echo(getScopeName() @ " " @ "  - purge time: " @ secondsToDaysHoursMinutesSeconds(%cacheDuration));
         echo(getScopeName() @ " " @ "  - stale time: " @ secondsToDaysHoursMinutesSeconds(%staleTime));
         echo(getScopeName() @ " " @ "  - use stale : " @ %useStale);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function GuiControl::downloadAndApplyBitmap(%this, %url, %policyName)

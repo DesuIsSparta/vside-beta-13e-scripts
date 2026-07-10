@@ -7,7 +7,7 @@ function URLPostObject::onComplete(%this, %unused)
 }
 function URLPostObject::checkSuccess(%this)
 {
-    if ((%this.getResult("status") $= "success"))
+    if (%this.getResult("status") $= "success")
     {
         return 1;
     }
@@ -16,11 +16,11 @@ function URLPostObject::checkSuccess(%this)
 function URLPostObject::copyValueIntoObject(%this, %object, %requestFieldName, %objectFieldName)
 {
     %value = %this.getResult(%requestFieldName);
-    if ((%value $= "true"))
+    if (%value $= "true")
     {
         %value = 1;
     }
-    if ((%value $= "false"))
+    if (%value $= "false")
     {
         %value = 0;
     }
@@ -36,21 +36,21 @@ function URLPostObject::copyListValueIntoObject(%this, %object, %listPrefix, %ob
 function URLPostObject::copyListValuesIntoMap(%this, %map, %listPrefix, %tabDelimitedListOfFieldNames)
 {
     %tabDelimitedListOfFieldNames = trim(%tabDelimitedListOfFieldNames);
-    %n = (getFieldCount(%tabDelimitedListOfFieldNames) - 1.0);
-    while ((%n >= 0.0))
+    %n = getFieldCount(%tabDelimitedListOfFieldNames) - 1;
+    while (%n >= 0)
     {
         %fieldName = getField(%tabDelimitedListOfFieldNames, %n);
         %fieldValue = %this.getResult(%listPrefix @ "." @ %fieldName);
-        if ((%fieldValue $= "true"))
+        if (%fieldValue $= "true")
         {
             %fieldValue = 1;
         }
-        if ((%fieldValue $= "false"))
+        if (%fieldValue $= "false")
         {
             %fieldValue = 0;
         }
         %map.put(%fieldName, %fieldValue);
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
 }
 function URLPostObject::addUserAndToken(%this, %userName)
@@ -73,16 +73,13 @@ function URLPostObject::addUserAndToken(%this, %userName)
             %this.setURLParam("user", %userName);
             %this.setURLParam("token", $Token);
         }
-        else
-        {
-            %this.setURLParam("user", %userName);
-            %this.setURLParam("token", getClientToken(%userName));
-        }
+        %this.setURLParam("user", %userName);
+        %this.setURLParam("token", getClientToken(%userName));
     }
 }
 function URLPostObject::setURLParamIfNotEmpty(%this, %paramName, %paramValue)
 {
-    if ((%paramValue $= ""))
+    if (%paramValue $= "")
     {
         return;
     }

@@ -7,19 +7,19 @@ function HelpDlg::onWake(%this)
     {
         HelpFileList.fileName[HelpFileList.entryCount] = %file;
         HelpFileList.addRow(HelpFileList.entryCount, fileBase(%file));
-        HelpFileList.entryCount = (HelpFileList.entryCount + 1.0);
+        HelpFileList.entryCount = HelpFileList.entryCount + 1;
         %file = findNextFile("*.hfl");
     }
     HelpFileList.sortNumerical(0);
     %i = 0;
     !(%file $= "");
-    while ((%i < HelpFileList.entryCount))
+    while (%i < HelpFileList.entryCount)
     {
         %rowId = HelpFileList.getRowId(%i);
         %text = HelpFileList.getRowTextById(%rowId);
-        %text = (%i + 1.0) @ ". " @ restWords(%text);
+        %text = (%i + 1) @ ". " @ restWords(%text);
         HelpFileList.setRowById(%rowId, %text);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     HelpFileList.setSelectedRow(0);
 }
@@ -52,17 +52,17 @@ function getHelp(%helpName)
 function contextHelp()
 {
     %i = 0;
-    while ((%i < Canvas.getCount()))
+    while (%i < Canvas.getCount())
     {
-        if ((Canvas.getObject(%i).getName() $= HelpDlg))
+        if (Canvas.getObject(%i).getName() $= HelpDlg)
         {
             Canvas.popDialog(HelpDlg);
             return;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %content = Canvas.getContent();
-    (%i < Canvas.getCount());
+    %i < Canvas.getCount();
     %helpPage = %content.getHelpPage();
     getHelp(%helpPage);
 }

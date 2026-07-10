@@ -20,8 +20,8 @@ function initClientCalls()
     }
     $gClientCallsList = new StringMap("");
     $gClientCallsList.put("gatewayExitTransition", "gatewayExitTransition");
-    %n = ($gClientCallsList.size() - 1.0);
-    while ((%n >= 0.0))
+    %n = $gClientCallsList.size() - 1;
+    while (%n >= 0)
     {
         %callName = $gClientCallsList.getKey(%n);
         %fnName = $gClientCallsList.get(%callName);
@@ -29,7 +29,7 @@ function initClientCalls()
         {
             error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
 }
 function gatewayExitTransition(%isEntry, %showCancel)
@@ -38,7 +38,7 @@ function gatewayExitTransition(%isEntry, %showCancel)
     {
         return;
     }
-    if (($Player::inviter $= ""))
+    if ($Player::inviter $= "")
     {
         gatewayeExitTransitionShowDialog(%isEntry, %showCancel);
         return;
@@ -87,16 +87,16 @@ function gatewayeExitTransitionShowDialog(%isEntry, %showCancel)
     %dlg = MessageBoxCustom(%title, %body, %buttons);
     %callbackNum = 0;
     %dlg.callback[%callbackNum] = "gatewayExitTransitionWorld  ();";
-    %callbackNum = (%callbackNum + 1.0);
+    %callbackNum = %callbackNum + 1;
     %dlg.callback[%callbackNum] = "gatewayExitTransitionMyPlace();";
-    %callbackNum = (%callbackNum + 1.0);
+    %callbackNum = %callbackNum + 1;
     if (!($Player::inviterOnline $= ""))
     {
         %dlg.callback[%callbackNum] = "gatewayExitTransitionInviter();";
-        %callbackNum = (%callbackNum + 1.0);
+        %callbackNum = %callbackNum + 1;
     }
     %dlg.callback[%callbackNum] = "gatewayExitTransitionCancel ();";
-    %callbackNum = (%callbackNum + 1.0);
+    %callbackNum = %callbackNum + 1;
     %dlg.window.canMove = 0;
     %dlg.doCallbackOnEscape = 0;
 }

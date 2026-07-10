@@ -2,36 +2,36 @@ function SimSet::sortByInternalName(%this, %recurse)
 {
     %chilluns = "";
     %delim = "";
-    %n = (%this.getCount() - 1.0);
-    while ((%n >= 0.0))
+    %n = %this.getCount() - 1;
+    while (%n >= 0)
     {
         %obj = %this.getObject(%n);
         %chilluns = %chilluns @ %delim;
         %chilluns = %chilluns @ %obj.getInternalName() @ "\t" @ %obj;
         %delim = "\n";
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     %chilluns = SortRecords(%chilluns);
-    (%n >= 0.0);
-    %n = (getRecordCount(%chilluns) - 1.0);
-    while ((%n >= 0.0))
+    %n >= 0;
+    %n = getRecordCount(%chilluns) - 1;
+    while (%n >= 0)
     {
         %obj = getField(getRecord(%chilluns, %n), 1);
         %this.bringToFront(%obj);
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     if (%recurse)
     {
-        %n = (%this.getCount() - 1.0);
-        (%n >= 0.0);
-        while ((%n >= 0.0))
+        %n = %this.getCount() - 1;
+        %n >= 0;
+        while (%n >= 0)
         {
             %obj = %this.getObject(%n);
             if (%obj.isClassSimSet())
             {
                 %obj.sortByInternalName(1);
             }
-            %n = (%n - 1.0);
+            %n = %n - 1;
         }
     }
 }
@@ -49,7 +49,7 @@ function echoError(%line)
 }
 function FileObject::indent(%this)
 {
-    if ((%this.indentString $= ""))
+    if (%this.indentString $= "")
     {
         %this.indentString = "   ";
     }
@@ -57,11 +57,11 @@ function FileObject::indent(%this)
 }
 function FileObject::unindent(%this)
 {
-    if ((%this.indentString $= ""))
+    if (%this.indentString $= "")
     {
         %this.indentString = "   ";
     }
-    %this.indent = getSubStr(%this.indent, strlen(%this.indentString), -(1.0));
+    %this.indent = getSubStr(%this.indent, strlen(%this.indentString), -(1));
 }
 function FileObject::writeLineIndented(%this, %line)
 {
@@ -101,6 +101,6 @@ function SimObject::_dumpParentContainersRecursive(%this, %depth)
     %container = %this.getGroup();
     if (isObject(%container))
     {
-        %container._dumpParentContainersRecursive((%depth + 1.0));
+        %container._dumpParentContainersRecursive((%depth + 1));
     }
 }

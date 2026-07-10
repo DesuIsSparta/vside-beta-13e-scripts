@@ -10,24 +10,24 @@ function DestinationList::AddDestinationInfo(%codeName, %filters, %contiguousSpa
     $gDestinationSpaces[%codeName] = %contiguousSpaceNames;
     $gDestinationVurls[%codeName] = %vurl;
     $gDestinationNamesInternal = $gDestinationNamesInternal @ %codeName @ " ";
-    %i = (getWordCount(%filters) - 1.0);
-    while ((%i >= 0.0))
+    %i = getWordCount(%filters) - 1;
+    while (%i >= 0)
     {
         %filter = getWord(%filters, %i);
-        if ((%filter $= "shop"))
+        if (%filter $= "shop")
         {
             $gStoreStockCacheSkus[%codeName] = "";
             $gStoreStockRevision[%codeName] = "";
         }
-        if ((findWord($gDestinationFiltersInUse, %filter) < 0.0))
+        if (findWord($gDestinationFiltersInUse, %filter) < 0)
         {
             $gDestinationFiltersInUse = $gDestinationFiltersInUse @ %filter @ " ";
         }
-        if ((findWord($gDestinationFiltersInDirectory, %filter) >= 0.0))
+        if (findWord($gDestinationFiltersInDirectory, %filter) >= 0)
         {
             DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF);
         }
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
 }
 function DestinationList::getDestinationContiguousSpace(%codeName)
@@ -36,11 +36,11 @@ function DestinationList::getDestinationContiguousSpace(%codeName)
 }
 function DestinationList::IsDestinationInMyContiguousSpace(%codeName)
 {
-    if (($gContiguousSpaceName $= ""))
+    if ($gContiguousSpaceName $= "")
     {
         return 0;
     }
-    return (findWord(DestinationList::getDestinationContiguousSpace(%codeName), $gContiguousSpaceName) >= 0.0);
+    return findWord(DestinationList::getDestinationContiguousSpace(%codeName), $gContiguousSpaceName) >= 0;
 }
 function DestinationList::getCityNameForDestination(%codeName)
 {
@@ -49,12 +49,12 @@ function DestinationList::getCityNameForDestination(%codeName)
 }
 function DestinationList::getBitmapLocation(%codeName)
 {
-    if (("" $= %codeName))
+    if ("" $= %codeName)
     {
         return 0;
     }
     %filter = getWord($gDestinationFilters[%codeName], 0);
-    if (("" $= %filter))
+    if ("" $= %filter)
     {
         return 0;
     }
@@ -67,13 +67,13 @@ function DestinationList::getOccluderBitmapLocation()
 $gDestinationAdsNum = 0;
 function DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF)
 {
-    %isNewEntry = ($gDestinationAdsNumByName[%codeName] $= "");
-    $gDestinationAdsNum[%codeName @ $gDestinationAds TAB $gDestinationAdsNum @ "codename"] = ;
-    $gDestinationAdsNum[%okayForTGF @ $gDestinationAds TAB $gDestinationAdsNum @ "okayForTGF"] = ;
+    %isNewEntry = $gDestinationAdsNumByName[%codeName] $= "";
+    $gDestinationAdsNum[%codeName @ $gDestinationAds TAB $gDestinationAdsNum @ "codename"] =;
+    $gDestinationAdsNum[%okayForTGF @ $gDestinationAds TAB $gDestinationAdsNum @ "okayForTGF"] =;
     if (%isNewEntry)
     {
         $gDestinationAdsNumByName[%codeName] = $gDestinationAdsNum;
-        $gDestinationAdsNum = ($gDestinationAdsNum + 1.0);
+        $gDestinationAdsNum = $gDestinationAdsNum + 1;
     }
 }
 function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese)
@@ -85,7 +85,7 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese)
     %candidates = "";
     %delim = "";
     %n = 0;
-    while ((%n < $gDestinationAdsNum))
+    while (%n < $gDestinationAdsNum)
     {
         %eligible = %n[$gDestinationAds TAB %n @ "okayForTGF"];
         if (!%eligible)
@@ -97,19 +97,16 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese)
             if (hasWord(%butNotThese, %codeName))
             {
             }
-            else
+            %filters = $gDestinationFilters[%codeName];
+            if (hasWord(%filters, %filter))
             {
-                %filters = $gDestinationFilters[%codeName];
-                if (hasWord(%filters, %filter))
-                {
-                    %candidates = %candidates @ %delim @ %codeName;
-                    %delim = " ";
-                }
+                %candidates = %candidates @ %delim @ %codeName;
+                %delim = " ";
             }
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
-    if (((%n < $gDestinationAdsNum) @ " " @ %candidates $= ""))
+    if ((%n < $gDestinationAdsNum) @ " " @ %candidates $= "")
     {
         error("Unable to find any candidates for filter \"" @ %filter @ "\"." @ " " @ getTrace());
         return "";
@@ -118,12 +115,12 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese)
 }
 function DestinationList::goToDestination(%codeName)
 {
-    if ((findWord($gDestinationNamesInternal, %codeName) < 0.0))
+    if (findWord($gDestinationNamesInternal, %codeName) < 0)
     {
         return;
     }
     %vurl = $gDestinationVurls[%codeName];
-    if ((%vurl $= ""))
+    if (%vurl $= "")
     {
         error(getScopeName() @ " " @ "- no vurl for destination" @ " " @ %codeName);
         return;
@@ -160,10 +157,7 @@ function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave)
             %dlg.callback[2] = "";
             return;
         }
-        else
-        {
-            %doSave = 0;
-        }
+        %doSave = 0;
     }
     ClosetGui.doClose(!%doSave, 0);
     toggleTGFMapFiltered("shop");
@@ -187,7 +181,7 @@ function DestinationList::GetRandomAreaName()
 }
 function DestinationList::GetAreaNameByIndex(%index)
 {
-    if (($gAreaNamesInternalList $= ""))
+    if ($gAreaNamesInternalList $= "")
     {
         return "";
     }
@@ -209,7 +203,7 @@ function DestinationList::GetAreaNameUserFacingNameCityAndBuildingShort(%areaNam
 {
     %cityName = DestinationList::GetAreaNameCity(%areaName);
     %cityName = strupr(%cityName);
-    if ((%cityName $= %areaName))
+    if (%cityName $= %areaName)
     {
         return %cityName;
     }
@@ -224,7 +218,7 @@ function DestinationList::GetAreaNameUserFacingNameCityAndBuilding(%areaName, %d
 {
     %cityName = DestinationList::GetAreaNameCity(%areaName);
     %cityName = strupr(%cityName);
-    if ((%cityName $= %areaName))
+    if (%cityName $= %areaName)
     {
         return %cityName;
     }

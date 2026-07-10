@@ -5,8 +5,8 @@ function portInit(%port)
     while (!setNetPort(%port))
     {
         echo("Port init failed on port " @ %port @ " trying next port.");
-        %port = (%port + 1.0);
-        %failCount = (%failCount + 1.0);
+        %port = %port + 1;
+        %failCount = %failCount + 1;
     }
     $Net::BoundPort = %port;
     !setNetPort(%port);
@@ -14,7 +14,7 @@ function portInit(%port)
 }
 function createServer(%serverType, %mission)
 {
-    if ((%mission $= ""))
+    if (%mission $= "")
     {
         error("createServer: mission name unspecified");
         return;
@@ -23,7 +23,7 @@ function createServer(%serverType, %mission)
     $MissionSequence = 0;
     $Server::ServerType = %serverType;
     $Net::BoundPort = 0;
-    if ((%serverType $= "MultiPlayer"))
+    if (%serverType $= "MultiPlayer")
     {
         portInit($Pref::Server::Port);
         allowConnections(1);
@@ -83,15 +83,15 @@ function addToServerGuidList(%guid)
 {
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
-        if ((getField($Server::GuidList, %i) == %guid))
+        if (getField($Server::GuidList, %i) == %guid)
         {
             return;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
-    if (((%i < %count) @ " " @ $Server::GuidList $= ""))
+    if ((%i < %count) @ " " @ $Server::GuidList $= "")
     {
     }
     else
@@ -105,14 +105,14 @@ function removeFromServerGuidList(%guid)
 {
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
-        if ((getField($Server::GuidList, %i) == %guid))
+        if (getField($Server::GuidList, %i) == %guid)
         {
             $Server::GuidList = removeField($Server::GuidList, %i);
             return;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function isUserConnected(%userName)

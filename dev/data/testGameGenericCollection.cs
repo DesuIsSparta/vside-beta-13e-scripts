@@ -34,7 +34,7 @@ function TEST_SIMPLE_LOADGAME::runTest(%this)
     }
     %count = gameplay::LoadedGamePlayGameCount();
     %this.testGame = GameGenericCollection::LoadGame("ASimpleCollectionTestGame");
-    %this.CheckGameCount((%count + 1.0), "should have one more after loading this");
+    %this.CheckGameCount((%count + 1), "should have one more after loading this");
     gameplay::UnLoadGamePlayGame(%this.testGame.getId());
     %this.CheckGameCount(%count, "should have one less after unloading");
 }

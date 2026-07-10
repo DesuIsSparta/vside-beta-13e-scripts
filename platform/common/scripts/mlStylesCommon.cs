@@ -74,7 +74,7 @@ function mlStyle(%dry, %styleName)
     }
     %wet = standardSubstitutions(%dry);
     %styleBody = $gMlStyle[%styleName];
-    if ((%styleBody $= ""))
+    if (%styleBody $= "")
     {
         error(getScopeName() @ " " @ "- unknown style:" @ " " @ %styleName @ " " @ getTrace());
     }

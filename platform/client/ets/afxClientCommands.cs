@@ -1,5 +1,5 @@
 $gAfxEffectsEnabledClient = 1;
-$gAfxSelectedAvatar = -(1.0);
+$gAfxSelectedAvatar = -(1);
 $gAfxSelectronStyle = 0;
 $gAfxSelectronStyleCount = 1;
 $gAfxTestViaBots = 0;
@@ -29,13 +29,13 @@ function afxGetSelectedAvatar()
 }
 function afxGetSelectedAvatarGhost()
 {
-    if (($gAfxSelectedAvatar != -(1.0)))
+    if ($gAfxSelectedAvatar != -(1))
     {
     }
     else
     {
     }
-    return -(1.0);
+    return -(1);
 }
 function afxSelectAvatarByName(%name)
 {
@@ -48,11 +48,11 @@ function afxSelectAvatarByName(%name)
     {
         return;
     }
-    %start_new_sele = ($gAfxSelectedAvatar != %avatar);
-    if (($gAfxSelectedAvatar != -(1.0)))
+    %start_new_sele = $gAfxSelectedAvatar != %avatar;
+    if ($gAfxSelectedAvatar != -(1))
     {
         $gAfxSelectedAvatar.sele.stopSelectron();
-        $gAfxSelectedAvatar = -(1.0);
+        $gAfxSelectedAvatar = -(1);
     }
     if (%start_new_sele)
     {
@@ -71,12 +71,12 @@ function afxNextSelectronStyle()
     {
         return;
     }
-    $gAfxSelectronStyle = ($gAfxSelectronStyle + 1.0);
-    if (($gAfxSelectronStyle >= $gAfxSelectronStyleCount))
+    $gAfxSelectronStyle = $gAfxSelectronStyle + 1;
+    if ($gAfxSelectronStyle >= $gAfxSelectronStyleCount)
     {
         $gAfxSelectronStyle = 0;
     }
-    if (($gAfxSelectedAvatar == -(1.0)))
+    if ($gAfxSelectedAvatar == -(1))
     {
         return;
     }
@@ -89,7 +89,7 @@ function afxNextSelectronStyle()
     }
 }
 afxInitKeybinds();
-$gAfxSelectedAvatar["AudioProfile_AFX_TeleIn" @ $gAfxClientSounds TAB "TeleIn" @ "profile"] = ;
+$gAfxSelectedAvatar["AudioProfile_AFX_TeleIn" @ $gAfxClientSounds TAB "TeleIn" @ "profile"] =;
 $gAfxClientSounds["TeleIn","delay"] = 300;
 $gAfxClientSounds["TeleOut","profile"] = "AudioProfile_AFX_TeleOut";
 $gAfxClientSounds["TeleOut","delay"] = 200;
@@ -103,7 +103,7 @@ function ClientCmdAfxClientSpecificSound(%soundID)
         error(getScopeName() @ " " @ "- could not find sound profile for" @ " " @ %soundID);
         return;
     }
-    if ((%delay > 0.0))
+    if (%delay > 0)
     {
         schedule(%delay, 0, "alxPlay", %profile);
     }

@@ -6,7 +6,7 @@ function ratingControl::Initialize(%this, %gradations, %buttonSize, %buttonBitma
         %this.buttonSize = %buttonSize;
         %this.buttonBitmap = %buttonBitmap;
         %this.rating = 0;
-        %this.mouseOver = -(1.0);
+        %this.mouseOver = -(1);
         %this.mouseDown = 0;
         %this.buildButtons();
         %this.update();
@@ -18,12 +18,12 @@ function ratingControl::buildButtons(%this)
     %xPos = 0;
     %ypos = 0;
     %i = 0;
-    while ((%i < %this.gradations))
+    while (%i < %this.gradations)
     {
         %this.images[" ",%ypos;
             extent = %this.buttonSize;
             minExtent = "1 1";
-            sluggishness = -(1.0);
+            sluggishness = -(1);
             visible = 1;
             bitmap = %this.buttonBitmap,"_n";
             bitmapBase = %this.buttonBitmap;
@@ -34,8 +34,8 @@ function ratingControl::buildButtons(%this)
             position = %xPos;
         %this.images[%i].bindClassName("RatingControlImage");
         %this.add(%this.images[%i]);
-        %xPos = (%xPos + getWord(%this.buttonSize, 0));
-        %i = (%i + 1.0);
+        %xPos = %xPos + getWord(%this.buttonSize, 0);
+        %i = %i + 1;
     }
     %this.eventCatcher = new GuiMouseEventCtrl("") {
         profile = (%i < %this.gradations) @ "GuiDefaultProfile";
@@ -44,7 +44,7 @@ function ratingControl::buildButtons(%this)
         position = "0 0";
         extent = (%this.gradations * getWord(%this.buttonSize, 0)) @ " " @ getWord(%this.buttonSize, 1);
         minExtent = "1 1";
-        sluggishness = -(1.0);
+        sluggishness = -(1);
         visible = 1;
     };
     %this.eventCatcher.bindClassName("RatingControlEventCatcher");
@@ -53,9 +53,9 @@ function ratingControl::buildButtons(%this)
 function ratingControl::update(%this)
 {
     %this.onUpdate();
-    %cutoff = (%this.rating - 1.0);
+    %cutoff = %this.rating - 1;
     %suffix = "_d";
-    if ((%this.mouseOver >= 0.0))
+    if (%this.mouseOver >= 0)
     {
         %cutoff = %this.mouseOver;
         if (!%this.mouseDown)
@@ -64,9 +64,9 @@ function ratingControl::update(%this)
         }
     }
     %i = 0;
-    while ((%i < %this.gradations))
+    while (%i < %this.gradations)
     {
-        if ((%i <= %cutoff))
+        if (%i <= %cutoff)
         {
             %this.images[%i].setImageSuffix(%suffix);
         }
@@ -74,7 +74,7 @@ function ratingControl::update(%this)
         {
             %this.images[%i].setImageSuffix("_n");
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function ratingControl::setRating(%this, %rating, %saveToManager)
@@ -105,14 +105,14 @@ function ratingControl::mouseMove(%this, %point)
 }
 function ratingControl::mouseUp(%this, %point)
 {
-    %this.mouseOver = -(1.0);
+    %this.mouseOver = -(1);
     %this.mouseDown = 0;
-    %this.setRating((mFloor((%point / getWord(%this.buttonSize, 0))) + 1.0), 1);
+    %this.setRating((mFloor((%point / getWord(%this.buttonSize, 0))) + 1), 1);
 }
 function RatingControlEventCatcher::onMouseLeaveBounds(%this)
 {
     %rc = %this.getParent();
-    %rc.setMouseOver(-(1.0));
+    %rc.setMouseOver(-(1));
 }
 function RatingControlEventCatcher::onMouseEnterBounds(%this, %unused, %point, %unused)
 {

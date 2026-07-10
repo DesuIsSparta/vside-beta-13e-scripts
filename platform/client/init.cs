@@ -84,7 +84,7 @@ function initClient()
     userProperties_makeManager("gUserPropMgrClient", 1);
     AssetManager::clientInit();
     textureDownloadSetDownloadHost($Net::DownloadHost);
-    if (($StandAlone == 1.0))
+    if ($StandAlone == 1)
     {
         userProperties_makeManager("gUserPropMgrServer", 0);
         log("general", "info", "--------- Starting standalone ---------");
@@ -97,11 +97,8 @@ function initClient()
             log("general", "info", "--------- Joining: " @ $JoinGameAddress @ "---------");
             join($JoinGameAddress);
         }
-        else
-        {
-            checkForPackageUpdates($AutoDownloadPackages);
-            loadMainMenu();
-        }
+        checkForPackageUpdates($AutoDownloadPackages);
+        loadMainMenu();
     }
     $TransitionScreenshot = new ScreenShotUploader("") {
         className = "ScreenShotUploaderClass";
@@ -127,13 +124,13 @@ function loadMainMenu()
 function startStandAlone()
 {
     log("initialization", "info", "start connectLocal()");
-    if (($MissionArg $= ""))
+    if ($MissionArg $= "")
     {
         $MissionArg = "projects/vside/worlds/lounge/missions/lounge.mis";
         log("initialization", "warn", "no mission specified. using" @ " " @ $MissionArg);
     }
     $Player::Name = $UserPref::Player::Name;
-    if (($Player::Name $= ""))
+    if ($Player::Name $= "")
     {
         $Player::Name = "no_name";
     }
@@ -291,12 +288,12 @@ function logoutPart2(%doQuit)
     }
     %logout.doQuit = %doQuit;
     %url = $Net::ClientServiceURL @ "/logout";
-    if (($Player::Name $= ""))
+    if ($Player::Name $= "")
     {
         log("login", "error", getScopeName() @ " " @ "- logout called with empty player name" @ " " @ getTrace());
         return;
     }
-    if (($Token $= ""))
+    if ($Token $= "")
     {
         log("login", "error", getScopeName() @ " " @ "- logout called with empty token" @ " " @ getTrace());
         return;
@@ -349,7 +346,7 @@ function StatusRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onDone:" @ " " @ %status);
-    if ((%status $= "success"))
+    if (%status $= "success")
     {
         %dfEnabled = %this.getValueBool("doubleFusionEnabled");
         if (isFunction("Using_DF"))
@@ -379,7 +376,7 @@ function StatusRequest::onDone(%this)
             $CacheFlagIsSet = 0;
         }
         $gLoginStatusMessage = %this.getValue("message");
-        if (($gLoginStatusMessage $= ""))
+        if ($gLoginStatusMessage $= "")
         {
             $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "A-OKAY"];
         }
@@ -395,7 +392,7 @@ function StatusRequest::onDone(%this)
 }
 function StatusRequest::onError(%this, %errorNum, %errorName)
 {
-    if ((%errorNum == $CURL::CouldNotResolveHost))
+    if (%errorNum == $CURL::CouldNotResolveHost)
     {
         $gLoginStatusMessage = %errorNum[$MsgCat::network @ "E-SERVER-DNS"];
     }

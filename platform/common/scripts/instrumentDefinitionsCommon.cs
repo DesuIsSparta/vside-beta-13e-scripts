@@ -44,7 +44,7 @@ function InstrumentRegistry::getInstrumentCount(%this)
 }
 function InstrumentRegistry::getInstrumentByIndex(%this, %index)
 {
-    if ((%index < 0.0) || (%index >= %this.instrumentsList.size()))
+    if ((%index < 0) || (%index >= %this.instrumentsList.size()))
     {
         warn(getScopeName() @ " " @ "- bad index value =" @ " " @ %index);
         return "";
@@ -53,19 +53,19 @@ function InstrumentRegistry::getInstrumentByIndex(%this, %index)
 }
 function InstrumentRegistry::getInstrumentBySku(%this, %sku)
 {
-    if ((%sku $= ""))
+    if (%sku $= "")
     {
         return "";
     }
-    %i = (%this.getInstrumentCount() - 1.0);
-    while ((%i >= 0.0))
+    %i = %this.getInstrumentCount() - 1;
+    while (%i >= 0)
     {
         %instrument = %this.getInstrumentByIndex(%i);
         if ((%instrument.skus["f"] $= %sku) || (%instrument.skus["m"] $= %sku) || (%instrument.skus["n"] $= %sku))
         {
             return %instrument;
         }
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
     return "";
 }
@@ -93,37 +93,37 @@ function InstrumentRegistry::isInstrument(%this, %instrumentNameOrObject)
 }
 function InstrumentRegistry::isInstrumentGenre(%this, %genre)
 {
-    if ((%genre $= ""))
+    if (%genre $= "")
     {
         return 0;
     }
-    %i = (%this.getInstrumentCount() - 1.0);
-    while ((%i >= 0.0))
+    %i = %this.getInstrumentCount() - 1;
+    while (%i >= 0)
     {
         %instrument = %this.getInstrumentByIndex(%i);
-        if ((%instrument.genre $= %genre))
+        if (%instrument.genre $= %genre)
         {
             return 1;
         }
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
     return 0;
 }
 function InstrumentRegistry::isInstrumentSku(%this, %sku)
 {
-    if ((%sku $= ""))
+    if (%sku $= "")
     {
         return 0;
     }
-    %i = (%this.getInstrumentCount() - 1.0);
-    while ((%i >= 0.0))
+    %i = %this.getInstrumentCount() - 1;
+    while (%i >= 0)
     {
         %instrument = %this.getInstrumentByIndex(%i);
         if ((%instrument.skus["f"] $= %sku) || (%instrument.skus["m"] $= %sku) || (%instrument.skus["n"] $= %sku))
         {
             return 1;
         }
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
     return 0;
 }

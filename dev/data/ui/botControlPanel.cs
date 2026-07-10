@@ -30,11 +30,11 @@ function botControlPanel::loadBots(%this)
 function botControlPanel::getSaveFilename(%this)
 {
     %filebase = $DevPref::Mod::botSaveFileName;
-    if ((%filebase $= ""))
+    if (%filebase $= "")
     {
         %filebase = $player.getShapeName() @ 1;
     }
-    if ((%filebase $= ""))
+    if (%filebase $= "")
     {
         %filebase = "default";
     }

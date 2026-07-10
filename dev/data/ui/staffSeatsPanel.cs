@@ -25,13 +25,13 @@ function doNextSeatSit(%seatNumber)
 {
     if ($player.isSitting())
     {
-        echo("not taking seat #" @ (%seatNumber + 1.0) @ "id: " @ %id @ "because the player is already sitting elsewhere");
+        echo("not taking seat #" @ (%seatNumber + 1) @ "id: " @ %id @ "because the player is already sitting elsewhere");
         return;
     }
     %id = StaffSeatsPanelTestSet.getObject(%seatNumber);
     commandToServer('RequestToSit', %id);
-    staffSeatsGuiCurNumber.setText((%seatNumber + 1.0));
-    echo("testing seat #" @ (%seatNumber + 1.0) @ "id: " @ %id);
+    staffSeatsGuiCurNumber.setText((%seatNumber + 1));
+    echo("testing seat #" @ (%seatNumber + 1) @ "id: " @ %id);
 }
 function waitForStandingBeforeSit(%seatNumber)
 {
@@ -61,35 +61,35 @@ function staffSeatsPanel::testSeat(%this, %seatNumber)
 }
 function staffSeatsPanel::testNextSeat(%this)
 {
-    if (($staffSeatsPanel_TOTALNUM > 0.0))
+    if ($staffSeatsPanel_TOTALNUM > 0)
     {
         %last = $staffSeatsPanel_CUR;
-        $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR + 1.0);
-        if (($staffSeatsPanel_CUR > $staffSeatsPanel_TOTALNUM))
+        $staffSeatsPanel_CUR = $staffSeatsPanel_CUR + 1;
+        if ($staffSeatsPanel_CUR > $staffSeatsPanel_TOTALNUM)
         {
-            $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR - 1.0);
+            $staffSeatsPanel_CUR = $staffSeatsPanel_CUR - 1;
             return;
         }
-        if ((%last != $staffSeatsPanel_CUR))
+        if (%last != $staffSeatsPanel_CUR)
         {
-            %this.testSeat(($staffSeatsPanel_CUR - 1.0));
+            %this.testSeat(($staffSeatsPanel_CUR - 1));
         }
     }
 }
 function staffSeatsPanel::testPrevSeat(%this)
 {
-    if (($staffSeatsPanel_TOTALNUM > 0.0))
+    if ($staffSeatsPanel_TOTALNUM > 0)
     {
         %last = $staffSeatsPanel_CUR;
-        $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR - 1.0);
-        if (($staffSeatsPanel_CUR <= 0.0))
+        $staffSeatsPanel_CUR = $staffSeatsPanel_CUR - 1;
+        if ($staffSeatsPanel_CUR <= 0)
         {
-            $staffSeatsPanel_CUR = ($staffSeatsPanel_CUR + 1.0);
+            $staffSeatsPanel_CUR = $staffSeatsPanel_CUR + 1;
             return;
         }
-        if ((%last != $staffSeatsPanel_CUR))
+        if (%last != $staffSeatsPanel_CUR)
         {
-            %this.testSeat(($staffSeatsPanel_CUR - 1.0));
+            %this.testSeat(($staffSeatsPanel_CUR - 1));
         }
     }
 }
@@ -106,18 +106,18 @@ function recursiveCollectSeatsFromSimGroup(%obj, %seatSet)
     {
         %num = %obj.getCount();
         %n = 0;
-        while ((%n < %num))
+        while (%n < %num)
         {
             recursiveCollectSeatsFromSimGroup(%obj.getObject(%n), %seatSet);
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
-        return (%n < %num);
+        return %n < %num;
     }
     if ((%obj.getClassName() $= "MissionMarker") || (%obj.getClassName() $= "ETSSeatMarker"))
     {
         %dbName = %obj.getDataBlock().getName();
         %seatMarkerFound = strstr(%dbName, "SeatMarker");
-        if ((%seatMarkerFound != -(1.0)))
+        if (%seatMarkerFound != -(1))
         {
             %seatSet.add(%obj.getId());
         }

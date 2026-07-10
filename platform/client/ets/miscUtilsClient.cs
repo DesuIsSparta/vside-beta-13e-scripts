@@ -22,11 +22,11 @@ function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnla
     %newHeight = %curHeight;
     if (%onlyEnlarge)
     {
-        if ((%curWidth < %width))
+        if (%curWidth < %width)
         {
             %newWidth = %width;
         }
-        if ((%curHeight < %height))
+        if (%curHeight < %height)
         {
             %newHeight = %height;
         }
@@ -59,7 +59,7 @@ function pushScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnlar
 function popScreenSize()
 {
     %stackSize = getFieldCount($gScreenSizeStack);
-    if ((%stackSize == 0.0))
+    if (%stackSize == 0)
     {
         %width = getWord($UserPref::Video::Resolution, 0);
         %height = getWord($UserPref::Video::Resolution, 1);
@@ -67,12 +67,12 @@ function popScreenSize()
     }
     else
     {
-        %frame = getField($gScreenSizeStack, (%stackSize - 1.0));
+        %frame = getField($gScreenSizeStack, (%stackSize - 1));
         %width = getWord(%frame, 0);
         %height = getWord(%frame, 1);
         %allowResize = getWord(%frame, 2);
     }
-    $gScreenSizeStack = getFields($gScreenSizeStack, 0, (%stackSize - 2.0));
+    $gScreenSizeStack = getFields($gScreenSizeStack, 0, (%stackSize - 2));
     applyScreenSize(%width, %height, %allowResize, 1, 0);
 }
 function clearScreenSizeStack()
@@ -103,25 +103,25 @@ function standardizeScreenAspect()
     %currentX = getWord($UserPref::Video::Resolution, 0);
     %currentY = getWord($UserPref::Video::Resolution, 1);
     %currentBPP = getWord($UserPref::Video::Resolution, 2);
-    %proportionX = (%currentX / %standardX);
-    %proportionY = (%currentY / %standardY);
-    if ((%proportionX < %proportionY))
+    %proportionX = %currentX / %standardX;
+    %proportionY = %currentY / %standardY;
+    if (%proportionX < %proportionY)
     {
-        if ((%proportionX < 1.0))
+        if (%proportionX < 1)
         {
             %proportionX = 1;
         }
-        %currentX = (%proportionX * %standardX);
-        %currentY = (%proportionX * %standardY);
+        %currentX = %proportionX * %standardX;
+        %currentY = %proportionX * %standardY;
     }
     else
     {
-        if ((%proportionY < 1.0))
+        if (%proportionY < 1)
         {
             %proportionY = 1;
         }
-        %currentX = (%proportionY * %standardX);
-        %currentY = (%proportionY * %standardY);
+        %currentX = %proportionY * %standardX;
+        %currentY = %proportionY * %standardY;
     }
     %currentX = mFloor((%currentX + 0.5));
     %currentY = mFloor((%currentY + 0.5));

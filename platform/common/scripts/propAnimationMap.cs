@@ -205,14 +205,14 @@ function dumpProps()
     echo(getTrace());
     %num = PropInternalDescriptionMap.size();
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %sku = PropInternalDescriptionMap.getKey(%n);
         %desc = PropInternalDescriptionMap.getValue(%n);
         %anims = PropAnimationMap.get(%sku);
         %genre = PropGenreMap.get(%sku);
         echo("|" @ " " @ formatString("%-8s", %sku) @ " " @ "|" @ " " @ %genre @ " " @ "|" @ " " @ formatString("%-30s", %anims) @ " " @ "|" @ " " @ formatString("%-30s", %desc) @ " " @ "|");
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 initializePropAnimationMap();
@@ -251,7 +251,7 @@ function Player::getPropAnimation(%this, %actionNum)
 }
 function Player::getPropAnimationFromSku(%this, %propSku, %actionNum)
 {
-    if ((%propSku $= ""))
+    if (%propSku $= "")
     {
         return "";
     }

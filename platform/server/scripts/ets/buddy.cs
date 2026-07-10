@@ -8,7 +8,7 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper)
     %user = %client.nameBase;
     %userId = PlayerDict.get(%user);
     %otherId = PlayerDict.get(%other);
-    if ((%userId == 0.0))
+    if (%userId == 0)
     {
         return;
     }
@@ -36,14 +36,14 @@ function RelRequest::onConnectFailed(%this)
 }
 function RelRequest::onLine(%this, %line)
 {
-    if ((%line $= "success"))
+    if (%line $= "success")
     {
         changeRelation(%this.userId, %this.otherId, %this.relType, %this.oper);
     }
     else
     {
     }
-    return (%line $= "fail");
+    return %line $= "fail";
 }
 function RelRequest::onDNSResolved(%this)
 {
@@ -67,7 +67,7 @@ function doLocalChangeRelation(%client, %other, %relType, %oper)
         error("bad other in doLocalChangeRelation:" @ " " @ getDebugString(%otherId) @ " " @ "from" @ " " @ getDebugString(%sender));
         return;
     }
-    if ((%oper $= "add"))
+    if (%oper $= "add")
     {
         %opCode = 0;
     }

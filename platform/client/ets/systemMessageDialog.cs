@@ -1,6 +1,6 @@
 function SystemMessageDialog::isShowing(%this)
 {
-    return (HudTabs.getCurrentTab().name $= "word");
+    return HudTabs.getCurrentTab().name $= "word";
 }
 function toggleSystemMessageDialog()
 {
@@ -36,7 +36,7 @@ addMessageCallback('MsgGamePlayOkMessage', handleGamePlayMessage);
 addMessageCallback('MsgTickerMessage', handleTickerMessage);
 function SystemMessageDialog::getTimeStampNice(%ts)
 {
-    if ((%ts $= ""))
+    if (%ts $= "")
     {
         %ts = getTimeStamp();
     }
@@ -44,12 +44,12 @@ function SystemMessageDialog::getTimeStampNice(%ts)
     %mn = getSubStr(%ts, 12, 2);
     %sc = getSubStr(%ts, 15, 2);
     %ap = "am";
-    if ((%hr >= 12.0))
+    if (%hr >= 12)
     {
-        %hr = (%hr - 12.0);
+        %hr = %hr - 12;
         %ap = "pm";
     }
-    if ((%hr == 0.0))
+    if (%hr == 0)
     {
         %hr = 12;
     }
@@ -64,7 +64,7 @@ function handleGamePlayMessage(%msgType, %msgString)
     %profileDlg = SystemMessageDialogProfile;
     %profileTxt = SystemMessageTextProfile;
     %timeStamp = SystemMessageDialog::getTimeStampNice(getTimeStamp()) @ " ";
-    if ((detag(%msgType) $= "MsgGamePlayOkMessage"))
+    if (detag(%msgType) $= "MsgGamePlayOkMessage")
     {
         return MessageBoxOK("vSide - Notice", %msgString, "");
     }
@@ -73,10 +73,10 @@ function formatMessagePriority(%msgString)
 {
     %lastMsgLvl = "MSGLEVEL2";
     %idx = 0;
-    while (((%idx = strstr(%msgString, "MSGLEVEL")) >= 0.0))
+    while ((%idx = strstr(%msgString, "MSGLEVEL")) >= 0)
     {
         %lastMsgLvl = getSubStr(%msgString, %idx, 9);
-        %msgString = getSubStr(%msgString, 0, %idx) @ getSubStr(%msgString, (%idx + 9.0), 1000);
+        %msgString = getSubStr(%msgString, 0, %idx) @ getSubStr(%msgString, (%idx + 9), 1000);
     }
     return getSubStr(%lastMsgLvl, 8, 1) @ " " @ %msgString;
 }
@@ -90,21 +90,18 @@ function handleSystemMessage(%msgType, %msgString)
     {
         SystemMessageDialog.open();
     }
-    if ((%importanceLevel $= 1))
+    if (%importanceLevel $= 1)
     {
         HudTabs.dontCloseNextTime();
     }
     else
     {
-        if ((%importanceLevel $= 2))
+        if (%importanceLevel $= 2)
         {
         }
-        else
+        if (%importanceLevel $= 3)
         {
-            if ((%importanceLevel $= 3))
-            {
-                HudTabs.pulseTabWithName("word");
-            }
+            HudTabs.pulseTabWithName("word");
         }
     }
     %timeStamp = "<spush><color:66aaffff>" @ %timeStamp @ "<spop>";
@@ -117,16 +114,16 @@ function handleSystemMessage(%msgType, %msgString)
 SystemMessageTextCtrl.bufferSize = 0;
 function SystemMessageTextCtrl::addText(%this, %txtString)
 {
-    if ((%this.bufferSize $= ""))
+    if (%this.bufferSize $= "")
     {
         %this.bufferSize = 0;
     }
-    if ((%this.bufferSize >= 20.0))
+    if (%this.bufferSize >= 20)
     {
         %this.deleteOldestBufferLine();
     }
     %this.bufferMessage[%this.bufferSize] = %txtString;
-    %this.bufferSize = (%this.bufferSize + 1.0);
+    %this.bufferSize = %this.bufferSize + 1;
     %this.refresh();
 }
 function SystemMessageTextCtrl::clearText(%this)
@@ -137,28 +134,28 @@ function SystemMessageTextCtrl::clearText(%this)
 function SystemMessageTextCtrl::deleteOldestBufferLine(%this)
 {
     %n = 0;
-    while ((%n < %this.bufferSize))
+    while (%n < %this.bufferSize)
     {
-        %this.bufferMessage[%n] = %this.bufferMessage[(%n + 1.0)];
-        %n = (%n + 1.0);
+        %this.bufferMessage[%n] = %this.bufferMessage[(%n + 1)];
+        %n = %n + 1;
     }
-    %this.bufferSize = (%this.bufferSize - 1.0);
-    (%n < %this.bufferSize);
+    %this.bufferSize = %this.bufferSize - 1;
+    %n < %this.bufferSize;
 }
 function SystemMessageTextCtrl::refresh(%this)
 {
     %this.setText("");
-    %n = (%this.bufferSize - 1.0);
-    while ((%n >= 0.0))
+    %n = %this.bufferSize - 1;
+    while (%n >= 0)
     {
         %curString = "<spush>";
-        if ((%n == (%this.bufferSize - 1.0)))
+        if (%n == (%this.bufferSize - 1))
         {
             %curString = %curString @ "<b>";
         }
-        %curString = %curString @ "<color:" @ %this.getMessageColor(((%this.bufferSize - %n) - 1.0)) @ ">" @ %this.bufferMessage[%n] @ "<spop>\n";
+        %curString = %curString @ "<color:" @ %this.getMessageColor(((%this.bufferSize - %n) - 1)) @ ">" @ %this.bufferMessage[%n] @ "<spop>\n";
         Parent::addText(%this, %curString, 0, 1);
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     %this.scrollToTop();
 }
@@ -168,7 +165,7 @@ $gAgedMessageColors[2] = "ffffff99";
 $gAgedMessageColors[3] = "ffffff77";
 function SystemMessageTextCtrl::getMessageColor(%this, %age)
 {
-    if ((%age > 3.0))
+    if (%age > 3)
     {
         %age = 3;
     }
@@ -176,7 +173,7 @@ function SystemMessageTextCtrl::getMessageColor(%this, %age)
 }
 function SystemMessageTextCtrl::onRightURL(%this, %url)
 {
-    if ((firstWord(%url) $= "gamelink"))
+    if (firstWord(%url) $= "gamelink")
     {
         %name = unmunge(getWords(%url, 1));
         onRightClickPlayerName(%name);
@@ -196,14 +193,14 @@ function SystemMessageTextCtrl::onRightURL(%this, %url)
 }
 function SystemMessageTextCtrl::onURL(%this, %url)
 {
-    if ((firstWord(%url) $= "gamelink"))
+    if (firstWord(%url) $= "gamelink")
     {
         %name = unmunge(getWords(%url, 1));
         onLeftClickPlayerName(%name, "");
     }
     else
     {
-        if ((getWord(%url, 0) $= "ACCEPT"))
+        if (getWord(%url, 0) $= "ACCEPT")
         {
             %name = unmunge(getWord(%url, 1));
             if (!(%name $= ""))
@@ -211,96 +208,72 @@ function SystemMessageTextCtrl::onURL(%this, %url)
                 doUserFavorite(%name, "accept");
             }
         }
-        else
+        if (getWord(%url, 0) $= "DECLINE")
         {
-            if ((getWord(%url, 0) $= "DECLINE"))
+            %name = unmunge(getWord(%url, 1));
+            if (!(%name $= ""))
             {
-                %name = unmunge(getWord(%url, 1));
-                if (!(%name $= ""))
-                {
-                    doUserFavorite(%name, "decline");
-                }
+                doUserFavorite(%name, "decline");
             }
-            else
+        }
+        if (getWord(%url, 0) $= "CANCEL")
+        {
+            %name = unmunge(getWord(%url, 1));
+            if (!(%name $= ""))
             {
-                if ((getWord(%url, 0) $= "CANCEL"))
-                {
-                    %name = unmunge(getWord(%url, 1));
-                    if (!(%name $= ""))
-                    {
-                        doUserFavorite(%name, "cancel");
-                    }
-                }
-                else
-                {
-                    if ((getWord(%url, 0) $= "ACCEPT_2PLAYER_ACTION"))
-                    {
-                        %name = unmunge(getWord(%url, 1));
-                        %requestId = getWord(%url, 2);
-                        %coanim = getWords(%url, 3);
-                        if (!(%name $= ""))
-                        {
-                        }
-                        if (!(%coanim $= ""))
-                        {
-                            setIdle(0);
-                            commandToServer('CoAnimRespond', %requestId, "ACCEPT MANUAL");
-                            %this.updateTwoPlayerActionRequest(%name, %coanim, %requestId, 1);
-                        }
-                    }
-                    else
-                    {
-                        if ((getWord(%url, 0) $= "DECLINE_2PLAYER_ACTION"))
-                        {
-                            %name = unmunge(getWord(%url, 1));
-                            %requestId = getWord(%url, 2);
-                            %coanim = getWords(%url, 3);
-                            if (!(%name $= ""))
-                            {
-                                commandToServer('CoAnimRespond', %requestId, "DECLINE MANUAL");
-                                %this.updateTwoPlayerActionRequest(%name, %coanim, %requestId, 0);
-                            }
-                        }
-                        else
-                        {
-                            if ((getSubStr(%url, 0, 7) $= "http://"))
-                            {
-                                gotoWebPage(%url);
-                            }
-                            else
-                            {
-                                if ((getSubStr(%url, 0, 7) $= "vside:/"))
-                                {
-                                    vurlOperation(%url);
-                                }
-                                else
-                                {
-                                    if ((getWord(%url, 0) $= "game"))
-                                    {
-                                        %cmd = getWord(%url, 1);
-                                        if ((%cmd $= "inspect"))
-                                        {
-                                            gameMgrClient.requestToInspectGame(getWord(%url, 2));
-                                            GameMgrHudWin.open();
-                                            GameMgrHudTabs.selectTabWithName("INSPECT");
-                                        }
-                                    }
-                                    else
-                                    {
-                                        if ((getWord(%url, 0) $= "answerHelpMeMode"))
-                                        {
-                                            %requestId = getWord(%url, 1);
-                                            %newbName = unmunge(getWords(%url, 2, 11111));
-                                            answerHelpMeMode(%newbName, %requestId);
-                                            %this.changeLinesEndingInString("<a:" @ %url, "- You answered the call!");
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
+                doUserFavorite(%name, "cancel");
             }
+        }
+        if (getWord(%url, 0) $= "ACCEPT_2PLAYER_ACTION")
+        {
+            %name = unmunge(getWord(%url, 1));
+            %requestId = getWord(%url, 2);
+            %coanim = getWords(%url, 3);
+            if (!(%name $= ""))
+            {
+            }
+            if (!(%coanim $= ""))
+            {
+                setIdle(0);
+                commandToServer('CoAnimRespond', %requestId, "ACCEPT MANUAL");
+                %this.updateTwoPlayerActionRequest(%name, %coanim, %requestId, 1);
+            }
+        }
+        if (getWord(%url, 0) $= "DECLINE_2PLAYER_ACTION")
+        {
+            %name = unmunge(getWord(%url, 1));
+            %requestId = getWord(%url, 2);
+            %coanim = getWords(%url, 3);
+            if (!(%name $= ""))
+            {
+                commandToServer('CoAnimRespond', %requestId, "DECLINE MANUAL");
+                %this.updateTwoPlayerActionRequest(%name, %coanim, %requestId, 0);
+            }
+        }
+        if (getSubStr(%url, 0, 7) $= "http://")
+        {
+            gotoWebPage(%url);
+        }
+        if (getSubStr(%url, 0, 7) $= "vside:/")
+        {
+            vurlOperation(%url);
+        }
+        if (getWord(%url, 0) $= "game")
+        {
+            %cmd = getWord(%url, 1);
+            if (%cmd $= "inspect")
+            {
+                gameMgrClient.requestToInspectGame(getWord(%url, 2));
+                GameMgrHudWin.open();
+                GameMgrHudTabs.selectTabWithName("INSPECT");
+            }
+        }
+        if (getWord(%url, 0) $= "answerHelpMeMode")
+        {
+            %requestId = getWord(%url, 1);
+            %newbName = unmunge(getWords(%url, 2, 11111));
+            answerHelpMeMode(%newbName, %requestId);
+            %this.changeLinesEndingInString("<a:" @ %url, "- You answered the call!");
         }
     }
     if (!%this.selectionActive)
@@ -311,20 +284,17 @@ function SystemMessageTextCtrl::onURL(%this, %url)
 function SystemMessageTextCtrl::updateFriendRequest(%this, %name, %accept)
 {
     %acceptString = "";
-    if ((%accept == 1.0))
+    if (%accept == 1)
     {
         %acceptString = %acceptString @ "Accepted!";
     }
     else
     {
-        if ((%accept == 0.0))
+        if (%accept == 0)
         {
             %acceptString = %acceptString @ "Declined!";
         }
-        else
-        {
-            %acceptString = %acceptString @ "(they cancelled)";
-        }
+        %acceptString = %acceptString @ "(they cancelled)";
     }
     if (!(%name $= ""))
     {
@@ -339,27 +309,21 @@ function SystemMessageTextCtrl::updateFriendRequest(%this, %name, %accept)
 function SystemMessageTextCtrl::updateTwoPlayerActionRequest(%this, %name, %coAnimName, %requestId, %accept)
 {
     %acceptString = "";
-    if ((%accept == 0.0))
+    if (%accept == 0)
     {
         %acceptString = %acceptString @ "Declined!";
     }
     else
     {
-        if ((%accept == 1.0))
+        if (%accept == 1)
         {
             %acceptString = %acceptString @ "Accepted!";
         }
-        else
+        if (%accept == 2)
         {
-            if ((%accept == 2.0))
-            {
-                %acceptString = %acceptString @ "(they cancelled)";
-            }
-            else
-            {
-                %acceptString = %acceptString @ "(timed out)";
-            }
+            %acceptString = %acceptString @ "(they cancelled)";
         }
+        %acceptString = %acceptString @ "(timed out)";
     }
     if (!(%name $= ""))
     {
@@ -369,12 +333,12 @@ function SystemMessageTextCtrl::updateTwoPlayerActionRequest(%this, %name, %coAn
 }
 function SystemMessageTextCtrl::changeLinesEndingInString(%this, %replaceThis, %withThis)
 {
-    %i = (%this.bufferSize - 1.0);
-    while ((%i >= 0.0))
+    %i = %this.bufferSize - 1;
+    while (%i >= 0)
     {
         %curLine = %this.bufferMessage[%i];
         %start = strstr(%curLine, %replaceThis);
-        if ((%start < 0.0))
+        if (%start < 0)
         {
         }
         else
@@ -382,7 +346,7 @@ function SystemMessageTextCtrl::changeLinesEndingInString(%this, %replaceThis, %
             %newLine = getSubStr(%curLine, 0, %start) @ " " @ %withThis;
             %this.bufferMessage[%i] = %newLine;
         }
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
     %this.refresh();
 }

@@ -5,7 +5,7 @@ function EtsInviteDialog::open(%this)
     %thisExtent = %this.getExtent();
     %width = getWord(%thisExtent, 0);
     %height = getWord(%thisExtent, 1);
-    %this.reposition(((%screenWidth / 2.0) - (%width / 2.0)), ((%screenHeight / 2.0) - (%height / 2.0)));
+    %this.reposition(((%screenWidth / 2) - (%width / 2)), ((%screenHeight / 2) - (%height / 2)));
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     %this.initializeWithDefaults();
@@ -48,7 +48,7 @@ function EtsInviteDialog::sendInvite(%this)
 {
     %to = trim(ETSInviteToTextCtrl.getText());
     %note = trim(ETSInviteNoteTextCtrl.getText());
-    if ((%to $= ""))
+    if (%to $= "")
     {
         MessageBoxOK(%to[$MsgCat::invitation @ "E-SEND-TITLE"], $MsgCat::invitation["EMPTY-TO-FIELD"], "");
         return;
@@ -75,13 +75,13 @@ function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message)
     %numTargetMails = "&numEmails=" @ %count;
     %targetMails = "";
     %i = 0;
-    while ((%i < %count))
+    while (%i < %count)
     {
         %targetMails = %targetMails @ "&email" @ %i @ "=" @ urlEncode(getWord(%to, %i));
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     %note = "";
-    (%i < %count);
+    %i < %count;
     if (!(%message $= ""))
     {
         %note = "&noteFromSender=" @ urlEncode(%message);
@@ -96,7 +96,7 @@ function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message)
 }
 function EtsInviteDialog::onConnectFailed(%this, %msg)
 {
-    if ((%msg $= ""))
+    if (%msg $= "")
     {
         %msg = "Could not connect";
     }
@@ -109,7 +109,7 @@ function EtsInviteDialog::onInviteSuccess(%this)
 }
 function EtsInviteDialog::onInviteError(%this, %errorMsg)
 {
-    if ((%errorMsg $= ""))
+    if (%errorMsg $= "")
     {
         %errorMsg = "no error message specified. try again later";
     }
@@ -117,7 +117,7 @@ function EtsInviteDialog::onInviteError(%this, %errorMsg)
 }
 function EtsInviteRequest::onError(%this, %errorNum, %unused)
 {
-    if ((%errorNum == $CURL::CouldNotResolveHost))
+    if (%errorNum == $CURL::CouldNotResolveHost)
     {
         EtsInviteDialog.onConnectFailed("Could not reach server");
         MessageBoxOK("Could Not Find Server", $MsgCat::network["E-SERVER-DNS"], "");
@@ -136,7 +136,7 @@ function EtsInviteRequest::onDone(%this)
 {
     EtsInviteDialog.setControlsActive(1);
     SendInvitePBController.setValue(1);
-    if ((%this.statusCode() != $HTTP::StatusOK))
+    if (%this.statusCode() != $HTTP::StatusOK)
     {
         EtsInviteDialog.onConnectFailed("Error communicating with server");
         log("communication", "error", "client HTTP code: " @ %this.statusCode());
@@ -145,22 +145,19 @@ function EtsInviteRequest::onDone(%this)
     }
     %status = findRequestStatus(%this);
     log("network", "debug", "EtsInviteRequest::onDone status: " @ %status);
-    if ((%status $= "fail"))
+    if (%status $= "fail")
     {
         EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
     }
     else
     {
-        if ((%status $= "error"))
+        if (%status $= "error")
         {
             EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
         }
-        else
+        if (%status $= "success")
         {
-            if ((%status $= "success"))
-            {
-                EtsInviteDialog.onInviteSuccess();
-            }
+            EtsInviteDialog.onInviteSuccess();
         }
     }
 }

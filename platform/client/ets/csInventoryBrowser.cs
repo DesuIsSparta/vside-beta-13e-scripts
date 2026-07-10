@@ -58,7 +58,7 @@ function CSInventoryBrowserWindow::Initialize(%this)
 function CSInventoryBrowserWindow::onResized(%this)
 {
     %extent = %this.getExtent();
-    CSInventoryBrowserContainer.resize((getWord(%extent, 0) - 16.0), ((getWord(%extent, 1) - 4.0) - 18.0));
+    CSInventoryBrowserContainer.resize((getWord(%extent, 0) - 16), ((getWord(%extent, 1) - 4) - 18));
     CSInventoryBrowser.onResized();
 }
 function CSInventoryBrowserWindow::onReachedTarget(%this)
@@ -71,10 +71,10 @@ function CSInventoryBrowser::loadAvailableSkus(%this)
     %skulist = getFurnitureSkus();
     %numSkus = getWordCount(%skulist);
     %i = 0;
-    while ((%i < %numSkus))
+    while (%i < %numSkus)
     {
         %this.addSku(getWord(%skulist, %i));
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     if (((%i < %numSkus) @ " " @ %this.Path $= "") || (%this.Path $= %this.baseDir))
     {
@@ -88,7 +88,7 @@ function CSInventoryBrowser::loadAvailableSkus(%this)
 function CSInventoryBrowser::fillLeafPane(%this, %pane)
 {
     Parent::fillLeafPane(%this, %pane);
-    %desc = getField(%this.Path, (%this.level - 1.0));
+    %desc = getField(%this.Path, (%this.level - 1));
     %desc = %this.getMenuText(%desc);
     %paneWidth = getWord(%pane.getExtent(), 0);
     %paneHeight = getWord(%pane.getExtent(), 1);
@@ -97,13 +97,13 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
     }
     if (!(%desc $= %this.baseDir))
     {
-        %ypos = (getWord(%pane.itemText.getPosition(), 1) + getWord(%pane.itemText.getExtent(), 1));
+        %ypos = getWord(%pane.itemText.getPosition(), 1) + getWord(%pane.itemText.getExtent(), 1);
         %qtyText = new GuiMLTextCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = 5 @ " " @ %ypos = (%ypos + 3.0);
-            extent = (%paneWidth - 5.0) @ " " @ 18;
+            position = 5 @ " " @ %ypos = %ypos + 3;
+            extent = (%paneWidth - 5) @ " " @ 18;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -112,13 +112,13 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
             maxChars = -1;
             text = "";
         };
-        %ypos = (%ypos + getWord(%qtyText.getExtent(), 1));
+        %ypos = %ypos + getWord(%qtyText.getExtent(), 1);
         %distributionText = new GuiMLTextCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
             position = 5 @ " " @ %ypos;
-            extent = (%paneWidth - 5.0) @ " " @ 18;
+            extent = (%paneWidth - 5) @ " " @ 18;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -127,9 +127,9 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
             maxChars = -1;
             text = "";
         };
-        %ypos = (%ypos + getWord(%distributionText.getExtent(), 1));
+        %ypos = %ypos + getWord(%distributionText.getExtent(), 1);
         %buttonWidth = 68;
-        %xPos = ((%paneWidth - %buttonWidth) - 3.0);
+        %xPos = (%paneWidth - %buttonWidth) - 3;
         %rightYPos = 18;
         %placeButton = new GuiVariableWidthButtonCtrl("") {
             profile = "BracketButton15Profile";
@@ -145,12 +145,12 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
             groupNum = -1;
             buttonType = "PushButton";
         };
-        %rightYPos = (%rightYPos + getWord(%placeButton.getExtent(), 1));
+        %rightYPos = %rightYPos + getWord(%placeButton.getExtent(), 1);
         %putAwayButton = new GuiVariableWidthButtonCtrl("") {
             profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %xPos @ " " @ %rightYPos = (%rightYPos + 4.0);
+            position = %xPos @ " " @ %rightYPos = %rightYPos + 4;
             extent = %buttonWidth @ " " @ 15;
             minExtent = "1 1";
             sluggishness = -1;
@@ -160,12 +160,12 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
             groupNum = -1;
             buttonType = "PushButton";
         };
-        %rightYPos = (%rightYPos + getWord(%putAwayButton.getExtent(), 1));
+        %rightYPos = %rightYPos + getWord(%putAwayButton.getExtent(), 1);
         %buyButton = new GuiVariableWidthButtonCtrl("") {
             profile = "BracketButton15Profile";
             horizSizing = "right";
             vertSizing = "bottom";
-            position = %xPos @ " " @ %rightYPos = (%rightYPos + 4.0);
+            position = %xPos @ " " @ %rightYPos = %rightYPos + 4;
             extent = %buttonWidth @ " " @ 15;
             minExtent = "1 1";
             sluggishness = -1;
@@ -175,9 +175,9 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
             groupNum = -1;
             buttonType = "PushButton";
         };
-        %rightYPos = (%rightYPos + getWord(%buyButton.getExtent(), 1));
+        %rightYPos = %rightYPos + getWord(%buyButton.getExtent(), 1);
         %si = "";
-        %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1.0)), "|"), 1);
+        %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1)), "|"), 1);
         %si = SkuManager.findBySku(%sku);
         if (!(%si.descLong $= ""))
         {
@@ -185,7 +185,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
                 profile = "BracketButton15RedProfile";
                 horizSizing = "right";
                 vertSizing = "bottom";
-                position = %xPos @ " " @ %rightYPos = (%rightYPos + 4.0);
+                position = %xPos @ " " @ %rightYPos = %rightYPos + 4;
                 extent = %buttonWidth @ " " @ 15;
                 minExtent = "1 1";
                 sluggishness = -1;
@@ -195,7 +195,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
                 groupNum = -1;
                 buttonType = "PushButton";
             };
-            %rightYPos = (%rightYPos + getWord(%buyButton.getExtent(), 1));
+            %rightYPos = %rightYPos + getWord(%buyButton.getExtent(), 1);
             if (%this.getFieldValue("showMoreInfo"))
             {
                 %moreInfoButton.text = "Less Info";
@@ -204,12 +204,12 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
             %pane.moreInfoButton = %moreInfoButton;
             %pane.add(%moreInfoButton);
         }
-        %maxThumbnailDim = mMin(((%paneHeight - %ypos) - 3.0), (%xPos - 2.0));
+        %maxThumbnailDim = mMin(((%paneHeight - %ypos) - 3), (%xPos - 2));
         %thumbnail = new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "top";
-            position = 0 @ " " @ (%ypos + 2.0);
+            position = 0 @ " " @ (%ypos + 2);
             extent = %maxThumbnailDim @ " " @ %maxThumbnailDim;
             minExtent = "1 1";
             sluggishness = -1;
@@ -242,7 +242,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
             horizSizing = "right";
             vertSizing = "bottom";
             position = "25 20";
-            extent = (%paneWidth - 5.0) @ " " @ 18;
+            extent = (%paneWidth - 5) @ " " @ 18;
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
@@ -257,21 +257,21 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
 function CSInventoryItemPane::update(%this)
 {
     %sku = %this.node.sku;
-    if ((%sku $= ""))
+    if (%sku $= "")
     {
         return;
     }
     %this.placeButton.command = "CustomSpaceClient::placeSkuInWorld(" @ %sku @ ");";
     %this.putAwayButton.command = "csTestFreeSelectedItem();";
-    if ((%sku == $CSSelectedSku))
+    if (%sku == $CSSelectedSku)
     {
     }
     %this.putAwayButton.setActive($CSSelectedIsOwned);
     %this.buyButton.command = "CSInventoryBrowser.switchToOtherBrowser(); CSShoppingBrowser.navigateToSku(" @ %sku @ ");";
     %numOwned = numOwnedFurnitureSku(%sku);
     %numPlaced = numUsingFurnitureSku(%sku);
-    %numStored = (%numOwned - %numPlaced);
-    %omni = (%numOwned == -(1.0));
+    %numStored = %numOwned - %numPlaced;
+    %omni = %numOwned == -(1);
     if (%omni)
     {
     }
@@ -335,7 +335,7 @@ function CSInventoryBrowserFilterField::refilter(%this)
     cancel($gCSInventoryBrowserFilterFieldTimerID);
     $gCSInventoryBrowserFilterFieldTimerID = "";
     %filterText = %this.getValue();
-    if ((%filterText $= %this.prevFilterText))
+    if (%filterText $= %this.prevFilterText)
     {
         return;
     }

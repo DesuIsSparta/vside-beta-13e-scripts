@@ -6,17 +6,17 @@ datablock CameraData(Observer) {
 };
 function Observer::onTrigger(%this, %obj, %unused, %state)
 {
-    if ((%state == 0.0))
+    if (%state == 0)
     {
         return;
     }
     %client = %obj.getControllingClient();
-    if ((%obj.mode $= "Observer"))
+    if (%obj.mode $= "Observer")
     {
     }
     else
     {
-        if ((%obj.mode $= "Corpse"))
+        if (%obj.mode $= "Corpse")
         {
             %client.spawnPlayer();
             %this.setMode(%obj, "Observer");
@@ -25,13 +25,13 @@ function Observer::onTrigger(%this, %obj, %unused, %state)
 }
 function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3)
 {
-    if ((%mode $= "Observer"))
+    if (%mode $= "Observer")
     {
         %obj.setFlyMode();
     }
     else
     {
-        if ((%mode $= "Corpse"))
+        if (%mode $= "Corpse")
         {
             %transform = %arg1.getTransform();
             %obj.setOrbitMode(%arg1, %transform, 0.5, 4.5, 4.5);

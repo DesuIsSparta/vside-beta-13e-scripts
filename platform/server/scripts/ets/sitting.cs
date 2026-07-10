@@ -75,7 +75,7 @@ function freeSeat(%seat)
 function showClientAvailableSeats(%seats, %client)
 {
     %i = 0;
-    while ((%i < %seats.getCount()))
+    while (%i < %seats.getCount())
     {
         %seat = %seats.getObject(%i);
         if (!isSeatTaken(%seat))
@@ -87,7 +87,7 @@ function showClientAvailableSeats(%seats, %client)
             }
             commandToClient(%client, 'ShowSeat', %seat.getId(), %seat.getTransform(), %seatType);
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function showPossibleSeats(%seats, %client)
@@ -98,19 +98,19 @@ function showPossibleSeats(%seats, %client)
 function hideClientSeats(%seats, %client)
 {
     %count = %seats.getCount();
-    if ((%count > 0.0))
+    if (%count > 0)
     {
         %seatList = "";
         %i = 0;
-        while ((%i < %count))
+        while (%i < %count)
         {
             %seat = %seats.getObject(%i);
             %seatList = %seatList @ " " @ %seat.getId();
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
         commandToClient(%client, 'HideSeats', %seatList);
     }
-    return (%i < %count);
+    return %i < %count;
 }
 function hidePossibleSeats(%seats, %client)
 {
@@ -132,7 +132,7 @@ function TurnOnSitCam(%player)
         }
         %theta = getWord(%player.mySeat.camAngles, 0);
         %phi = getWord(%player.mySeat.camAngles, 1);
-        if ((%theta $= ""))
+        if (%theta $= "")
         {
             %theta = 180;
             %phi = 20;
@@ -187,7 +187,7 @@ function StandPlayerUp(%player, %moveDir)
     }
     else
     {
-        if ((%moveDir < 0.0))
+        if (%moveDir < 0)
         {
             return 0;
         }
@@ -276,7 +276,7 @@ function SeatingArea::onTickTrigger(%this, %trigger)
         return;
     }
     %n = 0;
-    while ((%n < %trigger.getNumObjects()))
+    while (%n < %trigger.getNumObjects())
     {
         %obj = %trigger.getObject(%n);
         if (%obj.needRefreshVisibleSeats)
@@ -287,7 +287,7 @@ function SeatingArea::onTickTrigger(%this, %trigger)
             showPossibleSeats(%trigger.seats, %obj.client);
             %obj.needRefreshVisibleSeats = 0;
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function SeatingArea::onLeaveTrigger(%this, %trigger, %player)
@@ -316,7 +316,7 @@ datablock CameraData(SittingObserver) {
 };
 function SittingObserver::onTrigger(%this, %camera, %trigger, %state)
 {
-    if ((%state == 0.0))
+    if (%state == 0)
     {
         return;
     }
@@ -325,7 +325,7 @@ function SittingObserver::onTrigger(%this, %camera, %trigger, %state)
 }
 function SittingObserver::setMode(%this, %obj, %mode, %unused, %unused, %unused)
 {
-    if ((%mode $= "Observer"))
+    if (%mode $= "Observer")
     {
         %obj.setFlyMode();
     }
@@ -346,7 +346,7 @@ function Player::sitDown(%this)
     %pos = VectorAdd(%pos, %seat.sitOffset);
     %transform = %pos @ " " @ %rot;
     %this.setTransform(%transform);
-    if ((%seat.sitAnim $= ""))
+    if (%seat.sitAnim $= "")
     {
         warn("seat " @ %seat @ " does not specify a sitAnim");
     }
@@ -354,15 +354,15 @@ function Player::sitDown(%this)
     {
         %this.setActionThread(%seat.sitAnim, 1, 1);
     }
-    if ((%seat.sitIdle $= ""))
+    if (%seat.sitIdle $= "")
     {
         warn("seat " @ %seat @ " does not specify a sitIdle");
     }
-    if ((%seat.idleDelay $= ""))
+    if (%seat.idleDelay $= "")
     {
         warn("seat " @ %seat @ " does not specify a idleDelay");
     }
-    if ((%seat.sitSound $= ""))
+    if (%seat.sitSound $= "")
     {
         warn("seat " @ %seat @ " does not specify a sitSound");
     }
@@ -379,10 +379,7 @@ function Player::sitDown(%this)
         {
             commandToClient(%this.client, 'StartListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
         }
-        else
-        {
-            warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not starting");
-        }
+        warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not starting");
     }
     %this.schedule(%seat.idleDelay, "setActionThread", %seat.sitIdle, 0, 0);
     return;
@@ -395,7 +392,7 @@ function Player::standUp(%this)
         error("Player::standUp: no mySeat member variable");
         return;
     }
-    if ((%seat.standSound $= ""))
+    if (%seat.standSound $= "")
     {
         warn("seat " @ %seat @ " does not specify a standSound");
     }
@@ -403,7 +400,7 @@ function Player::standUp(%this)
     {
         %this.playAudio(0, %seat.standSound);
     }
-    if ((%seat.standAnim $= ""))
+    if (%seat.standAnim $= "")
     {
         warn("seat " @ %seat @ " does not specify a standAnim");
     }
@@ -421,10 +418,7 @@ function Player::standUp(%this)
         {
             commandToClient(%this.client, 'StopListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
         }
-        else
-        {
-            warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not stopping");
-        }
+        warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not stopping");
     }
     return;
 }

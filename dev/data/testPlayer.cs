@@ -52,7 +52,7 @@ function testPlayer_RemoveInventoryMultiTest()
 }
 function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname)
 {
-    %pass = (%wetExpected $= %wetActual);
+    %pass = %wetExpected $= %wetActual;
     if (!%pass)
     {
         log("wardrobe", "error", "failed:" @ " " @ %testname);

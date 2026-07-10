@@ -47,7 +47,7 @@ function ValidateRequest::isTooFullForPlayer(%this, %roles)
 {
     %ret = 0;
     %bypassing = "";
-    if ((ClientGroup.getCount() >= $Pref::Server::MaxPlayers))
+    if (ClientGroup.getCount() >= $Pref::Server::MaxPlayers)
     {
         if (roles::maskHasRoleString(mInt(%roles), "staff") || roles::maskHasRoleString(mInt(%roles), "moderator") || roles::maskHasRoleString(mInt(%roles), "press") || roles::maskHasRoleString(mInt(%roles), "celeb"))
         {
@@ -97,31 +97,31 @@ function JoinRequest::onDone(%this)
     log("login", "info", "JoinRequest for" @ " " @ %this.name @ " " @ "complete");
     %this.buddyCount = %this.getValue("numFavorites");
     %n = 1;
-    while ((%n <= %this.buddyCount))
+    while (%n <= %this.buddyCount)
     {
         %this.buddy[%n),%n] = %this.getValue("favorite";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.ignoreCount = (%n <= %this.buddyCount) @ %this.getValue("numIgnores");
     %n = 1;
-    while ((%n <= %this.ignoreCount))
+    while (%n <= %this.ignoreCount)
     {
         %this.ignore[%n),%n] = %this.getValue("ignore";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.onBuddyCount = (%n <= %this.ignoreCount) @ %this.getValue("numOnFavorites");
     %n = 1;
-    while ((%n <= %this.onBuddyCount))
+    while (%n <= %this.onBuddyCount)
     {
         %this.onBuddy[%n),%n] = %this.getValue("onFavorite";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.onIgnoreCount = (%n <= %this.onBuddyCount) @ %this.getValue("numOnIgnores");
     %n = 1;
-    while ((%n <= %this.onIgnoreCount))
+    while (%n <= %this.onIgnoreCount)
     {
         %this.onIgnore[%n),%n] = %this.getValue("onIgnore";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.registeredName = (%n <= %this.onIgnoreCount) @ %this.getValue("registered_user");
     %this.curOutfitSkus["m"] = %this.getValue("cur_outfit_skus_m");
@@ -202,7 +202,7 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
     if (!$Insecure)
     {
     }
-    if ((%token $= ""))
+    if (%token $= "")
     {
         log("login", "error", "invalid token:" @ " " @ %name);
         %this.connectCallback("CHR_INVALID_CHALLENGE_PACKET");
@@ -213,15 +213,15 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
     if (!(%timeout $= ""))
     {
         log("login", "debug", "GameConnection::onConnectRequest timeout for" @ " " @ %name @ " " @ %timeout);
-        if ((%curSimTime < %timeout))
+        if (%curSimTime < %timeout)
         {
             log("login", "warn", "GameConnection::onConnectRequest ignoring repeat request from" @ " " @ %netAddress @ " " @ %name);
             return;
         }
     }
-    %timeout = (%curSimTime + 25000.0);
+    %timeout = %curSimTime + 25000;
     log("login", "debug", "adding validate timeout" @ " " @ %timeout @ " " @ "for" @ " " @ %name);
-    PendingValidate.put(%name, (%curSimTime + 25000.0));
+    PendingValidate.put(%name, (%curSimTime + 25000));
     %validateRequest = new ManagerRequest("") {
         className = "ValidateRequest";
     };
@@ -254,12 +254,12 @@ function GameConnection::onConnect(%client, %name, %token)
 {
     %client.nameBase = %name;
     log("login", "info", "GameConnection::onConnect: " @ %name);
-    if ((ClientDict.getNorm(%name) != 0.0))
+    if (ClientDict.getNorm(%name) != 0)
     {
         log("login", "warn", "GameConnection::onConnect: duplicate entry in ClientDict" @ getDebugString(%client));
     }
     ClientDict.putNorm(%name, %client);
-    if ((%token $= ""))
+    if (%token $= "")
     {
         log("login", "warn", "GameConnection::onConnect called with empty token: " @ %name);
     }
@@ -273,7 +273,7 @@ function GameConnection::onConnect(%client, %name, %token)
     sendLoadInfoToClient(%client);
     %client.guid = 0;
     addToServerGuidList(%client.guid);
-    if ((%client.getAddress() $= "local"))
+    if (%client.getAddress() $= "local")
     {
         %client.isAdmin = 1;
         %client.isSuperAdmin = 1;
@@ -341,13 +341,13 @@ function GameConnection::postClientDrop(%this, %ignoreResponse, %reason)
     %dropRequest.client = %this;
     %dropRequest.ignoreResponse = %ignoreResponse;
     %name = %this.nameBase;
-    if ((ClientDict.getNorm(%name) == 0.0))
+    if (ClientDict.getNorm(%name) == 0)
     {
         log("login", "warn", "GameConnection::postClientDrop called with no entry in ClientDict:" @ " " @ getDebugString(%this));
     }
     ClientDict.remove(%name);
     %token = TokenDict.getNorm(%name);
-    if ((%token $= ""))
+    if (%token $= "")
     {
         log("login", "warn", "GameConnection::postClientDrop, no token for user: " @ %name);
     }
@@ -399,7 +399,7 @@ function GameConnection::syncClock(%client, %time)
 }
 function GameConnection::incScore(%this, %delta)
 {
-    %this.score = (%this.score + %delta);
+    %this.score = %this.score + %delta;
     messageAll('MsgClientScoreChanged', "", %this.score, %this);
     error("This function should not be called for The Lounge: GameConnection::incScore()");
     return;

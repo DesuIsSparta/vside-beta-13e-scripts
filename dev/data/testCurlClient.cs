@@ -226,7 +226,7 @@ function simpleScreenShotUploaderTest(%fileName)
 function curlTestAll()
 {
     %i = 0;
-    while ((%i < 10.0))
+    while (%i < 10)
     {
         simpleGoogleTest();
         headerTest();
@@ -238,7 +238,7 @@ function curlTestAll()
         downloadWithNameSpaceTest();
         simplePostTest();
         simplePostFileUploaderTest();
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }
 function testPcpUpdate()
@@ -287,7 +287,7 @@ function testCURLDownload()
 function stressTestFileDownload()
 {
     %i = 0;
-    while ((%i < 100.0))
+    while (%i < 100)
     {
         %curl = new URLPostObject("") {
             className = "TestDownload";
@@ -303,6 +303,6 @@ function stressTestFileDownload()
             return;
         }
         CURLSimGroup.add(%curl);
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
 }

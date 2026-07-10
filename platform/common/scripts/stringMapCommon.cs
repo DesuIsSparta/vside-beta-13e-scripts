@@ -1,11 +1,11 @@
 function StringMap::hasKey(%this, %key)
 {
-    return (%this.findKey(%key) >= 0.0);
+    return %this.findKey(%key) >= 0;
 }
 function StringMap::hasValue(%this, %value)
 {
     %idx = %this.findValue(%value);
-    if ((%idx < 0.0))
+    if (%idx < 0)
     {
         return 0;
     }
@@ -26,17 +26,17 @@ function StringMap::saveTo(%this, %fileName)
     if (%file.openForWrite(%fileName))
     {
         %n = 0;
-        while ((%n < %this.size()))
+        while (%n < %this.size())
         {
             %key = %this.getKey(%n);
             %value = %this.getValue(%n);
             %line = urlEncode(%key) @ "\t" @ urlEncode(%value);
             %file.writeLine(%line);
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
         %file.close();
         %ret = 1;
-        (%n < %this.size());
+        %n < %this.size();
     }
     else
     {
@@ -83,15 +83,15 @@ function StringMap::getLocalStorageFilename(%this, %fileName)
 }
 function StringMap::deleteValuesAsObjects(%this)
 {
-    %i = (%this.size() - 1.0);
-    while ((%i >= 0.0))
+    %i = %this.size() - 1;
+    while (%i >= 0)
     {
         %value = %this.getValue(%i);
         if (isObject(%value))
         {
             %value.delete();
         }
-        %i = (%i - 1.0);
+        %i = %i - 1;
     }
     %this.clear();
 }

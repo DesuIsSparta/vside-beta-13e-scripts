@@ -29,26 +29,23 @@ function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %curr
 }
 function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL)
 {
-    if ((%status $= "HAPPY"))
+    if (%status $= "HAPPY")
     {
         %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsHappy"];
-        if ((%currentState == %totalStates))
+        if (%currentState == %totalStates)
         {
             %info = %currentState[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsFullyGrown"];
         }
     }
     else
     {
-        if ((%status $= "DRY"))
+        if (%status $= "DRY")
         {
             %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDry"];
         }
-        else
+        if (%status $= "DEAD")
         {
-            if ((%status $= "DEAD"))
-            {
-                %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
-            }
+            %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
         }
     }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);

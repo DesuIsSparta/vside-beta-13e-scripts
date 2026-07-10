@@ -31,14 +31,14 @@ function geActivitiesPanel::updateStates(%this)
     %highest = %uam.getHighestPriorityCurrentActivity();
     %text = "";
     %delim = "";
-    %n = (%uam.knownActivities.size() - 1.0);
-    while ((%n >= 0.0))
+    %n = %uam.knownActivities.size() - 1;
+    while (%n >= 0)
     {
         %activityName = %uam.knownActivities.getKey(%n);
         %activityUFName = %uam.getActivityUserFacingName(%activityName);
         %on = %uam.getActivityActive(%activityName);
         %timeLeft = %uam.getActivityTimeLeft(%activityName);
-        %isHighest = (%activityName $= %highest);
+        %isHighest = %activityName $= %highest;
         %baseColor = %isHighest ? "ccff33" : "dddddd";
         if (%on)
         {
@@ -58,34 +58,34 @@ function geActivitiesPanel::updateStates(%this)
         %style = %style;
         "<b>" @ %style;
         %icon = %uam.getActivityIconFilename(%activityName);
-        if ((%timeLeft <= 0.0))
+        if (%timeLeft <= 0)
         {
         }
         else
         {
         }
-        %timeLeftText = " - " @ formatFloat("%0.1f", (%timeLeft / 1000.0));
+        %timeLeftText = " - " @ formatFloat("%0.1f", (%timeLeft / 1000));
         "";
         %text = "<spush>" @ %style @ "<just:left><a:gamelink " @ %activityName @ ">" @ %activityUFName @ "</a>" @ %timeLeftText @ "<just:right><bitmap:" @ %icon @ "><spop>" @ %delim @ %text;
         %delim = "<br>";
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     %text = %text @ %delim;
-    (%n >= 0.0);
+    %n >= 0;
     %timeSinceLastReport = %uam.getLastReportAgeMS();
-    %timeSinceLastReport = mFloor((%timeSinceLastReport / 1000.0));
+    %timeSinceLastReport = mFloor((%timeSinceLastReport / 1000));
     %text = %text @ %delim @ "<just:left><color:a09000>last report:" @ " " @ secondsToHHMMSS(%timeSinceLastReport);
     %timeToNextReport = %uam.getMSToNextReport();
-    if ((%timeToNextReport > 0.0))
+    if (%timeToNextReport > 0)
     {
-        %timeToNextReport = formatFloat("%.1f", (%timeToNextReport / 1000.0));
+        %timeToNextReport = formatFloat("%.1f", (%timeToNextReport / 1000));
         %text = %text @ %delim @ "<just:left><color:907000>reports paused for" @ " " @ %timeToNextReport @ "s..";
     }
     geActivitiesPanel_Current.setText(%text);
 }
 function geActivitiesPanel_Current::onUrl(%this, %url)
 {
-    if ((firstWord(%url) $= "gamelink"))
+    if (firstWord(%url) $= "gamelink")
     {
         %url = restWords(%url);
     }

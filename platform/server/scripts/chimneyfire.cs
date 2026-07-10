@@ -6,7 +6,7 @@ datablock ParticleData(ChimneySmoke) {
     lifetimeMS = 3000;
     lifetimeVarianceMS = 250;
     useInvAlpha = 0;
-    spinRandomMin = -(30.0);
+    spinRandomMin = -(30);
     spinRandomMax = 30;
     colors = "0.6 0.6 0.6 0.1";
     colors = "0.6 0.6 0.6 0.1";
@@ -38,7 +38,7 @@ datablock ParticleData(ChimneyFire1) {
     lifetimeMS = 500;
     lifetimeVarianceMS = 250;
     useInvAlpha = 0;
-    spinRandomMin = -(30.0);
+    spinRandomMin = -(30);
     spinRandomMax = 30;
     colors = "0.8 0.6 0.0 0.1";
     colors = "0.8 0.6 0.0 0.1";
@@ -58,7 +58,7 @@ datablock ParticleData(ChimneyFire2) {
     lifetimeMS = 800;
     lifetimeVarianceMS = 150;
     useInvAlpha = 0;
-    spinRandomMin = -(30.0);
+    spinRandomMin = -(30);
     spinRandomMax = 30;
     colors = "0.6 0.6 0.0 0.1";
     colors = "0.6 0.6 0.0 0.1";

@@ -11,7 +11,7 @@ function testLoginTimes()
     %testLogin.init();
     echo("LOAD: Logging into " @ $Cities[$cityIndex]);
     %testLogin.doLogin($Cities[$cityIndex]);
-    $cityIndex = ($cityIndex + 1.0);
+    $cityIndex = $cityIndex + 1;
 }
 function doSomething()
 {
@@ -23,7 +23,7 @@ function doSomething()
     pChat.say("Goodbye!", 0, 0);
     logout(0);
     WorldMap.exit();
-    if (($cityIndex <= $maxCities))
+    if ($cityIndex <= $maxCities)
     {
         schedule(3000, 0, testLoginTimes);
     }
@@ -35,13 +35,13 @@ function doSomething()
 function initCities()
 {
     %i = 0;
-    $Cities[%i = (%i + 1.0)] = "NewVeneziaNorth";
-    $Cities[%i = (%i + 1.0)] = "LaGenoaAiresNorth";
-    $Cities[%i = (%i + 1.0)] = "RaijukuNorth";
-    $Cities[%i = (%i + 1.0)] = "IIR Raijuku";
-    $Cities[%i = (%i + 1.0)] = "LaBoca Apartments";
-    $Cities[%i = (%i + 1.0)] = "Warehouse Loft";
-    $Cities[%i = (%i + 1.0)] = "BeatUp";
+    $Cities[%i = %i + 1] = "NewVeneziaNorth";
+    $Cities[%i = %i + 1] = "LaGenoaAiresNorth";
+    $Cities[%i = %i + 1] = "RaijukuNorth";
+    $Cities[%i = %i + 1] = "IIR Raijuku";
+    $Cities[%i = %i + 1] = "LaBoca Apartments";
+    $Cities[%i = %i + 1] = "Warehouse Loft";
+    $Cities[%i = %i + 1] = "BeatUp";
     $maxCities = %i;
     $cityIndex = 1;
 }

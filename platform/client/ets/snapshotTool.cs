@@ -24,7 +24,7 @@ function snapshotTool::doSnap(%this)
 function snapshotTool::waitForNextFrameToSnap(%this)
 {
     cancel(gGetField(%this, waitForFrameSchedule));
-    if (($Canvas::frameCount <= gGetField(%this, lastFrame)))
+    if ($Canvas::frameCount <= gGetField(%this, lastFrame))
     {
         gSetField(%this, waitForFrameSchedule, %this.schedule(10, "waitForNextFrameToSnap"));
         return;
@@ -49,13 +49,13 @@ function snapshotTool::doSnap2(%this)
 }
 function snapshotTool::onProgress(%this, %snapshot)
 {
-    %percent = (%snapshot.ulNow / %snapshot.ulTotal);
+    %percent = %snapshot.ulNow / %snapshot.ulTotal;
     snapshotToolProgressBar.setValue(%percent);
 }
 function snapshotToolonComplete(%request, %result)
 {
     %snapshot = %request.saveObject;
-    if ((%result == 0.0))
+    if (%result == 0)
     {
         snapshotToolSet1.setVisible(1);
         snapshotToolSet2.setVisible(0);

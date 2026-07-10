@@ -9,11 +9,11 @@ function new_ScriptArray(%name)
 function ScriptArray::append(%this, %value)
 {
     %this.Array[%this.numElements] = %value;
-    %this.numElements = (%this.numElements + 1.0);
+    %this.numElements = %this.numElements + 1;
 }
 function ScriptArray::get(%this, %index)
 {
-    if ((%index < 0.0) || (%index >= %this.numElements))
+    if ((%index < 0) || (%index >= %this.numElements))
     {
         error("ScriptArray::get()" @ " " @ "- Subscript out of range:" @ " " @ %index @ " " @ getTrace());
         return "";
@@ -22,12 +22,12 @@ function ScriptArray::get(%this, %index)
 }
 function ScriptArray::set(%this, %index, %value)
 {
-    if ((%index > %this.numElements))
+    if (%index > %this.numElements)
     {
         error("ScriptArray::set()" @ " " @ "- Subscript out of range:" @ " " @ %index @ " " @ "value:" @ " " @ %value @ " " @ getTrace());
         return;
     }
-    if ((%index == %this.numElements))
+    if (%index == %this.numElements)
     {
         %this.append(%value);
     }
@@ -47,7 +47,7 @@ function ScriptArray::clear(%this)
 function ScriptArray::deleteMembers(%this)
 {
     %n = 0;
-    while ((%n < %this.numElements))
+    while (%n < %this.numElements)
     {
         %element = %this.Array[%n];
         if (isObject(%element))
@@ -58,16 +58,16 @@ function ScriptArray::deleteMembers(%this)
         {
             error(getScopeName() @ " " @ "- called on non-object member: \"" @ %element @ "\":" @ " " @ getDebugString(%this) @ " " @ getTrace());
         }
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.clear();
 }
 function ScriptArray::dumpValues(%this)
 {
     %n = 0;
-    while ((%n < %this.numElements))
+    while (%n < %this.numElements)
     {
         echo(%n @ " " @ %this.get(%n));
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }

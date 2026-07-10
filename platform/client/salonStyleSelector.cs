@@ -10,7 +10,7 @@ function SalonStyleSelector::open(%this)
 }
 function SalonStyleSelector::close(%this)
 {
-    if (($gSalonChairCurrent != 0.0))
+    if ($gSalonChairCurrent != 0)
     {
         return 1;
     }
@@ -37,7 +37,7 @@ function SalonStyleSelector::Initialize(%this)
     %SSS_Width = 220;
     %SSS_ButtonWidth = 20;
     %SSS_ButtonSpacing = 6;
-    %SSS_ButtonMargin = (%SSS_ButtonWidth + (2.0 * %SSS_ButtonSpacing));
+    %SSS_ButtonMargin = %SSS_ButtonWidth + (2 * %SSS_ButtonSpacing);
     %this.minExtent = %SSS_Width @ " " @ 110;
     %this.resize(%SSS_Width, %SSS_Height);
     %gc = new GuiTextCtrl(gePropsWindowTitle) {
@@ -45,7 +45,7 @@ function SalonStyleSelector::Initialize(%this)
         horizSizing = "right";
         vertSizing = "bottom";
         position = "5 0";
-        extent = (%SSS_Width - 10.0) @ " " @ 18;
+        extent = (%SSS_Width - 10) @ " " @ 18;
         minExtent = "8 2";
         sluggishness = -1;
         visible = 1;
@@ -74,7 +74,7 @@ function SalonStyleSelector::Initialize(%this)
     };
     %this.add(%gc);
     %gc = new GuiBitmapButtonCtrl("") {
-        position = (%SSS_Width - 18.0) @ " " @ 5;
+        position = (%SSS_Width - 18) @ " " @ 5;
         extent = 13 @ " " @ 13;
         bitmap = "platform/client/buttons/close_m";
         command = "SalonStyleSelector.close();";
@@ -99,7 +99,7 @@ function SalonStyleSelector::Initialize(%this)
         horizSizing = "right";
         vertSizing = "bottom";
         position = %SSS_ButtonMargin @ " " @ 22;
-        extent = (%SSS_Width - (2.0 * %SSS_ButtonMargin)) @ " " @ 19;
+        extent = (%SSS_Width - (2 * %SSS_ButtonMargin)) @ " " @ 19;
         minExtent = "8 8";
         sluggishness = -1;
         visible = 1;
@@ -136,7 +136,7 @@ function SalonStyleSelector::Initialize(%this)
         horizSizing = "width";
         vertSizing = "height";
         position = "7 48";
-        extent = (%SSS_Width - 13.0) @ " " @ (%SSS_Height - 61.0);
+        extent = (%SSS_Width - 13) @ " " @ (%SSS_Height - 61);
         minExtent = "8 2";
         sluggishness = -1;
         visible = 1;
@@ -157,8 +157,8 @@ function SalonStyleSelector::Initialize(%this)
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
-        extent = (%SSS_Width - 22.0) @ " " @ 8;
-        minExtent = (%SSS_Width - 22.0) @ " " @ 8;
+        extent = (%SSS_Width - 22) @ " " @ 8;
+        minExtent = (%SSS_Width - 22) @ " " @ 8;
         sluggishness = -1;
         visible = 1;
         canHilite = 0;
@@ -175,8 +175,8 @@ function SalonStyleSelector::Initialize(%this)
         horizSizing = "width";
         vertSizing = "bottom";
         position = "1 1";
-        extent = (%SSS_Width - 22.0) @ " " @ 8;
-        minExtent = (%SSS_Width - 22.0) @ " " @ 8;
+        extent = (%SSS_Width - 22) @ " " @ 8;
+        minExtent = (%SSS_Width - 22) @ " " @ 8;
         sluggishness = -1;
         visible = 1;
         canHilite = 1;
@@ -186,7 +186,7 @@ function SalonStyleSelector::Initialize(%this)
     %gc.add(SalonStyleSelector.noSkuGuiText);
     %this.add(%gc);
     %left = 50;
-    %top = ((getWord(PlayGui.getExtent(), 1) - getWord(%this.getExtent(), 1)) / 2.0);
+    %top = (getWord(PlayGui.getExtent(), 1) - getWord(%this.getExtent(), 1)) / 2;
     %this.reposition(%left, %top);
 }
 function ShowPropsButton::onClick(%this)
@@ -198,7 +198,7 @@ function ShowPropsButton::onClick(%this)
     else
     {
         %salonCode = $SALON_CHAIR_DEF_DESTCODE[SalonStyleSelector.lastTypeOfSalon];
-        %amInSalon = ($gCurrentStoreName $= %salonCode);
+        %amInSalon = $gCurrentStoreName $= %salonCode;
         %callback = "";
         if (%amInSalon)
         {

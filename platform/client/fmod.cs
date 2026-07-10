@@ -26,7 +26,7 @@ function clientCmdMusicSpaceChange(%spaceId, %newStreamUrl)
 function FMod::FadeOutVolume(%this)
 {
     %vol = fmodGetTopChannelVolume();
-    if ((0.0 >= fmodGetTopChannelVolume()))
+    if (0 >= fmodGetTopChannelVolume())
     {
         fmodStopTopChannel();
         return;
@@ -112,7 +112,7 @@ function FMod::getAttenuation(%this)
 }
 function FMod::pushStream(%spaceId, %streamUrl)
 {
-    if ((strstr(%streamUrl, ".doppelganger.com") >= 0.0) || (strstr(%streamUrl, ".vside.com") >= 0.0) || (strstr(%streamUrl, ".eviltwinstudios.net") >= 0.0))
+    if ((strstr(%streamUrl, ".doppelganger.com") >= 0) || (strstr(%streamUrl, ".vside.com") >= 0) || (strstr(%streamUrl, ".eviltwinstudios.net") >= 0))
     {
         %newStreamUrl = strreplace(%streamUrl, "http://", "http://" @ $Player::Name @ ":" @ $Token @ "@");
     }
@@ -167,10 +167,10 @@ function FMod::checkMetaData(%this)
     %album = %this.getAlbum();
     %comment = %this.getComment();
     %current = %artist @ " " @ %title @ " " @ %album @ " " @ %comment;
-    if ((strcmp(%this.metaData, %current) != 0.0))
+    if (strcmp(%this.metaData, %current) != 0)
     {
         %this.metaData = %current;
-        if ((strcmp(%this.metaData, "") != 0.0))
+        if (strcmp(%this.metaData, "") != 0)
         {
             MusicHud.displayMetaData(%artist, %title, %album, %comment, 1);
         }

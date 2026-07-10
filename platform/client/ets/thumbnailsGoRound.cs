@@ -39,20 +39,20 @@ function thumbnailsGoRound::rebuild(%this)
     %totalH = getWord(%this.getExtent(), 1);
     %lilThumbsNumAcross = mFloor(((((%totalW - %this.mDeetsMinWidth) - %totalH) - %this.mLilThumbPadding) / (%this.mLilThumbHeight + %this.mLilThumbPadding)));
     echoDebug(getScopeName() @ " " @ "- lilThumbsNumAcross =" @ " " @ %lilThumbsNumAcross);
-    %lilThumbsWidth = ((((%this.mLilThumbHeight + %this.mLilThumbPadding) * %lilThumbsNumAcross) + %this.mLilThumbPadding) - 1.0);
+    %lilThumbsWidth = (((%this.mLilThumbHeight + %this.mLilThumbPadding) * %lilThumbsNumAcross) + %this.mLilThumbPadding) - 1;
     echoDebug(getScopeName() @ " " @ "- lilThumbsWidth     =" @ " " @ %lilThumbsWidth);
-    %deetsWidth = ((%totalW - %totalH) - %lilThumbsWidth);
+    %deetsWidth = (%totalW - %totalH) - %lilThumbsWidth;
     echoDebug(getScopeName() @ " " @ "- DeetsWidth   =" @ " " @ %deetsWidth);
     %xPos = 0;
     %w = %deetsWidth;
     %this.mDeetsContainer.resize(%xPos, 0, %w, %totalH);
-    %xPos = (%xPos + %w);
+    %xPos = %xPos + %w;
     %w = %totalH;
     %this.mBigThumbContainer.resize(%xPos, 0, %w, %totalH);
-    %xPos = (%xPos + %w);
+    %xPos = %xPos + %w;
     %w = %lilThumbsWidth;
     %this.mLilThumbsContainer.resize(%xPos, 0, %w, %totalH);
-    %xPos = (%xPos + %w);
+    %xPos = %xPos + %w;
     %this.mLilThumbsNumAcross = %lilThumbsNumAcross;
     %this.rebuildContainer_Deets(%this.mDeetsContainer);
     %this.rebuildContainer_BigThumb(%this.mBigThumbContainer);
@@ -61,29 +61,29 @@ function thumbnailsGoRound::rebuild(%this)
 }
 function thumbnailsGoRound::calcMaximumThumbHeight(%this)
 {
-    %ret = mFloor(((getWord(%this.getExtent(), 1) - %this.mLilThumbPadding) / 2.0));
+    %ret = mFloor(((getWord(%this.getExtent(), 1) - %this.mLilThumbPadding) / 2));
     return %ret;
 }
 function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container)
 {
     %container.deleteMembers();
     %m = 0;
-    while ((%m < 2.0))
+    while (%m < 2)
     {
-        if ((%m == 0.0))
+        if (%m == 0)
         {
-            %dx = ((%this.mLilThumbPadding + %this.mLilThumbHeight) * -(1.0));
-            %posX = ((getWord(%container.getExtent(), 0) + %dx) + 1.0);
-            %posY = (getWord(%container.getExtent(), 1) - %this.mLilThumbHeight);
+            %dx = (%this.mLilThumbPadding + %this.mLilThumbHeight) * -(1);
+            %posX = (getWord(%container.getExtent(), 0) + %dx) + 1;
+            %posY = getWord(%container.getExtent(), 1) - %this.mLilThumbHeight;
         }
         else
         {
-            %dx = (%this.mLilThumbPadding + %this.mLilThumbHeight);
+            %dx = %this.mLilThumbPadding + %this.mLilThumbHeight;
             %posX = %this.mLilThumbPadding;
             %posY = 0;
         }
-        %n = (%this.mLilThumbsNumAcross - 1.0);
-        while ((%n >= 0.0))
+        %n = %this.mLilThumbsNumAcross - 1;
+        while (%n >= 0)
         {
             %ctrl = new GuiControl("") {
                 position = %posX @ " " @ %posY;
@@ -92,16 +92,16 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container)
                 sluggishness = 0.3;
             };
             %container.add(%ctrl);
-            %posX = (%posX + %dx);
-            %n = (%n - 1.0);
+            %posX = %posX + %dx;
+            %n = %n - 1;
         }
-        %m = (%m + 1.0);
-        (%n >= 0.0);
+        %m = %m + 1;
+        %n >= 0;
     }
     %num = %container.getCount();
-    (%m < 2.0);
+    %m < 2;
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %ctrl = %container.getObject(%n);
         %this.rebuildContainer_LilThumb(%ctrl);
@@ -110,19 +110,19 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container)
             %this.addWidget_LilThumbButton(%ctrl);
         }
         %ctrl.mInPosition = %n;
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
-    %container.mOldestThumbnail = (%n < %num) @ (%container.getCount() - 1.0);
+    %container.mOldestThumbnail = (%n < %num) @ (%container.getCount() - 1);
 }
 function thumbnailsGoRound::getThumbnailIndexInSlot(%this, %slotIndex)
 {
     %num = %this.mLilThumbsContainer.getCount();
-    %ndx = ((%this.mLilThumbsContainer.mOldestThumbnail + 1.0) % %num);
+    %ndx = (%this.mLilThumbsContainer.mOldestThumbnail + 1) % %num;
     %n = 0;
-    while ((%n < %slotIndex))
+    while (%n < %slotIndex)
     {
-        %ndx = ((%ndx + 1.0) % %num);
-        %n = (%n + 1.0);
+        %ndx = (%ndx + 1) % %num;
+        %n = %n + 1;
     }
     return %ndx;
 }
@@ -134,10 +134,10 @@ function thumbnailsGoRound::getThumbnailInSlot(%this, %slotIndex)
 function thumbnailsGoRound::onRebuilt(%this)
 {
     %n = 0;
-    while ((%n < (%this.mLilThumbsNumAcross * 2.0)))
+    while (%n < (%this.mLilThumbsNumAcross * 2))
     {
         %this.tick();
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function thumbnailsGoRound::tick(%this)
@@ -161,24 +161,24 @@ function thumbnailsGoRound::giddap(%this, %bringInNewContent)
     %firstInPosition = %this.mLilThumbsContainer.getObject(0).mInPosition;
     %num = %this.mLilThumbsContainer.getCount();
     %n = 0;
-    while ((%n < (%num - 1.0)))
+    while (%n < (%num - 1))
     {
         %ctrlA = %this.mLilThumbsContainer.getObject(%n);
-        %ctrlB = %this.mLilThumbsContainer.getObject((%n + 1.0));
+        %ctrlB = %this.mLilThumbsContainer.getObject((%n + 1));
         %ctrlA.mInPosition = %ctrlB.mInPosition;
         %ctrlA.basePosition = %ctrlB.basePosition;
         %ctrlA.setTrgPosition(%ctrlA.basePosition);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %ctrlA = %this.mLilThumbsContainer.getObject(%n);
-    (%n < (%num - 1.0));
+    %n < (%num - 1);
     %ctrlA.mInPosition = %firstInPosition;
     %ctrlA.basePosition = %firstBasePosition;
     %ctrlA.setTrgPosition(%ctrlA.basePosition);
-    %this.mLilThumbsContainer.mOldestThumbnail = (%this.mLilThumbsContainer.mOldestThumbnail - 1.0);
-    if ((%this.mLilThumbsContainer.mOldestThumbnail < 0.0))
+    %this.mLilThumbsContainer.mOldestThumbnail = %this.mLilThumbsContainer.mOldestThumbnail - 1;
+    if (%this.mLilThumbsContainer.mOldestThumbnail < 0)
     {
-        %this.mLilThumbsContainer.mOldestThumbnail = (%this.mLilThumbsContainer.getCount() - 1.0);
+        %this.mLilThumbsContainer.mOldestThumbnail = %this.mLilThumbsContainer.getCount() - 1;
     }
     if (%bringInNewContent)
     {
@@ -192,20 +192,20 @@ function thumbnailsGoRound::getCurrentZoomedLilThumb(%this)
 }
 function thumbnailsGoRound::onLilThumbClick(%this, %container)
 {
-    %d = (%this.mLilThumbsNumAcross - %container.mInPosition);
-    if ((%d == 0.0))
+    %d = %this.mLilThumbsNumAcross - %container.mInPosition;
+    if (%d == 0)
     {
         return;
     }
-    if ((%d < 0.0))
+    if (%d < 0)
     {
-        %d = ((%this.mLilThumbsNumAcross * 2.0) + %d);
+        %d = (%this.mLilThumbsNumAcross * 2) + %d;
     }
     %n = 0;
-    while ((%n < %d))
+    while (%n < %d)
     {
         %this.giddap(0);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     %this.pause();
 }
@@ -217,13 +217,13 @@ function thumbnailsGoRound::pause(%this, %pausePeriodMS)
     }
     cancel(%this.tickTimerID);
     %this.tickTimerID = "";
-    if ((%pausePeriodMS > 0.0))
+    if (%pausePeriodMS > 0)
     {
         %this.tickTimerID = %this.schedule(%pausePeriodMS, "tick");
     }
     else
     {
-        if ((%pausePeriodMS == 0.0))
+        if (%pausePeriodMS == 0)
         {
             %this.tick();
         }
@@ -299,9 +299,9 @@ function thumbnailsGoRound::newContentLilThumb(%this, %container)
     %g = getRandom(128, 255);
     %b = getRandom(128, 255);
     %color1 = formatInt("%0.2X", %r) @ formatInt("%0.2X", %g) @ formatInt("%0.2X", %b);
-    %color2 = formatInt("%0.2X", (%r - 128.0)) @ formatInt("%0.2X", (%g - 128.0)) @ formatInt("%0.2X", (%b - 128.0));
+    %color2 = formatInt("%0.2X", (%r - 128)) @ formatInt("%0.2X", (%g - 128)) @ formatInt("%0.2X", (%b - 128));
     %container.mContent1 = "<color:" @ %color1 @ ">" @ %color2;
-    %container.mContent2 = (%r - 128.0) @ " " @ (%g - 128.0) @ " " @ (%b - 128.0) @ " " @ 255;
+    %container.mContent2 = (%r - 128) @ " " @ (%g - 128) @ " " @ (%b - 128) @ " " @ 255;
     %container.mContent3 = %color2;
     %container.mTextCtrl.setText("<font:arial:10>" @ " " @ %container.mContent1);
     %container.mBitmapCtrl.modulationColor = %container.mContent2;

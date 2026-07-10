@@ -12,13 +12,13 @@ function boneBlendGui::open(%this)
     if (!%this.runOnce)
     {
         %i = 0;
-        while ((%i < $MAX_FREE_BONE_BLENDS))
+        while (%i < $MAX_FREE_BONE_BLENDS)
         {
-            %index = (%i + $FIRST_FREE_BLEND_INDEX);
+            %index = %i + $FIRST_FREE_BLEND_INDEX;
             $player.setBoneBlendOffsetByIndex(%index, blendOffsetSliderUniqueField.getValue());
             $player.setBoneBlendRateByIndex(%index, blendRateSliderUniqueField.getValue());
             $player.setBoneBlendScaleByIndex(%index, blendScaleSliderUniqueField.getValue());
-            %i = (%i + 1.0);
+            %i = %i + 1;
         }
         $player.setBoneBlendRate(blendRateSlider.getValue());
         $player.setBoneBlendScale(blendScaleSlider.getValue());
@@ -31,7 +31,7 @@ function boneBlendGui::close(%this)
     PlayGui.focusTopWindow();
     return 1;
 }
-boneBlendGui.currentSliderIndex = -(1.0);
+boneBlendGui.currentSliderIndex = -(1);
 function blendUpperPitch::onMouseEnter(%this)
 {
     boneBlendGui.positionDynamicCtrls(%this);

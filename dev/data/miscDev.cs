@@ -2,14 +2,14 @@ function dumpOverlap(%group)
 {
     %num = %group.getCount();
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %obj1 = %group.getObject(%n);
         echo(getDebugString(%obj1) @ " " @ "overlaps:");
         %m = 0;
-        while ((%m < %num))
+        while (%m < %num)
         {
-            if ((%m == %n))
+            if (%m == %n)
             {
             }
             else
@@ -20,9 +20,9 @@ function dumpOverlap(%group)
                     echo("   " @ getDebugString(%obj2));
                 }
             }
-            %m = (%m + 1.0);
+            %m = %m + 1;
         }
-        %n = (%n + 1.0);
-        (%m < %num);
+        %n = %n + 1;
+        %m < %num;
     }
 }

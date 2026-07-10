@@ -4,7 +4,7 @@ function Player::hasRoleMask(%this, %mask)
 }
 function Player::hasAnyRoleInMask(%this, %mask)
 {
-    return (%mask == 0.0) || roles::masksOverlap(%this.getRolesMask(), %mask);
+    return (%mask == 0) || roles::masksOverlap(%this.getRolesMask(), %mask);
 }
 function Player::isStaff(%this)
 {
@@ -44,7 +44,7 @@ function Player::isDebugging(%this)
 function Player::hasRoleString(%this, %roleString)
 {
     %roleBits = roleGet(%roleString);
-    if ((%roleBits == 0.0))
+    if (%roleBits == 0)
     {
         return 0;
     }
@@ -75,11 +75,11 @@ function Player::toggleRoleMask(%this, %roleBits)
 }
 function roles::masksOverlap(%maskA, %maskB)
 {
-    return (%maskA & %maskB);
+    return %maskA & %maskB;
 }
 function roles::maskHasRole(%mask, %roleMask)
 {
-    return ((%mask & %roleMask) == %roleMask);
+    return (%mask & %roleMask) == %roleMask;
 }
 function roles::maskHasRoleString(%mask, %roleString)
 {
@@ -95,7 +95,7 @@ function roles::getRolesMaskFromStrings(%rolesStrings)
     while (!(%rolesStrings $= ""))
     {
         %rolesStrings = NextToken(%rolesStrings, "roleString", " ");
-        %rolesMask = (%rolesMask | roleGet(%roleString));
+        %rolesMask = %rolesMask | roleGet(%roleString);
     }
     return %rolesMask;
 }

@@ -16,31 +16,31 @@ testLoginAndStay();
 function test::initDances()
 {
     %i = 0;
-    $Dances[%i = (%i + 1.0)] = "hdnc1";
-    $Dances[%i = (%i + 1.0)] = "hdnc2";
-    $Dances[%i = (%i + 1.0)] = "hdnc3";
-    $Dances[%i = (%i + 1.0)] = "hdnc4";
-    $Dances[%i = (%i + 1.0)] = "idnc1";
-    $Dances[%i = (%i + 1.0)] = "idnc2";
-    $Dances[%i = (%i + 1.0)] = "idnc3";
-    $Dances[%i = (%i + 1.0)] = "idnc4";
-    $Dances[%i = (%i + 1.0)] = "pdnc1";
-    $Dances[%i = (%i + 1.0)] = "pdnc2";
-    $Dances[%i = (%i + 1.0)] = "pdnc3";
-    $Dances[%i = (%i + 1.0)] = "pdnc4";
-    $Dances[%i = (%i + 1.0)] = "hdncb1";
-    $Dances[%i = (%i + 1.0)] = "hdncb2";
-    $Dances[%i = (%i + 1.0)] = "hdncb3";
-    $Dances[%i = (%i + 1.0)] = "hdncb4";
+    $Dances[%i = %i + 1] = "hdnc1";
+    $Dances[%i = %i + 1] = "hdnc2";
+    $Dances[%i = %i + 1] = "hdnc3";
+    $Dances[%i = %i + 1] = "hdnc4";
+    $Dances[%i = %i + 1] = "idnc1";
+    $Dances[%i = %i + 1] = "idnc2";
+    $Dances[%i = %i + 1] = "idnc3";
+    $Dances[%i = %i + 1] = "idnc4";
+    $Dances[%i = %i + 1] = "pdnc1";
+    $Dances[%i = %i + 1] = "pdnc2";
+    $Dances[%i = %i + 1] = "pdnc3";
+    $Dances[%i = %i + 1] = "pdnc4";
+    $Dances[%i = %i + 1] = "hdncb1";
+    $Dances[%i = %i + 1] = "hdncb2";
+    $Dances[%i = %i + 1] = "hdncb3";
+    $Dances[%i = %i + 1] = "hdncb4";
     $DancesCount = %i;
     $DancesAvail = %i;
 }
 function test::initGenres()
 {
     %i = 0;
-    $Genres[%i = (%i + 1.0)] = "i";
-    $Genres[%i = (%i + 1.0)] = "h";
-    $Genres[%i = (%i + 1.0)] = "p";
+    $Genres[%i = %i + 1] = "i";
+    $Genres[%i = %i + 1] = "h";
+    $Genres[%i = %i + 1] = "p";
     $GenresCount = %i;
     $GenresAvail = %i;
 }
@@ -77,22 +77,19 @@ function test::getRandomGenre()
 {
     %num = getRandom(2);
     $genre = "";
-    if ((%num == 0.0))
+    if (%num == 0)
     {
         $genre = "i";
     }
     else
     {
-        if ((%num == 1.0))
+        if (%num == 1)
         {
             $genre = "h";
         }
-        else
+        if (%num == 2)
         {
-            if ((%num == 2.0))
-            {
-                $genre = "p";
-            }
+            $genre = "p";
         }
     }
     return $genre;
@@ -112,37 +109,28 @@ function test::doRemoveBuddy()
 function doAction()
 {
     %num = getRandom(4);
-    if ((%num == 0.0))
+    if (%num == 0)
     {
         $genre = test::getRandomGenre();
         ClosetGui.selectGenre($genre);
     }
     else
     {
-        if ((%num == 1.0))
+        if (%num == 1)
         {
             test::doDance();
         }
-        else
+        if (%num == 2)
         {
-            if ((%num == 2.0))
-            {
-                test::doWhisper();
-            }
-            else
-            {
-                if ((%num == 3.0))
-                {
-                    test::doAddBuddy();
-                }
-                else
-                {
-                    if ((%num == 4.0))
-                    {
-                        test::doRemoveBuddy();
-                    }
-                }
-            }
+            test::doWhisper();
+        }
+        if (%num == 3)
+        {
+            test::doAddBuddy();
+        }
+        if (%num == 4)
+        {
+            test::doRemoveBuddy();
         }
     }
 }

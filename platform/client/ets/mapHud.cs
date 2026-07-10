@@ -13,7 +13,7 @@ function geLocalMapContainer::close(%this)
 }
 function geLocalMapContainer::onSpaceChange(%this, %spaceName)
 {
-    if ((%this.spaceName $= %spaceName))
+    if (%this.spaceName $= %spaceName)
     {
         return;
     }
@@ -48,8 +48,8 @@ function geLocalMapContainer::setMap2D(%this, %mapObj)
     geMapHud2DTheBitMap.fitSize();
     %w = getWord(geMapHud2DTheBitMap.getExtent(), 0);
     %h = getWord(geMapHud2DTheBitMap.getExtent(), 1);
-    %w = (%w * 0.4);
-    %h = (%h * 0.4);
+    %w = %w * 0.4;
+    %h = %h * 0.4;
     geMapHud2DDragNZoom.resize(%w, %h);
     geMapHud2DDragNZoom.inspectPostApply();
     geMapHud2DTheBitMap.resize(%w, %h);
@@ -61,7 +61,7 @@ function geLocalMapContainer::setMap2D(%this, %mapObj)
 }
 function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text)
 {
-    if ((%text $= ""))
+    if (%text $= "")
     {
         geMapHud2DCustomSpaceModeTitle.setVisible(0);
         geMapHud2DCustomSpaceModeText.setVisible(0);
@@ -83,8 +83,8 @@ function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text)
 }
 function geLocalMapContainer_repositionTitleText()
 {
-    %newTitleTop = ((getWord(geMapHud2DCustomSpaceModeTitleContainer.getExtent(), 1) - getWord(geMapHud2DCustomSpaceModeTitle.getExtent(), 1)) / 2.0);
-    if ((%newTitleTop < 1.0))
+    %newTitleTop = (getWord(geMapHud2DCustomSpaceModeTitleContainer.getExtent(), 1) - getWord(geMapHud2DCustomSpaceModeTitle.getExtent(), 1)) / 2;
+    if (%newTitleTop < 1)
     {
     }
     else
@@ -118,7 +118,7 @@ function geLocalMapZoomOut::onMouseUp(%this)
     }
     else
     {
-        geMapHud2DDragNZoom.doScale((1.0 / $gGeMapHud2DDragNZoomRateAmountPerOneShot));
+        geMapHud2DDragNZoom.doScale((1 / $gGeMapHud2DDragNZoomRateAmountPerOneShot));
     }
 }
 function geLocalMapZoomIn::onMouseDown(%this)
@@ -149,25 +149,25 @@ function geMapHud2DDragNZoom::zoomTick(%this, %isZoomIn)
     {
         cancel($gGeMapHud2DDragNZoomTimer);
     }
-    %amount = (($gGeMapHud2DDragNZoomTickPeriodMS / 1000.0) * $gGeMapHud2DDragNZoomRateAmountPerSecond);
+    %amount = ($gGeMapHud2DDragNZoomTickPeriodMS / 1000) * $gGeMapHud2DDragNZoomRateAmountPerSecond;
     if (%isZoomIn)
     {
     }
     else
     {
     }
-    %amount = (1.0 - %amount);
-    (1.0 + %amount);
+    %amount = 1 - %amount;
+    1 + %amount;
     geMapHud2DDragNZoom.doScale(%amount);
     $gGeMapHud2DDragNZoomTimer = %this.schedule($gGeMapHud2DDragNZoomTickPeriodMS, "zoomTick", %isZoomIn);
 }
 function getSpace2DMap(%spaceName)
 {
-    if ((%spaceName $= ""))
+    if (%spaceName $= "")
     {
         return "";
     }
-    if (!isObject(space2DMapsMap) || (space2DMapsMap.findKey(%spaceName) < 0.0))
+    if (!isObject(space2DMapsMap) || (space2DMapsMap.findKey(%spaceName) < 0))
     {
         echo(getScopeName() @ " " @ "- no 2D map: \"" @ %spaceName @ "\".");
         return "";
@@ -202,7 +202,7 @@ function Player::updateMapIcon(%this)
     if ((%this == $player) || %this.getShowOnRadar() || $player.rolesPermissionCheckNoWarn("radarSeeAll"))
     {
         %gender = %this.getGender();
-        if ((%this.getShapeName() $= $Player::Name))
+        if (%this.getShapeName() $= $Player::Name)
         {
         }
         else
@@ -247,7 +247,7 @@ function Player::updateMapIcon(%this)
         %bitmap = %bitmap @ %gender @ "_";
         %bitmap = %bitmap @ %relation @ "_";
         %bitmap = %bitmap @ %mode;
-        if ((%relation $= "self"))
+        if (%relation $= "self")
         {
             $gGeLocalMapIcon_ME = %ctrl;
             geMapHud2DTheOrthoMap.pushToBack(%ctrl);

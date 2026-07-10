@@ -1,6 +1,6 @@
 $gClientHeartbeatTimer = "";
-$gClientHeartbeatPeriodMS = ((1000.0 * 60.0) * 2.0);
-$gClientHeartbeatPeriodMinimumMS = (1000.0 * 15.0);
+$gClientHeartbeatPeriodMS = (1000 * 60) * 2;
+$gClientHeartbeatPeriodMinimumMS = 1000 * 15;
 function clientHeartbeat()
 {
     if (!($gClientHeartbeatTimer $= ""))
@@ -10,7 +10,7 @@ function clientHeartbeat()
     }
     if (!($Token $= ""))
     {
-        if (($gClientHeartbeatPeriodMS < $gClientHeartbeatPeriodMinimumMS))
+        if ($gClientHeartbeatPeriodMS < $gClientHeartbeatPeriodMinimumMS)
         {
             error(getScopeName() @ " " @ "- heartbeat too frequent. setting to" @ " " @ $gClientHeartbeatPeriodMinimumMS @ " " @ "MS");
             $gClientHeartbeatPeriodMS = $gClientHeartbeatPeriodMinimumMS;
@@ -29,7 +29,7 @@ function onDoneOrErrorCallback_ClientHeartbeat(%request)
     {
         %errorCode = %request.getValue("errorCode");
         error(getScopeName() @ " " @ "- heartbeat failed, error =" @ " " @ %errorCode);
-        if ((%errorCode $= "invalid"))
+        if (%errorCode $= "invalid")
         {
             error(getScopeName() @ " " @ "- heartbeat failed due to invalid token, logging out.");
             %msg = $MsgCat::network["E-DROPPED"] @ $MsgCat::network["E-DROPPED"][$MsgCat::network @ "E-HEARTBEAT-INVALID"];

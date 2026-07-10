@@ -88,21 +88,21 @@ function creditsTick()
     cancel($gCreditsTimerID);
     %y = getWord(LoginCreditsText.position, 1);
     %h = getWord(LoginCreditsText.extent, 1);
-    if (($gCreditsTickDirection < 0.0))
+    if ($gCreditsTickDirection < 0)
     {
     }
-    if (((%y + %h) < 0.0))
-    {
-        return;
-    }
-    if (($gCreditsTickDirection > 0.0))
-    {
-    }
-    if ((%y > 157.0))
+    if ((%y + %h) < 0)
     {
         return;
     }
-    %y = (%y + ($gCreditsTickPixels * $gCreditsTickDirection));
+    if ($gCreditsTickDirection > 0)
+    {
+    }
+    if (%y > 157)
+    {
+        return;
+    }
+    %y = %y + ($gCreditsTickPixels * $gCreditsTickDirection);
     LoginCreditsText.reposition(0, %y);
     $gCreditsTimerID = schedule($gCreditsTickPeriod, 0, "creditsTick");
 }

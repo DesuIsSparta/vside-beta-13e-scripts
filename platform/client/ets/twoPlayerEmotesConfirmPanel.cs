@@ -18,7 +18,7 @@ function geTwoPlayerEmotesConfirmPanel::open(%this, %otherPlayerName, %coAnimNam
     %this.otherPlayerName = %otherPlayerName;
     %this.coAnimName = %coAnimName;
     %this.requestID = %requestId;
-    %this.countdownTick((15.0 * 1000.0));
+    %this.countdownTick((15 * 1000));
     %this.refresh();
 }
 function geTwoPlayerEmotesConfirmPanel::close(%this, %accepted, %messageCode)
@@ -45,14 +45,14 @@ function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemaining
         %this.countdownMSRemaining = %resetTimeRemainingMS;
     }
     %tickPeriod = 100;
-    %this.countdownMSRemaining = (%this.countdownMSRemaining - %tickPeriod);
-    geTwoPlayerEmotesConfirmClock_littleHand.rotRadians = ((%this.countdownMSRemaining * 0.001) / 6.0);
-    geTwoPlayerEmotesConfirmClock_bigHand.rotRadians = (%this.countdownMSRemaining * 0.001);
+    %this.countdownMSRemaining = %this.countdownMSRemaining - %tickPeriod;
+    geTwoPlayerEmotesConfirmClock_littleHand.rotRadians = (%this.countdownMSRemaining * 0.001) / 6;
+    geTwoPlayerEmotesConfirmClock_bigHand.rotRadians = %this.countdownMSRemaining * 0.001;
     %text = mFloor(((%this.countdownMSRemaining * 0.001) + 0.5));
     %text = %text @ "..";
     geTwoPlayerEmotesConfirmClock_readout.setTextWithStyle(%text);
     cancel(%this.countdownTimerID);
-    if ((%this.countdownMSRemaining > 0.0))
+    if (%this.countdownMSRemaining > 0)
     {
     }
     if (%this.isVisible())

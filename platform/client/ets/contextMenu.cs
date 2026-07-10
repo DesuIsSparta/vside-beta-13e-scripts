@@ -27,14 +27,14 @@ function GuiControl::newContextMenu(%this, %menuName)
 }
 function ContextMenu::showAtPoint(%this, %pos)
 {
-    %topContent = Canvas.getObject((Canvas.getCount() - 1.0));
+    %topContent = Canvas.getObject((Canvas.getCount() - 1));
     %topContent.add(%this);
     %topContent.pushToBack(%this);
     %this.setVisible(1);
     %this.forceOnAction();
     %popup = %this.getTextList().getParent().getParent();
     %width = getWord(%this.getExtent(), 0);
-    %height = (getWord(%this.getExtent(), 1) + getWord(%popup.getExtent(), 1));
+    %height = getWord(%this.getExtent(), 1) + getWord(%popup.getExtent(), 1);
     %newPos = onscreenCoordinates(getWord(%pos, 0), getWord(%pos, 1), %width, %height);
     %this.reposition(getWord(%newPos, 0), getWord(%newPos, 1));
     %popup.reposition(getWord(%newPos, 0), (getWord(%newPos, 1) + getWord(%this.getExtent(), 1)));
@@ -47,19 +47,19 @@ function onscreenCoordinates(%left, %top, %width, %height)
 {
     %screenWidth = getWord(getRes(), 0);
     %screenHeight = getWord(getRes(), 1);
-    if (((%left + %width) > %screenWidth))
+    if ((%left + %width) > %screenWidth)
     {
-        %left = (%screenWidth - %width);
+        %left = %screenWidth - %width;
     }
-    if (((%top + %height) > %screenHeight))
+    if ((%top + %height) > %screenHeight)
     {
-        %top = (%screenHeight - %height);
+        %top = %screenHeight - %height;
     }
-    if ((%left < 0.0))
+    if (%left < 0)
     {
         %left = 0;
     }
-    if ((%top < 0.0))
+    if (%top < 0)
     {
         %top = 0;
     }
@@ -91,7 +91,7 @@ function EditContextMenu::init(%this, %ctrl)
     %start = getWord(%selection, 0);
     %end = getWord(%selection, 1);
     %modifiable = !%ctrl.readOnly;
-    %canCopy = ((%end - %start) > 0.0);
+    %canCopy = (%end - %start) > 0;
     if (%modifiable)
     {
     }
@@ -100,45 +100,45 @@ function EditContextMenu::init(%this, %ctrl)
     {
     }
     %canPaste = !(getClipboard() $= "");
-    %n = -(1.0);
+    %n = -(1);
     if (%modifiable)
     {
     }
     else
     {
     }
-    %this.add("Undo", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
-    %this.add("---", %n = (%n + 1.0), %schemeDisabled);
+    %this.add("Undo", %n = %n + 1, %schemeNormal, %schemeDisabled);
+    %this.add("---", %n = %n + 1, %schemeDisabled);
     if (%canCut)
     {
     }
     else
     {
     }
-    %this.add("Cut", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
+    %this.add("Cut", %n = %n + 1, %schemeNormal, %schemeDisabled);
     if (%canCopy)
     {
     }
     else
     {
     }
-    %this.add("Copy", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
+    %this.add("Copy", %n = %n + 1, %schemeNormal, %schemeDisabled);
     if (%canPaste)
     {
     }
     else
     {
     }
-    %this.add("Paste", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
+    %this.add("Paste", %n = %n + 1, %schemeNormal, %schemeDisabled);
     if (%canCut)
     {
     }
     else
     {
     }
-    %this.add("Delete", %n = (%n + 1.0), %schemeNormal, %schemeDisabled);
-    %this.add("---", %n = (%n + 1.0), %schemeDisabled);
-    %this.add("Select All", %n = (%n + 1.0), %schemeNormal);
+    %this.add("Delete", %n = %n + 1, %schemeNormal, %schemeDisabled);
+    %this.add("---", %n = %n + 1, %schemeDisabled);
+    %this.add("Select All", %n = %n + 1, %schemeNormal);
 }
 function EditContextMenu::onCancel(%this)
 {
@@ -151,43 +151,31 @@ function EditContextMenu::onSelect(%this, %unused, %text)
     {
         return;
     }
-    if ((%text $= "Undo"))
+    if (%text $= "Undo")
     {
         %this.ctrl.doUndo();
     }
     else
     {
-        if ((%text $= "Cut"))
+        if (%text $= "Cut")
         {
             %this.ctrl.doCut();
         }
-        else
+        if (%text $= "Copy")
         {
-            if ((%text $= "Copy"))
-            {
-                %this.ctrl.doCopy();
-            }
-            else
-            {
-                if ((%text $= "Paste"))
-                {
-                    %this.ctrl.doPaste();
-                }
-                else
-                {
-                    if ((%text $= "Delete"))
-                    {
-                        %this.ctrl.deleteSelection();
-                    }
-                    else
-                    {
-                        if ((%text $= "Select All"))
-                        {
-                            %this.ctrl.selectAll();
-                        }
-                    }
-                }
-            }
+            %this.ctrl.doCopy();
+        }
+        if (%text $= "Paste")
+        {
+            %this.ctrl.doPaste();
+        }
+        if (%text $= "Delete")
+        {
+            %this.ctrl.deleteSelection();
+        }
+        if (%text $= "Select All")
+        {
+            %this.ctrl.selectAll();
         }
     }
 }

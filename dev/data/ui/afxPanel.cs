@@ -30,14 +30,14 @@ function afxPanel::initEffectsList(%this)
     }
     %list = "";
     %n = 0;
-    while ((%n < afxEffectsCatalog.size()))
+    while (%n < afxEffectsCatalog.size())
     {
         %effectName = afxEffectsCatalog.getKey(%n);
         %keyBinding = afxEffectsCatalog.get(%effectName);
         %entry = "<just:left><a:gamelink" @ " " @ %effectName @ ">" @ %effectName @ "</a><just:right>" @ %keyBinding;
         %list = %list @ %entry;
         %list = %list @ "\n";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     afxPanelEffectList.setText(%list);
 }

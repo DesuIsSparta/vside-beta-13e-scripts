@@ -34,7 +34,7 @@ function LoadingGui::updateLogoutButton(%this)
     %windowWidth = getWord(getRes(), 0);
     %width = getWord(LoadingLogoutButton.getExtent(), 0);
     %ypos = getWord(LoadingLogoutButton.getPosition(), 1);
-    %rightMarginPos = (%windowWidth - WindowManager.getRightMarginAtY(%ypos));
+    %rightMarginPos = %windowWidth - WindowManager.getRightMarginAtY(%ypos);
     %padding = 38;
     LoadingLogoutButton.reposition(((%rightMarginPos - %width) - %padding) @ " " @ %ypos);
 }
@@ -60,7 +60,7 @@ function LoadingGui::doTheTipThing(%this)
 {
     cancel($SCHEDULE_SHOWANOTHER);
     %resWidth = getWord($UserPref::Video::Resolution, 0);
-    if ((%resWidth < 640.0))
+    if (%resWidth < 640)
     {
         LoadingTipsHud.setVisible(0);
     }
@@ -77,10 +77,10 @@ function LoadingGui::onSleep(%this)
     if (!(%this.qLineCount $= ""))
     {
         %line = 0;
-        while ((%line < %this.qLineCount))
+        while (%line < %this.qLineCount)
         {
             %this.qLine[%line] = "";
-            %line = (%line + 1.0);
+            %line = %line + 1;
         }
     }
     %this.qLineCount = (%line < %this.qLineCount) @ 0;
@@ -105,18 +105,18 @@ function LoadingTipsHud::onMouseDown(%this)
     LoadingGui.doTheTipThing();
 }
 $TIP_CATEGORY = "ADVANCED";
-if (($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 2.0))
+if ($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 2)
 {
     $TIP_CATEGORY = "NEWBIE";
 }
 else
 {
-    if (($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 5.0))
+    if ($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 5)
     {
         $TIP_CATEGORY = "MEDIUM";
     }
 }
-$UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] = ($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] + 1.0);
+$UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] = $UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] + 1;
 $SCHEDULE_TIPTIMEDELAY = 8000;
 $SCHEDULE_SHOWANOTHER = 0;
 function LoadingTipsHud::initTipsList(%this)
@@ -150,19 +150,19 @@ function LoadingTipsHud::initTipsList(%this)
     while (!%fo.isEOF())
     {
         %file = %fo.readLine();
-        if ((strstr(%file, $TIP_CATEGORY) == -(1.0)))
+        if (strstr(%file, $TIP_CATEGORY) == -(1))
         {
         }
         else
         {
             %this.tipFile[%file,%fileCount] = %base_path;
             %this.tipFileShown[%fileCount] = 0;
-            %fileCount = (%fileCount + 1.0);
+            %fileCount = %fileCount + 1;
         }
     }
     %fo.close();
     %this.tipFileCount = !%fo.isEOF() @ %fileCount;
-    if ((%fileCount == 0.0))
+    if (%fileCount == 0)
     {
         echo("No tips found. We will now stop loading them. Add some and run again");
         LoadingTipsHud.setVisible(0);
@@ -171,26 +171,26 @@ function LoadingTipsHud::initTipsList(%this)
 }
 function LoadingTipsHud::loadATip(%this)
 {
-    if ((%this.tipFileCount == 0.0))
+    if (%this.tipFileCount == 0)
     {
         return;
     }
-    %tipNum = getRandom(0, (%this.tipFileCount - 1.0));
+    %tipNum = getRandom(0, (%this.tipFileCount - 1));
     %n = 0;
-    if ((%n < 10.0))
+    if (%n < 10)
     {
     }
-    while ((%this.tipFileShown[%tipNum] == 1.0))
+    while (%this.tipFileShown[%tipNum] == 1)
     {
-        %tipNum = getRandom(0, (%this.tipFileCount - 1.0));
-        %n = (%n + 1.0);
-        if ((%n < 10.0))
+        %tipNum = getRandom(0, (%this.tipFileCount - 1));
+        %n = %n + 1;
+        if (%n < 10)
         {
         }
     }
     %fileName = %this.tipFile[%tipNum];
-    (%this.tipFileShown[%tipNum] == 1.0);
-    if ((%fileName $= ""))
+    %this.tipFileShown[%tipNum] == 1;
+    if (%fileName $= "")
     {
         error("Got a bad tip filename. Skipping...");
         LoadingTipsHud.setVisible(0);
@@ -207,7 +207,7 @@ function LoadingTipsHud::loadATip(%this)
 }
 function LoadingTipsHud::loadTipImage(%this, %fileName)
 {
-    if ((%fileName $= ""))
+    if (%fileName $= "")
     {
         return;
     }
@@ -221,7 +221,7 @@ function LoadingTipsHud::loadTipImage(%this, %fileName)
 }
 function LoadingTipsHud::setBitmap(%this, %fileName)
 {
-    if ((%fileName $= ""))
+    if (%fileName $= "")
     {
         return;
     }

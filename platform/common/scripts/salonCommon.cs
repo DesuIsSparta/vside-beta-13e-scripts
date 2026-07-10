@@ -17,7 +17,7 @@ function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cut
     $SALON_STYLE_REQUREDSKUSMESSAGE[$NUM_SALON_STYLES] = %requiredActiveSkusMessage;
     %si = SkuManager.findBySku(%sku);
     %si.salonStyleIndex = $NUM_SALON_STYLES;
-    $NUM_SALON_STYLES = ($NUM_SALON_STYLES + 1.0);
+    $NUM_SALON_STYLES = $NUM_SALON_STYLES + 1;
 }
 $SALON_STYLE_BALD_SKU["f"] = 20315;
 $SALON_STYLE_BALD_SKU["m"] = 177;
@@ -523,15 +523,15 @@ SalonDefineStyles();
 function SalonDoesListContainAnySalonRewardSKUs(%skus)
 {
     %i = 0;
-    while ((%i < $NUM_SALON_STYLES))
+    while (%i < $NUM_SALON_STYLES)
     {
         %skuToCheck = $SALON_STYLE_SKU[%i];
         %wordLoc = findWord(%skus, %skuToCheck);
-        if ((%wordLoc >= 0.0))
+        if (%wordLoc >= 0)
         {
             return 1;
         }
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     return 0;
 }

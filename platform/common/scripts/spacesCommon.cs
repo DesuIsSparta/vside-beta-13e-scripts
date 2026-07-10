@@ -58,19 +58,19 @@ function spaces_HasSpaceDef(%internalName)
 function spaces_FindSpaceDefWithStoreID(%storeID)
 {
     %found = 0;
-    %n = (spaceDefsGroup.getCount() - 1.0);
-    if ((%n >= 0.0))
+    %n = spaceDefsGroup.getCount() - 1;
+    if (%n >= 0)
     {
     }
-    while ((%found == 0.0))
+    while (%found == 0)
     {
         %found = spaceDefsGroup.getObject(%n);
         if (!(%found.storeID $= %storeID))
         {
             %found = 0;
         }
-        %n = (%n - 1.0);
-        if ((%n >= 0.0))
+        %n = %n - 1;
+        if (%n >= 0)
         {
         }
     }
@@ -101,8 +101,8 @@ function SpaceDef::doTokenSubstitution(%this, %dry, %player)
 {
     %map = initTokenSubstitutions();
     %wet = %dry;
-    %n = (%map.size() - 1.0);
-    while ((%n >= 0.0))
+    %n = %map.size() - 1;
+    while (%n >= 0)
     {
         %replaceThis = %map.getKey(%n);
         %withThis = %map.getValue(%n);
@@ -110,7 +110,7 @@ function SpaceDef::doTokenSubstitution(%this, %dry, %player)
         %evalCmd = "%withThis = " @ %withThis @ ";";
         eval(%evalCmd);
         %wet = strreplace(%wet, %replaceThis, %withThis);
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     return %wet;
 }

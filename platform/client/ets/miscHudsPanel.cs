@@ -23,7 +23,7 @@ function geMiscHudsPanel::close(%this)
 function geMiscHudsPanel::addHud(%this, %panelCtrl)
 {
     %offsetX = getWord(geMiscHudsContainer.getExtent(), 0);
-    geMiscHudsContainer.resize(((1.0 + %offsetX) + getWord(%panelCtrl.getExtent(), 0)), mMax(getWord(%panelCtrl.getExtent(), 1), getWord(geMiscHudsContainer.getExtent(), 1)));
+    geMiscHudsContainer.resize(((1 + %offsetX) + getWord(%panelCtrl.getExtent(), 0)), mMax(getWord(%panelCtrl.getExtent(), 1), getWord(geMiscHudsContainer.getExtent(), 1)));
     geMiscHudsContainer.add(%panelCtrl);
     %panelCtrl.reposition(%offsetX, 0);
 }

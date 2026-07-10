@@ -1,5 +1,5 @@
 $gTickerRepetitionCount = 2;
-$gTickerRepetitionDelayMS = (1000.0 * 50.0);
+$gTickerRepetitionDelayMS = 1000 * 50;
 function handleTickerMessage(%unused, %msgString)
 {
     %senderName = getField(%msgString, 0);
@@ -18,10 +18,10 @@ function handleTickerMessage(%unused, %msgString)
     %queue = ticker_getQueue(%priority);
     ticker_enqueue(%queue, %msgString);
     %n = 1;
-    while ((%n < %repetitions))
+    while (%n < %repetitions)
     {
         schedule((%n * $gTickerRepetitionDelayMS), 0, "ticker_enqueue", %queue, %msgString);
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
 }
 function ticker_enqueue(%queue, %msgString)
@@ -31,7 +31,7 @@ function ticker_enqueue(%queue, %msgString)
 }
 function ticker_getQueue(%priority)
 {
-    if ((%priority < 0.0) || (%priority > 3.0))
+    if ((%priority < 0) || (%priority > 3))
     {
         error(getScopeName() @ " " @ "- invalid priority. setting to 0." @ " " @ %msgString);
         %priority = 0;
@@ -75,17 +75,14 @@ function ticker_doScroll()
         {
             $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
         }
-        else
-        {
-            $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
-        }
+        $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
     }
     %curX = getWord(geTicker_Text.getPosition(), 0);
     %curY = getWord(geTicker_Text.getPosition(), 1);
-    %pixelsToScroll = (($gTicker_TimerPixelsPerSecond * $gTicker_TimerPeriodMS) / 1000.0);
-    %newX = (%curX - %pixelsToScroll);
+    %pixelsToScroll = ($gTicker_TimerPixelsPerSecond * $gTicker_TimerPeriodMS) / 1000;
+    %newX = %curX - %pixelsToScroll;
     %newY = %curY;
-    if (((%newX + getWord(geTicker_Text.getExtent(), 0)) < 0.0))
+    if ((%newX + getWord(geTicker_Text.getExtent(), 0)) < 0)
     {
         geTicker_TextContainer.setVisible(0);
     }
@@ -99,19 +96,19 @@ function ticker_newMessage()
 {
     %msg = "";
     %n = 2;
-    if ((%n >= 0.0))
+    if (%n >= 0)
     {
     }
-    while ((%msg $= ""))
+    while (%msg $= "")
     {
         %queue = ticker_getQueue(%n);
-        if ((%queue.count() > 0.0))
+        if (%queue.count() > 0)
         {
             %msg = %queue.getKey(0);
             %queue.pop_front();
         }
-        %n = (%n - 1.0);
-        if ((%n >= 0.0))
+        %n = %n - 1;
+        if (%n >= 0)
         {
         }
     }
@@ -128,7 +125,7 @@ function ticker_newMessage()
         ticker_createUI();
         geTicker_TextContainer.setVisible(1);
         geTicker_Text.reposition(getWord(geTicker_TextContainer.getExtent(), 0), 0);
-        geTicker_Text.resize((getStrWidth(%unmarkedText) + 26.0), 14);
+        geTicker_Text.resize((getStrWidth(%unmarkedText) + 26), 14);
         geTicker_Text.setTextWithStyle(%markedText);
         ticker_tick();
     }
@@ -164,7 +161,7 @@ function ticker_createUI()
         bitmap = "platform/client/ui/ticker_background";
     };);
     $ButtonBarVar::buttonBarPaddingBottom = getWord(geTicker.getExtent(), 1);
-    $ButtonBarVar::buttonBarPaddingBottom = ($ButtonBarVar::buttonBarPaddingBottom - 4.0);
+    $ButtonBarVar::buttonBarPaddingBottom = $ButtonBarVar::buttonBarPaddingBottom - 4;
     ButtonBar.update();
 }
 function geTicker::update(%this)
@@ -172,8 +169,8 @@ function geTicker::update(%this)
     %clientRectPosition = WindowManager.getClientRectPosition();
     %clientRectExtent = WindowManager.getClientRectExtent();
     %parentW = getWord(%this.getGroup().getExtent(), 0);
-    %rightMargin = (getWord(%clientRectPosition, 0) + getWord(%clientRectExtent, 0));
-    %w = (%parentW - ((%parentW - %rightMargin) * 2.0));
+    %rightMargin = getWord(%clientRectPosition, 0) + getWord(%clientRectExtent, 0);
+    %w = %parentW - ((%parentW - %rightMargin) * 2);
     %w = mMax(%w, 300);
     %this.resize(%w, 29);
     %this.alignToCenterX();

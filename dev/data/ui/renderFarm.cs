@@ -74,7 +74,7 @@ function rf_processQueue()
     {
         return;
     }
-    if ((gRFQueue.count() < 1.0))
+    if (gRFQueue.count() < 1)
     {
         return;
     }
@@ -89,25 +89,25 @@ function rf_beginRender(%request)
 {
     $gRF_CurrentRequest = %request;
     %gender = "n";
-    %n = (getWordCount(%request.skus) - 1.0);
-    if ((%n >= 0.0))
+    %n = getWordCount(%request.skus) - 1;
+    if (%n >= 0)
     {
     }
-    while ((%gender $= "n"))
+    while (%gender $= "n")
     {
         %sku = getWord(%request.skus, %n);
         %si = SkuManager.findBySku(%sku);
         %gender = %si.gender;
-        %n = (%n - 1.0);
-        if ((%n >= 0.0))
+        %n = %n - 1;
+        if (%n >= 0)
         {
         }
     }
-    if (((%gender $= "n") @ " " @ %gender $= "n"))
+    if ((%gender $= "n") @ " " @ %gender $= "n")
     {
         %gender = "f";
     }
-    if ((%gender $= "f"))
+    if (%gender $= "f")
     {
     }
     else
@@ -158,12 +158,12 @@ function rf_generateTestSkus(%num, %forJavascript)
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "tokens");
     %allDrawers = %allDrawers @ " " @ "skin face eyes hair hat";
     %n = 0;
-    while ((%n < %num))
+    while (%n < %num)
     {
         %gender = getRandom(0, 1) ? "f" : "m";
         %skulist = "";
-        %d = (getWordCount(%allDrawers) - 1.0);
-        while ((%d >= 0.0))
+        %d = getWordCount(%allDrawers) - 1;
+        while (%d >= 0)
         {
             %drawerName = getWord(%allDrawers, %d);
             if (SkuManager.isOptionalDrawer(%drawerName))
@@ -172,15 +172,15 @@ function rf_generateTestSkus(%num, %forJavascript)
             else
             {
             }
-            %prob = 1.0;
+            %prob = 1;
             0.1;
-            if ((getRandom() <= %prob))
+            if (getRandom() <= %prob)
             {
-                if (($gRFGenerate_DrawersCache[%drawerName,%gender] $= ""))
+                if ($gRFGenerate_DrawersCache[%drawerName,%gender] $= "")
                 {
                     %skus = SkuManager.getSkusDrwr(%drawerName);
                     %skus = SkuManager.filterSkusGender(%skus, %gender);
-                    %skus[$gRFGenerate_DrawersCache,%drawerName,%gender] = ;
+                    %skus[$gRFGenerate_DrawersCache,%drawerName,%gender] =;
                 }
                 %sku = getRandomWord($gRFGenerate_DrawersCache[%drawerName,%gender]);
                 if (!(%sku $= ""))
@@ -188,10 +188,10 @@ function rf_generateTestSkus(%num, %forJavascript)
                     %skulist = %skulist @ " " @ %sku;
                 }
             }
-            %d = (%d - 1.0);
+            %d = %d - 1;
         }
         %skulist = trim(%skulist);
-        (%d >= 0.0);
+        %d >= 0;
         if (%forJavascript)
         {
             %ret = %ret @ "   gSkusList[gSkusList.length] = \"";
@@ -202,12 +202,12 @@ function rf_generateTestSkus(%num, %forJavascript)
             %ret = %ret @ "\";";
         }
         %ret = %ret @ "\n";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     if (%forJavascript)
     {
         %ret = %ret @ "}\n";
-        (%n < %num);
+        %n < %num;
     }
     return %ret;
 }

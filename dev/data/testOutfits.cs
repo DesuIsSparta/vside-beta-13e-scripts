@@ -19,14 +19,14 @@ $testOutfits::dataOutfit["f","staff"] = "5401 5557 5654 5716 5851 5876 5901 5951
 $testOutfits::dataOutfit["m","staff"] = "401 570 633 710 853 877 911 952 981";
 $testOutfits::dataBody["f","staff"] = "5133 5203 5303 5805";
 $testOutfits::dataBody["m","staff"] = "122 201 302 806";
-$testOutfits::dataOutfit["f","stock"][$testOutfits::dataOutfit["f","stock"] @ " " @ 27002 @ $testOutfits::dataOutfit TAB "f" @ "microphone"] = ;
-$testOutfits::dataOutfit["m","stock"][$testOutfits::dataOutfit["m","stock"] @ " " @ 30002 @ $testOutfits::dataOutfit TAB "m" @ "microphone"] = ;
-$testOutfits::dataBody["f","stock"][$testOutfits::dataBody["f","stock"] @ $testOutfits::dataBody TAB "f" @ "microphone"] = ;
-$testOutfits::dataBody["m","stock"][$testOutfits::dataBody["m","stock"] @ $testOutfits::dataBody TAB "m" @ "microphone"] = ;
+$testOutfits::dataOutfit["f","stock"][$testOutfits::dataOutfit["f","stock"] @ " " @ 27002 @ $testOutfits::dataOutfit TAB "f" @ "microphone"] =;
+$testOutfits::dataOutfit["m","stock"][$testOutfits::dataOutfit["m","stock"] @ " " @ 30002 @ $testOutfits::dataOutfit TAB "m" @ "microphone"] =;
+$testOutfits::dataBody["f","stock"][$testOutfits::dataBody["f","stock"] @ $testOutfits::dataBody TAB "f" @ "microphone"] =;
+$testOutfits::dataBody["m","stock"][$testOutfits::dataBody["m","stock"] @ $testOutfits::dataBody TAB "m" @ "microphone"] =;
 $testOutfits::dataOutfit["f","owned"] = "5400 5570 5600 5702 5850 5875 5900 5950 5980";
 $testOutfits::dataOutfit["m","owned"] = "400 575 600 701 850 875 900 950";
-$testOutfits::dataBody["f","stock"][$testOutfits::dataBody["f","stock"] @ $testOutfits::dataBody TAB "f" @ "owned"] = ;
-$testOutfits::dataBody["m","stock"][$testOutfits::dataBody["m","stock"] @ $testOutfits::dataBody TAB "m" @ "owned"] = ;
+$testOutfits::dataBody["f","stock"][$testOutfits::dataBody["f","stock"] @ $testOutfits::dataBody TAB "f" @ "owned"] =;
+$testOutfits::dataBody["m","stock"][$testOutfits::dataBody["m","stock"] @ $testOutfits::dataBody TAB "m" @ "owned"] =;
 $testOutfits::timer = 0;
 $testOutfits::badSkus = 12345;
 $testOutfits::quitWhenDone = 1;
@@ -41,7 +41,7 @@ function testOutfits_MasterNoQuit()
 }
 function testOutfits_Master()
 {
-    if (($Token $= ""))
+    if ($Token $= "")
     {
         error(getScopeName() @ " " @ "- must be logged into envManager. aborting tests.");
         return;
@@ -50,40 +50,40 @@ function testOutfits_Master()
     $testOutfits_passCount = 0;
     $testOutfits_nextTest = 0;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerOwned";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerMicrophone";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerMicrophone";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerSantaItem";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerSantaItem";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerOtherGender";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerOtherGender";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerAlmostEmpty";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerAlmostEmpty";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerEmpty";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerEmpty";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServerStaff";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManagerStaff";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvServer";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     $testOutfits_test[$testOutfits_testCount] = "testOutfits_UpToEnvManager";
-    $testOutfits_testCount = ($testOutfits_testCount + 1.0);
+    $testOutfits_testCount = $testOutfits_testCount + 1;
     %n = 0;
-    while ((%n < $testOutfits_testCount))
+    while (%n < $testOutfits_testCount)
     {
         $testOutfits_result[%n] = "NA  ";
-        %n = (%n + 1.0);
+        %n = %n + 1;
     }
     testOutfits_MasterDoNext();
 }
@@ -98,19 +98,19 @@ function testOutfits::skuListsAreEqual(%skusA, %skusB)
 {
     %skusA = SortNumbers(%skusA);
     %skusB = SortNumbers(%skusB);
-    return (%skusA $= %skusB);
+    return %skusA $= %skusB;
 }
 function testOutfits::skuListHasDuplicates(%skus)
 {
     %skus = SortNumbers(%skus);
-    %n = (getWordCount(%skus) - 2.0);
-    while ((%n >= 0.0))
+    %n = getWordCount(%skus) - 2;
+    while (%n >= 0)
     {
-        if ((getWord(%skus, %n) $= getWord(%skus, (%n + 1.0))))
+        if (getWord(%skus, %n) $= getWord(%skus, (%n + 1)))
         {
             return 1;
         }
-        %n = (%n - 1.0);
+        %n = %n - 1;
     }
     return 0;
 }
@@ -118,18 +118,18 @@ function testOutfits_MasterDoNext()
 {
     cancel($testOutfits::timer);
     $testOutfits::timer = 0;
-    if (($testOutfits_nextTest >= $testOutfits_testCount))
+    if ($testOutfits_nextTest >= $testOutfits_testCount)
     {
         echo("testOutfitsMaster() complete. User=" @ $player.getShapeName() @ " " @ "Gender=" @ $player.getGender() @ " " @ "Roles=" @ roles::getRoleStrings($player.getRolesMask()));
         %n = 0;
-        while ((%n < $testOutfits_testCount))
+        while (%n < $testOutfits_testCount)
         {
             %level = ($testOutfits_result[%n] $= "pass") ? "info" : "error";
             log("network", %level, "testOutfitsMaster()" @ " " @ $testOutfits_result[%n] @ ":" @ " " @ $testOutfits_test[%n]);
-            %n = (%n + 1.0);
+            %n = %n + 1;
         }
         %level = ($testOutfits_testCount == $testOutfits_passCount) ? "info" : "warn";
-        (%n < $testOutfits_testCount);
+        %n < $testOutfits_testCount;
         log("network", %level, "testOutfitsMaster() results:" @ " " @ $testOutfits_passCount @ " " @ "of" @ " " @ $testOutfits_testCount @ " " @ "passed," @ " " @ ($testOutfits_testCount - $testOutfits_passCount) @ " " @ "failed.");
         if ($testOutfits::quitWhenDone)
         {
@@ -139,7 +139,7 @@ function testOutfits_MasterDoNext()
     else
     {
         call($testOutfits_test[$testOutfits_nextTest]);
-        $testOutfits_nextTest = ($testOutfits_nextTest + 1.0);
+        $testOutfits_nextTest = $testOutfits_nextTest + 1;
     }
 }
 function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout)
@@ -149,7 +149,7 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout)
     %skusSent = SortNumbers(%skusSent);
     %skusExpected = SortNumbers(%skusExpected);
     %succ = testOutfits::skuListsAreEqual(%skusGot, %skusExpected);
-    if ((%skusGot $= $testOutfits::badSkus))
+    if (%skusGot $= $testOutfits::badSkus)
     {
         %noChange = "(no change)";
     }
@@ -160,8 +160,8 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout)
     if (%succ)
     {
         log("network", "info", "outfit test succeeded after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ ".");
-        $testOutfits_passCount = ($testOutfits_passCount + 1.0);
-        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1.0)] = "pass";
+        $testOutfits_passCount = $testOutfits_passCount + 1;
+        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1)] = "pass";
     }
     else
     {
@@ -169,8 +169,8 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout)
         log("network", "warn", "sent    " @ " " @ %skusSent);
         log("network", "warn", "got     " @ " " @ %skusGot);
         log("network", "warn", "expected" @ " " @ %skusExpected);
-        $testOutfits_passCount = ($testOutfits_passCount + 0.0);
-        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1.0)] = "fail";
+        $testOutfits_passCount = $testOutfits_passCount + 0;
+        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1)] = "fail";
     }
     testOutfits_MasterDoNext();
 }
@@ -308,11 +308,11 @@ function putInSets(%nums, %delim, %indent, %setSize)
     %inum = getWordCount(%nums);
     %prevNum = getWord(%nums, 0);
     %i = 0;
-    while ((%i < %inum))
+    while (%i < %inum)
     {
         %num = getWord(%nums, %i);
-        %dif = (%num - %prevNum);
-        if ((%dif >= %setSize))
+        %dif = %num - %prevNum;
+        if (%dif >= %setSize)
         {
             %out = %out @ %delim @ "\n";
             %prevNum = %num;
@@ -320,7 +320,7 @@ function putInSets(%nums, %delim, %indent, %setSize)
         }
         %out = %out @ %d @ %num;
         %d = %delim;
-        %i = (%i + 1.0);
+        %i = %i + 1;
     }
     return %out;
 }

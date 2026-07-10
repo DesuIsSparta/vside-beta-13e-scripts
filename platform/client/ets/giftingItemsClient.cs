@@ -1,7 +1,7 @@
 function drinks_confirmInitiateGift(%otherPlayerName)
 {
     %sku = $player.getActiveDrinkSku();
-    if ((%sku $= ""))
+    if (%sku $= "")
     {
         error(getScopeName() @ " " @ "- no drink!" @ " " @ getTrace());
         return;
@@ -24,7 +24,7 @@ function drinks_confirmInitiateMake(%otherPlayerName, %sku)
         return;
     }
     %si = SkuManager.findBySku(%sku);
-    if ((%otherPlayerName $= $Player::Name))
+    if (%otherPlayerName $= $Player::Name)
     {
         %msg = $Player::Name[$MsgCat::giftingItems @ "DLG-BODY-MAKE-SELF-CONFIRM"];
     }
@@ -43,7 +43,7 @@ function giftingItems_onInitiate(%dlg)
 {
     %transactionID = MD5(getRandom(0, 1000000));
     commandToServer('GiftingItems_Initiated', %dlg.otherPlayerName, %transactionID, %dlg.giftSkus, %dlg.making);
-    if ((%dlg.otherPlayerName $= $Player::Name))
+    if (%dlg.otherPlayerName $= $Player::Name)
     {
         %otherDlg = "";
     }
@@ -73,36 +73,30 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
     }
     %acceptMode = %acceptModeStrangers;
     %acceptModeFriends;
-    if ((%acceptMode $= "accept"))
+    if (%acceptMode $= "accept")
     {
         giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 1, %making);
         GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 1, "ACCEPTED-AUTO");
     }
     else
     {
-        if ((%acceptMode $= "decline"))
+        if (%acceptMode $= "decline")
         {
             GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-AUTO");
         }
-        else
+        if (%acceptMode $= "ask")
         {
-            if ((%acceptMode $= "ask"))
+            if (geGiftingPanel.isVisible())
             {
-                if (geGiftingPanel.isVisible())
-                {
-                    GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
-                }
-                else
-                {
-                    giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
-                    geGiftingPanel.giftTransactionID = %transactionID;
-                    geGiftingPanel.personalMessage = "";
-                    geGiftingPanel.skus = %skus;
-                    geGiftingPanel.GiftType = "items";
-                    geGiftingPanel.making = %making;
-                    geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
-                }
+                GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
             }
+            giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
+            geGiftingPanel.giftTransactionID = %transactionID;
+            geGiftingPanel.personalMessage = "";
+            geGiftingPanel.skus = %skus;
+            geGiftingPanel.GiftType = "items";
+            geGiftingPanel.making = %making;
+            geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
         }
     }
 }
@@ -146,7 +140,7 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded)
         error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
         return;
     }
-    %amSource = (%transactionRecord.sourcePlayerName $= $Player::Name);
+    %amSource = %transactionRecord.sourcePlayerName $= $Player::Name;
     if (%amSource)
     {
     }
@@ -155,7 +149,7 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded)
     }
     %otherPlayerName = %transactionRecord.sourcePlayerName;
     %transactionRecord.targetPlayerName;
-    %amAlphaAndOmega = (%otherPlayerName $= $Player::Name);
+    %amAlphaAndOmega = %otherPlayerName $= $Player::Name;
     %skus = %transactionRecord.skus;
     if (%succeeded)
     {
@@ -169,11 +163,8 @@ function ClientCmdGiftingItems_Completed(%transactionID, %succeeded)
             {
                 updateInventorySkus("", %skus, 0, 1, %otherPlayerName);
             }
-            else
-            {
-                %autoAccepted = %transactionRecord.autoAccepted;
-                updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
-            }
+            %autoAccepted = %transactionRecord.autoAccepted;
+            updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
         }
     }
     else
