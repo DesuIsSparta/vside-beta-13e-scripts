@@ -7,7 +7,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     };
     %floorplan = new SimObject("");
     if (isObject(MissionCleanup)) {
-        %floorplan.add(MissionCleanup);
+        MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007";
     %floorplan.description = "floorPlanDescription";
@@ -17,10 +17,10 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.priceVPoints = "50,000";
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
-    %buildingInfo.floorplan = %floorplan @ 0;
+    %buildingInfo.floorplan[0] = %floorplan;
     %floorplan = new SimObject("");
     if (isObject(MissionCleanup)) {
-        %floorplan.add(MissionCleanup);
+        MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007vpointsonly";
     %floorplan.description = "floorPlanDescription";
@@ -30,10 +30,10 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.priceVPoints = "50,000";
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
-    %buildingInfo.floorplan = %floorplan @ 1;
+    %buildingInfo.floorplan[1] = %floorplan;
     %floorplan = new SimObject("");
     if (isObject(MissionCleanup)) {
-        %floorplan.add(MissionCleanup);
+        MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007vbuxonly";
     %floorplan.description = "floorPlanDescription";
@@ -43,10 +43,10 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.priceVPoints = -1;
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
-    %buildingInfo.floorplan = %floorplan @ 2;
+    %buildingInfo.floorplan[2] = %floorplan;
     %floorplan = new SimObject("");
     if (isObject(MissionCleanup)) {
-        %floorplan.add(MissionCleanup);
+        MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007noavailable";
     %floorplan.description = "floorPlanDescription";
@@ -56,7 +56,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.priceVPoints = -1;
     %floorplan.isUpgrade = 0;
     %floorplan.numAvailable = 42;
-    %buildingInfo.floorplan = %floorplan @ 3;
+    %buildingInfo.floorplan[3] = %floorplan;
     %buildingDir = new SimGroup("");
     new SimGroup("") {
         owner = new SimGroup("") {
@@ -88,7 +88,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "Kenna's Loft";
         isFeatured = 1;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 62;
         access = "open";
         vurl = "someVURL";
@@ -102,7 +102,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "i am door code-protected";
         isFeatured = 0;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 101;
         access = "PASSWORDPROTECTED";
         vurl = "someVURL";
@@ -116,7 +116,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "foo foo";
         isFeatured = 0;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 101;
         access = "FriendsOnly";
         vurl = "someVURL";
@@ -130,7 +130,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "foo foo";
         isFeatured = 0;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 101;
         access = "FriendsOnly";
         vurl = "someVURL";
@@ -144,7 +144,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "DJ Skully Show";
         isFeatured = 1;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 986;
         access = "FriendsOnly";
         vurl = "someVURL";
@@ -158,7 +158,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "MusicLand";
         isFeatured = 0;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 21;
         access = "open";
         vurl = "someVURL";
@@ -172,7 +172,7 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "Lincoln Log Cabin";
         isFeatured = 1;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 777;
         access = "open";
         vurl = "someVURL";
@@ -186,11 +186,12 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         description = "RCMP HQ";
         isFeatured = 0;
         floorPlanName = "floorPlan007";
-        floorplan = 0 @ %buildingInfo.floorplan;
+        floorplan = %buildingInfo.floorplan[0];
         occupancy = 444;
         access = "FriendsOnly";
         vurl = "someVURL";
         longDescription = "yay long description!!";
-        audioStream = "myAudioStream" /* expression truncated */;
+        audioStream = "myAudioStream";
+        vi /* expression truncated */;
     customSpaceSelGotData(%buildingInfo, %buildingDir);
 };

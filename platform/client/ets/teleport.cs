@@ -22,7 +22,7 @@ function clientCmdTeleportFailure(%retry) {
             log("network", "warn", "VURL Teleportion faild, retries exausted.");
         }
         geTGF.reopen();
-        "".doReportError($VURL::curVURL, "FAIL");
+        $VURL::curVURL.doReportError("FAIL", "");
         $VURL::curVURL.delete();
     }
     echo("Teleport failed");
@@ -31,26 +31,26 @@ function clientCmdTeleportFailure(%retry) {
 function clientCmdNotifyOfRefuseTeleport() {
     handleSystemMessage("msgInfoMessage", $MsgCat::teleport["NOTIFY-REFUSING-TELEPORTS"]);
 };
-if (!(isObject($pi))) {
+if (!isObject($pi)) {
     $pi = 3.1415926536;
 }
 function Player::adjustHorizontalScale(%this) {
     %hScale = getWord(%this.getScale(), 0);
     %vScale = getWord(%this.getScale(), 2);
-    if (!(gGetField(%this, isScaling))) {
+    if (!gGetField(%this, isScaling)) {
         gSetField(%this, isScaling, 1);
         gSetField(%this, baseHorizScale, %hScale);
         %hScale = 0.05;
     }
     %hScale = mMin((%hScale + 0.05), gGetField(%this, baseHorizScale));
-    %hScale @ " " @ %hScale @ " " @ %vScale.setScale(%this);
+    %this.setScale(%hScale @ " " @ %hScale @ " " @ %vScale);
     if ((%hScale < gGetField(%this, baseHorizScale))) {
-        "adjustHorizontalScale".schedule(%this, 25);
+        %this.schedule(25, "adjustHorizontalScale");
     }
     gSetField(%this, isScaling, 0);
 };
 function doTeleportToMyApartment(%ignoreDownloadStatus) {
-    if (!(isDefined("%ignoreDownloadStatus"))) {
+    if (!isDefined("%ignoreDownloadStatus")) {
         %ignoreDownloadStatus = 0;
     }
     getApartmentVURL("doTeleportToMyApartmentCallback", %ignoreDownloadStatus);
@@ -60,7 +60,7 @@ function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus) 
         handleSystemMessage("msgInfoMessage", "We could not find your apartment at this time.");
     }
     if ((%status $= "noOwnedSpace")) {
-        %statusMsg = "statusMsg".getValue(GetMyApartmentVURLCommand);
+        %statusMsg = GetMyApartmentVURLCommand.getValue("statusMsg");
         handleSystemMessage("msgInfoMessage", "We could not find your apartment." @ "\n" @ %statusMsg);
     }
     if ((%vurl $= "")) {
@@ -80,7 +80,7 @@ function getApartmentVURL(%callback, %ignoreDownloadStatus) {
     %request.ignoreDownloadStatus = %ignoreDownloadStatus;
     %url = $Net::ClientServiceURL @ "/GetSpaceVURL" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&owner=" @ urlEncode($Player::Name);
     log("network", "debug", "GetSpaceVURL: " @ %url);
-    %url.setURL(%request);
+    %request.setURL(%url);
     %request.start();
 };
 function GetMyApartmentVURLCommand::onDone(%this) {
@@ -89,12 +89,12 @@ function GetMyApartmentVURLCommand::onDone(%this) {
     log("network", "debug", "GetMyApartmentAddress status: " @ %status);
     if ((%status $= "fail")) {
         echo(getScopeName() @ "->failed");
-        %statusMsg = "statusMsg".getValue(%this);
+        %statusMsg = %this.getValue("statusMsg");
         log("network", "error", "GetMyApartmentAddress failed due to: " @ %statusMsg);
     }
     echo(getScopeName() @ "->success");
     log("network", "debug", "GetMyApartmentAddress::onDone: " @ %status);
-    %vurl = "vurl".getValue(%this);
+    %vurl = %this.getValue("vurl");
     $Player::myPlaceVURL = %vurl;
     if (!(%this.callback $= "")) {
         %cmd = %this.callback @ "(\"" @ %status @ "\", \"" @ %vurl @ "\", \"" @ %this.ignoreDownloadStatus @ "\");";
@@ -104,5 +104,5 @@ function GetMyApartmentVURLCommand::onDone(%this) {
 function GetMyApartmentVURLCommand::onError(%this, %unused, %errMsg) {
     log("network", "debug", "GetMyApartmentVURLCommand::onError: " @ %errMsg);
     $Player::myPlaceVURL = "";
-    "delete".schedule(%this, 0);
+    %this.schedule(0, "delete");
 };

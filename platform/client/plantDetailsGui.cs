@@ -1,12 +1,12 @@
 function PlantDetailsGui::open(%this) {
-    %this.ensureAdded(PlayGui);
-    if (!(%this.isVisible())) {
-        1.setVisible(%this);
+    PlayGui.ensureAdded(%this);
+    if (!%this.isVisible()) {
+        %this.setVisible(1);
     }
-    %this.focusAndRaise(PlayGui);
+    PlayGui.focusAndRaise(%this);
 };
 function PlantDetailsGui::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
 };
@@ -15,11 +15,11 @@ function PlantDetailsGui::onClickFAQButton(%this) {
 };
 function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL) {
     %this.open();
-    %plantName.setText(PlantDetailsTitle);
-    (%currentState / %totalStates).setValue(PlantDetailsProgressBar);
-    %info.setText(PlantDetailsStatusText);
+    PlantDetailsTitle.setText(%plantName);
+    PlantDetailsProgressBar.setValue((%currentState / %totalStates));
+    PlantDetailsStatusText.setText(%info);
     %bmp = "projects/common/inventory/" @ %plantSKU @ "/progress" @ %plantSKU @ ".png";
-    %bmp.setBitmap(PlantProgressBackgroundBMP);
+    PlantProgressBackgroundBMP.setBitmap(%bmp);
     %this.faqURL = %faqURL;
 };
 function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL) {
@@ -37,5 +37,5 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
     }
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
     PlantDetailsGui.open();
-    %faqURL.showDetails(PlantDetailsGui, %plantSKU, %plantName, %info, %currentState, %totalStates);
+    PlantDetailsGui.showDetails(%plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL);
 };

@@ -41,14 +41,14 @@ function initProjectsReloadableLate() {
 };
 function parseProjectArg() {
     %haveArg = findArg("-project", "$ETS::ProjectName", "Missing -project <project name>");
-    if (!(%haveArg)) {
+    if (!%haveArg) {
         $ETS::ProjectName = "vside";
         warn("Using Default Project" @ " " @ $ETS::ProjectName);
     }
 };
 function parseCityArg() {
     %haveArg = findArg("-cityName", "$ETS::cityName", "Missing <city name>");
-    if (!(%haveArg)) {
+    if (!%haveArg) {
         $ETS::cityName = "nv";
         warn("Using Default City" @ " " @ $ETS::cityName);
     }

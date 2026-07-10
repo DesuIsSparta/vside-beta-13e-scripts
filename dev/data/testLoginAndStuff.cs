@@ -413,7 +413,7 @@ function testLoginAndStay() {
     };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
-    $DestServerName.doLogin(%testLogin);
+    %testLogin.doLogin($DestServerName);
 };
 echo("LOAD: starting via testLoginAndStay()");
 $failureCount = 0;
@@ -432,11 +432,11 @@ function do_emote() {
         $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
     }
     $mvForwardAction = 0;
-    $rand_emote = getRandom(0, (EmoteDict.size() - 1.0)).getValue(EmoteDict);
+    $rand_emote = EmoteDict.getValue(getRandom(0, (EmoteDict.size() - 1.0)));
     $rand_genre = getRandom(1, $GenresCount);
     commandToServer('EtsPlayAnimName', $rand_emote);
     if (isObject(pChat)) {
-        0.say(pChat, $rand_genre[$rand_genre["(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote, 0);
+        pChat.say($rand_genre[$rand_genre["(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote, 0, 0);
     }
     commandToServer('setGenre', $rand_genre[$Genres @ $rand_genre]);
     schedule(5000, 0, stopAndTalk);
@@ -456,25 +456,19 @@ function stopAndTalk() {
         %rand_teleport_NV = getRandom(1, $teleportsNVCount);
         %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
-        if (($DestServerName $= "NewVeneziaNorth")) {
-        }
-        if (($DestServerName $= "NewVeneziaSouth")) {
+        if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth")) {
             %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
             %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
         }
-        if (($DestServerName $= "LaGenoaAiresNorth")) {
-        }
-        if (($DestServerName $= "LaGenoaAiresSouth")) {
+        if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth")) {
             %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
             %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
         }
-        if (($DestServerName $= "RaijukuNorth")) {
-        }
-        if (($DestServerName $= "RaijukuSouth")) {
+        if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth")) {
             %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
             %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
         }
-        0.say(pChat, "(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination, 0);
+        pChat.say("(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination, 0, 0);
         commandToServer(%command, %destination);
         schedule(4000, 0, changeClothes);
     }
@@ -499,7 +493,7 @@ function takeSnapshot() {
 };
 function useAndSaveRandomOutfit() {
     %drwrs = "glasses torso legs legsb feet ear neck neckb wristleft wristleftb wristright wristrightb purse hat";
-    %skus = %drwrs.getRandomSkusForLocalPlayer(SkuManager);
+    %skus = SkuManager.getRandomSkusForLocalPlayer(%drwrs);
     commandToServer('SetActiveSkus', %skus);
 };
 function changeClothes() {
@@ -508,9 +502,8 @@ function changeClothes() {
     echo("LOAD: changeClothes done...");
 };
 function approveFriendRequests() {
-    %fansHere = BuddyHudWin.buddyLists;
-    FansHere;
-    if (!(isObject(%fansHere))) {
+    %fansHere = BuddyHudWin.buddyLists[FansHere];
+    if (!isObject(%fansHere)) {
         return;
     }
     if ((%fansHere.size() == 0.0)) {
@@ -519,11 +512,11 @@ function approveFriendRequests() {
     }
     %n = (%fansHere.size() - 1.0);
     while ((%n >= 0.0)) {
-        %playerName = %n.getKey(%fansHere);
+        %playerName = %fansHere.getKey(%n);
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        %playerName.whisper(pChat, "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.");
+        pChat.whisper("(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (%n - 1.0);
     }
 };

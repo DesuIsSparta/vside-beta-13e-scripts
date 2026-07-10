@@ -54,20 +54,20 @@ function startGame() {
     }
     %clientIndex = 0;
     while ((%clientIndex < ClientGroup.getCount())) {
-        %cl = %clientIndex.getObject(ClientGroup);
+        %cl = ClientGroup.getObject(%clientIndex);
         commandToClient(%cl, 'GameStart');
         %cl.score = 0;
         %clientIndex = (%clientIndex + 1.0);
     }
     new ScriptObject(AIManager);
-    AIManager.add(MissionCleanup);
+    MissionCleanup.add(AIManager);
     AIManager.think();
     new ScriptObject(AdManager);
-    AdManager.add(MissionCleanup);
+    MissionCleanup.add(AdManager);
     AdManager.init();
     AdManager.think();
     new ScriptObject(NPCManager);
-    NPCManager.add(MissionCleanup);
+    MissionCleanup.add(NPCManager);
     NPCManager.init();
     NPCManager.think();
     InitSittingSystem();
@@ -79,14 +79,14 @@ function startGame() {
     return;
 };
 function endGame() {
-    if (!($Game::Running)) {
+    if (!$Game::Running) {
         error("endGame: No game running!");
         return;
     }
     cancel($Game::Schedule);
     %clientIndex = 0;
     while ((%clientIndex < ClientGroup.getCount())) {
-        %cl = %clientIndex.getObject(ClientGroup);
+        %cl = ClientGroup.getObject(%clientIndex);
         commandToClient(%cl, 'GameEnd');
         %clientIndex = (%clientIndex + 1.0);
     }
@@ -98,13 +98,13 @@ function endGame() {
 function onGameDurationEnd() {
     if ($Game::Duration) {
     }
-    if (!(isObject(EditorGui))) {
+    if (!isObject(EditorGui)) {
         cycleGame();
     }
     return;
 };
 function cycleGame() {
-    if (!($Game::Cycling)) {
+    if (!$Game::Cycling) {
         $Game::Cycling = 1;
         $Game::Schedule = schedule(0, 0, "onCycleExec");
     }
@@ -136,15 +136,15 @@ function GameConnection::onClientEnterGame(%this) {
     %this.Camera = new Camera("") {
         dataBlock = Observer;
     };
-    %this.Camera.add(MissionCleanup);
-    %this.scopeToClient(%this.Camera);
+    MissionCleanup.add(%this.Camera);
+    %this.Camera.scopeToClient(%this);
     %this.score = 0;
     %this.spawnPlayer();
     return;
 };
 function GameConnection::onClientLeaveGame(%this) {
-    %this.nameBase.remove(PlayerDict);
-    0.setPlayerObject(%this);
+    PlayerDict.remove(%this.nameBase);
+    %this.setPlayerObject(0);
     if (isObject(%this.Camera)) {
         %this.Camera.delete();
     }
@@ -160,21 +160,21 @@ function GameConnection::onEnterMissionArea(%this) {
     return;
 };
 function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %unused) {
-    "".setShapeName(%this.Player);
+    %this.Player.setShapeName("");
     if (isObject(%this.Camera)) {
     }
     if (isObject(%this.Player)) {
-        %this.Player.setMode(%this.Camera, "Corpse");
-        %this.Camera.setControlObject(%this);
+        %this.Camera.setMode("Corpse", %this.Player);
+        %this.setControlObject(%this.Camera);
     }
     %this.Player = 0;
     if ((%damageType $= "Suicide")) {
     }
     if ((%sourceClient == %this)) {
-        -(1.0).incScore(%this);
+        %this.incScore(-(1.0));
         messageAll('MsgClientKilled', '%1 takes his own life!', %this.name);
     }
-    1.incScore(%sourceClient);
+    %sourceClient.incScore(1);
     messageAll('MsgClientKilled', '%1 gets nailed by %2!', %this.name, %sourceClient.name);
     if ((%sourceClient.score >= $Game::EndGameScore)) {
         cycleGame();
@@ -183,7 +183,7 @@ function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %un
 };
 function GameConnection::spawnPlayer(%this) {
     %spawnPoint = pickSpawnPoint();
-    %spawnPoint.createPlayer(%this);
+    %this.createPlayer(%spawnPoint);
     return;
 };
 function GameConnection::createPlayer(%this, %spawnPoint) {
@@ -217,24 +217,24 @@ function GameConnection::createPlayer(%this, %spawnPoint) {
     if ((%rand == 2.0)) {
         %genre = "p";
     }
-    %this.gender.setGender(%player);
-    %genre.setGenre(%player);
-    %this.gender @ ".headphones.dj".MeshOff(%player);
+    %player.setGender(%this.gender);
+    %player.setGenre(%genre);
+    %player.MeshOff(%this.gender @ ".headphones.dj");
     %w = Wardrobe::findWardrobe(%this.gender);
     if (%w) {
         %player.outfit = newOutfit(%w);
-        %player.assert(%player.outfit);
+        %player.outfit.assert(%player);
     }
-    %player.add(MissionCleanup);
-    %spawnPoint.setTransform(%player);
-    %this.name.setShapeName(%player);
-    %player.determinePermissions(%this);
-    %player.getEyeTransform().setTransform(%this.Camera);
+    MissionCleanup.add(%player);
+    %player.setTransform(%spawnPoint);
+    %player.setShapeName(%this.name);
+    %this.determinePermissions(%player);
+    %this.Camera.setTransform(%player.getEyeTransform());
     %this.Player = %player;
-    %player.setControlObject(%this);
-    %player.setPlayerObject(%this);
-    %this.Player.put(PlayerDict, %this.nameBase);
-    $Pref::Player::defaultAwayMessage.setAwayMessage(%player);
+    %this.setControlObject(%player);
+    %this.setPlayerObject(%player);
+    PlayerDict.put(%this.nameBase, %this.Player);
+    %player.setAwayMessage($Pref::Player::defaultAwayMessage);
     echo(getDebugString(%player) @ " " @ "has away message" @ " " @ %player.getAwayMessage());
     %this.initPlayerRelations();
     echo("server-side player entered:\x03" @ " " @ getDebugString(%player));
@@ -245,42 +245,38 @@ function GameConnection::initPlayerRelations() {
         %request = %this.request;
         %buddyCount = %request.buddyCount;
         while (%buddyCount = ((%buddyCount - 1.0) >= 0.0)) {
-            %buddyName = %request.buddy;
-            %buddyCount;
-            %buddyPlayer = %buddyName.get(PlayerDict);
+            %buddyName = %request.buddy[%buddyCount];
+            %buddyPlayer = PlayerDict.get(%buddyName);
             if (isObject(%buddyPlayer)) {
-                %buddyPlayer.addBuddy(%player);
+                %player.addBuddy(%buddyPlayer);
             }
         }
         %ignoreCount = %request.ignoreCount;
         %buddyCount = ((%buddyCount - 1.0) >= 0.0);
         while (%ignoreCount = ((%ignoreCount - 1.0) >= 0.0)) {
-            %ignoreName = %request.ignore;
-            %ignoreCount;
-            %ignorePlayer = %ignoreName.get(PlayerDict);
+            %ignoreName = %request.ignore[%ignoreCount];
+            %ignorePlayer = PlayerDict.get(%ignoreName);
             if (isObject(%ignorePlayer)) {
-                %ignorePlayer.addIgnore(%player);
+                %player.addIgnore(%ignorePlayer);
             }
         }
         %onBuddyCount = %request.onBuddyCount;
         %ignoreCount = ((%ignoreCount - 1.0) >= 0.0);
         while (%onBuddyCount = ((%onBuddyCount - 1.0) >= 0.0)) {
-            %onBuddyName = %request.onBuddy;
-            %onBuddyCount;
-            %onBuddyPlayer = %onBuddyName.get(PlayerDict);
+            %onBuddyName = %request.onBuddy[%onBuddyCount];
+            %onBuddyPlayer = PlayerDict.get(%onBuddyName);
             if (isObject(%onBuddyPlayer)) {
-                %player.addBuddy(%onBuddyPlayer);
+                %onBuddyPlayer.addBuddy(%player);
             }
             warn("no player object for on buddy " @ %onBuddyName);
         }
         %onIgnoreCount = %request.onIgnoreCount;
         %onBuddyCount = ((%onBuddyCount - 1.0) >= 0.0);
         while (%onIgnoreCount = ((%onIgnoreCount - 1.0) >= 0.0)) {
-            %onIgnoreName = %request.onIgnore;
-            %onIgnoreCount;
-            %onIgnorePlayer = %onIgnoreName.get(PlayerDict);
+            %onIgnoreName = %request.onIgnore[%onIgnoreCount];
+            %onIgnorePlayer = PlayerDict.get(%onIgnoreName);
             if (isObject(%onIgnorePlayer)) {
-                %player.addIgnore(%onIgnorePlayer);
+                %onIgnorePlayer.addIgnore(%player);
             }
             warn("no player object for on ignore " @ %onIgnorePlayer);
         }
@@ -293,8 +289,8 @@ function pickSpawnPoint() {
         %count = %group.getCount();
         if ((%count != 0.0)) {
             %index = getRandom((%count - 1.0));
-            %spawn = %index.getObject(%group);
-            return 1.getEmptySpot(%spawn, 1.5, 0);
+            %spawn = %group.getObject(%index);
+            return %spawn.getEmptySpot(1.5, 0, 1);
         }
         error("No spawn points found in " @ %groupName);
     }

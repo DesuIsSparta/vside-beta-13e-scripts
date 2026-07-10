@@ -1,9 +1,9 @@
 function GameConnection::etsInit(%this) {
-    1.setLoggedIn(WorldMap);
+    WorldMap.setLoggedIn(1);
     $gWorldMapJoiningServer = 0;
     resetScreenSize();
     ButtonBar.Initialize();
-    "showAndHide".schedule(ButtonBar, 1000);
+    ButtonBar.schedule(1000, "showAndHide");
     $gClientGameConnection = %this;
     $player = %this.getPlayerObject();
     $IN_ORBIT_CAM = %this.getControlObject().isClassCamera();
@@ -12,7 +12,7 @@ function GameConnection::etsInit(%this) {
     echo("client-side load time mission:" @ " " @ (($Client::MissionLoadTimeFinish - $Client::MissionLoadTimeStart) * 0.001) @ " " @ "seconds.");
     echo("client-side player init:" @ " " @ getDebugString($player));
     $player.prevRolesMask = -(1.0);
-    $player.getRolesMask().onGotRoles($player);
+    $player.onGotRoles($player.getRolesMask());
     Inventory::fetchPlayerInventoryIfNeedTo($player);
     $player.playersNotifiedOfIdleStatus = new StringMap("");
     if (($UserPref::Player::Genre $= "")) {
@@ -26,7 +26,7 @@ function GameConnection::etsInit(%this) {
     $UserPref::Player::gender = $player.gender;
     $player.startImpressionsTimer();
     echo("setting master volume to" @ " " @ $UserPref::Audio::masterVolume);
-    $UserPref::Audio::mute.setMuted(MuteButton);
+    MuteButton.setMuted($UserPref::Audio::mute);
     OptionsPanel.Initialize();
     WindowManager.Initialize();
     if (isFunction(gui_DevOpts_ShowCamPos)) {
@@ -37,13 +37,13 @@ function GameConnection::etsInit(%this) {
     }
     $player.configBoneBlends();
     $StoreSkusLayer = "";
-    %startingOutfit = $player.getGender() @ "currentOutfit".get($gOutfits);
-    outfits_getCurrentSkus().setActiveSKUs($player);
+    %startingOutfit = $player.getGender() @ $gOutfits.get("currentOutfit");
+    $player.setActiveSKUs(outfits_getCurrentSkus());
     commandToServer('setActiveSkus', $player.getActiveSKUs());
     $gClosetGuiNeedsOpen = 0;
-    if (!($StandAlone)) {
+    if (!$StandAlone) {
     }
-    if (!($gRetrievedOutfits)) {
+    if (!$gRetrievedOutfits) {
         $gClosetGuiNeedsOpen = 1;
         $gRetrievedOutfits = 1;
     }
@@ -68,7 +68,7 @@ function GameConnection::etsInit(%this) {
         $gDFNotifyCode = "";
     }
     setIdle(0);
-    0.setActivityActive(getUserActivityMgr(), "traveling");
+    getUserActivityMgr().setActivityActive("traveling", 0);
     if (isFunction(rf_TrySetup)) {
         rf_TrySetup();
     }
@@ -79,12 +79,12 @@ function Player::startImpressionsTimer(%this) {
 };
 function Player::takeImpressionsTimer(%this) {
     if (%this.takeImpressions()) {
-        "takeImpressionsTimer".schedule(%this, 500);
+        %this.schedule(500, "takeImpressionsTimer");
     }
-    "takeImpressionsTimer".schedule(%this, 2000);
+    %this.schedule(2000, "takeImpressionsTimer");
 };
 function Player::takeImpressions(%this) {
-    if (!(isObject($GameConnection))) {
+    if (!isObject($GameConnection)) {
         warn("$GameConnection is null");
         return 0;
     }
@@ -131,7 +131,7 @@ function forceOnscreen(%top, %left, %bottom, %right, %hudwidth, %hudheight) {
     return %xPos @ " " @ %ypos;
 };
 function Player::onAddClient(%this) {
-    if (!(isObject(%this))) {
+    if (!isObject(%this)) {
         echo("Player::onAddClient() non object" @ " " @ %this);
         return;
     }
@@ -144,34 +144,34 @@ function Player::onAddClient(%this) {
     gSetField(%this, affinityLevel, 0);
     gSetField(%this, lastTypingSomethingText, "");
     %this.addToPlayerInstanceDict();
-    %relation = %this.getShapeName().getFriendStatus(BuddyHudWin);
+    %relation = BuddyHudWin.getFriendStatus(%this.getShapeName());
     if ((%relation $= "friends")) {
-        1.setBuddy(%this);
-        1.setAmFave(%this);
+        %this.setBuddy(1);
+        %this.setAmFave(1);
     }
     if ((%relation $= "favorite")) {
-        1.setBuddy(%this);
+        %this.setBuddy(1);
     }
     if ((%relation $= "fan")) {
-        1.setAmFave(%this);
+        %this.setAmFave(1);
     }
-    %this.getShapeName().getIgnoreStatus(BuddyHudWin).setIgnore(%this);
+    %this.setIgnore(BuddyHudWin.getIgnoreStatus(%this.getShapeName()));
     %this.rebuildHudCtrl();
     if (isObject(geMapHud2DTheOrthoMap)) {
-        %this.playerAdd(geMapHud2DTheOrthoMap);
+        geMapHud2DTheOrthoMap.playerAdd(%this);
     }
 };
 function Player::addToPlayerInstanceDict(%this) {
     %dict = safeEnsureScriptObjectWithInit("StringMap", "PlayerInstanceDict", "{ ignoreCase = true; }");
-    %this.put(%dict, %this.getShapeName());
+    %dict.put(%this.getShapeName(), %this);
 };
 function Player::removeFromPlayerInstanceDict(%this) {
     %dict = PlayerInstanceDict;
-    %this.getShapeName().remove(%dict);
+    %dict.remove(%this.getShapeName());
 };
 function Player::findPlayerInstance(%playerName) {
     %dict = safeEnsureScriptObjectWithInit("StringMap", "PlayerInstanceDict", "{ ignoreCase = true; }");
-    return %playerName.get(%dict);
+    return %dict.get(%playerName);
 };
 function getBitmapFilename(%category, %fileName) {
     %rootPath = %category[$gBitmapCategoryRoot @ %category];
@@ -182,7 +182,7 @@ function getBitmapFilename(%category, %fileName) {
     return %rootPath @ %fileName;
 };
 function Player::rebuildHudCtrl(%this) {
-    if (!(isObject(%this.hudCtrl))) {
+    if (!isObject(%this.hudCtrl)) {
         %this.hudCtrl = new Gui3DProjectionCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
@@ -199,8 +199,8 @@ function Player::rebuildHudCtrl(%this) {
             visibleDist = $pref::TS::distBadgesVis;
         };
         %hudCtrl = %this.hudCtrl;
-        %this.setAttachedTo(%hudCtrl);
-        %hudCtrl.add(TheBadgesHud);
+        %hudCtrl.setAttachedTo(%this);
+        TheBadgesHud.add(%hudCtrl);
         %ctrl = new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
@@ -213,7 +213,7 @@ function Player::rebuildHudCtrl(%this) {
             bitmap = "";
         };
         %hudCtrl.roleCtrl = %ctrl;
-        %hudCtrl.roleCtrl.add(%hudCtrl);
+        %hudCtrl.add(%hudCtrl.roleCtrl);
     }
     %hudCtrl = %this.hudCtrl;
     %bitmap = "";
@@ -222,7 +222,7 @@ function Player::rebuildHudCtrl(%this) {
     }
     %localPlayerIsStaffOrMod = 0;
     %bitmapName = %this.getBadgeBitmapName();
-    %bitmapName.setBitmap(%hudCtrl.roleCtrl);
+    %hudCtrl.roleCtrl.setBitmap(%bitmapName);
 };
 function Player::getBadgeBitmapName(%this) {
     %ret = "";
@@ -247,7 +247,7 @@ function Player::getAffinityBadgeBitmapName(%this) {
 };
 $gRoleBadgeBitmapNamesInitted = 0;
 function Player::getRoleBadgeBitmapName(%this) {
-    if (!($gRoleBadgeBitmapNamesInitted)) {
+    if (!$gRoleBadgeBitmapNamesInitted) {
         %n = 0;
         %n["snooped" @ $gRoleBadgeBitmapNames TAB %n @ "role"] = ;
         %n["neighborhoodwatch" @ $gRoleBadgeBitmapNames TAB %n @ "bitmapName"] = ;
@@ -269,9 +269,9 @@ function Player::getRoleBadgeBitmapName(%this) {
     if ((%n < $gRoleBadgeBitmapNamesNum)) {
     }
     while ((%ret $= "")) {
-        if (%n[$gRoleBadgeBitmapNames TAB %n @ "role"].hasRoleString(%this)) {
+        if (%this.hasRoleString(%n[$gRoleBadgeBitmapNames TAB %n @ "role"])) {
             if (isObject($player)) {
-                if (%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"].rolesPermissionCheckNoWarn($player)) {
+                if ($player.rolesPermissionCheckNoWarn(%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"])) {
                     %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
                 }
             }

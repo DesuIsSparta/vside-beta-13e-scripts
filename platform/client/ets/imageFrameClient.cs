@@ -46,32 +46,28 @@ $ImageFrameBase::Type_Event = 3;
 $ImageFrameBase::Type_Gallery2 = 4;
 function ImageFrameBase::onImageTagChanged(%this, %newUrl) {
     if ((strlen(%newUrl) == 0.0)) {
-        "".setPortraitTexture(%this);
+        %this.setPortraitTexture("");
         return;
     }
-    %newUrl.getUserPortrait(%this);
-    if (0) {
-        if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
-        }
-        if (CustomSpaceClient::isOwner()) {
-            %playerName = %this.getImageTag();
-            InfoPopupDlg.close();
-            %playerName.showInfoFor(InfoPopupDlg);
-            InfoPopupDlg.open();
-        }
+    %this.getUserPortrait(%newUrl);
+    if (0 && (CustomSpaceClient::GetSpaceImIn() $= "") || CustomSpaceClient::isOwner()) {
+        %playerName = %this.getImageTag();
+        InfoPopupDlg.close();
+        InfoPopupDlg.showInfoFor(%playerName);
+        InfoPopupDlg.open();
     }
 };
 function ImageFrameBase::getImageTagType(%this, %imageTag) {
     %this.imageKey = "";
     %this.type = "";
     %urlinfo = new ScriptObject("");
-    "URLInfo".bindClassName(%urlinfo);
+    %urlinfo.bindClassName("URLInfo");
     %urlinfo.url = %imageTag;
     %bValidURL = %urlinfo.parse();
     if ((%bValidURL == 0.0)) {
         %urlinfo.delete();
         %this.imageKey = %imageTag;
-        if (%imageTag.isImageGUID(%this)) {
+        if (%this.isImageGUID(%imageTag)) {
             %this.type = $ImageFrameBase::Type_Gallery;
             return $ImageFrameBase::Type_Gallery;
         }
@@ -104,45 +100,35 @@ function ImageFrameBase::onUse(%this) {
     if (%this.isServerObject()) {
         return;
     }
-    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
+    if (!$CS_EditingCustomSpace) {
     }
-    if (!(CustomSpaceClient::isOwner())) {
-        if (!($CS_EditingCustomSpace)) {
-        }
-        if (CustomSpaceClient::isOwner()) {
-        }
+    if (CustomSpaceClient::isOwner()) {
     }
-    if (($Keyboard::modifierKeys & $EventModifier::CTRL)) {
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner() || ($Keyboard::modifierKeys & $EventModifier::CTRL)) {
         %imageTag = %this.getImageTag();
         if ((%imageTag $= "")) {
             return;
         }
-        if ((%this.type == $ImageFrameBase::Type_Gallery)) {
-        }
-        if ((%this.type == $ImageFrameBase::Type_URL)) {
-        }
-        if ((%this.type == $ImageFrameBase::Type_Event)) {
-        }
-        if ((%this.type == $ImageFrameBase::Type_Gallery2)) {
+        if ((%this.type == $ImageFrameBase::Type_Gallery) || (%this.type == $ImageFrameBase::Type_URL) || (%this.type == $ImageFrameBase::Type_Event) || (%this.type == $ImageFrameBase::Type_Gallery2)) {
             if ((%this.url $= "")) {
                 return;
             }
-            %this.Caption.initWithURLAndTitle(LinkContextMenu, %this.url);
+            LinkContextMenu.initWithURLAndTitle(%this.url, %this.Caption);
             LinkContextMenu.showAtCursor();
             return;
         }
         InfoPopupDlg.close();
-        %imageTag.showInfoFor(InfoPopupDlg);
+        InfoPopupDlg.showInfoFor(%imageTag);
         InfoPopupDlg.open();
         return;
     }
     $DlgPortraitSelect = MessageBoxTextEntryWithCancel($MsgCat::furniture["IMAGEFRAME-TITLE"], $MsgCat::furniture["IMAGEFRAME-PROMPT"], ImageFrameBase_SubmitPortrait, %this.getImageTag(), 0);
-    18.resize($DlgPortraitSelect.textEntry, 8, 68, 284);
+    $DlgPortraitSelect.textEntry.resize(8, 68, 284, 18);
     $DlgPortraitSelect.portrait = %this;
 };
 function ImageFrameBase_SubmitPortrait(%url) {
     %obj = $DlgPortraitSelect.portrait;
-    if (isURL(%url) && !(ImageFrameBase_IsPermittedURL(%url))) {
+    if (isURL(%url) && !ImageFrameBase_IsPermittedURL(%url)) {
         MessageBoxOK($MsgCat::furniture["IMAGEFRAME-TITLENOTWLIST"], $MsgCat::furniture["IMAGEFRAME-NOTWHITELIST"], "");
         return;
     }
@@ -156,22 +142,18 @@ function ImageFrameBase::onRightUse(%this) {
     if ((%this.type == $ImageFrameBase::Type_URL)) {
         return;
     }
-    if ((%this.type == $ImageFrameBase::Type_Gallery)) {
-    }
-    if ((%this.type == $ImageFrameBase::Type_Event)) {
-    }
-    if ((%this.type == $ImageFrameBase::Type_Gallery2)) {
+    if ((%this.type == $ImageFrameBase::Type_Gallery) || (%this.type == $ImageFrameBase::Type_Event) || (%this.type == $ImageFrameBase::Type_Gallery2)) {
         if ((%this.url $= "")) {
             return;
         }
-        %this.Caption.initWithURLAndTitle(LinkContextMenu, %this.url);
+        LinkContextMenu.initWithURLAndTitle(%this.url, %this.Caption);
         LinkContextMenu.showAtCursor();
         return;
     }
-    %info = %imageTag.get(PlayerInfoMap);
+    %info = PlayerInfoMap.get(%imageTag);
     if (isObject(%info)) {
-        %imageTag.initWithPlayerName(PlayerContextMenu);
-        Canvas.getCursorPos().showAtPoint(PlayerContextMenu);
+        PlayerContextMenu.initWithPlayerName(%imageTag);
+        PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
     }
     requestPlayerInfoForWithCallback(%imageTag, "ImageFrameBase_gotInfoDoMenu", %this);
 };
@@ -186,7 +168,7 @@ function ImageFrameBase::buildImageURL(%this, %imageTag, %type) {
         %url = %imageTag;
     }
     if ((%type == $ImageFrameBase::Type_Event)) {
-        %this.imageKey.GetEventInfo(%this);
+        %this.GetEventInfo(%this.imageKey);
         %url = "";
     }
     if ((%type == $ImageFrameBase::Type_Gallery2)) {
@@ -224,31 +206,31 @@ function ImageFrameBase::buildLinkURLAndCaption(%this, %imageTag, %type) {
     return %url;
 };
 function ImageFrameBase::getUserPortrait(%this, %imageTag) {
-    %type = %imageTag.getImageTagType(%this);
-    %url = %type.buildImageURL(%this, %imageTag);
-    %type.buildLinkURLAndCaption(%this, %imageTag);
+    %type = %this.getImageTagType(%imageTag);
+    %url = %this.buildImageURL(%imageTag, %type);
+    %this.buildLinkURLAndCaption(%imageTag, %type);
     if (!(%url $= "")) {
-        %url.downloadAndApplyImage(%this);
+        %this.downloadAndApplyImage(%url);
     }
 };
 function ImageFrameBase::downloadAndApplyImage(%this, %url) {
-    if (!(ImageFrameBase_IsPermittedURL(%url))) {
+    if (!ImageFrameBase_IsPermittedURL(%url)) {
         return;
     }
     %this.expectedImageUrl = %url;
-    "".applyUrl(dlMgr, %url, "dlMgrCallback_ImageFrameBase", "dlMgrErrorCallback_ImageFrameBase", %this);
+    dlMgr.applyUrl(%url, "dlMgrCallback_ImageFrameBase", "dlMgrErrorCallback_ImageFrameBase", %this, "");
 };
 function dlMgrCallback_ImageFrameBase(%dlItem, %unused) {
     %imageFrame = %dlItem.callbackData;
-    if (!(isObject(%imageFrame))) {
+    if (!isObject(%imageFrame)) {
         warn(getScopeName() @ " " @ "- ImageFrame no longer exists!" @ " " @ %imageFrame @ " " @ %dlItem.url @ " " @ getTrace());
         return;
     }
     if (!(%imageFrame.expectedImageUrl $= %dlItem.url)) {
         echoDebug(getScopeName() @ " " @ "- unexpected URL retrieved. Expected \"" @ %imageFrame.expectedImageUrl @ "\" but got \"" @ %dlItem.url @ "\".");
     }
-    "".setPortraitTexture(%imageFrame);
-    %dlItem.localFilename.setPortraitTexture(%imageFrame);
+    %imageFrame.setPortraitTexture("");
+    %imageFrame.setPortraitTexture(%dlItem.localFilename);
     %imageFrame.expectedUrl = "";
 };
 function ImageFrameBase_IsPermittedURL(%url) {
@@ -282,7 +264,7 @@ function ImageFrameBase_IsPermittedURL(%url) {
     return 0;
 };
 function isURL(%url) {
-    if (!(stricmp(getSubStr(%url, 0, 4), "http"))) {
+    if (!stricmp(getSubStr(%url, 0, 4), "http")) {
         return 1;
     }
     return 0;
@@ -318,42 +300,38 @@ function ImageFrameBase::GetEventInfo(%this, %eventId) {
     %request.frame = %this;
 };
 function onDoneOrErrorCallback_EventInfo(%request) {
-    %status = "status".getResult(%request);
+    %status = %request.getResult("status");
     %imgFrame = %request.frame;
     if (!(%status $= "success")) {
         error("client Event info request HTTP status: " @ %status);
         return;
     }
-    %imageURL = "photo.url".getValue(%request);
+    %imageURL = %request.getValue("photo.url");
     if ((%imageURL $= "")) {
         %imageURL = "http://" @ $Net::BaseDomain @ "/images/events/default_banner_L.jpg";
     }
-    %imageCaption = "photo.caption".getValue(%request);
+    %imageCaption = %request.getValue("photo.caption");
     %imgFrame.Caption = %imageCaption;
-    %imageURL.downloadAndApplyImage(%imgFrame);
+    %imgFrame.downloadAndApplyImage(%imageURL);
 };
 function dlMgrErrorCallback_ImageFrameBase(%dlItem) {
     %obj = %dlItem.callbackData;
     %playerName = %obj.getImageTag();
-    "".setPortraitTexture(%obj);
-    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
-    }
-    if (CustomSpaceClient::isOwner()) {
+    %obj.setPortraitTexture("");
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || CustomSpaceClient::isOwner()) {
         %imgTag = %obj.getImageTag();
         if ((%obj.type == $ImageFrameBase::Type_URL)) {
             %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDURL"], "[URL]", %imgTag);
         }
-        if ((%obj.type == $ImageFrameBase::Type_Gallery)) {
-        }
-        if ((%obj.type == $ImageFrameBase::Type_Gallery2)) {
+        if ((%obj.type == $ImageFrameBase::Type_Gallery) || (%obj.type == $ImageFrameBase::Type_Gallery2)) {
             %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDGALLERY"], "[GUID]", %imgTag);
         }
         if ((%obj.type == $ImageFrameBase::Type_Event)) {
             %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDEVENT"], "[EVENT]", %imgTag);
         }
-        %info = %imgTag.get(PlayerInfoMap);
+        %info = PlayerInfoMap.get(%imgTag);
         if (isObject(%info)) {
-            %info.showDefaultPlayerPortrait(%obj);
+            %obj.showDefaultPlayerPortrait(%info);
         }
         requestPlayerInfoForWithCallback(%imgTag, "ImageFrameBase_gotInfoPlayerSex", %obj);
         %message = "";
@@ -364,19 +342,19 @@ function dlMgrErrorCallback_ImageFrameBase(%dlItem) {
 };
 function ImageFrameBase_gotInfoDoMenu(%playerName, %info, %frame) {
     if (isObject(%info)) {
-        %playerName.initWithPlayerName(PlayerContextMenu);
-        Canvas.getCursorPos().showAtPoint(PlayerContextMenu);
+        PlayerContextMenu.initWithPlayerName(%playerName);
+        PlayerContextMenu.showAtPoint(Canvas.getCursorPos());
     }
 };
 function ImageFrameBase_gotInfoPlayerSex(%playerName, %info, %frame) {
     echo("ImageFrameBase_gotInfoPlayerSex( \"" @ %playerName @ "\", " @ %info @ ")");
     if (isObject(%info)) {
-        %info.showDefaultPlayerPortrait(%frame);
+        %frame.showDefaultPlayerPortrait(%info);
     }
     %message = strreplace($MsgCat::furniture["IMAGEFRAME-LOADFAILEDUSER"], "[USER]", %playerName);
     handleSystemMessage("msgInfoMessage", %message);
 };
 function ImageFrameBase::showDefaultPlayerPortrait(%this, %playerInfo) {
     %url = "http://" @ $Net::BaseDomain @ "/images/defaults/avatar_" @ %playerInfo.gender @ "_large.jpg";
-    %url.downloadAndApplyImage(%this);
+    %this.downloadAndApplyImage(%url);
 };

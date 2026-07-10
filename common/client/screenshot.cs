@@ -36,7 +36,7 @@ function stopMovie() {
 };
 $screenshotNumber = 0;
 function doScreenShot(%val) {
-    if (!(%val)) {
+    if (!%val) {
         return;
     }
     %name = "screenshots/screen_" @ getTimeStamp();
@@ -53,4 +53,4 @@ function doScreenShot(%val) {
     ScreenShot(%name @ %ext, %fmt);
     doSaveScreenShotMetaData(%name, %ext, PlayGui);
 };
-doScreenShot.bind(GlobalActionMap, keyboard, "ctrl-alt s");
+GlobalActionMap.bind(keyboard, "ctrl-alt s", doScreenShot);

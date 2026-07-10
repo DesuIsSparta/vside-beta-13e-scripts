@@ -4,65 +4,65 @@ function DEBUG_WM(%text) {
         echo(%text);
     }
 };
-if (!(isObject(WindowManager))) {
+if (!isObject(WindowManager)) {
     new ScriptObject(WindowManager);
     if (isObject(MissionCleanup)) {
-        WindowManager.add(MissionCleanup);
+        MissionCleanup.add(WindowManager);
     }
 }
 function WindowManager::Initialize(%this) {
     WindowManager.leftMargin = safeEnsureScriptObject("SimObject", "WindowManagerLeftMargin");
     WindowManager.leftMargin.bottomMargin = 225;
     %n = 0;
-    WindowManager.leftMargin.windows = CSControlPanel @ %n;
+    WindowManager.leftMargin.windows[%n] = CSControlPanel;
     %n = (%n + 1.0);
-    WindowManager.leftMargin.windows = CSFurnitureMover @ %n;
+    WindowManager.leftMargin.windows[%n] = CSFurnitureMover;
     %n = (%n + 1.0);
-    WindowManager.leftMargin.windows = CSInventoryBrowserWindow @ %n;
+    WindowManager.leftMargin.windows[%n] = CSInventoryBrowserWindow;
     %n = (%n + 1.0);
-    WindowManager.leftMargin.windows = CSShoppingBrowserWindow @ %n;
+    WindowManager.leftMargin.windows[%n] = CSShoppingBrowserWindow;
     %n = (%n + 1.0);
-    WindowManager.leftMargin.windows = CSPaintingWindow @ %n;
+    WindowManager.leftMargin.windows[%n] = CSPaintingWindow;
     %n = (%n + 1.0);
-    WindowManager.leftMargin.windows = CSMediaDisplay @ %n;
+    WindowManager.leftMargin.windows[%n] = CSMediaDisplay;
     %n = (%n + 1.0);
-    WindowManager.leftMargin.windows = CSRulesAndDescWindow @ %n;
+    WindowManager.leftMargin.windows[%n] = CSRulesAndDescWindow;
     %n = (%n + 1.0);
-    WindowManager.leftMargin.windows = CSLayoutSelector @ %n;
+    WindowManager.leftMargin.windows[%n] = CSLayoutSelector;
     %n = (%n + 1.0);
     WindowManager.leftMargin.numWindows = %n;
     WindowManager.leftMargin.Padding = 4;
     WindowManager.rightMargin = safeEnsureScriptObject("SimObject", "WindowManagerRightMargin");
     %n = 0;
-    WindowManager.rightMargin.windows = AccountBalanceHud @ %n;
+    WindowManager.rightMargin.windows[%n] = AccountBalanceHud;
     %n = (%n + 1.0);
-    WindowManager.rightMargin.windows = BuddyHudWin @ %n;
+    WindowManager.rightMargin.windows[%n] = BuddyHudWin;
     %n = (%n + 1.0);
-    WindowManager.rightMargin.windows = EmoteHudWin @ %n;
+    WindowManager.rightMargin.windows[%n] = EmoteHudWin;
     %n = (%n + 1.0);
     if (isObject(geActivitiesPanel)) {
-        WindowManager.rightMargin.windows = geActivitiesPanel @ %n;
+        WindowManager.rightMargin.windows[%n] = geActivitiesPanel;
         %n = (%n + 1.0);
     }
-    WindowManager.rightMargin.windows = GameMgrHudWin @ %n;
+    WindowManager.rightMargin.windows[%n] = GameMgrHudWin;
     %n = (%n + 1.0);
-    WindowManager.rightMargin.windows = geLocalMapContainer @ %n;
+    WindowManager.rightMargin.windows[%n] = geLocalMapContainer;
     %n = (%n + 1.0);
-    WindowManager.rightMargin.windows = BottomSpacerRTHudWin @ %n;
+    WindowManager.rightMargin.windows[%n] = BottomSpacerRTHudWin;
     %n = (%n + 1.0);
-    WindowManager.rightMargin.windows = DownloadProgressHudWin @ %n;
+    WindowManager.rightMargin.windows[%n] = DownloadProgressHudWin;
     %n = (%n + 1.0);
     WindowManager.rightMargin.numWindows = %n;
     WindowManager.rightMargin.Padding = 0;
     $WindowManager::Initialized = 1;
 };
 function WindowManager::wakeUp(%this) {
-    if (!($WindowManager::Initialized)) {
+    if (!$WindowManager::Initialized) {
         %this.Initialize();
     }
 };
 function WindowManager::getRightMargin(%this) {
-    return -(1.0).getRightMarginAtY(%this);
+    return %this.getRightMarginAtY(-(1.0));
 };
 $gWindowManagerMarginSpecialCasesRight = "";
 $gWindowManagerMarginSpecialCasesLeft = "AimConvContainer";
@@ -70,8 +70,7 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY) {
     %position = %windowWidth = getWord(getRes(), 0);
     %n = 0;
     while ((%n < %this.rightMargin.numWindows)) {
-        %win = WindowManager.rightMargin.windows;
-        %n;
+        %win = WindowManager.rightMargin.windows[%n];
         %pos = %win.getPosition();
         %posX = getWord(%pos, 0);
         %posY = getWord(%pos, 1);
@@ -92,7 +91,7 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY) {
     (%n < %this.rightMargin.numWindows);
     while ((%n >= 0.0)) {
         %ctrl = getWord($gWindowManagerMarginSpecialCasesRight, %n);
-        if (!(isObject(%ctrl))) {
+        if (!isObject(%ctrl)) {
             return;
         }
         %pos = %ctrl.getPosition();
@@ -114,14 +113,13 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY) {
     return (%windowWidth - %position);
 };
 function WindowManager::getLeftMargin(%this) {
-    return -(1.0).getLeftMarginAtY(%this);
+    return %this.getLeftMarginAtY(-(1.0));
 };
 function WindowManager::getLeftMarginAtY(%this, %checkAtY) {
     %width = 0;
     %n = 0;
     while ((%n < %this.leftMargin.numWindows)) {
-        %win = WindowManager.leftMargin.windows;
-        %n;
+        %win = WindowManager.leftMargin.windows[%n];
         %pos = %win.getPosition();
         %posX = getWord(%pos, 0);
         %posY = getWord(%pos, 1);
@@ -143,7 +141,7 @@ function WindowManager::getLeftMarginAtY(%this, %checkAtY) {
     (%n < %this.leftMargin.numWindows);
     while ((%n >= 0.0)) {
         %ctrl = getWord($gWindowManagerMarginSpecialCasesLeft, %n);
-        if (!(isObject(%ctrl))) {
+        if (!isObject(%ctrl)) {
             return;
         }
         %pos = %ctrl.getPosition();
@@ -178,7 +176,7 @@ function WindowManager::countVisibleRightMarginWindows(%this) {
     %count = 0;
     %n = 0;
     while ((%n < %this.rightMargin.numWindows)) {
-        if (WindowManager.rightMargin.windows.isVisible(%n)) {
+        if (WindowManager.rightMargin.windows[%n].isVisible()) {
             %count = (%count + 1.0);
         }
         %n = (%n + 1.0);
@@ -196,23 +194,22 @@ function WindowManager::repositionWindows(%this, %windowSet) {
         %totalWeight = 0.0;
         %padding = %windowSet.Padding;
         %residualHeight = getWord($UserPref::Video::Resolution, 1);
-        %residualHeight = (%residualHeight - "bottomMargin".getFieldValue(%windowSet));
+        %residualHeight = (%residualHeight - %windowSet.getFieldValue("bottomMargin"));
         %residualHeight = (%residualHeight - %padding);
         %oldestWin = "";
         %i = 0;
         while ((%i < %windowSet.numWindows)) {
-            %win = %windowSet.windows;
-            %i;
-            if (!(isObject(%win))) {
+            %win = %windowSet.windows[%i];
+            if (!isObject(%win)) {
             }
             if (%win.isVisible()) {
-                if ("doAutoClose".getFieldValue(%win)) {
+                if (%win.getFieldValue("doAutoClose")) {
                 }
-                if (("age".getFieldValue(%win) > 0.0)) {
+                if ((%win.getFieldValue("age") > 0.0)) {
                     if ((%oldestWin $= "")) {
                         %oldestWin = %win;
                     }
-                    if (("age".getFieldValue(%win) > "age".getFieldValue(%oldestWin))) {
+                    if ((%win.getFieldValue("age") > %oldestWin.getFieldValue("age"))) {
                         %oldestWin = %win;
                     }
                 }
@@ -238,8 +235,7 @@ function WindowManager::repositionWindows(%this, %windowSet) {
         (%i < %windowSet.numWindows);
         %i = 0;
         while ((%i < %windowSet.numWindows)) {
-            %win = %windowSet.windows;
-            %i;
+            %win = %windowSet.windows[%i];
             if (%win.isVisible()) {
                 %weight = %win.vWeight;
                 if ((%weight == 0.0)) {
@@ -264,7 +260,7 @@ function WindowManager::repositionWindows(%this, %windowSet) {
             }
             %i = (%i + 1.0);
         }
-        if ((%ypos > (getWord($UserPref::Video::Resolution, 1) - "bottomMargin".getFieldValue(%windowSet)))) {
+        if ((%ypos > (getWord($UserPref::Video::Resolution, 1) - %windowSet.getFieldValue("bottomMargin")))) {
         }
         if (!((%i < %windowSet.numWindows) @ " " @ %oldestWin $= "")) {
             %recomputing = 1;
@@ -275,15 +271,14 @@ function WindowManager::repositionWindows(%this, %windowSet) {
     %recomputing;
     %i = 0;
     while ((%i < %windowSet.numWindows)) {
-        %win = %windowSet.windows;
-        %i;
+        %win = %windowSet.windows[%i];
         if (%win.isVisible()) {
-            %win.age = ("age".getFieldValue(%win) + 1.0);
+            %win.age = (%win.getFieldValue("age") + 1.0);
             %xPos = getWord(%win.getPosition(), 0);
             %width = getWord(%win.getExtent(), 0);
             %curHeight = getWord(%win.getExtent(), 1);
-            %i[%height @ %i].resize(%win, %xPos, %ypos, %width);
-            if ("onResized".hasMethod(%win)) {
+            %win.resize(%xPos, %ypos, %width, %i[%height @ %i]);
+            if (%win.hasMethod("onResized")) {
             }
             if ((%i[%height @ %i] != %curHeight)) {
                 %win.onResized();
@@ -296,29 +291,29 @@ function WindowManager::repositionWindows(%this, %windowSet) {
     %windowSet.bottom = (%i < %windowSet.numWindows) @ %ypos;
 };
 function WindowManager::update(%this) {
-    %this.leftMargin.repositionWindows(%this);
-    %this.rightMargin.repositionWindows(%this);
+    %this.repositionWindows(%this.leftMargin);
+    %this.repositionWindows(%this.rightMargin);
     ConvBub.updateAutoMargins();
 };
 function BuddyHudWin::open(%this) {
     BuddyHudWin.refreshFavoritesList();
     BuddyHudWin.refreshAIMBuddyList();
     BuddyHudWin.clearSelections();
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
 };
 function BuddyHudWin::close(%this) {
-    0.setVisible(%this);
-    if (!($UserPref::AIM::RememberMe)) {
+    %this.setVisible(0);
+    if (!$UserPref::AIM::RememberMe) {
     }
     if (isObject(AIMScreenNameField)) {
-        "".setText(AIMScreenNameField);
+        AIMScreenNameField.setText("");
     }
-    if (!($UserPref::AIM::SavePassword)) {
+    if (!$UserPref::AIM::SavePassword) {
     }
     if (isObject(AIMPasswordField)) {
-        "".setText(AIMPasswordField);
+        AIMPasswordField.setText("");
     }
     PlayGui.focusTopWindow();
     WindowManager.update();
@@ -328,7 +323,7 @@ function toggleGameMgrHudWin() {
     GameMgrHudWin.toggle();
 };
 function GameMgrHudWin::toggle(%this) {
-    if (!("debugActive".rolesPermissionCheckNoWarn($player))) {
+    if (!$player.rolesPermissionCheckNoWarn("debugActive")) {
         return;
     }
     if (%this.isVisible()) {
@@ -338,33 +333,33 @@ function GameMgrHudWin::toggle(%this) {
 };
 function GameMgrHudWin::open(%this) {
     return;
-    if (!("debugActive".rolesPermissionCheckNoWarn($player))) {
+    if (!$player.rolesPermissionCheckNoWarn("debugActive")) {
         return;
     }
-    if (!("gamesCreate".rolesPermissionCheckNoWarn($player))) {
+    if (!$player.rolesPermissionCheckNoWarn("gamesCreate")) {
         return;
     }
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
 };
 function GameMgrHudWin::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     WindowManager.update();
     return 1;
 };
 function PlayerWin::open(%this) {
     if (!($player.getShapeName() $= "")) {
-        "\x04" @ " " @ $player.getShapeName().setText(PlayerWin);
+        PlayerWin.setText("\x04" @ " " @ $player.getShapeName());
     }
-    "\x04Player - Cam!".setText(PlayerWin);
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    PlayerWin.setText("\x04Player - Cam!");
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
 };
 function PlayerWin::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     WindowManager.update();
     return 1;

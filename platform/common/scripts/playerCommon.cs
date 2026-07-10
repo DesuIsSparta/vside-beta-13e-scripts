@@ -1,16 +1,16 @@
 function Player::playCelAnimation(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        "emote_" @ %anim.setActionThread(%this);
+        %this.setActionThread("emote_" @ %anim);
     }
 };
 function Player::playAnim(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        %anim.setActionThread(%this);
+        %this.setActionThread(%anim);
     }
 };
 function Player::playAnimPreRoll(%this, %anim, %preRollMS) {
     if (!(%this.getState() $= "Dead")) {
-        %preRollMS.setActionThreadPreRoll(%this, %anim);
+        %this.setActionThreadPreRoll(%anim, %preRollMS);
     }
 };
 function Player::initGlobalFields(%this) {
@@ -76,26 +76,24 @@ function Player::onDelete(%this) {
     }
     %this.removeFromPlayerInstanceDict();
     if (isObject(geMapHud2DTheOrthoMap)) {
-        %this.playerRemove(geMapHud2DTheOrthoMap);
+        geMapHud2DTheOrthoMap.playerRemove(%this);
     }
     %this.destroyGlobalFields();
     if (isObject(gUserPropMgrServer)) {
-        %this.getShapeName().forgetProperties(gUserPropMgrServer);
+        gUserPropMgrServer.forgetProperties(%this.getShapeName());
     }
 };
 function Player::isInHelpMeMode(%this) {
-    return getSpecialSKU(%this, "helpmebadge").hasActiveSKU(%this);
+    return %this.hasActiveSKU(getSpecialSKU(%this, "helpmebadge"));
 };
 function Player::isHostOrCohost(%this) {
-    if (%this.isHost()) {
-    }
-    return %this.isCohost();
+    return %this.isHost() || %this.isCohost();
 };
 function Player::isHost(%this) {
-    return "host".hasRoleString(%this);
+    return %this.hasRoleString("host");
 };
 function Player::isCohost(%this) {
-    return "cohost".hasRoleString(%this);
+    return %this.hasRoleString("cohost");
 };
 function Player::getOtherGender(%this) {
     %g = %this.getGender();
@@ -109,7 +107,7 @@ function Player::getOtherGender(%this) {
 };
 function Player::onAnimationDone(%this, %anim) {
     if (%this.isServerObject()) {
-        return %anim.onAnimationDoneServer(%this);
+        return %this.onAnimationDoneServer(%anim);
     }
-    return %anim.onAnimationDoneClient(%this);
+    return %this.onAnimationDoneClient(%anim);
 };

@@ -1,12 +1,12 @@
 function TextureManager_OnDelayedLoad(%num) {
     textureLoadingIndicator_initialize();
     if ((%num > 0.0)) {
-        1.setVisible(geTextureLoadingContainer);
-        HUDDarkProfile.setProfile(geTextureLoadingContainer);
+        geTextureLoadingContainer.setVisible(1);
+        geTextureLoadingContainer.setProfile(HUDDarkProfile);
         geTexturesLoadingIcon.resume();
     }
-    0.setVisible(geTextureLoadingContainer);
-    ETSNonModalProfile.setProfile(geTextureLoadingContainer);
+    geTextureLoadingContainer.setVisible(0);
+    geTextureLoadingContainer.setProfile(ETSNonModalProfile);
     geTexturesLoadingIcon.stop();
     WindowManager.update();
 };
@@ -15,18 +15,18 @@ function textureLoadingIndicator_initialize() {
         return;
     }
     %wi = AnimCtrl::newAnimCtrl((getWord(geTextureLoadingContainer.getExtent(), 0) - 19.0) @ " " @ 0, "18 18");
-    120.setDelay(%wi);
-    "platform/client/ui/wait0.png".addFrame(%wi);
-    "platform/client/ui/wait1.png".addFrame(%wi);
-    "platform/client/ui/wait2.png".addFrame(%wi);
-    "platform/client/ui/wait3.png".addFrame(%wi);
-    "platform/client/ui/wait4.png".addFrame(%wi);
-    "platform/client/ui/wait5.png".addFrame(%wi);
-    "platform/client/ui/wait6.png".addFrame(%wi);
-    "platform/client/ui/wait7.png".addFrame(%wi);
-    "geTexturesLoadingIcon".setName(%wi);
-    %wi.add(geTextureLoadingContainer);
-    new GuiMLTextCtrl(geTGF_deets_eventTxtr) {
+    %wi.setDelay(120);
+    %wi.addFrame("platform/client/ui/wait0.png");
+    %wi.addFrame("platform/client/ui/wait1.png");
+    %wi.addFrame("platform/client/ui/wait2.png");
+    %wi.addFrame("platform/client/ui/wait3.png");
+    %wi.addFrame("platform/client/ui/wait4.png");
+    %wi.addFrame("platform/client/ui/wait5.png");
+    %wi.addFrame("platform/client/ui/wait6.png");
+    %wi.addFrame("platform/client/ui/wait7.png");
+    %wi.setName("geTexturesLoadingIcon");
+    geTextureLoadingContainer.add(%wi);
+    geTextureLoadingContainer.add(new GuiMLTextCtrl(geTGF_deets_eventTxtr) {
         profile = "InfoWindowTextProfile";
         position = "0 0";
         extent = (getWord(%wi.getPosition(), 0) - 2.0) @ " " @ 18;
@@ -34,5 +34,5 @@ function textureLoadingIndicator_initialize() {
         vertSizing = "bottom";
         text = mlStyle("<just:right>loading.. ", "loadingHUD");
         autoDetectLinks = 0;
-    };.add(geTextureLoadingContainer);
+    };);
 };

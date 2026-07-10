@@ -4,17 +4,17 @@ function ClosetGuiFUE::open(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEOpenSched");
         cancel(%sched);
-        %sched = open.schedule(%this, 250);
+        %sched = %this.schedule(250, open);
         gSetField(%this, "closetGuiFUEOpenSched", %sched);
         return;
     }
-    if (!(%this.initialized)) {
+    if (!%this.initialized) {
         %this.arrivedAtFinalTip = 0;
         %this.Initialize();
     }
     %this.reposition();
     %this.showAllAsInactive();
-    ClosetTabs.getCurrentTab().name.goToStepByName(%this);
+    %this.goToStepByName(ClosetTabs.getCurrentTab().name);
 };
 function ClosetGuiFUE::close(%this) {
     %this.hide();
@@ -23,15 +23,15 @@ function ClosetGuiFUE::show(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEShowSched");
         cancel(%sched);
-        %sched = show.schedule(%this, 250);
+        %sched = %this.schedule(250, show);
         gSetField(%this, "closetGuiFUEShowSched", %sched);
         return;
     }
-    1.setVisible(%this);
-    ClosetTabs.getCurrentTab().name.goToStepByName(%this);
+    %this.setVisible(1);
+    %this.goToStepByName(ClosetTabs.getCurrentTab().name);
 };
 function ClosetGuiFUE::hide(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
 };
 function ClosetGuiFUE::reposition(%this) {
     %this.position = (((getWord(ClosetGuiPositioner.extent, 0) - 960.0) / 2.0) + 1.0) @ " " @ ((((getWord(ClosetGuiPositioner.extent, 1) - 576.0) - 32.0) / 2.0) + 1.0);
@@ -40,47 +40,47 @@ function ClosetGuiFUE::showAllAsInactive(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEShowAllAsInactiveSched");
         cancel(%sched);
-        %sched = showAllAsInactive.schedule(%this, 250);
+        %sched = %this.schedule(250, showAllAsInactive);
         gSetField(%this, "closetGuiFUEShowAllAsInactiveSched", %sched);
         return;
     }
     %i = 0;
     while ((%i < $gClosetGuiFueStepCount)) {
-        0.setVisible(%i @ "active", %this.stepContainers);
-        if (isObject(%i @ "inactive", %this.stepContainers)) {
-            !(%this.hideTipsCtrl.getValue()).setVisible(%i @ "inactive", %this.stepContainers);
+        %i.setVisible(%this.stepContainers["active"], 0);
+        if (isObject(%i, %this.stepContainers["inactive"])) {
+            %i.setVisible(%this.stepContainers["inactive"], !%this.hideTipsCtrl.getValue());
         }
         %i = (%i + 1.0);
     }
     ClosetGuiFUE.show();
 };
 function ClosetGuiFUE::addStep(%this, %activeContainer, %inactiveContainer) {
-    if (!(isObject(%activeContainer))) {
+    if (!isObject(%activeContainer)) {
         error(getScopeName() @ " " @ "- empty activeContainer object -" @ " " @ getTrace());
         return 0;
     }
     if (!(%inactiveContainer $= "")) {
     }
-    if (!(isObject(%inactiveContainer))) {
+    if (!isObject(%inactiveContainer)) {
         error(getScopeName() @ " " @ "- empty inactiveContainer object -" @ " " @ getTrace());
         return 0;
     }
-    0.setVisible(%activeContainer);
-    %activeContainer.add(%this);
-    %this.stepContainers = %activeContainer TAB $gClosetGuiFueStepCount @ "active";
+    %activeContainer.setVisible(0);
+    %this.add(%activeContainer);
+    %this.stepContainers[$gClosetGuiFueStepCount,"active"] = %activeContainer;
     if (isObject(%inactiveContainer)) {
-        0.setVisible(%inactiveContainer);
-        %inactiveContainer.add(%this);
+        %inactiveContainer.setVisible(0);
+        %this.add(%inactiveContainer);
     }
-    %this.stepContainers = %inactiveContainer TAB $gClosetGuiFueStepCount @ "inactive";
+    %this.stepContainers[$gClosetGuiFueStepCount,"inactive"] = %inactiveContainer;
     $gClosetGuiFueStepCount = ($gClosetGuiFueStepCount + 1.0);
     return 1;
 };
 function ClosetGuiFUE::addStepWithName(%this, %activeContainer, %inactiveContainer, %stepName) {
-    %this.stepNumbersByName = $gClosetGuiFueStepCount @ strlwr(%stepName);
-    if (!(%inactiveContainer.addStep(%this, %activeContainer))) {
+    %this.stepNumbersByName[strlwr(%stepName)] = $gClosetGuiFueStepCount;
+    if (!%this.addStep(%activeContainer, %inactiveContainer)) {
         warn(getScopeName() @ " " @ "- step" @ " " @ %stepName @ " " @ "not added -" @ " " @ getTrace());
-        %this.stepNumbersByName = -(1.0) @ strlwr(%stepName);
+        %this.stepNumbersByName[strlwr(%stepName)] = -(1.0);
         return 0;
     }
     return 1;
@@ -111,20 +111,17 @@ function ClosetGuiFUE::goToStepByName(%this, %stepName) {
     }
     %this.hideCurrentStep();
     if ((%stepName $= "Shops")) {
-        ($gCurrentStoreName $= "").setVisible(closetGuiFUEShopsDirBitmap);
-        !($gCurrentStoreName $= "").setVisible(StoreShoppingBag);
-        !($gCurrentStoreName $= "").setVisible(StoreAddItemsButton);
-        0.setLeaveStoreControlsVisible(ClosetTabs);
+        closetGuiFUEShopsDirBitmap.setVisible(($gCurrentStoreName $= ""));
+        StoreShoppingBag.setVisible(!($gCurrentStoreName $= ""));
+        StoreAddItemsButton.setVisible(!($gCurrentStoreName $= ""));
+        ClosetTabs.setLeaveStoreControlsVisible(0);
     }
-    0.setVisible(closetGuiFUEShopsDirBitmap);
-    $gClosetGuiFueCurrentStep = %this.stepNumbersByName;
-    strlwr(%stepName);
+    closetGuiFUEShopsDirBitmap.setVisible(0);
+    $gClosetGuiFueCurrentStep = %this.stepNumbersByName[strlwr(%stepName)];
     %this.showCurrentStep();
 };
 function ClosetGuiFUE::goToStepByNumber(%this, %stepNumber) {
-    if ((%stepNumber < 0.0)) {
-    }
-    if ((%stepNumber >= $gClosetGuiFueStepCount)) {
+    if ((%stepNumber < 0.0) || (%stepNumber >= $gClosetGuiFueStepCount)) {
         error(getScopeName() @ " " @ "- invalid stepNumber" @ " " @ %stepNumber @ " " @ "-" @ " " @ getTrace());
         return;
     }
@@ -139,28 +136,28 @@ function ClosetGuiFUE::showCurrentStep(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEShowCurrentStepSched");
         cancel(%sched);
-        %sched = showCurrentStep.schedule(%this, 250);
+        %sched = %this.schedule(250, showCurrentStep);
         gSetField(%this, "closetGuiFUEShowCurrentStepSched", %sched);
         return;
     }
-    0.setVisible($gClosetGuiFueCurrentStep @ "inactive", %this.stepContainers);
-    !(%this.hideTipsCtrl.getValue()).setVisible($gClosetGuiFueCurrentStep @ "active", %this.stepContainers);
-    if (!(%this.arrivedAtFinalTip)) {
-        %this.arrivedAtFinalTip = strlwr("Snapshot") @ ($gClosetGuiFueCurrentStep == %this.stepNumbersByName);
+    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["inactive"], 0);
+    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["active"], !%this.hideTipsCtrl.getValue());
+    if (!%this.arrivedAtFinalTip) {
+        %this.arrivedAtFinalTip = ($gClosetGuiFueCurrentStep == %this.stepNumbersByName[strlwr("Snapshot")]);
     }
 };
 function ClosetGuiFUE::hideCurrentStep(%this) {
     if (($gClosetGuiFueCurrentStep == -(1.0))) {
         return;
     }
-    0.setVisible($gClosetGuiFueCurrentStep @ "active", %this.stepContainers);
-    !(%this.hideTipsCtrl.getValue()).setVisible($gClosetGuiFueCurrentStep @ "inactive", %this.stepContainers);
+    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["active"], 0);
+    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["inactive"], !%this.hideTipsCtrl.getValue());
 };
 function ClosetGuiFUE::refresh(%this) {
     if (%this.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUERefreshSched");
         cancel(%sched);
-        %sched = refresh.schedule(%this, 250);
+        %sched = %this.schedule(250, refresh);
         gSetField(%this, "closetGuiFUERefreshSched", %sched);
         return;
     }
@@ -176,7 +173,7 @@ function ClosetGuiFUE::refresh(%this) {
 };
 function ClosetGuiFUE::Initialize(%this) {
     %this.refreshingOrInitializing = 1;
-    if (!(isObject(closetGuiFUEHideTipsCtrl))) {
+    if (!isObject(closetGuiFUEHideTipsCtrl)) {
         %this.hideTipsCtrl = new GuiCheckBoxCtrl(closetGuiFUEHideTipsCtrl) {
             profile = "ETSCheckBoxProfile";
             horizSizing = "right";
@@ -190,11 +187,11 @@ function ClosetGuiFUE::Initialize(%this) {
             groupNum = -1;
             buttonType = "ToggleButton";
         };
-        %this.hideTipsCtrl.add(%this);
+        %this.add(%this.hideTipsCtrl);
     }
     %this.hideTipsCtrl = closetGuiFUEHideTipsCtrl;
-    %this.hideTipsCtrl.add(%this);
-    %buttonPosition = "Body".getTabWithName(ClosetTabs).button.getPosition();
+    %this.add(%this.hideTipsCtrl);
+    %buttonPosition = ClosetTabs.getTabWithName("Body").button.getPosition();
     %newActiveStep = new GuiControl("") {
         profile = "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
@@ -246,8 +243,8 @@ function ClosetGuiFUE::Initialize(%this) {
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step3_inactive";
     };
-    "Body".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %buttonPosition = "Closet".getTabWithName(ClosetTabs).button.getPosition();
+    %this.addStepWithName(%newActiveStep, %newInactiveStep, "Body");
+    %buttonPosition = ClosetTabs.getTabWithName("Closet").button.getPosition();
     %newActiveStep = new GuiControl("") {
         profile = "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
@@ -290,11 +287,11 @@ function ClosetGuiFUE::Initialize(%this) {
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step2_inactive";
     };
-    "Closet".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    if (!(ClosetTabs.tabShopsInitialized)) {
+    %this.addStepWithName(%newActiveStep, %newInactiveStep, "Closet");
+    if (!ClosetTabs.tabShopsInitialized) {
         ClosetTabs.fillStoreTab();
     }
-    %button = "Shops".getTabWithName(ClosetTabs).button;
+    %button = ClosetTabs.getTabWithName("Shops").button;
     %buttonPosition = %button.getPosition();
     %newActiveStep = new GuiControl("") {
         profile = "ETSNonModalProfile";
@@ -317,7 +314,7 @@ function ClosetGuiFUE::Initialize(%this) {
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step1_active";
     };
-    if (!(isObject(closetGuiFUEShopsDirBitmap))) {
+    if (!isObject(closetGuiFUEShopsDirBitmap)) {
         %this.shopsDirBitmap = new GuiBitmapCtrl(closetGuiFUEShopsDirBitmap) {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
@@ -329,10 +326,10 @@ function ClosetGuiFUE::Initialize(%this) {
             visible = ($gCurrentStoreName $= "");
             bitmap = "platform/client/ui/closetGuiFUE_shop_active_shopsDir";
         };
-        %this.shopsDirBitmap.add(%this);
+        %this.add(%this.shopsDirBitmap);
     }
     %this.shopsDirBitmap = closetGuiFUEShopsDirBitmap;
-    %this.shopsDirBitmap.add(%this);
+    %this.add(%this.shopsDirBitmap);
     %credsBitmapCtrl = new GuiBitmapCtrl(closetGuiFUE_vPoints_vBux_Image) {
         profile = "ETSNonModalProfile";
         horizSizing = "right";
@@ -344,7 +341,7 @@ function ClosetGuiFUE::Initialize(%this) {
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_shop_active_creds";
     };
-    %credsBitmapCtrl.add(%newActiveStep);
+    %newActiveStep.add(%credsBitmapCtrl);
     %newInactiveStep = new GuiControl("") {
         profile = "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
@@ -366,8 +363,8 @@ function ClosetGuiFUE::Initialize(%this) {
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step1_inactive";
     };
-    "Shops".addStepWithName(%this, %newActiveStep, %newInactiveStep);
-    %buttonPosition = "Snapshot".getTabWithName(ClosetTabs).button.getPosition();
+    %this.addStepWithName(%newActiveStep, %newInactiveStep, "Shops");
+    %buttonPosition = ClosetTabs.getTabWithName("Snapshot").button.getPosition();
     %newActiveStep = new GuiControl("") {
         profile = "ETSNonModalProfile";
         horizSizing = ClosetGuiFUE.horizSizing;
@@ -430,7 +427,7 @@ function ClosetGuiFUE::Initialize(%this) {
         visible = 1;
         bitmap = "platform/client/ui/closetGuiFUE_step5_inactive";
     };
-    "Snapshot".addStepWithName(%this, %newActiveStep, %newInactiveStep);
+    %this.addStepWithName(%newActiveStep, %newInactiveStep, "Snapshot");
     %this.refreshingOrInitializing = 0;
     %this.initialized = 1;
 };
@@ -444,15 +441,15 @@ function closetGuiFUEHideTipsCtrl::hideTips(%this) {
     if (ClosetGuiFUE.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched");
         cancel(%sched);
-        %sched = showOrHideTips.schedule(%this, 250);
+        %sched = %this.schedule(250, showOrHideTips);
         gSetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched", %sched);
         return;
     }
     %i = 0;
     while ((%i < $gClosetGuiFueStepCount)) {
-        0.setVisible(%i @ "active", ClosetGuiFUE.stepContainers);
-        if (isObject(%i @ "inactive", ClosetGuiFUE.stepContainers)) {
-            0.setVisible(%i @ "inactive", ClosetGuiFUE.stepContainers);
+        %i.setVisible(ClosetGuiFUE.stepContainers["active"], 0);
+        if (isObject(%i, ClosetGuiFUE.stepContainers["inactive"])) {
+            %i.setVisible(ClosetGuiFUE.stepContainers["inactive"], 0);
         }
         %i = (%i + 1.0);
     }
@@ -461,15 +458,15 @@ function closetGuiFUEHideTipsCtrl::showTips(%this) {
     if (ClosetGuiFUE.refreshingOrInitializing) {
         %sched = gGetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched");
         cancel(%sched);
-        %sched = showOrHideTips.schedule(%this, 250);
+        %sched = %this.schedule(250, showOrHideTips);
         gSetField(%this, "closetGuiFUEHideTipsCtrlShowOrHideTipsSched", %sched);
         return;
     }
     %i = 0;
     while ((%i < $gClosetGuiFueStepCount)) {
-        (%i == $gClosetGuiFueCurrentStep).setVisible(%i @ "active", ClosetGuiFUE.stepContainers);
-        if (isObject(%i @ "inactive", ClosetGuiFUE.stepContainers)) {
-            (%i != $gClosetGuiFueCurrentStep).setVisible(%i @ "inactive", ClosetGuiFUE.stepContainers);
+        %i.setVisible(ClosetGuiFUE.stepContainers["active"], (%i == $gClosetGuiFueCurrentStep));
+        if (isObject(%i, ClosetGuiFUE.stepContainers["inactive"])) {
+            %i.setVisible(ClosetGuiFUE.stepContainers["inactive"], (%i != $gClosetGuiFueCurrentStep));
         }
         %i = (%i + 1.0);
     }

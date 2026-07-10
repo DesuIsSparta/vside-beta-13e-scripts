@@ -30,71 +30,71 @@ new StringMap(ThumbCategories) {
     ignoreCase = 1;
 };
 if (isObject(MissionCleanup)) {
-    ThumbCategories.add(MissionCleanup);
+    MissionCleanup.add(ThumbCategories);
 }
-"torso torsob legs legsb feet ear neck neckb neckc chest waist waistb wristleft wristleftb wristright wristrightb fingerleft fingerright toeleft toeright glasses back hat mask tail purse props badges tokens".put(ThumbCategories, "all items");
-"torso torsob chest legs legsb feet".put(ThumbCategories, "all garments");
-"ear neck neckb neckc waist waistb wristleft wristleftb wristright wristrightb fingerleft fingerright toeleft toeright chest back hat tail mask purse props badges".put(ThumbCategories, "all accessories");
-"face faceb eyes skin hair".put(ThumbCategories, "all features");
-"torso torsob chest".put(ThumbCategories, "tops");
-"legs legsb".put(ThumbCategories, "bottoms");
-"hair hat".put(ThumbCategories, "hair");
-"feet toeleft toeright".put(ThumbCategories, "shoes");
-"ear".put(ThumbCategories, "ear");
-"neck neckb neckc".put(ThumbCategories, "neck");
-"waist waistb".put(ThumbCategories, "waist");
-"wristleft wristleftb wristright wristrightb fingerleft fingerright".put(ThumbCategories, "hands");
-"purse".put(ThumbCategories, "bags");
-"chest back hat tail mask".put(ThumbCategories, "misc");
-"earl labret lftauricle lftconch lfteyebrow lftlobe lftorbital lftpinna lftrook lfttragus rghauricle rghconch rgheyebrow rghlobe rghorbital rghpinna rghrook rghtragus lowlip madonna medusa nostril septum".put(ThumbCategories, "bodymod");
-"glasses".put(ThumbCategories, "glasses");
-"face faceb".put(ThumbCategories, "face");
-"eyes".put(ThumbCategories, "eyes");
-"skin".put(ThumbCategories, "skin");
-"props".put(ThumbCategories, "props");
-"badges".put(ThumbCategories, "badges");
-"tokens".put(ThumbCategories, "tokens");
+ThumbCategories.put("all items", "torso torsob legs legsb feet ear neck neckb neckc chest waist waistb wristleft wristleftb wristright wristrightb fingerleft fingerright toeleft toeright glasses back hat mask tail purse props badges tokens");
+ThumbCategories.put("all garments", "torso torsob chest legs legsb feet");
+ThumbCategories.put("all accessories", "ear neck neckb neckc waist waistb wristleft wristleftb wristright wristrightb fingerleft fingerright toeleft toeright chest back hat tail mask purse props badges");
+ThumbCategories.put("all features", "face faceb eyes skin hair");
+ThumbCategories.put("tops", "torso torsob chest");
+ThumbCategories.put("bottoms", "legs legsb");
+ThumbCategories.put("hair", "hair hat");
+ThumbCategories.put("shoes", "feet toeleft toeright");
+ThumbCategories.put("ear", "ear");
+ThumbCategories.put("neck", "neck neckb neckc");
+ThumbCategories.put("waist", "waist waistb");
+ThumbCategories.put("hands", "wristleft wristleftb wristright wristrightb fingerleft fingerright");
+ThumbCategories.put("bags", "purse");
+ThumbCategories.put("misc", "chest back hat tail mask");
+ThumbCategories.put("bodymod", "earl labret lftauricle lftconch lfteyebrow lftlobe lftorbital lftpinna lftrook lfttragus rghauricle rghconch rgheyebrow rghlobe rghorbital rghpinna rghrook rghtragus lowlip madonna medusa nostril septum");
+ThumbCategories.put("glasses", "glasses");
+ThumbCategories.put("face", "face faceb");
+ThumbCategories.put("eyes", "eyes");
+ThumbCategories.put("skin", "skin");
+ThumbCategories.put("props", "props");
+ThumbCategories.put("badges", "badges");
+ThumbCategories.put("tokens", "tokens");
 SkuManager.buildSkusSearchText();
 new StringMap(ThumbCategoriesOrder);
 if (isObject(MissionCleanup)) {
-    ThumbCategoriesOrder.add(MissionCleanup);
+    MissionCleanup.add(ThumbCategoriesOrder);
 }
 %n = 0;
-"tops".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "tops");
 %n = (%n + 1.0);
-"bottoms".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "bottoms");
 %n = (%n + 1.0);
-"hair".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "hair");
 %n = (%n + 1.0);
-"shoes".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "shoes");
 %n = (%n + 1.0);
-"ear".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "ear");
 %n = (%n + 1.0);
-"neck".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "neck");
 %n = (%n + 1.0);
-"waist".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "waist");
 %n = (%n + 1.0);
-"hands".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "hands");
 %n = (%n + 1.0);
-"bags".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "bags");
 %n = (%n + 1.0);
-"props".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "props");
 %n = (%n + 1.0);
-"misc".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "misc");
 %n = (%n + 1.0);
-"bodymod".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "bodymod");
 %n = (%n + 1.0);
-"glasses".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "glasses");
 %n = (%n + 1.0);
-"face".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "face");
 %n = (%n + 1.0);
-"eyes".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "eyes");
 %n = (%n + 1.0);
-"skin".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "skin");
 %n = (%n + 1.0);
-"badges".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "badges");
 %n = (%n + 1.0);
-"tokens".put(ThumbCategoriesOrder, %n);
+ThumbCategoriesOrder.put(%n, "tokens");
 %n = (%n + 1.0);
 $tmpGender = "f";
 $tmpGender["0 0 0.0 1.7 35" @ $ThumbCamParams TAB $tmpGender @ "fullbody"] = ;
@@ -239,19 +239,19 @@ $shopBannerCacheCleared["threezee"] = 0;
 $shopBannerCacheCleared["yjl"] = 0;
 $shopBannerCacheCleared["vhd"] = 0;
 $shopBannerCacheCleared["vbar"] = 0;
-if (!(isObject(ClosetTabs))) {
+if (!isObject(ClosetTabs)) {
     new ScriptObject(ClosetTabs) {
         class = "TabControl";
     };
     if (isObject(MissionCleanup)) {
-        ClosetTabs.add(MissionCleanup);
+        MissionCleanup.add(ClosetTabs);
     }
 }
 function Closet::skuListHasCategory(%list, %category) {
-    %drawers = %category.get(ThumbCategories);
+    %drawers = ThumbCategories.get(%category);
     %n = (getWordCount(%drawers) - 1.0);
     while ((%n >= 0.0)) {
-        if (getWord(%drawers, %n).skuListHasDrawer(SkuManager, %list)) {
+        if (SkuManager.skuListHasDrawer(%list, getWord(%drawers, %n))) {
             return 1;
         }
         %n = (%n - 1.0);
@@ -259,14 +259,14 @@ function Closet::skuListHasCategory(%list, %category) {
     return 0;
 };
 function ClosetTabs::setup(%this) {
-    if (!(%this.initialized)) {
+    if (!%this.initialized) {
         %this.initializing = 1;
-        "horizontal".Initialize(%this, ClosetTabContainer, "103 21", "", "");
-        "platform/client/buttons/closet_tab".newTab(%this, "Shops");
-        "platform/client/buttons/closet_tab".newTab(%this, "Closet");
-        "platform/client/buttons/closet_tab".newTab(%this, "Body");
-        "platform/client/buttons/closet_tab".newTab(%this, "Snapshot");
-        "platform/client/buttons/closet_tab".newTab(%this, "My Designs");
+        %this.Initialize(ClosetTabContainer, "103 21", "", "", "horizontal");
+        %this.newTab("Shops", "platform/client/buttons/closet_tab");
+        %this.newTab("Closet", "platform/client/buttons/closet_tab");
+        %this.newTab("Body", "platform/client/buttons/closet_tab");
+        %this.newTab("Snapshot", "platform/client/buttons/closet_tab");
+        %this.newTab("My Designs", "platform/client/buttons/closet_tab");
         ClosetGui.lastTabOpened = "";
         ClosetGui.numberOfPurchasesAwaitingCompletion = 0;
         ClosetGui.numberOfPurchasesPastTimeout = 0;
@@ -318,58 +318,52 @@ $BodyStanceGroup = 286331157;
 $ClosetHangersGroup = 286331158;
 function ClosetTabs::tabSelected(%this, %tab) {
     ClosetGui.lastTabOpened = %tab.name;
-    if ((%tab.name $= "CLOSET")) {
+    if ((%tab.name $= "CLOSET") || (%tab.name $= "BODY") || (%tab.name $= "SHOPS") || (%tab.name $= "MY DESIGNS")) {
+        ClosetMainObjectView.setVisible(1);
+        ClosetMainObjectView.setOrbitDist(3.2);
+        ClosetMainObjectView.setLookAtNudge("0 0 0.1");
+        ClosetMainObjectView.setLightDirection("0 3 -2");
+        %tab.add(ClosetMainBadgeView);
+        %tab.bringToFront(ClosetMainBadgeView);
+        ClosetMainBadgeView.setVisible(1);
+        %tab.add(ClosetMainObjectViewContainer);
+        %tab.bringToFront(ClosetMainObjectViewContainer);
+        %tab.add(ClosetMainObjectZoomOutButton);
+        %tab.bringToFront(ClosetMainObjectZoomOutButton);
     }
-    if ((%tab.name $= "BODY")) {
-    }
-    if ((%tab.name $= "SHOPS")) {
-    }
-    if ((%tab.name $= "MY DESIGNS")) {
-        1.setVisible(ClosetMainObjectView);
-        3.2.setOrbitDist(ClosetMainObjectView);
-        "0 0 0.1".setLookAtNudge(ClosetMainObjectView);
-        "0 3 -2".setLightDirection(ClosetMainObjectView);
-        ClosetMainBadgeView.add(%tab);
-        ClosetMainBadgeView.bringToFront(%tab);
-        1.setVisible(ClosetMainBadgeView);
-        ClosetMainObjectViewContainer.add(%tab);
-        ClosetMainObjectViewContainer.bringToFront(%tab);
-        ClosetMainObjectZoomOutButton.add(%tab);
-        ClosetMainObjectZoomOutButton.bringToFront(%tab);
-    }
-    0.setVisible(ClosetMainObjectView);
-    1.setVisible(ClosetMainBadgeView);
+    ClosetMainObjectView.setVisible(0);
+    ClosetMainBadgeView.setVisible(1);
     if (isObject(%tab.hiliteStrip)) {
         %offset = %this.getInitialButtonOffset();
         %xoffset = getWord(%offset, 0);
         %yoffset = (getWord(%offset, 1) - 2.0);
-        2.resize(%tab.hiliteStrip, %xoffset, %yoffset, %this.visibleTabsWidth);
+        %tab.hiliteStrip.resize(%xoffset, %yoffset, %this.visibleTabsWidth, 2);
     }
     if ((%tab.name $= "BODY")) {
-        "p".setGenre($player);
-        if (!(%this.tabBodyInitialized)) {
+        $player.setGenre("p");
+        if (!%this.tabBodyInitialized) {
             %this.fillBodyTab();
         }
         BodyFeaturesPopup.rebuildPopupList();
         BodyItemsFrame.update();
-        %this.createFilterWidget().add(%tab);
+        %tab.add(%this.createFilterWidget());
         ClosetMainObjectView.systemDragDrop = 0;
         ClosetTabs.updateBodyTabDisplay();
     }
     if ((%tab.name $= "CLOSET")) {
-        "p".setGenre($player);
-        if (!(%this.tabClosetInitialized)) {
+        $player.setGenre("p");
+        if (!%this.tabClosetInitialized) {
             %this.fillClosetTab();
         }
-        getFilteredInventoryForSetDrawers().update(ClosetBrandPopup);
+        ClosetBrandPopup.update(getFilteredInventoryForSetDrawers());
         if ((ClosetBrandPopup.size() > 0.0)) {
-            0.SetSelected(ClosetBrandPopup);
+            ClosetBrandPopup.SetSelected(0);
         }
         ClosetItemsFrame.update();
-        %this.createFilterWidget().add(%tab);
-        %this.createAuthorWidget().add(%tab);
-        "".reparentSameSize(%this.createWhatYourWearingPanel(), ClosetWhatYourWearingContainer);
-        "You Are Wearing".setTextWithStyle(ClosetWhatYoureWearingTitle);
+        %tab.add(%this.createFilterWidget());
+        %tab.add(%this.createAuthorWidget());
+        %this.createWhatYourWearingPanel().reparentSameSize(ClosetWhatYourWearingContainer, "");
+        ClosetWhatYoureWearingTitle.setTextWithStyle("You Are Wearing");
         ClosetWhatYoureWearingList.filterByRemovable = 1;
         ClosetMainObjectView.systemDragDrop = 0;
         %outfitNames = [$player.getGender()];
@@ -377,134 +371,134 @@ function ClosetTabs::tabSelected(%this, %tab) {
         %i = 0;
         while ((%i < $gClosetNumOutfits)) {
             %name = getWord(%outfitNames, %i);
-            %objectView = %i.getOutfitObjectView(ClosetTabs);
-            $player.setSimObject(%objectView);
-            $ClosetSkusBody @ " " @ %name[$ClosetSkusOutfit @ %name].setSkus(%objectView);
+            %objectView = ClosetTabs.getOutfitObjectView(%i);
+            %objectView.setSimObject($player);
+            %objectView.setSkus($ClosetSkusBody @ " " @ %name[$ClosetSkusOutfit @ %name]);
             %i = (%i + 1.0);
         }
         %outfitNum = findWord($Player::HangerNames, [$player.getGender()], $ClosetOutfitName);
         (%i < $gClosetNumOutfits);
-        %outfitNum.getOutfitButton(ClosetTabs).performClick();
+        ClosetTabs.getOutfitButton(%outfitNum).performClick();
     }
     if ((%tab.name $= "SHOPS")) {
-        "p".setGenre($player);
-        if (!(%this.tabShopsInitialized)) {
+        $player.setGenre("p");
+        if (!%this.tabShopsInitialized) {
             %this.fillStoreTab();
         }
         if (!(StoreExpirationLegend.lastStore $= $gCurrentStoreName)) {
             StoreExpirationLegend.lastStore = $gCurrentStoreName;
-            0.setVisible(StoreExpirationLegend);
+            StoreExpirationLegend.setVisible(0);
         }
-        "Shops".showTabWithName(%this);
+        %this.showTabWithName("Shops");
         StoreBalanceText.update();
-        "".setBaseDesc(StoreShortDescText);
-        "".setBaseDesc(StoreLongDescText);
+        StoreShortDescText.setBaseDesc("");
+        StoreLongDescText.setBaseDesc("");
         if (!($gCurrentStoreName $= "")) {
-            0.setLeaveStoreControlsVisible(ClosetTabs);
-            1.setStoreControlsVisible(ClosetTabs);
-            Inventory::getCurrentStoreName().setText(StoreNameDescFrame.nameCtrl);
-            Inventory::getCurrentStoreDescInCloset().setText(StoreNameDescFrame.descCtrl);
+            ClosetTabs.setLeaveStoreControlsVisible(0);
+            ClosetTabs.setStoreControlsVisible(1);
+            StoreNameDescFrame.nameCtrl.setText(Inventory::getCurrentStoreName());
+            StoreNameDescFrame.descCtrl.setText(Inventory::getCurrentStoreDescInCloset());
             %storename = getCurrentStoreID();
             %bannerRsrc = "";
             if (!(%storename $= "")) {
                 removeShopBannerCache(%storename);
                 %bannerRsrc = "platform/client/buttons/banners/store_" @ %storename;
-                "storeads".applyUrl(dlMgr, %bannerRsrc, "dlMgrCallback_ShopTexture", "dlMgrCallback_ShopError", %this);
+                dlMgr.applyUrl(%bannerRsrc, "dlMgrCallback_ShopTexture", "dlMgrCallback_ShopError", %this, "storeads");
             }
             if (!(%bannerRsrc $= "")) {
-                1.setVisible(StoreBannerBrackets);
-                %bannerRsrc.setBitmap(StoreBanner);
+                StoreBannerBrackets.setVisible(1);
+                StoreBanner.setBitmap(%bannerRsrc);
             }
-            0.setVisible(StoreBannerBrackets);
+            StoreBannerBrackets.setVisible(0);
             %bgResource = "";
             if (!(%storename $= "")) {
                 %bgResource = "platform/client/ui/store_backgrounds/store_bg_" @ %storename;
             }
             if (!(%bgResource $= "")) {
-                %bgResource.setBitmap(StoreSpecificBackground);
-                1.setVisible(StoreSpecificBackground);
-                StoreSpecificBackground.bringToFront(%tab);
+                StoreSpecificBackground.setBitmap(%bgResource);
+                StoreSpecificBackground.setVisible(1);
+                %tab.bringToFront(StoreSpecificBackground);
             }
-            0.setVisible(StoreSpecificBackground);
+            StoreSpecificBackground.setVisible(0);
         }
-        0.setStoreControlsVisible(ClosetTabs);
-        !(isInFUE()).setLeaveStoreControlsVisible(ClosetTabs);
-        0.setVisible(StoreSpecificBackground);
-        %this.createFilterWidget().add(%tab);
+        ClosetTabs.setStoreControlsVisible(0);
+        ClosetTabs.setLeaveStoreControlsVisible(!isInFUE());
+        StoreSpecificBackground.setVisible(0);
+        %tab.add(%this.createFilterWidget());
         if (($gCurrentStoreName $= "")) {
-            0.setVisible(%this.createFilterWidget());
+            %this.createFilterWidget().setVisible(0);
         }
-        %this.createAuthorWidget().add(%tab);
+        %tab.add(%this.createAuthorWidget());
         ClosetMainObjectView.systemDragDrop = 0;
         ClosetTabs.refreshStoreTab();
     }
     if ((%tab.name $= "SNAPSHOT")) {
         ClosetGui.doResetGenre();
-        if (!(%this.tabSnapshotInitialized)) {
+        if (!%this.tabSnapshotInitialized) {
             %this.fillProfileTab();
         }
-        %objView = "SNAPSHOT".getTabWithName(ClosetTabs).objView;
-        $player.setSimObject(%objView);
-        ClosetMainObjectView.getSkus().setSkus(%objView);
+        %objView = ClosetTabs.getTabWithName("SNAPSHOT").objView;
+        %objView.setSimObject($player);
+        %objView.setSkus(ClosetMainObjectView.getSkus());
         if (isObject(ClosetGuiFUE)) {
         }
         ProfileSnapRegion.returnClosetGuiFUE = ClosetGuiFUE.visible;
         ProfileBackgroundChooser.Initialize();
-        "0 3 -2".setLightDirection(ProfileObjectView);
-        2.4.setOrbitDist(ProfileObjectView);
+        ProfileObjectView.setLightDirection("0 3 -2");
+        ProfileObjectView.setOrbitDist(2.4);
         ClosetMainObjectView.systemDragDrop = 0;
     }
     if ((%tab.name $= "MY DESIGNS")) {
-        "p".setGenre($player);
-        if (!(%this.tabMyShopInitialized)) {
+        $player.setGenre("p");
+        if (!%this.tabMyShopInitialized) {
             %this.fillMyShopTab();
         }
-        "MY DESIGNS".showTabWithName(%this);
-        %this.createFilterWidget().add(%tab);
-        MyShopTextureInspector.pushToBack(MyShopTextureInspector.getGroup());
+        %this.showTabWithName("MY DESIGNS");
+        %tab.add(%this.createFilterWidget());
+        MyShopTextureInspector.getGroup().pushToBack(MyShopTextureInspector);
         ClosetMainObjectView.systemDragDrop = 1;
-        "".reparentSameSize(%this.createWhatYourWearingPanel(), MyShopWhatYourWearingContainer);
-        "Custom Items".setTextWithStyle(ClosetWhatYoureWearingTitle);
+        %this.createWhatYourWearingPanel().reparentSameSize(MyShopWhatYourWearingContainer, "");
+        ClosetWhatYoureWearingTitle.setTextWithStyle("Custom Items");
         ClosetWhatYoureWearingList.filterByRemovable = 0;
     }
-    !(ClosetGui.isWaitingForPurchaseCompletion()).setActive(%tab.doneButton);
-    !(ClosetGui.isWaitingForPurchaseCompletion()).setActive(%tab.cancelButton);
+    %tab.doneButton.setActive(!ClosetGui.isWaitingForPurchaseCompletion());
+    %tab.cancelButton.setActive(!ClosetGui.isWaitingForPurchaseCompletion());
     if (0) {
         if (isObject(%tab.thumbnails)) {
-            1.makeFirstResponder(%tab.thumbnails);
+            %tab.thumbnails.makeFirstResponder(1);
         }
         %fr = Canvas.getFirstResponder();
         if (isObject(%fr)) {
-            0.makeFirstResponder(%fr);
+            %fr.makeFirstResponder(0);
         }
     }
     if (isObject(ClosetFilterContainer)) {
-        1.makeFirstResponder(ClosetFilterField);
+        ClosetFilterField.makeFirstResponder(1);
     }
     if (!(%tab.name $= "CLOSET")) {
         ClosetGui.updateVisibleAvatar();
     }
-    "".zoomToSKU(ClosetMainObjectView);
+    ClosetMainObjectView.zoomToSKU("");
     if (isInFUE()) {
     }
-    if (!(%this.initializing)) {
-        %tab.name.goToStepByName(ClosetGuiFUE);
+    if (!%this.initializing) {
+        ClosetGuiFUE.goToStepByName(%tab.name);
     }
 };
 function dlMgrCallback_ShopTexture(%dlItem, %unused) {
-    %dlItem.localFilename.setBitmap(StoreBanner);
+    StoreBanner.setBitmap(%dlItem.localFilename);
 };
 function dlMgrCallback_ShopError(%dlItem) {
     log("network", "debug", "Image Download Error!! " @ " " @ %dlItem);
 };
 function ClosetTabs::updateRangeText(%this) {
     %currentTab = %this.getCurrentTab();
-    if (!(isObject(%currentTab))) {
+    if (!isObject(%currentTab)) {
         return;
     }
     %rangeText = %currentTab.rangeText;
     %thumbnails = %currentTab.thumbnails;
-    if (!(isObject(%thumbnails))) {
+    if (!isObject(%thumbnails)) {
         return;
     }
     %cellHeight = (getWord(%thumbnails.childrenExtent, 1) + %thumbnails.spacing);
@@ -515,14 +509,14 @@ function ClosetTabs::updateRangeText(%this) {
     %max = mMin((%min + 7.0), %count);
     if ((%count > 0.0)) {
     }
-    "".setText(%rangeText, %min @ " - " @ %max @ " of " @ %count);
+    %rangeText.setText(%min @ " - " @ %max @ " of " @ %count, "");
     return %closestRow;
 };
 function ClosetTabs::getShortSkuDesc(%this, %sku) {
     if ((%sku <= 0.0)) {
         return "";
     }
-    %skuInfo = %sku.findBySku(SkuManager);
+    %skuInfo = SkuManager.findBySku(%sku);
     %ret = "";
     %ret = %ret @ "<spush><b>" @ %skuInfo.descShrt @ "<spop>";
     return %ret;
@@ -531,7 +525,7 @@ function ClosetTabs::getLongSkuDesc(%this, %sku) {
     if ((%sku <= 0.0)) {
         return "";
     }
-    %skuInfo = %sku.findBySku(SkuManager);
+    %skuInfo = SkuManager.findBySku(%sku);
     %ret = "";
     if (!(trim(%skuInfo.descLong) $= trim(%skuInfo.descShrt))) {
         %ret = %ret @ %skuInfo.descLong;
@@ -564,7 +558,7 @@ function ClosetThumbnails::onCreatedChild(%this, %child) {
         visible = 1;
     };
     if (isObject($player)) {
-        $player.setSimObject(%objectView);
+        %objectView.setSimObject($player);
     }
     %badgeView = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
@@ -617,7 +611,7 @@ function ClosetThumbnails::onCreatedChild(%this, %child) {
         ctrl = %child;
     };
     %frameButton.command = %this.getId() @ ".buttonClicked(" @ %frameButton.getId() @ ");";
-    "ClosetFrameButton".bindClassName(%frameButton);
+    %frameButton.bindClassName("ClosetFrameButton");
     %buttonBacking = new GuiControl("") {
         profile = "ETSWhiteProfile";
         horizSizing = "right";
@@ -794,26 +788,26 @@ function ClosetThumbnails::onCreatedChild(%this, %child) {
         maxChars = -1;
         text = "";
     };
-    %background.add(%child);
-    %ugcStatusIcon.add(%child);
-    %objectView.add(%child);
-    %expiringIcon.add(%child);
-    %badgeView.add(%child);
-    %rarityBitmap.add(%child);
-    %frameButton.add(%child);
-    %logo.add(%child);
-    %frameFader.add(%child);
-    %buyStatus.add(%child);
-    %desc.add(%child);
-    %vpointsPrice.add(%child);
-    %vbuxPrice.add(%child);
-    %totalButton.add(%child);
-    %inStockText.add(%child);
-    %priceFader.add(%child);
-    %availabilityText.add(%child);
-    %buttonBacking.add(%child);
-    %toggleCartButton.add(%child);
-    %buyNowButton.add(%child);
+    %child.add(%background);
+    %child.add(%ugcStatusIcon);
+    %child.add(%objectView);
+    %child.add(%expiringIcon);
+    %child.add(%badgeView);
+    %child.add(%rarityBitmap);
+    %child.add(%frameButton);
+    %child.add(%logo);
+    %child.add(%frameFader);
+    %child.add(%buyStatus);
+    %child.add(%desc);
+    %child.add(%vpointsPrice);
+    %child.add(%vbuxPrice);
+    %child.add(%totalButton);
+    %child.add(%inStockText);
+    %child.add(%priceFader);
+    %child.add(%availabilityText);
+    %child.add(%buttonBacking);
+    %child.add(%toggleCartButton);
+    %child.add(%buyNowButton);
     %child.background = %background;
     %child.objectView = %objectView;
     %child.badgeView = %badgeView;
@@ -839,18 +833,18 @@ function ClosetThumbnails::onCreatedChild(%this, %child) {
     %child.hilited = 0;
     %child.available = 1;
     if (!(getWord(%child.getNamespaceList(), 0) $= "ClosetThumbnailCtrl")) {
-        "ClosetThumbnailCtrl".bindClassName(%child);
+        %child.bindClassName("ClosetThumbnailCtrl");
     }
 };
 function ClosetThumbnails::buttonClicked(%this, %button) {
-    %button.ctrl.sku.toggleSku(ClosetGui);
-    1.makeFirstResponder(%this);
+    ClosetGui.toggleSku(%button.ctrl.sku);
+    %this.makeFirstResponder(1);
 };
 function ClosetThumbnails::getAllSkusInDrawers(%this, %drwrNames) {
     %skus = "";
     %n = 0;
     while ((%n < getWordCount(%drwrNames))) {
-        %s = $player.getGender().filterSkusGender(SkuManager, getWord(%drwrNames, %n).getSkusDrwr(SkuManager));
+        %s = SkuManager.filterSkusGender(SkuManager.getSkusDrwr(getWord(%drwrNames, %n)), $player.getGender());
         %skus = %skus @ " " @ %s;
         %n = (%n + 1.0);
     }
@@ -874,8 +868,8 @@ function getFilteredInventoryForSetDrawers() {
     if ((%inventory $= "no store")) {
         %inventory = "";
     }
-    %skus = $player.getGender().filterSkusGender(SkuManager, %inventory);
-    %skus = $player.getRolesMask().filterSkusRoles(SkuManager, %skus);
+    %skus = SkuManager.filterSkusGender(%inventory, $player.getGender());
+    %skus = SkuManager.filterSkusRoles(%skus, $player.getRolesMask());
     return %skus;
 };
 $gClosetThumbnailsDrawersPrevious = "";
@@ -887,23 +881,23 @@ function ClosetThumbnails::setDrawers(%this, %drwrNames) {
     }
     if (isObject(ClosetBrandPopup)) {
         if (!(ClosetItemsFrame.brand $= "")) {
-            %skus = $gClosetBrandsIntrnl[ClosetItemsFrame.brand].filterSkusBrand(SkuManager, %skus);
+            %skus = SkuManager.filterSkusBrand(%skus, $gClosetBrandsIntrnl[ClosetItemsFrame.brand]);
         }
         $gUpdatingClosetItemPopupFromThumbnailsSetDrawers = 1;
-        %skus.update(ClosetItemPopup);
+        ClosetItemPopup.update(%skus);
         $gUpdatingClosetItemPopupFromThumbnailsSetDrawers = 0;
         if ((%drwrNames $= "")) {
             if ((ClosetItemsFrame.category $= "")) {
                 ClosetItemsFrame.category = "All Items";
             }
             %category = strlwr(ClosetItemsFrame.category);
-            %drwrNames = %category.get(ThumbCategories);
+            %drwrNames = ThumbCategories.get(%category);
         }
     }
     %skusTmp = "";
     %n = (getWordCount(%drwrNames) - 1.0);
     while ((%n >= 0.0)) {
-        %s = getWord(%drwrNames, %n).filterSkusDrwr(SkuManager, %skus);
+        %s = SkuManager.filterSkusDrwr(%skus, getWord(%drwrNames, %n));
         if (!(%s $= "")) {
             %skusTmp = %s @ " " @ %skusTmp;
         }
@@ -911,64 +905,58 @@ function ClosetThumbnails::setDrawers(%this, %drwrNames) {
     }
     %skus = trim(%skusTmp);
     (%n >= 0.0);
-    %skus.setSkus(%this);
+    %this.setSkus(%skus);
 };
 function ClosetThumbnails::setUnfilteredSkus(%this, %skus) {
     %this.unfilteredSkus = %skus;
     %this.refilter();
 };
 function ClosetThumbnails::refilter(%this) {
-    %this.unfilteredSkus.setSkus(%this);
+    %this.setSkus(%this.unfilteredSkus);
 };
 function ClosetThumbnails::setSkus(%this, %skus) {
     %startingPos = %this.getPosition();
     %currentTabName = ClosetTabs.getCurrentTab().name;
     %skus = filterOutSkusToHideInCloset(%skus);
     if ((%currentTabName $= "SHOPS")) {
-        %skus = %skus.filterSkusNonZeroManufactured(SkuManager);
+        %skus = SkuManager.filterSkusNonZeroManufactured(%skus);
     }
     %skus = trim(%skus);
-    if ((%currentTabName $= "CLOSET")) {
-    }
-    if ((%currentTabName $= "SHOPS")) {
-    }
-    if ((%currentTabName $= "BODY")) {
-    }
-    if ((%currentTabName $= "MY DESIGNS")) {
+    if ((%currentTabName $= "CLOSET") || (%currentTabName $= "SHOPS") || (%currentTabName $= "BODY") || (%currentTabName $= "MY DESIGNS")) {
         if (isObject(ClosetFilterField)) {
         }
         %userFilterText = "";
         ClosetFilterField.getValue();
-        %skus = %userFilterText.filterSkusDescription(SkuManager, %skus);
+        %skus = SkuManager.filterSkusDescription(%skus, %userFilterText);
     }
     if (isObject(%this.otherGenderText)) {
         %numSkusOtherGender = getWordCount(%skus);
-        %skus = $player.getGender().filterSkusGender(SkuManager, %skus);
+        %skus = SkuManager.filterSkusGender(%skus, $player.getGender());
         %numSkus = getWordCount(%skus);
         %numSkusOtherGender = (%numSkusOtherGender - %numSkus);
         if ((%numSkusOtherGender == 0.0)) {
         }
         %text = "<just:right>(" @ %numSkusOtherGender @ " in other gender)";
         "";
-        %text.setText(%this.otherGenderText);
+        %this.otherGenderText.setText(%text);
     }
     %numSkus = getWordCount(%skus);
-    %numSkus.setNumChildren(%this);
+    %this.setNumChildren(%numSkus);
     if (isObject(%this.infoText)) {
-        if ((%numSkus != 0.0) && (ClosetTabs.getCurrentTab().name $= "BODY") && !(BodyItemsFrame.features $= "Height")) {
+        if ((ClosetTabs.getCurrentTab().name $= "BODY")) {
         }
-        if (!(BodyItemsFrame.features $= "Stance")) {
-            0.setVisible(%this.infoText);
-            1.setVisible(%this.scroll);
+        if (!(BodyItemsFrame.features $= "Height") || (%numSkus != 0.0) || !(BodyItemsFrame.features $= "Stance")) {
+            %this.infoText.setVisible(0);
+            %this.scroll.setVisible(1);
         }
-        0.setVisible(%this.scroll);
-        1.setVisible(%this.infoText);
-        "no matching items".setText(%this.infoText);
+        %this.scroll.setVisible(0);
+        %this.infoText.setVisible(1);
+        %this.infoText.setText("no matching items");
     }
-    if (!(isObject(ClosetCurrentCamParams))) {
+    if (!isObject(ClosetCurrentCamParams)) {
         new StringMap(ClosetCurrentCamParams);
         if (isObject(MissionCleanup)) {
-            ClosetCurrentCamParams.add(MissionCleanup);
+            MissionCleanup.add(ClosetCurrentCamParams);
         }
     }
     ClosetCurrentCamParams.adjustForHeight();
@@ -978,21 +966,13 @@ function ClosetThumbnails::setSkus(%this, %skus) {
     }
     %n = 0;
     while ((%n < %numSkus)) {
-        %cell = %n.getObject(%this);
+        %cell = %this.getObject(%n);
         %skunum = getWord(%skus, %n);
-        if ((getWordCount(%skunum) < 1.0)) {
-        }
-        if ((getWordCount(%skunum) > 1.0)) {
-        }
-        if ((%skunum == 0.0)) {
-        }
-        if ((%skunum $= 0)) {
-        }
-        if ((%numSkus != getWordCount(%skus))) {
+        if ((getWordCount(%skunum) < 1.0) || (getWordCount(%skunum) > 1.0) || (%skunum == 0.0) || (%skunum $= 0) || (%numSkus != getWordCount(%skus))) {
             error(getScopeName() @ " " @ "- cell#" @ %cell.getId() @ " " @ "- sku #" @ %n @ " " @ "of" @ " " @ %numSkus @ "/" @ getWordCount(%skus) @ " " @ "- skus:" @ " " @ %skunum @ " " @ "- end.");
             error(getScopeName() @ " " @ "- skus:" @ " " @ %skus @ " " @ "- end.");
         }
-        %skunum.setCellSkus(%this, %cell);
+        %this.setCellSkus(%cell, %skunum);
         %n = (%n + 1.0);
     }
     %dkBackground = 0;
@@ -1001,42 +981,42 @@ function ClosetThumbnails::setSkus(%this, %skus) {
     %expiringItemsCount = 0;
     %n = 0;
     while ((%n < %numSkus)) {
-        %cell = %n.getObject(%this);
+        %cell = %this.getObject(%n);
         %skunum = getWord(%skus, %n);
-        %skuItem = %skunum.findBySku(SkuManager);
-        %skuItem.descShrt.setText(%cell.descCtrl);
+        %skuItem = SkuManager.findBySku(%skunum);
+        %cell.descCtrl.setText(%skuItem.descShrt);
         if ((%skuItem.brand $= "roca")) {
-            "platform/client/ui/roca_logo_small".setBitmap(%cell.logo);
+            %cell.logo.setBitmap("platform/client/ui/roca_logo_small");
         }
         if ((%skuItem.brand $= "myet")) {
-            "platform/client/ui/myet_logo_small".setBitmap(%cell.logo);
+            %cell.logo.setBitmap("platform/client/ui/myet_logo_small");
         }
         if ((%skuItem.brand $= "pcd")) {
-            "platform/client/ui/pcd_logo_small".setBitmap(%cell.logo);
+            %cell.logo.setBitmap("platform/client/ui/pcd_logo_small");
         }
         if ((%skuItem.brand $= "staff")) {
-            "platform/client/ui/staff_logo_small".setBitmap(%cell.logo);
+            %cell.logo.setBitmap("platform/client/ui/staff_logo_small");
         }
         if ((%skuItem.brand $= "new")) {
-            "platform/client/ui/new_logo_small".setBitmap(%cell.logo);
+            %cell.logo.setBitmap("platform/client/ui/new_logo_small");
         }
-        "".setBitmap(%cell.logo);
-        if ("new".hasTag(%skuItem)) {
-            "platform/client/ui/new_logo_small".setBitmap(%cell.logo);
+        %cell.logo.setBitmap("");
+        if (%skuItem.hasTag("new")) {
+            %cell.logo.setBitmap("platform/client/ui/new_logo_small");
         }
         if (!(%skuItem.expireTime $= "")) {
-            "platform/client/ui/expiring_icon".setBitmap(%cell.expiringIcon);
-            1.setVisible(%cell.expiringIcon);
+            %cell.expiringIcon.setBitmap("platform/client/ui/expiring_icon");
+            %cell.expiringIcon.setVisible(1);
             %expiringItemsCount = (%expiringItemsCount + 1.0);
         }
-        0.setVisible(%cell.expiringIcon);
+        %cell.expiringIcon.setVisible(0);
         if ((%currentTabName $= "MY DESIGNS")) {
-            ClosetGui_MyShop_GetSkuUGCStatusIcon(%skunum).setBitmap(%cell.ugcStatusIcon);
-            1.setVisible(%cell.ugcStatusIcon);
+            %cell.ugcStatusIcon.setBitmap(ClosetGui_MyShop_GetSkuUGCStatusIcon(%skunum));
+            %cell.ugcStatusIcon.setVisible(1);
         }
-        0.setVisible(%cell.ugcStatusIcon);
-        %skuItem.qty.getRarityBitmap(%this).setBitmap(%cell.rarityBitmap);
-        %skuItem.skuType.isWearableSkuType(SkuManager).setActive(%cell.frameButton);
+        %cell.ugcStatusIcon.setVisible(0);
+        %cell.rarityBitmap.setBitmap(%this.getRarityBitmap(%skuItem.qty));
+        %cell.frameButton.setActive(SkuManager.isWearableSkuType(%skuItem.skuType));
         if ((%this.tab.name $= "SHOPS")) {
             %vpointsSym = "platform/client/ui/vpoints_9";
             %vbuxSym = "platform/client/ui/vbux_9";
@@ -1045,69 +1025,69 @@ function ClosetThumbnails::setSkus(%this, %skus) {
             if ((%vpointsPrice == 0.0)) {
             }
             if ((%vbuxPrice == 0.0)) {
-                "<just:right>free!".setText(%cell.vpointsCtrl);
-                "".setText(%cell.vbuxCtrl);
+                %cell.vpointsCtrl.setText("<just:right>free!");
+                %cell.vbuxCtrl.setText("");
             }
-            "".setText(%cell.vpointsCtrl);
-            "".setText(%cell.vbuxCtrl);
+            %cell.vpointsCtrl.setText("");
+            %cell.vbuxCtrl.setText("");
             if ((%vpointsPrice > 0.0)) {
-                "<bitmap:" @ %vpointsSym @ "> " @ %vpointsPrice.setText(%cell.vpointsCtrl);
+                %cell.vpointsCtrl.setText("<bitmap:" @ %vpointsSym @ "> " @ %vpointsPrice);
             }
             if ((%vbuxPrice > 0.0)) {
-                "<bitmap:" @ %vbuxSym @ "> " @ %vbuxPrice.setText(%cell.vbuxCtrl);
+                %cell.vbuxCtrl.setText("<bitmap:" @ %vbuxSym @ "> " @ %vbuxPrice);
             }
-            1.setVisible(%cell.totalButton);
-            %cell[$gStoreItemsQty @ %cell.sku].GetInStockText(%this).setText(%cell.inStockText);
+            %cell.totalButton.setVisible(1);
+            %cell.inStockText.setText(%this.GetInStockText(%cell[$gStoreItemsQty @ %cell.sku]));
             if ((findWord($Player::inventory, %cell.sku) >= 0.0)) {
-                "platform/client/ui/owned".SetCellAvailability(%this, %cell, 0, 1, "<just:right><color:00bb00>0wn3d!");
+                %this.SetCellAvailability(%cell, 0, 1, "<just:right><color:00bb00>0wn3d!", "platform/client/ui/owned");
             }
             if ((%cell[$gStoreItemsQty @ %cell.sku] == 0.0)) {
-                "".SetCellAvailability(%this, %cell, 0, 0, "<just:right><color:dd0000>Sold Out!");
+                %this.SetCellAvailability(%cell, 0, 0, "<just:right><color:dd0000>Sold Out!", "");
             }
             if ((%skuItem.rspk > (respektScoreToLevel($gMyRespektPoints) + 1.0))) {
-                "platform/client/ui/cantbuy2".SetCellAvailability(%this, %cell, 0, 0, "<just:right><color:bb0000>More Levels!");
+                %this.SetCellAvailability(%cell, 0, 0, "<just:right><color:bb0000>More Levels!", "platform/client/ui/cantbuy2");
             }
             if ((%skuItem.rspk > respektScoreToLevel($gMyRespektPoints))) {
-                "platform/client/ui/cantbuy".SetCellAvailability(%this, %cell, 0, 0, "<just:right><color:dd0000>Next Level!");
+                %this.SetCellAvailability(%cell, 0, 0, "<just:right><color:dd0000>Next Level!", "platform/client/ui/cantbuy");
             }
-            "".SetCellAvailability(%this, %cell, 1, 1, "");
+            %this.SetCellAvailability(%cell, 1, 1, "", "");
         }
-        "".setText(%cell.vpointsCtrl);
-        "".setText(%cell.vbuxCtrl);
+        %cell.vpointsCtrl.setText("");
+        %cell.vbuxCtrl.setText("");
         %cell.available = 0;
         if (!(%currentDrwrName $= %skuItem.drwrName)) {
             %currentDrwrName = %skuItem.drwrName;
-            %dkBackground = !(%dkBackground);
+            %dkBackground = !%dkBackground;
         }
-        %dkBackground ? ClosetDkBackgroundProfile : ClosetLtBackgroundProfile.setProfile(%cell.background);
+        %cell.background.setProfile(%dkBackground ? ClosetDkBackgroundProfile : ClosetLtBackgroundProfile);
         %n = (%n + 1.0);
     }
     if (((%n < %numSkus) @ " " @ %currentTabName $= "SHOPS")) {
     }
     if ((%expiringItemsCount > 0.0)) {
-        1.setVisible(StoreExpirationLegend);
+        StoreExpirationLegend.setVisible(1);
     }
     %this.setSelectedThumbs();
-    (1.0 - getWord(%startingPos, 1)).scrollTo(%this.getParent(), 0);
+    %this.getParent().scrollTo(0, (1.0 - getWord(%startingPos, 1)));
 };
 function ClosetThumbnails::SetCellAvailability(%this, %cell, %showPrice, %canTryOn, %subText, %overlayBitmapName) {
     if (!(%overlayBitmapName $= "")) {
-        %overlayBitmapName.setBitmap(%cell.buyStatus);
-        1.setVisible(%cell.buyStatus);
+        %cell.buyStatus.setBitmap(%overlayBitmapName);
+        %cell.buyStatus.setVisible(1);
     }
-    0.setVisible(%cell.buyStatus);
+    %cell.buyStatus.setVisible(0);
     if (!(%subText $= "")) {
-        1.setVisible(%cell.availabilityText);
-        %subText.setText(%cell.availabilityText);
+        %cell.availabilityText.setVisible(1);
+        %cell.availabilityText.setText(%subText);
         %cell.available = 0;
     }
-    0.setVisible(%cell.availabilityText);
+    %cell.availabilityText.setVisible(0);
     %cell.available = 1;
-    !(%showPrice).setVisible(%cell.priceFader);
+    %cell.priceFader.setVisible(!%showPrice);
     if (%canTryOn) {
     }
-    %cell.SkuItem.skuType.isWearableSkuType(SkuManager).setActive(%cell.frameButton);
-    !(%canTryOn).setVisible(%cell.frameFader);
+    %cell.frameButton.setActive(SkuManager.isWearableSkuType(%cell.SkuItem.skuType));
+    %cell.frameFader.setVisible(!%canTryOn);
 };
 function ClosetThumbnails::getRarityBitmap(%this, %qty) {
     %base = "platform/client/ui/";
@@ -1154,40 +1134,40 @@ function ClosetThumbnails::setCellSkus(%this, %cell, %skus) {
     }
     %skunum = %skus;
     %bodyAndOutfitSkus = $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] @ " " @ $ClosetSkusBody;
-    %skuItem = %skunum.findBySku(SkuManager);
+    %skuItem = SkuManager.findBySku(%skunum);
     %thumb = %cell.objectView;
     %badge = %cell.badgeView;
     %cell.sku = %skunum;
     %cell.SkuItem = %skuItem;
     if ((%skuItem.skuType $= "mesh")) {
-        1.setVisible(%thumb);
-        0.setVisible(%badge);
-        %params = strlwr(%skuItem.drwrName).get(ClosetCurrentCamParams);
+        %thumb.setVisible(1);
+        %badge.setVisible(0);
+        %params = ClosetCurrentCamParams.get(strlwr(%skuItem.drwrName));
         %dist = getWord(%params, 3);
         %fov = getWord(%params, 4);
         %lookAtNudge = getWords(%params, 0, 2);
-        %pskus = %skunum.overlaySkus(SkuManager, %bodyAndOutfitSkus);
+        %pskus = SkuManager.overlaySkus(%bodyAndOutfitSkus, %skunum);
         %thumb.layerSku = %skunum;
         %thumb.consumeMouseWheel = 0;
-        %pskus.setSkus(%thumb);
-        ClosetMainObjectView.makeSlaveOf(%thumb);
-        $player.setSimObject(%thumb);
-        "0 3 -2".setLightDirection(%thumb);
-        %lookAtNudge.setLookAtNudge(%thumb);
-        %dist.setOrbitDist(%thumb);
-        %fov.setFOV(%thumb);
+        %thumb.setSkus(%pskus);
+        %thumb.makeSlaveOf(ClosetMainObjectView);
+        %thumb.setSimObject($player);
+        %thumb.setLightDirection("0 3 -2");
+        %thumb.setLookAtNudge(%lookAtNudge);
+        %thumb.setOrbitDist(%dist);
+        %thumb.setFOV(%fov);
     }
     if ((%skuItem.skuType $= "badge")) {
-        0.setVisible(%thumb);
-        1.setVisible(%badge);
+        %thumb.setVisible(0);
+        %badge.setVisible(1);
         %bitmapName = %skuItem.getBitmapPath();
-        %bitmapName.setBitmap(%badge);
+        %badge.setBitmap(%bitmapName);
     }
     if ((%skuItem.skuType $= "token")) {
-        0.setVisible(%thumb);
-        1.setVisible(%badge);
+        %thumb.setVisible(0);
+        %badge.setVisible(1);
         %bitmapName = %skuItem.getBitmapPath();
-        %bitmapName.setBitmap(%badge);
+        %badge.setBitmap(%bitmapName);
     }
     if ((%skuItem.skuType $= "swatch")) {
         error("swatch in the closet!" @ " " @ %skunum);
@@ -1206,19 +1186,19 @@ function ClosetCurrentCamParams::adjustForHeight(%this) {
             %vNudge = (%vNudge + ((%vNudge + 1.0) * ($UserPref::Player::height - 1.0)));
             %params = setWord(%params, 2, %vNudge);
         }
-        %params.put(%this, %drawer);
+        %this.put(%drawer, %params);
         %i = (%i + 1.0);
     }
 };
 function ClosetMainObjectView::zoomToSKU(%this, %sku) {
     if ((%sku $= "")) {
         %drawer = "fullbody";
-        0.setVisible(ClosetMainObjectZoomOutButton);
+        ClosetMainObjectZoomOutButton.setVisible(0);
     }
-    %drawer = %sku.findBySku(SkuManager).drwrName;
-    1.setVisible(ClosetMainObjectZoomOutButton);
-    %params = %drawer.get(ClosetCurrentCamParams);
-    %params.setCamParams(%this);
+    %drawer = SkuManager.findBySku(%sku).drwrName;
+    ClosetMainObjectZoomOutButton.setVisible(1);
+    %params = ClosetCurrentCamParams.get(%drawer);
+    %this.setCamParams(%params);
 };
 function GuiObjectView::setCamParams(%this, %params) {
     if ((%params $= "")) {
@@ -1230,17 +1210,17 @@ function GuiObjectView::setCamParams(%this, %params) {
     if (!(%this.fovFac $= "")) {
         %fov = (%fov * %this.fovFac);
     }
-    "0 3 -2".setLightDirection(%this);
-    %lookAtNudge.setLookAtNudge(%this);
-    %dist.setOrbitDist(%this);
-    %fov.setFOV(%this);
+    %this.setLightDirection("0 3 -2");
+    %this.setLookAtNudge(%lookAtNudge);
+    %this.setOrbitDist(%dist);
+    %this.setFOV(%fov);
 };
 function ClosetThumbnails::SetSelected(%this, %cell, %selected) {
     %cell.selected = %selected;
     %buttonsDir = "platform/client/buttons/";
     %selString = %cell.selected ? "_sel" : "";
     %hiString = %cell.hilited ? "_hi" : "";
-    %buttonsDir @ "frame" @ %selString @ %hiString.setBitmap(%cell.frameButton);
+    %cell.frameButton.setBitmap(%buttonsDir @ "frame" @ %selString @ %hiString);
 };
 function ClosetThumbnails::setSelectedThumbs(%this) {
     if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
@@ -1250,9 +1230,9 @@ function ClosetThumbnails::setSelectedThumbs(%this) {
     %numThumbs = %this.getCount();
     %n = 0;
     while ((%n < %numThumbs)) {
-        %cell = %n.getObject(%this);
+        %cell = %this.getObject(%n);
         %selected = (findWord(%selectedSkus, %cell.sku) >= 0.0);
-        %selected.SetSelected(%this, %cell);
+        %this.SetSelected(%cell, %selected);
         %n = (%n + 1.0);
     }
 };
@@ -1263,10 +1243,10 @@ function ClosetThumbnailCtrl::onHilite(%this) {
         return;
     }
     %this.frameButton.mouseOver = 1;
-    %this.scrollToCell(%this.thumbnails.scroll);
-    %si = %this.sku.findBySku(SkuManager);
-    %descShort = %this.sku.getShortSkuDesc(ClosetTabs);
-    %descLong = %this.sku.getLongSkuDesc(ClosetTabs);
+    %this.thumbnails.scroll.scrollToCell(%this);
+    %si = SkuManager.findBySku(%this.sku);
+    %descShort = ClosetTabs.getShortSkuDesc(%this.sku);
+    %descLong = ClosetTabs.getLongSkuDesc(%this.sku);
     if ($DevPref::Closet::skuDeets) {
         %descLong = %descLong @ "<font:Courier New:14>";
         %descLong = %descLong @ "\n" @ "sku    = " @ " " @ %si.skuNumber;
@@ -1276,28 +1256,28 @@ function ClosetThumbnailCtrl::onHilite(%this) {
         %descLong = %descLong @ "\n" @ "roles  = " @ " " @ roles::getRoleStrings(%si.rolesMask);
         %descLong = %descLong @ "\n" @ "bornW/ = " @ " " @ %si.born;
         %descLong = %descLong @ "\n" @ "rspkt  = " @ " " @ %si.rspk;
-        %descLong = %descLong @ "\n" @ "tags   = " @ " " @ %si.skuNumber.getSkuTags(SkuManager);
+        %descLong = %descLong @ "\n" @ "tags   = " @ " " @ SkuManager.getSkuTags(%si.skuNumber);
     }
     if (isObject(BodyLongDescText)) {
-        %descShort.setText(BodyShortDescText);
-        %descLong.setText(BodyLongDescText);
+        BodyShortDescText.setText(%descShort);
+        BodyLongDescText.setText(%descLong);
     }
     if (isObject(ClosetLongDescText)) {
-        %descShort.setText(ClosetShortDescText);
-        %descLong.setText(ClosetLongDescText);
+        ClosetShortDescText.setText(%descShort);
+        ClosetLongDescText.setText(%descLong);
     }
     if (isObject(StoreLongDescText)) {
-        %descShort.setText(StoreShortDescText);
-        %descLong.setText(StoreLongDescText);
+        StoreShortDescText.setText(%descShort);
+        StoreLongDescText.setText(%descLong);
     }
-    %this.sku.updateAuthorWidget(ClosetTabs);
+    ClosetTabs.updateAuthorWidget(%this.sku);
     if (%this.available) {
     }
     if ((%this.thumbnails == ClosetThumbnailsShop.getId())) {
         if (!($gClosetThumbnailStoreHighlightTimer $= "")) {
             cancel($gClosetThumbnailStoreHighlightTimer);
         }
-        $gClosetThumbnailStoreHighlightTimer = "onHiliteStore".schedule(%this, $gClosetThumbnailStoreHighlightDelayMS);
+        $gClosetThumbnailStoreHighlightTimer = %this.schedule($gClosetThumbnailStoreHighlightDelayMS, "onHiliteStore");
     }
 };
 function ClosetThumbnailCtrl::onHiliteStore(%this) {
@@ -1308,24 +1288,24 @@ function ClosetThumbnailCtrl::onHiliteStore(%this) {
     %this.hilited = 1;
     %buttonsDir = "platform/client/buttons/";
     %frameBitmap = %this.selected ? "frame_sel" : "frame";
-    %cartBitmap = %this.sku.containsSku(StoreShoppingList) ? "removeFromCart" : "add2cart";
-    %buttonsDir @ %frameBitmap @ "_hi".setBitmap(%this.frameButton);
-    1.setVisible(%this.toggleCartButton);
-    %buttonsDir @ %cartBitmap.setBitmap(%this.toggleCartButton);
-    1.setVisible(%this.buyNowButton);
-    1.setVisible(%this.buttonBacking);
+    %cartBitmap = StoreShoppingList.containsSku(%this.sku) ? "removeFromCart" : "add2cart";
+    %this.frameButton.setBitmap(%buttonsDir @ %frameBitmap @ "_hi");
+    %this.toggleCartButton.setVisible(1);
+    %this.toggleCartButton.setBitmap(%buttonsDir @ %cartBitmap);
+    %this.buyNowButton.setVisible(1);
+    %this.buttonBacking.setVisible(1);
     if (isObject(StoreItemDescHiliteFrame)) {
-        1.setVisible(StoreItemDescHiliteFrame);
+        StoreItemDescHiliteFrame.setVisible(1);
     }
     if (isObject(StoreFloatingHiliteFrame)) {
-        1.setVisible(StoreFloatingHiliteFrame);
+        StoreFloatingHiliteFrame.setVisible(1);
         %screenPos = StoreFloatingHiliteFrame.getScreenPosition();
         %pos = StoreFloatingHiliteFrame.getPosition();
         %offsetX = (getWord(%screenPos, 0) - getWord(%pos, 0));
         %offsetY = (getWord(%screenPos, 1) - getWord(%pos, 1));
         %newPosX = ((getWord(%this.getScreenPosition(), 0) - %offsetX) - 9.0);
         %newPosY = ((getWord(%this.getScreenPosition(), 1) - %offsetY) - 4.0);
-        %newPosY.reposition(StoreFloatingHiliteFrame, %newPosX);
+        StoreFloatingHiliteFrame.reposition(%newPosX, %newPosY);
         %scroll = %this.thumbnails.scroll;
         %padding = 10;
         %minx = (getWord(%scroll.getScreenPosition(), 0) - %padding);
@@ -1342,25 +1322,25 @@ function ClosetThumbnailCtrl::onHiliteStore(%this) {
         }
         if ((%posY >= %minY)) {
         }
-        ((%posY + %height) <= %maxy).setVisible(StoreFloatingHiliteFrame);
+        StoreFloatingHiliteFrame.setVisible(((%posY + %height) <= %maxy));
     }
 };
 function ClosetThumbnailCtrl::onUnhilite(%this) {
     %this.frameButton.mouseOver = 0;
     if (0) {
         if (isObject(BodyLongDescText)) {
-            "".setText(BodyShortDescText);
-            "".setText(BodyLongDescText);
+            BodyShortDescText.setText("");
+            BodyLongDescText.setText("");
         }
         if (isObject(ClosetLongDescText)) {
-            "".setText(ClosetShortDescText);
-            "".setText(ClosetLongDescText);
+            ClosetShortDescText.setText("");
+            ClosetLongDescText.setText("");
         }
         if (isObject(StoreLongDescText)) {
             StoreShortDescText.showBaseDesc();
             StoreLongDescText.showBaseDesc();
         }
-        "".updateAuthorWidget(ClosetTabs);
+        ClosetTabs.updateAuthorWidget("");
     }
     if (ClosetTabs.tabShopsInitialized) {
     }
@@ -1368,17 +1348,17 @@ function ClosetThumbnailCtrl::onUnhilite(%this) {
         %this.hilited = 0;
         %buttonsDir = "platform/client/buttons/";
         %frameBitmap = %this.selected ? "frame_sel" : "frame";
-        %cartBitmap = %this.sku.containsSku(StoreShoppingList) ? "removeFromCart" : "add2cart";
-        %buttonsDir @ %frameBitmap.setBitmap(%this.frameButton);
-        0.setVisible(%this.toggleCartButton);
-        %buttonsDir @ %cartBitmap.setBitmap(%this.toggleCartButton);
-        0.setVisible(%this.buyNowButton);
-        0.setVisible(%this.buttonBacking);
+        %cartBitmap = StoreShoppingList.containsSku(%this.sku) ? "removeFromCart" : "add2cart";
+        %this.frameButton.setBitmap(%buttonsDir @ %frameBitmap);
+        %this.toggleCartButton.setVisible(0);
+        %this.toggleCartButton.setBitmap(%buttonsDir @ %cartBitmap);
+        %this.buyNowButton.setVisible(0);
+        %this.buttonBacking.setVisible(0);
         if (isObject(StoreItemDescHiliteFrame)) {
-            0.setVisible(StoreItemDescHiliteFrame);
+            StoreItemDescHiliteFrame.setVisible(0);
         }
         if (isObject(StoreFloatingHiliteFrame)) {
-            0.setVisible(StoreFloatingHiliteFrame);
+            StoreFloatingHiliteFrame.setVisible(0);
         }
     }
 };
@@ -1389,25 +1369,25 @@ function ClosetThumbnailCtrl::onMouseLeaveBounds(%this) {
     %this.onUnhilite();
 };
 function ClosetThumbnailCtrl::addToCart(%this) {
-    %this.sku.addSku(StoreShoppingList);
+    StoreShoppingList.addSku(%this.sku);
 };
 function ClosetThumbnailCtrl::toggleInCart(%this) {
-    if (%this.sku.containsSku(StoreShoppingList)) {
-        %this.sku.removeSku(StoreShoppingList);
+    if (StoreShoppingList.containsSku(%this.sku)) {
+        StoreShoppingList.removeSku(%this.sku);
     }
-    %this.sku.addSku(StoreShoppingList);
+    StoreShoppingList.addSku(%this.sku);
 };
 function ClosetThumbnailCtrl::buyNow(%this) {
     if (%this.sku) {
-        %this.sku.purchaseSkus(ClosetGui);
+        ClosetGui.purchaseSkus(%this.sku);
     }
 };
 function ClosetFrameButton::onMouseEnter(%this) {
     %thumbnails = %this.thumbnails;
-    %i = %this.ctrl.getObjectIndex(%this.thumbnails);
+    %i = %this.thumbnails.getObjectIndex(%this.ctrl);
     %row = mFloor((%i / %thumbnails.numRowsOrCols));
     %col = (%i % %thumbnails.numRowsOrCols);
-    %row.hiliteCell(%thumbnails, %col);
+    %thumbnails.hiliteCell(%col, %row);
 };
 $gAllOutfits = "A B C D E F G H I J K L";
 $Player::HangerNames["f"] = "fA fB fC fD fE fF fG fH fI fJ fK fL";
@@ -1416,7 +1396,7 @@ $gClosetNumOutfits = getWordCount($Player::HangerNames["f"]);
 $ClosetOutfitName = "";
 function ClosetGui::open(%this) {
     echo(getScopeName() @ "->debug for ETS-8039, $ClosetOutfitName at closet opening is: " @ $ClosetOutfitName);
-    if (!(isObject($player))) {
+    if (!isObject($player)) {
         error(getScopeName() @ " " @ "- no player" @ " " @ getTrace());
         return;
     }
@@ -1425,17 +1405,17 @@ function ClosetGui::open(%this) {
     %this.currentOverrideGenre = $player.getGenre();
     %this.wasInHelpmode = $player.isInHelpMeMode();
     %this.oldAnimation = $player.getCurrActionName();
-    %this.updateLocation(GuiTracker);
+    GuiTracker.updateLocation(%this);
     closetMap.push();
     DestroyMessageBoxes();
-    $ClosetOutfitName = $player.getGender() @ "currentOutfit".get($gOutfits);
-    $ClosetSkusBody = $player.getGender() @ "Body".get($gOutfits);
+    $ClosetOutfitName = $player.getGender() @ $gOutfits.get("currentOutfit");
+    $ClosetSkusBody = $gOutfits.get($player.getGender() @ "Body");
     %outfitNames = [$player.getGender()];
     $Player::HangerNames;
     %i = 0;
     while ((%i < $gClosetNumOutfits)) {
         %name = getWord(%outfitNames, %i);
-        %name[$ClosetSkusOutfit @ %name] = %name.get($gOutfits);
+        %name[$ClosetSkusOutfit @ %name] = $gOutfits.get(%name);
         %i = (%i + 1.0);
     }
     checkOutfitCorruption(1);
@@ -1451,30 +1431,22 @@ function ClosetGui::open(%this) {
     if (($IN_ORBIT_CAM == 1.0)) {
         togglePlayerCamMode();
     }
-    $player.setSimObject(ClosetMainObjectView);
-    %this.setContent(Canvas);
-    1.setVisible(%this);
+    ClosetMainObjectView.setSimObject($player);
+    Canvas.setContent(%this);
+    %this.setVisible(1);
     setIdle(1, $ClosetGuiOpenMessage);
-    1.setActivityActive(getUserActivityMgr(), "dressing");
+    getUserActivityMgr().setActivityActive("dressing", 1);
     ClosetGui.updateVisibleAvatar();
-    "".zoomToSKU(ClosetMainObjectView);
-    "debugPassive".rolesPermissionCheckNoWarn($player).setVisible(ClosetStaffPanelContainer);
-    if (((%i < $gClosetNumOutfits) @ " " @ $UserPref::Player::Genre $= "h")) {
-    }
-    if (($UserPref::Player::Genre $= "i")) {
-    }
-    if (($UserPref::Player::Genre $= "p")) {
-    }
-    if (($UserPref::Player::Genre $= "t")) {
-    }
-    if (($UserPref::Player::Genre $= "s")) {
-        $UserPref::Player::Genre.selectGenre(ClosetGui);
+    ClosetMainObjectView.zoomToSKU("");
+    ClosetStaffPanelContainer.setVisible($player.rolesPermissionCheckNoWarn("debugPassive"));
+    if (((%i < $gClosetNumOutfits) @ " " @ $UserPref::Player::Genre $= "h") || ($UserPref::Player::Genre $= "i") || ($UserPref::Player::Genre $= "p") || ($UserPref::Player::Genre $= "t") || ($UserPref::Player::Genre $= "s")) {
+        ClosetGui.selectGenre($UserPref::Player::Genre);
     }
     pushScreenSize(960, 544, 0, 1, 1);
     %closetGuiFUEIsObject = isObject(ClosetGuiFUE);
     if (isInFUE()) {
-        if (!(%closetGuiFUEIsObject)) {
-            "".execHideAndAddChild(ClosetGuiPositioner, "./closetGuiFUE.gui");
+        if (!%closetGuiFUEIsObject) {
+            ClosetGuiPositioner.execHideAndAddChild("./closetGuiFUE.gui", "");
         }
         ClosetGuiFUE.open();
     }
@@ -1483,18 +1455,18 @@ function ClosetGui::open(%this) {
     if (ClosetGuiFUE.isVisible()) {
         ClosetGuiFUE.close();
     }
-    if (!($Player::hasSeenTakeAvatarPhotoDialog)) {
-        if (!(ClosetTabs.tabSnapshotInitialized)) {
+    if (!$Player::hasSeenTakeAvatarPhotoDialog) {
+        if (!ClosetTabs.tabSnapshotInitialized) {
             ClosetTabs.fillProfileTab();
         }
-        "".update(ProfileCurrentPicture);
+        ProfileCurrentPicture.update("");
     }
     if (isObject(ProfileObjectView)) {
         ProfileObjectView.resetLight();
     }
 };
 function ClosetGui::close(%this, %cancel) {
-    1.doClose(%this, %cancel);
+    %this.doClose(%cancel, 1);
 };
 function ClosetGui::doClose(%this, %cancel, %allowMsgBoxOnExit) {
     if (%this.isWaitingForPurchaseCompletion()) {
@@ -1511,15 +1483,15 @@ function ClosetGui::doClose(%this, %cancel, %allowMsgBoxOnExit) {
         while ((%i >= 0.0)) {
             %aTriedOnSku = getWord($StoreSkusLayer, %i);
             if (((%skuIndex = findWord($Player::inventory, %aTriedOnSku)) >= 0.0)) {
-                if (%aTriedOnSku.isBodySku(SkuManager)) {
+                if (SkuManager.isBodySku(%aTriedOnSku)) {
                 }
                 if ((findWord($ClosetSkusBody, %aTriedOnSku) < 0.0)) {
-                    $ClosetSkusBody = %aTriedOnSku.overlaySkus(SkuManager, $ClosetSkusBody);
+                    $ClosetSkusBody = SkuManager.overlaySkus($ClosetSkusBody, %aTriedOnSku);
                 }
-                if (%aTriedOnSku.isOutfitSku(SkuManager)) {
+                if (SkuManager.isOutfitSku(%aTriedOnSku)) {
                 }
                 if ((findWord($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %aTriedOnSku) < 0.0)) {
-                    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = %aTriedOnSku.overlaySkus(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+                    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %aTriedOnSku);
                 }
             }
             %i = (%i - 1.0);
@@ -1541,24 +1513,24 @@ function ClosetGui::doClose(%this, %cancel, %allowMsgBoxOnExit) {
     }
     if (%allowMsgBoxOnExit) {
     }
-    if (!(%cancel)) {
+    if (!%cancel) {
     }
-    if (!(0.getProperty(gUserPropMgrClient, $Player::Name, "hasTakenAvatarPhoto"))) {
+    if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0)) {
     }
-    if (!($Player::hasSeenTakeAvatarPhotoDialog)) {
+    if (!$Player::hasSeenTakeAvatarPhotoDialog) {
     }
-    if (!($StandAlone)) {
+    if (!$StandAlone) {
         $Player::hasSeenTakeAvatarPhotoDialog = 1;
         MessageBoxYesNo($MsgCat::closet["MSG-NO-AVATAR-PHOTO-TITLE"], $MsgCat::closet["MSG-NO-AVATAR-PHOTO"], "ClosetTabs.selectTabWithName(\"SNAPSHOT\");", "ClosetGui.reallyClose(" @ %cancel @ ");");
         return 0;
     }
-    %cancel.reallyClose(%this);
+    %this.reallyClose(%cancel);
 };
 function ClosetGui::reallyClose(%this, %cancel) {
     stopPropAction();
     closetMap.pop();
     if (isObject(StoreSpecificBackground)) {
-        0.setVisible(StoreSpecificBackground);
+        StoreSpecificBackground.setVisible(0);
     }
     %this.doResetGenre();
     if ((%cancel $= "")) {
@@ -1569,58 +1541,58 @@ function ClosetGui::reallyClose(%this, %cancel) {
     }
     %this.doOkay();
     if (GuiTracker.inTransit) {
-        GuiTracker.previouslyOpened.setContent(Canvas);
+        Canvas.setContent(GuiTracker.previouslyOpened);
     }
-    PlayGui.setContent(Canvas);
-    0.setVisible(%this);
+    Canvas.setContent(PlayGui);
+    %this.setVisible(0);
     nextPlayerCamMode();
     setIdle(0);
     if (($gSalonChairCurrent != 0.0)) {
         if (!(%this.oldAnimation $= "")) {
-            %this.oldAnimation.playAnim($player);
+            $player.playAnim(%this.oldAnimation);
         }
     }
-    $player.getGender() @ $player.getGenre() @ "idl1a".playAnim($player);
+    $player.playAnim($player.getGender() @ $player.getGenre() @ "idl1a");
     %this.oldAnimation = "";
-    0.setActivityActive(getUserActivityMgr(), "dressing");
+    getUserActivityMgr().setActivityActive("dressing", 0);
     popScreenSize();
-    if (!(0.getProperty(gUserPropMgrClient, $Player::Name, "hasSeenPropUseAdvisory"))) {
+    if (!gUserPropMgrClient.getProperty($Player::Name, "hasSeenPropUseAdvisory", 0)) {
     }
-    if ($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].hasPropSku(SkuManager)) {
-        1.setProperty(gUserPropMgrClient, $Player::Name, "hasSeenPropUseAdvisory");
+    if (SkuManager.hasPropSku($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName])) {
+        gUserPropMgrClient.setProperty($Player::Name, "hasSeenPropUseAdvisory", 1);
         MessageBoxOK($MsgCat::closet["MSG-USE-PROP-TITLE"], $MsgCat::closet["MSG-USE-PROP-BODY"], "");
     }
     Inventory::fetchPlayerInventoryIfEmpty();
 };
 function ClosetGui::doResetCurrent(%this) {
     checkOutfitCorruption(1);
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = $ClosetOutfitName.get($gOutfits);
+    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = $gOutfits.get($ClosetOutfitName);
     %this.updateVisibleAvatar();
-    "".zoomToSKU(ClosetMainObjectView);
+    ClosetMainObjectView.zoomToSKU("");
     ClosetItemsFrame.update();
 };
 function ClosetGui::doResetGenre(%this) {
     $UserPref::Player::Genre = %this.oldStance;
     if (!(%this.currentOverrideGenre $= $UserPref::Player::Genre)) {
-        %this.currentOverrideGenre.setGenre($player);
+        $player.setGenre(%this.currentOverrideGenre);
     }
-    $UserPref::Player::Genre.setGenre($player);
+    $player.setGenre($UserPref::Player::Genre);
 };
 function ClosetGui::doResetAll(%this) {
     $UserPref::Player::height = %this.oldHeight;
-    $ClosetOutfitName = $player.getGender() @ "currentOutfit".get($gOutfits);
+    $ClosetOutfitName = $player.getGender() @ $gOutfits.get("currentOutfit");
     %outfitNames = [$player.getGender()];
     $Player::HangerNames;
     %i = 0;
     while ((%i < $gClosetNumOutfits)) {
         %name = getWord(%outfitNames, %i);
-        %name[$ClosetSkusOutfit @ %name] = %name.get($gOutfits);
+        %name[$ClosetSkusOutfit @ %name] = $gOutfits.get(%name);
         %i = (%i + 1.0);
     }
-    $ClosetSkusBody = $player.getGender() @ "Body".get($gOutfits);
+    $ClosetSkusBody = $gOutfits.get($player.getGender() @ "Body");
     (%i < $gClosetNumOutfits);
     %this.updateVisibleAvatar();
-    "".zoomToSKU(ClosetMainObjectView);
+    ClosetMainObjectView.zoomToSKU("");
     ClosetTabs.updateBodyTabDisplay();
 };
 function ClosetGui::doCancel(%this) {
@@ -1628,18 +1600,18 @@ function ClosetGui::doCancel(%this) {
         outfitsCorruptedNotify();
     }
     %this.doResetAll();
-    $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] @ " " @ $ClosetSkusBody.setActiveSKUs($player);
+    $player.setActiveSKUs($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] @ " " @ $ClosetSkusBody);
 };
 function ClosetGui::doOkay(%this) {
-    strupr(getSubStr($ClosetOutfitName, 1, 1)).put($gOutfits, "currentOutfit");
-    $ClosetSkusBody.put($gOutfits, $player.getGender() @ "Body");
+    $gOutfits.put("currentOutfit", strupr(getSubStr($ClosetOutfitName, 1, 1)));
+    $gOutfits.put($player.getGender() @ "Body", $ClosetSkusBody);
     %outfitNames = [$player.getGender()];
     $Player::HangerNames;
     %n = ($gClosetNumOutfits - 1.0);
     while ((%n >= 0.0)) {
         %name = getWord(%outfitNames, %n);
         %name[$ClosetSkusOutfit @ %name] = outfits_filterSKUList(%name[$ClosetSkusOutfit @ %name]);
-        %name[$ClosetSkusOutfit @ %name].put($gOutfits, %name);
+        $gOutfits.put(%name, %name[$ClosetSkusOutfit @ %name]);
         %n = (%n - 1.0);
     }
     if (checkOutfitCorruption(1)) {
@@ -1653,19 +1625,19 @@ function ClosetGui::doOkay(%this) {
     }
     commandToServer('SetActiveSkus', %activeSkus);
     commandToServer('setHeight', $UserPref::Player::height);
-    $UserPref::Player::height.setProperty(gUserPropMgrClient, $Player::Name, "avatarHeight");
+    gUserPropMgrClient.setProperty($Player::Name, "avatarHeight", $UserPref::Player::height);
     %playerActiveSKUs = $player.getActiveSKUs();
     if (%this.wasInHelpmode) {
         %playerActiveSKUs = %playerActiveSKUs @ " " @ getSpecialSKU(0, "helpmebadge");
     }
-    %playerActiveSKUs.schedule($player, 0, "setActiveSkus");
+    $player.schedule(0, "setActiveSkus", %playerActiveSKUs);
     if (isObject(closetGuiFUEHideTipsCtrl)) {
-        1.setValue(closetGuiFUEHideTipsCtrl);
+        closetGuiFUEHideTipsCtrl.setValue(1);
         closetGuiFUEHideTipsCtrl.onAction();
     }
 };
 function ClosetGui::askUserToDropProp(%this) {
-    %propSku = "props".filterSkusDrwr(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+    %propSku = SkuManager.filterSkusDrwr($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], "props");
     if ((%propSku $= "")) {
         return 0;
     }
@@ -1695,10 +1667,10 @@ function ClosetGui::askUserToDropProp(%this) {
     return 1;
 };
 function ClosetGui::userHasChangedBodyOrOutfit(%this) {
-    if (!($ClosetSkusBody $= $player.getGender() @ "Body".get($gOutfits))) {
+    if (!($ClosetSkusBody $= $gOutfits.get($player.getGender() @ "Body"))) {
         return 1;
     }
-    if (!("currentOutfit".get($gOutfits) $= strupr(getSubStr($ClosetOutfitName, 1, 1)))) {
+    if (!($gOutfits.get("currentOutfit") $= strupr(getSubStr($ClosetOutfitName, 1, 1)))) {
         return 1;
     }
     %outfitNames = [$player.getGender()];
@@ -1707,7 +1679,7 @@ function ClosetGui::userHasChangedBodyOrOutfit(%this) {
     while ((%n >= 0.0)) {
         %name = getWord(%outfitNames, %n);
         %newOutfit = outfits_filterSKUList(%name[$ClosetSkusOutfit @ %name]);
-        %oldOutfit = %name.get($gOutfits);
+        %oldOutfit = $gOutfits.get(%name);
         if (!(%newOutfit $= %oldOutfit)) {
             return 1;
         }
@@ -1727,9 +1699,7 @@ function ClosetGui::purchaseSkus(%this, %skus) {
 };
 function ShowPurchaseSkusConfirmationDialog(%skus, %cbPoints, %cbBux, %cbCancel) {
     %numSkus = getWordCount(%skus);
-    if ((%numSkus == 0.0)) {
-    }
-    if ((%skus $= 0)) {
+    if ((%numSkus == 0.0) || (%skus $= 0)) {
         error(getScopeName() @ " " @ "- no skus!" @ " " @ getTrace());
         return 0;
     }
@@ -1803,8 +1773,8 @@ function ShowPurchaseSkusConfirmationDialog(%skus, %cbPoints, %cbBux, %cbCancel)
     %dialog = MessageBoxCustom(%mbTitle, %mbBody @ %mbPointsNote @ %mbBuxNote, %mbButtons);
     %buttonIndex = 0;
     if (!(%mbCBPoints $= "")) {
-        %dialog.callback = %mbCBPoints @ %buttonIndex;
-        new GuiBitmapCtrl("") {
+        %dialog.callback[%buttonIndex] = %mbCBPoints;
+        %dialog.button[%buttonIndex].add(new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -1814,12 +1784,12 @@ function ShowPurchaseSkusConfirmationDialog(%skus, %cbPoints, %cbBux, %cbCancel)
             sluggishness = -1;
             visible = 1;
             bitmap = "platform/client/ui/vpoints_9";
-        };.add(%buttonIndex, %dialog.button);
+        };);
         %buttonIndex = (%buttonIndex + 1.0);
     }
     if (!(%mbCBBux $= "")) {
-        %dialog.callback = %mbCBBux @ %buttonIndex;
-        new GuiBitmapCtrl("") {
+        %dialog.callback[%buttonIndex] = %mbCBBux;
+        %dialog.button[%buttonIndex].add(new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "right";
             vertSizing = "bottom";
@@ -1829,10 +1799,10 @@ function ShowPurchaseSkusConfirmationDialog(%skus, %cbPoints, %cbBux, %cbCancel)
             sluggishness = -1;
             visible = 1;
             bitmap = "platform/client/ui/vbux_9";
-        };.add(%buttonIndex, %dialog.button);
+        };);
         %buttonIndex = (%buttonIndex + 1.0);
     }
-    %dialog.callback = %cbCancel @ %buttonIndex;
+    %dialog.callback[%buttonIndex] = %cbCancel;
     return %dialog;
 };
 function ClosetGui::doInsufficientVPoints() {
@@ -1859,8 +1829,8 @@ function ClosetGui::purchaseSkusVPoints(%this, %skus) {
     }
     %desc = "these " @ %numValidSkus @ " items";
     if ((%numValidSkus == 1.0)) {
-        %si = %skus.findBySku(SkuManager);
-        if (!(isObject(%si))) {
+        %si = SkuManager.findBySku(%skus);
+        if (!isObject(%si)) {
             return;
         }
         %desc = %si.descShrt;
@@ -1894,8 +1864,8 @@ function ClosetGui::purchaseSkusVBux(%this, %skus) {
     }
     %desc = "these " @ %numValidSkus @ " items";
     if ((%numValidSkus == 1.0)) {
-        %si = %skus.findBySku(SkuManager);
-        if (!(isObject(%si))) {
+        %si = SkuManager.findBySku(%skus);
+        if (!isObject(%si)) {
             return;
         }
         %desc = %si.descShrt;
@@ -1911,14 +1881,14 @@ function ClosetGui::purchaseSkusVBux(%this, %skus) {
     MessageBoxOkCancel("Confirm Purchase", %msg, %cmd, "");
 };
 function ClosetGui::doCheckout(%this) {
-    StoreShoppingList.getSkus().purchaseSkus(%this);
+    %this.purchaseSkus(StoreShoppingList.getSkus());
 };
 function ClosetGui::purchaseSkusReally(%this, %skus, %currency) {
     %array = new Array("");
     %n = (getWordCount(%skus) - 1.0);
     while ((%n >= 0.0)) {
         %sku = getWord(%skus, %n);
-        1.push_front(%array, %sku);
+        %array.push_front(%sku, 1);
         %n = (%n - 1.0);
     }
     %request = sendRequest_PurchaseInventory($Player::Name, %array, %currency, $gCurrentStoreName, "closet_onDoneOrErrorCallback_PurchaseInventory");
@@ -1927,51 +1897,49 @@ function ClosetGui::purchaseSkusReally(%this, %skus, %currency) {
     %request.callbackData = %this;
     %request.timedOutAlready = 0;
     %array.delete();
-    1.setVisible(StoreShoppingBag.waitIcon);
+    StoreShoppingBag.waitIcon.setVisible(1);
     StoreShoppingBag.waitIcon.start();
     %this.numberOfPurchasesAwaitingCompletion = (%this.numberOfPurchasesAwaitingCompletion + 1.0);
-    %tab = "SHOPS".getTabWithName(ClosetTabs);
-    !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.doneButton);
-    !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.cancelButton);
+    %tab = ClosetTabs.getTabWithName("SHOPS");
+    %tab.doneButton.setActive(!%this.isWaitingForPurchaseCompletion());
+    %tab.cancelButton.setActive(!%this.isWaitingForPurchaseCompletion());
     %this.checkoutPopup = MessageBoxOK($MsgCat::closet["MSG-PROCESSING-PURCHASE-TITLE"], $MsgCat::closet["MSG-PROCESSING-PURCHASE"], "");
-    %request.schedule(%this, 30000, purchaseSkusRequestTimedOut);
+    %this.schedule(30000, purchaseSkusRequestTimedOut, %request);
 };
 function ClosetGui::purchaseSkusRequestTimedOut(%this, %request) {
-    if (!(isObject(%request))) {
-    }
-    if ((%request.statusCode() $= "")) {
+    if (!isObject(%request) || (%request.statusCode() $= "")) {
         return;
     }
     %request.timedOutAlready = 1;
     %this.numberOfPurchasesPastTimeout = (%this.numberOfPurchasesPastTimeout + 1.0);
-    %tab = "SHOPS".getTabWithName(ClosetTabs);
-    !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.doneButton);
-    !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.cancelButton);
+    %tab = ClosetTabs.getTabWithName("SHOPS");
+    %tab.doneButton.setActive(!%this.isWaitingForPurchaseCompletion());
+    %tab.cancelButton.setActive(!%this.isWaitingForPurchaseCompletion());
     %this.processingTimeoutPopup = MessageBoxOK($MsgCat::closet["MSG-PROCESSING-TIMEOUT-TITLE"], $MsgCat::closet["MSG-PROCESSING-TIMEOUT"], "");
 };
 function ClosetGui::isWaitingForPurchaseCompletion(%this) {
     return (%this.numberOfPurchasesAwaitingCompletion > %this.numberOfPurchasesPastTimeout);
 };
 function closet_onDoneOrErrorCallback_PurchaseInventory(%request) {
-    %request.onDoneOrErrorCallback_PurchaseInventory(%request.callbackData);
+    %request.callbackData.onDoneOrErrorCallback_PurchaseInventory(%request);
 };
 function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
     StoreShoppingBag.waitIcon.stop();
-    0.setVisible(StoreShoppingBag.waitIcon);
+    StoreShoppingBag.waitIcon.setVisible(0);
     %this.numberOfPurchasesAwaitingCompletion = (%this.numberOfPurchasesAwaitingCompletion - 1.0);
     if (%request.timedOutAlready) {
         %this.numberOfPurchasesPastTimeout = (%this.numberOfPurchasesPastTimeout - 1.0);
     }
-    %tab = "SHOPS".getTabWithName(ClosetTabs);
-    !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.doneButton);
-    !(%this.isWaitingForPurchaseCompletion()).setActive(%tab.cancelButton);
+    %tab = ClosetTabs.getTabWithName("SHOPS");
+    %tab.doneButton.setActive(!%this.isWaitingForPurchaseCompletion());
+    %tab.cancelButton.setActive(!%this.isWaitingForPurchaseCompletion());
     if (isObject(%this.checkoutPopup)) {
         %this.checkoutPopup.close();
     }
     if (isObject(%this.processingTimeoutPopup)) {
         %this.processingTimeoutPopup.close();
     }
-    if (!(isObject(%request))) {
+    if (!isObject(%request)) {
         error(getScopeName() @ " " @ "- no request! this may be because we didn't send it in alpha 1");
         return;
     }
@@ -1980,10 +1948,10 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
     %skuResults["OutOfStock"] = "";
     %skuResults["NoUsageRights"] = "";
     %skuResults["InsufficientFunds"] = "";
-    %n = ("itemsCount".getValue(%request) - 1.0);
+    %n = (%request.getValue("itemsCount") - 1.0);
     while ((%n >= 0.0)) {
-        %sku = "items" @ %n @ ".sku".getValue(%request);
-        %validationResults = "items" @ %n @ ".validationResults".getValue(%request);
+        %sku = %request.getValue("items" @ %n @ ".sku");
+        %validationResults = %request.getValue("items" @ %n @ ".validationResults");
         %m = (getFieldCount(%validationResults) - 1.0);
         while ((%m >= 0.0)) {
             %validationResult = getField(%validationResults, %m);
@@ -1993,8 +1961,8 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
         %n = (%n - 1.0);
         (%m >= 0.0);
     }
-    if (!(%request.checkSuccess())) {
-        %errorCode = "errorCode".getValue(%request);
+    if (!%request.checkSuccess()) {
+        %errorCode = %request.getValue("errorCode");
         (%n >= 0.0);
         if ((%errorCode $= "staleInventory")) {
             %request = sendRequest_GetStoreInventory($Player::Name, $gCurrentStoreName, "OnGotDoneOrError_GetStoreInventory");
@@ -2013,7 +1981,7 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request) {
         }
         MessageBoxOK($MsgCat::commerce["E-TITLE"], $MsgCat::commerce["E-UNKNOWN"], "");
     }
-    %request.timedOutAlready.handleAnyPurchasedSkus(%this, %skuResults["pass"]);
+    %this.handleAnyPurchasedSkus(%skuResults["pass"], %request.timedOutAlready);
 };
 function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed) {
     %skusToFlatten = "";
@@ -2046,17 +2014,17 @@ function ClosetGui::handleAnyPurchasedSkus(%this, %skulist, %delayed) {
         %n = (getWordCount($StoreSkusLayer) - 1.0);
         while ((%n >= 0.0)) {
             %sku = getWord($StoreSkusLayer, %n);
-            if (!(hasWord(%skusToFlatten, %sku))) {
+            if (!hasWord(%skusToFlatten, %sku)) {
                 %newStoreSkus = %newStoreSkus @ " " @ %sku;
             }
             %n = (%n - 1.0);
         }
         $StoreSkusLayer = trim(%newStoreSkus);
         (%n >= 0.0);
-        %skusToFlattenClothing = %skusToFlatten.filterSkusForClothing(SkuManager);
-        %skusToFlattenBody = %skusToFlatten.filterSkusForBody(SkuManager);
-        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = %skusToFlattenClothing.overlaySkus(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
-        $ClosetSkusBody = %skusToFlattenBody.overlaySkus(SkuManager, $ClosetSkusBody);
+        %skusToFlattenClothing = SkuManager.filterSkusForClothing(%skusToFlatten);
+        %skusToFlattenBody = SkuManager.filterSkusForBody(%skusToFlatten);
+        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %skusToFlattenClothing);
+        $ClosetSkusBody = SkuManager.overlaySkus($ClosetSkusBody, %skusToFlattenBody);
     }
     StoreItemsFrame.update();
 };
@@ -2064,7 +2032,7 @@ function CheckoutRequest::onClosed(%this) {
 };
 function CheckoutRequest::onError(%this, %unused, %unused) {
     StoreShoppingBag.waitIcon.stop();
-    0.setVisible(StoreShoppingBag.waitIcon);
+    StoreShoppingBag.waitIcon.setVisible(0);
     if (isObject(ClosetGui.checkoutPopup)) {
         ClosetGui.checkoutPopup.close();
     }
@@ -2074,7 +2042,7 @@ function CheckoutRequest::onError(%this, %unused, %unused) {
 function CheckoutRequest::onDone(%this) {
     log("network", "debug", getScopeName() @ " " @ "- url =" @ " " @ %this.getURL());
     StoreShoppingBag.waitIcon.stop();
-    0.setVisible(StoreShoppingBag.waitIcon);
+    StoreShoppingBag.waitIcon.setVisible(0);
     if (isObject(ClosetGui.checkoutPopup)) {
         ClosetGui.checkoutPopup.close();
     }
@@ -2096,7 +2064,7 @@ function CheckoutRequest::onDone(%this) {
         %skusAborted = "";
         %i = 1;
         while (1) {
-            %line = "sku" @ %i.getValue(%this);
+            %line = %this.getValue("sku" @ %i);
             if ((%line $= "")) {
             }
             %sku = getField(%line, 0);
@@ -2171,10 +2139,10 @@ function CheckoutRequest::onDone(%this) {
             }
             $StoreSkusLayer = trim(%newStoreSkus);
             (%i < getWordCount($StoreSkusLayer));
-            %skusToFlattenClothing = %skusToFlatten.filterSkusForClothing(SkuManager);
-            %skusToFlattenBody = %skusToFlatten.filterSkusForBody(SkuManager);
-            $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = %skusToFlattenClothing.overlaySkus(SkuManager, $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
-            $ClosetSkusBody = %skusToFlattenBody.overlaySkus(SkuManager, $ClosetSkusBody);
+            %skusToFlattenClothing = SkuManager.filterSkusForClothing(%skusToFlatten);
+            %skusToFlattenBody = SkuManager.filterSkusForBody(%skusToFlatten);
+            $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName] = SkuManager.overlaySkus($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], %skusToFlattenClothing);
+            $ClosetSkusBody = SkuManager.overlaySkus($ClosetSkusBody, %skusToFlattenBody);
         }
         StoreItemsFrame.update();
     }
@@ -2194,34 +2162,34 @@ function ClosetGui::selectGenre(%this, %val) {
     }
     $gClosetStanceEmotesLast = %anim;
     (%anim $= $gClosetStanceEmotesLast);
-    $player.getGender() @ %val @ %anim.playAnim($player);
+    $player.playAnim($player.getGender() @ %val @ %anim);
 };
 function ClosetGui::updateVisibleAvatar(%this) {
     %merged = $ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName];
     if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
-        %merged = $StoreSkusLayer.overlaySkus(SkuManager, $ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
+        %merged = SkuManager.overlaySkus($ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], $StoreSkusLayer);
     }
     if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
-        $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName].refresh(ClosetWhatYoureWearingList);
+        ClosetWhatYoureWearingList.refresh($ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
     }
     if ((ClosetTabs.getCurrentTab().name $= "MY DESIGNS")) {
-        %merged = $gSkusMyShopLayer.overlaySkus(SkuManager, $ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName]);
-        $gSkusMyShopLayer.refresh(ClosetWhatYoureWearingList);
+        %merged = SkuManager.overlaySkus($ClosetSkusBody @ " " @ $ClosetOutfitName[$ClosetSkusOutfit @ $ClosetOutfitName], $gSkusMyShopLayer);
+        ClosetWhatYoureWearingList.refresh($gSkusMyShopLayer);
     }
-    %merged.setSkus(ClosetMainObjectView);
-    %snapTab = "SNAPSHOT".getTabWithName(ClosetTabs);
+    ClosetMainObjectView.setSkus(%merged);
+    %snapTab = ClosetTabs.getTabWithName("SNAPSHOT");
     if (%snapTab) {
     }
     if (isObject(%snapTab.objView)) {
-        %merged.setSkus(%snapTab.objView);
+        %snapTab.objView.setSkus(%merged);
     }
-    %badge = "badges".filterSkusDrwr(SkuManager, %merged);
-    %si = %badge.findBySku(SkuManager);
+    %badge = SkuManager.filterSkusDrwr(%merged, "badges");
+    %si = SkuManager.findBySku(%badge);
     %bitmap = "";
     if (isObject(%si)) {
         %bitmap = %si.getBitmapPath();
     }
-    %bitmap.setBitmap(ClosetMainBadgeView);
+    ClosetMainBadgeView.setBitmap(%bitmap);
     if (isObject(ClosetStaffPanel)) {
         ClosetStaffPanel.updateSkus();
     }
@@ -2245,22 +2213,22 @@ function ClosetGui::toggleSku(%this, %sku) {
     error(getScopeName() @ " " @ "- unknown tab:" @ " " @ ClosetTabs.getCurrentTab().name @ " " @ getTrace());
     return;
     ClosetGui.updateVisibleAvatar();
-    %sku.zoomToSKU(ClosetMainObjectView);
+    ClosetMainObjectView.zoomToSKU(%sku);
     %thumbnails = ClosetTabs.getCurrentTab().thumbnails;
     if (isObject(%thumbnails)) {
         %thumbnails.setSelectedThumbs();
         %count = %thumbnails.getCount();
         %i = 0;
         while ((%i < %count)) {
-            %cell = %i.getObject(%thumbnails);
-            %cell.sku.setCellSkus(%thumbnails, %cell);
+            %cell = %thumbnails.getObject(%i);
+            %thumbnails.setCellSkus(%cell, %cell.sku);
             %i = (%i + 1.0);
         }
     }
 };
 function ClosetGui::doArrow(%this, %dx, %dy) {
     if ((ClosetTabs.getCurrentTab().name $= "SNAPSHOT")) {
-        -(%dy).moveBy(ProfileObjectView, %dx);
+        ProfileObjectView.moveBy(%dx, -(%dy));
     }
 };
 function ClosetLink::onURL(%this, %url) {
@@ -2271,13 +2239,13 @@ function ClosetLink::onURL(%this, %url) {
         ClosetMyOutfitsFrame.saveOrCancel();
     }
     if ((getWord(%url, 0) $= "DONE")) {
-        0.close(ClosetGui);
+        ClosetGui.close(0);
     }
     if ((getWord(%url, 0) $= "CANCEL")) {
-        1.close(ClosetGui);
+        ClosetGui.close(1);
     }
     if ((getWord(%url, 0) $= "TOGGLE_SKU")) {
-        getWord(%url, 1).toggleSku(ClosetGui);
+        ClosetGui.toggleSku(getWord(%url, 1));
     }
 };
 function ClosetItemsScroll::getIndexForSku(%this, %sku) {
@@ -2285,7 +2253,7 @@ function ClosetItemsScroll::getIndexForSku(%this, %sku) {
     %count = %thumbnails.getCount();
     %i = 0;
     while ((%i < %count)) {
-        if ((%i.getObject(%thumbnails).sku == %sku)) {
+        if ((%thumbnails.getObject(%i).sku == %sku)) {
             return %i;
         }
         %i = (%i + 1.0);
@@ -2294,21 +2262,21 @@ function ClosetItemsScroll::getIndexForSku(%this, %sku) {
 };
 function ClosetItemsScroll::scrollToSku(%this, %sku) {
     %thumbnails = %this.thumbnails;
-    %idx = %sku.getIndexForSku(%this);
+    %idx = %this.getIndexForSku(%sku);
     if ((%idx < 0.0)) {
         if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
-            ClosetItemsFrame.brand = 0.getTextById(ClosetBrandPopup);
-            ClosetItemsFrame.category = 0.getTextById(ClosetItemPopup);
+            ClosetItemsFrame.brand = ClosetBrandPopup.getTextById(0);
+            ClosetItemsFrame.category = ClosetItemPopup.getTextById(0);
             ClosetItemsFrame.update();
-            0.SetSelected(ClosetBrandPopup);
-            0.SetSelected(ClosetItemPopup);
-            %idx = %sku.getIndexForSku(%this);
+            ClosetBrandPopup.SetSelected(0);
+            ClosetItemPopup.SetSelected(0);
+            %idx = %this.getIndexForSku(%sku);
         }
         if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
             if ((StoreCategoryPopup.GetSelected() != 0.0)) {
-                0.SetSelected(StoreCategoryPopup);
+                StoreCategoryPopup.SetSelected(0);
             }
-            %idx = %sku.getIndexForSku(%this);
+            %idx = %this.getIndexForSku(%sku);
         }
     }
     if ((%idx < 0.0)) {
@@ -2316,14 +2284,14 @@ function ClosetItemsScroll::scrollToSku(%this, %sku) {
     }
     %row = mFloor((%idx / %thumbnails.numRowsOrCols));
     %col = (%idx % %thumbnails.numRowsOrCols);
-    %row.hiliteCell(%thumbnails, %col);
-    %idx.scrollToCellIndex(%this);
-    %sku.zoomToSKU(ClosetMainObjectView);
+    %thumbnails.hiliteCell(%col, %row);
+    %this.scrollToCellIndex(%idx);
+    ClosetMainObjectView.zoomToSKU(%sku);
 };
 function ClosetItemsScroll::scrollToCell(%this, %cell) {
     %thumbnails = %this.thumbnails;
-    %cellIdx = %cell.getObjectIndex(%thumbnails);
-    %cellIdx.scrollToCellIndex(%this);
+    %cellIdx = %thumbnails.getObjectIndex(%cell);
+    %this.scrollToCellIndex(%cellIdx);
 };
 function ClosetItemsScroll::scrollToCellIndex(%this, %cellIdx) {
     %thumbnails = %this.thumbnails;
@@ -2335,12 +2303,12 @@ function ClosetItemsScroll::scrollToCellIndex(%this, %cellIdx) {
         %targetRow = %closestRow;
     }
     if ((%targetRow >= (%closestRow + 1.0))) {
-        (%cellHeight * (%targetRow - 1.0)).scrollTo(%thumbnails.getParent(), 0);
+        %thumbnails.getParent().scrollTo(0, (%cellHeight * (%targetRow - 1.0)));
     }
-    (%cellHeight * %targetRow).scrollTo(%thumbnails.getParent(), 0);
+    %thumbnails.getParent().scrollTo(0, (%cellHeight * %targetRow));
 };
 function ClosetItemsScroll::onMouseUp(%this) {
-    -(1.0).scrollToCellIndex(%this);
+    %this.scrollToCellIndex(-(1.0));
 };
 function ClosetItemsScroll::onScroll(%this) {
     ClosetTabs.updateRangeText();
@@ -2358,7 +2326,7 @@ function checkOutfitCorruption(%checkClosetVariables) {
     %noClosetOutfitName = 0;
     %playerObjNullInCloset = 0;
     %errMsg = "";
-    if (!(isObject($player))) {
+    if (!isObject($player)) {
     }
     if (%checkClosetVariables) {
         %playerObjNullInCloset = 1;
@@ -2370,10 +2338,8 @@ function checkOutfitCorruption(%checkClosetVariables) {
         error(getScopeName() @ "->Number of outfits named in Player::HangerNames for player gender is not equal to $gClosetNumOutfits! Will cause errors!");
         %errMsg = %errMsg @ " " @ "(getWordCount($Player::HangerNames[gender]) != $gClosetNumOutfits)";
     }
-    %currentOutfit = "currentOutfit".get($gOutfits);
-    if ((%currentOutfit $= "")) {
-    }
-    if ((findWord(%outfitNames, %plyrGendr @ %currentOutfit) < 0.0)) {
+    %currentOutfit = $gOutfits.get("currentOutfit");
+    if ((%currentOutfit $= "") || (findWord(%outfitNames, %plyrGendr @ %currentOutfit) < 0.0)) {
         %noCurrentOutfit = 1;
         error(getScopeName() @ "-> gOutfits->currentOutfit is blank or invalid! should NEVER happen! currentOutfit = \"" @ %currentOutfit @ "\"");
         %errMsg = %errMsg @ " " @ "(gOutfits->currentOutfit = " @ %currentOutfit @ ")";
@@ -2402,13 +2368,7 @@ function checkOutfitCorruption(%checkClosetVariables) {
             (%n >= 0.0);
         }
     }
-    if ((%outfitsCorrupted > 0.0)) {
-    }
-    if (%numOutfitNamesBroken) {
-    }
-    if (%noCurrentOutfit) {
-    }
-    if (%playerObjNullInCloset) {
+    if ((%outfitsCorrupted > 0.0) || %numOutfitNamesBroken || %noCurrentOutfit || %playerObjNullInCloset) {
         error(getScopeName() @ "->one or more outfits tests failed. posting trace and doing full debug print. trace=" @ getTrace());
         commandToServer('OutfitsCorruptedOnClient', %errMsg, getTrace());
         outfitsAndInventoryDebugLog();
@@ -2444,8 +2404,8 @@ function filterOutSkusToHideInCloset(%skus) {
 };
 function ClosetTabs::createFilterWidget(%this) {
     if (isObject(ClosetFilterContainer)) {
-        1.setVisible(ClosetFilterContainer);
-        1.makeFirstResponder(ClosetFilterField);
+        ClosetFilterContainer.setVisible(1);
+        ClosetFilterField.makeFirstResponder(1);
         return ClosetFilterContainer;
     }
     new GuiControl(ClosetFilterContainer) {
@@ -2455,13 +2415,13 @@ function ClosetTabs::createFilterWidget(%this) {
         position = "335 64";
         extent = "148 40";
     };
-    1.makeFirstResponder(ClosetFilterField);
+    ClosetFilterField.makeFirstResponder(1);
     return ClosetFilterContainer;
 };
 $gClosetFilterFieldTimerID = "";
 function ClosetFilterField::OnTextChanged(%this) {
     cancel($gClosetFilterFieldTimerID);
-    $gClosetFilterFieldTimerID = "onTimer".schedule(%this, %this.timeoutMS);
+    $gClosetFilterFieldTimerID = %this.schedule(%this.timeoutMS, "onTimer");
 };
 function ClosetFilterField::OnEnterKey(%this) {
     %this.refilter();
@@ -2495,7 +2455,7 @@ function ClosetFilterField::refilter(%this) {
 };
 function ClosetTabs::createAuthorWidget(%this) {
     if (isObject(ClosetAuthorContainer)) {
-        1.setVisible(ClosetAuthorContainer);
+        ClosetAuthorContainer.setVisible(1);
         return ClosetAuthorContainer;
     }
     new GuiWindowCtrl(ClosetAuthorPictureOutline) {
@@ -2523,33 +2483,33 @@ function ClosetTabs::createAuthorWidget(%this) {
     return ClosetAuthorContainer;
 };
 function ClosetTabs::updateAuthorWidget(%this, %sku) {
-    if (!(isObject(ClosetAuthorContainer))) {
+    if (!isObject(ClosetAuthorContainer)) {
         return;
     }
     if (!(%sku $= "")) {
     }
     %si = "";
-    %sku.findBySku(SkuManager);
+    SkuManager.findBySku(%sku);
     %filled = 0;
     if (isObject(%si)) {
         if (!(%si.author $= "")) {
             %filled = 1;
             if ((%si.author $= "?")) {
-                "platform/client/ui/tgf/tgf_profile_default_" @ $player.getGender().setBitmap(ClosetAuthorPicture);
+                ClosetAuthorPicture.setBitmap("platform/client/ui/tgf/tgf_profile_default_" @ $player.getGender());
                 ClosetAuthorPicture.modulationColor = "255 255 255 50";
-                1.setVisible(ClosetAuthorPictureOutline);
-                "<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "oh nos!<br>" @ "we've lost track of who made this!<br>".setText(ClosetAuthorText);
+                ClosetAuthorPictureOutline.setVisible(1);
+                ClosetAuthorText.setText("<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "oh nos!<br>" @ "we've lost track of who made this!<br>");
             }
             %playerEncoded = urlEncode(stripUnprintables(%si.author));
             %profileURL = $Net::ProfileURL @ %playerEncoded;
             %pictureURL_M = $Net::AvatarURL @ %playerEncoded @ "?size=M";
             %pictureURL_L = $Net::AvatarURL @ %playerEncoded @ "?size=L";
-            "".setBitmap(ClosetAuthorPicture);
-            %pictureURL_M.downloadAndApplyBitmap(ClosetAuthorPicture);
-            %pictureURL_L.downloadAndApplyBitmap(ClosetAuthorPicture);
+            ClosetAuthorPicture.setBitmap("");
+            ClosetAuthorPicture.downloadAndApplyBitmap(%pictureURL_M);
+            ClosetAuthorPicture.downloadAndApplyBitmap(%pictureURL_L);
             ClosetAuthorPicture.modulationColor = "255 255 255 255";
-            1.setVisible(ClosetAuthorPictureOutline);
-            "<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "design by<br><a:" @ %profileURL @ ">" @ %si.author @ "</a>".setText(ClosetAuthorText);
+            ClosetAuthorPictureOutline.setVisible(1);
+            ClosetAuthorText.setText("<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "design by<br><a:" @ %profileURL @ ">" @ %si.author @ "</a>");
         }
         if (!(%si.brand $= "")) {
         }
@@ -2561,17 +2521,17 @@ function ClosetTabs::updateAuthorWidget(%this, %sku) {
                 error(getScopeName() @ " " @ "- unknown brand" @ " " @ %si.brand @ " " @ %sku @ " " @ getTrace());
             }
             %filled = 1;
-            "platform/client/ui/vside_icon_38x38".setBitmap(ClosetAuthorPicture);
+            ClosetAuthorPicture.setBitmap("platform/client/ui/vside_icon_38x38");
             ClosetAuthorPicture.modulationColor = "255 255 255 20";
-            0.setVisible(ClosetAuthorPictureOutline);
-            "<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "brand:<br>" @ %fullBrand.setText(ClosetAuthorText);
+            ClosetAuthorPictureOutline.setVisible(0);
+            ClosetAuthorText.setText("<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "brand:<br>" @ %fullBrand);
         }
     }
-    if (!(%filled)) {
-        "platform/client/ui/vside_icon_38x38".setBitmap(ClosetAuthorPicture);
+    if (!%filled) {
+        ClosetAuthorPicture.setBitmap("platform/client/ui/vside_icon_38x38");
         ClosetAuthorPicture.modulationColor = "255 255 255 20";
-        0.setVisible(ClosetAuthorPictureOutline);
-        "".setText(ClosetAuthorText);
+        ClosetAuthorPictureOutline.setVisible(0);
+        ClosetAuthorText.setText("");
     }
 };
 function ClosetTabs::createWhatYourWearingPanel(%this) {
@@ -2643,8 +2603,8 @@ function ClosetTabs::createWhatYourWearingPanel(%this) {
         scroll = %whatYoureWearingScroll;
         lastPropSku = "";
     };
-    %whatYoureWearingList.add(%whatYoureWearingScroll);
-    %whatYoureWearingScroll.add(%whatYoureWearingPanel);
+    %whatYoureWearingScroll.add(%whatYoureWearingList);
+    %whatYoureWearingPanel.add(%whatYoureWearingScroll);
     return %whatYoureWearingPanel;
 };
 function ClosetMainObjectView::onSystemDragDroppedEvent(%this, %text, %pt) {
@@ -2658,7 +2618,7 @@ function ClosetMainObjectView::onSystemDragDroppedEvent(%this, %text, %pt) {
         error(getScopeName() @ " " @ "- not implemented for" @ " " @ ClosetTabs.getCurrentTab().name @ " " @ getTrace());
     }
     if ((ClosetTabs.getCurrentTab().name $= "MY DESIGNS")) {
-        %pt.onSystemDragDroppedEvent_MyShop(%this, %text);
+        %this.onSystemDragDroppedEvent_MyShop(%text, %pt);
     }
 };
 function ClosetGui_About(%section, %topic) {

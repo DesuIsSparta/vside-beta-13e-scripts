@@ -13,7 +13,7 @@ function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cut
     $NUM_SALON_STYLES[$SALON_STYLE_ANIMATION @ $NUM_SALON_STYLES] = %animation;
     $NUM_SALON_STYLES[$SALON_STYLE_CUTTIME @ $NUM_SALON_STYLES] = %cutTime;
     $NUM_SALON_STYLES[$SALON_STYLE_REQUREDSKUSMESSAGE @ $NUM_SALON_STYLES] = %requiredActiveSkusMessage;
-    %si = %sku.findBySku(SkuManager);
+    %si = SkuManager.findBySku(%sku);
     %si.salonStyleIndex = $NUM_SALON_STYLES;
     $NUM_SALON_STYLES = ($NUM_SALON_STYLES + 1.0);
 };

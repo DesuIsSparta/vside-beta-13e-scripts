@@ -2,29 +2,29 @@ function toggleSnoopPanel() {
     SnoopPanel.toggle();
 };
 function SnoopPanel::toggle(%this) {
-    %this.ensureAdded(playGui);
-    %this.showRaiseOrHide(playGui);
+    playGui.ensureAdded(%this);
+    playGui.showRaiseOrHide(%this);
 };
 function SnoopPanel::open(%this) {
-    if (!("snoop".rolesPermissionCheckNoWarn($player))) {
+    if (!$player.rolesPermissionCheckNoWarn("snoop")) {
         return;
     }
-    %this.ensureAdded(playGui);
-    if (!(%this.isVisible())) {
-        1.setVisible(%this);
+    playGui.ensureAdded(%this);
+    if (!%this.isVisible()) {
+        %this.setVisible(1);
         %this.restoreDims();
-        %this.focusAndRaise(playGui);
+        playGui.focusAndRaise(%this);
     }
 };
 function SnoopPanel::close(%this) {
-    %this.ensureAdded(playGui);
-    0.setVisible(%this);
+    playGui.ensureAdded(%this);
+    %this.setVisible(0);
     playGui.focusTopWindow();
     %this.storeDims();
 };
 function SnoopPanel::restoreDims(%this) {
     %dim = $DevPref::Mod::SnoopWindow::Dim;
-    getWord(%dim, 3).resize(%this, getWord(%dim, 0), getWord(%dim, 1), getWord(%dim, 2));
+    %this.resize(getWord(%dim, 0), getWord(%dim, 1), getWord(%dim, 2), getWord(%dim, 3));
 };
 function SnoopPanel::storeDims(%this) {
     $DevPref::Mod::SnoopWindow::Dim = %this.getPosition() @ " " @ %this.getExtent();
@@ -41,10 +41,10 @@ function SnoopPanel::addLine(%this, %text) {
         %newLine = "\n";
     }
     %newLine = "";
-    SnoopPanelScroll.isAtBottom().addText(snoopPanelTextCtrl, %newLine @ %timeStamp @ %text, 1);
+    snoopPanelTextCtrl.addText(%newLine @ %timeStamp @ %text, 1, SnoopPanelScroll.isAtBottom());
 };
 function SnoopPanel::addLine2(%this, %line) {
-    %line.addLine(%this);
+    %this.addLine(%line);
 };
 function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply) {
     %text = pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
@@ -56,7 +56,7 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
         %text = "<spush><color:dd0000>abuse<spop>  " @ " " @ %text;
     }
     %text = "<spush><color:00aa00>snoop" @ " " @ %text @ "<spop>";
-    %text.addLine2(%this);
+    %this.addLine2(%text);
     if ($DevPref::Audio::NotifySnoop) {
         if ((%speechType $= "sos")) {
             alxPlay(Audio_SOSMessageIn);
@@ -67,18 +67,18 @@ function SnoopPanel::handleIncoming(%this, %text, %name, %whisperedTo, %ignored,
     }
 };
 function ClientCmdSnoopIn(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply) {
-    %isAutoReply.handleIncoming(SnoopPanel, %text, %name, %whisperedTo, %ignored, %speechType);
+    SnoopPanel.handleIncoming(%text, %name, %whisperedTo, %ignored, %speechType, %isAutoReply);
 };
 function onModNotificationCussing(%playerName, %param2) {
-    if (!($DevPref::Mod::cusses)) {
+    if (!$DevPref::Mod::cusses) {
         return;
     }
     %text = NextToken(%param2, "verb", " ");
     %line = "<spush><color:880088>cuss ";
-    %line = %line @ " " @ "".getPlayerMarkup(pChat, %playerName);
+    %line = %line @ " " @ pChat.getPlayerMarkup(%playerName, "");
     %line = %line @ " " @ %verb @ " " @ %text;
     %line = %line @ " " @ "<spop>";
-    %line.addLine2(SnoopPanel);
+    SnoopPanel.addLine2(%line);
     %soundNum = stringToInteger(%playerName, $gAudioProfile_CussesNum);
     alxPlay2(%soundNum[$gAudioProfile_Cusses @ %soundNum]);
 };

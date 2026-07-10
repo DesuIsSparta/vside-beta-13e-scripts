@@ -8,7 +8,7 @@ function Player::onGotRoles(%this, %rolesMask) {
         return;
     }
     %this.prevRolesMask = %rolesMask;
-    if ("snoop".rolesPermissionCheckNoWarn(%this)) {
+    if (%this.rolesPermissionCheckNoWarn("snoop")) {
         $TSControl::objSelRange = 1000;
     }
     $TSControl::objSelRange = $pref::TS::distMouseOver;
@@ -19,13 +19,13 @@ function Player::onGotRoles(%this, %rolesMask) {
         %po.rebuildHudCtrl();
         %n = (%n - 1.0);
     }
-    "quietHUD".rolesPermissionCheckNoWarn(%this).setVisible(HUDHideChatCheckBox);
-    "farNameOpacity".rolesPermissionCheckNoWarn(%this).setVisible(FarNameOpacityCtrl);
-    "console".rolesPermissionCheckNoWarn(%this).setVisible(optionsPanelAlertOnLogCtrl);
-    if ("host".hasRoleString(%this)) {
+    HUDHideChatCheckBox.setVisible(%this.rolesPermissionCheckNoWarn("quietHUD"));
+    FarNameOpacityCtrl.setVisible(%this.rolesPermissionCheckNoWarn("farNameOpacity"));
+    optionsPanelAlertOnLogCtrl.setVisible(%this.rolesPermissionCheckNoWarn("console"));
+    if (%this.hasRoleString("host")) {
         schedule(2000, 0, "delayedWearSku", getSpecialSKU($player, "hostBadge"));
     }
-    if ("cohost".hasRoleString(%this)) {
+    if (%this.hasRoleString("cohost")) {
         schedule(2000, 0, "delayedWearSku", getSpecialSKU($player, "cohostBadge"));
     }
     schedule(2000, 0, "delayedRemoveSku", getSpecialSKU($player, "hostBadge"));
@@ -41,7 +41,7 @@ function delayedWearSku(%sku) {
 };
 function delayedRemoveSku(%sku) {
     %skus = $player.getActiveSKUs();
-    if (!(hasWord(%skus, %sku))) {
+    if (!hasWord(%skus, %sku)) {
         return;
     }
     %skus = findAndRemoveAllOccurrencesOfWord(%skus, %sku);

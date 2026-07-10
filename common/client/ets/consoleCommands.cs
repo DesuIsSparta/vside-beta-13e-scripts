@@ -1,15 +1,15 @@
 function connectLocal(%userName) {
     %c = new GameConnection(ServerConnection);
     $Player::Name = %userName;
-    "".setCommonPreconnectClientSettings(%c);
-    "localhost:" @ $Pref::Net::Port.connect(%c);
+    %c.setCommonPreconnectClientSettings("");
+    %c.connect("localhost:" @ $Pref::Net::Port);
 };
 function GameConnection::setCommonPreconnectClientSettings(%this, %teleTarget) {
-    $Player::Name.setUser(%this);
-    $Token.setToken(%this);
-    AssetManager::getCurrentAssetSet().setAssetSet(%this);
-    outfits_getCurrentSkus().setSkus(%this);
-    %teleTarget.setTeleportTarget(%this);
+    %this.setUser($Player::Name);
+    %this.setToken($Token);
+    %this.setAssetSet(AssetManager::getCurrentAssetSet());
+    %this.setSkus(outfits_getCurrentSkus());
+    %this.setTeleportTarget(%teleTarget);
     log("Network", "debug", getScopeName() @ " " @ "- setUser          :" @ " " @ $Player::Name);
     log("Network", "debug", getScopeName() @ " " @ "- setToken         :" @ " " @ $Token);
     log("Network", "debug", getScopeName() @ " " @ "- setAssetSet      :" @ " " @ AssetManager::getCurrentAssetSet());

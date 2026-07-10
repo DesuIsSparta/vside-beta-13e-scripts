@@ -1,8 +1,8 @@
 function ClientCmdEnterLeaveSpace(%internalName, %isEnter) {
     %spaceDef = spaces_GetSpaceDef(%internalName, 0);
     if (%spaceDef) {
-        %isEnter.onEnterLeaveDoNotify(%spaceDef);
-        %isEnter.onEnterLeaveDoStore(%spaceDef);
+        %spaceDef.onEnterLeaveDoNotify(%isEnter);
+        %spaceDef.onEnterLeaveDoStore(%isEnter);
     }
 };
 function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter) {
@@ -10,7 +10,7 @@ function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter) {
     }
     %dry = %this.onLeaveText;
     %this.onEntryText;
-    %wet = $player.doTokenSubstitution(%this, %dry);
+    %wet = %this.doTokenSubstitution(%dry, $player);
     if (!(%wet $= "")) {
         handleSystemMessage("msgInfoMessage", %wet);
     }

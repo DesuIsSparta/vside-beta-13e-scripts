@@ -1,30 +1,30 @@
 function debugPanel::toggle(%this) {
-    %this.showRaiseOrHide(playGui);
+    playGui.showRaiseOrHide(%this);
 };
 function debugPanel::open(%this) {
-    if (!("debugActive".rolesPermissionCheckWarn($player))) {
+    if (!$player.rolesPermissionCheckWarn("debugActive")) {
         return;
     }
-    1.setVisible(%this);
-    %this.focusAndRaise(playGui);
+    %this.setVisible(1);
+    playGui.focusAndRaise(%this);
 };
 function debugPanel::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     playGui.focusTopWindow();
     return 1;
 };
 function debugPanel::onWake(%this) {
-    getWord($UserPref::Video::Resolution, 0).setValue(gui_DevOpts_ResX);
-    getWord($UserPref::Video::Resolution, 1).setValue(gui_DevOpts_ResY);
+    gui_DevOpts_ResX.setValue(getWord($UserPref::Video::Resolution, 0));
+    gui_DevOpts_ResY.setValue(getWord($UserPref::Video::Resolution, 1));
     if (isObject(debugPanel_SkuSnapButton)) {
     }
-    if (!(isFunction("skuSnapshot_isSkuSnapshot"))) {
-        0.setActive(debugPanel_SkuSnapButton);
+    if (!isFunction("skuSnapshot_isSkuSnapshot")) {
+        debugPanel_SkuSnapButton.setActive(0);
     }
 };
 function debugPanel::resizeApp(%this) {
     $UserPref::Video::ConstrainWindowDimensions = 0;
-    $UserPref::Video::ConstrainWindowDimensions.setValue(gui_DevOpts_Constrain);
+    gui_DevOpts_Constrain.setValue($UserPref::Video::ConstrainWindowDimensions);
     %x = gui_DevOpts_ResX.getValue();
     %y = gui_DevOpts_ResY.getValue();
     %bpp = getWord($UserPref::Video::Resolution, 2);

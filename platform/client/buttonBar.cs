@@ -22,7 +22,7 @@ function ButtonBar::Initialize(%this) {
     $ButtonBarVar::Initialized = 1;
     %this.clear();
     ButtonBarActivator.clear();
-    %this.buttons = 0 @ "count";
+    %this.buttons["count"] = 0;
     %background = new GuiBitmapCtrl(ButtonBarBackground) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -37,56 +37,56 @@ function ButtonBar::Initialize(%this) {
         trgReachedCommand = "$ThisControl.onReachedTarget();";
     };
     %this.background = %background;
-    %background.add(%this);
-    0.addButtonWithPopupMenu(%this, "PrivateSpacePopupMenu", "platform/client/buttons/bb_apartment");
-    "".addMenuItem(PrivateSpacePopupMenu, "My Furnishings", "toggleCSPanel(CSInventoryBrowserWindow);", "platform/client/buttons/bb_apartment_furniture");
-    "".addMenuItem(PrivateSpacePopupMenu, "Shop", "toggleCSPanel(CSShoppingBrowserWindow);", "platform/client/buttons/bb_apartment_shop");
-    "".addMenuItem(PrivateSpacePopupMenu, "Materials & Surfaces", "toggleCSPanel(CSPaintingWindow);", "platform/client/buttons/bb_apartment_paint");
-    "".addMenuItem(PrivateSpacePopupMenu, "Layouts", "toggleCSPanel(CSLayoutSelector);", "platform/client/buttons/bb_apartment_layout");
-    "".addMenuItem(PrivateSpacePopupMenu, "My Music & Videos", "toggleCSPanel(CSMediaDisplay);", "platform/client/buttons/bb_apartment_audio_video");
-    "".addMenuItem(PrivateSpacePopupMenu, "My Rules & Description", "toggleCSPanel(CSRulesAndDescWindow);", "platform/client/buttons/bb_apartment_settings");
-    "".addMenuItem(PrivateSpacePopupMenu, "My Other Places", "geTGF.toggleToTabName(\"MyPlace\");", "platform/client/buttons/bb_apartment_myOtherPlaces");
-    0.addButton(%this, "StoreButton", "toggleStore();", "platform/client/buttons/bb_store");
-    0.addButton(%this, "BuildingDirectoryButton", "toggleBuildingDirectory();", "platform/client/buttons/bb_building_directory");
+    %this.add(%background);
+    %this.addButtonWithPopupMenu("PrivateSpacePopupMenu", "platform/client/buttons/bb_apartment", 0);
+    PrivateSpacePopupMenu.addMenuItem("My Furnishings", "toggleCSPanel(CSInventoryBrowserWindow);", "platform/client/buttons/bb_apartment_furniture", "");
+    PrivateSpacePopupMenu.addMenuItem("Shop", "toggleCSPanel(CSShoppingBrowserWindow);", "platform/client/buttons/bb_apartment_shop", "");
+    PrivateSpacePopupMenu.addMenuItem("Materials & Surfaces", "toggleCSPanel(CSPaintingWindow);", "platform/client/buttons/bb_apartment_paint", "");
+    PrivateSpacePopupMenu.addMenuItem("Layouts", "toggleCSPanel(CSLayoutSelector);", "platform/client/buttons/bb_apartment_layout", "");
+    PrivateSpacePopupMenu.addMenuItem("My Music & Videos", "toggleCSPanel(CSMediaDisplay);", "platform/client/buttons/bb_apartment_audio_video", "");
+    PrivateSpacePopupMenu.addMenuItem("My Rules & Description", "toggleCSPanel(CSRulesAndDescWindow);", "platform/client/buttons/bb_apartment_settings", "");
+    PrivateSpacePopupMenu.addMenuItem("My Other Places", "geTGF.toggleToTabName(\"MyPlace\");", "platform/client/buttons/bb_apartment_myOtherPlaces", "");
+    %this.addButton("StoreButton", "toggleStore();", "platform/client/buttons/bb_store", 0);
+    %this.addButton("BuildingDirectoryButton", "toggleBuildingDirectory();", "platform/client/buttons/bb_building_directory", 0);
     BuildingDirectoryButton.lastBuildingEntered = "";
-    1.addButton(%this, "PlacesButton", "toggleTGF();", "platform/client/buttons/bb_places");
-    1.addButtonWithPopupMenu(%this, "MePopupMenu", "platform/client/buttons/bb_avatar");
+    %this.addButton("PlacesButton", "toggleTGF();", "platform/client/buttons/bb_places", 1);
+    %this.addButtonWithPopupMenu("MePopupMenu", "platform/client/buttons/bb_avatar", 1);
     if ($UserPref::UI::ShowReloadTextures) {
-        "".addMenuItem(MePopupMenu, "Reload Textures", "playerTexturesReload();", "platform/client/buttons/bb_avatar_hanger");
+        MePopupMenu.addMenuItem("Reload Textures", "playerTexturesReload();", "platform/client/buttons/bb_avatar_hanger", "");
     }
-    "F7".addMenuItem(MePopupMenu, "View", "nextPlayerCamMode();", "platform/client/buttons/bb_avatar_view");
-    "".addMenuItem(MePopupMenu, "Body", "toggleBodyTab();", "platform/client/buttons/bb_avatar_body");
-    "F5".addMenuItem(MePopupMenu, "Closet", "toggleClosetTab();", "platform/client/buttons/bb_avatar_hanger");
-    "F4".addMenuItem(MePopupMenu, "Actions", "toggleEmoteHud();", "platform/client/buttons/bb_avatar_action");
-    1.addButtonWithPopupMenu(%this, "PeoplePopupMenu", "platform/client/buttons/bb_people");
-    "".addMenuItem(PeoplePopupMenu, "Invite friends - earn vPoints!", "doInviteFriends();", "platform/client/buttons/bb_people_friends");
-    "".addMenuItem(PeoplePopupMenu, "AIM", "toggleBuddyHudForTab(\"AIM\");", "platform/client/buttons/bb_people_aim");
-    "".addMenuItem(PeoplePopupMenu, "Requests", "toggleBuddyHudForTab(\"requests\");", "platform/client/buttons/bb_people_requests");
-    "F3".addMenuItem(PeoplePopupMenu, "Friends", "toggleBuddyHudForTab(\"friends\");", "platform/client/buttons/bb_people_friends");
-    1.addButtonWithPopupMenu(%this, "ToolsPopupMenu", "platform/client/buttons/bb_tools");
-    "Ctrl B".addMenuItem(ToolsPopupMenu, "Camera", "toggleCameraImgBroadcast();", "platform/client/buttons/bb_tools_camera");
-    "F1".addMenuItem(ToolsPopupMenu, "Radar", "toggleLocalMap();", "platform/client/buttons/bb_tools_radar");
-    "F6".addMenuItem(ToolsPopupMenu, "Settings", "toggleOptionsPanel();", "platform/client/buttons/bb_tools_settings");
+    MePopupMenu.addMenuItem("View", "nextPlayerCamMode();", "platform/client/buttons/bb_avatar_view", "F7");
+    MePopupMenu.addMenuItem("Body", "toggleBodyTab();", "platform/client/buttons/bb_avatar_body", "");
+    MePopupMenu.addMenuItem("Closet", "toggleClosetTab();", "platform/client/buttons/bb_avatar_hanger", "F5");
+    MePopupMenu.addMenuItem("Actions", "toggleEmoteHud();", "platform/client/buttons/bb_avatar_action", "F4");
+    %this.addButtonWithPopupMenu("PeoplePopupMenu", "platform/client/buttons/bb_people", 1);
+    PeoplePopupMenu.addMenuItem("Invite friends - earn vPoints!", "doInviteFriends();", "platform/client/buttons/bb_people_friends", "");
+    PeoplePopupMenu.addMenuItem("AIM", "toggleBuddyHudForTab(\"AIM\");", "platform/client/buttons/bb_people_aim", "");
+    PeoplePopupMenu.addMenuItem("Requests", "toggleBuddyHudForTab(\"requests\");", "platform/client/buttons/bb_people_requests", "");
+    PeoplePopupMenu.addMenuItem("Friends", "toggleBuddyHudForTab(\"friends\");", "platform/client/buttons/bb_people_friends", "F3");
+    %this.addButtonWithPopupMenu("ToolsPopupMenu", "platform/client/buttons/bb_tools", 1);
+    ToolsPopupMenu.addMenuItem("Camera", "toggleCameraImgBroadcast();", "platform/client/buttons/bb_tools_camera", "Ctrl B");
+    ToolsPopupMenu.addMenuItem("Radar", "toggleLocalMap();", "platform/client/buttons/bb_tools_radar", "F1");
+    ToolsPopupMenu.addMenuItem("Settings", "toggleOptionsPanel();", "platform/client/buttons/bb_tools_settings", "F6");
     %thisMenuName = "geWebPopupMenu";
-    "".addButtonWithPopupMenu(%this, %thisMenuName, "platform/client/buttons/bb_web", 1, "");
-    %item = "".addMenuItem(%thisMenuName, "Invite friends - earn vPoints!", "doInviteFriends();", "platform/client/buttons/bb_people_friends");
-    %item = "".addMenuItem(%thisMenuName, "vSide Home", "gotoWebPage(\"http://" @ $Net::BaseDomain @ "/\");", "platform/client/buttons/bb_help_info");
-    %item = "".addMenuItem(%thisMenuName, "My Profile", "doEditProfile();", "platform/client/buttons/bb_help_info");
-    %item = "".addMenuItem(%thisMenuName, "Music", "gotoWebPage(\"" @ $Net::MusicURL @ "\" );", "platform/client/buttons/bb_help_info");
-    %item = "".addMenuItem(%thisMenuName, "Forums", "gotoWebPage(\"" @ $Net::ForumsURL @ "\" );", "platform/client/buttons/bb_help_info");
-    %item = "".addMenuItem(%thisMenuName, "Events", "gotoWebPage(\"" @ $Net::EventsURL @ "\" );", "platform/client/buttons/bb_help_info");
-    "".addButtonWithPopupMenu(%this, "HelpPopupMenu", "platform/client/buttons/bb_help", 1, "");
-    %item = "".addMenuItem(HelpPopupMenu, "Info for parents", "gotoWebPage(\"" @ $Net::HelpURL_Parents @ "\");", "platform/client/buttons/bb_help_info");
-    %item = "".addMenuItem(HelpPopupMenu, "House Rules", "gotoWebPage(\"" @ $Net::HelpURL_Guidelines @ "\");", "platform/client/buttons/bb_help_info");
-    %item = "".addMenuItem(HelpPopupMenu, "FAQ: Designing your own clothes", "gotoWebPage(\"" @ $Net::HelpURL_VHD @ "\");", "platform/client/buttons/bb_help_faq");
-    %item = "".addMenuItem(HelpPopupMenu, "FAQ: Moving, dancing, and chatting", "gotoWebPage(\"" @ $Net::HelpURL_Navigation @ "\");", "platform/client/buttons/bb_help_faq");
-    %item = "".addMenuItem(HelpPopupMenu, "FAQ: Music and events", "gotoWebPage(\"" @ $Net::HelpURL_MusicNEvents @ "\");", "platform/client/buttons/bb_help_faq");
-    %item = "".addMenuItem(HelpPopupMenu, "FAQ: Something is wrong with vSide", "gotoWebPage(\"" @ $Net::HelpURL_Support @ "\");", "platform/client/buttons/bb_help_faq");
-    %item = "".addMenuItem(HelpPopupMenu, "Someone is bothering me!", "gotoWebPage(\"" @ $Net::HelpURL_Abuse @ "\");", "platform/client/buttons/bb_help_alert");
-    %item = "".addMenuItem(HelpPopupMenu, "Ask other vSiders for help", "toggleHelpMeMode();", "platform/client/buttons/bb_help_person");
-    "helpMe".setInternalName(%item);
+    %this.addButtonWithPopupMenu(%thisMenuName, "platform/client/buttons/bb_web", 1, "", "");
+    %item = %thisMenuName.addMenuItem("Invite friends - earn vPoints!", "doInviteFriends();", "platform/client/buttons/bb_people_friends", "");
+    %item = %thisMenuName.addMenuItem("vSide Home", "gotoWebPage(\"http://" @ $Net::BaseDomain @ "/\");", "platform/client/buttons/bb_help_info", "");
+    %item = %thisMenuName.addMenuItem("My Profile", "doEditProfile();", "platform/client/buttons/bb_help_info", "");
+    %item = %thisMenuName.addMenuItem("Music", "gotoWebPage(\"" @ $Net::MusicURL @ "\" );", "platform/client/buttons/bb_help_info", "");
+    %item = %thisMenuName.addMenuItem("Forums", "gotoWebPage(\"" @ $Net::ForumsURL @ "\" );", "platform/client/buttons/bb_help_info", "");
+    %item = %thisMenuName.addMenuItem("Events", "gotoWebPage(\"" @ $Net::EventsURL @ "\" );", "platform/client/buttons/bb_help_info", "");
+    %this.addButtonWithPopupMenu("HelpPopupMenu", "platform/client/buttons/bb_help", 1, "", "");
+    %item = HelpPopupMenu.addMenuItem("Info for parents", "gotoWebPage(\"" @ $Net::HelpURL_Parents @ "\");", "platform/client/buttons/bb_help_info", "");
+    %item = HelpPopupMenu.addMenuItem("House Rules", "gotoWebPage(\"" @ $Net::HelpURL_Guidelines @ "\");", "platform/client/buttons/bb_help_info", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Designing your own clothes", "gotoWebPage(\"" @ $Net::HelpURL_VHD @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Moving, dancing, and chatting", "gotoWebPage(\"" @ $Net::HelpURL_Navigation @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Music and events", "gotoWebPage(\"" @ $Net::HelpURL_MusicNEvents @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("FAQ: Something is wrong with vSide", "gotoWebPage(\"" @ $Net::HelpURL_Support @ "\");", "platform/client/buttons/bb_help_faq", "");
+    %item = HelpPopupMenu.addMenuItem("Someone is bothering me!", "gotoWebPage(\"" @ $Net::HelpURL_Abuse @ "\");", "platform/client/buttons/bb_help_alert", "");
+    %item = HelpPopupMenu.addMenuItem("Ask other vSiders for help", "toggleHelpMeMode();", "platform/client/buttons/bb_help_person", "");
+    %item.setInternalName("helpMe");
     updateHelpMeModeMenu();
-    %background.bringToFront(%this);
+    %this.bringToFront(%background);
     %this.update();
     $ButtonBarVar::Hidden = 0;
     %this.handleContiguousSpace();
@@ -129,48 +129,48 @@ function ButtonBar::makeNewDot(%this) {
     return %dot;
 };
 function ButtonBar::addButton(%this, %buttonName, %command, %bitmap, %insertUponCreate) {
-    %button = %bitmap.makeButton(%this, %buttonName, %command);
-    %this.buttons = %button TAB %buttonName @ "button";
-    %this.buttons = "count" @ %this.buttons TAB %buttonName @ "buttonIndex";
-    %this.buttons = %this.makeNewDot() TAB %buttonName @ "dot";
-    %this.buttons = (%this.buttons + 1.0 @ "count");
+    %button = %this.makeButton(%buttonName, %command, %bitmap);
+    %this.buttons[%buttonName,"button"] = %button;
+    %this.buttons[%buttonName,"buttonIndex"] = %this.buttons["count"];
+    %this.buttons[%buttonName,"dot"] = %this.makeNewDot();
+    %this.buttons["count"] = (%this.buttons["count"] + 1.0);
     if (%insertUponCreate) {
-        %buttonName.insertButton(%this);
+        %this.insertButton(%buttonName);
     }
 };
 function ButtonBar::addButtonWithPopupMenu(%this, %menuName, %bitmap, %insertUponCreate) {
     %menu = MenuLayer::newMenu(%menuName);
     %menu.canHilite = 0;
     %buttonName = %menuName @ "Button";
-    %button = %bitmap.makeButton(%this, %buttonName, %menuName @ ".showRelativeTo(" @ %buttonName @ ", true);");
+    %button = %this.makeButton(%buttonName, %menuName @ ".showRelativeTo(" @ %buttonName @ ", true);", %bitmap);
     %button.menu = %menu;
     %button.buttonType = "MenuButton";
-    %this.buttons = %button TAB %buttonName @ "button";
-    %this.buttons = "count" @ %this.buttons TAB %buttonName @ "buttonIndex";
-    %this.buttons = %this.makeNewDot() TAB %buttonName @ "dot";
-    %this.buttons = (%this.buttons + 1.0 @ "count");
+    %this.buttons[%buttonName,"button"] = %button;
+    %this.buttons[%buttonName,"buttonIndex"] = %this.buttons["count"];
+    %this.buttons[%buttonName,"dot"] = %this.makeNewDot();
+    %this.buttons["count"] = (%this.buttons["count"] + 1.0);
     if (%insertUponCreate) {
-        %buttonName.insertButton(%this);
+        %this.insertButton(%buttonName);
     }
 };
 function ButtonBar::insertButton(%this, %buttonName) {
-    %buttonToInsert = %this.buttons;
-    %buttonName @ "button";
-    %buttonIndex = %this.buttons;
-    %buttonName @ "buttonIndex";
-    %dotToInsert = %this.buttons;
-    %buttonName @ "dot";
-    if ((%buttonToInsert.getObjectIndex(%this) != -(1.0))) {
+    %buttonToInsert = %this.buttons["button"];
+    %buttonName;
+    %buttonIndex = %this.buttons["buttonIndex"];
+    %buttonName;
+    %dotToInsert = %this.buttons["dot"];
+    %buttonName;
+    if ((%this.getObjectIndex(%buttonToInsert) != -(1.0))) {
         return;
     }
-    %dotToInsert.add(ButtonBarActivator);
+    ButtonBarActivator.add(%dotToInsert);
     %dummyContainer = new GuiControl("");
     %maxCount = %this.getCount();
     %i = (%maxCount - 1.0);
     while ((%i > 0.0)) {
-        %currentButton = %i.getObject(%this);
-        %currentButton.remove(%this);
-        %currentButton.add(%dummyContainer);
+        %currentButton = %this.getObject(%i);
+        %this.remove(%currentButton);
+        %dummyContainer.add(%currentButton);
         %i = (%i - 1.0);
     }
     %buttonHasBeenInserted = 0;
@@ -178,37 +178,37 @@ function ButtonBar::insertButton(%this, %buttonName) {
     %maxCount = %dummyContainer.getCount();
     %i = (%maxCount - 1.0);
     while ((%i >= 0.0)) {
-        %currentButton = %i.getObject(%dummyContainer);
-        %currentButton.remove(%dummyContainer);
-        if (!(%buttonHasBeenInserted)) {
+        %currentButton = %dummyContainer.getObject(%i);
+        %dummyContainer.remove(%currentButton);
+        if (!%buttonHasBeenInserted) {
         }
-        if ((%this.buttons > %buttonIndex TAB %currentButton.getName() @ "buttonIndex")) {
-            %buttonToInsert.add(%this);
+        if ((%this.buttons["buttonIndex"] > %buttonIndex @ %currentButton.getName())) {
+            %this.add(%buttonToInsert);
             %buttonHasBeenInserted = 1;
         }
-        %currentButton.add(%this);
+        %this.add(%currentButton);
         %i = (%i - 1.0);
     }
-    if (!(%buttonHasBeenInserted)) {
-        %buttonToInsert.add(%this);
+    if (!%buttonHasBeenInserted) {
+        %this.add(%buttonToInsert);
     }
     %dummyContainer.delete();
     %this.update();
 };
 function ButtonBar::removeButton(%this, %buttonName) {
-    %buttonToRemove = %this.buttons;
-    %buttonName @ "button";
-    %dotToRemove = %this.buttons;
-    %buttonName @ "dot";
-    if (!(isObject(%buttonToRemove))) {
+    %buttonToRemove = %this.buttons["button"];
+    %buttonName;
+    %dotToRemove = %this.buttons["dot"];
+    %buttonName;
+    if (!isObject(%buttonToRemove)) {
         return;
     }
-    %indexOfButton = %buttonToRemove.getObjectIndex(%this);
+    %indexOfButton = %this.getObjectIndex(%buttonToRemove);
     if ((%indexOfButton == -(1.0))) {
         return;
     }
-    %buttonToRemove.remove(%this);
-    %dotToRemove.remove(ButtonBarActivator);
+    %this.remove(%buttonToRemove);
+    ButtonBarActivator.remove(%dotToRemove);
     %this.update();
 };
 function ButtonBar::update(%this) {
@@ -217,11 +217,11 @@ function ButtonBar::update(%this) {
     %bbWidth = getWord(%this.extent, 0);
     %bbHeight = getWord(%this.extent, 1);
     %newWidth = %bbWidth;
-    if (!($ButtonBarVar::Hidden)) {
+    if (!$ButtonBarVar::Hidden) {
         %numButtons = (%this.getCount() - 1.0);
         %newWidth = (((2.0 * $ButtonBarVar::buttonBarSideBorder) + (%numButtons * $ButtonBarVar::buttonWidth)) + ((%numButtons + 1.0) * $ButtonBarVar::buttonPadding));
     }
-    %bbHeight.resize(%this, mFloor((((%screenWidth - %newWidth) / 2.0) + 1.0)), (%screenHeight - %bbHeight), %newWidth);
+    %this.resize(mFloor((((%screenWidth - %newWidth) / 2.0) + 1.0)), (%screenHeight - %bbHeight), %newWidth, %bbHeight);
     $ButtonBarVar::VerticalAdjustment = 0;
     if ($ButtonBarVar::Hidden) {
         %widthPerButton = ($ButtonBarVar::dotWidth + $ButtonBarVar::dotPadding);
@@ -230,9 +230,9 @@ function ButtonBar::update(%this) {
         %maxCount = %this.getCount();
         %i = 1;
         while ((%i < %maxCount)) {
-            %currentButton = %i.getObject(%this);
-            %yoffset.setTrgPosition(%currentButton, %xoffset);
-            $ButtonBarVar::buttonMiniHeight.setTrgExtent(%currentButton, $ButtonBarVar::dotWidth);
+            %currentButton = %this.getObject(%i);
+            %currentButton.setTrgPosition(%xoffset, %yoffset);
+            %currentButton.setTrgExtent($ButtonBarVar::dotWidth, $ButtonBarVar::buttonMiniHeight);
             %xoffset = (%xoffset + ($ButtonBarVar::dotWidth + $ButtonBarVar::dotPadding));
             %i = (%i + 1.0);
         }
@@ -242,8 +242,8 @@ function ButtonBar::update(%this) {
         %maxCount = ButtonBarActivator.getCount();
         %i = 0;
         while ((%i < %maxCount)) {
-            %currentDot = %i.getObject(ButtonBarActivator);
-            %yoffset.setTrgPosition(%currentDot, %xoffset);
+            %currentDot = ButtonBarActivator.getObject(%i);
+            %currentDot.setTrgPosition(%xoffset, %yoffset);
             %xoffset = (%xoffset + ($ButtonBarVar::dotWidth + $ButtonBarVar::dotPadding));
             %i = (%i + 1.0);
         }
@@ -257,20 +257,20 @@ function ButtonBar::update(%this) {
     %maxCount = %this.getCount();
     %i = 1;
     while ((%i < %maxCount)) {
-        %currentButton = %i.getObject(%this);
-        1.setVisible(%currentButton);
-        %yoffset.setTrgPosition(%currentButton, %xoffset);
-        $ButtonBarVar::buttonHeight.setTrgExtent(%currentButton, $ButtonBarVar::buttonWidth);
+        %currentButton = %this.getObject(%i);
+        %currentButton.setVisible(1);
+        %currentButton.setTrgPosition(%xoffset, %yoffset);
+        %currentButton.setTrgExtent($ButtonBarVar::buttonWidth, $ButtonBarVar::buttonHeight);
         %xoffset = (%xoffset + ($ButtonBarVar::buttonWidth + $ButtonBarVar::buttonPadding));
         %i = (%i + 1.0);
     }
     %newBgExt = %newWidth @ " " @ %bbHeight;
     (%i < %maxCount);
     %newBgPos = "0 0";
-    $ButtonBarVar::buttonBarActivatorHeight.resize(ButtonBarActivator, mFloor((((%screenWidth - %newWidth) / 2.0) + 1.0)), (%screenHeight - $ButtonBarVar::buttonBarActivatorHeight), %newWidth);
+    ButtonBarActivator.resize(mFloor((((%screenWidth - %newWidth) / 2.0) + 1.0)), (%screenHeight - $ButtonBarVar::buttonBarActivatorHeight), %newWidth, $ButtonBarVar::buttonBarActivatorHeight);
     if (isObject(%this.background)) {
-        %newBgExt.setTrgExtent(%this.background);
-        %newBgPos.setTrgPosition(%this.background);
+        %this.background.setTrgExtent(%newBgExt);
+        %this.background.setTrgPosition(%newBgPos);
     }
     if (isObject(geTicker)) {
         geTicker.update();
@@ -285,29 +285,29 @@ function ButtonBar::onMouseEnterBounds(%this) {
 };
 function ButtonBar::show(%this) {
     $ButtonBarVar::scheduled = 0;
-    if (!($ButtonBarVar::Hidden)) {
+    if (!$ButtonBarVar::Hidden) {
         return;
     }
     $ButtonBarVar::Hidden = 0;
-    1.setVisible(%this);
-    0.setVisible(ButtonBarActivator);
+    %this.setVisible(1);
+    ButtonBarActivator.setVisible(0);
     %this.update();
-    ButtonBar.pushToBack(PlayGui);
-    ButtonBarActivator.bringToFront(PlayGui);
-    PlayGuiGradients.bringToFront(PlayGui);
+    PlayGui.pushToBack(ButtonBar);
+    PlayGui.bringToFront(ButtonBarActivator);
+    PlayGui.bringToFront(PlayGuiGradients);
     MessageHud.updatePosition();
 };
 function ButtonBar::hide(%this) {
     if ($ButtonBarVar::Hidden) {
         return;
     }
-    if (!($UserPref::ETS::ButtonBar::AutoHide)) {
+    if (!$UserPref::ETS::ButtonBar::AutoHide) {
         return;
     }
     $ButtonBarVar::Hidden = 1;
-    ButtonBar.bringToFront(PlayGui);
-    ButtonBarActivator.pushToBack(PlayGui);
-    PlayGuiGradients.bringToFront(PlayGui);
+    PlayGui.bringToFront(ButtonBar);
+    PlayGui.pushToBack(ButtonBarActivator);
+    PlayGui.bringToFront(PlayGuiGradients);
     %this.update();
     $ButtonBarVar::scheduled = 0;
     MessageHud.updatePosition();
@@ -319,7 +319,7 @@ function ButtonBar::scheduledHide(%this) {
 };
 function ButtonBar::showAndHide(%this) {
     %this.show();
-    "scheduledHide".schedule(%this, $Pref::ETS::ButtonBar::timeout);
+    %this.schedule($Pref::ETS::ButtonBar::timeout, "scheduledHide");
     $ButtonBarVar::scheduled = 1;
 };
 function ButtonBar::setAutoHiding(%this, %flag) {
@@ -331,26 +331,26 @@ function ButtonBar::setAutoHiding(%this, %flag) {
     %this.show();
 };
 function ButtonBar::showButton(%this, %button) {
-    %button.insertButton(%this);
+    %this.insertButton(%button);
     %this.showAndHide();
 };
 function ButtonBar::hideButton(%this, %button) {
     if (isObject(MenuLayer)) {
         MenuLayer.hide();
     }
-    %button.removeButton(%this);
+    %this.removeButton(%button);
 };
 function ButtonBar::handleContiguousSpace(%this) {
     if (isObject(PlacesButton)) {
         %showPlaces = ($gContiguousSpaceName $= "gw") ? 0 : 1;
         if (%showPlaces) {
-            PlacesButton.showButton(%this);
+            %this.showButton(PlacesButton);
         }
-        PlacesButton.hideButton(%this);
+        %this.hideButton(PlacesButton);
     }
     if (isObject(MessageHudShoutOutIcon)) {
         %isGW = ($gContiguousSpaceName $= "gw");
-        !(%isGW).setVisible(MessageHudShoutOutIcon);
+        MessageHudShoutOutIcon.setVisible(!%isGW);
     }
 };
 function ButtonBarBackground::onReachedTarget(%this) {
@@ -358,9 +358,9 @@ function ButtonBarBackground::onReachedTarget(%this) {
         %maxCount = ButtonBar.getCount();
         %i = 1;
         while ((%i < %maxCount)) {
-            0.setVisible(%i.getObject(ButtonBar));
+            ButtonBar.getObject(%i).setVisible(0);
             %i = (%i + 1.0);
         }
-        1.setVisible(ButtonBarActivator);
+        ButtonBarActivator.setVisible(1);
     }
 };

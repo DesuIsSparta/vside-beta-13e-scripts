@@ -1,7 +1,5 @@
 function setDFEnabled(%val) {
-    if (!(isFunction("Using_DF"))) {
-    }
-    if (!(Using_DF())) {
+    if (!isFunction("Using_DF") || !Using_DF()) {
         return;
     }
     if (%val) {
@@ -10,9 +8,7 @@ function setDFEnabled(%val) {
     DFManagerDestroy();
 };
 function clientCmdSetDFEnabled(%val) {
-    if (!(isFunction("Using_DF"))) {
-    }
-    if (!(Using_DF())) {
+    if (!isFunction("Using_DF") || !Using_DF()) {
         return;
     }
     setDFEnabled(%val);
@@ -35,7 +31,7 @@ $gDFDebugNeedsRefresh = 1;
 $gDFDebugAdvertsList = new_ScriptArray("");
 $gDFDebugCurrAdvert = "-";
 function DFDebugRefresh() {
-    if (!($gDFDebugNeedsRefresh)) {
+    if (!$gDFDebugNeedsRefresh) {
         return;
     }
     $gDFDebugNeedsRefresh = 0;
@@ -43,9 +39,9 @@ function DFDebugRefresh() {
     %num = ServerConnection.getCount();
     %n = 0;
     while ((%n < %num)) {
-        %obj = %n.getObject(ServerConnection);
+        %obj = ServerConnection.getObject(%n);
         if ((%obj.getClassName() $= "DFTextureAdvert")) {
-            %obj.append($gDFDebugAdvertsList);
+            $gDFDebugAdvertsList.append(%obj);
         }
         %n = (%n + 1.0);
     }
@@ -58,7 +54,7 @@ function DFDebugUpdateGuiStatus() {
     }
     if (($gDFDebugAdvertsList.size() > 0.0)) {
     }
-    %obj = ($gDFDebugCurrAdvert - 1.0).get($gDFDebugAdvertsList);
+    %obj = $gDFDebugAdvertsList.get(($gDFDebugCurrAdvert - 1.0));
     "";
     %objText = "";
     if (isObject(%obj)) {
@@ -67,21 +63,21 @@ function DFDebugUpdateGuiStatus() {
             %objText = %objText @ "-" @ " " @ %obj.getName();
         }
     }
-    $gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText.setValue(geDFDebugStatusText);
+    geDFDebugStatusText.setValue($gDFDebugCurrAdvert @ " " @ "/" @ " " @ $gDFDebugAdvertsList.size() @ " " @ %objText);
 };
 function DFDebugRefreshForce() {
     $gDFDebugNeedsRefresh = 1;
     DFDebugRefresh();
 };
 function DFDebugPrev() {
-    if (!($Pref::DF::debugMode)) {
+    if (!$Pref::DF::debugMode) {
         return;
     }
     DFDebugRefresh();
     DFDebugGotoAdvert(($gDFDebugCurrAdvert - 1.0));
 };
 function DFDebugNext() {
-    if (!($Pref::DF::debugMode)) {
+    if (!$Pref::DF::debugMode) {
         return;
     }
     DFDebugRefresh();
@@ -98,12 +94,12 @@ function DFDebugGotoAdvert(%advertNumber) {
     if ((%advertNumber < 1.0)) {
         %advertNumber = "-";
     }
-    %advertObj = (%advertNumber - 1.0).get($gDFDebugAdvertsList);
+    %advertObj = $gDFDebugAdvertsList.get((%advertNumber - 1.0));
     $gDFDebugCurrAdvert = %advertNumber;
     DFDebugUpdateGuiStatus();
     if (isObject(%advertObj)) {
-        %trans = "0 0 0 0 0 1 -3.14159".localToWorldTransform(%advertObj);
-        %offset = "0 5 0".localToWorldVector(%advertObj);
+        %trans = %advertObj.localToWorldTransform("0 0 0 0 0 1 -3.14159");
+        %offset = %advertObj.localToWorldVector("0 5 0");
         %point = %advertObj.getWorldBoxCenter();
         %point = VectorAdd(%offset, %point);
         %trans = %point @ " " @ getWords(%trans, 3, 100);

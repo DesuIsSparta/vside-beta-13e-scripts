@@ -1,12 +1,12 @@
 function geActivitiesPanel::open(%this) {
     %this.updateStates();
-    1.setVisible(%this);
-    %this.focusAndRaise(playGui);
+    %this.setVisible(1);
+    playGui.focusAndRaise(%this);
     WindowManager.update();
     %this.onUpdateTimer();
 };
 function geActivitiesPanel::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     playGui.focusTopWindow();
     WindowManager.update();
     cancel(%this.updateTimerID);
@@ -19,7 +19,7 @@ function activitiesOperation() {
 function geActivitiesPanel::onUpdateTimer(%this) {
     %this.updateStates();
     cancel(%this.updateTimerID);
-    %this.updateTimerID = "onUpdateTimer".schedule(%this, 200);
+    %this.updateTimerID = %this.schedule(200, "onUpdateTimer");
 };
 function geActivitiesPanel::updateStates(%this) {
     %uam = getUserActivityMgr();
@@ -28,10 +28,10 @@ function geActivitiesPanel::updateStates(%this) {
     %delim = "";
     %n = (%uam.knownActivities.size() - 1.0);
     while ((%n >= 0.0)) {
-        %activityName = %n.getKey(%uam.knownActivities);
-        %activityUFName = %activityName.getActivityUserFacingName(%uam);
-        %on = %activityName.getActivityActive(%uam);
-        %timeLeft = %activityName.getActivityTimeLeft(%uam);
+        %activityName = %uam.knownActivities.getKey(%n);
+        %activityUFName = %uam.getActivityUserFacingName(%activityName);
+        %on = %uam.getActivityActive(%activityName);
+        %timeLeft = %uam.getActivityTimeLeft(%activityName);
         %isHighest = (%activityName $= %highest);
         %baseColor = %isHighest ? "ccff33" : "dddddd";
         if (%on) {
@@ -43,7 +43,7 @@ function geActivitiesPanel::updateStates(%this) {
         }
         %style = %style;
         "<b>" @ %style;
-        %icon = %activityName.getActivityIconFilename(%uam);
+        %icon = %uam.getActivityIconFilename(%activityName);
         if ((%timeLeft <= 0.0)) {
         }
         %timeLeftText = " - " @ formatFloat("%0.1f", (%timeLeft / 1000.0));
@@ -62,7 +62,7 @@ function geActivitiesPanel::updateStates(%this) {
         %timeToNextReport = formatFloat("%.1f", (%timeToNextReport / 1000.0));
         %text = %text @ %delim @ "<just:left><color:907000>reports paused for" @ " " @ %timeToNextReport @ "s..";
     }
-    %text.setText(geActivitiesPanel_Current);
+    geActivitiesPanel_Current.setText(%text);
 };
 function geActivitiesPanel_Current::onUrl(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
@@ -70,5 +70,5 @@ function geActivitiesPanel_Current::onUrl(%this, %url) {
     }
     %activityName = firstWord(%url);
     %uam = getUserActivityMgr();
-    !(%activityName.getActivityActive(%uam)).setActivityActive(%uam, %activityName);
+    %uam.setActivityActive(%activityName, !%uam.getActivityActive(%activityName));
 };

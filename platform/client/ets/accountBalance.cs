@@ -1,38 +1,38 @@
 function AccountBalanceHud::Initialize(%this) {
-    if (!(%this.initialized)) {
-        if (!(isObject(AccountBalancePBController))) {
+    if (!%this.initialized) {
+        if (!isObject(AccountBalancePBController)) {
             new ScriptObject(AccountBalancePBController) {
                 class = "ProgressBarController";
             };
             if (isObject(MissionCleanup)) {
-                AccountBalancePBController.add(MissionCleanup);
+                MissionCleanup.add(AccountBalancePBController);
             }
         }
-        "platform/client/ui/progress_sm_rcap".Initialize(AccountBalancePBController, AccountBalancePBContainer, "platform/client/ui/progress_sm_empty", "platform/client/ui/progress_sm_fill", "platform/client/ui/progress_sm_lcap");
+        AccountBalancePBController.Initialize(AccountBalancePBContainer, "platform/client/ui/progress_sm_empty", "platform/client/ui/progress_sm_fill", "platform/client/ui/progress_sm_lcap", "platform/client/ui/progress_sm_rcap");
         %this.pulsar = AnimCtrl::newAnimCtrl("2 1", "89 26");
-        40.setDelay(%this.pulsar);
+        %this.pulsar.setDelay(40);
         %nums = "00 01 02 03 04 05 06 07 08 09 10 11";
         %i = 0;
         while ((%i < getWordCount(%nums))) {
             %num = getWord(%nums, %i);
-            "platform/client/ui/vpoints_pulse/vpoints_pulse_" @ %num @ ".png".addFrame(%this.pulsar);
+            %this.pulsar.addFrame("platform/client/ui/vpoints_pulse/vpoints_pulse_" @ %num @ ".png");
             %i = (%i + 1.0);
         }
-        ETSNonModalProfile.setProfile(%this.pulsar);
-        0.setVisible(%this.pulsar);
-        %this.pulsar.add(%this);
+        %this.pulsar.setProfile(ETSNonModalProfile);
+        %this.pulsar.setVisible(0);
+        %this.add(%this.pulsar);
         %this.initialized = (%i < getWordCount(%nums)) @ 1;
     }
     AccountBalanceHud.update();
 };
 function AccountBalanceHud::open(%this) {
     %wasVisible = %this.isVisible();
-    if (!(%wasVisible)) {
-        1.setVisible(%this);
+    if (!%wasVisible) {
+        %this.setVisible(1);
         WindowManager.update();
     }
-    if (!($UserPref::UI::ShowAccountHud)) {
-        "close".schedule(%this, 5000);
+    if (!$UserPref::UI::ShowAccountHud) {
+        %this.schedule(5000, "close");
     }
 };
 function AccountBalanceHud::close(%this) {
@@ -40,22 +40,22 @@ function AccountBalanceHud::close(%this) {
         return 0;
     }
     if (%this.isVisible()) {
-        0.setVisible(%this);
+        %this.setVisible(0);
         WindowManager.update();
     }
     return 1;
 };
 function AccountBalanceHud::startPulse(%this, %numPulses) {
-    1.setVisible(%this.pulsar);
+    %this.pulsar.setVisible(1);
     %this.pulsar.start();
-    "stopPulse".schedule(%this, ((%numPulses * %this.pulsar.delay) * %this.pulsar.numFrames));
+    %this.schedule(((%numPulses * %this.pulsar.delay) * %this.pulsar.numFrames), "stopPulse");
 };
 function AccountBalanceHud::stopPulse(%this) {
     %this.pulsar.stop();
-    0.setVisible(%this.pulsar);
+    %this.pulsar.setVisible(0);
 };
 function AccountBalanceHud::update(%this) {
-    if (!(%this.initialized)) {
+    if (!%this.initialized) {
         AccountBalanceHud.Initialize();
     }
     if ($UserPref::UI::ShowAccountHud) {
@@ -63,8 +63,8 @@ function AccountBalanceHud::update(%this) {
     }
     %this.close();
     if (isObject(AccountBalanceVPointsText)) {
-        commaify($Player::VPoints).setText(AccountBalanceVPointsText);
-        commaify($Player::VBux).setText(AccountBalanceVBuxText);
-        (1.0 - respektPercentToNextLevel($gMyRespektPoints)).setValue(AccountBalancePBController);
+        AccountBalanceVPointsText.setText(commaify($Player::VPoints));
+        AccountBalanceVBuxText.setText(commaify($Player::VBux));
+        AccountBalancePBController.setValue((1.0 - respektPercentToNextLevel($gMyRespektPoints)));
     }
 };

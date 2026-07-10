@@ -1,33 +1,33 @@
 function sendRequest_ClientHeartbeat(%userName, %callbackHandler) {
     %request = safeEnsureScriptObject("ManagerRequest", "");
-    "UniformManagerRequest".bindClassName(%request);
-    "request_ClientHeartbeat".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_ClientHeartbeat");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/ClientHeartbeat";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
 };
 function sendRequest_CompleteClientRegistration(%registrationID, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_CompleteClientRegistration".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_CompleteClientRegistration");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/CompleteClientRegistration";
-    %url.setURL(%request);
-    %registrationID.addUrlParam(%request, "registrationID");
+    %request.setURL(%url);
+    %request.addUrlParam("registrationID", %registrationID);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
 };
 function sendRequest_GetBalancesAndScores(%userName, %callbackHandler) {
     %request = safeEnsureScriptObject("ManagerRequest", "");
-    "UniformManagerRequest".bindClassName(%request);
-    "request_GetBalancesAndScores".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_GetBalancesAndScores");
     if (%request.isOpen()) {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
         return;
@@ -35,8 +35,8 @@ function sendRequest_GetBalancesAndScores(%userName, %callbackHandler) {
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetBalancesAndScores";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -46,44 +46,44 @@ function sendRequest_GetCustomSpaceInfo(%buildingName, %spaceName, %ownerName, %
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetCustomSpaceInfo";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
     if ((%buildingName $= "")) {
     }
     if ((%ownerName $= "")) {
         error(getScopeName() @ " " @ "- either buildingName or ownerName must have a value." @ " " @ getTrace());
         return "";
     }
-    %buildingName.setURLParamIfNotEmpty(%request, "building");
-    %spaceName.setURLParamIfNotEmpty(%request, "space");
-    %ownerName.setURLParamIfNotEmpty(%request, "owner");
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setURLParamIfNotEmpty("building", %buildingName);
+    %request.setURLParamIfNotEmpty("space", %spaceName);
+    %request.setURLParamIfNotEmpty("owner", %ownerName);
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
 function sendRequest_GetClientUserProperties(%userName, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_GetClientUserProperties".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_GetClientUserProperties");
     %url = "";
     %url = %url @ $Net::SecureClientServiceURL;
     %url = %url @ "/GetClientUserProperties";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
 };
 function sendRequest_GetStoreInventory(%userName, %storename, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_GetStoreInventory".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_GetStoreInventory");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetStoreInventory";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
-    %storename.addUrlParam(%request, "storeName");
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
+    %request.addUrlParam("storeName", %storename);
     %request.storeName = %storename;
     %request.callbackHandler = %callbackHandler;
     %request.start();
@@ -91,14 +91,14 @@ function sendRequest_GetStoreInventory(%userName, %storename, %callbackHandler) 
 };
 function sendRequest_GetUserInventoryCollection(%userName, %collectionName, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_GetUserInventoryCollection".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_GetUserInventoryCollection");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetUserInventoryCollection";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
-    %collectionName.addUrlParam(%request, "name");
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
+    %request.addUrlParam("name", %collectionName);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -116,15 +116,15 @@ function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandl
         return "";
     }
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    %requestName.setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName(%requestName);
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetUserRelations";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
     if (!(%singleUserName $= "")) {
-        %singleUserName.addUrlParam(%request, "buddy");
+        %request.addUrlParam("buddy", %singleUserName);
     }
     %request.callbackHandler = %callbackHandler;
     %request.singleUserName = %singleUserName;
@@ -143,18 +143,18 @@ function sendRequest_GetOnlineFriends(%maxCount, %sortCriteria, %callbackHandler
         return "";
     }
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    %requestName.setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName(%requestName);
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetOnlineFriends";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
     if (!(%maxCount $= "")) {
-        %maxCount.addUrlParam(%request, "maxCount");
+        %request.addUrlParam("maxCount", %maxCount);
     }
     if (!(%sortCriteria $= "")) {
-        %sortCriteria.addUrlParam(%request, "sortCriteria");
+        %request.addUrlParam("sortCriteria", %sortCriteria);
     }
     %request.callbackHandler = %callbackHandler;
     %request.doAnother = 0;
@@ -172,77 +172,77 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler) {
         return "";
     }
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    %requestName.setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName(%requestName);
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/finder/GetOnlineUsers";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
     %request.callbackHandler = %callbackHandler;
     %request.doAnother = 0;
-    %maxCount.addUrlParam(%request, "maxCount");
+    %request.addUrlParam("maxCount", %maxCount);
     %isImplemented = 1;
     if (%isImplemented) {
     }
-    if (!($StandAlone)) {
+    if (!$StandAlone) {
         %request.start();
     }
     echo(getScopeName() @ " " @ "- using fake data.");
     %num = 100;
-    "success".putValue(%request, "status");
-    %num.putValue(%request, "userCount");
+    %request.putValue("status", "success");
+    %request.putValue("userCount", %num);
     %n = 0;
     while ((%n < %num)) {
         %keyBase = "user" @ %n @ ".";
-        getRandomUserName().putValue(%request, %keyBase @ "userName");
-        (getRandom(0, 99) < 20.0) ? "friend" : "".putValue(%request, %keyBase @ "relationType");
+        %request.putValue(%keyBase @ "userName", getRandomUserName());
+        %request.putValue(%keyBase @ "relationType", (getRandom(0, 99) < 20.0) ? "friend" : "");
         if ((getRandom(0, 1) == 0.0)) {
         }
-        "".putValue(%request, %keyBase @ "age", getRandom(13, 25));
-        getRandomWord("idle dancing chatting shoppingForClothes decorating  ").putValue(%request, %keyBase @ "currentActivities");
-        "lga_yachts".putValue(%request, %keyBase @ "currentLocation.areaName");
-        "LGAHarbor".putValue(%request, %keyBase @ "currentLocation.buildingName");
-        "Yacht_LargeSouth".putValue(%request, %keyBase @ "currentLocation.serverName");
-        "Da Shiznit".putValue(%request, %keyBase @ "levelName");
-        getRandomWord("f m").putValue(%request, %keyBase @ "gender");
-        "4 times the timmy 100% less fat 100% muscle ;)".putValue(%request, %keyBase @ "headline");
-        "InworldOnEnvserver".putValue(%request, %keyBase @ "onlineStatus");
-        694040.putValue(%request, %keyBase @ "score");
-        "LGAHarbor".putValue(%request, %keyBase @ "homeLocation.buildingName");
+        %request.putValue(%keyBase @ "age", getRandom(13, 25), "");
+        %request.putValue(%keyBase @ "currentActivities", getRandomWord("idle dancing chatting shoppingForClothes decorating  "));
+        %request.putValue(%keyBase @ "currentLocation.areaName", "lga_yachts");
+        %request.putValue(%keyBase @ "currentLocation.buildingName", "LGAHarbor");
+        %request.putValue(%keyBase @ "currentLocation.serverName", "Yacht_LargeSouth");
+        %request.putValue(%keyBase @ "levelName", "Da Shiznit");
+        %request.putValue(%keyBase @ "gender", getRandomWord("f m"));
+        %request.putValue(%keyBase @ "headline", "4 times the timmy 100% less fat 100% muscle ;)");
+        %request.putValue(%keyBase @ "onlineStatus", "InworldOnEnvserver");
+        %request.putValue(%keyBase @ "score", 694040);
+        %request.putValue(%keyBase @ "homeLocation.buildingName", "LGAHarbor");
         %n = (%n + 1.0);
     }
     %n = 0;
     (%n < %num);
-    "nv".putValue(%request, "location" @ %n @ ".areaName");
-    getRandom(30, 800).putValue(%request, "location" @ %n @ ".userCount");
+    %request.putValue("location" @ %n @ ".areaName", "nv");
+    %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
     %n = (%n + 1.0);
-    "rj".putValue(%request, "location" @ %n @ ".areaName");
-    getRandom(30, 800).putValue(%request, "location" @ %n @ ".userCount");
+    %request.putValue("location" @ %n @ ".areaName", "rj");
+    %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
     %n = (%n + 1.0);
-    "lga".putValue(%request, "location" @ %n @ ".areaName");
-    getRandom(30, 800).putValue(%request, "location" @ %n @ ".userCount");
+    %request.putValue("location" @ %n @ ".areaName", "lga");
+    %request.putValue("location" @ %n @ ".userCount", getRandom(30, 800));
     %n = (%n + 1.0);
-    "pvt".putValue(%request, "location" @ %n @ ".areaName");
-    getRandom(50, 1500).putValue(%request, "location" @ %n @ ".userCount");
+    %request.putValue("location" @ %n @ ".areaName", "pvt");
+    %request.putValue("location" @ %n @ ".userCount", getRandom(50, 1500));
     %n = (%n + 1.0);
-    "gw".putValue(%request, "location" @ %n @ ".areaName");
-    getRandom(0, 30).putValue(%request, "location" @ %n @ ".userCount");
+    %request.putValue("location" @ %n @ ".areaName", "gw");
+    %request.putValue("location" @ %n @ ".userCount", getRandom(0, 30));
     %n = (%n + 1.0);
-    %n.putValue(%request, "locationCount");
-    "onDoneOrError".schedule(%request, 500);
+    %request.putValue("locationCount", %n);
+    %request.schedule(500, "onDoneOrError");
     return %request;
 };
 function sendRequest_GetHappeningsInProgress(%userName, %callbackHandler) {
     %requestName = "request_GetHappeningsInProgress";
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    %requestName.setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName(%requestName);
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/finder/GetHappeningsInProgress";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
     %request.callbackHandler = %callbackHandler;
     %request.doAnother = 0;
     %request.start();
@@ -251,31 +251,31 @@ function sendRequest_GetHappeningsInProgress(%userName, %callbackHandler) {
 function sendRequest_PurchaseInventory(%userName, %skusArray, %payWith, %storename, %callbackHandler) {
     %payWith = strlwr(%payWith);
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_PurchaseInventory".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_PurchaseInventory");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/PurchaseInventory";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
-    %payWith.addUrlParam(%request, "payWith");
-    %storename.addUrlParam(%request, "storeName");
-    %storename[$gStoreStockRevision @ %storename].addUrlParam(%request, "storeRevisionDate");
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
+    %request.addUrlParam("payWith", %payWith);
+    %request.addUrlParam("storeName", %storename);
+    %request.addUrlParam("storeRevisionDate", %storename[$gStoreStockRevision @ %storename]);
     %skusNum = %skusArray.count();
-    %skusNum.addUrlParam(%request, "itemsToBuyCount");
+    %request.addUrlParam("itemsToBuyCount", %skusNum);
     %n = 0;
     while ((%n < %skusNum)) {
-        if ((%n.getValue(%skusArray) != 1.0)) {
-            error("trying to buy a non-unit quantity of a sku." @ " " @ %n.getKey(%skusArray) @ " " @ %n.getValue(%skusArray));
-            1.setValue(%skusArray, %n);
+        if ((%skusArray.getValue(%n) != 1.0)) {
+            error("trying to buy a non-unit quantity of a sku." @ " " @ %skusArray.getKey(%n) @ " " @ %skusArray.getValue(%n));
+            %skusArray.setValue(%n, 1);
         }
         %n = (%n + 1.0);
     }
     %n = 0;
     (%n < %skusNum);
     while ((%n < %skusNum)) {
-        %n.getKey(%skusArray).addBodyParam(%request, "itemsToBuy" @ %n @ ".sku");
-        %n.getValue(%skusArray).addBodyParam(%request, "itemsToBuy" @ %n @ ".quantity");
+        %request.addBodyParam("itemsToBuy" @ %n @ ".sku", %skusArray.getKey(%n));
+        %request.addBodyParam("itemsToBuy" @ %n @ ".quantity", %skusArray.getValue(%n));
         %n = (%n + 1.0);
     }
     %request.payWith = (%n < %skusNum) @ %payWith;
@@ -285,14 +285,14 @@ function sendRequest_PurchaseInventory(%userName, %skusArray, %payWith, %storena
 };
 function sendRequest_RemoveUserInventoryCollection(%userName, %collectionName, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_RemoveUserInventoryCollection".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_RemoveUserInventoryCollection");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/RemoveUserInventoryCollection";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
-    %collectionName.addUrlParam(%request, "name");
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
+    %request.addUrlParam("name", %collectionName);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -302,44 +302,44 @@ function sendRequest_SaveClientUserProperties(%userName, %stringMap, %callbackHa
     %url = "";
     %url = %url @ $Net::SecureClientServiceURL;
     %url = %url @ "/SaveClientUserProperties";
-    %url.setURL(%request);
-    $Player::Name.setBodyParam(%request, "user");
-    $Token.setURLParam(%request, "token");
+    %request.setURL(%url);
+    %request.setBodyParam("user", $Player::Name);
+    %request.setURLParam("token", $Token);
     %num = %stringMap.size();
-    %num.setBodyParam(%request, "propertyCount");
+    %request.setBodyParam("propertyCount", %num);
     %n = 0;
     while ((%n < %num)) {
-        %n.getKey(%stringMap).setBodyParam(%request, "property" @ %n @ ".key");
-        %n.getValue(%stringMap).setBodyParam(%request, "property" @ %n @ ".value");
+        %request.setBodyParam("property" @ %n @ ".key", %stringMap.getKey(%n));
+        %request.setBodyParam("property" @ %n @ ".value", %stringMap.getValue(%n));
         %n = (%n + 1.0);
     }
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
 function sendRequest_UpdateUserInventoryCollection(%userName, %collectionName, %propertyMap, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_UpdateUserInventoryCollection".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_UpdateUserInventoryCollection");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/UpdateUserInventoryCollection";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
-    %collectionName.addUrlParam(%request, "name");
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
+    %request.addUrlParam("name", %collectionName);
     %num = %propertyMap.size();
-    %num.addUrlParam(%request, "propertyCount");
+    %request.addUrlParam("propertyCount", %num);
     %n = 0;
     while ((%n < %num)) {
-        %n.getKey(%propertyMap).addUrlParam(%request, "property" @ %n @ ".key");
-        %n.getValue(%propertyMap).addUrlParam(%request, "property" @ %n @ ".value");
+        %request.addUrlParam("property" @ %n @ ".key", %propertyMap.getKey(%n));
+        %request.addUrlParam("property" @ %n @ ".value", %propertyMap.getValue(%n));
         %n = (%n + 1.0);
     }
     %request.callbackHandler = (%n < %num) @ %callbackHandler;
     if ($StandAlone) {
         if (!(%callbackHandler $= "")) {
             warn(getScopeName() @ " " @ "- standalone: faking success" @ " " @ getTrace());
-            "success".putValue(%request, "status");
+            %request.putValue("status", "success");
             schedule(500, 0, %callbackHandler, %request);
         }
     }
@@ -348,32 +348,32 @@ function sendRequest_UpdateUserInventoryCollection(%userName, %collectionName, %
 };
 function sendRequest_GetHighGameScores(%userName, %gameName, %firstIndex, %maxCount, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_GetHighGameScores".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_GetHighGameScores");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/score/GetHighGameScores";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
-    %gameName.addUrlParam(%request, "gameName");
-    %firstIndex.addUrlParam(%request, "firstIndex");
-    %maxCount.addUrlParam(%request, "maxCount");
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
+    %request.addUrlParam("gameName", %gameName);
+    %request.addUrlParam("firstIndex", %firstIndex);
+    %request.addUrlParam("maxCount", %maxCount);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
 };
 function sendRequest_GetHighGameScoresForStation(%userName, %gameStationId, %firstIndex, %maxCount, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_GetHighGameScoresForStation".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_GetHighGameScoresForStation");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/score/GetHighGameScoresForStation";
-    %url.setURL(%request);
-    %userName.addUserAndToken(%request);
-    %gameStationId.addUrlParam(%request, "gameStationId");
-    %firstIndex.addUrlParam(%request, "firstIndex");
-    %maxCount.addUrlParam(%request, "maxCount");
+    %request.setURL(%url);
+    %request.addUserAndToken(%userName);
+    %request.addUrlParam("gameStationId", %gameStationId);
+    %request.addUrlParam("firstIndex", %firstIndex);
+    %request.addUrlParam("maxCount", %maxCount);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -383,29 +383,29 @@ function sendRequest_GetMainHappenings(%maxCount, %callbackHandler) {
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/finder/GetMainHappenings";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    %maxCount.setURLParam(%request, "maxCount");
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.setURLParam("maxCount", %maxCount);
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
 function sendRequest_GetMainVenues(%maxCount, %callbackHandler) {
     %requestName = "request_GetMainVenues";
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    %requestName.setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName(%requestName);
     %request.timeStart = getSimTime();
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/finder/GetMainVenues";
     %url = %url @ "FAKE";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    %maxCount.addUrlParam(%request, "maxCount");
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.addUrlParam("maxCount", %maxCount);
     %request.callbackHandler = %callbackHandler;
-    "success".putValue(%request, "status");
-    %maxCount.putValue(%request, "venuesCount");
+    %request.putValue("status", "success");
+    %request.putValue("venuesCount", %maxCount);
     %n = 0;
     %venue = "interscope_lounge";
     %notThese = %venue;
@@ -436,24 +436,24 @@ function sendRequest_GetMainVenues(%maxCount, %callbackHandler) {
         fakeRequestListItem_GetMainVenues(%request, "venues", %n, %venue);
         %n = (%n + 1.0);
     }
-    "onDoneOrError".schedule(%request, 100);
+    %request.schedule(100, "onDoneOrError");
 };
 function fakeRequestListItem_GetMainVenues(%request, %listNameBase, %listIndex, %venueCodeName) {
-    %venueCodeName.putValue(%request, %listNameBase @ %listIndex @ ".codeName");
+    %request.putValue(%listNameBase @ %listIndex @ ".codeName", %venueCodeName);
 };
 function sendRequest_AbuseReport(%abuser, %description, %occurrence, %abuseType, %chatSnippetFile, %callbackHandler) {
     %request = safeNewScriptObject("URLPostObject", "", 0);
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/AbuseReport";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    %abuser.setURLParam(%request, "abuser");
-    %description.setURLParam(%request, "description");
-    %occurrence.setURLParam(%request, "occurrence");
-    %abuseType.setURLParam(%request, "abuseType");
-    %chatSnippetFile.setPostFile(%request, "chatSnippet");
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.setURLParam("abuser", %abuser);
+    %request.setURLParam("description", %description);
+    %request.setURLParam("occurrence", %occurrence);
+    %request.setURLParam("abuseType", %abuseType);
+    %request.setPostFile("chatSnippet", %chatSnippetFile);
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
@@ -462,22 +462,22 @@ function sendRequest_BootNew(%callbackHandler) {
     %url = "";
     %url = %url @ $Net::SecureClientServiceURL;
     %url = %url @ "/Boot";
-    %url.setURL(%request);
-    $Player::Name.setURLParam(%request, "user");
-    $Player::Password.setBodyParam(%request, "password");
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setURL(%url);
+    %request.setURLParam("user", $Player::Name);
+    %request.setBodyParam("password", $Player::Password);
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
 function sendRequest_Boot(%callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
+    %request.bindClassName("UniformManagerRequest");
     %url = "";
     %url = %url @ $Net::SecureClientServiceURL;
     %url = %url @ "/Boot";
-    %url.setURL(%request);
-    $Player::Name.addUrlParam(%request, "user");
-    $Player::Password.addBodyParam(%request, "password");
+    %request.setURL(%url);
+    %request.addUrlParam("user", $Player::Name);
+    %request.addBodyParam("password", $Player::Password);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -488,26 +488,26 @@ function sendRequest_UpdateUserStates(%statesList, %callbackHandler) {
     %callbackHandler = "";
     %callbackHandler;
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
+    %request.bindClassName("UniformManagerRequest");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/UpdateUserStates";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    %statesList.addUrlParam(%request, "userStates");
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.addUrlParam("userStates", %statesList);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
 };
 function sendRequest_EventInformation(%eventId, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    "request_EventInformation".setName(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setName("request_EventInformation");
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/GetEventBanner";
-    %url.setURL(%request);
-    %eventId.addUrlParam(%request, "eventId");
+    %request.setURL(%url);
+    %request.addUrlParam("eventId", %eventId);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -517,14 +517,14 @@ function sendRequest_GiftCurrency(%targetUserName, %currencyType, %currencyAmoun
     %url = "";
     %url = %url @ $Net::SecureClientServiceURL;
     %url = %url @ "/TransferCurrency";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    MD5($Player::Password).setBodyParam(%request, "password");
-    %targetUserName.setURLParam(%request, "payee");
-    (%currencyType $= "vPoints") ? "VPOINTS" : "VBUX".setURLParam(%request, "currencyType");
-    %currencyAmount.setURLParam(%request, "amount");
-    1.setURLParam(%request, "dryRun", %dryRun);
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.setBodyParam("password", MD5($Player::Password));
+    %request.setURLParam("payee", %targetUserName);
+    %request.setURLParam("currencyType", (%currencyType $= "vPoints") ? "VPOINTS" : "VBUX");
+    %request.setURLParam("amount", %currencyAmount);
+    %request.setURLParam("dryRun", %dryRun, 1);
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
@@ -533,10 +533,10 @@ function sendRequest_GetUserProfileInfo(%targetUser, %callbackHandler) {
     %url = "";
     %url = %url @ $Net::SecureClientServiceURL;
     %url = %url @ "/GetUserProfileInfo";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    %targetUser.setURLParam(%request, "targetUser");
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.setURLParam("targetUser", %targetUser);
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
@@ -546,21 +546,21 @@ function sendRequest_UploadPhoto(%fileName, %caption, %peopleInViewList, %type, 
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/uploadPhoto";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    %caption.setURLParam(%request, "caption");
-    %featured.setURLParam(%request, "featured");
-    "".setURLParam(%request, "broadcast");
-    %type.setURLParam(%request, "type");
-    %location.setURLParam(%request, "location");
-    %peopleInViewList.setURLParam(%request, "inView");
-    %fileName.setPostFile(%request, "imageBody");
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.setURLParam("caption", %caption);
+    %request.setURLParam("featured", %featured);
+    %request.setURLParam("broadcast", "");
+    %request.setURLParam("type", %type);
+    %request.setURLParam("location", %location);
+    %request.setURLParam("inView", %peopleInViewList);
+    %request.setPostFile("imageBody", %fileName);
     if (!(CustomSpaceClient::GetSpaceImIn() $= "")) {
-        $CSSpaceInfo.owner.setURLParam(%request, "apartmentOwner");
-        $CSSpaceInfo.vurl.setURLParam(%request, "vurl");
+        %request.setURLParam("apartmentOwner", $CSSpaceInfo.owner);
+        %request.setURLParam("vurl", $CSSpaceInfo.vurl);
     }
-    "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns".setURLParam(%request, "vurl");
-    %callbackHandler.setCompletedCallback(%request);
+    %request.setURLParam("vurl", "vside:/location/" @ $gContiguousSpaceName @ "/PlazaSpawns");
+    %request.setCompletedCallback(%callbackHandler);
     %request.start();
     return %request;
 };
@@ -569,19 +569,19 @@ function sendRequest_PublishToTicker(%message, %priority, %callbackHandler) {
     %url = "";
     %url = %url @ $Net::ClientServiceURL;
     %url = %url @ "/PublishToTicker";
-    %url.setURL(%request);
-    $Player::Name.addUserAndToken(%request);
-    %callbackHandler.setCompletedCallback(%request);
-    %message.setURLParam(%request, "text");
-    %priority.setURLParam(%request, "priority");
+    %request.setURL(%url);
+    %request.addUserAndToken($Player::Name);
+    %request.setCompletedCallback(%callbackHandler);
+    %request.setURLParam("text", %message);
+    %request.setURLParam("priority", %priority);
     %isImplementedOnBackEnd = 1;
     if (%isImplementedOnBackEnd) {
     }
-    if (!($StandAlone)) {
+    if (!$StandAlone) {
         %request.start();
     }
     echo(getScopeName() @ " " @ "- using fake data. yep");
-    "success".setResult(%request, "status");
-    "onDoneOrError".schedule(%request, 500);
+    %request.setResult("status", "success");
+    %request.schedule(500, "onDoneOrError");
     return %request;
 };

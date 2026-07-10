@@ -1,84 +1,84 @@
 DeclareTestSuite("TestSuite_GameState");
 function TestSuite_GameState::setup(%this) {
-    "TEST_GAMESTATE_BASICS".addTestCase(%this);
-    "TEST_GAMESTATEBITSET".addTestCase(%this);
-    "TEST_GAMESTATEBITSETTOOMANYTHINGS".addTestCase(%this);
-    "TEST_GAMESTATEBITSET_NON_THINGS".addTestCase(%this);
+    %this.addTestCase("TEST_GAMESTATE_BASICS");
+    %this.addTestCase("TEST_GAMESTATEBITSET");
+    %this.addTestCase("TEST_GAMESTATEBITSETTOOMANYTHINGS");
+    %this.addTestCase("TEST_GAMESTATEBITSET_NON_THINGS");
 };
 function TEST_GAMESTATE_BASICS::runTest(%this) {
-    if (!($StandAlone)) {
-        "this test must be run in $standalone".assert(%this, 0);
+    if (!$StandAlone) {
+        %this.assert(0, "this test must be run in $standalone");
         return;
     }
     %player = $StandaloneServerPlayer;
     %stateName = "TEST_GAMESTATE_BASICS_STATE";
-    "a nonexistent gamestate should default to zero".assert(%this, (gameplay::getState(%player, %stateName) == 0.0));
+    %this.assert((gameplay::getState(%player, %stateName) == 0.0), "a nonexistent gamestate should default to zero");
     gameplay::setState(%player, %stateName, 1);
-    "the state should be 1 right after we set it".assert(%this, (gameplay::getState(%player, %stateName) == 1.0));
+    %this.assert((gameplay::getState(%player, %stateName) == 1.0), "the state should be 1 right after we set it");
     %new = (gameplay::getState(%player, %stateName) + 1.0);
     gameplay::setState(%player, %stateName, %new);
-    "the state should be 2 right after we increment it".assert(%this, (gameplay::getState(%player, %stateName) == 2.0));
+    %this.assert((gameplay::getState(%player, %stateName) == 2.0), "the state should be 2 right after we increment it");
     gameplay::ClearState(%player, %stateName);
-    "the state should be zero again after we clear it".assert(%this, (gameplay::getState(%player, %stateName) == 0.0));
+    %this.assert((gameplay::getState(%player, %stateName) == 0.0), "the state should be zero again after we clear it");
 };
 function TEST_GAMESTATEBITSET::runTest(%this) {
-    if (!($StandAlone)) {
-        "this test must be run in $standalone".assert(%this, 0);
+    if (!$StandAlone) {
+        %this.assert(0, "this test must be run in $standalone");
         return;
     }
     %player = $StandaloneServerPlayer;
     %set = GameStateBitSet::construct("testBits_set");
-    "failed to construct GameStateBitSet".assert(%this, isObject(%set));
-    "blarney".AddThing(%set);
-    "balleyhoo".AddThing(%set);
-    "gold".AddThing(%set);
-    %count = %player.CountBits(%set);
-    "should have counted no bits since we haven't set any yet".assert(%this, (%count == 0.0));
-    "gold".SetBit(%set, %player);
-    %ret = "blarney".IsBitSet(%set, %player);
-    "a bit was set that should not be set".assert(%this, (%ret == 0.0));
-    %ret = "gold".IsBitSet(%set, %player);
-    "a bit that should have been set was not set".assert(%this, (%ret == 1.0));
-    "blarney".SetBit(%set, %player);
-    "balleyhoo".SetBit(%set, %player);
-    %count = %player.CountBits(%set);
-    "should have counted 3 bits since we set them all".assert(%this, (%count == 3.0));
-    %player.ClearState(%set);
-    %count = %player.CountBits(%set);
-    "should have counted no bits since we cleared the state for this player".assert(%this, (%count == 0.0));
+    %this.assert(isObject(%set), "failed to construct GameStateBitSet");
+    %set.AddThing("blarney");
+    %set.AddThing("balleyhoo");
+    %set.AddThing("gold");
+    %count = %set.CountBits(%player);
+    %this.assert((%count == 0.0), "should have counted no bits since we haven't set any yet");
+    %set.SetBit(%player, "gold");
+    %ret = %set.IsBitSet(%player, "blarney");
+    %this.assert((%ret == 0.0), "a bit was set that should not be set");
+    %ret = %set.IsBitSet(%player, "gold");
+    %this.assert((%ret == 1.0), "a bit that should have been set was not set");
+    %set.SetBit(%player, "blarney");
+    %set.SetBit(%player, "balleyhoo");
+    %count = %set.CountBits(%player);
+    %this.assert((%count == 3.0), "should have counted 3 bits since we set them all");
+    %set.ClearState(%player);
+    %count = %set.CountBits(%player);
+    %this.assert((%count == 0.0), "should have counted no bits since we cleared the state for this player");
     %set.delete();
 };
 function TEST_GAMESTATEBITSETTOOMANYTHINGS::runTest(%this) {
-    if (!($StandAlone)) {
-        "this test must be run in $standalone".assert(%this, 0);
+    if (!$StandAlone) {
+        %this.assert(0, "this test must be run in $standalone");
         return;
     }
     %player = $StandaloneServerPlayer;
     %set = GameStateBitSet::construct("testBits_set");
     %i = 0;
     while ((%i < 32.0)) {
-        %ret = 0 @ " " @ %i.AddThing(%set);
-        "failed to add a thing to the set when it should have worked".assert(%this, (%ret == 1.0));
+        %ret = %set.AddThing(0 @ " " @ %i);
+        %this.assert((%ret == 1.0), "failed to add a thing to the set when it should have worked");
         %i = (%i + 1.0);
     }
-    %ret = "TOO MANY!".AddThing(%set);
+    %ret = %set.AddThing("TOO MANY!");
     (%i < 32.0);
-    "we should not have been able to add this thing to the set, only 32 things shoudl work".assert(%this, (%ret == 0.0));
+    %this.assert((%ret == 0.0), "we should not have been able to add this thing to the set, only 32 things shoudl work");
     %set.delete();
 };
 function TEST_GAMESTATEBITSET_NON_THINGS::runTest(%this) {
-    if (!($StandAlone)) {
-        "this test must be run in $standalone".assert(%this, 0);
+    if (!$StandAlone) {
+        %this.assert(0, "this test must be run in $standalone");
         return;
     }
     %player = $StandaloneServerPlayer;
     %set = GameStateBitSet::construct("testBits_set");
-    %count = %player.CountBits(%set);
-    "empty set should have empty bits".assert(%this, (%count == 0.0));
-    %ret = "gold".SetBit(%set, %player);
-    "should fail to set a bit for a thing that doesn't exist in this set".assert(%this, (%ret == 0.0));
-    %ret = "blarney".IsBitSet(%set, %player);
-    "a bit should not be set for this set that has no things in it.".assert(%this, (%ret == 0.0));
-    %player.ClearState(%set);
+    %count = %set.CountBits(%player);
+    %this.assert((%count == 0.0), "empty set should have empty bits");
+    %ret = %set.SetBit(%player, "gold");
+    %this.assert((%ret == 0.0), "should fail to set a bit for a thing that doesn't exist in this set");
+    %ret = %set.IsBitSet(%player, "blarney");
+    %this.assert((%ret == 0.0), "a bit should not be set for this set that has no things in it.");
+    %set.ClearState(%player);
     %set.delete();
 };

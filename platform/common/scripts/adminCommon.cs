@@ -18,16 +18,16 @@ function admin::isActionable(%obj, %action) {
         return isPlayerObject(%obj);
     }
     if ((%action $= "Ban")) {
-        if (!(isPlayerObject(%obj))) {
+        if (!isPlayerObject(%obj)) {
             return 0;
         }
-        return !(isAIPlayerObject(%obj));
+        return !isAIPlayerObject(%obj);
     }
     if ((%action $= "Message")) {
         if ((%obj == 0.0)) {
             return 1;
         }
-        if (!(isPlayerObject(%obj))) {
+        if (!isPlayerObject(%obj)) {
             return 0;
         }
         if (isAIPlayerObject(%obj)) {

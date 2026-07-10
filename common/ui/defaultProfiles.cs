@@ -1,6 +1,6 @@
 $Gui::fontCacheDirectory = ExpandFilename("./cache");
 $Gui::clipboardFile = ExpandFilename("./cache/clipboard.gui");
-if (!(isObject(GuiDefaultProfile))) {
+if (!isObject(GuiDefaultProfile)) {
     new GuiControlProfile(GuiDefaultProfile) {
         tab = 0;
         canKeyFocus = 0;
@@ -41,23 +41,23 @@ if (!(isObject(GuiDefaultProfile))) {
         soundButtonOver = "";
     };
 }
-if (!(isObject(GuiInputCtrlProfile))) {
+if (!isObject(GuiInputCtrlProfile)) {
     new GuiControlProfile(GuiInputCtrlProfile) {
         tab = 1;
         canKeyFocus = 1;
     };
 }
-if (!(isObject(GuiDialogProfile))) {
+if (!isObject(GuiDialogProfile)) {
     new GuiControlProfile(GuiDialogProfile);
 }
-if (!(isObject(GuiSolidDefaultProfile))) {
+if (!isObject(GuiSolidDefaultProfile)) {
     new GuiControlProfile(GuiSolidDefaultProfile) {
         opaque = 1;
         border = 0;
         fillColor = ($Platform $= "macos") ? "211 211 211" : "192 192 192";
     };
 }
-if (!(isObject(GuiWindowProfile))) {
+if (!isObject(GuiWindowProfile)) {
     new GuiControlProfile(GuiWindowProfile) {
         opaque = 1;
         border = 2;
@@ -73,7 +73,7 @@ if (!(isObject(GuiWindowProfile))) {
         justify = ($Platform $= "macos") ? "center" : "left";
     };
 }
-if (!(isObject(GuiToolWindowProfile))) {
+if (!isObject(GuiToolWindowProfile)) {
     new GuiControlProfile(GuiToolWindowProfile) {
         opaque = 1;
         border = 2;
@@ -86,24 +86,24 @@ if (!(isObject(GuiToolWindowProfile))) {
         textOffset = "6 6";
     };
 }
-if (!(isObject(EditorToolButtonProfile))) {
+if (!isObject(EditorToolButtonProfile)) {
     new GuiControlProfile(EditorToolButtonProfile) {
         opaque = 1;
         border = 2;
     };
 }
-if (!(isObject(GuiContentProfile))) {
+if (!isObject(GuiContentProfile)) {
     new GuiControlProfile(GuiContentProfile) {
         opaque = 1;
         fillColor = "255 255 255";
     };
 }
-if (!(isObject(GuiModelessDialogProfile))) {
+if (!isObject(GuiModelessDialogProfile)) {
     new GuiControlProfile("GuiModelessDialogProfile") {
         modal = 0;
     };
 }
-if (!(isObject(GuiButtonProfile))) {
+if (!isObject(GuiButtonProfile)) {
     new GuiControlProfile(GuiButtonProfile) {
         opaque = 1;
         border = 1;
@@ -115,12 +115,12 @@ if (!(isObject(GuiButtonProfile))) {
         canKeyFocus = 0;
     };
 }
-if (!(isObject(GuiBorderButtonProfile))) {
+if (!isObject(GuiBorderButtonProfile)) {
     new GuiControlProfile(GuiBorderButtonProfile) {
         fontColorHL = "0 0 0";
     };
 }
-if (!(isObject(GuiMenuBarProfile))) {
+if (!isObject(GuiMenuBarProfile)) {
     new GuiControlProfile(GuiMenuBarProfile) {
         opaque = 1;
         fillColor = ($Platform $= "macos") ? "211 211 211" : "192 192 192";
@@ -137,12 +137,12 @@ if (!(isObject(GuiMenuBarProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(GuiButtonSmProfile))) {
+if (!isObject(GuiButtonSmProfile)) {
     new GuiControlProfile(GuiButtonSmProfile : GuiButtonProfile) {
         fontSize = 14;
     };
 }
-if (!(isObject(GuiRadioProfile))) {
+if (!isObject(GuiRadioProfile)) {
     new GuiControlProfile(GuiRadioProfile) {
         fontSize = 14;
         fillColor = "232 232 232";
@@ -152,7 +152,7 @@ if (!(isObject(GuiRadioProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(GuiScrollProfile))) {
+if (!isObject(GuiScrollProfile)) {
     new GuiControlProfile(GuiScrollProfile) {
         opaque = 1;
         fillColor = "255 255 255";
@@ -163,12 +163,12 @@ if (!(isObject(GuiScrollProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(GuiSliderProfile))) {
+if (!isObject(GuiSliderProfile)) {
     new GuiControlProfile(GuiSliderProfile) {
         bitmap = "./darkSlider";
     };
 }
-if (!(isObject(GuiTextProfile))) {
+if (!isObject(GuiTextProfile)) {
     new GuiControlProfile(GuiTextProfile) {
         fontColor = "0 0 0";
         fontColorLink = "255 96 96";
@@ -177,7 +177,7 @@ if (!(isObject(GuiTextProfile))) {
         autoSizeHeight = 1;
     };
 }
-if (!(isObject(EditorTextProfile))) {
+if (!isObject(EditorTextProfile)) {
     new GuiControlProfile(EditorTextProfile) {
         fontType = "Arial Bold";
         fontColor = "0 0 0";
@@ -185,7 +185,7 @@ if (!(isObject(EditorTextProfile))) {
         autoSizeHeight = 1;
     };
 }
-if (!(isObject(EditorTextProfileWhite))) {
+if (!isObject(EditorTextProfileWhite)) {
     new GuiControlProfile(EditorTextProfileWhite) {
         fontType = "Arial Bold";
         fontColor = "255 255 255";
@@ -193,27 +193,27 @@ if (!(isObject(EditorTextProfileWhite))) {
         autoSizeHeight = 1;
     };
 }
-if (!(isObject(GuiMediumTextProfile))) {
+if (!isObject(GuiMediumTextProfile)) {
     new GuiControlProfile(GuiMediumTextProfile : GuiTextProfile) {
         fontSize = 24;
     };
 }
-if (!(isObject(GuiBigTextProfile))) {
+if (!isObject(GuiBigTextProfile)) {
     new GuiControlProfile(GuiBigTextProfile : GuiTextProfile) {
         fontSize = 36;
     };
 }
-if (!(isObject(GuiCenterTextProfile))) {
+if (!isObject(GuiCenterTextProfile)) {
     new GuiControlProfile(GuiCenterTextProfile : GuiTextProfile) {
         justify = "center";
     };
 }
-if (!(isObject(MissionEditorProfile))) {
+if (!isObject(MissionEditorProfile)) {
     new GuiControlProfile(MissionEditorProfile) {
         canKeyFocus = 1;
     };
 }
-if (!(isObject(EditorScrollProfile))) {
+if (!isObject(EditorScrollProfile)) {
     new GuiControlProfile(EditorScrollProfile) {
         opaque = 1;
         fillColor = "192 192 192 192";
@@ -224,7 +224,7 @@ if (!(isObject(EditorScrollProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(GuiTextEditProfile))) {
+if (!isObject(GuiTextEditProfile)) {
     new GuiControlProfile(GuiTextEditProfile) {
         opaque = 1;
         fillColor = "255 255 255";
@@ -243,7 +243,7 @@ if (!(isObject(GuiTextEditProfile))) {
         drawShadow = 0;
     };
 }
-if (!(isObject(GuiControlListPopupProfile))) {
+if (!isObject(GuiControlListPopupProfile)) {
     new GuiControlProfile(GuiControlListPopupProfile) {
         opaque = 1;
         fillColor = "255 255 255";
@@ -262,16 +262,16 @@ if (!(isObject(GuiControlListPopupProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(GuiTextArrayProfile))) {
+if (!isObject(GuiTextArrayProfile)) {
     new GuiControlProfile(GuiTextArrayProfile : GuiTextProfile) {
         fontColorHL = "32 100 100";
         fillColorHL = "200 200 200";
     };
 }
-if (!(isObject(GuiTextListProfile))) {
+if (!isObject(GuiTextListProfile)) {
     new GuiControlProfile(GuiTextListProfile : GuiTextProfile);
 }
-if (!(isObject(GuiTreeViewProfile))) {
+if (!isObject(GuiTreeViewProfile)) {
     new GuiControlProfile(GuiTreeViewProfile) {
         fontSize = 13;
         fontColor = "0 0 0";
@@ -284,7 +284,7 @@ if (!(isObject(GuiTreeViewProfile))) {
         bitmap = "./shll_treeView";
     };
 }
-if (!(isObject(GuiCheckBoxProfile))) {
+if (!isObject(GuiCheckBoxProfile)) {
     new GuiControlProfile(GuiCheckBoxProfile) {
         opaque = 0;
         fillColor = "232 232 232";
@@ -299,7 +299,7 @@ if (!(isObject(GuiCheckBoxProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(GuiPopUpMenuProfile))) {
+if (!isObject(GuiPopUpMenuProfile)) {
     new GuiControlProfile(GuiPopUpMenuProfile) {
         opaque = 1;
         mouseOverSelected = 1;
@@ -316,7 +316,7 @@ if (!(isObject(GuiPopUpMenuProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(GuiEditorClassProfile))) {
+if (!isObject(GuiEditorClassProfile)) {
     new GuiControlProfile(GuiEditorClassProfile) {
         opaque = 1;
         fillColor = "232 232 232";
@@ -331,14 +331,14 @@ if (!(isObject(GuiEditorClassProfile))) {
         hasBitmapArray = 1;
     };
 }
-if (!(isObject(LoadTextProfile))) {
+if (!isObject(LoadTextProfile)) {
     new GuiControlProfile("LoadTextProfile") {
         fontColor = "66 219 234";
         autoSizeWidth = 1;
         autoSizeHeight = 1;
     };
 }
-if (!(isObject(GuiMLTextProfile))) {
+if (!isObject(GuiMLTextProfile)) {
     new GuiControlProfile("GuiMLTextProfile") {
         fontColorLink = "255  96  96";
         fontColorLinkHL = "0     0 255";
@@ -351,14 +351,14 @@ new GuiControlProfile(GuiMLTextModelessProfile : GuiMLTextProfile) {
     canKeyFocus = 0;
     modal = 0;
 };
-if (!(isObject(GuiMLTextNoSelectProfile))) {
+if (!isObject(GuiMLTextNoSelectProfile)) {
     new GuiControlProfile("GuiMLTextNoSelectProfile") {
         fontColorLink = "255 96 96";
         fontColorLinkHL = "0 0 255";
         modal = 0;
     };
 }
-if (!(isObject(GuiMLTextEditProfile))) {
+if (!isObject(GuiMLTextEditProfile)) {
     new GuiControlProfile(GuiMLTextEditProfile) {
         fontColorLink = "255 96 96";
         fontColorLinkHL = "0 0 255";
@@ -373,21 +373,21 @@ if (!(isObject(GuiMLTextEditProfile))) {
         canKeyFocus = 1;
     };
 }
-if (!(isObject(GuiConsoleProfile))) {
+if (!isObject(GuiConsoleProfile)) {
     new GuiControlProfile("GuiConsoleProfile") {
         fontType = ($Platform $= "macos") ? "Courier New" : "Lucida Console";
         fontSize = ($Platform $= "macos") ? 14 : 12;
         fontColor = "0 0 0";
         fontColorHL = "130 130 130";
         fontColorNA = "255 0 0";
-        fontColors = "  0   0   0" @ 5;
-        fontColors = "150 150 150" @ 6;
-        fontColors = "200 150  50" @ 7;
-        fontColors = "255   0   0" @ 8;
-        fontColors = "255   0 255" @ 9;
+        fontColors = "  0   0   0";
+        fontColors = "150 150 150";
+        fontColors = "200 150  50";
+        fontColors = "255   0   0";
+        fontColors = "255   0 255";
     };
 }
-if (!(isObject(GuiProgressProfile))) {
+if (!isObject(GuiProgressProfile)) {
     new GuiControlProfile("GuiProgressProfile") {
         opaque = 0;
         fillColor = "44 152 162 100";
@@ -395,13 +395,13 @@ if (!(isObject(GuiProgressProfile))) {
         borderColor = "78 88 120";
     };
 }
-if (!(isObject(GuiProgressTextProfile))) {
+if (!isObject(GuiProgressTextProfile)) {
     new GuiControlProfile("GuiProgressTextProfile") {
         fontColor = "0 0 0";
         justify = "center";
     };
 }
-if (!(isObject(GuiInspectorFieldProfile))) {
+if (!isObject(GuiInspectorFieldProfile)) {
     new GuiControlProfile(GuiInspectorFieldProfile) {
         opaque = 0;
         fillColor = "255 255 255";
@@ -422,15 +422,15 @@ if (!(isObject(GuiInspectorFieldProfile))) {
         canKeyFocus = 1;
     };
 }
-if (!(isObject(GuiInspectorBackgroundProfile))) {
+if (!isObject(GuiInspectorBackgroundProfile)) {
     new GuiControlProfile(GuiInspectorBackgroundProfile : GuiInspectorFieldProfile) {
         border = 5;
     };
 }
-if (!(isObject(GuiInspectorDynamicFieldProfile))) {
+if (!isObject(GuiInspectorDynamicFieldProfile)) {
     new GuiControlProfile(GuiInspectorDynamicFieldProfile : GuiInspectorFieldProfile);
 }
-if (!(isObject(GuiInspectorTextEditProfile))) {
+if (!isObject(GuiInspectorTextEditProfile)) {
     new GuiControlProfile("GuiInspectorTextEditProfile") {
         opaque = 0;
         border = 0;
@@ -443,7 +443,7 @@ if (!(isObject(GuiInspectorTextEditProfile))) {
         fontColorNA = "0 0 0";
     };
 }
-if (!(isObject(InspectorTypeEnumProfile))) {
+if (!isObject(InspectorTypeEnumProfile)) {
     new GuiControlProfile(InspectorTypeEnumProfile : GuiInspectorFieldProfile) {
         mouseOverSelected = 1;
         bitmap = ($Platform $= "macos") ? "./osxScroll" : "./darkScroll";
@@ -452,7 +452,7 @@ if (!(isObject(InspectorTypeEnumProfile))) {
         border = 1;
     };
 }
-if (!(isObject(InspectorTypeCheckboxProfile))) {
+if (!isObject(InspectorTypeCheckboxProfile)) {
     new GuiControlProfile(InspectorTypeCheckboxProfile : GuiInspectorFieldProfile) {
         bitmap = ($Platform $= "macos") ? "./osxCheck" : "./torqueCheck";
         hasBitmapArray = 1;
@@ -460,7 +460,7 @@ if (!(isObject(InspectorTypeCheckboxProfile))) {
         border = 0;
     };
 }
-if (!(isObject(GuiInspectorTypeFileNameProfile))) {
+if (!isObject(GuiInspectorTypeFileNameProfile)) {
     new GuiControlProfile(GuiInspectorTypeFileNameProfile) {
         opaque = 0;
         border = 5;
@@ -480,7 +480,7 @@ if (!(isObject(GuiInspectorTypeFileNameProfile))) {
         borderColorNA = "64 64 64";
     };
 }
-if (!(isObject(GuiMessageWindowProfile))) {
+if (!isObject(GuiMessageWindowProfile)) {
     new GuiControlProfile(GuiMessageWindowProfile : GuiWindowProfile) {
         bitmap = "./msgWindow";
         fillColor = "  0   0   0 179";
@@ -490,14 +490,14 @@ if (!(isObject(GuiMessageWindowProfile))) {
         stretchBitmaps = 0;
     };
 }
-if (!(isObject(GuiMessageTextProfile))) {
+if (!isObject(GuiMessageTextProfile)) {
     new GuiControlProfile(GuiMessageTextProfile : GuiTextProfile) {
         fontColor = "255 255 255 255";
         fontColorGL = "255 255 255 128";
         fontColorLink = "255 106 196 255";
     };
 }
-if (!(isObject(GuiVarWidthButtonProfile))) {
+if (!isObject(GuiVarWidthButtonProfile)) {
     new GuiControlProfile(GuiVarWidthButtonProfile : GuiDefaultProfile) {
         bitmap = "./varWidthButton";
         justify = "center";
@@ -505,13 +505,13 @@ if (!(isObject(GuiVarWidthButtonProfile))) {
         hlOffset = "0 0";
         hlInset = "4 2";
         fontColor = "230 100 255 255";
-        fontColors = "255 147 248 255" @ 6;
-        fontColors = "147   0 137 255" @ 7;
-        fontColors = "100 100 100 255" @ 8;
+        fontColors = "255 147 248 255";
+        fontColors = "147   0 137 255";
+        fontColors = "100 100 100 255";
         drawShadow = 0;
     };
 }
-if (!(isObject(GuiFocusableVWButtonProfile))) {
+if (!isObject(GuiFocusableVWButtonProfile)) {
     new GuiControlProfile(GuiFocusableVWButtonProfile : GuiVarWidthButtonProfile) {
         canKeyFocus = 1;
         tab = 1;

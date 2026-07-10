@@ -327,7 +327,7 @@ function testLoginAndStay() {
     };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
-    $DestServerName.doLogin(%testLogin);
+    %testLogin.doLogin($DestServerName);
 };
 echo("LOAD: starting via testLoginAndSumo()");
 $failureCount = 0;
@@ -390,25 +390,19 @@ function stopAndTalk() {
         %rand_teleport_NV = getRandom(1, $teleportsNVCount);
         %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
-        if (($DestServerName $= "NewVeneziaNorth")) {
-        }
-        if (($DestServerName $= "NewVeneziaSouth")) {
+        if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth")) {
             %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
             %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
         }
-        if (($DestServerName $= "LaGenoaAiresNorth")) {
-        }
-        if (($DestServerName $= "LaGenoaAiresSouth")) {
+        if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth")) {
             %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
             %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
         }
-        if (($DestServerName $= "RaijukuNorth")) {
-        }
-        if (($DestServerName $= "RaijukuSouth")) {
+        if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth")) {
             %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
             %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
         }
-        0.say(pChat, "Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination, 0);
+        pChat.say("Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination, 0, 0);
         commandToServer(%command, %destination);
     }
     if (($failureCount == 5.0)) {
@@ -427,9 +421,8 @@ function logoffAndQuit() {
     schedule(1000, 0, doQuit);
 };
 function approveFriendRequests() {
-    %fansHere = BuddyHudWin.buddyLists;
-    FansHere;
-    if (!(isObject(%fansHere))) {
+    %fansHere = BuddyHudWin.buddyLists[FansHere];
+    if (!isObject(%fansHere)) {
         return;
     }
     if ((%fansHere.size() == 0.0)) {
@@ -438,11 +431,11 @@ function approveFriendRequests() {
     }
     %n = (%fansHere.size() - 1.0);
     while ((%n >= 0.0)) {
-        %playerName = %n.getKey(%fansHere);
+        %playerName = %fansHere.getKey(%n);
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        %playerName.whisper(pChat, "(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.");
+        pChat.whisper("(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (%n - 1.0);
     }
 };

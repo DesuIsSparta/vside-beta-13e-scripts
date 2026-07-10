@@ -4,7 +4,7 @@ function sPChat::init() {
     }
     new ScriptObject(pChat);
     if (isObject(MissionCleanup)) {
-        pChat.add(MissionCleanup);
+        MissionCleanup.add(pChat);
     }
     pChat.reset();
 };
@@ -16,20 +16,20 @@ function pChat::say(%this, %text, %noMic, %isAutoReply) {
         commandToServer('PChatSay', %text, %noMic, %isAutoReply);
     }
     handleSystemMessage("msgInfoMessage", "dude, you're not at your body. text not sent.");
-    "said".raiseHand(%this, %text);
-    1.setActivityActive(getUserActivityMgr(), "chatting");
+    %this.raiseHand(%text, "said");
+    getUserActivityMgr().setActivityActive("chatting", 1);
 };
 function pChat::whisper(%this, %text, %playerName, %isAutoReply) {
     %text = trim(%text);
     if ((%text $= "")) {
         return;
     }
-    if (%playerName.hasKey(UserListIgnores)) {
+    if (UserListIgnores.hasKey(%playerName)) {
         handleSystemMessage("msgInfoMessage", "Sorry, you can't whisper to <linkcolor:ffddeeff><a:gamelink " @ munge(%playerName) @ ">" @ StripMLControlChars(%playerName) @ "</a>, because you are ignoring them!");
         return;
     }
     commandToServer('PChatWhisper', %text, makeTaggedString(%playerName), %isAutoReply);
-    "whispered".raiseHand(%this, %text);
+    %this.raiseHand(%text, "whispered");
 };
 function pChat::yell(%this, %text, %isAutoReply) {
     setIdle(0);
@@ -37,7 +37,7 @@ function pChat::yell(%this, %text, %isAutoReply) {
         commandToServer('PChatYell', %text, %isAutoReply);
     }
     handleSystemMessage("msgInfoMessage", "dude, you're not at your body. text not yelled.");
-    "yelled".raiseHand(%this, %text);
+    %this.raiseHand(%text, "yelled");
 };
 function pChat::clearHistory(%this) {
     if (isObject(ConvBubVecCtrlMsgVec)) {
@@ -58,7 +58,7 @@ function pChat::raiseHand(%this, %text, %type) {
     if ((%wet $= %text)) {
         return;
     }
-    if (!(testFlooding($player, "raiseHand", 1))) {
+    if (!testFlooding($player, "raiseHand", 1)) {
         return;
     }
     commandToServer('raiseHand', %text, %type);
@@ -105,48 +105,48 @@ function pChat::composeLine(%text, %name, %whisperedTo, %ignored, %speechType, %
                 return "";
             }
             if (%isAutoReply) {
-                %text = "".getPlayerMarkup(pChat, %name) @ "autoreplies: " @ makeColorTag(%yellColor) @ %text;
+                %text = pChat.getPlayerMarkup(%name, "") @ "autoreplies: " @ makeColorTag(%yellColor) @ %text;
             }
-            %text = "".getPlayerMarkup(pChat, %name) @ ": " @ makeColorTag(%yellColor) @ %text;
+            %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%yellColor) @ %text;
         }
         if ((%speechType $= "sos")) {
-            %text = "".getPlayerMarkup(pChat, %name) @ " pleads: " @ makeColorTag(%sosColor) @ %text;
+            %text = pChat.getPlayerMarkup(%name, "") @ " pleads: " @ makeColorTag(%sosColor) @ %text;
         }
         if ((%speechType $= "mic")) {
-            %text = "".getPlayerMarkup(pChat, %name) @ ": " @ makeColorTag(%micColor) @ %text;
+            %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%micColor) @ %text;
         }
         if ((%speechType $= "pvtNotify")) {
-            %text = "".getPlayerMarkup(pChat, %name) @ " " @ makeColorTag(%pvtNotifyColor) @ %text;
+            %text = pChat.getPlayerMarkup(%name, "") @ " " @ makeColorTag(%pvtNotifyColor) @ %text;
         }
         if ((%speechType $= "pubNotify")) {
-            %text = %pubNotifyColor.getPlayerMarkup(pChat, %name) @ " " @ makeColorTag(%pubNotifyColor) @ %text;
+            %text = pChat.getPlayerMarkup(%name, %pubNotifyColor) @ " " @ makeColorTag(%pubNotifyColor) @ %text;
         }
         if (%isAutoReply) {
-            %text = "".getPlayerMarkup(pChat, %name) @ "autoreplies: " @ makeColorTag(%regularColor) @ %text;
+            %text = pChat.getPlayerMarkup(%name, "") @ "autoreplies: " @ makeColorTag(%regularColor) @ %text;
         }
-        %text = "".getPlayerMarkup(pChat, %name) @ ": " @ makeColorTag(%regularColor) @ %text;
+        %text = pChat.getPlayerMarkup(%name, "") @ ": " @ makeColorTag(%regularColor) @ %text;
     }
     if ((%speechType $= "abuse")) {
-        %text = "".getPlayerMarkup(pChat, %name) @ makeColorTag(%abuseColor) @ " narcs on " @ "".getPlayerMarkup(pChat, %whisperedTo) @ ": " @ makeColorTag(%abuseColor) @ %text;
+        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%abuseColor) @ " narcs on " @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ makeColorTag(%abuseColor) @ %text;
     }
     if ((%speechType $= "gift")) {
         %giftText = getField(%text, 0);
         %message = getField(%text, 1);
-        %text = "".getPlayerMarkup(pChat, %name) @ makeColorTag(%giftColor) @ " gave " @ "".getPlayerMarkup(pChat, %whisperedTo) @ " " @ %giftText @ ": " @ makeColorTag(%giftColor) @ %message;
+        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%giftColor) @ " gave " @ pChat.getPlayerMarkup(%whisperedTo, "") @ " " @ %giftText @ ": " @ makeColorTag(%giftColor) @ %message;
     }
     if ((%name $= $player.getShapeName())) {
         if ((%name $= %whisperedTo)) {
-            %text = "".getPlayerMarkup(pChat, %name) @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
+            %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
         }
-        %text = "".getPlayerMarkup(pChat, %name) @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ "".getPlayerMarkup(pChat, %whisperedTo) @ ": " @ %text;
+        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ %text;
     }
     if (!(%whisperedTo $= $player.getShapeName())) {
         if ((%name $= %whisperedTo)) {
-            %text = "".getPlayerMarkup(pChat, %name) @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
+            %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ " mutters" @ %futl @ " to " @ makeColorTag(%regularColor) @ getPronounHimHerIt($player) @ "self: " @ %text;
         }
-        %text = "".getPlayerMarkup(pChat, %name) @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ "".getPlayerMarkup(pChat, %whisperedTo) @ ": " @ %text;
+        %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies" : " whispers" @ %futl @ " to " @ makeColorTag(%regularColor) @ pChat.getPlayerMarkup(%whisperedTo, "") @ ": " @ %text;
     }
-    %text = "".getPlayerMarkup(pChat, %name) @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies: " : " whispers: " @ makeColorTag(%regularColor) @ %text;
+    %text = pChat.getPlayerMarkup(%name, "") @ makeColorTag(%whisperColor) @ %isAutoReply ? " autoreplies: " : " whispers: " @ makeColorTag(%regularColor) @ %text;
     $previousIncomingWhisperer = %name;
     %text = "<spush>" @ %text @ "<spop>";
     return %text;
@@ -158,14 +158,14 @@ function pChat::ProcessIncomingLine(%text, %senderPlayer, %name, %whisperedTo, %
     if ((%text $= "")) {
         return;
     }
-    if (!(isObject(ConvBubVecCtrlMsgVec))) {
+    if (!isObject(ConvBubVecCtrlMsgVec)) {
         new MessageVector(ConvBubVecCtrlMsgVec);
         if (isObject(MissionCleanup)) {
-            ConvBubVecCtrlMsgVec.add(MissionCleanup);
+            MissionCleanup.add(ConvBubVecCtrlMsgVec);
         }
     }
-    ConvBubVecCtrlMsgVec.attach(ConvBubVecCtrl);
-    %senderPlayer.pushBackLine(ConvBubVecCtrlMsgVec, %text);
+    ConvBubVecCtrl.attach(ConvBubVecCtrlMsgVec);
+    ConvBubVecCtrlMsgVec.pushBackLine(%text, %senderPlayer);
     if (($UserPref::UI::FlashTaskBar == 1.0)) {
         flashWindow(0);
     }
@@ -174,20 +174,16 @@ function pChat::ProcessIncomingLine(%text, %senderPlayer, %name, %whisperedTo, %
             alxPlay(AudioIm_WhisperIn);
         }
     }
-    if (!(isForegroundWindow())) {
-    }
-    if (isIdle()) {
-    }
-    if (!(PlayGui.canPlayerSeeWorld()) && $UserPref::Audio::NotifyChat) {
+    if (!isForegroundWindow() || isIdle() || !PlayGui.canPlayerSeeWorld() && $UserPref::Audio::NotifyChat) {
         alxPlay(AudioIm_MessageIn);
     }
     ConvBub.open();
     gSetField(ConvBub, expanded, 0);
-    if (!(ConvBubScroll.isAtBottom())) {
+    if (!ConvBubScroll.isAtBottom()) {
         if (ConvBub.isEavesdrop) {
-            ETSScrollDimProfile.setProfile(ConvBubScroll);
+            ConvBubScroll.setProfile(ETSScrollDimProfile);
         }
-        ETSHiScrollProfile.setProfile(ConvBubScroll);
+        ConvBubScroll.setProfile(ETSHiScrollProfile);
     }
     pChat::tryLookAt(%senderPlayer, %speechType, %rawText);
     return %text;
@@ -208,7 +204,7 @@ function pChat::tryLookAt(%targetObj, %speechType, %text) {
             return;
         }
     }
-    if (!(isObject(%targetObj))) {
+    if (!isObject(%targetObj)) {
         return;
     }
     if ((%targetObj.getId() == $player.getId())) {
@@ -243,7 +239,7 @@ function clientCmdWhisperIn(%text, %name, %isAutoReply) {
         return;
     }
     pChat::ProcessIncomingLine(%text, 0, %name, $player.getShapeName(), 0, "whisper", %isAutoReply);
-    if (!(%isAutoReply)) {
+    if (!%isAutoReply) {
     }
     if ($UserPref::Player::autoReplyToWhispersWhenAway) {
     }
@@ -251,7 +247,7 @@ function clientCmdWhisperIn(%text, %name, %isAutoReply) {
     }
     if ($player.getAFK()) {
     }
-    if (!(%name.haveNotifiedPlayerOfIdleStatus($player))) {
+    if (!$player.haveNotifiedPlayerOfIdleStatus(%name)) {
         doUserWhisper(%name, $player.getAwayMessage(), 1);
     }
 };
@@ -261,6 +257,6 @@ function clientCmdWhisperOut(%text, %name, %ignored, %isAutoReply) {
 function clientCmdNotification(%unused, %name, %type) {
 };
 function clientCmdSosIn(%text, %name) {
-    %text = "".getPlayerMarkup(pChat, %name) @ " " @ "pleads:" @ " " @ %text;
+    %text = pChat.getPlayerMarkup(%name, "") @ " " @ "pleads:" @ " " @ %text;
     handleSystemMessage("msgSosMessage", %text);
 };

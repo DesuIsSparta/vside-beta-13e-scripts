@@ -1,11 +1,9 @@
 safeEnsureScriptObject("StringMap", "gStompedObjectNames");
 function onObjectNameStomped(%name, %stompeeID, %likeleyStomperID) {
-    %stompeeID @ " " @ %likeleyStomperID.put(gStompedObjectNames, gStompedObjectNames.size() @ " " @ %name);
+    gStompedObjectNames.put(gStompedObjectNames.size() @ " " @ %name, %stompeeID @ " " @ %likeleyStomperID);
 };
 function displayStompedObjectNameErrors() {
-    if (!($ETS::devMode)) {
-    }
-    if ((gStompedObjectNames.size() == 0.0)) {
+    if (!$ETS::devMode || (gStompedObjectNames.size() == 0.0)) {
         return;
     }
     schedule(0, 0, "displayStompedObjectNameErrorsReally");
@@ -20,7 +18,7 @@ function displayStompedObjectNameErrorsReally() {
     %realCount = 0;
     %n = 0;
     while ((%n < %count)) {
-        %name = getWord(%n.getKey(gStompedObjectNames), 1);
+        %name = getWord(gStompedObjectNames.getKey(%n), 1);
         %skip = 0;
         if ((%name $= "ClientSeatDisplayData")) {
             %skip = 1;
@@ -28,20 +26,20 @@ function displayStompedObjectNameErrorsReally() {
         if ((%name $= "ClientSeatListeningDisplayData")) {
             %skip = 1;
         }
-        if (!(%skip)) {
+        if (!%skip) {
             %realCount = (%realCount + 1.0);
             %body = %body @ "\n" @ "";
             %body = %body @ %n;
             %body = %body @ " " @ "\"" @ %name @ "\"";
-            %body = %body @ " " @ "-" @ " " @ getDebugString(getWord(%n.getValue(gStompedObjectNames), 1));
-            %body = %body @ " " @ "stomped" @ " " @ getDebugString(getWord(%n.getValue(gStompedObjectNames), 0));
+            %body = %body @ " " @ "-" @ " " @ getDebugString(getWord(gStompedObjectNames.getValue(%n), 1));
+            %body = %body @ " " @ "stomped" @ " " @ getDebugString(getWord(gStompedObjectNames.getValue(%n), 0));
         }
         %n = (%n + 1.0);
     }
     if ((%realCount > 0.0)) {
         %mb = MessageBoxOK(%title, %body, "").window;
         (%n < %count);
-        200.resize(%mb, 800);
+        %mb.resize(800, 200);
         %mb.resizeWidth = 1;
         %mb.resizeHeight = 1;
     }

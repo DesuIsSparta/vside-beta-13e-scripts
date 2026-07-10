@@ -8,26 +8,26 @@ $PackageDownload::GuestimatedSize = ((40.0 * 1024.0) * 1024.0);
 $PackageDownload::GuestimatedCommonSize = ((5.0 * 1024.0) * 1024.0);
 function queuePackageUpdatesByString(%missing) {
     %missingA = AssetManager::StringToArray(%missing);
-    %missingA.reinit(packageDownload);
+    packageDownload.reinit(%missingA);
 };
 function queuePackageUpdates(%missing) {
-    if (!(isObject(packageDownload))) {
+    if (!isObject(packageDownload)) {
         new ScriptObject(packageDownload);
         if (isObject(MissionCleanup)) {
-            packageDownload.add(MissionCleanup);
+            MissionCleanup.add(packageDownload);
         }
     }
     if (packageDownload.isActive()) {
         return;
     }
-    if (!(isObject(%missing))) {
+    if (!isObject(%missing)) {
         %missing = AssetManager::getMissingAssets();
     }
     packageDownload.missingPackages = %missing;
     packageDownload.init();
 };
 function downloadPackageUpdates(%missing) {
-    if (!(isObject(packageDownload))) {
+    if (!isObject(packageDownload)) {
     }
     if (isObject(%missing)) {
         queuePackageUpdates(%missing);
@@ -36,25 +36,25 @@ function downloadPackageUpdates(%missing) {
 };
 function packageDownload::reinit(%this, %missingArray) {
     %realCurrentItem = (%this.currentItem - 1.0);
-    %currentKey = %realCurrentItem.getKey(%this.missingPackages);
+    %currentKey = %this.missingPackages.getKey(%realCurrentItem);
     %newMissingArray = new Array("");
     if (isObject(MissionCleanup)) {
-        %newMissingArray.add(MissionCleanup);
+        MissionCleanup.add(%newMissingArray);
     }
     %newStatusMap = new StringMap("");
     if (isObject(MissionCleanup)) {
-        %newStatusMap.add(MissionCleanup);
+        MissionCleanup.add(%newStatusMap);
     }
-    %currentKey.get(%this.statusMap).put(%newStatusMap, %currentKey);
-    0.push_back(%newMissingArray, %currentKey);
-    if ((0.getKey(%missingArray) $= %currentKey)) {
+    %newStatusMap.put(%currentKey, %this.statusMap.get(%currentKey));
+    %newMissingArray.push_back(%currentKey, 0);
+    if ((%missingArray.getKey(0) $= %currentKey)) {
         echo("Currently downloading " @ %currentKey @ ". Will truncate current download session.");
     }
     %i = 0;
     while ((%i < %missingArray.count())) {
-        %key = %i.getKey(%missingArray);
-        "incomplete".put(%newStatusMap, %key);
-        (%i + 1.0).push_back(%newMissingArray, %key);
+        %key = %missingArray.getKey(%i);
+        %newStatusMap.put(%key, "incomplete");
+        %newMissingArray.push_back(%key, (%i + 1.0));
         %i = (%i + 1.0);
     }
     %newMissingArray.sorta();
@@ -71,18 +71,18 @@ function packageDownload::init(%this) {
     %this.wasInterrupted = 0;
     %this.statusMap = new StringMap("");
     if (isObject(MissionCleanup)) {
-        %this.statusMap.add(MissionCleanup);
+        MissionCleanup.add(%this.statusMap);
     }
     %this.bytesDownloadedMap = new StringMap("");
     if (isObject(MissionCleanup)) {
-        %this.bytesDownloadedMap.add(MissionCleanup);
+        MissionCleanup.add(%this.bytesDownloadedMap);
     }
     %this.isActive = 0;
     %i = 0;
     while ((%i < %this.missingPackages.count())) {
-        %key = %i.getKey(%this.missingPackages);
-        "incomplete".put(%this.statusMap, %key);
-        0.put(%this.bytesDownloadedMap, %key);
+        %key = %this.missingPackages.getKey(%i);
+        %this.statusMap.put(%key, "incomplete");
+        %this.bytesDownloadedMap.put(%key, 0);
         %i = (%i + 1.0);
     }
     return 1;
@@ -93,7 +93,7 @@ function packageDownload::isActive(%this) {
 function packageDownload::isDone(%this) {
     %i = 0;
     while ((%i < %this.statusMap.size())) {
-        if ((%i.getValue(%this.statusMap) $= "incomplete")) {
+        if ((%this.statusMap.getValue(%i) $= "incomplete")) {
             return 0;
         }
         %i = (%i + 1.0);
@@ -103,7 +103,7 @@ function packageDownload::isDone(%this) {
 function packageDownload::completedSuccessfully(%this) {
     %i = 0;
     while ((%i < %this.statusMap.size())) {
-        if ((%i.getValue(%this.statusMap) $= "error")) {
+        if ((%this.statusMap.getValue(%i) $= "error")) {
             return 0;
         }
         %i = (%i + 1.0);
@@ -114,7 +114,7 @@ function packageDownload::getEstimatedSize(%this) {
     %total = 0;
     %i = 0;
     while ((%i < %this.statusMap.size())) {
-        if ((%i.getKey(%this.statusMap) $= $AssetManager::COMMONPACKAGE)) {
+        if ((%this.statusMap.getKey(%i) $= $AssetManager::COMMONPACKAGE)) {
             %total = (%total + $PackageDownload::GuestimatedCommonSize);
         }
         %total = (%total + $PackageDownload::GuestimatedSize);
@@ -123,9 +123,7 @@ function packageDownload::getEstimatedSize(%this) {
     return %total;
 };
 function packageDownload::start(%this) {
-    if (!(isObject(%this.missingPackages))) {
-    }
-    if ((%this.missingPackages.count() == 0.0)) {
+    if (!isObject(%this.missingPackages) || (%this.missingPackages.count() == 0.0)) {
         return 0;
     }
     echo("Starting package download.");
@@ -141,12 +139,12 @@ function packageDownload::doneDownloading(%this) {
 function packageDownload::downloadFile(%this) {
     if (%this.doneDownloading()) {
         %this.isActive = 0;
-        if (!(%this.completedSuccessfully())) {
+        if (!%this.completedSuccessfully()) {
             MessageBoxOK("Could not download", "Could not download required files. Click OK to logout.", "buttonBarMenuLogout();");
             return;
         }
         if (isObject(%this.callBackSink)) {
-            %this.onDone(%this.callBackSink);
+            %this.callBackSink.onDone(%this);
         }
         if (%this.wasInterrupted) {
             checkForPackageUpdates(1);
@@ -158,10 +156,10 @@ function packageDownload::downloadFile(%this) {
     %name = "packageDownloadClass" @ getRandom(0, 1000);
     %curl = new URLPostObject(%name);
     if (isObject(MissionCleanup)) {
-        %curl.add(MissionCleanup);
+        MissionCleanup.add(%curl);
     }
     %this.CURLObject = %curl;
-    %file = %this.currentItem.getKey(%this.missingPackages);
+    %file = %this.missingPackages.getKey(%this.currentItem);
     if ((%file $= "")) {
         echo("Skipping empty file.");
         %this.currentItem = (%this.currentItem + 1.0);
@@ -170,26 +168,26 @@ function packageDownload::downloadFile(%this) {
     }
     echo("Fetching " @ %file @ "(" @ %this.currentItem @ ")");
     %url = $Asset::DownloadURL @ "/" @ %file;
-    %url.setURL(%curl);
-    %file.setDownloadFile(%curl);
-    1.setRecvData(%curl);
-    1.setProgress(%curl);
-    "deflate,gzip".setEncodings(%curl);
+    %curl.setURL(%url);
+    %curl.setDownloadFile(%file);
+    %curl.setRecvData(1);
+    %curl.setProgress(1);
+    %curl.setEncodings("deflate,gzip");
     echo("City threshold speed set to " @ $PackageDownload::MinimumCityDownloadSpeedThreshold @ " bytes/sec");
-    $PackageDownload::MinimumCityDownloadSpeedThreshold.setLowSpeedLimit(%curl);
-    $PackageDownload::MinimumCityDownloadTimeThreshold.setLowSpeedTime(%curl);
+    %curl.setLowSpeedLimit($PackageDownload::MinimumCityDownloadSpeedThreshold);
+    %curl.setLowSpeedTime($PackageDownload::MinimumCityDownloadTimeThreshold);
     %curl.callBackSink = %this;
     %curl.NoAutoDelete = 1;
     %curl.packageName = %file;
-    "packageDownload_onCompletedDownload".setCompletedCallback(%curl);
-    "started".put(%this.statusMap, %file);
-    if (!(%curl.start())) {
-        "failed".put(%this.statusMap, %file);
+    %curl.setCompletedCallback("packageDownload_onCompletedDownload");
+    %this.statusMap.put(%file, "started");
+    if (!%curl.start()) {
+        %this.statusMap.put(%file, "failed");
         %curl.delete();
         echo("Problems starting download of " @ %url @ " to " @ %file);
         return;
     }
-    %curl.add(CURLSimGroup);
+    CURLSimGroup.add(%curl);
     %this.currentItem = (%this.currentItem + 1.0);
 };
 function packageDownload::onError(%this, %request, %errNo) {
@@ -201,46 +199,46 @@ function packageDownload::onError(%this, %request, %errNo) {
         %this.retryCount = (%this.retryCount + 1.0);
         %request.restart();
     }
-    "error".put(%this.statusMap, %request.getDownloadFile());
-    delete.schedule(%request, 0);
+    %this.statusMap.put(%request.getDownloadFile(), "error");
+    %request.schedule(0, delete);
     %this.downloadFile();
 };
 function packageDownload_onCompletedDownload(%request, %result) {
     if ((%result == 0.0)) {
-        %request.packageName.onDone(packageDownload);
+        packageDownload.onDone(%request.packageName);
     }
-    %result.onError(packageDownload, %request);
+    packageDownload.onError(%request, %result);
 };
 function packageDownload::onDone(%this, %packageName) {
     echo("Got file " @ %packageName);
     AssetManager::updatePackageHash(%packageName);
     rescanDir("projects");
-    "done".put(%this.statusMap, %packageName);
+    %this.statusMap.put(%packageName, "done");
     WorldMap.UpdateCityStatuses();
     %this.downloadFile();
 };
 function packageDownload::onProgress(%this, %this2, %dltotal, %dlnow) {
     if (isObject(%this.callBackSink)) {
-        %dlnow.onProgress(%this.callBackSink, %dltotal);
+        %this.callBackSink.onProgress(%dltotal, %dlnow);
     }
-    %dlnow.put(packageDownload.bytesDownloadedMap, %this2.packageName);
+    packageDownload.bytesDownloadedMap.put(%this2.packageName, %dlnow);
     if ((textureDownloadQueuedCount() > $PackageDownload::ConcurrentTextureThreshold)) {
-        if (!($seenThrottleMessage)) {
+        if (!$seenThrottleMessage) {
             echo("textureDownloadQueuedCount is > " @ $PackageDownload::ConcurrentTextureThreshold @ ". Throttling city download.");
             $seenThrottleMessage = 1;
             $seenUnThrottleMessage = 0;
         }
-        $PackageDownload::ConcurrentTextureMaxBytes.setMaxDownloadSpeed(%this.CURLObject);
+        %this.CURLObject.setMaxDownloadSpeed($PackageDownload::ConcurrentTextureMaxBytes);
     }
-    if (!($seenUnThrottleMessage)) {
+    if (!$seenUnThrottleMessage) {
         echo("Texture DownloadQueuedCount is < " @ $PackageDownload::ConcurrentTextureThreshold @ ". Un-throttling city download.");
         $seenUnThrottleMessage = 1;
         $seenThrottleMessage = 0;
     }
-    0.setMaxDownloadSpeed(%this.CURLObject);
+    %this.CURLObject.setMaxDownloadSpeed(0);
 };
 function packageDownload::getCurrentItem(%this) {
-    return (%this.currentItem - 1.0).getKey(%this.missingPackages);
+    return %this.missingPackages.getKey((%this.currentItem - 1.0));
 };
 function packageDownload::getCurrentPackageIndex(%this) {
     return %this.currentItem;
@@ -249,7 +247,7 @@ function packageDownload::getTotalPackages(%this) {
     return %this.missingPackages.count();
 };
 function packageDownload::getCurrentCityName(%this) {
-    %package = (%this.currentItem - 1.0).getKey(%this.missingPackages);
+    %package = %this.missingPackages.getKey((%this.currentItem - 1.0));
     if ((%package $= "")) {
         return "nothing";
     }
@@ -262,27 +260,25 @@ function packageDownload::getCurrentCityName(%this) {
 };
 function packageDownload::getItemStatus(%this, %package) {
     if (isObject(%this.statusMap)) {
-        return %package.get(%this.statusMap);
+        return %this.statusMap.get(%package);
     }
     return "incomplete";
 };
 function packageDownload::getCurrentItemStatus(%this) {
-    return %this.getCurrentItem().get(%this.statusMap);
+    return %this.statusMap.get(%this.getCurrentItem());
 };
 function packageDownload::getPercentComplete(%this, %city) {
     %package = AssetManager::cityToPackage(%city);
     if (isObject(%this.statusMap)) {
     }
-    if ((%package.get(%this.statusMap) $= "incomplete")) {
+    if ((%this.statusMap.get(%package) $= "incomplete")) {
         return 0;
     }
-    if ((%package.get(%this.statusMap) $= "done")) {
+    if ((%this.statusMap.get(%package) $= "done")) {
         return 1;
     }
-    %currentDownloaded = %package.get(%this.bytesDownloadedMap);
-    if ((%currentDownloaded == 0.0)) {
-    }
-    if ((%currentDownloaded $= "")) {
+    %currentDownloaded = %this.bytesDownloadedMap.get(%package);
+    if ((%currentDownloaded == 0.0) || (%currentDownloaded $= "")) {
         return 0;
     }
     if ((%package $= $AssetManager::COMMONPACKAGE)) {
@@ -296,39 +292,37 @@ function packageDownload::getStatus(%this) {
 };
 function packageDownload::getStatusForCity(%this, %city) {
     %package = AssetManager::cityToPackage(%city);
-    %status = %package.getItemStatus(%this);
-    %common_status = $AssetManager::COMMONPACKAGE.getItemStatus(%this);
-    if ((%status $= "")) {
+    %status = %this.getItemStatus(%package);
+    %common_status = %this.getItemStatus($AssetManager::COMMONPACKAGE);
+    if ((%status $= "") || (%status $= "done")) {
     }
-    if ((%status $= "done") && (%city $= "gw") && (%common_status $= "")) {
-    }
-    if ((%common_status $= "done")) {
+    if ((%common_status $= "") || (%city $= "gw") || (%common_status $= "done")) {
         return "done";
     }
     return %status;
 };
 function checkForPackageUpdates(%startDownload) {
-    if (!(isValidHostAddress($Net::DownloadHost))) {
+    if (!isValidHostAddress($Net::DownloadHost)) {
         return;
     }
     %request = new ManagerRequest("") {
         className = "packageDownloadCheck";
     };
     if (isObject(MissionCleanup)) {
-        %request.add(MissionCleanup);
+        MissionCleanup.add(%request);
     }
     if (%startDownload) {
         %request.startDownload = %startDownload;
     }
     %request.startDownload = 0;
-    $Asset::DownloadURL @ "/checksums_resp.txt".setURL(%request);
+    %request.setURL($Asset::DownloadURL @ "/checksums_resp.txt");
     %request.start();
 };
 function packageDownloadCheck::onError(%this, %unused, %errorName) {
     log("Admin", "error", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- error = " @ " " @ %errorName @ " " @ "url = " @ " " @ %this.getURL());
     log("Admin", "error", "Could not contact download site. Turning off package download.");
     $AutoDownloadPackages = 0;
-    delete.schedule(%this, 0);
+    %this.schedule(0, delete);
 };
 function packageDownloadCheck::onDone(%this) {
     %status = findRequestStatus(%this);
@@ -337,15 +331,15 @@ function packageDownloadCheck::onDone(%this) {
         log("Admin", "error", getScopeName() @ " " @ "- status =" @ " " @ %status);
         log("Admin", "error", "Could not contact download site. Turning off package download.");
         $AutoDownloadPackages = 0;
-        delete.schedule(%this, 0);
+        %this.schedule(0, delete);
         return;
     }
     %map = AssetManager::StringToMap(AssetManager::getCurrentAssetSet());
     %badpackages = new Array("");
     if (isObject(MissionCleanup)) {
-        %badpackages.add(MissionCleanup);
+        MissionCleanup.add(%badpackages);
     }
-    %available = "client_version".getValue(%this);
+    %available = %this.getValue("client_version");
     %buildVersion = formatInt("%d", getBuildVersion());
     %protocolVersion = formatInt("%d", getProtocolVersion());
     if ((%available > %buildVersion)) {
@@ -358,16 +352,16 @@ function packageDownloadCheck::onDone(%this) {
     %orderMap = AssetManager::getPackageOrder();
     %tempOrderArray = new Array("");
     if (isObject(MissionCleanup)) {
-        %tempOrderArray.add(MissionCleanup);
+        MissionCleanup.add(%tempOrderArray);
     }
     %n = 0;
     while ((%n < %orderMap.size())) {
-        %key = %n.getKey(%map);
+        %key = %map.getKey(%n);
         if ((%key $= "")) {
         }
-        %remoteValue = %key.getValue(%this);
-        if (!(packageUpToDate(%key.get(%map), %remoteValue))) {
-            %key.get(%orderMap).push_back(%tempOrderArray, %key);
+        %remoteValue = %this.getValue(%key);
+        if (!packageUpToDate(%map.get(%key), %remoteValue)) {
+            %tempOrderArray.push_back(%key, %orderMap.get(%key));
         }
         %n = (%n + 1.0);
     }
@@ -375,8 +369,8 @@ function packageDownloadCheck::onDone(%this) {
     %n = 0;
     (%n < %orderMap.size());
     while ((%n < %tempOrderArray.count())) {
-        %key = %n.getKey(%tempOrderArray);
-        %n.push_back(%badpackages, %key);
+        %key = %tempOrderArray.getKey(%n);
+        %badpackages.push_back(%key, %n);
         %n = (%n + 1.0);
     }
     %badpackages.sorta();
@@ -386,5 +380,5 @@ function packageDownloadCheck::onDone(%this) {
         echo("Starting download of package updates.");
         downloadPackageUpdates();
     }
-    delete.schedule(%this, 0);
+    %this.schedule(0, delete);
 };

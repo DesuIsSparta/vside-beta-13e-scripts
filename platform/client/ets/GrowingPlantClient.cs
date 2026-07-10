@@ -1,13 +1,9 @@
 $gGrowingPlantSkuList = "41401 41506";
 function GrowingPlantClient::onPlantCreated(%nuggetId) {
-    if ((CustomSpaceClient::GetSpaceImIn() $= "")) {
-    }
-    if (!(CustomSpaceClient::isOwner())) {
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner()) {
         return;
     }
-    if ((%nuggetId $= "")) {
-    }
-    if ((%nuggetId == 0.0)) {
+    if ((%nuggetId $= "") || (%nuggetId == 0.0)) {
         warn(getScopeName() @ "->passed empty nuggetID");
         return;
     }

@@ -4,37 +4,37 @@ function EtsInviteDialog::open(%this) {
     %thisExtent = %this.getExtent();
     %width = getWord(%thisExtent, 0);
     %height = getWord(%thisExtent, 1);
-    ((%screenHeight / 2.0) - (%height / 2.0)).reposition(%this, ((%screenWidth / 2.0) - (%width / 2.0)));
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    %this.reposition(((%screenWidth / 2.0) - (%width / 2.0)), ((%screenHeight / 2.0) - (%height / 2.0)));
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     %this.initializeWithDefaults();
 };
 function EtsInviteDialog::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
 };
 function toggleEtsInviteDialog() {
-    EtsInviteDialog.showRaiseOrHide(PlayGui);
+    PlayGui.showRaiseOrHide(EtsInviteDialog);
 };
 function EtsInviteDialog::setControlsActive(%this, %flag) {
-    %flag.setActive(InviteDialogButtonSend);
+    InviteDialogButtonSend.setActive(%flag);
 };
 function EtsInviteDialog::onWake(%this) {
-    1.setControlsActive(%this);
-    if (!(isObject(SendInvitePBController))) {
+    %this.setControlsActive(1);
+    if (!isObject(SendInvitePBController)) {
         new ScriptObject(SendInvitePBController) {
             class = "ProgressBarController";
         };
         if (isObject(MissionCleanup)) {
-            SendInvitePBController.add(MissionCleanup);
+            MissionCleanup.add(SendInvitePBController);
         }
     }
 };
 function EtsInviteDialog::initializeWithDefaults(%this) {
-    "".setValue(ETSInviteToTextCtrl);
+    ETSInviteToTextCtrl.setValue("");
     %text = "";
-    %text.setText(ETSInviteNoteTextCtrl);
+    ETSInviteNoteTextCtrl.setText(%text);
 };
 function EtsInviteDialog::sendInvite(%this) {
     %to = trim(ETSInviteToTextCtrl.getText());
@@ -43,7 +43,7 @@ function EtsInviteDialog::sendInvite(%this) {
         MessageBoxOK(%to[$MsgCat::invitation @ "E-SEND-TITLE"], $MsgCat::invitation["EMPTY-TO-FIELD"], "");
         return;
     }
-    %note.sendInviteRequestToEnvManager(%this, %to);
+    %this.sendInviteRequestToEnvManager(%to, %note);
 };
 function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message) {
     if (isObject(EtsInviteRequest)) {
@@ -51,7 +51,7 @@ function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message) {
     }
     %inviteRequest = new ManagerRequest(EtsInviteRequest);
     if (isObject(MissionCleanup)) {
-        %inviteRequest.add(MissionCleanup);
+        MissionCleanup.add(%inviteRequest);
     }
     %url = $Net::SecureURL @ "?cmd=invite_email";
     %token = "&token=" @ urlEncode($Token);
@@ -73,18 +73,18 @@ function EtsInviteDialog::sendInviteRequestToEnvManager(%this, %to, %message) {
     }
     %url = %url @ %token @ %numTargetMails @ %targetMails @ %note;
     log("network", "debug", "send invite command: " @ %url);
-    %url.setURL(%inviteRequest);
-    1.setProgress(%inviteRequest);
-    0.setControlsActive(%this);
-    0.1.setValue(SendInvitePBController);
+    %inviteRequest.setURL(%url);
+    %inviteRequest.setProgress(1);
+    %this.setControlsActive(0);
+    SendInvitePBController.setValue(0.1);
     %inviteRequest.start();
 };
 function EtsInviteDialog::onConnectFailed(%this, %msg) {
     if ((%msg $= "")) {
         %msg = "Could not connect";
     }
-    1.setControlsActive(%this);
-    0.setValue(SendInvitePBController);
+    %this.setControlsActive(1);
+    SendInvitePBController.setValue(0);
 };
 function EtsInviteDialog::onInviteSuccess(%this) {
     MessageBoxOK($MsgCat::invitation["S-SEND-TITLE"], $MsgCat::invitation["INVITE-SENT"], "EtsInviteDialog.close();");
@@ -97,20 +97,20 @@ function EtsInviteDialog::onInviteError(%this, %errorMsg) {
 };
 function EtsInviteRequest::onError(%this, %errorNum, %unused) {
     if ((%errorNum == $CURL::CouldNotResolveHost)) {
-        "Could not reach server".onConnectFailed(EtsInviteDialog);
+        EtsInviteDialog.onConnectFailed("Could not reach server");
         MessageBoxOK("Could Not Find Server", $MsgCat::network["E-SERVER-DNS"], "");
     }
-    "Could not connect".onConnectFailed(EtsInviteDialog);
+    EtsInviteDialog.onConnectFailed("Could not connect");
     MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
 };
 function EtsInviteRequest::onConnected(%this) {
-    0.5.setValue(SendInvitePBController);
+    SendInvitePBController.setValue(0.5);
 };
 function EtsInviteRequest::onDone(%this) {
-    1.setControlsActive(EtsInviteDialog);
-    1.setValue(SendInvitePBController);
+    EtsInviteDialog.setControlsActive(1);
+    SendInvitePBController.setValue(1);
     if ((%this.statusCode() != $HTTP::StatusOK)) {
-        "Error communicating with server".onConnectFailed(EtsInviteDialog);
+        EtsInviteDialog.onConnectFailed("Error communicating with server");
         log("communication", "error", "client HTTP code: " @ %this.statusCode());
         MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
         return;
@@ -118,10 +118,10 @@ function EtsInviteRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     log("network", "debug", "EtsInviteRequest::onDone status: " @ %status);
     if ((%status $= "fail")) {
-        "statusMsg".getValue(%this).onInviteError(EtsInviteDialog);
+        EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
     }
     if ((%status $= "error")) {
-        "statusMsg".getValue(%this).onInviteError(EtsInviteDialog);
+        EtsInviteDialog.onInviteError(%this.getValue("statusMsg"));
     }
     if ((%status $= "success")) {
         EtsInviteDialog.onInviteSuccess();

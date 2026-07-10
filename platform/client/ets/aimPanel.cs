@@ -1,6 +1,6 @@
 function doAIMSignIn() {
     $Player::AIMName = trim($Player::AIMName);
-    $Player::AIMName.setValue(AIMScreenNameField);
+    AIMScreenNameField.setValue($Player::AIMName);
     if (!($Player::AIMName $= "")) {
         if ($UserPref::AIM::RememberMe) {
             $UserPref::Player::AIMName = $Player::AIMName;
@@ -8,7 +8,7 @@ function doAIMSignIn() {
         }
         $UserPref::Player::AIMName = "";
         $UserPref::Player::AIMPassword = "";
-        0.setActive(AIMSignInButton);
+        AIMSignInButton.setActive(0);
         if ((aimGetState() == 0.0)) {
             warn("Tried connecting to AIM when already connected.  Disconnecting.");
             aimDisconnect();
@@ -17,12 +17,12 @@ function doAIMSignIn() {
     }
 };
 function doAIMSignOff() {
-    %aimTab = "AIM".getTabWithName(BuddyHudTabs);
-    0.setVisible(%aimTab.aimListScroll);
-    0.setVisible(%aimTab.signOffButton);
-    0.setVisible(%aimTab.inviteButton);
-    1.setVisible(%aimTab.loginFrame);
-    1.setActive(AIMSignInButton);
+    %aimTab = BuddyHudTabs.getTabWithName("AIM");
+    %aimTab.aimListScroll.setVisible(0);
+    %aimTab.signOffButton.setVisible(0);
+    %aimTab.inviteButton.setVisible(0);
+    %aimTab.loginFrame.setVisible(1);
+    AIMSignInButton.setActive(1);
     aimDisconnect();
 };
 function silentAIMDisconnect() {
@@ -31,22 +31,22 @@ function silentAIMDisconnect() {
     }
 };
 function aimLoginCallback() {
-    %aimTab = "AIM".getTabWithName(BuddyHudTabs);
-    1.setVisible(%aimTab.aimListScroll);
-    1.setVisible(%aimTab.signOffButton);
-    1.setVisible(%aimTab.inviteButton);
-    0.setVisible(%aimTab.loginFrame);
+    %aimTab = BuddyHudTabs.getTabWithName("AIM");
+    %aimTab.aimListScroll.setVisible(1);
+    %aimTab.signOffButton.setVisible(1);
+    %aimTab.inviteButton.setVisible(1);
+    %aimTab.loginFrame.setVisible(0);
     AIMConvManager.Initialize();
 };
 function onAIMStateChange(%state) {
     if ((%state == 0.0)) {
         if ((AIMLoginFrame.AIMState == 200.0)) {
-            1.setActive(AIMSignInButton);
+            AIMSignInButton.setActive(1);
             MessageBoxOK("AIM Login Failed", $MsgCat::login["E-AIM-PASSWORD"], "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
         }
     }
     if ((%state == 50.0)) {
-        1.setActive(AIMSignInButton);
+        AIMSignInButton.setActive(1);
         MessageBoxOK("AIM Disconnected", $MsgCat::login["E-AIM-DISCONNECT"], "BuddyHudWin.open(); BuddyHudTabs.selectTabWithName(\"AIM\");");
     }
     if ((%state == 100.0)) {
@@ -81,26 +81,26 @@ function onAIMStateChange(%state) {
 };
 function AIMLoginFrame::setup(%this) {
     if ($UserPref::AIM::RememberMe) {
-        $UserPref::Player::AIMName.setText(AIMScreenNameField);
-        $UserPref::Player::AIMPassword.setText(AIMPasswordField);
+        AIMScreenNameField.setText($UserPref::Player::AIMName);
+        AIMPasswordField.setText($UserPref::Player::AIMPassword);
     }
-    "".setText(AIMScreenNameField);
-    "".setText(AIMPasswordField);
+    AIMScreenNameField.setText("");
+    AIMPasswordField.setText("");
     %this.update();
 };
 function AIMLoginFrame::update(%this) {
     if (AIMRememberMeCheckbox.getValue()) {
-        1.setActive(AIMSavePasswordCheckbox);
+        AIMSavePasswordCheckbox.setActive(1);
         if (AIMSavePasswordCheckbox.getValue()) {
-            1.setActive(AIMAutoSigninCheckbox);
+            AIMAutoSigninCheckbox.setActive(1);
         }
-        0.setActive(AIMAutoSigninCheckbox);
-        0.setValue(AIMAutoSigninCheckbox);
+        AIMAutoSigninCheckbox.setActive(0);
+        AIMAutoSigninCheckbox.setValue(0);
     }
-    0.setActive(AIMSavePasswordCheckbox);
-    0.setValue(AIMSavePasswordCheckbox);
-    0.setActive(AIMAutoSigninCheckbox);
-    0.setValue(AIMAutoSigninCheckbox);
+    AIMSavePasswordCheckbox.setActive(0);
+    AIMSavePasswordCheckbox.setValue(0);
+    AIMAutoSigninCheckbox.setActive(0);
+    AIMAutoSigninCheckbox.setValue(0);
     if (AIMRememberMeCheckbox.getValue()) {
         $UserPref::Player::AIMName = $Player::AIMName;
     }

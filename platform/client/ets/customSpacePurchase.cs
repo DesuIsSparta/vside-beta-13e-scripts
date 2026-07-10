@@ -2,7 +2,7 @@ function CSSpacePurchase(%space) {
     getCustomSpacePurchaseInfo(%space, "GotSpacePurchaseInfo");
 };
 function GotSpacePurchaseInfo(%space) {
-    if (!(isObject(%space))) {
+    if (!isObject(%space)) {
         error(getScopeName() @ " " @ "- bad space." @ " " @ getTrace());
         return;
     }
@@ -60,7 +60,7 @@ function CSSpacePurchasePriceConfirmation(%space) {
     %dlg = MessageBoxCustom(%title, %text, %buttons);
     %index = 0;
     while ((%index < %count)) {
-        %dlg.callback = %index[%callback @ %index] @ %index;
+        %dlg.callback[%index],%index] = %index[%callback;
         %index = (%index + 1.0);
     }
 };
@@ -77,15 +77,13 @@ function CSSpacePurchaseDoConfirm(%space, %useBux) {
     MessageBoxYesNo(%title, %text, %cmd, "CSSpacePurchaseCancel();");
 };
 function CSSpacePurchaseDowngradeCheck(%space, %useBux, %priceFinal, %lossVPoints, %lossVBux) {
-    if ((%lossVPoints > 0.0)) {
-    }
-    if ((%lossVBux > 0.0)) {
+    if ((%lossVPoints > 0.0) || (%lossVBux > 0.0)) {
         %loss = CSSpacePurchasePriceFormatting(%lossVPoints, %lossVBux);
         %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["TRADE_IN_DOWN_A"] @ " " @ %loss @ " " @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_B"] @ "\n";
         %buttons = "Yes - Trade in" @ "\t" @ "No - Cancel";
         %dlg = MessageBoxCustom("Warning", %text, %buttons);
-        %dlg.callback = "purchaseApartmentRequest( " @ %space @ ", " @ %useBux @ ", " @ %priceFinal @ ",  \"CSSpacePurchaseSuccess\", \"CSSpacePurchaseFailed\");" @ 0;
-        %dlg.callback = "CSSpacePurchaseCancel();" @ 1;
+        %dlg.callback[%space,", ",%useBux,", ",%priceFinal,",  \"CSSpacePurchaseSuccess\", \"CSSpacePurchaseFailed\");",0] = "purchaseApartmentRequest( ";
+        %dlg.callback[1] = "CSSpacePurchaseCancel();";
     }
     purchaseApartmentRequest(%space, %useBux, %priceFinal, "CSSpacePurchaseSuccess", "CSSpacePurchaseFailed");
 };
@@ -97,11 +95,11 @@ function CSSpacePurchaseCancel() {
 function CSSpacePurchaseSuccess(%unused, %unused, %vurl) {
     $Player::myPlaceVURL = %vurl;
     %title = "Get a Room (Complete!)";
-    1.setProperty(gUserPropMgrClient, $Player::Name, "ShowOwnerTip");
+    gUserPropMgrClient.setProperty($Player::Name, "ShowOwnerTip", 1);
     %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["PURCHASE_DONE"] @ "\n";
     %buttons = "Go there now" @ "\t" @ "Close";
     %dlg = MessageBoxCustom(%title, %text, %buttons);
-    %dlg.callback = "vurlOperation( \"" @ %vurl @ "\");" @ 0;
+    %dlg.callback[%vurl,"\");",0] = "vurlOperation( \"";
     getOwnerSpacesInfo($Player::Name, "");
 };
 function CSSpacePurchaseFailed(%errorCode) {

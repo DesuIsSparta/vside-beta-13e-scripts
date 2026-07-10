@@ -32,12 +32,10 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
         %tooClose = 0;
         %n = 0;
         while ((%n < %num)) {
-            %item = %n.getObject(MissionCleanup);
+            %item = MissionCleanup.getObject(%n);
             if ((%item != %exclude)) {
             }
-            if ((%item.getClassName() $= "Player")) {
-            }
-            if ((%item.getClassName() $= "AIPlayer")) {
+            if ((%item.getClassName() $= "Player") || (%item.getClassName() $= "AIPlayer")) {
                 %itTrans = %item.getTransform();
                 %itX = getWord(%itTrans, 0);
                 %itY = getWord(%itTrans, 1);
@@ -50,7 +48,7 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
             }
             %n = (%n + 1.0);
         }
-        if (!(%tooClose)) {
+        if (!%tooClose) {
             %good = 1;
             (%n < %num);
         }
@@ -73,7 +71,7 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
 function SpawnSphere::spawnBots(%this, %num, %sep) {
     %n = 0;
     while ((%n < %num)) {
-        AIManager::SpawnETS(AIManager, 0.getEmptySpot(%this, %sep, 0));
+        AIManager::SpawnETS(AIManager, %this.getEmptySpot(%sep, 0, 0));
         %n = (%n + 1.0);
     }
 };
@@ -83,25 +81,25 @@ function SpawnSphere::spawnBotsDensity(%this, %density, %sep) {
     %botArea = ((%botArea * %botArea) * 3.14159);
     %num = (((%spnArea / %botArea) * 0.9) * %density);
     echo("spawning" @ " " @ %num @ " " @ "bots..");
-    %num.spawnBots(%this);
+    %this.spawnBots(%num);
     return;
 };
 function serverCmdAddBotsToSpawnSphere(%unused, %unused, %num, %sep) {
-    %sep.spawnBots(EntrySpawn, %num);
+    EntrySpawn.spawnBots(%num, %sep);
     return;
 };
 function Player::teleportToRandomSpawnSphere(%this) {
     %chosen = "";
-    if (!(isObject(PlayerDropPoints))) {
+    if (!isObject(PlayerDropPoints)) {
         %chosen = EntrySpawn;
     }
-    %chosen = getRandom(0, (PlayerDropPoints.getCount() - 1.0)).getObject(PlayerDropPoints);
-    if (!(isObject(%chosen))) {
+    %chosen = PlayerDropPoints.getObject(getRandom(0, (PlayerDropPoints.getCount() - 1.0)));
+    if (!isObject(%chosen)) {
         error("This is all messed up. No known spawn spheres!");
     }
-    %pos = 0.getEmptySpot(%chosen, 1, 0);
+    %pos = %chosen.getEmptySpot(1, 0, 0);
     %rot = getWords(%this.getTransform(), 3, 4);
-    %pos @ " " @ %rot.setTransform(%this);
-    "0 0 5".setVelocity(%this);
+    %this.setTransform(%pos @ " " @ %rot);
+    %this.setVelocity("0 0 5");
     return;
 };

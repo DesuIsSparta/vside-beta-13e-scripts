@@ -2,12 +2,12 @@ function toggleMOTDEditDialog() {
     toggleVisibleState(MOTDEditGui);
 };
 function MOTDEditGui::open(%this) {
-    0.pushDialog(Canvas, %this);
-    1.setVisible(%this);
+    Canvas.pushDialog(%this, 0);
+    %this.setVisible(1);
 };
 function MOTDEditGui::close(%this, %unused) {
-    %this.popDialog(Canvas);
-    0.setVisible(%this);
+    Canvas.popDialog(%this);
+    %this.setVisible(0);
 };
 function MOTDEditGui::refresh(%this, %messageType) {
     if ((%messageType $= "MOTD")) {
@@ -40,35 +40,35 @@ function MOTDEditGui::onPasteFrom(%this, %messageType) {
         MOTDText.qotdID = %qID;
     }
     MOTDText.qotdID = "";
-    %text.setText(MOTDText);
+    MOTDText.setText(%text);
 };
 function MOTDEditGui::onAction(%this, %messageType) {
     MOTDEditGui.messageType = %messageType;
-    "confirm: submit as" @ " " @ %messageType.setText(MOTDEditGuiButtonConfirm);
-    0.setVisible(MOTDEditGuiButtonDoIt);
-    0.setVisible(MOTDEditGuiButtonDoIt2);
-    1.setVisible(MOTDEditGuiButtonConfirm);
-    1.setVisible(MOTDEditGuiButtonCancel);
-    %messageType.onPasteFrom(%this);
+    MOTDEditGuiButtonConfirm.setText("confirm: submit as" @ " " @ %messageType);
+    MOTDEditGuiButtonDoIt.setVisible(0);
+    MOTDEditGuiButtonDoIt2.setVisible(0);
+    MOTDEditGuiButtonConfirm.setVisible(1);
+    MOTDEditGuiButtonCancel.setVisible(1);
+    %this.onPasteFrom(%messageType);
 };
 function MOTDEditGui::onCancel(%this) {
-    1.setVisible(MOTDEditGuiButtonDoIt);
-    1.setVisible(MOTDEditGuiButtonDoIt2);
-    0.setVisible(MOTDEditGuiButtonConfirm);
-    0.setVisible(MOTDEditGuiButtonCancel);
+    MOTDEditGuiButtonDoIt.setVisible(1);
+    MOTDEditGuiButtonDoIt2.setVisible(1);
+    MOTDEditGuiButtonConfirm.setVisible(0);
+    MOTDEditGuiButtonCancel.setVisible(0);
 };
 function MOTDEditGui::onConfirm(%this) {
-    1.setVisible(MOTDEditGuiButtonDoIt);
-    1.setVisible(MOTDEditGuiButtonDoIt2);
-    0.setVisible(MOTDEditGuiButtonConfirm);
-    0.setVisible(MOTDEditGuiButtonCancel);
+    MOTDEditGuiButtonDoIt.setVisible(1);
+    MOTDEditGuiButtonDoIt2.setVisible(1);
+    MOTDEditGuiButtonConfirm.setVisible(0);
+    MOTDEditGuiButtonCancel.setVisible(0);
     %message = getClipboard();
     if (isObject(MOTDEditRequest)) {
         MOTDEditRequest.delete();
     }
     new ManagerRequest(MOTDEditRequest);
     if (isObject(MissionCleanup)) {
-        MOTDEditRequest.add(MissionCleanup);
+        MissionCleanup.add(MOTDEditRequest);
     }
     %url = $Net::ClientServiceURL @ "/GlobalMessage";
     %url = %url @ "?user=" @ urlEncode($Player::Name);
@@ -76,7 +76,7 @@ function MOTDEditGui::onConfirm(%this) {
     %url = %url @ "&message=" @ encodeMOTDString(%message);
     %url = %url @ "&type=" @ urlEncode(%this.messageType);
     log("communication", "debug", "sending request to set the current" @ " " @ %this.messageType @ " " @ "message: " @ %url);
-    %url.setURL(MOTDEditRequest);
+    MOTDEditRequest.setURL(%url);
     MOTDEditRequest.start();
     MOTDEditRequest.messageType = %this.messageType;
 };
@@ -89,7 +89,7 @@ function MOTDEditRequest::onDone(%this) {
         MessageBoxOK("Success", %this.messageType @ " " @ "submitted, test it out to make sure it's what you wanted.", "");
     }
     if ((%status $= "fail")) {
-        MessageBoxOK("Uh Oh", "It didn't work! here's why:" @ "\n" @ "statusMsg".getValue(%this), "");
+        MessageBoxOK("Uh Oh", "It didn't work! here's why:" @ "\n" @ %this.getValue("statusMsg"), "");
         log("communication", "warn", "MOTDEditRequest::onDone(): fail");
     }
 };

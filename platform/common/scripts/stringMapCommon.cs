@@ -1,27 +1,27 @@
 function StringMap::hasKey(%this, %key) {
-    return (%key.findKey(%this) >= 0.0);
+    return (%this.findKey(%key) >= 0.0);
 };
 function StringMap::hasValue(%this, %value) {
-    %idx = %value.findValue(%this);
+    %idx = %this.findValue(%value);
     if ((%idx < 0.0)) {
         return 0;
     }
     return 1;
 };
 function StringMap::saveToLocalStorage(%this, %fileName) {
-    %fileName = %fileName.getLocalStorageFilename(%this);
-    return %fileName.saveTo(%this);
+    %fileName = %this.getLocalStorageFilename(%fileName);
+    return %this.saveTo(%fileName);
 };
 function StringMap::saveTo(%this, %fileName) {
     %file = new FileObject("");
     %ret = 0;
-    if (%fileName.openForWrite(%file)) {
+    if (%file.openForWrite(%fileName)) {
         %n = 0;
         while ((%n < %this.size())) {
-            %key = %n.getKey(%this);
-            %value = %n.getValue(%this);
+            %key = %this.getKey(%n);
+            %value = %this.getValue(%n);
             %line = urlEncode(%key) @ "\t" @ urlEncode(%value);
-            %line.writeLine(%file);
+            %file.writeLine(%line);
             %n = (%n + 1.0);
         }
         %file.close();
@@ -33,23 +33,23 @@ function StringMap::saveTo(%this, %fileName) {
     return %ret;
 };
 function StringMap::loadFromLocalStorage(%this, %fileName, %errorLogLevel) {
-    %fileName = %fileName.getLocalStorageFilename(%this);
-    return %errorLogLevel.loadFrom(%this, %fileName);
+    %fileName = %this.getLocalStorageFilename(%fileName);
+    return %this.loadFrom(%fileName, %errorLogLevel);
 };
 function StringMap::loadFrom(%this, %fileName, %errorLogLevel) {
     %this.clear();
     %file = new FileObject("");
     %ret = 0;
-    if (%fileName.openForRead(%file)) {
-        while (!(%file.isEOF())) {
+    if (%file.openForRead(%fileName)) {
+        while (!%file.isEOF()) {
             %line = trim(%file.readLine());
             %key = urlDecode(getField(%line, 0));
             %value = urlDecode(getField(%line, 1));
-            %value.put(%this, %key);
+            %this.put(%key, %value);
         }
         %file.close();
         %ret = 1;
-        !(%file.isEOF());
+        !%file.isEOF();
     }
     log("general", %errorLogLevel, getScopeName() @ " " @ "- can't open file for read:" @ " " @ %fileName @ " " @ getTrace());
     %file.delete();
@@ -63,7 +63,7 @@ function StringMap::getLocalStorageFilename(%this, %fileName) {
 function StringMap::deleteValuesAsObjects(%this) {
     %i = (%this.size() - 1.0);
     while ((%i >= 0.0)) {
-        %value = %i.getValue(%this);
+        %value = %this.getValue(%i);
         if (isObject(%value)) {
             %value.delete();
         }

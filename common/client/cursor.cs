@@ -8,7 +8,7 @@ package CanvasCursor {
         %cursorShouldBeOn = 0;
         %i = 0;
         while ((%i < %this.getCount())) {
-            %control = %i.getObject(%this);
+            %control = %this.getObject(%i);
             if ((%control.noCursor $= "")) {
                 %cursorShouldBeOn = 1;
             }

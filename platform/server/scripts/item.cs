@@ -1,14 +1,14 @@
 $Item::RespawnTime = (20.0 * 1000.0);
 $Item::PopTime = (10.0 * 1000.0);
 function Item::respawn(%this) {
-    1.startFade(%this, 0, 0);
-    1.setHidden(%this);
-    0.schedule(%this, $Item::RespawnTime, "setHidden");
-    0.schedule(%this, ($Item::RespawnTime + 100.0), "startFade", 1000, 0);
+    %this.startFade(0, 0, 1);
+    %this.setHidden(1);
+    %this.schedule($Item::RespawnTime, "setHidden", 0);
+    %this.schedule(($Item::RespawnTime + 100.0), "startFade", 1000, 0, 0);
 };
 function Item::schedulePop(%this) {
-    1.schedule(%this, ($Item::PopTime - 1000.0), "startFade", 1000, 0);
-    "delete".schedule(%this, $Item::PopTime);
+    %this.schedule(($Item::PopTime - 1000.0), "startFade", 1000, 0, 1);
+    %this.schedule($Item::PopTime, "delete");
 };
 function ItemData::onThrow(%this, %user, %amount) {
     if ((%amount $= "")) {
@@ -17,16 +17,16 @@ function ItemData::onThrow(%this, %user, %amount) {
     if (!(%this.maxInventory $= "") && (%amount > %this.maxInventory)) {
         %amount = %this.maxInventory;
     }
-    if (!(%amount)) {
+    if (!%amount) {
         return 0;
     }
-    %amount.decInventory(%user, %this);
+    %user.decInventory(%this, %amount);
     %obj = new Item("") {
         dataBlock = %this;
         rotation = "0 0 1 " @ (getRandom() * 360.0);
         count = %amount;
     };
-    %obj.add(MissionGroup);
+    MissionGroup.add(%obj);
     %obj.schedulePop();
     return %obj;
 };
@@ -40,7 +40,7 @@ function ItemData::onPickup(%this, %obj, %user, %amount) {
         }
         %count = 1;
     }
-    %count.incInventory(%user, %this);
+    %user.incInventory(%this, %count);
     if (%user.client) {
         messageClient(%user.client, 'MsgItemPickup', '\x02\x01You picked up %1', %this.pickUpName);
     }

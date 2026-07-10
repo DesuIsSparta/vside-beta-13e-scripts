@@ -1,25 +1,25 @@
-if (!(isObject(DraggableProfile))) {
+if (!isObject(DraggableProfile)) {
     new GuiControlProfile(DraggableProfile : ToolTipProfile) {
         modal = 1;
     };
 }
 function DragAndDropExampleList::Initialize(%this) {
-    if (!(%this.initialized)) {
-        10.setNumChildren(%this);
+    if (!%this.initialized) {
+        %this.setNumChildren(10);
         %this.initialized = 1;
     }
 };
 function DragAndDropExampleList::onCreatedChild(%this, %child, %unused, %yPos) {
-    DraggableProfile.setProfile(%child);
+    %child.setProfile(DraggableProfile);
     %child.contentText = %yPos;
-    new GuiTextCtrl("") {
+    %child.add(new GuiTextCtrl("") {
         profile = VPointsTextProfile;
         position = "10 8";
         extent = "200 50";
         text = %child.contentText;
-    };.add(%child);
+    };);
     if (!(getWord(%child.getNamespaceList(), 0) $= "DragAndDropExampleDraggable")) {
-        "DragAndDropExampleDraggable".bindClassName(%child);
+        %child.bindClassName("DragAndDropExampleDraggable");
     }
 };
 function DragAndDropExampleList::onDragAndDropEnter(%this, %dragCtrl) {
@@ -28,10 +28,10 @@ function DragAndDropExampleList::onDragAndDropEnter(%this, %dragCtrl) {
 function DragAndDropExampleList::onDragAndDropLeave(%this, %dragCtrl) {
     hiliteControl(0);
     %marker = %this.getHiliteMarker();
-    0.setVisible(%marker);
+    %marker.setVisible(0);
 };
 function DragAndDropExampleList::getHiliteMarker(%this) {
-    if (!(isObject(%this.hiliteMarker))) {
+    if (!isObject(%this.hiliteMarker)) {
         %this.hiliteMarker = new GuiBitmapCtrl("") {
             profile = "ETSNonModalProfile";
             horizSizing = "width";
@@ -48,28 +48,28 @@ function DragAndDropExampleList::getHiliteMarker(%this) {
     return %this.hiliteMarker;
 };
 function DragAndDropExampleList::onDragAndDropMove(%this, %dragCtrl, %mousePos) {
-    %ctrl = (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)).closestChildToPoint(%this, getWord(%mousePos, 0));
+    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)));
     %marker = %this.getHiliteMarker();
-    %marker.add(Canvas.getContent());
-    %marker.pushToBack(Canvas.getContent());
+    Canvas.getContent().add(%marker);
+    Canvas.getContent().pushToBack(%marker);
     if (isObject(%ctrl)) {
-        ((getWord(%ctrl.getScreenPosition(), 1) - %this.spacing) - 1.0).reposition(%marker, (getWord(%ctrl.getScreenPosition(), 0) + 5.0));
+        %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5.0), ((getWord(%ctrl.getScreenPosition(), 1) - %this.spacing) - 1.0));
     }
-    %ctrl = (getWord(%mousePos, 1) - (getWord(%this.childrenExtent, 1) / 2.0)).closestChildToPoint(%this, getWord(%mousePos, 0));
+    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) - (getWord(%this.childrenExtent, 1) / 2.0)));
     if (isObject(%ctrl)) {
-        ((getWord(%ctrl.getScreenPosition(), 1) + getWord(%this.childrenExtent, 1)) - 1.0).reposition(%marker, (getWord(%ctrl.getScreenPosition(), 0) + 5.0));
+        %marker.reposition((getWord(%ctrl.getScreenPosition(), 0) + 5.0), ((getWord(%ctrl.getScreenPosition(), 1) + getWord(%this.childrenExtent, 1)) - 1.0));
     }
-    1.setVisible(%marker);
+    %marker.setVisible(1);
 };
 function DragAndDropExampleList::onDragAndDropDrop(%this, %dragCtrl, %mousePos) {
-    %ctrl = (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)).closestChildToPoint(%this, getWord(%mousePos, 0));
-    %ctrl.reorderChild(%this, %dragCtrl);
+    %ctrl = %this.closestChildToPoint(getWord(%mousePos, 0), (getWord(%mousePos, 1) + (getWord(%this.childrenExtent, 1) / 2.0)));
+    %this.reorderChild(%dragCtrl, %ctrl);
     return 1;
 };
 function DragAndDropExampleDraggable::onMouseDown(%this) {
 };
 function DragAndDropExampleDraggable::onMouseDragged(%this) {
-    1.setAsDragControl(%this);
+    %this.setAsDragControl(1);
 };
 function DragAndDropExampleDraggable::onDragSet(%this) {
 };

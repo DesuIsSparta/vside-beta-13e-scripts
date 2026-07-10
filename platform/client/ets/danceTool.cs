@@ -3,64 +3,64 @@ $gDanceToolTimerPeriod = 100;
 $gDanceToolSequence = 0;
 $gDanceToolTimeStart = 0;
 function danceTool::open(%this) {
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     userTips::showOnceEver("DanceToolUsage");
     %this.initialcontent();
-    if (!(isObject($gDanceToolSequence))) {
+    if (!isObject($gDanceToolSequence)) {
         $gDanceToolSequence = new StringMap("");
         if (isObject(MissionCleanup)) {
-            $gDanceToolSequence.add(MissionCleanup);
+            MissionCleanup.add($gDanceToolSequence);
         }
     }
 };
 function danceTool::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     $gDanceToolTimer = 0;
     return 1;
 };
 function toggleDanceTool() {
     if (showDanceTool()) {
-        danceTool.showRaiseOrHide(PlayGui);
+        PlayGui.showRaiseOrHide(danceTool);
     }
 };
 function danceTool::record(%this) {
-    0.setVisible(guiDanceToolButtonRecord);
-    0.setVisible(guiDanceToolButtonPlay);
-    1.setVisible(guiDanceToolButtonStop);
-    "STOP (recording)".setText(guiDanceToolButtonStop);
-    0.setVisible(guiDanceToolButtonCopyFrom);
-    0.setVisible(guiDanceToolCheckBoxLoop);
+    guiDanceToolButtonRecord.setVisible(0);
+    guiDanceToolButtonPlay.setVisible(0);
+    guiDanceToolButtonStop.setVisible(1);
+    guiDanceToolButtonStop.setText("STOP (recording)");
+    guiDanceToolButtonCopyFrom.setVisible(0);
+    guiDanceToolCheckBoxLoop.setVisible(0);
     %this.recording = 1;
     %this.playing = 0;
     %this.nextStep = 0;
     %this.prevStepTime = -(1.0);
-    "".setText(guiDanceToolMLTextBody);
-    $player.getShapeName().setText(guiDanceToolTextAuthor);
-    "my cool dance".setText(guiDanceToolTextTitle);
-    $player.getGender().setGender(%this);
+    guiDanceToolMLTextBody.setText("");
+    guiDanceToolTextAuthor.setText($player.getShapeName());
+    guiDanceToolTextTitle.setText("my cool dance");
+    %this.setGender($player.getGender());
     %this.startTimer();
 };
 function danceTool::play(%this) {
-    0.setVisible(guiDanceToolButtonRecord);
-    0.setVisible(guiDanceToolButtonPlay);
-    1.setVisible(guiDanceToolButtonStop);
-    "STOP (playing)".setText(guiDanceToolButtonStop);
-    0.setVisible(guiDanceToolButtonCopyFrom);
-    1.setVisible(guiDanceToolCheckBoxLoop);
-    guiDanceToolMLTextBody.getText().constructSequence(%this);
+    guiDanceToolButtonRecord.setVisible(0);
+    guiDanceToolButtonPlay.setVisible(0);
+    guiDanceToolButtonStop.setVisible(1);
+    guiDanceToolButtonStop.setText("STOP (playing)");
+    guiDanceToolButtonCopyFrom.setVisible(0);
+    guiDanceToolCheckBoxLoop.setVisible(1);
+    %this.constructSequence(guiDanceToolMLTextBody.getText());
     %this.recording = 0;
     %this.playing = 1;
     %this.prevStep = -(1.0);
     %this.startTimer();
 };
 function danceTool::stop(%this) {
-    1.setVisible(guiDanceToolButtonRecord);
-    1.setVisible(guiDanceToolButtonPlay);
-    0.setVisible(guiDanceToolButtonStop);
-    1.setVisible(guiDanceToolButtonCopyFrom);
-    1.setVisible(guiDanceToolCheckBoxLoop);
+    guiDanceToolButtonRecord.setVisible(1);
+    guiDanceToolButtonPlay.setVisible(1);
+    guiDanceToolButtonStop.setVisible(0);
+    guiDanceToolButtonCopyFrom.setVisible(1);
+    guiDanceToolCheckBoxLoop.setVisible(1);
     commandToServer('DanceSequenceDone');
     if (%this.recording) {
         %this.finishRecordingPreviousStep();
@@ -71,7 +71,7 @@ function danceTool::stop(%this) {
 };
 function danceTool::startTimer(%this) {
     cancel($gDanceToolTimer);
-    $gDanceToolTimer = "timerTick".schedule(%this, $gDanceToolTimerPeriod);
+    $gDanceToolTimer = %this.schedule($gDanceToolTimerPeriod, "timerTick");
     $gDanceToolTimeStart = getSimTime();
 };
 function danceTool::stopTimer(%this) {
@@ -79,11 +79,11 @@ function danceTool::stopTimer(%this) {
     $gDanceToolTimer = 0;
 };
 function danceTool::timerTick(%this) {
-    if (!(%this.playing)) {
+    if (!%this.playing) {
         return;
     }
     %this.playNextStep();
-    $gDanceToolTimer = "timerTick".schedule(%this, $gDanceToolTimerPeriod);
+    $gDanceToolTimer = %this.schedule($gDanceToolTimerPeriod, "timerTick");
 };
 function danceTool::constructSequence(%this, %lines) {
     %numFields = 2;
@@ -96,14 +96,14 @@ function danceTool::constructSequence(%this, %lines) {
         if ((%wc >= %numFields)) {
             %stepName = getWords(%line, 0, (%wc - %numFields));
             %stepDuration = getWord(%line, (%wc - 1.0));
-            %this.stepTimes = %totalT @ %n;
-            %this.stepNames = %stepName @ %n;
+            %this.stepTimes[%n] = %totalT;
+            %this.stepNames[%n] = %stepName;
             %totalT = (%totalT + %stepDuration);
         }
         %n = (%n + 1.0);
     }
-    %this.stepTimes = (%n < %this.numSteps) @ %totalT @ %this.numSteps;
-    %this.stepNames = "(finished)" @ %this.numSteps;
+    %this.stepTimes[%this.numSteps] = (%n < %this.numSteps) @ %totalT;
+    %this.stepNames[%this.numSteps] = "(finished)";
     %this.numSteps = (%this.numSteps + 1.0);
 };
 function danceTool::playNextStep(%this) {
@@ -115,11 +115,10 @@ function danceTool::playNextStep(%this) {
         %n = (%this.prevStep + 1.0);
         if ((%n < %this.numSteps)) {
         }
-        while (!(%tooFar)) {
-            if ((%this.stepTimes <= %curDanceTime @ %n)) {
+        while (!%tooFar) {
+            if ((%this.stepTimes[%n] <= %curDanceTime)) {
                 %playStep = %n;
-                %playStepTime = %this.stepTimes;
-                %n;
+                %playStepTime = %this.stepTimes[%n];
             }
             %tooFar = 1;
             %n = (%n + 1.0);
@@ -128,7 +127,7 @@ function danceTool::playNextStep(%this) {
         }
     }
     %playStep = 0;
-    !(%tooFar);
+    !%tooFar;
     if ((%playStep >= (%this.numSteps - 1.0))) {
         if (guiDanceToolCheckBoxLoop.getValue()) {
             %this.play();
@@ -137,22 +136,19 @@ function danceTool::playNextStep(%this) {
         %this.stop();
     }
     if ((%playStep >= 0.0)) {
-        %playStep.playStep(%this);
+        %this.playStep(%playStep);
     }
 };
 function danceTool::playStep(%this, %stepNum) {
-    if ((%stepNum < 0.0)) {
-    }
-    if ((%stepNum >= %this.numSteps)) {
+    if ((%stepNum < 0.0) || (%stepNum >= %this.numSteps)) {
         error("invalid step index" @ " " @ %stepNum @ " " @ " - we have" @ " " @ %this.numSteps);
         %this.stop();
         return;
     }
-    %stepName = %this.stepNames;
-    %stepNum;
+    %stepName = %this.stepNames[%stepNum];
     %this.prevStep = %stepNum;
-    %animName = %stepName.getAnimName(%this);
-    if (!(%animName.canRecordAnim(%this))) {
+    %animName = %this.getAnimName(%stepName);
+    if (!%this.canRecordAnim(%animName)) {
         return;
     }
     sendDanceToolAnimToServer(%animName);
@@ -168,15 +164,15 @@ function danceTool::canRecordAnim(%this, %nameInternal) {
     return 0;
 };
 function danceTool::addStep(%this, %nameInternal) {
-    if (!(%this.recording)) {
+    if (!%this.recording) {
         return;
     }
-    if (!(%nameInternal.canRecordAnim(%this))) {
+    if (!%this.canRecordAnim(%nameInternal)) {
         return;
     }
     %animName = %nameInternal;
     %this.finishRecordingPreviousStep();
-    1.addText(guiDanceToolMLTextBody, %animName, 1);
+    guiDanceToolMLTextBody.addText(%animName, 1, 1);
 };
 function danceTool::finishRecordingPreviousStep(%this) {
     %t = getSimTime();
@@ -186,7 +182,7 @@ function danceTool::finishRecordingPreviousStep(%this) {
         if ((%dt < 0.1)) {
             %dt = 0.1;
         }
-        1.addText(guiDanceToolMLTextBody, " " @ %dt @ "\n", 1);
+        guiDanceToolMLTextBody.addText(" " @ %dt @ "\n", 1, 1);
     }
     %this.prevStepTime = %t;
 };
@@ -204,14 +200,14 @@ function danceTool::setGender(%this, %gender) {
     }
     %genderFull = "males";
     %txt = "Designed for:" @ " " @ %colorTag @ %genderFull;
-    %txt.setText(guiDanceToolTextGender);
+    guiDanceToolTextGender.setText(%txt);
 };
 $gDanceToolVersionString = "Dancetastique version 1.0";
 function danceTool::clipboardCopyTo(%this) {
     setClipboard(%this.getContent());
 };
 function danceTool::clipboardPasteFrom(%this) {
-    getClipboard().setContent(%this);
+    %this.setContent(getClipboard());
 };
 function danceTool::getContent(%this) {
     %content = "";
@@ -235,10 +231,10 @@ function danceTool::setContent(%this, %content) {
         MessageBoxOK("Wrong Version!", "" @ $gDanceToolVersionString @ "\nand you're trying to use a dance from\n" @ " " @ %version, "");
         return;
     }
-    %author.setValue(guiDanceToolTextAuthor);
-    %title.setValue(guiDanceToolTextTitle);
-    %gender.setGender(%this);
-    %content.setText(guiDanceToolMLTextBody);
+    guiDanceToolTextAuthor.setValue(%author);
+    guiDanceToolTextTitle.setValue(%title);
+    %this.setGender(%gender);
+    guiDanceToolMLTextBody.setText(%content);
 };
 $gDanceToolInitialized = 0;
 function danceTool::initialcontent(%this) {
@@ -257,6 +253,6 @@ function danceTool::initialcontent(%this) {
     %content = %content @ "Whack\n";
     %content = %content @ "m\n";
     %content = %content @ "nmjlih 0.258\nnmjspin 1.409\nhdnc2 1.004\nhdnc4 1.119\nnmjzstep 0.921\nidnc2 1.128\nhdnc1 0.854\nnmjlih 0.427\nhdnc1 0.409\nnmjlih 0.363\nhdnc1 0.59\nnmjlih 0.501\nhdnc1 0.594\nnmjlih 0.334\nhdnc1 0.449\nidnc2 0.441\nhdnc1 0.445\nidnc2 0.522\nnmjzstep 0.574\npdnc1 0.41\nnmjzstep 0.413\npdnc1 0.454\nnmjzstep 0.48\npdnc1 1.005\nhdnc4 1.419\nhdnc2 0.975\nhdnc4 0.462\nhdnc2 0.1\nnmjspin 0.917\nhdnc2 0.362\nnmjspin 0.524\nnmjlih 0.965\nhdnc1 0.684\nnmjlih 0.355\nhdnc1 0.43\nnmjlih 0.434\nnmjspin 1.46\nhdnc2 1.024\nhdnc4 0.966\npdnc1 0.491\nhdnc4 0.301\npdnc1 0.595\nhdnc4 0.376\npdnc1 0.467\nhdnc4 0.449\npdnc1 0.622\nhdnc4 0.367\npdnc1 0.743\nhdnc4 0.356\npdnc1 0.495\nhdnc4 0.316\npdnc1 0.492\nnmjzstep 0.489\nidnc2 0.448\nnmjzstep 0.585\nidnc2 0.37\nnmjzstep 0.494\nidnc2 0.499\nnmjzstep 0.52\nidnc2 0.438\nnmjzstep 0.465\nidnc2 0.487\nnmjzstep 0.422\nidnc2 0.426\nhdnc1 0.476\nnmjlih 0.446\nhdnc1 0.304\nnmjlih 0.264\nhdnc1 0.226\nnmjlih 0.184\nhdnc1 0.158\nnmjlih 0.204\nhdnc1 0.161\nnmjlih 0.159\nhdnc1 0.188\nnmjlih 0.157\nhdnc1 0.161\nnmjlih 0.137\nhdnc1 0.1\nnmjzstep 1.371\npdnc1 0.24\nnmjzstep 0.138\npdnc1 0.13\nnmjzstep 0.132\npdnc1 0.12\nnmjzstep 0.112\npdnc1 0.125\nnmjzstep 0.1\npdnc1 0.123\nnmjzstep 0.125\npdnc1 0.345\nhdnc4 0.263\nhdnc4 0.1\npdnc1 0.145\npdnc1 0.144\nhdnc4 0.167\npdnc1 0.139\npdnc1 0.163\nhdnc4 0.207\npdnc1 0.225\nhdnc4 0.254\npdnc1 0.199\npdnc1 0.1\nhdnc4 0.173\npdnc1 0.226\nhdnc4 0.4\npdnc1 0.107\nhdnc4 0.126\npdnc1 0.165\npdnc1 0.1\nhdnc4 0.311\nhdnc4 0.141\nhdnc2 0.483\nnmjspin 0.424\nnmjlih 0.397\nnmjspin 0.553\nnmjlih 0.306\nnmjspin 1.68\nnmjspin 1.868\nhdnc4 0.503\nhdnc2 0.39\nhdnc4 0.583\nhdnc2 0.485\nhdnc4 0.494\nhdnc2 0.348\nhdnc4 0.521\nhdnc2 0.35\nhdnc4 0.321\nhdnc4 0.171\npdnc1 0.545\nnmjzstep 0.969\nnmjzstep 0.563\npdnc1 0.388\nnmjzstep 0.51\nhdnc1 0.425\nidnc2 0.222\nidnc2 0.1\nhdnc1 0.223\nidnc2 0.186\nhdnc1 0.184\nidnc2 0.179\nhdnc1 0.124\nidnc2 0.127\nidnc2 0.1\nhdnc1 0.226\nidnc2 0.124\nhdnc1 0.184\nidnc2 0.119\nhdnc1 0.172\nidnc2 0.11\nhdnc1 0.163\nidnc2 0.114\nhdnc1 0.138\nidnc2 0.105\nhdnc1 0.24\nnmjlih 0.355\nhdnc1 0.268\nnmjlih 0.245\nhdnc1 0.209\nnmjlih 0.519\npdnc1 0.181\nhdnc4 0.922\npdnc1 0.489\nnmjzstep 0.399\npdnc1 0.427\nnmjzstep 0.465\npdnc1 0.518\nnmjlih 2.064\nnmjspin 1.808\nhdncb3 2.411\nhdncb2 2.967\nhdncb4 4.251\nhdnc1 2.409\nnmjlih 0.397\nnmjlih 4.307\n";
-    %content.setContent(%this);
+    %this.setContent(%content);
     $gDanceToolInitialized = 1;
 };

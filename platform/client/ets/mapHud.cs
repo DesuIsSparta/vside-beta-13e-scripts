@@ -1,10 +1,10 @@
 function geLocalMapContainer::open(%this) {
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
 };
 function geLocalMapContainer::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     WindowManager.update();
     return 1;
@@ -15,7 +15,7 @@ function geLocalMapContainer::onSpaceChange(%this, %spaceName) {
     }
     %this.spaceName = %spaceName;
     %mapObj = getSpace2DMap(%spaceName);
-    %mapObj.setMap2D(%this);
+    %this.setMap2D(%mapObj);
     if ($UserPref::UI::Radar::AutoOpen) {
     }
     if (isObject(%mapObj)) {
@@ -24,28 +24,28 @@ function geLocalMapContainer::onSpaceChange(%this, %spaceName) {
 };
 function geLocalMapContainer::setMap2D(%this, %mapObj) {
     %this.mapObj = %mapObj;
-    if (!(isObject(%mapObj))) {
-        1.setVisible(geMapHud2DNotAvail);
-        0.setVisible(geMapHud2DDragNZoom);
-        0.setVisible(geMapHud2DCustomSpaceModeTitle);
-        0.setVisible(geMapHud2DCustomSpaceModeText);
+    if (!isObject(%mapObj)) {
+        geMapHud2DNotAvail.setVisible(1);
+        geMapHud2DDragNZoom.setVisible(0);
+        geMapHud2DCustomSpaceModeTitle.setVisible(0);
+        geMapHud2DCustomSpaceModeText.setVisible(0);
         %this.close();
         return;
     }
-    1.setVisible(geMapHud2DDragNZoom);
-    0.setVisible(geMapHud2DNotAvail);
-    0.setVisible(geMapHud2DCustomSpaceModeTitle);
-    0.setVisible(geMapHud2DCustomSpaceModeText);
-    %mapObj.mapFile.setBitmap(geMapHud2DTheBitMap);
+    geMapHud2DDragNZoom.setVisible(1);
+    geMapHud2DNotAvail.setVisible(0);
+    geMapHud2DCustomSpaceModeTitle.setVisible(0);
+    geMapHud2DCustomSpaceModeText.setVisible(0);
+    geMapHud2DTheBitMap.setBitmap(%mapObj.mapFile);
     geMapHud2DTheBitMap.fitSize();
     %w = getWord(geMapHud2DTheBitMap.getExtent(), 0);
     %h = getWord(geMapHud2DTheBitMap.getExtent(), 1);
     %w = (%w * 0.4);
     %h = (%h * 0.4);
-    %h.resize(geMapHud2DDragNZoom, %w);
+    geMapHud2DDragNZoom.resize(%w, %h);
     geMapHud2DDragNZoom.inspectPostApply();
-    %h.resize(geMapHud2DTheBitMap, %w);
-    0.reposition(geMapHud2DTheBitMap, 0);
+    geMapHud2DTheBitMap.resize(%w, %h);
+    geMapHud2DTheBitMap.reposition(0, 0);
     geMapHud2DTheOrthoMap.upperLeft = %mapObj.coordUpperLeft;
     geMapHud2DTheOrthoMap.upperRight = %mapObj.coordUpperRight;
     geMapHud2DTheOrthoMap.lowerLeft = %mapObj.coordLowerLeft;
@@ -53,19 +53,19 @@ function geLocalMapContainer::setMap2D(%this, %mapObj) {
 };
 function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text) {
     if ((%text $= "")) {
-        0.setVisible(geMapHud2DCustomSpaceModeTitle);
-        0.setVisible(geMapHud2DCustomSpaceModeText);
-        0.setVisible(geMapHud2DDragNZoom);
-        "".setText(geMapHud2DCustomSpaceModeTitle);
-        "".setText(geMapHud2DCustomSpaceModeText);
-        1.setVisible(geMapHud2DNotAvail);
+        geMapHud2DCustomSpaceModeTitle.setVisible(0);
+        geMapHud2DCustomSpaceModeText.setVisible(0);
+        geMapHud2DDragNZoom.setVisible(0);
+        geMapHud2DCustomSpaceModeTitle.setText("");
+        geMapHud2DCustomSpaceModeText.setText("");
+        geMapHud2DNotAvail.setVisible(1);
     }
-    0.setVisible(geMapHud2DDragNZoom);
-    0.setVisible(geMapHud2DNotAvail);
-    %title.setText(geMapHud2DCustomSpaceModeTitle);
-    1.setVisible(geMapHud2DCustomSpaceModeTitle);
-    %text.setText(geMapHud2DCustomSpaceModeText);
-    1.setVisible(geMapHud2DCustomSpaceModeText);
+    geMapHud2DDragNZoom.setVisible(0);
+    geMapHud2DNotAvail.setVisible(0);
+    geMapHud2DCustomSpaceModeTitle.setText(%title);
+    geMapHud2DCustomSpaceModeTitle.setVisible(1);
+    geMapHud2DCustomSpaceModeText.setText(%text);
+    geMapHud2DCustomSpaceModeText.setVisible(1);
     waitAFrameAndCall("geLocalMapContainer_repositionTitleText");
 };
 function geLocalMapContainer_repositionTitleText() {
@@ -74,7 +74,7 @@ function geLocalMapContainer_repositionTitleText() {
     }
     %newTitleTop = %newTitleTop;
     1;
-    %newTitleTop.reposition(geMapHud2DCustomSpaceModeTitle, 0);
+    geMapHud2DCustomSpaceModeTitle.reposition(0, %newTitleTop);
 };
 $gDragNZoomIsReallySmooth = 1;
 $gGeMapHud2DDragNZoomTimer = "";
@@ -83,7 +83,7 @@ $gGeMapHud2DDragNZoomRateAmountPerOneShot = 1.4;
 $gGeMapHud2DDragNZoomTickPeriodMS = 50;
 function geLocalMapZoomOut::onMouseDown(%this) {
     if ($gDragNZoomIsReallySmooth) {
-        0.zoomTick(geMapHud2DDragNZoom);
+        geMapHud2DDragNZoom.zoomTick(0);
     }
 };
 function geLocalMapZoomOut::onMouseUp(%this) {
@@ -93,11 +93,11 @@ function geLocalMapZoomOut::onMouseUp(%this) {
             $gGeMapHud2DDragNZoomTimer = "";
         }
     }
-    (1.0 / $gGeMapHud2DDragNZoomRateAmountPerOneShot).doScale(geMapHud2DDragNZoom);
+    geMapHud2DDragNZoom.doScale((1.0 / $gGeMapHud2DDragNZoomRateAmountPerOneShot));
 };
 function geLocalMapZoomIn::onMouseDown(%this) {
     if ($gDragNZoomIsReallySmooth) {
-        1.zoomTick(geMapHud2DDragNZoom);
+        geMapHud2DDragNZoom.zoomTick(1);
     }
 };
 function geLocalMapZoomIn::onMouseUp(%this) {
@@ -107,7 +107,7 @@ function geLocalMapZoomIn::onMouseUp(%this) {
             $gGeMapHud2DDragNZoomTimer = "";
         }
     }
-    $gGeMapHud2DDragNZoomRateAmountPerOneShot.doScale(geMapHud2DDragNZoom);
+    geMapHud2DDragNZoom.doScale($gGeMapHud2DDragNZoomRateAmountPerOneShot);
 };
 function geMapHud2DDragNZoom::zoomTick(%this, %isZoomIn) {
     if (!($gGeMapHud2DDragNZoomTimer $= "")) {
@@ -118,20 +118,18 @@ function geMapHud2DDragNZoom::zoomTick(%this, %isZoomIn) {
     }
     %amount = (1.0 - %amount);
     (1.0 + %amount);
-    %amount.doScale(geMapHud2DDragNZoom);
-    $gGeMapHud2DDragNZoomTimer = %isZoomIn.schedule(%this, $gGeMapHud2DDragNZoomTickPeriodMS, "zoomTick");
+    geMapHud2DDragNZoom.doScale(%amount);
+    $gGeMapHud2DDragNZoomTimer = %this.schedule($gGeMapHud2DDragNZoomTickPeriodMS, "zoomTick", %isZoomIn);
 };
 function getSpace2DMap(%spaceName) {
     if ((%spaceName $= "")) {
         return "";
     }
-    if (!(isObject(space2DMapsMap))) {
-    }
-    if ((%spaceName.findKey(space2DMapsMap) < 0.0)) {
+    if (!isObject(space2DMapsMap) || (space2DMapsMap.findKey(%spaceName) < 0.0)) {
         echo(getScopeName() @ " " @ "- no 2D map: \"" @ %spaceName @ "\".");
         return "";
     }
-    return %spaceName.get(space2DMapsMap);
+    return space2DMapsMap.get(%spaceName);
 };
 $gGeLocalMapIcon_ME = 0;
 function geMapHud2DTheOrthoMap::playerAdd(%this, %player) {
@@ -139,28 +137,28 @@ function geMapHud2DTheOrthoMap::playerAdd(%this, %player) {
 };
 function Player::updateMapIcon(%this) {
     %ctrl = gGetField(%this, "mapCtrl");
-    if (!(isObject(%ctrl))) {
+    if (!isObject(%ctrl)) {
         %ctrl = new GuiBitmapCtrl("") {
             extent = "32 32";
         };
         %ctrl.worldObject = %this;
         gSetField(%this, "mapCtrl", %ctrl);
-        %ctrl.add(geMapHud2DTheOrthoMap);
+        geMapHud2DTheOrthoMap.add(%ctrl);
         if (isObject($gGeLocalMapIcon_ME)) {
-            $gGeLocalMapIcon_ME.pushToBack(geMapHud2DTheOrthoMap);
+            geMapHud2DTheOrthoMap.pushToBack($gGeLocalMapIcon_ME);
         }
     }
     %bitmap = "";
-    if (%this.getShowOnRadar() && isObject($player) && (%this == $player)) {
+    if (isObject($player)) {
     }
-    if ("radarSeeAll".rolesPermissionCheckNoWarn($player)) {
+    if ((%this == $player) || %this.getShowOnRadar() || $player.rolesPermissionCheckNoWarn("radarSeeAll")) {
         %gender = %this.getGender();
         if ((%this.getShapeName() $= $Player::Name)) {
         }
         %relation = %this.isFriend() ? "friend" : "other";
         "self";
         %mode = "reg";
-        if ("celeb".hasRoleString(%this)) {
+        if (%this.hasRoleString("celeb")) {
         }
         %mode = %mode;
         "celeb";
@@ -168,11 +166,11 @@ function Player::updateMapIcon(%this) {
         }
         %mode = %mode;
         "robot";
-        if ("guidebadge".hasSpecialSku(%this)) {
+        if (%this.hasSpecialSku("guidebadge")) {
         }
         %mode = %mode;
         "guide";
-        if (!(%this.getShowOnRadar())) {
+        if (!%this.getShowOnRadar()) {
         }
         %mode = %mode;
         "hidden";
@@ -182,12 +180,12 @@ function Player::updateMapIcon(%this) {
         %bitmap = %bitmap @ %mode;
         if ((%relation $= "self")) {
             $gGeLocalMapIcon_ME = %ctrl;
-            %ctrl.pushToBack(geMapHud2DTheOrthoMap);
-            %ctrl.setCenterOnCtrl(geMapHud2DDragNZoom);
-            $player.setReferenceObject(geMapHud2DTheOrthoMap);
+            geMapHud2DTheOrthoMap.pushToBack(%ctrl);
+            geMapHud2DDragNZoom.setCenterOnCtrl(%ctrl);
+            geMapHud2DTheOrthoMap.setReferenceObject($player);
         }
     }
-    %bitmap.setBitmap(%ctrl);
+    %ctrl.setBitmap(%bitmap);
 };
 function geMapHud2DTheOrthoMap::playerRemove(%this, %player) {
     %ctrl = gGetField(%player, "mapCtrl");

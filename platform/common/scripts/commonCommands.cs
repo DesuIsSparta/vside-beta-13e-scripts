@@ -1,17 +1,15 @@
 function isPlayerObject(%obj) {
     if (isObject(%obj)) {
     }
-    return !(!(%obj.getType() & $TypeMasks::PlayerObjectType));
+    return !!(%obj.getType() & $TypeMasks::PlayerObjectType);
 };
 function isAIPlayerObject(%obj) {
     if (isObject(%obj)) {
     }
-    return !(!(%obj.getClassName() $= "AIPlayer"));
+    return !!(%obj.getClassName() $= "AIPlayer");
 };
 function isNPCObject(%obj) {
-    if (!(isObject(NPCGroup))) {
-    }
-    if (!(isAIPlayerObject(%obj))) {
+    if (!isObject(NPCGroup) || !isAIPlayerObject(%obj)) {
         return 0;
     }
     return (%obj.getGroup().getId() == NPCGroup.getId());
@@ -41,7 +39,7 @@ function gGetField(%object, %name) {
     return %name[$gGlobalFields TAB %object.getId() @ %name];
 };
 function gGetFieldWithDefault(%object, %name, %def) {
-    if (!(isObject(%object))) {
+    if (!isObject(%object)) {
         error(getScopeName() @ " " @ "called with bad object!");
         return %def;
     }
@@ -52,17 +50,17 @@ function gGetFieldWithDefault(%object, %name, %def) {
 };
 function tmpFields(%obj) {
     %tmps = gGetField(%obj, tmpFields);
-    if (!(isObject(%tmps))) {
+    if (!isObject(%tmps)) {
         %tmps = new ScriptObject(temporaryfields);
         if (isObject(MissionCleanup)) {
-            %tmps.add(MissionCleanup);
+            MissionCleanup.add(%tmps);
         }
         gSetField(%obj, tmpFields, %tmps);
     }
     return %tmps;
 };
 function getDebugString(%obj) {
-    if (!(isObject(%obj))) {
+    if (!isObject(%obj)) {
         return "-(" @ %obj @ " " @ "is not an object)-";
     }
     return %obj.getDebugString();
@@ -138,7 +136,7 @@ function safeNewScriptObject(%classname, %objectName, %deleteExisting) {
     }
     eval("%ret = new " @ %classname @ "(" @ %objectName @ ");");
     if (isObject(MissionCleanup)) {
-        %ret.add(MissionCleanup);
+        MissionCleanup.add(%ret);
     }
     return %ret;
 };
@@ -174,13 +172,13 @@ function safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName,
         %classCount = getWordCount(%classesToBind);
         %i = 0;
         while ((%i < %classCount)) {
-            getWord(%classesToBind, %i).bindClassName(%ret);
+            %ret.bindClassName(getWord(%classesToBind, %i));
             %i = (%i + 1.0);
         }
     }
-    %objectName.setName(%ret);
+    %ret.setName(%objectName);
     if (isObject(MissionCleanup)) {
-        %ret.add(MissionCleanup);
+        MissionCleanup.add(%ret);
     }
     return %ret;
 };
@@ -193,9 +191,7 @@ function getPathOfButtonResource(%res) {
     %n = (getWordCount($gValidTextureExt) - 1.0);
     while ((%n >= 0.0)) {
         %ext = getWord($gValidTextureExt, %n);
-        if (isFile(%res @ %ext)) {
-        }
-        if (isFile(%res @ "_n" @ %ext)) {
+        if (isFile(%res @ %ext) || isFile(%res @ "_n" @ %ext)) {
             setCachedResourcePath(%res, %res);
             return %res;
         }
@@ -215,27 +211,25 @@ function getPathsMatchingPattern(%pattern) {
 };
 function getCachedResourcePath(%res) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    %path = %res.get(ResourcePathMap);
+    %path = ResourcePathMap.get(%res);
     return %path;
 };
 function setCachedResourcePath(%res, %path) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    %path.put(ResourcePathMap, %res);
+    ResourcePathMap.put(%res, %path);
 };
 function setAllLogLevels(%level) {
-    %level.setAllLogLevels(Console);
-    %level.setAllLogLevels(log);
+    Console.setAllLogLevels(%level);
+    log.setAllLogLevels(%level);
     setConsoleLogLevel(%level);
 };
 function bitstreamCountToggle() {
     setAllLogLevels("debug");
-    $bitStreamCount = !($bitStreamCount);
+    $bitStreamCount = !$bitStreamCount;
 };
 function getPlayerMarkup(%player, %color, %isNameNotObject) {
     %playerName = "";
-    if (!(%isNameNotObject)) {
-    }
-    if ((%isNameNotObject $= "")) {
+    if (!%isNameNotObject || (%isNameNotObject $= "")) {
         %playerName = %player.getShapeName();
     }
     if ((%playerName $= "")) {
@@ -309,7 +303,7 @@ function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize) {
 function SimSet::getByField(%this, %field, %svalue) {
     %n = (%this.getCount() - 1.0);
     while ((%n >= 0.0)) {
-        %obj = %n.getObject(%this);
+        %obj = %this.getObject(%n);
         %evalString = "return %obj." @ %field @ " $= \"" @ %svalue @ "\";";
         if (eval(%evalString)) {
             return %obj;
@@ -335,7 +329,7 @@ function GuiControl::getChildrenInOrder(%this, %children) {
     %count = %this.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %child = %i.getObject(%this);
+        %child = %this.getObject(%i);
         if (hasWord(%ids, %child)) {
             %toReturn = %toReturn @ " " @ %child;
         }
@@ -346,7 +340,7 @@ function GuiControl::getChildrenInOrder(%this, %children) {
 function logOnce(%logSystems, %logLevel, %key, %msg) {
     %key = %logLevel @ " " @ getScopeName(1) @ "_" @ %key;
     %map = safeEnsureScriptObject("StringMap", "messageCountsErrors");
-    %count = %key.get(%map);
+    %count = %map.get(%key);
     if ((%count $= "")) {
         log(%logSystems, %logLevel, %msg);
     }
@@ -354,7 +348,7 @@ function logOnce(%logSystems, %logLevel, %key, %msg) {
         log(%logSystems, %logLevel, "multiple log messages for:" @ " " @ %key @ " " @ "- swallowing the remainder." @ " " @ %msg);
     }
     %count = (%count + 1.0);
-    %count.put(%map, %key);
+    %map.put(%key, %count);
 };
 function debugOnce(%key, %msg) {
     %key = getScopeName(1) @ "_" @ %key;

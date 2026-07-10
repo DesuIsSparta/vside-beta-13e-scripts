@@ -11,14 +11,14 @@ function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, 
     log("network", "info", "client cache CRC:" @ " " @ %crc @ " " @ "seq: " @ " " @ %missionSequence @ " " @ "gender:" @ " " @ %gender);
     if ((%missionSequence != $MissionSequence)) {
     }
-    if (!($missionRunning)) {
+    if (!$missionRunning) {
         log("network", "error", "premature exit from MissionCRC" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;
     }
     %client.gender = %gender;
-    $missionCRC.setMissionCRC(%client);
-    %missionSequence.setDatablockSequence(%client);
-    %missionSequence.setGhostingSequence(%client);
+    %client.setMissionCRC($missionCRC);
+    %client.setDatablockSequence(%missionSequence);
+    %client.setGhostingSequence(%missionSequence);
     if ((%crc == $Server::DatablockCRC)) {
     }
     if ((%hasStandaloneCache == 1.0)) {
@@ -33,20 +33,20 @@ function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, 
 };
 function serverCmdStartCacheAck(%client, %missionSequence) {
     log("network", "info", "sending mission load to client:" @ " " @ $Server::MissionFile @ " " @ "seq: " @ " " @ %missionSequence);
-    %missionSequence.transmitDataBlocks(%client);
+    %client.transmitDataBlocks(%missionSequence);
     return;
 };
 function GameConnection::onDataBlocksDone(%this, %missionSequence) {
     log("network", "debug", "GameConnection::onDataBlocksDone seq:" @ " " @ %missionSequence);
     if ((%missionSequence != $MissionSequence)) {
     }
-    if (!($missionRunning)) {
+    if (!$missionRunning) {
         log("network", "error", "premature exit from onDataBlocksDone" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;
     }
     commandToClient(%this, 'StartGhostAlways', %missionSequence, $Server::MissionFile);
     if (%this.readingCache) {
-        1.activateGhosting(%this);
+        %this.activateGhosting(1);
     }
     return;
 };
@@ -54,12 +54,12 @@ function serverCmdStartGhostAlwaysAck(%client, %missionSequence) {
     log("network", "debug", "starting GhostAlways seq:" @ " " @ %missionSequence);
     if ((%missionSequence != $MissionSequence)) {
     }
-    if (!($missionRunning)) {
+    if (!$missionRunning) {
         log("network", "error", "premature exit from StartGhostAlwaysAck" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;
     }
     %client.transmitPaths();
-    0.activateGhosting(%client);
+    %client.activateGhosting(0);
     return;
 };
 function GameConnection::clientWantsGhostAlwaysRetry(%this) {
@@ -81,7 +81,7 @@ function serverCmdMissionStartPhase3Ack(%client, %missionSequence) {
     log("network", "debug", "client done loading:" @ " " @ %client @ " " @ "seq: " @ " " @ %missionSequence);
     if ((%missionSequence != $MissionSequence)) {
     }
-    if (!($missionRunning)) {
+    if (!$missionRunning) {
         log("network", "debug", "premature exit from StartPhase3Ack" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;
     }

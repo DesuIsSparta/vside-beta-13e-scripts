@@ -2,13 +2,13 @@ $Client::DatablockCRC = 0;
 $Cache::ExtraNameTag = "";
 function clientCmdCheckCacheCRC(%missionSequence, %missionName) {
     log("network", "info", "check client cache CRC:" @ " " @ %missionName @ " " @ "seq:" @ " " @ %missionSequence @ " " @ "gender:" @ " " @ $UserPref::Player::gender);
-    if (!(isObject(ServerConnection))) {
+    if (!isObject(ServerConnection)) {
         log("network", "warn", "ServerConnection not valid in clientCmdMissionCheckCacheCRC");
     }
     $GeneratingCacheNow = 0;
     $CurrentMission = %missionName;
     if ($CacheFlagIsSet) {
-        %crc = %missionName.getCacheCRC(ServerConnection);
+        %crc = ServerConnection.getCacheCRC(%missionName);
     }
     %crc = -(1.0);
     log("network", "debug", "client cache CRC:" @ " " @ %crc);
@@ -22,7 +22,7 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName) {
     commandToServer('MissionCRC', %missionSequence, %missionName, %crc, $UserPref::Player::gender, %hasStandaloneCache);
 };
 function clientCmdStartCache(%missionSequence, %missionName, %musicTrack) {
-    if (!($CacheFlagIsSet)) {
+    if (!$CacheFlagIsSet) {
         log("network", "debug", "cache turned off, acking server");
         commandToServer('StartCacheAck', %missionSequence);
         return;
@@ -30,7 +30,7 @@ function clientCmdStartCache(%missionSequence, %missionName, %musicTrack) {
     log("network", "info", "attempting client side load caching:" @ " " @ %missionName @ " " @ "seq:" @ " " @ %missionSequence);
     onMissionDownloadPhase1(%missionName, %musicTrack);
     $GeneratingCacheNow = 1;
-    %success = %missionName.startCache(ServerConnection);
+    %success = ServerConnection.startCache(%missionName);
     if (%success) {
         log("network", "info", "cache writing started successfully");
     }
@@ -38,13 +38,13 @@ function clientCmdStartCache(%missionSequence, %missionName, %musicTrack) {
     commandToServer('StartCacheAck', %missionSequence);
 };
 function clientCmdLoadLocalCache(%missionSequence, %missionName, %musicTrack) {
-    if (!(isObject(ServerConnection))) {
+    if (!isObject(ServerConnection)) {
         log("network", "warn", "ServerConnection not valid in clientCmdMissionLoadLocalDatablocks");
     }
     log("network", "info", "loading local datablocks for mission:" @ " " @ %missionName @ " " @ "seq: " @ " " @ %missionSequence);
     onMissionDownloadPhase1(%missionName, %musicTrack);
-    %missionSequence.setDatablockSequence(ServerConnection);
-    %missionName.loadCachePhase1(ServerConnection, %missionSequence);
+    ServerConnection.setDatablockSequence(%missionSequence);
+    ServerConnection.loadCachePhase1(%missionSequence, %missionName);
 };
 function onDataBlockObjectReceived(%index, %total) {
     onPhase1Progress((%index / %total));
@@ -59,8 +59,8 @@ function clientCmdStartGhostAlways(%missionSequence, %missionName) {
     textureDownloadProcess();
     if ($CacheFlagIsSet) {
     }
-    if (!($GeneratingCacheNow)) {
-        %missionName.loadCachePhase2(ServerConnection, %missionSequence);
+    if (!$GeneratingCacheNow) {
+        ServerConnection.loadCachePhase2(%missionSequence, %missionName);
     }
     log("network", "debug", "not using cache, acking server to start ghost always phase");
     commandToServer('StartGhostAlwaysAck', %missionSequence);
@@ -80,7 +80,7 @@ function onGhostAlwaysStarted(%ghostCount) {
     $GhostCount = %ghostCount;
     if ($CacheFlagIsSet) {
     }
-    if (!($GeneratingCacheNow)) {
+    if (!$GeneratingCacheNow) {
     }
     $GhostsRecvd = 0;
 };
@@ -132,6 +132,6 @@ function sceneLightingComplete() {
 };
 function connect(%server) {
     %conn = new GameConnection("");
-    "".setCommonPreconnectClientSettings(%conn);
-    %server.connect(%conn);
+    %conn.setCommonPreconnectClientSettings("");
+    %conn.connect(%server);
 };

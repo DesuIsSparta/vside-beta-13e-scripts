@@ -11,7 +11,7 @@ function testLoginAndStay() {
     };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
-    $DestServerName.doLogin(%testLogin);
+    %testLogin.doLogin($DestServerName);
 };
 function doSomething() {
     walk();
@@ -42,11 +42,11 @@ function stopAndTalk() {
         if (geTGF.isVisible()) {
             geTGF.closeFully();
         }
-        0.say(pChat, "Hello from" @ " " @ $Hostname @ ".", 0);
+        pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
         schedule(4000, 0, changeClothes);
         if (($DestServerName $= "MyApartment")) {
         }
-        if (!($videoURLUpdated)) {
+        if (!$videoURLUpdated) {
             updateApartment();
         }
     }
@@ -66,7 +66,7 @@ function logoffAndQuit() {
     schedule(1000, 0, doQuit);
 };
 function updateApartment() {
-    "http://www.youtube.com/watch?v=_qkmrKa74ts".setText(CSMediaVideoTextBox);
+    CSMediaVideoTextBox.setText("http://www.youtube.com/watch?v=_qkmrKa74ts");
     CSMediaWindow.stopVideo();
     CSMediaWindow.playVideo();
     $videoURLUpdated = 1;
@@ -80,9 +80,8 @@ function changeClothes() {
     }
 };
 function approveFriendRequests() {
-    %fansHere = BuddyHudWin.buddyLists;
-    FansHere;
-    if (!(isObject(%fansHere))) {
+    %fansHere = BuddyHudWin.buddyLists[FansHere];
+    if (!isObject(%fansHere)) {
         return;
     }
     if ((%fansHere.size() == 0.0)) {
@@ -91,11 +90,11 @@ function approveFriendRequests() {
     }
     %n = (%fansHere.size() - 1.0);
     while ((%n >= 0.0)) {
-        %playerName = %n.getKey(%fansHere);
+        %playerName = %fansHere.getKey(%n);
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
         doUserFavorite(%playerName, %action);
-        %playerName.whisper(pChat, "Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.");
+        pChat.whisper("Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (%n - 1.0);
     }
 };

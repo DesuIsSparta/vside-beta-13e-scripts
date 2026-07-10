@@ -8,7 +8,7 @@ function generateCacheRemote() {
     };
     $iterationsWaited = 0;
     %cacheGenerate.init();
-    "cache_host".doLogin(%cacheGenerate);
+    %cacheGenerate.doLogin("cache_host");
 };
 echo("LOAD: starting via generateCacheRemote()");
 generateCacheRemote();

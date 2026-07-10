@@ -1,20 +1,20 @@
 function Array::hasKey(%this, %key) {
-    return (%key.getIndexFromKey(%this) >= 0.0);
+    return (%this.getIndexFromKey(%key) >= 0.0);
 };
 function Array::hasValue(%this, %val) {
-    return (%val.getIndexFromValue(%this) >= 0.0);
+    return (%this.getIndexFromValue(%val) >= 0.0);
 };
 function Array::size(%this) {
     return %this.count();
 };
 function Array::get(%this, %key) {
-    %ndx = %key.getIndexFromKey(%this);
+    %ndx = %this.getIndexFromKey(%key);
     if ((%ndx < 0.0)) {
         error(getScopeName() @ " " @ "- no such key: \"" @ %key @ "\"." @ " " @ getTrace());
         return "";
     }
-    return %ndx.getValue(%this);
+    return %this.getValue(%ndx);
 };
 function Array::put(%this, %key, %value) {
-    %value.push_back(%this, %key);
+    %this.push_back(%key, %value);
 };

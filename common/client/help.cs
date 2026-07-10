@@ -3,49 +3,49 @@ function HelpDlg::onWake(%this) {
     HelpFileList.clear();
     %file = findFirstFile("*.hfl");
     while (!(%file $= "")) {
-        HelpFileList.fileName = %file @ HelpFileList.entryCount;
-        fileBase(%file).addRow(HelpFileList, HelpFileList.entryCount);
+        HelpFileList.fileName[HelpFileList.entryCount] = %file;
+        HelpFileList.addRow(HelpFileList.entryCount, fileBase(%file));
         HelpFileList.entryCount = (HelpFileList.entryCount + 1.0);
         %file = findNextFile("*.hfl");
     }
-    0.sortNumerical(HelpFileList);
+    HelpFileList.sortNumerical(0);
     %i = 0;
     !(%file $= "");
     while ((%i < HelpFileList.entryCount)) {
-        %rowId = %i.getRowId(HelpFileList);
-        %text = %rowId.getRowTextById(HelpFileList);
+        %rowId = HelpFileList.getRowId(%i);
+        %text = HelpFileList.getRowTextById(%rowId);
         %text = (%i + 1.0) @ ". " @ restWords(%text);
-        %text.setRowById(HelpFileList, %rowId);
+        HelpFileList.setRowById(%rowId, %text);
         %i = (%i + 1.0);
     }
-    0.setSelectedRow(HelpFileList);
+    HelpFileList.setSelectedRow(0);
 };
 function HelpDlg::close(%this) {
-    %this.popDialog(Canvas);
+    Canvas.popDialog(%this);
 };
 function HelpFileList::onSelect(%this, %row) {
     %fo = new FileObject("");
-    %this.fileName.openForRead(%fo, %row);
+    %fo.openForRead(%this.fileName[%row]);
     %text = "";
-    while (!(%fo.isEOF())) {
+    while (!%fo.isEOF()) {
         %text = %text @ %fo.readLine() @ "\n";
     }
     %fo.delete();
-    %text.setText(HelpText);
-    1.makeFirstResponder(HelpText);
+    HelpText.setText(%text);
+    HelpText.makeFirstResponder(1);
 };
 function getHelp(%helpName) {
-    0.pushDialog(Canvas, HelpDlg);
+    Canvas.pushDialog(HelpDlg, 0);
     if (!(%helpName $= "")) {
-        %index = %helpName.findTextIndex(HelpFileList);
-        %index.setSelectedRow(HelpFileList);
+        %index = HelpFileList.findTextIndex(%helpName);
+        HelpFileList.setSelectedRow(%index);
     }
 };
 function contextHelp() {
     %i = 0;
     while ((%i < Canvas.getCount())) {
-        if ((%i.getObject(Canvas).getName() $= HelpDlg)) {
-            HelpDlg.popDialog(Canvas);
+        if ((Canvas.getObject(%i).getName() $= HelpDlg)) {
+            Canvas.popDialog(HelpDlg);
             return;
         }
         %i = (%i + 1.0);

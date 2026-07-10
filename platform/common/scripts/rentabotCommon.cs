@@ -1,5 +1,5 @@
 function rentabot_getCoreName(%name) {
-    if (!(rentabot_isRentabotName(%name))) {
+    if (!rentabot_isRentabotName(%name)) {
         return %name;
     }
     %len = strlen(%name);
@@ -12,7 +12,7 @@ function rentabot_isRentabotName(%name) {
     return hasSuffix(%name, "]");
 };
 function rentabot_makeRentabotName(%name) {
-    if (!(rentabot_isRentabotName(%name))) {
+    if (!rentabot_isRentabotName(%name)) {
         %name = "[" @ %name @ "]";
     }
     return %name;

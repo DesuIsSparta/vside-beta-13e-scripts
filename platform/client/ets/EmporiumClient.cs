@@ -1,15 +1,15 @@
 function getEmporium(%name, %callback) {
     %storeInfo = new SimObject("");
-    "Emporium".bindClassName(%storeInfo);
+    %storeInfo.bindClassName("Emporium");
     if (isObject(MissionCleanup)) {
-        %storeInfo.add(MissionCleanup);
+        MissionCleanup.add(%storeInfo);
     }
     %storeInfo.storeName = %name;
     %storeInfo.Inventory = new Array("");
     if (isObject(MissionCleanup)) {
-        %storeInfo.Inventory.add(MissionCleanup);
+        MissionCleanup.add(%storeInfo.Inventory);
     }
-    %callback.refreshInventory(%storeInfo);
+    %storeInfo.refreshInventory(%callback);
 };
 function Emporium::OnRemove(%this) {
     if (isObject(%storeInfo.Inventory)) {
@@ -28,9 +28,9 @@ function Emporium::getSkus(%this) {
     %index = 0;
     while ((%index < %count)) {
         if ((%index != 0.0)) {
-            %skus = %skus @ " " @ %index.getKey(%this.Inventory);
+            %skus = %skus @ " " @ %this.Inventory.getKey(%index);
         }
-        %skus = %index.getKey(%this.Inventory);
+        %skus = %this.Inventory.getKey(%index);
         %index = (%index + 1.0);
     }
     %skus = trim(%skus);
@@ -38,25 +38,23 @@ function Emporium::getSkus(%this) {
     return %skus;
 };
 function Emporium::getItemByIndex(%this, %index) {
-    if ((%index < 0.0)) {
-    }
-    if ((%index >= %this.Inventory.count())) {
+    if ((%index < 0.0) || (%index >= %this.Inventory.count())) {
         return 0;
     }
-    return %index.getValue(%this.Inventory);
+    return %this.Inventory.getValue(%index);
 };
 function Emporium::getItemBySku(%this, %sku) {
-    %index = %sku.getIndexFromKey(%this.Inventory);
+    %index = %this.Inventory.getIndexFromKey(%sku);
     if ((%index < 0.0)) {
         return 0;
     }
-    return %index.getItemByIndex(%this);
+    return %this.getItemByIndex(%index);
 };
 function Emporium::destroyStore(%this) {
     %this.Inventory.empty();
 };
 function Emporium::refreshInventory(%this, %callback) {
-    if (!(haveValidManagerHost())) {
+    if (!haveValidManagerHost()) {
         warn(getScopeName() @ " " @ "no valid manager, not doing this");
         return;
     }
@@ -65,14 +63,14 @@ function Emporium::refreshInventory(%this, %callback) {
     %request.storeName = %this.storeName;
     %request.store = %this;
     %url = $Net::ClientServiceURL @ "/GetStoreInventory?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "storeName=" @ urlEncode(%this.storeName);
-    %url.setURL(%request);
+    %request.setURL(%url);
     %request.start();
 };
 function GetStoreInventory::onDone(%this) {
     %status = findRequestStatus(%this);
     log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
     if (!(%status $= "success")) {
-        %message = "statusMsg".getValue(%this);
+        %message = %this.getValue("statusMsg");
         error(getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "\"" @ %message @ "\"");
         %cmd = %this.callback @ "( 0, " @ %status @ ");";
         eval(%cmd);
@@ -80,36 +78,36 @@ function GetStoreInventory::onDone(%this) {
     }
     %storeInfo = %this.store;
     %storeInfo.storeName = %this.storeName;
-    %storeInfo.inventoryRevision = "storeRevisionDate".getValue(%this);
-    %count = "itemsCount".getValue(%this);
+    %storeInfo.inventoryRevision = %this.getValue("storeRevisionDate");
+    %count = %this.getValue("itemsCount");
     %storeInfo.Inventory.empty();
     %index = 0;
     while ((%index < %count)) {
-        %sku = "items" @ %index @ ".sku".getValue(%this);
-        %item = %sku.findBySku(SkuManager);
-        %quantity = "items" @ %index @ ".quantity".getValue(%this);
-        %priceVPoints = "items" @ %index @ ".priceVPoints".getValue(%this);
-        %priceVBux = "items" @ %index @ ".priceVBux".getValue(%this);
-        if (!(%item)) {
+        %sku = %this.getValue("items" @ %index @ ".sku");
+        %item = SkuManager.findBySku(%sku);
+        %quantity = %this.getValue("items" @ %index @ ".quantity");
+        %priceVPoints = %this.getValue("items" @ %index @ ".priceVPoints");
+        %priceVBux = %this.getValue("items" @ %index @ ".priceVBux");
+        if (!%item) {
             warn("Inventory", getScopeName() @ " " @ "- Unknown SKU returned from server. SKU =" @ " " @ %sku);
         }
         %item.quantityInStore = %quantity;
         %item.priceVPoints = %priceVPoints;
         %item.priceVBux = %priceVBux;
-        %item.push_back(%storeInfo.Inventory, %sku);
+        %storeInfo.Inventory.push_back(%sku, %item);
         %index = (%index + 1.0);
     }
     %cmd = %this.callback @ "(" @ %storeInfo @ ", \"success\");";
     (%index < %count);
     eval(%cmd);
-    "delete".schedule(%this, 0);
+    %this.schedule(0, "delete");
 };
 function GetStoreInventory::onError(%this, %unused, %errorName) {
-    %errorName.callback(%this, 0);
-    "delete".schedule(%this, 0);
+    %this.callback(0, %errorName);
+    %this.schedule(0, "delete");
 };
 function Emporium::purchase(%this, %skulist, %currency, %callback) {
-    %callback.purchaseCollated(%this, %skulist, %currency);
+    %this.purchaseCollated(%skulist, %currency, %callback);
 };
 function Emporium::purchaseCollated(%this, %skulist, %currency, %callback) {
     %currency = strlwr(%currency);
@@ -119,14 +117,14 @@ function Emporium::purchaseCollated(%this, %skulist, %currency, %callback) {
     while (!(%skulist $= "")) {
         %sku = firstWord(%skulist);
         %skulist = restWords(%skulist);
-        %index = %sku.getIndexFromKey(%purchaseArray);
+        %index = %purchaseArray.getIndexFromKey(%sku);
         echo("Found sku=" @ %sku @ " at index " @ %index);
         if ((%index < 0.0)) {
-            1.push_back(%purchaseArray, %sku);
+            %purchaseArray.push_back(%sku, 1);
         }
-        %count = %index.getValue(%purchaseArray);
+        %count = %purchaseArray.getValue(%index);
         %count = (%count + 1.0);
-        %index.setValue(%purchaseArray, %count);
+        %purchaseArray.setValue(%count, %index);
     }
     %request = safeEnsureScriptObject("ManagerRequest", "PurchaseInventory");
     !(%skulist $= "");
@@ -137,12 +135,12 @@ function Emporium::purchaseCollated(%this, %skulist, %currency, %callback) {
     %url = %url @ "itemsToBuyCount=" @ %count;
     %index = 0;
     while ((%index < %count)) {
-        %sku = %index.getKey(%purchaseArray);
-        %qty = %index.getValue(%purchaseArray);
+        %sku = %purchaseArray.getKey(%index);
+        %qty = %purchaseArray.getValue(%index);
         %url = %url @ "&" @ "itemsToBuy" @ %index @ ".sku=" @ %sku @ "&" @ "itemsToBuy" @ %index @ ".quantity=" @ %qty;
         %index = (%index + 1.0);
     }
-    %url.setURL(%request);
+    %request.setURL(%url);
     %request.start();
     %request.purchaseArray = (%index < %count) @ %purchaseArray;
 };
@@ -169,19 +167,19 @@ function Emporium::purchaseUncollated(%this, %skulist, %currency, %callback) {
         %url = %url @ "itemsToBuy" @ %index @ ".quantity=" @ urlEncode(1) @ "&";
         %index = (%index + 1.0);
     }
-    %url.setURL(%request);
+    %request.setURL(%url);
     %request.start();
 };
 function PurchaseInventory::onDone(%this) {
     %skuStatuslist = "";
     %status = findRequestStatus(%this);
     log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
-    %count = "itemsCount".getValue(%this);
+    %count = %this.getValue("itemsCount");
     %index = 0;
     while ((%index < %count)) {
-        %sku = "items" @ %index @ ".sku".getValue(%this);
-        %result = "items" @ %index @ ".validationResults".getValue(%this);
-        %qty = %sku.get(%this.purchaseArray);
+        %sku = %this.getValue("items" @ %index @ ".sku");
+        %result = %this.getValue("items" @ %index @ ".validationResults");
+        %qty = %this.purchaseArray.get(%sku);
         if ((%qty $= "")) {
             error(getScopeName() @ " " @ "- sku not found:" @ " " @ %sku @ " " @ %this.getURL());
             %qty = 1;
@@ -205,10 +203,10 @@ function PurchaseInventory::onDone(%this) {
     (%index < %count);
     eval(%cmd);
     %this.purchaseArray.delete();
-    "delete".schedule(%this, 0);
+    %this.schedule(0, "delete");
 };
 function PurchaseInventory::onError(%this, %unused, %errorName) {
     %cmd = %this.callback @ "( \"error\", " @ %errorName @ ");";
     eval(%cmd);
-    "delete".schedule(%this, 0);
+    %this.schedule(0, "delete");
 };

@@ -4,7 +4,7 @@ function drinks_confirmInitiateGift(%otherPlayerName) {
         error(getScopeName() @ " " @ "- no drink!" @ " " @ getTrace());
         return;
     }
-    %si = %sku.findBySku(SkuManager);
+    %si = SkuManager.findBySku(%sku);
     %msg = $MsgCat::giftingItems["DLG-BODY-GIVE-CONFIRM"];
     %msg = strreplace(%msg, "[ITEMNAME]", %si.descShrt);
     %msg = strreplace(%msg, "[OTHERPLAYER]", %otherPlayerName);
@@ -15,11 +15,11 @@ function drinks_confirmInitiateGift(%otherPlayerName) {
 };
 function drinks_confirmInitiateMake(%otherPlayerName, %sku) {
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-    if (!(isObject(%otherPlayer))) {
+    if (!isObject(%otherPlayer)) {
         error(getScopeName() @ " " @ "- can't find other player" @ " " @ %otherPlayerName @ " " @ getTrace());
         return;
     }
-    %si = %sku.findBySku(SkuManager);
+    %si = SkuManager.findBySku(%sku);
     if ((%otherPlayerName $= $Player::Name)) {
         %msg = $Player::Name[$MsgCat::giftingItems @ "DLG-BODY-MAKE-SELF-CONFIRM"];
     }
@@ -42,7 +42,7 @@ function giftingItems_onInitiate(%dlg) {
 };
 function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID, %making) {
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-    if (!(isObject(%otherPlayer))) {
+    if (!isObject(%otherPlayer)) {
         error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName);
         GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "E-ENVSERVER-UNKNOWN");
         return;
@@ -71,7 +71,7 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
         geGiftingPanel.skus = %skus;
         geGiftingPanel.GiftType = "items";
         geGiftingPanel.making = %making;
-        "items_acceptDecline".open(geGiftingPanel, %otherPlayerName);
+        geGiftingPanel.open(%otherPlayerName, "items_acceptDecline");
     }
 };
 function GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, %accepted, %messageCode) {
@@ -79,17 +79,17 @@ function GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 
 };
 function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %accepted, %messageCode) {
     %pendingTransactionRecord = giftingItems_getPendingTransactionClient(%transactionID);
-    if (!(isObject(%pendingTransactionRecord))) {
+    if (!isObject(%pendingTransactionRecord)) {
         error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
         return;
     }
     if (isObject(%pendingTransactionRecord.dlg)) {
         %pendingTransactionRecord.dlg.close();
     }
-    if (!(%accepted)) {
+    if (!%accepted) {
         %otherPlayerName = %pendingTransactionRecord.targetPlayerName;
         %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-        if (!(isObject(%otherPlayer))) {
+        if (!isObject(%otherPlayer)) {
             error(getScopeName() @ " " @ "- can't find other player:" @ " " @ %otherPlayerName @ " " @ %transactionID);
             %messageCode = "E-TARGET-MISSING";
         }
@@ -102,7 +102,7 @@ function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %acce
 };
 function ClientCmdGiftingItems_Completed(%transactionID, %succeeded) {
     %transactionRecord = giftingItems_getPendingTransactionClient(%transactionID);
-    if (!(isObject(%transactionRecord))) {
+    if (!isObject(%transactionRecord)) {
         error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
         return;
     }

@@ -1,4 +1,4 @@
-if (!(isObject(ConversationList))) {
+if (!isObject(ConversationList)) {
     new SimGroup(ConversationList);
 }
 function newConversation(%senderPlayer, %targetPlayer) {
@@ -8,16 +8,16 @@ function newConversation(%senderPlayer, %targetPlayer) {
         dataBlock = "release_conv";
         position = %conversationPos;
     };
-    %newConversation.setConversation(%senderPlayer);
-    %senderPlayer.addParticipant(%newConversation);
-    %newConversation.add(ConversationList);
+    %senderPlayer.setConversation(%newConversation);
+    %newConversation.addParticipant(%senderPlayer);
+    ConversationList.add(%newConversation);
     return %newConversation;
 };
 function leaveListening(%senderPlayer, %conversation) {
     CONVBUB_DEBUG(senderPlayer @ " " @ "leaving listening on" @ " " @ %conversation);
     if (isObject(%conversation)) {
-        %senderPlayer.removeListener(%conversation);
-        0.setConversation(%senderPlayer);
+        %conversation.removeListener(%senderPlayer);
+        %senderPlayer.setConversation(0);
     }
     echo("..oops - NULL conversation");
     return;
@@ -26,8 +26,8 @@ function leaveConversation(%senderPlayer) {
     %conversation = %senderPlayer.getConversation();
     CONVBUB_DEBUG("LEAVE CONVERSATION" @ " " @ getDebugString(%conversation));
     if (isObject(%conversation)) {
-        %senderPlayer.removeMember(%conversation);
-        0.setConversation(%senderPlayer);
+        %conversation.removeMember(%senderPlayer);
+        %senderPlayer.setConversation(0);
         gSetField(%senderPlayer, orientedConversation, 0);
     }
     return;
@@ -37,9 +37,9 @@ function findConversation(%senderPlayer, %targetPlayer) {
     if (isObject(%targetPlayer)) {
         %conv = %targetPlayer.getConversation();
     }
-    if (!(isObject(%conv))) {
+    if (!isObject(%conv)) {
     }
-    if (!(%targetPlayer.hasParticipant(%conv))) {
+    if (!%conv.hasParticipant(%targetPlayer)) {
         if (isObject(%senderPlayer.getConversation())) {
             %conv = %senderPlayer.getConversation();
         }
@@ -53,9 +53,9 @@ function updateConversationLocations() {
     CONVBUB_DEBUG("ConversationList has" @ " " @ %count);
     %i = 0;
     while ((%i < %count)) {
-        %conversation = %i.getObject(ConversationList);
-        if (!(%conversation.updateLocation())) {
-            %conversation.remove(ConversationList);
+        %conversation = ConversationList.getObject(%i);
+        if (!%conversation.updateLocation()) {
+            ConversationList.remove(%conversation);
             %conversation.delete();
         }
         %i = (%i + 1.0);
@@ -76,7 +76,7 @@ function serverCmdChatMessage(%senderConnection, %targetPlayer, %message) {
         return;
     }
     if ((%targetPlayer != 0.0)) {
-        %targetPlayer = %targetPlayer.resolveObjectFromGhostIndex(%senderConnection);
+        %targetPlayer = %senderConnection.resolveObjectFromGhostIndex(%targetPlayer);
     }
     %senderPlayer = %senderConnection.Player;
     ServersideChatMessage(%senderPlayer, %targetPlayer, %message);
@@ -88,18 +88,18 @@ function ServersideChatMessage(%senderPlayer, %targetPlayer, %message) {
     }
     CONVBUB_DEBUG("CHAT MESSAGE sender: " @ getDebugString(%senderPlayer) @ "  target: " @ getDebugString(%targetPlayer) @ "  message: " @ %message);
     if (isAIPlayerObject(%targetPlayer)) {
-        %message.handleTalkedToNPC(NPCManager, %senderPlayer, %targetPlayer);
+        NPCManager.handleTalkedToNPC(%senderPlayer, %targetPlayer, %message);
     }
     %conv = findConversation(%senderPlayer, %targetPlayer);
-    if (!(isObject(%conv))) {
+    if (!isObject(%conv)) {
         error("could not find conversation.");
         return;
     }
     CONVBUB_DEBUG("found conv:" @ " " @ %conv);
-    %senderPlayer.addParticipant(%conv);
-    %message.addMessage(%conv, %senderPlayer);
+    %conv.addParticipant(%senderPlayer);
+    %conv.addMessage(%senderPlayer, %message);
     if (0 && (%conv.countParticipants() > 1.0) && (gGetField(%senderPlayer, orientedConversation) != %conv)) {
-        700.orientTowardsOverTime(%senderPlayer, %conv);
+        %senderPlayer.orientTowardsOverTime(%conv, 700);
         gSetField(%senderPlayer, orientedConversation, %conv);
     }
     return;
@@ -107,7 +107,7 @@ function ServersideChatMessage(%senderPlayer, %targetPlayer, %message) {
 function serverCmdEavesdrop(%senderConnection, %newTarget) {
     CONVBUB_DEBUG("EAVESDROP: " @ %newTarget);
     if ((%newTarget != 0.0)) {
-        %newTarget = %newTarget.resolveObjectFromGhostIndex(%senderConnection);
+        %newTarget = %senderConnection.resolveObjectFromGhostIndex(%newTarget);
     }
     %senderPlayer = %senderConnection.Player;
     serverSideEavesdrop(%senderPlayer, %newTarget);
@@ -115,29 +115,29 @@ function serverCmdEavesdrop(%senderConnection, %newTarget) {
 };
 function serverSideEavesdrop(%senderPlayer, %targetPlayer) {
     CONVBUB_DEBUG("in serverSideEavesdrop:" @ " " @ getDebugString(%senderPlayer) @ " " @ getDebugString(%targetPlayer));
-    if (!(isPlayerObject(%senderPlayer))) {
+    if (!isPlayerObject(%senderPlayer)) {
         error("serverSideEavesdrop: got Non-player sender:" @ " " @ getDebugString(%senderPlayer));
         return;
     }
     if ((%targetPlayer != 0.0)) {
     }
-    if (!(isPlayerObject(%targetPlayer))) {
+    if (!isPlayerObject(%targetPlayer)) {
         error("serverSideEavesdrop: got Non-zero, Non-player target:" @ " " @ getDebugString(%targetPlayer));
         return;
     }
     %targetConv = 0;
     if (isObject(%targetPlayer)) {
         %targetConv = %targetPlayer.getConversation();
-        if (!(isObject(%targetConv))) {
+        if (!isObject(%targetConv)) {
             CONVBUB_DEBUG("serverSideEavesdrop:" @ " " @ getDebugString(%senderPlayer) @ " " @ "eavesdropping on no conversation!" @ " " @ getDebugString(%targetPlayer));
             return;
         }
-        if (!(%targetPlayer.hasParticipant(%targetConv))) {
+        if (!%targetConv.hasParticipant(%targetPlayer)) {
             CONVBUB_DEBUG("serverSideEavesdrop:" @ " " @ getDebugString(%senderPlayer) @ " " @ "eavesdropping on somebody who ain't talking:" @ " " @ getDebugString(%targetPlayer));
             return;
         }
     }
-    0.joinConversation(%senderPlayer, %targetConv);
+    %senderPlayer.joinConversation(%targetConv, 0);
     return;
 };
 function Player::joinConversation(%this, %conv, %asParticipant) {
@@ -147,25 +147,25 @@ function Player::joinConversation(%this, %conv, %asParticipant) {
         return;
     }
     if (isObject(%oldConv)) {
-        if (%this.hasListener(%oldConv)) {
-            %this.removeListener(%oldConv);
+        if (%oldConv.hasListener(%this)) {
+            %oldConv.removeListener(%this);
         }
-        if (%this.hasParticipant(%oldConv)) {
-            %this.removeParticipant(%oldConv);
+        if (%oldConv.hasParticipant(%this)) {
+            %oldConv.removeParticipant(%this);
         }
         error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
     }
-    if (!(isObject(%conv))) {
+    if (!isObject(%conv)) {
         return;
     }
     if (%asParticipant) {
-        %this.addParticipant(%conv);
+        %conv.addParticipant(%this);
         %tmp = "participant";
     }
-    %this.addListener(%conv);
+    %conv.addListener(%this);
     %tmp = "listener";
     CONVBUB_DEBUG(getDebugString(%this) @ " " @ "joined" @ " " @ getDebugString(%conv) @ " " @ "as a" @ " " @ %tmp);
-    %conv.setConversation(%this);
+    %this.setConversation(%conv);
     return;
 };
 function Conversation::onListenerLeft(%this, %player) {

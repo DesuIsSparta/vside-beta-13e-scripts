@@ -21,14 +21,14 @@ function doLoginButton() {
 };
 function doLogin() {
     echo("login as " @ $testUser);
-    $testUser.setValue(LoginUserNameField);
-    "etspass".setValue(LoginPasswordField);
+    LoginUserNameField.setValue($testUser);
+    LoginPasswordField.setValue("etspass");
     LoginGui.isAwake();
     LoginGui.doLoginButton();
     schedule(7000, 0, checkStatus);
 };
 function checkStatus() {
-    if (!(isObject(LoginRequest))) {
+    if (!isObject(LoginRequest)) {
         echo("LOAD: No LoginRequest object yet. Trying again in 5 seconds.");
         schedule(7000, 0, checkStatus);
         return;
@@ -40,8 +40,8 @@ function BootRequest::onDone(%this) {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         quit();
     }
-    if ("status".hasKey(%this)) {
-        %status = "status".getValue(%this);
+    if (%this.hasKey("status")) {
+        %status = %this.getValue("status");
     }
     %status = findStatus(%this);
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
@@ -64,8 +64,8 @@ function LoginRequest::onDone(%this) {
         error("LOAD: Client HTTP code: " @ %this.statusCode());
         quit();
     }
-    if ("status".hasKey(%this)) {
-        %status = "status".getValue(%this);
+    if (%this.hasKey("status")) {
+        %status = %this.getValue("status");
     }
     %status = findStatus(%this);
     log("login", "debug", "LOAD: LoginRequest::onDone status: " @ %status);
@@ -107,9 +107,9 @@ function joinServer() {
     }
     %i = 0;
     while ((%i < servers.getCount())) {
-        if (("name".get(%i.getObject(servers)) $= "TestTown")) {
-            %i.getObject(servers).join(WorldMap);
-            echo("LOAD: Joined server " @ "name".get(%i.getObject(servers)));
+        if ((servers.getObject(%i).get("name") $= "TestTown")) {
+            WorldMap.join(servers.getObject(%i));
+            echo("LOAD: Joined server " @ servers.getObject(%i).get("name"));
             echo("LOAD: Test login completed");
             schedule(11000, 0, doSomething);
         }

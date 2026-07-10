@@ -7,42 +7,40 @@ function serverCmdToggleCamera(%client) {
     %control = %client.Player;
     %control.mode = observerFly;
     %client.Camera.setFlyMode();
-    %control.setControlObject(%client);
+    %client.setControlObject(%control);
 };
 function serverCmdDropPlayerAtCamera(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    if ($Server::TestCheats) {
-    }
-    if (isObject(EditorGui)) {
-        %client.Camera.getTransform().setTransform(%client.Player);
-        "0 0 0".setVelocity(%client.Player);
-        %client.Player.setControlObject(%client);
+    if ($Server::TestCheats || isObject(EditorGui)) {
+        %client.Player.setTransform(%client.Camera.getTransform());
+        %client.Player.setVelocity("0 0 0");
+        %client.setControlObject(%client.Player);
     }
 };
 function serverCmdDropCameraAtPlayer(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    %client.Player.getEyeTransform().setTransform(%client.Camera);
-    "0 0 0".setVelocity(%client.Camera);
-    %client.Camera.setControlObject(%client);
+    %client.Camera.setTransform(%client.Player.getEyeTransform());
+    %client.Camera.setVelocity("0 0 0");
+    %client.setControlObject(%client.Camera);
     %client.Camera.setFlyMode();
 };
 function serverCmdSuicide(%client) {
     if (isObject(%client.Player)) {
-        "Suicide".kill(%client.Player);
+        %client.Player.kill("Suicide");
     }
 };
 function serverCmdPlayCel(%client, %anim) {
     if (isObject(%client.Player)) {
-        %anim.playCelAnimation(%client.Player);
+        %client.Player.playCelAnimation(%anim);
     }
 };
 function serverCmdPlayAnim(%client, %anim) {
     if (isObject(%client.Player)) {
-        %anim.playAnim(%client.Player);
+        %client.Player.playAnim(%anim);
     }
 };
 function serverCmdPlayDeath(%client) {

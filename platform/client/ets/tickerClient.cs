@@ -6,7 +6,7 @@ function handleTickerMessage(%unused, %msgString) {
     %priority = getField(%msgString, 2);
     %repetitions = getField(%msgString, 3);
     %repetitions = $gTickerRepetitionCount;
-    if (%senderName.hasKey(UserListIgnores)) {
+    if (UserListIgnores.hasKey(%senderName)) {
         %priority = 2;
         %markedName = "<spush>" @ getPlayerMarkup(%senderName, "eeffff", 1) @ "<spop>";
         %body = "(you are ignoring" @ " " @ %markedName @ " " @ ")";
@@ -22,13 +22,11 @@ function handleTickerMessage(%unused, %msgString) {
     }
 };
 function ticker_enqueue(%queue, %msgString) {
-    "".push_back(%queue, %msgString);
+    %queue.push_back(%msgString, "");
     ticker_tick();
 };
 function ticker_getQueue(%priority) {
-    if ((%priority < 0.0)) {
-    }
-    if ((%priority > 3.0)) {
+    if ((%priority < 0.0) || (%priority > 3.0)) {
         error(getScopeName() @ " " @ "- invalid priority. setting to 0." @ " " @ %msgString);
         %priority = 0;
     }
@@ -57,7 +55,7 @@ function ticker_doScroll() {
         $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
         return;
     }
-    if (!(isForegroundWindow())) {
+    if (!isForegroundWindow()) {
         $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Paused;
     }
     $gTicker_TimerPeriodMS = $gTicker_TimerPeriodMS_Regular;
@@ -67,9 +65,9 @@ function ticker_doScroll() {
     %newX = (%curX - %pixelsToScroll);
     %newY = %curY;
     if (((%newX + getWord(geTicker_Text.getExtent(), 0)) < 0.0)) {
-        0.setVisible(geTicker_TextContainer);
+        geTicker_TextContainer.setVisible(0);
     }
-    %newY.reposition(geTicker_Text, %newX);
+    geTicker_Text.reposition(%newX, %newY);
     %curX = getWord(geTicker_Text.getPosition(), 0);
 };
 function ticker_newMessage() {
@@ -80,7 +78,7 @@ function ticker_newMessage() {
     while ((%msg $= "")) {
         %queue = ticker_getQueue(%n);
         if ((%queue.count() > 0.0)) {
-            %msg = 0.getKey(%queue);
+            %msg = %queue.getKey(0);
             %queue.pop_front();
         }
         %n = (%n - 1.0);
@@ -97,26 +95,23 @@ function ticker_newMessage() {
         %unmarkedText = %senderName @ " " @ "-" @ " " @ %body @ " " @ "-" @ " " @ %senderName;
         %markedText = %markedName @ " " @ "-" @ " " @ %body @ " " @ "-" @ " " @ %markedName;
         ticker_createUI();
-        1.setVisible(geTicker_TextContainer);
-        0.reposition(geTicker_Text, getWord(geTicker_TextContainer.getExtent(), 0));
-        14.resize(geTicker_Text, (getStrWidth(%unmarkedText) + 26.0));
-        %markedText.setTextWithStyle(geTicker_Text);
+        geTicker_TextContainer.setVisible(1);
+        geTicker_Text.reposition(getWord(geTicker_TextContainer.getExtent(), 0), 0);
+        geTicker_Text.resize((getStrWidth(%unmarkedText) + 26.0), 14);
+        geTicker_Text.setTextWithStyle(%markedText);
         ticker_tick();
     }
     geTicker.delete();
 };
 function ticker_createUI() {
-    if (!(isObject(ButtonBar))) {
+    if (!isObject(ButtonBar)) {
         error(getScopeName() @ " " @ "- no ButtonBar yet." @ " " @ getTrace());
         return;
     }
     if (isObject(geTicker)) {
         return;
     }
-    new GuiBitmapCtrl(geTicker) {
-        extent = "20 29";
-        bitmap = "platform/client/ui/ticker_background";
-    };.add(PlayGui, new GuiMLTextCtrl(geTicker_Text) {
+    PlayGui.add(new GuiMLTextCtrl(geTicker_Text) {
         horizSizing = "right";
         extent = 14 @ " " @ 16;
         position = 0 @ " " @ 0;
@@ -127,6 +122,9 @@ function ticker_createUI() {
         extent = 2 @ " " @ 16;
         position = 9 @ " " @ 6;
         visible = 0;
+    };, new GuiBitmapCtrl(geTicker) {
+        extent = "20 29";
+        bitmap = "platform/client/ui/ticker_background";
     };);
     $ButtonBarVar::buttonBarPaddingBottom = getWord(geTicker.getExtent(), 1);
     $ButtonBarVar::buttonBarPaddingBottom = ($ButtonBarVar::buttonBarPaddingBottom - 4.0);
@@ -139,7 +137,7 @@ function geTicker::update(%this) {
     %rightMargin = (getWord(%clientRectPosition, 0) + getWord(%clientRectExtent, 0));
     %w = (%parentW - ((%parentW - %rightMargin) * 2.0));
     %w = mMax(%w, 300);
-    29.resize(%this, %w);
+    %this.resize(%w, 29);
     %this.alignToCenterX();
     %this.alignToBottom();
 };

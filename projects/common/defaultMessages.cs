@@ -372,7 +372,7 @@ function setupMessages() {
 $gMessagesSeen = "";
 function hasMessageBeenSeenThisSession(%msgID) {
     %seen = (findField($gMessagesSeen, %msgID) >= 0.0) ? 1 : 0;
-    if (!(%seen)) {
+    if (!%seen) {
         if (!($gMessagesSeen $= "")) {
             $gMessagesSeen = $gMessagesSeen @ "\t";
         }

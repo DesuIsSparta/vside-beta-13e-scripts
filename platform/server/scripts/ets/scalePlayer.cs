@@ -1,6 +1,6 @@
 function Player::UseHeightRandom(%this) {
     %height = (getRandom(98, 110) * 0.01);
-    %height.setHeight(%this);
+    %this.setHeight(%height);
     return;
 };
 function Player::setHeight(%this, %height) {
@@ -19,14 +19,14 @@ function Player::setHeight(%this, %height) {
     }
     %h = %height;
     %sxy = (((%h - 1.0) * $Pref::Server::playerHeightWidthFactor) + 1.0);
-    %sxy @ " " @ %sxy @ " " @ %h.setScale(%this);
+    %this.setScale(%sxy @ " " @ %sxy @ " " @ %h);
     return;
 };
 function serverCmdSetHeight(%client, %height) {
-    if (!(isObject(%client.Player))) {
+    if (!isObject(%client.Player)) {
         return;
     }
-    %height.setHeight(%client.Player);
+    %client.Player.setHeight(%height);
     return;
 };
 function Player::getAngleTowards(%this, %obj) {
@@ -41,8 +41,8 @@ function Player::getAngleTowards(%this, %obj) {
     return %atan;
 };
 function Player::orientToward(%this, %obj) {
-    %angle = %obj.getAngleTowards(%this);
-    %posA @ " " @ "0 0 1" @ " " @ %angle.setTransform(%this);
+    %angle = %this.getAngleTowards(%obj);
+    %this.setTransform(%posA @ " " @ "0 0 1" @ " " @ %angle);
     return;
 };
 function Player::orientTowardsOverTime(%this, %obj, %milliseconds) {
@@ -52,20 +52,20 @@ function Player::orientTowardsOverTime(%this, %obj, %milliseconds) {
     if ((getWord(%rotCur, 2) < 0.0)) {
         %rotA = (%rotA * -(1.0));
     }
-    %angle = %obj.getAngleTowards(%this);
+    %angle = %this.getAngleTowards(%obj);
     %dA = (%angle - %rotA);
     %period = gGetField(%this, orientTickPeriod);
     %numTicks = (%milliseconds / %period);
     %dA2 = (%dA / %numTicks);
-    %numTicks.orientTowardsTicker(%this, %rotA, %dA2);
+    %this.orientTowardsTicker(%rotA, %dA2, %numTicks);
     return;
 };
 function Player::orientTowardsTicker(%this, %curA, %dltA, %ticksLeft) {
     %curA = (%curA + %dltA);
     %ticksLeft = (%ticksLeft - 1.0);
-    %this.getPosition() @ " " @ "0 0 1" @ " " @ %curA.setTransform(%this);
+    %this.setTransform(%this.getPosition() @ " " @ "0 0 1" @ " " @ %curA);
     if ((%ticksLeft > 0.0)) {
-        %ticksLeft.schedule(%this, gGetField(%this, orientTickPeriod), "orientTowardsTicker", %curA, %dltA);
+        %this.schedule(gGetField(%this, orientTickPeriod), "orientTowardsTicker", %curA, %dltA, %ticksLeft);
     }
     return;
 };

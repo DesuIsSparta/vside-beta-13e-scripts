@@ -1,22 +1,20 @@
 function new_ScriptArray(%name) {
     %obj = new ScriptObject("");
-    "ScriptArray".bindClassName(%obj);
+    %obj.bindClassName("ScriptArray");
     %obj.numElements = 0;
-    %name.setName(%obj);
+    %obj.setName(%name);
     return %obj;
 };
 function ScriptArray::append(%this, %value) {
-    %this.Array = %value @ %this.numElements;
+    %this.Array[%this.numElements] = %value;
     %this.numElements = (%this.numElements + 1.0);
 };
 function ScriptArray::get(%this, %index) {
-    if ((%index < 0.0)) {
-    }
-    if ((%index >= %this.numElements)) {
+    if ((%index < 0.0) || (%index >= %this.numElements)) {
         error("ScriptArray::get()" @ " " @ "- Subscript out of range:" @ " " @ %index @ " " @ getTrace());
         return "";
     }
-    return %this.Array;
+    return %this.Array[%index];
 };
 function ScriptArray::set(%this, %index, %value) {
     if ((%index > %this.numElements)) {
@@ -24,9 +22,9 @@ function ScriptArray::set(%this, %index, %value) {
         return;
     }
     if ((%index == %this.numElements)) {
-        %value.append(%this);
+        %this.append(%value);
     }
-    %this.Array = %value @ %index;
+    %this.Array[%index] = %value;
 };
 function ScriptArray::size(%this) {
     return %this.numElements;
@@ -37,8 +35,7 @@ function ScriptArray::clear(%this) {
 function ScriptArray::deleteMembers(%this) {
     %n = 0;
     while ((%n < %this.numElements)) {
-        %element = %this.Array;
-        %n;
+        %element = %this.Array[%n];
         if (isObject(%element)) {
             %element.delete();
         }
@@ -50,7 +47,7 @@ function ScriptArray::deleteMembers(%this) {
 function ScriptArray::dumpValues(%this) {
     %n = 0;
     while ((%n < %this.numElements)) {
-        echo(%n @ " " @ %n.get(%this));
+        echo(%n @ " " @ %this.get(%n));
         %n = (%n + 1.0);
     }
 };

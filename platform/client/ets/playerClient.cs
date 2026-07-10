@@ -12,11 +12,11 @@ function toggleHelpMeMode(%this) {
     setHelpMeMode();
 };
 function updateHelpMeModeMenu() {
-    if (!(isObject(HelpPopupMenu))) {
+    if (!isObject(HelpPopupMenu)) {
         return;
     }
-    %item = "helpMe".findObjectByInternalName(HelpPopupMenu);
-    if (!(isObject(%item))) {
+    %item = HelpPopupMenu.findObjectByInternalName("helpMe");
+    if (!isObject(%item)) {
         error(getScopeName() @ " " @ "- could not find menu item");
         return;
     }
@@ -27,7 +27,7 @@ function updateHelpMeModeMenu() {
         %text = "Stop asking vSiders for Help";
     }
     %text = "Ask other vSiders for Help";
-    %text.setMenuItemText(%item);
+    %item.setMenuItemText(%text);
     %item.command = %command;
 };
 $gHelpMeModeDuration = ((3.0 * 60.0) * 1000.0);
@@ -67,34 +67,34 @@ function Player::onAnimationStart(%this, %animName) {
     if (isObject($player)) {
     }
     if ((%this.getId() == $player.getId())) {
-        %animTags = %animName.get(gAnimationTags);
+        %animTags = gAnimationTags.get(%animName);
         %dancing = hasWord(%animTags, "dance");
         if (%dancing) {
-            1.setActivityActive(getUserActivityMgr(), "dancing");
+            getUserActivityMgr().setActivityActive("dancing", 1);
         }
-        "".onAnimationSku(%this, 0, %animName);
+        %this.onAnimationSku(0, %animName, "");
     }
 };
 function Player::onAnimationSku(%this, %state, %animName, %animInternalName) {
-    %animSkus = %animInternalName.getAnimationSkus(%this);
+    %animSkus = %this.getAnimationSkus(%animInternalName);
     if ((%animSkus $= "")) {
         if (!(%this.currentBaseActiveSkus $= "") && !(%this.currentBaseActiveSkus $= %this.getActiveSKUs())) {
-            %this.currentBaseActiveSkus.setActiveSKUs(%this);
+            %this.setActiveSKUs(%this.currentBaseActiveSkus);
         }
         return;
     }
     %activeSkus = %this.getActiveSKUs();
     if (%state) {
-        %activeSkus = %animSkus.overlaySkus(SkuManager, %activeSkus);
+        %activeSkus = SkuManager.overlaySkus(%activeSkus, %animSkus);
     }
-    %activeSkus = %animSkus.skusRemove(SkuManager, %activeSkus).overlaySkus(SkuManager, %this.currentBaseActiveSkus);
-    %activeSkus.setActiveSKUs(%this);
+    %activeSkus = SkuManager.overlaySkus(%this.currentBaseActiveSkus, SkuManager.skusRemove(%activeSkus, %animSkus));
+    %this.setActiveSKUs(%activeSkus);
 };
 function Player::getAnimationSkus(%this, %animInternalName) {
     if ((%animInternalName $= "")) {
         return "";
     }
-    if ((%animInternalName @ " " @ %this.animationSkus $= "")) {
+    if ((%this.animationSkus[%animInternalName] $= "")) {
         %skusIndex = strstr(%animInternalName, "_skus_");
         if ((%skusIndex == -(1.0))) {
             %skus = "";
@@ -102,10 +102,10 @@ function Player::getAnimationSkus(%this, %animInternalName) {
         %skusString = getSubStr(%animInternalName, %skusIndex);
         %skusString = strreplace(%skusString, "_", " ");
         %skus = restWords(restWords(%skusString));
-        %skus = %this.getGender().filterSkusGender(SkuManager, %skus);
-        %this.animationSkus = %skus @ %animInternalName;
+        %skus = SkuManager.filterSkusGender(%skus, %this.getGender());
+        %this.animationSkus[%animInternalName] = %skus;
     }
-    return %this.animationSkus;
+    return %this.animationSkus[%animInternalName];
 };
 $gPlayerStaggerTimer = "";
 $gPlayerStaggerTimerPeriod = 300;
@@ -123,9 +123,7 @@ function Player::staggerTick(%this) {
     }
     %fwdVel = ($mvForwardAction - $mvBackwardAction);
     %sdeVel = ($mvLeftAction - $mvRightAction);
-    if ((%fwdVel != 0.0)) {
-    }
-    if ((%sdeVel != 0.0)) {
+    if ((%fwdVel != 0.0) || (%sdeVel != 0.0)) {
         %amt = (getRandom(0, ($gPlayerStaggerAmount * 1000.0)) * 0.001);
         if (getRandom(0, 1)) {
         }
@@ -150,7 +148,7 @@ function Player::staggerTick(%this) {
     $mvYawLeftSpeed = 0;
     $mvYawRightSpeed = 0;
     %period = ($gPlayerStaggerTimerPeriod * 3.0);
-    $gPlayerStaggerTimer = "staggerTick".schedule(%this, %period);
+    $gPlayerStaggerTimer = %this.schedule(%period, "staggerTick");
 };
 function Player::onAnimationDoneClient(%this, %unused) {
     if ((%this.getId() != $player.getId())) {
@@ -161,7 +159,7 @@ function Player::onAnimationDoneClient(%this, %unused) {
     if (ClosetGui.isVisible()) {
         ClosetGui.isDoingPropAction = 0;
         if (isObject(ClosetWhatYoureWearingList)) {
-            ClosetWhatYoureWearingList.skus.refresh(ClosetWhatYoureWearingList);
+            ClosetWhatYoureWearingList.refresh(ClosetWhatYoureWearingList.skus);
         }
     }
 };

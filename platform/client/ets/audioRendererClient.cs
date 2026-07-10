@@ -1,10 +1,10 @@
 function DSAudioRenderer::onLoad(%this) {
     %multiplier = $UserPref::Audio::mute ? 0 : 1;
-    ((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1).setVolume(%this);
+    %this.setVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
     %this.play();
 };
 function DSAudioRenderer::onBuffer(%this, %val) {
-    if (!(%val) && (%this.getMediaFile() $= Playlist.url)) {
+    if (!%val && (%this.getMediaFile() $= Playlist.url)) {
         log("general", "info", "DSAudioRenderer::onBuffer(): Starting to play: " @ %this.getMediaFile());
         if (!(%this.bufferCallback $= "")) {
             %callback = %this.bufferCallback @ "(" @ %this.getId() @ ");";

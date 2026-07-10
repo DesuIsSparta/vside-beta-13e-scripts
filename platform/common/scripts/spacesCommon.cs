@@ -34,7 +34,7 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE) {
     if (isObject(%fullName)) {
         return %fullName.getId();
     }
-    if (!(%createIfDNE)) {
+    if (!%createIfDNE) {
         return 0;
     }
     %spaceDef = new ScriptObject(%fullName) {
@@ -42,7 +42,7 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE) {
         internalName = %internalName;
     };
     %spaceDef.defaultValues();
-    %spaceDef.add(spaceDefsGroup);
+    spaceDefsGroup.add(%spaceDef);
     return %spaceDef.getId();
 };
 function spaces_HasSpaceDef(%internalName) {
@@ -55,7 +55,7 @@ function spaces_FindSpaceDefWithStoreID(%storeID) {
     if ((%n >= 0.0)) {
     }
     while ((%found == 0.0)) {
-        %found = %n.getObject(spaceDefsGroup);
+        %found = spaceDefsGroup.getObject(%n);
         if (!(%found.storeID $= %storeID)) {
             %found = 0;
         }
@@ -75,10 +75,10 @@ function initTokenSubstitutions() {
     if (%map.initialized) {
         return %map;
     }
-    "          %player     .getShapeName()".put(%map, "[PLAYERNAME]");
-    "firstWord(%player     .getShapeName())".put(%map, "[PLAYERFIRSTNAME]");
-    "          %this       .lastReason".put(%map, "[REASON]");
-    "          %this       .shortName".put(%map, "[SHORTNAME]");
+    %map.put("[PLAYERNAME]", "          %player     .getShapeName()");
+    %map.put("[PLAYERFIRSTNAME]", "firstWord(%player     .getShapeName())");
+    %map.put("[REASON]", "          %this       .lastReason");
+    %map.put("[SHORTNAME]", "          %this       .shortName");
     %map.initialized = 1;
     return %map;
 };
@@ -87,8 +87,8 @@ function SpaceDef::doTokenSubstitution(%this, %dry, %player) {
     %wet = %dry;
     %n = (%map.size() - 1.0);
     while ((%n >= 0.0)) {
-        %replaceThis = %n.getKey(%map);
-        %withThis = %n.getValue(%map);
+        %replaceThis = %map.getKey(%n);
+        %withThis = %map.getValue(%n);
         %player = %player;
         %evalCmd = "%withThis = " @ %withThis @ ";";
         eval(%evalCmd);

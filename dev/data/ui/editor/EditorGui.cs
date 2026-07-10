@@ -1,6 +1,6 @@
 $AIEdit = 0;
 function EStatusHudActivator::onMouseEnter(%this) {
-    if (!(EStatusHud.isShowing())) {
+    if (!EStatusHud.isShowing()) {
         EStatusHud.updateStatus();
     }
 };
@@ -18,7 +18,7 @@ function toggleStatusHud() {
         EStatusHud.hide();
     }
     EStatusHud.show();
-    1.keepOpen(EStatusHud);
+    EStatusHud.keepOpen(1);
 };
 function EStatusHud::GetSelectTypeDisplayText(%this, %type) {
     if ((%type $= $TypeMasks::ALLTYPES)) {
@@ -48,15 +48,15 @@ function EStatusHud::GetSelectTypeDisplayText(%this, %type) {
     return "All Types";
 };
 function EStatusHud::updateStatus(%this) {
-    realUpdateStatus.schedule(EStatusHud, 100);
+    EStatusHud.schedule(100, realUpdateStatus);
 };
 function EStatusHud::initialUpdateStatus(%this) {
-    realUpdateStatus.schedule(EStatusHud, 1000);
+    EStatusHud.schedule(1000, realUpdateStatus);
 };
 function EStatusHud::realUpdateStatus(%this) {
     %c2 = "\x06";
     %selected = %c2 @ EWorldEditor.getSelectionSize() @ "\x02\x01 world objects selected";
-    %seltype = "\x02\x01type: " @ %c2 @ EWorldEditor.selectType.GetSelectTypeDisplayText(%this);
+    %seltype = "\x02\x01type: " @ %c2 @ %this.GetSelectTypeDisplayText(EWorldEditor.selectType);
     %addto = "\x02\x01addgroup: " @ %c2 @ $instantGroup @ ":" @ $instantGroup.getName();
     %viewerTrans = LocalClientConnection.getControlObject().getTransform();
     %camera = "\x02\x01cam pos: " @ %c2 @ "( " @ getWord(%viewerTrans, 0) @ " , " @ getWord(%viewerTrans, 1) @ " , " @ getWord(%viewerTrans, 2) @ " )";
@@ -68,16 +68,16 @@ function EStatusHud::realUpdateStatus(%this) {
     %this.charWidth = mMax(strlen(this.charWidth), strlen(%scale));
     %this.charWidth = mMax(strlen(this.charWidth), strlen(%grid));
     %text = %selected @ "\n" @ %seltype @ "\n" @ %addto @ "\n" @ %camera @ "\n" @ %scale @ "\n" @ %grid;
-    %text.setStatusText(%this);
+    %this.setStatusText(%text);
 };
 function EStatusHud::setStatusText(%this, %text) {
     %this.text = %text;
     %this.charWidth = strlen(%text);
     EStatusHud.show();
-    %this.hideSchedule = %this.schedule(%this, 5000, tryHide);
+    %this.hideSchedule = %this.schedule(5000, tryHide, %this);
 };
 function EStatusHud::tryHide(%this) {
-    if (!($UserPref::WorldEditor::keepEStatusHudOpen)) {
+    if (!$UserPref::WorldEditor::keepEStatusHudOpen) {
         %this.hide();
         return 1;
     }
@@ -90,39 +90,39 @@ function EStatusHud::update(%this) {
         %widthMultiplier = 7.2;
         %heightOffset = (%heightOffset + 8.0);
         %heightDelta = 4;
-        "MusicMLTextProfileSmall".setProfile(EStatusText);
+        EStatusText.setProfile("MusicMLTextProfileSmall");
     }
     if ((%resWidth <= 640.0)) {
         %widthMultiplier = 8.1;
         %heightOffset = (%heightOffset + 4.0);
         %heightDelta = 2;
-        "MusicMLTextProfileMedium".setProfile(EStatusText);
+        EStatusText.setProfile("MusicMLTextProfileMedium");
     }
     %widthMultiplier = 9.0;
     %heightDelta = 0;
-    "MusicMLTextProfile".setProfile(EStatusText);
+    EStatusText.setProfile("MusicMLTextProfile");
     %content = "";
     if (!(%this.text $= "")) {
         %content = %this.text @ "\n";
     }
-    %content.setText(EStatusText);
+    EStatusText.setText(%content);
     %height = getWord(%this.extent, 1);
     %targetWidth = mCeil((%widthMultiplier * mMax(%this.charWidth, 20)));
-    %height.setTrgExtent(%this, %targetWidth);
-    %height.resize(EStatusText, 0, 0, %targetWidth);
+    %this.setTrgExtent(%targetWidth, %height);
+    EStatusText.resize(0, 0, %targetWidth, %height);
     %this.updatePosition();
 };
 function EStatusHud::updatePosition(%this) {
     %trgX = getWord(%this.getTrgPosition(), 0);
     %trgY = (((getWord(ButtonBar.getTrgPosition(), 1) - getWord(%this.getExtent(), 1)) + $ButtonBarVar::VerticalAdjustment) + 12.0);
-    %trgY.setTrgPosition(%this, %trgX);
+    %this.setTrgPosition(%trgX, %trgY);
 };
 function EStatusHud::show(%this) {
     if (%this.hideSchedule) {
         cancel(%this.hideSchedule);
     }
     %trgY = getWord(%this.getTrgPosition(), 1);
-    %trgY.setTrgPosition(%this, 4);
+    %this.setTrgPosition(4, %trgY);
     %this.update();
 };
 function EStatusHud::keepOpen(%this, %flag) {
@@ -132,14 +132,14 @@ function EStatusHud::hide(%this) {
     %this.updatePosition();
     %width = getWord(%this.getTrgExtent(), 0);
     %trgY = getWord(%this.getTrgPosition(), 1);
-    %trgY.setTrgPosition(%this, -(%width));
-    0.keepOpen(%this);
+    %this.setTrgPosition(-(%width), %trgY);
+    %this.keepOpen(0);
 };
 function EStatusHud::isShowing(%this) {
     return (getWord(%this.position, 0) >= 0.0);
 };
 function EStatusHud::onMouseLeaveBounds(%this) {
-    if (!(%this.tryHide())) {
+    if (!%this.tryHide()) {
         %this.updatePosition();
     }
 };
@@ -150,7 +150,7 @@ function EStatusHud::onMouseEnterBounds(%this) {
     if (%this.isShowing()) {
         %posX = getWord(%this.position, 0);
         %posY = getWord(%this.position, 1);
-        %posY.setTrgPosition(%this, %posX);
+        %this.setTrgPosition(%posX, %posY);
     }
 };
 $sgEditorItemNames::sgMenu = "Synapse Gaming Tools";
@@ -248,222 +248,222 @@ function EditorGui::onSleep(%this) {
 };
 function EditorGui::init(%this) {
     %this.getPrefs();
-    if (!(isObject("terraformer"))) {
+    if (!isObject("terraformer")) {
         new Terraformer("terraformer");
     }
     $SelectedOperation = -(1.0);
     $NextOperationId = 1;
     $HeightfieldDirtyRow = -(1.0);
     EditorMenuBar.clearMenus();
-    0.addMenu(EditorMenuBar, "File");
-    1.addMenuItem(EditorMenuBar, "File", "New Mission...");
-    "Ctrl O".addMenuItem(EditorMenuBar, "File", "Open Mission...", 2);
-    "Ctrl S".addMenuItem(EditorMenuBar, "File", "Save Mission...", 3);
-    4.addMenuItem(EditorMenuBar, "File", "Save Mission As...");
-    0.addMenuItem(EditorMenuBar, "File", "-");
-    6.addMenuItem(EditorMenuBar, "File", "Import Terraform Data...");
-    5.addMenuItem(EditorMenuBar, "File", "Import Texture Data...");
-    0.addMenuItem(EditorMenuBar, "File", "-");
-    7.addMenuItem(EditorMenuBar, "File", "Refresh File List");
-    0.addMenuItem(EditorMenuBar, "File", "-");
-    5.addMenuItem(EditorMenuBar, "File", "Export Terraform Bitmap...");
-    1.addMenu(EditorMenuBar, "Edit");
-    "Ctrl Z".addMenuItem(EditorMenuBar, "Edit", "Undo", 1);
-    1.setMenuItemBitmap(EditorMenuBar, "Edit", "Undo");
-    "Ctrl R".addMenuItem(EditorMenuBar, "Edit", "Redo", 2);
-    2.setMenuItemBitmap(EditorMenuBar, "Edit", "Redo");
-    0.addMenuItem(EditorMenuBar, "Edit", "-");
-    "Ctrl X".addMenuItem(EditorMenuBar, "Edit", "Cut", 3);
-    3.setMenuItemBitmap(EditorMenuBar, "Edit", "Cut");
-    "Ctrl C".addMenuItem(EditorMenuBar, "Edit", "Copy", 4);
-    4.setMenuItemBitmap(EditorMenuBar, "Edit", "Copy");
-    "Ctrl V".addMenuItem(EditorMenuBar, "Edit", "Paste", 5);
-    5.setMenuItemBitmap(EditorMenuBar, "Edit", "Paste");
-    0.addMenuItem(EditorMenuBar, "Edit", "-");
-    "Ctrl A".addMenuItem(EditorMenuBar, "Edit", "Select All", 6);
-    "Ctrl N".addMenuItem(EditorMenuBar, "Edit", "Select None", 7);
-    "Ctrl D".addMenuItem(EditorMenuBar, "Edit", "Select None", 8);
-    "Ctrl-Shift I".addMenuItem(EditorMenuBar, "Edit", "Select Inverse", 9);
-    "Ctrl F".addMenuItem(EditorMenuBar, "Edit", "Find Selected", 10);
-    "Shift F".addMenuItem(EditorMenuBar, "Edit", "Zoom Camera To Selection", 11);
-    "Ctrl E".addMenuItem(EditorMenuBar, "Edit", "Expand Selected Tree", 12);
-    "Shift E".addMenuItem(EditorMenuBar, "Edit", "Expand And Select Selected Tree", 13);
-    0.addMenuItem(EditorMenuBar, "Edit", "-");
-    "Alt L".addMenuItem(EditorMenuBar, "Edit", "Relight Scene", 14);
-    0.addMenuItem(EditorMenuBar, "Edit", "-");
-    12.addMenuItem(EditorMenuBar, "Edit", "World Editor Settings...");
-    13.addMenuItem(EditorMenuBar, "Edit", "Terrain Editor Settings...");
-    0.addMenuItem(EditorMenuBar, "Edit", "-");
-    "]".addMenuItem(EditorMenuBar, "Edit", "Increase Move Scale", 15);
-    "[".addMenuItem(EditorMenuBar, "Edit", "Decrease Move Scale", 16);
-    "g".addMenuItem(EditorMenuBar, "Edit", "Toggle Grid Visibility", 17);
-    "s".addMenuItem(EditorMenuBar, "Edit", "Status Hud Toggle", 17);
-    7.addMenu(EditorMenuBar, "Camera");
-    "Alt Q".addMenuItem(EditorMenuBar, "Camera", "Drop Camera at Player", 1);
-    "Alt W".addMenuItem(EditorMenuBar, "Camera", "Drop Player at Camera", 2);
-    "Alt C".addMenuItem(EditorMenuBar, "Camera", "Toggle Camera", 10);
-    "Alt T".addMenuItem(EditorMenuBar, "Camera", "Drop Camera at Selection", 19);
-    0.addMenuItem(EditorMenuBar, "Camera", "-");
-    1.addMenuItem(EditorMenuBar, "Camera", "Slowest", 3, "Shift 1");
-    1.addMenuItem(EditorMenuBar, "Camera", "Very Slow", 4, "Shift 2");
-    1.addMenuItem(EditorMenuBar, "Camera", "Slow", 5, "Shift 3");
-    1.addMenuItem(EditorMenuBar, "Camera", "Medium Pace", 6, "Shift 4");
-    1.addMenuItem(EditorMenuBar, "Camera", "Fast", 7, "Shift 5");
-    1.addMenuItem(EditorMenuBar, "Camera", "Very Fast", 8, "Shift 6");
-    1.addMenuItem(EditorMenuBar, "Camera", "Fastest", 9, "Shift 7");
-    6.addMenu(EditorMenuBar, "World");
-    "Ctrl L".addMenuItem(EditorMenuBar, "World", "Lock Selection", 10);
-    "Ctrl Shift L".addMenuItem(EditorMenuBar, "World", "Unlock Selection", 11);
-    0.addMenuItem(EditorMenuBar, "World", "-");
-    "Ctrl H".addMenuItem(EditorMenuBar, "World", "Hide Selected", 12);
-    "Shift H".addMenuItem(EditorMenuBar, "World", "Unhide Selected", 13);
-    "Ctrl J".addMenuItem(EditorMenuBar, "World", "Invert Hidden", 14);
-    0.addMenuItem(EditorMenuBar, "World", "-");
-    "Delete".addMenuItem(EditorMenuBar, "World", "Delete Selection", 17);
-    15.addMenuItem(EditorMenuBar, "World", "Reset Transforms");
-    "Ctrl Shift D".addMenuItem(EditorMenuBar, "World", "Drop Selection", 16);
-    17.addMenuItem(EditorMenuBar, "World", "Add Selection to Instant Group");
-    "N".addMenuItem(EditorMenuBar, "World", "SimGroup Create", 18);
-    0.addMenuItem(EditorMenuBar, "World", "-");
-    1.addMenuItem(EditorMenuBar, "World", "Drop at Origin", 0, "");
-    1.addMenuItem(EditorMenuBar, "World", "Drop at Camera", 1, "");
-    1.addMenuItem(EditorMenuBar, "World", "Drop at Camera w/Rot", 2, "");
-    1.addMenuItem(EditorMenuBar, "World", "Drop below Camera", 3, "");
-    1.addMenuItem(EditorMenuBar, "World", "Drop at Screen Center", 4, "");
-    1.addMenuItem(EditorMenuBar, "World", "Drop at Centroid", 5, "");
-    1.addMenuItem(EditorMenuBar, "World", "Drop to Ground", 6, "");
-    9.addMenu(EditorMenuBar, "SnapTo");
-    "X".addMenuItem(EditorMenuBar, "SnapTo", "X", 1);
-    "Shift X".addMenuItem(EditorMenuBar, "SnapTo", "X+", 2);
-    "Alt X".addMenuItem(EditorMenuBar, "SnapTo", "X-", 3);
-    "Y".addMenuItem(EditorMenuBar, "SnapTo", "Y", 4);
-    "Shift Y".addMenuItem(EditorMenuBar, "SnapTo", "Y+", 5);
-    "Alt Y".addMenuItem(EditorMenuBar, "SnapTo", "Y-", 6);
-    "Z".addMenuItem(EditorMenuBar, "SnapTo", "Z", 7);
-    "Shift Z".addMenuItem(EditorMenuBar, "SnapTo", "Z+", 8);
-    "Alt Z".addMenuItem(EditorMenuBar, "SnapTo", "Z-", 9);
-    "numpad6".addMenuItem(EditorMenuBar, "SnapTo", "X+YZ", 10);
-    "numpad4".addMenuItem(EditorMenuBar, "SnapTo", "X-YZ", 11);
-    "numpad8".addMenuItem(EditorMenuBar, "SnapTo", "XY+Z", 12);
-    "numpad2".addMenuItem(EditorMenuBar, "SnapTo", "XY-Z", 13);
-    "numpad9".addMenuItem(EditorMenuBar, "SnapTo", "XYZ+", 12);
-    "numpad3".addMenuItem(EditorMenuBar, "SnapTo", "XYZ-", 13);
-    "shift numpad6".addMenuItem(EditorMenuBar, "SnapTo", "ObjX+YZ", 14);
-    "shift numpad4".addMenuItem(EditorMenuBar, "SnapTo", "ObjX-YZ", 15);
-    "shift numpad8".addMenuItem(EditorMenuBar, "SnapTo", "ObjXY+Z", 16);
-    "shift numpad2".addMenuItem(EditorMenuBar, "SnapTo", "ObjXY-Z", 17);
-    "shift numpad9".addMenuItem(EditorMenuBar, "SnapTo", "ObjXYZ+", 18);
-    "shift numpad3".addMenuItem(EditorMenuBar, "SnapTo", "ObjXYZ-", 19);
-    10.addMenu(EditorMenuBar, "CloneTo");
-    "alt numpad6".addMenuItem(EditorMenuBar, "CloneTo", "X+YZ", 1);
-    "alt numpad4".addMenuItem(EditorMenuBar, "CloneTo", "X-YZ", 2);
-    "alt numpad8".addMenuItem(EditorMenuBar, "CloneTo", "XY+Z", 3);
-    "alt numpad2".addMenuItem(EditorMenuBar, "CloneTo", "XY-Z", 4);
-    "alt numpad9".addMenuItem(EditorMenuBar, "CloneTo", "XYZ+", 5);
-    "alt numpad3".addMenuItem(EditorMenuBar, "CloneTo", "XYZ-", 6);
-    3.addMenu(EditorMenuBar, "Action");
-    1.addMenuItem(EditorMenuBar, "Action", "Select", 1, "");
-    1.addMenuItem(EditorMenuBar, "Action", "Adjust Selection", 2, "");
-    0.addMenuItem(EditorMenuBar, "Action", "-");
-    1.addMenuItem(EditorMenuBar, "Action", "Add Dirt", 6, "");
-    1.addMenuItem(EditorMenuBar, "Action", "Excavate", 6, "");
-    1.addMenuItem(EditorMenuBar, "Action", "Adjust Height", 6, "");
-    1.addMenuItem(EditorMenuBar, "Action", "Flatten", 4, "");
-    1.addMenuItem(EditorMenuBar, "Action", "Smooth", 5, "");
-    1.addMenuItem(EditorMenuBar, "Action", "Set Height", 7, "");
-    0.addMenuItem(EditorMenuBar, "Action", "-");
-    1.addMenuItem(EditorMenuBar, "Action", "Set Empty", 8, "");
-    1.addMenuItem(EditorMenuBar, "Action", "Clear Empty", 8, "");
-    0.addMenuItem(EditorMenuBar, "Action", "-");
-    1.addMenuItem(EditorMenuBar, "Action", "Paint Material", 9, "");
-    4.addMenu(EditorMenuBar, "Brush");
-    1.addMenuItem(EditorMenuBar, "Brush", "Box Brush", 91, "");
-    1.addMenuItem(EditorMenuBar, "Brush", "Circle Brush", 92, "");
-    0.addMenuItem(EditorMenuBar, "Brush", "-");
-    2.addMenuItem(EditorMenuBar, "Brush", "Soft Brush", 93, "");
-    2.addMenuItem(EditorMenuBar, "Brush", "Hard Brush", 94, "");
-    0.addMenuItem(EditorMenuBar, "Brush", "-");
-    3.addMenuItem(EditorMenuBar, "Brush", "Size 1 x 1", 1, "Alt 1");
-    3.addMenuItem(EditorMenuBar, "Brush", "Size 3 x 3", 3, "Alt 2");
-    3.addMenuItem(EditorMenuBar, "Brush", "Size 5 x 5", 5, "Alt 3");
-    3.addMenuItem(EditorMenuBar, "Brush", "Size 9 x 9", 9, "Alt 4");
-    3.addMenuItem(EditorMenuBar, "Brush", "Size 15 x 15", 15, "Alt 5");
-    3.addMenuItem(EditorMenuBar, "Brush", "Size 25 x 25", 25, "Alt 6");
-    2.addMenu(EditorMenuBar, "Window");
-    1.addMenuItem(EditorMenuBar, "Window", "World Editor", 2, "F2");
-    1.addMenuItem(EditorMenuBar, "Window", "World Editor Inspector", 3, "F3");
-    1.addMenuItem(EditorMenuBar, "Window", "World Editor Creator", 4, "F4");
-    1.addMenuItem(EditorMenuBar, "Window", "Mission Area Editor", 5, "F5");
-    0.addMenuItem(EditorMenuBar, "Window", "-");
-    1.addMenuItem(EditorMenuBar, "Window", "Terrain Editor", 6, "F6");
-    1.addMenuItem(EditorMenuBar, "Window", "Terrain Terraform Editor", 7, "F7");
-    1.addMenuItem(EditorMenuBar, "Window", "Terrain Texture Editor", 8, "F8");
-    1.addMenuItem(EditorMenuBar, "Window", "Terrain Texture Painter", 9, "");
+    EditorMenuBar.addMenu("File", 0);
+    EditorMenuBar.addMenuItem("File", "New Mission...", 1);
+    EditorMenuBar.addMenuItem("File", "Open Mission...", 2, "Ctrl O");
+    EditorMenuBar.addMenuItem("File", "Save Mission...", 3, "Ctrl S");
+    EditorMenuBar.addMenuItem("File", "Save Mission As...", 4);
+    EditorMenuBar.addMenuItem("File", "-", 0);
+    EditorMenuBar.addMenuItem("File", "Import Terraform Data...", 6);
+    EditorMenuBar.addMenuItem("File", "Import Texture Data...", 5);
+    EditorMenuBar.addMenuItem("File", "-", 0);
+    EditorMenuBar.addMenuItem("File", "Refresh File List", 7);
+    EditorMenuBar.addMenuItem("File", "-", 0);
+    EditorMenuBar.addMenuItem("File", "Export Terraform Bitmap...", 5);
+    EditorMenuBar.addMenu("Edit", 1);
+    EditorMenuBar.addMenuItem("Edit", "Undo", 1, "Ctrl Z");
+    EditorMenuBar.setMenuItemBitmap("Edit", "Undo", 1);
+    EditorMenuBar.addMenuItem("Edit", "Redo", 2, "Ctrl R");
+    EditorMenuBar.setMenuItemBitmap("Edit", "Redo", 2);
+    EditorMenuBar.addMenuItem("Edit", "-", 0);
+    EditorMenuBar.addMenuItem("Edit", "Cut", 3, "Ctrl X");
+    EditorMenuBar.setMenuItemBitmap("Edit", "Cut", 3);
+    EditorMenuBar.addMenuItem("Edit", "Copy", 4, "Ctrl C");
+    EditorMenuBar.setMenuItemBitmap("Edit", "Copy", 4);
+    EditorMenuBar.addMenuItem("Edit", "Paste", 5, "Ctrl V");
+    EditorMenuBar.setMenuItemBitmap("Edit", "Paste", 5);
+    EditorMenuBar.addMenuItem("Edit", "-", 0);
+    EditorMenuBar.addMenuItem("Edit", "Select All", 6, "Ctrl A");
+    EditorMenuBar.addMenuItem("Edit", "Select None", 7, "Ctrl N");
+    EditorMenuBar.addMenuItem("Edit", "Select None", 8, "Ctrl D");
+    EditorMenuBar.addMenuItem("Edit", "Select Inverse", 9, "Ctrl-Shift I");
+    EditorMenuBar.addMenuItem("Edit", "Find Selected", 10, "Ctrl F");
+    EditorMenuBar.addMenuItem("Edit", "Zoom Camera To Selection", 11, "Shift F");
+    EditorMenuBar.addMenuItem("Edit", "Expand Selected Tree", 12, "Ctrl E");
+    EditorMenuBar.addMenuItem("Edit", "Expand And Select Selected Tree", 13, "Shift E");
+    EditorMenuBar.addMenuItem("Edit", "-", 0);
+    EditorMenuBar.addMenuItem("Edit", "Relight Scene", 14, "Alt L");
+    EditorMenuBar.addMenuItem("Edit", "-", 0);
+    EditorMenuBar.addMenuItem("Edit", "World Editor Settings...", 12);
+    EditorMenuBar.addMenuItem("Edit", "Terrain Editor Settings...", 13);
+    EditorMenuBar.addMenuItem("Edit", "-", 0);
+    EditorMenuBar.addMenuItem("Edit", "Increase Move Scale", 15, "]");
+    EditorMenuBar.addMenuItem("Edit", "Decrease Move Scale", 16, "[");
+    EditorMenuBar.addMenuItem("Edit", "Toggle Grid Visibility", 17, "g");
+    EditorMenuBar.addMenuItem("Edit", "Status Hud Toggle", 17, "s");
+    EditorMenuBar.addMenu("Camera", 7);
+    EditorMenuBar.addMenuItem("Camera", "Drop Camera at Player", 1, "Alt Q");
+    EditorMenuBar.addMenuItem("Camera", "Drop Player at Camera", 2, "Alt W");
+    EditorMenuBar.addMenuItem("Camera", "Toggle Camera", 10, "Alt C");
+    EditorMenuBar.addMenuItem("Camera", "Drop Camera at Selection", 19, "Alt T");
+    EditorMenuBar.addMenuItem("Camera", "-", 0);
+    EditorMenuBar.addMenuItem("Camera", "Slowest", 3, "Shift 1", 1);
+    EditorMenuBar.addMenuItem("Camera", "Very Slow", 4, "Shift 2", 1);
+    EditorMenuBar.addMenuItem("Camera", "Slow", 5, "Shift 3", 1);
+    EditorMenuBar.addMenuItem("Camera", "Medium Pace", 6, "Shift 4", 1);
+    EditorMenuBar.addMenuItem("Camera", "Fast", 7, "Shift 5", 1);
+    EditorMenuBar.addMenuItem("Camera", "Very Fast", 8, "Shift 6", 1);
+    EditorMenuBar.addMenuItem("Camera", "Fastest", 9, "Shift 7", 1);
+    EditorMenuBar.addMenu("World", 6);
+    EditorMenuBar.addMenuItem("World", "Lock Selection", 10, "Ctrl L");
+    EditorMenuBar.addMenuItem("World", "Unlock Selection", 11, "Ctrl Shift L");
+    EditorMenuBar.addMenuItem("World", "-", 0);
+    EditorMenuBar.addMenuItem("World", "Hide Selected", 12, "Ctrl H");
+    EditorMenuBar.addMenuItem("World", "Unhide Selected", 13, "Shift H");
+    EditorMenuBar.addMenuItem("World", "Invert Hidden", 14, "Ctrl J");
+    EditorMenuBar.addMenuItem("World", "-", 0);
+    EditorMenuBar.addMenuItem("World", "Delete Selection", 17, "Delete");
+    EditorMenuBar.addMenuItem("World", "Reset Transforms", 15);
+    EditorMenuBar.addMenuItem("World", "Drop Selection", 16, "Ctrl Shift D");
+    EditorMenuBar.addMenuItem("World", "Add Selection to Instant Group", 17);
+    EditorMenuBar.addMenuItem("World", "SimGroup Create", 18, "N");
+    EditorMenuBar.addMenuItem("World", "-", 0);
+    EditorMenuBar.addMenuItem("World", "Drop at Origin", 0, "", 1);
+    EditorMenuBar.addMenuItem("World", "Drop at Camera", 1, "", 1);
+    EditorMenuBar.addMenuItem("World", "Drop at Camera w/Rot", 2, "", 1);
+    EditorMenuBar.addMenuItem("World", "Drop below Camera", 3, "", 1);
+    EditorMenuBar.addMenuItem("World", "Drop at Screen Center", 4, "", 1);
+    EditorMenuBar.addMenuItem("World", "Drop at Centroid", 5, "", 1);
+    EditorMenuBar.addMenuItem("World", "Drop to Ground", 6, "", 1);
+    EditorMenuBar.addMenu("SnapTo", 9);
+    EditorMenuBar.addMenuItem("SnapTo", "X", 1, "X");
+    EditorMenuBar.addMenuItem("SnapTo", "X+", 2, "Shift X");
+    EditorMenuBar.addMenuItem("SnapTo", "X-", 3, "Alt X");
+    EditorMenuBar.addMenuItem("SnapTo", "Y", 4, "Y");
+    EditorMenuBar.addMenuItem("SnapTo", "Y+", 5, "Shift Y");
+    EditorMenuBar.addMenuItem("SnapTo", "Y-", 6, "Alt Y");
+    EditorMenuBar.addMenuItem("SnapTo", "Z", 7, "Z");
+    EditorMenuBar.addMenuItem("SnapTo", "Z+", 8, "Shift Z");
+    EditorMenuBar.addMenuItem("SnapTo", "Z-", 9, "Alt Z");
+    EditorMenuBar.addMenuItem("SnapTo", "X+YZ", 10, "numpad6");
+    EditorMenuBar.addMenuItem("SnapTo", "X-YZ", 11, "numpad4");
+    EditorMenuBar.addMenuItem("SnapTo", "XY+Z", 12, "numpad8");
+    EditorMenuBar.addMenuItem("SnapTo", "XY-Z", 13, "numpad2");
+    EditorMenuBar.addMenuItem("SnapTo", "XYZ+", 12, "numpad9");
+    EditorMenuBar.addMenuItem("SnapTo", "XYZ-", 13, "numpad3");
+    EditorMenuBar.addMenuItem("SnapTo", "ObjX+YZ", 14, "shift numpad6");
+    EditorMenuBar.addMenuItem("SnapTo", "ObjX-YZ", 15, "shift numpad4");
+    EditorMenuBar.addMenuItem("SnapTo", "ObjXY+Z", 16, "shift numpad8");
+    EditorMenuBar.addMenuItem("SnapTo", "ObjXY-Z", 17, "shift numpad2");
+    EditorMenuBar.addMenuItem("SnapTo", "ObjXYZ+", 18, "shift numpad9");
+    EditorMenuBar.addMenuItem("SnapTo", "ObjXYZ-", 19, "shift numpad3");
+    EditorMenuBar.addMenu("CloneTo", 10);
+    EditorMenuBar.addMenuItem("CloneTo", "X+YZ", 1, "alt numpad6");
+    EditorMenuBar.addMenuItem("CloneTo", "X-YZ", 2, "alt numpad4");
+    EditorMenuBar.addMenuItem("CloneTo", "XY+Z", 3, "alt numpad8");
+    EditorMenuBar.addMenuItem("CloneTo", "XY-Z", 4, "alt numpad2");
+    EditorMenuBar.addMenuItem("CloneTo", "XYZ+", 5, "alt numpad9");
+    EditorMenuBar.addMenuItem("CloneTo", "XYZ-", 6, "alt numpad3");
+    EditorMenuBar.addMenu("Action", 3);
+    EditorMenuBar.addMenuItem("Action", "Select", 1, "", 1);
+    EditorMenuBar.addMenuItem("Action", "Adjust Selection", 2, "", 1);
+    EditorMenuBar.addMenuItem("Action", "-", 0);
+    EditorMenuBar.addMenuItem("Action", "Add Dirt", 6, "", 1);
+    EditorMenuBar.addMenuItem("Action", "Excavate", 6, "", 1);
+    EditorMenuBar.addMenuItem("Action", "Adjust Height", 6, "", 1);
+    EditorMenuBar.addMenuItem("Action", "Flatten", 4, "", 1);
+    EditorMenuBar.addMenuItem("Action", "Smooth", 5, "", 1);
+    EditorMenuBar.addMenuItem("Action", "Set Height", 7, "", 1);
+    EditorMenuBar.addMenuItem("Action", "-", 0);
+    EditorMenuBar.addMenuItem("Action", "Set Empty", 8, "", 1);
+    EditorMenuBar.addMenuItem("Action", "Clear Empty", 8, "", 1);
+    EditorMenuBar.addMenuItem("Action", "-", 0);
+    EditorMenuBar.addMenuItem("Action", "Paint Material", 9, "", 1);
+    EditorMenuBar.addMenu("Brush", 4);
+    EditorMenuBar.addMenuItem("Brush", "Box Brush", 91, "", 1);
+    EditorMenuBar.addMenuItem("Brush", "Circle Brush", 92, "", 1);
+    EditorMenuBar.addMenuItem("Brush", "-", 0);
+    EditorMenuBar.addMenuItem("Brush", "Soft Brush", 93, "", 2);
+    EditorMenuBar.addMenuItem("Brush", "Hard Brush", 94, "", 2);
+    EditorMenuBar.addMenuItem("Brush", "-", 0);
+    EditorMenuBar.addMenuItem("Brush", "Size 1 x 1", 1, "Alt 1", 3);
+    EditorMenuBar.addMenuItem("Brush", "Size 3 x 3", 3, "Alt 2", 3);
+    EditorMenuBar.addMenuItem("Brush", "Size 5 x 5", 5, "Alt 3", 3);
+    EditorMenuBar.addMenuItem("Brush", "Size 9 x 9", 9, "Alt 4", 3);
+    EditorMenuBar.addMenuItem("Brush", "Size 15 x 15", 15, "Alt 5", 3);
+    EditorMenuBar.addMenuItem("Brush", "Size 25 x 25", 25, "Alt 6", 3);
+    EditorMenuBar.addMenu("Window", 2);
+    EditorMenuBar.addMenuItem("Window", "World Editor", 2, "F2", 1);
+    EditorMenuBar.addMenuItem("Window", "World Editor Inspector", 3, "F3", 1);
+    EditorMenuBar.addMenuItem("Window", "World Editor Creator", 4, "F4", 1);
+    EditorMenuBar.addMenuItem("Window", "Mission Area Editor", 5, "F5", 1);
+    EditorMenuBar.addMenuItem("Window", "-", 0);
+    EditorMenuBar.addMenuItem("Window", "Terrain Editor", 6, "F6", 1);
+    EditorMenuBar.addMenuItem("Window", "Terrain Terraform Editor", 7, "F7", 1);
+    EditorMenuBar.addMenuItem("Window", "Terrain Texture Editor", 8, "F8", 1);
+    EditorMenuBar.addMenuItem("Window", "Terrain Texture Painter", 9, "", 1);
     %selectMenuName = "Select Type";
     %n = 1;
-    11.addMenu(EditorMenuBar, %selectMenuName);
-    1.addMenuItem(EditorMenuBar, %selectMenuName, "All Types", %n, "Ctrl 1");
+    EditorMenuBar.addMenu(%selectMenuName, 11);
+    EditorMenuBar.addMenuItem(%selectMenuName, "All Types", %n, "Ctrl 1", 1);
     %n = (%n + 1.0);
-    1.addMenuItem(EditorMenuBar, %selectMenuName, "Triggers", %n, "Ctrl 2");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Triggers", %n, "Ctrl 2", 1);
     %n = (%n + 1.0);
-    1.addMenuItem(EditorMenuBar, %selectMenuName, "Interiors", %n, "Ctrl 3");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Interiors", %n, "Ctrl 3", 1);
     %n = (%n + 1.0);
-    1.addMenuItem(EditorMenuBar, %selectMenuName, "Shapes and Sit Markers", %n, "Ctrl 4");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Shapes and Sit Markers", %n, "Ctrl 4", 1);
     %n = (%n + 1.0);
-    1.addMenuItem(EditorMenuBar, %selectMenuName, "Antiportals", %n, "Ctrl 5");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Antiportals", %n, "Ctrl 5", 1);
     %n = (%n + 1.0);
-    1.addMenuItem(EditorMenuBar, %selectMenuName, "Items", %n, "ctrl 6");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Items", %n, "ctrl 6", 1);
     %n = (%n + 1.0);
-    1.addMenuItem(EditorMenuBar, %selectMenuName, "Audio Emitters", %n, "Ctrl 7");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Audio Emitters", %n, "Ctrl 7", 1);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "-");
+    EditorMenuBar.addMenuItem(%selectMenuName, "-", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all AdvertShapes");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all AdvertShapes", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all AIPlayers");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all AIPlayers", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all ETSSeatMarker");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all ETSSeatMarker", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all InteriorInstances");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all InteriorInstances", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all Markers");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all Markers", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all MissionMarkers");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all MissionMarkers", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all StaticShapes");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all StaticShapes", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all sgUniversalStaticLights");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all sgUniversalStaticLights", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all Triggers");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all Triggers", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all TSStatics");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all TSStatics", %n);
     %n = (%n + 1.0);
-    %n.addMenuItem(EditorMenuBar, %selectMenuName, "Select all Waterblocks");
+    EditorMenuBar.addMenuItem(%selectMenuName, "Select all Waterblocks", %n);
     %n = (%n + 1.0);
     %debugMenuName = "Render Mode";
-    11.addMenu(EditorMenuBar, %debugMenuName);
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "normal", 1, "Shift N");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "lines", 2, "Shift F2");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "detail polys", 3, "Shift F3");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "portal zones", 4, "Shift F4");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "null surfaces", 5, "Shift F5");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "portal zones nonRoot", 6, "Shift F6");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "zonesNonRoot, Detail", 7, "Shift F7");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "large textures", 8, "Shift F8");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "detail level", 9, "Shift F9");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "lightmap", 10, "Shift F10");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "only textures", 11, "Shift F11");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "triangle strips", 12, "Shift F12");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "next mode", 13, "=");
-    1.addMenuItem(EditorMenuBar, %debugMenuName, "prev mode", 14, "-");
-    8.addMenu(EditorMenuBar, $sgEditorItemNames::sgMenu);
-    "F12".addMenuItem(EditorMenuBar, $sgEditorItemNames::sgMenu, $sgEditorItemNames::sgMenuItem[0], 2);
-    "Adjust Height".onActionMenuItemSelect(EditorMenuBar, 0);
-    "Circle Brush".onBrushMenuItemSelect(EditorMenuBar, 0);
-    "Soft Brush".onBrushMenuItemSelect(EditorMenuBar, 0);
-    "Size 9 x 9".onBrushMenuItemSelect(EditorMenuBar, 9);
-    "Medium Pace".onCameraMenuItemSelect(EditorMenuBar, 6);
-    "Drop at Screen Center".onWorldMenuItemSelect(EditorMenuBar, 0);
+    EditorMenuBar.addMenu(%debugMenuName, 11);
+    EditorMenuBar.addMenuItem(%debugMenuName, "normal", 1, "Shift N", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "lines", 2, "Shift F2", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "detail polys", 3, "Shift F3", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "portal zones", 4, "Shift F4", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "null surfaces", 5, "Shift F5", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "portal zones nonRoot", 6, "Shift F6", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "zonesNonRoot, Detail", 7, "Shift F7", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "large textures", 8, "Shift F8", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "detail level", 9, "Shift F9", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "lightmap", 10, "Shift F10", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "only textures", 11, "Shift F11", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "triangle strips", 12, "Shift F12", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "next mode", 13, "=", 1);
+    EditorMenuBar.addMenuItem(%debugMenuName, "prev mode", 14, "-", 1);
+    EditorMenuBar.addMenu($sgEditorItemNames::sgMenu, 8);
+    EditorMenuBar.addMenuItem($sgEditorItemNames::sgMenu, $sgEditorItemNames::sgMenuItem[0], 2, "F12");
+    EditorMenuBar.onActionMenuItemSelect(0, "Adjust Height");
+    EditorMenuBar.onBrushMenuItemSelect(0, "Circle Brush");
+    EditorMenuBar.onBrushMenuItemSelect(0, "Soft Brush");
+    EditorMenuBar.onBrushMenuItemSelect(9, "Size 9 x 9");
+    EditorMenuBar.onCameraMenuItemSelect(6, "Medium Pace");
+    EditorMenuBar.onWorldMenuItemSelect(0, "Drop at Screen Center");
     EWorldEditor.init();
     ETerrainEditor.attachTerrain();
     TerraformerInit();
@@ -477,13 +477,7 @@ function EditorGui::init(%this) {
     EditorGui.saveAs = 0;
 };
 function EditorNewMission() {
-    if (ETerrainEditor.isMissionDirty) {
-    }
-    if (ETerrainEditor.isDirty) {
-    }
-    if (EWorldEditor.isDirty) {
-    }
-    if (EditorTree.isDirty) {
+    if (ETerrainEditor.isMissionDirty || ETerrainEditor.isDirty || EWorldEditor.isDirty || EditorTree.isDirty) {
         MessageBoxYesNo("Mission Modified", "Would you like to save changes to the current mission \"" @ $Server::MissionFile @ "\" before creating a new mission?", "EditorDoNewMission(true);", "EditorDoNewMission(false);");
     }
     EditorDoNewMission(0);
@@ -495,49 +489,41 @@ function EditorSaveMissionMenu() {
     EditorSaveMission();
 };
 function EditorSaveMission() {
-    if (EWorldEditor.isDirty) {
+    if (EWorldEditor.isDirty || EditorTree.isDirty || ETerrainEditor.isMissionDirty) {
     }
-    if (EditorTree.isDirty) {
-    }
-    if (ETerrainEditor.isMissionDirty) {
-    }
-    if (!(isWriteableFileName($Server::MissionFile))) {
+    if (!isWriteableFileName($Server::MissionFile)) {
         MessageBoxOK("Error", "Mission file \"" @ $Server::MissionFile @ "\" is read-only.", "");
         return 0;
     }
     if (ETerrainEditor.isDirty) {
     }
-    if (!(isWriteableFileName(Terrain.terrainFile))) {
+    if (!isWriteableFileName(Terrain.terrainFile)) {
         MessageBoxOK("Error", "Terrain file \"" @ Terrain.terrainFile @ "\" is read-only.", "");
         return 0;
     }
     %errorCount = RunTestCase("TEST_MISSIONGROUPINTEGRITY", "WARNING: About that mission file you just saved...");
-    if (EWorldEditor.isDirty) {
-    }
-    if (EditorTree.isDirty) {
-    }
-    if (ETerrainEditor.isMissionDirty) {
+    if (EWorldEditor.isDirty || EditorTree.isDirty || ETerrainEditor.isMissionDirty) {
         if ((MissionInfo.mode $= "PrivateSpaceDesign")) {
             if (isObject(PRIVATESPACE_GROUP)) {
-                PRIVATESPACE_GROUP.add(RootGroup);
+                RootGroup.add(PRIVATESPACE_GROUP);
             }
             error("PrivateSpaceDesign mode, no PRIVATESPACE_GROUP object");
         }
-        $Server::MissionFile.save(MissionGroup);
+        MissionGroup.save($Server::MissionFile);
         if ((MissionInfo.mode $= "PrivateSpaceDesign") && isObject(PRIVATESPACE_GROUP)) {
             %spaceForGridFileName = getSubStr($Server::MissionFile, 0, (strlen($Server::MissionFile) - 4.0)) @ "_generated.cs";
-            %spaceForGridFileName.save(PRIVATESPACE_GROUP);
+            PRIVATESPACE_GROUP.save(%spaceForGridFileName);
             echo("PrivateSpaceDesign mode saving to space for grid, file named:" @ " " @ %spaceForGridFileName);
-            PRIVATESPACE_GROUP.add(MissionGroup);
+            MissionGroup.add(PRIVATESPACE_GROUP);
         }
     }
     if ((MissionInfo.mode $= "PrivateSpaceDesign") && isObject(PRIVATESPACE_GROUP)) {
         %spaceForGridFileName = getSubStr($Server::MissionFile, 0, (strlen($Server::MissionFile) - 4.0)) @ "_generated.cs";
-        %spaceForGridFileName.save(PRIVATESPACE_GROUP);
+        PRIVATESPACE_GROUP.save(%spaceForGridFileName);
         echo("PrivateSpaceDesign mode saving to space for grid, file named:" @ " " @ %spaceForGridFileName);
     }
     if (ETerrainEditor.isDirty) {
-        Terrain.terrainFile.save(Terrain);
+        Terrain.save(Terrain.terrainFile);
     }
     EditorTree.isDirty = 0;
     EWorldEditor.isDirty = 0;
@@ -554,7 +540,7 @@ function EditorDoSaveAs(%missionName) {
     %saveTerrName = Terrain.terrainFile;
     $Server::MissionFile = %missionName;
     Terrain.terrainFile = filePath(%missionName) @ "/" @ fileBase(%missionName) @ ".ter";
-    if (!(EditorSaveMission())) {
+    if (!EditorSaveMission()) {
         $Server::MissionFile = %saveMissionFile;
         Terrain.terrainFile = %saveTerrName;
     }
@@ -566,7 +552,7 @@ function EditorDoLoadMission(%file) {
     Editor.close();
     loadMission(%file, 1);
     Editor::Create();
-    Editor.add(MissionCleanup);
+    MissionCleanup.add(Editor);
     EditorGui.loadingMission = 1;
     Editor.open();
 };
@@ -591,13 +577,7 @@ function EditorDoNewMission(%saveFirst) {
     EditorTree.isDirty = 1;
 };
 function EditorOpenMission() {
-    if (ETerrainEditor.isMissionDirty) {
-    }
-    if (ETerrainEditor.isDirty) {
-    }
-    if (EWorldEditor.isDirty) {
-    }
-    if (EditorTree.isDirty) {
+    if (ETerrainEditor.isMissionDirty || ETerrainEditor.isDirty || EWorldEditor.isDirty || EditorTree.isDirty) {
         MessageBoxYesNo("Mission Modified", "Would you like to save changes to the current mission \"" @ $Server::MissionFile @ "\" before opening a new mission?", "EditorSaveBeforeLoad();", "getLoadFilename(\"*.mis\", \"EditorDoLoadMission\");");
     }
     getLoadFilename("*.mis", "EditorDoLoadMission");
@@ -607,89 +587,83 @@ function EditorMenuBar::onMenuSelect(%this, %unused, %menu) {
         if (ETerrainEditor.isVisible()) {
         }
         %editingHeightfield = EHeightField.isVisible();
-        %editingHeightfield.setMenuItemEnable(EditorMenuBar, "File", "Export Terraform Bitmap...");
-        if (ETerrainEditor.isDirty) {
-        }
-        if (ETerrainEditor.isMissionDirty) {
-        }
-        if (EWorldEditor.isDirty) {
-        }
-        EditorTree.isDirty.setMenuItemEnable(EditorMenuBar, "File", "Save Mission...");
+        EditorMenuBar.setMenuItemEnable("File", "Export Terraform Bitmap...", %editingHeightfield);
+        EditorMenuBar.setMenuItemEnable("File", "Save Mission...", ETerrainEditor.isDirty || ETerrainEditor.isMissionDirty || EWorldEditor.isDirty || EditorTree.isDirty);
     }
     if ((%menu $= "Edit")) {
         %selSize = EWorldEditor.getSelectionSize();
-        (%selSize > 0.0).setMenuItemEnable(EditorMenuBar, "Edit", "Zoom Camera To Selection");
+        EditorMenuBar.setMenuItemEnable("Edit", "Zoom Camera To Selection", (%selSize > 0.0));
         if (EWorldEditor.isVisible()) {
-            1.setMenuItemEnable(EditorMenuBar, "Edit", "Select All");
-            EWorldEditor.canPasteSelection().setMenuItemEnable(EditorMenuBar, "Edit", "Paste");
+            EditorMenuBar.setMenuItemEnable("Edit", "Select All", 1);
+            EditorMenuBar.setMenuItemEnable("Edit", "Paste", EWorldEditor.canPasteSelection());
             %canCutCopy = (EWorldEditor.getSelectionSize() > 0.0);
-            %canCutCopy.setMenuItemEnable(EditorMenuBar, "Edit", "Cut");
-            %canCutCopy.setMenuItemEnable(EditorMenuBar, "Edit", "Copy");
+            EditorMenuBar.setMenuItemEnable("Edit", "Cut", %canCutCopy);
+            EditorMenuBar.setMenuItemEnable("Edit", "Copy", %canCutCopy);
         }
         if (ETerrainEditor.isVisible()) {
-            0.setMenuItemEnable(EditorMenuBar, "Edit", "Cut");
-            0.setMenuItemEnable(EditorMenuBar, "Edit", "Copy");
-            0.setMenuItemEnable(EditorMenuBar, "Edit", "Paste");
-            0.setMenuItemEnable(EditorMenuBar, "Edit", "Select All");
+            EditorMenuBar.setMenuItemEnable("Edit", "Cut", 0);
+            EditorMenuBar.setMenuItemEnable("Edit", "Copy", 0);
+            EditorMenuBar.setMenuItemEnable("Edit", "Paste", 0);
+            EditorMenuBar.setMenuItemEnable("Edit", "Select All", 0);
         }
     }
     if ((%menu $= "World")) {
         %selSize = EWorldEditor.getSelectionSize();
         %lockCount = EWorldEditor.getSelectionLockCount();
         %hideCount = EWorldEditor.getSelectionHiddenCount();
-        (%lockCount < %selSize).setMenuItemEnable(EditorMenuBar, "World", "Lock Selection");
-        (%lockCount > 0.0).setMenuItemEnable(EditorMenuBar, "World", "Unlock Selection");
-        (%hideCount < %selSize).setMenuItemEnable(EditorMenuBar, "World", "Hide Selected");
-        (%hideCount > 0.0).setMenuItemEnable(EditorMenuBar, "World", "Unhide Selected");
-        (%selSize > 0.0).setMenuItemEnable(EditorMenuBar, "World", "Invert Hidden");
-        (%selSize > 0.0).setMenuItemEnable(EditorMenuBar, "World", "Add Selection to Instant Group");
+        EditorMenuBar.setMenuItemEnable("World", "Lock Selection", (%lockCount < %selSize));
+        EditorMenuBar.setMenuItemEnable("World", "Unlock Selection", (%lockCount > 0.0));
+        EditorMenuBar.setMenuItemEnable("World", "Hide Selected", (%hideCount < %selSize));
+        EditorMenuBar.setMenuItemEnable("World", "Unhide Selected", (%hideCount > 0.0));
+        EditorMenuBar.setMenuItemEnable("World", "Invert Hidden", (%selSize > 0.0));
+        EditorMenuBar.setMenuItemEnable("World", "Add Selection to Instant Group", (%selSize > 0.0));
         if ((%selSize > 0.0)) {
         }
-        (%lockCount == 0.0).setMenuItemEnable(EditorMenuBar, "World", "Reset Transforms");
+        EditorMenuBar.setMenuItemEnable("World", "Reset Transforms", (%lockCount == 0.0));
         if ((%selSize > 0.0)) {
         }
-        (%lockCount == 0.0).setMenuItemEnable(EditorMenuBar, "World", "Drop Selection");
+        EditorMenuBar.setMenuItemEnable("World", "Drop Selection", (%lockCount == 0.0));
         if ((%selSize > 0.0)) {
         }
-        (%lockCount == 0.0).setMenuItemEnable(EditorMenuBar, "World", "Delete Selection");
+        EditorMenuBar.setMenuItemEnable("World", "Delete Selection", (%lockCount == 0.0));
     }
 };
 function EditorMenuBar::onMenuItemSelect(%this, %unused, %menu, %itemId, %item) {
     if ((%menu $= "File")) {
-        %item.onFileMenuItemSelect(%this, %itemId);
+        %this.onFileMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "Edit")) {
-        %item.onEditMenuItemSelect(%this, %itemId);
+        %this.onEditMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "World")) {
-        %item.onWorldMenuItemSelect(%this, %itemId);
+        %this.onWorldMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "Window")) {
-        %item.onWindowMenuItemSelect(%this, %itemId);
+        %this.onWindowMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "Select Type")) {
-        %item.onSelectTypeMenuItemSelect(%this, %itemId);
+        %this.onSelectTypeMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "Render Mode")) {
-        %item.onRenderModeMenuItemSelect(%this, %itemId);
+        %this.onRenderModeMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "Action")) {
-        %item.onActionMenuItemSelect(%this, %itemId);
+        %this.onActionMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "Brush")) {
-        %item.onBrushMenuItemSelect(%this, %itemId);
+        %this.onBrushMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "Camera")) {
-        %item.onCameraMenuItemSelect(%this, %itemId);
+        %this.onCameraMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "SnapTo")) {
-        %item.OnSnapToMenuItemSelect(%this, %itemId);
+        %this.OnSnapToMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= "CloneTo")) {
-        %item.OnCloneToMenuItemSelect(%this, %itemId);
+        %this.OnCloneToMenuItemSelect(%itemId, %item);
     }
     if ((%menu $= $sgEditorItemNames::sgMenu)) {
-        %item.onToggleSGTools(%this, %itemId);
+        %this.onToggleSGTools(%itemId, %item);
     }
 };
 function refreshFileList() {
@@ -735,27 +709,27 @@ function EditorMenuBar::onCameraMenuItemSelect(%this, %itemId, %item) {
     if ((%item $= "Drop Camera at Selection")) {
         EWorldEditor.dropCameraWithSelectionInView();
     }
-    1.setMenuItemChecked(%this, "Camera", %itemId);
+    %this.setMenuItemChecked("Camera", %itemId, 1);
     $Camera::movementSpeed = ((((%itemId - 3.0) / 6.0) * 195.0) + 5.0);
 };
 function EditorMenuBar::onActionMenuItemSelect(%this, %itemId, %item) {
-    1.setMenuItemChecked(EditorMenuBar, "Action", %item);
+    EditorMenuBar.setMenuItemChecked("Action", %item, 1);
     if ((%item $= "Select")) {
         ETerrainEditor.currentMode = "select";
         ETerrainEditor.selectionHidden = 0;
         ETerrainEditor.renderVertexSelection = 1;
-        "select".setAction(ETerrainEditor);
+        ETerrainEditor.setAction("select");
     }
     if ((%item $= "Adjust Selection")) {
         ETerrainEditor.currentMode = "adjust";
         ETerrainEditor.selectionHidden = 0;
-        "adjustHeight".setAction(ETerrainEditor);
+        ETerrainEditor.setAction("adjustHeight");
         ETerrainEditor.currentAction = brushAdjustHeight;
         ETerrainEditor.renderVertexSelection = 1;
     }
     ETerrainEditor.currentMode = "paint";
     ETerrainEditor.selectionHidden = 1;
-    ETerrainEditor.currentAction.setAction(ETerrainEditor);
+    ETerrainEditor.setAction(ETerrainEditor.currentAction);
     if ((%item $= "Add Dirt")) {
         ETerrainEditor.currentAction = raiseHeight;
         ETerrainEditor.renderVertexSelection = 1;
@@ -793,19 +767,19 @@ function EditorMenuBar::onActionMenuItemSelect(%this, %itemId, %item) {
         ETerrainEditor.renderVertexSelection = 0;
     }
     if ((ETerrainEditor.currentMode $= "select")) {
-        ETerrainEditor.currentAction.processAction(ETerrainEditor);
+        ETerrainEditor.processAction(ETerrainEditor.currentAction);
     }
     if ((ETerrainEditor.currentMode $= "paint")) {
-        ETerrainEditor.currentAction.setAction(ETerrainEditor);
+        ETerrainEditor.setAction(ETerrainEditor.currentAction);
     }
 };
 function EditorMenuBar::onBrushMenuItemSelect(%this, %itemId, %item) {
-    1.setMenuItemChecked(EditorMenuBar, "Brush", %item);
+    EditorMenuBar.setMenuItemChecked("Brush", %item, 1);
     if ((%item $= "Box Brush")) {
-        box.setBrushType(ETerrainEditor);
+        ETerrainEditor.setBrushType(box);
     }
     if ((%item $= "Circle Brush")) {
-        ellipse.setBrushType(ETerrainEditor);
+        ETerrainEditor.setBrushType(ellipse);
     }
     if ((%item $= "Soft Brush")) {
         ETerrainEditor.enableSoftBrushes = 1;
@@ -814,10 +788,10 @@ function EditorMenuBar::onBrushMenuItemSelect(%this, %itemId, %item) {
         ETerrainEditor.enableSoftBrushes = 0;
     }
     ETerrainEditor.brushSize = %itemId;
-    %itemId.setBrushSize(ETerrainEditor, %itemId);
+    ETerrainEditor.setBrushSize(%itemId, %itemId);
 };
 function EditorMenuBar::onRenderModeMenuItemSelect(%this, %itemId, %item) {
-    1.setMenuItemChecked(EditorMenuBar, "Render Mode", %item);
+    EditorMenuBar.setMenuItemChecked("Render Mode", %item, 1);
     if ((%item $= "normal")) {
         setInteriorRenderMode(0);
     }
@@ -866,7 +840,7 @@ function EditorMenuBar::onSelectTypeMenuItemSelect(%this, %itemId, %item) {
     if ((getWords(%item, 0, 1) $= "Select all")) {
         %classname = getWord(%item, 2);
         %classname = getSubStr(%classname, 0, (strlen(%classname) - 1.0));
-        %classname.selectAllObjectsOfClassName(EWorldEditor);
+        EWorldEditor.selectAllObjectsOfClassName(%classname);
     }
     if ((%item $= "All Types")) {
         EWorldEditor.selectType = $TypeMasks::ALLTYPES;
@@ -890,24 +864,24 @@ function EditorMenuBar::onSelectTypeMenuItemSelect(%this, %itemId, %item) {
         EWorldEditor.selectType = $TypeMasks::AntiPortalObjectType;
     }
     EWorldEditor.selectType = $TypeMasks::ALLTYPES;
-    1.setMenuItemChecked(EditorMenuBar, "Select Type", %item);
+    EditorMenuBar.setMenuItemChecked("Select Type", %item, 1);
     EStatusHud.updateStatus();
 };
 function EditorMenuBar::onWorldMenuItemSelect(%this, %itemId, %item) {
     if ((%item $= "Lock Selection")) {
-        1.lockSelection(EWorldEditor);
+        EWorldEditor.lockSelection(1);
     }
     if ((%item $= "Unlock Selection")) {
-        0.lockSelection(EWorldEditor);
+        EWorldEditor.lockSelection(0);
     }
     if ((%item $= "Hide Selected")) {
-        1.hideSelection(EWorldEditor);
+        EWorldEditor.hideSelection(1);
     }
     if ((%item $= "Hide All But Selected")) {
-        1.hideAllButSelection(EWorldEditor);
+        EWorldEditor.hideAllButSelection(1);
     }
     if ((%item $= "Unhide Selected")) {
-        0.hideSelection(EWorldEditor);
+        EWorldEditor.hideSelection(0);
     }
     if ((%item $= "Invert Hidden")) {
         EWorldEditor.invertHiddenSelection();
@@ -928,7 +902,7 @@ function EditorMenuBar::onWorldMenuItemSelect(%this, %itemId, %item) {
     if ((%item $= "Add Selection to Instant Group")) {
         EWorldEditor.addSelectionToAddGroup();
     }
-    1.setMenuItemChecked(EditorMenuBar, "World", %item);
+    EditorMenuBar.setMenuItemChecked("World", %item, 1);
     if ((%item $= "Drop at Origin")) {
         EWorldEditor.dropType = "atOrigin";
     }
@@ -952,17 +926,17 @@ function EditorMenuBar::onWorldMenuItemSelect(%this, %itemId, %item) {
     }
 };
 function EditorMenuBar::OnSnapToMenuItemSelect(%this, %itemId, %item) {
-    %item.multiSnapTo(EWorldEditor);
+    EWorldEditor.multiSnapTo(%item);
 };
 function EditorMenuBar::OnCloneToMenuItemSelect(%this, %itemId, %item) {
-    %item.CloneTo(EWorldEditor);
+    EWorldEditor.CloneTo(%item);
 };
 function EditorMenuBar::onEditMenuItemSelect(%this, %itemId, %item) {
     if ((%item $= "World Editor Settings...")) {
-        0.pushDialog(Canvas, WorldEditorSettingsDlg);
+        Canvas.pushDialog(WorldEditorSettingsDlg, 0);
     }
     if ((%item $= "Terrain Editor Settings...")) {
-        99.pushDialog(Canvas, TerrainEditorValuesSettingsGui);
+        Canvas.pushDialog(TerrainEditorValuesSettingsGui, 99);
     }
     if ((%item $= "Relight Scene")) {
         lightScene("", forceAlways);
@@ -971,8 +945,8 @@ function EditorMenuBar::onEditMenuItemSelect(%this, %itemId, %item) {
         EWorldEditor.increaseMoveScale();
     }
     if ((%item $= "Toggle Grid Visibility")) {
-        EWorldEditor.renderPlane = !(EWorldEditor.renderPlane);
-        EWorldEditor.renderPlaneHashes = !(EWorldEditor.renderPlaneHashes);
+        EWorldEditor.renderPlane = !EWorldEditor.renderPlane;
+        EWorldEditor.renderPlaneHashes = !EWorldEditor.renderPlaneHashes;
     }
     if ((%item $= "Status Hud Toggle")) {
         toggleStatusHud();
@@ -1033,10 +1007,10 @@ function EditorMenuBar::onEditMenuItemSelect(%this, %itemId, %item) {
     }
 };
 function EditorMenuBar::onToggleSGTools(%this, %itemId, %item) {
-    %item.toggleSGTools(EditorGui);
+    EditorGui.toggleSGTools(%item);
 };
 function EditorMenuBar::onWindowMenuItemSelect(%this, %itemId, %item) {
-    %item.setEditor(EditorGui);
+    EditorGui.setEditor(%item);
 };
 function Creator::onWake(%this) {
     Creator.init();
@@ -1045,25 +1019,25 @@ function Creator::onSleep(%this) {
     $LastEditorChosenInstantGroup = $instantGroup;
 };
 function EditorGui::setWorldEditorVisible(%this) {
-    1.setVisible(EWorldEditor);
-    0.setVisible(ETerrainEditor);
-    1.setMenuVisible(EditorMenuBar, "World");
-    0.setMenuVisible(EditorMenuBar, "Action");
-    0.setMenuVisible(EditorMenuBar, "Brush");
-    1.makeFirstResponder(EWorldEditor);
-    1.open(EditorTree, MissionGroup);
+    EWorldEditor.setVisible(1);
+    ETerrainEditor.setVisible(0);
+    EditorMenuBar.setMenuVisible("World", 1);
+    EditorMenuBar.setMenuVisible("Action", 0);
+    EditorMenuBar.setMenuVisible("Brush", 0);
+    EWorldEditor.makeFirstResponder(1);
+    EditorTree.open(MissionGroup, 1);
 };
 function EditorGui::setTerrainEditorVisible(%this) {
-    0.setVisible(EWorldEditor);
-    1.setVisible(ETerrainEditor);
+    EWorldEditor.setVisible(0);
+    ETerrainEditor.setVisible(1);
     ETerrainEditor.attachTerrain();
-    0.setVisible(EHeightField);
-    0.setVisible(ETexture);
-    0.setMenuVisible(EditorMenuBar, "World");
-    1.setMenuVisible(EditorMenuBar, "Action");
-    1.setMenuVisible(EditorMenuBar, "Brush");
-    1.makeFirstResponder(ETerrainEditor);
-    0.setVisible(EPainter);
+    EHeightField.setVisible(0);
+    ETexture.setVisible(0);
+    EditorMenuBar.setMenuVisible("World", 0);
+    EditorMenuBar.setMenuVisible("Action", 1);
+    EditorMenuBar.setMenuVisible("Brush", 1);
+    ETerrainEditor.makeFirstResponder(1);
+    EPainter.setVisible(0);
 };
 function EditorGui::toggleSGTools(%this, %item) {
     if ((%item $= %item[$sgEditorItemNames::sgMenuItem @ 0])) {
@@ -1071,31 +1045,31 @@ function EditorGui::toggleSGTools(%this, %item) {
     }
 };
 function EditorGui::setEditor(%this, %editor) {
-    -(1.0).setMenuItemBitmap(EditorMenuBar, "Window", %this.currentEditor);
-    0.setMenuItemBitmap(EditorMenuBar, "Window", %editor);
+    EditorMenuBar.setMenuItemBitmap("Window", %this.currentEditor, -(1.0));
+    EditorMenuBar.setMenuItemBitmap("Window", %editor, 0);
     %this.currentEditor = %editor;
     if ((%editor $= "World Editor")) {
-        0.setVisible(EWFrame);
-        0.setVisible(EWMissionArea);
+        EWFrame.setVisible(0);
+        EWMissionArea.setVisible(0);
         %this.setWorldEditorVisible();
     }
     if ((%editor $= "World Editor Inspector")) {
-        1.setVisible(EWFrame);
-        0.setVisible(EWMissionArea);
-        0.setVisible(EWCreatorPane);
-        1.setVisible(EWInspectorPane);
+        EWFrame.setVisible(1);
+        EWMissionArea.setVisible(0);
+        EWCreatorPane.setVisible(0);
+        EWInspectorPane.setVisible(1);
         %this.setWorldEditorVisible();
     }
     if ((%editor $= "World Editor Creator")) {
-        1.setVisible(EWFrame);
-        0.setVisible(EWMissionArea);
-        1.setVisible(EWCreatorPane);
-        0.setVisible(EWInspectorPane);
+        EWFrame.setVisible(1);
+        EWMissionArea.setVisible(0);
+        EWCreatorPane.setVisible(1);
+        EWInspectorPane.setVisible(0);
         %this.setWorldEditorVisible();
     }
     if ((%editor $= "Mission Area Editor")) {
-        0.setVisible(EWFrame);
-        1.setVisible(EWMissionArea);
+        EWFrame.setVisible(0);
+        EWMissionArea.setVisible(1);
         %this.setWorldEditorVisible();
     }
     if ((%editor $= "Terrain Editor")) {
@@ -1103,22 +1077,20 @@ function EditorGui::setEditor(%this, %editor) {
     }
     if ((%editor $= "Terrain Terraform Editor")) {
         %this.setTerrainEditorVisible();
-        1.setVisible(EHeightField);
+        EHeightField.setVisible(1);
     }
     if ((%editor $= "Terrain Texture Editor")) {
         %this.setTerrainEditorVisible();
-        1.setVisible(ETexture);
+        ETexture.setVisible(1);
     }
     if ((%editor $= "Terrain Texture Painter")) {
         %this.setTerrainEditorVisible();
-        1.setVisible(EPainter);
+        EPainter.setVisible(1);
         EPainter.setup();
     }
 };
 function EditorGui::getHelpPage(%this) {
-    if ((%this.currentEditor $= "World Editor") && (%this.currentEditor $= "World Editor Inspector")) {
-    }
-    if ((%this.currentEditor $= "World Editor Creator")) {
+    if ((%this.currentEditor $= "World Editor Inspector") || (%this.currentEditor $= "World Editor") || (%this.currentEditor $= "World Editor Creator")) {
         return "5. World Editor";
     }
     if ((%this.currentEditor $= "Mission Area Editor")) {
@@ -1138,7 +1110,7 @@ function EditorGui::getHelpPage(%this) {
     }
 };
 function ETerrainEditor::setPaintMaterial(%this, %matIndex) {
-    ETerrainEditor.paintMaterial = %matIndex @ EPainter.mat;
+    ETerrainEditor.paintMaterial = EPainter.mat[%matIndex];
 };
 function ETerrainEditor::changeMaterial(%this, %matIndex) {
     EPainter.matIndex = %matIndex;
@@ -1148,42 +1120,42 @@ function EPainterChangeMat(%file) {
     %file = filePath(%file) @ "/" @ fileBase(%file);
     %i = 0;
     while ((%i < 6.0)) {
-        if ((%i @ " " @ EPainter.mat $= %file)) {
+        if ((EPainter.mat[%i] $= %file)) {
             return;
         }
         %i = (%i + 1.0);
     }
-    EPainter.mat = (%i < 6.0) @ %file @ EPainter.matIndex;
+    EPainter.mat[EPainter.matIndex] = (%i < 6.0) @ %file;
     %mats = "";
     %i = 0;
     while ((%i < 6.0)) {
-        %mats = %mats @ %i @ EPainter.mat @ "\n";
+        %mats = %mats @ EPainter.mat[%i] @ "\n";
         %i = (%i + 1.0);
     }
-    %mats.setTerrainMaterials(ETerrainEditor);
+    ETerrainEditor.setTerrainMaterials(%mats);
     EPainter.setup();
     "ETerrainMaterialPaint" @ EPainter.matIndex.performClick();
 };
 function EPainter::setup(%this) {
-    "Paint Material".onActionMenuItemSelect(EditorMenuBar, 0);
+    EditorMenuBar.onActionMenuItemSelect(0, "Paint Material");
     %mats = ETerrainEditor.getTerrainMaterials();
     %valid = 1;
     %i = 0;
     while ((%i < 6.0)) {
         %mat = getRecord(%mats, %i);
-        %this.mat = %mat @ %i;
-        fileBase(%mat).setText("ETerrainMaterialText" @ %i);
-        %mat.setBitmap("ETerrainMaterialBitmap" @ %i);
-        1.setActive("ETerrainMaterialChange" @ %i);
-        !(%mat $= "").setActive("ETerrainMaterialPaint" @ %i);
+        %this.mat[%i] = %mat;
+        "ETerrainMaterialText" @ %i.setText(fileBase(%mat));
+        "ETerrainMaterialBitmap" @ %i.setBitmap(%mat);
+        "ETerrainMaterialChange" @ %i.setActive(1);
+        "ETerrainMaterialPaint" @ %i.setActive(!(%mat $= ""));
         if ((%mat $= "")) {
-            "Add...".setText("ETerrainMaterialChange" @ %i);
+            "ETerrainMaterialChange" @ %i.setText("Add...");
             if (%valid) {
                 %valid = 0;
             }
-            0.setActive("ETerrainMaterialChange" @ %i);
+            "ETerrainMaterialChange" @ %i.setActive(0);
         }
-        "Change...".setText("ETerrainMaterialChange" @ %i);
+        "ETerrainMaterialChange" @ %i.setText("Change...");
         %i = (%i + 1.0);
     }
     ETerrainMaterialPaint0.performClick();
@@ -1191,14 +1163,14 @@ function EPainter::setup(%this) {
 function EditorGui::onWake(%this) {
     moveMap.push();
     EditorMap.push();
-    %this.currentEditor.setEditor(%this);
+    %this.setEditor(%this.currentEditor);
 };
 function EditorGui::onSleep(%this) {
     EditorMap.pop();
     moveMap.pop();
 };
 function AreaEditor::onUpdate(%this, %area) {
-    "X: " @ getWord(%area, 0) @ " Y: " @ getWord(%area, 1) @ " W: " @ getWord(%area, 2) @ " H: " @ getWord(%area, 3).setValue(AreaEditingText);
+    AreaEditingText.setValue("X: " @ getWord(%area, 0) @ " Y: " @ getWord(%area, 1) @ " W: " @ getWord(%area, 2) @ " H: " @ getWord(%area, 3));
 };
 function AreaEditor::onWorldOffset(%this, %unused) {
 };
@@ -1206,11 +1178,11 @@ function RecurseInvertSelectObjectsInGroup(%theSimGroup) {
     %count = %theSimGroup.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %object = %i.getObject(%theSimGroup);
+        %object = %theSimGroup.getObject(%i);
         if (%object.isClassSimGroup()) {
             RecurseInvertSelectObjectsInGroup(%object);
         }
-        %object.invertSelectObject(EWorldEditor);
+        EWorldEditor.invertSelectObject(%object);
         %i = (%i + 1.0);
     }
 };
@@ -1218,14 +1190,12 @@ function RecurseSelectObjectsInGroup(%theSimGroup, %classname) {
     %count = %theSimGroup.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %object = %i.getObject(%theSimGroup);
+        %object = %theSimGroup.getObject(%i);
         if (%object.isClassSimGroup()) {
             RecurseSelectObjectsInGroup(%object, %classname);
         }
-        if ((%classname $= "")) {
-        }
-        if ((%object.getClassName() $= %classname)) {
-            %object.selectObject(EWorldEditor);
+        if ((%classname $= "") || (%object.getClassName() $= %classname)) {
+            EWorldEditor.selectObject(%object);
         }
         %i = (%i + 1.0);
     }
@@ -1265,30 +1235,30 @@ function WorldEditor::onDelete(%this) {
     EditorTree.deleteSelection();
     inspector.uninspect();
     EStatusHud.updateStatus();
-    "".updateGeneralInfo(EWorldEditor);
+    EWorldEditor.updateGeneralInfo("");
 };
 function WorldEditor::onSelect(%this, %obj) {
-    %obj.addSelection(EditorTree);
+    EditorTree.addSelection(%obj);
     EStatusHud.updateStatus();
-    "".updateGeneralInfo(EWorldEditor);
+    EWorldEditor.updateGeneralInfo("");
 };
 function WorldEditor::onUnSelect(%this, %obj) {
-    %obj.removeSelection(EditorTree);
+    EditorTree.removeSelection(%obj);
     inspector.uninspect();
     EStatusHud.updateStatus();
-    "".updateGeneralInfo(EWorldEditor);
+    EWorldEditor.updateGeneralInfo("");
 };
 function WorldEditor::onClearSelected(%this) {
     EditorTree.clearSelection();
     inspector.uninspect();
     EStatusHud.updateStatus();
-    "".updateGeneralInfo(EWorldEditor);
+    EWorldEditor.updateGeneralInfo("");
 };
 function WorldEditor::onClearSelection(%this) {
     EditorTree.clearSelection();
     inspector.uninspect();
     EStatusHud.updateStatus();
-    "".updateGeneralInfo(EWorldEditor);
+    EWorldEditor.updateGeneralInfo("");
 };
 function EditorTree::onDragDrop(%this) {
     EditorTree.isDirty = 1;
@@ -1299,7 +1269,7 @@ function EditorTree::onObjectDeleteCompleted(%this) {
     EWorldEditor.deleteSelection();
     inspector.uninspect();
     EStatusHud.updateStatus();
-    "".updateGeneralInfo(EWorldEditor);
+    EWorldEditor.updateGeneralInfo("");
 };
 function EditorTree::onClearSelected(%this) {
     WorldEditor.clearSelection();
@@ -1316,46 +1286,46 @@ function EditorTree::init(%this) {
         setFirstResponder = 0;
         modal = 1;
     };
-    0.setVisible(ETContextPopup);
+    ETContextPopup.setVisible(0);
 };
 function EditorTree::OnInspect(%this, %obj) {
-    %obj.inspect(inspector);
-    %obj.getName().setValue(InspectorNameEdit);
-    %obj.updateGeneralInfo(EWorldEditor);
+    inspector.inspect(%obj);
+    InspectorNameEdit.setValue(%obj.getName());
+    EWorldEditor.updateGeneralInfo(%obj);
 };
 function EditorTree::onAddSelection(%this, %obj) {
     if ($AIEdit) {
-        %obj.selectObject(aiEdit);
+        aiEdit.selectObject(%obj);
     }
-    %obj.selectObject(EWorldEditor);
-    %obj.isNetCacheable = %obj.getInitialNetCacheable(TEST_MISSIONGROUPINTEGRITY);
+    EWorldEditor.selectObject(%obj);
+    %obj.isNetCacheable = TEST_MISSIONGROUPINTEGRITY.getInitialNetCacheable(%obj);
 };
 function EditorTree::onRemoveSelection(%this, %obj) {
     if ($AIEdit) {
-        %obj.selectObject(aiEdit);
+        aiEdit.selectObject(%obj);
     }
-    %obj.unselectObject(EWorldEditor);
+    EWorldEditor.unselectObject(%obj);
 };
 function EditorTree::onSelect(%this, %obj) {
     EWorldEditor.clearSelection();
     if (%obj.isClassSimGroup()) {
-        %obj.inspect(inspector);
-        %obj.getName().setValue(InspectorNameEdit);
+        inspector.inspect(%obj);
+        InspectorNameEdit.setValue(%obj.getName());
         $userPref::Editor::autoSelectGroupContents = $userPref::Editor::autoSelectGroupContents;
         if ($userPref::Editor::autoSelectGroupContents) {
             RecurseSelectObjectsInGroup(%obj, "");
         }
     }
     if ($AIEdit) {
-        %obj.selectObject(aiEdit);
+        aiEdit.selectObject(%obj);
     }
-    %obj.selectObject(EWorldEditor);
+    EWorldEditor.selectObject(%obj);
 };
 function EditorTree::onUnSelect(%this, %obj) {
     if ($AIEdit) {
-        %obj.unselectObject(aiEdit);
+        aiEdit.unselectObject(%obj);
     }
-    %obj.unselectObject(EWorldEditor);
+    EWorldEditor.unselectObject(%obj);
 };
 function ETContextPopup::onSelect(%this, %index, %unused) {
     if ((%index == 0.0)) {
@@ -1363,11 +1333,11 @@ function ETContextPopup::onSelect(%this, %index, %unused) {
     }
 };
 function WorldEditor::init(%this) {
-    AIObjective.ignoreObjClass(%this, TerrainBlock, Sky);
+    %this.ignoreObjClass(TerrainBlock, Sky, AIObjective);
     %this.numEditModes = 3;
-    %this.editMode = "move" @ 0;
-    %this.editMode = "rotate" @ 1;
-    %this.editMode = "scale" @ 2;
+    %this.editMode[0] = "move";
+    %this.editMode[1] = "rotate";
+    %this.editMode[2] = "scale";
     new GuiControl(WEContextPopupDlg) {
         profile = "GuiModelessDialogProfile";
         horizSizing = "width";
@@ -1379,26 +1349,26 @@ function WorldEditor::init(%this) {
         setFirstResponder = 0;
         modal = 1;
     };
-    0.setVisible(WEContextPopup);
+    WEContextPopup.setVisible(0);
 };
 function WorldEditor::onDblClick(%this, %obj) {
 };
 function WorldEditor::onClick(%this, %obj) {
     EStatusHud.updateStatus();
-    "".updateGeneralInfo(EWorldEditor);
-    %obj.inspect(inspector);
-    %obj.getName().setValue(InspectorNameEdit);
+    EWorldEditor.updateGeneralInfo("");
+    inspector.inspect(%obj);
+    InspectorNameEdit.setValue(%obj.getName());
 };
 function WorldEditor::onEndDrag(%this, %obj) {
     EStatusHud.updateStatus();
-    %obj.inspect(inspector);
-    %obj.getName().setValue(InspectorNameEdit);
+    inspector.inspect(%obj);
+    InspectorNameEdit.setValue(%obj.getName());
 };
 function WorldEditor::export(%this) {
     getSaveFilename("~/editor/*.mac", %this @ ".doExport", "selection.mac");
 };
 function WorldEditor::doExport(%this, %file) {
-    1.save(MissionGroup, "~/editor/" @ %file);
+    MissionGroup.save("~/editor/" @ %file, 1);
 };
 function WorldEditor::import(%this) {
     getLoadFilename("~/editor/*.mac", %this @ ".doImport");
@@ -1412,7 +1382,7 @@ function WorldEditor::getSelectionLockCount(%this) {
     %ret = 0;
     %i = 0;
     while ((%i < %this.getSelectionSize())) {
-        %obj = %i.getSelectedObject(%this);
+        %obj = %this.getSelectedObject(%i);
         if ((%obj.locked $= "true")) {
             %ret = (%ret + 1.0);
         }
@@ -1424,7 +1394,7 @@ function WorldEditor::getSelectionHiddenCount(%this) {
     %ret = 0;
     %i = (%this.getSelectionSize() - 1.0);
     while ((%i >= 0.0)) {
-        %obj = %i.getSelectedObject(%this);
+        %obj = %this.getSelectedObject(%i);
         if (%obj.noShow) {
             %ret = (%ret + 1.0);
         }
@@ -1434,149 +1404,147 @@ function WorldEditor::getSelectionHiddenCount(%this) {
 };
 function WorldEditor::snapTo(%this, %snapType, %objTarget, %objToSnap) {
     if ((%objTarget $= "")) {
-        %objTarget = 0.getSelectedObject(%this);
+        %objTarget = %this.getSelectedObject(0);
     }
     if ((%objToSnap $= "")) {
-        %objToSnap = (%this.getSelectionSize() - 1.0).getSelectedObject(%this);
+        %objToSnap = %this.getSelectedObject((%this.getSelectionSize() - 1.0));
     }
-    if ((%objTarget $= "")) {
-    }
-    if ((%objToSnap $= "")) {
+    if ((%objTarget $= "") || (%objToSnap $= "")) {
         error("Please select two objects before selecting a Snap To funciton.");
         return;
     }
     if ((%snapType $= "X")) {
-        %objToSnap.snapToX(%this, %objTarget);
+        %this.snapToX(%objTarget, %objToSnap);
     }
     if ((%snapType $= "X-")) {
-        %objToSnap.snapToXNeg(%this, %objTarget);
+        %this.snapToXNeg(%objTarget, %objToSnap);
     }
     if ((%snapType $= "X+")) {
-        %objToSnap.snapToXPos(%this, %objTarget);
+        %this.snapToXPos(%objTarget, %objToSnap);
     }
     if ((%snapType $= "Y")) {
-        %objToSnap.snapToY(%this, %objTarget);
+        %this.snapToY(%objTarget, %objToSnap);
     }
     if ((%snapType $= "Y-")) {
-        %objToSnap.snapToYNeg(%this, %objTarget);
+        %this.snapToYNeg(%objTarget, %objToSnap);
     }
     if ((%snapType $= "Y+")) {
-        %objToSnap.snapToYPos(%this, %objTarget);
+        %this.snapToYPos(%objTarget, %objToSnap);
     }
     if ((%snapType $= "Z")) {
-        %objToSnap.snapToZ(%this, %objTarget);
+        %this.snapToZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "Z-")) {
-        %objToSnap.snapToZNeg(%this, %objTarget);
+        %this.snapToZNeg(%objTarget, %objToSnap);
     }
     if ((%snapType $= "Z+")) {
-        %objToSnap.snapToZPos(%this, %objTarget);
+        %this.snapToZPos(%objTarget, %objToSnap);
     }
     if ((%snapType $= "X+YZ")) {
-        %objToSnap.snapToXPosYZ(%this, %objTarget);
+        %this.snapToXPosYZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "X-YZ")) {
-        %objToSnap.snapToXNegYZ(%this, %objTarget);
+        %this.snapToXNegYZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "XY+Z")) {
-        %objToSnap.snapToXYPosZ(%this, %objTarget);
+        %this.snapToXYPosZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "XY-Z")) {
-        %objToSnap.snapToXYNegZ(%this, %objTarget);
+        %this.snapToXYNegZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "XYZ+")) {
-        %objToSnap.snapToXYZPos(%this, %objTarget);
+        %this.snapToXYZPos(%objTarget, %objToSnap);
     }
     if ((%snapType $= "XYZ-")) {
-        %objToSnap.snapToXYZNeg(%this, %objTarget);
+        %this.snapToXYZNeg(%objTarget, %objToSnap);
     }
     if ((%snapType $= "ObjX+YZ")) {
-        %objToSnap.snapToObjXPosYZ(%this, %objTarget);
+        %this.snapToObjXPosYZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "ObjX-YZ")) {
-        %objToSnap.snapToObjXNegYZ(%this, %objTarget);
+        %this.snapToObjXNegYZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "ObjXY+Z")) {
-        %objToSnap.snapToObjXYPosZ(%this, %objTarget);
+        %this.snapToObjXYPosZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "ObjXY-Z")) {
-        %objToSnap.snapToObjXYNegZ(%this, %objTarget);
+        %this.snapToObjXYNegZ(%objTarget, %objToSnap);
     }
     if ((%snapType $= "ObjXYZ+")) {
-        %objToSnap.snapToObjXYZPos(%this, %objTarget);
+        %this.snapToObjXYZPos(%objTarget, %objToSnap);
     }
     if ((%snapType $= "ObjXYZ-")) {
-        %objToSnap.snapToObjXYZNeg(%this, %objTarget);
+        %this.snapToObjXYZNeg(%objTarget, %objToSnap);
     }
 };
 function WorldEditor::snapToX(%this, %objTarget, %objToSnap) {
-    setWord(%objToSnap.getTransform(), 0, (getWord(%objTarget.getTransform(), 0) + EWorldEditor.snapGapX)).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 0, (getWord(%objTarget.getTransform(), 0) + EWorldEditor.snapGapX)));
 };
 function WorldEditor::snapToXPos(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 0) - getWord(%objToSnap.getTransform(), 0)));
     %transformWithOffset = (getWord(%objTarget.getWorldBox(), 3) + %edgeOffset);
-    setWord(%objToSnap.getTransform(), 0, %transformWithOffset).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 0, %transformWithOffset));
 };
 function WorldEditor::snapToXNeg(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 3) - getWord(%objToSnap.getTransform(), 0)));
     %transformWithOffset = (getWord(%objTarget.getWorldBox(), 0) - %edgeOffset);
-    setWord(%objToSnap.getTransform(), 0, %transformWithOffset).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 0, %transformWithOffset));
 };
 function WorldEditor::snapToY(%this, %objTarget, %objToSnap) {
-    setWord(%objToSnap.getTransform(), 1, (getWord(%objTarget.getTransform(), 1) + EWorldEditor.snapGapY)).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 1, (getWord(%objTarget.getTransform(), 1) + EWorldEditor.snapGapY)));
 };
 function WorldEditor::snapToYPos(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 1) - getWord(%objToSnap.getTransform(), 1)));
     %transformWithOffset = (getWord(%objTarget.getWorldBox(), 4) + %edgeOffset);
-    setWord(%objToSnap.getTransform(), 1, %transformWithOffset).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 1, %transformWithOffset));
 };
 function WorldEditor::snapToYNeg(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 4) - getWord(%objToSnap.getTransform(), 1)));
     %transformWithOffset = (getWord(%objTarget.getWorldBox(), 1) - %edgeOffset);
-    setWord(%objToSnap.getTransform(), 1, %transformWithOffset).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 1, %transformWithOffset));
 };
 function WorldEditor::snapToZ(%this, %objTarget, %objToSnap) {
-    setWord(%objToSnap.getTransform(), 2, (getWord(%objTarget.getTransform(), 2) + EWorldEditor.snapGapZ)).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 2, (getWord(%objTarget.getTransform(), 2) + EWorldEditor.snapGapZ)));
 };
 function WorldEditor::snapToZPos(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 2) - getWord(%objToSnap.getTransform(), 2)));
     %transformWithOffset = (getWord(%objTarget.getWorldBox(), 5) + %edgeOffset);
-    setWord(%objToSnap.getTransform(), 2, %transformWithOffset).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 2, %transformWithOffset));
 };
 function WorldEditor::snapToZNeg(%this, %objTarget, %objToSnap) {
     %edgeOffset = mAbs((getWord(%objToSnap.getWorldBox(), 5) - getWord(%objToSnap.getTransform(), 2)));
     %transformWithOffset = (getWord(%objTarget.getWorldBox(), 2) - %edgeOffset);
-    setWord(%objToSnap.getTransform(), 2, %transformWithOffset).setTransform(%objToSnap);
+    %objToSnap.setTransform(setWord(%objToSnap.getTransform(), 2, %transformWithOffset));
 };
 function WorldEditor::snapToXPosYZ(%this, %objTarget, %objToSnap) {
-    %objToSnap.snapToXPos(%this, %objTarget);
-    %objToSnap.snapToY(%this, %objTarget);
-    %objToSnap.snapToZ(%this, %objTarget);
+    %this.snapToXPos(%objTarget, %objToSnap);
+    %this.snapToY(%objTarget, %objToSnap);
+    %this.snapToZ(%objTarget, %objToSnap);
 };
 function WorldEditor::snapToXNegYZ(%this, %objTarget, %objToSnap) {
-    %objToSnap.snapToXNeg(%this, %objTarget);
-    %objToSnap.snapToY(%this, %objTarget);
-    %objToSnap.snapToZ(%this, %objTarget);
+    %this.snapToXNeg(%objTarget, %objToSnap);
+    %this.snapToY(%objTarget, %objToSnap);
+    %this.snapToZ(%objTarget, %objToSnap);
 };
 function WorldEditor::snapToXYPosZ(%this, %objTarget, %objToSnap) {
-    %objToSnap.snapToX(%this, %objTarget);
-    %objToSnap.snapToYPos(%this, %objTarget);
-    %objToSnap.snapToZ(%this, %objTarget);
+    %this.snapToX(%objTarget, %objToSnap);
+    %this.snapToYPos(%objTarget, %objToSnap);
+    %this.snapToZ(%objTarget, %objToSnap);
 };
 function WorldEditor::snapToXYNegZ(%this, %objTarget, %objToSnap) {
-    %objToSnap.snapToX(%this, %objTarget);
-    %objToSnap.snapToYNeg(%this, %objTarget);
-    %objToSnap.snapToZ(%this, %objTarget);
+    %this.snapToX(%objTarget, %objToSnap);
+    %this.snapToYNeg(%objTarget, %objToSnap);
+    %this.snapToZ(%objTarget, %objToSnap);
 };
 function WorldEditor::snapToXYZPos(%this, %objTarget, %objToSnap) {
-    %objToSnap.snapToX(%this, %objTarget);
-    %objToSnap.snapToY(%this, %objTarget);
-    %objToSnap.snapToZPos(%this, %objTarget);
+    %this.snapToX(%objTarget, %objToSnap);
+    %this.snapToY(%objTarget, %objToSnap);
+    %this.snapToZPos(%objTarget, %objToSnap);
 };
 function WorldEditor::snapToXYZNeg(%this, %objTarget, %objToSnap) {
-    %objToSnap.snapToX(%this, %objTarget);
-    %objToSnap.snapToY(%this, %objTarget);
-    %objToSnap.snapToZNeg(%this, %objTarget);
+    %this.snapToX(%objTarget, %objToSnap);
+    %this.snapToY(%objTarget, %objToSnap);
+    %this.snapToZNeg(%objTarget, %objToSnap);
 };
 function WorldEditor::snapToObjXPosYZ(%this, %objTarget, %objToSnap) {
     %edgeOffset = (mAbs(getWord(%objToSnap.getObjectBox(), 3)) + mAbs(getWord(%objTarget.getObjectBox(), 0)));
@@ -1587,7 +1555,7 @@ function WorldEditor::snapToObjXPosYZ(%this, %objTarget, %objToSnap) {
     %newTransform = setWord(%newTransform, 0, (getWord(%objTarget.getTransform(), 0) + getWord(%offsetMatrix, 0)));
     %newTransform = setWord(%newTransform, 1, (getWord(%objTarget.getTransform(), 1) + getWord(%offsetMatrix, 1)));
     %newTransform = setWord(%newTransform, 2, (getWord(%objTarget.getTransform(), 2) + getWord(%offsetMatrix, 2)));
-    %newTransform.setTransform(%objToSnap);
+    %objToSnap.setTransform(%newTransform);
 };
 function WorldEditor::snapToObjXNegYZ(%this, %objTarget, %objToSnap) {
     %edgeOffset = (mAbs(getWord(%objToSnap.getObjectBox(), 0)) + mAbs(getWord(%objTarget.getObjectBox(), 3)));
@@ -1598,7 +1566,7 @@ function WorldEditor::snapToObjXNegYZ(%this, %objTarget, %objToSnap) {
     %newTransform = setWord(%newTransform, 0, (getWord(%objTarget.getTransform(), 0) + getWord(%offsetMatrix, 0)));
     %newTransform = setWord(%newTransform, 1, (getWord(%objTarget.getTransform(), 1) + getWord(%offsetMatrix, 1)));
     %newTransform = setWord(%newTransform, 2, (getWord(%objTarget.getTransform(), 2) + getWord(%offsetMatrix, 2)));
-    %newTransform.setTransform(%objToSnap);
+    %objToSnap.setTransform(%newTransform);
 };
 function WorldEditor::snapToObjXYPosZ(%this, %objTarget, %objToSnap) {
     %edgeOffset = (mAbs(getWord(%objToSnap.getObjectBox(), 4)) + mAbs(getWord(%objTarget.getObjectBox(), 1)));
@@ -1609,7 +1577,7 @@ function WorldEditor::snapToObjXYPosZ(%this, %objTarget, %objToSnap) {
     %newTransform = setWord(%newTransform, 0, (getWord(%objTarget.getTransform(), 0) + getWord(%offsetMatrix, 0)));
     %newTransform = setWord(%newTransform, 1, (getWord(%objTarget.getTransform(), 1) + getWord(%offsetMatrix, 1)));
     %newTransform = setWord(%newTransform, 2, (getWord(%objTarget.getTransform(), 2) + getWord(%offsetMatrix, 2)));
-    %newTransform.setTransform(%objToSnap);
+    %objToSnap.setTransform(%newTransform);
 };
 function WorldEditor::snapToObjXYNegZ(%this, %objTarget, %objToSnap) {
     %edgeOffset = (mAbs(getWord(%objToSnap.getObjectBox(), 1)) + mAbs(getWord(%objTarget.getObjectBox(), 4)));
@@ -1620,7 +1588,7 @@ function WorldEditor::snapToObjXYNegZ(%this, %objTarget, %objToSnap) {
     %newTransform = setWord(%newTransform, 0, (getWord(%objTarget.getTransform(), 0) + getWord(%offsetMatrix, 0)));
     %newTransform = setWord(%newTransform, 1, (getWord(%objTarget.getTransform(), 1) + getWord(%offsetMatrix, 1)));
     %newTransform = setWord(%newTransform, 2, (getWord(%objTarget.getTransform(), 2) + getWord(%offsetMatrix, 2)));
-    %newTransform.setTransform(%objToSnap);
+    %objToSnap.setTransform(%newTransform);
 };
 function WorldEditor::snapToObjXYZPos(%this, %objTarget, %objToSnap) {
     %edgeOffset = (mAbs(getWord(%objToSnap.getObjectBox(), 5)) + mAbs(getWord(%objTarget.getObjectBox(), 2)));
@@ -1631,7 +1599,7 @@ function WorldEditor::snapToObjXYZPos(%this, %objTarget, %objToSnap) {
     %newTransform = setWord(%newTransform, 0, (getWord(%objTarget.getTransform(), 0) + getWord(%offsetMatrix, 0)));
     %newTransform = setWord(%newTransform, 1, (getWord(%objTarget.getTransform(), 1) + getWord(%offsetMatrix, 1)));
     %newTransform = setWord(%newTransform, 2, (getWord(%objTarget.getTransform(), 2) + getWord(%offsetMatrix, 2)));
-    %newTransform.setTransform(%objToSnap);
+    %objToSnap.setTransform(%newTransform);
 };
 function WorldEditor::snapToObjXYZNeg(%this, %objTarget, %objToSnap) {
     %edgeOffset = (mAbs(getWord(%objToSnap.getObjectBox(), 2)) + mAbs(getWord(%objTarget.getObjectBox(), 5)));
@@ -1642,13 +1610,13 @@ function WorldEditor::snapToObjXYZNeg(%this, %objTarget, %objToSnap) {
     %newTransform = setWord(%newTransform, 0, (getWord(%objTarget.getTransform(), 0) + getWord(%offsetMatrix, 0)));
     %newTransform = setWord(%newTransform, 1, (getWord(%objTarget.getTransform(), 1) + getWord(%offsetMatrix, 1)));
     %newTransform = setWord(%newTransform, 2, (getWord(%objTarget.getTransform(), 2) + getWord(%offsetMatrix, 2)));
-    %newTransform.setTransform(%objToSnap);
+    %objToSnap.setTransform(%newTransform);
 };
 function WorldEditor::CloneTo(%this, %snapType) {
     %selSize = %this.getSelectionSize();
     %i = 0;
     while ((%i < %selSize)) {
-        %i[%origObjects @ %i] = %i.getSelectedObject(%this);
+        %i[%origObjects @ %i] = %this.getSelectedObject(%i);
         %i = (%i + 1.0);
     }
     %i = 0;
@@ -1656,30 +1624,30 @@ function WorldEditor::CloneTo(%this, %snapType) {
     while ((%i < %selSize)) {
         %this.clearSelection();
         %objTarget = %i[%origObjects @ %i];
-        %objTarget.selectObject(%this);
+        %this.selectObject(%objTarget);
         %this.copySelection();
         %this.pasteSelection();
-        %objToSnap = 0.getSelectedObject(%this);
+        %objToSnap = %this.getSelectedObject(0);
         %i[%newObjects @ %i] = %objToSnap;
-        %objToSnap.snapTo(%this, %snapType, %objTarget);
+        %this.snapTo(%snapType, %objTarget, %objToSnap);
         %i = (%i + 1.0);
     }
     %this.clearSelection();
     %i = 0;
     (%i < %selSize);
     while ((%i < %selSize)) {
-        %i[%newObjects @ %i].selectObject(%this);
+        %this.selectObject(%i[%newObjects @ %i]);
         %i = (%i + 1.0);
     }
 };
 function WorldEditor::multiSnapTo(%this, %snapType) {
     echo("in multiSnapTo w/ type" @ " " @ %snapType);
     %selSize = %this.getSelectionSize();
-    %objTarget = (%this.getSelectionSize() - 1.0).getSelectedObject(%this);
+    %objTarget = %this.getSelectedObject((%this.getSelectionSize() - 1.0));
     %i = 0;
     while ((%i < (%selSize - 1.0))) {
-        %objToSnap = %i.getSelectedObject(%this);
-        %objToSnap.snapTo(%this, %snapType, %objTarget);
+        %objToSnap = %this.getSelectedObject(%i);
+        %this.snapTo(%snapType, %objTarget, %objToSnap);
         %i = (%i + 1.0);
     }
 };
@@ -1692,7 +1660,7 @@ function WorldEditor::dropCameraToSelection(%this) {
     %cam = setWord(%cam, 0, getWord(%pos, 0));
     %cam = setWord(%cam, 1, getWord(%pos, 1));
     %cam = setWord(%cam, 2, getWord(%pos, 2));
-    %cam.setTransform(LocalClientConnection.Camera);
+    LocalClientConnection.Camera.setTransform(%cam);
     %control = LocalClientConnection.getControlObject();
     if ((%control != LocalClientConnection.Camera)) {
         toggleCamera();
@@ -1714,7 +1682,7 @@ function WorldEditor::dropCameraWithSelectionInView(%this) {
     %camTransform = setWord(%camTransform, 0, getWord(%camPosition, 0));
     %camTransform = setWord(%camTransform, 1, getWord(%camPosition, 1));
     %camTransform = setWord(%camTransform, 2, getWord(%camPosition, 2));
-    %camTransform.setTransform(%camera);
+    %camera.setTransform(%camTransform);
     if ((%curCam != %camera)) {
         toggleCamera();
     }
@@ -1730,8 +1698,8 @@ function WorldEditor::moveSelectionInPlace(%this) {
 function WorldEditor::addSelectionToAddGroup(%this) {
     %i = 0;
     while ((%i < %this.getSelectionSize())) {
-        %obj = %i.getSelectedObject(%this);
-        %obj.add($instantGroup);
+        %obj = %this.getSelectedObject(%i);
+        $instantGroup.add(%obj);
         %i = (%i + 1.0);
     }
 };
@@ -1739,22 +1707,22 @@ function WorldEditor::resetTransforms(%this) {
     %this.addUndoState();
     %i = 0;
     while ((%i < %this.getSelectionSize())) {
-        %obj = %i.getSelectedObject(%this);
+        %obj = %this.getSelectedObject(%i);
         %transform = %obj.getTransform();
         %transform = setWord(%transform, 3, 0);
         %transform = setWord(%transform, 4, 0);
         %transform = setWord(%transform, 5, 1);
         %transform = setWord(%transform, 6, 0);
-        %transform.setTransform(%obj);
-        "1 1 1".setScale(%obj);
+        %obj.setTransform(%transform);
+        %obj.setScale("1 1 1");
         %i = (%i + 1.0);
     }
 };
 function WorldEditorToolbarDlg::init(%this) {
-    "EditorToolInspectorGui".isMember(WorldEditorToolFrameSet).setValue(WorldEditorInspectorCheckBox);
-    "EditorToolMissionAreaGui".isMember(WorldEditorToolFrameSet).setValue(WorldEditorMissionAreaCheckBox);
-    "EditorToolTreeViewGui".isMember(WorldEditorToolFrameSet).setValue(WorldEditorTreeCheckBox);
-    "EditorToolCreatorGui".isMember(WorldEditorToolFrameSet).setValue(WorldEditorCreatorCheckBox);
+    WorldEditorInspectorCheckBox.setValue(WorldEditorToolFrameSet.isMember("EditorToolInspectorGui"));
+    WorldEditorMissionAreaCheckBox.setValue(WorldEditorToolFrameSet.isMember("EditorToolMissionAreaGui"));
+    WorldEditorTreeCheckBox.setValue(WorldEditorToolFrameSet.isMember("EditorToolTreeViewGui"));
+    WorldEditorCreatorCheckBox.setValue(WorldEditorToolFrameSet.isMember("EditorToolCreatorGui"));
 };
 $LastEditorChosenInstantGroup = 0;
 function Creator::init(%this) {
@@ -1765,7 +1733,7 @@ function Creator::init(%this) {
         $instantGroup = "MissionGroup";
     }
     $instantGroup = "MissionGroup";
-    %base = "Interiors".insertItem(%this, 0);
+    %base = %this.insertItem(0, "Interiors");
     %interiorId = "";
     %file = findFirstFile("*.dif");
     echo(" Creator::init  loading interiors");
@@ -1777,38 +1745,36 @@ function Creator::init(%this) {
         while ((%i < %dirCount)) {
             %parent = getWords(%split, 0, %i);
             if (!(%parent[%interiorId @ %parent])) {
-                %parent[%interiorId @ %parent] = getWord(%split, %i).insertItem(%this, %parentId);
+                %parent[%interiorId @ %parent] = %this.insertItem(%parentId, getWord(%split, %i));
             }
             %parentId = %parent[%interiorId @ %parent];
             %i = (%i + 1.0);
         }
         %create = "createInterior(" @ "\"" @ %file @ "\"" @ ");";
         (%i < %dirCount);
-        "Interior".insertItem(%this, %parentId, fileBase(%file), %create);
+        %this.insertItem(%parentId, fileBase(%file), %create, "Interior");
         %file = findNextFile("*.dif");
     }
     echo(" Creator::init  loading shapes");
-    %base = "Shapes".insertItem(%this, 0);
+    %base = %this.insertItem(0, "Shapes");
     !(%file $= "");
     %dataGroup = "DataBlockGroup";
     %i = 0;
     while ((%i < %dataGroup.getCount())) {
-        %obj = %i.getObject(%dataGroup);
+        %obj = %dataGroup.getObject(%i);
         echo("Obj: " @ %obj.getName() @ " - " @ %obj.category);
-        if (!(%obj.category $= "")) {
-        }
-        if ((%obj.category != 0.0)) {
-            %id = %obj.category.findItemByName(%this);
+        if (!(%obj.category $= "") || (%obj.category != 0.0)) {
+            %id = %this.findItemByName(%obj.category);
             if ((%id == 0.0)) {
-                %grp = %obj.category.insertItem(%this, %base);
-                "Item".insertItem(%this, %grp, %obj.getName(), %obj.getClassName() @ "::create(" @ %obj.getName() @ ");");
+                %grp = %this.insertItem(%base, %obj.category);
+                %this.insertItem(%grp, %obj.getName(), %obj.getClassName() @ "::create(" @ %obj.getName() @ ");", "Item");
             }
-            "Item".insertItem(%this, %id, %obj.getName(), %obj.getClassName() @ "::create(" @ %obj.getName() @ ");");
+            %this.insertItem(%id, %obj.getName(), %obj.getClassName() @ "::create(" @ %obj.getName() @ ");", "Item");
         }
         %i = (%i + 1.0);
     }
     echo(" Creator::init  loading static shapes");
-    %base = "Static Shapes".insertItem(%this, 0);
+    %base = %this.insertItem(0, "Static Shapes");
     (%i < %dataGroup.getCount());
     %staticId = "";
     %file = findFirstFile("*.dts");
@@ -1820,17 +1786,17 @@ function Creator::init(%this) {
         while ((%i < %dirCount)) {
             %parent = getWords(%split, 0, %i);
             if (!(%parent[%staticId @ %parent])) {
-                %parent[%staticId @ %parent] = getWord(%split, %i).insertItem(%this, %parentId);
+                %parent[%staticId @ %parent] = %this.insertItem(%parentId, getWord(%split, %i));
             }
             %parentId = %parent[%staticId @ %parent];
             %i = (%i + 1.0);
         }
         %create = "TSStatic::create(\"" @ %file @ "\");";
         (%i < %dirCount);
-        "TSStatic".insertItem(%this, %parentId, fileBase(%file), %create);
+        %this.insertItem(%parentId, fileBase(%file), %create, "TSStatic");
         %file = findNextFile("*.dts");
     }
-    %base = "Dynamic Shapes".insertItem(%this, 0);
+    %base = %this.insertItem(0, "Dynamic Shapes");
     !(%file $= "");
     %dynamicID = "";
     %file = findFirstFile("*.dts");
@@ -1842,14 +1808,14 @@ function Creator::init(%this) {
         while ((%i < %dirCount)) {
             %parent = getWords(%split, 0, %i);
             if (!(%parent[%dynamicID @ %parent])) {
-                %parent[%dynamicID @ %parent] = getWord(%split, %i).insertItem(%this, %parentId);
+                %parent[%dynamicID @ %parent] = %this.insertItem(%parentId, getWord(%split, %i));
             }
             %parentId = %parent[%dynamicID @ %parent];
             %i = (%i + 1.0);
         }
         %create = "TSDynamic::create(\"" @ %file @ "\");";
         (%i < %dirCount);
-        "TSDynamic".insertItem(%this, %parentId, fileBase(%file), %create);
+        %this.insertItem(%parentId, fileBase(%file), %create, "TSDynamic");
         %file = findNextFile("*.dts");
     }
     %file[%objGroup @ 0] = !(%file $= "") @ "Environment";
@@ -1899,23 +1865,23 @@ function Creator::init(%this) {
     %System_Item[0] = "SimGroup";
     %System_Item[1] = "SimSpace";
     echo(" Creator::init  loading mission objects");
-    %base = "Mission Objects".insertItem(%this, 0);
+    %base = %this.insertItem(0, "Mission Objects");
     %i = 0;
     while (!(%i[%objGroup @ %i] $= "")) {
-        %grp = %i[%objGroup @ %i].insertItem(%this, %base);
+        %grp = %this.insertItem(%base, %i[%objGroup @ %i]);
         %groupTag = "%" @ %i[%objGroup @ %i] @ "_Item";
         %done = 0;
         %j = 0;
-        while (!(%done)) {
+        while (!%done) {
             eval("%itemTag = " @ %groupTag @ %j @ ";");
             if ((%itemTag $= "")) {
                 %done = 1;
             }
-            %itemTag.insertItem(%this, %grp, %itemTag, "ObjectBuilderGui.build" @ %itemTag @ "();");
+            %this.insertItem(%grp, %itemTag, "ObjectBuilderGui.build" @ %itemTag @ "();", %itemTag);
             %j = (%j + 1.0);
         }
         %i = (%i + 1.0);
-        !(%done);
+        !%done;
     }
     echo(" Creator::init  finished");
 };
@@ -1925,43 +1891,43 @@ function createInterior(%name) {
         rotation = "0 0 0";
         interiorFile = %name;
     };
-    %obj.isNetCacheable = %obj.getInitialNetCacheable(TEST_MISSIONGROUPINTEGRITY);
+    %obj.isNetCacheable = TEST_MISSIONGROUPINTEGRITY.getInitialNetCacheable(%obj);
     return %obj;
 };
 function WorldEditor::onAddSelected(%this, %obj) {
-    %obj.addSelection(EditorTree);
+    EditorTree.addSelection(%obj);
 };
 function Creator::onSelect(%this) {
     Creator.clearSelection();
 };
 function Creator::OnInspect(%this, %obj) {
-    if (!($missionRunning)) {
+    if (!$missionRunning) {
         return;
     }
-    %objId = eval(%obj.getItemValue(%this));
-    %obj.removeSelection(Creator);
+    %objId = eval(%this.getItemValue(%obj));
+    Creator.removeSelection(%obj);
     EditorTree.clearSelection();
     EWorldEditor.clearSelection();
-    %objId.selectObject(EWorldEditor);
+    EWorldEditor.selectObject(%objId);
     EWorldEditor.dropSelection();
 };
 function ExpandSelectedInEditorTree() {
     %id = EditorTree.getSelectedItem();
     if ((%id != -(1.0))) {
-        %id.expandAllChildren(EditorTree);
+        EditorTree.expandAllChildren(%id);
     }
     echo("nothing selected");
 };
 function SelectRecursively(%itemId) {
-    %obj = %itemId.getItemValue(EditorTree);
+    %obj = EditorTree.getItemValue(%itemId);
     if (isObject(%obj)) {
-        %obj.selectObject(EWorldEditor);
+        EWorldEditor.selectObject(%obj);
     }
-    %child = %itemId.getChild(EditorTree);
+    %child = EditorTree.getChild(%itemId);
     if (%child) {
         SelectRecursively(%child);
     }
-    %sibling = %itemId.getNextSibling(EditorTree);
+    %sibling = EditorTree.getNextSibling(%itemId);
     if (%sibling) {
         SelectRecursively(%sibling);
     }
@@ -1970,7 +1936,7 @@ function ExpandSelectedAndSelectInEditorTree() {
     %obj = EditorTree.getSelectedObject();
     %id = EditorTree.getSelectedItem();
     if ((%id != -(1.0))) {
-        %id.expandAllChildren(EditorTree);
+        EditorTree.expandAllChildren(%id);
         if (isObject(%obj) && %obj.isClassSimGroup()) {
             RecurseSelectObjectsInGroup(%obj, "");
         }
@@ -1982,33 +1948,31 @@ function FindSelectedInEditorTree() {
         echo("nothing selected");
         return;
     }
-    %obj = 0.getSelectedObject(EWorldEditor);
+    %obj = EWorldEditor.getSelectedObject(0);
     if (isObject(%obj)) {
-        1.buildVisibleTree(EditorTree);
-        %item = %obj.getId().findItemByObjectId(EditorTree);
+        EditorTree.buildVisibleTree(1);
+        %item = EditorTree.findItemByObjectId(%obj.getId());
         if ((%item != -(1.0))) {
-            %item.scrollVisible(EditorTree);
-            1.makeFirstResponder(EditorTree);
+            EditorTree.scrollVisible(%item);
+            EditorTree.makeFirstResponder(1);
         }
         echo("unable to find item in EditorTree");
     }
     echo("nothing selected");
 };
 function Creator::Create(%this, %sel) {
-    %obj = eval(%sel.getItemValue(%this));
+    %obj = eval(%this.getItemValue(%sel));
     if ((%obj == -(1.0))) {
         return;
     }
-    %obj.isNetCacheable = %obj.getInitialNetCacheable(TEST_MISSIONGROUPINTEGRITY);
-    %obj.add($instantGroup);
+    %obj.isNetCacheable = TEST_MISSIONGROUPINTEGRITY.getInitialNetCacheable(%obj);
+    $instantGroup.add(%obj);
     EWorldEditor.clearSelection();
-    %obj.selectObject(EWorldEditor);
+    EWorldEditor.selectObject(%obj);
     EWorldEditor.dropSelection();
 };
 function TSStatic::Create(%shapeName) {
-    if ((MissionInfo.mode $= "InventoryDesigner")) {
-    }
-    if ((MissionInfo.mode $= "PrivateSpaceDesign")) {
+    if ((MissionInfo.mode $= "InventoryDesigner") || (MissionInfo.mode $= "PrivateSpaceDesign")) {
         MessageBoxOK("Warning", "You should use TSDynamic for inventory items and in private spaces instead of TSStatic," @ "\n" @ "I'll still make it for you, but you should change it to the TSDynamic!" @ "\n" @ "look under \"Dynamic Shapes\" for the same thing there. thanks!", "");
     }
     %obj = new TSStatic("") {
@@ -2043,13 +2007,13 @@ $selectedTextureOperation = -(1.0);
 $TerraformerTextureDir = "common/editor/textureScripts";
 function TextureInit() {
     Texture_operation_menu.clear();
-    "Placement Operations".setText(Texture_operation_menu);
-    1.add(Texture_operation_menu, "Place by Fractal");
-    2.add(Texture_operation_menu, "Place by Height");
-    3.add(Texture_operation_menu, "Place by Slope");
-    4.add(Texture_operation_menu, "Place by Water Level");
+    Texture_operation_menu.setText("Placement Operations");
+    Texture_operation_menu.add("Place by Fractal", 1);
+    Texture_operation_menu.add("Place by Height", 2);
+    Texture_operation_menu.add("Place by Slope", 3);
+    Texture_operation_menu.add("Place by Water Level", 4);
     $HeightfieldSrcRegister = (Heightfield_operation.rowCount() - 1.0);
-    HeightfieldPreview.getValue().setValue(TexturePreview);
+    TexturePreview.setValue(HeightfieldPreview.getValue());
     %script = Terrain.getTextureScript();
     if (!(%script $= "")) {
         texture::loadFromScript(%script);
@@ -2061,7 +2025,7 @@ function TextureInit() {
     %rowCount = Texture_material.rowCount();
     %row = 0;
     while ((%row < %rowCount)) {
-        %data = %row.getRowText(Texture_material);
+        %data = Texture_material.getRowText(%row);
         %entry = getRecord(%data, 0);
         %reg = getField(%entry, 1);
         %reg[$dirtyTexture @ %reg] = 1;
@@ -2086,12 +2050,12 @@ function TextureInit() {
 function TerraformerTextureGui::refresh(%this) {
 };
 function Texture_material_menu::onSelect(%this, %id, %text) {
-    "Materials".setText(%this);
+    %this.setText("Materials");
     texture::saveMaterial();
     texture::hideTab();
     %id = texture::addMaterial(%text @ "\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0));
     if ((%id != -(1.0))) {
-        %id.setSelectedById(Texture_material);
+        Texture_material.setSelectedById(%id);
         texture::addOperation("Fractal Distortion\ttab_DistortMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t0\tdmask_interval\t20\tdmask_rough\t0\tdmask_seed\t" @ Terraformer.generateSeed() @ "\tdmask_filter\t0.00000 0.00000 0.13750 0.487500 0.86250 1.00000 1.00000");
     }
 };
@@ -2105,7 +2069,7 @@ function addLoadedMaterial(%file) {
     %text = filePath(%file) @ "/" @ fileBase(%file);
     %id = texture::addMaterial(%text @ "\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0));
     if ((%id != -(1.0))) {
-        %id.setSelectedById(Texture_material);
+        Texture_material.setSelectedById(%id);
         texture::addOperation("Fractal Distortion\ttab_DistortMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t0\tdmask_interval\t20\tdmask_rough\t0\tdmask_seed\t" @ Terraformer.generateSeed() @ "\tdmask_filter\t0.00000 0.00000 0.13750 0.487500 0.86250 1.00000 1.00000");
     }
     texture::save();
@@ -2126,12 +2090,12 @@ function Texture_material::onSelect(%this, %id, %text) {
     Texture_operation.clearSelection();
 };
 function Texture_operation_menu::onSelect(%this, %id, %text) {
-    "Placement Operations".setText(%this);
+    %this.setText("Placement Operations");
     %id = -(1.0);
     if (($selectedMaterial == -(1.0))) {
         return;
     }
-    %dreg = getField(0.getRowText(Texture_operation), 2);
+    %dreg = getField(Texture_operation.getRowText(0), 2);
     if ((%text $= "Place by Fractal")) {
         %id = texture::addOperation("Place by Fractal\ttab_FractalMask\t" @ $nextTextureRegister = ($nextTextureRegister + 1.0) @ "\t" @ %dreg @ "\tfbmmask_interval\t16\tfbmmask_rough\t0.000\tfbmmask_seed\t" @ Terraformer.generateSeed() @ "\tfbmmask_filter\t0.000000 0.166667 0.333333 0.500000 0.666667 0.833333 1.000000\tfBmDistort\ttrue");
     }
@@ -2146,7 +2110,7 @@ function Texture_operation_menu::onSelect(%this, %id, %text) {
     }
     texture::hideTab();
     if ((%id != -(1.0))) {
-        %id.setSelectedById(Texture_operation);
+        Texture_operation.setSelectedById(%id);
     }
 };
 function Texture_operation::onSelect(%this, %id, %text) {
@@ -2166,8 +2130,8 @@ function texture::deleteMaterial(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %row = %id.getRowNumById(Texture_material);
-    %row.removeRow(Texture_material);
+    %row = Texture_material.getRowNumById(%id);
+    Texture_material.removeRow(%row);
     %rowCount = (Texture_material.rowCount() - 1.0);
     if ((%row > %rowCount)) {
         %row = %rowCount;
@@ -2176,8 +2140,8 @@ function texture::deleteMaterial(%id) {
         $selectedMaterial = -(1.0);
     }
     Texture_operation.clear();
-    %id = %row.getRowId(Texture_material);
-    %id.setSelectedById(Texture_material);
+    %id = Texture_material.getRowId(%row);
+    Texture_material.setSelectedById(%id);
     texture::save();
 };
 function texture::deleteOperation(%id) {
@@ -2187,11 +2151,11 @@ function texture::deleteOperation(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %row = %id.getRowNumById(Texture_operation);
+    %row = Texture_operation.getRowNumById(%id);
     if ((%row == 0.0)) {
         return;
     }
-    %row.removeRow(Texture_operation);
+    Texture_operation.removeRow(%row);
     %rowCount = (Texture_operation.rowCount() - 1.0);
     if ((%row > %rowCount)) {
         %row = %rowCount;
@@ -2199,27 +2163,27 @@ function texture::deleteOperation(%id) {
     if ((%id == $selectedTextureOperation)) {
         $selectedTextureOperation = -(1.0);
     }
-    %id = %row.getRowId(Texture_operation);
-    %id.setSelectedById(Texture_operation);
+    %id = Texture_operation.getRowId(%row);
+    Texture_operation.setSelectedById(%id);
     texture::save();
 };
 function texture::applyMaterials() {
     texture::saveMaterial();
     %count = Texture_material.rowCount();
     if ((%count > 0.0)) {
-        %data = getRecord(0.getRowText(Texture_material), 0);
+        %data = getRecord(Texture_material.getRowText(0), 0);
         %mat_list = getField(%data, 0);
         %reg_list = getField(%data, 1);
-        texture::evalMaterial(0.getRowId(Texture_material));
+        texture::evalMaterial(Texture_material.getRowId(0));
         %i = 1;
         while ((%i < %count)) {
-            texture::evalMaterial(%i.getRowId(Texture_material));
-            %data = getRecord(%i.getRowText(Texture_material), 0);
+            texture::evalMaterial(Texture_material.getRowId(%i));
+            %data = getRecord(Texture_material.getRowText(%i), 0);
             %mat_list = %mat_list @ " " @ getField(%data, 0);
             %reg_list = %reg_list @ " " @ getField(%data, 1);
             %i = (%i + 1.0);
         }
-        %mat_list.setMaterials(Terraformer, %reg_list);
+        Terraformer.setMaterials(%reg_list, %mat_list);
     }
 };
 function texture::previewMaterial(%id) {
@@ -2229,11 +2193,11 @@ function texture::previewMaterial(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %data = %id.getRowTextById(Texture_material);
-    %row = %id.getRowNumById(Texture_material);
+    %data = Texture_material.getRowTextById(%id);
+    %row = Texture_material.getRowNumById(%id);
     %reg = getField(getRecord(%data, 0), 1);
     texture::evalMaterial(%id);
-    %reg.preview(Terraformer, TexturePreview);
+    Terraformer.preview(TexturePreview, %reg);
 };
 function texture::evalMaterial(%id) {
     if ((%id $= "")) {
@@ -2242,7 +2206,7 @@ function texture::evalMaterial(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %data = %id.getRowTextById(Texture_material);
+    %data = Texture_material.getRowTextById(%id);
     %reg = getField(getRecord(%data, 0), 1);
     %opCount = getRecordCount(%data);
     if ((%opCount >= 2.0)) {
@@ -2255,7 +2219,7 @@ function texture::evalMaterial(%id) {
             texture::evalOperationData(%entry, %op);
             %op = (%op + 1.0);
         }
-        %reg.mergeMasks(Terraformer, %reg_list);
+        Terraformer.mergeMasks(%reg_list, %reg);
     }
     texture::save();
 };
@@ -2266,10 +2230,10 @@ function texture::evalOperation(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %data = %id.getRowTextById(Texture_operation);
-    %row = %id.getRowNumById(Texture_operation);
+    %data = Texture_operation.getRowTextById(%id);
+    %row = Texture_operation.getRowNumById(%id);
     if ((%row != 0.0)) {
-        texture::evalOperation(0.getRowId(Texture_operation));
+        texture::evalOperation(Texture_operation.getRowId(0));
     }
     texture::evalOperationData(%data, %row);
     texture::save();
@@ -2278,24 +2242,24 @@ function texture::evalOperationData(%data, %row) {
     %label = getField(%data, 0);
     %reg = getField(%data, 2);
     %dreg = getField(%data, 3);
-    %id = %row.getRowId(Texture_material);
+    %id = Texture_material.getRowId(%row);
     if ((%reg[$dirtyTexture @ %reg] == 0.0)) {
         return;
     }
     if ((%label $= "Fractal Distortion")) {
-        0.maskFBm(Terraformer, %reg, getField(%data, 5), getField(%data, 7), getField(%data, 9), getField(%data, 11), 0);
+        Terraformer.maskFBm(%reg, getField(%data, 5), getField(%data, 7), getField(%data, 9), getField(%data, 11), 0, 0);
     }
     if ((%label $= "Place by Fractal")) {
-        %dreg.maskFBm(Terraformer, %reg, getField(%data, 5), getField(%data, 7), getField(%data, 9), getField(%data, 11), getField(%data, 13));
+        Terraformer.maskFBm(%reg, getField(%data, 5), getField(%data, 7), getField(%data, 9), getField(%data, 11), getField(%data, 13), %dreg);
     }
     if ((%label $= "Place by Height")) {
-        %dreg.maskHeight(Terraformer, $HeightfieldSrcRegister, %reg, getField(%data, 5), getField(%data, 7));
+        Terraformer.maskHeight($HeightfieldSrcRegister, %reg, getField(%data, 5), getField(%data, 7), %dreg);
     }
     if ((%label $= "Place by Slope")) {
-        %dreg.maskSlope(Terraformer, $HeightfieldSrcRegister, %reg, getField(%data, 5), getField(%data, 7));
+        Terraformer.maskSlope($HeightfieldSrcRegister, %reg, getField(%data, 5), getField(%data, 7), %dreg);
     }
     if ((%label $= "Place by Water Level")) {
-        %dreg.maskWater(Terraformer, $HeightfieldSrcRegister, %reg, getField(%data, 5));
+        Terraformer.maskWater($HeightfieldSrcRegister, %reg, getField(%data, 5), %dreg);
     }
     %reg[$dirtyTexture @ %reg] = 0;
 };
@@ -2306,23 +2270,23 @@ function texture::previewOperation(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %row = %id.getRowNumById(Texture_operation);
-    %data = %row.getRowText(Texture_operation);
+    %row = Texture_operation.getRowNumById(%id);
+    %data = Texture_operation.getRowText(%row);
     %reg = getField(%data, 2);
     texture::evalOperation(%id);
-    %reg.preview(Terraformer, TexturePreview);
+    Terraformer.preview(TexturePreview, %reg);
 };
 function texture::restoreMaterial(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %data = %id.getRowTextById(Texture_material);
+    %data = Texture_material.getRowTextById(%id);
     Texture_operation.clear();
     %recordCount = getRecordCount(%data);
     %record = 1;
     while ((%record < %recordCount)) {
         %entry = getRecord(%data, %record);
-        %entry.addRow(Texture_operation, $nextTextureId = ($nextTextureId + 1.0));
+        Texture_operation.addRow($nextTextureId = ($nextTextureId + 1.0), %entry);
         %record = (%record + 1.0);
     }
 };
@@ -2332,27 +2296,27 @@ function texture::saveMaterial() {
         return;
     }
     texture::saveOperation();
-    %data = %id.getRowTextById(Texture_material);
+    %data = Texture_material.getRowTextById(%id);
     %newData = getRecord(%data, 0);
     %rowCount = Texture_operation.rowCount();
     %row = 0;
     while ((%row < %rowCount)) {
-        %newData = %newData @ "\n" @ %row.getRowText(Texture_operation);
+        %newData = %newData @ "\n" @ Texture_operation.getRowText(%row);
         %row = (%row + 1.0);
     }
-    %newData.setRowById(Texture_material, %id);
+    Texture_material.setRowById(%id, %newData);
     texture::save();
 };
 function texture::restoreOperation(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %data = %id.getRowTextById(Texture_operation);
+    %data = Texture_operation.getRowTextById(%id);
     %fieldCount = getFieldCount(%data);
     %field = 4;
     while ((%field < %fieldCount)) {
         %obj = getField(%data, %field);
-        getField(%data, (%field + 1.0)).setValue(%obj);
+        %obj.setValue(getField(%data, (%field + 1.0)));
         %field = (%field + 2.0);
     }
     texture::save();
@@ -2362,7 +2326,7 @@ function texture::saveOperation() {
     if ((%id == -(1.0))) {
         return;
     }
-    %data = %id.getRowTextById(Texture_operation);
+    %data = Texture_operation.getRowTextById(%id);
     %newData = getField(%data, 0) @ "\t" @ getField(%data, 1) @ "\t" @ getField(%data, 2) @ "\t" @ getField(%data, 3);
     %fieldCount = getFieldCount(%data);
     %field = 4;
@@ -2374,18 +2338,18 @@ function texture::saveOperation() {
     %dirty = !((%field < %fieldCount) @ " " @ %data $= %newData);
     %reg = getField(%data, 2);
     %reg[$dirtyTexture @ %reg] = %dirty;
-    %newData.setRowById(Texture_operation, %id);
+    Texture_operation.setRowById(%id, %newData);
     if ((%dirty == 1.0)) {
-        %data = $selectedMaterial.getRowTextById(Texture_material);
+        %data = Texture_material.getRowTextById($selectedMaterial);
         %reg = getField(getRecord(%data, 0), 1);
         %reg[$dirtyTexture @ %reg] = 1;
     }
-    %row = %id.getRowNumById(Texture_material);
+    %row = Texture_material.getRowNumById(%id);
     if ((%row == 0.0)) {
         %rowCount = Texture_operation.rowCount();
         %r = 1;
         while ((%r < %rowCount)) {
-            %data = %r.getRowText(Texture_operation);
+            %data = Texture_operation.getRowText(%r);
             $dirtyTexture[getField(%data, 2)] = 1;
             %r = (%r + 1.0);
         }
@@ -2394,7 +2358,7 @@ function texture::saveOperation() {
 };
 function texture::addMaterial(%entry) {
     %id = $nextTextureId = ($nextTextureId + 1.0);
-    %entry.addRow(Texture_material, %id);
+    Texture_material.addRow(%id, %entry);
     %reg = getField(%entry, 1);
     %reg[$dirtyTexture @ %reg] = 1;
     texture::save();
@@ -2402,7 +2366,7 @@ function texture::addMaterial(%entry) {
 };
 function texture::addOperation(%entry) {
     %id = $nextTextureId = ($nextTextureId + 1.0);
-    %entry.addRow(Texture_operation, %id);
+    Texture_operation.addRow(%id, %entry);
     %reg = getField(%entry, 2);
     %reg[$dirtyTexture @ %reg] = 1;
     texture::save();
@@ -2416,11 +2380,11 @@ function texture::save() {
         if ((%row != 0.0)) {
             %script = %script @ "\n";
         }
-        %data = expandEscape(%row.getRowText(Texture_material));
+        %data = expandEscape(Texture_material.getRowText(%row));
         %script = %script @ %data;
         %row = (%row + 1.0);
     }
-    %script.setTextureScript(Terrain);
+    Terrain.setTextureScript(%script);
     ETerrainEditor.isDirty = (%row < %rowCount) @ 1;
 };
 function texture::import() {
@@ -2443,7 +2407,7 @@ function texture::loadFromScript(%script) {
     %row = 0;
     while ((%row < %rowCount)) {
         $nextTextureRegister[$dirtyTexture @ $nextTextureRegister] = 1;
-        %data = %row.getRowText(Texture_material);
+        %data = Texture_material.getRowText(%row);
         %rec = getRecord(%data, 0);
         %rec = setField(%rec, 1, $nextTextureRegister);
         %data = setRecord(%data, 0, %rec);
@@ -2462,14 +2426,14 @@ function texture::loadFromScript(%script) {
             $nextTextureRegister = ($nextTextureRegister + 1.0);
             %op = (%op + 1.0);
         }
-        %id = %row.getRowId(Texture_material);
+        %id = Texture_material.getRowId(%row);
         (%op < %opCount);
-        %data.setRowById(Texture_material, %id);
+        Texture_material.setRowById(%id, %data);
         %row = (%row + 1.0);
     }
     $selectedMaterial = -(1.0);
     (%row < %rowCount);
-    0.getRowId(Texture_material).setSelectedById(Texture_material);
+    Texture_material.setSelectedById(Texture_material.getRowId(0));
 };
 function texture::doLoadTexture(%name) {
     %newTerr = new TerrainBlock("") {
@@ -2487,49 +2451,49 @@ function texture::doLoadTexture(%name) {
     }
 };
 function texture::hideTab() {
-    0.setVisible(tab_DistortMask);
-    0.setVisible(tab_FractalMask);
-    0.setVisible(tab_HeightMask);
-    0.setVisible(tab_SlopeMask);
-    0.setVisible(tab_WaterMask);
+    tab_DistortMask.setVisible(0);
+    tab_FractalMask.setVisible(0);
+    tab_HeightMask.setVisible(0);
+    tab_SlopeMask.setVisible(0);
+    tab_WaterMask.setVisible(0);
 };
 function texture::showTab(%id) {
     texture::hideTab();
-    %data = %id.getRowTextById(Texture_operation);
+    %data = Texture_operation.getRowTextById(%id);
     %tab = getField(%data, 1);
-    1.setVisible(%tab);
+    %tab.setVisible(1);
 };
 $TerraformerHeightfieldDir = "common/editor/heightScripts";
 function tab_Blend::reset(%this) {
     blend_option.clear();
-    0.add(blend_option, "Add");
-    1.add(blend_option, "Subtract");
-    2.add(blend_option, "Max");
-    3.add(blend_option, "Min");
-    4.add(blend_option, "Multiply");
+    blend_option.add("Add", 0);
+    blend_option.add("Subtract", 1);
+    blend_option.add("Max", 2);
+    blend_option.add("Min", 3);
+    blend_option.add("Multiply", 4);
 };
 function tab_fBm::reset(%this) {
     fbm_detail.clear();
-    0.add(fbm_detail, "Very Low");
-    1.add(fbm_detail, "Low");
-    2.add(fbm_detail, "Normal");
-    3.add(fbm_detail, "High");
-    4.add(fbm_detail, "Very High");
+    fbm_detail.add("Very Low", 0);
+    fbm_detail.add("Low", 1);
+    fbm_detail.add("Normal", 2);
+    fbm_detail.add("High", 3);
+    fbm_detail.add("Very High", 4);
 };
 function tab_RMF::reset(%this) {
     rmf_detail.clear();
-    0.add(rmf_detail, "Very Low");
-    1.add(rmf_detail, "Low");
-    2.add(rmf_detail, "Normal");
-    3.add(rmf_detail, "High");
-    4.add(rmf_detail, "Very High");
+    rmf_detail.add("Very Low", 0);
+    rmf_detail.add("Low", 1);
+    rmf_detail.add("Normal", 2);
+    rmf_detail.add("High", 3);
+    rmf_detail.add("Very High", 4);
 };
 function tab_terrainFile::reset(%this) {
     terrainFile_textList.clear();
     %filespec = $TerraformerHeightfieldDir @ "/*.ter";
     %file = findFirstFile(%filespec);
     while (!(%file $= "")) {
-        fileBase(%file) @ fileExt(%file).addRow(terrainFile_textList, %i = (%i + 1.0));
+        terrainFile_textList.addRow(%i = (%i + 1.0), fileBase(%file) @ fileExt(%file));
         %file = findNextFile(%filespec);
     }
 };
@@ -2574,21 +2538,21 @@ function Heightfield::resetTabs() {
 };
 function TerraformerInit() {
     Heightfield_options.clear();
-    "Operation".setText(Heightfield_options);
-    0.add(Heightfield_options, "fBm Fractal");
-    1.add(Heightfield_options, "Rigid MultiFractal");
-    2.add(Heightfield_options, "Canyon Fractal");
-    3.add(Heightfield_options, "Sinus");
-    4.add(Heightfield_options, "Bitmap");
-    5.add(Heightfield_options, "Turbulence");
-    6.add(Heightfield_options, "Smoothing");
-    7.add(Heightfield_options, "Smooth Water");
-    8.add(Heightfield_options, "Smooth Ridges/Valleys");
-    9.add(Heightfield_options, "Filter");
-    10.add(Heightfield_options, "Thermal Erosion");
-    11.add(Heightfield_options, "Hydraulic Erosion");
-    12.add(Heightfield_options, "Blend");
-    13.add(Heightfield_options, "Terrain File");
+    Heightfield_options.setText("Operation");
+    Heightfield_options.add("fBm Fractal", 0);
+    Heightfield_options.add("Rigid MultiFractal", 1);
+    Heightfield_options.add("Canyon Fractal", 2);
+    Heightfield_options.add("Sinus", 3);
+    Heightfield_options.add("Bitmap", 4);
+    Heightfield_options.add("Turbulence", 5);
+    Heightfield_options.add("Smoothing", 6);
+    Heightfield_options.add("Smooth Water", 7);
+    Heightfield_options.add("Smooth Ridges/Valleys", 8);
+    Heightfield_options.add("Filter", 9);
+    Heightfield_options.add("Thermal Erosion", 10);
+    Heightfield_options.add("Hydraulic Erosion", 11);
+    Heightfield_options.add("Blend", 12);
+    Heightfield_options.add("Terrain File", 13);
     Heightfield::resetTabs();
     %script = Terrain.getHeightfieldScript();
     if (!(%script $= "")) {
@@ -2597,13 +2561,13 @@ function TerraformerInit() {
     if ((Heightfield_operation.rowCount() == 0.0)) {
         Heightfield_operation.clear();
         %id1 = Heightfield::add("General\tTab_general\tgeneral_min_height\t50\tgeneral_scale\t300\tgeneral_water\t0.000\tgeneral_centerx\t0\tgeneral_centery\t0");
-        %id1.setSelectedById(Heightfield_operation);
+        Heightfield_operation.setSelectedById(%id1);
     }
     Heightfield::resetTabs();
     Heightfield::preview();
 };
 function Heightfield_options::onSelect(%this, %unused, %text) {
-    "Operation".setText(Heightfield_options);
+    Heightfield_options.setText("Operation");
     %id = -(1.0);
     %rowCount = Heightfield_operation.rowCount();
     if ((%text $= "Terrain File")) {
@@ -2652,80 +2616,74 @@ function Heightfield_options::onSelect(%this, %unused, %text) {
         %id = Heightfield::add("Blend\ttab_Blend\tblend_factor\t0.500\tblend_srcB\t" @ (%rowCount - 2.0) @ "\tblend_option\tadd");
     }
     if ((%id != -(1.0))) {
-        %id.setSelectedById(Heightfield_operation);
+        Heightfield_operation.setSelectedById(%id);
     }
 };
 function Heightfield::eval(%id) {
     if ((%id == -(1.0))) {
         return;
     }
-    %data = restWords(%id.getRowTextById(Heightfield_operation));
+    %data = restWords(Heightfield_operation.getRowTextById(%id));
     %label = getField(%data, 0);
-    %row = %id.getRowNumById(Heightfield_operation);
+    %row = Heightfield_operation.getRowNumById(%id);
     echo("Heightfield::eval:" @ %row @ "  " @ %label);
     if ((%label $= "General")) {
         if ((Terrain.squareSize > 0.0)) {
             %size = Terrain.squareSize;
         }
         %size = 8;
-        getField(%data, 7).setTerrainInfo(Terraformer, 256, %size, getField(%data, 3), getField(%data, 5));
-        getField(%data, 11).setShift(Terraformer, getField(%data, 9));
-        %row.terrainData(Terraformer);
+        Terraformer.setTerrainInfo(256, %size, getField(%data, 3), getField(%data, 5), getField(%data, 7));
+        Terraformer.setShift(getField(%data, 9), getField(%data, 11));
+        Terraformer.terrainData(%row);
     }
     if ((%label $= "Terrain File")) {
-        getField(%data, 3).terrainFile(Terraformer, %row);
+        Terraformer.terrainFile(%row, getField(%data, 3));
     }
     if ((%label $= "fBm Fractal")) {
-        getField(%data, 9).fBm(Terraformer, %row, getField(%data, 3), getField(%data, 5), getField(%data, 7));
+        Terraformer.fBm(%row, getField(%data, 3), getField(%data, 5), getField(%data, 7), getField(%data, 9));
     }
     if ((%label $= "Sinus")) {
-        getField(%data, 5).sinus(Terraformer, %row, getField(%data, 3));
+        Terraformer.sinus(%row, getField(%data, 3), getField(%data, 5));
     }
     if ((%label $= "Rigid MultiFractal")) {
-        getField(%data, 9).rigidMultiFractal(Terraformer, %row, getField(%data, 3), getField(%data, 5), getField(%data, 7));
+        Terraformer.rigidMultiFractal(%row, getField(%data, 3), getField(%data, 5), getField(%data, 7), getField(%data, 9));
     }
     if ((%label $= "Canyon Fractal")) {
-        getField(%data, 7).canyon(Terraformer, %row, getField(%data, 3), getField(%data, 5));
+        Terraformer.canyon(%row, getField(%data, 3), getField(%data, 5), getField(%data, 7));
     }
     if ((%label $= "Smoothing")) {
-        getField(%data, 5).smooth(Terraformer, (%row - 1.0), %row, getField(%data, 3));
+        Terraformer.smooth((%row - 1.0), %row, getField(%data, 3), getField(%data, 5));
     }
     if ((%label $= "Smooth Water")) {
-        getField(%data, 5).smoothWater(Terraformer, (%row - 1.0), %row, getField(%data, 3));
+        Terraformer.smoothWater((%row - 1.0), %row, getField(%data, 3), getField(%data, 5));
     }
     if ((%label $= "Smooth Ridges/Valleys")) {
-        getField(%data, 5).smoothRidges(Terraformer, (%row - 1.0), %row, getField(%data, 3));
+        Terraformer.smoothRidges((%row - 1.0), %row, getField(%data, 3), getField(%data, 5));
     }
     if ((%label $= "Filter")) {
-        getField(%data, 3).filter(Terraformer, (%row - 1.0), %row);
+        Terraformer.filter((%row - 1.0), %row, getField(%data, 3));
     }
     if ((%label $= "Turbulence")) {
-        getField(%data, 5).turbulence(Terraformer, (%row - 1.0), %row, getField(%data, 3));
+        Terraformer.turbulence((%row - 1.0), %row, getField(%data, 3), getField(%data, 5));
     }
     if ((%label $= "Thermal Erosion")) {
-        getField(%data, 7).erodeThermal(Terraformer, (%row - 1.0), %row, getField(%data, 3), getField(%data, 5));
+        Terraformer.erodeThermal((%row - 1.0), %row, getField(%data, 3), getField(%data, 5), getField(%data, 7));
     }
     if ((%label $= "Hydraulic Erosion")) {
-        getField(%data, 5).erodeHydraulic(Terraformer, (%row - 1.0), %row, getField(%data, 3));
+        Terraformer.erodeHydraulic((%row - 1.0), %row, getField(%data, 3), getField(%data, 5));
     }
     if ((%label $= "Bitmap")) {
-        getField(%data, 3).loadGreyscale(Terraformer, %row);
+        Terraformer.loadGreyscale(%row, getField(%data, 3));
     }
     if ((%label $= "Blend")) {
         %rowCount = Heightfield_operation.rowCount();
         if ((%rowCount > 2.0)) {
-            %a = (%id.getRowNumById(Heightfield_operation) - 1.0);
+            %a = (Heightfield_operation.getRowNumById(%id) - 1.0);
             %b = getField(%data, 5);
             echo("Blend: " @ %data);
             echo("Blend: " @ getField(%data, 3) @ "  " @ getField(%data, 7));
-            if ((%a < %rowCount)) {
-            }
-            if ((%a > 0.0)) {
-            }
-            if ((%b < %rowCount)) {
-            }
-            if ((%b > 0.0)) {
-                getField(%data, 7).blend(Terraformer, %a, %b, %row, getField(%data, 3));
+            if ((%a < %rowCount) || (%a > 0.0) || (%b < %rowCount) || (%b > 0.0)) {
+                Terraformer.blend(%a, %b, %row, getField(%data, 3), getField(%data, 7));
             }
             echo("Heightfield Editor: Blend parameters out of range.");
         }
@@ -2736,22 +2694,22 @@ function Heightfield::add(%entry) {
     Heightfield::hideTab();
     %id = $NextOperationId = ($NextOperationId + 1.0);
     if (($SelectedOperation != -(1.0))) {
-        %row = ($SelectedOperation.getRowNumById(Heightfield_operation) + 1.0);
+        %row = (Heightfield_operation.getRowNumById($SelectedOperation) + 1.0);
         %entry = %row @ " " @ %entry;
-        %row.addRow(Heightfield_operation, %id, %entry);
+        Heightfield_operation.addRow(%id, %entry, %row);
         %i = (%row + 1.0);
         while ((%i < Heightfield_operation.rowCount())) {
-            %id = %i.getRowId(Heightfield_operation);
-            %text = %id.getRowTextById(Heightfield_operation);
+            %id = Heightfield_operation.getRowId(%i);
+            %text = Heightfield_operation.getRowTextById(%id);
             %text = setWord(%text, 0, %i);
-            %text.setRowById(Heightfield_operation, %id);
+            Heightfield_operation.setRowById(%id, %text);
             %i = (%i + 1.0);
         }
     }
     %entry = Heightfield_operation.rowCount() @ " " @ %entry;
     (%i < Heightfield_operation.rowCount());
-    %entry.addRow(Heightfield_operation, %id);
-    %row = %id.getRowNumById(Heightfield_operation);
+    Heightfield_operation.addRow(%id, %entry);
+    %row = Heightfield_operation.getRowNumById(%id);
     if ((%row <= $HeightfieldDirtyRow)) {
         $HeightfieldDirtyRow = %row;
     }
@@ -2762,17 +2720,17 @@ function Heightfield::onDelete(%id) {
     if ((%id $= "")) {
         %id = $SelectedOperation;
     }
-    %row = %id.getRowNumById(Heightfield_operation);
+    %row = Heightfield_operation.getRowNumById(%id);
     if ((%row == 0.0)) {
         return;
     }
-    %row.removeRow(Heightfield_operation);
+    Heightfield_operation.removeRow(%row);
     %i = %row;
     while ((%i < Heightfield_operation.rowCount())) {
-        %id2 = %i.getRowId(Heightfield_operation);
-        %text = %id2.getRowTextById(Heightfield_operation);
+        %id2 = Heightfield_operation.getRowId(%i);
+        %text = Heightfield_operation.getRowTextById(%id2);
         %text = setWord(%text, 0, %i);
-        %text.setRowById(Heightfield_operation, %id2);
+        Heightfield_operation.setRowById(%id2, %text);
         %i = (%i + 1.0);
     }
     if (($HeightfieldDirtyRow >= %row)) {
@@ -2786,8 +2744,8 @@ function Heightfield::onDelete(%id) {
     if ((%id == $SelectedOperation)) {
         $SelectedOperation = -(1.0);
     }
-    %id = %row.getRowId(Heightfield_operation);
-    %id.setSelectedById(Heightfield_operation);
+    %id = Heightfield_operation.getRowId(%row);
+    Heightfield_operation.setSelectedById(%id);
     Heightfield::save();
 };
 function Heightfield_operation::onSelect(%this, %id, %text) {
@@ -2803,12 +2761,12 @@ function Heightfield::restoreTab(%id) {
         return;
     }
     Heightfield::hideTab();
-    %data = restWords(%id.getRowTextById(Heightfield_operation));
+    %data = restWords(Heightfield_operation.getRowTextById(%id));
     %fieldCount = getFieldCount(%data);
     %field = 2;
     while ((%field < %fieldCount)) {
         %obj = getField(%data, %field);
-        getField(%data, (%field + 1.0)).setValue(%obj);
+        %obj.setValue(getField(%data, (%field + 1.0)));
         %field = (%field + 2.0);
     }
     Heightfield::save();
@@ -2817,7 +2775,7 @@ function Heightfield::saveTab() {
     if (($SelectedOperation == -(1.0))) {
         return;
     }
-    %data = $SelectedOperation.getRowTextById(Heightfield_operation);
+    %data = Heightfield_operation.getRowTextById($SelectedOperation);
     %rowNum = getWord(%data, 0);
     %data = restWords(%data);
     %newData = getField(%data, 0) @ "\t" @ getField(%data, 1);
@@ -2829,32 +2787,32 @@ function Heightfield::saveTab() {
         %field = (%field + 2.0);
     }
     if (!((%field < %fieldCount) @ " " @ %data $= %newData)) {
-        %row = $SelectedOperation.getRowNumById(Heightfield_operation);
+        %row = Heightfield_operation.getRowNumById($SelectedOperation);
         if ((%row <= $HeightfieldDirtyRow)) {
         }
         if ((%row > 0.0)) {
             $HeightfieldDirtyRow = %row;
         }
     }
-    %rowNum @ " " @ %newData.setRowById(Heightfield_operation, $SelectedOperation);
+    Heightfield_operation.setRowById($SelectedOperation, %rowNum @ " " @ %newData);
     Heightfield::save();
 };
 function Heightfield::preview(%id) {
     %rowCount = Heightfield_operation.rowCount();
     if ((%id $= "")) {
-        %id = (%rowCount - 1.0).getRowId(Heightfield_operation);
+        %id = Heightfield_operation.getRowId((%rowCount - 1.0));
     }
-    %row = %id.getRowNumById(Heightfield_operation);
+    %row = Heightfield_operation.getRowNumById(%id);
     Heightfield::refresh(%row);
-    %row.previewScaled(Terraformer, HeightfieldPreview);
+    Terraformer.previewScaled(HeightfieldPreview, %row);
 };
 function Heightfield::refresh(%last) {
     if ((%last $= "")) {
         %last = (Heightfield_operation.rowCount() - 1.0);
     }
-    Heightfield::eval(0.getRowId(Heightfield_operation));
+    Heightfield::eval(Heightfield_operation.getRowId(0));
     while (($HeightfieldDirtyRow <= %last)) {
-        %id = $HeightfieldDirtyRow.getRowId(Heightfield_operation);
+        %id = Heightfield_operation.getRowId($HeightfieldDirtyRow);
         Heightfield::eval(%id);
         $HeightfieldDirtyRow = ($HeightfieldDirtyRow + 1.0);
     }
@@ -2866,13 +2824,13 @@ function Heightfield::apply(%id) {
         return;
     }
     if ((%id $= "")) {
-        %id = (%rowCount - 1.0).getRowId(Heightfield_operation);
+        %id = Heightfield_operation.getRowId((%rowCount - 1.0));
     }
-    %row = %id.getRowNumById(Heightfield_operation);
+    %row = Heightfield_operation.getRowNumById(%id);
     HeightfieldPreview.setRoot();
     Heightfield::refresh(%row);
-    %row.setTerrain(Terraformer);
-    0.setCameraPosition(Terraformer, 0, 0);
+    Terraformer.setTerrain(%row);
+    Terraformer.setCameraPosition(0, 0, 0);
     ETerrainEditor.isDirty = 1;
 };
 $TerraformerSaveRegister = 0;
@@ -2883,7 +2841,7 @@ function Heightfield::saveBitmap(%name) {
     Heightfield::doSaveBitmap(%name);
 };
 function Heightfield::doSaveBitmap(%name) {
-    %name.saveGreyscale(Terraformer, $TerraformerSaveRegister);
+    Terraformer.saveGreyscale($TerraformerSaveRegister, %name);
 };
 function Heightfield::save() {
     %script = "";
@@ -2893,11 +2851,11 @@ function Heightfield::save() {
         if ((%row != 0.0)) {
             %script = %script @ "\n";
         }
-        %data = restWords(%row.getRowText(Heightfield_operation));
+        %data = restWords(Heightfield_operation.getRowText(%row));
         %script = %script @ expandEscape(%data);
         %row = (%row + 1.0);
     }
-    %script.setHeightfieldScript(Terrain);
+    Terrain.setHeightfieldScript(%script);
     ETerrainEditor.isDirty = (%row < %rowCount) @ 1;
 };
 function Heightfield::import() {
@@ -2918,14 +2876,14 @@ function Heightfield::loadFromScript(%script, %leaveCamera) {
         Heightfield_operation.clear();
         Heightfield::add("General\tTab_general\tgeneral_min_height\t50\tgeneral_scale\t300\tgeneral_water\t0.000\tgeneral_centerx\t0\tgeneral_centery\t0");
     }
-    %data = restWords(0.getRowText(Heightfield_operation));
+    %data = restWords(Heightfield_operation.getRowText(0));
     !(%rec $= "");
     %x = getField(%data, 7);
     %y = getField(%data, 9);
-    %y.setOrigin(HeightfieldPreview, %x);
-    0.getRowId(Heightfield_operation).setSelectedById(Heightfield_operation);
-    if (!(%leaveCamera)) {
-        %y.setCameraPosition(Terraformer, %x);
+    HeightfieldPreview.setOrigin(%x, %y);
+    Heightfield_operation.setSelectedById(Heightfield_operation.getRowId(0));
+    if (!%leaveCamera) {
+        Terraformer.setCameraPosition(%x, %y);
     }
 };
 function strip(%stripStr, %strToStrip) {
@@ -2954,47 +2912,47 @@ function Heightfield::setBitmap() {
     getLoadFilename($TerraformerHeightfieldDir @ "/*.png", "Heightfield::doSetBitmap");
 };
 function Heightfield::doSetBitmap(%name) {
-    %name.setValue(bitmap_name);
+    bitmap_name.setValue(%name);
     Heightfield::saveTab();
     Heightfield::preview($SelectedOperation);
 };
 function Heightfield::hideTab() {
-    0.setVisible(tab_terrainFile);
-    0.setVisible(tab_fBm);
-    0.setVisible(tab_RMF);
-    0.setVisible(tab_Canyon);
-    0.setVisible(tab_Smooth);
-    0.setVisible(tab_SmoothWater);
-    0.setVisible(tab_SmoothRidge);
-    0.setVisible(tab_Filter);
-    0.setVisible(tab_Turbulence);
-    0.setVisible(tab_Thermal);
-    0.setVisible(tab_Hydraulic);
-    0.setVisible(tab_General);
-    0.setVisible(tab_Bitmap);
-    0.setVisible(tab_Blend);
-    0.setVisible(tab_Sinus);
+    tab_terrainFile.setVisible(0);
+    tab_fBm.setVisible(0);
+    tab_RMF.setVisible(0);
+    tab_Canyon.setVisible(0);
+    tab_Smooth.setVisible(0);
+    tab_SmoothWater.setVisible(0);
+    tab_SmoothRidge.setVisible(0);
+    tab_Filter.setVisible(0);
+    tab_Turbulence.setVisible(0);
+    tab_Thermal.setVisible(0);
+    tab_Hydraulic.setVisible(0);
+    tab_General.setVisible(0);
+    tab_Bitmap.setVisible(0);
+    tab_Blend.setVisible(0);
+    tab_Sinus.setVisible(0);
 };
 function Heightfield::showTab(%id) {
     Heightfield::hideTab();
-    %data = restWords(%id.getRowTextById(Heightfield_operation));
+    %data = restWords(Heightfield_operation.getRowTextById(%id));
     %tab = getField(%data, 1);
     echo("Tab data: " @ %data @ " tab: " @ %tab);
-    1.setVisible(%tab);
+    %tab.setVisible(1);
 };
 function Heightfield::center() {
     %camera = Terraformer.getCameraPosition();
     %x = getWord(%camera, 0);
     %y = getWord(%camera, 1);
-    %y.setOrigin(HeightfieldPreview, %x);
+    HeightfieldPreview.setOrigin(%x, %y);
     %origin = HeightfieldPreview.getOrigin();
     %x = getWord(%origin, 0);
     %y = getWord(%origin, 1);
     %root = HeightfieldPreview.getRoot();
     %x = (%x + getWord(%root, 0));
     %y = (%y + getWord(%root, 1));
-    %x.setValue(general_centerx);
-    %y.setValue(general_centery);
+    general_centerx.setValue(%x);
+    general_centery.setValue(%y);
     Heightfield::saveTab();
 };
 function ExportHeightfield::onAction() {
@@ -3007,14 +2965,14 @@ function ExportHeightfield::onAction() {
 function TerrainEditor::onGuiUpdate(%this, %text) {
     %mouseBrushInfo = " (Mouse Brush) #: " @ getWord(%text, 0) @ "  avg: " @ getWord(%text, 1);
     %selectionInfo = " (Selection) #: " @ getWord(%text, 2) @ "  avg: " @ getWord(%text, 3);
-    %mouseBrushInfo.setValue(TEMouseBrushInfo);
-    %mouseBrushInfo.setValue(TEMouseBrushInfo1);
-    %selectionInfo.setValue(TESelectionInfo);
-    %selectionInfo.setValue(TESelectionInfo1);
+    TEMouseBrushInfo.setValue(%mouseBrushInfo);
+    TEMouseBrushInfo1.setValue(%mouseBrushInfo);
+    TESelectionInfo.setValue(%selectionInfo);
+    TESelectionInfo1.setValue(%selectionInfo);
 };
 function TerrainEditor::offsetBrush(%this, %x, %y) {
     %curPos = %this.getBrushPos();
-    (getWord(%curPos, 1) + %y).setBrushPos(%this, (getWord(%curPos, 0) + %x));
+    %this.setBrushPos((getWord(%curPos, 0) + %x), (getWord(%curPos, 1) + %y));
 };
 function TerrainEditor::swapInLoneMaterial(%this, %name) {
     if ((%this.baseMaterialsSwapped $= "true")) {
@@ -3023,7 +2981,7 @@ function TerrainEditor::swapInLoneMaterial(%this, %name) {
     }
     %this.baseMaterialsSwapped = "true";
     %this.pushBaseMaterialInfo();
-    %name.setLoneBaseMaterial(%this);
+    %this.setLoneBaseMaterial(%name);
     flushTextureCache();
 };
 function TELoadTerrainButton::onAction(%this) {
@@ -3048,15 +3006,15 @@ function TELoadTerrainButton::gotFileName(%this, %name) {
     ETerrainEditor.attachTerrain();
 };
 function TerrainEditorSettingsGui::onWake(%this) {
-    ETerrainEditor.softSelectFilter.setValue(TESoftSelectFilter);
+    TESoftSelectFilter.setValue(ETerrainEditor.softSelectFilter);
 };
 function TerrainEditorSettingsGui::onSleep(%this) {
     ETerrainEditor.softSelectFilter = TESoftSelectFilter.getValue();
 };
 function TESettingsApplyButton::onAction(%this) {
     ETerrainEditor.softSelectFilter = TESoftSelectFilter.getValue();
-    1.resetSelWeights(ETerrainEditor);
-    "softSelect".processAction(ETerrainEditor);
+    ETerrainEditor.resetSelWeights(1);
+    ETerrainEditor.processAction("softSelect");
 };
 function getPrefSetting(%pref, %default) {
     if ((%pref $= "")) {
@@ -3074,15 +3032,13 @@ function Editor::open(%this) {
         return;
     }
     %this.prevContent = Canvas.getContent();
-    EditorGui.setContent(Canvas);
+    Canvas.setContent(EditorGui);
 };
 function Editor::close(%this) {
-    if ((%this.prevContent == -(1.0))) {
-    }
-    if ((%this.prevContent $= "")) {
+    if ((%this.prevContent == -(1.0)) || (%this.prevContent $= "")) {
         %this.prevContent = "PlayGui";
     }
-    %this.prevContent.setContent(Canvas);
+    Canvas.setContent(%this.prevContent);
     MessageHud.close();
 };
 function EWorldEditor::updateGeneralInfo(%this, %optObj) {
@@ -3090,34 +3046,34 @@ function EWorldEditor::updateGeneralInfo(%this, %optObj) {
     %color = "<color:886644>";
     if ((%numSelected == 0.0)) {
         if ((%optObj $= "")) {
-            %color @ "(nothing selected)".setText(WorldEditorGeneralInfoMLText);
+            WorldEditorGeneralInfoMLText.setText(%color @ "(nothing selected)");
             return;
         }
         %obj = %optObj;
     }
     if ((%numSelected > 1.0)) {
-        %color @ "(multi)".setText(WorldEditorGeneralInfoMLText);
+        WorldEditorGeneralInfoMLText.setText(%color @ "(multi)");
         return;
     }
-    %obj = 0.getSelectedObject(%this);
+    %obj = %this.getSelectedObject(0);
     %serverID = %clientID = -(1.0);
     %serverValid = %clientValid = 0;
-    %client = $Player::Name.get(ClientDict);
-    if (!(isObject(%client))) {
+    %client = ClientDict.get($Player::Name);
+    if (!isObject(%client)) {
         error(getScopeName() @ "-> can't get $Player::Name's client object form ClientDict!");
     }
     if (%obj.isClassNetObject()) {
         if (%obj.isServerObject()) {
             %serverID = %obj.getId();
             %serverValid = 1;
-            if (!(isObject(%client))) {
+            if (!isObject(%client)) {
                 %clientID = "(no client object for player)";
             }
-            %ghostID = %obj.getGhostID(%client);
+            %ghostID = %client.getGhostID(%obj);
             if ((%ghostID <= 0.0)) {
                 %clientID = "no ghost.";
             }
-            %clientID = %ghostID.resolveGhostID(ServerConnection);
+            %clientID = ServerConnection.resolveGhostID(%ghostID);
             if ((%clientID <= 0.0)) {
                 %clientID = "no ghost (server has ghostID, tho)";
             }
@@ -3127,21 +3083,21 @@ function EWorldEditor::updateGeneralInfo(%this, %optObj) {
             error(getScopeName() @ "-> unexpected: worldeditor has selected a client-side object! handling.");
             %clientID = %obj.getId();
             %clientValid = 1;
-            %ghostID = %clientID.getGhostID(ServerConnection);
+            %ghostID = ServerConnection.getGhostID(%clientID);
             if ((%ghostID <= 0.0)) {
                 %serverID = "client-side only.";
             }
-            if (!(isObject(%client))) {
+            if (!isObject(%client)) {
                 %serverID = "(no client object for player)";
             }
-            %serverID = %ghostID.ResolveGhost(%client).getId();
+            %serverID = %client.ResolveGhost(%ghostID).getId();
             if ((%serverID <= 0.0)) {
                 %serverID = "no ghost (client has ghost ID, tho)";
             }
             %serverValid = 1;
         }
         error(getScopeName() @ "-> net object which returns false on both isServer/ClientObject(), returning!");
-        %color @ "(error see log!)".setText(WorldEditorGeneralInfoMLText);
+        WorldEditorGeneralInfoMLText.setText(%color @ "(error see log!)");
     }
     %serverID = %obj;
     %serverValid = 1;
@@ -3163,7 +3119,7 @@ function EWorldEditor::updateGeneralInfo(%this, %optObj) {
     }
     %text = %clientText @ -(1.0) @ ">" @ %clientText @ "</a>";
     %text @ "Client:  <a:gamelink COPYTOCLIP ";
-    %text.setText(WorldEditorGeneralInfoMLText);
+    WorldEditorGeneralInfoMLText.setText(%text);
 };
 function WorldEditorGeneralInfoMLText::onUrl(%this, %url) {
     %cmd = getWord(%url, 1);

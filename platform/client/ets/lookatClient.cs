@@ -11,9 +11,9 @@ function doLookAt(%obj, %isDanceWith, %isKiss) {
     if (%isKiss) {
         %resetTime = $KissResetTimeout;
     }
-    if (!(%isKiss)) {
+    if (!%isKiss) {
     }
-    if (!(%isDanceWith)) {
+    if (!%isDanceWith) {
         %resetTime = $LookAtResetTimeout;
     }
     if ((%obj != $player)) {

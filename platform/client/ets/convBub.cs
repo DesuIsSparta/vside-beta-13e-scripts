@@ -7,19 +7,19 @@ function SayConv(%text, %unused) {
     error("this needs to be reimplemented - " @ " " @ %text);
 };
 function ResizeBub(%text, %reset, %ctrl) {
-    return 0.autoResize(%ctrl, %reset);
+    return %ctrl.autoResize(%reset, 0);
 };
 function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
-    if (!(%this.autoSize)) {
+    if (!%this.autoSize) {
         return;
     }
-    %msgVec = 0.getObject(0.getObject(%this)).getAttached();
-    if (!(isObject(%msgVec))) {
+    %msgVec = %this.getObject(0).getObject(0).getAttached();
+    if (!isObject(%msgVec)) {
         return;
     }
     %ext = %this.getExtent();
     %extY = getWord(%ext, 1);
-    %longest = 1.getLongestLineLength(%msgVec, 10);
+    %longest = %msgVec.getLongestLineLength(10, 1);
     %pixelsPerCharacter = 7.3;
     %maxWidth = getWord(%this.getParent().getExtent(), 0);
     %minWidth = getWord(%this.minExtent, 0);
@@ -41,34 +41,34 @@ function GuiConvBubbleCtrl::autoResize(%this, %reset, %makewidest) {
         %extY = (%parentHeight * %this.vPercent1);
     }
     %extY = (%parentHeight * %this.vPercent0);
-    %textHeight = getWord(0.getObject(0.getObject(%this)).getExtent(), 1);
+    %textHeight = getWord(%this.getObject(0).getObject(0).getExtent(), 1);
     %extY = mClamp(%extY, 0, (%textHeight + 30.0));
-    %extY.setTrgExtent(%this, %newW);
+    %this.setTrgExtent(%newW, %extY);
 };
 function GuiConvBubbleCtrl::AutosizeTimer(%this) {
     gSetField(%this, expanded, 0);
     if (ConvBubScroll.isAtBottom()) {
-        0.autoResize(%this, 0);
+        %this.autoResize(0, 0);
     }
     cancel(gGetField(%this, resizeTimer));
-    gSetField(%this, resizeTimer, "AutosizeTimer".schedule(%this, 1000));
+    gSetField(%this, resizeTimer, %this.schedule(1000, "AutosizeTimer"));
 };
 $gConvBubOrigSlug = -(123.0);
 $gConvBubChillTimer = 0;
 function GuiConvBubbleCtrl::reexpand(%this, %howLongSecs) {
     cancel(gGetField(%this, resizeTimer));
-    gSetField(%this, resizeTimer, "AutosizeTimer".schedule(%this, (%howLongSecs * 1000.0)));
-    if (!(gGetField(%this, expanded))) {
+    gSetField(%this, resizeTimer, %this.schedule((%howLongSecs * 1000.0), "AutosizeTimer"));
+    if (!gGetField(%this, expanded)) {
         if (($gConvBubOrigSlug == -(123.0))) {
             $gConvBubOrigSlug = %this.getSluggishness();
         }
         gSetField(%this, expanded, 1);
-        0.5.setSluggishness(%this);
-        1.autoResize(%this, 1);
-        0.setChilling(%this);
+        %this.setSluggishness(0.5);
+        %this.autoResize(1, 1);
+        %this.setChilling(0);
         cancel($gConvBubChillTimer);
-        $gConvBubChillTimer = 1.schedule(%this, 700, "setChilling");
-        $gConvBubOrigSlug.schedule(%this, 700, "setSluggishness");
+        $gConvBubChillTimer = %this.schedule(700, "setChilling", 1);
+        %this.schedule(700, "setSluggishness", $gConvBubOrigSlug);
     }
 };
 function ConvBub::onMouseLeaveBounds(%this) {
@@ -79,37 +79,37 @@ ConvBub.AutosizeTimer();
 function ConvBub::updateAutoMargins(%this) {
     %clientRectPosition = WindowManager.getClientRectPosition();
     %clientRectExtent = WindowManager.getClientRectExtent();
-    %clientRectExtent.setTrgExtent(gePlayGuiHudlessArea);
-    %clientRectPosition.setTrgPosition(gePlayGuiHudlessArea);
+    gePlayGuiHudlessArea.setTrgExtent(%clientRectExtent);
+    gePlayGuiHudlessArea.setTrgPosition(%clientRectPosition);
 };
 function ConvBub::close(%this, %keepHistory) {
-    0.setVisible(ConvBub);
-    if (!(%keepHistory)) {
+    ConvBub.setVisible(0);
+    if (!%keepHistory) {
     }
     if (isObject(pChat)) {
         pChat.clearHistory();
     }
-    0.makeFirstResponder(ConvBubVecCtrl);
+    ConvBubVecCtrl.makeFirstResponder(0);
 };
 function ConvBub::open(%this) {
     if ($UserPref::Display::hideChat) {
         userTips::showOnceThisSession("HideChat");
         return;
     }
-    1.setVisible(%this);
-    %this.autoCloseTimeout.restartAutoCloseTimer(%this);
+    %this.setVisible(1);
+    %this.restartAutoCloseTimer(%this.autoCloseTimeout);
     %this.chooseProfile();
 };
 function ConvBub::chooseProfile(%this) {
     if (isObject(ApplauseMeterGui)) {
     }
     if (ApplauseMeterGui.downplayChatBubble()) {
-        ConvBubFadedProfile.setProfile(%this);
+        %this.setProfile(ConvBubFadedProfile);
     }
-    if ("hween".hasRoleString($player)) {
-        ConvBubSpookyProfile.setProfile(%this);
+    if ($player.hasRoleString("hween")) {
+        %this.setProfile(ConvBubSpookyProfile);
     }
-    ConvBubProfile.setProfile(%this);
+    %this.setProfile(ConvBubProfile);
 };
 $gConvBubAutoCloseTimer = 0;
 function ConvBub::restartAutoCloseTimer(%this, %timeout) {
@@ -117,19 +117,19 @@ function ConvBub::restartAutoCloseTimer(%this, %timeout) {
         return;
     }
     cancel($gConvBubAutoCloseTimer);
-    $gConvBubAutoCloseTimer = "tryAutoClose".schedule(%this, %timeout);
+    $gConvBubAutoCloseTimer = %this.schedule(%timeout, "tryAutoClose");
 };
 function ConvBub::tryAutoClose(%this) {
     if (%this.getChilling()) {
-        (10.0 * 1000.0).restartAutoCloseTimer(%this);
+        %this.restartAutoCloseTimer((10.0 * 1000.0));
         return;
     }
-    1.close(ConvBub);
+    ConvBub.close(1);
 };
 function ConvBub::onWake(%this) {
 };
 function ConvBub::onMouseDown(%this) {
-    15.reexpand(ConvBub);
+    ConvBub.reexpand(15);
 };
 function ConvBubVecCtrl::onMouseDown(%this) {
     ConvBub.onMouseDown();
@@ -139,10 +139,10 @@ function ConvBubVecCtrl::onRightURL(%this, %url) {
         %name = unmunge(getWords(%url, 1));
         onRightClickPlayerName(%name);
     }
-    %url.initWithURL(LinkContextMenu);
+    LinkContextMenu.initWithURL(%url);
     LinkContextMenu.showAtCursor();
-    if (!(%this.selectionActive)) {
-        1.makeFirstResponder(TheShapeNameHud);
+    if (!%this.selectionActive) {
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function ConvBubVecCtrl::onURL(%this, %url) {
@@ -156,28 +156,28 @@ function ConvBubVecCtrl::onURL(%this, %url) {
     if ((getSubStr(%url, 0, 7) $= "vside:/")) {
         vurlOperation(%url);
     }
-    if (!(%this.selectionActive)) {
-        1.makeFirstResponder(TheShapeNameHud);
+    if (!%this.selectionActive) {
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function ConvBubScroll::onScrolledToBottom(%this) {
     if (ConvBub.isEavesdrop) {
-        ETSScrollDimProfile.setProfile(%this);
+        %this.setProfile(ETSScrollDimProfile);
     }
-    ETSScrollDarkProfile.setProfile(%this);
+    %this.setProfile(ETSScrollDarkProfile);
 };
 function ConvBubScroll::onMouseDown(%this) {
     ConvBub.onMouseDown();
 };
 function LinkContextMenu::initWithURL(%this, %url) {
-    %url.initWithURLAndTitle(%this, %url);
+    %this.initWithURLAndTitle(%url, %url);
 };
 function LinkContextMenu::initWithURLAndTitle(%this, %url, %title) {
     %this.clear();
-    %title.setText(%this);
+    %this.setText(%title);
     %this.url = %url;
-    0.add(%this, "Visit Link", %n = (%n + 1.0));
-    0.add(%this, "Copy Link", %n = (%n + 1.0));
+    %this.add("Visit Link", %n = (%n + 1.0), 0);
+    %this.add("Copy Link", %n = (%n + 1.0), 0);
 };
 function LinkContextMenu::onSelect(%this, %unused, %text) {
     if ((%text $= "Visit Link")) {

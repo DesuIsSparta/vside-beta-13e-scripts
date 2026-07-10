@@ -11,7 +11,7 @@ function initClient() {
     $SpawnTargetSavedVURL = "";
     exec("./customProfiles.cs");
     initBaseClient();
-    if (!(initCanvas(generateWindowTitle("")))) {
+    if (!initCanvas(generateWindowTitle(""))) {
         return;
     }
     if ($StandAlone) {
@@ -72,7 +72,7 @@ function initClient() {
         fmodSetMute($UserPref::Audio::mute);
     }
     error("FMOD Audio Initialization Failed");
-    "DefaultCursor".setCursor(Canvas);
+    Canvas.setCursor("DefaultCursor");
     userProperties_makeManager("gUserPropMgrClient", 1);
     AssetManager::clientInit();
     textureDownloadSetDownloadHost($Net::DownloadHost);
@@ -99,11 +99,11 @@ function shutdownClient() {
     dlMgr.shutDown();
 };
 function loadMainMenu() {
-    LoginGui.setContent(Canvas);
+    Canvas.setContent(LoginGui);
     if ($Audio::initFailed) {
         MessageBoxOK("Audio Initialization Failed", "A sound card must be installed to hear audio playback.  If a soundcard is already present please ensure the drivers are installed properly.", "");
     }
-    "DefaultCursor".setCursor(Canvas);
+    Canvas.setCursor("DefaultCursor");
 };
 function startStandAlone() {
     log("initialization", "info", "start connectLocal()");
@@ -115,15 +115,15 @@ function startStandAlone() {
     if (($Player::Name $= "")) {
         $Player::Name = "no_name";
     }
-    $Player::Name.forgetProperties(gUserPropMgrClient);
-    "startStandAlone_Part2();".requestProperties(gUserPropMgrClient, $Player::Name);
+    gUserPropMgrClient.forgetProperties($Player::Name);
+    gUserPropMgrClient.requestProperties($Player::Name, "startStandAlone_Part2();");
 };
 function startStandAlone_Part2() {
     outfits_init();
     createServer("SinglePlayer", $MissionArg);
     $GameConnection = new GameConnection(ServerConnection);
-    "".setCommonPreconnectClientSettings($GameConnection);
-    ServerConnection.add(RootGroup);
+    $GameConnection.setCommonPreconnectClientSettings("");
+    RootGroup.add(ServerConnection);
     $GameConnection.connectLocal();
     log("initialization", "info", "end connectLocal()");
 };
@@ -132,19 +132,19 @@ function join(%joinGameAddress) {
     echo("join:: connecting to: " @ %joinGameAddress);
     $lastJoinedServer = %joinGameAddress;
     $GameConnection = new GameConnection(ServerConnection);
-    "".setCommonPreconnectClientSettings($GameConnection);
-    %joinGameAddress.connect($GameConnection);
+    $GameConnection.setCommonPreconnectClientSettings("");
+    $GameConnection.connect(%joinGameAddress);
 };
 function showLicense() {
     %file = findFirstFile("*/license.txt");
     %fo = new FileObject("");
-    %file.openForRead(%fo);
+    %fo.openForRead(%file);
     %text = "";
-    while (!(%fo.isEOF())) {
+    while (!%fo.isEOF()) {
         %text = %text @ %fo.readLine() @ "\n";
     }
-    %text.setText(LicenseText);
-    0.pushDialog(Canvas, licenseDlg);
+    LicenseText.setText(%text);
+    Canvas.pushDialog(licenseDlg, 0);
 };
 function onVideoDeactivate() {
     stopMoving();
@@ -158,7 +158,7 @@ function onVideoReactivate() {
 };
 function quitApp() {
     echoDebug(getScopeName() @ " " @ "- Disconnecting." @ " " @ getTrace());
-    if (!($StandAlone)) {
+    if (!$StandAlone) {
     }
     if ($AmClient) {
     }
@@ -169,7 +169,7 @@ function quitApp() {
 };
 function logout(%doQuit) {
     %analytic = getAnalytic();
-    "/client/logout/" @ %doQuit.trackPageView(%analytic);
+    %analytic.trackPageView("/client/logout/" @ %doQuit);
     if (isObject(ApplauseMeterGui)) {
         ApplauseMeterGui.close();
     }
@@ -182,22 +182,22 @@ function logout(%doQuit) {
     }
     CustomSpaceClient::OnClientDisconnect();
     if (isObject($player)) {
-        0.applySkuBadge($player);
+        $player.applySkuBadge(0);
     }
     silentAIMDisconnect();
-    if (!($UserPref::AIM::RememberMe)) {
+    if (!$UserPref::AIM::RememberMe) {
     }
     if (isObject(AIMScreenNameField)) {
-        "".setText(AIMScreenNameField);
+        AIMScreenNameField.setText("");
     }
-    if (!($UserPref::AIM::SavePassword)) {
+    if (!$UserPref::AIM::SavePassword) {
     }
     if (isObject(AIMPasswordField)) {
-        "".setText(AIMPasswordField);
+        AIMPasswordField.setText("");
     }
     WorldMap.setNotConnectedToServer();
     if (isObject(ConvBub)) {
-        0.close(ConvBub);
+        ConvBub.close(0);
     }
     if (isObject(BuddyHudWin)) {
         BuddyHudWin.close();
@@ -216,23 +216,23 @@ function logout(%doQuit) {
         SystemMessageDialog.close();
     }
     setWindowTitle(generateWindowTitle($ServerName));
-    if (!($Login::loggedIn)) {
+    if (!$Login::loggedIn) {
         return;
     }
     if (isObject(LogoutRequest)) {
         return;
     }
     %cmd = "logoutPart2(" @ %doQuit @ ");";
-    "".setText(geShoutout_Credential_Twitter_Username);
-    "".setText(geShoutout_Credential_Twitter_Password);
-    $Player::VBux.setProperty(gUserPropMgrClient, $Player::Name, "prevBalanceVBux");
-    $Player::VPoints.setProperty(gUserPropMgrClient, $Player::Name, "prevBalanceVPoints");
-    %cmd.persistReally(gUserPropMgrClient, $Player::Name);
+    geShoutout_Credential_Twitter_Username.setText("");
+    geShoutout_Credential_Twitter_Password.setText("");
+    gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVBux", $Player::VBux);
+    gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVPoints", $Player::VPoints);
+    gUserPropMgrClient.persistReally($Player::Name, %cmd);
 };
 function logoutPart2(%doQuit) {
     %logout = new ManagerRequest(LogoutRequest);
     if (isObject(MissionCleanup)) {
-        %logout.add(MissionCleanup);
+        MissionCleanup.add(%logout);
     }
     %logout.doQuit = %doQuit;
     %url = $Net::ClientServiceURL @ "/logout";
@@ -251,7 +251,7 @@ function logoutPart2(%doQuit) {
     }
     %url = %url @ %userValue @ %tokenValue @ %aimMessagesSentValue;
     log("login", "debug", "logout: " @ %url);
-    %url.setURL(%logout);
+    %logout.setURL(%url);
     %logout.start();
 };
 function LogoutRequest::onError(%this, %errorNum, %errorName) {
@@ -284,32 +284,32 @@ function StatusRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onDone:" @ " " @ %status);
     if ((%status $= "success")) {
-        %dfEnabled = "doubleFusionEnabled".getValueBool(%this);
+        %dfEnabled = %this.getValueBool("doubleFusionEnabled");
         if (isFunction("Using_DF")) {
         }
         if (Using_DF()) {
             setDFEnabled(%dfEnabled);
         }
-        %preload = "assetPreloadEnabled".getValueBool(%this);
+        %preload = %this.getValueBool("assetPreloadEnabled");
         if ($Preload) {
         }
         if (%preload) {
         }
-        if (!($NoDisplay)) {
+        if (!$NoDisplay) {
             preloadResources();
         }
-        %cache = "missionCacheEnabled".getValueBool(%this);
+        %cache = %this.getValueBool("missionCacheEnabled");
         if ($CacheFlagIsSet) {
         }
-        if (!(%cache)) {
+        if (!%cache) {
             $CacheFlagIsSet = 0;
         }
-        $gLoginStatusMessage = "message".getValue(%this);
+        $gLoginStatusMessage = %this.getValue("message");
         if (($gLoginStatusMessage $= "")) {
             $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "A-OKAY"];
         }
         parseGiftingSettings(%this);
-        $gVPointsRatio = "vPointsRatio".getValue(%this);
+        $gVPointsRatio = %this.getValue("vPointsRatio");
         $gVPointsRatio = 50;
     }
     $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
@@ -334,7 +334,7 @@ function sendStatusRequest() {
     }
     %url = $Net::ClientServiceURL @ "/SystemStatus";
     log("login", "info", "sending system status request: " @ %url);
-    %url.setURL(%request);
+    %request.setURL(%url);
     %request.start();
     $gLoginStatusMessage = $MsgCat::network["H-SEARCHING"];
     LoginGui.update();
@@ -363,6 +363,6 @@ function sendFirstLaunchRequest() {
     }
     %owner = "doppelganger";
     %url = $Net::downloadURL @ "/first_launch?status=true&platform=" @ $Platform @ "&referrer=" @ %referrer @ "&owner=" @ %owner;
-    %url.setURL(%request);
+    %request.setURL(%url);
     %request.start();
 };

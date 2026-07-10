@@ -1,12 +1,12 @@
 function toggleEditor(%make) {
     if (%make) {
-        if (!($missionRunning)) {
+        if (!$missionRunning) {
             MessageBoxOK("Mission Required", "You must load a mission before starting the Mission Editor.", "");
-            return !("gameEditors".rolesPermissionCheckNoWarn($player));
+            return !$player.rolesPermissionCheckNoWarn("gameEditors");
         }
-        if (!(isObject(Editor))) {
+        if (!isObject(Editor)) {
             Editor::Create();
-            Editor.add(MissionCleanup);
+            MissionCleanup.add(Editor);
         }
         if ((Canvas.getContent() == EditorGui.getId())) {
             Editor.close();
@@ -37,7 +37,7 @@ function Editor::onAdd(%unused) {
     exec("./EditorGui.cs");
     exec("./WorldEditorSettingsDlg.gui");
     exec("./TerrainEditorVSettingsGui.gui");
-    "fxShapeReplicatedStatic".ignoreObjClass(EWorldEditor);
+    EWorldEditor.ignoreObjClass("fxShapeReplicatedStatic");
     EditorGui.init();
     exec("./editorRender.cs");
 };
@@ -45,7 +45,7 @@ function Editor::checkActiveLoadDone() {
     if (isObject(EditorGui)) {
     }
     if (EditorGui.loadingMission) {
-        EditorGui.setContent(Canvas);
+        Canvas.setContent(EditorGui);
         EditorGui.loadingMission = 0;
         return 1;
     }

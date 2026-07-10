@@ -4,10 +4,8 @@ function handleConnectionErrorMessage(%unused, %msgString) {
 };
 function GameConnection::initialControlSet(%this) {
     echo("*** Initial Control Object");
-    if (!(isObject(EditorGui))) {
-    }
-    if (!(Editor::checkActiveLoadDone()) && (Canvas.getContent() != PlayGui.getId())) {
-        PlayGui.setContent(Canvas);
+    if (!isObject(EditorGui) || !Editor::checkActiveLoadDone() && (Canvas.getContent() != PlayGui.getId())) {
+        Canvas.setContent(PlayGui);
     }
     %this.etsInit();
 };
@@ -15,13 +13,13 @@ function GameConnection::setLagIcon(%this, %state) {
     if ((%this.getAddress() $= "local")) {
         return;
     }
-    (%state $= "true").setVisible(LagIcon);
+    LagIcon.setVisible((%state $= "true"));
 };
 function GameConnection::onConnectionAccepted(%this) {
-    0.setVisible(LagIcon);
+    LagIcon.setVisible(0);
     $GameConnection = %this;
     $VURLcmd = "";
-    1.setActivityActive(getUserActivityMgr(), "traveling");
+    getUserActivityMgr().setActivityActive("traveling", 1);
 };
 function GameConnection::onServerConnectionPossiblyTimingOut(%this) {
     warn("Possibly losing connection to server..");
@@ -38,20 +36,20 @@ function GameConnection::onConnectionDropped(%this, %msg) {
     if (%this.waitForDisconnect) {
         %this.waitForDisconnect = 0;
         disconnectedCleanup("");
-        $SpawnTargetSavedVURL.schedule(WorldMap, 1, "doServerJoin");
+        WorldMap.schedule(1, "doServerJoin", $SpawnTargetSavedVURL);
         return;
     }
     if ((getField(%msg, 0) $= "bootToMap")) {
         %currentCity = WorldMap.currentCity;
         WorldMap.setNotConnectedToServer();
-        "map".openToTabName(geTGF);
+        geTGF.openToTabName("map");
         %levelOrCityName = getField(%msg, 1);
         if ((%levelOrCityName $= 0)) {
         }
         if ((%levelOrCityName $= 1)) {
-            %currentCity.selectCity(WorldMap);
+            WorldMap.selectCity(%currentCity);
         }
-        %levelOrCityName.selectCity(WorldMap);
+        WorldMap.selectCity(%levelOrCityName);
         MessageBoxOK("BOOTED TO MAP", getFields(%msg, 2), "");
     }
     logout(0);
@@ -60,7 +58,7 @@ function GameConnection::onConnectionDropped(%this, %msg) {
 };
 function GameConnection::onConnectionError(%this, %msg) {
     if ($CacheFlagIsSet) {
-        $CurrentMission.deleteCacheFile(ServerConnection);
+        ServerConnection.deleteCacheFile($CurrentMission);
         $CurrentMission = "";
     }
     disconnectedCleanup(geTGF);
@@ -143,7 +141,7 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra) {
     %error = "Connection error.  Please try another server.  Error code: (" @ %msg @ ")";
     %destGui = geTGF;
     %analytic = getAnalytic();
-    "/client/connectionRejected/" @ %msg.trackPageView(%analytic);
+    %analytic.trackPageView("/client/connectionRejected/" @ %msg);
     if ((%destGui.getId() == LoginGui.getId())) {
     }
     if (!(%msg $= "CR_ASSETS_MISSING")) {
@@ -167,7 +165,7 @@ function disconnect(%screen) {
     destroyServer();
 };
 function disconnectedStop() {
-    0.close(ConvBub);
+    ConvBub.close(0);
     alxStopAll();
     if (isObject(MusicPlayer)) {
         MusicPlayer.stop();
@@ -176,13 +174,13 @@ function disconnectedStop() {
 function disconnectedCleanup(%screen) {
     $gWorldMapJoiningServer = 0;
     disconnectedStop();
-    0.setVisible(LagIcon);
+    LagIcon.setVisible(0);
     if (isObject(%screen)) {
         if ((%screen.getId() == geTGF.getId())) {
             WorldMap.setNotConnectedToServer();
             geTGF.open();
         }
-        %screen.setContent(Canvas);
+        Canvas.setContent(%screen);
     }
     geTGF.closeFully();
     clearTextureHolds();

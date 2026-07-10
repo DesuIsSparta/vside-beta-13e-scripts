@@ -13,7 +13,7 @@ function Observer::onTrigger(%this, %obj, %unused, %state) {
     }
     if ((%obj.mode $= "Corpse")) {
         %client.spawnPlayer();
-        "Observer".setMode(%this, %obj);
+        %this.setMode(%obj, "Observer");
     }
 };
 function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3) {
@@ -22,13 +22,13 @@ function Observer::setMode(%this, %obj, %mode, %arg1, %arg2, %arg3) {
     }
     if ((%mode $= "Corpse")) {
         %transform = %arg1.getTransform();
-        4.5.setOrbitMode(%obj, %arg1, %transform, 0.5, 4.5);
+        %obj.setOrbitMode(%arg1, %transform, 0.5, 4.5, 4.5);
     }
     %obj.mode = %mode;
 };
 function Camera::onAdd(%this, %obj) {
-    %this.mode.setMode(%this);
+    %this.setMode(%this.mode);
 };
 function Camera::setMode(%this, %mode, %arg1, %arg2, %arg3) {
-    %arg3.setMode(%this.getDataBlock(), %this, %mode, %arg1, %arg2);
+    %this.getDataBlock().setMode(%this, %mode, %arg1, %arg2, %arg3);
 };

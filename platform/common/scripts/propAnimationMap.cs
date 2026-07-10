@@ -189,9 +189,9 @@ function initializePropAnimationMap() {
 };
 $gPropGenres = "";
 function setupPropAnimations(%propSku, %actionAnims, %genre, %internalDescription) {
-    %actionAnims.put(PropAnimationMap, %propSku);
-    %genre.put(PropGenreMap, %propSku);
-    %internalDescription.put(PropInternalDescriptionMap, %propSku);
+    PropAnimationMap.put(%propSku, %actionAnims);
+    PropGenreMap.put(%propSku, %genre);
+    PropInternalDescriptionMap.put(%propSku, %internalDescription);
     $gPropGenres = $gPropGenres @ " " @ %genre;
 };
 function isPropGenre(%genre) {
@@ -202,60 +202,52 @@ function dumpProps() {
     %num = PropInternalDescriptionMap.size();
     %n = 0;
     while ((%n < %num)) {
-        %sku = %n.getKey(PropInternalDescriptionMap);
-        %desc = %n.getValue(PropInternalDescriptionMap);
-        %anims = %sku.get(PropAnimationMap);
-        %genre = %sku.get(PropGenreMap);
+        %sku = PropInternalDescriptionMap.getKey(%n);
+        %desc = PropInternalDescriptionMap.getValue(%n);
+        %anims = PropAnimationMap.get(%sku);
+        %genre = PropGenreMap.get(%sku);
         echo("|" @ " " @ formatString("%-8s", %sku) @ " " @ "|" @ " " @ %genre @ " " @ "|" @ " " @ formatString("%-30s", %anims) @ " " @ "|" @ " " @ formatString("%-30s", %desc) @ " " @ "|");
         %n = (%n + 1.0);
     }
 };
 initializePropAnimationMap();
 function canHavePropsInGenre(%genre) {
-    if ((%genre $= "k")) {
-    }
-    if ((%genre $= "w")) {
-    }
-    if ((%genre $= "o")) {
-    }
-    if ((%genre $= "l")) {
-    }
-    if ((%genre $= "s")) {
+    if ((%genre $= "k") || (%genre $= "w") || (%genre $= "o") || (%genre $= "l") || (%genre $= "s")) {
         return 0;
     }
     return 1;
 };
 function Player::getActivePropSku(%this) {
-    return %this.getActiveSKUs().getFirstPropSku(SkuManager);
+    return SkuManager.getFirstPropSku(%this.getActiveSKUs());
 };
 function Player::getActiveDrinkSku(%this) {
-    return "drink".getSkuWithAnyTags(SkuManager, %this.getActiveSKUs());
+    return SkuManager.getSkuWithAnyTags(%this.getActiveSKUs(), "drink");
 };
 function Player::hasActiveDrinkSku(%this) {
-    return "drink".hasSkuWithAnyTags(SkuManager, %this.getActiveSKUs());
+    return SkuManager.hasSkuWithAnyTags(%this.getActiveSKUs(), "drink");
 };
 function Player::getActiveDrinkMakerSku(%this) {
-    return "drinkMaker".getSkuWithAnyTags(SkuManager, %this.getActiveSKUs());
+    return SkuManager.getSkuWithAnyTags(%this.getActiveSKUs(), "drinkMaker");
 };
 function Player::hasActiveDrinkMakerSku(%this) {
-    return "drinkMaker".hasSkuWithAnyTags(SkuManager, %this.getActiveSKUs());
+    return SkuManager.hasSkuWithAnyTags(%this.getActiveSKUs(), "drinkMaker");
 };
 function Player::getPropAnimation(%this, %actionNum) {
     %propSku = %this.getActivePropSku();
-    return %actionNum.getPropAnimationFromSku(%this, %propSku);
+    return %this.getPropAnimationFromSku(%propSku, %actionNum);
 };
 function Player::getPropAnimationFromSku(%this, %propSku, %actionNum) {
     if ((%propSku $= "")) {
         return "";
     }
-    %anim = %propSku.get(PropAnimationMap);
+    %anim = PropAnimationMap.get(%propSku);
     %anim = getWord(%anim, %actionNum);
     %anim = %this.getGender() @ %anim;
     return %anim;
 };
 function Player::getPropAnimationFromSkus(%this, %skus, %animNum) {
-    %propSku = %skus.getFirstPropSku(SkuManager);
-    return %animNum.getPropAnimationFromSku(%this, %propSku);
+    %propSku = SkuManager.getFirstPropSku(%skus);
+    return %this.getPropAnimationFromSku(%propSku, %animNum);
 };
 function Player::hasAvailableProp(%this) {
     %propSku = getActivePropSku();
@@ -265,6 +257,6 @@ function Player::dropProp(%this) {
     %propSku = %this.getActivePropSku();
     if (!(%propSku $= "")) {
         %activeSkus = findAndRemoveFirstOccurrenceOfWord(%this.getActiveSKUs(), %propSku);
-        %activeSkus.setActiveSKUs(%this);
+        %this.setActiveSKUs(%activeSkus);
     }
 };

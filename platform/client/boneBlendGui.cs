@@ -6,48 +6,48 @@ boneBlendGui.labelOffset2 = "190 25";
 boneBlendGui.labelOffset3 = "190 45";
 boneBlendGui.groupOffset1 = "120 0";
 function boneBlendGui::open(%this) {
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
-    if (!(%this.runOnce)) {
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
+    if (!%this.runOnce) {
         %i = 0;
         while ((%i < $MAX_FREE_BONE_BLENDS)) {
             %index = (%i + $FIRST_FREE_BLEND_INDEX);
-            blendOffsetSliderUniqueField.getValue().setBoneBlendOffsetByIndex($player, %index);
-            blendRateSliderUniqueField.getValue().setBoneBlendRateByIndex($player, %index);
-            blendScaleSliderUniqueField.getValue().setBoneBlendScaleByIndex($player, %index);
+            $player.setBoneBlendOffsetByIndex(%index, blendOffsetSliderUniqueField.getValue());
+            $player.setBoneBlendRateByIndex(%index, blendRateSliderUniqueField.getValue());
+            $player.setBoneBlendScaleByIndex(%index, blendScaleSliderUniqueField.getValue());
             %i = (%i + 1.0);
         }
-        blendRateSlider.getValue().setBoneBlendRate($player);
-        blendScaleSlider.getValue().setBoneBlendScale($player);
+        $player.setBoneBlendRate(blendRateSlider.getValue());
+        $player.setBoneBlendScale(blendScaleSlider.getValue());
         %this.runOnce = (%i < $MAX_FREE_BONE_BLENDS) @ 1;
     }
 };
 function boneBlendGui::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
 };
 boneBlendGui.currentSliderIndex = -(1.0);
 function blendUpperPitch::onMouseEnter(%this) {
-    %this.positionDynamicCtrls(boneBlendGui);
+    boneBlendGui.positionDynamicCtrls(%this);
     boneBlendGui.currentSliderIndex = $BB_UPPR_PITCH;
-    "platform/client/ui/messageHud".setBitmap(blendUpperPitch.getGroup());
-    "".setBitmap(blendUpperYaw.getGroup());
-    "".setBitmap(blendUpperRoll.getGroup());
+    blendUpperPitch.getGroup().setBitmap("platform/client/ui/messageHud");
+    blendUpperYaw.getGroup().setBitmap("");
+    blendUpperRoll.getGroup().setBitmap("");
 };
 function blendUpperYaw::onMouseEnter(%this) {
-    %this.positionDynamicCtrls(boneBlendGui);
+    boneBlendGui.positionDynamicCtrls(%this);
     boneBlendGui.currentSliderIndex = $BB_UPPR_YAW;
-    "platform/client/ui/messageHud".setBitmap(blendUpperYaw.getGroup());
-    "".setBitmap(blendUpperPitch.getGroup());
-    "".setBitmap(blendUpperRoll.getGroup());
+    blendUpperYaw.getGroup().setBitmap("platform/client/ui/messageHud");
+    blendUpperPitch.getGroup().setBitmap("");
+    blendUpperRoll.getGroup().setBitmap("");
 };
 function blendUpperRoll::onMouseEnter(%this) {
-    %this.positionDynamicCtrls(boneBlendGui);
+    boneBlendGui.positionDynamicCtrls(%this);
     boneBlendGui.currentSliderIndex = $BB_UPPR_ROLL;
-    "".setBitmap(blendUpperPitch.getGroup());
-    "platform/client/ui/messageHud".setBitmap(blendUpperRoll.getGroup());
-    "".setBitmap(blendUpperYaw.getGroup());
+    blendUpperPitch.getGroup().setBitmap("");
+    blendUpperRoll.getGroup().setBitmap("platform/client/ui/messageHud");
+    blendUpperYaw.getGroup().setBitmap("");
 };
 function boneBlendGui::positionDynamicCtrls(%this, %contextControl) {
     %groupPosition = VectorAdd(%contextControl.getGroup().position, boneBlendGui.groupOffset1);

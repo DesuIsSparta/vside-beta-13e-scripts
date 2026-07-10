@@ -11,10 +11,10 @@ function initCoAnimList() {
 };
 $gCoAnimDictionary = 0;
 function addCoAnim(%coAnimName, %anim, %delayA, %delayB, %range, %relativeTransform, %minLevel, %requestText, %moveMode) {
-    if (!(isObject($gCoAnimDictionary))) {
+    if (!isObject($gCoAnimDictionary)) {
         $gCoAnimDictionary = new StringMap("");
         if (isObject(MissionCleanup)) {
-            $gCoAnimDictionary.add(MissionCleanup);
+            MissionCleanup.add($gCoAnimDictionary);
         }
     }
     %entry = "" @ %anim @ "\t" @ %delayA @ "\t" @ %delayB @ "\t" @ %range @ "\t" @ %relativeTransform @ "\t" @ %minLevel @ "\t" @ %requestText @ "\t" @ %moveMode;
@@ -35,24 +35,24 @@ function setCoAnimSkuPeriod(%coAnimName, %whichPlayer, %specialSkuName, %startMS
     setCoAnimEntry(%coAnimName, %entry);
 };
 function findCoAnimEntry(%name) {
-    if (!(isObject($gCoAnimDictionary))) {
+    if (!isObject($gCoAnimDictionary)) {
         return "";
     }
-    return %name.get($gCoAnimDictionary);
+    return $gCoAnimDictionary.get(%name);
 };
 function setCoAnimEntry(%name, %value) {
-    %value.put($gCoAnimDictionary, %name);
+    $gCoAnimDictionary.put(%name, %value);
 };
 initCoAnimList();
 function getAllCoAnims() {
-    if (!(isObject($gCoAnimDictionary))) {
+    if (!isObject($gCoAnimDictionary)) {
         return "";
     }
     %list = "";
     %count = $gCoAnimDictionary.size();
     %i = 0;
     while ((%i < %count)) {
-        %userFacingName = %i.getKey($gCoAnimDictionary);
+        %userFacingName = $gCoAnimDictionary.getKey(%i);
         if (!(%userFacingName $= "")) {
             %list = %list @ "\t" @ %userFacingName;
         }
@@ -67,7 +67,7 @@ function getAllUserTriggerableCoAnims() {
     %n = (getFieldCount(%list) - 1.0);
     while ((%n >= 0.0)) {
         %entryKey = getField(%list, %n);
-        %entryVal = %entryKey.get($gCoAnimDictionary);
+        %entryVal = $gCoAnimDictionary.get(%entryKey);
         %wantsTo = getField(%entryVal, 6);
         if (!(%wantsTo $= "")) {
             %retList = %entryKey @ %delim @ %retList;

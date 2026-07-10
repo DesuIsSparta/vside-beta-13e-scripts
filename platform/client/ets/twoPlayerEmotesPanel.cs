@@ -1,13 +1,13 @@
 function TwoPlayerEmotesPanel::open(%this, %playerName) {
-    %this.ensureAdded(PlayGui);
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    PlayGui.ensureAdded(%this);
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     %this.playerName = %playerName;
-    "Target: " @ %playerName.setText(TwoPlayerEmotesText);
+    TwoPlayerEmotesText.setText("Target: " @ %playerName);
     %this.refresh();
 };
 function TwoPlayerEmotesPanel::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
 };
@@ -20,14 +20,14 @@ function TwoPlayerEmotesPanel::refresh(%this) {
     %pos = onscreenCoordinates(%targetX, %targetY, %width, %height);
     %posX = getWord(%pos, 0);
     %posY = getWord(%pos, 1);
-    %posY.reposition(%this, %posX);
+    %this.reposition(%posX, %posY);
     %list = TwoPlayerEmotesList;
     %list.clear();
     %anims = getAllUserTriggerableCoAnims();
     %count = getFieldCount(%anims);
     %i = 0;
     while ((%i < %count)) {
-        getField(%anims, %i).addRow(%list, %i);
+        %list.addRow(%i, getField(%anims, %i));
         %i = (%i + 1.0);
     }
 };

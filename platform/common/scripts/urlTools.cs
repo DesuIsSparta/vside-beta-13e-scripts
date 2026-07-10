@@ -23,8 +23,8 @@ function URLInfo::parse(%this) {
         while ((%idx < %count)) {
             %nvPair = getWord(%params, %idx);
             %value = NextToken(%nvPair, "name", "=");
-            %this.paramName = %name @ %idx;
-            %this.param = %value @ %name;
+            %this.paramName[%idx] = %name;
+            %this.param[%name] = %value;
             %idx = (%idx + 1.0);
         }
     }
@@ -33,7 +33,7 @@ function URLInfo::parse(%this) {
     return 1;
 };
 function URLInfo::reconstruct(%this) {
-    if (!(%this.parsed)) {
+    if (!%this.parsed) {
         return "";
     }
     %newUrl = %this.protocol @ "://" @ %this.host;
@@ -47,9 +47,8 @@ function URLInfo::reconstruct(%this) {
             if ((%idx > 0.0)) {
                 %newUrl = %newUrl @ "&";
             }
-            %name = %this.paramName;
-            %idx;
-            %newUrl = %newUrl @ %name @ "=" @ %name @ %this.param;
+            %name = %this.paramName[%idx];
+            %newUrl = %newUrl @ %name @ "=" @ %this.param[%name];
             %idx = (%idx + 1.0);
         }
     }

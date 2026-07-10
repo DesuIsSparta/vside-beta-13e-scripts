@@ -111,9 +111,9 @@ package platform {
     };
     function haveValidManagerHost() {
         %ret = isValidHostAddress($Net::ManagerHost);
-        if (!(%ret)) {
+        if (!%ret) {
         }
-        if (!($StandAlone)) {
+        if (!$StandAlone) {
             warn(getScopeName(1) @ " " @ "- $Net::ManagerHost is invalid." @ " " @ getTrace());
         }
         return %ret;
@@ -124,11 +124,9 @@ package platform {
     function parseArgs() {
         Parent::parseArgs();
         echo("--------- Parsing Arg MOD: platform ---------");
-        if (hasArg("-dedicated")) {
+        if (hasArg("-dedicated") || hasArg("-server")) {
         }
-        if (hasArg("-server")) {
-        }
-        if (!($Game::Compile)) {
+        if (!$Game::Compile) {
             $Server::Dedicated = 1;
             $Con::logBufferEnabled = 0;
             $Net::ManagerHost = "192.168.100.100:8081";
@@ -138,11 +136,9 @@ package platform {
             parseServerArgs();
         }
         parseClientArgs();
-        if (hasArg("-dedicated")) {
+        if (hasArg("-dedicated") || hasArg("-server")) {
         }
-        if (hasArg("-server")) {
-        }
-        if (!($Game::Compile)) {
+        if (!$Game::Compile) {
             enableWinConsole(1);
         }
         rebaseURLs();
@@ -152,7 +148,7 @@ package platform {
             log("initialization", "debug", "setting the map as invisible");
         }
         $NonInteractive = 0;
-        if (!($NonInteractive)) {
+        if (!$NonInteractive) {
             log("initialization", "debug", "Exporting net_settings.log");
             export("$Net::*", "./net_settings.log", 0);
         }
@@ -168,7 +164,7 @@ package platform {
             %testdomain = strreplace($Net::BaseDomain, ":", " ");
             if (stricmp("www.vside.com", firstWord(%testdomain))) {
                 %analytic = getAnalytic();
-                "UA-324914-24".setDomainAndAccount(%analytic, "test.vside.com");
+                %analytic.setDomainAndAccount("test.vside.com", "UA-324914-24");
             }
         }
         return;
@@ -179,7 +175,7 @@ package platform {
         if (%haveManagerArg) {
             %colonPos = strstr($Net::ManagerHost, ":");
             if ((%colonPos == -(1.0))) {
-                if (!(%haveSManagerArg)) {
+                if (!%haveSManagerArg) {
                     $Net::SecureManagerHost = $Net::ManagerHost @ ":8443";
                 }
                 if ($Server::Dedicated) {
@@ -187,7 +183,7 @@ package platform {
                 }
                 $Net::ManagerHost = $Net::ManagerHost @ ":8080";
             }
-            if (!(%haveSManagerArg)) {
+            if (!%haveSManagerArg) {
                 %line = $Net::ManagerHost;
                 %line = NextToken(%line, host, ":");
                 NextToken(%line, port, " ");
@@ -282,7 +278,7 @@ package platform {
         %CityNameString = ($ETS::cityName $= "") ? "" : " in";
         %LongCityNameString = "";
         if (isObject(WorldMap)) {
-            %areaName = %ServerName.cityNameForServerName(WorldMap);
+            %areaName = WorldMap.cityNameForServerName(%ServerName);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
             %LongCityNameString = (%locationName $= "") ? "" : " - in";
         }
@@ -363,8 +359,8 @@ package platform {
     };
     function startInitialSSLConnection() {
         %curl = new URLPostObject("");
-        "http://" @ $Net::SecureManagerHost.setURL(%curl);
-        0.setBody(%curl);
+        %curl.setURL("http://" @ $Net::SecureManagerHost);
+        %curl.setBody(0);
         %curl.start();
         return;
     };
@@ -372,9 +368,7 @@ package platform {
         Parent::onStart();
         echo("--------- Initializing MOD: platform ---------");
         exec("./client/init.cs");
-        if ($StandAlone) {
-        }
-        if ($Server::Dedicated) {
+        if ($StandAlone || $Server::Dedicated) {
             exec("./server/init.cs");
             initServer();
         }
@@ -386,16 +380,16 @@ package platform {
         }
         initClient();
         if (isObject(ConsoleEntry)) {
-            "platform/client/consoleHistory.txt".loadHistory(ConsoleEntry);
+            ConsoleEntry.loadHistory("platform/client/consoleHistory.txt");
         }
         echo("---no ConsoleEntry not loading history");
         return;
     };
     function onExit() {
         dumpConsoleHistoryReally();
-        if (!($Server::Dedicated)) {
+        if (!$Server::Dedicated) {
             shutdownClient();
-            if (!($NonInteractive)) {
+            if (!$NonInteractive) {
                 echo("Exporting client prefs");
                 $UserPref::Player::Password = munge($UserPref::Player::Password);
                 $UserPref::Player::AIMPassword = munge($UserPref::Player::AIMPassword);
@@ -408,7 +402,7 @@ package platform {
         return;
     };
     function dumpConsoleHistorySchedule() {
-        if (!(isDefined("$gConsoleHistoryDumpTimer"))) {
+        if (!isDefined("$gConsoleHistoryDumpTimer")) {
             $gConsoleHistoryDumpTimer = "";
             $gConsoleHistoryPeriod = 15000;
         }
@@ -420,8 +414,8 @@ package platform {
     function dumpConsoleHistoryReally() {
         if (isObject(ConsoleEntry)) {
         }
-        if (!($NonInteractive)) {
-            "platform/client/consoleHistory.txt".dumpHistory(ConsoleEntry);
+        if (!$NonInteractive) {
+            ConsoleEntry.dumpHistory("platform/client/consoleHistory.txt");
         }
         echo("---no ConsoleEntry not dumping history");
         return;

@@ -3,7 +3,7 @@ $gAfxSelectedAvatar = -(1.0);
 $gAfxSelectronStyle = 0;
 $gAfxSelectronStyleCount = 1;
 $gAfxTestViaBots = 0;
-if (!($gAfxEffectsEnabledClient)) {
+if (!$gAfxEffectsEnabledClient) {
 }
 function afxInitKeybinds() {
     afxAddEffect("LevelUpSpell", "ctrl-shift u");
@@ -14,9 +14,9 @@ function afxRequestEffect(%effectName) {
     }
 };
 function afxAddEffect(%effectName, %keyBinding) {
-    "".bindCmd(moveMap, keyboard, %keyBinding, "afxRequestEffect(\"" @ %effectName @ "\");");
+    moveMap.bindCmd(keyboard, %keyBinding, "afxRequestEffect(\"" @ %effectName @ "\");", "");
     safeEnsureScriptObject("StringMap", "afxEffectsCatalog");
-    %keyBinding.put(afxEffectsCatalog, %effectName);
+    afxEffectsCatalog.put(%effectName, %keyBinding);
 };
 function afxGetSelectedAvatar() {
     return $gAfxSelectedAvatar;
@@ -27,11 +27,11 @@ function afxGetSelectedAvatarGhost() {
     return -(1.0);
 };
 function afxSelectAvatarByName(%name) {
-    if (!($player.isDebugging())) {
+    if (!$player.isDebugging()) {
         return;
     }
     %avatar = Player::findPlayerInstance(%name);
-    if (!(isObject(%avatar))) {
+    if (!isObject(%avatar)) {
         return;
     }
     %start_new_sele = ($gAfxSelectedAvatar != %avatar);
@@ -42,14 +42,14 @@ function afxSelectAvatarByName(%name) {
     if (%start_new_sele) {
         %sele = startSelectron(%avatar, $gAfxSelectronStyle);
         if (isObject(%sele)) {
-            "selected".addConstraint(%sele, %avatar);
+            %sele.addConstraint(%avatar, "selected");
             %avatar.sele = %sele;
             $gAfxSelectedAvatar = %avatar;
         }
     }
 };
 function afxNextSelectronStyle() {
-    if (!($player.isDebugging())) {
+    if (!$player.isDebugging()) {
         return;
     }
     $gAfxSelectronStyle = ($gAfxSelectronStyle + 1.0);
@@ -62,7 +62,7 @@ function afxNextSelectronStyle() {
     $gAfxSelectedAvatar.sele.stopSelectron();
     %sele = startSelectron($gAfxSelectedAvatar, $gAfxSelectronStyle);
     if (isObject(%sele)) {
-        "selected".addConstraint(%sele, $gAfxSelectedAvatar);
+        %sele.addConstraint($gAfxSelectedAvatar, "selected");
         $gAfxSelectedAvatar.sele = %sele;
     }
 };
@@ -75,7 +75,7 @@ function ClientCmdAfxClientSpecificSound(%soundID) {
     %soundID = detag(%soundID);
     %profile = %soundID[$gAfxClientSounds TAB %soundID @ "profile"];
     %delay = %soundID[$gAfxClientSounds TAB %soundID @ "delay"];
-    if (!(isObject(%profile))) {
+    if (!isObject(%profile)) {
         error(getScopeName() @ " " @ "- could not find sound profile for" @ " " @ %soundID);
         return;
     }

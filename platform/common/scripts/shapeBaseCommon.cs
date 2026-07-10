@@ -1,5 +1,5 @@
 function ShapeBase::setDisplayName(%this, %name) {
-    %name.setShapeName(%this);
+    %this.setShapeName(%name);
 };
 function ShapeBase::getDisplayName(%this) {
     return %this.getShapeName();

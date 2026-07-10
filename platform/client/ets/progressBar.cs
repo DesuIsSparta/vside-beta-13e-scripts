@@ -1,7 +1,7 @@
 function ProgressBarController::Initialize(%this, %parentCtrl, %emptyBitmap, %fillBitmap, %leftCapBitmap, %rightCapBitmap) {
-    if (!(%this.pbinitialized)) {
+    if (!%this.pbinitialized) {
         %this.ctrl = %parentCtrl;
-        if (!(isObject(%this.ctrl))) {
+        if (!isObject(%this.ctrl)) {
             return;
         }
         %this.width = getWord(%this.ctrl.getExtent(), 0);
@@ -9,10 +9,10 @@ function ProgressBarController::Initialize(%this, %parentCtrl, %emptyBitmap, %fi
         %this.value = 0;
         %this.leftMargin = 0;
         %this.rightMargin = 0;
-        %leftCapBitmap.makeLeftCap(%this);
-        %rightCapBitmap.makeRightCap(%this);
-        %emptyBitmap.makeBackground(%this);
-        %fillBitmap.makeForeground(%this);
+        %this.makeLeftCap(%leftCapBitmap);
+        %this.makeRightCap(%rightCapBitmap);
+        %this.makeBackground(%emptyBitmap);
+        %this.makeForeground(%fillBitmap);
         %this.pbinitialized = 1;
     }
 };
@@ -29,7 +29,7 @@ function ProgressBarController::makeBackground(%this, %bitmap) {
         bitmap = %bitmap;
         wrap = 1;
     };
-    %this.background.add(%this.ctrl);
+    %this.ctrl.add(%this.background);
 };
 function ProgressBarController::makeForeground(%this, %bitmap) {
     %this.foreground = new GuiBitmapCtrl("") {
@@ -44,7 +44,7 @@ function ProgressBarController::makeForeground(%this, %bitmap) {
         bitmap = %bitmap;
         wrap = 1;
     };
-    %this.foreground.add(%this.ctrl);
+    %this.ctrl.add(%this.foreground);
 };
 function ProgressBarController::makeLeftCap(%this, %bitmap) {
     if (isObject(%this.leftCap)) {
@@ -66,7 +66,7 @@ function ProgressBarController::makeLeftCap(%this, %bitmap) {
         bitmap = %bitmap;
         wrap = 1;
     };
-    %this.leftCap.add(%this.ctrl);
+    %this.ctrl.add(%this.leftCap);
     %this.reseatCaps();
 };
 function ProgressBarController::makeRightCap(%this, %bitmap) {
@@ -89,7 +89,7 @@ function ProgressBarController::makeRightCap(%this, %bitmap) {
         bitmap = %bitmap;
         wrap = 1;
     };
-    %this.rightCap.add(%this.ctrl);
+    %this.ctrl.add(%this.rightCap);
     %this.reseatCaps();
 };
 function ProgressBarController::reseatCaps(%this) {
@@ -101,14 +101,14 @@ function ProgressBarController::reseatCaps(%this) {
         %this.rightCap.fitSize();
         %parentWidth = getWord(%this.ctrl.getExtent(), 0);
         %capWidth = getWord(%this.rightCap.getExtent(), 0);
-        0.reposition(%this.rightCap, (%parentWidth - %capWidth));
+        %this.rightCap.reposition((%parentWidth - %capWidth), 0);
         %this.rightMargin = %capWidth;
     }
 };
 function ProgressBarController::setValue(%this, %value) {
     %this.value = mMax(mMin(%value, 1), 0);
     %effectiveWidth = (%this.width - (%this.leftMargin + %this.rightMargin));
-    %this.height.resize(%this.foreground, %this.leftMargin, 0, mFloor((%this.value * %effectiveWidth)));
+    %this.foreground.resize(%this.leftMargin, 0, mFloor((%this.value * %effectiveWidth)), %this.height);
     %this.reseatCaps();
 };
 function ProgressBarController::update(%this) {
@@ -116,10 +116,10 @@ function ProgressBarController::update(%this) {
         %this.width = getWord(%this.ctrl.getExtent(), 0);
         %this.height = getWord(%this.ctrl.getExtent(), 1);
         if (isObject(%this.background)) {
-            %this.height.resize(%this.background, 0, 0, %this.width);
+            %this.background.resize(0, 0, %this.width, %this.height);
         }
         if (isObject(%this.foreground)) {
-            %this.value.setValue(%this);
+            %this.setValue(%this.value);
         }
     }
 };

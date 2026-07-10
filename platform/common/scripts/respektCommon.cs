@@ -103,16 +103,14 @@ function Player::hasRespektLevel(%this, %level) {
     if (%this.isStaffOrModerator()) {
         return 1;
     }
-    if ((%level $= "")) {
-    }
-    if ((%level == 0.0)) {
+    if ((%level $= "") || (%level == 0.0)) {
         return 1;
     }
     return (%this.getRespektPoints() >= respektLevelMinPoints(%level));
 };
 function Player::getRespektPoints(%this) {
-    if (!(%this.isServerObject())) {
-        $gMyRespektPoints.setRespektPoints(%this);
+    if (!%this.isServerObject()) {
+        %this.setRespektPoints($gMyRespektPoints);
     }
     return gGetField(%this, "respektPoints");
 };

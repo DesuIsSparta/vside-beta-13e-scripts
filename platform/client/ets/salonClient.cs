@@ -2,7 +2,7 @@ function SalonStyleSelector::refreshAvailableStyles(%this) {
     ShowSalonMenu(%this.lastTypeOfSalon, %this.lastClientGender);
 };
 function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
-    if (!(isDefined("%targetPlayerName"))) {
+    if (!isDefined("%targetPlayerName")) {
         %targetPlayerName = "";
     }
     SalonStyleSelector.lastTypeOfSalon = %typeOfSalon;
@@ -14,27 +14,25 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
     "";
     SalonStyleSelector.targetPlayer = %targetPlayer;
     %thumbsDirectory = "platform/client/ui/salon/salonthumbs_";
-    %thumbsDirectory @ %typeOfSalon.setBitmap(SalonStyleSelectorChair);
+    SalonStyleSelectorChair.setBitmap(%thumbsDirectory @ %typeOfSalon);
     %text = "Choose" @ " " @ %typeOfSalon[$SALON_CHAIR_DEF_PROPDESC @ %typeOfSalon] @ " " @ "Prop";
-    %text.setText(ShowPropsButton);
+    ShowPropsButton.setText(%text);
     %text = %typeOfSalon[$SALON_CHAIR_DEF_SALONMENUDESC @ %typeOfSalon];
     %text = strreplace(%text, "[TARGET]", %targetPlayerName);
-    %text.setText(gePropsWindowTitle);
-    %typeOfSalon[$SALON_CHAIR_DEF_CANCLOSE @ %typeOfSalon].setVisible(SalonStyleSelector.closeButton);
+    gePropsWindowTitle.setText(%text);
+    SalonStyleSelector.closeButton.setVisible(%typeOfSalon[$SALON_CHAIR_DEF_CANCLOSE @ %typeOfSalon]);
     %propSku = $player.getActivePropSku();
     %propThumbsDir = "platform/client/ui/props/propthumbs_";
     if ((%propSku $= "")) {
     }
     %propThumbFile = %propThumbsDir @ %propSku;
     "";
-    if ((%propThumbFile $= "")) {
+    if ((%propThumbFile $= "") || !(isFile(%propThumbFile @ ".png"))) {
+        SalonStyleSelectorProp.setBitmap("");
     }
-    if (!(isFile(%propThumbFile @ ".png"))) {
-        "".setBitmap(SalonStyleSelectorProp);
-    }
-    %propThumbFile.setBitmap(SalonStyleSelectorProp);
+    SalonStyleSelectorProp.setBitmap(%propThumbFile);
     %list = SalonStyleSelector.skuGuiList;
-    0.setNumChildren(%list);
+    %list.setNumChildren(0);
     %list.childrenExtent = (getWord(%list.getExtent(), 0) - (2.0 * %list.spacing)) @ " " @ 40;
     %width = getWord(%list.childrenExtent, 0);
     %i = 0;
@@ -44,50 +42,46 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName) {
         %req = %i[$SALON_STYLE_REQUIREDSKUS @ %i];
         if (!(%grouping $= %typeOfSalon)) {
         }
-        if (!(%req $= "") && !(DoesPlayerHaveItemActive($player, %req))) {
+        if (!(%req $= "") && !DoesPlayerHaveItemActive($player, %req)) {
         }
-        %si = %skunum.findBySku(SkuManager);
-        if (isObject(%si)) {
-            if ((%si.gender $= %clientGender)) {
-            }
-            if ((%si.gender $= "n")) {
-                %iconPath = %thumbsDirectory @ %skunum;
-                %linkStart = "<a:gamelink chooseStyle" @ " " @ %i @ ">";
-                %thumbnail = "";
-                %description = %si.descShrt;
-                %text = %linkStart @ %thumbnail @ " " @ "<clip:" @ %width @ ">" @ %description @ "</clip></a>";
-                %text = mlStyle(%text, "salonPanel");
-                %item = %list.addChild();
-                %iconCtrl = new GuiBitmapCtrl("") {
-                    extent = "46 40";
-                    bitmap = %iconPath;
-                };
-                new GuiBitmapButtonCtrl("") {
-                    position = "1 1";
-                    extent = "44 38";
-                    bitmap = "platform/client/buttons/tgf/tgf_buttonframe_190x109";
-                    command = "SalonChooseStyle(" @ %i @ ");";
-                };
-                %textCtrl = new GuiMLTextCtrl("") {
-                    position = "50 13";
-                    extent = "142 20";
-                    bitmap = %iconPath;
-                };
-                %iconCtrl.add(%item);
-                %textCtrl.add(%item);
-                "SalonStyleSelectorRow".bindClassName(%textCtrl);
-                InfoWindowTextListProfile.setProfile(%textCtrl);
-                %text.setText(%textCtrl);
-            }
+        %si = SkuManager.findBySku(%skunum);
+        if (isObject(%si) && (%si.gender $= %clientGender) || (%si.gender $= "n")) {
+            %iconPath = %thumbsDirectory @ %skunum;
+            %linkStart = "<a:gamelink chooseStyle" @ " " @ %i @ ">";
+            %thumbnail = "";
+            %description = %si.descShrt;
+            %text = %linkStart @ %thumbnail @ " " @ "<clip:" @ %width @ ">" @ %description @ "</clip></a>";
+            %text = mlStyle(%text, "salonPanel");
+            %item = %list.addChild();
+            %iconCtrl = new GuiBitmapCtrl("") {
+                extent = "46 40";
+                bitmap = %iconPath;
+            };
+            new GuiBitmapButtonCtrl("") {
+                position = "1 1";
+                extent = "44 38";
+                bitmap = "platform/client/buttons/tgf/tgf_buttonframe_190x109";
+                command = "SalonChooseStyle(" @ %i @ ");";
+            };
+            %textCtrl = new GuiMLTextCtrl("") {
+                position = "50 13";
+                extent = "142 20";
+                bitmap = %iconPath;
+            };
+            %item.add(%iconCtrl);
+            %item.add(%textCtrl);
+            %textCtrl.bindClassName("SalonStyleSelectorRow");
+            %textCtrl.setProfile(InfoWindowTextListProfile);
+            %textCtrl.setText(%text);
         }
         %i = (%i + 1.0);
     }
     %list.reseatChildren();
     if ((%list.getNumChildren() == 0.0)) {
         %msg = ((%i < $NUM_SALON_STYLES) @ " " @ $player.getActivePropSku() $= "") ? "No styles available.\nTry choosing a prop." : "No styles available.\nChoose another prop.";
-        "<just:center>" @ %msg.setText(SalonStyleSelector.noSkuGuiText);
+        SalonStyleSelector.noSkuGuiText.setText("<just:center>" @ %msg);
     }
-    "".setText(SalonStyleSelector.noSkuGuiText);
+    SalonStyleSelector.noSkuGuiText.setText("");
 };
 function SalonStyleSelectorRow::onURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
@@ -124,7 +118,7 @@ function SalonChooseStyle(%styleNumber) {
     %reqMsg = %styleNumber[$SALON_STYLE_REQUREDSKUSMESSAGE @ %styleNumber];
     %anim = %styleNumber[$SALON_STYLE_ANIMATION @ %styleNumber];
     %cutTime = %styleNumber[$SALON_STYLE_CUTTIME @ %styleNumber];
-    if (!(%req $= "") && !(DoesPlayerHaveItemActive($player, %req))) {
+    if (!(%req $= "") && !DoesPlayerHaveItemActive($player, %req)) {
         %reqname = getSkuShortName(%req);
         MessageBoxOK("vSalon", %reqMsg, "");
         return;

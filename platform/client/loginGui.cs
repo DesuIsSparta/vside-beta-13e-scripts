@@ -1,7 +1,7 @@
 function LoginGui::onWake(%this) {
     sendStatusRequest();
-    1.setControlsActive(%this);
-    0.setVisible(LoginProgressBarCtrls);
+    %this.setControlsActive(1);
+    LoginProgressBarCtrls.setVisible(0);
     %this.displayPartnerInfo();
     clearScreenSizeStack();
     pushScreenSize(960, 544, 0, 1, 0);
@@ -9,36 +9,36 @@ function LoginGui::onWake(%this) {
     $ServerName = "";
     loggedoutCleanup();
     if ($UserPref::Login::RememberMe) {
-        $UserPref::Player::Name.setText(LoginUserNameField);
-        $UserPref::Player::Password.setText(LoginPasswordField);
+        LoginUserNameField.setText($UserPref::Player::Name);
+        LoginPasswordField.setText($UserPref::Player::Password);
     }
-    "".setText(LoginUserNameField);
-    "".setText(LoginPasswordField);
-    1.makeFirstResponder(LoginUserNameField);
+    LoginUserNameField.setText("");
+    LoginPasswordField.setText("");
+    LoginUserNameField.makeFirstResponder(1);
     LoginUserNameField.selectAll();
     %colors = "<linkcolorhl:66aaff><linkcolor:ccddddff>";
-    %colors @ "<a:gamelink " @ $Net::HelpURL_Guidelines @ "><just:right>User Guidelines</a> | <a:gamelink " @ $Net::HelpURL_General @ ">Help</a>".setText(LoginHelpLinks);
+    LoginHelpLinks.setText(%colors @ "<a:gamelink " @ $Net::HelpURL_Guidelines @ "><just:right>User Guidelines</a> | <a:gamelink " @ $Net::HelpURL_General @ ">Help</a>");
     %colors = "<linkcolorhl:66aaff><linkcolor:ccdddd80>";
-    %colors @ "<a:gamelink CREDITS>Credits</a>".setText(LoginCreditsLink);
+    LoginCreditsLink.setText(%colors @ "<a:gamelink CREDITS>Credits</a>");
     if (RegistrationGui.haveIncompleteRegistration()) {
         %regText = "Complete Registration";
     }
     %regText = "Register";
-    %colors @ "<just:right><spush><b><a:gamelink REGISTER>" @ %regText @ "</a><spop> | <a:gamelink " @ $Net::ForgotPassURL @ ">Forgot Password</a>".setText(LoginRegistrationLinks);
-    if (!(isObject(LoginPBController))) {
+    LoginRegistrationLinks.setText(%colors @ "<just:right><spush><b><a:gamelink REGISTER>" @ %regText @ "</a><spop> | <a:gamelink " @ $Net::ForgotPassURL @ ">Forgot Password</a>");
+    if (!isObject(LoginPBController)) {
         new ScriptObject(LoginPBController) {
             class = "ProgressBarController";
         };
     }
-    "".Initialize(LoginPBController, LoginProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "");
-    0.update(%this);
+    LoginPBController.Initialize(LoginProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
+    %this.update(0);
     if ($UserPref::Login::firstRun) {
         if (isValidHostAddress($Net::DownloadHost)) {
             sendFirstLaunchRequest();
         }
         $UserPref::Login::firstRun = 0;
     }
-    if (!($gHasOpenedRegistrationGui)) {
+    if (!$gHasOpenedRegistrationGui) {
     }
     if (RegistrationGui.haveIncompleteRegistration()) {
         RegistrationGui.tryOpenOrWebPage();
@@ -48,7 +48,7 @@ function LoginGui::onWake(%this) {
     %analytic.requestNewSession();
 };
 function getStockPartnerShortcutText(%name) {
-    %obj = %name.getPartnerObj(gLoginPartnersInfo);
+    %obj = gLoginPartnersInfo.getPartnerObj(%name);
     %vurl = %obj.vurl;
     return "Go straight to <spush><color:ddff55>" @ %obj.extraLongName @ "<spop>: <a:" @ %vurl @ ">Click Here</a>" @ ".";
 };
@@ -56,7 +56,7 @@ function initLoginPartners() {
     safeEnsureScriptObject("StringMap", "gLoginPartnersInfo");
     gLoginPartnersInfo.clear();
     %name = "doppelganger";
-    %obj = %name.getOrMakePartnerObj(gLoginPartnersInfo);
+    %obj = gLoginPartnersInfo.getOrMakePartnerObj(%name);
     %obj.shortName = %name;
     %obj.longName = "vSide";
     %obj.extraLongName = "vSide";
@@ -67,7 +67,7 @@ function initLoginPartners() {
     %obj.gatewayOptionButton1 = "Take me Clubbing!";
     %obj.gatewayOptionButton2 = "Take me to my place!";
     %name = "degrassi";
-    %obj = %name.getOrMakePartnerObj(gLoginPartnersInfo);
+    %obj = gLoginPartnersInfo.getOrMakePartnerObj(%name);
     %obj.shortName = %name;
     %obj.longName = "Degrassi";
     %obj.extraLongName = "The DOT Grill and DOT Dorms";
@@ -78,66 +78,66 @@ function initLoginPartners() {
     %obj.gatewayOptionButton1 = "Take me to the Grill!";
     %obj.gatewayOptionButton2 = "Take me to my Dorm!";
     %name = "";
-    %obj = %name.getOrMakePartnerObj(gLoginPartnersInfo);
-    %obj.shortName = "doppelganger".get(gLoginPartnersInfo).shortName;
-    %obj.longName = "doppelganger".get(gLoginPartnersInfo).longName;
-    %obj.extraLongName = "doppelganger".get(gLoginPartnersInfo).extraLongName;
-    %obj.vurl = "doppelganger".get(gLoginPartnersInfo).vurl;
-    %obj.shortcutText = "doppelganger".get(gLoginPartnersInfo).shortcutText;
-    %obj.changesLoginScreen = "doppelganger".get(gLoginPartnersInfo).changesLoginScreen;
-    %obj.gatewayOptionBody = "doppelganger".get(gLoginPartnersInfo).gatewayOptionBody;
-    %obj.gatewayOptionButton1 = "doppelganger".get(gLoginPartnersInfo).gatewayOptionButton1;
-    %obj.gatewayOptionButton2 = "doppelganger".get(gLoginPartnersInfo).gatewayOptionButton2;
+    %obj = gLoginPartnersInfo.getOrMakePartnerObj(%name);
+    %obj.shortName = gLoginPartnersInfo.get("doppelganger").shortName;
+    %obj.longName = gLoginPartnersInfo.get("doppelganger").longName;
+    %obj.extraLongName = gLoginPartnersInfo.get("doppelganger").extraLongName;
+    %obj.vurl = gLoginPartnersInfo.get("doppelganger").vurl;
+    %obj.shortcutText = gLoginPartnersInfo.get("doppelganger").shortcutText;
+    %obj.changesLoginScreen = gLoginPartnersInfo.get("doppelganger").changesLoginScreen;
+    %obj.gatewayOptionBody = gLoginPartnersInfo.get("doppelganger").gatewayOptionBody;
+    %obj.gatewayOptionButton1 = gLoginPartnersInfo.get("doppelganger").gatewayOptionButton1;
+    %obj.gatewayOptionButton2 = gLoginPartnersInfo.get("doppelganger").gatewayOptionButton2;
 };
 function gLoginPartnersInfo::getOrMakePartnerObj(%this, %shortName) {
-    if (!(%shortName.hasKey(%this))) {
+    if (!%this.hasKey(%shortName)) {
         %obj = safeNewScriptObject("ScriptObject", "", 0);
-        %obj.put(%this, %shortName);
+        %this.put(%shortName, %obj);
     }
-    return %shortName.get(%this);
+    return %this.get(%shortName);
 };
 function gLoginPartnersInfo::getPartnerObj(%this, %shortName) {
-    %obj = %shortName.get(%this);
-    if (!(isObject(%obj))) {
+    %obj = %this.get(%shortName);
+    if (!isObject(%obj)) {
         error(getScopeName(1) @ " " @ "- DNE:" @ " " @ %shortName);
-        %obj = "".get(%this);
+        %obj = %this.get("");
     }
     return %obj;
 };
 initLoginPartners();
 $gEnableStartHereMenu = 0;
 function LoginGui::displayPartnerInfo(%this) {
-    %partnerObj = $Net::userOwner.getPartnerObj(gLoginPartnersInfo);
+    %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
     if (%partnerObj.changesLoginScreen) {
-        $gEnableStartHereMenu.setVisible(LoginStartHereCtrls);
-        1.setVisible(LoginPartnerLogo);
-        "platform/client/ui/with_" @ $Net::userOwner.setBitmap(LoginPartnerLogo);
+        LoginStartHereCtrls.setVisible($gEnableStartHereMenu);
+        LoginPartnerLogo.setVisible(1);
+        LoginPartnerLogo.setBitmap("platform/client/ui/with_" @ $Net::userOwner);
         LoginPartnerLogo.fitSize();
         LoginStartHerePopup.clear();
-        %partnerObj.longName.add(LoginStartHerePopup);
-        "Map".add(LoginStartHerePopup);
+        LoginStartHerePopup.add(%partnerObj.longName);
+        LoginStartHerePopup.add("Map");
         LoginStartHerePopup.selectUserPreferred();
     }
-    0.setVisible(LoginStartHereCtrls);
-    0.setVisible(LoginPartnerLogo);
+    LoginStartHereCtrls.setVisible(0);
+    LoginPartnerLogo.setVisible(0);
     LoginStartHerePopup.clear();
 };
 function LoginStartHerePopup::selectUserPreferred(%this) {
     %size = %this.size();
     %i = 0;
     while ((%i < %size)) {
-        if ((%i.getTextById(%this) $= $UserPref::Login::StartHere)) {
-            %i.SetSelected(%this);
+        if ((%this.getTextById(%i) $= $UserPref::Login::StartHere)) {
+            %this.SetSelected(%i);
             return;
         }
         %i = (%i + 1.0);
     }
-    0.SetSelected(%this);
+    %this.SetSelected(0);
 };
 function LoginStartHerePopup::onSelect(%this, %id, %entries) {
     $UserPref::Login::StartHere = %entries;
     if ((%entries $= "Degrassi")) {
-        $VURLcmd = "degrassi".get(gLoginPartnersInfo).vurl;
+        $VURLcmd = gLoginPartnersInfo.get("degrassi").vurl;
     }
     log("initialization", "debug", "Disabled removal of the vSide address URL.");
 };
@@ -170,20 +170,20 @@ function LoginCreditsLink::onURL(%this, %url) {
 };
 function LoginGui::setControlsActive(%this, %flag) {
     %this.controlsActive = %flag;
-    %flag.setActive(LoginLoginButton);
-    %flag.setActive(LoginRememberMeCheckbox);
+    LoginLoginButton.setActive(%flag);
+    LoginRememberMeCheckbox.setActive(%flag);
     %profile = %flag ? ETSLoginEditProfile : ETSLoginNoEditProfile;
     LoginUserNameField.text = LoginUserNameField.getValue();
-    %profile.setProfile(LoginUserNameField);
+    LoginUserNameField.setProfile(%profile);
     LoginPasswordField.text = LoginPasswordField.getValue();
-    %profile.setProfile(LoginPasswordField);
+    LoginPasswordField.setProfile(%profile);
     %fr = Canvas.getFirstResponder();
     if (isObject(%fr)) {
-        0.makeFirstResponder(%fr);
+        %fr.makeFirstResponder(0);
     }
 };
 function LoginGui::onCanvasResize(%this) {
-    0.update(%this);
+    %this.update(0);
 };
 function LoginGui::doLoginButton(%this) {
     $Player::Name = LoginUserNameField.getValue();
@@ -202,8 +202,8 @@ function LoginGui::doLoginButton(%this) {
         loginDebugPanel.open();
         return;
     }
-    0.setControlsActive(%this);
-    1.setVisible(LoginProgressBarCtrls);
+    %this.setControlsActive(0);
+    LoginProgressBarCtrls.setVisible(1);
     if ($UserPref::Login::RememberMe) {
         $UserPref::Player::Name = $Player::Name;
         $UserPref::Player::Password = $Player::Password;
@@ -219,7 +219,7 @@ function LoginGui::envManagerLogin(%this) {
     }
     %loginRequest = new ManagerRequest(LoginRequest);
     if (isObject(MissionCleanup)) {
-        %loginRequest.add(MissionCleanup);
+        MissionCleanup.add(%loginRequest);
     }
     %url = $Net::SecureClientServiceURL @ "/login?";
     %userValue = "user=" @ urlEncode($Player::Name);
@@ -233,11 +233,11 @@ function LoginGui::envManagerLogin(%this) {
     %id4 = "&id4=" @ $System::ID4;
     %url = %url @ %userValue @ %passValue @ %version @ %build @ %os @ %id @ %id2 @ %id3 @ %id4;
     log("login", "debug", "login: " @ %url);
-    %url.setURL(%loginRequest);
-    1.setProgress(%loginRequest);
+    %loginRequest.setURL(%url);
+    %loginRequest.setProgress(1);
     %loginRequest.originalName = $Player::Name;
-    1.setVisible(LoginProgressBarCtrls);
-    0.1.setValue(LoginPBController);
+    LoginProgressBarCtrls.setVisible(1);
+    LoginPBController.setValue(0.1);
     $Login::loggedIn = 0;
     %loginRequest.start();
 };
@@ -246,9 +246,9 @@ function LoginGui::onConnectFailed(%this, %msg) {
     if ((%msg $= "")) {
         %msg = "Could not connect";
     }
-    0.setVisible(LoginProgressBarCtrls);
-    0.setValue(LoginPBController);
-    1.setControlsActive(%this);
+    LoginProgressBarCtrls.setVisible(0);
+    LoginPBController.setValue(0);
+    %this.setControlsActive(1);
 };
 function LoginGui::nextControl(%this, %curControl) {
     %nextControl = "";
@@ -266,71 +266,69 @@ function LoginGui::nextControl(%this, %curControl) {
         $Login::newAccount = 0;
         LoginGui.doLoginButton();
     }
-    1.makeFirstResponder(%nextControl);
+    %nextControl.makeFirstResponder(1);
     %nextControl.selectAll();
 };
 function LoginRequest::onError(%this, %errorNum, %unused) {
     if ((%errorNum == $CURL::CouldNotResolveHost)) {
-        "Could not reach server".onConnectFailed(LoginGui);
+        LoginGui.onConnectFailed("Could not reach server");
         MessageBoxOK("Could Not Find Server", $MsgCat::network["E-SERVER-DNS"], "");
     }
-    "Could not connect".onConnectFailed(LoginGui);
+    LoginGui.onConnectFailed("Could not connect");
     MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
 };
 function LoginRequest::onConnected(%this) {
-    0.5.setValue(LoginPBController);
+    LoginPBController.setValue(0.5);
 };
 function LoginRequest::onDone(%this) {
-    1.setControlsActive(LoginGui);
-    1.setValue(LoginPBController);
+    LoginGui.setControlsActive(1);
+    LoginPBController.setValue(1);
     if ((%this.statusCode() != $HTTP::StatusOK)) {
-        "Error communicating with server".onConnectFailed(LoginGui);
+        LoginGui.onConnectFailed("Error communicating with server");
         log("communication", "error", "client HTTP code: " @ %this.statusCode());
         MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
         return;
     }
     %status = strlwr(findRequestStatus(%this));
     log("login", "debug", "LoginRequest::onDone status: " @ %status);
-    if ((%status $= "fail")) {
-    }
-    if ((%status $= "error")) {
-        %errorCode = "errorCode".getValue(%this);
+    if ((%status $= "fail") || (%status $= "error")) {
+        %errorCode = %this.getValue("errorCode");
         %errorCode = strlwr(%errorCode);
         log("login", "error", "errorCode = " @ %errorCode);
         if ((%errorCode $= "invalid")) {
-            "Wrong name or password".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("Wrong name or password");
             MessageBoxOK("Invalid Login", $MsgCat::login["E-PASSWORD"], "");
         }
         if ((%errorCode $= "overloaded")) {
-            "Overcrowded".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("Overcrowded");
             MessageBoxOK("No More Room", $ETS::AppName @ $ETS::AppName[$MsgCat::server @ "E-SERVER-FULL"], "");
         }
         if ((%errorCode $= "serverfail")) {
-            "There was a server error".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("There was a server error");
             MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
         }
         if ((%errorCode $= "inactive")) {
-            "Activation required".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("Activation required");
             MessageBoxOK("Activation Required", "You have not yet activated your account.  Check your email for the message with the activation link.  If you have not received an activation message, you can get another copy sent to you at <a:" @ $Net::ActivationURL @ ">the registration site</a>.", "");
         }
         if ((%errorCode $= "alreadyloggedin")) {
-            "You are already logged in on another connection.".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("You are already logged in on another connection.");
             MessageBoxYesNo("Already Logged In", $MsgCat::login["E-ALREADY-IN"], "LoginRequest::handleBoot();", "LoginRequest::cancelBoot();");
         }
         if ((%errorCode $= "banned")) {
-            "Banned".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("Banned");
             MessageBoxOK("Banned", $MsgCat::login["E-BANNED"] @ $MsgCat::login["E-BANNED"][$MsgCat::login @ "E-DONT-KNOW-RULES"], "");
         }
         if ((%errorCode $= "suspended")) {
-            "Banned".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("Banned");
             %msg = "";
             %msg = %msg @ %msg[$MsgCat::login @ "E-SUSPENDED"];
             %msg = %msg @ "\n";
             %msg = %msg @ "\n";
-            %msg = %msg @ "suspensionReason".getValue(%this);
+            %msg = %msg @ %this.getValue("suspensionReason");
             %msg = strreplace(%msg, "[READTOU]", "");
             %msg = %msg @ "[READTOU]";
-            %secs = "suspensionSecondsRemaining".getValue(%this);
+            %secs = %this.getValue("suspensionSecondsRemaining");
             %secs = ((%secs + 60.0) - (%secs % 60));
             %msg = %msg @ "\n";
             %msg = %msg @ "\n";
@@ -339,13 +337,13 @@ function LoginRequest::onDone(%this) {
             MessageBoxOK("Suspended", %msg, "");
         }
         if ((%errorCode $= "upgrade_required")) {
-            "Upgrade required".onConnectFailed(LoginGui);
+            LoginGui.onConnectFailed("Upgrade required");
             MessageBoxOK("Upgrade Required", $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-2"], "");
         }
-        "There was a server error".onConnectFailed(LoginGui);
+        LoginGui.onConnectFailed("There was a server error");
         MessageBoxOK("Server Error", $MsgCat::login["E-UNKNOWN"], "");
         %analytic = getAnalytic();
-        "/client/login/error/" @ %errorCode.trackPageView(%analytic);
+        %analytic.trackPageView("/client/login/error/" @ %errorCode);
     }
     if ((%status $= "upgrade_available")) {
         LoginRequest::commonLogin(%this);
@@ -357,11 +355,11 @@ function LoginRequest::onDone(%this) {
 };
 function LoginRequest::commonLogin(%this) {
     %analytic = getAnalytic();
-    "/client/login".trackPageView(%analytic);
+    %analytic.trackPageView("/client/login");
     %this.parseResponse();
-    $Player::Name.forgetProperties(gUserPropMgrClient);
+    gUserPropMgrClient.forgetProperties($Player::Name);
     %cb = %this.getId() @ ".commonLogin_Part2();";
-    %cb.requestProperties(gUserPropMgrClient, $Player::Name);
+    gUserPropMgrClient.requestProperties($Player::Name, %cb);
     if (isObject(StoreShoppingList)) {
         StoreShoppingList.clear();
     }
@@ -379,7 +377,7 @@ function LoginRequest::commonLogin_Part2(%this) {
         ClosetGui.lastTabOpened = "";
     }
     if (isObject(ProfileCurrentPicture)) {
-        "".setBitmap(ProfileCurrentPicture);
+        ProfileCurrentPicture.setBitmap("");
     }
     $Player::attemptsToAutoUploadAvatarSnapshot = 0;
     $Player::hasSeenTakeAvatarPhotoDialog = 0;
@@ -391,34 +389,32 @@ function LoginRequest::commonLogin_Part2(%this) {
             }
             MessageBoxYesNo("Email Not Verified", $MsgCat::login["CONF-NAG"], "gotoWebPage(\"" @ $Net::ActivationURL @ "\");", "");
         }
-        if (!($Login::newAccount)) {
+        if (!$Login::newAccount) {
             MessageBoxYesNo("No Email Address", $MsgCat::login["NO-EMAIL-NAG"], "gotoWebPage(\"" @ $Net::AccountEditURL @ "\");", "");
         }
     }
     %validCharacters = "abcdefghijklmnopqrstuvwxyz" @ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" @ "0123456789-_ ";
-    if (0) {
-    }
-    if (!(stripString($Player::Name, %validCharacters) $= $Player::Name)) {
+    if (0 || !(stripString($Player::Name, %validCharacters) $= $Player::Name)) {
         %msgBox = MessageBoxOK("USERNAME WARNING", "\n<b>" @ $MsgCat::login["LEGACY-USERNAME-NAG"] @ "\n", "");
-        350.setWindowWidth(%msgBox);
+        %msgBox.setWindowWidth(350);
     }
     destroySpaceInfo($CSSpaceInfo);
     $CSSpaceInfo = 0;
     if (isObject(CSRulesAndDescWindow)) {
-        "".setText(CSDescTaglineTextBox);
-        "".setText(CSRulesPasswordField);
+        CSDescTaglineTextBox.setText("");
+        CSRulesPasswordField.setText("");
         if (CSRulesAndDescWindow.initialized) {
             CSRulesDescSavedIndicator.reset();
             CSRulesPasswordSavedIndicator.reset();
-            0.SetSelected(CSRulesAccessPopup);
+            CSRulesAccessPopup.SetSelected(0);
         }
     }
     if (isObject(geTGF_HotSpotsDataTable)) {
-        geTGF_HotSpotsDataTable.getRowCount().removeRowsByIndex(geTGF_HotSpotsDataTable, 0);
+        geTGF_HotSpotsDataTable.removeRowsByIndex(0, geTGF_HotSpotsDataTable.getRowCount());
         geTGF_HotSpotsDataTable.updateListeners();
     }
     if (isObject(geTGF_FriendsDataTable)) {
-        geTGF_FriendsDataTable.getRowCount().removeRowsByIndex(geTGF_FriendsDataTable, 0);
+        geTGF_FriendsDataTable.removeRowsByIndex(0, geTGF_FriendsDataTable.getRowCount());
         geTGF_FriendsDataTable.updateListeners();
     }
     sendBuddyListRequest("onDoneOrErrorCallback_GetUserRelations_ForHotSpots");
@@ -427,78 +423,78 @@ function LoginRequest::commonLogin_Part2(%this) {
 $gLastLoggedInThisSessionAs = "";
 function LoginRequest::parseResponse(%this) {
     log("login", "debug", "LoginRequest::parseResponse");
-    $Token = "token".getValue(%this);
+    $Token = %this.getValue("token");
     log("login", "debug", "token: " @ $Token);
-    %val = "gender".getValue(%this);
+    %val = %this.getValue("gender");
     if (!(%val $= "")) {
         $UserPref::Player::gender = %val;
     }
     warn(getScopeName() @ " " @ "- gender not returned.");
-    $Player::Name = "registered_user".getValue(%this);
+    $Player::Name = %this.getValue("registered_user");
     if ($UserPref::Login::RememberMe) {
         $UserPref::Player::Name = $Player::Name;
     }
     $gLastLoggedInThisSessionAs = $Player::Name;
-    eval("$Player::rolesMask      = " @ "rolesMask".getValue(%this) @ ";");
-    $Player::hasEmail = "hasemail".getValueBool(%this);
-    $Player::activated = "activated".getValueBool(%this);
-    $Player::inviter = "inviter".getValue(%this);
+    eval("$Player::rolesMask      = " @ %this.getValue("rolesMask") @ ";");
+    $Player::hasEmail = %this.getValueBool("hasemail");
+    $Player::activated = %this.getValueBool("activated");
+    $Player::inviter = %this.getValue("inviter");
     $Player::inviterOnline = "";
     $Player::inviterGender = "";
     clientHeartbeat();
 };
 function LoginRequest::onGotUserProperties(%this) {
-    "favoriteActionsActionList".clearPropertyIfExists(gUserPropMgrClient, $Player::Name);
-    "favoriteActionsKeyComboList".clearPropertyIfExists(gUserPropMgrClient, $Player::Name);
-    $UserPref::Audio::masterVolume = $Defaults::UserPref::Audio::masterVolume.getProperty(gUserPropMgrClient, $Player::Name, "volumeMaster");
-    $UserPref::Audio::channelVolume1 = $Defaults::UserPref::Audio::channelVolume1.getProperty(gUserPropMgrClient, $Player::Name, "volumeMusic");
-    $UserPref::Audio::channelVolume2 = $Defaults::UserPref::Audio::channelVolume2.getProperty(gUserPropMgrClient, $Player::Name, "volumeSfx");
-    $UserPref::Audio::mute = $Defaults::UserPref::Audio::mute.getProperty(gUserPropMgrClient, $Player::Name, "volumeMute");
-    $UserPref::Audio::NotifyChat = $Defaults::UserPref::Audio::NotifyChat.getProperty(gUserPropMgrClient, $Player::Name, "flashIncomingChat");
-    $UserPref::Audio::NotifyWhisper = $Defaults::UserPref::Audio::NotifyWhisper.getProperty(gUserPropMgrClient, $Player::Name, "flashIncomingWhisper");
-    $UserPref::Chat::ShowTyping = $Defaults::UserPref::Chat::ShowTyping.getProperty(gUserPropMgrClient, $Player::Name, "showTyping");
-    $UserPref::Display::farNameOpacity = $Defaults::UserPref::Display::farNameOpacity.getProperty(gUserPropMgrClient, $Player::Name, "farOpacity");
-    $UserPref::Display::hideChat = $Defaults::UserPref::Display::hideChat.getProperty(gUserPropMgrClient, $Player::Name, "hideChat");
-    $UserPref::Display::hideNames = $Defaults::UserPref::Display::hideNames.getProperty(gUserPropMgrClient, $Player::Name, "hideNames");
-    $UserPref::debug::alertOnLogWarning = $Defaults::UserPref::debug::alertOnLogWarning.getProperty(gUserPropMgrClient, $Player::Name, "alertOnLogWarning");
-    $UserPref::debug::alertOnLogError = $Defaults::UserPref::debug::alertOnLogError.getProperty(gUserPropMgrClient, $Player::Name, "alertOnLogError");
-    $UserPref::ETS::ButtonBar::AutoHide = $Defaults::UserPref::ETS::ButtonBar::AutoHide.getProperty(gUserPropMgrClient, $Player::Name, "hideButtonBar");
-    $UserPref::HudTabs::AutoOpen["music"] = $Defaults::UserPref::HudTabs::AutoOpen["music"].getProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabMusic");
-    $UserPref::HudTabs::AutoClose["music"] = $Defaults::UserPref::HudTabs::AutoClose["music"].getProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabMusic");
-    $UserPref::HudTabs::AutoOpen["affinity"] = $Defaults::UserPref::HudTabs::AutoOpen["affinity"].getProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabAffinity");
-    $UserPref::HudTabs::AutoClose["affinity"] = $Defaults::UserPref::HudTabs::AutoClose["affinity"].getProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabAffinity");
-    $UserPref::HudTabs::AutoOpen["scores"] = $Defaults::UserPref::HudTabs::AutoOpen["scores"].getProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabScores");
-    $UserPref::HudTabs::AutoClose["scores"] = $Defaults::UserPref::HudTabs::AutoClose["scores"].getProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabScores");
-    $UserPref::HudTabs::AutoOpen["word"] = $Defaults::UserPref::HudTabs::AutoOpen["word"].getProperty(gUserPropMgrClient, $Player::Name, "autoOpenTabWord");
-    $UserPref::HudTabs::AutoClose["word"] = $Defaults::UserPref::HudTabs::AutoClose["word"].getProperty(gUserPropMgrClient, $Player::Name, "autoCloseTabWord");
-    $UserPref::Player::TeleportBlock = $Defaults::UserPref::Player::TeleportBlock.getProperty(gUserPropMgrClient, $Player::Name, "refuseTeleports");
-    $UserPref::Player::WhisperBlock = $Defaults::UserPref::Player::WhisperBlock.getProperty(gUserPropMgrClient, $Player::Name, "refuseWhispers");
-    $UserPref::Player::YellBlock = $Defaults::UserPref::Player::YellBlock.getProperty(gUserPropMgrClient, $Player::Name, "refuseYells");
-    $UserPref::Player::EmotesPermissionFriends = $Defaults::UserPref::Player::EmotesPermissionFriends.getProperty(gUserPropMgrClient, $Player::Name, "emotesPermissionsFriends");
-    $UserPref::Player::EmotesPermissionStrangers = $Defaults::UserPref::Player::EmotesPermissionStrangers.getProperty(gUserPropMgrClient, $Player::Name, "emotesPermissionsStrangers");
-    $UserPref::Player::GiftsPermissionFriends = $Defaults::UserPref::Player::GiftsPermissionFriends.getProperty(gUserPropMgrClient, $Player::Name, "giftsPermissionsFriends");
-    $UserPref::Player::GiftsPermissionStrangers = $Defaults::UserPref::Player::GiftsPermissionStrangers.getProperty(gUserPropMgrClient, $Player::Name, "giftsPermissionsStrangers");
-    $UserPref::Player::awayMessage = $Pref::Player::defaultAwayMessage.getProperty(gUserPropMgrClient, $Player::Name, "awayMessage");
+    gUserPropMgrClient.clearPropertyIfExists($Player::Name, "favoriteActionsActionList");
+    gUserPropMgrClient.clearPropertyIfExists($Player::Name, "favoriteActionsKeyComboList");
+    $UserPref::Audio::masterVolume = gUserPropMgrClient.getProperty($Player::Name, "volumeMaster", $Defaults::UserPref::Audio::masterVolume);
+    $UserPref::Audio::channelVolume1 = gUserPropMgrClient.getProperty($Player::Name, "volumeMusic", $Defaults::UserPref::Audio::channelVolume1);
+    $UserPref::Audio::channelVolume2 = gUserPropMgrClient.getProperty($Player::Name, "volumeSfx", $Defaults::UserPref::Audio::channelVolume2);
+    $UserPref::Audio::mute = gUserPropMgrClient.getProperty($Player::Name, "volumeMute", $Defaults::UserPref::Audio::mute);
+    $UserPref::Audio::NotifyChat = gUserPropMgrClient.getProperty($Player::Name, "flashIncomingChat", $Defaults::UserPref::Audio::NotifyChat);
+    $UserPref::Audio::NotifyWhisper = gUserPropMgrClient.getProperty($Player::Name, "flashIncomingWhisper", $Defaults::UserPref::Audio::NotifyWhisper);
+    $UserPref::Chat::ShowTyping = gUserPropMgrClient.getProperty($Player::Name, "showTyping", $Defaults::UserPref::Chat::ShowTyping);
+    $UserPref::Display::farNameOpacity = gUserPropMgrClient.getProperty($Player::Name, "farOpacity", $Defaults::UserPref::Display::farNameOpacity);
+    $UserPref::Display::hideChat = gUserPropMgrClient.getProperty($Player::Name, "hideChat", $Defaults::UserPref::Display::hideChat);
+    $UserPref::Display::hideNames = gUserPropMgrClient.getProperty($Player::Name, "hideNames", $Defaults::UserPref::Display::hideNames);
+    $UserPref::debug::alertOnLogWarning = gUserPropMgrClient.getProperty($Player::Name, "alertOnLogWarning", $Defaults::UserPref::debug::alertOnLogWarning);
+    $UserPref::debug::alertOnLogError = gUserPropMgrClient.getProperty($Player::Name, "alertOnLogError", $Defaults::UserPref::debug::alertOnLogError);
+    $UserPref::ETS::ButtonBar::AutoHide = gUserPropMgrClient.getProperty($Player::Name, "hideButtonBar", $Defaults::UserPref::ETS::ButtonBar::AutoHide);
+    $UserPref::HudTabs::AutoOpen["music"] = gUserPropMgrClient.getProperty($Player::Name, "autoOpenTabMusic", $Defaults::UserPref::HudTabs::AutoOpen["music"]);
+    $UserPref::HudTabs::AutoClose["music"] = gUserPropMgrClient.getProperty($Player::Name, "autoCloseTabMusic", $Defaults::UserPref::HudTabs::AutoClose["music"]);
+    $UserPref::HudTabs::AutoOpen["affinity"] = gUserPropMgrClient.getProperty($Player::Name, "autoOpenTabAffinity", $Defaults::UserPref::HudTabs::AutoOpen["affinity"]);
+    $UserPref::HudTabs::AutoClose["affinity"] = gUserPropMgrClient.getProperty($Player::Name, "autoCloseTabAffinity", $Defaults::UserPref::HudTabs::AutoClose["affinity"]);
+    $UserPref::HudTabs::AutoOpen["scores"] = gUserPropMgrClient.getProperty($Player::Name, "autoOpenTabScores", $Defaults::UserPref::HudTabs::AutoOpen["scores"]);
+    $UserPref::HudTabs::AutoClose["scores"] = gUserPropMgrClient.getProperty($Player::Name, "autoCloseTabScores", $Defaults::UserPref::HudTabs::AutoClose["scores"]);
+    $UserPref::HudTabs::AutoOpen["word"] = gUserPropMgrClient.getProperty($Player::Name, "autoOpenTabWord", $Defaults::UserPref::HudTabs::AutoOpen["word"]);
+    $UserPref::HudTabs::AutoClose["word"] = gUserPropMgrClient.getProperty($Player::Name, "autoCloseTabWord", $Defaults::UserPref::HudTabs::AutoClose["word"]);
+    $UserPref::Player::TeleportBlock = gUserPropMgrClient.getProperty($Player::Name, "refuseTeleports", $Defaults::UserPref::Player::TeleportBlock);
+    $UserPref::Player::WhisperBlock = gUserPropMgrClient.getProperty($Player::Name, "refuseWhispers", $Defaults::UserPref::Player::WhisperBlock);
+    $UserPref::Player::YellBlock = gUserPropMgrClient.getProperty($Player::Name, "refuseYells", $Defaults::UserPref::Player::YellBlock);
+    $UserPref::Player::EmotesPermissionFriends = gUserPropMgrClient.getProperty($Player::Name, "emotesPermissionsFriends", $Defaults::UserPref::Player::EmotesPermissionFriends);
+    $UserPref::Player::EmotesPermissionStrangers = gUserPropMgrClient.getProperty($Player::Name, "emotesPermissionsStrangers", $Defaults::UserPref::Player::EmotesPermissionStrangers);
+    $UserPref::Player::GiftsPermissionFriends = gUserPropMgrClient.getProperty($Player::Name, "giftsPermissionsFriends", $Defaults::UserPref::Player::GiftsPermissionFriends);
+    $UserPref::Player::GiftsPermissionStrangers = gUserPropMgrClient.getProperty($Player::Name, "giftsPermissionsStrangers", $Defaults::UserPref::Player::GiftsPermissionStrangers);
+    $UserPref::Player::awayMessage = gUserPropMgrClient.getProperty($Player::Name, "awayMessage", $Pref::Player::defaultAwayMessage);
     if (isObject(DefaultAwayMsgEdit)) {
-        "".setText(DefaultAwayMsgEdit);
+        DefaultAwayMsgEdit.setText("");
     }
-    $UserPref::Player::autoReplyToWhispersWhenAway = $Defaults::UserPref::Player::autoReplyToWhispersWhenAway.getProperty(gUserPropMgrClient, $Player::Name, "autoReplyToWhipsers");
-    $UserPref::Player::filterProfanity = $Defaults::UserPref::Player::filterProfanity.getProperty(gUserPropMgrClient, $Player::Name, "filterProfanity");
-    $UserPref::Player::Genre = "".getProperty(gUserPropMgrClient, $Player::Name, "playerMood");
-    $UserPref::Player::height = $Defaults::UserPref::Player::height.getProperty(gUserPropMgrClient, $Player::Name, "avatarHeight");
-    $UserPref::Player::showOnRadar = $Defaults::UserPref::Player::showOnRadar.getProperty(gUserPropMgrClient, $Player::Name, "showOnRadar");
-    $UserPref::UI::FlashTaskBar = $Defaults::UserPref::UI::FlashTaskBar.getProperty(gUserPropMgrClient, $Player::Name, "flashTaskBar");
-    $UserPref::UI::Radar::AutoOpen = $Defaults::UserPref::UI::Radar::AutoOpen.getProperty(gUserPropMgrClient, $Player::Name, "radarAutoOpen");
-    $UserPref::UI::ShowAccountHud = $Defaults::UserPref::UI::ShowAccountHud.getProperty(gUserPropMgrClient, $Player::Name, "showAccountHud");
-    $UserPref::UI::ShowTooltips = $Defaults::UserPref::UI::ShowTooltips.getProperty(gUserPropMgrClient, $Player::Name, "showTooltips");
-    $UserPref::Video::Exposure = $Defaults::UserPref::Video::Exposure.getProperty(gUserPropMgrClient, $Player::Name, "videoExposure");
-    $UserPref::Video::exposureQualitySetting = $Defaults::UserPref::Video::exposureQuality.getProperty(gUserPropMgrClient, $Player::Name, "videoExposureQuality");
-    $UserPref::Video::shapeNameFontSize = $Defaults::UserPref::Video::shapeNameFontSize.getProperty(gUserPropMgrClient, $Player::Name, "videoNameSize");
-    $UserPref::Video::renderQualitySetting = $Defaults::UserPref::Video::renderQuality.getProperty(gUserPropMgrClient, $Player::Name, "videoRenderQuality");
-    $UserPref::Video::shadowQualitySetting = $Defaults::UserPref::Video::shadowQuality.getProperty(gUserPropMgrClient, $Player::Name, "videoShadowQuality");
-    $UserPref::Video::visibledistanceQualitySetting = $Defaults::UserPref::Video::visibledistanceQuality.getProperty(gUserPropMgrClient, $Player::Name, "videoVisibleDistance");
-    $UserPref::Video::waterreflectionQualitySetting = $Defaults::UserPref::Video::waterreflectionQuality.getProperty(gUserPropMgrClient, $Player::Name, "videoWaterReflection");
-    $UserPref::Video::ConstrainWindowDimensions = $Defaults::UserPref::Video::ConstrainWindowDimensions.getProperty(gUserPropMgrClient, $Player::Name, "videoConstrainWindowDimensions");
+    $UserPref::Player::autoReplyToWhispersWhenAway = gUserPropMgrClient.getProperty($Player::Name, "autoReplyToWhipsers", $Defaults::UserPref::Player::autoReplyToWhispersWhenAway);
+    $UserPref::Player::filterProfanity = gUserPropMgrClient.getProperty($Player::Name, "filterProfanity", $Defaults::UserPref::Player::filterProfanity);
+    $UserPref::Player::Genre = gUserPropMgrClient.getProperty($Player::Name, "playerMood", "");
+    $UserPref::Player::height = gUserPropMgrClient.getProperty($Player::Name, "avatarHeight", $Defaults::UserPref::Player::height);
+    $UserPref::Player::showOnRadar = gUserPropMgrClient.getProperty($Player::Name, "showOnRadar", $Defaults::UserPref::Player::showOnRadar);
+    $UserPref::UI::FlashTaskBar = gUserPropMgrClient.getProperty($Player::Name, "flashTaskBar", $Defaults::UserPref::UI::FlashTaskBar);
+    $UserPref::UI::Radar::AutoOpen = gUserPropMgrClient.getProperty($Player::Name, "radarAutoOpen", $Defaults::UserPref::UI::Radar::AutoOpen);
+    $UserPref::UI::ShowAccountHud = gUserPropMgrClient.getProperty($Player::Name, "showAccountHud", $Defaults::UserPref::UI::ShowAccountHud);
+    $UserPref::UI::ShowTooltips = gUserPropMgrClient.getProperty($Player::Name, "showTooltips", $Defaults::UserPref::UI::ShowTooltips);
+    $UserPref::Video::Exposure = gUserPropMgrClient.getProperty($Player::Name, "videoExposure", $Defaults::UserPref::Video::Exposure);
+    $UserPref::Video::exposureQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoExposureQuality", $Defaults::UserPref::Video::exposureQuality);
+    $UserPref::Video::shapeNameFontSize = gUserPropMgrClient.getProperty($Player::Name, "videoNameSize", $Defaults::UserPref::Video::shapeNameFontSize);
+    $UserPref::Video::renderQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoRenderQuality", $Defaults::UserPref::Video::renderQuality);
+    $UserPref::Video::shadowQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoShadowQuality", $Defaults::UserPref::Video::shadowQuality);
+    $UserPref::Video::visibledistanceQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoVisibleDistance", $Defaults::UserPref::Video::visibledistanceQuality);
+    $UserPref::Video::waterreflectionQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoWaterReflection", $Defaults::UserPref::Video::waterreflectionQuality);
+    $UserPref::Video::ConstrainWindowDimensions = gUserPropMgrClient.getProperty($Player::Name, "videoConstrainWindowDimensions", $Defaults::UserPref::Video::ConstrainWindowDimensions);
     if (($UserPref::Player::Genre $= "")) {
     }
     if (isObject($player)) {
@@ -515,26 +511,22 @@ function LoginRequest::onGotUserProperties(%this) {
     %m = (%maxNumberKeyCombos - 1.0);
     while ((%m >= 0.0)) {
         %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %m);
-        %action = -(1.0).getProperty(gUserPropMgrClient, $Player::Name, "favoriteActionsKey_f_" @ %keyCombo);
-        if ((%action == -(1.0))) {
-        }
-        if ((%action $= "")) {
+        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, -(1.0));
+        if ((%action == -(1.0)) || (%action $= "")) {
             %action[%numberOfUnboundKeyCombinations @ "f"] = (%action[%numberOfUnboundKeyCombinations @ "f"] + 1.0);
             %keyCombo["" @ $UserPref::emotes TAB "f" @ %keyCombo] = ;
         }
         if (!(%keyCombo $= "")) {
-            %keyCombo.put(EmoteBindingMap, %action);
+            EmoteBindingMap.put(%action, %keyCombo);
             %keyCombo[%action @ $UserPref::emotes TAB "f" @ %keyCombo] = ;
         }
-        %action = -(1.0).getProperty(gUserPropMgrClient, $Player::Name, "favoriteActionsKey_m_" @ %keyCombo);
-        if ((%action == -(1.0))) {
-        }
-        if ((%action $= "")) {
+        %action = gUserPropMgrClient.getProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, -(1.0));
+        if ((%action == -(1.0)) || (%action $= "")) {
             %action[%numberOfUnboundKeyCombinations @ "m"] = (%action[%numberOfUnboundKeyCombinations @ "m"] + 1.0);
             %keyCombo["" @ $UserPref::emotes TAB "m" @ %keyCombo] = ;
         }
         if (!(%keyCombo $= "")) {
-            %keyCombo.put(EmoteBindingMap, %action);
+            EmoteBindingMap.put(%action, %keyCombo);
             %keyCombo[%action @ $UserPref::emotes TAB "m" @ %keyCombo] = ;
         }
         %m = (%m - 1.0);
@@ -566,34 +558,34 @@ function LoginRequest::handleBoot(%this) {
     sendRequest_BootNew("onDoneOrErrorCallback_Boot");
 };
 function onDoneOrErrorCallback_Boot(%request) {
-    %status = "status".getResult(%request);
+    %status = %request.getResult("status");
     if ((%status $= "success")) {
-        0.setControlsActive(LoginGui);
+        LoginGui.setControlsActive(0);
         LoginGui.envManagerLogin();
     }
     if ((%status $= "fail")) {
         error("client boot HTTP status: " @ %status);
-        "Could not disconnect".onConnectFailed(LoginGui);
+        LoginGui.onConnectFailed("Could not disconnect");
         MessageBoxOK("Could Not Disconnect", $MsgCat::login["E-DISCONNECT"], "");
     }
     if ((%status $= "error")) {
         error("client boot HTTP status: " @ %status);
-        "There was a problem with the login server".onConnectFailed(LoginGui);
+        LoginGui.onConnectFailed("There was a problem with the login server");
         MessageBoxOK("Problem Connecting", $MsgCat::login["E-CONNECT"], "");
     }
     error("client boot HTTP status: " @ %status);
-    "Error communicating with server".onConnectFailed(LoginGui);
+    LoginGui.onConnectFailed("Error communicating with server");
     MessageBoxOK("Server Unavailable", $MsgCat::network["E-SERVER-UNAVAIL"], "");
 };
 function LoginGui::update(%this, %unused) {
-    $gLoginStatusMessage.setText(LoginSystemStatusText);
-    0.setActive(LoginSystemStatusButton);
+    LoginSystemStatusText.setText($gLoginStatusMessage);
+    LoginSystemStatusButton.setActive(0);
 };
 function LoginGui::getBitmap(%this, %set, %img) {
     return "LoginFader" @ %set @ "_" @ %img;
 };
 function LoginGui::fadeInBitmap(%this, %set, %img) {
-    %bitmap = %img.getBitmap(%this, %set);
+    %bitmap = %this.getBitmap(%set, %img);
     if (%bitmap.done) {
         %bitmap.fadeInTime = 1000;
         %bitmap.waitTime = 0;
@@ -602,7 +594,7 @@ function LoginGui::fadeInBitmap(%this, %set, %img) {
     }
 };
 function LoginGui::fadeOutBitmap(%this, %set, %img) {
-    %bitmap = %img.getBitmap(%this, %set);
+    %bitmap = %this.getBitmap(%set, %img);
     if (%bitmap.done) {
         %bitmap.fadeInTime = 0;
         %bitmap.waitTime = 0;
@@ -613,56 +605,56 @@ function LoginGui::fadeOutBitmap(%this, %set, %img) {
 function LoginGui::startAnimation(%this) {
     %this.firstAnimation = 1;
     %this.bitmapSet = 1;
-    "animate".schedule(%this, 1000);
+    %this.schedule(1000, "animate");
 };
 function LoginGui::animate(%this) {
-    if (!(%this.firstAnimation)) {
-        %this.bitmapSet.hideBitmapSet(%this);
+    if (!%this.firstAnimation) {
+        %this.hideBitmapSet(%this.bitmapSet);
     }
     %this.firstAnimation = 0;
     %this.bitmapSet = (%this.bitmapSet == 0.0) ? 1 : 0;
-    %this.bitmapSet.schedule(%this, 500, "showBitmapSet");
+    %this.schedule(500, "showBitmapSet", %this.bitmapSet);
     cancel(%this.animateTimer);
-    %this.animateTimer = "animate".schedule(%this, 45000);
+    %this.animateTimer = %this.schedule(45000, "animate");
 };
 function LoginGui::hideBitmap(%this, %set, %img) {
-    %bitmap = %img.getBitmap(%this, %set);
+    %bitmap = %this.getBitmap(%set, %img);
     %bitmap.fadeInTime = 0;
     %bitmap.waitTime = 0;
     %bitmap.fadeOutTime = 1;
     %bitmap.reset();
 };
 function LoginGui::stopAnimation(%this) {
-    0.hideBitmap(%this, 0);
-    1.hideBitmap(%this, 0);
-    2.hideBitmap(%this, 0);
-    3.hideBitmap(%this, 0);
-    0.hideBitmap(%this, 1);
-    1.hideBitmap(%this, 1);
-    2.hideBitmap(%this, 1);
+    %this.hideBitmap(0, 0);
+    %this.hideBitmap(0, 1);
+    %this.hideBitmap(0, 2);
+    %this.hideBitmap(0, 3);
+    %this.hideBitmap(1, 0);
+    %this.hideBitmap(1, 1);
+    %this.hideBitmap(1, 2);
     cancel(%this.animateTimer);
 };
 function LoginGui::showBitmapSet(%this, %set) {
     if ((%set == 0.0)) {
-        0.schedule(%this, 0, "fadeInBitmap", 0);
-        1.schedule(%this, 1000, "fadeInBitmap", 0);
-        2.schedule(%this, 2000, "fadeInBitmap", 0);
-        3.schedule(%this, 3000, "fadeInBitmap", 0);
+        %this.schedule(0, "fadeInBitmap", 0, 0);
+        %this.schedule(1000, "fadeInBitmap", 0, 1);
+        %this.schedule(2000, "fadeInBitmap", 0, 2);
+        %this.schedule(3000, "fadeInBitmap", 0, 3);
     }
-    0.schedule(%this, 0, "fadeInBitmap", 1);
-    1.schedule(%this, 1000, "fadeInBitmap", 1);
-    2.schedule(%this, 2000, "fadeInBitmap", 1);
+    %this.schedule(0, "fadeInBitmap", 1, 0);
+    %this.schedule(1000, "fadeInBitmap", 1, 1);
+    %this.schedule(2000, "fadeInBitmap", 1, 2);
 };
 function LoginGui::hideBitmapSet(%this, %set) {
     if ((%set == 0.0)) {
-        0.schedule(%this, 0, "fadeOutBitmap", 0);
-        1.schedule(%this, 1000, "fadeOutBitmap", 0);
-        2.schedule(%this, 2000, "fadeOutBitmap", 0);
-        3.schedule(%this, 3000, "fadeOutBitmap", 0);
+        %this.schedule(0, "fadeOutBitmap", 0, 0);
+        %this.schedule(1000, "fadeOutBitmap", 0, 1);
+        %this.schedule(2000, "fadeOutBitmap", 0, 2);
+        %this.schedule(3000, "fadeOutBitmap", 0, 3);
     }
-    0.schedule(%this, 0, "fadeOutBitmap", 1);
-    1.schedule(%this, 1000, "fadeOutBitmap", 1);
-    2.schedule(%this, 2000, "fadeOutBitmap", 1);
+    %this.schedule(0, "fadeOutBitmap", 1, 0);
+    %this.schedule(1000, "fadeOutBitmap", 1, 1);
+    %this.schedule(2000, "fadeOutBitmap", 1, 2);
 };
 function checkForClientUpgrades() {
     if (($Platform $= "macos")) {
@@ -672,9 +664,7 @@ function checkForClientUpgrades() {
     if (($Net::UpgradeToolAvailable == 0.0)) {
         return;
     }
-    if (!(isObject(LoginGui))) {
-    }
-    if (!(LoginGui.isAwake())) {
+    if (!isObject(LoginGui) || !LoginGui.isAwake()) {
         return;
     }
     if ($Net::upgradeAvailable) {

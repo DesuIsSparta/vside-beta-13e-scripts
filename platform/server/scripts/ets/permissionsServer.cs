@@ -38,6 +38,6 @@ function GameConnection::determinePermissions(%unused, %player) {
         %perms = (%perms | $EtsPermissionTypes::Staff);
     }
     echo("setting permissions for" @ " " @ getDebugString(%player) @ " " @ "to" @ " " @ %perms);
-    %perms.setEtsPermissions(%player);
+    %player.setEtsPermissions(%perms);
     return;
 };

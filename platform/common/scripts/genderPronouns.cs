@@ -1,12 +1,8 @@
 function getGender(%obj) {
-    if ((%obj $= "f")) {
-    }
-    if ((%obj $= "m")) {
-    }
-    if ((%obj $= "n")) {
+    if ((%obj $= "f") || (%obj $= "m") || (%obj $= "n")) {
         return %obj;
     }
-    if (!(isPlayerObject(%obj))) {
+    if (!isPlayerObject(%obj)) {
         return "n";
     }
     return %obj.getGender();

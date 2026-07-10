@@ -2,13 +2,11 @@ function GuiTracker::updateLocation(%this, %guiJustOpened) {
     if (%this.inTransit) {
         %sched = gGetField(%this, "guiTrackerUpdateLocation");
         cancel(%sched);
-        %sched = %guiJustOpened.schedule(%this, 200, updateLocation);
+        %sched = %this.schedule(200, updateLocation, %guiJustOpened);
         gSetField(%this, "guiTrackerUpdateLocation", %sched);
         return;
     }
-    if ((%this.destination $= "")) {
-    }
-    if ((%this.destination.getId() $= %guiJustOpened.getId())) {
+    if ((%this.destination $= "") || (%this.destination.getId() $= %guiJustOpened.getId())) {
         %this.previouslyOpened = %this.currentlyOpen;
         %this.currentlyOpen = %guiJustOpened;
         %this.destination = "";
@@ -22,7 +20,7 @@ function GuiTracker::goBack(%this) {
     if (!(%this.currentlyOpen $= "")) {
     }
     if (!(%this.currentlyOpen.getName() $= "playGui")) {
-        0.close(%this.currentlyOpen);
+        %this.currentlyOpen.close(0);
     }
     if (!(%this.previouslyOpened $= "")) {
     }
@@ -40,7 +38,7 @@ function GuiTracker::Initialize(%this) {
     %this.destination = "";
     %this.inTransit = 0;
 };
-if (!(isObject(GuiTracker))) {
+if (!isObject(GuiTracker)) {
     new GuiControl(GuiTracker);
     GuiTracker.Initialize();
 }

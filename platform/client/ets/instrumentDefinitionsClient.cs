@@ -1,7 +1,7 @@
 %registry = safeEnsureScriptObject("ScriptObject", "");
-"InstrumentRegistry".bindClassName(%registry);
-"InstrumentRegistryClient".bindClassName(%registry);
-"InstrumentRegistryClient".setName(%registry);
+%registry.bindClassName("InstrumentRegistry");
+%registry.bindClassName("InstrumentRegistryClient");
+%registry.setName("InstrumentRegistryClient");
 function InstrumentRegistryClient::initializeRegistry(%this) {
     if (%this.initialized) {
         warn(getScopeName() @ " " @ "- registry already intialized");
@@ -9,11 +9,11 @@ function InstrumentRegistryClient::initializeRegistry(%this) {
     }
     %this.instrumentsList = new StringMap("");
     if (isObject(MissionCleanup)) {
-        %this.instrumentsList.add(MissionCleanup);
+        MissionCleanup.add(%this.instrumentsList);
     }
     %this.keyBindings = new StringMap("");
     if (isObject(MissionCleanup)) {
-        %this.keyBindings.add(MissionCleanup);
+        MissionCleanup.add(%this.keyBindings);
     }
     %this.initializeRegistryCommon();
     %this.initialized = 1;
@@ -24,15 +24,15 @@ function InstrumentRegistryClient::clearRegistry(%this) {
     if (isObject(%this.instrumentsList)) {
         %i = (%this.instrumentsList.size() - 1.0);
         while ((%i >= 0.0)) {
-            %instrument = %i.getValue(%this.instrumentsList);
+            %instrument = %this.instrumentsList.getValue(%i);
             if (isObject(%instrument)) {
-                if (isObject("f", %instrument.animationMaps)) {
-                    %instrument.animationMaps.clear("f");
-                    %instrument.animationMaps.delete("f");
+                if (isObject(%instrument.animationMaps["f"])) {
+                    %instrument.animationMaps["f"].clear();
+                    %instrument.animationMaps["f"].delete();
                 }
-                if (isObject("m", %instrument.animationMaps)) {
-                    %instrument.animationMaps.clear("m");
-                    %instrument.animationMaps.delete("m");
+                if (isObject(%instrument.animationMaps["m"])) {
+                    %instrument.animationMaps["m"].clear();
+                    %instrument.animationMaps["m"].delete();
                 }
                 %instrument.delete();
             }
@@ -68,7 +68,7 @@ function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %i
         idleIcon = %instrumentGameIdleIcon;
         unfocusedIcon = %instrumentGameUnfocusedIcon;
     };
-    %instrument.put(%this.instrumentsList, %instrumentName);
+    %this.instrumentsList.put(%instrumentName, %instrument);
 };
 function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrumentName, %keyBinding, %animationName) {
     if ((%instrumentName $= "")) {
@@ -83,26 +83,26 @@ function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrume
     }
     if (!(%instrumentName $= "")) {
     }
-    if (!(%instrumentName.hasKey(%this.instrumentsList))) {
+    if (!%this.instrumentsList.hasKey(%instrumentName)) {
         warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return;
     }
-    %keyBinding = %keyBinding.normalizeKeyBinding(%this, %instrumentName);
-    %animationName.put(%this.keyBindings, %keyBinding);
+    %keyBinding = %this.normalizeKeyBinding(%instrumentName, %keyBinding);
+    %this.keyBindings.put(%keyBinding, %animationName);
 };
 function InstrumentRegistryClient::getAnimation(%this, %instrumentName, %keyBinding) {
-    if (!(%instrumentName.isInstrument(%this))) {
+    if (!%this.isInstrument(%instrumentName)) {
         warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return;
     }
     if ((%keyBinding $= "")) {
-        return %instrumentName.getStopAnimation(%this);
+        return %this.getStopAnimation(%instrumentName);
     }
-    %keyBinding = %keyBinding.normalizeKeyBinding(%this, %instrumentName);
-    if (!(%keyBinding.hasKey(%this.keyBindings))) {
+    %keyBinding = %this.normalizeKeyBinding(%instrumentName, %keyBinding);
+    if (!%this.keyBindings.hasKey(%keyBinding)) {
         return "";
     }
-    return %keyBinding.get(%this.keyBindings);
+    return %this.keyBindings.get(%keyBinding);
 };
 function InstrumentRegistryClient::normalizeKeyBinding(%this, %instrumentName, %keyBinding) {
     if ((%keyBinding $= "")) {
@@ -111,50 +111,50 @@ function InstrumentRegistryClient::normalizeKeyBinding(%this, %instrumentName, %
     %keyBinding = strlwr(%keyBinding);
     return %instrumentName @ "\t" @ %keyBinding;
 };
-"platform/client/ui/guitar_unfocused".registerInstrument(InstrumentRegistryClient, "lguitar", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/guitar_activeA", "platform/client/ui/guitar_activeB", "platform/client/ui/guitar_idle");
-"platform/client/ui/rguitar_unfocused".registerInstrument(InstrumentRegistryClient, "rguitar", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out YAY!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/rguitar_activeA", "platform/client/ui/rguitar_activeB", "platform/client/ui/rguitar_idle");
-"platform/client/ui/rguitar_unfocused".registerInstrument(InstrumentRegistryClient, "bassa", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out BASS!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/rguitar_activeA", "platform/client/ui/rguitar_activeB", "platform/client/ui/rguitar_idle");
-"platform/client/ui/rguitar_unfocused".registerInstrument(InstrumentRegistryClient, "druma", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out BASS!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/rguitar_activeA", "platform/client/ui/rguitar_activeB", "platform/client/ui/rguitar_idle");
-"gtrglr1e".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 1);
-"gtrglr2e".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 2);
-"gtrglr3e".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 3);
-"gtrglr4e".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 4);
-"gtrglr5e".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 5);
-"gtrglr6e".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 6);
-"gtrglr7e".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 7);
-"gtrglr8a".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 8);
-"gtrglr9a".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 9);
-"gtrglr10a".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", 0);
-"gtrglr11a".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "q");
-"gtrglr12a".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "w");
-"gtrglr13a".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "e");
-"gtrglr14a".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "r");
-"gtrglr15b".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "t");
-"gtrglr16b".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "y");
-"gtrglr17b".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "u");
-"gtrglr18b".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "i");
-"gtrglr19b".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "o");
-"gtrglr20b".registerInstrumentKeyBinding(InstrumentRegistryClient, "lguitar", "p");
-"gtrgr1e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 1);
-"gtrgr2e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 2);
-"gtrgr3e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 3);
-"gtrgr22a".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 4);
-"gtrgr25b".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 5);
-"gtrgr6e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 6);
-"gtrgr7e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 7);
-"gtrgr14a".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 8);
-"gtrgr9e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 9);
-"gtrgr10e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", 0);
-"gtrgr11e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "q");
-"gtrgr12a".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "w");
-"gtrgr13a".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "e");
-"gtrgr8e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "r");
-"gtrgr15a".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "t");
-"gtrgr5e".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "y");
-"gtrgr28b".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "u");
-"gtrgr18a".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "i");
-"gtrgr29b".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "o");
-"gtrgr17a".registerInstrumentKeyBinding(InstrumentRegistryClient, "rguitar", "p");
-"bassr1e".registerInstrumentKeyBinding(InstrumentRegistryClient, "bassa", 1);
-"drumr1e".registerInstrumentKeyBinding(InstrumentRegistryClient, "druma", 1);
+InstrumentRegistryClient.registerInstrument("lguitar", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/guitar_activeA", "platform/client/ui/guitar_activeB", "platform/client/ui/guitar_idle", "platform/client/ui/guitar_unfocused");
+InstrumentRegistryClient.registerInstrument("rguitar", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out YAY!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/rguitar_activeA", "platform/client/ui/rguitar_activeB", "platform/client/ui/rguitar_idle", "platform/client/ui/rguitar_unfocused");
+InstrumentRegistryClient.registerInstrument("bassa", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out BASS!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/rguitar_activeA", "platform/client/ui/rguitar_activeB", "platform/client/ui/rguitar_idle", "platform/client/ui/rguitar_unfocused");
+InstrumentRegistryClient.registerInstrument("druma", "Click here. Use the numbers 1-0 and keys Q-P to play riffs!", "Rock out BASS!", "Sorry, the guitar is temporarily disabled.", "platform/client/ui/rguitar_activeA", "platform/client/ui/rguitar_activeB", "platform/client/ui/rguitar_idle", "platform/client/ui/rguitar_unfocused");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 1, "gtrglr1e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 2, "gtrglr2e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 3, "gtrglr3e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 4, "gtrglr4e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 5, "gtrglr5e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 6, "gtrglr6e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 7, "gtrglr7e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 8, "gtrglr8a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 9, "gtrglr9a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", 0, "gtrglr10a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "q", "gtrglr11a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "w", "gtrglr12a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "e", "gtrglr13a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "r", "gtrglr14a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "t", "gtrglr15b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "y", "gtrglr16b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "u", "gtrglr17b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "i", "gtrglr18b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "o", "gtrglr19b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("lguitar", "p", "gtrglr20b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 1, "gtrgr1e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 2, "gtrgr2e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 3, "gtrgr3e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 4, "gtrgr22a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 5, "gtrgr25b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 6, "gtrgr6e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 7, "gtrgr7e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 8, "gtrgr14a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 9, "gtrgr9e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", 0, "gtrgr10e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "q", "gtrgr11e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "w", "gtrgr12a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "e", "gtrgr13a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "r", "gtrgr8e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "t", "gtrgr15a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "y", "gtrgr5e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "u", "gtrgr28b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "i", "gtrgr18a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "o", "gtrgr29b");
+InstrumentRegistryClient.registerInstrumentKeyBinding("rguitar", "p", "gtrgr17a");
+InstrumentRegistryClient.registerInstrumentKeyBinding("bassa", 1, "bassr1e");
+InstrumentRegistryClient.registerInstrumentKeyBinding("druma", 1, "drumr1e");
 InstrumentRegistryClient.registerCommonProperties();

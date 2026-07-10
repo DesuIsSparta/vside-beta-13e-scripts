@@ -1,23 +1,23 @@
 $gGuiEditorGuiExeced = 0;
 function GuiEditLazy(%val) {
-    if (!($gGuiEditorGuiExeced)) {
+    if (!$gGuiEditorGuiExeced) {
         exec("dev/data/ui/GuiEditorGui.gui");
         $gGuiEditorGuiExeced = 1;
     }
     GuiEdit(%val);
 };
-GuiEditLazy.bind(GlobalActionMap, keyboard, "alt F10");
+GlobalActionMap.bind(keyboard, "alt F10", GuiEditLazy);
 $gWorldEditorExeced = 0;
 function toggleEditorLazy(%val) {
-    if (!($gWorldEditorExeced)) {
+    if (!$gWorldEditorExeced) {
         exec("dev/data/ui/editor/editor.cs");
         $gWorldEditorExeced = 1;
     }
     toggleEditor(%val);
 };
-toggleEditorLazy.bind(GlobalActionMap, keyboard, "alt F11");
+GlobalActionMap.bind(keyboard, "alt F11", toggleEditorLazy);
 function canvasExecMisc() {
-    if (!($AmClient)) {
+    if (!$AmClient) {
         return;
     }
     exec("common/ui/InspectDlg.gui");

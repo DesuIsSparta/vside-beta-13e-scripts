@@ -2,22 +2,20 @@ function rf_TrySetup() {
     if (!(MissionInfo.name $= "renderFarm")) {
         return;
     }
-    rf_getGE().setContent(Canvas);
-    $gRFPlayerF = seBotF.getGhostID(LocalClientConnection).resolveGhostID(ServerConnection);
-    $gRFPlayerM = seBotM.getGhostID(LocalClientConnection).resolveGhostID(ServerConnection);
-    if (!(isObject($gRFPlayerF))) {
-    }
-    if (!(isObject($gRFPlayerM))) {
+    Canvas.setContent(rf_getGE());
+    $gRFPlayerF = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotF));
+    $gRFPlayerM = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotM));
+    if (!isObject($gRFPlayerF) || !isObject($gRFPlayerM)) {
         schedule(1000, 0, "rf_TrySetup");
     }
-    $gRFPlayerF.setSimObject(geRenderFarmObjectView);
-    2.4.setOrbitDist(geRenderFarmObjectView);
-    10.resize(playGui, 10);
-    playGui.add(geRenderFarm);
-    playGui.bringToFront(geRenderFarm);
+    geRenderFarmObjectView.setSimObject($gRFPlayerF);
+    geRenderFarmObjectView.setOrbitDist(2.4);
+    playGui.resize(10, 10);
+    geRenderFarm.add(playGui);
+    geRenderFarm.bringToFront(playGui);
 };
 function rf_getGE() {
-    if (!(isObject(geRenderFarm))) {
+    if (!isObject(geRenderFarm)) {
         pushScreenSize(512, 1024, 1, 1, 0);
         exec("dev/data/ui/renderFarm.gui");
         initWebServer(28000);
@@ -30,7 +28,7 @@ function httpServer_Render(%requestId, %user, %skus, %poseName, %poseOffset, %he
     return rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom);
 };
 function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom) {
-    if (!($StandAlone)) {
+    if (!$StandAlone) {
         return "error\r\nnot in correct mode\r\n";
     }
     %missingParams = "";
@@ -57,7 +55,7 @@ function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %hei
     %rfRequest.height = %height;
     %rfRequest.angle = %angle;
     %rfRequest.zoom = %zoom;
-    "".push_back(gRFQueue, %rfRequest);
+    gRFQueue.push_back(%rfRequest, "");
     rf_processQueue();
     return "success";
 };
@@ -68,7 +66,7 @@ function rf_processQueue() {
     if ((gRFQueue.count() < 1.0)) {
         return;
     }
-    %request = 0.getKey(gRFQueue);
+    %request = gRFQueue.getKey(0);
     gRFQueue.pop_front();
     if (isObject(%request)) {
         rf_beginRender(%request);
@@ -82,7 +80,7 @@ function rf_beginRender(%request) {
     }
     while ((%gender $= "n")) {
         %sku = getWord(%request.skus, %n);
-        %si = %sku.findBySku(SkuManager);
+        %si = SkuManager.findBySku(%sku);
         %gender = %si.gender;
         %n = (%n - 1.0);
         if ((%n >= 0.0)) {
@@ -95,10 +93,10 @@ function rf_beginRender(%request) {
     }
     %player = $gRFPlayerM;
     $gRFPlayerF;
-    %request.skus.setActiveSKUs(%player);
-    %request.height.setHeight(%player);
-    %player.setSimObject(geRenderFarmObjectView);
-    mDegToRad(%request.angle).setRotation(geRenderFarmObjectView, 0, 0);
+    %player.setActiveSKUs(%request.skus);
+    %player.setHeight(%request.height);
+    geRenderFarmObjectView.setSimObject(%player);
+    geRenderFarmObjectView.setRotation(0, 0, mDegToRad(%request.angle));
     %text = "<tab:100>";
     %text = %text @ "requestID:" @ "\t" @ %request.requestID @ "\n";
     %text = %text @ "user:" @ "\t" @ %request.user @ "\n";
@@ -108,9 +106,9 @@ function rf_beginRender(%request) {
     %text = %text @ "poseName:" @ "\t" @ %request.poseName @ "\n";
     %text = %text @ "poseOffset:" @ "\t" @ %request.poseOffset @ "\n";
     %text = trim(%text);
-    %text.setTextWithStyle(geRenderFarmOverlayText1);
+    geRenderFarmOverlayText1.setTextWithStyle(%text);
     %fileName = "web/rf/images/rf_" @ $gRF_CurrentRequest.requestID @ ".jpg";
-    %fileName.snapshot(geRenderFarmObjectView);
+    geRenderFarmObjectView.snapshot(%fileName);
     rf_finishRender($gRF_CurrentRequest);
 };
 function rf_finishRender(%request) {
@@ -119,7 +117,7 @@ function rf_finishRender(%request) {
     rf_processQueue();
 };
 function rf_generateTestSkus(%num, %forJavascript) {
-    if (!(isDefined("%forJavascript"))) {
+    if (!isDefined("%forJavascript")) {
         %forJavascript = 1;
     }
     %ret = "";
@@ -128,7 +126,7 @@ function rf_generateTestSkus(%num, %forJavascript) {
         %ret = %ret @ "\n" @ "{";
         %ret = %ret @ "\n" @ "   gSkusList.length            = 0;";
     }
-    %allDrawers = "all items".get(ThumbCategories);
+    %allDrawers = ThumbCategories.get("all items");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "props");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "badges");
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "tokens");
@@ -140,14 +138,14 @@ function rf_generateTestSkus(%num, %forJavascript) {
         %d = (getWordCount(%allDrawers) - 1.0);
         while ((%d >= 0.0)) {
             %drawerName = getWord(%allDrawers, %d);
-            if (%drawerName.isOptionalDrawer(SkuManager)) {
+            if (SkuManager.isOptionalDrawer(%drawerName)) {
             }
             %prob = 1.0;
             0.1;
             if ((getRandom() <= %prob)) {
                 if ((%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender] $= "")) {
-                    %skus = %drawerName.getSkusDrwr(SkuManager);
-                    %skus = %gender.filterSkusGender(SkuManager, %skus);
+                    %skus = SkuManager.getSkusDrwr(%drawerName);
+                    %skus = SkuManager.filterSkusGender(%skus, %gender);
                     %gender[%skus @ $gRFGenerate_DrawersCache TAB %drawerName @ %gender] = ;
                 }
                 %sku = getRandomWord(%gender[$gRFGenerate_DrawersCache TAB %drawerName @ %gender]);

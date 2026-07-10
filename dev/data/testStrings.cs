@@ -85,7 +85,7 @@ function testCollapseWhiteSpace() {
         %exp = %n[%exp @ %n];
         %wet = collapseWhiteSpace(%n[%dry @ %n]);
         %succ = (%wet $= %exp);
-        if (!(%succ)) {
+        if (!%succ) {
             error(getScopeName() @ " " @ "- test failed. dry=[" @ %dry @ "] wet=[" @ %wet @ "] expected=[" @ %exp @ "]");
             %ret = 0;
         }
@@ -142,7 +142,7 @@ function testFindUnitInsensitive(%delimiter, %findFnName) {
         %exp = %n[%exp @ %n];
         %wet = call(%findFnName, %n[%dry @ %n], "foo");
         %succ = (%wet $= %exp);
-        if (!(%succ)) {
+        if (!%succ) {
             error(getScopeName() @ " " @ "- test failed. findFn =" @ " " @ %findFnName @ " " @ "delim =" @ " " @ %delimiter @ " " @ "dry=[" @ %dry @ "] wet=[" @ %wet @ "] expected=[" @ %exp @ "]");
             %ret = 0;
         }
@@ -189,7 +189,7 @@ function testFindUnitSensitive(%delimiter, %findFnName) {
         %exp = %n[%exp @ %n];
         %wet = call(%findFnName, %n[%dry @ %n], "foo", 1);
         %succ = (%wet $= %exp);
-        if (!(%succ)) {
+        if (!%succ) {
             error(getScopeName() @ " " @ "- test failed. findFn =" @ " " @ %findFnName @ " " @ "delim =" @ " " @ %delimiter @ " " @ "dry=[" @ %dry @ "] wet=[" @ %wet @ "] expected=[" @ %exp @ "]");
             %ret = 0;
         }

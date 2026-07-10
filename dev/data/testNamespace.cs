@@ -18,15 +18,15 @@ function myGuiControl::func1(%this) {
 };
 DeclareTestSuite("TestSuite_NAMESPACE");
 function TestSuite_NAMESPACE::setup(%this) {
-    "TEST_NAMESPACE_PackageTest".addTestCase(%this);
+    %this.addTestCase("TEST_NAMESPACE_PackageTest");
 };
 function TEST_NAMESPACE_PackageTest::runTest(%this) {
-    "we should be in a package if it was activated in the same script it was declared in".assertSameString(%this, "yes in a package", %this.packagePreActivatedFunc());
-    "we should be not in a package when we have not activated it yet".assertSameString(%this, "not in a package", %this.packageFunc());
+    %this.assertSameString("yes in a package", %this.packagePreActivatedFunc(), "we should be in a package if it was activated in the same script it was declared in");
+    %this.assertSameString("not in a package", %this.packageFunc(), "we should be not in a package when we have not activated it yet");
     activatePackage(TEST_NAMESPACE_Package);
-    "we should be in a package when we activat it".assertSameString(%this, "yes in a package", %this.packageFunc());
+    %this.assertSameString("yes in a package", %this.packageFunc(), "we should be in a package when we activat it");
     deactivatePackage(TEST_NAMESPACE_Package);
-    "we should not be in a package when we deactivate it".assertSameString(%this, "not in a package", %this.packageFunc());
+    %this.assertSameString("not in a package", %this.packageFunc(), "we should not be in a package when we deactivate it");
 };
 function TEST_NAMESPACE_PackageTest::packageFunc(%this) {
     return "not in a package";

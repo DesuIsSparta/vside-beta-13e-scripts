@@ -9,7 +9,7 @@ function testLoginAndStay() {
     };
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
-    $DestServerName.doLogin(%testLogin);
+    %testLogin.doLogin($DestServerName);
 };
 testLoginAndStay();
 function test::initDances() {
@@ -51,7 +51,7 @@ function walk() {
 function stopAndTalk() {
     $mvYawLeftSpeed = 0;
     $mvForwardAction = 0;
-    0.say(pChat, "Hello from" @ " " @ $Hostname @ ".", 0);
+    pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
     schedule(1000, 0, stopAndDance);
 };
 function stopAndDance() {
@@ -64,7 +64,7 @@ function test::doDance() {
     %danceNum = getRandom($DancesCount);
     $dance = %danceNum[$Dances @ %danceNum];
     commandToServer('EtsPlayAnimName', $dance);
-    0.say(pChat, "I'm doing dance" @ " " @ $dance @ " " @ ".", 0);
+    pChat.say("I'm doing dance" @ " " @ $dance @ " " @ ".", 0, 0);
 };
 function test::getRandomGenre() {
     %num = getRandom(2);
@@ -93,7 +93,7 @@ function doAction() {
     %num = getRandom(4);
     if ((%num == 0.0)) {
         $genre = test::getRandomGenre();
-        $genre.selectGenre(ClosetGui);
+        ClosetGui.selectGenre($genre);
     }
     if ((%num == 1.0)) {
         test::doDance();

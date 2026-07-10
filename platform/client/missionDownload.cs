@@ -1,72 +1,72 @@
 function onMissionDownloadPhase1(%unused, %unused) {
     if (isObject(LoadingPBController)) {
-        0.setValue(LoadingPBController);
-        "Loading data".setValue(LoadingProgressTxt);
+        LoadingPBController.setValue(0);
+        LoadingProgressTxt.setValue("Loading data");
     }
     if (isObject(TransitionPBController)) {
-        0.setValue(TransitionPBController);
+        TransitionPBController.setValue(0);
     }
 };
 function onPhase1Progress(%progress) {
     if (isObject(LoadingPBController)) {
-        (%progress * 0.33).setValue(LoadingPBController);
+        LoadingPBController.setValue((%progress * 0.33));
     }
     if (isObject(TransitionPBController)) {
-        (%progress * 0.33).setValue(TransitionPBController);
+        TransitionPBController.setValue((%progress * 0.33));
     }
 };
 function onPhase1Complete() {
     if (isObject(LoadingPBController)) {
-        0.33.setValue(LoadingPBController);
+        LoadingPBController.setValue(0.33);
     }
 };
 function onMissionDownloadPhase2() {
     $Client::MissionLoadTimeStart = getSimTime();
     if (isObject(LoadingPBController)) {
-        "Loading objects".setValue(LoadingProgressTxt);
+        LoadingProgressTxt.setValue("Loading objects");
     }
     if (isObject(TransitionPBController)) {
-        "Loading objects".setValue(TransitionProgressTxt);
+        TransitionProgressTxt.setValue("Loading objects");
     }
 };
 function onPhase2ProgressUpdateStatusDisplay(%progress) {
     if (isObject(LoadingPBController)) {
-        ((%progress * 0.33) + 0.33).setValue(LoadingPBController);
+        LoadingPBController.setValue(((%progress * 0.33) + 0.33));
     }
     if (isObject(TransitionPBController)) {
-        ((%progress * 0.33) + 0.33).setValue(TransitionPBController);
+        TransitionPBController.setValue(((%progress * 0.33) + 0.33));
     }
 };
 function onPhase2Complete() {
 };
 function onFileChunkReceived(%fileName, %ofs, %size) {
     if (isObject(LoadingPBController)) {
-        (%ofs / %size).setValue(LoadingPBController);
-        "Downloading " @ %fileName @ "...".setValue(LoadingProgressTxt);
+        LoadingPBController.setValue((%ofs / %size));
+        LoadingProgressTxt.setValue("Downloading " @ %fileName @ "...");
     }
     if (isObject(TransitionPBController)) {
-        (%ofs / %size).setValue(TransitionPBController);
+        TransitionPBController.setValue((%ofs / %size));
     }
 };
 function onMissionDownloadPhase3() {
     if (isObject(LoadingProgressTxt)) {
-        "Lighting".setValue(LoadingProgressTxt);
+        LoadingProgressTxt.setValue("Lighting");
     }
 };
 function onPhase3Progress(%progress) {
     if (isObject(LoadingPBController)) {
-        ((%progress * 0.33) + 0.66).setValue(LoadingPBController);
+        LoadingPBController.setValue(((%progress * 0.33) + 0.66));
     }
     if (isObject(TransitionPBController)) {
-        ((%progress * 0.33) + 0.66).setValue(TransitionPBController);
+        TransitionPBController.setValue(((%progress * 0.33) + 0.66));
     }
 };
 function onPhase3Complete() {
     if (isObject(LoadingPBController)) {
-        1.setValue(LoadingPBController);
+        LoadingPBController.setValue(1);
     }
     if (isObject(TransitionPBController)) {
-        1.setValue(TransitionPBController);
+        TransitionPBController.setValue(1);
     }
     $lightingMission = 0;
 };
@@ -88,45 +88,39 @@ if (Using_DF()) {
     addMessageCallback('MsgDFZoneName', handleMsgDFZoneNameMessage);
 }
 function handleLoadInfoMessage(%unused, %msgString) {
-    0.setVisible(TransitionMessage);
-    if (WorldMap.isAwake()) {
-    }
-    if (LoginGui.isAwake()) {
-    }
-    if ($StandAlone) {
-        0.setTransitioning(LoadingGui);
-        "LoadingGui".setContent(Canvas);
+    TransitionMessage.setVisible(0);
+    if (WorldMap.isAwake() || LoginGui.isAwake() || $StandAlone) {
+        LoadingGui.setTransitioning(0);
+        Canvas.setContent("LoadingGui");
         %line = 0;
         while ((%line < LoadingGui.qLineCount)) {
-            LoadingGui.qLine = "" @ %line;
+            LoadingGui.qLine[%line] = "";
             %line = (%line + 1.0);
         }
         LoadingGui.qLineCount = (%line < LoadingGui.qLineCount) @ 0;
     }
     if (PlayGui.isAwake()) {
-        1.setTransitioning(LoadingGui);
-        "LoadingGui".setContent(Canvas);
-        $TransitionScreenshot.setScreenshotBitmap(LoadingGui);
+        LoadingGui.setTransitioning(1);
+        Canvas.setContent("LoadingGui");
+        LoadingGui.setScreenshotBitmap($TransitionScreenshot);
     }
 };
 function handleLoadDescriptionMessage(%unused, %msgString) {
-    LoadingGui.qLine = %msgString @ LoadingGui.qLineCount;
+    LoadingGui.qLine[LoadingGui.qLineCount] = %msgString;
     LoadingGui.qLineCount = (LoadingGui.qLineCount + 1.0);
     %text = "<spush><font:Arial:16>";
     %line = 0;
     while ((%line < (LoadingGui.qLineCount - 1.0))) {
-        %text = %text @ %line @ LoadingGui.qLine @ " ";
+        %text = %text @ LoadingGui.qLine[%line] @ " ";
         %line = (%line + 1.0);
     }
-    %text = %text @ %line @ LoadingGui.qLine @ "<spop>";
+    %text = %text @ LoadingGui.qLine[%line] @ "<spop>";
     (%line < (LoadingGui.qLineCount - 1.0));
 };
 function handleLoadInfoDoneMessage(%unused, %msgString) {
 };
 function handleMsgDFZoneNameMessage(%unused, %msgString) {
-    if (!(isFunction("Using_DF"))) {
-    }
-    if (!(Using_DF())) {
+    if (!isFunction("Using_DF") || !Using_DF()) {
         return;
     }
     setDFZoneName(%msgString);

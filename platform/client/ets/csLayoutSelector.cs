@@ -6,17 +6,17 @@ function CSLayoutSelector::toggle(%this) {
     %this.open();
 };
 function CSLayoutSelector::open(%this) {
-    if ($ETS::devMode && "debugActive".rolesPermissionCheckNoWarn($player)) {
+    if ($ETS::devMode) {
     }
-    $StandAlone.setVisible(CSLayoutSelectorSaveAsDefaultLink);
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    CSLayoutSelectorSaveAsDefaultLink.setVisible($player.rolesPermissionCheckNoWarn("debugActive") || $StandAlone);
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     WindowManager.update();
-    "".setMode(%this);
+    %this.setMode("");
     CustomSpaceClient::checkEditingSpace();
 };
 function CSLayoutSelector::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     CustomSpaceClient::checkEditingSpace();
     PlayGui.focusTopWindow();
     WindowManager.update();
@@ -24,24 +24,24 @@ function CSLayoutSelector::close(%this) {
 };
 function CSLayoutSelector::layoutSelected(%this, %newLayoutSelection) {
     if ((%this.selectedLayout == %newLayoutSelection)) {
-        "".setMode(%this);
+        %this.setMode("");
         return;
     }
     if ((%this.layMode $= "COPY")) {
-        %newLayoutSelection.getCopyTargetInfo(%this, %this.selectedLayout);
+        %this.getCopyTargetInfo(%this.selectedLayout, %newLayoutSelection);
         return;
     }
     %undoClickCmd = "CSLayoutButtonsArray.getChild(" @ %this.selectedLayout @ ",0).buttonSelect.performClick();";
     MessageBoxYesNo($MsgCat::custSpace["LAYOUT_CHANGE","TITLE"], $MsgCat::custSpace["LAYOUT_CHANGE","BODY"], "CSLayoutSelector.layoutSelectedAndConfirmed(" @ %newLayoutSelection @ ");", %undoClickCmd);
 };
 function CSLayoutSelector::layoutSelectedAndConfirmed(%this, %newLayoutSelection) {
-    0.setSelectionState(%this, %this.selectedLayout);
-    1.setSelectionState(%this, %newLayoutSelection);
+    %this.setSelectionState(%this.selectedLayout, 0);
+    %this.setSelectionState(%newLayoutSelection, 1);
     %this.selectedLayout = %newLayoutSelection;
     %this.saveSettings();
 };
 function CSLayoutSelector::setSelectionState(%this, %buttonIndex, %selected) {
-    !(%selected).setActive(%buttonIndex.getObject(CSLayoutButtonsArray).buttonSelect);
+    CSLayoutButtonsArray.getObject(%buttonIndex).buttonSelect.setActive(!%selected);
 };
 function CSLayoutSelector::saveSettings(%this) {
     echo("Saving new space layout selection: " @ %this.selectedLayout);
@@ -52,16 +52,16 @@ function CSLayoutSelector::updateSettings(%this, %numLayouts, %curLayout) {
         error(getScopeName() @ "->being told the selected layout is out of bounds!");
     }
     if ((CSLayoutButtonsArray.getCount() != %numLayouts)) {
-        %numLayouts.setNumChildren(CSLayoutButtonsArray);
+        CSLayoutButtonsArray.setNumChildren(%numLayouts);
     }
     %oldSelected = %this.selectedLayout;
     %this.selectedLayout = %curLayout;
-    %this.selectedLayout.getObject(CSLayoutButtonsArray).buttonSelect.performClick();
-    1.setSelectionState(%this, %this.selectedLayout);
+    CSLayoutButtonsArray.getObject(%this.selectedLayout).buttonSelect.performClick();
+    %this.setSelectionState(%this.selectedLayout, 1);
     if (!(%oldSelected $= "")) {
     }
     if ((%oldSelected != %this.selectedLayout)) {
-        0.setSelectionState(%this, %oldSelected);
+        %this.setSelectionState(%oldSelected, 0);
     }
 };
 function CSLayoutSelector::cloneLayout(%this, %sourceLayout) {
@@ -89,11 +89,11 @@ function CSLayoutButtonsArray::onCreatedChild(%this, %child) {
         extent = "15 15";
         text = "<color:ffffff><b><just:center>" @ " " @ (%num + 1.0);
     };
-    "CSLayoutButton".bindClassName(%ctrl);
+    %ctrl.bindClassName("CSLayoutButton");
     %ctrl.num = %num;
     %child.buttonSelect = %ctrl;
-    %ctrl.add(%child);
-    0.setSelectionState(CSLayoutSelector, %num);
+    %child.add(%ctrl);
+    CSLayoutSelector.setSelectionState(%num, 0);
 };
 function CSLayoutSelectorLink::onURL(%this, %url) {
     if ((firstWord(%url) $= "gamelink")) {
@@ -102,10 +102,10 @@ function CSLayoutSelectorLink::onURL(%this, %url) {
     %cmd = firstWord(%url);
     %args = restWords(%url);
     if ((%cmd $= "CLONE")) {
-        %args.cloneLayout(CSLayoutSelector);
+        CSLayoutSelector.cloneLayout(%args);
     }
     if ((%cmd $= "MODE")) {
-        trim(%args).setMode(CSLayoutSelector);
+        CSLayoutSelector.setMode(trim(%args));
     }
     if ((%cmd $= "ERASE")) {
         customSpace::ConfirmEraseLayout(CSLayoutSelector.selectedLayout);
@@ -132,11 +132,11 @@ function CSLayoutSelector::setMode(%this, %mode) {
     %eraseLink = "<a:gamelink ERASE>[erase]</a>";
     %defaultLink = "<a:gamelink DEFAULT>[default]</a>";
     %this.layMode = "";
-    %titleText.setText(CSLayoutSelectorTitleText);
-    %descText.setText(CSLayoutSelectorDescText);
-    %copyLink.setText(CSLayoutSelectorCopyLink);
-    %eraseLink.setText(CSLayoutSelectorEraseLink);
-    %defaultLink.setText(CSLayoutSelectorDefaultLink);
+    CSLayoutSelectorTitleText.setText(%titleText);
+    CSLayoutSelectorDescText.setText(%descText);
+    CSLayoutSelectorCopyLink.setText(%copyLink);
+    CSLayoutSelectorEraseLink.setText(%eraseLink);
+    CSLayoutSelectorDefaultLink.setText(%defaultLink);
 };
 function CSLayoutSelector::getCopyTargetInfo(%this, %sourceLayout, %layoutNum) {
     %this.layMode = "COPY";
@@ -167,10 +167,10 @@ function CSLayoutSelector::gotCopyTargetInfo(%this, %infoStr) {
         %body = strreplace(%body, "[SRC]", %layoutFrom);
         %body = strreplace(%body, "[DST]", %layoutTo);
         MessageBoxOK(%title, %body, "");
-        "".setMode(%this);
+        %this.setMode("");
         return;
     }
-    %texturesChnged.copyLayout(%this, %this.sourceLayout, %layoutNum);
+    %this.copyLayout(%this.sourceLayout, %layoutNum, %texturesChnged);
 };
 function CSLayoutSelector::copyLayout(%this, %layoutFrom, %layoutTo, %texturesChnged) {
     %title = $MsgCat::custSpace["LAYOUT_COPY","TITLE"];
@@ -239,7 +239,7 @@ function CSLayoutButton::onMouseDragged(%this) {
     if ((VectorLenSquared(%vec) < (6.0 * 6.0))) {
         return 0;
     }
-    1.setAsDragControl(%this);
+    %this.setAsDragControl(1);
     return 1;
 };
 function CSLayoutButton::makeVisualClone(%this) {
@@ -269,6 +269,6 @@ function CSLayoutButton::onDragAndDropDrop(%this, %dragCtrl, %unused) {
     if ((%this == %dragCtrl)) {
         return 0;
     }
-    %this.num.getCopyTargetInfo(CSLayoutSelector, %dragCtrl.num);
+    CSLayoutSelector.getCopyTargetInfo(%dragCtrl.num, %this.num);
     return 1;
 };

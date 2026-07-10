@@ -9,7 +9,7 @@ function toggleSystemMessageDialog() {
 };
 function SystemMessageDialog::open(%this) {
     if ($UserPref::HudTabs::AutoOpen["word"]) {
-        "word".selectTabWithName(HudTabs);
+        HudTabs.selectTabWithName("word");
     }
 };
 function SystemMessageDialog::close(%this) {
@@ -75,10 +75,10 @@ function handleSystemMessage(%msgType, %msgString) {
     if ((%importanceLevel $= 2)) {
     }
     if ((%importanceLevel $= 3)) {
-        "word".pulseTabWithName(HudTabs);
+        HudTabs.pulseTabWithName("word");
     }
     %timeStamp = "<spush><color:66aaffff>" @ %timeStamp @ "<spop>";
-    1.addText(SystemMessageTextCtrl, %timeStamp @ " " @ %msgString, 1);
+    SystemMessageTextCtrl.addText(%timeStamp @ " " @ %msgString, 1, 1);
     if ($UserPref::Audio::NotifyWhisper) {
         alxPlay(AudioIm_SystemMessageIn);
     }
@@ -91,32 +91,32 @@ function SystemMessageTextCtrl::addText(%this, %txtString) {
     if ((%this.bufferSize >= 20.0)) {
         %this.deleteOldestBufferLine();
     }
-    %this.bufferMessage = %txtString @ %this.bufferSize;
+    %this.bufferMessage[%this.bufferSize] = %txtString;
     %this.bufferSize = (%this.bufferSize + 1.0);
     %this.refresh();
 };
 function SystemMessageTextCtrl::clearText(%this) {
     %this.bufferSize = 0;
-    %this.DefaultMessage.setText(%this);
+    %this.setText(%this.DefaultMessage);
 };
 function SystemMessageTextCtrl::deleteOldestBufferLine(%this) {
     %n = 0;
     while ((%n < %this.bufferSize)) {
-        %this.bufferMessage = (%n + 1.0) @ %this.bufferMessage @ %n;
+        %this.bufferMessage[%n] = %this.bufferMessage[(%n + 1.0)];
         %n = (%n + 1.0);
     }
     %this.bufferSize = (%this.bufferSize - 1.0);
     (%n < %this.bufferSize);
 };
 function SystemMessageTextCtrl::refresh(%this) {
-    "".setText(%this);
+    %this.setText("");
     %n = (%this.bufferSize - 1.0);
     while ((%n >= 0.0)) {
         %curString = "<spush>";
         if ((%n == (%this.bufferSize - 1.0))) {
             %curString = %curString @ "<b>";
         }
-        %curString = %curString @ "<color:" @ ((%this.bufferSize - %n) - 1.0).getMessageColor(%this) @ ">" @ %n @ %this.bufferMessage @ "<spop>\n";
+        %curString = %curString @ "<color:" @ %this.getMessageColor(((%this.bufferSize - %n) - 1.0)) @ ">" @ %this.bufferMessage[%n] @ "<spop>\n";
         Parent::addText(%this, %curString, 0, 1);
         %n = (%n - 1.0);
     }
@@ -137,14 +137,12 @@ function SystemMessageTextCtrl::onRightURL(%this, %url) {
         %name = unmunge(getWords(%url, 1));
         onRightClickPlayerName(%name);
     }
-    if ((getSubStr(%url, 0, 7) $= "http://")) {
-    }
-    if ((getSubStr(%url, 0, 7) $= "vside:/")) {
-        %url.initWithURL(LinkContextMenu);
+    if ((getSubStr(%url, 0, 7) $= "http://") || (getSubStr(%url, 0, 7) $= "vside:/")) {
+        LinkContextMenu.initWithURL(%url);
         LinkContextMenu.showAtCursor();
     }
-    if (!(%this.selectionActive)) {
-        1.makeFirstResponder(TheShapeNameHud);
+    if (!%this.selectionActive) {
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function SystemMessageTextCtrl::onURL(%this, %url) {
@@ -179,7 +177,7 @@ function SystemMessageTextCtrl::onURL(%this, %url) {
         if (!(%coanim $= "")) {
             setIdle(0);
             commandToServer('CoAnimRespond', %requestId, "ACCEPT MANUAL");
-            1.updateTwoPlayerActionRequest(%this, %name, %coanim, %requestId);
+            %this.updateTwoPlayerActionRequest(%name, %coanim, %requestId, 1);
         }
     }
     if ((getWord(%url, 0) $= "DECLINE_2PLAYER_ACTION")) {
@@ -188,7 +186,7 @@ function SystemMessageTextCtrl::onURL(%this, %url) {
         %coanim = getWords(%url, 3);
         if (!(%name $= "")) {
             commandToServer('CoAnimRespond', %requestId, "DECLINE MANUAL");
-            0.updateTwoPlayerActionRequest(%this, %name, %coanim, %requestId);
+            %this.updateTwoPlayerActionRequest(%name, %coanim, %requestId, 0);
         }
     }
     if ((getSubStr(%url, 0, 7) $= "http://")) {
@@ -200,19 +198,19 @@ function SystemMessageTextCtrl::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "game")) {
         %cmd = getWord(%url, 1);
         if ((%cmd $= "inspect")) {
-            getWord(%url, 2).requestToInspectGame(gameMgrClient);
+            gameMgrClient.requestToInspectGame(getWord(%url, 2));
             GameMgrHudWin.open();
-            "INSPECT".selectTabWithName(GameMgrHudTabs);
+            GameMgrHudTabs.selectTabWithName("INSPECT");
         }
     }
     if ((getWord(%url, 0) $= "answerHelpMeMode")) {
         %requestId = getWord(%url, 1);
         %newbName = unmunge(getWords(%url, 2, 11111));
         answerHelpMeMode(%newbName, %requestId);
-        "- You answered the call!".changeLinesEndingInString(%this, "<a:" @ %url);
+        %this.changeLinesEndingInString("<a:" @ %url, "- You answered the call!");
     }
-    if (!(%this.selectionActive)) {
-        1.makeFirstResponder(TheShapeNameHud);
+    if (!%this.selectionActive) {
+        TheShapeNameHud.makeFirstResponder(1);
     }
 };
 function SystemMessageTextCtrl::updateFriendRequest(%this, %name, %accept) {
@@ -228,7 +226,7 @@ function SystemMessageTextCtrl::updateFriendRequest(%this, %name, %accept) {
         %linkStart = "<a:ACCEPT " @ munge(%name) @ ">";
     }
     %linkStart = "<a:ACCEPT ";
-    %acceptString.changeLinesEndingInString(%this, %linkStart);
+    %this.changeLinesEndingInString(%linkStart, %acceptString);
 };
 function SystemMessageTextCtrl::updateTwoPlayerActionRequest(%this, %name, %coAnimName, %requestId, %accept) {
     %acceptString = "";
@@ -245,18 +243,17 @@ function SystemMessageTextCtrl::updateTwoPlayerActionRequest(%this, %name, %coAn
     if (!(%name $= "")) {
         %linkStart = "<a:ACCEPT_2PLAYER_ACTION " @ munge(%name) @ " " @ %requestId @ " " @ %coAnimName @ ">";
     }
-    %acceptString.changeLinesEndingInString(%this, %linkStart);
+    %this.changeLinesEndingInString(%linkStart, %acceptString);
 };
 function SystemMessageTextCtrl::changeLinesEndingInString(%this, %replaceThis, %withThis) {
     %i = (%this.bufferSize - 1.0);
     while ((%i >= 0.0)) {
-        %curLine = %this.bufferMessage;
-        %i;
+        %curLine = %this.bufferMessage[%i];
         %start = strstr(%curLine, %replaceThis);
         if ((%start < 0.0)) {
         }
         %newLine = getSubStr(%curLine, 0, %start) @ " " @ %withThis;
-        %this.bufferMessage = %newLine @ %i;
+        %this.bufferMessage[%i] = %newLine;
         %i = (%i - 1.0);
     }
     %this.refresh();

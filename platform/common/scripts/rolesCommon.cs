@@ -2,30 +2,22 @@ function Player::hasRoleMask(%this, %mask) {
     return roles::maskHasRole(%this.getRolesMask(), %mask);
 };
 function Player::hasAnyRoleInMask(%this, %mask) {
-    if ((%mask == 0.0)) {
-    }
-    return roles::masksOverlap(%this.getRolesMask(), %mask);
+    return (%mask == 0.0) || roles::masksOverlap(%this.getRolesMask(), %mask);
 };
 function Player::isStaff(%this) {
-    return "staff".hasRoleString(%this);
+    return %this.hasRoleString("staff");
 };
 function Player::isModerator(%this) {
-    return "moderator".hasRoleString(%this);
+    return %this.hasRoleString("moderator");
 };
 function Player::isStaffOrModerator(%this) {
-    if (%this.isStaff()) {
-    }
-    return %this.isModerator();
+    return %this.isStaff() || %this.isModerator();
 };
 function Player::isCeleb(%this) {
-    return "celeb".hasRoleString(%this);
+    return %this.hasRoleString("celeb");
 };
 function Player::mayConnectToFullServer(%this) {
-    if (%this.isStaff()) {
-    }
-    if (%this.isModerator()) {
-    }
-    return %this.isCeleb();
+    return %this.isStaff() || %this.isModerator() || %this.isCeleb();
 };
 function Player::isDebugging(%this) {
     if (isDefined("$UserPref::ETS::Debugging")) {
@@ -41,21 +33,21 @@ function Player::hasRoleString(%this, %roleString) {
     if ((%roleBits == 0.0)) {
         return 0;
     }
-    return %roleBits.hasRoleMask(%this);
+    return %this.hasRoleMask(%roleBits);
 };
 function Player::getRoleStrings(%this) {
     return roles::getRoleStrings(%this.getRolesMask());
 };
 function Player::toggleRoleString(%this, %roleString) {
     %roleBits = roleGet(%roleString);
-    return %roleBits.toggleRoleMask(%this);
+    return %this.toggleRoleMask(%roleBits);
 };
 function Player::toggleRoleMask(%this, %roleBits) {
-    if (%roleBits.hasRoleMask(%this)) {
-        %roleBits.removeRoleByMask(%this);
+    if (%this.hasRoleMask(%roleBits)) {
+        %this.removeRoleByMask(%roleBits);
         %ret = 0;
     }
-    %roleBits.addRoleByMask(%this);
+    %this.addRoleByMask(%roleBits);
     %ret = 1;
     return %ret;
 };

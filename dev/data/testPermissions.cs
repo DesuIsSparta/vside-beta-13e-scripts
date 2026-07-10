@@ -31,7 +31,7 @@ function testPermissions_AddABot_Evaluate() {
     }
     %expectedDelta = (%expectedDelta * 1.0);
     2.0;
-    %expectedSuccess = "bots".rolesPermissionCheckNoWarn($player);
+    %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
     %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
@@ -53,7 +53,7 @@ function testPermissions_AddABotArmy_Evaluate() {
     }
     %expectedDelta = (%expectedDelta * 1.0);
     2.0;
-    %expectedSuccess = "bots".rolesPermissionCheckNoWarn($player);
+    %expectedSuccess = $player.rolesPermissionCheckNoWarn("bots");
     %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;

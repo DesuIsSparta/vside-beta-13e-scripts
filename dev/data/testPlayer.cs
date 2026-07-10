@@ -7,7 +7,7 @@ function testPlayer_Master() {
 };
 function testPlayer_AddInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory1;
-    $testPlayer::sampleSKUsTwo.addInventorySKUs($player);
+    $player.addInventorySKUs($testPlayer::sampleSKUsTwo);
     echo("testPlayer_AddInventoryTest(): " @ $Player::inventory);
     if (!($Player::inventory $= $testPlayer::sampleSKUsTwo) @ " " @ $testPlayer::sampleInitialInventory1) {
         log("network", "error", "testPlayer_AddInventoryTest(): failed");
@@ -15,7 +15,7 @@ function testPlayer_AddInventoryTest() {
 };
 function testPlayer_RemoveInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory2;
-    $testPlayer::sampleSKUsTwo.removeInventorySKUs($player);
+    $player.removeInventorySKUs($testPlayer::sampleSKUsTwo);
     echo("testPlayer_RemoveInventoryTest(): " @ $Player::inventory);
     if (!($Player::inventory $= $testPlayer::sampleInitialInventory1)) {
         log("network", "error", "testPlayer_RemoveInventoryTest(): failed");
@@ -28,7 +28,7 @@ function testPlayer_AddInventoryMultiTest() {
     %delta = "3 4";
     %wetExpected = "3 4 1 2";
     $Player::inventory = %dry;
-    %delta.addInventorySKUs($player);
+    $player.addInventorySKUs(%delta);
     %wetActual = $Player::inventory;
     return testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %q);
 };
@@ -39,13 +39,13 @@ function testPlayer_RemoveInventoryMultiTest() {
     %delta = "5 4 6";
     %wetExpected = "1 2 3";
     $Player::inventory = %dry;
-    %delta.removeInventorySKUs($player);
+    $player.removeInventorySKUs(%delta);
     %wetActual = $Player::inventory;
     return testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %q);
 };
 function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname) {
     %pass = (%wetExpected $= %wetActual);
-    if (!(%pass)) {
+    if (!%pass) {
         log("wardrobe", "error", "failed:" @ " " @ %testname);
         log("wardrobe", "debug", "dry         = \"" @ %dry @ "\"");
         log("wardrobe", "debug", "delta       = \"" @ %delta @ "\"");

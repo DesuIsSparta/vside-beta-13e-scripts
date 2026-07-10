@@ -4,12 +4,12 @@ function sampleData_initUserNames() {
     if (($gRandomUserNamesNum < 0.0)) {
         %fn = ExpandFilename("./sampleUserNames.txt");
         %fo = new FileObject("");
-        if (!(%fn.openForRead(%fo))) {
+        if (!%fo.openForRead(%fn)) {
             error("could not open" @ " " @ %fn);
             return;
         }
         $gRandomUserNamesNum = 0;
-        while (!(%fo.isEOF())) {
+        while (!%fo.isEOF()) {
             %name = %fo.readLine();
             $gRandomUserNamesNum[$gRandomUserNames @ $gRandomUserNamesNum] = %name;
             $gRandomUserNamesNum = ($gRandomUserNamesNum + 1.0);
@@ -36,12 +36,12 @@ function sampleData_initBannerIDs() {
     if (($gRandomBannerIDsNum < 0.0)) {
         %fn = ExpandFilename("./sampleBannerIDs.txt");
         %fo = new FileObject("");
-        if (!(%fn.openForRead(%fo))) {
+        if (!%fo.openForRead(%fn)) {
             error("could not open" @ " " @ %fn);
             return;
         }
         $gRandomBannerIDsNum = 0;
-        while (!(%fo.isEOF())) {
+        while (!%fo.isEOF()) {
             %name = %fo.readLine();
             $gRandomBannerIDsNum[$gRandomBannerIDs @ $gRandomBannerIDsNum] = %name;
             $gRandomBannerIDsNum = ($gRandomBannerIDsNum + 1.0);
@@ -67,12 +67,12 @@ function getRandomApartmentPhotoID() {
     if (($gRandomApartmentPhotoIDsNum < 0.0)) {
         %fn = ExpandFilename("./sampleApartmentPhotoIDs.txt");
         %fo = new FileObject("");
-        if (!(%fn.openForRead(%fo))) {
+        if (!%fo.openForRead(%fn)) {
             error("could not open" @ " " @ %fn);
             return;
         }
         $gRandomApartmentPhotoIDsNum = 0;
-        while (!(%fo.isEOF())) {
+        while (!%fo.isEOF()) {
             %name = %fo.readLine();
             $gRandomApartmentPhotoIDsNum[$gRandomApartmentPhotoIDs @ $gRandomApartmentPhotoIDsNum] = %name;
             $gRandomApartmentPhotoIDsNum = ($gRandomApartmentPhotoIDsNum + 1.0);
@@ -82,6 +82,6 @@ function getRandomApartmentPhotoID() {
         echo("read" @ " " @ $gRandomApartmentPhotoIDsNum @ " " @ "names..");
     }
     %num = getRandom(0, ($gRandomApartmentPhotoIDsNum - 1.0));
-    !(%fo.isEOF());
+    !%fo.isEOF();
     return %num[$gRandomApartmentPhotoIDs @ %num];
 };

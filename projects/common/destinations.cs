@@ -62,7 +62,7 @@ function DestinationList::AddDestinationAd(%codeName, %vurl, %okayForTGF) {
     }
 };
 function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
-    if (!(isDefined("%butNotThese"))) {
+    if (!isDefined("%butNotThese")) {
         %butNotThese = "interscope_lounge";
     }
     %candidates = "";
@@ -70,7 +70,7 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese) {
     %n = 0;
     while ((%n < $gDestinationAdsNum)) {
         %eligible = %n[$gDestinationAds TAB %n @ "okayForTGF"];
-        if (!(%eligible)) {
+        if (!%eligible) {
         }
         %codeName = %n[$gDestinationAds TAB %n @ "codename"];
         if (hasWord(%butNotThese, %codeName)) {
@@ -98,7 +98,7 @@ function DestinationList::goToDestination(%codeName) {
         return;
     }
     %command = "geTGF.close();" @ " " @ "vurlOperation(\"" @ %vurl @ "\");";
-    if (!(DestinationList::IsDestinationInMyContiguousSpace(%codeName))) {
+    if (!DestinationList::IsDestinationInMyContiguousSpace(%codeName)) {
         %title = $MsgCat::destinations["REMOTE-TITLE"];
         %body = strreplace($MsgCat::destinations["REMOTE-BODY"], "[NAME]", %codeName[$gDestinationNames @ %codeName]);
         MessageBoxOkCancel(%title, %body, %command, "");
@@ -116,14 +116,14 @@ function transferFromShopToDestinationsDirectoryPart2(%askForSave, %doSave) {
             %text = "You've made some changes to your appearance.\nWould you like to save your changes?";
             %buttons = "Yes" @ "\t" @ "No" @ "\t" @ "Cancel";
             %dlg = MessageBoxCustom(%title, %text, %buttons);
-            %dlg.callback = "transferFromShopToDestinationsDirectoryPart2(false, true);" @ 0;
-            %dlg.callback = "transferFromShopToDestinationsDirectoryPart2(false, false);" @ 1;
-            %dlg.callback = "" @ 2;
+            %dlg.callback[0] = "transferFromShopToDestinationsDirectoryPart2(false, true);";
+            %dlg.callback[1] = "transferFromShopToDestinationsDirectoryPart2(false, false);";
+            %dlg.callback[2] = "";
             return;
         }
         %doSave = 0;
     }
-    0.doClose(ClosetGui, !(%doSave));
+    ClosetGui.doClose(!%doSave, 0);
     toggleTGFMapFiltered("shop");
 };
 $gAreaNamesInternalList = "";
@@ -162,7 +162,7 @@ function DestinationList::GetAreaNameUserFacingNameCityAndBuildingShort(%areaNam
         return %cityName;
     }
     %bldgName = DestinationList::GetAreaNameShortName(%areaName);
-    if (!(isDefined("%delimiter"))) {
+    if (!isDefined("%delimiter")) {
         %delimiter = " - ";
     }
     return %cityName @ %delimiter @ %bldgName;
@@ -174,7 +174,7 @@ function DestinationList::GetAreaNameUserFacingNameCityAndBuilding(%areaName, %d
         return %cityName;
     }
     %bldgName = DestinationList::GetAreaNameUserFacingName(%areaName);
-    if (!(isDefined("%delimiter"))) {
+    if (!isDefined("%delimiter")) {
         %delimiter = " - ";
     }
     return %cityName @ %delimiter @ %bldgName;

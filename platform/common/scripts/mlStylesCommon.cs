@@ -67,9 +67,7 @@ $gMlStyle["shoutout_charsLeft"] = "<color:ffffff40><font:arial:40><just:right>";
 $gMlStyle["shoutout_status"] = "<color:ffffffd0><outline><shadowcolor:00000080><font:arial:40><just:center>";
 $gMlStyle["tgf_StandardTextColors"][$gMlStyle @ "ticker"] = $gMlStyle["tgf_StandardTextColors"] @ "<just:center>";
 function mlStyle(%dry, %styleName) {
-    if (!(isDefined("%styleName"))) {
-    }
-    if ((%styleName $= "")) {
+    if (!isDefined("%styleName") || (%styleName $= "")) {
         return "";
     }
     %wet = standardSubstitutions(%dry);

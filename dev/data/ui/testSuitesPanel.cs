@@ -1,16 +1,16 @@
 function testSuitesPanel::toggle(%this) {
-    %this.showRaiseOrHide(playGui);
+    playGui.showRaiseOrHide(%this);
 };
 function testSuitesPanel::open(%this) {
-    if (!("TestSuites".rolesPermissionCheckWarn($player))) {
+    if (!$player.rolesPermissionCheckWarn("TestSuites")) {
         return;
     }
     %this.loadAvailableTests();
-    1.setVisible(%this);
-    %this.focusAndRaise(playGui);
+    %this.setVisible(1);
+    playGui.focusAndRaise(%this);
 };
 function testSuitesPanel::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     playGui.focusTopWindow();
     return 1;
 };
@@ -33,8 +33,8 @@ function testSuitesPanel::loadAvailableTests(%this) {
     %i = 0;
     while ((%i < DeclaredTestSuiteCount())) {
         %name = DeclaredTestSuiteGet(%i);
-        %name.addRow(%list, %name);
+        %list.addRow(%name, %name);
         %i = (%i + 1.0);
     }
-    0.sort(%list);
+    %list.sort(0);
 };

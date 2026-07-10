@@ -17,8 +17,8 @@ function clientHeartbeat() {
     echo("not repeating halting client heartbeat");
 };
 function onDoneOrErrorCallback_ClientHeartbeat(%request) {
-    if (!(%request.checkSuccess())) {
-        %errorCode = "errorCode".getValue(%request);
+    if (!%request.checkSuccess()) {
+        %errorCode = %request.getValue("errorCode");
         error(getScopeName() @ " " @ "- heartbeat failed, error =" @ " " @ %errorCode);
         if ((%errorCode $= "invalid")) {
             error(getScopeName() @ " " @ "- heartbeat failed due to invalid token, logging out.");

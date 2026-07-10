@@ -1,19 +1,19 @@
 new SimSet(ModalMessageBoxes);
 if (isObject(MissionCleanup)) {
-    ModalMessageBoxes.add(MissionCleanup);
+    MissionCleanup.add(ModalMessageBoxes);
 }
 $gNumModalDialogs = 0;
 function MessageCallback(%dlg, %callback) {
-    %dlg.schedule(Canvas, 70, "popDialog");
+    Canvas.schedule(70, "popDialog", %dlg);
     $gThisDialog = %dlg;
     eval(%callback);
-    %dlg.remove(ModalMessageBoxes);
+    ModalMessageBoxes.remove(%dlg);
     $gNumModalDialogs = ($gNumModalDialogs - 1.0);
     if (($gNumModalDialogs <= 0.0)) {
         $gNumModalDialogs = 0;
         setActionMapsEnabled(1);
     }
-    "delete".schedule(%dlg, 1500);
+    %dlg.schedule(1500, "delete");
 };
 function DestroyMessageBoxes() {
     if (isObject(ModalMessageBoxes)) {
@@ -28,22 +28,22 @@ function ShowAllMessageBoxes() {
     %count = ModalMessageBoxes.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %mb = %i.getObject(ModalMessageBoxes);
+        %mb = ModalMessageBoxes.getObject(%i);
         if (isObject(%mb)) {
-            0.pushDialog(Canvas, %mb);
+            Canvas.pushDialog(%mb, 0);
         }
         %i = (%i + 1.0);
     }
 };
 function MBSetText(%text, %frame, %msg) {
     %ext = %text.getExtent();
-    "<just:center>" @ %msg.setText(%text);
+    %text.setText("<just:center>" @ %msg);
     %text.forceReflow();
     %newExtent = %text.getExtent();
     %deltaY = (getWord(%newExtent, 1) - getWord(%ext, 1));
     %windowPos = %frame.getPosition();
     %windowExt = %frame.getExtent();
-    (getWord(%windowExt, 1) + %deltaY).resize(%frame, getWord(%windowPos, 0), (getWord(%windowPos, 1) - (%deltaY / 2.0)), getWord(%windowExt, 0));
+    %frame.resize(getWord(%windowPos, 0), (getWord(%windowPos, 1) - (%deltaY / 2.0)), getWord(%windowExt, 0), (getWord(%windowExt, 1) + %deltaY));
 };
 function MessageBoxOK(%title, %message, %callback, %canStopShowing, %key) {
     isDefined("%callback", "");
@@ -53,47 +53,47 @@ function MessageBoxOK(%title, %message, %callback, %canStopShowing, %key) {
         return;
     }
     %dialog = MessageBoxOKDlg::newDialog();
-    %title.setText(%dialog.window);
-    %key.tryAddStopShowing(%dialog, %title, %message, %canStopShowing);
+    %dialog.window.setText(%title);
+    %dialog.tryAddStopShowing(%title, %message, %canStopShowing, %key);
     $gNumModalDialogs = ($gNumModalDialogs + 1.0);
-    %dialog.add(ModalMessageBoxes);
+    ModalMessageBoxes.add(%dialog);
     setActionMapsEnabled(0);
-    0.pushDialog(Canvas, %dialog);
-    %message.setMessageText(%dialog);
-    %dialog.callback = %callback @ 0;
+    Canvas.pushDialog(%dialog, 0);
+    %dialog.setMessageText(%message);
+    %dialog.callback[0] = %callback;
     return %dialog;
 };
 function MessageBoxTextEntry(%title, %message, %callback, %defaultText) {
     %dialog = MessageBoxTextEntryDlg::newDialog();
-    %title.setText(%dialog.window);
-    %defaultText.setText(%dialog.textEntry);
-    1000.setSelection(%dialog.textEntry, 0);
+    %dialog.window.setText(%title);
+    %dialog.textEntry.setText(%defaultText);
+    %dialog.textEntry.setSelection(0, 1000);
     $gNumModalDialogs = ($gNumModalDialogs + 1.0);
-    %dialog.add(ModalMessageBoxes);
+    ModalMessageBoxes.add(%dialog);
     setActionMapsEnabled(0);
-    0.pushDialog(Canvas, %dialog);
-    %message.setMessageText(%dialog);
+    Canvas.pushDialog(%dialog, 0);
+    %dialog.setMessageText(%message);
     %dialog.callback = %callback;
-    %dialog.callback = %dialog @ ".doCallback();" @ 0;
+    %dialog.callback[".doCallback();",0] = %dialog;
     return %dialog;
 };
 function MessageBoxTextEntryWithCancel(%title, %message, %callback, %defaultText, %maxLength) {
     %dialog = MessageBoxTextEntryWCancelDlg::newDialog();
-    %title.setText(%dialog.window);
+    %dialog.window.setText(%title);
     if ((%maxLength != 0.0)) {
     }
     if (!(%maxLength $= "")) {
         %dialog.textEntry.maxLength = %maxLength;
     }
-    %defaultText.setText(%dialog.textEntry);
-    1000.setSelection(%dialog.textEntry, 0);
+    %dialog.textEntry.setText(%defaultText);
+    %dialog.textEntry.setSelection(0, 1000);
     $gNumModalDialogs = ($gNumModalDialogs + 1.0);
-    %dialog.add(ModalMessageBoxes);
+    ModalMessageBoxes.add(%dialog);
     setActionMapsEnabled(0);
-    0.pushDialog(Canvas, %dialog);
-    %message.setMessageText(%dialog);
+    Canvas.pushDialog(%dialog, 0);
+    %dialog.setMessageText(%message);
     %dialog.callback = %callback;
-    %dialog.callback = %dialog @ ".doCallback();" @ 0;
+    %dialog.callback[".doCallback();",0] = %dialog;
     return %dialog;
 };
 function MessageBoxTextEntryWithBitmapWithCancel(%title, %message, %callback, %defaultText, %maxLength, %bitmapPath) {
@@ -109,7 +109,7 @@ function MessageBoxTextEntryWithBitmapWithCancel(%title, %message, %callback, %d
         extent = %extX @ " " @ %extY;
         bitmap = %bitmapPath;
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %dialog.bitmapCtrl = %ctrl;
     return %dialog;
 };
@@ -120,14 +120,14 @@ function MessageBoxOkCancel(%title, %message, %callback, %cancelCallback, %canSt
     isDefined("%cancelCallback", "");
     isDefined("%canStopShowing", "");
     %dialog = MessageBoxOKCancelDlg::newDialog();
-    %title.setText(%dialog.window);
+    %dialog.window.setText(%title);
     $gNumModalDialogs = ($gNumModalDialogs + 1.0);
-    %dialog.add(ModalMessageBoxes);
+    ModalMessageBoxes.add(%dialog);
     setActionMapsEnabled(0);
-    0.pushDialog(Canvas, %dialog);
-    %message.setMessageText(%dialog);
-    %dialog.callback = %callback @ 0;
-    %dialog.callback = %cancelCallback @ 1;
+    Canvas.pushDialog(%dialog, 0);
+    %dialog.setMessageText(%message);
+    %dialog.callback[0] = %callback;
+    %dialog.callback[1] = %cancelCallback;
     return %dialog;
 };
 function MessageBoxOKCancelDlg::onSleep(%this) {
@@ -141,40 +141,40 @@ function MessageBoxYesNo(%title, %message, %yesCallback, %noCallback, %canStopSh
         return;
     }
     %dialog = MessageBoxYesNoDlg::newDialog();
-    %title.setText(%dialog.window);
-    %key.tryAddStopShowing(%dialog, %title, %message, %canStopShowing);
+    %dialog.window.setText(%title);
+    %dialog.tryAddStopShowing(%title, %message, %canStopShowing, %key);
     $gNumModalDialogs = ($gNumModalDialogs + 1.0);
-    %dialog.add(ModalMessageBoxes);
+    ModalMessageBoxes.add(%dialog);
     setActionMapsEnabled(0);
-    0.pushDialog(Canvas, %dialog);
-    %message.setMessageText(%dialog);
-    %dialog.callback = %yesCallback @ 0;
-    %dialog.callback = %noCallback @ 1;
+    Canvas.pushDialog(%dialog, 0);
+    %dialog.setMessageText(%message);
+    %dialog.callback[0] = %yesCallback;
+    %dialog.callback[1] = %noCallback;
     return %dialog;
 };
 function MessageBoxYesNoDlg::onSleep(%this) {
 };
 function MessagePopup(%title, %message, %delay) {
     %dialog = MessagePopupDlg::newDialog();
-    %title.setText(%dialog.window);
+    %dialog.window.setText(%title);
     $gNumModalDialogs = ($gNumModalDialogs + 1.0);
-    %dialog.add(ModalMessageBoxes);
+    ModalMessageBoxes.add(%dialog);
     setActionMapsEnabled(0);
-    0.pushDialog(Canvas, %dialog);
-    %message.setMessageText(%dialog);
+    Canvas.pushDialog(%dialog, 0);
+    %dialog.setMessageText(%message);
     if (!(%delay $= "")) {
-        "close".schedule(%dialog, %delay);
+        %dialog.schedule(%delay, "close");
     }
     return %dialog;
 };
 function MessageBoxCustom(%title, %message, %buttonList) {
     %dialog = MessageBox::newDialog(%buttonList);
-    %title.setText(%dialog.window);
+    %dialog.window.setText(%title);
     $gNumModalDialogs = ($gNumModalDialogs + 1.0);
-    %dialog.add(ModalMessageBoxes);
+    ModalMessageBoxes.add(%dialog);
     setActionMapsEnabled(0);
-    0.pushDialog(Canvas, %dialog);
-    %message.setMessageText(%dialog);
+    Canvas.pushDialog(%dialog, 0);
+    %dialog.setMessageText(%message);
     return %dialog;
 };
 function MessageBox::newDialog(%buttonList) {
@@ -200,7 +200,7 @@ function MessageBox::newDialog(%buttonList) {
         modulationColor = "255 255 255  90";
     };
     %dialog.backgroundCtrl = %ctrl;
-    %ctrl.add(%dialog);
+    %dialog.add(%ctrl);
     %dialog.numButtons = getFieldCount(%buttonList);
     %padding = 20;
     %minButtonWidth = 50;
@@ -262,7 +262,7 @@ function MessageBox::newDialog(%buttonList) {
         sluggishness = -1;
         visible = 1;
     };
-    %buttonContainer.add(%window);
+    %window.add(%buttonContainer);
     %xPos = %padding;
     %ypos = 0;
     %i = 0;
@@ -287,18 +287,18 @@ function MessageBox::newDialog(%buttonList) {
             simpleStyle = 0;
         };
         %xPos = (%xPos + (%buttonWidth + %padding));
-        %window.button = %button @ %i;
-        %dialog.button = %button @ %i;
-        %button.add(%buttonContainer);
-        %dialog.callback = "" @ %i;
+        %window.button[%i] = %button;
+        %dialog.button[%i] = %button;
+        %buttonContainer.add(%button);
+        %dialog.callback[%i] = "";
         %i = (%i + 1.0);
     }
-    %text.add(%window);
-    %window.add(%dialog);
+    %window.add(%text);
+    %dialog.add(%window);
     %dialog.window = (%i < %dialog.numButtons) @ %window;
     %dialog.text = %text;
     %dialog.doCallbackOnEscape = 1;
-    "MessageBox".bindClassName(%dialog);
+    %dialog.bindClassName("MessageBox");
     return %dialog;
 };
 function MessageBox::setMessageText(%this, %msg) {
@@ -321,23 +321,23 @@ function MessageBox::reflow(%this) {
     %windowExt = %this.window.getExtent();
     %deltaX = (%this.targetWidth - getWord(%windowExt, 0));
     if ((%deltaX != 0.0)) {
-        getWord(%windowExt, 1).resize(%this.window, (getWord(%windowPos, 0) - (%deltaX / 2.0)), getWord(%windowPos, 1), (getWord(%windowExt, 0) + %deltaX));
+        %this.window.resize((getWord(%windowPos, 0) - (%deltaX / 2.0)), getWord(%windowPos, 1), (getWord(%windowExt, 0) + %deltaX), getWord(%windowExt, 1));
     }
-    "<just:center>" @ %this.message.setText(%this.text);
+    %this.text.setText("<just:center>" @ %this.message);
     %this.text.forceReflow();
     %newTextExt = %this.text.getExtent();
     %deltaY = (getWord(%newTextExt, 1) - getWord(%startingTextExt, 1));
     %windowPos = %this.window.getPosition();
     %windowExt = %this.window.getExtent();
     if ((%deltaY != 0.0)) {
-        (getWord(%windowExt, 1) + %deltaY).resize(%this.window, getWord(%windowPos, 0), (getWord(%windowPos, 1) - (%deltaY / 2.0)), getWord(%windowExt, 0));
+        %this.window.resize(getWord(%windowPos, 0), (getWord(%windowPos, 1) - (%deltaY / 2.0)), getWord(%windowExt, 0), (getWord(%windowExt, 1) + %deltaY));
     }
 };
 function MessageBox::close(%this) {
     if (%this.doCallbackOnEscape) {
     }
     %callback = "";
-    %this.callback;
+    %this.callback[(%this.numButtons - 1.0)];
     MessageCallback(%this, %callback);
 };
 function MessageBox_TryDontShow(%title, %message, %callback, %canStopShowing, %key) {
@@ -346,7 +346,7 @@ function MessageBox_TryDontShow(%title, %message, %callback, %canStopShowing, %k
     }
     safeEnsureScriptObject("StringMap", gMessageBoxDontShow, 0);
     %key = MessageBox_GetKey(%title, %message, %key);
-    if (%key.get(gMessageBoxDontShow)) {
+    if (gMessageBoxDontShow.get(%key)) {
         eval(%callback);
         return 1;
     }
@@ -354,7 +354,7 @@ function MessageBox_TryDontShow(%title, %message, %callback, %canStopShowing, %k
 };
 function MessageBox_SetDontShow(%key, %val) {
     safeEnsureScriptObject("StringMap", gMessageBoxDontShow, 0);
-    %val.put(gMessageBoxDontShow, %key);
+    gMessageBoxDontShow.put(%key, %val);
 };
 function MessageBox_GetKey(%title, %message, %key) {
     if (!(%key $= "")) {
@@ -375,7 +375,7 @@ function MessageBox::tryAddStopShowing(%this, %title, %message, %canStopShowing,
             vertSizing = "top";
             command = "MessageBox_SetDontShow(\"" @ %key @ "\", !$ThisControl.getValue());";
         };
-        1.setValue(%ctrl);
-        %ctrl.add(%this.window);
+        %ctrl.setValue(1);
+        %this.window.add(%ctrl);
     }
 };

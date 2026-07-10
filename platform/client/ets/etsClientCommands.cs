@@ -22,7 +22,7 @@ function onAppCloseButton() {
     }
     %dialog = $closeConfirmDlg = MessageBoxYesNo("Quit vSide", $MsgCat::login["CONF-QUIT"], "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
     if (!($gLastLoggedInThisSessionAs $= "")) {
-        %yesButtonPos = %dialog.button.getParent(0).getPosition();
+        %yesButtonPos = %dialog.button[0].getParent().getPosition();
         %ctrl = new GuiCheckBoxCtrl("") {
             profile = "ETSCheckBoxProfile";
             position = getWord(%yesButtonPos, 0) @ " " @ (getWord(%yesButtonPos, 1) - 23.0);
@@ -31,13 +31,13 @@ function onAppCloseButton() {
             vertSizing = "top";
             text = "Visit my web profile";
         };
-        $UserPref::General::onQuitVisitWebProfile.setValue(%ctrl);
+        %ctrl.setValue($UserPref::General::onQuitVisitWebProfile);
         %window = %dialog.window;
-        %ctrl.add(%window);
+        %window.add(%ctrl);
         %dialog.visitProfileOptionCtrl = %ctrl;
         %width = getWord(%window.getExtent(), 0);
         %height = getWord(%window.getExtent(), 1);
-        (%height + 20.0).resize(%window, %width);
+        %window.resize(%width, (%height + 20.0));
     }
 };
 function confirmQuitOnYes() {
@@ -72,14 +72,14 @@ function ClientCmdMissionInfo(%contiguousSpaceName, %mode) {
 function onGotContiguousSpaceName(%contiguousSpaceName) {
     $gContiguousSpaceName = %contiguousSpaceName;
     tutorials_Initialize();
-    %contiguousSpaceName.onSpaceChange(geLocalMapContainer);
+    geLocalMapContainer.onSpaceChange(%contiguousSpaceName);
     CSControlPanelTabs.updateSkipTutorialTab();
     ButtonBar.handleContiguousSpace();
     if (!(%contiguousSpaceName $= "")) {
     }
     %name = "[" @ $ServerName @ "]";
     %contiguousSpaceName;
-    1.incrementIntegerProperty(gUserPropMgrClient, $Player::Name, "level started count" @ " " @ %name);
+    gUserPropMgrClient.incrementIntegerProperty($Player::Name, "level started count" @ " " @ %name, 1);
 };
 $gContiguousSpaceFullNames[""] = "vSide";
 $gContiguousSpaceOfferSkip[""] = 0;
@@ -105,7 +105,7 @@ function getCurrentContiguousSpaceOfferSkip() {
     return $gContiguousSpaceName[$gContiguousSpaceOfferSkip @ $gContiguousSpaceName];
 };
 function ClientCmdLevelCompleted(%levelName) {
-    1.setProperty(gUserPropMgrClient, $Player::Name, "level completed" @ " " @ %levelName);
+    gUserPropMgrClient.setProperty($Player::Name, "level completed" @ " " @ %levelName, 1);
 };
 function ClientCmdToonColorOffsetFill(%colorOffset) {
     $pref::TS::ToonColorOffsetFill = %colorOffset;

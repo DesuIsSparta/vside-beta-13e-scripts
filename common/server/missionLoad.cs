@@ -12,8 +12,8 @@ function loadMission(%missionName, %isFirstMission) {
     %count = ClientGroup.getCount();
     %cl = 0;
     while ((%cl < %count)) {
-        %client = %cl.getObject(ClientGroup);
-        if (!(%client.isAIControlled())) {
+        %client = ClientGroup.getObject(%cl);
+        if (!%client.isAIControlled()) {
             sendLoadInfoToClient(%client);
         }
         %cl = (%cl + 1.0);
@@ -34,9 +34,9 @@ function loadMissionStage2() {
     if (!(strchr(%file, "\\") $= "")) {
         %file = strreplace(%file, "\\", "/");
     }
-    if (!(isFile(%file))) {
+    if (!isFile(%file)) {
         error("initialization", "Mission file could not be found:" @ " " @ %ofile);
-        if (!($StandAlone)) {
+        if (!$StandAlone) {
             quit();
         }
         return;
@@ -44,7 +44,7 @@ function loadMissionStage2() {
     $missionCRC = 0;
     new SimGroup(MissionCleanup);
     exec(%file);
-    if (!(isObject(MissionGroup))) {
+    if (!isObject(MissionGroup)) {
         error("No 'MissionGroup' found in mission \"" @ $missionName @ "\".");
         schedule(3000, ServerGroup, CycleMissions);
         return;
@@ -55,7 +55,7 @@ function loadMissionStage2() {
     $missionRunning = 1;
     %clientIndex = 0;
     while ((%clientIndex < ClientGroup.getCount())) {
-        %clientIndex.getObject(ClientGroup).loadMission();
+        ClientGroup.getObject(%clientIndex).loadMission();
         %clientIndex = (%clientIndex + 1.0);
     }
     onMissionLoaded();
@@ -63,14 +63,14 @@ function loadMissionStage2() {
     return (%clientIndex < ClientGroup.getCount());
 };
 function endMission() {
-    if (!(isObject(MissionGroup))) {
+    if (!isObject(MissionGroup)) {
         return;
     }
     echo("*** ENDING MISSION");
     onMissionEnded();
     %clientIndex = 0;
     while ((%clientIndex < ClientGroup.getCount())) {
-        %cl = %clientIndex.getObject(ClientGroup);
+        %cl = ClientGroup.getObject(%clientIndex);
         %cl.endMission();
         %cl.resetGhosting();
         %cl.clearPaths();

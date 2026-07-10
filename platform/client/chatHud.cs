@@ -3,27 +3,27 @@ $ChatHud::ListenTarget = 0;
 function onServerMessage(%unused) {
 };
 function onAIMReceive(%sender, %msg) {
-    %msg.receivedMessage(AIMConvManager, %sender);
+    AIMConvManager.receivedMessage(%sender, %msg);
 };
 function MessageHud::open(%this, %text) {
     if (%this.isVisible()) {
         return;
     }
-    1.setVisible(%this);
-    1.makeFirstResponder(MessageHudEdit);
+    %this.setVisible(1);
+    MessageHudEdit.makeFirstResponder(1);
     MessageHudEdit.reinjectOpenEvent();
-    updatePosition.schedule(MessageHud, 100);
+    MessageHud.schedule(100, updatePosition);
     if (isObject(ConvBubVecCtrlMsgVec) && (ConvBubVecCtrlMsgVec.getNumLines() > 0.0)) {
         ConvBub.open();
     }
 };
 function MessageHud::close(%this) {
-    if (!(%this.isVisible())) {
+    if (!%this.isVisible()) {
         return;
     }
-    0.setVisible(%this);
-    0.makeFirstResponder(MessageHudEdit);
-    "".setValue(MessageHudEdit);
+    %this.setVisible(0);
+    MessageHudEdit.makeFirstResponder(0);
+    MessageHudEdit.setValue("");
 };
 function MessageHudEdit::onEscape(%this) {
     finishTextEntry();
@@ -32,8 +32,8 @@ function MessageHud::updatePosition(%this) {
     %resWidth = getWord($UserPref::Video::Resolution, 0);
     %trgX = (0.5 * (%resWidth - getWord(%this.getExtent(), 0)));
     %trgY = ((getWord(ButtonBar.getTrgPosition(), 1) - 35.0) + $ButtonBarVar::VerticalAdjustment);
-    %trgY.setTrgPosition(%this, %trgX);
-    %this.pushToBack(PlayGui);
+    %this.setTrgPosition(%trgX, %trgY);
+    PlayGui.pushToBack(%this);
 };
 function MessageHudEdit::eval(%this) {
     %text = trim(StripMLControlChars(%this.getValue()));
@@ -42,10 +42,10 @@ function MessageHudEdit::eval(%this) {
         return;
     }
     if (isCommand(%text)) {
-        if (!(processCommand(%text))) {
+        if (!processCommand(%text)) {
             %curAnim = $player.getCurrActionName();
             %curBase = getSubStr(%curAnim, 2, 100);
-            %curProt = %curBase.get(ProtectedAnimsDict);
+            %curProt = ProtectedAnimsDict.get(%curBase);
             if ((%curProt == 1.0)) {
                 commandToServer('RequestToStand', 0, 0);
             }
@@ -54,7 +54,7 @@ function MessageHudEdit::eval(%this) {
     }
     emote(%text);
     if (isObject(pChat)) {
-        0.say(pChat, %text, 0);
+        pChat.say(%text, 0, 0);
     }
     say(%text);
 };
@@ -67,10 +67,10 @@ function MessageHudEdit::scanForAutoCommands(%this) {
         return;
     }
     if (isObject(CommandAbbreviationMap)) {
-        %replace = %firstWord.get(CommandAbbreviationMap);
+        %replace = CommandAbbreviationMap.get(%firstWord);
         if (!(%replace $= "")) {
-            setWord(%this.getValue(), 0, %replace).setValue(%this);
-            40000.setCursorPos(%this);
+            %this.setValue(setWord(%this.getValue(), 0, %replace));
+            %this.setCursorPos(40000);
         }
     }
     %firstWord = getWord(%this.getValue(), 0);
@@ -91,17 +91,17 @@ function MessageHudEdit::onKeystroke(%this) {
         return;
     }
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
-    $gChatPreviewTimer = "chatPreviewTimer".schedule(%this, $Chat::Preview::Period);
+    $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
 };
 function MessageHudEdit::chatPreviewTimer(%this) {
     cancel($gChatPreviewTimer);
     %this.sendPreviewText();
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
-    $gChatPreviewTimer = "chatPreviewTimer".schedule(%this, $Chat::Preview::Period);
-    %this.pushToBack(PlayGui);
+    $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
+    PlayGui.pushToBack(%this);
 };
 function MessageHudEdit::sendPreviewText(%this) {
-    %this.getValue().sendPreviewText($player);
+    $player.sendPreviewText(%this.getValue());
 };
 function removeLastWordIfNotFollowedByWhiteSpace(%dry) {
     if (!(%dry $= rtrim(%dry))) {
@@ -117,9 +117,9 @@ function removeLastWordIfNotFollowedByWhiteSpace(%dry) {
 };
 function MessageHud::setGrayed(%this, %value) {
     if (%value) {
-        "platform/client/ui/messageHudGray".setBitmap(%this);
+        %this.setBitmap("platform/client/ui/messageHudGray");
     }
-    "platform/client/ui/messageHud".setBitmap(%this);
+    %this.setBitmap("platform/client/ui/messageHud");
 };
 function MessageHud::updateModeIcon(%this) {
     if (isObject($player)) {
@@ -130,7 +130,7 @@ function MessageHud::updateModeIcon(%this) {
     }
     %modeIconName = "";
     %modeIconCommand = "";
-    %modeIconCommand.setModeIconName(%this, %modeIconName);
+    %this.setModeIconName(%modeIconName, %modeIconCommand);
 };
 $gMessageHudEditOriginalPosition = "";
 $gMessageHudEditOriginalExtent = "";
@@ -141,7 +141,7 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
         $gMessageHudEditOriginalExtent = MessageHudEdit.getExtent();
     }
     if ((%modeIconName $= "")) {
-        0.setVisible(MessageHudModeIcon);
+        MessageHudModeIcon.setVisible(0);
         MessageHudEdit.position = $gMessageHudEditOriginalPosition;
         MessageHudEdit.extent = $gMessageHudEditOriginalExtent;
     }
@@ -150,8 +150,8 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
     MessageHudEdit.position = %positionNew;
     %extentNew = VectorSub($gMessageHudEditOriginalExtent, $gMessageHudEditModeIconOffset);
     MessageHudEdit.extent = %extentNew;
-    %bitmap.setBitmap(MessageHudModeIcon);
-    1.setVisible(MessageHudModeIcon);
+    MessageHudModeIcon.setBitmap(%bitmap);
+    MessageHudModeIcon.setVisible(1);
     MessageHudModeIcon.command = %modeIconCommand;
 };
 function displayMicrophoneHelp() {
@@ -161,17 +161,17 @@ function displayMicrophoneHelp() {
     userTips::showNow("GotMic");
 };
 function startTextEntry() {
-    if (!(MessageHud.isVisible())) {
-        moveMap.lastkey.open(MessageHud);
+    if (!MessageHud.isVisible()) {
+        MessageHud.open(moveMap.lastkey);
     }
-    MessageHudEdit.getValue() @ moveMap.lastkey.setText(MessageHudEdit);
-    1.makeFirstResponder(MessageHudEdit);
+    MessageHudEdit.setText(MessageHudEdit.getValue() @ moveMap.lastkey);
+    MessageHudEdit.makeFirstResponder(1);
 };
 function finishTextEntry(%text) {
     MessageHud.close();
     cancel($gChatPreviewTimer);
     $gChatPreviewTimer = 0;
-    "".onGotTypingSomething($player);
-    "".sendPreviewText($player);
-    "".setValue(MessageHudEdit);
+    $player.onGotTypingSomething("");
+    $player.sendPreviewText("");
+    MessageHudEdit.setValue("");
 };

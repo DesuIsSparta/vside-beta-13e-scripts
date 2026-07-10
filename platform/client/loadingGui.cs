@@ -4,21 +4,21 @@ function LoadingGui::onAdd(%this) {
 function LoadingGui::onWake(%this) {
     $Platform::CanSleepInBackground = 0;
     ShowAllMessageBoxes();
-    if (!(isObject(LoadingPBController))) {
+    if (!isObject(LoadingPBController)) {
         new ScriptObject(LoadingPBController) {
             class = "ProgressBarController";
         };
         if (isObject(MissionCleanup)) {
-            LoadingPBController.add(MissionCleanup);
+            MissionCleanup.add(LoadingPBController);
         }
     }
-    "".Initialize(LoadingPBController, LoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "");
+    LoadingPBController.Initialize(LoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
     LoadingTipsHud.initTipsList();
     %this.doTheTipThing();
     %this.updateLogoutButton();
     if ($StandAlone) {
     }
-    if (!($missionRunning)) {
+    if (!$missionRunning) {
         error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
         MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();");
     }
@@ -27,31 +27,31 @@ function LoadingGui::updateLogoutButton(%this) {
     %windowWidth = getWord(getRes(), 0);
     %width = getWord(LoadingLogoutButton.getExtent(), 0);
     %ypos = getWord(LoadingLogoutButton.getPosition(), 1);
-    %rightMarginPos = (%windowWidth - %ypos.getRightMarginAtY(WindowManager));
+    %rightMarginPos = (%windowWidth - WindowManager.getRightMarginAtY(%ypos));
     %padding = 38;
-    ((%rightMarginPos - %width) - %padding) @ " " @ %ypos.reposition(LoadingLogoutButton);
+    LoadingLogoutButton.reposition(((%rightMarginPos - %width) - %padding) @ " " @ %ypos);
 };
 function LoadingGui::setTransitioning(%this, %flag) {
     %this.transitioning = %flag;
     %this.updateLogoutButton();
     if (%flag) {
-        0.setVisible(LoadingTipsHud);
-        LoadingProgressBrackets.add(LoadingCenterFrame);
-        LoadingProgressHolder.add(LoadingCenterFrame);
-        LoadingProgressText.add(LoadingCenterFrame);
+        LoadingTipsHud.setVisible(0);
+        LoadingCenterFrame.add(LoadingProgressBrackets);
+        LoadingCenterFrame.add(LoadingProgressHolder);
+        LoadingCenterFrame.add(LoadingProgressText);
     }
-    LoadingProgressBrackets.add(LoadingBottomRightFrame);
-    LoadingProgressHolder.add(LoadingBottomRightFrame);
-    LoadingProgressText.add(LoadingBottomRightFrame);
+    LoadingBottomRightFrame.add(LoadingProgressBrackets);
+    LoadingBottomRightFrame.add(LoadingProgressHolder);
+    LoadingBottomRightFrame.add(LoadingProgressText);
 };
 function LoadingGui::doTheTipThing(%this) {
     cancel($SCHEDULE_SHOWANOTHER);
     %resWidth = getWord($UserPref::Video::Resolution, 0);
     if ((%resWidth < 640.0)) {
-        0.setVisible(LoadingTipsHud);
+        LoadingTipsHud.setVisible(0);
     }
     LoadingTipsHud.loadATip();
-    $SCHEDULE_SHOWANOTHER = "doTheTipThing".schedule(%this, $SCHEDULE_TIPTIMEDELAY);
+    $SCHEDULE_SHOWANOTHER = %this.schedule($SCHEDULE_TIPTIMEDELAY, "doTheTipThing");
 };
 function LoadingGui::onSleep(%this) {
     cancel($SCHEDULE_SHOWANOTHER);
@@ -59,13 +59,13 @@ function LoadingGui::onSleep(%this) {
     if (!(%this.qLineCount $= "")) {
         %line = 0;
         while ((%line < %this.qLineCount)) {
-            %this.qLine = "" @ %line;
+            %this.qLine[%line] = "";
             %line = (%line + 1.0);
         }
     }
     %this.qLineCount = (%line < %this.qLineCount) @ 0;
-    "".setValue(LoadingProgressTxt);
-    0.setValue(LoadingPBController);
+    LoadingProgressTxt.setValue("");
+    LoadingPBController.setValue(0);
 };
 function LoadingGui::onCanvasResize(%this) {
     LoadingGui.doTheTipThing();
@@ -95,10 +95,10 @@ function LoadingTipsHud::initTipsList(%this) {
     %testImageSpec = %projectTipsDir @ "/*testing.png";
     %file = findFirstFile(%testImageSpec);
     if (!(%file $= "")) {
-        if (%file.loadTipImage(%this)) {
+        if (%this.loadTipImage(%file)) {
         }
-        if (!(LoadingGui.transitioning)) {
-            1.setVisible(LoadingTipsHud);
+        if (!LoadingGui.transitioning) {
+            LoadingTipsHud.setVisible(1);
         }
         warn("LoadingTipsHud loading override tip file" @ " " @ %file);
         MessageBoxOK("Warning", "loading override test tip file:" @ " " @ %file, "");
@@ -107,25 +107,25 @@ function LoadingTipsHud::initTipsList(%this) {
     %base_path = %projectTipsDir @ "/";
     %tips_fileName = %base_path @ "tips.txt";
     %fo = new FileObject("");
-    if (!(%tips_fileName.openForRead(%fo))) {
+    if (!%fo.openForRead(%tips_fileName)) {
         error("Could not open" @ " " @ %tips_fileName);
         %this.tipFileCount = %fileCount;
         return;
     }
     %fileCount = 0;
-    while (!(%fo.isEOF())) {
+    while (!%fo.isEOF()) {
         %file = %fo.readLine();
         if ((strstr(%file, $TIP_CATEGORY) == -(1.0))) {
         }
-        %this.tipFile = %base_path @ %file @ %fileCount;
-        %this.tipFileShown = 0 @ %fileCount;
+        %this.tipFile[%file,%fileCount] = %base_path;
+        %this.tipFileShown[%fileCount] = 0;
         %fileCount = (%fileCount + 1.0);
     }
     %fo.close();
-    %this.tipFileCount = !(%fo.isEOF()) @ %fileCount;
+    %this.tipFileCount = !%fo.isEOF() @ %fileCount;
     if ((%fileCount == 0.0)) {
         echo("No tips found. We will now stop loading them. Add some and run again");
-        0.setVisible(LoadingTipsHud);
+        LoadingTipsHud.setVisible(0);
         return;
     }
 };
@@ -137,40 +137,40 @@ function LoadingTipsHud::loadATip(%this) {
     %n = 0;
     if ((%n < 10.0)) {
     }
-    while ((%this.tipFileShown == 1.0 @ %tipNum)) {
+    while ((%this.tipFileShown[%tipNum] == 1.0)) {
         %tipNum = getRandom(0, (%this.tipFileCount - 1.0));
         %n = (%n + 1.0);
         if ((%n < 10.0)) {
         }
     }
-    %fileName = %this.tipFile;
-    (%this.tipFileShown == 1.0 @ %tipNum) @ %tipNum;
+    %fileName = %this.tipFile[%tipNum];
+    (%this.tipFileShown[%tipNum] == 1.0);
     if ((%fileName $= "")) {
         error("Got a bad tip filename. Skipping...");
-        0.setVisible(LoadingTipsHud);
+        LoadingTipsHud.setVisible(0);
         return;
     }
-    if (%fileName.loadTipImage(%this)) {
+    if (%this.loadTipImage(%fileName)) {
     }
-    if (!(LoadingGui.transitioning)) {
-        1.setVisible(LoadingTipsHud);
-        %this.tipFileShown = 1 @ %tipNum;
+    if (!LoadingGui.transitioning) {
+        LoadingTipsHud.setVisible(1);
+        %this.tipFileShown[%tipNum] = 1;
     }
 };
 function LoadingTipsHud::loadTipImage(%this, %fileName) {
     if ((%fileName $= "")) {
         return;
     }
-    if (!(isFile(%fileName))) {
+    if (!isFile(%fileName)) {
         %url = $Net::downloadURL @ "/packages/" @ %fileName;
-        %url.downloadAndApplyBitmap(%this);
+        %this.downloadAndApplyBitmap(%url);
         return;
     }
-    %fileName.setBitmap(%this);
+    %this.setBitmap(%fileName);
 };
 function LoadingTipsHud::setBitmap(%this, %fileName) {
     if ((%fileName $= "")) {
         return;
     }
-    %fileName.setBitmap(TipsWhileLoadingImage);
+    TipsWhileLoadingImage.setBitmap(%fileName);
 };

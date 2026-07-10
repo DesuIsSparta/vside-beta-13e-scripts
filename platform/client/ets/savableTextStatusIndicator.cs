@@ -3,7 +3,7 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         error(getScopeName() @ " " @ "- object with name '" @ %indicatorName @ "' already exists");
         return 0;
     }
-    if (!(isObject(%controlToGetValueFrom))) {
+    if (!isObject(%controlToGetValueFrom)) {
         error(getScopeName() @ " " @ "- requires object parameter - '" @ %controlToGetValueFrom @ "' is not an object");
         return 0;
     }
@@ -51,9 +51,9 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         bitmap = %arrowBitmap;
         visible = 0;
     };
-    %obj.savedBitmap.add(%obj);
-    %obj.savingBitmap.add(%obj);
-    %obj.changedBitmap.add(%obj);
+    %obj.add(%obj.savedBitmap);
+    %obj.add(%obj.savingBitmap);
+    %obj.add(%obj.changedBitmap);
     return %obj;
 };
 function SavableTextStatusIndicator::setInitialValue(%this, %initialValue) {
@@ -65,7 +65,7 @@ function SavableTextStatusIndicator::setInitialValue(%this, %initialValue) {
 };
 function SavableTextStatusIndicator::incrementRequestCount(%this) {
     %newValue = %this.controlToGetValueFrom.getValue();
-    if (!(%this.acceptEmptyString)) {
+    if (!%this.acceptEmptyString) {
     }
     if ((%newValue $= "")) {
         return;
@@ -73,22 +73,22 @@ function SavableTextStatusIndicator::incrementRequestCount(%this) {
     %this.lastValueSaved = %newValue;
     %this.initialValueSet = 1;
     %this.requestsPendingCount = (%this.requestsPendingCount + 1.0);
-    1.update(%this);
+    %this.update(1);
 };
 function SavableTextStatusIndicator::decrementRequestCount(%this) {
     %this.requestsPendingCount = (%this.requestsPendingCount - 1.0);
-    1.update(%this);
+    %this.update(1);
 };
 function SavableTextStatusIndicator::update(%this, %doCallback) {
     %valueSaved = (%this.requestsPendingCount == 0.0);
     %valueChanged = !(%this.lastValueSaved $= %this.controlToGetValueFrom.getValue());
     if (%valueSaved) {
     }
-    !(%valueChanged).setVisible(%this.savedBitmap);
-    if (!(%valueSaved)) {
+    %this.savedBitmap.setVisible(!%valueChanged);
+    if (!%valueSaved) {
     }
-    !(%valueChanged).setVisible(%this.savingBitmap);
-    %valueChanged.setVisible(%this.changedBitmap);
+    %this.savingBitmap.setVisible(!%valueChanged);
+    %this.changedBitmap.setVisible(%valueChanged);
     if (%doCallback) {
     }
     if (!(%this.callbackForUpdates $= "")) {

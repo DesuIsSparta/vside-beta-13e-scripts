@@ -1,13 +1,13 @@
 function worldControlPanel::open(%this) {
-    if (!("staffPanelMain".rolesPermissionCheckNoWarn($player))) {
+    if (!$player.rolesPermissionCheckNoWarn("staffPanelMain")) {
         return;
     }
-    1.setVisible(%this);
-    %this.focusAndRaise(playGui);
+    %this.setVisible(1);
+    playGui.focusAndRaise(%this);
     gui_DevOpts_SetTexturesButtons();
 };
 function worldControlPanel::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     playGui.focusTopWindow();
     return 1;
 };
@@ -41,8 +41,8 @@ $interiorRenderModeNames[20] = "transparent polys";
 function interiorRenderModeSet(%mode) {
     setInteriorRenderMode(%mode);
     %mode = getInteriorRenderMode();
-    %mode.setValue(guiCtrlInteriorRenderMode);
-    %mode[$interiorRenderModeNames @ %mode].setValue(guiCtrlInteriorRenderModeName);
+    guiCtrlInteriorRenderMode.setValue(%mode);
+    guiCtrlInteriorRenderModeName.setValue(%mode[$interiorRenderModeNames @ %mode]);
 };
 function interiorRenderModeTextChange() {
     interiorRenderModeSet(guiCtrlInteriorRenderMode.getValue());
@@ -67,6 +67,6 @@ function gui_DevOpts_Toggle_PlayerTextureLobotomyFile() {
     gui_DevOpts_SetTexturesButtons();
 };
 function gui_DevOpts_SetTexturesButtons() {
-    ($DevPref::OpenGL::WorldTextureLobotomyFile $= "").setValue(ge_LocalOpts_WorldTextures);
-    ($DevPref::OpenGL::PlayerTextureLobotomyFile $= "").setValue(ge_LocalOpts_PlayerTextures);
+    ge_LocalOpts_WorldTextures.setValue(($DevPref::OpenGL::WorldTextureLobotomyFile $= ""));
+    ge_LocalOpts_PlayerTextures.setValue(($DevPref::OpenGL::PlayerTextureLobotomyFile $= ""));
 };

@@ -48,12 +48,12 @@ function Player::hasSpecialSku(%this, %skuName) {
     if ((%sku == 0.0)) {
         return 0;
     }
-    %hasIt = %sku.hasActiveSKU(%this);
+    %hasIt = %this.hasActiveSKU(%sku);
     return %hasIt;
 };
 function getSkuShortName(%sku) {
-    %si = %sku.findBySku(SkuManager);
-    if (!(isObject(%si))) {
+    %si = SkuManager.findBySku(%sku);
+    if (!isObject(%si)) {
         return %sku;
     }
     if ((%si.descShrt $= "")) {

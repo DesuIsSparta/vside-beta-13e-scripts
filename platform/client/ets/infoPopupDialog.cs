@@ -1,7 +1,7 @@
 function InfoPopupDlg::open(%this) {
     %this.init();
     if ($UserPref::HudTabs::AutoOpen["affinity"]) {
-        "affinity".selectTabWithName(HudTabs);
+        HudTabs.selectTabWithName("affinity");
     }
 };
 function InfoPopupDlg::close(%this) {
@@ -16,38 +16,38 @@ function InfoPopupDlg::isShowing(%this) {
     return (HudTabs.getCurrentTab().name $= "affinity");
 };
 function InfoPopupDlg::init(%this) {
-    if (!(%this.initialized)) {
+    if (!%this.initialized) {
         %this.waitIcon = AnimCtrl::newAnimCtrl("91 36", "18 18");
-        60.setDelay(%this.waitIcon);
-        "platform/client/ui/wait0.png".addFrame(%this.waitIcon);
-        "platform/client/ui/wait1.png".addFrame(%this.waitIcon);
-        "platform/client/ui/wait2.png".addFrame(%this.waitIcon);
-        "platform/client/ui/wait3.png".addFrame(%this.waitIcon);
-        "platform/client/ui/wait4.png".addFrame(%this.waitIcon);
-        "platform/client/ui/wait5.png".addFrame(%this.waitIcon);
-        "platform/client/ui/wait6.png".addFrame(%this.waitIcon);
-        "platform/client/ui/wait7.png".addFrame(%this.waitIcon);
-        %this.waitIcon.add(%this);
-        0.setVisible(%this.waitIcon);
+        %this.waitIcon.setDelay(60);
+        %this.waitIcon.addFrame("platform/client/ui/wait0.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait1.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait2.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait3.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait4.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait5.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait6.png");
+        %this.waitIcon.addFrame("platform/client/ui/wait7.png");
+        %this.add(%this.waitIcon);
+        %this.waitIcon.setVisible(0);
         %this.initialized = 1;
         %this.playerName = "";
         %this.clear();
     }
 };
 function InfoPopupDlg::clear(%this) {
-    "".setText(InfoPopupNameField);
-    "Click on a player or player's name to see information about them.".setText(InfoPopupContents);
-    0.setVisible(InfoPopupTagsScroll);
-    "".setText(InfoPopupBottom);
+    InfoPopupNameField.setText("");
+    InfoPopupContents.setText("Click on a player or player's name to see information about them.");
+    InfoPopupTagsScroll.setVisible(0);
+    InfoPopupBottom.setText("");
 };
 function InfoPopupDlg::showInfoFor(%this, %playerName) {
     if (rentabot_isRentabotName(%playerName)) {
         %this.open();
-        "Sorry," @ " " @ %playerName @ " " @ "doesn't have info..".setText(InfoPopupContents);
-        "".setText(InfoPopupTagsText);
-        "".setText(InfoPopupBottom);
+        InfoPopupContents.setText("Sorry," @ " " @ %playerName @ " " @ "doesn't have info..");
+        InfoPopupTagsText.setText("");
+        InfoPopupBottom.setText("");
         %this.waitIcon.stop();
-        0.setVisible(%this.waitIcon);
+        %this.waitIcon.setVisible(0);
         return;
     }
     %this.playerName = %playerName;
@@ -64,10 +64,10 @@ function InfoPopupDlg::tryShowPlayerInfo(%this) {
     }
     %playerName = StripMLControlChars(%this.playerName);
     gSetField(%this, playerNameDict, %playerName);
-    %info = %playerName.get(PlayerInfoMap);
+    %info = PlayerInfoMap.get(%playerName);
     if (isObject(%info)) {
         %this.waitIcon.stop();
-        0.setVisible(%this.waitIcon);
+        %this.waitIcon.setVisible(0);
         %age = StripMLControlChars(%info.age);
         if ((%age $= "")) {
             %age = "hidden";
@@ -107,25 +107,25 @@ function InfoPopupDlg::tryShowPlayerInfo(%this) {
         if ((%tags $= "")) {
             %tagsText = %tagsText @ "You have no interests in common with <a:PROFILE>" @ %gender[$genderPronounHimHerThem @ %gender] @ "</a>.";
         }
-        %tagsText = %tagsText @ 0.splitTagsIntoLinks(%this, %tags);
-        %activitiesText = "<br><spush><b>Activities: <spop>" @ %fieldOpen @ 5.getActivitiesMLText(getUserActivityMgr(), %info.activities) @ %fieldClose;
-        %playerName.setAffinityName(InfoPopupDlg);
-        %tableSettings @ %ageText @ %locText @ %respektText @ %activitiesText @ %contentTagsText @ "".setText(InfoPopupContents);
-        %playerName.getInfoPopupBottomText(%this).setText(InfoPopupBottom);
+        %tagsText = %tagsText @ %this.splitTagsIntoLinks(%tags, 0);
+        %activitiesText = "<br><spush><b>Activities: <spop>" @ %fieldOpen @ getUserActivityMgr().getActivitiesMLText(%info.activities, 5) @ %fieldClose;
+        InfoPopupDlg.setAffinityName(%playerName);
+        InfoPopupContents.setText(%tableSettings @ %ageText @ %locText @ %respektText @ %activitiesText @ %contentTagsText @ "");
+        InfoPopupBottom.setText(%this.getInfoPopupBottomText(%playerName));
         InfoPopupBottom.forceReflow();
         InfoPopupContents.forceReflow();
-        %tagsText.setText(InfoPopupTagsText);
+        InfoPopupTagsText.setText(%tagsText);
         %ypos = ((getWord(InfoPopupContents.getExtent(), 1) + getWord(InfoPopupContents.getPosition(), 1)) - 1.0);
         %yExt = ((getWord(InfoPopupBottom.getPosition(), 1) - %ypos) - 1.0);
-        %yExt.resize(InfoPopupTagsScroll, 0, %ypos, 225);
-        1.setVisible(InfoPopupTagsScroll);
+        InfoPopupTagsScroll.resize(0, %ypos, 225, %yExt);
+        InfoPopupTagsScroll.setVisible(1);
         %this.playerName = "";
     }
-    1.setVisible(%this.waitIcon);
+    %this.waitIcon.setVisible(1);
     %this.waitIcon.start();
-    %playerName.setAffinityName(InfoPopupDlg);
-    "".setText(InfoPopupTagsText);
-    "".setText(InfoPopupBottom);
+    InfoPopupDlg.setAffinityName(%playerName);
+    InfoPopupTagsText.setText("");
+    InfoPopupBottom.setText("");
     requestPlayerInfoFor(%this.playerName);
 };
 function InfoPopupDlg::setAffinityName(%this, %playerName) {
@@ -135,12 +135,12 @@ function InfoPopupDlg::setAffinityName(%this, %playerName) {
         %nameFieldString = getSubStr(%playerName, 0, (%visibleCharLimit - 3.0));
         %nameFieldString = %nameFieldString @ "...";
     }
-    "(" @ %nameFieldString @ ")".setText(InfoPopupNameField);
+    InfoPopupNameField.setText("(" @ %nameFieldString @ ")");
 };
 function InfoPopupDlg::showPlayerNotFound(%this) {
-    "Sorry, couldn't find anyone named " @ %this.playerName @ ".".setText(InfoPopupContents);
-    "".setText(InfoPopupTagsText);
-    "".setText(InfoPopupBottom);
+    InfoPopupContents.setText("Sorry, couldn't find anyone named " @ %this.playerName @ ".");
+    InfoPopupTagsText.setText("");
+    InfoPopupBottom.setText("");
 };
 function InfoPopupDlg::splitTagsIntoLinks(%this, %tags, %includeCategory) {
     %ret = "";
@@ -162,18 +162,18 @@ function InfoPopupDlg::splitTagsIntoLinks(%this, %tags, %includeCategory) {
 };
 function InfoPopupDlg::getInfoPopupBottomText(%this, %playerName) {
     %profileLink = "<a:PROFILE>Web Profile</a>";
-    %addRemoveIgnoreUnignore = %playerName.getAddRemoveIgnoreUnignoreText(%this);
+    %addRemoveIgnoreUnignore = %this.getAddRemoveIgnoreUnignoreText(%playerName);
     %ret = %profileLink @ " | " @ %addRemoveIgnoreUnignore;
     return %ret;
 };
 function InfoPopupDlg::getAddRemoveIgnoreUnignoreText(%this, %playerName) {
     %ret = "";
-    if (!(isObject(UserListFavorites))) {
+    if (!isObject(UserListFavorites)) {
         error(getTrace() @ " " @ "- hmm. not sure how this happened.");
         return "<just:center>(favorite status unknown)";
     }
-    %friendStatus = %playerName.getFriendStatus(BuddyHudWin);
-    %isIgnr = %playerName.getIgnoreStatus(BuddyHudWin);
+    %friendStatus = BuddyHudWin.getFriendStatus(%playerName);
+    %isIgnr = BuddyHudWin.getIgnoreStatus(%playerName);
     %faveLink = "";
     %faveLink2 = "";
     %faveText = "";
@@ -214,7 +214,7 @@ function InfoPopupDlg::getAddRemoveIgnoreUnignoreText(%this, %playerName) {
 function InfoPopupDlg::stopAnimation(%this) {
     %this.init();
     %this.waitIcon.stop();
-    0.setVisible(%this.waitIcon);
+    %this.waitIcon.setVisible(0);
 };
 function InfoPopupContents::onURL(%this, %url) {
     %first = getWord(%url, 0);
@@ -265,5 +265,5 @@ function InfoPopupNameField::onRightURL(%this, %url) {
 function InfoPopupContents::sheduleBuddyRefreshIfNeeded(%this) {
 };
 function InfoPopupBottom::onURL(%this, %url) {
-    %url.onURL(InfoPopupContents);
+    InfoPopupContents.onURL(%url);
 };

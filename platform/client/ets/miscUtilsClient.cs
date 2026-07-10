@@ -24,9 +24,7 @@ function applyScreenSize(%width, %height, %allowResize, %keepOldPrefs, %onlyEnla
     }
     %newWidth = %width;
     %newHeight = %height;
-    if ((%newWidth != %curWidth)) {
-    }
-    if ((%newHeight != %curHeight)) {
+    if ((%newWidth != %curWidth) || (%newHeight != %curHeight)) {
         $Video::allowResize = 1;
         setScreenMode(%newWidth, %newHeight, %bpp, 0);
     }

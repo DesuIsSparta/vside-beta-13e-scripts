@@ -1,7 +1,7 @@
 function clientCmdClientSideCallTriggerEnterOrLeave(%callName, %isEntry, %param0, %param1, %param2, %param3) {
     initClientCalls();
-    %fnName = %callName.get($gClientCallsList);
-    if (!(isFunction(%fnName))) {
+    %fnName = $gClientCallsList.get(%callName);
+    if (!isFunction(%fnName)) {
         error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
     }
     call(%fnName, %isEntry, %param0, %param1, %param2, %param3);
@@ -12,19 +12,19 @@ function initClientCalls() {
         return;
     }
     $gClientCallsList = new StringMap("");
-    "gatewayExitTransition".put($gClientCallsList, "gatewayExitTransition");
+    $gClientCallsList.put("gatewayExitTransition", "gatewayExitTransition");
     %n = ($gClientCallsList.size() - 1.0);
     while ((%n >= 0.0)) {
-        %callName = %n.getKey($gClientCallsList);
-        %fnName = %callName.get($gClientCallsList);
-        if (!(isFunction(%fnName))) {
+        %callName = $gClientCallsList.getKey(%n);
+        %fnName = $gClientCallsList.get(%callName);
+        if (!isFunction(%fnName)) {
             error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
         }
         %n = (%n - 1.0);
     }
 };
 function gatewayExitTransition(%isEntry, %showCancel) {
-    if (!(%isEntry)) {
+    if (!%isEntry) {
         return;
     }
     if (($Player::inviter $= "")) {
@@ -37,8 +37,8 @@ function gatewayExitTransition(%isEntry, %showCancel) {
 };
 function onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit(%request) {
     if (%request.checkSuccess()) {
-        %currentAreaName = "currentAreaName".getResult(%request);
-        $Player::inviterGender = "gender".getResult(%request);
+        %currentAreaName = %request.getResult("currentAreaName");
+        $Player::inviterGender = %request.getResult("gender");
         $Player::inviterOnline = "";
         if (!(%currentAreaName $= "")) {
             $Player::inviterOnline = $Player::inviter;
@@ -49,7 +49,7 @@ function onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit(%request) {
 };
 function gatewayeExitTransitionShowDialog(%isEntry, %showCancel) {
     %title = "Where would you like to go next?";
-    %partnerObj = $Net::userOwner.getPartnerObj(gLoginPartnersInfo);
+    %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
     %body = %partnerObj.gatewayOptionBody;
     %buttons = %partnerObj.gatewayOptionButton1 @ "\t" @ %partnerObj.gatewayOptionButton2;
     if (!($Player::inviterOnline $= "")) {
@@ -64,21 +64,21 @@ function gatewayeExitTransitionShowDialog(%isEntry, %showCancel) {
     }
     %dlg = MessageBoxCustom(%title, %body, %buttons);
     %callbackNum = 0;
-    %dlg.callback = "gatewayExitTransitionWorld  ();" @ %callbackNum;
+    %dlg.callback[%callbackNum] = "gatewayExitTransitionWorld  ();";
     %callbackNum = (%callbackNum + 1.0);
-    %dlg.callback = "gatewayExitTransitionMyPlace();" @ %callbackNum;
+    %dlg.callback[%callbackNum] = "gatewayExitTransitionMyPlace();";
     %callbackNum = (%callbackNum + 1.0);
     if (!($Player::inviterOnline $= "")) {
-        %dlg.callback = "gatewayExitTransitionInviter();" @ %callbackNum;
+        %dlg.callback[%callbackNum] = "gatewayExitTransitionInviter();";
         %callbackNum = (%callbackNum + 1.0);
     }
-    %dlg.callback = "gatewayExitTransitionCancel ();" @ %callbackNum;
+    %dlg.callback[%callbackNum] = "gatewayExitTransitionCancel ();";
     %callbackNum = (%callbackNum + 1.0);
     %dlg.window.canMove = 0;
     %dlg.doCallbackOnEscape = 0;
 };
 function gatewayExitTransitionWorld() {
-    %partnerObj = $Net::userOwner.getPartnerObj(gLoginPartnersInfo);
+    %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
     %vurl = %partnerObj.vurl;
     commandToServer('skipGateway', "world", $Net::userOwner);
     schedule(1000, 0, "vurlOperation", %vurl, 1);
@@ -86,7 +86,7 @@ function gatewayExitTransitionWorld() {
         sendC2CCmd("finishedGateway", $Player::inviterOnline, $player.getGender());
     }
     %analytic = getAnalytic();
-    "/client/gw/exit/Party".trackPageView(%analytic);
+    %analytic.trackPageView("/client/gw/exit/Party");
 };
 function gatewayExitTransitionMyPlace() {
     commandToServer('skipGateway', "space", $Net::userOwner);
@@ -95,14 +95,14 @@ function gatewayExitTransitionMyPlace() {
         sendC2CCmd("finishedGateway", $Player::inviterOnline, $player.getGender());
     }
     %analytic = getAnalytic();
-    "/client/gw/exit/MyPlace".trackPageView(%analytic);
+    %analytic.trackPageView("/client/gw/exit/MyPlace");
 };
 function gatewayExitTransitionInviter() {
     doUserTeleportTo($Player::inviter);
     %analytic = getAnalytic();
-    "/client/gw/exit/Inviter".trackPageView(%analytic);
+    %analytic.trackPageView("/client/gw/exit/Inviter");
 };
 function gatewayExitTransitionCancel() {
     %analytic = getAnalytic();
-    "/client/gw/exit/Cancel".trackPageView(%analytic);
+    %analytic.trackPageView("/client/gw/exit/Cancel");
 };

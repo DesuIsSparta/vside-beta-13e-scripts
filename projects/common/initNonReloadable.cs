@@ -23,7 +23,7 @@ function cityInfoSetUp(%name, %background, %coords, %button, %altCoords, %altBut
     %cityInfo.altCoords = %altCoords;
     %cityInfo.altButton = %altButton;
     %cityInfo.venues = safeEnsureScriptObject("StringMap", "");
-    "VenuesMap".bindClassName(%cityInfo.venues);
+    %cityInfo.venues.bindClassName("VenuesMap");
     return %cityInfo;
 };
 function cityInfoAddVenue(%cityInfo, %venueName, %coords, %button, %spawnPointsGroup) {
@@ -32,12 +32,12 @@ function cityInfoAddVenue(%cityInfo, %venueName, %coords, %button, %spawnPointsG
     %venueInfo.Coords = %coords;
     %venueInfo.button = %button;
     %venueInfo.spawnName = %spawnPointsGroup;
-    %venueInfo.put(%cityInfo.venues, %venueInfo.name);
+    %cityInfo.venues.put(%venueInfo.name, %venueInfo);
     if ($StandAlone) {
     }
     if ((%cityInfo.name $= $gContiguousSpaceName)) {
     }
-    if (!(isObject(%spawnPointsGroup))) {
+    if (!isObject(%spawnPointsGroup)) {
         error(%cityInfo.name @ " " @ "- unknown spawnPointGroup:" @ " " @ %spawnPointsGroup @ " " @ %venueName);
     }
 };
@@ -50,7 +50,7 @@ function fillCityInfoMap(%map) {
     cityInfoAddVenue(%cityInfo, "The Lounge", "186 255 44 50", "platform/client/buttons/venues/arrow_venue", "LoungeSpawns");
     cityInfoAddVenue(%cityInfo, "Rail Station", "378 138 44 50", "platform/client/buttons/venues/arrow_venue", "RailwaySpawns");
     cityInfoAddVenue(%cityInfo, "NV255 Lofts", "325 267 44 50", "platform/client/buttons/venues/arrow_venue", "LobbySpawns_NV255Lofts");
-    %cityInfo.put(%map, %cityInfo.name);
+    %map.put(%cityInfo.name, %cityInfo);
     %cityInfo = cityInfoSetUp("lga", "platform/client/ui/city_maps/citymap_lga", "460 87 194 422", "platform/client/buttons/cities/lga", "59 100 121 31", "platform/client/buttons/cities/sm_lga");
     cityInfoAddVenue(%cityInfo, "Waterfront", "152 384 44 50", "platform/client/buttons/venues/arrow_venue", "MapSpawns_Waterfront");
     cityInfoAddVenue(%cityInfo, "Main Plaza", "283 255 44 50", "platform/client/buttons/venues/arrow_venue", "PlazaSpawns");
@@ -60,17 +60,17 @@ function fillCityInfoMap(%map) {
     cityInfoAddVenue(%cityInfo, "LGA Tower", "163 289 44 50", "platform/client/buttons/venues/arrow_venue", "LobbySpawns_LGATower");
     cityInfoAddVenue(%cityInfo, "The Docks", "515 97 44 50", "platform/client/buttons/venues/arrow_venue", "LobbySpawns_LGAYachts");
     cityInfoAddVenue(%cityInfo, "Degrassi", "270 321 44 50", "platform/client/buttons/venues/arrow_venue", "MapSpawns_Degrassi");
-    %cityInfo.put(%map, %cityInfo.name);
+    %map.put(%cityInfo.name, %cityInfo);
     %cityInfo = cityInfoSetUp("rj", "platform/client/ui/city_maps/citymap_rj", "260 87 200 422", "platform/client/buttons/cities/raijuku", "49 69 93 31", "platform/client/buttons/cities/sm_raijuku");
     cityInfoAddVenue(%cityInfo, "Main Plaza", "270 315 44 50", "platform/client/buttons/venues/arrow_venue", "PlazaSpawns");
     cityInfoAddVenue(%cityInfo, "Shopping", "383 305 44 50", "platform/client/buttons/venues/arrow_venue", "MapSpawns_Shopping");
     cityInfoAddVenue(%cityInfo, "IIR Residences", "271 109 44 50", "platform/client/buttons/venues/arrow_venue", "LobbySpawns_HotelRaijuku");
     cityInfoAddVenue(%cityInfo, "IIC Club", "539 261 44 50", "platform/client/buttons/venues/arrow_venue", "VenueSpawns_iic");
     cityInfoAddVenue(%cityInfo, "GiGoth", "473 202 44 50", "platform/client/buttons/venues/arrow_venue", "VenueSpawns_gigoth");
-    %cityInfo.put(%map, %cityInfo.name);
+    %map.put(%cityInfo.name, %cityInfo);
     %cityInfo = cityInfoSetUp("gw", "platform/client/ui/city_maps/citymap_gw", "514 508 169 56", "platform/client/buttons/cities/gateway", "79 131 121 34", "platform/client/buttons/cities/sm_gateway");
     cityInfoAddVenue(%cityInfo, "Start Here!", "348 106 88 100", "platform/client/buttons/venues/arrow_venue", "mapSpawns_entry");
-    %cityInfo.put(%map, %cityInfo.name);
+    %map.put(%cityInfo.name, %cityInfo);
     return %map;
 };
 function fillCityNamesMap(%map) {
@@ -79,27 +79,27 @@ function fillCityNamesMap(%map) {
     %map.clear();
     %code = "nv";
     %long = "NewVenezia";
-    %code.put(%map, "New Venezia");
-    %code.put(%map, %long);
-    %code.put(%map, %code);
-    %long.put(gCityNamesShortToLongMap, %code);
+    %map.put("New Venezia", %code);
+    %map.put(%long, %code);
+    %map.put(%code, %code);
+    gCityNamesShortToLongMap.put(%code, %long);
     %code = "lga";
     %long = "LaGenoaAires";
-    %code.put(%map, "La Genoa Aires");
-    %code.put(%map, %long);
-    %code.put(%map, %code);
-    %long.put(gCityNamesShortToLongMap, %code);
+    %map.put("La Genoa Aires", %code);
+    %map.put(%long, %code);
+    %map.put(%code, %code);
+    gCityNamesShortToLongMap.put(%code, %long);
     %code = "rj";
     %long = "RaiJuku";
-    %code.put(%map, "Rai Juku");
-    %code.put(%map, %long);
-    %code.put(%map, %code);
-    %long.put(gCityNamesShortToLongMap, %code);
+    %map.put("Rai Juku", %code);
+    %map.put(%long, %code);
+    %map.put(%code, %code);
+    gCityNamesShortToLongMap.put(%code, %long);
     %code = "gw";
     %long = "Gateway";
-    %code.put(%map, "n00bieIsland");
-    %code.put(%map, %long);
-    %code.put(%map, %code);
-    %long.put(gCityNamesShortToLongMap, %code);
+    %map.put("n00bieIsland", %code);
+    %map.put(%long, %code);
+    %map.put(%code, %code);
+    gCityNamesShortToLongMap.put(%code, %long);
     return %map;
 };

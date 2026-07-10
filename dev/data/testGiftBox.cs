@@ -1,57 +1,53 @@
 DeclareTestSuite("TestSuite_GiftBox");
 function TestSuite_GiftBox::setup(%this) {
-    "TEST_GiftBox_BASICS".addTestCase(%this);
-    "TEST_GiftBox_LoadFromFile".addTestCase(%this);
+    %this.addTestCase("TEST_GiftBox_BASICS");
+    %this.addTestCase("TEST_GiftBox_LoadFromFile");
 };
 function TEST_GiftBox_BASICS::runTest(%this) {
-    if (!($StandAlone)) {
-        "this test must be run in $standalone".assert(%this, 0);
+    if (!$StandAlone) {
+        %this.assert(0, "this test must be run in $standalone");
         return;
     }
     %testGiftBoxData = "dev/testData/giftbox.txt";
     %gb = GiftBoxData::construct();
-    %ret = 5.add(%gb, 100, "VPOINTS");
-    "failed to add vPoints gift".assert(%this, %ret);
-    %ret = 10.add(%gb, 50, "VPOINTS");
-    "failed to add vPoints gift".assert(%this, %ret);
-    %ret = 15.add(%gb, 50, "VPOINTS");
-    "failed to add vPoints gift".assert(%this, %ret);
-    %ret = 20.add(%gb, 10, "VPOINTS");
-    "failed to add vPoints gift".assert(%this, %ret);
-    %ret = 25.add(%gb, 10, "VPOINTS");
-    "failed to add vPoints gift".assert(%this, %ret);
-    %ret = 1000.add(%gb, 1, "VPOINTS");
-    "failed to add vPoints gift".assert(%this, %ret);
-    %ret = 1000.add(%gb, 1, "BLAHBLAH");
-    "expected failure for unknown gift type".assert(%this, !(%ret));
-    %ret = 1000.add(%gb, 0, "VPOINTS");
-    "expected failure for adding zero gifts".assert(%this, !(%ret));
-    %ret = 0.add(%gb, 1, "VPOINTS");
-    "expected failure for adding zero vpoint gifts".assert(%this, !(%ret));
-    %ret = -1345.add(%gb, 20, "SKUS");
-    "expected failure for adding a bad sku number".assert(%this, !(%ret));
-    "expected 221 total possible gifts in the box but got:" @ " " @ %gb.totalGiftsInBox().assert(%this, (%gb.totalGiftsInBox() == 221.0));
+    %ret = %gb.add(100, "VPOINTS", 5);
+    %this.assert(%ret, "failed to add vPoints gift");
+    %ret = %gb.add(50, "VPOINTS", 10);
+    %this.assert(%ret, "failed to add vPoints gift");
+    %ret = %gb.add(50, "VPOINTS", 15);
+    %this.assert(%ret, "failed to add vPoints gift");
+    %ret = %gb.add(10, "VPOINTS", 20);
+    %this.assert(%ret, "failed to add vPoints gift");
+    %ret = %gb.add(10, "VPOINTS", 25);
+    %this.assert(%ret, "failed to add vPoints gift");
+    %ret = %gb.add(1, "VPOINTS", 1000);
+    %this.assert(%ret, "failed to add vPoints gift");
+    %ret = %gb.add(1, "BLAHBLAH", 1000);
+    %this.assert(!%ret, "expected failure for unknown gift type");
+    %ret = %gb.add(0, "VPOINTS", 1000);
+    %this.assert(!%ret, "expected failure for adding zero gifts");
+    %ret = %gb.add(1, "VPOINTS", 0);
+    %this.assert(!%ret, "expected failure for adding zero vpoint gifts");
+    %ret = %gb.add(20, "SKUS", -1345);
+    %this.assert(!%ret, "expected failure for adding a bad sku number");
+    %this.assert((%gb.totalGiftsInBox() == 221.0), "expected 221 total possible gifts in the box but got:" @ " " @ %gb.totalGiftsInBox());
     %giftString = %gb.GetAGift();
-    "expected at least 2 words in the gift string".assert(%this, (getWordCount(%giftString) >= 2.0));
+    %this.assert((getWordCount(%giftString) >= 2.0), "expected at least 2 words in the gift string");
     %type = getWord(%giftString, 0);
-    if ((%type $= "SKUS")) {
-    }
-    "expected first word of gift string to be SKUS or VPOINTS".assert(%this, (%type $= "VPOINTS"));
+    %this.assert((%type $= "SKUS") || (%type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
     %gb.delete();
 };
 function TEST_GiftBox_LoadFromFile::runTest(%this) {
-    if (!($StandAlone)) {
-        "this test must be run in $standalone".assert(%this, 0);
+    if (!$StandAlone) {
+        %this.assert(0, "this test must be run in $standalone");
         return;
     }
     %testGiftBoxData = "dev/testData/giftbox.txt";
     %gb = GiftBoxData::ConstructFromFile(%testGiftBoxData);
-    "expected 601 total possible gifts in the box but got:" @ " " @ %gb.totalGiftsInBox().assert(%this, (%gb.totalGiftsInBox() == 601.0));
+    %this.assert((%gb.totalGiftsInBox() == 601.0), "expected 601 total possible gifts in the box but got:" @ " " @ %gb.totalGiftsInBox());
     %giftString = %gb.GetAGift();
-    "expected at least 2 words in the gift string".assert(%this, (getWordCount(%giftString) >= 2.0));
+    %this.assert((getWordCount(%giftString) >= 2.0), "expected at least 2 words in the gift string");
     %type = getWord(%giftString, 0);
-    if ((%type $= "SKUS")) {
-    }
-    "expected first word of gift string to be SKUS or VPOINTS".assert(%this, (%type $= "VPOINTS"));
+    %this.assert((%type $= "SKUS") || (%type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
     %gb.delete();
 };

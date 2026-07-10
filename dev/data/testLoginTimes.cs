@@ -9,15 +9,15 @@ function testLoginTimes() {
     };
     %testLogin.init();
     echo("LOAD: Logging into " @ $cityIndex[$Cities @ $cityIndex]);
-    $cityIndex[$Cities @ $cityIndex].doLogin(%testLogin);
+    %testLogin.doLogin($cityIndex[$Cities @ $cityIndex]);
     $cityIndex = ($cityIndex + 1.0);
 };
 function doSomething() {
     if (ClosetGui.isVisible()) {
         ClosetGui.close();
     }
-    0.say(pChat, "Hello!", 0);
-    0.say(pChat, "Goodbye!", 0);
+    pChat.say("Hello!", 0, 0);
+    pChat.say("Goodbye!", 0, 0);
     logout(0);
     WorldMap.exit();
     if (($cityIndex <= $maxCities)) {

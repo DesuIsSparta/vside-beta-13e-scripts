@@ -25,15 +25,15 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
     if (snapshotTool::snapRegion(%region, %fileName)) {
         $screenShotNum = ($screenShotNum + 1.0);
         %uploader = new URLPostObject("");
-        1.setProgress(%uploader);
-        $Net::UploadPhotoURL.setURL(%uploader);
-        $Player::Name.setURLParam(%uploader, "user");
-        $Token.setURLParam(%uploader, "token");
-        "avatar".setURLParam(%uploader, "type");
-        %fileName.setPostFile(%uploader, "imageBody");
+        %uploader.setProgress(1);
+        %uploader.setURL($Net::UploadPhotoURL);
+        %uploader.setURLParam("user", $Player::Name);
+        %uploader.setURLParam("token", $Token);
+        %uploader.setURLParam("type", "avatar");
+        %uploader.setPostFile("imageBody", %fileName);
         if (%uploader.start()) {
             if (isObject(CURLSimGroup)) {
-                %uploader.add(CURLSimGroup);
+                CURLSimGroup.add(%uploader);
             }
         }
         error("Unable to upload avatar photo." @ " " @ getTrace());
@@ -71,7 +71,7 @@ function getScreenShotMetaData(%guiTSCtrl) {
     %n = 0;
     while ((%n < %numPts)) {
         %windowCoord = VectorConvolve(%n[%samplePts @ %n], %ctrlExtent);
-        %worldCoord1 = %windowCoord.unproject(%guiTSCtrl);
+        %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
         %camVec = VectorSub(%worldCoord1, %cameraTransform);
         %camVec = VectorNormalize(%camVec);
         %camVec = VectorScale(%camVec, 5000);
@@ -109,7 +109,7 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %ctrlExtent = %guiTSCtrl.getExtent();
     %exempt = "";
     %windowCoord = VectorConvolve("0.5 0.5", %ctrlExtent);
-    %worldCoord1 = %windowCoord.unproject(%guiTSCtrl);
+    %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
     %centerCoord = %worldCoord1;
     %camVec = VectorSub(%worldCoord1, %cameraTransform);
     %camVec = VectorNormalize(%camVec);
@@ -124,7 +124,7 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
         %windowCoord = VectorScale(%windowCoord, $pref::Render::orthoScale);
         %windowCoord = VectorAdd(%windowCoord, "0.5 0.5");
         %windowCoord = VectorConvolve(%windowCoord, %ctrlExtent);
-        %worldCoord1 = %windowCoord.unproject(%guiTSCtrl);
+        %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
         %worldCoord2 = VectorAdd(%worldCoord1, %camVec);
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %n[%samplePts @ %n] @ "\"  \"" @ %windowCoord @ "\"";
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "\"" @ %worldCoord1 @ "\" --> \"" @ %worldCoord2 @ "\"";
@@ -135,9 +135,9 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
         if (isObject(moWorldCornerMarkers) && (%n < moWorldCornerMarkers.getCount())) {
             %mh = %hit;
             %mh = setWord(%mh, 2, 0);
-            %marker = %n.getObject(moWorldCornerMarkers);
-            %mh.setTransform(%marker);
-            "1 1 1".setScale(%marker);
+            %marker = moWorldCornerMarkers.getObject(%n);
+            %marker.setTransform(%mh);
+            %marker.setScale("1 1 1");
         }
         %n = (%n + 1.0);
     }
@@ -159,8 +159,8 @@ function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
     }
     %fn = %name @ ".cs";
     %file = new FileObject("");
-    if (%fn.openForWrite(%file)) {
-        getScreenShotMetaData(%guiCtrl).writeLine(%file);
+    if (%file.openForWrite(%fn)) {
+        %file.writeLine(getScreenShotMetaData(%guiCtrl));
     }
     error(getScopeName() @ " " @ "- could not open file for write:" @ " " @ %fn);
     %file.delete();

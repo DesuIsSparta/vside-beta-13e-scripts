@@ -1,10 +1,10 @@
 function ShapeBase::Damage(%this, %sourceObject, %position, %damage, %damageType) {
-    %damageType.Damage(%this.getDataBlock(), %this, %sourceObject, %position, %damage);
+    %this.getDataBlock().Damage(%this, %sourceObject, %position, %damage, %damageType);
 };
 function ShapeBase::setDamageDt(%this, %damageAmount, %damageType) {
     if (!(%obj.getState() $= "Dead")) {
-        %damageType.Damage(%this, 0, "0 0 0", %damageAmount);
-        %obj.damageSchedule = %damageType.schedule(%obj, 50, "setDamageDt", %damageAmount);
+        %this.Damage(0, "0 0 0", %damageAmount, %damageType);
+        %obj.damageSchedule = %obj.schedule(50, "setDamageDt", %damageAmount, %damageType);
     }
     %obj.damageSchedule = "";
 };

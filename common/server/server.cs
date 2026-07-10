@@ -1,13 +1,13 @@
 exec("./dif2dae.cs");
 function portInit(%port) {
     %failCount = 0;
-    while (!(setNetPort(%port))) {
+    while (!setNetPort(%port)) {
         echo("Port init failed on port " @ %port @ " trying next port.");
         %port = (%port + 1.0);
         %failCount = (%failCount + 1.0);
     }
     $Net::BoundPort = %port;
-    !(setNetPort(%port));
+    !setNetPort(%port);
     return %failCount;
 };
 function createServer(%serverType, %mission) {
@@ -52,7 +52,7 @@ function destroyServer() {
         $ServerGroup.delete();
     }
     while (ClientGroup.getCount()) {
-        %client = 0.getObject(ClientGroup);
+        %client = ClientGroup.getObject(0);
         %client.delete();
     }
     $Server::GuidList = "";
@@ -95,7 +95,7 @@ function removeFromServerGuidList(%guid) {
     }
 };
 function isUserConnected(%userName) {
-    %client = %userName.getNorm(ClientDict);
+    %client = ClientDict.getNorm(%userName);
     if (!(%client $= "")) {
         return 1;
     }

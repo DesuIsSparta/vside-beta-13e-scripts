@@ -8,7 +8,7 @@ function outfits_init() {
     $gOutfits = new StringMap("");
     $gOutfitsDefault = new StringMap("");
     outfits_makeDefault($gOutfitsDefault);
-    $gOutfitsDefault.duplicate($gOutfits);
+    $gOutfits.duplicate($gOutfitsDefault);
     checkOutfitCorruption(0);
     if ($StandAlone) {
         return;
@@ -24,12 +24,12 @@ function outfits_makeDefault(%stringMap) {
         %n = (getWordCount(%outfits) - 1.0);
         while ((%n >= 0.0)) {
             %name = %gender @ getWord(%outfits, %n);
-            %name[$gNewStockOutfits @ %name].put(%stringMap, %name);
+            %stringMap.put(%name, %name[$gNewStockOutfits @ %name]);
             %n = (%n - 1.0);
         }
         %name = %gender @ "Body";
         (%n >= 0.0);
-        %gender[$gDefaultBodyAttrs @ %gender].put(%stringMap, %name);
+        %stringMap.put(%name, %gender[$gDefaultBodyAttrs @ %gender]);
         %m = (%m - 1.0);
     }
     if (isObject($player)) {
@@ -37,7 +37,7 @@ function outfits_makeDefault(%stringMap) {
         (%m >= 0.0);
     }
     %gender = $UserPref::Player::gender;
-    "A".put(%stringMap, "currentOutfit");
+    %stringMap.put("currentOutfit", "A");
 };
 function outfits_persist() {
     if (checkOutfitCorruption(0)) {
@@ -61,42 +61,42 @@ function outfits_dumpCurrent() {
     %num = getWordCount(%skus);
     %n = 0;
     while ((%n < %num)) {
-        getWord(%skus, %n).findBySku(SkuManager).dumpEts();
+        SkuManager.findBySku(getWord(%skus, %n)).dumpEts();
         %n = (%n + 1.0);
     }
 };
 function outfits_getCurrentSkus() {
-    %outfitName = "currentOutfit".get($gOutfits);
-    %clothing = $player.getGender() @ %outfitName.get($gOutfits);
-    %body = $player.getGender() @ "Body".get($gOutfits);
+    %outfitName = $gOutfits.get("currentOutfit");
+    %clothing = $gOutfits.get($player.getGender() @ %outfitName);
+    %body = $gOutfits.get($player.getGender() @ "Body");
     %skus = %clothing @ " " @ %body;
     return %skus;
 };
 $gRetrievedOutfits = 0;
 function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
-    if (!(%request.checkSuccess())) {
+    if (!%request.checkSuccess()) {
         warn(getScopeName() @ "->outfits request failed!");
         checkOutfitCorruption(0);
         return;
     }
     $gRetrievedOutfits = 1;
     %stringMap = new StringMap("");
-    %num = "propertyCount".getValue(%request);
+    %num = %request.getValue("propertyCount");
     %n = 0;
     while ((%n < %num)) {
-        %key = "property" @ %n @ ".key".getValue(%request);
-        %value = "property" @ %n @ ".value".getValue(%request);
+        %key = %request.getValue("property" @ %n @ ".key");
+        %value = %request.getValue("property" @ %n @ ".value");
         %value = outfits_filterSKUList(%value);
-        %value.put(%stringMap, %key);
+        %stringMap.put(%key, %value);
         %n = (%n + 1.0);
     }
     echo("Retrieved outfit settings:");
     %stringMap.dumpValues();
-    if (!((%n < %num) @ " " @ "initialOutfitAndBody".get(%stringMap) $= "")) {
+    if (!((%n < %num) @ " " @ %stringMap.get("initialOutfitAndBody") $= "")) {
     }
-    if (("currentOutfit".get(%stringMap) $= "")) {
-        $Player::Name[$userpref::player::initialSkus @ $Player::Name] = "initialOutfitAndBody".get(%stringMap);
-        if (!("f".filterSkusGender(SkuManager, $Player::Name[$userpref::player::initialSkus @ $Player::Name]) $= $Player::Name[$userpref::player::initialSkus @ $Player::Name])) {
+    if ((%stringMap.get("currentOutfit") $= "")) {
+        $Player::Name[$userpref::player::initialSkus @ $Player::Name] = %stringMap.get("initialOutfitAndBody");
+        if (!(SkuManager.filterSkusGender($Player::Name[$userpref::player::initialSkus @ $Player::Name], "f") $= $Player::Name[$userpref::player::initialSkus @ $Player::Name])) {
             %skusGender = "m";
         }
         %skusGender = "f";
@@ -110,18 +110,18 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
     }
     if (!($Player::Name[$userpref::player::initialSkus @ $Player::Name] $= "")) {
         if (($Player::Name[$userpref::player::initialSkusGender @ $Player::Name] $= $UserPref::Player::gender)) {
-            %skusBody = $Player::Name[$userpref::player::initialSkus @ $Player::Name].filterSkusForBody(SkuManager);
-            %skusOutfit = $Player::Name[$userpref::player::initialSkus @ $Player::Name].filterSkusForClothing(SkuManager);
-            "A".put(%stringMap, "currentOutfit");
-            %skusBody.put(%stringMap, $UserPref::Player::gender @ "Body");
-            %skusOutfit.put(%stringMap, $UserPref::Player::gender @ "A");
+            %skusBody = SkuManager.filterSkusForBody($Player::Name[$userpref::player::initialSkus @ $Player::Name]);
+            %skusOutfit = SkuManager.filterSkusForClothing($Player::Name[$userpref::player::initialSkus @ $Player::Name]);
+            %stringMap.put("currentOutfit", "A");
+            %stringMap.put($UserPref::Player::gender @ "Body", %skusBody);
+            %stringMap.put($UserPref::Player::gender @ "A", %skusOutfit);
             schedule(500, 0, "outfits_persist");
         }
         error(getScopeName() @ " " @ "- got" @ " " @ $UserPref::Player::gender @ " " @ "expected" @ " " @ $Player::Name[$userpref::player::initialSkusGender @ $Player::Name]);
         deleteVariables("$userpref::player::initialSkus" @ $Player::Name);
         deleteVariables("$userpref::player::initialSkusGender" @ $Player::Name);
     }
-    %stringMap.import($gOutfits);
+    $gOutfits.import(%stringMap);
     if (checkOutfitCorruption(0)) {
         error(getScopeName() @ "->final post-outfits_retrieve test failed");
     }
@@ -129,10 +129,10 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request) {
 };
 function outfits_getCurrentSkus() {
     %gender = $UserPref::Player::gender;
-    %currentOutfit = %gender @ "currentOutfit".get($gOutfits);
+    %currentOutfit = %gender @ $gOutfits.get("currentOutfit");
     %currentBody = %gender @ "Body";
-    %clothing = %currentOutfit.get($gOutfits);
-    %body = %currentBody.get($gOutfits);
+    %clothing = $gOutfits.get(%currentOutfit);
+    %body = $gOutfits.get(%currentBody);
     return %clothing @ " " @ %body;
 };
 function outfits_filterSKUList(%skulist) {
@@ -153,15 +153,15 @@ function outfits_filterSKUList(%skulist) {
 };
 function SaveOutfitAndBodySkusAsCurrent(%skus) {
     %gender = $player.getGender();
-    %skus = %gender.filterSkusGender(SkuManager, %skus);
-    %skusBody = %skus.filterSkusForBody(SkuManager);
-    %skusOutfit = %skus.filterSkusForClothing(SkuManager);
+    %skus = SkuManager.filterSkusGender(%skus, %gender);
+    %skusBody = SkuManager.filterSkusForBody(%skus);
+    %skusOutfit = SkuManager.filterSkusForClothing(%skus);
     %keyBody = %gender @ "Body";
-    %keyOutfit = %gender @ "currentOutfit".get($gOutfits);
-    %skusBody.put($gOutfits, %keyBody);
-    %skusOutfit.put($gOutfits, %keyOutfit);
+    %keyOutfit = %gender @ $gOutfits.get("currentOutfit");
+    $gOutfits.put(%keyBody, %skusBody);
+    $gOutfits.put(%keyOutfit, %skusOutfit);
     outfits_persist();
-    %skus.setActiveSKUs($player);
+    $player.setActiveSKUs(%skus);
     commandToServer('SetActiveSkus', %skus);
 };
 function Player::switchOutfitTo(%unused, %outfitName) {
@@ -169,17 +169,17 @@ function Player::switchOutfitTo(%unused, %outfitName) {
     if ((%idx == -(1.0))) {
         warn(getScopeName() @ "->Trying to change to an outfit not in $Player::HangerNames");
     }
-    if (!($player.getGender() @ %outfitName.hasKey($gOutfits))) {
+    if (!($gOutfits.hasKey($player.getGender() @ %outfitName))) {
         error(getScopeName() @ "->No key in $gOutfits for requested outfit! Cancelling outfit change!");
         return 0;
     }
-    if (("currentOutfit".get($gOutfits) $= %outfitName)) {
+    if (($gOutfits.get("currentOutfit") $= %outfitName)) {
         echo(getScopeName() @ "->Trying to change outfit to already selected outfit, returning.");
         return 1;
     }
-    %outfitName.put($gOutfits, "currentOutfit");
-    %outfitSkus = $player.getGender() @ %outfitName.get($gOutfits);
-    %bodySkus = $player.getGender() @ "Body".get($gOutfits);
+    $gOutfits.put("currentOutfit", %outfitName);
+    %outfitSkus = $gOutfits.get($player.getGender() @ %outfitName);
+    %bodySkus = $gOutfits.get($player.getGender() @ "Body");
     %activeSkus = %outfitSkus @ " " @ %bodySkus;
     %helpmesku = getSpecialSKU(0, "helpmebadge");
     %idx = findWord(%activeSkus, %helpmesku);

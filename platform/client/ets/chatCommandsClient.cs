@@ -1,33 +1,33 @@
 function commandMapAdd(%keyword, %functionName) {
-    %functionName.put(CommandMap, %keyword);
+    CommandMap.put(%keyword, %functionName);
 };
 function commandMapAddAbbreviation(%keyword, %abbreviation) {
-    %functionName = %keyword.get(CommandMap);
+    %functionName = CommandMap.get(%keyword);
     if ((%functionName $= "")) {
         if ((%keyword $= "reply")) {
         }
         warn("commandMapAddAbbreviation: unknown keyword:" @ " " @ %keyword);
     }
     commandMapAdd(%keyword, %functionName);
-    "/" @ %keyword.put(CommandAbbreviationMap, "/" @ %abbreviation);
+    CommandAbbreviationMap.put("/" @ %abbreviation, "/" @ %keyword);
 };
 function initCommandMap() {
-    if (!(isObject(CommandMap))) {
+    if (!isObject(CommandMap)) {
         new StringMap(CommandMap) {
             ignoreCase = 1;
         };
     }
     if (isObject(MissionCleanup)) {
-        CommandMap.add(MissionCleanup);
+        MissionCleanup.add(CommandMap);
     }
     CommandMap.clear();
-    if (!(isObject(CommandAbbreviationMap))) {
+    if (!isObject(CommandAbbreviationMap)) {
         new StringMap(CommandAbbreviationMap) {
             ignoreCase = 1;
         };
     }
     if (isObject(MissionCleanup)) {
-        CommandAbbreviationMap.add(MissionCleanup);
+        MissionCleanup.add(CommandAbbreviationMap);
     }
     CommandAbbreviationMap.clear();
     $gUnidleChatCommands = "code drop helpme help microphone summon tvremote";
@@ -97,9 +97,7 @@ function initCommandMap() {
 initCommandMap();
 $gAutoOrbitOnReceiveItem = 0;
 function doAutoOrbitOperation(%onOrOff) {
-    if ((strlwr(%onOrOff) $= "on")) {
-    }
-    $gAutoOrbitOnReceiveItem = (strlwr(%onOrOff) $= "true");
+    $gAutoOrbitOnReceiveItem = (strlwr(%onOrOff) $= "on") || (strlwr(%onOrOff) $= "true");
 };
 function addOperation(%playerName) {
     doUserFavorite(%playerName, "add");
@@ -138,9 +136,9 @@ function declineAllOperation() {
     MessageBoxYesNo(%title, %body, "declineAllOperationReally();", "");
 };
 function Player::haveNotifiedPlayerOfIdleStatus(%this, %name) {
-    %notified = %name.get(%this.playersNotifiedOfIdleStatus);
+    %notified = %this.playersNotifiedOfIdleStatus.get(%name);
     if ((%notified $= "")) {
-        "true".put(%this.playersNotifiedOfIdleStatus, %name);
+        %this.playersNotifiedOfIdleStatus.put(%name, "true");
         return 0;
     }
     return 1;
@@ -157,12 +155,12 @@ function gameOperation(%msg) {
         }
     }
     if ((%operation $= "start")) {
-        %gameName.requestStartGameWithName(gameMgrClient);
+        gameMgrClient.requestStartGameWithName(%gameName);
     }
     if ((%operation $= "join")) {
     }
     if ((%operation $= "quit")) {
-        %gameName.requestQuitGameWithName(gameMgrClient);
+        gameMgrClient.requestQuitGameWithName(%gameName);
     }
     if ((%operation $= "m")) {
     }
@@ -172,7 +170,7 @@ function gameOperation(%msg) {
     handleSystemMessage("msgInfoMessage", "Sorry, that isn't a valid game command! Type \"/game help\" for a list of valid game commands.");
 };
 function identifyOperation(%msg) {
-    if (!(isDefined("%msg"))) {
+    if (!isDefined("%msg")) {
         %msg = "";
     }
     error(getScopeName() @ " " @ "-" @ " " @ getDebugString($player));
@@ -210,18 +208,18 @@ function replyOperation() {
 function sosOperation(%line) {
 };
 function plainSayOperation(%line) {
-    if (!(isObject(pChat))) {
+    if (!isObject(pChat)) {
         error(getScopeName() @ " " @ "no pchat");
         return;
     }
-    0.say(pChat, %line, 1);
+    pChat.say(%line, 1, 0);
 };
 function yellOperation(%line) {
-    if (!(isObject(pChat))) {
+    if (!isObject(pChat)) {
         error(getScopeName() @ " " @ "no pchat");
         return;
     }
-    0.yell(pChat, %line);
+    pChat.yell(%line, 0);
 };
 function teleportOperation(%playerName) {
     %bOwnerTele = 0;
@@ -229,7 +227,7 @@ function teleportOperation(%playerName) {
     }
     if ($player.isHostOrCohost()) {
         %playerClicked = Player::findPlayerInstance(%playerName);
-        if (!(isObject(%playerClicked))) {
+        if (!isObject(%playerClicked)) {
             %playerClicked = Player::findPlayerInstance(rentabot_makeRentabotName(%playerName));
         }
         if (isObject(%playerClicked)) {
@@ -251,7 +249,7 @@ function respawnOperation(%playerName) {
     if ((%playerName $= "")) {
         doRespawnMe();
     }
-    if ("manageUsersBasic".rolesPermissionCheckNoWarn($player)) {
+    if ($player.rolesPermissionCheckNoWarn("manageUsersBasic")) {
         doUserRespawn(%playerName);
     }
     if (!(CustomSpaceClient::GetSpaceImIn() $= "")) {
@@ -278,7 +276,7 @@ function setTransformOperation(%transform) {
     commandToServer('setTransform', %transform);
 };
 function summonOperation(%playerName) {
-    if ("manageUsersBasic".rolesPermissionCheckNoWarn($player)) {
+    if ($player.rolesPermissionCheckNoWarn("manageUsersBasic")) {
         doUserSummon(%playerName);
     }
     if (!(CustomSpaceClient::GetSpaceImIn() $= "")) {
@@ -312,15 +310,13 @@ function bootAllFromSpaceOperation(%spaceName) {
     CustomSpaceClient::TryBootAllUsersFromSpace(%spaceName);
 };
 function whoisOperation(%playerName) {
-    %playerName.showInfoFor(InfoPopupDlg);
+    InfoPopupDlg.showInfoFor(%playerName);
 };
 function mapHudOperation() {
     toggleVisibleState(geLocalMapContainer);
 };
 function grantMicrophoneOperation(%playerName) {
-    if (CustomSpaceClient::isOwner()) {
-    }
-    if ("microphones".rolesPermissionCheckNoWarn($player)) {
+    if (CustomSpaceClient::isOwner() || $player.rolesPermissionCheckNoWarn("microphones")) {
         %playerObj = Player::findPlayerInstance(%playerName);
         if (%playerObj.hasMicrophone()) {
             commandToServer('MicrophoneGiveOrRevoke', %playerName, 0);
@@ -329,7 +325,7 @@ function grantMicrophoneOperation(%playerName) {
     }
 };
 function miscHudsOperation() {
-    if (!(isObject(geMiscHudsPanel))) {
+    if (!isObject(geMiscHudsPanel)) {
         return;
     }
     geMiscHudsPanel.toggle();
@@ -415,7 +411,7 @@ function doUserPuppy(%playerName) {
 function doUserIgnore(%playerName, %op) {
     if (("remove" $= %op)) {
         safeEnsureScriptObjectWithInit("StringMap", "cantUnignoreList", "{ ignoreCase = true; }");
-        %canUnignoreTime = %playerName.get(cantUnignoreList);
+        %canUnignoreTime = cantUnignoreList.get(%playerName);
         if (!("" $= %canUnignoreTime)) {
         }
         if ((%canUnignoreTime > getSimTime())) {
@@ -429,9 +425,9 @@ function doUserIgnore(%playerName, %op) {
         if ((%op $= "add")) {
             $gRentabotIgnores = trim($gRentabotIgnores @ " " @ %ghost);
         }
-        %playerName.remove(UserListIgnores);
+        UserListIgnores.remove(%playerName);
         if (isObject(%ghost)) {
-            (%op $= "add").setIgnore(%ghost);
+            %ghost.setIgnore((%op $= "add"));
         }
         rentabotClient_reignore();
         return;
@@ -441,25 +437,25 @@ function doUserIgnore(%playerName, %op) {
 };
 function doUserWhisper(%playerName, %text, %isAutoReply) {
     if (isObject(pChat)) {
-        %isAutoReply.whisper(pChat, %text, %playerName);
+        pChat.whisper(%text, %playerName, %isAutoReply);
     }
 };
 function openUserWhisper(%playerName) {
-    if (!(isObject(pChat))) {
+    if (!isObject(pChat)) {
         return;
     }
     MessageHud.open();
-    1.setVisible(MessageHud);
-    "/whisper" @ " " @ %playerName @ "/ ".setValue(MessageHudEdit);
-    1.makeFirstResponder(MessageHudEdit);
-    40000.setCursorPos(MessageHudEdit);
+    MessageHud.setVisible(1);
+    MessageHudEdit.setValue("/whisper" @ " " @ %playerName @ "/ ");
+    MessageHudEdit.makeFirstResponder(1);
+    MessageHudEdit.setCursorPos(40000);
 };
 function doUserBadge(%playerName) {
     commandToServer('BadgeNext', %playerName);
 };
 function doUserCopySkus(%playerName) {
     %player = Player::findPlayerInstance(%playerName);
-    if (!(isObject(%player))) {
+    if (!isObject(%player)) {
         error(getScopeName() @ " " @ "- could not find player \"" @ %playerName @ "\".");
         return;
     }
@@ -478,7 +474,7 @@ function doUserPasteSkusReally(%playerName) {
     %n = (getWordCount(%clipboard) - 1.0);
     while ((%n >= 0.0)) {
         %sku = getWord(%clipboard, %n);
-        if (%sku.isValidSku(SkuManager)) {
+        if (SkuManager.isValidSku(%sku)) {
             %skus = %sku @ " " @ %skus;
         }
         %crap = %sku @ " " @ %crap;
@@ -493,7 +489,7 @@ function doUserPasteSkusReally(%playerName) {
 function doUserRelativeTransform(%player) {
     %transformA = %player.getTransform();
     %transformB = $player.getTransform();
-    %meRelativeToThem = $player.getTransform().worldToLocal(%player);
+    %meRelativeToThem = %player.worldToLocal($player.getTransform());
     %mb = MessageBoxTextEntryWithCancel("Relative Transform", "the your transform relative to" @ " " @ %player.getShapeName() @ " " @ "is\n" @ " " @ %meRelativeToThem @ " " @ "\nenter a new one if you like..", setUserRelativeTransform, %meRelativeToThem, 0);
     %mb.relativeTo = %player;
 };
@@ -511,23 +507,23 @@ function doCoAnim(%coAnimName, %targetName) {
     if ($StandAlone) {
         exec("platform/common/scripts/coAnimateCommon.cs");
     }
-    if (!(%targetName.getIgnoreStatus(BuddyHudWin))) {
+    if (!BuddyHudWin.getIgnoreStatus(%targetName)) {
         setIdle(0);
         commandToServer('RequestCoAnim', %coAnimName, %targetName);
     }
     handleSystemMessage("msgInfoMessage", "You can't do a two-player action with someone you are ignoring.");
 };
 function clientCmdConfirmCoAnim(%initiatingPlayerName, %coAnimName, %requestId) {
-    if (%initiatingPlayerName.getIgnoreStatus(BuddyHudWin)) {
+    if (BuddyHudWin.getIgnoreStatus(%initiatingPlayerName)) {
         commandToServer('CoAnimRespond', %requestId, "DECLINE IGNORED");
         return;
     }
-    if ((%initiatingPlayerName.getFriendStatus(BuddyHudWin) $= "friends")) {
+    if ((BuddyHudWin.getFriendStatus(%initiatingPlayerName) $= "friends")) {
     }
     %permission = $UserPref::Player::EmotesPermissionStrangers;
     $UserPref::Player::EmotesPermissionFriends;
     if ((%permission == 0.0)) {
-        if (!(isIdle())) {
+        if (!isIdle()) {
             commandToServer('CoAnimRespond', %requestId, "ACCEPT AUTO");
         }
         confirmTwoPlayerEmote(%initiatingPlayerName, %coAnimName, %requestId, 1);
@@ -541,7 +537,7 @@ function confirmTwoPlayerEmote(%initiatingPlayerName, %coAnimName, %requestId, %
     if (geTwoPlayerEmotesConfirmPanel.isVisible()) {
         commandToServer('CoAnimRespond', %requestId, "DECLINE BUSY");
     }
-    %requestId.open(geTwoPlayerEmotesConfirmPanel, %initiatingPlayerName, %coAnimName);
+    geTwoPlayerEmotesConfirmPanel.open(%initiatingPlayerName, %coAnimName, %requestId);
 };
 function doUserBodyMod(%player) {
     bodyModPanel.toggle();
@@ -549,9 +545,7 @@ function doUserBodyMod(%player) {
 $userTips::tipSeen["SOSUsage"] = 0;
 function doUserSOS(%text) {
     %text = trim(%text);
-    if ((%text $= "")) {
-    }
-    if ((%text $= "[name of problem user and description of abuse]")) {
+    if ((%text $= "") || (%text $= "[name of problem user and description of abuse]")) {
         %text[$userTips::tipSeen @ "SOSUsage"] = 0;
         tryOpenUserSOS();
         return;
@@ -560,20 +554,20 @@ function doUserSOS(%text) {
 };
 function tryOpenUserSOS() {
     %dlg = userTips::showNow("SOSUsage");
-    0.setVisible(%dlg.window.cancelButton);
+    %dlg.window.cancelButton.setVisible(0);
     %winWidth = getWord(%dlg.window.getExtent(), 0);
     %buttonWidth = getWord(%dlg.window.okButton.getExtent(), 0);
     %ypos = getWord(%dlg.window.okButton.getPosition(), 1);
-    %ypos.reposition(%dlg.window.okButton, ((%winWidth - %buttonWidth) / 2.0));
+    %dlg.window.okButton.reposition(((%winWidth - %buttonWidth) / 2.0), %ypos);
 };
 function openUserSOS() {
     %textPart1 = "/sos ";
     %textPart2 = "[name of problem user and description of abuse] ";
     MessageHud.open();
-    1.setVisible(MessageHud);
-    %textPart1 @ %textPart2.setValue(MessageHudEdit);
-    1.makeFirstResponder(MessageHudEdit);
-    (strlen(textPart1) * strlen(%textPart2)).setSelection(MessageHudEdit, strlen(%textPart1));
+    MessageHud.setVisible(1);
+    MessageHudEdit.setValue(%textPart1 @ %textPart2);
+    MessageHudEdit.makeFirstResponder(1);
+    MessageHudEdit.setSelection(strlen(%textPart1), (strlen(textPart1) * strlen(%textPart2)));
 };
 function cancelUserSOS() {
 };
@@ -592,7 +586,7 @@ function processCommand(%text) {
         if ((findWord($gUnidleChatCommands, %command) != -(1.0))) {
             setIdle(0);
         }
-        %function = %command.get(CommandMap);
+        %function = CommandMap.get(%command);
         if (!(%function $= "")) {
             call(%function, %text);
             return 1;
@@ -601,14 +595,14 @@ function processCommand(%text) {
     return 0;
 };
 function convertWordToAnim(%w) {
-    %got = %w.get(EmoticonMap);
+    %got = EmoticonMap.get(%w);
     if (!(%got $= "")) {
-        %got2 = %got.get(EmoteDict);
+        %got2 = EmoteDict.get(%got);
         if (!(%got2 $= "")) {
             %got = %got2;
         }
     }
-    %got = %w.get(EmoteDict);
+    %got = EmoteDict.get(%w);
     return %got;
 };
 function getLastEmoteAnim(%text) {
@@ -621,18 +615,14 @@ function getLastEmoteAnim(%text) {
     while ((%n >= 0.0)) {
         %w = getWord(%text, %n);
         %anim = "";
-        if (%isCmd) {
-        }
-        if (!(isNoAutoEmoteWord(%w))) {
+        if (%isCmd || !isNoAutoEmoteWord(%w)) {
             %anim = convertWordToAnim(%w);
         }
         if (!(%anim $= "")) {
             return %anim;
         }
         %w = stripChars(%w, "!?.,:-");
-        if (%isCmd) {
-        }
-        if (!(isNoAutoEmoteWord(%w))) {
+        if (%isCmd || !isNoAutoEmoteWord(%w)) {
             %anim = convertWordToAnim(%w);
         }
         if (!(%anim $= "")) {
@@ -640,9 +630,7 @@ function getLastEmoteAnim(%text) {
         }
         %n = (%n - 1.0);
     }
-    if (%isCmd) {
-    }
-    if (!(isNoAutoEmoteWord(%w))) {
+    if (%isCmd || !isNoAutoEmoteWord(%w)) {
         return convertWordToAnim(%text);
     }
     return "";
@@ -658,7 +646,7 @@ function emote(%text) {
 function sendAnimToServer(%anim) {
     setIdle(0);
     if (isObject(danceTool)) {
-        %anim.addStep(danceTool);
+        danceTool.addStep(%anim);
     }
     commandToServer('EtsPlayAnimName', %anim);
 };
@@ -684,7 +672,7 @@ function doChangeRelation(%otherPlayerName, %relType, %oper) {
     %opParam = "&op=" @ urlEncode(%oper);
     %url = %url @ %userParam @ %tokenParam @ %targetParam @ %typeParam @ %opParam;
     log("relations", "debug", "doChangeRelation: " @ %url);
-    %url.setURL(%request);
+    %request.setURL(%url);
     %request.start();
 };
 function RelRequest::onError(%this, %unused, %unused) {
@@ -693,7 +681,7 @@ function RelRequest::onDone(%this) {
     %status = findRequestStatus(%this);
     log("relations", "info", "RelRequest::onDone:" @ " " @ %status);
     if ((%status $= "fail")) {
-        %errorCode = "errorCode".getValue(%this);
+        %errorCode = %this.getValue("errorCode");
         %errorMsg = "";
         %markedOtherName = getPlayerMarkup(%this.otherName, "", 1);
         %operationStr = %this.relType @ %this.oper;
@@ -738,9 +726,7 @@ function RelRequest::onDone(%this) {
             if ((%errorCode $= "invalid")) {
                 %errorMsg = "Woops, we can't find anyone named " @ %this.otherName @ " to ignore.";
             }
-            if ((%errorCode $= "USER_IS_IGNORED")) {
-            }
-            if ((%errorCode $= "DUPLICATE_REQUEST")) {
+            if ((%errorCode $= "USER_IS_IGNORED") || (%errorCode $= "DUPLICATE_REQUEST")) {
                 %errorMsg = "Woops, you're already ignoring " @ %markedOtherName @ ".";
             }
             if ((%errorCode $= "NOT_ALLOWED")) {
@@ -778,12 +764,10 @@ function RelRequest::onDone(%this) {
     }
     if ((%status $= "success")) {
         %comp = %this.relType @ %this.oper;
-        if ((%comp $= "friendacceptall")) {
-        }
-        if ((%comp $= "frienddeclineall")) {
+        if ((%comp $= "friendacceptall") || (%comp $= "frienddeclineall")) {
         }
         if ((%this.otherName $= "")) {
-            (%comp $= "friendacceptall").updateFriendRequest(SystemMessageTextCtrl, %this.otherName);
+            SystemMessageTextCtrl.updateFriendRequest(%this.otherName, (%comp $= "friendacceptall"));
         }
     }
 };

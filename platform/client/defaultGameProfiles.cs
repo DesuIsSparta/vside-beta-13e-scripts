@@ -136,11 +136,11 @@ new GuiControlProfile(ChatHudMessageProfile) {
     fontType = "Arial";
     fontSize = 16;
     fontColor = "44 172 181";
-    fontColors = "4 235 105" @ 1;
-    fontColors = "219 200 128" @ 2;
-    fontColors = "77 253 95" @ 3;
-    fontColors = "40 231 240" @ 4;
-    fontColors = "200 200 50 200" @ 5;
+    fontColors = "4 235 105";
+    fontColors = "219 200 128";
+    fontColors = "77 253 95";
+    fontColors = "40 231 240";
+    fontColors = "200 200 50 200";
     autoSizeWidth = 1;
     autoSizeHeight = 1;
 };
@@ -249,15 +249,15 @@ new GuiControlProfile(InfoWindowTextListProfile) {
     fontColor = "255 255 255";
     fontColorLink = "255 255 255";
     fontColorHL = "255   0 153";
-    fontColors = "255   0 153" @ 6;
+    fontColors = "255   0 153";
     drawShadow = 0;
     mouseOverSelected = 0;
 };
 new GuiControlProfile(AIMTextListProfile : ETSTextListProfile) {
-    fontColors = "100 100 100 160" @ 5;
-    fontColors = "102 153 255 204" @ 6;
-    fontColors = "255 255 255 160" @ 7;
-    fontColors = "255 255 255 160" @ 8;
+    fontColors = "100 100 100 160";
+    fontColors = "102 153 255 204";
+    fontColors = "255 255 255 160";
+    fontColors = "255 255 255 160";
 };
 new GuiControlProfile(ConvBubProfile) {
     opaque = 1;
@@ -340,18 +340,18 @@ new GuiControlProfile(ConvBubMessageProfile) {
     fontType = "SF Cartoonist Hand Bold";
     fontSize = 22;
     fontColor = "0 0 0 255";
-    fontColors = "4 235 105" @ 1;
-    fontColors = "219 200 128" @ 2;
-    fontColors = "77 253 95" @ 3;
-    fontColors = "40 231 240" @ 4;
-    fontColors = "200 200 50 200" @ 5;
+    fontColors = "4 235 105";
+    fontColors = "219 200 128";
+    fontColors = "77 253 95";
+    fontColors = "40 231 240";
+    fontColors = "200 200 50 200";
     fontColorLink = "  0   0 255";
     fontColorLinkHL = "255   0 153";
     fontColorHL = "  4 235 105";
     fillColorHL = "100 100 100 255";
-    fontColors = " 40   0 230 255" @ 6;
-    fontColors = " 70   0 160 255" @ 7;
-    fontColors = "  0   0   0 128" @ 8;
+    fontColors = " 40   0 230 255";
+    fontColors = " 70   0 160 255";
+    fontColors = "  0   0   0 128";
     autoSizeWidth = 1;
     autoSizeHeight = 1;
     canKeyFocus = 1;
@@ -544,17 +544,17 @@ new GuiControlProfile(ETSAIMMessageProfile) {
     fontType = "Lucida Console";
     fontSize = 12;
     fontColor = "200 200 200";
-    fontColors = "  4 235 105" @ 1;
-    fontColors = "219 200 128" @ 2;
-    fontColors = " 77 253  95" @ 3;
-    fontColors = " 40 231 240" @ 4;
-    fontColors = "200 200  50 200" @ 5;
+    fontColors = "  4 235 105";
+    fontColors = "219 200 128";
+    fontColors = " 77 253  95";
+    fontColors = " 40 231 240";
+    fontColors = "200 200  50 200";
     fontColorLink = "  0   0 255";
     fontColorLinkHL = "255   0 153";
     fontColorHL = "  4 235 105";
     fillColorHL = "  0   0   0 120";
-    fontColors = "238 143 238" @ 6;
-    fontColors = "190 190 238" @ 7;
+    fontColors = "238 143 238";
+    fontColors = "190 190 238";
     drawShadow = 1;
     autoSizeWidth = 1;
     autoSizeHeight = 1;
@@ -669,18 +669,18 @@ new GuiControlProfile(ETSAIMTextProfile : GuiTextProfile) {
 };
 new GuiControlProfile(ETSAIMSelectedProfile : GuiTextProfile) {
     fontColor = "255 255 255 255";
-    fontColors = "180 180 180 255" @ 6;
-    fontColors = "255 255 255 255" @ 7;
-    fontColors = " 90  90  90 255" @ 8;
+    fontColors = "180 180 180 255";
+    fontColors = "255 255 255 255";
+    fontColors = " 90  90  90 255";
     fontType = "Lucida Console";
     fontSize = 12;
     drawShadow = 1;
 };
 new GuiControlProfile(ETSAIMDeselectedProfile : GuiTextProfile) {
     fontColor = "255 255 255 255";
-    fontColors = "180 180 180 255" @ 6;
-    fontColors = "255 255 255 255" @ 7;
-    fontColors = " 90  90  90 255" @ 8;
+    fontColors = "180 180 180 255";
+    fontColors = "255 255 255 255";
+    fontColors = " 90  90  90 255";
     fontType = "Lucida Console";
     fontSize = 10;
     drawShadow = 1;
@@ -732,9 +732,9 @@ new GuiControlProfile(ClosetTabButtonProfile : GuiButtonProfile) {
     fontType = "Arial Bold";
     fontSize = 16;
     fontColor = " 50  50  50 255";
-    fontColors = $HighlightColorLt @ 6;
-    fontColors = $HighlightColorDk @ 7;
-    fontColors = $HighlightColor @ 8;
+    fontColors = $HighlightColorLt;
+    fontColors = $HighlightColorDk;
+    fontColors = $HighlightColor;
 };
 new GuiControlProfile(ClosetPriceLabelProfile : GuiTextProfile) {
     fontType = "Arial Bold";
@@ -774,9 +774,9 @@ new GuiControlProfile(ClosetHangerButtonProfile : GuiButtonProfile) {
     fontType = "Arial Bold";
     fontSize = 14;
     fontColor = "102 102 102 255";
-    fontColors = "  0   0   0 255" @ 6;
-    fontColors = "  0   0   0 255" @ 7;
-    fontColors = "  0   0   0 255" @ 8;
+    fontColors = "  0   0   0 255";
+    fontColors = "  0   0   0 255";
+    fontColors = "  0   0   0 255";
     textOffset = "10 -9";
     justify = "center";
     acceptMouseDragAndDrop = 1;
@@ -785,17 +785,17 @@ new GuiControlProfile(ClosetFrameButtonProfile : GuiButtonProfile) {
     fontType = "Arial Bold";
     fontSize = 14;
     fontColor = $ClosetHiliteDk;
-    fontColors = $ClosetHiliteDk @ 6;
-    fontColors = "255 255 255 255" @ 7;
-    fontColors = "153 153 153 255" @ 8;
+    fontColors = $ClosetHiliteDk;
+    fontColors = "255 255 255 255";
+    fontColors = "153 153 153 255";
     textOffset = "-12 41";
     justify = "right";
 };
 new GuiControlProfile(ClosetFrameSelectedButtonProfile : ClosetFrameButtonProfile) {
     fontColor = "255 255 255 255";
-    fontColors = "255 255 255 255" @ 6;
-    fontColors = $ClosetHiliteDk @ 7;
-    fontColors = "153 153 153 255" @ 8;
+    fontColors = "255 255 255 255";
+    fontColors = $ClosetHiliteDk;
+    fontColors = "153 153 153 255";
 };
 new GuiControlProfile(ClosetBuxProfile : ETSMLTextProfile) {
     fontType = "Arial Bold";
@@ -856,9 +856,9 @@ new GuiControlProfile(ClosetTinyLinkProfile : ClosetMediumLinkProfile) {
     fontType = "Arial";
     fontSize = 14;
     fontColor = $ClosetHiliteDk;
-    fontColors = $ClosetHiliteLt @ 6;
-    fontColors = $ClosetHiliteDk @ 7;
-    fontColors = "153 153 153 255" @ 8;
+    fontColors = $ClosetHiliteLt;
+    fontColors = $ClosetHiliteDk;
+    fontColors = "153 153 153 255";
     textOffset = "1 0";
 };
 new GuiControlProfile(ClosetPopupProfile : GuiDefaultProfile) {
@@ -869,7 +869,7 @@ new GuiControlProfile(ClosetPopupProfile : GuiDefaultProfile) {
     fontColor = "  0   0   0 255";
     fontColorHL = $HighlightColorDk;
     fontColorSEL = $HighlightColor;
-    fontColors = "  0   0   0 255" @ 6;
+    fontColors = "  0   0   0 255";
     fontType = "Arial";
     fontSize = 14;
     textOffset = "7 0";
@@ -885,7 +885,7 @@ new GuiControlProfile(InfoWindowPopupProfile : ClosetPopupProfile) {
     fontType = "Arial";
     fontSize = 14;
     fontColor = "255 255 255";
-    fontColors = "255 0 153" @ 6;
+    fontColors = "255 0 153";
     fillColor = "0 0 0 0";
     bitmap = "./ui/infowindowdropdown";
 };
@@ -930,7 +930,7 @@ new GuiControlProfile(ETSPlantProgressProfile : GuiProgressProfile) {
 };
 new GuiControlProfile(ETSMapHudTextProfile : ETSTextProfile) {
     fontColor = "102 102 102 255";
-    fontColors = "255   0 153 255" @ 1;
+    fontColors = "255   0 153 255";
 };
 new GuiControlProfile(ETSProgressTextProfile : GuiProgressTextProfile) {
     fontColor = "142 142 142 255";
@@ -1236,9 +1236,9 @@ new GuiControlProfile(ETSMenuNonModalProfile : ETSMenuProfile) {
 };
 new GuiControlProfile(ETSButtonProfile : GuiButtonProfile) {
     fontColor = "255 255 255 255";
-    fontColors = $HighlightColorLt @ 6;
-    fontColors = $HighlightColorDk @ 7;
-    fontColors = "255 255 255  90" @ 8;
+    fontColors = $HighlightColorLt;
+    fontColors = $HighlightColorDk;
+    fontColors = "255 255 255  90";
     fillColor = "  0   0   0 156";
     borderColor = "255 255 255  84";
     fillColorHL = "127 127 127 180";
@@ -1248,17 +1248,17 @@ new GuiControlProfile(ETSVerticalButtonProfile : ETSButtonProfile) {
     fontType = "Arial Bold";
     fontSize = 14;
     fontColor = $HighlightColor;
-    fontColors = $HighlightColorLt @ 6;
-    fontColors = $HighlightColorDk @ 7;
-    fontColors = "255 255 255 220" @ 8;
+    fontColors = $HighlightColorLt;
+    fontColors = $HighlightColorDk;
+    fontColors = "255 255 255 220";
     textRotation = 90;
     textOffset = "0 4";
     justify = "right";
 };
 new GuiControlProfile(ETSShopVerticalButtonProfile : ETSVerticalButtonProfile) {
     fontColor = $VBuxFontColor;
-    fontColors = $VBuxFontColorLinkHL @ 6;
-    fontColors = $VBuxFontColor @ 8;
+    fontColors = $VBuxFontColorLinkHL;
+    fontColors = $VBuxFontColor;
     fontColorLink = $VBuxFontColorLink;
     fontColorLinkHL = $VBuxFontColorLinkHL;
 };
@@ -1340,9 +1340,9 @@ new GuiControlProfile(BracketButton19Profile : GuiFocusableVWButtonProfile) {
     fontType = "Arial Bold";
     fontSize = 16;
     fontColor = $HighlightColor;
-    fontColors = $HighlightColorLt @ 6;
-    fontColors = $HighlightColorDk @ 7;
-    fontColors = "0 0 0 128" @ 8;
+    fontColors = $HighlightColorLt;
+    fontColors = $HighlightColorDk;
+    fontColors = "0 0 0 128";
     hlInset = "2 2";
 };
 new GuiControlProfile(BracketButton19TealProfile : BracketButton19Profile) {
@@ -1377,9 +1377,9 @@ new GuiControlProfile(BracketButton18TGFProfile : BracketButton19Profile) {
     fontType = "Arial Bold";
     fontSize = 18;
     fontColor = "238 238 238 255";
-    fontColors = "255 147 248 255" @ 6;
-    fontColors = "255 147 248 255" @ 7;
-    fontColors = $HighlightColorLightIn @ 8;
+    fontColors = "255 147 248 255";
+    fontColors = "255 147 248 255";
+    fontColors = $HighlightColorLightIn;
 };
 new GuiControlProfile(BracketButton16TGFProfile : BracketButton18TGFProfile) {
     fontSize = 16;
@@ -1391,9 +1391,9 @@ new GuiControlProfile(BracketButton14TGFProfile : BracketButton18TGFProfile) {
 };
 new GuiControlProfile(BracketButtonLt19Profile : BracketButton19Profile) {
     fontColor = $HighlightColorLight;
-    fontColors = $HighlightColorLightLt @ 6;
-    fontColors = $Algae @ 7;
-    fontColors = $HighlightColorLightIn @ 8;
+    fontColors = $HighlightColorLightLt;
+    fontColors = $Algae;
+    fontColors = $HighlightColorLightIn;
 };
 new GuiControlProfile(BracketButtonLt19NonDefaultProfile : BracketButtonLt19Profile) {
     fontColor = $DarkSea;
@@ -1418,9 +1418,9 @@ new GuiControlProfile(BracketButton15NonFocusProfile : BracketButton15Profile) {
 };
 new GuiControlProfile(StoreItemButtonProfile : HiddenBracketButton15Profile) {
     fontColor = "  0   0   0 255";
-    fontColors = $HighlightColorLt @ 6;
-    fontColors = $HighlightColorDk @ 7;
-    fontColors = "  0   0   0 128" @ 8;
+    fontColors = $HighlightColorLt;
+    fontColors = $HighlightColorDk;
+    fontColors = "  0   0   0 128";
     justify = "left";
     textOffset = "3 0";
 };
@@ -1446,7 +1446,7 @@ new GuiControlProfile(BracketButton13Profile : BracketButton19Profile) {
 };
 new GuiControlProfile(ETSMessageTextProfile : GuiMessageTextProfile) {
     fontColorLink = BracketButton19Profile.fontColor;
-    fontColorLinkHL = 6 @ BracketButton19Profile.fontColors;
+    fontColorLinkHL = BracketButton19Profile.fontColors[6];
 };
 new GuiControlProfile(MapLargeLabelProfile : GuiTextProfile) {
     fontType = "Arial";
@@ -1457,8 +1457,8 @@ new GuiControlProfile(MapLargeLabelProfile : GuiTextProfile) {
 new GuiControlProfile(MapPopupProfile : ClosetPopupProfile) {
     bitmap = "./ui/dottedDropdown";
     fontColor = "255 255 255 255";
-    fontColors = "255 255 255 180" @ 1;
-    fontColors = "255 255 255 180" @ 6;
+    fontColors = "255 255 255 180";
+    fontColors = "255 255 255 180";
 };
 new GuiControlProfile(MapPopupWindowProfile : ETSWindowProfile) {
     opaque = 1;
@@ -1497,9 +1497,9 @@ new GuiControlProfile(VPointsButtonProfile : GuiButtonProfile) {
     fontType = "Arial Bold";
     fontSize = 16;
     fontColor = $HighlightColor;
-    fontColors = $HighlightColorLt @ 6;
-    fontColors = $HighlightColorDk @ 7;
-    fontColors = "  0   0   0 128" @ 8;
+    fontColors = $HighlightColorLt;
+    fontColors = $HighlightColorDk;
+    fontColors = "  0   0   0 128";
     hlInset = "2 2";
 };
 new GuiControlProfile(VPointsTextProfile : ETSTextProfile) {
@@ -1516,9 +1516,9 @@ new GuiControlProfile(VBuxButtonProfile : VPointsButtonProfile) {
     fontType = "Arial Bold";
     fontSize = 16;
     fontColor = $HighlightColor;
-    fontColors = $HighlightColorLt @ 6;
-    fontColors = $HighlightColorDk @ 7;
-    fontColors = "  0   0   0 128" @ 8;
+    fontColors = $HighlightColorLt;
+    fontColors = $HighlightColorDk;
+    fontColors = "  0   0   0 128";
     hlInset = "2 2";
 };
 new GuiControlProfile(VBuxTextProfile : ETSTextProfile) {
@@ -1625,7 +1625,7 @@ new GuiControlProfile(GuiTableBodyCellBitmapProfile : ETSNonModalProfile);
 new GuiControlProfile(GuiTableScrollProfile : DottedScrollProfile) {
     bitmap = "./ui/dottedScrollWhite";
 };
-if (!(isObject(ClipboardProfile))) {
+if (!isObject(ClipboardProfile)) {
     new GuiControlProfile(ClipboardProfile : GuiDefaultProfile) {
         opaque = 1;
         border = 1;
@@ -1633,36 +1633,36 @@ if (!(isObject(ClipboardProfile))) {
         borderColor = $WindowBorderColor;
     };
 }
-if (!(isObject(ClipboardTabButtonProfile))) {
+if (!isObject(ClipboardTabButtonProfile)) {
     new GuiControlProfile(ClipboardTabButtonProfile : ClosetTabButtonProfile) {
         fontType = "Arial";
         fontSize = 15;
         fontColor = "255 255 255 120";
-        fontColors = $HighlightColorLt @ 6;
-        fontColors = $HighlightColorDk @ 7;
-        fontColors = $HighlightColor @ 8;
+        fontColors = $HighlightColorLt;
+        fontColors = $HighlightColorDk;
+        fontColors = $HighlightColor;
     };
 }
-if (!(isObject(ClipboardHeaderCellProfile))) {
+if (!isObject(ClipboardHeaderCellProfile)) {
     new GuiControlProfile(ClipboardHeaderCellProfile : GuiTableHeaderCell_N_Profile);
 }
-if (!(isObject(ClipboardHeaderCellButtonProfile))) {
+if (!isObject(ClipboardHeaderCellButtonProfile)) {
     new GuiControlProfile(ClipboardHeaderCellButtonProfile : GuiTableHeaderCellButtonProfile) {
         border = 1;
         borderColor = "255 255 255  90";
     };
 }
-if (!(isObject(ClipboardHeaderMLTextProfile))) {
+if (!isObject(ClipboardHeaderMLTextProfile)) {
     new GuiControlProfile(ClipboardHeaderMLTextProfile : GuiTableHeaderCellMLTextProfile) {
         fontType = "Arial";
         fontSize = 14;
         fontColor = "255 255 255 120";
-        fontColors = $HighlightColorLt @ 6;
-        fontColors = $HighlightColorDk @ 7;
-        fontColors = $HighlightColor @ 8;
+        fontColors = $HighlightColorLt;
+        fontColors = $HighlightColorDk;
+        fontColors = $HighlightColor;
     };
 }
-if (!(isObject(ClipboardTextProfile))) {
+if (!isObject(ClipboardTextProfile)) {
     new GuiControlProfile(ClipboardTextProfile : ETSTextProfile) {
         fontType = "Arial";
         fontSize = 14;
@@ -1822,8 +1822,8 @@ new GuiControlProfile(CSProfileDescriptionTextNormal : ETSUnselectedMenuTextProf
 new GuiControlProfile(Profile_MyShop_TextField : GuiTextEditProfile) {
     border = 0;
     borderColor = "0 0 0 80";
-    fontColors = "0 0 0 255" @ 1;
-    fontColors = "0 0 0 255" @ 6;
+    fontColors = "0 0 0 255";
+    fontColors = "0 0 0 255";
     fillColorHL = "0 200 250 100";
 };
 new GuiControlProfile(Profile_MyShop_TextField_Bold : Profile_MyShop_TextField) {

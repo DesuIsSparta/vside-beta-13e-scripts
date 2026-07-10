@@ -1,7 +1,5 @@
 function setRenderQualityValue(%val) {
-    if ((%val < 0.0)) {
-    }
-    if ((%val > 3.0)) {
+    if ((%val < 0.0) || (%val > 3.0)) {
         error("Unknown render quality:" @ " " @ %val);
         return;
     }
@@ -131,44 +129,44 @@ function setExposureFilter(%val) {
 };
 function setExposureFilterValue(%val) {
     if ((%val == 0.0)) {
-        0.showBrightnessControls(OptionsPanel);
-        0.setVisible(ExposureFilter);
+        OptionsPanel.showBrightnessControls(0);
+        ExposureFilter.setVisible(0);
         if (isObject(EditorExposureFilter)) {
-            0.setVisible(EditorExposureFilter);
+            EditorExposureFilter.setVisible(0);
         }
-        0.setVisible(ExposureFilterSelfView);
+        ExposureFilterSelfView.setVisible(0);
     }
     if ((%val == 1.0)) {
-        1.showBrightnessControls(OptionsPanel);
-        1.setVisible(ExposureFilter);
+        OptionsPanel.showBrightnessControls(1);
+        ExposureFilter.setVisible(1);
         if (isObject(EditorExposureFilter)) {
-            1.setVisible(EditorExposureFilter);
+            EditorExposureFilter.setVisible(1);
         }
-        1.setVisible(ExposureFilterSelfView);
+        ExposureFilterSelfView.setVisible(1);
     }
     if ((%val == 2.0)) {
-        1.showBrightnessControls(OptionsPanel);
-        1.setVisible(ExposureFilter);
+        OptionsPanel.showBrightnessControls(1);
+        ExposureFilter.setVisible(1);
         if (isObject(EditorExposureFilter)) {
-            1.setVisible(EditorExposureFilter);
+            EditorExposureFilter.setVisible(1);
         }
-        1.setVisible(ExposureFilterSelfView);
+        ExposureFilterSelfView.setVisible(1);
     }
     if ((%val == 3.0)) {
         if (($renderQuality == 0.0)) {
-            0.showBrightnessControls(OptionsPanel);
-            0.setVisible(ExposureFilter);
+            OptionsPanel.showBrightnessControls(0);
+            ExposureFilter.setVisible(0);
             if (isObject(EditorExposureFilter)) {
-                0.setVisible(EditorExposureFilter);
+                EditorExposureFilter.setVisible(0);
             }
-            0.setVisible(ExposureFilterSelfView);
+            ExposureFilterSelfView.setVisible(0);
         }
-        1.showBrightnessControls(OptionsPanel);
-        1.setVisible(ExposureFilter);
+        OptionsPanel.showBrightnessControls(1);
+        ExposureFilter.setVisible(1);
         if (isObject(EditorExposureFilter)) {
-            1.setVisible(EditorExposureFilter);
+            EditorExposureFilter.setVisible(1);
         }
-        1.setVisible(ExposureFilterSelfView);
+        ExposureFilterSelfView.setVisible(1);
     }
 };
 function ClientCmdRenderModsVD(%s) {

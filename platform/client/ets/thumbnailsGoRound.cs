@@ -1,5 +1,5 @@
 function newThumbnailsGoRound_base(%name) {
-    if (!(isDefined("%name"))) {
+    if (!isDefined("%name")) {
         %name = "";
     }
     %profile = ETSNonModalProfile;
@@ -17,17 +17,17 @@ function newThumbnailsGoRound_base(%name) {
     %ctrl = new GuiControl("") {
         profile = %profile;
     };
-    %ctrl.add(%mainContainer);
+    %mainContainer.add(%ctrl);
     %mainContainer.mDeetsContainer = %ctrl;
     %ctrl = new GuiControl("") {
         profile = %profile;
     };
-    %ctrl.add(%mainContainer);
+    %mainContainer.add(%ctrl);
     %mainContainer.mBigThumbContainer = %ctrl;
     %ctrl = new GuiControl("") {
         profile = %profile;
     };
-    %ctrl.add(%mainContainer);
+    %mainContainer.add(%ctrl);
     %mainContainer.mLilThumbsContainer = %ctrl;
     return %mainContainer;
 };
@@ -42,18 +42,18 @@ function thumbnailsGoRound::rebuild(%this) {
     echoDebug(getScopeName() @ " " @ "- DeetsWidth   =" @ " " @ %deetsWidth);
     %xPos = 0;
     %w = %deetsWidth;
-    %totalH.resize(%this.mDeetsContainer, %xPos, 0, %w);
+    %this.mDeetsContainer.resize(%xPos, 0, %w, %totalH);
     %xPos = (%xPos + %w);
     %w = %totalH;
-    %totalH.resize(%this.mBigThumbContainer, %xPos, 0, %w);
+    %this.mBigThumbContainer.resize(%xPos, 0, %w, %totalH);
     %xPos = (%xPos + %w);
     %w = %lilThumbsWidth;
-    %totalH.resize(%this.mLilThumbsContainer, %xPos, 0, %w);
+    %this.mLilThumbsContainer.resize(%xPos, 0, %w, %totalH);
     %xPos = (%xPos + %w);
     %this.mLilThumbsNumAcross = %lilThumbsNumAcross;
-    %this.mDeetsContainer.rebuildContainer_Deets(%this);
-    %this.mBigThumbContainer.rebuildContainer_BigThumb(%this);
-    %this.mLilThumbsContainer.rebuildContainer_LilThumbs(%this);
+    %this.rebuildContainer_Deets(%this.mDeetsContainer);
+    %this.rebuildContainer_BigThumb(%this.mBigThumbContainer);
+    %this.rebuildContainer_LilThumbs(%this.mLilThumbsContainer);
     %this.onRebuilt();
 };
 function thumbnailsGoRound::calcMaximumThumbHeight(%this) {
@@ -80,7 +80,7 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container) {
                 extent = %this.mLilThumbHeight @ " " @ %this.mLilThumbHeight;
                 sluggishness = 0.3;
             };
-            %ctrl.add(%container);
+            %container.add(%ctrl);
             %posX = (%posX + %dx);
             %n = (%n - 1.0);
         }
@@ -91,10 +91,10 @@ function thumbnailsGoRound::rebuildContainer_LilThumbs(%this, %container) {
     (%m < 2.0);
     %n = 0;
     while ((%n < %num)) {
-        %ctrl = %n.getObject(%container);
-        %ctrl.rebuildContainer_LilThumb(%this);
+        %ctrl = %container.getObject(%n);
+        %this.rebuildContainer_LilThumb(%ctrl);
         if (%this.mClickableThumbs) {
-            %ctrl.addWidget_LilThumbButton(%this);
+            %this.addWidget_LilThumbButton(%ctrl);
         }
         %ctrl.mInPosition = %n;
         %n = (%n + 1.0);
@@ -112,7 +112,7 @@ function thumbnailsGoRound::getThumbnailIndexInSlot(%this, %slotIndex) {
     return %ndx;
 };
 function thumbnailsGoRound::getThumbnailInSlot(%this, %slotIndex) {
-    %obj = %slotIndex.getThumbnailIndexInSlot(%this).getObject(%this.mLilThumbsContainer);
+    %obj = %this.mLilThumbsContainer.getObject(%this.getThumbnailIndexInSlot(%slotIndex));
     return %obj;
 };
 function thumbnailsGoRound::onRebuilt(%this) {
@@ -126,43 +126,43 @@ function thumbnailsGoRound::tick(%this) {
     cancel(%this.tickTimerID);
     %this.tickTimerID = "";
     %this.giddap();
-    %this.tickTimerID = "tick".schedule(%this, %this.mTickPeriodMS);
+    %this.tickTimerID = %this.schedule(%this.mTickPeriodMS, "tick");
 };
 function thumbnailsGoRound::giddap(%this, %bringInNewContent) {
-    if (!(%this.isVisibleRecursive())) {
+    if (!%this.isVisibleRecursive()) {
         return;
     }
-    if (!(isDefined("%bringInNewContent"))) {
+    if (!isDefined("%bringInNewContent")) {
         %bringInNewContent = 1;
     }
-    %firstBasePosition = 0.getObject(%this.mLilThumbsContainer).basePosition;
-    %firstInPosition = 0.getObject(%this.mLilThumbsContainer).mInPosition;
+    %firstBasePosition = %this.mLilThumbsContainer.getObject(0).basePosition;
+    %firstInPosition = %this.mLilThumbsContainer.getObject(0).mInPosition;
     %num = %this.mLilThumbsContainer.getCount();
     %n = 0;
     while ((%n < (%num - 1.0))) {
-        %ctrlA = %n.getObject(%this.mLilThumbsContainer);
-        %ctrlB = (%n + 1.0).getObject(%this.mLilThumbsContainer);
+        %ctrlA = %this.mLilThumbsContainer.getObject(%n);
+        %ctrlB = %this.mLilThumbsContainer.getObject((%n + 1.0));
         %ctrlA.mInPosition = %ctrlB.mInPosition;
         %ctrlA.basePosition = %ctrlB.basePosition;
-        %ctrlA.basePosition.setTrgPosition(%ctrlA);
+        %ctrlA.setTrgPosition(%ctrlA.basePosition);
         %n = (%n + 1.0);
     }
-    %ctrlA = %n.getObject(%this.mLilThumbsContainer);
+    %ctrlA = %this.mLilThumbsContainer.getObject(%n);
     (%n < (%num - 1.0));
     %ctrlA.mInPosition = %firstInPosition;
     %ctrlA.basePosition = %firstBasePosition;
-    %ctrlA.basePosition.setTrgPosition(%ctrlA);
+    %ctrlA.setTrgPosition(%ctrlA.basePosition);
     %this.mLilThumbsContainer.mOldestThumbnail = (%this.mLilThumbsContainer.mOldestThumbnail - 1.0);
     if ((%this.mLilThumbsContainer.mOldestThumbnail < 0.0)) {
         %this.mLilThumbsContainer.mOldestThumbnail = (%this.mLilThumbsContainer.getCount() - 1.0);
     }
     if (%bringInNewContent) {
-        0.getThumbnailInSlot(%this).newContentLilThumb(%this);
+        %this.newContentLilThumb(%this.getThumbnailInSlot(0));
     }
     %this.newContentBigThumb();
 };
 function thumbnailsGoRound::getCurrentZoomedLilThumb(%this) {
-    return %this.mLilThumbsNumAcross.getThumbnailInSlot(%this);
+    return %this.getThumbnailInSlot(%this.mLilThumbsNumAcross);
 };
 function thumbnailsGoRound::onLilThumbClick(%this, %container) {
     %d = (%this.mLilThumbsNumAcross - %container.mInPosition);
@@ -174,19 +174,19 @@ function thumbnailsGoRound::onLilThumbClick(%this, %container) {
     }
     %n = 0;
     while ((%n < %d)) {
-        0.giddap(%this);
+        %this.giddap(0);
         %n = (%n + 1.0);
     }
     %this.pause();
 };
 function thumbnailsGoRound::pause(%this, %pausePeriodMS) {
-    if (!(isDefined("%pausePeriodMS"))) {
+    if (!isDefined("%pausePeriodMS")) {
         %pausePeriodMS = %this.mPausePeriodMS;
     }
     cancel(%this.tickTimerID);
     %this.tickTimerID = "";
     if ((%pausePeriodMS > 0.0)) {
-        %this.tickTimerID = "tick".schedule(%this, %pausePeriodMS);
+        %this.tickTimerID = %this.schedule(%pausePeriodMS, "tick");
     }
     if ((%pausePeriodMS == 0.0)) {
         %this.tick();
@@ -194,7 +194,7 @@ function thumbnailsGoRound::pause(%this, %pausePeriodMS) {
 };
 function newThumbnailsGoRound(%name) {
     %obj = newThumbnailsGoRound_base(%name);
-    "thumbnailsGoRound".bindClassName(%obj);
+    %obj.bindClassName("thumbnailsGoRound");
     return %obj;
 };
 function thumbnailsGoRound::rebuildContainer_LilThumb(%this, %container) {
@@ -204,14 +204,14 @@ function thumbnailsGoRound::rebuildContainer_LilThumb(%this, %container) {
         extent = %container.getExtent();
         bitmap = "platform/client/ui/white_16x16";
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %container.mBitmapCtrl = %ctrl;
     %ctrl = new GuiMLTextCtrl("") {
         profile = ETSNonModalProfile;
         extent = %container.getExtent();
         value = "<font:arial:16><color:white>lilThumb";
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %container.mTextCtrl = %ctrl;
 };
 function thumbnailsGoRound::addWidget_LilThumbButton(%this, %container) {
@@ -221,7 +221,7 @@ function thumbnailsGoRound::addWidget_LilThumbButton(%this, %container) {
         canHilite = 0;
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_50x50";
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
 };
 function thumbnailsGoRound::rebuildContainer_BigThumb(%this, %container) {
     %container.deleteMembers();
@@ -230,7 +230,7 @@ function thumbnailsGoRound::rebuildContainer_BigThumb(%this, %container) {
         extent = %container.getExtent();
         bitmap = "platform/client/ui/white_16x16";
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %container.mBitmapCtrl = %ctrl;
     %ctrl = new GuiMLTextCtrl("") {
         profile = "ETSNonModalProfile";
@@ -238,7 +238,7 @@ function thumbnailsGoRound::rebuildContainer_BigThumb(%this, %container) {
         extent = %container.getExtent();
         value = "<font:arial:20><color:white>bigThumb";
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %container.mTextCtrl = %ctrl;
 };
 function thumbnailsGoRound::rebuildContainer_Deets(%this, %container) {
@@ -248,7 +248,7 @@ function thumbnailsGoRound::rebuildContainer_Deets(%this, %container) {
         extent = %container.getExtent();
         value = "<font:arial:20><color:white>Deets";
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %container.mTextCtrl = %ctrl;
 };
 function thumbnailsGoRound::newContentLilThumb(%this, %container) {
@@ -260,7 +260,7 @@ function thumbnailsGoRound::newContentLilThumb(%this, %container) {
     %container.mContent1 = "<color:" @ %color1 @ ">" @ %color2;
     %container.mContent2 = (%r - 128.0) @ " " @ (%g - 128.0) @ " " @ (%b - 128.0) @ " " @ 255;
     %container.mContent3 = %color2;
-    "<font:arial:10>" @ " " @ %container.mContent1.setText(%container.mTextCtrl);
+    %container.mTextCtrl.setText("<font:arial:10>" @ " " @ %container.mContent1);
     %container.mBitmapCtrl.modulationColor = %container.mContent2;
 };
 function thumbnailsGoRound::newContentBigThumb(%this) {
@@ -268,7 +268,7 @@ function thumbnailsGoRound::newContentBigThumb(%this) {
     %lilThumbContainer = %this.getCurrentZoomedLilThumb();
     %container.mContent1 = %lilThumbContainer.mContent1;
     %container.mContent2 = %lilThumbContainer.mContent2;
-    "<font:arial:16>" @ " " @ %container.mContent1.setText(%container.mTextCtrl);
+    %container.mTextCtrl.setText("<font:arial:16>" @ " " @ %container.mContent1);
     %container.mBitmapCtrl.modulationColor = %container.mContent2;
     %this.newContentDeets();
 };
@@ -276,5 +276,5 @@ function thumbnailsGoRound::newContentDeets(%this) {
     %container = %this.mDeetsContainer;
     %lilThumbContainer = %this.getCurrentZoomedLilThumb();
     %url = "http://www.w3schools.com/tags/ref_color_tryit.asp?hex=" @ %lilThumbContainer.mContent3;
-    "<color:ffffffff>this is the color <a:" @ %url @ ">" @ %lilThumbContainer.mContent3 @ "</a>".setText(%container.mTextCtrl);
+    %container.mTextCtrl.setText("<color:ffffffff>this is the color <a:" @ %url @ ">" @ %lilThumbContainer.mContent3 @ "</a>");
 };

@@ -25,7 +25,7 @@ function wordsNotInWords(%haystack, %needles) {
     %n = (getWordCount(%needles) - 1.0);
     while ((%n >= 0.0)) {
         %word = getWord(%needles, %n);
-        if (!(hasWord(%haystack, %word))) {
+        if (!hasWord(%haystack, %word)) {
             %ret = %ret @ " " @ %word;
         }
         %n = (%n - 1.0);
@@ -61,7 +61,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths) {
     while ((%currentWordIndex < %inputWordCount)) {
         %thisLine = "";
         %atEndOfLine = 0;
-        while (!(%atEndOfLine)) {
+        while (!%atEndOfLine) {
             %currentWord = getWord(%text, %currentWordIndex);
             if ((%thisLine $= "")) {
                 %thisLine = %currentWord;
@@ -88,7 +88,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths) {
                 %i = 1;
                 if ((%i <= %wordLength)) {
                 }
-                while (!(%wordDone)) {
+                while (!%wordDone) {
                     %partialWord = getSubStr(%currentWord, 0, %i);
                     %thisLineWidth = getStrWidth(%partialWord, %profile);
                     if ((%thisLineWidth > %thisLineMaxWidth)) {
@@ -104,7 +104,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths) {
                     }
                 }
                 %thisLine = %partialWord;
-                !(%wordDone);
+                !%wordDone;
                 if ((%beginningOfNextWord > 0.0)) {
                     %text = setWord(%text, %currentWordIndex, getSubStr(%currentWord, %beginningOfNextWord, %wordLength));
                 }
@@ -126,7 +126,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths) {
                 %atEndOfLine = 1;
             }
         }
-        if ((!(%atEndOfLine) @ " " @ %outputText $= "")) {
+        if ((!%atEndOfLine @ " " @ %outputText $= "")) {
             %outputText = %thisLine;
         }
         %outputText = %outputText @ "\n" @ %thisLine;

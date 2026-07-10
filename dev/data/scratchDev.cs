@@ -11,21 +11,21 @@ function fakeBuddyInfo(%friends, %faves, %fans) {
     %n = 0;
     while ((%n < %friends)) {
         %record = getFakeBuddyRecord("fakefriend" @ " " @ formatInt("%0.4d", (%friends - %n)));
-        %record.put(UserListFriends, %record.name);
+        UserListFriends.put(%record.name, %record);
         %n = (%n + 1.0);
     }
     %n = 0;
     (%n < %friends);
     while ((%n < %faves)) {
         %record = getFakeBuddyRecord("fakeFave" @ " " @ formatInt("%0.4d", %n));
-        %record.put(UserListFavorites, %record.name);
+        UserListFavorites.put(%record.name, %record);
         %n = (%n + 1.0);
     }
     %n = 0;
     (%n < %faves);
     while ((%n < %fans)) {
         %record = getFakeBuddyRecord("fakeFan" @ " " @ formatInt("%0.4d", %n));
-        %record.put(UserListFans, %record.name);
+        UserListFans.put(%record.name, %record);
         %n = (%n + 1.0);
     }
 };
@@ -57,7 +57,7 @@ function dev_TestMLText(%onOrOff, %method) {
         extent = playGui.getExtent();
         profile = ETSNonModalProfile;
     };
-    geMLTest.add(playGui);
+    playGui.add(geMLTest);
     if (isObject(geMLTestArray)) {
         geMLTestArray.delete();
     }
@@ -67,7 +67,7 @@ function dev_TestMLText(%onOrOff, %method) {
         inRows = 0;
         profile = ETSNonModalProfile;
     };
-    geMLTestArray.add(playGui);
+    playGui.add(geMLTestArray);
     if ((%method == 0.0)) {
         %text = "";
         if (%onOrOff) {
@@ -77,18 +77,18 @@ function dev_TestMLText(%onOrOff, %method) {
                 %n = (%n + 1.0);
             }
         }
-        %text.setText(geMLTest);
+        geMLTest.setText(%text);
     }
     if ((%method == 1.0) && %onOrOff) {
         geMLTestArray.childrenExtent = (%n < %numLines) @ (getWord(playGui.getExtent(), 0) / 1.0) @ " " @ 16;
         geMLTestArray.numRowsOrCols = 1;
         geMLTestArray.childrenClassName = "GuiMLTextCtrl";
-        %numLines.setNumChildren(geMLTestArray);
+        geMLTestArray.setNumChildren(%numLines);
         %n = 0;
         while ((%n < %numLines)) {
-            %child = %n.getObject(geMLTestArray);
+            %child = geMLTestArray.getObject(%n);
             %child.profile = ETSNonModalProfile;
-            %method[%lineText @ %method].setText(%child);
+            %child.setText(%method[%lineText @ %method]);
             %n = (%n + 1.0);
         }
     }
@@ -96,12 +96,12 @@ function dev_TestMLText(%onOrOff, %method) {
         geMLTestArray.childrenExtent = (%n < %numLines) @ (getWord(playGui.getExtent(), 0) / 1.0) @ " " @ 16;
         geMLTestArray.numRowsOrCols = 1;
         geMLTestArray.childrenClassName = "GuiTextCtrl";
-        %numLines.setNumChildren(geMLTestArray);
+        geMLTestArray.setNumChildren(%numLines);
         %n = 0;
         while ((%n < %numLines)) {
-            %child = %n.getObject(geMLTestArray);
+            %child = geMLTestArray.getObject(%n);
             %child.profile = ETSNonModalProfile;
-            %method[%lineText @ %method].setText(%child);
+            %child.setText(%method[%lineText @ %method]);
             %n = (%n + 1.0);
         }
     }
@@ -109,12 +109,12 @@ function dev_TestMLText(%onOrOff, %method) {
         geMLTestArray.childrenExtent = (%n < %numLines) @ (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
         geMLTestArray.numRowsOrCols = %numCols;
         geMLTestArray.childrenClassName = "GuiButtonCtrl";
-        (%numLines * %numCols).setNumChildren(geMLTestArray);
+        geMLTestArray.setNumChildren((%numLines * %numCols));
         %n = 0;
         while ((%n < (%numLines * %numCols))) {
-            %child = %n.getObject(geMLTestArray);
+            %child = geMLTestArray.getObject(%n);
             %child.profile = ETSNonModalProfile;
-            %method[%lineText @ %method].setText(%child);
+            %child.setText(%method[%lineText @ %method]);
             %n = (%n + 1.0);
         }
     }
@@ -122,12 +122,12 @@ function dev_TestMLText(%onOrOff, %method) {
         geMLTestArray.childrenExtent = (%n < (%numLines * %numCols)) @ (getWord(playGui.getExtent(), 0) / %numCols) @ " " @ 16;
         geMLTestArray.numRowsOrCols = %numCols;
         geMLTestArray.childrenClassName = "GuiBitmapCtrl";
-        (%numLines * %numCols).setNumChildren(geMLTestArray);
+        geMLTestArray.setNumChildren((%numLines * %numCols));
         %n = 0;
         while ((%n < (%numLines * %numCols))) {
-            %child = %n.getObject(geMLTestArray);
+            %child = geMLTestArray.getObject(%n);
             %child.profile = ETSNonModalProfile;
-            %method[%lineText @ %method].setBitmap(%child);
+            %child.setBitmap(%method[%lineText @ %method]);
             %n = (%n + 1.0);
         }
     }
@@ -137,16 +137,16 @@ $gClientSideSceneObjectsTickNum = 0;
 $gClientSideSceneObjectsGroup = "";
 function dev_clientSideSceneObjectsTick() {
     cancel($gClientSideSceneObjectsTimer);
-    if (!(isObject($gClientSideSceneObjectsGroup))) {
+    if (!isObject($gClientSideSceneObjectsGroup)) {
         $gClientSideSceneObjectsGroup = new SimGroup("");
-        $gClientSideSceneObjectsGroup.add(ServerConnection);
+        ServerConnection.add($gClientSideSceneObjectsGroup);
         %a = new StaticShape("") {
             dataBlock = "db_CounterDie";
         };
-        %a.add($gClientSideSceneObjectsGroup);
+        $gClientSideSceneObjectsGroup.add(%a);
     }
     %windowCoord = Canvas.getCursorPos();
-    %startPoint = %windowCoord.unproject(playGui);
+    %startPoint = playGui.unproject(%windowCoord);
     %camTran = playGui.getLastCameraTransform();
     %camPos = getWords(%camTran, 0, 2);
     %camPtVec = VectorSub(%startPoint, %camPos);
@@ -162,9 +162,9 @@ function dev_clientSideSceneObjectsTick() {
     }
     %hitPosition = VectorAdd(%startPoint, VectorScale(%camPtVec, 4));
     %t = ($gClientSideSceneObjectsTickNum * 0.1);
-    %a = 0.getObject($gClientSideSceneObjectsGroup);
-    MatrixMultiply(MatrixMultiply(playGui.getLastCameraTransform(), "0 2 0 1 0 0" @ " " @ %t), "0 0 0 1 0" @ " " @ ($gClientSideSceneObjectsTickNum * 0.0)).setTransform(%a);
-    %hitPosition @ " " @ "0 0 1" @ " " @ %t.setTransform(%a);
+    %a = $gClientSideSceneObjectsGroup.getObject(0);
+    %a.setTransform(MatrixMultiply(MatrixMultiply(playGui.getLastCameraTransform(), "0 2 0 1 0 0" @ " " @ %t), "0 0 0 1 0" @ " " @ ($gClientSideSceneObjectsTickNum * 0.0)));
+    %a.setTransform(%hitPosition @ " " @ "0 0 1" @ " " @ %t);
     $gClientSideSceneObjectsTickNum = ($gClientSideSceneObjectsTickNum + 1.0);
     if ((($gClientSideSceneObjectsTickNum % 2) == 0.0)) {
         %datablock = unitCubeGreyDataBlock;
@@ -191,9 +191,9 @@ function tryArray() {
         childrenClassName = "GuiButtonCtrl";
         spacing = 10;
     };
-    20.setChildrenExtents(%arrayCtrl, "20 40 80 160");
-    20.setNumChildren(%arrayCtrl);
-    %arrayCtrl.add(LoginGui);
+    %arrayCtrl.setChildrenExtents("20 40 80 160", 20);
+    %arrayCtrl.setNumChildren(20);
+    LoginGui.add(%arrayCtrl);
 };
 function tryGuiTable() {
     if (isObject(erezG)) {
@@ -206,7 +206,7 @@ function tryGuiTable() {
         childrenClassName = "GuiMLTextCtrl";
         spacing = 2;
     };
-    %table.add(LoginGui);
+    LoginGui.add(%table);
 };
 function tryDataTable() {
     if (isObject(erezD)) {
@@ -217,19 +217,19 @@ function tryDataTable() {
 function tryTable() {
     tryGuiTable();
     tryDataTable();
-    erezD.setDataTable(erezG);
-    100.addColumn(erezD, "username", "User Names", "string");
-    200.addColumn(erezD, "population", "Population", "number");
-    50.addColumn(erezD, "online", "Online", "icon");
-    "platform/client/ui/checkmark_green".addIconToColumn(erezD, "online", "online");
-    "platform/client/ui/ellipsis_yellow".addIconToColumn(erezD, "online", "idle");
-    "platform/client/ui/arrow_red_right".addIconToColumn(erezD, "online", "offline");
-    5.addRows(erezD);
-    "username" @ "\t" @ "erez" @ "\t" @ "erez" @ "\n" @ "population" @ "\t" @ 30 @ "\t" @ 30 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 0);
-    "username" @ "\t" @ "ship" @ "\t" @ "<b>ship" @ "\n" @ "population" @ "\t" @ 70 @ "\t" @ 70 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 1);
-    "username" @ "\t" @ "boat" @ "\t" @ "<color:ff0000>boat" @ "\n" @ "population" @ "\t" @ 60 @ "\t" @ 60 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 2);
-    "username" @ "\t" @ "band" @ "\t" @ "<clip:40>band</clip>" @ "\n" @ "population" @ "\t" @ 20 @ "\t" @ 20 @ "\n" @ "online" @ "\t" @ "idle" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 3);
-    "username" @ "\t" @ "dunk" @ "\t" @ "<color:00ff00>dunk" @ "\n" @ "population" @ "\t" @ 90 @ "\t" @ 90 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]".setRowDataByIndex(erezD, 4);
+    erezG.setDataTable(erezD);
+    erezD.addColumn("username", "User Names", "string", 100);
+    erezD.addColumn("population", "Population", "number", 200);
+    erezD.addColumn("online", "Online", "icon", 50);
+    erezD.addIconToColumn("online", "online", "platform/client/ui/checkmark_green");
+    erezD.addIconToColumn("online", "idle", "platform/client/ui/ellipsis_yellow");
+    erezD.addIconToColumn("online", "offline", "platform/client/ui/arrow_red_right");
+    erezD.addRows(5);
+    erezD.setRowDataByIndex(0, "username" @ "\t" @ "erez" @ "\t" @ "erez" @ "\n" @ "population" @ "\t" @ 30 @ "\t" @ 30 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(1, "username" @ "\t" @ "ship" @ "\t" @ "<b>ship" @ "\n" @ "population" @ "\t" @ 70 @ "\t" @ 70 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(2, "username" @ "\t" @ "boat" @ "\t" @ "<color:ff0000>boat" @ "\n" @ "population" @ "\t" @ 60 @ "\t" @ 60 @ "\n" @ "online" @ "\t" @ "online" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(3, "username" @ "\t" @ "band" @ "\t" @ "<clip:40>band</clip>" @ "\n" @ "population" @ "\t" @ 20 @ "\t" @ 20 @ "\n" @ "online" @ "\t" @ "idle" @ "\t" @ "[ICON]");
+    erezD.setRowDataByIndex(4, "username" @ "\t" @ "dunk" @ "\t" @ "<color:00ff00>dunk" @ "\n" @ "population" @ "\t" @ 90 @ "\t" @ 90 @ "\n" @ "online" @ "\t" @ "offline" @ "\t" @ "[ICON]");
     erezD.updateListeners();
 };
 function devAvatarNamesNormal() {
@@ -691,7 +691,7 @@ $gAnimTestNum[$gAnimTestAnim @ $gAnimTestNum] = "ygunsling";
 $gAnimTestNum = ($gAnimTestNum + 1.0);
 function animTest_Again() {
     %anim = $player.getGender() @ $gAnimTestCur[$gAnimTestAnim @ $gAnimTestCur];
-    %anim.playAnim($player);
+    $player.playAnim(%anim);
     echo(getScopeName() @ " " @ "-" @ " " @ %anim);
 };
 function animTest_Next() {
@@ -736,8 +736,8 @@ function onDoneOrErrorCallback_TestRequestRetry(%request) {
 };
 function sendRequest_ArbitraryTestUrl(%url, %callbackHandler) {
     %request = safeNewScriptObject("ManagerRequest", "", 0);
-    "UniformManagerRequest".bindClassName(%request);
-    %url.setURL(%request);
+    %request.bindClassName("UniformManagerRequest");
+    %request.setURL(%url);
     %request.callbackHandler = %callbackHandler;
     %request.start();
     return %request;
@@ -759,10 +759,10 @@ function dev_testURLEncode() {
     return %gnarly;
 };
 function dev_ensureRandomItemManager() {
-    if (!(isObject(gRandomItemManager))) {
+    if (!isObject(gRandomItemManager)) {
         new ScriptObject(gRandomItemManager);
         if (isObject(MissionCleanup)) {
-            gRandomItemManager.add(MissionCleanup);
+            MissionCleanup.add(gRandomItemManager);
             gRandomItemManager.numItems = 0;
         }
     }
@@ -774,8 +774,8 @@ function dev_clearRandomItems() {
 function dev_declareRandomItem(%itemName, %itemWeight) {
     dev_ensureRandomItemManager();
     %n = gRandomItemManager.numItems;
-    gRandomItemManager.itemName = %itemName @ %n;
-    gRandomItemManager.itemWeight = %itemWeight @ %n;
+    gRandomItemManager.itemName[%n] = %itemName;
+    gRandomItemManager.itemWeight[%n] = %itemWeight;
     gRandomItemManager.weightsNeedNormalizing = 1;
     gRandomItemManager.numItems = (gRandomItemManager.numItems + 1.0);
 };
@@ -786,9 +786,8 @@ function dev_getRandomItem() {
         %totalWeight = 0;
         %n = 0;
         while ((%n < gRandomItemManager.numItems)) {
-            gRandomItemManager.itemWeightCumulative = (gRandomItemManager.itemWeight + %totalWeight @ %n) @ %n;
-            %totalWeight = (%totalWeight + gRandomItemManager.itemWeight);
-            %n;
+            gRandomItemManager.itemWeightCumulative[%n] = (gRandomItemManager.itemWeight[%n] + %totalWeight);
+            %totalWeight = (%totalWeight + gRandomItemManager.itemWeight[%n]);
             %n = (%n + 1.0);
         }
         gRandomItemManager.totalWeight = (%n < gRandomItemManager.numItems) @ %totalWeight;
@@ -796,8 +795,8 @@ function dev_getRandomItem() {
     %rand = getRandom(0, (gRandomItemManager.totalWeight - 1.0));
     %n = 0;
     while ((%n < gRandomItemManager.numItems)) {
-        if ((%rand < gRandomItemManager.itemWeightCumulative)) {
-            return gRandomItemManager.itemName;
+        if ((%rand < gRandomItemManager.itemWeightCumulative[%n])) {
+            return gRandomItemManager.itemName[%n];
         }
         %n = (%n + 1.0);
     }
@@ -862,7 +861,7 @@ function SimObject::getTypeStrings(%this) {
 $gTwitterText = "";
 $gTwitterTextCount = 1;
 function twitterTest1(%text) {
-    if (!(isDefined("%text"))) {
+    if (!isDefined("%text")) {
         %text = "hey there";
     }
     if ((%text $= $gTwitterText)) {
@@ -872,9 +871,9 @@ function twitterTest1(%text) {
     $gTwitterText = %text;
     $gTwitterTextCount = 1;
     %request = new URLPostObject("");
-    "https://twitter.com/statuses/update.xml".setURL(%request);
-    %text.setBodyParam(%request, "status");
-    "elenzil:etspass777".setUserNameAndPassword(%request);
+    %request.setURL("https://twitter.com/statuses/update.xml");
+    %request.setBodyParam("status", %text);
+    %request.setUserNameAndPassword("elenzil:etspass777");
     %request.start();
 };
 function GuiControl::snapAndUpToTwitter(%this, %userName, %password, %asBackground, %tile) {
@@ -896,20 +895,20 @@ function snapshot::snapAndUpRegionToTwitter(%region, %fileName, %userName, %pass
     }
     %url = "http://twitter.com/account/update_profile_image.xml";
     %uploader = "";
-    if (!(snapshotTool::snapRegion(%region, %fileName))) {
+    if (!snapshotTool::snapRegion(%region, %fileName)) {
         error(getScopeName() @ " " @ "- Unable to capture region." @ " " @ %region @ " " @ %fileName @ " " @ getTrace());
     }
     $screenShotNum = ($screenShotNum + 1.0);
     %uploader = new URLPostObject("");
-    1.setProgress(%uploader);
-    %url.setURL(%uploader);
-    %userName @ ":" @ %password.setUserNameAndPassword(%uploader);
-    %fileName.setPostFile(%uploader, "image");
-    "Expect:".setCustomHeaders(%uploader);
+    %uploader.setProgress(1);
+    %uploader.setURL(%url);
+    %uploader.setUserNameAndPassword(%userName @ ":" @ %password);
+    %uploader.setPostFile("image", %fileName);
+    %uploader.setCustomHeaders("Expect:");
     if (%tile) {
-        "true".setBodyParam(%uploader, "tile");
+        %uploader.setBodyParam("tile", "true");
     }
-    if (!(%uploader.start())) {
+    if (!%uploader.start()) {
         error(getScopeName() @ " " @ "- Unable to upload photo." @ " " @ %fileName @ " " @ %url @ " " @ getTrace());
     }
     return %uploader;

@@ -16,7 +16,7 @@ function serverStart() {
     %version = "version=" @ urlEncode(getProtocolVersion());
     %post = %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version;
     echo("sending server start to: " @ %host);
-    %post.post(%initRequest, %host, %uri, %query);
+    %initRequest.post(%host, %uri, %query, %post);
     schedule(7500, 0, "serverHeartBeat");
     return;
 };
@@ -47,14 +47,14 @@ function serverHeartBeat() {
         if ((%i > 0.0)) {
             %users = %users @ ",";
         }
-        %client = %i.getObject(ClientGroup);
+        %client = ClientGroup.getObject(%i);
         %users = %users @ urlEncode(%client.nameBase);
         %i = (%i + 1.0);
     }
     %post = %bindPort @ "&" @ %name @ "&" @ %location @ "&" @ %description @ "&" @ %capacity @ "&" @ %version @ "&" @ %load @ "&" @ %users;
     (%i < %count);
     echo("sending server heartbeat to: " @ %host);
-    %post.post(%initRequest, %host, %uri, %query);
+    %initRequest.post(%host, %uri, %query, %post);
     schedule(7500, 0, "serverHeartBeat");
     return;
 };
@@ -82,10 +82,10 @@ function InitRequest::onLine(%unused, %line) {
     %line = NextToken(%line, name, "=");
     %line = NextToken(%line, value, "=");
     if ((%name $= "boot")) {
-        %connection = %value.get(ClientDict);
+        %connection = ClientDict.get(%value);
         if ((%connection != 0.0)) {
             echo("received boot for player " @ %connection.nameBase);
-            "You have connected in another location.".delete(%connection);
+            %connection.delete("You have connected in another location.");
         }
     }
     return;

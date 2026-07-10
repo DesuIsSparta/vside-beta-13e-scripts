@@ -1,7 +1,5 @@
-$AmClient = !(hasArg("-dedicated"));
-if (hasArg("-dedicated")) {
-}
-$AmServer = hasArg("-standalone");
+$AmClient = !hasArg("-dedicated");
+$AmServer = hasArg("-dedicated") || hasArg("-standalone");
 exec("./worlds/" @ "gateway" @ "/initReloadable.cs", 0);
 exec("./worlds/" @ "lga" @ "/initReloadable.cs", 0);
 exec("./worlds/" @ "lounge" @ "/initReloadable.cs", 0);

@@ -1,10 +1,10 @@
 function InitClientSittingSystem() {
 };
 function ETSSeatMarker::moveDisplayedSeat(%this, %pos) {
-    if (!(isObject(%this.myDisplaySeat))) {
+    if (!isObject(%this.myDisplaySeat)) {
         return;
     }
-    %pos.setTransform(%this.myDisplaySeat);
+    %this.myDisplaySeat.setTransform(%pos);
 };
 function ETSSeatMarker::showSeat(%this, %seatID) {
     if (isObject(%this.myDisplaySeat)) {
@@ -22,7 +22,7 @@ function ETSSeatMarker::showSeat(%this, %seatID) {
         notSoFast = 0;
         notSoFastClearTime = 1000;
     };
-    %this.getTransform().setTransform(%seatDisplay);
+    %seatDisplay.setTransform(%this.getTransform());
     %this.myDisplaySeat = %seatDisplay;
 };
 function ETSSeatMarker::hideSeat(%this) {
@@ -36,9 +36,9 @@ function EtsClientModel::cancelNotSoFast(%this) {
 };
 function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat) {
     if (!(%autosit_outfit $= "")) {
-        $player.outfitBeforeAutosit = "currentOutfit".get($gOutfits);
-        %success = %autosit_outfit.switchOutfitTo($player);
-        if (!(%success)) {
+        $player.outfitBeforeAutosit = $gOutfits.get("currentOutfit");
+        %success = $player.switchOutfitTo(%autosit_outfit);
+        if (!%success) {
             error(getScopeName() @ "->Could not change outfit to trigger-specified autosit_outfit = " @ %autosit_outfit);
             $player.outfitBeforeAutosit = "";
         }
@@ -55,8 +55,8 @@ function clientCmdStandRequestSuccessful(%unused) {
     }
     $player.isKissSeat = 0;
     if (!($player.outfitBeforeAutosit $= "")) {
-        %success = $player.outfitBeforeAutosit.switchOutfitTo($player);
-        if (!(%success)) {
+        %success = $player.switchOutfitTo($player.outfitBeforeAutosit);
+        if (!%success) {
             error(getScopeName() @ "->Could not restore saved pre-autosit outfit! (previous outfit = " @ Player.outfitBeforeAutosit @ ")");
         }
         $player.outfitBeforeAutosit = "";
@@ -72,9 +72,9 @@ function ClientSittingSystemOnClick(%obj) {
         return;
     }
     %obj.notSoFast = 1;
-    cancelNotSoFast.schedule(%obj, %obj.notSoFastClearTime);
+    %obj.schedule(%obj.notSoFastClearTime, cancelNotSoFast);
     if (isObject(CSFurnitureMover)) {
-        -(1.0).SelectNuggetID(CSFurnitureMover);
+        CSFurnitureMover.SelectNuggetID(-(1.0));
     }
     commandToServer('RequestToSit', %obj.seatID);
 };

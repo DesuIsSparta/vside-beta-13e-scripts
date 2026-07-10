@@ -1,28 +1,24 @@
 function Canvas::onSystemDragDropEvent(%this, %text, %isDrop, %pt) {
-    if (!(isURL(%text))) {
+    if (!isURL(%text)) {
         return 0;
     }
-    if ((%this.getId() == Canvas.getId())) {
-        if (!(isObject($player))) {
-        }
-        if (!($player.isHost())) {
-            return 0;
-        }
+    if ((%this.getId() == Canvas.getId()) && !isObject($player) || !$player.isHost()) {
+        return 0;
     }
     return Parent::onSystemDragDropEvent(%this, %text, %isDrop, %pt);
 };
 function Canvas::onSystemDragDroppedEvent(%this, %url, %pt) {
-    if (!(isObject(CSMediaDisplay))) {
+    if (!isObject(CSMediaDisplay)) {
         error(getScopeName() @ " " @ "- CSMediaDisplay not initialized." @ " " @ getTrace());
         return;
     }
-    %url.playMediaStream(CSMediaDisplay);
+    CSMediaDisplay.playMediaStream(%url);
 };
 function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt) {
-    if (!(%text.acceptsSystemDragDropContent(%this))) {
+    if (!%this.acceptsSystemDragDropContent(%text)) {
         return 0;
     }
-    %this.setSystemDragTargetControl(Canvas);
+    Canvas.setSystemDragTargetControl(%this);
     if ((%eventType $= "MAKE")) {
         hiliteControl(%this);
     }
@@ -37,7 +33,7 @@ function GuiControl::onSystemDragDropEvent(%this, %text, %eventType, %pt) {
         if (%this.isHiliteCtrl()) {
             hiliteControl("");
         }
-        %pt.onSystemDragDroppedEvent(%this, %text);
+        %this.onSystemDragDroppedEvent(%text, %pt);
     }
     return 1;
 };

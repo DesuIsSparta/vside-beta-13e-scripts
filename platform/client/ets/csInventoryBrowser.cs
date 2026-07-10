@@ -1,17 +1,17 @@
 function CSInventoryBrowserWindow::open(%this) {
     %previouslyOpen = %this.isVisible();
     closeCSPanelsInOtherCategories(%this);
-    1.setVisible(%this);
-    %this.focusAndRaise(PlayGui);
+    %this.setVisible(1);
+    PlayGui.focusAndRaise(%this);
     CSFurnitureMover.open();
     WindowManager.update();
     CustomSpaceClient::checkEditingSpace();
-    if (!(%previouslyOpen)) {
+    if (!%previouslyOpen) {
         CSInventoryBrowser.focusCurrentFrame();
     }
 };
 function CSInventoryBrowserWindow::close(%this) {
-    0.setVisible(%this);
+    %this.setVisible(0);
     PlayGui.resetFirstResponder();
     CustomSpaceClient::checkEditingSpace();
     WindowManager.update();
@@ -24,17 +24,17 @@ function CSInventoryBrowserWindow::toggle(%this) {
     %this.open();
 };
 function CSInventoryBrowserWindow::Initialize(%this) {
-    if (!(%this.initialized)) {
+    if (!%this.initialized) {
         %ctrl = TreeBrowserControl::newControl(CSInventoryBrowserContainer, "CSBrowser");
-        "CSInventoryBrowser".bindClassName(%ctrl);
-        "CSInventoryBrowser".setName(%ctrl);
+        %ctrl.bindClassName("CSInventoryBrowser");
+        %ctrl.setName("CSInventoryBrowser");
         CSInventoryBrowser.menuProfile = "ETSClearMenuProfile";
         CSInventoryBrowser.selectedProfile = "ETSSelectedMenuItemNoBorderProfile";
-        1.setNumChildren(CSInventoryBrowser);
+        CSInventoryBrowser.setNumChildren(1);
         CSInventoryBrowser.adjustMenuCellHeight = 1;
         CSInventoryBrowser.showMoreInfo = 1;
         CSInventoryBrowser.baseDir = "My Furnishings";
-        CSInventoryBrowser.baseDir.addNode(CSInventoryBrowser);
+        CSInventoryBrowser.addNode(CSInventoryBrowser.baseDir);
         CSInventoryBrowser.loadAvailableSkus();
         $gGotFurnitureCallback = "CSInventoryBrowser.loadAvailableSkus();" @ "CSFurnitureMoverText.update();" @ "CSFurnitureMover.updateButtonStates();";
         %this.initialized = 1;
@@ -44,7 +44,7 @@ function CSInventoryBrowserWindow::Initialize(%this) {
 };
 function CSInventoryBrowserWindow::onResized(%this) {
     %extent = %this.getExtent();
-    ((getWord(%extent, 1) - 4.0) - 18.0).resize(CSInventoryBrowserContainer, (getWord(%extent, 0) - 16.0));
+    CSInventoryBrowserContainer.resize((getWord(%extent, 0) - 16.0), ((getWord(%extent, 1) - 4.0) - 18.0));
     CSInventoryBrowser.onResized();
 };
 function CSInventoryBrowserWindow::onReachedTarget(%this) {
@@ -56,20 +56,18 @@ function CSInventoryBrowser::loadAvailableSkus(%this) {
     %numSkus = getWordCount(%skulist);
     %i = 0;
     while ((%i < %numSkus)) {
-        getWord(%skulist, %i).addSku(%this);
+        %this.addSku(getWord(%skulist, %i));
         %i = (%i + 1.0);
     }
-    if (((%i < %numSkus) @ " " @ %this.Path $= "")) {
-    }
-    if ((%this.Path $= %this.baseDir)) {
-        0.goToPath(%this, %this.baseDir);
+    if (((%i < %numSkus) @ " " @ %this.Path $= "") || (%this.Path $= %this.baseDir)) {
+        %this.goToPath(%this.baseDir, 0);
     }
     %this.update();
 };
 function CSInventoryBrowser::fillLeafPane(%this, %pane) {
     Parent::fillLeafPane(%this, %pane);
     %desc = getField(%this.Path, (%this.level - 1.0));
-    %desc = %desc.getMenuText(%this);
+    %desc = %this.getMenuText(%desc);
     %paneWidth = getWord(%pane.getExtent(), 0);
     %paneHeight = getWord(%pane.getExtent(), 1);
     if (!(%desc $= "")) {
@@ -156,7 +154,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         %rightYPos = (%rightYPos + getWord(%buyButton.getExtent(), 1));
         %si = "";
         %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1.0)), "|"), 1);
-        %si = %sku.findBySku(SkuManager);
+        %si = SkuManager.findBySku(%sku);
         if (!(%si.descLong $= "")) {
             %moreInfoButton = new GuiVariableWidthButtonCtrl("") {
                 profile = "BracketButton15RedProfile";
@@ -173,12 +171,12 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
                 buttonType = "PushButton";
             };
             %rightYPos = (%rightYPos + getWord(%buyButton.getExtent(), 1));
-            if ("showMoreInfo".getFieldValue(%this)) {
+            if (%this.getFieldValue("showMoreInfo")) {
                 %moreInfoButton.text = "Less Info";
                 %moreInfoButton.command = "CSInventoryBrowser.showMoreInfo = false; CSInventoryBrowser.goToCurrentPath();";
             }
             %pane.moreInfoButton = %moreInfoButton;
-            %moreInfoButton.add(%pane);
+            %pane.add(%moreInfoButton);
         }
         %maxThumbnailDim = mMin(((%paneHeight - %ypos) - 3.0), (%xPos - 2.0));
         %thumbnail = new GuiBitmapCtrl("") {
@@ -190,14 +188,14 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
             minExtent = "1 1";
             sluggishness = -1;
             visible = 1;
-            bitmap = 128.getThumbnailPathForSku(%this, %sku);
+            bitmap = %this.getThumbnailPathForSku(%sku, 128);
         };
-        %qtyText.add(%pane);
-        %distributionText.add(%pane);
-        %placeButton.add(%pane);
-        %putAwayButton.add(%pane);
-        %buyButton.add(%pane);
-        %thumbnail.add(%pane);
+        %pane.add(%qtyText);
+        %pane.add(%distributionText);
+        %pane.add(%placeButton);
+        %pane.add(%putAwayButton);
+        %pane.add(%buyButton);
+        %pane.add(%thumbnail);
         %pane.qtyText = %qtyText;
         %pane.distributionText = %distributionText;
         %pane.placeButton = %placeButton;
@@ -206,7 +204,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         %pane.thumbnail = %thumbnail;
         %pane.nextPrevText.browser = CSInventoryBrowser;
         if (!(getWord(%pane.getNamespaceList(), 0) $= "CSInventoryItemPane")) {
-            "CSInventoryItemPane".bindClassName(%pane);
+            %pane.bindClassName("CSInventoryItemPane");
         }
         %pane.update();
     }
@@ -224,7 +222,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane) {
         maxChars = -1;
         text = "<color:ffffff>You don't own any furnishings.";
     };
-    %noItemText.add(%pane);
+    %pane.add(%noItemText);
 };
 function CSInventoryItemPane::update(%this) {
     %sku = %this.node.sku;
@@ -235,7 +233,7 @@ function CSInventoryItemPane::update(%this) {
     %this.putAwayButton.command = "csTestFreeSelectedItem();";
     if ((%sku == $CSSelectedSku)) {
     }
-    $CSSelectedIsOwned.setActive(%this.putAwayButton);
+    %this.putAwayButton.setActive($CSSelectedIsOwned);
     %this.buyButton.command = "CSInventoryBrowser.switchToOtherBrowser(); CSShoppingBrowser.navigateToSku(" @ %sku @ ");";
     %numOwned = numOwnedFurnitureSku(%sku);
     %numPlaced = numUsingFurnitureSku(%sku);
@@ -253,14 +251,14 @@ function CSInventoryItemPane::update(%this) {
     }
     %txtStored = %numStored @ " in storage.";
     "";
-    "<color:ffffff>" @ %txtOwned.setText(%this.qtyText);
-    "<color:ffffff>" @ %txtPlaced @ %txtStored.setText(%this.distributionText);
+    %this.qtyText.setText("<color:ffffff>" @ %txtOwned);
+    %this.distributionText.setText("<color:ffffff>" @ %txtPlaced @ %txtStored);
     if (%omni) {
-        1.setActive(%this.placeButton);
-        0.setActive(%this.buyButton);
+        %this.placeButton.setActive(1);
+        %this.buyButton.setActive(0);
     }
-    (%numPlaced < %numOwned).setActive(%this.placeButton);
-    1.setActive(%this.buyButton);
+    %this.placeButton.setActive((%numPlaced < %numOwned));
+    %this.buyButton.setActive(1);
 };
 function CSInventoryBrowser::switchToOtherBrowser(%this) {
     CSInventoryBrowserWindow.close();
@@ -269,8 +267,8 @@ function CSInventoryBrowser::switchToOtherBrowser(%this) {
 $gCSInventoryBrowserFilterFieldTimerID = "";
 function CSInventoryBrowserFilterField::OnTextChanged(%this) {
     cancel($gCSInventoryBrowserFilterFieldTimerID);
-    $gCSInventoryBrowserFilterFieldTimerID = "onTimer".schedule(%this, %this.timeoutMS);
-    %this.getValue().setValue(CSShoppingBrowserFilterField);
+    $gCSInventoryBrowserFilterFieldTimerID = %this.schedule(%this.timeoutMS, "onTimer");
+    CSShoppingBrowserFilterField.setValue(%this.getValue());
     CSShoppingBrowser.filterText = %this.getValue();
 };
 function CSInventoryBrowserFilterField::OnEnterKey(%this) {
@@ -289,7 +287,7 @@ function CSInventoryBrowserFilterField::refilter(%this) {
     %this.prevFilterText = %filterText;
     CSInventoryBrowser.filterText = %filterText;
     CSInventoryBrowser.goToCurrentPath();
-    %filterText.setValue(CSShoppingBrowserFilterField);
+    CSShoppingBrowserFilterField.setValue(%filterText);
     CSShoppingBrowser.filterText = %filterText;
     CSShoppingBrowser.goToCurrentPath();
 };

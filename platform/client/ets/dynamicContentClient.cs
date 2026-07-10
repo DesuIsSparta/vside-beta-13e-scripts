@@ -4,12 +4,12 @@ function staffSnapshot(%region) {
     commandToServer('getStaffSnapshotObj');
 };
 function clientCmdsetStaffSnapshotObj(%id) {
-    %obj = %id.resolveGhostID(ServerConnection);
-    if (!(isObject(%obj))) {
+    %obj = ServerConnection.resolveGhostID(%id);
+    if (!isObject(%obj)) {
         log("general", "warn", "clientCmdsetStaffSnapshot: invalid object id.");
         return;
     }
-    if (!(%obj.getIsDC())) {
+    if (!%obj.getIsDC()) {
         log("general", "warn", "clientCmdsetStaffSnapshotObj: this is not a valid DC object to take a snapshot on.");
         return;
     }
@@ -18,10 +18,10 @@ function clientCmdsetStaffSnapshotObj(%id) {
     shootscreen(%uplocal, $DC::staffSnapshotRegion);
     %downurl = $DC::DownloadFolder @ "/" @ %fileName;
     %downlocal = %uplocal;
-    $DC::UploadScript.setUploadURL(%obj.getDCObject());
-    %uplocal.setUploadLocalFilename(%obj.getDCObject());
-    %downurl.setDownloadURL(%obj.getDCObject());
-    %downlocal.setDownloadLocalFilename(%obj.getDCObject());
+    %obj.getDCObject().setUploadURL($DC::UploadScript);
+    %obj.getDCObject().setUploadLocalFilename(%uplocal);
+    %obj.getDCObject().setDownloadURL(%downurl);
+    %obj.getDCObject().setDownloadLocalFilename(%downlocal);
     %obj.getDCObject().startDCUpload();
 };
 function dlMgrCallback_GetNewSkin(%dlItem, %unused) {
@@ -31,20 +31,20 @@ function dlMgrCallback_GetNewSkin(%dlItem, %unused) {
     setNewSkin(%fileName, %dlData.shapebaseobj);
 };
 function clientCmdgetNewSkin(%skinName, %shapebaseobj) {
-    %shapebaseobj = %shapebaseobj.resolveGhostID(ServerConnection);
+    %shapebaseobj = ServerConnection.resolveGhostID(%shapebaseobj);
     %skinName = getTaggedString(%skinName);
     %fileName = %skinName @ ".jpg";
     %url = $DC::RemoteSkinsFolder @ "/" @ %fileName;
     %item = new ScriptObject("");
     %item.skinName = %skinName;
     %item.shapebaseobj = %shapebaseobj;
-    "".applyUrl(dlMgr, %url, "dlMgrCallback_GetNewSkin", "", %item);
+    dlMgr.applyUrl(%url, "dlMgrCallback_GetNewSkin", "", %item, "");
 };
 function setNewSkin(%skinName, %shapebaseobj) {
-    if (!(isObject(%shapebaseobj))) {
+    if (!isObject(%shapebaseobj)) {
         return;
     }
-    %skinName.setSkinName(%shapebaseobj);
+    %shapebaseobj.setSkinName(%skinName);
     echo("setNewSkin: Successfully applied new skin: " @ %skinName @ " to shapebase: " @ %shapebaseobj.getId());
 };
 $DC::marqueeSeq1 = 0;

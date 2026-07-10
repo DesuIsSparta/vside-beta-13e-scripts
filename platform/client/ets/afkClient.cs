@@ -6,25 +6,23 @@ function TryFixBadWords(%dry) {
     return %dry;
 };
 function Player::onGotTextFields(%this) {
-    TryFixBadWords(%this.getAwayMessage()).setAwayMessage(%this);
+    %this.setAwayMessage(TryFixBadWords(%this.getAwayMessage()));
     %this.updateMapIcon();
 };
 setIdleTimeout(((4.0 * 60.0) * 1000.0));
 $gCurrentAwayMessage = "";
 function setIdle(%idle, %message) {
-    if (!(isDefined("%message"))) {
+    if (!isDefined("%message")) {
         %message = "";
     }
     if (isObject(ServerConnection)) {
     }
-    if (!(ServerConnection.isPresentAtBody())) {
+    if (!ServerConnection.isPresentAtBody()) {
         %idle = 1;
     }
-    if (!($Server::Dedicated)) {
+    if (!$Server::Dedicated) {
         if ((%idle == 1.0)) {
-            if (!(isIdle())) {
-            }
-            if (!(%message $= $gCurrentAwayMessage)) {
+            if (!isIdle() || !(%message $= $gCurrentAwayMessage)) {
                 onIdle(%message);
             }
         }
@@ -35,7 +33,7 @@ function setIdle(%idle, %message) {
     setGameInterfaceIdle(%idle);
 };
 function onIdle(%message) {
-    if (!(isObject($player))) {
+    if (!isObject($player)) {
         return;
     }
     $gCurrentAwayMessage = %message;
@@ -44,13 +42,13 @@ function onIdle(%message) {
     }
     %message = getSubStr(%message, 0, $Pref::Player::awayMessageMaxLen);
     commandToServer('setAfkOn', makeTaggedString(%message));
-    1.setActivityActive(getUserActivityMgr(), "idle");
+    getUserActivityMgr().setActivityActive("idle", 1);
 };
 function onUnidle() {
-    if (!(isObject($player))) {
+    if (!isObject($player)) {
         return;
     }
-    if (!(isObject($GameConnection))) {
+    if (!isObject($GameConnection)) {
         return;
     }
     if ($GameConnection.isPresentAtBody()) {
@@ -60,7 +58,7 @@ function onUnidle() {
     if (ClosetGui.visible) {
         commandToServer('setAfkOn', $ClosetGuiOpenMessage);
     }
-    0.setActivityActive(getUserActivityMgr(), "idle");
+    getUserActivityMgr().setActivityActive("idle", 0);
 };
 function awayOperation(%line) {
     DefaultAwayMsgEdit.applySettings();

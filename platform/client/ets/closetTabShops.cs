@@ -1,23 +1,23 @@
 function ClosetTabs::refreshStoreTab(%this) {
     StoreCategoryPopup.clear();
     if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
-        "Loading ...".add(StoreCategoryPopup);
+        StoreCategoryPopup.add("Loading ...");
         return;
     }
     %allCategories = "All Items" @ "\t" @ "All Garments" @ "\t" @ "All Accessories" @ "\t" @ "Tops" @ "\t" @ "Bottoms" @ "\t" @ "Hair" @ "\t" @ "Face" @ "\t" @ "Skin" @ "\t" @ "Shoes" @ "\t" @ "Ear" @ "\t" @ "Neck" @ "\t" @ "Waist" @ "\t" @ "Hands" @ "\t" @ "Bags" @ "\t" @ "Glasses" @ "\t" @ "Props" @ "\t" @ "Misc" @ "\t" @ "BodyMod";
-    %storeDrwrs = $player.getGender().filterSkusGender(SkuManager, Inventory::getCurrentStoreSkus()).getSkuDrwrs(SkuManager);
+    %storeDrwrs = SkuManager.getSkuDrwrs(SkuManager.filterSkusGender(Inventory::getCurrentStoreSkus(), $player.getGender()));
     if ((%storeDrwrs $= "")) {
         StoreItemsFrame.update();
     }
     %n = 0;
     while ((%n < getFieldCount(%allCategories))) {
         %cat = getField(%allCategories, %n);
-        %catDrwrs = strlwr(%cat).get(ThumbCategories);
+        %catDrwrs = ThumbCategories.get(strlwr(%cat));
         %m = 0;
         while ((%m < getWordCount(%catDrwrs))) {
             %found = findWord(%storeDrwrs, getWord(%catDrwrs, %m));
             if ((%found >= 0.0)) {
-                %cat.add(StoreCategoryPopup);
+                StoreCategoryPopup.add(%cat);
             }
             %m = (%m + 1.0);
         }
@@ -27,11 +27,11 @@ function ClosetTabs::refreshStoreTab(%this) {
     loadStorePosition();
 };
 function ClosetTabs::fillStoreTab(%this) {
-    %theTab = "SHOPS".getTabWithName(%this);
-    if (!(isObject(%theTab))) {
+    %theTab = %this.getTabWithName("SHOPS");
+    if (!isObject(%theTab)) {
         return;
     }
-    new GuiBitmapCtrl("") {
+    %theTab.add(new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -41,10 +41,10 @@ function ClosetTabs::fillStoreTab(%this) {
         sluggishness = -1;
         visible = 1;
         bitmap = "platform/client/ui/closet_tabs_bracket";
-    };.add(%theTab);
+    };);
     %tabWidth = getWord(%theTab.getExtent(), 0);
     %tabHeight = getWord(%theTab.getExtent(), 1);
-    new GuiBitmapCtrl(StoreSpecificBackground) {
+    %theTab.add(new GuiBitmapCtrl(StoreSpecificBackground) {
         profile = "GuiDefaultProfile";
         horizSizing = "center";
         vertSizing = "center";
@@ -54,7 +54,7 @@ function ClosetTabs::fillStoreTab(%this) {
         sluggishness = -1;
         visible = 0;
         bitmap = "";
-    };.add(%theTab);
+    };);
     %storename = new GuiTextCtrl("") {
         profile = "ClosetTitleProfile";
         horizSizing = "right";
@@ -92,9 +92,9 @@ function ClosetTabs::fillStoreTab(%this) {
         nameCtrl = %storename;
         descCtrl = %storeDesc;
     };
-    %storename.add(%nameDescFrame);
-    %storeDesc.add(%nameDescFrame);
-    %nameDescFrame.add(%theTab);
+    %nameDescFrame.add(%storename);
+    %nameDescFrame.add(%storeDesc);
+    %theTab.add(%nameDescFrame);
     %categoryLabel = new GuiTextCtrl(StoreCategoryLabel) {
         profile = "ClosetTitleProfile";
         horizSizing = "right";
@@ -107,7 +107,7 @@ function ClosetTabs::fillStoreTab(%this) {
         text = "Item";
         maxLength = 255;
     };
-    %categoryLabel.add(%theTab);
+    %theTab.add(%categoryLabel);
     %categoryPopup = new GuiPopUp2MenuCtrl(StoreCategoryPopup) {
         profile = "ClosetPopupProfile";
         scrollProfile = "DottedScrollProfile";
@@ -123,7 +123,7 @@ function ClosetTabs::fillStoreTab(%this) {
         maxPopupHeight = 200;
         allowReverse = 0;
     };
-    %categoryPopup.add(%theTab);
+    %theTab.add(%categoryPopup);
     %ctrl = new GuiControl(StoreExpirationLegend) {
         position = "26 465";
         extent = "260 20";
@@ -153,7 +153,7 @@ function ClosetTabs::fillStoreTab(%this) {
         text = " = Expires after a certain amount of time.";
         maxLength = 255;
     };
-    %ctrl.add(%theTab);
+    %theTab.add(%ctrl);
     %itemsFrame = new GuiControl(StoreItemsFrame) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -176,7 +176,7 @@ function ClosetTabs::fillStoreTab(%this) {
         text = "no matching items";
         maxLength = 255;
     };
-    %itemsInfoText.add(%itemsFrame);
+    %itemsFrame.add(%itemsInfoText);
     %itemsRangeText = new GuiTextCtrl("") {
         profile = "ClosetRightInfoProfile";
         horizSizing = "left";
@@ -189,7 +189,7 @@ function ClosetTabs::fillStoreTab(%this) {
         text = "";
         maxLength = 255;
     };
-    %itemsRangeText.add(%itemsFrame);
+    %itemsFrame.add(%itemsRangeText);
     %theTab.rangeText = %itemsRangeText;
     %itemsScroll = new GuiScrollCtrl("") {
         profile = "ETSScrollProfile";
@@ -204,7 +204,7 @@ function ClosetTabs::fillStoreTab(%this) {
         constantThumbHeight = 1;
         scrollMultiplier = 16.1;
     };
-    "ClosetItemsScroll".bindClassName(%itemsScroll);
+    %itemsScroll.bindClassName("ClosetItemsScroll");
     %theTab.itemsScroll = %itemsScroll;
     %thumbnails = new GuiArray2Ctrl(ClosetThumbnailsShop) {
         class = "ClosetThumbnails";
@@ -219,13 +219,13 @@ function ClosetTabs::fillStoreTab(%this) {
         tab = %theTab;
         scroll = %itemsScroll;
     };
-    %thumbnails.add(%itemsScroll);
+    %itemsScroll.add(%thumbnails);
     %itemsScroll.thumbnails = %thumbnails;
-    %itemsScroll.add(%itemsFrame);
+    %itemsFrame.add(%itemsScroll);
     %itemsFrame.thumbnails = %thumbnails;
-    %itemsFrame.add(%theTab);
+    %theTab.add(%itemsFrame);
     %theTab.thumbnails = %thumbnails;
-    new GuiVariableWidthButtonCtrl(StoreDirectoryLink) {
+    %theTab.add(new GuiVariableWidthButtonCtrl(StoreDirectoryLink) {
         profile = "BracketButton13Profile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -237,8 +237,8 @@ function ClosetTabs::fillStoreTab(%this) {
         buttonType = "PushButton";
         drawText = 1;
         command = "transferFromShopToDestinationsDirectory();";
-    };.add(%theTab);
-    new GuiMLTextCtrl(StoreDirectoryLinkBigText) {
+    };);
+    %theTab.add(new GuiMLTextCtrl(StoreDirectoryLinkBigText) {
         profile = "ClosetLeftInfoProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -250,8 +250,8 @@ function ClosetTabs::fillStoreTab(%this) {
         allowColorChars = 0;
         maxChars = -1;
         text = $MsgCat::closet["H-NOT-IN-STORE"];
-    };.add(%theTab);
-    new GuiBitmapButtonCtrl(StoreDirectoryLinkBig) {
+    };);
+    %theTab.add(new GuiBitmapButtonCtrl(StoreDirectoryLinkBig) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -262,17 +262,8 @@ function ClosetTabs::fillStoreTab(%this) {
         visible = 0;
         bitmap = "platform/client/buttons/closet_shopsDirButton";
         command = "transferFromShopToDestinationsDirectory();";
-    };.add(%theTab);
-    new GuiControl(StoreBannerFrame) {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "26 483";
-        extent = "464 69";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    };.add(%theTab, new GuiBitmapButtonCtrl(StoreBanner) {
+    };);
+    %theTab.add(new GuiBitmapButtonCtrl(StoreBanner) {
         profile = "GuiButtonProfile";
         horizSizing = "left";
         vertSizing = "bottom";
@@ -297,18 +288,17 @@ function ClosetTabs::fillStoreTab(%this) {
         sluggishness = -1;
         visible = 0;
         bitmap = "platform/client/ui/banner_bracket";
-    };);
-    new GuiBitmapCtrl("") {
+    };, new GuiControl(StoreBannerFrame) {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
-        position = "689 26";
-        extent = "245 45";
+        position = "26 483";
+        extent = "464 69";
         minExtent = "1 1";
         sluggishness = -1;
         visible = 1;
-        bitmap = "platform/client/ui/balance_bracket";
-    };.add(%theTab, new GuiMLTextCtrl(StoreBalanceText) {
+    };);
+    %theTab.add(new GuiMLTextCtrl(StoreBalanceText) {
         profile = "ClosetLargeLinkProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -319,6 +309,16 @@ function ClosetTabs::fillStoreTab(%this) {
         visible = 1;
         maxChars = -1;
         text = "";
+    };, new GuiBitmapCtrl("") {
+        profile = "GuiDefaultProfile";
+        horizSizing = "right";
+        vertSizing = "bottom";
+        position = "689 26";
+        extent = "245 45";
+        minExtent = "1 1";
+        sluggishness = -1;
+        visible = 1;
+        bitmap = "platform/client/ui/balance_bracket";
     };);
     %itemDescFrame = new GuiWindowCtrl(StoreItemDescFrame) {
         profile = "DottedWindowProfile";
@@ -352,8 +352,8 @@ function ClosetTabs::fillStoreTab(%this) {
         extent = "173 16";
         lineSpacing = -3;
     };
-    %itemDescFrame.add(%theTab);
-    new GuiWindowCtrl(StoreItemDescHiliteFrame) {
+    %theTab.add(%itemDescFrame);
+    %theTab.add(new GuiWindowCtrl(StoreItemDescHiliteFrame) {
         profile = "StoreHiliteFrameProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -369,8 +369,8 @@ function ClosetTabs::fillStoreTab(%this) {
         canMinimize = 0;
         canMaximize = 0;
         closeCommand = "";
-    };.add(%theTab);
-    new GuiWindowCtrl(StoreFloatingHiliteFrame) {
+    };);
+    %theTab.add(new GuiWindowCtrl(StoreFloatingHiliteFrame) {
         profile = "StoreHiliteFrameProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -386,7 +386,7 @@ function ClosetTabs::fillStoreTab(%this) {
         canMinimize = 0;
         canMaximize = 0;
         closeCommand = "";
-    };.add(%theTab);
+    };);
     %shoppingBag = new GuiWindowCtrl(StoreShoppingBag) {
         profile = "DottedWindowProfile";
         horizSizing = "right";
@@ -496,7 +496,7 @@ function ClosetTabs::fillStoreTab(%this) {
         canMaximize = 0;
         closeCommand = "";
     };
-    new GuiVariableWidthButtonCtrl(StoreAddItemsButton) {
+    %theTab.add(new GuiVariableWidthButtonCtrl(StoreAddItemsButton) {
         profile = "BracketButton15NonDefaultProfile";
         horizSizing = "right";
         vertSizing = "bottom";
@@ -508,21 +508,21 @@ function ClosetTabs::fillStoreTab(%this) {
         text = "Add Items You're Wearing To Cart";
         buttonType = "PushButton";
         drawText = 1;
-    };.add(%theTab);
-    0.setActive(StoreAddItemsButton);
+    };);
+    StoreAddItemsButton.setActive(0);
     %wi = AnimCtrl::newAnimCtrl("129 213", "18 18");
-    60.setDelay(%wi);
-    "platform/client/ui/wait0.png".addFrame(%wi);
-    "platform/client/ui/wait1.png".addFrame(%wi);
-    "platform/client/ui/wait2.png".addFrame(%wi);
-    "platform/client/ui/wait3.png".addFrame(%wi);
-    "platform/client/ui/wait4.png".addFrame(%wi);
-    "platform/client/ui/wait5.png".addFrame(%wi);
-    "platform/client/ui/wait6.png".addFrame(%wi);
-    "platform/client/ui/wait7.png".addFrame(%wi);
-    %wi.add(StoreShoppingBag);
+    %wi.setDelay(60);
+    %wi.addFrame("platform/client/ui/wait0.png");
+    %wi.addFrame("platform/client/ui/wait1.png");
+    %wi.addFrame("platform/client/ui/wait2.png");
+    %wi.addFrame("platform/client/ui/wait3.png");
+    %wi.addFrame("platform/client/ui/wait4.png");
+    %wi.addFrame("platform/client/ui/wait5.png");
+    %wi.addFrame("platform/client/ui/wait6.png");
+    %wi.addFrame("platform/client/ui/wait7.png");
+    StoreShoppingBag.add(%wi);
     StoreShoppingBag.waitIcon = %wi;
-    0.setVisible(%wi);
+    %wi.setVisible(0);
     %shoppingScroll = new GuiScrollCtrl("") {
         profile = "ETSScrollProfile";
         position = "3 22";
@@ -546,9 +546,9 @@ function ClosetTabs::fillStoreTab(%this) {
         canHilite = 0;
         scroll = %shoppingScroll;
     };
-    %shoppingList.add(%shoppingScroll);
-    %shoppingScroll.add(%shoppingBag);
-    %shoppingBag.add(%theTab);
+    %shoppingScroll.add(%shoppingList);
+    %shoppingBag.add(%shoppingScroll);
+    %theTab.add(%shoppingBag);
     %doneButton = new GuiVariableWidthButtonCtrl("") {
         profile = "BracketButton19Profile";
         horizSizing = "right";
@@ -575,38 +575,38 @@ function ClosetTabs::fillStoreTab(%this) {
         buttonType = "PushButton";
         drawText = 1;
     };
-    %doneButton.add(%theTab);
+    %theTab.add(%doneButton);
     %theTab.doneButton = %doneButton;
-    %cancelButton.add(%theTab);
+    %theTab.add(%cancelButton);
     %theTab.cancelButton = %cancelButton;
-    1.setStoreControlsVisible(ClosetTabs);
+    ClosetTabs.setStoreControlsVisible(1);
     %this.tabShopsInitialized = 1;
 };
 function ClosetTabs::setStoreControlsVisible(%this, %flag) {
-    %flag.setVisible(StoreNameDescFrame);
-    %flag.setVisible(StoreCategoryLabel);
-    %flag.setVisible(StoreCategoryPopup);
-    %flag.setVisible(StoreItemsFrame);
-    %flag.setVisible(StoreBannerFrame);
-    %flag.setVisible(StoreAddItemsButton);
-    %flag.setVisible(StoreShortDescText);
-    %flag.setVisible(StoreLongDescText);
-    %flag.setVisible(StoreShoppingBag);
-    %flag.setVisible(StoreItemDescFrame);
+    StoreNameDescFrame.setVisible(%flag);
+    StoreCategoryLabel.setVisible(%flag);
+    StoreCategoryPopup.setVisible(%flag);
+    StoreItemsFrame.setVisible(%flag);
+    StoreBannerFrame.setVisible(%flag);
+    StoreAddItemsButton.setVisible(%flag);
+    StoreShortDescText.setVisible(%flag);
+    StoreLongDescText.setVisible(%flag);
+    StoreShoppingBag.setVisible(%flag);
+    StoreItemDescFrame.setVisible(%flag);
     if (%flag) {
     }
-    !(isInFUE()).setVisible(StoreDirectoryLink);
-    if (!(%flag)) {
-        %flag.setVisible(StoreItemDescHiliteFrame);
-        %flag.setVisible(StoreFloatingHiliteFrame);
+    StoreDirectoryLink.setVisible(!isInFUE());
+    if (!%flag) {
+        StoreItemDescHiliteFrame.setVisible(%flag);
+        StoreFloatingHiliteFrame.setVisible(%flag);
     }
     if (isInFUE()) {
-        !(%flag).setVisible(closetGuiFUE_vPoints_vBux_Image);
+        closetGuiFUE_vPoints_vBux_Image.setVisible(!%flag);
     }
 };
 function ClosetTabs::setLeaveStoreControlsVisible(%this, %flag) {
-    %flag.setVisible(StoreDirectoryLinkBigText);
-    %flag.setVisible(StoreDirectoryLinkBig);
+    StoreDirectoryLinkBigText.setVisible(%flag);
+    StoreDirectoryLinkBig.setVisible(%flag);
 };
 function StoreShoppingList::onCreatedChild(%this, %child) {
     %background = new GuiControl("") {
@@ -711,14 +711,14 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
         buttonType = "PushButton";
         drawText = 0;
     };
-    %background.add(%child);
-    %hilite.add(%child);
-    %itemDesc.add(%child);
-    %expiringIcon.add(%child);
-    %buxLink.add(%child);
-    %pointsLink.add(%child);
-    %totalButton.add(%child);
-    %closeBox.add(%child);
+    %child.add(%background);
+    %child.add(%hilite);
+    %child.add(%itemDesc);
+    %child.add(%expiringIcon);
+    %child.add(%buxLink);
+    %child.add(%pointsLink);
+    %child.add(%totalButton);
+    %child.add(%closeBox);
     %child.background = %background;
     %child.hiliteCtrl = %hilite;
     %child.desc = %itemDesc;
@@ -730,7 +730,7 @@ function StoreShoppingList::onCreatedChild(%this, %child) {
     %child.sku = 0;
     %child.shoppingList = %this;
     if (!(getWord(%child.getNamespaceList(), 0) $= "StoreShoppingListItem")) {
-        "StoreShoppingListItem".bindClassName(%child);
+        %child.bindClassName("StoreShoppingListItem");
     }
 };
 function StoreShoppingList::addSku(%this, %sku) {
@@ -740,7 +740,7 @@ function StoreShoppingList::addSku(%this, %sku) {
     %count = %this.getCount();
     %idx = 0;
     while ((%idx < %count)) {
-        if ((%idx.getObject(%this).sku $= %sku)) {
+        if ((%this.getObject(%idx).sku $= %sku)) {
             return;
         }
         %idx = (%idx + 1.0);
@@ -748,39 +748,39 @@ function StoreShoppingList::addSku(%this, %sku) {
     %child = %this.addChild();
     (%idx < %count);
     %child.sku = %sku;
-    %si = %sku.findBySku(SkuManager);
-    %si.descShrt.setText(%child.desc);
+    %si = SkuManager.findBySku(%sku);
+    %child.desc.setText(%si.descShrt);
     %child.desc.command = "ClosetGui.toggleSku(" @ %sku @ ");" @ "ClosetThumbnailsShop.scroll.scrollToSku(" @ %sku @ ");";
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
     %child.points = Inventory::getVPointsPriceForSku(%child.sku);
     %child.bux = Inventory::getVBuxPriceForSku(%child.sku);
-    %pointsIcon @ " " @ %child.points.setText(%child.pointsLink);
-    %buxIcon @ " " @ %child.bux.setText(%child.buxLink);
+    %child.pointsLink.setText(%pointsIcon @ " " @ %child.points);
+    %child.buxLink.setText(%buxIcon @ " " @ %child.bux);
     if (!(%si.expireTime $= "")) {
-        "platform/client/ui/expiring_icon".setBitmap(%child.expiringIcon);
-        1.setVisible(%child.expiringIcon);
+        %child.expiringIcon.setBitmap("platform/client/ui/expiring_icon");
+        %child.expiringIcon.setVisible(1);
     }
-    "".setBitmap(%child.expiringIcon);
-    0.setVisible(%child.expiringIcon);
+    %child.expiringIcon.setBitmap("");
+    %child.expiringIcon.setVisible(0);
     %count = StoreItemsFrame.thumbnails.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %obj = %i.getObject(StoreItemsFrame.thumbnails);
+        %obj = StoreItemsFrame.thumbnails.getObject(%i);
         if ((%obj.sku == %sku)) {
-            "platform/client/buttons/removeFromCart".setBitmap(%obj.toggleCartButton);
+            %obj.toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
         }
         %i = (%i + 1.0);
     }
     %this.update();
-    (%this.getCount() - 1.0).hiliteCell(%this, 0);
+    %this.hiliteCell(0, (%this.getCount() - 1.0));
 };
 function StoreShoppingList::addSkus(%this, %skulist) {
     %skulist = trim(%skulist);
     %count = getWordCount(%skulist);
     %i = 0;
     while ((%i < %count)) {
-        getWord(%skulist, %i).addSku(%this);
+        %this.addSku(getWord(%skulist, %i));
         %i = (%i + 1.0);
     }
 };
@@ -788,7 +788,7 @@ function StoreShoppingList::removeSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %obj = %i.getObject(%this);
+        %obj = %this.getObject(%i);
         if ((%obj.sku == %sku)) {
             %obj.delete();
         }
@@ -798,14 +798,14 @@ function StoreShoppingList::removeSku(%this, %sku) {
     (%i < %count);
     %i = 0;
     while ((%i < %count)) {
-        %obj = %i.getObject(StoreItemsFrame.thumbnails);
+        %obj = StoreItemsFrame.thumbnails.getObject(%i);
         if ((%obj.sku == %sku)) {
-            "platform/client/buttons/add2cart".setBitmap(%obj.toggleCartButton);
+            %obj.toggleCartButton.setBitmap("platform/client/buttons/add2cart");
         }
         %i = (%i + 1.0);
     }
     if ((findWord($StoreSkusLayer, %sku) != -(1.0))) {
-        1.setActive(StoreAddItemsButton);
+        StoreAddItemsButton.setActive(1);
     }
     %this.update();
 };
@@ -814,18 +814,18 @@ function StoreShoppingList::removeSkus(%this, %skulist) {
     %count = getWordCount(%skulist);
     %i = 0;
     while ((%i < %count)) {
-        getWord(%skulist, %i).removeSku(%this);
+        %this.removeSku(getWord(%skulist, %i));
         %i = (%i + 1.0);
     }
 };
 function StoreShoppingList::clear(%this) {
-    %this.getSkus().removeSkus(%this);
+    %this.removeSkus(%this.getSkus());
 };
 function StoreShoppingList::containsSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
     while ((%i < %count)) {
-        if ((%i.getObject(%this).sku == %sku)) {
+        if ((%this.getObject(%i).sku == %sku)) {
             return 1;
         }
         %i = (%i + 1.0);
@@ -837,7 +837,7 @@ function StoreShoppingList::getSkus(%this) {
     %count = %this.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %skus = %skus @ " " @ %i.getObject(%this).sku;
+        %skus = %skus @ " " @ %this.getObject(%i).sku;
         %i = (%i + 1.0);
     }
     return trim(%skus);
@@ -846,24 +846,24 @@ function StoreShoppingList::addItemsYoureWearing(%this) {
     %count = getWordCount($StoreSkusLayer);
     %i = 0;
     while ((%i < %count)) {
-        getWord($StoreSkusLayer, %i).addSku(%this);
+        %this.addSku(getWord($StoreSkusLayer, %i));
         %i = (%i + 1.0);
     }
-    0.setActive(StoreAddItemsButton);
+    StoreAddItemsButton.setActive(0);
 };
 function StoreShoppingList::clear(%this) {
     Parent::clear(%this);
     %this.update();
 };
 function StoreShoppingList::update(%this) {
-    (%this.getCount() == 0.0).setVisible(StoreNoItemsText);
+    StoreNoItemsText.setVisible((%this.getCount() == 0.0));
     %this.reseatChildren();
     %this.sumPrices();
     %count = %this.getCount();
     %i = 0;
     while ((%i < %count)) {
-        %child = %i.getObject(%this);
-        ((%i % 2) == 0.0) ? ClosetLtBackgroundProfile : ClosetDkBackgroundProfile.setProfile(%child.background);
+        %child = %this.getObject(%i);
+        %child.background.setProfile(((%i % 2) == 0.0) ? ClosetLtBackgroundProfile : ClosetDkBackgroundProfile);
         %i = (%i + 1.0);
     }
 };
@@ -873,7 +873,7 @@ function StoreShoppingList::sumPrices(%this) {
     %count = %this.getCount();
     %idx = 0;
     while ((%idx < %count)) {
-        %child = %idx.getObject(%this);
+        %child = %this.getObject(%idx);
         if (!(%child.points $= "-")) {
             %pointsSum = (%pointsSum + %child.points);
         }
@@ -885,13 +885,13 @@ function StoreShoppingList::sumPrices(%this) {
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
     (%idx < %count);
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
-    %pointsIcon @ " " @ %pointsSum.setText(StorePointsTotalText);
-    %buxIcon @ " " @ %buxSum.setText(StoreBuxTotalText);
+    StorePointsTotalText.setText(%pointsIcon @ " " @ %pointsSum);
+    StoreBuxTotalText.setText(%buxIcon @ " " @ %buxSum);
     %this.pointsTotal = %pointsSum;
     %this.buxTotal = %buxSum;
 };
 function StoreShoppingList::scrollToItem(%this, %item) {
-    %idx = %item.getObjectIndex(%this);
+    %idx = %this.getObjectIndex(%item);
     if ((%idx >= 0.0)) {
         %scroll = %this.scroll;
         %cellHeight = (getWord(%this.childrenExtent, 1) + %this.spacing);
@@ -900,16 +900,16 @@ function StoreShoppingList::scrollToItem(%this, %item) {
         %closestRow = (%ypos / %cellHeight);
         %targetRow = getWord(%this.hilitedCell, 1);
         if ((%targetRow < %closestRow)) {
-            (%cellHeight * %targetRow).scrollTo(%scroll, 0);
+            %scroll.scrollTo(0, (%cellHeight * %targetRow));
         }
         if ((%targetRow >= ((%closestRow + %numRowsVisible) - 1.0))) {
-            ((%cellHeight * ((%targetRow - %numRowsVisible) + 1.0)) + (2.0 * %this.Parent.spacing)).scrollTo(%scroll, 0);
+            %scroll.scrollTo(0, ((%cellHeight * ((%targetRow - %numRowsVisible) + 1.0)) + (2.0 * %this.Parent.spacing)));
         }
     }
 };
 function StoreShoppingListItem::onMouseEnterBounds(%this) {
-    %idx = %this.getObjectIndex(%this.shoppingList);
-    %idx.hiliteCell(%this.shoppingList, 0);
+    %idx = %this.shoppingList.getObjectIndex(%this);
+    %this.shoppingList.hiliteCell(0, %idx);
 };
 function StoreShoppingListItem::onMouseLeaveBounds(%this) {
     %this.onUnhilite();
@@ -918,12 +918,12 @@ function StoreShoppingListItem::onHilite(%this) {
     if (0) {
     }
     if (isObject(StoreLongDescText)) {
-        %this.sku.getShortSkuDesc(ClosetTabs).setDesc(StoreShortDescText);
-        %this.sku.getLongSkuDesc(ClosetTabs).setDesc(StoreLongDescText);
-        %this.sku.updateAuthorWidget(ClosetTabs);
+        StoreShortDescText.setDesc(ClosetTabs.getShortSkuDesc(%this.sku));
+        StoreLongDescText.setDesc(ClosetTabs.getLongSkuDesc(%this.sku));
+        ClosetTabs.updateAuthorWidget(%this.sku);
     }
-    %this.scrollToItem(StoreShoppingList);
-    1.setVisible(%this.hiliteCtrl);
+    StoreShoppingList.scrollToItem(%this);
+    %this.hiliteCtrl.setVisible(1);
 };
 function StoreShoppingListItem::onUnhilite(%this) {
     if (0) {
@@ -931,22 +931,22 @@ function StoreShoppingListItem::onUnhilite(%this) {
     if (isObject(StoreLongDescText)) {
         StoreShortDescText.showBaseDesc();
         StoreLongDescText.showBaseDesc();
-        "".updateAuthorWidget(ClosetTabs);
+        ClosetTabs.updateAuthorWidget("");
     }
     if (isObject(StoreItemDescHiliteFrame)) {
-        0.setVisible(StoreItemDescHiliteFrame);
+        StoreItemDescHiliteFrame.setVisible(0);
     }
     if (isObject(StoreFloatingHiliteFrame)) {
-        0.setVisible(StoreFloatingHiliteFrame);
+        StoreFloatingHiliteFrame.setVisible(0);
     }
-    0.setVisible(%this.hiliteCtrl);
+    %this.hiliteCtrl.setVisible(0);
 };
 function StoreBalanceText::update(%this) {
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_14>";
     %buxIcon = "<bitmap:platform/client/ui/vbux_14>";
     %pointsInfoLink = "<spush><linkcolor:159fe7><a:gamelink " @ $Net::HelpURL_VPoints @ ">>> How to earn vPoints</a><spop>";
     %getBuxLink = "<spush><linkcolor:13b93c><a:gamelink " @ $Net::AddFundsURL @ ">>> Get more vBux</a><spop>";
-    "You Have   " @ "<spush><font:Arial Bold:16><color:159fe7>" @ %pointsIcon @ " " @ commaify($Player::VPoints) @ "<spop>" @ "   " @ "<spush><font:Arial Bold:16><color:13b93c>" @ %buxIcon @ " " @ commaify($Player::VBux) @ "<spop>" @ "<br>" @ "<font:Arial Bold:13>" @ %pointsInfoLink @ "   " @ %getBuxLink.setText(%this);
+    %this.setText("You Have   " @ "<spush><font:Arial Bold:16><color:159fe7>" @ %pointsIcon @ " " @ commaify($Player::VPoints) @ "<spop>" @ "   " @ "<spush><font:Arial Bold:16><color:13b93c>" @ %buxIcon @ " " @ commaify($Player::VBux) @ "<spop>" @ "<br>" @ "<font:Arial Bold:13>" @ %pointsInfoLink @ "   " @ %getBuxLink);
 };
 function StoreBalanceText::onURL(%this, %url) {
     if ((getWord(%url, 0) $= "gamelink")) {
@@ -956,34 +956,34 @@ function StoreBalanceText::onURL(%this, %url) {
 };
 function StoreItemsFrame::update(%this) {
     if (!($gCurrentStoreName[$gStoreStockLoaded @ $gCurrentStoreName])) {
-        "Loading store inventory...".setText(%this.thumbnails.infoText);
+        %this.thumbnails.infoText.setText("Loading store inventory...");
     }
     if ((Inventory::getCurrentStoreSkus() $= "")) {
-        "Nothing in stock!".setText(%this.thumbnails.infoText);
+        %this.thumbnails.infoText.setText("Nothing in stock!");
     }
-    "No matching items.".setText(%this.thumbnails.infoText);
-    strlwr(%this.category).get(ThumbCategories).setDrawers(%this.thumbnails);
+    %this.thumbnails.infoText.setText("No matching items.");
+    %this.thumbnails.setDrawers(ThumbCategories.get(strlwr(%this.category)));
 };
 function StoreCategoryPopup::onSelect(%this, %unused, %entries) {
     StoreItemsFrame.category = %entries;
     StoreItemsFrame.update();
-    "".schedule(StoreShortDescText, 0, "setBaseDesc");
-    "".schedule(StoreLongDescText, 0, "setBaseDesc");
+    StoreShortDescText.schedule(0, "setBaseDesc", "");
+    StoreLongDescText.schedule(0, "setBaseDesc", "");
     ClosetThumbnailsShop.getParent().scrollToTop();
 };
 function StoreLongDescText::setBaseDesc(%this, %desc) {
     %this.baseText = %desc;
-    %desc.setText(%this);
+    %this.setText(%desc);
     if ((%desc $= "")) {
-        0.setVisible(StoreItemDescHiliteFrame);
-        0.setVisible(StoreFloatingHiliteFrame);
+        StoreItemDescHiliteFrame.setVisible(0);
+        StoreFloatingHiliteFrame.setVisible(0);
     }
 };
 function StoreLongDescText::setDesc(%this, %desc) {
-    %desc.setText(%this);
+    %this.setText(%desc);
 };
 function StoreLongDescText::showBaseDesc(%this) {
-    %this.baseText.setText(%this);
+    %this.setText(%this.baseText);
 };
 function StoreShortDescText::setBaseDesc(%this, %desc) {
     StoreLongDescText::setBaseDesc(%this, %desc);
@@ -1074,9 +1074,9 @@ function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify) {
     %sound = %sound2;
     %pulseCount = %pulseCount2;
     alxPlay(%sound);
-    5.schedule(%guiControl1, %delay, "blinkSet", "bounce", 150, 100, "0 -1 0 0");
+    %guiControl1.schedule(%delay, "blinkSet", "bounce", 150, 100, "0 -1 0 0", 5);
     if (isObject(%guiControl2)) {
-        %pulseCount.startPulse(%guiControl2);
+        %guiControl2.startPulse(%pulseCount);
     }
 };
 function floatBalanceChange(%whichBalance, %change, %player) {
@@ -1084,11 +1084,11 @@ function floatBalanceChange(%whichBalance, %change, %player) {
     if ((%change < %threshhold)) {
         return;
     }
-    if (!(isObject(%player))) {
+    if (!isObject(%player)) {
         error(getScopeName() @ " " @ "- can't find player!" @ " " @ getTrace());
         return;
     }
-    if (!(isObject(%player.hudCtrl))) {
+    if (!isObject(%player.hudCtrl)) {
         error(getScopeName() @ " " @ "- no hudCtrl to attach to!" @ " " @ getTrace());
         return;
     }
@@ -1104,7 +1104,7 @@ function floatBalanceChange(%whichBalance, %change, %player) {
     %maxAge = ((%amountNorm * 70.0) + 70.0);
     %baseColor = %isVPoints ? "55eeff" : "22dd44";
     %baseAlpha = ((%amountNorm * 0.4) + 0.6);
-    %baseAlpha.floatText(%player, %text, %maxAge, %speed, %baseColor);
+    %player.floatText(%text, %maxAge, %speed, %baseColor, %baseAlpha);
 };
 function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha) {
     %this.hudCtrl.updatePosition();
@@ -1120,7 +1120,7 @@ function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha
         baseText = %text;
         baseAlpha = %baseAlpha;
     };
-    %ctrl.add(ThePointsFloaterHud);
+    ThePointsFloaterHud.add(%ctrl);
     ThePointsFloaterHud.doTick();
 };
 $gFloatingTextStyles["font","default"] = "arial:14";
@@ -1140,7 +1140,7 @@ $gFloatingTextStyles["speed","emphatic1"] = 4;
 $gFloatingTextStyles["prepend","emphatic1"] = "";
 $gFloatingTextStyles["append","emphatic1"] = "";
 $gFloatingTextStyles["font","light1"] = "arial:14";
-$gFloatingTextStyles["outline","light1"] = !(1);
+$gFloatingTextStyles["outline","light1"] = !1;
 $gFloatingTextStyles["color","light1"] = "FFFFFF";
 $gFloatingTextStyles["baseAlpha","light1"] = 0.7;
 $gFloatingTextStyles["maxAge","light1"] = 20;
@@ -1156,7 +1156,7 @@ $gFloatingTextStyles["speed","SUPERSLOWDRIP"] = 4;
 $gFloatingTextStyles["prepend","SUPERSLOWDRIP"] = "";
 $gFloatingTextStyles["append","SUPERSLOWDRIP"] = "";
 function Player::floatTextSimple(%this, %text, %style) {
-    if (!(isDefined("%style"))) {
+    if (!isDefined("%style")) {
         %style = "";
     }
     if ((%style $= "")) {
@@ -1175,15 +1175,15 @@ function Player::floatTextSimple(%this, %text, %style) {
     %baseAlpha = %style[$gFloatingTextStyles TAB "baseAlpha" @ %style];
     %maxAge = %style[$gFloatingTextStyles TAB "maxAge" @ %style];
     %speed = %style[$gFloatingTextStyles TAB "speed" @ %style];
-    %baseAlpha.floatText(%this, %text, %maxAge, %speed, %baseColor);
+    %this.floatText(%text, %maxAge, %speed, %baseColor, %baseAlpha);
 };
 function ClientCmdFloatText(%playerGhostID, %text, %style) {
-    %player = %playerGhostID.resolveGhostID(ServerConnection);
-    if (!(isObject(%player))) {
+    %player = ServerConnection.resolveGhostID(%playerGhostID);
+    if (!isObject(%player)) {
         error(getScopeName() @ " " @ "- could not resolve ghost" @ " " @ %playerGhostID @ " " @ %text);
         return;
     }
-    %style.floatTextSimple(%player, %text);
+    %player.floatTextSimple(%text, %style);
 };
 function ThePointsFloaterHud::doTick(%this) {
     cancel(%this.timerID);
@@ -1194,7 +1194,7 @@ function ThePointsFloaterHud::doTick(%this) {
     }
     %n = (%numChildren - 1.0);
     while ((%n >= 0.0)) {
-        %ctrl = %n.getObject(%this);
+        %ctrl = %this.getObject(%n);
         %ageNorm = (%ctrl.age / %ctrl.maxAge);
         if ((%ageNorm > 1.0)) {
             %ctrl.delete();
@@ -1206,7 +1206,7 @@ function ThePointsFloaterHud::doTick(%this) {
             %x = (%x + ((%ctrl.speed * (%ageNorm - 0.2)) * 3.0));
             %y = (%y - %ctrl.speed);
         }
-        %y.reposition(%ctrl, %x);
+        %ctrl.reposition(%x, %y);
         %alpha = ((1.0 - %ageNorm) * %ctrl.baseAlpha);
         if ((%ageNorm < 0.2)) {
             %alpha = (1.0 - (%alpha * ((mSin((getSimTime() * 0.03)) * 0.5) + 0.5)));
@@ -1218,13 +1218,13 @@ function ThePointsFloaterHud::doTick(%this) {
         }
         %colorTag = "<color:" @ %ctrl.BaseColor @ %alpha1 @ ">";
         %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
-        %shadowTag @ %colorTag @ %ctrl.baseText.setText(%ctrl);
+        %ctrl.setText(%shadowTag @ %colorTag @ %ctrl.baseText);
         %n = (%n - 1.0);
     }
-    %this.timerID = (%n >= 0.0) @ "doTick".schedule(%this, %this.tickPeriodMS);
+    %this.timerID = (%n >= 0.0) @ %this.schedule(%this.tickPeriodMS, "doTick");
 };
 function clientCmdUpdateVPoints(%newPoints, %notify) {
-    if (!(isDefined("%notify"))) {
+    if (!isDefined("%notify")) {
         %notify = 1;
     }
     if (!(%newPoints $= "")) {
@@ -1234,7 +1234,7 @@ function clientCmdUpdateVPoints(%newPoints, %notify) {
     }
 };
 function clientCmdUpdateVBux(%newBux, %notify) {
-    if (!(isDefined("%notify"))) {
+    if (!isDefined("%notify")) {
         %notify = 1;
     }
     if (!(%newBux $= "")) {
@@ -1247,23 +1247,23 @@ function ClosetGUI_ToggleSku_Shops(%sku) {
     %wordLoc = findWord($StoreSkusLayer, %sku);
     if ((%wordLoc >= 0.0)) {
         $StoreSkusLayer = removeWord($StoreSkusLayer, %wordLoc);
-        "".setBaseDesc(StoreShortDescText);
-        "".setBaseDesc(StoreLongDescText);
-        "".updateAuthorWidget(ClosetTabs);
+        StoreShortDescText.setBaseDesc("");
+        StoreLongDescText.setBaseDesc("");
+        ClosetTabs.updateAuthorWidget("");
     }
-    $StoreSkusLayer = %sku.overlaySkus(SkuManager, $StoreSkusLayer);
-    %sku.getShortSkuDesc(ClosetTabs).setBaseDesc(StoreShortDescText);
-    %sku.getLongSkuDesc(ClosetTabs).setBaseDesc(StoreLongDescText);
-    %sku.updateAuthorWidget(ClosetTabs);
+    $StoreSkusLayer = SkuManager.overlaySkus($StoreSkusLayer, %sku);
+    StoreShortDescText.setBaseDesc(ClosetTabs.getShortSkuDesc(%sku));
+    StoreLongDescText.setBaseDesc(ClosetTabs.getLongSkuDesc(%sku));
+    ClosetTabs.updateAuthorWidget(%sku);
     %count = getWordCount($StoreSkusLayer);
     %itemsToAdd = 0;
     %i = 0;
     while ((%i < %count)) {
         %sku2 = getWord($StoreSkusLayer, %i);
-        if (!(%sku2.containsSku(StoreShoppingList))) {
+        if (!StoreShoppingList.containsSku(%sku2)) {
             %itemsToAdd = 1;
         }
         %i = (%i + 1.0);
     }
-    %itemsToAdd.setActive(StoreAddItemsButton);
+    StoreAddItemsButton.setActive(%itemsToAdd);
 };

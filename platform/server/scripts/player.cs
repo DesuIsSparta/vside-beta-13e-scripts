@@ -104,15 +104,15 @@ datablock ParticleData(PlayerSplashMist) {
     spinRandomMin = -(90.0);
     spinRandomMax = 500;
     textureName = "projects/common/characters/splash";
-    colors = "0.7 0.8 1.0 1.0" @ 0;
-    colors = "0.7 0.8 1.0 0.5" @ 1;
-    colors = "0.7 0.8 1.0 0.0" @ 2;
-    sizes = 0.5 @ 0;
-    sizes = 0.5 @ 1;
-    sizes = 0.8 @ 2;
-    times = 0 @ 0;
-    times = 0.5 @ 1;
-    times = 1 @ 2;
+    colors = "0.7 0.8 1.0 1.0";
+    colors = "0.7 0.8 1.0 0.5";
+    colors = "0.7 0.8 1.0 0.0";
+    sizes = 0.5;
+    sizes = 0.5;
+    sizes = 0.8;
+    times = 0;
+    times = 0.5;
+    times = 1;
 };
 datablock ParticleEmitterData(PlayerSplashMistEmitter) {
     ejectionPeriodMS = 5;
@@ -137,15 +137,15 @@ datablock ParticleData(PlayerBubbleParticle) {
     lifetimeVarianceMS = 100;
     useInvAlpha = 0;
     textureName = "projects/common/characters/splash";
-    colors = "0.7 0.8 1.0 0.4" @ 0;
-    colors = "0.7 0.8 1.0 0.4" @ 1;
-    colors = "0.7 0.8 1.0 0.0" @ 2;
-    sizes = 0.1 @ 0;
-    sizes = 0.3 @ 1;
-    sizes = 0.3 @ 2;
-    times = 0 @ 0;
-    times = 0.5 @ 1;
-    times = 1 @ 2;
+    colors = "0.7 0.8 1.0 0.4";
+    colors = "0.7 0.8 1.0 0.4";
+    colors = "0.7 0.8 1.0 0.0";
+    sizes = 0.1;
+    sizes = 0.3;
+    sizes = 0.3;
+    times = 0;
+    times = 0.5;
+    times = 1;
 };
 datablock ParticleEmitterData(PlayerBubbleEmitter) {
     ejectionPeriodMS = 1;
@@ -171,15 +171,15 @@ datablock ParticleData(PlayerFoamParticle) {
     spinRandomMin = -(90.0);
     spinRandomMax = 500;
     textureName = "projects/common/characters/splash";
-    colors = "0.7 0.8 1.0 0.20" @ 0;
-    colors = "0.7 0.8 1.0 0.20" @ 1;
-    colors = "0.7 0.8 1.0 0.00" @ 2;
-    sizes = 0.2 @ 0;
-    sizes = 0.4 @ 1;
-    sizes = 1.6 @ 2;
-    times = 0 @ 0;
-    times = 0.5 @ 1;
-    times = 1 @ 2;
+    colors = "0.7 0.8 1.0 0.20";
+    colors = "0.7 0.8 1.0 0.20";
+    colors = "0.7 0.8 1.0 0.00";
+    sizes = 0.2;
+    sizes = 0.4;
+    sizes = 1.6;
+    times = 0;
+    times = 0.5;
+    times = 1;
 };
 datablock ParticleEmitterData(PlayerFoamEmitter) {
     ejectionPeriodMS = 10;
@@ -202,15 +202,15 @@ datablock ParticleData(PlayerFoamDropletsParticle) {
     lifetimeMS = 600;
     lifetimeVarianceMS = 0;
     textureName = "projects/common/characters/splash";
-    colors = "0.7 0.8 1.0 1.0" @ 0;
-    colors = "0.7 0.8 1.0 0.5" @ 1;
-    colors = "0.7 0.8 1.0 0.0" @ 2;
-    sizes = 0.8 @ 0;
-    sizes = 0.3 @ 1;
-    sizes = 0 @ 2;
-    times = 0 @ 0;
-    times = 0.5 @ 1;
-    times = 1 @ 2;
+    colors = "0.7 0.8 1.0 1.0";
+    colors = "0.7 0.8 1.0 0.5";
+    colors = "0.7 0.8 1.0 0.0";
+    sizes = 0.8;
+    sizes = 0.3;
+    sizes = 0;
+    times = 0;
+    times = 0.5;
+    times = 1;
 };
 datablock ParticleEmitterData(PlayerFoamDropletsEmitter) {
     ejectionPeriodMS = 7;
@@ -233,15 +233,15 @@ datablock ParticleData(PlayerSplashParticle) {
     constantAcceleration = -(0.0);
     lifetimeMS = 600;
     lifetimeVarianceMS = 0;
-    colors = "0.7 0.8 1.0 1.0" @ 0;
-    colors = "0.7 0.8 1.0 0.5" @ 1;
-    colors = "0.7 0.8 1.0 0.0" @ 2;
-    sizes = 0.5 @ 0;
-    sizes = 0.5 @ 1;
-    sizes = 0.5 @ 2;
-    times = 0 @ 0;
-    times = 0.5 @ 1;
-    times = 1 @ 2;
+    colors = "0.7 0.8 1.0 1.0";
+    colors = "0.7 0.8 1.0 0.5";
+    colors = "0.7 0.8 1.0 0.0";
+    sizes = 0.5;
+    sizes = 0.5;
+    sizes = 0.5;
+    times = 0;
+    times = 0.5;
+    times = 1;
 };
 datablock ParticleEmitterData(PlayerSplashEmitter) {
     ejectionPeriodMS = 1;
@@ -269,16 +269,16 @@ datablock SplashData(PlayerSplash) {
     acceleration = -(3.0);
     texWrap = 5;
     texture = "projects/common/characters/splash";
-    emitter = PlayerSplashEmitter @ 0;
-    emitter = PlayerSplashMistEmitter @ 1;
-    colors = "0.7 0.8 1.0 0.0" @ 0;
-    colors = "0.7 0.8 1.0 0.3" @ 1;
-    colors = "0.7 0.8 1.0 0.7" @ 2;
-    colors = "0.7 0.8 1.0 0.0" @ 3;
-    times = 0 @ 0;
-    times = 0.4 @ 1;
-    times = 0.8 @ 2;
-    times = 1 @ 3;
+    emitter = PlayerSplashEmitter;
+    emitter = PlayerSplashMistEmitter;
+    colors = "0.7 0.8 1.0 0.0";
+    colors = "0.7 0.8 1.0 0.3";
+    colors = "0.7 0.8 1.0 0.7";
+    colors = "0.7 0.8 1.0 0.0";
+    times = 0;
+    times = 0.4;
+    times = 0.8;
+    times = 1;
 };
 datablock ParticleData(LightPuff) {
     dragCoefficient = 2;
@@ -290,12 +290,12 @@ datablock ParticleData(LightPuff) {
     useInvAlpha = 1;
     spinRandomMin = -(35.0);
     spinRandomMax = 35;
-    colors = "1.0 1.0 1.0 1.0" @ 0;
-    colors = "1.0 1.0 1.0 0.0" @ 1;
-    sizes = 0.1 @ 0;
-    sizes = 0.8 @ 1;
-    times = 0.3 @ 0;
-    times = 1 @ 1;
+    colors = "1.0 1.0 1.0 1.0";
+    colors = "1.0 1.0 1.0 0.0";
+    sizes = 0.1;
+    sizes = 0.8;
+    times = 0.3;
+    times = 1;
 };
 datablock ParticleEmitterData(LightPuffEmitter) {
     ejectionPeriodMS = 35;
@@ -321,9 +321,9 @@ datablock ParticleData(LiftoffDust) {
     useInvAlpha = 1;
     spinRandomMin = -(90.0);
     spinRandomMax = 500;
-    colors = "1.0 1.0 1.0 1.0" @ 0;
-    sizes = 1 @ 0;
-    times = 1 @ 0;
+    colors = "1.0 1.0 1.0 1.0";
+    sizes = 1;
+    times = 1;
 };
 datablock ParticleEmitterData(LiftoffDustEmitter) {
     ejectionPeriodMS = 5;
@@ -461,9 +461,9 @@ datablock PlayerData(PlayerBody) {
     splashFreqMod = 300;
     splashVelEpsilon = 0.6;
     bubbleEmitTime = 0.4;
-    splashEmitter = PlayerFoamDropletsEmitter @ 0;
-    splashEmitter = PlayerFoamEmitter @ 1;
-    splashEmitter = PlayerBubbleEmitter @ 2;
+    splashEmitter = PlayerFoamDropletsEmitter;
+    splashEmitter = PlayerFoamEmitter;
+    splashEmitter = PlayerBubbleEmitter;
     mediumSplashSoundVelocity = 10;
     hardSplashSoundVelocity = 20;
     exitSplashSoundVelocity = 5;
@@ -491,12 +491,12 @@ datablock PlayerData(PlayerBody) {
     groundImpactShakeDuration = 0.8;
     groundImpactShakeFalloff = 10;
     observeParameters = "0.5 4.5 4.5";
-    maxInv = 20 @ BulletAmmo;
-    maxInv = 1 @ HealthKit;
-    maxInv = 100 @ RifleAmmo;
-    maxInv = 50 @ CrossbowAmmo;
-    maxInv = 1 @ Crossbow;
-    maxInv = 1 @ Rifle;
+    maxInv = 20;
+    maxInv = 1;
+    maxInv = 100;
+    maxInv = 50;
+    maxInv = 1;
+    maxInv = 1;
     gender = "";
 };
 datablock PlayerData(PlayerF : PlayerBody) {
@@ -515,8 +515,8 @@ datablock PlayerData(PlayerM : PlayerBody) {
 };
 function armor::onAdd(%this, %obj) {
     gSetField(%this, mountVehicle, 1);
-    %this.rechargeRate.setRechargeRate(%obj);
-    0.setRepairRate(%obj);
+    %obj.setRechargeRate(%this.rechargeRate);
+    %obj.setRepairRate(0);
     return;
 };
 function armor::onRemove(%this, %obj) {
@@ -536,23 +536,23 @@ function armor::onNewDataBlock(%this, %obj) {
 };
 function armor::onMount(%this, %obj, %vehicle, %node) {
     if ((%node == 0.0)) {
-        "0 0 0 0 0 1 0".setTransform(%obj);
-        1.setActionThread(%obj, %node, %vehicle.getDataBlock().mountPose, 1);
-        %obj.lastWeapon = $WeaponSlot.getMountedImage(%obj);
-        $WeaponSlot.unmountImage(%obj);
-        %vehicle.setControlObject(%obj);
-        2.setObjectActiveImage(%obj.client, %vehicle);
+        %obj.setTransform("0 0 0 0 0 1 0");
+        %obj.setActionThread(%vehicle.getDataBlock().mountPose[%node], 1, 1);
+        %obj.lastWeapon = %obj.getMountedImage($WeaponSlot);
+        %obj.unmountImage($WeaponSlot);
+        %obj.setControlObject(%vehicle);
+        %obj.client.setObjectActiveImage(%vehicle, 2);
     }
     return;
 };
 function armor::onUnmount(%this, %obj, %vehicle, %node) {
     if ((%node == 0.0)) {
-        $WeaponSlot.mountImage(%obj, %obj.lastWeapon);
+        %obj.mountImage(%obj.lastWeapon, $WeaponSlot);
     }
     return;
 };
 function armor::doDismount(%this, %obj, %forced) {
-    if (!(%obj.isMounted())) {
+    if (!%obj.isMounted()) {
         return;
     }
     %pos = getWords(%obj.getTransform(), 0, 2);
@@ -570,7 +570,7 @@ function armor::doDismount(%this, %obj, %forced) {
     %i = 0;
     while ((%i < %numAttempts)) {
         %pos = VectorAdd(%oldPos, VectorScale(%i[%vec @ %i], 3));
-        if (%pos.checkDismountPoint(%obj, %oldPos)) {
+        if (%obj.checkDismountPoint(%oldPos, %pos)) {
             %success = %i;
             %impulseVec = %i[%vec @ %i];
         }
@@ -583,10 +583,10 @@ function armor::doDismount(%this, %obj, %forced) {
         (%i < %numAttempts);
     }
     gSetField(%this, mountVehicle, 0);
-    1.schedule(%obj, 4000, "mountVehicles");
-    %pos.setTransform(%obj);
-    VectorScale(%impulseVec, %obj.getDataBlock().mass).applyImpulse(%obj, %pos);
-    0.setPilot(%obj);
+    %obj.schedule(4000, "mountVehicles", 1);
+    %obj.setTransform(%pos);
+    %obj.applyImpulse(%pos, VectorScale(%impulseVec, %obj.getDataBlock().mass));
+    %obj.setPilot(0);
     %obj.vehicleTurret = "";
     return;
 };
@@ -595,7 +595,7 @@ function armor::onCollision(%this, %obj, %col) {
         return;
     }
     if ((%col.getClassName() $= "Item")) {
-        %col.pickup(%obj);
+        %obj.pickup(%col);
     }
     %this = %col.getDataBlock();
     if ((%this.className $= WheeledVehicleData)) {
@@ -606,20 +606,20 @@ function armor::onCollision(%this, %obj, %col) {
     }
     if (%col.mountable) {
         %node = 0;
-        %node.mountObject(%col, %obj);
+        %col.mountObject(%obj, %node);
         %obj.mVehicle = %col;
     }
     return;
 };
 function armor::onImpact(%this, %obj, %unused, %vec, %vecLen) {
-    "Impact".Damage(%obj, 0, VectorAdd(%obj.getPosition(), %vec), (%vecLen * %this.speedDamageScale));
+    %obj.Damage(0, VectorAdd(%obj.getPosition(), %vec), (%vecLen * %this.speedDamageScale), "Impact");
     return;
 };
 function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType) {
     if ((%obj.getState() $= "Dead")) {
         return;
     }
-    %damage.applyDamage(%obj);
+    %obj.applyDamage(%damage);
     %location = "Body";
     %client = %obj.client;
     if (%sourceObject) {
@@ -627,7 +627,7 @@ function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType
     %sourceClient = 0;
     %sourceObject;
     if ((%obj.getState() $= "Dead")) {
-        %location.onDeath(%client, %sourceObject, %sourceClient, %damageType);
+        %client.onDeath(%sourceObject, %sourceClient, %damageType, %location);
     }
     return;
 };
@@ -639,7 +639,7 @@ function armor::onDamage(%this, %obj, %delta) {
         if ((%flash > 0.75)) {
             %flash = 0.75;
         }
-        %flash.setDamageFlash(%obj);
+        %obj.setDamageFlash(%flash);
         if ((%delta > 10.0)) {
             %obj.playPain();
         }
@@ -649,10 +649,10 @@ function armor::onDamage(%this, %obj, %delta) {
 function armor::onDisabled(%this, %obj, %unused) {
     %obj.playDeathCry();
     %obj.playDeathAnimation();
-    0.75.setDamageFlash(%obj);
-    0.setImageTrigger(%obj, 0);
-    1.schedule(%obj, ($CorpseTimeoutValue - 1000.0), "startFade", 1000, 0);
-    "delete".schedule(%obj, $CorpseTimeoutValue);
+    %obj.setDamageFlash(0.75);
+    %obj.setImageTrigger(0, 0);
+    %obj.schedule(($CorpseTimeoutValue - 1000.0), "startFade", 1000, 0, 1);
+    %obj.schedule($CorpseTimeoutValue, "delete");
     return;
 };
 function armor::onLeaveMissionArea(%this, %obj) {
@@ -677,13 +677,13 @@ function armor::onEnterLiquid(%this, %obj, %unused, %type) {
     if ((%type == 3.0)) {
     }
     if ((%type == 4.0)) {
-        "Lava".setDamageDt(%obj, %this, $DamageLava);
+        %obj.setDamageDt(%this, $DamageLava, "Lava");
     }
     if ((%type == 5.0)) {
-        "Lava".setDamageDt(%obj, %this, $DamageHotLava);
+        %obj.setDamageDt(%this, $DamageHotLava, "Lava");
     }
     if ((%type == 6.0)) {
-        "Lava".setDamageDt(%obj, %this, $DamageCrustyLava);
+        %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
     }
     return (%type == 7.0);
 };
@@ -698,7 +698,7 @@ function armor::animationDone(%this) {
     return;
 };
 function Player::kill(%this, %damageType) {
-    %damageType.Damage(%this, 0, %this.getPosition(), 10000);
+    %this.Damage(0, %this.getPosition(), 10000, %damageType);
     return;
 };
 function Player::mountVehicles(%this, %bool) {
@@ -707,20 +707,20 @@ function Player::mountVehicles(%this, %bool) {
 };
 function Player::isPilot(%this) {
     %vehicle = %this.getObjectMount();
-    if (%vehicle && (0.getMountNodeObject(%vehicle) == %this)) {
+    if (%vehicle && (%vehicle.getMountNodeObject(0) == %this)) {
         return 1;
     }
     return 0;
 };
 function Player::playCelAnimation(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        "emote_" @ %anim.setActionThread(%this);
+        %this.setActionThread("emote_" @ %anim);
     }
     return;
 };
 function Player::playAnim(%this, %anim) {
     if (!(%this.getState() $= "Dead")) {
-        %anim.setActionThread(%this);
+        %this.setActionThread(%anim);
     }
     return;
 };
@@ -729,12 +729,12 @@ function Player::onNewDataBlock(%this, %obj) {
     return;
 };
 function AddDance(%danceObj, %sequence, %timeTillSwitch, %transitionTime) {
-    if (!(%danceObj.count)) {
+    if (!%danceObj.count) {
         %danceObj.count = 0;
     }
-    %danceObj.anim = %sequence @ %danceObj.count;
-    %danceObj.time = %timeTillSwitch @ %danceObj.count;
-    %danceObj.transition = %transitionTime @ %danceObj.count;
+    %danceObj.anim[%danceObj.count] = %sequence;
+    %danceObj.time[%danceObj.count] = %timeTillSwitch;
+    %danceObj.transition[%danceObj.count] = %transitionTime;
     %danceObj.count = (%danceObj.count + 1.0);
     return;
 };
@@ -750,11 +750,11 @@ function Player::dancePulse(%player) {
     if ((%player.danceTimeRemaining <= 0.0)) {
         echo("choosing new dance");
         %dNum = getRandom(0, (%player.danceObj.count - 1.0));
-        (%player.danceObj.transition / 1000.0 @ %dNum).setActionThread(%player, %dNum, %player.danceObj.anim, 0, 1);
-        %player.danceTimeRemaining = %dNum @ %player.danceObj.time;
-        echo("number " @ %dNum @ " chose anime" @ %dNum @ %player.danceObj.anim @ " for " @ %player.danceTimeRemaining @ " milliseconds");
+        %player.setActionThread(%player.danceObj.anim[%dNum], 0, 1, (%player.danceObj.transition[%dNum] / 1000.0));
+        %player.danceTimeRemaining = %player.danceObj.time[%dNum];
+        echo("number " @ %dNum @ " chose anime" @ %player.danceObj.anim[%dNum] @ " for " @ %player.danceTimeRemaining @ " milliseconds");
     }
-    %player.danceSchedule = "dancePulse".schedule(%player, $DANCE_PULSE_FREQ);
+    %player.danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse");
     return;
 };
 function Player::startDance(%player) {
@@ -771,7 +771,7 @@ function Player::startDance(%player) {
     AddDance(%player.danceObj, "idl3d", 3000, 500);
     echo("starting schedule");
     %player.isDancing = 1;
-    %player.danceSchedule = "dancePulse".schedule(%player, $DANCE_PULSE_FREQ);
+    %player.danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse");
     return;
 };
 function Player::stopDance(%player) {

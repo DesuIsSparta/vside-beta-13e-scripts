@@ -141,7 +141,7 @@ function userTips::showNow(%tipName) {
         %dialog = MessageBoxOkCancel(%title, %body, %cbOk, %cbCnc);
     }
     %dialog = MessageBoxOK(%title, %body, "");
-    %width.setWindowWidth(%dialog);
+    %dialog.setWindowWidth(%width);
     return %dialog;
 };
 function userTips::showOnceThisSession(%tipName) {

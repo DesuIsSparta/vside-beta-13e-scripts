@@ -1,106 +1,106 @@
 function serverCmdAddBotArmy(%client) {
-    if (!(isObject(%client.Player))) {
+    if (!isObject(%client.Player)) {
         return;
     }
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    %client.Player.getTransform().SpawnArmyETS(AIManager);
+    AIManager.SpawnArmyETS(%client.Player.getTransform());
     return;
 };
 function serverCmdAddBot(%client) {
-    if (!(isObject(%client.Player))) {
+    if (!isObject(%client.Player)) {
         return;
     }
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    %client.Player.getTransform().SpawnETS(AIManager);
+    AIManager.SpawnETS(%client.Player.getTransform());
     return;
 };
 function serverCmdRandomizeBots(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
     AIManager.RandomizeBots();
     return;
 };
 function serverCmdBotsMove(%client, %val) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
     AIManager.BotsMove = %val;
     return;
 };
 function serverCmdToggleBotsMove(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    AIManager.BotsMove = !(AIManager.BotsMove);
+    AIManager.BotsMove = !AIManager.BotsMove;
     return;
 };
 function serverCmdToggleBotsBlahBlah(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    AIManager.BotsBlahBlah = !(AIManager.BotsBlahBlah);
+    AIManager.BotsBlahBlah = !AIManager.BotsBlahBlah;
     return;
 };
 function serverCmdOneShotBotsBlahBlah(%client, %toPlayer) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
     if (%toPlayer) {
-        %client.Player.BotsBlahBlahOneShot(AIManager);
+        AIManager.BotsBlahBlahOneShot(%client.Player);
     }
     AIManager.BotsBlahBlahOneShot();
     return;
 };
 function serverCmdToggleBotsEavesdrop(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    AIManager.BotsEavesdrop = !(AIManager.BotsEavesdrop);
+    AIManager.BotsEavesdrop = !AIManager.BotsEavesdrop;
     return;
 };
 function serverCmdToggleBotsSurfing(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    AIManager.BotsSurfing = !(AIManager.BotsSurfing);
+    AIManager.BotsSurfing = !AIManager.BotsSurfing;
     return;
 };
 function serverCmdOneLove(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
     %n = 0;
     while ((%n < AIManager.numBots)) {
-        AIManager.bots.wardrobeStock(%n);
+        AIManager.bots[%n].wardrobeStock();
         %n = (%n + 1.0);
     }
     %client.Player.wardrobeStock();
     return (%n < AIManager.numBots);
 };
 function serverCmdZombiesAttack(%client, %position) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
     if ((%position $= "")) {
         %position = %client.Player.getTransform();
     }
-    %client.Player.zombiesAttack(AIManager, %position);
+    AIManager.zombiesAttack(%position, %client.Player);
     return;
 };
 function serverCmdZombiesDance(%client, %param) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
-    %param.zombiesDance(AIManager);
+    AIManager.zombiesDance(%param);
     return;
 };
 function serverCmdZombiesEmote(%client) {
-    if (!(%client.Player.isStaff())) {
+    if (!%client.Player.isStaff()) {
         return;
     }
     AIManager.zombiesEmote();
@@ -120,18 +120,18 @@ function AIManager::zombiesAttack(%this, %position, %obj) {
         %v1 = mCos(%theta) @ " " @ mSin(%theta) @ " " @ 0;
         %v1 = VectorScale(%v1, %radius);
         %v1 = VectorAdd(%v1, %position);
-        %theta.zombieAttack(%i, %this.bots, %v1, %position, %obj);
+        %this.bots[%i].zombieAttack(%v1, %position, %obj, %theta);
         %theta = (%theta + %dTheta);
         %i = (%i + 1.0);
     }
 };
 function AIPlayer::zombieAttack(%this, %position, %aimAt, %obj, %theta) {
-    "dnc" @ getRandom(1, 2).playAnim(%this);
-    0.setMoveDestination(%this, %position);
+    %this.playAnim("dnc" @ getRandom(1, 2));
+    %this.setMoveDestination(%position, 0);
     if (!(%obj $= "")) {
-        %obj.setAimObject(%this);
+        %this.setAimObject(%obj);
     }
-    %aimAt.setAimLocation(%this);
+    %this.setAimLocation(%aimAt);
     return;
 };
 function AIManager::zombiesDance(%this, %param) {
@@ -141,7 +141,7 @@ function AIManager::zombiesDance(%this, %param) {
     %this.BotsMove = 0;
     %i = 0;
     while ((%i < %this.numBots)) {
-        "dnc" @ getRandom(1, 4).playAnim(%i, %this.bots);
+        %this.bots[%i].playAnim("dnc" @ getRandom(1, 4));
         %i = (%i + 1.0);
     }
 };
@@ -152,15 +152,15 @@ function AIManager::zombiesEmote(%this) {
     %this.BotsMove = 0;
     %i = 0;
     while ((%i < %this.numBots)) {
-        %this.bots.doRandomEmote(%i);
+        %this.bots[%i].doRandomEmote();
         %i = (%i + 1.0);
     }
 };
 function AIPlayer::doAutoMoveEntry(%this) {
-    "pwve".playAnim(%this);
+    %this.playAnim("pwve");
     %pos = EntrySpawn.choosePointOnCenterPlane();
-    0.setAimObject(%this);
-    0.schedule(%this, 2500, "setMoveDestination", %pos);
+    %this.setAimObject(0);
+    %this.schedule(2500, "setMoveDestination", %pos, 0);
     return;
 };
 function serverCmdKillBots(%client) {
@@ -173,20 +173,20 @@ function AIManager::killBots(%this) {
     }
     %i = 0;
     while ((%i < %this.numBots)) {
-        %this.bots.delete(%i);
+        %this.bots[%i].delete();
         %i = (%i + 1.0);
     }
     %this.numBots = (%i < %this.numBots) @ 0;
     return;
 };
 function serverCmdBotsIdlePercent(%client, %percent) {
-    %percent.IdleBots(AIManager);
+    AIManager.IdleBots(%percent);
     return;
 };
 function AIManager::IdleBots(%this, %percent) {
     %i = 0;
     while ((%i < %this.numBots)) {
-        (getRandom(1, 99) < %percent).setAFK(%i, %this.bots);
+        %this.bots[%i].setAFK((getRandom(1, 99) < %percent));
         %i = (%i + 1.0);
     }
 };

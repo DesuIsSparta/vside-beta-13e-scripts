@@ -1,7 +1,3 @@
 function isInFUE() {
-    if ($gClosetGuiNeedsOpen) {
-    }
-    if (($gContiguousSpaceName $= "gateway")) {
-    }
-    return ($gContiguousSpaceName $= "gw");
+    return $gClosetGuiNeedsOpen || ($gContiguousSpaceName $= "gateway") || ($gContiguousSpaceName $= "gw");
 };

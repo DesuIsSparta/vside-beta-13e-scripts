@@ -10,7 +10,7 @@ function Math::isInLineOfSight(%src, %trg, %exempt, %checkForPlayers, %onClient)
     if (%checkForPlayers) {
         %mask = (%mask | $TypeMasks::PlayerObjectType);
     }
-    return !(containerRayCast(%src, %trg, %mask, %exempt, %onClient));
+    return !containerRayCast(%src, %trg, %mask, %exempt, %onClient);
 };
 function SceneObject::localToWorldTransform(%this, %dry) {
     %mat = %this.getTransform();
@@ -126,16 +126,16 @@ function secondsToHHMMSS(%seconds) {
     return %ret;
 };
 function SMHDtoSeconds(%seconds, %minutes, %hours, %days) {
-    if (!(isDefined("%days"))) {
+    if (!isDefined("%days")) {
         %days = 0;
     }
-    if (!(isDefined("%hours"))) {
+    if (!isDefined("%hours")) {
         %hours = 0;
     }
-    if (!(isDefined("%minutes"))) {
+    if (!isDefined("%minutes")) {
         %minutes = 0;
     }
-    if (!(isDefined("%seconds"))) {
+    if (!isDefined("%seconds")) {
         %seconds = 0;
         error(getScopeName() @ " " @ "- no arguments." @ " " @ getTrace());
     }

@@ -1,6 +1,6 @@
 function newTGFGoRound(%name) {
     %obj = newThumbnailsGoRound(%name);
-    "TGFGoRound".bindClassName(%obj);
+    %obj.bindClassName("TGFGoRound");
     return %obj;
 };
 function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
@@ -9,20 +9,20 @@ function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
         profile = ETSNonModalProfile;
         extent = %container.getExtent();
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %container.mBitmapCtrl = %ctrl;
     %ctrlB = new GuiControl("") {
         profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
         position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 10.0);
     };
-    %ctrlB.add(%container);
+    %container.add(%ctrlB);
     %ctrl = new GuiMLTextCtrl("") {
         profile = ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundLilThumb";
     };
-    %ctrl.add(%ctrlB);
+    %ctrlB.add(%ctrl);
     %container.mTextCtrl = %ctrl;
 };
 function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
@@ -32,20 +32,20 @@ function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
         position = "0 0";
         extent = %container.getExtent();
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
     %container.mBitmapCtrl = %ctrl;
     %ctrlB = new GuiControl("") {
         profile = EtsDarkBorderlessBoxProfile;
         extent = %container.getExtent();
         position = 0 @ " " @ (getWord(%container.getExtent(), 1) - 18.0);
     };
-    %ctrlB.add(%container);
+    %container.add(%ctrlB);
     %ctrl = new GuiMLTextCtrl("") {
         profile = ETSNonModalProfile;
         extent = %ctrlB.getExtent();
         style = "tgfGoRoundBigThumb";
     };
-    %ctrl.add(%ctrlB);
+    %ctrlB.add(%ctrl);
     %container.mTextCtrl = %ctrl;
     %ctrl = new GuiBitmapButtonCtrl("") {
         position = "-2 -2";
@@ -54,25 +54,25 @@ function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
         canHilite = 0;
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
     };
-    %ctrl.add(%container);
+    %container.add(%ctrl);
 };
 function TGFGoRound::rebuildContainer_Deets(%this, %container) {
     %container.deleteMembers();
 };
 function TGFGoRound::newContentLilThumb(%this, %container) {
-    if (!(isObject(%this.mItemsList))) {
+    if (!isObject(%this.mItemsList)) {
         error(getScopeName() @ " " @ "- no list" @ " " @ getTrace());
         return;
     }
-    %item = %this.mItemsList.mCurrentItem.getValue(%this.mItemsList);
-    if (!(isObject(%item))) {
+    %item = %this.mItemsList.getValue(%this.mItemsList.mCurrentItem);
+    if (!isObject(%item)) {
         error(getScopeName() @ " " @ "- bad item" @ " " @ %this.mItemsList.mCurrentItem @ " " @ getTrace());
         %this.mItemsList.mCurrentItem = 0;
         return;
     }
     if ((%item.relationType $= "")) {
     }
-    if (%item.userName.hasKey(UserListFriends)) {
+    if (UserListFriends.hasKey(%item.userName)) {
         %item.relationType = "friend";
     }
     %userName = %item.userName;
@@ -80,10 +80,10 @@ function TGFGoRound::newContentLilThumb(%this, %container) {
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
     if (!(%userName $= "")) {
         %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=M";
-        %avatarPicURL.downloadAndApplyBitmap(%container.mBitmapCtrl);
+        %container.mBitmapCtrl.downloadAndApplyBitmap(%avatarPicURL);
     }
-    "platform/client/ui/tgf/tgf_profile_default".setBitmap(%container.mBitmapCtrl);
-    %friendColorTag @ %userName.setTextWithStyle(%container.mTextCtrl);
+    %container.mBitmapCtrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
+    %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
     %container.mItem = %item;
     %this.mItemsList.mCurrentItem = ((%this.mItemsList.mCurrentItem + 1.0) % %this.mItemsList.size());
 };
@@ -96,21 +96,21 @@ function TGFGoRound::newContentBigThumb(%this) {
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
     if (!(%userName $= "")) {
         %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=L";
-        %avatarPicURL.downloadAndApplyBitmap(0.getObject(%container));
+        %container.getObject(0).downloadAndApplyBitmap(%avatarPicURL);
     }
-    %lilThumbContainer.mBitmapCtrl.getBitmap().setBitmap(%container.mBitmapCtrl);
-    %friendColorTag @ %userName.setTextWithStyle(%container.mTextCtrl);
+    %container.mBitmapCtrl.setBitmap(%lilThumbContainer.mBitmapCtrl.getBitmap());
+    %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
     %container.mItem = %item;
     %this.newContentDeets();
 };
 function TGFGoRound::newContentDeets(%this) {
 };
 function TGFGoRound::onBigThumbClick(%this, %bigThumbContainer) {
-    %bigThumbContainer.mItem.viewItem(%this);
+    %this.viewItem(%bigThumbContainer.mItem);
 };
 function TGFGoRound::viewItem(%this, %item) {
     %this.pause();
-    %item.DoDetails(geTGF, "main");
+    geTGF.DoDetails("main", %item);
 };
 function geTGFGoRound_DeetsMLText::onURL(%this, %url) {
     %type = firstWord(%url);
@@ -119,15 +119,15 @@ function geTGFGoRound_DeetsMLText::onURL(%this, %url) {
         return;
     }
     %userName = restWords(%url);
-    %userName.viewProfile(geTGFGoRound);
+    geTGFGoRound.viewProfile(%userName);
 };
 function TGFGoRound::setItemList(%this, %list) {
     %this.mItemsList = %list;
     %list.mCurrentItem = 0;
     %n = 0;
     while ((%n < (%this.mLilThumbsNumAcross * 2.0))) {
-        %lilThumbContainer = %n.getObject(%this.mLilThumbsContainer);
-        %lilThumbContainer.newContentLilThumb(%this);
+        %lilThumbContainer = %this.mLilThumbsContainer.getObject(%n);
+        %this.newContentLilThumb(%lilThumbContainer);
         %n = (%n + 1.0);
     }
     %this.newContentBigThumb();

@@ -217,15 +217,15 @@ package common {
 };
 
 function findRequestStatus(%managerRequest) {
-    if ("status".hasKey(%managerRequest)) {
-        return "status".getValue(%managerRequest);
+    if (%managerRequest.hasKey("status")) {
+        return %managerRequest.getValue("status");
     }
     %stati = "invalid fail serverfail inactive alreadyloggedin banned suspended upgrade_required upgrade_available success overloaded sendstart boot";
     %count = getWordCount(%stati);
     %i = 0;
     while ((%i <= %count)) {
         %astatus = getWord(%stati, %i);
-        if (%astatus.hasKey(%managerRequest)) {
+        if (%managerRequest.hasKey(%astatus)) {
             return %astatus;
         }
         %i = (%i + 1.0);

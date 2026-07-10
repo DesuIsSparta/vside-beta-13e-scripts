@@ -3,18 +3,18 @@ function TestLoginRequest::onError(%this, %unused, %unused) {
 function TestLoginRequest::onDone(%this, %unused) {
     echo("status:          " @ %this.status());
     echo("status code:     " @ %this.statusCode());
-    echo("token:           " @ "token".getValue(%this));
-    echo("gender:          " @ "gender".getValue(%this));
-    echo("registered_user: " @ "registered_user".getValue(%this));
-    echo("user_type:       " @ "user_type".getValue(%this));
-    echo("permissions:     " @ "permissions".getValue(%this));
-    echo("outfit:          " @ "outfit".getValue(%this));
-    echo("cur_outfit_name: " @ "cur_outfit_name".getValue(%this));
-    echo("bodyattrs:       " @ "bodyattrs".getValue(%this));
-    echo("inventory:       " @ "inventory".getValue(%this));
-    echo("acctbal:         " @ "acctbal".getValue(%this));
-    echo("activated:       " @ "activated".getValue(%this));
-    echo("hasemail:        " @ "hasemail".getValue(%this));
+    echo("token:           " @ %this.getValue("token"));
+    echo("gender:          " @ %this.getValue("gender"));
+    echo("registered_user: " @ %this.getValue("registered_user"));
+    echo("user_type:       " @ %this.getValue("user_type"));
+    echo("permissions:     " @ %this.getValue("permissions"));
+    echo("outfit:          " @ %this.getValue("outfit"));
+    echo("cur_outfit_name: " @ %this.getValue("cur_outfit_name"));
+    echo("bodyattrs:       " @ %this.getValue("bodyattrs"));
+    echo("inventory:       " @ %this.getValue("inventory"));
+    echo("acctbal:         " @ %this.getValue("acctbal"));
+    echo("activated:       " @ %this.getValue("activated"));
+    echo("hasemail:        " @ %this.getValue("hasemail"));
 };
 function TestBootRequest::onDone(%this) {
     schedule(1000, 0, Login);
@@ -25,14 +25,14 @@ function bootThenLogin() {
     }
     %bootRequest = new ManagerRequest(TestBootRequest);
     if (isObject(MissionCleanup)) {
-        %bootRequest.add(MissionCleanup);
+        MissionCleanup.add(%bootRequest);
     }
     %url = $Net::SecureClientServiceURL @ "/Boot";
     %url = %url @ "?user=doppeladmin&password=doppeladmin";
-    %url.setURL(%bootRequest);
-    1.setVerbose(%bootRequest);
+    %bootRequest.setURL(%url);
+    %bootRequest.setVerbose(1);
     if (%bootRequest.start()) {
-        %bootRequest.add(CURLSimGroup);
+        CURLSimGroup.add(%bootRequest);
     }
     %bootRequest.delete();
 };
@@ -42,12 +42,12 @@ function Login() {
     }
     %loginRequest = new ManagerRequest(TestLoginRequest);
     if (isObject(MissionCleanup)) {
-        %loginRequest.add(MissionCleanup);
+        MissionCleanup.add(%loginRequest);
     }
-    "http://s-envmanager.eviltwinstudios.net/envmanager/envclient/login?user=doppeladmin&password=doppeladmin&build=unknown&version=unknown".setURL(%loginRequest);
-    1.setProgress(%loginRequest);
+    %loginRequest.setURL("http://s-envmanager.eviltwinstudios.net/envmanager/envclient/login?user=doppeladmin&password=doppeladmin&build=unknown&version=unknown");
+    %loginRequest.setProgress(1);
     if (%loginRequest.start()) {
-        %loginRequest.add(CURLSimGroup);
+        CURLSimGroup.add(%loginRequest);
     }
     %loginRequest.delete();
 };

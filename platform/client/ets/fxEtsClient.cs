@@ -4,7 +4,7 @@ $fxEts::BrightnessFlashTimerPeriod = 100;
 $fxEts::BrightnessFlashTimerID = 0;
 $fxEts::BrightnessFlashDecay = 0.96;
 function fxEts::updateExposureFilter() {
-    if (!(isObject(ExposureFilter))) {
+    if (!isObject(ExposureFilter)) {
         return;
     }
     if (($UserPref::Video::exposureQualitySetting == 0.0)) {
@@ -30,22 +30,22 @@ function fxEts::updateExposureFilter() {
     if ((VectorDist(%colFin, "0.5 0.5 0.5") < 0.01)) {
         %atNeutral = 1;
     }
-    !(%atNeutral).setVisible(ExposureFilter);
-    !(%atNeutral).setVisible(ExposureFilterSelfView);
-    if (!(isObject(EditorExposureFilter))) {
+    ExposureFilter.setVisible(!%atNeutral);
+    ExposureFilterSelfView.setVisible(!%atNeutral);
+    if (!isObject(EditorExposureFilter)) {
         return;
     }
     EditorExposureFilter.exposure = %colFin;
-    !(%atNeutral).setVisible(EditorExposureFilter);
+    EditorExposureFilter.setVisible(!%atNeutral);
 };
 function fxEts::updateTOD(%hod) {
     fxEts::updateTODColor(fxEts::getColorForTOD(((%hod * 60.0) * 60.0)));
     if (isObject(DevOptsTextTOD)) {
-        mFloor((%hod + 0.5)).setValue(DevOptsTextTOD);
+        DevOptsTextTOD.setValue(mFloor((%hod + 0.5)));
         %r = (mFloor(((getWord($fxEts::todColorMod, 0) * 100.0) + 0.5)) / 100.0);
         %g = (mFloor(((getWord($fxEts::todColorMod, 1) * 100.0) + 0.5)) / 100.0);
         %b = (mFloor(((getWord($fxEts::todColorMod, 2) * 100.0) + 0.5)) / 100.0);
-        %r @ " " @ %g @ " " @ %b.setValue(DevOptsEditTODColor);
+        DevOptsEditTODColor.setValue(%r @ " " @ %g @ " " @ %b);
     }
 };
 function fxEts::updateTODColor(%color) {
@@ -53,7 +53,7 @@ function fxEts::updateTODColor(%color) {
     fxEts::updateExposureFilter();
 };
 function fxEts::TODTick() {
-    if (!(isObject(ExposureFilter))) {
+    if (!isObject(ExposureFilter)) {
         return;
     }
     %cityTOD = (getSimTime() + $Sim::TimeDeltaToCity);
@@ -67,8 +67,8 @@ function fxEts::TODTick() {
     }
     fxEts::updateTOD(%cityHOD);
     if (isObject(DevOptsSliderTOD)) {
-        %cityHOD.setValue(DevOptsSliderTOD);
-        mFloor((%cityHOD + 0.5)).setValue(DevOptsTextTOD);
+        DevOptsSliderTOD.setValue(%cityHOD);
+        DevOptsTextTOD.setValue(mFloor((%cityHOD + 0.5)));
     }
     fxEts::updateExposureFilter();
 };
@@ -140,7 +140,7 @@ function fxEts::getColorForTOD(%sod) {
 function fxEts::BrightnessFlashTick() {
     $fxEts::BrightnessFlashColor = ColorScale($fxEts::BrightnessFlashColor, $fxEts::BrightnessFlashDecay);
     %doMore = (ColorLenSquared($fxEts::BrightnessFlashColor) > 0.0001);
-    if (!(%doMore)) {
+    if (!%doMore) {
         $fxEts::BrightnessFlashColor = "0 0 0 0";
     }
     fxEts::updateExposureFilter();

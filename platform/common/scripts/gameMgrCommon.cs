@@ -16,7 +16,7 @@ $gameMgr::CUSTOM_GAME = 1;
 if (isObject(MissionCleanup)) {
     %n = 0;
     while ((%n < $gameMgr::GAME_TYPES_COUNT)) {
-        %n[$gameMgr::GAME_TYPES @ %n].add(MissionCleanup);
+        MissionCleanup.add(%n[$gameMgr::GAME_TYPES @ %n]);
         %n = (%n + 1.0);
     }
 }
@@ -33,5 +33,5 @@ $gameMgr::GameStatus::WAITING = 0;
 $gameMgr::GameStatus::STARTED = 1;
 $gameMgr::GameStatus::POST_GAME = 2;
 function SimSet::getByNameField(%this, %name) {
-    return %name.getByField(%this, "name");
+    return %this.getByField("name", %name);
 };
