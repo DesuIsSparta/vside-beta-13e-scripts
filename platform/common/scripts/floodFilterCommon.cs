@@ -58,23 +58,29 @@ $floodFilter::inPeriod[$tmp::eventName] = ((1000.0 * 60.0) * 10.0);
 $floodFilter::penalty[$tmp::eventName] = 0;
 $floodFilter::message[$tmp::eventName] = "FLOOD PROTECTION: Don't yell so much!";
 $floodFilter::exemptPermission[$tmp::eventName] = "flood";
-function testFlooding(%player, %eventType, %testExempt) {
-    if (!isObject(%player)) {
-        if (!$AmClient) {
+function testFlooding(%player, %eventType, %testExempt)
+{
+    if (!isObject(%player))
+    {
+        if (!$AmClient)
+        {
             error(getScopeName() @ " " @ "- called without an object on server. (allowing action)" @ " " @ getTrace());
             return 0;
         }
-        if (isObject($player)) {
+        if (isObject($player))
+        {
             error(getScopeName() @ " " @ "- called without an object when $player is valid (allowing action)" @ " " @ getTrace());
             return 0;
         }
         %player = safeEnsureScriptObject("ScriptObject", "gConnectionlessFloodingProxy");
         %testExempt = 0;
     }
-    if (%player.isClassAIPlayer()) {
+    if (%player.isClassAIPlayer())
+    {
         return 0;
     }
-    if (%testExempt && testFloodingExempt(%player, %eventType)) {
+    if (%testExempt && testFloodingExempt(%player, %eventType))
+    {
         return 0;
     }
     %erOld = %player.eventRecord[%eventType];
@@ -82,36 +88,45 @@ function testFlooding(%player, %eventType, %testExempt) {
     %newNum = 0;
     %expiredTime = (getSimTime() - $floodFilter::inPeriod[%eventType]);
     %n = (getWordCount(%erOld) - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %eventTime = getWord(%erOld, %n);
-        if ((%eventTime >= %expiredTime)) {
+        if ((%eventTime >= %expiredTime))
+        {
             %erNew = %eventTime @ " " @ %erNew;
             %newNum = (%newNum + 1.0);
         }
         %n = (%n - 1.0);
     }
-    if ((%newNum >= $floodFilter::maxEvents[%eventType])) {
-        if (($floodFilter::penalty[%eventType] > 0.0)) {
+    if ((%newNum >= $floodFilter::maxEvents[%eventType]))
+    {
+        if (($floodFilter::penalty[%eventType] > 0.0))
+        {
             %erNew = (getSimTime() + $floodFilter::penalty[%eventType]) @ " " @ %erNew;
             (%n >= 0.0);
         }
         %player.eventRecord[%eventType] = %erNew;
         return 1;
-    } else {
+    }
+    else
+    {
         %erNew = getSimTime() @ " " @ %erNew;
         %player.eventRecord[%eventType] = %erNew;
         return 0;
     }
-};
-function testFloodingExempt(%player, %eventType) {
+}
+function testFloodingExempt(%player, %eventType)
+{
     %count = getWordCount($floodFilter::exemptPermission[%eventType]);
     %idx = 0;
-    while ((%idx < %count)) {
+    while ((%idx < %count))
+    {
         %permission = getWord($floodFilter::exemptPermission[%eventType], %idx);
-        if (%player.rolesPermissionCheckNoWarn(%permission)) {
+        if (%player.rolesPermissionCheckNoWarn(%permission))
+        {
             return 1;
         }
         %idx = (%idx + 1.0);
     }
     return 0;
-};
+}

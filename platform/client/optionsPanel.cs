@@ -1,14 +1,18 @@
 $OptionsPanel::scheduledPersistID = 0;
-if (!isObject(OptionsPanelTabs)) {
+if (!isObject(OptionsPanelTabs))
+{
     new ScriptObject(OptionsPanelTabs) {
         class = "TabControl";
     };
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(OptionsPanelTabs);
     }
 }
-function OptionsPanelTabs::setup(%this) {
-    if (!%this.initialized) {
+function OptionsPanelTabs::setup(%this)
+{
+    if (!%this.initialized)
+    {
         %this.Initialize(OptionsPanelTabContainer, "88 33", "", "0 0", "vertical");
         %this.newTab("social", "platform/client/buttons/settings_social");
         %this.newTab("audio", "platform/client/buttons/settings_audio");
@@ -19,10 +23,12 @@ function OptionsPanelTabs::setup(%this) {
         %this.hideTabWithName("vip");
         %this.fillTabs();
     }
-};
-function OptionsPanelTabs::fillTabs(%this) {
+}
+function OptionsPanelTabs::fillTabs(%this)
+{
     %i = 0;
-    while ((%i < %this.numTabs)) {
+    while ((%i < %this.numTabs))
+    {
         %tab = %this.tabs[%i];
         %tab.setProfile(ETSNonModalProfile);
         %tab.clear();
@@ -55,13 +61,16 @@ function OptionsPanelTabs::fillTabs(%this) {
     %this.fillVisualTab();
     %this.fillTabsTab();
     %this.fillVIPTab();
-};
-function OptionsPanelTabs::tabSelected(%this, %tab) {
-    if (%tab.hasFieldValue("initialFirstResponder") && isObject(%tab.initialFirstResponder)) {
+}
+function OptionsPanelTabs::tabSelected(%this, %tab)
+{
+    if (%tab.hasFieldValue("initialFirstResponder") && isObject(%tab.initialFirstResponder))
+    {
         %tab.initialFirstResponder.makeFirstResponder(1);
     }
-};
-function OptionsPanelTabs::fillSocialTab(%this) {
+}
+function OptionsPanelTabs::fillSocialTab(%this)
+{
     %tab = %this.getTabWithName("social");
     %originX = 10;
     %originY = 0;
@@ -421,8 +430,9 @@ function OptionsPanelTabs::fillSocialTab(%this) {
         buttonType = "PushButton";
     };);
     %tab.initialFirstResponder = DefaultAwayMsgEdit;
-};
-function OptionsPanelTabs::fillAudioTab(%this) {
+}
+function OptionsPanelTabs::fillAudioTab(%this)
+{
     %tab = %this.getTabWithName("audio");
     %originX = 10;
     %originY = 10;
@@ -593,8 +603,9 @@ function OptionsPanelTabs::fillAudioTab(%this) {
         groupNum = -1;
         buttonType = "PushButton";
     };);
-};
-function OptionsPanelTabs::fillVisualTab(%this) {
+}
+function OptionsPanelTabs::fillVisualTab(%this)
+{
     %tab = %this.getTabWithName("visual");
     %originX = 10;
     %originY = 10;
@@ -957,8 +968,9 @@ function OptionsPanelTabs::fillVisualTab(%this) {
         buttonType = "PushButton";
     };);
     %tab.initialFirstResponder = RenderQualityPopup;
-};
-function OptionsPanelTabs::fillTabsTab(%this) {
+}
+function OptionsPanelTabs::fillTabsTab(%this)
+{
     %tab = %this.getTabWithName("tabs");
     %originX = 10;
     %originY = 10;
@@ -1270,8 +1282,9 @@ function OptionsPanelTabs::fillTabsTab(%this) {
         groupNum = -1;
         buttonType = "PushButton";
     };);
-};
-function OptionsPanelTabs::fillVIPTab(%this) {
+}
+function OptionsPanelTabs::fillVIPTab(%this)
+{
     %tab = %this.getTabWithName("vip");
     %originX = 10;
     %originY = 10;
@@ -1587,12 +1600,14 @@ function OptionsPanelTabs::fillVIPTab(%this) {
         buttonType = "PushButton";
     };);
     %tab.initialFirstResponder = FarNameOpacityTextEditCtrl;
-};
-function OptionsPanelTabs::wakeUp(%this) {
+}
+function OptionsPanelTabs::wakeUp(%this)
+{
     %this.setup();
     %this.selectCurrentTab();
-};
-function OptionsPanelTabs::restoreSocialDefaults(%this) {
+}
+function OptionsPanelTabs::restoreSocialDefaults(%this)
+{
     $UserPref::Player::awayMessage = $Pref::Player::defaultAwayMessage;
     $UserPref::Chat::ShowTyping = $Defaults::UserPref::Chat::ShowTyping;
     $UserPref::Player::TeleportBlock = $Defaults::UserPref::Player::TeleportBlock;
@@ -1606,20 +1621,23 @@ function OptionsPanelTabs::restoreSocialDefaults(%this) {
     $UserPref::Player::GiftsPermissionStrangers = $Defaults::UserPref::Player::GiftsPermissionStrangers;
     OptionsPanel.readSettings();
     schedulePersist();
-};
-function OptionsPanelTabs::restoreAudioDefaults(%this) {
+}
+function OptionsPanelTabs::restoreAudioDefaults(%this)
+{
     $UserPref::Audio::masterVolume = $Defaults::UserPref::Audio::masterVolume;
     $UserPref::Audio::channelVolume1 = $Defaults::UserPref::Audio::channelVolume1;
     $UserPref::Audio::channelVolume2 = $Defaults::UserPref::Audio::channelVolume2;
-    if (($UserPref::Audio::mute != $Defaults::UserPref::Audio::mute)) {
+    if (($UserPref::Audio::mute != $Defaults::UserPref::Audio::mute))
+    {
         Music::toggleMute();
     }
     $UserPref::Audio::NotifyChat = $Defaults::UserPref::Audio::NotifyChat;
     $UserPref::Audio::NotifyWhisper = $Defaults::UserPref::Audio::NotifyWhisper;
     OptionsPanel.readSettings();
     schedulePersist();
-};
-function OptionsPanelTabs::restoreVisualDefaults(%this) {
+}
+function OptionsPanelTabs::restoreVisualDefaults(%this)
+{
     $UserPref::Video::Exposure = $Defaults::UserPref::Video::Exposure;
     $UserPref::Video::renderQualitySetting = $Defaults::UserPref::Video::renderQuality;
     $UserPref::Video::shadowQualitySetting = $Defaults::UserPref::Video::shadowQuality;
@@ -1634,13 +1652,15 @@ function OptionsPanelTabs::restoreVisualDefaults(%this) {
     AccountBalanceHud.update();
     $UserPref::UI::ShowTooltips = $Defaults::UserPref::UI::ShowTooltips;
     ButtonBar.setAutoHiding($Defaults::UserPref::ETS::ButtonBar::AutoHide);
-    if (isObject(gMessageBoxDontShow)) {
+    if (isObject(gMessageBoxDontShow))
+    {
         gMessageBoxDontShow.clear();
     }
     OptionsPanel.readSettings();
     schedulePersist();
-};
-function OptionsPanelTabs::restoreTabsDefaults(%this) {
+}
+function OptionsPanelTabs::restoreTabsDefaults(%this)
+{
     $Defaults::UserPref::HudTabs::AutoOpen["music"][$UserPref::HudTabs::AutoOpen @ "music"] = $Defaults::UserPref::HudTabs::AutoOpen["music"];
     $Defaults::UserPref::HudTabs::AutoClose["music"][$UserPref::HudTabs::AutoClose @ "music"] = $Defaults::UserPref::HudTabs::AutoClose["music"];
     $Defaults::UserPref::HudTabs::AutoOpen["affinity"][$UserPref::HudTabs::AutoOpen @ "affinity"] = $Defaults::UserPref::HudTabs::AutoOpen["affinity"];
@@ -1652,18 +1672,23 @@ function OptionsPanelTabs::restoreTabsDefaults(%this) {
     $Defaults::UserPref::HudTabs::AutoOpen["tutorial"][$UserPref::HudTabs::AutoOpen @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoOpen["tutorial"];
     $Defaults::UserPref::HudTabs::AutoClose["tutorial"][$UserPref::HudTabs::AutoClose @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoClose["tutorial"];
     %currentTab = HudTabs.getCurrentTab();
-    if ((%currentTab $= "")) {
-    } else {
+    if ((%currentTab $= ""))
+    {
+    }
+    else
+    {
     }
     %tabName = %currentTab.name;
     "";
-    if ($UserPref::HudTabs::AutoClose[%tabName]) {
+    if ($UserPref::HudTabs::AutoClose[%tabName])
+    {
         HudTabs.autoHide();
     }
     OptionsPanel.readSettings();
     schedulePersist();
-};
-function OptionsPanelTabs::restoreVIPDefaults(%this) {
+}
+function OptionsPanelTabs::restoreVIPDefaults(%this)
+{
     performerPanelRadioButtonForceField0.performClick();
     $UserPref::Display::hideNames = $Defaults::UserPref::Display::hideNames;
     $UserPref::Display::hideChat = $Defaults::UserPref::Display::hideChat;
@@ -1678,55 +1703,72 @@ function OptionsPanelTabs::restoreVIPDefaults(%this) {
     geDFShowDefaults.performClick();
     OptionsPanel.readSettings();
     schedulePersist();
-};
-function OptionsPanelTabs::onChangedHideChat(%this) {
-    if ($UserPref::Display::hideChat) {
+}
+function OptionsPanelTabs::onChangedHideChat(%this)
+{
+    if ($UserPref::Display::hideChat)
+    {
         ConvBub.close(0);
         SystemMessageDialog.close();
-    } else {
-        if ((ConvBubVecCtrlMsgVec.getNumLines() > 0.0)) {
+    }
+    else
+    {
+        if ((ConvBubVecCtrlMsgVec.getNumLines() > 0.0))
+        {
             ConvBub.open();
         }
     }
     schedulePersist();
-};
-function OptionsPanelTabs::onChangedDFDebugMode(%this) {
+}
+function OptionsPanelTabs::onChangedDFDebugMode(%this)
+{
     geDFDebugCtrls.setVisible($Pref::DF::debugMode);
     DF_DebugMode($Pref::DF::debugMode);
-};
-function OptionsPanelTabs::onChangedDFShowDefaults(%this) {
+}
+function OptionsPanelTabs::onChangedDFShowDefaults(%this)
+{
     DF_ShowDefaults($Pref::DF::showDefaults);
-};
-function OptionsPanelTabs::onChangedShowNames(%this) {
+}
+function OptionsPanelTabs::onChangedShowNames(%this)
+{
     $UserPref::Display::hideNames = !HUDShowNamesCheckBox.getValue();
     TheBadgesHud.setVisible(!$UserPref::Display::hideNames);
-};
-function OptionsPanel::open(%this) {
+}
+function OptionsPanel::open(%this)
+{
     %this.readSettings();
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
-    if ($player) {
+    if ($player)
+    {
     }
-    if ($player.rolesPermissionCheckNoWarn("quietHUD") || $player.rolesPermissionCheckNoWarn("farNameOpacity")) {
+    if ($player.rolesPermissionCheckNoWarn("quietHUD") || $player.rolesPermissionCheckNoWarn("farNameOpacity"))
+    {
         OptionsPanelTabs.showTabWithName("vip");
-    } else {
-        if ((OptionsPanelTabs.getCurrentTab().name $= "vip")) {
+    }
+    else
+    {
+        if ((OptionsPanelTabs.getCurrentTab().name $= "vip"))
+        {
             OptionsPanelTabs.selectTabAtIndex(0);
         }
         OptionsPanelTabs.hideTabWithName("vip");
     }
     OptionsPanelTabs.selectCurrentTab();
-};
-function OptionsPanel::close(%this) {
+}
+function OptionsPanel::close(%this)
+{
     %this.applySettings();
     %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
-};
-function OptionsPanel::wakeUp(%this) {
+}
+function OptionsPanel::wakeUp(%this)
+{
     OptionsPanelTabs.wakeUp();
-};
-function OptionsPanel::Initialize(%this) {
+}
+function OptionsPanel::Initialize(%this)
+{
     OptionsPanelTabs.setup();
     TwoPlayerActionsFriendsPopup.clear();
     TwoPlayerActionsFriendsPopup.add(" Accept", 0);
@@ -1772,15 +1814,19 @@ function OptionsPanel::Initialize(%this) {
     FontSizePopup.add(" Medium", 1);
     FontSizePopup.add(" Large", 2);
     %this.readSettings();
-};
-function schedulePersist() {
-    if (($OptionsPanel::scheduledPersistID != 0.0)) {
+}
+function schedulePersist()
+{
+    if (($OptionsPanel::scheduledPersistID != 0.0))
+    {
         cancel($OptionsPanel::scheduledPersistID);
     }
     $OptionsPanel::scheduledPersistID = schedule(4000, 0, "persistOptionsPanelSettingsToManager");
-};
-function persistOptionsPanelSettingsToManager() {
-    if (!haveValidManagerHost() || !haveValidToken()) {
+}
+function persistOptionsPanelSettingsToManager()
+{
+    if (!haveValidManagerHost() || !haveValidToken())
+    {
         return;
     }
     gUserPropMgrClient.setProperty($Player::Name, "volumeMaster", $UserPref::Audio::masterVolume);
@@ -1830,7 +1876,8 @@ function persistOptionsPanelSettingsToManager() {
     gUserPropMgrClient.setProperty($Player::Name, "alertOnLogError", $UserPref::debug::alertOnLogError);
     %maxNumberKeyCombos = getFieldCount($Defaults::UserPref::emotes::defaultKeyCombinations);
     %i = (%maxNumberKeyCombos - 1.0);
-    while ((%i >= 0.0)) {
+    while ((%i >= 0.0))
+    {
         %keyCombo = getField($Defaults::UserPref::emotes::defaultKeyCombinations, %i);
         gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_f_" @ %keyCombo, $UserPref::emotes["f",%keyCombo]);
         gUserPropMgrClient.setProperty($Player::Name, "favoriteActionsKey_m_" @ %keyCombo, $UserPref::emotes["m",%keyCombo]);
@@ -1839,21 +1886,26 @@ function persistOptionsPanelSettingsToManager() {
     $OptionsPanel::scheduledPersistID = 0;
     (%i >= 0.0);
     legacyPersistOptionsPanelSettingsToManager();
-};
-function LegacySaveSettingsRequest::onDone(%this) {
+}
+function LegacySaveSettingsRequest::onDone(%this)
+{
     log("communication", "info", "settings successfully saved to manager");
     %this.schedule(0, "delete");
-};
-function LegacySaveSettingsRequest::onError(%this, %unused, %errName) {
+}
+function LegacySaveSettingsRequest::onError(%this, %unused, %errName)
+{
     log("communication", "info", "error saving settings: " @ %errName);
     %this.schedule(0, "delete");
-};
-function legacyPersistOptionsPanelSettingsToManager() {
-    if (!haveValidManagerHost() || !haveValidToken()) {
+}
+function legacyPersistOptionsPanelSettingsToManager()
+{
+    if (!haveValidManagerHost() || !haveValidToken())
+    {
         return;
     }
     %request = new ManagerRequest(LegacySaveSettingsRequest);
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/SaveSettings";
@@ -1866,8 +1918,9 @@ function legacyPersistOptionsPanelSettingsToManager() {
     log("communication", "debug", "save settings: " @ %url);
     %request.setURL(%url);
     %request.start();
-};
-function OptionsPanel::readSettings(%this) {
+}
+function OptionsPanel::readSettings(%this)
+{
     DefaultAwayMsgEdit.setValue($UserPref::Player::awayMessage);
     DefaultAwayMsgEdit.applySettings();
     ShowTypingCheckBox.setValue($UserPref::Chat::ShowTyping);
@@ -1918,128 +1971,168 @@ function OptionsPanel::readSettings(%this) {
     FarNameOpacityTextEditCtrl.setValue($UserPref::Display::farNameOpacity);
     optionsPanelAlertOnWarningCheckBox.setValue($UserPref::debug::alertOnLogWarning);
     optionsPanelAlertOnErrorCheckBox.setValue($UserPref::debug::alertOnLogError);
-};
-function OptionsPanel::applySettings(%this) {
+}
+function OptionsPanel::applySettings(%this)
+{
     DefaultAwayMsgEdit.applySettings();
     schedulePersist();
-};
-function OptionsPanel::showBrightnessControls(%this, %flag) {
+}
+function OptionsPanel::showBrightnessControls(%this, %flag)
+{
     %this.showBrightnessControls = %flag;
-    if (isObject(BrightnessLabel)) {
+    if (isObject(BrightnessLabel))
+    {
     }
-    if (isObject(BrightnessSlider)) {
+    if (isObject(BrightnessSlider))
+    {
         BrightnessLabel.setVisible(%flag);
         BrightnessSlider.setVisible(%flag);
     }
-};
-function DefaultAwayMsgEdit::applySettings(%this) {
+}
+function DefaultAwayMsgEdit::applySettings(%this)
+{
     %this.setValue(trim(%this.getValue()));
     %newAwayMsg = %this.getValue();
-    if ((%newAwayMsg $= "")) {
-        if (($UserPref::Player::awayMessage $= "")) {
+    if ((%newAwayMsg $= ""))
+    {
+        if (($UserPref::Player::awayMessage $= ""))
+        {
             $UserPref::Player::awayMessage = $Pref::Player::defaultAwayMessage;
         }
         %this.setValue($UserPref::Player::awayMessage);
-    } else {
+    }
+    else
+    {
         $UserPref::Player::awayMessage = %newAwayMsg;
     }
-    if (isIdle()) {
+    if (isIdle())
+    {
         setIdle(1, $UserPref::Player::awayMessage);
     }
     schedulePersist();
-};
-function VolumeSlider::applySettings(%this) {
+}
+function VolumeSlider::applySettings(%this)
+{
     $UserPref::Audio::masterVolume = VolumeSlider.value;
     %multiplier = $UserPref::Audio::mute ? 0 : 1;
     alxListenerf(AL_GAIN_LINEAR, (%multiplier * $UserPref::Audio::masterVolume));
     fmodSetMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
-    if (Using_FFMPEG()) {
+    if (Using_FFMPEG())
+    {
         ffmpegSetMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
     }
     schedulePersist();
-};
-function VolumeMusicSlider::applySettings(%this) {
+}
+function VolumeMusicSlider::applySettings(%this)
+{
     $UserPref::Audio::channelVolume1 = %this.value;
     alxSetChannelVolume(1, $UserPref::Audio::channelVolume1);
     %multiplier = $UserPref::Audio::mute ? 0 : 1;
     fmodSetMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
-    if (Using_FFMPEG()) {
+    if (Using_FFMPEG())
+    {
         ffmpegSetMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
     }
     schedulePersist();
-};
-function VolumeSFXSlider::applySettings(%this) {
+}
+function VolumeSFXSlider::applySettings(%this)
+{
     $UserPref::Audio::channelVolume2 = VolumeSFXSlider.value;
     alxSetChannelVolume(2, $UserPref::Audio::channelVolume2);
     schedulePersist();
-};
-function TwoPlayerActionsFriendsPopup::onSelect(%this, %id, %unused) {
+}
+function TwoPlayerActionsFriendsPopup::onSelect(%this, %id, %unused)
+{
     $UserPref::Player::EmotesPermissionFriends = %id;
-    if (($UserPref::Player::EmotesPermissionStrangers < %id)) {
+    if (($UserPref::Player::EmotesPermissionStrangers < %id))
+    {
         TwoPlayerActionsStrangersPopup.SetSelected(%id);
     }
     schedulePersist();
-};
-function TwoPlayerActionsStrangersPopup::onSelect(%this, %id, %unused) {
+}
+function TwoPlayerActionsStrangersPopup::onSelect(%this, %id, %unused)
+{
     $UserPref::Player::EmotesPermissionStrangers = %id;
-    if (($UserPref::Player::EmotesPermissionFriends > %id)) {
+    if (($UserPref::Player::EmotesPermissionFriends > %id))
+    {
         TwoPlayerActionsFriendsPopup.SetSelected(%id);
     }
     schedulePersist();
-};
-function GiftsFriendsPopup::onSelect(%this, %id, %unused) {
+}
+function GiftsFriendsPopup::onSelect(%this, %id, %unused)
+{
     $UserPref::Player::GiftsPermissionFriends = %id;
-    if (($UserPref::Player::GiftsPermissionStrangers < %id)) {
+    if (($UserPref::Player::GiftsPermissionStrangers < %id))
+    {
         GiftsStrangersPopup.SetSelected(%id);
     }
     schedulePersist();
-};
-function GiftsStrangersPopup::onSelect(%this, %id, %unused) {
+}
+function GiftsStrangersPopup::onSelect(%this, %id, %unused)
+{
     $UserPref::Player::GiftsPermissionStrangers = %id;
-    if (($UserPref::Player::GiftsPermissionFriends > %id)) {
+    if (($UserPref::Player::GiftsPermissionFriends > %id))
+    {
         GiftsFriendsPopup.SetSelected(%id);
     }
     schedulePersist();
-};
-function RenderQualityPopup::onSelect(%this, %id, %unused) {
+}
+function RenderQualityPopup::onSelect(%this, %id, %unused)
+{
     setRenderQuality(%id);
-};
-function ShadowDetailSizePopup::onSelect(%this, %id, %unused) {
+}
+function ShadowDetailSizePopup::onSelect(%this, %id, %unused)
+{
     setShadowDetailSize(%id);
-};
-function SmallTexturesModePopup::onSelect(%this, %id, %unused) {
+}
+function SmallTexturesModePopup::onSelect(%this, %id, %unused)
+{
     setSmallTextureMode(%id);
-};
-function VisibleDistancePopup::onSelect(%this, %id, %unused) {
+}
+function VisibleDistancePopup::onSelect(%this, %id, %unused)
+{
     setVisibleDistanceOption(%id);
-};
-function WaterReflectionModePopup::onSelect(%this, %id, %unused) {
+}
+function WaterReflectionModePopup::onSelect(%this, %id, %unused)
+{
     setWaterReflection(%id);
-};
-function ExposureFilterModePopup::onSelect(%this, %id, %unused) {
+}
+function ExposureFilterModePopup::onSelect(%this, %id, %unused)
+{
     setExposureFilter(%id);
-};
-function FontSizePopup::onSelect(%this, %id, %unused) {
+}
+function FontSizePopup::onSelect(%this, %id, %unused)
+{
     setShapeNameFontSize(%id);
-};
-function BrightnessSlider::applySettings(%this) {
+}
+function BrightnessSlider::applySettings(%this)
+{
     fxEts::updateExposureFilter();
-};
-function setShapeNameFontSize(%val) {
-    if ((%val < 0.0) || (%val > 2.0)) {
+}
+function setShapeNameFontSize(%val)
+{
+    if ((%val < 0.0) || (%val > 2.0))
+    {
         error("Unknown font size:" @ " " @ %val);
         return;
     }
     $UserPref::Video::shapeNameFontSize = %val;
-    if ((%val == 0.0)) {
+    if ((%val == 0.0))
+    {
         %prof = SmallShapeNameHudProfile;
         %otherProf = BoldSmallShapeNameHudProfile;
-    } else {
-        if ((%val == 1.0)) {
+    }
+    else
+    {
+        if ((%val == 1.0))
+        {
             %prof = MediumShapeNameHudProfile;
             %otherProf = BoldMediumShapeNameHudProfile;
-        } else {
-            if ((%val == 2.0)) {
+        }
+        else
+        {
+            if ((%val == 2.0))
+            {
                 %prof = LargeShapeNameHudProfile;
                 %otherProf = BoldLargeShapeNameHudProfile;
             }
@@ -2047,13 +2140,15 @@ function setShapeNameFontSize(%val) {
     }
     TheShapeNameHud.setProfile(%prof);
     TheShapeNameHud.otherProfile = %otherProf;
-};
+}
 setShapeNameFontSize($UserPref::Video::shapeNameFontSize);
-function toggleAutoHideButtonBar() {
+function toggleAutoHideButtonBar()
+{
     ButtonBar.setAutoHiding(AutoHideButtonBarCheckBox.getValue());
     schedulePersist();
-};
-function updateHudTabsHiding() {
+}
+function updateHudTabsHiding()
+{
     $UserPref::HudTabs::AutoOpen["music"] = HudMusicAutoOpenCheckBox.getValue();
     $UserPref::HudTabs::AutoClose["music"] = HudMusicAutoCloseCheckBox.getValue();
     $UserPref::HudTabs::AutoOpen["affinity"] = HudAffinityAutoOpenCheckBox.getValue();
@@ -2063,62 +2158,77 @@ function updateHudTabsHiding() {
     $UserPref::HudTabs::AutoOpen["word"] = HudWordAutoOpenCheckBox.getValue();
     $UserPref::HudTabs::AutoClose["word"] = HudWordAutoCloseCheckBox.getValue();
     %i = 0;
-    while ((%i < HudTabs.numTabs)) {
+    while ((%i < HudTabs.numTabs))
+    {
         %tab = HudTabs.getTabAtIndex(%i);
-        if (!(%tab.name $= "tutorial")) {
+        if (!(%tab.name $= "tutorial"))
+        {
             %tab.autoHide = %tab[$UserPref::HudTabs::AutoClose @ %tab.name];
         }
         %i = (%i + 1.0);
     }
     %currentTab = HudTabs.getCurrentTab();
     (%i < HudTabs.numTabs);
-    if ((%currentTab $= "")) {
-    } else {
+    if ((%currentTab $= ""))
+    {
+    }
+    else
+    {
     }
     %tabName = %currentTab.name;
     "";
-    if ($UserPref::HudTabs::AutoClose[%tabName]) {
+    if ($UserPref::HudTabs::AutoClose[%tabName])
+    {
         HudTabs.autoHide();
     }
-};
-function toggleAutoOpenLocalMap() {
+}
+function toggleAutoOpenLocalMap()
+{
     $UserPref::UI::Radar::AutoOpen = AutoOpenLocalMapCheckBox.getValue();
     HudTabs.autoHide();
     schedulePersist();
-};
-function doAutoReplyToWhispersWhenAway() {
+}
+function doAutoReplyToWhispersWhenAway()
+{
     schedulePersist();
-};
-function doShowTyping() {
+}
+function doShowTyping()
+{
     gSetField($player, lastPreviewText, "");
     MessageHudEdit.sendPreviewText();
     schedulePersist();
-};
-function doFilterProfanity() {
+}
+function doFilterProfanity()
+{
     schedulePersist();
-};
-function doShowOnRadar() {
+}
+function doShowOnRadar()
+{
     commandToServer('setShowOnRadar', $UserPref::Player::showOnRadar);
     schedulePersist();
-};
-function doTeleportBlock() {
+}
+function doTeleportBlock()
+{
     commandToServer('setTeleportBlock', $UserPref::Player::TeleportBlock);
     schedulePersist();
-};
-function doWhisperBlock(%clearNotify) {
+}
+function doWhisperBlock(%clearNotify)
+{
     commandToServer('setWhisperBlock', $UserPref::Player::WhisperBlock, %clearNotify);
     schedulePersist();
-};
-function sendInitialPrefsToServer() {
+}
+function sendInitialPrefsToServer()
+{
     commandToServer('setGenre', $UserPref::Player::Genre);
     commandToServer('setHeight', $UserPref::Player::height);
     commandToServer('setShowOnRadar', $UserPref::Player::showOnRadar);
     commandToServer('setWhisperBlock', $UserPref::Player::WhisperBlock, 0);
     commandToServer('setTeleportBlock', $UserPref::Player::TeleportBlock);
-};
-function doEditAwayMessage() {
+}
+function doEditAwayMessage()
+{
     OptionsPanel.open();
     OptionsPanelTabs.selectTabWithName("social");
     DefaultAwayMsgEdit.makeFirstResponder(1);
     DefaultAwayMsgEdit.selectAll();
-};
+}

@@ -1,4 +1,5 @@
-function spaceDefs_Init() {
+function spaceDefs_Init()
+{
     %space = spaces_GetSpaceDef("starStyle", 1);
     %space.shortName = "StarStyle";
     %space.onEntryText = "SPACE Welcome to StarStyle - Rock Pop & Urban are in the front, Latin & Country are in the back! Press F5 to shop the styles in the videos. Check back often, more products are on the way!";
@@ -18,4 +19,4 @@ function spaceDefs_Init() {
     %space = spaces_GetSpaceDef("maroonSpace", 1);
     %space = spaces_GetSpaceDef("yellowSpace", 1);
     %space = spaces_GetSpaceDef("triggerWonderlandSpace", 1);
-};
+}

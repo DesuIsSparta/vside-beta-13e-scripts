@@ -1,12 +1,16 @@
-function tutorialHud::show(%this) {
+function tutorialHud::show(%this)
+{
     %this.onOpen();
-};
-function tutorialHud::onOpen(%this) {
+}
+function tutorialHud::onOpen(%this)
+{
     HudTabs.dontCloseNextTime();
-};
-function tutorialHud::onClose(%this) {
-};
-function HudTabs::fillTutorialTab(%this) {
+}
+function tutorialHud::onClose(%this)
+{
+}
+function HudTabs::fillTutorialTab(%this)
+{
     %theTab = %this.getTabWithName("tutorial");
     %theTab.titleText.delete();
     %theTab.titleText = "";
@@ -18,32 +22,50 @@ function HudTabs::fillTutorialTab(%this) {
     %theTab.add($returnControl);
     HudTabs.hideTabWithName("tutorial");
     %theTab.pushToBack(%theTab.closeButton);
-};
+}
 $gTutorialsFontBig = "<font:arial bold:18><color:ffffff>";
 $gTutorialsFontMed = "<font:arial bold:16><color:ffffff>";
 $gTutorialsFontSmall = "<font:arial:14><color:dddddd>";
-function TutorialsCatalogClient::GetTutorialsRoot() {
+function TutorialsCatalogClient::GetTutorialsRoot()
+{
     %csn = $gContiguousSpaceName;
     %idx = strchrpos(%csn, "_");
-    if ((%idx >= 0.0)) {
+    if ((%idx >= 0.0))
+    {
         %csn = getSubStr(%csn, 0, %idx);
     }
-    if ((%csn $= "gw")) {
+    if ((%csn $= "gw"))
+    {
         %world = "gateway";
-    } else {
-        if ((%csn $= "lga")) {
+    }
+    else
+    {
+        if ((%csn $= "lga"))
+        {
             %world = "lga";
-        } else {
-            if ((%csn $= "nv")) {
+        }
+        else
+        {
+            if ((%csn $= "nv"))
+            {
                 %world = "lounge";
-            } else {
-                if ((%csn $= "rj")) {
+            }
+            else
+            {
+                if ((%csn $= "rj"))
+                {
                     %world = "raijuku";
-                } else {
-                    if ((%csn $= "minimal")) {
+                }
+                else
+                {
+                    if ((%csn $= "minimal"))
+                    {
                         %world = "dummy";
-                    } else {
-                        if (!($gContiguousSpaceName $= "")) {
+                    }
+                    else
+                    {
+                        if (!($gContiguousSpaceName $= ""))
+                        {
                             error(getScopeName() @ " " @ "- contiguous space name '" @ $gContiguousSpaceName @ "' not recognized!" @ " " @ getTrace());
                         }
                         return "";
@@ -54,40 +76,50 @@ function TutorialsCatalogClient::GetTutorialsRoot() {
     }
     %ret = "projects/" @ $ETS::ProjectName @ "/worlds/" @ %world @ "/tutorials/";
     return %ret;
-};
-function tutorials_Initialize() {
+}
+function tutorials_Initialize()
+{
     safeNewScriptObject("SimGroup", "TutorialsCatalogClient", 1);
     TutorialsCatalogClient.bindClassName("TutorialsObject");
     TutorialsCatalogClient.bindClassName("TutorialsCatalogClient");
     TutorialsCatalogClient.deleteMembers();
-    if ((TutorialsCatalogClient::GetTutorialsRoot() $= "")) {
+    if ((TutorialsCatalogClient::GetTutorialsRoot() $= ""))
+    {
         return;
     }
     TutorialsCatalogClient.addContentPattern("*.jpg");
     TutorialsCatalogClient.addContentPattern("*.png");
     TutorialsCatalogClient.sortByInternalName(1);
-    if ($StandAlone) {
-        if (isObject(TutorialsCatalogServer)) {
+    if ($StandAlone)
+    {
+        if (isObject(TutorialsCatalogServer))
+        {
             TutorialsCatalogServer.ValidateForStandAlone();
-        } else {
+        }
+        else
+        {
             error(getScopeName() @ " " @ "- cannot validate tutorials for client: object TutorialsCatalogServer does not exist");
         }
     }
     geTutorialContainer.currentTutorialObj = "";
     HudTabs.hideTabWithName("tutorial");
-    if ((TutorialsCatalogClient.getCount() > 0.0)) {
+    if ((TutorialsCatalogClient.getCount() > 0.0))
+    {
         geTutorialContainer.goToTutorialByIndex(0, 1);
     }
-};
-function TutorialsCatalogClient::addContentPattern(%this, %pattern) {
+}
+function TutorialsCatalogClient::addContentPattern(%this, %pattern)
+{
     %filespec = TutorialsCatalogClient::GetTutorialsRoot() @ %pattern;
     %file = findFirstFile(%filespec);
-    while (!(%file $= "")) {
+    while (!(%file $= ""))
+    {
         %this.addContentItem(%file);
         %file = findNextFile(%filespec);
     }
-};
-function TutorialsCatalogClient::addContentItem(%this, %file) {
+}
+function TutorialsCatalogClient::addContentItem(%this, %file)
+{
     %file = getSubStr(%file, strlen(TutorialsCatalogClient::GetTutorialsRoot()), 1000000);
     %file = strreplace(%file, "/", "\t");
     %tutorialName = getField(%file, 0);
@@ -96,8 +128,10 @@ function TutorialsCatalogClient::addContentItem(%this, %file) {
     %tutorialObj = %this.getSubItemByName(%tutorialName, 1);
     %tutorialObj.tutorial = %tutorialObj;
     %tutorialObj.isSecret = (getWord(%tutorialName, 0) $= "Secret");
-    if ((getWord(%stepName, 0) $= "Nag")) {
-        if (!isObject(%tutorialObj.nagsGroup)) {
+    if ((getWord(%stepName, 0) $= "Nag"))
+    {
+        if (!isObject(%tutorialObj.nagsGroup))
+        {
             %tutorialObj.nagsGroup = safeNewScriptObject("SimGroup", "", 0);
             %tutorialObj.nagsGroup.tutorial = %tutorialObj;
         }
@@ -109,17 +143,22 @@ function TutorialsCatalogClient::addContentItem(%this, %file) {
         %nagObj.timeDelayForFinalNagRepeat = (120.0 * 1000.0);
         %nagObj.schedule = "";
         %tutorialObj.nagsGroup.add(%nagObj);
-    } else {
+    }
+    else
+    {
         %itemObj = %tutorialObj.getSubItemByName(%stepName, 1);
         %itemObj.isSecret = 0;
     }
-};
-function TutorialsObject::getSubItemByName(%this, %name, %createIfNotFound) {
+}
+function TutorialsObject::getSubItemByName(%this, %name, %createIfNotFound)
+{
     %obj = %this.findObjectByInternalName(%name);
-    if (isObject(%obj)) {
+    if (isObject(%obj))
+    {
         return %obj;
     }
-    if (!%createIfNotFound) {
+    if (!%createIfNotFound)
+    {
         return 0;
     }
     %obj = safeNewScriptObject("SimGroup", "", 1);
@@ -127,108 +166,147 @@ function TutorialsObject::getSubItemByName(%this, %name, %createIfNotFound) {
     %obj.setInternalName(%name);
     %this.add(%obj);
     return %obj;
-};
-function TutorialsObject::getSubItemByIndex(%this, %ndx) {
-    if ((%ndx < 0.0) || (%ndx >= %this.getCount())) {
+}
+function TutorialsObject::getSubItemByIndex(%this, %ndx)
+{
+    if ((%ndx < 0.0) || (%ndx >= %this.getCount()))
+    {
         return 0;
-    } else {
+    }
+    else
+    {
         return %this.getObject(%ndx);
     }
-};
-function TutorialsObject::getIndex(%this) {
+}
+function TutorialsObject::getIndex(%this)
+{
     return %this.getGroup().getObjectIndex(%this);
-};
-function TutorialsObject::getUserFacingName(%this) {
+}
+function TutorialsObject::getUserFacingName(%this)
+{
     %internalName = %this.getInternalName();
-    if ((getWord(%internalName, 0) $= "Nag")) {
+    if ((getWord(%internalName, 0) $= "Nag"))
+    {
         %userFacingName = restWords(restWords(%internalName));
-    } else {
-        if ((getWord(%internalName, 0) $= "Secret")) {
+    }
+    else
+    {
+        if ((getWord(%internalName, 0) $= "Secret"))
+        {
             %userFacingName = restWords(restWords(%internalName));
-        } else {
+        }
+        else
+        {
             %userFacingName = restWords(%internalName);
         }
     }
     return %userFacingName;
-};
-function TutorialsObject::getChildByUserFacingName(%this, %name) {
+}
+function TutorialsObject::getChildByUserFacingName(%this, %name)
+{
     %n = (%this.getCount() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %obj = %this.getObject(%n);
-        if ((%obj.getUserFacingName() $= %name)) {
+        if ((%obj.getUserFacingName() $= %name))
+        {
             return %obj;
         }
         %n = (%n - 1.0);
     }
     return 0;
-};
-function TutorialsObject::getSiblingByDelta(%this, %delta) {
+}
+function TutorialsObject::getSiblingByDelta(%this, %delta)
+{
     %ndx = %this.getIndex();
     %ndx = (%ndx + %delta);
     return %this.getGroup().getSubItemByIndex(%ndx);
-};
-function TutorialsObject::getFirstSibling(%this) {
+}
+function TutorialsObject::getFirstSibling(%this)
+{
     return %this.getGroup().getSubItemByIndex(0);
-};
-function TutorialsObject::getLastSibling(%this) {
+}
+function TutorialsObject::getLastSibling(%this)
+{
     return %this.getGroup().getSubItemByIndex((%this.getGroup().getCount() - 1.0));
-};
-function geTutorialContainer::getCurrentTutorialObj(%this) {
+}
+function geTutorialContainer::getCurrentTutorialObj(%this)
+{
     return %this.currentTutorialObj;
-};
-function geTutorialContainer::getCurrentStepObj(%this) {
+}
+function geTutorialContainer::getCurrentStepObj(%this)
+{
     %tut = %this.getCurrentTutorialObj();
-    if (!isObject(%tut)) {
+    if (!isObject(%tut))
+    {
         return 0;
-    } else {
+    }
+    else
+    {
         return %tut.currentStepObj;
     }
-};
-function geTutorialContainer::getStepBitmapPath(%this, %stepObj) {
+}
+function geTutorialContainer::getStepBitmapPath(%this, %stepObj)
+{
     %path = TutorialsCatalogClient::GetTutorialsRoot();
     %path = %path @ %stepObj.getGroup().tutorial.getInternalName() @ "/";
     %path = %path @ %stepObj.getInternalName();
     return %path;
-};
-function geTutorialContainer::goToTutorialByIndex(%this, %ndx, %restartTutorial) {
+}
+function geTutorialContainer::goToTutorialByIndex(%this, %ndx, %restartTutorial)
+{
     %tutorialObj = TutorialsCatalogClient.getSubItemByIndex(%ndx);
-    if (!isObject(%tutorialObj)) {
+    if (!isObject(%tutorialObj))
+    {
         error(getScopeName() @ " " @ "- can't find tutorial:" @ " " @ %ndx);
         return;
     }
     %this.currentTutorialObj = %tutorialObj;
-    if (%restartTutorial || !isObject(%tutorialObj.currentStepObj)) {
+    if (%restartTutorial || !isObject(%tutorialObj.currentStepObj))
+    {
         %this.goToStepByIndex(0);
-    } else {
+    }
+    else
+    {
         %this.goToStepByIndex(%tutorialObj.currentStepObj.getIndex());
     }
-};
-function geTutorialContainer::goToTutorialByDelta(%this, %delta, %promoteToParentDelta) {
+}
+function geTutorialContainer::goToTutorialByDelta(%this, %delta, %promoteToParentDelta)
+{
     %cur = %this.getCurrentTutorialObj();
-    if (!isObject(%cur)) {
+    if (!isObject(%cur))
+    {
         error(getScopeName() @ " " @ "- no current item. Trying to step by" @ " " @ %delta);
         return;
     }
     %new = %cur.getSiblingByDelta(%delta);
-    if (isObject(%new)) {
+    if (isObject(%new))
+    {
         %this.goToTutorialByIndex(%new.getIndex(), 1);
-        if ((%delta < 0.0)) {
+        if ((%delta < 0.0))
+        {
             %this.goToLastStep();
         }
-    } else {
-        if (%promoteToParentDelta) {
+    }
+    else
+    {
+        if (%promoteToParentDelta)
+        {
             error(getScopeName() @ " " @ "- no parents!");
         }
     }
-};
-function geTutorialContainer::goToStepByIndex(%this, %ndx) {
+}
+function geTutorialContainer::goToStepByIndex(%this, %ndx)
+{
     %tut = %this.getCurrentTutorialObj();
-    if (!isObject(%tut)) {
+    if (!isObject(%tut))
+    {
         error(getScopeName() @ " " @ "- no current tutorial. Trying to go to step" @ " " @ %ndx);
         return;
     }
     %stepObj = %tut.getSubItemByIndex(%ndx);
-    if (!isObject(%stepObj)) {
+    if (!isObject(%stepObj))
+    {
         error(getScopeName() @ " " @ "- no such step:" @ " " @ %ndx);
         return;
     }
@@ -237,52 +315,69 @@ function geTutorialContainer::goToStepByIndex(%this, %ndx) {
     %this.setMetaData(%stepObj);
     %this.doUpdateButtons(%tut);
     %tut.doRestartNags();
-};
-function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDelta) {
+}
+function geTutorialContainer::goToStepByDelta(%this, %delta, %promoteToParentDelta)
+{
     %cur = %this.getCurrentStepObj();
-    if (!isObject(%cur)) {
+    if (!isObject(%cur))
+    {
         error(getScopeName() @ " " @ "- no current item. Trying to step by" @ " " @ %delta);
         return;
     }
     %new = %cur.getSiblingByDelta(%delta);
-    if (isObject(%new)) {
+    if (isObject(%new))
+    {
         %this.goToStepByIndex(%new.getIndex());
-    } else {
-        if (%promoteToParentDelta) {
-            if ((%delta < 0.0)) {
-            } else {
+    }
+    else
+    {
+        if (%promoteToParentDelta)
+        {
+            if ((%delta < 0.0))
+            {
+            }
+            else
+            {
             }
             %this.goToTutorialByDelta(-(1.0), 1, 1);
         }
     }
-};
-function geTutorialContainer::goToFirstStep(%this) {
+}
+function geTutorialContainer::goToFirstStep(%this)
+{
     %cur = %this.getCurrentStepObj();
     %this.goToStepByIndex(%cur.getFirstSibling().getIndex());
-};
-function geTutorialContainer::goToCurrentStep(%this) {
+}
+function geTutorialContainer::goToCurrentStep(%this)
+{
     %cur = %this.getCurrentStepObj();
     %this.goToStepByIndex(%cur.getIndex());
-};
-function geTutorialContainer::goToLastStep(%this) {
+}
+function geTutorialContainer::goToLastStep(%this)
+{
     %cur = %this.getCurrentStepObj();
     %this.goToStepByIndex(%cur.getLastSibling().getIndex());
-};
-function geTutorialContainer::doUpdateButtons(%this, %tutorialsObject) {
-    if ((getWord(%tutorialsObject.getInternalName(), 0) $= "Nag")) {
+}
+function geTutorialContainer::doUpdateButtons(%this, %tutorialsObject)
+{
+    if ((getWord(%tutorialsObject.getInternalName(), 0) $= "Nag"))
+    {
         geTutorialMLNavNext.setVisible(0);
         geTutorialMLNavPrev.setVisible(0);
         geTutorialMLReturnToTutorialButton.setVisible(1);
         geTutorialMLRepeatTheTutorialButton.setVisible(%tutorialsObject.isLastNag());
-    } else {
+    }
+    else
+    {
         geTutorialMLReturnToTutorialButton.setVisible(0);
         geTutorialMLRepeatTheTutorialButton.setVisible(0);
         %stepCount = %tutorialsObject.getCount();
         geTutorialMLNavNext.setVisible((%stepCount > 1.0));
         geTutorialMLNavPrev.setVisible((%stepCount > 1.0));
     }
-};
-function geTutorialContainer::setMainBitmap(%this, %path) {
+}
+function geTutorialContainer::setMainBitmap(%this, %path)
+{
     %dragNZoom = geTutorialMainBitmap.getGroup();
     geTutorialMainBitmap.setBitmap(%path);
     geTutorialMainBitmap.fitSize();
@@ -293,8 +388,9 @@ function geTutorialContainer::setMainBitmap(%this, %path) {
     geTutorialMainBitmap.resize(%w, %h);
     %dragNZoom.fitAroundParent();
     %dragNZoom.reposition(0, 0);
-};
-function geTutorialContainer::setMetaData(%this, %stepObj) {
+}
+function geTutorialContainer::setMetaData(%this, %stepObj)
+{
     %stepName = %stepObj.getUserFacingName();
     %stepNum = (%stepObj.getIndex() + 1.0);
     %stepTTL = %stepObj.getGroup().getCount();
@@ -303,55 +399,85 @@ function geTutorialContainer::setMetaData(%this, %stepObj) {
     %labelText = "<just:right>" @ $gTutorialsFontBig @ %tutorialName;
     geTutorialMLTop.setText(%labelText);
     %labelText = $gTutorialsFontMed @ %stepName;
-    if ((%stepObj.getGroup() == %stepObj.getGroup().tutorial) || %stepObj.getGroup().tutorial.isSecret) {
+    if ((%stepObj.getGroup() == %stepObj.getGroup().tutorial) || %stepObj.getGroup().tutorial.isSecret)
+    {
     }
-    if ((%stepObj.getGroup().getCount() > 1.0)) {
+    if ((%stepObj.getGroup().getCount() > 1.0))
+    {
         %labelText = %labelText @ "<just:right>" @ $gTutorialsFontSmall @ "step " @ %stepNum @ " of " @ %stepTTL;
-        if ((%stepNum < %stepTTL)) {
+        if ((%stepNum < %stepTTL))
+        {
             geTutorialMLNavNext.setText(geTutorialMLNavNext.activeText);
-        } else {
+        }
+        else
+        {
             geTutorialMLNavNext.setText(geTutorialMLNavNext.inactiveText);
         }
-        if ((%stepNum > 1.0)) {
+        if ((%stepNum > 1.0))
+        {
             geTutorialMLNavPrev.setText(geTutorialMLNavPrev.activeText);
-        } else {
+        }
+        else
+        {
             geTutorialMLNavPrev.setText(geTutorialMLNavPrev.inactiveText);
         }
     }
     geTutorialMLBot.setText(%labelText);
-};
-function geTutorialMLNavNext::onURL(%this, %url) {
+}
+function geTutorialMLNavNext::onURL(%this, %url)
+{
     %stepObj = geTutorialContainer.getCurrentStepObj();
-    if (!isObject(%stepObj)) {
+    if (!isObject(%stepObj))
+    {
         error(getScopeName() @ " " @ "- no current step");
         return;
     }
     %restartNags = 1;
     %stepNdx = %stepObj.getIndex();
-    if ((firstWord(%url) $= "gamelink")) {
+    if ((firstWord(%url) $= "gamelink"))
+    {
         %word = restWords(%url);
-    } else {
+    }
+    else
+    {
         %word = %url;
     }
-    if ((%word $= "prev2x")) {
-        if ((%stepNdx == 0.0)) {
+    if ((%word $= "prev2x"))
+    {
+        if ((%stepNdx == 0.0))
+        {
             geTutorialContainer.goToTutorialByDelta(-(1.0), 1);
         }
         geTutorialContainer.goToFirstStep();
-    } else {
-        if ((%word $= "next2x")) {
+    }
+    else
+    {
+        if ((%word $= "next2x"))
+        {
             geTutorialContainer.goToTutorialByDelta(1, 1);
-        } else {
-            if ((%word $= "prev")) {
+        }
+        else
+        {
+            if ((%word $= "prev"))
+            {
                 geTutorialContainer.goToStepByDelta(-(1.0), !1);
-            } else {
-                if ((%word $= "next")) {
+            }
+            else
+            {
+                if ((%word $= "next"))
+                {
                     geTutorialContainer.goToStepByDelta(1, !1);
-                } else {
-                    if ((%word $= "repeat")) {
+                }
+                else
+                {
+                    if ((%word $= "repeat"))
+                    {
                         commandToServer('respawnPlayerAtTutorialBeginning', $gCurrentMainTutorial.getUserFacingName());
-                    } else {
-                        if ((%word $= "return")) {
+                    }
+                    else
+                    {
+                        if ((%word $= "return"))
+                        {
                             geTutorialContainer.goToCurrentStep();
                         }
                     }
@@ -359,66 +485,87 @@ function geTutorialMLNavNext::onURL(%this, %url) {
             }
         }
     }
-};
-function geTutorialMLNavPrev::onURL(%this, %url) {
+}
+function geTutorialMLNavPrev::onURL(%this, %url)
+{
     geTutorialMLNavNext::onURL(%this, %url);
-};
-function geTutorialMLRepeatTheTutorialButton::onURL(%this, %url) {
+}
+function geTutorialMLRepeatTheTutorialButton::onURL(%this, %url)
+{
     geTutorialMLNavNext::onURL(%this, %url);
-};
-function geTutorialMLReturnToTutorialButton::onURL(%this, %url) {
+}
+function geTutorialMLReturnToTutorialButton::onURL(%this, %url)
+{
     geTutorialMLNavNext::onURL(%this, %url);
-};
+}
 $gTutorialOpenTimer = "";
 $gCurrentMainTutorial = 0;
-function clientCmdEnterTutorialSpace(%name, %forceRestartTutorial) {
+function clientCmdEnterTutorialSpace(%name, %forceRestartTutorial)
+{
     %tutorialObj = TutorialsCatalogClient.getChildByUserFacingName(%name);
-    if (!isObject(%tutorialObj)) {
+    if (!isObject(%tutorialObj))
+    {
         error(getScopeName() @ " " @ "- no such tutorial:" @ " " @ %name);
         return;
     }
     %tutorialObj.doStartTutorial(%forceRestartTutorial);
-};
-function TutorialsObject::doStartTutorial(%this, %forceRestartTutorial) {
-    if ((%this == $gCurrentMainTutorial)) {
+}
+function TutorialsObject::doStartTutorial(%this, %forceRestartTutorial)
+{
+    if ((%this == $gCurrentMainTutorial))
+    {
     }
     %returningToMainTutorialFromSecretTutorial = geTutorialContainer.getCurrentTutorialObj().isSecret;
-    if (!%this.isSecret) {
+    if (!%this.isSecret)
+    {
         $gCurrentMainTutorial = %this.getId();
     }
     %this.doUpdateDisplay(1, !%returningToMainTutorialFromSecretTutorial || %forceRestartTutorial);
-};
-function TutorialsObject::doRestartNags(%this) {
+}
+function TutorialsObject::doRestartNags(%this)
+{
     TutorialsCatalogClient.doCancelAllNagSchedules();
-    if (isObject(%this.nagsGroup)) {
+    if (isObject(%this.nagsGroup))
+    {
         %i = (%this.nagsGroup.getCount() - 1.0);
-        while ((%i >= 0.0)) {
+        while ((%i >= 0.0))
+        {
             %nagObj = %this.nagsGroup.getObject(%i);
             %nagObj.schedule = %nagObj.schedule(%nagObj.timeDelay, doUpdateDisplay);
             %i = (%i - 1.0);
         }
     }
-};
-function TutorialsCatalogClient::forceNextNag() {
-    if (!$ETS::devMode) {
+}
+function TutorialsCatalogClient::forceNextNag()
+{
+    if (!$ETS::devMode)
+    {
         return;
     }
-    if (isObject($gCurrentMainTutorial)) {
+    if (isObject($gCurrentMainTutorial))
+    {
         $gCurrentMainTutorial.forceNextNag();
-    } else {
+    }
+    else
+    {
         handleSystemMessage("msgInfoMessage", "Not currently in a tutorial.");
     }
-};
-function TutorialsObject::forceNextNag(%this) {
-    if (!$ETS::devMode) {
+}
+function TutorialsObject::forceNextNag(%this)
+{
+    if (!$ETS::devMode)
+    {
         return;
     }
-    if (isObject(%this.nagsGroup)) {
+    if (isObject(%this.nagsGroup))
+    {
         %nagsCount = %this.nagsGroup.getCount();
         %i = 0;
-        while ((%i < %nagsCount)) {
+        while ((%i < %nagsCount))
+        {
             %nagObj = %this.nagsGroup.getObject(%i);
-            if (%nagObj.schedule) {
+            if (%nagObj.schedule)
+            {
                 %nagObj.doUpdateDisplay();
                 return;
             }
@@ -426,56 +573,75 @@ function TutorialsObject::forceNextNag(%this) {
         }
     }
     handleSystemMessage("msgInfoMessage", "No nags exist for the current tutorial.");
-};
-function TutorialsObject::doUpdateDisplay(%this, %showPanel, %restartTutorial) {
-    if (%showPanel) {
+}
+function TutorialsObject::doUpdateDisplay(%this, %showPanel, %restartTutorial)
+{
+    if (%showPanel)
+    {
         geTutorialContainer.doUpdateButtons(%this);
-        if (($gTutorialOpenTimer $= "")) {
+        if (($gTutorialOpenTimer $= ""))
+        {
             HudTabs.overrideLockedOpen = 1;
             HudTabs.close();
             $gTutorialOpenTimer = schedule(250, 0, "openTutorialPaneReally", %this, %restartTutorial);
         }
-    } else {
+    }
+    else
+    {
         HudTabs.overrideLockedOpen = 1;
         HudTabs.hideTabWithName("tutorial");
     }
-};
-function openTutorialPaneReally(%tutorialObj, %restartTutorial) {
+}
+function openTutorialPaneReally(%tutorialObj, %restartTutorial)
+{
     cancel($gTutorialOpenTimer);
     $gTutorialOpenTimer = "";
     alxPlay(AudioProfile_Tutorial);
     geTutorialContainer.goToTutorialByIndex(%tutorialObj.getIndex(), %restartTutorial);
     HudTabs.selectTabWithName("tutorial");
-};
-function clientCmdLeaveTutorialSpace(%name) {
+}
+function clientCmdLeaveTutorialSpace(%name)
+{
     %tutorialObj = TutorialsCatalogClient.getChildByUserFacingName(%name);
-    if (!isObject(%tutorialObj)) {
+    if (!isObject(%tutorialObj))
+    {
         error(getScopeName() @ " " @ "- no such tutorial:" @ " " @ %name);
         return;
     }
-    if (%tutorialObj.isSecret) {
-        if (isObject($gCurrentMainTutorial)) {
+    if (%tutorialObj.isSecret)
+    {
+        if (isObject($gCurrentMainTutorial))
+        {
             $gCurrentMainTutorial.doUpdateDisplay(1, 0);
-        } else {
+        }
+        else
+        {
             %tutorialObj.doUpdateDisplay(0, 1);
         }
-    } else {
+    }
+    else
+    {
         %tutorialObj.doFinishTutorial();
     }
-};
-function TutorialsObject::doFinishTutorial(%this) {
-    if (($gCurrentMainTutorial == %this)) {
+}
+function TutorialsObject::doFinishTutorial(%this)
+{
+    if (($gCurrentMainTutorial == %this))
+    {
         TutorialsCatalogClient.doCancelAllNagSchedules();
         %this.doUpdateDisplay(0, 1);
     }
-};
-function NagObject::doUpdateDisplay(%this) {
+}
+function NagObject::doUpdateDisplay(%this)
+{
     cancel(%this.schedule);
     %this.schedule = "";
-    if (!isObject(%this.getGroup().tutorial) || (TutorialsCatalogClient.getObjectIndex(%this.getGroup().tutorial) < 0.0) || ($gCurrentMainTutorial != %this.getGroup().tutorial.getId())) {
+    if (!isObject(%this.getGroup().tutorial) || (TutorialsCatalogClient.getObjectIndex(%this.getGroup().tutorial) < 0.0) || ($gCurrentMainTutorial != %this.getGroup().tutorial.getId()))
+    {
         return;
     }
-    if (%this.isLastNag()) {
+    if (%this.isLastNag())
+    {
         %this.schedule = %this.schedule(%this.timeDelayForFinalNagRepeat, doUpdateDisplay);
     }
     geTutorialContainer.doUpdateButtons(%this);
@@ -483,17 +649,22 @@ function NagObject::doUpdateDisplay(%this) {
     HudTabs.selectTabWithName("tutorial");
     geTutorialContainer.setMainBitmap(geTutorialContainer.getStepBitmapPath(%this));
     geTutorialContainer.setMetaData(%this);
-};
-function NagObject::isLastNag(%this) {
+}
+function NagObject::isLastNag(%this)
+{
     return (%this.getGroup().getObjectIndex(%this) == (%this.getGroup().getCount() - 1.0));
-};
-function TutorialsCatalogClient::doCancelAllNagSchedules(%this) {
+}
+function TutorialsCatalogClient::doCancelAllNagSchedules(%this)
+{
     %i = (%this.getCount() - 1.0);
-    while ((%i >= 0.0)) {
+    while ((%i >= 0.0))
+    {
         %tutorialObj = %this.getObject(%i);
-        if (isObject(%tutorialObj.nagsGroup)) {
+        if (isObject(%tutorialObj.nagsGroup))
+        {
             %j = (%tutorialObj.nagsGroup.getCount() - 1.0);
-            while ((%j >= 0.0)) {
+            while ((%j >= 0.0))
+            {
                 %nagObj = %tutorialObj.nagsGroup.getObject(%j);
                 cancel(%nagObj.schedule);
                 %nagObj.schedule = "";
@@ -503,9 +674,11 @@ function TutorialsCatalogClient::doCancelAllNagSchedules(%this) {
         %i = (%i - 1.0);
         (%j >= 0.0);
     }
-};
-function leaveAllTutorialSpaces() {
-    if (isObject(TutorialsCatalogClient)) {
+}
+function leaveAllTutorialSpaces()
+{
+    if (isObject(TutorialsCatalogClient))
+    {
         TutorialsCatalogClient.doCancelAllNagSchedules();
     }
     $gCurrentMainTutorial = 0;
@@ -513,4 +686,4 @@ function leaveAllTutorialSpaces() {
     HudTabs.close();
     HudTabs.hideTabWithName("tutorial");
     CSControlPanel.close();
-};
+}

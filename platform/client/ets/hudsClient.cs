@@ -1,9 +1,12 @@
-function HudTabs::setup() {
-    if (!isObject(HudTabs)) {
+function HudTabs::setup()
+{
+    if (!isObject(HudTabs))
+    {
         new ScriptObject(HudTabs) {
             class = "TabControl";
         };
-        if (isObject(MissionCleanup)) {
+        if (isObject(MissionCleanup))
+        {
             MissionCleanup.add(HudTabs);
         }
         HudTabs.Initialize(HudContainer, "46 39", "", "", "vertical");
@@ -16,9 +19,11 @@ function HudTabs::setup() {
         HudTabs.close();
         HudTabs.closeTimer = 0;
     }
-};
-function HudTabs::newTab(%this, %name, %bitmapName, %title) {
-    if (!isDefined("%title")) {
+}
+function HudTabs::newTab(%this, %name, %bitmapName, %title)
+{
+    if (!isDefined("%title"))
+    {
         %title = "";
     }
     %tab = Parent::newTab(%this, %name, %bitmapName);
@@ -46,14 +51,17 @@ function HudTabs::newTab(%this, %name, %bitmapName, %title) {
     %ypos = (getWord(%pos, 1) - 2.0);
     %tab.pulsar.reposition(%xPos, %ypos);
     %tab.pulseTimer = 0;
-};
-function HudTabs::update(%this) {
+}
+function HudTabs::update(%this)
+{
     Parent::update(%this);
     %numVisibleButtons = 0;
     %padding = %this.getPadding();
     %n = 0;
-    while ((%n < %this.numTabs)) {
-        if (%this.buttons[%n].isVisible()) {
+    while ((%n < %this.numTabs))
+    {
+        if (%this.buttons[%n].isVisible())
+        {
             %height = (%height + (getWord(%this.buttons[%n].getExtent(), 1) + %padding));
         }
         %n = (%n + 1.0);
@@ -62,9 +70,11 @@ function HudTabs::update(%this) {
     (%n < %this.numTabs);
     %width = getWord(HudTabsCollapsed.getExtent(), 0);
     HudTabsCollapsed.resize(%width, %height);
-};
-function HudTabs::pulseTab(%this, %tabObject) {
-    if (!isObject(%tabObject) || !isObject(%tabObject.pulsar)) {
+}
+function HudTabs::pulseTab(%this, %tabObject)
+{
+    if (!isObject(%tabObject) || !isObject(%tabObject.pulsar))
+    {
         error(getScopeName() @ "->invalid tab object or tab without pulsar object passed! returning!");
         return;
     }
@@ -75,137 +85,178 @@ function HudTabs::pulseTab(%this, %tabObject) {
     %tabObject.pulsar.start();
     cancel(%tabObject.pulseTimer);
     %tabObject.pulseTimer = %this.schedule(4000, "pausePulseOnTab", %tabObject);
-};
-function HudTabs::pulseTabWithName(%this, %tabName) {
+}
+function HudTabs::pulseTabWithName(%this, %tabName)
+{
     %tabObject = 0;
-    if (!(%tabName $= "")) {
+    if (!(%tabName $= ""))
+    {
         %tabObject = %this.getTabWithName(%tabName);
     }
     %this.pulseTab(%tabObject);
-};
-function HudTabs::pausePulseOnTab(%this, %tabObject) {
+}
+function HudTabs::pausePulseOnTab(%this, %tabObject)
+{
     cancel(%tabObject.pulseTimer);
     %tabObject.pulsar.stop();
     %tabObject.pulsar.setCurrentFrame(0);
-};
-function HudTabs::pausePulseOnAllTabs(%this) {
+}
+function HudTabs::pausePulseOnAllTabs(%this)
+{
     %i = 0;
-    while ((%i < %this.numTabs)) {
+    while ((%i < %this.numTabs))
+    {
         %this.pausePulseOnTab(%this.tabs[%i]);
         %i = (%i + 1.0);
     }
-};
-function HudTabs::stopPulseOnTab(%this, %tabObject) {
+}
+function HudTabs::stopPulseOnTab(%this, %tabObject)
+{
     cancel(%tabObject.pulseTimer);
     %tabObject.pulsar.stop();
     %tabObject.pulsar.setVisible(0);
-};
-function HudTabs::getPadding(%this) {
+}
+function HudTabs::getPadding(%this)
+{
     return 0;
-};
-function HudTabs::close(%this) {
+}
+function HudTabs::close(%this)
+{
     %tab = %this.getCurrentTab();
-    if (isObject(%tab)) {
+    if (isObject(%tab))
+    {
     }
-    if (isObject(%tab.content)) {
+    if (isObject(%tab.content))
+    {
         %tab.content.onClose();
     }
     HudTabsCollapsed.setVisible(1);
     %this.selectTabAtIndex(-(1.0));
-};
-function HudTabs::onHiddenButton(%this) {
+}
+function HudTabs::onHiddenButton(%this)
+{
     Parent::onHiddenButton(%this);
     %this.close();
-};
-function HudTabs::hideOrShowTab(%this, %tabObject, %show) {
-    if (%this.currentTabIsLockedOpen()) {
+}
+function HudTabs::hideOrShowTab(%this, %tabObject, %show)
+{
+    if (%this.currentTabIsLockedOpen())
+    {
         Parent::hideOrShowTab(%this, %tabObject, %show);
         return;
     }
-    if ((%this.getCurrentTab() == %tabObject)) {
+    if ((%this.getCurrentTab() == %tabObject))
+    {
         %this.close();
     }
     Parent::hideOrShowTab(%this, %tabObject, %show);
-    if (isObject(%tabObject.pulsar) && %tabObject.pulsar.isVisible()) {
+    if (isObject(%tabObject.pulsar) && %tabObject.pulsar.isVisible())
+    {
         %this.stopPulseOnTab(%tabObject);
     }
-};
-function HudTabs::setTabAtIndexVisible(%this, %tabIndex, %visible) {
+}
+function HudTabs::setTabAtIndexVisible(%this, %tabIndex, %visible)
+{
     %tab = %this.tabs[%tabIndex];
-    if (!isObject(%tab)) {
+    if (!isObject(%tab))
+    {
         return;
     }
     %posX = getWord(%this.tabPosition, 0);
     %posY = getWord(%this.tabPosition, 1);
-    if (%visible) {
+    if (%visible)
+    {
         %tab.setVisible(1);
         %tab.setTrgPosition(%posX, %posY);
-    } else {
+    }
+    else
+    {
         %tab.setTrgPosition((%posX - getWord(%tab.getExtent(), 0)), %posY);
     }
-};
-function HudTabs::autoHide(%this) {
+}
+function HudTabs::autoHide(%this)
+{
     %currentTab = %this.getCurrentTab();
-    if ((%currentTab $= "")) {
-    } else {
+    if ((%currentTab $= ""))
+    {
+    }
+    else
+    {
     }
     %tabName = %currentTab.name;
     "";
-    if (!$UserPref::HudTabs::AutoClose[%tabName]) {
+    if (!$UserPref::HudTabs::AutoClose[%tabName])
+    {
         return;
     }
-    if (%this.container.cursorInControl()) {
+    if (%this.container.cursorInControl())
+    {
         %this.autoHideSchedule(2000);
         return;
     }
     %this.close();
-    if (%currentTab.pulsar.isVisible()) {
+    if (%currentTab.pulsar.isVisible())
+    {
         %this.pausePulseOnTab(%currentTab);
     }
-};
-function HudTabs::autoHideSchedule(%this, %ms) {
+}
+function HudTabs::autoHideSchedule(%this, %ms)
+{
     cancel(%this.closeTimer);
     %this.closeTimer = %this.schedule(%ms, "autoHide");
-};
-function HudTabs::dontCloseNextTime(%this) {
+}
+function HudTabs::dontCloseNextTime(%this)
+{
     cancel(%this.closeTimer);
     %this.closeTimer = 0;
-};
-function HudTabs::tabSelected(%this, %tab) {
-    if (isObject(%tab)) {
+}
+function HudTabs::tabSelected(%this, %tab)
+{
+    if (isObject(%tab))
+    {
         HudTabsCollapsed.setVisible(0);
         %this.autoHideSchedule($Pref::ETS::HudTabs::timeout);
-        if (isObject(%tab.pulsar)) {
+        if (isObject(%tab.pulsar))
+        {
             %this.stopPulseOnTab(%tab);
         }
     }
-    if (!%tab.autoHide) {
+    if (!%tab.autoHide)
+    {
         %this.dontCloseNextTime();
     }
     %prevTab = %this.getPreviousTab();
-    if ((%prevTab != %tab)) {
-        if (isObject(%prevTab)) {
+    if ((%prevTab != %tab))
+    {
+        if (isObject(%prevTab))
+        {
         }
-        if (isObject(%prevTab.content)) {
+        if (isObject(%prevTab.content))
+        {
             %prevTab.content.onClose();
-            if (%prevTab.pulsar.isVisible()) {
+            if (%prevTab.pulsar.isVisible())
+            {
                 %this.pausePulseOnTab(%prevTab);
             }
         }
     }
-};
-function HudTabs::getInitialButtonOffset(%this) {
+}
+function HudTabs::getInitialButtonOffset(%this)
+{
     return "46 0";
-};
-function HudTabs::CreateTab(%this, %name) {
+}
+function HudTabs::CreateTab(%this, %name)
+{
     %tab = Parent::CreateTab(%this, %name);
     %tab.sluggishness = 0.5;
     %tab.reposition((getWord(%this.tabPosition, 0) - getWord(%tab.getExtent(), 0)), getWord(%this.tabPosition, 1));
     return %tab;
-};
-function HudTabs::fillTabs(%this) {
+}
+function HudTabs::fillTabs(%this)
+{
     %i = 0;
-    while ((%i < HudTabs.numTabs)) {
+    while ((%i < HudTabs.numTabs))
+    {
         %tab = HudTabs.tabs[%i];
         %tab.setProfile(GuiDefaultProfile);
         %tab.clear();
@@ -221,8 +272,11 @@ function HudTabs::fillTabs(%this) {
             visible = 1;
             maxLength = 255;
         };);
-        if ((%tab.title $= "")) {
-        } else {
+        if ((%tab.title $= ""))
+        {
+        }
+        else
+        {
         }
         %title = %tab.title;
         %tab.name;
@@ -274,8 +328,9 @@ function HudTabs::fillTabs(%this) {
     HudTabs.fillScoresTab();
     HudTabs.fillWordTab();
     HudTabs.fillTutorialTab();
-};
-function HudTabs::fillMusicTab(%this) {
+}
+function HudTabs::fillMusicTab(%this)
+{
     %theTab = %this.getTabWithName("music");
     %theTab.content.setName("MusicHud");
     %theTab.content.bindClassName("MusicHud");
@@ -406,24 +461,31 @@ function HudTabs::fillMusicTab(%this) {
         sluggishness = -1;
         visible = 0;
     };);
-};
-function MusicTabToggleSoundTxt::updateText(%this) {
-    if ($UserPref::Audio::mute) {
+}
+function MusicTabToggleSoundTxt::updateText(%this)
+{
+    if ($UserPref::Audio::mute)
+    {
         %soundTxt = "(off)";
-    } else {
+    }
+    else
+    {
         %soundTxt = "(on)";
     }
     %this.setText(%soundTxt);
-};
-function MusicRatingControl::updatePosition(%this) {
+}
+function MusicRatingControl::updatePosition(%this)
+{
     %musicTextBottomY = ((getWord(MusicText.getExtent(), 1) + getWord(MusicTextScroll.getPosition(), 1)) + getWord(MusicText.getPosition(), 1));
     %mTScrollBottomY = (getWord(MusicTextScroll.getExtent(), 1) + getWord(MusicTextScroll.getPosition(), 1));
     %padding = 10;
     %this.reposition(getWord(%this.getPosition, 0), (mMin(%musicTextBottomY, %mTScrollBottomY) + %padding));
-};
-function HudTabs::fillAffinityTab(%this) {
+}
+function HudTabs::fillAffinityTab(%this)
+{
     %theTab = %this.getTabWithName("affinity");
-    if (!showPlayerInfoPopup()) {
+    if (!showPlayerInfoPopup())
+    {
         %theTab.button.setVisible(0);
     }
     %theTab.content.setName("InfoPopupDlg");
@@ -498,8 +560,9 @@ function HudTabs::fillAffinityTab(%this) {
     InfoPopupTagsScroll.add(InfoPopupTagsText);
     InfoPopupDlg.add(InfoPopupTagsScroll);
     InfoPopupDlg.init();
-};
-function HudTabs::fillScoresTab(%this) {
+}
+function HudTabs::fillScoresTab(%this)
+{
     %theTab = %this.getTabWithName("scores");
     %theTab.content.setName("HudScoresContent");
     %theTab.content.bindClassName("HudScoresContent");
@@ -542,11 +605,13 @@ function HudTabs::fillScoresTab(%this) {
         text = "<b>Next Level:";
         maxLength = 64;
     };);
-    if (!isObject(HudScoresPBController)) {
+    if (!isObject(HudScoresPBController))
+    {
         new ScriptObject(HudScoresPBController) {
             class = "ProgressBarController";
         };
-        if (isObject(MissionCleanup)) {
+        if (isObject(MissionCleanup))
+        {
             MissionCleanup.add(HudScoresPBController);
         }
     }
@@ -598,7 +663,8 @@ function HudTabs::fillScoresTab(%this) {
         maxLength = 64;
     };
     HudScoresContent.add(HudScoresContent.respektScoreLabel);
-    if (0) {
+    if (0)
+    {
         HudScoresContent.add(new GuiMLTextCtrl("") {
             profile = "HudScoresLabelTextProfile";
             horizSizing = "right";
@@ -673,130 +739,175 @@ function HudTabs::fillScoresTab(%this) {
     };
     HudScoresContent.collectionsScroll.add(HudScoresContent.collectionsList);
     HudScoresContent.add(HudScoresContent.collectionsScroll);
-    if (!isObject(HudScoresContent.collectionsSet)) {
+    if (!isObject(HudScoresContent.collectionsSet))
+    {
         HudScoresContent.collectionsSet = new SimSet(ScoresHudCollectionsSet);
     }
     HudScoresContent.previousRespektPoints = 0;
     HudScoresContent.setRespektPoints(0, 0);
-};
-function HudScoresContent::setRespektPoints(%this, %points, %notify) {
+}
+function HudScoresContent::setRespektPoints(%this, %points, %notify)
+{
     %this.respektScoreLabel.setText(%points);
     %level = respektScoreToLevel(%points);
     %levelName = respektLevelToNameWithoutArticle(%level);
     %this.respektLevelLabel.setText(%level @ " - " @ %levelName);
     HudScoresPBController.setValue((1.0 - respektPercentToNextLevel(%points)));
     %levelPrev = respektScoreToLevel(%this.previousRespektPoints);
-    if ((%level != %levelPrev)) {
+    if ((%level != %levelPrev))
+    {
     }
-    if ((%this.previousRespektPoints != 0.0)) {
-        if ((%level > %levelPrev)) {
+    if ((%this.previousRespektPoints != 0.0))
+    {
+        if ((%level > %levelPrev))
+        {
             alxPlay(AudioRespektLevelGained);
         }
-        if ((%level == 1.0)) {
+        if ((%level == 1.0))
+        {
             %code = "LEVELCHANGE1";
-        } else {
-            if ((%level == 2.0)) {
+        }
+        else
+        {
+            if ((%level == 2.0))
+            {
                 %code = "LEVELCHANGE2";
-            } else {
+            }
+            else
+            {
                 %code = "LEVELCHANGE";
             }
         }
         schedule(5000, 0, "respektHandle", "", %points, (%points - %this.previousRespektPoints), %code, 0, 1);
         HudTabs.schedule(5100, "pulseTabWithName", "scores");
     }
-    if (%notify) {
+    if (%notify)
+    {
     }
-    if ((%points != %this.previousRespektPoints)) {
+    if ((%points != %this.previousRespektPoints))
+    {
         HudTabs.pulseTabWithName("scores");
     }
     %this.previousRespektPoints = %points;
-};
-function HudScoresContent::setRespektRank(%this, %rank) {
-    if ((%rank $= "")) {
+}
+function HudScoresContent::setRespektRank(%this, %rank)
+{
+    if ((%rank $= ""))
+    {
         %text = "(unknown)";
-    } else {
+    }
+    else
+    {
         %text = "#" @ %rank;
     }
-    if (isObject(%this.respektRankLabel)) {
+    if (isObject(%this.respektRankLabel))
+    {
         %this.respektRankLabel.setText(%text);
     }
-    if ((%rank != %this.previousRespektRank)) {
+    if ((%rank != %this.previousRespektRank))
+    {
         HudTabs.pulseTabWithName("scores");
     }
     %this.previousRespektRank = %rank;
-};
-function HudScoresContent::clearCollections(%this) {
+}
+function HudScoresContent::clearCollections(%this)
+{
     %count = %this.collectionsSet.getCount();
     %n = (%count - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %collection = %this.collectionsSet.getObject(%n);
         %this.collectionsSet.remove(%collection);
         %collection.delete();
         %n = (%n - 1.0);
     }
     %this.refreshCollections();
-};
-function clientCmdSetCollectionStatus(%name, %sofar, %total) {
+}
+function clientCmdSetCollectionStatus(%name, %sofar, %total)
+{
     HudScoresContent.setCollectionStatus(%name, %sofar, %total);
-};
-function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total) {
+}
+function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total)
+{
     %ourCopy = %this.getCollectionObject(%name);
-    if (!isObject(%ourCopy)) {
-        if ((%total == 0.0)) {
+    if (!isObject(%ourCopy))
+    {
+        if ((%total == 0.0))
+        {
         }
-        if ((%sofar == 0.0)) {
+        if ((%sofar == 0.0))
+        {
             return;
         }
         %ourCopy = new ScriptObject("") {
             name = %name;
         };
-        if (isObject(MissionCleanup)) {
+        if (isObject(MissionCleanup))
+        {
             MissionCleanup.add(%ourCopy);
         }
         %this.collectionsSet.add(%ourCopy);
     }
-    if ((%total == 0.0)) {
+    if ((%total == 0.0))
+    {
     }
-    if ((%sofar == 0.0)) {
+    if ((%sofar == 0.0))
+    {
         %this.collectionsSet.remove(%ourCopy);
         %ourCopy.delete();
-    } else {
+    }
+    else
+    {
         %ourCopy.sofar = %sofar;
         %ourCopy.total = %total;
     }
     %this.refreshCollections();
-};
-function HudScoresContent::getCollectionObject(%this, %name) {
+}
+function HudScoresContent::getCollectionObject(%this, %name)
+{
     %n = (%this.collectionsSet.getCount() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %cur = %this.collectionsSet.getObject(%n);
-        if ((%name $= %cur.name)) {
+        if ((%name $= %cur.name))
+        {
             return %cur;
         }
         %n = (%n - 1.0);
     }
     return -(1.0);
-};
-function HudScoresContent::refreshCollections(%this) {
+}
+function HudScoresContent::refreshCollections(%this)
+{
     %this.collectionsList.setText("");
     %count = %this.collectionsSet.getCount();
     %stringToSort = "";
     %completed = "";
     %i = (%count - 1.0);
-    while ((%i >= 0.0)) {
+    while ((%i >= 0.0))
+    {
         %collection = %this.collectionsSet.getObject(%i);
         %ratio = (%collection.sofar / %collection.total);
-        if ((%ratio != 1.0)) {
+        if ((%ratio != 1.0))
+        {
             %append = formatFloat("%1.3f", %ratio) @ "\t" @ %collection.getId();
-            if (!(%stringToSort $= "")) {
+            if (!(%stringToSort $= ""))
+            {
                 %stringToSort = %stringToSort @ " " @ %append;
-            } else {
+            }
+            else
+            {
                 %stringToSort = %append;
             }
-        } else {
-            if (!(%completed $= "")) {
+        }
+        else
+        {
+            if (!(%completed $= ""))
+            {
                 %completed = %completed @ " " @ %collection.getId();
-            } else {
+            }
+            else
+            {
                 %completed = %collection.getId();
             }
         }
@@ -807,29 +918,35 @@ function HudScoresContent::refreshCollections(%this) {
     %count = getFieldCount(%stringToSort);
     %this.collectionsList.addText("<spush><just:left><b> In Progress:<spop><br>", 0);
     %i = (%count - 1.0);
-    while ((%i > 0.0)) {
+    while ((%i > 0.0))
+    {
         %collection = getWord(getField(%stringToSort, %i), 0);
         %this.collectionsList.addText("<spush><just:left>   " @ %collection.name @ " " @ "<just:right>(" @ %collection.sofar @ "/" @ %collection.total @ ")<spop><br>", 0);
         %i = (%i - 1.0);
     }
-    if (((%i > 0.0) @ " " @ %completed $= "")) {
+    if (((%i > 0.0) @ " " @ %completed $= ""))
+    {
         return;
     }
     %this.collectionsList.addText("<spush><just:left><b> Completed:<spop><br>", 0);
     %count = getWordCount(%completed);
     %i = 0;
-    while ((%i < %count)) {
+    while ((%i < %count))
+    {
         %collection = getWord(%completed, %i);
         %this.collectionsList.addText("<spush><just:left>   " @ %collection.name @ " " @ "<just:right>(" @ %collection.sofar @ "/" @ %collection.total @ ")<spop><br>", 0);
         %i = (%i + 1.0);
     }
-    if (%this.collectionsList.isAwake()) {
+    if (%this.collectionsList.isAwake())
+    {
         %this.collectionsList.forceReflow();
     }
-};
-function HudScoresContent::onClose(%this) {
-};
-function HudTabs::fillWordTab(%this) {
+}
+function HudScoresContent::onClose(%this)
+{
+}
+function HudTabs::fillWordTab(%this)
+{
     %theTab = %this.getTabWithName("word");
     %theTab.content.setName("SystemMessageDialog");
     %theTab.content.bindClassName("SystemMessageDialog");
@@ -862,8 +979,9 @@ function HudTabs::fillWordTab(%this) {
         childMargin = "0 0";
     };);
     SystemMessageTextCtrl.setText(SystemMessageTextCtrl.DefaultMessage);
-};
-function HudTabs::fillPrivateSpaceTab(%this) {
+}
+function HudTabs::fillPrivateSpaceTab(%this)
+{
     HudTabs.hideTabWithName("private space");
     %theTab = %this.getTabWithName("private space");
     %theTab.content.setName("PrivSpaceHud");
@@ -938,65 +1056,87 @@ function HudTabs::fillPrivateSpaceTab(%this) {
     };
     %theTab.add(SpaceSurfTE);
     %this.filledPrivateSpaceTab = 1;
-};
-function PrivSpaceHud::onClose(%this) {
+}
+function PrivSpaceHud::onClose(%this)
+{
     OPSpaceHud.descriptionChanged();
-};
-function PrivSpaceHudToggleOP::onURL(%this, %url) {
-    if ((getWord(%url, 0) $= "OPon")) {
+}
+function PrivSpaceHudToggleOP::onURL(%this, %url)
+{
+    if ((getWord(%url, 0) $= "OPon"))
+    {
         PrivSpaceHud.showOP();
-    } else {
-        if ((getWord(%url, 0) $= "OPoff")) {
+    }
+    else
+    {
+        if ((getWord(%url, 0) $= "OPoff"))
+        {
             PrivSpaceHud.hideOP();
-        } else {
+        }
+        else
+        {
             error("Url in PrivSpaceHud.toggleOP is broken.<-" @ getScopeName());
         }
     }
-};
-function PrivSpaceHud::enableOPlink(%this) {
+}
+function PrivSpaceHud::enableOPlink(%this)
+{
     %this.toggleOP.setVisible(1);
-};
-function PrivSpaceHud::disableOPlink(%this) {
+}
+function PrivSpaceHud::disableOPlink(%this)
+{
     %this.toggleOP.setVisible(0);
-};
-function PrivSpaceHud::showOP(%this) {
+}
+function PrivSpaceHud::showOP(%this)
+{
     OPSpaceHud.setVisible(1);
     NonOPSpaceHud.setVisible(0);
     %this.toggleOP.setText("<a:OPoff >(guest view)</a>");
-    if ((HudTabs.getCurrentTab().name $= "private space")) {
+    if ((HudTabs.getCurrentTab().name $= "private space"))
+    {
         HudTabs.dontCloseNextTime();
     }
     CSControlPanel.open();
-};
-function PrivSpaceHud::hideOP(%this) {
+}
+function PrivSpaceHud::hideOP(%this)
+{
     OPSpaceHud.setVisible(0);
     NonOPSpaceHud.setVisible(1);
     %this.toggleOP.setText("<a:OPon >(host's view)</a>");
-    if ((HudTabs.getCurrentTab().name $= "private space")) {
+    if ((HudTabs.getCurrentTab().name $= "private space"))
+    {
         HudTabs.autoHideSchedule($Pref::ETS::HudTabs::timeout);
         OPSpaceHud.descriptionChanged();
     }
     CSControlPanel.close();
-};
-function PrivSpaceHud::updateMusic(%this, %newStreamID) {
-    if (isObject($musicStreamIDMap)) {
+}
+function PrivSpaceHud::updateMusic(%this, %newStreamID)
+{
+    if (isObject($musicStreamIDMap))
+    {
         %newStreamName = $musicStreamIDMap.get(%newStreamID);
-        if ((%newStreamName $= "")) {
+        if ((%newStreamName $= ""))
+        {
             error("Stream ID (\"" @ %newStreamID @ "\") not in music stream id -> name mapping! <-" @ getScopeName());
             %newStreamName = %newStreamID;
         }
-    } else {
+    }
+    else
+    {
         warn("the music stream ID map was not initialized.  This should have been done in GameConnection::etsInit()");
         %newStreamName = %newStreamID;
     }
     OPSpaceHud.updateMusic(%newStreamName);
     NonOPSpaceHud.updateMusic(%newStreamName);
-};
-function clientCmdPrivSpaceHudUpdateMusic(%newStreamID) {
-};
-function clientCmdPrivSpaceHudUpdateVideo(%unused) {
-};
-function OPSpaceHud::setup(%this) {
+}
+function clientCmdPrivSpaceHudUpdateMusic(%newStreamID)
+{
+}
+function clientCmdPrivSpaceHudUpdateVideo(%unused)
+{
+}
+function OPSpaceHud::setup(%this)
+{
     %ypos = 0;
     %this.add(new GuiTextCtrl("") {
         profile = "InfoWindowNonModalTextProfile";
@@ -1127,31 +1267,41 @@ function OPSpaceHud::setup(%this) {
         allowReverse = 0;
     };
     %this.add(%this.MusicStreamDropdown);
-};
-function OPSpaceHud::accessSelected(%this, %accessLevel) {
-    if (!(%accessLevel $= %this.accessLevel)) {
+}
+function OPSpaceHud::accessSelected(%this, %accessLevel)
+{
+    if (!(%accessLevel $= %this.accessLevel))
+    {
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", %accessLevel, "", "");
     }
     %this.accessLevel = %accessLevel;
-};
-function OPSpaceHud::descriptionChanged(%this) {
+}
+function OPSpaceHud::descriptionChanged(%this)
+{
     %description = %this.spaceDescField.getValue();
-    if (!(%this.description $= %description)) {
+    if (!(%this.description $= %description))
+    {
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), %description, "", "", "");
     }
     %this.description = %description;
-};
-function OPSpaceHud::MusicSelected(%this) {
+}
+function OPSpaceHud::MusicSelected(%this)
+{
     %selection = %this.MusicStreamDropdown.getText();
-    if ((%selection $= "")) {
+    if ((%selection $= ""))
+    {
         error("Empty string was selected on MusicStreamDropdown. Not sending request. Check that the server sent StreamID was in the $musicStreamIDMap checked by PrivSpaceHud::updateMusic <-" @ getScopeName());
         return;
     }
-    if (!(%selection $= %this.musicStream)) {
-        if (isObject($musicStreamNameMap)) {
+    if (!(%selection $= %this.musicStream))
+    {
+        if (isObject($musicStreamNameMap))
+        {
             log("communication", "debug", "getting the stream name from the musicStreamMap which is" @ " " @ $musicStreamNameMap);
             %streamID = $musicStreamNameMap.get(%selection);
-        } else {
+        }
+        else
+        {
             warn("the MusicStreamMap variable is not defined. We cannot get the music stream mapping.. so using PrivateSpace (the default)");
             %streamID = "PrivateSpace";
         }
@@ -1159,47 +1309,63 @@ function OPSpaceHud::MusicSelected(%this) {
         customSpace::SetMusicStreamID(%streamID);
     }
     %this.musicStream = %selection;
-};
-function OPSpaceHud::updateMusic(%this, %newStreamName) {
-    if ((%newStreamName $= "")) {
+}
+function OPSpaceHud::updateMusic(%this, %newStreamName)
+{
+    if ((%newStreamName $= ""))
+    {
         warn(getScopeName() @ "-> received an empty string for stream name.");
     }
     %this.musicStream = %newStreamName;
-    if ((%this.MusicStreamDropdown.size() != 0.0)) {
+    if ((%this.MusicStreamDropdown.size() != 0.0))
+    {
         %index = %this.MusicStreamDropdown.findText(%newStreamName);
-        if ((%index < 0.0)) {
+        if ((%index < 0.0))
+        {
             warn("Some music streams are loaded, but the latest update is not in the dropdown!<-" @ getScopeName());
         }
         %this.MusicStreamDropdown.SetSelected(%index);
-    } else {
+    }
+    else
+    {
         warn("Tried to set selected music stream on updating OPSpaceHud settings, but the music wasn't loaded!<-" @ getScopeName());
     }
-};
-function OPSpaceHud::updateStreams(%this, %streamList) {
+}
+function OPSpaceHud::updateStreams(%this, %streamList)
+{
     %this.MusicStreamDropdown.fillFromList(%streamList);
     %selectedIndex = 0;
-    if (!(%this.musicStream $= "")) {
+    if (!(%this.musicStream $= ""))
+    {
         %selectedIndex = %this.MusicStreamDropdown.findText(%this.musicStream);
     }
     %this.MusicStreamDropdown.SetSelected(%selectedIndex);
-};
-function OPSpaceHud::updateSettings(%this, %name, %description, %accessMode) {
+}
+function OPSpaceHud::updateSettings(%this, %name, %description, %accessMode)
+{
     %this.description = %description;
     %this.spaceDescField.setText(%description);
     %this.accessLevel = %accessMode;
-    if ((%accessMode $= "Open")) {
+    if ((%accessMode $= "Open"))
+    {
         %this.AccessOptAnyone.performClick();
-    } else {
-        if ((%accessMode $= "FriendsOnly")) {
+    }
+    else
+    {
+        if ((%accessMode $= "FriendsOnly"))
+        {
             %this.AccessOptFriends.performClick();
-        } else {
+        }
+        else
+        {
             %this.accessLevel = "Open";
             %this.AccessOptAnyone.performClick();
         }
     }
     %this.spaceNameField.setText(%name);
-};
-function NonOPSpaceHud::setup(%this) {
+}
+function NonOPSpaceHud::setup(%this)
+{
     %ypos = 0;
     %this.add(new GuiTextCtrl("") {
         profile = "InfoWindowNonModalTextProfile";
@@ -1314,83 +1480,112 @@ function NonOPSpaceHud::setup(%this) {
         maxLength = 64;
     };
     %this.add(%this.bigMLText);
-};
-function NonOPSpaceHud::updateSettings(%this, %name, %description, %owner) {
-    if (!(%owner $= "")) {
+}
+function NonOPSpaceHud::updateSettings(%this, %name, %description, %owner)
+{
+    if (!(%owner $= ""))
+    {
         %this.spaceOwnerField.setText("<a:owner " @ munge(%owner) @ ">" @ %owner @ "</a>");
-    } else {
+    }
+    else
+    {
         %this.spaceOwnerField.setText("<a:noowner >Take Control</a>");
     }
     %this.spaceDescField.setText(%description);
     %this.spaceNameField.setText(%name);
-};
-function NonOPSpaceHud::updateMusic(%this, %newStreamName) {
+}
+function NonOPSpaceHud::updateMusic(%this, %newStreamName)
+{
     %this.musicStreamField.setText(%newStreamName);
-};
-function GuiPopUp2MenuCtrl::fillFromList(%this, %list) {
+}
+function GuiPopUp2MenuCtrl::fillFromList(%this, %list)
+{
     %this.clear();
     %count = getFieldCount(%list);
     %i = 0;
-    while ((%i < %count)) {
+    while ((%i < %count))
+    {
         %this.add(getField(%list, %i));
         %i = (%i + 1.0);
     }
-};
-function NonOPSpaceHudOwnerField::onURL(%this, %url) {
-    if ((getWord(%url, 0) $= "noowner")) {
+}
+function NonOPSpaceHudOwnerField::onURL(%this, %url)
+{
+    if ((getWord(%url, 0) $= "noowner"))
+    {
         CustomSpaceSettings::changeSpaceOwnership(CustomSpaceClient::GetSpaceImIn(), 1);
-    } else {
-        if ((getWord(%url, 0) $= "owner")) {
+    }
+    else
+    {
+        if ((getWord(%url, 0) $= "owner"))
+        {
             onLeftClickPlayerName(unmunge(getWords(%url, 1)), "");
         }
     }
-};
-function NonOPSpaceHudOwnerField::onRightURL(%this, %url) {
-    if ((getWord(%url, 0) $= "noowner")) {
-    } else {
-        if ((getWord(%url, 0) $= "owner")) {
+}
+function NonOPSpaceHudOwnerField::onRightURL(%this, %url)
+{
+    if ((getWord(%url, 0) $= "noowner"))
+    {
+    }
+    else
+    {
+        if ((getWord(%url, 0) $= "owner"))
+        {
             onRightClickPlayerName(unmunge(getWords(%url, 1)));
         }
     }
-};
-function CustomSpaceSettings::saveSettings(%spaceName, %description, %accessMode, %password, %audioStream, %videoStream) {
-    if (!isObject($CSSpaceInfo) || !($CSSpaceInfo.owner $= $Player::Name)) {
+}
+function CustomSpaceSettings::saveSettings(%spaceName, %description, %accessMode, %password, %audioStream, %videoStream)
+{
+    if (!isObject($CSSpaceInfo) || !($CSSpaceInfo.owner $= $Player::Name))
+    {
         return;
     }
-    if (!(%description $= "")) {
+    if (!(%description $= ""))
+    {
         $CSSpaceInfo.description = %description;
     }
-    if (!(%accessMode $= "")) {
+    if (!(%accessMode $= ""))
+    {
         $CSSpaceInfo.access = %accessMode;
     }
-    if ($StandAlone) {
+    if ($StandAlone)
+    {
         echo(getScopeName() @ " " @ "pretending success using standalone");
         return;
     }
-    if (!haveValidManagerHost() || !haveValidToken()) {
+    if (!haveValidManagerHost() || !haveValidToken())
+    {
         echo(getScopeName() @ " " @ "No valid manager host or token.");
         return;
     }
     %request = new ManagerRequest("") {
         className = "ModifyCustomSpaceSettingsRequest";
     };
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%request);
     }
     %url = $Net::ClientServiceURL @ "/SaveCustomSpaceSettings?" @ "user=" @ urlEncode($Player::Name) @ "&" @ "token=" @ urlEncode($Token) @ "&" @ "space=" @ urlEncode(%spaceName);
-    if (!(%description $= "")) {
+    if (!(%description $= ""))
+    {
         %url = %url @ "&description=" @ urlEncode(%description);
     }
-    if (!(%accessMode $= "")) {
+    if (!(%accessMode $= ""))
+    {
         %url = %url @ "&accessMode=" @ urlEncode(%accessMode);
     }
-    if (!(%password $= "")) {
+    if (!(%password $= ""))
+    {
         %url = %url @ "&password=" @ urlEncode(%password);
     }
-    if (!(%audioStream $= "")) {
+    if (!(%audioStream $= ""))
+    {
         %url = %url @ "&audioStream=" @ urlEncode(%audioStream);
     }
-    if (!(%videoStream $= "")) {
+    if (!(%videoStream $= ""))
+    {
         %url = %url @ "&videoStream=" @ urlEncode(%videoStream);
     }
     log("network", "info", getScopeName() @ ":" @ %url);
@@ -1398,36 +1593,45 @@ function CustomSpaceSettings::saveSettings(%spaceName, %description, %accessMode
     %request.start();
     %request.requestDescription = %description;
     %request.requestAccessMode = %accessMode;
-    if (!(%request.requestDescription $= "")) {
+    if (!(%request.requestDescription $= ""))
+    {
         CSRulesDescSavedIndicator.incrementRequestCount();
     }
-    if (!(%request.requestAccessMode $= "")) {
+    if (!(%request.requestAccessMode $= ""))
+    {
         CSRulesPasswordSavedIndicator.incrementRequestCount();
     }
-};
-function ModifyCustomSpaceSettingsRequest::onDone(%this) {
+}
+function ModifyCustomSpaceSettingsRequest::onDone(%this)
+{
     %status = findRequestStatus(%this);
     log("network", "debug", getScopeName() @ ":" @ %status);
-    if ((%status $= "fail")) {
+    if ((%status $= "fail"))
+    {
         warn("network", getScopeName() @ " request failed: " @ %this.getValue("statusMessage"));
     }
     %this.schedule(0, "delete");
-    if (!(%this.requestDescription $= "")) {
+    if (!(%this.requestDescription $= ""))
+    {
         CSRulesDescSavedIndicator.decrementRequestCount();
     }
-    if (!(%this.requestAccessMode $= "")) {
+    if (!(%this.requestAccessMode $= ""))
+    {
         CSRulesPasswordSavedIndicator.decrementRequestCount();
     }
-};
-function ModifyCustomSpaceSettingsRequest::onError(%this, %unused, %errMsg) {
+}
+function ModifyCustomSpaceSettingsRequest::onError(%this, %unused, %errMsg)
+{
     error("network", getScopeName() @ ":" @ %errMsg);
     %this.schedule(0, "delete");
-};
-function CustomSpaceSettings::changeSpaceOwnership(%spaceName, %takeOwnershipBool) {
+}
+function CustomSpaceSettings::changeSpaceOwnership(%spaceName, %takeOwnershipBool)
+{
     %request = new ManagerRequest("") {
         className = "ChangeSpaceOwnershipRequest";
     };
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%request);
     }
     %url = $Net::BaseURL @ "?cmd=ChangeSpaceOwnership" @ "&user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&space=" @ urlEncode(%spaceName) @ "&take=" @ urlEncode(%takeOwnershipBool ? 1 : 0);
@@ -1435,46 +1639,63 @@ function CustomSpaceSettings::changeSpaceOwnership(%spaceName, %takeOwnershipBoo
     %request.setURL(%url);
     %request.spaceName = %spaceName;
     %request.start();
-};
-function ChangeSpaceOwnershipRequest::onDone(%this) {
+}
+function ChangeSpaceOwnershipRequest::onDone(%this)
+{
     %status = findRequestStatus(%this);
     %statusMsg = %this.getValue("statusMsg");
     log("network", "info", getScopeName() @ ":" @ %status @ " - msg: " @ %statusMsg);
-    if ((%status $= "success")) {
+    if ((%status $= "success"))
+    {
         HudTabs.selectTabWithName("private space");
-    } else {
-        if ((trim(getWords(%statusMsg, 0, 1)) $= "fail already-owned")) {
+    }
+    else
+    {
+        if ((trim(getWords(%statusMsg, 0, 1)) $= "fail already-owned"))
+        {
             handleSystemMessage("msgInfoMessage", "Sorry, the space is already owned by someone else.");
-        } else {
-            if ((trim(getWords(%statusMsg, 0, 1)) $= "fail respekt")) {
+        }
+        else
+        {
+            if ((trim(getWords(%statusMsg, 0, 1)) $= "fail respekt"))
+            {
                 handleSystemMessage("msgInfoMessage", "Sorry, you must be at least a " @ getWord(%statusMsg, 2) @ " to own this space.");
-            } else {
+            }
+            else
+            {
                 handleSystemMessage("msgInfoMessage", "Sorry, you couldn't change the ownership of the space.");
             }
         }
     }
     %this.schedule(0, "delete");
-};
-function CustomSpaceSettings::onError(%this, %unused, %errMsg) {
+}
+function CustomSpaceSettings::onError(%this, %unused, %errMsg)
+{
     error("network", getScopeName() @ ":" @ %errMsg);
     %this.schedule(0, "delete");
-};
-function HudTabs::addPermissionBasedContent(%this) {
-    if (!%this.filledPrivateSpaceTab) {
+}
+function HudTabs::addPermissionBasedContent(%this)
+{
+    if (!%this.filledPrivateSpaceTab)
+    {
         return;
     }
     %hasPerm = $player.rolesPermissionCheckNoWarn("fly");
     SpaceSurfText.setVisible(%hasPerm);
     SpaceSurfTE.setVisible(%hasPerm);
-    if (%hasPerm) {
+    if (%hasPerm)
+    {
     }
-    if (($gMode $= "PrivateSpaceGrid")) {
+    if (($gMode $= "PrivateSpaceGrid"))
+    {
         %this.showTabWithName("private space");
     }
-};
-function SpaceSurfText::onURL(%this, %url) {
+}
+function SpaceSurfText::onURL(%this, %url)
+{
     teleportToAdjacentSpace((%url $= "spaceN"));
-};
-function SpaceSurfTE::onEnter(%this) {
+}
+function SpaceSurfTE::onEnter(%this)
+{
     teleportToSpaceNumber(%this.getValue());
-};
+}

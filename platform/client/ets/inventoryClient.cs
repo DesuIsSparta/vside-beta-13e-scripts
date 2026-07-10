@@ -4,10 +4,12 @@ $gVHDUserNameFilter = "";
 $gVHDUserNoStock = 0;
 $gInventoryFetchFakeDelay = 1000;
 $ClientIsAuthoritativeForInventory = 0;
-function clientCmdOnEnterStore(%storename) {
+function clientCmdOnEnterStore(%storename)
+{
     log("inventory", "info", "Entering store" @ " " @ %storename);
     %idx = findWord($gStoreNameStack, %storename);
-    while ((%idx != -(1.0))) {
+    while ((%idx != -(1.0)))
+    {
         error("Entering same store twice:" @ " " @ %storename @ " " @ "(corrected)");
         $gStoreNameStack = removeWord($gStoreNameStack, %idx);
         %idx = findWord($gStoreNameStack, %storename);
@@ -18,44 +20,54 @@ function clientCmdOnEnterStore(%storename) {
     resetStorePosition();
     Inventory::fetchStoreInventory(%storename);
     getUserActivityMgr().setActivityActive("shoppingForClothes", 1);
-};
-function clientCmdOnLeaveStore(%storename) {
+}
+function clientCmdOnLeaveStore(%storename)
+{
     log("inventory", "info", "Leaving store: \"" @ %storename @ "\".");
     clientSideOnLeaveStore(%storename);
-    if (($gCurrentStoreName $= "")) {
+    if (($gCurrentStoreName $= ""))
+    {
         ButtonBar.hideButton(storeButton);
     }
-};
-function clientSideOnLeaveStore(%storename) {
+}
+function clientSideOnLeaveStore(%storename)
+{
     getUserActivityMgr().setActivityActive("shoppingForClothes", 0);
-    if ((%storename $= "")) {
+    if ((%storename $= ""))
+    {
         $gStoreNameStack = "";
         $gCurrentStoreName = "";
         $StoreSkusLayer = "";
         return;
     }
     %idx = findWord($gStoreNameStack, %storename);
-    if ((%idx != -(1.0))) {
+    if ((%idx != -(1.0)))
+    {
         $gStoreNameStack = removeWord($gStoreNameStack, %idx);
     }
     $gCurrentStoreName = getWord($gStoreNameStack, 0);
     $StoreSkusLayer = "";
     resetStorePosition();
-};
-function clientCmdOnEnterVHDUserStore(%userName) {
+}
+function clientCmdOnEnterVHDUserStore(%userName)
+{
     %spaceName = CustomSpaceClient::GetCurrentSpaceName();
     %seppos = strpos(%spaceName, ".");
-    if ((%seppos > -(1.0))) {
+    if ((%seppos > -(1.0)))
+    {
         %seppos = (%seppos + 1.0);
         %len = (strlen(%spaceName) - %seppos);
         %userName = getSubStr(%spaceName, %seppos, %len);
-    } else {
+    }
+    else
+    {
         %userName = "";
     }
     $gVHDUserNameFilter = %userName;
     %storename = "vhd";
     %idx = findWord($gStoreNameStack, %storename);
-    while ((%idx != -(1.0))) {
+    while ((%idx != -(1.0)))
+    {
         error("Entering same store twice:" @ " " @ %storename @ " " @ "(corrected)");
         $gStoreNameStack = removeWord($gStoreNameStack, %idx);
         %idx = findWord($gStoreNameStack, %storename);
@@ -66,45 +78,57 @@ function clientCmdOnEnterVHDUserStore(%userName) {
     resetStorePosition();
     Inventory::fetchVHDUserStoreInventory(%storename);
     getUserActivityMgr().setActivityActive("shoppingForClothes", 1);
-};
-function clientCmdOnLeaveVHDUserStore(%storename) {
+}
+function clientCmdOnLeaveVHDUserStore(%storename)
+{
     log("inventory", "info", "Leaving store: \"" @ %storename @ "\".");
     clientSideOnLeaveVHDUserStore(%storename);
-    if (($gCurrentStoreName $= "")) {
+    if (($gCurrentStoreName $= ""))
+    {
         ButtonBar.hideButton(storeButton);
     }
-};
-function clientSideOnLeaveVHDUserStore(%storename) {
+}
+function clientSideOnLeaveVHDUserStore(%storename)
+{
     getUserActivityMgr().setActivityActive("shoppingForClothes", 0);
-    if ((%storename $= "")) {
+    if ((%storename $= ""))
+    {
         $gStoreNameStack = "";
         $gCurrentStoreName = "";
         $StoreSkusLayer = "";
         return;
     }
     %idx = findWord($gStoreNameStack, %storename);
-    if ((%idx != -(1.0))) {
+    if ((%idx != -(1.0)))
+    {
         $gStoreNameStack = removeWord($gStoreNameStack, %idx);
     }
     $gCurrentStoreName = getWord($gStoreNameStack, 0);
     $StoreSkusLayer = "";
     resetStorePosition();
     $gVHDUserNameFilter = "";
-};
-function Inventory::fetchVHDUserStoreInventory(%storename) {
-    if ($StandAlone) {
+}
+function Inventory::fetchVHDUserStoreInventory(%storename)
+{
+    if ($StandAlone)
+    {
         schedule($gInventoryFetchFakeDelay, 0, "fakeVHDUserStoreInventoryGotFetchResults", %storename);
         return;
     }
     sendRequest_GetStoreInventory($Player::Name, %storename, "OnGotDoneOrError_GetVHDUserStoreInventory");
-};
-function OnGotDoneOrError_GetVHDUserStoreInventory(%request) {
+}
+function OnGotDoneOrError_GetVHDUserStoreInventory(%request)
+{
     %storename = %request.storeName;
-    if (%request.checkSuccess()) {
+    if (%request.checkSuccess())
+    {
         Inventory::clearStore(%storename);
         $gStoreStockRevision[%storename] = %request.getValue("storeRevisionDate");
-    } else {
-        if ((%request.getValue("errorCode") $= "storeNotFound")) {
+    }
+    else
+    {
+        if ((%request.getValue("errorCode") $= "storeNotFound"))
+        {
             Inventory::clearStore(%storename);
             Inventory::onGotStoreInventory(%storename);
         }
@@ -112,15 +136,20 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request) {
     }
     %num = %request.getValue("itemsCount");
     %hasAuthoredInventory = 0;
-    if ((strlen($gVHDUserNameFilter) > 0.0)) {
+    if ((strlen($gVHDUserNameFilter) > 0.0))
+    {
         %n = 0;
-        if ((%n < %num)) {
+        if ((%n < %num))
+        {
             %prefix = "items" @ %n @ ".";
             %sku = %request.getValue(%prefix @ "sku");
             %si = SkuManager.findBySku(%sku);
-            if ((stricmp(%si.author, $gVHDUserNameFilter) == 0.0)) {
+            if ((stricmp(%si.author, $gVHDUserNameFilter) == 0.0))
+            {
                 %hasAuthoredInventory = 1;
-            } else {
+            }
+            else
+            {
                 %n = (%n + 1.0);
             }
         }
@@ -128,15 +157,18 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request) {
         (%n < %num);
     }
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %prefix = "items" @ %n @ ".";
         %sku = %request.getValue(%prefix @ "sku");
         %authorMatch = 0;
-        if (%hasAuthoredInventory) {
+        if (%hasAuthoredInventory)
+        {
             %si = SkuManager.findBySku(%sku);
             %authorMatch = (stricmp(%si.author, $gVHDUserNameFilter) == 0.0) ? 1 : 0;
         }
-        if (!%hasAuthoredInventory || %authorMatch) {
+        if (!%hasAuthoredInventory || %authorMatch)
+        {
             %qty = %request.getValue(%prefix @ "quantity");
             %vpoints = %request.getValue(%prefix @ "priceVPoints");
             %vbux = %request.getValue(%prefix @ "priceVBux");
@@ -146,70 +178,94 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request) {
     }
     Inventory::sortStoreInventory(%storename);
     Inventory::onGotVHDUserStoreInventory(%storename);
-    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= "")) {
+    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= ""))
+    {
     }
-    if (isObject(StoreShoppingList)) {
+    if (isObject(StoreShoppingList))
+    {
         StoreShoppingList.addSkus(%request.shoppingCartSkus);
     }
-};
-function Inventory::onGotVHDUserStoreInventory(%storename) {
+}
+function Inventory::onGotVHDUserStoreInventory(%storename)
+{
     %hasUserNameFilter = !($gVHDUserNameFilter $= "") ? 1 : 0;
     $gStoreStockLoaded[%storename] = 1;
-    if (ClosetGui.isVisible()) {
+    if (ClosetGui.isVisible())
+    {
     }
-    if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
+    if ((ClosetTabs.getCurrentTab().name $= "SHOPS"))
+    {
     }
-    if (($gCurrentStoreName $= %storename)) {
+    if (($gCurrentStoreName $= %storename))
+    {
         saveStorePosition();
         ClosetTabs::refreshStoreTab();
     }
-    if (%hasUserNameFilter) {
+    if (%hasUserNameFilter)
+    {
     }
-    if (!$gVHDUserNoStock) {
+    if (!$gVHDUserNoStock)
+    {
         %storeLongName = $gVHDUserNameFilter @ "'s vHD Store";
         %storeDesc = %storeLongName @ " " @ "- press F5 or click \"Shop\" to start shopping!";
-    } else {
-        if ($gVHDUserNoStock) {
+    }
+    else
+    {
+        if ($gVHDUserNoStock)
+        {
             %storeLongName = $gVHDUserNameFilter @ " doesn't have any vHD Designs.";
             %storeDesc = %storeLongName @ " " @ "- Instead press F5 or click \"Shop\" to start browsing the full range of clothing from vSide House of Design!";
-        } else {
+        }
+        else
+        {
             %storeLongName = $gDestinationNames[%storename];
             %storeDesc = $gDestinationDescsInWorld[%storename];
         }
     }
-    if ((%storeLongName $= "")) {
+    if ((%storeLongName $= ""))
+    {
         error(getScopeName() @ " " @ "- no store long name for" @ " " @ %storename);
     }
-    if ((%storeDesc $= "")) {
+    if ((%storeDesc $= ""))
+    {
         error(getScopeName() @ " " @ "- no store desc for" @ " " @ %storename);
     }
     handleSystemMessage("msgInfoMessage", %storeDesc);
-    if (!($gCurrentStoreName $= "")) {
+    if (!($gCurrentStoreName $= ""))
+    {
         ButtonBar.showButton(storeButton);
-        if (isObject(ClosetFilterField)) {
+        if (isObject(ClosetFilterField))
+        {
             ClosetFilterField.setValue("");
         }
     }
-};
-function fakeVHDUserStoreInventoryGotFetchResults(%storename) {
+}
+function fakeVHDUserStoreInventoryGotFetchResults(%storename)
+{
     echo("Fake store fetch results for" @ " " @ %storename);
     Inventory::clearStore(%storename);
     %skus = SkuManager.getStoreSkus(%storename);
     %qtys = SkuManager.getStoreQtys(%storename);
     %skusNum = getWordCount(%skus);
     %qtysNum = getWordCount(%qtys);
-    if ((%skusNum != getWordCount(%qtys))) {
+    if ((%skusNum != getWordCount(%qtys)))
+    {
         error(getScopeName() @ " " @ "- mismatched number of skus and quantities:" @ " " @ %skusNum @ " " @ %qtysNum);
     }
     %hasAuthoredInventory = 0;
-    if (!($gVHDUserNameFilter $= "")) {
+    if (!($gVHDUserNameFilter $= ""))
+    {
         %n = 0;
-        if ((%n < %num)) {
+        if ((%n < %num))
+        {
             %sku = %request.getValue(%prefix @ "sku");
             %si = SkuManager.findBySku(%sku);
-            if ((%si.author $= $gVHDUserNameFilter)) {
+            if ((%si.author $= $gVHDUserNameFilter))
+            {
                 %hasAuthoredInventory = 1;
-            } else {
+            }
+            else
+            {
                 %n = (%n + 1.0);
             }
         }
@@ -217,19 +273,25 @@ function fakeVHDUserStoreInventoryGotFetchResults(%storename) {
         (%n < %num);
     }
     %n = 0;
-    while ((%n < %skusNum)) {
+    while ((%n < %skusNum))
+    {
         %sku = getWord(%skus, %n);
-        if ((%n < %qtysNum)) {
+        if ((%n < %qtysNum))
+        {
             %qty = getWord(%qtys, %n);
-        } else {
+        }
+        else
+        {
             %qty = -(1.0);
         }
         %authorMatch = 0;
-        if (%hasAuthoredInventory) {
+        if (%hasAuthoredInventory)
+        {
             %si = SkuManager.findBySku(%sku);
             %authorMatch = (%si.author $= $gVHDUserNameFilter) ? 1 : 0;
         }
-        if (!%hasAuthoredInventory || %authorMatch) {
+        if (!%hasAuthoredInventory || %authorMatch)
+        {
             %vbux = %si.price;
             %vpoints = (%si.price * 2.0);
             Inventory::addItemToStore(%storename, %sku, %qty, %vpoints, %vbux);
@@ -237,35 +299,47 @@ function fakeVHDUserStoreInventoryGotFetchResults(%storename) {
         %n = (%n + 1.0);
     }
     Inventory::onGotVHDUserStoreInventory(%storename);
-};
-function resetStorePosition() {
+}
+function resetStorePosition()
+{
     $gStoreScrollPos = 0;
     $gStoreCurrentCategory = "";
-};
-function loadStorePosition() {
+}
+function loadStorePosition()
+{
     %presentCategory = StoreCategoryPopup.getText();
-    if ((%presentCategory $= "")) {
+    if ((%presentCategory $= ""))
+    {
         StoreCategoryPopup.SetSelected(0);
-    } else {
-        if (!($gStoreCurrentCategory $= %presentCategory)) {
+    }
+    else
+    {
+        if (!($gStoreCurrentCategory $= %presentCategory))
+        {
             %catIndex = StoreCategoryPopup.findText($gStoreCurrentCategory);
-            if ((%catIndex >= 0.0)) {
+            if ((%catIndex >= 0.0))
+            {
                 StoreCategoryPopup.SetSelected(%catIndex);
-            } else {
+            }
+            else
+            {
                 $gStoreCurrentCategory = %presentCategory;
             }
         }
     }
-    if (($gStoreScrollPos $= "")) {
+    if (($gStoreScrollPos $= ""))
+    {
         $gStoreScrollPos = 0;
     }
     ClosetTabs.getTabWithName("Shops").itemsScroll.scrollTo(0, $gStoreScrollPos);
-};
-function saveStorePosition() {
+}
+function saveStorePosition()
+{
     $gStoreScrollPos = (0.0 - getWord(ClosetTabs.getTabWithName("Shops").thumbnails.getPosition(), 1));
     $gStoreCurrentCategory = StoreCategoryPopup.getText();
-};
-function clientCmdUpdateInventorySkus(%invChangedSkus, %notify, %autoEquip) {
+}
+function clientCmdUpdateInventorySkus(%invChangedSkus, %notify, %autoEquip)
+{
     log("inventory", "info", "clientCmdUpdateInventorySkus(): invChangedSkus (<skus-added> | <skus-removed>) =" @ %invChangedSkus);
     %invChangedSkus = strreplace(%invChangedSkus, "\t", " ");
     %invChangedSkus = strreplace(%invChangedSkus, "|", "\t");
@@ -274,40 +348,50 @@ function clientCmdUpdateInventorySkus(%invChangedSkus, %notify, %autoEquip) {
     log("inventory", "debug", getScopeName() @ " " @ "- skus   Added=" @ %skusAdded);
     log("inventory", "debug", getScopeName() @ " " @ "- skus Removed=" @ %skusRemoved);
     updateInventorySkus(%skusAdded, %skusRemoved, %notify, %autoEquip, "");
-};
-function updateInventorySkus(%skusAdded, %skusRemoved, %notify, %autoEquip, %srcName) {
+}
+function updateInventorySkus(%skusAdded, %skusRemoved, %notify, %autoEquip, %srcName)
+{
     %entryTime = getRealTime();
     echoDebug(getScopeName() @ " " @ "skus added  :" @ " " @ %skusAdded);
     echoDebug(getScopeName() @ " " @ "skus removed:" @ " " @ %skusRemoved);
     $player.addInventorySKUs(%skusAdded);
     $player.removeInventorySKUs(%skusRemoved);
-    if (isObject(ClosetItemPopup)) {
+    if (isObject(ClosetItemPopup))
+    {
         ClosetItemPopup.update($Player::inventory);
     }
-    if (%notify) {
+    if (%notify)
+    {
     }
-    if (!ClosetGui.isVisible() || !(ClosetTabs.getCurrentTab().name $= "Shops")) {
+    if (!ClosetGui.isVisible() || !(ClosetTabs.getCurrentTab().name $= "Shops"))
+    {
         notifyUserOfSkusGained(%skusAdded, %srcName, %autoEquip);
     }
-    if (%autoEquip) {
+    if (%autoEquip)
+    {
         Inventory::equipOrWearSkus(%skusAdded);
     }
-    if (!(CustomSpaceClient::GetSpaceImIn() $= "")) {
+    if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
+    {
     }
-    if (CustomSpaceClient::isOwner()) {
+    if (CustomSpaceClient::isOwner())
+    {
         getOwnedFurniture();
     }
     %exitTime = getRealTime();
     error(getScopeName() @ " " @ "- time:" @ " " @ mSubS32(%exitTime, %entryTime));
-};
-function clientCmdGiftReceived(%skus, %srcName) {
+}
+function clientCmdGiftReceived(%skus, %srcName)
+{
     $player.addInventorySKUs(%skus);
     notifyUserOfSkusGained(%skus, %srcName, 0);
-    if (ClosetGui.isVisible()) {
+    if (ClosetGui.isVisible())
+    {
         ClosetTabs.selectCurrentTab();
     }
-};
-function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired) {
+}
+function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired)
+{
     log("inventory", "info", "clientCmdInventoryExpiration(): skusAboutToExpire (<sku>|<numItems>|<remaining>|<reason>SPC<next>) =\"" @ %skusAboutToExpire @ "\", skusJustExpired (<sku>|<numItems>|<reason>|<replacementSKU>SPC<next>) = \"" @ %skusJustExpired @ "\"");
     %skusAboutToExpire = strreplace(%skusAboutToExpire, " ", "\n");
     %skusAboutToExpire = strreplace(%skusAboutToExpire, "|", "\t");
@@ -315,43 +399,56 @@ function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired) {
     %skusJustExpired = strreplace(%skusJustExpired, "|", "\t");
     %aboutToExpireCount = getRecordCount(%skusAboutToExpire);
     %justExpiredCount = getRecordCount(%skusJustExpired);
-    if ((%aboutToExpireCount == 0.0)) {
+    if ((%aboutToExpireCount == 0.0))
+    {
     }
-    if ((%justExpiredCount == 0.0)) {
+    if ((%justExpiredCount == 0.0))
+    {
         error(getScopeName() @ "-> received empty update... this shouldn't happen.");
         return;
     }
-    if ((%justExpiredCount > 0.0)) {
+    if ((%justExpiredCount > 0.0))
+    {
         %sound = AudioProfile_JustExpired;
-    } else {
-        if ((%aboutToExpireCount > 0.0)) {
+    }
+    else
+    {
+        if ((%aboutToExpireCount > 0.0))
+        {
             %sound = AudioProfile_ExpiringSoon;
         }
     }
     schedule(500, 0, "alxPlay", %sound);
     %msg = "";
     %listOfSkusJustExpired = "";
-    if (%justExpiredCount) {
+    if (%justExpiredCount)
+    {
         %activeSkus = $player.getActiveSKUs();
         %realExpiredCount = 0;
         %i = 0;
-        while ((%i < %justExpiredCount)) {
+        while ((%i < %justExpiredCount))
+        {
             %itemStr = getRecord(%skusJustExpired, %i);
             %num = getField(%itemStr, 1);
             %realExpiredCount = (%realExpiredCount + %num);
             %i = (%i + 1.0);
         }
-        if ((%realExpiredCount > 1.0)) {
+        if ((%realExpiredCount > 1.0))
+        {
             %msg = %realExpiredCount @ " of your items just expired (";
             (%i < %justExpiredCount);
-        } else {
+        }
+        else
+        {
             %msg = "Your ";
         }
         %listOfSkusJustExpired = "";
         %listOfUniqueSkusJustExpired = "";
         %i = 0;
-        while ((%i < %justExpiredCount)) {
-            if ((%i > 0.0)) {
+        while ((%i < %justExpiredCount))
+        {
+            if ((%i > 0.0))
+            {
                 %msg = %msg @ ", ";
             }
             %itemStr = getRecord(%skusJustExpired, %i);
@@ -359,29 +456,38 @@ function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired) {
             %num = getField(%itemStr, 1);
             %reason = getField(%itemStr, 2);
             %replaceSKU = getField(%itemStr, 3);
-            if ((%num $= "")) {
+            if ((%num $= ""))
+            {
                 %num = 1;
             }
             %si = SkuManager.findBySku(%sku);
-            if (isObject(%si)) {
+            if (isObject(%si))
+            {
                 %name = %si.descShrt;
-            } else {
+            }
+            else
+            {
                 error(getScopeName() @ "-> unknown sku just expired");
                 %name = "(oops, bug)";
             }
-            if ((%num > 1.0)) {
+            if ((%num > 1.0))
+            {
                 %msg = %msg @ %num;
             }
             %msg = %msg @ %name @ (%num > 1.0) ? "s" : "";
             removeExpiredSkuFromOutfits(%sku, %replaceSKU, 0);
             %activeSkus = removeAndReplaceSkuFromSkuList(%activeSkus, %sku, %replaceSKU);
-            if ((%listOfUniqueSkusJustExpired $= "")) {
+            if ((%listOfUniqueSkusJustExpired $= ""))
+            {
                 %listOfUniqueSkusJustExpired = %sku;
-            } else {
+            }
+            else
+            {
                 %listOfUniqueSkusJustExpired = %listOfUniqueSkusJustExpired @ " " @ %sku;
             }
             %k = 0;
-            while ((%k < %num)) {
+            while ((%k < %num))
+            {
                 %listOfSkusJustExpired = %listOfSkusJustExpired @ %sku @ " ";
                 %k = (%k + 1.0);
             }
@@ -389,43 +495,58 @@ function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired) {
             (%k < %num);
         }
         notifyUserOfSkusExpired(%listOfUniqueSkusJustExpired, "");
-        if ((%justExpiredCount > 0.0)) {
+        if ((%justExpiredCount > 0.0))
+        {
             outfits_persist();
         }
         commandToServer('SetActiveSkus', %activeSkus);
-        if ((%justExpiredCount > 1.0)) {
+        if ((%justExpiredCount > 1.0))
+        {
             %msg = %msg @ ")";
             (%i < %justExpiredCount);
-        } else {
+        }
+        else
+        {
             %msg = %msg @ " just expired";
         }
-        if (%aboutToExpireCount) {
+        if (%aboutToExpireCount)
+        {
             %msg = %msg @ ", AND ";
-        } else {
+        }
+        else
+        {
             %msg = %msg @ ".";
         }
     }
-    if (%aboutToExpireCount) {
+    if (%aboutToExpireCount)
+    {
         %realAboutToExpireCount = 0;
         %i = 0;
-        while ((%i < %aboutToExpireCount)) {
+        while ((%i < %aboutToExpireCount))
+        {
             %itemStr = getRecord(%skusAboutToExpire, %i);
             %num = getField(%itemStr, 1);
-            if ((%num $= "")) {
+            if ((%num $= ""))
+            {
                 %num = 1;
             }
             %realAboutToExpireCount = (%realAboutToExpireCount + %num);
             %i = (%i + 1.0);
         }
-        if ((%realAboutToExpireCount > 1.0)) {
+        if ((%realAboutToExpireCount > 1.0))
+        {
             %msg = %msg @ %realAboutToExpireCount @ " of your items are about to expire! (";
             (%i < %aboutToExpireCount);
-        } else {
+        }
+        else
+        {
             %msg = %msg @ (%justExpiredCount > 0.0) ? "y" : "Y" @ "our";
         }
         %i = 0;
-        while ((%i < %aboutToExpireCount)) {
-            if ((%i > 0.0)) {
+        while ((%i < %aboutToExpireCount))
+        {
+            if ((%i > 0.0))
+            {
                 %msg = %msg @ ", ";
             }
             %aboutToExpireSku = getRecord(%skusAboutToExpire, %i);
@@ -434,64 +555,84 @@ function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired) {
             %remaining = getField(%aboutToExpireSku, 2);
             %reason = getField(%aboutToExpireSku, 3);
             %si = SkuManager.findBySku(%sku);
-            if (isObject(%si)) {
+            if (isObject(%si))
+            {
                 %name = %si.descShrt;
-            } else {
+            }
+            else
+            {
                 error(getScopeName() @ "-> unknown sku about to expire");
                 %name = "(oops, bug)";
             }
             %msg = %msg @ %num @ " " @ %name @ (%num > 1.0) ? "s" : "";
-            if ((%realAboutToExpireCount == 1.0)) {
+            if ((%realAboutToExpireCount == 1.0))
+            {
                 %msg = %msg @ " expires";
             }
             %roundedRemaining = (mFloor(((%remaining + 30.0) / 60.0)) * 60.0);
             %msg = %msg @ " in " @ secondsToDaysHoursMinutesSeconds(%roundedRemaining);
             %i = (%i + 1.0);
         }
-        if ((%realAboutToExpireCount > 1.0)) {
+        if ((%realAboutToExpireCount > 1.0))
+        {
             %msg = %msg @ ").";
             (%i < %aboutToExpireCount);
-        } else {
+        }
+        else
+        {
             %msg = %msg @ ".";
         }
     }
-    if (!(%msg $= "")) {
+    if (!(%msg $= ""))
+    {
         handleSystemMessage('MsgInfoMessage', %msg);
     }
-    if (!(%listOfSkusJustExpired $= "")) {
+    if (!(%listOfSkusJustExpired $= ""))
+    {
         log("inventory", "debug", "clientCmdInventoryExpiration(): removed from inventory: skusJustExpired=" @ %listOfSkusJustExpired);
         $player.removeInventorySKUs(%listOfSkusJustExpired);
     }
-};
-function removeAndReplaceSkuFromSkuList(%skusOutfit, %sku, %replaceSKU) {
-    if ((%sku $= "")) {
+}
+function removeAndReplaceSkuFromSkuList(%skusOutfit, %sku, %replaceSKU)
+{
+    if ((%sku $= ""))
+    {
         error(getScopeName() @ " " @ "sku is null can't remove from skusoutfits:" @ " " @ %skusOutfit @ " " @ "or replace with" @ " " @ %replaceSKU);
         return %skusOutfit;
     }
-    if (((%idx = findWord(%skusOutfit, %sku)) >= 0.0)) {
+    if (((%idx = findWord(%skusOutfit, %sku)) >= 0.0))
+    {
         %changes = (%changes + 1.0);
         %skusOutfit = removeWord(%skusOutfit, %idx);
-        if (%replaceSKU) {
+        if (%replaceSKU)
+        {
         }
-        if (!(%replaceSKU $= "") && (findWord(%skusOutfit, %replaceSKU) < 0.0)) {
-            if ((%skusOutfit $= "")) {
+        if (!(%replaceSKU $= "") && (findWord(%skusOutfit, %replaceSKU) < 0.0))
+        {
+            if ((%skusOutfit $= ""))
+            {
                 %skusOutfit = %replaceSKU;
-            } else {
+            }
+            else
+            {
                 %skusOutfit = %skusOutfit @ " " @ %replaceSKU;
             }
         }
     }
     return %skusOutfit;
-};
-function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser) {
-    if (!isObject($player)) {
+}
+function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser)
+{
+    if (!isObject($player))
+    {
         error(getScopeName() @ " " @ "$player is not valid, cannot remove expired sku and replace with new one" @ " " @ %sku @ " " @ %newSku);
         return 0;
     }
     %outfitNames = [$player.getGender()];
     $Player::HangerNames;
     %i = 0;
-    while ((%i < $gClosetNumOutfits)) {
+    while ((%i < $gClosetNumOutfits))
+    {
         %name = getWord(%outfitNames, %i);
         %keyOutfit = %name;
         %keyBody = $player.getGender() @ "Body";
@@ -499,11 +640,13 @@ function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser) {
         %skusOutfit = removeAndReplaceSkuFromSkuList(%skusOutfit, %oldSku, %newSku);
         %STOCKOutfit = $gNewStockOutfits[%keyOutfit];
         %n = (getWordCount(%STOCKOutfit) - 1.0);
-        while ((%n >= 0.0)) {
+        while ((%n >= 0.0))
+        {
             %sku = getWord(%STOCKOutfit, %n);
             %drawer = SkuManager.findBySku(%sku).drwrName;
             %optional = SkuManager.isOptionalDrawer(%drawer);
-            if (%optional) {
+            if (%optional)
+            {
                 %STOCKOutfit = removeWord(%STOCKOutfit, %n);
             }
             %n = (%n - 1.0);
@@ -515,11 +658,13 @@ function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser) {
         %STOCKBody = [$player.getGender()];
         $gDefaultBodyAttrs;
         %n = (getWordCount(%STOCKBody) - 1.0);
-        while ((%n >= 0.0)) {
+        while ((%n >= 0.0))
+        {
             %sku = getWord(%STOCKBody, %n);
             %drawer = SkuManager.findBySku(%sku).drwrName;
             %optional = SkuManager.isOptionalDrawer(%drawer);
-            if (%optional) {
+            if (%optional)
+            {
                 %STOCKBody = removeWord(%STOCKBody, %n);
             }
             %n = (%n - 1.0);
@@ -530,21 +675,27 @@ function removeExpiredSkuFromOutfits(%oldSku, %newSku, %notifyUser) {
         $gOutfits.put(%keyOutfit, %skusOutfit);
         %i = (%i + 1.0);
     }
-    if (%notifyUser) {
+    if (%notifyUser)
+    {
         notifyUserOfSkusExpired(%oldSku, "");
     }
-};
-function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped) {
+}
+function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped)
+{
     echo(getScopeName() @ " " @ %skus @ " " @ %srcName);
-    if (isObject($player)) {
+    if (isObject($player))
+    {
         %gender = $player.getGender();
-    } else {
+    }
+    else
+    {
         error(getScopeName() @ " " @ "- ERROR NO Player OBJECT using forced gender");
         %gender = "f";
     }
     %skus = SkuManager.filterSkusGender(%skus, %gender);
     %skus = SkuManager.filterSkusVisible(%skus, 1);
-    if ((%skus $= "")) {
+    if ((%skus $= ""))
+    {
         echo(getScopeName() @ " " @ "- no visible skus." @ " " @ %skus @ " " @ getTrace());
         return;
     }
@@ -558,12 +709,18 @@ function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped) {
     %numNonFurnishing = (%numSkus - %numFurnishing);
     %listWearable = SkuManager.getSkuShortDescriptions(%skusWearable, ", ", 1, 0);
     %listUnwearable = SkuManager.getSkuShortDescriptions(%skusUnwearable, ", ", 1, 32);
-    if ((%numWearable > 0.0)) {
-        if ((%listWearable @ " " @ %listUnwearable $= "")) {
-        } else {
+    if ((%numWearable > 0.0))
+    {
+        if ((%listWearable @ " " @ %listUnwearable $= ""))
+        {
+        }
+        else
+        {
         }
         %list = "" @ " and" @ " " @ %listUnwearable;
-    } else {
+    }
+    else
+    {
         %list = %listUnwearable;
     }
     %wordNonFurnishingItThem = (%numNonFurnishing == 1.0) ? "it" : "them";
@@ -571,97 +728,142 @@ function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped) {
     %wordWearableItThem = (%numWearable == 1.0) ? "it" : "them";
     %wordWearableItemItems = (%numWearable == 1.0) ? "item" : "items";
     %wordFurnishingItThem = (%numFurnishing == 1.0) ? "it" : "them";
-    if ((%numFurnishing > 0.0)) {
+    if ((%numFurnishing > 0.0))
+    {
         %specialOrFurniture = (%numFurnishing != %numUnwearable) ? "special or furniture" : "furniture";
-    } else {
+    }
+    else
+    {
         %specialOrFurniture = "special";
     }
     %msgUnwearable = "";
-    if ((%numNonFurnishing > 0.0)) {
-        if ((%numWearable > 0.0)) {
-            if ((%numUnwearable == 0.0)) {
-            } else {
-                if ((%numUnwearable == 1.0)) {
-                } else {
+    if ((%numNonFurnishing > 0.0))
+    {
+        if ((%numWearable > 0.0))
+        {
+            if ((%numUnwearable == 0.0))
+            {
+            }
+            else
+            {
+                if ((%numUnwearable == 1.0))
+                {
+                }
+                else
+                {
                 }
             }
             %msgUnwearable = "One is" @ %numUnwearable @ " " @ "are" @ " " @ %specialOrFurniture @ " and can't actually be worn)";
             "\n(";
-        } else {
+        }
+        else
+        {
             %msgUnwearable = "\n(" @ (%numUnwearable == 1.0) ? "It's" : "They're" @ " " @ %specialOrFurniture @ " and can't actually be worn)";
             "";
         }
     }
     %YoullFindStr = "";
-    if (!%autoEquipped) {
-        if ((%numNonFurnishing > 0.0)) {
-            if ((%numFurnishing > 0.0)) {
-            } else {
+    if (!%autoEquipped)
+    {
+        if ((%numNonFurnishing > 0.0))
+        {
+            if ((%numFurnishing > 0.0))
+            {
+            }
+            else
+            {
             }
             %YoullFindStr = "your non-furnishing" @ " " @ %wordNonFurnishingItemItems @ %wordNonFurnishingItThem @ " " @ "in the closet (F5).";
             "You'll find" @ " ";
         }
-        if ((%numFurnishing > 0.0)) {
-            if ((%numNonFurnishing > 0.0)) {
-            } else {
+        if ((%numFurnishing > 0.0))
+        {
+            if ((%numNonFurnishing > 0.0))
+            {
             }
-            if ((%numNonFurnishing > 0.0)) {
-            } else {
+            else
+            {
+            }
+            if ((%numNonFurnishing > 0.0))
+            {
+            }
+            else
+            {
             }
             %YoullFindStr = "your new furniture" @ %wordFurnishingItThem @ " " @ "in your apartment using the Space->My Furnishings panel.";
             "" @ "\n" @ "And you" @ "You" @ " " @ "can place" @ " ";
         }
     }
-    if ((%YoullFindStr @ " " @ %srcName $= $Player::Name)) {
+    if ((%YoullFindStr @ " " @ %srcName $= $Player::Name))
+    {
         %srcName = "yourself";
     }
-    if ((%srcName $= "")) {
-    } else {
+    if ((%srcName $= ""))
+    {
+    }
+    else
+    {
     }
     %fromString = " from" @ " " @ %srcName;
     "";
-    if ((%numSkus == 1.0)) {
-    } else {
+    if ((%numSkus == 1.0))
+    {
+    }
+    else
+    {
     }
     %msg = "a new item" @ %numSkus @ " " @ "new items" @ %fromString @ "!";
     "You just got" @ " ";
     %msg = %msg @ "\n" @ "(" @ %list @ ")";
     %msg = %msg @ %msgUnwearable;
     %msg = %msg @ "\n" @ %YoullFindStr;
-    if (!%autoEquipped) {
+    if (!%autoEquipped)
+    {
     }
-    if ((%numWearable > 0.0)) {
-        if ((%numFurnishing == 0.0)) {
+    if ((%numWearable > 0.0))
+    {
+        if ((%numFurnishing == 0.0))
+        {
             %msg = %msg @ "\n" @ "" @ "\n" @ "Would you like to wear " @ %wordWearableItThem @ " now?";
-            if (SalonDoesListContainAnySalonRewardSKUs(%skus)) {
+            if (SalonDoesListContainAnySalonRewardSKUs(%skus))
+            {
                 echo(getScopeName() @ " " @ "found a salon sku in the list, so we are wearing it immediately without asking: " @ " " @ %skus);
                 Inventory::equipOrWearSkus(%skus);
                 return;
             }
-        } else {
+        }
+        else
+        {
             %msg = %msg @ "\n" @ "" @ "\n" @ "Would you like to put on your wearable " @ %wordWearableItemItems @ " now?";
         }
         %mb = MessageBoxYesNo("Score!", %msg, "Inventory::equipOrWearSkus(\"" @ %skus @ "\"); if($gAutoOrbitOnReceiveItem && !$IN_ORBIT_CAM) nextPlayerCamMode();", "");
-    } else {
+    }
+    else
+    {
         %mb = MessageBoxOK("Score!", %msg, "");
     }
     %mb.text.setText(%mb.message);
-};
-function notifyUserOfSkusExpired(%skus, %srcName) {
+}
+function notifyUserOfSkusExpired(%skus, %srcName)
+{
     %skus = trim(%skus);
-    if ((%skus $= "")) {
+    if ((%skus $= ""))
+    {
         return;
     }
     %count = getWordCount(%skus);
-    if ((%count == 0.0)) {
+    if ((%count == 0.0))
+    {
         return;
     }
     %descriptions = SkuManager.getSkuShortDescriptions(%skus, ", ", 0);
     %msg = (%count == 1.0) ? "An item in your outfits expired while you were away:" : "Some items in your outfits expired while you were away:";
     handleSystemMessage("msgInfoMessage", %msg @ " " @ %descriptions);
-};
-function Inventory::equipOrWearSkus(%skus) {
-    if ((%skus $= "")) {
+}
+function Inventory::equipOrWearSkus(%skus)
+{
+    if ((%skus $= ""))
+    {
         return;
     }
     %skusNew = SkuManager.filterSkusGender(%skus, $player.getGender());
@@ -670,29 +872,39 @@ function Inventory::equipOrWearSkus(%skus) {
     log("inventory", "debug", "Inventory::equipOrWearSkus(): %skusDry=" @ %skusDry);
     %skusWet = SkuManager.overlaySkus(%skusDry, %skusNew);
     log("inventory", "info", "Inventory::equipOrWearSkus(): %skusWet=" @ %skusWet);
-    if (ClosetGui.isVisible()) {
+    if (ClosetGui.isVisible())
+    {
         $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.filterSkusForClothing(%skusWet);
         $ClosetSkusBody = SkuManager.filterSkusForBody(%skusWet);
         ClosetTabs.selectCurrentTab();
         ClosetGui.updateVisibleAvatar();
-    } else {
+    }
+    else
+    {
         SaveOutfitAndBodySkusAsCurrent(%skusWet);
     }
-};
-function Inventory::fetchStoreInventory(%storename) {
-    if ($StandAlone) {
+}
+function Inventory::fetchStoreInventory(%storename)
+{
+    if ($StandAlone)
+    {
         schedule($gInventoryFetchFakeDelay, 0, "fakeStoreInventoryGotFetchResults", %storename);
         return;
     }
     sendRequest_GetStoreInventory($Player::Name, %storename, "OnGotDoneOrError_GetStoreInventory");
-};
-function OnGotDoneOrError_GetStoreInventory(%request) {
+}
+function OnGotDoneOrError_GetStoreInventory(%request)
+{
     %storename = %request.storeName;
-    if (%request.checkSuccess()) {
+    if (%request.checkSuccess())
+    {
         Inventory::clearStore(%storename);
         $gStoreStockRevision[%storename] = %request.getValue("storeRevisionDate");
-    } else {
-        if ((%request.getValue("errorCode") $= "storeNotFound")) {
+    }
+    else
+    {
+        if ((%request.getValue("errorCode") $= "storeNotFound"))
+        {
             Inventory::clearStore(%storename);
             Inventory::onGotStoreInventory(%storename);
         }
@@ -700,7 +912,8 @@ function OnGotDoneOrError_GetStoreInventory(%request) {
     }
     %num = %request.getValue("itemsCount");
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %prefix = "items" @ %n @ ".";
         %sku = %request.getValue(%prefix @ "sku");
         %qty = %request.getValue(%prefix @ "quantity");
@@ -711,23 +924,29 @@ function OnGotDoneOrError_GetStoreInventory(%request) {
     }
     Inventory::sortStoreInventory(%storename);
     Inventory::onGotStoreInventory(%storename);
-    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= "")) {
+    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= ""))
+    {
     }
-    if (isObject(StoreShoppingList)) {
+    if (isObject(StoreShoppingList))
+    {
         StoreShoppingList.addSkus(%request.shoppingCartSkus);
     }
-};
-function Inventory::sortStoreInventory(%storename) {
+}
+function Inventory::sortStoreInventory(%storename)
+{
     warn(getScopeName() @ " " @ "- should be done server-side. ETS-3468");
     %allSkus = SkuManager.filterSkusGender(SkuManager.getSkus(), $UserPref::Player::gender);
     $gStoreStockCacheSkus[%storename] = Inventory::sortSkus($gStoreStockCacheSkus[%storename], %allSkus);
-};
-function Inventory::sortSkus(%skusToSort, %orderToAppearIn) {
+}
+function Inventory::sortSkus(%skusToSort, %orderToAppearIn)
+{
     %ret = "";
     %n = (getWordCount(%orderToAppearIn) - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %sku = getWord(%orderToAppearIn, %n);
-        if ((findWord(%skusToSort, %sku) >= 0.0)) {
+        if ((findWord(%skusToSort, %sku) >= 0.0))
+        {
             %ret = %sku @ " " @ %ret;
         }
         %n = (%n - 1.0);
@@ -735,23 +954,29 @@ function Inventory::sortSkus(%skusToSort, %orderToAppearIn) {
     %ret = trim(%ret);
     (%n >= 0.0);
     return %ret;
-};
-function fakeStoreInventoryGotFetchResults(%storename) {
+}
+function fakeStoreInventoryGotFetchResults(%storename)
+{
     echo("Fake store fetch results for" @ " " @ %storename);
     Inventory::clearStore(%storename);
     %skus = SkuManager.getStoreSkus(%storename);
     %qtys = SkuManager.getStoreQtys(%storename);
     %skusNum = getWordCount(%skus);
     %qtysNum = getWordCount(%qtys);
-    if ((%skusNum != getWordCount(%qtys))) {
+    if ((%skusNum != getWordCount(%qtys)))
+    {
         error(getScopeName() @ " " @ "- mismatched number of skus and quantities:" @ " " @ %skusNum @ " " @ %qtysNum);
     }
     %n = 0;
-    while ((%n < %skusNum)) {
+    while ((%n < %skusNum))
+    {
         %sku = getWord(%skus, %n);
-        if ((%n < %qtysNum)) {
+        if ((%n < %qtysNum))
+        {
             %qty = getWord(%qtys, %n);
-        } else {
+        }
+        else
+        {
             %qty = -(1.0);
         }
         %si = SkuManager.findBySku(%sku);
@@ -761,97 +986,135 @@ function fakeStoreInventoryGotFetchResults(%storename) {
         %n = (%n + 1.0);
     }
     Inventory::onGotStoreInventory(%storename);
-};
-function Inventory::addItemToStore(%storename, %sku, %qty, %vpoints, %vbux) {
+}
+function Inventory::addItemToStore(%storename, %sku, %qty, %vpoints, %vbux)
+{
     $gStoreStockCacheSkus[%storename] = $gStoreStockCacheSkus[%storename] @ %sku @ " ";
     $gStoreItemsQty[%sku] = %qty;
-    if ((%vpoints < 0.0)) {
-    } else {
+    if ((%vpoints < 0.0))
+    {
+    }
+    else
+    {
     }
     $gStoreItemsVPoints[%sku] = "-" @ mFloor(%vpoints);
-    if ((%vbux < 0.0)) {
-    } else {
+    if ((%vbux < 0.0))
+    {
+    }
+    else
+    {
     }
     $gStoreItemsVBux[%sku] = "-" @ mFloor(%vbux);
-};
-function Inventory::getVPointsPriceForSku(%sku) {
+}
+function Inventory::getVPointsPriceForSku(%sku)
+{
     %price = $gStoreItemsVPoints[%sku];
-    if (!(%price $= "")) {
+    if (!(%price $= ""))
+    {
         return %price;
     }
     %si = SkuManager.findBySku(%sku);
-    if (isObject(%si)) {
+    if (isObject(%si))
+    {
     }
-    if (!(%si.priceVPoints $= "")) {
-        if ((%si.priceVPoints == -(1.0))) {
-        } else {
+    if (!(%si.priceVPoints $= ""))
+    {
+        if ((%si.priceVPoints == -(1.0)))
+        {
+        }
+        else
+        {
         }
         return %si.priceVPoints;
     }
     return "-";
-};
-function Inventory::getVBuxPriceForSku(%sku) {
+}
+function Inventory::getVBuxPriceForSku(%sku)
+{
     %price = $gStoreItemsVBux[%sku];
-    if (!(%price $= "")) {
+    if (!(%price $= ""))
+    {
         return %price;
     }
     %si = SkuManager.findBySku(%sku);
-    if (isObject(%si)) {
+    if (isObject(%si))
+    {
     }
-    if (!(%si.priceVBux $= "")) {
-        if ((%si.priceVBux == -(1.0))) {
-        } else {
+    if (!(%si.priceVBux $= ""))
+    {
+        if ((%si.priceVBux == -(1.0)))
+        {
+        }
+        else
+        {
         }
         return %si.priceVBux;
     }
     return "-";
-};
-function Inventory::getTotalPrice(%currency, %skus) {
+}
+function Inventory::getTotalPrice(%currency, %skus)
+{
     %hasValidSku = 0;
     %total = 0;
     %count = getWordCount(%skus);
     %i = 0;
-    while ((%i < %count)) {
+    while ((%i < %count))
+    {
         %sku = getWord(%skus, %i);
-        if ((%currency $= "vPoints")) {
-        } else {
+        if ((%currency $= "vPoints"))
+        {
+        }
+        else
+        {
         }
         %price = Inventory::getVBuxPriceForSku(%sku);
         Inventory::getVPointsPriceForSku(%sku);
-        if (!(%price $= "-")) {
+        if (!(%price $= "-"))
+        {
             %total = (%total + %price);
             %hasValidSku = 1;
         }
         %i = (%i + 1.0);
     }
-    if (%hasValidSku) {
-    } else {
+    if (%hasValidSku)
+    {
+    }
+    else
+    {
     }
     return "-";
-};
-function Inventory::filterSkusByValidPrice(%currency, %skus) {
+}
+function Inventory::filterSkusByValidPrice(%currency, %skus)
+{
     %validSkus = "";
     %count = getWordCount(%skus);
     %i = 0;
-    while ((%i < %count)) {
+    while ((%i < %count))
+    {
         %sku = getWord(%skus, %i);
-        if ((%currency $= "vPoints")) {
-        } else {
+        if ((%currency $= "vPoints"))
+        {
+        }
+        else
+        {
         }
         %price = Inventory::getVBuxPriceForSku(%sku);
         Inventory::getVPointsPriceForSku(%sku);
-        if (!(%price $= "-")) {
+        if (!(%price $= "-"))
+        {
             %validSkus = %validSkus @ " " @ %sku;
         }
         %i = (%i + 1.0);
     }
     return trim(%validSkus);
-};
-function Inventory::dumpStore(%storename) {
+}
+function Inventory::dumpStore(%storename)
+{
     echo("store" @ " " @ %storename);
     %num = getWordCount($gStoreStockCacheSkus[%storename]);
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %sku = getWord($gStoreStockCacheSkus[%storename], %n);
         %qty = $gStoreItemsQty[%sku];
         %vps = $gStoreItemsVPoints[%sku];
@@ -860,82 +1123,107 @@ function Inventory::dumpStore(%storename) {
         echo("sku:" @ " " @ formatInt("%6d", %sku) @ " " @ "qty" @ " " @ formatInt("%4d", %qty) @ " " @ "vPoints" @ " " @ formatInt("%6d", %vps) @ " " @ "vBux" @ " " @ formatInt("%6d", %vbs) @ " " @ %si.descShrt);
         %n = (%n + 1.0);
     }
-};
-function Inventory::onGotStoreInventory(%storename) {
-    if ((%storename $= "furnishings")) {
-        if (isObject(CSShoppingBrowser)) {
+}
+function Inventory::onGotStoreInventory(%storename)
+{
+    if ((%storename $= "furnishings"))
+    {
+        if (isObject(CSShoppingBrowser))
+        {
             CSShoppingBrowser.loadAvailableSkus();
         }
         return;
     }
     $gStoreStockLoaded[%storename] = 1;
-    if (ClosetGui.isVisible()) {
+    if (ClosetGui.isVisible())
+    {
     }
-    if ((ClosetTabs.getCurrentTab().name $= "SHOPS")) {
+    if ((ClosetTabs.getCurrentTab().name $= "SHOPS"))
+    {
     }
-    if (($gCurrentStoreName $= %storename)) {
+    if (($gCurrentStoreName $= %storename))
+    {
         saveStorePosition();
         ClosetTabs::refreshStoreTab();
     }
     %storeLongName = $gDestinationNames[%storename];
     %storeDesc = $gDestinationDescsInWorld[%storename];
-    if ((%storeLongName $= "")) {
+    if ((%storeLongName $= ""))
+    {
         error(getScopeName() @ " " @ "- no store long name for" @ " " @ %storename);
     }
-    if ((%storeDesc $= "")) {
+    if ((%storeDesc $= ""))
+    {
         error(getScopeName() @ " " @ "- no store desc for" @ " " @ %storename);
     }
     handleSystemMessage("msgInfoMessage", %storeDesc);
-    if (!($gCurrentStoreName $= "")) {
+    if (!($gCurrentStoreName $= ""))
+    {
         ButtonBar.showButton(storeButton);
-        if (isObject(ClosetFilterField)) {
+        if (isObject(ClosetFilterField))
+        {
             ClosetFilterField.setValue("");
         }
     }
-};
-function Inventory::getCurrentStoreSkus() {
-    if (($gCurrentStoreName $= "")) {
+}
+function Inventory::getCurrentStoreSkus()
+{
+    if (($gCurrentStoreName $= ""))
+    {
         return "no store";
     }
     return $gStoreStockCacheSkus[$gCurrentStoreName];
-};
-function Inventory::getStoreName(%storeID) {
+}
+function Inventory::getStoreName(%storeID)
+{
     return $gDestinationNames[%storeID];
-};
-function Inventory::getCurrentStoreName() {
-    if (($gCurrentStoreName $= "")) {
+}
+function Inventory::getCurrentStoreName()
+{
+    if (($gCurrentStoreName $= ""))
+    {
         return "";
     }
     return Inventory::getStoreName($gCurrentStoreName);
-};
-function Inventory::getStoreDescInCloset(%storeID) {
+}
+function Inventory::getStoreDescInCloset(%storeID)
+{
     return $gDestinationDescsInCloset[%storeID];
-};
-function Inventory::getStoreDescInWorld(%storeID) {
+}
+function Inventory::getStoreDescInWorld(%storeID)
+{
     return $gDestinationDescsInWorld[%storeID];
-};
-function Inventory::getCurrentStoreDescInCloset() {
+}
+function Inventory::getCurrentStoreDescInCloset()
+{
     return Inventory::getStoreDescInCloset($gCurrentStoreName);
-};
-function Inventory::getCurrentStoreDescInWorld() {
+}
+function Inventory::getCurrentStoreDescInWorld()
+{
     return Inventory::getStoreDescInWorld($gCurrentStoreName);
-};
-function Inventory::getStoreDrwrs(%storeID) {
+}
+function Inventory::getStoreDrwrs(%storeID)
+{
     return Inventory::getStoreDrwrs($gCurrentStoreName);
-};
-function Inventory::getCurrentStoreDrwrs() {
+}
+function Inventory::getCurrentStoreDrwrs()
+{
     return Inventory::getStoreDrwrs($gCurrentStoreName);
-};
-function Inventory::fetchPlayerInventoryIfNeedTo(%playerObj) {
+}
+function Inventory::fetchPlayerInventoryIfNeedTo(%playerObj)
+{
     echoDebug("inventory", "This should be more sophisticated. Something like if (!touched).");
     Inventory::fetchPlayerInventory(%playerObj);
-};
-function Inventory::fetchPlayerInventoryIfEmpty() {
-    if (!isDefined("$player::inventory") || ($Player::inventory $= "")) {
+}
+function Inventory::fetchPlayerInventoryIfEmpty()
+{
+    if (!isDefined("$player::inventory") || ($Player::inventory $= ""))
+    {
         Inventory::fetchPlayerInventory();
     }
-};
-function fakePlayerInventoryGotFetchResults() {
+}
+function fakePlayerInventoryGotFetchResults()
+{
     echo("Fake player fetch inventory results");
     $Player::inventory = SkuManager.getBornWithSkus();
     $Player::inventory = trim($Player::inventory);
@@ -943,35 +1231,45 @@ function fakePlayerInventoryGotFetchResults() {
     $Player::inventory = $Player::inventory @ " " @ %skus;
     $Player::inventory = trim($Player::inventory);
     Inventory::onGotPlayerInventory();
-};
-function Inventory::onGotPlayerInventory() {
+}
+function Inventory::onGotPlayerInventory()
+{
     echo("got player inventory");
-    if (($Player::inventory $= "")) {
+    if (($Player::inventory $= ""))
+    {
         error(getScopeName() @ "->got empty player inventory!");
         %notEmpty = 0;
-    } else {
+    }
+    else
+    {
         %notEmpty = 1;
     }
     Inventory::dedupeSkus($Player::inventory);
-    if (($Player::inventory $= "")) {
+    if (($Player::inventory $= ""))
+    {
     }
-    if (%notEmpty) {
+    if (%notEmpty)
+    {
         error(getScopeName() @ "->got empty player inventory after deduping!");
     }
-    if ($gClosetGuiNeedsOpen) {
+    if ($gClosetGuiNeedsOpen)
+    {
         BodyItemsFrame.update();
     }
-    if (!($Player::inventory $= "")) {
+    if (!($Player::inventory $= ""))
+    {
         Inventory::EnsurePlayerOwnsOutfitItems();
     }
-};
-function Inventory::EnsurePlayerOwnsOutfitItems() {
+}
+function Inventory::EnsurePlayerOwnsOutfitItems()
+{
     %outfitNames = [$player.getGender()];
     $Player::HangerNames;
     %anyRemoved = 0;
     %expiredSkus = "";
     %i = 0;
-    while ((%i < $gClosetNumOutfits)) {
+    while ((%i < $gClosetNumOutfits))
+    {
         %name = getWord(%outfitNames, %i);
         %keyOutfit = %name;
         %keyBody = $player.getGender() @ "Body";
@@ -980,16 +1278,22 @@ function Inventory::EnsurePlayerOwnsOutfitItems() {
         %entireOutfit = %skusBody @ " " @ %skusOutfit;
         %count = getWordCount(%entireOutfit);
         %j = (%count - 1.0);
-        while ((%j >= 0.0)) {
+        while ((%j >= 0.0))
+        {
             %sku = getWord(%entireOutfit, %j);
-            if (!$player.hasInventorySKU(%sku)) {
+            if (!$player.hasInventorySKU(%sku))
+            {
                 %anyRemoved = 1;
                 %replaceSKU = "";
                 removeExpiredSkuFromOutfits(%sku, %replaceSKU, 0);
-                if ((findWord(%expiredSkus, %sku) < 0.0)) {
-                    if ((%expiredSkus $= "")) {
+                if ((findWord(%expiredSkus, %sku) < 0.0))
+                {
+                    if ((%expiredSkus $= ""))
+                    {
                         %expiredSkus = %sku;
-                    } else {
+                    }
+                    else
+                    {
                         %expiredSkus = %expiredSkus @ " " @ %sku;
                     }
                 }
@@ -1000,18 +1304,22 @@ function Inventory::EnsurePlayerOwnsOutfitItems() {
         (%j >= 0.0);
     }
     notifyUserOfSkusExpired(%expiredSkus, "");
-    if (%anyRemoved) {
+    if (%anyRemoved)
+    {
         outfits_persist();
     }
-};
-function Inventory::dedupeSkus(%dry) {
+}
+function Inventory::dedupeSkus(%dry)
+{
     %dryNum = getWordCount(%dry);
     %wet = dedupeWords(%dry);
     %wetNum = getWordCount(%wet);
-    if ((%dryNum != %wetNum)) {
+    if ((%dryNum != %wetNum))
+    {
         %xtra = %dry;
         %n = 0;
-        while ((%n < %wetNum)) {
+        while ((%n < %wetNum))
+        {
             %sku = getWord(%wet, %n);
             %xtra = findAndRemoveFirstOccurrenceOfWord(%xtra, %sku);
             %n = (%n + 1.0);
@@ -1021,16 +1329,20 @@ function Inventory::dedupeSkus(%dry) {
         error(getScopeName() @ " " @ "- Got duplicate skus. Count: " @ " " @ %count @ " " @ "and here they are:" @ " " @ %xtra @ " " @ "dry:" @ " " @ %dry @ " " @ getTrace());
     }
     return %wet;
-};
-function Inventory::clearStore(%storename) {
+}
+function Inventory::clearStore(%storename)
+{
     $gStoreStockCacheSkus[%storename] = "";
     $gStoreStockRevision[%storename] = "";
-};
-function Inventory::giftItemToPlayer(%unused, %unused) {
-};
-function Inventory::fetchPlayerInventory() {
+}
+function Inventory::giftItemToPlayer(%unused, %unused)
+{
+}
+function Inventory::fetchPlayerInventory()
+{
     log("inventory", "info", getScopeName());
-    if ($ClientIsAuthoritativeForInventory || $StandAlone) {
+    if ($ClientIsAuthoritativeForInventory || $StandAlone)
+    {
         schedule($gInventoryFetchFakeDelay, 0, "fakePlayerInventoryGotFetchResults");
         log("inventory", "info", "standalone - using fake player inventory fetch");
         return;
@@ -1045,19 +1357,24 @@ function Inventory::fetchPlayerInventory() {
     %request.doAnother = 0;
     %request.start();
     log("network", "debug", getScopeName() @ " " @ "-" @ " " @ %request.getURL());
-};
-function InventoryRequest::tryDoAnother(%this) {
-    if (!%this.doAnother) {
+}
+function InventoryRequest::tryDoAnother(%this)
+{
+    if (!%this.doAnother)
+    {
         return;
     }
     log("network", "debug", getScopeName() @ " " @ "- doing another on" @ " " @ %this.getURL());
     Inventory::fetchPlayerInventory($player);
-};
-function InventoryRequest::onError(%this, %unused, %unused) {
+}
+function InventoryRequest::onError(%this, %unused, %unused)
+{
     %this.tryDoAnother();
-};
-function InventoryRequest::onDone(%this) {
-    if (!%this.checkSuccess()) {
+}
+function InventoryRequest::onDone(%this)
+{
+    if (!%this.checkSuccess())
+    {
         error(getScopeName() @ "->InventoryRequest failed! Inventory = \"" @ $Player::inventory @ "\"");
         return;
     }
@@ -1066,7 +1383,8 @@ function InventoryRequest::onDone(%this) {
     $Player::inventory = "";
     %num = %array.count();
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %skunum = %array.getValue(%n).skuNumber;
         $Player::inventory = $Player::inventory @ " " @ %skunum;
         %n = (%n + 1.0);
@@ -1078,29 +1396,38 @@ function InventoryRequest::onDone(%this) {
     Inventory::onGotPlayerInventory();
     %array.delete();
     %this.tryDoAnother();
-};
-function Player::hasInventorySKU(%this, %sku) {
+}
+function Player::hasInventorySKU(%this, %sku)
+{
     return (findWord($Player::inventory, %sku) >= 0.0);
-};
-function Player::addInventorySKUs(%this, %skusToAdd) {
+}
+function Player::addInventorySKUs(%this, %skusToAdd)
+{
     echo("Player::addInventorySKUs skusToAdd=" @ %skusToAdd);
     %idx = (getWordCount(%skusToAdd) - 1.0);
-    while ((%idx >= 0.0)) {
+    while ((%idx >= 0.0))
+    {
         %sku = getWord(%skusToAdd, %idx);
-        if (!hasWord($Player::inventory, %sku)) {
+        if (!hasWord($Player::inventory, %sku))
+        {
             $Player::inventory = %sku @ " " @ $Player::inventory;
         }
         %idx = (%idx - 1.0);
     }
-};
-function Player::removeInventorySKUs(%this, %skusToRemove) {
+}
+function Player::removeInventorySKUs(%this, %skusToRemove)
+{
     %idx = (getWordCount(%skusToRemove) - 1.0);
-    while ((%idx >= 0.0)) {
+    while ((%idx >= 0.0))
+    {
         %sku = getWord(%skusToRemove, %idx);
         %loc = findWord($Player::inventory, %sku);
-        if ((%loc >= 0.0)) {
+        if ((%loc >= 0.0))
+        {
             $Player::inventory = removeWord($Player::inventory, %loc);
-        } else {
+        }
+        else
+        {
             echo(getScopeName() @ " " @ "- tried to remove sku i don't have -" @ " " @ %sku @ " " @ getTrace());
         }
         %idx = (%idx - 1.0);
@@ -1109,14 +1436,17 @@ function Player::removeInventorySKUs(%this, %skusToRemove) {
     (%idx >= 0.0);
     %activeSkus = $player.getActiveSKUs();
     %n = (getWordCount(%skusToRemove) - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %sku = getWord(%skusToRemove, %n);
         %activeSkus = findAndRemoveFirstOccurrenceOfWord(%activeSkus, %sku);
         %m = ($gOutfits.size() - 1.0);
-        while ((%m >= 0.0)) {
+        while ((%m >= 0.0))
+        {
             %outfitSkus = $gOutfits.getValue(%m);
             %outfitSkus = findAndRemoveAllOccurrencesOfWord(%outfitSkus, %sku);
-            if (!(%outfitSkus $= $gOutfits.getValue(%m))) {
+            if (!(%outfitSkus $= $gOutfits.getValue(%m)))
+            {
                 %atLeastOneOutfitChanged = 1;
                 $gOutfits.put($gOutfits.getKey(%m), %outfitSkus);
             }
@@ -1125,23 +1455,28 @@ function Player::removeInventorySKUs(%this, %skusToRemove) {
         %n = (%n - 1.0);
         (%m >= 0.0);
     }
-    if (!((%n >= 0.0) @ " " @ $player.getActiveSKUs() $= %activeSkus)) {
+    if (!((%n >= 0.0) @ " " @ $player.getActiveSKUs() $= %activeSkus))
+    {
         $player.setActiveSKUs(%activeSkus);
         commandToServer('SetActiveSkus', %activeSkus);
     }
-    if (%atLeastOneOutfitChanged) {
+    if (%atLeastOneOutfitChanged)
+    {
         outfits_persist();
     }
-};
-function doTakeFlower(%unused) {
+}
+function doTakeFlower(%unused)
+{
     error("20080131 OBSOLETE FUNCTION - returning immediately. -" @ " " @ getTrace());
     return;
-};
-function doGiveFlower(%unused) {
+}
+function doGiveFlower(%unused)
+{
     error("20080131 OBSOLETE FUNCTION - returning immediately. -" @ " " @ getTrace());
     return;
-};
-function sendGiftRequest(%unused, %skus) {
+}
+function sendGiftRequest(%unused, %skus)
+{
     error("20080131 OBSOLETE FUNCTION - returning immediately. -" @ " " @ getTrace());
     return;
-};
+}

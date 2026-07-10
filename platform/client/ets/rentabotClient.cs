@@ -1,19 +1,25 @@
-function rentabotClient_customizeBot(%obj) {
-    if (!$StandAlone) {
+function rentabotClient_customizeBot(%obj)
+{
+    if (!$StandAlone)
+    {
     }
-    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner()) {
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner())
+    {
         return;
     }
-    if (!isObject(%obj)) {
+    if (!isObject(%obj))
+    {
         error(getScopeName() @ "- passed null object" @ " " @ getTrace());
         return;
     }
-    if (!%obj.isClassAIPlayer()) {
+    if (!%obj.isClassAIPlayer())
+    {
         error(getScopeName() @ "- passed a real player!" @ " " @ getTrace());
         return;
     }
     %name = %obj.getDisplayName();
-    if (!rentabot_isRentabotName(%name)) {
+    if (!rentabot_isRentabotName(%name))
+    {
         return;
     }
     %name = rentabot_getCoreName(%name);
@@ -64,7 +70,8 @@ function rentabotClient_customizeBot(%obj) {
     };
     %window.add(%ctrl);
     %row = (%row + (%rowSize + %rowSpacing));
-    if (%obj.getCanSpew()) {
+    if (%obj.getCanSpew())
+    {
         %ctrl = new GuiMLTextCtrl("") {
             profile = "GuiMessageTextProfile";
             position = %col1 @ " " @ %row;
@@ -118,9 +125,11 @@ function rentabotClient_customizeBot(%obj) {
         %window.add(%ctrl);
         %row = (%row + (%rowSize + %rowSpacing));
     }
-    if ((%obj.getGender() $= $player.getGender())) {
+    if ((%obj.getGender() $= $player.getGender()))
+    {
     }
-    if (%obj.getDressUpWrite() || %obj.getDressUpRead()) {
+    if (%obj.getDressUpWrite() || %obj.getDressUpRead())
+    {
         %ctrl = new GuiMLTextCtrl("") {
             profile = "GuiMessageTextProfile";
             position = %col1 @ " " @ %row;
@@ -128,7 +137,8 @@ function rentabotClient_customizeBot(%obj) {
             text = "<just:right>Dress:";
         };
         %window.add(%ctrl);
-        if (%obj.getDressUpRead()) {
+        if (%obj.getDressUpRead())
+        {
             %ctrl = new GuiVariableWidthButtonCtrl("") {
                 profile = "GuiFocusableVWButtonProfile";
                 position = %col2 @ " " @ %row;
@@ -138,7 +148,8 @@ function rentabotClient_customizeBot(%obj) {
             };
             %window.add(%ctrl);
         }
-        if (%obj.getDressUpWrite()) {
+        if (%obj.getDressUpWrite())
+        {
             %ctrl = new GuiVariableWidthButtonCtrl("") {
                 profile = "GuiFocusableVWButtonProfile";
                 position = (%col2 + mFloor(((%col2Size + %colSpacing) / 3.0))) @ " " @ %row;
@@ -160,33 +171,45 @@ function rentabotClient_customizeBot(%obj) {
     }
     %window.ctrlName.makeFirstResponder(1);
     %window.ctrlName.setSelection(0, 1000);
-    if (isObject(%window.ctrlBlab)) {
+    if (isObject(%window.ctrlBlab))
+    {
         %window.ctrlName.altCommand = %window.ctrlBlab @ ".makeFirstResponder(true);";
-    } else {
+    }
+    else
+    {
         %window.ctrlName.altCommand = %okayCmd @ " " @ %dlg @ ".close();";
     }
     %window.ctrlBlab.altCommand = %window.ctrlWhisper @ ".makeFirstResponder(true);";
     %window.ctrlWhisper.altCommand = %okayCmd @ " " @ %dlg @ ".close();";
-};
-function CustomizeBotDialog_onOkay() {
+}
+function CustomizeBotDialog_onOkay()
+{
     %window = $gCustomizeBotDialog.window;
     %obj = %window.rentabot;
     %name = %window.ctrlName.getValue();
     %name = rentabot_getCoreName(%name);
-    if (%obj.getCanSpew()) {
-    } else {
+    if (%obj.getCanSpew())
+    {
+    }
+    else
+    {
     }
     %msgBlab = "";
     %window.ctrlBlab.getValue();
-    if (%obj.getCanSpew()) {
-    } else {
+    if (%obj.getCanSpew())
+    {
+    }
+    else
+    {
     }
     %msgWhisper = "";
     %window.ctrlWhisper.getValue();
     commandToServer('Rentabot_Customize', CustomSpaceClient::GetSpaceImIn(), %obj.getGhostID(), %name, %msgBlab, %msgWhisper);
-};
-function rentabotClient_DressUpRead(%obj) {
-    if (!isObject(%obj)) {
+}
+function rentabotClient_DressUpRead(%obj)
+{
+    if (!isObject(%obj))
+    {
         error(getScopeName() @ " " @ "- something went wrong" @ " " @ getTrace());
         return;
     }
@@ -198,52 +221,68 @@ function rentabotClient_DressUpRead(%obj) {
     %numLostGender = (getWordCount(%otherSkusOutfit) - getWordCount(%otherSkusGender));
     %numLostOwnership = (getWordCount(%otherSkusGender) - getWordCount(%otherSkusAllGood));
     %msg = "";
-    if ((%numLostGender > 0.0)) {
+    if ((%numLostGender > 0.0))
+    {
         %otherGender = (%obj.getGender() $= "f") ? "female" : "male";
         %msg = %msg @ "Some of those items are for" @ " " @ %otherGender @ " " @ "players";
     }
-    if ((%numLostOwnership > 0.0)) {
-        if ((%msg $= "")) {
+    if ((%numLostOwnership > 0.0))
+    {
+        if ((%msg $= ""))
+        {
             %msg = %msg @ "You don't own some of those items";
-        } else {
+        }
+        else
+        {
             %msg = %msg @ ", and you don't own some of those items";
         }
     }
-    if (!(%msg $= "")) {
+    if (!(%msg $= ""))
+    {
         %msg = %msg @ "!";
         %msg = $MsgCat::furniture["DRESSUP-READ-CONF-NOTALL-BODY"] @ %msg;
         %tit = $MsgCat::furniture["DRESSUP-READ-CONF-NOTALL-TITLE"];
-    } else {
+    }
+    else
+    {
         %msg = $MsgCat::furniture["DRESSUP-READ-CONF-BODY"] @ %msg;
         %tit = $MsgCat::furniture["DRESSUP-READ-CONF-TITLE"];
     }
     MessageBoxYesNo(%tit, %msg, "rentabotClient_DressUpReadConfirmed(\"" @ %otherSkusAllGood @ "\");", "");
-};
-function rentabotClient_DressUpReadConfirmed(%skus) {
+}
+function rentabotClient_DressUpReadConfirmed(%skus)
+{
     %underSkus = $player.getGender()["A"];
     $gNewStockOutfits;
     %underSkus = %underSkus @ " " @ SkuManager.filterSkusForBody($player.getActiveSKUs());
     %allSkus = SkuManager.overlaySkus(%underSkus, %skus);
     SaveOutfitAndBodySkusAsCurrent(%allSkus);
-};
-function rentabotClient_DressUpWrite(%obj) {
+}
+function rentabotClient_DressUpWrite(%obj)
+{
     %skus = $player.getActiveSKUs();
     MessageBoxYesNo($MsgCat::furniture["DRESSUP-WRITE-CONF-TITLE"], $MsgCat::furniture["DRESSUP-WRITE-CONF-BODY"], "rentabotClient_DressUpWriteConfirmed(" @ %obj @ ", \"" @ %skus @ "\");", "");
-};
-function rentabotClient_DressUpWriteConfirmed(%obj, %skus) {
+}
+function rentabotClient_DressUpWriteConfirmed(%obj, %skus)
+{
     commandToServer('Rentabot_DressUpWrite', CustomSpaceClient::GetSpaceImIn(), %obj.getGhostID(), %skus);
-};
-function rentabotClient_DressUpReset(%obj) {
+}
+function rentabotClient_DressUpReset(%obj)
+{
     MessageBoxYesNo($MsgCat::furniture["DRESSUP-RESET-CONF-TITLE"], $MsgCat::furniture["DRESSUP-RESET-CONF-BODY"], "rentabotClient_DressUpResetConfirmed(" @ %obj @ ");", "");
-};
-function rentabotClient_DressUpResetConfirmed(%obj) {
+}
+function rentabotClient_DressUpResetConfirmed(%obj)
+{
     commandToServer('Rentabot_DressUpReset', CustomSpaceClient::GetSpaceImIn(), %obj.getGhostID());
-};
-function rentabotClient_reignore() {
+}
+function rentabotClient_reignore()
+{
     %n = (getWordCount($gRentabotIgnores) - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %bot = getWord($gRentabotIgnores, %n);
-        if (isObject(%bot)) {
+        if (isObject(%bot))
+        {
             %bot.setIgnore(1);
             %record = new ScriptObject("");
             %record.name = $ServerName;
@@ -256,9 +295,11 @@ function rentabotClient_reignore() {
             %record.csn = BuddyHudTabs.getCityNameForServerName(%record.serverName);
             %record.activities = "";
             UserListIgnores.put(%bot.getShapeName(), %record);
-        } else {
+        }
+        else
+        {
             $gRentabotIgnores = findAndRemoveAllOccurrencesOfWord($gRentabotIgnores, %bot);
         }
         %n = (%n - 1.0);
     }
-};
+}

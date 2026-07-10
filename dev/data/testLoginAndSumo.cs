@@ -1,5 +1,6 @@
 exec("./skeletonClient.cs");
-function initGenres() {
+function initGenres()
+{
     %i = 0;
     $Genres[%i = (%i + 1.0),0] = "h";
     %i["confident" @ $Genres TAB %i @ 1] = ;
@@ -12,8 +13,9 @@ function initGenres() {
     $Genres[%i = (%i + 1.0),0] = "z";
     %i["zombie" @ $Genres TAB %i @ 1] = ;
     $GenresCount = %i;
-};
-function initTeleports() {
+}
+function initTeleports()
+{
     %i = 0;
     $teleportsNV[%i = (%i + 1.0),0] = 'TeleportToPlayer';
     %i["nobunaga" @ $teleportsNV TAB %i @ 1] = ;
@@ -316,8 +318,9 @@ function initTeleports() {
     $teleportsRJ[%i = (%i + 1.0),0] = 'TeleportToTransform';
     %i["-59.37 -39.95 32.71 0 0 1 4.01" @ $teleportsRJ TAB %i @ 1] = ;
     $teleportsRJCount = %i;
-};
-function testLoginAndStay() {
+}
+function testLoginAndStay()
+{
     $loginLogout = 0;
     %testLogin = new ScriptObject(skeletonClient) {
         userName = $UserPref::Player::Name;
@@ -328,22 +331,28 @@ function testLoginAndStay() {
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
-};
+}
 echo("LOAD: starting via testLoginAndSumo()");
 $failureCount = 0;
 initGenres();
 initTeleports();
 testLoginAndStay();
-function doSomething() {
+function doSomething()
+{
     schedule(10000, 0, do_sumo);
-};
-function do_sumo_action() {
+}
+function do_sumo_action()
+{
     commandToServer('SumoAction', getRandom(0, 6));
     %i = getRandom(1, 2);
-    if ((%i $= 1)) {
+    if ((%i $= 1))
+    {
         $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
-    } else {
-        if ((%i $= 2)) {
+    }
+    else
+    {
+        if ((%i $= 2))
+        {
             $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
         }
     }
@@ -351,18 +360,21 @@ function do_sumo_action() {
     schedule(500, 0, movementstop);
     schedule(250, 0, walk);
     schedule(750, 0, movementstop);
-};
-function walk() {
+}
+function walk()
+{
     $mvYawLeftSpeed = 0;
     $mvYawRightSpeed = 0;
     $mvForwardAction = 1;
-};
-function movementstop() {
+}
+function movementstop()
+{
     $mvYawLeftSpeed = 0;
     $mvYawRightSpeed = 0;
     $mvForwardAction = 0;
-};
-function do_sumo() {
+}
+function do_sumo()
+{
     $mvYawLeftSpeed = 0;
     $mvYawRightSpeed = 0;
     $mvForwardAction = 0;
@@ -378,28 +390,39 @@ function do_sumo() {
     schedule(18000, 0, do_sumo_action);
     schedule(20000, 0, stopAndTalk);
     schedule(30000, 0, approveFriendRequests);
-};
-function stopAndTalk() {
-    if (isObject(pChat)) {
-        if (ClosetGui.isVisible()) {
+}
+function stopAndTalk()
+{
+    if (isObject(pChat))
+    {
+        if (ClosetGui.isVisible())
+        {
             ClosetGui.close();
         }
-        if (geTGF.isVisible()) {
+        if (geTGF.isVisible())
+        {
             geTGF.closeFully();
         }
         movement_stop();
         %rand_teleport_NV = getRandom(1, $teleportsNVCount);
         %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
-        if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth")) {
+        if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth"))
+        {
             %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
             %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
-        } else {
-            if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth")) {
+        }
+        else
+        {
+            if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth"))
+            {
                 %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
                 %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
-            } else {
-                if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth")) {
+            }
+            else
+            {
+                if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth"))
+                {
                     %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
                     %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
                 }
@@ -407,35 +430,45 @@ function stopAndTalk() {
         }
         pChat.say("Let's get ready to SUMO!!!! - (" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ %destination, 0, 0);
         commandToServer(%command, %destination);
-    } else {
-        if (($failureCount == 5.0)) {
+    }
+    else
+    {
+        if (($failureCount == 5.0))
+        {
             echo("LOAD: Giving up. Lost PChat object.");
             echo("LOAD: Quit()-ing...");
             logoffAndQuit();
-        } else {
+        }
+        else
+        {
             echo("LOAD: Lost PChat... Gonna try again.");
             $failureCount = ($failureCount + 1.0);
         }
     }
     schedule(10000, 0, do_sumo);
-};
-function logoffAndQuit() {
+}
+function logoffAndQuit()
+{
     echo("LOAD: Logging off and quit()-ing...");
     echo("LOAD: Login::loggedIn:" @ " " @ $Login::loggedIn);
     logout(0);
     schedule(1000, 0, doQuit);
-};
-function approveFriendRequests() {
+}
+function approveFriendRequests()
+{
     %fansHere = BuddyHudWin.buddyLists[FansHere];
-    if (!isObject(%fansHere)) {
+    if (!isObject(%fansHere))
+    {
         return;
     }
-    if ((%fansHere.size() == 0.0)) {
+    if ((%fansHere.size() == 0.0))
+    {
         echo("LOAD: There are no waiting requests.");
         return;
     }
     %n = (%fansHere.size() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %playerName = %fansHere.getKey(%n);
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
@@ -443,4 +476,4 @@ function approveFriendRequests() {
         pChat.whisper("(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (%n - 1.0);
     }
-};
+}

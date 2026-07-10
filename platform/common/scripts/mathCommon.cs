@@ -1,67 +1,80 @@
-function Math::isInRange(%pos1, %pos2, %range) {
+function Math::isInRange(%pos1, %pos2, %range)
+{
     %rangeSq = (%range * %range);
     %vec = VectorSub(%pos1, %pos2);
     %distSq = VectorLenSquared(%vec);
     %ret = (%distSq <= %rangeSq);
     return %ret;
-};
-function Math::isInLineOfSight(%src, %trg, %exempt, %checkForPlayers, %onClient) {
+}
+function Math::isInLineOfSight(%src, %trg, %exempt, %checkForPlayers, %onClient)
+{
     %mask = (((((((0 | $TypeMasks::TerrainObjectType) | $TypeMasks::InteriorObjectType) | $TypeMasks::StaticShapeObjectType) | $TypeMasks::ItemObjectType) | $TypeMasks::VehicleObjectType) | $TypeMasks::WaterObjectType) | 0);
-    if (%checkForPlayers) {
+    if (%checkForPlayers)
+    {
         %mask = (%mask | $TypeMasks::PlayerObjectType);
     }
     return !containerRayCast(%src, %trg, %mask, %exempt, %onClient);
-};
-function SceneObject::localToWorldTransform(%this, %dry) {
+}
+function SceneObject::localToWorldTransform(%this, %dry)
+{
     %mat = %this.getTransform();
     %wet = MatrixMultiply(%dry, %mat);
     return %wet;
-};
-function SceneObject::worldToLocalTransform(%this, %dry) {
+}
+function SceneObject::worldToLocalTransform(%this, %dry)
+{
     %mat = %this.getWorldTransform();
     %wet = MatrixMultiply(%dry, %mat);
     return %wet;
-};
-function SceneObject::localToWorldVector(%this, %dry) {
+}
+function SceneObject::localToWorldVector(%this, %dry)
+{
     %mat = %this.getTransform();
     %wet = MatrixMulVector(%mat, %dry);
     return %wet;
-};
-function SceneObject::worldToLocalVector(%this, %dry) {
+}
+function SceneObject::worldToLocalVector(%this, %dry)
+{
     %mat = %this.getWorldTransform();
     %wet = MatrixMulVector(%mat, %dry);
     return %wet;
-};
-function SceneObject::localToWorldPoint(%this, %pnt) {
+}
+function SceneObject::localToWorldPoint(%this, %pnt)
+{
     %mat = %this.getTransform();
     %pnt = setWord(%pnt, 1, (getWord(%pnt, 1) - 1.0));
     %pnt = VectorConvolve(%pnt, %this.getScale());
     %pnt = MatrixMulPoint(%mat, %pnt);
     return %pnt;
-};
-function SceneObject::worldToLocalPoint(%this, %pnt) {
+}
+function SceneObject::worldToLocalPoint(%this, %pnt)
+{
     %mat = %this.getWorldTransform();
     %pnt = MatrixMulPoint(%mat, %pnt);
     %pnt = VectorConvolveInverse(%pnt, %this.getScale());
     %pnt = setWord(%pnt, 1, (getWord(%pnt, 1) + 1.0));
     return %pnt;
-};
-function getRandomNormal() {
+}
+function getRandomNormal()
+{
     %u1 = getRandom();
     %u2 = getRandom();
     %x = (mSqrt((-(2.0) * mLog(%u1))) * mCos((6.28318531 * %u2)));
     return %x;
-};
-function getRandomNormalMeanVariance(%mean, %variance) {
+}
+function getRandomNormalMeanVariance(%mean, %variance)
+{
     %x = getRandomNormal();
     %x = (%x * %variance);
     %x = (%x + %mean);
     return %x;
-};
-function mRoundTo(%value, %smallestDigitValue) {
+}
+function mRoundTo(%value, %smallestDigitValue)
+{
     return (mFloor(((%value / %smallestDigitValue) + 0.5)) * %smallestDigitValue);
-};
-function fitCameraConeAroundSphere(%spherePosition, %sphereRadius, %camDirection, %camFOVRadians) {
+}
+function fitCameraConeAroundSphere(%spherePosition, %sphereRadius, %camDirection, %camFOVRadians)
+{
     %fovD2 = (%camFOVRadians * 0.5);
     %vConeEdge = mSin(%fovD2) @ " " @ mCos(%fovD2);
     %vConeEdgePerp = -(mCos(%fovD2)) @ " " @ mSin(%fovD2);
@@ -70,12 +83,14 @@ function fitCameraConeAroundSphere(%spherePosition, %sphereRadius, %camDirection
     %pCamPos = VectorScale(%camDirection, %sCamDist);
     %pCamPos = VectorAdd(%pCamPos, %spherePosition);
     return %pCamPos;
-};
+}
 $gSecondsPerMinute = 60;
 $gSecondsPerHour = (60.0 * $gSecondsPerMinute);
 $gSecondsPerDay = (24.0 * $gSecondsPerHour);
-function secondsToDaysHoursMinutesSeconds(%seconds) {
-    if ((%seconds < 1.0)) {
+function secondsToDaysHoursMinutesSeconds(%seconds)
+{
+    if ((%seconds < 1.0))
+    {
         return %seconds @ " " @ "seconds";
     }
     %days = mFloor((%seconds / $gSecondsPerDay));
@@ -86,31 +101,37 @@ function secondsToDaysHoursMinutesSeconds(%seconds) {
     %seconds = (%seconds - (%minutes * $gSecondsPerMinute));
     %ret = "";
     %delim = "";
-    if ((%days > 0.0)) {
+    if ((%days > 0.0))
+    {
         %ret = %ret @ %delim @ %days @ " " @ "day";
         %ret = %ret @ (%days > 1.0) ? "s" : "";
         %delim = ", ";
     }
-    if ((%hours > 0.0)) {
+    if ((%hours > 0.0))
+    {
         %ret = %ret @ %delim @ %hours @ " " @ "hour";
         %ret = %ret @ (%hours > 1.0) ? "s" : "";
         %delim = ", ";
     }
-    if ((%minutes > 0.0)) {
+    if ((%minutes > 0.0))
+    {
         %ret = %ret @ %delim @ %minutes @ " " @ "minute";
         %ret = %ret @ (%minutes > 1.0) ? "s" : "";
         %delim = ", ";
     }
-    if ((%seconds > 0.0)) {
-        if (!(%delim $= "")) {
+    if ((%seconds > 0.0))
+    {
+        if (!(%delim $= ""))
+        {
             %delim = " and ";
         }
         %ret = %ret @ %delim @ %seconds @ " " @ "second";
         %ret = %ret @ (%seconds > 1.0) ? "s" : "";
     }
     return %ret;
-};
-function secondsToHHMMSS(%seconds) {
+}
+function secondsToHHMMSS(%seconds)
+{
     %hours = mFloor((%seconds / $gSecondsPerHour));
     %seconds = (%seconds - (%hours * $gSecondsPerHour));
     %minutes = mFloor((%seconds / $gSecondsPerMinute));
@@ -124,42 +145,58 @@ function secondsToHHMMSS(%seconds) {
     %ret = %ret @ %fmtMinutes @ %delim;
     %ret = %ret @ %fmtSeconds;
     return %ret;
-};
-function SMHDtoSeconds(%seconds, %minutes, %hours, %days) {
-    if (!isDefined("%days")) {
+}
+function SMHDtoSeconds(%seconds, %minutes, %hours, %days)
+{
+    if (!isDefined("%days"))
+    {
         %days = 0;
     }
-    if (!isDefined("%hours")) {
+    if (!isDefined("%hours"))
+    {
         %hours = 0;
     }
-    if (!isDefined("%minutes")) {
+    if (!isDefined("%minutes"))
+    {
         %minutes = 0;
     }
-    if (!isDefined("%seconds")) {
+    if (!isDefined("%seconds"))
+    {
         %seconds = 0;
         error(getScopeName() @ " " @ "- no arguments." @ " " @ getTrace());
     }
     %ret = ((((((%days * 60.0) * 60.0) * 24.0) + ((%hours * 60.0) * 60.0)) + (%minutes * 60.0)) + %seconds);
     return %ret;
-};
-function minutesToSeconds(%val) {
+}
+function minutesToSeconds(%val)
+{
     return (%val * 60.0);
-};
-function hoursToSeconds(%val) {
+}
+function hoursToSeconds(%val)
+{
     return ((%val * 60.0) * 60.0);
-};
-function daysToSeconds(%val) {
+}
+function daysToSeconds(%val)
+{
     return (((%val * 60.0) * 60.0) * 24.0);
-};
-function min(%a, %b) {
-    if ((%a < %b)) {
-    } else {
+}
+function min(%a, %b)
+{
+    if ((%a < %b))
+    {
+    }
+    else
+    {
     }
     return %b;
-};
-function max(%a, %b) {
-    if ((%a > %b)) {
-    } else {
+}
+function max(%a, %b)
+{
+    if ((%a > %b))
+    {
+    }
+    else
+    {
     }
     return %b;
-};
+}

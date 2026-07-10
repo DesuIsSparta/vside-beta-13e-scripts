@@ -1,6 +1,8 @@
-function ClosetTabs::fillBodyTab(%this) {
+function ClosetTabs::fillBodyTab(%this)
+{
     %theTab = %this.getTabWithName("BODY");
-    if (!isObject(%theTab)) {
+    if (!isObject(%theTab))
+    {
         return;
     }
     %theTab.add(new GuiBitmapCtrl("") {
@@ -305,68 +307,86 @@ function ClosetTabs::fillBodyTab(%this) {
     %featuresPopup.SetSelected(0);
     %this.tabBodyInitialized = 1;
     BodyItemsFrame.update();
-};
-function ClosetTabs::updateBodyTabDisplay(%this) {
-    if (!%this.tabBodyInitialized) {
+}
+function ClosetTabs::updateBodyTabDisplay(%this)
+{
+    if (!%this.tabBodyInitialized)
+    {
         return;
     }
     BodyHeightSlider.setValue($UserPref::Player::height);
     BodyHeightSlider.valueChanged();
-};
-function BodyItemsFrame::update(%this) {
+}
+function BodyItemsFrame::update(%this)
+{
     %this.thumbnails.setDrawers(ThumbCategories.get(strlwr(%this.features)));
     %this.thumbnails.makeFirstResponder(1);
-    if ((%this.features $= "Height")) {
+    if ((%this.features $= "Height"))
+    {
         BodyHeightFrame.setVisible(1);
         BodyHeightFrame.getParent().pushToBack(BodyHeightFrame);
-    } else {
+    }
+    else
+    {
         BodyHeightFrame.setVisible(0);
     }
-    if ((%this.features $= "Stance")) {
+    if ((%this.features $= "Stance"))
+    {
         BodyStanceButtons.setVisible(1);
         BodyStanceButtons.getParent().pushToBack(BodyStanceButtons);
-    } else {
+    }
+    else
+    {
         BodyStanceButtons.setVisible(0);
     }
-};
-function BodyHeightDisplayText::update(%this) {
+}
+function BodyHeightDisplayText::update(%this)
+{
     %myHeight = ($UserPref::Player::height * [$player.getGender()]);
     $gClosetNeutralHeightInches;
     %myFeet = mFloor((%myHeight / 12.0));
     %myInches = mFloor((%myHeight - (%myFeet * 12.0)));
     %this.setText(%myFeet @ "'" @ " " @ %myInches @ "\"");
-};
-function BodyHeightSlider::valueChanged(%this) {
+}
+function BodyHeightSlider::valueChanged(%this)
+{
     %h = %this.getValue();
     $UserPref::Player::height = %h;
     %sxy = (((%h - 1.0) * $Pref::Wardrobe::playerHeightWidthFactor) + 1.0);
     $player.setScale(%sxy @ " " @ %sxy @ " " @ %h);
     BodyHeightDisplayText.update();
-};
-function BodyFeaturesPopup::onSelect(%this, %unused, %entries) {
-    if ((BodyItemsFrame.features $= %entries)) {
+}
+function BodyFeaturesPopup::onSelect(%this, %unused, %entries)
+{
+    if ((BodyItemsFrame.features $= %entries))
+    {
         return;
     }
     BodyItemsFrame.features = %entries;
-    if (ClosetTabs.tabBodyInitialized) {
+    if (ClosetTabs.tabBodyInitialized)
+    {
         BodyItemsFrame.update();
     }
     ClosetThumbnailsBody.getParent().scrollToTop();
-};
-function BodyFeaturesPopup::rebuildPopupList(%this) {
+}
+function BodyFeaturesPopup::rebuildPopupList(%this)
+{
     %this.clear();
     %categoryList = "All Features" @ "\t" @ "Skin" @ "\t" @ "Face" @ "\t" @ "Eyes" @ "\t" @ "Hair";
     %n = 0;
-    while ((%n < getFieldCount(%categoryList))) {
+    while ((%n < getFieldCount(%categoryList)))
+    {
         %category = getField(%categoryList, %n);
-        if (Closet::skuListHasCategory($Player::inventory, %category)) {
+        if (Closet::skuListHasCategory($Player::inventory, %category))
+        {
             %this.add(%category);
         }
         %n = (%n + 1.0);
     }
     %this.add("Height");
     %this.SetSelected(0);
-};
-function ClosetGUI_ToggleSku_Body(%sku) {
+}
+function ClosetGUI_ToggleSku_Body(%sku)
+{
     ClosetGUI_ToggleSku_Closet(%sku);
-};
+}

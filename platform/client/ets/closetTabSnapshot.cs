@@ -1,6 +1,8 @@
-function ClosetTabs::fillProfileTab(%this) {
+function ClosetTabs::fillProfileTab(%this)
+{
     %theTab = %this.getTabWithName("SNAPSHOT");
-    if (!isObject(%theTab)) {
+    if (!isObject(%theTab))
+    {
         return;
     }
     %theTab.add(new GuiBitmapCtrl("") {
@@ -515,50 +517,64 @@ function ClosetTabs::fillProfileTab(%this) {
     %theTab.add(%cancelButton);
     %theTab.cancelButton = %cancelButton;
     %this.tabSnapshotInitialized = 1;
-};
-function ProfilePosePopup::onSelect(%this, %unused, %entries) {
-    if (!(%entries $= "")) {
+}
+function ProfilePosePopup::onSelect(%this, %unused, %entries)
+{
+    if (!(%entries $= ""))
+    {
         %anim = convertWordToAnim(%entries);
         $player.playAnim(%anim);
         ProfilePoseReplay.setVisible(1);
     }
-};
-function ProfilePoseReplay::onURL(%this, %url) {
+}
+function ProfilePoseReplay::onURL(%this, %url)
+{
     %anim = ProfilePosePopup.getText();
-    if (!(%anim $= "pose")) {
+    if (!(%anim $= "pose"))
+    {
         %anim = convertWordToAnim(%anim);
         $player.playAnim(%anim);
     }
-};
-function ProfileCurrentPicture::update(%this, %url) {
-    if ($StandAlone) {
+}
+function ProfileCurrentPicture::update(%this, %url)
+{
+    if ($StandAlone)
+    {
         return;
     }
-    if (!(%url $= "")) {
+    if (!(%url $= ""))
+    {
         $Player::hasSeenTakeAvatarPhotoDialog = 1;
     }
     %curl = new URLPostObject("");
     %curl.setName("ProfileAvatarPictureRequest");
-    if ((%url $= "")) {
+    if ((%url $= ""))
+    {
         %url = $Net::AvatarURL @ urlEncode($player.getShapeName());
     }
     %curl.setURL(%url);
     %curl.setDownloadFile(%this.getLocalFileName(1));
     %curl.setRecvData(1);
     %curl.setCompletedCallback("ProfileAvatarPictureRequestOnCompleted");
-    if (!%curl.start()) {
+    if (!%curl.start())
+    {
         %curl.delete();
         warn("ProfileCurrentPicture::update(): couldn't start dynamic download of avatar pic.");
         return;
-    } else {
-        if (isObject(CURLSimGroup)) {
+    }
+    else
+    {
+        if (isObject(CURLSimGroup))
+        {
             CURLSimGroup.add(%curl);
         }
     }
     echo("ProfileCurrentPicture::update(): started dynamic download of avatar pic");
-};
-function ProfileAvatarPictureRequestOnCompleted(%request, %result) {
-    if ((%result == 0.0)) {
+}
+function ProfileAvatarPictureRequestOnCompleted(%request, %result)
+{
+    if ((%result == 0.0))
+    {
         gUserPropMgrClient.setProperty($Player::Name, "hasTakenAvatarPhoto", 1);
         %fileName = %request.getDownloadFile();
         removeFile(%fileName);
@@ -569,47 +585,67 @@ function ProfileAvatarPictureRequestOnCompleted(%request, %result) {
         dlMgr.purgeCacheEntry(%request.getURL() @ "?size=S");
         dlMgr.purgeCacheEntry(%request.getURL() @ "?size=M");
         dlMgr.purgeCacheEntry(%request.getURL() @ "?size=L");
-    } else {
+    }
+    else
+    {
         %retryCount = 1;
-        if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0)) {
+        if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0))
+        {
         }
-        if (($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount)) {
+        if (($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount))
+        {
         }
-        if ((ClosetGui.lastTabOpened $= "SNAPSHOT")) {
+        if ((ClosetGui.lastTabOpened $= "SNAPSHOT"))
+        {
         }
-        if (ClosetGui.isVisible()) {
+        if (ClosetGui.isVisible())
+        {
             ProfileSnapRegion.schedule(200, prepareSnapshot);
             $Player::attemptsToAutoUploadAvatarSnapshot = ($Player::attemptsToAutoUploadAvatarSnapshot + 1.0);
         }
     }
-};
-function ProfileCurrentPicture::getLocalFileName(%this, %includeExtention) {
-    if (($Pref::Video::screenShotFormat $= "JPEG")) {
+}
+function ProfileCurrentPicture::getLocalFileName(%this, %includeExtention)
+{
+    if (($Pref::Video::screenShotFormat $= "JPEG"))
+    {
         %ext = ".jpg";
-    } else {
-        if (($Pref::Video::screenShotFormat $= "PNG")) {
+    }
+    else
+    {
+        if (($Pref::Video::screenShotFormat $= "PNG"))
+        {
             %ext = ".png";
-        } else {
+        }
+        else
+        {
             %ext = ".png";
         }
     }
-    if (%includeExtention) {
-    } else {
+    if (%includeExtention)
+    {
+    }
+    else
+    {
     }
     return %ext @ "";
-};
-function ProfileSnapRegion::prepareSnapshot(%this) {
-    if (%this.returnClosetGuiFUE) {
+}
+function ProfileSnapRegion::prepareSnapshot(%this)
+{
+    if (%this.returnClosetGuiFUE)
+    {
         ClosetGuiFUE.setVisible(0);
         waitAFrameAndCall("ProfileSnapRegion_doSnapshot");
         return;
     }
     ProfileSnapRegion_doSnapshot();
-};
-function ProfileSnapRegion_doSnapshot() {
+}
+function ProfileSnapRegion_doSnapshot()
+{
     ProfileSnapRegion.doSnapshot();
-};
-function ProfileSnapRegion::doSnapshot(%this) {
+}
+function ProfileSnapRegion::doSnapshot(%this)
+{
     ProfileSnapshotButton.setActive(0);
     ProfileSnapshotButton_Container.waitIcon.setVisible(1);
     ProfileSnapshotButton_Container.waitIcon.start();
@@ -617,29 +653,36 @@ function ProfileSnapRegion::doSnapshot(%this) {
     %snapshot = snapshot::snapAndUpRegion(%reg, ProfileCurrentPicture.getLocalFileName(0), "n");
     %snapshot.setCompletedCallback("ProfileSnapRegionOnCompleted");
     %snapshot.saveObject = %this;
-    if (%this.returnClosetGuiFUE) {
+    if (%this.returnClosetGuiFUE)
+    {
         ClosetGuiFUE.setVisible(1);
     }
-};
-function ProfileSnapRegion::onProgress(%this, %unused) {
-};
-function ProfileSnapRegionOnCompleted(%request, %result) {
+}
+function ProfileSnapRegion::onProgress(%this, %unused)
+{
+}
+function ProfileSnapRegionOnCompleted(%request, %result)
+{
     %snapRegion = %request.saveObject;
-    if ((%result == 0.0)) {
+    if ((%result == 0.0))
+    {
         echo("Profile pic upload done -- downloading");
         echo("photoURL =" @ " " @ %request.getResult("photoURL"));
         ProfileSnapshotButton_Container.waitIcon.stop();
         ProfileSnapshotButton_Container.waitIcon.setVisible(0);
         ProfileSnapshotButton.setActive(1);
         ProfileCurrentPicture.update(%request.getResult("photoURL"));
-    } else {
+    }
+    else
+    {
         warn("Profile pic upload error");
         ProfileSnapshotButton_Container.waitIcon.stop();
         ProfileSnapshotButton_Container.waitIcon.setVisible(0);
         ProfileSnapshotButton.setActive(1);
     }
-};
-function ProfileBackgroundChooser::onCreatedChild(%this, %child) {
+}
+function ProfileBackgroundChooser::onCreatedChild(%this, %child)
+{
     %thumb = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -672,22 +715,30 @@ function ProfileBackgroundChooser::onCreatedChild(%this, %child) {
     %child.add(%frame);
     %child.thumb = %thumb;
     %child.frame = %frame;
-};
-function ProfileBackgroundChooser::Initialize(%this) {
-    if (!%this.initialized) {
+}
+function ProfileBackgroundChooser::Initialize(%this)
+{
+    if (!%this.initialized)
+    {
         %bgdPath = "platform/client/ui/backgrounds/";
         %images = getPathsMatchingPattern(%bgdPath @ "*");
         %count = getFieldCount(%images);
         %numImages = 0;
         %i = 0;
-        while ((%i < %count)) {
+        while ((%i < %count))
+        {
             %fileName = fileName(getField(%images, %i));
-            if ((getSubStr(%fileName, 0, 3) $= "sm_")) {
+            if ((getSubStr(%fileName, 0, 3) $= "sm_"))
+            {
                 %extension = strrchr(%fileName, ".");
-                if ((%extension $= ".jpg")) {
+                if ((%extension $= ".jpg"))
+                {
                     %numImages = (%numImages + 1.0);
-                } else {
-                    if ((%extension $= ".png")) {
+                }
+                else
+                {
+                    if ((%extension $= ".png"))
+                    {
                         %numImages = (%numImages + 1.0);
                     }
                 }
@@ -697,7 +748,8 @@ function ProfileBackgroundChooser::Initialize(%this) {
         %this.setNumChildren(%numImages);
         %i = 0;
         (%i < %count);
-        while ((%i < %numImages)) {
+        while ((%i < %numImages))
+        {
             %cell = %this.getObject(%i);
             %cell.index = %i;
             %cell.thumb.setBitmap(%bgdPath @ "sm_" @ (%i + 1.0));
@@ -709,71 +761,95 @@ function ProfileBackgroundChooser::Initialize(%this) {
         %this.selectThumbAtIndex(0);
         %this.initialized = 1;
     }
-};
-function ProfileBackgroundChooser::selectThumbAtIndex(%this, %index) {
-    if ((%this.selected == %index)) {
+}
+function ProfileBackgroundChooser::selectThumbAtIndex(%this, %index)
+{
+    if ((%this.selected == %index))
+    {
         return;
     }
-    if ((%this.selected >= 0.0)) {
+    if ((%this.selected >= 0.0))
+    {
         %cell = %this.getObject(%this.selected);
-        if (isObject(%cell)) {
+        if (isObject(%cell))
+        {
             %cell.frame.setBitmap("platform/client/buttons/sm_frame");
         }
     }
     %this.selected = %index;
     %cell = %this.getObject(%this.selected);
     %cell.frame.setBitmap("platform/client/buttons/sm_frame_selected");
-    if (isFile(%cell.bitmapName)) {
+    if (isFile(%cell.bitmapName))
+    {
         ProfileBackgroundImage.setBitmap(%cell.bitmapName);
-    } else {
+    }
+    else
+    {
         %url = $Net::downloadURL @ "/packages/" @ %cell.bitmapName;
         ProfileBackgroundImage.setBitmap(%cell.thumbBitmapName);
         ProfileBackgroundImage.downloadAndApplyBitmap(%url);
     }
-};
-function ProfileBackgroundImage::onSystemDragDroppedEvent(%this, %text, %unused) {
+}
+function ProfileBackgroundImage::onSystemDragDroppedEvent(%this, %text, %unused)
+{
     %text = strreplace(%text, "\\", "/");
-    if (platformIsFile(%text)) {
+    if (platformIsFile(%text))
+    {
         addFile(%text);
         %this.setBitmap("");
         %this.setBitmap(%text);
-    } else {
+    }
+    else
+    {
         %this.downloadAndApplyBitmap(%text);
     }
-};
-function ProfileBackgroundChooser::thumbClicked(%this, %cell) {
+}
+function ProfileBackgroundChooser::thumbClicked(%this, %cell)
+{
     %this.selectThumbAtIndex(%cell.index);
-};
-function ProfileBackgroundChooser::moveBy(%this, %numSlots) {
+}
+function ProfileBackgroundChooser::moveBy(%this, %numSlots)
+{
     %pos = %this.getTrgPosition();
     %xPos = getWord(%pos, 0);
     %ypos = getWord(%pos, 1);
     %slotWidth = (getWord(%this.childrenExtent, 0) + %this.spacing);
     %min = (-((%this.getCount() - 6.0)) * %slotWidth);
     %max = 0;
-    if (ProfilePreviousBackgroundButton.isActive()) {
+    if (ProfilePreviousBackgroundButton.isActive())
+    {
     }
-    if (((%xPos + (%slotWidth * %numSlots)) >= %max)) {
+    if (((%xPos + (%slotWidth * %numSlots)) >= %max))
+    {
         ProfilePreviousBackgroundButton.setActive(0);
-    } else {
-        if (!ProfilePreviousBackgroundButton.isActive()) {
+    }
+    else
+    {
+        if (!ProfilePreviousBackgroundButton.isActive())
+        {
             ProfilePreviousBackgroundButton.setActive(1);
         }
     }
-    if (ProfileNextBackgroundButton.isActive()) {
+    if (ProfileNextBackgroundButton.isActive())
+    {
     }
-    if (((%xPos + (%slotWidth * %numSlots)) <= %min)) {
+    if (((%xPos + (%slotWidth * %numSlots)) <= %min))
+    {
         ProfileNextBackgroundButton.setActive(0);
-    } else {
-        if (!ProfileNextBackgroundButton.isActive()) {
+    }
+    else
+    {
+        if (!ProfileNextBackgroundButton.isActive())
+        {
             ProfileNextBackgroundButton.setActive(1);
         }
     }
     %xPos = mMin(%max, mMax(%min, (%xPos + (%slotWidth * %numSlots))));
     %this.setTrgPosition(%xPos, %ypos);
     %this.minExtent = (%slotWidth * %this.getCount()) @ " " @ %slotWidth;
-};
-function ProfileObjectView::moveBy(%this, %dx, %dy) {
+}
+function ProfileObjectView::moveBy(%this, %dx, %dy)
+{
     %nudge = ($player.getGender() $= "f") ? "0.4 -0.3 0.8" : "0 -0.1 0.8";
     %this.setLookAtNudge(%nudge);
     %dx = (%dx * 0.25);
@@ -781,12 +857,13 @@ function ProfileObjectView::moveBy(%this, %dx, %dy) {
     %x = mMin(3, mMax(-(3.0), (%this.xPos + %dx)));
     %y = mMin(4, mMax(-(13.0), (%this.yPos + %dy)));
     %this.setMove(%x @ " " @ %y);
-};
-function ProfileObjectView::setMove(%this, %pos) {
+}
+function ProfileObjectView::setMove(%this, %pos)
+{
     %this.xPos = getWord(%pos, 0);
     %this.yPos = getWord(%pos, 1);
     %this.setTrgPosition((-(195.0) + (50.0 * %this.xPos)), (-(700.0) + (50.0 * %this.yPos)));
-};
+}
 $gProfileObjectView_Views["default","f"] = "-0 0 2.4";
 $gProfileObjectView_Views["default","m"] = "-0 0 2.4";
 $gProfileObjectView_Views["face","f"] = "-0 1 0.7";
@@ -795,10 +872,12 @@ $gProfileObjectView_Views["body","f"] = "-0 -2 4.7";
 $gProfileObjectView_Views["body","m"] = "-0 -2 4.6";
 $gProfileObjectView_Views["offscreen","f"] = "-0 -13 5.6";
 $gProfileObjectView_Views["offscreen","m"] = "-0 -13 5.6";
-function ProfileObjectView::setView(%this, %viewName) {
+function ProfileObjectView::setView(%this, %viewName)
+{
     %view = [$player.getGender()];
     $gProfileObjectView_Views @ %viewName;
-    if ((%view $= "")) {
+    if ((%view $= ""))
+    {
         error(getScopeName() @ " " @ "- unknown view" @ " " @ %viewName @ " " @ getTrace());
         %view = [$player.getGender()];
         $gProfileObjectView_Views @ "default";
@@ -807,34 +886,43 @@ function ProfileObjectView::setView(%this, %viewName) {
     %zoom = getWords(%view, 2, 2);
     %this.setMove(%position);
     %this.setOrbitDist(%zoom);
-};
-function ProfilePresetViews::onURL(%this, %url) {
+}
+function ProfilePresetViews::onURL(%this, %url)
+{
     %cmd = firstWord(%url);
-    if (!(%cmd $= "SETVIEW")) {
+    if (!(%cmd $= "SETVIEW"))
+    {
         error(getScopeName() @ " " @ "- unknown command" @ " " @ %cmd @ " " @ getTrace());
         return;
     }
     %viewName = restWords(%url);
     ProfileObjectView.setView(%viewName);
-};
-function ProfileBackgroundURLField::OnEnterKey(%this) {
+}
+function ProfileBackgroundURLField::OnEnterKey(%this)
+{
     %url = %this.getValue();
-    if (!ImageFrameBase_IsPermittedURL(%url)) {
+    if (!ImageFrameBase_IsPermittedURL(%url))
+    {
         MessageBoxOK($MsgCat::furniture["IMAGEFRAME-TITLENOTWLIST"], $MsgCat::furniture["IMAGEFRAME-NOTWHITELIST"], "");
         return;
     }
     ProfileBackgroundImage.downloadAndApplyBitmap(%url);
-};
-function ProfileBackgroundURLField::onSetFirstResponder(%this) {
+}
+function ProfileBackgroundURLField::onSetFirstResponder(%this)
+{
     Parent::onSetFirstResponder(%this);
-    if (%this.isDefault) {
+    if (%this.isDefault)
+    {
         %this.isDefault = 0;
         %this.setText("");
-    } else {
+    }
+    else
+    {
         %this.setSelection(0, 1000);
     }
-};
-function ProfileObjectView::resetLight(%this) {
+}
+function ProfileObjectView::resetLight(%this)
+{
     %this.setLightDirection("0 3 -2");
     %this.setLightColor("1 1 1");
-};
+}

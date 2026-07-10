@@ -1,6 +1,8 @@
 $DestinationList::DestinationInfoInitialized = 0;
-function DestinationList::InitDestinationInfo() {
-    if ($DestinationList::DestinationInfoInitialized) {
+function DestinationList::InitDestinationInfo()
+{
+    if ($DestinationList::DestinationInfoInitialized)
+    {
         return;
     }
     $DestinationList::DestinationInfoInitialized = 1;
@@ -101,5 +103,5 @@ function DestinationList::InitDestinationInfo() {
     %city = "";
     DestinationList::AddAreaNameInfo("", "", %city, "", "platform/client/ui/friendsHud_transition");
     DestinationList::AddAreaNameInfo("?", "", %city, "", "platform/client/ui/friendsHud_city_QUESTIONMARK");
-};
+}
 DestinationList::InitDestinationInfo();

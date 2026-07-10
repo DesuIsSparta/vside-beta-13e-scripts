@@ -1,4 +1,5 @@
-function initClient() {
+function initClient()
+{
     echo("--------- Initializing Client ---------");
     initAVPlayer();
     $AmClient = 1;
@@ -11,12 +12,15 @@ function initClient() {
     $SpawnTargetSavedVURL = "";
     exec("./customProfiles.cs");
     initBaseClient();
-    if (!initCanvas(generateWindowTitle(""))) {
+    if (!initCanvas(generateWindowTitle("")))
+    {
         return;
     }
-    if ($StandAlone) {
+    if ($StandAlone)
+    {
     }
-    if ($Preload) {
+    if ($Preload)
+    {
         preloadResources();
     }
     exec("./audio.cs");
@@ -67,25 +71,34 @@ function initClient() {
     setShadowDetailLevel($Pref::shadows);
     setDefaultFov($UserPref::Player::DefaultFOV);
     setZoomSpeed($Pref::Player::zoomSpeed);
-    if (fmodInitialize()) {
+    if (fmodInitialize())
+    {
         echo("FMOD Audio Initialized");
         fmodSetMute($UserPref::Audio::mute);
-    } else {
+    }
+    else
+    {
         error("FMOD Audio Initialization Failed");
     }
     Canvas.setCursor("DefaultCursor");
     userProperties_makeManager("gUserPropMgrClient", 1);
     AssetManager::clientInit();
     textureDownloadSetDownloadHost($Net::DownloadHost);
-    if (($StandAlone == 1.0)) {
+    if (($StandAlone == 1.0))
+    {
         userProperties_makeManager("gUserPropMgrServer", 0);
         log("general", "info", "--------- Starting standalone ---------");
         startStandAlone();
-    } else {
-        if (!($JoinGameAddress $= "")) {
+    }
+    else
+    {
+        if (!($JoinGameAddress $= ""))
+        {
             log("general", "info", "--------- Joining: " @ $JoinGameAddress @ "---------");
             join($JoinGameAddress);
-        } else {
+        }
+        else
+        {
             checkForPackageUpdates($AutoDownloadPackages);
             loadMainMenu();
         }
@@ -97,31 +110,38 @@ function initClient() {
     enableManualWindowResize(1);
     dlMgr::smInit();
     loadAlwaysLoadManifest();
-};
-function shutdownClient() {
+}
+function shutdownClient()
+{
     dlMgr.shutDown();
-};
-function loadMainMenu() {
+}
+function loadMainMenu()
+{
     Canvas.setContent(LoginGui);
-    if ($Audio::initFailed) {
+    if ($Audio::initFailed)
+    {
         MessageBoxOK("Audio Initialization Failed", "A sound card must be installed to hear audio playback.  If a soundcard is already present please ensure the drivers are installed properly.", "");
     }
     Canvas.setCursor("DefaultCursor");
-};
-function startStandAlone() {
+}
+function startStandAlone()
+{
     log("initialization", "info", "start connectLocal()");
-    if (($MissionArg $= "")) {
+    if (($MissionArg $= ""))
+    {
         $MissionArg = "projects/vside/worlds/lounge/missions/lounge.mis";
         log("initialization", "warn", "no mission specified. using" @ " " @ $MissionArg);
     }
     $Player::Name = $UserPref::Player::Name;
-    if (($Player::Name $= "")) {
+    if (($Player::Name $= ""))
+    {
         $Player::Name = "no_name";
     }
     gUserPropMgrClient.forgetProperties($Player::Name);
     gUserPropMgrClient.requestProperties($Player::Name, "startStandAlone_Part2();");
-};
-function startStandAlone_Part2() {
+}
+function startStandAlone_Part2()
+{
     outfits_init();
     createServer("SinglePlayer", $MissionArg);
     $GameConnection = new GameConnection(ServerConnection);
@@ -129,101 +149,130 @@ function startStandAlone_Part2() {
     RootGroup.add(ServerConnection);
     $GameConnection.connectLocal();
     log("initialization", "info", "end connectLocal()");
-};
-function join(%joinGameAddress) {
+}
+function join(%joinGameAddress)
+{
     loadMainMenu();
     echo("join:: connecting to: " @ %joinGameAddress);
     $lastJoinedServer = %joinGameAddress;
     $GameConnection = new GameConnection(ServerConnection);
     $GameConnection.setCommonPreconnectClientSettings("");
     $GameConnection.connect(%joinGameAddress);
-};
-function showLicense() {
+}
+function showLicense()
+{
     %file = findFirstFile("*/license.txt");
     %fo = new FileObject("");
     %fo.openForRead(%file);
     %text = "";
-    while (!%fo.isEOF()) {
+    while (!%fo.isEOF())
+    {
         %text = %text @ %fo.readLine() @ "\n";
     }
     LicenseText.setText(%text);
     Canvas.pushDialog(licenseDlg, 0);
-};
-function onVideoDeactivate() {
+}
+function onVideoDeactivate()
+{
     stopMoving();
-    if (isObject(cameraTestsGroup)) {
+    if (isObject(cameraTestsGroup))
+    {
         benchmarks::onVideoDeactivate();
     }
     $Video::Inactive = 1;
-};
-function onVideoReactivate() {
+}
+function onVideoReactivate()
+{
     $Video::Inactive = 0;
-};
-function quitApp() {
+}
+function quitApp()
+{
     echoDebug(getScopeName() @ " " @ "- Disconnecting." @ " " @ getTrace());
-    if (!$StandAlone) {
+    if (!$StandAlone)
+    {
     }
-    if ($AmClient) {
+    if ($AmClient)
+    {
     }
-    if (!($Token $= "")) {
+    if (!($Token $= ""))
+    {
         logout(1);
-    } else {
+    }
+    else
+    {
         doQuit();
     }
-};
-function logout(%doQuit) {
+}
+function logout(%doQuit)
+{
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/logout/" @ %doQuit);
-    if (isObject(ApplauseMeterGui)) {
+    if (isObject(ApplauseMeterGui))
+    {
         ApplauseMeterGui.close();
     }
-    if (isObject(SalonStyleSelector)) {
+    if (isObject(SalonStyleSelector))
+    {
         $gSalonChairCurrent = 0;
         SalonStyleSelector.close();
     }
-    if (isObject(PlantDetailsGui)) {
+    if (isObject(PlantDetailsGui))
+    {
         PlantDetailsGui.close();
     }
     CustomSpaceClient::OnClientDisconnect();
-    if (isObject($player)) {
+    if (isObject($player))
+    {
         $player.applySkuBadge(0);
     }
     silentAIMDisconnect();
-    if (!$UserPref::AIM::RememberMe) {
+    if (!$UserPref::AIM::RememberMe)
+    {
     }
-    if (isObject(AIMScreenNameField)) {
+    if (isObject(AIMScreenNameField))
+    {
         AIMScreenNameField.setText("");
     }
-    if (!$UserPref::AIM::SavePassword) {
+    if (!$UserPref::AIM::SavePassword)
+    {
     }
-    if (isObject(AIMPasswordField)) {
+    if (isObject(AIMPasswordField))
+    {
         AIMPasswordField.setText("");
     }
     WorldMap.setNotConnectedToServer();
-    if (isObject(ConvBub)) {
+    if (isObject(ConvBub))
+    {
         ConvBub.close(0);
     }
-    if (isObject(BuddyHudWin)) {
+    if (isObject(BuddyHudWin))
+    {
         BuddyHudWin.close();
     }
-    if (isObject(UserListFriends)) {
+    if (isObject(UserListFriends))
+    {
         UserListFriends.clear();
     }
-    if (isObject(UserListFavorites)) {
+    if (isObject(UserListFavorites))
+    {
         UserListFavorites.clear();
     }
-    if (isObject(UserListFans)) {
+    if (isObject(UserListFans))
+    {
         UserListFans.clear();
     }
-    if (isObject(SystemMessageDialog)) {
+    if (isObject(SystemMessageDialog))
+    {
         SystemMessageTextCtrl.clearText();
         SystemMessageDialog.close();
     }
     setWindowTitle(generateWindowTitle($ServerName));
-    if (!$Login::loggedIn) {
+    if (!$Login::loggedIn)
+    {
         return;
     }
-    if (isObject(LogoutRequest)) {
+    if (isObject(LogoutRequest))
+    {
         return;
     }
     %cmd = "logoutPart2(" @ %doQuit @ ");";
@@ -232,109 +281,140 @@ function logout(%doQuit) {
     gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVBux", $Player::VBux);
     gUserPropMgrClient.setProperty($Player::Name, "prevBalanceVPoints", $Player::VPoints);
     gUserPropMgrClient.persistReally($Player::Name, %cmd);
-};
-function logoutPart2(%doQuit) {
+}
+function logoutPart2(%doQuit)
+{
     %logout = new ManagerRequest(LogoutRequest);
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%logout);
     }
     %logout.doQuit = %doQuit;
     %url = $Net::ClientServiceURL @ "/logout";
-    if (($Player::Name $= "")) {
+    if (($Player::Name $= ""))
+    {
         log("login", "error", getScopeName() @ " " @ "- logout called with empty player name" @ " " @ getTrace());
         return;
     }
-    if (($Token $= "")) {
+    if (($Token $= ""))
+    {
         log("login", "error", getScopeName() @ " " @ "- logout called with empty token" @ " " @ getTrace());
         return;
     }
     %userValue = "?user=" @ urlEncode($Player::Name);
     %tokenValue = "&token=" @ urlEncode($Token);
-    if (isObject(AIMConvManager)) {
+    if (isObject(AIMConvManager))
+    {
         %aimMessagesSentValue = "&aimMessagesSent=" @ urlEncode(AIMConvManager.totalMessagesSent);
     }
     %url = %url @ %userValue @ %tokenValue @ %aimMessagesSentValue;
     log("login", "debug", "logout: " @ %url);
     %logout.setURL(%url);
     %logout.start();
-};
-function LogoutRequest::onError(%this, %errorNum, %errorName) {
-    if (%this.doQuit) {
+}
+function LogoutRequest::onError(%this, %errorNum, %errorName)
+{
+    if (%this.doQuit)
+    {
         doQuit();
     }
     %this.delete();
-};
-function LogoutRequest::onDone(%this) {
+}
+function LogoutRequest::onDone(%this)
+{
     $Login::loggedIn = 0;
     $Player::inventory = "";
-    if (isObject(geTGF)) {
+    if (isObject(geTGF))
+    {
         geTGF.close();
     }
-    if (isObject(WorldMap)) {
+    if (isObject(WorldMap))
+    {
         WorldMap.exit();
     }
-    if (isObject(HudScoresContent)) {
+    if (isObject(HudScoresContent))
+    {
         HudScoresContent.previousRespektPoints = 0;
     }
     log("login", "debug", "logout done");
-    if (%this.doQuit) {
+    if (%this.doQuit)
+    {
         doQuit();
     }
     %this.delete();
-};
+}
 $gLoginStatusMessage = "";
 $gVPointsRatio = 50;
-function StatusRequest::onDone(%this) {
+function StatusRequest::onDone(%this)
+{
     %status = findRequestStatus(%this);
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onDone:" @ " " @ %status);
-    if ((%status $= "success")) {
+    if ((%status $= "success"))
+    {
         %dfEnabled = %this.getValueBool("doubleFusionEnabled");
-        if (isFunction("Using_DF")) {
+        if (isFunction("Using_DF"))
+        {
         }
-        if (Using_DF()) {
+        if (Using_DF())
+        {
             setDFEnabled(%dfEnabled);
         }
         %preload = %this.getValueBool("assetPreloadEnabled");
-        if ($Preload) {
+        if ($Preload)
+        {
         }
-        if (%preload) {
+        if (%preload)
+        {
         }
-        if (!$NoDisplay) {
+        if (!$NoDisplay)
+        {
             preloadResources();
         }
         %cache = %this.getValueBool("missionCacheEnabled");
-        if ($CacheFlagIsSet) {
+        if ($CacheFlagIsSet)
+        {
         }
-        if (!%cache) {
+        if (!%cache)
+        {
             $CacheFlagIsSet = 0;
         }
         $gLoginStatusMessage = %this.getValue("message");
-        if (($gLoginStatusMessage $= "")) {
+        if (($gLoginStatusMessage $= ""))
+        {
             $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "A-OKAY"];
         }
         parseGiftingSettings(%this);
         $gVPointsRatio = %this.getValue("vPointsRatio");
         $gVPointsRatio = 50;
-    } else {
+    }
+    else
+    {
         $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     }
     LoginGui.update();
-};
-function StatusRequest::onError(%this, %errorNum, %errorName) {
-    if ((%errorNum == $CURL::CouldNotResolveHost)) {
+}
+function StatusRequest::onError(%this, %errorNum, %errorName)
+{
+    if ((%errorNum == $CURL::CouldNotResolveHost))
+    {
         $gLoginStatusMessage = %errorNum[$MsgCat::network @ "E-SERVER-DNS"];
-    } else {
+    }
+    else
+    {
         $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
     }
     LoginGui.update();
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onError:" @ " " @ %errorName);
-};
-function StatusRequest::getInfoString(%this) {
+}
+function StatusRequest::getInfoString(%this)
+{
     return "[" @ %this.connection @ " " @ %this.name @ "]";
-};
-function sendStatusRequest() {
+}
+function sendStatusRequest()
+{
     %request = safeEnsureScriptObject("ManagerRequest", "StatusRequest");
-    if (%request.isOpen()) {
+    if (%request.isOpen())
+    {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
         return;
     }
@@ -344,33 +424,44 @@ function sendStatusRequest() {
     %request.start();
     $gLoginStatusMessage = $MsgCat::network["H-SEARCHING"];
     LoginGui.update();
-};
-function FirstLaunchRequest::onDone(%this) {
+}
+function FirstLaunchRequest::onDone(%this)
+{
     log("login", "info", %this.getInfoString() @ " " @ "FirstLaunchRequest::onDone");
-};
-function FirstLaunchRequest::onError(%this, %errorNum, %errorName) {
+}
+function FirstLaunchRequest::onError(%this, %errorNum, %errorName)
+{
     log("login", "info", %this.getInfoString() @ " " @ "FirstLaunchRequest::onError:" @ " " @ %errorName);
-};
-function FirstLaunchRequest::getInfoString(%this) {
+}
+function FirstLaunchRequest::getInfoString(%this)
+{
     return "[" @ %this.connection @ " " @ %this.name @ "]";
-};
-function sendFirstLaunchRequest() {
+}
+function sendFirstLaunchRequest()
+{
     %request = safeEnsureScriptObject("ManagerRequest", "FirstLaunchRequest");
-    if (%request.isOpen()) {
+    if (%request.isOpen())
+    {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
         return;
     }
-    if (!($Net::userReferrer $= "")) {
+    if (!($Net::userReferrer $= ""))
+    {
         %referrer = $Net::userReferrer;
-    } else {
+    }
+    else
+    {
         %referrer = "";
     }
-    if (!($Net::userOwner $= "")) {
+    if (!($Net::userOwner $= ""))
+    {
         %owner = $Net::userOwner;
-    } else {
+    }
+    else
+    {
         %owner = "doppelganger";
     }
     %url = $Net::downloadURL @ "/first_launch?status=true&platform=" @ $Platform @ "&referrer=" @ %referrer @ "&owner=" @ %owner;
     %request.setURL(%url);
     %request.start();
-};
+}

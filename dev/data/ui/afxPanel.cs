@@ -1,29 +1,37 @@
-function afxPanel::toggle(%this) {
+function afxPanel::toggle(%this)
+{
     playGui.showRaiseOrHide(%this);
-};
-function afxPanel::open(%this) {
-    if (!$player.rolesPermissionCheckWarn("debugActive")) {
+}
+function afxPanel::open(%this)
+{
+    if (!$player.rolesPermissionCheckWarn("debugActive"))
+    {
         return;
     }
-    if (!%this.isVisible()) {
+    if (!%this.isVisible())
+    {
         %this.setVisible(1);
         playGui.focusAndRaise(%this);
     }
     %this.initEffectsList();
-};
-function afxPanel::close(%this) {
+}
+function afxPanel::close(%this)
+{
     %this.setVisible(0);
     playGui.focusTopWindow();
     return 1;
-};
-function afxPanel::initEffectsList(%this) {
-    if (!isObject(afxEffectsCatalog)) {
+}
+function afxPanel::initEffectsList(%this)
+{
+    if (!isObject(afxEffectsCatalog))
+    {
         afxPanelEffectList.setText("");
         return;
     }
     %list = "";
     %n = 0;
-    while ((%n < afxEffectsCatalog.size())) {
+    while ((%n < afxEffectsCatalog.size()))
+    {
         %effectName = afxEffectsCatalog.getKey(%n);
         %keyBinding = afxEffectsCatalog.get(%effectName);
         %entry = "<just:left><a:gamelink" @ " " @ %effectName @ ">" @ %effectName @ "</a><just:right>" @ %keyBinding;
@@ -32,12 +40,14 @@ function afxPanel::initEffectsList(%this) {
         %n = (%n + 1.0);
     }
     afxPanelEffectList.setText(%list);
-};
-function afxPanelEffectList::onUrl(%this, %url) {
+}
+function afxPanelEffectList::onUrl(%this, %url)
+{
     %cmd = firstWord(%url);
-    if (!(%cmd $= "gamelink")) {
+    if (!(%cmd $= "gamelink"))
+    {
         return;
     }
     %rest = restWords(%url);
     afxRequestEffect(%rest);
-};
+}

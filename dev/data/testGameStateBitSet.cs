@@ -1,12 +1,15 @@
 DeclareTestSuite("TestSuite_GameState");
-function TestSuite_GameState::setup(%this) {
+function TestSuite_GameState::setup(%this)
+{
     %this.addTestCase("TEST_GAMESTATE_BASICS");
     %this.addTestCase("TEST_GAMESTATEBITSET");
     %this.addTestCase("TEST_GAMESTATEBITSETTOOMANYTHINGS");
     %this.addTestCase("TEST_GAMESTATEBITSET_NON_THINGS");
-};
-function TEST_GAMESTATE_BASICS::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_GAMESTATE_BASICS::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
@@ -20,9 +23,11 @@ function TEST_GAMESTATE_BASICS::runTest(%this) {
     %this.assert((gameplay::getState(%player, %stateName) == 2.0), "the state should be 2 right after we increment it");
     gameplay::ClearState(%player, %stateName);
     %this.assert((gameplay::getState(%player, %stateName) == 0.0), "the state should be zero again after we clear it");
-};
-function TEST_GAMESTATEBITSET::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_GAMESTATEBITSET::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
@@ -47,16 +52,19 @@ function TEST_GAMESTATEBITSET::runTest(%this) {
     %count = %set.CountBits(%player);
     %this.assert((%count == 0.0), "should have counted no bits since we cleared the state for this player");
     %set.delete();
-};
-function TEST_GAMESTATEBITSETTOOMANYTHINGS::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_GAMESTATEBITSETTOOMANYTHINGS::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
     %player = $StandaloneServerPlayer;
     %set = GameStateBitSet::construct("testBits_set");
     %i = 0;
-    while ((%i < 32.0)) {
+    while ((%i < 32.0))
+    {
         %ret = %set.AddThing(0 @ " " @ %i);
         %this.assert((%ret == 1.0), "failed to add a thing to the set when it should have worked");
         %i = (%i + 1.0);
@@ -65,9 +73,11 @@ function TEST_GAMESTATEBITSETTOOMANYTHINGS::runTest(%this) {
     (%i < 32.0);
     %this.assert((%ret == 0.0), "we should not have been able to add this thing to the set, only 32 things shoudl work");
     %set.delete();
-};
-function TEST_GAMESTATEBITSET_NON_THINGS::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_GAMESTATEBITSET_NON_THINGS::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
@@ -81,4 +91,4 @@ function TEST_GAMESTATEBITSET_NON_THINGS::runTest(%this) {
     %this.assert((%ret == 0.0), "a bit should not be set for this set that has no things in it.");
     %set.ClearState(%player);
     %set.delete();
-};
+}

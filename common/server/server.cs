@@ -1,7 +1,9 @@
 exec("./dif2dae.cs");
-function portInit(%port) {
+function portInit(%port)
+{
     %failCount = 0;
-    while (!setNetPort(%port)) {
+    while (!setNetPort(%port))
+    {
         echo("Port init failed on port " @ %port @ " trying next port.");
         %port = (%port + 1.0);
         %failCount = (%failCount + 1.0);
@@ -9,9 +11,11 @@ function portInit(%port) {
     $Net::BoundPort = %port;
     !setNetPort(%port);
     return %failCount;
-};
-function createServer(%serverType, %mission) {
-    if ((%mission $= "")) {
+}
+function createServer(%serverType, %mission)
+{
+    if ((%mission $= ""))
+    {
         error("createServer: mission name unspecified");
         return;
     }
@@ -19,7 +23,8 @@ function createServer(%serverType, %mission) {
     $MissionSequence = 0;
     $Server::ServerType = %serverType;
     $Net::BoundPort = 0;
-    if ((%serverType $= "MultiPlayer")) {
+    if ((%serverType $= "MultiPlayer"))
+    {
         portInit($Pref::Server::Port);
         allowConnections(1);
     }
@@ -35,23 +40,28 @@ function createServer(%serverType, %mission) {
     onServerCreated();
     loadMission(%mission, 1);
     return;
-};
-function destroyServer() {
+}
+function destroyServer()
+{
     $Server::ServerType = "";
     allowConnections(0);
     $missionRunning = 0;
     endMission();
     onServerDestroyed();
-    if (isObject(MissionGroup)) {
+    if (isObject(MissionGroup))
+    {
         MissionGroup.delete();
     }
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.delete();
     }
-    if (isObject($ServerGroup)) {
+    if (isObject($ServerGroup))
+    {
         $ServerGroup.delete();
     }
-    while (ClientGroup.getCount()) {
+    while (ClientGroup.getCount())
+    {
         %client = ClientGroup.getObject(0);
         %client.delete();
     }
@@ -60,48 +70,61 @@ function destroyServer() {
     deleteDataBlocks();
     purgeResources();
     return;
-};
-function resetServerDefaults() {
+}
+function resetServerDefaults()
+{
     echo("Resetting server defaults...");
     exec("~/defaults.cs");
     exec("~/prefs.cs");
     loadMission($Server::MissionFile);
     return;
-};
-function addToServerGuidList(%guid) {
+}
+function addToServerGuidList(%guid)
+{
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    while ((%i < %count)) {
-        if ((getField($Server::GuidList, %i) == %guid)) {
+    while ((%i < %count))
+    {
+        if ((getField($Server::GuidList, %i) == %guid))
+        {
             return;
         }
         %i = (%i + 1.0);
     }
-    if (((%i < %count) @ " " @ $Server::GuidList $= "")) {
-    } else {
+    if (((%i < %count) @ " " @ $Server::GuidList $= ""))
+    {
+    }
+    else
+    {
     }
     $Server::GuidList = $Server::GuidList;
     %guid;
     return;
-};
-function removeFromServerGuidList(%guid) {
+}
+function removeFromServerGuidList(%guid)
+{
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    while ((%i < %count)) {
-        if ((getField($Server::GuidList, %i) == %guid)) {
+    while ((%i < %count))
+    {
+        if ((getField($Server::GuidList, %i) == %guid))
+        {
             $Server::GuidList = removeField($Server::GuidList, %i);
             return;
         }
         %i = (%i + 1.0);
     }
-};
-function isUserConnected(%userName) {
+}
+function isUserConnected(%userName)
+{
     %client = ClientDict.getNorm(%userName);
-    if (!(%client $= "")) {
+    if (!(%client $= ""))
+    {
         return 1;
     }
     return 0;
-};
-function onServerInfoQuery() {
+}
+function onServerInfoQuery()
+{
     return "OK";
-};
+}

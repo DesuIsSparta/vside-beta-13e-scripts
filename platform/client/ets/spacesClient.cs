@@ -1,28 +1,40 @@
-function ClientCmdEnterLeaveSpace(%internalName, %isEnter) {
+function ClientCmdEnterLeaveSpace(%internalName, %isEnter)
+{
     %spaceDef = spaces_GetSpaceDef(%internalName, 0);
-    if (%spaceDef) {
+    if (%spaceDef)
+    {
         %spaceDef.onEnterLeaveDoNotify(%isEnter);
         %spaceDef.onEnterLeaveDoStore(%isEnter);
     }
-};
-function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter) {
-    if (%isEnter) {
-    } else {
+}
+function SpaceDef::onEnterLeaveDoNotify(%this, %isEnter)
+{
+    if (%isEnter)
+    {
+    }
+    else
+    {
     }
     %dry = %this.onLeaveText;
     %this.onEntryText;
     %wet = %this.doTokenSubstitution(%dry, $player);
-    if (!(%wet $= "")) {
+    if (!(%wet $= ""))
+    {
         handleSystemMessage("msgInfoMessage", %wet);
     }
-};
-function SpaceDef::onEnterLeaveDoStore(%this, %isEnter) {
-    if ((%this.storeID $= "")) {
+}
+function SpaceDef::onEnterLeaveDoStore(%this, %isEnter)
+{
+    if ((%this.storeID $= ""))
+    {
         return;
     }
-    if (%isEnter) {
+    if (%isEnter)
+    {
         clientCmdOnEnterStore(%this.storeID);
-    } else {
+    }
+    else
+    {
         clientCmdOnLeaveStore(%this.storeID);
     }
-};
+}

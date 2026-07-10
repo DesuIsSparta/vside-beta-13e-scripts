@@ -4,26 +4,33 @@ exec("./TGFTabHotSpotsClient.cs");
 exec("./TGFTabFriendsClient.cs");
 exec("./TGFTabMapClient.cs");
 exec("./TGFTabMyPlacesClient.cs");
-function geTGF::ResetAndOpen(%this) {
+function geTGF::ResetAndOpen(%this)
+{
     %this.setTabNeedsRefreshAll(1);
-    if (!(%this.mGeTabs $= "")) {
+    if (!(%this.mGeTabs $= ""))
+    {
         %this.mGeTabs.Maps_filterDestinationsByType("");
     }
     WorldMap.setView("multi_city");
     %this.openToTabName("Main");
-};
-function geTGF::shouldGoOnPlayGui(%this) {
+}
+function geTGF::shouldGoOnPlayGui(%this)
+{
     %ret = WorldMap.loggedIn;
     return %ret;
-};
-function geTGF::adjustAppearanceForContainer(%this, %onPlayGui) {
-    if (%onPlayGui) {
+}
+function geTGF::adjustAppearanceForContainer(%this, %onPlayGui)
+{
+    if (%onPlayGui)
+    {
         %this.mGeBackground.setBitmap("platform/client/ui/finelines");
         %this.mGeBackground.wrap = 1;
         %this.mGeBackground.modulationColor = "255 255 255 90";
         %this.mGeWindow.setProfile(TGFSmallWindowProfile);
         %this.mGeWindow_BG.modulationColor = "255 255 255 255";
-    } else {
+    }
+    else
+    {
         %this.mGeBackground.setBitmap("");
         %this.mGeWindow.setProfile(TGFBigWindowProfile);
         %this.mGeWindow.resize(0, 0, 960, 544);
@@ -36,8 +43,9 @@ function geTGF::adjustAppearanceForContainer(%this, %onPlayGui) {
     %this.mGeWindow.canMinimize = 0;
     %this.mGeWindow.canMaximize = 0;
     %this.mGeClose.setVisible(%onPlayGui);
-};
-function geTGF::open(%this) {
+}
+function geTGF::open(%this)
+{
     %this.init();
     %this.doreopen = 0;
     GuiTracker.updateLocation(%this);
@@ -45,7 +53,8 @@ function geTGF::open(%this) {
     tgfMapMap.push();
     %this.setVisible(1);
     %this.adjustAppearanceForContainer(%this.shouldGoOnPlayGui());
-    if (%this.shouldGoOnPlayGui()) {
+    if (%this.shouldGoOnPlayGui())
+    {
         PlayGui.add(%this);
         PlayGui.focusAndRaise(%this);
         %this.resize(0, 0, getWord(PlayGui.extent, 0), getWord(PlayGui.extent, 1));
@@ -53,7 +62,9 @@ function geTGF::open(%this) {
         moveMap.pop();
         functionMap.pop();
         pushScreenSize(960, 544, 0, 1, 1);
-    } else {
+    }
+    else
+    {
         %this.onPlayGui = 0;
         Canvas.setContent(%this);
         %this.resize(0, 0, 960, 544);
@@ -62,53 +73,68 @@ function geTGF::open(%this) {
     WorldMap.refresh();
     moveAccountBalanceHud("TGF");
     %this.refreshIfNeeded();
-};
-function geTGF::reopen(%this) {
-    if (!(%this.doreopen $= "")) {
+}
+function geTGF::reopen(%this)
+{
+    if (!(%this.doreopen $= ""))
+    {
     }
-    if ((%this.doreopen == 1.0)) {
+    if ((%this.doreopen == 1.0))
+    {
         %this.open();
     }
-};
-function geTGF::openToTabName(%this, %tabName) {
-    if (!%this.isVisible()) {
+}
+function geTGF::openToTabName(%this, %tabName)
+{
+    if (!%this.isVisible())
+    {
         %this.open();
     }
     %this.mGeTabs.selectTabWithName(%tabName);
     %this.refreshIfNeeded();
-};
-function geTGF::toggleToTabName(%this, %tabName) {
-    if (%this.isVisible()) {
+}
+function geTGF::toggleToTabName(%this, %tabName)
+{
+    if (%this.isVisible())
+    {
         %currentTab = %this.mGeTabs.getCurrentTab();
-        if ((%currentTab.name $= %tabName)) {
+        if ((%currentTab.name $= %tabName))
+        {
             %this.close();
             return;
         }
     }
     %this.setTabNeedsRefresh(%tabName, 1);
     %this.openToTabName(%tabName);
-};
-function geTGF::closeFully(%this) {
+}
+function geTGF::closeFully(%this)
+{
     %this.close();
-    if (%this.isVisible()) {
+    if (%this.isVisible())
+    {
         %this.close();
         %this.setVisible(0);
     }
-};
-function geTGF::close(%this) {
-    if (tgfMapMap.isActive()) {
+}
+function geTGF::close(%this)
+{
+    if (tgfMapMap.isActive())
+    {
         tgfMapMap.pop();
     }
-    if (geDeetsLayer.isVisible()) {
+    if (geDeetsLayer.isVisible())
+    {
         eval(geDeetsWindow.closeCommand);
         return;
     }
     %this.setTabNeedsRefreshAll(1);
-    if ((%this.getId() == Canvas.getContent())) {
+    if ((%this.getId() == Canvas.getContent()))
+    {
         return 0;
     }
     %this.setVisible(0);
-    if (%this.onPlayGui) {
+    if (%this.onPlayGui)
+    {
         PlayGui.focusAndRaise(%this);
         popScreenSize();
         moveMap.push();
@@ -117,37 +143,49 @@ function geTGF::close(%this) {
     setIdle(0);
     moveAccountBalanceHud("PLAYGUI");
     return 1;
-};
-function geTGF::onGroupRemove(%this) {
+}
+function geTGF::onGroupRemove(%this)
+{
     moveAccountBalanceHud("PLAYGUI");
-};
-function geTGF::toggle(%this) {
-    if (%this.isVisible()) {
+}
+function geTGF::toggle(%this)
+{
+    if (%this.isVisible())
+    {
         return %this.close();
-    } else {
+    }
+    else
+    {
         return %this.open();
     }
-};
-function geTGF::refreshIfNeeded(%this) {
+}
+function geTGF::refreshIfNeeded(%this)
+{
     %curTabName = geTGF_tabs.getUpcomingTab().name;
-    if (%this.getTabNeedsRefresh(%curTabName)) {
+    if (%this.getTabNeedsRefresh(%curTabName))
+    {
         %this.refresh();
     }
-};
-function geTGF::refresh(%this) {
+}
+function geTGF::refresh(%this)
+{
     %curTabName = geTGF_tabs.getUpcomingTab().name;
     %cmd = "geTGF_Tabs.refreshTab" @ %curTabName @ "();";
     eval(%cmd);
     %this.setTabNeedsRefresh(%curTabName, 0);
-};
-function geTGF::reinit(%this) {
-    if (isObject(%this.mGeTabs)) {
+}
+function geTGF::reinit(%this)
+{
+    if (isObject(%this.mGeTabs))
+    {
         %this.mGeTabs.delete();
     }
     %this.init();
-};
-function geTGF::init(%this) {
-    if (isObject(%this.mGeTabs)) {
+}
+function geTGF::init(%this)
+{
+    if (isObject(%this.mGeTabs))
+    {
         return;
     }
     %this.mGeTabs = new ScriptObject(geTGF_tabs) {
@@ -155,7 +193,8 @@ function geTGF::init(%this) {
         tabsAlign = "near";
         tabsOffset = "-2 1";
     };
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%this.mGeTabs);
     }
     %this.mGeTabs.setup(%this.mGeTabContainer);
@@ -164,9 +203,11 @@ function geTGF::init(%this) {
     WorldMap.schedule(100, "initialize");
     geTGF.mGeTabs.Maps_GetApartmentVURL();
     %this.setDoCallbackOnGroupAddRemove(1);
-};
-function geTGF_tabs::setup(%this, %container) {
-    if (%this.initialized) {
+}
+function geTGF_tabs::setup(%this, %container)
+{
+    if (%this.initialized)
+    {
         return;
     }
     %this.Initialize(%container, "137 45", "", "0 0", "horizontal");
@@ -183,10 +224,14 @@ function geTGF_tabs::setup(%this, %container) {
     $MsgCat::TGF["tooltips_myplace"][%tooltips @ "myplace"] = $MsgCat::TGF["tooltips_myplace"];
     %num = getWordCount(%tabNames);
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %tabName = getWord(%tabNames, %n);
-        if (isDefined("%tooltips" @ %tabName)) {
-        } else {
+        if (isDefined("%tooltips" @ %tabName))
+        {
+        }
+        else
+        {
         }
         %toolTip = "";
         %tooltips[%tabName];
@@ -199,57 +244,80 @@ function geTGF_tabs::setup(%this, %container) {
     geTGF.setTabNeedsRefreshAll(1);
     %this.schedule(100, "fillTabMap");
     %this.selectTabWithName("main");
-};
-function geTGF::setTabNeedsRefreshAll(%this, %val) {
+}
+function geTGF::setTabNeedsRefreshAll(%this, %val)
+{
     %this.setTabNeedsRefresh("main", %val);
     %this.setTabNeedsRefresh("hotspots", %val);
     %this.setTabNeedsRefresh("friends", %val);
     %this.setTabNeedsRefresh("map", %val);
     %this.setTabNeedsRefresh("myplace", %val);
-};
-function geTGF::setTabNeedsRefresh(%this, %tabName, %val) {
-    if (!isObject(geTGF_tabs)) {
+}
+function geTGF::setTabNeedsRefresh(%this, %tabName, %val)
+{
+    if (!isObject(geTGF_tabs))
+    {
         return;
     }
     geTGF_tabs.getTabWithName(%tabName).needsRefresh = %val;
-};
-function geTGF::getTabNeedsRefresh(%this, %tabName) {
+}
+function geTGF::getTabNeedsRefresh(%this, %tabName)
+{
     %val = geTGF_tabs.getTabWithName(%tabName).needsRefresh;
     return %val;
-};
-function geTGF_tabs::fillTabGeneric(%this, %tab) {
+}
+function geTGF_tabs::fillTabGeneric(%this, %tab)
+{
     %tab.setProfile(ETSNonModalProfile);
     %tab.clear();
-};
-function geTGF_tabs::onShowTabGeneric(%this) {
+}
+function geTGF_tabs::onShowTabGeneric(%this)
+{
     cancel(geTGF.geTGF_Refresh_Schedule);
     geTGF_Refresh.setActive(1);
     geTGF_Refresh.setVisible(1);
-};
-function geTGF_tabs::onShowOrHideTab(%this, %tabObject, %show) {
-    if (!%show) {
+}
+function geTGF_tabs::onShowOrHideTab(%this, %tabObject, %show)
+{
+    if (!%show)
+    {
         return;
     }
-    if ((%tabObject.name $= "main")) {
+    if ((%tabObject.name $= "main"))
+    {
         %this.fillTabMain();
         %this.onShowTabMain();
-    } else {
-        if ((%tabObject.name $= "hotspots")) {
+    }
+    else
+    {
+        if ((%tabObject.name $= "hotspots"))
+        {
             %this.fillTabHotSpots();
             %this.onShowTabHotSpots();
-        } else {
-            if ((%tabObject.name $= "friends")) {
+        }
+        else
+        {
+            if ((%tabObject.name $= "friends"))
+            {
                 %this.fillTabFriends();
                 %this.onShowTabFriends();
-            } else {
-                if ((%tabObject.name $= "map")) {
+            }
+            else
+            {
+                if ((%tabObject.name $= "map"))
+                {
                     %this.fillTabMap();
                     %this.onShowTabMap();
-                } else {
-                    if ((%tabObject.name $= "myplace")) {
+                }
+                else
+                {
+                    if ((%tabObject.name $= "myplace"))
+                    {
                         %this.fillTabMyPlace();
                         %this.onShowTabMyPlace();
-                    } else {
+                    }
+                    else
+                    {
                         error(getScopeName() @ " " @ "- unknown tab name:" @ " " @ %tabObject.name @ " " @ getTrace());
                     }
                 }
@@ -257,29 +325,36 @@ function geTGF_tabs::onShowOrHideTab(%this, %tabObject, %show) {
         }
     }
     geTGF.refreshIfNeeded();
-};
-function geTGF::onLogin(%this) {
+}
+function geTGF::onLogin(%this)
+{
     %this.ResetAndOpen();
-};
-function geTGF::onLogoutButton(%this) {
+}
+function geTGF::onLogoutButton(%this)
+{
     MessageBoxYesNo("Log Out", "<br>Are you sure you want to log out?<br>", %this @ ".logoutReally();", "");
-};
-function geTGF::logoutReally(%this) {
+}
+function geTGF::logoutReally(%this)
+{
     logout(0);
-};
-function geTGF::onRefresh(%this) {
+}
+function geTGF::onRefresh(%this)
+{
     cancel(%this.geTGF_Refresh_Schedule);
     %this.geTGF_Refresh_Schedule = geTGF_Refresh.schedule((30.0 * 1000.0), setActive, 1);
     geTGF_Refresh.setActive(0);
     hiliteControl(0);
     %this.refresh();
-};
-function geTGF::onMyPlace(%this) {
+}
+function geTGF::onMyPlace(%this)
+{
     geTGF_tabs::Maps_clickMyApartment();
-};
+}
 $gTGF_Deets_Constructed = 0;
-function geTGF::constructDeetsWindow(%this, %window, %item) {
-    if (!$gTGF_Deets_Constructed) {
+function geTGF::constructDeetsWindow(%this, %window, %item)
+{
+    if (!$gTGF_Deets_Constructed)
+    {
         $gTGF_Deets_Constructed = 1;
         %window.deleteMembers();
         %ctrl = new GuiBitmapButtonCtrl("") {
@@ -408,24 +483,35 @@ function geTGF::constructDeetsWindow(%this, %window, %item) {
             style = "tgfDeets_NavLinks";
         };);
     }
-    if ((%window.itemType $= %item.type)) {
+    if ((%window.itemType $= %item.type))
+    {
         return;
     }
-    if ((%item.type $= "happening")) {
+    if ((%item.type $= "happening"))
+    {
         %this.arrangeDeetsWindow_happening(%window);
-    } else {
-        if ((%item.type $= "venue")) {
+    }
+    else
+    {
+        if ((%item.type $= "venue"))
+        {
             %this.arrangeDeetsWindow_venue(%window);
-        } else {
-            if ((%item.type $= "person")) {
+        }
+        else
+        {
+            if ((%item.type $= "person"))
+            {
                 %this.arrangeDeetsWindow_person(%window);
-            } else {
+            }
+            else
+            {
                 error("unknown itemType:" @ " " @ %item.type @ " " @ getTrace());
             }
         }
     }
-};
-function geTGF::arrangeDeetsWindow_happening(%this, %window) {
+}
+function geTGF::arrangeDeetsWindow_happening(%this, %window)
+{
     geDeetsWindow.resize(500, 200);
     geDeetsWindow.alignToCenterXY();
     %drop = 21;
@@ -439,8 +525,9 @@ function geTGF::arrangeDeetsWindow_happening(%this, %window) {
     geTGF_deets_venue.setVisible(0);
     geTGF_deets_person.setVisible(0);
     geTGF_deets_featured.setVisible(1);
-};
-function geTGF::arrangeDeetsWindow_venue(%this, %window) {
+}
+function geTGF::arrangeDeetsWindow_venue(%this, %window)
+{
     geDeetsWindow.resize(450, 200);
     geDeetsWindow.alignToCenterXY();
     %drop = 21;
@@ -454,8 +541,9 @@ function geTGF::arrangeDeetsWindow_venue(%this, %window) {
     geTGF_deets_venue.setVisible(1);
     geTGF_deets_person.setVisible(0);
     geTGF_deets_featured.setVisible(0);
-};
-function geTGF::arrangeDeetsWindow_person(%this, %window) {
+}
+function geTGF::arrangeDeetsWindow_person(%this, %window)
+{
     geDeetsWindow.resize(500, 200);
     geDeetsWindow.alignToCenterXY();
     %drop = 21;
@@ -469,24 +557,35 @@ function geTGF::arrangeDeetsWindow_person(%this, %window) {
     geTGF_deets_venue.setVisible(0);
     geTGF_deets_person.setVisible(1);
     geTGF_deets_featured.setVisible(0);
-};
-function geTGF::arrangeDeetsPicture(%this, %window, %drop, %aspectW, %aspectH) {
+}
+function geTGF::arrangeDeetsPicture(%this, %window, %drop, %aspectW, %aspectH)
+{
     %sizY = ((getWord(%window.getExtent(), 1) - %drop) - 2.0);
     %sizX = ((%sizY * %aspectW) / %aspectH);
     %posX = 3;
     %posY = %drop;
     geTGF_deets_pictureContainer.resize(%posX, %posY, %sizX, %sizY);
-};
-function geTGF::fillDetailsContainer(%this, %container, %item) {
-    if ((%item.type $= "happening")) {
+}
+function geTGF::fillDetailsContainer(%this, %container, %item)
+{
+    if ((%item.type $= "happening"))
+    {
         %this.fillDetailsContainer_Happening(%container, %item);
-    } else {
-        if ((%item.type $= "venue")) {
+    }
+    else
+    {
+        if ((%item.type $= "venue"))
+        {
             %this.fillDetailsContainer_Venue(%container, %item);
-        } else {
-            if ((%item.type $= "person")) {
+        }
+        else
+        {
+            if ((%item.type $= "person"))
+            {
                 %this.fillDetailsContainer_Person(%container, %item);
-            } else {
+            }
+            else
+            {
                 error(getScopeName() @ " " @ "- unknown type:" @ " " @ %item.type @ " " @ getTrace());
             }
         }
@@ -494,73 +593,107 @@ function geTGF::fillDetailsContainer(%this, %container, %item) {
     %this.getItemList(%item.listName, %item.type).currentItem = %item;
     %hasPrevItem = isObject(%this.getPrevItem(%item.listName, %item.type));
     %hasNextItem = isObject(%this.getNextItem(%item.listName, %item.type));
-    if (%hasPrevItem) {
-    } else {
+    if (%hasPrevItem)
+    {
+    }
+    else
+    {
     }
     %prevLink = mlStyle("<a:gamelink prev><<</a>", tgfDeets_NavLinkActive) @ mlStyle("<<", tgfDeets_NavLinkInactive);
     "<just:left>";
-    if (%hasNextItem) {
-    } else {
+    if (%hasNextItem)
+    {
+    }
+    else
+    {
     }
     %nextLink = mlStyle("<a:gamelink next>>></a>", tgfDeets_NavLinkActive) @ mlStyle(">>", tgfDeets_NavLinkInactive);
     "<just:right>";
     geTGF_deets_NavLinks.setText(%prevLink @ %nextLink);
-};
-function geTGF::formatOccupancy(%this, %num, %interestingNumberFormat, %unknownString, %noneString) {
-    if ((%num == -(1.0))) {
+}
+function geTGF::formatOccupancy(%this, %num, %interestingNumberFormat, %unknownString, %noneString)
+{
+    if ((%num == -(1.0)))
+    {
         %ret = %unknownString;
-    } else {
-        if ((%num == 0.0)) {
+    }
+    else
+    {
+        if ((%num == 0.0))
+        {
             %ret = %noneString;
-        } else {
+        }
+        else
+        {
             %ret = %interestingNumberFormat @ %num;
         }
     }
     return %ret;
-};
-function geTGF::getEventTypePostItTagBitmap(%this, %item) {
+}
+function geTGF::getEventTypePostItTagBitmap(%this, %item)
+{
     %ret = "";
-    if (!(%item.eventID $= "")) {
-        if ((%item.subType $= "publicLocationEvent")) {
+    if (!(%item.eventID $= ""))
+    {
+        if ((%item.subType $= "publicLocationEvent"))
+        {
             %ret = "platform/client/ui/tgf/tgf_publicEvent";
-        } else {
-            if (%item.featured) {
+        }
+        else
+        {
+            if (%item.featured)
+            {
                 %ret = "platform/client/ui/tgf/tgf_featuredEvent";
-            } else {
+            }
+            else
+            {
                 %ret = "platform/client/ui/tgf/tgf_event";
             }
         }
     }
     return %ret;
-};
-function geTGF::fillDetailsContainer_Happening(%this, %container, %item) {
+}
+function geTGF::fillDetailsContainer_Happening(%this, %container, %item)
+{
     geTGF_deets_Title.setTextWithStyle(%item.headline, "");
     %profileURL = $Net::ProfileURL @ urlEncode(%item.hostUserName);
     %subTypeText = "";
-    if ((%item.subType $= "apt")) {
+    if ((%item.subType $= "apt"))
+    {
         %mainPicUrl1 = $Net::BuildDirPhotoURL @ urlEncode(%item.hostUserName) @ "?size=S";
         %mainPicUrl2 = $Net::BuildDirPhotoURL @ urlEncode(%item.hostUserName) @ "?size=L";
         %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
         %detailsURL = %profileURL;
         %subTypeText = "personal space ";
-    } else {
-        if ((%item.subType $= "aptEvent")) {
+    }
+    else
+    {
+        if ((%item.subType $= "aptEvent"))
+        {
             %mainPicUrl1 = %item.baseImageURL @ "?size=S";
             %mainPicUrl2 = %item.baseImageURL @ "?size=M";
             %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
             %detailsURL = $Net::EventDetailURL @ urlEncode(%item.eventID);
             %subTypeText = "event ";
-        } else {
-            if ((%item.subType $= "publicLocationEvent")) {
+        }
+        else
+        {
+            if ((%item.subType $= "publicLocationEvent"))
+            {
                 %mainPicUrl1 = %item.baseImageURL @ "?size=S";
                 %mainPicUrl2 = %item.baseImageURL @ "?size=M";
                 %hostUrl = $Net::AvatarURL @ urlEncode(%item.hostUserName) @ "?size=S";
                 %detailsURL = $Net::EventDetailURL @ urlEncode(%item.eventID);
                 %subTypeText = "public event ";
-            } else {
-                if ((%item.subType $= "")) {
+            }
+            else
+            {
+                if ((%item.subType $= ""))
+                {
                     error(getScopeName() @ " " @ "- empty happening subtype." @ " " @ "(" @ %item.type @ ")" @ " " @ getTrace());
-                } else {
+                }
+                else
+                {
                     error(getScopeName() @ " " @ "- unknown happening subtype:" @ " " @ %item.subType @ " " @ "(" @ %item.type @ ")" @ " " @ getTrace());
                 }
             }
@@ -568,7 +701,8 @@ function geTGF::fillDetailsContainer_Happening(%this, %container, %item) {
     }
     %bitmap = %this.getEventTypePostItTagBitmap(%item);
     geTGF_deets_featured.setBitmap(%bitmap);
-    if (%item.featured) {
+    if (%item.featured)
+    {
         %subTypeText = "featured" @ " " @ %subTypeText;
     }
     %subTypeText = "-" @ " " @ %subTypeText;
@@ -593,34 +727,46 @@ function geTGF::fillDetailsContainer_Happening(%this, %container, %item) {
     %text = %text @ "<br><just:left>" @ "<spush><b>" @ "<a:gamelink " @ %detailsURL @ ">" @ "More Info" @ "</a>" @ "<spop>";
     %text = %text @ "<just:right>" @ "<spush>" @ mlStyle("<a:gamelink " @ %item.goThereVURL @ ">" @ "<b>Let's Go! " @ "</a>", "tgfDeets_Visit") @ "<spop>";
     geTGF_deets_eventText.setTextWithStyle(%text, "");
-};
-function geTGF::getUserFacingAccessModeWithIcon(%this, %accessMode) {
+}
+function geTGF::getUserFacingAccessModeWithIcon(%this, %accessMode)
+{
     %bitmap = "";
     %text = "";
-    if ((%accessMode $= "OPEN")) {
+    if ((%accessMode $= "OPEN"))
+    {
         %bitmap = "";
         %text = "Open";
-    } else {
-        if ((%accessMode $= "FRIENDSONLY")) {
+    }
+    else
+    {
+        if ((%accessMode $= "FRIENDSONLY"))
+        {
             %bitmap = "platform/client/ui/tgf/tgf_heart_white";
             %text = "Friends";
-        } else {
-            if ((%accessMode $= "PASSWORDPROTECTED")) {
+        }
+        else
+        {
+            if ((%accessMode $= "PASSWORDPROTECTED"))
+            {
                 %bitmap = "platform/client/ui/tgf/tgf_key_white";
                 %text = "Door Code";
-            } else {
+            }
+            else
+            {
                 error(getScopeName() @ " " @ "- unknown access mode '" @ %accessMode @ "' -" @ " " @ getTrace());
                 %bitmap = "";
                 %text = "(?)";
             }
         }
     }
-    if (!(%bitmap $= "")) {
+    if (!(%bitmap $= ""))
+    {
         %bitmap = "<bitmap:" @ %bitmap @ "> ";
     }
     return %bitmap @ %text;
-};
-function geTGF::fillDetailsContainer_Venue(%this, %container, %item) {
+}
+function geTGF::fillDetailsContainer_Venue(%this, %container, %item)
+{
     %item.fullName = %item[$gDestinationNames @ %item.codeName];
     %item.areaName = %item[$gDestinationSpaces @ %item.codeName];
     %item.headline = %item[$gDestinationDescsInCloset @ %item.codeName];
@@ -629,7 +775,8 @@ function geTGF::fillDetailsContainer_Venue(%this, %container, %item) {
     %whatIsIt = "A ";
     %delim = "";
     %n = (getWordCount(%item[$gDestinationFilters @ %item.codeName]) - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %whatIsIt = %whatIsIt @ %delim @ getWord(%item[$gDestinationFilters @ %item.codeName], %n);
         %delim = " and a ";
         %n = (%n - 1.0);
@@ -655,25 +802,33 @@ function geTGF::fillDetailsContainer_Venue(%this, %container, %item) {
     %text = %text @ "<br>";
     %text = %text @ "<just:right>" @ "<spush>" @ mlStyle("<a:gamelink " @ %item.goThereVURL @ ">" @ "<b>Let's Go! " @ "</a>", "tgfDeets_Visit") @ "<spop>";
     geTGF_deets_venueText.setTextWithStyle(%text, "");
-};
-function geTGF_deets_venueText::onURL(%this, %url) {
+}
+function geTGF_deets_venueText::onURL(%this, %url)
+{
     geDeetsLayer.setVisible(0);
-    if ((firstWord(%url) $= "gamelink")) {
-    } else {
+    if ((firstWord(%url) $= "gamelink"))
+    {
+    }
+    else
+    {
     }
     %url = %url;
     restWords(%url);
     %s = firstWord(%url);
-    if ((%s $= "MAP_CITY")) {
+    if ((%s $= "MAP_CITY"))
+    {
         %city = restWords(%url);
         geTGF.openToTabName("map");
         WorldMap.selectCity(%city);
-    } else {
+    }
+    else
+    {
         Parent::onURL(%this, %url);
     }
-};
+}
 $gTextAllTimeVPointsLink = "<spush><b><linkcolor:ffffff><a:gamelink " @ $Net::HelpURL_VPoints @ ">All-time <bitmap:platform/client/ui/vpoints_14></a><spop>";
-function geTGF::fillDetailsContainer_Person(%this, %container, %item) {
+function geTGF::fillDetailsContainer_Person(%this, %container, %item)
+{
     %friend = (%item.relationType $= "friend");
     %friendTag = %friend ? "<color:30dd30><shadowcolor:000080>" : "";
     geTGF_deets_Title.setTextWithStyle(%friendTag @ %item.userName, "");
@@ -687,19 +842,26 @@ function geTGF::fillDetailsContainer_Person(%this, %container, %item) {
     geTGF_deets_picture.downloadAndApplyBitmap(%url);
     %tableSettings = "<tab:67,215>";
     %profileURL = $Net::ProfileURL @ urlEncode(%item.userName);
-    if ((%item.goThereVURL $= "")) {
+    if ((%item.goThereVURL $= ""))
+    {
         %item.goThereVURL = "vside:/user/" @ %item.userName;
     }
     %readMoreText = "<spush><b><a:gamelink " @ %profileURL @ ">Read More</a><spop>";
     %goThereText = ("<spush><b><a:gamelink " @ %item.goThereVURL @ ">Visit " @ " " @ %item.gender $= "m") ? "him" : "her" @ " now!</a><spop>";
     %goThereText = mlStyle(%goThereText, "tgfDeets_Visit");
     %text = %tableSettings;
-    if ((%text @ "Age" @ "\t" @ ": " @ " " @ %item.age $= "")) {
-    } else {
+    if ((%text @ "Age" @ "\t" @ ": " @ " " @ %item.age $= ""))
+    {
+    }
+    else
+    {
     }
     %text = "(not shown)" @ %item.age;
-    if ((%text @ "<br>" @ "Location" @ "\t" @ ": " @ " " @ %item.locationIRL $= "")) {
-    } else {
+    if ((%text @ "<br>" @ "Location" @ "\t" @ ": " @ " " @ %item.locationIRL $= ""))
+    {
+    }
+    else
+    {
     }
     %text = "(not shown)" @ %item.locationIRL;
     %text = %text @ "<br>" @ "Level" @ "\t" @ ": " @ respektLevelToNameWithoutArticle(respektScoreToLevel(%item.score));
@@ -711,27 +873,46 @@ function geTGF::fillDetailsContainer_Person(%this, %container, %item) {
     %text = %text @ "<br>";
     %text = %text @ "<br>" @ "      " @ %readMoreText @ "    |    " @ %goThereText;
     geTGF_deets_stats.setTextWithStyle(%text, "");
-    if ((%item.headline $= "")) {
-    } else {
+    if ((%item.headline $= ""))
+    {
+    }
+    else
+    {
     }
     geTGF_deets_stats_headline.setTextWithStyle("(none)", %item.headline, "");
-};
-function geTGF::DoDetails(%this, %tabName, %item) {
-    if ((%tabName $= "main")) {
+}
+function geTGF::DoDetails(%this, %tabName, %item)
+{
+    if ((%tabName $= "main"))
+    {
         %container = %this.main_GetAndOpenDetailsContainer(%item);
-    } else {
-        if ((%tabName $= "hotspots")) {
+    }
+    else
+    {
+        if ((%tabName $= "hotspots"))
+        {
             %container = %this.hotspots_GetAndOpenDetailsContainer(%item);
-        } else {
-            if ((%tabName $= "friends")) {
+        }
+        else
+        {
+            if ((%tabName $= "friends"))
+            {
                 %container = %this.friends_GetAndOpenDetailsContainer(%item);
-            } else {
-                if ((%tabName $= "map")) {
+            }
+            else
+            {
+                if ((%tabName $= "map"))
+                {
                     %container = %this.map_GetAndOpenDetailsContainer(%item);
-                } else {
-                    if ((%tabName $= "myplace")) {
+                }
+                else
+                {
+                    if ((%tabName $= "myplace"))
+                    {
                         %container = %this.myplace_GetAndOpenDetailsContainer(%item);
-                    } else {
+                    }
+                    else
+                    {
                         error(getScopeName() @ " " @ "- unknown tabName:" @ " " @ %tabName @ " " @ getTrace());
                     }
                 }
@@ -742,58 +923,80 @@ function geTGF::DoDetails(%this, %tabName, %item) {
     %itemList.currentItem = %item;
     %this.currentItem = %item;
     %this.fillDetailsContainer(%container, %item);
-};
-function geTGF::getPrevItem(%this, %listName, %type) {
+}
+function geTGF::getPrevItem(%this, %listName, %type)
+{
     %itemList = %this.getItemList(%listName, %type);
     %curNdx = %itemList.getIndexFromValue(%itemList.currentItem);
-    if ((%curNdx < 0.0)) {
+    if ((%curNdx < 0.0))
+    {
         %curNdx = 0;
     }
     %newNdx = (%curNdx - 1.0);
-    if ((%newNdx >= 0.0)) {
+    if ((%newNdx >= 0.0))
+    {
     }
-    if ((%newNdx < %itemList.count())) {
+    if ((%newNdx < %itemList.count()))
+    {
         %ret = %itemList.getValue(%newNdx);
-    } else {
+    }
+    else
+    {
         %ret = "";
     }
     return %ret;
-};
-function geTGF::getNextItem(%this, %listName, %type) {
+}
+function geTGF::getNextItem(%this, %listName, %type)
+{
     %itemList = %this.getItemList(%listName, %type);
     %curNdx = %itemList.getIndexFromValue(%itemList.currentItem);
-    if ((%curNdx < 0.0)) {
+    if ((%curNdx < 0.0))
+    {
         %curNdx = 0;
     }
     %newNdx = (%curNdx + 1.0);
-    if ((%newNdx >= 0.0)) {
+    if ((%newNdx >= 0.0))
+    {
     }
-    if ((%newNdx < %itemList.count())) {
+    if ((%newNdx < %itemList.count()))
+    {
         %ret = %itemList.getValue(%newNdx);
-    } else {
+    }
+    else
+    {
         %ret = "";
     }
     return %ret;
-};
-function geTGF_deets_NavLinks::onURL(%this, %url) {
-    if ((firstWord(%url) $= "gamelink")) {
-    } else {
+}
+function geTGF_deets_NavLinks::onURL(%this, %url)
+{
+    if ((firstWord(%url) $= "gamelink"))
+    {
+    }
+    else
+    {
     }
     %url = %url;
     restWords(%url);
     %s = firstWord(%url);
-    if ((%s $= "prev")) {
+    if ((%s $= "prev"))
+    {
         %item = geTGF.getPrevItem(geTGF.currentItem.listName, geTGF.currentItem.type);
-    } else {
-        if ((%s $= "next")) {
+    }
+    else
+    {
+        if ((%s $= "next"))
+        {
             %item = geTGF.getNextItem(geTGF.currentItem.listName, geTGF.currentItem.type);
         }
     }
-    if (isObject(%item)) {
+    if (isObject(%item))
+    {
         geTGF.DoDetails(geTGF_tabs.getCurrentTab().name, %item);
     }
-};
-function geTGF::createNewItem(%this, %listName, %type, %id) {
+}
+function geTGF::createNewItem(%this, %listName, %type, %id)
+{
     %itemList = %this.getItemList(%listName, %type);
     %item = new ScriptObject("");
     %item.type = %type;
@@ -801,66 +1004,82 @@ function geTGF::createNewItem(%this, %listName, %type, %id) {
     %item.listName = %listName;
     %itemList.push_back(%id, %item);
     return %item;
-};
-function geTGF::clearItemList(%this, %listName, %type) {
+}
+function geTGF::clearItemList(%this, %listName, %type)
+{
     %itemList = %this.getItemList(%listName, %type);
     %n = (%itemList.count() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %item = %itemList.getValue(%n);
         %item.delete();
         %n = (%n - 1.0);
     }
     %itemList.empty();
-};
-function geTGF::getItemList(%this, %listName, %type) {
-    if (!%this.testItemList(%listName, %type)) {
+}
+function geTGF::getItemList(%this, %listName, %type)
+{
+    if (!%this.testItemList(%listName, %type))
+    {
         %this.mainTabItems[%listName,%type] = new Array("");
     }
     return %this.mainTabItems[%type];
-};
-function geTGF::testItemList(%this, %listName, %type) {
+}
+function geTGF::testItemList(%this, %listName, %type)
+{
     return isObject(%listName, %this.mainTabItems[%type]);
-};
-function geTGF::removeItemsWithFieldValueFromList(%this, %listName, %type, %fieldName, %fieldValue) {
+}
+function geTGF::removeItemsWithFieldValueFromList(%this, %listName, %type, %fieldName, %fieldValue)
+{
     %itemList = %this.getItemList(%listName, %type);
     %n = (%itemList.count() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %item = %itemList.getValue(%n);
         %itemFieldValue = %item.getFieldValue(%fieldName);
-        if ((%itemFieldValue $= %fieldValue)) {
+        if ((%itemFieldValue $= %fieldValue))
+        {
             %itemList.erase(%n);
             %item.delete();
         }
         %n = (%n - 1.0);
     }
-};
-function geTGF::removeItemsFromList1WithMatchingItemInList2(%this, %list1Name, %list1Type, %list2Name, %list2Type, %fieldName) {
+}
+function geTGF::removeItemsFromList1WithMatchingItemInList2(%this, %list1Name, %list1Type, %list2Name, %list2Type, %fieldName)
+{
     %itemList2 = %this.getItemList(%list2Name, %list2Type);
     %n = (%itemList2.count() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %item = %itemList2.getValue(%n);
         %fieldValue = %item.getFieldValue(%fieldName);
         %this.removeItemsWithFieldValueFromList(%list1Name, %list1Type, %fieldName, %fieldValue);
         %n = (%n - 1.0);
     }
-};
-function geTGF::findItem(%this, %listName, %type, %id) {
+}
+function geTGF::findItem(%this, %listName, %type, %id)
+{
     %list = %this.getItemList(%listName, %type);
     %list.moveFirst();
     %indx = %list.getIndexFromKey(%id);
-    if ((%indx < 0.0)) {
+    if ((%indx < 0.0))
+    {
         error(getScopeName() @ " " @ "- item not found:" @ " " @ %type @ " " @ %id @ " " @ getTrace());
         return "";
-    } else {
+    }
+    else
+    {
         return %list.getValue(%indx);
     }
-};
-function geTGF::dumpItemList(%this, %listName, %type) {
+}
+function geTGF::dumpItemList(%this, %listName, %type)
+{
     %itemList = %this.getItemList(%listName, %type);
     %n = (%itemList.count() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %item = %itemList.getValue(%n);
         %item.dumpFields();
         %n = (%n - 1.0);
     }
-};
+}

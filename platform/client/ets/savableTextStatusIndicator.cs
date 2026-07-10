@@ -1,9 +1,12 @@
-function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %controlToGetValueFrom, %callbackForSecondaryVisualUpdates, %acceptEmptyString, %arrowDescription) {
-    if (isObject(%indicatorName)) {
+function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %controlToGetValueFrom, %callbackForSecondaryVisualUpdates, %acceptEmptyString, %arrowDescription)
+{
+    if (isObject(%indicatorName))
+    {
         error(getScopeName() @ " " @ "- object with name '" @ %indicatorName @ "' already exists");
         return 0;
     }
-    if (!isObject(%controlToGetValueFrom)) {
+    if (!isObject(%controlToGetValueFrom))
+    {
         error(getScopeName() @ " " @ "- requires object parameter - '" @ %controlToGetValueFrom @ "' is not an object");
         return 0;
     }
@@ -34,12 +37,18 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
         bitmap = "platform/client/ui/ellipsis_yellow";
         visible = 0;
     };
-    if ((%arrowDescription $= "right")) {
+    if ((%arrowDescription $= "right"))
+    {
         %arrowBitmap = "platform/client/ui/arrow_red_right";
-    } else {
-        if ((%arrowDescription $= "downAndRight")) {
+    }
+    else
+    {
+        if ((%arrowDescription $= "downAndRight"))
+        {
             %arrowBitmap = "platform/client/ui/arrow_red_downAndRight";
-        } else {
+        }
+        else
+        {
             %arrowBitmap = "platform/client/ui/arrow_red_right";
         }
     }
@@ -57,48 +66,62 @@ function SavableTextStatusIndicatorCreator::make(%indicatorName, %position, %con
     %obj.add(%obj.savingBitmap);
     %obj.add(%obj.changedBitmap);
     return %obj;
-};
-function SavableTextStatusIndicator::setInitialValue(%this, %initialValue) {
-    if (%this.initialValueSet) {
+}
+function SavableTextStatusIndicator::setInitialValue(%this, %initialValue)
+{
+    if (%this.initialValueSet)
+    {
         warn(getScopeName() @ " " @ "- initial value already set -" @ " " @ getTrace());
-    } else {
+    }
+    else
+    {
         %this.lastValueSaved = %initialValue;
         %this.initialValueSet = 1;
     }
-};
-function SavableTextStatusIndicator::incrementRequestCount(%this) {
+}
+function SavableTextStatusIndicator::incrementRequestCount(%this)
+{
     %newValue = %this.controlToGetValueFrom.getValue();
-    if (!%this.acceptEmptyString) {
+    if (!%this.acceptEmptyString)
+    {
     }
-    if ((%newValue $= "")) {
+    if ((%newValue $= ""))
+    {
         return;
     }
     %this.lastValueSaved = %newValue;
     %this.initialValueSet = 1;
     %this.requestsPendingCount = (%this.requestsPendingCount + 1.0);
     %this.update(1);
-};
-function SavableTextStatusIndicator::decrementRequestCount(%this) {
+}
+function SavableTextStatusIndicator::decrementRequestCount(%this)
+{
     %this.requestsPendingCount = (%this.requestsPendingCount - 1.0);
     %this.update(1);
-};
-function SavableTextStatusIndicator::update(%this, %doCallback) {
+}
+function SavableTextStatusIndicator::update(%this, %doCallback)
+{
     %valueSaved = (%this.requestsPendingCount == 0.0);
     %valueChanged = !(%this.lastValueSaved $= %this.controlToGetValueFrom.getValue());
-    if (%valueSaved) {
+    if (%valueSaved)
+    {
     }
     %this.savedBitmap.setVisible(!%valueChanged);
-    if (!%valueSaved) {
+    if (!%valueSaved)
+    {
     }
     %this.savingBitmap.setVisible(!%valueChanged);
     %this.changedBitmap.setVisible(%valueChanged);
-    if (%doCallback) {
+    if (%doCallback)
+    {
     }
-    if (!(%this.callbackForUpdates $= "")) {
+    if (!(%this.callbackForUpdates $= ""))
+    {
         eval(%this.callbackForUpdates);
     }
-};
-function SavableTextStatusIndicator::reset(%this) {
+}
+function SavableTextStatusIndicator::reset(%this)
+{
     %this.requestsPendingCount = 0;
     %this.lastValueSaved = "";
-};
+}

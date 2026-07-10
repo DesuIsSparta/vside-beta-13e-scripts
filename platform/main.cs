@@ -4,25 +4,33 @@ exec("./server/defaults.cs", 0);
 exec("./client/userprefs.cs", 0);
 $UserPref::Player::Password = unmunge($UserPref::Player::Password);
 $UserPref::Player::AIMPassword = unmunge($UserPref::Player::AIMPassword);
-package platform {
-    function displayHelp() {
+package platform
+{
+    function displayHelp()
+    {
         Parent::displayHelp();
-        if ($Server::Dedicated) {
+        if ($Server::Dedicated)
+        {
             displayServerHelp();
-        } else {
+        }
+        else
+        {
             displayClientHelp();
         }
         return;
-    };
-    function displayClientHelp() {
+    }
+    function displayClientHelp()
+    {
         print("\nClient options:\n" @ "  -manager <host[:port]>     Specify login server\n" @ "  -mainsite <url>            Specify main website\n" @ "  -download <host[:port]>    Specify download host\n" @ "  -large                     Large display\n" @ "  -small                     Small display\n" @ "  -noSound                   Disable sound\n" @ "  -display <OpenGL|D3D|Auto> Specify device or auto-detect\n" @ "  -server                    Start as server\n" @ "  -cache                     Do network caching\n" @ "  -staging                   Run in staging environment\n" @ "  -stagingrc                 Run in stagingRC environment\n" @ "  -alpha                     Run in alpha environment\n" @ "  -preload                   Run asset preloading\n" @ "  -url                       Specify a place to spawn to via vURL\n" @ "  -alphabuffer               Request an alpha buffer for OpenGL\n" @ "  -notexdelay                Disable teuxture delay load\n" @ "  -enableRawTextures         Enable use of compressed textures\n" @ "  -automated                 Automatically begin tasks like thumbnail generationg\n" @ "");
         return;
-    };
-    function displayServerHelp() {
+    }
+    function displayServerHelp()
+    {
         print("\nServer options:\n" @ "  -manager <host[:port]>     Specify host and port of login server\n" @ "  -mission <mission>         Specify mission file\n" @ "  -serverName                Server name\n" @ "  -nameSpaceTag              a namespace tag for private spaces and buildings default \"\"\n" @ "  -serverAddress <address>   Server bind address\n" @ "  -serverPort                Server bind port\n" @ "  -mapLocation <x,y>         Server worldmap coordinates\n" @ "  -disableChat               NPCs don't chat\n" @ "  -webloglevel <n>           Set web log level\n" @ "  -notmappable               Server will not appear on the map\n" @ "");
         return;
-    };
-    function rebaseURLs() {
+    }
+    function rebaseURLs()
+    {
         $Net::CrashURL = absoluteURL($Net::ManagerHost, "envmanager/envclient/CrashReport");
         $Net::ItunesURL = absoluteURL($Net::BaseDomain, "go/itunes");
         $Net::ProfileURL = absoluteURL($Net::BaseDomain, "go/profile/user/");
@@ -68,12 +76,15 @@ package platform {
         $Net::ForumsURL = absoluteURL($Net::BaseDomain, "go/forums");
         $Net::ImageInfoURL = absoluteURL($Net::BaseDomain, "go/imageinfo");
         $Net::downloadURL = "http://" @ $Net::DownloadHost;
-        if ($Server::Dedicated) {
+        if ($Server::Dedicated)
+        {
             $Net::BaseURL = "http://" @ $Net::ManagerHost @ "/envmanager/status";
             $Net::LoginURL = "http://" @ $Net::ManagerHost @ "/envmanager/login";
             $Net::ClientServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envclient";
             $Net::ServerServiceURL = "http://" @ $Net::ManagerHost @ "/envmanager/envserver";
-        } else {
+        }
+        else
+        {
             $Net::BaseURL = "http://" @ $Net::ManagerHost @ "/envmanager/login";
             $Net::SecureURL = "http://" @ $Net::SecureManagerHost @ "/envmanager/login";
             $Net::LoginURL = $Net::BaseURL;
@@ -83,348 +94,471 @@ package platform {
         }
         setupProjectSpecificUrls();
         return;
-    };
-    function notokenURL(%url) {
+    }
+    function notokenURL(%url)
+    {
         return strreplace(%url, "http", "HTTP");
-    };
-    function clientRebaseHosts() {
+    }
+    function clientRebaseHosts()
+    {
         $Net::ManagerHost = "envmanager." @ $Net::BaseDomain @ ":8080";
         $Net::SecureManagerHost = "envmanager." @ $Net::BaseDomain @ ":8443";
         $Net::DownloadHost = "download." @ $Net::BaseDomain;
         return;
-    };
-    function serverRebaseHosts() {
+    }
+    function serverRebaseHosts()
+    {
         $Net::ManagerHost = $Net::BaseDomain @ ":8081";
         $Net::IRCHost = "irc." @ $Net::BaseDomain @ ":6667";
         return;
-    };
-    function isValidHostAddress(%address) {
+    }
+    function isValidHostAddress(%address)
+    {
         %ret = 1;
-        if ((%address $= "")) {
+        if ((%address $= ""))
+        {
             %ret = 0;
-        } else {
-            if ((%address $= 0)) {
+        }
+        else
+        {
+            if ((%address $= 0))
+            {
                 %ret = 0;
-            } else {
-                if ((%address $= "0:0")) {
+            }
+            else
+            {
+                if ((%address $= "0:0"))
+                {
                     %ret = 0;
                 }
             }
         }
         return %ret;
-    };
-    function haveValidManagerHost() {
+    }
+    function haveValidManagerHost()
+    {
         %ret = isValidHostAddress($Net::ManagerHost);
-        if (!%ret) {
+        if (!%ret)
+        {
         }
-        if (!$StandAlone) {
+        if (!$StandAlone)
+        {
             warn(getScopeName(1) @ " " @ "- $Net::ManagerHost is invalid." @ " " @ getTrace());
         }
         return %ret;
-    };
-    function haveValidToken() {
+    }
+    function haveValidToken()
+    {
         return !($Token $= "");
-    };
-    function parseArgs() {
+    }
+    function parseArgs()
+    {
         Parent::parseArgs();
         echo("--------- Parsing Arg MOD: platform ---------");
-        if (hasArg("-dedicated") || hasArg("-server")) {
+        if (hasArg("-dedicated") || hasArg("-server"))
+        {
         }
-        if (!$Game::Compile) {
+        if (!$Game::Compile)
+        {
             $Server::Dedicated = 1;
             $Con::logBufferEnabled = 0;
             $Net::ManagerHost = "192.168.100.100:8081";
             $Net::DownloadHost = "192.168.100.100:8081";
         }
-        if ($Server::Dedicated) {
+        if ($Server::Dedicated)
+        {
             parseServerArgs();
-        } else {
+        }
+        else
+        {
             parseClientArgs();
         }
-        if (hasArg("-dedicated") || hasArg("-server")) {
+        if (hasArg("-dedicated") || hasArg("-server"))
+        {
         }
-        if (!$Game::Compile) {
+        if (!$Game::Compile)
+        {
             enableWinConsole(1);
         }
         rebaseURLs();
         setupMessages();
-        if (hasArg("-notmappable")) {
+        if (hasArg("-notmappable"))
+        {
             $Server::Mappable = 0;
             log("initialization", "debug", "setting the map as invisible");
         }
         $NonInteractive = 0;
-        if (!$NonInteractive) {
+        if (!$NonInteractive)
+        {
             log("initialization", "debug", "Exporting net_settings.log");
             export("$Net::*", "./net_settings.log", 0);
         }
         return;
-    };
-    function parseMainsiteArg() {
+    }
+    function parseMainsiteArg()
+    {
         %haveMainsiteArg = findArg("-mainsite", "$Net::BaseDomain", "Missing mainsite <url>");
-        if (%haveMainsiteArg) {
-            if ($Server::Dedicated) {
+        if (%haveMainsiteArg)
+        {
+            if ($Server::Dedicated)
+            {
                 serverRebaseHosts();
-            } else {
+            }
+            else
+            {
                 clientRebaseHosts();
                 %testdomain = strreplace($Net::BaseDomain, ":", " ");
-                if (stricmp("www.vside.com", firstWord(%testdomain))) {
+                if (stricmp("www.vside.com", firstWord(%testdomain)))
+                {
                     %analytic = getAnalytic();
                     %analytic.setDomainAndAccount("test.vside.com", "UA-324914-24");
                 }
             }
         }
         return;
-    };
-    function parseManagerArgs() {
+    }
+    function parseManagerArgs()
+    {
         %haveManagerArg = findArg("-manager", "$Net::ManagerHost", "Missing manager <host[:port]>");
         %haveSManagerArg = findArg("-smanager", "$Net::SecureManagerHost", "Missing smanager <host[:port]>");
-        if (%haveManagerArg) {
+        if (%haveManagerArg)
+        {
             %colonPos = strstr($Net::ManagerHost, ":");
-            if ((%colonPos == -(1.0))) {
-                if (!%haveSManagerArg) {
+            if ((%colonPos == -(1.0)))
+            {
+                if (!%haveSManagerArg)
+                {
                     $Net::SecureManagerHost = $Net::ManagerHost @ ":8443";
                 }
-                if ($Server::Dedicated) {
+                if ($Server::Dedicated)
+                {
                     $Net::ManagerHost = $Net::ManagerHost @ ":8081";
-                } else {
+                }
+                else
+                {
                     $Net::ManagerHost = $Net::ManagerHost @ ":8080";
                 }
-            } else {
-                if (!%haveSManagerArg) {
+            }
+            else
+            {
+                if (!%haveSManagerArg)
+                {
                     %line = $Net::ManagerHost;
                     %line = NextToken(%line, host, ":");
                     NextToken(%line, port, " ");
-                    if ((%port $= 80)) {
+                    if ((%port $= 80))
+                    {
                         $Net::SecureManagerHost = %host @ ":443";
-                    } else {
+                    }
+                    else
+                    {
                         $Net::SecureManagerHost = %host @ ":8443";
                     }
                 }
             }
         }
-        if (%haveSManagerArg) {
+        if (%haveSManagerArg)
+        {
             %colonPos = strstr($Net::SecureManagerHost, ":");
-            if ((%colonPos == -(1.0))) {
+            if ((%colonPos == -(1.0)))
+            {
                 $Net::SecureManagerHost = $NetSecureManagerHost @ ":8443";
             }
         }
         log("initialization", "debug", "manager host: " @ $Net::ManagerHost);
         log("initialization", "debug", "secure manager host: " @ $Net::SecureManagerHost);
         return;
-    };
-    function parseDownloadArg() {
+    }
+    function parseDownloadArg()
+    {
         findArg("-download", "$Net::DownloadHost", "Missing download <host[:port]>");
         return;
-    };
-    function parseIRCArg() {
+    }
+    function parseIRCArg()
+    {
         findArg("-irc", "$Net::IRCHost", "Missing irc <host[:port]>");
         return;
-    };
-    function parseURLArg() {
+    }
+    function parseURLArg()
+    {
         findArg("-url", "$VURLcmd", "No url specified");
         return;
-    };
-    function parseClientArgs() {
+    }
+    function parseClientArgs()
+    {
         parseMainsiteArg();
         parseManagerArgs();
         startInitialSSLConnection();
         parseDownloadArg();
         parseURLArg();
         $CacheFlagIsSet = 0;
-        if (findSwitch("-cache", "$CacheFlagIsSet")) {
+        if (findSwitch("-cache", "$CacheFlagIsSet"))
+        {
             log("initialization", "debug", "cache flag set");
         }
         $Preload = 0;
-        if (findSwitch("-preload", "$Preload")) {
+        if (findSwitch("-preload", "$Preload"))
+        {
             log("initialization", "debug", "preload flag set");
         }
-        if (findArg("-extraCacheNameTag", "$Cache::ExtraNameTag", "Missing <extraCacheNameTag>")) {
+        if (findArg("-extraCacheNameTag", "$Cache::ExtraNameTag", "Missing <extraCacheNameTag>"))
+        {
             log("initialization", "debug", "cache extra tag: " @ $Cache::ExtraNameTag);
         }
         $AutoDownloadPackages = 0;
-        if (findSwitch("-usePackages", "$AutoDownloadPackages")) {
+        if (findSwitch("-usePackages", "$AutoDownloadPackages"))
+        {
             log("initialization", "debug", "usePackages specified. Start downloading ASAP.");
         }
-        if (hasArg("-large")) {
+        if (hasArg("-large"))
+        {
             $UserPref::Video::Resolution = "960 544 32";
-        } else {
-            if (hasArg("-small")) {
+        }
+        else
+        {
+            if (hasArg("-small"))
+            {
                 $UserPref::Video::Resolution = "480 272 32";
             }
         }
-        if (hasArg("-noSound")) {
+        if (hasArg("-noSound"))
+        {
             error("initialization", "no support yet");
         }
-        if (findArg("-display", "$Pref::Video::DisplayDevice", "Missing <display device>")) {
-            if (($Pref::Video::DisplayDevice $= "D3D")) {
+        if (findArg("-display", "$Pref::Video::DisplayDevice", "Missing <display device>"))
+        {
+            if (($Pref::Video::DisplayDevice $= "D3D"))
+            {
             }
-            if (($Pref::Video::DisplayDevice $= "OpenGL")) {
-            } else {
-                if (($Pref::Video::DisplayDevice $= "Auto")) {
+            if (($Pref::Video::DisplayDevice $= "OpenGL"))
+            {
+            }
+            else
+            {
+                if (($Pref::Video::DisplayDevice $= "Auto"))
+                {
                     $Pref::Video::DisplayDevice = "";
-                } else {
+                }
+                else
+                {
                     error("initialization", "Error: " @ $Pref::Video::DisplayDevice @ " not one of OpenGL|D3D|Auto");
                 }
             }
         }
-        if (hasArg("-notexdelay")) {
+        if (hasArg("-notexdelay"))
+        {
             log("initialization", "debug", "Disabling delay loading of textures");
             $pref::OpenGL::delayLoadTextures = 0;
         }
-        if (hasArg("-nobgtexload")) {
+        if (hasArg("-nobgtexload"))
+        {
             log("initialization", "debug", "Disabling background loading of textures");
             $pref::OpenGL::backgroundLoadTextures = 0;
         }
-        if (hasArg("-enableRawTextures")) {
+        if (hasArg("-enableRawTextures"))
+        {
             log("initialization", "debug", "Enable use of compressed textures");
             $pref::OpenGL::enableRawTextures = 1;
         }
-        if (hasArg("-automated")) {
+        if (hasArg("-automated"))
+        {
             $gAutomatedRun = 1;
         }
         $ETS::WindowTitle = generateWindowTitle("");
         return;
-    };
-    function generateWindowTitle(%ServerName) {
+    }
+    function generateWindowTitle(%ServerName)
+    {
         %ServerNameString = (%ServerName $= "") ? "" : " on server";
         %CityNameString = ($ETS::cityName $= "") ? "" : " in";
         %LongCityNameString = "";
-        if (isObject(WorldMap)) {
+        if (isObject(WorldMap))
+        {
             %areaName = WorldMap.cityNameForServerName(%ServerName);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
             %LongCityNameString = (%locationName $= "") ? "" : " - in";
-        } else {
+        }
+        else
+        {
             echo(getScopeName() @ " " @ "No WorldMap, not getting long city name from server");
         }
-        if (hasArg("-staging")) {
+        if (hasArg("-staging"))
+        {
             %title = $ETS::AppName @ " (Staging Build " @ getBuildVersion() @ %ServerNameString @ ")";
-        } else {
-            if (hasArg("-stagingrc")) {
+        }
+        else
+        {
+            if (hasArg("-stagingrc"))
+            {
                 %title = $ETS::AppName @ " (StagingRC Build " @ getBuildVersion() @ %ServerNameString @ ")";
-            } else {
-                if (hasArg("-alpha")) {
+            }
+            else
+            {
+                if (hasArg("-alpha"))
+                {
                     %title = $ETS::AppName @ " (Alpha Build " @ getBuildVersion() @ %LongCityNameString @ ")";
-                } else {
-                    if (hasArg("-standalone")) {
+                }
+                else
+                {
+                    if (hasArg("-standalone"))
+                    {
                         %alphabufferrequested = "";
-                        if (hasArg("-alphabuffer")) {
+                        if (hasArg("-alphabuffer"))
+                        {
                             %alphabufferrequested = " * Alpha Buffer Requested *";
                         }
                         %title = $ETS::AppName @ " (Standalone Build " @ getBuildVersion() @ %ServerNameString @ %CityNameString @ %alphabufferrequested @ ")";
-                    } else {
+                    }
+                    else
+                    {
                         %title = $ETS::AppName @ " - " @ $ETS::AppVersion @ %LongCityNameString;
                     }
                 }
             }
         }
         return %title;
-    };
-    function GetServerNameSpaceTaggedName(%name) {
-        if (!($pref::Server::NameSpaceTag $= "")) {
+    }
+    function GetServerNameSpaceTaggedName(%name)
+    {
+        if (!($pref::Server::NameSpaceTag $= ""))
+        {
             error(getScopeName() @ " " @ "- $pref::Server::NameSpaceTag is being used to modify the building and model id names, this should not be released to the public");
             %name = $pref::Server::NameSpaceTag @ %name;
         }
         return %name;
-    };
-    function parseServerArgs() {
+    }
+    function parseServerArgs()
+    {
         parseMainsiteArg();
         parseManagerArgs();
         parseDownloadArg();
         parseIRCArg();
         $Pref::Net::BindAddress = "";
-        if (findArg("-mission", "$MissionArg", "Missing <mission file>")) {
+        if (findArg("-mission", "$MissionArg", "Missing <mission file>"))
+        {
             log("initialization", "debug", "mission file: " @ $MissionArg);
-            if (!(strchr($MissionArg, "\\") $= "")) {
+            if (!(strchr($MissionArg, "\\") $= ""))
+            {
                 $MissionArg = strreplace($MissionArg, "\\", "/");
             }
         }
-        if (findArg("-nameSpaceTag", "$Pref::Server::NameSpaceTag", "Missing <namespacetag>")) {
+        if (findArg("-nameSpaceTag", "$Pref::Server::NameSpaceTag", "Missing <namespacetag>"))
+        {
             log("initialization", "debug", "namespacetag: " @ $pref::Server::NameSpaceTag);
         }
-        if (findArg("-serverName", "$Pref::Server::Name", "Missing <server name>")) {
-            if (!($pref::Server::NameSpaceTag $= "")) {
+        if (findArg("-serverName", "$Pref::Server::Name", "Missing <server name>"))
+        {
+            if (!($pref::Server::NameSpaceTag $= ""))
+            {
                 $Pref::Server::Name = $pref::Server::NameSpaceTag @ $Pref::Server::Name;
             }
             $Con::WindowTitle = $Con::WindowTitle @ " - " @ $Pref::Server::Name;
             log("initialization", "debug", "server name: " @ $Pref::Server::Name);
         }
-        if (findArg("-cityName", "$Pref::Server::City", "Missing <city name>")) {
+        if (findArg("-cityName", "$Pref::Server::City", "Missing <city name>"))
+        {
             $Con::WindowTitle = $Con::WindowTitle @ " - " @ $Pref::Server::City;
             log("initialization", "debug", "city name: " @ $Pref::Server::City);
         }
-        if (findArg("-serverPort", "$Pref::Server::Port", "Missing <server port>")) {
+        if (findArg("-serverPort", "$Pref::Server::Port", "Missing <server port>"))
+        {
             log("initialization", "debug", "server port: " @ $Pref::Server::Port);
         }
-        if (findArg("-serverAddress", "$Pref::Net::BindAddress", "Missing <server address>")) {
+        if (findArg("-serverAddress", "$Pref::Net::BindAddress", "Missing <server address>"))
+        {
             log("initialization", "debug", "server address: " @ $Pref::Net::BindAddress);
         }
-        if (findArg("-mapLocation", "$Server::Location", "Missing <map location>")) {
+        if (findArg("-mapLocation", "$Server::Location", "Missing <map location>"))
+        {
             log("initialization", "debug", "map location: " @ $Server::Location);
         }
-        if (findSwitch("-enableChat", "$Server::NPCChatEnabled")) {
+        if (findSwitch("-enableChat", "$Server::NPCChatEnabled"))
+        {
             log("initialization", "debug", "enabling NPC chat");
         }
-        if (findSwitch("-weblogLevel", "$Server::WebLogLevel", "Missing <log level>")) {
+        if (findSwitch("-weblogLevel", "$Server::WebLogLevel", "Missing <log level>"))
+        {
             log("initialization", "debug", "web log level: " @ $Server::WebLogLevel);
         }
-        if (findSwitch("-usePackages", "$Pref::Server::usePackages", "Missing <usePackages>")) {
+        if (findSwitch("-usePackages", "$Pref::Server::usePackages", "Missing <usePackages>"))
+        {
             log("initialization", "debug", "Enabling city package requirements.");
-        } else {
+        }
+        else
+        {
             $Pref::Server::usePackages = 0;
         }
         hasArg("-webConfigFile");
         return;
-    };
-    function startInitialSSLConnection() {
+    }
+    function startInitialSSLConnection()
+    {
         %curl = new URLPostObject("");
         %curl.setURL("http://" @ $Net::SecureManagerHost);
         %curl.setBody(0);
         %curl.start();
         return;
-    };
-    function onStart() {
+    }
+    function onStart()
+    {
         Parent::onStart();
         echo("--------- Initializing MOD: platform ---------");
         exec("./client/init.cs");
-        if ($StandAlone || $Server::Dedicated) {
+        if ($StandAlone || $Server::Dedicated)
+        {
             exec("./server/init.cs");
             initServer();
         }
         exec("./common/scripts/init.cs");
         $Token = "";
         $TokenStandalone = "TOKEN_STANDALONE";
-        if ($Server::Dedicated) {
+        if ($Server::Dedicated)
+        {
             initDedicated();
-        } else {
+        }
+        else
+        {
             initClient();
         }
-        if (isObject(ConsoleEntry)) {
+        if (isObject(ConsoleEntry))
+        {
             ConsoleEntry.loadHistory("platform/client/consoleHistory.txt");
-        } else {
+        }
+        else
+        {
             echo("---no ConsoleEntry not loading history");
         }
         return;
-    };
-    function onExit() {
+    }
+    function onExit()
+    {
         dumpConsoleHistoryReally();
-        if (!$Server::Dedicated) {
+        if (!$Server::Dedicated)
+        {
             shutdownClient();
-            if (!$NonInteractive) {
+            if (!$NonInteractive)
+            {
                 echo("Exporting client prefs");
                 $UserPref::Player::Password = munge($UserPref::Player::Password);
                 $UserPref::Player::AIMPassword = munge($UserPref::Player::AIMPassword);
                 export("$UserPref::*", "./client/userprefs.cs", 0);
-            } else {
+            }
+            else
+            {
                 echo("NOTE: Skipping export of userprefs.cs on non-interactive client.");
             }
-        } else {
+        }
+        else
+        {
             shutdownDedicated();
         }
         Parent::onExit();
         return;
-    };
-    function dumpConsoleHistorySchedule() {
-        if (!isDefined("$gConsoleHistoryDumpTimer")) {
+    }
+    function dumpConsoleHistorySchedule()
+    {
+        if (!isDefined("$gConsoleHistoryDumpTimer"))
+        {
             $gConsoleHistoryDumpTimer = "";
             $gConsoleHistoryPeriod = 15000;
         }
@@ -432,17 +566,22 @@ package platform {
         $gConsoleHistoryDumpTimer = "";
         $gConsoleHistoryDumpTimer = schedule($gConsoleHistoryPeriod, 0, "dumpConsoleHistoryReally");
         return;
-    };
-    function dumpConsoleHistoryReally() {
-        if (isObject(ConsoleEntry)) {
+    }
+    function dumpConsoleHistoryReally()
+    {
+        if (isObject(ConsoleEntry))
+        {
         }
-        if (!$NonInteractive) {
+        if (!$NonInteractive)
+        {
             ConsoleEntry.dumpHistory("platform/client/consoleHistory.txt");
-        } else {
+        }
+        else
+        {
             echo("---no ConsoleEntry not dumping history");
         }
         return;
-    };
+    }
     activatePackage(platform);
 };
 

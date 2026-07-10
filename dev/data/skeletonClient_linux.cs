@@ -12,15 +12,19 @@ $System::ID1 = "fakeMacAddress.com";
 $System::ID2 = "fakeMacAddress.com";
 $System::ID3 = "fakeMacAddress.com";
 $System::ID4 = "fakeMacAddress.com";
-function initAVPlayer() {
+function initAVPlayer()
+{
     echo("Fake initAVPlayer()");
-};
-function getCurrentMemoryUsage() {
+}
+function getCurrentMemoryUsage()
+{
     echo("Fake getCurrentMemoryUsage()");
-};
-function getAllAVPlayerNames() {
+}
+function getAllAVPlayerNames()
+{
     echo("Fake getAllAVPlayerNames()");
-};
-function ffmpegSetMasterVolume() {
+}
+function ffmpegSetMasterVolume()
+{
     echo("Fake ffmpegSetMasterVolume()");
-};
+}

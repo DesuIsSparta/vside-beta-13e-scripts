@@ -1,4 +1,5 @@
-function initEmoticonMap(%map) {
+function initEmoticonMap(%map)
+{
     %map.put("X(", "angry");
     %map.put("X-(", "angry");
     %map.put(":-t", "angry");
@@ -118,13 +119,15 @@ function initEmoticonMap(%map) {
     %map.put("salut", "wave");
     %map.put("#:-S", "whew");
     %map.put("phew", "whew");
-};
-if (!isObject(EmoticonMap)) {
+}
+if (!isObject(EmoticonMap))
+{
     new StringMap(EmoticonMap) {
         ignoreCase = 1;
     };
 }
-if (isObject(MissionCleanup)) {
+if (isObject(MissionCleanup))
+{
     MissionCleanup.add(EmoticonMap);
 }
 initEmoticonMap(EmoticonMap);

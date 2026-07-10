@@ -1,37 +1,50 @@
-function Player::UseHeightRandom(%this) {
+function Player::UseHeightRandom(%this)
+{
     %height = (getRandom(98, 110) * 0.01);
     %this.setHeight(%height);
     return;
-};
-function Player::setHeight(%this, %height) {
+}
+function Player::setHeight(%this, %height)
+{
     %c = getSubStr(%height, 0, 1);
-    if ((%c $= "+")) {
+    if ((%c $= "+"))
+    {
     }
-    if ((%c $= "-")) {
+    if ((%c $= "-"))
+    {
         %h = getWord(%this.getScale(), 2);
         %h = (%h + %height);
-        if ((%h > $Pref::Server::playerHeightMax)) {
+        if ((%h > $Pref::Server::playerHeightMax))
+        {
             %h = $Pref::Server::playerHeightMax;
-        } else {
-            if ((%h < $Pref::Server::playerHeightMin)) {
+        }
+        else
+        {
+            if ((%h < $Pref::Server::playerHeightMin))
+            {
                 %h = $Pref::Server::playerHeightMin;
             }
         }
-    } else {
+    }
+    else
+    {
         %h = %height;
     }
     %sxy = (((%h - 1.0) * $Pref::Server::playerHeightWidthFactor) + 1.0);
     %this.setScale(%sxy @ " " @ %sxy @ " " @ %h);
     return;
-};
-function serverCmdSetHeight(%client, %height) {
-    if (!isObject(%client.Player)) {
+}
+function serverCmdSetHeight(%client, %height)
+{
+    if (!isObject(%client.Player))
+    {
         return;
     }
     %client.Player.setHeight(%height);
     return;
-};
-function Player::getAngleTowards(%this, %obj) {
+}
+function Player::getAngleTowards(%this, %obj)
+{
     %posA = %this.getPosition();
     %posB = %obj.getPosition();
     %vAB = VectorSub(%posB, %posA);
@@ -41,17 +54,20 @@ function Player::getAngleTowards(%this, %obj) {
     %atan = mAtan(%dy, %dx);
     %atan = (%atan + (3.15149 * 0.5));
     return %atan;
-};
-function Player::orientToward(%this, %obj) {
+}
+function Player::orientToward(%this, %obj)
+{
     %angle = %this.getAngleTowards(%obj);
     %this.setTransform(%posA @ " " @ "0 0 1" @ " " @ %angle);
     return;
-};
-function Player::orientTowardsOverTime(%this, %obj, %milliseconds) {
+}
+function Player::orientTowardsOverTime(%this, %obj, %milliseconds)
+{
     gSetField(%this, orientTickPeriod, 20);
     %rotCur = getWords(%this.getTransform(), 3, 6);
     %rotA = getWord(%rotCur, 3);
-    if ((getWord(%rotCur, 2) < 0.0)) {
+    if ((getWord(%rotCur, 2) < 0.0))
+    {
         %rotA = (%rotA * -(1.0));
     }
     %angle = %this.getAngleTowards(%obj);
@@ -61,13 +77,15 @@ function Player::orientTowardsOverTime(%this, %obj, %milliseconds) {
     %dA2 = (%dA / %numTicks);
     %this.orientTowardsTicker(%rotA, %dA2, %numTicks);
     return;
-};
-function Player::orientTowardsTicker(%this, %curA, %dltA, %ticksLeft) {
+}
+function Player::orientTowardsTicker(%this, %curA, %dltA, %ticksLeft)
+{
     %curA = (%curA + %dltA);
     %ticksLeft = (%ticksLeft - 1.0);
     %this.setTransform(%this.getPosition() @ " " @ "0 0 1" @ " " @ %curA);
-    if ((%ticksLeft > 0.0)) {
+    if ((%ticksLeft > 0.0))
+    {
         %this.schedule(gGetField(%this, orientTickPeriod), "orientTowardsTicker", %curA, %dltA, %ticksLeft);
     }
     return;
-};
+}

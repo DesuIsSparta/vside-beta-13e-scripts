@@ -1,7 +1,8 @@
 $ETS::AppName = "vSide";
 $ETS::AppVersion = "Beta 13e";
-function setupProjectSpecificUrls() {
-};
+function setupProjectSpecificUrls()
+{
+}
 exec("./worlds/gateway/initNonReloadable.cs", 0);
 exec("./worlds/lga/initNonReloadable.cs", 0);
 exec("./worlds/lounge/initNonReloadable.cs", 0);

@@ -5,21 +5,25 @@ $REFLECT_AMOUNT_WOOD = 0.2;
 $SOUNDID_GLASSWALK = 1;
 $SOUNDID_WOODWALK = 0;
 $SOUNDID_GRAVELWALK = 2;
-function addMaterialMapping_GlassOutside(%matName) {
+function addMaterialMapping_GlassOutside(%matName)
+{
     addMaterialMapping(%matName, "sound:" @ " " @ $SOUNDID_GLASSWALK, "environment:" @ " " @ $SKY_OUTSIDE_MAIN_SPHERE @ " " @ $REFLECT_AMOUNT_TRANSGLASS, "environmentCube:" @ " " @ $SKY_OUTSIDE_MAIN_CUBE @ " " @ $REFLECT_AMOUNT_TRANSGLASS);
-};
-function addMaterialMapping_WoodOutside(%matName) {
+}
+function addMaterialMapping_WoodOutside(%matName)
+{
     addMaterialMapping(%matName, "sound:" @ " " @ $SOUNDID_WOODWALK);
-};
-function addMaterialMapping_GlassGenericSheen(%matName) {
+}
+function addMaterialMapping_GlassGenericSheen(%matName)
+{
     %genericSheen_SPHERE = "projects/common/worlds/gen_spheremap";
     %genericSheen_CUBE = "projects/common/cubemaps/glassSheen";
     %glossAmount = 0.6;
     addMaterialMapping(%matName, "sound:" @ " " @ $SOUNDID_GLASSWALK, "environment:" @ " " @ %genericSheen_SPHERE @ " " @ %glossAmount, "environmentCube:" @ " " @ %genericSheen_CUBE @ " " @ %glossAmount);
-};
-function addMaterialMapping_GravelOutside(%matName) {
+}
+function addMaterialMapping_GravelOutside(%matName)
+{
     addMaterialMapping(%matName, "sound:" @ " " @ $SOUNDID_GRAVELWALK);
-};
+}
 addMaterialMapping("generic", "sound: 1");
 addMaterialMapping_GravelOutside("zengarden_floor_sands6");
 addMaterialMapping_GravelOutside("zengarden_floor_sands2");

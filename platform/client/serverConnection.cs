@@ -1,147 +1,221 @@
 addMessageCallback('MsgConnectionError', handleConnectionErrorMessage);
-function handleConnectionErrorMessage(%unused, %msgString) {
+function handleConnectionErrorMessage(%unused, %msgString)
+{
     $ServerConnectionErrorMessage = %msgString;
-};
-function GameConnection::initialControlSet(%this) {
+}
+function GameConnection::initialControlSet(%this)
+{
     echo("*** Initial Control Object");
-    if (!isObject(EditorGui) || !Editor::checkActiveLoadDone() && (Canvas.getContent() != PlayGui.getId())) {
+    if (!isObject(EditorGui) || !Editor::checkActiveLoadDone() && (Canvas.getContent() != PlayGui.getId()))
+    {
         Canvas.setContent(PlayGui);
     }
     %this.etsInit();
-};
-function GameConnection::setLagIcon(%this, %state) {
-    if ((%this.getAddress() $= "local")) {
+}
+function GameConnection::setLagIcon(%this, %state)
+{
+    if ((%this.getAddress() $= "local"))
+    {
         return;
     }
     LagIcon.setVisible((%state $= "true"));
-};
-function GameConnection::onConnectionAccepted(%this) {
+}
+function GameConnection::onConnectionAccepted(%this)
+{
     LagIcon.setVisible(0);
     $GameConnection = %this;
     $VURLcmd = "";
     getUserActivityMgr().setActivityActive("traveling", 1);
-};
-function GameConnection::onServerConnectionPossiblyTimingOut(%this) {
+}
+function GameConnection::onServerConnectionPossiblyTimingOut(%this)
+{
     warn("Possibly losing connection to server..");
-};
-function GameConnection::onServerConnectionRestored(%this) {
+}
+function GameConnection::onServerConnectionRestored(%this)
+{
     warn("Restored connection to server.");
-};
-function GameConnection::onServerConnectionTimedOut(%this) {
+}
+function GameConnection::onServerConnectionTimedOut(%this)
+{
     disconnectedCleanup(geTGF);
     MessageBoxOK("TIMED OUT", $MsgCat::network["E-SERVER-TIMEOUT"], "");
-};
-function GameConnection::onConnectionDropped(%this, %msg) {
+}
+function GameConnection::onConnectionDropped(%this, %msg)
+{
     %msg = standardSubstitutions(%msg);
-    if (%this.waitForDisconnect) {
+    if (%this.waitForDisconnect)
+    {
         %this.waitForDisconnect = 0;
         disconnectedCleanup("");
         WorldMap.schedule(1, "doServerJoin", $SpawnTargetSavedVURL);
         return;
     }
-    if ((getField(%msg, 0) $= "bootToMap")) {
+    if ((getField(%msg, 0) $= "bootToMap"))
+    {
         %currentCity = WorldMap.currentCity;
         WorldMap.setNotConnectedToServer();
         geTGF.openToTabName("map");
         %levelOrCityName = getField(%msg, 1);
-        if ((%levelOrCityName $= 0)) {
-        } else {
-            if ((%levelOrCityName $= 1)) {
+        if ((%levelOrCityName $= 0))
+        {
+        }
+        else
+        {
+            if ((%levelOrCityName $= 1))
+            {
                 WorldMap.selectCity(%currentCity);
-            } else {
+            }
+            else
+            {
                 WorldMap.selectCity(%levelOrCityName);
             }
         }
         MessageBoxOK("BOOTED TO MAP", getFields(%msg, 2), "");
-    } else {
+    }
+    else
+    {
         logout(0);
         disconnectedCleanup(LoginGui);
         MessageBoxOK("DISCONNECT", $MsgCat::network["E-DROPPED"] @ %msg, "");
     }
-};
-function GameConnection::onConnectionError(%this, %msg) {
-    if ($CacheFlagIsSet) {
+}
+function GameConnection::onConnectionError(%this, %msg)
+{
+    if ($CacheFlagIsSet)
+    {
         ServerConnection.deleteCacheFile($CurrentMission);
         $CurrentMission = "";
     }
     disconnectedCleanup(geTGF);
     MessageBoxOK("DISCONNECT", $ServerConnectionErrorMessage @ " (" @ %msg @ ")", "");
-};
-function GameConnection::onConnectRequestRejected(%this, %msg, %extra) {
+}
+function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
+{
     %destGui = LoginGui;
-    if ((%msg $= "CR_INVALID_PROTOCOL_VERSION")) {
+    if ((%msg $= "CR_INVALID_PROTOCOL_VERSION"))
+    {
         %error = %msg[$MsgCat::network @ "E-PROTOCOL-VER"];
         %destGui = geTGF;
-    } else {
-        if ((%msg $= "CR_INVALID_CONNECT_PACKET")) {
+    }
+    else
+    {
+        if ((%msg $= "CR_INVALID_CONNECT_PACKET"))
+        {
             %error = "Internal Error: badly formed network packet";
             %destGui = geTGF;
-        } else {
-            if ((%msg $= "CR_YOUAREBANNED")) {
+        }
+        else
+        {
+            if ((%msg $= "CR_YOUAREBANNED"))
+            {
                 %error = "You are not allowed to play on this server.";
-            } else {
-                if ((%msg $= "CR_TOKEN")) {
+            }
+            else
+            {
+                if ((%msg $= "CR_TOKEN"))
+                {
                     %error = $ETS::AppName @ " " @ $ETS::AppName[$MsgCat::network @ "E-SERVICE-UNAVAIL"];
-                } else {
-                    if ((%msg $= "CR_SERVERFULL")) {
+                }
+                else
+                {
+                    if ((%msg $= "CR_SERVERFULL"))
+                    {
                         %error = %msg[$MsgCat::login @ "E-SERVER-FULL"];
                         %destGui = geTGF;
-                    } else {
-                        if ((%msg $= "CR_BAD_TARGET")) {
+                    }
+                    else
+                    {
+                        if ((%msg $= "CR_BAD_TARGET"))
+                        {
                             %error = %msg[$MsgCat::login @ "E-BAD-TARGET"];
                             %destGui = geTGF;
-                        } else {
-                            if ((%msg $= "CR_CANNOT_ACTIVATE_APARTMENT")) {
+                        }
+                        else
+                        {
+                            if ((%msg $= "CR_CANNOT_ACTIVATE_APARTMENT"))
+                            {
                                 %error = %msg[$MsgCat::login @ "E-CANNOT-ACTIVATE-APARTMENT"];
                                 %destGui = geTGF;
-                            } else {
-                                if ((%msg $= "CR_APARTMENT_ACTIVATION_DENIED")) {
+                            }
+                            else
+                            {
+                                if ((%msg $= "CR_APARTMENT_ACTIVATION_DENIED"))
+                                {
                                     %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATION-DENIED"];
                                     %destGui = geTGF;
-                                } else {
-                                    if ((%msg $= "CR_APARTMENT_ACTIVE_ELSEWHERE")) {
+                                }
+                                else
+                                {
+                                    if ((%msg $= "CR_APARTMENT_ACTIVE_ELSEWHERE"))
+                                    {
                                         %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATE-ELSEWHERE"];
                                         %destGui = geTGF;
-                                    } else {
-                                        if ((%msg $= "CR_LEVEL_COMPLETED")) {
+                                    }
+                                    else
+                                    {
+                                        if ((%msg $= "CR_LEVEL_COMPLETED"))
+                                        {
                                             %error = %msg[$MsgCat::login @ "E-LEVEL-COMPLETED"];
                                             %destGui = geTGF;
-                                        } else {
-                                            if ((%msg $= "CHR_PASSWORD")) {
-                                                if (($Client::Password $= "")) {
+                                        }
+                                        else
+                                        {
+                                            if ((%msg $= "CHR_PASSWORD"))
+                                            {
+                                                if (($Client::Password $= ""))
+                                                {
                                                     MessageBoxOK("REJECTED", $MsgCat::login["PASSWORD-REQD"], "");
-                                                } else {
+                                                }
+                                                else
+                                                {
                                                     $Client::Password = "";
                                                     MessageBoxOK("REJECTED", $MsgCat::login["PASSWORD-BAD"], "");
                                                 }
                                                 return;
-                                            } else {
-                                                if ((%msg $= "CHR_PROTOCOL")) {
+                                            }
+                                            else
+                                            {
+                                                if ((%msg $= "CHR_PROTOCOL"))
+                                                {
                                                     %error = %msg[$MsgCat::network @ "E-PROTOCOL-VER"];
                                                     %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
                                                     %destGui = geTGF;
-                                                } else {
-                                                    if ((%msg $= "CHR_CLASSCRC")) {
+                                                }
+                                                else
+                                                {
+                                                    if ((%msg $= "CHR_CLASSCRC"))
+                                                    {
                                                         %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
                                                         %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
                                                         %destGui = geTGF;
-                                                    } else {
-                                                        if ((%msg $= "CHR_CLASSCRCROOTDIRVAL")) {
+                                                    }
+                                                    else
+                                                    {
+                                                        if ((%msg $= "CHR_CLASSCRCROOTDIRVAL"))
+                                                        {
                                                             %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
                                                             %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
                                                             %destGui = geTGF;
-                                                        } else {
-                                                            if ((%msg $= "CHR_INVALID_CHALLENGE_PACKET")) {
+                                                        }
+                                                        else
+                                                        {
+                                                            if ((%msg $= "CHR_INVALID_CHALLENGE_PACKET"))
+                                                            {
                                                                 %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
                                                                 %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
                                                                 %error = %error @ "\n" @ "(assets)";
                                                                 %destGui = geTGF;
-                                                            } else {
-                                                                if ((%msg $= "CR_ASSETS_MISSING")) {
+                                                            }
+                                                            else
+                                                            {
+                                                                if ((%msg $= "CR_ASSETS_MISSING"))
+                                                                {
                                                                     %error = "Cities/packages are missing or out of date: " @ %extra;
                                                                     %destGui = CityDownloadGui;
                                                                     queuePackageUpdatesByString(%extra);
-                                                                } else {
+                                                                }
+                                                                else
+                                                                {
                                                                     %error = "Connection error.  Please try another server.  Error code: (" @ %msg @ ")";
                                                                     %destGui = geTGF;
                                                                 }
@@ -162,47 +236,62 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra) {
     }
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/connectionRejected/" @ %msg);
-    if ((%destGui.getId() == LoginGui.getId())) {
+    if ((%destGui.getId() == LoginGui.getId()))
+    {
     }
-    if (!(%msg $= "CR_ASSETS_MISSING")) {
+    if (!(%msg $= "CR_ASSETS_MISSING"))
+    {
         logout(0);
     }
     disconnectedCleanup(%destGui);
     error("Could Not Connect: " @ strreplace(%error, "\n", " "));
-    if (!(%msg $= "CR_ASSETS_MISSING")) {
+    if (!(%msg $= "CR_ASSETS_MISSING"))
+    {
         MessageBoxOK("Could Not Connect", %error, "");
     }
-};
-function GameConnection::onConnectRequestTimedOut(%this) {
+}
+function GameConnection::onConnectRequestTimedOut(%this)
+{
     disconnectedCleanup(geTGF);
     MessageBoxOK("TIMED OUT", $MsgCat::network["E-SERVER-TIMEOUT"], "");
-};
-function disconnect(%screen) {
-    if (isObject(ServerConnection)) {
+}
+function disconnect(%screen)
+{
+    if (isObject(ServerConnection))
+    {
         ServerConnection.delete();
     }
     disconnectedCleanup(%screen);
     destroyServer();
-};
-function disconnectedStop() {
+}
+function disconnectedStop()
+{
     ConvBub.close(0);
     alxStopAll();
-    if (isObject(MusicPlayer)) {
+    if (isObject(MusicPlayer))
+    {
         MusicPlayer.stop();
     }
-};
-function disconnectedCleanup(%screen) {
+}
+function disconnectedCleanup(%screen)
+{
     $gWorldMapJoiningServer = 0;
     disconnectedStop();
     LagIcon.setVisible(0);
-    if (isObject(%screen)) {
-        if ((%screen.getId() == geTGF.getId())) {
+    if (isObject(%screen))
+    {
+        if ((%screen.getId() == geTGF.getId()))
+        {
             WorldMap.setNotConnectedToServer();
             geTGF.open();
-        } else {
+        }
+        else
+        {
             Canvas.setContent(%screen);
         }
-    } else {
+    }
+    else
+    {
         geTGF.closeFully();
     }
     clearTextureHolds();
@@ -212,21 +301,25 @@ function disconnectedCleanup(%screen) {
     fmodClose();
     TransitionCancel(0);
     CustomSpaceClient::OnClientDisconnect();
-    if (isObject(ApplauseMeterGui)) {
+    if (isObject(ApplauseMeterGui))
+    {
         ApplauseMeterGui.close();
     }
-    if (isObject(SalonStyleSelector)) {
+    if (isObject(SalonStyleSelector))
+    {
         $gSalonChairCurrent = 0;
         SalonStyleSelector.close();
     }
-    if (isObject(PlantDetailsGui)) {
+    if (isObject(PlantDetailsGui))
+    {
         PlantDetailsGui.close();
     }
     $StoreSkusLayer = "";
     clientCmdOnLeaveStore("");
     leaveAllTutorialSpaces();
     afxEndMissionNotify();
-};
-function loggedoutCleanup() {
+}
+function loggedoutCleanup()
+{
     $Token = "";
-};
+}

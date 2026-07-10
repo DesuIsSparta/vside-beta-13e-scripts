@@ -1,86 +1,121 @@
-function clientCmdTeleportSuccessful() {
-    if (isObject($VURL::curVURL)) {
+function clientCmdTeleportSuccessful()
+{
+    if (isObject($VURL::curVURL))
+    {
         $VURL::curVURL.doReportSuccess();
         $VURL::curVURL.delete();
         $VURL::curVURL = "";
-    } else {
+    }
+    else
+    {
         echo("Teleport successful");
     }
     geTGF.doreopen = 0;
     setIdle(0);
-    if (isObject($player)) {
+    if (isObject($player))
+    {
         $player.adjustHorizontalScale();
     }
-};
-function clientCmdTeleportFailure(%retry) {
-    if (isObject($VURL::curVURL)) {
+}
+function clientCmdTeleportFailure(%retry)
+{
+    if (isObject($VURL::curVURL))
+    {
         echo("VURL Teleport Failed. VURL=" @ $VURL::curVURL.vurl);
-        if ((%retry != 0.0)) {
+        if ((%retry != 0.0))
+        {
             log("network", "info", "Attempting Retry.");
-            if ($VURL::curVURL.execute()) {
+            if ($VURL::curVURL.execute())
+            {
                 return;
             }
             log("network", "warn", "VURL Teleportion faild, retries exausted.");
-        } else {
+        }
+        else
+        {
             geTGF.reopen();
             $VURL::curVURL.doReportError("FAIL", "");
         }
         $VURL::curVURL.delete();
-    } else {
+    }
+    else
+    {
         echo("Teleport failed");
         geTGF.reopen();
     }
-};
-function clientCmdNotifyOfRefuseTeleport() {
+}
+function clientCmdNotifyOfRefuseTeleport()
+{
     handleSystemMessage("msgInfoMessage", $MsgCat::teleport["NOTIFY-REFUSING-TELEPORTS"]);
-};
-if (!isObject($pi)) {
+}
+if (!isObject($pi))
+{
     $pi = 3.1415926536;
 }
-function Player::adjustHorizontalScale(%this) {
+function Player::adjustHorizontalScale(%this)
+{
     %hScale = getWord(%this.getScale(), 0);
     %vScale = getWord(%this.getScale(), 2);
-    if (!gGetField(%this, isScaling)) {
+    if (!gGetField(%this, isScaling))
+    {
         gSetField(%this, isScaling, 1);
         gSetField(%this, baseHorizScale, %hScale);
         %hScale = 0.05;
     }
     %hScale = mMin((%hScale + 0.05), gGetField(%this, baseHorizScale));
     %this.setScale(%hScale @ " " @ %hScale @ " " @ %vScale);
-    if ((%hScale < gGetField(%this, baseHorizScale))) {
+    if ((%hScale < gGetField(%this, baseHorizScale)))
+    {
         %this.schedule(25, "adjustHorizontalScale");
-    } else {
+    }
+    else
+    {
         gSetField(%this, isScaling, 0);
     }
-};
-function doTeleportToMyApartment(%ignoreDownloadStatus) {
-    if (!isDefined("%ignoreDownloadStatus")) {
+}
+function doTeleportToMyApartment(%ignoreDownloadStatus)
+{
+    if (!isDefined("%ignoreDownloadStatus"))
+    {
         %ignoreDownloadStatus = 0;
     }
     getApartmentVURL("doTeleportToMyApartmentCallback", %ignoreDownloadStatus);
-};
-function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus) {
-    if ((%status $= "fail")) {
+}
+function doTeleportToMyApartmentCallback(%status, %vurl, %ignoreDownloadStatus)
+{
+    if ((%status $= "fail"))
+    {
         handleSystemMessage("msgInfoMessage", "We could not find your apartment at this time.");
-    } else {
-        if ((%status $= "noOwnedSpace")) {
+    }
+    else
+    {
+        if ((%status $= "noOwnedSpace"))
+        {
             %statusMsg = GetMyApartmentVURLCommand.getValue("statusMsg");
             handleSystemMessage("msgInfoMessage", "We could not find your apartment." @ "\n" @ %statusMsg);
-        } else {
-            if ((%vurl $= "")) {
+        }
+        else
+        {
+            if ((%vurl $= ""))
+            {
                 handleSystemMessage("msgInfoMessage", "You do not appear to own an appartment.");
-            } else {
-                if (CustomSpacesSelector.isVisible()) {
+            }
+            else
+            {
+                if (CustomSpacesSelector.isVisible())
+                {
                     CustomSpacesSelector.close();
                 }
                 vurlOperation(%vurl, %ignoreDownloadStatus);
             }
         }
     }
-};
-function getApartmentVURL(%callback, %ignoreDownloadStatus) {
+}
+function getApartmentVURL(%callback, %ignoreDownloadStatus)
+{
     %request = safeEnsureScriptObject("ManagerRequest", "GetMyApartmentVURLCommand");
-    if (%request.isOpen()) {
+    if (%request.isOpen())
+    {
         return;
     }
     %request.callback = %callback;
@@ -89,28 +124,34 @@ function getApartmentVURL(%callback, %ignoreDownloadStatus) {
     log("network", "debug", "GetSpaceVURL: " @ %url);
     %request.setURL(%url);
     %request.start();
-};
-function GetMyApartmentVURLCommand::onDone(%this) {
+}
+function GetMyApartmentVURLCommand::onDone(%this)
+{
     echo(getScopeName());
     %status = findRequestStatus(%this);
     log("network", "debug", "GetMyApartmentAddress status: " @ %status);
-    if ((%status $= "fail")) {
+    if ((%status $= "fail"))
+    {
         echo(getScopeName() @ "->failed");
         %statusMsg = %this.getValue("statusMsg");
         log("network", "error", "GetMyApartmentAddress failed due to: " @ %statusMsg);
-    } else {
+    }
+    else
+    {
         echo(getScopeName() @ "->success");
         log("network", "debug", "GetMyApartmentAddress::onDone: " @ %status);
     }
     %vurl = %this.getValue("vurl");
     $Player::myPlaceVURL = %vurl;
-    if (!(%this.callback $= "")) {
+    if (!(%this.callback $= ""))
+    {
         %cmd = %this.callback @ "(\"" @ %status @ "\", \"" @ %vurl @ "\", \"" @ %this.ignoreDownloadStatus @ "\");";
         eval(%cmd);
     }
-};
-function GetMyApartmentVURLCommand::onError(%this, %unused, %errMsg) {
+}
+function GetMyApartmentVURLCommand::onError(%this, %unused, %errMsg)
+{
     log("network", "debug", "GetMyApartmentVURLCommand::onError: " @ %errMsg);
     $Player::myPlaceVURL = "";
     %this.schedule(0, "delete");
-};
+}

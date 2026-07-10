@@ -36,29 +36,38 @@ $specialSKUs["noBackendVet"] = trim($specialSKUs["noBackendVet"]);
 $specialSKUs["tickerPri0"] = 58000;
 $specialSKUs["tickerPri1"] = 58001;
 $specialSKUs["tickerPri2"] = 58002;
-function getSpecialSKU(%player, %skuName) {
-    if (isObject(%player)) {
-    } else {
+function getSpecialSKU(%player, %skuName)
+{
+    if (isObject(%player))
+    {
+    }
+    else
+    {
     }
     %gender = "n";
     %player.getGender();
     return $specialSKUs[%gender,%skuName];
-};
-function Player::hasSpecialSku(%this, %skuName) {
+}
+function Player::hasSpecialSku(%this, %skuName)
+{
     %sku = getSpecialSKU(%this, %skuName);
-    if ((%sku == 0.0)) {
+    if ((%sku == 0.0))
+    {
         return 0;
     }
     %hasIt = %this.hasActiveSKU(%sku);
     return %hasIt;
-};
-function getSkuShortName(%sku) {
+}
+function getSkuShortName(%sku)
+{
     %si = SkuManager.findBySku(%sku);
-    if (!isObject(%si)) {
+    if (!isObject(%si))
+    {
         return %sku;
     }
-    if ((%si.descShrt $= "")) {
+    if ((%si.descShrt $= ""))
+    {
         return %sku;
     }
     return %si.descShrt;
-};
+}

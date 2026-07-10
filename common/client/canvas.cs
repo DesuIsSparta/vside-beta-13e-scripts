@@ -1,6 +1,8 @@
-function initCanvas(%windowName) {
+function initCanvas(%windowName)
+{
     videoSetGammaCorrection($pref::OpenGL::gammaCorrection);
-    if (!createCanvas(%windowName)) {
+    if (!createCanvas(%windowName))
+    {
         echo("canvas could not be created");
         quit();
         return 0;
@@ -22,9 +24,11 @@ function initCanvas(%windowName) {
     exec("./screenshot.cs");
     exec("./cursor.cs");
     return 1;
-};
-function resetCanvas() {
-    if (isObject(Canvas)) {
+}
+function resetCanvas()
+{
+    if (isObject(Canvas))
+    {
         Canvas.repaint();
     }
-};
+}

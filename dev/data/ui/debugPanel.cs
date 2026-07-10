@@ -1,49 +1,61 @@
-function debugPanel::toggle(%this) {
+function debugPanel::toggle(%this)
+{
     playGui.showRaiseOrHide(%this);
-};
-function debugPanel::open(%this) {
-    if (!$player.rolesPermissionCheckWarn("debugActive")) {
+}
+function debugPanel::open(%this)
+{
+    if (!$player.rolesPermissionCheckWarn("debugActive"))
+    {
         return;
     }
     %this.setVisible(1);
     playGui.focusAndRaise(%this);
-};
-function debugPanel::close(%this) {
+}
+function debugPanel::close(%this)
+{
     %this.setVisible(0);
     playGui.focusTopWindow();
     return 1;
-};
-function debugPanel::onWake(%this) {
+}
+function debugPanel::onWake(%this)
+{
     gui_DevOpts_ResX.setValue(getWord($UserPref::Video::Resolution, 0));
     gui_DevOpts_ResY.setValue(getWord($UserPref::Video::Resolution, 1));
-    if (isObject(debugPanel_SkuSnapButton)) {
+    if (isObject(debugPanel_SkuSnapButton))
+    {
     }
-    if (!isFunction("skuSnapshot_isSkuSnapshot")) {
+    if (!isFunction("skuSnapshot_isSkuSnapshot"))
+    {
         debugPanel_SkuSnapButton.setActive(0);
     }
-};
-function debugPanel::resizeApp(%this) {
+}
+function debugPanel::resizeApp(%this)
+{
     $UserPref::Video::ConstrainWindowDimensions = 0;
     gui_DevOpts_Constrain.setValue($UserPref::Video::ConstrainWindowDimensions);
     %x = gui_DevOpts_ResX.getValue();
     %y = gui_DevOpts_ResY.getValue();
     %bpp = getWord($UserPref::Video::Resolution, 2);
     setScreenMode(%x, %y, %bpp, 0);
-};
-function debugPanel::advanceGPTime(%time) {
+}
+function debugPanel::advanceGPTime(%time)
+{
     echo(getScopeName() @ "-> trying to advance by %time=" @ %time @ " hours");
     %space = CustomSpaceClient::GetSpaceImIn();
-    if ((%space $= "")) {
+    if ((%space $= ""))
+    {
         handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
         return;
     }
     commandToServer('GPDebugAdvanceTimeByXHours', CustomSpaceClient::GetSpaceImIn(), %time);
-};
-function debugPanel::getGPInfo() {
+}
+function debugPanel::getGPInfo()
+{
     %spaceName = CustomSpaceClient::GetSpaceImIn();
-    if ((%spaceName $= "")) {
+    if ((%spaceName $= ""))
+    {
         handleSystemMessage('MsgInfoMessage', "You have to be in a space!");
         return;
     }
     commandToServer('GPDebugGetInfo', CustomSpaceClient::GetSpaceImIn());
-};
+}

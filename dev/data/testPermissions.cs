@@ -1,36 +1,50 @@
-function testPermissions_Master() {
+function testPermissions_Master()
+{
     asyncTestsMasterClear();
     asyncTestsMasterAdd("testPermissions_AddABot", 1000);
     asyncTestsMasterAdd("testPermissions_AddABotArmy", 3000);
     asyncTestsMasterRun();
-};
-function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess) {
-    if ((%expectedSuccess == %actualSuccess)) {
+}
+function testPermissions_MakeResultString(%expectedSuccess, %actualSuccess)
+{
+    if ((%expectedSuccess == %actualSuccess))
+    {
         %result = "pass";
-    } else {
-        if (%expectedSuccess) {
+    }
+    else
+    {
+        if (%expectedSuccess)
+        {
             %result = "should have succeeded but did not.";
-        } else {
+        }
+        else
+        {
             %result = "should not have succeeded but did.";
         }
     }
     return %result;
-};
-function testPermissions_AddABot_Setup() {
+}
+function testPermissions_AddABot_Setup()
+{
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Dry = System::getClassInstanceCount("AIPlayer");
     return "pass";
-};
-function testPermissions_AddABot_Fire() {
+}
+function testPermissions_AddABot_Fire()
+{
     commandToServer('addBot');
     return "pass";
-};
-function testPermissions_AddABot_Evaluate() {
+}
+function testPermissions_AddABot_Evaluate()
+{
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 1;
-    if ($StandAlone) {
-    } else {
+    if ($StandAlone)
+    {
+    }
+    else
+    {
     }
     %expectedDelta = (%expectedDelta * 1.0);
     2.0;
@@ -38,22 +52,28 @@ function testPermissions_AddABot_Evaluate() {
     %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
-};
-function testPermissions_AddABotarmy_Setup() {
+}
+function testPermissions_AddABotarmy_Setup()
+{
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Dry = System::getClassInstanceCount("AIPlayer");
     return "pass";
-};
-function testPermissions_AddABotArmy_Fire() {
+}
+function testPermissions_AddABotArmy_Fire()
+{
     commandToServer('addBotArmy');
     return "pass";
-};
-function testPermissions_AddABotArmy_Evaluate() {
+}
+function testPermissions_AddABotArmy_Evaluate()
+{
     System::compileClassInstanceCounts();
     $gTestPermissions_Num_Wet = System::getClassInstanceCount("AIPlayer");
     %expectedDelta = 8;
-    if ($StandAlone) {
-    } else {
+    if ($StandAlone)
+    {
+    }
+    else
+    {
     }
     %expectedDelta = (%expectedDelta * 1.0);
     2.0;
@@ -61,4 +81,4 @@ function testPermissions_AddABotArmy_Evaluate() {
     %actualSuccess = ($gTestPermissions_Num_Wet == ($gTestPermissions_Num_Dry + %expectedDelta));
     %result = testPermissions_MakeResultString(%expectedSuccess, %actualSuccess);
     return %result;
-};
+}

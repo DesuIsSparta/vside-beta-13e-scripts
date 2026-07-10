@@ -1,19 +1,24 @@
-function PlantDetailsGui::open(%this) {
+function PlantDetailsGui::open(%this)
+{
     PlayGui.ensureAdded(%this);
-    if (!%this.isVisible()) {
+    if (!%this.isVisible())
+    {
         %this.setVisible(1);
     }
     PlayGui.focusAndRaise(%this);
-};
-function PlantDetailsGui::close(%this) {
+}
+function PlantDetailsGui::close(%this)
+{
     %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
-};
-function PlantDetailsGui::onClickFAQButton(%this) {
+}
+function PlantDetailsGui::onClickFAQButton(%this)
+{
     gotoWebPage(%this.faqURL);
-};
-function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL) {
+}
+function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL)
+{
     %this.open();
     PlantDetailsTitle.setText(%plantName);
     PlantDetailsProgressBar.setValue((%currentState / %totalStates));
@@ -21,18 +26,27 @@ function PlantDetailsGui::showDetails(%this, %plantSKU, %plantName, %info, %curr
     %bmp = "projects/common/inventory/" @ %plantSKU @ "/progress" @ %plantSKU @ ".png";
     PlantProgressBackgroundBMP.setBitmap(%bmp);
     %this.faqURL = %faqURL;
-};
-function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL) {
-    if ((%status $= "HAPPY")) {
+}
+function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %currentState, %status, %faqURL)
+{
+    if ((%status $= "HAPPY"))
+    {
         %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsHappy"];
-        if ((%currentState == %totalStates)) {
+        if ((%currentState == %totalStates))
+        {
             %info = %currentState[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsFullyGrown"];
         }
-    } else {
-        if ((%status $= "DRY")) {
+    }
+    else
+    {
+        if ((%status $= "DRY"))
+        {
             %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDry"];
-        } else {
-            if ((%status $= "DEAD")) {
+        }
+        else
+        {
+            if ((%status $= "DEAD"))
+            {
                 %info = %status[$MsgCat::plant @ "GENERIC-DetailsInfoPlantIsDead"];
             }
         }
@@ -40,4 +54,4 @@ function ClientCmdShowPlantDetails(%plantSKU, %plantName, %totalStates, %current
     %info = strreplace(%info, "[PLANTNAME_OR_YOURPLANT]", %plantName);
     PlantDetailsGui.open();
     PlantDetailsGui.showDetails(%plantSKU, %plantName, %info, %currentState, %totalStates, %faqURL);
-};
+}

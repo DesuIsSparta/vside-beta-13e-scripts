@@ -6,20 +6,28 @@ datablock MissionMarkerData(SpawnSphereMarker) {
     category = "Misc";
     shapeFile = "projects/common/worlds/markers/octahedron.dts";
 };
-function MissionMarkerData::Create(%block) {
-    if ((%block $= "WayPointMarker")) {
+function MissionMarkerData::Create(%block)
+{
+    if ((%block $= "WayPointMarker"))
+    {
         %obj = new WayPoint("") {
             dataBlock = %block;
         };
         return %obj;
-    } else {
-        if ((%block $= "SpawnSphereMarker")) {
+    }
+    else
+    {
+        if ((%block $= "SpawnSphereMarker"))
+        {
             %obj = new SpawnSphere("") {
                 dataBlock = %block;
             };
             return %obj;
-        } else {
-            if ((%block $= "SeatMarker")) {
+        }
+        else
+        {
+            if ((%block $= "SeatMarker"))
+            {
                 %obj = new MissionMarker("") {
                     dataBlock = %block;
                     sitOffset = %block.sitOffset;
@@ -36,4 +44,4 @@ function MissionMarkerData::Create(%block) {
         }
     }
     return -(1.0);
-};
+}

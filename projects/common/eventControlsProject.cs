@@ -1,5 +1,6 @@
 $gDoorsNum = 0;
-function addLockableDoor(%contiguousSpaceName, %doorName, %initiallyLocked, %groupName, %zoneName, %doorToLock, %vurl) {
+function addLockableDoor(%contiguousSpaceName, %doorName, %initiallyLocked, %groupName, %zoneName, %doorToLock, %vurl)
+{
     $gDoorNames[$gDoorsNum] = %doorName;
     $gDoorGroupNames[$gDoorsNum] = %groupName;
     $gDoorZoneNames[$gDoorsNum] = %zoneName;
@@ -8,24 +9,31 @@ function addLockableDoor(%contiguousSpaceName, %doorName, %initiallyLocked, %gro
     $gDoorInitLocked[$gDoorsNum] = %initiallyLocked;
     $gDoorVURL[$gDoorsNum] = %vurl;
     $gDoorsNum = ($gDoorsNum + 1.0);
-    if (!("" $= %zoneName)) {
+    if (!("" $= %zoneName))
+    {
     }
-    if (!("" $= %vurl)) {
+    if (!("" $= %vurl))
+    {
         eval(%zoneName @ ".vurl = \"" @ %vurl @ "\";");
     }
-};
-function findLockableDoorIndexByZoneName(%zoneName) {
+}
+function findLockableDoorIndexByZoneName(%zoneName)
+{
     %found = -(1.0);
     %n = 0;
-    if ((%n < $gDoorsNum)) {
+    if ((%n < $gDoorsNum))
+    {
     }
-    while ((%found == -(1.0))) {
-        if (($gDoorZoneNames[%n] $= %zoneName)) {
+    while ((%found == -(1.0)))
+    {
+        if (($gDoorZoneNames[%n] $= %zoneName))
+        {
             %found = %n;
         }
         %n = (%n + 1.0);
-        if ((%n < $gDoorsNum)) {
+        if ((%n < $gDoorsNum))
+        {
         }
     }
     return %found;
-};
+}

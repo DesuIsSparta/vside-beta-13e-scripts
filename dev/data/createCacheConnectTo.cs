@@ -2,27 +2,35 @@ echo("CACHE: Using port " @ $Pref::Net::Port);
 connectLocal("invalidtestuser");
 schedule(3000, 0, doLoginCheck);
 $iterationsWaited = 0;
-function doLoginCheck() {
-    if (isObject(pChat)) {
+function doLoginCheck()
+{
+    if (isObject(pChat))
+    {
         echo("CACHE: We found PChat. Quitting in 2 seconds...");
         schedule(2000, 0, logoutAndQuit);
         echo("CACHE: Telling server to shutdown.");
         commandToServer('KillServer');
-    } else {
-        if (($iterationsWaited == 400.0)) {
+    }
+    else
+    {
+        if (($iterationsWaited == 400.0))
+        {
             error("CACHE->ERROR : Giving up. Waited for 20 minutes and nothing happended");
             schedule(2000, 0, logoutAndQuit);
             echo("CACHE: Telling server to shutdown.");
             commandToServer('KillServer');
-        } else {
+        }
+        else
+        {
             echo("CACHE: Nothing yet....");
             $iterationsWaited = ($iterationsWaited + 1.0);
             schedule(3000, 0, doLoginCheck);
         }
     }
-};
-function logoutAndQuit() {
+}
+function logoutAndQuit()
+{
     logout(0);
     WorldMap.exit();
     quit();
-};
+}

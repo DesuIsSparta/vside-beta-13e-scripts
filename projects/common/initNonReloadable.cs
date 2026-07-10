@@ -2,19 +2,24 @@ exec("./propertyMap.cs");
 exec("./defaultMessages.cs");
 $ETS::AppName = "vSide";
 $ETS::AppVersion = "X";
-function getMapType() {
+function getMapType()
+{
     return "two_layer";
-};
-function showPlayerInfoPopup() {
+}
+function showPlayerInfoPopup()
+{
     return 1;
-};
-function showInviteFriend() {
+}
+function showInviteFriend()
+{
     return 0;
-};
-function showDanceTool() {
+}
+function showDanceTool()
+{
     return 1;
-};
-function cityInfoSetUp(%name, %background, %coords, %button, %altCoords, %altButton) {
+}
+function cityInfoSetUp(%name, %background, %coords, %button, %altCoords, %altButton)
+{
     %cityInfo = safeEnsureScriptObject("ScriptObject", "");
     %cityInfo.name = %name;
     %cityInfo.background = %background;
@@ -25,23 +30,28 @@ function cityInfoSetUp(%name, %background, %coords, %button, %altCoords, %altBut
     %cityInfo.venues = safeEnsureScriptObject("StringMap", "");
     %cityInfo.venues.bindClassName("VenuesMap");
     return %cityInfo;
-};
-function cityInfoAddVenue(%cityInfo, %venueName, %coords, %button, %spawnPointsGroup) {
+}
+function cityInfoAddVenue(%cityInfo, %venueName, %coords, %button, %spawnPointsGroup)
+{
     %venueInfo = safeEnsureScriptObject("ScriptObject", "");
     %venueInfo.name = %venueName;
     %venueInfo.Coords = %coords;
     %venueInfo.button = %button;
     %venueInfo.spawnName = %spawnPointsGroup;
     %cityInfo.venues.put(%venueInfo.name, %venueInfo);
-    if ($StandAlone) {
+    if ($StandAlone)
+    {
     }
-    if ((%cityInfo.name $= $gContiguousSpaceName)) {
+    if ((%cityInfo.name $= $gContiguousSpaceName))
+    {
     }
-    if (!isObject(%spawnPointsGroup)) {
+    if (!isObject(%spawnPointsGroup))
+    {
         error(%cityInfo.name @ " " @ "- unknown spawnPointGroup:" @ " " @ %spawnPointsGroup @ " " @ %venueName);
     }
-};
-function fillCityInfoMap(%map) {
+}
+function fillCityInfoMap(%map)
+{
     %map.clear();
     %cityInfo = cityInfoSetUp("nv", "platform/client/ui/city_maps/citymap_nv", "51 87 209 422", "platform/client/buttons/cities/newvenezia", "49 36 115 33", "platform/client/buttons/cities/sm_newvenezia");
     cityInfoAddVenue(%cityInfo, "Main Plaza", "256 422 44 50", "platform/client/buttons/venues/arrow_venue", "PlazaSpawns");
@@ -72,8 +82,9 @@ function fillCityInfoMap(%map) {
     cityInfoAddVenue(%cityInfo, "Start Here!", "348 106 88 100", "platform/client/buttons/venues/arrow_venue", "mapSpawns_entry");
     %map.put(%cityInfo.name, %cityInfo);
     return %map;
-};
-function fillCityNamesMap(%map) {
+}
+function fillCityNamesMap(%map)
+{
     safeEnsureScriptObject("StringMap", "gCityNamesShortToLongMap");
     gCityNamesShortToLongMap.clear();
     %map.clear();
@@ -102,4 +113,4 @@ function fillCityNamesMap(%map) {
     %map.put(%code, %code);
     gCityNamesShortToLongMap.put(%code, %long);
     return %map;
-};
+}

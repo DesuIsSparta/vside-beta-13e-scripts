@@ -7,13 +7,15 @@ EditorMap.bindCmd(keyboard, "alt s", "Canvas.pushDialog(EditorSaveMissionDlg, 0)
 EditorMap.bindCmd(keyboard, "alt r", "lightScene(\"\", forceAlways);", "");
 EditorMap.bindCmd(keyboard, "escape", "editor.close();", "");
 %i = 0;
-while ((%i < 9.0)) {
+while ((%i < 9.0))
+{
     EditorMap.bindCmd(keyboard, "alt " @ %i, "editor.setBookmark(" @ %i @ ");", "");
     %i = (%i + 1.0);
 }
 %i = 0;
 (%i < 9.0);
-while ((%i < 9.0)) {
+while ((%i < 9.0))
+{
     EditorMap.bindCmd(keyboard, "ctrl " @ %i, "editor.gotoBookmark(" @ %i @ ");", "");
     %i = (%i + 1.0);
 }

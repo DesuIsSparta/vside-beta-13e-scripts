@@ -1,18 +1,24 @@
-function TextureManager_OnDelayedLoad(%num) {
+function TextureManager_OnDelayedLoad(%num)
+{
     textureLoadingIndicator_initialize();
-    if ((%num > 0.0)) {
+    if ((%num > 0.0))
+    {
         geTextureLoadingContainer.setVisible(1);
         geTextureLoadingContainer.setProfile(HUDDarkProfile);
         geTexturesLoadingIcon.resume();
-    } else {
+    }
+    else
+    {
         geTextureLoadingContainer.setVisible(0);
         geTextureLoadingContainer.setProfile(ETSNonModalProfile);
         geTexturesLoadingIcon.stop();
     }
     WindowManager.update();
-};
-function textureLoadingIndicator_initialize() {
-    if (isObject(geTexturesLoadingIcon)) {
+}
+function textureLoadingIndicator_initialize()
+{
+    if (isObject(geTexturesLoadingIcon))
+    {
         return;
     }
     %wi = AnimCtrl::newAnimCtrl((getWord(geTextureLoadingContainer.getExtent(), 0) - 19.0) @ " " @ 0, "18 18");
@@ -36,4 +42,4 @@ function textureLoadingIndicator_initialize() {
         text = mlStyle("<just:right>loading.. ", "loadingHUD");
         autoDetectLinks = 0;
     };);
-};
+}

@@ -1,73 +1,102 @@
-function TryFixBadWords(%dry) {
+function TryFixBadWords(%dry)
+{
     %doFilter = $UserPref::Player::filterProfanity;
-    if (%doFilter) {
+    if (%doFilter)
+    {
         return fixBadWords(%dry);
-    } else {
+    }
+    else
+    {
         return %dry;
     }
-};
-function Player::onGotTextFields(%this) {
+}
+function Player::onGotTextFields(%this)
+{
     %this.setAwayMessage(TryFixBadWords(%this.getAwayMessage()));
     %this.updateMapIcon();
-};
+}
 setIdleTimeout(((4.0 * 60.0) * 1000.0));
 $gCurrentAwayMessage = "";
-function setIdle(%idle, %message) {
-    if (!isDefined("%message")) {
+function setIdle(%idle, %message)
+{
+    if (!isDefined("%message"))
+    {
         %message = "";
     }
-    if (isObject(ServerConnection)) {
+    if (isObject(ServerConnection))
+    {
     }
-    if (!ServerConnection.isPresentAtBody()) {
+    if (!ServerConnection.isPresentAtBody())
+    {
         %idle = 1;
     }
-    if (!$Server::Dedicated) {
-        if ((%idle == 1.0)) {
-            if (!isIdle() || !(%message $= $gCurrentAwayMessage)) {
+    if (!$Server::Dedicated)
+    {
+        if ((%idle == 1.0))
+        {
+            if (!isIdle() || !(%message $= $gCurrentAwayMessage))
+            {
                 onIdle(%message);
             }
-        } else {
-            if (isIdle()) {
+        }
+        else
+        {
+            if (isIdle())
+            {
                 onUnidle();
             }
         }
     }
     setGameInterfaceIdle(%idle);
-};
-function onIdle(%message) {
-    if (!isObject($player)) {
+}
+function onIdle(%message)
+{
+    if (!isObject($player))
+    {
         return;
     }
     $gCurrentAwayMessage = %message;
-    if ((%message $= "")) {
+    if ((%message $= ""))
+    {
         %message = $UserPref::Player::awayMessage;
     }
     %message = getSubStr(%message, 0, $Pref::Player::awayMessageMaxLen);
     commandToServer('setAfkOn', makeTaggedString(%message));
     getUserActivityMgr().setActivityActive("idle", 1);
-};
-function onUnidle() {
-    if (!isObject($player)) {
+}
+function onUnidle()
+{
+    if (!isObject($player))
+    {
         return;
     }
-    if (!isObject($GameConnection)) {
+    if (!isObject($GameConnection))
+    {
         return;
     }
-    if ($GameConnection.isPresentAtBody()) {
+    if ($GameConnection.isPresentAtBody())
+    {
         commandToServer('setAfkOff');
         $player.playersNotifiedOfIdleStatus.clear();
     }
-    if (ClosetGui.visible) {
+    if (ClosetGui.visible)
+    {
         commandToServer('setAfkOn', $ClosetGuiOpenMessage);
-    } else {
+    }
+    else
+    {
         getUserActivityMgr().setActivityActive("idle", 0);
     }
-};
-function awayOperation(%line) {
+}
+function awayOperation(%line)
+{
     DefaultAwayMsgEdit.applySettings();
-    if (isDefined("%line")) {
+    if (isDefined("%line"))
+    {
         setIdle(1, %line);
-    } else {
+    }
+    else
+    {
         setIdle(1);
     }
-};
+}

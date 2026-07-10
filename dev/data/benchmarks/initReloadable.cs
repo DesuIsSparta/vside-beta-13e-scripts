@@ -1,4 +1,5 @@
-if ($AmClient) {
+if ($AmClient)
+{
     exec("./benchmarksClientGui.cs");
     exec("./benchmarksClient.cs");
     exec("./adminGui.cs");

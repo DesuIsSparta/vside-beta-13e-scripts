@@ -5,10 +5,12 @@ $gAdminActionDefaultMessages["Message"] = "";
 $gAdminActionDefaultMessages["Summon"] = "You have been teleported!";
 $gAdminActionDefaultMessages["Respawn"] = "You have been teleported away!";
 $gAdminActionDefaultMessages["Throw Voice"] = "";
-function adminActionPopup::onSelect(%this, %unused, %text) {
+function adminActionPopup::onSelect(%this, %unused, %text)
+{
     selectAdminAction(%text);
-};
-function selectAdminAction(%text) {
+}
+function selectAdminAction(%text)
+{
     adminActionPopup.setText(%text);
     adminGuiEditMessage.setValue($gAdminActionDefaultMessages[%text]);
     adminGuiButtonDoIt.setVisible(1);
@@ -21,44 +23,56 @@ function selectAdminAction(%text) {
     adminBanUserName.setVisible(%isBanCommand);
     adminGuiDuration.setVisible(%isBanCommand);
     adminGuiEditDuration.setVisible(%isBanCommand);
-};
-function toggleAdminDialog(%action, %target) {
-    if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic")) {
+}
+function toggleAdminDialog(%action, %target)
+{
+    if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic"))
+    {
         return;
     }
-    if (!isDefined("%action")) {
+    if (!isDefined("%action"))
+    {
         %action = "";
     }
-    if (!isDefined("%target")) {
+    if (!isDefined("%target"))
+    {
         %target = "";
     }
     adminGui.defaultAction = %action;
     adminGui.defaultTarget = %target;
-    if (!(%action $= "") || !(%target $= "")) {
+    if (!(%action $= "") || !(%target $= ""))
+    {
         adminGui.open();
-    } else {
+    }
+    else
+    {
         toggleVisibleState(adminGui);
     }
-};
-function adminGui::open(%this) {
+}
+function adminGui::open(%this)
+{
     Canvas.pushDialog(%this, 0);
     %this.setVisible(1);
     adminActionPopup.onSelect(0, adminActionPopup.getText());
     adminGuiEditMessage.makeFirstResponder(1);
     adminGuiEditMessage.selectAll();
     %this.initMenu();
-    if (!(%this.defaultAction $= "")) {
+    if (!(%this.defaultAction $= ""))
+    {
         selectAdminAction(%this.defaultAction);
     }
     %this.onRefreshTargetsList();
-};
-function adminGui::close(%this, %unused) {
+}
+function adminGui::close(%this, %unused)
+{
     Canvas.popDialog(%this);
     %this.setVisible(0);
-};
-function adminGui::initMenu(%this, %unused) {
+}
+function adminGui::initMenu(%this, %unused)
+{
     %prevItem = adminActionPopup.getText();
-    if ((%prevItem $= "")) {
+    if ((%prevItem $= ""))
+    {
         %prevItem = "Message";
     }
     adminActionPopup.clear();
@@ -89,18 +103,24 @@ function adminGui::initMenu(%this, %unused) {
     %itemText = "Throw Voice";
     adminActionPopup.add(%itemText, %n = (%n + 1.0), %disabled);
     adminActionPopup.setText(%prevItem);
-};
-function adminGui::tryTarget(%this, %shape) {
-    if (!%this.isVisible()) {
+}
+function adminGui::tryTarget(%this, %shape)
+{
+    if (!%this.isVisible())
+    {
         return;
     }
-    if (adminGuiButtonConfirm.isVisible()) {
+    if (adminGuiButtonConfirm.isVisible())
+    {
         return;
     }
     %name = admin::getTargetName(%shape);
-    if (isObject(%shape)) {
+    if (isObject(%shape))
+    {
         %classname = admin::getFormattedClassName(%shape.getClassName());
-    } else {
+    }
+    else
+    {
         %classname = admin::getFormattedClassName("special");
     }
     %targetName = %classname @ "\t" @ %name;
@@ -108,19 +128,22 @@ function adminGui::tryTarget(%this, %shape) {
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
-};
-function adminGui::onAction(%this) {
+}
+function adminGui::onAction(%this)
+{
     adminGuiButtonDoIt.setVisible(0);
     adminGuiButtonConfirm.setText("confirm" @ " " @ adminActionPopup.getText() @ ":" @ " " @ adminTargetsPopup.getText());
     adminGuiButtonConfirm.setVisible(1);
     adminGuiButtonCancel.setVisible(1);
-};
-function adminGui::onCancel(%this) {
+}
+function adminGui::onCancel(%this)
+{
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
-};
-function adminGui::onConfirm(%this) {
+}
+function adminGui::onConfirm(%this)
+{
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
@@ -128,64 +151,87 @@ function adminGui::onConfirm(%this) {
     %action = adminActionPopup.getText();
     %banUser = adminBanUserName.getValue();
     %duration = adminGuiEditDuration.getValue();
-    if ((%action $= "Ban")) {
+    if ((%action $= "Ban"))
+    {
         %internalMsg = adminGuiEditInternalMessage.getValue();
-    } else {
+    }
+    else
+    {
         %internalMsg = "";
     }
     warn("adminAction:" @ " " @ $player.getShapeName() @ " " @ %action @ " " @ "on" @ " " @ adminTargetsPopup.getText() @ " " @ "with message:" @ " " @ %message);
     commandToServer('AdminAction', %action, adminTargetsPopup.getText(), %message, %banUser, %duration, %internalMsg);
-};
-function adminGui::onRefreshTargetsList(%this) {
+}
+function adminGui::onRefreshTargetsList(%this)
+{
     $gAdminGuiPrevMenuTarget = adminTargetsPopup.getText();
     adminTargetsPopup.setText("getting list..");
     commandToServer('AdminGetTargets');
-};
-function adminGui::onGotTargetsList(%this, %theList) {
+}
+function adminGui::onGotTargetsList(%this, %theList)
+{
     adminTargetsPopup.clear();
     %num = getRecordCount(%theList);
-    if ((%num < 1.0)) {
+    if ((%num < 1.0))
+    {
         error("apparently nobody is here. this is bad.");
         return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %entry = getRecord(%theList, %n);
         adminTargetsPopup.add(%entry, %n);
-        if ((%entry $= $gAdminGuiPrevMenuTarget)) {
+        if ((%entry $= $gAdminGuiPrevMenuTarget))
+        {
             %nextItem = %entry;
         }
         %n = (%n + 1.0);
     }
     adminTargetsPopup.sort();
-    if (!((%n < %num) @ " " @ %this.defaultTarget $= "")) {
+    if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))
+    {
         adminTargetsPopup.setText(%this.defaultTarget);
-    } else {
+    }
+    else
+    {
         adminTargetsPopup.setText(%nextItem);
     }
-};
-function adminTargetsPopup::onSelect(%this, %unused, %text) {
+}
+function adminTargetsPopup::onSelect(%this, %unused, %text)
+{
     adminGuiButtonDoIt.setVisible(1);
     adminGuiButtonConfirm.setVisible(0);
     adminGuiButtonCancel.setVisible(0);
-};
+}
 $adminTargetsList = "";
-function clientCmdBuildTargetsList(%actionTagged, %item) {
+function clientCmdBuildTargetsList(%actionTagged, %item)
+{
     %action = detag(%actionTagged);
-    if ((%action $= "begin")) {
+    if ((%action $= "begin"))
+    {
         $adminTargetsList = "";
-    } else {
-        if ((%action $= "add")) {
-            if (($adminTargetsList $= "")) {
+    }
+    else
+    {
+        if ((%action $= "add"))
+        {
+            if (($adminTargetsList $= ""))
+            {
                 $adminTargetsList = %item;
-            } else {
+            }
+            else
+            {
                 $adminTargetsList = $adminTargetsList @ "\n" @ %item;
             }
-        } else {
-            if ((%action $= "finish")) {
+        }
+        else
+        {
+            if ((%action $= "finish"))
+            {
                 adminGui.onGotTargetsList($adminTargetsList);
             }
         }
     }
-};
+}

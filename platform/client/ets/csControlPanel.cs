@@ -1,29 +1,40 @@
-if (!isObject(CSControlPanelTabs)) {
+if (!isObject(CSControlPanelTabs))
+{
     new ScriptObject(CSControlPanelTabs) {
         class = "TabControl";
     };
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(CSControlPanelTabs);
     }
 }
-function CSControlPanelTabs::setup(%this) {
-    if (!%this.initialized) {
+function CSControlPanelTabs::setup(%this)
+{
+    if (!%this.initialized)
+    {
         %this.Initialize(CSControlPanelTabContainer, "", "", "", "horizontal");
         %this.newTab("MODEL_APT", "");
         %this.newTab("SKIP_TUTORIAL", "");
     }
-};
-function CSControlPanelTabs::tabSelected(%this, %tab) {
-    if ((%tab.name $= "MODEL_APT")) {
+}
+function CSControlPanelTabs::tabSelected(%this, %tab)
+{
+    if ((%tab.name $= "MODEL_APT"))
+    {
         %this.fillModelAptTab(%tab);
-    } else {
-        if ((%tab.name $= "SKIP_TUTORIAL")) {
+    }
+    else
+    {
+        if ((%tab.name $= "SKIP_TUTORIAL"))
+        {
             %this.fillSkipTutorialTab(%tab);
         }
     }
-};
-function CSControlPanelTabs::fillModelAptTab(%this, %theTab) {
-    if (%theTab.initialized) {
+}
+function CSControlPanelTabs::fillModelAptTab(%this, %theTab)
+{
+    if (%theTab.initialized)
+    {
         return;
     }
     %theTab.initialized = 1;
@@ -41,9 +52,11 @@ function CSControlPanelTabs::fillModelAptTab(%this, %theTab) {
         maxChars = -1;
     };);
     CSSpaceModelAptText.update();
-};
-function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab) {
-    if (%theTab.initialized) {
+}
+function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab)
+{
+    if (%theTab.initialized)
+    {
         return;
     }
     %theTab.initialized = 1;
@@ -64,80 +77,111 @@ function CSControlPanelTabs::fillSkipTutorialTab(%this, %theTab) {
         maxChars = -1;
     };);
     CSSpaceSkipTutorialText.setText(%text);
-};
-function CSControlPanelTabs::updateSkipTutorialTab(%this) {
-    if (getCurrentContiguousSpaceOfferSkip()) {
+}
+function CSControlPanelTabs::updateSkipTutorialTab(%this)
+{
+    if (getCurrentContiguousSpaceOfferSkip())
+    {
         CSControlPanel.open();
         CSControlPanelTabs.selectTabWithName("SKIP_TUTORIAL");
         CSSpaceSkipTutorialText.setText("<font:BauhausStd-Demi:18><linkcolor:eeffaa>To skip Gateway, <a:gamelink SKIP_TUTORIAL>Click Here</a>.");
-    } else {
-        if ((CSControlPanelTabs.getCurrentTab() == CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL"))) {
+    }
+    else
+    {
+        if ((CSControlPanelTabs.getCurrentTab() == CSControlPanelTabs.getTabWithName("SKIP_TUTORIAL")))
+        {
             CSControlPanel.close();
         }
     }
-};
-function CSSpaceSkipTutorialText::onURL(%this, %url) {
-    if ((%url $= "gamelink SKIP_TUTORIAL")) {
+}
+function CSSpaceSkipTutorialText::onURL(%this, %url)
+{
+    if ((%url $= "gamelink SKIP_TUTORIAL"))
+    {
         gatewayExitTransition(1, 1);
-    } else {
+    }
+    else
+    {
         error(getScopeName() @ " " @ "- unknown option" @ " " @ %url);
     }
-};
-function CSControlPanel::open(%this) {
+}
+function CSControlPanel::open(%this)
+{
     CSControlPanelTabs.setup();
-    if (%this.isVisible()) {
+    if (%this.isVisible())
+    {
         return;
     }
     %this.userHasClickedMe = 0;
     %this.setVisible(1);
     WindowManager.update();
-};
-function CSControlPanel::close(%this) {
+}
+function CSControlPanel::close(%this)
+{
     %this.setVisible(0);
     csDoneEditingSpace();
     WindowManager.update();
-};
-function CSControlPanel::toggle(%this) {
-    if (%this.isVisible()) {
+}
+function CSControlPanel::toggle(%this)
+{
+    if (%this.isVisible())
+    {
         %this.close();
-    } else {
+    }
+    else
+    {
         %this.open();
     }
-};
-function CSControlPanel::update(%this) {
-};
+}
+function CSControlPanel::update(%this)
+{
+}
 $CSPurchaseErrorInsufficientFunds = "You do not have enough funds to purchase a space like this.";
 $CSPurchaseErrorNoLongerAvailable = "Spaces of this model are no longer available.";
 $CSPurchaseErrorError = "We are unable to execute a space purchase at this time.";
-function CSSpaceModelAptText::onURL(%this, %url) {
-    if (%this.userHasClickedMe) {
+function CSSpaceModelAptText::onURL(%this, %url)
+{
+    if (%this.userHasClickedMe)
+    {
         return;
     }
     %this.userHasClickedMe = 1;
-    if ((getWord(%url, 0) $= "gamelink")) {
+    if ((getWord(%url, 0) $= "gamelink"))
+    {
         %url = getWords(%url, 1);
     }
-    if ((getWord(%url, 0) $= "PURCHASESPACE")) {
+    if ((getWord(%url, 0) $= "PURCHASESPACE"))
+    {
         CSSpacePurchase($CSSpaceInfo);
     }
     %this.userHasClickedMe = 0;
-};
-function CSSpaceModelAptText::update(%this) {
-    if (($CSSpaceInfo == 0.0)) {
+}
+function CSSpaceModelAptText::update(%this)
+{
+    if (($CSSpaceInfo == 0.0))
+    {
         %this.lineSpacing = 0;
         %text = "Waiting for apartment info...";
-    } else {
+    }
+    else
+    {
         %myLevel = respektScoreToLevel($gMyRespektPoints);
-        if (($CSSpaceInfo.floorplan.minLevel > %myLevel)) {
+        if (($CSSpaceInfo.floorplan.minLevel > %myLevel))
+        {
             %text = "You must be at least<spush><color:ffbbdd> " @ respektLevelToNameWithIndefiniteArticle($CSSpaceInfo.floorplan.minLevel) @ "<spop> to purchase an apartment like this.";
-        } else {
+        }
+        else
+        {
             %this.lineSpacing = 4;
-            if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName)) {
+            if (ownerHasSpaceWithFloorplan($Player::Name, $CSSpaceInfo.floorPlanName))
+            {
                 %text = "<spush><font:BauhausStd-Demi:18><color:eeff3366>(You own one of these!)<spop>";
-            } else {
+            }
+            else
+            {
                 %text = "<spush><font:BauhausStd-Demi:18><linkcolor:eeff33><a:PURCHASESPACE>P u r c h a s e  T h i s  S p a c e !</a><spop>" @ "\n" @ CSSpacePurchasePriceFormatting($CSSpaceInfo.floorplan.priceVPoints, $CSSpaceInfo.floorplan.priceVBux);
             }
         }
     }
     %this.setText(%text);
-};
+}

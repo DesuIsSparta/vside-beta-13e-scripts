@@ -1,4 +1,5 @@
-function userTips::initUserTips() {
+function userTips::initUserTips()
+{
     $userTips::numTips = 0;
     %tipName = "AutoChangeToSwimWear";
     $userTips::tipTitle[%tipName] = "Tip - Automatically changing into swimwear.";
@@ -106,65 +107,88 @@ function userTips::initUserTips() {
     $userTips::allTips[$userTips::numTips] = %tipName;
     $userTips::numTips = ($userTips::numTips + 1.0);
     userTips::resetSeenThisSession();
-};
-function userTips::resetSeenThisSession() {
+}
+function userTips::resetSeenThisSession()
+{
     %n = 0;
-    while ((%n < $userTips::numTips)) {
+    while ((%n < $userTips::numTips))
+    {
         $userTips::tipSeen[$userTips::allTips[%n]] = 0;
         %n = (%n + 1.0);
     }
-};
-function userTips::resetSeenEver() {
+}
+function userTips::resetSeenEver()
+{
     %n = 0;
-    while ((%n < $userTips::numTips)) {
+    while ((%n < $userTips::numTips))
+    {
         $UserPref::userTips::tipSeen[$userTips::allTips[%n]] = 0;
         %n = (%n + 1.0);
     }
-};
-function userTips::resetSeenAll() {
+}
+function userTips::resetSeenAll()
+{
     userTips::resetSeenThisSession();
     userTips::resetSeenEver();
-};
-function userTips::showNow(%tipName) {
+}
+function userTips::showNow(%tipName)
+{
     $userTips::tipSeen[%tipName] = 1;
     %title = standardSubstitutions($userTips::tipTitle[%tipName]);
     %body = standardSubstitutions($userTips::tipBody[%tipName]);
     %cbOk = standardSubstitutions($userTips::tipCallbackOK[%tipName]);
     %cbCnc = standardSubstitutions($userTips::tipCallbackCnc[%tipName]);
     %width = $userTips::tipWidth[%tipName];
-    if ((%width $= "")) {
-    } else {
+    if ((%width $= ""))
+    {
+    }
+    else
+    {
     }
     %width = %width;
     300;
     %dialog = 0;
-    if (!(%cbOk $= "")) {
+    if (!(%cbOk $= ""))
+    {
         %dialog = MessageBoxOkCancel(%title, %body, %cbOk, %cbCnc);
-    } else {
+    }
+    else
+    {
         %dialog = MessageBoxOK(%title, %body, "");
     }
     %dialog.setWindowWidth(%width);
     return %dialog;
-};
-function userTips::showOnceThisSession(%tipName) {
-    if (($userTips::tipSeen[%tipName] != 0.0)) {
-        if (!($userTips::tipCallbackOK[%tipName] $= "")) {
+}
+function userTips::showOnceThisSession(%tipName)
+{
+    if (($userTips::tipSeen[%tipName] != 0.0))
+    {
+        if (!($userTips::tipCallbackOK[%tipName] $= ""))
+        {
             eval($userTips::tipCallbackOK[%tipName]);
         }
-    } else {
+    }
+    else
+    {
         userTips::showNow(%tipName);
     }
-};
-function userTips::showOnceEver(%tipName) {
-    if (($UserPref::userTips::tipSeen[%tipName] == 1.0)) {
-        if (!($userTips::tipCallbackOK[%tipName] $= "")) {
+}
+function userTips::showOnceEver(%tipName)
+{
+    if (($UserPref::userTips::tipSeen[%tipName] == 1.0))
+    {
+        if (!($userTips::tipCallbackOK[%tipName] $= ""))
+        {
             eval($userTips::tipCallbackOK[%tipName]);
         }
-    } else {
+    }
+    else
+    {
         $UserPref::userTips::tipSeen[%tipName] = 1;
         userTips::showNow(%tipName);
     }
-};
-function no_op() {
-};
+}
+function no_op()
+{
+}
 userTips::initUserTips();

@@ -1,4 +1,5 @@
-function serverCmdChangeRelation(%client, %other, %relType, %oper) {
+function serverCmdChangeRelation(%client, %other, %relType, %oper)
+{
     doLocalChangeRelation(%client, %other, %relType, %oper);
     %relRequest = new CURLObject(RelRequest);
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
@@ -7,7 +8,8 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     %user = %client.nameBase;
     %userId = PlayerDict.get(%user);
     %otherId = PlayerDict.get(%other);
-    if ((%userId == 0.0)) {
+    if ((%userId == 0.0))
+    {
         return;
     }
     RelRequest.userId = %userId;
@@ -21,44 +23,58 @@ function serverCmdChangeRelation(%client, %other, %relType, %oper) {
     %post = %userValue @ "&" @ %otherValue @ "&" @ %relTypeValue @ "&" @ %operTypeValue;
     %relRequest.post(%host, %uri, %query, %post);
     return;
-};
-function RelRequest::onConnected(%this) {
+}
+function RelRequest::onConnected(%this)
+{
     return;
-};
-function RelRequest::onConnectFailed(%this) {
+}
+function RelRequest::onConnectFailed(%this)
+{
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     echo("Cannot reach Server Manager (" @ %host @ ")");
     return;
-};
-function RelRequest::onLine(%this, %line) {
-    if ((%line $= "success")) {
+}
+function RelRequest::onLine(%this, %line)
+{
+    if ((%line $= "success"))
+    {
         changeRelation(%this.userId, %this.otherId, %this.relType, %this.oper);
-    } else {
+    }
+    else
+    {
     }
     return (%line $= "fail");
-};
-function RelRequest::onDNSResolved(%this) {
+}
+function RelRequest::onDNSResolved(%this)
+{
     return;
-};
-function RelRequest::onDNSFailed(%this) {
+}
+function RelRequest::onDNSFailed(%this)
+{
     echo("Cannot resolve Manager Host (" @ $Pref::Server::ManagerAddress @ ")");
     return;
-};
-function RelRequest::onDisconnect(%this) {
+}
+function RelRequest::onDisconnect(%this)
+{
     return;
-};
-function doLocalChangeRelation(%client, %other, %relType, %oper) {
+}
+function doLocalChangeRelation(%client, %other, %relType, %oper)
+{
     %sender = %client.Player;
     %otherId = PlayerDict.get(%other);
-    if (!isPlayerObject(%otherId)) {
+    if (!isPlayerObject(%otherId))
+    {
         error("bad other in doLocalChangeRelation:" @ " " @ getDebugString(%otherId) @ " " @ "from" @ " " @ getDebugString(%sender));
         return;
     }
-    if ((%oper $= "add")) {
+    if ((%oper $= "add"))
+    {
         %opCode = 0;
-    } else {
+    }
+    else
+    {
         %opCode = 1;
     }
     changeRelation(%sender, %otherId, %relType, %opCode);
     return;
-};
+}

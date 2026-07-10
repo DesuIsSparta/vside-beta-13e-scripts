@@ -1,9 +1,12 @@
 safeEnsureScriptObjectWithInit("StringMap", "PlayerInfoMap", "{ ignoreCase = true; }");
-function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank) {
-    if ((%playerName $= "")) {
+function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank)
+{
+    if ((%playerName $= ""))
+    {
         return 0;
     }
-    if ((%this.findKey(%playerName) != -(1.0))) {
+    if ((%this.findKey(%playerName) != -(1.0)))
+    {
         return 0;
     }
     %playerInfo = safeEnsureScriptObject("ScriptObject", "");
@@ -17,64 +20,83 @@ function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %locati
     %playerInfo.respektRank = %respektRank;
     %playerInfo.activities = "";
     %entry = UserListFriends.get(%playerName);
-    if (isObject(%entry)) {
+    if (isObject(%entry))
+    {
         %playerInfo.activities = %entry.activities;
     }
     %this.put(%playerName, %playerInfo.getId());
-    if (!(%playerName $= $Player::Name)) {
+    if (!(%playerName $= $Player::Name))
+    {
         %playerInstance = Player::findPlayerInstance(%playerName);
     }
     return %playerInfo;
-};
-function PlayerInfoMap::removePlayerInfo(%this, %playerName) {
-    if ((%playerName $= "")) {
+}
+function PlayerInfoMap::removePlayerInfo(%this, %playerName)
+{
+    if ((%playerName $= ""))
+    {
         return;
     }
-    if ((%this.findKey(%playerName) == -(1.0))) {
+    if ((%this.findKey(%playerName) == -(1.0)))
+    {
         return;
     }
     %this.get(%playerName).delete();
     %this.remove(%playerName);
-};
-function PlayerInfoMap::removeAllInfo(%this) {
+}
+function PlayerInfoMap::removeAllInfo(%this)
+{
     %size = %this.size();
     %i = 0;
-    while ((%i < %size)) {
+    while ((%i < %size))
+    {
         %this.getValue(%i).delete();
         %i = (%i + 1.0);
     }
     %this.clear();
-};
-function clientCmdClearPlayerInfoCache() {
+}
+function clientCmdClearPlayerInfoCache()
+{
     PlayerInfoMap.removeAllInfo();
-};
-function getPlayerNamesInRadius(%radius) {
-    if (!isObject($player)) {
+}
+function getPlayerNamesInRadius(%radius)
+{
+    if (!isObject($player))
+    {
         return "";
     }
     initContainerRadiusSearch($player.getTransform(), %radius, $TypeMasks::PlayerObjectType, 1);
     %names = "";
-    if (1) {
+    if (1)
+    {
         %player = containerSearchNext(1);
-        if (!isObject(%player)) {
-        } else {
-            if ((%player.getId() != $player.getId())) {
+        if (!isObject(%player))
+        {
+        }
+        else
+        {
+            if ((%player.getId() != $player.getId()))
+            {
                 %names = %names @ "\t" @ %player.getShapeName();
             }
         }
     }
     return trim(%names);
-};
-function requestPlayerInfoFor(%playerName) {
+}
+function requestPlayerInfoFor(%playerName)
+{
     requestPlayerInfoForWithCallback(%playerName, "", 0);
-};
-function requestPlayerInfoForWithCallback(%playerName, %callback, %data) {
-    if (!haveValidManagerHost() || $StandAlone) {
+}
+function requestPlayerInfoForWithCallback(%playerName, %callback, %data)
+{
+    if (!haveValidManagerHost() || $StandAlone)
+    {
         return;
     }
     log("communication", "info", "Requesting information for player: " @ %playerName @ " " @ getTrace());
     %request = safeEnsureScriptObject("ManagerRequest", "PlayerInfoRequest");
-    if (%request.isOpen()) {
+    if (%request.isOpen())
+    {
         warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
         return;
     }
@@ -91,29 +113,36 @@ function requestPlayerInfoForWithCallback(%playerName, %callback, %data) {
     %request.askedForPlayers = "";
     log("relations", "debug", "requestPlayerInfoFor: " @ %url);
     %request.setURL(%url);
-    if (!haveValidManagerHost() || !haveValidToken()) {
+    if (!haveValidManagerHost() || !haveValidToken())
+    {
         %request.onDone();
         return;
     }
     %request.start();
-};
-function PlayerInfoRequest::onError(%this, %errorNum, %errorName) {
+}
+function PlayerInfoRequest::onError(%this, %errorNum, %errorName)
+{
     log("network", "warn", getScopeName() @ ": " @ %errorNum @ " " @ %errorName);
-    if (isObject(InfoPopupDlg)) {
+    if (isObject(InfoPopupDlg))
+    {
     }
-    if (InfoPopupDlg.isShowing()) {
+    if (InfoPopupDlg.isShowing())
+    {
         InfoPopupDlg.stopAnimation();
     }
     %this.callback = "";
-};
-function PlayerInfoRequest::onDone(%this) {
+}
+function PlayerInfoRequest::onDone(%this)
+{
     %status = findRequestStatus(%this);
-    if ((%status $= "success")) {
+    if ((%status $= "success"))
+    {
         %numUsers = %this.getValue("numUsers");
         $ETS::PlayerInfo::NoTags = %this.getValue("notags");
         %failedPlayers = %this.askedForPlayers;
         %i = 0;
-        while ((%i < %numUsers)) {
+        while ((%i < %numUsers))
+        {
             %name = %this.getValue("proximalPlayers" @ %i @ ".userName");
             %age = %this.getValue("proximalPlayers" @ %i @ ".age");
             %gender = %this.getValue("proximalPlayers" @ %i @ ".gender");
@@ -125,63 +154,89 @@ function PlayerInfoRequest::onDone(%this) {
             %respektRank = %this.getValue("proximalPlayers" @ %i @ ".respektRanking");
             PlayerInfoMap.addPlayerInfo(%name, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank);
             %askedForIndex = findField(%failedPlayers, %name);
-            if ((%askedForIndex >= 0.0)) {
+            if ((%askedForIndex >= 0.0))
+            {
                 %failedPlayers = removeField(%failedPlayers, %askedForIndex);
             }
             %i = (%i + 1.0);
         }
         %num = getFieldCount(%failedPlayers);
         (%i < %numUsers);
-        if ((%num > 0.0)) {
+        if ((%num > 0.0))
+        {
             error("Communication", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- failed to get information for" @ " " @ %num @ " " @ "players:" @ " " @ %failedPlayers);
             %i = 0;
-            while ((%i < %num)) {
+            while ((%i < %num))
+            {
                 %name = getField(%failedPlayers, %i);
                 warn("adding null player info for" @ " " @ %name);
                 PlayerInfoMap.addPlayerInfo(%name, "unknown", "unknown", "unknown", "", "", 0, "", "");
                 %i = (%i + 1.0);
             }
         }
-        if (((%i < %num) @ " " @ %this.callback $= "")) {
-            if (isObject(InfoPopupDlg)) {
+        if (((%i < %num) @ " " @ %this.callback $= ""))
+        {
+            if (isObject(InfoPopupDlg))
+            {
                 InfoPopupDlg.stopAnimation();
             }
-            if ((%numUsers == 0.0)) {
-                if (!(%this.requestPlayerInfoFor $= "")) {
+            if ((%numUsers == 0.0))
+            {
+                if (!(%this.requestPlayerInfoFor $= ""))
+                {
                     InfoPopupDlg.showPlayerNotFound();
                 }
-            } else {
-                if (isObject(InfoPopupDlg)) {
-                    if (!(%this.requestPlayerInfoFor $= "")) {
+            }
+            else
+            {
+                if (isObject(InfoPopupDlg))
+                {
+                    if (!(%this.requestPlayerInfoFor $= ""))
+                    {
                     }
-                    if ((PlayerInfoMap.get(%this.requestPlayerInfoFor) $= "")) {
+                    if ((PlayerInfoMap.get(%this.requestPlayerInfoFor) $= ""))
+                    {
                         InfoPopupDlg.showPlayerNotFound();
-                    } else {
+                    }
+                    else
+                    {
                         InfoPopupDlg.tryShowPlayerInfo();
                     }
                 }
             }
-        } else {
-            if ((%numUsers > 0.0)) {
+        }
+        else
+        {
+            if ((%numUsers > 0.0))
+            {
                 %playinfo = PlayerInfoMap.get(%this.requestPlayerInfoFor);
-            } else {
+            }
+            else
+            {
                 %playinfo = 0;
             }
             %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this.callbackData @ ");";
             eval(%cmd);
         }
-    } else {
-        if ((%this.callback $= "")) {
-            if (isObject(InfoPopupDlg)) {
+    }
+    else
+    {
+        if ((%this.callback $= ""))
+        {
+            if (isObject(InfoPopupDlg))
+            {
             }
-            if (InfoPopupDlg.isShowing()) {
+            if (InfoPopupDlg.isShowing())
+            {
                 InfoPopupDlg.stopAnimation();
             }
-        } else {
+        }
+        else
+        {
             %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
             eval(%cmd);
         }
     }
     %this.requestPlayerInfoFor = "";
     %this.callback = "";
-};
+}

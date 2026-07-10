@@ -1,190 +1,240 @@
-function CSBrowser::getHiliteProxy(%this) {
+function CSBrowser::getHiliteProxy(%this)
+{
     %ancestor = %this;
-    while (isObject(%ancestor)) {
+    while (isObject(%ancestor))
+    {
         %ancestor = %ancestor.getParent();
-        if ((%ancestor.getClassName() $= "GuiWindowCtrl")) {
+        if ((%ancestor.getClassName() $= "GuiWindowCtrl"))
+        {
             return %ancestor;
         }
     }
     return "";
-};
-function CSBrowser::goToParentPath(%this) {
-    if ((getFieldCount(%this.Path) > 1.0)) {
+}
+function CSBrowser::goToParentPath(%this)
+{
+    if ((getFieldCount(%this.Path) > 1.0))
+    {
         Parent::goToParentPath(%this);
     }
-};
-function CSBrowser::getMenuText(%this, %text) {
+}
+function CSBrowser::getMenuText(%this, %text)
+{
     return getField(strreplace(%text, "|", "\t"), 0);
-};
-function CSBrowser::getPathForSku(%this, %sku) {
+}
+function CSBrowser::getPathForSku(%this, %sku)
+{
     %si = SkuManager.findBySku(%sku);
-    if (!isObject(%si)) {
+    if (!isObject(%si))
+    {
         return "";
     }
     %name = %si.descShrt;
     %firstPath = getField(strreplace(%si.drwrName, ";", "" @ "\t" @ ""), 0);
     %path = strreplace(%firstPath, "/", "" @ "\t" @ "");
-    if ((%name $= "") || (%path $= "")) {
+    if ((%name $= "") || (%path $= ""))
+    {
         return "";
     }
     return %this.baseDir @ "\t" @ %path @ "\t" @ %name @ "|" @ %sku;
-};
-function CSBrowser::getPathsForSku(%this, %sku) {
+}
+function CSBrowser::getPathsForSku(%this, %sku)
+{
     %si = SkuManager.findBySku(%sku);
-    if (!isObject(%si)) {
+    if (!isObject(%si))
+    {
         return "";
     }
     %name = %si.descShrt;
-    if ((%name $= "")) {
+    if ((%name $= ""))
+    {
         return "";
     }
     %paths = trim(strreplace(%si.drwrName, ";", "\n"));
     %additionalPaths = %this.getAddlPathsForSku(%sku);
-    if (!(%additionalPaths $= "")) {
+    if (!(%additionalPaths $= ""))
+    {
         %paths = %paths @ "\n" @ %additionalPaths;
     }
     %paths = "All Items" @ "\n" @ %paths;
-    if ((%paths $= "")) {
+    if ((%paths $= ""))
+    {
         return "";
     }
     %toReturn = "";
     %numRecords = getRecordCount(%paths);
     %i = 0;
-    while ((%i < %numRecords)) {
+    while ((%i < %numRecords))
+    {
         %path = getRecord(%paths, %i);
         %path = trim(strreplace(%path, "/", "\t"));
         %toReturn = %toReturn @ "\n" @ %this.baseDir @ "\t" @ %path @ "\t" @ %name @ "|" @ %sku;
         %i = (%i + 1.0);
     }
     return trim(%toReturn);
-};
+}
 $CSBrowser::NewFurnishingPath = "New Items";
-function CSBrowser::getAddlPathsForSku(%this, %sku) {
+function CSBrowser::getAddlPathsForSku(%this, %sku)
+{
     %si = SkuManager.findBySku(%sku);
-    if (!isObject(%si)) {
+    if (!isObject(%si))
+    {
         return;
     }
     %brand = %si.brand;
     %path = "";
-    if ((%brand $= "new")) {
+    if ((%brand $= "new"))
+    {
         %path = $CSBrowser::NewFurnishingPath;
     }
     return %path;
-};
-function CSBrowser::addSku(%this, %sku) {
+}
+function CSBrowser::addSku(%this, %sku)
+{
     %paths = %this.getPathsForSku(%sku);
     %numPaths = getRecordCount(%paths);
     %i = 0;
-    while ((%i < %numPaths)) {
+    while ((%i < %numPaths))
+    {
         %path = getRecord(%paths, %i);
-        if (!(%path $= "")) {
+        if (!(%path $= ""))
+        {
             %node = %this.addNode(%path);
             %node.sku = %sku;
         }
         %i = (%i + 1.0);
     }
-};
-function CSBrowser::removeSku(%this, %sku) {
+}
+function CSBrowser::removeSku(%this, %sku)
+{
     %paths = %this.getPathsForSku(%sku);
     %numPaths = getRecordCount(%paths);
     %i = 0;
-    while ((%i < %numPaths)) {
+    while ((%i < %numPaths))
+    {
         %path = getRecord(%paths, %i);
-        if (!(%path $= "")) {
+        if (!(%path $= ""))
+        {
             %this.deleteNodeAtPath(%path);
         }
         %i = (%i + 1.0);
     }
     %this.clearEmptyCategories();
     %this.update();
-};
-function CSBrowser::navigateToSku(%this, %sku) {
+}
+function CSBrowser::navigateToSku(%this, %sku)
+{
     %path = %this.getPathForSku(%sku);
-    if (!(%path $= "")) {
+    if (!(%path $= ""))
+    {
         %this.goToPath(%path, 0);
     }
-};
-function CSBrowser::clearEmptyCategories(%this) {
+}
+function CSBrowser::clearEmptyCategories(%this)
+{
     %this.clearEmptyCategoriesAt(%this.getNode(""));
-    if (!isObject(%this.getCurrentNode())) {
+    if (!isObject(%this.getCurrentNode()))
+    {
         %this.goToPath(%this.baseDir);
     }
-};
-function CSBrowser::clearEmptyCategoriesAt(%this, %node) {
-    if (!isObject(%node)) {
+}
+function CSBrowser::clearEmptyCategoriesAt(%this, %node)
+{
+    if (!isObject(%node))
+    {
         return;
     }
     %numChildren = %node.getCount();
     %i = (%numChildren - 1.0);
-    while ((%i >= 0.0)) {
+    while ((%i >= 0.0))
+    {
         %this.clearEmptyCategoriesAt(%node.getObject(%i));
         %i = (%i - 1.0);
     }
-    if ((%node.getCount() == 0.0)) {
+    if ((%node.getCount() == 0.0))
+    {
     }
-    if (((%i >= 0.0) @ " " @ %node.sku $= "")) {
+    if (((%i >= 0.0) @ " " @ %node.sku $= ""))
+    {
         %this.deleteNode(%node);
     }
-};
-function CSBrowser::update(%this) {
+}
+function CSBrowser::update(%this)
+{
     %this.goToCurrentPath(0);
-};
+}
 $CSBrowser::TopOfListCategories = $CSBrowser::NewFurnishingPath;
-function CSBrowser::goToPath(%this, %path, %focus) {
-    if (!isDefined("%focus")) {
+function CSBrowser::goToPath(%this, %path, %focus)
+{
+    if (!isDefined("%focus"))
+    {
         %focus = 1;
     }
     Parent::goToPath(%this, %path, %focus);
     %menu = %this.getCurrentMenu();
     %count = %menu.getCount();
     %i = 0;
-    while ((%i < %count)) {
+    while ((%i < %count))
+    {
         %menuItem = %menu.getChild(0, %i);
         %sku = getSubStr(strchr(%menuItem.name, "|"), 1);
         %this.modifyListViewForSku(%sku, %menuItem);
-        if ((%sku $= "")) {
+        if ((%sku $= ""))
+        {
         }
-        if ((findRecord($CSBrowser::TopOfListCategories, %menuItem.name) >= 0.0)) {
+        if ((findRecord($CSBrowser::TopOfListCategories, %menuItem.name) >= 0.0))
+        {
             %menu.reorderChild(%menuItem, %menu.getChild(0, 0));
         }
         %i = (%i + 1.0);
     }
-    if ((%this.level == 1.0)) {
+    if ((%this.level == 1.0))
+    {
     }
-    if (!%this.otherBrowsersVisible()) {
+    if (!%this.otherBrowsersVisible())
+    {
         %this.button[0].command = (%i < %count) @ %this.getId() @ ".switchToOtherBrowser();";
         %this.button[0].setActive(1);
     }
-};
+}
 $CSBrowser::NewFurnishingIconBitmap = "platform/client/ui/new_logo_small";
 $CSBrowser::FurnishingFolderBitmap = "platform/client/ui/folderIcon";
-function CSBrowser::modifyListViewForSku(%this, %sku, %menuItem) {
+function CSBrowser::modifyListViewForSku(%this, %sku, %menuItem)
+{
     %leftIcon = %menuItem.leftIcon;
     %rightIcon = %menuItem.rightIcon;
-    if (!(%sku $= "")) {
+    if (!(%sku $= ""))
+    {
         %si = SkuManager.findBySku(%sku);
         %rIconBmp = "";
-        if ((%si.brand $= "new")) {
+        if ((%si.brand $= "new"))
+        {
             %rIconBmp = $CSBrowser::NewFurnishingIconBitmap;
         }
-        if (!(%rIconBmp $= "")) {
+        if (!(%rIconBmp $= ""))
+        {
             %rightIcon.setBitmap(%rIconBmp);
         }
         %lIconBmp = %this.getThumbnailPathForSku(%sku, 32);
-        if (!(%lIconBmp $= "")) {
+        if (!(%lIconBmp $= ""))
+        {
             %leftIcon.setBitmap(%lIconBmp);
             %menuItem.menuText.reposition(33, getWord(%menuItem.menuText.getPosition(), 1));
         }
-    } else {
+    }
+    else
+    {
         %leftIcon.setBitmap($CSBrowser::FurnishingFolderBitmap);
         %menuItem.menuText.reposition(33, getWord(%menuItem.menuText.getPosition(), 1));
     }
-};
-function CSBrowser::onCreatedChild(%this, %child, %x, %y) {
+}
+function CSBrowser::onCreatedChild(%this, %child, %x, %y)
+{
     Parent::onCreatedChild(%this, %child, %x, %y);
     %child.menu.bindClassName("CSBrowserFrame");
-};
-function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y) {
+}
+function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y)
+{
     Parent::onCreatedChild(%this, %child, %x, %y);
     %child.rightIcon = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
@@ -210,30 +260,41 @@ function CSBrowserFrame::onCreatedChild(%this, %child, %x, %y) {
         bitmap = "";
     };
     %child.add(%child.leftIcon);
-};
-function CSBrowserNextPrevLink::onURL(%this, %url) {
-    if ((getWord(%url, 0) $= "gamelink")) {
+}
+function CSBrowserNextPrevLink::onURL(%this, %url)
+{
+    if ((getWord(%url, 0) $= "gamelink"))
+    {
         %dir = getWord(%url, 1);
-    } else {
+    }
+    else
+    {
         return;
     }
-    if ((%dir $= "prev")) {
-    } else {
+    if ((%dir $= "prev"))
+    {
+    }
+    else
+    {
     }
     %this.browser.selectNextLeaf(-(1.0), 1, 0);
-};
-function CSBrowser::fillLeafPane(%this, %pane) {
+}
+function CSBrowser::fillLeafPane(%this, %pane)
+{
     %desc = getField(%this.Path, (%this.level - 1.0));
     %desc = %this.getMenuText(%desc);
-    if ((%desc $= "") || (%desc $= %this.baseDir)) {
+    if ((%desc $= "") || (%desc $= %this.baseDir))
+    {
         return;
     }
     %paneWidth = getWord(%pane.getExtent(), 0);
     %paneHeight = getWord(%pane.getExtent(), 1);
     %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1.0)), "|"), 1);
-    if (!(%sku $= "")) {
+    if (!(%sku $= ""))
+    {
         %si = SkuManager.findBySku(%sku);
-        if ((%si.brand $= "new")) {
+        if ((%si.brand $= "new"))
+        {
             %desc = %desc @ "\n" @ "<spush><color:ff0000>New!<spop>";
         }
     }
@@ -271,65 +332,79 @@ function CSBrowser::fillLeafPane(%this, %pane) {
     };
     %pane.add(%nextPrevText);
     %pane.nextPrevText = %nextPrevText;
-};
+}
 $CSBrowser::ThumbnailFilename = "projects/common/inventory/[sku]/thumb_[size]x[size]_[sku]";
 $CSBrowser::MissingThumbFilename = "platform/client/ui/thumbNotFound_[size]x[size]";
-function CSBrowser::getThumbnailPathForSku(%this, %sku, %size) {
+function CSBrowser::getThumbnailPathForSku(%this, %sku, %size)
+{
     %fileName = strreplace($CSBrowser::ThumbnailFilename, "[size]", %size);
     %fileName = strreplace(%fileName, "[sku]", %sku);
     return %fileName;
-};
-function CSBrowser::ShowMoreFor(%this, %sku) {
-    if ((%sku $= "")) {
+}
+function CSBrowser::ShowMoreFor(%this, %sku)
+{
+    if ((%sku $= ""))
+    {
         return;
     }
     %si = SkuManager.findBySku(%sku);
-    if (!isObject(%si)) {
+    if (!isObject(%si))
+    {
         return;
     }
-    if ((%si.descLong $= "")) {
+    if ((%si.descLong $= ""))
+    {
         return;
     }
     %pathRecords = %this.getPathsForSku(%sku);
     %count = getRecordCount(%pathRecords);
-    if ((%count == 0.0)) {
+    if ((%count == 0.0))
+    {
         error(getScopeName() @ "->this CSBrowser doesn't have a path for sku = " @ %sku @ ", which is a presumably valid sku as it is in the SKUManager.");
         return;
     }
     %pathToUse = getRecord(%pathRecords, 0);
     %i = 0;
-    while ((%i < %count)) {
+    while ((%i < %count))
+    {
         %aPath = getRecord(%pathRecords, %i);
-        if ((trim(%aPath) $= %this.Path)) {
+        if ((trim(%aPath) $= %this.Path))
+        {
             %pathToUse = %aPath;
         }
         %i = (%i + 1.0);
     }
     %this.showMoreInfo = (%i < %count) @ 1;
     %this.goToPath(%pathToUse);
-};
-function CSBrowser::isNodeExpanded(%this, %path) {
+}
+function CSBrowser::isNodeExpanded(%this, %path)
+{
     %sku = getSubStr(strchr(getField(%path, (getFieldCount(%path) - 1.0)), "|"), 1);
-    if ((%sku $= "")) {
+    if ((%sku $= ""))
+    {
         return 0;
     }
     %si = SkuManager.findBySku(%sku);
-    if (!(%si.descLong $= "")) {
+    if (!(%si.descLong $= ""))
+    {
     }
     return (%this.getFieldValue("showMoreInfo") == 1.0);
-};
-function CSBrowser::fillExpandedContentPane(%this, %expandedPane) {
+}
+function CSBrowser::fillExpandedContentPane(%this, %expandedPane)
+{
     %frame = %expandedPane.getParent();
     %rightEdgeOfContentPane = (getWord(%frame.contentPane.getExtent(), 0) + getWord(%frame.contentPane.getPosition(), 0));
     %rightEdgeOfContentPane = (%rightEdgeOfContentPane + 10.0);
     %bottomOfItemText = (getWord(%frame.contentPane.itemText.getPosition(), 1) + getWord(%frame.contentPane.itemText.getExtent(), 1));
     %sku = getSubStr(strchr(getField(%this.Path, (%this.level - 1.0)), "|"), 1);
-    if ((%sku $= "")) {
+    if ((%sku $= ""))
+    {
         warn(getScopeName() @ "-> couldn't parse sku from path");
         return;
     }
     %si = SkuManager.findBySku(%sku);
-    if (!isObject(%si)) {
+    if (!isObject(%si))
+    {
         warn(getScopeName() @ "-> couldn't find sku = " @ %sku @ " in skumanager!");
         return;
     }
@@ -341,21 +416,26 @@ function CSBrowser::fillExpandedContentPane(%this, %expandedPane) {
     };
     %expandedPane.add(%descText);
     %expandedPane.descText = %descText;
-};
-function CSBrowser::collapseView(%this) {
+}
+function CSBrowser::collapseView(%this)
+{
     Parent::collapseView(%this);
-};
-function CSBrowser::onResized(%this) {
+}
+function CSBrowser::onResized(%this)
+{
     Parent::onResized(%this);
-};
-function CSBrowser::resizeParentsBy(%this, %delta) {
+}
+function CSBrowser::resizeParentsBy(%this, %delta)
+{
     %window = %this.getParent().getParent();
     %windowExt = %window.getTrgExtent();
     %window.setTrgExtent((getWord(%windowExt, 0) + getWord(%delta, 0)), (getWord(%windowExt, 1) + getWord(%delta, 1)));
     Parent::resizeParentsBy(%this, %delta);
-};
-function CSBrowser::otherBrowsersVisible(%this) {
-    if (CSInventoryBrowserWindow.isVisible()) {
+}
+function CSBrowser::otherBrowsersVisible(%this)
+{
+    if (CSInventoryBrowserWindow.isVisible())
+    {
     }
     return CSShoppingBrowserWindow.isVisible();
-};
+}

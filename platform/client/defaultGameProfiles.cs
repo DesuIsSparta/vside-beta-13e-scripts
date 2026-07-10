@@ -1625,7 +1625,8 @@ new GuiControlProfile(GuiTableBodyCellBitmapProfile : ETSNonModalProfile);
 new GuiControlProfile(GuiTableScrollProfile : DottedScrollProfile) {
     bitmap = "./ui/dottedScrollWhite";
 };
-if (!isObject(ClipboardProfile)) {
+if (!isObject(ClipboardProfile))
+{
     new GuiControlProfile(ClipboardProfile : GuiDefaultProfile) {
         opaque = 1;
         border = 1;
@@ -1633,7 +1634,8 @@ if (!isObject(ClipboardProfile)) {
         borderColor = $WindowBorderColor;
     };
 }
-if (!isObject(ClipboardTabButtonProfile)) {
+if (!isObject(ClipboardTabButtonProfile))
+{
     new GuiControlProfile(ClipboardTabButtonProfile : ClosetTabButtonProfile) {
         fontType = "Arial";
         fontSize = 15;
@@ -1643,16 +1645,19 @@ if (!isObject(ClipboardTabButtonProfile)) {
         fontColors = $HighlightColor;
     };
 }
-if (!isObject(ClipboardHeaderCellProfile)) {
+if (!isObject(ClipboardHeaderCellProfile))
+{
     new GuiControlProfile(ClipboardHeaderCellProfile : GuiTableHeaderCell_N_Profile);
 }
-if (!isObject(ClipboardHeaderCellButtonProfile)) {
+if (!isObject(ClipboardHeaderCellButtonProfile))
+{
     new GuiControlProfile(ClipboardHeaderCellButtonProfile : GuiTableHeaderCellButtonProfile) {
         border = 1;
         borderColor = "255 255 255  90";
     };
 }
-if (!isObject(ClipboardHeaderMLTextProfile)) {
+if (!isObject(ClipboardHeaderMLTextProfile))
+{
     new GuiControlProfile(ClipboardHeaderMLTextProfile : GuiTableHeaderCellMLTextProfile) {
         fontType = "Arial";
         fontSize = 14;
@@ -1662,7 +1667,8 @@ if (!isObject(ClipboardHeaderMLTextProfile)) {
         fontColors = $HighlightColor;
     };
 }
-if (!isObject(ClipboardTextProfile)) {
+if (!isObject(ClipboardTextProfile))
+{
     new GuiControlProfile(ClipboardTextProfile : ETSTextProfile) {
         fontType = "Arial";
         fontSize = 14;

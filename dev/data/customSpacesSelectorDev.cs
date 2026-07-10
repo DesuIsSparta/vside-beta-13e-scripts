@@ -1,12 +1,14 @@
 $gGetFakeBuildingDirectory = 0;
-function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
+function CustomSpacesSelector::getFakeBuildingDirectory(%unused)
+{
     %buildingInfo = new SimGroup("") {
         name = "Hotel Erez";
         description = Buildings::GetLongDescription("");
         floorPlanCount = 4;
     };
     %floorplan = new SimObject("");
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007";
@@ -19,7 +21,8 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.numAvailable = 42;
     %buildingInfo.floorplan[0] = %floorplan;
     %floorplan = new SimObject("");
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007vpointsonly";
@@ -32,7 +35,8 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.numAvailable = 42;
     %buildingInfo.floorplan[1] = %floorplan;
     %floorplan = new SimObject("");
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007vbuxonly";
@@ -45,7 +49,8 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
     %floorplan.numAvailable = 42;
     %buildingInfo.floorplan[2] = %floorplan;
     %floorplan = new SimObject("");
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%floorplan);
     }
     %floorplan.name = "floorPlan007noavailable";
@@ -194,4 +199,4 @@ function CustomSpacesSelector::getFakeBuildingDirectory(%unused) {
         audioStream = "myAudioStream";
         vi /* expression truncated */;
     customSpaceSelGotData(%buildingInfo, %buildingDir);
-};
+}

@@ -1,4 +1,5 @@
-function AnimCtrl::newAnimCtrl(%pos, %ext) {
+function AnimCtrl::newAnimCtrl(%pos, %ext)
+{
     %ctrl = new GuiBitmapCtrl("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -18,53 +19,69 @@ function AnimCtrl::newAnimCtrl(%pos, %ext) {
     %ctrl.loop = 1;
     %ctrl.timer = 0;
     return %ctrl;
-};
-function AnimCtrl::addFrame(%this, %frame) {
-    if ((%this.numFrames == 0.0)) {
+}
+function AnimCtrl::addFrame(%this, %frame)
+{
+    if ((%this.numFrames == 0.0))
+    {
         %this.setBitmap(%frame);
     }
     %this.frame[%this.numFrames] = %frame;
     %this.numFrames = (%this.numFrames + 1.0);
-};
-function AnimCtrl::setDelay(%this, %delay) {
+}
+function AnimCtrl::setDelay(%this, %delay)
+{
     %this.delay = %delay;
-};
-function AnimCtrl::start(%this) {
+}
+function AnimCtrl::start(%this)
+{
     %this.currentFrame = 0;
     %this.resume();
-};
-function AnimCtrl::resume(%this) {
-    if ((%this.numFrames <= 0.0)) {
+}
+function AnimCtrl::resume(%this)
+{
+    if ((%this.numFrames <= 0.0))
+    {
         return;
     }
-    if ((%this.timer != 0.0)) {
+    if ((%this.timer != 0.0))
+    {
         cancel(%this.timer);
         %this.timer = 0;
     }
     %this.tick();
-};
-function AnimCtrl::stop(%this) {
+}
+function AnimCtrl::stop(%this)
+{
     cancel(%this.timer);
     %this.timer = 0;
-};
-function AnimCtrl::tick(%this) {
-    if ((%this.delay > 0.0)) {
+}
+function AnimCtrl::tick(%this)
+{
+    if ((%this.delay > 0.0))
+    {
         %this.timer = %this.schedule(%this.delay, "tick");
     }
     %this.setBitmap(%this.frame[%this.currentFrame]);
     %this.currentFrame = (%this.currentFrame + 1.0);
-    if ((%this.currentFrame == %this.numFrames)) {
-        if (%this.loop) {
+    if ((%this.currentFrame == %this.numFrames))
+    {
+        if (%this.loop)
+        {
             %this.currentFrame = 0;
-        } else {
+        }
+        else
+        {
             %this.stop();
         }
     }
-};
-function AnimCtrl::setCurrentFrame(%this, %frame) {
-    if ((%frame < 0.0) || (%frame >= %this.numFrames)) {
+}
+function AnimCtrl::setCurrentFrame(%this, %frame)
+{
+    if ((%frame < 0.0) || (%frame >= %this.numFrames))
+    {
         return;
     }
     %this.currentFrame = %frame;
     %this.setBitmap(%this.frame[%this.currentFrame]);
-};
+}

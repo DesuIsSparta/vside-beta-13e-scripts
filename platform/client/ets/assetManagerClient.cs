@@ -1,18 +1,22 @@
 $gClientAssetSetString = "";
-function AssetManager::clientInit() {
+function AssetManager::clientInit()
+{
     echo("Initializing AssetManager(client)");
     AssetManager::commonInit();
     %map = AssetManager::getPackages();
     $gClientAssetSetString = AssetManager::rehashSet(%map);
     echo("assetSet: " @ $gClientAssetSetString);
-};
-function AssetManager::getCurrentAssetSet() {
+}
+function AssetManager::getCurrentAssetSet()
+{
     return $gClientAssetSetString;
-};
-function AssetManager::rescanPackages() {
+}
+function AssetManager::rescanPackages()
+{
     AssetManager::clientInit();
-};
-function AssetManager::updatePackageHash(%file) {
+}
+function AssetManager::updatePackageHash(%file)
+{
     assetManagerUpdatePackage(%file);
     $gClientAssetSetString = assetManagerMapString();
-};
+}

@@ -1,44 +1,56 @@
-function GuiTracker::updateLocation(%this, %guiJustOpened) {
-    if (%this.inTransit) {
+function GuiTracker::updateLocation(%this, %guiJustOpened)
+{
+    if (%this.inTransit)
+    {
         %sched = gGetField(%this, "guiTrackerUpdateLocation");
         cancel(%sched);
         %sched = %this.schedule(200, updateLocation, %guiJustOpened);
         gSetField(%this, "guiTrackerUpdateLocation", %sched);
         return;
     }
-    if ((%this.destination $= "") || (%this.destination.getId() $= %guiJustOpened.getId())) {
+    if ((%this.destination $= "") || (%this.destination.getId() $= %guiJustOpened.getId()))
+    {
         %this.previouslyOpened = %this.currentlyOpen;
         %this.currentlyOpen = %guiJustOpened;
         %this.destination = "";
     }
-};
-function GuiTracker::setDestination(%this, %destination) {
+}
+function GuiTracker::setDestination(%this, %destination)
+{
     %this.destination = %destination;
-};
-function GuiTracker::goBack(%this) {
+}
+function GuiTracker::goBack(%this)
+{
     %this.inTransit = 1;
-    if (!(%this.currentlyOpen $= "")) {
+    if (!(%this.currentlyOpen $= ""))
+    {
     }
-    if (!(%this.currentlyOpen.getName() $= "playGui")) {
+    if (!(%this.currentlyOpen.getName() $= "playGui"))
+    {
         %this.currentlyOpen.close(0);
     }
-    if (!(%this.previouslyOpened $= "")) {
+    if (!(%this.previouslyOpened $= ""))
+    {
     }
-    if (!(%this.previouslyOpened.getName() $= "playGui")) {
+    if (!(%this.previouslyOpened.getName() $= "playGui"))
+    {
         %this.previouslyOpened.open();
     }
     %this.inTransit = 0;
-};
-function GuiTracker::canGoBack(%this) {
+}
+function GuiTracker::canGoBack(%this)
+{
     return !(%this.previouslyOpened $= "");
-};
-function GuiTracker::Initialize(%this) {
+}
+function GuiTracker::Initialize(%this)
+{
     %this.currentlyOpen = "";
     %this.previouslyOpened = "";
     %this.destination = "";
     %this.inTransit = 0;
-};
-if (!isObject(GuiTracker)) {
+}
+if (!isObject(GuiTracker))
+{
     new GuiControl(GuiTracker);
     GuiTracker.Initialize();
 }

@@ -513,29 +513,37 @@ datablock PlayerData(PlayerM : PlayerBody) {
     shapeFile = "projects/common/characters/m_player/m_player.dts";
     wardrobeInitFunc = "wardrobeInitM()";
 };
-function armor::onAdd(%this, %obj) {
+function armor::onAdd(%this, %obj)
+{
     gSetField(%this, mountVehicle, 1);
     %obj.setRechargeRate(%this.rechargeRate);
     %obj.setRepairRate(0);
     return;
-};
-function armor::onRemove(%this, %obj) {
-    if ((%obj.client.Player == %obj)) {
+}
+function armor::onRemove(%this, %obj)
+{
+    if ((%obj.client.Player == %obj))
+    {
         %obj.client.Player = 0;
     }
-    if (%obj.isDancing) {
+    if (%obj.isDancing)
+    {
         %obj.stopDance();
     }
-    if (%obj.isSitting) {
+    if (%obj.isSitting)
+    {
         freeSeat(%obj.mySeat);
     }
     return;
-};
-function armor::onNewDataBlock(%this, %obj) {
+}
+function armor::onNewDataBlock(%this, %obj)
+{
     return;
-};
-function armor::onMount(%this, %obj, %vehicle, %node) {
-    if ((%node == 0.0)) {
+}
+function armor::onMount(%this, %obj, %vehicle, %node)
+{
+    if ((%node == 0.0))
+    {
         %obj.setTransform("0 0 0 0 0 1 0");
         %obj.setActionThread(%vehicle.getDataBlock().mountPose[%node], 1, 1);
         %obj.lastWeapon = %obj.getMountedImage($WeaponSlot);
@@ -544,15 +552,19 @@ function armor::onMount(%this, %obj, %vehicle, %node) {
         %obj.client.setObjectActiveImage(%vehicle, 2);
     }
     return;
-};
-function armor::onUnmount(%this, %obj, %vehicle, %node) {
-    if ((%node == 0.0)) {
+}
+function armor::onUnmount(%this, %obj, %vehicle, %node)
+{
+    if ((%node == 0.0))
+    {
         %obj.mountImage(%obj.lastWeapon, $WeaponSlot);
     }
     return;
-};
-function armor::doDismount(%this, %obj, %forced) {
-    if (!%obj.isMounted()) {
+}
+function armor::doDismount(%this, %obj, %forced)
+{
+    if (!%obj.isMounted())
+    {
         return;
     }
     %pos = getWords(%obj.getTransform(), 0, 2);
@@ -568,18 +580,24 @@ function armor::doDismount(%this, %obj, %forced) {
     %numAttempts = 5;
     %success = -(1.0);
     %i = 0;
-    if ((%i < %numAttempts)) {
+    if ((%i < %numAttempts))
+    {
         %pos = VectorAdd(%oldPos, VectorScale(%vec[%i], 3));
-        if (%obj.checkDismountPoint(%oldPos, %pos)) {
+        if (%obj.checkDismountPoint(%oldPos, %pos))
+        {
             %success = %i;
             %impulseVec = %vec[%i];
-        } else {
+        }
+        else
+        {
             %i = (%i + 1.0);
         }
     }
-    if (%forced) {
+    if (%forced)
+    {
     }
-    if ((%success == -(1.0))) {
+    if ((%success == -(1.0)))
+    {
         %pos = %oldPos;
         (%i < %numAttempts);
     }
@@ -590,65 +608,85 @@ function armor::doDismount(%this, %obj, %forced) {
     %obj.setPilot(0);
     %obj.vehicleTurret = "";
     return;
-};
-function armor::onCollision(%this, %obj, %col) {
-    if ((%obj.getState() $= "Dead")) {
+}
+function armor::onCollision(%this, %obj, %col)
+{
+    if ((%obj.getState() $= "Dead"))
+    {
         return;
     }
-    if ((%col.getClassName() $= "Item")) {
+    if ((%col.getClassName() $= "Item"))
+    {
         %obj.pickup(%col);
     }
     %this = %col.getDataBlock();
-    if ((%this.className $= WheeledVehicleData)) {
+    if ((%this.className $= WheeledVehicleData))
+    {
     }
-    if (%obj.mountVehicle) {
+    if (%obj.mountVehicle)
+    {
     }
-    if ((%obj.getState() $= "Move")) {
+    if ((%obj.getState() $= "Move"))
+    {
     }
-    if (%col.mountable) {
+    if (%col.mountable)
+    {
         %node = 0;
         %col.mountObject(%obj, %node);
         %obj.mVehicle = %col;
     }
     return;
-};
-function armor::onImpact(%this, %obj, %unused, %vec, %vecLen) {
+}
+function armor::onImpact(%this, %obj, %unused, %vec, %vecLen)
+{
     %obj.Damage(0, VectorAdd(%obj.getPosition(), %vec), (%vecLen * %this.speedDamageScale), "Impact");
     return;
-};
-function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType) {
-    if ((%obj.getState() $= "Dead")) {
+}
+function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType)
+{
+    if ((%obj.getState() $= "Dead"))
+    {
         return;
     }
     %obj.applyDamage(%damage);
     %location = "Body";
     %client = %obj.client;
-    if (%sourceObject) {
-    } else {
+    if (%sourceObject)
+    {
+    }
+    else
+    {
     }
     %sourceClient = 0;
     %sourceObject;
-    if ((%obj.getState() $= "Dead")) {
+    if ((%obj.getState() $= "Dead"))
+    {
         %client.onDeath(%sourceObject, %sourceClient, %damageType, %location);
     }
     return;
-};
-function armor::onDamage(%this, %obj, %delta) {
-    if ((%delta > 0.0)) {
+}
+function armor::onDamage(%this, %obj, %delta)
+{
+    if ((%delta > 0.0))
+    {
     }
-    if (!(%obj.getState() $= "Dead")) {
+    if (!(%obj.getState() $= "Dead"))
+    {
         %flash = (%obj.getDamageFlash() + ((%delta / %this.maxDamage) * 2.0));
-        if ((%flash > 0.75)) {
+        if ((%flash > 0.75))
+        {
             %flash = 0.75;
         }
         %obj.setDamageFlash(%flash);
-        if ((%delta > 10.0)) {
+        if ((%delta > 10.0))
+        {
             %obj.playPain();
         }
     }
     return;
-};
-function armor::onDisabled(%this, %obj, %unused) {
+}
+function armor::onDisabled(%this, %obj, %unused)
+{
     %obj.playDeathCry();
     %obj.playDeathAnimation();
     %obj.setDamageFlash(0.75);
@@ -656,37 +694,63 @@ function armor::onDisabled(%this, %obj, %unused) {
     %obj.schedule(($CorpseTimeoutValue - 1000.0), "startFade", 1000, 0, 1);
     %obj.schedule($CorpseTimeoutValue, "delete");
     return;
-};
-function armor::onLeaveMissionArea(%this, %obj) {
-    if (isObject(%obj.client)) {
+}
+function armor::onLeaveMissionArea(%this, %obj)
+{
+    if (isObject(%obj.client))
+    {
         %obj.client.onLeaveMissionArea();
     }
     return;
-};
-function armor::onEnterMissionArea(%this, %obj) {
-    if (isObject(%obj.client)) {
+}
+function armor::onEnterMissionArea(%this, %obj)
+{
+    if (isObject(%obj.client))
+    {
         %obj.client.onEnterMissionArea();
     }
     return;
-};
-function armor::onEnterLiquid(%this, %obj, %unused, %type) {
-    if ((%type == 0.0)) {
-    } else {
-        if ((%type == 1.0)) {
-        } else {
-            if ((%type == 2.0)) {
-            } else {
-                if ((%type == 3.0)) {
-                } else {
-                    if ((%type == 4.0)) {
+}
+function armor::onEnterLiquid(%this, %obj, %unused, %type)
+{
+    if ((%type == 0.0))
+    {
+    }
+    else
+    {
+        if ((%type == 1.0))
+        {
+        }
+        else
+        {
+            if ((%type == 2.0))
+            {
+            }
+            else
+            {
+                if ((%type == 3.0))
+                {
+                }
+                else
+                {
+                    if ((%type == 4.0))
+                    {
                         %obj.setDamageDt(%this, $DamageLava, "Lava");
-                    } else {
-                        if ((%type == 5.0)) {
+                    }
+                    else
+                    {
+                        if ((%type == 5.0))
+                        {
                             %obj.setDamageDt(%this, $DamageHotLava, "Lava");
-                        } else {
-                            if ((%type == 6.0)) {
+                        }
+                        else
+                        {
+                            if ((%type == 6.0))
+                            {
                                 %obj.setDamageDt(%this, $DamageCrustyLava, "Lava");
-                            } else {
+                            }
+                            else
+                            {
                             }
                         }
                     }
@@ -695,50 +759,64 @@ function armor::onEnterLiquid(%this, %obj, %unused, %type) {
         }
     }
     return (%type == 7.0);
-};
-function armor::onLeaveLiquid(%this, %obj, %type) {
+}
+function armor::onLeaveLiquid(%this, %obj, %type)
+{
     %obj.clearDamageDt();
     return;
-};
-function armor::onTrigger(%this, %obj, %unused, %unused) {
+}
+function armor::onTrigger(%this, %obj, %unused, %unused)
+{
     return;
-};
-function armor::animationDone(%this) {
+}
+function armor::animationDone(%this)
+{
     return;
-};
-function Player::kill(%this, %damageType) {
+}
+function Player::kill(%this, %damageType)
+{
     %this.Damage(0, %this.getPosition(), 10000, %damageType);
     return;
-};
-function Player::mountVehicles(%this, %bool) {
+}
+function Player::mountVehicles(%this, %bool)
+{
     gSetField(%this, mountVehicle, %bool);
     return;
-};
-function Player::isPilot(%this) {
+}
+function Player::isPilot(%this)
+{
     %vehicle = %this.getObjectMount();
-    if (%vehicle && (%vehicle.getMountNodeObject(0) == %this)) {
+    if (%vehicle && (%vehicle.getMountNodeObject(0) == %this))
+    {
         return 1;
     }
     return 0;
-};
-function Player::playCelAnimation(%this, %anim) {
-    if (!(%this.getState() $= "Dead")) {
+}
+function Player::playCelAnimation(%this, %anim)
+{
+    if (!(%this.getState() $= "Dead"))
+    {
         %this.setActionThread("emote_" @ %anim);
     }
     return;
-};
-function Player::playAnim(%this, %anim) {
-    if (!(%this.getState() $= "Dead")) {
+}
+function Player::playAnim(%this, %anim)
+{
+    if (!(%this.getState() $= "Dead"))
+    {
         %this.setActionThread(%anim);
     }
     return;
-};
-function Player::onNewDataBlock(%this, %obj) {
+}
+function Player::onNewDataBlock(%this, %obj)
+{
     echo("ON NEW DATABLOCK" @ " " @ %this @ " " @ %obj);
     return;
-};
-function AddDance(%danceObj, %sequence, %timeTillSwitch, %transitionTime) {
-    if (!%danceObj.count) {
+}
+function AddDance(%danceObj, %sequence, %timeTillSwitch, %transitionTime)
+{
+    if (!%danceObj.count)
+    {
         %danceObj.count = 0;
     }
     %danceObj.anim[%danceObj.count] = %sequence;
@@ -746,17 +824,20 @@ function AddDance(%danceObj, %sequence, %timeTillSwitch, %transitionTime) {
     %danceObj.transition[%danceObj.count] = %transitionTime;
     %danceObj.count = (%danceObj.count + 1.0);
     return;
-};
+}
 $DANCE_PULSE_FREQ = 100;
-function Player::dancePulse(%player) {
+function Player::dancePulse(%player)
+{
     %playerVel = %player.getVelocity();
     %vel = VectorLen(%playerVel);
-    if ((%vel > 0.1)) {
+    if ((%vel > 0.1))
+    {
         %player.stopDance();
         return;
     }
     %player.danceTimeRemaining = (%player.danceTimeRemaining - $DANCE_PULSE_FREQ);
-    if ((%player.danceTimeRemaining <= 0.0)) {
+    if ((%player.danceTimeRemaining <= 0.0))
+    {
         echo("choosing new dance");
         %dNum = getRandom(0, (%player.danceObj.count - 1.0));
         %player.setActionThread(%player.danceObj.anim[%dNum], 0, 1, (%player.danceObj.transition[%dNum] / 1000.0));
@@ -765,10 +846,12 @@ function Player::dancePulse(%player) {
     }
     %player.danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse");
     return;
-};
-function Player::startDance(%player) {
+}
+function Player::startDance(%player)
+{
     echo("Player::startDance");
-    if (%player.isDancing) {
+    if (%player.isDancing)
+    {
         echo("already dancing");
         %player.stopDance();
     }
@@ -782,15 +865,17 @@ function Player::startDance(%player) {
     %player.isDancing = 1;
     %player.danceSchedule = %player.schedule($DANCE_PULSE_FREQ, "dancePulse");
     return;
-};
-function Player::stopDance(%player) {
+}
+function Player::stopDance(%player)
+{
     echo("Player::stopDance");
     cancel(%player.danceSchedule);
-    if (isObject(%player.danceObj)) {
+    if (isObject(%player.danceObj))
+    {
         %player.danceObj.delete();
     }
     %player.danceObj = 0;
     %player.danceTimeRemaining = 0;
     %player.isDancing = 0;
     return;
-};
+}

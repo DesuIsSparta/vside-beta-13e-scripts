@@ -1,4 +1,5 @@
-function SpaceDef::defaultValues(%this) {
+function SpaceDef::defaultValues(%this)
+{
     %this.audioStreamID = "";
     %this.audioStreamVolume = $Pref::AudioVolume;
     %this.audioStreamAttenuation = "";
@@ -24,17 +25,21 @@ function SpaceDef::defaultValues(%this) {
     %this.contiguousSpaceName = "";
     %this.visitID = "";
     %this.partnerURL = "";
-};
-function spaces_Init() {
+}
+function spaces_Init()
+{
     safeEnsureScriptObject("SimGroup", "spaceDefsGroup");
     spaceDefs_Init();
-};
-function spaces_GetSpaceDef(%internalName, %createIfDNE) {
+}
+function spaces_GetSpaceDef(%internalName, %createIfDNE)
+{
     %fullName = "SpaceDef_" @ %internalName;
-    if (isObject(%fullName)) {
+    if (isObject(%fullName))
+    {
         return %fullName.getId();
     }
-    if (!%createIfDNE) {
+    if (!%createIfDNE)
+    {
         return 0;
     }
     %spaceDef = new ScriptObject(%fullName) {
@@ -44,35 +49,45 @@ function spaces_GetSpaceDef(%internalName, %createIfDNE) {
     %spaceDef.defaultValues();
     spaceDefsGroup.add(%spaceDef);
     return %spaceDef.getId();
-};
-function spaces_HasSpaceDef(%internalName) {
+}
+function spaces_HasSpaceDef(%internalName)
+{
     %fullName = "SpaceDef_" @ %internalName;
     return isObject(%fullName);
-};
-function spaces_FindSpaceDefWithStoreID(%storeID) {
+}
+function spaces_FindSpaceDefWithStoreID(%storeID)
+{
     %found = 0;
     %n = (spaceDefsGroup.getCount() - 1.0);
-    if ((%n >= 0.0)) {
+    if ((%n >= 0.0))
+    {
     }
-    while ((%found == 0.0)) {
+    while ((%found == 0.0))
+    {
         %found = spaceDefsGroup.getObject(%n);
-        if (!(%found.storeID $= %storeID)) {
+        if (!(%found.storeID $= %storeID))
+        {
             %found = 0;
         }
         %n = (%n - 1.0);
-        if ((%n >= 0.0)) {
+        if ((%n >= 0.0))
+        {
         }
     }
     return %found;
-};
-function SpaceDef::getInternalName(%this) {
+}
+function SpaceDef::getInternalName(%this)
+{
     return getSubStr(%this.getName(), 9);
-};
-function initTokenSubstitutions() {
+}
+function initTokenSubstitutions()
+{
     %map = safeEnsureScriptObject("StringMap", "gTokenSubstitutionTable");
-    if (0) {
+    if (0)
+    {
     }
-    if (%map.initialized) {
+    if (%map.initialized)
+    {
         return %map;
     }
     %map.put("[PLAYERNAME]", "          %player     .getShapeName()");
@@ -81,12 +96,14 @@ function initTokenSubstitutions() {
     %map.put("[SHORTNAME]", "          %this       .shortName");
     %map.initialized = 1;
     return %map;
-};
-function SpaceDef::doTokenSubstitution(%this, %dry, %player) {
+}
+function SpaceDef::doTokenSubstitution(%this, %dry, %player)
+{
     %map = initTokenSubstitutions();
     %wet = %dry;
     %n = (%map.size() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %replaceThis = %map.getKey(%n);
         %withThis = %map.getValue(%n);
         %player = %player;
@@ -96,5 +113,5 @@ function SpaceDef::doTokenSubstitution(%this, %dry, %player) {
         %n = (%n - 1.0);
     }
     return %wet;
-};
+}
 spaces_Init();

@@ -1,4 +1,5 @@
-function initProjectSpecificDoors() {
+function initProjectSpecificDoors()
+{
     $gDoorsNum = 0;
     addLockableDoor("nv", "NV Doppel Store", 0, "", "", "doppledoor", "");
     addLockableDoor("nv", "NV Hottubs", 0, "", "", "deckdoor1", "");
@@ -37,5 +38,5 @@ function initProjectSpecificDoors() {
     addLockableDoor("lga", "LGA VHD", 0, "vhd_access_group", "TeleportFreeVHD", "", "");
     addLockableDoor("lga", "LGA VHD Runway", 0, "vhd_access_stagegroup", "TeleportFreeVHDstage", "", "");
     addLockableDoor("lga", "LGA Stage Rope", 0, "stageRopeGroup", "TeleportFreeStage", "", "");
-};
+}
 initProjectSpecificDoors();

@@ -1,3 +1,4 @@
-function Player::hasMicrophone(%this) {
+function Player::hasMicrophone(%this)
+{
     return SkuManager.hasSkuWithTag(%this.getActiveSKUs(), "microphone");
-};
+}

@@ -1,156 +1,208 @@
 $ChatHud::ChatTarget = 0;
 $ChatHud::ListenTarget = 0;
-function onServerMessage(%unused) {
-};
-function onAIMReceive(%sender, %msg) {
+function onServerMessage(%unused)
+{
+}
+function onAIMReceive(%sender, %msg)
+{
     AIMConvManager.receivedMessage(%sender, %msg);
-};
-function MessageHud::open(%this, %text) {
-    if (%this.isVisible()) {
+}
+function MessageHud::open(%this, %text)
+{
+    if (%this.isVisible())
+    {
         return;
     }
     %this.setVisible(1);
     MessageHudEdit.makeFirstResponder(1);
     MessageHudEdit.reinjectOpenEvent();
     MessageHud.schedule(100, updatePosition);
-    if (isObject(ConvBubVecCtrlMsgVec) && (ConvBubVecCtrlMsgVec.getNumLines() > 0.0)) {
+    if (isObject(ConvBubVecCtrlMsgVec) && (ConvBubVecCtrlMsgVec.getNumLines() > 0.0))
+    {
         ConvBub.open();
     }
-};
-function MessageHud::close(%this) {
-    if (!%this.isVisible()) {
+}
+function MessageHud::close(%this)
+{
+    if (!%this.isVisible())
+    {
         return;
     }
     %this.setVisible(0);
     MessageHudEdit.makeFirstResponder(0);
     MessageHudEdit.setValue("");
-};
-function MessageHudEdit::onEscape(%this) {
+}
+function MessageHudEdit::onEscape(%this)
+{
     finishTextEntry();
-};
-function MessageHud::updatePosition(%this) {
+}
+function MessageHud::updatePosition(%this)
+{
     %resWidth = getWord($UserPref::Video::Resolution, 0);
     %trgX = (0.5 * (%resWidth - getWord(%this.getExtent(), 0)));
     %trgY = ((getWord(ButtonBar.getTrgPosition(), 1) - 35.0) + $ButtonBarVar::VerticalAdjustment);
     %this.setTrgPosition(%trgX, %trgY);
     PlayGui.pushToBack(%this);
-};
-function MessageHudEdit::eval(%this) {
+}
+function MessageHudEdit::eval(%this)
+{
     %text = trim(StripMLControlChars(%this.getValue()));
     finishTextEntry();
-    if ((%text $= "")) {
+    if ((%text $= ""))
+    {
         return;
     }
-    if (isCommand(%text)) {
-        if (!processCommand(%text)) {
+    if (isCommand(%text))
+    {
+        if (!processCommand(%text))
+        {
             %curAnim = $player.getCurrActionName();
             %curBase = getSubStr(%curAnim, 2, 100);
             %curProt = ProtectedAnimsDict.get(%curBase);
-            if ((%curProt == 1.0)) {
+            if ((%curProt == 1.0))
+            {
                 commandToServer('RequestToStand', 0, 0);
             }
             emote(%text);
         }
-    } else {
+    }
+    else
+    {
         emote(%text);
-        if (isObject(pChat)) {
+        if (isObject(pChat))
+        {
             pChat.say(%text, 0, 0);
-        } else {
+        }
+        else
+        {
             say(%text);
         }
     }
-};
-function MessageHudEdit::scanForAutoCommands(%this) {
-    if ((getWordCount(%this.getValue()) != 1.0)) {
+}
+function MessageHudEdit::scanForAutoCommands(%this)
+{
+    if ((getWordCount(%this.getValue()) != 1.0))
+    {
         return;
     }
     %firstWord = getWord(%this.getValue(), 0);
-    if ((strpos(%this.getValue(), " ") < 0.0)) {
+    if ((strpos(%this.getValue(), " ") < 0.0))
+    {
         return;
     }
-    if (isObject(CommandAbbreviationMap)) {
+    if (isObject(CommandAbbreviationMap))
+    {
         %replace = CommandAbbreviationMap.get(%firstWord);
-        if (!(%replace $= "")) {
+        if (!(%replace $= ""))
+        {
             %this.setValue(setWord(%this.getValue(), 0, %replace));
             %this.setCursorPos(40000);
         }
     }
     %firstWord = getWord(%this.getValue(), 0);
-    if ((%firstWord $= "/reply")) {
+    if ((%firstWord $= "/reply"))
+    {
         replyOperation();
-    } else {
-        if ((%firstWord $= "/sos")) {
-        } else {
+    }
+    else
+    {
+        if ((%firstWord $= "/sos"))
+        {
+        }
+        else
+        {
         }
     }
-};
+}
 $gChatPreviewTimer = 0;
-function MessageHudEdit::onKeystroke(%this) {
+function MessageHudEdit::onKeystroke(%this)
+{
     %text = trim(StripMLControlChars(%this.getValue()));
-    if (!(%text $= "")) {
+    if (!(%text $= ""))
+    {
         setIdle(0);
     }
     %this.scanForAutoCommands();
-    if (($gChatPreviewTimer != 0.0)) {
+    if (($gChatPreviewTimer != 0.0))
+    {
         return;
     }
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
     $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
-};
-function MessageHudEdit::chatPreviewTimer(%this) {
+}
+function MessageHudEdit::chatPreviewTimer(%this)
+{
     cancel($gChatPreviewTimer);
     %this.sendPreviewText();
     $Chat::Preview::Period = mMax($Chat::Preview::Period, 100);
     $gChatPreviewTimer = %this.schedule($Chat::Preview::Period, "chatPreviewTimer");
     PlayGui.pushToBack(%this);
-};
-function MessageHudEdit::sendPreviewText(%this) {
+}
+function MessageHudEdit::sendPreviewText(%this)
+{
     $player.sendPreviewText(%this.getValue());
-};
-function removeLastWordIfNotFollowedByWhiteSpace(%dry) {
-    if (!(%dry $= rtrim(%dry))) {
+}
+function removeLastWordIfNotFollowedByWhiteSpace(%dry)
+{
+    if (!(%dry $= rtrim(%dry)))
+    {
         return %dry;
     }
     %num = getWordCount(%dry);
-    if ((%num < 1.0)) {
+    if ((%num < 1.0))
+    {
         return "";
     }
     %lastWordSize = strlen(getWord(%dry, (%num - 1.0)));
     %wet = getSubStr(%dry, 0, (strlen(%dry) - %lastWordSize));
     return %wet;
-};
-function MessageHud::setGrayed(%this, %value) {
-    if (%value) {
+}
+function MessageHud::setGrayed(%this, %value)
+{
+    if (%value)
+    {
         %this.setBitmap("platform/client/ui/messageHudGray");
-    } else {
+    }
+    else
+    {
         %this.setBitmap("platform/client/ui/messageHud");
     }
-};
-function MessageHud::updateModeIcon(%this) {
-    if (isObject($player)) {
+}
+function MessageHud::updateModeIcon(%this)
+{
+    if (isObject($player))
+    {
     }
-    if ($player.hasMicrophone()) {
+    if ($player.hasMicrophone())
+    {
         %modeIconName = "bb_microphone";
         %modeIconCommand = "displayMicrophoneHelp();";
-    } else {
+    }
+    else
+    {
         %modeIconName = "";
         %modeIconCommand = "";
     }
     %this.setModeIconName(%modeIconName, %modeIconCommand);
-};
+}
 $gMessageHudEditOriginalPosition = "";
 $gMessageHudEditOriginalExtent = "";
 $gMessageHudEditModeIconOffset = "22 0";
-function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
-    if (($gMessageHudEditOriginalPosition $= "")) {
+function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand)
+{
+    if (($gMessageHudEditOriginalPosition $= ""))
+    {
         $gMessageHudEditOriginalPosition = MessageHudEdit.getPosition();
         $gMessageHudEditOriginalExtent = MessageHudEdit.getExtent();
     }
-    if ((%modeIconName $= "")) {
+    if ((%modeIconName $= ""))
+    {
         MessageHudModeIcon.setVisible(0);
         MessageHudEdit.position = $gMessageHudEditOriginalPosition;
         MessageHudEdit.extent = $gMessageHudEditOriginalExtent;
-    } else {
+    }
+    else
+    {
         %bitmap = "platform/client/buttons/" @ %modeIconName;
         %positionNew = VectorAdd($gMessageHudEditOriginalPosition, $gMessageHudEditModeIconOffset);
         MessageHudEdit.position = %positionNew;
@@ -160,26 +212,33 @@ function MessageHud::setModeIconName(%this, %modeIconName, %modeIconCommand) {
         MessageHudModeIcon.setVisible(1);
         MessageHudModeIcon.command = %modeIconCommand;
     }
-};
-function displayMicrophoneHelp() {
-    if ((Canvas.getContent() != PlayGui.getId())) {
+}
+function displayMicrophoneHelp()
+{
+    if ((Canvas.getContent() != PlayGui.getId()))
+    {
         return;
     }
     userTips::showNow("GotMic");
-};
-function startTextEntry() {
-    if (!MessageHud.isVisible()) {
+}
+function startTextEntry()
+{
+    if (!MessageHud.isVisible())
+    {
         MessageHud.open(moveMap.lastkey);
-    } else {
+    }
+    else
+    {
         MessageHudEdit.setText(MessageHudEdit.getValue() @ moveMap.lastkey);
         MessageHudEdit.makeFirstResponder(1);
     }
-};
-function finishTextEntry(%text) {
+}
+function finishTextEntry(%text)
+{
     MessageHud.close();
     cancel($gChatPreviewTimer);
     $gChatPreviewTimer = 0;
     $player.onGotTypingSomething("");
     $player.sendPreviewText("");
     MessageHudEdit.setValue("");
-};
+}

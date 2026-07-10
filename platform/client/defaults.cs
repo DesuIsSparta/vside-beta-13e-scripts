@@ -111,7 +111,8 @@ $Pref::OpenGL::mipReduction = 0;
 $Pref::OpenGL::interiorMipReduction = 0;
 $Pref::OpenGL::skyMipReduction = 0;
 $pref::OpenGL::resizedBitmapLoadingIsEnabled = 1;
-if (($Platform $= "windows")) {
+if (($Platform $= "windows"))
+{
     $pref::OpenGL::disableEXTCompiledVertexArray = ($Platform::Version::Major == 6.0);
 }
 $pref::visibleDistanceMod = 1.0;
@@ -240,7 +241,8 @@ $Player::VPoints = 0;
 $Player::VBux = 0;
 $Net::userOwner = "";
 exec("./default_owner.cs", 0);
-if (($Net::userOwner $= "")) {
+if (($Net::userOwner $= ""))
+{
     $Net::userOwner = "doppelganger";
 }
 $VURLcmd = "";

@@ -1,4 +1,5 @@
-function convertDif2Dae() {
+function convertDif2Dae()
+{
     %obj = new InteriorInstance("") {
         position = "0 0 0";
         rotation = "1 0 0 0";
@@ -7,4 +8,4 @@ function convertDif2Dae() {
     };
     %obj.exportToCollada(0);
     MissionGroup.add(%obj);
-};
+}

@@ -13,9 +13,11 @@ $gameMgr::GAME_TYPES[1] = new ScriptObject("") {
     USER_CREATE = 1;
 };
 $gameMgr::CUSTOM_GAME = 1;
-if (isObject(MissionCleanup)) {
+if (isObject(MissionCleanup))
+{
     %n = 0;
-    while ((%n < $gameMgr::GAME_TYPES_COUNT)) {
+    while ((%n < $gameMgr::GAME_TYPES_COUNT))
+    {
         MissionCleanup.add($gameMgr::GAME_TYPES[%n]);
         %n = (%n + 1.0);
     }
@@ -32,6 +34,7 @@ $gameMgr::GameStatus::CANT_START = -(1.0);
 $gameMgr::GameStatus::WAITING = 0;
 $gameMgr::GameStatus::STARTED = 1;
 $gameMgr::GameStatus::POST_GAME = 2;
-function SimSet::getByNameField(%this, %name) {
+function SimSet::getByNameField(%this, %name)
+{
     return %this.getByField("name", %name);
-};
+}

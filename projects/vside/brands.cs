@@ -1,4 +1,5 @@
-function ClosetInitBrands() {
+function ClosetInitBrands()
+{
     ClosetAddBrand("All", "*");
     ClosetAddBrand(121, 121);
     ClosetAddBrand("All American Rejects", "aar");
@@ -32,5 +33,5 @@ function ClosetInitBrands() {
     ClosetAddBrand("vSideHouseofDesign", "vhd");
     ClosetAddBrand("Vee Bar", "vbar");
     ClosetAddBrand("VHD Template", "vhdtemplate");
-};
+}
 ClosetInitBrands();

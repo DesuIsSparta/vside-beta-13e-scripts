@@ -1,5 +1,6 @@
 exec("./skeletonClient.cs");
-function testLoginTimes() {
+function testLoginTimes()
+{
     $loginLogout = 0;
     %testLogin = new ScriptObject(skeletonClient) {
         userName = $UserPref::Player::Name;
@@ -11,22 +12,28 @@ function testLoginTimes() {
     echo("LOAD: Logging into " @ $Cities[$cityIndex]);
     %testLogin.doLogin($Cities[$cityIndex]);
     $cityIndex = ($cityIndex + 1.0);
-};
-function doSomething() {
-    if (ClosetGui.isVisible()) {
+}
+function doSomething()
+{
+    if (ClosetGui.isVisible())
+    {
         ClosetGui.close();
     }
     pChat.say("Hello!", 0, 0);
     pChat.say("Goodbye!", 0, 0);
     logout(0);
     WorldMap.exit();
-    if (($cityIndex <= $maxCities)) {
+    if (($cityIndex <= $maxCities))
+    {
         schedule(3000, 0, testLoginTimes);
-    } else {
+    }
+    else
+    {
         skeletonClient::reallyQuit();
     }
-};
-function initCities() {
+}
+function initCities()
+{
     %i = 0;
     $Cities[%i = (%i + 1.0)] = "NewVeneziaNorth";
     $Cities[%i = (%i + 1.0)] = "LaGenoaAiresNorth";
@@ -37,6 +44,6 @@ function initCities() {
     $Cities[%i = (%i + 1.0)] = "BeatUp";
     $maxCities = %i;
     $cityIndex = 1;
-};
+}
 initCities();
 testLoginTimes();

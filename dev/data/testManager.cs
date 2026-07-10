@@ -1,6 +1,8 @@
-function TestLoginRequest::onError(%this, %unused, %unused) {
-};
-function TestLoginRequest::onDone(%this, %unused) {
+function TestLoginRequest::onError(%this, %unused, %unused)
+{
+}
+function TestLoginRequest::onDone(%this, %unused)
+{
     echo("status:          " @ %this.status());
     echo("status code:     " @ %this.statusCode());
     echo("token:           " @ %this.getValue("token"));
@@ -15,41 +17,54 @@ function TestLoginRequest::onDone(%this, %unused) {
     echo("acctbal:         " @ %this.getValue("acctbal"));
     echo("activated:       " @ %this.getValue("activated"));
     echo("hasemail:        " @ %this.getValue("hasemail"));
-};
-function TestBootRequest::onDone(%this) {
+}
+function TestBootRequest::onDone(%this)
+{
     schedule(1000, 0, Login);
-};
-function bootThenLogin() {
-    if (isObject(TestBootRequest)) {
+}
+function bootThenLogin()
+{
+    if (isObject(TestBootRequest))
+    {
         TestBootRequest.delete();
     }
     %bootRequest = new ManagerRequest(TestBootRequest);
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%bootRequest);
     }
     %url = $Net::SecureClientServiceURL @ "/Boot";
     %url = %url @ "?user=doppeladmin&password=doppeladmin";
     %bootRequest.setURL(%url);
     %bootRequest.setVerbose(1);
-    if (%bootRequest.start()) {
+    if (%bootRequest.start())
+    {
         CURLSimGroup.add(%bootRequest);
-    } else {
+    }
+    else
+    {
         %bootRequest.delete();
     }
-};
-function Login() {
-    if (isObject(TestLoginRequest)) {
+}
+function Login()
+{
+    if (isObject(TestLoginRequest))
+    {
         TestLoginRequest.delete();
     }
     %loginRequest = new ManagerRequest(TestLoginRequest);
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%loginRequest);
     }
     %loginRequest.setURL("http://s-envmanager.eviltwinstudios.net/envmanager/envclient/login?user=doppeladmin&password=doppeladmin&build=unknown&version=unknown");
     %loginRequest.setProgress(1);
-    if (%loginRequest.start()) {
+    if (%loginRequest.start())
+    {
         CURLSimGroup.add(%loginRequest);
-    } else {
+    }
+    else
+    {
         %loginRequest.delete();
     }
-};
+}

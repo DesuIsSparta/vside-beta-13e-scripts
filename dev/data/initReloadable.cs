@@ -30,6 +30,7 @@ exec("./miscDev.cs");
 exec("./scratchDev.cs");
 exec("./videoRendererDev.cs");
 exec("./testData/initReloadable.cs");
-if ($AmClient) {
+if ($AmClient)
+{
     exec("./ui/initReloadable.cs");
 }

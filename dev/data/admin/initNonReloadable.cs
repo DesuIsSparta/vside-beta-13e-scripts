@@ -1,3 +1,4 @@
-if ($AmClient) {
+if ($AmClient)
+{
     exec("./snoopPanel.gui");
 }

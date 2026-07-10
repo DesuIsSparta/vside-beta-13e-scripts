@@ -1,23 +1,29 @@
 $Item::RespawnTime = (20.0 * 1000.0);
 $Item::PopTime = (10.0 * 1000.0);
-function Item::respawn(%this) {
+function Item::respawn(%this)
+{
     %this.startFade(0, 0, 1);
     %this.setHidden(1);
     %this.schedule($Item::RespawnTime, "setHidden", 0);
     %this.schedule(($Item::RespawnTime + 100.0), "startFade", 1000, 0, 0);
-};
-function Item::schedulePop(%this) {
+}
+function Item::schedulePop(%this)
+{
     %this.schedule(($Item::PopTime - 1000.0), "startFade", 1000, 0, 1);
     %this.schedule($Item::PopTime, "delete");
-};
-function ItemData::onThrow(%this, %user, %amount) {
-    if ((%amount $= "")) {
+}
+function ItemData::onThrow(%this, %user, %amount)
+{
+    if ((%amount $= ""))
+    {
         %amount = 1;
     }
-    if (!(%this.maxInventory $= "") && (%amount > %this.maxInventory)) {
+    if (!(%this.maxInventory $= "") && (%amount > %this.maxInventory))
+    {
         %amount = %this.maxInventory;
     }
-    if (!%amount) {
+    if (!%amount)
+    {
         return 0;
     }
     %user.decInventory(%this, %amount);
@@ -29,34 +35,45 @@ function ItemData::onThrow(%this, %user, %amount) {
     MissionGroup.add(%obj);
     %obj.schedulePop();
     return %obj;
-};
-function ItemData::onPickup(%this, %obj, %user, %amount) {
+}
+function ItemData::onPickup(%this, %obj, %user, %amount)
+{
     %count = %obj.count;
-    if ((%count $= "")) {
-        if (!(%this.maxInventory $= "")) {
-            if (!(%count = %this.maxInventory)) {
+    if ((%count $= ""))
+    {
+        if (!(%this.maxInventory $= ""))
+        {
+            if (!(%count = %this.maxInventory))
+            {
                 return;
             }
-        } else {
+        }
+        else
+        {
             %count = 1;
         }
     }
     %user.incInventory(%this, %count);
-    if (%user.client) {
+    if (%user.client)
+    {
         messageClient(%user.client, 'MsgItemPickup', '\x02\x01You picked up %1', %this.pickUpName);
     }
-    if (%obj.isStatic()) {
+    if (%obj.isStatic())
+    {
         %obj.respawn();
-    } else {
+    }
+    else
+    {
         %obj.delete();
     }
     return 1;
-};
-function ItemData::create(%data) {
+}
+function ItemData::create(%data)
+{
     %obj = new Item("") {
         dataBlock = %data;
         static = 1;
         rotate = 1;
     };
     return %obj;
-};
+}

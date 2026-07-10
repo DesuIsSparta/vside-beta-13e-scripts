@@ -120,7 +120,8 @@ new GuiControlProfile(GuiRadioProfile) {
     bitmap = "./demoRadio";
     hasBitmapArray = 1;
 };
-if (!isObject(GuiClickLabelProfile)) {
+if (!isObject(GuiClickLabelProfile))
+{
     new GuiControlProfile(GuiClickLabelProfile) {
         opaque = 1;
         fontColor = "100 100 100";
@@ -137,7 +138,8 @@ if (!isObject(GuiClickLabelProfile)) {
         acceptMouseDragAndDrop = 1;
     };
 }
-if (!isObject(GuiClickLabelProfileBold)) {
+if (!isObject(GuiClickLabelProfileBold))
+{
     new GuiControlProfile(GuiClickLabelProfileBold : GuiClickLabelProfile) {
         borderColor = "256 0 0 100";
     };

@@ -1,10 +1,13 @@
 DeclareTestSuite("TestSuite_GiftBox");
-function TestSuite_GiftBox::setup(%this) {
+function TestSuite_GiftBox::setup(%this)
+{
     %this.addTestCase("TEST_GiftBox_BASICS");
     %this.addTestCase("TEST_GiftBox_LoadFromFile");
-};
-function TEST_GiftBox_BASICS::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_GiftBox_BASICS::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
@@ -36,9 +39,11 @@ function TEST_GiftBox_BASICS::runTest(%this) {
     %type = getWord(%giftString, 0);
     %this.assert((%type $= "SKUS") || (%type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
     %gb.delete();
-};
-function TEST_GiftBox_LoadFromFile::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_GiftBox_LoadFromFile::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
@@ -50,4 +55,4 @@ function TEST_GiftBox_LoadFromFile::runTest(%this) {
     %type = getWord(%giftString, 0);
     %this.assert((%type $= "SKUS") || (%type $= "VPOINTS"), "expected first word of gift string to be SKUS or VPOINTS");
     %gb.delete();
-};
+}

@@ -1,90 +1,122 @@
-function toggleSalonChairControlDialog() {
-    if (!$StandAlone) {
+function toggleSalonChairControlDialog()
+{
+    if (!$StandAlone)
+    {
         return;
     }
-    if (!($gContiguousSpaceName $= "minimal")) {
+    if (!($gContiguousSpaceName $= "minimal"))
+    {
         return;
     }
-    if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic")) {
+    if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic"))
+    {
         return;
     }
     toggleVisibleState(salonChairControlGui);
-};
-function salonChairControlGui::open(%this) {
+}
+function salonChairControlGui::open(%this)
+{
     Canvas.pushDialog(%this, 0);
     %this.setVisible(1);
     %this.onRefreshTargetsList();
-};
-function salonChairControlGui::close(%this, %unused) {
+}
+function salonChairControlGui::close(%this, %unused)
+{
     Canvas.popDialog(%this);
     %this.setVisible(0);
-};
-function salonChairControlGui::tryTarget(%this, %shape) {
-    if (!%this.isVisible()) {
+}
+function salonChairControlGui::tryTarget(%this, %shape)
+{
+    if (!%this.isVisible())
+    {
         return;
     }
     %name = admin::getTargetName(%shape);
-    if (isObject(%shape)) {
+    if (isObject(%shape))
+    {
         %classname = admin::getFormattedClassName(%shape.getClassName());
-    } else {
+    }
+    else
+    {
         %classname = admin::getFormattedClassName("special");
     }
     %targetName = %classname @ "\t" @ %name;
     salonChairControlTargetsPopup.setText(%targetName);
-};
-function salonChairControlGui::sitInChair(%this, %chairType) {
+}
+function salonChairControlGui::sitInChair(%this, %chairType)
+{
     %name = getField(salonChairControlTargetsPopup.getText(), 1);
     commandToServer('RequestOtherPlayerToSit', %name, "seSalonChairClient" @ %chairType);
-};
-function salonChairControlGui::releaseFromChair(%this, %teleportAway) {
+}
+function salonChairControlGui::releaseFromChair(%this, %teleportAway)
+{
     %name = getField(salonChairControlTargetsPopup.getText(), 1);
     commandToServer('RequestOtherPlayerToStand', %name, %teleportAway);
-};
+}
 $gSalonChairControlTargetsList = "";
-function salonChairControlGui::onRefreshTargetsList(%this) {
+function salonChairControlGui::onRefreshTargetsList(%this)
+{
     $gSalonChairControlGuiPrevMenuTarget = salonChairControlTargetsPopup.getText();
     salonChairControlTargetsPopup.setText("getting list..");
     commandToServer('SalonChairControlGetTargets');
-};
-function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item) {
+}
+function clientCmdBuildSalonChairControlTargetsList(%actionTagged, %item)
+{
     %action = detag(%actionTagged);
-    if ((%action $= "begin")) {
+    if ((%action $= "begin"))
+    {
         $gSalonChairControlTargetsList = "";
-    } else {
-        if ((%action $= "add")) {
-            if (($gSalonChairControlTargetsList $= "")) {
+    }
+    else
+    {
+        if ((%action $= "add"))
+        {
+            if (($gSalonChairControlTargetsList $= ""))
+            {
                 $gSalonChairControlTargetsList = %item;
-            } else {
+            }
+            else
+            {
                 $gSalonChairControlTargetsList = $gSalonChairControlTargetsList @ "\n" @ %item;
             }
-        } else {
-            if ((%action $= "finish")) {
+        }
+        else
+        {
+            if ((%action $= "finish"))
+            {
                 salonChairControlGui.onGotTargetsList($gSalonChairControlTargetsList);
             }
         }
     }
-};
-function salonChairControlGui::onGotTargetsList(%this, %theList) {
+}
+function salonChairControlGui::onGotTargetsList(%this, %theList)
+{
     salonChairControlTargetsPopup.clear();
     %num = getRecordCount(%theList);
-    if ((%num < 1.0)) {
+    if ((%num < 1.0))
+    {
         error("apparently nobody is here. this is bad.");
         return;
     }
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %entry = getRecord(%theList, %n);
         salonChairControlTargetsPopup.add(%entry, %n);
-        if ((%entry $= $gSalonChairControlGuiPrevMenuTarget)) {
+        if ((%entry $= $gSalonChairControlGuiPrevMenuTarget))
+        {
             %nextItem = %entry;
         }
         %n = (%n + 1.0);
     }
     salonChairControlTargetsPopup.sort();
-    if (!((%n < %num) @ " " @ %this.defaultTarget $= "")) {
+    if (!((%n < %num) @ " " @ %this.defaultTarget $= ""))
+    {
         salonChairControlTargetsPopup.setText(%this.defaultTarget);
-    } else {
+    }
+    else
+    {
         salonChairControlTargetsPopup.setText(%nextItem);
     }
-};
+}

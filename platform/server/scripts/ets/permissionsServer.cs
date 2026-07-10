@@ -24,20 +24,24 @@ $Whitelist_Staff = $Whitelist_Staff @ " " @ "todd";
 $Whitelist_Staff = $Whitelist_Staff @ " " @ "eviljg";
 $Whitelist_Staff = $Whitelist_Staff @ " " @ "ocelot";
 $Whitelist_Staff = $Whitelist_Staff @ " " @ "ahminus";
-function GameConnection::determinePermissions(%unused, %player) {
+function GameConnection::determinePermissions(%unused, %player)
+{
     %name = stripUnprintables(%player.getShapeName());
     %perms = 0;
-    if (!(%name $= "")) {
+    if (!(%name $= ""))
+    {
     }
-    if ((findWord($Whitelist_Staff, %name) >= 0.0)) {
+    if ((findWord($Whitelist_Staff, %name) >= 0.0))
+    {
         %perms = (%perms | $EtsPermissionTypes::Staff);
         echo("Staff login:" @ " " @ %name);
     }
-    if ($AmClient) {
+    if ($AmClient)
+    {
         echo("Running standalone: setting staff.");
         %perms = (%perms | $EtsPermissionTypes::Staff);
     }
     echo("setting permissions for" @ " " @ getDebugString(%player) @ " " @ "to" @ " " @ %perms);
     %player.setEtsPermissions(%perms);
     return;
-};
+}

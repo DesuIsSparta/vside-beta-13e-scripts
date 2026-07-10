@@ -1,28 +1,36 @@
-function SalonStyleSelector::open(%this) {
+function SalonStyleSelector::open(%this)
+{
     PlayGui.ensureAdded(%this);
     %this.Initialize();
-    if (!%this.isVisible()) {
+    if (!%this.isVisible())
+    {
         %this.setVisible(1);
     }
     PlayGui.focusAndRaise(%this);
-};
-function SalonStyleSelector::close(%this) {
-    if (($gSalonChairCurrent != 0.0)) {
+}
+function SalonStyleSelector::close(%this)
+{
+    if (($gSalonChairCurrent != 0.0))
+    {
         return 1;
     }
     %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
-};
-function SalonStyleSelector::Initialize(%this) {
-    if (%this.initialized) {
+}
+function SalonStyleSelector::Initialize(%this)
+{
+    if (%this.initialized)
+    {
         return;
     }
     %this.initialized = 1;
-    if (isObject(SalonStyleSelector.skuGuiList)) {
+    if (isObject(SalonStyleSelector.skuGuiList))
+    {
         SalonStyleSelector.skuGuiList.delete();
     }
-    if (isObject(SalonStyleSelector.noSkuGuiText)) {
+    if (isObject(SalonStyleSelector.noSkuGuiText))
+    {
         SalonStyleSelector.noSkuGuiText.delete();
     }
     %SSS_Height = 200;
@@ -180,21 +188,28 @@ function SalonStyleSelector::Initialize(%this) {
     %left = 50;
     %top = ((getWord(PlayGui.getExtent(), 1) - getWord(%this.getExtent(), 1)) / 2.0);
     %this.reposition(%left, %top);
-};
-function ShowPropsButton::onClick(%this) {
-    if ($player.hasAvailableProp()) {
+}
+function ShowPropsButton::onClick(%this)
+{
+    if ($player.hasAvailableProp())
+    {
         toggleClosetItemCategory("props");
-    } else {
+    }
+    else
+    {
         %salonCode = $SALON_CHAIR_DEF_DESTCODE[SalonStyleSelector.lastTypeOfSalon];
         %amInSalon = ($gCurrentStoreName $= %salonCode);
         %callback = "";
-        if (%amInSalon) {
+        if (%amInSalon)
+        {
             %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-IN"];
             %callback = "toggleStore();";
-        } else {
+        }
+        else
+        {
             %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-OUT"];
             %callback = "vurlOperation(\"" @ $gDestinationVurls[%salonCode] @ "\");";
         }
         MessageBoxYesNo(%salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-TITLE"], %msg, %callback, "");
     }
-};
+}

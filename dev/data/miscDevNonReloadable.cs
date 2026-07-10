@@ -1,23 +1,29 @@
 $gGuiEditorGuiExeced = 0;
-function GuiEditLazy(%val) {
-    if (!$gGuiEditorGuiExeced) {
+function GuiEditLazy(%val)
+{
+    if (!$gGuiEditorGuiExeced)
+    {
         exec("dev/data/ui/GuiEditorGui.gui");
         $gGuiEditorGuiExeced = 1;
     }
     GuiEdit(%val);
-};
+}
 GlobalActionMap.bind(keyboard, "alt F10", GuiEditLazy);
 $gWorldEditorExeced = 0;
-function toggleEditorLazy(%val) {
-    if (!$gWorldEditorExeced) {
+function toggleEditorLazy(%val)
+{
+    if (!$gWorldEditorExeced)
+    {
         exec("dev/data/ui/editor/editor.cs");
         $gWorldEditorExeced = 1;
     }
     toggleEditor(%val);
-};
+}
 GlobalActionMap.bind(keyboard, "alt F11", toggleEditorLazy);
-function canvasExecMisc() {
-    if (!$AmClient) {
+function canvasExecMisc()
+{
+    if (!$AmClient)
+    {
         return;
     }
     exec("common/ui/InspectDlg.gui");
@@ -29,5 +35,5 @@ function canvasExecMisc() {
     exec("common/ui/NetGraphGui.gui");
     exec("common/client/help.cs");
     exec("common/client/recordings.cs");
-};
+}
 canvasExecMisc();

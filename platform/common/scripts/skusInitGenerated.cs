@@ -1,4 +1,5 @@
-function skusInit() {
+function skusInit()
+{
     skusAddItem2(5150, "mesh", "", "f", "", "hair", "f.hair.speedway", "blonde.f.hair.speedway", "Speedway Blonde", "Get your diva on with this sexy swoop!", "", 1, 0, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(5149, "mesh", "", "f", "", "hair", "f.hair.speedway", "base.f.hair.speedway", "Speedway Red", "Get your diva on with this sexy swoop!", "", 1, 0, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(5151, "mesh", "", "f", "", "hair", "f.hair.speedway", "brn.f.hair.speedway", "Speedway Brown", "Get your diva on with this sexy swoop!", "", 1, 0, 1, -(1.0), 0, 0, "", "");
@@ -9540,4 +9541,4 @@ function skusInit() {
     skusAddItem2(58001, "service", "", "n", "", "Services", "", "", "Ticker Message (Priority 1)", "Ticker Message (Priority 1)", "special", 0, 15, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(58002, "service", "", "n", "", "Services", "", "", "Ticker Message (Priority 2)", "Ticker Message (Priority 2)", "special", 0, 5, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(81556, "mesh", "", "n", "new", "Decoration/Miscellaneous", "", "", "Truck Trailer", "Truck trailer loaded with a white refrigerated shipping container", "furnishings", 0, 35, 1, -(1.0), 0, 0, "", "");
-};
+}

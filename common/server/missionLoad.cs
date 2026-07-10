@@ -1,5 +1,6 @@
 $MissionLoadPause = 5000;
-function loadMission(%missionName, %isFirstMission) {
+function loadMission(%missionName, %isFirstMission)
+{
     endMission();
     echo("*** LOADING MISSION: " @ %missionName);
     echo("*** Stage 1 load");
@@ -11,33 +12,43 @@ function loadMission(%missionName, %isFirstMission) {
     buildLoadInfo(%missionName);
     %count = ClientGroup.getCount();
     %cl = 0;
-    while ((%cl < %count)) {
+    while ((%cl < %count))
+    {
         %client = ClientGroup.getObject(%cl);
-        if (!%client.isAIControlled()) {
+        if (!%client.isAIControlled())
+        {
             sendLoadInfoToClient(%client);
         }
         %cl = (%cl + 1.0);
     }
-    if (%isFirstMission) {
+    if (%isFirstMission)
+    {
     }
-    if (((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer")) {
+    if (((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer"))
+    {
         loadMissionStage2();
-    } else {
+    }
+    else
+    {
         schedule($MissionLoadPause, ServerGroup, loadMissionStage2);
     }
     return;
-};
-function loadMissionStage2() {
+}
+function loadMissionStage2()
+{
     echo("*** Stage 2 load");
     $instantGroup = ServerGroup;
     %file = $Server::MissionFile;
     %ofile = %file;
-    if (!(strchr(%file, "\\") $= "")) {
+    if (!(strchr(%file, "\\") $= ""))
+    {
         %file = strreplace(%file, "\\", "/");
     }
-    if (!isFile(%file)) {
+    if (!isFile(%file))
+    {
         error("initialization", "Mission file could not be found:" @ " " @ %ofile);
-        if (!$StandAlone) {
+        if (!$StandAlone)
+        {
             quit();
         }
         return;
@@ -45,7 +56,8 @@ function loadMissionStage2() {
     $missionCRC = 0;
     new SimGroup(MissionCleanup);
     exec(%file);
-    if (!isObject(MissionGroup)) {
+    if (!isObject(MissionGroup))
+    {
         error("No 'MissionGroup' found in mission \"" @ $missionName @ "\".");
         schedule(3000, ServerGroup, CycleMissions);
         return;
@@ -55,22 +67,26 @@ function loadMissionStage2() {
     echo("*** Mission loaded");
     $missionRunning = 1;
     %clientIndex = 0;
-    while ((%clientIndex < ClientGroup.getCount())) {
+    while ((%clientIndex < ClientGroup.getCount()))
+    {
         ClientGroup.getObject(%clientIndex).loadMission();
         %clientIndex = (%clientIndex + 1.0);
     }
     onMissionLoaded();
     purgeResources();
     return (%clientIndex < ClientGroup.getCount());
-};
-function endMission() {
-    if (!isObject(MissionGroup)) {
+}
+function endMission()
+{
+    if (!isObject(MissionGroup))
+    {
         return;
     }
     echo("*** ENDING MISSION");
     onMissionEnded();
     %clientIndex = 0;
-    while ((%clientIndex < ClientGroup.getCount())) {
+    while ((%clientIndex < ClientGroup.getCount()))
+    {
         %cl = ClientGroup.getObject(%clientIndex);
         %cl.endMission();
         %cl.resetGhosting();
@@ -83,8 +99,9 @@ function endMission() {
     $ServerGroup = new SimGroup(ServerGroup);
     (%clientIndex < ClientGroup.getCount());
     return;
-};
-function resetMission() {
+}
+function resetMission()
+{
     echo("*** MISSION RESET");
     MissionCleanup.delete();
     $instantGroup = ServerGroup;
@@ -92,4 +109,4 @@ function resetMission() {
     $instantGroup = MissionCleanup;
     onMissionReset();
     return;
-};
+}

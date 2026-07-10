@@ -1,5 +1,6 @@
 exec("./skeletonClient.cs");
-function testLoginAndStay() {
+function testLoginAndStay()
+{
     $changeClothesCount = 0;
     $videoURLUpdated = 0;
     $loginLogout = 0;
@@ -12,87 +13,112 @@ function testLoginAndStay() {
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
-};
-function doSomething() {
+}
+function doSomething()
+{
     walk();
-};
+}
 echo("LOAD: starting via testLoginAndStay()");
 testLoginAndStay();
-function walk() {
+function walk()
+{
     $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
     $mvForwardAction = $movementSpeed;
     $walkIterations = ($walkIterations + 1.0);
-    if ($loginLogout) {
+    if ($loginLogout)
+    {
     }
-    if (($walkIterations == 5.0)) {
+    if (($walkIterations == 5.0))
+    {
         logout(0);
         WorldMap.exit();
         schedule(6000, 0, doLogin);
-    } else {
+    }
+    else
+    {
         schedule(5000, 0, stopAndTalk);
         schedule(10000, 0, approveFriendRequests);
     }
-};
-function stopAndTalk() {
+}
+function stopAndTalk()
+{
     $mvYawLeftSpeed = 0;
     $mvForwardAction = 0;
-    if (isObject(pChat)) {
-        if (ClosetGui.isVisible()) {
+    if (isObject(pChat))
+    {
+        if (ClosetGui.isVisible())
+        {
             ClosetGui.close();
         }
-        if (geTGF.isVisible()) {
+        if (geTGF.isVisible())
+        {
             geTGF.closeFully();
         }
         pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
         schedule(4000, 0, changeClothes);
-        if (($DestServerName $= "MyApartment")) {
+        if (($DestServerName $= "MyApartment"))
+        {
         }
-        if (!$videoURLUpdated) {
+        if (!$videoURLUpdated)
+        {
             updateApartment();
         }
-    } else {
-        if (($failureCount == 30.0)) {
+    }
+    else
+    {
+        if (($failureCount == 30.0))
+        {
             echo("LOAD: Giving up. Lost PChat object.");
             echo("LOAD: Quit()-ing...");
             logoffAndQuit();
-        } else {
+        }
+        else
+        {
             echo("LOAD: Lost PChat... Gonna try again.");
             $failureCount = ($failureCount + 1.0);
         }
     }
     schedule(5000, 0, walk);
-};
-function logoffAndQuit() {
+}
+function logoffAndQuit()
+{
     echo("LOAD: Logging off and quit()-ing...");
     echo("LOAD: Login::loggedIn:" @ " " @ $Login::loggedIn);
     logout(0);
     schedule(1000, 0, doQuit);
-};
-function updateApartment() {
+}
+function updateApartment()
+{
     CSMediaVideoTextBox.setText("http://www.youtube.com/watch?v=_qkmrKa74ts");
     CSMediaWindow.stopVideo();
     CSMediaWindow.playVideo();
     $videoURLUpdated = 1;
-};
-function changeClothes() {
-    if (($changeClothesCount < 2.0)) {
+}
+function changeClothes()
+{
+    if (($changeClothesCount < 2.0))
+    {
         echo("LOAD: changeClothes enter...");
         useAndSaveRandomOutfit();
         $changeClothesCount = ($changeClothesCount + 1.0);
         echo("LOAD: changeClothes done...");
     }
-};
-function approveFriendRequests() {
+}
+function approveFriendRequests()
+{
     %fansHere = BuddyHudWin.buddyLists[FansHere];
-    if (!isObject(%fansHere)) {
+    if (!isObject(%fansHere))
+    {
         return;
     }
-    if ((%fansHere.size() == 0.0)) {
+    if ((%fansHere.size() == 0.0))
+    {
         echo("LOAD: There are no waiting requests.");
         return;
     }
     %n = (%fansHere.size() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %playerName = %fansHere.getKey(%n);
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
@@ -100,4 +126,4 @@ function approveFriendRequests() {
         pChat.whisper("Hey" @ " " @ %playerName @ " " @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (%n - 1.0);
     }
-};
+}

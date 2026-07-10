@@ -1,4 +1,5 @@
-function initializeAnimationMaps() {
+function initializeAnimationMaps()
+{
     initializeAnimationMap(animationMapFH, "f", "h");
     initializeAnimationMap(animationMapFI, "f", "i");
     initializeAnimationMap(animationMapFP, "f", "p");
@@ -40,45 +41,54 @@ function initializeAnimationMaps() {
     makeAnimationMapRedMana(animationMapFJ, animationMapFP, "f");
     makeAnimationMapBlueMana(animationMapMM, animationMapMP, "m");
     makeAnimationMapBlueMana(animationMapFM, animationMapFP, "f");
-};
-function makeAnimationMapSuperTyra(%map, %src, %gender) {
+}
+function makeAnimationMapSuperTyra(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("run", %gender @ "ntyrwlk");
     %map.put("root", %gender @ "ntyidl1a");
     %map.put("back", %gender @ "hwlkb1");
     %map.put("sml", %gender @ "ntyrsml");
-};
-function makeAnimationMapTyra(%map, %src, %gender) {
+}
+function makeAnimationMapTyra(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("run", %gender @ "ntyrwlk");
     %map.put("root", %gender @ "ntyidl1a");
     %map.put("back", %gender @ "hwlkb1");
     %map.put("sml", %gender @ "ntyrsml");
-};
-function makeAnimationMapSkate(%map, %src, %gender) {
+}
+function makeAnimationMapSkate(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("run", %gender @ "kwlkf1");
     %map.put("side", %gender @ "ksde");
     %map.put("back", %gender @ "kwlkb1");
-};
-function makeAnimationMapSwim(%map, %src, %gender) {
+}
+function makeAnimationMapSwim(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "nswmidl1");
     %map.put("run", %gender @ "nswmf1");
     %map.put("side", %gender @ "nswmsde");
     %map.put("back", %gender @ "nswmb1");
-};
-function makeAnimationMapZombie(%map, %src, %gender) {
+}
+function makeAnimationMapZombie(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("run", %gender @ "nzwlk");
     %map.put("root", %gender @ "nzidl1");
-};
-function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim) {
+}
+function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim)
+{
     %src = (%gender $= "f") ? animationMapFP : animationMapMP;
     %animationMapName = "animationMap" @ %gender @ %genre;
-    if (isObject(%animationMapName)) {
+    if (isObject(%animationMapName))
+    {
         %map = %animationMapName.getId();
-    } else {
+    }
+    else
+    {
         %map = new StringMap(%animationMapName);
     }
     copyAnimationMap(%map, %src);
@@ -88,24 +98,27 @@ function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideA
     %map.put("back", %gender @ %backAnim);
     %map.put("jump", %gender @ %jumpAnim);
     return %map;
-};
-function makeAnimationMapSumo(%map, %src, %gender) {
+}
+function makeAnimationMapSumo(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "nsumoidle");
     %map.put("run", %gender @ "nsumowlkf");
     %map.put("side", %gender @ "nsumowlks");
     %map.put("back", %gender @ "nsumowlkb");
     %map.put("jump", %gender @ "nsumojmp");
-};
-function makeAnimationMapPillow(%map, %src, %gender) {
+}
+function makeAnimationMapPillow(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "npwidle");
     %map.put("run", %gender @ "npwwlkf");
     %map.put("side", %gender @ "npwsde");
     %map.put("back", %gender @ "npwwlkb");
     %map.put("jump", %gender @ "npwjmp");
-};
-function makeAnimationMapProps(%map, %src, %gender) {
+}
+function makeAnimationMapProps(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "y" @ "idl1a");
     %map.put("idl1a", %gender @ "y" @ "idl1a");
@@ -131,8 +144,9 @@ function makeAnimationMapProps(%map, %src, %gender) {
     %map.put("lidl1a", %gender @ "y" @ "lidl1a");
     %map.put("lidl2a", %gender @ "y" @ "lidl2a");
     %map.put("lidl3a", %gender @ "y" @ "lidl3a");
-};
-function makeAnimationMapCross(%map, %src, %gender) {
+}
+function makeAnimationMapCross(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "x" @ "idl1a");
     %map.put("run", %gender @ "x" @ "wlkf1");
@@ -143,8 +157,9 @@ function makeAnimationMapCross(%map, %src, %gender) {
     %map.put("cidl2a", %gender @ "x" @ "cidl2a");
     %map.put("lidl1a", %gender @ "x" @ "lidl1a");
     %map.put("lidl2a", %gender @ "x" @ "lidl2a");
-};
-function makeAnimationMapBottleShake(%map, %src, %gender) {
+}
+function makeAnimationMapBottleShake(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "e" @ "idl1a");
     %map.put("idl1a", %gender @ "e" @ "idl1a");
@@ -168,8 +183,9 @@ function makeAnimationMapBottleShake(%map, %src, %gender) {
     %map.put("cidl2a", %gender @ "e" @ "cidl2a");
     %map.put("lidl1a", %gender @ "e" @ "lidl1a");
     %map.put("lidl2a", %gender @ "e" @ "lidl2a");
-};
-function makeAnimationMapBottle(%map, %src, %gender) {
+}
+function makeAnimationMapBottle(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "f" @ "idl1a");
     %map.put("idl1a", %gender @ "f" @ "idl1a");
@@ -193,8 +209,9 @@ function makeAnimationMapBottle(%map, %src, %gender) {
     %map.put("cidl2a", %gender @ "f" @ "cidl2a");
     %map.put("lidl1a", %gender @ "f" @ "lidl1a");
     %map.put("lidl2a", %gender @ "f" @ "lidl2a");
-};
-function makeAnimationMapDrinkStem(%map, %src, %gender) {
+}
+function makeAnimationMapDrinkStem(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "u" @ "idl1a");
     %map.put("idl1a", %gender @ "u" @ "idl1a");
@@ -218,8 +235,9 @@ function makeAnimationMapDrinkStem(%map, %src, %gender) {
     %map.put("cidl2a", %gender @ "u" @ "cidl2a");
     %map.put("lidl1a", %gender @ "u" @ "lidl1a");
     %map.put("lidl2a", %gender @ "u" @ "lidl2a");
-};
-function makeAnimationMapDrinkCup(%map, %src, %gender) {
+}
+function makeAnimationMapDrinkCup(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "v" @ "idl1a");
     %map.put("idl1a", %gender @ "v" @ "idl1a");
@@ -243,8 +261,9 @@ function makeAnimationMapDrinkCup(%map, %src, %gender) {
     %map.put("cidl2a", %gender @ "v" @ "cidl2a");
     %map.put("lidl1a", %gender @ "v" @ "lidl1a");
     %map.put("lidl2a", %gender @ "v" @ "lidl2a");
-};
-function makeAnimationMapRedMana(%map, %src, %gender) {
+}
+function makeAnimationMapRedMana(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "j" @ "idl1a");
     %map.put("idl1a", %gender @ "j" @ "idl1a");
@@ -268,8 +287,9 @@ function makeAnimationMapRedMana(%map, %src, %gender) {
     %map.put("cidl2a", %gender @ "e" @ "cidl2a");
     %map.put("lidl1a", %gender @ "e" @ "lidl1a");
     %map.put("lidl2a", %gender @ "e" @ "lidl2a");
-};
-function makeAnimationMapBlueMana(%map, %src, %gender) {
+}
+function makeAnimationMapBlueMana(%map, %src, %gender)
+{
     copyAnimationMap(%map, %src);
     %map.put("root", %gender @ "m" @ "idl1a");
     %map.put("idl1a", %gender @ "m" @ "idl1a");
@@ -293,12 +313,15 @@ function makeAnimationMapBlueMana(%map, %src, %gender) {
     %map.put("cidl2a", %gender @ "e" @ "cidl2a");
     %map.put("lidl1a", %gender @ "e" @ "lidl1a");
     %map.put("lidl2a", %gender @ "e" @ "lidl2a");
-};
-function initializeAnimationMapAnimal(%map, %gender, %genre) {
-    if (!isObject(%map)) {
+}
+function initializeAnimationMapAnimal(%map, %gender, %genre)
+{
+    if (!isObject(%map))
+    {
         new StringMap(%map);
     }
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%map);
     }
     %map.put("root", %gender @ %genre @ "idle1");
@@ -308,41 +331,58 @@ function initializeAnimationMapAnimal(%map, %gender, %genre) {
     %map.put("idl1b", %gender @ %genre @ "idle2");
     %map.put("idl1c", %gender @ %genre @ "idle3");
     %map.put("idl1d", %gender @ %genre @ "idle4");
-};
-function initializeAnimationMap(%map, %gender, %genre) {
-    if (!isObject(%map)) {
+}
+function initializeAnimationMap(%map, %gender, %genre)
+{
+    if (!isObject(%map))
+    {
         new StringMap(%map);
     }
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%map);
     }
     addGenreSpecificAnimations(%map, %gender, %genre);
     addGenreNeutralAnimations(%map, %gender);
-};
-function copyAnimationMap(%map, %src) {
-    if (!isObject(%map)) {
+}
+function copyAnimationMap(%map, %src)
+{
+    if (!isObject(%map))
+    {
         new StringMap(%map);
     }
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%map);
     }
     %map.duplicate(%src);
-};
+}
 $gKnownAnimationTags = "dance";
-function addAnimationToMap(%map, %mapThis, %toThis, %tags) {
+function addAnimationToMap(%map, %mapThis, %toThis, %tags)
+{
     %map.put(%mapThis, %toThis);
     %n = getWordCount(%tags);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %tag = getWord(%tags, %n);
-        if ((%tag $= "")) {
-        } else {
-            if (!hasWord($gKnownAnimationTags, %tag)) {
+        if ((%tag $= ""))
+        {
+        }
+        else
+        {
+            if (!hasWord($gKnownAnimationTags, %tag))
+            {
                 error(getScopeName() @ " " @ "- unknown animation tag:\"" @ %tag @ "\"." @ " " @ getTrace());
-            } else {
+            }
+            else
+            {
                 safeEnsureScriptObject("StringMap", "gAnimationTags");
                 %animTags = gAnimationTags.get(%toThis);
-                if (hasWord(%animTags, %tag)) {
-                } else {
+                if (hasWord(%animTags, %tag))
+                {
+                }
+                else
+                {
                     %animTags = %tag @ " " @ %animTags;
                     gAnimationTags.put(%toThis, %animTags);
                 }
@@ -350,8 +390,9 @@ function addAnimationToMap(%map, %mapThis, %toThis, %tags) {
         }
         %n = (%n - 1.0);
     }
-};
-function addGenreSpecificAnimations(%map, %gender, %genre) {
+}
+function addGenreSpecificAnimations(%map, %gender, %genre)
+{
     addAnimationToMap(%map, "root", %gender @ %genre @ "idl1a", "");
     addAnimationToMap(%map, "run", %gender @ %genre @ "wlkf1", "");
     addAnimationToMap(%map, "back", %gender @ %genre @ "wlkb1", "");
@@ -387,13 +428,16 @@ function addGenreSpecificAnimations(%map, %gender, %genre) {
     addAnimationToMap(%map, "lol", %gender @ %genre @ "lol", "");
     addAnimationToMap(%map, "bow", %gender @ %genre @ "bow", "");
     addAnimationToMap(%map, "jump", %gender @ "njmp", "");
-    if ((%gender $= "f")) {
+    if ((%gender $= "f"))
+    {
     }
-    if ((%genre $= "p")) {
+    if ((%genre $= "p"))
+    {
         addAnimationToMap(%map, "root", %gender @ %genre @ "idl1b", "");
     }
-};
-function addGenreNeutralAnimations(%map, %gender) {
+}
+function addGenreNeutralAnimations(%map, %gender)
+{
     addAnimationToMap(%map, "sumopowerdefend", %gender @ "nsumopowerdefend", "");
     addAnimationToMap(%map, "jump", %gender @ "njmp", "");
     addAnimationToMap(%map, "standjump", %gender @ "njmp", "");
@@ -797,7 +841,8 @@ function addGenreNeutralAnimations(%map, %gender) {
     %coanims = "";
     %delim = "";
     %n = ($gCoAnimDictionary.size() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %animName = getField($gCoAnimDictionary.getValue(%n), 0);
         %coanims = %coanims @ %delim @ %animName;
         %delim = " ";
@@ -808,10 +853,12 @@ function addGenreNeutralAnimations(%map, %gender) {
     %prefixes = "sti mti mmi msi tsi str mtr mmr msr tsr";
     %prefixCount = getWordCount(%prefixes);
     %i = 0;
-    while ((%i < %coanimCount)) {
+    while ((%i < %coanimCount))
+    {
         %coanim = getWord(%coanims, %i);
         %j = 0;
-        while ((%j < %prefixCount)) {
+        while ((%j < %prefixCount))
+        {
             %prefix = getWord(%prefixes, %j);
             addAnimationToMap(%map, %prefix @ "_" @ %coanim, %gender @ "n" @ %prefix @ "_" @ %coanim, "");
             %j = (%j + 1.0);
@@ -819,8 +866,9 @@ function addGenreNeutralAnimations(%map, %gender) {
         %i = (%i + 1.0);
         (%j < %prefixCount);
     }
-};
-function initNoAutoEmoteList() {
+}
+function initNoAutoEmoteList()
+{
     addNoAutoEmoteWord("angry");
     addNoAutoEmoteWord("applause");
     addNoAutoEmoteWord("busy");
@@ -880,21 +928,26 @@ function initNoAutoEmoteList() {
     addNoAutoEmoteWord("whew");
     addNoAutoEmoteWord("wow");
     addNoAutoEmoteWord("zzz");
-};
+}
 $gNoAutoEmoteWords = 0;
-function addNoAutoEmoteWord(%word) {
-    if (!isObject($gNoAutoEmoteWords)) {
+function addNoAutoEmoteWord(%word)
+{
+    if (!isObject($gNoAutoEmoteWords))
+    {
         $gNoAutoEmoteWords = new StringMap("");
-        if (isObject(MissionCleanup)) {
+        if (isObject(MissionCleanup))
+        {
             MissionCleanup.add($gNoAutoEmoteWords);
         }
     }
     $gNoAutoEmoteWords.put(%word, 1);
-};
-function isNoAutoEmoteWord(%word) {
-    if (!isObject($gNoAutoEmoteWords)) {
+}
+function isNoAutoEmoteWord(%word)
+{
+    if (!isObject($gNoAutoEmoteWords))
+    {
         initNoAutoEmoteList();
     }
     return $gNoAutoEmoteWords.get(%word);
-};
+}
 initializeAnimationMaps();

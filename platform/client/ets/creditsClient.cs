@@ -1,7 +1,8 @@
 $gCreditsTickPeriod = 30;
 $gCreditsTickPixels = 2;
 $gCreditsTickDirection = 1;
-function doCredits() {
+function doCredits()
+{
     %text = "<color:ccddddFF><just:center>";
     %text = %text @ "<br><br><br><br><br><br><br>";
     %text = credits_AddSection(%text, "vSide");
@@ -80,34 +81,42 @@ function doCredits() {
     LoginCreditsText.setText(%text);
     $gCreditsTickDirection = -($gCreditsTickDirection);
     creditsTick();
-};
+}
 $gCreditsTimerID = 0;
-function creditsTick() {
+function creditsTick()
+{
     cancel($gCreditsTimerID);
     %y = getWord(LoginCreditsText.position, 1);
     %h = getWord(LoginCreditsText.extent, 1);
-    if (($gCreditsTickDirection < 0.0)) {
+    if (($gCreditsTickDirection < 0.0))
+    {
     }
-    if (((%y + %h) < 0.0)) {
+    if (((%y + %h) < 0.0))
+    {
         return;
     }
-    if (($gCreditsTickDirection > 0.0)) {
+    if (($gCreditsTickDirection > 0.0))
+    {
     }
-    if ((%y > 157.0)) {
+    if ((%y > 157.0))
+    {
         return;
     }
     %y = (%y + ($gCreditsTickPixels * $gCreditsTickDirection));
     LoginCreditsText.reposition(0, %y);
     $gCreditsTimerID = schedule($gCreditsTickPeriod, 0, "creditsTick");
-};
-function credits_AddSection(%dry, %name) {
+}
+function credits_AddSection(%dry, %name)
+{
     %wet = %dry @ "<br><br><spush><font:BauhausStd-Demi:20>" @ %name @ "<spop><br>";
     return %wet;
-};
-function credits_AddName(%dry, %name) {
+}
+function credits_AddName(%dry, %name)
+{
     %wet = %dry @ %name @ "<br>";
     return %wet;
-};
-function credits_AddLead(%dry, %name) {
+}
+function credits_AddLead(%dry, %name)
+{
     return credits_AddName(%dry, "<spush><b>" @ %name @ "<spop>");
-};
+}

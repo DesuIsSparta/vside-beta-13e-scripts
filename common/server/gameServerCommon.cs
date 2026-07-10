@@ -1,40 +1,51 @@
-function onServerCreated() {
+function onServerCreated()
+{
     echo("in onServerCreated()");
     $Server::GameType = "Test App";
     $Server::MissionType = "Deathmatch";
     createGame();
     return;
-};
-function onServerDestroyed() {
+}
+function onServerDestroyed()
+{
     destroyGame();
     return;
-};
-function onMissionLoaded() {
+}
+function onMissionLoaded()
+{
     startGame();
     return;
-};
-function onMissionEnded() {
+}
+function onMissionEnded()
+{
     endGame();
     return;
-};
-function onMissionReset() {
+}
+function onMissionReset()
+{
     return;
-};
-function GameConnection::onClientEnterGame(%unused) {
+}
+function GameConnection::onClientEnterGame(%unused)
+{
     return;
-};
-function GameConnection::onClientLeaveGame(%unused) {
+}
+function GameConnection::onClientLeaveGame(%unused)
+{
     return;
-};
-function createGame() {
+}
+function createGame()
+{
     return;
-};
-function destroyGame() {
+}
+function destroyGame()
+{
     return;
-};
-function startGame() {
+}
+function startGame()
+{
     return;
-};
-function endGame() {
+}
+function endGame()
+{
     return;
-};
+}

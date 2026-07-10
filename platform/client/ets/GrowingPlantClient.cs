@@ -1,23 +1,31 @@
 $gGrowingPlantSkuList = "41401 41506";
-function GrowingPlantClient::onPlantCreated(%nuggetId) {
-    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner()) {
+function GrowingPlantClient::onPlantCreated(%nuggetId)
+{
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner())
+    {
         return;
     }
-    if ((%nuggetId $= "") || (%nuggetId == 0.0)) {
+    if ((%nuggetId $= "") || (%nuggetId == 0.0))
+    {
         warn(getScopeName() @ "->passed empty nuggetID");
         return;
     }
     $DlgNameAPlant = MessageBoxTextEntryWithCancel($MsgCat::furniture["NAMEPLANT-TITLE"], $MsgCat::furniture["NAMEPLANT-PROMPT"], "GrowingPlantClient::NamePlantDialogSubmit", "Planty", 32);
     $DlgNameAPlant.plantNuggetID = %nuggetId;
-};
-function GrowingPlantClient::NamePlantDialogSubmit(%newName) {
+}
+function GrowingPlantClient::NamePlantDialogSubmit(%newName)
+{
     commandToServer('GrowingPlant_NamePlant', CustomSpaceClient::GetSpaceImIn(), $DlgNameAPlant.plantNuggetID, %newName);
-};
-function GrowingPlantClient::isPlant(%plantSkuOrObject) {
-    if (isObject(%plantSkuOrObject)) {
+}
+function GrowingPlantClient::isPlant(%plantSkuOrObject)
+{
+    if (isObject(%plantSkuOrObject))
+    {
         %sku = %plantSkuOrObject.nugget.sku;
-    } else {
+    }
+    else
+    {
         %sku = %plantSkuOrObject;
     }
     return (findWord($gGrowingPlantSkuList, %sku) >= 0.0);
-};
+}

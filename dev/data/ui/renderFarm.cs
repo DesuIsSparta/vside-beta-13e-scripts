@@ -1,11 +1,14 @@
-function rf_TrySetup() {
-    if (!(MissionInfo.name $= "renderFarm")) {
+function rf_TrySetup()
+{
+    if (!(MissionInfo.name $= "renderFarm"))
+    {
         return;
     }
     Canvas.setContent(rf_getGE());
     $gRFPlayerF = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotF));
     $gRFPlayerM = ServerConnection.resolveGhostID(LocalClientConnection.getGhostID(seBotM));
-    if (!isObject($gRFPlayerF) || !isObject($gRFPlayerM)) {
+    if (!isObject($gRFPlayerF) || !isObject($gRFPlayerM))
+    {
         schedule(1000, 0, "rf_TrySetup");
     }
     geRenderFarmObjectView.setSimObject($gRFPlayerF);
@@ -13,9 +16,11 @@ function rf_TrySetup() {
     playGui.resize(10, 10);
     geRenderFarm.add(playGui);
     geRenderFarm.bringToFront(playGui);
-};
-function rf_getGE() {
-    if (!isObject(geRenderFarm)) {
+}
+function rf_getGE()
+{
+    if (!isObject(geRenderFarm))
+    {
         pushScreenSize(512, 1024, 1, 1, 0);
         exec("dev/data/ui/renderFarm.gui");
         initWebServer(28000);
@@ -23,12 +28,15 @@ function rf_getGE() {
         $gRF_CurrentRequest = "";
     }
     return geRenderFarm;
-};
-function httpServer_Render(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom) {
+}
+function httpServer_Render(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom)
+{
     return rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom);
-};
-function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom) {
-    if (!$StandAlone) {
+}
+function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %height, %angle, %zoom)
+{
+    if (!$StandAlone)
+    {
         return "error\r\nnot in correct mode\r\n";
     }
     %missingParams = "";
@@ -41,7 +49,8 @@ function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %hei
     %missingParams = (%missingParams @ " " @ " " @ %angle $= "") ? "angle" : "";
     %missingParams = (%missingParams @ " " @ " " @ %zoom $= "") ? "zoom" : "";
     %missingParams = trim(%missingParams);
-    if (!(%missingParams $= "")) {
+    if (!(%missingParams $= ""))
+    {
         %missingParams = "missing parameters:" @ " " @ %missingParams;
         error(getScopeName() @ " " @ "-" @ " " @ %missingParams);
         return "error\r\n" @ %missingParams @ "\r\n";
@@ -58,39 +67,51 @@ function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %hei
     gRFQueue.push_back(%rfRequest, "");
     rf_processQueue();
     return "success";
-};
-function rf_processQueue() {
-    if (isObject($gRF_CurrentRequest)) {
+}
+function rf_processQueue()
+{
+    if (isObject($gRF_CurrentRequest))
+    {
         return;
     }
-    if ((gRFQueue.count() < 1.0)) {
+    if ((gRFQueue.count() < 1.0))
+    {
         return;
     }
     %request = gRFQueue.getKey(0);
     gRFQueue.pop_front();
-    if (isObject(%request)) {
+    if (isObject(%request))
+    {
         rf_beginRender(%request);
     }
-};
-function rf_beginRender(%request) {
+}
+function rf_beginRender(%request)
+{
     $gRF_CurrentRequest = %request;
     %gender = "n";
     %n = (getWordCount(%request.skus) - 1.0);
-    if ((%n >= 0.0)) {
+    if ((%n >= 0.0))
+    {
     }
-    while ((%gender $= "n")) {
+    while ((%gender $= "n"))
+    {
         %sku = getWord(%request.skus, %n);
         %si = SkuManager.findBySku(%sku);
         %gender = %si.gender;
         %n = (%n - 1.0);
-        if ((%n >= 0.0)) {
+        if ((%n >= 0.0))
+        {
         }
     }
-    if (((%gender $= "n") @ " " @ %gender $= "n")) {
+    if (((%gender $= "n") @ " " @ %gender $= "n"))
+    {
         %gender = "f";
     }
-    if ((%gender $= "f")) {
-    } else {
+    if ((%gender $= "f"))
+    {
+    }
+    else
+    {
     }
     %player = $gRFPlayerM;
     $gRFPlayerF;
@@ -111,18 +132,22 @@ function rf_beginRender(%request) {
     %fileName = "web/rf/images/rf_" @ $gRF_CurrentRequest.requestID @ ".jpg";
     geRenderFarmObjectView.snapshot(%fileName);
     rf_finishRender($gRF_CurrentRequest);
-};
-function rf_finishRender(%request) {
+}
+function rf_finishRender(%request)
+{
     %request.delete();
     $gRF_CurrentRequest = "";
     rf_processQueue();
-};
-function rf_generateTestSkus(%num, %forJavascript) {
-    if (!isDefined("%forJavascript")) {
+}
+function rf_generateTestSkus(%num, %forJavascript)
+{
+    if (!isDefined("%forJavascript"))
+    {
         %forJavascript = 1;
     }
     %ret = "";
-    if (%forJavascript) {
+    if (%forJavascript)
+    {
         %ret = %ret @ "\n" @ "function initSkusList()";
         %ret = %ret @ "\n" @ "{";
         %ret = %ret @ "\n" @ "   gSkusList.length            = 0;";
@@ -133,25 +158,33 @@ function rf_generateTestSkus(%num, %forJavascript) {
     %allDrawers = findAndRemoveAllOccurrencesOfWord(%allDrawers, "tokens");
     %allDrawers = %allDrawers @ " " @ "skin face eyes hair hat";
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %gender = getRandom(0, 1) ? "f" : "m";
         %skulist = "";
         %d = (getWordCount(%allDrawers) - 1.0);
-        while ((%d >= 0.0)) {
+        while ((%d >= 0.0))
+        {
             %drawerName = getWord(%allDrawers, %d);
-            if (SkuManager.isOptionalDrawer(%drawerName)) {
-            } else {
+            if (SkuManager.isOptionalDrawer(%drawerName))
+            {
+            }
+            else
+            {
             }
             %prob = 1.0;
             0.1;
-            if ((getRandom() <= %prob)) {
-                if (($gRFGenerate_DrawersCache[%drawerName,%gender] $= "")) {
+            if ((getRandom() <= %prob))
+            {
+                if (($gRFGenerate_DrawersCache[%drawerName,%gender] $= ""))
+                {
                     %skus = SkuManager.getSkusDrwr(%drawerName);
                     %skus = SkuManager.filterSkusGender(%skus, %gender);
                     %skus[$gRFGenerate_DrawersCache,%drawerName,%gender] = ;
                 }
                 %sku = getRandomWord($gRFGenerate_DrawersCache[%drawerName,%gender]);
-                if (!(%sku $= "")) {
+                if (!(%sku $= ""))
+                {
                     %skulist = %skulist @ " " @ %sku;
                 }
             }
@@ -159,19 +192,22 @@ function rf_generateTestSkus(%num, %forJavascript) {
         }
         %skulist = trim(%skulist);
         (%d >= 0.0);
-        if (%forJavascript) {
+        if (%forJavascript)
+        {
             %ret = %ret @ "   gSkusList[gSkusList.length] = \"";
         }
         %ret = %ret @ %skulist;
-        if (%forJavascript) {
+        if (%forJavascript)
+        {
             %ret = %ret @ "\";";
         }
         %ret = %ret @ "\n";
         %n = (%n + 1.0);
     }
-    if (%forJavascript) {
+    if (%forJavascript)
+    {
         %ret = %ret @ "}\n";
         (%n < %num);
     }
     return %ret;
-};
+}

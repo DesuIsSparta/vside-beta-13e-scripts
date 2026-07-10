@@ -1,6 +1,8 @@
-function ClosetTabs::fillClosetTab(%this) {
+function ClosetTabs::fillClosetTab(%this)
+{
     %theTab = %this.getTabWithName("CLOSET");
-    if (!isObject(%theTab)) {
+    if (!isObject(%theTab))
+    {
         return;
     }
     %theTab.add(new GuiBitmapCtrl("") {
@@ -60,9 +62,11 @@ function ClosetTabs::fillClosetTab(%this) {
     %itemPopup.possibleCategoryList = %categoryList;
     %itemPopup.displayedCategoryList = %categoryList;
     %n = 0;
-    while ((%n < getFieldCount(%categoryList))) {
+    while ((%n < getFieldCount(%categoryList)))
+    {
         %category = getField(%categoryList, %n);
-        if (Closet::skuListHasCategory($Player::inventory, %category)) {
+        if (Closet::skuListHasCategory($Player::inventory, %category))
+        {
             %itemPopup.add(%category);
         }
         %n = (%n + 1.0);
@@ -220,7 +224,8 @@ function ClosetTabs::fillClosetTab(%this) {
     %xPos = 0;
     %ypos = 0;
     %i = 0;
-    while ((%i < $gClosetNumOutfits)) {
+    while ((%i < $gClosetNumOutfits))
+    {
         %objectView = new GuiObjectView("ClosetOutfitObjectView" @ %i) {
             profile = "GuiDefaultProfile";
             horizSizing = "right";
@@ -232,7 +237,8 @@ function ClosetTabs::fillClosetTab(%this) {
             CamSluggishness = 0.0000001;
             visible = 1;
         };
-        if (isObject($player)) {
+        if (isObject($player))
+        {
             %objectView.setSimObject($player);
         }
         %objectView.setRotation(0.2, 0, 2.8);
@@ -320,46 +326,57 @@ function ClosetTabs::fillClosetTab(%this) {
     %itemPopup.SetSelected(0);
     ClosetItemsFrame.update();
     %this.tabClosetInitialized = 1;
-};
-function ClosetTabs::getOutfitObjectView(%this, %index) {
+}
+function ClosetTabs::getOutfitObjectView(%this, %index)
+{
     return "ClosetOutfitObjectView" @ %index;
-};
-function ClosetTabs::getOutfitButton(%this, %index) {
+}
+function ClosetTabs::getOutfitButton(%this, %index)
+{
     return "ClosetOutfitButton" @ %index;
-};
-function ClosetTabs::updateOutfitObjectView(%this, %index) {
+}
+function ClosetTabs::updateOutfitObjectView(%this, %index)
+{
     %objectView = %this.getOutfitObjectView(%index);
     %name = ClosetMyOutfitsFrame.getOutfitNameForHanger(%index);
     %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetSkusOutfit[%name]);
-};
+}
 $gSwimsuitOutfitIndex = 6;
-function ClosetTabs::doCopyOutfit(%this, %src, %dest) {
+function ClosetTabs::doCopyOutfit(%this, %src, %dest)
+{
     %title = $MsgCat::closet["MSG-COPY-OUTFIT-WARN","TITLE"];
     %body = $MsgCat::closet["MSG-COPY-OUTFIT-WARN","BODY"];
     %body = strreplace(%body, "[SRC]", (%src + 1.0));
     %body = strreplace(%body, "[DST]", (%dest + 1.0));
-    if ((%dest == $gSwimsuitOutfitIndex)) {
+    if ((%dest == $gSwimsuitOutfitIndex))
+    {
         %body = %body[%body @ "\n" @ "" @ "\n" @ $MsgCat::closet TAB "MSG-COPY-OUTFIT-WARN" @ "SWIM"];
     }
     MessageBoxYesNo(%title, %body, "ClosetTabs.doCopyOutfitReally(" @ %src @ ", " @ %dest @ ");", "");
-};
-function ClosetTabs::doCopyOutfitReally(%this, %src, %dest) {
+}
+function ClosetTabs::doCopyOutfitReally(%this, %src, %dest)
+{
     %srcName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%src);
     %destName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%dest);
     $ClosetSkusOutfit[%destName] = $ClosetSkusOutfit[%srcName];
     ClosetTabs.updateOutfitObjectView(%dest);
     ClosetTabs.getOutfitButton(%dest).performClick();
-};
-function ClosetTabs::doSwapOutfits(%this, %src, %dest) {
-    if ((%src == $gSwimsuitOutfitIndex) || (%dest == $gSwimsuitOutfitIndex)) {
+}
+function ClosetTabs::doSwapOutfits(%this, %src, %dest)
+{
+    if ((%src == $gSwimsuitOutfitIndex) || (%dest == $gSwimsuitOutfitIndex))
+    {
         %title = %dest[$MsgCat::closet TAB "MSG-SWAP-OUTFIT-WARN" @ "TITLE"];
         %body = $MsgCat::closet["MSG-SWAP-OUTFIT-WARN","BODY"];
         MessageBoxYesNo(%title, %body, "ClosetTabs.doSwapOutfitsReally(" @ %src @ ", " @ %dest @ ");", "");
-    } else {
+    }
+    else
+    {
         %this.doSwapOutfitsReally(%src, %dest);
     }
-};
-function ClosetTabs::doSwapOutfitsReally(%this, %src, %dest) {
+}
+function ClosetTabs::doSwapOutfitsReally(%this, %src, %dest)
+{
     %srcName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%src);
     %destName = ClosetMyOutfitsFrame.getOutfitNameForHanger(%dest);
     %tmp = $ClosetSkusOutfit[%srcName];
@@ -368,25 +385,32 @@ function ClosetTabs::doSwapOutfitsReally(%this, %src, %dest) {
     ClosetTabs.updateOutfitObjectView(%src);
     ClosetTabs.updateOutfitObjectView(%dest);
     ClosetTabs.getOutfitButton(%dest).performClick();
-};
-function ClosetOutfitButton::onMouseDown(%this) {
+}
+function ClosetOutfitButton::onMouseDown(%this)
+{
     %this.origin = Canvas.getCursorPos();
-};
-function ClosetOutfitButton::onMouseDragged(%this, %modifier) {
+}
+function ClosetOutfitButton::onMouseDragged(%this, %modifier)
+{
     %vec = VectorSub(%this.origin, Canvas.getCursorPos());
-    if ((VectorLenSquared(%vec) < (10.0 * 10.0))) {
+    if ((VectorLenSquared(%vec) < (10.0 * 10.0)))
+    {
         return 0;
     }
-    if (($Platform $= "macos")) {
-    } else {
+    if (($Platform $= "macos"))
+    {
+    }
+    else
+    {
     }
     %mask = $EventModifier::CTRL;
     $EventModifier::ALT;
     %this.operation = (%modifier & %mask) ? "COPY" : "SWAP";
     %this.setAsDragControl(1);
     return 1;
-};
-function ClosetOutfitButton::makeVisualClone(%this) {
+}
+function ClosetOutfitButton::makeVisualClone(%this)
+{
     %objectView = new GuiObjectView("") {
         profile = "GuiDefaultProfile";
         horizSizing = "right";
@@ -398,7 +422,8 @@ function ClosetOutfitButton::makeVisualClone(%this) {
         CamSluggishness = 0.0000001;
         visible = 1;
     };
-    if (isObject($player)) {
+    if (isObject($player))
+    {
         %objectView.setSimObject($player);
     }
     %objectView.setRotation(0.2, 0, 2.8);
@@ -411,7 +436,8 @@ function ClosetOutfitButton::makeVisualClone(%this) {
         extent = "30 15";
         text = "<font:Arial:16><color:ffffff><b><outline><just:right>" @ " " @ (%this.index + 1.0) @ " ";
     };
-    if ((%this.operation $= "")) {
+    if ((%this.operation $= ""))
+    {
         %this.operation = "SWAP";
     }
     %operationIcon = new GuiBitmapCtrl("") {
@@ -436,172 +462,230 @@ function ClosetOutfitButton::makeVisualClone(%this) {
     %clone.operationIcon = %operationIcon;
     %this.clone = %clone;
     return %clone;
-};
-function ClosetOutfitButton::dragAndDropCtrl(%this, %make) {
-    if (%make) {
+}
+function ClosetOutfitButton::dragAndDropCtrl(%this, %make)
+{
+    if (%make)
+    {
         %this.operation = "COPY";
-    } else {
+    }
+    else
+    {
         %this.operation = "SWAP";
     }
     %this.clone.operationIcon.setBitmap("platform/client/ui/" @ %this.operation);
-};
-function ClosetOutfitButton::onDragSet(%this) {
+}
+function ClosetOutfitButton::onDragSet(%this)
+{
     %this.depressed = 1;
     %i = 0;
-    while (isObject(%button = ClosetTabs.getOutfitButton(%i))) {
+    while (isObject(%button = ClosetTabs.getOutfitButton(%i)))
+    {
         %button.mouseOver = 0;
         %i = (%i + 1.0);
     }
     Canvas.centerDragHiliteAroundCursor();
     %this.clone.mouseOver = isObject(%button = ClosetTabs.getOutfitButton(%i)) @ 1;
-};
-function ClosetOutfitButton::onDragReleased(%this) {
+}
+function ClosetOutfitButton::onDragReleased(%this)
+{
     %this.depressed = 0;
-};
-function ClosetOutfitButton::onDragAndDropEnter(%this, %dragCtrl) {
-    if ((findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -(1.0))) {
+}
+function ClosetOutfitButton::onDragAndDropEnter(%this, %dragCtrl)
+{
+    if ((findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -(1.0)))
+    {
         return;
     }
-    if ((%this != %dragCtrl)) {
+    if ((%this != %dragCtrl))
+    {
         hiliteControl(%this, 1);
         %this.depressed = 1;
         %dragCtrl.clone.operationIcon.setVisible(1);
         %this.label.setVisible(1);
     }
-};
-function ClosetOutfitButton::onDragAndDropLeave(%this, %dragCtrl) {
-    if ((%this != %dragCtrl)) {
+}
+function ClosetOutfitButton::onDragAndDropLeave(%this, %dragCtrl)
+{
+    if ((%this != %dragCtrl))
+    {
         hiliteControl(0);
         %this.depressed = 0;
         %dragCtrl.clone.operationIcon.setVisible(0);
         %this.label.setVisible(0);
     }
-};
-function ClosetOutfitButton::onDragAndDropDrop(%this, %dragCtrl, %unused) {
-    if ((findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -(1.0))) {
+}
+function ClosetOutfitButton::onDragAndDropDrop(%this, %dragCtrl, %unused)
+{
+    if ((findWord(%dragCtrl.getNamespaceList(), "ClosetOutfitButton") == -(1.0)))
+    {
         return 0;
     }
-    if ((%this == %dragCtrl)) {
+    if ((%this == %dragCtrl))
+    {
         return 0;
     }
-    if ((%dragCtrl.operation $= "COPY")) {
+    if ((%dragCtrl.operation $= "COPY"))
+    {
         ClosetTabs.doCopyOutfit(%dragCtrl.index, %this.index);
-    } else {
-        if ((%dragCtrl.operation $= "SWAP")) {
+    }
+    else
+    {
+        if ((%dragCtrl.operation $= "SWAP"))
+        {
             ClosetTabs.doSwapOutfits(%dragCtrl.index, %this.index);
         }
     }
     return 1;
-};
-function ClosetBrandPopup::update(%this, %skus) {
+}
+function ClosetBrandPopup::update(%this, %skus)
+{
     %this.clear();
     %i = 0;
-    while ((%i < getFieldCount($gClosetBrands))) {
+    while ((%i < getFieldCount($gClosetBrands)))
+    {
         %brand = getField($gClosetBrands, %i);
-        if (SkuManager.skusHaveBrands(%skus, $gClosetBrandsIntrnl[%brand] @ " ")) {
+        if (SkuManager.skusHaveBrands(%skus, $gClosetBrandsIntrnl[%brand] @ " "))
+        {
             %this.add(%brand);
         }
         %i = (%i + 1.0);
     }
-};
-function ClosetItemPopup::update(%this, %skus) {
+}
+function ClosetItemPopup::update(%this, %skus)
+{
     NoItemInBrandNameLabel.setText("");
     %prevSelText = %this.getTextById(%this.GetSelected());
-    if (!(%skus $= "")) {
+    if (!(%skus $= ""))
+    {
         %newList = "";
         %n = 0;
-        while ((%n < getFieldCount(%this.possibleCategoryList))) {
+        while ((%n < getFieldCount(%this.possibleCategoryList)))
+        {
             %category = getField(%this.possibleCategoryList, %n);
-            if (Closet::skuListHasCategory(%skus, %category)) {
+            if (Closet::skuListHasCategory(%skus, %category))
+            {
                 %newList = %newList @ "\t" @ %category;
             }
             %n = (%n + 1.0);
         }
         %newList = trim(%newList);
         (%n < getFieldCount(%this.possibleCategoryList));
-        if ((%newList $= %this.displayedCategoryList)) {
+        if ((%newList $= %this.displayedCategoryList))
+        {
             return;
         }
-    } else {
+    }
+    else
+    {
         %newList = getField(%this.possibleCategoryList, 0);
     }
     %this.displayedCategoryList = %newList;
     %prevSelText = %this.getTextById(%this.GetSelected());
     %this.clear();
     %n = 0;
-    while ((%n < getFieldCount(%newList))) {
+    while ((%n < getFieldCount(%newList)))
+    {
         %this.add(getField(%newList, %n));
         %n = (%n + 1.0);
     }
     %newSel = %this.findText(%prevSelText);
     (%n < getFieldCount(%newList));
-    if ((%newSel < 0.0)) {
+    if ((%newSel < 0.0))
+    {
         %this.SetSelected(0);
-        if ((ClosetBrandPopup.getText() $= "All")) {
+        if ((ClosetBrandPopup.getText() $= "All"))
+        {
             %brandString = "";
-        } else {
-            if ((ClosetBrandPopup.getText() $= "Basic")) {
+        }
+        else
+        {
+            if ((ClosetBrandPopup.getText() $= "Basic"))
+            {
                 %brandString = " basic";
-            } else {
+            }
+            else
+            {
                 %brandString = " " @ ClosetBrandPopup.getText() @ " " @ "brand";
             }
         }
-        if ((firstWord(%prevSelText) $= "All")) {
-        } else {
+        if ((firstWord(%prevSelText) $= "All"))
+        {
+        }
+        else
+        {
         }
         %categoryString = strlwr(restWords(%prevSelText), %prevSelText);
-        if ((%categoryString $= "")) {
+        if ((%categoryString $= ""))
+        {
             %categoryString = "clothes";
         }
         %msg = $MsgCat::closet["H-NO-BRAND-ITEMS1"] @ %brandString @ " " @ %categoryString @ %categoryString[$MsgCat::closet @ "H-NO-BRAND-ITEMS2"] @ %brandString @ " " @ %brandString[$MsgCat::closet @ "H-NO-BRAND-ITEMS3"];
         NoItemInBrandNameLabel.setText(%msg);
-    } else {
+    }
+    else
+    {
         %this.setText(%prevSelText);
     }
-};
-function ClosetItemsFrame::update(%this) {
-    if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
+}
+function ClosetItemsFrame::update(%this)
+{
+    if ((ClosetTabs.getCurrentTab().name $= "CLOSET"))
+    {
         %this.thumbnails.setDrawers("");
     }
-};
-function ClosetMyOutfitsFrame::getOutfitNameForHanger(%this, %hanger) {
+}
+function ClosetMyOutfitsFrame::getOutfitNameForHanger(%this, %hanger)
+{
     return getWord($Player::HangerNames, [$player.getGender()], %hanger);
-};
-function ClosetMyOutfitsFrame::hangerSelected(%this, %hanger) {
+}
+function ClosetMyOutfitsFrame::hangerSelected(%this, %hanger)
+{
     %this.currentHanger = %hanger;
     $ClosetOutfitName = %this.getOutfitNameForHanger(%hanger);
     ClosetItemsFrame.update();
-    if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
+    if ((ClosetTabs.getCurrentTab().name $= "CLOSET"))
+    {
         ClosetTabs.getTabWithName("CLOSET").thumbnails.setSelectedThumbs();
     }
     ClosetGui.updateVisibleAvatar();
-};
-function ClosetItemPopup::onSelect(%this, %unused, %entries) {
-    if ((ClosetItemsFrame.category $= %entries)) {
+}
+function ClosetItemPopup::onSelect(%this, %unused, %entries)
+{
+    if ((ClosetItemsFrame.category $= %entries))
+    {
         return;
     }
     ClosetItemsFrame.category = %entries;
-    if ($gUpdatingClosetItemPopupFromThumbnailsSetDrawers) {
+    if ($gUpdatingClosetItemPopupFromThumbnailsSetDrawers)
+    {
         $gUpdatingClosetItemPopupFromThumbnailsSetDrawers = 0;
         return;
-    } else {
-        if (ClosetTabs.tabClosetInitialized) {
+    }
+    else
+    {
+        if (ClosetTabs.tabClosetInitialized)
+        {
             ClosetItemsFrame.update();
         }
     }
     ClosetThumbnailsCloset.getParent().scrollToTop();
-};
-function ClosetBrandPopup::onSelect(%this, %unused, %entries) {
-    if ((ClosetItemsFrame.brand $= %entries)) {
+}
+function ClosetBrandPopup::onSelect(%this, %unused, %entries)
+{
+    if ((ClosetItemsFrame.brand $= %entries))
+    {
         return;
     }
     ClosetItemsFrame.brand = %entries;
-    if (ClosetTabs.tabClosetInitialized) {
+    if (ClosetTabs.tabClosetInitialized)
+    {
         ClosetItemsFrame.update();
     }
     ClosetThumbnailsCloset.getParent().scrollToTop();
-};
-function ClosetWhatYoureWearingList::onCreatedChild(%this, %child) {
+}
+function ClosetWhatYoureWearingList::onCreatedChild(%this, %child)
+{
     %currentTabName = ClosetTabs.getCurrentTab().name;
     %background = new GuiControl("") {
         profile = "ClosetLtBackgroundProfile";
@@ -674,8 +758,11 @@ function ClosetWhatYoureWearingList::onCreatedChild(%this, %child) {
         bitmap = "";
         modulationColor = "255 255 255 100";
     };
-    if ((%currentTabName $= "MY DESIGNS")) {
-    } else {
+    if ((%currentTabName $= "MY DESIGNS"))
+    {
+    }
+    else
+    {
     }
     %authorText = new GuiMLTextCtrl("") {
         profile = "ClosetSmallLinkProfile";
@@ -699,143 +786,205 @@ function ClosetWhatYoureWearingList::onCreatedChild(%this, %child) {
     %child.closeBox = %closeBox;
     %child.authorText = %authorText;
     %child.sku = 0;
-    if (!(getWord(%child.getNamespaceList(), 0) $= "ClosetWhatYoureWearingItem")) {
+    if (!(getWord(%child.getNamespaceList(), 0) $= "ClosetWhatYoureWearingItem"))
+    {
         %child.bindClassName("ClosetWhatYoureWearingItem");
     }
-};
+}
 $gNoSkuList = "400 850 875 900 950 5400 5850 5875 5900 5950 5980";
-function ClosetWhatYoureWearingList::addSku(%this, %sku) {
-    if ((findWord($gNoSkuList, %sku) != -(1.0))) {
+function ClosetWhatYoureWearingList::addSku(%this, %sku)
+{
+    if ((findWord($gNoSkuList, %sku) != -(1.0)))
+    {
         return;
     }
     %drawerAction = "";
     %child = %this.addChild();
     %child.sku = %sku;
     %si = SkuManager.findBySku(%sku);
-    if (!(SkuManager.getPropSkus(%sku) $= "")) {
-        if (InstrumentRegistryClient.isInstrumentSku(%sku)) {
+    if (!(SkuManager.getPropSkus(%sku) $= ""))
+    {
+        if (InstrumentRegistryClient.isInstrumentSku(%sku))
+        {
             %drawerAction = "  (no animation)";
-        } else {
-            if (ClosetGui.isDoingPropAction) {
+        }
+        else
+        {
+            if (ClosetGui.isDoingPropAction)
+            {
                 %drawerAction = "  <a:gamelink stopPropAction>stop animation</a>";
-            } else {
+            }
+            else
+            {
                 %drawerAction = "  <a:gamelink startPropAction>start animation</a>";
             }
         }
     }
     %child.desc.setText("<a:gamelink " @ %sku @ ">" @ %si.descShrt @ "</a>" @ "<br><spush><font:Arial:12><color:00000099>" @ %si.getUserFacingDrawerName() @ %drawerAction @ "<spop>");
-    if (!(%si.author $= "")) {
+    if (!(%si.author $= ""))
+    {
         %playerEncoded = urlEncode(stripUnprintables(%si.author));
         %profileURL = $Net::ProfileURL @ %playerEncoded;
         %child.authorText.setText("<just:right><font:Arial:12><color:00000044><linkcolor:00000066>" @ "by <a:gamelink " @ %profileURL @ ">" @ %si.author @ "</a>");
-    } else {
+    }
+    else
+    {
         %child.authorText.setText("");
     }
-    if (!(%si.expireTime $= "")) {
+    if (!(%si.expireTime $= ""))
+    {
         %child.expiringIcon.setBitmap("platform/client/ui/expiring_icon");
         %child.expiringIcon.setVisible(1);
-    } else {
+    }
+    else
+    {
         %child.expiringIcon.setVisible(0);
     }
     %currentTabName = ClosetTabs.getCurrentTab().name;
-    if ((%currentTabName $= "MY DESIGNS")) {
+    if ((%currentTabName $= "MY DESIGNS"))
+    {
         %child.ugcStatusIcon.setBitmap(ClosetGui_MyShop_GetSkuUGCStatusIcon(%sku));
         %child.ugcStatusIcon.setVisible(1);
-    } else {
+    }
+    else
+    {
         %child.ugcStatusIcon.setVisible(0);
     }
-    if (%this.filterByRemovable) {
+    if (%this.filterByRemovable)
+    {
         %showRemoveButton = SkuManager.isOptionalDrawer(%si.drwrName);
-    } else {
+    }
+    else
+    {
         %showRemoveButton = 1;
     }
     %child.closeBox.setActive(%showRemoveButton);
     %this.hiliteCell(0, (%this.getCount() - 1.0));
     %this.reseatChildren();
-};
-function ClosetWhatYoureWearingList::setSkus(%this, %skus) {
+}
+function ClosetWhatYoureWearingList::setSkus(%this, %skus)
+{
     %propSku = SkuManager.getFirstPropSku($ClosetSkusOutfit[$ClosetOutfitName]);
-    if ((%propSku $= "") || (%this.lastPropSku != %propSku)) {
+    if ((%propSku $= "") || (%this.lastPropSku != %propSku))
+    {
         stopPropAction();
     }
     %this.lastPropSku = %propSku;
-    if ((%propSku $= "")) {
+    if ((%propSku $= ""))
+    {
         $player.setGenre("p");
-    } else {
+    }
+    else
+    {
         %instrument = InstrumentRegistryClient.getInstrumentBySku(%propSku);
-        if ((%instrument $= "")) {
+        if ((%instrument $= ""))
+        {
             $player.setGenre("p");
-        } else {
+        }
+        else
+        {
             $player.setGenre(%instrument.genre);
         }
     }
     %this.setNumChildren(0);
-    if ((getWordCount(%skus) == 0.0)) {
+    if ((getWordCount(%skus) == 0.0))
+    {
         ClosetWhatYoureWearingNone.setTextWithStyle("(wearing none)");
-        if (isObject(MyShopCopyToOutfitText)) {
+        if (isObject(MyShopCopyToOutfitText))
+        {
             MyShopCopyToOutfitText.setVisible(0);
         }
-    } else {
+    }
+    else
+    {
         ClosetWhatYoureWearingNone.setTextWithStyle("");
-        if (isObject(MyShopCopyToOutfitText)) {
+        if (isObject(MyShopCopyToOutfitText))
+        {
             MyShopCopyToOutfitText.setVisible(1);
         }
     }
     %skus = SkuManager.sortSkusByDrawer(%skus);
     %count = getWordCount(%skus);
     %i = 0;
-    while ((%i < %count)) {
+    while ((%i < %count))
+    {
         %this.addSku(getWord(%skus, %i));
         %i = (%i + 1.0);
     }
     %this.skus = (%i < %count) @ %skus;
-};
-function ClosetWhatYoureWearingList::refresh(%this, %skus) {
+}
+function ClosetWhatYoureWearingList::refresh(%this, %skus)
+{
     ClosetWhatYoureWearingList.setSkus(%skus);
-};
-function ClosetWhatYoureWearingButton::onURL(%this, %url) {
-    if ((getWord(%url, 0) $= "gamelink")) {
+}
+function ClosetWhatYoureWearingButton::onURL(%this, %url)
+{
+    if ((getWord(%url, 0) $= "gamelink"))
+    {
         %url = getWords(%url, 1);
     }
-    if ((%url $= "startPropAction")) {
+    if ((%url $= "startPropAction"))
+    {
         ClosetMainObjectView.zoomToSKU("");
         doPropAction();
         ClosetWhatYoureWearingList.refresh($ClosetSkusOutfit[$ClosetOutfitName]);
-    } else {
-        if ((%url $= "stopPropAction")) {
+    }
+    else
+    {
+        if ((%url $= "stopPropAction"))
+        {
             stopPropAction();
             ClosetWhatYoureWearingList.refresh($ClosetSkusOutfit[$ClosetOutfitName]);
-        } else {
-            if ((ClosetTabs.getCurrentTab().name $= "CLOSET")) {
+        }
+        else
+        {
+            if ((ClosetTabs.getCurrentTab().name $= "CLOSET"))
+            {
                 ClosetThumbnailsCloset.scroll.scrollToSku(%url);
-            } else {
-                if ((ClosetTabs.getCurrentTab().name $= "MY DESIGNS")) {
+            }
+            else
+            {
+                if ((ClosetTabs.getCurrentTab().name $= "MY DESIGNS"))
+                {
                     ClosetGui_MyShop_ToggleCurrentSku(%url);
                 }
             }
         }
     }
-};
-function ClosetGUI_ToggleSku_Closet(%sku) {
+}
+function ClosetGUI_ToggleSku_Closet(%sku)
+{
     %drawer = SkuManager.findBySku(%sku).drwrName;
     %removable = SkuManager.isOptionalDrawer(%drawer);
-    if (SkuManager.isBodySku(%sku)) {
+    if (SkuManager.isBodySku(%sku))
+    {
         %wordLoc = findWord($ClosetSkusBody, %sku);
-        if ((%wordLoc >= 0.0)) {
-            if (%removable) {
+        if ((%wordLoc >= 0.0))
+        {
+            if (%removable)
+            {
                 $ClosetSkusBody = removeWord($ClosetSkusBody, %wordLoc);
             }
-        } else {
+        }
+        else
+        {
             $ClosetSkusBody = SkuManager.overlaySkus($ClosetSkusBody, %sku);
         }
-    } else {
-        if (SkuManager.isOutfitSku(%sku)) {
+    }
+    else
+    {
+        if (SkuManager.isOutfitSku(%sku))
+        {
             %wordLoc = findWord($ClosetSkusOutfit[$ClosetOutfitName], %sku);
-            if ((%wordLoc >= 0.0)) {
-                if (%removable) {
+            if ((%wordLoc >= 0.0))
+            {
+                if (%removable)
+                {
                     $ClosetSkusOutfit[$ClosetOutfitName] = removeWord($ClosetSkusOutfit[$ClosetOutfitName], %wordLoc);
                 }
-            } else {
+            }
+            else
+            {
                 $ClosetSkusOutfit[$ClosetOutfitName] = SkuManager.overlaySkus($ClosetSkusOutfit[$ClosetOutfitName], %sku);
             }
             %outfitNum = findWord($Player::HangerNames, [$player.getGender()], $ClosetOutfitName);
@@ -843,4 +992,4 @@ function ClosetGUI_ToggleSku_Closet(%sku) {
             %objectView.setSkus($ClosetSkusBody @ " " @ $ClosetSkusOutfit[$ClosetOutfitName]);
         }
     }
-};
+}

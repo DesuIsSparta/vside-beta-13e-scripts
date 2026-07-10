@@ -1,4 +1,5 @@
-function initServer() {
+function initServer()
+{
     echo("--------- Initializing MOD: Intersection: Server ---------");
     $AmServer = 1;
     $Server::Status = "Unknown";
@@ -10,59 +11,79 @@ function initServer() {
     exec("./scripts/game.cs");
     exec("./scripts/audio.cs");
     exec("./scripts/ets/init.cs");
-};
-function Monitor::onConnected(%unused) {
+}
+function Monitor::onConnected(%unused)
+{
     echo("Monitor Connected");
-};
-function Monitor::onConnectFailed(%unused) {
+}
+function Monitor::onConnectFailed(%unused)
+{
     echo("Monitor Connection Failed");
-};
-function Monitor::onDisconnect(%unused) {
+}
+function Monitor::onDisconnect(%unused)
+{
     echo("Monitor Disconnected");
-};
-function Monitor::onLine(%unused, %line) {
+}
+function Monitor::onLine(%unused, %line)
+{
     echo("Monitor TCP: " @ %line);
-};
-function Monitor::onConnectRequest(%unused, %unused, %id) {
+}
+function Monitor::onConnectRequest(%unused, %unused, %id)
+{
     echo("Monitor Accept: " @ %id);
-};
-function openMonitorSocket() {
+}
+function openMonitorSocket()
+{
     %mon = new TCPObject(Monitor);
-    if (($Pref::Server::MonitorPort != 0.0)) {
+    if (($Pref::Server::MonitorPort != 0.0))
+    {
         %mon.listen($Pref::Server::MonitorPort);
-    } else {
+    }
+    else
+    {
         %mon.listen(28000);
     }
-};
-function initDedicated() {
+}
+function initDedicated()
+{
     enableWinConsole(1);
     echo("\n--------- Starting Dedicated Server ---------");
     $Server::Dedicated = 1;
-    if (!($missionArg $= "")) {
+    if (!($missionArg $= ""))
+    {
         openMonitorSocket();
         createServer("MultiPlayer", $missionArg);
-    } else {
+    }
+    else
+    {
         echo("No mission specified (use -mission filename)");
     }
-};
-function quitApp() {
+}
+function quitApp()
+{
     echo("Server quitting");
-    if (!$StandAlone) {
+    if (!$StandAlone)
+    {
     }
-    if ($AmServer) {
+    if ($AmServer)
+    {
         stopServer();
-    } else {
+    }
+    else
+    {
         doQuit();
     }
-};
-function stopServer() {
+}
+function stopServer()
+{
     %stopRequest = new HTTPObject(StopRequest);
     %host = $Pref::Server::ManagerAddress @ ":" @ $Pref::Server::ManagerHTTPPort;
     %uri = "/envmanager/status";
     %query = "cmd=stop";
     %post = "";
     %stopRequest.post(%host, %uri, %query, %post);
-};
-function StopRequest::onStatus(%unused) {
+}
+function StopRequest::onStatus(%unused)
+{
     doQuit();
-};
+}

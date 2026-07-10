@@ -1,19 +1,23 @@
-if (!isObject(geHighScoresPanelTabs)) {
+if (!isObject(geHighScoresPanelTabs))
+{
     new ScriptObject(geHighScoresPanelTabs) {
         class = "TabControl";
     };
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(geHighScoresPanelTabs);
     }
 }
-function toggleHighScoresPanel() {
+function toggleHighScoresPanel()
+{
     toggleVisibleState(geHighScoresPanel);
-};
+}
 safeEnsureScriptObject("StringMap", "HumanReadableGameNamesMap");
 HumanReadableGameNamesMap.put("TheGrind", "The Grind");
 HumanReadableGameNamesMap.put("Materiel", "Materiel");
 HumanReadableGameNamesMap.put("Sumo", "Sumo");
-function geHighScoresPanel::open(%this, %gameName, %gameStationId) {
+function geHighScoresPanel::open(%this, %gameName, %gameStationId)
+{
     %this.Initialize();
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
@@ -29,18 +33,22 @@ function geHighScoresPanel::open(%this, %gameName, %gameStationId) {
     %request = sendRequest_GetHighGameScoresForStation($Player::Name, %this.gameStationId, 0, 25, "onDoneOrErrorCallback_GetHighGameScores");
     %request.global = 0;
     %this.requestStarted();
-};
-function clientCmdOpenHighScoresFor(%gameName, %gameStationId) {
+}
+function clientCmdOpenHighScoresFor(%gameName, %gameStationId)
+{
     geHighScoresPanel.open(%gameName, %gameStationId);
-};
-function geHighScoresPanel::close(%this) {
+}
+function geHighScoresPanel::close(%this)
+{
     %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
-};
-function geHighScoresPanel::Initialize(%this) {
+}
+function geHighScoresPanel::Initialize(%this)
+{
     geHighScoresPanelTabs.setup();
-    if (!isObject(%this.waitIcon)) {
+    if (!isObject(%this.waitIcon))
+    {
         %this.requestsPending = 0;
         %this.waitIcon = AnimCtrl::newAnimCtrl("457 24", "18 18");
         %this.waitIcon.setDelay(60);
@@ -55,27 +63,33 @@ function geHighScoresPanel::Initialize(%this) {
         %this.waitIcon.setVisible(0);
         %this.add(%this.waitIcon);
     }
-};
-function geHighScoresPanel::requestStarted(%this) {
+}
+function geHighScoresPanel::requestStarted(%this)
+{
     %this.requestsPending = (%this.requestsPending + 1.0);
     %this.waitIcon.setVisible(1);
     %this.waitIcon.start();
-};
-function geHighScoresPanel::requestStopped(%this) {
+}
+function geHighScoresPanel::requestStopped(%this)
+{
     %this.requestsPending = (%this.requestsPending - 1.0);
-    if ((%this.requestsPending <= 0.0)) {
+    if ((%this.requestsPending <= 0.0))
+    {
         %this.requestsPending = 0;
         %this.waitIcon.stop();
         %this.waitIcon.setVisible(0);
     }
-};
-function onDoneOrErrorCallback_GetHighGameScores(%request) {
+}
+function onDoneOrErrorCallback_GetHighGameScores(%request)
+{
     geHighScoresPanel.requestStopped();
-    if (%request.checkSuccess()) {
+    if (%request.checkSuccess())
+    {
         %global = %request.global;
         %tabName = %global ? "Global" : "This Machine";
         %tab = geHighScoresPanelTabs.getTabWithName(%tabName);
-        if (!isObject(%tab)) {
+        if (!isObject(%tab))
+        {
             error(getTrace() @ " " @ "tab with name" @ " " @ %tabName @ " " @ "not found!");
             return;
         }
@@ -87,15 +101,18 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
         %userScore = "";
         %userScoreDate = "";
         %i = 0;
-        while ((%i < %count)) {
+        while ((%i < %count))
+        {
             %prefix = "scores.scores" @ %i;
             %score = %request.getValue(%prefix @ ".score");
             %scoreRanking = %request.getValue(%prefix @ ".scoreRanking");
             %userName = %request.getValue(%prefix @ ".userName");
             %dateAttained = %request.getValue(%prefix @ ".dateAttained");
-            if ((%userName $= $Player::Name)) {
+            if ((%userName $= $Player::Name))
+            {
             }
-            if ((%userRanking $= "")) {
+            if ((%userRanking $= ""))
+            {
                 %userRanking = %scoreRanking;
                 %userScore = %score;
                 %userScoreDate = %dateAttained;
@@ -108,22 +125,29 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
             %i = (%i + 1.0);
         }
         %dataTable.updateListeners();
-        if (((%i < %count) @ " " @ %userRanking $= "")) {
+        if (((%i < %count) @ " " @ %userRanking $= ""))
+        {
             %userRanking = %request.getValue("scores.userRanking");
             %userScore = %request.getValue("scores.userScore");
             %userScoreDate = %request.getValue("scores.userScoreDate");
         }
-        if ((%userRanking $= "")) {
-            if (%global) {
+        if ((%userRanking $= ""))
+        {
+            if (%global)
+            {
                 %hrGameName = HumanReadableGameNamesMap.get(geHighScoresPanel.gameName);
                 %text = "You have no score for " @ %hrGameName @ ".";
-            } else {
+            }
+            else
+            {
                 %text = "You have no score on this machine.";
             }
             %tab.noScoreText.setText(%text);
             %tab.noScoreText.setVisible(1);
             %tab.userScoresPanel.setVisible(0);
-        } else {
+        }
+        else
+        {
             %tab.usernameField.setText("<clip:111>" @ $Player::Name);
             %tab.bestScoreField.setText(%userScore);
             %tab.rankField.setText(%userRanking);
@@ -132,8 +156,9 @@ function onDoneOrErrorCallback_GetHighGameScores(%request) {
             %tab.userScoresPanel.setVisible(1);
         }
     }
-};
-function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name) {
+}
+function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name)
+{
     return new GuiBitmapButtonCtrl("") {
         profile = "ClipboardTabButtonProfile";
         horizSizing = "right";
@@ -151,23 +176,28 @@ function geHighScoresPanelTabs::createButton(%this, %bitmapName, %tab, %name) {
         helpTag = 0;
         drawText = 1;
     };;
-};
-function geHighScoresPanelTabs::setup(%this) {
-    if (!%this.initialized) {
+}
+function geHighScoresPanelTabs::setup(%this)
+{
+    if (!%this.initialized)
+    {
         %this.Initialize(geHighScoresPanelTabContainer, "109 25", "", "0 0", "horizontal");
         %this.newTab("This Machine", "platform/client/buttons/clipboard_tab");
         %this.newTab("Global", "platform/client/buttons/clipboard_tab");
         %this.selectTabWithName("This Machine");
         %this.fillTabs();
     }
-};
-function geHighScoresPanelTabs::fillTabs(%this) {
+}
+function geHighScoresPanelTabs::fillTabs(%this)
+{
     %this.fillTabWithName("This Machine");
     %this.fillTabWithName("Global");
-};
-function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
+}
+function geHighScoresPanelTabs::fillTabWithName(%this, %tabName)
+{
     %tab = %this.getTabWithName(%tabName);
-    if (!isObject(%tab)) {
+    if (!isObject(%tab))
+    {
         return;
     }
     %tab.setProfile(ClipboardProfile);
@@ -323,22 +353,26 @@ function geHighScoresPanelTabs::fillTabWithName(%this, %tabName) {
     };
     %tab.noScoreText = %noScoreText;
     %tab.add(%noScoreText);
-};
-function geHighScoresGuiTable::doSetupRowGuiArray(%this, %rowArray) {
+}
+function geHighScoresGuiTable::doSetupRowGuiArray(%this, %rowArray)
+{
     Parent::doSetupRowGuiArray(%this, %rowArray);
     %rowArray.DataTable = %this.getDataTable();
-    if (!(getWord(%child.getNamespaceList(), 0) $= "geHighScoresGuiTableRow")) {
+    if (!(getWord(%child.getNamespaceList(), 0) $= "geHighScoresGuiTableRow"))
+    {
         %rowArray.bindClassName("geHighScoresGuiTableRow");
     }
-};
-function geHighScoresGuiTable::onRowSelected(%this, %unused, %rowIndex, %unused, %unused) {
+}
+function geHighScoresGuiTable::onRowSelected(%this, %unused, %rowIndex, %unused, %unused)
+{
     %cellIndex = %this.getDataTable().getColumnIndex("username");
     %userName = %this.getDataTable().getCellSortValue(%rowIndex, %cellIndex);
     onLeftClickPlayerName(%userName, "");
-};
-function geHighScoresGuiTableRow::onRightMouseUp(%this) {
+}
+function geHighScoresGuiTableRow::onRightMouseUp(%this)
+{
     %rowIndex = %this.getParent().getObjectIndex(%this);
     %cellIndex = %this.DataTable.getColumnIndex("username");
     %userName = %this.DataTable.getCellSortValue(%rowIndex, %cellIndex);
     onRightClickPlayerName(%userName);
-};
+}

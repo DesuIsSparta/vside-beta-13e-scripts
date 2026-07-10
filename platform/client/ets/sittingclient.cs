@@ -1,18 +1,24 @@
-function InitClientSittingSystem() {
-};
-function ETSSeatMarker::moveDisplayedSeat(%this, %pos) {
-    if (!isObject(%this.myDisplaySeat)) {
+function InitClientSittingSystem()
+{
+}
+function ETSSeatMarker::moveDisplayedSeat(%this, %pos)
+{
+    if (!isObject(%this.myDisplaySeat))
+    {
         return;
     }
     %this.myDisplaySeat.setTransform(%pos);
-};
-function ETSSeatMarker::showSeat(%this, %seatID) {
-    if (isObject(%this.myDisplaySeat)) {
+}
+function ETSSeatMarker::showSeat(%this, %seatID)
+{
+    if (isObject(%this.myDisplaySeat))
+    {
         %this.myDisplaySeat.seatID = %seatID;
         return;
     }
     %type = "ClientSeatDisplayData";
-    if (%this.isListeningStation()) {
+    if (%this.isListeningStation())
+    {
         %type = "ClientSeatListeningDisplayData";
     }
     %seatDisplay = new EtsClientModel("") {
@@ -24,60 +30,79 @@ function ETSSeatMarker::showSeat(%this, %seatID) {
     };
     %seatDisplay.setTransform(%this.getTransform());
     %this.myDisplaySeat = %seatDisplay;
-};
-function ETSSeatMarker::hideSeat(%this) {
-    if (isObject(%this.myDisplaySeat)) {
+}
+function ETSSeatMarker::hideSeat(%this)
+{
+    if (isObject(%this.myDisplaySeat))
+    {
         %this.myDisplaySeat.delete();
         %this.myDisplaySeat = 0;
     }
-};
-function EtsClientModel::cancelNotSoFast(%this) {
+}
+function EtsClientModel::cancelNotSoFast(%this)
+{
     %this.notSoFast = 0;
-};
-function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat) {
-    if (!(%autosit_outfit $= "")) {
+}
+function clientCmdSitRequestSuccessful(%unused, %autosit_outfit, %isKissingSeat)
+{
+    if (!(%autosit_outfit $= ""))
+    {
         $player.outfitBeforeAutosit = $gOutfits.get("currentOutfit");
         %success = $player.switchOutfitTo(%autosit_outfit);
-        if (!%success) {
+        if (!%success)
+        {
             error(getScopeName() @ "->Could not change outfit to trigger-specified autosit_outfit = " @ %autosit_outfit);
             $player.outfitBeforeAutosit = "";
         }
         userTips::showOnceEver("AutoChangeToSwimWear");
     }
-    if (!(%isKissingSeat $= "")) {
+    if (!(%isKissingSeat $= ""))
+    {
         $player.isKissSeat = 1;
-    } else {
+    }
+    else
+    {
         $player.isKissSeat = 0;
     }
-};
-function clientCmdStandRequestSuccessful(%unused) {
-    if ((ApplauseMeterGui.applauseMeterUse $= "blockgame")) {
+}
+function clientCmdStandRequestSuccessful(%unused)
+{
+    if ((ApplauseMeterGui.applauseMeterUse $= "blockgame"))
+    {
         ApplauseMeterGui.close();
     }
     $player.isKissSeat = 0;
-    if (!($player.outfitBeforeAutosit $= "")) {
+    if (!($player.outfitBeforeAutosit $= ""))
+    {
         %success = $player.switchOutfitTo($player.outfitBeforeAutosit);
-        if (!%success) {
+        if (!%success)
+        {
             error(getScopeName() @ "->Could not restore saved pre-autosit outfit! (previous outfit = " @ Player.outfitBeforeAutosit @ ")");
         }
         $player.outfitBeforeAutosit = "";
     }
-};
-function SendStandCommand(%moveDir) {
-    if ($player.isSitting()) {
+}
+function SendStandCommand(%moveDir)
+{
+    if ($player.isSitting())
+    {
         commandToServer('RequestToStand', %moveDir, 0);
     }
-};
-function ClientSittingSystemOnClick(%obj) {
-    if ((%obj.notSoFast == 1.0)) {
+}
+function ClientSittingSystemOnClick(%obj)
+{
+    if ((%obj.notSoFast == 1.0))
+    {
         return;
     }
     %obj.notSoFast = 1;
     %obj.schedule(%obj.notSoFastClearTime, cancelNotSoFast);
-    if (isObject(CSFurnitureMover)) {
+    if (isObject(CSFurnitureMover))
+    {
         CSFurnitureMover.SelectNuggetID(-(1.0));
     }
     commandToServer('RequestToSit', %obj.seatID);
-};
-function clientCmdOnLeaveSittingTrigger(%autosit_outfit) {
-};
+}
+function clientCmdOnLeaveSittingTrigger(%autosit_outfit)
+{
+}

@@ -1,30 +1,41 @@
 $screenShotNum = 100;
-function snapshot::snapAndUpControlRegion(%control, %fileName, %removeBG) {
+function snapshot::snapAndUpControlRegion(%control, %fileName, %removeBG)
+{
     return snapshot::snapAndUpRegion(%control.getScreenPosition() @ " " @ %control.getExtent(), %fileName, %removeBG);
-};
-function snapControl(%ctrl, %fileName) {
+}
+function snapControl(%ctrl, %fileName)
+{
     %origin = %ctrl.getPosition();
     %extent = %ctrl.getExtent();
     %rect = %origin @ " " @ %extent;
     shootscreen(%fileName, %rect);
-};
-function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
-    if ((%fileName $= "")) {
+}
+function snapshot::snapAndUpRegion(%region, %fileName, %removeBG)
+{
+    if ((%fileName $= ""))
+    {
         %fileName = "screenshot_" @ getSubStr(getTimeStamp(), 0, 17) @ "_" @ $screenShotNum;
     }
     %fn_orig = %fileName;
-    if (($Pref::Video::screenShotFormat $= "JPEG")) {
+    if (($Pref::Video::screenShotFormat $= "JPEG"))
+    {
         %ext = ".jpg";
-    } else {
-        if (($Pref::Video::screenShotFormat $= "PNG")) {
+    }
+    else
+    {
+        if (($Pref::Video::screenShotFormat $= "PNG"))
+        {
             %ext = ".png";
-        } else {
+        }
+        else
+        {
             %ext = ".png";
         }
     }
     %fileName = %fileName @ %ext;
     %uploader = "";
-    if (snapshotTool::snapRegion(%region, %fileName)) {
+    if (snapshotTool::snapRegion(%region, %fileName))
+    {
         $screenShotNum = ($screenShotNum + 1.0);
         %uploader = new URLPostObject("");
         %uploader.setProgress(1);
@@ -33,26 +44,36 @@ function snapshot::snapAndUpRegion(%region, %fileName, %removeBG) {
         %uploader.setURLParam("token", $Token);
         %uploader.setURLParam("type", "avatar");
         %uploader.setPostFile("imageBody", %fileName);
-        if (%uploader.start()) {
-            if (isObject(CURLSimGroup)) {
+        if (%uploader.start())
+        {
+            if (isObject(CURLSimGroup))
+            {
                 CURLSimGroup.add(%uploader);
             }
-        } else {
+        }
+        else
+        {
             error("Unable to upload avatar photo." @ " " @ getTrace());
         }
-    } else {
+    }
+    else
+    {
         error("Unable to capture region." @ " " @ getTrace());
     }
     return %uploader;
-};
-function GuiControl::snapshot(%this, %fileName) {
+}
+function GuiControl::snapshot(%this, %fileName)
+{
     return snapshot::snapRegion(%this.getScreenPosition() @ " " @ %this.getExtent(), %fileName);
-};
-function snapshot::snapRegion(%region, %fileName) {
+}
+function snapshot::snapRegion(%region, %fileName)
+{
     shootscreen(%fileName, %region);
-};
-function getScreenShotMetaData(%guiTSCtrl) {
-    if (($pref::Render::orthoScale != 1.0)) {
+}
+function getScreenShotMetaData(%guiTSCtrl)
+{
+    if (($pref::Render::orthoScale != 1.0))
+    {
         return getScreenShotMetaDataOrtho(%guiTSCtrl);
     }
     %cameraTransform = PlayGui.getLastCameraTransform();
@@ -73,7 +94,8 @@ function getScreenShotMetaData(%guiTSCtrl) {
     %ret = %ret @ "\n" @ "// %cameraTransform =" @ " " @ %cameraTransform;
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %n = 0;
-    while ((%n < %numPts)) {
+    while ((%n < %numPts))
+    {
         %windowCoord = VectorConvolve(%samplePts[%n], %ctrlExtent);
         %worldCoord1 = %guiTSCtrl.unproject(%windowCoord);
         %camVec = VectorSub(%worldCoord1, %cameraTransform);
@@ -91,8 +113,9 @@ function getScreenShotMetaData(%guiTSCtrl) {
         %n = (%n + 1.0);
     }
     return %ret;
-};
-function getScreenShotMetaDataOrtho(%guiTSCtrl) {
+}
+function getScreenShotMetaDataOrtho(%guiTSCtrl)
+{
     %cameraTransform = PlayGui.getLastCameraTransform();
     %numPts = 0;
     %sampleName[%numPts] = "upper left";
@@ -122,7 +145,8 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %ret = %ret @ "\n" @ "// %orthoScale      =" @ " " @ $pref::Render::orthoScale;
     %summary = "";
     %n = 0;
-    while ((%n < %numPts)) {
+    while ((%n < %numPts))
+    {
         %windowCoord = %samplePts[%n];
         %windowCoord = VectorAdd(%windowCoord, "-0.5 -0.5");
         %windowCoord = VectorScale(%windowCoord, $pref::Render::orthoScale);
@@ -136,7 +160,8 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
         %ret = %ret @ "\n" @ "//" @ " " @ %n @ " " @ "XY plane: \"" @ %hit @ "\"";
         %summary = %summary @ "\n" @ formatString("%-15s:", %sampleName[%n]) @ " " @ %hit;
         %resultPts[%n] = %hit;
-        if (isObject(moWorldCornerMarkers) && (%n < moWorldCornerMarkers.getCount())) {
+        if (isObject(moWorldCornerMarkers) && (%n < moWorldCornerMarkers.getCount()))
+        {
             %mh = %hit;
             %mh = setWord(%mh, 2, 0);
             %marker = moWorldCornerMarkers.getObject(%n);
@@ -156,17 +181,22 @@ function getScreenShotMetaDataOrtho(%guiTSCtrl) {
     %summary = %summary @ "\n" @ formatString("%-15s:", "altitudeUnit") @ " " @ %pAB;
     %command = "addSpace2DMap(\"" @ $gContiguousSpaceName @ "\", expandFilename(\"./orthomap\"), \"" @ $gContiguousSpaceName[%resultPts @ 0] @ "\", \"" @ $gContiguousSpaceName[%resultPts @ 0][%resultPts @ 1] @ "\", \"" @ $gContiguousSpaceName[%resultPts @ 0][%resultPts @ 1][%resultPts @ 2] @ "\", \"" @ %pAB @ "\");";
     return %command @ "\n" @ %summary @ "\n" @ %ret;
-};
-function doSaveScreenShotMetaData(%name, %ext, %guiCtrl) {
-    if (($pref::Render::orthoScale <= 1.0)) {
+}
+function doSaveScreenShotMetaData(%name, %ext, %guiCtrl)
+{
+    if (($pref::Render::orthoScale <= 1.0))
+    {
         return;
     }
     %fn = %name @ ".cs";
     %file = new FileObject("");
-    if (%file.openForWrite(%fn)) {
+    if (%file.openForWrite(%fn))
+    {
         %file.writeLine(getScreenShotMetaData(%guiCtrl));
-    } else {
+    }
+    else
+    {
         error(getScopeName() @ " " @ "- could not open file for write:" @ " " @ %fn);
     }
     %file.delete();
-};
+}

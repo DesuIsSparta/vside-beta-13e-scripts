@@ -1,4 +1,5 @@
-function setupProjectSpecificMessages() {
+function setupProjectSpecificMessages()
+{
     $MsgCat::infoSignTitle["ATM"] = "vBux";
     $MsgCat::infoSignBody["ATM"] = "Use vBux to gear up with more clothes, accessories, and other cool merch. <a:http://www.vside.com/go/help/category/vbux>Get more info on vBux</a>.";
     $MsgCat::infoSignTitle["BAR"] = "Main Floor Bar";
@@ -190,5 +191,5 @@ function setupProjectSpecificMessages() {
     $MsgCat::respektEvent["","neg"] = "";
     $MsgCat::respektEvent["DEFAULT","pos"] = "[DVALUE] vPoints: Stoked!";
     $MsgCat::respektEvent["DEFAULT","neg"] = "[DVALUE] vPoints: Bummer.";
-};
+}
 setupProjectSpecificMessages();

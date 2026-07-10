@@ -1,6 +1,8 @@
-function drinks_confirmInitiateGift(%otherPlayerName) {
+function drinks_confirmInitiateGift(%otherPlayerName)
+{
     %sku = $player.getActiveDrinkSku();
-    if ((%sku $= "")) {
+    if ((%sku $= ""))
+    {
         error(getScopeName() @ " " @ "- no drink!" @ " " @ getTrace());
         return;
     }
@@ -12,17 +14,22 @@ function drinks_confirmInitiateGift(%otherPlayerName) {
     %dlg.otherPlayerName = %otherPlayerName;
     %dlg.giftSkus = %sku;
     %dlg.making = 0;
-};
-function drinks_confirmInitiateMake(%otherPlayerName, %sku) {
+}
+function drinks_confirmInitiateMake(%otherPlayerName, %sku)
+{
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-    if (!isObject(%otherPlayer)) {
+    if (!isObject(%otherPlayer))
+    {
         error(getScopeName() @ " " @ "- can't find other player" @ " " @ %otherPlayerName @ " " @ getTrace());
         return;
     }
     %si = SkuManager.findBySku(%sku);
-    if ((%otherPlayerName $= $Player::Name)) {
+    if ((%otherPlayerName $= $Player::Name))
+    {
         %msg = $Player::Name[$MsgCat::giftingItems @ "DLG-BODY-MAKE-SELF-CONFIRM"];
-    } else {
+    }
+    else
+    {
         %msg = $MsgCat::giftingItems["DLG-BODY-MAKE-CONFIRM"];
     }
     %msg = strreplace(%msg, "[ITEMNAME]", %si.descShrt);
@@ -31,20 +38,26 @@ function drinks_confirmInitiateMake(%otherPlayerName, %sku) {
     %dlg.otherPlayerName = %otherPlayerName;
     %dlg.giftSkus = %sku;
     %dlg.making = 1;
-};
-function giftingItems_onInitiate(%dlg) {
+}
+function giftingItems_onInitiate(%dlg)
+{
     %transactionID = MD5(getRandom(0, 1000000));
     commandToServer('GiftingItems_Initiated', %dlg.otherPlayerName, %transactionID, %dlg.giftSkus, %dlg.making);
-    if ((%dlg.otherPlayerName $= $Player::Name)) {
+    if ((%dlg.otherPlayerName $= $Player::Name))
+    {
         %otherDlg = "";
-    } else {
+    }
+    else
+    {
         %otherDlg = MessageBoxOK("The Gift of Libation", "<br>Checking with" @ " " @ %dlg.otherPlayerName @ "..<br>", "");
     }
     giftingItems_registerPendingTransactionGiver(%transactionID, %dlg.otherPlayerName, %dlg.giftSkus, %otherDlg, %dlg.making);
-};
-function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID, %making) {
+}
+function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID, %making)
+{
     %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-    if (!isObject(%otherPlayer)) {
+    if (!isObject(%otherPlayer))
+    {
         error(getScopeName() @ " " @ "- could not find other player:" @ " " @ %otherPlayerName);
         GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "E-ENVSERVER-UNKNOWN");
         return;
@@ -52,22 +65,35 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
     error("// oxe 20090219 - todo - decide if this is good or if we want a new one");
     %acceptModeStrangers = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionStrangers];
     %acceptModeFriends = $gGiftAcceptModeStrings[$UserPref::Player::GiftsPermissionFriends];
-    if (%otherPlayer.isFriend()) {
-    } else {
+    if (%otherPlayer.isFriend())
+    {
+    }
+    else
+    {
     }
     %acceptMode = %acceptModeStrangers;
     %acceptModeFriends;
-    if ((%acceptMode $= "accept")) {
+    if ((%acceptMode $= "accept"))
+    {
         giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 1, %making);
         GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 1, "ACCEPTED-AUTO");
-    } else {
-        if ((%acceptMode $= "decline")) {
+    }
+    else
+    {
+        if ((%acceptMode $= "decline"))
+        {
             GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-AUTO");
-        } else {
-            if ((%acceptMode $= "ask")) {
-                if (geGiftingPanel.isVisible()) {
+        }
+        else
+        {
+            if ((%acceptMode $= "ask"))
+            {
+                if (geGiftingPanel.isVisible())
+                {
                     GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, 0, "DECLINED-BUSY");
-                } else {
+                }
+                else
+                {
                     giftingItems_registerPendingTransactionRecipient(%transactionID, %otherPlayerName, %skus, 0, %making);
                     geGiftingPanel.giftTransactionID = %transactionID;
                     geGiftingPanel.personalMessage = "";
@@ -79,23 +105,29 @@ function ClientCmdGiftingItems_Initiated(%otherPlayerName, %skus, %transactionID
             }
         }
     }
-};
-function GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, %accepted, %messageCode) {
+}
+function GiftingItemsClient_DoAcceptOrDecline(%otherPlayerName, %transactionID, %accepted, %messageCode)
+{
     commandToServer('GiftingItems_AcceptedOrDeclined', %otherPlayerName, %transactionID, %accepted, %messageCode);
-};
-function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %accepted, %messageCode) {
+}
+function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %accepted, %messageCode)
+{
     %pendingTransactionRecord = giftingItems_getPendingTransactionClient(%transactionID);
-    if (!isObject(%pendingTransactionRecord)) {
+    if (!isObject(%pendingTransactionRecord))
+    {
         error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
         return;
     }
-    if (isObject(%pendingTransactionRecord.dlg)) {
+    if (isObject(%pendingTransactionRecord.dlg))
+    {
         %pendingTransactionRecord.dlg.close();
     }
-    if (!%accepted) {
+    if (!%accepted)
+    {
         %otherPlayerName = %pendingTransactionRecord.targetPlayerName;
         %otherPlayer = Player::findPlayerInstance(%otherPlayerName);
-        if (!isObject(%otherPlayer)) {
+        if (!isObject(%otherPlayer))
+        {
             error(getScopeName() @ " " @ "- can't find other player:" @ " " @ %otherPlayerName @ " " @ %transactionID);
             %messageCode = "E-TARGET-MISSING";
         }
@@ -105,41 +137,57 @@ function ClientCmdGiftingItems_AcceptedOrDeclinedOrInvalid(%transactionID, %acce
         MessageBoxOK("Woops..", %text, "");
     }
     giftingItems_deletePendingTransactionClient(%transactionID);
-};
-function ClientCmdGiftingItems_Completed(%transactionID, %succeeded) {
+}
+function ClientCmdGiftingItems_Completed(%transactionID, %succeeded)
+{
     %transactionRecord = giftingItems_getPendingTransactionClient(%transactionID);
-    if (!isObject(%transactionRecord)) {
+    if (!isObject(%transactionRecord))
+    {
         error(getScopeName() @ " " @ "- no such pending transaction:" @ " " @ %transactionID);
         return;
     }
     %amSource = (%transactionRecord.sourcePlayerName $= $Player::Name);
-    if (%amSource) {
-    } else {
+    if (%amSource)
+    {
+    }
+    else
+    {
     }
     %otherPlayerName = %transactionRecord.sourcePlayerName;
     %transactionRecord.targetPlayerName;
     %amAlphaAndOmega = (%otherPlayerName $= $Player::Name);
     %skus = %transactionRecord.skus;
-    if (%succeeded) {
-        if (%amAlphaAndOmega) {
+    if (%succeeded)
+    {
+        if (%amAlphaAndOmega)
+        {
             schedule(3000, 0, "updateInventorySkus", %skus, "", 1, 1, %otherPlayerName);
-        } else {
-            if (%amSource) {
+        }
+        else
+        {
+            if (%amSource)
+            {
                 updateInventorySkus("", %skus, 0, 1, %otherPlayerName);
-            } else {
+            }
+            else
+            {
                 %autoAccepted = %transactionRecord.autoAccepted;
                 updateInventorySkus(%skus, "", %autoAccepted, 1, %otherPlayerName);
             }
         }
-    } else {
+    }
+    else
+    {
         %msg = $MsgCat::giftingItems["E-UNKNOWN"];
         MessageBoxOK("Woops...", %msg);
     }
-    if (%amSource) {
+    if (%amSource)
+    {
         %dlg = %transactionRecord.dlg;
-        if (isObject(%dlg)) {
+        if (isObject(%dlg))
+        {
             %dlg.close();
         }
     }
     giftingItems_deletePendingTransactionClient(%transactionID);
-};
+}

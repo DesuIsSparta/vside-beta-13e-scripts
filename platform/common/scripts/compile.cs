@@ -1,7 +1,9 @@
-function compileCS() {
+function compileCS()
+{
     %file = findFirstFile("*.cs");
-    while (!(%file $= "")) {
+    while (!(%file $= ""))
+    {
         compile(%file);
         %file = findNextFile("*.cs");
     }
-};
+}

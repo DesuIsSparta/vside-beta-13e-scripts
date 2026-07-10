@@ -1,4 +1,5 @@
-function setupDefaultMessages() {
+function setupDefaultMessages()
+{
     %buildVersion = urlEncode(getBuildVersion());
     $MsgCat::abuse["E-ABUSE-TYPE"] = "Please specify type, occurrence, and description.";
     $MsgCat::abuse["ABUSE-MSG"] = "vSide has received your Abuse Report! We will look at it shortly and take any necessary action.";
@@ -362,40 +363,50 @@ function setupDefaultMessages() {
     $MsgCat["UI::HELPMEMODE-ON"] = "Cool!  You just turned on \"help-me\" mode.  Now other vSiders will see that \"?\" over your head and hopefully someone will come and help." @ "\n" @ "" @ "\n" @ "To turn off \"help-me\" mode (and remove the \"?\") just click the \"help\" button on the button bar again, or just wait for it to go away automatically in a few minutes.";
     $MsgCatTitles["UI::HELPMEANSWERED"] = "Answer The Call";
     $MsgCat["UI::HELPMEANSWERED"] = "You already answered that call!" @ "\n" @ "Maybe use whisper instead.";
-};
-function setupProjectSpecificMessages() {
-};
-function setupMessages() {
+}
+function setupProjectSpecificMessages()
+{
+}
+function setupMessages()
+{
     setupDefaultMessages();
     setupProjectSpecificMessages();
-};
+}
 $gMessagesSeen = "";
-function hasMessageBeenSeenThisSession(%msgID) {
+function hasMessageBeenSeenThisSession(%msgID)
+{
     %seen = (findField($gMessagesSeen, %msgID) >= 0.0) ? 1 : 0;
-    if (!%seen) {
-        if (!($gMessagesSeen $= "")) {
+    if (!%seen)
+    {
+        if (!($gMessagesSeen $= ""))
+        {
             $gMessagesSeen = $gMessagesSeen @ "\t";
         }
         $gMessagesSeen = $gMessagesSeen @ %msgID;
     }
     return %seen;
-};
-function msgCatOK(%msgID) {
+}
+function msgCatOK(%msgID)
+{
     %body = $MsgCat[%msgID];
-    if ((%body $= "")) {
+    if ((%body $= ""))
+    {
         error(getScopeName() @ " " @ "- no body for message" @ " " @ %msgID);
         return;
     }
     %title = $MsgCatTitles[%msgID];
-    if ((%title $= "")) {
+    if ((%title $= ""))
+    {
         error(getScopeName() @ " " @ "- no title for message" @ " " @ %msgID);
         %title = "Guess What?";
     }
     MessageBoxOK(%title, %body, "");
-};
-function msgCatOKOnceThisSession(%msgID) {
-    if (hasMessageBeenSeenThisSession(%msgID)) {
+}
+function msgCatOKOnceThisSession(%msgID)
+{
+    if (hasMessageBeenSeenThisSession(%msgID))
+    {
         return;
     }
     msgCatOK(%msgID);
-};
+}

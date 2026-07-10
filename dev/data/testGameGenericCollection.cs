@@ -1,9 +1,11 @@
 DeclareTestSuite("TestSuite_Games_Collection");
-function TestSuite_Games_Collection::setup(%this) {
+function TestSuite_Games_Collection::setup(%this)
+{
     %this.addTestCase("TEST_SIMPLE_LOADGAME");
     %this.addTestCase("TEST_SIMPLE_COLLECTION");
-};
-function ASimpleCollectionTestGame::setup(%this) {
+}
+function ASimpleCollectionTestGame::setup(%this)
+{
     %this.displayName = "simple collection game thing";
     %this.displayNamePlural = "simple collection game things";
     %this.rewardInventory = "";
@@ -17,13 +19,16 @@ function ASimpleCollectionTestGame::setup(%this) {
     %this.MSG_STARTCOLLECTION = "You just got the first [ITEMNAMESINGULAR]. See if you can find all [TOTAL]!";
     %this.MSG_CONTINUECOLLECTION = "You found a [ITEMNAMESINGULAR]. Keep searching for the remaining [REMAINING]!";
     %this.MSG_FINISHCOLLECTION = "You found all [TOTAL] [ITEMNAMEPLURAL], well done!";
-};
-function TEST_SIMPLE_LOADGAME::CheckGameCount(%this, %shouldHaveCount, %message) {
+}
+function TEST_SIMPLE_LOADGAME::CheckGameCount(%this, %shouldHaveCount, %message)
+{
     %count = gameplay::LoadedGamePlayGameCount();
     %this.assert((%count == %shouldHaveCount), %message @ " " @ "- loaded game count should be" @ " " @ %shouldHaveCount @ " " @ ", but it was" @ " " @ %count);
-};
-function TEST_SIMPLE_LOADGAME::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_SIMPLE_LOADGAME::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
@@ -32,15 +37,18 @@ function TEST_SIMPLE_LOADGAME::runTest(%this) {
     %this.CheckGameCount((%count + 1.0), "should have one more after loading this");
     gameplay::UnLoadGamePlayGame(%this.testGame.getId());
     %this.CheckGameCount(%count, "should have one less after unloading");
-};
-function TEST_SIMPLE_COLLECTION::CheckState(%this, %player, %shouldBeDone, %shouldHaveCount, %message) {
+}
+function TEST_SIMPLE_COLLECTION::CheckState(%this, %player, %shouldBeDone, %shouldHaveCount, %message)
+{
     %done = %this.testGame.AlreadyFinishedCollection(%player);
     %this.assert((%done == %shouldBeDone), %message @ " " @ "- done should be" @ " " @ %shouldBeDone @ " " @ "but it was" @ " " @ %done);
     %collected = %this.testGame.HowManyCollectedSoFar(%player);
     %this.assert((%collected == %shouldHaveCount), %message @ " " @ "- collected count should be" @ " " @ %shouldHaveCount @ " " @ ", but it was" @ " " @ %collected);
-};
-function TEST_SIMPLE_COLLECTION::runTest(%this) {
-    if (!$StandAlone) {
+}
+function TEST_SIMPLE_COLLECTION::runTest(%this)
+{
+    if (!$StandAlone)
+    {
         %this.assert(0, "this test must be run in $standalone");
         return;
     }
@@ -61,4 +69,4 @@ function TEST_SIMPLE_COLLECTION::runTest(%this) {
     %this.testGame.ClearGameStateForPlayer(%player);
     %this.CheckState(%player, 0, 0, "state after clearing the game state for this player");
     gameplay::UnLoadGamePlayGame(%this.testGame.getId());
-};
+}

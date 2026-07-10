@@ -1,28 +1,37 @@
-function setHighFidelityCull(%on) {
-    if (%on) {
+function setHighFidelityCull(%on)
+{
+    if (%on)
+    {
         $pref::Player::highFidelityCullMask = $TypeMasks::InteriorObjectType;
-    } else {
+    }
+    else
+    {
         $pref::Player::highFidelityCullMask = 0;
     }
-};
+}
 $closeConfirmDlg = 0;
-function onAppCloseButton() {
+function onAppCloseButton()
+{
     commandToServer('SetLookAt', -(1.0), 0, 0);
-    if (isObject($closeConfirmDlg)) {
+    if (isObject($closeConfirmDlg))
+    {
         %isShowingNow = $closeConfirmDlg.visible;
         $closeConfirmDlg.close();
-        if (%isShowingNow) {
+        if (%isShowingNow)
+        {
             confirmQuitOnYes();
             return;
         }
     }
     %noCmd = "";
-    if ($ConsoleActive) {
+    if ($ConsoleActive)
+    {
         ToggleConsole(1);
         %noCmd = "ToggleConsole(true);";
     }
     %dialog = $closeConfirmDlg = MessageBoxYesNo("Quit vSide", $MsgCat::login["CONF-QUIT"], "confirmQuitOnYes();", %noCmd @ " " @ "confirmQuitOnNo ();");
-    if (!($gLastLoggedInThisSessionAs $= "")) {
+    if (!($gLastLoggedInThisSessionAs $= ""))
+    {
         %yesButtonPos = %dialog.button[0].getParent().getPosition();
         %ctrl = new GuiCheckBoxCtrl("") {
             profile = "ETSCheckBoxProfile";
@@ -40,49 +49,62 @@ function onAppCloseButton() {
         %height = getWord(%window.getExtent(), 1);
         %window.resize(%width, (%height + 20.0));
     }
-};
-function confirmQuitOnYes() {
-    if (!($gLastLoggedInThisSessionAs $= "")) {
+}
+function confirmQuitOnYes()
+{
+    if (!($gLastLoggedInThisSessionAs $= ""))
+    {
         $UserPref::General::onQuitVisitWebProfile = $closeConfirmDlg.visitProfileOptionCtrl.getValue();
-        if ($UserPref::General::onQuitVisitWebProfile) {
+        if ($UserPref::General::onQuitVisitWebProfile)
+        {
             doUserProfile($gLastLoggedInThisSessionAs);
         }
     }
     cleanUpAndQuit();
-};
-function confirmQuitOnNo() {
-    if (!($gLastLoggedInThisSessionAs $= "")) {
+}
+function confirmQuitOnNo()
+{
+    if (!($gLastLoggedInThisSessionAs $= ""))
+    {
         $UserPref::General::onQuitVisitWebProfile = $closeConfirmDlg.visitProfileOptionCtrl.getValue();
     }
     $closeConfirmDlg = 0;
-};
-function cleanUpAndQuit() {
-    if (isObject(ConsoleWindow)) {
+}
+function cleanUpAndQuit()
+{
+    if (isObject(ConsoleWindow))
+    {
         $UserPref::ETS::Console::Dim = ConsoleWindow.getPosition() @ " " @ ConsoleWindow.getExtent();
     }
-    if (isObject(SnoopPanel)) {
+    if (isObject(SnoopPanel))
+    {
         SnoopPanel.storeDims();
     }
     quit();
-};
+}
 $gContiguousSpaceName = "";
-function ClientCmdMissionInfo(%contiguousSpaceName, %mode) {
+function ClientCmdMissionInfo(%contiguousSpaceName, %mode)
+{
     $gMode = %mode;
     onGotContiguousSpaceName(%contiguousSpaceName);
-};
-function onGotContiguousSpaceName(%contiguousSpaceName) {
+}
+function onGotContiguousSpaceName(%contiguousSpaceName)
+{
     $gContiguousSpaceName = %contiguousSpaceName;
     tutorials_Initialize();
     geLocalMapContainer.onSpaceChange(%contiguousSpaceName);
     CSControlPanelTabs.updateSkipTutorialTab();
     ButtonBar.handleContiguousSpace();
-    if (!(%contiguousSpaceName $= "")) {
-    } else {
+    if (!(%contiguousSpaceName $= ""))
+    {
+    }
+    else
+    {
     }
     %name = "[" @ $ServerName @ "]";
     %contiguousSpaceName;
     gUserPropMgrClient.incrementIntegerProperty($Player::Name, "level started count" @ " " @ %name, 1);
-};
+}
 $gContiguousSpaceFullNames[""] = "vSide";
 $gContiguousSpaceOfferSkip[""] = 0;
 $gContiguousSpaceFullNames["gw"] = "Gateway";
@@ -97,27 +119,35 @@ $gContiguousSpaceFullNames["nv"] = "NewVenezia";
 $gContiguousSpaceOfferSkip["nv"] = 0;
 $gContiguousSpaceFullNames["rj"] = "RaiJuku";
 $gContiguousSpaceOfferSkip["rj"] = 0;
-function getContiguousSpaceFullName(%code) {
+function getContiguousSpaceFullName(%code)
+{
     return $gContiguousSpaceFullNames[%code];
-};
-function getCurrentContiguousSpaceFullName() {
+}
+function getCurrentContiguousSpaceFullName()
+{
     return getContiguousSpaceFullName($gContiguousSpaceName);
-};
-function getCurrentContiguousSpaceOfferSkip() {
+}
+function getCurrentContiguousSpaceOfferSkip()
+{
     return $gContiguousSpaceOfferSkip[$gContiguousSpaceName];
-};
-function ClientCmdLevelCompleted(%levelName) {
+}
+function ClientCmdLevelCompleted(%levelName)
+{
     gUserPropMgrClient.setProperty($Player::Name, "level completed" @ " " @ %levelName, 1);
-};
-function ClientCmdToonColorOffsetFill(%colorOffset) {
+}
+function ClientCmdToonColorOffsetFill(%colorOffset)
+{
     $pref::TS::ToonColorOffsetFill = %colorOffset;
-};
-function ClientCmdToonColorOffsetEdge(%colorOffset) {
+}
+function ClientCmdToonColorOffsetEdge(%colorOffset)
+{
     $pref::TS::ToonColorOffsetEdge = %colorOffset;
-};
-function ClientCmdDoYouWantToOpenGiftBox(%boxID) {
+}
+function ClientCmdDoYouWantToOpenGiftBox(%boxID)
+{
     MessageBoxYesNo("A Gift Box", "Would you like to take this gift?", "onOpenGiftBoxYes(" @ %boxID @ ");", "");
-};
-function onOpenGiftBoxYes(%boxID) {
+}
+function onOpenGiftBoxYes(%boxID)
+{
     commandToServer('OpenGiftBox', %boxID);
-};
+}

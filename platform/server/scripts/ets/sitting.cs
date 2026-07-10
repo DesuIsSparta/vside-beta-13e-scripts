@@ -19,72 +19,91 @@ datablock EtsClientModelData(ClientSeatDisplayData) {
 datablock EtsClientModelData(ClientSeatListeningDisplayData : ClientSeatDisplayData) {
     shapeFile = "projects/common/worlds/headphones.dts";
 };
-function InitSittingSystem() {
+function InitSittingSystem()
+{
     initSeatsTakenSet();
     return;
-};
+}
 $SeatsTakenSet = 0;
-function initSeatsTakenSet() {
-    if (isObject($SeatsTakenSet)) {
+function initSeatsTakenSet()
+{
+    if (isObject($SeatsTakenSet))
+    {
         $SeatsTakenSet.delete();
     }
     $SeatsTakenSet = new SimSet("");
     MissionCleanup.add($SeatsTakenSet);
     return;
-};
-function isSeatTaken(%seat) {
-    if (!isObject($SeatsTakenSet)) {
+}
+function isSeatTaken(%seat)
+{
+    if (!isObject($SeatsTakenSet))
+    {
         warn("isSeatTaken: $SeatsTakenSet must be initialized first");
         return 0;
     }
     return $SeatsTakenSet.isMember(%seat);
-};
-function takeSeat(%seat) {
-    if (!isObject($SeatsTakenSet)) {
+}
+function takeSeat(%seat)
+{
+    if (!isObject($SeatsTakenSet))
+    {
         warn("takeSeat: $SeatsTakenSet must be initialized first");
         return;
     }
-    if ($SeatsTakenSet.isMember(%seat)) {
+    if ($SeatsTakenSet.isMember(%seat))
+    {
         warn("takeSeat: taking a seat that is already taken: " @ %seat);
     }
     $SeatsTakenSet.add(%seat);
     return;
-};
-function freeSeat(%seat) {
-    if (!isObject($SeatsTakenSet)) {
+}
+function freeSeat(%seat)
+{
+    if (!isObject($SeatsTakenSet))
+    {
         warn("freeSeat: $SeatsTakenSet must be initialized first");
         return;
     }
-    if (!$SeatsTakenSet.isMember(%seat)) {
+    if (!$SeatsTakenSet.isMember(%seat))
+    {
         warn("freeSeat: freeing a seat that is not taken yet: " @ %seat);
     }
     $SeatsTakenSet.remove(%seat);
     return;
-};
-function showClientAvailableSeats(%seats, %client) {
+}
+function showClientAvailableSeats(%seats, %client)
+{
     %i = 0;
-    while ((%i < %seats.getCount())) {
+    while ((%i < %seats.getCount()))
+    {
         %seat = %seats.getObject(%i);
-        if (!isSeatTaken(%seat)) {
+        if (!isSeatTaken(%seat))
+        {
             %seatType = "ClientSeatDisplayData";
-            if (isObject(%seat.listeningStation)) {
+            if (isObject(%seat.listeningStation))
+            {
                 %seatType = "ClientSeatListeningDisplayData";
             }
             commandToClient(%client, 'ShowSeat', %seat.getId(), %seat.getTransform(), %seatType);
         }
         %i = (%i + 1.0);
     }
-};
-function showPossibleSeats(%seats, %client) {
+}
+function showPossibleSeats(%seats, %client)
+{
     showClientAvailableSeats(%seats, %client);
     return;
-};
-function hideClientSeats(%seats, %client) {
+}
+function hideClientSeats(%seats, %client)
+{
     %count = %seats.getCount();
-    if ((%count > 0.0)) {
+    if ((%count > 0.0))
+    {
         %seatList = "";
         %i = 0;
-        while ((%i < %count)) {
+        while ((%i < %count))
+        {
             %seat = %seats.getObject(%i);
             %seatList = %seatList @ " " @ %seat.getId();
             %i = (%i + 1.0);
@@ -92,15 +111,19 @@ function hideClientSeats(%seats, %client) {
         commandToClient(%client, 'HideSeats', %seatList);
     }
     return (%i < %count);
-};
-function hidePossibleSeats(%seats, %client) {
+}
+function hidePossibleSeats(%seats, %client)
+{
     hideClientSeats(%seats, %client);
     return;
-};
-function TurnOnSitCam(%player) {
+}
+function TurnOnSitCam(%player)
+{
     %client = %player.client;
-    if (isObject(%client)) {
-        if (!isObject(%client.sitCam)) {
+    if (isObject(%client))
+    {
+        if (!isObject(%client.sitCam))
+        {
             %client.sitCam = new Camera("") {
                 dataBlock = SittingObserver;
             };
@@ -109,7 +132,8 @@ function TurnOnSitCam(%player) {
         }
         %theta = getWord(%player.mySeat.camAngles, 0);
         %phi = getWord(%player.mySeat.camAngles, 1);
-        if ((%theta $= "")) {
+        if ((%theta $= ""))
+        {
             %theta = 180;
             %phi = 20;
         }
@@ -120,19 +144,24 @@ function TurnOnSitCam(%player) {
         %client.setControlObject(%client.sitCam);
     }
     return;
-};
-function TurnOffSitCam(%player, %delay) {
+}
+function TurnOffSitCam(%player, %delay)
+{
     %client = %player.client;
-    if (!%delay) {
+    if (!%delay)
+    {
         %delay = 500;
     }
-    if (isObject(%client)) {
+    if (isObject(%client))
+    {
         %client.schedule(%delay, "setControlObject", %player);
     }
     return;
-};
-function SitPlayerDown(%player, %seatID) {
-    if (%player.isSitting) {
+}
+function SitPlayerDown(%player, %seatID)
+{
+    if (%player.isSitting)
+    {
         error("SitPlayerDown: player should not already be sitting, fix this!");
     }
     takeSeat(%seatID);
@@ -141,18 +170,25 @@ function SitPlayerDown(%player, %seatID) {
     %player.sitDown();
     TurnOnSitCam(%player);
     return;
-};
-function NeedSeatRefresh(%player) {
+}
+function NeedSeatRefresh(%player)
+{
     %player.needRefreshVisibleSeats = 1;
     return;
-};
-function StandPlayerUp(%player, %moveDir) {
-    if (!%player.isSitting) {
+}
+function StandPlayerUp(%player, %moveDir)
+{
+    if (!%player.isSitting)
+    {
         error("StandPlayerUp: player should be already sitting, fix this!");
     }
-    if (isObject(%player.mySeat.listeningStation)) {
-    } else {
-        if ((%moveDir < 0.0)) {
+    if (isObject(%player.mySeat.listeningStation))
+    {
+    }
+    else
+    {
+        if ((%moveDir < 0.0))
+        {
             return 0;
         }
     }
@@ -165,115 +201,142 @@ function StandPlayerUp(%player, %moveDir) {
     schedule(%msUntilPlayerControl, 0, "NeedSeatRefresh", %player);
     return 1;
     return;
-};
-function serverCmdRequestToSit(%client, %seatID) {
-    if (!isObject(%client.Player)) {
+}
+function serverCmdRequestToSit(%client, %seatID)
+{
+    if (!isObject(%client.Player))
+    {
         error("serverCmdRequestToSit: client" @ %client @ " has no player.");
         return;
     }
-    if (!isObject(%seatID)) {
+    if (!isObject(%seatID))
+    {
         error("serverCmdRequestToSit: bad seat ID: " @ %seatID);
         return;
     }
-    if (%client.Player.isSitting) {
+    if (%client.Player.isSitting)
+    {
         error("serverCmdRequestToSit: player already sitting " @ %client.Player);
         return;
     }
-    if (isSeatTaken(%seatID)) {
+    if (isSeatTaken(%seatID))
+    {
         commandToClient(%client, 'SeatWasTaken', %seatID);
         return;
     }
     SitPlayerDown(%client.Player, %seatID);
     commandToClient(%client, 'SitRequestSuccessful', %seatID);
     return;
-};
-function serverCmdRequestToStand(%client, %moveDir) {
-    if (!isObject(%client.Player)) {
+}
+function serverCmdRequestToStand(%client, %moveDir)
+{
+    if (!isObject(%client.Player))
+    {
         error("serverCmdRequestToStand: bad player object");
         return;
     }
     %ret = StandPlayerUp(%client.Player, %moveDir);
-    if (%ret) {
+    if (%ret)
+    {
         commandToClient(%client, 'StandRequestSuccessful', %seatID);
     }
     return;
-};
+}
 datablock TriggerData(SeatingArea) {
     tickPeriodMS = 200;
     seats = "ReplaceMeWith a Sim Group Name";
 };
-function SeatingArea::onEnterTrigger(%this, %trigger, %player) {
+function SeatingArea::onEnterTrigger(%this, %trigger, %player)
+{
     Parent::onEnterTrigger(%this, %trigger, %player);
     %client = %player.client;
-    if (!isObject(%client)) {
+    if (!isObject(%client))
+    {
         return;
     }
-    if (!isObject(%trigger.seats)) {
+    if (!isObject(%trigger.seats))
+    {
         error("SeatingArea::onEnterTrigger:  Did not find seats SimGroup member. Must have group of seats to function");
         return;
     }
-    if (!isObject($SeatsTakenSet)) {
+    if (!isObject($SeatsTakenSet))
+    {
         %player.needRefreshVisibleSeats = 1;
         return;
     }
     showPossibleSeats(%trigger.seats, %client);
     %player.needRefreshVisibleSeats = 0;
     return;
-};
-function SeatingArea::onTickTrigger(%this, %trigger) {
+}
+function SeatingArea::onTickTrigger(%this, %trigger)
+{
     Parent::onTickTrigger(%this, %trigger);
-    if (!isObject($SeatsTakenSet)) {
+    if (!isObject($SeatsTakenSet))
+    {
         return;
     }
     %n = 0;
-    while ((%n < %trigger.getNumObjects())) {
+    while ((%n < %trigger.getNumObjects()))
+    {
         %obj = %trigger.getObject(%n);
-        if (%obj.needRefreshVisibleSeats) {
+        if (%obj.needRefreshVisibleSeats)
+        {
         }
-        if (isObject(%obj.client)) {
+        if (isObject(%obj.client))
+        {
             showPossibleSeats(%trigger.seats, %obj.client);
             %obj.needRefreshVisibleSeats = 0;
         }
         %n = (%n + 1.0);
     }
-};
-function SeatingArea::onLeaveTrigger(%this, %trigger, %player) {
+}
+function SeatingArea::onLeaveTrigger(%this, %trigger, %player)
+{
     Parent::onLeaveTrigger(%this, %trigger, %player);
-    if (!isObject($SeatsTakenSet)) {
+    if (!isObject($SeatsTakenSet))
+    {
         return;
     }
     %client = %player.client;
-    if (!isObject(%client)) {
+    if (!isObject(%client))
+    {
         return;
     }
-    if (!isObject(%trigger.seats)) {
+    if (!isObject(%trigger.seats))
+    {
         return;
     }
     hidePossibleSeats(%trigger.seats, %client);
     return;
-};
+}
 datablock CameraData(SittingObserver) {
     mode = "Observer";
     cameraMinFov = 30;
     cameraMaxFov = 120;
 };
-function SittingObserver::onTrigger(%this, %camera, %trigger, %state) {
-    if ((%state == 0.0)) {
+function SittingObserver::onTrigger(%this, %camera, %trigger, %state)
+{
+    if ((%state == 0.0))
+    {
         return;
     }
     %client = %camera.getControllingClient();
     return;
-};
-function SittingObserver::setMode(%this, %obj, %mode, %unused, %unused, %unused) {
-    if ((%mode $= "Observer")) {
+}
+function SittingObserver::setMode(%this, %obj, %mode, %unused, %unused, %unused)
+{
+    if ((%mode $= "Observer"))
+    {
         %obj.setFlyMode();
     }
     %obj.mode = %mode;
     return;
-};
-function Player::sitDown(%this) {
+}
+function Player::sitDown(%this)
+{
     %seat = %this.mySeat;
-    if (!isObject(%seat)) {
+    if (!isObject(%seat))
+    {
         error("Player::sitDown: no mySeat member variable");
         return;
     }
@@ -283,61 +346,85 @@ function Player::sitDown(%this) {
     %pos = VectorAdd(%pos, %seat.sitOffset);
     %transform = %pos @ " " @ %rot;
     %this.setTransform(%transform);
-    if ((%seat.sitAnim $= "")) {
+    if ((%seat.sitAnim $= ""))
+    {
         warn("seat " @ %seat @ " does not specify a sitAnim");
-    } else {
+    }
+    else
+    {
         %this.setActionThread(%seat.sitAnim, 1, 1);
     }
-    if ((%seat.sitIdle $= "")) {
+    if ((%seat.sitIdle $= ""))
+    {
         warn("seat " @ %seat @ " does not specify a sitIdle");
     }
-    if ((%seat.idleDelay $= "")) {
+    if ((%seat.idleDelay $= ""))
+    {
         warn("seat " @ %seat @ " does not specify a idleDelay");
     }
-    if ((%seat.sitSound $= "")) {
+    if ((%seat.sitSound $= ""))
+    {
         warn("seat " @ %seat @ " does not specify a sitSound");
-    } else {
+    }
+    else
+    {
         %this.playAudio(0, %seat.sitSound);
     }
-    if (isObject(%seat.listeningStation)) {
+    if (isObject(%seat.listeningStation))
+    {
         0.playThread("start", %seat.listeningStation);
         %meshName = %this.getDataBlock().gender @ ".headphones.dj";
         %this.MeshOn(%meshName);
-        if (!(%seat.listeningStation.stream $= "")) {
+        if (!(%seat.listeningStation.stream $= ""))
+        {
             commandToClient(%this.client, 'StartListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
-        } else {
+        }
+        else
+        {
             warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not starting");
         }
     }
     %this.schedule(%seat.idleDelay, "setActionThread", %seat.sitIdle, 0, 0);
     return;
-};
-function Player::standUp(%this) {
+}
+function Player::standUp(%this)
+{
     %seat = %this.mySeat;
-    if (!isObject(%seat)) {
+    if (!isObject(%seat))
+    {
         error("Player::standUp: no mySeat member variable");
         return;
     }
-    if ((%seat.standSound $= "")) {
+    if ((%seat.standSound $= ""))
+    {
         warn("seat " @ %seat @ " does not specify a standSound");
-    } else {
+    }
+    else
+    {
         %this.playAudio(0, %seat.standSound);
     }
-    if ((%seat.standAnim $= "")) {
+    if ((%seat.standAnim $= ""))
+    {
         warn("seat " @ %seat @ " does not specify a standAnim");
-    } else {
+    }
+    else
+    {
         %this.setActionThread(%seat.standAnim, 0, 0);
     }
-    if (isObject(%seat.listeningStation)) {
+    if (isObject(%seat.listeningStation))
+    {
         %seat.listeningStation.stopThread(0);
         0.playThread("ambient", %seat.listeningStation);
         %meshName = %this.getDataBlock().gender @ ".headphones.dj";
         %this.MeshOff(%meshName);
-        if (!(%seat.listeningStation.stream $= "")) {
+        if (!(%seat.listeningStation.stream $= ""))
+        {
             commandToClient(%this.client, 'StopListeningStationAudio', %seat.getId(), %seat.listeningStation.stream);
-        } else {
+        }
+        else
+        {
             warn("listeningStation " @ %seat.listeningStation @ " does not specify a stream, not stopping");
         }
     }
     return;
-};
+}

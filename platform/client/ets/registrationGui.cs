@@ -1,34 +1,48 @@
 $gHasOpenedRegistrationGui = 0;
-function RegistrationGui::open(%this) {
+function RegistrationGui::open(%this)
+{
     Canvas.setContent(%this);
     pushScreenSize(640, 363, 0, 1, 1);
     %this.init();
-    if (0) {
-    } else {
+    if (0)
+    {
+    }
+    else
+    {
         RegistrationPartnerLogo.setVisible(0);
     }
     $gHasOpenedRegistrationGui = 1;
-};
-function RegistrationGui::haveIncompleteRegistration(%this) {
-    if (1) {
+}
+function RegistrationGui::haveIncompleteRegistration(%this)
+{
+    if (1)
+    {
     }
-    if (isDefined("$Net::registrationID")) {
+    if (isDefined("$Net::registrationID"))
+    {
     }
-    if (!($Net::RegistrationID $= "")) {
+    if (!($Net::RegistrationID $= ""))
+    {
     }
     %ret = !hasField($UserPref::Login::completedRegistrations, $Net::RegistrationID);
     return %ret;
-};
-function RegistrationGui::tryOpenOrWebPage(%this) {
-    if (%this.haveIncompleteRegistration()) {
+}
+function RegistrationGui::tryOpenOrWebPage(%this)
+{
+    if (%this.haveIncompleteRegistration())
+    {
         %this.open();
         %this.completeRegistration();
-    } else {
+    }
+    else
+    {
         gotoWebPage($Net::ReregisterURL);
     }
-};
-function RegistrationGui::init(%this) {
-    if (!%this.initialized) {
+}
+function RegistrationGui::init(%this)
+{
+    if (!%this.initialized)
+    {
         %this.waitIcon = AnimCtrl::newAnimCtrl("300 98", "18 18");
         %this.waitIcon.setDelay(60);
         %this.waitIcon.addFrame("platform/client/ui/wait0.png");
@@ -43,28 +57,36 @@ function RegistrationGui::init(%this) {
         %this.waitIcon.setVisible(0);
         %this.initialized = 1;
     }
-};
-function RegistrationGui::completeRegistration(%this) {
+}
+function RegistrationGui::completeRegistration(%this)
+{
     %this.waitIcon.setVisible(1);
     %this.waitIcon.start();
     %request = sendRequest_CompleteClientRegistration($Net::RegistrationID, "onDoneOrErrorCallback_CompleteClientRegistration");
     geRegistrationStatusText.setValue("<spush><font:BauhausStd-Demi:20><just:center>Fetching your info..<spop>");
-};
-function RegistrationGui::markCurrentRegistrationAsCompleted(%this) {
-    if (!%this.haveIncompleteRegistration()) {
+}
+function RegistrationGui::markCurrentRegistrationAsCompleted(%this)
+{
+    if (!%this.haveIncompleteRegistration())
+    {
         return;
     }
     $UserPref::Login::completedRegistrations = trim($UserPref::Login::completedRegistrations @ "\t" @ $Net::RegistrationID);
-};
-function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
+}
+function onDoneOrErrorCallback_CompleteClientRegistration(%request)
+{
     %this = RegistrationGui;
     %this.waitIcon.stop();
     %this.waitIcon.setVisible(0);
-    if (%request.checkSuccess()) {
+    if (%request.checkSuccess())
+    {
         $UserPref::Player::Name = %request.getValue("userName");
         $UserPref::Player::Password = %request.getValue("password");
-        if ((%request.getValue("gender") $= "")) {
-        } else {
+        if ((%request.getValue("gender") $= ""))
+        {
+        }
+        else
+        {
         }
         $UserPref::Player::gender = %request.getValue("gender");
         $UserPref::Player::gender;
@@ -76,40 +98,57 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request) {
         %analytic = getAnalytic();
         %analytic.trackPageView("/client/registration/success");
         LoginGui.doLoginButton();
-    } else {
+    }
+    else
+    {
         %errorCode = %request.getValue("errorCode");
         %analytic = getAnalytic();
         %analytic.trackPageView("/client/registration/failed/" @ %errorCode);
-        if ((%errorCode $= "UNKNOWN_ID")) {
+        if ((%errorCode $= "UNKNOWN_ID"))
+        {
             %errorMessage = %errorCode[$MsgCat::login @ "E-REG-UNKNOWN-ID"];
             error(getScopeName() @ " " @ "- unknown registration ID -" @ " " @ $Net::RegistrationID);
             RegistrationGui.markCurrentRegistrationAsCompleted();
             RegistrationGui.close();
-        } else {
-            if ((%errorCode $= "INCOMPLETE")) {
+        }
+        else
+        {
+            if ((%errorCode $= "INCOMPLETE"))
+            {
                 %errorMessage = %errorCode[$MsgCat::login @ "E-REG-INCOMPLETE"];
-            } else {
+            }
+            else
+            {
                 %errorMessage = $MsgCat::login["E-REG-UNKNOWN"];
             }
         }
         %errorMessage = "<spush><font:BauhausStd-Demi:20><just:center>" @ %errorMessage @ "<spop>";
         geRegistrationStatusText.setValue(%errorMessage);
     }
-};
-function RegistrationGui::close(%this) {
+}
+function RegistrationGui::close(%this)
+{
     popScreenSize();
     Canvas.setContent(LoginGui);
-};
-function RegistrationLink::onURL(%this, %url) {
-    if ((%url $= "HAVE_ACCOUNT")) {
+}
+function RegistrationLink::onURL(%this, %url)
+{
+    if ((%url $= "HAVE_ACCOUNT"))
+    {
         RegistrationGui.close();
-    } else {
-        if ((%url $= "REREGISTER")) {
+    }
+    else
+    {
+        if ((%url $= "REREGISTER"))
+        {
             gotoWebPage($Net::ReregisterURL);
-        } else {
-            if ((%url $= "FINISH_REGISTRATION")) {
+        }
+        else
+        {
+            if ((%url $= "FINISH_REGISTRATION"))
+            {
                 gotoWebPage(standardSubstitutions($Net::FinishRegistrationURL));
             }
         }
     }
-};
+}

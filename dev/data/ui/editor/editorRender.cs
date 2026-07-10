@@ -1,5 +1,7 @@
-function SpawnSphere::onEditorRender(%this, %editor, %unused, %unused) {
-    if (%this.noShow) {
+function SpawnSphere::onEditorRender(%this, %editor, %unused, %unused)
+{
+    if (%this.noShow)
+    {
         return;
     }
     %center = %this.getWorldBoxCenter();
@@ -20,4 +22,4 @@ function SpawnSphere::onEditorRender(%this, %editor, %unused, %unused) {
     %editor.consoleFrameColor = "255 200 0 180";
     %editor.consoleFillColor = "255 200 0 40";
     %editor.renderTriangle(%arrow1, %arrow2, %arrow3);
-};
+}

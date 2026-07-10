@@ -1,24 +1,32 @@
-function doCSSuiteTest() {
+function doCSSuiteTest()
+{
     RunTestSuite("TestSuite_CSSmokeTests");
-};
+}
 DeclareTestSuite("TestSuite_CSSmokeTests");
-function MockTriggerArea::getNumObjects(%this) {
+function MockTriggerArea::getNumObjects(%this)
+{
     return 0;
-};
-function MockTriggerArea::getObject(%this, %unused) {
+}
+function MockTriggerArea::getObject(%this, %unused)
+{
     return 0;
-};
-function MockInterior::getActiveSkuPairs(%this) {
+}
+function MockInterior::getActiveSkuPairs(%this)
+{
     return %this.activeSkuPairs;
-};
-function MockInterior::setActiveSkuPairs(%this, %pairs) {
+}
+function MockInterior::setActiveSkuPairs(%this, %pairs)
+{
     %this.activeSkuPairs = %pairs;
-};
-function TestSuite_CSSmokeTests::setup(%this) {
-    if (isObject(TestCS_MockTriggerObj)) {
+}
+function TestSuite_CSSmokeTests::setup(%this)
+{
+    if (isObject(TestCS_MockTriggerObj))
+    {
         TestCS_MockTriggerObj.delete();
     }
-    if (isObject(TestCS_MockInteriorObj)) {
+    if (isObject(TestCS_MockInteriorObj))
+    {
         TestCS_MockInteriorObj.delete();
     }
     %mockInteriorobj = new ScriptObject(TestCS_MockInteriorObj) {
@@ -48,16 +56,20 @@ function TestSuite_CSSmokeTests::setup(%this) {
     %this.addTestCase("TEST_CS_SpaceLoadConfigurationsFromStringMap");
     %this.addTestCase("TEST_CS_SpaceSaveToStringWithTestingObject");
     %this.addTestCase("TEST_CS_SpaceDeleteUnownedObjects");
-};
-function TestSuite_CSSmokeTests::TearDown(%this) {
-    if (isObject(TestCS_MockTriggerObj)) {
+}
+function TestSuite_CSSmokeTests::TearDown(%this)
+{
+    if (isObject(TestCS_MockTriggerObj))
+    {
         TestCS_MockTriggerObj.delete();
     }
-    if (isObject(TestCS_MockInteriorObj)) {
+    if (isObject(TestCS_MockInteriorObj))
+    {
         TestCS_MockInteriorObj.delete();
     }
-};
-function TEST_CS_SpaceCreate::runTest(%this) {
+}
+function TEST_CS_SpaceCreate::runTest(%this)
+{
     %maxItems = 1000;
     %name = "Bobs Home";
     %thespace = CustomizableSpace::construct(TestCS_MockTriggerObj, %name, %maxItems);
@@ -68,8 +80,9 @@ function TEST_CS_SpaceCreate::runTest(%this) {
     %this.assertSameString(%thespace.spaceName, %name, "created position is not correct");
     %thespace.delete();
     %this.assert(!isObject(%thespace.nuggets), "CustomizableSpace still has nuggets after being deleted");
-};
-function TEST_CS_NuggetCreate::runTest(%this) {
+}
+function TEST_CS_NuggetCreate::runTest(%this)
+{
     %guid = 1;
     %sku = 41000;
     %theNugget = InventoryNugget::construct(%sku, 1, "0 0 0", "0 0 0", 0, %guid, "");
@@ -80,8 +93,9 @@ function TEST_CS_NuggetCreate::runTest(%this) {
     %this.assert(!isObject("CUSTOMIZABLE_GROUP_SEATAREA"), "CUSTOMIZABLE_GROUP_SEATAREA should not exist");
     %theNugget.delete();
     %this.assert(!isObject(%realGroup), "the group" @ " " @ %realGroup @ " " @ " should not exist after nugget was deleted");
-};
-function TEST_CS_NuggetCreateForEdit::runTest(%this) {
+}
+function TEST_CS_NuggetCreateForEdit::runTest(%this)
+{
     %guid = 1;
     %sku = 41000;
     %theNugget = InventoryNugget::construct(%sku, "0 0 0", "0 0 0", 1, %guid, "");
@@ -92,8 +106,9 @@ function TEST_CS_NuggetCreateForEdit::runTest(%this) {
     %this.assertSameObject("CUSTOMIZABLE_GROUP", %realGroup, "CUSTOMIZABLE_GROUP and objectgroup for the nugget are not the same");
     %theNugget.delete();
     %this.assert(!isObject(%realGroup), "the group" @ " " @ %realGroup @ " " @ " should not exist after nugget was deleted");
-};
-function TEST_CS_CreationThroughSpace::runTest(%this) {
+}
+function TEST_CS_CreationThroughSpace::runTest(%this)
+{
     %sku = 41000;
     %thespace = CustomizableSpace::construct(TestCS_MockTriggerObj, "Bobs Home", 1000);
     %reference = %thespace.CreateInventoryItem(%sku, 1, "0 0 0", "0 0 0");
@@ -104,8 +119,9 @@ function TEST_CS_CreationThroughSpace::runTest(%this) {
     %nugget = %thespace.GetInventoryItem(%reference);
     %thespace.delete();
     %this.assert(!isObject(%nugget), "after deleting thespace, the nugget still exists");
-};
-function TEST_CS_CreationThroughSpaceAndManipulate::runTest(%this) {
+}
+function TEST_CS_CreationThroughSpaceAndManipulate::runTest(%this)
+{
     %sku = 41000;
     %createPos = "0 0 0";
     %createOrient = "0 0 0";
@@ -129,8 +145,9 @@ function TEST_CS_CreationThroughSpaceAndManipulate::runTest(%this) {
     %this.assertSameString(%nugget.position, %expectedOffset, "position after moving not correct");
     %this.assertSameString(%nugget.orientation, %expected, "orientation after moving not correct");
     %thespace.delete();
-};
-function TEST_CS_SpaceMultiSkuAndLimits::runTest(%this) {
+}
+function TEST_CS_SpaceMultiSkuAndLimits::runTest(%this)
+{
     %sku = 41000;
     %createPos = "0 0 0";
     %createOrient = "0 0 0";
@@ -150,8 +167,9 @@ function TEST_CS_SpaceMultiSkuAndLimits::runTest(%this) {
     %thespace.delete();
     %this.assert(!isObject(%nugget1), "objects should all be deleted when the space is deleted");
     %this.assert(!isObject(%nugget2), "objects should all be deleted when the space is deleted");
-};
-function TEST_CS_SpaceDelete::runTest(%this) {
+}
+function TEST_CS_SpaceDelete::runTest(%this)
+{
     %sku = 41000;
     %createPos = "0 0 0";
     %createOrient = "0 0 0";
@@ -163,8 +181,9 @@ function TEST_CS_SpaceDelete::runTest(%this) {
     %this.assert((%nugget1 == 0.0), "should not get a valid object using deleted reference id");
     %this.assert((%thespace.nuggets.getCount() == 0.0), "the space should be empty");
     %thespace.delete();
-};
-function TEST_CS_SpaceDeleteUnKnownRef::runTest(%this) {
+}
+function TEST_CS_SpaceDeleteUnKnownRef::runTest(%this)
+{
     %sku = 41000;
     %createPos = "0 0 0";
     %createOrient = "0 0 0";
@@ -176,8 +195,9 @@ function TEST_CS_SpaceDeleteUnKnownRef::runTest(%this) {
     %this.assert((%ret == 0.0), "if we delete an unknown reference id, DeleteInventoryItem should return zero");
     %this.assert((%thespace.nuggets.getCount() == 1.0), "the space should still have the good object in it after we delete a bad reference id");
     %thespace.delete();
-};
-function TEST_CS_SpaceSaveToStringMapAndLoad::runTest(%this) {
+}
+function TEST_CS_SpaceSaveToStringMapAndLoad::runTest(%this)
+{
     %sku = 41000;
     %createPos = "5 10 20";
     %createOrient = "0 0 0";
@@ -194,8 +214,9 @@ function TEST_CS_SpaceSaveToStringMapAndLoad::runTest(%this) {
     %this.assertSameString(%thespace.spaceName, %name, "loaded space has wrong name");
     %theStrings.delete();
     %thespace.delete();
-};
-function TEST_CS_SpaceSaveToStringWithTestingObject::runTest(%this) {
+}
+function TEST_CS_SpaceSaveToStringWithTestingObject::runTest(%this)
+{
     %sku = 41000;
     %createPos = "5 10 20";
     %createOrient = "0 0 0";
@@ -212,8 +233,9 @@ function TEST_CS_SpaceSaveToStringWithTestingObject::runTest(%this) {
     %this.assertSameString(%thespace.spaceName, %name, "loaded space has wrong name");
     %theStrings.delete();
     %thespace.delete();
-};
-function TEST_CS_SpaceSaveToStringMapAndLoadBasedOnOffsets::runTest(%this) {
+}
+function TEST_CS_SpaceSaveToStringMapAndLoadBasedOnOffsets::runTest(%this)
+{
     %space1Offset = "0 0 0";
     %space2Offset = "100 200 300";
     %space3Offset = "-100 -200 300";
@@ -243,8 +265,9 @@ function TEST_CS_SpaceSaveToStringMapAndLoadBasedOnOffsets::runTest(%this) {
     %this.assertSameString(%nugget.position, %objectPos3, "after creating the nugget in the new negative offset spot, it did not have the correct offset itself");
     %theStrings.delete();
     %thespace.delete();
-};
-function TEST_CS_SpaceListIDs::runTest(%this) {
+}
+function TEST_CS_SpaceListIDs::runTest(%this)
+{
     %sku = 41000;
     %createPos = "5 10 20";
     %createOrient = "0 0 0";
@@ -257,8 +280,9 @@ function TEST_CS_SpaceListIDs::runTest(%this) {
     %list = %thespace.ListReferenceIDs();
     %this.assertSameString(%list, %expectedList, "list of ids does not match expected");
     %thespace.delete();
-};
-function TEST_CS_SpaceManager::runTest(%this) {
+}
+function TEST_CS_SpaceManager::runTest(%this)
+{
     %manager = SpaceManager::GetInstance();
     %manager2 = SpaceManager::GetInstance();
     %this.assert(isObject(%manager), "The Space Manager Singleton GetInstance function did not return a valid object");
@@ -293,8 +317,9 @@ function TEST_CS_SpaceManager::runTest(%this) {
     %thespace2 = %manager.CreateSpaceNamed(TestCS_MockTriggerObj, %name);
     %this.assert(!isObject(%thespace2), "Creating the same space twice should fail, but we got back a valid object");
     %thespace.delete();
-};
-function TEST_CS_ConstrainMovementToSpace::runTest(%this) {
+}
+function TEST_CS_ConstrainMovementToSpace::runTest(%this)
+{
     %manager = SpaceManager::GetInstance();
     %name = "My Massive Mortuary";
     %sku = 41000;
@@ -317,8 +342,9 @@ function TEST_CS_ConstrainMovementToSpace::runTest(%this) {
     %reference = %thespace.CreateInventoryItem(%sku, 1, %createPosBad, %createOrient);
     %this.assert((%reference == 0.0), "trying to create an inventory nugget outside of the space bounds should have failed");
     %thespace.delete();
-};
-function TEST_CS_EditPermissions::runTest(%this) {
+}
+function TEST_CS_EditPermissions::runTest(%this)
+{
     %mockPlayerA = new ScriptObject("") {
         class = "MockTestPlayer";
     };
@@ -343,8 +369,9 @@ function TEST_CS_EditPermissions::runTest(%this) {
     %thespace.delete();
     %mockPlayerA.delete();
     %mockPlayerB.delete();
-};
-function TEST_CS_SpaceLoadConfigurationsFromStringMap::runTest(%this) {
+}
+function TEST_CS_SpaceLoadConfigurationsFromStringMap::runTest(%this)
+{
     %sku = 41000;
     %createPos = "5 10 20";
     %createOrient = "0 0 0";
@@ -366,8 +393,9 @@ function TEST_CS_SpaceLoadConfigurationsFromStringMap::runTest(%this) {
     %this.assert((%thespace.nuggets.getCount() == 2.0), "loaded configuration should have deleted all the 5 existing and loaded only 2");
     %theStrings.delete();
     %thespace.delete();
-};
-function TEST_CS_SpaceDeleteUnownedObjects::runTest(%this) {
+}
+function TEST_CS_SpaceDeleteUnownedObjects::runTest(%this)
+{
     %sku = 41000;
     %createPos = "5 10 20";
     %createOrient = "0 0 0";
@@ -381,7 +409,8 @@ function TEST_CS_SpaceDeleteUnownedObjects::runTest(%this) {
     %thespace.CreateInventoryItem(%sku, 1, %createPos, %createOrient, "");
     %this.assert((%thespace.nuggets.getCount() == 5.0), "after loading the configuration and adding 3 more, we should have 5 now");
     %deleteTheseMap = new StringMap("");
-    if (isObject(MissionCleanup)) {
+    if (isObject(MissionCleanup))
+    {
         MissionCleanup.add(%deleteTheseMap);
     }
     %deleteTheseMap.put(%sku, 2);
@@ -395,4 +424,4 @@ function TEST_CS_SpaceDeleteUnownedObjects::runTest(%this) {
     %this.assert((%thespace.nuggets.getCount() == 0.0), "after notifying the space to delete 2 more of sku, we should have no more, but we have" @ " " @ %thespace.nuggets.getCount());
     %deleteTheseMap.delete();
     %thespace.delete();
-};
+}

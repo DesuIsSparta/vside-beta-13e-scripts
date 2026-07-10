@@ -1,9 +1,11 @@
-function newTGFGoRound(%name) {
+function newTGFGoRound(%name)
+{
     %obj = newThumbnailsGoRound(%name);
     %obj.bindClassName("TGFGoRound");
     return %obj;
-};
-function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
+}
+function TGFGoRound::rebuildContainer_LilThumb(%this, %container)
+{
     %container.deleteMembers();
     %ctrl = new GuiBitmapCtrl("") {
         profile = ETSNonModalProfile;
@@ -24,8 +26,9 @@ function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
     };
     %ctrlB.add(%ctrl);
     %container.mTextCtrl = %ctrl;
-};
-function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
+}
+function TGFGoRound::rebuildContainer_BigThumb(%this, %container)
+{
     %container.deleteMembers();
     %ctrl = new GuiBitmapCtrl("") {
         profile = "ETSNonModalProfile";
@@ -55,30 +58,37 @@ function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
         bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
     };
     %container.add(%ctrl);
-};
-function TGFGoRound::rebuildContainer_Deets(%this, %container) {
+}
+function TGFGoRound::rebuildContainer_Deets(%this, %container)
+{
     %container.deleteMembers();
-};
-function TGFGoRound::newContentLilThumb(%this, %container) {
-    if (!isObject(%this.mItemsList)) {
+}
+function TGFGoRound::newContentLilThumb(%this, %container)
+{
+    if (!isObject(%this.mItemsList))
+    {
         error(getScopeName() @ " " @ "- no list" @ " " @ getTrace());
         return;
     }
     %item = %this.mItemsList.getValue(%this.mItemsList.mCurrentItem);
-    if (!isObject(%item)) {
+    if (!isObject(%item))
+    {
         error(getScopeName() @ " " @ "- bad item" @ " " @ %this.mItemsList.mCurrentItem @ " " @ getTrace());
         %this.mItemsList.mCurrentItem = 0;
         return;
     }
-    if ((%item.relationType $= "")) {
+    if ((%item.relationType $= ""))
+    {
     }
-    if (UserListFriends.hasKey(%item.userName)) {
+    if (UserListFriends.hasKey(%item.userName))
+    {
         %item.relationType = "friend";
     }
     %userName = %item.userName;
     %isFriend = (%item.relationType $= "friend");
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
-    if (!(%userName $= "")) {
+    if (!(%userName $= ""))
+    {
         %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=M";
         %container.mBitmapCtrl.downloadAndApplyBitmap(%avatarPicURL);
     }
@@ -86,15 +96,17 @@ function TGFGoRound::newContentLilThumb(%this, %container) {
     %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
     %container.mItem = %item;
     %this.mItemsList.mCurrentItem = ((%this.mItemsList.mCurrentItem + 1.0) % %this.mItemsList.size());
-};
-function TGFGoRound::newContentBigThumb(%this) {
+}
+function TGFGoRound::newContentBigThumb(%this)
+{
     %container = %this.mBigThumbContainer;
     %lilThumbContainer = %this.getCurrentZoomedLilThumb();
     %item = %lilThumbContainer.mItem;
     %userName = %item.userName;
     %isFriend = (%item.relationType $= "friend");
     %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
-    if (!(%userName $= "")) {
+    if (!(%userName $= ""))
+    {
         %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=L";
         %container.getObject(0).downloadAndApplyBitmap(%avatarPicURL);
     }
@@ -102,33 +114,40 @@ function TGFGoRound::newContentBigThumb(%this) {
     %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
     %container.mItem = %item;
     %this.newContentDeets();
-};
-function TGFGoRound::newContentDeets(%this) {
-};
-function TGFGoRound::onBigThumbClick(%this, %bigThumbContainer) {
+}
+function TGFGoRound::newContentDeets(%this)
+{
+}
+function TGFGoRound::onBigThumbClick(%this, %bigThumbContainer)
+{
     %this.viewItem(%bigThumbContainer.mItem);
-};
-function TGFGoRound::viewItem(%this, %item) {
+}
+function TGFGoRound::viewItem(%this, %item)
+{
     %this.pause();
     geTGF.DoDetails("main", %item);
-};
-function geTGFGoRound_DeetsMLText::onURL(%this, %url) {
+}
+function geTGFGoRound_DeetsMLText::onURL(%this, %url)
+{
     %type = firstWord(%url);
-    if (!(%type $= "PROFILE")) {
+    if (!(%type $= "PROFILE"))
+    {
         error(getScopeName() @ " " @ "- unknown type" @ " " @ %type @ " " @ getTrace());
         return;
     }
     %userName = restWords(%url);
     geTGFGoRound.viewProfile(%userName);
-};
-function TGFGoRound::setItemList(%this, %list) {
+}
+function TGFGoRound::setItemList(%this, %list)
+{
     %this.mItemsList = %list;
     %list.mCurrentItem = 0;
     %n = 0;
-    while ((%n < (%this.mLilThumbsNumAcross * 2.0))) {
+    while ((%n < (%this.mLilThumbsNumAcross * 2.0)))
+    {
         %lilThumbContainer = %this.mLilThumbsContainer.getObject(%n);
         %this.newContentLilThumb(%lilThumbContainer);
         %n = (%n + 1.0);
     }
     %this.newContentBigThumb();
-};
+}

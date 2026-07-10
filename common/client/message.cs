@@ -1,51 +1,66 @@
-if (isObject(MessageFuncDict)) {
+if (isObject(MessageFuncDict))
+{
     MessageFuncDict.delete();
 }
 $MessageFuncDict = new StringMap(MessageFuncDict);
-if (isObject(MissionCleanup)) {
+if (isObject(MissionCleanup))
+{
     MissionCleanup.add(MessageFuncDict);
 }
-function clientCmdChatMessage(%unused, %voice, %pitch, %msgString) {
+function clientCmdChatMessage(%unused, %voice, %pitch, %msgString)
+{
     onChatMessage(detag(%msgString), %voice, %pitch);
-};
-function clientCmdServerMessage(%msgType, %msgString) {
+}
+function clientCmdServerMessage(%msgType, %msgString)
+{
     log("communication", "debug", "clientCmdServerMessage, msgType: " @ %msgType);
     log("communication", "debug", "clientCmdServerMessage, msgString: " @ %msgString);
     %tag = getWord(%msgType, 0);
     %defFuncList = MessageFuncDict.get("");
-    if (isObject(%defFuncList)) {
+    if (isObject(%defFuncList))
+    {
         %i = 0;
-        while (!((%func = %defFuncList.func[%i]) $= "")) {
+        while (!((%func = %defFuncList.func[%i]) $= ""))
+        {
             call(%func, %msgType, %msgString);
             %i = (%i + 1.0);
         }
     }
-    if (!((!((%func = %defFuncList.func[%i]) $= "") @ " " @ %tag) $= "")) {
+    if (!((!((%func = %defFuncList.func[%i]) $= "") @ " " @ %tag) $= ""))
+    {
         %funcList = MessageFuncDict.get(%tag);
-        if (isObject(%funcList)) {
+        if (isObject(%funcList))
+        {
             %i = 0;
-            while (!((%func = %funcList.func[%i]) $= "")) {
+            while (!((%func = %funcList.func[%i]) $= ""))
+            {
                 call(%func, %msgType, %msgString);
                 %i = (%i + 1.0);
             }
         }
     }
-};
-function addMessageCallback(%msgType, %func) {
+}
+function addMessageCallback(%msgType, %func)
+{
     %m = MessageFuncDict.get(%msgType);
-    if (isObject(%m)) {
+    if (isObject(%m))
+    {
         %i = 0;
-        while (!(%m.func[%i] $= "")) {
+        while (!(%m.func[%i] $= ""))
+        {
             %i = (%i + 1.0);
         }
         %m.func[%i] = !(%m.func[%i] $= "") @ %func;
-    } else {
+    }
+    else
+    {
         %m = new SimObject("");
         MessageFuncDict.put(%msgType, %m);
         %m.func[0] = %func;
     }
-};
-function defaultMessageCallback(%msgType, %msgString) {
+}
+function defaultMessageCallback(%msgType, %msgString)
+{
     onServerMessage(detag(%msgString));
-};
+}
 addMessageCallback("", defaultMessageCallback);

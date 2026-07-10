@@ -1,28 +1,36 @@
-function DancePadGui::open(%this) {
+function DancePadGui::open(%this)
+{
     %this.fillDanceButtonOptions();
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     userTips::showOnceEver("DancePadUsage");
-};
-function DancePadGui::close(%this) {
+}
+function DancePadGui::close(%this)
+{
     %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
-};
-function DancePadGui::fillDanceButtonOptions(%this) {
-    if (($UserPref::Player::gender $= "f")) {
+}
+function DancePadGui::fillDanceButtonOptions(%this)
+{
+    if (($UserPref::Player::gender $= "f"))
+    {
         %dancesList = $dancesMapF;
-    } else {
+    }
+    else
+    {
         %dancesList = $dancesMapM;
     }
     %num = (getFieldCount(%dancesList) / 2.0);
     %numlists = 8;
     %listNum = 1;
-    while ((%listNum <= %numlists)) {
+    while ((%listNum <= %numlists))
+    {
         %theList = "danceButton" @ %listNum @ "List";
         %theList.clear();
         %n = 0;
-        while ((%n < %num)) {
+        while ((%n < %num))
+        {
             %theList.add(getField(%dancesList, (%n * 2.0)), %n);
             %n = (%n + 1.0);
         }
@@ -30,13 +38,15 @@ function DancePadGui::fillDanceButtonOptions(%this) {
         %sel = getRandom(1, (%num - 1.0));
         (%n < %num);
         %theList.SetSelected(%sel);
-        if (($UserPref::DancePad::dancePadSeen == 0.0)) {
+        if (($UserPref::DancePad::dancePadSeen == 0.0))
+        {
             %prefCmd = "$UserPref::DancePad::Button" @ %listNum @ " = " @ %sel @ ";";
             eval(%prefCmd);
         }
         %listNum = (%listNum + 1.0);
     }
-    if (($UserPref::DancePad::dancePadSeen == 0.0)) {
+    if (($UserPref::DancePad::dancePadSeen == 0.0))
+    {
         $UserPref::DancePad::dancePadSeen = 1;
         (%listNum <= %numlists);
         return;
@@ -49,38 +59,48 @@ function DancePadGui::fillDanceButtonOptions(%this) {
     danceButton6List.SetSelected($UserPref::DancePad::Button6);
     danceButton7List.SetSelected($UserPref::DancePad::Button7);
     danceButton8List.SetSelected($UserPref::DancePad::Button8);
-};
-function dancePadDoEmote(%list) {
+}
+function dancePadDoEmote(%list)
+{
     %emote = "/" @ %list.getText();
     %curAnim = $player.getCurrActionName();
     %curBase = getSubStr(%curAnim, 2, 100);
     %curProt = ProtectedAnimsDict.get(%curBase);
-    if ((%curProt == 1.0)) {
+    if ((%curProt == 1.0))
+    {
         commandToServer('RequestToStand', 0, 0);
     }
     emote(%emote);
-};
-function dancePadButton1::onMouseEnter(%this) {
+}
+function dancePadButton1::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton1List);
-};
-function dancePadButton2::onMouseEnter(%this) {
+}
+function dancePadButton2::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton2List);
-};
-function dancePadButton3::onMouseEnter(%this) {
+}
+function dancePadButton3::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton3List);
-};
-function dancePadButton4::onMouseEnter(%this) {
+}
+function dancePadButton4::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton4List);
-};
-function dancePadButton5::onMouseEnter(%this) {
+}
+function dancePadButton5::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton5List);
-};
-function dancePadButton6::onMouseEnter(%this) {
+}
+function dancePadButton6::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton6List);
-};
-function dancePadButton7::onMouseEnter(%this) {
+}
+function dancePadButton7::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton7List);
-};
-function dancePadButton8::onMouseEnter(%this) {
+}
+function dancePadButton8::onMouseEnter(%this)
+{
     dancePadDoEmote(danceButton8List);
-};
+}

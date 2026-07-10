@@ -1,21 +1,29 @@
-function performerPanel::toggle(%this) {
-    if (!%this.isVisible()) {
+function performerPanel::toggle(%this)
+{
+    if (!%this.isVisible())
+    {
         %this.open();
-    } else {
+    }
+    else
+    {
         %this.close();
     }
-};
-function performerPanel::open(%this) {
-    if (!$gPerformerMode) {
+}
+function performerPanel::open(%this)
+{
+    if (!$gPerformerMode)
+    {
         return;
     }
-    if (!%this.isVisible()) {
+    if (!%this.isVisible())
+    {
         %this.setVisible(1);
         PlayGui.focusAndRaise(%this);
     }
-};
-function performerPanel::close(%this) {
+}
+function performerPanel::close(%this)
+{
     %this.setVisible(0);
     PlayGui.focusTopWindow();
     return 1;
-};
+}

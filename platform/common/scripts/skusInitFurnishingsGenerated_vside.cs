@@ -1,4 +1,5 @@
-function skusInitFurnishings() {
+function skusInitFurnishings()
+{
     skusAddItem2(81537, "furnishing", "", "m", "new", "Decoration/Miscellaneous", "", "", "Food Crate", "Empty food crate", "furnishings", 0, 15, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(81523, "furnishing", "", "n", "", "Decoration/Foliage", "", "", "Green Pine Tree", "Small green pine tree", "furnishings", 0, 25, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(41000, "furnishing", "", "n", "", "Furniture/Stools", "", "", "Black Bar Stool", "", "furnishings", 0, 35, 1, -(1.0), 0, 0, "", "");
@@ -852,4 +853,4 @@ function skusInitFurnishings() {
     skusAddItem2(81561, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Road Block: Road Closed Ahead", "Black and yellow Road Closed Ahead road block", "furnishings", 0, 25, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(81562, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Traffic Cone", "Worn plastic orange traffic cone", "furnishings", 0, 5, 1, -(1.0), 0, 0, "", "");
     skusAddItem2(81563, "furnishing", "", "n", "new", "Decoration/Miscellaneous", "", "", "Square Warning Cone", "Weathered square traffic cone", "furnishings", 0, 5, 1, -(1.0), 0, 0, "", "");
-};
+}

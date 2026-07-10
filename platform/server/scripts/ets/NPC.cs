@@ -1,5 +1,7 @@
-function NPCManager::init(%this) {
-    if (isObject(%this.animSets)) {
+function NPCManager::init(%this)
+{
+    if (isObject(%this.animSets))
+    {
         %this.animSets.delete();
     }
     %this.animSets = new StringMap("");
@@ -188,73 +190,92 @@ function NPCManager::init(%this) {
     %this.addAnimToSet("ai_generic", "busy");
     %this.addAnimToSet("ai_generic", "nlst");
     return;
-};
-function storeTransformsSet(%simSet) {
+}
+function storeTransformsSet(%simSet)
+{
     %num = %simSet.getCount();
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %obj = %simSet.getObject(%n);
         gSetField(%obj, origTransform, %obj.getTransform());
         %n = (%n + 1.0);
     }
-};
-function restoreTransformsSet(%simSet) {
+}
+function restoreTransformsSet(%simSet)
+{
     %num = %simSet.getCount();
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %obj = %simSet.getObject(%n);
         %obj.setTransform(gGetField(%obj, origTransform));
         %n = (%n + 1.0);
     }
-};
-function copyObjectNamesToShapeNamesSet(%simSet) {
+}
+function copyObjectNamesToShapeNamesSet(%simSet)
+{
     %num = %simSet.getCount();
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %obj = %simSet.getObject(%n);
         %obj.setShapeName(%obj.getName());
         %n = (%n + 1.0);
     }
-};
-function registerInPlayerDictSet(%simSet) {
+}
+function registerInPlayerDictSet(%simSet)
+{
     %num = %simSet.getCount();
     %n = 0;
-    while ((%n < %num)) {
+    while ((%n < %num))
+    {
         %obj = %simSet.getObject(%n);
         PlayerDict.put(%obj.getShapeName(), %obj);
         %n = (%n + 1.0);
     }
-};
-function NPCManager::resetnextAnimTimes(%this) {
-    if (!isObject(%this.NPCGroup)) {
+}
+function NPCManager::resetnextAnimTimes(%this)
+{
+    if (!isObject(%this.NPCGroup))
+    {
         return;
     }
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
-    while ((%n < %NPCNum)) {
+    while ((%n < %NPCNum))
+    {
         gSetField(%this.NPCGroup.getObject(%n), nextAnimTime, "");
         %n = (%n + 1.0);
     }
-};
-function NPCManager::assertOutfits(%this) {
-    if (!isObject(%this.NPCGroup)) {
+}
+function NPCManager::assertOutfits(%this)
+{
+    if (!isObject(%this.NPCGroup))
+    {
         return;
     }
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
-    while ((%n < %NPCNum)) {
+    while ((%n < %NPCNum))
+    {
         %npc = %this.NPCGroup.getObject(%n);
         %gnd = %npc.getDataBlock().gender;
         %npc.gender = %gnd;
         %npc.MeshOff(%gnd @ ".headphones.dj");
-        if (!(%gnd $= "")) {
+        if (!(%gnd $= ""))
+        {
             %w = Wardrobe::findWardrobe(%gnd);
-            if (%w) {
+            if (%w)
+            {
                 %os = %npc.getDataBlock().outfit;
                 %outfit = newOutfit(%w);
-                if ((%os $= "random")) {
+                if ((%os $= "random"))
+                {
                     %outfit.makeRandom();
-                } else {
+                }
+                else
+                {
                     %outfit.deserialize(%os);
                 }
                 %outfit.assert(%npc);
@@ -262,73 +283,94 @@ function NPCManager::assertOutfits(%this) {
         }
         %n = (%n + 1.0);
     }
-};
-function NPCManager::setAnimTimeMin(%this, %setName, %val) {
+}
+function NPCManager::setAnimTimeMin(%this, %setName, %val)
+{
     %this.animSets.put(%setName @ "_TimeMin", %val);
     return;
-};
-function NPCManager::setAnimTimeMax(%this, %setName, %val) {
+}
+function NPCManager::setAnimTimeMax(%this, %setName, %val)
+{
     %this.animSets.put(%setName @ "_TimeMax", %val);
     return;
-};
-function NPCManager::getAnimTimeMin(%this, %setName) {
+}
+function NPCManager::getAnimTimeMin(%this, %setName)
+{
     return %this.animSets.get(%setName @ "_TimeMin");
-};
-function NPCManager::getAnimTimeMax(%this, %setName) {
+}
+function NPCManager::getAnimTimeMax(%this, %setName)
+{
     return %this.animSets.get(%setName @ "_TimeMax");
-};
-function NPCManager::getRandomAnimFromSet(%this, %setName) {
+}
+function NPCManager::getRandomAnimFromSet(%this, %setName)
+{
     %set = %this.animSets.get(%setName);
     %num = getWordCount(%set);
     return getWord(%set, getRandom(0, (%num - 1.0)));
-};
-function NPCManager::addAnimToSet(%this, %setName, %val) {
+}
+function NPCManager::addAnimToSet(%this, %setName, %val)
+{
     %prev = %this.animSets.get(%setName);
-    if (!(%prev $= "")) {
+    if (!(%prev $= ""))
+    {
         %newThing = %prev @ " " @ %val;
-    } else {
+    }
+    else
+    {
         %newThing = %val;
     }
     %this.animSets.put(%setName, %newThing);
     %sets = %this.animSets.get("setNames");
-    if ((findWord(%sets, %setName) != -(1.0))) {
+    if ((findWord(%sets, %setName) != -(1.0)))
+    {
         return;
     }
-    if (!(%sets $= "")) {
+    if (!(%sets $= ""))
+    {
         %newThing = %sets @ " " @ %setName;
-    } else {
+    }
+    else
+    {
         %newThing = %setName;
     }
     %this.animSets.put("setNames", %newThing);
     return;
-};
-function NPCManager::think(%this) {
-    if (!isObject(%this.NPCGroup)) {
+}
+function NPCManager::think(%this)
+{
+    if (!isObject(%this.NPCGroup))
+    {
         warn("No NPC group, going to sleep..");
         return;
     }
     %NPCNum = %this.NPCGroup.getCount();
     %n = 0;
-    while ((%n < %NPCNum)) {
+    while ((%n < %NPCNum))
+    {
         %this.thinkNPC(%this.NPCGroup.getObject(%n));
         %n = (%n + 1.0);
     }
     %this.schedule(%this.thinkPeriod, think);
     return (%n < %NPCNum);
-};
-function NPCManager::thinkNPC(%this, %npc) {
+}
+function NPCManager::thinkNPC(%this, %npc)
+{
     %setName = %npc.getDataBlock().animSetName;
-    if (!isObject(%this)) {
+    if (!isObject(%this))
+    {
     }
-    if (!isObject(%this.animSets)) {
+    if (!isObject(%this.animSets))
+    {
         echo("Trouble in little china");
         return;
     }
     %curTime = getSimTime();
     %nat = gGetField(%npc, nextAnimTime);
-    if (!(%nat $= "")) {
+    if (!(%nat $= ""))
+    {
     }
-    if ((%curTime < %nat)) {
+    if ((%curTime < %nat))
+    {
         return;
     }
     %nat = (%curTime + getRandom(%this.getAnimTimeMin(%setName), %this.getAnimTimeMax(%setName)));
@@ -337,18 +379,21 @@ function NPCManager::thinkNPC(%this, %npc) {
     %anim = %this.getRandomAnimFromSet(%setName);
     %npc.playAnim(%anim);
     return;
-};
-function NPCManager::dumpEts(%this) {
+}
+function NPCManager::dumpEts(%this)
+{
     %sets = %this.animSets.get("setNames");
     %setsNum = getWordCount(%sets);
     %setN = 0;
-    while ((%setN < %setsNum)) {
+    while ((%setN < %setsNum))
+    {
         %set = getWord(%sets, %setN);
         echo(%set @ " " @ "timeMin =" @ " " @ %this.getAnimTimeMin(%set) @ " " @ "timeMax =" @ " " @ %this.getAnimTimeMax(%set));
         %anims = %this.animSets.get(%set);
         %animsNum = getWordCount(%anims);
         %animN = 0;
-        while ((%animN < %animsNum)) {
+        while ((%animN < %animsNum))
+        {
             %anim = getWord(%anims, %animN);
             echo("  " @ %anim);
             %animN = (%animN + 1.0);
@@ -356,14 +401,16 @@ function NPCManager::dumpEts(%this) {
         %setN = (%setN + 1.0);
         (%animN < %animsNum);
     }
-};
-function NPCManager::handleTalkedToNPC(%this, %unused, %npc, %unused) {
+}
+function NPCManager::handleTalkedToNPC(%this, %unused, %npc, %unused)
+{
     %setName = %npc.getDataBlock().aiProfile;
     %anim = %this.getRandomAnimFromSet(%setName);
-    if ((%anim $= "")) {
+    if ((%anim $= ""))
+    {
         return;
     }
     %delay = getRandom(500, 1500);
     %npc.schedule(%delay, "playAnim", %anim);
     return;
-};
+}

@@ -312,41 +312,54 @@ new ScriptObject(blendAnim_22) {
     decayRate = 3;
 };
 $gBlendAnimsTitlesMap = 0;
-function Player::configBoneBlends(%this) {
-    if (($gBlendAnimsTitlesMap == 0.0)) {
+function Player::configBoneBlends(%this)
+{
+    if (($gBlendAnimsTitlesMap == 0.0))
+    {
         $gBlendAnimsTitlesMap = safeEnsureScriptObject("StringMap", "");
     }
     %i = 0;
-    while ((%i < $MAX_FREE_BONE_BLENDS)) {
+    while ((%i < $MAX_FREE_BONE_BLENDS))
+    {
         %index = (%i + $FIRST_FREE_BLEND_INDEX);
         %sobj = "blendAnim_" @ %i;
         %this.configBoneBlendAnimation(%index, %sobj.sequence, %sobj.flavor, %sobj.defaultPosition, %sobj.attackTime, %sobj.decayTime, %sobj.attackRate, %sobj.decayRate, %sobj.isReplacement, %sobj.holdPosition);
         $gBlendAnimsTitlesMap.put(%sobj.title, %i);
         %i = (%i + 1.0);
     }
-};
-function Player::getBoneBlendIndexFromTitle(%this, %title) {
-    if (!isObject($gBlendAnimsTitlesMap)) {
+}
+function Player::getBoneBlendIndexFromTitle(%this, %title)
+{
+    if (!isObject($gBlendAnimsTitlesMap))
+    {
         warn(getScopeName() @ " " @ "- $gBlendAnimsTitlesMap not configured");
         %this.configBoneBlends();
     }
     %ret = $gBlendAnimsTitlesMap.get(%title);
-    if ((%ret $= "")) {
+    if ((%ret $= ""))
+    {
         %ret = -(1.0);
-    } else {
+    }
+    else
+    {
         %ret = (%ret + $FIRST_FREE_BLEND_INDEX);
     }
     return %ret;
-};
-function Player::triggerBlendAnimByTitle(%this, %title, %doit) {
+}
+function Player::triggerBlendAnimByTitle(%this, %title, %doit)
+{
     %index = %this.getBoneBlendIndexFromTitle(%title);
-    if ((%index < 0.0)) {
+    if ((%index < 0.0))
+    {
         error(getScopeName() @ " " @ "- blend anim not found:" @ " " @ %title);
         return;
     }
-    if (%this.isServerObject()) {
+    if (%this.isServerObject())
+    {
         %this.triggerBoneBlendAnimation(%index, %doit, 0);
-    } else {
+    }
+    else
+    {
         %this.triggerBlendAnim(%index, %doit);
     }
-};
+}

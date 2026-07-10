@@ -1,5 +1,6 @@
 exec("./skeletonClient.cs");
-function initGenres() {
+function initGenres()
+{
     %i = 0;
     $Genres[%i = (%i + 1.0),0] = "h";
     %i["confident" @ $Genres TAB %i @ 1] = ;
@@ -12,8 +13,9 @@ function initGenres() {
     $Genres[%i = (%i + 1.0),0] = "z";
     %i["zombie" @ $Genres TAB %i @ 1] = ;
     $GenresCount = %i;
-};
-function initTeleports() {
+}
+function initTeleports()
+{
     %i = 0;
     $teleportsNV[%i = (%i + 1.0),0] = 'TeleportToPlayer';
     %i["nobunaga" @ $teleportsNV TAB %i @ 1] = ;
@@ -402,8 +404,9 @@ function initTeleports() {
     $teleportsRJ[%i = (%i + 1.0),0] = 'TeleportToTransform';
     %i["35.37 -22.42 31.01 0 0 1 .1" @ $teleportsRJ TAB %i @ 1] = ;
     $teleportsRJCount = %i;
-};
-function testLoginAndStay() {
+}
+function testLoginAndStay()
+{
     $loginLogout = 0;
     %testLogin = new ScriptObject(skeletonClient) {
         userName = $UserPref::Player::Name;
@@ -414,21 +417,27 @@ function testLoginAndStay() {
     %testLogin.init();
     echo("LOAD: $TargetCity: " @ $DestServerName);
     %testLogin.doLogin($DestServerName);
-};
+}
 echo("LOAD: starting via testLoginAndStay()");
 $failureCount = 0;
 initGenres();
 initTeleports();
 testLoginAndStay();
-function doSomething() {
+function doSomething()
+{
     schedule(30000, 0, do_emote);
-};
-function do_emote() {
+}
+function do_emote()
+{
     %i = getRandom(1, 2);
-    if ((%i $= 1)) {
+    if ((%i $= 1))
+    {
         $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
-    } else {
-        if ((%i $= 2)) {
+    }
+    else
+    {
+        if ((%i $= 2))
+        {
             $mvYawRightSpeed = $Pref::Input::KeyboardTurnSpeed;
         }
     }
@@ -436,19 +445,24 @@ function do_emote() {
     $rand_emote = EmoteDict.getValue(getRandom(0, (EmoteDict.size() - 1.0)));
     $rand_genre = getRandom(1, $GenresCount);
     commandToServer('EtsPlayAnimName', $rand_emote);
-    if (isObject(pChat)) {
+    if (isObject(pChat))
+    {
         pChat.say($rand_genre[$rand_genre["(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote, 0, 0);
     }
     commandToServer('setGenre', $Genres[$rand_genre]);
     schedule(5000, 0, stopAndTalk);
     schedule(30000, 0, approveFriendRequests);
-};
-function stopAndTalk() {
-    if (isObject(pChat)) {
-        if (ClosetGui.isVisible()) {
+}
+function stopAndTalk()
+{
+    if (isObject(pChat))
+    {
+        if (ClosetGui.isVisible())
+        {
             ClosetGui.close();
         }
-        if (geTGF.isVisible()) {
+        if (geTGF.isVisible())
+        {
             geTGF.closeFully();
         }
         $mvYawLeftSpeed = 0;
@@ -457,15 +471,22 @@ function stopAndTalk() {
         %rand_teleport_NV = getRandom(1, $teleportsNVCount);
         %rand_teleport_LGA = getRandom(1, $teleportsLGACount);
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
-        if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth")) {
+        if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth"))
+        {
             %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
             %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
-        } else {
-            if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth")) {
+        }
+        else
+        {
+            if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth"))
+            {
                 %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
                 %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
-            } else {
-                if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth")) {
+            }
+            else
+            {
+                if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth"))
+                {
                     %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
                     %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
                 }
@@ -474,49 +495,62 @@ function stopAndTalk() {
         pChat.say("(" @ $Hostname @ ")" @ " " @ $UserPref::Player::Name @ " " @ ":" @ " " @ $Hostname @ " " @ ":" @ " " @ %command @ " " @ ":" @ " " @ %destination, 0, 0);
         commandToServer(%command, %destination);
         schedule(4000, 0, changeClothes);
-    } else {
-        if (($failureCount == 5.0)) {
+    }
+    else
+    {
+        if (($failureCount == 5.0))
+        {
             echo("LOAD: Giving up. Lost PChat object.");
             echo("LOAD: Quit()-ing...");
             logoffAndQuit();
-        } else {
+        }
+        else
+        {
             echo("LOAD: Lost PChat... Gonna try again.");
             $failureCount = ($failureCount + 1.0);
         }
     }
     schedule(10000, 0, do_emote);
-};
-function logoffAndQuit() {
+}
+function logoffAndQuit()
+{
     echo("LOAD: Logging off and quit()-ing...");
     echo("LOAD: Login::loggedIn:" @ " " @ $Login::loggedIn);
     logout(0);
     schedule(1000, 0, doQuit);
-};
-function takeSnapshot() {
+}
+function takeSnapshot()
+{
     echo("LOAD: takeSnapshot");
     BroadCastControlPanel.automateSnapshotUpload();
-};
-function useAndSaveRandomOutfit() {
+}
+function useAndSaveRandomOutfit()
+{
     %drwrs = "glasses torso legs legsb feet ear neck neckb wristleft wristleftb wristright wristrightb purse hat";
     %skus = SkuManager.getRandomSkusForLocalPlayer(%drwrs);
     commandToServer('SetActiveSkus', %skus);
-};
-function changeClothes() {
+}
+function changeClothes()
+{
     echo("LOAD: changeClothes enter...");
     useAndSaveRandomOutfit();
     echo("LOAD: changeClothes done...");
-};
-function approveFriendRequests() {
+}
+function approveFriendRequests()
+{
     %fansHere = BuddyHudWin.buddyLists[FansHere];
-    if (!isObject(%fansHere)) {
+    if (!isObject(%fansHere))
+    {
         return;
     }
-    if ((%fansHere.size() == 0.0)) {
+    if ((%fansHere.size() == 0.0))
+    {
         echo("LOAD: There are no waiting requests.");
         return;
     }
     %n = (%fansHere.size() - 1.0);
-    while ((%n >= 0.0)) {
+    while ((%n >= 0.0))
+    {
         %playerName = %fansHere.getKey(%n);
         echo("LOAD: Friend" @ " " @ %playerName);
         %action = "accept";
@@ -524,4 +558,4 @@ function approveFriendRequests() {
         pChat.whisper("(" @ $Hostname @ ")" @ " " @ "Hey" @ " " @ %playerName @ ", I" @ " " @ %action @ " " @ "your friendship.", %playerName);
         %n = (%n - 1.0);
     }
-};
+}

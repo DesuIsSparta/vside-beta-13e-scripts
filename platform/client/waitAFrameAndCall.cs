@@ -1,18 +1,25 @@
-function waitAFrameAndCall(%call) {
+function waitAFrameAndCall(%call)
+{
     waitAFrameAndEval(%call @ "();");
-};
-function waitAFrameAndEval(%script) {
+}
+function waitAFrameAndEval(%script)
+{
     $WaitAFrameAndEval_LastFrame = $Canvas::frameCount;
     waitAFrameAndEval_checkIfNextFrame(%script);
-};
-function waitAFrameAndEval_checkIfNextFrame(%script) {
-    if (($WaitAFrameAndEval_LastFrame < $Canvas::frameCount)) {
+}
+function waitAFrameAndEval_checkIfNextFrame(%script)
+{
+    if (($WaitAFrameAndEval_LastFrame < $Canvas::frameCount))
+    {
         waitAFrameAndEval_waitedAFrame(%script);
-    } else {
+    }
+    else
+    {
         cancel($gWaitAFrameAndEval_Timer);
         $gWaitAFrameAndEval_Timer = schedule(10, 0, waitAFrameAndEval_checkIfNextFrame, %script);
     }
-};
-function waitAFrameAndEval_waitedAFrame(%script) {
+}
+function waitAFrameAndEval_waitedAFrame(%script)
+{
     eval(%script);
-};
+}
