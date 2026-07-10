@@ -1,374 +1,185 @@
-function MusicHud::setMusicService(%this, %musicService)
-{
-    %this.musicService = %musicService;
-    return ;
-}
-function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %isItune)
-{
+function MusicHud::setMusicService(%this, %musicService) {
+    musicService = %musicService @ %this;
+};
+function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %isItune) {
     %artist = utf8Decode(%artist);
     %title = utf8Decode(%title);
     %album = utf8Decode(%album);
     %comment = utf8Decode(%comment);
-    if (%isItune)
-    {
-        %this.artist = %this.getITunesSearchLink(%artist, "", "", %artist);
-        %this.album = %this.getITunesSearchLink(%artist, %album, "", %album);
-        if ($ETS::ProjectName $= "vmtv")
-        {
-            %this.title = %this.getITunesSearchLink(%artist, %album, %title, %title);
-        }
-        else
-        {
-            %this.title = %this.getSongPageLink(%artist, %album, %title, %title);
-        }
-    }
-    else
-    {
-        %this.artist = %artist;
-        %this.album = %album;
-        %this.title = %title;
-    }
+    artist = %isItune @ %this.getITunesSearchLink(%artist, "", "", %artist) @ %this;
+    album = %this.getITunesSearchLink(%artist, %album, "", %album) @ %this;
+    title = ($ETS::ProjectName $= "vmtv") @ %this.getITunesSearchLink(%artist, %album, %title, %title) @ %this;
+    title = %this.getSongPageLink(%artist, %album, %title, %title) @ %this;
+    artist = %artist @ %this;
+    album = %album @ %this;
+    title = %title @ %this;
     %commentData = %this.parseComment(%comment);
     %commentText = %commentData.get("text");
     %url = %commentData.get("url");
-    if (%url $= "")
-    {
-        %this.comment = %commentText;
-    }
-    else
-    {
-        %this.comment = "<a:" @ %url @ ">" @ %commentText @ "</a>";
-    }
+    comment = (%url $= "") @ %commentText @ %this;
+    comment = "<a:" @ %url @ ">" @ %commentText @ "</a>" @ %this;
     %commentData.delete();
-    %this.charWidth = mMax(mMax(mMax(strlen(%artist), 2 + strlen(%title)), strlen(%album)), strlen(%commentText));
+    charWidth = mMax(mMax(mMax(strlen(%artist), (strlen(%title) + 2.0)), strlen(%album)), strlen(%commentText)) @ %this;
     %this.update();
-    if ((((HudTabs.currentTabIndex < 0) || (HudTabs.getCurrentTab().name $= "music")) && !$UserPref::Audio::mute) && %this.hasMusicData())
-    {
-        %this.show();
-    }
-    if ((!((%artist $= "")) || !((%title $= ""))) || !((%album $= "")))
-    {
-        Music::fetchRatings(%artist, %title, %album);
-    }
-    return ;
-}
-function MusicHud::hasMusicData(%this)
-{
-    return (!((%this.musicService $= "")) && !((%this.musicService.getArtist() $= ""))) || !((%this.musicService.getTitle() $= ""));
-}
-function MusicHud::update(%this)
-{
+    %this.show();
+    Music::fetchRatings(%artist, %title, %album);
+};
+function MusicHud::hasMusicData(%this) {
+    return !((%this SPC musicService.getTitle() $= ""));
+};
+function MusicHud::update(%this) {
     %heightOffset = 40;
     %heightDelta = 0;
     %content = "";
-    if (%this.hasMusicData())
-    {
-        %content = %this.artist @ "\n\"" @ %this.title @ "\"";
-        if ((%this.musicService.getAlbum() $= "") && (%this.musicService.getAlbum() $= "album"))
-        {
-            %heightOffset = %heightOffset + 20;
-        }
-        else
-        {
-            %content = %content @ "\n" @ %this.album;
-            %heightOffset = %heightOffset + %heightDelta;
-        }
-        if (%this.comment $= "")
-        {
-            %heightOffset = %heightOffset + 20;
-        }
-        else
-        {
-            %content = %content @ "\n" @ %this.comment;
-            %heightOffset = %heightOffset + %heightDelta;
-        }
-    }
-    if ($UserPref::Audio::mute)
-    {
-        %this.ratingControl.setVisible(0);
-        %content = "Audio is currently muted. Unmute audio to listen to music.";
-    }
-    else
-    {
-        if (!(%content $= ""))
-        {
-            %this.ratingControl.setVisible(1);
-        }
-        else
-        {
-            %this.ratingControl.setVisible(0);
-            if (isObject(FMod))
-            {
-                if (FMod.isMusicOn())
-                {
-                    %content = "Loading music info...";
-                }
-                else
-                {
-                    %content = "You are currently in a space without music. To listen to music visit clubs, stores, apartments, or other venues that have music playing.";
-                }
-            }
-            else
-            {
-                %content = "FMod music not currently available.";
-            }
-        }
-    }
+    %content = %this.hasMusicData() @ %this @ artist @ "\n\"" @ %this @ title @ "\"";
+    %heightOffset = (20.0 + %heightOffset);
+    (%this SPC musicService.getAlbum() $= "album");
+    %content = %this @ album;
+    (%this SPC musicService.getAlbum() $= "") @ %content @ "\n";
+    %heightOffset = (%heightDelta + %heightOffset);
+    %heightOffset = (20.0 + %heightOffset);
+    (%this SPC comment $= "");
+    %content = %this @ comment;
+    %content @ "\n";
+    %heightOffset = (%heightDelta + %heightOffset);
+    ratingControl.setVisible(0);
+    %content = "Audio is currently muted. Unmute audio to listen to music.";
+    %this;
+    ratingControl.setVisible(1);
+    ratingControl.setVisible(0);
+    %content = "Loading music info...";
+    isMusicOn();
+    %content = "You are currently in a space without music. To listen to music visit clubs, stores, apartments, or other venues that have music playing.";
+    FMod;
+    %content = "FMod music not currently available.";
+    isObject();
     %this.updateRatingText();
-    MusicText.setText(%content);
-    if (MusicText.isVisible() && MusicText.isAwake())
-    {
-        MusicText.forceReflow();
-    }
-    MusicHud.ratingControl.updatePosition();
-    return ;
-}
-function MusicHud::updateRatingText(%this)
-{
-    %ratingText = %this.ratingControl.descripText;
-    if (!(%ratingText $= ""))
-    {
-        %ratingText = %ratingText @ "<br>";
-    }
-    %isObject = isObject(RatingRequest);
-    if (!%isObject && (findRequestStatus(RatingRequest) $= "fail"))
-    {
-        %ratingText = %ratingText @ "Couldn\'t get song rating.";
-    }
-    else
-    {
-        if (%isObject && !((RatingRequest.community_rating $= "")))
-        {
-            %ratingText = %ratingText @ "Avg. Rating: " @ RatingRequest.community_rating;
-            if (!(RatingRequest.num_ratings $= ""))
-            {
-                %plural = !(RatingRequest.num_ratings $= 1) ? "s" : "";
-                %ratingText = %ratingText @ " (" @ RatingRequest.num_ratings @ " vote" @ %plural @ ") ";
-            }
-        }
-    }
-    %this.ratingControl.label.setText(%ratingText);
-    return ;
-}
-function MusicHud::setRating(%this, %rating)
-{
-    %this.ratingControl.setRating(%rating, 0);
-    return ;
-}
-function MusicHud::parseComment(%this, %comment)
-{
-    %map = new StringMap();
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%map);
-    }
-    %comment = NextToken(%comment, var, ":");
-    if (!(%var $= "DOPP"))
-    {
-        return %map;
-    }
-    %url = NextToken(%comment, var, "|");
-    %map.put("text", %var);
-    if (getSubStr(%url, 0, 7) $= "http://")
-    {
-        %map.put("url", getSubStr(%url, 7, strlen(%url) - 7));
-    }
-    else
-    {
-        %map.put("url", %url);
-    }
+    %content.setText();
+    forceReflow();
+    ratingControl.updatePosition();
+};
+function MusicHud::updateRatingText(%this) {
+    %ratingText = descripText;
+    ratingControl;
+    %ratingText = !((%this SPC %ratingText $= "")) @ %ratingText @ "<br>";
+    %isObject = isObject();
+    RatingRequest;
+    %ratingText = (RatingRequest SPC findRequestStatus() $= "fail") @ %ratingText @ "Couldn't get song rating.";
+    !(%isObject);
+    %ratingText = RatingRequest @ community_rating;
+    %isObject @ !((RatingRequest SPC community_rating $= "")) @ %ratingText @ "Avg. Rating: ";
+    %plural = "";
+    "s";
+    %ratingText = !((RatingRequest SPC num_ratings $= "")) @ !((RatingRequest SPC num_ratings $= 1)) @ %ratingText @ " (" @ RatingRequest @ num_ratings @ " vote" @ %plural @ ") ";
+    label.setText(%ratingText);
+};
+function MusicHud::setRating(%this, %rating) {
+    ratingControl.setRating(%rating, 0);
+};
+function MusicHud::parseComment(%this, %comment) {
+    %map = new ""();
+    StringMap;
+    %map.add();
+    %comment = NextToken(%comment, ":");
+    var;
     return %map;
-}
+    %url = NextToken(%comment, "|");
+    var;
+    %map.put("text", %var);
+    %map.put("url", getSubStr(%url, 7, (7.0 - strlen(%url))));
+    %map.put("url", %url);
+    return %map;
+};
 $Music::ITunesSearchURL = $Net::ItunesURL;
 $Music::ITunesDownloadURL = "http://www.apple.com/itunes/affiliates/download";
 $Music::SongPageSearchURL = $Net::SongPageURL;
-function MusicHud::getITunesSearchLink(%this, %artist, %album, %title, %text)
-{
+function MusicHud::getITunesSearchLink(%this, %artist, %album, %title, %text) {
     return "<a:" @ $Music::ITunesSearchURL @ "?artistTerm=" @ urlEncode(%artist) @ "&songTerm=" @ urlEncode(%title) @ "&albumTerm=" @ urlEncode(%album) @ ">" @ %text @ "</a>";
-}
-function MusicHud::getSongPageLink(%this, %artist, %album, %title, %text)
-{
+};
+function MusicHud::getSongPageLink(%this, %artist, %album, %title, %text) {
     return "<a:" @ $Music::SongPageSearchURL @ "?artistTerm=" @ urlEncode(%artist) @ "&songTerm=" @ urlEncode(%title) @ "&albumTerm=" @ urlEncode(%album) @ "&token=" @ urlEncode($Token) @ "&user=" @ urlEncode($Player::Name) @ ">" @ %text @ "</a>";
-}
-function MusicHud::getITunesDownloadURL(%this, %iTunesURL)
-{
+};
+function MusicHud::getITunesDownloadURL(%this, %iTunesURL) {
     return $Music::ITunesDownloadURL @ "?itmsUrl=" @ %iTunesURL;
-}
-function MusicHud::show(%this)
-{
-    if ($UserPref::HudTabs::AutoOpen["music"])
-    {
-        HudTabs.selectTabWithName("music");
-    }
-    return ;
-}
-function MusicHud::keepOpen(%this, %flag)
-{
+};
+function MusicHud::show(%this) {
+    "music".selectTabWithName();
+};
+function MusicHud::keepOpen(%this, %flag) {
     $UserPref::Audio::keepMusicHudOpen = %flag;
-    return ;
-}
-function MusicHud::hide(%this)
-{
-    if (%this.isShowing())
-    {
-        HudTabs.close();
-    }
-    return ;
-}
-function MusicHud::onClose(%this)
-{
+};
+function MusicHud::hide(%this) {
+    close();
+};
+function MusicHud::onClose(%this) {
     %this.keepOpen(0);
     %this.update();
-    return ;
-}
-function MusicHud::isShowing(%this)
-{
-    return HudTabs.getCurrentTab().name $= "music";
-}
-function MusicHud::setChangeStationAllowed(%this, %flag)
-{
-    MusicHudMyMediaButton.setVisible(%flag);
+};
+function MusicHud::isShowing(%this) {
+    return (getCurrentTab() SPC name $= "music");
+};
+function MusicHud::setChangeStationAllowed(%this, %flag) {
+    %flag.setVisible();
     %flag = 0;
-    if (%flag)
-    {
-        MusicHudChangeStationButton.setVisible(1);
-    }
-    else
-    {
-        MusicHudChangeStationButton.setVisible(0);
-        %this.setView("basic");
-    }
-    return ;
-}
-function MusicHud::setView(%this, %view)
-{
-    if (%view $= "basic")
-    {
-        MusicHudBasicView.setVisible(1);
-        MusicHudEditView.setVisible(0);
-    }
-    else
-    {
-        if (%view $= "change_station")
-        {
-            MusicHudBasicView.setVisible(0);
-            MusicHudEditView.setVisible(1);
-            %this.fillStationPopup();
-        }
-    }
-    return ;
-}
-function MusicHud::fillStationPopup(%this)
-{
-    MusicHudStationPopup.clear();
-    MusicHudStationPopup.setActive(0);
-    if (!(%this.station $= ""))
-    {
-        MusicHudStationPopup.setText(%this.station);
-    }
+    MusicHudMyMediaButton;
+    1.setVisible();
+    0.setVisible();
+    %this.setView("basic");
+};
+function MusicHud::setView(%this, %view) {
+    1.setVisible();
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    %this.fillStationPopup();
+};
+function MusicHud::fillStationPopup(%this) {
+    clear();
+    0.setActive();
+    station.setText();
     Music::createGetMusicStreamsRequest();
-    return ;
-}
-function MusicHud::updateStations(%this, %stations)
-{
+};
+function MusicHud::updateStations(%this, %stations) {
     log("communication", "debug", "Called updateStations. Station count: " @ getFieldCount(%stations));
     %i = 0;
-    while (%i < getFieldCount(%stations))
-    {
-        %field = getField(%stations, %i);
-        if (%field $= "")
-        {
-            continue;
-        }
-        MusicHudStationPopup.add(%field);
-        %i = %i + 1;
-    }
-    if (%this.station $= "")
-    {
-        MusicHudStationPopup.SetSelected(0);
-    }
-    MusicHudStationPopup.setActive(1);
-    return ;
-}
-function MusicHud::stationSelected(%this)
-{
-    %this.station = MusicHudStationPopup.getValue();
-    customSpace::SetMusicStreamID(%this.station);
-    return ;
-}
-function MusicText::onUrl_NOOP(%this, %url)
-{
+    %field = getField(%stations, %i);
+    (getFieldCount(%stations) < %i);
+    %field.add();
+    %i = (1.0 + %i);
+    MusicHudStationPopup;
+    0.SetSelected();
+    1.setActive();
+};
+function MusicHud::stationSelected(%this) {
+    station = MusicHudStationPopup @ getValue() @ %this;
+    customSpace::SetMusicStreamID(station);
+};
+function MusicText::onUrl_NOOP(%this, %url) {
     $MusicText::selectedURL = %url;
-    if (iTunesIsRunning())
-    {
-        iTunesOpen(%url);
-    }
-    else
-    {
-        if (iTunesIsInstalled())
-        {
-            MessagePopup("Please Wait", "Starting ITunes...", 5000);
-            iTunesOpen(%url);
-        }
-        else
-        {
-            MessageBoxYesNo("Confirm Installation", "You have selected a link to the ITunes Store " @ "but do not have ITunes installed.  " @ "Would you like to install it now?", "MusicText::installITunes();", "MusicText::declineITunes();");
-        }
-    }
-    return ;
-}
-function MusicText::installITunes()
-{
+    iTunesOpen(%url);
+    MessagePopup("Please Wait", "Starting ITunes...", 5000);
+    iTunesOpen(%url);
+    MessageBoxYesNo("Confirm Installation", iTunesIsRunning() @ iTunesIsInstalled() @ "You have selected a link to the ITunes Store " @ "but do not have ITunes installed.  " @ "Would you like to install it now?", "MusicText::installITunes();", "MusicText::declineITunes();");
+};
+function MusicText::installITunes() {
     gotoWebPage(getITunesDownloadURL($MusicText::selectedURL));
-    return ;
-}
-function MusicText::declineITunes()
-{
-    return ;
-}
-function MusicText::startITunes()
-{
+};
+function MusicText::declineITunes() {
+};
+function MusicText::startITunes() {
     iTunesOpen($MusicText::selectedURL);
-    return ;
-}
-function MusicRatingControl::onUpdate(%this)
-{
-    if ((%this.mouseOver + 1) == 1)
-    {
-        %this.descripText = "Hate It";
-    }
-    else
-    {
-        if ((%this.mouseOver + 1) == 2)
-        {
-            %this.descripText = "Not So Good";
-        }
-        else
-        {
-            if ((%this.mouseOver + 1) == 3)
-            {
-                %this.descripText = "So-So";
-            }
-            else
-            {
-                if ((%this.mouseOver + 1) == 4)
-                {
-                    %this.descripText = "Like It";
-                }
-                else
-                {
-                    if ((%this.mouseOver + 1) == 5)
-                    {
-                        %this.descripText = "Love It!";
-                    }
-                    else
-                    {
-                        %this.descripText = "";
-                    }
-                }
-            }
-        }
-    }
-    MusicHud.updateRatingText();
-    return ;
-}
+};
+function MusicRatingControl::onUpdate(%this) {
+    descripText = (1.0 == (%this + mouseOver)) @ "Hate It" @ %this;
+    1.0;
+    descripText = (1.0 == (%this + mouseOver)) @ "Not So Good" @ %this;
+    2.0;
+    descripText = (1.0 == (%this + mouseOver)) @ "So-So" @ %this;
+    3.0;
+    descripText = (1.0 == (%this + mouseOver)) @ "Like It" @ %this;
+    4.0;
+    descripText = (1.0 == (%this + mouseOver)) @ "Love It!" @ %this;
+    5.0;
+    descripText = "" @ %this;
+    updateRatingText();
+};

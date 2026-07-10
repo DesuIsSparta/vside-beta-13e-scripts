@@ -1,122 +1,81 @@
-function EmoteHudWin::open(%this)
-{
+function EmoteHudWin::open(%this) {
     %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
-    WindowManager.update();
-    EmoteHudList.currentEmote = "";
-    EmoteHudList.setEditMode(0);
-    return ;
-}
-function EmoteHudWin::close(%this)
-{
-    if (!(EmoteHudList.currentEmote $= ""))
-    {
-        EmoteHudList.reset();
-        return ;
-    }
+    %this.focusAndRaise();
+    update();
+    currentEmote = WindowManager @ "" @ EmoteHudList;
+    PlayGui;
+    0.setEditMode();
+};
+function EmoteHudWin::close(%this) {
+    reset();
+    return EmoteHudList;
     %this.setVisible(0);
-    PlayGui.focusTopWindow();
-    WindowManager.update();
+    focusTopWindow();
+    update();
     return 1;
-}
-function clientCmdActivateDanceList(%listName)
-{
-    EmoteHudTabs.dynamicAddList(%listName);
-    insertPlainToCodedListIntoMap(%listName, EmoteDict);
-    return ;
-}
-function clientCmdDeActivateDanceList(%listName)
-{
+};
+function clientCmdActivateDanceList(%listName) {
+    %listName.dynamicAddList();
+    insertPlainToCodedListIntoMap(%listName);
+};
+function clientCmdDeActivateDanceList(%listName) {
     emote("/whew");
-    removePlainToCodedListFromMap(%listName, EmoteDict);
-    EmoteHudTabs.dynamicRemoveList(%listName);
-    return ;
-}
-function EmoteHudTabs::dynamicAddList(%this, %dancesList)
-{
-    %list = %this.getTabWithName("dances").list;
-    %num = getFieldCount(%dancesList) / 2;
+    removePlainToCodedListFromMap(%listName);
+    %listName.dynamicRemoveList();
+};
+function EmoteHudTabs::dynamicAddList(%this, %dancesList) {
+    %list = list;
+    %this.getTabWithName("dances");
+    %num = (2.0 / getFieldCount(%dancesList));
     %n = 0;
-    while (%n < %num)
-    {
-        %list.addRow(%list.rowCount(), getField(%dancesList, %n * 2));
-        %n = %n + 1;
-    }
-    EmoteHudList.reset();
-    return ;
-}
-function EmoteHudTabs::dynamicRemoveList(%this, %dancesList)
-{
-    %list = %this.getTabWithName("dances").list;
-    %num = getFieldCount(%dancesList) / 2;
+    %list.addRow(%list.rowCount(), getField(%dancesList, (2.0 * %n)));
+    %n = (1.0 + %n);
+    (%num < %n);
+    reset();
+};
+function EmoteHudTabs::dynamicRemoveList(%this, %dancesList) {
+    %list = list;
+    %this.getTabWithName("dances");
+    %num = (2.0 / getFieldCount(%dancesList));
     %n = 0;
-    while (%n < %num)
-    {
-        %danceName = getField(%dancesList, %n * 2);
-        %index = %list.findTextIndex(%danceName);
-        echo("Searching for \"" @ %danceName @ "\" and got index" SPC %index);
-        if (%index != -1)
-        {
-            %list.removeRow(%index);
-        }
-        %n = %n + 1;
-    }
-    EmoteHudList.reset();
-    return ;
-}
-function EmoteHudTabs::wakeUp(%this)
-{
+    %danceName = getField(%dancesList, (2.0 * %n));
+    (%num < %n);
+    %index = %list.findTextIndex(%danceName);
+    echo("Searching for \"" @ %danceName @ "\" and got index" @ " " @ %index);
+    %list.removeRow(%index);
+    %n = (1.0 + %n);
+    (-(1.0) != %index);
+    reset();
+};
+function EmoteHudTabs::wakeUp(%this) {
     %this.setup();
     %this.selectCurrentTab();
-    return ;
-}
-function EmoteHudWin::wakeUp(%this)
-{
-    EmoteHudList.setup();
-    return ;
-}
-$gEmoteListTitles["Mood"] = "Mood";
-$gEmoteListTitles["FavoriteActions"] = "Favorite Actions";
-$gEmoteListTitles["Expressions"] = "Expressions";
-$gEmoteListTitles["Gestures"] = "Gestures";
-$gEmoteListTitles["DancesLounge"] = "Lounge Dances";
-$gEmoteListTitles["DancesBreak"] = "Break Dances";
-$gEmoteListTitles["DancesThrilla"] = "Thrilla Dances";
-$gEmoteListTitles["DancesGoGo"] = "Go-Go Dances";
-$gEmoteListTitles["DancesHipHop"] = "HipHop Dances";
-$gEmoteListTitles["DancesJB"] = "JB Dances";
-$gEmoteListTitles["DancesGoth"] = "Goth Dances";
-function EmoteHudList::setup(%this)
-{
+};
+function EmoteHudWin::wakeUp(%this) {
+    setup();
+};
+function EmoteHudList::setup(%this) {
     safeEnsureScriptObjectWithInit("StringMap", "EmoteBindingMap", "{ ignoreCase = true; }");
-    EmoteBindingMap.clear();
+    clear();
     %genders = "f m";
+    EmoteBindingMap;
     %keys = "F08 F09 F10 F11 F12 ctrl1 ctrl2 ctrl3 ctrl4 ctrl5 ctrl6 ctrl7 ctrl8 ctrl9 ctrl0";
-    %n = getWordCount(%genders) - 1;
-    while (%n >= 0)
-    {
-        %gender = getWord(%genders, %n);
-        if (%gender $= $UserPref::Player::gender)
-        {
-            %m = getWordCount(%keys) - 1;
-            while (%m >= 0)
-            {
-                %key = getWord(%keys, %m);
-                %emote = $UserPref::emotes[%gender,normalizeKey(%key)];
-                if (!(%emote $= ""))
-                {
-                    EmoteBindingMap.put(%emote, %key);
-                }
-                %m = %m - 1;
-            }
-        }
-        %n = %n - 1;
-    }
-    EmoteHudList.setEditMode(0);
-    return ;
-}
-function EmoteHudList::populateLists(%this)
-{
+    %n = (1.0 - getWordCount(%genders));
+    %gender = getWord(%genders, %n);
+    (0.0 >= %n);
+    %m = (1.0 - getWordCount(%keys));
+    (%gender $= $UserPref::Player::gender);
+    %key = getWord(%keys, %m);
+    (0.0 >= %m);
+    %emote = ;
+    %emote.put(%key);
+    %m = (1.0 - %m);
+    EmoteBindingMap;
+    %n = (1.0 - %n);
+    (0.0 >= %m);
+    0.setEditMode();
+};
+function EmoteHudList::populateLists(%this) {
     %this.initializeList("Mood");
     %this.initializeList("FavoriteActions");
     %this.initializeList("Expressions");
@@ -130,70 +89,50 @@ function EmoteHudList::populateLists(%this)
     %this.initializeList("DancesGoth");
     %startingPos = %this.getPosition();
     %this.setText("");
-    %list = %this.lists["Mood"];
+    %list = lists;
+    "Mood" @ %this;
     %numMoods = getWordCount($gMoods);
     %i = 0;
-    while (%i < %numMoods)
-    {
-        %list.put(%i, %this.getMLDisplayForMood(getWord($gMoods, %i)));
-        %i = %i + 1;
-    }
-    %list = %this.lists["FavoriteActions"];
-    %size = EmoteBindingMap.size();
+    %list.put(%i, %this.getMLDisplayForMood(getWord($gMoods, %i)));
+    %i = (1.0 + %i);
+    (%numMoods < %i);
+    %list = lists;
+    (%numMoods < %i) @ "FavoriteActions" @ %this;
+    %size = size();
+    EmoteBindingMap;
     %i = 0;
-    while (%i < %size)
-    {
-        %key = EmoteBindingMap.getKey(%i);
-        %value = EmoteBindingMap.getValue(%i);
-        if (!(%key $= ""))
-        {
-            %list.put(%value, %this.getMLDisplayForEmote(%key));
-        }
-        %i = %i + 1;
-    }
-    %expressions = "angry" TAB "confused" TAB "cry" TAB "embarrassed" TAB "flirt" TAB "hmm" TAB "in-love" TAB "lol" TAB "rotfl" TAB "sad" TAB "scared" TAB "sleepy" TAB "smile" TAB "surprised" TAB "thinking";
-    %this.populateList(%this.lists["Expressions"], %expressions);
-    %gestures = "yes" TAB "no" TAB "applause" TAB "applaud for" TAB "bow" TAB "boo" TAB "busy" TAB "come-here" TAB "cool" TAB "crowd-wave" TAB "doh" TAB "hiFive-initiate" TAB "hiFive-finish" TAB "hug-initiate" TAB "hug-finish" TAB "kiss" TAB "lol" TAB "loser" TAB "not-listening" TAB "o-my-nails" TAB "point" TAB "reauxshambeaux synch" TAB "reaux" TAB "sham" TAB "beaux" TAB "rotfl" TAB "shhh" TAB "sit" TAB "shake-fist-at" TAB "shoo" TAB "shrug" TAB "sleepy" TAB "supermodel-turn" TAB "talk-to-the-hand" TAB "thumbs-up" TAB "tapglass" TAB "thumbs-down" TAB "vomit" TAB "vside" TAB "waiting" TAB "wave" TAB "whew";
-    %this.populateList(%this.lists["Gestures"], %gestures);
-    if ($UserPref::Player::gender $= "f")
-    {
-        %dances = $dancesMap_Lounge_F;
-    }
-    else
-    {
-        %dances = $dancesMap_Lounge_M;
-    }
-    %this.populateListWithPairs(%this.lists["DancesLounge"], %dances);
-    if ($UserPref::Player::gender $= "f")
-    {
-        %dances = $dancesMap_Break_F;
-    }
-    else
-    {
-        %dances = $dancesMap_Break_M;
-    }
-    %this.populateListWithPairs(%this.lists["DancesBreak"], %dances);
-    if ($UserPref::Player::gender $= "f")
-    {
-        %dances = $dancesMap_Goth_F;
-    }
-    else
-    {
-        %dances = $dancesMap_Goth_M;
-    }
-    %this.populateListWithPairs(%this.lists["DancesGoth"], %dances);
-    if ($UserPref::Player::gender $= "f")
-    {
-        %dances = $dancesMap_GoGo_F;
-    }
-    else
-    {
-        %dances = $dancesMap_GoGo_M;
-    }
-    %this.populateListWithPairs(%this.lists["DancesGoGo"], %dances);
-    %this.populateListWithPairs(%this.lists["DancesThrilla"], $dancesMap_Thrilla);
-    %this.populateListWithPairs(%this.lists["DancesHipHop"], $dancesMap_HipHop);
-    %this.populateListWithPairs(%this.lists["DancesJB"], $dancesMap_JB);
+    %key = %i.getKey();
+    EmoteBindingMap;
+    %value = %i.getValue();
+    EmoteBindingMap;
+    %list.put(%value, %this.getMLDisplayForEmote(%key));
+    %i = (1.0 + %i);
+    !(((%size < %i) SPC %key $= ""));
+    %expressions = "angry" @ "\t" @ "confused" @ "\t" @ "cry" @ "\t" @ "embarrassed" @ "\t" @ "flirt" @ "\t" @ "hmm" @ "\t" @ "in-love" @ "\t" @ "lol" @ "\t" @ "rotfl" @ "\t" @ "sad" @ "\t" @ "scared" @ "\t" @ "sleepy" @ "\t" @ "smile" @ "\t" @ "surprised" @ "\t" @ "thinking";
+    (%size < %i);
+    %this.populateList(lists, %expressions);
+    %gestures = "yes" @ "\t" @ "no" @ "\t" @ "applause" @ "\t" @ "applaud for" @ "\t" @ "bow" @ "\t" @ "boo" @ "\t" @ "busy" @ "\t" @ "come-here" @ "\t" @ "cool" @ "\t" @ "crowd-wave" @ "\t" @ "doh" @ "\t" @ "hiFive-initiate" @ "\t" @ "hiFive-finish" @ "\t" @ "hug-initiate" @ "\t" @ "hug-finish" @ "\t" @ "kiss" @ "\t" @ "lol" @ "\t" @ "loser" @ "\t" @ "not-listening" @ "\t" @ "o-my-nails" @ "\t" @ "point" @ "\t" @ "reauxshambeaux synch" @ "\t" @ "reaux" @ "\t" @ "sham" @ "\t" @ "beaux" @ "\t" @ "rotfl" @ "\t" @ "shhh" @ "\t" @ "sit" @ "\t" @ "shake-fist-at" @ "\t" @ "shoo" @ "\t" @ "shrug" @ "\t" @ "sleepy" @ "\t" @ "supermodel-turn" @ "\t" @ "talk-to-the-hand" @ "\t" @ "thumbs-up" @ "\t" @ "tapglass" @ "\t" @ "thumbs-down" @ "\t" @ "vomit" @ "\t" @ "vside" @ "\t" @ "waiting" @ "\t" @ "wave" @ "\t" @ "whew";
+    "Expressions" @ %this;
+    %this.populateList(lists, %gestures);
+    %dances = $dancesMap_Lounge_F;
+    ("Gestures" @ %this SPC $UserPref::Player::gender $= "f");
+    %dances = $dancesMap_Lounge_M;
+    %this.populateListWithPairs(lists, %dances);
+    %dances = $dancesMap_Break_F;
+    ("DancesLounge" @ %this SPC $UserPref::Player::gender $= "f");
+    %dances = $dancesMap_Break_M;
+    %this.populateListWithPairs(lists, %dances);
+    %dances = $dancesMap_Goth_F;
+    ("DancesBreak" @ %this SPC $UserPref::Player::gender $= "f");
+    %dances = $dancesMap_Goth_M;
+    %this.populateListWithPairs(lists, %dances);
+    %dances = $dancesMap_GoGo_F;
+    ("DancesGoth" @ %this SPC $UserPref::Player::gender $= "f");
+    %dances = $dancesMap_GoGo_M;
+    %this.populateListWithPairs(lists, %dances);
+    %this.populateListWithPairs(lists, $dancesMap_Thrilla);
+    %this.populateListWithPairs(lists, $dancesMap_HipHop);
+    %this.populateListWithPairs(lists, $dancesMap_JB);
     %this.setCurListName("Mood");
     %this.putListIntoList("Mood");
     %this.setCurListName("FavoriteActions");
@@ -218,336 +157,166 @@ function EmoteHudList::populateLists(%this)
     %this.putListIntoList("DancesGoth");
     %this.scrollToPos(%startingPos);
     schedulePersist();
-    return ;
-}
-function EmoteHudList::populateList(%this, %list, %emotes)
-{
+};
+function EmoteHudList::populateList(%this, %list, %emotes) {
     %count = getFieldCount(%emotes);
     %i = 0;
-    while (%i < %count)
-    {
-        %field = getField(%emotes, %i);
-        %list.put(100000 + %i, %this.getMLDisplayForEmote(%field));
-        %i = %i + 1;
-    }
-}
-
-function EmoteHudList::populateListWithPairs(%this, %list, %emotePairs)
-{
-    %count = getFieldCount(%emotePairs) / 2;
+    %field = getField(%emotes, %i);
+    (%count < %i);
+    %list.put((%i + 100000.0), %this.getMLDisplayForEmote(%field));
+    %i = (1.0 + %i);
+};
+function EmoteHudList::populateListWithPairs(%this, %list, %emotePairs) {
+    %count = (2.0 / getFieldCount(%emotePairs));
     %i = 0;
-    while (%i < %count)
-    {
-        %field = getField(%emotePairs, 2 * %i);
-        %list.put(100000 + %i, %this.getMLDisplayForEmote(%field));
-        %i = %i + 1;
-    }
-}
-
-function EmoteHudList::reset(%this)
-{
-    if (%this.timer != 0)
-    {
-        cancel(%this.timer);
-        %this.timer = 0;
-    }
-    %this.currentEmote = "";
+    %field = getField(%emotePairs, (%i * 2.0));
+    (%count < %i);
+    %list.put((%i + 100000.0), %this.getMLDisplayForEmote(%field));
+    %i = (1.0 + %i);
+};
+function EmoteHudList::reset(%this) {
+    cancel(timer);
+    timer = %this @ 0 @ %this;
+    (%this != timer);
+    currentEmote = 0.0 @ "" @ %this;
     %this.populateLists();
-    return ;
-}
-function EmoteHudList::setEditMode(%this, %flag)
-{
-    %this.editMode = %flag;
-    if (%this.editMode)
-    {
-        EmoteEditButton.setText("Done Editing");
-    }
-    else
-    {
-        EmoteEditButton.setText("Edit Action Hotkeys");
-    }
+};
+function EmoteHudList::setEditMode(%this, %flag) {
+    editMode = %flag @ %this;
+    "Done Editing".setText();
+    "Edit Action Hotkeys".setText();
     %this.reset();
-    return ;
-}
-function EmoteHudList::toggleEditMode(%this)
-{
-    %this.setEditMode(!%this.editMode);
-    return ;
-}
-function EmoteHudList::getMLDisplayForEmote(%this, %emote)
-{
+};
+function EmoteHudList::toggleEditMode(%this) {
+    %this.setEditMode(!(editMode));
+};
+function EmoteHudList::getMLDisplayForEmote(%this, %emote) {
     %rightStr = "";
-    %binding = EmoteBindingMap.get(%emote);
-    if (%binding $= "")
-    {
-        if (%this.editMode)
-        {
-            %rightStr = "<spush><color:666666aa><linkcolor:666666aa><just:right><a:gamelink bindemote " @ %emote @ ">[bind]</a><just:left><spop>";
-        }
-    }
-    else
-    {
-        if (%this.editMode)
-        {
-            %rightStr = "<spush><color:cccccc><linkcolor:cccccc><just:right><a:gamelink bindemote " @ %emote @ ">[" @ %binding @ "]</a><just:left><spop>";
-        }
-        else
-        {
-            %rightStr = "<spush><color:999999><linkcolor:999999><just:right>[" @ %binding @ "]<just:left><spop>";
-        }
-    }
+    %binding = %emote.get();
+    EmoteBindingMap;
+    %rightStr = %this @ editMode @ "<spush><color:666666aa><linkcolor:666666aa><just:right><a:gamelink bindemote " @ %emote @ ">[bind]</a><just:left><spop>";
+    (%binding $= "");
+    %rightStr = %this @ editMode @ "<spush><color:cccccc><linkcolor:cccccc><just:right><a:gamelink bindemote " @ %emote @ ">[" @ %binding @ "]</a><just:left><spop>";
+    %rightStr = "<spush><color:999999><linkcolor:999999><just:right>[" @ %binding @ "]<just:left><spop>";
     return "    <a:gamelink emote " @ convertWordToAnim(%emote) @ ">" @ %emote @ "</a>" @ %rightStr;
-}
-function EmoteHudList::getMLDisplayForMood(%this, %mood)
-{
+};
+function EmoteHudList::getMLDisplayForMood(%this, %mood) {
     %text = %mood;
-    if (findWord($gMoodAbbreviations, $UserPref::Player::Genre) == findWord($gMoods, %mood))
-    {
-        %text = "<spush><b>-" SPC %mood SPC "-<spop>";
-    }
+    %text = "<spush><b>-" @ " " @ %mood @ " " @ "-<spop>";
+    (findWord($gMoods, %mood) == findWord($gMoodAbbreviations, $UserPref::Player::Genre));
     return "    <a:gamelink set_mood " @ %mood @ ">" @ %text @ "</a>";
-}
-function EmoteHudList::initializeList(%this, %listName)
-{
-    if (!isObject(%this.lists[%listName]))
-    {
-        %this.lists[%listName] = new StringMap();
-    }
-    %this.lists[%listName].clear();
-    return ;
-}
-function EmoteHudList::setCurListName(%this, %listName)
-{
-    %this.curListName = %listName;
-    %this.listAdded[%listName] = 0;
-    return ;
-}
-function EmoteHudList::putListIntoList(%this, %srcList)
-{
-    %list = %this.lists[%srcList];
-    if (!isObject(%list))
-    {
-        log(relations, error, "unknown list" SPC %srcList);
-        return ;
-    }
-    if ((%list.size() > 0) && !(%this.listAdded[%this.curListName]))
-    {
-        %this.listAdded[%this.curListName] = 1;
-        if ($UserPref::emotes::collapsedLists[%this.curListName])
-        {
-            %collapsed = "+";
-        }
-        else
-        {
-            %collapsed = "- ";
-        }
-        %listTitle = $gEmoteListTitles[%this.curListName];
-        %titleLine = "<color:ffffff><linkcolor:ffffff><spush><linkcolor:f5b9ff><b><a:gamelink list " @ %this.curListName @ ">" @ %collapsed @ %listTitle @ "</a><spop>";
-        %this.setText(%this.getText() @ %titleLine @ "<br>");
-    }
-    if (!$UserPref::emotes::collapsedLists[%this.curListName])
-    {
-        %list.forEach("addToEmotesList");
-    }
-    return ;
-}
-function StringMap::addToEmotesList(%this, %key, %value)
-{
-    EmoteHudList.setText(EmoteHudList.getText() @ %value @ "<br>");
-    return ;
-}
-function EmoteHudList::scrollToPos(%this, %pos)
-{
-    %this.getParent().scrollTo(0, 1 - getWord(%pos, 1));
-    return ;
-}
-function EmoteHudList::onURL(%this, %url)
-{
-    if (firstWord(%url) $= "gamelink")
-    {
-        %url = getWords(%url, 1);
-    }
-    if (getWord(%url, 0) $= "set_mood")
-    {
-        setMood(findWord($gMoods, getWord(%url, 1)));
-        EmoteHudList.populateLists();
-    }
-    else
-    {
-        if (getWord(%url, 0) $= "emote")
-        {
-            sendAnimToServer(getWords(%url, 1));
-        }
-        else
-        {
-            if (getWord(%url, 0) $= "list")
-            {
-                %listName = getWords(%url, 1);
-                $UserPref::emotes::collapsedLists[%listName] = !$UserPref::emotes::collapsedLists[%listName];
-                EmoteHudList.populateLists();
-            }
-            else
-            {
-                if (getWord(%url, 0) $= "bindemote")
-                {
-                    %this.currentEmote = getWords(%url, 1);
-                    %this.setText("<linkcolor:ffffff>" @ "Binding <spush><b><color:e553ff>" @ %this.currentEmote @ "<spop>...<br>" @ "<br>" @ "Type a hotkey below or choose one from the list.<br>" @ "<br>");
-                    %bindings = "F08 F09 F10 F11 F12 ctrl1 ctrl2 ctrl3 ctrl4 ctrl5 ctrl6 ctrl7 ctrl8 ctrl9 ctrl0";
-                    %count = getWordCount(%bindings);
-                    %i = 0;
-                    while (%i < %count)
-                    {
-                        %binding = getWord(%bindings, %i);
-                        %emote = %this.getEmoteForBinding(%binding);
-                        %rightStr = "";
-                        %leftStr = "<a:gamelink bindbinding " @ %binding @ ">[" @ %binding @ "]</a>";
-                        if (%emote $= %this.currentEmote)
-                        {
-                            %rightStr = "<just:right><spush><b><color:e553ff>" @ %emote @ "<spop><just:left>";
-                            %leftStr = "[<spush><b><linkcolor:e553ff><linkcolorhl:f5b9ff><a:gamelink cancel>" @ %binding @ "</a><spop>]";
-                        }
-                        else
-                        {
-                            if (!(%emote $= ""))
-                            {
-                                %rightStr = "<just:right>" @ %emote @ "<just:left>";
-                            }
-                        }
-                        %this.setText(%this.getText() @ %leftStr @ %rightStr @ "<br>");
-                        %i = %i + 1;
-                    }
-                    %this.setText(%this.getText() @ "<br>");
-                    %binding = EmoteBindingMap.get(%this.currentEmote);
-                    if (!(%binding $= ""))
-                    {
-                        %this.setText(%this.getText() @ "<a:gamelink unbind " @ %binding @ ">[ Unbind " @ %binding @ " ]</a>  ");
-                    }
-                    %this.setText(%this.getText() @ "<just:right><a:gamelink cancel>[ Cancel ]</a><just:left>");
-                }
-                else
-                {
-                    if (getWord(%url, 0) $= "bindbinding")
-                    {
-                        if (!(%this.currentEmote $= ""))
-                        {
-                            %this.doFunc(getWord(%url, 1));
-                        }
-                        else
-                        {
-                            warn("Tried to bind a key without current emote defined.");
-                        }
-                    }
-                    else
-                    {
-                        if (getWord(%url, 0) $= "unbind")
-                        {
-                            if (!(%this.currentEmote $= ""))
-                            {
-                                %this.rebind(getWord(%url, 1), "");
-                            }
-                            else
-                            {
-                                warn("Tried to unbind a key without current emote defined.");
-                            }
-                        }
-                        else
-                        {
-                            if (getWord(%url, 0) $= "cancel")
-                            {
-                                %this.reset();
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
-    return ;
-}
-function normalizeKey(%key)
-{
+};
+function EmoteHudList::initializeList(%this, %listName) {
+    ignoreCase = StringMap @ new ""() @ 1;
+    0;
+    lists = %listName @ %this @ !(isObject(lists)) @ %listName @ %this;
+    lists.clear();
+};
+function EmoteHudList::setCurListName(%this, %listName) {
+    curListName = %listName @ %this;
+    listAdded = 0 @ %listName @ %this;
+};
+function EmoteHudList::putListIntoList(%this, %srcList) {
+    %list = lists;
+    %srcList @ %this;
+    log("unknown list" @ " " @ %srcList);
+    return error;
+    listAdded = !(listAdded) @ 1 @ %this @ curListName @ %this;
+    %this @ curListName @ %this;
+    %collapsed = "+";
+    %this[%this @ curListName];
+    %collapsed = "- ";
+    $UserPref::emotes::collapsedLists;
+    %listTitle = %this[%this @ curListName];
+    $gEmoteListTitles;
+    %titleLine = (0.0 > %list.size()) @ "<color:ffffff><linkcolor:ffffff><spush><linkcolor:f5b9ff><b><a:gamelink list " @ %this @ curListName @ ">" @ %collapsed @ %listTitle @ "</a><spop>";
+    %this.setText(%this.getText() @ %titleLine @ "<br>");
+    %list.forEach("addToEmotesList");
+};
+function StringMap::addToEmotesList(%this, %key, %value) {
+    EmoteHudList @ EmoteHudList @ getText() @ %value @ "<br>".setText();
+};
+function EmoteHudList::scrollToPos(%this, %pos) {
+    %this.getParent().scrollTo(0, (getWord(%pos, 1) - 1.0));
+};
+function EmoteHudList::onURL(%this, %url) {
+    %url = getWords(%url, 1);
+    (firstWord(%url) $= "gamelink");
+    setMood(findWord($gMoods, getWord(%url, 1)));
+    populateLists();
+    sendAnimToServer(getWords(%url, 1));
+    %listName = getWords(%url, 1);
+    ((EmoteHudList SPC getWord(%url, 0) $= "emote") SPC getWord(%url, 0) $= "list");
+    %listName[$UserPref::emotes::collapsedLists @ %listName] = !(%listName[$UserPref::emotes::collapsedLists @ %listName]);
+    (getWord(%url, 0) $= "set_mood");
+    populateLists();
+    currentEmote = (EmoteHudList SPC getWord(%url, 0) $= "bindemote") @ getWords(%url, 1) @ %this;
+    %this.setText("<linkcolor:ffffff>" @ "Binding <spush><b><color:e553ff>" @ %this @ currentEmote @ "<spop>...<br>" @ "<br>" @ "Type a hotkey below or choose one from the list.<br>" @ "<br>");
+    %bindings = "F08 F09 F10 F11 F12 ctrl1 ctrl2 ctrl3 ctrl4 ctrl5 ctrl6 ctrl7 ctrl8 ctrl9 ctrl0";
+    %count = getWordCount(%bindings);
+    %i = 0;
+    %binding = getWord(%bindings, %i);
+    (%count < %i);
+    %emote = %this.getEmoteForBinding(%binding);
+    %rightStr = "";
+    %leftStr = "<a:gamelink bindbinding " @ %binding @ ">[" @ %binding @ "]</a>";
+    %rightStr = %emote @ (%this $= currentEmote) @ "<just:right><spush><b><color:e553ff>" @ %emote @ "<spop><just:left>";
+    %leftStr = "[<spush><b><linkcolor:e553ff><linkcolorhl:f5b9ff><a:gamelink cancel>" @ %binding @ "</a><spop>]";
+    %rightStr = !((%emote $= "")) @ "<just:right>" @ %emote @ "<just:left>";
+    %this.setText(%this.getText() @ %leftStr @ %rightStr @ "<br>");
+    %i = (1.0 + %i);
+    %this.setText((%count < %i) @ %this.getText() @ "<br>");
+    %binding = currentEmote.get();
+    %this;
+    %this.setText(!((EmoteBindingMap SPC %binding $= "")) @ %this.getText() @ "<a:gamelink unbind " @ %binding @ ">[ Unbind " @ %binding @ " ]</a>  ");
+    %this.setText(%this.getText() @ "<just:right><a:gamelink cancel>[ Cancel ]</a><just:left>");
+    %this.doFunc(getWord(%url, 1));
+    warn("Tried to bind a key without current emote defined.");
+    %this.rebind(getWord(%url, 1), "");
+    warn("Tried to unbind a key without current emote defined.");
+    %this.reset();
+};
+function normalizeKey(%key) {
     %key = strreplace(%key, "-", "");
-    if (%key $= "F8")
-    {
-        %key = "F08";
-    }
-    else
-    {
-        if (%key $= "F9")
-        {
-            %key = "F09";
-        }
-    }
+    %key = "F08";
+    (%key $= "F8");
+    %key = "F09";
+    (%key $= "F9");
     return %key;
-}
-function EmoteHudList::getEmoteForBinding(%this, %binding)
-{
+};
+function EmoteHudList::getEmoteForBinding(%this, %binding) {
     %binding = normalizeKey(%binding);
-    return $UserPref::emotes[$UserPref::Player::gender,%binding];
-}
-function EmoteHudList::setEmoteForBinding(%this, %binding, %emote)
-{
+    return %binding[$UserPref::emotes TAB $UserPref::Player::gender @ %binding];
+};
+function EmoteHudList::setEmoteForBinding(%this, %binding, %emote) {
     %binding = normalizeKey(%binding);
-    $UserPref::emotes[$UserPref::Player::gender,%binding] = %emote ;
-    return ;
-}
-function EmoteHudList::rebind(%this, %binding, %emote)
-{
+    %binding[%emote @ $UserPref::emotes TAB $UserPref::Player::gender @ %binding] = ;
+};
+function EmoteHudList::rebind(%this, %binding, %emote) {
     %binding2 = normalizeKey(%binding);
-    if (%binding2 $= EmoteBindingMap.get(%emote))
-    {
-        %this.reset();
-        return ;
-    }
-    %this.setEmoteForBinding(EmoteBindingMap.get(%emote), "");
-    EmoteBindingMap.remove($UserPref::emotes[$UserPref::Player::gender,%binding2]);
-    $UserPref::emotes[$UserPref::Player::gender,%binding2] = %emote ;
-    if (!(%emote $= ""))
-    {
-        EmoteBindingMap.put(%emote, %binding2);
-    }
-    if (!(%emote $= ""))
-    {
-        %this.setText("<spush><b><color:e553ff>[" @ %binding @ "]<spop> now maps to <spush><b><color:e553ff>" @ %emote @ "<spop>");
-    }
-    else
-    {
-        %this.setText("Removed binding for <spush><b><color:e553ff>[" @ %binding2 @ "]<spop>");
-    }
-    %this.timer = %this.schedule(1500, "reset");
-    return ;
-}
-function EmoteHudList::doFunc(%this, %func)
-{
-    if (!(%this.currentEmote $= ""))
-    {
-        %this.rebind(%func, %this.currentEmote);
-    }
-    else
-    {
-        %anim = convertWordToAnim(%this.getEmoteForBinding(%func));
-        if (%anim $= "")
-        {
-            error(getScopeName() SPC "can\'t find anim for" SPC %func);
-        }
-        else
-        {
-            sendAnimToServer(%anim);
-        }
-    }
-    return ;
-}
+    %this.reset();
+    return (EmoteBindingMap $= %emote.get());
+    %this.setEmoteForBinding(%emote.get(), "");
+    %binding2[EmoteBindingMap @ $UserPref::emotes TAB $UserPref::Player::gender @ %binding2].remove();
+    %binding2[EmoteBindingMap @ %emote @ $UserPref::emotes TAB $UserPref::Player::gender @ %binding2] = ;
+    %emote.put(%binding2);
+    %this.setText(!((%emote $= "")) @ !((EmoteBindingMap SPC %emote $= "")) @ "<spush><b><color:e553ff>[" @ %binding @ "]<spop> now maps to <spush><b><color:e553ff>" @ %emote @ "<spop>");
+    %this.setText("Removed binding for <spush><b><color:e553ff>[" @ %binding2 @ "]<spop>");
+    timer = %this.schedule(1500, "reset") @ %this;
+};
+function EmoteHudList::doFunc(%this, %func) {
+    %this.rebind(%func, currentEmote);
+    %anim = convertWordToAnim(%this.getEmoteForBinding(%func));
+    %this;
+    error(getScopeName() @ " " @ "can't find anim for" @ " " @ %func);
+    sendAnimToServer(%anim);
+};
 $gMoods = "Confident Relaxed Upbeat Blue Fabulous";
 $gMoodAbbreviations = "h i p b x";
-function setMood(%mood)
-{
+function setMood(%mood) {
     %moodName = getWord($gMoods, %mood);
-    if (%moodName $= "")
-    {
-        return ;
-    }
+    return (%moodName $= "");
     echo("Setting mood to " @ %moodName);
     $UserPref::Player::Genre = getWord($gMoodAbbreviations, %mood);
     commandToServer('setGenre', $UserPref::Player::Genre);
-    return ;
-}
+};

@@ -1,550 +1,264 @@
 $TESTMissionGroupIntegrityAlreadyRun = 0;
 $gPrevNumMissing = 0;
-function PlayGui::onWake(%this)
-{
+function PlayGui::onWake(%this) {
     %this.Initialize();
-    GuiTracker.updateLocation(%this);
+    %this.updateLocation();
     $enableDirectInput = 1;
+    GuiTracker;
     activateDirectInput();
-    moveMap.push();
-    functionMap.push();
+    push();
+    push();
     ShowAllMessageBoxes();
-    AIMConvManager.wakeUp();
-    BuddyHudWin.wakeUp();
-    GameMgrHudWin.wakeUp();
-    OptionsPanel.wakeUp();
-    EmoteHudWin.wakeUp();
-    WindowManager.wakeUp();
-    AccountBalanceHud.Initialize();
-    AccountBalanceHud.open();
-    TheShapeNameHud.rolesVIP = roles::getRolesMaskFromStrings("staff moderator celeb");
-    TheShapeNameHud.rolesCeleb = roles::getRolesMaskFromStrings("celeb");
+    wakeUp();
+    wakeUp();
+    wakeUp();
+    wakeUp();
+    wakeUp();
+    wakeUp();
+    Initialize();
+    open();
+    rolesVIP = AccountBalanceHud @ roles::getRolesMaskFromStrings("staff moderator celeb") @ TheShapeNameHud;
+    AccountBalanceHud;
+    rolesCeleb = WindowManager @ roles::getRolesMaskFromStrings("celeb") @ TheShapeNameHud;
+    EmoteHudWin;
     %this.schedule(100, "resetFirstResponder");
-    if ($RegisterObjectFailFlag == 1)
-    {
-        schedule(0, 0, "MessageBoxOK", "DATABLOCK REGISTRATION OF OBJECT FAILED", "Do not continue editing this mission because you are missing datablocks and will destroy other people\'s work if you continue, but you probably just need to do an update of your working area.\n\nSearch the console.log for \'Register object failed\'." @ "\n" @ $gRegisterObjectFailList, "");
-    }
-    if ((getNumMissingTextures() > $gPrevNumMissing) && $ETS::devMode)
-    {
-        schedule(0, 0, "MessageBoxOK", "MISSING TEXTURES", getNumMissingTextures() SPC "textures were not found so far.\n\nSearch the console.log for \'missing texture:\'.", "");
-        $gPrevNumMissing = getNumMissingTextures();
-    }
+    schedule(0, 0, "MessageBoxOK", "DATABLOCK REGISTRATION OF OBJECT FAILED", OptionsPanel @ (1.0 == $RegisterObjectFailFlag) @ "Do not continue editing this mission because you are missing datablocks and will destroy other people's work if you continue, but you probably just need to do an update of your working area.\n\nSearch the console.log for 'Register object failed'." @ "\n" @ $gRegisterObjectFailList, "");
+    schedule(0, 0, "MessageBoxOK", "MISSING TEXTURES", getNumMissingTextures() @ " " @ "textures were not found so far.\n\nSearch the console.log for 'missing texture:'.", "");
+    $gPrevNumMissing = getNumMissingTextures();
+    $ETS::devMode;
     displayStompedObjectNameErrors();
-    if (($StandAlone && $ETS::devMode) && !$TESTMissionGroupIntegrityAlreadyRun)
-    {
-        $TESTMissionGroupIntegrityAlreadyRun = 1;
-        %errorCount = RunTestCase("TEST_MISSIONGROUPINTEGRITY", "WARNING: About that mission file you just loaded...");
-    }
-    return ;
-}
-function PlayGui::Initialize(%this)
-{
-    if (!%this.initialized)
-    {
-        %this.initialized = 1;
-        %this.newContextMenu("ETSWhatsThisMenu");
-        %this.newContextMenu("PlayerContextMenu");
-        %this.newContextMenu("LinkContextMenu");
-        %this.newContextMenu("FurnitureItemContextMenu");
-    }
-    return ;
-}
-function PlayGui::canPlayerSeeWorld(%this)
-{
-    if (!%this.isVisible())
-    {
-        return 0;
-    }
-    if (geTGF.isVisible())
-    {
-        return 0;
-    }
-    if (ClosetGui.isVisible())
-    {
-        return 0;
-    }
-    if (WorldMap.isVisible())
-    {
-        return 0;
-    }
+    $TESTMissionGroupIntegrityAlreadyRun = 1;
+    !($TESTMissionGroupIntegrityAlreadyRun);
+    %errorCount = RunTestCase("TEST_MISSIONGROUPINTEGRITY", "WARNING: About that mission file you just loaded...");
+    $ETS::devMode;
+};
+function PlayGui::Initialize(%this) {
+    initialized = !(initialized) @ 1 @ %this;
+    %this;
+    %this.newContextMenu("ETSWhatsThisMenu");
+    %this.newContextMenu("PlayerContextMenu");
+    %this.newContextMenu("LinkContextMenu");
+    %this.newContextMenu("FurnitureItemContextMenu");
+};
+function PlayGui::canPlayerSeeWorld(%this) {
+    return 0;
+    return 0;
+    return 0;
+    return 0;
     return 1;
-}
-function PlayGui::onSleep(%this)
-{
-    functionMap.pop();
-    moveMap.pop();
-    return ;
-}
-function PlayGui::onCanvasResize(%this)
-{
-    if (isObject(ButtonBar))
-    {
-        ButtonBar.update();
-    }
-    if (isObject(MusicHud))
-    {
-        MusicHud.update();
-    }
-    if (isObject(WindowManager))
-    {
-        WindowManager.update();
-    }
-    if (isObject(ConvBubScroll))
-    {
-        ConvBubScroll.scrollToBottom();
-    }
-    if (isObject(PlayerContextMenu))
-    {
-        PlayerContextMenu.forceClose();
-    }
-    if (isObject(MLScrollInspectPanel))
-    {
-        MLScrollInspectPanel.updateSize();
-    }
-    return ;
-}
-function PlayGui::resetFirstResponder(%this)
-{
-    if (MessageHud.isVisible())
-    {
-        MessageHudEdit.makeFirstResponder(1);
-    }
-    else
-    {
-        TheShapeNameHud.makeFirstResponder(1);
-    }
-    return ;
-}
-function PlayGui::onMouseUp(%this, %obj, %pt, %worldVec)
-{
+};
+function PlayGui::onSleep(%this) {
+    pop();
+    pop();
+};
+function PlayGui::onCanvasResize(%this) {
+    update();
+    update();
+    update();
+    scrollToBottom();
+    forceClose();
+    updateSize();
+};
+function PlayGui::resetFirstResponder(%this) {
+    1.makeFirstResponder();
+    1.makeFirstResponder();
+};
+function PlayGui::onMouseUp(%this, %obj, %pt, %worldVec) {
     %power = 1;
     onMouseUpThrowBall(%power, %worldVec);
-    return ;
-}
-function PlayGui::onMouseDownObj(%this, %obj, %pt, %worldVec)
-{
-    if ($ETS::devMode && $DevPref::Debug::PrintClickedOn)
-    {
-        error(getScopeName() SPC "-" SPC getDebugString(%obj));
-    }
-    if (isObject(adminGui))
-    {
-        adminGui.tryTarget(%obj);
-    }
-    if (isObject(animatorPanel))
-    {
-        animatorPanel.tryTarget(%obj);
-    }
-    if (isObject(salonChairControlGui))
-    {
-        salonChairControlGui.tryTarget(%obj);
-    }
-    if (!isObject(%obj))
-    {
-        onLeftClickSwatch(0);
-        return ;
-    }
+};
+function PlayGui::onMouseDownObj(%this, %obj, %pt, %worldVec) {
+    error(getScopeName() @ " " @ "-" @ " " @ getDebugString(%obj));
+    %obj.tryTarget();
+    %obj.tryTarget();
+    %obj.tryTarget();
+    onLeftClickSwatch(0);
+    return !(isObject(%obj));
     %type = %obj.getType();
-    if ($gSwatchPaintingModeOn)
-    {
-        onLeftClickSwatch(%obj);
-    }
-    else
-    {
-        if (%type & $TypeMasks::AdvertObjectType)
-        {
-            %this.onAdvertClick(%obj, %pt);
-        }
-        else
-        {
-            if (%type & $TypeMasks::UsableObjectType)
-            {
-                %this.onUsableObjectClick(%obj, %pt);
-            }
-            else
-            {
-                if (%type & $TypeMasks::PlayerObjectType)
-                {
-                    onLeftClickPlayerName(%obj.getShapeName(), %obj);
-                }
-                else
-                {
-                    echoDebug("got a clicked object but didn\'t find a proper typemask:" SPC %type SPC getDebugString(%obj));
-                }
-            }
-        }
-    }
-    return ;
-}
-function PlayGui::onRightMouseDown(%this, %obj, %pt)
-{
+    onLeftClickSwatch(%obj);
+    %this.onAdvertClick(%obj, %pt);
+    %this.onUsableObjectClick(%obj, %pt);
+    onLeftClickPlayerName(%obj.getShapeName(), %obj);
+    echoDebug("got a clicked object but didn't find a proper typemask:" @ " " @ %type @ " " @ getDebugString(%obj));
+};
+function PlayGui::onRightMouseDown(%this, %obj, %pt) {
     %type = 0;
-    if (isObject(%obj))
-    {
-        %type = %obj.getType();
-    }
-    if (%type & $TypeMasks::InteriorObjectType)
-    {
-        onRightClickDownInterior(%obj);
-    }
-    return ;
-}
-function PlayGui::onRightMouseUp(%this, %obj)
-{
+    %type = %obj.getType();
+    isObject(%obj);
+    onRightClickDownInterior(%obj);
+};
+function PlayGui::onRightMouseUp(%this, %obj) {
     %type = 0;
-    if (isObject(%obj))
-    {
-        %type = %obj.getType();
-    }
-    if (%type & $TypeMasks::AdvertObjectType)
-    {
-        %this.onAdvertClick(%obj, %pt);
-    }
-    else
-    {
-        if (%type & $TypeMasks::UsableObjectType)
-        {
-            %this.onUsableObjectRightClick(%obj);
-        }
-        else
-        {
-            if (%type & $TypeMasks::PlayerObjectType)
-            {
-                %this.onRMBPlayer(%obj);
-            }
-            else
-            {
-                if (%type & $TypeMasks::InteriorObjectType)
-                {
-                    onRightClickUpInterior(%obj);
-                }
-            }
-        }
-    }
-    return ;
-}
-function PlayGui::onUsableObjectClick(%this, %obj, %pt)
-{
+    %type = %obj.getType();
+    isObject(%obj);
+    %this.onAdvertClick(%obj, %pt);
+    %this.onUsableObjectRightClick(%obj);
+    %this.onRMBPlayer(%obj);
+    onRightClickUpInterior(%obj);
+};
+function PlayGui::onUsableObjectClick(%this, %obj, %pt) {
     setIdle(0);
     %nuggetId = %obj.getInventoryNuggetID();
-    if (%obj.seatDisplay)
-    {
-        ClientSittingSystemOnClick(%obj);
-    }
-    else
-    {
-        if (%nuggetId >= 0)
-        {
-            if ($CS_EditingCustomSpace && !(($Keyboard::modifierKeys & $EventModifier::CTRL)))
-            {
-                CSFurnitureMover.SelectNuggetObject(%obj);
-            }
-            else
-            {
-                if (checkInteractOK(%obj))
-                {
-                    if (%obj.hasMethod("onUse"))
-                    {
-                        %obj.onUse($player);
-                    }
-                    commandToServer('usableObjectClick', %obj.getGhostID());
-                }
-            }
-        }
-        else
-        {
-            if (checkInteractOK(%obj))
-            {
-                if (%obj.hasMethod("onUse"))
-                {
-                    %obj.onUse($player);
-                }
-                commandToServer('usableObjectClick', %obj.getGhostID());
-            }
-        }
-    }
-    return ;
-}
-function PlayGui::onUsableObjectRightClick(%this, %obj)
-{
+    ClientSittingSystemOnClick(%obj);
+    %obj.SelectNuggetObject();
+    %obj.onUse($player);
+    commandToServer('usableObjectClick', %obj.getGhostID());
+    %obj.onUse($player);
+    commandToServer('usableObjectClick', %obj.getGhostID());
+};
+function PlayGui::onUsableObjectRightClick(%this, %obj) {
     %nuggetId = %obj.getInventoryNuggetID();
-    if ((%nuggetId >= 0) && $CS_EditingCustomSpace)
-    {
-        FurnitureItemContextMenu.initWithObject(%obj);
-        FurnitureItemContextMenu.showAtCursor();
-    }
-    else
-    {
-        if (%obj != 0)
-        {
-            if (checkInteractOK(%obj) && %obj.hasMethod("onRightUse"))
-            {
-                %obj.onRightUse();
-            }
-        }
-    }
-    return ;
-}
+    %obj.initWithObject();
+    showAtCursor();
+    %obj.onRightUse();
+};
 $gPlayGuiLastMouseOver = 0;
-function PlayGui::onMouseOver(%this, %obj)
-{
-    if (isObject($TSControl::objSelLastMouseOver))
-    {
-        $TSControl::objSelLastMouseOver.SetHighlighted(0);
-    }
-    Canvas.setCursor(ETSDefaultCursor);
-    if (%obj == 0)
-    {
-        onMouseOverSwatchObj(0);
-        return ;
-    }
-    if ($gSwatchPaintingModeOn)
-    {
-        tryOnMouseOverSwatches(%obj);
-    }
-    else
-    {
-        %highlightOk = $CS_EditingCustomSpace || checkInteractOK(%obj);
-        if (%highlightOk)
-        {
-            %obj.SetHighlighted(1);
-            Canvas.setCursor(ETSHandCursor);
-            %type = %obj.getType();
-            %datablock = %obj.hasMethod("getDataBlock") ? %obj.getDataBlock() : 0;
-            if (((((1 && %obj.isGhost()) && (%type & $TypeMasks::UsableObjectType)) && isObject(%datablock)) && !((%datablock.playerAnimReach $= ""))) && !$CS_EditingCustomSpace)
-            {
-                commandToServer('UsableObjectReach', %obj.getGhostID());
-            }
-        }
-    }
-    return ;
-}
-function checkInteractOK(%obj)
-{
-    %activateDistance = 0;
+function PlayGui::onMouseOver(%this, %obj) {
+    $TSControl::objSelLastMouseOver.SetHighlighted(0);
+    setCursor();
+    onMouseOverSwatchObj(0);
+    return (0.0 == %obj);
+    tryOnMouseOverSwatches(%obj);
+    %highlightOk = checkInteractOK(%obj);
+    $CS_EditingCustomSpace;
+    %obj.SetHighlighted(1);
+    setCursor();
+    %type = %obj.getType();
+    ETSHandCursor;
+    %datablock = 0;
+    %obj.getDataBlock();
+    commandToServer('UsableObjectReach', %obj.getGhostID());
+};
+function checkInteractOK(%obj) {
+    %activateDistance = 0.0;
     %interactOK = 1;
-    if (%obj.getType() & $TypeMasks::InteriorObjectType)
-    {
-        return 0;
-    }
-    if (%obj.hasMethod("getActivationRange"))
-    {
-        %activateDistance = %obj.getActivationRange();
-    }
-    if ((%activateDistance == 0) && %obj.hasMethod("getDataBlock"))
-    {
-        %datablock = %obj.getDataBlock();
-        %activateDistance = %datablock.activateRange;
-    }
-    if (%activateDistance > 0)
-    {
-        %rangeVal = %activateDistance * %activateDistance;
-        %distVal = VectorDistSquared($player.getPosition(), %obj.getPosition());
-        if (%rangeVal < %distVal)
-        {
-            %interactOK = 0;
-        }
-    }
+    return 0;
+    %activateDistance = %obj.getActivationRange();
+    %obj.hasMethod("getActivationRange");
+    %datablock = %obj.getDataBlock();
+    %obj.hasMethod("getDataBlock");
+    %activateDistance = activateRange;
+    %datablock;
+    %rangeVal = (%activateDistance * %activateDistance);
+    (0.0 > %activateDistance);
+    %distVal = VectorDistSquared($player.getPosition(), %obj.getPosition());
+    (0.0 == %activateDistance);
+    %interactOK = 0;
+    (%distVal < %rangeVal);
     return %interactOK;
-}
-function GuiControl::getTopWindow(%this)
-{
+};
+function GuiControl::getTopWindow(%this) {
     return %this.getTopNthWindow(0);
-}
-function GuiControl::getTopNthWindow(%this, %ndex)
-{
+};
+function GuiControl::getTopNthWindow(%this, %ndex) {
     %count = %this.getCount();
     %num = 0;
-    %idx = %count - 1;
-    while (%idx >= 0)
-    {
-        %obj = %this.getObject(%idx);
-        if ((%obj.profile.canKeyFocus && %obj.isVisible()) && (%obj.getId() != TheShapeNameHud.getId()))
-        {
-            if (%num >= %ndex)
-            {
-                return %obj;
-            }
-            else
-            {
-                %num = %num + 1;
-            }
-        }
-        %idx = %idx - 1;
-    }
-    return -1;
-}
-function GuiControl::focusTopWindow(%this)
-{
+    %idx = (1.0 - %count);
+    %obj = %this.getObject(%idx);
+    (0.0 >= %idx);
+    return %obj;
+    %num = (1.0 + %num);
+    %idx = (1.0 - %idx);
+    return -(1.0);
+};
+function GuiControl::focusTopWindow(%this) {
     %obj = %this.getTopWindow();
-    if (isObject(%obj))
-    {
-        %this.focusAndRaise(%obj);
-    }
-    else
-    {
-        TheShapeNameHud.makeFirstResponder(1);
-    }
-    return ;
-}
-function GuiControl::closeTopClosableWindow(%this)
-{
+    %this.focusAndRaise(%obj);
+    1.makeFirstResponder();
+};
+function GuiControl::closeTopClosableWindow(%this) {
     %closedOne = 0;
     %n = 0;
-    while (!%closedOne)
-    {
-        %obj = %this.getTopNthWindow(%n);
-        if (!isObject(%obj))
-        {
-            continue;
-        }
-        if (!(%obj.closeCommand $= ""))
-        {
-            eval("%closedOne =" SPC %obj.closeCommand);
-        }
-        else
-        {
-            %closedOne = %obj.close();
-        }
-        %n = %n + 1;
-    }
+    %obj = %this.getTopNthWindow(%n);
+    !(%closedOne);
+    eval(%obj @ closeCommand);
+    %closedOne = %obj.close();
+    "%closedOne =" @ " ";
+    %n = (1.0 + %n);
+    !((%obj SPC closeCommand $= ""));
     %this.focusTopWindow();
     return %closedOne;
-}
-function GuiControl::dumpTopWindows(%this)
-{
+};
+function GuiControl::dumpTopWindows(%this) {
     %n = 0;
-    while (1)
-    {
-        %obj = %this.getTopNthWindow(%n);
-        if (!isObject(%obj))
-        {
-            continue;
-        }
-        echo(getDebugString(%obj));
-        %n = %n + 1;
-    }
-}
-
-function GuiControl::showRaiseOrHide(%this, %ctrl)
-{
-    if (%ctrl.isVisible())
-    {
-        %top = %this.getTopWindow();
-        if (%top.getId() == %ctrl.getId())
-        {
-            %ctrl.close();
-        }
-        else
-        {
-            %this.focusAndRaise(%ctrl);
-        }
-    }
-    else
-    {
-        %ctrl.open();
-    }
-    return ;
-}
-function GuiControl::showRaise(%this, %ctrl)
-{
-    if (%ctrl.isVisible())
-    {
-        %top = %this.getTopWindow();
-        if (%top.getId() != %ctrl.getId())
-        {
-            %this.focusAndRaise(%ctrl);
-        }
-    }
-    else
-    {
-        %ctrl.open();
-    }
-    return ;
-}
-function GuiControl::focusAndRaise(%this, %ctrl)
-{
-    Canvas.cursorOn();
+    %obj = %this.getTopNthWindow(%n);
+    1;
+    echo(getDebugString(%obj));
+    %n = (1.0 + %n);
+    !(isObject(%obj));
+};
+function GuiControl::showRaiseOrHide(%this, %ctrl) {
+    %top = %this.getTopWindow();
+    %ctrl.isVisible();
+    %ctrl.close();
+    %this.focusAndRaise(%ctrl);
+    %ctrl.open();
+};
+function GuiControl::showRaise(%this, %ctrl) {
+    %top = %this.getTopWindow();
+    %ctrl.isVisible();
+    %this.focusAndRaise(%ctrl);
+    %ctrl.open();
+};
+function GuiControl::focusAndRaise(%this, %ctrl) {
+    cursorOn();
     %this.pushToBack(%ctrl);
     %ctrl.makeFirstResponder(1);
-    return ;
-}
-function GuiControl::ensureAdded(%this, %panel)
-{
-    if (%panel.getParent() == %this.getId())
-    {
-        return ;
-    }
+};
+function GuiControl::ensureAdded(%this, %panel) {
+    return (%this.getId() == %panel.getParent());
     %this.add(%panel);
     %panel.setVisible(0);
-    return ;
-}
-function checkDistance(%a, %b)
-{
+};
+function checkDistance(%a, %b) {
     %dist = 0;
-    if (isObject(%a) && isObject(%b))
-    {
-        %apos = %a.getPosition();
-        %bpos = %b.getPosition();
-        %ax = getWord(%apos, 0);
-        %ay = getWord(%apos, 1);
-        %bx = getWord(%bpos, 0);
-        %by = getWord(%bpos, 1);
-        %distx = %bx - %ax;
-        %disty = %by - %ay;
-        %dist = (%distx * %distx) + (%disty * %disty);
-    }
+    %apos = %a.getPosition();
+    isObject(%b);
+    %bpos = %b.getPosition();
+    isObject(%a);
+    %ax = getWord(%apos, 0);
+    %ay = getWord(%apos, 1);
+    %bx = getWord(%bpos, 0);
+    %by = getWord(%bpos, 1);
+    %distx = (%ax - %bx);
+    %disty = (%ay - %by);
+    %dist = ((%disty * %disty) + (%distx * %distx));
     return %dist;
-}
-function onBuddyStateChange(%index)
-{
-    BuddyHudWin.refreshAIMBuddyList();
+};
+function onBuddyStateChange(%index) {
+    refreshAIMBuddyList();
     %buddyName = aimGetBuddyName(%index);
+    BuddyHudWin;
     %buddyState = aimGetBuddyState(%index);
-    AIMConvManager.buddyStateChanged(stripUnprintables(%buddyName), %buddyState);
-    return ;
-}
-function SitHud::sitDown(%this)
-{
+    stripUnprintables(%buddyName).buddyStateChanged(%buddyState);
+};
+function SitHud::sitDown(%this) {
     commandToServer('SitDown');
-    return ;
-}
-function SitHud::standUp(%this)
-{
+};
+function SitHud::standUp(%this) {
     commandToServer('StandUp');
-    return ;
-}
-function clientCmdShowSitHud(%val, %sitOrStand)
-{
-    SitButton.setVisible(%sitOrStand);
-    StandButton.setVisible(!%sitOrStand);
-    SitHud.setVisible(%val);
-    return ;
-}
-function clientCmdShowSitButton(%sitOrStand)
-{
-    SitButton.setVisible(%sitOrStand);
-    StandButton.setVisible(!%sitOrStand);
-    return ;
-}
-function BitmapFullScreenFlasher::FlashImage(%this, %bitmapName, %fadeInTime, %waitTime, %fadeOutTime)
-{
+};
+function clientCmdShowSitHud(%val, %sitOrStand) {
+    %sitOrStand.setVisible();
+    !(%sitOrStand).setVisible();
+    %val.setVisible();
+};
+function clientCmdShowSitButton(%sitOrStand) {
+    %sitOrStand.setVisible();
+    !(%sitOrStand).setVisible();
+};
+function BitmapFullScreenFlasher::FlashImage(%this, %bitmapName, %fadeInTime, %waitTime, %fadeOutTime) {
     %this.setBitmap(%bitmapName);
     %this.setVisible(1);
-    %this.fadeInTime = %fadeInTime;
-    %this.waitTime = %waitTime;
-    %this.fadeOutTime = %fadeOutTime;
-    %this.fadeoutColor = "0 0 0 0";
+    fadeInTime = %fadeInTime @ %this;
+    waitTime = %waitTime @ %this;
+    fadeOutTime = %fadeOutTime @ %this;
+    fadeoutColor = "0 0 0 0" @ %this;
     %this.reset();
-    return ;
-}
-function BitmapFullScreenFlasher::onFinishedFading(%this)
-{
+};
+function BitmapFullScreenFlasher::onFinishedFading(%this) {
     %this.setVisible(0);
-    return ;
-}
-function clientCmdFlashImage(%imageName, %fadeInTime, %waitTime, %fadeOutTime)
-{
-    BitmapFullScreenFlasher.FlashImage(%imageName, %fadeInTime, %waitTime, %fadeOutTime);
-    return ;
-}
+};
+function clientCmdFlashImage(%imageName, %fadeInTime, %waitTime, %fadeOutTime) {
+    %imageName.FlashImage(%fadeInTime, %waitTime, %fadeOutTime);
+};

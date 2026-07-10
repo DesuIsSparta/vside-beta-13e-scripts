@@ -1,251 +1,172 @@
-$gAdminActionDefaultMessages["Boot"] = "You have been booted by staff.";
-$gAdminActionDefaultMessages["BootQuiet"] = "You have been courteously booted by staff.";
-$gAdminActionDefaultMessages["Ban"] = "You have been suspended by staff.";
-$gAdminActionDefaultMessages["Message"] = "";
-$gAdminActionDefaultMessages["Summon"] = "You have been teleported!";
-$gAdminActionDefaultMessages["Respawn"] = "You have been teleported away!";
-$gAdminActionDefaultMessages["Throw Voice"] = "";
-function adminActionPopup::onSelect(%this, %unused, %text)
-{
+function adminActionPopup::onSelect(%this, %unused, %text) {
     selectAdminAction(%text);
-    return ;
-}
-function selectAdminAction(%text)
-{
-    adminActionPopup.setText(%text);
-    adminGuiEditMessage.setValue($gAdminActionDefaultMessages[%text]);
-    adminGuiButtonDoIt.setVisible(1);
-    adminGuiButtonConfirm.setVisible(0);
-    adminGuiButtonCancel.setVisible(0);
-    %isBanCommand = %text $= "Ban";
-    adminGuiInternalMessage.setVisible(%isBanCommand);
-    adminGuiEditInternalMessage.setVisible(%isBanCommand);
-    adminBanUserName.setValue(0);
-    adminBanUserName.setVisible(%isBanCommand);
-    adminGuiDuration.setVisible(%isBanCommand);
-    adminGuiEditDuration.setVisible(%isBanCommand);
-    return ;
-}
-function toggleAdminDialog(%action, %target)
-{
-    if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic"))
-    {
-        return ;
-    }
-    if (!isDefined("%action"))
-    {
-        %action = "";
-    }
-    if (!isDefined("%target"))
-    {
-        %target = "";
-    }
-    adminGui.defaultAction = %action;
-    adminGui.defaultTarget = %target;
-    if (!((%action $= "")) && !((%target $= "")))
-    {
-        adminGui.open();
-    }
-    else
-    {
-        toggleVisibleState(adminGui);
-    }
-    return ;
-}
-function adminGui::open(%this)
-{
-    Canvas.pushDialog(%this, 0);
+};
+function selectAdminAction(%text) {
+    %text.setText();
+    %text[$gAdminActionDefaultMessages @ %text].setValue();
+    1.setVisible();
+    0.setVisible();
+    0.setVisible();
+    %isBanCommand = (adminGuiButtonCancel SPC %text $= "Ban");
+    adminGuiButtonConfirm;
+    %isBanCommand.setVisible();
+    %isBanCommand.setVisible();
+    0.setValue();
+    %isBanCommand.setVisible();
+    %isBanCommand.setVisible();
+    %isBanCommand.setVisible();
+};
+function toggleAdminDialog(%action, %target) {
+    return !($player.rolesPermissionCheckNoWarn("manageUsersBasic"));
+    %action = "";
+    !(isDefined("%action"));
+    %target = "";
+    !(isDefined("%target"));
+    defaultAction = %action @ adminGui;
+    defaultTarget = %target @ adminGui;
+    open();
+    toggleVisibleState();
+};
+function adminGui::open(%this) {
+    %this.pushDialog(0);
     %this.setVisible(1);
-    adminActionPopup.onSelect(0, adminActionPopup.getText());
-    adminGuiEditMessage.makeFirstResponder(1);
-    adminGuiEditMessage.selectAll();
+    0.onSelect(getText());
+    1.makeFirstResponder();
+    selectAll();
     %this.initMenu();
-    if (!(%this.defaultAction $= ""))
-    {
-        selectAdminAction(%this.defaultAction);
-    }
+    selectAdminAction(defaultAction);
     %this.onRefreshTargetsList();
-    return ;
-}
-function adminGui::close(%this, %unused)
-{
-    Canvas.popDialog(%this);
+};
+function adminGui::close(%this, %unused) {
+    %this.popDialog();
     %this.setVisible(0);
-    return ;
-}
-function adminGui::initMenu(%this, %unused)
-{
-    %prevItem = adminActionPopup.getText();
-    if (%prevItem $= "")
-    {
-        %prevItem = "Message";
-    }
-    adminActionPopup.clear();
+};
+function adminGui::initMenu(%this, %unused) {
+    %prevItem = getText();
+    adminActionPopup;
+    %prevItem = "Message";
+    (%prevItem $= "");
+    clear();
     %grey = "0 0 0 128";
-    adminActionPopup.addScheme(1, %grey, %grey, %grey);
+    adminActionPopup;
+    1.addScheme(%grey, %grey, %grey);
     %n = 0;
+    adminActionPopup;
     %disabled = 0;
     %itemText = "Message";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Boot";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "BootQuiet";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Ban";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Fly To";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Track";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Snoop Toggle";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Teleport To";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Respawn";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Summon";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
     %itemText = "Throw Voice";
-    adminActionPopup.add(%itemText, %n = %n + 1, %disabled);
-    adminActionPopup.setText(%prevItem);
-    return ;
-}
-function adminGui::tryTarget(%this, %shape)
-{
-    if (!%this.isVisible())
-    {
-        return ;
-    }
-    if (adminGuiButtonConfirm.isVisible())
-    {
-        return ;
-    }
+    %n = (1.0 + %n);
+    %itemText.add(adminActionPopup, %disabled);
+    %prevItem.setText();
+};
+function adminGui::tryTarget(%this, %shape) {
+    return !(%this.isVisible());
+    return isVisible();
     %name = admin::getTargetName(%shape);
-    if (isObject(%shape))
-    {
-        %classname = admin::getFormattedClassName(%shape.getClassName());
-    }
-    else
-    {
-        %classname = admin::getFormattedClassName("special");
-    }
+    %classname = admin::getFormattedClassName(%shape.getClassName());
+    isObject(%shape);
+    %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
-    adminTargetsPopup.setText(%targetName);
-    adminGuiButtonDoIt.setVisible(1);
-    adminGuiButtonConfirm.setVisible(0);
-    adminGuiButtonCancel.setVisible(0);
-    return ;
-}
-function adminGui::onAction(%this)
-{
-    adminGuiButtonDoIt.setVisible(0);
-    adminGuiButtonConfirm.setText("confirm" SPC adminActionPopup.getText() @ ":" SPC adminTargetsPopup.getText());
-    adminGuiButtonConfirm.setVisible(1);
-    adminGuiButtonCancel.setVisible(1);
-    return ;
-}
-function adminGui::onCancel(%this)
-{
-    adminGuiButtonDoIt.setVisible(1);
-    adminGuiButtonConfirm.setVisible(0);
-    adminGuiButtonCancel.setVisible(0);
-    return ;
-}
-function adminGui::onConfirm(%this)
-{
-    adminGuiButtonDoIt.setVisible(1);
-    adminGuiButtonConfirm.setVisible(0);
-    adminGuiButtonCancel.setVisible(0);
-    %message = adminGuiEditMessage.getValue();
-    %action = adminActionPopup.getText();
-    %banUser = adminBanUserName.getValue();
-    %duration = adminGuiEditDuration.getValue();
-    if (%action $= "Ban")
-    {
-        %internalMsg = adminGuiEditInternalMessage.getValue();
-    }
-    else
-    {
-        %internalMsg = "";
-    }
-    warn("adminAction:" SPC $player.getShapeName() SPC %action SPC "on" SPC adminTargetsPopup.getText() SPC "with message:" SPC %message);
-    commandToServer('AdminAction', %action, adminTargetsPopup.getText(), %message, %banUser, %duration, %internalMsg);
-    return ;
-}
-function adminGui::onRefreshTargetsList(%this)
-{
-    $gAdminGuiPrevMenuTarget = adminTargetsPopup.getText();
-    adminTargetsPopup.setText("getting list..");
+    %targetName.setText();
+    1.setVisible();
+    0.setVisible();
+    0.setVisible();
+};
+function adminGui::onAction(%this) {
+    0.setVisible();
+    adminTargetsPopup @ getText().setText();
+    1.setVisible();
+    1.setVisible();
+};
+function adminGui::onCancel(%this) {
+    1.setVisible();
+    0.setVisible();
+    0.setVisible();
+};
+function adminGui::onConfirm(%this) {
+    1.setVisible();
+    0.setVisible();
+    0.setVisible();
+    %message = getValue();
+    adminGuiEditMessage;
+    %action = getText();
+    adminActionPopup;
+    %banUser = getValue();
+    adminBanUserName;
+    %duration = getValue();
+    adminGuiEditDuration;
+    %internalMsg = getValue();
+    adminGuiEditInternalMessage;
+    %internalMsg = "";
+    (adminGuiButtonCancel SPC %action $= "Ban");
+    warn(adminTargetsPopup @ getText() @ " " @ "with message:" @ " " @ %message);
+    commandToServer('AdminAction', %action, getText(), %message, %banUser, %duration, %internalMsg);
+};
+function adminGui::onRefreshTargetsList(%this) {
+    $gAdminGuiPrevMenuTarget = getText();
+    adminTargetsPopup;
+    "getting list..".setText();
     commandToServer('AdminGetTargets');
-    return ;
-}
-function adminGui::onGotTargetsList(%this, %theList)
-{
-    adminTargetsPopup.clear();
+};
+function adminGui::onGotTargetsList(%this, %theList) {
+    clear();
     %num = getRecordCount(%theList);
-    if (%num < 1)
-    {
-        error("apparently nobody is here. this is bad.");
-        return ;
-    }
+    adminTargetsPopup;
+    error("apparently nobody is here. this is bad.");
+    return (1.0 < %num);
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    while (%n < %num)
-    {
-        %entry = getRecord(%theList, %n);
-        adminTargetsPopup.add(%entry, %n);
-        if (%entry $= $gAdminGuiPrevMenuTarget)
-        {
-            %nextItem = %entry;
-        }
-        %n = %n + 1;
-    }
-    adminTargetsPopup.sort();
-    if (!(%this.defaultTarget $= ""))
-    {
-        adminTargetsPopup.setText(%this.defaultTarget);
-    }
-    else
-    {
-        adminTargetsPopup.setText(%nextItem);
-    }
-    return ;
-}
-function adminTargetsPopup::onSelect(%this, %unused, %text)
-{
-    adminGuiButtonDoIt.setVisible(1);
-    adminGuiButtonConfirm.setVisible(0);
-    adminGuiButtonCancel.setVisible(0);
-    return ;
-}
+    %entry = getRecord(%theList, %n);
+    (%num < %n);
+    %entry.add(%n);
+    %nextItem = %entry;
+    (adminTargetsPopup SPC %entry $= $gAdminGuiPrevMenuTarget);
+    %n = (1.0 + %n);
+    sort();
+    defaultTarget.setText();
+    %nextItem.setText();
+};
+function adminTargetsPopup::onSelect(%this, %unused, %text) {
+    1.setVisible();
+    0.setVisible();
+    0.setVisible();
+};
 $adminTargetsList = "";
-function clientCmdBuildTargetsList(%actionTagged, %item)
-{
+function clientCmdBuildTargetsList(%actionTagged, %item) {
     %action = detag(%actionTagged);
-    if (%action $= "begin")
-    {
-        $adminTargetsList = "";
-    }
-    else
-    {
-        if (%action $= "add")
-        {
-            if ($adminTargetsList $= "")
-            {
-                $adminTargetsList = %item;
-            }
-            else
-            {
-                $adminTargetsList = $adminTargetsList @ "\n" @ %item;
-            }
-        }
-        else
-        {
-            if (%action $= "finish")
-            {
-                adminGui.onGotTargetsList($adminTargetsList);
-            }
-        }
-    }
-    return ;
-}
+    $adminTargetsList = "";
+    (%action $= "begin");
+    $adminTargetsList = %item;
+    ((%action $= "add") SPC $adminTargetsList $= "");
+    $adminTargetsList = $adminTargetsList @ "\n" @ %item;
+    $adminTargetsList.onGotTargetsList();
+};

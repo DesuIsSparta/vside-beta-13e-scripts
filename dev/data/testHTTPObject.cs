@@ -1,73 +1,54 @@
 $httpObjTestRequest = 0;
-function httpObjTest::init()
-{
-    %httpObj = new HTTPObject(httpObjTestRequest);
-    %httpObj.gotEOF = 0;
-    %httpObj.numLines = 0;
-    %httpObj.numChars = 0;
-    %httpObj.requestingClient = 0;
+function httpObjTest::init() {
+    %httpObj = new ();
+    httpObjTestRequest;
+    gotEOF = HTTPObject @ 0 @ %httpObj;
+    0;
+    numLines = 0 @ %httpObj;
+    numChars = 0 @ %httpObj;
+    requestingClient = 0 @ %httpObj;
     return %httpObj;
-}
-function testHTTPObject()
-{
+};
+function testHTTPObject() {
     testHTTPObjectReal(0);
-    return ;
-}
-function testHTTPObjectReal(%client)
-{
+};
+function testHTTPObjectReal(%client) {
     %httpObj = httpObjTest::init();
-    %httpObj.requestingClient = %client;
+    requestingClient = %client @ %httpObj;
     %httpObj.get("winbuild:80", "/scripts/orion/tests/pi.txt", "");
-    return ;
-}
-function serverCmdTestHTTPObject(%client)
-{
-    if (!%client.hasPlayerObjectAndPermission_Warn("debugActive"))
-    {
-        return ;
-    }
+};
+function serverCmdTestHTTPObject(%client) {
+    return !(%client.hasPlayerObjectAndPermission_Warn("debugActive"));
     testHTTPObjectReal(%client);
-    return ;
-}
-function httpObjTestRequest::onLine(%this, %line)
-{
-    if (%line $= "EOF")
-    {
-        %this.gotEOF = 1;
-    }
-    %this.numLines = %this.numLines + 1;
-    %this.numChars = %this.numChars + strlen(%line);
-    log("network", "debug", "HTTPObjTestRequest::onLine:" SPC %line);
-    return ;
-}
-function httpObjTestRequest::onDisconnect(%this)
-{
-    %wwo = %this.gotEOF ? "with" : "without";
-    %lvl = %this.gotEOF ? "debug" : "error";
-    %line = "HTTPObjTestRequest::onDisconnect" SPC %wwo SPC "EOF. lines =" SPC %this.numLines SPC "chars =" SPC %this.numChars;
+};
+function httpObjTestRequest::onLine(%this, %line) {
+    gotEOF = (%line $= "EOF") @ 1 @ %this;
+    numLines = (%this + numLines);
+    1.0;
+    numChars = (%this + numChars);
+    strlen(%line);
+    log("network", "debug", "HTTPObjTestRequest::onLine:" @ " " @ %line);
+};
+function httpObjTestRequest::onDisconnect(%this) {
+    %wwo = "without";
+    "with";
+    %lvl = "error";
+    "debug";
+    %line = %this @ numChars;
+    %this @ numLines @ " " @ "chars =" @ " ";
     log("network", %lvl, %line);
     %this.notifyRequestingClient(%line);
     %this.delete();
-    return ;
-}
-function httpObjTestRequest::onConnectFailed(%this)
-{
+};
+function httpObjTestRequest::onConnectFailed(%this) {
     %line = "HTTPObjTestRequest::onConnectFailed.";
     log("network", "error", %line);
     %this.notifyRequestingClient(%line);
-    return ;
-}
-function httpObjTestRequest::onConnected(%this)
-{
+};
+function httpObjTestRequest::onConnected(%this) {
     %line = "HTTPObjTestRequest::onConnected.";
     %this.notifyRequestingClient(%line);
-    return ;
-}
-function httpObjTestRequest::notifyRequestingClient(%this, %line)
-{
-    if (isObject(%this.requestingClient))
-    {
-        admin::doSystemMessagePlayer(%this.requestingClient.Player, %line, 'MsgInfoMessage');
-    }
-    return ;
-}
+};
+function httpObjTestRequest::notifyRequestingClient(%this, %line) {
+    admin::doSystemMessagePlayer(Player, %line, 'MsgInfoMessage');
+};

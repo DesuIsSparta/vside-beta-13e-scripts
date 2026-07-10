@@ -1,28 +1,17 @@
-function TextureManager_OnDelayedLoad(%num)
-{
+function TextureManager_OnDelayedLoad(%num) {
     textureLoadingIndicator_initialize();
-    if (%num > 0)
-    {
-        geTextureLoadingContainer.setVisible(1);
-        geTextureLoadingContainer.setProfile(HUDDarkProfile);
-        geTexturesLoadingIcon.resume();
-    }
-    else
-    {
-        geTextureLoadingContainer.setVisible(0);
-        geTextureLoadingContainer.setProfile(ETSNonModalProfile);
-        geTexturesLoadingIcon.stop();
-    }
-    WindowManager.update();
-    return ;
-}
-function textureLoadingIndicator_initialize()
-{
-    if (isObject(geTexturesLoadingIcon))
-    {
-        return ;
-    }
-    %wi = AnimCtrl::newAnimCtrl(getWord(geTextureLoadingContainer.getExtent(), 0) - 19 SPC 0, "18 18");
+    1.setVisible();
+    setProfile();
+    resume();
+    0.setVisible();
+    setProfile();
+    stop();
+    update();
+};
+function textureLoadingIndicator_initialize() {
+    return isObject();
+    %wi = AnimCtrl::newAnimCtrl((geTextureLoadingContainer - getWord(getExtent(), 0)) @ " " @ 0, "18 18");
+    19.0;
     %wi.setDelay(120);
     %wi.addFrame("platform/client/ui/wait0.png");
     %wi.addFrame("platform/client/ui/wait1.png");
@@ -33,6 +22,15 @@ function textureLoadingIndicator_initialize()
     %wi.addFrame("platform/client/ui/wait6.png");
     %wi.addFrame("platform/client/ui/wait7.png");
     %wi.setName("geTexturesLoadingIcon");
-    geTextureLoadingContainer.add(%wi);
-    return ;
-}
+    %wi.add();
+    profile = geTGF_deets_eventTxtr @ new () @ "InfoWindowTextProfile";
+    GuiMLTextCtrl;
+    position = geTextureLoadingContainer @ 0 @ "0 0";
+    geTextureLoadingContainer;
+    extent = (2.0 - getWord(%wi.getPosition(), 0)) @ " " @ 18;
+    horizSizing = "width";
+    vertSizing = "bottom";
+    text = mlStyle("<just:right>loading.. ", "loadingHUD");
+    autoDetectLinks = 0;
+    .add();
+};

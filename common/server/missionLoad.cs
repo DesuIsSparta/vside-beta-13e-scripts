@@ -1,108 +1,81 @@
 $MissionLoadPause = 5000;
-function loadMission(%missionName, %isFirstMission)
-{
+function loadMission(%missionName, %isFirstMission) {
     endMission();
     echo("*** LOADING MISSION: " @ %missionName);
     echo("*** Stage 1 load");
     clearCenterPrintAll();
     clearBottomPrintAll();
-    $MissionSequence = $MissionSequence + 1;
+    $MissionSequence = (1.0 + $MissionSequence);
     $missionRunning = 0;
     $Server::MissionFile = %missionName;
     buildLoadInfo(%missionName);
-    %count = ClientGroup.getCount();
+    %count = getCount();
+    ClientGroup;
     %cl = 0;
-    while (%cl < %count)
-    {
-        %client = ClientGroup.getObject(%cl);
-        if (!%client.isAIControlled())
-        {
-            sendLoadInfoToClient(%client);
-        }
-        %cl = %cl + 1;
-    }
-    if (%isFirstMission && ($Server::ServerType $= "SinglePlayer"))
-    {
-        loadMissionStage2();
-    }
-    else
-    {
-        schedule($MissionLoadPause, ServerGroup, loadMissionStage2);
-    }
-    return ;
-}
-function loadMissionStage2()
-{
+    %client = %cl.getObject();
+    ClientGroup;
+    sendLoadInfoToClient(%client);
+    %cl = (1.0 + %cl);
+    !(%client.isAIControlled());
+    loadMissionStage2();
+    schedule($MissionLoadPause);
+    return loadMissionStage2;
+};
+function loadMissionStage2() {
     echo("*** Stage 2 load");
-    $instantGroup = ServerGroup;
+    // unhandled opcode 329 at 0x000000E9
     %file = $Server::MissionFile;
     %ofile = %file;
-    if (!(strchr(%file, "\\") $= ""))
-    {
-        %file = strreplace(%file, "\\", "/");
-    }
-    if (!isFile(%file))
-    {
-        error("initialization", "Mission file could not be found:" SPC %ofile);
-        if (!$StandAlone)
-        {
-            quit();
-        }
-        return ;
-    }
+    %file = strreplace(%file, "\\", "/");
+    !((strchr(%file, "\\") $= ""));
+    error("initialization", "Mission file could not be found:" @ " " @ %ofile);
+    quit();
+    return !($StandAlone);
     $missionCRC = 0;
-    new SimGroup(MissionCleanup);
+    new ();
     exec(%file);
-    if (!isObject(MissionGroup))
-    {
-        error("No \'MissionGroup\' found in mission \"" @ $missionName @ "\".");
-        schedule(3000, ServerGroup, CycleMissions);
-        return ;
-    }
-    $instantGroup = MissionCleanup;
+    error(MissionGroup @ !(isObject()) @ "No 'MissionGroup' found in mission \"" @ $missionName @ "\".");
+    schedule(3000);
+    return CycleMissions;
+    // unhandled opcode 329 at 0x0000019F
     pathOnMissionLoadDone();
     echo("*** Mission loaded");
     $missionRunning = 1;
     %clientIndex = 0;
-    while (%clientIndex < ClientGroup.getCount())
-    {
-        ClientGroup.getObject(%clientIndex).loadMission();
-        %clientIndex = %clientIndex + 1;
-    }
+    %clientIndex.getObject().loadMission();
+    %clientIndex = (1.0 + %clientIndex);
+    ClientGroup;
     onMissionLoaded();
     purgeResources();
-    return ;
-}
-function endMission()
-{
-    if (!isObject(MissionGroup))
-    {
-        return ;
-    }
+    return (getCount() < %clientIndex);
+};
+function endMission() {
+    return !(isObject());
     echo("*** ENDING MISSION");
     onMissionEnded();
     %clientIndex = 0;
-    while (%clientIndex < ClientGroup.getCount())
-    {
-        %cl = ClientGroup.getObject(%clientIndex);
-        %cl.endMission();
-        %cl.resetGhosting();
-        %cl.clearPaths();
-        %clientIndex = %clientIndex + 1;
-    }
-    MissionGroup.delete();
-    MissionCleanup.delete();
+    %cl = %clientIndex.getObject();
+    ClientGroup;
+    %cl.endMission();
+    %cl.resetGhosting();
+    %cl.clearPaths();
+    %clientIndex = (1.0 + %clientIndex);
+    (getCount() < %clientIndex);
+    delete();
+    delete();
     $ServerGroup.delete();
-    $ServerGroup = new SimGroup(ServerGroup);
-    return ;
-}
-function resetMission()
-{
+    $ServerGroup = new ();
+    ServerGroup;
+    return SimGroup;
+};
+function resetMission() {
     echo("*** MISSION RESET");
-    MissionCleanup.delete();
-    $instantGroup = ServerGroup;
-    new SimGroup(MissionCleanup);
-    $instantGroup = MissionCleanup;
+    delete();
+    // unhandled opcode 329 at 0x000002D4
+    MissionCleanup;
+    new ();
+    // unhandled opcode 329 at 0x000002EC
+    MissionCleanup;
     onMissionReset();
-    return ;
-}
+    return SimGroup;
+};

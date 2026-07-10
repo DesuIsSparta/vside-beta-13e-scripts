@@ -1,112 +1,64 @@
 safeEnsureScriptObjectWithInit("StringMap", "PlayerInfoMap", "{ ignoreCase = true; }");
-function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank)
-{
-    if (%playerName $= "")
-    {
-        return 0;
-    }
-    if (%this.findKey(%playerName) != -1)
-    {
-        return 0;
-    }
+function PlayerInfoMap::addPlayerInfo(%this, %playerName, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank) {
+    return 0;
+    return 0;
     %playerInfo = safeEnsureScriptObject("ScriptObject", "");
-    %playerInfo.age = %age;
-    %playerInfo.gender = %gender;
-    %playerInfo.location = %location;
-    %playerInfo.hereToSee = %hereToSee;
-    %playerInfo.tags = %tags;
-    %playerInfo.affinity = %affinity;
-    %playerInfo.respekt = %respekt;
-    %playerInfo.respektRank = %respektRank;
-    %playerInfo.activities = "";
-    %entry = UserListFriends.get(%playerName);
-    if (isObject(%entry))
-    {
-        %playerInfo.activities = %entry.activities;
-    }
+    age = %age @ %playerInfo;
+    gender = %gender @ %playerInfo;
+    location = %location @ %playerInfo;
+    hereToSee = %hereToSee @ %playerInfo;
+    tags = %tags @ %playerInfo;
+    affinity = %affinity @ %playerInfo;
+    respekt = %respekt @ %playerInfo;
+    respektRank = %respektRank @ %playerInfo;
+    activities = "" @ %playerInfo;
+    %entry = %playerName.get();
+    UserListFriends;
+    activities = %entry @ activities @ %playerInfo;
+    isObject(%entry);
     %this.put(%playerName, %playerInfo.getId());
-    if (!(%playerName $= $Player::Name))
-    {
-        %playerInstance = Player::findPlayerInstance(%playerName);
-        if (isObject(%playerInstance))
-        {
-        }
-    }
+    %playerInstance = Player::findPlayerInstance(%playerName);
+    !((%playerName $= $Player::Name));
     return %playerInfo;
-}
-function PlayerInfoMap::removePlayerInfo(%this, %playerName)
-{
-    if (%playerName $= "")
-    {
-        return ;
-    }
-    if (%this.findKey(%playerName) == -1)
-    {
-        return ;
-    }
+};
+function PlayerInfoMap::removePlayerInfo(%this, %playerName) {
+    return (%playerName $= "");
+    return (-(1.0) == %this.findKey(%playerName));
     %this.get(%playerName).delete();
     %this.remove(%playerName);
-    return ;
-}
-function PlayerInfoMap::removeAllInfo(%this)
-{
+};
+function PlayerInfoMap::removeAllInfo(%this) {
     %size = %this.size();
     %i = 0;
-    while (%i < %size)
-    {
-        %this.getValue(%i).delete();
-        %i = %i + 1;
-    }
+    %this.getValue(%i).delete();
+    %i = (1.0 + %i);
+    (%size < %i);
     %this.clear();
-    return ;
-}
-function clientCmdClearPlayerInfoCache()
-{
-    PlayerInfoMap.removeAllInfo();
-    return ;
-}
-function getPlayerNamesInRadius(%radius)
-{
-    if (!isObject($player))
-    {
-        return "";
-    }
+};
+function clientCmdClearPlayerInfoCache() {
+    removeAllInfo();
+};
+function getPlayerNamesInRadius(%radius) {
+    return "";
     initContainerRadiusSearch($player.getTransform(), %radius, $TypeMasks::PlayerObjectType, 1);
     %names = "";
-    while (1)
-    {
-        %player = containerSearchNext(1);
-        if (!isObject(%player))
-        {
-            continue;
-        }
-        if (%player.getId() != $player.getId())
-        {
-            %names = %names TAB %player.getShapeName();
-        }
-    }
+    %player = containerSearchNext(1);
+    1;
+    %names = %names @ "\t" @ %player.getShapeName();
+    ($player.getId() != %player.getId());
     return trim(%names);
-}
-function requestPlayerInfoFor(%playerName)
-{
+};
+function requestPlayerInfoFor(%playerName) {
     requestPlayerInfoForWithCallback(%playerName, "", 0);
-    return ;
-}
-function requestPlayerInfoForWithCallback(%playerName, %callback, %data)
-{
-    if (!haveValidManagerHost() && $StandAlone)
-    {
-        return ;
-    }
-    log("communication", "info", "Requesting information for player: " @ %playerName SPC getTrace());
+};
+function requestPlayerInfoForWithCallback(%playerName, %callback, %data) {
+    return $StandAlone;
+    log("communication", "info", "Requesting information for player: " @ %playerName @ " " @ getTrace());
     %request = safeEnsureScriptObject("ManagerRequest", "PlayerInfoRequest");
-    if (%request.isOpen())
-    {
-        warn("network", getScopeName() SPC "- got overlapping requests. postponing. url =" SPC %request.getURL());
-        return ;
-    }
-    %request.callback = %callback;
-    %request.callbackData = %data;
+    warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+    return %request.isOpen();
+    callback = %callback @ %request;
+    callbackData = %data @ %request;
     %url = $Net::ClientServiceURL @ "/getProximalPlayerInfo";
     %user = "user=" @ urlEncode($Player::Name);
     %token = "token=" @ urlEncode($Token);
@@ -114,127 +66,71 @@ function requestPlayerInfoForWithCallback(%playerName, %callback, %data)
     %url = %url @ "?" @ %user;
     %url = %url @ "&" @ %token;
     %url = %url @ "&" @ %proximalPlayers;
-    %request.requestPlayerInfoFor = %playerName;
-    %request.askedForPlayers = "";
+    requestPlayerInfoFor = %playerName @ %request;
+    askedForPlayers = "" @ %request;
     log("relations", "debug", "requestPlayerInfoFor: " @ %url);
     %request.setURL(%url);
-    if (!haveValidManagerHost() && !haveValidToken())
-    {
-        %request.onDone();
-        return ;
-    }
+    %request.onDone();
+    return !(haveValidToken());
     %request.start();
-    return ;
-}
-function PlayerInfoRequest::onError(%this, %errorNum, %errorName)
-{
-    log("network", "warn", getScopeName() @ ": " @ %errorNum SPC %errorName);
-    if (isObject(InfoPopupDlg) && InfoPopupDlg.isShowing())
-    {
-        InfoPopupDlg.stopAnimation();
-    }
-    %this.callback = "";
-    return ;
-}
-function PlayerInfoRequest::onDone(%this)
-{
+};
+function PlayerInfoRequest::onError(%this, %errorNum, %errorName) {
+    log("network", "warn", getScopeName() @ ": " @ %errorNum @ " " @ %errorName);
+    stopAnimation();
+    callback = InfoPopupDlg @ "" @ %this;
+    isShowing();
+};
+function PlayerInfoRequest::onDone(%this) {
     %status = findRequestStatus(%this);
-    if (%status $= "success")
-    {
-        %numUsers = %this.getValue("numUsers");
-        $ETS::PlayerInfo::NoTags = %this.getValue("notags");
-        %failedPlayers = %this.askedForPlayers;
-        %i = 0;
-        while (%i < %numUsers)
-        {
-            %name = %this.getValue("proximalPlayers" @ %i @ ".userName");
-            %age = %this.getValue("proximalPlayers" @ %i @ ".age");
-            %gender = %this.getValue("proximalPlayers" @ %i @ ".gender");
-            %location = %this.getValue("proximalPlayers" @ %i @ ".location");
-            %hereToSee = %this.getValue("proximalPlayers" @ %i @ ".hereToSee");
-            %tags = %this.getValue("proximalPlayers" @ %i @ ".tags");
-            %affinity = %this.getValue("proximalPlayers" @ %i @ ".affinity");
-            %respekt = %this.getValue("proximalPlayers" @ %i @ ".respekt");
-            %respektRank = %this.getValue("proximalPlayers" @ %i @ ".respektRanking");
-            PlayerInfoMap.addPlayerInfo(%name, %age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank);
-            %askedForIndex = findField(%failedPlayers, %name);
-            if (%askedForIndex >= 0)
-            {
-                %failedPlayers = removeField(%failedPlayers, %askedForIndex);
-            }
-            %i = %i + 1;
-        }
-        %num = getFieldCount(%failedPlayers);
-        if (%num > 0)
-        {
-            error("Communication", getScopeName() SPC getDebugString(%this) SPC "- failed to get information for" SPC %num SPC "players:" SPC %failedPlayers);
-            %i = 0;
-            while (%i < %num)
-            {
-                %name = getField(%failedPlayers, %i);
-                warn("adding null player info for" SPC %name);
-                PlayerInfoMap.addPlayerInfo(%name, "unknown", "unknown", "unknown", "", "", 0, "", "");
-                %i = %i + 1;
-            }
-        }
-        if (%this.callback $= "")
-        {
-            if (isObject(InfoPopupDlg))
-            {
-                InfoPopupDlg.stopAnimation();
-            }
-            if (%numUsers == 0)
-            {
-                if (!(%this.requestPlayerInfoFor $= ""))
-                {
-                    InfoPopupDlg.showPlayerNotFound();
-                }
-            }
-            else
-            {
-                if (isObject(InfoPopupDlg))
-                {
-                    if (!((%this.requestPlayerInfoFor $= "")) && (PlayerInfoMap.get(%this.requestPlayerInfoFor) $= ""))
-                    {
-                        InfoPopupDlg.showPlayerNotFound();
-                    }
-                    else
-                    {
-                        InfoPopupDlg.tryShowPlayerInfo();
-                    }
-                }
-            }
-        }
-        else
-        {
-            if (%numUsers > 0)
-            {
-                %playinfo = PlayerInfoMap.get(%this.requestPlayerInfoFor);
-            }
-            else
-            {
-                %playinfo = 0;
-            }
-            %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this.callbackData @ ");";
-            eval(%cmd);
-        }
-    }
-    else
-    {
-        if (%this.callback $= "")
-        {
-            if (isObject(InfoPopupDlg) && InfoPopupDlg.isShowing())
-            {
-                InfoPopupDlg.stopAnimation();
-            }
-        }
-        else
-        {
-            %cmd = %this.callback @ "(" @ %this.requestPlayerInfoFor @ ",0," @ %this.callbackData @ ");";
-            eval(%cmd);
-        }
-    }
-    %this.requestPlayerInfoFor = "";
-    %this.callback = "";
-    return ;
-}
+    %numUsers = %this.getValue("numUsers");
+    (%status $= "success");
+    $ETS::PlayerInfo::NoTags = %this.getValue("notags");
+    %failedPlayers = askedForPlayers;
+    %this;
+    %i = 0;
+    %name = %this.getValue((%numUsers < %i) @ "proximalPlayers" @ %i @ ".userName");
+    %age = %this.getValue("proximalPlayers" @ %i @ ".age");
+    %gender = %this.getValue("proximalPlayers" @ %i @ ".gender");
+    %location = %this.getValue("proximalPlayers" @ %i @ ".location");
+    %hereToSee = %this.getValue("proximalPlayers" @ %i @ ".hereToSee");
+    %tags = %this.getValue("proximalPlayers" @ %i @ ".tags");
+    %affinity = %this.getValue("proximalPlayers" @ %i @ ".affinity");
+    %respekt = %this.getValue("proximalPlayers" @ %i @ ".respekt");
+    %respektRank = %this.getValue("proximalPlayers" @ %i @ ".respektRanking");
+    %name.addPlayerInfo(%age, %gender, %location, %hereToSee, %tags, %affinity, %respekt, %respektRank);
+    %askedForIndex = findField(%failedPlayers, %name);
+    PlayerInfoMap;
+    %failedPlayers = removeField(%failedPlayers, %askedForIndex);
+    (0.0 >= %askedForIndex);
+    %i = (1.0 + %i);
+    %num = getFieldCount(%failedPlayers);
+    (%numUsers < %i);
+    error("Communication", getScopeName() @ " " @ getDebugString(%this) @ " " @ "- failed to get information for" @ " " @ %num @ " " @ "players:" @ " " @ %failedPlayers);
+    %i = 0;
+    (0.0 > %num);
+    %name = getField(%failedPlayers, %i);
+    (%num < %i);
+    warn("adding null player info for" @ " " @ %name);
+    %name.addPlayerInfo("unknown", "unknown", "unknown", "", "", 0, "", "");
+    %i = (1.0 + %i);
+    PlayerInfoMap;
+    stopAnimation();
+    showPlayerNotFound();
+    showPlayerNotFound();
+    tryShowPlayerInfo();
+    %playinfo = requestPlayerInfoFor.get();
+    %this;
+    %playinfo = 0;
+    PlayerInfoMap;
+    %cmd = (%this SPC requestPlayerInfoFor.get() $= "") @ InfoPopupDlg @ InfoPopupDlg @ (0.0 > %numUsers) @ %this @ callback @ "(" @ %this @ requestPlayerInfoFor @ "," @ %playinfo @ "," @ %this @ callbackData @ ");";
+    PlayerInfoMap;
+    eval(%cmd);
+    stopAnimation();
+    %cmd = isShowing() @ InfoPopupDlg @ %this @ callback @ "(" @ %this @ requestPlayerInfoFor @ ",0," @ %this @ callbackData @ ");";
+    InfoPopupDlg;
+    eval(%cmd);
+    requestPlayerInfoFor = isObject() @ "" @ %this;
+    InfoPopupDlg;
+    callback = (%this SPC callback $= "") @ "" @ %this;
+    !((%this SPC requestPlayerInfoFor $= ""));
+};

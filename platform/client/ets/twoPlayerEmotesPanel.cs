@@ -1,48 +1,38 @@
-function TwoPlayerEmotesPanel::open(%this, %playerName)
-{
-    PlayGui.ensureAdded(%this);
+function TwoPlayerEmotesPanel::open(%this, %playerName) {
+    %this.ensureAdded();
     %this.setVisible(1);
-    PlayGui.focusAndRaise(%this);
-    %this.playerName = %playerName;
-    TwoPlayerEmotesText.setText("Target: " @ %playerName);
+    %this.focusAndRaise();
+    playerName = PlayGui @ %playerName @ %this;
+    PlayGui;
+    TwoPlayerEmotesText @ "Target: " @ %playerName.setText();
     %this.refresh();
-    return ;
-}
-function TwoPlayerEmotesPanel::close(%this)
-{
+};
+function TwoPlayerEmotesPanel::close(%this) {
     %this.setVisible(0);
-    PlayGui.focusTopWindow();
+    focusTopWindow();
     return 1;
-}
-function TwoPlayerEmotesPanel::refresh(%this)
-{
+};
+function TwoPlayerEmotesPanel::refresh(%this) {
     %width = getWord(%this.getExtent(), 0);
     %height = getWord(%this.getExtent(), 1);
-    %cursorPos = Canvas.getCursorPos();
-    %targetX = getWord(%cursorPos, 0) - 20;
-    %targetY = getWord(%cursorPos, 1) - 5;
+    %cursorPos = getCursorPos();
+    Canvas;
+    %targetX = (20.0 - getWord(%cursorPos, 0));
+    %targetY = (5.0 - getWord(%cursorPos, 1));
     %pos = onscreenCoordinates(%targetX, %targetY, %width, %height);
     %posX = getWord(%pos, 0);
     %posY = getWord(%pos, 1);
     %this.reposition(%posX, %posY);
-    %list = TwoPlayerEmotesList;
+    // unhandled opcode 308 at 0x00000131
     %list.clear();
     %anims = getAllUserTriggerableCoAnims();
     %count = getFieldCount(%anims);
     %i = 0;
-    while (%i < %count)
-    {
-        %list.addRow(%i, getField(%anims, %i));
-        %i = %i + 1;
-    }
-}
-
-function TwoPlayerEmotesList::onSelect(%this, %id, %text)
-{
-    if (%id >= 0)
-    {
-        doCoAnim(%text, TwoPlayerEmotesPanel.playerName);
-        TwoPlayerEmotesPanel.close();
-    }
-    return ;
-}
+    %list.addRow(%i, getField(%anims, %i));
+    %i = (1.0 + %i);
+    (%count < %i);
+};
+function TwoPlayerEmotesList::onSelect(%this, %id, %text) {
+    doCoAnim(%text, playerName);
+    close();
+};

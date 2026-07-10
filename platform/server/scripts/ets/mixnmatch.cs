@@ -1,102 +1,70 @@
-function serverCmdUseMesh(%client, %mesh)
-{
-    if (!isObject(%client.Player))
-    {
-        return ;
-    }
-    %client.Player.UseMesh(%mesh);
-    return ;
-}
-function serverCmdUseMeshRandom(%client, %category)
-{
-    if (!isObject(%client.Player))
-    {
-        return ;
-    }
-    %client.Player.UseMeshRandom(%category);
-    return ;
-}
-function serverCmdUseSkinToneRandom(%client)
-{
-    if (!isObject(%client.Player))
-    {
-        return ;
-    }
-    %client.Player.UseSkinToneRandom();
-    return ;
-}
-function serverCmdUseSkinTone(%client, %tone)
-{
-    if (!isObject(%client.Player))
-    {
-        return ;
-    }
-    %client.Player.UseSkinTone(%tone);
-    return ;
-}
-function Player::UseSkinTone(%this, %tone)
-{
+function serverCmdUseMesh(%client, %mesh) {
+    return !(isObject(Player));
+    Player.UseMesh(%mesh);
+    return %client;
+};
+function serverCmdUseMeshRandom(%client, %category) {
+    return !(isObject(Player));
+    Player.UseMeshRandom(%category);
+    return %client;
+};
+function serverCmdUseSkinToneRandom(%client) {
+    return !(isObject(Player));
+    Player.UseSkinToneRandom();
+    return %client;
+};
+function serverCmdUseSkinTone(%client, %tone) {
+    return !(isObject(Player));
+    Player.UseSkinTone(%tone);
+    return %client;
+};
+function Player::UseSkinTone(%this, %tone) {
     %this.setSkinName(%tone);
-    return ;
-}
-function Player::UseSkinToneRandom(%this)
-{
-    if (!$numSkinTones)
-    {
-        $numSkinTones = 0;
-        $skinTones[$numSkinTones] = "base";
-        $numSkinTones = $numSkinTones + 1;
-        $skinTones[$numSkinTones] = "tan";
-        $numSkinTones = $numSkinTones + 1;
-        $skinTones[$numSkinTones] = "dark";
-        $numSkinTones = $numSkinTones + 1;
-    }
-    %tone = $skinTones[getRandom(0, $numSkinTones - 1)];
+    return;
+};
+function Player::UseSkinToneRandom(%this) {
+    $numSkinTones = 0;
+    !($numSkinTones);
+    $numSkinTones[$skinTones @ $numSkinTones] = "base";
+    $numSkinTones = (1.0 + $numSkinTones);
+    $numSkinTones[$skinTones @ $numSkinTones] = "tan";
+    $numSkinTones = (1.0 + $numSkinTones);
+    $numSkinTones[$skinTones @ $numSkinTones] = "dark";
+    $numSkinTones = (1.0 + $numSkinTones);
+    %tone = ;
     %face = getRandom(1, 4);
     %this.UseSkinTone(%tone @ ".body");
     %this.UseSkinTone(%tone @ %face @ ".face");
-    return ;
-}
-function serverCmdUseHairRandom(%client)
-{
-    if (!isObject(%client.Player))
-    {
-        return ;
-    }
-    %client.Player.UseHairRandom();
-    return ;
-}
-function Player::UseHairRandom(%this)
-{
-    if (!$numHairTones)
-    {
-        $numHairTones = 0;
-        $hairTones[$numHairTones] = "base";
-        $numHairTones = $numHairTones + 1;
-        $hairTones[$numHairTones] = "red";
-        $numHairTones = $numHairTones + 1;
-        $hairTones[$numHairTones] = "black";
-        $numHairTones = $numHairTones + 1;
-    }
+    return;
+};
+function serverCmdUseHairRandom(%client) {
+    return !(isObject(Player));
+    Player.UseHairRandom();
+    return %client;
+};
+function Player::UseHairRandom(%this) {
+    $numHairTones = 0;
+    !($numHairTones);
+    $numHairTones[$hairTones @ $numHairTones] = "base";
+    $numHairTones = (1.0 + $numHairTones);
+    $numHairTones[$hairTones @ $numHairTones] = "red";
+    $numHairTones = (1.0 + $numHairTones);
+    $numHairTones[$hairTones @ $numHairTones] = "black";
+    $numHairTones = (1.0 + $numHairTones);
     %this.UseMeshRandom("hair");
-    %tone = $hairTones[getRandom(0, $numHairTones - 1)];
+    %tone = ;
     %this.UseSkinTone(%tone @ ".hair");
-    return ;
-}
-function serverCmdUseClothesRandom(%client)
-{
-    if (!isObject(%client.Player))
-    {
-        return ;
-    }
-    %client.Player.UseClothesRandom();
-    return ;
-}
-function Player::UseClothesRandom(%this)
-{
+    return;
+};
+function serverCmdUseClothesRandom(%client) {
+    return !(isObject(Player));
+    Player.UseClothesRandom();
+    return %client;
+};
+function Player::UseClothesRandom(%this) {
     %this.UseMeshRandom("feet");
     %this.UseMeshRandom("legs");
     %this.UseMeshRandom("torso");
     %this.UseMeshRandom("glasses");
-    return ;
-}
+    return;
+};

@@ -1,4 +1,1 @@
-if ($AmServer)
-{
-    exec("./barters.cs");
-}
+exec("./barters.cs");

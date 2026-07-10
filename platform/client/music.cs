@@ -1,113 +1,67 @@
 $musicStreamNameMap = 0;
 $musicStreamIDMap = 0;
-function Music::init()
-{
-    %fmod = new ScriptObject(FMod);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(FMod);
-    }
+function Music::init() {
+    %fmod = new ();
+    FMod;
+    add();
     %fmod.init($UserPref::Audio::mute);
     $Music::lastPos = "0 0 0";
-    return ;
-}
-function Music::setService(%service)
-{
+    FMod;
+};
+function Music::setService(%service) {
     $Music::service = %service;
-    MusicHud.setMusicService(%service);
-    return ;
-}
-function Music::adjustVolume()
-{
+    %service.setMusicService();
+};
+function Music::adjustVolume() {
     %soundPos = $Music::service.getAttenuation();
-    if (!isObject($player) && (%soundPos $= ""))
-    {
-        return ;
-    }
+    return (!(isObject($player)) SPC %soundPos $= "");
     %pos = $player.getPosition();
-    if (%pos != $Music::lastPos)
-    {
-        Music::attenuate(%pos, %soundPos, 30, $Music::service.getSourceVolume());
-        $Music::lastPos = %pos;
-    }
-    return ;
-}
-function musicAttenuationTimer()
-{
-    if (!($Music::service.getAttenuation() $= ""))
-    {
-        Music::adjustVolume();
-        schedule(250, 0, "musicAttenuationTimer");
-    }
-    else
-    {
-        $Music::lastPos = "0 0 0";
-    }
-    return ;
-}
-function Music::attenuate(%playerPos, %soundPos, %maxDistance, %maxVolume)
-{
+    Music::attenuate(%pos, %soundPos, 30, $Music::service.getSourceVolume());
+    $Music::lastPos = %pos;
+    ($Music::lastPos != %pos);
+};
+function musicAttenuationTimer() {
+    Music::adjustVolume();
+    schedule(250, 0, "musicAttenuationTimer");
+    $Music::lastPos = "0 0 0";
+    !(($Music::service.getAttenuation() $= ""));
+};
+function Music::attenuate(%playerPos, %soundPos, %maxDistance, %maxVolume) {
     %dist = VectorLen(VectorDist(%playerPos, %soundPos));
-    if (%dist > %maxDistance)
-    {
-        %dist = %maxDistance;
-    }
-    %vol = (1 - (%dist / %maxDistance)) * %maxVolume;
+    %dist = %maxDistance;
+    (%maxDistance > %dist);
+    %vol = (%maxVolume * ((%maxDistance / %dist) - 1.0));
     $Music::service.setVolume(%vol);
-    return ;
-}
-function Music::setMuted(%flag)
-{
-    if (%flag != $UserPref::Audio::mute)
-    {
-        Music::toggleMute();
-    }
-    return ;
-}
-function Music::toggleMute()
-{
-    $UserPref::Audio::mute = !$UserPref::Audio::mute;
-    %multiplier = $UserPref::Audio::mute ? 0 : 1;
-    alxListenerf(AL_GAIN_LINEAR, %multiplier * $UserPref::Audio::masterVolume);
-    if ((isObject($Music::service) && !(($Music::service $= ""))) && (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -1))
-    {
-        $Music::service.setMute($UserPref::Audio::mute);
-        $Music::service.setMasterVolume((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1);
-    }
-    else
-    {
-        fmodSetMute($UserPref::Audio::mute);
-    }
-    MuteButton.setMuted($UserPref::Audio::mute);
-    MusicTabToggleSoundTxt.updateText();
-    if (isObject(MuteCheckBox))
-    {
-        MuteCheckBox.setValue($UserPref::Audio::mute);
-    }
-    if (Using_FFMPEG())
-    {
-        ffmpegSetMasterVolume((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1);
-    }
+};
+function Music::setMuted(%flag) {
+    Music::toggleMute();
+};
+function Music::toggleMute() {
+    $UserPref::Audio::mute = !($UserPref::Audio::mute);
+    %multiplier = 1;
+    0;
+    alxListenerf(($UserPref::Audio::masterVolume * %multiplier));
+    $Music::service.setMute($UserPref::Audio::mute);
+    $Music::service.setMasterVolume(($UserPref::Audio::channelVolume1 * ($UserPref::Audio::masterVolume * %multiplier)));
+    fmodSetMute($UserPref::Audio::mute);
+    $UserPref::Audio::mute.setMuted();
+    updateText();
+    $UserPref::Audio::mute.setValue();
+    ffmpegSetMasterVolume(($UserPref::Audio::channelVolume1 * ($UserPref::Audio::masterVolume * %multiplier)));
     schedulePersist();
-    MusicHud.update();
-    return ;
-}
-function doRateSong(%rating)
-{
+    update();
+};
+function doRateSong(%rating) {
     Music::rateSong(%rating);
-    return ;
-}
-function Music::rateSong(%rating)
-{
+};
+function Music::rateSong(%rating) {
     %request = safeEnsureScriptObject("ManagerRequest", "RatingRequest");
-    if (%request.isOpen())
-    {
-        warn("network", getScopeName() SPC "- got overlapping requests. postponing. url =" SPC %request.getURL());
-        cancel(%request.timer);
-        %request.timer = schedule(100, 0, "doRateSong", %rating);
-        return ;
-    }
-    %request.user_rating = %rating;
+    warn("network", getScopeName() @ " " @ "- got overlapping requests. postponing. url =" @ " " @ %request.getURL());
+    cancel(timer);
+    timer = %request @ schedule(100, 0, "doRateSong", %rating) @ %request;
+    %request.isOpen();
+    return;
+    user_rating = %rating @ %request;
     %url = $Net::ClientServiceURL @ "/RateSong?";
     %val1 = "user=" @ urlEncode($Player::Name);
     %val2 = "&token=" @ urlEncode($Token);
@@ -115,38 +69,21 @@ function Music::rateSong(%rating)
     %val4 = "&album=" @ urlEncode($Music::service.getAlbum(), 255);
     %val5 = "&song=" @ urlEncode($Music::service.getTitle(), 255);
     %val6 = "&rating=" @ urlEncode(%rating);
-    if (("&artist=" $= %val3) && ("&song=" $= %val5))
-    {
-        warn("did not have artist and song name, not sending rating request: " @ %url);
-        return ;
-    }
+    warn((("&artist=" $= %val3) SPC "&song=" $= %val5) @ "did not have artist and song name, not sending rating request: " @ %url);
+    return;
     %url = %url @ %val1 @ %val2 @ %val3 @ %val4 @ %val5 @ %val6;
     log("communication", "debug", "sending RatingRequest for rateSong: " @ %url);
     %request.setURL(%url);
-    if (!%request.start())
-    {
-        log("communication", "debug", "failed to send RatingRequest for rateSong: " @ %url);
-    }
-    return ;
-}
-function Music::fetchRatings(%artist, %title, %album)
-{
-    if (!haveValidManagerHost())
-    {
-        return ;
-    }
-    if (($Player::Name $= "") && ($Token $= ""))
-    {
-        log("communication", "debug", "the get_song_ratings request will not be made because we don\'t have a valid user or token");
-        return ;
-    }
+    log("communication", "debug", !(%request.start()) @ "failed to send RatingRequest for rateSong: " @ %url);
+};
+function Music::fetchRatings(%artist, %title, %album) {
+    return !(haveValidManagerHost());
+    log("communication", "debug", "the get_song_ratings request will not be made because we don't have a valid user or token");
+    return (($Player::Name $= "") SPC $Token $= "");
     %request = safeEnsureScriptObject("ManagerRequest", "RatingRequest");
-    if (%request.isOpen())
-    {
-        warn("network", getScopeName() SPC "- got overlapping requests. aborting. url =" SPC %request.getURL());
-        return ;
-    }
-    %request.user_rating = 0;
+    warn("network", getScopeName() @ " " @ "- got overlapping requests. aborting. url =" @ " " @ %request.getURL());
+    return %request.isOpen();
+    user_rating = 0 @ %request;
     %url = $Net::ClientServiceURL @ "/GetSongRating?";
     %val1 = "user=" @ urlEncode($Player::Name);
     %val2 = "&token=" @ urlEncode($Token);
@@ -156,130 +93,87 @@ function Music::fetchRatings(%artist, %title, %album)
     %url = %url @ %val1 @ %val2 @ %val3 @ %val4 @ %val5;
     log("communication", "debug", "sending RatingRequest for fetchRatings: " @ %url);
     %request.setURL(%url);
-    if (!%request.start())
-    {
-        log("communication", "debug", "failed to send RatingRequest for fetchRatings: " @ %url);
-    }
-    return ;
-}
-function RatingRequest::onError(%this, %unused, %unused)
-{
-    return ;
-}
-function RatingRequest::onDone(%this)
-{
+    log("communication", "debug", !(%request.start()) @ "failed to send RatingRequest for fetchRatings: " @ %url);
+};
+function RatingRequest::onError(%this, %unused, %unused) {
+};
+function RatingRequest::onDone(%this) {
     %status = findRequestStatus(%this);
-    log("network", "debug", getScopeName() SPC "- status =" SPC %status SPC "url =" SPC %this.getURL());
-    if (!(%status $= "success"))
-    {
-        MusicHud.setRating(0);
-        MusicHud.update();
-        error(getScopeName() SPC "- status =" SPC %status);
-        return ;
-    }
-    %this.community_rating = %this.getValue("communityRating");
-    %this.community_rating = mRoundTo(%this.community_rating, 0.1);
-    %this.num_ratings = %this.getValue("voteCount");
+    log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
+    0.setRating();
+    update();
+    error(getScopeName() @ " " @ "- status =" @ " " @ %status);
+    return MusicHud;
+    community_rating = %this.getValue("communityRating") @ %this;
+    community_rating = %this @ mRoundTo(community_rating, 0.1) @ %this;
+    num_ratings = %this.getValue("voteCount") @ %this;
     %userRating = %this.getValue("individualRating");
-    if (!(%userRating $= ""))
-    {
-        %this.user_rating = %userRating;
-    }
-    MusicHud.setRating(%this.user_rating);
-    MusicHud.update();
-    return ;
-}
-function Music::createGetMusicStreamsRequest()
-{
-    if (!haveValidManagerHost())
-    {
-        return ;
-    }
-    if (isObject(GetMusicStreamsRequest))
-    {
-        return ;
-    }
-    new ManagerRequest(GetMusicStreamsRequest);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(GetMusicStreamsRequest);
-    }
-    %url = $Net::ClientServiceURL @ "/GetUserFacingMusicStreams";
-    %val1 = "?user=" @ urlEncode($Player::Name);
-    %val2 = "&token=" @ urlEncode($Token);
-    %url = %url @ %val1 @ %val2;
+    user_rating = !((%userRating $= "")) @ %userRating @ %this;
+    user_rating.setRating();
+    update();
+};
+function Music::createGetMusicStreamsRequest() {
+    return !(haveValidManagerHost());
+    return isObject();
+    new ();
+    add();
+    %url = GetMusicStreamsRequest @ $Net::ClientServiceURL @ "/GetUserFacingMusicStreams";
+    MissionCleanup;
+    %val1 = isObject() @ "?user=" @ urlEncode($Player::Name);
+    MissionCleanup;
+    %val2 = GetMusicStreamsRequest @ "&token=" @ urlEncode($Token);
+    ManagerRequest;
+    %url = 0 @ %url @ %val1 @ %val2;
     log("communication", "info", "sending GetMusicStreamsRequest for getMusicStreamMapping: " @ %url);
-    GetMusicStreamsRequest.setURL(%url);
-    if (!GetMusicStreamsRequest.start())
-    {
-        log("communication", "debug", "failed to send GetMusicStreamsRequest for getMusicStreamMapping: " @ %url);
-    }
-    return ;
-}
-function GetMusicStreamsRequest::onError(%this, %unused, %unused)
-{
+    %url.setURL();
+    log("communication", "debug", !(start()) @ "failed to send GetMusicStreamsRequest for getMusicStreamMapping: " @ %url);
+};
+function GetMusicStreamsRequest::onError(%this, %unused, %unused) {
     %this.schedule(0, "delete");
-    return ;
-}
-function GetMusicStreamsRequest::onDone(%this)
-{
+};
+function GetMusicStreamsRequest::onDone(%this) {
     %status = findRequestStatus(%this);
-    log("network", "debug", getScopeName() SPC "- status =" SPC %status SPC "url =" SPC %this.getURL());
-    if (!(%status $= "success"))
-    {
-        error(getScopeName() SPC "- status =" SPC %status);
-        return ;
-    }
-    log("communication", "debug", "GetMusicStreamsRequest::onDone:" SPC %status);
+    log("network", "debug", getScopeName() @ " " @ "- status =" @ " " @ %status @ " " @ "url =" @ " " @ %this.getURL());
+    error(getScopeName() @ " " @ "- status =" @ " " @ %status);
+    return !((%status $= "success"));
+    log("communication", "debug", "GetMusicStreamsRequest::onDone:" @ " " @ %status);
     %count = %this.getValue("mountCount");
-    $musicStreamNameMap = new StringMap();
-    if (isObject($musicStreamNameMap) && isObject(MissionCleanup))
-    {
-        MissionCleanup.add($musicStreamNameMap);
-    }
-    $musicStreamIDMap = new StringMap();
-    if (isObject($musicStreamIDMap) && isObject(MissionCleanup))
-    {
-        MissionCleanup.add($musicStreamIDMap);
-    }
+    $musicStreamNameMap = new ""();
+    StringMap;
+    $musicStreamNameMap.add();
+    $musicStreamIDMap = new ""();
+    StringMap;
+    $musicStreamIDMap.add();
     %streamField = "";
+    MissionCleanup;
     %i = 0;
-    while (%i < %count)
-    {
-        %prefix = "mount" @ %i @ ".";
-        %streamID = %this.getValue(%prefix @ "key");
-        %streamName = %this.getValue(%prefix @ "value");
-        $musicStreamNameMap.put(getWords(%streamName, 1), %streamID);
-        $musicStreamIDMap.put(%streamID, getWords(%streamName, 1));
-        %streamField = %streamField @ %streamName @ "\t";
-        %i = %i + 1;
-    }
+    isObject();
+    %prefix = MissionCleanup @ (%count < %i) @ "mount" @ %i @ ".";
+    isObject($musicStreamIDMap);
+    %streamID = %this.getValue(0 @ %prefix @ "key");
+    MissionCleanup;
+    %streamName = %this.getValue(isObject() @ %prefix @ "value");
+    MissionCleanup;
+    $musicStreamNameMap.put(getWords(%streamName, 1), %streamID);
+    $musicStreamIDMap.put(%streamID, getWords(%streamName, 1));
+    %streamField = 0 @ isObject($musicStreamNameMap) @ %streamField @ %streamName @ "\t";
+    %i = (1.0 + %i);
     %streamField = SortFields(%streamField);
+    (%count < %i);
     %sortedStreamField = "";
     %fieldCount = getFieldCount(%streamField);
     %i = 0;
-    while (%i < %fieldCount)
-    {
-        %sortedStreamField = %sortedStreamField @ getWords(getField(%streamField, %i), 1) @ "\t";
-        %i = %i + 1;
-    }
+    %sortedStreamField = (%fieldCount < %i) @ %sortedStreamField @ getWords(getField(%streamField, %i), 1) @ "\t";
+    %i = (1.0 + %i);
     %streamField = %sortedStreamField;
+    (%fieldCount < %i);
     $musicStreamNameMap.put($CSMediaMusicOffName, $CSMediaMusicOffID);
     $musicStreamIDMap.put($CSMediaMusicOffID, $CSMediaMusicOffName);
-    MusicHud.updateStations(%streamField);
-    CSMediaDisplay.updateRadioStreams();
+    %streamField.updateStations();
+    updateRadioStreams();
     %this.schedule(0, "delete");
-    return ;
-}
-function MuteButton::setMuted(%this, %flag)
-{
-    if (%flag)
-    {
-        %this.setBitmap("platform/client/buttons/muted");
-    }
-    else
-    {
-        %this.setBitmap("platform/client/buttons/unmuted");
-    }
-    return ;
-}
+};
+function MuteButton::setMuted(%this, %flag) {
+    %this.setBitmap("platform/client/buttons/muted");
+    %this.setBitmap("platform/client/buttons/unmuted");
+};

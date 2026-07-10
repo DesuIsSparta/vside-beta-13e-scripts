@@ -1,20 +1,12 @@
-function MapPointPanel::toggle(%this)
-{
-    PlayGui.showRaiseOrHide(%this);
-    return ;
-}
-function MapPointPanel::open(%this)
-{
-    if (!%this.isVisible())
-    {
-        %this.setVisible(1);
-        PlayGui.focusAndRaise(%this);
-    }
-    return ;
-}
-function MapPointPanel::close(%this)
-{
+function MapPointPanel::toggle(%this) {
+    %this.showRaiseOrHide();
+};
+function MapPointPanel::open(%this) {
+    %this.setVisible(1);
+    %this.focusAndRaise();
+};
+function MapPointPanel::close(%this) {
     %this.setVisible(0);
-    PlayGui.focusTopWindow();
+    focusTopWindow();
     return 1;
-}
+};

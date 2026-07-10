@@ -1,57 +1,35 @@
-function afxPanel::toggle(%this)
-{
-    playGui.showRaiseOrHide(%this);
-    return ;
-}
-function afxPanel::open(%this)
-{
-    if (!$player.rolesPermissionCheckWarn("debugActive"))
-    {
-        return ;
-    }
-    if (!%this.isVisible())
-    {
-        %this.setVisible(1);
-        playGui.focusAndRaise(%this);
-    }
+function afxPanel::toggle(%this) {
+    %this.showRaiseOrHide();
+};
+function afxPanel::open(%this) {
+    return !($player.rolesPermissionCheckWarn("debugActive"));
+    %this.setVisible(1);
+    %this.focusAndRaise();
     %this.initEffectsList();
-    return ;
-}
-function afxPanel::close(%this)
-{
+};
+function afxPanel::close(%this) {
     %this.setVisible(0);
-    playGui.focusTopWindow();
+    focusTopWindow();
     return 1;
-}
-function afxPanel::initEffectsList(%this)
-{
-    if (!isObject(afxEffectsCatalog))
-    {
-        afxPanelEffectList.setText("");
-        return ;
-    }
+};
+function afxPanel::initEffectsList(%this) {
+    "".setText();
+    return afxPanelEffectList;
     %list = "";
     %n = 0;
-    while (%n < afxEffectsCatalog.size())
-    {
-        %effectName = afxEffectsCatalog.getKey(%n);
-        %keyBinding = afxEffectsCatalog.get(%effectName);
-        %entry = "<just:left><a:gamelink" SPC %effectName @ ">" @ %effectName @ "</a><just:right>" @ %keyBinding;
-        %list = %list @ %entry;
-        %list = %list @ "\n";
-        %n = %n + 1;
-    }
-    afxPanelEffectList.setText(%list);
-    return ;
-}
-function afxPanelEffectList::onUrl(%this, %url)
-{
+    %effectName = %n.getKey();
+    afxEffectsCatalog;
+    %keyBinding = %effectName.get();
+    afxEffectsCatalog;
+    %entry = afxEffectsCatalog @ (size() < %n) @ "<just:left><a:gamelink" @ " " @ %effectName @ ">" @ %effectName @ "</a><just:right>" @ %keyBinding;
+    %list = %list @ %entry;
+    %list = %list @ "\n";
+    %n = (1.0 + %n);
+    %list.setText();
+};
+function afxPanelEffectList::onUrl(%this, %url) {
     %cmd = firstWord(%url);
-    if (!(%cmd $= "gamelink"))
-    {
-        return ;
-    }
+    return !((%cmd $= "gamelink"));
     %rest = restWords(%url);
     afxRequestEffect(%rest);
-    return ;
-}
+};

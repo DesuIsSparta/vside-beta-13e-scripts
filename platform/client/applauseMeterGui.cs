@@ -1,191 +1,84 @@
-function ApplauseMeterGui::open(%this, %applauseMeterUse, %arg)
-{
+function ApplauseMeterGui::open(%this, %applauseMeterUse, %arg) {
     %applauseMeterUse = strlwr(%applauseMeterUse);
-    if ((%this.applauseMeterUse $= "applause") && !((%applauseMeterUse $= "applause")))
-    {
-        ApplauseMeterGui.closeForApplause();
-    }
-    else
-    {
-        if ((%this.applauseMeterUse $= "instrument") && !((%applauseMeterUse $= "instrument")))
-        {
-            ApplauseMeterGui.closeForInstrument();
-        }
-        else
-        {
-            if ((%this.applauseMeterUse $= "sumo") && !((%applauseMeterUse $= "sumo")))
-            {
-                ApplauseMeterGui.closeForSumo();
-            }
-            else
-            {
-                if ((%this.applauseMeterUse $= "blockgame") && !((%applauseMeterUse $= "blockgame")))
-                {
-                    ApplauseMeterGui.closeForBlockGame();
-                }
-            }
-        }
-    }
-    %this.applauseMeterUse = "";
+    closeForApplause();
+    closeForInstrument();
+    closeForSumo();
+    closeForBlockGame();
+    applauseMeterUse = ApplauseMeterGui @ "" @ %this;
+    !(((%this SPC applauseMeterUse $= "blockgame") SPC %applauseMeterUse $= "blockgame"));
     %focusAndRaise = 1;
-    if (%applauseMeterUse $= "applause")
-    {
-        ApplauseMeterGui.openForApplause(%arg);
-    }
-    else
-    {
-        if (%applauseMeterUse $= "instrument")
-        {
-            %arg = strlwr(%arg);
-            ApplauseMeterGui.openForInstrument(%arg);
-            %focusAndRaise = 0;
-        }
-        else
-        {
-            if (%applauseMeterUse $= "sumo")
-            {
-                %arg = strlwr(%arg);
-                ApplauseMeterGui.openForSumo(%arg);
-            }
-            else
-            {
-                if (%applauseMeterUse $= "blockgame")
-                {
-                    %arg = strlwr(%arg);
-                    ApplauseMeterGui.openForBlockGame(%arg);
-                }
-                else
-                {
-                    error(getScopeName() SPC "- unknown use \'" SPC %applauseMeterUse SPC "\' for ApplauseMeterGui -" SPC getTrace());
-                    return ;
-                }
-            }
-        }
-    }
-    %this.applauseMeterUse = %applauseMeterUse;
-    %this.closingFromServer = 0;
+    ApplauseMeterGui;
+    %arg.openForApplause();
+    %arg = strlwr(%arg);
+    (ApplauseMeterGui SPC %applauseMeterUse $= "instrument");
+    %arg.openForInstrument();
+    %focusAndRaise = 0;
+    ApplauseMeterGui;
+    %arg = strlwr(%arg);
+    ((!(((%this SPC applauseMeterUse $= "sumo") SPC %applauseMeterUse $= "sumo")) SPC %applauseMeterUse $= "applause") SPC %applauseMeterUse $= "sumo");
+    %arg.openForSumo();
+    %arg = strlwr(%arg);
+    (ApplauseMeterGui SPC %applauseMeterUse $= "blockgame");
+    %arg.openForBlockGame();
+    error(getScopeName() @ " " @ "- unknown use '" @ " " @ %applauseMeterUse @ " " @ "' for ApplauseMeterGui -" @ " " @ getTrace());
+    return ApplauseMeterGui;
+    applauseMeterUse = %applauseMeterUse @ %this;
+    closingFromServer = 0 @ %this;
     %this.setVisible(1);
-    if (%focusAndRaise)
-    {
-        PlayGui.focusAndRaise(%this);
-    }
-    return ;
-}
-function ApplauseMeterGui::scheduleApplaudMeterGuiClose(%this)
-{
+    %this.focusAndRaise();
+};
+function ApplauseMeterGui::scheduleApplaudMeterGuiClose(%this) {
     %sched = gGetFieldWithDefault(%this, "closeApplauseMeterGuiSched", "");
     cancel(%sched);
-    %sched = %this.schedule(5000, close);
+    %sched = %this.schedule(5000);
+    close;
     gSetField(%this, "closeApplauseMeterGuiSched", %sched);
-    return ;
-}
-function ApplauseMeterGui::closeByUser(%this)
-{
-    if (%this.applauseMeterUse $= "sumo")
-    {
-        if (%this.sumoGameType $= "PillowFightGame")
-        {
-            MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USERCLOSE"], "");
-        }
-        else
-        {
-            MessageBoxOK($MsgCat::applauseGui["MSG-SUMO-WARN"], $MsgCat::applauseGui["MSG-SUMO-USERCLOSE"], "");
-        }
-        return 0;
-    }
-    return %this.close();
-}
-function ApplauseMeterGui::close(%this)
-{
-    if (%this.applauseMeterUse $= "applause")
-    {
-        ApplauseMeterGui.closeForApplause();
-    }
-    else
-    {
-        if (%this.applauseMeterUse $= "instrument")
-        {
-            ApplauseMeterGui.closeForInstrument();
-        }
-        else
-        {
-            if (%this.applauseMeterUse $= "sumo")
-            {
-                ApplauseMeterGui.closeForSumo();
-            }
-            else
-            {
-                if (%this.applauseMeterUse $= "blockgame")
-                {
-                    ApplauseMeterGui.closeForBlockGame();
-                }
-                else
-                {
-                    if (!((%this.applauseMeterUse $= "")) && %this.isVisible())
-                    {
-                        error(getScopeName() SPC "- unknown use \'" @ %this.applauseMeterUse @ "\' for ApplauseMeterGui -" SPC getTrace());
-                    }
-                }
-            }
-        }
-    }
-    %this.applauseMeterUse = "";
-    %this.closingFromServer = 0;
-    %this.setVisible(0);
-    PlayGui.focusTopWindow();
-    return 1;
-}
-function ApplauseMeterGui::downplayChatBubble(%this)
-{
-    if (!%this.isVisible())
-    {
-        return 0;
-    }
-    if (%this.applauseMeterUse $= "blockgame")
-    {
-        return 1;
-    }
+};
+function ApplauseMeterGui::closeByUser(%this) {
+    MessageBoxOK(%this[$MsgCat::applauseGui @ "MSG-PILLOW-WARN"], (%this SPC sumoGameType $= "PillowFightGame"), "");
+    MessageBoxOK((%this SPC applauseMeterUse $= "sumo"), , "");
     return 0;
-}
-function ApplauseMeterGui::scheduleGoIdle(%this)
-{
-    if (%this.applauseMeterUse $= "applause")
-    {
-        %sched = gGetFieldWithDefault(%this, "applaudeGoIdleSched", "");
-        cancel(%sched);
-        %sched = %this.schedule(750, applaudSetIdleIcon);
-        gSetField(%this, "applaudeGoIdleSched", %sched);
-    }
-    else
-    {
-        if (%this.applauseMeterUse $= "instrument")
-        {
-            %sched = gGetFieldWithDefault(%this, "instrumentGoIdleSched", "");
-            cancel(%sched);
-            %sched = %this.schedule(750, instrumentSetIdleIcon);
-            gSetField(%this, "instrumentGoIdleSched", %sched);
-        }
-        else
-        {
-            if (%this.applauseMeterUse $= "sumo")
-            {
-            }
-            else
-            {
-                error(getScopeName() SPC "- unknown use \'" SPC %this.applauseMeterUse SPC "\' for ApplauseMeterGui -" SPC getTrace());
-            }
-        }
-    }
-    return ;
-}
-function ApplauseMeterGui::onSetFirstResponder(%this)
-{
+    return %this.close();
+};
+function ApplauseMeterGui::close(%this) {
+    closeForApplause();
+    closeForInstrument();
+    closeForSumo();
+    closeForBlockGame();
+    error(%this.isVisible() @ getScopeName() @ " " @ "- unknown use '" @ %this @ applauseMeterUse @ "' for ApplauseMeterGui -" @ " " @ getTrace());
+    applauseMeterUse = !((%this SPC applauseMeterUse $= "")) @ "" @ %this;
+    ApplauseMeterGui;
+    closingFromServer = (%this SPC applauseMeterUse $= "blockgame") @ 0 @ %this;
+    ApplauseMeterGui;
+    %this.setVisible(0);
+    focusTopWindow();
+    return 1;
+};
+function ApplauseMeterGui::downplayChatBubble(%this) {
+    return 0;
+    return 1;
+    return 0;
+};
+function ApplauseMeterGui::scheduleGoIdle(%this) {
+    %sched = gGetFieldWithDefault(%this, "applaudeGoIdleSched", "");
+    (%this SPC applauseMeterUse $= "applause");
+    cancel(%sched);
+    %sched = %this.schedule(750);
+    applaudSetIdleIcon;
+    gSetField(%this, "applaudeGoIdleSched", %sched);
+    %sched = gGetFieldWithDefault(%this, "instrumentGoIdleSched", "");
+    (%this SPC applauseMeterUse $= "instrument");
+    cancel(%sched);
+    %sched = %this.schedule(750);
+    instrumentSetIdleIcon;
+    gSetField(%this, "instrumentGoIdleSched", %sched);
+    error(%this @ applauseMeterUse @ " " @ "' for ApplauseMeterGui -" @ " " @ getTrace());
+};
+function ApplauseMeterGui::onSetFirstResponder(%this) {
     %this.setGray(0);
     Parent::onSetFirstResponder(%this);
-    return ;
-}
-function ApplauseMeterGui::onClearFirstResponder(%this)
-{
+};
+function ApplauseMeterGui::onClearFirstResponder(%this) {
     %sched = gGetFieldWithDefault(%this, "applaudeGoIdleSched", "");
     cancel(%sched);
     gSetField(%this, "applaudeGoIdleSched", "");
@@ -194,549 +87,261 @@ function ApplauseMeterGui::onClearFirstResponder(%this)
     gSetField(%this, "instrumentGoIdleSched", "");
     %this.setGray(1);
     Parent::onClearFirstResponder(%this);
-    return ;
-}
-function ApplauseMeterGui::setGray(%this, %value)
-{
-    if (%this.applauseMeterUse $= "applause")
-    {
-        %this.setApplaudIcon(!%value, 1, %this.nonIdleStateA);
-    }
-    else
-    {
-        if (%this.applauseMeterUse $= "instrument")
-        {
-            %this.setInstrumentIcon(!%value, 1, %this.nonIdleStateA);
-        }
-        else
-        {
-            if (%this.applauseMeterUse $= "sumo")
-            {
-            }
-        }
-    }
-    return ;
-}
-function ApplauseMeterGui::openForBlockGame(%this, %gameType)
-{
-    ApplauseMeterGui.setText($MsgCat::applauseGui["TITLE-BLOCKGAME-" @ %gameType]);
-    ApplauseMeterInfoText.setText($MsgCat::applauseGui["BODYTEXT-BLOCKGAME-" @ %gameType]);
-    %this.nonIdleStateA = 0;
-    ApplauseMeterGui.alignToBottom();
-    return ;
-}
-function ApplauseMeterGui::closeForBlockGame(%this)
-{
-    ApplauseMeterInfoText.setText("");
-    if ($player.isSitting())
-    {
-        SendStandCommand(1);
-    }
-    return ;
-}
-$gBlockGameKeys = "" NL "I" NL "J" NL "K" NL "L" NL " " NL "left" NL "right" NL "up" NL "down" NL "lcontrol" NL "rcontrol";
-function ApplauseMeterGui::onBlockGameKeys(%this, %keyCodeStr, %isKeyDown)
-{
-    %wantIt = %isKeyDown && (findRecord($gBlockGameKeys, %keyCodeStr) < 0) ? 0 : 1;
-    if (%wantIt)
-    {
-        if (%keyCodeStr $= "I")
-        {
-            %keyCodeStr = "rotatecw";
-        }
-        else
-        {
-            if (%keyCodeStr $= "J")
-            {
-                %keyCodeStr = "left";
-            }
-            else
-            {
-                if (%keyCodeStr $= "K")
-                {
-                    %keyCodeStr = "rotateccw";
-                }
-                else
-                {
-                    if (%keyCodeStr $= "L")
-                    {
-                        %keyCodeStr = "right";
-                    }
-                    else
-                    {
-                        if (%keyCodeStr $= " ")
-                        {
-                            %keyCodeStr = "harddrop";
-                        }
-                    }
-                }
-            }
-        }
-        commandToServer('BlockGameMove', %keyCodeStr);
-    }
+};
+function ApplauseMeterGui::setGray(%this, %value) {
+    %this.setApplaudIcon(!(%value), 1, nonIdleStateA);
+    %this.setInstrumentIcon(!(%value), 1, nonIdleStateA);
+};
+function ApplauseMeterGui::openForBlockGame(%this, %gameType) {
+    %gameType[ApplauseMeterGui @ $MsgCat::applauseGui @ "TITLE-BLOCKGAME-" @ %gameType].setText();
+    %gameType[ApplauseMeterInfoText @ $MsgCat::applauseGui @ "BODYTEXT-BLOCKGAME-" @ %gameType].setText();
+    nonIdleStateA = 0 @ %this;
+    alignToBottom();
+};
+function ApplauseMeterGui::closeForBlockGame(%this) {
+    "".setText();
+    SendStandCommand(1);
+};
+$gBlockGameKeys = "" @ "\n" @ "I" @ "\n" @ "J" @ "\n" @ "K" @ "\n" @ "L" @ "\n" @ " " @ "\n" @ "left" @ "\n" @ "right" @ "\n" @ "up" @ "\n" @ "down" @ "\n" @ "lcontrol" @ "\n" @ "rcontrol";
+function ApplauseMeterGui::onBlockGameKeys(%this, %keyCodeStr, %isKeyDown) {
+    %wantIt = 1;
+    0;
+    %keyCodeStr = "rotatecw";
+    (%wantIt SPC %keyCodeStr $= "I");
+    %keyCodeStr = "left";
+    ((0.0 < findRecord($gBlockGameKeys, %keyCodeStr)) SPC %keyCodeStr $= "J");
+    %keyCodeStr = "rotateccw";
+    (%isKeyDown SPC %keyCodeStr $= "K");
+    %keyCodeStr = "right";
+    (%keyCodeStr $= "L");
+    %keyCodeStr = "harddrop";
+    (%keyCodeStr $= " ");
+    commandToServer('BlockGameMove', %keyCodeStr);
     return %isKeyDown;
-}
-function ApplauseMeterGui::openForSumo(%this, %gameType)
-{
-    %this.sumoGameType = %gameType;
-    if (%this.sumoGameType $= "PillowFightGame")
-    {
-        ApplauseMeterGui.setText($MsgCat::applauseGui["TITLE-PILLOW"]);
-        ApplauseMeterInfoText.setText($MsgCat::applauseGui["BODYTEXT-PILLOW"]);
-    }
-    else
-    {
-        ApplauseMeterGui.setText($MsgCat::applauseGui["TITLE-SUMO"]);
-        ApplauseMeterInfoText.setText($MsgCat::applauseGui["BODYTEXT-SUMO"]);
-    }
-    %this.nonIdleStateA = 0;
-    ApplauseMeterGui.alignToBottom();
+};
+function ApplauseMeterGui::openForSumo(%this, %gameType) {
+    sumoGameType = %gameType @ %this;
+    %this[$MsgCat::applauseGui @ "TITLE-PILLOW"].setText();
+    ApplauseMeterInfoText.setText();
+    ApplauseMeterGui.setText();
+    ApplauseMeterInfoText.setText();
+    nonIdleStateA = ApplauseMeterGui @ 0 @ %this;
+    (%this SPC sumoGameType $= "PillowFightGame");
+    alignToBottom();
     getUserActivityMgr().setActivityActive("wrestling", 1);
-    return ;
-}
-function ApplauseMeterGui::closeForSumo(%this)
-{
-    ApplauseMeterInfoText.setText("");
-    %this.sumoGameType = "";
+};
+function ApplauseMeterGui::closeForSumo(%this) {
+    "".setText();
+    sumoGameType = ApplauseMeterInfoText @ "" @ %this;
     getUserActivityMgr().setActivityActive("wrestling", 0);
-    return ;
-}
-function ApplauseMeterGui::onSumoKeys(%this, %keyCodeStr, %isKeyDown)
-{
-    if (%keyCodeStr $= "left")
-    {
-        return 0;
-    }
-    else
-    {
-        if (%keyCodeStr $= "right")
-        {
-            return 0;
-        }
-        else
-        {
-            if (%keyCodeStr $= "up")
-            {
-                return 0;
-            }
-            else
-            {
-                if (%keyCodeStr $= "down")
-                {
-                    return 0;
-                }
-                else
-                {
-                    if (%keyCodeStr $= "\r")
-                    {
-                        return 0;
-                    }
-                }
-            }
-        }
-    }
-    if (%isKeyDown)
-    {
-        if (!(%this.sumoGameType $= ""))
-        {
-            if (%keyCodeStr $= "q")
-            {
-                commandToServer('SumoAction', %this.sumoGameType, 0);
-            }
-            else
-            {
-                if (%keyCodeStr $= "w")
-                {
-                    commandToServer('SumoAction', %this.sumoGameType, 1);
-                }
-                else
-                {
-                    if (%keyCodeStr $= "e")
-                    {
-                        commandToServer('SumoAction', %this.sumoGameType, 2);
-                    }
-                    else
-                    {
-                        if (%keyCodeStr $= "a")
-                        {
-                            commandToServer('SumoAction', %this.sumoGameType, 3);
-                        }
-                        else
-                        {
-                            if (%keyCodeStr $= "s")
-                            {
-                                commandToServer('SumoAction', %this.sumoGameType, 4);
-                            }
-                            else
-                            {
-                                if (%keyCodeStr $= "z")
-                                {
-                                    commandToServer('SumoAction', %this.sumoGameType, 5);
-                                }
-                                else
-                                {
-                                    if (%keyCodeStr $= "x")
-                                    {
-                                        commandToServer('SumoAction', %this.sumoGameType, 6);
-                                    }
-                                    else
-                                    {
-                                        if (%keyCodeStr $= " ")
-                                        {
-                                            jumpOnce();
-                                        }
-                                    }
-                                }
-                            }
-                        }
-                    }
-                }
-            }
-        }
-    }
+};
+function ApplauseMeterGui::onSumoKeys(%this, %keyCodeStr, %isKeyDown) {
+    return 0;
+    return 0;
+    return 0;
+    return 0;
+    return 0;
+    commandToServer('SumoAction', sumoGameType, 0);
+    commandToServer('SumoAction', sumoGameType, 1);
+    commandToServer('SumoAction', sumoGameType, 2);
+    commandToServer('SumoAction', sumoGameType, 3);
+    commandToServer('SumoAction', sumoGameType, 4);
+    commandToServer('SumoAction', sumoGameType, 5);
+    commandToServer('SumoAction', sumoGameType, 6);
+    jumpOnce();
     return 1;
-}
-function ApplauseMeterGui::openForApplause(%this, %playerName)
-{
+};
+function ApplauseMeterGui::openForApplause(%this, %playerName) {
     gSetField(%this, "applaudeGoIdleSched", "");
     gSetField(%this, "closeApplauseMeterGuiSched", "");
-    ApplauseMeterGui.setText($MsgCat::applauseGui["TITLE-APPLAUSE"]);
-    ApplauseMeterInfoText.setText($MsgCat::applauseGui["BODYTEXT-APPLAUSE"] SPC %playerName);
+    ApplauseMeterGui.setText();
+    ApplauseMeterInfoText @ " " @ %playerName.setText();
     commandToServer('SetMyApplauseTarget', %playerName);
-    ApplauseMeterActionIconContainer.setVisible(1);
-    %this.nonIdleStateA = 0;
-    %this.setApplaudIcon(1, 1, %this.nonIdleStateA);
-    return ;
-}
-function ApplauseMeterGui::closeForApplause(%this)
-{
-    ApplauseMeterActionIconContainer.setVisible(0);
-    ApplauseMeterInfoText.setText("");
+    1.setVisible();
+    nonIdleStateA = ApplauseMeterActionIconContainer @ 0 @ %this;
+    %this.setApplaudIcon(1, 1, nonIdleStateA);
+};
+function ApplauseMeterGui::closeForApplause(%this) {
+    0.setVisible();
+    "".setText();
     %sched = gGetFieldWithDefault(%this, "applaudeGoIdleSched", "");
+    ApplauseMeterInfoText;
     cancel(%sched);
     gSetField(%this, "applaudeGoIdleSched", "");
     %sched = gGetFieldWithDefault(%this, "closeApplauseMeterGuiSched", "");
+    ApplauseMeterActionIconContainer;
     cancel(%sched);
     gSetField(%this, "closeApplauseMeterGuiSched", "");
     commandToServer('SetMyApplauseTarget', "");
-    return ;
-}
-function ApplauseMeterGui::clap(%this)
-{
-    if ($player.isSitting())
-    {
-        SendStandCommand(1);
-        return ;
-    }
+};
+function ApplauseMeterGui::clap(%this) {
+    SendStandCommand(1);
+    return $player.isSitting();
     %this.animateApplaudIcon();
     sendAnimToServer("apls01");
     %this.scheduleGoIdle();
     %this.scheduleApplaudMeterGuiClose();
-    return ;
-}
-function ApplauseMeterGui::applaudSetIdleIcon(%this)
-{
-    %this.nonIdleStateA = 0;
-    %this.setApplaudIcon(1, 1, %this.nonIdleStateA);
-    return ;
-}
-function ApplauseMeterGui::animateApplaudIcon(%this)
-{
-    %this.nonIdleStateA = !%this.nonIdleStateA;
-    %this.setApplaudIcon(1, 0, %this.nonIdleStateA);
-    return ;
-}
-function ApplauseMeterGui::setApplaudIcon(%this, %hasFocus, %isIdle, %nonIdleStateA)
-{
-    if (!%hasFocus)
-    {
-        ApplauseMeterActionActiveIconA.setVisible(0);
-        ApplauseMeterActionActiveIconB.setVisible(0);
-        ApplauseMeterActionUnfocusedIcon.setVisible(1);
-        ApplauseMeterActionIdleIcon.setVisible(0);
-        return ;
-    }
-    else
-    {
-        if (%isIdle)
-        {
-            ApplauseMeterActionUnfocusedIcon.setVisible(0);
-            ApplauseMeterActionActiveIconA.setVisible(0);
-            ApplauseMeterActionActiveIconB.setVisible(0);
-            ApplauseMeterActionIdleIcon.setVisible(1);
-            return ;
-        }
-        else
-        {
-            if (%nonIdleStateA)
-            {
-                ApplauseMeterActionUnfocusedIcon.setVisible(0);
-                ApplauseMeterActionIdleIcon.setVisible(0);
-                ApplauseMeterActionActiveIconB.setVisible(0);
-                ApplauseMeterActionActiveIconA.setVisible(1);
-                return ;
-            }
-            else
-            {
-                ApplauseMeterActionUnfocusedIcon.setVisible(0);
-                ApplauseMeterActionIdleIcon.setVisible(0);
-                ApplauseMeterActionActiveIconA.setVisible(0);
-                ApplauseMeterActionActiveIconB.setVisible(1);
-                return ;
-            }
-        }
-    }
-    return ;
-}
-function ApplauseMeterGui::openForInstrument(%this, %instrumentName)
-{
+};
+function ApplauseMeterGui::applaudSetIdleIcon(%this) {
+    nonIdleStateA = 0 @ %this;
+    %this.setApplaudIcon(1, 1, nonIdleStateA);
+};
+function ApplauseMeterGui::animateApplaudIcon(%this) {
+    nonIdleStateA = %this @ !(nonIdleStateA) @ %this;
+    %this.setApplaudIcon(1, 0, nonIdleStateA);
+};
+function ApplauseMeterGui::setApplaudIcon(%this, %hasFocus, %isIdle, %nonIdleStateA) {
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    0.setVisible();
+    return ApplauseMeterActionIdleIcon;
+    0.setVisible();
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    return ApplauseMeterActionIdleIcon;
+    0.setVisible();
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    return ApplauseMeterActionActiveIconA;
+    0.setVisible();
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    return ApplauseMeterActionActiveIconB;
+};
+function ApplauseMeterGui::openForInstrument(%this, %instrumentName) {
     gSetField(%this, "instrumentGoIdleSched", "");
     gSetField(%this, "closeApplauseMeterGuiSched", "");
     %schedule = gGetFieldWithDefault(%this, "animateInstrumentIconSchedule", "");
     cancel(%schedule);
     gSetField(%this, "animateInstrumentIconSchedule", "");
-    %instrument = InstrumentRegistryClient.getInstrumentObject(%instrumentName);
-    if (!isObject(%instrument))
-    {
-        error(getScopeName() SPC "- can\'t find instrument \'" @ %instrumentName @ "\', not opening instrument game -" SPC getTrace());
-        %this.close();
-        return ;
-    }
-    %this.instrumentInUse = %instrumentName;
-    ApplauseMeterGui.setText(%instrument.titleText);
-    ApplauseMeterInfoText.setText(%instrument.bodyText);
-    InstrumentActionActiveIconA.setBitmap(%instrument.activeIconA);
-    InstrumentActionActiveIconB.setBitmap(%instrument.activeIconB);
-    InstrumentActionIdleIcon.setBitmap(%instrument.idleIcon);
-    InstrumentActionUnfocusedIcon.setBitmap(%instrument.unfocusedIcon);
-    InstrumentActionIconContainer.setVisible(1);
-    %this.nonIdleStateA = 0;
-    %this.setInstrumentIcon(1, 1, %this.nonIdleStateA);
-    %this.closedForInstrument = 0;
-    return ;
-}
-function ApplauseMeterGui::closeForInstrument(%this)
-{
-    %this.rawk(InstrumentRegistryClient.getStopAnimation(%this.instrumentInUse));
-    %this.closedForInstrument = 1;
-    %this.instrumentInUse = "";
+    %instrument = %instrumentName.getInstrumentObject();
+    InstrumentRegistryClient;
+    error(!(isObject(%instrument)) @ getScopeName() @ " " @ "- can't find instrument '" @ %instrumentName @ "', not opening instrument game -" @ " " @ getTrace());
+    %this.close();
+    return;
+    instrumentInUse = %instrumentName @ %this;
+    titleText.setText();
+    bodyText.setText();
+    activeIconA.setBitmap();
+    activeIconB.setBitmap();
+    idleIcon.setBitmap();
+    unfocusedIcon.setBitmap();
+    1.setVisible();
+    nonIdleStateA = InstrumentActionIconContainer @ 0 @ %this;
+    %instrument;
+    %this.setInstrumentIcon(1, 1, nonIdleStateA);
+    closedForInstrument = %this @ 0 @ %this;
+    InstrumentActionUnfocusedIcon;
+};
+function ApplauseMeterGui::closeForInstrument(%this) {
+    %this.rawk(instrumentInUse.getStopAnimation());
+    closedForInstrument = %this @ 1 @ %this;
+    InstrumentRegistryClient;
+    instrumentInUse = "" @ %this;
     %schedule = gGetFieldWithDefault(%this, "animateInstrumentIconSchedule", "");
     cancel(%schedule);
     gSetField(%this, "animateInstrumentIconSchedule", "");
-    if (!%this.closingFromServer)
-    {
-        commandToServer('DropInstrumentOnClosingInstrumentInterface');
-    }
-    InstrumentActionIconContainer.setVisible(0);
-    ApplauseMeterInfoText.setText("");
+    commandToServer('DropInstrumentOnClosingInstrumentInterface');
+    0.setVisible();
+    "".setText();
     %sched = gGetFieldWithDefault(%this, "instrumentGoIdleSched", "");
+    ApplauseMeterInfoText;
     cancel(%sched);
     gSetField(%this, "instrumentGoIdleSched", "");
     %sched = gGetFieldWithDefault(%this, "closeApplauseMeterGuiSched", "");
+    InstrumentActionIconContainer;
     cancel(%sched);
     gSetField(%this, "closeApplauseMeterGuiSched", "");
-    return ;
-}
-function toggleInstrumentGame(%instrument)
-{
-    if (ApplauseMeterGui.isVisible() && (ApplauseMeterGui.applauseMeterUse $= "instrument"))
-    {
-        ApplauseMeterGui.close();
-    }
-    else
-    {
-        ApplauseMeterGui.open("instrument", %instrument);
-    }
-    return ;
-}
-function toggleGuitarGame()
-{
+};
+function toggleInstrumentGame(%instrument) {
+    close();
+    "instrument".open(%instrument);
+};
+function toggleGuitarGame() {
     toggleInstrumentGame("guitar");
-    return ;
-}
-function clientCmdOpenGameControls(%gameType, %arg)
-{
-    if (!isObject(ApplauseMeterGui))
-    {
-        return ;
-    }
-    if (%gameType $= "")
-    {
-        return ;
-    }
-    if (!(ApplauseMeterGui.applauseMeterUse $= %gameType))
-    {
-        ApplauseMeterGui.open(%gameType, %arg);
-    }
-    return ;
-}
-function clientCmdCloseGameControls(%gameType, %arg)
-{
-    if (!isObject(ApplauseMeterGui))
-    {
-        return ;
-    }
-    if (ApplauseMeterGui.applauseMeterUse $= %gameType)
-    {
-        ApplauseMeterGui.close();
-    }
-    return ;
-}
-function clientCmdDisableInstrumentGame()
-{
-    if (!ApplauseMeterGui.closedForInstrument)
-    {
-        ApplauseMeterGui.closeForInstrument();
-        InstrumentActionIconContainer.setVisible(0);
-        ApplauseMeterInfoText.setText(InstrumentRegistryClient.getInstrumentObject(%instrumentName).disabledText);
-    }
-    return ;
-}
-function ApplauseMeterGui::rawk(%this, %anim)
-{
-    if ($player.isSitting())
-    {
-        SendStandCommand(1);
-        return ;
-    }
-    if (!(%anim $= ""))
-    {
-        commandToServer('PlayInstrumentGameAnim', %this.instrumentInUse, %anim);
-    }
+};
+function clientCmdOpenGameControls(%gameType, %arg) {
+    return !(isObject());
+    return (%gameType $= "");
+    %gameType.open(%arg);
+};
+function clientCmdCloseGameControls(%gameType, %arg) {
+    return !(isObject());
+    close();
+};
+function clientCmdDisableInstrumentGame() {
+    closeForInstrument();
+    0.setVisible();
+    disabledText.setText();
+};
+function ApplauseMeterGui::rawk(%this, %anim) {
+    SendStandCommand(1);
+    return $player.isSitting();
+    commandToServer('PlayInstrumentGameAnim', instrumentInUse, %anim);
     %schedule = gGetFieldWithDefault(%this, "animateInstrumentIconSchedule", "");
-    if (%schedule $= "")
-    {
-        %schedule = %this.schedule(300, animateInstrumentIcon);
-        gSetField(%this, "animateInstrumentIconSchedule", %schedule);
-    }
+    %this;
+    %schedule = %this.schedule(300);
+    animateInstrumentIcon;
+    gSetField(%this, "animateInstrumentIconSchedule", %schedule);
     %this.scheduleGoIdle();
-    return ;
-}
-function ApplauseMeterGui::instrumentSetIdleIcon(%this)
-{
-    %this.nonIdleStateA = 0;
-    %this.setInstrumentIcon(1, 1, %this.nonIdleStateA);
-    return ;
-}
-function ApplauseMeterGui::animateInstrumentIcon(%this)
-{
+};
+function ApplauseMeterGui::instrumentSetIdleIcon(%this) {
+    nonIdleStateA = 0 @ %this;
+    %this.setInstrumentIcon(1, 1, nonIdleStateA);
+};
+function ApplauseMeterGui::animateInstrumentIcon(%this) {
     %schedule = gGetFieldWithDefault(%this, "animateInstrumentIconSchedule", "");
     cancel(%schedule);
     gSetField(%this, "animateInstrumentIconSchedule", "");
-    %this.nonIdleStateA = !%this.nonIdleStateA;
-    %this.setInstrumentIcon(1, 0, %this.nonIdleStateA);
-    return ;
-}
-function ApplauseMeterGui::setInstrumentIcon(%this, %hasFocus, %isIdle, %nonIdleStateA)
-{
-    if (!%hasFocus)
-    {
-        InstrumentActionActiveIconA.setVisible(0);
-        InstrumentActionActiveIconB.setVisible(0);
-        InstrumentActionUnfocusedIcon.setVisible(1);
-        InstrumentActionIdleIcon.setVisible(0);
-        return ;
-    }
-    else
-    {
-        if (%isIdle)
-        {
-            InstrumentActionUnfocusedIcon.setVisible(0);
-            InstrumentActionActiveIconA.setVisible(0);
-            InstrumentActionActiveIconB.setVisible(0);
-            InstrumentActionIdleIcon.setVisible(1);
-            return ;
-        }
-        else
-        {
-            if (%nonIdleStateA)
-            {
-                InstrumentActionUnfocusedIcon.setVisible(0);
-                InstrumentActionIdleIcon.setVisible(0);
-                InstrumentActionActiveIconB.setVisible(0);
-                InstrumentActionActiveIconA.setVisible(1);
-                return ;
-            }
-            else
-            {
-                InstrumentActionUnfocusedIcon.setVisible(0);
-                InstrumentActionIdleIcon.setVisible(0);
-                InstrumentActionActiveIconA.setVisible(0);
-                InstrumentActionActiveIconB.setVisible(1);
-                return ;
-            }
-        }
-    }
-    return ;
-}
-function ApplauseMeterGui::onKeyDown(%this, %unused, %keyCode)
-{
+    nonIdleStateA = %this @ !(nonIdleStateA) @ %this;
+    %this.setInstrumentIcon(1, 0, nonIdleStateA);
+};
+function ApplauseMeterGui::setInstrumentIcon(%this, %hasFocus, %isIdle, %nonIdleStateA) {
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    0.setVisible();
+    return InstrumentActionIdleIcon;
+    0.setVisible();
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    return InstrumentActionIdleIcon;
+    0.setVisible();
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    return InstrumentActionActiveIconA;
+    0.setVisible();
+    0.setVisible();
+    0.setVisible();
+    1.setVisible();
+    return InstrumentActionActiveIconB;
+};
+function ApplauseMeterGui::onKeyDown(%this, %unused, %keyCode) {
     setIdle(0);
     %keyCodeStr = %this.getStringFromKeyCode(%keyCode);
-    %this.lastKeyDown = %keyCodeStr;
-    if ((%this.applauseMeterUse $= "instrument") && !((%this.instrumentInUse $= "")))
-    {
-        %this.rawk(InstrumentRegistryClient.getAnimation(%this.instrumentInUse, %keyCodeStr));
-    }
-    else
-    {
-        if (%this.applauseMeterUse $= "sumo")
-        {
-            return %this.onSumoKeys(%keyCodeStr, 1);
-        }
-        else
-        {
-            if (%this.applauseMeterUse $= "blockgame")
-            {
-                return %this.onBlockGameKeys(%keyCodeStr, 1);
-            }
-        }
-    }
+    lastKeyDown = %keyCodeStr @ %this;
+    %this.rawk(instrumentInUse.getAnimation(%keyCodeStr));
+    return %this.onSumoKeys(%keyCodeStr, 1);
+    return %this.onBlockGameKeys(%keyCodeStr, 1);
     return 1;
-}
-function ApplauseMeterGui::onKeyUp(%this, %unused, %keyCode)
-{
+};
+function ApplauseMeterGui::onKeyUp(%this, %unused, %keyCode) {
     %keyCodeStr = %this.getStringFromKeyCode(%keyCode);
-    if (%this.applauseMeterUse $= "applause")
-    {
-        if (%keyCodeStr $= " ")
-        {
-            ApplauseMeterGui.clap();
-        }
-    }
-    else
-    {
-        if (%this.applauseMeterUse $= "instrument")
-        {
-            if (%this.lastKeyDown $= %keyCodeStr)
-            {
-                if (%this.instrumentInUse $= "")
-                {
-                    warn(getScopeName() SPC "- instrument not specified, using default stop animation \'" @ InstrumentRegistryClient.defaultStopAnimation @ "\'");
-                    %anim = InstrumentRegistryClient.defaultStopAnimation;
-                    commandToServer('EtsPlayAnimName', %anim);
-                }
-                else
-                {
-                    %anim = InstrumentRegistryClient.getStopAnimation(%this.instrumentInUse);
-                    commandToServer('EtsPlayAnimName', %anim);
-                }
-            }
-        }
-        else
-        {
-            if (%this.applauseMeterUse $= "sumo")
-            {
-                return %this.onSumoKeys(%keyCodeStr, 0);
-            }
-            else
-            {
-                if (%this.applauseMeterUse $= "blockgame")
-                {
-                    return %this.onBlockGameKeys(%keyCodeStr, 0);
-                }
-            }
-        }
-    }
+    clap();
+    warn((%this SPC instrumentInUse $= "") @ getScopeName() @ " " @ "- instrument not specified, using default stop animation '" @ InstrumentRegistryClient @ defaultStopAnimation @ "'");
+    %anim = defaultStopAnimation;
+    InstrumentRegistryClient;
+    commandToServer('EtsPlayAnimName', %anim);
+    %anim = instrumentInUse.getStopAnimation();
+    %this;
+    commandToServer('EtsPlayAnimName', %anim);
+    return %this.onSumoKeys(%keyCodeStr, 0);
+    return %this.onBlockGameKeys(%keyCodeStr, 0);
     return 1;
-}
+};

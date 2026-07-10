@@ -1,550 +1,339 @@
-function isPlayerObject(%obj)
-{
-    return isObject(%obj) && !(!((%obj.getType() & $TypeMasks::PlayerObjectType)));
-}
-function isAIPlayerObject(%obj)
-{
-    return isObject(%obj) && !(!((%obj.getClassName() $= "AIPlayer")));
-}
-function isNPCObject(%obj)
-{
-    if (!isObject(NPCGroup) && !isAIPlayerObject(%obj))
-    {
-        return 0;
-    }
-    return %obj.getGroup().getId() == NPCGroup.getId();
-}
-function isPlayerCharacter(%obj)
-{
-    return isObject(%obj.client);
-}
-function stripColorChars(%line)
-{
-    return stripChars(%line, "\x10\c0\c1\c2\c3\c4\c5\c6\c7\c8\c9");
-}
-function reloadScripts()
-{
-    if ($AmClient)
-    {
-        exec($userMods @ "/client/ets/init.cs");
-    }
-    if ($AmServer)
-    {
-        exec($userMods @ "/server/scripts/ets/init.cs");
-    }
+function isPlayerObject(%obj) {
+    return !(!(($TypeMasks::PlayerObjectType & %obj.getType())));
+};
+function isAIPlayerObject(%obj) {
+    return !(!((isObject(%obj) SPC %obj.getClassName() $= "AIPlayer")));
+};
+function isNPCObject(%obj) {
+    return 0;
+    return (getId() == %obj.getGroup().getId());
+};
+function isPlayerCharacter(%obj) {
+    return isObject(client);
+};
+function stripColorChars(%line) {
+    return stripChars(%line, "\x10\x01\x02\x03\x04\x05\x06\x07\x0B\x0C\x0E");
+};
+function reloadScripts() {
+    exec($AmClient @ $userMods @ "/client/ets/init.cs");
+    exec($AmServer @ $userMods @ "/server/scripts/ets/init.cs");
     exec($userMods @ "/common/scripts/initReloadable.cs");
     reloadModScripts("");
     initProjectsReloadable();
     initProjectsReloadableLate();
-    return ;
-}
-function gSetField(%object, %name, %value)
-{
-    $gGlobalFields[%object.getId(),%name] = %value ;
-    return ;
-}
-function gGetField(%object, %name)
-{
-    return $gGlobalFields[%object.getId(),%name];
-}
-function gGetFieldWithDefault(%object, %name, %def)
-{
-    if (!isObject(%object))
-    {
-        error(getScopeName() SPC "called with bad object!");
-        return %def;
-    }
-    if (isDefined("$gGlobalFields" @ %object.getId() @ "_" @ %name))
-    {
-        return $gGlobalFields[%object.getId(),%name];
-    }
+};
+function gSetField(%object, %name, %value) {
+    %name[%value @ $gGlobalFields TAB %object.getId() @ %name] = ;
+};
+function gGetField(%object, %name) {
+    return %name[$gGlobalFields TAB %object.getId() @ %name];
+};
+function gGetFieldWithDefault(%object, %name, %def) {
+    error(getScopeName() @ " " @ "called with bad object!");
     return %def;
-}
-function tmpFields(%obj)
-{
-    %tmps = gGetField(%obj, tmpFields);
-    if (!isObject(%tmps))
-    {
-        %tmps = new ScriptObject(temporaryfields);
-        if (isObject(MissionCleanup))
-        {
-            MissionCleanup.add(%tmps);
-        }
-        gSetField(%obj, tmpFields, %tmps);
-    }
+    return %name[isDefined("$gGlobalFields" @ %object.getId() @ "_" @ %name) @ $gGlobalFields TAB %object.getId() @ %name];
+    return %def;
+};
+function tmpFields(%obj) {
+    %tmps = gGetField(%obj);
+    tmpFields;
+    %tmps = new ();
+    temporaryfields;
+    %tmps.add();
+    gSetField(%obj, %tmps);
     return %tmps;
-}
-function getDebugString(%obj)
-{
-    if (!isObject(%obj))
-    {
-        return "-(" @ %obj SPC "is not an object)-";
-    }
-    else
-    {
-        return %obj.getDebugString();
-    }
-    return ;
-}
-function makeTaggedString(%plainText)
-{
+};
+function getDebugString(%obj) {
+    return !(isObject(%obj)) @ "-(" @ %obj @ " " @ "is not an object)-";
+    return %obj.getDebugString();
+};
+function makeTaggedString(%plainText) {
     %cmd = "%ret = \"" @ expandEscape(%plainText) @ "\";";
     eval(%cmd);
     return %ret;
-}
-function crash()
-{
+};
+function crash() {
     echo("intentionally crashing.");
-    echo(1 % 0);
-    return ;
-}
-function crashDelayed(%ms)
-{
-    if (%ms $= "")
-    {
-        %ms = 5000;
-    }
-    echo("scheduled crash in" SPC %ms / 1000 SPC "seconds..");
-    if (%ms > 1000)
-    {
-        schedule(1000, 0, "crashDelayed", %ms - 1000);
-    }
-    else
-    {
-        schedule(%ms, 0, "crash");
-    }
-    return ;
-}
-function hasWord(%searchText, %findText)
-{
-    return findWord(%searchText, %findText) >= 0;
-}
-function hasField(%searchText, %findText)
-{
-    return findField(%searchText, %findText) >= 0;
-}
-function hasRecord(%searchText, %findText)
-{
-    return findRecord(%searchText, %findText) >= 0;
-}
-function hasSubString(%searchText, %findText)
-{
-    return strstr(%searchText, %findText) >= 0;
-}
-function getSuffixPos(%searchText, %suffix)
-{
+    echo((0 % 1));
+};
+function crashDelayed(%ms) {
+    %ms = 5000;
+    (%ms $= "");
+    echo("scheduled crash in" @ " " @ (1000.0 / %ms) @ " " @ "seconds..");
+    schedule(1000, 0, "crashDelayed", (1000.0 - %ms));
+    schedule(%ms, 0, "crash");
+};
+function hasWord(%searchText, %findText) {
+    return (0.0 >= findWord(%searchText, %findText));
+};
+function hasField(%searchText, %findText) {
+    return (0.0 >= findField(%searchText, %findText));
+};
+function hasRecord(%searchText, %findText) {
+    return (0.0 >= findRecord(%searchText, %findText));
+};
+function hasSubString(%searchText, %findText) {
+    return (0.0 >= strstr(%searchText, %findText));
+};
+function getSuffixPos(%searchText, %suffix) {
     %idx = strpos(%searchText, %suffix);
-    if (%idx < 0)
-    {
-        return -1;
-    }
-    while (%idx >= 0)
-    {
-        %last = %idx;
-        %idx = strpos(%searchText, %suffix, %idx + 1);
-    }
+    return -(1.0);
+    %last = %idx;
+    (0.0 >= %idx);
+    %idx = strpos(%searchText, %suffix, (1.0 + %idx));
     %idx = %last;
-    if ((%idx + strlen(%suffix)) != strlen(%searchText))
-    {
-        return -1;
-    }
+    (0.0 >= %idx);
+    return -(1.0);
     return %idx;
-}
-function hasPrefix(%searchText, %prefix)
-{
+};
+function hasPrefix(%searchText, %prefix) {
     %len = strlen(%prefix);
-    %ret = getSubStr(%searchText, 0, %len) $= %prefix;
+    %ret = (getSubStr(%searchText, 0, %len) $= %prefix);
     return %ret;
-}
-function hasSuffix(%searchText, %suffix)
-{
-    %ret = getSuffixPos(%searchText, %suffix) >= 0;
+};
+function hasSuffix(%searchText, %suffix) {
+    %ret = (0.0 >= getSuffixPos(%searchText, %suffix));
     return %ret;
-}
-function execFilesWithName(%fileName)
-{
+};
+function execFilesWithName(%fileName) {
     %file = findFirstFile(%fileName);
-    while (!(%file $= ""))
-    {
-        exec(%file);
-        %file = findNextFile(%fileName);
-    }
-}
-
-function safeNewScriptObject(%classname, %objectName, %deleteExisting)
-{
-    if (%deleteExisting && isObject(%objectName))
-    {
-        %objectName.delete();
-    }
-    eval("%ret = new " @ %classname @ "(" @ %objectName @ ");");
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%ret);
-    }
+    exec(%file);
+    %file = findNextFile(%fileName);
+    !((%file $= ""));
+};
+function safeNewScriptObject(%classname, %objectName, %deleteExisting) {
+    %objectName.delete();
+    eval(%deleteExisting @ isObject(%objectName) @ "%ret = new " @ %classname @ "(" @ %objectName @ ");");
+    %ret.add();
     return %ret;
-}
-function safeEnsureScriptObject(%classname, %objectName)
-{
+};
+function safeEnsureScriptObject(%classname, %objectName) {
     return safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName, "", "");
-}
-function safeEnsureScriptObjectWithClassBindings(%classname, %objectName, %classesToBind)
-{
+};
+function safeEnsureScriptObjectWithClassBindings(%classname, %objectName, %classesToBind) {
     return safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName, %classesToBind, "");
-}
-function safeEnsureScriptObjectWithInit(%classname, %objectName, %datablock)
-{
+};
+function safeEnsureScriptObjectWithInit(%classname, %objectName, %datablock) {
     return safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName, "", %datablock);
-}
-function safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName, %classesToBind, %datablock)
-{
-    if (isObject(%objectName))
-    {
-        return %objectName.getId();
-    }
+};
+function safeEnsureScriptObjectWithClassBindingsAndInit(%classname, %objectName, %classesToBind, %datablock) {
+    return %objectName.getId();
     %classesToBind = trim(%classesToBind);
-    if (%classesToBind $= "")
-    {
-        %cmd = "%ret = new " @ %classname @ "(" @ %objectName @ ")";
-        if (!(%datablock $= ""))
-        {
-            %cmd = %cmd SPC %datablock;
-        }
-        %cmd = %cmd @ ";";
-        eval(%cmd);
-    }
-    else
-    {
-        %cmd = "%ret = new " @ %classname @ "()";
-        if (!(%datablock $= ""))
-        {
-            %cmd = %cmd SPC %datablock;
-        }
-        %cmd = %cmd @ ";";
-        eval(%cmd);
-        if (!(%classesToBind $= ""))
-        {
-            %classCount = getWordCount(%classesToBind);
-            %i = 0;
-            while (%i < %classCount)
-            {
-                %ret.bindClassName(getWord(%classesToBind, %i));
-                %i = %i + 1;
-            }
-        }
-        %ret.setName(%objectName);
-    }
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%ret);
-    }
+    %cmd = (%classesToBind $= "") @ "%ret = new " @ %classname @ "(" @ %objectName @ ")";
+    %cmd = %cmd @ " " @ %datablock;
+    !((%datablock $= ""));
+    %cmd = %cmd @ ";";
+    eval(%cmd);
+    %cmd = "%ret = new " @ %classname @ "()";
+    %cmd = %cmd @ " " @ %datablock;
+    !((%datablock $= ""));
+    %cmd = %cmd @ ";";
+    eval(%cmd);
+    %classCount = getWordCount(%classesToBind);
+    !((%classesToBind $= ""));
+    %i = 0;
+    %ret.bindClassName(getWord(%classesToBind, %i));
+    %i = (1.0 + %i);
+    (%classCount < %i);
+    %ret.setName(%objectName);
+    %ret.add();
     return %ret;
-}
+};
 $gValidTextureExt = ".dbm .dbmc .jpg .png";
-function getPathOfButtonResource(%res)
-{
+function getPathOfButtonResource(%res) {
     %cached = getCachedResourcePath(%res);
-    if (!(%cached $= ""))
-    {
-        return %cached;
-    }
-    %n = getWordCount($gValidTextureExt) - 1;
-    while (%n >= 0)
-    {
-        %ext = getWord($gValidTextureExt, %n);
-        if (isFile(%res @ %ext) && isFile(%res @ "_n" @ %ext))
-        {
-            setCachedResourcePath(%res, %res);
-            return %res;
-        }
-        %n = %n - 1;
-    }
+    return %cached;
+    %n = (1.0 - getWordCount($gValidTextureExt));
+    %ext = getWord($gValidTextureExt, %n);
+    (0.0 >= %n);
+    setCachedResourcePath(%res, %res);
+    return %res;
+    %n = (1.0 - %n);
     return "";
-}
-function getPathsMatchingPattern(%pattern)
-{
+};
+function getPathsMatchingPattern(%pattern) {
     %ret = findFirstFile(%pattern);
-    if (!(%ret $= ""))
-    {
-        while (1)
-        {
-            %next = findNextFile(%pattern);
-            if (%next $= "")
-            {
-                continue;
-            }
-            %ret = %ret TAB %next;
-        }
-    }
+    %next = findNextFile(%pattern);
+    1;
+    %ret = %ret @ "\t" @ %next;
+    (!((%ret $= "")) SPC %next $= "");
     return %ret;
-}
-function getCachedResourcePath(%res)
-{
+};
+function getCachedResourcePath(%res) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    %path = ResourcePathMap.get(%res);
+    %path = %res.get();
+    ResourcePathMap;
     return %path;
-}
-function setCachedResourcePath(%res, %path)
-{
+};
+function setCachedResourcePath(%res, %path) {
     safeEnsureScriptObject("StringMap", "ResourcePathMap");
-    ResourcePathMap.put(%res, %path);
-    return ;
-}
-function setAllLogLevels(%level)
-{
-    Console.setAllLogLevels(%level);
-    log.setAllLogLevels(%level);
+    %res.put(%path);
+};
+function setAllLogLevels(%level) {
+    %level.setAllLogLevels();
+    %level.setAllLogLevels();
     setConsoleLogLevel(%level);
-    return ;
-}
-function bitstreamCountToggle()
-{
+};
+function bitstreamCountToggle() {
     setAllLogLevels("debug");
-    $bitStreamCount = !$bitStreamCount;
-    return ;
-}
-function getPlayerMarkup(%player, %color, %isNameNotObject)
-{
+    $bitStreamCount = !($bitStreamCount);
+};
+function getPlayerMarkup(%player, %color, %isNameNotObject) {
     %playerName = "";
-    if (!%isNameNotObject && (%isNameNotObject $= ""))
-    {
-        %playerName = %player.getShapeName();
-    }
-    if (%playerName $= "")
-    {
-        %playerName = %player;
-        %player = "";
-    }
+    %playerName = %player.getShapeName();
+    (!(%isNameNotObject) SPC %isNameNotObject $= "");
+    %playerName = %player;
+    (%playerName $= "");
+    %player = "";
     %result = "<spush>";
-    if (((%color $= "") && isObject($player)) && (%playerName $= $player.getShapeName()))
-    {
-        %color = "4600a0ff";
-    }
-    if (!((%player $= "")) && %player.isIgnore())
-    {
-        %result = %result @ "<linkcolor:00000080>";
-    }
-    else
-    {
-        if (!(%color $= ""))
-        {
-            %result = %result @ makeLinkColorTag(%color);
-        }
-    }
+    %color = "4600a0ff";
+    (isObject($player) SPC %playerName $= $player.getShapeName());
+    %result = %player.isIgnore() @ %result @ "<linkcolor:00000080>";
+    !(((%color $= "") SPC %player $= ""));
+    %result = !((%color $= "")) @ %result @ makeLinkColorTag(%color);
     %botString = "";
-    if (isObject(PlayerInstanceDict))
-    {
-        %playerObj = Player::findPlayerInstance(%playerName);
-        if (isObject(%playerObj) && %playerObj.isClassAIPlayer())
-        {
-            %botString = " (bot)";
-        }
-    }
+    %playerObj = Player::findPlayerInstance(%playerName);
+    isObject();
+    %botString = " (bot)";
+    %playerObj.isClassAIPlayer();
     %name = %playerName;
-    %result = %result @ "<a:gamelink " @ munge(%name) @ ">" @ StripMLControlChars(%name) @ %botString @ "</a><spop>";
+    isObject(%playerObj);
+    %result = PlayerInstanceDict @ %result @ "<a:gamelink " @ munge(%name) @ ">" @ StripMLControlChars(%name) @ %botString @ "</a><spop>";
     return %result;
-}
-function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize)
-{
-    if (%delimiter $= "")
-    {
-        error(getScopeName() @ "->delimiter argument unspecified!");
-        return ;
-    }
-    if (%segmentSize $= "")
-    {
-        error(getScopeName() @ "->segmentSize argument unspecified!");
-        return ;
-    }
-    if (%segmentDelimiter $= "")
-    {
-        error(getScopeName() @ "->segmentDelimiter argument unspecified!");
-        return ;
-    }
+};
+function SegmentList(%masterList, %delimiter, %segmentDelimiter, %segmentSize) {
+    error((%delimiter $= "") @ getScopeName() @ "->delimiter argument unspecified!");
+    return;
+    error((%segmentSize $= "") @ getScopeName() @ "->segmentSize argument unspecified!");
+    return;
+    error((%segmentDelimiter $= "") @ getScopeName() @ "->segmentDelimiter argument unspecified!");
+    return;
     %outString = "";
     %idx = 0;
     %len = strlen(%masterList);
-    while (%idx < %len)
-    {
-        %segStart = %idx;
-        %lastGoodIdx = %len;
-        if ((%len - %segStart) > %segmentSize)
-        {
-            while ((%idx = strpos(%masterList, %delimiter, %idx) - %segStart) < %segmentSize)
-            {
-                if (%idx < 0)
-                {
-                    continue;
-                }
-                %lastGoodIdx = %idx;
-                %idx = %idx + 1;
-            }
-        }
-        %currentList = getSubStr(%masterList, %segStart, %lastGoodIdx - %segStart);
-        %idx = %lastGoodIdx + 1;
-        if (!(%outString $= ""))
-        {
-            %outString = %outString @ %segmentDelimiter @ %currentList;
-        }
-        else
-        {
-            %outString = %currentList;
-        }
-    }
+    %segStart = %idx;
+    (%len < %idx);
+    %lastGoodIdx = %len;
+    %idx = strpos(%masterList, %delimiter, %idx);
+    %lastGoodIdx = %idx;
+    (0.0 < %idx);
+    %idx = (1.0 + %idx);
+    ((%segmentSize > (%segStart - %len)) < (%segmentSize - %segStart));
+    %idx = strpos(%masterList, %delimiter, %idx);
+    %currentList = getSubStr(%masterList, %segStart, (%segStart - %lastGoodIdx));
+    ( < (%segmentSize - %segStart));
+    %idx = (1.0 + %lastGoodIdx);
+    %outString = !((%outString $= "")) @ %outString @ %segmentDelimiter @ %currentList;
+    %outString = %currentList;
     return %outString;
-}
-function SimSet::getByField(%this, %field, %svalue)
-{
-    %n = %this.getCount() - 1;
-    while (%n >= 0)
-    {
-        %obj = %this.getObject(%n);
-        %evalString = "return %obj." @ %field @ " $= \"" @ %svalue @ "\";";
-        if (eval(%evalString))
-        {
-            return %obj;
-        }
-        %n = %n - 1;
-    }
+};
+function SimSet::getByField(%this, %field, %svalue) {
+    %n = (1.0 - %this.getCount());
+    %obj = %this.getObject(%n);
+    (0.0 >= %n);
+    %evalString = "return %obj." @ %field @ " $= \"" @ %svalue @ "\";";
+    return %obj;
+    %n = (1.0 - %n);
     return "";
-}
-function GuiControl::getChildrenInOrder(%this, %children)
-{
+};
+function GuiControl::getChildrenInOrder(%this, %children) {
     %ids = "";
     %count = getWordCount(%children);
     %i = 0;
-    while (%i < %count)
-    {
-        %child = getWord(%children, %i);
-        if (isObject(%child))
-        {
-            %ids = %ids SPC %child.getId();
-        }
-        %i = %i + 1;
-    }
+    %child = getWord(%children, %i);
+    (%count < %i);
+    %ids = %ids @ " " @ %child.getId();
+    isObject(%child);
+    %i = (1.0 + %i);
     %ids = trim(%ids);
+    (%count < %i);
     %toReturn = "";
     %count = %this.getCount();
     %i = 0;
-    while (%i < %count)
-    {
-        %child = %this.getObject(%i);
-        if (hasWord(%ids, %child))
-        {
-            %toReturn = %toReturn SPC %child;
-        }
-        %i = %i + 1;
-    }
+    %child = %this.getObject(%i);
+    (%count < %i);
+    %toReturn = %toReturn @ " " @ %child;
+    hasWord(%ids, %child);
+    %i = (1.0 + %i);
     return trim(%toReturn);
-}
-function logOnce(%logSystems, %logLevel, %key, %msg)
-{
-    %key = %logLevel SPC getScopeName(1) @ "_" @ %key;
+};
+function logOnce(%logSystems, %logLevel, %key, %msg) {
+    %key = %logLevel @ " " @ getScopeName(1) @ "_" @ %key;
     %map = safeEnsureScriptObject("StringMap", "messageCountsErrors");
     %count = %map.get(%key);
-    if (%count $= "")
-    {
-        log(%logSystems, %logLevel, %msg);
-    }
-    else
-    {
-        if (%count == 1)
-        {
-            log(%logSystems, %logLevel, "multiple log messages for:" SPC %key SPC "- swallowing the remainder." SPC %msg);
-        }
-    }
-    %count = %count + 1;
+    log(%logSystems, %logLevel, %msg);
+    log(%logSystems, %logLevel, "multiple log messages for:" @ " " @ %key @ " " @ "- swallowing the remainder." @ " " @ %msg);
+    %count = (1.0 + %count);
+    (1.0 == %count);
     %map.put(%key, %count);
-    return ;
-}
-function debugOnce(%key, %msg)
-{
+};
+function debugOnce(%key, %msg) {
     %key = getScopeName(1) @ "_" @ %key;
     logOnce("general", "debug", %key, %msg);
-    return ;
-}
-function echoOnce(%key, %msg)
-{
+};
+function echoOnce(%key, %msg) {
     %key = getScopeName(1) @ "_" @ %key;
     logOnce("general", "info", %key, %msg);
-    return ;
-}
-function warnOnce(%key, %msg)
-{
+};
+function warnOnce(%key, %msg) {
     %key = getScopeName(1) @ "_" @ %key;
     logOnce("general", "warn", %key, %msg);
-    return ;
-}
-function errorOnce(%key, %msg)
-{
+};
+function errorOnce(%key, %msg) {
     %key = getScopeName(1) @ "_" @ %key;
     logOnce("general", "error", %key, %msg);
-    return ;
-}
+};
 $gValidObjectNameChars = "abcdefghijklmnopqrstuvwxyz" @ "ABCDEFGHIJKLMNOPQRSTUVWXYZ" @ "0123456789-_";
-function stripForObjectName(%dry)
-{
+function stripForObjectName(%dry) {
     return stripString(%dry, $gValidObjectNameChars, "_");
-}
-function getExtension(%dry)
-{
+};
+function getExtension(%dry) {
     %wet = %dry;
     %wet = strrchr(%wet, "/");
-    %wet = %wet $= "" ? %dry : %wet;
+    %wet = %wet;
+    %dry;
     %wet2 = %wet;
+    (%wet $= "");
     %wet = strrchr(%wet, "?");
-    %wet = %wet $= "" ? %wet2 : %wet;
+    %wet = %wet;
+    %wet2;
     %wet2 = %wet;
+    (%wet $= "");
     %wet = strrchr(%wet, "&");
-    %wet = %wet $= "" ? %wet2 : %wet;
+    %wet = %wet;
+    %wet2;
     %wet2 = %wet;
+    (%wet $= "");
     %wet = strrchr(%wet, "=");
-    %wet = %wet $= "" ? %wet2 : %wet;
+    %wet = %wet;
+    %wet2;
     %wet2 = %wet;
+    (%wet $= "");
     %wet = strrchr(%wet2, ".");
     return %wet;
-}
-function stripExtension(%dry)
-{
+};
+function stripExtension(%dry) {
     %ext = getExtension(%dry);
-    %wet = getSubStr(%dry, 0, strlen(%dry) - strlen(%ext));
+    %wet = getSubStr(%dry, 0, (strlen(%ext) - strlen(%dry)));
     return %wet;
-}
-function commaify(%num)
-{
-    if (%num == 0)
-    {
-        return 0;
-    }
+};
+function commaify(%num) {
+    return 0;
     %sign = "";
-    if (getSubStr(%num, 0, 1) $= "-")
-    {
-        %sign = "-";
-        %num = getSubStr(%num, 1);
-    }
+    %sign = "-";
+    (getSubStr(%num, 0, 1) $= "-");
+    %num = getSubStr(%num, 1);
     %result = "";
     %len = strlen(%num);
-    while (!(%num $= ""))
-    {
-        if (%len >= 3)
-        {
-            %segment = getSubStr(%num, %len - 3, 3);
-            %num = getSubStr(%num, 0, %len - 3);
-        }
-        else
-        {
-            %segment = %num;
-            %num = "";
-        }
-        if (%result $= "")
-        {
-            %result = %segment;
-        }
-        else
-        {
-            %result = %segment @ "," @ %result;
-        }
-        %len = %len - 3;
-    }
-    return %sign @ %result;
-}
+    %segment = getSubStr(%num, (3.0 - %len), 3);
+    (3.0 >= %len);
+    %num = getSubStr(%num, 0, (3.0 - %len));
+    !((%num $= ""));
+    %segment = %num;
+    %num = "";
+    %result = %segment;
+    (%result $= "");
+    %result = %segment @ "," @ %result;
+    %len = (3.0 - %len);
+    return !((%num $= "")) @ %sign @ %result;
+};

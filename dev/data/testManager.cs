@@ -1,9 +1,6 @@
-function TestLoginRequest::onError(%this, %unused, %unused)
-{
-    return ;
-}
-function TestLoginRequest::onDone(%this, %unused)
-{
+function TestLoginRequest::onError(%this, %unused, %unused) {
+};
+function TestLoginRequest::onDone(%this, %unused) {
     echo("status:          " @ %this.status());
     echo("status code:     " @ %this.statusCode());
     echo("token:           " @ %this.getValue("token"));
@@ -18,58 +15,31 @@ function TestLoginRequest::onDone(%this, %unused)
     echo("acctbal:         " @ %this.getValue("acctbal"));
     echo("activated:       " @ %this.getValue("activated"));
     echo("hasemail:        " @ %this.getValue("hasemail"));
-    return ;
-}
-function TestBootRequest::onDone(%this)
-{
-    schedule(1000, 0, Login);
-    return ;
-}
-function bootThenLogin()
-{
-    if (isObject(TestBootRequest))
-    {
-        TestBootRequest.delete();
-    }
-    %bootRequest = new ManagerRequest(TestBootRequest);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%bootRequest);
-    }
-    %url = $Net::SecureClientServiceURL @ "/Boot";
-    %url = %url @ "?user=doppeladmin&password=doppeladmin";
+};
+function TestBootRequest::onDone(%this) {
+    schedule(1000, 0);
+};
+function bootThenLogin() {
+    delete();
+    %bootRequest = new ();
+    TestBootRequest;
+    %bootRequest.add();
+    %url = MissionCleanup @ $Net::SecureClientServiceURL @ "/Boot";
+    isObject();
+    %url = MissionCleanup @ %url @ "?user=doppeladmin&password=doppeladmin";
+    ManagerRequest;
     %bootRequest.setURL(%url);
     %bootRequest.setVerbose(1);
-    if (%bootRequest.start())
-    {
-        CURLSimGroup.add(%bootRequest);
-    }
-    else
-    {
-        %bootRequest.delete();
-    }
-    return ;
-}
-function Login()
-{
-    if (isObject(TestLoginRequest))
-    {
-        TestLoginRequest.delete();
-    }
-    %loginRequest = new ManagerRequest(TestLoginRequest);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%loginRequest);
-    }
+    %bootRequest.add();
+    %bootRequest.delete();
+};
+function Login() {
+    delete();
+    %loginRequest = new ();
+    TestLoginRequest;
+    %loginRequest.add();
     %loginRequest.setURL("http://s-envmanager.eviltwinstudios.net/envmanager/envclient/login?user=doppeladmin&password=doppeladmin&build=unknown&version=unknown");
     %loginRequest.setProgress(1);
-    if (%loginRequest.start())
-    {
-        CURLSimGroup.add(%loginRequest);
-    }
-    else
-    {
-        %loginRequest.delete();
-    }
-    return ;
-}
+    %loginRequest.add();
+    %loginRequest.delete();
+};

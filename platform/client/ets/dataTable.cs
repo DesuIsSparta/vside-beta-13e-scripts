@@ -1,9 +1,6 @@
-function DataTable::clear(%this)
-{
+function DataTable::clear(%this) {
     %this.removeRowsByIndex(0, %this.getRowCount());
-    return ;
-}
-function DataTable::hasColumnNamed(%this, %name)
-{
-    return %this.getColumnIndex(%name) >= 0;
-}
+};
+function DataTable::hasColumnNamed(%this, %name) {
+    return (0.0 >= %this.getColumnIndex(%name));
+};

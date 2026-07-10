@@ -1,205 +1,114 @@
-animatorPanel.initialized = 0;
-function toggleAnimatorPanel(%target)
-{
-    if (!$player.rolesPermissionCheckNoWarn("debugActive"))
-    {
-        return ;
-    }
-    if (!isDefined("%target"))
-    {
-        %target = "";
-    }
-    animatorPanel.defaultTarget = %target;
-    if (!(%target $= ""))
-    {
-        animatorPanel.open();
-    }
-    else
-    {
-        toggleVisibleState(animatorPanel);
-    }
-    return ;
-}
-function animatorPanel::open(%this)
-{
+initialized = 0 @ animatorPanel;
+function toggleAnimatorPanel(%target) {
+    return !($player.rolesPermissionCheckNoWarn("debugActive"));
+    %target = "";
+    !(isDefined("%target"));
+    defaultTarget = %target @ animatorPanel;
+    open();
+    toggleVisibleState();
+};
+function animatorPanel::open(%this) {
     %this.init();
-    Canvas.pushDialog(%this, 0);
+    %this.pushDialog(0);
     %this.setVisible(1);
     %this.onRefreshTargetsList();
-    return ;
-}
-function animatorPanel::init(%this)
-{
-    if (%this.initialized)
-    {
-        return ;
-    }
+};
+function animatorPanel::init(%this) {
+    return initialized;
     %this.onRefreshAnimsList();
-    %this.lastTextBox = "";
-    %this.initialized = 1;
-    return ;
-}
-function animatorPanel::close(%this, %unused)
-{
-    Canvas.popDialog(%this);
+    lastTextBox = "" @ %this;
+    initialized = 1 @ %this;
+};
+function animatorPanel::close(%this, %unused) {
+    %this.popDialog();
     %this.setVisible(0);
-    return ;
-}
-function animatorPanel::tryTarget(%this, %shape)
-{
-    if (!%this.isVisible())
-    {
-        return ;
-    }
+};
+function animatorPanel::tryTarget(%this, %shape) {
+    return !(%this.isVisible());
     %name = admin::getTargetName(%shape);
-    if (isObject(%shape))
-    {
-        %classname = admin::getFormattedClassName(%shape.getClassName());
-    }
-    else
-    {
-        %classname = admin::getFormattedClassName("special");
-    }
+    %classname = admin::getFormattedClassName(%shape.getClassName());
+    isObject(%shape);
+    %classname = admin::getFormattedClassName("special");
     %targetName = %classname @ "\t" @ %name;
-    animatorPanelTargetsPopup.setText(%targetName);
-    return ;
-}
-function animatorPanel::doAnimToTarget(%this, %animTextBox)
-{
-    %playerName = getField(animatorPanelTargetsPopup.getText(), 1);
-    if ((%playerName $= "") && !isObject(%animTextBox))
-    {
-        return ;
-    }
+    %targetName.setText();
+};
+function animatorPanel::doAnimToTarget(%this, %animTextBox) {
+    %playerName = getField(getText(), 1);
+    animatorPanelTargetsPopup;
+    return !(isObject(%animTextBox));
     %animName = %animTextBox.getText();
     commandToServer('ForcePlayerToPlayAnimName', %playerName, %animName);
-    return ;
-}
-function animatorPanel::onRefreshAnimsList(%this)
-{
+};
+function animatorPanel::onRefreshAnimsList(%this) {
     commandToServer('RefreshAnimatorPanel');
-    return ;
-}
-function clientCmdRefreshAnimatorPanel(%possibleGenres)
-{
-    animatorPanel.onGotPossibleGenres(%possibleGenres);
-    return ;
-}
-function animatorPanel::onGotPossibleGenres(%this, %possibleGenres)
-{
-    animatorPanelAnimsPopup.clear();
+};
+function clientCmdRefreshAnimatorPanel(%possibleGenres) {
+    %possibleGenres.onGotPossibleGenres();
+};
+function animatorPanel::onGotPossibleGenres(%this, %possibleGenres) {
+    clear();
     %animIndex = 0;
+    animatorPanelAnimsPopup;
     %numGenres = strlen(%possibleGenres);
     %i = 0;
-    while (%i < %numGenres)
-    {
-        %genre = strupr(getSubStr(%possibleGenres, %i, 1));
-        %g = 0;
-        while (%g < 2)
-        {
-            %gender = %g ? "M" : "F";
-            %animationMap = "animationMap" @ %gender @ %genre;
-            if (isObject(%animationMap))
-            {
-                %numAnimations = %animationMap.size();
-                %j = 0;
-                while (%j < %numAnimations)
-                {
-                    %anim = %animationMap.getValue(%j);
-                    if (animatorPanelAnimsPopup.findText(%anim) < 0)
-                    {
-                        animatorPanelAnimsPopup.add(%anim, %animIndex);
-                        %animIndex = %animIndex + 1;
-                    }
-                    %j = %j + 1;
-                }
-            }
-            %g = %g + 1;
-        }
-        %i = %i + 1;
-    }
-    animatorPanelAnimsPopup.sort();
-    return ;
-}
-function animatorPanelAnimsPopup::onSelect(%this, %unused, %text)
-{
-    if (isObject(animatorPanel.lastTextBox))
-    {
-        animatorPanel.lastTextBox.setText(%text);
-    }
-    return ;
-}
-function animatorPanel::onRefreshTargetsList(%this)
-{
-    $gAnimatorGuiPrevMenuTarget = animatorPanelTargetsPopup.getText();
-    animatorPanelTargetsPopup.setText("getting list..");
+    %genre = strupr(getSubStr(%possibleGenres, %i, 1));
+    (%numGenres < %i);
+    %g = 0;
+    %gender = "F";
+    "M";
+    %animationMap = (2.0 < %g) @ %g @ "animationMap" @ %gender @ %genre;
+    %numAnimations = %animationMap.size();
+    isObject(%animationMap);
+    %j = 0;
+    %anim = %animationMap.getValue(%j);
+    (%numAnimations < %j);
+    %anim.add(%animIndex);
+    %animIndex = (1.0 + %animIndex);
+    animatorPanelAnimsPopup;
+    %j = (1.0 + %j);
+    (animatorPanelAnimsPopup < %anim.findText());
+    %g = (1.0 + %g);
+    (%numAnimations < %j);
+    %i = (1.0 + %i);
+    (2.0 < %g);
+    sort();
+};
+function animatorPanelAnimsPopup::onSelect(%this, %unused, %text) {
+    lastTextBox.setText(%text);
+};
+function animatorPanel::onRefreshTargetsList(%this) {
+    $gAnimatorGuiPrevMenuTarget = getText();
+    animatorPanelTargetsPopup;
+    "getting list..".setText();
     commandToServer('AnimatorGetTargets');
-    return ;
-}
-function animatorPanel::onGotTargetsList(%this, %theList)
-{
-    animatorPanelTargetsPopup.clear();
+};
+function animatorPanel::onGotTargetsList(%this, %theList) {
+    clear();
     %num = getRecordCount(%theList);
-    if (%num < 1)
-    {
-        error("apparently nobody is here. this is bad.");
-        return ;
-    }
+    animatorPanelTargetsPopup;
+    error("apparently nobody is here. this is bad.");
+    return (1.0 < %num);
     %nextItem = getRecord(%theList, 0);
     %n = 0;
-    while (%n < %num)
-    {
-        %entry = getRecord(%theList, %n);
-        animatorPanelTargetsPopup.add(%entry, %n);
-        if (%entry $= $gAnimatorGuiPrevMenuTarget)
-        {
-            %nextItem = %entry;
-        }
-        %n = %n + 1;
-    }
-    animatorPanelTargetsPopup.sort();
-    if (!(%this.defaultTarget $= ""))
-    {
-        animatorPanelTargetsPopup.setText(%this.defaultTarget);
-    }
-    else
-    {
-        animatorPanelTargetsPopup.setText(%nextItem);
-    }
-    return ;
-}
-function animatorPanelTargetsPopup::onSelect(%this, %unused, %text)
-{
-    return ;
-}
+    %entry = getRecord(%theList, %n);
+    (%num < %n);
+    %entry.add(%n);
+    %nextItem = %entry;
+    (animatorPanelTargetsPopup SPC %entry $= $gAnimatorGuiPrevMenuTarget);
+    %n = (1.0 + %n);
+    sort();
+    defaultTarget.setText();
+    %nextItem.setText();
+};
+function animatorPanelTargetsPopup::onSelect(%this, %unused, %text) {
+};
 $animatorPanelTargetsList = "";
-function clientCmdBuildAnimatorTargetsList(%actionTagged, %item)
-{
+function clientCmdBuildAnimatorTargetsList(%actionTagged, %item) {
     %action = detag(%actionTagged);
-    if (%action $= "begin")
-    {
-        $animatorPanelTargetsList = "";
-    }
-    else
-    {
-        if (%action $= "add")
-        {
-            if ($animatorPanelTargetsList $= "")
-            {
-                $animatorPanelTargetsList = %item;
-            }
-            else
-            {
-                $animatorPanelTargetsList = $animatorPanelTargetsList @ "\n" @ %item;
-            }
-        }
-        else
-        {
-            if (%action $= "finish")
-            {
-                animatorPanel.onGotTargetsList($animatorPanelTargetsList);
-            }
-        }
-    }
-    return ;
-}
+    $animatorPanelTargetsList = "";
+    (%action $= "begin");
+    $animatorPanelTargetsList = %item;
+    ((%action $= "add") SPC $animatorPanelTargetsList $= "");
+    $animatorPanelTargetsList = $animatorPanelTargetsList @ "\n" @ %item;
+    $animatorPanelTargetsList.onGotTargetsList();
+};

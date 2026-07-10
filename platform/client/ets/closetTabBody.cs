@@ -1,240 +1,348 @@
-function ClosetTabs::fillBodyTab(%this)
-{
+function ClosetTabs::fillBodyTab(%this) {
     %theTab = %this.getTabWithName("BODY");
-    if (!isObject(%theTab))
-    {
-        return ;
-    }
-    %featuresLabel = new GuiTextCtrl()
-    {
-        profile = "ClosetTitleProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "181 64";
-        extent = "72 20";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        text = "Features";
-        maxLength = 255;
-    };
+    return !(isObject(%theTab));
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "26 26";
+    extent = "571 37";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/closet_tabs_bracket";
+    %theTab.add();
+    profile = GuiTextCtrl @ new ""() @ "ClosetTitleProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "181 64";
+    extent = "72 20";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "Features";
+    maxLength = 255;
+    %featuresLabel = ;
     %theTab.add(%featuresLabel);
-    %featuresPopup = new GuiPopUp2MenuCtrl(BodyFeaturesPopup)
-    {
-        profile = "ClosetPopupProfile";
-        scrollProfile = "DottedScrollProfile";
-        winProfile = "ClosetPopupWindowProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "180 84";
-        extent = "150 17";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        maxLength = 255;
-        maxPopupHeight = 200;
-        allowReverse = 0;
-    };
+    profile = BodyFeaturesPopup @ new () @ "ClosetPopupProfile";
+    GuiPopUp2MenuCtrl;
+    scrollProfile = 0 @ "DottedScrollProfile";
+    winProfile = "ClosetPopupWindowProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "180 84";
+    extent = "150 17";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    maxLength = 255;
+    maxPopupHeight = 200;
+    allowReverse = 0;
+    %featuresPopup = ;
     %theTab.add(%featuresPopup);
     %featuresPopup.rebuildPopupList();
-    %itemsFrame = new GuiControl(BodyItemsFrame)
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "22 120";
-        extent = "467 350";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    };
-    %itemsInfoText = new GuiTextCtrl()
-    {
-        profile = "ClosetLeftInfoProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "1 30";
-        extent = "77 16";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 0;
-        text = "no matching items";
-        maxLength = 255;
-    };
+    profile = BodyItemsFrame @ new () @ "GuiDefaultProfile";
+    GuiControl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "22 120";
+    extent = "467 350";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    profile = BodyHeightFrame @ new () @ "GuiDefaultProfile";
+    GuiControl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "368 62";
+    extent = "90 290";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    profile = BodyHeightDisplayText @ new () @ "BracketButton15InertProfile";
+    GuiVariableWidthButtonCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "2 5";
+    extent = "55 15";
+    minExtent = "1 1";
+    visible = 1;
+    command = "";
+    text = "---";
+    groupNum = -1;
+    buttonType = "PushButton";
+    helpTag = 0;
+    drawText = 1;
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "59 77";
+    extent = "30 10";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/divot";
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "59 141";
+    extent = "30 10";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/divot";
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "59 201";
+    extent = "30 10";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/divot";
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "65 5";
+    extent = "19 16";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/hslider_top";
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "65 270";
+    extent = "19 17";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/hslider_bottom";
+    profile = BodyHeightSlider @ new () @ "DottedSliderProfile";
+    GuiSliderCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "64 10";
+    extent = "21 270";
+    minExtent = "1 1";
+    altCommand = "BodyHeightSlider.valueChanged();";
+    sluggishness = -1;
+    visible = 1;
+    range = $Pref::Wardrobe::playerHeightMin @ " " @ $Pref::Wardrobe::playerHeightMax;
+    defaultValues = "0.930 1.000 1.075";
+    snapToDefaultRangeRatio = 0.04;
+    ticks = 10;
+    value = $UserPref::Player::height;
+    profile = BodyStanceButtons @ new () @ "GuiDefaultProfile";
+    GuiControl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "19 41";
+    extent = "333 26";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    profile = BodyStanceButtonHipHop @ new () @ "BracketButton19NonDefaultProfile";
+    GuiVariableWidthButtonCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "60 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.selectGenre(\"h\");";
+    text = "Hip-Hop";
+    groupNum = $BodyStanceGroup;
+    buttonType = "RadioButton";
+    helpTag = 0;
+    drawText = 1;
+    profile = BodyStanceButtonIndie @ new () @ "BracketButton19NonDefaultProfile";
+    GuiVariableWidthButtonCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "68 0";
+    extent = "60 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.selectGenre(\"i\");";
+    text = "Indie";
+    groupNum = $BodyStanceGroup;
+    buttonType = "RadioButton";
+    helpTag = 0;
+    drawText = 1;
+    profile = BodyStanceButtonPreppy @ new () @ "BracketButton19NonDefaultProfile";
+    GuiVariableWidthButtonCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "136 0";
+    extent = "60 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.selectGenre(\"p\");";
+    text = "Preppy";
+    groupNum = $BodyStanceGroup;
+    buttonType = "RadioButton";
+    helpTag = 0;
+    drawText = 1;
+    %itemsFrame = ;
+    profile = GuiTextCtrl @ new ""() @ "ClosetLeftInfoProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "1 30";
+    extent = "77 16";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    text = "no matching items";
+    maxLength = 255;
+    %itemsInfoText = ;
     %itemsFrame.add(%itemsInfoText);
-    %itemsRangeText = new GuiTextCtrl()
-    {
-        profile = "ClosetRightInfoProfile";
-        horizSizing = "left";
-        vertSizing = "bottom";
-        position = "313 1";
-        extent = "125 14";
-        minExtent = "125 1";
-        sluggishness = -1;
-        visible = 1;
-        text = "";
-        maxLength = 255;
-    };
+    profile = GuiTextCtrl @ new ""() @ "ClosetRightInfoProfile";
+    0;
+    horizSizing = "left";
+    vertSizing = "bottom";
+    position = "313 1";
+    extent = "125 14";
+    minExtent = "125 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "";
+    maxLength = 255;
+    %itemsRangeText = ;
     %itemsFrame.add(%itemsRangeText);
-    %theTab.rangeText = %itemsRangeText;
-    %itemsScroll = new GuiScrollCtrl()
-    {
-        profile = "ETSScrollProfile";
-        position = "0 20";
-        extent = "465 282";
-        minExtent = "1 1";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        visible = 1;
-        hScrollBar = "dynamic";
-        vScrollBar = "dynamic";
-        constantThumbHeight = 1;
-        scrollMultiplier = 14;
-    };
+    rangeText = %itemsRangeText @ %theTab;
+    profile = GuiScrollCtrl @ new ""() @ "ETSScrollProfile";
+    0;
+    position = "0 20";
+    extent = "465 282";
+    minExtent = "1 1";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    visible = 1;
+    hScrollBar = "dynamic";
+    vScrollBar = "dynamic";
+    constantThumbHeight = 1;
+    scrollMultiplier = 14;
+    %itemsScroll = ;
     %itemsScroll.bindClassName("ClosetItemsScroll");
-    %theTab.itemsScroll = %itemsScroll;
-    %thumbnails = new GuiArray2Ctrl(ClosetThumbnailsBody)
-    {
-        class = "ClosetThumbnails";
-        profile = "FocusableDefaultProfile";
-        childrenClassName = "GuiMouseEventCtrl";
-        childrenExtent = "109 138";
-        spacing = 2;
-        numRowsOrCols = 4;
-        inRows = 0;
-        canHilite = 0;
-        infoText = %itemsInfoText;
-        tab = %theTab;
-        scroll = %itemsScroll;
-    };
+    itemsScroll = %itemsScroll @ %theTab;
+    class = ClosetThumbnailsBody @ new () @ "ClosetThumbnails";
+    GuiArray2Ctrl;
+    profile = 0 @ "FocusableDefaultProfile";
+    childrenClassName = "GuiMouseEventCtrl";
+    childrenExtent = "109 138";
+    spacing = 2;
+    numRowsOrCols = 4;
+    inRows = 0;
+    canHilite = 0;
+    infoText = %itemsInfoText;
+    tab = %theTab;
+    scroll = %itemsScroll;
+    %thumbnails = ;
     %itemsScroll.add(%thumbnails);
-    %itemsScroll.thumbnails = %thumbnails;
+    thumbnails = %thumbnails @ %itemsScroll;
     %itemsFrame.add(%itemsScroll);
-    %itemsFrame.thumbnails = %thumbnails;
+    thumbnails = %thumbnails @ %itemsFrame;
     %theTab.add(%itemsFrame);
-    %theTab.thumbnails = %thumbnails;
-    %doneButton = new GuiVariableWidthButtonCtrl()
-    {
-        profile = "BracketButton19Profile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "829 519";
-        extent = "43 19";
-        minExtent = "1 1";
-        visible = 1;
-        command = "ClosetGui.close(false);";
-        text = "Done";
-        buttonType = "PushButton";
-        drawText = 1;
-    };
-    %cancelButton = new GuiVariableWidthButtonCtrl()
-    {
-        profile = "BracketButton19NonDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "882 519";
-        extent = "52 19";
-        minExtent = "1 1";
-        visible = 1;
-        command = "ClosetGui.close(true);";
-        text = "Cancel";
-        buttonType = "PushButton";
-        drawText = 1;
-    };
+    thumbnails = %thumbnails @ %theTab;
+    profile = BodyShortDescText @ new () @ "ClosetLeftInfoProfile";
+    GuiMLTextCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "692 84";
+    extent = "242 25";
+    lineSpacing = -(3.0);
+    %theTab.add();
+    profile = BodyLongDescText @ new () @ "ClosetLeftInfoProfile";
+    GuiMLTextCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "692 106";
+    extent = "173 32";
+    lineSpacing = -(3.0);
+    %theTab.add();
+    profile = GuiVariableWidthButtonCtrl @ new ""() @ "BracketButton19Profile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "829 519";
+    extent = "43 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.close(false);";
+    text = "Done";
+    buttonType = "PushButton";
+    drawText = 1;
+    %doneButton = ;
+    profile = GuiVariableWidthButtonCtrl @ new ""() @ "BracketButton19NonDefaultProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "882 519";
+    extent = "52 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.close(true);";
+    text = "Cancel";
+    buttonType = "PushButton";
+    drawText = 1;
+    %cancelButton = ;
     %theTab.add(%doneButton);
-    %theTab.doneButton = %doneButton;
+    doneButton = %doneButton @ %theTab;
     %theTab.add(%cancelButton);
-    %theTab.cancelButton = %cancelButton;
+    cancelButton = %cancelButton @ %theTab;
     %featuresPopup.SetSelected(0);
-    %this.tabBodyInitialized = 1;
-    BodyItemsFrame.update();
-    return ;
-}
-function ClosetTabs::updateBodyTabDisplay(%this)
-{
-    if (!%this.tabBodyInitialized)
-    {
-        return ;
-    }
-    BodyHeightSlider.setValue($UserPref::Player::height);
-    BodyHeightSlider.valueChanged();
-    return ;
-}
-function BodyItemsFrame::update(%this)
-{
-    %this.thumbnails.setDrawers(ThumbCategories.get(strlwr(%this.features)));
-    %this.thumbnails.makeFirstResponder(1);
-    if (%this.features $= "Height")
-    {
-        BodyHeightFrame.setVisible(1);
-        BodyHeightFrame.getParent().pushToBack(BodyHeightFrame);
-    }
-    else
-    {
-        BodyHeightFrame.setVisible(0);
-    }
-    if (%this.features $= "Stance")
-    {
-        BodyStanceButtons.setVisible(1);
-        BodyStanceButtons.getParent().pushToBack(BodyStanceButtons);
-    }
-    else
-    {
-        BodyStanceButtons.setVisible(0);
-    }
-    return ;
-}
-function BodyHeightDisplayText::update(%this)
-{
-    %myHeight = $UserPref::Player::height * $gClosetNeutralHeightInches[$player.getGender()];
-    %myFeet = mFloor(%myHeight / 12);
-    %myInches = mFloor(%myHeight - (%myFeet * 12));
-    %this.setText(%myFeet @ "\'" SPC %myInches @ "\"");
-    return ;
-}
-function BodyHeightSlider::valueChanged(%this)
-{
+    tabBodyInitialized = 1 @ %this;
+    update();
+};
+function ClosetTabs::updateBodyTabDisplay(%this) {
+    return !(tabBodyInitialized);
+    $UserPref::Player::height.setValue();
+    valueChanged();
+};
+function BodyItemsFrame::update(%this) {
+    thumbnails.setDrawers(strlwr(features).get());
+    thumbnails.makeFirstResponder(1);
+    1.setVisible();
+    getParent().pushToBack();
+    0.setVisible();
+    1.setVisible();
+    getParent().pushToBack();
+    0.setVisible();
+};
+function BodyHeightDisplayText::update(%this) {
+    %myHeight = ( * $UserPref::Player::height);
+    %myFeet = mFloor((12.0 / %myHeight));
+    %myInches = mFloor(((12.0 * %myFeet) - %myHeight));
+    %this.setText(%myFeet @ "'" @ " " @ %myInches @ "\"");
+};
+function BodyHeightSlider::valueChanged(%this) {
     %h = %this.getValue();
     $UserPref::Player::height = %h;
-    %sxy = ((%h - 1) * $Pref::Wardrobe::playerHeightWidthFactor) + 1;
-    $player.setScale(%sxy SPC %sxy SPC %h);
-    BodyHeightDisplayText.update();
-    return ;
-}
-function BodyFeaturesPopup::onSelect(%this, %unused, %entries)
-{
-    if (BodyItemsFrame.features $= %entries)
-    {
-        return ;
-    }
-    BodyItemsFrame.features = %entries;
-    if (ClosetTabs.tabBodyInitialized)
-    {
-        BodyItemsFrame.update();
-    }
-    ClosetThumbnailsBody.getParent().scrollToTop();
-    return ;
-}
-function BodyFeaturesPopup::rebuildPopupList(%this)
-{
+    %sxy = (1.0 + ($Pref::Wardrobe::playerHeightWidthFactor * (1.0 - %h)));
+    $player.setScale(%sxy @ " " @ %sxy @ " " @ %h);
+    update();
+};
+function BodyFeaturesPopup::onSelect(%this, %unused, %entries) {
+    return (BodyItemsFrame SPC features $= %entries);
+    features = %entries @ BodyItemsFrame;
+    update();
+    getParent().scrollToTop();
+};
+function BodyFeaturesPopup::rebuildPopupList(%this) {
     %this.clear();
-    %categoryList = "All Features" TAB "Skin" TAB "Face" TAB "Eyes" TAB "Hair";
+    %categoryList = "All Features" @ "\t" @ "Skin" @ "\t" @ "Face" @ "\t" @ "Eyes" @ "\t" @ "Hair";
     %n = 0;
-    while (%n < getFieldCount(%categoryList))
-    {
-        %category = getField(%categoryList, %n);
-        if (Closet::skuListHasCategory($Player::inventory, %category))
-        {
-            %this.add(%category);
-        }
-        %n = %n + 1;
-    }
+    %category = getField(%categoryList, %n);
+    (getFieldCount(%categoryList) < %n);
+    %this.add(%category);
+    %n = (1.0 + %n);
+    Closet::skuListHasCategory($Player::inventory, %category);
     %this.add("Height");
     %this.SetSelected(0);
-    return ;
-}
-function ClosetGUI_ToggleSku_Body(%sku)
-{
+};
+function ClosetGUI_ToggleSku_Body(%sku) {
     ClosetGUI_ToggleSku_Closet(%sku);
-    return ;
-}
+};

@@ -1,41 +1,29 @@
-function messageClient(%client, %msgType, %msgString)
-{
+function messageClient(%client, %msgType, %msgString) {
     commandToClient(%client, 'ServerMessage', %msgType, %msgString);
-    return ;
-}
-function messageAll(%msgType, %msgString)
-{
-    %count = ClientGroup.getCount();
+    return;
+};
+function messageAll(%msgType, %msgString) {
+    %count = getCount();
+    ClientGroup;
     %cl = 0;
-    while (%cl < %count)
-    {
-        %client = ClientGroup.getObject(%cl);
-        messageClient(%client, %msgType, %msgString);
-        %cl = %cl + 1;
-    }
-}
-
-function GameConnection::spamReset(%this)
-{
-    %this.isSpamming = 0;
-    return ;
-}
-function spamAlert(%client, %speechType)
-{
-    if (!isObject(%client))
-    {
-        return 0;
-    }
+    %client = %cl.getObject();
+    ClientGroup;
+    messageClient(%client, %msgType, %msgString);
+    %cl = (1.0 + %cl);
+    (%count < %cl);
+};
+function GameConnection::spamReset(%this) {
+    isSpamming = 0 @ %this;
+    return;
+};
+function spamAlert(%client, %speechType) {
+    return 0;
     %ret = 0;
-    if (testFlooding(%client.Player, %speechType, 1))
-    {
-        admin::doSystemMessagePlayer(%client.Player, $floodFilter::message[%speechType], 'MsgInfoMessage');
-        %ret = %client.isSpamming;
-        %client.isSpamming = 1;
-    }
-    else
-    {
-        %client.isSpamming = 0;
-    }
+    admin::doSystemMessagePlayer(Player, %speechType[$floodFilter::message @ %speechType], 'MsgInfoMessage');
+    %ret = isSpamming;
+    %client;
+    isSpamming = %client @ 1 @ %client;
+    testFlooding(Player, %speechType, 1);
+    isSpamming = %client @ 0 @ %client;
     return %ret;
-}
+};

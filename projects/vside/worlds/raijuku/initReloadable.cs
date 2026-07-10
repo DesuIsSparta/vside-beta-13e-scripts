@@ -1,4 +1,1 @@
-if ($AmClient)
-{
-    exec("./maps/initReloadable.cs");
-}
+exec("./maps/initReloadable.cs");

@@ -1,42 +1,27 @@
-new GuiCursor(EditorHandCursor)
-{
-    hotSpot = "7 0";
-    bitmapName = "./CUR_hand.png";
-};
-new GuiCursor(EditorRotateCursor)
-{
-    hotSpot = "11 18";
-    bitmapName = "./CUR_rotate.png";
-};
-new GuiCursor(EditorMoveCursor)
-{
-    hotSpot = "9 13";
-    bitmapName = "./CUR_grab.png";
-};
-new GuiCursor(EditorArrowCursor)
-{
-    hotSpot = "0 0";
-    bitmapName = "./CUR_3darrow.png";
-};
-new GuiCursor(EditorUpDownCursor)
-{
-    hotSpot = "5 10";
-    bitmapName = "./CUR_3dupdown.png";
-};
-new GuiCursor(EditorLeftRightCursor)
-{
-    hotSpot = "9 5";
-    bitmapName = "./CUR_3dleftright.png";
-};
-new GuiCursor(EditorDiagRightCursor)
-{
-    hotSpot = "8 8";
-    bitmapName = "./CUR_3ddiagright.png";
-};
-new GuiCursor(EditorDiagLeftCursor)
-{
-    hotSpot = "8 8";
-    bitmapName = "./CUR_3ddiagleft.png";
-};
-new GuiControl(EmptyControl);
-
+hotSpot = EditorHandCursor @ new () @ "7 0";
+GuiCursor;
+bitmapName = 0 @ "./CUR_hand.png";
+hotSpot = EditorRotateCursor @ new () @ "11 18";
+GuiCursor;
+bitmapName = 0 @ "./CUR_rotate.png";
+hotSpot = EditorMoveCursor @ new () @ "9 13";
+GuiCursor;
+bitmapName = 0 @ "./CUR_grab.png";
+hotSpot = EditorArrowCursor @ new () @ "0 0";
+GuiCursor;
+bitmapName = 0 @ "./CUR_3darrow.png";
+hotSpot = EditorUpDownCursor @ new () @ "5 10";
+GuiCursor;
+bitmapName = 0 @ "./CUR_3dupdown.png";
+hotSpot = EditorLeftRightCursor @ new () @ "9 5";
+GuiCursor;
+bitmapName = 0 @ "./CUR_3dleftright.png";
+hotSpot = EditorDiagRightCursor @ new () @ "8 8";
+GuiCursor;
+bitmapName = 0 @ "./CUR_3ddiagright.png";
+hotSpot = EditorDiagLeftCursor @ new () @ "8 8";
+GuiCursor;
+bitmapName = 0 @ "./CUR_3ddiagleft.png";
+profile = EmptyControl @ new () @ "GuiButtonProfile";
+GuiControl;
+0;

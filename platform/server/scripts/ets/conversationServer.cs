@@ -1,241 +1,144 @@
-if (!isObject(ConversationList))
-{
-}
-new SimGroup(ConversationList);
-function newConversation(%senderPlayer, %targetPlayer)
-{
+new ();
+function newConversation(%senderPlayer, %targetPlayer) {
     %senderPos = %senderPlayer.getPosition();
+    ConversationList;
     %conversationPos = %senderPos;
-    %newConversation = new Conversation()
-    {
-        dataBlock = "release_conv";
-        position = %conversationPos;
-    };
+    SimGroup;
+    dataBlock = Conversation @ new ""() @ "release_conv";
+    0;
+    position = !(isObject()) @ 0 @ %conversationPos;
+    ConversationList;
+    %newConversation = ;
     %senderPlayer.setConversation(%newConversation);
     %newConversation.addParticipant(%senderPlayer);
-    ConversationList.add(%newConversation);
+    %newConversation.add();
     return %newConversation;
-}
-function leaveListening(%senderPlayer, %conversation)
-{
-    CONVBUB_DEBUG(senderPlayer SPC "leaving listening on" SPC %conversation);
-    if (isObject(%conversation))
-    {
-        %conversation.removeListener(%senderPlayer);
-        %senderPlayer.setConversation(0);
-    }
-    else
-    {
-        echo("..oops - NULL conversation");
-    }
-    return ;
-}
-function leaveConversation(%senderPlayer)
-{
+};
+function leaveListening(%senderPlayer, %conversation) {
+    CONVBUB_DEBUG(( - senderPlayer) @ "leaving listening on" @ " " @ %conversation);
+    %conversation.removeListener(%senderPlayer);
+    %senderPlayer.setConversation(0);
+    echo("..oops - NULL conversation");
+    return isObject(%conversation);
+};
+function leaveConversation(%senderPlayer) {
     %conversation = %senderPlayer.getConversation();
-    CONVBUB_DEBUG("LEAVE CONVERSATION" SPC getDebugString(%conversation));
-    if (isObject(%conversation))
-    {
-        %conversation.removeMember(%senderPlayer);
-        %senderPlayer.setConversation(0);
-        gSetField(%senderPlayer, orientedConversation, 0);
-    }
-    return ;
-}
-function findConversation(%senderPlayer, %targetPlayer)
-{
+    CONVBUB_DEBUG("LEAVE CONVERSATION" @ " " @ getDebugString(%conversation));
+    %conversation.removeMember(%senderPlayer);
+    %senderPlayer.setConversation(0);
+    gSetField(%senderPlayer, 0);
+    return orientedConversation;
+};
+function findConversation(%senderPlayer, %targetPlayer) {
     %conv = 0;
-    if (isObject(%targetPlayer))
-    {
-        %conv = %targetPlayer.getConversation();
-    }
-    if (!isObject(%conv) && !%conv.hasParticipant(%targetPlayer))
-    {
-        if (isObject(%senderPlayer.getConversation()))
-        {
-            %conv = %senderPlayer.getConversation();
-        }
-        else
-        {
-            %conv = newConversation(%senderPlayer, %targetPlayer);
-            CONVBUB_DEBUG("new conversation: " @ getDebugString(%conv));
-        }
-    }
+    %conv = %targetPlayer.getConversation();
+    isObject(%targetPlayer);
+    %conv = %senderPlayer.getConversation();
+    isObject(%senderPlayer.getConversation());
+    %conv = newConversation(%senderPlayer, %targetPlayer);
+    !(%conv.hasParticipant(%targetPlayer));
+    CONVBUB_DEBUG(!(isObject(%conv)) @ "new conversation: " @ getDebugString(%conv));
     return %conv;
-}
-function updateConversationLocations()
-{
-    %count = ConversationList.getCount();
-    CONVBUB_DEBUG("ConversationList has" SPC %count);
+};
+function updateConversationLocations() {
+    %count = getCount();
+    ConversationList;
+    CONVBUB_DEBUG("ConversationList has" @ " " @ %count);
     %i = 0;
-    while (%i < %count)
-    {
-        %conversation = ConversationList.getObject(%i);
-        if (!%conversation.updateLocation())
-        {
-            ConversationList.remove(%conversation);
-            %conversation.delete();
-        }
-        %i = %i + 1;
-    }
-}
-
+    %conversation = %i.getObject();
+    ConversationList;
+    %conversation.remove();
+    %conversation.delete();
+    %i = (1.0 + %i);
+    ConversationList;
+};
 $Conv::updateLocationsTimerID = 0;
-function updateConvLocationsTimer()
-{
+function updateConvLocationsTimer() {
     updateConversationLocations();
     cancel($Conv::updateLocationsTimerID);
     $Conv::updateLocationsTimerID = schedule(400, 0, "updateConvLocationsTimer");
-    return ;
-}
+    return;
+};
 updateConvLocationsTimer();
-function serverCmdChatMessage(%senderConnection, %targetPlayer, %message)
-{
-    if ((%message $= "") && spamAlert(%senderConnection))
-    {
-        return ;
-    }
-    if (%targetPlayer != 0)
-    {
-        %targetPlayer = %senderConnection.resolveObjectFromGhostIndex(%targetPlayer);
-    }
-    %senderPlayer = %senderConnection.Player;
+function serverCmdChatMessage(%senderConnection, %targetPlayer, %message) {
+    return spamAlert(%senderConnection);
+    %targetPlayer = %senderConnection.resolveObjectFromGhostIndex(%targetPlayer);
+    (0.0 != %targetPlayer);
+    %senderPlayer = Player;
+    %senderConnection;
     ServersideChatMessage(%senderPlayer, %targetPlayer, %message);
-    return ;
-}
-function ServersideChatMessage(%senderPlayer, %targetPlayer, %message)
-{
-    if (strlen(%message) >= $Pref::Server::MaxChatLen)
-    {
-        %message = getSubStr(%message, 0, $Pref::Server::MaxChatLen);
-    }
+    return;
+};
+function ServersideChatMessage(%senderPlayer, %targetPlayer, %message) {
+    %message = getSubStr(%message, 0, $Pref::Server::MaxChatLen);
+    ($Pref::Server::MaxChatLen >= strlen(%message));
     CONVBUB_DEBUG("CHAT MESSAGE sender: " @ getDebugString(%senderPlayer) @ "  target: " @ getDebugString(%targetPlayer) @ "  message: " @ %message);
-    if (isAIPlayerObject(%targetPlayer))
-    {
-        NPCManager.handleTalkedToNPC(%senderPlayer, %targetPlayer, %message);
-    }
+    %senderPlayer.handleTalkedToNPC(%targetPlayer, %message);
     %conv = findConversation(%senderPlayer, %targetPlayer);
-    if (!isObject(%conv))
-    {
-        error("could not find conversation.");
-        return ;
-    }
-    CONVBUB_DEBUG("found conv:" SPC %conv);
+    NPCManager;
+    error("could not find conversation.");
+    return !(isObject(%conv));
+    CONVBUB_DEBUG("found conv:" @ " " @ %conv);
     %conv.addParticipant(%senderPlayer);
     %conv.addMessage(%senderPlayer, %message);
-    if (0)
-    {
-        if (%conv.countParticipants() > 1)
-        {
-            if (gGetField(%senderPlayer, orientedConversation) != %conv)
-            {
-                %senderPlayer.orientTowardsOverTime(%conv, 700);
-                gSetField(%senderPlayer, orientedConversation, %conv);
-            }
-        }
-    }
-    return ;
-}
-function serverCmdEavesdrop(%senderConnection, %newTarget)
-{
+    %senderPlayer.orientTowardsOverTime(%conv, 700);
+    gSetField(%senderPlayer, %conv);
+    return orientedConversation;
+};
+function serverCmdEavesdrop(%senderConnection, %newTarget) {
     CONVBUB_DEBUG("EAVESDROP: " @ %newTarget);
-    if (%newTarget != 0)
-    {
-        %newTarget = %senderConnection.resolveObjectFromGhostIndex(%newTarget);
-    }
-    %senderPlayer = %senderConnection.Player;
+    %newTarget = %senderConnection.resolveObjectFromGhostIndex(%newTarget);
+    (0.0 != %newTarget);
+    %senderPlayer = Player;
+    %senderConnection;
     serverSideEavesdrop(%senderPlayer, %newTarget);
-    return ;
-}
-function serverSideEavesdrop(%senderPlayer, %targetPlayer)
-{
-    CONVBUB_DEBUG("in serverSideEavesdrop:" SPC getDebugString(%senderPlayer) SPC getDebugString(%targetPlayer));
-    if (!isPlayerObject(%senderPlayer))
-    {
-        error("serverSideEavesdrop: got Non-player sender:" SPC getDebugString(%senderPlayer));
-        return ;
-    }
-    if ((%targetPlayer != 0) && !isPlayerObject(%targetPlayer))
-    {
-        error("serverSideEavesdrop: got Non-zero, Non-player target:" SPC getDebugString(%targetPlayer));
-        return ;
-    }
+    return;
+};
+function serverSideEavesdrop(%senderPlayer, %targetPlayer) {
+    CONVBUB_DEBUG("in serverSideEavesdrop:" @ " " @ getDebugString(%senderPlayer) @ " " @ getDebugString(%targetPlayer));
+    error("serverSideEavesdrop: got Non-player sender:" @ " " @ getDebugString(%senderPlayer));
+    return !(isPlayerObject(%senderPlayer));
+    error("serverSideEavesdrop: got Non-zero, Non-player target:" @ " " @ getDebugString(%targetPlayer));
+    return !(isPlayerObject(%targetPlayer));
     %targetConv = 0;
-    if (isObject(%targetPlayer))
-    {
-        %targetConv = %targetPlayer.getConversation();
-        if (!isObject(%targetConv))
-        {
-            CONVBUB_DEBUG("serverSideEavesdrop:" SPC getDebugString(%senderPlayer) SPC "eavesdropping on no conversation!" SPC getDebugString(%targetPlayer));
-            return ;
-        }
-        if (!%targetConv.hasParticipant(%targetPlayer))
-        {
-            CONVBUB_DEBUG("serverSideEavesdrop:" SPC getDebugString(%senderPlayer) SPC "eavesdropping on somebody who ain\'t talking:" SPC getDebugString(%targetPlayer));
-            return ;
-        }
-    }
+    %targetConv = %targetPlayer.getConversation();
+    isObject(%targetPlayer);
+    CONVBUB_DEBUG("serverSideEavesdrop:" @ " " @ getDebugString(%senderPlayer) @ " " @ "eavesdropping on no conversation!" @ " " @ getDebugString(%targetPlayer));
+    return !(isObject(%targetConv));
+    CONVBUB_DEBUG("serverSideEavesdrop:" @ " " @ getDebugString(%senderPlayer) @ " " @ "eavesdropping on somebody who ain't talking:" @ " " @ getDebugString(%targetPlayer));
+    return !(%targetConv.hasParticipant(%targetPlayer));
     %senderPlayer.joinConversation(%targetConv, 0);
-    return ;
-}
-function Player::joinConversation(%this, %conv, %asParticipant)
-{
+    return;
+};
+function Player::joinConversation(%this, %conv, %asParticipant) {
     %oldConv = %this.getConversation();
-    if (%oldConv == %conv)
-    {
-        CONVBUB_DEBUG("no change in conversation" SPC getDebugString(%oldConv));
-        return ;
-    }
-    if (isObject(%oldConv))
-    {
-        if (%oldConv.hasListener(%this))
-        {
-            %oldConv.removeListener(%this);
-        }
-        else
-        {
-            if (%oldConv.hasParticipant(%this))
-            {
-                %oldConv.removeParticipant(%this);
-            }
-            else
-            {
-                error(%this.getDebugString() SPC "thinks it\'s in the wrong conversation:" SPC getDebugString(%oldConv));
-            }
-        }
-    }
-    if (!isObject(%conv))
-    {
-        return ;
-    }
-    if (%asParticipant)
-    {
-        %conv.addParticipant(%this);
-        %tmp = "participant";
-    }
-    else
-    {
-        %conv.addListener(%this);
-        %tmp = "listener";
-    }
-    CONVBUB_DEBUG(getDebugString(%this) SPC "joined" SPC getDebugString(%conv) SPC "as a" SPC %tmp);
+    CONVBUB_DEBUG("no change in conversation" @ " " @ getDebugString(%oldConv));
+    return (%conv == %oldConv);
+    %oldConv.removeListener(%this);
+    %oldConv.removeParticipant(%this);
+    error(%this.getDebugString() @ " " @ "thinks it's in the wrong conversation:" @ " " @ getDebugString(%oldConv));
+    return !(isObject(%conv));
+    %conv.addParticipant(%this);
+    %tmp = "participant";
+    %asParticipant;
+    %conv.addListener(%this);
+    %tmp = "listener";
+    CONVBUB_DEBUG(getDebugString(%this) @ " " @ "joined" @ " " @ getDebugString(%conv) @ " " @ "as a" @ " " @ %tmp);
     %this.setConversation(%conv);
-    return ;
-}
-function Conversation::onListenerLeft(%this, %player)
-{
+    return;
+};
+function Conversation::onListenerLeft(%this, %player) {
     commandToClient(%player.getControllingClient(), 'ConvLeftListener');
-    return ;
-}
-function Conversation::onParticipantLeft(%this, %player)
-{
+    return;
+};
+function Conversation::onParticipantLeft(%this, %player) {
     commandToClient(%player.getControllingClient(), 'ConvLeftParticipant');
-    return ;
-}
-function serverCmdLeaveConversation(%senderConnection)
-{
-    %senderPlayer = %senderConnection.Player;
+    return;
+};
+function serverCmdLeaveConversation(%senderConnection) {
+    %senderPlayer = Player;
+    %senderConnection;
     CONVBUB_DEBUG("LEAVECONVERSATION: " @ getDebugString(%senderPlayer));
     leaveConversation(%senderPlayer);
-    return ;
-}
+    return;
+};

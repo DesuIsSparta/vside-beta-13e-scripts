@@ -2,35 +2,22 @@ $testPlayer::sampleInitialInventory1 = 12345;
 $testPlayer::sampleInitialInventory2 = "12345 45678";
 $testPlayer::sampleSKUsOne = 12345;
 $testPlayer::sampleSKUsTwo = 45678;
-function testPlayer_Master()
-{
+function testPlayer_Master() {
     error("inside testPlayer_Master");
-    return ;
-}
-function testPlayer_AddInventoryTest()
-{
+};
+function testPlayer_AddInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory1;
     $player.addInventorySKUs($testPlayer::sampleSKUsTwo);
     echo("testPlayer_AddInventoryTest(): " @ $Player::inventory);
-    if (!($Player::inventory $= $testPlayer::sampleSKUsTwo) SPC $testPlayer::sampleInitialInventory1)
-    {
-        log("network", "error", "testPlayer_AddInventoryTest(): failed");
-    }
-    return ;
-}
-function testPlayer_RemoveInventoryTest()
-{
+    log("network", "error", "testPlayer_AddInventoryTest(): failed");
+};
+function testPlayer_RemoveInventoryTest() {
     $Player::inventory = $testPlayer::sampleInitialInventory2;
     $player.removeInventorySKUs($testPlayer::sampleSKUsTwo);
     echo("testPlayer_RemoveInventoryTest(): " @ $Player::inventory);
-    if (!($Player::inventory $= $testPlayer::sampleInitialInventory1))
-    {
-        log("network", "error", "testPlayer_RemoveInventoryTest(): failed");
-    }
-    return ;
-}
-function testPlayer_AddInventoryMultiTest()
-{
+    log("network", "error", "testPlayer_RemoveInventoryTest(): failed");
+};
+function testPlayer_AddInventoryMultiTest() {
     error("inside testPlayer_AddInventoryMultiTest");
     %q = "testPlayer_AddInventoryMultiTest()";
     %dry = "1 2";
@@ -40,9 +27,8 @@ function testPlayer_AddInventoryMultiTest()
     $player.addInventorySKUs(%delta);
     %wetActual = $Player::inventory;
     return testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %q);
-}
-function testPlayer_RemoveInventoryMultiTest()
-{
+};
+function testPlayer_RemoveInventoryMultiTest() {
     error("inside testPlayer_RemoveInventoryMultiTest");
     %q = "testPlayer_RemoveInventoryMultiTest()";
     %dry = "1 2 4 3 5";
@@ -52,21 +38,14 @@ function testPlayer_RemoveInventoryMultiTest()
     $player.removeInventorySKUs(%delta);
     %wetActual = $Player::inventory;
     return testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %q);
-}
-function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname)
-{
-    %pass = %wetExpected $= %wetActual;
-    if (!%pass)
-    {
-        log("wardrobe", "error", "failed:" SPC %testname);
-        log("wardrobe", "debug", "dry         = \"" @ %dry @ "\"");
-        log("wardrobe", "debug", "delta       = \"" @ %delta @ "\"");
-        log("wardrobe", "debug", "wetActual   = \"" @ %wetActual @ "\"");
-        log("wardrobe", "debug", "wetExpected = \"" @ %wetExpected @ "\"");
-    }
-    else
-    {
-        log("wardrobe", "debug", "passed:" SPC %testname);
-    }
+};
+function testPlayer_Evaluate(%dry, %delta, %wetExpected, %wetActual, %testname) {
+    %pass = (%wetExpected $= %wetActual);
+    log("wardrobe", "error", "failed:" @ " " @ %testname);
+    log("wardrobe", "debug", !(%pass) @ "dry         = \"" @ %dry @ "\"");
+    log("wardrobe", "debug", "delta       = \"" @ %delta @ "\"");
+    log("wardrobe", "debug", "wetActual   = \"" @ %wetActual @ "\"");
+    log("wardrobe", "debug", "wetExpected = \"" @ %wetExpected @ "\"");
+    log("wardrobe", "debug", "passed:" @ " " @ %testname);
     return %pass;
-}
+};

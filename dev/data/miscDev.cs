@@ -1,27 +1,15 @@
-function dumpOverlap(%group)
-{
+function dumpOverlap(%group) {
     %num = %group.getCount();
     %n = 0;
-    while (%n < %num)
-    {
-        %obj1 = %group.getObject(%n);
-        echo(getDebugString(%obj1) SPC "overlaps:");
-        %m = 0;
-        while (%m < %num)
-        {
-            if (%m == %n)
-            {
-                continue;
-            }
-            %obj2 = %group.getObject(%m);
-            if (%obj1.objBoxesOverlap(%obj2))
-            {
-                echo("   " @ getDebugString(%obj2));
-            }
-            %m = %m + 1;
-        }
-        %n = %n + 1;
-    }
-}
-
-
+    %obj1 = %group.getObject(%n);
+    (%num < %n);
+    echo(getDebugString(%obj1) @ " " @ "overlaps:");
+    %m = 0;
+    %obj2 = %group.getObject(%m);
+    (%n == %m);
+    echo(%obj1.objBoxesOverlap(%obj2) @ "   " @ getDebugString(%obj2));
+    %m = (1.0 + %m);
+    (%num < %m);
+    %n = (1.0 + %n);
+    (%num < %m);
+};

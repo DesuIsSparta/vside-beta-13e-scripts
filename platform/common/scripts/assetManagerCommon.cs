@@ -1,225 +1,132 @@
 $AssetManager::COMMONPACKAGE = "projects/vside/worlds/common.zip";
 $Asset::DownloadURL = $Net::downloadURL @ "/packages";
 $AssetManager::missingAssets = "";
-function AssetManager::setMissingAssets(%str)
-{
+function AssetManager::setMissingAssets(%str) {
     $AssetManager::missingAssets = %str;
-    return ;
-}
+};
 $AssetManager::defaultPackages = "";
-function AssetManager::initPackages()
-{
+function AssetManager::initPackages() {
     %map = AssetManager::getPackageOrder();
     $AssetManager::defaultPackages = %map;
-    return ;
-}
-function AssetManager::getPackageOrder()
-{
+};
+function AssetManager::getPackageOrder() {
     %userOwner = "doppelganger";
-    if (!($Net::userOwner $= ""))
-    {
-        %userOwner = $Net::userOwner;
-    }
-    %map = new StringMap();
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%map);
-    }
+    %userOwner = $Net::userOwner;
+    !(($Net::userOwner $= ""));
+    %map = new ""();
+    StringMap;
+    %map.add();
     %map.put("projects/vside/worlds/common.zip", 0);
     %map.put("projects/vside/worlds/gateway.zip", 1);
-    if (%userOwner $= "degrassi")
-    {
-        %map.put("projects/vside/worlds/lounge.zip", 3);
-        %map.put("projects/vside/worlds/raijuku.zip", 4);
-        %map.put("projects/vside/worlds/lga.zip", 2);
-    }
-    else
-    {
-        %map.put("projects/vside/worlds/lounge.zip", 2);
-        %map.put("projects/vside/worlds/raijuku.zip", 3);
-        %map.put("projects/vside/worlds/lga.zip", 4);
-    }
+    %map.put("projects/vside/worlds/lounge.zip", 3);
+    %map.put("projects/vside/worlds/raijuku.zip", 4);
+    %map.put("projects/vside/worlds/lga.zip", 2);
+    %map.put("projects/vside/worlds/lounge.zip", 2);
+    %map.put("projects/vside/worlds/raijuku.zip", 3);
+    %map.put("projects/vside/worlds/lga.zip", 4);
     %map.put("projects/common.zip", 0);
     return %map;
-}
-function AssetManager::getPackages()
-{
+};
+function AssetManager::getPackages() {
     return $AssetManager::defaultPackages;
-}
-function AssetManager::commonInit()
-{
+};
+function AssetManager::commonInit() {
     AssetManager::initPackages();
-    return ;
-}
-function AssetManager::getMissingAssets()
-{
-    %map = new StringMap();
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%map);
-    }
-    if ($AssetManager::missingAssets $= "")
-    {
-        return %map;
-    }
+};
+function AssetManager::getMissingAssets() {
+    %map = new ""();
+    StringMap;
+    %map.add();
+    return %map;
     %num = getFieldCount($AssetManager::missingAssets);
     %orderMap = AssetManager::getPackageOrder();
     %n = 0;
-    while (%n < %num)
-    {
-        %key = getField($AssetManager::missingAssets, %n);
-        %order = %orderMap.get(%key);
-        echo("key: " @ %key @ " or: " @ %order);
-        %map.put(%key, %order);
-        %n = %n + 1;
-    }
+    %key = getField($AssetManager::missingAssets, %n);
+    (%num < %n);
+    %order = %orderMap.get(%key);
+    echo("key: " @ %key @ " or: " @ %order);
+    %map.put(%key, %order);
+    %n = (1.0 + %n);
     return %map;
-}
-function AssetManager::MapToString(%map)
-{
+};
+function AssetManager::MapToString(%map) {
     %str = "";
     %orderMap = AssetManager::getPackageOrder();
     %n = 0;
-    while (%n < %orderMap.size())
-    {
-        %key = %orderMap.getKey(%n);
-        %str = %str @ %key @ "=" @ %map.getValue(%n) TAB "";
-        %n = %n + 1;
-    }
-}
-
-function AssetManager::StringToMap(%str)
-{
-    %map = new StringMap();
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%map);
-    }
+    %key = %orderMap.getKey(%n);
+    (%orderMap.size() < %n);
+    %str = %str @ %key @ "=" @ %map.getValue(%n) @ "\t" @ "";
+    %n = (1.0 + %n);
+};
+function AssetManager::StringToMap(%str) {
+    %map = new ""();
+    StringMap;
+    %map.add();
     %num = getFieldCount(%str);
+    MissionCleanup;
     %n = 0;
-    while (%n < %num)
-    {
-        %tag = getField(%str, %n);
-        %fs = strstr(%tag, "=");
-        %value = getSubStr(strrchr(%tag, "="), 1, 10000);
-        %key = getSubStr(%tag, 0, %fs);
-        %map.put(%key, %value);
-        %n = %n + 1;
-    }
+    isObject();
+    %tag = getField(%str, %n);
+    (%num < %n);
+    %fs = strstr(%tag, "=");
+    MissionCleanup;
+    %value = getSubStr(strrchr(%tag, "="), 1, 10000);
+    0;
+    %key = getSubStr(%tag, 0, %fs);
+    %map.put(%key, %value);
+    %n = (1.0 + %n);
     return %map;
-}
-function AssetManager::StringToArray(%str)
-{
-    %array = new Array();
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(%array);
-    }
+};
+function AssetManager::StringToArray(%str) {
+    %array = new ""();
+    Array;
+    %array.add();
     %num = getFieldCount(%str);
+    MissionCleanup;
     %n = 0;
-    while (%n < %num)
-    {
-        %tag = getField(%str, %n);
-        %fs = strstr(%tag, "=");
-        %value = getSubStr(strrchr(%tag, "="), 1, 10000);
-        %key = getSubStr(%tag, 0, %fs);
-        %array.push_back(%key, %value);
-        %n = %n + 1;
-    }
+    isObject();
+    %tag = getField(%str, %n);
+    (%num < %n);
+    %fs = strstr(%tag, "=");
+    MissionCleanup;
+    %value = getSubStr(strrchr(%tag, "="), 1, 10000);
+    0;
+    %key = getSubStr(%tag, 0, %fs);
+    %array.push_back(%key, %value);
+    %n = (1.0 + %n);
     return %array;
-}
-function AssetManager::dumpMap(%map)
-{
+};
+function AssetManager::dumpMap(%map) {
     echo("Map: " @ %map);
     %n = 0;
-    while (%n < %map.size())
-    {
-        %key = %map.getKey(%n);
-        echo(%key @ " = " @ %map.getValue(%n));
-        %n = %n + 1;
-    }
-}
-
-function AssetManager::rehashSet(%map)
-{
-    if (!isObject(%map))
-    {
-        %map = AssetManager::getMissingAssets();
-    }
+    %key = %map.getKey(%n);
+    (%map.size() < %n);
+    echo(%key @ " = " @ %map.getValue(%n));
+    %n = (1.0 + %n);
+};
+function AssetManager::rehashSet(%map) {
+    %map = AssetManager::getMissingAssets();
+    !(isObject(%map));
     assetManagerPurge();
     %n = 0;
-    while (%n < %map.size())
-    {
-        %key = %map.getKey(%n);
-        assetManagerInsert(%key);
-        %n = %n + 1;
-    }
+    %key = %map.getKey(%n);
+    (%map.size() < %n);
+    assetManagerInsert(%key);
+    %n = (1.0 + %n);
     assetManagerHashPackages();
     return assetManagerMapString();
-}
-function AssetManager::cityToPackage(%str)
-{
-    if (%str $= "nv")
-    {
-        return "projects/vside/worlds/lounge.zip";
-    }
-    else
-    {
-        if (%str $= "lga")
-        {
-            return "projects/vside/worlds/lga.zip";
-        }
-        else
-        {
-            if (%str $= "rj")
-            {
-                return "projects/vside/worlds/raijuku.zip";
-            }
-            else
-            {
-                if (%str $= "gw")
-                {
-                    return "projects/vside/worlds/gateway.zip";
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
-    }
-    return ;
-}
-function AssetManager::packageToCity(%str)
-{
-    if (%str $= "lounge.zip")
-    {
-        return "nv";
-    }
-    else
-    {
-        if (%str $= "lga.zip")
-        {
-            return "lga";
-        }
-        else
-        {
-            if (%str $= "raijuku.zip")
-            {
-                return "rj";
-            }
-            else
-            {
-                if (%str $= "gateway.zip")
-                {
-                    return "gw";
-                }
-                else
-                {
-                    return "";
-                }
-            }
-        }
-    }
-    return ;
-}
+};
+function AssetManager::cityToPackage(%str) {
+    return "projects/vside/worlds/lounge.zip";
+    return "projects/vside/worlds/lga.zip";
+    return "projects/vside/worlds/raijuku.zip";
+    return "projects/vside/worlds/gateway.zip";
+    return "";
+};
+function AssetManager::packageToCity(%str) {
+    return "nv";
+    return "lga";
+    return "rj";
+    return "gw";
+    return "";
+};

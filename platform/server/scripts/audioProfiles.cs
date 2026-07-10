@@ -1,117 +1,84 @@
-datablock AudioDescription(AudioDefault3d)
-{
-    volume = 1;
-    isLooping = 0;
-    is3D = 1;
-    referenceDistance = 20;
-    maxDistance = 100;
-    type = $SimAudioType;
-};
-datablock AudioDescription(AudioClose3d)
-{
-    volume = 1;
-    isLooping = 0;
-    is3D = 1;
-    referenceDistance = 10;
-    maxDistance = 60;
-    type = $SimAudioType;
-};
-datablock AudioDescription(AudioClosest3d)
-{
-    volume = 1;
-    isLooping = 0;
-    is3D = 1;
-    referenceDistance = 5;
-    maxDistance = 30;
-    type = $SimAudioType;
-};
-datablock AudioDescription(AudioFootstepDescription : AudioClosest3d)
-{
-    volume = 0.4;
-    referenceDistance = 5;
-    maxDistance = 20;
-};
-datablock AudioDescription(AudioAmbientDescription : AudioClosest3d)
-{
-    volume = 0.8;
-    referenceDistance = 5;
-    maxDistance = 10;
-};
-datablock AudioDescription(AudioDefaultLooping3d)
-{
-    volume = 1;
-    isLooping = 1;
-    is3D = 1;
-    referenceDistance = 20;
-    maxDistance = 100;
-    type = $SimAudioType;
-};
-datablock AudioDescription(AudioCloseLooping3d)
-{
-    volume = 1;
-    isLooping = 1;
-    is3D = 1;
-    referenceDistance = 10;
-    maxDistance = 50;
-    type = $SimAudioType;
-};
-datablock AudioDescription(AudioClosestLooping3d)
-{
-    volume = 1;
-    isLooping = 1;
-    is3D = 1;
-    referenceDistance = 5;
-    maxDistance = 30;
-    type = $SimAudioType;
-};
-datablock AudioDescription(Audio2D)
-{
-    volume = 1;
-    isLooping = 0;
-    is3D = 0;
-    type = $SimAudioType;
-};
-datablock AudioDescription(AudioLooping2D)
-{
-    volume = 1;
-    isLooping = 1;
-    is3D = 0;
-    type = $SimAudioType;
-};
-datablock AudioProfile(takeme)
-{
-    fileName = "~/data/sound/takeme.wav";
-    description = "AudioDefaultLooping3d";
-    preload = 0;
-};
-datablock AudioProfile(SitLounge)
-{
-    fileName = "intersection/data/sound/LEATHER_CHAIR_ADJUST_02_1.ogg";
-    description = "AudioDefault3d";
-    preload = 0;
-};
-datablock AudioProfile(SitJacuzzi)
-{
-    fileName = "intersection/data/sound/BODY_JUMP_IN_L2.ogg";
-    description = "AudioClose3d";
-    preload = 0;
-};
-datablock AudioProfile(StepSoundDefault)
-{
-    fileName = "intersection/data/sound/walk_default.ogg";
-    description = "AudioFootstepDescription";
-    preload = 0;
-};
-datablock AudioProfile(StepSoundWood)
-{
-    fileName = "intersection/data/sound/WALK_WOOD_B.ogg";
-    description = "AudioFootstepDescription";
-    preload = 0;
-};
-datablock AudioProfile(HotTubAmbientSound)
-{
-    fileName = "intersection/data/sound/hottub_bubbles.ogg";
-    description = "AudioAmbientDescription";
-    preload = 0;
-};
-
+volume = AudioDefault3d @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 0;
+is3D = 1;
+referenceDistance = 20;
+maxDistance = 100;
+type = $SimAudioType;
+volume = AudioClose3d @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 0;
+is3D = 1;
+referenceDistance = 10;
+maxDistance = 60;
+type = $SimAudioType;
+volume = AudioClosest3d @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 0;
+is3D = 1;
+referenceDistance = 5;
+maxDistance = 30;
+type = $SimAudioType;
+volume = AudioFootstepDescription @ datablock ( : AudioClosest3d) @ 0.4;
+AudioDescription;
+referenceDistance = 0 @ 5;
+maxDistance = 20;
+volume = AudioAmbientDescription @ datablock ( : AudioClosest3d) @ 0.8;
+AudioDescription;
+referenceDistance = 0 @ 5;
+maxDistance = 10;
+volume = AudioDefaultLooping3d @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 1;
+is3D = 1;
+referenceDistance = 20;
+maxDistance = 100;
+type = $SimAudioType;
+volume = AudioCloseLooping3d @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 1;
+is3D = 1;
+referenceDistance = 10;
+maxDistance = 50;
+type = $SimAudioType;
+volume = AudioClosestLooping3d @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 1;
+is3D = 1;
+referenceDistance = 5;
+maxDistance = 30;
+type = $SimAudioType;
+volume = Audio2D @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 0;
+is3D = 0;
+type = $SimAudioType;
+volume = AudioLooping2D @ datablock () @ 1;
+AudioDescription;
+isLooping = 0 @ 1;
+is3D = 0;
+type = $SimAudioType;
+fileName = takeme @ datablock () @ "~/data/sound/takeme.wav";
+AudioProfile;
+description = 0 @ "AudioDefaultLooping3d";
+preload = 0;
+fileName = SitLounge @ datablock () @ "intersection/data/sound/LEATHER_CHAIR_ADJUST_02_1.ogg";
+AudioProfile;
+description = 0 @ "AudioDefault3d";
+preload = 0;
+fileName = SitJacuzzi @ datablock () @ "intersection/data/sound/BODY_JUMP_IN_L2.ogg";
+AudioProfile;
+description = 0 @ "AudioClose3d";
+preload = 0;
+fileName = StepSoundDefault @ datablock () @ "intersection/data/sound/walk_default.ogg";
+AudioProfile;
+description = 0 @ "AudioFootstepDescription";
+preload = 0;
+fileName = StepSoundWood @ datablock () @ "intersection/data/sound/WALK_WOOD_B.ogg";
+AudioProfile;
+description = 0 @ "AudioFootstepDescription";
+preload = 0;
+fileName = HotTubAmbientSound @ datablock () @ "intersection/data/sound/hottub_bubbles.ogg";
+AudioProfile;
+description = 0 @ "AudioAmbientDescription";
+preload = 0;

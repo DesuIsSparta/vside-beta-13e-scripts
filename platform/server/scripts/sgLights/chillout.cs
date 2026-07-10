@@ -1,2 +1,3 @@
-datablock sgUniversalStaticLightData(chillout);
-
+className = chillout @ datablock () @ "sgUniversalStaticLightData";
+sgUniversalStaticLightData;
+0;

@@ -10,4 +10,3 @@ $DC::DownloadFolder = $Net::DynamicContentURL @ "/uploaded_files/files";
 $DC::LocalAvatarFolder = $DC::dcFolder @ "/" @ "avatars";
 $DC::GUIFolderName = $DC::dcFolder @ "/" @ "gui";
 $DC::CacheFolderName = $DC::dcFolder @ "/" @ "cache";
-

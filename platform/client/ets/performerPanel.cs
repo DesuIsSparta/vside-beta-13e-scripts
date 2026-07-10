@@ -1,31 +1,14 @@
-function performerPanel::toggle(%this)
-{
-    if (!%this.isVisible())
-    {
-        %this.open();
-    }
-    else
-    {
-        %this.close();
-    }
-    return ;
-}
-function performerPanel::open(%this)
-{
-    if (!$gPerformerMode)
-    {
-        return ;
-    }
-    if (!%this.isVisible())
-    {
-        %this.setVisible(1);
-        PlayGui.focusAndRaise(%this);
-    }
-    return ;
-}
-function performerPanel::close(%this)
-{
+function performerPanel::toggle(%this) {
+    %this.open();
+    %this.close();
+};
+function performerPanel::open(%this) {
+    return !($gPerformerMode);
+    %this.setVisible(1);
+    %this.focusAndRaise();
+};
+function performerPanel::close(%this) {
     %this.setVisible(0);
-    PlayGui.focusTopWindow();
+    focusTopWindow();
     return 1;
-}
+};

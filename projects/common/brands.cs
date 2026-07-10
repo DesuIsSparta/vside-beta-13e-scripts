@@ -1,16 +1,9 @@
 $gClosetBrands = "";
-function ClosetAddBrand(%userFacing, %codeName)
-{
-    if (!($gClosetBrands $= ""))
-    {
-        %s = "" TAB %userFacing;
-    }
-    else
-    {
-        %s = %userFacing;
-    }
+function ClosetAddBrand(%userFacing, %codeName) {
+    %s = "" @ "\t" @ %userFacing;
+    !(($gClosetBrands $= ""));
+    %s = %userFacing;
     $gClosetBrands = $gClosetBrands @ %s;
-    $gClosetBrandsIntrnl[%userFacing] = %codeName ;
-    $gClosetBrandsExtrnl[%codeName] = %userFacing ;
-    return ;
-}
+    %userFacing[$gClosetBrandsIntrnl @ %userFacing] = %codeName;
+    %codeName[$gClosetBrandsExtrnl @ %codeName] = %userFacing;
+};

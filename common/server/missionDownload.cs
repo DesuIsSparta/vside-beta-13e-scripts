@@ -1,104 +1,66 @@
 $Server::DatablockCRC = 0;
-function GameConnection::loadMission(%this)
-{
-    log("network", "debug", "GameConnection::load mission" SPC $Server::MissionFile SPC "seq: " SPC $MissionSequence);
-    if (%this.isAIControlled())
-    {
-        %this.onClientEnterGame();
-    }
-    else
-    {
-        commandToClient(%this, 'CheckCacheCRC', $MissionSequence, $Server::MissionFile);
-    }
-    return ;
-}
-function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, %hasStandaloneCache)
-{
-    log("network", "info", "client cache CRC:" SPC %crc SPC "seq: " SPC %missionSequence SPC "gender:" SPC %gender);
-    if ((%missionSequence != $MissionSequence) && !$missionRunning)
-    {
-        log("network", "error", "premature exit from MissionCRC" SPC "client sequence:" SPC %missionSequence SPC "server sequence:" SPC $MissionSequence);
-        return ;
-    }
-    %client.gender = %gender;
+function GameConnection::loadMission(%this) {
+    log("network", "debug", "GameConnection::load mission" @ " " @ $Server::MissionFile @ " " @ "seq: " @ " " @ $MissionSequence);
+    %this.onClientEnterGame();
+    commandToClient(%this, 'CheckCacheCRC', $MissionSequence, $Server::MissionFile);
+    return %this.isAIControlled();
+};
+function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, %hasStandaloneCache) {
+    log("network", "info", "client cache CRC:" @ " " @ %crc @ " " @ "seq: " @ " " @ %missionSequence @ " " @ "gender:" @ " " @ %gender);
+    log("network", "error", "premature exit from MissionCRC" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
+    return !($missionRunning);
+    gender = %gender @ %client;
     %client.setMissionCRC($missionCRC);
     %client.setDatablockSequence(%missionSequence);
     %client.setGhostingSequence(%missionSequence);
-    if ((%crc == $Server::DatablockCRC) && (%hasStandaloneCache == 1))
-    {
-        log("network", "debug", "tell client to load local cache");
-        %client.readingCache = 1;
-        commandToClient(%client, 'LoadLocalCache', $MissionSequence, $Server::MissionFile, MissionGroup.musicTrack);
-    }
-    else
-    {
-        log("network", "debug", "tell client to start caching our data");
-        %client.readingCache = 0;
-        commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, MissionGroup.musicTrack);
-    }
-    return ;
-}
-function serverCmdStartCacheAck(%client, %missionSequence)
-{
-    log("network", "info", "sending mission load to client:" SPC $Server::MissionFile SPC "seq: " SPC %missionSequence);
+    log("network", "debug", "tell client to load local cache");
+    readingCache = (1.0 == %hasStandaloneCache) @ 1 @ %client;
+    ($Server::DatablockCRC == %crc);
+    commandToClient(%client, 'LoadLocalCache', $MissionSequence, $Server::MissionFile, musicTrack);
+    log("network", "debug", "tell client to start caching our data");
+    readingCache = MissionGroup @ 0 @ %client;
+    commandToClient(%client, 'StartCache', $MissionSequence, $Server::MissionFile, musicTrack);
+    return MissionGroup;
+};
+function serverCmdStartCacheAck(%client, %missionSequence) {
+    log("network", "info", "sending mission load to client:" @ " " @ $Server::MissionFile @ " " @ "seq: " @ " " @ %missionSequence);
     %client.transmitDataBlocks(%missionSequence);
-    return ;
-}
-function GameConnection::onDataBlocksDone(%this, %missionSequence)
-{
-    log("network", "debug", "GameConnection::onDataBlocksDone seq:" SPC %missionSequence);
-    if ((%missionSequence != $MissionSequence) && !$missionRunning)
-    {
-        log("network", "error", "premature exit from onDataBlocksDone" SPC "client sequence:" SPC %missionSequence SPC "server sequence:" SPC $MissionSequence);
-        return ;
-    }
+    return;
+};
+function GameConnection::onDataBlocksDone(%this, %missionSequence) {
+    log("network", "debug", "GameConnection::onDataBlocksDone seq:" @ " " @ %missionSequence);
+    log("network", "error", "premature exit from onDataBlocksDone" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
+    return !($missionRunning);
     commandToClient(%this, 'StartGhostAlways', %missionSequence, $Server::MissionFile);
-    if (%this.readingCache)
-    {
-        %this.activateGhosting(1);
-    }
-    return ;
-}
-function serverCmdStartGhostAlwaysAck(%client, %missionSequence)
-{
-    log("network", "debug", "starting GhostAlways seq:" SPC %missionSequence);
-    if ((%missionSequence != $MissionSequence) && !$missionRunning)
-    {
-        log("network", "error", "premature exit from StartGhostAlwaysAck" SPC "client sequence:" SPC %missionSequence SPC "server sequence:" SPC $MissionSequence);
-        return ;
-    }
+    %this.activateGhosting(1);
+    return readingCache;
+};
+function serverCmdStartGhostAlwaysAck(%client, %missionSequence) {
+    log("network", "debug", "starting GhostAlways seq:" @ " " @ %missionSequence);
+    log("network", "error", "premature exit from StartGhostAlwaysAck" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
+    return !($missionRunning);
     %client.transmitPaths();
     %client.activateGhosting(0);
-    return ;
-}
-function GameConnection::clientWantsGhostAlwaysRetry(%this)
-{
-    log("network", "debug", "GameConnection::ClientWantsGhostAlwaysRetry:" SPC %this);
-    if ($missionRunning)
-    {
-        %this.activateGhosting();
-    }
-    return ;
-}
-function GameConnection::onGhostAlwaysFailed(%this)
-{
-    log("network", "debug", "GameConnection::onGhostAlwaysFailed:" SPC %this);
-    return ;
-}
-function GameConnection::onGhostAlwaysObjectsReceived(%this, %crc)
-{
+    return;
+};
+function GameConnection::clientWantsGhostAlwaysRetry(%this) {
+    log("network", "debug", "GameConnection::ClientWantsGhostAlwaysRetry:" @ " " @ %this);
+    %this.activateGhosting();
+    return $missionRunning;
+};
+function GameConnection::onGhostAlwaysFailed(%this) {
+    log("network", "debug", "GameConnection::onGhostAlwaysFailed:" @ " " @ %this);
+    return;
+};
+function GameConnection::onGhostAlwaysObjectsReceived(%this, %crc) {
     commandToClient(%this, 'MissionStartPhase3', $MissionSequence, $Server::MissionFile);
-    return ;
-}
-function serverCmdMissionStartPhase3Ack(%client, %missionSequence)
-{
-    log("network", "debug", "client done loading:" SPC %client SPC "seq: " SPC %missionSequence);
-    if ((%missionSequence != $MissionSequence) && !$missionRunning)
-    {
-        log("network", "debug", "premature exit from StartPhase3Ack" SPC "client sequence:" SPC %missionSequence SPC "server sequence:" SPC $MissionSequence);
-        return ;
-    }
+    return;
+};
+function serverCmdMissionStartPhase3Ack(%client, %missionSequence) {
+    log("network", "debug", "client done loading:" @ " " @ %client @ " " @ "seq: " @ " " @ %missionSequence);
+    log("network", "debug", "premature exit from StartPhase3Ack" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
+    return !($missionRunning);
     %client.startMission();
     %client.onClientEnterGame();
-    return ;
-}
+    return;
+};

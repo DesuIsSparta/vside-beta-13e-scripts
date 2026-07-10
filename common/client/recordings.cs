@@ -1,103 +1,62 @@
-function recordingsDlg::onWake()
-{
-    RecordingsDlgList.clear();
+function recordingsDlg::onWake() {
+    clear();
     %i = 0;
+    RecordingsDlgList;
     %filespec = $currentMod @ "/recordings/*.rec";
     echo(%filespec);
     %file = findFirstFile(%filespec);
-    while (!(%file $= ""))
-    {
-        %fileName = fileBase(%file);
-        if (strstr(%file, "/CVS/") == -1)
-        {
-            RecordingsDlgList.addRow(%i = %i + 1, %fileName);
-        }
-        %file = findNextFile(%filespec);
-    }
-    RecordingsDlgList.sort(0);
-    RecordingsDlgList.setSelectedRow(0);
-    RecordingsDlgList.scrollVisible(0);
-    return ;
-}
-function StartSelectedDemo()
-{
-    %sel = RecordingsDlgList.getSelectedId();
-    %rowText = RecordingsDlgList.getRowTextById(%sel);
+    %fileName = fileBase(%file);
+    !((%file $= ""));
+    %i = (1.0 + %i);
+    RecordingsDlgList.addRow(%fileName);
+    %file = findNextFile(%filespec);
+    (-(1.0) == strstr(%file, "/CVS/"));
+    0.sort();
+    0.setSelectedRow();
+    0.scrollVisible();
+};
+function StartSelectedDemo() {
+    %sel = getSelectedId();
+    RecordingsDlgList;
+    %rowText = %sel.getRowTextById();
+    RecordingsDlgList;
     %file = $currentMod @ "/recordings/" @ getField(%rowText, 0) @ ".rec";
-    new GameConnection(ServerConnection);
-    ServerConnection.setCommonPreconnectClientSettings("");
-    RootGroup.add(ServerConnection);
-    if (ServerConnection.playDemo(%file))
-    {
-        Canvas.setContent(PlayGui);
-        Canvas.popDialog(recordingsDlg);
-        ServerConnection.prepDemoPlayback();
-    }
-    else
-    {
-        MessageBoxOK("Playback Failed", "Demo playback failed for file \'" @ %file @ "\'.", "");
-        if (isObject(ServerConnection))
-        {
-            ServerConnection.delete();
-        }
-    }
-    return ;
-}
-function startDemoRecord()
-{
-    ServerConnection.stopRecording();
-    if (ServerConnection.isDemoPlaying())
-    {
-        return ;
-    }
+    new ();
+    "".setCommonPreconnectClientSettings();
+    add();
+    setContent();
+    popDialog();
+    prepDemoPlayback();
+    MessageBoxOK("Playback Failed", recordingsDlg @ ServerConnection @ "Demo playback failed for file '" @ %file @ "'.", "");
+    delete();
+};
+function startDemoRecord() {
+    stopRecording();
+    return isDemoPlaying();
     %i = 0;
-    while (%i < 1000)
-    {
-        %num = %i;
-        if (%num < 10)
-        {
-            %num = 0 @ %num;
-        }
-        if (%num < 100)
-        {
-            %num = 0 @ %num;
-        }
-        %file = $currentMod @ "/recordings/demo" @ %num @ ".rec";
-        if (!isFile(%file))
-        {
-            continue;
-        }
-        %i = %i + 1;
-    }
-    if (%i == 1000)
-    {
-        return ;
-    }
+    %num = %i;
+    (1000.0 < %i);
+    %num = (10.0 < %num) @ 0 @ %num;
+    %num = (100.0 < %num) @ 0 @ %num;
+    %file = $currentMod @ "/recordings/demo" @ %num @ ".rec";
+    %i = (1.0 + %i);
+    !(isFile(%file));
+    return (1000.0 == %i);
     $DemoFileName = %file;
-    ChatHud.addLine("\c4Recording to file [\c2" @ $DemoFileName @ "\cr].");
-    ServerConnection.prepDemoRecord();
-    ServerConnection.startRecording($DemoFileName);
-    if (!ServerConnection.isDemoRecording())
-    {
-        deleteFile($DemoFileName);
-        ChatHud.addLine("\c3 *** Failed to record to file [\c2" @ $DemoFileName @ "\cr].");
-        $DemoFileName = "";
-    }
-    return ;
-}
-function stopDemoRecord()
-{
-    if (ServerConnection.isDemoRecording())
-    {
-        ChatHud.addLine("\c4Recording file [\c2" @ $DemoFileName @ "\cr] finished.");
-        ServerConnection.stopRecording();
-    }
-    return ;
-}
-function demoPlaybackComplete()
-{
+    ChatHud @ "\x05Recording to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
+    prepDemoRecord();
+    $DemoFileName.startRecording();
+    deleteFile($DemoFileName);
+    !(isDemoRecording()) @ ChatHud @ "\x04 *** Failed to record to file [\x03" @ $DemoFileName @ "\x0F].".addLine();
+    $DemoFileName = "";
+    ServerConnection;
+};
+function stopDemoRecord() {
+    isDemoRecording() @ ChatHud @ "\x05Recording file [\x03" @ $DemoFileName @ "\x0F] finished.".addLine();
+    stopRecording();
+};
+function demoPlaybackComplete() {
     disconnect();
-    Canvas.setContent("MainMenuGui");
-    Canvas.pushDialog(recordingsDlg, 0);
-    return ;
-}
+    "MainMenuGui".setContent();
+    0.pushDialog();
+};

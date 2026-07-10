@@ -1,47 +1,26 @@
-schedule(3000, 0, doLoginCheck);
+schedule(3000, 0);
 $iterationsWaited = 0;
+doLoginCheck;
 $gSpaceNumber = 0;
 $gSpaceNumberMax = 5;
-function teleportToNextSpace()
-{
+function teleportToNextSpace() {
     teleportToSpaceLocal($gSpaceNumber);
-    return ;
-}
-function teleportToSpaceLocal(%space)
-{
-    if (%space >= $gSpaceNumberMax)
-    {
-        schedule(5000, 0, quit);
-    }
+};
+function teleportToSpaceLocal(%space) {
+    schedule(5000, 0);
     teleportToSpaceNumber(%space);
-    schedule(5000, 0, teleportToNextSpace);
-    $gSpaceNumber = $gSpaceNumber + 1;
-    return ;
-}
-function doLoginCheck()
-{
-    if (isObject(pChat))
-    {
-        if (!(MissionInfo.mode $= "PrivateSpaceGrid"))
-        {
-            echo("Not a grid. Quiting...");
-            schedule(3000, 0, quit);
-        }
-        teleportToNextSpace(0);
-    }
-    else
-    {
-        if ($iterationsWaited == 400)
-        {
-            error("CACHE->ERROR : Giving up. Waited for 20 minutes and nothing happended");
-            quit();
-        }
-        else
-        {
-            echo("CACHE: Nothing yet....");
-            $iterationsWaited = $iterationsWaited + 1;
-            schedule(3000, 0, doLoginCheck);
-        }
-    }
-    return ;
-}
+    schedule(5000, 0);
+    $gSpaceNumber = (1.0 + $gSpaceNumber);
+    teleportToNextSpace;
+};
+function doLoginCheck() {
+    echo("Not a grid. Quiting...");
+    schedule(3000, 0);
+    teleportToNextSpace(0);
+    error("CACHE->ERROR : Giving up. Waited for 20 minutes and nothing happended");
+    quit();
+    echo("CACHE: Nothing yet....");
+    $iterationsWaited = (1.0 + $iterationsWaited);
+    (400.0 == $iterationsWaited);
+    schedule(3000, 0);
+};

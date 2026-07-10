@@ -1,10 +1,6 @@
 $DestinationList::DestinationInfoInitialized = 0;
-function DestinationList::InitDestinationInfo()
-{
-    if ($DestinationList::DestinationInfoInitialized)
-    {
-        return ;
-    }
+function DestinationList::InitDestinationInfo() {
+    return $DestinationList::DestinationInfoInitialized;
     $DestinationList::DestinationInfoInitialized = 1;
     %trailerEmpty = "";
     %trailerShopping = " - press F5 or click \"Shop\" to start shopping!";
@@ -12,22 +8,22 @@ function DestinationList::InitDestinationInfo()
     %csn = "gw";
     DestinationList::AddDestinationInfo("gateway", "shopNID", %csn, "The Boutique", "Welcome to the Boutique!", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_gateway", 0);
     %csn = "lga";
-    DestinationList::AddDestinationInfo("rooftop", "venue shop", %csn, "The Rooftop Bar", "vSide\'s Vista Bar & Drink-Supplies Shop", %trailerEmpty, "vside:/location/" @ %csn @ "/VenueSpawns_rooftop", 0);
+    DestinationList::AddDestinationInfo("rooftop", "venue shop", %csn, "The Rooftop Bar", "vSide's Vista Bar & Drink-Supplies Shop", %trailerEmpty, "vside:/location/" @ %csn @ "/VenueSpawns_rooftop", 0);
     DestinationList::AddDestinationInfo("modpodz", "shop", %csn, "ModPodz", "Vintage Hipster Threads", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_modpodz", 1);
     DestinationList::AddDestinationInfo("cos", "shop", %csn, "vSide Costume Store", "Wild Rentable Costumes ", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_cos", 1);
     DestinationList::AddDestinationInfo("salon", "shop", %csn, "La Bonita Salon & Spa", "Spa, Salon & Steam", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_salon", 0);
-    DestinationList::AddDestinationInfo("dega", "shop venue", %csn, "The Degrassi DOT Grill", "Degrassi\'s Hottest Tunes & Dorms", %trailerShopping, "vside:/location/" @ %csn @ "/MapSpawns_Degrassi", 1);
+    DestinationList::AddDestinationInfo("dega", "shop venue", %csn, "The Degrassi DOT Grill", "Degrassi's Hottest Tunes & Dorms", %trailerShopping, "vside:/location/" @ %csn @ "/MapSpawns_Degrassi", 1);
     DestinationList::AddDestinationInfo("starstyle", "shop", %csn, "Starstyle", "Dress Like The Stars", %trailerVideos, "vside:/location/" @ %csn @ "/ShoppingSpawns_starstyle", 0);
-    DestinationList::AddDestinationInfo("drezz", "shop", %csn, "Drezz Wear", "Sizzlin\' Club Wear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_drezz", 1);
+    DestinationList::AddDestinationInfo("drezz", "shop", %csn, "Drezz Wear", "Sizzlin' Club Wear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_drezz", 1);
     DestinationList::AddDestinationInfo("kong", "shop", %csn, "Kong Sportswear", "Trendy T-Shirt Flavor", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_kong", 0);
     DestinationList::AddDestinationInfo(121, "shop", %csn, "121 Evening Wear", "Elegant Evening Wear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_121", 1);
     DestinationList::AddDestinationInfo("besos", "shop", %csn, "Besos", "Urban Style", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_besos", 0);
     DestinationList::AddDestinationInfo("radio", "shop", %csn, "The LGA Radio Store", "Radio Artist Swag", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_radio", 0);
     DestinationList::AddDestinationInfo("vhd", "shop venue", %csn, "vSide House of Design", "Exclusive vSider Designs", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_vhd", 1);
     DestinationList::AddDestinationInfo("starstyle2", "shopNID", %csn, "StarStyle", "Dress Like The Stars", %trailerVideos, "", 0);
-    DestinationList::AddDestinationInfo("bardemaria", "venue", %csn, "Bar de Maria", "Funk, Disco & 70\'s", %trailerEmpty, "vside:/location/" @ %csn @ "/VenueSpawns_bardemaria", 0);
+    DestinationList::AddDestinationInfo("bardemaria", "venue", %csn, "Bar de Maria", "Funk, Disco & 70's", %trailerEmpty, "vside:/location/" @ %csn @ "/VenueSpawns_bardemaria", 0);
     DestinationList::AddDestinationInfo("tripled", "venue", %csn, "Triple D Club", "Upfront Dance Jamz", %trailerEmpty, "vside:/location/" @ %csn @ "/VenueSpawns_tripled", 0);
-    DestinationList::AddDestinationInfo("theHacienda", "venue", %csn, "The Hacienda", "Pop, Dance, & 80\'s", %trailerEmpty, "vside:/location/" @ %csn @ "/MapSpawns_Hacienda", 1);
+    DestinationList::AddDestinationInfo("theHacienda", "venue", %csn, "The Hacienda", "Pop, Dance, & 80's", %trailerEmpty, "vside:/location/" @ %csn @ "/MapSpawns_Hacienda", 1);
     DestinationList::AddDestinationInfo("lga_docks", "plaza", %csn, "LGA Docks", "Your Gateway to Paradise", %trailerEmpty, "vside:/location/" @ %csn @ "/MapSpawns_Dock", 0);
     DestinationList::AddDestinationInfo("lga_plaza", "plaza", %csn, "LGA Main Plaza", "The Heart of LGA", %trailerEmpty, "vside:/location/" @ %csn @ "/plazaSpawns", 0);
     DestinationList::AddDestinationInfo("lga_waterfront", "plaza", %csn, "LGA Waterfront", "Come & Enjoy the View", %trailerEmpty, "vside:/location/" @ %csn @ "/MapSpawns_Waterfront", 0);
@@ -38,7 +34,7 @@ function DestinationList::InitDestinationInfo()
     %csn = "nv";
     DestinationList::AddDestinationInfo("kitson", "shop", %csn, "Kitson", "Home of Celebrity Shopping", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_kitson", 0);
     DestinationList::AddDestinationInfo("eviltwinblack", "shop", %csn, "EvilTwin Store", "Clothing for your EvilTwin", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_eviltwinblack", 0);
-    DestinationList::AddDestinationInfo("garis", "shop", %csn, "Gari\'s Boutique", "Everyday Casual Wear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_garis", 1);
+    DestinationList::AddDestinationInfo("garis", "shop", %csn, "Gari's Boutique", "Everyday Casual Wear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_garis", 1);
     DestinationList::AddDestinationInfo("pcd", "shop", %csn, "The PCD Boutique", "PCD Clothing & Gear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_pcd", 0);
     DestinationList::AddDestinationInfo("roca", "shop", %csn, "Rocawear", "Urban Streetwear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_roca", 0);
     DestinationList::AddDestinationInfo("sf1972", "shop", %csn, "S/F 1972", "Killer Footwear", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_sf1972", 0);
@@ -51,13 +47,13 @@ function DestinationList::InitDestinationInfo()
     DestinationList::AddDestinationInfo("djam", "shopNID", %csn, "The DJ AM Store", "Welcome to the DJ AM Store!", %trailerShopping, "", 0);
     DestinationList::AddDestinationInfo("eviltwinwhite", "shopNID", %csn, "EvilTwin Store", "Clothing for your EvilTwin", %trailerShopping, "", 0);
     DestinationList::AddDestinationInfo("clubrage", "venue residence", %csn, "Club Rage", "Rocking vSider-built clubs in downtown NV", %trailerEmpty, "vside:/location/" @ %csn @ "/LobbySpawns_ClubRage", 1);
-    DestinationList::AddDestinationInfo("interscope_lounge", "venue", %csn, "The Interscope Lounge", "Sizzlin\' Pop", %trailerEmpty, "vside:/location/" @ %csn @ "/LoungeSpawns", 1);
-    DestinationList::AddDestinationInfo("djamclub", "venue", %csn, "DJ AM\'s Club LAX", "DJ AM\'s Best Beats", %trailerEmpty, "vside:/location/" @ %csn @ "/LAXSpawns", 0);
-    DestinationList::AddDestinationInfo("skybar", "venue", %csn, "The Sky Bar", "Blazin\' HipHop", %trailerEmpty, "vside:/location/" @ %csn @ "/SkyBarSpawns", 0);
+    DestinationList::AddDestinationInfo("interscope_lounge", "venue", %csn, "The Interscope Lounge", "Sizzlin' Pop", %trailerEmpty, "vside:/location/" @ %csn @ "/LoungeSpawns", 1);
+    DestinationList::AddDestinationInfo("djamclub", "venue", %csn, "DJ AM's Club LAX", "DJ AM's Best Beats", %trailerEmpty, "vside:/location/" @ %csn @ "/LAXSpawns", 0);
+    DestinationList::AddDestinationInfo("skybar", "venue", %csn, "The Sky Bar", "Blazin' HipHop", %trailerEmpty, "vside:/location/" @ %csn @ "/SkyBarSpawns", 0);
     DestinationList::AddDestinationInfo("teahouse", "venue", %csn, "The Tea House", "Downtempo, Chillout & Balearic", %trailerEmpty, "vside:/location/" @ %csn @ "/TeaHouseSpawns", 0);
     DestinationList::AddDestinationInfo("disco_rooftop", "venueNID", %csn, "The Disco RoofTop", "Party above the city", %trailerEmpty, "vside:/location/" @ %csn @ "/VenueSpawns_DiscoRooftop", 0);
     DestinationList::AddDestinationInfo("nv_plaza", "plaza", %csn, "NV Main Plaza", "The Heart of NV", %trailerEmpty, "vside:/location/" @ %csn @ "/plazaSpawns", 0);
-    DestinationList::AddDestinationInfo("warehouselofts", "residence", %csn, "The Warehouse Lofts", "PCD, Kenna, AAR & Kimberly\'s Pads", %trailerEmpty, "vside:/location/" @ %csn @ "/LoftSpawns", 0);
+    DestinationList::AddDestinationInfo("warehouselofts", "residence", %csn, "The Warehouse Lofts", "PCD, Kenna, AAR & Kimberly's Pads", %trailerEmpty, "vside:/location/" @ %csn @ "/LoftSpawns", 0);
     DestinationList::AddDestinationInfo("nv255lofts", "residence", %csn, "The NV255 Lofts", "The NV255 Loft Residences", %trailerEmpty, "vside:/location/" @ %csn @ "/LobbySpawns_NV255Lofts", 1);
     %csn = "rj";
     DestinationList::AddDestinationInfo("eviltwinblack2", "shop", %csn, "EvilTwin Store", "Clothing for your EvilTwin Too!", %trailerShopping, "vside:/location/" @ %csn @ "/ShoppingSpawns_eviltwinblack2", 0);
@@ -103,7 +99,5 @@ function DestinationList::InitDestinationInfo()
     %city = "";
     DestinationList::AddAreaNameInfo("", "", %city, "", "platform/client/ui/friendsHud_transition");
     DestinationList::AddAreaNameInfo("?", "", %city, "", "platform/client/ui/friendsHud_city_QUESTIONMARK");
-    return ;
-}
+};
 DestinationList::InitDestinationInfo();
-

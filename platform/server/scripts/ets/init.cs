@@ -14,7 +14,4 @@ exec("./NPC.cs");
 exec("./permissionsServer.cs");
 exec("./adminServer.cs");
 exec("./systemMessageServer.cs");
-if (isFile("./secret.cs"))
-{
-    exec("./secret.cs");
-}
+exec("./secret.cs");

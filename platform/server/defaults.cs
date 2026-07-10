@@ -18,9 +18,8 @@ $Pref::Server::MaxChatLen = 1200;
 $Audio::voiceCodec = ".v12";
 $Pref::Server::playerHeightMin = 0.5;
 $Pref::Server::playerHeightMax = 2.1;
-$Pref::Server::playerHeightWidthFactor = -0.4;
+$Pref::Server::playerHeightWidthFactor = -(0.4);
 $Pref::Server::adLogFolder = "adLogs";
 $Pref::Server::adLogBaseName = "adLog";
 $Pref::Server::adLogAppendTimeStamp = 1;
 $Pref::Net::BindAddress = "";
-

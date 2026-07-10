@@ -1,31 +1,27 @@
 $NUM_SALON_STYLES = 0;
-function SalonDefineChair(%grouping, %salonMenuDesc, %propDesc, %whereToGet, %destinationCode, %canClose)
-{
-    $SALON_CHAIR_DEF_SALONMENUDESC[%grouping] = %salonMenuDesc ;
-    $SALON_CHAIR_DEF_PROPDESC[%grouping] = %propDesc ;
-    $SALON_CHAIR_DEF_WHERETOGET[%grouping] = %whereToGet ;
-    $SALON_CHAIR_DEF_DESTCODE[%grouping] = %destinationCode ;
-    $SALON_CHAIR_DEF_CANCLOSE[%grouping] = %canClose ;
-    return ;
-}
-function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cutTime, %requiredActiveSkusMessage)
-{
-    $SALON_STYLE_GROUPING[$NUM_SALON_STYLES] = %grouping ;
-    $SALON_STYLE_SKU[$NUM_SALON_STYLES] = %sku ;
-    $SALON_STYLE_REQUIREDSKUS[$NUM_SALON_STYLES] = %requiredActiveSkus ;
-    $SALON_STYLE_ANIMATION[$NUM_SALON_STYLES] = %animation ;
-    $SALON_STYLE_CUTTIME[$NUM_SALON_STYLES] = %cutTime ;
-    $SALON_STYLE_REQUREDSKUSMESSAGE[$NUM_SALON_STYLES] = %requiredActiveSkusMessage ;
-    %si = SkuManager.findBySku(%sku);
-    %si.salonStyleIndex = $NUM_SALON_STYLES;
-    $NUM_SALON_STYLES = $NUM_SALON_STYLES + 1;
-    return ;
-}
-$SALON_STYLE_BALD_SKU["f"] = 20315 ;
-$SALON_STYLE_BALD_SKU["m"] = 177 ;
-$SALON_STYLE_BALD_SKU["n"] = "";
-function SalonDefineStyles()
-{
+function SalonDefineChair(%grouping, %salonMenuDesc, %propDesc, %whereToGet, %destinationCode, %canClose) {
+    %grouping[$SALON_CHAIR_DEF_SALONMENUDESC @ %grouping] = %salonMenuDesc;
+    %grouping[$SALON_CHAIR_DEF_PROPDESC @ %grouping] = %propDesc;
+    %grouping[$SALON_CHAIR_DEF_WHERETOGET @ %grouping] = %whereToGet;
+    %grouping[$SALON_CHAIR_DEF_DESTCODE @ %grouping] = %destinationCode;
+    %grouping[$SALON_CHAIR_DEF_CANCLOSE @ %grouping] = %canClose;
+};
+function SalonDefineStyle(%grouping, %sku, %requiredActiveSkus, %animation, %cutTime, %requiredActiveSkusMessage) {
+    $NUM_SALON_STYLES[$SALON_STYLE_GROUPING @ $NUM_SALON_STYLES] = %grouping;
+    $NUM_SALON_STYLES[$SALON_STYLE_SKU @ $NUM_SALON_STYLES] = %sku;
+    $NUM_SALON_STYLES[$SALON_STYLE_REQUIREDSKUS @ $NUM_SALON_STYLES] = %requiredActiveSkus;
+    $NUM_SALON_STYLES[$SALON_STYLE_ANIMATION @ $NUM_SALON_STYLES] = %animation;
+    $NUM_SALON_STYLES[$SALON_STYLE_CUTTIME @ $NUM_SALON_STYLES] = %cutTime;
+    $NUM_SALON_STYLES[$SALON_STYLE_REQUREDSKUSMESSAGE @ $NUM_SALON_STYLES] = %requiredActiveSkusMessage;
+    %si = %sku.findBySku();
+    SkuManager;
+    salonStyleIndex = $NUM_SALON_STYLES @ %si;
+    $NUM_SALON_STYLES = (1.0 + $NUM_SALON_STYLES);
+};
+$NUM_SALON_STYLES[$SALON_STYLE_BALD_SKU @ "f"] = 20315;
+$NUM_SALON_STYLES[$SALON_STYLE_BALD_SKU @ "f"][$SALON_STYLE_BALD_SKU @ "m"] = 177;
+$NUM_SALON_STYLES[$SALON_STYLE_BALD_SKU @ "f"][$SALON_STYLE_BALD_SKU @ "m"][$SALON_STYLE_BALD_SKU @ "n"] = "";
+function SalonDefineStyles() {
     SalonDefineChair("basicHair", "vSalon - choose a style!", "styling", "La Bonita Salon in LGA", "salon", 0);
     SalonDefineStyle("basicHair", 20359, "8006 18006", "hpick", 9000, "");
     SalonDefineStyle("basicHair", 20360, "8006 18006", "hpick", 9000, "");
@@ -520,21 +516,14 @@ function SalonDefineStyles()
     SalonDefineStyle("drinks", 27249, 27253, "fmakewine", 15000, "");
     SalonDefineStyle("drinks", 27250, 27254, "fmakewine", 15000, "");
     SalonDefineStyle("drinks", 27278, 27277, "fmakegcylin", 15000, "");
-    return ;
-}
+};
 SalonDefineStyles();
-function SalonDoesListContainAnySalonRewardSKUs(%skus)
-{
+function SalonDoesListContainAnySalonRewardSKUs(%skus) {
     %i = 0;
-    while (%i < $NUM_SALON_STYLES)
-    {
-        %skuToCheck = $SALON_STYLE_SKU[%i];
-        %wordLoc = findWord(%skus, %skuToCheck);
-        if (%wordLoc >= 0)
-        {
-            return 1;
-        }
-        %i = %i + 1;
-    }
+    %skuToCheck = %i[$SALON_STYLE_SKU @ %i];
+    ($NUM_SALON_STYLES < %i);
+    %wordLoc = findWord(%skus, %skuToCheck);
+    return 1;
+    %i = (1.0 + %i);
     return 0;
-}
+};

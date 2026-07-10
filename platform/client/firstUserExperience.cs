@@ -1,4 +1,3 @@
-function isInFUE()
-{
-    return ($gClosetGuiNeedsOpen || ($gContiguousSpaceName $= "gateway")) || ($gContiguousSpaceName $= "gw");
-}
+function isInFUE() {
+    return (($gClosetGuiNeedsOpen SPC $gContiguousSpaceName $= "gateway") SPC $gContiguousSpaceName $= "gw");
+};

@@ -1,4 +1,1 @@
-if ($AmClient)
-{
-    exec("./snoopPanel.cs");
-}
+exec("./snoopPanel.cs");

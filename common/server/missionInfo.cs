@@ -1,68 +1,44 @@
-function clearLoadInfo()
-{
-    if (isObject(MissionInfo))
-    {
-        MissionInfo.delete();
-    }
-    return ;
-}
-function buildLoadInfo(%mission)
-{
+function clearLoadInfo() {
+    delete();
+    return MissionInfo;
+};
+function buildLoadInfo(%mission) {
     clearLoadInfo();
     %infoObject = "";
-    %file = new FileObject();
-    if (%file.openForRead(%mission))
-    {
-        %inInfoBlock = 0;
-        while (!%file.isEOF())
-        {
-            %line = %file.readLine();
-            %line = trim(%line);
-            if (%line $= "new ScriptObject(MissionInfo) {")
-            {
-                %inInfoBlock = 1;
-            }
-            else
-            {
-                if (%inInfoBlock && (%line $= "};"))
-                {
-                    %inInfoBlock = 0;
-                    %infoObject = %infoObject @ %line;
-                    break;
-                }
-            }
-            if (%inInfoBlock)
-            {
-                %infoObject = %infoObject @ %line @ " ";
-            }
-        }
-        %file.close();
-    }
+    %file = new ""();
+    FileObject;
+    %inInfoBlock = 0;
+    %file.openForRead(%mission);
+    %line = %file.readLine();
+    !(%file.isEOF());
+    %line = trim(%line);
+    0;
+    %inInfoBlock = 1;
+    (%line $= "new ScriptObject(MissionInfo) {");
+    %inInfoBlock = 0;
+    (%inInfoBlock SPC %line $= "};");
+    %infoObject = %infoObject @ %line;
+    %infoObject = %inInfoBlock @ %infoObject @ %line @ " ";
+    %file.close();
     eval(%infoObject);
     %file.delete();
-    return ;
-}
-function dumpLoadInfo()
-{
-    echo("Mission Name: " @ MissionInfo.name);
+    return !(%file.isEOF());
+};
+function dumpLoadInfo() {
+    echo(MissionInfo @ name);
     echo("Mission Description:");
     %i = 0;
-    while (!(MissionInfo.desc[%i] $= ""))
-    {
-        echo("   " @ MissionInfo.desc[%i]);
-        %i = %i + 1;
-    }
-}
-
-function sendLoadInfoToClient(%client)
-{
-    messageClient(%client, 'MsgLoadInfo', MissionInfo.name);
+    "Mission Name: ";
+    echo(!((%i @ MissionInfo SPC desc $= "")) @ "   " @ %i @ MissionInfo @ desc);
+    %i = (1.0 + %i);
+};
+function sendLoadInfoToClient(%client) {
+    messageClient(%client, 'MsgLoadInfo', name);
     %i = 0;
-    while (!(MissionInfo.desc[%i] $= ""))
-    {
-        messageClient(%client, 'MsgLoadDescripition', MissionInfo.desc[%i]);
-        %i = %i + 1;
-    }
+    MissionInfo;
+    messageClient(%client, 'MsgLoadDescripition', desc);
+    %i = (1.0 + %i);
+    !((%i @ MissionInfo SPC desc $= "")) @ %i @ MissionInfo;
     messageClient(%client, 'MsgLoadInfoDone', "");
-    return ;
-}
+    return !((%i @ MissionInfo SPC desc $= ""));
+};

@@ -1,24 +1,17 @@
-function playerTexturesReload()
-{
-    %n = PlayerInstanceDict.size() - 1;
-    while (%n >= 0)
-    {
-        %player = PlayerInstanceDict.getValue(%n);
-        %player.setActiveSKUs(%player.getActiveSKUs(), 1);
-        %n = %n - 1;
-    }
-}
-
-function changedShowReloadTextures()
-{
-    MessageBoxOK("Restart required", $MsgCat::VHDClient["A-RESTART"], "");
+function playerTexturesReload() {
+    %n = (PlayerInstanceDict - size());
+    1.0;
+    %player = %n.getValue();
+    PlayerInstanceDict;
+    %player.setActiveSKUs(%player.getActiveSKUs(), 1);
+    %n = (1.0 - %n);
+    (0.0 >= %n);
+};
+function changedShowReloadTextures() {
+    MessageBoxOK("Restart required", , "");
     %n = 0;
-    while (%n < 4)
-    {
-        MePopupMenuButton.schedule(%n * 300, "setVisible", 0);
-        MePopupMenuButton.schedule((%n * 300) + 150, "setVisible", 1);
-        %n = %n + 1;
-    }
-}
-
-
+    (300.0 * %n).schedule("setVisible", 0);
+    (150.0 + (300.0 * %n)).schedule("setVisible", 1);
+    %n = (1.0 + %n);
+    MePopupMenuButton;
+};

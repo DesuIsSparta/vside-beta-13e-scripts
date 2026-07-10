@@ -30,10 +30,4 @@ exec("./miscDev.cs");
 exec("./scratchDev.cs");
 exec("./videoRendererDev.cs");
 exec("./testData/initReloadable.cs");
-if ($StandAlone || !$Server::Dedicated)
-{
-}
-if ($AmClient)
-{
-    exec("./ui/initReloadable.cs");
-}
+exec("./ui/initReloadable.cs");

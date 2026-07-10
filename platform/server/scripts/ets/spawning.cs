@@ -1,5 +1,4 @@
-function SpawnSphere::choosePointOnCenterPlane(%this)
-{
+function SpawnSphere::choosePointOnCenterPlane(%this) {
     %trans = %this.getTransform();
     %posX = getWord(%trans, 0);
     %posY = getWord(%trans, 1);
@@ -7,116 +6,94 @@ function SpawnSphere::choosePointOnCenterPlane(%this)
     %retries = 7;
     %good = 0;
     %n = 0;
-    while (%n < 10)
-    {
-        %tryX = getRandom(-1000, 1000);
-        %tryY = getRandom(-1000, 1000);
-        if (((%tryX * %tryX) + (%tryY * %tryY)) < (1000 * 1000))
-        {
-            %good = 1;
-        }
-        %n = %n + 1;
-    }
-    %posX = %posX + ((%tryX * 0.001) * %this.radius);
-    %posY = %posY + ((%tryY * 0.001) * %this.radius);
-    return %posX SPC %posY SPC %posZ;
-}
-function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphere)
-{
-    %minSep2 = %minSeparation * %minSeparation;
-    %num = MissionCleanup.getCount();
+    %tryX = getRandom(-(1000.0), 1000);
+    (10.0 < %n);
+    %tryY = getRandom(-(1000.0), 1000);
+    %good = 1;
+    ((1000.0 * 1000.0) < ((%tryY * %tryY) + (%tryX * %tryX)));
+    %n = (1.0 + %n);
+    %posX = ((radius * (0.001 * %tryX)) + %posX);
+    %this;
+    %posY = ((radius * (0.001 * %tryY)) + %posY);
+    %this;
+    return %posX @ " " @ %posY @ " " @ %posZ;
+};
+function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphere) {
+    %minSep2 = (%minSeparation * %minSeparation);
+    %num = getCount();
+    MissionCleanup;
     %retries = 20;
     %good = 0;
     %m = 0;
-    while (%m < %retries)
-    {
-        %candidate = %this.choosePointOnCenterPlane();
-        %cdX = getWord(%candidate, 0);
-        %cdY = getWord(%candidate, 1);
-        %tooClose = 0;
-        %n = 0;
-        while (%n < %num)
-        {
-            %item = MissionCleanup.getObject(%n);
-            if (((%item != %exclude) && (%item.getClassName() $= "Player")) || (%item.getClassName() $= "AIPlayer"))
-            {
-                %itTrans = %item.getTransform();
-                %itX = getWord(%itTrans, 0);
-                %itY = getWord(%itTrans, 1);
-                %dx = %itX - %cdX;
-                %dy = %itY - %cdY;
-                %sep2 = (%dx * %dx) + (%dy * %dy);
-                if (%sep2 < %minSep2)
-                {
-                    %tooClose = 1;
-                }
-            }
-            %n = %n + 1;
-        }
-        if (!%tooClose)
-        {
-            %good = 1;
-        }
-        %m = %m + 1;
-    }
-    %rot = "0 0 1";
-    if (%m >= %retries)
-    {
-        echo("\c2 could not find empty spot");
-        %rot = "0 0 -1";
-    }
-    %theta = (getRandom(0, 360) * 3.41593) / 180;
-    %rot = %rot SPC %theta;
-    if (%alignToSphere)
-    {
-        %rot = getWords(%this.getTransform(), 3);
-    }
-    %ret = %candidate SPC %rot;
-    return %ret;
-}
-function SpawnSphere::spawnBots(%this, %num, %sep)
-{
+    %candidate = %this.choosePointOnCenterPlane();
+    (%retries < %m);
+    %cdX = getWord(%candidate, 0);
+    %cdY = getWord(%candidate, 1);
+    %tooClose = 0;
     %n = 0;
-    while (%n < %num)
-    {
-        AIManager::SpawnETS(AIManager, %this.getEmptySpot(%sep, 0, 0));
-        %n = %n + 1;
-    }
-}
-
-function SpawnSphere::spawnBotsDensity(%this, %density, %sep)
-{
-    %spnArea = (%this.radius * %this.radius) * 3.14159;
-    %botArea = %sep / 2;
-    %botArea = (%botArea * %botArea) * 3.14159;
-    %num = ((%spnArea / %botArea) * 0.9) * %density;
-    echo("spawning" SPC %num SPC "bots..");
+    %item = %n.getObject();
+    MissionCleanup;
+    %itTrans = %item.getTransform();
+    (((%exclude != %item) SPC %item.getClassName() $= "Player") SPC %item.getClassName() $= "AIPlayer");
+    %itX = getWord(%itTrans, 0);
+    (%num < %n);
+    %itY = getWord(%itTrans, 1);
+    %dx = (%cdX - %itX);
+    %dy = (%cdY - %itY);
+    %sep2 = ((%dy * %dy) + (%dx * %dx));
+    %tooClose = 1;
+    (%minSep2 < %sep2);
+    %n = (1.0 + %n);
+    %good = 1;
+    !(%tooClose);
+    %m = (1.0 + %m);
+    (%num < %n);
+    %rot = "0 0 1";
+    (%retries < %m);
+    echo("\x03 could not find empty spot");
+    %rot = "0 0 -1";
+    (%retries >= %m);
+    %theta = (180.0 / (3.41593 * getRandom(0, 360)));
+    %rot = %rot @ " " @ %theta;
+    %rot = getWords(%this.getTransform(), 3);
+    %alignToSphere;
+    %ret = %candidate @ " " @ %rot;
+    return %ret;
+};
+function SpawnSphere::spawnBots(%this, %num, %sep) {
+    %n = 0;
+    AIManager::SpawnETS(%this.getEmptySpot(%sep, 0, 0));
+    %n = (1.0 + %n);
+    AIManager;
+};
+function SpawnSphere::spawnBotsDensity(%this, %density, %sep) {
+    %spnArea = (radius * (%this * radius));
+    %this;
+    %botArea = (2.0 / %sep);
+    3.14159;
+    %botArea = (3.14159 * (%botArea * %botArea));
+    %num = (%density * (0.9 * (%botArea / %spnArea)));
+    echo("spawning" @ " " @ %num @ " " @ "bots..");
     %this.spawnBots(%num);
-    return ;
-}
-function serverCmdAddBotsToSpawnSphere(%unused, %unused, %num, %sep)
-{
-    EntrySpawn.spawnBots(%num, %sep);
-    return ;
-}
-function Player::teleportToRandomSpawnSphere(%this)
-{
+    return;
+};
+function serverCmdAddBotsToSpawnSphere(%unused, %unused, %num, %sep) {
+    %num.spawnBots(%sep);
+    return EntrySpawn;
+};
+function Player::teleportToRandomSpawnSphere(%this) {
     %chosen = "";
-    if (!isObject(PlayerDropPoints))
-    {
-        %chosen = EntrySpawn;
-    }
-    else
-    {
-        %chosen = PlayerDropPoints.getObject(getRandom(0, PlayerDropPoints.getCount() - 1));
-    }
-    if (!isObject(%chosen))
-    {
-        error("This is all messed up. No known spawn spheres!");
-    }
+    // unhandled opcode 508 at 0x0000039B
+    %chosen = EntrySpawn;
+    !(isObject());
+    %chosen = getRandom(0, (PlayerDropPoints - getCount())).getObject();
+    1.0;
+    error("This is all messed up. No known spawn spheres!");
     %pos = %chosen.getEmptySpot(1, 0, 0);
+    !(isObject(%chosen));
     %rot = getWords(%this.getTransform(), 3, 4);
-    %this.setTransform(%pos SPC %rot);
+    PlayerDropPoints;
+    %this.setTransform(%pos @ " " @ %rot);
     %this.setVelocity("0 0 5");
-    return ;
-}
+    return PlayerDropPoints;
+};

@@ -1,403 +1,257 @@
-function GuiMLTextCtrl::onURL(%this, %url)
-{
-    if (getWord(%url, 0) $= "gamelink")
-    {
-        %url = restWords(%url);
-    }
-    if (%url $= "")
-    {
-        return ;
-    }
-    if (!strnicmp(%url, "vside:/", 7))
-    {
-        vurlOperation(%url);
-        return ;
-    }
+function GuiMLTextCtrl::onURL(%this, %url) {
+    %url = restWords(%url);
+    (getWord(%url, 0) $= "gamelink");
+    return (%url $= "");
+    vurlOperation(%url);
+    return !(strnicmp(%url, "vside:/", 7));
     gotoWebPage(%url);
-    return ;
-}
-function GuiMLTextCtrl::massageURL(%url)
-{
-    if (strstr(%url, "http://") == 0)
-    {
-        %url = getSubStr(%url, 7, 1000000);
-    }
+};
+function GuiMLTextCtrl::massageURL(%url) {
+    %url = getSubStr(%url, 7, 1000000);
+    (0.0 == strstr(%url, "http://"));
     return %url;
-}
-function GuiArray2Ctrl::scrollToRowByCell(%this, %cell)
-{
+};
+function GuiArray2Ctrl::scrollToRowByCell(%this, %cell) {
     %cellIdx = %this.getObjectIndex(%cell);
     %this.scrollToRowByCellIndex(%cellIdx);
-    return ;
-}
-function GuiArray2Ctrl::scrollToRowByCellIndex(%this, %cellIdx)
-{
-    %cellHeight = getWord(%this.childrenExtent, 1) + %this.spacing;
-    %ypos = 1 - getWord(%this.getPosition(), 1);
-    %closestRow = mFloor((%ypos / %cellHeight) + 0.5);
-    %targetRow = mFloor(%cellIdx / %this.numRowsOrCols);
-    if (%cellIdx < 0)
-    {
-        %targetRow = %closestRow;
-    }
-    %visibleRows = mFloor(getWord(%this.getParent().getExtent(), 1) / %cellHeight);
-    %dRows = %targetRow - %closestRow;
-    if (%dRows < 0)
-    {
-        %targetRow = %targetRow;
-    }
-    else
-    {
-        if (%dRows < %visibleRows)
-        {
-            %targetRow = %closestRow;
-        }
-        else
-        {
-            %targetRow = (%targetRow - %visibleRows) + 1;
-        }
-    }
-    %this.getParent().scrollTo(0, %cellHeight * %targetRow);
-    return ;
-}
-function GuiControl::blinkSet(%this, %mode, %periodOffMS, %periodOnMS, %param)
-{
-    if (!(%this.origPoint $= ""))
-    {
-        %this.resize(getWord(%this.origPoint, 0), getWord(%this.origPoint, 1), getWord(%this.origExtnt, 0), getWord(%this.origExtnt, 1));
-    }
-    %mode = %mode $= "none" ? "" : %mode;
-    %this.blinkMode = %mode;
-    %this.blinkPeriodOffMS = %periodOffMS;
-    %this.blinkPeriodOnMS = %periodOnMS;
-    %this.blinkParam = %param;
-    %this.blinksRemaining = 15;
-    %this.origPoint = "";
+};
+function GuiArray2Ctrl::scrollToRowByCellIndex(%this, %cellIdx) {
+    %cellHeight = (%this + getWord(childrenExtent, 1));
+    spacing;
+    %ypos = (getWord(%this.getPosition(), 1) - 1.0);
+    %this;
+    %closestRow = mFloor((0.5 + (%cellHeight / %ypos)));
+    %targetRow = mFloor((numRowsOrCols / %cellIdx));
+    %this;
+    %targetRow = %closestRow;
+    (0.0 < %cellIdx);
+    %visibleRows = mFloor((%cellHeight / getWord(%this.getParent().getExtent(), 1)));
+    %dRows = (%closestRow - %targetRow);
+    %targetRow = %targetRow;
+    (0.0 < %dRows);
+    %targetRow = %closestRow;
+    (%visibleRows < %dRows);
+    %targetRow = (1.0 + (%visibleRows - %targetRow));
+    %this.getParent().scrollTo(0, (%targetRow * %cellHeight));
+};
+function GuiControl::blinkSet(%this, %mode, %periodOffMS, %periodOnMS, %param) {
+    %this.resize(getWord(origPoint, 0), getWord(origPoint, 1), getWord(origExtnt, 0), getWord(origExtnt, 1));
+    %mode = %mode;
+    "";
+    blinkMode = (%this SPC %mode $= "none") @ %mode @ %this;
+    %this;
+    blinkPeriodOffMS = %this @ %periodOffMS @ %this;
+    %this;
+    blinkPeriodOnMS = !((%this SPC origPoint $= "")) @ %periodOnMS @ %this;
+    blinkParam = %param @ %this;
+    blinksRemaining = 15 @ %this;
+    origPoint = "" @ %this;
     %this.blinkStateSet(0);
-    if (!((%mode $= "")) && (%periodOnMS > 50))
-    {
-        %this.blinkDo();
-    }
-    return ;
-}
-function GuiControl::blinkSetRemaining(%this, %remaining)
-{
-    %this.blinksRemaining = %remaining;
-    return ;
-}
-function GuiControl::blinkDo(%this)
-{
-    cancel(%this.blinkTimer);
-    %this.blinkTimer = "";
-    %newState = 1 - %this.blinkState;
-    %period = %newState ? %this : %this;
-    if (%newState == 0)
-    {
-        %this.blinksRemaining = %this.blinksRemaining - 1;
-    }
-    if ((%period >= 50) && (%this.blinksRemaining > 0))
-    {
-        %this.blinkStateSet(%newState);
-        %this.blinkTimer = %this.schedule(%period, "blinkDo");
-    }
-    else
-    {
-        %this.blinkStateSet(0);
-        if ((%period > 0) && (%period < 50))
-        {
-            error(getScopeName() SPC "- period too small:" SPC %period);
-        }
-    }
-    return ;
-}
-function GuiControl::blinkStateSet(%this, %state)
-{
-    %cmd = "GuiControl_blinkStateSet_" @ %this.blinkMode;
-    if (isFunction(%cmd))
-    {
-        call(%cmd, %this, %state);
-    }
-    else
-    {
-        if (!(%this.blinkMode $= ""))
-        {
-            error(getScopeName() SPC "- Unknown mode:" SPC %this.blinkMode SPC getTrace());
-        }
-        %this.blinkPeriodOnMS = 0;
-        %this.blinkPeriodOffMS = 0;
-    }
-    return ;
-}
-function GuiControl_blinkStateSet_Bounce(%this, %state)
-{
-    if (%this.blinkState == %state)
-    {
-        return ;
-    }
-    %this.blinkState = %state;
-    if (%this.origPoint $= "")
-    {
-        %this.origPoint = %this.getPosition();
-        %this.origExtnt = %this.getExtent();
-    }
-    if (%state == 0)
-    {
-        %newPoint = %this.origPoint;
-        %newExtnt = %this.origExtnt;
-    }
-    else
-    {
-        if (%state == 1)
-        {
-            %newPoint = VectorAdd(%this.origPoint, getWords(%this.blinkParam, 0, 1));
-            %newExtnt = VectorAdd(%this.origExtnt, getWords(%this.blinkParam, 2, 3));
-        }
-    }
+    %this.blinkDo();
+};
+function GuiControl::blinkSetRemaining(%this, %remaining) {
+    blinksRemaining = %remaining @ %this;
+};
+function GuiControl::blinkDo(%this) {
+    cancel(blinkTimer);
+    blinkTimer = %this @ "" @ %this;
+    %newState = (blinkState - 1.0);
+    %this;
+    %period = blinkPeriodOffMS;
+    %this;
+    blinksRemaining = (%this - blinksRemaining);
+    1.0;
+    %this.blinkStateSet(%newState);
+    blinkTimer = (%this > blinksRemaining) @ %this.schedule(%period, "blinkDo") @ %this;
+    0.0;
+    %this.blinkStateSet(0);
+    error(getScopeName() @ " " @ "- period too small:" @ " " @ %period);
+};
+function GuiControl::blinkStateSet(%this, %state) {
+    %cmd = %this @ blinkMode;
+    "GuiControl_blinkStateSet_";
+    call(%cmd, %this, %state);
+    error(%this @ blinkMode @ " " @ getTrace());
+    blinkPeriodOnMS = getScopeName() @ " " @ "- Unknown mode:" @ " " @ 0 @ %this;
+    !((%this SPC blinkMode $= ""));
+    blinkPeriodOffMS = isFunction(%cmd) @ 0 @ %this;
+};
+function GuiControl_blinkStateSet_Bounce(%this, %state) {
+    return (%this == blinkState);
+    blinkState = %state @ %this;
+    origPoint = (%this SPC origPoint $= "") @ %this.getPosition() @ %this;
+    origExtnt = %this.getExtent() @ %this;
+    %newPoint = origPoint;
+    %this;
+    %newExtnt = origExtnt;
+    %this;
+    %newPoint = VectorAdd(origPoint, getWords(blinkParam, 0, 1));
+    %this;
+    %newExtnt = VectorAdd(origExtnt, getWords(blinkParam, 2, 3));
+    %this;
     %this.resize(getWord(%newPoint, 0), getWord(%newPoint, 1), getWord(%newExtnt, 0), getWord(%newExtnt, 1));
-    return ;
-}
-function GuiMLTextCtrl::applyBaseTextWithStyle(%this, %style)
-{
-    %this.setValue(mlStyle(%this.baseText, %style));
-    return ;
-}
-function GuiMLTextCtrl::applyBaseText(%this)
-{
-    %this.applyBaseTextWithStyle(%this.style);
-    return ;
-}
-function GuiMLTextCtrl::setTextWithStyle(%this, %text, %style)
-{
-    if (!isDefined("%style") && (%style $= ""))
-    {
-        %style = %this.style;
-    }
+};
+function GuiMLTextCtrl::applyBaseTextWithStyle(%this, %style) {
+    %this.setValue(mlStyle(baseText, %style));
+};
+function GuiMLTextCtrl::applyBaseText(%this) {
+    %this.applyBaseTextWithStyle(style);
+};
+function GuiMLTextCtrl::setTextWithStyle(%this, %text, %style) {
+    %style = style;
+    %this;
     %this.setText(mlStyle(%text, %style));
-    return ;
-}
-function GuiControl::onSetFirstResponder(%this)
-{
+};
+function GuiControl::onSetFirstResponder(%this) {
     %ctrl = %this;
-    if (%this.hasFieldValue("hiliteProxy"))
-    {
-        if (isObject(%this.hiliteProxy))
-        {
-            %ctrl = %this.hiliteProxy;
-        }
-    }
+    %ctrl = hiliteProxy;
+    %this;
     hiliteControl(%ctrl);
-    return ;
-}
-function GuiControl::onClearFirstResponder(%this)
-{
-    if (!isObject(Canvas.getFirstResponder()))
-    {
-        hiliteControl(0);
-    }
-    return ;
-}
-function GuiPopUpMenuCtrl::onSetFirstResponder(%this)
-{
+};
+function GuiControl::onClearFirstResponder(%this) {
+    hiliteControl(0);
+};
+function GuiPopUpMenuCtrl::onSetFirstResponder(%this) {
     hiliteControl(%this, 1);
-    return ;
-}
-function GuiPopUp2MenuCtrl::onSetFirstResponder(%this)
-{
+};
+function GuiPopUp2MenuCtrl::onSetFirstResponder(%this) {
     hiliteControl(%this, 1);
-    return ;
-}
-function hiliteControl(%ctrl, %inParent)
-{
-    if (isObject(GuiEditorGui) && (Canvas.getContent() == GuiEditorGui.getId()))
-    {
-        return ;
-    }
-    if (!isDefined("%inParent"))
-    {
-        %inParent = 0;
-    }
-    if ((isObject(%ctrl) && %ctrl.canHilite) && %ctrl.isActive())
-    {
-        if (!isObject(HiliteWindow))
-        {
-        }
-        new GuiWindowCtrl(HiliteWindow)
-            {
-                profile = "HiliteFrameProfile";
-                horizSizing = "width";
-                vertSizing = "height";
-                position = "0 0";
-                extent = "1 1";
-                minExtent = "1 1";
-                sluggishness = -1;
-                visible = 1;
-                resizeWidth = 0;
-                resizeHeight = 0;
-                canMove = 0;
-                canClose = 0;
-                canMinimize = 0;
-                canMaximize = 0;
-                closeCommand = "";
-            };
-        if (%inParent)
-        {
-            %parent = %ctrl.getParent();
-            if (isObject(%parent))
-            {
-                %parent.add(HiliteWindow);
-                %parent.pushToBack(HiliteWindow);
-                %offset = 1;
-                %targetPosX = getWord(%ctrl.getPosition(), 0) - %offset;
-                %targetPosY = getWord(%ctrl.getPosition(), 1) - %offset;
-                %targetExtX = getWord(%ctrl.getExtent(), 0) + (2 * %offset);
-                %targetExtY = getWord(%ctrl.getExtent(), 1) + (2 * %offset);
-            }
-        }
-        else
-        {
-            %ctrl.add(HiliteWindow);
-            %offset = 1;
-            %targetPosX = 0 - %offset;
-            %targetPosY = 0 - %offset;
-            %targetExtX = getWord(%ctrl.getExtent(), 0) + (2 * %offset);
-            %targetExtY = getWord(%ctrl.getExtent(), 1) + (2 * %offset);
-        }
-        HiliteWindow.setVisible(1);
-        HiliteWindow.setTrgPosition(%targetPosX SPC %targetPosY);
-        HiliteWindow.setTrgExtent(%targetExtX SPC %targetExtY);
-        HiliteWindow.hiliteCtrl = %ctrl;
-    }
-    else
-    {
-        if (isObject(HiliteWindow))
-        {
-            HiliteWindow.delete();
-        }
-    }
-    return ;
-}
-function getHiliteCtrl()
-{
-    return isObject(HiliteWindow) && HiliteWindow.isVisible() ? HiliteWindow : "";
-}
-function GuiControl::isHiliteCtrl(%this)
-{
-    return (isObject(HiliteWindow) && HiliteWindow.isVisible()) && (HiliteWindow.hiliteCtrl.getId() == %this.getId());
-}
+};
+function hiliteControl(%ctrl, %inParent) {
+    return (Canvas == getContent());
+    %inParent = 0;
+    !(isDefined("%inParent"));
+    profile = HiliteWindow @ new () @ "HiliteFrameProfile";
+    GuiWindowCtrl;
+    horizSizing = !(isObject()) @ 0 @ "width";
+    HiliteWindow;
+    vertSizing = canHilite @ %ctrl.isActive() @ "height";
+    %ctrl;
+    position = isObject(%ctrl) @ "0 0";
+    extent = "1 1";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    resizeWidth = 0;
+    resizeHeight = 0;
+    canMove = 0;
+    canClose = 0;
+    canMinimize = 0;
+    canMaximize = 0;
+    closeCommand = "";
+    %parent = %ctrl.getParent();
+    %inParent;
+    %parent.add();
+    %parent.pushToBack();
+    %offset = 1;
+    HiliteWindow;
+    %targetPosX = (%offset - getWord(%ctrl.getPosition(), 0));
+    HiliteWindow;
+    %targetPosY = (%offset - getWord(%ctrl.getPosition(), 1));
+    isObject(%parent);
+    %targetExtX = ((%offset * 2.0) + getWord(%ctrl.getExtent(), 0));
+    %targetExtY = ((%offset * 2.0) + getWord(%ctrl.getExtent(), 1));
+    %ctrl.add();
+    %offset = 1;
+    HiliteWindow;
+    %targetPosX = (%offset - 0.0);
+    %targetPosY = (%offset - 0.0);
+    %targetExtX = ((%offset * 2.0) + getWord(%ctrl.getExtent(), 0));
+    %targetExtY = ((%offset * 2.0) + getWord(%ctrl.getExtent(), 1));
+    1.setVisible();
+    %targetPosX @ " " @ %targetPosY.setTrgPosition();
+    %targetExtX @ " " @ %targetExtY.setTrgExtent();
+    hiliteCtrl = HiliteWindow @ %ctrl @ HiliteWindow;
+    HiliteWindow;
+    delete();
+};
+function getHiliteCtrl() {
+    return "";
+};
+function GuiControl::isHiliteCtrl(%this) {
+    return (HiliteWindow == hiliteCtrl.getId());
+};
 $gToolTipDelay = 500;
-function GuiControl::onMouseEnterBounds(%this)
-{
-    if (!(%this.tooltip $= ""))
-    {
-        cancel(%this.tooltiptimer);
-        %this.tooltiptimer = %this.schedule($gToolTipDelay, "showToolTip");
-    }
-    return ;
-}
-function GuiControl::showToolTip(%this, %toolTip)
-{
-    if (!$UserPref::UI::ShowTooltips)
-    {
-        return ;
-    }
-    if (isObject(ToolTipCtrl))
-    {
-        ToolTipCtrl.delete();
-    }
-    if (!isDefined("%tooltip"))
-    {
-        %toolTip = %this.tooltip;
-    }
-    %cursorPos = Canvas.getCursorPos();
+function GuiControl::onMouseEnterBounds(%this) {
+    cancel(tooltiptimer);
+    tooltiptimer = %this @ %this.schedule($gToolTipDelay, "showToolTip") @ %this;
+    !((%this SPC tooltip $= ""));
+};
+function GuiControl::showToolTip(%this, %toolTip) {
+    return !($UserPref::UI::ShowTooltips);
+    delete();
+    %toolTip = tooltip;
+    %this;
+    %cursorPos = getCursorPos();
+    Canvas;
     %posX = getWord(%cursorPos, 0);
-    %posY = getWord(%cursorPos, 1) + 22;
+    !(isDefined("%tooltip"));
+    %posY = (22.0 + getWord(%cursorPos, 1));
+    ToolTipCtrl;
     %extX = getStrWidth(%toolTip);
+    isObject();
     %extY = 16;
-    %coords = onscreenCoordinates(%posX, %posY, %extX + 8, %extY);
+    ToolTipCtrl;
+    %coords = onscreenCoordinates(%posX, %posY, (8.0 + %extX), %extY);
     %posX = getWord(%coords, 0);
     %posY = getWord(%coords, 1);
-    new GuiControl(ToolTipCtrl)
-    {
-        profile = "ToolTipProfile";
-        position = %posX SPC %posY;
-        extent = %extX + 8 SPC %extY + 0;
-        minExtent = "1 1";
-    };
-    Canvas.getContent().add(ToolTipCtrl);
-    return ;
-}
-function GuiControl::hideToolTip(%this)
-{
-    if (isObject(ToolTipCtrl))
-    {
-        ToolTipCtrl.setVisible(0);
-    }
-    cancel(%this.tooltiptimer);
-    %this.tooltiptimer = 0;
-    return ;
-}
-function GuiControl::onMouseLeaveBounds(%this)
-{
+    profile = ToolTipCtrl @ new () @ "ToolTipProfile";
+    GuiControl;
+    position = 0 @ %posX @ " " @ %posY;
+    extent = (8.0 + %extX) @ " " @ (0.0 + %extY);
+    minExtent = "1 1";
+    profile = ToolTipTextCtrl @ new () @ "ToolTipTextProfile";
+    GuiTextCtrl;
+    position = "4 -1";
+    extent = %extX @ " " @ %extY;
+    text = %toolTip;
+    getContent().add();
+};
+function GuiControl::hideToolTip(%this) {
+    0.setVisible();
+    cancel(tooltiptimer);
+    tooltiptimer = %this @ 0 @ %this;
+    ToolTipCtrl;
+};
+function GuiControl::onMouseLeaveBounds(%this) {
     %this.hideToolTip();
-    return ;
-}
-function GuiControl::onMouseDown(%this)
-{
+};
+function GuiControl::onMouseDown(%this) {
     %this.hideToolTip();
-    return ;
-}
-function GuiControl::onDialogPush(%this)
-{
+};
+function GuiControl::onDialogPush(%this) {
     %this.hideToolTip();
-    return ;
-}
-function GuiControl::onDialogPop(%this)
-{
+};
+function GuiControl::onDialogPop(%this) {
     %this.hideToolTip();
-    return ;
-}
-function GuiMLTextCtrl::onMouseOverTooltip(%this, %toolTip)
-{
-    cancel(%this.tooltiptimer);
-    %this.tooltiptimer = 0;
-    if (%toolTip $= "")
-    {
-        %this.hideToolTip();
-    }
-    else
-    {
-        %this.tooltiptimer = %this.schedule($gToolTipDelay, "showToolTip", %toolTip);
-    }
-    return ;
-}
-function CanvasDragHiliteCtrl::onReachedTarget(%this)
-{
+};
+function GuiMLTextCtrl::onMouseOverTooltip(%this, %toolTip) {
+    cancel(tooltiptimer);
+    tooltiptimer = %this @ 0 @ %this;
+    %this.hideToolTip();
+    tooltiptimer = (%toolTip $= "") @ %this.schedule($gToolTipDelay, "showToolTip", %toolTip) @ %this;
+};
+function CanvasDragHiliteCtrl::onReachedTarget(%this) {
     %this.setVisible(0);
-    return ;
-}
-function Canvas::getDragHiliteCtrl(%this)
-{
-    if (!isObject(%this.dragHiliteCtrl))
-    {
-        %this.dragHiliteCtrl = new GuiControl(CanvasDragHiliteCtrl)
-        {
-            profile = "ETSNonModalProfile";
-            horizSizing = "width";
-            vertSizing = "height";
-            position = "0 0";
-            extent = "1 1";
-            minExtent = "1 1";
-            sluggishness = 0.25;
-            visible = 1;
-            trgReachedCommand = "$ThisControl.onReachedTarget();";
-        };
-    }
-    return %this.dragHiliteCtrl;
-}
-function Canvas::onDragAndDropStart(%this, %dragCtrl, %mousePos)
-{
-    %this.startingDragPos = %mousePos;
-    %this.dragCtrl = %dragCtrl;
+};
+function Canvas::getDragHiliteCtrl(%this) {
+    profile = CanvasDragHiliteCtrl @ new () @ "ETSNonModalProfile";
+    GuiControl;
+    horizSizing = !(isObject(dragHiliteCtrl)) @ 0 @ "width";
+    %this;
+    vertSizing = "height";
+    position = "0 0";
+    extent = "1 1";
+    minExtent = "1 1";
+    sluggishness = 0.25;
+    visible = 1;
+    trgReachedCommand = "$ThisControl.onReachedTarget();";
+    dragHiliteCtrl = %this;
+    return dragHiliteCtrl;
+};
+function Canvas::onDragAndDropStart(%this, %dragCtrl, %mousePos) {
+    startingDragPos = %mousePos @ %this;
+    dragCtrl = %dragCtrl @ %this;
     %dragHiliteCtrl = %this.getDragHiliteCtrl();
     %dragHiliteCtrl.reposition(getWord(%dragCtrl.getScreenPosition(), 0), getWord(%dragCtrl.getScreenPosition(), 1));
     %dragHiliteCtrl.resize(getWord(%dragCtrl.getExtent(), 0), getWord(%dragCtrl.getExtent(), 1));
@@ -406,382 +260,308 @@ function Canvas::onDragAndDropStart(%this, %dragCtrl, %mousePos)
     %this.getContent().add(%dragHiliteCtrl);
     %this.getContent().pushToBack(%dragHiliteCtrl);
     %dragHiliteCtrl.setVisible(1);
-    return ;
-}
-function Canvas::centerDragHiliteAroundCursor(%this)
-{
-    if (!isObject(%this.dragCtrl))
-    {
-        return ;
-    }
-    %width = getWord(%this.dragCtrl.getExtent(), 0);
-    %height = getWord(%this.dragCtrl.getExtent(), 1);
-    %startX = getWord(%this.dragCtrl.getScreenPosition(), 0) + (%width / 2);
-    %startY = getWord(%this.dragCtrl.getScreenPosition(), 1) + (%height / 2);
-    %this.startingDragPos = %startX SPC %startY;
+};
+function Canvas::centerDragHiliteAroundCursor(%this) {
+    return !(isObject(dragCtrl));
+    %width = getWord(dragCtrl.getExtent(), 0);
+    %this;
+    %height = getWord(dragCtrl.getExtent(), 1);
+    %this;
+    %startX = (%this + getWord(dragCtrl.getScreenPosition(), 0));
+    (2.0 / %width);
+    %startY = (%this + getWord(dragCtrl.getScreenPosition(), 1));
+    (2.0 / %height);
+    startingDragPos = %startX @ " " @ %startY @ %this;
     %dragHiliteCtrl = %this.getDragHiliteCtrl();
     %mousePos = %this.getCursorPos();
-    %dragHiliteCtrl.reposition(getWord(%mousePos, 0) - (%width / 2), getWord(%mousePos, 1) - (%height / 2));
-    return ;
-}
-function Canvas::onDragAndDropMove(%this, %dragCtrl, %mousePos)
-{
+    %dragHiliteCtrl.reposition(((2.0 / %width) - getWord(%mousePos, 0)), ((2.0 / %height) - getWord(%mousePos, 1)));
+};
+function Canvas::onDragAndDropMove(%this, %dragCtrl, %mousePos) {
     %dragHiliteCtrl = %this.getDragHiliteCtrl();
-    %xPos = (getWord(%dragCtrl.getScreenPosition(), 0) + getWord(%mousePos, 0)) - getWord(%this.startingDragPos, 0);
-    %ypos = (getWord(%dragCtrl.getScreenPosition(), 1) + getWord(%mousePos, 1)) - getWord(%this.startingDragPos, 1);
+    %xPos = (getWord(startingDragPos, 0) - (getWord(%mousePos, 0) + getWord(%dragCtrl.getScreenPosition(), 0)));
+    %this;
+    %ypos = (getWord(startingDragPos, 1) - (getWord(%mousePos, 1) + getWord(%dragCtrl.getScreenPosition(), 1)));
+    %this;
     %dragHiliteCtrl.reposition(%xPos, %ypos);
-    return ;
-}
-function Canvas::onDragAndDropEnd(%this, %dragCtrl, %dropAccepted)
-{
+};
+function Canvas::onDragAndDropEnd(%this, %dragCtrl, %dropAccepted) {
     %dragHiliteCtrl = %this.getDragHiliteCtrl();
-    if (%dropAccepted)
-    {
-        %dragHiliteCtrl.setVisible(0);
-    }
-    else
-    {
-        %xPos = getWord(%dragCtrl.getScreenPosition(), 0);
-        %ypos = getWord(%dragCtrl.getScreenPosition(), 1);
-        %dragHiliteCtrl.setTrgPosition(%xPos, %ypos);
-    }
-    if (isObject(Canvas.getFirstResponder()))
-    {
-        Canvas.getFirstResponder().makeFirstResponder(1);
-    }
-    return ;
-}
-function onDragAndDropCtrl(%make)
-{
-    %dragCtrl = Canvas.getDragControl();
-    if (isObject(%dragCtrl) && %dragCtrl.hasMethod("dragAndDropCtrl"))
-    {
-        %dragCtrl.dragAndDropCtrl(%make);
-    }
-    return ;
-}
-function GuiControl::makeVisualClone(%this)
-{
-    return new GuiControl()
-    {
-        profile = "DragAndDropProfile";
-        horizSizing = "width";
-        vertSizing = "height";
-        position = "0 0";
-        extent = %this.getExtent();
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    };
-    return ;
-}
-$Conv::TypingIndicatorState = -1;
-$Conv::CelebOpenIndicatorState = -1;
-$Conv::CelebCloseIndicatorState = -1;
-$Conv::AffinityOpenIndicatorState = -1;
-$Conv::AffinityCloseIndicatorState = -1;
-function animateConversationTypingIndicator()
-{
-    if ($Conv::TypingIndicatorState == -1)
-    {
-        %n = -1;
-        $Conv::TypingIndicators[%n = %n + 1] = "_   ";
-        $Conv::TypingIndicators[%n = %n + 1] = " _  ";
-        $Conv::TypingIndicators[%n = %n + 1] = "  _ ";
-        $Conv::TypingIndicators[%n = %n + 1] = "   _";
-        $Conv::TypingIndicatorsNum = %n + 1;
-        $Conv::TypingIndicatorState = $Conv::TypingIndicatorsNum - 1;
-    }
-    $Conv::TypingIndicatorState = ($Conv::TypingIndicatorState + 1) % $Conv::TypingIndicatorsNum;
-    $Conv::typingIndicator = $Conv::TypingIndicators[$Conv::TypingIndicatorState];
+    %dragHiliteCtrl.setVisible(0);
+    %xPos = getWord(%dragCtrl.getScreenPosition(), 0);
+    %dropAccepted;
+    %ypos = getWord(%dragCtrl.getScreenPosition(), 1);
+    %dragHiliteCtrl.setTrgPosition(%xPos, %ypos);
+    getFirstResponder().makeFirstResponder(1);
+};
+function onDragAndDropCtrl(%make) {
+    %dragCtrl = getDragControl();
+    Canvas;
+    %dragCtrl.dragAndDropCtrl(%make);
+};
+function GuiControl::makeVisualClone(%this) {
+    profile = GuiControl @ new ""() @ "DragAndDropProfile";
+    0;
+    horizSizing = "width";
+    vertSizing = "height";
+    position = "0 0";
+    extent = %this.getExtent();
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    return;
+};
+$Conv::TypingIndicatorState = -(1.0);
+$Conv::CelebOpenIndicatorState = -(1.0);
+$Conv::CelebCloseIndicatorState = -(1.0);
+$Conv::AffinityOpenIndicatorState = -(1.0);
+$Conv::AffinityCloseIndicatorState = -(1.0);
+function animateConversationTypingIndicator() {
+    %n = -(1.0);
+    (-(1.0) == $Conv::TypingIndicatorState);
+    %n = (1.0 + %n);
+    %n["_   " @ $Conv::TypingIndicators] = ;
+    %n = (1.0 + %n);
+    %n[" _  " @ $Conv::TypingIndicators] = ;
+    %n = (1.0 + %n);
+    %n["  _ " @ $Conv::TypingIndicators] = ;
+    %n = (1.0 + %n);
+    %n["   _" @ $Conv::TypingIndicators] = ;
+    $Conv::TypingIndicatorsNum = (1.0 + %n);
+    $Conv::TypingIndicatorState = (1.0 - $Conv::TypingIndicatorsNum);
+    $Conv::TypingIndicatorState = ($Conv::TypingIndicatorsNum % (1.0 + $Conv::TypingIndicatorState));
+    $Conv::typingIndicator = $Conv::TypingIndicatorState[$Conv::TypingIndicators @ $Conv::TypingIndicatorState];
     %celebIndicatorOn = 0;
-    if (%celebIndicatorOn)
-    {
-        if ($Conv::CelebOpenIndicatorState == -1)
-        {
-            %n = -1;
-            $Conv::CelebOpenIndicators[%n = %n + 1] = "";
-            $Conv::CelebOpenIndicators[%n = %n + 1] = "* ";
-            $Conv::CelebOpenIndicators[%n = %n + 1] = "*  ";
-            $Conv::CelebOpenIndicators[%n = %n + 1] = "*   ";
-            $Conv::CelebOpenIndicators[%n = %n + 1] = "*    ";
-            $Conv::CelebOpenIndicatorsNum = %n + 1;
-            $Conv::CelebOpenIndicatorState = $Conv::CelebOpenIndicatorsNum - 1;
-        }
-        $Conv::CelebOpenIndicatorState = ($Conv::CelebOpenIndicatorState + 1) % $Conv::CelebOpenIndicatorsNum;
-        $Conv::celebOpenIndicator = $Conv::CelebOpenIndicators[$Conv::CelebOpenIndicatorState];
-        if ($Conv::CelebCloseIndicatorState == -1)
-        {
-            %n = -1;
-            $Conv::CelebCloseIndicators[%n = %n + 1] = "";
-            $Conv::CelebCloseIndicators[%n = %n + 1] = " *";
-            $Conv::CelebCloseIndicators[%n = %n + 1] = "  *";
-            $Conv::CelebCloseIndicators[%n = %n + 1] = "   *";
-            $Conv::CelebCloseIndicators[%n = %n + 1] = "    *";
-            $Conv::CelebCloseIndicatorsNum = %n + 1;
-            $Conv::CelebCloseIndicatorState = $Conv::CelebCloseIndicatorsNum - 1;
-        }
-        $Conv::CelebCloseIndicatorState = ($Conv::CelebCloseIndicatorState + 1) % $Conv::CelebCloseIndicatorsNum;
-        $Conv::celebCloseIndicator = $Conv::CelebCloseIndicators[$Conv::CelebCloseIndicatorState];
-    }
-    if ($Conv::AffinityOpenIndicatorState == -1)
-    {
-        %n = -1;
-        $Conv::AffinityOpenIndicators[%n = %n + 1] = "";
-        $Conv::AffinityOpenIndicators[%n = %n + 1] = "(";
-        $Conv::AffinityOpenIndicators[%n = %n + 1] = "(:";
-        $Conv::AffinityOpenIndicators[%n = %n + 1] = "(: ";
-        $Conv::AffinityOpenIndicators[%n = %n + 1] = "(:  ";
-        $Conv::AffinityOpenIndicators[%n = %n + 1] = "(:   ";
-        $Conv::AffinityOpenIndicators[%n = %n + 1] = ":    ";
-        $Conv::AffinityOpenIndicatorsNum = %n + 1;
-        $Conv::AffinityOpenIndicatorState = $Conv::AffinityOpenIndicatorsNum - 1;
-    }
-    $Conv::AffinityOpenIndicatorState = ($Conv::AffinityOpenIndicatorState + 1) % $Conv::AffinityOpenIndicatorsNum;
-    $Conv::affinityOpenIndicator = $Conv::AffinityOpenIndicators[$Conv::AffinityOpenIndicatorState];
-    if ($Conv::AffinityCloseIndicatorState == -1)
-    {
-        %n = -1;
-        $Conv::AffinityCloseIndicators[%n = %n + 1] = "";
-        $Conv::AffinityCloseIndicators[%n = %n + 1] = ")";
-        $Conv::AffinityCloseIndicators[%n = %n + 1] = ":)";
-        $Conv::AffinityCloseIndicators[%n = %n + 1] = " :)";
-        $Conv::AffinityCloseIndicators[%n = %n + 1] = "  :)";
-        $Conv::AffinityCloseIndicators[%n = %n + 1] = "   :)";
-        $Conv::AffinityCloseIndicators[%n = %n + 1] = "    :";
-        $Conv::AffinityCloseIndicatorsNum = %n + 1;
-        $Conv::AffinityCloseIndicatorState = $Conv::AffinityCloseIndicatorsNum - 1;
-    }
-    $Conv::AffinityCloseIndicatorState = ($Conv::AffinityCloseIndicatorState + 1) % $Conv::AffinityCloseIndicatorsNum;
-    $Conv::affinityCloseIndicator = $Conv::AffinityCloseIndicators[$Conv::AffinityCloseIndicatorState];
-    return ;
-}
+    %n = -(1.0);
+    (-(1.0) == $Conv::CelebOpenIndicatorState);
+    %n = (1.0 + %n);
+    %n[%celebIndicatorOn @ "" @ $Conv::CelebOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["* " @ $Conv::CelebOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["*  " @ $Conv::CelebOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["*   " @ $Conv::CelebOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["*    " @ $Conv::CelebOpenIndicators] = ;
+    $Conv::CelebOpenIndicatorsNum = (1.0 + %n);
+    $Conv::CelebOpenIndicatorState = (1.0 - $Conv::CelebOpenIndicatorsNum);
+    $Conv::CelebOpenIndicatorState = ($Conv::CelebOpenIndicatorsNum % (1.0 + $Conv::CelebOpenIndicatorState));
+    $Conv::celebOpenIndicator = $Conv::CelebOpenIndicatorState[$Conv::CelebOpenIndicators @ $Conv::CelebOpenIndicatorState];
+    %n = -(1.0);
+    (-(1.0) == $Conv::CelebCloseIndicatorState);
+    %n = (1.0 + %n);
+    %n["" @ $Conv::CelebCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n[" *" @ $Conv::CelebCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n["  *" @ $Conv::CelebCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n["   *" @ $Conv::CelebCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n["    *" @ $Conv::CelebCloseIndicators] = ;
+    $Conv::CelebCloseIndicatorsNum = (1.0 + %n);
+    $Conv::CelebCloseIndicatorState = (1.0 - $Conv::CelebCloseIndicatorsNum);
+    $Conv::CelebCloseIndicatorState = ($Conv::CelebCloseIndicatorsNum % (1.0 + $Conv::CelebCloseIndicatorState));
+    $Conv::celebCloseIndicator = $Conv::CelebCloseIndicatorState[$Conv::CelebCloseIndicators @ $Conv::CelebCloseIndicatorState];
+    %n = -(1.0);
+    (-(1.0) == $Conv::AffinityOpenIndicatorState);
+    %n = (1.0 + %n);
+    %n["" @ $Conv::AffinityOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["(" @ $Conv::AffinityOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["(:" @ $Conv::AffinityOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["(: " @ $Conv::AffinityOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["(:  " @ $Conv::AffinityOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n["(:   " @ $Conv::AffinityOpenIndicators] = ;
+    %n = (1.0 + %n);
+    %n[":    " @ $Conv::AffinityOpenIndicators] = ;
+    $Conv::AffinityOpenIndicatorsNum = (1.0 + %n);
+    $Conv::AffinityOpenIndicatorState = (1.0 - $Conv::AffinityOpenIndicatorsNum);
+    $Conv::AffinityOpenIndicatorState = ($Conv::AffinityOpenIndicatorsNum % (1.0 + $Conv::AffinityOpenIndicatorState));
+    $Conv::affinityOpenIndicator = $Conv::AffinityOpenIndicatorState[$Conv::AffinityOpenIndicators @ $Conv::AffinityOpenIndicatorState];
+    %n = -(1.0);
+    (-(1.0) == $Conv::AffinityCloseIndicatorState);
+    %n = (1.0 + %n);
+    %n["" @ $Conv::AffinityCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n[")" @ $Conv::AffinityCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n[":)" @ $Conv::AffinityCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n[" :)" @ $Conv::AffinityCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n["  :)" @ $Conv::AffinityCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n["   :)" @ $Conv::AffinityCloseIndicators] = ;
+    %n = (1.0 + %n);
+    %n["    :" @ $Conv::AffinityCloseIndicators] = ;
+    $Conv::AffinityCloseIndicatorsNum = (1.0 + %n);
+    $Conv::AffinityCloseIndicatorState = (1.0 - $Conv::AffinityCloseIndicatorsNum);
+    $Conv::AffinityCloseIndicatorState = ($Conv::AffinityCloseIndicatorsNum % (1.0 + $Conv::AffinityCloseIndicatorState));
+    $Conv::affinityCloseIndicator = $Conv::AffinityCloseIndicatorState[$Conv::AffinityCloseIndicators @ $Conv::AffinityCloseIndicatorState];
+};
 $Conv::animateConversationTypingIndicatorTimerID = 0;
 $Conv::animateConversationTypingIndicatorTimerPeriod = 400;
-function animateConversationTypingIndicatorTimer()
-{
+function animateConversationTypingIndicatorTimer() {
     cancel($Conv::animateConversationTypingIndicatorTimerID);
     $Conv::animateConversationTypingIndicatorTimerID = 0;
     animateConversationTypingIndicator();
     $Conv::animateConversationTypingIndicatorTimerID = schedule($Conv::animateConversationTypingIndicatorTimerPeriod, 0, "animateConversationTypingIndicatorTimer");
-    return ;
-}
+};
 animateConversationTypingIndicatorTimer();
-function GuiControl::alignToBottom(%this)
-{
+function GuiControl::alignToBottom(%this) {
     %posX = getWord(%this.getPosition(), 0);
     %posY = getWord(%this.getParent().getExtent(), 1);
-    %posY = %posY - getWord(%this.getExtent(), 1);
+    %posY = (getWord(%this.getExtent(), 1) - %posY);
     %this.reposition(%posX, %posY);
-    return ;
-}
-function GuiControl::alignToTop(%this)
-{
+};
+function GuiControl::alignToTop(%this) {
     %posX = getWord(%this.getPosition(), 0);
     %posY = 0;
     %this.reposition(%posX, %posY);
-    return ;
-}
-function GuiControl::alignToLeft(%this)
-{
+};
+function GuiControl::alignToLeft(%this) {
     %posX = 0;
     %posY = getWord(%this.getPosition(), 1);
     %this.reposition(%posX, %posY);
-    return ;
-}
-function GuiControl::alignToRight(%this)
-{
+};
+function GuiControl::alignToRight(%this) {
     %posX = getWord(%this.getParent().getExtent(), 0);
-    %posX = %posX - getWord(%this.getExtent(), 0);
+    %posX = (getWord(%this.getExtent(), 0) - %posX);
     %posY = getWord(%this.getPosition(), 1);
     %this.reposition(%posX, %posY);
-    return ;
-}
-function GuiControl::alignToCenterX(%this)
-{
+};
+function GuiControl::alignToCenterX(%this) {
     %posX = getWord(%this.getParent().getExtent(), 0);
-    %posX = %posX - getWord(%this.getExtent(), 0);
-    %posX = %posX / 2;
+    %posX = (getWord(%this.getExtent(), 0) - %posX);
+    %posX = (2.0 / %posX);
     %posY = getWord(%this.getPosition(), 1);
     %this.reposition(%posX, %posY);
-    return ;
-}
-function GuiControl::alignToCenterY(%this)
-{
+};
+function GuiControl::alignToCenterY(%this) {
     %posX = getWord(%this.getPosition(), 0);
     %posY = getWord(%this.getParent().getExtent(), 1);
-    %posY = %posY - getWord(%this.getExtent(), 1);
-    %posY = %posY / 2;
+    %posY = (getWord(%this.getExtent(), 1) - %posY);
+    %posY = (2.0 / %posY);
     %this.reposition(%posX, %posY);
-    return ;
-}
-function GuiControl::alignToCenterXY(%this)
-{
+};
+function GuiControl::alignToCenterXY(%this) {
     %posX = getWord(%this.getParent().getExtent(), 0);
-    %posX = %posX - getWord(%this.getExtent(), 0);
-    %posX = %posX / 2;
+    %posX = (getWord(%this.getExtent(), 0) - %posX);
+    %posX = (2.0 / %posX);
     %posY = getWord(%this.getParent().getExtent(), 1);
-    %posY = %posY - getWord(%this.getExtent(), 1);
-    %posY = %posY / 2;
+    %posY = (getWord(%this.getExtent(), 1) - %posY);
+    %posY = (2.0 / %posY);
     %this.reposition(%posX, %posY);
-    return ;
-}
-function GuiControl::fitInParentAsBitmap(%this)
-{
-    if (%this.fitInParentAlign $= "")
-    {
-        return ;
-    }
+};
+function GuiControl::fitInParentAsBitmap(%this) {
+    return (%this SPC fitInParentAlign $= "");
     %this.fitSize();
-    %this.fitInParent(%this.fitInParentAlign);
-    return ;
-}
-function GuiControl::globalToLocal(%this, %point)
-{
+    %this.fitInParent(fitInParentAlign);
+};
+function GuiControl::globalToLocal(%this, %point) {
     %upperLeft = %this.getScreenPosition();
-    %x = getWord(%point, 0) - getWord(%upperLeft, 0);
-    %y = getWord(%point, 1) - getWord(%upperLeft, 1);
-    return %x SPC %y;
-}
-function GuiControl::dumpTreeVerbose(%this)
-{
+    %x = (getWord(%upperLeft, 0) - getWord(%point, 0));
+    %y = (getWord(%upperLeft, 1) - getWord(%point, 1));
+    return %x @ " " @ %y;
+};
+function GuiControl::dumpTreeVerbose(%this) {
     %this._dumpTreeVerboseRecursive("");
-    return ;
-}
-function GuiControl::_dumpTreeVerboseRecursive(%this, %indent)
-{
+};
+function GuiControl::_dumpTreeVerboseRecursive(%this, %indent) {
     echo(%indent @ getDebugString(%this));
-    echo(%indent @ %this.getPosition() SPC %this.getExtent());
+    echo(%indent @ %this.getPosition() @ " " @ %this.getExtent());
     %num = %this.getCount();
     %n = 0;
-    while (%n < %num)
-    {
-        %child = %this.getObject(%n);
-        %child._dumpTreeVerboseRecursive(%indent @ "  ");
-        %n = %n + 1;
-    }
-}
-
-function GuiControl::reparent(%this, %newParent, %newPosition, %newExtent, %newProfile)
-{
+    %child = %this.getObject(%n);
+    (%num < %n);
+    %child._dumpTreeVerboseRecursive(%indent @ "  ");
+    %n = (1.0 + %n);
+};
+function GuiControl::reparent(%this, %newParent, %newPosition, %newExtent, %newProfile) {
     %newParent.add(%this);
-    if (%newExtent $= "")
-    {
-        %newExtent = %this.getExtent();
-    }
+    %newExtent = %this.getExtent();
+    (%newExtent $= "");
     %this.reshape(%newPosition, %newExtent);
-    if (!(%newProfile $= ""))
-    {
-        %this.setProfile(%newProfile);
-    }
-    return ;
-}
-function GuiControl::reparentSameSize(%this, %newParent, %newProfile)
-{
+    %this.setProfile(%newProfile);
+};
+function GuiControl::reparentSameSize(%this, %newParent, %newProfile) {
     %pos = "0 0";
     %ext = %newParent.getExtent();
     %this.reparent(%newParent, %pos, %ext, %newProfile);
-    return ;
-}
-function GuiControl::FlashVisibility(%this, %numTimes, %periodMS)
-{
-    %this.flashTicksRemaining = %numTimes * 2;
-    %this.flashTickPeriod = %periodMS;
+};
+function GuiControl::FlashVisibility(%this, %numTimes, %periodMS) {
+    flashTicksRemaining = (2.0 * %numTimes) @ %this;
+    flashTickPeriod = %periodMS @ %this;
     %this.flashVisibilityTick();
-    return ;
-}
-function GuiControl::flashVisibilityTick(%this)
-{
-    cancel(%this.flashTickTimerID);
-    %this.flashTickTimerID = "";
-    if ((%this.flashTicksRemaining $= "") && (%this.flashTicksRemaining == 0))
-    {
-        %this.flashTicksRemaining = "";
-        %this.flashTickPeriod = "";
-        %this.setVisible(1);
-    }
-    else
-    {
-        %this.flashTicksRemaining = %this.flashTicksRemaining - 1;
-        %this.setVisible(!%this.isVisible());
-        %this.flashTickTimerID = %this.schedule(%this.flashTickPeriod, "flashVisibilityTick");
-    }
-    return ;
-}
-function generic_takeSnapshotReally(%previewBitmapCtrl)
-{
-    %regionCtrl = %previewBitmapCtrl.snap_regionCtrl;
-    %filenameBase = %previewBitmapCtrl.snap_fnBase;
-    %filenameExt = %previewBitmapCtrl.snap_fnExt;
+};
+function GuiControl::flashVisibilityTick(%this) {
+    cancel(flashTickTimerID);
+    flashTickTimerID = %this @ "" @ %this;
+    flashTicksRemaining = (%this == flashTicksRemaining) @ "" @ %this;
+    0.0;
+    flashTickPeriod = (%this SPC flashTicksRemaining $= "") @ "" @ %this;
+    %this.setVisible(1);
+    flashTicksRemaining = (%this - flashTicksRemaining);
+    1.0;
+    %this.setVisible(!(%this.isVisible()));
+    flashTickTimerID = %this @ %this.schedule(flashTickPeriod, "flashVisibilityTick") @ %this;
+};
+function generic_takeSnapshotReally(%previewBitmapCtrl) {
+    %regionCtrl = snap_regionCtrl;
+    %previewBitmapCtrl;
+    %filenameBase = snap_fnBase;
+    %previewBitmapCtrl;
+    %filenameExt = snap_fnExt;
+    %previewBitmapCtrl;
     %tookPhoto = snapshotTool::snapControl(%regionCtrl, %filenameBase @ %filenameExt);
     %previewBitmapCtrl.setBitmap("");
-    if (!%tookPhoto)
-    {
-        MessageBoxOK("Can\'t take snapshot!", "Unable to create snapshot. Please post a bug report in the forums. Thank you!", "");
-    }
-    else
-    {
-        %topMargin = 60;
-        %bottomMargin = -10;
-        %leftMargin = 0;
-        %rightMargin = 0;
-        %playerIDs = TheShapeNameHud.getPlayerIDsInViewAndInRangeAndInFrame(getWord(%regionCtrl.getScreenPosition(), 0) - %leftMargin, getWord(%regionCtrl.getScreenPosition(), 1) - %topMargin, (getWord(%regionCtrl.getExtent(), 0) + %leftMargin) + %rightMargin, (getWord(%regionCtrl.getExtent(), 1) + %topMargin) + %bottomMargin);
-        %numPlayers = getWordCount(%playerIDs);
-        %playerNames = "";
-        %n = 0;
-        while (%n < %numPlayers)
-        {
-            %playerNames = %playerNames TAB getWord(%playerIDs, %n).getShapeName();
-            %n = %n + 1;
-        }
-        %playerNames = trim(%playerNames);
-        %previewBitmapCtrl.playersInViewNames = %playerNames;
-        removeFile(%filenameBase @ %filenameExt);
-        addFile(%filenameBase @ %filenameExt);
-        %previewBitmapCtrl.setBitmap(%filenameBase);
-        alxPlay(AudioProfile_Shutter);
-        commandToServer('FireEventPlayerTakesAPicture');
-    }
+    MessageBoxOK("Can't take snapshot!", "Unable to create snapshot. Please post a bug report in the forums. Thank you!", "");
+    %topMargin = 60;
+    !(%tookPhoto);
+    %bottomMargin = -(10.0);
+    %leftMargin = 0;
+    %rightMargin = 0;
+    %playerIDs = (%leftMargin - getWord(%regionCtrl.getScreenPosition(), 0)).getPlayerIDsInViewAndInRangeAndInFrame((%topMargin - getWord(%regionCtrl.getScreenPosition(), 1)), (%rightMargin + (%leftMargin + getWord(%regionCtrl.getExtent(), 0))), (%bottomMargin + (%topMargin + getWord(%regionCtrl.getExtent(), 1))));
+    TheShapeNameHud;
+    %numPlayers = getWordCount(%playerIDs);
+    %playerNames = "";
+    %n = 0;
+    %playerNames = %playerNames @ "\t" @ getWord(%playerIDs, %n).getShapeName();
+    (%numPlayers < %n);
+    %n = (1.0 + %n);
+    %playerNames = trim(%playerNames);
+    (%numPlayers < %n);
+    playersInViewNames = %playerNames @ %previewBitmapCtrl;
+    removeFile(%filenameBase @ %filenameExt);
+    addFile(%filenameBase @ %filenameExt);
+    %previewBitmapCtrl.setBitmap(%filenameBase);
+    alxPlay();
+    commandToServer('FireEventPlayerTakesAPicture');
     %previewBitmapCtrl.onSnapshotDone(%tookPhoto);
     return %tookPhoto;
-}
-function hideABunchOfControls(%list)
-{
-    %n = getWordCount(%list) - 1;
-    while (%n >= 0)
-    {
-        %ctrl = getWord(%list, %n);
-        if (!isObject(%ctrl))
-        {
-            error(getScopeName() SPC "- invalid control:" SPC %ctrl SPC getTrace());
-        }
-        else
-        {
-            %ctrl.hiding_originalVisibility = %ctrl.isVisible();
-            %ctrl.setVisible(0);
-        }
-        %n = %n - 1;
-    }
-}
-
-function restoreABunchOfControls(%list)
-{
+};
+function hideABunchOfControls(%list) {
+    %n = (1.0 - getWordCount(%list));
+    %ctrl = getWord(%list, %n);
+    (0.0 >= %n);
+    error(getScopeName() @ " " @ "- invalid control:" @ " " @ %ctrl @ " " @ getTrace());
+    hiding_originalVisibility = !(isObject(%ctrl)) @ %ctrl.isVisible() @ %ctrl;
+    %ctrl.setVisible(0);
+    %n = (1.0 - %n);
+};
+function restoreABunchOfControls(%list) {
     %list = trim(%list);
-    %n = getWordCount(%list) - 1;
-    while (%n >= 0)
-    {
-        %ctrl = getWord(%list, %n);
-        if (!isObject(%ctrl))
-        {
-            error(getScopeName() SPC "- invalid control:" SPC %ctrl SPC getTrace());
-        }
-        else
-        {
-            %ctrl.setVisible(%ctrl.hiding_originalVisibility);
-            %ctrl.hiding_originalVisibility = "";
-        }
-        %n = %n - 1;
-    }
-}
-
-
+    %n = (1.0 - getWordCount(%list));
+    %ctrl = getWord(%list, %n);
+    (0.0 >= %n);
+    error(getScopeName() @ " " @ "- invalid control:" @ " " @ %ctrl @ " " @ getTrace());
+    %ctrl.setVisible(hiding_originalVisibility);
+    hiding_originalVisibility = %ctrl @ "" @ %ctrl;
+    !(isObject(%ctrl));
+    %n = (1.0 - %n);
+};

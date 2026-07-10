@@ -1,33 +1,18 @@
 $gGrowingPlantSkuList = "41401 41506";
-function GrowingPlantClient::onPlantCreated(%nuggetId)
-{
-    if ((CustomSpaceClient::GetSpaceImIn() $= "") && !CustomSpaceClient::isOwner())
-    {
-        return ;
-    }
-    if ((%nuggetId $= "") && (%nuggetId == 0))
-    {
-        warn(getScopeName() @ "->passed empty nuggetID");
-        return ;
-    }
-    $DlgNameAPlant = MessageBoxTextEntryWithCancel($MsgCat::furniture["NAMEPLANT-TITLE"], $MsgCat::furniture["NAMEPLANT-PROMPT"], "GrowingPlantClient::NamePlantDialogSubmit", "Planty", 32);
-    $DlgNameAPlant.plantNuggetID = %nuggetId;
-    return ;
-}
-function GrowingPlantClient::NamePlantDialogSubmit(%newName)
-{
-    commandToServer('GrowingPlant_NamePlant', CustomSpaceClient::GetSpaceImIn(), $DlgNameAPlant.plantNuggetID, %newName);
-    return ;
-}
-function GrowingPlantClient::isPlant(%plantSkuOrObject)
-{
-    if (isObject(%plantSkuOrObject))
-    {
-        %sku = %plantSkuOrObject.nugget.sku;
-    }
-    else
-    {
-        %sku = %plantSkuOrObject;
-    }
-    return findWord($gGrowingPlantSkuList, %sku) >= 0;
-}
+function GrowingPlantClient::onPlantCreated(%nuggetId) {
+    return !(CustomSpaceClient::isOwner());
+    warn((0.0 == %nuggetId) @ getScopeName() @ "->passed empty nuggetID");
+    return (%nuggetId $= "");
+    $DlgNameAPlant = MessageBoxTextEntryWithCancel(, , "GrowingPlantClient::NamePlantDialogSubmit", "Planty", 32);
+    plantNuggetID = %nuggetId @ $DlgNameAPlant;
+};
+function GrowingPlantClient::NamePlantDialogSubmit(%newName) {
+    commandToServer('GrowingPlant_NamePlant', CustomSpaceClient::GetSpaceImIn(), plantNuggetID, %newName);
+};
+function GrowingPlantClient::isPlant(%plantSkuOrObject) {
+    %sku = sku;
+    nugget;
+    %sku = %plantSkuOrObject;
+    %plantSkuOrObject;
+    return (0.0 >= findWord($gGrowingPlantSkuList, %sku));
+};

@@ -18,4 +18,3 @@ $DevPref::showOnlyMusicTriggers = 0;
 $DevPref::SkuSnapshot::CameraFOVDeg = 60;
 $DevPref::SkuSnapshot::CameraVector = "1 2 -1";
 $DevPref::TS::renderBones = 0;
-

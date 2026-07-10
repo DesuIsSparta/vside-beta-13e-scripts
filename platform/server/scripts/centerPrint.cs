@@ -1,97 +1,62 @@
-function centerPrintAll(%message, %time, %lines)
-{
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
-    {
-        %lines = 1;
-    }
-    %count = ClientGroup.getCount();
+function centerPrintAll(%message, %time, %lines) {
+    %lines = 1;
+    (1.0 < %lines);
+    %count = getCount();
+    ClientGroup;
     %i = 0;
-    while (%i < %count)
-    {
-        %cl = ClientGroup.getObject(%i);
-        if (!%cl.isAIControlled())
-        {
-            commandToClient(%cl, 'centerPrint', %message, %time, %lines);
-        }
-        %i = %i + 1;
-    }
-}
-
-function bottomPrintAll(%message, %time, %lines)
-{
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
-    {
-        %lines = 1;
-    }
-    %count = ClientGroup.getCount();
+    (3.0 > %lines);
+    %cl = %i.getObject();
+    ClientGroup;
+    commandToClient(%cl, 'centerPrint', %message, %time, %lines);
+    %i = (1.0 + %i);
+    !(%cl.isAIControlled());
+};
+function bottomPrintAll(%message, %time, %lines) {
+    %lines = 1;
+    (1.0 < %lines);
+    %count = getCount();
+    ClientGroup;
     %i = 0;
-    while (%i < %count)
-    {
-        %cl = ClientGroup.getObject(%i);
-        if (!%cl.isAIControlled())
-        {
-            commandToClient(%cl, 'bottomPrint', %message, %time, %lines);
-        }
-        %i = %i + 1;
-    }
-}
-
-function centerPrint(%client, %message, %time, %lines)
-{
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
-    {
-        %lines = 1;
-    }
+    (3.0 > %lines);
+    %cl = %i.getObject();
+    ClientGroup;
+    commandToClient(%cl, 'bottomPrint', %message, %time, %lines);
+    %i = (1.0 + %i);
+    !(%cl.isAIControlled());
+};
+function centerPrint(%client, %message, %time, %lines) {
+    %lines = 1;
+    (1.0 < %lines);
     commandToClient(%client, 'CenterPrint', %message, %time, %lines);
-    return ;
-}
-function bottomPrint(%client, %message, %time, %lines)
-{
-    if (((%lines $= "") || (%lines > 3)) || (%lines < 1))
-    {
-        %lines = 1;
-    }
+};
+function bottomPrint(%client, %message, %time, %lines) {
+    %lines = 1;
+    (1.0 < %lines);
     commandToClient(%client, 'BottomPrint', %message, %time, %lines);
-    return ;
-}
-function clearCenterPrint(%client)
-{
+};
+function clearCenterPrint(%client) {
     commandToClient(%client, 'ClearCenterPrint');
-    return ;
-}
-function clearBottomPrint(%client)
-{
+};
+function clearBottomPrint(%client) {
     commandToClient(%client, 'ClearBottomPrint');
-    return ;
-}
-function clearCenterPrintAll()
-{
-    %count = ClientGroup.getCount();
+};
+function clearCenterPrintAll() {
+    %count = getCount();
+    ClientGroup;
     %i = 0;
-    while (%i < %count)
-    {
-        %cl = ClientGroup.getObject(%i);
-        if (!%cl.isAIControlled())
-        {
-            commandToClient(%cl, 'ClearCenterPrint');
-        }
-        %i = %i + 1;
-    }
-}
-
-function clearBottomPrintAll()
-{
-    %count = ClientGroup.getCount();
+    %cl = %i.getObject();
+    ClientGroup;
+    commandToClient(%cl, 'ClearCenterPrint');
+    %i = (1.0 + %i);
+    !(%cl.isAIControlled());
+};
+function clearBottomPrintAll() {
+    %count = getCount();
+    ClientGroup;
     %i = 0;
-    while (%i < %count)
-    {
-        %cl = ClientGroup.getObject(%i);
-        if (!%cl.isAIControlled())
-        {
-            commandToClient(%cl, 'ClearBottomPrint');
-        }
-        %i = %i + 1;
-    }
-}
-
-
+    %cl = %i.getObject();
+    ClientGroup;
+    commandToClient(%cl, 'ClearBottomPrint');
+    %i = (1.0 + %i);
+    !(%cl.isAIControlled());
+};

@@ -35,356 +35,286 @@ $BB_UPPR_TOAST = 26;
 $BB_SIT_KISS_BEND_TO = 27;
 $BB_SIT_KISS_PIVOT = 28;
 $BB_UPPR_KISS = 29;
-new ScriptObject(blendAnim_0)
-{
-    title = "waving";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mwave";
-    isReplacement = 1;
-    attackTime = 0.1;
-    decayTime = 0.9;
-    attackRate = 3;
-    decayRate = 3;
-};
-new ScriptObject(blendAnim_1)
-{
-    title = "laughing";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mlol";
-    isReplacement = 1;
-    attackTime = 0.1;
-    decayTime = 0.9;
-    attackRate = 3;
-    decayRate = 3;
-};
-new ScriptObject(blendAnim_2)
-{
-    title = "chug";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mchug";
-    isReplacement = 1;
-    attackTime = 0.1;
-    decayTime = 0.9;
-    attackRate = 3;
-    decayRate = 3;
-};
-new ScriptObject(blendAnim_3)
-{
-    title = "cheer";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mcheer";
-    isReplacement = 1;
-    attackTime = 0.1;
-    decayTime = 0.9;
-    attackRate = 3;
-    decayRate = 3;
-};
-new ScriptObject(blendAnim_4)
-{
-    title = "upper body dance";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mupdnc";
-    isReplacement = 1;
-    attackTime = 0.25;
-    decayTime = 0.95;
-    attackRate = 1;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_5)
-{
-    title = "lower body dance";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mlowdnc";
-    isReplacement = 0;
-    attackTime = 0;
-    decayTime = 0;
-    attackRate = 1;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_6)
-{
-    title = "cheer1";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mcheer1";
-    isReplacement = 1;
-    attackTime = 0.1;
-    decayTime = 0.9;
-    attackRate = 1;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_7)
-{
-    title = "pivot whole body";
-    defaultPosition = 0.5;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "mpiv";
-    isReplacement = 0;
-    attackTime = 1;
-    decayTime = 1;
-    attackRate = 1;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_8)
-{
-    title = "bend to object";
-    defaultPosition = 0.25;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "mpitch";
-    isReplacement = 0;
-    attackTime = 0;
-    decayTime = 0;
-    attackRate = 2;
-    decayRate = 2;
-};
-new ScriptObject(blendAnim_9)
-{
-    title = "upper body for kiss";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mupkis";
-    isReplacement = 1;
-    attackTime = 1;
-    decayTime = 0.95;
-    attackRate = 1;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_10)
-{
-    title = "hold mic";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_HOLD_AT_N_REVERSE;
-    holdPosition = 0.7;
-    sequence = "mmic";
-    isReplacement = 1;
-    attackTime = 0.2;
-    decayTime = 0.1;
-    attackRate = 3;
-    decayRate = 3;
-};
-new ScriptObject(blendAnim_11)
-{
-    title = "head LR for kiss";
-    defaultPosition = 0.5;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "head_LR";
-    isReplacement = 0;
-    attackTime = 0;
-    decayTime = 0;
-    attackRate = 2;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_12)
-{
-    title = "head UD for Kiss";
-    defaultPosition = 0.5;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "head_UD";
-    isReplacement = 0;
-    attackTime = 0;
-    decayTime = 0;
-    attackRate = 2;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_13)
-{
-    title = "dance with modifier";
-    defaultPosition = 0.5;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "mdip";
-    isReplacement = 0;
-    attackTime = 1;
-    decayTime = 1;
-    attackRate = 10;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_14)
-{
-    title = "oh my god";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "momg";
-    isReplacement = 1;
-    attackTime = 0.25;
-    decayTime = 0.8;
-    attackRate = 1;
-    decayRate = 3.5;
-};
-new ScriptObject(blendAnim_15)
-{
-    title = "dance with modifier roll";
-    defaultPosition = 0.5;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "mroll";
-    isReplacement = 0;
-    attackTime = 1;
-    decayTime = 1;
-    attackRate = 10;
-    decayRate = 1;
-};
-new ScriptObject(blendAnim_16)
-{
-    title = "flirt";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mflrt";
-    isReplacement = 1;
-    attackTime = 0.15;
-    decayTime = 0.8;
-    attackRate = 3.5;
-    decayRate = 3.5;
-};
-new ScriptObject(blendAnim_17)
-{
-    title = "drink";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mdrink";
-    isReplacement = 1;
-    attackTime = 0.16;
-    decayTime = 0.85;
-    attackRate = 0.5;
-    decayRate = 0.5;
-};
-new ScriptObject(blendAnim_18)
-{
-    title = "up mic";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 0;
-    sequence = "mmic";
-    isReplacement = 1;
-    attackTime = 0.2;
-    decayTime = 0.1;
-    attackRate = 2;
-    decayRate = 3;
-};
-new ScriptObject(blendAnim_19)
-{
-    title = "toast";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mtoast";
-    isReplacement = 1;
-    attackTime = 0.16;
-    decayTime = 0.85;
-    attackRate = 0.5;
-    decayRate = 0.5;
-};
-new ScriptObject(blendAnim_20)
-{
-    title = "sitting bend to object";
-    defaultPosition = 0.5;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "msitbend";
-    isReplacement = 0;
-    attackTime = 0;
-    decayTime = 0;
-    attackRate = 5.5;
-    decayRate = 1.5;
-};
-new ScriptObject(blendAnim_21)
-{
-    title = "sitting pivot";
-    defaultPosition = 0.5;
-    flavor = $BB_FLAVOR_SETPOS;
-    holdPosition = 1;
-    sequence = "msitpiv";
-    isReplacement = 0;
-    attackTime = 0;
-    decayTime = 0;
-    attackRate = 5.5;
-    decayRate = 1.5;
-};
-new ScriptObject(blendAnim_22)
-{
-    title = "upper body kiss";
-    defaultPosition = 0;
-    flavor = $BB_FLAVOR_ONESHOT;
-    holdPosition = 1;
-    sequence = "mupkis";
-    isReplacement = 1;
-    attackTime = 0.1;
-    decayTime = 0.9;
-    attackRate = 3;
-    decayRate = 3;
-};
+title = blendAnim_0 @ new () @ "waving";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mwave";
+isReplacement = 1;
+attackTime = 0.1;
+decayTime = 0.9;
+attackRate = 3;
+decayRate = 3;
+title = blendAnim_1 @ new () @ "laughing";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mlol";
+isReplacement = 1;
+attackTime = 0.1;
+decayTime = 0.9;
+attackRate = 3;
+decayRate = 3;
+title = blendAnim_2 @ new () @ "chug";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mchug";
+isReplacement = 1;
+attackTime = 0.1;
+decayTime = 0.9;
+attackRate = 3;
+decayRate = 3;
+title = blendAnim_3 @ new () @ "cheer";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mcheer";
+isReplacement = 1;
+attackTime = 0.1;
+decayTime = 0.9;
+attackRate = 3;
+decayRate = 3;
+title = blendAnim_4 @ new () @ "upper body dance";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mupdnc";
+isReplacement = 1;
+attackTime = 0.25;
+decayTime = 0.95;
+attackRate = 1;
+decayRate = 1;
+title = blendAnim_5 @ new () @ "lower body dance";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mlowdnc";
+isReplacement = 0;
+attackTime = 0;
+decayTime = 0;
+attackRate = 1;
+decayRate = 1;
+title = blendAnim_6 @ new () @ "cheer1";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mcheer1";
+isReplacement = 1;
+attackTime = 0.1;
+decayTime = 0.9;
+attackRate = 1;
+decayRate = 1;
+title = blendAnim_7 @ new () @ "pivot whole body";
+ScriptObject;
+defaultPosition = 0 @ 0.5;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "mpiv";
+isReplacement = 0;
+attackTime = 1;
+decayTime = 1;
+attackRate = 1;
+decayRate = 1;
+title = blendAnim_8 @ new () @ "bend to object";
+ScriptObject;
+defaultPosition = 0 @ 0.25;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "mpitch";
+isReplacement = 0;
+attackTime = 0;
+decayTime = 0;
+attackRate = 2;
+decayRate = 2;
+title = blendAnim_9 @ new () @ "upper body for kiss";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mupkis";
+isReplacement = 1;
+attackTime = 1;
+decayTime = 0.95;
+attackRate = 1;
+decayRate = 1;
+title = blendAnim_10 @ new () @ "hold mic";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_HOLD_AT_N_REVERSE;
+holdPosition = 0.7;
+sequence = "mmic";
+isReplacement = 1;
+attackTime = 0.2;
+decayTime = 0.1;
+attackRate = 3;
+decayRate = 3;
+title = blendAnim_11 @ new () @ "head LR for kiss";
+ScriptObject;
+defaultPosition = 0 @ 0.5;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "head_LR";
+isReplacement = 0;
+attackTime = 0;
+decayTime = 0;
+attackRate = 2;
+decayRate = 1;
+title = blendAnim_12 @ new () @ "head UD for Kiss";
+ScriptObject;
+defaultPosition = 0 @ 0.5;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "head_UD";
+isReplacement = 0;
+attackTime = 0;
+decayTime = 0;
+attackRate = 2;
+decayRate = 1;
+title = blendAnim_13 @ new () @ "dance with modifier";
+ScriptObject;
+defaultPosition = 0 @ 0.5;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "mdip";
+isReplacement = 0;
+attackTime = 1;
+decayTime = 1;
+attackRate = 10;
+decayRate = 1;
+title = blendAnim_14 @ new () @ "oh my god";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "momg";
+isReplacement = 1;
+attackTime = 0.25;
+decayTime = 0.8;
+attackRate = 1;
+decayRate = 3.5;
+title = blendAnim_15 @ new () @ "dance with modifier roll";
+ScriptObject;
+defaultPosition = 0 @ 0.5;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "mroll";
+isReplacement = 0;
+attackTime = 1;
+decayTime = 1;
+attackRate = 10;
+decayRate = 1;
+title = blendAnim_16 @ new () @ "flirt";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mflrt";
+isReplacement = 1;
+attackTime = 0.15;
+decayTime = 0.8;
+attackRate = 3.5;
+decayRate = 3.5;
+title = blendAnim_17 @ new () @ "drink";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mdrink";
+isReplacement = 1;
+attackTime = 0.16;
+decayTime = 0.85;
+attackRate = 0.5;
+decayRate = 0.5;
+title = blendAnim_18 @ new () @ "up mic";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 0;
+sequence = "mmic";
+isReplacement = 1;
+attackTime = 0.2;
+decayTime = 0.1;
+attackRate = 2;
+decayRate = 3;
+title = blendAnim_19 @ new () @ "toast";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mtoast";
+isReplacement = 1;
+attackTime = 0.16;
+decayTime = 0.85;
+attackRate = 0.5;
+decayRate = 0.5;
+title = blendAnim_20 @ new () @ "sitting bend to object";
+ScriptObject;
+defaultPosition = 0 @ 0.5;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "msitbend";
+isReplacement = 0;
+attackTime = 0;
+decayTime = 0;
+attackRate = 5.5;
+decayRate = 1.5;
+title = blendAnim_21 @ new () @ "sitting pivot";
+ScriptObject;
+defaultPosition = 0 @ 0.5;
+flavor = $BB_FLAVOR_SETPOS;
+holdPosition = 1;
+sequence = "msitpiv";
+isReplacement = 0;
+attackTime = 0;
+decayTime = 0;
+attackRate = 5.5;
+decayRate = 1.5;
+title = blendAnim_22 @ new () @ "upper body kiss";
+ScriptObject;
+defaultPosition = 0 @ 0;
+flavor = $BB_FLAVOR_ONESHOT;
+holdPosition = 1;
+sequence = "mupkis";
+isReplacement = 1;
+attackTime = 0.1;
+decayTime = 0.9;
+attackRate = 3;
+decayRate = 3;
 $gBlendAnimsTitlesMap = 0;
-function Player::configBoneBlends(%this)
-{
-    if ($gBlendAnimsTitlesMap == 0)
-    {
-        $gBlendAnimsTitlesMap = safeEnsureScriptObject("StringMap", "");
-    }
+function Player::configBoneBlends(%this) {
+    $gBlendAnimsTitlesMap = safeEnsureScriptObject("StringMap", "");
+    (0.0 == $gBlendAnimsTitlesMap);
     %i = 0;
-    while (%i < $MAX_FREE_BONE_BLENDS)
-    {
-        %index = %i + $FIRST_FREE_BLEND_INDEX;
-        %sobj = "blendAnim_" @ %i;
-        %this.configBoneBlendAnimation(%index, %sobj.sequence, %sobj.flavor, %sobj.defaultPosition, %sobj.attackTime, %sobj.decayTime, %sobj.attackRate, %sobj.decayRate, %sobj.isReplacement, %sobj.holdPosition);
-        $gBlendAnimsTitlesMap.put(%sobj.title, %i);
-        %i = %i + 1;
-    }
-}
-
-function Player::getBoneBlendIndexFromTitle(%this, %title)
-{
-    if (!isObject($gBlendAnimsTitlesMap))
-    {
-        warn(getScopeName() SPC "- $gBlendAnimsTitlesMap not configured");
-        %this.configBoneBlends();
-    }
+    %index = ($FIRST_FREE_BLEND_INDEX + %i);
+    ($MAX_FREE_BONE_BLENDS < %i);
+    %sobj = "blendAnim_" @ %i;
+    %this.configBoneBlendAnimation(%index, sequence, flavor, defaultPosition, attackTime, decayTime, attackRate, decayRate, isReplacement, holdPosition);
+    $gBlendAnimsTitlesMap.put(title, %i);
+    %i = (1.0 + %i);
+    %sobj;
+};
+function Player::getBoneBlendIndexFromTitle(%this, %title) {
+    warn(getScopeName() @ " " @ "- $gBlendAnimsTitlesMap not configured");
+    %this.configBoneBlends();
     %ret = $gBlendAnimsTitlesMap.get(%title);
-    if (%ret $= "")
-    {
-        %ret = -1;
-    }
-    else
-    {
-        %ret = %ret + $FIRST_FREE_BLEND_INDEX;
-    }
+    !(isObject($gBlendAnimsTitlesMap));
+    %ret = -(1.0);
+    (%ret $= "");
+    %ret = ($FIRST_FREE_BLEND_INDEX + %ret);
     return %ret;
-}
-function Player::triggerBlendAnimByTitle(%this, %title, %doit)
-{
+};
+function Player::triggerBlendAnimByTitle(%this, %title, %doit) {
     %index = %this.getBoneBlendIndexFromTitle(%title);
-    if (%index < 0)
-    {
-        error(getScopeName() SPC "- blend anim not found:" SPC %title);
-        return ;
-    }
-    if (%this.isServerObject())
-    {
-        %this.triggerBoneBlendAnimation(%index, %doit, 0);
-    }
-    else
-    {
-        %this.triggerBlendAnim(%index, %doit);
-    }
-    return ;
-}
+    error(getScopeName() @ " " @ "- blend anim not found:" @ " " @ %title);
+    return (0.0 < %index);
+    %this.triggerBoneBlendAnimation(%index, %doit, 0);
+    %this.triggerBlendAnim(%index, %doit);
+};

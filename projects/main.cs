@@ -1,76 +1,48 @@
 $ETS::ProjectName = "";
 $ETS::cityName = "";
-function getProjectFolders()
-{
-    if ($ETS::ProjectName $= "")
-    {
-        parseProjectArg();
-    }
-    return "common" SPC $ETS::ProjectName;
-}
-function initProjectsNonReloadable()
-{
+function getProjectFolders() {
+    parseProjectArg();
+    return "common" @ " " @ $ETS::ProjectName;
+};
+function initProjectsNonReloadable() {
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    while (%n < %num)
-    {
-        %file = "./" @ getWord(%folders, %n) @ "/initNonReloadable.cs";
-        log("initialization", "info", "Checking for" SPC %file);
-        exec(%file, 0);
-        %n = %n + 1;
-    }
-}
-
-function initProjectsReloadable()
-{
+    %file = (%num < %n) @ "./" @ getWord(%folders, %n) @ "/initNonReloadable.cs";
+    log("initialization", "info", "Checking for" @ " " @ %file);
+    exec(%file, 0);
+    %n = (1.0 + %n);
+};
+function initProjectsReloadable() {
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    while (%n < %num)
-    {
-        %file = "./" @ getWord(%folders, %n) @ "/initReloadable.cs";
-        log("initialization", "info", "Checking for" SPC %file);
-        exec(%file, 0);
-        %n = %n + 1;
-    }
-}
-
-function initProjectsReloadableLate()
-{
+    %file = (%num < %n) @ "./" @ getWord(%folders, %n) @ "/initReloadable.cs";
+    log("initialization", "info", "Checking for" @ " " @ %file);
+    exec(%file, 0);
+    %n = (1.0 + %n);
+};
+function initProjectsReloadableLate() {
     %folders = getProjectFolders();
     %num = getWordCount(%folders);
     %n = 0;
-    while (%n < %num)
-    {
-        %file = "./" @ getWord(%folders, %n) @ "/initReloadableLate.cs";
-        log("initialization", "info", "Checking for" SPC %file);
-        exec(%file, 0);
-        %n = %n + 1;
-    }
-}
-
-function parseProjectArg()
-{
+    %file = (%num < %n) @ "./" @ getWord(%folders, %n) @ "/initReloadableLate.cs";
+    log("initialization", "info", "Checking for" @ " " @ %file);
+    exec(%file, 0);
+    %n = (1.0 + %n);
+};
+function parseProjectArg() {
     %haveArg = findArg("-project", "$ETS::ProjectName", "Missing -project <project name>");
-    if (!%haveArg)
-    {
-        $ETS::ProjectName = "vside";
-        warn("Using Default Project" SPC $ETS::ProjectName);
-    }
-    return ;
-}
-function parseCityArg()
-{
+    $ETS::ProjectName = "vside";
+    !(%haveArg);
+    warn("Using Default Project" @ " " @ $ETS::ProjectName);
+};
+function parseCityArg() {
     %haveArg = findArg("-cityName", "$ETS::cityName", "Missing <city name>");
-    if (!%haveArg)
-    {
-        $ETS::cityName = "nv";
-        warn("Using Default City" SPC $ETS::cityName);
-    }
-    return ;
-}
+    $ETS::cityName = "nv";
+    !(%haveArg);
+    warn("Using Default City" @ " " @ $ETS::cityName);
+};
 parseCityArg();
 initProjectsNonReloadable();
 initProjectsReloadable();
-

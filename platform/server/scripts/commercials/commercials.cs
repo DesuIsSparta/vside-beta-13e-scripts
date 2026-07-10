@@ -1,91 +1,63 @@
-datablock StaticShapeData(AcePetrolRoof)
-{
-    category = "Commercials";
-    shapeFile = "~/data/shapes/commercials/acepetrol_roof.dts";
-    isPlaying = 1;
-};
-function AcePetrolRoof::onAdd(%unused, %obj)
-{
+category = AcePetrolRoof @ datablock () @ "Commercials";
+StaticShapeData;
+shapeFile = 0 @ "~/data/shapes/commercials/acepetrol_roof.dts";
+isPlaying = 1;
+function AcePetrolRoof::onAdd(%unused, %obj) {
     %obj.playThread(0, "ambient");
     echo("onAdd");
-    %obj.isPlaying = 1;
-    return ;
-}
-datablock StaticShapeData(AcePetrolWall)
-{
-    category = "Commercials";
-    shapeFile = "~/data/shapes/commercials/acepetrol_wall.dts";
-    isPlaying = 1;
+    isPlaying = 1 @ %obj;
 };
-function AcePetrolWall::onAdd(%unused, %obj)
-{
+category = AcePetrolWall @ datablock () @ "Commercials";
+StaticShapeData;
+shapeFile = 0 @ "~/data/shapes/commercials/acepetrol_wall.dts";
+isPlaying = 1;
+function AcePetrolWall::onAdd(%unused, %obj) {
     %obj.playThread(0, "ambient");
     echo("onAdd");
-    %obj.isPlaying = 1;
-    return ;
-}
-datablock StaticShapeData(Cowboy)
-{
-    category = "Commercials";
-    shapeFile = "~/data/shapes/commercials/commercialCowBoy.dts";
-    isPlaying = 1;
+    isPlaying = 1 @ %obj;
 };
-function Cowboy::onAdd(%unused, %obj)
-{
+category = Cowboy @ datablock () @ "Commercials";
+StaticShapeData;
+shapeFile = 0 @ "~/data/shapes/commercials/commercialCowBoy.dts";
+isPlaying = 1;
+function Cowboy::onAdd(%unused, %obj) {
     %obj.playThread(0, "ambient");
     echo("onAdd");
-    %obj.isPlaying = 1;
-    return ;
-}
-datablock StaticShapeData(flipcom)
-{
-    category = "Commercials";
-    shapeFile = "~/data/shapes/commercials/flipcom.dts";
-    isPlaying = 1;
+    isPlaying = 1 @ %obj;
 };
-function flipcom::onAdd(%unused, %obj)
-{
+category = flipcom @ datablock () @ "Commercials";
+StaticShapeData;
+shapeFile = 0 @ "~/data/shapes/commercials/flipcom.dts";
+isPlaying = 1;
+function flipcom::onAdd(%unused, %obj) {
     %obj.playThread(0, "ambient");
     echo("onAdd");
-    %obj.isPlaying = 1;
-    return ;
-}
-datablock StaticShapeData(HotelSign1)
-{
-    category = "Commercials";
-    shapeFile = "~/data/shapes/commercials/hotelSignRotating.dts";
-    isPlaying = 1;
+    isPlaying = 1 @ %obj;
 };
-function HotelSign1::onAdd(%unused, %obj)
-{
+category = HotelSign1 @ datablock () @ "Commercials";
+StaticShapeData;
+shapeFile = 0 @ "~/data/shapes/commercials/hotelSignRotating.dts";
+isPlaying = 1;
+function HotelSign1::onAdd(%unused, %obj) {
     %obj.playThread(0, "ambient");
     echo("onAdd");
-    %obj.isPlaying = 1;
-    return ;
-}
-datablock StaticShapeData(HotelSign2)
-{
-    category = "Commercials";
-    shapeFile = "~/data/shapes/commercials/hotelSignRotatingVertical.dts";
-    isPlaying = 1;
+    isPlaying = 1 @ %obj;
 };
-function HotelSign2::onAdd(%unused, %obj)
-{
+category = HotelSign2 @ datablock () @ "Commercials";
+StaticShapeData;
+shapeFile = 0 @ "~/data/shapes/commercials/hotelSignRotatingVertical.dts";
+isPlaying = 1;
+function HotelSign2::onAdd(%unused, %obj) {
     %obj.playThread(0, "ambient");
     echo("onAdd");
-    %obj.isPlaying = 1;
-    return ;
-}
-datablock StaticShapeData(Tire)
-{
-    category = "Commercials";
-    shapeFile = "~/data/shapes/commercials/rotatingTire.dts";
-    isPlaying = 1;
+    isPlaying = 1 @ %obj;
 };
-function Tire::onAdd(%unused, %obj)
-{
+category = Tire @ datablock () @ "Commercials";
+StaticShapeData;
+shapeFile = 0 @ "~/data/shapes/commercials/rotatingTire.dts";
+isPlaying = 1;
+function Tire::onAdd(%unused, %obj) {
     %obj.playThread(0, "ambient");
     echo("onAdd");
-    %obj.isPlaying = 1;
-    return ;
-}
+    isPlaying = 1 @ %obj;
+};

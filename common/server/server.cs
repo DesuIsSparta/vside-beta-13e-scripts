@@ -1,122 +1,88 @@
 exec("./dif2dae.cs");
-function portInit(%port)
-{
+function portInit(%port) {
     %failCount = 0;
-    while (!setNetPort(%port))
-    {
-        echo("Port init failed on port " @ %port @ " trying next port.");
-        %port = %port + 1;
-        %failCount = %failCount + 1;
-    }
+    echo(!(setNetPort(%port)) @ "Port init failed on port " @ %port @ " trying next port.");
+    %port = (1.0 + %port);
+    %failCount = (1.0 + %failCount);
     $Net::BoundPort = %port;
+    !(setNetPort(%port));
     return %failCount;
-}
-function createServer(%serverType, %mission)
-{
-    if (%mission $= "")
-    {
-        error("createServer: mission name unspecified");
-        return ;
-    }
+};
+function createServer(%serverType, %mission) {
+    error("createServer: mission name unspecified");
+    return (%mission $= "");
     destroyServer();
     $MissionSequence = 0;
     $Server::ServerType = %serverType;
     $Net::BoundPort = 0;
-    if (%serverType $= "MultiPlayer")
-    {
-        portInit($Pref::Server::Port);
-        allowConnections(1);
-    }
-    $ServerGroup = new SimGroup(ServerGroup);
-    $ClientDict = new StringMap(ClientDict);
-    $PlayerDict = new StringMap(PlayerDict);
-    $TokenDict = new StringMap(TokenDict);
-    $PendingValidate = new StringMap(PendingValidate);
-    ClientDict.allowInstanceMethods();
-    PlayerDict.allowInstanceMethods();
-    TokenDict.allowInstanceMethods();
-    new StringMap(PlayerNameLowerToRegMap);
+    portInit($Pref::Server::Port);
+    allowConnections(1);
+    $ServerGroup = new ();
+    ServerGroup;
+    $ClientDict = new ();
+    ClientDict;
+    $PlayerDict = new ();
+    PlayerDict;
+    $TokenDict = new ();
+    TokenDict;
+    $PendingValidate = new ();
+    PendingValidate;
+    allowInstanceMethods();
+    allowInstanceMethods();
+    allowInstanceMethods();
+    new ();
     onServerCreated();
     loadMission(%mission, 1);
-    return ;
-}
-function destroyServer()
-{
+    return PlayerNameLowerToRegMap;
+};
+function destroyServer() {
     $Server::ServerType = "";
     allowConnections(0);
     $missionRunning = 0;
     endMission();
     onServerDestroyed();
-    if (isObject(MissionGroup))
-    {
-        MissionGroup.delete();
-    }
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.delete();
-    }
-    if (isObject($ServerGroup))
-    {
-        $ServerGroup.delete();
-    }
-    while (ClientGroup.getCount())
-    {
-        %client = ClientGroup.getObject(0);
-        %client.delete();
-    }
+    delete();
+    delete();
+    $ServerGroup.delete();
+    %client = 0.getObject();
+    ClientGroup;
+    %client.delete();
     $Server::GuidList = "";
+    getCount();
     deleteDataBlocks();
     purgeResources();
-    return ;
-}
-function resetServerDefaults()
-{
+    return ClientGroup;
+};
+function resetServerDefaults() {
     echo("Resetting server defaults...");
     exec("~/defaults.cs");
     exec("~/prefs.cs");
     loadMission($Server::MissionFile);
-    return ;
-}
-function addToServerGuidList(%guid)
-{
+    return;
+};
+function addToServerGuidList(%guid) {
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    while (%i < %count)
-    {
-        if (getField($Server::GuidList, %i) == %guid)
-        {
-            return ;
-        }
-        %i = %i + 1;
-    }
-    $Server::GuidList = $Server::GuidList $= "" ? %guid : $Server::GuidList;
-    return ;
-}
-function removeFromServerGuidList(%guid)
-{
+    return (%guid == getField($Server::GuidList, %i));
+    %i = (1.0 + %i);
+    $Server::GuidList = $Server::GuidList;
+    %guid;
+    return ((%count < %i) SPC $Server::GuidList $= "");
+};
+function removeFromServerGuidList(%guid) {
     %count = getFieldCount($Server::GuidList);
     %i = 0;
-    while (%i < %count)
-    {
-        if (getField($Server::GuidList, %i) == %guid)
-        {
-            $Server::GuidList = removeField($Server::GuidList, %i);
-            return ;
-        }
-        %i = %i + 1;
-    }
-}
-
-function isUserConnected(%userName)
-{
-    %client = ClientDict.getNorm(%userName);
-    if (!(%client $= ""))
-    {
-        return 1;
-    }
+    $Server::GuidList = removeField($Server::GuidList, %i);
+    (%guid == getField($Server::GuidList, %i));
+    return (%count < %i);
+    %i = (1.0 + %i);
+};
+function isUserConnected(%userName) {
+    %client = %userName.getNorm();
+    ClientDict;
+    return 1;
     return 0;
-}
-function onServerInfoQuery()
-{
+};
+function onServerInfoQuery() {
     return "OK";
-}
+};

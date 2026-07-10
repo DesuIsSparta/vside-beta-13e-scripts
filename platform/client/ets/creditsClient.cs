@@ -1,8 +1,7 @@
 $gCreditsTickPeriod = 30;
 $gCreditsTickPixels = 2;
 $gCreditsTickDirection = 1;
-function doCredits()
-{
+function doCredits() {
     %text = "<color:ccddddFF><just:center>";
     %text = %text @ "<br><br><br><br><br><br><br>";
     %text = credits_AddSection(%text, "vSide");
@@ -78,41 +77,33 @@ function doCredits()
     %text = credits_AddName(%text, "Tom N.");
     %text = credits_AddName(%text, "Tracie R.");
     %text = credits_AddName(%text, "Willy B.");
-    LoginCreditsText.setText(%text);
-    $gCreditsTickDirection = -$gCreditsTickDirection;
+    %text.setText();
+    $gCreditsTickDirection = -($gCreditsTickDirection);
+    LoginCreditsText;
     creditsTick();
-    return ;
-}
+};
 $gCreditsTimerID = 0;
-function creditsTick()
-{
+function creditsTick() {
     cancel($gCreditsTimerID);
-    %y = getWord(LoginCreditsText.position, 1);
-    %h = getWord(LoginCreditsText.extent, 1);
-    if (($gCreditsTickDirection < 0) && ((%y + %h) < 0))
-    {
-        return ;
-    }
-    if (($gCreditsTickDirection > 0) && (%y > 157))
-    {
-        return ;
-    }
-    %y = %y + ($gCreditsTickPixels * $gCreditsTickDirection);
-    LoginCreditsText.reposition(0, %y);
+    %y = getWord(position, 1);
+    LoginCreditsText;
+    %h = getWord(extent, 1);
+    LoginCreditsText;
+    return (0.0 < (%h + %y));
+    return (157.0 > %y);
+    %y = (($gCreditsTickDirection * $gCreditsTickPixels) + %y);
+    0.reposition(%y);
     $gCreditsTimerID = schedule($gCreditsTickPeriod, 0, "creditsTick");
-    return ;
-}
-function credits_AddSection(%dry, %name)
-{
+    LoginCreditsText;
+};
+function credits_AddSection(%dry, %name) {
     %wet = %dry @ "<br><br><spush><font:BauhausStd-Demi:20>" @ %name @ "<spop><br>";
     return %wet;
-}
-function credits_AddName(%dry, %name)
-{
+};
+function credits_AddName(%dry, %name) {
     %wet = %dry @ %name @ "<br>";
     return %wet;
-}
-function credits_AddLead(%dry, %name)
-{
+};
+function credits_AddLead(%dry, %name) {
     return credits_AddName(%dry, "<spush><b>" @ %name @ "<spop>");
-}
+};

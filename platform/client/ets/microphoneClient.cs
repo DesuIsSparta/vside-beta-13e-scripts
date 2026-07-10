@@ -1,10 +1,6 @@
-function doMicrophoneGiveOrRevoke(%playerName, %give)
-{
+function doMicrophoneGiveOrRevoke(%playerName, %give) {
     commandToServer('MicrophoneGiveOrRevoke', %playerName, %give);
-    return ;
-}
-function doMicrophoneRevokeAll()
-{
+};
+function doMicrophoneRevokeAll() {
     commandToServer('MicrophoneRevokeAll');
-    return ;
-}
+};

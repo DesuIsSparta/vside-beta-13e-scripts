@@ -1,11 +1,10 @@
 safeEnsureScriptObject("StringMap", "PropAnimationMap", 1);
 safeEnsureScriptObject("StringMap", "PropGenreMap", 1);
 safeEnsureScriptObject("StringMap", "PropInternalDescriptionMap", 1);
-PropAnimationMap.ignoreCase = 1;
-PropGenreMap.ignoreCase = 1;
-PropInternalDescriptionMap.ignoreCase = 1;
-function initializePropAnimationMap()
-{
+ignoreCase = 1 @ PropAnimationMap;
+ignoreCase = 1 @ PropGenreMap;
+ignoreCase = 1 @ PropInternalDescriptionMap;
+function initializePropAnimationMap() {
     setupPropAnimations(8002, "ywatrpt", "y", "the watering can         - f");
     setupPropAnimations(8010, "ygunsling", "y", "6-shooters               - f");
     setupPropAnimations(8011, "ymime", "y", "mimes                    - f");
@@ -187,99 +186,79 @@ function initializePropAnimationMap()
     setupPropAnimations(27274, "fmakeshot", "e", "shot red");
     setupPropAnimations(27275, "emakechmp", "e", "shot dgreen");
     setupPropAnimations(27276, "emakechmp", "e", "shot blue");
-    return ;
-}
+};
 $gPropGenres = "";
-function setupPropAnimations(%propSku, %actionAnims, %genre, %internalDescription)
-{
-    PropAnimationMap.put(%propSku, %actionAnims);
-    PropGenreMap.put(%propSku, %genre);
-    PropInternalDescriptionMap.put(%propSku, %internalDescription);
-    $gPropGenres = $gPropGenres SPC %genre;
-    return ;
-}
-function isPropGenre(%genre)
-{
+function setupPropAnimations(%propSku, %actionAnims, %genre, %internalDescription) {
+    %propSku.put(%actionAnims);
+    %propSku.put(%genre);
+    %propSku.put(%internalDescription);
+    $gPropGenres = $gPropGenres @ " " @ %genre;
+    PropInternalDescriptionMap;
+};
+function isPropGenre(%genre) {
     return hasWord($gPropGenres, %genre);
-}
-function dumpProps()
-{
+};
+function dumpProps() {
     echo(getTrace());
-    %num = PropInternalDescriptionMap.size();
+    %num = size();
+    PropInternalDescriptionMap;
     %n = 0;
-    while (%n < %num)
-    {
-        %sku = PropInternalDescriptionMap.getKey(%n);
-        %desc = PropInternalDescriptionMap.getValue(%n);
-        %anims = PropAnimationMap.get(%sku);
-        %genre = PropGenreMap.get(%sku);
-        echo("|" SPC formatString("%-8s", %sku) SPC "|" SPC %genre SPC "|" SPC formatString("%-30s", %anims) SPC "|" SPC formatString("%-30s", %desc) SPC "|");
-        %n = %n + 1;
-    }
-}
-
+    %sku = %n.getKey();
+    PropInternalDescriptionMap;
+    %desc = %n.getValue();
+    PropInternalDescriptionMap;
+    %anims = %sku.get();
+    PropAnimationMap;
+    %genre = %sku.get();
+    PropGenreMap;
+    echo("|" @ " " @ formatString("%-8s", %sku) @ " " @ "|" @ " " @ %genre @ " " @ "|" @ " " @ formatString("%-30s", %anims) @ " " @ "|" @ " " @ formatString("%-30s", %desc) @ " " @ "|");
+    %n = (1.0 + %n);
+    (%num < %n);
+};
 initializePropAnimationMap();
-function canHavePropsInGenre(%genre)
-{
-    if (((((%genre $= "k") || (%genre $= "w")) || (%genre $= "o")) || (%genre $= "l")) || (%genre $= "s"))
-    {
-        return 0;
-    }
+function canHavePropsInGenre(%genre) {
+    return 0;
     return 1;
-}
-function Player::getActivePropSku(%this)
-{
-    return SkuManager.getFirstPropSku(%this.getActiveSKUs());
-}
-function Player::getActiveDrinkSku(%this)
-{
-    return SkuManager.getSkuWithAnyTags(%this.getActiveSKUs(), "drink");
-}
-function Player::hasActiveDrinkSku(%this)
-{
-    return SkuManager.hasSkuWithAnyTags(%this.getActiveSKUs(), "drink");
-}
-function Player::getActiveDrinkMakerSku(%this)
-{
-    return SkuManager.getSkuWithAnyTags(%this.getActiveSKUs(), "drinkMaker");
-}
-function Player::hasActiveDrinkMakerSku(%this)
-{
-    return SkuManager.hasSkuWithAnyTags(%this.getActiveSKUs(), "drinkMaker");
-}
-function Player::getPropAnimation(%this, %actionNum)
-{
+};
+function Player::getActivePropSku(%this) {
+    return %this.getActiveSKUs().getFirstPropSku();
+};
+function Player::getActiveDrinkSku(%this) {
+    return %this.getActiveSKUs().getSkuWithAnyTags("drink");
+};
+function Player::hasActiveDrinkSku(%this) {
+    return %this.getActiveSKUs().hasSkuWithAnyTags("drink");
+};
+function Player::getActiveDrinkMakerSku(%this) {
+    return %this.getActiveSKUs().getSkuWithAnyTags("drinkMaker");
+};
+function Player::hasActiveDrinkMakerSku(%this) {
+    return %this.getActiveSKUs().hasSkuWithAnyTags("drinkMaker");
+};
+function Player::getPropAnimation(%this, %actionNum) {
     %propSku = %this.getActivePropSku();
     return %this.getPropAnimationFromSku(%propSku, %actionNum);
-}
-function Player::getPropAnimationFromSku(%this, %propSku, %actionNum)
-{
-    if (%propSku $= "")
-    {
-        return "";
-    }
-    %anim = PropAnimationMap.get(%propSku);
+};
+function Player::getPropAnimationFromSku(%this, %propSku, %actionNum) {
+    return "";
+    %anim = %propSku.get();
+    PropAnimationMap;
     %anim = getWord(%anim, %actionNum);
     %anim = %this.getGender() @ %anim;
     return %anim;
-}
-function Player::getPropAnimationFromSkus(%this, %skus, %animNum)
-{
-    %propSku = SkuManager.getFirstPropSku(%skus);
+};
+function Player::getPropAnimationFromSkus(%this, %skus, %animNum) {
+    %propSku = %skus.getFirstPropSku();
+    SkuManager;
     return %this.getPropAnimationFromSku(%propSku, %animNum);
-}
-function Player::hasAvailableProp(%this)
-{
+};
+function Player::hasAvailableProp(%this) {
     %propSku = getActivePropSku();
-    return !(%propSku $= "");
-}
-function Player::dropProp(%this)
-{
+    return !((%propSku $= ""));
+};
+function Player::dropProp(%this) {
     %propSku = %this.getActivePropSku();
-    if (!(%propSku $= ""))
-    {
-        %activeSkus = findAndRemoveFirstOccurrenceOfWord(%this.getActiveSKUs(), %propSku);
-        %this.setActiveSKUs(%activeSkus);
-    }
-    return ;
-}
+    %activeSkus = findAndRemoveFirstOccurrenceOfWord(%this.getActiveSKUs(), %propSku);
+    !((%propSku $= ""));
+    %this.setActiveSKUs(%activeSkus);
+};

@@ -1,846 +1,714 @@
-function DoesPlayerHaveItemActive(%player, %skulist)
-{
-    if (%skulist $= "")
-    {
-        return 1;
-    }
+function DoesPlayerHaveItemActive(%player, %skulist) {
+    return 1;
     %num = getWordCount(%skulist);
     %n = 0;
-    while (%n < %num)
-    {
-        %sku = getWord(%skulist, %n);
-        %hasIt = %player.hasActiveSKU(%sku);
-        if (%hasIt)
-        {
-            return 1;
-        }
-        %n = %n + 1;
-    }
+    %sku = getWord(%skulist, %n);
+    (%num < %n);
+    %hasIt = %player.hasActiveSKU(%sku);
+    return 1;
+    %n = (1.0 + %n);
     return 0;
-}
-function SkuManager::vetByRoles(%this, %rolesMask, %skusDry, %skusDefault)
-{
+};
+function SkuManager::vetByRoles(%this, %rolesMask, %skusDry, %skusDefault) {
     %skusWet = %this.filterSkusRoles(%skusDry, %rolesMask);
     %skusWet = %this.overlaySkus(%skusDefault, %skusWet);
     return %skusWet;
-}
-function SkuManager::vetSkus(%this, %rolesMask, %gender, %skusDry, %skusDefault)
-{
+};
+function SkuManager::vetSkus(%this, %rolesMask, %gender, %skusDry, %skusDefault) {
     %skusWet = %this.filterSkusRoles(%skusDry, %rolesMask);
     %skusWet = %this.filterSkusGender(%skusWet, %gender);
     %skusWet = %this.overlaySkus(%skusDefault, %skusWet);
     return %skusWet;
-}
-function SkuManager::clearValueCache(%this)
-{
-    if (isObject(%this.valueCache))
-    {
-        %this.valueCache.delete();
-    }
-    %this.valueCache = safeNewScriptObject("StringMap", "", 0);
-    return ;
-}
-SkuManager.clearValueCache();
-SkuManager.addBodyDrawer("hair");
-SkuManager.addBodyDrawer("face");
-SkuManager.addBodyDrawer("faceb");
-SkuManager.addBodyDrawer("eyes");
-SkuManager.addBodyDrawer("skin");
-SkuManager.addOutfitDrawer("glasses");
-SkuManager.addOutfitDrawer("torso");
-SkuManager.addOutfitDrawer("torsob");
-SkuManager.addOutfitDrawer("legs");
-SkuManager.addOutfitDrawer("legsb");
-SkuManager.addOutfitDrawer("feet");
-SkuManager.addOutfitDrawer("ear");
-SkuManager.addOutfitDrawer("neck");
-SkuManager.addOutfitDrawer("neckb");
-SkuManager.addOutfitDrawer("neckc");
-SkuManager.addOutfitDrawer("wristleft");
-SkuManager.addOutfitDrawer("wristleftb");
-SkuManager.addOutfitDrawer("wristright");
-SkuManager.addOutfitDrawer("wristrightb");
-SkuManager.addOutfitDrawer("fingerleft");
-SkuManager.addOutfitDrawer("fingerright");
-SkuManager.addOutfitDrawer("toeleft");
-SkuManager.addOutfitDrawer("toeright");
-SkuManager.addOutfitDrawer("purse");
-SkuManager.addOutfitDrawer("waist");
-SkuManager.addOutfitDrawer("waistb");
-SkuManager.addOutfitDrawer("back");
-SkuManager.addOutfitDrawer("hat");
-SkuManager.addOutfitDrawer("mask");
-SkuManager.addOutfitDrawer("earl");
-SkuManager.addOutfitDrawer("labret");
-SkuManager.addOutfitDrawer("lftauricle");
-SkuManager.addOutfitDrawer("lftconch");
-SkuManager.addOutfitDrawer("lfteyebrow");
-SkuManager.addOutfitDrawer("lftlobe");
-SkuManager.addOutfitDrawer("lftorbital");
-SkuManager.addOutfitDrawer("lftpinna");
-SkuManager.addOutfitDrawer("lftrook");
-SkuManager.addOutfitDrawer("lfttragus");
-SkuManager.addOutfitDrawer("rghauricle");
-SkuManager.addOutfitDrawer("rghconch");
-SkuManager.addOutfitDrawer("rgheyebrow");
-SkuManager.addOutfitDrawer("rghlobe");
-SkuManager.addOutfitDrawer("rghorbital");
-SkuManager.addOutfitDrawer("rghpinna");
-SkuManager.addOutfitDrawer("rghrook");
-SkuManager.addOutfitDrawer("rghtragus");
-SkuManager.addOutfitDrawer("lowlip");
-SkuManager.addOutfitDrawer("madonna");
-SkuManager.addOutfitDrawer("medusa");
-SkuManager.addOutfitDrawer("nostril");
-SkuManager.addOutfitDrawer("septum");
-SkuManager.addOutfitDrawer("tail");
-SkuManager.addOutfitDrawer("chest");
-SkuManager.addOutfitDrawer("props");
-SkuManager.addOutfitDrawer("badges");
-SkuManager.addOutfitDrawer("tokens");
-SkuManager.addOutfitDrawer("gameplay");
-SkuManager.addOutfitDrawer("deprecated_gl");
-SkuManager.addOutfitDrawer("deprecated_ea");
-SkuManager.addOutfitDrawer("deprecated_ne");
-SkuManager.addOutfitDrawer("deprecated_wl");
-SkuManager.addOutfitDrawer("deprecated_wr");
-SkuManager.addOutfitDrawer("deprecated_wa");
-SkuManager.addOutfitDrawer("microphone");
-SkuManager.addOptionalDrawer("faceb");
-SkuManager.addOptionalDrawer("glasses");
-SkuManager.addOptionalDrawer("torsob");
-SkuManager.addOptionalDrawer("legsb");
-SkuManager.addOptionalDrawer("ear");
-SkuManager.addOptionalDrawer("neck");
-SkuManager.addOptionalDrawer("neckb");
-SkuManager.addOptionalDrawer("neckc");
-SkuManager.addOptionalDrawer("wristleft");
-SkuManager.addOptionalDrawer("wristleftb");
-SkuManager.addOptionalDrawer("wristright");
-SkuManager.addOptionalDrawer("wristrightb");
-SkuManager.addOptionalDrawer("fingerleft");
-SkuManager.addOptionalDrawer("fingerright");
-SkuManager.addOptionalDrawer("toeleft");
-SkuManager.addOptionalDrawer("toeright");
-SkuManager.addOptionalDrawer("purse");
-SkuManager.addOptionalDrawer("waist");
-SkuManager.addOptionalDrawer("waistb");
-SkuManager.addOptionalDrawer("back");
-SkuManager.addOptionalDrawer("hat");
-SkuManager.addOptionalDrawer("mask");
-SkuManager.addOptionalDrawer("earl");
-SkuManager.addOptionalDrawer("labret");
-SkuManager.addOptionalDrawer("lftauricle");
-SkuManager.addOptionalDrawer("lftconch");
-SkuManager.addOptionalDrawer("lfteyebrow");
-SkuManager.addOptionalDrawer("lftlobe");
-SkuManager.addOptionalDrawer("lftorbital");
-SkuManager.addOptionalDrawer("lftpinna");
-SkuManager.addOptionalDrawer("lftrook");
-SkuManager.addOptionalDrawer("lfttragus");
-SkuManager.addOptionalDrawer("rghauricle");
-SkuManager.addOptionalDrawer("rghconch");
-SkuManager.addOptionalDrawer("rgheyebrow");
-SkuManager.addOptionalDrawer("rghlobe");
-SkuManager.addOptionalDrawer("rghorbital");
-SkuManager.addOptionalDrawer("rghpinna");
-SkuManager.addOptionalDrawer("rghrook");
-SkuManager.addOptionalDrawer("rghtragus");
-SkuManager.addOptionalDrawer("lowlip");
-SkuManager.addOptionalDrawer("madonna");
-SkuManager.addOptionalDrawer("medusa");
-SkuManager.addOptionalDrawer("nostril");
-SkuManager.addOptionalDrawer("septum");
-SkuManager.addOptionalDrawer("tail");
-SkuManager.addOptionalDrawer("chest");
-SkuManager.addOptionalDrawer("props");
-SkuManager.addOptionalDrawer("badges");
-SkuManager.addOptionalDrawer("tokens");
-SkuManager.addOptionalDrawer("gameplay");
-SkuManager.addOptionalDrawer("deprecated_gl");
-SkuManager.addOptionalDrawer("deprecated_ea");
-SkuManager.addOptionalDrawer("deprecated_ne");
-SkuManager.addOptionalDrawer("deprecated_wl");
-SkuManager.addOptionalDrawer("deprecated_wr");
-SkuManager.addOptionalDrawer("deprecated_wa");
-SkuManager.addOptionalDrawer("microphone");
-SkuManager.addWearableSkuType("mesh");
-SkuManager.addWearableSkuType("badge");
-function SkuManager::allDrawers(%this)
-{
-    %allDrawers = %this.allClosetDrawers() SPC "gameplay";
+};
+function SkuManager::clearValueCache(%this) {
+    valueCache.delete();
+    valueCache = %this @ safeNewScriptObject("StringMap", "", 0) @ %this;
+    isObject(valueCache);
+};
+clearValueCache();
+"hair".addBodyDrawer();
+"face".addBodyDrawer();
+"faceb".addBodyDrawer();
+"eyes".addBodyDrawer();
+"skin".addBodyDrawer();
+"glasses".addOutfitDrawer();
+"torso".addOutfitDrawer();
+"torsob".addOutfitDrawer();
+"legs".addOutfitDrawer();
+"legsb".addOutfitDrawer();
+"feet".addOutfitDrawer();
+"ear".addOutfitDrawer();
+"neck".addOutfitDrawer();
+"neckb".addOutfitDrawer();
+"neckc".addOutfitDrawer();
+"wristleft".addOutfitDrawer();
+"wristleftb".addOutfitDrawer();
+"wristright".addOutfitDrawer();
+"wristrightb".addOutfitDrawer();
+"fingerleft".addOutfitDrawer();
+"fingerright".addOutfitDrawer();
+"toeleft".addOutfitDrawer();
+"toeright".addOutfitDrawer();
+"purse".addOutfitDrawer();
+"waist".addOutfitDrawer();
+"waistb".addOutfitDrawer();
+"back".addOutfitDrawer();
+"hat".addOutfitDrawer();
+"mask".addOutfitDrawer();
+"earl".addOutfitDrawer();
+"labret".addOutfitDrawer();
+"lftauricle".addOutfitDrawer();
+"lftconch".addOutfitDrawer();
+"lfteyebrow".addOutfitDrawer();
+"lftlobe".addOutfitDrawer();
+"lftorbital".addOutfitDrawer();
+"lftpinna".addOutfitDrawer();
+"lftrook".addOutfitDrawer();
+"lfttragus".addOutfitDrawer();
+"rghauricle".addOutfitDrawer();
+"rghconch".addOutfitDrawer();
+"rgheyebrow".addOutfitDrawer();
+"rghlobe".addOutfitDrawer();
+"rghorbital".addOutfitDrawer();
+"rghpinna".addOutfitDrawer();
+"rghrook".addOutfitDrawer();
+"rghtragus".addOutfitDrawer();
+"lowlip".addOutfitDrawer();
+"madonna".addOutfitDrawer();
+"medusa".addOutfitDrawer();
+"nostril".addOutfitDrawer();
+"septum".addOutfitDrawer();
+"tail".addOutfitDrawer();
+"chest".addOutfitDrawer();
+"props".addOutfitDrawer();
+"badges".addOutfitDrawer();
+"tokens".addOutfitDrawer();
+"gameplay".addOutfitDrawer();
+"deprecated_gl".addOutfitDrawer();
+"deprecated_ea".addOutfitDrawer();
+"deprecated_ne".addOutfitDrawer();
+"deprecated_wl".addOutfitDrawer();
+"deprecated_wr".addOutfitDrawer();
+"deprecated_wa".addOutfitDrawer();
+"microphone".addOutfitDrawer();
+"faceb".addOptionalDrawer();
+"glasses".addOptionalDrawer();
+"torsob".addOptionalDrawer();
+"legsb".addOptionalDrawer();
+"ear".addOptionalDrawer();
+"neck".addOptionalDrawer();
+"neckb".addOptionalDrawer();
+"neckc".addOptionalDrawer();
+"wristleft".addOptionalDrawer();
+"wristleftb".addOptionalDrawer();
+"wristright".addOptionalDrawer();
+"wristrightb".addOptionalDrawer();
+"fingerleft".addOptionalDrawer();
+"fingerright".addOptionalDrawer();
+"toeleft".addOptionalDrawer();
+"toeright".addOptionalDrawer();
+"purse".addOptionalDrawer();
+"waist".addOptionalDrawer();
+"waistb".addOptionalDrawer();
+"back".addOptionalDrawer();
+"hat".addOptionalDrawer();
+"mask".addOptionalDrawer();
+"earl".addOptionalDrawer();
+"labret".addOptionalDrawer();
+"lftauricle".addOptionalDrawer();
+"lftconch".addOptionalDrawer();
+"lfteyebrow".addOptionalDrawer();
+"lftlobe".addOptionalDrawer();
+"lftorbital".addOptionalDrawer();
+"lftpinna".addOptionalDrawer();
+"lftrook".addOptionalDrawer();
+"lfttragus".addOptionalDrawer();
+"rghauricle".addOptionalDrawer();
+"rghconch".addOptionalDrawer();
+"rgheyebrow".addOptionalDrawer();
+"rghlobe".addOptionalDrawer();
+"rghorbital".addOptionalDrawer();
+"rghpinna".addOptionalDrawer();
+"rghrook".addOptionalDrawer();
+"rghtragus".addOptionalDrawer();
+"lowlip".addOptionalDrawer();
+"madonna".addOptionalDrawer();
+"medusa".addOptionalDrawer();
+"nostril".addOptionalDrawer();
+"septum".addOptionalDrawer();
+"tail".addOptionalDrawer();
+"chest".addOptionalDrawer();
+"props".addOptionalDrawer();
+"badges".addOptionalDrawer();
+"tokens".addOptionalDrawer();
+"gameplay".addOptionalDrawer();
+"deprecated_gl".addOptionalDrawer();
+"deprecated_ea".addOptionalDrawer();
+"deprecated_ne".addOptionalDrawer();
+"deprecated_wl".addOptionalDrawer();
+"deprecated_wr".addOptionalDrawer();
+"deprecated_wa".addOptionalDrawer();
+"microphone".addOptionalDrawer();
+"mesh".addWearableSkuType();
+"badge".addWearableSkuType();
+function SkuManager::allDrawers(%this) {
+    %allDrawers = %this.allClosetDrawers() @ " " @ "gameplay";
+    SkuManager;
     return %allDrawers;
-}
-function SkuManager::allClosetDrawers(%this)
-{
+};
+function SkuManager::allClosetDrawers(%this) {
     return "hair face faceb earl labret lftauricle lftconch lfteyebrow lftlobe lftorbital lftpinna lftrook lfttragus rghauricle rghconch rgheyebrow rghlobe rghorbital rghpinna rghrook rghtragus lowlip madonna medusa nostril septum eyes glasses torso torsob legs legsb feet skin ear neck neckb neckc chest wristleft wristleftb wristright wristrightb fingerleft fingerright toeleft toeright waist waistb purse back hat mask tail props badges";
-}
-function SkuManager::commonDrawers(%this)
-{
+};
+function SkuManager::commonDrawers(%this) {
     return "hair face faceb earl labret lftauricle lftconch lfteyebrow lftlobe lftorbital lftpinna lftrook lfttragus rghauricle rghconch rgheyebrow rghlobe rghorbital rghpinna rghrook rghtragus lowlip madonna medusa nostril septum eyes glasses torso torsob legs legsb feet skin ear neck neckb neckc chest wristleft wristleftb wristright wristrightb fingerleft fingerright toeleft toeright purse hat props badges";
-}
-SkuManager.userFacingDrawerNamesNum = 0;
-function SkuManager::addUserFacingDrawerName(%this, %internalName, %userFacingName)
-{
-    %paddedNum = formatInt("%0.5d", %this.userFacingDrawerNamesNum);
-    %this.userFacingDrawerName[%internalName] = %paddedNum TAB %internalName TAB %userFacingName;
-    %this.userFacingDrawerNamesNum = %this.userFacingDrawerNamesNum + 1;
-    return ;
-}
-SkuManager.addUserFacingDrawerName("torso", "Top");
-SkuManager.addUserFacingDrawerName("torsob", "Top");
-SkuManager.addUserFacingDrawerName("legs", "Bottom");
-SkuManager.addUserFacingDrawerName("legsb", "Bottom");
-SkuManager.addUserFacingDrawerName("feet", "Feet");
-SkuManager.addUserFacingDrawerName("neck", "Neck");
-SkuManager.addUserFacingDrawerName("neckb", "Neck");
-SkuManager.addUserFacingDrawerName("neckc", "Neck");
-SkuManager.addUserFacingDrawerName("glasses", "Glasses");
-SkuManager.addUserFacingDrawerName("ear", "Ear");
-SkuManager.addUserFacingDrawerName("waist", "Waist");
-SkuManager.addUserFacingDrawerName("waistb", "Waist");
-SkuManager.addUserFacingDrawerName("wristleft", "Left Hand");
-SkuManager.addUserFacingDrawerName("wristleftb", "Left Hand");
-SkuManager.addUserFacingDrawerName("wristright", "Right Hand");
-SkuManager.addUserFacingDrawerName("wristrightb", "Right Hand");
-SkuManager.addUserFacingDrawerName("fingerleft", "Left Fingers");
-SkuManager.addUserFacingDrawerName("fingerright", "Right Finger");
-SkuManager.addUserFacingDrawerName("toeleft", "Left Toes");
-SkuManager.addUserFacingDrawerName("toeright", "Right toes");
-SkuManager.addUserFacingDrawerName("chest", "Chest");
-SkuManager.addUserFacingDrawerName("hat", "Hat");
-SkuManager.addUserFacingDrawerName("mask", "Mask");
-SkuManager.addUserFacingDrawerName("purse", "Purse");
-SkuManager.addUserFacingDrawerName("back", "Back");
-SkuManager.addUserFacingDrawerName("tail", "Tail");
-SkuManager.addUserFacingDrawerName("badges", "Badge");
-SkuManager.addUserFacingDrawerName("eyes", "Eyes");
-SkuManager.addUserFacingDrawerName("face", "Face");
-SkuManager.addUserFacingDrawerName("faceb", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("earl", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("labret", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lftauricle", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lftconch", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lfteyebrow", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lftlobe", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lftorbital", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lftpinna", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lftrook", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lfttragus", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rghauricle", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rghconch", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rgheyebrow", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rghlobe", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rghorbital", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rghpinna", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rghrook", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("rghtragus", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("lowlip", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("madonna", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("medusa", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("nostril", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("septum", "Facial Enhancement");
-SkuManager.addUserFacingDrawerName("hair", "Hair");
-SkuManager.addUserFacingDrawerName("skin", "Skin");
-SkuManager.addUserFacingDrawerName("props", "Props");
-SkuManager.addUserFacingDrawerName("tokens", "Token");
-SkuManager.addUserFacingDrawerName("ceiling", "Ceiling");
-SkuManager.addUserFacingDrawerName("wall", "Wall");
-SkuManager.addUserFacingDrawerName("fixtures", "Fixtures");
-SkuManager.addUserFacingDrawerName("floor", "Floor");
-SkuManager.addUserFacingDrawerName("general", "General");
-SkuManager.addUserFacingDrawerName("deprecated_ea", "");
-SkuManager.addUserFacingDrawerName("deprecated_gl", "");
-SkuManager.addUserFacingDrawerName("deprecated_ne", "");
-SkuManager.addUserFacingDrawerName("deprecated_wa", "");
-SkuManager.addUserFacingDrawerName("deprecated_wl", "");
-SkuManager.addUserFacingDrawerName("deprecated_wr", "");
-function SkuManager::sortSkusByDrawer(%this, %drySkuList)
-{
+};
+userFacingDrawerNamesNum = 0 @ SkuManager;
+function SkuManager::addUserFacingDrawerName(%this, %internalName, %userFacingName) {
+    %paddedNum = formatInt("%0.5d", userFacingDrawerNamesNum);
+    %this;
+    userFacingDrawerName = %paddedNum @ "\t" @ %internalName @ "\t" @ %userFacingName @ %internalName @ %this;
+    userFacingDrawerNamesNum = (%this + userFacingDrawerNamesNum);
+    1.0;
+};
+"torso".addUserFacingDrawerName("Top");
+"torsob".addUserFacingDrawerName("Top");
+"legs".addUserFacingDrawerName("Bottom");
+"legsb".addUserFacingDrawerName("Bottom");
+"feet".addUserFacingDrawerName("Feet");
+"neck".addUserFacingDrawerName("Neck");
+"neckb".addUserFacingDrawerName("Neck");
+"neckc".addUserFacingDrawerName("Neck");
+"glasses".addUserFacingDrawerName("Glasses");
+"ear".addUserFacingDrawerName("Ear");
+"waist".addUserFacingDrawerName("Waist");
+"waistb".addUserFacingDrawerName("Waist");
+"wristleft".addUserFacingDrawerName("Left Hand");
+"wristleftb".addUserFacingDrawerName("Left Hand");
+"wristright".addUserFacingDrawerName("Right Hand");
+"wristrightb".addUserFacingDrawerName("Right Hand");
+"fingerleft".addUserFacingDrawerName("Left Fingers");
+"fingerright".addUserFacingDrawerName("Right Finger");
+"toeleft".addUserFacingDrawerName("Left Toes");
+"toeright".addUserFacingDrawerName("Right toes");
+"chest".addUserFacingDrawerName("Chest");
+"hat".addUserFacingDrawerName("Hat");
+"mask".addUserFacingDrawerName("Mask");
+"purse".addUserFacingDrawerName("Purse");
+"back".addUserFacingDrawerName("Back");
+"tail".addUserFacingDrawerName("Tail");
+"badges".addUserFacingDrawerName("Badge");
+"eyes".addUserFacingDrawerName("Eyes");
+"face".addUserFacingDrawerName("Face");
+"faceb".addUserFacingDrawerName("Facial Enhancement");
+"earl".addUserFacingDrawerName("Facial Enhancement");
+"labret".addUserFacingDrawerName("Facial Enhancement");
+"lftauricle".addUserFacingDrawerName("Facial Enhancement");
+"lftconch".addUserFacingDrawerName("Facial Enhancement");
+"lfteyebrow".addUserFacingDrawerName("Facial Enhancement");
+"lftlobe".addUserFacingDrawerName("Facial Enhancement");
+"lftorbital".addUserFacingDrawerName("Facial Enhancement");
+"lftpinna".addUserFacingDrawerName("Facial Enhancement");
+"lftrook".addUserFacingDrawerName("Facial Enhancement");
+"lfttragus".addUserFacingDrawerName("Facial Enhancement");
+"rghauricle".addUserFacingDrawerName("Facial Enhancement");
+"rghconch".addUserFacingDrawerName("Facial Enhancement");
+"rgheyebrow".addUserFacingDrawerName("Facial Enhancement");
+"rghlobe".addUserFacingDrawerName("Facial Enhancement");
+"rghorbital".addUserFacingDrawerName("Facial Enhancement");
+"rghpinna".addUserFacingDrawerName("Facial Enhancement");
+"rghrook".addUserFacingDrawerName("Facial Enhancement");
+"rghtragus".addUserFacingDrawerName("Facial Enhancement");
+"lowlip".addUserFacingDrawerName("Facial Enhancement");
+"madonna".addUserFacingDrawerName("Facial Enhancement");
+"medusa".addUserFacingDrawerName("Facial Enhancement");
+"nostril".addUserFacingDrawerName("Facial Enhancement");
+"septum".addUserFacingDrawerName("Facial Enhancement");
+"hair".addUserFacingDrawerName("Hair");
+"skin".addUserFacingDrawerName("Skin");
+"props".addUserFacingDrawerName("Props");
+"tokens".addUserFacingDrawerName("Token");
+"ceiling".addUserFacingDrawerName("Ceiling");
+"wall".addUserFacingDrawerName("Wall");
+"fixtures".addUserFacingDrawerName("Fixtures");
+"floor".addUserFacingDrawerName("Floor");
+"general".addUserFacingDrawerName("General");
+"deprecated_ea".addUserFacingDrawerName("");
+"deprecated_gl".addUserFacingDrawerName("");
+"deprecated_ne".addUserFacingDrawerName("");
+"deprecated_wa".addUserFacingDrawerName("");
+"deprecated_wl".addUserFacingDrawerName("");
+"deprecated_wr".addUserFacingDrawerName("");
+function SkuManager::sortSkusByDrawer(%this, %drySkuList) {
     %sortableList = "";
-    %n = getWordCount(%drySkuList) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%drySkuList, %n);
-        %thing = %this.userFacingDrawerName[SkuManager.findBySku(%sku).drwrName];
-        %sortableList = %sortableList @ %thing TAB %sku @ "\n";
-        %n = %n - 1;
-    }
+    SkuManager;
+    %n = (1.0 - getWordCount(%drySkuList));
+    SkuManager;
+    %sku = getWord(%drySkuList, %n);
+    (0.0 >= %n);
+    %thing = userFacingDrawerName;
+    %sku.findBySku() @ drwrName @ %this;
+    %sortableList = SkuManager @ SkuManager @ %sortableList @ %thing @ "\t" @ %sku @ "\n";
+    SkuManager;
+    %n = (1.0 - %n);
+    SkuManager;
     %sortableList = trim(%sortableList);
+    (0.0 >= %n);
     %sortedList = SortRecords(%sortableList);
+    SkuManager;
     %wetSkuList = "";
-    %n = getWordCount(%drySkuList) - 1;
-    while (%n >= 0)
-    {
-        %thing = getRecord(%sortedList, %n);
-        %wetSkuList = getField(%thing, 3) SPC %wetSkuList;
-        %n = %n - 1;
-    }
+    SkuManager;
+    %n = (1.0 - getWordCount(%drySkuList));
+    SkuManager;
+    %thing = getRecord(%sortedList, %n);
+    (0.0 >= %n);
+    %wetSkuList = getField(%thing, 3) @ " " @ %wetSkuList;
+    SkuManager;
+    %n = (1.0 - %n);
+    SkuManager;
     %wetSkuList = trim(%wetSkuList);
+    (0.0 >= %n);
     return %wetSkuList;
-}
-function SkuManager::getUserFacingDrawerName(%this, %internalDrawerName)
-{
-    %val = %this.userFacingDrawerName[%internalDrawerName];
-    if (%val $= "")
-    {
-        error(getScopeName() SPC "- unknown drawer name:" SPC %internalDrawerName SPC getTrace());
-    }
+};
+function SkuManager::getUserFacingDrawerName(%this, %internalDrawerName) {
+    %val = userFacingDrawerName;
+    %internalDrawerName @ %this;
+    error(getScopeName() @ " " @ "- unknown drawer name:" @ " " @ %internalDrawerName @ " " @ getTrace());
     return getField(%val, 2);
-}
-function SkuManager::getUserFacingDrawerNameFromSku(%this, %skunum)
-{
+};
+function SkuManager::getUserFacingDrawerNameFromSku(%this, %skunum) {
     %si = %this.findBySku(%skunum);
-    if (!isObject(%si))
-    {
-        return "";
-    }
-    return %this.getUserFacingDrawerName(%si.drwrName);
-}
-function SkuItem::getUserFacingDrawerName(%this)
-{
-    return SkuManager.getUserFacingDrawerName(%this.drwrName);
-}
-function SkuItem::getDescLong(%this)
-{
-    %ret = %this.descLong $= "" ? %this : %this;
+    return "";
+    return %this.getUserFacingDrawerName(drwrName);
+};
+function SkuItem::getUserFacingDrawerName(%this) {
+    return drwrName.getUserFacingDrawerName();
+};
+function SkuItem::getDescLong(%this) {
+    %ret = descLong;
+    %this;
     return %ret;
-}
+};
 $gSwatchableSkuDrawers = "BuildingBlocks";
-function SkuItem::isSwatchable(%this)
-{
-    %drawers = strreplace(%this.drwrName, "/", "\t");
-    %n = getFieldCount(%drawers) - 1;
-    while (%n >= 0)
-    {
-        %drawer = getField(%drawers, %n);
-        if (hasField($gSwatchableSkuDrawers, %drawer))
-        {
-            return 1;
-        }
-        %n = %n - 1;
-    }
+function SkuItem::isSwatchable(%this) {
+    %drawers = strreplace(drwrName, "/", "\t");
+    %this;
+    %n = (1.0 - getFieldCount(%drawers));
+    %drawer = getField(%drawers, %n);
+    (0.0 >= %n);
+    return 1;
+    %n = (1.0 - %n);
     return 0;
-}
-function SkuManager::isSwatchableSku(%this, %skunum)
-{
+};
+function SkuManager::isSwatchableSku(%this, %skunum) {
     return %this.findBySku(%skunum).isSwatchable();
-}
-function SkuManager::filterSkusDescription(%this, %skus, %userFilterText)
-{
+};
+function SkuManager::filterSkusDescription(%this, %skus, %userFilterText) {
     %userFilterText = strlwr(%userFilterText);
     %userFilterText = trim(%userFilterText);
-    if (%userFilterText $= "")
-    {
-        return %skus;
-    }
+    return %skus;
     %wet = "";
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %si = %this.findBySku(%sku);
-        if (strstr(%si.searchText, %userFilterText) >= 0)
-        {
-            %wet = %sku SPC %wet;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %si = %this.findBySku(%sku);
+    %wet = %sku @ " " @ %wet;
+    (%si >= strstr(searchText, %userFilterText));
+    %n = (1.0 - %n);
+    0.0;
     %wet = trim(%wet);
+    (0.0 >= %n);
     return %wet;
-}
-function SkuManager::buildSkusSearchText(%this)
-{
+};
+function SkuManager::buildSkusSearchText(%this) {
     safeEnsureScriptObject("StringMap", "gReverseThumbCategories", 0);
-    %n = ThumbCategories.size() - 1;
-    while (%n >= 0)
-    {
-        %key = ThumbCategories.getKey(%n);
-        %val = ThumbCategories.getValue(%n);
-        %m = getWordCount(%val) - 1;
-        while (%m >= 0)
-        {
-            %drwr = getWord(%val, %m);
-            %cats = gReverseThumbCategories.get(%drwr);
-            %cats = %cats SPC %key;
-            gReverseThumbCategories.put(%drwr, %cats);
-            %m = %m - 1;
-        }
-        %n = %n - 1;
-    }
-    %n = %this.getCount() - 1;
-    while (%n >= 0)
-    {
-        %si = %this.getObject(%n);
-        %st = "";
-        %st = %st TAB %si.descLong;
-        %st = %st TAB %si.descShrt;
-        %st = %st TAB %si.tags;
-        %st = %st TAB %si.brand;
-        %st = %st TAB %si.drwrName;
-        %st = %st TAB gReverseThumbCategories.get(%si.drwrName);
-        %st = %st TAB %si.skuNumber;
-        %st = %st TAB %si.author;
-        %st = strlwr(%st);
-        %st = trim(%st);
-        %si.searchText = %st;
-        %n = %n - 1;
-    }
-}
-
-function SkuManager::filterSkusInList(%this, %skusDry, %list)
-{
+    %n = (ThumbCategories - size());
+    1.0;
+    %key = %n.getKey();
+    ThumbCategories;
+    %val = %n.getValue();
+    ThumbCategories;
+    %m = (1.0 - getWordCount(%val));
+    (0.0 >= %n);
+    %drwr = getWord(%val, %m);
+    (0.0 >= %m);
+    %cats = %drwr.get();
+    gReverseThumbCategories;
+    %cats = %cats @ " " @ %key;
+    %drwr.put(%cats);
+    %m = (1.0 - %m);
+    gReverseThumbCategories;
+    %n = (1.0 - %n);
+    (0.0 >= %m);
+    %n = (1.0 - %this.getCount());
+    (0.0 >= %n);
+    %si = %this.getObject(%n);
+    (0.0 >= %n);
+    %st = "";
+    %st = %si @ descLong;
+    %st @ "\t";
+    %st = %si @ descShrt;
+    %st @ "\t";
+    %st = %si @ tags;
+    %st @ "\t";
+    %st = %si @ brand;
+    %st @ "\t";
+    %st = %si @ drwrName;
+    %st @ "\t";
+    %st = %si @ drwrName.get();
+    gReverseThumbCategories;
+    %st = %si @ skuNumber;
+    %st @ "\t";
+    %st = %si @ author;
+    %st @ "\t";
+    %st = strlwr(%st);
+    %st @ "\t";
+    %st = trim(%st);
+    searchText = %st @ %si;
+    %n = (1.0 - %n);
+};
+function SkuManager::filterSkusInList(%this, %skusDry, %list) {
     %skusWet = "";
     %sep = "";
     %num = getWordCount(%skusDry);
     %n = 0;
-    while (%n < %num)
-    {
-        %sku = getWord(%skusDry, %n);
-        if (%this.skuListHasSku(%list, %sku))
-        {
-            %skusWet = %skusWet @ %sep @ %sku;
-            %sep = " ";
-        }
-        %n = %n + 1;
-    }
+    %sku = getWord(%skusDry, %n);
+    (%num < %n);
+    %skusWet = %this.skuListHasSku(%list, %sku) @ %skusWet @ %sep @ %sku;
+    %sep = " ";
+    %n = (1.0 + %n);
     return %skusWet;
-}
-function SkuManager::filterSkusVisible(%this, %skusDry, %unused)
-{
+};
+function SkuManager::filterSkusVisible(%this, %skusDry, %unused) {
     %skusWet = %skusDry;
     return %skusWet;
-}
-function SkuManager::getRandomSkusFromList(%this, %skulist, %drawersList)
-{
+};
+function SkuManager::getRandomSkusFromList(%this, %skulist, %drawersList) {
     %skus = "";
     %delim = "";
-    %n = getWordCount(%drawersList) - 1;
-    while (%n >= 0)
-    {
-        %drwrName = getWord(%drawersList, %n);
-        %drwrSkus = %this.filterSkusDrwr(%skulist, %drwrName);
-        %numSkus = getWordCount(%drwrSkus);
-        if (%numSkus > 0)
-        {
-            %sku = getWord(%drwrSkus, getRandom(0, %numSkus - 1));
-            %skus = %skus @ %delim @ %sku;
-            %delim = " ";
-        }
-        %n = %n - 1;
-    }
-    return %skus;
-}
-function SkuManager::getRandomSkus(%this, %player, %drawersList)
-{
-    %skus = "";
-    %n = getWordCount(%drawersList) - 1;
-    while (%n >= 0)
-    {
-        %drwrName = getWord(%drawersList, %n);
-        %drwrSkus = SkuManager.getSkusDrwr(%drwrName);
-        %drwrSkus = SkuManager.filterSkusGender(%drwrSkus, %player.getGender());
-        %drwrSkus = SkuManager.filterSkusRoles(%drwrSkus, %player.getRolesMask());
-        %numSkus = getWordCount(%drwrSkus);
-        if (%numSkus < 1)
-        {
-            log("wardrobe", "error", "Closet::getRandomSkus() - no skus in drawer" SPC %drwrName SPC getDebugString(%player));
-        }
-        else
-        {
-            %skus = %skus @ getWord(%drwrSkus, getRandom(0, %numSkus - 1)) @ " ";
-        }
-        %n = %n - 1;
-    }
-    return %skus;
-}
-function SkuManager::getRandomSku(%this, %player, %drawersList)
-{
-    %sku = "";
-    %rnd = getRandom(0, getWordCount(%drawersList) - 1);
-    %drwrName = getWord(%drawersList, %rnd);
-    %drwrSkus = SkuManager.getSkusDrwr(%drwrName);
-    %drwrSkus = SkuManager.filterSkusGender(%drwrSkus, %player.getGender());
-    %drwrSkus = SkuManager.filterSkusRoles(%drwrSkus, %player.getRolesMask());
+    %n = (1.0 - getWordCount(%drawersList));
+    %drwrName = getWord(%drawersList, %n);
+    (0.0 >= %n);
+    %drwrSkus = %this.filterSkusDrwr(%skulist, %drwrName);
     %numSkus = getWordCount(%drwrSkus);
-    if (%numSkus < 1)
-    {
-        log("wardrobe", "error", "Closet::getRandomSku() - no skus in drawer" SPC %drwrName SPC getDebugString(%player));
-    }
-    else
-    {
-        %sku = getWord(%drwrSkus, getRandom(0, %numSkus - 1)) @ " ";
-    }
+    %sku = getWord(%drwrSkus, getRandom(0, (1.0 - %numSkus)));
+    (0.0 > %numSkus);
+    %skus = %skus @ %delim @ %sku;
+    %delim = " ";
+    %n = (1.0 - %n);
+    return %skus;
+};
+function SkuManager::getRandomSkus(%this, %player, %drawersList) {
+    %skus = "";
+    %n = (1.0 - getWordCount(%drawersList));
+    %drwrName = getWord(%drawersList, %n);
+    (0.0 >= %n);
+    %drwrSkus = %drwrName.getSkusDrwr();
+    SkuManager;
+    %drwrSkus = %drwrSkus.filterSkusGender(%player.getGender());
+    SkuManager;
+    %drwrSkus = %drwrSkus.filterSkusRoles(%player.getRolesMask());
+    SkuManager;
+    %numSkus = getWordCount(%drwrSkus);
+    log("wardrobe", "error", "Closet::getRandomSkus() - no skus in drawer" @ " " @ %drwrName @ " " @ getDebugString(%player));
+    %skus = (1.0 < %numSkus) @ %skus @ getWord(%drwrSkus, getRandom(0, (1.0 - %numSkus))) @ " ";
+    %n = (1.0 - %n);
+    return %skus;
+};
+function SkuManager::getRandomSku(%this, %player, %drawersList) {
+    %sku = "";
+    %rnd = getRandom(0, (1.0 - getWordCount(%drawersList)));
+    %drwrName = getWord(%drawersList, %rnd);
+    %drwrSkus = %drwrName.getSkusDrwr();
+    SkuManager;
+    %drwrSkus = %drwrSkus.filterSkusGender(%player.getGender());
+    SkuManager;
+    %drwrSkus = %drwrSkus.filterSkusRoles(%player.getRolesMask());
+    SkuManager;
+    %numSkus = getWordCount(%drwrSkus);
+    log("wardrobe", "error", "Closet::getRandomSku() - no skus in drawer" @ " " @ %drwrName @ " " @ getDebugString(%player));
+    %sku = (1.0 < %numSkus) @ getWord(%drwrSkus, getRandom(0, (1.0 - %numSkus))) @ " ";
     return %sku;
-}
-function SkuManager::skuListHasSku(%this, %list, %sku)
-{
-    return findWord(%list, %sku) >= 0;
-}
-function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeUsage, %thumbnailWidth)
-{
-    %thumbnailSize = isDefined("%thumbnailSize") ? %thumbnailSize : 0;
+};
+function SkuManager::skuListHasSku(%this, %list, %sku) {
+    return (0.0 >= findWord(%list, %sku));
+};
+function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeUsage, %thumbnailWidth) {
+    %thumbnailSize = 0;
+    %thumbnailSize;
     %ret = "";
+    isDefined("%thumbnailSize");
     %delim = "";
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %si = %this.findBySku(%sku);
-        if (!isObject(%si))
-        {
-            error(getScopeName() SPC "- unknown sku:" SPC %sku);
-        }
-        else
-        {
-            %usage = "";
-            if (%includeUsage && !((%si.usageShrt $= "")))
-            {
-                %usage = " -" SPC %si.usageShrt;
-            }
-            %thumbnailText = "";
-            if ((%thumbnailWidth > 0) && (%si.skuType $= "furnishing"))
-            {
-                %thumbnailImage = CSBrowser::getThumbnailPathForSku(0, %sku, 32);
-                %thumbnailText = " <bitmap:" @ %thumbnailImage @ ":true:middle:width=" @ %thumbnailWidth @ ">";
-            }
-            %ret = %ret @ %delim @ %si.descShrt @ %thumbnailText @ %usage;
-            %delim = %delimiter;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %si = %this.findBySku(%sku);
+    error(getScopeName() @ " " @ "- unknown sku:" @ " " @ %sku);
+    %usage = "";
+    !(isObject(%si));
+    %usage = %si @ usageShrt;
+    " -" @ " ";
+    %thumbnailText = "";
+    !((%si SPC usageShrt $= ""));
+    %thumbnailImage = CSBrowser::getThumbnailPathForSku(0, %sku, 32);
+    (%si SPC skuType $= "furnishing");
+    %thumbnailText = %includeUsage @ (0.0 > %thumbnailWidth) @ " <bitmap:" @ %thumbnailImage @ ":true:middle:width=" @ %thumbnailWidth @ ">";
+    %ret = %ret @ %delim @ %si @ descShrt @ %thumbnailText @ %usage;
+    %delim = %delimiter;
+    %n = (1.0 - %n);
     return %ret;
-}
-function SkuManager::dumpSkuList(%this, %skus)
-{
+};
+function SkuManager::dumpSkuList(%this, %skus) {
     %skus = SortNumbers(%skus);
     %line = "sku num";
-    %line = %line @ " - " @ drawer;
-    %line = %line @ " - " @ desc;
-    %line = %line @ " - " @ mesh;
-    %line = %line @ " - " @ textures;
-    %line = %line @ " - " @ roles;
+    %line = drawer;
+    %line @ " - ";
+    %line = desc;
+    %line @ " - ";
+    %line = mesh;
+    %line @ " - ";
+    %line = textures;
+    %line @ " - ";
+    %line = roles;
+    %line @ " - ";
     echo("wardrobe", %line);
     %num = getWordCount(%skus);
     %n = 0;
-    while (%n < %num)
-    {
-        %sn = getWord(%skus, %n);
-        %si = %this.findBySku(%sn);
-        if (!isObject(%si))
-        {
-            error("wardrobe", "dumpSkuList: unknown sku" SPC %sn);
-        }
-        else
-        {
-            %line = %sn;
-            %line = %line @ " - " @ %si.drwrName;
-            %line = %line @ " - " @ %si.descShrt;
-            %line = %line @ " - " @ %si.meshName;
-            %line = %line @ " - " @ %si.getTxtrNames();
-            %line = %line @ " - " @ roles::getRoleStrings(%si.rolesMask);
-            echo("wardrobe", %line);
-        }
-        %n = %n + 1;
-    }
-}
-
-function Player::dumpActiveSkus(%this)
-{
+    %sn = getWord(%skus, %n);
+    (%num < %n);
+    %si = %this.findBySku(%sn);
+    error("wardrobe", "dumpSkuList: unknown sku" @ " " @ %sn);
+    %line = %sn;
+    !(isObject(%si));
+    %line = %si @ drwrName;
+    %line @ " - ";
+    %line = %si @ descShrt;
+    %line @ " - ";
+    %line = %si @ meshName;
+    %line @ " - ";
+    %line = %line @ " - " @ %si.getTxtrNames();
+    %line = %si @ roles::getRoleStrings(rolesMask);
+    %line @ " - ";
+    echo("wardrobe", %line);
+    %n = (1.0 + %n);
+};
+function Player::dumpActiveSkus(%this) {
     %skus = %this.getActiveSKUs();
-    SkuManager.dumpSkuList(%skus);
-    return ;
-}
-function SkuManager::setSkuPair(%this, %list, %first, %second)
-{
+    %skus.dumpSkuList();
+};
+function SkuManager::setSkuPair(%this, %list, %first, %second) {
     %ndx = findWord(%list, %first);
-    if (%ndx < 0)
-    {
-        if (%second > 0)
-        {
-            %list = %list SPC %first SPC %second;
-        }
-    }
-    else
-    {
-        if (%second > 0)
-        {
-            %list = setWord(%list, %ndx + 1, %second);
-        }
-        else
-        {
-            %list = removeWord(removeWord(%list, %ndx + 1), %ndx);
-        }
-    }
+    %list = %list @ " " @ %first @ " " @ %second;
+    (0.0 > %second);
+    %list = setWord(%list, (1.0 + %ndx), %second);
+    (0.0 > %second);
+    %list = removeWord(removeWord(%list, (1.0 + %ndx)), %ndx);
+    (0.0 < %ndx);
     return %list;
-}
-function SkuManager::skusRemove(%this, %listA, %listB)
-{
+};
+function SkuManager::skusRemove(%this, %listA, %listB) {
     %num = getWordCount(%listB);
     %n = 0;
-    while (%n < %num)
-    {
-        %sku = getWord(%listB, %n);
-        %listA = findAndRemoveAllOccurrencesOfWord(%listA, %sku);
-        %n = %n + 1;
-    }
+    %sku = getWord(%listB, %n);
+    (%num < %n);
+    %listA = findAndRemoveAllOccurrencesOfWord(%listA, %sku);
+    %n = (1.0 + %n);
     return %listA;
-}
-function SkuManager::addSkuTags(%this, %sku, %tags)
-{
+};
+function SkuManager::addSkuTags(%this, %sku, %tags) {
     %si = %this.findBySku(%sku);
-    if (!isObject(%si))
-    {
-        error(getScopeName() SPC "- no such sku:" SPC %sku SPC %tags SPC getTrace());
-        return ;
-    }
-    %si.tags = mergeWords(%si.tags, %tags);
-    %n = getWordCount(%tags) - 1;
-    while (%n >= 0)
-    {
-        %tag = getWord(%tags, %n);
-        %skus = %this.skuTags.get(%tag);
-        %skus = trim(%skus SPC %sku);
-        %this.skuTags.put(%tag, %skus);
-        %n = %n - 1;
-    }
-}
-
-function SkuManager::getSkuTags(%this, %sku)
-{
-    return %this.findBySku(%sku).tags;
-}
-function SkuManager::filterSkusAnyTags(%this, %skus, %tags)
-{
+    error(getScopeName() @ " " @ "- no such sku:" @ " " @ %sku @ " " @ %tags @ " " @ getTrace());
+    return !(isObject(%si));
+    tags = %si @ mergeWords(tags, %tags) @ %si;
+    %n = (1.0 - getWordCount(%tags));
+    %tag = getWord(%tags, %n);
+    (0.0 >= %n);
+    %skus = skuTags.get(%tag);
+    %this;
+    %skus = trim(%skus @ " " @ %sku);
+    skuTags.put(%tag, %skus);
+    %n = (1.0 - %n);
+    %this;
+};
+function SkuManager::getSkuTags(%this, %sku) {
+    return tags;
+};
+function SkuManager::filterSkusAnyTags(%this, %skus, %tags) {
     %ret = "";
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %skuTags = %this.getSkuTags(%sku);
-        %num = numWordsInWords(%skuTags, %tags);
-        if (%num > 0)
-        {
-            %ret = %ret SPC %sku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %skuTags = %this.getSkuTags(%sku);
+    %num = numWordsInWords(%skuTags, %tags);
+    %ret = %ret @ " " @ %sku;
+    (0.0 > %num);
+    %n = (1.0 - %n);
     %ret = trim(%ret);
+    (0.0 >= %n);
     return %ret;
-}
-function SkuManager::filterSkusTag(%this, %skus, %tag)
-{
+};
+function SkuManager::filterSkusTag(%this, %skus, %tag) {
     %ret = "";
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %skuTags = %this.getSkuTags(%sku);
-        if (hasWord(%skuTags, %tag))
-        {
-            %ret = %ret SPC %sku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %skuTags = %this.getSkuTags(%sku);
+    %ret = %ret @ " " @ %sku;
+    hasWord(%skuTags, %tag);
+    %n = (1.0 - %n);
     %ret = trim(%ret);
+    (0.0 >= %n);
     return %ret;
-}
-function SkuManager::getSkuWithAnyTags(%this, %skus, %tags)
-{
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %skuTags = %this.getSkuTags(%sku);
-        %num = numWordsInWords(%skuTags, %tags);
-        if (%num > 0)
-        {
-            return %sku;
-        }
-        %n = %n - 1;
-    }
+};
+function SkuManager::getSkuWithAnyTags(%this, %skus, %tags) {
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %skuTags = %this.getSkuTags(%sku);
+    %num = numWordsInWords(%skuTags, %tags);
+    return %sku;
+    %n = (1.0 - %n);
     return "";
-}
-function SkuManager::hasSkuWithAnyTags(%this, %skus, %tags)
-{
-    return !(%this.getSkuWithAnyTags(%skus, %tags) $= "");
-}
-function SkuManager::hasSkuWithTag(%this, %skus, %tags)
-{
+};
+function SkuManager::hasSkuWithAnyTags(%this, %skus, %tags) {
+    return !((%this.getSkuWithAnyTags(%skus, %tags) $= ""));
+};
+function SkuManager::hasSkuWithTag(%this, %skus, %tags) {
     return %this.hasSkuWithAnyTags(%skus, %tags);
-}
-function SkuManager::filterSkusAllTags(%this, %skus, %tags)
-{
+};
+function SkuManager::filterSkusAllTags(%this, %skus, %tags) {
     %ret = "";
     %numTags = getWordCount(%tags);
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %skuTags = %this.getSkuTags(%sku);
-        %num = numWordsInWords(%skuTags, %tags);
-        if (%num == %numTags)
-        {
-            %ret = %ret SPC %sku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %skuTags = %this.getSkuTags(%sku);
+    %num = numWordsInWords(%skuTags, %tags);
+    %ret = %ret @ " " @ %sku;
+    (%numTags == %num);
+    %n = (1.0 - %n);
     %ret = trim(%ret);
+    (0.0 >= %n);
     return %ret;
-}
-function SkuManager::getSkuWithAllTags(%this, %skus, %tags)
-{
+};
+function SkuManager::getSkuWithAllTags(%this, %skus, %tags) {
     %numTags = getWordCount(%tags);
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %skuTags = %this.getSkuTags(%sku);
-        %num = numWordsInWords(%skuTags, %tags);
-        if (%num == %numTags)
-        {
-            return %sku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %skuTags = %this.getSkuTags(%sku);
+    %num = numWordsInWords(%skuTags, %tags);
+    return %sku;
+    %n = (1.0 - %n);
     return "";
-}
-function SkuManager::hasSkuWithAllTags(%this, %skus, %tags)
-{
-    return !(%this.getSkuWithAllTags(%skus, %tags) $= "");
-}
-function SkuManager::dumpSkuTags(%this)
-{
-    %this.skuTags.dumpValues();
-    return ;
-}
-function SkuManager::getSkusTag(%this, %tag, %gender)
-{
+};
+function SkuManager::hasSkuWithAllTags(%this, %skus, %tags) {
+    return !((%this.getSkuWithAllTags(%skus, %tags) $= ""));
+};
+function SkuManager::dumpSkuTags(%this) {
+    skuTags.dumpValues();
+};
+function SkuManager::getSkusTag(%this, %tag, %gender) {
     %key = "skuTag_" @ %gender @ "_" @ %tag;
-    if (!%this.valueCache.hasKey(%key))
-    {
-        %skus = %this.getSkusGender(%gender);
-        %skus = %this.filterSkusTag(%skus, %tag);
-        %this.valueCache.put(%key, %skus);
-    }
-    return %this.valueCache.get(%key);
-}
-function SkuManager::filterSkusDrwrs(%this, %skus, %drwrs)
-{
+    %skus = %this.getSkusGender(%gender);
+    !(valueCache.hasKey(%key));
+    %skus = %this.filterSkusTag(%skus, %tag);
+    %this;
+    valueCache.put(%key, %skus);
+    return valueCache.get(%key);
+};
+function SkuManager::filterSkusDrwrs(%this, %skus, %drwrs) {
     %ret = "";
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %si = %this.findBySku(%sku);
-        if (hasWord(%drwrs, %si.drwrName))
-        {
-            %ret = %ret SPC %sku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %si = %this.findBySku(%sku);
+    %ret = %ret @ " " @ %sku;
+    hasWord(%drwrs, drwrName);
+    %n = (1.0 - %n);
+    %si;
     %ret = trim(%ret);
+    (0.0 >= %n);
     return %ret;
-}
-function SkuManager::filterSkusStore(%this, %skus, %storename)
-{
+};
+function SkuManager::filterSkusStore(%this, %skus, %storename) {
     %ret = "";
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        %si = %this.findBySku(%sku);
-        if (hasWord(%si.stores, %storename))
-        {
-            %ret = %ret SPC %sku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %si = %this.findBySku(%sku);
+    %ret = %ret @ " " @ %sku;
+    hasWord(stores, %storename);
+    %n = (1.0 - %n);
+    %si;
     %ret = trim(%ret);
+    (0.0 >= %n);
     return %ret;
-}
-function SkuManager::getPropSkus(%this, %skulist)
-{
+};
+function SkuManager::getPropSkus(%this, %skulist) {
     %propSkus = %this.filterSkusDrwr(%skulist, "props");
     return trim(%propSkus);
-}
-function SkuManager::getFirstPropSku(%this, %skus)
-{
+};
+function SkuManager::getFirstPropSku(%this, %skus) {
     %propSkus = %this.getPropSkus(%skus);
     %propSku = firstWord(%propSkus);
     return %propSku;
-}
-function SkuManager::hasPropSku(%this, %skus)
-{
-    return !(%this.getPropSkus(%skus) $= "");
-}
-function Player::hasPropActive(%this)
-{
-    return SkuManager.hasPropSku(%this.getActiveSKUs());
-}
-function Player::EnsureActiveSkus(%this, %skus)
-{
+};
+function SkuManager::hasPropSku(%this, %skus) {
+    return !((%this.getPropSkus(%skus) $= ""));
+};
+function Player::hasPropActive(%this) {
+    return %this.getActiveSKUs().hasPropSku();
+};
+function Player::EnsureActiveSkus(%this, %skus) {
     %activeSkus = %this.getActiveSKUs();
-    %n = getWordCount(%skus) - 1;
-    while (%n >= 0)
-    {
-        %sku = getWord(%skus, %n);
-        if (!hasWord(%activeSkus, %sku))
-        {
-            %currentSkus = %activeSkus SPC %sku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%skus));
+    %sku = getWord(%skus, %n);
+    (0.0 >= %n);
+    %currentSkus = %activeSkus @ " " @ %sku;
+    !(hasWord(%activeSkus, %sku));
+    %n = (1.0 - %n);
     %currentSkus = trim(%activeSkus);
+    (0.0 >= %n);
     %this.setActiveSKUs(%activeSkus);
-    return ;
-}
-function SkuItem::hasTag(%this, %tag)
-{
-    return hasWord(%this.tags, %tag);
-}
-function SkuItem::replaceTextureName(%this, %newTextureName)
-{
+};
+function SkuItem::hasTag(%this, %tag) {
+    return hasWord(tags, %tag);
+};
+function SkuItem::replaceTextureName(%this, %newTextureName) {
     %explode = strreplace(%newTextureName, ".", "\t");
     %base = removeField(%explode, 0);
     %oldTextures = %this.getTxtrNames();
     %num = getWordCount(%oldTextures);
     %newTextures = "";
     %n = 0;
-    while (%n < %num)
-    {
-        %texture = getWord(%oldTextures, %n);
-        %explode = strreplace(%texture, ".", "\t");
-        %explode = removeField(%explode, 0);
-        if (%explode $= %base)
-        {
-            %texture = %newTextureName;
-        }
-        %newTextures = %newTextures SPC %texture;
-        %n = %n + 1;
-    }
+    %texture = getWord(%oldTextures, %n);
+    (%num < %n);
+    %explode = strreplace(%texture, ".", "\t");
+    %explode = removeField(%explode, 0);
+    %texture = %newTextureName;
+    (%explode $= %base);
+    %newTextures = %newTextures @ " " @ %texture;
+    %n = (1.0 + %n);
     %newTextures = trim(%newTextures);
+    (%num < %n);
     %this.setTxtrNames(%newTextures);
-    return ;
-}
-function SkuManager::findTemplateSku(%this, %sku)
-{
+};
+function SkuManager::findTemplateSku(%this, %sku) {
     %si = %this.findBySku(%sku);
-    %candidates = %this.getSkusDrwr(%si.drwrName);
-    %candidates = %this.filterSkusGender(%candidates, %si.gender);
+    %candidates = %this.getSkusDrwr(drwrName);
+    %si;
+    %candidates = %this.filterSkusGender(%candidates, gender);
+    %si;
     %candidates = %this.filterSkusTag(%candidates, "TEMPLATE");
     %candidates = findAndRemoveFirstOccurrenceOfWord(%candidates, %sku);
     %found = "";
-    %n = getWordCount(%candidates) - 1;
-    while (%found $= "")
-    {
-        %candidateSku = getWord(%candidates, %n);
-        %candidateSI = %this.findBySku(%candidateSku);
-        if (%si.meshName $= %candidateSI.meshName)
-        {
-            %found = %candidateSku;
-        }
-        %n = %n - 1;
-    }
+    %n = (1.0 - getWordCount(%candidates));
+    %candidateSku = getWord(%candidates, %n);
+    ((0.0 >= %n) SPC %found $= "");
+    %candidateSI = %this.findBySku(%candidateSku);
+    %found = %candidateSku;
+    (%candidateSI $= meshName);
+    %n = (1.0 - %n);
+    %si SPC meshName;
     return %found;
-}
+};

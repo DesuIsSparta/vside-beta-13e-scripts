@@ -1,146 +1,95 @@
-function clientCmdClientSideCallTriggerEnterOrLeave(%callName, %isEntry, %param0, %param1, %param2, %param3)
-{
+function clientCmdClientSideCallTriggerEnterOrLeave(%callName, %isEntry, %param0, %param1, %param2, %param3) {
     initClientCalls();
     %fnName = $gClientCallsList.get(%callName);
-    if (!isFunction(%fnName))
-    {
-        error(getScopeName() SPC "- no such call" SPC %callName SPC "-" SPC %fnName);
-    }
-    else
-    {
-        call(%fnName, %isEntry, %param0, %param1, %param2, %param3);
-    }
-    return ;
-}
+    error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
+    call(%fnName, %isEntry, %param0, %param1, %param2, %param3);
+};
 $gClientCallsList = "";
-function initClientCalls()
-{
-    if (isObject($gClientCallsList))
-    {
-        return ;
-    }
-    $gClientCallsList = new StringMap();
+function initClientCalls() {
+    return isObject($gClientCallsList);
+    $gClientCallsList = new ""();
+    StringMap;
     $gClientCallsList.put("gatewayExitTransition", "gatewayExitTransition");
-    %n = $gClientCallsList.size() - 1;
-    while (%n >= 0)
-    {
-        %callName = $gClientCallsList.getKey(%n);
-        %fnName = $gClientCallsList.get(%callName);
-        if (!isFunction(%fnName))
-        {
-            error(getScopeName() SPC "- no such call" SPC %callName SPC "-" SPC %fnName);
-        }
-        %n = %n - 1;
-    }
-}
-
-function gatewayExitTransition(%isEntry, %showCancel)
-{
-    if (!%isEntry)
-    {
-        return ;
-    }
-    if ($Player::inviter $= "")
-    {
-        gatewayeExitTransitionShowDialog(%isEntry, %showCancel);
-        return ;
-    }
+    %n = (1.0 - $gClientCallsList.size());
+    0;
+    %callName = $gClientCallsList.getKey(%n);
+    (0.0 >= %n);
+    %fnName = $gClientCallsList.get(%callName);
+    error(getScopeName() @ " " @ "- no such call" @ " " @ %callName @ " " @ "-" @ " " @ %fnName);
+    %n = (1.0 - %n);
+    !(isFunction(%fnName));
+};
+function gatewayExitTransition(%isEntry, %showCancel) {
+    return !(%isEntry);
+    gatewayeExitTransitionShowDialog(%isEntry, %showCancel);
+    return ($Player::inviter $= "");
     %request = sendRequest_GetUserProfileInfo($Player::inviter, "onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit");
-    %request.isEntry = %isEntry;
-    %request.showCancel = %showCancel;
-    return ;
-}
-function onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit(%request)
-{
-    if (%request.checkSuccess())
-    {
-        %currentAreaName = %request.getResult("currentAreaName");
-        $Player::inviterGender = %request.getResult("gender");
-        $Player::inviterOnline = "";
-        if (!(%currentAreaName $= ""))
-        {
-            $Player::inviterOnline = $Player::inviter;
-            $Player::inviterGender = %gender;
-        }
-    }
-    gatewayeExitTransitionShowDialog(%request.isEntry, %request.showCancel);
-    return ;
-}
-function gatewayeExitTransitionShowDialog(%isEntry, %showCancel)
-{
+    isEntry = %isEntry @ %request;
+    showCancel = %showCancel @ %request;
+};
+function onDoneOrErrorCallback_GetUserProfileInfo_gatewayExit(%request) {
+    %currentAreaName = %request.getResult("currentAreaName");
+    %request.checkSuccess();
+    $Player::inviterGender = %request.getResult("gender");
+    $Player::inviterOnline = "";
+    $Player::inviterOnline = $Player::inviter;
+    !((%currentAreaName $= ""));
+    $Player::inviterGender = %gender;
+    gatewayeExitTransitionShowDialog(isEntry, showCancel);
+};
+function gatewayeExitTransitionShowDialog(%isEntry, %showCancel) {
     %title = "Where would you like to go next?";
-    %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
-    %body = %partnerObj.gatewayOptionBody;
-    %buttons = %partnerObj.gatewayOptionButton1 TAB %partnerObj.gatewayOptionButton2;
-    if (!($Player::inviterOnline $= ""))
-    {
-        %body = %body @ "<br>.. or, you could visit " SPC $Player::inviterOnline @ ", who invited you to vSide!";
-        %buttons = %buttons TAB "Visit" SPC $Player::inviterOnline;
-    }
-    else
-    {
-        if (!($Player::inviter $= ""))
-        {
-            %body = %body @ "<br><br>(You were invited to vSide by" SPC $Player::inviter @ ", but" SPC getPronounHeSheIt($Player::inviterGender) SPC "\'s offline right now)";
-        }
-    }
-    if (%showCancel)
-    {
-        %buttons = %buttons TAB "Cancel";
-    }
+    %partnerObj = $Net::userOwner.getPartnerObj();
+    gLoginPartnersInfo;
+    %body = gatewayOptionBody;
+    %partnerObj;
+    %buttons = %partnerObj @ gatewayOptionButton2;
+    gatewayOptionButton1 @ "\t";
+    %body = !((%partnerObj SPC $Player::inviterOnline $= "")) @ %body @ "<br>.. or, you could visit " @ " " @ $Player::inviterOnline @ ", who invited you to vSide!";
+    %buttons = %buttons @ "\t" @ "Visit" @ " " @ $Player::inviterOnline;
+    %body = !(($Player::inviter $= "")) @ %body @ "<br><br>(You were invited to vSide by" @ " " @ $Player::inviter @ ", but" @ " " @ getPronounHeSheIt($Player::inviterGender) @ " " @ "'s offline right now)";
+    %buttons = %buttons @ "\t" @ "Cancel";
+    %showCancel;
     %dlg = MessageBoxCustom(%title, %body, %buttons);
     %callbackNum = 0;
-    %dlg.callback[%callbackNum] = "gatewayExitTransitionWorld  ();";
-    %callbackNum = %callbackNum + 1;
-    %dlg.callback[%callbackNum] = "gatewayExitTransitionMyPlace();";
-    %callbackNum = %callbackNum + 1;
-    if (!($Player::inviterOnline $= ""))
-    {
-        %dlg.callback[%callbackNum] = "gatewayExitTransitionInviter();";
-        %callbackNum = %callbackNum + 1;
-    }
-    %dlg.callback[%callbackNum] = "gatewayExitTransitionCancel ();";
-    %callbackNum = %callbackNum + 1;
-    %dlg.window.canMove = 0;
-    %dlg.doCallbackOnEscape = 0;
-    return ;
-}
-function gatewayExitTransitionWorld()
-{
-    %partnerObj = gLoginPartnersInfo.getPartnerObj($Net::userOwner);
-    %vurl = %partnerObj.vurl;
+    callback = "gatewayExitTransitionWorld  ();" @ %callbackNum @ %dlg;
+    %callbackNum = (1.0 + %callbackNum);
+    callback = "gatewayExitTransitionMyPlace();" @ %callbackNum @ %dlg;
+    %callbackNum = (1.0 + %callbackNum);
+    callback = !(($Player::inviterOnline $= "")) @ "gatewayExitTransitionInviter();" @ %callbackNum @ %dlg;
+    %callbackNum = (1.0 + %callbackNum);
+    callback = "gatewayExitTransitionCancel ();" @ %callbackNum @ %dlg;
+    %callbackNum = (1.0 + %callbackNum);
+    canMove = %dlg @ window;
+    0;
+    doCallbackOnEscape = 0 @ %dlg;
+};
+function gatewayExitTransitionWorld() {
+    %partnerObj = $Net::userOwner.getPartnerObj();
+    gLoginPartnersInfo;
+    %vurl = vurl;
+    %partnerObj;
     commandToServer('skipGateway', "world", $Net::userOwner);
     schedule(1000, 0, "vurlOperation", %vurl, 1);
-    if (!($Player::inviterOnline $= ""))
-    {
-        sendC2CCmd("finishedGateway", $Player::inviterOnline, $player.getGender());
-    }
+    sendC2CCmd("finishedGateway", $Player::inviterOnline, $player.getGender());
     %analytic = getAnalytic();
+    !(($Player::inviterOnline $= ""));
     %analytic.trackPageView("/client/gw/exit/Party");
-    return ;
-}
-function gatewayExitTransitionMyPlace()
-{
+};
+function gatewayExitTransitionMyPlace() {
     commandToServer('skipGateway', "space", $Net::userOwner);
     schedule(1000, 0, "doTeleportToMyApartment", 1);
-    if (!($Player::inviterOnline $= ""))
-    {
-        sendC2CCmd("finishedGateway", $Player::inviterOnline, $player.getGender());
-    }
+    sendC2CCmd("finishedGateway", $Player::inviterOnline, $player.getGender());
     %analytic = getAnalytic();
+    !(($Player::inviterOnline $= ""));
     %analytic.trackPageView("/client/gw/exit/MyPlace");
-    return ;
-}
-function gatewayExitTransitionInviter()
-{
+};
+function gatewayExitTransitionInviter() {
     doUserTeleportTo($Player::inviter);
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/gw/exit/Inviter");
-    return ;
-}
-function gatewayExitTransitionCancel()
-{
+};
+function gatewayExitTransitionCancel() {
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/gw/exit/Cancel");
-    return ;
-}
+};

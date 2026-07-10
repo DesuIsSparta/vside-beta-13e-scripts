@@ -1,103 +1,68 @@
-new AudioDescription(AudioGui)
-{
-    volume = 0.6;
-    isLooping = 0;
-    is3D = 0;
-    type = $SimAudioType;
-};
-new AudioDescription(AudioMessage)
-{
-    volume = 1;
-    isLooping = 0;
-    is3D = 0;
-    type = $SimAudioType;
-};
-new AudioProfile(AudioButtonOver)
-{
-    fileName = "projects/common/sound/buttonOver.wav";
-    description = "AudioGui";
-    preload = 0;
-};
-new AudioProfile(AudioIm_MessageIn)
-{
-    fileName = "projects/common/sounds/im/messageIn.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioIm_WhisperIn)
-{
-    fileName = "projects/common/sounds/im/whisperIn.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioIm_SystemMessageIn)
-{
-    fileName = "projects/common/sounds/im/whisperIn.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(Audio_SOSMessageIn)
-{
-    fileName = "dev/data/sounds/helpme.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioIm_CaChing)
-{
-    fileName = "projects/common/sounds/ui/caChing.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioIm_vPoints1)
-{
-    fileName = "projects/common/sounds/ui/vPoints1.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioIm_vPoints2)
-{
-    fileName = "projects/common/sounds/ui/vPoints2.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioProfile_Shutter)
-{
-    fileName = "projects/common/sounds/ui/shutter.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioRespektLevelGained)
-{
-    fileName = "projects/common/sounds/gameplay/questEnd.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioProfile_ExpiringSoon)
-{
-    fileName = "projects/common/sounds/ui/ticking.ogg";
-    description = "AudioMessage";
-};
-new AudioProfile(AudioProfile_JustExpired)
-{
-    fileName = "projects/common/sounds/ui/pop.ogg";
-    description = "AudioMessage";
-};
-new AudioProfile(AudioProfile_Tutorial)
-{
-    fileName = "projects/common/sounds/ui/tutorial.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioProfile_AFX_TeleIn)
-{
-    fileName = "projects/common/sounds/teleIn.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-new AudioProfile(AudioProfile_AFX_TeleOut)
-{
-    fileName = "projects/common/sounds/teleOut.ogg";
-    description = "AudioMessage";
-    preload = 0;
-};
-
+volume = AudioGui @ new () @ 0.6;
+AudioDescription;
+isLooping = 0 @ 0;
+is3D = 0;
+type = $SimAudioType;
+volume = AudioMessage @ new () @ 1;
+AudioDescription;
+isLooping = 0 @ 0;
+is3D = 0;
+type = $SimAudioType;
+fileName = AudioButtonOver @ new () @ "projects/common/sound/buttonOver.wav";
+AudioProfile;
+description = 0 @ "AudioGui";
+preload = 0;
+fileName = AudioIm_MessageIn @ new () @ "projects/common/sounds/im/messageIn.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioIm_WhisperIn @ new () @ "projects/common/sounds/im/whisperIn.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioIm_SystemMessageIn @ new () @ "projects/common/sounds/im/whisperIn.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = Audio_SOSMessageIn @ new () @ "dev/data/sounds/helpme.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioIm_CaChing @ new () @ "projects/common/sounds/ui/caChing.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioIm_vPoints1 @ new () @ "projects/common/sounds/ui/vPoints1.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioIm_vPoints2 @ new () @ "projects/common/sounds/ui/vPoints2.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioProfile_Shutter @ new () @ "projects/common/sounds/ui/shutter.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioRespektLevelGained @ new () @ "projects/common/sounds/gameplay/questEnd.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioProfile_ExpiringSoon @ new () @ "projects/common/sounds/ui/ticking.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+fileName = AudioProfile_JustExpired @ new () @ "projects/common/sounds/ui/pop.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+fileName = AudioProfile_Tutorial @ new () @ "projects/common/sounds/ui/tutorial.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioProfile_AFX_TeleIn @ new () @ "projects/common/sounds/teleIn.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;
+fileName = AudioProfile_AFX_TeleOut @ new () @ "projects/common/sounds/teleOut.ogg";
+AudioProfile;
+description = 0 @ "AudioMessage";
+preload = 0;

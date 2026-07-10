@@ -1,99 +1,66 @@
-function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName)
-{
-    %fo = new FileObject();
-    if (%fo.openForRead(%mlTextfileName))
-    {
-        %text = "";
-        while (!%fo.isEOF())
-        {
-            %text = %text @ %fo.readLine() @ "\n";
-        }
-        InspectPanelMLText.setText(%text);
-        %this.open();
-    }
-    else
-    {
-        InspectPanelMLText.setText("I can\'t find the file: " @ %mlTextfileName);
-    }
+function MLScrollInspectPanel::OnInspect(%this, %mlTextfileName) {
+    %fo = new ""();
+    FileObject;
+    %text = "";
+    %fo.openForRead(%mlTextfileName);
+    %text = 0 @ !(%fo.isEOF()) @ %text @ %fo.readLine() @ "\n";
+    %text.setText();
+    %this.open();
+    InspectPanelMLText @ "I can't find the file: " @ %mlTextfileName.setText();
     %fo.delete();
-    return ;
-}
-function clientCmdShowInspectionPanel(%mlTextfileName)
-{
-    MLScrollInspectPanel.OnInspect(%mlTextfileName);
-    return ;
-}
-function InspectPanelMLText::onURL(%this, %url)
-{
-    MLScrollInspectPanel.OnInspect(%url);
-    return ;
-}
-function MLScrollInspectPanel::toggle(%this)
-{
-    PlayGui.showRaiseOrHide(%this);
-    return ;
-}
-function MLScrollInspectPanel::updateSize(%this)
-{
+};
+function clientCmdShowInspectionPanel(%mlTextfileName) {
+    %mlTextfileName.OnInspect();
+};
+function InspectPanelMLText::onURL(%this, %url) {
+    %url.OnInspect();
+};
+function MLScrollInspectPanel::toggle(%this) {
+    %this.showRaiseOrHide();
+};
+function MLScrollInspectPanel::updateSize(%this) {
     %screenWidth = getWord($UserPref::Video::Resolution, 0);
     %screenHeight = getWord($UserPref::Video::Resolution, 1);
     %posX = 0;
     %posY = 0;
     %width = 358;
     %height = 243;
-    if ((%screenHeight == 272) && (%screenWidth == 480))
-    {
-        %height = 243;
-        %width = 358;
-        %posX = (%screenWidth - %width) / 2;
-        %posY = 0;
-    }
-    else
-    {
-        if ((%screenHeight == 363) && (%screenWidth == 640))
-        {
-            %height = 161 * 2;
-            %width = 161 * 3;
-            %posX = (%screenWidth - %width) / 2;
-            %posY = 0;
-        }
-        else
-        {
-            if ((%screenHeight == 544) && (%screenWidth == 960))
-            {
-                %height = 242 * 2;
-                %width = 242 * 3;
-                %posX = (%screenWidth - %width) / 2;
-                %posY = 0;
-            }
-            else
-            {
-                if ((%screenHeight == 714) && (%screenWidth == 1260))
-                {
-                    %height = 317 * 2;
-                    %width = 317 * 3;
-                    %posX = (%screenWidth - %width) / 2;
-                    %posY = 0;
-                }
-            }
-        }
-    }
+    %height = 243;
+    (480.0 == %screenWidth);
+    %width = 358;
+    (272.0 == %screenHeight);
+    %posX = (2.0 / (%width - %screenWidth));
+    %posY = 0;
+    %height = (2.0 * 161.0);
+    (640.0 == %screenWidth);
+    %width = (3.0 * 161.0);
+    (363.0 == %screenHeight);
+    %posX = (2.0 / (%width - %screenWidth));
+    %posY = 0;
+    %height = (2.0 * 242.0);
+    (960.0 == %screenWidth);
+    %width = (3.0 * 242.0);
+    (544.0 == %screenHeight);
+    %posX = (2.0 / (%width - %screenWidth));
+    %posY = 0;
+    %height = (2.0 * 317.0);
+    (1260.0 == %screenWidth);
+    %width = (3.0 * 317.0);
+    (714.0 == %screenHeight);
+    %posX = (2.0 / (%width - %screenWidth));
+    %posY = 0;
     %this.resize(%posX, %posY, %width, %height);
-    InspectPanelScrollControl.scrollToTop();
-    return ;
-}
-function MLScrollInspectPanel::open(%this)
-{
+    scrollToTop();
+};
+function MLScrollInspectPanel::open(%this) {
     %this.setVisible(1);
     %this.setConstrained(1);
-    PlayGui.focusAndRaise(%this);
+    %this.focusAndRaise();
     %this.updateSize();
-    InspectPanelScrollControl.makeFirstResponder(1);
-    return ;
-}
-function MLScrollInspectPanel::close(%this)
-{
+    1.makeFirstResponder();
+};
+function MLScrollInspectPanel::close(%this) {
     %this.setVisible(0);
-    PlayGui.focusTopWindow();
+    focusTopWindow();
     return 1;
-}
+};

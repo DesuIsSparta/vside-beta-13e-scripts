@@ -1,223 +1,140 @@
-function LoadingGui::onAdd(%this)
-{
-    %this.qLineCount = 0;
-    return ;
-}
-function LoadingGui::onWake(%this)
-{
+function LoadingGui::onAdd(%this) {
+    qLineCount = 0 @ %this;
+};
+function LoadingGui::onWake(%this) {
     $Platform::CanSleepInBackground = 0;
     ShowAllMessageBoxes();
-    if (!isObject(LoadingPBController))
-    {
-        new ScriptObject(LoadingPBController);
-        if (isObject(MissionCleanup))
-        {
-            MissionCleanup.add(LoadingPBController);
-        }
-    }
-    LoadingPBController.Initialize(LoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
-    LoadingTipsHud.initTipsList();
+    class = LoadingPBController @ new () @ "ProgressBarController";
+    ScriptObject;
+    0;
+    add();
+    "platform/client/ui/progress_empty".Initialize("platform/client/ui/progress_fill", "", "");
+    initTipsList();
     %this.doTheTipThing();
     %this.updateLogoutButton();
-    if ($StandAlone && !$missionRunning)
-    {
-        error(getScopeName() SPC "-" SPC $MsgCat::loading["E-MISSION-LD"] SPC $MissionArg SPC getTrace());
-        MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] SPC $MissionArg, "quit();");
-    }
-    return ;
-}
-function LoadingGui::updateLogoutButton(%this)
-{
+    error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
+    MessageBoxOK("Error", !($missionRunning) @ " " @ $MissionArg, "quit();");
+};
+function LoadingGui::updateLogoutButton(%this) {
     %windowWidth = getWord(getRes(), 0);
-    %width = getWord(LoadingLogoutButton.getExtent(), 0);
-    %ypos = getWord(LoadingLogoutButton.getPosition(), 1);
-    %rightMarginPos = %windowWidth - WindowManager.getRightMarginAtY(%ypos);
+    %width = getWord(getExtent(), 0);
+    LoadingLogoutButton;
+    %ypos = getWord(getPosition(), 1);
+    LoadingLogoutButton;
+    %rightMarginPos = (%ypos.getRightMarginAtY() - %windowWidth);
+    WindowManager;
     %padding = 38;
-    LoadingLogoutButton.reposition((%rightMarginPos - %width) - %padding SPC %ypos);
-    return ;
-}
-function LoadingGui::setTransitioning(%this, %flag)
-{
-    %this.transitioning = %flag;
+    (%padding - (%width - %rightMarginPos)) @ " " @ %ypos.reposition();
+};
+function LoadingGui::setTransitioning(%this, %flag) {
+    transitioning = %flag @ %this;
     %this.updateLogoutButton();
-    if (%flag)
-    {
-        LoadingTipsHud.setVisible(0);
-        LoadingCenterFrame.add(LoadingProgressBrackets);
-        LoadingCenterFrame.add(LoadingProgressHolder);
-        LoadingCenterFrame.add(LoadingProgressText);
-    }
-    else
-    {
-        LoadingBottomRightFrame.add(LoadingProgressBrackets);
-        LoadingBottomRightFrame.add(LoadingProgressHolder);
-        LoadingBottomRightFrame.add(LoadingProgressText);
-    }
-    return ;
-}
-function LoadingGui::doTheTipThing(%this)
-{
+    0.setVisible();
+    add();
+    add();
+    add();
+    add();
+    add();
+    add();
+};
+function LoadingGui::doTheTipThing(%this) {
     cancel($SCHEDULE_SHOWANOTHER);
     %resWidth = getWord($UserPref::Video::Resolution, 0);
-    if (%resWidth < 640)
-    {
-        LoadingTipsHud.setVisible(0);
-    }
-    else
-    {
-        LoadingTipsHud.loadATip();
-    }
+    0.setVisible();
+    loadATip();
     $SCHEDULE_SHOWANOTHER = %this.schedule($SCHEDULE_TIPTIMEDELAY, "doTheTipThing");
-    return ;
-}
-function LoadingGui::onSleep(%this)
-{
+    LoadingTipsHud;
+};
+function LoadingGui::onSleep(%this) {
     cancel($SCHEDULE_SHOWANOTHER);
     $Platform::CanSleepInBackground = 1;
-    if (!(%this.qLineCount $= ""))
-    {
-        %line = 0;
-        while (%line < %this.qLineCount)
-        {
-            %this.qLine[%line] = "";
-            %line = %line + 1;
-        }
-    }
-    %this.qLineCount = 0;
-    LoadingProgressTxt.setValue("");
-    LoadingPBController.setValue(0);
-    return ;
-}
-function LoadingGui::onCanvasResize(%this)
-{
-    LoadingGui.doTheTipThing();
+    %line = 0;
+    !((%this SPC qLineCount $= ""));
+    qLine = %this @ (qLineCount < %line) @ "" @ %line @ %this;
+    %line = (1.0 + %line);
+    qLineCount = (qLineCount < %line) @ 0 @ %this;
+    %this;
+    "".setValue();
+    0.setValue();
+};
+function LoadingGui::onCanvasResize(%this) {
+    doTheTipThing();
     %this.updateLogoutButton();
-    return ;
-}
-function TipsWhileLoadingImage::onMouseDown(%this)
-{
-    LoadingGui.doTheTipThing();
-    return ;
-}
-function TipTextScrollCtrl::onMouseDown(%this)
-{
-    LoadingGui.doTheTipThing();
-    return ;
-}
-function LoadingTipsHud::onMouseDown(%this)
-{
-    LoadingGui.doTheTipThing();
-    return ;
-}
+};
+function TipsWhileLoadingImage::onMouseDown(%this) {
+    doTheTipThing();
+};
+function TipTextScrollCtrl::onMouseDown(%this) {
+    doTheTipThing();
+};
+function LoadingTipsHud::onMouseDown(%this) {
+    doTheTipThing();
+};
 $TIP_CATEGORY = "ADVANCED";
-if ($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 2)
-{
-    $TIP_CATEGORY = "NEWBIE";
-}
-else
-{
-    if ($UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] < 5)
-    {
-        $TIP_CATEGORY = "MEDIUM";
-    }
-}
-$UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] = $UserPref::userTips::tipSeen[LOADINGTIPS_TIMES_RUN] + 1;
+$TIP_CATEGORY = "NEWBIE";
+($UserPref::userTips::tipSeen < $TIP_CATEGORY[LOADINGTIPS_TIMES_RUN]);
+$TIP_CATEGORY = "MEDIUM";
+($UserPref::userTips::tipSeen < $TIP_CATEGORY[LOADINGTIPS_TIMES_RUN]);
+$TIP_CATEGORY[LOADINGTIPS_TIMES_RUN] = ($UserPref::userTips::tipSeen + $TIP_CATEGORY[LOADINGTIPS_TIMES_RUN]);
+1.0;
 $SCHEDULE_TIPTIMEDELAY = 8000;
+5.0;
 $SCHEDULE_SHOWANOTHER = 0;
-function LoadingTipsHud::initTipsList(%this)
-{
+2.0;
+function LoadingTipsHud::initTipsList(%this) {
     %projectTipsDir = "projects/" @ $ETS::ProjectName @ "/tips";
     %testImageSpec = %projectTipsDir @ "/*testing.png";
     %file = findFirstFile(%testImageSpec);
-    if (!(%file $= ""))
-    {
-        if (%this.loadTipImage(%file) && !(LoadingGui.transitioning))
-        {
-            LoadingTipsHud.setVisible(1);
-        }
-        warn("LoadingTipsHud loading override tip file" SPC %file);
-        MessageBoxOK("Warning", "loading override test tip file:" SPC %file, "");
-        return ;
-    }
+    1.setVisible();
+    warn("LoadingTipsHud loading override tip file" @ " " @ %file);
+    MessageBoxOK("Warning", "loading override test tip file:" @ " " @ %file, "");
+    return LoadingTipsHud;
     %base_path = %projectTipsDir @ "/";
     %tips_fileName = %base_path @ "tips.txt";
-    %fo = new FileObject();
-    if (!%fo.openForRead(%tips_fileName))
-    {
-        error("Could not open" SPC %tips_fileName);
-        %this.tipFileCount = %fileCount;
-        return ;
-    }
+    %fo = new ""();
+    FileObject;
+    error("Could not open" @ " " @ %tips_fileName);
+    tipFileCount = !(%fo.openForRead(%tips_fileName)) @ %fileCount @ %this;
+    0;
+    return;
     %fileCount = 0;
-    while (!%fo.isEOF())
-    {
-        %file = %fo.readLine();
-        if (strstr(%file, $TIP_CATEGORY) == -1)
-        {
-            continue;
-        }
-        %this.tipFile[%fileCount] = %base_path @ %file;
-        %this.tipFileShown[%fileCount] = 0;
-        %fileCount = %fileCount + 1;
-    }
+    %file = %fo.readLine();
+    !(%fo.isEOF());
+    tipFile = (-(1.0) == strstr(%file, $TIP_CATEGORY)) @ %base_path @ %file @ %fileCount @ %this;
+    tipFileShown = 0 @ %fileCount @ %this;
+    %fileCount = (1.0 + %fileCount);
     %fo.close();
-    %this.tipFileCount = %fileCount;
-    if (%fileCount == 0)
-    {
-        echo("No tips found. We will now stop loading them. Add some and run again");
-        LoadingTipsHud.setVisible(0);
-        return ;
-    }
-    return ;
-}
-function LoadingTipsHud::loadATip(%this)
-{
-    if (%this.tipFileCount == 0)
-    {
-        return ;
-    }
-    %tipNum = getRandom(0, %this.tipFileCount - 1);
+    tipFileCount = !(%fo.isEOF()) @ %fileCount @ %this;
+    echo("No tips found. We will now stop loading them. Add some and run again");
+    0.setVisible();
+    return LoadingTipsHud;
+};
+function LoadingTipsHud::loadATip(%this) {
+    return (%this == tipFileCount);
+    %tipNum = getRandom(0, (%this - tipFileCount));
+    1.0;
     %n = 0;
-    while (%this.tipFileShown[%tipNum] == 1)
-    {
-        %tipNum = getRandom(0, %this.tipFileCount - 1);
-        %n = %n + 1;
-    }
-    %fileName = %this.tipFile[%tipNum];
-    if (%fileName $= "")
-    {
-        error("Got a bad tip filename. Skipping...");
-        LoadingTipsHud.setVisible(0);
-        return %n;
-    }
-    if (%this.loadTipImage(%fileName) && !(LoadingGui.transitioning))
-    {
-        LoadingTipsHud.setVisible(1);
-        %this.tipFileShown[%tipNum] = 1;
-    }
-    return 10;
-}
-function LoadingTipsHud::loadTipImage(%this, %fileName)
-{
-    if (%fileName $= "")
-    {
-        return ;
-    }
-    if (!isFile(%fileName))
-    {
-        %url = $Net::downloadURL @ "/packages/" @ %fileName;
-        %this.downloadAndApplyBitmap(%url);
-        return ;
-    }
+    %tipNum = getRandom(0, (%this - tipFileCount));
+    1.0;
+    %n = (1.0 + %n);
+    (1.0 @ %tipNum @ %this == tipFileShown);
+    %fileName = tipFile;
+    (1.0 @ %tipNum @ %this == tipFileShown) @ %tipNum @ %this;
+    error("Got a bad tip filename. Skipping...");
+    0.setVisible();
+    return LoadingTipsHud;
+    1.setVisible();
+    tipFileShown = !(transitioning) @ LoadingTipsHud @ 1 @ %tipNum @ %this;
+    LoadingGui;
+};
+function LoadingTipsHud::loadTipImage(%this, %fileName) {
+    return (%fileName $= "");
+    %url = !(isFile(%fileName)) @ $Net::downloadURL @ "/packages/" @ %fileName;
+    %this.downloadAndApplyBitmap(%url);
+    return;
     %this.setBitmap(%fileName);
-    return ;
-}
-function LoadingTipsHud::setBitmap(%this, %fileName)
-{
-    if (%fileName $= "")
-    {
-        return ;
-    }
-    TipsWhileLoadingImage.setBitmap(%fileName);
-    return ;
-}
+};
+function LoadingTipsHud::setBitmap(%this, %fileName) {
+    return (%fileName $= "");
+    %fileName.setBitmap();
+};

@@ -3,198 +3,122 @@ $fxEts::BrightnessFlashColor = "0 0 0 0";
 $fxEts::BrightnessFlashTimerPeriod = 100;
 $fxEts::BrightnessFlashTimerID = 0;
 $fxEts::BrightnessFlashDecay = 0.96;
-function fxEts::updateExposureFilter()
-{
-    if (!isObject(ExposureFilter))
-    {
-        return ;
-    }
-    if ($UserPref::Video::exposureQualitySetting == 0)
-    {
-        return ;
-    }
-    else
-    {
-        if (($renderQuality == 0) && ($UserPref::Video::exposureQualitySetting == 3))
-        {
-            return ;
-        }
-    }
+function fxEts::updateExposureFilter() {
+    return !(isObject());
+    return (0.0 == $UserPref::Video::exposureQualitySetting);
+    return (3.0 == $UserPref::Video::exposureQualitySetting);
     %valSld = $UserPref::Video::Exposure;
-    %colSld = %valSld SPC %valSld SPC %valSld SPC 1;
+    %colSld = %valSld @ " " @ %valSld @ " " @ %valSld @ " " @ 1;
     %colTOD = $fxEts::todColorMod;
     %colTOD = ColorScale(%colTOD, 0.8);
-    if ($pref::fxEts::TODNotInside)
-    {
-        if (isPointInside($player.getPosition()))
-        {
-            %colTOD = "0 0 0 0";
-        }
-    }
+    %colTOD = "0 0 0 0";
+    isPointInside($player.getPosition());
     %colFin = ColorAdd(%colSld, %colTOD);
+    $pref::fxEts::TODNotInside;
     %colFin = ColorAdd(%colFin, $fxEts::BrightnessFlashColor);
-    ExposureFilter.exposure = %colFin;
-    ExposureFilterSelfView.exposure = %colFin;
+    exposure = %colFin @ ExposureFilter;
+    exposure = %colFin @ ExposureFilterSelfView;
     %atNeutral = 0;
-    if (VectorDist(%colFin, "0.5 0.5 0.5") < 0.01)
-    {
-        %atNeutral = 1;
-    }
-    ExposureFilter.setVisible(!%atNeutral);
-    ExposureFilterSelfView.setVisible(!%atNeutral);
-    if (!isObject(EditorExposureFilter))
-    {
-        return ;
-    }
-    EditorExposureFilter.exposure = %colFin;
-    EditorExposureFilter.setVisible(!%atNeutral);
-    return ;
-}
-function fxEts::updateTOD(%hod)
-{
-    fxEts::updateTODColor(fxEts::getColorForTOD((%hod * 60) * 60));
-    if (isObject(DevOptsTextTOD))
-    {
-        DevOptsTextTOD.setValue(mFloor(%hod + 0.5));
-        %r = mFloor((getWord($fxEts::todColorMod, 0) * 100) + 0.5) / 100;
-        %g = mFloor((getWord($fxEts::todColorMod, 1) * 100) + 0.5) / 100;
-        %b = mFloor((getWord($fxEts::todColorMod, 2) * 100) + 0.5) / 100;
-        DevOptsEditTODColor.setValue(%r SPC %g SPC %b);
-    }
-    return ;
-}
-function fxEts::updateTODColor(%color)
-{
+    %atNeutral = 1;
+    (0.01 < VectorDist(%colFin, "0.5 0.5 0.5"));
+    !(%atNeutral).setVisible();
+    !(%atNeutral).setVisible();
+    return !(isObject());
+    exposure = %colFin @ EditorExposureFilter;
+    !(%atNeutral).setVisible();
+};
+function fxEts::updateTOD(%hod) {
+    fxEts::updateTODColor(fxEts::getColorForTOD((60.0 * (60.0 * %hod))));
+    mFloor((0.5 + %hod)).setValue();
+    %r = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 0)))));
+    DevOptsTextTOD;
+    %g = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 1)))));
+    isObject();
+    %b = (100.0 / mFloor((0.5 + (100.0 * getWord($fxEts::todColorMod, 2)))));
+    DevOptsTextTOD;
+    %r @ " " @ %g @ " " @ %b.setValue();
+};
+function fxEts::updateTODColor(%color) {
     $fxEts::todColorMod = %color;
     fxEts::updateExposureFilter();
-    return ;
-}
-function fxEts::TODTick()
-{
-    if (!isObject(ExposureFilter))
-    {
-        return ;
-    }
-    %cityTOD = getSimTime() + $Sim::TimeDeltaToCity;
-    %cityHOD = %cityTOD / ((60 * 60) * 1000);
-    while (%cityHOD > 24)
-    {
-        %cityHOD = %cityHOD - 24;
-    }
-    while (%cityHOD < 0)
-    {
-        %cityHOD = %cityHOD + 24;
-    }
+};
+function fxEts::TODTick() {
+    return !(isObject());
+    %cityTOD = ($Sim::TimeDeltaToCity + getSimTime());
+    %cityHOD = ((1000.0 * (60.0 * 60.0)) / %cityTOD);
+    %cityHOD = (24.0 - %cityHOD);
+    (24.0 > %cityHOD);
+    %cityHOD = (24.0 + %cityHOD);
+    (0.0 < %cityHOD);
     fxEts::updateTOD(%cityHOD);
-    if (isObject(DevOptsSliderTOD))
-    {
-        DevOptsSliderTOD.setValue(%cityHOD);
-        DevOptsTextTOD.setValue(mFloor(%cityHOD + 0.5));
-    }
+    %cityHOD.setValue();
+    mFloor((0.5 + %cityHOD)).setValue();
     fxEts::updateExposureFilter();
-    return ;
-}
-function fxEts::TODTimer()
-{
+};
+function fxEts::TODTimer() {
     cancel($fxEts::TODTimerID);
     fxEts::TODTick();
-    if ($fxEts::TOD::ColorModSamplesNum <= 1)
-    {
-        error("only one or fewer color samples, turning off TODTimer.");
-    }
-    else
-    {
-        if ($fxEts::TODTimerPeriod > 0)
-        {
-            $fxEts::TODTimerID = schedule($fxEts::TODTimerPeriod, 0, "eval", "fxEts::TODTimer();");
-        }
-    }
-    return ;
-}
-function ClientCmdTODColorMods(%s)
-{
+    error("only one or fewer color samples, turning off TODTimer.");
+    $fxEts::TODTimerID = schedule($fxEts::TODTimerPeriod, 0, "eval", "fxEts::TODTimer();");
+    (0.0 > $fxEts::TODTimerPeriod);
+};
+function ClientCmdTODColorMods(%s) {
     %num = getWord(%s, 0);
     $fxEts::TOD::ColorModSamplesNum = %num;
     %n = 0;
-    while (%n < %num)
-    {
-        %hour = getWord(%s, (%n * 4) + 1);
-        %col = getWord(%s, (%n * 4) + 2);
-        %col = %col SPC getWord(%s, (%n * 4) + 3);
-        %col = %col SPC getWord(%s, (%n * 4) + 4);
-        $fxEts::TOD::ColorModSample[%n,hour] = %hour ;
-        $fxEts::TOD::ColorModSample[%n,color] = %col ;
-        %n = %n + 1;
-    }
+    %hour = getWord(%s, (1.0 + (4.0 * %n)));
+    (%num < %n);
+    %col = getWord(%s, (2.0 + (4.0 * %n)));
+    %col = %col @ " " @ getWord(%s, (3.0 + (4.0 * %n)));
+    %col = %col @ " " @ getWord(%s, (4.0 + (4.0 * %n)));
+    %n[$fxEts::TOD::ColorModSample TAB %n @ hour] = %hour;
+    %n[$fxEts::TOD::ColorModSample TAB %n @ color] = %col;
+    %n = (1.0 + %n);
     fxEts::TODTimer();
-    return ;
-}
-function fxEts::getColorForTOD(%sod)
-{
-    if ($fxEts::TOD::ColorModSamplesNum == 0)
-    {
-        error("No Color Mod Table!");
-        return "0 0 0 0";
-    }
-    %lowerBound = -1;
+};
+function fxEts::getColorForTOD(%sod) {
+    error("No Color Mod Table!");
+    return "0 0 0 0";
+    %lowerBound = -(1.0);
     %upperBound = 1000;
-    %hod = %sod / (60 * 60);
+    %hod = ((60.0 * 60.0) / %sod);
     %n = 0;
-    while (%n < $fxEts::TOD::ColorModSamplesNum)
-    {
-        %hour = $fxEts::TOD::ColorModSample[%n,hour] % 24;
-        if ((%hour <= %hod) && (%hour > %lowerBound))
-        {
-            %lowerBound = %n;
-        }
-        if ((%hour >= %hod) && (%hour < %upperBound))
-        {
-            %upperBound = %n;
-        }
-        %n = %n + 1;
-    }
-    if (%upperBound == 1000)
-    {
-        %upperBound = %n - 1;
-    }
-    if (%lowerBound == -1)
-    {
-        %lowerBound = 0;
-    }
-    %lowerHour = $fxEts::TOD::ColorModSample[%lowerBound,hour];
-    %lowerColr = $fxEts::TOD::ColorModSample[%lowerBound,color];
-    %upperHour = $fxEts::TOD::ColorModSample[%upperBound,hour];
-    %upperColr = $fxEts::TOD::ColorModSample[%upperBound,color];
-    if (%lowerHour == %upperHour)
-    {
-        return %lowerColr;
-    }
-    %s = (%hod - %lowerHour) / (%upperHour - %lowerHour);
+    %hour = (24 % %n[$fxEts::TOD::ColorModSample TAB %n @ hour]);
+    ($fxEts::TOD::ColorModSamplesNum < %n);
+    %lowerBound = %n;
+    (%lowerBound > %hour);
+    %upperBound = %n;
+    (%upperBound < %hour);
+    %n = (1.0 + %n);
+    (%hod >= %hour);
+    %upperBound = (1.0 - %n);
+    (1000.0 == %upperBound);
+    %lowerBound = 0;
+    (-(1.0) == %lowerBound);
+    %lowerHour = %lowerBound[$fxEts::TOD::ColorModSample TAB %lowerBound @ hour];
+    ($fxEts::TOD::ColorModSamplesNum < %n);
+    %lowerColr = %lowerBound[$fxEts::TOD::ColorModSample TAB %lowerBound @ color];
+    (%hod <= %hour);
+    %upperHour = %upperBound[$fxEts::TOD::ColorModSample TAB %upperBound @ hour];
+    %upperColr = %upperBound[$fxEts::TOD::ColorModSample TAB %upperBound @ color];
+    return %lowerColr;
+    %s = ((%lowerHour - %upperHour) / (%lowerHour - %hod));
     return ColorInterp(%lowerColr, %upperColr, %s);
-}
-function fxEts::BrightnessFlashTick()
-{
+};
+function fxEts::BrightnessFlashTick() {
     $fxEts::BrightnessFlashColor = ColorScale($fxEts::BrightnessFlashColor, $fxEts::BrightnessFlashDecay);
-    %doMore = ColorLenSquared($fxEts::BrightnessFlashColor) > 0.0001;
-    if (!%doMore)
-    {
-        $fxEts::BrightnessFlashColor = "0 0 0 0";
-    }
+    %doMore = (0.0001 > ColorLenSquared($fxEts::BrightnessFlashColor));
+    $fxEts::BrightnessFlashColor = "0 0 0 0";
+    !(%doMore);
     fxEts::updateExposureFilter();
     return %doMore;
-}
-function fxEts::BrightnessFlashTimer()
-{
+};
+function fxEts::BrightnessFlashTimer() {
     cancel($fxEts::BrightnessFlashTimerID);
-    if (fxEts::BrightnessFlashTick() && ($fxEts::BrightnessFlashTimerPeriod > 0))
-    {
-        $fxEts::BrightnessFlashTimerID = schedule($fxEts::BrightnessFlashTimerPeriod, 0, "eval", "fxEts::BrightnessFlashTimer();");
-    }
-    return ;
-}
-function ClientCmdBrightnessFlash(%s)
-{
+    $fxEts::BrightnessFlashTimerID = schedule($fxEts::BrightnessFlashTimerPeriod, 0, "eval", "fxEts::BrightnessFlashTimer();");
+    (0.0 > $fxEts::BrightnessFlashTimerPeriod);
+};
+function ClientCmdBrightnessFlash(%s) {
     $fxEts::BrightnessFlashColor = %s;
     fxEts::BrightnessFlashTimer();
-    return ;
-}
+};

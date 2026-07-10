@@ -1,291 +1,503 @@
-function ClosetTabs::refreshStoreTab(%this)
-{
-    StoreCategoryPopup.clear();
-    if (!$gStoreStockLoaded[$gCurrentStoreName])
-    {
-        StoreCategoryPopup.add("Loading ...");
-        return ;
-    }
-    %allCategories = "All Items" TAB "All Garments" TAB "All Accessories" TAB "Tops" TAB "Bottoms" TAB "Hair" TAB "Face" TAB "Skin" TAB "Shoes" TAB "Ear" TAB "Neck" TAB "Waist" TAB "Hands" TAB "Bags" TAB "Glasses" TAB "Props" TAB "Misc" TAB "BodyMod";
-    %storeDrwrs = SkuManager.getSkuDrwrs(SkuManager.filterSkusGender(Inventory::getCurrentStoreSkus(), $player.getGender()));
-    if (%storeDrwrs $= "")
-    {
-        StoreItemsFrame.update();
-    }
-    else
-    {
-        %n = 0;
-        while (%n < getFieldCount(%allCategories))
-        {
-            %cat = getField(%allCategories, %n);
-            %catDrwrs = ThumbCategories.get(strlwr(%cat));
-            %m = 0;
-            while (%m < getWordCount(%catDrwrs))
-            {
-                %found = findWord(%storeDrwrs, getWord(%catDrwrs, %m));
-                if (%found >= 0)
-                {
-                    StoreCategoryPopup.add(%cat);
-                    break;
-                }
-                %m = %m + 1;
-            }
-            %n = %n + 1;
-        }
-    }
+function ClosetTabs::refreshStoreTab(%this) {
+    clear();
+    "Loading ...".add();
+    return StoreCategoryPopup;
+    %allCategories = "All Items" @ "\t" @ "All Garments" @ "\t" @ "All Accessories" @ "\t" @ "Tops" @ "\t" @ "Bottoms" @ "\t" @ "Hair" @ "\t" @ "Face" @ "\t" @ "Skin" @ "\t" @ "Shoes" @ "\t" @ "Ear" @ "\t" @ "Neck" @ "\t" @ "Waist" @ "\t" @ "Hands" @ "\t" @ "Bags" @ "\t" @ "Glasses" @ "\t" @ "Props" @ "\t" @ "Misc" @ "\t" @ "BodyMod";
+    %storeDrwrs = Inventory::getCurrentStoreSkus().filterSkusGender($player.getGender()).getSkuDrwrs();
+    SkuManager;
+    update();
+    %n = 0;
+    StoreItemsFrame;
+    %cat = getField(%allCategories, %n);
+    (getFieldCount(%allCategories) < %n);
+    %catDrwrs = strlwr(%cat).get();
+    ThumbCategories;
+    %m = 0;
+    (SkuManager SPC %storeDrwrs $= "");
+    %found = findWord(%storeDrwrs, getWord(%catDrwrs, %m));
+    (getWordCount(%catDrwrs) < %m);
+    %cat.add();
+    %m = (1.0 + %m);
+    StoreCategoryPopup;
+    %n = (1.0 + %n);
+    (getWordCount(%catDrwrs) < %m);
     loadStorePosition();
-    return ;
-}
-function ClosetTabs::fillStoreTab(%this)
-{
+};
+function ClosetTabs::fillStoreTab(%this) {
     %theTab = %this.getTabWithName("SHOPS");
-    if (!isObject(%theTab))
-    {
-        return ;
-    }
+    return !(isObject(%theTab));
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "26 26";
+    extent = "571 37";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/closet_tabs_bracket";
+    %theTab.add();
     %tabWidth = getWord(%theTab.getExtent(), 0);
     %tabHeight = getWord(%theTab.getExtent(), 1);
-    %storename = new GuiTextCtrl()
-    {
-        profile = "ClosetTitleProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "237 17";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        text = "";
-        maxLength = 255;
-    };
-    %storeDesc = new GuiMLTextCtrl()
-    {
-        profile = "ClosetLeftInfoProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 23";
-        extent = "237 17";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        allowColorChars = 0;
-        maxChars = -1;
-        text = "";
-    };
-    %nameDescFrame = new GuiControl(StoreNameDescFrame)
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "26 66";
-        extent = "251 59";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        nameCtrl = %storename;
-        descCtrl = %storeDesc;
-    };
+    profile = StoreSpecificBackground @ new () @ "GuiDefaultProfile";
+    GuiBitmapCtrl;
+    horizSizing = 0 @ "center";
+    vertSizing = "center";
+    position = (256.0 - (2.0 / %tabWidth)) @ " " @ (256.0 - (2.0 / %tabHeight));
+    extent = "512 512";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    bitmap = "";
+    %theTab.add();
+    profile = GuiTextCtrl @ new ""() @ "ClosetTitleProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "237 17";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "";
+    maxLength = 255;
+    %storename = ;
+    profile = GuiMLTextCtrl @ new ""() @ "ClosetLeftInfoProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 23";
+    extent = "237 17";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    allowColorChars = 0;
+    maxChars = -1;
+    text = "";
+    %storeDesc = ;
+    profile = StoreNameDescFrame @ new () @ "GuiDefaultProfile";
+    GuiControl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "26 66";
+    extent = "251 59";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    nameCtrl = %storename;
+    descCtrl = %storeDesc;
+    %nameDescFrame = ;
     %nameDescFrame.add(%storename);
     %nameDescFrame.add(%storeDesc);
     %theTab.add(%nameDescFrame);
-    %categoryLabel = new GuiTextCtrl(StoreCategoryLabel)
-    {
-        profile = "ClosetTitleProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "181 64";
-        extent = "75 20";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        text = "Item";
-        maxLength = 255;
-    };
+    profile = StoreCategoryLabel @ new () @ "ClosetTitleProfile";
+    GuiTextCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "181 64";
+    extent = "75 20";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "Item";
+    maxLength = 255;
+    %categoryLabel = ;
     %theTab.add(%categoryLabel);
-    %categoryPopup = new GuiPopUp2MenuCtrl(StoreCategoryPopup)
-    {
-        profile = "ClosetPopupProfile";
-        scrollProfile = "DottedScrollProfile";
-        winProfile = "ClosetPopupWindowProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "180 84";
-        extent = "150 17";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        maxLength = 255;
-        maxPopupHeight = 200;
-        allowReverse = 0;
-    };
+    profile = StoreCategoryPopup @ new () @ "ClosetPopupProfile";
+    GuiPopUp2MenuCtrl;
+    scrollProfile = 0 @ "DottedScrollProfile";
+    winProfile = "ClosetPopupWindowProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "180 84";
+    extent = "150 17";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    maxLength = 255;
+    maxPopupHeight = 200;
+    allowReverse = 0;
+    %categoryPopup = ;
     %theTab.add(%categoryPopup);
-    %ctrl = new GuiControl(StoreExpirationLegend)
-    {
-        position = "26 465";
-        extent = "260 20";
-        visible = 0;
-        lastStore = "";
-    };
+    position = StoreExpirationLegend @ new () @ "26 465";
+    GuiControl;
+    extent = 0 @ "260 20";
+    visible = 0;
+    lastStore = "";
+    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "16 16";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/expiring_icon_small";
+    modulationColor = "255 255 255 255";
+    profile = GuiTextCtrl @ new ""() @ "ClosetLeftInfoProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "16 -1";
+    extent = "200 18";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    text = " = Expires after a certain amount of time.";
+    maxLength = 255;
+    %ctrl = ;
     %theTab.add(%ctrl);
-    %itemsFrame = new GuiControl(StoreItemsFrame)
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "22 120";
-        extent = "467 350";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    };
-    %itemsInfoText = new GuiTextCtrl()
-    {
-        profile = "ClosetLeftInfoProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "1 30";
-        extent = "77 16";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 0;
-        text = "no matching items";
-        maxLength = 255;
-    };
+    profile = StoreItemsFrame @ new () @ "GuiDefaultProfile";
+    GuiControl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "22 120";
+    extent = "467 350";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    %itemsFrame = ;
+    profile = GuiTextCtrl @ new ""() @ "ClosetLeftInfoProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "1 30";
+    extent = "77 16";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    text = "no matching items";
+    maxLength = 255;
+    %itemsInfoText = ;
     %itemsFrame.add(%itemsInfoText);
-    %itemsRangeText = new GuiTextCtrl()
-    {
-        profile = "ClosetRightInfoProfile";
-        horizSizing = "left";
-        vertSizing = "bottom";
-        position = "313 1";
-        extent = "125 14";
-        minExtent = "125 1";
-        sluggishness = -1;
-        visible = 1;
-        text = "";
-        maxLength = 255;
-    };
+    profile = GuiTextCtrl @ new ""() @ "ClosetRightInfoProfile";
+    0;
+    horizSizing = "left";
+    vertSizing = "bottom";
+    position = "313 1";
+    extent = "125 14";
+    minExtent = "125 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "";
+    maxLength = 255;
+    %itemsRangeText = ;
     %itemsFrame.add(%itemsRangeText);
-    %theTab.rangeText = %itemsRangeText;
-    %itemsScroll = new GuiScrollCtrl()
-    {
-        profile = "ETSScrollProfile";
-        position = "0 20";
-        extent = "465 326";
-        minExtent = "1 1";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        visible = 1;
-        hScrollBar = "dynamic";
-        vScrollBar = "dynamic";
-        constantThumbHeight = 1;
-        scrollMultiplier = 16.1;
-    };
+    rangeText = %itemsRangeText @ %theTab;
+    profile = GuiScrollCtrl @ new ""() @ "ETSScrollProfile";
+    0;
+    position = "0 20";
+    extent = "465 326";
+    minExtent = "1 1";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    visible = 1;
+    hScrollBar = "dynamic";
+    vScrollBar = "dynamic";
+    constantThumbHeight = 1;
+    scrollMultiplier = 16.1;
+    %itemsScroll = ;
     %itemsScroll.bindClassName("ClosetItemsScroll");
-    %theTab.itemsScroll = %itemsScroll;
-    %thumbnails = new GuiArray2Ctrl(ClosetThumbnailsShop)
-    {
-        class = "ClosetThumbnails";
-        profile = "FocusableDefaultProfile";
-        childrenClassName = "GuiMouseEventCtrl";
-        childrenExtent = "109 159";
-        spacing = 2;
-        numRowsOrCols = 4;
-        inRows = 0;
-        canHilite = 0;
-        infoText = %itemsInfoText;
-        tab = %theTab;
-        scroll = %itemsScroll;
-    };
+    itemsScroll = %itemsScroll @ %theTab;
+    class = ClosetThumbnailsShop @ new () @ "ClosetThumbnails";
+    GuiArray2Ctrl;
+    profile = 0 @ "FocusableDefaultProfile";
+    childrenClassName = "GuiMouseEventCtrl";
+    childrenExtent = "109 159";
+    spacing = 2;
+    numRowsOrCols = 4;
+    inRows = 0;
+    canHilite = 0;
+    infoText = %itemsInfoText;
+    tab = %theTab;
+    scroll = %itemsScroll;
+    %thumbnails = ;
     %itemsScroll.add(%thumbnails);
-    %itemsScroll.thumbnails = %thumbnails;
+    thumbnails = %thumbnails @ %itemsScroll;
     %itemsFrame.add(%itemsScroll);
-    %itemsFrame.thumbnails = %thumbnails;
+    thumbnails = %thumbnails @ %itemsFrame;
     %theTab.add(%itemsFrame);
-    %theTab.thumbnails = %thumbnails;
-    new GuiControl(StoreBannerFrame)
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "26 483";
-        extent = "464 69";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    }.add(new GuiControl(StoreBannerFrame)
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "26 483";
-        extent = "464 69";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    });
-    new GuiBitmapCtrl()
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "689 26";
-        extent = "245 45";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        bitmap = "platform/client/ui/balance_bracket";
-    }.add(new GuiBitmapCtrl()
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "689 26";
-        extent = "245 45";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        bitmap = "platform/client/ui/balance_bracket";
-    });
-    %itemDescFrame = new GuiWindowCtrl(StoreItemDescFrame)
-    {
-        profile = "DottedWindowProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "689 84";
-        extent = "245 110";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        resizeWidth = 0;
-        resizeHeight = 0;
-        canMove = 0;
-        canClose = 0;
-        canMinimize = 0;
-        canMaximize = 0;
-        closeCommand = "";
-    };
+    thumbnails = %thumbnails @ %theTab;
+    profile = StoreDirectoryLink @ new () @ "BracketButton13Profile";
+    GuiVariableWidthButtonCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "26 124";
+    extent = "126 13";
+    minExtent = "1 1";
+    visible = 1;
+    text = "Go to Shops Directory";
+    buttonType = "PushButton";
+    drawText = 1;
+    command = "transferFromShopToDestinationsDirectory();";
+    %theTab.add();
+    profile = StoreDirectoryLinkBigText @ new () @ "ClosetLeftInfoProfile";
+    GuiMLTextCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "26 124";
+    extent = "350 17";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    allowColorChars = 0;
+    maxChars = -1;
+    text = ;
+    %theTab.add();
+    profile = StoreDirectoryLinkBig @ new () @ "GuiDefaultProfile";
+    GuiBitmapButtonCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "100 200";
+    extent = "300 50";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    bitmap = "platform/client/buttons/closet_shopsDirButton";
+    command = "transferFromShopToDestinationsDirectory();";
+    %theTab.add();
+    profile = StoreBannerFrame @ new () @ "GuiDefaultProfile";
+    GuiControl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "26 483";
+    extent = "464 69";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    profile = StoreBannerBrackets @ new () @ "GuiDefaultProfile";
+    GuiBitmapCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "464 69";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    bitmap = "platform/client/ui/banner_bracket";
+    profile = StoreBanner @ new () @ "GuiButtonProfile";
+    GuiBitmapButtonCtrl;
+    horizSizing = "left";
+    vertSizing = "bottom";
+    position = "8 6";
+    extent = "448 57";
+    minExtent = "2 2";
+    sluggishness = -1;
+    visible = 1;
+    command = "StoreBanner.doAction();";
+    text = "";
+    groupNum = -1;
+    buttonType = "PushButton";
+    bitmap = "";
+    drawText = 0;
+    %theTab.add();
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "689 26";
+    extent = "245 45";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/balance_bracket";
+    profile = StoreBalanceText @ new () @ "ClosetLargeLinkProfile";
+    GuiMLTextCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "9 5";
+    extent = "228 42";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    maxChars = -1;
+    text = "";
+    %theTab.add();
+    profile = StoreItemDescFrame @ new () @ "DottedWindowProfile";
+    GuiWindowCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "689 84";
+    extent = "245 110";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    resizeWidth = 0;
+    resizeHeight = 0;
+    canMove = 0;
+    canClose = 0;
+    canMinimize = 0;
+    canMaximize = 0;
+    closeCommand = "";
+    profile = StoreShortDescText @ new () @ "ClosetLeftInfoProfile";
+    GuiMLTextCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "3 0";
+    extent = "242 25";
+    lineSpacing = -3;
+    profile = StoreLongDescText @ new () @ "ClosetLeftInfoProfile";
+    GuiMLTextCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "3 22";
+    extent = "173 16";
+    lineSpacing = -3;
+    %itemDescFrame = ;
     %theTab.add(%itemDescFrame);
-    %shoppingBag = new GuiWindowCtrl(StoreShoppingBag)
-    {
-        profile = "DottedWindowProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "689 207";
-        extent = "245 281";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        resizeWidth = 0;
-        resizeHeight = 0;
-        canMove = 0;
-        canClose = 0;
-        canMinimize = 0;
-        canMaximize = 0;
-        closeCommand = "";
-    };
-    StoreAddItemsButton.setActive(0);
+    profile = StoreItemDescHiliteFrame @ new () @ "StoreHiliteFrameProfile";
+    GuiWindowCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "679 80";
+    extent = "263 124";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    resizeWidth = 0;
+    resizeHeight = 0;
+    canMove = 0;
+    canClose = 0;
+    canMinimize = 0;
+    canMaximize = 0;
+    closeCommand = "";
+    %theTab.add();
+    profile = StoreFloatingHiliteFrame @ new () @ "StoreHiliteFrameProfile";
+    GuiWindowCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "119 143";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    resizeWidth = 0;
+    resizeHeight = 0;
+    canMove = 0;
+    canClose = 0;
+    canMinimize = 0;
+    canMaximize = 0;
+    closeCommand = "";
+    %theTab.add();
+    profile = StoreShoppingBag @ new () @ "DottedWindowProfile";
+    GuiWindowCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "689 207";
+    extent = "245 281";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    resizeWidth = 0;
+    resizeHeight = 0;
+    canMove = 0;
+    canClose = 0;
+    canMinimize = 0;
+    canMaximize = 0;
+    closeCommand = "";
+    profile = GuiBitmapCtrl @ new ""() @ "GuiDefaultProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "7 4";
+    extent = "18 13";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "platform/client/ui/cart";
+    profile = GuiTextCtrl @ new ""() @ "ClosetTitleProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "28 1";
+    extent = "108 20";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "Shopping Cart";
+    maxLength = 255;
+    profile = StoreNoItemsText @ new () @ "ClosetLeftInfoProfile";
+    GuiMLTextCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "5 28";
+    extent = "221 16";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "No items in shopping cart.";
+    maxLength = 255;
+    profile = GuiMLTextCtrl @ new ""() @ "ShoppingBagItemProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "7 261";
+    extent = "60 16";
+    minExtent = "60 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "Buy All For";
+    maxLength = 255;
+    profile = StorePointsTotalText @ new () @ "ClosetPointsProfile";
+    GuiMLTextCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "90 261";
+    extent = "60 16";
+    minExtent = "60 1";
+    sluggishness = -1;
+    visible = 1;
+    maxLength = 255;
+    profile = StoreBuxTotalText @ new () @ "ClosetBuxProfile";
+    GuiMLTextCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "162 261";
+    extent = "50 16";
+    minExtent = "50 1";
+    sluggishness = -1;
+    visible = 1;
+    maxLength = 255;
+    profile = StoreTotalButton @ new () @ "HiddenBracketButton15Profile";
+    GuiVariableWidthButtonCtrl;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "85 261";
+    extent = "132 16";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.doCheckout();";
+    text = "";
+    buttonType = "PushButton";
+    drawText = 0;
+    profile = GuiWindowCtrl @ new ""() @ "DottedWindowProfile";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "6 258";
+    extent = "233 1";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    resizeWidth = 0;
+    resizeHeight = 0;
+    canMove = 0;
+    canClose = 0;
+    canMinimize = 0;
+    canMaximize = 0;
+    closeCommand = "";
+    %shoppingBag = ;
+    profile = StoreAddItemsButton @ new () @ "BracketButton15NonDefaultProfile";
+    GuiVariableWidthButtonCtrl;
+    horizSizing = 0 @ "right";
+    vertSizing = "bottom";
+    position = "689 491";
+    extent = "213 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "StoreShoppingList.addItemsYoureWearing();";
+    text = "Add Items You're Wearing To Cart";
+    buttonType = "PushButton";
+    drawText = 1;
+    %theTab.add();
+    0.setActive();
     %wi = AnimCtrl::newAnimCtrl("129 213", "18 18");
+    StoreAddItemsButton;
     %wi.setDelay(60);
     %wi.addFrame("platform/client/ui/wait0.png");
     %wi.addFrame("platform/client/ui/wait1.png");
@@ -295,215 +507,191 @@ function ClosetTabs::fillStoreTab(%this)
     %wi.addFrame("platform/client/ui/wait5.png");
     %wi.addFrame("platform/client/ui/wait6.png");
     %wi.addFrame("platform/client/ui/wait7.png");
-    StoreShoppingBag.add(%wi);
-    StoreShoppingBag.waitIcon = %wi;
+    %wi.add();
+    waitIcon = StoreShoppingBag @ %wi @ StoreShoppingBag;
     %wi.setVisible(0);
-    %shoppingScroll = new GuiScrollCtrl()
-    {
-        profile = "ETSScrollProfile";
-        position = "3 22";
-        extent = "239 232";
-        minExtent = "1 1";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        visible = 1;
-        hScrollBar = "alwaysOff";
-        vScrollBar = "dynamic";
-        constantThumbHeight = 1;
-        scrollMultiplier = 2.5;
-    };
-    %shoppingList = new GuiArray2Ctrl(StoreShoppingList)
-    {
-        profile = "GuiDefaultProfile";
-        childrenClassName = "GuiMouseEventCtrl";
-        childrenExtent = "233 36";
-        spacing = 2;
-        numRowsOrCols = 1;
-        inRows = 0;
-        canHilite = 0;
-        scroll = %shoppingScroll;
-    };
+    profile = GuiScrollCtrl @ new ""() @ "ETSScrollProfile";
+    0;
+    position = "3 22";
+    extent = "239 232";
+    minExtent = "1 1";
+    horizSizing = "right";
+    vertSizing = "bottom";
+    visible = 1;
+    hScrollBar = "alwaysOff";
+    vScrollBar = "dynamic";
+    constantThumbHeight = 1;
+    scrollMultiplier = 2.5;
+    %shoppingScroll = ;
+    profile = StoreShoppingList @ new () @ "GuiDefaultProfile";
+    GuiArray2Ctrl;
+    childrenClassName = 0 @ "GuiMouseEventCtrl";
+    childrenExtent = "233 36";
+    spacing = 2;
+    numRowsOrCols = 1;
+    inRows = 0;
+    canHilite = 0;
+    scroll = %shoppingScroll;
+    %shoppingList = ;
     %shoppingScroll.add(%shoppingList);
     %shoppingBag.add(%shoppingScroll);
     %theTab.add(%shoppingBag);
-    %doneButton = new GuiVariableWidthButtonCtrl()
-    {
-        profile = "BracketButton19Profile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "829 519";
-        extent = "43 19";
-        minExtent = "1 1";
-        visible = 1;
-        command = "ClosetGui.close(false);";
-        text = "Done";
-        buttonType = "PushButton";
-        drawText = 1;
-    };
-    %cancelButton = new GuiVariableWidthButtonCtrl()
-    {
-        profile = "BracketButton19NonDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "882 519";
-        extent = "52 19";
-        minExtent = "1 1";
-        visible = 1;
-        command = "ClosetGui.close(true);";
-        text = "Cancel";
-        buttonType = "PushButton";
-        drawText = 1;
-    };
+    profile = GuiVariableWidthButtonCtrl @ new ""() @ "BracketButton19Profile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "829 519";
+    extent = "43 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.close(false);";
+    text = "Done";
+    buttonType = "PushButton";
+    drawText = 1;
+    %doneButton = ;
+    profile = GuiVariableWidthButtonCtrl @ new ""() @ "BracketButton19NonDefaultProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "882 519";
+    extent = "52 19";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.close(true);";
+    text = "Cancel";
+    buttonType = "PushButton";
+    drawText = 1;
+    %cancelButton = ;
     %theTab.add(%doneButton);
-    %theTab.doneButton = %doneButton;
+    doneButton = %doneButton @ %theTab;
     %theTab.add(%cancelButton);
-    %theTab.cancelButton = %cancelButton;
-    ClosetTabs.setStoreControlsVisible(1);
-    %this.tabShopsInitialized = 1;
-    return ;
-}
-function ClosetTabs::setStoreControlsVisible(%this, %flag)
-{
-    StoreNameDescFrame.setVisible(%flag);
-    StoreCategoryLabel.setVisible(%flag);
-    StoreCategoryPopup.setVisible(%flag);
-    StoreItemsFrame.setVisible(%flag);
-    StoreBannerFrame.setVisible(%flag);
-    StoreAddItemsButton.setVisible(%flag);
-    StoreShortDescText.setVisible(%flag);
-    StoreLongDescText.setVisible(%flag);
-    StoreShoppingBag.setVisible(%flag);
-    StoreItemDescFrame.setVisible(%flag);
-    StoreDirectoryLink.setVisible(%flag && !isInFUE());
-    if (!%flag)
-    {
-        StoreItemDescHiliteFrame.setVisible(%flag);
-        StoreFloatingHiliteFrame.setVisible(%flag);
-    }
-    if (isInFUE())
-    {
-        closetGuiFUE_vPoints_vBux_Image.setVisible(!%flag);
-    }
-    return ;
-}
-function ClosetTabs::setLeaveStoreControlsVisible(%this, %flag)
-{
-    StoreDirectoryLinkBigText.setVisible(%flag);
-    StoreDirectoryLinkBig.setVisible(%flag);
-    return ;
-}
-function StoreShoppingList::onCreatedChild(%this, %child)
-{
-    %background = new GuiControl()
-    {
-        profile = "ClosetLtBackgroundProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "233 36";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-    };
-    %hilite = new GuiControl()
-    {
-        profile = "ClosetHiliteProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "0 0";
-        extent = "233 36";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 0;
-    };
-    %itemDesc = new GuiVariableWidthButtonCtrl()
-    {
-        profile = "StoreItemButtonProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "1 2";
-        extent = "208 15";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        text = "";
-        groupNum = -1;
-        buttonType = "PushButton";
-        command = "";
-        drawText = 1;
-    };
-    %closeBox = new GuiBitmapButtonCtrl()
-    {
-        profile = "GuiDefaultProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "213 4";
-        extent = "10 10";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        command = "StoreShoppingList.removeSku(" @ %child.getId() @ ".sku);";
-        text = "";
-        groupNum = -1;
-        buttonType = "PushButton";
-        bitmap = "platform/client/buttons/closet_close";
-        drawText = 0;
-    };
-    %expiringIcon = new GuiBitmapCtrl()
-    {
-        profile = "ETSNonModalProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "208 16";
-        extent = "20 20";
-        minExtent = "1 1";
-        sluggishness = -1;
-        visible = 1;
-        bitmap = "";
-        modulationColor = "255 255 255 100";
-    };
-    %pointsLink = new GuiMLTextCtrl()
-    {
-        profile = "ClosetPointsProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "6 18";
-        extent = "60 18";
-        minExtent = "60 1";
-        sluggishness = -1;
-        visible = 1;
-        allowColorChars = 0;
-        maxChars = -1;
-        text = "";
-    };
-    %buxLink = new GuiMLTextCtrl()
-    {
-        profile = "ClosetBuxProfile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "78 18";
-        extent = "50 18";
-        minExtent = "50 1";
-        sluggishness = -1;
-        visible = 1;
-        allowColorChars = 0;
-        maxChars = -1;
-        text = "";
-    };
-    %totalButton = new GuiVariableWidthButtonCtrl()
-    {
-        profile = "HiddenBracketButton15Profile";
-        horizSizing = "right";
-        vertSizing = "bottom";
-        position = "1 18";
-        extent = "132 16";
-        minExtent = "1 1";
-        visible = 1;
-        command = "ClosetGui.purchaseSkus(" @ %child @ ".sku);";
-        text = "";
-        buttonType = "PushButton";
-        drawText = 0;
-    };
+    cancelButton = %cancelButton @ %theTab;
+    1.setStoreControlsVisible();
+    tabShopsInitialized = ClosetTabs @ 1 @ %this;
+};
+function ClosetTabs::setStoreControlsVisible(%this, %flag) {
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    !(isInFUE()).setVisible();
+    %flag.setVisible();
+    %flag.setVisible();
+    !(%flag).setVisible();
+};
+function ClosetTabs::setLeaveStoreControlsVisible(%this, %flag) {
+    %flag.setVisible();
+    %flag.setVisible();
+};
+function StoreShoppingList::onCreatedChild(%this, %child) {
+    profile = GuiControl @ new ""() @ "ClosetLtBackgroundProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "233 36";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    %background = ;
+    profile = GuiControl @ new ""() @ "ClosetHiliteProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "0 0";
+    extent = "233 36";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 0;
+    %hilite = ;
+    profile = GuiVariableWidthButtonCtrl @ new ""() @ "StoreItemButtonProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "1 2";
+    extent = "208 15";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    text = "";
+    groupNum = -1;
+    buttonType = "PushButton";
+    command = "";
+    drawText = 1;
+    %itemDesc = ;
+    profile = GuiBitmapButtonCtrl @ new ""() @ "GuiDefaultProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "213 4";
+    extent = "10 10";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    command = "StoreShoppingList.removeSku(" @ %child.getId() @ ".sku);";
+    text = "";
+    groupNum = -1;
+    buttonType = "PushButton";
+    bitmap = "platform/client/buttons/closet_close";
+    drawText = 0;
+    %closeBox = ;
+    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "208 16";
+    extent = "20 20";
+    minExtent = "1 1";
+    sluggishness = -1;
+    visible = 1;
+    bitmap = "";
+    modulationColor = "255 255 255 100";
+    %expiringIcon = ;
+    profile = GuiMLTextCtrl @ new ""() @ "ClosetPointsProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "6 18";
+    extent = "60 18";
+    minExtent = "60 1";
+    sluggishness = -1;
+    visible = 1;
+    allowColorChars = 0;
+    maxChars = -1;
+    text = "";
+    %pointsLink = ;
+    profile = GuiMLTextCtrl @ new ""() @ "ClosetBuxProfile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "78 18";
+    extent = "50 18";
+    minExtent = "50 1";
+    sluggishness = -1;
+    visible = 1;
+    allowColorChars = 0;
+    maxChars = -1;
+    text = "";
+    %buxLink = ;
+    profile = GuiVariableWidthButtonCtrl @ new ""() @ "HiddenBracketButton15Profile";
+    0;
+    horizSizing = "right";
+    vertSizing = "bottom";
+    position = "1 18";
+    extent = "132 16";
+    minExtent = "1 1";
+    visible = 1;
+    command = "ClosetGui.purchaseSkus(" @ %child @ ".sku);";
+    text = "";
+    buttonType = "PushButton";
+    drawText = 0;
+    %totalButton = ;
     %child.add(%background);
     %child.add(%hilite);
     %child.add(%itemDesc);
@@ -512,712 +700,463 @@ function StoreShoppingList::onCreatedChild(%this, %child)
     %child.add(%pointsLink);
     %child.add(%totalButton);
     %child.add(%closeBox);
-    %child.background = %background;
-    %child.hiliteCtrl = %hilite;
-    %child.desc = %itemDesc;
-    %child.expiringIcon = %expiringIcon;
-    %child.pointsLink = %pointsLink;
-    %child.buxLink = %buxLink;
-    %child.points = "-";
-    %child.bux = "-";
-    %child.sku = 0;
-    %child.shoppingList = %this;
-    if (!(getWord(%child.getNamespaceList(), 0) $= "StoreShoppingListItem"))
-    {
-        %child.bindClassName("StoreShoppingListItem");
-    }
-    return ;
-}
-function StoreShoppingList::addSku(%this, %sku)
-{
-    if (findWord($Player::inventory, %sku) >= 0)
-    {
-        return ;
-    }
+    background = %background @ %child;
+    hiliteCtrl = %hilite @ %child;
+    desc = %itemDesc @ %child;
+    expiringIcon = %expiringIcon @ %child;
+    pointsLink = %pointsLink @ %child;
+    buxLink = %buxLink @ %child;
+    points = "-" @ %child;
+    bux = "-" @ %child;
+    sku = 0 @ %child;
+    shoppingList = %this @ %child;
+    %child.bindClassName("StoreShoppingListItem");
+};
+function StoreShoppingList::addSku(%this, %sku) {
+    return (0.0 >= findWord($Player::inventory, %sku));
     %count = %this.getCount();
     %idx = 0;
-    while (%idx < %count)
-    {
-        if (%this.getObject(%idx).sku $= %sku)
-        {
-            return ;
-        }
-        %idx = %idx + 1;
-    }
+    return (%this.getObject(%idx) SPC sku $= %sku);
+    %idx = (1.0 + %idx);
     %child = %this.addChild();
-    %child.sku = %sku;
-    %si = SkuManager.findBySku(%sku);
-    %child.desc.setText(%si.descShrt);
-    %child.desc.command = "ClosetGui.toggleSku(" @ %sku @ ");" @ "ClosetThumbnailsShop.scroll.scrollToSku(" @ %sku @ ");";
+    (%count < %idx);
+    sku = %sku @ %child;
+    %si = %sku.findBySku();
+    SkuManager;
+    desc.setText(descShrt);
+    command = %child @ desc;
+    %child @ %si @ "ClosetGui.toggleSku(" @ %sku @ ");" @ "ClosetThumbnailsShop.scroll.scrollToSku(" @ %sku @ ");";
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
-    %child.points = Inventory::getVPointsPriceForSku(%child.sku);
-    %child.bux = Inventory::getVBuxPriceForSku(%child.sku);
-    %child.pointsLink.setText(%pointsIcon @ " " @ %child.points);
-    %child.buxLink.setText(%buxIcon @ " " @ %child.bux);
-    if (!(%si.expireTime $= ""))
-    {
-        %child.expiringIcon.setBitmap("platform/client/ui/expiring_icon");
-        %child.expiringIcon.setVisible(1);
-    }
-    else
-    {
-        %child.expiringIcon.setBitmap("");
-        %child.expiringIcon.setVisible(0);
-    }
-    %count = StoreItemsFrame.thumbnails.getCount();
+    points = %child @ Inventory::getVPointsPriceForSku(sku) @ %child;
+    bux = %child @ Inventory::getVBuxPriceForSku(sku) @ %child;
+    pointsLink.setText(%child @ points);
+    buxLink.setText(%child @ bux);
+    expiringIcon.setBitmap("platform/client/ui/expiring_icon");
+    expiringIcon.setVisible(1);
+    expiringIcon.setBitmap("");
+    expiringIcon.setVisible(0);
+    %count = thumbnails.getCount();
+    StoreItemsFrame;
     %i = 0;
-    while (%i < %count)
-    {
-        %obj = StoreItemsFrame.thumbnails.getObject(%i);
-        if (%obj.sku == %sku)
-        {
-            %obj.toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
-            break;
-        }
-        %i = %i + 1;
-    }
+    %child;
+    %obj = thumbnails.getObject(%i);
+    StoreItemsFrame;
+    toggleCartButton.setBitmap("platform/client/buttons/removeFromCart");
+    %i = (1.0 + %i);
+    %obj;
     %this.update();
-    %this.hiliteCell(0, %this.getCount() - 1);
-    return ;
-}
-function StoreShoppingList::addSkus(%this, %skulist)
-{
+    %this.hiliteCell(0, (1.0 - %this.getCount()));
+};
+function StoreShoppingList::addSkus(%this, %skulist) {
     %skulist = trim(%skulist);
     %count = getWordCount(%skulist);
     %i = 0;
-    while (%i < %count)
-    {
-        %this.addSku(getWord(%skulist, %i));
-        %i = %i + 1;
-    }
-}
-
-function StoreShoppingList::removeSku(%this, %sku)
-{
+    %this.addSku(getWord(%skulist, %i));
+    %i = (1.0 + %i);
+    (%count < %i);
+};
+function StoreShoppingList::removeSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
-    while (%i < %count)
-    {
-        %obj = %this.getObject(%i);
-        if (%obj.sku == %sku)
-        {
-            %obj.delete();
-            break;
-        }
-        %i = %i + 1;
-    }
-    %count = StoreItemsFrame.thumbnails.getCount();
+    %obj = %this.getObject(%i);
+    (%count < %i);
+    %obj.delete();
+    %i = (1.0 + %i);
+    (%obj == sku);
+    %count = thumbnails.getCount();
+    StoreItemsFrame;
     %i = 0;
-    while (%i < %count)
-    {
-        %obj = StoreItemsFrame.thumbnails.getObject(%i);
-        if (%obj.sku == %sku)
-        {
-            %obj.toggleCartButton.setBitmap("platform/client/buttons/add2cart");
-            break;
-        }
-        %i = %i + 1;
-    }
-    if (findWord($StoreSkusLayer, %sku) != -1)
-    {
-        StoreAddItemsButton.setActive(1);
-    }
+    (%count < %i);
+    %obj = thumbnails.getObject(%i);
+    StoreItemsFrame;
+    toggleCartButton.setBitmap("platform/client/buttons/add2cart");
+    %i = (1.0 + %i);
+    %obj;
+    1.setActive();
     %this.update();
-    return ;
-}
-function StoreShoppingList::removeSkus(%this, %skulist)
-{
+};
+function StoreShoppingList::removeSkus(%this, %skulist) {
     %skulist = trim(%skulist);
     %count = getWordCount(%skulist);
     %i = 0;
-    while (%i < %count)
-    {
-        %this.removeSku(getWord(%skulist, %i));
-        %i = %i + 1;
-    }
-}
-
-function StoreShoppingList::clear(%this)
-{
+    %this.removeSku(getWord(%skulist, %i));
+    %i = (1.0 + %i);
+    (%count < %i);
+};
+function StoreShoppingList::clear(%this) {
     %this.removeSkus(%this.getSkus());
-    return ;
-}
-function StoreShoppingList::containsSku(%this, %sku)
-{
+};
+function StoreShoppingList::containsSku(%this, %sku) {
     %count = %this.getCount();
     %i = 0;
-    while (%i < %count)
-    {
-        if (%this.getObject(%i).sku == %sku)
-        {
-            return 1;
-        }
-        %i = %i + 1;
-    }
+    return 1;
+    %i = (1.0 + %i);
     return 0;
-}
-function StoreShoppingList::getSkus(%this)
-{
+};
+function StoreShoppingList::getSkus(%this) {
     %skus = "";
     %count = %this.getCount();
     %i = 0;
-    while (%i < %count)
-    {
-        %skus = %skus SPC %this.getObject(%i).sku;
-        %i = %i + 1;
-    }
+    %skus = %this.getObject(%i) @ sku;
+    %skus @ " ";
+    %i = (1.0 + %i);
+    (%count < %i);
     return trim(%skus);
-}
-function StoreShoppingList::addItemsYoureWearing(%this)
-{
+};
+function StoreShoppingList::addItemsYoureWearing(%this) {
     %count = getWordCount($StoreSkusLayer);
     %i = 0;
-    while (%i < %count)
-    {
-        %this.addSku(getWord($StoreSkusLayer, %i));
-        %i = %i + 1;
-    }
-    StoreAddItemsButton.setActive(0);
-    return ;
-}
-function StoreShoppingList::clear(%this)
-{
+    %this.addSku(getWord($StoreSkusLayer, %i));
+    %i = (1.0 + %i);
+    (%count < %i);
+    0.setActive();
+};
+function StoreShoppingList::clear(%this) {
     Parent::clear(%this);
     %this.update();
-    return ;
-}
-function StoreShoppingList::update(%this)
-{
-    StoreNoItemsText.setVisible(%this.getCount() == 0);
+};
+function StoreShoppingList::update(%this) {
+    (0.0 == %this.getCount()).setVisible();
     %this.reseatChildren();
     %this.sumPrices();
     %count = %this.getCount();
+    StoreNoItemsText;
     %i = 0;
-    while (%i < %count)
-    {
-        %child = %this.getObject(%i);
-        %child.background.setProfile((%i % 2) == 0 ? ClosetLtBackgroundProfile : ClosetDkBackgroundProfile);
-        %i = %i + 1;
-    }
-}
-
-function StoreShoppingList::sumPrices(%this)
-{
+    %child = %this.getObject(%i);
+    (%count < %i);
+    // unhandled opcode 8756 at 0x00002231
+    background.setProfile();
+    %i = (1.0 + %i);
+    ClosetDkBackgroundProfile;
+};
+function StoreShoppingList::sumPrices(%this) {
     %pointsSum = 0;
     %buxSum = 0;
     %count = %this.getCount();
     %idx = 0;
-    while (%idx < %count)
-    {
-        %child = %this.getObject(%idx);
-        if (!(%child.points $= "-"))
-        {
-            %pointsSum = %pointsSum + %child.points;
-        }
-        if (!(%child.bux $= "-"))
-        {
-            %buxSum = %buxSum + %child.bux;
-        }
-        %idx = %idx + 1;
-    }
+    %child = %this.getObject(%idx);
+    (%count < %idx);
+    %pointsSum = (points + %pointsSum);
+    %child;
+    %buxSum = (bux + %buxSum);
+    %child;
+    %idx = (1.0 + %idx);
+    !((%child SPC bux $= "-"));
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_9>";
+    (%count < %idx);
     %buxIcon = "<bitmap:platform/client/ui/vbux_9>";
-    StorePointsTotalText.setText(%pointsIcon @ " " @ %pointsSum);
-    StoreBuxTotalText.setText(%buxIcon @ " " @ %buxSum);
-    %this.pointsTotal = %pointsSum;
-    %this.buxTotal = %buxSum;
-    return ;
-}
-function StoreShoppingList::scrollToItem(%this, %item)
-{
+    !((%child SPC points $= "-"));
+    StorePointsTotalText @ %pointsIcon @ " " @ %pointsSum.setText();
+    StoreBuxTotalText @ %buxIcon @ " " @ %buxSum.setText();
+    pointsTotal = %pointsSum @ %this;
+    buxTotal = %buxSum @ %this;
+};
+function StoreShoppingList::scrollToItem(%this, %item) {
     %idx = %this.getObjectIndex(%item);
-    if (%idx >= 0)
-    {
-        %scroll = %this.scroll;
-        %cellHeight = getWord(%this.childrenExtent, 1) + %this.spacing;
-        %numRowsVisible = getWord(%scroll.getExtent(), 1) / %cellHeight;
-        %ypos = 1 - getWord(%this.getPosition(), 1);
-        %closestRow = %ypos / %cellHeight;
-        %targetRow = getWord(%this.hilitedCell, 1);
-        if (%targetRow < %closestRow)
-        {
-            %scroll.scrollTo(0, %cellHeight * %targetRow);
-        }
-        else
-        {
-            if (%targetRow >= ((%closestRow + %numRowsVisible) - 1))
-            {
-                %scroll.scrollTo(0, (%cellHeight * ((%targetRow - %numRowsVisible) + 1)) + (2 * %this.Parent.spacing));
-            }
-        }
-    }
-    return ;
-}
-function StoreShoppingListItem::onMouseEnterBounds(%this)
-{
-    %idx = %this.shoppingList.getObjectIndex(%this);
-    %this.shoppingList.hiliteCell(0, %idx);
-    return ;
-}
-function StoreShoppingListItem::onMouseLeaveBounds(%this)
-{
+    %scroll = scroll;
+    %this;
+    %cellHeight = (%this + getWord(childrenExtent, 1));
+    spacing;
+    %numRowsVisible = (%cellHeight / getWord(%scroll.getExtent(), 1));
+    %this;
+    %ypos = (getWord(%this.getPosition(), 1) - 1.0);
+    (0.0 >= %idx);
+    %closestRow = (%cellHeight / %ypos);
+    %targetRow = getWord(hilitedCell, 1);
+    %this;
+    %scroll.scrollTo(0, (%targetRow * %cellHeight));
+    %scroll.scrollTo(0, ((spacing * 2.0) + ((1.0 + (%numRowsVisible - %targetRow)) * %cellHeight)));
+};
+function StoreShoppingListItem::onMouseEnterBounds(%this) {
+    %idx = shoppingList.getObjectIndex(%this);
+    %this;
+    shoppingList.hiliteCell(0, %idx);
+};
+function StoreShoppingListItem::onMouseLeaveBounds(%this) {
     %this.onUnhilite();
-    return ;
-}
-function StoreShoppingListItem::onHilite(%this)
-{
-    if (0 && isObject(StoreLongDescText))
-    {
-        StoreShortDescText.setDesc(ClosetTabs.getShortSkuDesc(%this.sku));
-        StoreLongDescText.setDesc(ClosetTabs.getLongSkuDesc(%this.sku));
-        ClosetTabs.updateAuthorWidget(%this.sku);
-    }
-    StoreShoppingList.scrollToItem(%this);
-    %this.hiliteCtrl.setVisible(1);
-    return ;
-}
-function StoreShoppingListItem::onUnhilite(%this)
-{
-    if (0 && isObject(StoreLongDescText))
-    {
-        StoreShortDescText.showBaseDesc();
-        StoreLongDescText.showBaseDesc();
-        ClosetTabs.updateAuthorWidget("");
-    }
-    if (isObject(StoreItemDescHiliteFrame))
-    {
-        StoreItemDescHiliteFrame.setVisible(0);
-    }
-    if (isObject(StoreFloatingHiliteFrame))
-    {
-        StoreFloatingHiliteFrame.setVisible(0);
-    }
-    %this.hiliteCtrl.setVisible(0);
-    return ;
-}
-function StoreBalanceText::update(%this)
-{
+};
+function StoreShoppingListItem::onHilite(%this) {
+    sku.getShortSkuDesc().setDesc();
+    sku.getLongSkuDesc().setDesc();
+    sku.updateAuthorWidget();
+    %this.scrollToItem();
+    hiliteCtrl.setVisible(1);
+};
+function StoreShoppingListItem::onUnhilite(%this) {
+    showBaseDesc();
+    showBaseDesc();
+    "".updateAuthorWidget();
+    0.setVisible();
+    0.setVisible();
+    hiliteCtrl.setVisible(0);
+};
+function StoreBalanceText::update(%this) {
     %pointsIcon = "<bitmap:platform/client/ui/vpoints_14>";
     %buxIcon = "<bitmap:platform/client/ui/vbux_14>";
     %pointsInfoLink = "<spush><linkcolor:159fe7><a:gamelink " @ $Net::HelpURL_VPoints @ ">>> How to earn vPoints</a><spop>";
     %getBuxLink = "<spush><linkcolor:13b93c><a:gamelink " @ $Net::AddFundsURL @ ">>> Get more vBux</a><spop>";
     %this.setText("You Have   " @ "<spush><font:Arial Bold:16><color:159fe7>" @ %pointsIcon @ " " @ commaify($Player::VPoints) @ "<spop>" @ "   " @ "<spush><font:Arial Bold:16><color:13b93c>" @ %buxIcon @ " " @ commaify($Player::VBux) @ "<spop>" @ "<br>" @ "<font:Arial Bold:13>" @ %pointsInfoLink @ "   " @ %getBuxLink);
-    return ;
-}
-function StoreBalanceText::onURL(%this, %url)
-{
-    if (getWord(%url, 0) $= "gamelink")
-    {
-        %url = getWords(%url, 1);
-    }
+};
+function StoreBalanceText::onURL(%this, %url) {
+    %url = getWords(%url, 1);
+    (getWord(%url, 0) $= "gamelink");
     Parent::onURL(%this, %url);
-    return ;
-}
-function StoreItemsFrame::update(%this)
-{
-    if (!$gStoreStockLoaded[$gCurrentStoreName])
-    {
-        %this.thumbnails.infoText.setText("Loading store inventory...");
-    }
-    else
-    {
-        if (Inventory::getCurrentStoreSkus() $= "")
-        {
-            %this.thumbnails.infoText.setText("Nothing in stock!");
-        }
-        else
-        {
-            %this.thumbnails.infoText.setText("No matching items.");
-        }
-    }
-    %this.thumbnails.setDrawers(ThumbCategories.get(strlwr(%this.category)));
-    return ;
-}
-function StoreCategoryPopup::onSelect(%this, %unused, %entries)
-{
-    StoreItemsFrame.category = %entries;
-    StoreItemsFrame.update();
-    StoreShortDescText.schedule(0, "setBaseDesc", "");
-    StoreLongDescText.schedule(0, "setBaseDesc", "");
-    ClosetThumbnailsShop.getParent().scrollToTop();
-    return ;
-}
-function StoreLongDescText::setBaseDesc(%this, %desc)
-{
-    %this.baseText = %desc;
+};
+function StoreItemsFrame::update(%this) {
+    infoText.setText("Loading store inventory...");
+    infoText.setText("Nothing in stock!");
+    infoText.setText("No matching items.");
+    thumbnails.setDrawers(strlwr(category).get());
+};
+function StoreCategoryPopup::onSelect(%this, %unused, %entries) {
+    category = %entries @ StoreItemsFrame;
+    update();
+    0.schedule("setBaseDesc", "");
+    0.schedule("setBaseDesc", "");
+    getParent().scrollToTop();
+};
+function StoreLongDescText::setBaseDesc(%this, %desc) {
+    baseText = %desc @ %this;
     %this.setText(%desc);
-    if (%desc $= "")
-    {
-        StoreItemDescHiliteFrame.setVisible(0);
-        StoreFloatingHiliteFrame.setVisible(0);
-    }
-    return ;
-}
-function StoreLongDescText::setDesc(%this, %desc)
-{
+    0.setVisible();
+    0.setVisible();
+};
+function StoreLongDescText::setDesc(%this, %desc) {
     %this.setText(%desc);
-    return ;
-}
-function StoreLongDescText::showBaseDesc(%this)
-{
-    %this.setText(%this.baseText);
-    return ;
-}
-function StoreShortDescText::setBaseDesc(%this, %desc)
-{
+};
+function StoreLongDescText::showBaseDesc(%this) {
+    %this.setText(baseText);
+};
+function StoreShortDescText::setBaseDesc(%this, %desc) {
     StoreLongDescText::setBaseDesc(%this, %desc);
-    return ;
-}
-function StoreShortDescText::setDesc(%this, %desc)
-{
+};
+function StoreShortDescText::setDesc(%this, %desc) {
     StoreLongDescText::setDesc(%this, %desc);
-    return ;
-}
-function StoreShortDescText::showBaseDesc(%this)
-{
+};
+function StoreShortDescText::showBaseDesc(%this) {
     StoreLongDescText::showBaseDesc(%this, %desc);
-    return ;
-}
-function getCurrentStoreID()
-{
+};
+function getCurrentStoreID() {
     %storename = stripChars($gCurrentStoreName, 0123456789);
-    if (%storename $= "edocsecret")
-    {
-        %storename = "edoc";
-    }
-    if (%storename $= "")
-    {
-        return $gCurrentStoreName;
-    }
+    %storename = "edoc";
+    (%storename $= "edocsecret");
+    return $gCurrentStoreName;
     return %storename;
-}
-function StoreBanner::doAction(%this)
-{
+};
+function StoreBanner::doAction(%this) {
     %storename = getCurrentStoreID();
-    if (!(%storename $= ""))
-    {
-        gotoWebPage($Net::PartnerURL @ "/" @ %storename, 0);
-    }
-    return ;
-}
-function updateAccountBalanceDisplays()
-{
-    if (isObject(StoreBalanceText))
-    {
-        StoreBalanceText.update();
-    }
-    if (isObject(AccountBalanceHud))
-    {
-        AccountBalanceHud.update();
-    }
-    return ;
-}
-function clientCmdUpdateAccountBalances(%newPoints, %newBux)
-{
-    if (!(%newBux $= ""))
-    {
-        BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, 1);
-        $Player::VBux = mFloor(%newBux);
-    }
-    if (!(%newPoints $= ""))
-    {
-        BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, 1);
-        $Player::VPoints = mFloor(%newPoints);
-    }
+    gotoWebPage(!((%storename $= "")) @ $Net::PartnerURL @ "/" @ %storename, 0);
+};
+function updateAccountBalanceDisplays() {
+    update();
+    update();
+};
+function clientCmdUpdateAccountBalances(%newPoints, %newBux) {
+    BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, 1);
+    $Player::VBux = mFloor(%newBux);
+    !((%newBux $= ""));
+    BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, 1);
+    $Player::VPoints = mFloor(%newPoints);
+    !((%newPoints $= ""));
     updateAccountBalanceDisplays();
-    return ;
-}
-function clientCmdRefreshVPoints()
-{
+};
+function clientCmdRefreshVPoints() {
     getBalancesAndScores();
-    return ;
-}
-$gBalanceUpdateSpecialEffect_Delay["vBux"] = 150;
-$gBalanceUpdateSpecialEffect_Delay["vPoints"] = 300;
-$gBalanceUpdateSpecialEffect_Threshhold1["vBux"] = 1;
-$gBalanceUpdateSpecialEffect_Threshhold1["vPoints"] = 100;
-$gBalanceUpdateSpecialEffect_Threshhold2["vBux"] = 1;
-$gBalanceUpdateSpecialEffect_Threshhold2["vPoints"] = 1000;
-$gBalanceUpdateSpecialEffect_Sound1["vBux"] = "AudioIm_CaChing";
-$gBalanceUpdateSpecialEffect_Sound1["vPoints"] = "AudioIm_vPoints1";
-$gBalanceUpdateSpecialEffect_Sound2["vBux"] = "AudioIm_CaChing";
-$gBalanceUpdateSpecialEffect_Sound2["vPoints"] = "AudioIm_vPoints2";
-$gBalanceUpdateSpecialEffect_GuiControl1["vBux"] = "AccountBalanceVBuxText";
-$gBalanceUpdateSpecialEffect_GuiControl1["vPoints"] = "AccountBalanceVPointsText";
-$gBalanceUpdateSpecialEffect_GuiControl2["vBux"] = "";
-$gBalanceUpdateSpecialEffect_GuiControl2["vPoints"] = "AccountBalanceHud";
-$gBalanceUpdateSpecialEffect_PulseCount1["vBux"] = 1;
-$gBalanceUpdateSpecialEffect_PulseCount1["vPoints"] = 1;
-$gBalanceUpdateSpecialEffect_PulseCount2["vBux"] = 4;
-$gBalanceUpdateSpecialEffect_PulseCount2["vPoints"] = 4;
-function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify)
-{
-    %delta = %newVal - %oldVal;
-    if (%notify)
-    {
-        schedule(3000, 0, "floatBalanceChange", %whichBalance, %delta, $player);
-    }
-    %threshhold1 = $gBalanceUpdateSpecialEffect_Threshhold1[%whichBalance];
-    if (%delta < %threshhold1)
-    {
-        return ;
-    }
-    %delay = $gBalanceUpdateSpecialEffect_Delay[%whichBalance];
-    %threshhold2 = $gBalanceUpdateSpecialEffect_Threshhold2[%whichBalance];
-    %sound1 = $gBalanceUpdateSpecialEffect_Sound1[%whichBalance];
-    %sound2 = $gBalanceUpdateSpecialEffect_Sound2[%whichBalance];
-    %guiControl1 = $gBalanceUpdateSpecialEffect_GuiControl1[%whichBalance];
-    %guiControl2 = $gBalanceUpdateSpecialEffect_GuiControl2[%whichBalance];
-    %pulseCount1 = $gBalanceUpdateSpecialEffect_PulseCount1[%whichBalance];
-    %pulseCount2 = $gBalanceUpdateSpecialEffect_PulseCount2[%whichBalance];
-    if (%delta < %threshhold2)
-    {
-        %sound = %sound1;
-        %pulseCount = %pulseCount1;
-    }
-    else
-    {
-        %sound = %sound2;
-        %pulseCount = %pulseCount2;
-    }
+};
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"] = 150;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"] = 300;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"] = 1;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"] = 100;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"] = 1;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"] = 1000;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"] = "AudioIm_CaChing";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"] = "AudioIm_vPoints1";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"] = "AudioIm_CaChing";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"] = "AudioIm_vPoints2";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"] = "AccountBalanceVBuxText";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"] = "AccountBalanceVPointsText";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"] = "";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"] = "AccountBalanceHud";
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"] = 1;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vPoints"] = 1;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vBux"] = 4;
+$Player::VPoints[$gBalanceUpdateSpecialEffect_Delay @ "vBux"][$gBalanceUpdateSpecialEffect_Delay @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vBux"][$gBalanceUpdateSpecialEffect_Threshhold2 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound1 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound1 @ "vPoints"][$gBalanceUpdateSpecialEffect_Sound2 @ "vBux"][$gBalanceUpdateSpecialEffect_Sound2 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl1 @ "vPoints"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vBux"][$gBalanceUpdateSpecialEffect_GuiControl2 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount1 @ "vPoints"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vBux"][$gBalanceUpdateSpecialEffect_PulseCount2 @ "vPoints"] = 4;
+function BalanceUpdateSpecialEffects(%whichBalance, %oldVal, %newVal, %notify) {
+    %delta = (%oldVal - %newVal);
+    schedule(3000, 0, "floatBalanceChange", %whichBalance, %delta, $player);
+    %threshhold1 = %whichBalance[$gBalanceUpdateSpecialEffect_Threshhold1 @ %whichBalance];
+    %notify;
+    return (%threshhold1 < %delta);
+    %delay = %whichBalance[$gBalanceUpdateSpecialEffect_Delay @ %whichBalance];
+    %threshhold2 = %whichBalance[$gBalanceUpdateSpecialEffect_Threshhold2 @ %whichBalance];
+    %sound1 = %whichBalance[$gBalanceUpdateSpecialEffect_Sound1 @ %whichBalance];
+    %sound2 = %whichBalance[$gBalanceUpdateSpecialEffect_Sound2 @ %whichBalance];
+    %guiControl1 = %whichBalance[$gBalanceUpdateSpecialEffect_GuiControl1 @ %whichBalance];
+    %guiControl2 = %whichBalance[$gBalanceUpdateSpecialEffect_GuiControl2 @ %whichBalance];
+    %pulseCount1 = %whichBalance[$gBalanceUpdateSpecialEffect_PulseCount1 @ %whichBalance];
+    %pulseCount2 = %whichBalance[$gBalanceUpdateSpecialEffect_PulseCount2 @ %whichBalance];
+    %sound = %sound1;
+    (%threshhold2 < %delta);
+    %pulseCount = %pulseCount1;
+    %sound = %sound2;
+    %pulseCount = %pulseCount2;
     alxPlay(%sound);
     %guiControl1.schedule(%delay, "blinkSet", "bounce", 150, 100, "0 -1 0 0", 5);
-    if (isObject(%guiControl2))
-    {
-        %guiControl2.startPulse(%pulseCount);
-    }
-    return ;
-}
-function floatBalanceChange(%whichBalance, %change, %player)
-{
+    %guiControl2.startPulse(%pulseCount);
+};
+function floatBalanceChange(%whichBalance, %change, %player) {
     %threshhold = 1;
-    if (%change < %threshhold)
-    {
-        return ;
-    }
-    if (!isObject(%player))
-    {
-        error(getScopeName() SPC "- can\'t find player!" SPC getTrace());
-        return ;
-    }
-    if (!isObject(%player.hudCtrl))
-    {
-        error(getScopeName() SPC "- no hudCtrl to attach to!" SPC getTrace());
-        return ;
-    }
-    %isVPoints = %whichBalance $= "vPoints";
-    %alot = %isVPoints ? 1000 : 100;
-    %amountNorm = mClampF(%change / %alot, 0, 1);
-    %amountNorm = 1 - ((1 - %amountNorm) * (1 - %amountNorm));
-    %isALot = %amountNorm > 0.95;
-    %speed = ((1 - %amountNorm) * 2) + 3;
-    %fontTag = %isALot ? "<font:arial:18>" : "<font:arial:14>";
-    %currencyText = %isVPoints ? "vPoints" : "vBux";
-    %text = %fontTag @ "<b><outline>+" SPC %change SPC %currencyText;
-    %maxAge = (%amountNorm * 70) + 70;
-    %baseColor = %isVPoints ? "55eeff" : "22dd44";
-    %baseAlpha = (%amountNorm * 0.4) + 0.6;
+    return (%threshhold < %change);
+    error(getScopeName() @ " " @ "- can't find player!" @ " " @ getTrace());
+    return !(isObject(%player));
+    error(getScopeName() @ " " @ "- no hudCtrl to attach to!" @ " " @ getTrace());
+    return !(isObject(hudCtrl));
+    %isVPoints = (%whichBalance $= "vPoints");
+    %alot = 100;
+    1000;
+    %amountNorm = mClampF((%alot / %change), 0, 1);
+    %isVPoints;
+    %amountNorm = (((%amountNorm - 1.0) * (%amountNorm - 1.0)) - 1.0);
+    %isALot = (0.95 > %amountNorm);
+    %speed = (3.0 + (2.0 * (%amountNorm - 1.0)));
+    %fontTag = "<font:arial:14>";
+    "<font:arial:18>";
+    %currencyText = "vBux";
+    "vPoints";
+    %text = %isVPoints @ %fontTag @ "<b><outline>+" @ " " @ %change @ " " @ %currencyText;
+    %isALot;
+    %maxAge = (70.0 + (70.0 * %amountNorm));
+    %baseColor = "22dd44";
+    "55eeff";
+    %baseAlpha = (0.6 + (0.4 * %amountNorm));
+    %isVPoints;
     %player.floatText(%text, %maxAge, %speed, %baseColor, %baseAlpha);
-    return ;
-}
-function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha)
-{
-    %this.hudCtrl.updatePosition();
-    %text = "<just:center>" @ %text;
+};
+function Player::floatText(%this, %text, %maxAge, %speed, %baseColor, %baseAlpha) {
+    hudCtrl.updatePosition();
+    %text = %this @ "<just:center>" @ %text;
     %width = 600;
-    %ctrl = new GuiMLTextCtrl()
-    {
-        extent = %width SPC 18;
-        position = getWord(%this.hudCtrl.position, 0) - (%width / 2) SPC getWord(%this.hudCtrl.position, 1) + 100;
-        age = 0;
-        maxAge = %maxAge;
-        speed = %speed;
-        BaseColor = %baseColor;
-        baseText = %text;
-        baseAlpha = %baseAlpha;
-    };
-    ThePointsFloaterHud.add(%ctrl);
-    ThePointsFloaterHud.doTick();
-    return ;
-}
-$gFloatingTextStyles["font","default"] = "arial:14";
-$gFloatingTextStyles["outline","default"] = 1;
-$gFloatingTextStyles["color","default"] = "FFFFFF";
-$gFloatingTextStyles["baseAlpha","default"] = 0.7;
-$gFloatingTextStyles["maxAge","default"] = 100;
-$gFloatingTextStyles["speed","default"] = 5;
-$gFloatingTextStyles["prepend","default"] = "";
-$gFloatingTextStyles["append","default"] = "";
-$gFloatingTextStyles["font","emphatic1"] = "arial:14";
-$gFloatingTextStyles["outline","emphatic1"] = 1;
-$gFloatingTextStyles["color","emphatic1"] = "FFFFFF";
-$gFloatingTextStyles["baseAlpha","emphatic1"] = 0.8;
-$gFloatingTextStyles["maxAge","emphatic1"] = 200;
-$gFloatingTextStyles["speed","emphatic1"] = 4;
-$gFloatingTextStyles["prepend","emphatic1"] = "";
-$gFloatingTextStyles["append","emphatic1"] = "";
-$gFloatingTextStyles["font","light1"] = "arial:14";
-$gFloatingTextStyles["outline","light1"] = !1;
-$gFloatingTextStyles["color","light1"] = "FFFFFF";
-$gFloatingTextStyles["baseAlpha","light1"] = 0.7;
-$gFloatingTextStyles["maxAge","light1"] = 20;
-$gFloatingTextStyles["speed","light1"] = 10;
-$gFloatingTextStyles["prepend","light1"] = "";
-$gFloatingTextStyles["append","light1"] = "";
-$gFloatingTextStyles["font","SUPERSLOWDRIP"] = "arial:14";
-$gFloatingTextStyles["outline","SUPERSLOWDRIP"] = 1;
-$gFloatingTextStyles["color","SUPERSLOWDRIP"] = "159FE7";
-$gFloatingTextStyles["baseAlpha","SUPERSLOWDRIP"] = 1;
-$gFloatingTextStyles["maxAge","SUPERSLOWDRIP"] = 100;
-$gFloatingTextStyles["speed","SUPERSLOWDRIP"] = 4;
-$gFloatingTextStyles["prepend","SUPERSLOWDRIP"] = "";
-$gFloatingTextStyles["append","SUPERSLOWDRIP"] = "";
-function Player::floatTextSimple(%this, %text, %style)
-{
-    if (!isDefined("%style"))
-    {
-        %style = "";
-    }
-    if (%style $= "")
-    {
-        %style = "default";
-    }
-    if ($gFloatingTextStyles["font",%style] $= "")
-    {
-        error(getScopeName() SPC "- unknown style:" SPC %style SPC %text SPC getTrace());
-        %style = "default";
-    }
-    %outline = $gFloatingTextStyles["outline",%style] ? "<b><outline>" : "";
-    %text = "<font:" @ $gFloatingTextStyles["font",%style] @ ">" @ %text;
+    extent = GuiMLTextCtrl @ new ""() @ %width @ " " @ 18;
+    0;
+    position = (hudCtrl - getWord(position, 0)) @ " " @ 100.0 @ %this @ (hudCtrl + getWord(position, 1));
+    %this;
+    age = (2.0 / %width) @ 0;
+    maxAge = %maxAge;
+    speed = %speed;
+    BaseColor = %baseColor;
+    baseText = %text;
+    baseAlpha = %baseAlpha;
+    %ctrl = ;
+    %ctrl.add();
+    doTick();
+};
+function Player::floatTextSimple(%this, %text, %style) {
+    %style = "";
+    !(isDefined("%style"));
+    %style = "default";
+    (%style $= "");
+    error(getScopeName() @ " " @ "- unknown style:" @ " " @ %style @ " " @ %text @ " " @ getTrace());
+    %style = "default";
+    (%style[$gFloatingTextStyles TAB "font" @ %style] $= "");
+    %outline = "";
+    "<b><outline>";
+    %text = %style[%style[$gFloatingTextStyles TAB "outline" @ %style] @ "<font:" @ $gFloatingTextStyles TAB "font" @ %style] @ ">" @ %text;
     %text = %outline @ %text;
-    %text = $gFloatingTextStyles["prepend",%style] @ %text;
-    %text = %text @ $gFloatingTextStyles["append",%style];
-    %baseColor = $gFloatingTextStyles["color",%style];
-    %baseAlpha = $gFloatingTextStyles["baseAlpha",%style];
-    %maxAge = $gFloatingTextStyles["maxAge",%style];
-    %speed = $gFloatingTextStyles["speed",%style];
+    %text = %style[$gFloatingTextStyles TAB "prepend" @ %style] @ %text;
+    %text = %style[%text @ $gFloatingTextStyles TAB "append" @ %style];
+    %baseColor = %style[$gFloatingTextStyles TAB "color" @ %style];
+    %baseAlpha = %style[$gFloatingTextStyles TAB "baseAlpha" @ %style];
+    %maxAge = %style[$gFloatingTextStyles TAB "maxAge" @ %style];
+    %speed = %style[$gFloatingTextStyles TAB "speed" @ %style];
     %this.floatText(%text, %maxAge, %speed, %baseColor, %baseAlpha);
-    return ;
-}
-function ClientCmdFloatText(%playerGhostID, %text, %style)
-{
-    %player = ServerConnection.resolveGhostID(%playerGhostID);
-    if (!isObject(%player))
-    {
-        error(getScopeName() SPC "- could not resolve ghost" SPC %playerGhostID SPC %text);
-        return ;
-    }
+};
+function ClientCmdFloatText(%playerGhostID, %text, %style) {
+    %player = %playerGhostID.resolveGhostID();
+    ServerConnection;
+    error(getScopeName() @ " " @ "- could not resolve ghost" @ " " @ %playerGhostID @ " " @ %text);
+    return !(isObject(%player));
     %player.floatTextSimple(%text, %style);
-    return ;
-}
-function ThePointsFloaterHud::doTick(%this)
-{
-    cancel(%this.timerID);
-    %this.timerID = "";
+};
+function ThePointsFloaterHud::doTick(%this) {
+    cancel(timerID);
+    timerID = %this @ "" @ %this;
     %numChildren = %this.getCount();
-    if (%numChildren < 1)
-    {
-        return ;
-    }
-    %n = %numChildren - 1;
-    while (%n >= 0)
-    {
-        %ctrl = %this.getObject(%n);
-        %ageNorm = %ctrl.age / %ctrl.maxAge;
-        if (%ageNorm > 1)
-        {
-            %ctrl.delete();
-        }
-        else
-        {
-            %ctrl.age = %ctrl.age + 1;
-            %x = getWord(%ctrl.position, 0);
-            %y = getWord(%ctrl.position, 1);
-            if (%ageNorm > 0.2)
-            {
-                %x = %x + ((%ctrl.speed * (%ageNorm - 0.2)) * 3);
-                %y = %y - %ctrl.speed;
-            }
-            %ctrl.reposition(%x, %y);
-            %alpha = (1 - %ageNorm) * %ctrl.baseAlpha;
-            if (%ageNorm < 0.2)
-            {
-                %alpha = 1 - (%alpha * ((mSin(getSimTime() * 0.03) * 0.5) + 0.5));
-            }
-            %alpha1 = formatInt("%0.2X", %alpha * 255);
-            %alpha2 = formatInt("%0.2X", 1 * 255);
-            if (%ageNorm > 0.2)
-            {
-                %alpha2 = 00;
-            }
-            %colorTag = "<color:" @ %ctrl.BaseColor @ %alpha1 @ ">";
-            %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
-            %ctrl.setText(%shadowTag @ %colorTag @ %ctrl.baseText);
-        }
-        %n = %n - 1;
-    }
-    %this.timerID = %this.schedule(%this.tickPeriodMS, "doTick");
-    return ;
-}
-function clientCmdUpdateVPoints(%newPoints, %notify)
-{
-    if (!isDefined("%notify"))
-    {
-        %notify = 1;
-    }
-    if (!(%newPoints $= ""))
-    {
-        BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, %notify);
-        $Player::VPoints = mFloor(%newPoints);
-        updateAccountBalanceDisplays();
-    }
-    return ;
-}
-function clientCmdUpdateVBux(%newBux, %notify)
-{
-    if (!isDefined("%notify"))
-    {
-        %notify = 1;
-    }
-    if (!(%newBux $= ""))
-    {
-        BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, %notify);
-        $Player::VBux = mFloor(%newBux);
-        updateAccountBalanceDisplays();
-    }
-    return ;
-}
-function ClosetGUI_ToggleSku_Shops(%sku)
-{
+    return (1.0 < %numChildren);
+    %n = (1.0 - %numChildren);
+    %ctrl = %this.getObject(%n);
+    (0.0 >= %n);
+    %ageNorm = (%ctrl / age);
+    maxAge;
+    %ctrl.delete();
+    age = (%ctrl + age);
+    1.0;
+    %x = getWord(position, 0);
+    %ctrl;
+    %y = getWord(position, 1);
+    %ctrl;
+    %x = (((0.2 - %ageNorm) * (%ctrl * speed)) + %x);
+    3.0;
+    %y = (speed - %y);
+    %ctrl;
+    %ctrl.reposition(%x, %y);
+    %alpha = (baseAlpha * (%ageNorm - 1.0));
+    %ctrl;
+    %alpha = (((0.5 + (0.5 * mSin((0.03 * getSimTime())))) * %alpha) - 1.0);
+    (0.2 < %ageNorm);
+    %alpha1 = formatInt("%0.2X", (255.0 * %alpha));
+    (0.2 > %ageNorm);
+    %alpha2 = formatInt("%0.2X", (255.0 * 1.0));
+    (1.0 > %ageNorm);
+    %alpha2 = 00;
+    (0.2 > %ageNorm);
+    %colorTag = %ctrl @ "<color:" @ %ctrl @ BaseColor @ %alpha1 @ ">";
+    %shadowTag = "<shadowcolor:" @ 000000 @ %alpha2 @ ">";
+    %ctrl.setText(%ctrl @ baseText);
+    %n = (1.0 - %n);
+    %shadowTag @ %colorTag;
+    timerID = %this @ %this.schedule(tickPeriodMS, "doTick") @ %this;
+    (0.0 >= %n);
+};
+function clientCmdUpdateVPoints(%newPoints, %notify) {
+    %notify = 1;
+    !(isDefined("%notify"));
+    BalanceUpdateSpecialEffects("vPoints", $Player::VPoints, %newPoints, %notify);
+    $Player::VPoints = mFloor(%newPoints);
+    !((%newPoints $= ""));
+    updateAccountBalanceDisplays();
+};
+function clientCmdUpdateVBux(%newBux, %notify) {
+    %notify = 1;
+    !(isDefined("%notify"));
+    BalanceUpdateSpecialEffects("vBux", $Player::VBux, %newBux, %notify);
+    $Player::VBux = mFloor(%newBux);
+    !((%newBux $= ""));
+    updateAccountBalanceDisplays();
+};
+function ClosetGUI_ToggleSku_Shops(%sku) {
     %wordLoc = findWord($StoreSkusLayer, %sku);
-    if (%wordLoc >= 0)
-    {
-        $StoreSkusLayer = removeWord($StoreSkusLayer, %wordLoc);
-        StoreShortDescText.setBaseDesc("");
-        StoreLongDescText.setBaseDesc("");
-        ClosetTabs.updateAuthorWidget("");
-    }
-    else
-    {
-        $StoreSkusLayer = SkuManager.overlaySkus($StoreSkusLayer, %sku);
-        StoreShortDescText.setBaseDesc(ClosetTabs.getShortSkuDesc(%sku));
-        StoreLongDescText.setBaseDesc(ClosetTabs.getLongSkuDesc(%sku));
-        ClosetTabs.updateAuthorWidget(%sku);
-    }
+    $StoreSkusLayer = removeWord($StoreSkusLayer, %wordLoc);
+    (0.0 >= %wordLoc);
+    "".setBaseDesc();
+    "".setBaseDesc();
+    "".updateAuthorWidget();
+    $StoreSkusLayer = $StoreSkusLayer.overlaySkus(%sku);
+    SkuManager;
+    %sku.getShortSkuDesc().setBaseDesc();
+    %sku.getLongSkuDesc().setBaseDesc();
+    %sku.updateAuthorWidget();
     %count = getWordCount($StoreSkusLayer);
+    ClosetTabs;
     %itemsToAdd = 0;
+    ClosetTabs;
     %i = 0;
-    while (%i < %count)
-    {
-        %sku2 = getWord($StoreSkusLayer, %i);
-        if (!StoreShoppingList.containsSku(%sku2))
-        {
-            %itemsToAdd = 1;
-            break;
-        }
-        %i = %i + 1;
-    }
-    StoreAddItemsButton.setActive(%itemsToAdd);
-    return ;
-}
+    StoreLongDescText;
+    %sku2 = getWord($StoreSkusLayer, %i);
+    (%count < %i);
+    %itemsToAdd = 1;
+    !(%sku2.containsSku());
+    %i = (1.0 + %i);
+    StoreShoppingList;
+    %itemsToAdd.setActive();
+};

@@ -1,22 +1,16 @@
-function kick(%client)
-{
-    %msg = "\c2The admin has kicked" SPC %client.name;
+function kick(%client) {
+    %msg = %client @ name;
+    "\x03The admin has kicked" @ " ";
     messageAll('MsgAdminForce', %msg);
-    if (!%client.isAIControlled())
-    {
-        BanList::add(%client.guid, %client.getAddress(), $Pref::Server::KickBanTime);
-    }
+    BanList::add(guid, %client.getAddress(), $Pref::Server::KickBanTime);
     %client.delete("You have been kicked from this server");
-    return ;
-}
-function Ban(%client)
-{
-    %msg = "\c2The admin has banned" SPC %client.name;
+    return %client;
+};
+function Ban(%client) {
+    %msg = %client @ name;
+    "\x03The admin has banned" @ " ";
     messageAll('MsgAdminForce', %msg);
-    if (!%client.isAIControlled())
-    {
-        BanList::add(%client.guid, %client.getAddress(), $Pref::Server::BanTime);
-    }
+    BanList::add(guid, %client.getAddress(), $Pref::Server::BanTime);
     %client.delete("You have been banned from this server");
-    return ;
-}
+    return %client;
+};

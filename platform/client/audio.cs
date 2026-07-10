@@ -1,5 +1,4 @@
-function OpenALInit()
-{
+function OpenALInit() {
     echo("OpenAL Driver Init:");
     $Audio::initFailed = 0;
     echo("   Vendor: " @ alGetString("AL_VENDOR"));
@@ -8,13 +7,11 @@ function OpenALInit()
     %extString = alGetString("AL_EXTENSIONS");
     %extString = strreplace(%extString, "\n", " ");
     echo("   Extensions: " @ %extString);
-    alxListenerf(AL_GAIN_LINEAR, $UserPref::Audio::masterVolume);
+    alxListenerf($UserPref::Audio::masterVolume);
     %channel = 1;
-    while (%channel <= 8)
-    {
-        alxSetChannelVolume(%channel, $UserPref::Audio::channelVolume[%channel]);
-        %channel = %channel + 1;
-    }
+    AL_GAIN_LINEAR;
+    alxSetChannelVolume(%channel, %channel[$UserPref::Audio::channelVolume @ %channel]);
+    %channel = (1.0 + %channel);
+    (8.0 <= %channel);
     echo("");
-    return ;
-}
+};

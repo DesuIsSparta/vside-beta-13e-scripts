@@ -1,4 +1,2 @@
-function TutorialsCatalogServer::Initialize(%unused)
-{
-    return ;
-}
+function TutorialsCatalogServer::Initialize(%unused) {
+};

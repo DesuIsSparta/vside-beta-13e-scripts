@@ -1,17 +1,13 @@
 $blockGame::matchThreshhold = 3;
-function BlockGameTheGrind::getGameName(%unused)
-{
+function BlockGameTheGrind::getGameName(%unused) {
     return "TheGrind";
-}
-function BlockGameTheGrind::getSku(%unused)
-{
+};
+function BlockGameTheGrind::getSku(%unused) {
     return 41336;
-}
-function BlockGameMateriel::getGameName(%unused)
-{
+};
+function BlockGameMateriel::getGameName(%unused) {
     return "Materiel";
-}
-function BlockGameMateriel::getSku(%unused)
-{
+};
+function BlockGameMateriel::getSku(%unused) {
     return 0;
-}
+};

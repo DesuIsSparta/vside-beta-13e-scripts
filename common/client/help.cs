@@ -1,75 +1,59 @@
-function HelpDlg::onWake(%this)
-{
-    HelpFileList.entryCount = 0;
-    HelpFileList.clear();
+function HelpDlg::onWake(%this) {
+    entryCount = 0 @ HelpFileList;
+    clear();
     %file = findFirstFile("*.hfl");
-    while (!(%file $= ""))
-    {
-        HelpFileList.fileName[HelpFileList.entryCount] = %file;
-        HelpFileList.addRow(HelpFileList.entryCount, fileBase(%file));
-        HelpFileList.entryCount = HelpFileList.entryCount + 1;
-        %file = findNextFile("*.hfl");
-    }
-    HelpFileList.sortNumerical(0);
+    HelpFileList;
+    fileName = !((%file $= "")) @ %file @ HelpFileList @ entryCount @ HelpFileList;
+    entryCount.addRow(fileBase(%file));
+    entryCount = (HelpFileList + entryCount);
+    1.0;
+    %file = findNextFile("*.hfl");
+    HelpFileList;
+    0.sortNumerical();
     %i = 0;
-    while (%i < HelpFileList.entryCount)
-    {
-        %rowId = HelpFileList.getRowId(%i);
-        %text = HelpFileList.getRowTextById(%rowId);
-        %text = %i + 1 @ ". " @ restWords(%text);
-        HelpFileList.setRowById(%rowId, %text);
-        %i = %i + 1;
-    }
-    HelpFileList.setSelectedRow(0);
-    return ;
-}
-function HelpDlg::close(%this)
-{
-    Canvas.popDialog(%this);
-    return ;
-}
-function HelpFileList::onSelect(%this, %row)
-{
-    %fo = new FileObject();
-    %fo.openForRead(%this.fileName[%row]);
+    HelpFileList;
+    %rowId = %i.getRowId();
+    HelpFileList;
+    %text = %rowId.getRowTextById();
+    HelpFileList;
+    %text = HelpFileList @ (entryCount < %i) @ (1.0 + %i) @ ". " @ restWords(%text);
+    !((HelpFileList SPC %file $= ""));
+    %rowId.setRowById(%text);
+    %i = (1.0 + %i);
+    HelpFileList;
+    0.setSelectedRow();
+};
+function HelpDlg::close(%this) {
+    %this.popDialog();
+};
+function HelpFileList::onSelect(%this, %row) {
+    %fo = new ""();
+    FileObject;
+    %fo.openForRead(fileName);
     %text = "";
-    while (!%fo.isEOF())
-    {
-        %text = %text @ %fo.readLine() @ "\n";
-    }
+    0 @ %row @ %this;
+    %text = !(%fo.isEOF()) @ %text @ %fo.readLine() @ "\n";
     %fo.delete();
-    HelpText.setText(%text);
-    HelpText.makeFirstResponder(1);
-    return ;
-}
-function getHelp(%helpName)
-{
-    Canvas.pushDialog(HelpDlg, 0);
-    if (!(%helpName $= ""))
-    {
-        %index = HelpFileList.findTextIndex(%helpName);
-        HelpFileList.setSelectedRow(%index);
-    }
-    return ;
-}
-function contextHelp()
-{
+    %text.setText();
+    1.makeFirstResponder();
+};
+function getHelp(%helpName) {
+    0.pushDialog();
+    %index = %helpName.findTextIndex();
+    HelpFileList;
+    %index.setSelectedRow();
+};
+function contextHelp() {
     %i = 0;
-    while (%i < Canvas.getCount())
-    {
-        if (Canvas.getObject(%i).getName() $= HelpDlg)
-        {
-            Canvas.popDialog(HelpDlg);
-            return ;
-        }
-        %i = %i + 1;
-    }
-    %content = Canvas.getContent();
+    popDialog();
+    return HelpDlg;
+    %i = (1.0 + %i);
+    %content = getContent();
+    Canvas;
     %helpPage = %content.getHelpPage();
+    (getCount() < %i);
     getHelp(%helpPage);
-    return ;
-}
-function GuiControl::getHelpPage(%this)
-{
-    return %this.helpPage;
-}
+};
+function GuiControl::getHelpPage(%this) {
+    return helpPage;
+};

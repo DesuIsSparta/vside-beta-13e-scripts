@@ -1,5 +1,4 @@
-function DeclareFloorplans()
-{
+function DeclareFloorplans() {
     DeclareFloorplan("NV255_S", 45000);
     DeclareFloorplan("NV255_M", 45001);
     DeclareFloorplan("NV255_L", 45002);
@@ -18,10 +17,8 @@ function DeclareFloorplans()
     DeclareFloorplan("LaVilla", 45015);
     DeclareFloorplan("ClubRage", 45016);
     DeclareFloorplan("Islands", 45017);
-    return ;
-}
-function DeclareBuildings()
-{
+};
+function DeclareBuildings() {
     DeclareBuilding("LoftApartments", "The Warehouse Lofts", "", "Freshman", "nv_warehouselofts", "LoftApartment");
     DeclareBuilding("NV255Lofts", "NV255 Lofts", "", "Freshman", "nv_nv255", "NV255_L NV255_M NV255_S");
     DeclareBuilding("ClubRage", "Club Rage", "", "Freshman", "nv_clubrage", "ClubRage");
@@ -32,8 +29,6 @@ function DeclareBuildings()
     DeclareBuilding("HotelRaijuku", "iiR Residences", "", "Senior", "rj_iir", "iiRResidences_L iiRResidences_M iiRResidences_S");
     DeclareBuilding("RunDownRaijukuApartments", "Hidden Jewel Apartments", "", "Junior", "", "BeatupApartment");
     DeclareBuilding("RJHarbor", "Island Apartments", "", "Freshman", "rj_islands", "Islands");
-    return ;
-}
+};
 DeclareFloorplans();
 DeclareBuildings();
-

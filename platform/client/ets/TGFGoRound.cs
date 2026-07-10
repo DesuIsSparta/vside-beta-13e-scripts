@@ -1,167 +1,133 @@
-function newTGFGoRound(%name)
-{
+function newTGFGoRound(%name) {
     %obj = newThumbnailsGoRound(%name);
     %obj.bindClassName("TGFGoRound");
     return %obj;
-}
-function TGFGoRound::rebuildContainer_LilThumb(%this, %container)
-{
+};
+function TGFGoRound::rebuildContainer_LilThumb(%this, %container) {
     %container.deleteMembers();
-    %ctrl = new GuiBitmapCtrl()
-    {
-        profile = ETSNonModalProfile;
-        extent = %container.getExtent();
-    };
+    profile = new ""() @ ETSNonModalProfile;
+    GuiBitmapCtrl;
+    extent = 0 @ %container.getExtent();
+    %ctrl = ;
     %container.add(%ctrl);
-    %container.mBitmapCtrl = %ctrl;
-    %ctrlB = new GuiControl()
-    {
-        profile = EtsDarkBorderlessBoxProfile;
-        extent = %container.getExtent();
-        position = 0 SPC getWord(%container.getExtent(), 1) - 10;
-    };
+    mBitmapCtrl = %ctrl @ %container;
+    profile = new ""() @ EtsDarkBorderlessBoxProfile;
+    GuiControl;
+    extent = 0 @ %container.getExtent();
+    position = 0 @ " " @ (10.0 - getWord(%container.getExtent(), 1));
+    %ctrlB = ;
     %container.add(%ctrlB);
-    %ctrl = new GuiMLTextCtrl()
-    {
-        profile = ETSNonModalProfile;
-        extent = %ctrlB.getExtent();
-        style = "tgfGoRoundLilThumb";
-    };
+    profile = new ""() @ ETSNonModalProfile;
+    GuiMLTextCtrl;
+    extent = 0 @ %ctrlB.getExtent();
+    style = "tgfGoRoundLilThumb";
+    %ctrl = ;
     %ctrlB.add(%ctrl);
-    %container.mTextCtrl = %ctrl;
-    return ;
-}
-function TGFGoRound::rebuildContainer_BigThumb(%this, %container)
-{
+    mTextCtrl = %ctrl @ %container;
+};
+function TGFGoRound::rebuildContainer_BigThumb(%this, %container) {
     %container.deleteMembers();
-    %ctrl = new GuiBitmapCtrl()
-    {
-        profile = "ETSNonModalProfile";
-        position = "0 0";
-        extent = %container.getExtent();
-    };
+    profile = GuiBitmapCtrl @ new ""() @ "ETSNonModalProfile";
+    0;
+    position = "0 0";
+    extent = %container.getExtent();
+    %ctrl = ;
     %container.add(%ctrl);
-    %container.mBitmapCtrl = %ctrl;
-    %ctrlB = new GuiControl()
-    {
-        profile = EtsDarkBorderlessBoxProfile;
-        extent = %container.getExtent();
-        position = 0 SPC getWord(%container.getExtent(), 1) - 18;
-    };
+    mBitmapCtrl = %ctrl @ %container;
+    profile = new ""() @ EtsDarkBorderlessBoxProfile;
+    GuiControl;
+    extent = 0 @ %container.getExtent();
+    position = 0 @ " " @ (18.0 - getWord(%container.getExtent(), 1));
+    %ctrlB = ;
     %container.add(%ctrlB);
-    %ctrl = new GuiMLTextCtrl()
-    {
-        profile = ETSNonModalProfile;
-        extent = %ctrlB.getExtent();
-        style = "tgfGoRoundBigThumb";
-    };
+    profile = new ""() @ ETSNonModalProfile;
+    GuiMLTextCtrl;
+    extent = 0 @ %ctrlB.getExtent();
+    style = "tgfGoRoundBigThumb";
+    %ctrl = ;
     %ctrlB.add(%ctrl);
-    %container.mTextCtrl = %ctrl;
-    %ctrl = new GuiBitmapButtonCtrl()
-    {
-        position = "-2 -2";
-        extent = VectorAdd(%container.getExtent(), "4 4");
-        command = %this @ ".onBigThumbClick(" @ %container @ ");";
-        canHilite = 0;
-        bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
-    };
+    mTextCtrl = %ctrl @ %container;
+    position = GuiBitmapButtonCtrl @ new ""() @ "-2 -2";
+    0;
+    extent = VectorAdd(%container.getExtent(), "4 4");
+    command = %this @ ".onBigThumbClick(" @ %container @ ");";
+    canHilite = 0;
+    bitmap = "platform/client/buttons/tgf/tgf_buttonframe_100x100";
+    %ctrl = ;
     %container.add(%ctrl);
-    return ;
-}
-function TGFGoRound::rebuildContainer_Deets(%this, %container)
-{
+};
+function TGFGoRound::rebuildContainer_Deets(%this, %container) {
     %container.deleteMembers();
-    return ;
-}
-function TGFGoRound::newContentLilThumb(%this, %container)
-{
-    if (!isObject(%this.mItemsList))
-    {
-        error(getScopeName() SPC "- no list" SPC getTrace());
-        return ;
-    }
-    %item = %this.mItemsList.getValue(%this.mItemsList.mCurrentItem);
-    if (!isObject(%item))
-    {
-        error(getScopeName() SPC "- bad item" SPC %this.mItemsList.mCurrentItem SPC getTrace());
-        %this.mItemsList.mCurrentItem = 0;
-        return ;
-    }
-    if ((%item.relationType $= "") && UserListFriends.hasKey(%item.userName))
-    {
-        %item.relationType = "friend";
-    }
-    %userName = %item.userName;
-    %isFriend = %item.relationType $= "friend";
-    %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
-    if (!(%userName $= ""))
-    {
-        %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=M";
-        %container.mBitmapCtrl.downloadAndApplyBitmap(%avatarPicURL);
-    }
-    %container.mBitmapCtrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
-    %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
-    %container.mItem = %item;
-    %this.mItemsList.mCurrentItem = (%this.mItemsList.mCurrentItem + 1) % %this.mItemsList.size();
-    return ;
-}
-function TGFGoRound::newContentBigThumb(%this)
-{
-    %container = %this.mBigThumbContainer;
+};
+function TGFGoRound::newContentLilThumb(%this, %container) {
+    error(getScopeName() @ " " @ "- no list" @ " " @ getTrace());
+    return !(isObject(mItemsList));
+    %item = mItemsList.getValue(mCurrentItem);
+    mItemsList;
+    error(mItemsList @ mCurrentItem @ " " @ getTrace());
+    mCurrentItem = %this @ mItemsList;
+    %this @ 0;
+    return getScopeName() @ " " @ "- bad item" @ " ";
+    relationType = userName.hasKey() @ "friend" @ %item;
+    %item;
+    %userName = userName;
+    %item;
+    %isFriend = (%item SPC relationType $= "friend");
+    UserListFriends;
+    %friendColorTag = "";
+    "<color:00ee00ee>";
+    %avatarPicURL = (%item SPC relationType $= "") @ !((%isFriend SPC %userName $= "")) @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=M";
+    mBitmapCtrl.downloadAndApplyBitmap(%avatarPicURL);
+    mBitmapCtrl.setBitmap("platform/client/ui/tgf/tgf_profile_default");
+    mTextCtrl.setTextWithStyle(%container @ %friendColorTag @ %userName);
+    mItem = %container @ %item @ %container;
+    %container;
+    mCurrentItem = %this @ mItemsList;
+    1.0 @ (%this % (mItemsList + mCurrentItem));
+};
+function TGFGoRound::newContentBigThumb(%this) {
+    %container = mBigThumbContainer;
+    %this;
     %lilThumbContainer = %this.getCurrentZoomedLilThumb();
-    %item = %lilThumbContainer.mItem;
-    %userName = %item.userName;
-    %isFriend = %item.relationType $= "friend";
-    %friendColorTag = %isFriend ? "<color:00ee00ee>" : "";
-    if (!(%userName $= ""))
-    {
-        %avatarPicURL = $Net::AvatarURL @ urlEncode(%userName) @ "?size=L";
-        %container.getObject(0).downloadAndApplyBitmap(%avatarPicURL);
-    }
-    %container.mBitmapCtrl.setBitmap(%lilThumbContainer.mBitmapCtrl.getBitmap());
-    %container.mTextCtrl.setTextWithStyle(%friendColorTag @ %userName);
-    %container.mItem = %item;
+    %item = mItem;
+    %lilThumbContainer;
+    %userName = userName;
+    %item;
+    %isFriend = (%item SPC relationType $= "friend");
+    %friendColorTag = "";
+    "<color:00ee00ee>";
+    %avatarPicURL = !((%isFriend SPC %userName $= "")) @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=L";
+    %container.getObject(0).downloadAndApplyBitmap(%avatarPicURL);
+    mBitmapCtrl.setBitmap(mBitmapCtrl.getBitmap());
+    mTextCtrl.setTextWithStyle(%container @ %friendColorTag @ %userName);
+    mItem = %lilThumbContainer @ %item @ %container;
+    %container;
     %this.newContentDeets();
-    return ;
-}
-function TGFGoRound::newContentDeets(%this)
-{
-    return ;
-}
-function TGFGoRound::onBigThumbClick(%this, %bigThumbContainer)
-{
-    %this.viewItem(%bigThumbContainer.mItem);
-    return ;
-}
-function TGFGoRound::viewItem(%this, %item)
-{
+};
+function TGFGoRound::newContentDeets(%this) {
+};
+function TGFGoRound::onBigThumbClick(%this, %bigThumbContainer) {
+    %this.viewItem(mItem);
+};
+function TGFGoRound::viewItem(%this, %item) {
     %this.pause();
-    geTGF.DoDetails("main", %item);
-    return ;
-}
-function geTGFGoRound_DeetsMLText::onURL(%this, %url)
-{
+    "main".DoDetails(%item);
+};
+function geTGFGoRound_DeetsMLText::onURL(%this, %url) {
     %type = firstWord(%url);
-    if (!(%type $= "PROFILE"))
-    {
-        error(getScopeName() SPC "- unknown type" SPC %type SPC getTrace());
-        return ;
-    }
+    error(getScopeName() @ " " @ "- unknown type" @ " " @ %type @ " " @ getTrace());
+    return !((%type $= "PROFILE"));
     %userName = restWords(%url);
-    geTGFGoRound.viewProfile(%userName);
-    return ;
-}
-function TGFGoRound::setItemList(%this, %list)
-{
-    %this.mItemsList = %list;
-    %list.mCurrentItem = 0;
+    %userName.viewProfile();
+};
+function TGFGoRound::setItemList(%this, %list) {
+    mItemsList = %list @ %this;
+    mCurrentItem = 0 @ %list;
     %n = 0;
-    while (%n < (%this.mLilThumbsNumAcross * 2))
-    {
-        %lilThumbContainer = %this.mLilThumbsContainer.getObject(%n);
-        %this.newContentLilThumb(%lilThumbContainer);
-        %n = %n + 1;
-    }
+    %lilThumbContainer = mLilThumbsContainer.getObject(%n);
+    %this;
+    %this.newContentLilThumb(%lilThumbContainer);
+    %n = (1.0 + %n);
+    ((%this * mLilThumbsNumAcross) < %n);
     %this.newContentBigThumb();
-    return ;
-}
+};

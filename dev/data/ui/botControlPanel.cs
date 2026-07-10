@@ -1,48 +1,30 @@
-function botControlPanel::toggle(%this)
-{
-    playGui.showRaiseOrHide(%this);
-    return ;
-}
-function botControlPanel::open(%this)
-{
-    if (!$player.rolesPermissionCheckWarn("bots"))
-    {
-        return ;
-    }
+function botControlPanel::toggle(%this) {
+    %this.showRaiseOrHide();
+};
+function botControlPanel::open(%this) {
+    return !($player.rolesPermissionCheckWarn("bots"));
     %this.setVisible(1);
-    playGui.focusAndRaise(%this);
-    return ;
-}
-function botControlPanel::close(%this)
-{
+    %this.focusAndRaise();
+};
+function botControlPanel::close(%this) {
     %this.setVisible(0);
-    playGui.focusTopWindow();
+    focusTopWindow();
     return 1;
-}
-function botControlPanel::saveBots(%this)
-{
+};
+function botControlPanel::saveBots(%this) {
     %filebase = %this.getSaveFilename();
     commandToServer('saveBots', %filebase);
-    return ;
-}
-function botControlPanel::loadBots(%this)
-{
+};
+function botControlPanel::loadBots(%this) {
     %filebase = %this.getSaveFilename();
     commandToServer('loadBots', %filebase);
-    return ;
-}
-function botControlPanel::getSaveFilename(%this)
-{
+};
+function botControlPanel::getSaveFilename(%this) {
     %filebase = $DevPref::Mod::botSaveFileName;
-    if (%filebase $= "")
-    {
-        %filebase = $player.getShapeName() @ 1;
-    }
-    if (%filebase $= "")
-    {
-        %filebase = "default";
-    }
+    %filebase = (%filebase $= "") @ $player.getShapeName() @ 1;
+    %filebase = "default";
+    (%filebase $= "");
     $DevPref::Mod::botSaveFileName = %filebase;
-    saveLoadBotsFileNameCtrl.setValue(%filebase);
+    %filebase.setValue();
     return %filebase;
-}
+};

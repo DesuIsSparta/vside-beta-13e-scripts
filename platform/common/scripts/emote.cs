@@ -1,12 +1,10 @@
-function addPlainToCoded(%list, %plain, %coded)
-{
+function addPlainToCoded(%list, %plain, %coded) {
     %num = getFieldCount(%list);
-    %list = setField(%list, %num + 0, %plain);
-    %list = setField(%list, %num + 1, %coded);
+    %list = setField(%list, (0.0 + %num), %plain);
+    %list = setField(%list, (1.0 + %num), %coded);
     return %list;
-}
-function initGenderedDances()
-{
+};
+function initGenderedDances() {
     %list = "";
     %list = addPlainToCoded(%list, "Mooncurl", "hdnc1");
     %list = addPlainToCoded(%list, "Diva Dip", "hdnc2");
@@ -140,53 +138,39 @@ function initGenderedDances()
     %list = addPlainToCoded(%list, "Camel Walk", "jbdnc08");
     %list = addPlainToCoded(%list, "Get Funkie", "jbdnc10");
     $dancesMap_JB = %list;
-    return ;
-}
+};
 $gDanceMaps = "";
-function getRandomDance()
-{
-    if ($gDanceMaps $= "")
-    {
-        $gDanceMaps = $gDanceMaps @ $dancesMap_Lounge_F @ "\t";
-        $gDanceMaps = $gDanceMaps @ $dancesMap_Break_F @ "\t";
-        $gDanceMaps = $gDanceMaps @ $dancesMap_Goth_F @ "\t";
-        $gDanceMaps = $gDanceMaps @ $dancesMap_Thrilla @ "\t";
-        $gDanceMaps = $gDanceMaps @ $dancesMap_GoGo @ "\t";
-        $gDanceMaps = $gDanceMaps @ $dancesMap_HipHop @ "\t";
-        $gDanceMaps = $gDanceMaps @ $dancesMap_JB @ "\t";
-    }
-    %num = getFieldCount($gDanceMaps) / 2;
-    %n = (getRandom(0, %num - 1) * 2) + 1;
+function getRandomDance() {
+    $gDanceMaps = ($gDanceMaps $= "") @ $gDanceMaps @ $dancesMap_Lounge_F @ "\t";
+    $gDanceMaps = $gDanceMaps @ $dancesMap_Break_F @ "\t";
+    $gDanceMaps = $gDanceMaps @ $dancesMap_Goth_F @ "\t";
+    $gDanceMaps = $gDanceMaps @ $dancesMap_Thrilla @ "\t";
+    $gDanceMaps = $gDanceMaps @ $dancesMap_GoGo @ "\t";
+    $gDanceMaps = $gDanceMaps @ $dancesMap_HipHop @ "\t";
+    $gDanceMaps = $gDanceMaps @ $dancesMap_JB @ "\t";
+    %num = (2.0 / getFieldCount($gDanceMaps));
+    %n = (1.0 + (2.0 * getRandom(0, (1.0 - %num))));
     return getField($gDanceMaps, %n);
-}
-function insertPlainToCodedListIntoMap(%srcList, %trgMap)
-{
-    %num = getFieldCount(%srcList) / 2;
+};
+function insertPlainToCodedListIntoMap(%srcList, %trgMap) {
+    %num = (2.0 / getFieldCount(%srcList));
     %n = 0;
-    while (%n < %num)
-    {
-        %plain = getField(%srcList, %n * 2);
-        %coded = getField(%srcList, (%n * 2) + 1);
-        %trgMap.put(%plain, %coded);
-        %n = %n + 1;
-    }
-}
-
-function removePlainToCodedListFromMap(%srcList, %trgMap)
-{
-    %num = getFieldCount(%srcList) / 2;
+    %plain = getField(%srcList, (2.0 * %n));
+    (%num < %n);
+    %coded = getField(%srcList, (1.0 + (2.0 * %n)));
+    %trgMap.put(%plain, %coded);
+    %n = (1.0 + %n);
+};
+function removePlainToCodedListFromMap(%srcList, %trgMap) {
+    %num = (2.0 / getFieldCount(%srcList));
     %n = 0;
-    while (%n < %num)
-    {
-        %plain = getField(%srcList, %n * 2);
-        %coded = getField(%srcList, (%n * 2) + 1);
-        %trgMap.remove(%plain);
-        %n = %n + 1;
-    }
-}
-
-function initializeEmoteDictPublic(%dict)
-{
+    %plain = getField(%srcList, (2.0 * %n));
+    (%num < %n);
+    %coded = getField(%srcList, (1.0 + (2.0 * %n)));
+    %trgMap.remove(%plain);
+    %n = (1.0 + %n);
+};
+function initializeEmoteDictPublic(%dict) {
     initGenderedDances();
     insertPlainToCodedListIntoMap($dancesMap_Lounge_F, %dict);
     insertPlainToCodedListIntoMap($dancesMap_Lounge_M, %dict);
@@ -266,10 +250,8 @@ function initializeEmoteDictPublic(%dict)
     %dict.put("crowd-wave", "crdwve");
     %dict.put("loser", "losr");
     %dict.put("o-my-nails", "admrnail");
-    return ;
-}
-function initializeEmoteDictProtected(%dict)
-{
+};
+function initializeEmoteDictProtected(%dict) {
     %dict.put("walk-forwards", "wlkf1");
     %dict.put("walk-backwards", "wlkb1");
     %dict.put("idle-1a", "idl1a");
@@ -323,35 +305,24 @@ function initializeEmoteDictProtected(%dict)
     %dict.put("bed-lay-handsbehindhead", "bedrlx");
     %dict.put("bed-lay-chezlounge", "chzlngidl1");
     %dict.put("pocketbike-ride", "pckride");
-    return ;
-}
-function initializeEmoteDict()
-{
-    if (isObject(EmoteDict))
-    {
-        EmoteDict.delete();
-    }
-    new StringMap(EmoteDict);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(EmoteDict);
-    }
-    initializeEmoteDictPublic(EmoteDict);
-    return ;
-}
+};
+function initializeEmoteDict() {
+    delete();
+    ignoreCase = EmoteDict @ new () @ 1;
+    StringMap;
+    0;
+    add();
+    initializeEmoteDictPublic();
+};
 initializeEmoteDict();
-function intializeSharedEmoteDict()
-{
-    if (isObject(SharedEmoteDict))
-    {
-        SharedEmoteDict.delete();
-    }
-    new StringMap(SharedEmoteDict);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(SharedEmoteDict);
-    }
-    %dict = SharedEmoteDict;
+function intializeSharedEmoteDict() {
+    delete();
+    ignoreCase = SharedEmoteDict @ new () @ 1;
+    StringMap;
+    0;
+    add();
+    // unhandled opcode 465 at 0x000013B2
+    SharedEmoteDict;
     %dict.put("dnc1", "dnc2");
     %dict.put("dnc2", "dnc3");
     %dict.put("dnc3", "dnc4");
@@ -367,26 +338,22 @@ function intializeSharedEmoteDict()
     %dict.put("hdncb1", "hdncb2");
     %dict.put("hdncb2", "hdncb3");
     %dict.put("hdncb3", "hdncb4");
-    return ;
-}
-function getSharedEmote(%theirEmote)
-{
-    %got = SharedEmoteDict.get(%theirEmote);
+};
+function getSharedEmote(%theirEmote) {
+    %got = %theirEmote.get();
+    SharedEmoteDict;
     return %got;
-}
+};
 intializeSharedEmoteDict();
-function initializeProtectedAnims()
-{
-    if (isObject(ProtectedAnimsDict))
-    {
-        ProtectedAnimsDict.delete();
-    }
-    new StringMap(ProtectedAnimsDict);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(ProtectedAnimsDict);
-    }
-    %dict = ProtectedAnimsDict;
+function initializeProtectedAnims() {
+    delete();
+    ignoreCase = ProtectedAnimsDict @ new () @ 1;
+    StringMap;
+    0;
+    add();
+    // unhandled opcode 465 at 0x00001519
+    %got = ProtectedAnimsDict;
+    ProtectedAnimsDict;
     %dict.put("dnc1", 2);
     %dict.put("dnc2", 2);
     %dict.put("dnc3", 2);
@@ -508,23 +475,16 @@ function initializeProtectedAnims()
     %dict.put("drinkbottle02", 2);
     %dict.put("drinkbottle03", 2);
     %dict.put("drinkmugwipe02", 2);
-    return ;
-}
+};
 initializeProtectedAnims();
-function intializeDrinkExcludedAnims()
-{
-    if (isObject(DrinkExcludedAnimsDict))
-    {
-        DrinkExcludedAnimsDict.delete();
-    }
-    new StringMap(DrinkExcludedAnimsDict);
-    if (isObject(MissionCleanup))
-    {
-        MissionCleanup.add(DrinkExcludedAnimsDict);
-    }
-    %dict = DrinkExcludedAnimsDict;
+function intializeDrinkExcludedAnims() {
+    delete();
+    ignoreCase = DrinkExcludedAnimsDict @ new () @ 1;
+    StringMap;
+    0;
+    add();
+    // unhandled opcode 465 at 0x00001D03
+    DrinkExcludedAnimsDict;
     %dict.put("rotfl", 2);
-    return ;
-}
+};
 intializeDrinkExcludedAnims();
-

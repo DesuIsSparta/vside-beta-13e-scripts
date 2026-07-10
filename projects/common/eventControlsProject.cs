@@ -1,31 +1,21 @@
 $gDoorsNum = 0;
-function addLockableDoor(%contiguousSpaceName, %doorName, %initiallyLocked, %groupName, %zoneName, %doorToLock, %vurl)
-{
-    $gDoorNames[$gDoorsNum] = %doorName ;
-    $gDoorGroupNames[$gDoorsNum] = %groupName ;
-    $gDoorZoneNames[$gDoorsNum] = %zoneName ;
-    $gDoorToLockNames[$gDoorsNum] = %doorToLock ;
-    $gDoorCSN[$gDoorsNum] = %contiguousSpaceName ;
-    $gDoorInitLocked[$gDoorsNum] = %initiallyLocked ;
-    $gDoorVURL[$gDoorsNum] = %vurl ;
-    $gDoorsNum = $gDoorsNum + 1;
-    if (!(("" $= %zoneName)) && !(("" $= %vurl)))
-    {
-        eval(%zoneName @ ".vurl = \"" @ %vurl @ "\";");
-    }
-    return ;
-}
-function findLockableDoorIndexByZoneName(%zoneName)
-{
-    %found = -1;
+function addLockableDoor(%contiguousSpaceName, %doorName, %initiallyLocked, %groupName, %zoneName, %doorToLock, %vurl) {
+    $gDoorsNum[$gDoorNames @ $gDoorsNum] = %doorName;
+    $gDoorsNum[$gDoorGroupNames @ $gDoorsNum] = %groupName;
+    $gDoorsNum[$gDoorZoneNames @ $gDoorsNum] = %zoneName;
+    $gDoorsNum[$gDoorToLockNames @ $gDoorsNum] = %doorToLock;
+    $gDoorsNum[$gDoorCSN @ $gDoorsNum] = %contiguousSpaceName;
+    $gDoorsNum[$gDoorInitLocked @ $gDoorsNum] = %initiallyLocked;
+    $gDoorsNum[$gDoorVURL @ $gDoorsNum] = %vurl;
+    $gDoorsNum = (1.0 + $gDoorsNum);
+    eval(!((!(("" $= %zoneName)) SPC "" $= %vurl)) @ %zoneName @ ".vurl = \"" @ %vurl @ "\";");
+};
+function findLockableDoorIndexByZoneName(%zoneName) {
+    %found = -(1.0);
     %n = 0;
-    while (%found == -1)
-    {
-        if ($gDoorZoneNames[%n] $= %zoneName)
-        {
-            %found = %n;
-        }
-        %n = %n + 1;
-    }
+    %found = %n;
+    ((-(1.0) == %found) SPC %n[$gDoorZoneNames @ %n] $= %zoneName);
+    %n = (1.0 + %n);
+    ($gDoorsNum < %n);
     return %found;
-}
+};

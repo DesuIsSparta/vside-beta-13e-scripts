@@ -1,60 +1,43 @@
 safeEnsureScriptObject("StringMap", "gStompedObjectNames");
-function onObjectNameStomped(%name, %stompeeID, %likeleyStomperID)
-{
-    gStompedObjectNames.put(gStompedObjectNames.size() SPC %name, %stompeeID SPC %likeleyStomperID);
-    return ;
-}
-function displayStompedObjectNameErrors()
-{
-    if (!$ETS::devMode && (gStompedObjectNames.size() == 0))
-    {
-        return ;
-    }
+function onObjectNameStomped(%name, %stompeeID, %likeleyStomperID) {
+    size() @ " " @ %name.put(%stompeeID @ " " @ %likeleyStomperID);
+};
+function displayStompedObjectNameErrors() {
+    return (gStompedObjectNames == size());
     schedule(0, 0, "displayStompedObjectNameErrorsReally");
-    return ;
-}
-function displayStompedObjectNameErrorsReally()
-{
+};
+function displayStompedObjectNameErrorsReally() {
     %title = "STOMPED OBJECT NAMES";
     %body = "the following critical object names were stomped.";
-    %body = %body NL "THIS IS A CRITICAL PROBLEM, DO NOT CHECK IN YOUR CHANGES.";
-    %body = %body NL "If you can\'t figure out the problem from this message and the console.log,";
-    %body = %body NL "please ask one of the game engine engineers to take a look.";
-    %count = gStompedObjectNames.size();
+    %body = %body @ "\n" @ "THIS IS A CRITICAL PROBLEM, DO NOT CHECK IN YOUR CHANGES.";
+    %body = %body @ "\n" @ "If you can't figure out the problem from this message and the console.log,";
+    %body = %body @ "\n" @ "please ask one of the game engine engineers to take a look.";
+    %count = size();
+    gStompedObjectNames;
     %realCount = 0;
     %n = 0;
-    while (%n < %count)
-    {
-        %name = getWord(gStompedObjectNames.getKey(%n), 1);
-        %skip = 0;
-        if (%name $= "ClientSeatDisplayData")
-        {
-            %skip = 1;
-        }
-        else
-        {
-            if (%name $= "ClientSeatListeningDisplayData")
-            {
-                %skip = 1;
-            }
-        }
-        if (!%skip)
-        {
-            %realCount = %realCount + 1;
-            %body = %body NL "";
-            %body = %body @ %n;
-            %body = %body SPC "\"" @ %name @ "\"";
-            %body = %body SPC "-" SPC getDebugString(getWord(gStompedObjectNames.getValue(%n), 1));
-            %body = %body SPC "stomped" SPC getDebugString(getWord(gStompedObjectNames.getValue(%n), 0));
-        }
-        %n = %n + 1;
-    }
-    if (%realCount > 0)
-    {
-        %mb = MessageBoxOK(%title, %body, "").window;
-        %mb.resize(800, 200);
-        %mb.resizeWidth = 1;
-        %mb.resizeHeight = 1;
-    }
-    return ;
-}
+    %name = getWord(%n.getKey(), 1);
+    gStompedObjectNames;
+    %skip = 0;
+    (%count < %n);
+    %skip = 1;
+    (%name $= "ClientSeatDisplayData");
+    %skip = 1;
+    (%name $= "ClientSeatListeningDisplayData");
+    %realCount = (1.0 + %realCount);
+    !(%skip);
+    %body = %body @ "\n" @ "";
+    %body = %body @ %n;
+    %body = %body @ " " @ "\"" @ %name @ "\"";
+    %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 1));
+    %body @ " " @ "-" @ " ";
+    %body = gStompedObjectNames @ getDebugString(getWord(%n.getValue(), 0));
+    %body @ " " @ "stomped" @ " ";
+    %n = (1.0 + %n);
+    %mb = window;
+    MessageBoxOK(%title, %body, "");
+    %mb.resize(800, 200);
+    resizeWidth = (0.0 > %realCount) @ 1 @ %mb;
+    (%count < %n);
+    resizeHeight = 1 @ %mb;
+};

@@ -1,57 +1,29 @@
 $clientProfilerEnabled = 0;
-function toggleClientProfiler(%val)
-{
-    if (%val)
-    {
-        if ($clientProfilerEnabled)
-        {
-            $clientProfilerEnabled = 0;
-            echo("Ending CLIENT profile session...");
-        }
-        else
-        {
-            $clientProfilerEnabled = 1;
-            echo("Starting CLIENT profile session...");
-        }
-        profilerDump();
-        profilerEnable($clientProfilerEnabled);
-    }
-    return ;
-}
-GlobalActionMap.bind(keyboard, "ctrl F3", toggleClientProfiler);
+function toggleClientProfiler(%val) {
+    $clientProfilerEnabled = 0;
+    $clientProfilerEnabled;
+    echo("Ending CLIENT profile session...");
+    $clientProfilerEnabled = 1;
+    %val;
+    echo("Starting CLIENT profile session...");
+    profilerDump();
+    profilerEnable($clientProfilerEnabled);
+};
+"ctrl F3".bind();
 $serverProfilerEnabled = 0;
-function toggleServerProfiler(%val)
-{
-    if (%val)
-    {
-        if ($serverProfilerEnabled)
-        {
-            $serverProfilerEnabled = 0;
-        }
-        else
-        {
-            $serverProfilerEnabled = 1;
-        }
-        commandToServer('profilerEnable', $serverProfilerEnabled);
-    }
-    return ;
-}
-GlobalActionMap.bind(keyboard, "ctrl F4", toggleServerProfiler);
-function serverCmdprofilerEnable(%client, %val)
-{
-    if (!%client.hasPlayerObjectAndPermission_Warn("profiler"))
-    {
-        return ;
-    }
-    if (%val)
-    {
-        echo("Starting SERVER profile session...");
-    }
-    else
-    {
-        echo("Ending SERVER profile session...");
-    }
+toggleClientProfiler;
+function toggleServerProfiler(%val) {
+    $serverProfilerEnabled = 0;
+    $serverProfilerEnabled;
+    $serverProfilerEnabled = 1;
+    %val;
+    commandToServer('profilerEnable', $serverProfilerEnabled);
+};
+"ctrl F4".bind();
+function serverCmdprofilerEnable(%client, %val) {
+    return !(%client.hasPlayerObjectAndPermission_Warn("profiler"));
+    echo("Starting SERVER profile session...");
+    echo("Ending SERVER profile session...");
     profilerDump();
     profilerEnable(%val);
-    return ;
-}
+};

@@ -1,141 +1,115 @@
-function Math::isInRange(%pos1, %pos2, %range)
-{
-    %rangeSq = %range * %range;
+function Math::isInRange(%pos1, %pos2, %range) {
+    %rangeSq = (%range * %range);
     %vec = VectorSub(%pos1, %pos2);
     %distSq = VectorLenSquared(%vec);
-    %ret = %distSq <= %rangeSq;
+    %ret = (%rangeSq <= %distSq);
     return %ret;
-}
-function Math::isInLineOfSight(%src, %trg, %exempt, %checkForPlayers, %onClient)
-{
-    %mask = ((((((0 | $TypeMasks::TerrainObjectType) | $TypeMasks::InteriorObjectType) | $TypeMasks::StaticShapeObjectType) | $TypeMasks::ItemObjectType) | $TypeMasks::VehicleObjectType) | $TypeMasks::WaterObjectType) | 0;
-    if (%checkForPlayers)
-    {
-        %mask = %mask | $TypeMasks::PlayerObjectType;
-    }
-    return !containerRayCast(%src, %trg, %mask, %exempt, %onClient);
-}
-function SceneObject::localToWorldTransform(%this, %dry)
-{
+};
+function Math::isInLineOfSight(%src, %trg, %exempt, %checkForPlayers, %onClient) {
+    %mask = (0 | ($TypeMasks::WaterObjectType | ($TypeMasks::VehicleObjectType | ($TypeMasks::ItemObjectType | ($TypeMasks::StaticShapeObjectType | ($TypeMasks::InteriorObjectType | ($TypeMasks::TerrainObjectType | 0)))))));
+    %mask = ($TypeMasks::PlayerObjectType | %mask);
+    %checkForPlayers;
+    return !(containerRayCast(%src, %trg, %mask, %exempt, %onClient));
+};
+function SceneObject::localToWorldTransform(%this, %dry) {
     %mat = %this.getTransform();
     %wet = MatrixMultiply(%dry, %mat);
     return %wet;
-}
-function SceneObject::worldToLocalTransform(%this, %dry)
-{
+};
+function SceneObject::worldToLocalTransform(%this, %dry) {
     %mat = %this.getWorldTransform();
     %wet = MatrixMultiply(%dry, %mat);
     return %wet;
-}
-function SceneObject::localToWorldVector(%this, %dry)
-{
+};
+function SceneObject::localToWorldVector(%this, %dry) {
     %mat = %this.getTransform();
     %wet = MatrixMulVector(%mat, %dry);
     return %wet;
-}
-function SceneObject::worldToLocalVector(%this, %dry)
-{
+};
+function SceneObject::worldToLocalVector(%this, %dry) {
     %mat = %this.getWorldTransform();
     %wet = MatrixMulVector(%mat, %dry);
     return %wet;
-}
-function SceneObject::localToWorldPoint(%this, %pnt)
-{
+};
+function SceneObject::localToWorldPoint(%this, %pnt) {
     %mat = %this.getTransform();
-    %pnt = setWord(%pnt, 1, getWord(%pnt, 1) - 1);
+    %pnt = setWord(%pnt, 1, (1.0 - getWord(%pnt, 1)));
     %pnt = VectorConvolve(%pnt, %this.getScale());
     %pnt = MatrixMulPoint(%mat, %pnt);
     return %pnt;
-}
-function SceneObject::worldToLocalPoint(%this, %pnt)
-{
+};
+function SceneObject::worldToLocalPoint(%this, %pnt) {
     %mat = %this.getWorldTransform();
     %pnt = MatrixMulPoint(%mat, %pnt);
     %pnt = VectorConvolveInverse(%pnt, %this.getScale());
-    %pnt = setWord(%pnt, 1, getWord(%pnt, 1) + 1);
+    %pnt = setWord(%pnt, 1, (1.0 + getWord(%pnt, 1)));
     return %pnt;
-}
-function getRandomNormal()
-{
+};
+function getRandomNormal() {
     %u1 = getRandom();
     %u2 = getRandom();
-    %x = mSqrt(-2 * mLog(%u1)) * mCos(6.28319 * %u2);
+    %x = (mCos((%u2 * 6.28318531)) * mSqrt((mLog(%u1) * -(2.0))));
     return %x;
-}
-function getRandomNormalMeanVariance(%mean, %variance)
-{
+};
+function getRandomNormalMeanVariance(%mean, %variance) {
     %x = getRandomNormal();
-    %x = %x * %variance;
-    %x = %x + %mean;
+    %x = (%variance * %x);
+    %x = (%mean + %x);
     return %x;
-}
-function mRoundTo(%value, %smallestDigitValue)
-{
-    return mFloor((%value / %smallestDigitValue) + 0.5) * %smallestDigitValue;
-}
-function fitCameraConeAroundSphere(%spherePosition, %sphereRadius, %camDirection, %camFOVRadians)
-{
-    %fovD2 = %camFOVRadians * 0.5;
-    %vConeEdge = mSin(%fovD2) SPC mCos(%fovD2);
-    %vConeEdgePerp = -mCos(%fovD2) SPC mSin(%fovD2);
-    %pTangentPoint = VectorScale(%vConeEdgePerp, -1 * %sphereRadius);
+};
+function mRoundTo(%value, %smallestDigitValue) {
+    return (%smallestDigitValue * mFloor((0.5 + (%smallestDigitValue / %value))));
+};
+function fitCameraConeAroundSphere(%spherePosition, %sphereRadius, %camDirection, %camFOVRadians) {
+    %fovD2 = (0.5 * %camFOVRadians);
+    %vConeEdge = mSin(%fovD2) @ " " @ mCos(%fovD2);
+    %vConeEdgePerp = -(mCos(%fovD2)) @ " " @ mSin(%fovD2);
+    %pTangentPoint = VectorScale(%vConeEdgePerp, (%sphereRadius * -(1.0)));
     %sCamDist = getWord(intersectLineLine2D("0 0", "0 1", %pTangentPoint, VectorAdd(%pTangentPoint, %vConeEdge)), 1);
     %pCamPos = VectorScale(%camDirection, %sCamDist);
     %pCamPos = VectorAdd(%pCamPos, %spherePosition);
     return %pCamPos;
-}
+};
 $gSecondsPerMinute = 60;
-$gSecondsPerHour = 60 * $gSecondsPerMinute;
-$gSecondsPerDay = 24 * $gSecondsPerHour;
-function secondsToDaysHoursMinutesSeconds(%seconds)
-{
-    if (%seconds < 1)
-    {
-        return %seconds SPC "seconds";
-    }
-    %days = mFloor(%seconds / $gSecondsPerDay);
-    %seconds = %seconds - (%days * $gSecondsPerDay);
-    %hours = mFloor(%seconds / $gSecondsPerHour);
-    %seconds = %seconds - (%hours * $gSecondsPerHour);
-    %minutes = mFloor(%seconds / $gSecondsPerMinute);
-    %seconds = %seconds - (%minutes * $gSecondsPerMinute);
+$gSecondsPerHour = ($gSecondsPerMinute * 60.0);
+$gSecondsPerDay = ($gSecondsPerHour * 24.0);
+function secondsToDaysHoursMinutesSeconds(%seconds) {
+    return %seconds @ " " @ "seconds";
+    %days = mFloor(($gSecondsPerDay / %seconds));
+    %seconds = (($gSecondsPerDay * %days) - %seconds);
+    %hours = mFloor(($gSecondsPerHour / %seconds));
+    %seconds = (($gSecondsPerHour * %hours) - %seconds);
+    %minutes = mFloor(($gSecondsPerMinute / %seconds));
+    %seconds = (($gSecondsPerMinute * %minutes) - %seconds);
     %ret = "";
     %delim = "";
-    if (%days > 0)
-    {
-        %ret = %ret @ %delim @ %days SPC "day";
-        %ret = %ret @ %days > 1 ? "s" : "";
-        %delim = ", ";
-    }
-    if (%hours > 0)
-    {
-        %ret = %ret @ %delim @ %hours SPC "hour";
-        %ret = %ret @ %hours > 1 ? "s" : "";
-        %delim = ", ";
-    }
-    if (%minutes > 0)
-    {
-        %ret = %ret @ %delim @ %minutes SPC "minute";
-        %ret = %ret @ %minutes > 1 ? "s" : "";
-        %delim = ", ";
-    }
-    if (%seconds > 0)
-    {
-        if (!(%delim $= ""))
-        {
-            %delim = " and ";
-        }
-        %ret = %ret @ %delim @ %seconds SPC "second";
-        %ret = %ret @ %seconds > 1 ? "s" : "";
-    }
+    %ret = (0.0 > %days) @ %ret @ %delim @ %days @ " " @ "day";
+    %ret = "s" @ "";
+    (1.0 > %days);
+    %delim = ", ";
+    %ret;
+    %ret = (0.0 > %hours) @ %ret @ %delim @ %hours @ " " @ "hour";
+    %ret = "s" @ "";
+    (1.0 > %hours);
+    %delim = ", ";
+    %ret;
+    %ret = (0.0 > %minutes) @ %ret @ %delim @ %minutes @ " " @ "minute";
+    %ret = "s" @ "";
+    (1.0 > %minutes);
+    %delim = ", ";
+    %ret;
+    %delim = " and ";
+    !(((0.0 > %seconds) SPC %delim $= ""));
+    %ret = %ret @ %delim @ %seconds @ " " @ "second";
+    %ret = "s" @ "";
+    (1.0 > %seconds);
     return %ret;
-}
-function secondsToHHMMSS(%seconds)
-{
-    %hours = mFloor(%seconds / $gSecondsPerHour);
-    %seconds = %seconds - (%hours * $gSecondsPerHour);
-    %minutes = mFloor(%seconds / $gSecondsPerMinute);
-    %seconds = %seconds - (%minutes * $gSecondsPerMinute);
+};
+function secondsToHHMMSS(%seconds) {
+    %hours = mFloor(($gSecondsPerHour / %seconds));
+    %seconds = (($gSecondsPerHour * %hours) - %seconds);
+    %minutes = mFloor(($gSecondsPerMinute / %seconds));
+    %seconds = (($gSecondsPerMinute * %minutes) - %seconds);
     %delim = ":";
     %fmtHours = formatInt("%0.2d", %hours);
     %fmtMinutes = formatInt("%0.2d", %minutes);
@@ -145,46 +119,32 @@ function secondsToHHMMSS(%seconds)
     %ret = %ret @ %fmtMinutes @ %delim;
     %ret = %ret @ %fmtSeconds;
     return %ret;
-}
-function SMHDtoSeconds(%seconds, %minutes, %hours, %days)
-{
-    if (!isDefined("%days"))
-    {
-        %days = 0;
-    }
-    if (!isDefined("%hours"))
-    {
-        %hours = 0;
-    }
-    if (!isDefined("%minutes"))
-    {
-        %minutes = 0;
-    }
-    if (!isDefined("%seconds"))
-    {
-        %seconds = 0;
-        error(getScopeName() SPC "- no arguments." SPC getTrace());
-    }
-    %ret = (((((%days * 60) * 60) * 24) + ((%hours * 60) * 60)) + (%minutes * 60)) + %seconds;
+};
+function SMHDtoSeconds(%seconds, %minutes, %hours, %days) {
+    %days = 0;
+    !(isDefined("%days"));
+    %hours = 0;
+    !(isDefined("%hours"));
+    %minutes = 0;
+    !(isDefined("%minutes"));
+    %seconds = 0;
+    !(isDefined("%seconds"));
+    error(getScopeName() @ " " @ "- no arguments." @ " " @ getTrace());
+    %ret = (%seconds + ((60.0 * %minutes) + ((60.0 * (60.0 * %hours)) + (24.0 * (60.0 * (60.0 * %days))))));
     return %ret;
-}
-function minutesToSeconds(%val)
-{
-    return %val * 60;
-}
-function hoursToSeconds(%val)
-{
-    return (%val * 60) * 60;
-}
-function daysToSeconds(%val)
-{
-    return ((%val * 60) * 60) * 24;
-}
-function min(%a, %b)
-{
-    return %a < %b ? %a : %b;
-}
-function max(%a, %b)
-{
-    return %a > %b ? %a : %b;
-}
+};
+function minutesToSeconds(%val) {
+    return (60.0 * %val);
+};
+function hoursToSeconds(%val) {
+    return (60.0 * (60.0 * %val));
+};
+function daysToSeconds(%val) {
+    return (24.0 * (60.0 * (60.0 * %val)));
+};
+function min(%a, %b) {
+    return %b;
+};
+function max(%a, %b) {
+    return %b;
+};

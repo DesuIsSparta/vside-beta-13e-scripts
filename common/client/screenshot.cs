@@ -1,82 +1,42 @@
-function formatImageNumber(%number)
-{
-    if (%number < 10)
-    {
-        %number = 0 @ %number;
-    }
-    if (%number < 100)
-    {
-        %number = 0 @ %number;
-    }
-    if (%number < 1000)
-    {
-        %number = 0 @ %number;
-    }
-    if (%number < 10000)
-    {
-        %number = 0 @ %number;
-    }
+function formatImageNumber(%number) {
+    %number = (10.0 < %number) @ 0 @ %number;
+    %number = (100.0 < %number) @ 0 @ %number;
+    %number = (1000.0 < %number) @ 0 @ %number;
+    %number = (10000.0 < %number) @ 0 @ %number;
     return %number;
-}
-function formatSessionNumber(%number)
-{
-    if (%number < 10)
-    {
-        %number = 0 @ %number;
-    }
-    if (%number < 100)
-    {
-        %number = 0 @ %number;
-    }
+};
+function formatSessionNumber(%number) {
+    %number = (10.0 < %number) @ 0 @ %number;
+    %number = (100.0 < %number) @ 0 @ %number;
     return %number;
-}
-function recordMovie(%movieName, %fps)
-{
-    $timeAdvance = 1000 / %fps;
-    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, 0);
-    return ;
-}
-function movieGrabScreen(%movieName, %frameNumber)
-{
+};
+function recordMovie(%movieName, %fps) {
+    $timeAdvance = (%fps / 1000.0);
+    $screenGrabThread = schedule($timeAdvance, 0, %movieName, 0);
+    movieGrabScreen;
+};
+function movieGrabScreen(%movieName, %frameNumber) {
     ScreenShot(%movieName @ formatImageNumber(%frameNumber) @ ".png");
-    $screenGrabThread = schedule($timeAdvance, 0, movieGrabScreen, %movieName, %frameNumber + 1);
-    return ;
-}
-function stopMovie()
-{
+    $screenGrabThread = schedule($timeAdvance, 0, %movieName, (1.0 + %frameNumber));
+    movieGrabScreen;
+};
+function stopMovie() {
     $timeAdvance = 0;
     cancel($screenGrabThread);
-    return ;
-}
+};
 $screenshotNumber = 0;
-function doScreenShot(%val)
-{
-    if (!%val)
-    {
-        return ;
-    }
+function doScreenShot(%val) {
+    return !(%val);
     %name = "screenshots/screen_" @ getTimeStamp();
-    if ($Pref::Video::screenShotFormat $= "JPEG")
-    {
-        %ext = ".jpg";
-        %fmt = "JPEG";
-    }
-    else
-    {
-        if ($Pref::Video::screenShotFormat $= "PNG")
-        {
-            %ext = ".png";
-            %fmt = "PNG";
-        }
-        else
-        {
-            %ext = ".png";
-            %fmt = "PNG";
-        }
-    }
+    %ext = ".jpg";
+    ($Pref::Video::screenShotFormat $= "JPEG");
+    %fmt = "JPEG";
+    %ext = ".png";
+    ($Pref::Video::screenShotFormat $= "PNG");
+    %fmt = "PNG";
+    %ext = ".png";
+    %fmt = "PNG";
     ScreenShot(%name @ %ext, %fmt);
-    doSaveScreenShotMetaData(%name, %ext, PlayGui);
-    return ;
-}
-GlobalActionMap.bind(keyboard, "ctrl-alt s", doScreenShot);
-
+    doSaveScreenShotMetaData(%name, %ext);
+};
+"ctrl-alt s".bind();
