@@ -225,8 +225,8 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
         %text = geGiftingTextAmt.textBody;
         %text = strreplace(%text, "[GIFTTYPE]", %currencyText);
         %text = "<spush><font:Arial Bold:20>2.<spop> " @ %text;
-        %vpText = (geGiftingEditAmt.getValue() == 1) ? "vPoint" : "vPoints";
-        %vbText = (geGiftingEditAmt.getValue() == 1) ? "vBuck" : "vBux";
+        %vpText = geGiftingEditAmt.getValue() == 1 ? "vPoint" : "vPoints";
+        %vbText = geGiftingEditAmt.getValue() == 1 ? "vBuck" : "vBux";
         %currencyText = geGiftingCurrencyType_vPoints.getValue() ? "<spush><color:159fe7>" @ %vpText @ "<spop> " : "<spush><color:13b93c>" @ %vbText @ "<spop>";
         if (%amountInTheBank < geGiftingEditAmt.getValue())
         {
@@ -275,18 +275,18 @@ function geGiftingPanel::getGiftDescription(%this)
 }
 function gifting_composeGiftDescriptionCurrency(%currencyType, %currencyAmount)
 {
-    %vpText = (%currencyAmount == 1) ? "vPoint" : "vPoints";
-    %vbText = (%currencyAmount == 1) ? "vBuck" : "vBux";
-    %text = (%currencyAmount @ " " @ " " @ %currencyType $= "VPOINTS") ? "<spush><color:159fe7>" @ %vpText @ "<spop>" : "<spush><color:13b93c>" @ %vbText @ "<spop>";
+    %vpText = %currencyAmount == 1 ? "vPoint" : "vPoints";
+    %vbText = %currencyAmount == 1 ? "vBuck" : "vBux";
+    %text = %currencyAmount @ " " @ " " @ %currencyType $= "VPOINTS" ? "<spush><color:159fe7>" @ %vpText @ "<spop>" : "<spush><color:13b93c>" @ %vbText @ "<spop>";
     return %text;
 }
 function gifting_composeGiftDescriptionCurrency2(%currencyType, %currencyAmount)
 {
-    %vpText = (%currencyAmount == 1) ? "vPoint" : "vPoints";
-    %vbText = (%currencyAmount == 1) ? "vBuck" : "vBux";
-    %aFew = (%currencyType $= "VPOINTS") ? 50 : 5;
-    %sardonicism = (%currencyAmount < %aFew) ? "whole " : "";
-    %text = (%currencyAmount @ " " @ %sardonicism @ " " @ %currencyType $= "VPOINTS") ? "<spush><color:002288>" @ %vpText @ "<spop>" : "<spush><color:005500>" @ %vbText @ "<spop>";
+    %vpText = %currencyAmount == 1 ? "vPoint" : "vPoints";
+    %vbText = %currencyAmount == 1 ? "vBuck" : "vBux";
+    %aFew = %currencyType $= "VPOINTS" ? 50 : 5;
+    %sardonicism = %currencyAmount < %aFew ? "whole " : "";
+    %text = %currencyAmount @ " " @ %sardonicism @ " " @ %currencyType $= "VPOINTS" ? "<spush><color:002288>" @ %vpText @ "<spop>" : "<spush><color:005500>" @ %vbText @ "<spop>";
     return %text;
 }
 function gifting_composeGiftDescriptionItems(%skus)
@@ -306,7 +306,7 @@ function geGiftingPanel::refreshScreen_Confirmation(%this)
         %this.personalMessage = "(no message)";
     }
     %text = "<tab:80>";
-    %text = %text @ %text[$MsgCat::gifting @ "CAVEAT-MUNEROR"];
+    %text = %text @ $MsgCat::gifting["CAVEAT-MUNEROR"];
     %text = %text @ "<br>";
     %text = %text @ "<br>Giving:" @ "\t" @ %this.getGiftDescription();
     %text = %text @ "<br>To:" @ "\t" @ %this.targetPlayerName;
@@ -329,7 +329,7 @@ function geGiftingPanel::refreshScreen_AcceptDecline(%this)
     geGiftingButtonCancel.setVisible(0);
     %otherPlayer = Player::findPlayerInstance(%this.otherPlayerName);
     %text = "";
-    %text = %text @ %text[$MsgCat::gifting @ "ACCEPT-OR-DECLINE"];
+    %text = %text @ $MsgCat::gifting["ACCEPT-OR-DECLINE"];
     %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
     %text = strreplace(%text, "[PERSONALMESSAGE]", %this.personalMessage);
     %text = strreplace(%text, "[GIFTAMOUNT]", %this.currencyAmount);
@@ -359,8 +359,8 @@ function geGiftingPanel::refreshScreen_ItemsAcceptDecline(%this)
     else
     {
     }
-    %text = %this[$MsgCat::giftingItems @ "ACCEPT-OR-DECLINE-MAKING"][$MsgCat::giftingItems @ "ACCEPT-OR-DECLINE"];
-    %this[$MsgCat::giftingItems @ "ACCEPT-OR-DECLINE-MAKING"];
+    %text = $MsgCat::giftingItems["ACCEPT-OR-DECLINE"];
+    $MsgCat::giftingItems["ACCEPT-OR-DECLINE-MAKING"];
     %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
     %text = strreplace(%text, "[GIFTDESC]", %this.getGiftDescription());
     %text = strreplace(%text, "[OTHERPLAYER_HE_SHE_IT]", getPronounHeSheIt(%otherPlayer));
@@ -397,8 +397,8 @@ function geGiftingPanel::countdownTick(%this)
         else
         {
         }
-        %text = %this[$MsgCat::giftingItems @ "E-TOOSLOW"][$MsgCat::giftingItems @ "E-TOOSLOW"];
-        %this[$MsgCat::giftingItems @ "E-TOOSLOW"];
+        %text = $MsgCat::giftingItems["E-TOOSLOW"];
+        $MsgCat::giftingItems["E-TOOSLOW"];
         %text = strreplace(%text, "[OTHERPLAYER]", %this.otherPlayerName);
         %text = strreplace(%text, "[PERSONALMESSAGE]", %this.personalMessage);
         handleSystemMessage("msgInfoMessage", %text);
@@ -714,7 +714,7 @@ function onDoneOrErrorCallback_GiftCurrency(%request)
         %msg = $MsgCat::gifting["E-BACKEND-",%errorCode];
         if (%msg $= "")
         {
-            %msg = %msg[$MsgCat::gifting @ "E-BACKEND-UNKNOWN"];
+            %msg = $MsgCat::gifting["E-BACKEND-UNKNOWN"];
         }
         error(getScopeName() @ " " @ "- failed with" @ " " @ %errorCode);
     }
@@ -731,7 +731,7 @@ function onDoneOrErrorCallback_GiftCurrency(%request)
         %levelText = "is level" @ " " @ %levelNum @ ", so ";
         %limitText = getGiftingCapsForLevel(%levelNum, %currencyType, "recv");
     }
-    %currencyText = (%currencyType $= "VPOINTS") ? "<spush><color:159fe7>vPoints<spop> " : "<spush><color:13b93c>vBux<spop>";
+    %currencyText = %currencyType $= "VPOINTS" ? "<spush><color:159fe7>vPoints<spop> " : "<spush><color:13b93c>vBux<spop>";
     %msg = strreplace(%msg, "[OTHERPLAYER]", "<linkcolor:ffddeeff><a:gamelink " @ munge(%otherPlayerName) @ ">" @ StripMLControlChars(%otherPlayerName) @ "</a>");
     %msg = strreplace(%msg, "[GIFTTYPE]", %currencyText);
     %msg = strreplace(%msg, "[OTHERPLAYERLEVELTEXT]", %levelText);

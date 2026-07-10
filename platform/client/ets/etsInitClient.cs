@@ -117,8 +117,8 @@ function forceOnscreen(%top, %left, %bottom, %right, %hudwidth, %hudheight)
     %leftslop = %left - %hudwidth;
     %topslop = %top - %hudheight;
     %bottomslop = %screenbottom - (%bottom + %hudheight);
-    %topB = (%topslop > %bottomslop) ? 1 : 0;
-    %leftB = (%leftslop > %rightslop) ? 1 : 0;
+    %topB = %topslop > %bottomslop ? 1 : 0;
+    %leftB = %leftslop > %rightslop ? 1 : 0;
     if (%topB)
     {
         %ypos = %top - %hudheight;
@@ -338,20 +338,20 @@ function Player::getRoleBadgeBitmapName(%this)
     %n = 0;
     while ((%n < $gRoleBadgeBitmapNamesNum) && (%ret $= ""))
     {
-        if (%this.hasRoleString(%n[$gRoleBadgeBitmapNames TAB %n @ "role"]))
+        if (%this.hasRoleString($gRoleBadgeBitmapNames[%n,"role"]))
         {
             if (isObject($player))
             {
-                if ($player.rolesPermissionCheckNoWarn(%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"]))
+                if ($player.rolesPermissionCheckNoWarn($gRoleBadgeBitmapNames[%n,"canSeePerm"]))
                 {
-                    %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
+                    %ret = getBitmapFilename("badge", $gRoleBadgeBitmapNames[%n,"bitmapName"]);
                 }
             }
             else
             {
-                if (%n[$gRoleBadgeBitmapNames TAB %n @ "canSeePerm"] $= "")
+                if ($gRoleBadgeBitmapNames[%n,"canSeePerm"] $= "")
                 {
-                    %ret = getBitmapFilename("badge", %n[$gRoleBadgeBitmapNames TAB %n @ "bitmapName"]);
+                    %ret = getBitmapFilename("badge", $gRoleBadgeBitmapNames[%n,"bitmapName"]);
                 }
             }
         }

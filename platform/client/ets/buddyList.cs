@@ -1206,7 +1206,7 @@ function BuddyHudWin::populateBuddyListsReally(%this)
         error(getScopeName() @ " " @ "- F" @ " " @ formatFloat("%8.3f", ((getSimTime() - %startTime) / 1000)) @ " " @ formatFloat("%8.3f", ((getSimTime() - %lastTime) / 1000)));
         %lastTime = getSimTime();
     }
-    %bitmap = (UserListFans.size() > 0) ? "platform/client/buttons/pending_active" : "platform/client/buttons/pending";
+    %bitmap = UserListFans.size() > 0 ? "platform/client/buttons/pending_active" : "platform/client/buttons/pending";
     %elButton = BuddyHudTabs.getTabWithName("requests").button;
     %elButton.setBitmap(%bitmap);
     if (%friendCount > 0)
@@ -1318,7 +1318,7 @@ function BuddyHudWin::putListIntoList(%this, %srcList, %destList)
     {
         %this.listAdded[%this.curListName] = 1;
         %colorTag = "<linkcolor:ffffff>";
-        if (%this[$UserPref::buddies::collapsedLists @ %this.curListName])
+        if ($UserPref::buddies::collapsedLists[%this.curListName])
         {
             %collapsed = "+";
         }
@@ -1326,16 +1326,16 @@ function BuddyHudWin::putListIntoList(%this, %srcList, %destList)
         {
             %collapsed = "- ";
         }
-        %listTitle = %this[$gBuddyListTitles @ %this.curListName];
+        %listTitle = $gBuddyListTitles[%this.curListName];
         %titleLine = "<color:ffffff>" @ %colorTag @ "<a:gamelink list " @ %this.curListName @ ">" @ %collapsed @ %listTitle @ "</a>";
         %destList.setText(%destList.getText() @ %titleLine @ "<br>");
-        if ((%this.curListName $= "WaitingForYourApproval") && !(%this[$UserPref::buddies::collapsedLists @ %this.curListName]))
+        if ((%this.curListName $= "WaitingForYourApproval") && !$UserPref::buddies::collapsedLists[%this.curListName])
         {
             %formatStr = "<spush><linkcolor:" @ ColorIToHex("255 147 248") @ ">";
             %destList.setText(%destList.getText() @ %formatStr @ "  [<a:gamelink approveall>Approve All</a>]   [<a:gamelink declineall>Decline All</a>]<spop><br>");
         }
     }
-    if (!(%this[$UserPref::buddies::collapsedLists @ %this.curListName]))
+    if (!$UserPref::buddies::collapsedLists[%this.curListName])
     {
         %this.putIntoList = %destList;
         %list.forEach("addToFavList");
@@ -1834,8 +1834,8 @@ function BuddyHudTabs::setBuddyActivities(%this, %buddyName, %activitiesList)
 function clientCmdUpdateBuddy(%source, %target, %action)
 {
     log("relations", "debug", "clientCmdUpdateBuddy(source=" @ %source @ ", target=" @ %target @ ", action=" @ %action @ ")");
-    %other = (%target $= $player.getShapeName()) ? %source : %target;
-    %self = (%target $= $player.getShapeName()) ? %target : %source;
+    %other = %target $= $player.getShapeName() ? %source : %target;
+    %self = %target $= $player.getShapeName() ? %target : %source;
     if (%action $= "userJoined")
     {
         sendBuddyStatusRequest(%other);

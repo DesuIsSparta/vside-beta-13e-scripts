@@ -22,7 +22,7 @@ function LoadingGui::onWake(%this)
     %this.updateLogoutButton();
     if ($StandAlone && !$missionRunning)
     {
-        error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
+        error(getScopeName() @ " " @ "-" @ " " @ $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
         MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();");
     }
 }

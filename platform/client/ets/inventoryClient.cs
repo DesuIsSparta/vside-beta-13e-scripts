@@ -160,7 +160,7 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request)
         if (%hasAuthoredInventory)
         {
             %si = SkuManager.findBySku(%sku);
-            %authorMatch = (stricmp(%si.author, $gVHDUserNameFilter) == 0) ? 1 : 0;
+            %authorMatch = stricmp(%si.author, $gVHDUserNameFilter) == 0 ? 1 : 0;
         }
         if (!%hasAuthoredInventory || %authorMatch)
         {
@@ -268,7 +268,7 @@ function fakeVHDUserStoreInventoryGotFetchResults(%storename)
         if (%hasAuthoredInventory)
         {
             %si = SkuManager.findBySku(%sku);
-            %authorMatch = (%si.author $= $gVHDUserNameFilter) ? 1 : 0;
+            %authorMatch = %si.author $= $gVHDUserNameFilter ? 1 : 0;
         }
         if (!%hasAuthoredInventory || %authorMatch)
         {
@@ -672,20 +672,20 @@ function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped)
     %listUnwearable = SkuManager.getSkuShortDescriptions(%skusUnwearable, ", ", 1, 32);
     if (%numWearable > 0)
     {
-        %list = (%listWearable @ " " @ %listUnwearable $= "") ? "" : " and" @ " " @ %listUnwearable;
+        %list = %listWearable @ " " @ %listUnwearable $= "" ? "" : " and" @ " " @ %listUnwearable;
     }
     else
     {
         %list = %listUnwearable;
     }
-    %wordNonFurnishingItThem = (%numNonFurnishing == 1) ? "it" : "them";
-    %wordNonFurnishingItemItems = (%numNonFurnishing == 1) ? "item" : "items";
-    %wordWearableItThem = (%numWearable == 1) ? "it" : "them";
-    %wordWearableItemItems = (%numWearable == 1) ? "item" : "items";
-    %wordFurnishingItThem = (%numFurnishing == 1) ? "it" : "them";
+    %wordNonFurnishingItThem = %numNonFurnishing == 1 ? "it" : "them";
+    %wordNonFurnishingItemItems = %numNonFurnishing == 1 ? "item" : "items";
+    %wordWearableItThem = %numWearable == 1 ? "it" : "them";
+    %wordWearableItemItems = %numWearable == 1 ? "item" : "items";
+    %wordFurnishingItThem = %numFurnishing == 1 ? "it" : "them";
     if (%numFurnishing > 0)
     {
-        %specialOrFurniture = (%numFurnishing != %numUnwearable) ? "special or furniture" : "furniture";
+        %specialOrFurniture = %numFurnishing != %numUnwearable ? "special or furniture" : "furniture";
     }
     else
     {
@@ -696,7 +696,7 @@ function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped)
     {
         if (%numWearable > 0)
         {
-            %msgUnwearable = (%numUnwearable == 0) ? "" : "\n(" @ (%numUnwearable == 1) ? "One is" : %numUnwearable @ " " @ "are" @ " " @ %specialOrFurniture @ " and can't actually be worn)";
+            %msgUnwearable = %numUnwearable == 0 ? "" : "\n(" @ (%numUnwearable == 1) ? "One is" : %numUnwearable @ " " @ "are" @ " " @ %specialOrFurniture @ " and can't actually be worn)";
         }
         else
         {
@@ -719,7 +719,7 @@ function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped)
     {
         %srcName = "yourself";
     }
-    %fromString = (%srcName $= "") ? "" : " from" @ " " @ %srcName;
+    %fromString = %srcName $= "" ? "" : " from" @ " " @ %srcName;
     %msg = "You just got" @ " " @ (%numSkus == 1) ? "a new item" : %numSkus @ " " @ "new items" @ %fromString @ "!";
     %msg = %msg @ "\n" @ "(" @ %list @ ")";
     %msg = %msg @ %msgUnwearable;
@@ -761,7 +761,7 @@ function notifyUserOfSkusExpired(%skus, %srcName)
         return;
     }
     %descriptions = SkuManager.getSkuShortDescriptions(%skus, ", ", 0);
-    %msg = (%count == 1) ? "An item in your outfits expired while you were away:" : "Some items in your outfits expired while you were away:";
+    %msg = %count == 1 ? "An item in your outfits expired while you were away:" : "Some items in your outfits expired while you were away:";
     handleSystemMessage("msgInfoMessage", %msg @ " " @ %descriptions);
 }
 function Inventory::equipOrWearSkus(%skus)
@@ -891,8 +891,8 @@ function Inventory::addItemToStore(%storename, %sku, %qty, %vpoints, %vbux)
 {
     $gStoreStockCacheSkus[%storename] = $gStoreStockCacheSkus[%storename] @ %sku @ " ";
     $gStoreItemsQty[%sku] = %qty;
-    $gStoreItemsVPoints[%sku] = (%vpoints < 0) ? "-" : mFloor(%vpoints);
-    $gStoreItemsVBux[%sku] = (%vbux < 0) ? "-" : mFloor(%vbux);
+    $gStoreItemsVPoints[%sku] = %vpoints < 0 ? "-" : mFloor(%vpoints);
+    $gStoreItemsVBux[%sku] = %vbux < 0 ? "-" : mFloor(%vbux);
 }
 function Inventory::getVPointsPriceForSku(%sku)
 {
@@ -943,7 +943,7 @@ function Inventory::getTotalPrice(%currency, %skus)
     while (%i < %count)
     {
         %sku = getWord(%skus, %i);
-        %price = (%currency $= "vPoints") ? Inventory::getVPointsPriceForSku(%sku) : Inventory::getVBuxPriceForSku(%sku);
+        %price = %currency $= "vPoints" ? Inventory::getVPointsPriceForSku(%sku) : Inventory::getVBuxPriceForSku(%sku);
         if (!(%price $= "-"))
         {
             %total = %total + %price;
@@ -961,7 +961,7 @@ function Inventory::filterSkusByValidPrice(%currency, %skus)
     while (%i < %count)
     {
         %sku = getWord(%skus, %i);
-        %price = (%currency $= "vPoints") ? Inventory::getVPointsPriceForSku(%sku) : Inventory::getVBuxPriceForSku(%sku);
+        %price = %currency $= "vPoints" ? Inventory::getVPointsPriceForSku(%sku) : Inventory::getVBuxPriceForSku(%sku);
         if (!(%price $= "-"))
         {
             %validSkus = %validSkus @ " " @ %sku;

@@ -68,7 +68,7 @@ function TabControl::getInitialButtonOffset(%this)
         %this.tabsOffset = "0 1";
     }
     %ret = %this.tabsOffset;
-    %dimAlign = (%this.orientation $= "vertical") ? 1 : 0;
+    %dimAlign = %this.orientation $= "vertical" ? 1 : 0;
     if (%this.tabsAlign $= "far")
     {
         %basePosition = getWord(%ret, %dimAlign);

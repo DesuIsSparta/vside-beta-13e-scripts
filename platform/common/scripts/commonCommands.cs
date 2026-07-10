@@ -474,16 +474,16 @@ function getExtension(%dry)
 {
     %wet = %dry;
     %wet = strrchr(%wet, "/");
-    %wet = (%wet $= "") ? %dry : %wet;
+    %wet = %wet $= "" ? %dry : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet, "?");
-    %wet = (%wet $= "") ? %wet2 : %wet;
+    %wet = %wet $= "" ? %wet2 : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet, "&");
-    %wet = (%wet $= "") ? %wet2 : %wet;
+    %wet = %wet $= "" ? %wet2 : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet, "=");
-    %wet = (%wet $= "") ? %wet2 : %wet;
+    %wet = %wet $= "" ? %wet2 : %wet;
     %wet2 = %wet;
     %wet = strrchr(%wet2, ".");
     return %wet;

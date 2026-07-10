@@ -83,7 +83,7 @@ function ApplauseMeterGui::closeByUser(%this)
     {
         if (%this.sumoGameType $= "PillowFightGame")
         {
-            MessageBoxOK(%this[$MsgCat::applauseGui @ "MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USERCLOSE"], "");
+            MessageBoxOK($MsgCat::applauseGui["MSG-PILLOW-WARN"], $MsgCat::applauseGui["MSG-PILLOW-USERCLOSE"], "");
         }
         else
         {
@@ -226,7 +226,7 @@ function ApplauseMeterGui::closeForBlockGame(%this)
 $gBlockGameKeys = "" @ "\n" @ "I" @ "\n" @ "J" @ "\n" @ "K" @ "\n" @ "L" @ "\n" @ " " @ "\n" @ "left" @ "\n" @ "right" @ "\n" @ "up" @ "\n" @ "down" @ "\n" @ "lcontrol" @ "\n" @ "rcontrol";
 function ApplauseMeterGui::onBlockGameKeys(%this, %keyCodeStr, %isKeyDown)
 {
-    %wantIt = (findRecord($gBlockGameKeys, %keyCodeStr) < 0) ? 0 : 1;
+    %wantIt = findRecord($gBlockGameKeys, %keyCodeStr) < 0 ? 0 : 1;
     if (%wantIt)
     {
         if (%keyCodeStr $= "I")

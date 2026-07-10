@@ -20,26 +20,26 @@ function CSSpacePurchasePriceConfirmation(%space)
     %price = CSSpacePurchasePriceFormatting(%space.floorplan.priceVPoints, %space.floorplan.priceVBux);
     %tradein = CSSpacePurchasePriceFormatting(%space.floorplan.tradeInValueVPoints, %space.floorplan.tradeInValueVBux);
     %final = CSSpacePurchasePriceFormatting(%finalVPoints, %finalVBux);
-    %text = %text @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"] @ "\n<tab:30>" @ "\n" @ "\t" @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"][$MsgCat::custSpace @ "PURCHASE_SPACEPRICE"] @ " " @ %price @ "\n" @ " " @ "\n" @ "\t" @ %price[$MsgCat::custSpace @ "PURCHASE_NOTINCLUDED"] @ "\n" @ "<spop>";
+    %text = %text @ $MsgCat::custSpace["PURCHASE_TRADEININTRO"] @ "\n<tab:30>" @ "\n" @ "\t" @ $MsgCat::custSpace["PURCHASE_SPACEPRICE"] @ " " @ %price @ "\n" @ " " @ "\n" @ "\t" @ $MsgCat::custSpace["PURCHASE_NOTINCLUDED"] @ "\n" @ "<spop>";
     if (($Player::VPoints >= %finalVPoints) && (%finalVPoints >= 0) && ($Player::VBux >= %finalVBux) && (%finalVBux >= 0))
     {
-        %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_CHOICE"] @ "\n";
+        %text = %text @ "\n" @ $MsgCat::custSpace["PURCHASE_CHOICE"] @ "\n";
     }
     else
     {
         if (($Player::VPoints >= %finalVPoints) && (%finalVPoints >= 0))
         {
-            %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VPOINTSONLY"] @ "\n";
+            %text = %text @ "\n" @ $MsgCat::custSpace["PURCHASE_VPOINTSONLY"] @ "\n";
         }
         else
         {
             if (($Player::VBux >= %finalVBux) && (%finalVBux >= 0))
             {
-                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
+                %text = %text @ "\n" @ $MsgCat::custSpace["PURCHASE_VBUXONLY"] @ "\n";
             }
             else
             {
-                %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] @ "\n";
+                %text = %text @ "\n" @ $MsgCat::custSpace["PURCHASE_NOTENOUGH"] @ "\n";
                 MessageBoxOK(%title, %text, "");
                 return;
             }
@@ -93,7 +93,7 @@ function CSSpacePurchaseDowngradeCheck(%space, %useBux, %priceFinal, %lossVPoint
     if ((%lossVPoints > 0) || (%lossVBux > 0))
     {
         %loss = CSSpacePurchasePriceFormatting(%lossVPoints, %lossVBux);
-        %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["TRADE_IN_DOWN_A"] @ " " @ %loss @ " " @ %loss[$MsgCat::custSpace @ "TRADE_IN_DOWN_B"] @ "\n";
+        %text = "<just:left>" @ "\n" @ $MsgCat::custSpace["TRADE_IN_DOWN_A"] @ " " @ %loss @ " " @ $MsgCat::custSpace["TRADE_IN_DOWN_B"] @ "\n";
         %buttons = "Yes - Trade in" @ "\t" @ "No - Cancel";
         %dlg = MessageBoxCustom("Warning", %text, %buttons);
         %dlg.callback[%space,", ",%useBux,", ",%priceFinal,",  \"CSSpacePurchaseSuccess\", \"CSSpacePurchaseFailed\");",0] = "purchaseApartmentRequest( ";

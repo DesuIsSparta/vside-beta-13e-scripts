@@ -81,7 +81,7 @@ function geLocalMapContainer::setMap2DForCustomSpacesMode(%this, %title, %text)
 function geLocalMapContainer_repositionTitleText()
 {
     %newTitleTop = (getWord(geMapHud2DCustomSpaceModeTitleContainer.getExtent(), 1) - getWord(geMapHud2DCustomSpaceModeTitle.getExtent(), 1)) / 2;
-    %newTitleTop = (%newTitleTop < 1) ? 1 : %newTitleTop;
+    %newTitleTop = %newTitleTop < 1 ? 1 : %newTitleTop;
     geMapHud2DCustomSpaceModeTitle.reposition(0, %newTitleTop);
 }
 $gDragNZoomIsReallySmooth = 1;
@@ -182,7 +182,7 @@ function Player::updateMapIcon(%this)
     if (((%this.getShowOnRadar() || isObject($player)) && (%this == $player)) || $player.rolesPermissionCheckNoWarn("radarSeeAll"))
     {
         %gender = %this.getGender();
-        %relation = (%this.getShapeName() $= $Player::Name) ? "self" : %this.isFriend() ? "friend" : "other";
+        %relation = %this.getShapeName() $= $Player::Name ? "self" : %this.isFriend() ? "friend" : "other";
         %mode = "reg";
         %mode = %this.hasRoleString("celeb") ? "celeb" : %mode;
         %mode = %this.isClassAIPlayer() ? "robot" : %mode;

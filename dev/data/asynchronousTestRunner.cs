@@ -114,6 +114,6 @@ function asyncTestsMasterFinished()
         }
         %n = %n + 1;
     }
-    %level = (%countPass == $asyncTests::testsNum) ? "info" : "error";
+    %level = %countPass == $asyncTests::testsNum ? "info" : "error";
     log("general", %level, "tests finished." @ " " @ $asyncTests::testsNum @ " " @ "total," @ " " @ %countPass @ " " @ "passed," @ " " @ %countFail @ " " @ "failed," @ " " @ %countNA @ " " @ "did not initialize.");
 }

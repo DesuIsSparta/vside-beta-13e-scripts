@@ -147,7 +147,7 @@ function UniformManagerRequest::onDoneOrError(%this)
 {
     %this.timeFinish = getSimTime();
     %this.duration = %this.timeFinish - %this.timeStart;
-    %level = (%this.duration < 1000) ? "debug" : "warn";
+    %level = %this.duration < 1000 ? "debug" : "warn";
     log("Communication", "debug", "Request duration" @ " " @ formatFloat("%7.3f", (%this.duration / 1000)) @ " " @ "seconds:" @ " " @ %this.getURL());
     if (%this.retryCount $= "")
     {

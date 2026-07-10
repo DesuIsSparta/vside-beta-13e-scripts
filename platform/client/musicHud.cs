@@ -191,7 +191,7 @@ function MusicHud::getITunesDownloadURL(%this, %iTunesURL)
 }
 function MusicHud::show(%this)
 {
-    if (%iTunesURL[$UserPref::HudTabs::AutoOpen @ "music"])
+    if ($UserPref::HudTabs::AutoOpen["music"])
     {
         HudTabs.selectTabWithName("music");
     }

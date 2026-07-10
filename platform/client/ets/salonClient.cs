@@ -11,7 +11,7 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName)
     SalonStyleSelector.lastTypeOfSalon = %typeOfSalon;
     SalonStyleSelector.lastClientGender = %clientGender;
     SalonStyleSelector.open();
-    %targetPlayer = (%targetPlayerName $= "") ? "" : Player::findPlayerInstance(%targetPlayerName);
+    %targetPlayer = %targetPlayerName $= "" ? "" : Player::findPlayerInstance(%targetPlayerName);
     SalonStyleSelector.targetPlayer = %targetPlayer;
     %thumbsDirectory = "platform/client/ui/salon/salonthumbs_";
     SalonStyleSelectorChair.setBitmap(%thumbsDirectory @ %typeOfSalon);
@@ -23,7 +23,7 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName)
     SalonStyleSelector.closeButton.setVisible($SALON_CHAIR_DEF_CANCLOSE[%typeOfSalon]);
     %propSku = $player.getActivePropSku();
     %propThumbsDir = "platform/client/ui/props/propthumbs_";
-    %propThumbFile = (%propSku $= "") ? "" : %propThumbsDir @ %propSku;
+    %propThumbFile = %propSku $= "" ? "" : %propThumbsDir @ %propSku;
     if ((%propThumbFile $= "") || !(isFile(%propThumbFile @ ".png")))
     {
         SalonStyleSelectorProp.setBitmap("");
@@ -90,7 +90,7 @@ function ShowSalonMenu(%typeOfSalon, %clientGender, %targetPlayerName)
     %list.reseatChildren();
     if (%list.getNumChildren() == 0)
     {
-        %msg = ($player.getActivePropSku() $= "") ? "No styles available.\nTry choosing a prop." : "No styles available.\nChoose another prop.";
+        %msg = $player.getActivePropSku() $= "" ? "No styles available.\nTry choosing a prop." : "No styles available.\nChoose another prop.";
         SalonStyleSelector.noSkuGuiText.setText("<just:center>" @ %msg);
     }
     else

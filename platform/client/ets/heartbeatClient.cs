@@ -32,7 +32,7 @@ function onDoneOrErrorCallback_ClientHeartbeat(%request)
         if (%errorCode $= "invalid")
         {
             error(getScopeName() @ " " @ "- heartbeat failed due to invalid token, logging out.");
-            %msg = $MsgCat::network["E-DROPPED"] @ $MsgCat::network["E-DROPPED"][$MsgCat::network @ "E-HEARTBEAT-INVALID"];
+            %msg = $MsgCat::network["E-DROPPED"] @ $MsgCat::network["E-HEARTBEAT-INVALID"];
             logout(0);
             disconnectedCleanup(LoginGui);
             MessageBoxOK("DISCONNECT", %msg, "");

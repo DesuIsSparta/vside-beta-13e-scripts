@@ -22,8 +22,8 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
         error(getScopeName() @ " " @ "- not initialized for" @ " " @ %userName @ " " @ getTrace());
         return;
     }
-    %propertyValue = (%propertyValue $= "false") ? 0 : %propertyValue;
-    %propertyValue = (%propertyValue $= "true") ? 1 : %propertyValue;
+    %propertyValue = %propertyValue $= "false" ? 0 : %propertyValue;
+    %propertyValue = %propertyValue $= "true" ? 1 : %propertyValue;
     if (%smValue.hasKey(%propertyName) && (%smValue.get(%propertyName) $= %propertyValue))
     {
         return;
@@ -258,8 +258,8 @@ function userPropertiesMgr::parseRequest(%this, %request)
     {
         %key = utf8Decode(%request.getValue("property" @ %n @ ".key"));
         %value = utf8Decode(%request.getValue("property" @ %n @ ".value"));
-        %value = (%value $= "false") ? 0 : %value;
-        %value = (%value $= "true") ? 1 : %value;
+        %value = %value $= "false" ? 0 : %value;
+        %value = %value $= "true" ? 1 : %value;
         %smValue.put(%key, %value);
         %n = %n + 1;
     }

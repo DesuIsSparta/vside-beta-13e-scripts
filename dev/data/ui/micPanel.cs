@@ -30,7 +30,7 @@ function micPanel::addMicHolder(%this, %playerName)
     {
         return;
     }
-    %delim = (%this.micHolders $= "") ? "" : "\t";
+    %delim = %this.micHolders $= "" ? "" : "\t";
     %this.micHolders = %this.micHolders @ %delim @ %playerName;
     %this.micHolders = SortFields(%this.micHolders);
     %this.updateMicHoldersList();

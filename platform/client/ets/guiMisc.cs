@@ -63,7 +63,7 @@ function GuiControl::blinkSet(%this, %mode, %periodOffMS, %periodOnMS, %param)
     {
         %this.resize(getWord(%this.origPoint, 0), getWord(%this.origPoint, 1), getWord(%this.origExtnt, 0), getWord(%this.origExtnt, 1));
     }
-    %mode = (%mode $= "none") ? "" : %mode;
+    %mode = %mode $= "none" ? "" : %mode;
     %this.blinkMode = %mode;
     %this.blinkPeriodOffMS = %periodOffMS;
     %this.blinkPeriodOnMS = %periodOnMS;

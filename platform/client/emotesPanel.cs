@@ -319,7 +319,7 @@ function EmoteHudList::putListIntoList(%this, %srcList)
     if ((%list.size() > 0) && !%this.listAdded[%this.curListName])
     {
         %this.listAdded[%this.curListName] = 1;
-        if (%this[$UserPref::emotes::collapsedLists @ %this.curListName])
+        if ($UserPref::emotes::collapsedLists[%this.curListName])
         {
             %collapsed = "+";
         }
@@ -327,11 +327,11 @@ function EmoteHudList::putListIntoList(%this, %srcList)
         {
             %collapsed = "- ";
         }
-        %listTitle = %this[$gEmoteListTitles @ %this.curListName];
+        %listTitle = $gEmoteListTitles[%this.curListName];
         %titleLine = "<color:ffffff><linkcolor:ffffff><spush><linkcolor:f5b9ff><b><a:gamelink list " @ %this.curListName @ ">" @ %collapsed @ %listTitle @ "</a><spop>";
         %this.setText(%this.getText() @ %titleLine @ "<br>");
     }
-    if (!(%this[$UserPref::emotes::collapsedLists @ %this.curListName]))
+    if (!$UserPref::emotes::collapsedLists[%this.curListName])
     {
         %list.forEach("addToEmotesList");
     }

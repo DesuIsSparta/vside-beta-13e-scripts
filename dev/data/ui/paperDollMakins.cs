@@ -36,7 +36,7 @@ function gePaperDollMakins::paperDoll_refresh(%this)
     }
     else
     {
-        %genderText = ($player.getGender() $= "f") ? "female" : "male";
+        %genderText = $player.getGender() $= "f" ? "female" : "male";
         %gender = $player.getGender();
     }
     %text = "";

@@ -172,8 +172,8 @@ function ClosetGuiFUE::showCurrentStep(%this)
         gSetField(%this, "closetGuiFUEShowCurrentStepSched", %sched);
         return;
     }
-    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["inactive"], 0);
-    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["active"], !%this.hideTipsCtrl.getValue());
+    $gClosetGuiFueCurrentStep["inactive"].stepContainers.setVisible(0);
+    $gClosetGuiFueCurrentStep["active"].stepContainers.setVisible(!%this.hideTipsCtrl.getValue());
     if (!%this.arrivedAtFinalTip)
     {
         %this.arrivedAtFinalTip = $gClosetGuiFueCurrentStep == %this.stepNumbersByName[strlwr("Snapshot")];
@@ -185,8 +185,8 @@ function ClosetGuiFUE::hideCurrentStep(%this)
     {
         return;
     }
-    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["active"], 0);
-    $gClosetGuiFueCurrentStep.setVisible(%this.stepContainers["inactive"], !%this.hideTipsCtrl.getValue());
+    $gClosetGuiFueCurrentStep["active"].stepContainers.setVisible(0);
+    $gClosetGuiFueCurrentStep["inactive"].stepContainers.setVisible(!%this.hideTipsCtrl.getValue());
 }
 function ClosetGuiFUE::refresh(%this)
 {

@@ -202,14 +202,14 @@ function ShowPropsButton::onClick(%this)
         %callback = "";
         if (%amInSalon)
         {
-            %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-IN"];
+            %msg = $MsgCat::shops["NO-PROPS-GO-TO-",%salonCode,"-BODY-IN"];
             %callback = "toggleStore();";
         }
         else
         {
-            %msg = %salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-BODY-OUT"];
+            %msg = $MsgCat::shops["NO-PROPS-GO-TO-",%salonCode,"-BODY-OUT"];
             %callback = "vurlOperation(\"" @ $gDestinationVurls[%salonCode] @ "\");";
         }
-        MessageBoxYesNo(%salonCode[$MsgCat::shops @ "NO-PROPS-GO-TO-" @ %salonCode @ "-TITLE"], %msg, %callback, "");
+        MessageBoxYesNo($MsgCat::shops["NO-PROPS-GO-TO-",%salonCode,"-TITLE"], %msg, %callback, "");
     }
 }

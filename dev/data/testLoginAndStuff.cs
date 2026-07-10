@@ -447,7 +447,7 @@ function do_emote()
     commandToServer('EtsPlayAnimName', $rand_emote);
     if (isObject(pChat))
     {
-        pChat.say($rand_genre[$rand_genre["(" @ $Hostname @ ")" @ " " @ "Genre:" @ " " @ $Genres TAB $rand_genre @ 0] @ "(" @ $Genres TAB $rand_genre @ 1] @ "); Emote:" @ " " @ $rand_emote, 0, 0);
+        pChat.say($rand_genre["("[$Hostname,")"," ","Genre:"," ",$Genres,$rand_genre,0],"(",$Genres,$rand_genre,1] @ "); Emote:" @ " " @ $rand_emote, 0, 0);
     }
     commandToServer('setGenre', $Genres[$rand_genre]);
     schedule(5000, 0, stopAndTalk);
@@ -473,22 +473,22 @@ function stopAndTalk()
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
         if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth"))
         {
-            %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
-            %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
+            %command = $teleportsNV[%rand_teleport_NV,0];
+            %destination = $teleportsNV[%rand_teleport_NV,1];
         }
         else
         {
             if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth"))
             {
-                %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
-                %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
+                %command = $teleportsLGA[%rand_teleport_LGA,0];
+                %destination = $teleportsLGA[%rand_teleport_LGA,1];
             }
             else
             {
                 if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth"))
                 {
-                    %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
-                    %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
+                    %command = $teleportsRJ[%rand_teleport_RJ,0];
+                    %destination = $teleportsRJ[%rand_teleport_RJ,1];
                 }
             }
         }

@@ -28,7 +28,7 @@ function setupProjectSpecificMessages()
     $MsgCat::infoSignBody["SHOPPING"] = "Let's go shopping!  Check out the new stores and buy the latest fashions for your vSide lifestyle.";
     $MsgCat::infoSignTitle["VIP"] = "VIP Room";
     $MsgCat::infoSignBody["VIP"] = "VIP status was awarded to the first 400 members of vSide and to VIP contest winners.";
-    $Net::ProfilesURL[$MsgCat::profile @ "H-PROFILE-TIP"] = "Want to learn more about your friends?  Check out <a:" @ $Net::ProfilesURL @ ">online profiles</a>.";
+    $MsgCat::profile["H-PROFILE-TIP"] = "Want to learn more about your friends?  Check out <a:" @ $Net::ProfilesURL @ ">online profiles</a>.";
     $MsgCat::respektEvent["EMAILVERIFY","pos"] = "[DVALUE] vPoints: Thank you for confirming your e-mail address.";
     $MsgCat::respektEvent["EMAILVERIFY","neg"] = "";
     $MsgCat::respektEvent["FRIENDS","pos"] = "[DVALUE] vPoints: You added a friend!";

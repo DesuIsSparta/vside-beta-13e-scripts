@@ -215,7 +215,7 @@ function geTGF_OnCompleted_MyPlace(%tracker)
                 %item.location_buildingName = %itemObj.get("location.buildingName");
                 %item.location_serverName = %itemObj.get("location.serverName");
                 %item.moreInfoURL = %itemObj.get("moreInfoURL");
-                %item.subType = (%item.eventID $= "") ? "apt" : "aptEvent";
+                %item.subType = %item.eventID $= "" ? "apt" : "aptEvent";
             }
         }
         %n = %n + 1;

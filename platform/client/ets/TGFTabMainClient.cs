@@ -853,7 +853,7 @@ function geTGF_main_people::tryUpdateWorldmapSummaries(%this)
         %delim = "<br>";
         %n = %n + 1;
     }
-    %withS = (%total == 1) ? "" : "s";
+    %withS = %total == 1 ? "" : "s";
     %text = "<spush><just:center><font:arial:16>" @ commaify(%total) @ " vSider" @ %withS @ " In-World:<spop><br>" @ %text;
     %text = "<tab:100>" @ %text;
     geTGF_main_people_locationsText.setTextWithStyle(%text);

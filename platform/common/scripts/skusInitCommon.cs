@@ -248,7 +248,7 @@ function SkuManager::setDrawerExclusive(%this, %drwr)
     }
     %this.exclusiveDrwrs = %this.exclusiveDrwrs @ %drwr @ "\n";
 }
-%this[$gNewStockOutfits @ mA] = "400 554 600 701 850 875 900 950";
+$gNewStockOutfits[mA] = "400 554 600 701 850 875 900 950";
 $gNewStockOutfits[mB] = "403 502 33763 31600 31034";
 $gNewStockOutfits[mC] = "33424 32098 906 606 31018";
 $gNewStockOutfits[mD] = "33402 32403 31522 31072";

@@ -638,7 +638,7 @@ function AIMConvManager::sendMessage(%this)
         %sendMessage = %this.filterMessage(%conv, %message);
         %this.spamDict.put(%conv.aimName, 1);
         aimSend(%conv.aimName, %sendMessage);
-        %prefix = (%conv.contents.mlText.getText() $= "") ? "" : "\n";
+        %prefix = %conv.contents.mlText.getText() $= "" ? "" : "\n";
         %toBottom = %conv.contents.scroll.isAtBottom();
         %conv.contents.mlText.addText(%prefix @ "<spush><color:bebeee>" @ %message @ "<spop>", 1, %toBottom);
         %this.totalMessagesSent = %this.totalMessagesSent + 1;
@@ -665,7 +665,7 @@ function AIMConvManager::receivedMessage(%this, %aimName, %message)
     %conv = %this.newConv(%aimName);
     if (%conv)
     {
-        %prefix = (%conv.contents.mlText.getText() $= "") ? "" : "\n";
+        %prefix = %conv.contents.mlText.getText() $= "" ? "" : "\n";
         %toBottom = %conv.contents.scroll.isAtBottom();
         %conv.contents.mlText.addText(%prefix @ "<spush><color:ee8fee>" @ %message @ "<spop>", 1, %toBottom);
         %conv.newMessage = 1;

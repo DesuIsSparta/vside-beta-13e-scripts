@@ -54,7 +54,7 @@ function CityDownloadGui::onWake(%this)
     DLLoadingPBController.Initialize(DLLoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
     if ($StandAlone && !$missionRunning)
     {
-        error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
+        error(getScopeName() @ " " @ "-" @ " " @ $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
         MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();", "");
     }
     packageDownload.callBackSink = %this;

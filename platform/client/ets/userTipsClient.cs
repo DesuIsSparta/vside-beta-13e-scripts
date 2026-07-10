@@ -139,7 +139,7 @@ function userTips::showNow(%tipName)
     %cbOk = standardSubstitutions($userTips::tipCallbackOK[%tipName]);
     %cbCnc = standardSubstitutions($userTips::tipCallbackCnc[%tipName]);
     %width = $userTips::tipWidth[%tipName];
-    %width = (%width $= "") ? 300 : %width;
+    %width = %width $= "" ? 300 : %width;
     %dialog = 0;
     if (!(%cbOk $= ""))
     {

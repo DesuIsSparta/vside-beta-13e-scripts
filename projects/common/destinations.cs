@@ -87,13 +87,13 @@ function DestinationList::GetRandomDestinationForTGF(%filter, %butNotThese)
     %n = 0;
     while (%n < $gDestinationAdsNum)
     {
-        %eligible = %n[$gDestinationAds TAB %n @ "okayForTGF"];
+        %eligible = $gDestinationAds[%n,"okayForTGF"];
         if (!%eligible)
         {
         }
         else
         {
-            %codeName = %n[$gDestinationAds TAB %n @ "codename"];
+            %codeName = $gDestinationAds[%n,"codename"];
             if (hasWord(%butNotThese, %codeName))
             {
             }

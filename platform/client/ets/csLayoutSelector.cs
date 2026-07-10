@@ -205,7 +205,7 @@ function CSLayoutSelector::gotCopyTargetInfo(%this, %infoStr)
     %numFurnishings = getField(%infoStr, 1);
     if (%numFurnishings > 0)
     {
-        %title = %numFurnishings[$MsgCat::custSpace TAB "LAYOUT_COPY_TRG_INVAL" @ "TITLE"];
+        %title = $MsgCat::custSpace["LAYOUT_COPY_TRG_INVAL","TITLE"];
         %title = strreplace(%title, "[SRC]", %layoutFrom);
         %title = strreplace(%title, "[DST]", %layoutTo);
         %body = $MsgCat::custSpace["LAYOUT_COPY_TRG_INVAL","BODY"];
@@ -224,7 +224,7 @@ function CSLayoutSelector::copyLayout(%this, %layoutFrom, %layoutTo, %texturesCh
     %title = strreplace(%title, "[DST]", (%layoutTo + 1));
     if (!(%texturesChnged $= 1))
     {
-        %body = %texturesChnged[$MsgCat::custSpace TAB "LAYOUT_COPY" @ "BODY"];
+        %body = $MsgCat::custSpace["LAYOUT_COPY","BODY"];
     }
     else
     {

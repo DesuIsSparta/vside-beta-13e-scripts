@@ -124,11 +124,11 @@ function testOutfits_MasterDoNext()
         %n = 0;
         while (%n < $testOutfits_testCount)
         {
-            %level = ($testOutfits_result[%n] $= "pass") ? "info" : "error";
+            %level = $testOutfits_result[%n] $= "pass" ? "info" : "error";
             log("network", %level, "testOutfitsMaster()" @ " " @ $testOutfits_result[%n] @ ":" @ " " @ $testOutfits_test[%n]);
             %n = %n + 1;
         }
-        %level = ($testOutfits_testCount == $testOutfits_passCount) ? "info" : "warn";
+        %level = $testOutfits_testCount == $testOutfits_passCount ? "info" : "warn";
         log("network", %level, "testOutfitsMaster() results:" @ " " @ $testOutfits_passCount @ " " @ "of" @ " " @ $testOutfits_testCount @ " " @ "passed," @ " " @ ($testOutfits_testCount - $testOutfits_passCount) @ " " @ "failed.");
         if ($testOutfits::quitWhenDone)
         {
@@ -160,7 +160,7 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout)
     {
         log("network", "info", "outfit test succeeded after" @ " " @ %timeout @ "ms:" @ " " @ %testname @ ".");
         $testOutfits_passCount = $testOutfits_passCount + 1;
-        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1)] = "pass";
+        $testOutfits_result[($testOutfits_nextTest - 1)] = "pass";
     }
     else
     {
@@ -169,7 +169,7 @@ function testOutfits_TestCatch(%testname, %skusSent, %skusExpected, %timeout)
         log("network", "warn", "got     " @ " " @ %skusGot);
         log("network", "warn", "expected" @ " " @ %skusExpected);
         $testOutfits_passCount = $testOutfits_passCount + 0;
-        $testOutfits_nextTest[$testOutfits_result @ ($testOutfits_nextTest - 1)] = "fail";
+        $testOutfits_result[($testOutfits_nextTest - 1)] = "fail";
     }
     testOutfits_MasterDoNext();
 }

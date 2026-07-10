@@ -1223,7 +1223,7 @@ function geTextureDropTarget::applyTexture(%this, %texturePath)
     if (%ok)
     {
         MyShopRefreshTexturesCtrl.setVisible(1);
-        %otherExtension = (%extension $= ".png") ? ".jpg" : ".png";
+        %otherExtension = %extension $= ".png" ? ".jpg" : ".png";
         %otherFullPath = "user/textures/" @ %newTextureName @ %otherExtension;
         if (isFile(%otherFullPath))
         {

@@ -442,7 +442,7 @@ function CustomSpaceClient::setCoHostHood(%playerName, %set, %confirm)
     }
     if (%set && %confirm)
     {
-        %msg = %confirm[$MsgCat::custSpace TAB "OWNER_ACTION" @ "COHOST-CONFIRM"];
+        %msg = $MsgCat::custSpace["OWNER_ACTION","COHOST-CONFIRM"];
         %msg = strreplace(%msg, "[TARGET]", %playerName);
         MessageBoxYesNo("Make Co-Host", %msg, "CommandToServer('setCohostHood', \"" @ %playerName @ "\", true);", "");
     }
@@ -1215,7 +1215,7 @@ function clientCmdCSLayoutSelected(%unused, %audioStream, %videoStream)
 {
     refreshActiveFurniture();
     CSFurnitureMover.SelectNuggetID(-1);
-    %envMgrVideoStr = (%videoStream $= "") ? "no-video" : %videoStream;
+    %envMgrVideoStr = %videoStream $= "" ? "no-video" : %videoStream;
     CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", "", "", %audioStream, %envMgrVideoStr);
 }
 function csCopyLayoutFromTo(%from, %to)

@@ -828,7 +828,7 @@ function ProfileBackgroundChooser::moveBy(%this, %numSlots)
 }
 function ProfileObjectView::moveBy(%this, %dx, %dy)
 {
-    %nudge = ($player.getGender() $= "f") ? "0.4 -0.3 0.8" : "0 -0.1 0.8";
+    %nudge = $player.getGender() $= "f" ? "0.4 -0.3 0.8" : "0 -0.1 0.8";
     %this.setLookAtNudge(%nudge);
     %dx = %dx * 0.25;
     %dy = %dy * 0.25;

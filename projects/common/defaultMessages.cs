@@ -68,7 +68,7 @@ function setupDefaultMessages()
     $MsgCat::commerce["S-PURCHASE-DELAYED"] = "Sorry that took so long! We appreciate your patience.\nYour new items are now in your closet. Enjoy!";
     $MsgCat::commerce["E-TITLE"] = "Problem with your purchase";
     $MsgCat::commerce["E-ALREADYOWN"] = "You already own one or more of the items in your cart.";
-    $Net::AddFundsURL[$MsgCat::commerce @ "E-NO-VBUX"] = "You do not have enough vBux to make this purchase.  <a:" @ $Net::AddFundsURL @ ">Add more vBux</a>.";
+    $MsgCat::commerce["E-NO-VBUX"] = "You do not have enough vBux to make this purchase.  <a:" @ $Net::AddFundsURL @ ">Add more vBux</a>.";
     $MsgCat::commerce["E-NO-VPOINTS"] = "You do not have enough vPoints to make this purchase.";
     $MsgCat::commerce["E-SOLDOUT"] = "Some items in your cart were sold out.  Do you wish to remove these items from your cart?";
     $MsgCat::commerce["F-PURCHASE"] = "Could not purchase one or more of the items in your cart.";
@@ -91,7 +91,7 @@ function setupDefaultMessages()
     $MsgCat::custSpace["PURCHASE_FINALPRICE"] = "Final price:";
     $MsgCat::custSpace["PURCHASE_NOTINCLUDED"] = "<spush><color:00ffff>Note: Furniture not included<spop>";
     $MsgCat::custSpace["PURCHASE_CONFIRM"] = "Are you sure you want to buy this space for [PRICE] ?";
-    $Net::AddFundsURL[$MsgCat::custSpace @ "PURCHASE_NOTENOUGH"] = "Ouch, it doesn't look like you have enough vBux or vPoints to move in here. You can <a:" @ $Net::AddFundsURL @ ">buy more vBux</a> or go out and hustle for more vPoints. Come back when you've got the cash and you can have this place in a snap.";
+    $MsgCat::custSpace["PURCHASE_NOTENOUGH"] = "Ouch, it doesn't look like you have enough vBux or vPoints to move in here. You can <a:" @ $Net::AddFundsURL @ ">buy more vBux</a> or go out and hustle for more vPoints. Come back when you've got the cash and you can have this place in a snap.";
     $MsgCat::custSpace["PURCHASE_VBUXONLY"] = "Awesome, looks like you've got enough vBux to move in. Click buy to complete the purchase.";
     $MsgCat::custSpace["PURCHASE_VPOINTSONLY"] = "Sweet, looks like you've got enough vPoints to move in. Click buy to complete the purchase.";
     $MsgCat::custSpace["PURCHASE_CHOICE"] = "Sweet, looks like you've got enough vBux and vPoints to move in. Which would you like to pay with?";
@@ -177,7 +177,7 @@ function setupDefaultMessages()
     $MsgCat::furniture["IMAGEFRAME-USER"] = "This is a portrait of <a:[USERPROFILE]>[USERNAME]</a>";
     $MsgCat::furniture["IMAGEFRAME-NOUSER"] = "This is a portrait of our favorite bunny";
     $MsgCat::furniture["IMAGEFRAME-TITLENOTWLIST"] = "Unsupported Graphic";
-    $Net::ImageInfoURL[$MsgCat::furniture @ "IMAGEFRAME-NOTWHITELIST"] = "Oops!  vSide can only display images from certain websites and that's not one of 'em.\nPlease click <a:" @ $Net::ImageInfoURL @ ">here</a> for a list of supported sites.";
+    $MsgCat::furniture["IMAGEFRAME-NOTWHITELIST"] = "Oops!  vSide can only display images from certain websites and that's not one of 'em.\nPlease click <a:" @ $Net::ImageInfoURL @ ">here</a> for a list of supported sites.";
     $MsgCat::furniture["IMAGEFRAME-LOADFAILEDUSER"] = "Darn, [USER] doesn't appear to have a portrait.";
     $MsgCat::furniture["IMAGEFRAME-LOADFAILEDGALLERY"] = "We can't seem to find that picture in our gallery.";
     $MsgCat::furniture["IMAGEFRAME-LOADFAILEDEVENT"] = "We can't seem to find that event.";
@@ -232,29 +232,29 @@ function setupDefaultMessages()
     $MsgCat::giftingItems["DLG-BODY-MAKE-SELF-CONFIRM"] = "Are you sure you want to make yourself a <spush><b>[ITEMNAME]<spop>?";
     $MsgCat::giftingItems["ACCEPT-OR-DECLINE"] = "<spush><b>[OTHERPLAYER]<spop><br>would like to give you <spush><b>[GIFTDESC]<spop>!<br><br>Do you want to accept [IT_THEM]?";
     $MsgCat::giftingItems["ACCEPT-OR-DECLINE-MAKING"] = "<spush><b>[OTHERPLAYER]<spop><br>would like to make you <spush><b>[GIFTDESC]<spop>!<br><br>Do you want to accept [IT_THEM]?";
-    $MsgCat::gifting["E-BACKEND-UNKNOWN"][$MsgCat::giftingItems @ "E-UNKNOWN"] = $MsgCat::gifting["E-BACKEND-UNKNOWN"];
-    $MsgCat::gifting["E-ENVSERVER-UNKNOWN"][$MsgCat::giftingItems @ "E-ENVSERVER-UNKNOWN"] = $MsgCat::gifting["E-ENVSERVER-UNKNOWN"];
-    $MsgCat::gifting["E-SOURCE-MISSING"][$MsgCat::giftingItems @ "E-SOURCE-MISSING"] = $MsgCat::gifting["E-SOURCE-MISSING"];
-    $MsgCat::gifting["E-TARGET-MISSING"][$MsgCat::giftingItems @ "E-TARGET-MISSING"] = $MsgCat::gifting["E-TARGET-MISSING"];
+    $MsgCat::giftingItems["E-UNKNOWN"] = $MsgCat::gifting["E-BACKEND-UNKNOWN"];
+    $MsgCat::giftingItems["E-ENVSERVER-UNKNOWN"] = $MsgCat::gifting["E-ENVSERVER-UNKNOWN"];
+    $MsgCat::giftingItems["E-SOURCE-MISSING"] = $MsgCat::gifting["E-SOURCE-MISSING"];
+    $MsgCat::giftingItems["E-TARGET-MISSING"] = $MsgCat::gifting["E-TARGET-MISSING"];
     $MsgCat::giftingItems["E-TOOSLOW"] = "[OTHERPLAYER] wanted to give you a drink, but you were away..";
-    $MsgCat::gifting["ACCEPTED"][$MsgCat::giftingItems @ "ACCEPTED"] = $MsgCat::gifting["ACCEPTED"];
-    $MsgCat::gifting["ACCEPTED-AUTO"][$MsgCat::giftingItems @ "ACCEPTED-AUTO"] = $MsgCat::gifting["ACCEPTED-AUTO"];
-    $MsgCat::gifting["DECLINED"][$MsgCat::giftingItems @ "DECLINED"] = $MsgCat::gifting["DECLINED"];
-    $MsgCat::gifting["DECLINED-AUTO"][$MsgCat::giftingItems @ "DECLINED-AUTO"] = $MsgCat::gifting["DECLINED-AUTO"];
-    $MsgCat::gifting["DECLINED-TIMEOUT"][$MsgCat::giftingItems @ "DECLINED-TIMEOUT"] = $MsgCat::gifting["DECLINED-TIMEOUT"];
-    $MsgCat::gifting["DECLINED-BUSY"][$MsgCat::giftingItems @ "DECLINED-BUSY"] = $MsgCat::gifting["DECLINED-BUSY"];
-    $MsgCat::gifting["DECLINED-IDLE"][$MsgCat::giftingItems @ "DECLINED-IDLE"] = $MsgCat::gifting["DECLINED-IDLE"];
-    $MsgCat::gifting["DECLINED-IGNORING"][$MsgCat::giftingItems @ "DECLINED-IGNORING"] = $MsgCat::gifting["DECLINED-IGNORING"];
-    $MsgCat::gifting["DECLINED-DISCONNECTED"][$MsgCat::giftingItems @ "DECLINED-DISCONNECTED"] = $MsgCat::gifting["DECLINED-DISCONNECTED"];
+    $MsgCat::giftingItems["ACCEPTED"] = $MsgCat::gifting["ACCEPTED"];
+    $MsgCat::giftingItems["ACCEPTED-AUTO"] = $MsgCat::gifting["ACCEPTED-AUTO"];
+    $MsgCat::giftingItems["DECLINED"] = $MsgCat::gifting["DECLINED"];
+    $MsgCat::giftingItems["DECLINED-AUTO"] = $MsgCat::gifting["DECLINED-AUTO"];
+    $MsgCat::giftingItems["DECLINED-TIMEOUT"] = $MsgCat::gifting["DECLINED-TIMEOUT"];
+    $MsgCat::giftingItems["DECLINED-BUSY"] = $MsgCat::gifting["DECLINED-BUSY"];
+    $MsgCat::giftingItems["DECLINED-IDLE"] = $MsgCat::gifting["DECLINED-IDLE"];
+    $MsgCat::giftingItems["DECLINED-IGNORING"] = $MsgCat::gifting["DECLINED-IGNORING"];
+    $MsgCat::giftingItems["DECLINED-DISCONNECTED"] = $MsgCat::gifting["DECLINED-DISCONNECTED"];
     $MsgCat::coanim["ACCEPT-OR-DECLINE"] = "<spush><b>[OTHERPLAYER]<spop><br>would like to [ACTIONDESC]! <br><br>Do you want to accept?";
     $MsgCat::coanim["E-TOOSLOW"] = "[OTHERPLAYER] wanted to [ACTIONDESC], but you were away..";
     $MsgCat::invitation["E-SEND-TITLE"] = "Doh! We couldn't send that invitation.";
     $MsgCat::invitation["EMPTY-TO-FIELD"] = "Huh? The e-mail address you entered is invalid.";
     $MsgCat::invitation["S-SEND-TITLE"] = "Invitation Sent";
     $MsgCat::invitation["INVITE-SENT"] = "Your invitation has been sent. Thanks! :)";
-    $Net::inviteFriendsURL[$MsgCat::invitation @ "TEXT-TGF-MAIN"] = "<a:gamelink:" @ $Net::inviteFriendsURL @ ">Invite Friends to vSide<br><linkcolor:ffffffaa><font:arial:14>(and earn vPoints!)</a>";
-    $Net::inviteFriendsURL[$MsgCat::invitation @ "TEXT-TGF-HOTSPOTS"] = "Did you know you can earn vPoints by inviting friends? <a:" @ $Net::inviteFriendsURL @ ">Click here to do it!</a>";
-    $MsgCat::invitation["TEXT-TGF-HOTSPOTS"][$MsgCat::invitation @ "TEXT-TGF-FRIENDS"] = $MsgCat::invitation["TEXT-TGF-HOTSPOTS"];
+    $MsgCat::invitation["TEXT-TGF-MAIN"] = "<a:gamelink:" @ $Net::inviteFriendsURL @ ">Invite Friends to vSide<br><linkcolor:ffffffaa><font:arial:14>(and earn vPoints!)</a>";
+    $MsgCat::invitation["TEXT-TGF-HOTSPOTS"] = "Did you know you can earn vPoints by inviting friends? <a:" @ $Net::inviteFriendsURL @ ">Click here to do it!</a>";
+    $MsgCat::invitation["TEXT-TGF-FRIENDS"] = $MsgCat::invitation["TEXT-TGF-HOTSPOTS"];
     $MsgCat::invitation["INVITEE-INWORLD"] = "Someone you invited to vSide has just finished Gateway! Give \"[OTHERPLAYER]\" a minute to spawn in-world, then welcome [OTHERPLAYER_HIM_HER_IT] to vSide!";
     $MsgCat::loading["E-MISSION-LD"] = "Oops! Something went wrong loading the mission: ";
     $MsgCat::login["E-PASSWORD"] = "The user name and password you have entered do not match. Make sure you've got them right and try again. ";
@@ -267,10 +267,10 @@ function setupDefaultMessages()
     $MsgCat::login["E-ALREADY-IN"] = "You appear to be already signed in elsewhere.  Would you like to end that session and sign in again?";
     $MsgCat::login["E-BANNED"] = "This account has been\npermanently banned from vSide.";
     $MsgCat::login["E-SUSPENDED"] = "This account has been temporarily suspended:";
-    $Net::HelpURL_Guidelines[$MsgCat::login @ "E-DONT-KNOW-RULES"] = "\n\nDon't know the rules? <a:" @ $Net::HelpURL_Guidelines @ ">Read 'em here!</a>";
+    $MsgCat::login["E-DONT-KNOW-RULES"] = "\n\nDon't know the rules? <a:" @ $Net::HelpURL_Guidelines @ ">Read 'em here!</a>";
     $MsgCat::login["E-UPGRADE-1"] = "You seem to be running an old version of ";
-    %buildVersion[$MsgCat::login @ "E-UPGRADE-2"] = "You can get the most recent version of " @ $ETS::AppName @ " <a:" @ $Net::downloadURL @ "/download/upgrade?version=" @ %buildVersion @ ">here</a>.";
-    %buildVersion[$MsgCat::login @ "E-UPGRADE-3"] = "You can get it <a:" @ $Net::downloadURL @ "/download/upgrade?version=" @ %buildVersion @ ">here</a>.";
+    $MsgCat::login["E-UPGRADE-2"] = "You can get the most recent version of " @ $ETS::AppName @ " <a:" @ $Net::downloadURL @ "/download/upgrade?version=" @ %buildVersion @ ">here</a>.";
+    $MsgCat::login["E-UPGRADE-3"] = "You can get it <a:" @ $Net::downloadURL @ "/download/upgrade?version=" @ %buildVersion @ ">here</a>.";
     $MsgCat::login["CONF-EMAIL"] = "We've sent you a confirmation e-mail.  When you get it be sure to click on the link in the e-mail to verify your address.";
     $MsgCat::login["NO-EMAIL-NAG"] = "We don't have an email address on file for you. Without one we can't keep you in the loop. Would you like to add one now?";
     $MsgCat::login["CONF-NAG"] = "You haven't verified your email address! Verify your email address to take advantage of advanced vSide features, be eligible for contests, prizes, and more. Would you like us to send you another activation e-mail?";
@@ -295,7 +295,7 @@ function setupDefaultMessages()
     $MsgCat::network["E-SERVER-DNS"] = "Couldn't connect to vSide :(" @ "\n" @ "Please make sure that your computer is connected to the internets. ";
     $MsgCat::network["H-SEARCHING"] = "Phoning vSide..";
     $MsgCat::network["H-SYS-DOWN"] = "Doh! vSide is unavailable due to maintenance :( Try again in a little bit. ";
-    $Net::ForumsURL[$MsgCat::network @ "H-SEE-FORUMS"] = "For system status information, please see our <a:" @ $Net::ForumsURL @ ">Community Forums</a>. ";
+    $MsgCat::network["H-SEE-FORUMS"] = "For system status information, please see our <a:" @ $Net::ForumsURL @ ">Community Forums</a>. ";
     $MsgCat::network["E-SERVER-TIMEOUT"] = "Doh! Your connection to vSide has timed out. Make sure your computer is connected to the internets and sign in again. ";
     $MsgCat::network["E-DROPPED"] = "You have been disconnected from vSide: ";
     $MsgCat::network["E-NO-SERVER-DATA"] = "Doh! Can't figure out what cities are available. Try logging out and back in and make sure you're connected to the internets. ";
@@ -303,9 +303,9 @@ function setupDefaultMessages()
     $MsgCat::network["E-PROTOCOL-VER"] = "You seem to be running an old version of vSide. ";
     $MsgCat::network["A-OKAY"] = "Come on in, the system's fine! ";
     $MsgCat::network["E-HEARTBEAT-INVALID"] = "You seem to have logged in elsewhere.";
-    $Net::PhotoAlbumURL[$MsgCat::photo @ "N-LINK-ALBUM"] = "<a:gamelink " @ $Net::PhotoAlbumURL @ ">View Album</a>";
-    $Net::PhotoAlbumURL[$MsgCat::photo @ "E-UPLOAD-UNKNOWN"] = "Doh! Your photo didn't upload - you probably " @ "have too many!<br><a:gamelink " @ $Net::PhotoAlbumURL @ ">Click here to delete some</a>, then try again.";
-    $Net::PhotoAlbumURL[$MsgCat::photo @ "E-UPLOAD-FULL"] = "Doh! Your photo didn't upload - you " @ "have too many!<br><a:gamelink " @ $Net::PhotoAlbumURL @ ">Click here to delete some</a>, then try again.";
+    $MsgCat::photo["N-LINK-ALBUM"] = "<a:gamelink " @ $Net::PhotoAlbumURL @ ">View Album</a>";
+    $MsgCat::photo["E-UPLOAD-UNKNOWN"] = "Doh! Your photo didn't upload - you probably " @ "have too many!<br><a:gamelink " @ $Net::PhotoAlbumURL @ ">Click here to delete some</a>, then try again.";
+    $MsgCat::photo["E-UPLOAD-FULL"] = "Doh! Your photo didn't upload - you " @ "have too many!<br><a:gamelink " @ $Net::PhotoAlbumURL @ ">Click here to delete some</a>, then try again.";
     $MsgCat::profile["H-PHOTO"] = "Set your profile picture!";
     $MsgCat::profile["H-PROFILE-TIP"] = "";
     $MsgCat::rentabot["NO-PROFILE"] = "Sorry, [NAME] doesn't have a profile.";
@@ -339,7 +339,7 @@ function setupDefaultMessages()
     $MsgCat::VURLError["ERROR_EXECUTEERROR"] = "";
     $MsgCat::VURLError["ERROR_FAIL"] = "Our bad, we couldn't teleport you to the spot you requested.";
     $MsgCat::VURLError["ERROR_ACCESSDENIED"] = "Sorry, you're not allowed in there right now!";
-    $MsgCat::teleport["OFFLINE"][$MsgCat::VURLError @ "ERROR_USEROFFLINE"] = $MsgCat::teleport["OFFLINE"];
+    $MsgCat::VURLError["ERROR_USEROFFLINE"] = $MsgCat::teleport["OFFLINE"];
     $MsgCat::VURLError["ERROR_NOMORERETRY"] = "Weak. We will never find the destination you requested.";
     $MsgCat::VURLError["ERROR_TELETOSELF"] = "Wherever you go, there you are.";
     $MsgCat::VURLError["ERROR_LOCKED"] = "That apartment is locked right now.";
@@ -355,8 +355,8 @@ function setupDefaultMessages()
     $MsgCat::VURLError["ERROR_INVALID"] = "Oops, there is no one on vSide with that name.";
     $MsgCat::VURLError["ERROR_FLOOD"] = "Stop teleing so much!";
     $MsgCat::VURLError["ERROR_DOWNLOADING"] = "The city you requested is fashionably late to download but will be here shortly. Please try again in a few minutes.";
-    $MsgCat::VURLError["ERROR_LOCATIONFULL"][$MsgCat::VURLError @ "ERROR_NOSPACE"] = $MsgCat::VURLError["ERROR_LOCATIONFULL"];
-    $MsgCat::VURLError["ERROR_LOCATIONOFFLINE"][$MsgCat::VURLError @ "ERROR_OFFLINE"] = $MsgCat::VURLError["ERROR_LOCATIONOFFLINE"];
+    $MsgCat::VURLError["ERROR_NOSPACE"] = $MsgCat::VURLError["ERROR_LOCATIONFULL"];
+    $MsgCat::VURLError["ERROR_OFFLINE"] = $MsgCat::VURLError["ERROR_LOCATIONOFFLINE"];
     $MsgCat::VURLText["PASSWORD_REQUIRED_TITLE"] = "Exclusive Party";
     $MsgCat::VURLText["PASSWORD_REQUIRED_TEXT"] = "You are entering a private party." @ "\n" @ "What's the door code?";
     $MsgCatTitles["UI::HELPMEMODE-ON"] = "Help-Me Mode";
@@ -375,7 +375,7 @@ function setupMessages()
 $gMessagesSeen = "";
 function hasMessageBeenSeenThisSession(%msgID)
 {
-    %seen = (findField($gMessagesSeen, %msgID) >= 0) ? 1 : 0;
+    %seen = findField($gMessagesSeen, %msgID) >= 0 ? 1 : 0;
     if (!%seen)
     {
         if (!($gMessagesSeen $= ""))

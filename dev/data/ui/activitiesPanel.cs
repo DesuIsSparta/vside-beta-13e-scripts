@@ -44,7 +44,7 @@ function geActivitiesPanel::updateStates(%this)
         %style = %style @ "<color:" @ %baseColor @ "f0>";
         %style = %isHighest ? "<b>" @ %style : %style;
         %icon = %uam.getActivityIconFilename(%activityName);
-        %timeLeftText = (%timeLeft <= 0) ? "" : " - " @ formatFloat("%0.1f", (%timeLeft / 1000));
+        %timeLeftText = %timeLeft <= 0 ? "" : " - " @ formatFloat("%0.1f", (%timeLeft / 1000));
         %text = "<spush>" @ %style @ "<just:left><a:gamelink " @ %activityName @ ">" @ %activityUFName @ "</a>" @ %timeLeftText @ "<just:right><bitmap:" @ %icon @ "><spop>" @ %delim @ %text;
         %delim = "<br>";
         %n = %n - 1;

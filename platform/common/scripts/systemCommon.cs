@@ -474,7 +474,7 @@ function compileClassInstances(%obj, %container)
     }
     %curr = %container.instanceCounts["count"];
     %found;
-    %curr = (%curr $= "") ? 0 : %curr;
+    %curr = %curr $= "" ? 0 : %curr;
     %container.instanceCounts[%found,"count"] = %curr + 1;
     if (%obj.isClassSimGroup())
     {

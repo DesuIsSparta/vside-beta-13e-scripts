@@ -354,7 +354,7 @@ function StatusRequest::onDone(%this)
         $gLoginStatusMessage = %this.getValue("message");
         if ($gLoginStatusMessage $= "")
         {
-            $gLoginStatusMessage = $gLoginStatusMessage[$MsgCat::network @ "A-OKAY"];
+            $gLoginStatusMessage = $MsgCat::network["A-OKAY"];
         }
         parseGiftingSettings(%this);
         $gVPointsRatio = %this.getValue("vPointsRatio");
@@ -362,7 +362,7 @@ function StatusRequest::onDone(%this)
     }
     else
     {
-        $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
+        $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SEE-FORUMS"];
     }
     LoginGui.update();
 }
@@ -370,11 +370,11 @@ function StatusRequest::onError(%this, %errorNum, %errorName)
 {
     if (%errorNum == $CURL::CouldNotResolveHost)
     {
-        $gLoginStatusMessage = %errorNum[$MsgCat::network @ "E-SERVER-DNS"];
+        $gLoginStatusMessage = $MsgCat::network["E-SERVER-DNS"];
     }
     else
     {
-        $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"];
+        $gLoginStatusMessage = $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SEE-FORUMS"];
     }
     LoginGui.update();
     log("login", "info", %this.getInfoString() @ " " @ "StatusRequest::onError:" @ " " @ %errorName);

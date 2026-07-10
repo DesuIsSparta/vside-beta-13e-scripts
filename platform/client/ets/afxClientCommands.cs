@@ -90,8 +90,8 @@ $gAfxClientSounds["TeleOut","delay"] = 200;
 function ClientCmdAfxClientSpecificSound(%soundID)
 {
     %soundID = detag(%soundID);
-    %profile = %soundID[$gAfxClientSounds TAB %soundID @ "profile"];
-    %delay = %soundID[$gAfxClientSounds TAB %soundID @ "delay"];
+    %profile = $gAfxClientSounds[%soundID,"profile"];
+    %delay = $gAfxClientSounds[%soundID,"delay"];
     if (!isObject(%profile))
     {
         error(getScopeName() @ " " @ "- could not find sound profile for" @ " " @ %soundID);

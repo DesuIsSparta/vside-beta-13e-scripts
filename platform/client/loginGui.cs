@@ -355,7 +355,7 @@ function LoginRequest::onError(%this, %errorNum, %unused)
     else
     {
         LoginGui.onConnectFailed("Could not connect");
-        MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
+        MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SEE-FORUMS"], "");
     }
 }
 function LoginRequest::onConnected(%this)
@@ -390,7 +390,7 @@ function LoginRequest::onDone(%this)
             if (%errorCode $= "overloaded")
             {
                 LoginGui.onConnectFailed("Overcrowded");
-                MessageBoxOK("No More Room", $ETS::AppName @ $ETS::AppName[$MsgCat::server @ "E-SERVER-FULL"], "");
+                MessageBoxOK("No More Room", $ETS::AppName @ $MsgCat::server["E-SERVER-FULL"], "");
             }
             else
             {
@@ -418,7 +418,7 @@ function LoginRequest::onDone(%this)
                             if (%errorCode $= "banned")
                             {
                                 LoginGui.onConnectFailed("Banned");
-                                MessageBoxOK("Banned", $MsgCat::login["E-BANNED"] @ $MsgCat::login["E-BANNED"][$MsgCat::login @ "E-DONT-KNOW-RULES"], "");
+                                MessageBoxOK("Banned", $MsgCat::login["E-BANNED"] @ $MsgCat::login["E-DONT-KNOW-RULES"], "");
                             }
                             else
                             {
@@ -426,7 +426,7 @@ function LoginRequest::onDone(%this)
                                 {
                                     LoginGui.onConnectFailed("Banned");
                                     %msg = "";
-                                    %msg = %msg @ %msg[$MsgCat::login @ "E-SUSPENDED"];
+                                    %msg = %msg @ $MsgCat::login["E-SUSPENDED"];
                                     %msg = %msg @ "\n";
                                     %msg = %msg @ "\n";
                                     %msg = %msg @ %this.getValue("suspensionReason");
@@ -445,7 +445,7 @@ function LoginRequest::onDone(%this)
                                     if (%errorCode $= "upgrade_required")
                                     {
                                         LoginGui.onConnectFailed("Upgrade required");
-                                        MessageBoxOK("Upgrade Required", $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-2"], "");
+                                        MessageBoxOK("Upgrade Required", $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".  " @ $MsgCat::login["E-UPGRADE-2"], "");
                                     }
                                     else
                                     {
@@ -467,7 +467,7 @@ function LoginRequest::onDone(%this)
         if (%status $= "upgrade_available")
         {
             LoginRequest::commonLogin(%this);
-            MessageBoxOK("Upgrade Available", "There is a new version of" @ " " @ $ETS::AppName @ " " @ "available.  " @ $ETS::AppName[$MsgCat::login @ "E-UPGRADE-3"], "");
+            MessageBoxOK("Upgrade Available", "There is a new version of" @ " " @ $ETS::AppName @ " " @ "available.  " @ $MsgCat::login["E-UPGRADE-3"], "");
         }
         else
         {
@@ -801,7 +801,7 @@ function LoginGui::animate(%this)
         %this.hideBitmapSet(%this.bitmapSet);
     }
     %this.firstAnimation = 0;
-    %this.bitmapSet = (%this.bitmapSet == 0) ? 1 : 0;
+    %this.bitmapSet = %this.bitmapSet == 0 ? 1 : 0;
     %this.schedule(500, "showBitmapSet", %this.bitmapSet);
     cancel(%this.animateTimer);
     %this.animateTimer = %this.schedule(45000, "animate");

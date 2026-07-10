@@ -79,7 +79,7 @@ function respektLevelToNameWithIndefiniteArticle(%level)
     %level = respektLevelValidate(%level);
     %article = $gRespektLevelsIndefiniteArticles[%level];
     %levelName = respektLevelToNameWithoutArticle(%level);
-    %ret = (%article $= "") ? %levelName : %article @ " " @ %levelName;
+    %ret = %article $= "" ? %levelName : %article @ " " @ %levelName;
     return %ret;
 }
 function respektPointsNeededToNextLevel(%score)
@@ -113,7 +113,7 @@ function respektLevelMaxPoints(%level)
     }
     else
     {
-        return %level[$gRespektLevelsMinPoints @ (%level + 1)] - 1;
+        return $gRespektLevelsMinPoints[(%level + 1)] - 1;
     }
 }
 function Player::getRespektLevel(%this)
@@ -179,7 +179,7 @@ function isOlderRevision(%isThis, %olderThanThis, %playerName)
 }
 function getRespektMessage(%dValue, %code)
 {
-    %posNeg = (%dValue >= 0) ? "pos" : "neg";
+    %posNeg = %dValue >= 0 ? "pos" : "neg";
     %msg = $MsgCat::respektEvent[%code,%posNeg];
     if (%msg $= "")
     {

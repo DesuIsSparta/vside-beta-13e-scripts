@@ -179,7 +179,7 @@ function onMouseWheelDifSkus(%val)
     {
         %ndx = -1;
     }
-    %val = (%val < 0) ? 1 : -1;
+    %val = %val < 0 ? 1 : -1;
     %ndx = %ndx - %val;
     if (%ndx < 0)
     {

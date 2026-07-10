@@ -152,10 +152,10 @@ function fxEts::getColorForTOD(%sod)
     {
         %lowerBound = 0;
     }
-    %lowerHour = %lowerBound[$fxEts::TOD::ColorModSample TAB %lowerBound @ hour];
-    %lowerColr = %lowerBound[$fxEts::TOD::ColorModSample TAB %lowerBound @ color];
-    %upperHour = %upperBound[$fxEts::TOD::ColorModSample TAB %upperBound @ hour];
-    %upperColr = %upperBound[$fxEts::TOD::ColorModSample TAB %upperBound @ color];
+    %lowerHour = $fxEts::TOD::ColorModSample[%lowerBound,hour];
+    %lowerColr = $fxEts::TOD::ColorModSample[%lowerBound,color];
+    %upperHour = $fxEts::TOD::ColorModSample[%upperBound,hour];
+    %upperColr = $fxEts::TOD::ColorModSample[%upperBound,color];
     if (%lowerHour == %upperHour)
     {
         return %lowerColr;

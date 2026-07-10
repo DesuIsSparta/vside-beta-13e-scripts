@@ -25,7 +25,7 @@ function geHighScoresPanel::open(%this, %gameName, %gameStationId)
     %this.gameName = %gameName;
     %this.gameStationId = %gameStationId;
     %humanReadableGameName = HumanReadableGameNamesMap.get(%this.gameName);
-    %colon = (%humanReadableGameName $= "") ? "" : ": ";
+    %colon = %humanReadableGameName $= "" ? "" : ": ";
     geHighScoresTitleText.setText("High Scores" @ %colon @ %humanReadableGameName);
     %request = sendRequest_GetHighGameScores($Player::Name, %this.gameName, 0, 25, "onDoneOrErrorCallback_GetHighGameScores");
     %request.global = 1;
@@ -114,7 +114,7 @@ function onDoneOrErrorCallback_GetHighGameScores(%request)
                 %userScore = %score;
                 %userScoreDate = %dateAttained;
             }
-            %style = (BuddyHudWin.getFriendStatus(%userName) $= "friends") ? "UserName_Friend" : "UserName_Normal";
+            %style = BuddyHudWin.getFriendStatus(%userName) $= "friends" ? "UserName_Friend" : "UserName_Normal";
             %rowData = "rank" @ "\t" @ %scoreRanking @ "\t" @ %scoreRanking @ "\n" @ "avatar" @ "\t" @ %userName @ "\t" @ "platform/client/ui/tgf/tgf_profile_default" @ "\n" @ "username" @ "\t" @ %userName @ "\t" @ mlStyle(%userName, %style) @ "\n" @ "date" @ "\t" @ %dateAttained @ "\t" @ %dateAttained @ "\n" @ "score" @ "\t" @ %score @ "\t" @ %score;
             %dataTable.setRowDataByIndex(%i, %rowData);
             %rowData = "avatar" @ "\t" @ %userName @ "\t" @ $Net::AvatarURL @ urlEncode(%userName) @ "?size=S";

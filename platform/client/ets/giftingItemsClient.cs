@@ -26,7 +26,7 @@ function drinks_confirmInitiateMake(%otherPlayerName, %sku)
     %si = SkuManager.findBySku(%sku);
     if (%otherPlayerName $= $Player::Name)
     {
-        %msg = $Player::Name[$MsgCat::giftingItems @ "DLG-BODY-MAKE-SELF-CONFIRM"];
+        %msg = $MsgCat::giftingItems["DLG-BODY-MAKE-SELF-CONFIRM"];
     }
     else
     {

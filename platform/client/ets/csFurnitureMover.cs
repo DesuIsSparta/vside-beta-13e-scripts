@@ -82,10 +82,10 @@ function CSFurnitureMover::updateClickText(%this)
 {
     %prefix = "<color:cccccc>Click = ";
     %moveBy = mRoundTo(csGetMoveClickSize(), 0.001);
-    %moveUnit = (%moveBy == 1) ? " foot" : " feet";
+    %moveUnit = %moveBy == 1 ? " foot" : " feet";
     CSMoveClickText.setText(%prefix @ "<color:ffffff>" @ %moveBy @ %moveUnit);
     %rotateBy = mRoundTo(csGetRotateClickSize(), 0.01);
-    %rotateUnit = (%rotateBy == 1) ? " degree" : " degrees";
+    %rotateUnit = %rotateBy == 1 ? " degree" : " degrees";
     CSRotateClickText.setText(%prefix @ "<color:ffffff>" @ %rotateBy @ %rotateUnit);
 }
 function CSFurnitureMover::preSelectedNuggetChanged(%this)
@@ -612,11 +612,11 @@ function FurnitureItemContextMenu::initWithObject(%this, %obj)
             %this.add("Put Away", %n = %n + 1, %schemeNormal);
             %this.add("Cut", %n = %n + 1, %schemeNormal);
             %this.add("Copy", %n = %n + 1, %schemeNormal);
-            %schemeMoreAvailable = (numOwnedFurnitureSku(%sku) > numUsingFurnitureSku(%sku)) ? 0 : 1;
+            %schemeMoreAvailable = numOwnedFurnitureSku(%sku) > numUsingFurnitureSku(%sku) ? 0 : 1;
             %this.add("Place Another", %n = %n + 1, %schemeMoreAvailable);
-            %schemeCanBuy = (numOwnedFurnitureSku(%sku) != -1) ? 0 : 1;
+            %schemeCanBuy = numOwnedFurnitureSku(%sku) != -1 ? 0 : 1;
             %this.add("Buy Another", %n = %n + 1, %schemeCanBuy);
-            %schemeReset = (%obj.getActiveSku() > 0) ? 0 : 1;
+            %schemeReset = %obj.getActiveSku() > 0 ? 0 : 1;
             %this.add("Reset Material", %n = %n + 1, %schemeReset);
         }
         else

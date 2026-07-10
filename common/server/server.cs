@@ -89,7 +89,7 @@ function addToServerGuidList(%guid)
         }
         %i = %i + 1;
     }
-    $Server::GuidList = ($Server::GuidList $= "") ? %guid : $Server::GuidList;
+    $Server::GuidList = $Server::GuidList $= "" ? %guid : $Server::GuidList;
     return;
 }
 function removeFromServerGuidList(%guid)

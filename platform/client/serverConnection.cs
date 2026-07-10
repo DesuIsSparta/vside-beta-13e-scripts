@@ -94,7 +94,7 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
     %destGui = LoginGui;
     if (%msg $= "CR_INVALID_PROTOCOL_VERSION")
     {
-        %error = %msg[$MsgCat::network @ "E-PROTOCOL-VER"];
+        %error = $MsgCat::network["E-PROTOCOL-VER"];
         %destGui = geTGF;
     }
     else
@@ -114,48 +114,48 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
             {
                 if (%msg $= "CR_TOKEN")
                 {
-                    %error = $ETS::AppName @ " " @ $ETS::AppName[$MsgCat::network @ "E-SERVICE-UNAVAIL"];
+                    %error = $ETS::AppName @ " " @ $MsgCat::network["E-SERVICE-UNAVAIL"];
                 }
                 else
                 {
                     if (%msg $= "CR_SERVERFULL")
                     {
-                        %error = %msg[$MsgCat::login @ "E-SERVER-FULL"];
+                        %error = $MsgCat::login["E-SERVER-FULL"];
                         %destGui = geTGF;
                     }
                     else
                     {
                         if (%msg $= "CR_BAD_TARGET")
                         {
-                            %error = %msg[$MsgCat::login @ "E-BAD-TARGET"];
+                            %error = $MsgCat::login["E-BAD-TARGET"];
                             %destGui = geTGF;
                         }
                         else
                         {
                             if (%msg $= "CR_CANNOT_ACTIVATE_APARTMENT")
                             {
-                                %error = %msg[$MsgCat::login @ "E-CANNOT-ACTIVATE-APARTMENT"];
+                                %error = $MsgCat::login["E-CANNOT-ACTIVATE-APARTMENT"];
                                 %destGui = geTGF;
                             }
                             else
                             {
                                 if (%msg $= "CR_APARTMENT_ACTIVATION_DENIED")
                                 {
-                                    %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATION-DENIED"];
+                                    %error = $MsgCat::login["E-APARTMENT-ACTIVATION-DENIED"];
                                     %destGui = geTGF;
                                 }
                                 else
                                 {
                                     if (%msg $= "CR_APARTMENT_ACTIVE_ELSEWHERE")
                                     {
-                                        %error = %msg[$MsgCat::login @ "E-APARTMENT-ACTIVATE-ELSEWHERE"];
+                                        %error = $MsgCat::login["E-APARTMENT-ACTIVATE-ELSEWHERE"];
                                         %destGui = geTGF;
                                     }
                                     else
                                     {
                                         if (%msg $= "CR_LEVEL_COMPLETED")
                                         {
-                                            %error = %msg[$MsgCat::login @ "E-LEVEL-COMPLETED"];
+                                            %error = $MsgCat::login["E-LEVEL-COMPLETED"];
                                             %destGui = geTGF;
                                         }
                                         else
@@ -177,32 +177,32 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
                                             {
                                                 if (%msg $= "CHR_PROTOCOL")
                                                 {
-                                                    %error = %msg[$MsgCat::network @ "E-PROTOCOL-VER"];
-                                                    %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                    %error = $MsgCat::network["E-PROTOCOL-VER"];
+                                                    %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
                                                     %destGui = geTGF;
                                                 }
                                                 else
                                                 {
                                                     if (%msg $= "CHR_CLASSCRC")
                                                     {
-                                                        %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
-                                                        %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                        %error = $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".";
+                                                        %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
                                                         %destGui = geTGF;
                                                     }
                                                     else
                                                     {
                                                         if (%msg $= "CHR_CLASSCRCROOTDIRVAL")
                                                         {
-                                                            %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
-                                                            %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                            %error = $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".";
+                                                            %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
                                                             %destGui = geTGF;
                                                         }
                                                         else
                                                         {
                                                             if (%msg $= "CHR_INVALID_CHALLENGE_PACKET")
                                                             {
-                                                                %error = %msg[$MsgCat::login @ "E-UPGRADE-1"] @ $ETS::AppName @ ".";
-                                                                %error = %error @ "\n" @ %error[$MsgCat::login @ "E-UPGRADE-2"];
+                                                                %error = $MsgCat::login["E-UPGRADE-1"] @ $ETS::AppName @ ".";
+                                                                %error = %error @ "\n" @ $MsgCat::login["E-UPGRADE-2"];
                                                                 %error = %error @ "\n" @ "(assets)";
                                                                 %destGui = geTGF;
                                                             }

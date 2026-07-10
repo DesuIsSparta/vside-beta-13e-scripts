@@ -103,7 +103,7 @@ function CSShoppingBrowser::loadAvailableSkus(%this)
     {
         %skulist = %this.storeInfo.getSkus();
         %numSkus = getWordCount(%skulist);
-        %this.statusText = (%numSkus == 0) ? "No furnishings available to buy." : "";
+        %this.statusText = %numSkus == 0 ? "No furnishings available to buy." : "";
     }
     else
     {
@@ -352,10 +352,10 @@ function CSShoppingBrowser::purchaseSkusVPoints(%this, %skus)
     {
         %totalPrice = Inventory::getTotalPrice("vPoints", %skus);
         %itemCount = getWordCount(%skus);
-        %itemsStr = (%itemCount == 1) ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
+        %itemsStr = %itemCount == 1 ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
         if (%totalPrice <= $Player::VPoints)
         {
-            %vpointsString = (%totalPrice == 1) ? "vPoint" : "vPoints";
+            %vpointsString = %totalPrice == 1 ? "vPoint" : "vPoints";
             %msg = "Do you wish to purchase " @ %itemsStr @ " for " @ %totalPrice @ " " @ %vpointsString @ "?";
             %cmd = "CSShoppingBrowser.storeInfo.purchase(\"" @ %skus @ "\", \"vPoints\", \"CSShoppingBrowser::onGotPurchaseResult\");";
             MessageBoxOkCancel("Confirm Purchase", %msg, %cmd, "");
@@ -372,7 +372,7 @@ function CSShoppingBrowser::purchaseSkusVBux(%this, %skus)
     {
         %totalPrice = Inventory::getTotalPrice("vBux", %skus);
         %itemCount = getWordCount(%skus);
-        %itemsStr = (%itemCount == 1) ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
+        %itemsStr = %itemCount == 1 ? "this item" : "these" @ " " @ %itemCount @ " " @ "items";
         if (%totalPrice <= $Player::VBux)
         {
             %msg = "Do you wish to purchase " @ %itemsStr @ " for " @ %totalPrice @ " vBux?";

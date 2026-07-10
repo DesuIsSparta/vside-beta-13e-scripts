@@ -17,56 +17,56 @@ function getPronounHeSheIt(%obj)
 {
     return $genderPronounHeSheIt[getGender(%obj)];
 }
-$genderPronounHeSheIt[getGender(%obj)][$genderPronounHeSheThey @ "m"] = "he";
+$genderPronounHeSheThey["m"] = "he";
 $genderPronounHeSheThey["f"] = "she";
 $genderPronounHeSheThey["n"] = "they";
 function getPronounHeSheThey(%obj)
 {
     return $genderPronounHeSheThey[getGender(%obj)];
 }
-$genderPronounHeSheThey[getGender(%obj)][$genderPronounHimHerIt @ "m"] = "him";
+$genderPronounHimHerIt["m"] = "him";
 $genderPronounHimHerIt["f"] = "her";
 $genderPronounHimHerIt["n"] = "it";
 function getPronounHimHerIt(%obj)
 {
     return $genderPronounHimHerIt[getGender(%obj)];
 }
-$genderPronounHimHerIt[getGender(%obj)][$genderPronounHimHerThem @ "m"] = "him";
+$genderPronounHimHerThem["m"] = "him";
 $genderPronounHimHerThem["f"] = "her";
 $genderPronounHimHerThem["n"] = "them";
 function getPronounHimHerThem(%obj)
 {
     return $genderPronounHimHerThem[getGender(%obj)];
 }
-$genderPronounHimHerThem[getGender(%obj)][$genderPronounHisHerIts @ "m"] = "his";
+$genderPronounHisHerIts["m"] = "his";
 $genderPronounHisHerIts["f"] = "her";
 $genderPronounHisHerIts["n"] = "its";
 function getPronounHisHerIts(%obj)
 {
     return $genderPronounHisHerIts[getGender(%obj)];
 }
-$genderPronounHisHerIts[getGender(%obj)][$genderPronounHisHerTheir @ "m"] = "his";
+$genderPronounHisHerTheir["m"] = "his";
 $genderPronounHisHerTheir["f"] = "her";
 $genderPronounHisHerTheir["n"] = "their";
 function getPronounHisHerTheir(%obj)
 {
     return $genderPronounHisHerTheir[getGender(%obj)];
 }
-$genderPronounHisHerTheir[getGender(%obj)][$genderPronounHisHerTheirCapital @ "m"] = "His";
+$genderPronounHisHerTheirCapital["m"] = "His";
 $genderPronounHisHerTheirCapital["f"] = "Her";
 $genderPronounHisHerTheirCapital["n"] = "Their";
 function getPronounHisHerTheirCapital(%obj)
 {
     return $genderPronounHisHerTheirCapital[getGender(%obj)];
 }
-$genderPronounHisHerTheirCapital[getGender(%obj)][$genderPronounHisHersIts @ "m"] = "his";
+$genderPronounHisHersIts["m"] = "his";
 $genderPronounHisHersIts["f"] = "hers";
 $genderPronounHisHersIts["n"] = "its";
 function getPronounHisHersIts(%obj)
 {
     return $genderPronounHisHersIts[getGender(%obj)];
 }
-$genderPronounHisHersIts[getGender(%obj)][$genderPronounHisHersTheirs @ "m"] = "his";
+$genderPronounHisHersTheirs["m"] = "his";
 $genderPronounHisHersTheirs["f"] = "hers";
 $genderPronounHisHersTheirs["n"] = "theirs";
 function getPronounHisHersTheirs(%obj)
@@ -75,6 +75,6 @@ function getPronounHisHersTheirs(%obj)
 }
 function getPronounItThem(%quantity)
 {
-    %ret = (%quantity == 1) ? "it" : "them";
+    %ret = %quantity == 1 ? "it" : "them";
     return %ret;
 }

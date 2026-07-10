@@ -152,7 +152,7 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
             {
             }
             %ownerNameText = %ownerName;
-            "<spush>" @ %isFriend[$gMlStyle @ "CSProfileFriendMenuTextUnselected"] @ %ownerName @ "<spop>";
+            "<spush>" @ $gMlStyle["CSProfileFriendMenuTextUnselected"] @ %ownerName @ "<spop>";
             %spaceDescTextForModel = "<clip:" @ %descriptionFieldWidth @ ">" @ TryFixBadWords(%entry.description) @ "</clip>";
             if (%isFriend)
             {
@@ -161,7 +161,7 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
             {
             }
             %spaceDescText = %spaceDescTextForModel;
-            "<spush>" @ %isFriend[$gMlStyle @ "CSProfileFriendMenuTextUnselected"] @ %spaceDescTextForModel @ "<spop>";
+            "<spush>" @ $gMlStyle["CSProfileFriendMenuTextUnselected"] @ %spaceDescTextForModel @ "<spop>";
             %dummyText = "";
             if ((stricmp(%entry.access, "PasswordProtected") == 0) || (stricmp(%entry.access, "Locked") == 0))
             {
@@ -178,7 +178,7 @@ function CSSelectorCtrl::refreshFromSet(%this, %doSort)
             {
             }
             %occupancyText = %occupancyTextForModel;
-            "<spush>" @ %isFriend[$gMlStyle @ "CSProfileFriendMenuTextUnselected"] @ %occupancyTextForModel @ "<spop>";
+            "<spush>" @ $gMlStyle["CSProfileFriendMenuTextUnselected"] @ %occupancyTextForModel @ "<spop>";
             if (%amCurrentlyHere)
             {
                 %visitNowLinkText = "You Are Here";
@@ -335,7 +335,7 @@ function CSSelectorCtrl::sortEntries(%this, %sortField, %increasing)
                 {
                     if (%sortField $= "self")
                     {
-                        %key = (%entry.owner $= $Player::Name) ? 00 : 10;
+                        %key = %entry.owner $= $Player::Name ? 00 : 10;
                     }
                     else
                     {
@@ -679,18 +679,18 @@ function CSSelectorLine::getDescriptionText(%entry, %bitmapText)
         {
             %pricingText = "Currently unavailable for purchase - check back soon!";
         }
-        %desc = "<spush>" @ $gMlStyle["CSProfileDescriptionTitleModel"] @ chopTextToFitLineWidths(%entry.name, CSProfileDescriptionTitleModel, %titleLineWidth, "") @ "\n" @ $gMlStyle["CSProfileDescriptionTextModel"] @ %pricingText @ "\n\n" @ %pricingText[$gMlStyle @ "CSProfileDescriptionHeaderModel"] @ "Currently Playing:" @ " " @ %pricingText[$gMlStyle @ "CSProfileDescriptionHeaderModel"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ csGetCurrentlyPlaying(%entry.audioStream, %entry.videoStream) @ "\n\n" @ %bitmapText @ "\n" @ " " @ %bitmapText[$gMlStyle @ "CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.longDescription) @ "<spop>";
+        %desc = "<spush>" @ $gMlStyle["CSProfileDescriptionTitleModel"] @ chopTextToFitLineWidths(%entry.name, CSProfileDescriptionTitleModel, %titleLineWidth, "") @ "\n" @ $gMlStyle["CSProfileDescriptionTextModel"] @ %pricingText @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderModel"] @ "Currently Playing:" @ " " @ $gMlStyle["CSProfileDescriptionTextNormal"] @ csGetCurrentlyPlaying(%entry.audioStream, %entry.videoStream) @ "\n\n" @ %bitmapText @ "\n" @ " " @ $gMlStyle["CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.longDescription) @ "<spop>";
     }
     else
     {
         %titleLineWidth = ((stricmp(%entry.access, "PasswordProtected") == 0) || (stricmp(%entry.access, "Locked") == 0) ? getWord(CustomSpacesSelector_ENTERPASSWORDBUTTON.getPosition(), 0) : getWord(CustomSpacesSelector_GOBUTTON.getPosition(), 0) - %entry.isFeatured ? 35 : 0) - 5;
-        if ("<spush>" @ %entry.isFeatured ? "<bitmap:platform/client/ui/buildingDir_featured_star_lg>" : "" @ %entry[$gMlStyle @ "CSProfileDescriptionTitleNormal"] @ " " @ %entry.type $= "CELEBSPACE")
+        if ("<spush>" @ %entry.isFeatured ? "<bitmap:platform/client/ui/buildingDir_featured_star_lg>" : "" @ $gMlStyle["CSProfileDescriptionTitleNormal"] @ " " @ %entry.type $= "CELEBSPACE")
         {
         }
         else
         {
         }
-        %desc = %entry.name @ chopTextToFitLineWidths(%entry.owner @ "'s Pad", CSProfileDescriptionTitleNormal, %titleLineWidth, "") @ "\n" @ $gMlStyle["CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.description) @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Currently Playing: " @ " " @ $gMlStyle["CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ csGetCurrentlyPlaying(%entry.audioStream, %entry.videoStream) @ "\n\n" @ %bitmapText @ "\n" @ %bitmapText[$gMlStyle @ "CSProfileDescriptionHeaderNormal"] @ "vURL: " @ " " @ %bitmapText[$gMlStyle @ "CSProfileDescriptionHeaderNormal"][$gMlStyle @ "CSProfileDescriptionTextNormal"] @ vurlClearResolution(%entry.vurl) @ "<a: ></a>" @ " " @ "(<a:COPY_VURL>copy</a>)" @ "\n\n" @ " " @ $gMlStyle["CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.longDescription) @ "<spop>";
+        %desc = %entry.name @ chopTextToFitLineWidths(%entry.owner @ "'s Pad", CSProfileDescriptionTitleNormal, %titleLineWidth, "") @ "\n" @ $gMlStyle["CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.description) @ "\n\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "Currently Playing: " @ " " @ $gMlStyle["CSProfileDescriptionTextNormal"] @ csGetCurrentlyPlaying(%entry.audioStream, %entry.videoStream) @ "\n\n" @ %bitmapText @ "\n" @ $gMlStyle["CSProfileDescriptionHeaderNormal"] @ "vURL: " @ " " @ $gMlStyle["CSProfileDescriptionTextNormal"] @ vurlClearResolution(%entry.vurl) @ "<a: ></a>" @ " " @ "(<a:COPY_VURL>copy</a>)" @ "\n\n" @ " " @ $gMlStyle["CSProfileDescriptionTextNormal"] @ TryFixBadWords(%entry.longDescription) @ "<spop>";
     }
     return %desc;
 }
@@ -1250,7 +1250,7 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
     CSLegendContainer.setVisible(1);
     if (!(%buildingInfo.name $= ""))
     {
-        if (%buildingInfo[$gMlStyle @ "CSProfileTitleText"] @ " " @ Buildings::GetDescription(%buildingInfo.name) $= "")
+        if ($gMlStyle["CSProfileTitleText"] @ " " @ Buildings::GetDescription(%buildingInfo.name) $= "")
         {
         }
         else
@@ -1397,7 +1397,7 @@ function customSpaceSelFailed(%building)
     CSLegendContainer.setVisible(0);
     if (!(%building $= ""))
     {
-        %titleBarText = (%building[$gMlStyle @ "CSProfileTitleText"] @ " " @ Buildings::GetDescription(%building) $= "") ? %building : Buildings::GetDescription(%building) @ " " @ $gMlStyle["CSProfileSubTitleText"] @ "building directory";
+        %titleBarText = $gMlStyle["CSProfileTitleText"] @ " " @ Buildings::GetDescription(%building) $= "" ? %building : Buildings::GetDescription(%building) @ " " @ $gMlStyle["CSProfileSubTitleText"] @ "building directory";
         CustomSpacesSelector_TITLE.setText(%titleBarText);
     }
     else
@@ -1420,7 +1420,7 @@ function CustomSpacesSelector_RETURNTOLOBBY::onURL(%this, %url)
     %url = getWords(%url, 1);
     if (%url $= "EXIT_TO_LOBBY")
     {
-        MessageBoxYesNo(%url[$MsgCat::custSpacSel @ "RETURN-TO-LOBBY-TITLE"], $MsgCat::custSpacSel["RETURN-TO-LOBBY-TEXT"], "CustomSpacesSelector.doReturnToLobby();", "");
+        MessageBoxYesNo($MsgCat::custSpacSel["RETURN-TO-LOBBY-TITLE"], $MsgCat::custSpacSel["RETURN-TO-LOBBY-TEXT"], "CustomSpacesSelector.doReturnToLobby();", "");
     }
 }
 function CustomSpacesSelector::doReturnToLobby(%this)

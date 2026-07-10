@@ -1575,7 +1575,7 @@ function EditorGui::setTerrainEditorVisible(%this)
 }
 function EditorGui::toggleSGTools(%this, %item)
 {
-    if (%item $= %item[$sgEditorItemNames::sgMenuItem @ 0])
+    if (%item $= $sgEditorItemNames::sgMenuItem[0])
     {
         sgLightEditor::toggle();
     }

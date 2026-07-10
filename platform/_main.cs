@@ -344,14 +344,14 @@ package platform
     }
     function generateWindowTitle(%ServerName)
     {
-        %ServerNameString = (%ServerName $= "") ? "" : " on server" @ " " @ %ServerName;
-        %CityNameString = ($ETS::cityName $= "") ? "" : " in" @ " " @ $ETS::cityName;
+        %ServerNameString = %ServerName $= "" ? "" : " on server" @ " " @ %ServerName;
+        %CityNameString = $ETS::cityName $= "" ? "" : " in" @ " " @ $ETS::cityName;
         %LongCityNameString = "";
         if (isObject(WorldMap))
         {
             %areaName = WorldMap.cityNameForServerName(%ServerName);
             %locationName = DestinationList::GetAreaNameUserFacingName(%areaName);
-            %LongCityNameString = (%locationName $= "") ? "" : " - in" @ " " @ %locationName;
+            %LongCityNameString = %locationName $= "" ? "" : " - in" @ " " @ %locationName;
         }
         else
         {

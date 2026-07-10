@@ -1661,16 +1661,16 @@ function OptionsPanelTabs::restoreVisualDefaults(%this)
 }
 function OptionsPanelTabs::restoreTabsDefaults(%this)
 {
-    $Defaults::UserPref::HudTabs::AutoOpen["music"][$UserPref::HudTabs::AutoOpen @ "music"] = $Defaults::UserPref::HudTabs::AutoOpen["music"];
-    $Defaults::UserPref::HudTabs::AutoClose["music"][$UserPref::HudTabs::AutoClose @ "music"] = $Defaults::UserPref::HudTabs::AutoClose["music"];
-    $Defaults::UserPref::HudTabs::AutoOpen["affinity"][$UserPref::HudTabs::AutoOpen @ "affinity"] = $Defaults::UserPref::HudTabs::AutoOpen["affinity"];
-    $Defaults::UserPref::HudTabs::AutoClose["affinity"][$UserPref::HudTabs::AutoClose @ "affinity"] = $Defaults::UserPref::HudTabs::AutoClose["affinity"];
-    $Defaults::UserPref::HudTabs::AutoOpen["scores"][$UserPref::HudTabs::AutoOpen @ "scores"] = $Defaults::UserPref::HudTabs::AutoOpen["scores"];
-    $Defaults::UserPref::HudTabs::AutoClose["scores"][$UserPref::HudTabs::AutoClose @ "scores"] = $Defaults::UserPref::HudTabs::AutoClose["scores"];
-    $Defaults::UserPref::HudTabs::AutoOpen["word"][$UserPref::HudTabs::AutoOpen @ "word"] = $Defaults::UserPref::HudTabs::AutoOpen["word"];
-    $Defaults::UserPref::HudTabs::AutoClose["word"][$UserPref::HudTabs::AutoClose @ "word"] = $Defaults::UserPref::HudTabs::AutoClose["word"];
-    $Defaults::UserPref::HudTabs::AutoOpen["tutorial"][$UserPref::HudTabs::AutoOpen @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoOpen["tutorial"];
-    $Defaults::UserPref::HudTabs::AutoClose["tutorial"][$UserPref::HudTabs::AutoClose @ "tutorial"] = $Defaults::UserPref::HudTabs::AutoClose["tutorial"];
+    $UserPref::HudTabs::AutoOpen["music"] = $Defaults::UserPref::HudTabs::AutoOpen["music"];
+    $UserPref::HudTabs::AutoClose["music"] = $Defaults::UserPref::HudTabs::AutoClose["music"];
+    $UserPref::HudTabs::AutoOpen["affinity"] = $Defaults::UserPref::HudTabs::AutoOpen["affinity"];
+    $UserPref::HudTabs::AutoClose["affinity"] = $Defaults::UserPref::HudTabs::AutoClose["affinity"];
+    $UserPref::HudTabs::AutoOpen["scores"] = $Defaults::UserPref::HudTabs::AutoOpen["scores"];
+    $UserPref::HudTabs::AutoClose["scores"] = $Defaults::UserPref::HudTabs::AutoClose["scores"];
+    $UserPref::HudTabs::AutoOpen["word"] = $Defaults::UserPref::HudTabs::AutoOpen["word"];
+    $UserPref::HudTabs::AutoClose["word"] = $Defaults::UserPref::HudTabs::AutoClose["word"];
+    $UserPref::HudTabs::AutoOpen["tutorial"] = $Defaults::UserPref::HudTabs::AutoOpen["tutorial"];
+    $UserPref::HudTabs::AutoClose["tutorial"] = $Defaults::UserPref::HudTabs::AutoClose["tutorial"];
     %currentTab = HudTabs.getCurrentTab();
     if (%currentTab $= "")
     {
@@ -2156,7 +2156,7 @@ function updateHudTabsHiding()
         %tab = HudTabs.getTabAtIndex(%i);
         if (!(%tab.name $= "tutorial"))
         {
-            %tab.autoHide = %tab[$UserPref::HudTabs::AutoClose @ %tab.name];
+            %tab.autoHide = $UserPref::HudTabs::AutoClose[%tab.name];
         }
         %i = %i + 1;
     }

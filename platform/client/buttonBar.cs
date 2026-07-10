@@ -386,7 +386,7 @@ function ButtonBar::handleContiguousSpace(%this)
 {
     if (isObject(PlacesButton))
     {
-        %showPlaces = ($gContiguousSpaceName $= "gw") ? 0 : 1;
+        %showPlaces = $gContiguousSpaceName $= "gw" ? 0 : 1;
         if (%showPlaces)
         {
             %this.showButton(PlacesButton);

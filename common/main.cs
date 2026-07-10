@@ -30,7 +30,7 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch)
         %nextArg = "";
         if (%i < ($Game::argc - 1))
         {
-            %nextArg = %i[$Game::argv @ (%i + 1)];
+            %nextArg = $Game::argv[(%i + 1)];
         }
         %hasNextArg = ($Game::argc - %i) > 1;
         if (%arg $= %argToFind)
@@ -56,7 +56,7 @@ function findCommandLineOption(%argToFind, %valToSet, %errorMsg, %isSwitch)
                         log("initialization", "debug", "evalString: " @ %evalString);
                         eval(%evalString);
                         log("initialization", "debug", "setting value " @ %valToSet);
-                        %i[$Game::ArgUsed @ (%i + 1)] = %i[$Game::ArgUsed @ (%i + 1)] + 1;
+                        $Game::ArgUsed[(%i + 1)] = $Game::ArgUsed[(%i + 1)] + 1;
                         %found = 1;
                     }
                     else
@@ -89,13 +89,13 @@ function getAllArgs()
     %n = 1;
     while (%n < $Game::argc)
     {
-        %sep = (%n == 1) ? "" : " ";
+        %sep = %n == 1 ? "" : " ";
         %ret = %ret @ %sep @ $Game::argv[%n];
         %n = %n + 1;
     }
     return %ret;
 }
-%ret[$gKnownUnusedArgsLogLevel @ "-debug"] = "info";
+$gKnownUnusedArgsLogLevel["-debug"] = "info";
 function checkUnusedArgs()
 {
     %i = 1;

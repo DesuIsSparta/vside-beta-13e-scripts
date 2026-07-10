@@ -66,7 +66,7 @@ function respektComposeMessage(%user, %otherUser, %value, %dValue, %code)
     %otherUserProfileURL = $Net::ProfileURL @ urlEncode(stripUnprintables(%otherUser));
     %userWet = pChat.getPlayerMarkup(%user, "ffddeeff");
     %otherUserWet = pChat.getPlayerMarkup(%otherUser, "ffddeeff");
-    %dValueWet = (%dValue > 0) ? "+" @ %dValue : %dValue;
+    %dValueWet = %dValue > 0 ? "+" @ %dValue : %dValue;
     %msg = getRespektMessage(%dValue, %code);
     %msg = strreplace(%msg, "[USER]", %userWet);
     %msg = strreplace(%msg, "[OTHERUSER]", %otherUserWet);
@@ -180,7 +180,7 @@ function checkPointsEarnedSinceLastLogin()
     %firstLogin = !gUserPropMgrClient.hasProperty($Player::Name, "prevBalanceVPoints");
     if (!%firstLogin && (%dVP != 0) || (%dVB != 0))
     {
-        %msg = %dVB[$MsgCat::TGF @ "currencyEarnedOffline"];
+        %msg = $MsgCat::TGF["currencyEarnedOffline"];
         %msg = %msg @ (%dVP != 0) ? " " @ %dVP @ " " @ "vPoints" : "";
         %msg = %msg @ (%dVP != 0) && (%dVB != 0) ? " " @ "and" : "";
         %msg = %msg @ (%dVB != 0) ? " " @ %dVB @ " " @ "vBux" : "";

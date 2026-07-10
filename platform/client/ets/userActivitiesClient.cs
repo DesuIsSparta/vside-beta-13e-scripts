@@ -82,7 +82,7 @@ function UserActivityMgr::getActivityBitmapMLText(%this, %activityName)
 {
     %ufn = %this.getActivityUserFacingName(%activityName);
     %bitmap = %this.getActivityIconFilename(%activityName);
-    %tip = (%ufn $= "") ? "" : "<tip:" @ %ufn @ ">";
+    %tip = %ufn $= "" ? "" : "<tip:" @ %ufn @ ">";
     %ret = "<spush>" @ %tip @ "<bitmap:" @ %bitmap @ "><spop>";
     return %ret;
 }

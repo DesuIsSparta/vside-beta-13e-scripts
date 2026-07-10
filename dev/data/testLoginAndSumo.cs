@@ -409,22 +409,22 @@ function stopAndTalk()
         %rand_teleport_RJ = getRandom(1, $teleportsRJCount);
         if (($DestServerName $= "NewVeneziaNorth") || ($DestServerName $= "NewVeneziaSouth"))
         {
-            %command = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 0];
-            %destination = %rand_teleport_NV[$teleportsNV TAB %rand_teleport_NV @ 1];
+            %command = $teleportsNV[%rand_teleport_NV,0];
+            %destination = $teleportsNV[%rand_teleport_NV,1];
         }
         else
         {
             if (($DestServerName $= "LaGenoaAiresNorth") || ($DestServerName $= "LaGenoaAiresSouth"))
             {
-                %command = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 0];
-                %destination = %rand_teleport_LGA[$teleportsLGA TAB %rand_teleport_LGA @ 1];
+                %command = $teleportsLGA[%rand_teleport_LGA,0];
+                %destination = $teleportsLGA[%rand_teleport_LGA,1];
             }
             else
             {
                 if (($DestServerName $= "RaijukuNorth") || ($DestServerName $= "RaijukuSouth"))
                 {
-                    %command = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 0];
-                    %destination = %rand_teleport_RJ[$teleportsRJ TAB %rand_teleport_RJ @ 1];
+                    %command = $teleportsRJ[%rand_teleport_RJ,0];
+                    %destination = $teleportsRJ[%rand_teleport_RJ,1];
                 }
             }
         }

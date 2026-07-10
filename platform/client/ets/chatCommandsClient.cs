@@ -486,7 +486,7 @@ function doUserFavorite(%playerName, %op)
 {
     if (rentabot_isRentabotName(%playerName) && (%op $= "add"))
     {
-        %msg = %op[$MsgCat::rentabot @ "NO-FRIENDS"];
+        %msg = $MsgCat::rentabot["NO-FRIENDS"];
         %msg = strreplace(%msg, "[NAME]", %playerName);
         handleSystemMessage("msgInfoMessage", %msg);
         return;
@@ -688,7 +688,7 @@ function clientCmdConfirmCoAnim(%initiatingPlayerName, %coAnimName, %requestId)
         commandToServer('CoAnimRespond', %requestId, "DECLINE IGNORED");
         return;
     }
-    %permission = (BuddyHudWin.getFriendStatus(%initiatingPlayerName) $= "friends") ? $UserPref::Player::EmotesPermissionFriends : $UserPref::Player::EmotesPermissionStrangers;
+    %permission = BuddyHudWin.getFriendStatus(%initiatingPlayerName) $= "friends" ? $UserPref::Player::EmotesPermissionFriends : $UserPref::Player::EmotesPermissionStrangers;
     if (%permission == 0)
     {
         if (!isIdle())
@@ -733,7 +733,7 @@ function doUserSOS(%text)
     %text = trim(%text);
     if ((%text $= "") || (%text $= "[name of problem user and description of abuse]"))
     {
-        %text[$userTips::tipSeen @ "SOSUsage"] = 0;
+        $userTips::tipSeen["SOSUsage"] = 0;
         tryOpenUserSOS();
         return;
     }

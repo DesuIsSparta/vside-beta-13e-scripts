@@ -102,58 +102,58 @@ $tmpGender = "f";
 $tmpGender["0 0 0.0 1.7 35" @ $ThumbCamParams TAB $tmpGender @ "fullbody"] =;
 $tmpGender["0.4 -0.3 0.8 1.0 20" @ $ThumbCamParams TAB $tmpGender @ "hair"] =;
 $tmpGender["0.4 -0.3 0.8 1.0 15" @ $ThumbCamParams TAB $tmpGender @ "face"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "face"] @ $ThumbCamParams TAB $tmpGender @ "faceb"] =;
+$ThumbCamParams[$tmpGender,"face"][$ThumbCamParams,$tmpGender,"faceb"] =;
 $tmpGender["0.4 -0.3 0.8 1.0 10" @ $ThumbCamParams TAB $tmpGender @ "eyes"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "ear"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "earl"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "labret"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftauricle"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftconch"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lfteyebrow"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftlobe"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftorbital"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftpinna"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftrook"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lfttragus"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghauricle"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghconch"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rgheyebrow"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghlobe"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghorbital"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghpinna"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghrook"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghtragus"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lowlip"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "madonna"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "medusa"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "nostril"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "septum"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "glasses"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "face"] @ $ThumbCamParams TAB $tmpGender @ "skin"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"ear"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"earl"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"labret"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftauricle"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftconch"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lfteyebrow"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftlobe"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftorbital"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftpinna"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftrook"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lfttragus"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghauricle"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghconch"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rgheyebrow"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghlobe"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghorbital"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghpinna"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghrook"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghtragus"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lowlip"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"madonna"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"medusa"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"nostril"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"septum"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"glasses"] =;
+$ThumbCamParams[$tmpGender,"face"][$ThumbCamParams,$tmpGender,"skin"] =;
 $tmpGender["0.4 -0.3 0.4 1.8 20" @ $ThumbCamParams TAB $tmpGender @ "torso"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "torso"] @ $ThumbCamParams TAB $tmpGender @ "torsob"] =;
+$ThumbCamParams[$tmpGender,"torso"][$ThumbCamParams,$tmpGender,"torsob"] =;
 $tmpGender["0 0 -0.4 1.7 35" @ $ThumbCamParams TAB $tmpGender @ "legs"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "legs"] @ $ThumbCamParams TAB $tmpGender @ "legsb"] =;
+$ThumbCamParams[$tmpGender,"legs"][$ThumbCamParams,$tmpGender,"legsb"] =;
 $tmpGender["0.1 -0.2 -0.85 1.2 20" @ $ThumbCamParams TAB $tmpGender @ "feet"] =;
 $tmpGender["0.4 -0.4 0.65 1.0 11" @ $ThumbCamParams TAB $tmpGender @ "neck"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "neck"] @ $ThumbCamParams TAB $tmpGender @ "neckb"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "neck"] @ $ThumbCamParams TAB $tmpGender @ "neckc"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "neck"] @ $ThumbCamParams TAB $tmpGender @ "chest"] =;
+$ThumbCamParams[$tmpGender,"neck"][$ThumbCamParams,$tmpGender,"neckb"] =;
+$ThumbCamParams[$tmpGender,"neck"][$ThumbCamParams,$tmpGender,"neckc"] =;
+$ThumbCamParams[$tmpGender,"neck"][$ThumbCamParams,$tmpGender,"chest"] =;
 $tmpGender["-0.2 -0.5 0.04 1.5 8" @ $ThumbCamParams TAB $tmpGender @ "wristleft"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristleft"] @ $ThumbCamParams TAB $tmpGender @ "wristleftb"] =;
+$ThumbCamParams[$tmpGender,"wristleft"][$ThumbCamParams,$tmpGender,"wristleftb"] =;
 $tmpGender["1.1 -0.6 0.04 1.5 8" @ $ThumbCamParams TAB $tmpGender @ "wristright"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristright"] @ $ThumbCamParams TAB $tmpGender @ "wristrightb"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristleft"] @ $ThumbCamParams TAB $tmpGender @ "fingerleft"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristright"] @ $ThumbCamParams TAB $tmpGender @ "fingerright"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "feet"] @ $ThumbCamParams TAB $tmpGender @ "toeleft"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "feet"] @ $ThumbCamParams TAB $tmpGender @ "toeright"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "torso"] @ $ThumbCamParams TAB $tmpGender @ "purse"] =;
+$ThumbCamParams[$tmpGender,"wristright"][$ThumbCamParams,$tmpGender,"wristrightb"] =;
+$ThumbCamParams[$tmpGender,"wristleft"][$ThumbCamParams,$tmpGender,"fingerleft"] =;
+$ThumbCamParams[$tmpGender,"wristright"][$ThumbCamParams,$tmpGender,"fingerright"] =;
+$ThumbCamParams[$tmpGender,"feet"][$ThumbCamParams,$tmpGender,"toeleft"] =;
+$ThumbCamParams[$tmpGender,"feet"][$ThumbCamParams,$tmpGender,"toeright"] =;
+$ThumbCamParams[$tmpGender,"torso"][$ThumbCamParams,$tmpGender,"purse"] =;
 $tmpGender["0.5 -0.4 0.1 1.0 18" @ $ThumbCamParams TAB $tmpGender @ "waist"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "waist"] @ $ThumbCamParams TAB $tmpGender @ "waistb"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "face"] @ $ThumbCamParams TAB $tmpGender @ "mask"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "hair"] @ $ThumbCamParams TAB $tmpGender @ "hat"] =;
+$ThumbCamParams[$tmpGender,"waist"][$ThumbCamParams,$tmpGender,"waistb"] =;
+$ThumbCamParams[$tmpGender,"face"][$ThumbCamParams,$tmpGender,"mask"] =;
+$ThumbCamParams[$tmpGender,"hair"][$ThumbCamParams,$tmpGender,"hat"] =;
 $tmpGender["0.4 -1.1 0.4 1.8 22" @ $ThumbCamParams TAB $tmpGender @ "back"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "waist"] @ $ThumbCamParams TAB $tmpGender @ "tail"] =;
+$ThumbCamParams[$tmpGender,"waist"][$ThumbCamParams,$tmpGender,"tail"] =;
 $tmpGender["1.1 -0.4 0.04 1.5 18" @ $ThumbCamParams TAB $tmpGender @ "props"] =;
 $tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "badges"] =;
 $tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"] =;
@@ -161,58 +161,58 @@ $tmpGender = "m";
 $tmpGender["0 0 0.0 1.7 35" @ $ThumbCamParams TAB $tmpGender @ "fullbody"] =;
 $tmpGender["0.0 0.0 0.9 1.0 15" @ $ThumbCamParams TAB $tmpGender @ "hair"] =;
 $tmpGender["0.0 0.0 0.9 1.0 6" @ $ThumbCamParams TAB $tmpGender @ "eyes"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "hair"] @ $ThumbCamParams TAB $tmpGender @ "face"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "hair"] @ $ThumbCamParams TAB $tmpGender @ "faceb"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "earl"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "labret"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftauricle"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftconch"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lfteyebrow"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftlobe"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftorbital"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftpinna"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lftrook"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lfttragus"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghauricle"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghconch"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rgheyebrow"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghlobe"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghorbital"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghpinna"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghrook"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "rghtragus"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "lowlip"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "madonna"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "medusa"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "nostril"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "septum"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "glasses"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "hair"] @ $ThumbCamParams TAB $tmpGender @ "skin"] =;
+$ThumbCamParams[$tmpGender,"hair"][$ThumbCamParams,$tmpGender,"face"] =;
+$ThumbCamParams[$tmpGender,"hair"][$ThumbCamParams,$tmpGender,"faceb"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"earl"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"labret"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftauricle"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftconch"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lfteyebrow"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftlobe"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftorbital"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftpinna"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lftrook"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lfttragus"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghauricle"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghconch"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rgheyebrow"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghlobe"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghorbital"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghpinna"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghrook"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"rghtragus"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"lowlip"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"madonna"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"medusa"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"nostril"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"septum"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"glasses"] =;
+$ThumbCamParams[$tmpGender,"hair"][$ThumbCamParams,$tmpGender,"skin"] =;
 $tmpGender["0 0 0.4 1.8 20" @ $ThumbCamParams TAB $tmpGender @ "torso"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "torso"] @ $ThumbCamParams TAB $tmpGender @ "torsob"] =;
+$ThumbCamParams[$tmpGender,"torso"][$ThumbCamParams,$tmpGender,"torsob"] =;
 $tmpGender["0 0 -0.4 1.7 35" @ $ThumbCamParams TAB $tmpGender @ "legs"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "legs"] @ $ThumbCamParams TAB $tmpGender @ "legsb"] =;
+$ThumbCamParams[$tmpGender,"legs"][$ThumbCamParams,$tmpGender,"legsb"] =;
 $tmpGender["0 0 -0.85 1.2 20" @ $ThumbCamParams TAB $tmpGender @ "feet"] =;
 $tmpGender["0.0 -0.2 0.76 1.0 12" @ $ThumbCamParams TAB $tmpGender @ "neck"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "neck"] @ $ThumbCamParams TAB $tmpGender @ "neckb"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "neck"] @ $ThumbCamParams TAB $tmpGender @ "neckc"] =;
+$ThumbCamParams[$tmpGender,"neck"][$ThumbCamParams,$tmpGender,"neckb"] =;
+$ThumbCamParams[$tmpGender,"neck"][$ThumbCamParams,$tmpGender,"neckc"] =;
 $tmpGender["0.0 -0.2 0.66 1.0 20" @ $ThumbCamParams TAB $tmpGender @ "chest"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "eyes"] @ $ThumbCamParams TAB $tmpGender @ "ear"] =;
+$ThumbCamParams[$tmpGender,"eyes"][$ThumbCamParams,$tmpGender,"ear"] =;
 $tmpGender["-0.6 -0.1 0.15 1.5 10" @ $ThumbCamParams TAB $tmpGender @ "wristleft"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristleft"] @ $ThumbCamParams TAB $tmpGender @ "wristleftb"] =;
+$ThumbCamParams[$tmpGender,"wristleft"][$ThumbCamParams,$tmpGender,"wristleftb"] =;
 $tmpGender["0.7 -0.1 0.15 1.5 10" @ $ThumbCamParams TAB $tmpGender @ "wristright"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristright"] @ $ThumbCamParams TAB $tmpGender @ "wristrightb"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristleft"] @ $ThumbCamParams TAB $tmpGender @ "fingerleft"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "wristright"] @ $ThumbCamParams TAB $tmpGender @ "fingerright"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "feet"] @ $ThumbCamParams TAB $tmpGender @ "toeleft"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "feet"] @ $ThumbCamParams TAB $tmpGender @ "toeright"] =;
+$ThumbCamParams[$tmpGender,"wristright"][$ThumbCamParams,$tmpGender,"wristrightb"] =;
+$ThumbCamParams[$tmpGender,"wristleft"][$ThumbCamParams,$tmpGender,"fingerleft"] =;
+$ThumbCamParams[$tmpGender,"wristright"][$ThumbCamParams,$tmpGender,"fingerright"] =;
+$ThumbCamParams[$tmpGender,"feet"][$ThumbCamParams,$tmpGender,"toeleft"] =;
+$ThumbCamParams[$tmpGender,"feet"][$ThumbCamParams,$tmpGender,"toeright"] =;
 $tmpGender["0 -0.1 0.45 3 18" @ $ThumbCamParams TAB $tmpGender @ "purse"] =;
 $tmpGender["0 0 0.1 1.0 20" @ $ThumbCamParams TAB $tmpGender @ "waist"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "waist"] @ $ThumbCamParams TAB $tmpGender @ "waistb"] =;
+$ThumbCamParams[$tmpGender,"waist"][$ThumbCamParams,$tmpGender,"waistb"] =;
 $tmpGender["0 -0.8 0.4 1.8 14" @ $ThumbCamParams TAB $tmpGender @ "back"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "hair"] @ $ThumbCamParams TAB $tmpGender @ "hat"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "face"] @ $ThumbCamParams TAB $tmpGender @ "mask"] =;
-$tmpGender[$tmpGender[$ThumbCamParams TAB $tmpGender @ "waist"] @ $ThumbCamParams TAB $tmpGender @ "tail"] =;
+$ThumbCamParams[$tmpGender,"hair"][$ThumbCamParams,$tmpGender,"hat"] =;
+$ThumbCamParams[$tmpGender,"face"][$ThumbCamParams,$tmpGender,"mask"] =;
+$ThumbCamParams[$tmpGender,"waist"][$ThumbCamParams,$tmpGender,"tail"] =;
 $tmpGender["0.7 -0.1 0.15 1.5 18" @ $ThumbCamParams TAB $tmpGender @ "props"] =;
 $tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "badges"] =;
 $tmpGender["" @ $ThumbCamParams TAB $tmpGender @ "tokens"] =;
@@ -1053,7 +1053,7 @@ function ClosetThumbnails::setSkus(%this, %skus)
         %skus = SkuManager.filterSkusGender(%skus, $player.getGender());
         %numSkus = getWordCount(%skus);
         %numSkusOtherGender = %numSkusOtherGender - %numSkus;
-        %text = (%numSkusOtherGender == 0) ? "" : "<just:right>(" @ %numSkusOtherGender @ " in other gender)";
+        %text = %numSkusOtherGender == 0 ? "" : "<just:right>(" @ %numSkusOtherGender @ " in other gender)";
         %this.otherGenderText.setText(%text);
     }
     else
@@ -1198,14 +1198,14 @@ function ClosetThumbnails::setSkus(%this, %skus)
                 }
             }
             %cell.totalButton.setVisible(1);
-            %cell.inStockText.setText(%this.GetInStockText(%cell[$gStoreItemsQty @ %cell.sku]));
+            %cell.inStockText.setText(%this.GetInStockText($gStoreItemsQty[%cell.sku]));
             if (findWord($Player::inventory, %cell.sku) >= 0)
             {
                 %this.SetCellAvailability(%cell, 0, 1, "<just:right><color:00bb00>0wn3d!", "platform/client/ui/owned");
             }
             else
             {
-                if (%cell[$gStoreItemsQty @ %cell.sku] == 0)
+                if ($gStoreItemsQty[%cell.sku] == 0)
                 {
                     %this.SetCellAvailability(%cell, 0, 0, "<just:right><color:dd0000>Sold Out!", "");
                 }
@@ -1981,7 +1981,7 @@ function ClosetGui::askUserToDropProp(%this)
             }
         }
     }
-    %body = $MsgCat::closet["MSG-NO-PROP-IN-THIS-GENRE-BODY1"] @ " " @ %activity @ %activity[$MsgCat::closet @ "MSG-NO-PROP-IN-THIS-GENRE-BODY2"];
+    %body = $MsgCat::closet["MSG-NO-PROP-IN-THIS-GENRE-BODY1"] @ " " @ %activity @ $MsgCat::closet["MSG-NO-PROP-IN-THIS-GENRE-BODY2"];
     MessageBoxYesNo($MsgCat::closet["MSG-NO-PROP-IN-THIS-GENRE-TITLE"], %body, "$ClosetSkusOutfit[$ClosetOutfitName] = \"" @ %outfitWithoutProp @ "\"; ClosetGui.reallyClose(false);", "");
     return 1;
 }
@@ -2035,7 +2035,7 @@ function ShowPurchaseSkusConfirmationDialog(%skus, %cbPoints, %cbBux, %cbCancel)
     %skusValidBux = Inventory::filterSkusByValidPrice("vBux", %skus);
     %numSkusValidPoints = getWordCount(%skusValidPoints);
     %numSkusValidBux = getWordCount(%skusValidBux);
-    %itemsStr = (%numSkus == 1) ? "this item" : "these" @ " " @ %numSkus @ " " @ "items";
+    %itemsStr = %numSkus == 1 ? "this item" : "these" @ " " @ %numSkus @ " " @ "items";
     %pointsTotal = Inventory::getTotalPrice("vPoints", %skus);
     %buxTotal = Inventory::getTotalPrice("vBux", %skus);
     if ((%pointsTotal == 0) && (%numSkusValidPoints > 0))
@@ -2190,12 +2190,12 @@ function ClosetGui::purchaseSkusVPoints(%this, %skus)
         }
         %desc = %si.descShrt;
     }
-    %vpointsString = (%totalPrice == 1) ? "vPoint" : "vPoints";
+    %vpointsString = %totalPrice == 1 ? "vPoint" : "vPoints";
     %note = "";
     if (%numValidSkus > %numSkus)
     {
         %diff = %numSkus - %numValidSkus;
-        %itemsString = (%diff == 1) ? "item is" : "items are";
+        %itemsString = %diff == 1 ? "item is" : "items are";
         %note = "<br><br>Note: " @ %diff @ " " @ %itemsString @ " not available for vPoints.";
     }
     %msg = "Do you wish to purchase " @ %desc @ " for " @ %totalPrice @ " " @ %vpointsString @ "?" @ %note;
@@ -2239,7 +2239,7 @@ function ClosetGui::purchaseSkusVBux(%this, %skus)
     if (%numValidSkus > %numSkus)
     {
         %diff = %numSkus - %numValidSkus;
-        %itemsString = (%diff == 1) ? "item is" : "items are";
+        %itemsString = %diff == 1 ? "item is" : "items are";
         %note = "<br><br>Note: " @ %diff @ " " @ %itemsString @ " not available for vBux.";
     }
     %msg = "Do you wish to purchase " @ %desc @ " for " @ %totalPrice @ " vBux?" @ %note;
@@ -2352,8 +2352,8 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request)
         {
             if (%errorCode $= "insufficientTotalFunds")
             {
-                %msgName = (%request.currency $= "vpoints") ? "E-NO-VPOINTS" : "E-NO-VBUX";
-                MessageBoxOK(%request[$MsgCat::commerce @ "E-TITLE"], $MsgCat::commerce[%msgName], "");
+                %msgName = %request.currency $= "vpoints" ? "E-NO-VPOINTS" : "E-NO-VBUX";
+                MessageBoxOK($MsgCat::commerce["E-TITLE"], $MsgCat::commerce[%msgName], "");
             }
             else
             {
@@ -2361,7 +2361,7 @@ function ClosetGui::onDoneOrErrorCallback_PurchaseInventory(%this, %request)
                 {
                     if (!(%errorCode[%skuResults @ "OutOfStock"] $= ""))
                     {
-                        MessageBoxYesNo(%errorCode[%skuResults @ "OutOfStock"][$MsgCat::commerce @ "E-TITLE"], $MsgCat::commerce["E-SOLDOUT"], "StoreShoppingList.removeSkus(\"" @ %skuResults["OutOfStock"] @ "\");", "");
+                        MessageBoxYesNo($MsgCat::commerce["E-TITLE"], $MsgCat::commerce["E-SOLDOUT"], "StoreShoppingList.removeSkus(\"" @ %skuResults["OutOfStock"] @ "\");", "");
                     }
                     else
                     {
@@ -2467,7 +2467,7 @@ function CheckoutRequest::onDone(%this)
     %buyFailed = 0;
     if (%status $= "connect-failed")
     {
-        MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
+        MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $MsgCat::network["H-SYS-DOWN"] @ $MsgCat::network["H-SEE-FORUMS"], "");
     }
     else
     {
@@ -2557,23 +2557,23 @@ function CheckoutRequest::onDone(%this)
                 %msg = "";
                 if (%ownsAlready)
                 {
-                    %msg = %msg @ %msg[$MsgCat::commerce @ "E-ALREADYOWN"] @ "\n\n";
+                    %msg = %msg @ $MsgCat::commerce["E-ALREADYOWN"] @ "\n\n";
                 }
                 if (%buyFailedInsufVBux)
                 {
-                    %msg = %msg @ %msg[$MsgCat::commerce @ "E-NO-VBUX"] @ "\n\n";
+                    %msg = %msg @ $MsgCat::commerce["E-NO-VBUX"] @ "\n\n";
                 }
                 if (%buyFailedInsufVPoints)
                 {
-                    %msg = %msg @ %msg[$MsgCat::commerce @ "E-NO-VPOINTS"] @ "\n\n";
+                    %msg = %msg @ $MsgCat::commerce["E-NO-VPOINTS"] @ "\n\n";
                 }
                 if (%buyFailed)
                 {
-                    %msg = %msg @ %msg[$MsgCat::commerce @ "F-PURCHASE"] @ "\n\n";
+                    %msg = %msg @ $MsgCat::commerce["F-PURCHASE"] @ "\n\n";
                 }
                 if (!(%skusAborted $= ""))
                 {
-                    %msg = %msg @ %msg[$MsgCat::commerce @ "E-ABORTED"] @ "\n\n";
+                    %msg = %msg @ $MsgCat::commerce["E-ABORTED"] @ "\n\n";
                 }
                 if (!(%msg $= ""))
                 {
@@ -3101,7 +3101,7 @@ function ClosetTabs::updateAuthorWidget(%this, %sku)
         {
             if (!(%si.brand $= "") && !(%si.brand $= "new") && !(%si.brand $= "vhdtemplate"))
             {
-                %fullBrand = %si[$gClosetBrandsExtrnl @ %si.brand];
+                %fullBrand = $gClosetBrandsExtrnl[%si.brand];
                 if (%fullBrand $= "")
                 {
                     error(getScopeName() @ " " @ "- unknown brand" @ " " @ %si.brand @ " " @ %sku @ " " @ getTrace());

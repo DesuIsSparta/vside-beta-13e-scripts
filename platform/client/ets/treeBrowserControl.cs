@@ -620,7 +620,7 @@ function TreeBrowserControl::getNextLeaf(%this, %path, %forward)
     }
     while ((%cnt = %node.getCount()) > 0)
     {
-        %slot = (%forward > 0) ? 0 : (%cnt - 1);
+        %slot = %forward > 0 ? 0 : (%cnt - 1);
         %node = %node.getObject(%slot);
         %path = %path @ "\t" @ %node.name;
     }

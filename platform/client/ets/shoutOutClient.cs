@@ -428,7 +428,7 @@ function shoutOut_action_sendTicker()
     %request = sendRequest_PublishToTicker(%messageText, %priority, "onDoneOrErrorCallback_PublishToTicker");
     %request.messageText = %messageText;
     %analytic = getAnalytic();
-    %withPic = ($gShoutOut_ShortPhotoURL $= "") ? "" : "/photo";
+    %withPic = $gShoutOut_ShortPhotoURL $= "" ? "" : "/photo";
     %analytic.trackPageView("/client/shoutout/ticker" @ %withPic);
 }
 function onDoneOrErrorCallback_PublishToTicker(%request)
@@ -467,7 +467,7 @@ function shoutOut_action_sendFB()
     %sharerURL = %sharerURL @ "?u=" @ urlEncode($gShoutOut_PhotoURL);
     gotoWebPage(%sharerURL);
     %analytic = getAnalytic();
-    %withPic = ($gShoutOut_ShortPhotoURL $= "") ? "" : "/photo";
+    %withPic = $gShoutOut_ShortPhotoURL $= "" ? "" : "/photo";
     %analytic.trackPageView("/client/shoutout/facebook" @ %withPic);
 }
 function shoutOut_action_sendTweet()
@@ -486,7 +486,7 @@ function shoutOut_action_sendTweet()
     %pass = geShoutout_Credential_Twitter_Password.getText();
     %request = sendRequest_Twitter_statuses_update(%user, %pass, %tweetText, "onDoneOrErrorCallback_Twitter_statuses_update");
     %analytic = getAnalytic();
-    %withPic = ($gShoutOut_ShortPhotoURL $= "") ? "" : "/photo";
+    %withPic = $gShoutOut_ShortPhotoURL $= "" ? "" : "/photo";
     %analytic.trackPageView("/client/shoutout/twitter" @ %withPic);
 }
 function onDoneOrErrorCallback_Twitter_statuses_update(%request)

@@ -297,10 +297,10 @@ function WindowManager::repositionWindows(%this, %windowSet)
                         %weight = $gWindowManagerSpacerWeight;
                     }
                 }
-                %ratio = (%totalWeight == 0) ? 0 : (%weight / %totalWeight);
-                %height = (%ratio > 0) ? (%ratio * %residualHeight) : getWord(%win.getExtent(), 1);
+                %ratio = %totalWeight == 0 ? 0 : (%weight / %totalWeight);
+                %height = %ratio > 0 ? (%ratio * %residualHeight) : getWord(%win.getExtent(), 1);
                 %minHeight = getWord(%win.minExtent, 1);
-                %height[%i] = (%height < %minHeight) ? %minHeight : %height;
+                %height[%i] = %height < %minHeight ? %minHeight : %height;
                 %ypos = %ypos + (%height[%i] + %padding);
             }
             %i = %i + 1;

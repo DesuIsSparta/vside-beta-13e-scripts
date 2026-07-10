@@ -81,7 +81,7 @@ function makeAnimationMapZombie(%map, %src, %gender)
 }
 function makeAnimationMapInstrument(%gender, %genre, %rootAnim, %runAnim, %sideAnim, %backAnim, %jumpAnim)
 {
-    %src = (%gender $= "f") ? animationMapFP : animationMapMP;
+    %src = %gender $= "f" ? animationMapFP : animationMapMP;
     %animationMapName = "animationMap" @ %gender @ %genre;
     if (isObject(%animationMapName))
     {

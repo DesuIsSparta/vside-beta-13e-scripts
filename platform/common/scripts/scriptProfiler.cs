@@ -89,7 +89,7 @@ function scriptProfiler_getTotals()
         %time = formatFloat("%10.4f", ($gScriptProfiler_TotalTimes.getValue(%n) / 1000));
         %id = $gScriptProfiler_TotalTimes.getKey(%n);
         %id2 = formatString("%-70s", %id);
-        %bal = ($gScriptProfiler_EntryTimes.get(%id) $= "") ? "(  balanced)" : "(unbalanced)";
+        %bal = $gScriptProfiler_EntryTimes.get(%id) $= "" ? "(  balanced)" : "(unbalanced)";
         %cls = formatInt("%5d", $gScriptProfiler_TotalCalls.getValue(%n));
         %ret = %ret @ %delim @ %time @ " " @ %bal @ " " @ %cls @ " " @ %id2;
         %delim = "\n";

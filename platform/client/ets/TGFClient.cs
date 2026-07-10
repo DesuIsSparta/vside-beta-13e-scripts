@@ -750,17 +750,17 @@ function geTGF::getUserFacingAccessModeWithIcon(%this, %accessMode)
 }
 function geTGF::fillDetailsContainer_Venue(%this, %container, %item)
 {
-    %item.fullName = %item[$gDestinationNames @ %item.codeName];
-    %item.areaName = %item[$gDestinationSpaces @ %item.codeName];
-    %item.headline = %item[$gDestinationDescsInCloset @ %item.codeName];
-    %item.goThereVURL = %item[$gDestinationVurls @ %item.codeName];
+    %item.fullName = $gDestinationNames[%item.codeName];
+    %item.areaName = $gDestinationSpaces[%item.codeName];
+    %item.headline = $gDestinationDescsInCloset[%item.codeName];
+    %item.goThereVURL = $gDestinationVurls[%item.codeName];
     %item.cityName = DestinationList::GetAreaNameUserFacingName(DestinationList::GetAreaNameCity(%item.areaName));
     %whatIsIt = "A ";
     %delim = "";
-    %n = getWordCount(%item[$gDestinationFilters @ %item.codeName]) - 1;
+    %n = getWordCount($gDestinationFilters[%item.codeName]) - 1;
     while (%n >= 0)
     {
-        %whatIsIt = %whatIsIt @ %delim @ getWord(%item[$gDestinationFilters @ %item.codeName], %n);
+        %whatIsIt = %whatIsIt @ %delim @ getWord($gDestinationFilters[%item.codeName], %n);
         %delim = " and a ";
         %n = %n - 1;
     }
@@ -788,7 +788,7 @@ function geTGF::fillDetailsContainer_Venue(%this, %container, %item)
 function geTGF_deets_venueText::onURL(%this, %url)
 {
     geDeetsLayer.setVisible(0);
-    %url = (firstWord(%url) $= "gamelink") ? restWords(%url) : %url;
+    %url = firstWord(%url) $= "gamelink" ? restWords(%url) : %url;
     %s = firstWord(%url);
     if (%s $= "MAP_CITY")
     {
@@ -822,7 +822,7 @@ function geTGF::fillDetailsContainer_Person(%this, %container, %item)
         %item.goThereVURL = "vside:/user/" @ %item.userName;
     }
     %readMoreText = "<spush><b><a:gamelink " @ %profileURL @ ">Read More</a><spop>";
-    %goThereText = ("<spush><b><a:gamelink " @ %item.goThereVURL @ ">Visit " @ " " @ %item.gender $= "m") ? "him" : "her" @ " now!</a><spop>";
+    %goThereText = "<spush><b><a:gamelink " @ %item.goThereVURL @ ">Visit " @ " " @ %item.gender $= "m" ? "him" : "her" @ " now!</a><spop>";
     %goThereText = mlStyle(%goThereText, "tgfDeets_Visit");
     %text = %tableSettings;
     if (%text @ "Age" @ "\t" @ ": " @ " " @ %item.age $= "")
@@ -939,7 +939,7 @@ function geTGF::getNextItem(%this, %listName, %type)
 }
 function geTGF_deets_NavLinks::onURL(%this, %url)
 {
-    %url = (firstWord(%url) $= "gamelink") ? restWords(%url) : %url;
+    %url = firstWord(%url) $= "gamelink" ? restWords(%url) : %url;
     %s = firstWord(%url);
     if (%s $= "prev")
     {

@@ -50,7 +50,7 @@ function EtsInviteDialog::sendInvite(%this)
     %note = trim(ETSInviteNoteTextCtrl.getText());
     if (%to $= "")
     {
-        MessageBoxOK(%to[$MsgCat::invitation @ "E-SEND-TITLE"], $MsgCat::invitation["EMPTY-TO-FIELD"], "");
+        MessageBoxOK($MsgCat::invitation["E-SEND-TITLE"], $MsgCat::invitation["EMPTY-TO-FIELD"], "");
         return;
     }
     %this.sendInviteRequestToEnvManager(%to, %note);
@@ -124,7 +124,7 @@ function EtsInviteRequest::onError(%this, %errorNum, %unused)
     else
     {
         EtsInviteDialog.onConnectFailed("Could not connect");
-        MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"] @ "  " @ $ETS::AppName[$MsgCat::network @ "H-SYS-DOWN"][$MsgCat::network @ "H-SEE-FORUMS"], "");
+        MessageBoxOK("Could not connect", "Could not connect to " @ $ETS::AppName @ " servers.  " @ $MsgCat::network["H-SYS-DOWN"] @ "  " @ $MsgCat::network["H-SEE-FORUMS"], "");
     }
 }
 function EtsInviteRequest::onConnected(%this)

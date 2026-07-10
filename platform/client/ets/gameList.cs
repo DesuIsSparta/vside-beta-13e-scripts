@@ -124,8 +124,8 @@ function GameList::refreshInspectTab(%this)
     {
         %ourRecord = %game.ourRecord;
     }
-    %gameType = %game[$gameMgr::GAME_TYPES @ %game.gametype].title;
-    %plyrStr = (%game.playercount > 1) ? " players" : " player";
+    %gameType = $gameMgr::GAME_TYPES[%game.gametype].title;
+    %plyrStr = %game.playercount > 1 ? " players" : " player";
     %upperText = "<spush><b>Inspect Game:<spop><br>" @ "name: " @ %game.gname @ "<br>" @ "game: " @ %gameType @ "<br>" @ "<spush><b>created by " @ %game.host @ "<spop><br>" @ %game.playercount @ %plyrStr @ "<br>";
     if (%game.gamestatus == $gameMgr::GameStatus::STARTED)
     {
@@ -693,7 +693,7 @@ function GameList::refresh(%this)
         {
             %listPrefix = "+";
         }
-        %outString = %outString @ "<a:gamelink list " @ %aList @ " >" @ %listPrefix @ " " @ %aList[$gameMgr::GAME_TYPES @ %aList.gametype].title @ " " @ "(" @ %aList.getCount() @ " games)</a><spop><br>";
+        %outString = %outString @ "<a:gamelink list " @ %aList @ " >" @ %listPrefix @ " " @ $gameMgr::GAME_TYPES[%aList.gametype].title @ " " @ "(" @ %aList.getCount() @ " games)</a><spop><br>";
         if (%aList.collapsed == 1)
         {
             echo("the list is collapsed <-" @ getScopeName());

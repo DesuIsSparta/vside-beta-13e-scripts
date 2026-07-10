@@ -122,13 +122,13 @@ function JoinRequest::onDone(%this)
     }
     %this.registeredName = %this.getValue("registered_user");
     %this.curOutfitSkus["m"] = %this.getValue("cur_outfit_skus_m");
-    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"m\"] = " @ %this.curOutfitSkus["m"]);
+    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"m\"] = "["m"].curOutfitSkus);
     %this.curOutfitSkus["f"] = %this.getValue("cur_outfit_skus_f");
-    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"f\"] = " @ %this.curOutfitSkus["f"]);
+    log("wardrobe", "info", "curOutfitSkus returned in ValidateRequest::onLine, curOutfitSkus[\"f\"] = "["f"].curOutfitSkus);
     %this.bodyAttrs["m"] = %this.getValue("bodyattrs_m");
-    log("wardrobe", "info", "bodyAttrs_m returned in ValidateRequest::onLine, bodyAttrs[\"m\"] = " @ %this.bodyAttrs["m"]);
+    log("wardrobe", "info", "bodyAttrs_m returned in ValidateRequest::onLine, bodyAttrs[\"m\"] = "["m"].bodyAttrs);
     %this.bodyAttrs["f"] = %this.getValue("bodyattrs_f");
-    log("wardrobe", "info", "bodyAttrs_f returned in ValidateRequest::onLine, bodyAttrs[\"f\"] = " @ %this.bodyAttrs["f"]);
+    log("wardrobe", "info", "bodyAttrs_f returned in ValidateRequest::onLine, bodyAttrs[\"f\"] = "["f"].bodyAttrs);
     %this.callback.onJoinResponse(%this);
     if (!(%this.teleportTarget $= ""))
     {

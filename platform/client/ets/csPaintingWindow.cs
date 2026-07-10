@@ -343,7 +343,7 @@ function geSwatchesPanelMLOnOff::onURL(%this, %url)
     }
     if (firstWord(%url) $= "PAINTINGMODE")
     {
-        $gSwatchPaintingModeOn = (restWords(%url) $= "on") ? 1 : 0;
+        $gSwatchPaintingModeOn = restWords(%url) $= "on" ? 1 : 0;
         %this.update();
     }
     else

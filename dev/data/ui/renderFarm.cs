@@ -40,14 +40,14 @@ function rf_enqueueRender(%requestId, %user, %skus, %poseName, %poseOffset, %hei
         return "error\r\nnot in correct mode\r\n";
     }
     %missingParams = "";
-    %missingParams = (%missingParams @ " " @ " " @ %requestId $= "") ? "requestID" : "";
-    %missingParams = (%missingParams @ " " @ " " @ %user $= "") ? "user" : "";
-    %missingParams = (%missingParams @ " " @ " " @ %skus $= "") ? "skus" : "";
-    %missingParams = (%missingParams @ " " @ " " @ %poseName $= "") ? "poseName" : "";
-    %missingParams = (%missingParams @ " " @ " " @ %poseOffset $= "") ? "poseOffset" : "";
-    %missingParams = (%missingParams @ " " @ " " @ %height $= "") ? "height" : "";
-    %missingParams = (%missingParams @ " " @ " " @ %angle $= "") ? "angle" : "";
-    %missingParams = (%missingParams @ " " @ " " @ %zoom $= "") ? "zoom" : "";
+    %missingParams = %missingParams @ " " @ " " @ %requestId $= "" ? "requestID" : "";
+    %missingParams = %missingParams @ " " @ " " @ %user $= "" ? "user" : "";
+    %missingParams = %missingParams @ " " @ " " @ %skus $= "" ? "skus" : "";
+    %missingParams = %missingParams @ " " @ " " @ %poseName $= "" ? "poseName" : "";
+    %missingParams = %missingParams @ " " @ " " @ %poseOffset $= "" ? "poseOffset" : "";
+    %missingParams = %missingParams @ " " @ " " @ %height $= "" ? "height" : "";
+    %missingParams = %missingParams @ " " @ " " @ %angle $= "" ? "angle" : "";
+    %missingParams = %missingParams @ " " @ " " @ %zoom $= "" ? "zoom" : "";
     %missingParams = trim(%missingParams);
     if (!(%missingParams $= ""))
     {
@@ -101,7 +101,7 @@ function rf_beginRender(%request)
     {
         %gender = "f";
     }
-    %player = (%gender $= "f") ? $gRFPlayerF : $gRFPlayerM;
+    %player = %gender $= "f" ? $gRFPlayerF : $gRFPlayerM;
     %player.setActiveSKUs(%request.skus);
     %player.setHeight(%request.height);
     geRenderFarmObjectView.setSimObject(%player);

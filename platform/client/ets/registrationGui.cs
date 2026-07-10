@@ -73,7 +73,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
     {
         $UserPref::Player::Name = %request.getValue("userName");
         $UserPref::Player::Password = %request.getValue("password");
-        $UserPref::Player::gender = (%request.getValue("gender") $= "") ? $UserPref::Player::gender : %request.getValue("gender");
+        $UserPref::Player::gender = %request.getValue("gender") $= "" ? $UserPref::Player::gender : %request.getValue("gender");
         $Player::Name = $UserPrefPlayer::Name;
         $Player::Password = $UserPrefPlayer::Password;
         LoginUserNameField.setValue($Player::Name);
@@ -90,7 +90,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
         %analytic.trackPageView("/client/registration/failed/" @ %errorCode);
         if (%errorCode $= "UNKNOWN_ID")
         {
-            %errorMessage = %errorCode[$MsgCat::login @ "E-REG-UNKNOWN-ID"];
+            %errorMessage = $MsgCat::login["E-REG-UNKNOWN-ID"];
             error(getScopeName() @ " " @ "- unknown registration ID -" @ " " @ $Net::RegistrationID);
             RegistrationGui.markCurrentRegistrationAsCompleted();
             RegistrationGui.close();
@@ -99,7 +99,7 @@ function onDoneOrErrorCallback_CompleteClientRegistration(%request)
         {
             if (%errorCode $= "INCOMPLETE")
             {
-                %errorMessage = %errorCode[$MsgCat::login @ "E-REG-INCOMPLETE"];
+                %errorMessage = $MsgCat::login["E-REG-INCOMPLETE"];
             }
             else
             {

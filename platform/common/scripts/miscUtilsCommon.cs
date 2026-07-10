@@ -79,7 +79,7 @@ function FileObject::writeCloseTag(%this, %tagName)
 }
 function FileObject::writeShortTag(%this, %tagName, %tagValues, %tagContent)
 {
-    %line = ("<" @ %tagName @ " " @ %tagValues $= "") ? "" : " " @ %tagValues @ ">";
+    %line = "<" @ %tagName @ " " @ %tagValues $= "" ? "" : " " @ %tagValues @ ">";
     %line = %line @ %tagContent;
     %line = %line @ "</" @ %tagName @ ">";
     %this.writeLineIndented(%line);

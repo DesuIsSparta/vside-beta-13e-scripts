@@ -35,7 +35,7 @@ $ImageFrame_WhiteList[33] = "fbcdn" @ " " @ "net";
 $ImageFrame_BlackList[0] = "forums";
 $ImageFrame_DisplayName["unknown"] = "Image from the Web";
 $ImageFrame_DisplayName["vside"] = "vSide Gallery";
-$ImageFrame_DisplayName["vside"][$ImageFrame_DisplayName @ "doppelganger"] = $ImageFrame_DisplayName["vside"];
+$ImageFrame_DisplayName["doppelganger"] = $ImageFrame_DisplayName["vside"];
 $ImageFrame_DisplayName["flickr"] = "Flickr";
 $ImageFrame_DisplayName["photobucket"] = "Photobucket";
 $ImageFrame_DisplayName["vsideevent"] = "vSide Event";
@@ -233,7 +233,7 @@ function ImageFrameBase::buildLinkURLAndCaption(%this, %imageTag, %type)
     {
         if (%type == $ImageFrameBase::Type_Gallery)
         {
-            %caption = %type[$ImageFrame_DisplayName @ "vside"];
+            %caption = $ImageFrame_DisplayName["vside"];
             %url = $Net::PhotoPageURL @ %imageTag;
         }
         else
@@ -255,14 +255,14 @@ function ImageFrameBase::buildLinkURLAndCaption(%this, %imageTag, %type)
             {
                 if (%type == $ImageFrameBase::Type_Event)
                 {
-                    %caption = %type[$ImageFrame_DisplayName @ "vsideevent"];
+                    %caption = $ImageFrame_DisplayName["vsideevent"];
                     %url = %imageTag;
                 }
                 else
                 {
                     if (%type == $ImageFrameBase::Type_Gallery2)
                     {
-                        %caption = %type[$ImageFrame_DisplayName @ "vside"];
+                        %caption = $ImageFrame_DisplayName["vside"];
                         %url = $Net::PhotoPageURL @ %this.imageKey;
                     }
                 }
@@ -423,19 +423,19 @@ function dlMgrErrorCallback_ImageFrameBase(%dlItem)
         %imgTag = %obj.getImageTag();
         if (%obj.type == $ImageFrameBase::Type_URL)
         {
-            %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDURL"], "[URL]", %imgTag);
+            %message = strreplace($MsgCat::furniture["IMAGEFRAME-LOADFAILEDURL"], "[URL]", %imgTag);
         }
         else
         {
             if ((%obj.type == $ImageFrameBase::Type_Gallery) || (%obj.type == $ImageFrameBase::Type_Gallery2))
             {
-                %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDGALLERY"], "[GUID]", %imgTag);
+                %message = strreplace($MsgCat::furniture["IMAGEFRAME-LOADFAILEDGALLERY"], "[GUID]", %imgTag);
             }
             else
             {
                 if (%obj.type == $ImageFrameBase::Type_Event)
                 {
-                    %message = strreplace(%obj[$MsgCat::furniture @ "IMAGEFRAME-LOADFAILEDEVENT"], "[EVENT]", %imgTag);
+                    %message = strreplace($MsgCat::furniture["IMAGEFRAME-LOADFAILEDEVENT"], "[EVENT]", %imgTag);
                 }
                 else
                 {

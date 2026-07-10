@@ -336,14 +336,14 @@ function clientCmdPChatUse(%bool, %rangeRadialRegular, %rangeAngularRegular, %ra
 {
     if (%bool)
     {
-        %rangeRadialRegular[$Player::PChat::rangeRadial @ "regular"] = %rangeRadialRegular;
-        %rangeAngularRegular[$Player::PChat::rangeAngular @ "regular"] = %rangeAngularRegular;
-        %rangeRadialYell[$Player::PChat::rangeRadial @ "yell"] = %rangeRadialYell;
-        %rangeAngularYell[$Player::PChat::rangeAngular @ "yell"] = %rangeAngularYell;
-        %rangeRadialMic[$Player::PChat::rangeRadial @ "mic"] = %rangeRadialMic;
-        %rangeAngularMic[$Player::PChat::rangeAngular @ "mic"] = %rangeAngularMic;
-        %rangeRadialMic[$Player::PChat::rangeRadial @ "pubNotify"] = %rangeRadialMic;
-        %rangeAngularMic[$Player::PChat::rangeAngular @ "pubNotify"] = %rangeAngularMic;
+        $Player::PChat::rangeRadial["regular"] = %rangeRadialRegular;
+        $Player::PChat::rangeAngular["regular"] = %rangeAngularRegular;
+        $Player::PChat::rangeRadial["yell"] = %rangeRadialYell;
+        $Player::PChat::rangeAngular["yell"] = %rangeAngularYell;
+        $Player::PChat::rangeRadial["mic"] = %rangeRadialMic;
+        $Player::PChat::rangeAngular["mic"] = %rangeAngularMic;
+        $Player::PChat::rangeRadial["pubNotify"] = %rangeRadialMic;
+        $Player::PChat::rangeAngular["pubNotify"] = %rangeAngularMic;
         $Player::PChat::rangeRadial = %rangeRadialRegular;
         $Player::PChat::rangeAngular = %rangeAngularRegular;
         sPChat::init();

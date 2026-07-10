@@ -63,7 +63,7 @@ function rentabotClient_customizeBot(%obj)
         profile = "GuiMessageTextProfile";
         position = %col2 @ " " @ %row;
         extent = %col2Size @ " " @ %rowSize;
-        text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-NAME"];
+        text = %tipStyle @ $MsgCat::furniture["BOTCUST-TIP-NAME"];
     };
     %window.add(%ctrl);
     %row = %row + (%rowSize + %rowSpacing);
@@ -91,7 +91,7 @@ function rentabotClient_customizeBot(%obj)
             profile = "GuiMessageTextProfile";
             position = %col2 @ " " @ %row;
             extent = %col2Size @ " " @ %rowSize;
-            text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-BLAB"];
+            text = %tipStyle @ $MsgCat::furniture["BOTCUST-TIP-BLAB"];
         };
         %window.add(%ctrl);
         %row = %row + (%rowSize + %rowSpacing);
@@ -117,7 +117,7 @@ function rentabotClient_customizeBot(%obj)
             profile = "GuiMessageTextProfile";
             position = %col2 @ " " @ %row;
             extent = %col2Size @ " " @ %rowSize;
-            text = %tipStyle @ %tipStyle[$MsgCat::furniture @ "BOTCUST-TIP-WHISPER"];
+            text = %tipStyle @ $MsgCat::furniture["BOTCUST-TIP-WHISPER"];
         };
         %window.add(%ctrl);
         %row = %row + (%rowSize + %rowSpacing);
@@ -217,7 +217,7 @@ function rentabotClient_DressUpRead(%obj)
     %msg = "";
     if (%numLostGender > 0)
     {
-        %otherGender = (%obj.getGender() $= "f") ? "female" : "male";
+        %otherGender = %obj.getGender() $= "f" ? "female" : "male";
         %msg = %msg @ "Some of those items are for" @ " " @ %otherGender @ " " @ "players";
     }
     if (%numLostOwnership > 0)

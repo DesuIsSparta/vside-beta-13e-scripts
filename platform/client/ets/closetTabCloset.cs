@@ -366,7 +366,7 @@ function ClosetTabs::doSwapOutfits(%this, %src, %dest)
 {
     if ((%src == $gSwimsuitOutfitIndex) || (%dest == $gSwimsuitOutfitIndex))
     {
-        %title = %dest[$MsgCat::closet TAB "MSG-SWAP-OUTFIT-WARN" @ "TITLE"];
+        %title = $MsgCat::closet["MSG-SWAP-OUTFIT-WARN","TITLE"];
         %body = $MsgCat::closet["MSG-SWAP-OUTFIT-WARN","BODY"];
         MessageBoxYesNo(%title, %body, "ClosetTabs.doSwapOutfitsReally(" @ %src @ ", " @ %dest @ ");", "");
     }
@@ -397,8 +397,8 @@ function ClosetOutfitButton::onMouseDragged(%this, %modifier)
     {
         return 0;
     }
-    %mask = ($Platform $= "macos") ? $EventModifier::ALT : $EventModifier::CTRL;
-    %this.operation = (%modifier & %mask) ? "COPY" : "SWAP";
+    %mask = $Platform $= "macos" ? $EventModifier::ALT : $EventModifier::CTRL;
+    %this.operation = %modifier & %mask ? "COPY" : "SWAP";
     %this.setAsDragControl(1);
     return 1;
 }
@@ -605,7 +605,7 @@ function ClosetItemPopup::update(%this, %skus)
         {
             %categoryString = "clothes";
         }
-        %msg = $MsgCat::closet["H-NO-BRAND-ITEMS1"] @ %brandString @ " " @ %categoryString @ %categoryString[$MsgCat::closet @ "H-NO-BRAND-ITEMS2"] @ %brandString @ " " @ %brandString[$MsgCat::closet @ "H-NO-BRAND-ITEMS3"];
+        %msg = $MsgCat::closet["H-NO-BRAND-ITEMS1"] @ %brandString @ " " @ %categoryString @ $MsgCat::closet["H-NO-BRAND-ITEMS2"] @ %brandString @ " " @ $MsgCat::closet["H-NO-BRAND-ITEMS3"];
         NoItemInBrandNameLabel.setText(%msg);
     }
     else
