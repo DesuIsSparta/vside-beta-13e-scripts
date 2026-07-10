@@ -37,10 +37,7 @@ function MLScrollInspectPanel::updateSize(%this)
     %posY = 0;
     %width = 358;
     %height = 243;
-    if (%screenHeight == 272)
-    {
-    }
-    if (%screenWidth == 480)
+    if ((%screenHeight == 272) && (%screenWidth == 480))
     {
         %height = 243;
         %width = 358;
@@ -49,30 +46,21 @@ function MLScrollInspectPanel::updateSize(%this)
     }
     else
     {
-        if (%screenHeight == 363)
-        {
-        }
-        if (%screenWidth == 640)
+        if ((%screenHeight == 363) && (%screenWidth == 640))
         {
             %height = 161 * 2;
             %width = 161 * 3;
             %posX = (%screenWidth - %width) / 2;
             %posY = 0;
         }
-        if (%screenHeight == 544)
-        {
-        }
-        if (%screenWidth == 960)
+        if ((%screenHeight == 544) && (%screenWidth == 960))
         {
             %height = 242 * 2;
             %width = 242 * 3;
             %posX = (%screenWidth - %width) / 2;
             %posY = 0;
         }
-        if (%screenHeight == 714)
-        {
-        }
-        if (%screenWidth == 1260)
+        if ((%screenHeight == 714) && (%screenWidth == 1260))
         {
             %height = 317 * 2;
             %width = 317 * 3;

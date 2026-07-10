@@ -120,10 +120,7 @@ function requestPlayerInfoForWithCallback(%playerName, %callback, %data)
 function PlayerInfoRequest::onError(%this, %errorNum, %errorName)
 {
     log("network", "warn", getScopeName() @ ": " @ %errorNum @ " " @ %errorName);
-    if (isObject(InfoPopupDlg))
-    {
-    }
-    if (InfoPopupDlg.isShowing())
+    if (isObject(InfoPopupDlg) && InfoPopupDlg.isShowing())
     {
         InfoPopupDlg.stopAnimation();
     }
@@ -188,10 +185,7 @@ function PlayerInfoRequest::onDone(%this)
             {
                 if (isObject(InfoPopupDlg))
                 {
-                    if (!(%this.requestPlayerInfoFor $= ""))
-                    {
-                    }
-                    if (PlayerInfoMap.get(%this.requestPlayerInfoFor) $= "")
+                    if (!(%this.requestPlayerInfoFor $= "") && (PlayerInfoMap.get(%this.requestPlayerInfoFor) $= ""))
                     {
                         InfoPopupDlg.showPlayerNotFound();
                     }
@@ -217,10 +211,7 @@ function PlayerInfoRequest::onDone(%this)
     {
         if (%this.callback $= "")
         {
-            if (isObject(InfoPopupDlg))
-            {
-            }
-            if (InfoPopupDlg.isShowing())
+            if (isObject(InfoPopupDlg) && InfoPopupDlg.isShowing())
             {
                 InfoPopupDlg.stopAnimation();
             }

@@ -151,10 +151,7 @@ function CSBrowser::clearEmptyCategoriesAt(%this, %node)
         %this.clearEmptyCategoriesAt(%node.getObject(%i));
         %i = %i - 1;
     }
-    if (%node.getCount() == 0)
-    {
-    }
-    if ((%i >= 0) @ " " @ %node.sku $= "")
+    if ((%node.getCount() == 0) && ((%i >= 0) @ " " @ %node.sku $= ""))
     {
         %this.deleteNode(%node);
     }
@@ -179,19 +176,13 @@ function CSBrowser::goToPath(%this, %path, %focus)
         %menuItem = %menu.getChild(0, %i);
         %sku = getSubStr(strchr(%menuItem.name, "|"), 1);
         %this.modifyListViewForSku(%sku, %menuItem);
-        if (%sku $= "")
-        {
-        }
-        if (findRecord($CSBrowser::TopOfListCategories, %menuItem.name) >= 0)
+        if ((%sku $= "") && (findRecord($CSBrowser::TopOfListCategories, %menuItem.name) >= 0))
         {
             %menu.reorderChild(%menuItem, %menu.getChild(0, 0));
         }
         %i = %i + 1;
     }
-    if (%this.level == 1)
-    {
-    }
-    if (!%this.otherBrowsersVisible())
+    if ((%this.level == 1) && !%this.otherBrowsersVisible())
     {
         %this.button[0].command = (%i < %count) @ %this.getId() @ ".switchToOtherBrowser();";
         %this.button[0].setActive(1);
@@ -385,10 +376,7 @@ function CSBrowser::isNodeExpanded(%this, %path)
         return 0;
     }
     %si = SkuManager.findBySku(%sku);
-    if (!(%si.descLong $= ""))
-    {
-    }
-    return %this.getFieldValue("showMoreInfo") == 1;
+    return !(%si.descLong $= "") && (%this.getFieldValue("showMoreInfo") == 1);
 }
 function CSBrowser::fillExpandedContentPane(%this, %expandedPane)
 {
@@ -434,8 +422,5 @@ function CSBrowser::resizeParentsBy(%this, %delta)
 }
 function CSBrowser::otherBrowsersVisible(%this)
 {
-    if (CSInventoryBrowserWindow.isVisible())
-    {
-    }
-    return CSShoppingBrowserWindow.isVisible();
+    return CSInventoryBrowserWindow.isVisible() && CSShoppingBrowserWindow.isVisible();
 }

@@ -111,10 +111,7 @@ package dev
         }
         else
         {
-            if ($Console)
-            {
-            }
-            if ($dev_kit_auth)
+            if ($Console && $dev_kit_auth)
             {
                 enableWinConsole(1);
             }
@@ -188,10 +185,7 @@ package dev
     function onExit()
     {
         $ETS::devMode = 0;
-        if (!$Server::Dedicated)
-        {
-        }
-        if (!$NonInteractive)
+        if (!$Server::Dedicated && !$NonInteractive)
         {
             echo("Exporting Dev Prefs");
             export("$DevPref::*", "dev/data/devPrefs.cs", 0);

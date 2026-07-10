@@ -29,10 +29,7 @@ function ManagerRequest::parse_Inventory(%this, %array, %qtyFieldInterpretation)
                     error(getScopeName() @ " " @ "- more than one non-furnishing SKU owned::" @ " " @ %sku @ " " @ %qty @ " " @ %si.skuType);
                 }
             }
-            if (%qty < 1)
-            {
-            }
-            if (%qty != -(1))
+            if ((%qty < 1) && (%qty != -(1)))
             {
                 error(getScopeName() @ " " @ "- invalid sku quantity:" @ " " @ %sku @ " " @ %qty);
             }

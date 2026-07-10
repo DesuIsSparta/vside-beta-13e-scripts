@@ -28,10 +28,7 @@ function TriggersPanel::setStream(%this)
 {
     %trigger = TriggersPanelTriggerPopup.getValue();
     %stream = TriggersPanelStreamPopup.getValue();
-    if (!(%trigger $= ""))
-    {
-    }
-    if (!(%stream $= ""))
+    if (!(%trigger $= "") && !(%stream $= ""))
     {
         MessageBoxYesNo("Set Stream", "Are you sure you want to set the stream for trigger \"" @ %trigger @ "\" to \"" @ %stream @ "\"?", "TriggersPanel.setStreamReally();", "");
     }
@@ -40,10 +37,7 @@ function TriggersPanel::setStreamReally(%this)
 {
     %trigger = TriggersPanelTriggerPopup.getValue();
     %stream = TriggersPanelStreamPopup.getValue();
-    if (!(%trigger $= ""))
-    {
-    }
-    if (!(%stream $= ""))
+    if (!(%trigger $= "") && !(%stream $= ""))
     {
         log("Communication", "info", "Setting stream for trigger " @ %trigger @ " to " @ %stream);
         commandToServer('SetMusicStreamMapping', %trigger, %stream);
@@ -56,10 +50,7 @@ function TriggersPanel::setLocalURLMapping(%this)
 {
     %stream = $TriggersPanel::NewStreamName;
     %newUrl = $TriggersPanel::NewURL;
-    if (!(%stream $= ""))
-    {
-    }
-    if (!(%newUrl $= ""))
+    if (!(%stream $= "") && !(%newUrl $= ""))
     {
         MessageBoxYesNo("Set Stream", "Are you sure you want to set stream \"" @ %stream @ "\" to \"" @ %newUrl @ "\"?", "TriggersPanel.setLocalURLMappingReally();", "");
     }
@@ -72,10 +63,7 @@ function TriggersPanel::setLocalURLMappingReally(%this)
 {
     %stream = $TriggersPanel::NewStreamName;
     %newUrl = $TriggersPanel::NewURL;
-    if (!(%stream $= ""))
-    {
-    }
-    if (!(%newUrl $= ""))
+    if (!(%stream $= "") && !(%newUrl $= ""))
     {
         log("communication", "info", "Stream " @ %stream @ " " @ "will now be mapped to " @ %newUrl @ " " @ "on this server only");
         commandToServer('SetUrl', %stream, %newUrl);
@@ -90,10 +78,7 @@ function TriggersPanel::setURLMapping(%this)
 {
     %stream = $TriggersPanel::NewStreamName;
     %newUrl = $TriggersPanel::NewURL;
-    if (!(%stream $= ""))
-    {
-    }
-    if (!(%newUrl $= ""))
+    if (!(%stream $= "") && !(%newUrl $= ""))
     {
         MessageBoxYesNo("Set Stream", "Are you sure you want to set stream \"" @ %stream @ "\" to \"" @ %newUrl @ "\"?", "TriggersPanel.setURLMappingReally();", "");
     }
@@ -106,10 +91,7 @@ function TriggersPanel::setURLMappingReally(%this)
 {
     %stream = $TriggersPanel::NewStreamName;
     %newUrl = $TriggersPanel::NewURL;
-    if (!(%stream $= ""))
-    {
-    }
-    if (!(%newUrl $= ""))
+    if (!(%stream $= "") && !(%newUrl $= ""))
     {
         log("communication", "info", "Stream " @ %stream @ " " @ "will now be mapped to " @ %newUrl);
         %this.urlsToEnvmanager(%stream, %newUrl);

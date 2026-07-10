@@ -60,33 +60,21 @@ function BroadSnapshotButton_prepareForDoTakeSnapshot()
         BroadCastControlPanel.temporaryGUIControlContainer.setVisible(0);
         BroadCastControlPanel.temporaryGUIControlContainer.add(ConvBub);
     }
-    if (BroadcastHideSelfCheckbox.getValue())
+    if (BroadcastHideSelfCheckbox.getValue() && BroadcastHideSelfCheckbox.isVisible() && !$IN_ORBIT_CAM && !$firstPerson)
     {
-    }
-    if (BroadcastHideSelfCheckbox.isVisible())
-    {
-        if (!$IN_ORBIT_CAM)
+        $player.MeshOff("*");
+        $player.setShapeName("");
+        if (isObject($player.hudCtrl))
         {
+            $player.hudCtrl.setVisible(0);
         }
-        if (!$firstPerson)
-        {
-            $player.MeshOff("*");
-            $player.setShapeName("");
-            if (isObject($player.hudCtrl))
-            {
-                $player.hudCtrl.setVisible(0);
-            }
-            ThePointsFloaterHud.setVisible(0);
-        }
+        ThePointsFloaterHud.setVisible(0);
     }
     if (BroadcastFullScreenCheckbox.getValue())
     {
         BroadCastControlPanel.setVisible(0);
     }
-    if ($Platform $= "windows")
-    {
-    }
-    if ($Platform::Version::Major == 6)
+    if (($Platform $= "windows") && ($Platform::Version::Major == 6))
     {
         waitAFrameAndCall("waitAFrameAndCall(\"BroadSnapshotButton_doTakeSnapshot\");");
     }
@@ -120,10 +108,7 @@ function BroadSnapshotButton_doTakeSnapshot()
     {
         %regionControl = BroadCastRegionControl.getId();
     }
-    if (%regionControl != 0)
-    {
-    }
-    %tookPhoto = snapshotTool::snapControl(%regionControl, %photoFileName @ %ext);
+    %tookPhoto = (%regionControl != 0) && snapshotTool::snapControl(%regionControl, %photoFileName @ %ext);
     if (%tookPhoto)
     {
         %topMargin = 60;
@@ -181,10 +166,7 @@ function BroadSnapshotButton_doTakeSnapshot()
         BroadCastControlPanel.temporaryGUIControlContainer.delete();
         BroadCastControlPanel.temporaryGUIControlContainer = (%i >= 0) @ 0;
     }
-    if (BroadcastHideSelfCheckbox.getValue())
-    {
-    }
-    if (BroadcastHideSelfCheckbox.isVisible())
+    if (BroadcastHideSelfCheckbox.getValue() && BroadcastHideSelfCheckbox.isVisible())
     {
         $player.setActiveSKUs($player.getActiveSKUs());
         $player.setShapeName($Player::Name);
@@ -201,10 +183,7 @@ function BroadSnapshotButton_doTakeSnapshot()
     BroadcastHideHUDsCheckbox.setActive(1);
     BroadcastHideChatCheckbox.setActive(1);
     BroadcastHideSelfCheckbox.setActive(1);
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    BroadcastHideSelfCheckbox.setVisible(!$firstPerson);
+    BroadcastHideSelfCheckbox.setVisible(!$IN_ORBIT_CAM && !$firstPerson);
     BroadcastFullScreenCheckbox.setActive(1);
     PlayGui.focusAndRaise(BroadCastControlPanel);
     if (%tookPhoto)
@@ -228,10 +207,7 @@ function BroadSnapshotUploadButton::doBroadCastSnapshot(%this, %callbackSink)
     }
     BroadCastPreview.curl.setURLParam("caption", %caption);
     BroadCastPreview.curl.setURLParam("featured", "false");
-    if (BroadcastCaptionSetBCastCtrl.visible)
-    {
-    }
-    if (BroadcastCaptionSetBCastCtrl.getValue())
+    if (BroadcastCaptionSetBCastCtrl.visible && BroadcastCaptionSetBCastCtrl.getValue())
     {
         BroadCastPreview.curl.setURLParam("broadcast", "BroadcastScreens");
     }
@@ -425,10 +401,7 @@ function BroadCastControlPanel::enterTookPhotoMode(%this)
     BroadcastCaptionShareFcBookIcon.setVisible(1);
     BroadcastUploadingLabel.setVisible(0);
     BroadcastUploadFailedLabel.setVisible(0);
-    if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-    {
-    }
-    if (CustomSpaceClient::isOwner())
+    if (!(CustomSpaceClient::GetSpaceImIn() $= "") && CustomSpaceClient::isOwner())
     {
         BroadSnapshotUploadButton.setVisible(0);
         BroadSnapshotUploadButtonApartment.setVisible(1);

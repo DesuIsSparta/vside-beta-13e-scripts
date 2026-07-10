@@ -1,16 +1,10 @@
 function isPlayerObject(%obj)
 {
-    if (isObject(%obj))
-    {
-    }
-    return !!(%obj.getType() & $TypeMasks::PlayerObjectType);
+    return isObject(%obj) && !!(%obj.getType() & $TypeMasks::PlayerObjectType);
 }
 function isAIPlayerObject(%obj)
 {
-    if (isObject(%obj))
-    {
-    }
-    return !!(%obj.getClassName() $= "AIPlayer");
+    return isObject(%obj) && !!(%obj.getClassName() $= "AIPlayer");
 }
 function isNPCObject(%obj)
 {
@@ -174,10 +168,7 @@ function execFilesWithName(%fileName)
 }
 function safeNewScriptObject(%classname, %objectName, %deleteExisting)
 {
-    if (%deleteExisting)
-    {
-    }
-    if (isObject(%objectName))
+    if (%deleteExisting && isObject(%objectName))
     {
         %objectName.delete();
     }
@@ -313,20 +304,11 @@ function getPlayerMarkup(%player, %color, %isNameNotObject)
         %player = "";
     }
     %result = "<spush>";
-    if (%color $= "")
-    {
-    }
-    if (isObject($player))
-    {
-    }
-    if (%playerName $= $player.getShapeName())
+    if ((%color $= "") && isObject($player) && (%playerName $= $player.getShapeName()))
     {
         %color = "4600a0ff";
     }
-    if (!(%player $= ""))
-    {
-    }
-    if (%player.isIgnore())
+    if (!(%player $= "") && %player.isIgnore())
     {
         %result = %result @ "<linkcolor:00000080>";
     }
@@ -341,10 +323,7 @@ function getPlayerMarkup(%player, %color, %isNameNotObject)
     if (isObject(PlayerInstanceDict))
     {
         %playerObj = Player::findPlayerInstance(%playerName);
-        if (isObject(%playerObj))
-        {
-        }
-        if (%playerObj.isClassAIPlayer())
+        if (isObject(%playerObj) && %playerObj.isClassAIPlayer())
         {
             %botString = " (bot)";
         }

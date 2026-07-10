@@ -8,10 +8,7 @@ function ETSWhatsThisMenu::init(%this, %obj)
         %title = "Sponsored Link";
     }
     %this.setText(%title);
-    if (!%obj.isClassAdvertTextureAdvert())
-    {
-    }
-    if (getFieldCount(%obj.getBasicURL()) > 2)
+    if (!%obj.isClassAdvertTextureAdvert() && (getFieldCount(%obj.getBasicURL()) > 2))
     {
         %this.newStyle = 1;
         %this.initNewStyle(%obj);
@@ -79,10 +76,7 @@ function ETSWhatsThisMenu::onSelect(%this, %id, %text)
     {
         gotoWebPage(%url, 0);
         commandToServer('advertFollow', %url, %this.description);
-        if (isObject(%this.obj))
-        {
-        }
-        if (%this.obj.isClassAdvertTextureAdvert())
+        if (isObject(%this.obj) && %this.obj.isClassAdvertTextureAdvert())
         {
             %this.obj.onSelect();
             %this.obj = 0;
@@ -201,17 +195,11 @@ function convertPtToTextureSpace(%obj, %pt)
     %pt[2] = getWord(%pt, 2);
     %retX = %pt[%xComp];
     %retY = %pt[%yComp];
-    if (%xFlip >= 0)
-    {
-    }
-    if (%pt[%xFlip] < 0.5)
+    if ((%xFlip >= 0) && (%pt[%xFlip] < 0.5))
     {
         %retX = 1 - %retX;
     }
-    if (%yFlip >= 0)
-    {
-    }
-    if (%pt[%yFlip] < 0.5)
+    if ((%yFlip >= 0) && (%pt[%yFlip] < 0.5))
     {
         %retY = 1 - %retY;
     }

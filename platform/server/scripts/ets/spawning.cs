@@ -39,10 +39,7 @@ function SpawnSphere::getEmptySpot(%this, %minSeparation, %exclude, %alignToSphe
         while (%n < %num)
         {
             %item = MissionCleanup.getObject(%n);
-            if (%item != %exclude)
-            {
-            }
-            if ((%item.getClassName() $= "Player") || (%item.getClassName() $= "AIPlayer"))
+            if ((%item != %exclude) && (%item.getClassName() $= "Player") || (%item.getClassName() $= "AIPlayer"))
             {
                 %itTrans = %item.getTransform();
                 %itX = getWord(%itTrans, 0);

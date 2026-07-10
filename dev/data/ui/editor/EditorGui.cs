@@ -554,18 +554,12 @@ function EditorSaveMissionMenu()
 }
 function EditorSaveMission()
 {
-    if (EWorldEditor.isDirty || EditorTree.isDirty || ETerrainEditor.isMissionDirty)
-    {
-    }
-    if (!isWriteableFileName($Server::MissionFile))
+    if (EWorldEditor.isDirty || EditorTree.isDirty || ETerrainEditor.isMissionDirty && !isWriteableFileName($Server::MissionFile))
     {
         MessageBoxOK("Error", "Mission file \"" @ $Server::MissionFile @ "\" is read-only.", "");
         return 0;
     }
-    if (ETerrainEditor.isDirty)
-    {
-    }
-    if (!isWriteableFileName(Terrain.terrainFile))
+    if (ETerrainEditor.isDirty && !isWriteableFileName(Terrain.terrainFile))
     {
         MessageBoxOK("Error", "Terrain file \"" @ Terrain.terrainFile @ "\" is read-only.", "");
         return 0;
@@ -675,10 +669,7 @@ function EditorMenuBar::onMenuSelect(%this, %unused, %menu)
 {
     if (%menu $= "File")
     {
-        if (ETerrainEditor.isVisible())
-        {
-        }
-        %editingHeightfield = EHeightField.isVisible();
+        %editingHeightfield = ETerrainEditor.isVisible() && EHeightField.isVisible();
         EditorMenuBar.setMenuItemEnable("File", "Export Terraform Bitmap...", %editingHeightfield);
         EditorMenuBar.setMenuItemEnable("File", "Save Mission...", ETerrainEditor.isDirty || ETerrainEditor.isMissionDirty || EWorldEditor.isDirty || EditorTree.isDirty);
     }
@@ -718,18 +709,9 @@ function EditorMenuBar::onMenuSelect(%this, %unused, %menu)
             EditorMenuBar.setMenuItemEnable("World", "Unhide Selected", (%hideCount > 0));
             EditorMenuBar.setMenuItemEnable("World", "Invert Hidden", (%selSize > 0));
             EditorMenuBar.setMenuItemEnable("World", "Add Selection to Instant Group", (%selSize > 0));
-            if (%selSize > 0)
-            {
-            }
-            EditorMenuBar.setMenuItemEnable("World", "Reset Transforms", (%lockCount == 0));
-            if (%selSize > 0)
-            {
-            }
-            EditorMenuBar.setMenuItemEnable("World", "Drop Selection", (%lockCount == 0));
-            if (%selSize > 0)
-            {
-            }
-            EditorMenuBar.setMenuItemEnable("World", "Delete Selection", (%lockCount == 0));
+            EditorMenuBar.setMenuItemEnable("World", "Reset Transforms", (%selSize > 0) && (%lockCount == 0));
+            EditorMenuBar.setMenuItemEnable("World", "Drop Selection", (%selSize > 0) && (%lockCount == 0));
+            EditorMenuBar.setMenuItemEnable("World", "Delete Selection", (%selSize > 0) && (%lockCount == 0));
         }
     }
 }
@@ -2307,10 +2289,7 @@ function Creator::init(%this)
     %Environment_Item[%env_item_idx = %env_item_idx + 1] = "sgMissionLightingFilter";
     %Environment_Item[%env_item_idx = %env_item_idx + 1] = "sgDecalProjector";
     %Environment_Item[%env_item_idx = %env_item_idx + 1] = "volumeLight";
-    if (isFunction("Using_DF"))
-    {
-    }
-    if (Using_DF())
+    if (isFunction("Using_DF") && Using_DF())
     {
         %Environment_Item[%env_item_idx = %env_item_idx + 1] = "DFTextureAdvert";
     }
@@ -2560,10 +2539,7 @@ function TextureInit()
             {
                 %entry = getRecord(%data, %op);
                 %label = getField(%entry, 0);
-                if (!(%label $= "Place by Fractal"))
-                {
-                }
-                if (!(%label $= "Fractal Distortion"))
+                if (!(%label $= "Place by Fractal") && !(%label $= "Fractal Distortion"))
                 {
                     %reg = getField(%entry, 2);
                     $dirtyTexture[%reg] = 1;
@@ -3495,10 +3471,7 @@ function Heightfield::saveTab()
     if (!((%field < %fieldCount) @ " " @ %data $= %newData))
     {
         %row = Heightfield_operation.getRowNumById($SelectedOperation);
-        if (%row <= $HeightfieldDirtyRow)
-        {
-        }
-        if (%row > 0)
+        if ((%row <= $HeightfieldDirtyRow) && (%row > 0))
         {
             $HeightfieldDirtyRow = %row;
         }

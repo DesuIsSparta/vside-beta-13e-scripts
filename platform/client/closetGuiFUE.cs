@@ -73,10 +73,7 @@ function ClosetGuiFUE::addStep(%this, %activeContainer, %inactiveContainer)
         error(getScopeName() @ " " @ "- empty activeContainer object -" @ " " @ getTrace());
         return 0;
     }
-    if (!(%inactiveContainer $= ""))
-    {
-    }
-    if (!isObject(%inactiveContainer))
+    if (!(%inactiveContainer $= "") && !isObject(%inactiveContainer))
     {
         error(getScopeName() @ " " @ "- empty inactiveContainer object -" @ " " @ getTrace());
         return 0;
@@ -118,10 +115,7 @@ function ClosetGuiFUE::firstStep(%this)
 function ClosetGuiFUE::nextStep(%this)
 {
     %this.hideCurrentStep();
-    if ($gClosetGuiFueCurrentStep >= -(1))
-    {
-    }
-    if ($gClosetGuiFueCurrentStep < ($gClosetGuiFueStepCount - 1))
+    if (($gClosetGuiFueCurrentStep >= -(1)) && ($gClosetGuiFueCurrentStep < ($gClosetGuiFueStepCount - 1)))
     {
         $gClosetGuiFueCurrentStep = $gClosetGuiFueCurrentStep + 1;
     }

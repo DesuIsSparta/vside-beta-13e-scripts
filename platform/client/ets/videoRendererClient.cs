@@ -198,10 +198,7 @@ function VideoRenderer::onError(%this)
         cancel(%this.videoRetryScdId);
     }
     %this.videoRetryScdId = 0;
-    if ($VideoRendererLoadable > 0)
-    {
-    }
-    if (!%this.getPlayWithPlaylist())
+    if (($VideoRendererLoadable > 0) && !%this.getPlayWithPlaylist())
     {
         %this.videoRetryScdId = %this.schedule(10000, "VideoRetry");
     }
@@ -300,10 +297,7 @@ function doStartVideoPlaying(%videoGhost, %playIndex, %videoURL, %retry)
                 csRecordMediaView(%videoURL, %mediaType);
             }
         }
-        if (CustomSpaceClient::isOwner())
-        {
-        }
-        if (!(%videoURL $= ""))
+        if (CustomSpaceClient::isOwner() && !(%videoURL $= ""))
         {
             CSMediaDisplay.syncPlayingMediaStream(%videoURL);
         }

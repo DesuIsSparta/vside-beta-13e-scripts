@@ -8,10 +8,7 @@ function gePaperDollMakins::open(%this)
     $UserPref::Video::ConstrainWindowDimensions = 0;
     Canvas.pushDialog(%this, 0);
     setScreenMode(1048, 1048, getWord($UserPref::Video::Resolution, 2), 0);
-    if (!gePaperDollWhichSetup_Client.getValue())
-    {
-    }
-    if (!gePaperDollWhichSetup_Web.getValue())
+    if (!gePaperDollWhichSetup_Client.getValue() && !gePaperDollWhichSetup_Web.getValue())
     {
         gePaperDollWhichSetup_Client.performClick();
     }
@@ -120,10 +117,7 @@ function paperDoll_Permute_Cancel()
 function paperDoll_callingTakeCurrentSnapshot()
 {
     paperDoll_takeCurrentSnapshot();
-    if (!$gPaperDoll_CancelRun)
-    {
-    }
-    if ($gPaperDoll_CurIndex < ($gPaperDoll_SkuArray.size() - 1))
+    if (!$gPaperDoll_CancelRun && ($gPaperDoll_CurIndex < ($gPaperDoll_SkuArray.size() - 1)))
     {
         $gPaperDoll_CurIndex = $gPaperDoll_CurIndex + 1;
         paperDoll_prepareNextSnapshot();

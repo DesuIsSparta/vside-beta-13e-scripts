@@ -88,10 +88,7 @@ function InfoPopupDlg::tryShowPlayerInfo(%this)
             %age = "hidden";
         }
         %gender = %info.gender;
-        if (!(%gender $= "f"))
-        {
-        }
-        if (!(%gender $= "m"))
+        if (!(%gender $= "f") && !(%gender $= "m"))
         {
             %gender = "n";
         }

@@ -28,10 +28,7 @@ function GameConnection::determinePermissions(%unused, %player)
 {
     %name = stripUnprintables(%player.getShapeName());
     %perms = 0;
-    if (!(%name $= ""))
-    {
-    }
-    if (findWord($Whitelist_Staff, %name) >= 0)
+    if (!(%name $= "") && (findWord($Whitelist_Staff, %name) >= 0))
     {
         %perms = %perms | $EtsPermissionTypes::Staff;
         echo("Staff login:" @ " " @ %name);

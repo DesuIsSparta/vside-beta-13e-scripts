@@ -18,13 +18,7 @@ function clientCmdCheckCacheCRC(%missionSequence, %missionName)
         %crc = -(1);
     }
     log("network", "debug", "client cache CRC:" @ " " @ %crc);
-    if ($CacheFlagIsSet)
-    {
-    }
-    if ($StandAlone)
-    {
-    }
-    %hasStandaloneCache = %crc != -(1);
+    %hasStandaloneCache = $CacheFlagIsSet && $StandAlone && (%crc != -(1));
     $Client::TempMissionFile = %missionName;
     prepLighting();
     commandToServer('MissionCRC', %missionSequence, %missionName, %crc, $UserPref::Player::gender, %hasStandaloneCache);
@@ -75,10 +69,7 @@ function clientCmdStartGhostAlways(%missionSequence, %missionName)
     echo("Starting texture downloads...");
     textureDownloadAllowDownloads(1);
     textureDownloadProcess();
-    if ($CacheFlagIsSet)
-    {
-    }
-    if (!$GeneratingCacheNow)
+    if ($CacheFlagIsSet && !$GeneratingCacheNow)
     {
         ServerConnection.loadCachePhase2(%missionSequence, %missionName);
     }
@@ -104,10 +95,7 @@ function onGhostAlwaysStarted(%ghostCount)
 {
     echo("onGhostAlwaysStarted: " @ %ghostCount);
     $GhostCount = %ghostCount;
-    if ($CacheFlagIsSet)
-    {
-    }
-    if (!$GeneratingCacheNow)
+    if ($CacheFlagIsSet && !$GeneratingCacheNow)
     {
     }
     else

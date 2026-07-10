@@ -175,10 +175,7 @@ function OnGotDoneOrError_GetVHDUserStoreInventory(%request)
     }
     Inventory::sortStoreInventory(%storename);
     Inventory::onGotVHDUserStoreInventory(%storename);
-    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= ""))
-    {
-    }
-    if (isObject(StoreShoppingList))
+    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= "") && isObject(StoreShoppingList))
     {
         StoreShoppingList.addSkus(%request.shoppingCartSkus);
     }
@@ -187,21 +184,12 @@ function Inventory::onGotVHDUserStoreInventory(%storename)
 {
     %hasUserNameFilter = !($gVHDUserNameFilter $= "") ? 1 : 0;
     $gStoreStockLoaded[%storename] = 1;
-    if (ClosetGui.isVisible())
-    {
-    }
-    if (ClosetTabs.getCurrentTab().name $= "SHOPS")
-    {
-    }
-    if ($gCurrentStoreName $= %storename)
+    if (ClosetGui.isVisible() && (ClosetTabs.getCurrentTab().name $= "SHOPS") && ($gCurrentStoreName $= %storename))
     {
         saveStorePosition();
         ClosetTabs::refreshStoreTab();
     }
-    if (%hasUserNameFilter)
-    {
-    }
-    if (!$gVHDUserNoStock)
+    if (%hasUserNameFilter && !$gVHDUserNoStock)
     {
         %storeLongName = $gVHDUserNameFilter @ "'s vHD Store";
         %storeDesc = %storeLongName @ " " @ "- press F5 or click \"Shop\" to start shopping!";
@@ -348,10 +336,7 @@ function updateInventorySkus(%skusAdded, %skusRemoved, %notify, %autoEquip, %src
     {
         ClosetItemPopup.update($Player::inventory);
     }
-    if (%notify)
-    {
-    }
-    if (!ClosetGui.isVisible() || !(ClosetTabs.getCurrentTab().name $= "Shops"))
+    if (!ClosetGui.isVisible() || %notify && !(ClosetTabs.getCurrentTab().name $= "Shops"))
     {
         notifyUserOfSkusGained(%skusAdded, %srcName, %autoEquip);
     }
@@ -359,10 +344,7 @@ function updateInventorySkus(%skusAdded, %skusRemoved, %notify, %autoEquip, %src
     {
         Inventory::equipOrWearSkus(%skusAdded);
     }
-    if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-    {
-    }
-    if (CustomSpaceClient::isOwner())
+    if (!(CustomSpaceClient::GetSpaceImIn() $= "") && CustomSpaceClient::isOwner())
     {
         getOwnedFurniture();
     }
@@ -387,10 +369,7 @@ function clientCmdInventoryExpiration(%skusAboutToExpire, %skusJustExpired)
     %skusJustExpired = strreplace(%skusJustExpired, "|", "\t");
     %aboutToExpireCount = getRecordCount(%skusAboutToExpire);
     %justExpiredCount = getRecordCount(%skusJustExpired);
-    if (%aboutToExpireCount == 0)
-    {
-    }
-    if (%justExpiredCount == 0)
+    if ((%aboutToExpireCount == 0) && (%justExpiredCount == 0))
     {
         error(getScopeName() @ "-> received empty update... this shouldn't happen.");
         return;
@@ -586,10 +565,7 @@ function removeAndReplaceSkuFromSkuList(%skusOutfit, %sku, %replaceSKU)
     {
         %changes = %changes + 1;
         %skusOutfit = removeWord(%skusOutfit, %idx);
-        if (%replaceSKU)
-        {
-        }
-        if (!(%replaceSKU $= "") && (findWord(%skusOutfit, %replaceSKU) < 0))
+        if (%replaceSKU && !(%replaceSKU $= "") && (findWord(%skusOutfit, %replaceSKU) < 0))
         {
             if (%skusOutfit $= "")
             {
@@ -793,10 +769,7 @@ function notifyUserOfSkusGained(%skus, %srcName, %autoEquipped)
     %msg = %msg @ "\n" @ "(" @ %list @ ")";
     %msg = %msg @ %msgUnwearable;
     %msg = %msg @ "\n" @ %YoullFindStr;
-    if (!%autoEquipped)
-    {
-    }
-    if (%numWearable > 0)
+    if (!%autoEquipped && (%numWearable > 0))
     {
         if (%numFurnishing == 0)
         {
@@ -900,10 +873,7 @@ function OnGotDoneOrError_GetStoreInventory(%request)
     }
     Inventory::sortStoreInventory(%storename);
     Inventory::onGotStoreInventory(%storename);
-    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= ""))
-    {
-    }
-    if (isObject(StoreShoppingList))
+    if (!((%n < %num) @ " " @ %request.shoppingCartSkus $= "") && isObject(StoreShoppingList))
     {
         StoreShoppingList.addSkus(%request.shoppingCartSkus);
     }
@@ -990,10 +960,7 @@ function Inventory::getVPointsPriceForSku(%sku)
         return %price;
     }
     %si = SkuManager.findBySku(%sku);
-    if (isObject(%si))
-    {
-    }
-    if (!(%si.priceVPoints $= ""))
+    if (isObject(%si) && !(%si.priceVPoints $= ""))
     {
         if (%si.priceVPoints == -(1))
         {
@@ -1013,10 +980,7 @@ function Inventory::getVBuxPriceForSku(%sku)
         return %price;
     }
     %si = SkuManager.findBySku(%sku);
-    if (isObject(%si))
-    {
-    }
-    if (!(%si.priceVBux $= ""))
+    if (isObject(%si) && !(%si.priceVBux $= ""))
     {
         if (%si.priceVBux == -(1))
         {
@@ -1111,13 +1075,7 @@ function Inventory::onGotStoreInventory(%storename)
         return;
     }
     $gStoreStockLoaded[%storename] = 1;
-    if (ClosetGui.isVisible())
-    {
-    }
-    if (ClosetTabs.getCurrentTab().name $= "SHOPS")
-    {
-    }
-    if ($gCurrentStoreName $= %storename)
+    if (ClosetGui.isVisible() && (ClosetTabs.getCurrentTab().name $= "SHOPS") && ($gCurrentStoreName $= %storename))
     {
         saveStorePosition();
         ClosetTabs::refreshStoreTab();
@@ -1221,10 +1179,7 @@ function Inventory::onGotPlayerInventory()
         %notEmpty = 1;
     }
     Inventory::dedupeSkus($Player::inventory);
-    if ($Player::inventory $= "")
-    {
-    }
-    if (%notEmpty)
+    if (($Player::inventory $= "") && %notEmpty)
     {
         error(getScopeName() @ "->got empty player inventory after deduping!");
     }

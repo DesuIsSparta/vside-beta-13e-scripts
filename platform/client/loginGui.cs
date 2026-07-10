@@ -50,10 +50,7 @@ function LoginGui::onWake(%this)
         }
         $UserPref::Login::firstRun = 0;
     }
-    if (!$gHasOpenedRegistrationGui)
-    {
-    }
-    if (RegistrationGui.haveIncompleteRegistration())
+    if (!$gHasOpenedRegistrationGui && RegistrationGui.haveIncompleteRegistration())
     {
         RegistrationGui.tryOpenOrWebPage();
     }
@@ -250,10 +247,7 @@ function LoginGui::doLoginButton(%this)
         MessageBoxOK("No Password", "Please enter a password.", "");
         return;
     }
-    if ($ETS::devMode)
-    {
-    }
-    if ($Player::Name $= "debug")
+    if ($ETS::devMode && ($Player::Name $= "debug"))
     {
         loginDebugPanel.open();
         return;
@@ -621,10 +615,7 @@ function LoginRequest::onGotUserProperties(%this)
     $UserPref::Video::visibledistanceQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoVisibleDistance", $Defaults::UserPref::Video::visibledistanceQuality);
     $UserPref::Video::waterreflectionQualitySetting = gUserPropMgrClient.getProperty($Player::Name, "videoWaterReflection", $Defaults::UserPref::Video::waterreflectionQuality);
     $UserPref::Video::ConstrainWindowDimensions = gUserPropMgrClient.getProperty($Player::Name, "videoConstrainWindowDimensions", $Defaults::UserPref::Video::ConstrainWindowDimensions);
-    if ($UserPref::Player::Genre $= "")
-    {
-    }
-    if (isObject($player))
+    if (($UserPref::Player::Genre $= "") && isObject($player))
     {
         %rand = getRandom(0, 2);
         $UserPref::Player::Genre = getSubStr($player.getDataBlock().possibleGenres, %rand, 1);

@@ -15,10 +15,7 @@ function GameConnection::loadMission(%this)
 function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, %hasStandaloneCache)
 {
     log("network", "info", "client cache CRC:" @ " " @ %crc @ " " @ "seq: " @ " " @ %missionSequence @ " " @ "gender:" @ " " @ %gender);
-    if (%missionSequence != $MissionSequence)
-    {
-    }
-    if (!$missionRunning)
+    if ((%missionSequence != $MissionSequence) && !$missionRunning)
     {
         log("network", "error", "premature exit from MissionCRC" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;
@@ -27,10 +24,7 @@ function serverCmdMissionCRC(%client, %missionSequence, %unused, %crc, %gender, 
     %client.setMissionCRC($missionCRC);
     %client.setDatablockSequence(%missionSequence);
     %client.setGhostingSequence(%missionSequence);
-    if (%crc == $Server::DatablockCRC)
-    {
-    }
-    if (%hasStandaloneCache == 1)
+    if ((%crc == $Server::DatablockCRC) && (%hasStandaloneCache == 1))
     {
         log("network", "debug", "tell client to load local cache");
         %client.readingCache = 1;
@@ -53,10 +47,7 @@ function serverCmdStartCacheAck(%client, %missionSequence)
 function GameConnection::onDataBlocksDone(%this, %missionSequence)
 {
     log("network", "debug", "GameConnection::onDataBlocksDone seq:" @ " " @ %missionSequence);
-    if (%missionSequence != $MissionSequence)
-    {
-    }
-    if (!$missionRunning)
+    if ((%missionSequence != $MissionSequence) && !$missionRunning)
     {
         log("network", "error", "premature exit from onDataBlocksDone" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;
@@ -71,10 +62,7 @@ function GameConnection::onDataBlocksDone(%this, %missionSequence)
 function serverCmdStartGhostAlwaysAck(%client, %missionSequence)
 {
     log("network", "debug", "starting GhostAlways seq:" @ " " @ %missionSequence);
-    if (%missionSequence != $MissionSequence)
-    {
-    }
-    if (!$missionRunning)
+    if ((%missionSequence != $MissionSequence) && !$missionRunning)
     {
         log("network", "error", "premature exit from StartGhostAlwaysAck" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;
@@ -105,10 +93,7 @@ function GameConnection::onGhostAlwaysObjectsReceived(%this, %crc)
 function serverCmdMissionStartPhase3Ack(%client, %missionSequence)
 {
     log("network", "debug", "client done loading:" @ " " @ %client @ " " @ "seq: " @ " " @ %missionSequence);
-    if (%missionSequence != $MissionSequence)
-    {
-    }
-    if (!$missionRunning)
+    if ((%missionSequence != $MissionSequence) && !$missionRunning)
     {
         log("network", "debug", "premature exit from StartPhase3Ack" @ " " @ "client sequence:" @ " " @ %missionSequence @ " " @ "server sequence:" @ " " @ $MissionSequence);
         return;

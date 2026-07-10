@@ -63,13 +63,7 @@ function Music::toggleMute()
     $UserPref::Audio::mute = !$UserPref::Audio::mute;
     %multiplier = $UserPref::Audio::mute ? 0 : 1;
     alxListenerf(AL_GAIN_LINEAR, (%multiplier * $UserPref::Audio::masterVolume));
-    if (isObject($Music::service))
-    {
-    }
-    if (!($Music::service $= ""))
-    {
-    }
-    if (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -(1))
+    if (isObject($Music::service) && !($Music::service $= "") && (strstr($Music::service.getNamespaceList(), "VideoRenderer") == -(1)))
     {
         $Music::service.setMute($UserPref::Audio::mute);
         $Music::service.setMasterVolume(((%multiplier * $UserPref::Audio::masterVolume) * $UserPref::Audio::channelVolume1));
@@ -113,10 +107,7 @@ function Music::rateSong(%rating)
     %val4 = "&album=" @ urlEncode($Music::service.getAlbum(), 255);
     %val5 = "&song=" @ urlEncode($Music::service.getTitle(), 255);
     %val6 = "&rating=" @ urlEncode(%rating);
-    if ("&artist=" $= %val3)
-    {
-    }
-    if ("&song=" $= %val5)
+    if (("&artist=" $= %val3) && ("&song=" $= %val5))
     {
         warn("did not have artist and song name, not sending rating request: " @ %url);
         return;
@@ -228,18 +219,12 @@ function GetMusicStreamsRequest::onDone(%this)
     log("communication", "debug", "GetMusicStreamsRequest::onDone:" @ " " @ %status);
     %count = %this.getValue("mountCount");
     $musicStreamNameMap = new StringMap("");
-    if (isObject($musicStreamNameMap))
-    {
-    }
-    if (isObject(MissionCleanup))
+    if (isObject($musicStreamNameMap) && isObject(MissionCleanup))
     {
         MissionCleanup.add($musicStreamNameMap);
     }
     $musicStreamIDMap = new StringMap("");
-    if (isObject($musicStreamIDMap))
-    {
-    }
-    if (isObject(MissionCleanup))
+    if (isObject($musicStreamIDMap) && isObject(MissionCleanup))
     {
         MissionCleanup.add($musicStreamIDMap);
     }

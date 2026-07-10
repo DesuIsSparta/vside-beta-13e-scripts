@@ -12,10 +12,7 @@ if (isObject(MissionCleanup))
 {
     MissionCleanup.add($SystemMetric::ObjectCounts);
 }
-if (isDefined("$GMetricsLogFile"))
-{
-}
-if (isObject($GMetricsLogFile))
+if (isDefined("$GMetricsLogFile") && isObject($GMetricsLogFile))
 {
     $GMetricsLogFile.delete();
 }
@@ -285,10 +282,7 @@ function SystemDumpMetricsTimer()
         error("deactivating SystemDumpMetricsTimer because timer period is " @ " " @ $Pref::System::dumpMetricsTimerPeriodMS);
         return;
     }
-    if ($AmClient)
-    {
-    }
-    if (!$Pref::System::dumpMetricsOnStandAloneClient)
+    if ($AmClient && !$Pref::System::dumpMetricsOnStandAloneClient)
     {
         echo("deactivating SystemDumpMetricsTimer because am client");
         return;
@@ -461,24 +455,18 @@ function compileClassInstances(%obj, %container)
     %classname = %obj.getClassName();
     %found = -(1);
     %n = 0;
-    if (%n < %container.numClasses)
-    {
-    }
-    while (%found == -(1))
+    while ((%n < %container.numClasses) && (%found == -(1)))
     {
         if (%n @ " " @ %container.instanceCounts["class"] $= %classname)
         {
             %found = %n;
         }
         %n = %n + 1;
-        if (%n < %container.numClasses)
-        {
-        }
     }
     if (%found == -(1))
     {
         %found = %container.numClasses;
-        %found == -(1);
+        (%n < %container.numClasses) && (%found == -(1));
         %container.numClasses = %container.numClasses + 1;
         %container.instanceCounts[%found,"class"] = %classname;
     }

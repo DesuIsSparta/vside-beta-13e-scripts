@@ -356,20 +356,14 @@ function NPCManager::think(%this)
 function NPCManager::thinkNPC(%this, %npc)
 {
     %setName = %npc.getDataBlock().animSetName;
-    if (!isObject(%this))
-    {
-    }
-    if (!isObject(%this.animSets))
+    if (!isObject(%this) && !isObject(%this.animSets))
     {
         echo("Trouble in little china");
         return;
     }
     %curTime = getSimTime();
     %nat = gGetField(%npc, nextAnimTime);
-    if (!(%nat $= ""))
-    {
-    }
-    if (%curTime < %nat)
+    if (!(%nat $= "") && (%curTime < %nat))
     {
         return;
     }

@@ -52,10 +52,7 @@ function CityDownloadGui::onWake(%this)
         }
     }
     DLLoadingPBController.Initialize(DLLoadingProgressHolder, "platform/client/ui/progress_empty", "platform/client/ui/progress_fill", "", "");
-    if ($StandAlone)
-    {
-    }
-    if (!$missionRunning)
+    if ($StandAlone && !$missionRunning)
     {
         error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
         MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();", "");

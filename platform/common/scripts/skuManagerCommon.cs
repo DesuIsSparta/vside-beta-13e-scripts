@@ -510,18 +510,12 @@ function SkuManager::getSkuShortDescriptions(%this, %skus, %delimiter, %includeU
         else
         {
             %usage = "";
-            if (%includeUsage)
-            {
-            }
-            if (!(%si.usageShrt $= ""))
+            if (%includeUsage && !(%si.usageShrt $= ""))
             {
                 %usage = " -" @ " " @ %si.usageShrt;
             }
             %thumbnailText = "";
-            if (%thumbnailWidth > 0)
-            {
-            }
-            if (%si.skuType $= "furnishing")
+            if ((%thumbnailWidth > 0) && (%si.skuType $= "furnishing"))
             {
                 %thumbnailImage = CSBrowser::getThumbnailPathForSku(0, %sku, 32);
                 %thumbnailText = " <bitmap:" @ %thumbnailImage @ ":true:middle:width=" @ %thumbnailWidth @ ">";
@@ -852,10 +846,7 @@ function SkuManager::findTemplateSku(%this, %sku)
     %candidates = findAndRemoveFirstOccurrenceOfWord(%candidates, %sku);
     %found = "";
     %n = getWordCount(%candidates) - 1;
-    if (%n >= 0)
-    {
-    }
-    while (%found $= "")
+    while ((%n >= 0) && (%found $= ""))
     {
         %candidateSku = getWord(%candidates, %n);
         %candidateSI = %this.findBySku(%candidateSku);
@@ -864,9 +855,6 @@ function SkuManager::findTemplateSku(%this, %sku)
             %found = %candidateSku;
         }
         %n = %n - 1;
-        if (%n >= 0)
-        {
-        }
     }
     return %found;
 }

@@ -16,10 +16,7 @@ function initClient()
     {
         return;
     }
-    if ($StandAlone)
-    {
-    }
-    if ($Preload)
+    if ($StandAlone && $Preload)
     {
         preloadResources();
     }
@@ -185,13 +182,7 @@ function onVideoReactivate()
 function quitApp()
 {
     echoDebug(getScopeName() @ " " @ "- Disconnecting." @ " " @ getTrace());
-    if (!$StandAlone)
-    {
-    }
-    if ($AmClient)
-    {
-    }
-    if (!($Token $= ""))
+    if (!$StandAlone && $AmClient && !($Token $= ""))
     {
         logout(1);
     }
@@ -223,17 +214,11 @@ function logout(%doQuit)
         $player.applySkuBadge(0);
     }
     silentAIMDisconnect();
-    if (!$UserPref::AIM::RememberMe)
-    {
-    }
-    if (isObject(AIMScreenNameField))
+    if (!$UserPref::AIM::RememberMe && isObject(AIMScreenNameField))
     {
         AIMScreenNameField.setText("");
     }
-    if (!$UserPref::AIM::SavePassword)
-    {
-    }
-    if (isObject(AIMPasswordField))
+    if (!$UserPref::AIM::SavePassword && isObject(AIMPasswordField))
     {
         AIMPasswordField.setText("");
     }
@@ -349,29 +334,17 @@ function StatusRequest::onDone(%this)
     if (%status $= "success")
     {
         %dfEnabled = %this.getValueBool("doubleFusionEnabled");
-        if (isFunction("Using_DF"))
-        {
-        }
-        if (Using_DF())
+        if (isFunction("Using_DF") && Using_DF())
         {
             setDFEnabled(%dfEnabled);
         }
         %preload = %this.getValueBool("assetPreloadEnabled");
-        if ($Preload)
-        {
-        }
-        if (%preload)
-        {
-        }
-        if (!$NoDisplay)
+        if ($Preload && %preload && !$NoDisplay)
         {
             preloadResources();
         }
         %cache = %this.getValueBool("missionCacheEnabled");
-        if ($CacheFlagIsSet)
-        {
-        }
-        if (!%cache)
+        if ($CacheFlagIsSet && !%cache)
         {
             $CacheFlagIsSet = 0;
         }

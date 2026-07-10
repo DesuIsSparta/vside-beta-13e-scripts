@@ -188,10 +188,7 @@ function GameConnection::onConnectRequestRejected(%this, %msg, %extra)
     }
     %analytic = getAnalytic();
     %analytic.trackPageView("/client/connectionRejected/" @ %msg);
-    if (%destGui.getId() == LoginGui.getId())
-    {
-    }
-    if (!(%msg $= "CR_ASSETS_MISSING"))
+    if ((%destGui.getId() == LoginGui.getId()) && !(%msg $= "CR_ASSETS_MISSING"))
     {
         logout(0);
     }

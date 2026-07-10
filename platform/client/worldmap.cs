@@ -229,10 +229,7 @@ function WorldMap::setUpCities(%this)
         WorldMapMultiCityLarge.add(%largeCityButton);
         WorldMapStatusPanel.add(%largeCityButton.statusLabel);
         %largeCityButton.statusLabel.setVisible(0);
-        if (isObject(packageDownload))
-        {
-        }
-        if ($AutoDownloadPackages)
+        if (isObject(packageDownload) && $AutoDownloadPackages)
         {
             %status = packageDownload.getStatusForCity(%cityName);
             if (%status $= "done")
@@ -350,10 +347,7 @@ function WorldMap::openTGF(%this, %forTGF)
     %this.Initialize();
     GuiTracker.updateLocation(%this);
     %this.setBitmap("platform/client/ui/worldmapBackground");
-    if (WorldMapCityInfoMap.size() > 1)
-    {
-    }
-    if (!%this.loggedIn)
+    if ((WorldMapCityInfoMap.size() > 1) && !%this.loggedIn)
     {
         %this.setView("multi_city");
     }
@@ -583,10 +577,7 @@ function WorldMap::join(%this, %server, %isATransition, %targetVurl)
         %a2 = %this.server.get("address");
         %p2 = %this.server.get("port");
         echo("current server:" @ " " @ %a2 @ ":" @ %p2);
-        if (%a1 $= %a2)
-        {
-        }
-        if (%p1 $= %p2)
+        if ((%a1 $= %a2) && (%p1 $= %p2))
         {
             if (!%isATransition)
             {
@@ -610,10 +601,7 @@ function WorldMap::join(%this, %server, %isATransition, %targetVurl)
         %i = %i + 1;
     }
     ServerConnection.waitForDisconnect = (%i < %this.numServers) @ 0;
-    if (isObject(ServerConnection))
-    {
-    }
-    if (GameConnection::getServerConnection() != -(1))
+    if (isObject(ServerConnection) && (GameConnection::getServerConnection() != -(1)))
     {
         echo("disconnecting...");
         ServerConnection.waitForDisconnect = 1;
@@ -854,10 +842,7 @@ function WorldMap::exit(%this)
     {
         ServerConnection.delete();
     }
-    if (isFunction("Using_DF"))
-    {
-    }
-    if (Using_DF())
+    if (isFunction("Using_DF") && Using_DF())
     {
         endDFZone();
     }
@@ -945,10 +930,7 @@ function WorldMap::validateSpot(%this, %locOrig)
     %valid = 0;
     %loc = %locOrig;
     %try = 0;
-    if (!%valid)
-    {
-    }
-    while (%try < %retries)
+    while (!%valid && (%try < %retries))
     {
         %valid = 1;
         %n = 0;
@@ -968,9 +950,6 @@ function WorldMap::validateSpot(%this, %locOrig)
             %loc = %locX @ " " @ %locY;
         }
         %try = %try + 1;
-        if (!%valid)
-        {
-        }
     }
     return %loc;
 }
@@ -1032,10 +1011,7 @@ function WorldMap::showPopup(%this, %city)
     %load = %server.get("load");
     %port = %server.get("port");
     MapHudCityText.setText(%destName);
-    if (isObject(packageDownload))
-    {
-    }
-    if ($AutoDownloadPackages)
+    if (isObject(packageDownload) && $AutoDownloadPackages)
     {
         %status = packageDownload.getStatusForCity(%city);
         if (%status $= "done")
@@ -1151,10 +1127,7 @@ function WorldMap::UpdateCityStatuses(%this)
     while (%n >= 0)
     {
         %serverProps = WorldMapServers.getObject(%n);
-        if (!%hasAccess)
-        {
-        }
-        if (%serverProps.get("city") $= %csn)
+        if (!%hasAccess && (%serverProps.get("city") $= %csn))
         {
             %serverProps.delete();
         }
@@ -1201,10 +1174,7 @@ function WorldMap::UpdateCityStatuses(%this)
             }
             %n = %n - 1;
         }
-        if (isObject(packageDownload))
-        {
-        }
-        if ($AutoDownloadPackages)
+        if (isObject(packageDownload) && $AutoDownloadPackages)
         {
             %dlStatus = packageDownload.getStatusForCity(%buttonBig.cityName);
             %n >= 0;
@@ -1313,10 +1283,7 @@ function WorldMap::requestMapData(%this)
         RootGroup.add(WorldMapServers);
     }
     %mapRequest = safeEnsureScriptObject("URLPostObject", "MapRequest");
-    if (!(%mapRequest.isActive $= ""))
-    {
-    }
-    if (%mapRequest.isActive == 1)
+    if (!(%mapRequest.isActive $= "") && (%mapRequest.isActive == 1))
     {
         return;
     }
@@ -1383,10 +1350,7 @@ function WorldMap::parseResult(%this, %request)
         while (%i < %numServers)
         {
             %ServerName = %request.getResult("server" @ %i @ ".name");
-            if (%ServerName $= %savedName)
-            {
-            }
-            if (!(%savedServer $= ""))
+            if ((%ServerName $= %savedName) && !(%savedServer $= ""))
             {
                 %serverProps = %savedServer;
             }
@@ -1454,10 +1418,7 @@ function getSkipMapVurl(%bChangeUI)
         {
             $gTriedToAutoConnectOnceAlready[$Player::Name] = 1;
         }
-        if (gUserPropMgrClient.getProperty($Player::Name, "level started count gw", 0) == 0)
-        {
-        }
-        if (!roles::maskhaspermission($player::rolesMask, "gatewaySpawn"))
+        if ((gUserPropMgrClient.getProperty($Player::Name, "level started count gw", 0) == 0) && !roles::maskhaspermission($player::rolesMask, "gatewaySpawn"))
         {
             if ($ETS::devMode)
             {
@@ -1555,16 +1516,7 @@ function gotVURLCommandLineList(%arg)
     log("communication", "debug", "now URL is " @ %url);
     $VURLcmd = %url;
     %i < %count;
-    if (isObject(LoginGui))
-    {
-    }
-    if ($Token $= "")
-    {
-    }
-    if (isObject(WorldMap))
-    {
-    }
-    if (!WorldMap.loggedIn)
+    if (isObject(LoginGui) && ($Token $= "") && isObject(WorldMap) && !WorldMap.loggedIn)
     {
         LoginGui.setControlsActive(0);
         LoginProgressBarCtrls.setVisible(1);

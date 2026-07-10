@@ -86,10 +86,7 @@ function DoorTrigger::onLeaveTrigger(%this, %trigger, %player)
         return;
     }
     %trigger.door.insideCount = %trigger.door.insideCount - 1;
-    if (%trigger.door.insideCount == 0)
-    {
-    }
-    if (%trigger.door.doorOpen)
+    if ((%trigger.door.insideCount == 0) && %trigger.door.doorOpen)
     {
         DoorShapeData::closeDoor(%trigger.door);
     }

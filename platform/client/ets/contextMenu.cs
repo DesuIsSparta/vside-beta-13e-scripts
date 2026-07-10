@@ -92,14 +92,8 @@ function EditContextMenu::init(%this, %ctrl)
     %end = getWord(%selection, 1);
     %modifiable = !%ctrl.readOnly;
     %canCopy = (%end - %start) > 0;
-    if (%modifiable)
-    {
-    }
-    %canCut = %canCopy;
-    if (%modifiable)
-    {
-    }
-    %canPaste = !(getClipboard() $= "");
+    %canCut = %modifiable && %canCopy;
+    %canPaste = %modifiable && !(getClipboard() $= "");
     %n = -(1);
     if (%modifiable)
     {

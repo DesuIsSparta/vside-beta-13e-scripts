@@ -36,10 +36,7 @@ function Player::isDebugging(%this)
     }
     %debugging = 0;
     $UserPref::ETS::Debugging;
-    if (%this.isStaff())
-    {
-    }
-    return %debugging;
+    return %this.isStaff() && %debugging;
 }
 function Player::hasRoleString(%this, %roleString)
 {

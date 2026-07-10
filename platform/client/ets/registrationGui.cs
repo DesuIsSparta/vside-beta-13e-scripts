@@ -15,16 +15,7 @@ function RegistrationGui::open(%this)
 }
 function RegistrationGui::haveIncompleteRegistration(%this)
 {
-    if (1)
-    {
-    }
-    if (isDefined("$Net::registrationID"))
-    {
-    }
-    if (!($Net::RegistrationID $= ""))
-    {
-    }
-    %ret = !hasField($UserPref::Login::completedRegistrations, $Net::RegistrationID);
+    %ret = 1 && isDefined("$Net::registrationID") && !($Net::RegistrationID $= "") && !hasField($UserPref::Login::completedRegistrations, $Net::RegistrationID);
     return %ret;
 }
 function RegistrationGui::tryOpenOrWebPage(%this)

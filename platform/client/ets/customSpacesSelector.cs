@@ -466,13 +466,7 @@ function CSSelectorCtrl::onCreatedChild(%this, %child)
 }
 function CSSelectorCtrl::ownerIsFriend(%this, %spaceOwner)
 {
-    if ($ETS::devMode)
-    {
-    }
-    if ($gGetFakeBuildingDirectory)
-    {
-    }
-    if (%spaceOwner $= "DDDD")
+    if ($ETS::devMode && $gGetFakeBuildingDirectory && (%spaceOwner $= "DDDD"))
     {
         return 1;
     }
@@ -486,10 +480,7 @@ function CSSelectorLine::forgetFirstClick(%this)
 }
 function CSSelectorLine::onMouseDown(%this)
 {
-    if (CustomSpacesSelector.lastSelectedEntry $= %this.entryName)
-    {
-    }
-    if (!(%this.entryName $= $CSSpaceName))
+    if ((CustomSpacesSelector.lastSelectedEntry $= %this.entryName) && !(%this.entryName $= $CSSpaceName))
     {
         CSSelectorListCtrl.teleportToSelected();
         return;
@@ -540,10 +531,7 @@ function CSSelectorLine::onMouseDown(%this)
             {
                 CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
                 CustomSpacesSelector_ENTERPASSWORDBUTTON.setVisible(0);
-                if (!%amCurrentlyHere)
-                {
-                }
-                CustomSpacesSelector_GOBUTTON.setActive(%this.ownerIsFriend(%entry.owner));
+                CustomSpacesSelector_GOBUTTON.setActive(!%amCurrentlyHere && %this.ownerIsFriend(%entry.owner));
                 CustomSpacesSelector_GOBUTTON.setVisible(1);
             }
             CustomSpacesSelector_VISITandBUYBUTTON.setVisible(0);
@@ -623,17 +611,11 @@ function CSSelectorLine_gotDescriptionPhotoFinale(%entry, %bitmapText)
 }
 function csGetCurrentlyPlaying(%audioStream, %videoStream)
 {
-    if (!(%videoStream $= ""))
-    {
-    }
-    if (!(%videoStream $= "no-video"))
+    if (!(%videoStream $= "") && !(%videoStream $= "no-video"))
     {
         return "YouTube Videos!";
     }
-    if (!(%audioStream $= ""))
-    {
-    }
-    if (!(%audioStream $= "- none -"))
+    if (!(%audioStream $= "") && !(%audioStream $= "- none -"))
     {
         return %audioStream;
     }
@@ -865,15 +847,9 @@ function CSSelectorListCtrl::teleportToSelected(%this)
     }
     %entryName = %selectorCtrl.getHilitedCell().entryName;
     %entry = %selectorCtrl.getEntryByName(%entryName);
-    if (!($Player::Name $= %entry.owner))
+    if (!($Player::Name $= %entry.owner) && !$player.rolesPermissionCheckNoWarn("customspaceMaster"))
     {
-    }
-    if (!$player.rolesPermissionCheckNoWarn("customspaceMaster"))
-    {
-        if (stricmp(%entry.access, "FriendsOnly") == 0)
-        {
-        }
-        if (!%selectorCtrl.ownerIsFriend(%entry.owner))
+        if ((stricmp(%entry.access, "FriendsOnly") == 0) && !%selectorCtrl.ownerIsFriend(%entry.owner))
         {
             MessageBoxOK($MsgCat::custSpacSel["APT-IS-FRIENDSONLY-TITLE"], $MsgCat::custSpacSel["APT-IS-FRIENDSONLY-TEXT"], "");
             return;
@@ -964,13 +940,7 @@ function CustomSpacesSelector_vurlTransitionFailed(%vurl, %errorCode, %unused)
 function CustomSpacesSelector::open(%this, %building)
 {
     %building = trim(%building);
-    if ((%building $= "") || (%building $= 0))
-    {
-        if ($ETS::devMode)
-        {
-        }
-    }
-    if (!$gGetFakeBuildingDirectory)
+    if ((%building $= "") || (%building $= 0) && !($ETS::devMode && $gGetFakeBuildingDirectory))
     {
         warn(getScopeName() @ " " @ "- trying to open building directory with building name '" @ %building @ "'");
         return;
@@ -989,10 +959,7 @@ function CustomSpacesSelector::open(%this, %building)
     CustomSpacesSelector_LOADING.setVisible(1);
     %this.container.setVisible(1);
     PlayGui.focusAndRaise(%this.container);
-    if ($ETS::devMode)
-    {
-    }
-    if ($gGetFakeBuildingDirectory)
+    if ($ETS::devMode && $gGetFakeBuildingDirectory)
     {
         CSSelectorDescriptionCtrl.setTextAndUpdateWithCallback("(loading...)", %this, "getFakeBuildingDirectory", "");
     }
@@ -1271,16 +1238,10 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
             %space = %buildingDir.getObject(%i);
             %floorPlanFound = 0;
             %j = 0;
-            if (%j < %buildingInfo.floorPlanCount)
-            {
-            }
-            while (!%floorPlanFound)
+            while ((%j < %buildingInfo.floorPlanCount) && !%floorPlanFound)
             {
                 %floorPlanFound = %space.floorPlanName $= %buildingInfo.floorplan[%j].name;
                 %j = %j + 1;
-                if (%j < %buildingInfo.floorPlanCount)
-                {
-                }
             }
             if (!%floorPlanFound)
             {
@@ -1288,7 +1249,7 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
             }
             else
             {
-                %space.city = !%floorPlanFound @ %buildingInfo.city;
+                %space.city = (%j < %buildingInfo.floorPlanCount) && !%floorPlanFound @ %buildingInfo.city;
                 %info = PlayerInfoMap.get(%space.owner);
                 if (isObject(%info))
                 {
@@ -1363,13 +1324,7 @@ function customSpaceSelGotData(%buildingInfo, %buildingDir)
     }
     if (0)
     {
-        if (!((%i < %spacesCount) @ " " @ $Player::myPlaceVURL $= ""))
-        {
-        }
-        if ($CSSpaceInfo != 0)
-        {
-        }
-        %amAtHome = stricmp($CSSpaceInfo.owner, $player.getShapeName()) == 0;
+        %amAtHome = !((%i < %spacesCount) @ " " @ $Player::myPlaceVURL $= "") && ($CSSpaceInfo != 0) && (stricmp($CSSpaceInfo.owner, $player.getShapeName()) == 0);
         CustomSpacesSelector_MYPLACE_container.setVisible(!($Player::myPlaceVURL $= ""));
         %style = %amAtHome ? "CSProfileSpecialLinkDisabled" : "CSProfileSpecialLink";
         %alpha = %amAtHome ? 85 : 255;

@@ -590,10 +590,7 @@ function armor::doDismount(%this, %obj, %forced)
         }
         %i = %i + 1;
     }
-    if (%forced)
-    {
-    }
-    if (%success == -(1))
+    if (%forced && (%success == -(1)))
     {
         %pos = %oldPos;
         %i < %numAttempts;
@@ -617,16 +614,7 @@ function armor::onCollision(%this, %obj, %col)
         %obj.pickup(%col);
     }
     %this = %col.getDataBlock();
-    if (%this.className $= WheeledVehicleData)
-    {
-    }
-    if (%obj.mountVehicle)
-    {
-    }
-    if (%obj.getState() $= "Move")
-    {
-    }
-    if (%col.mountable)
+    if ((%this.className $= WheeledVehicleData) && %obj.mountVehicle && (%obj.getState() $= "Move") && %col.mountable)
     {
         %node = 0;
         %col.mountObject(%obj, %node);
@@ -664,10 +652,7 @@ function armor::Damage(%this, %obj, %sourceObject, %unused, %damage, %damageType
 }
 function armor::onDamage(%this, %obj, %delta)
 {
-    if (%delta > 0)
-    {
-    }
-    if (!(%obj.getState() $= "Dead"))
+    if ((%delta > 0) && !(%obj.getState() $= "Dead"))
     {
         %flash = %obj.getDamageFlash() + ((%delta / %this.maxDamage) * 2);
         if (%flash > 0.75)

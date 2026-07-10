@@ -87,10 +87,7 @@ function InstrumentRegistryClient::registerInstrument(%this, %instrumentName, %i
 }
 function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrumentName, %keyBinding, %animationName)
 {
-    if (%instrumentName $= "")
-    {
-    }
-    if (!(%keyBinding $= ""))
+    if ((%instrumentName $= "") && !(%keyBinding $= ""))
     {
         error(getScopeName() @ " " @ "- cannot bind nonempty keyBinding for empty instrumentName");
         return;
@@ -100,10 +97,7 @@ function InstrumentRegistryClient::registerInstrumentKeyBinding(%this, %instrume
         error(getScopeName() @ " " @ "- cannot bind empty animationName");
         return;
     }
-    if (!(%instrumentName $= ""))
-    {
-    }
-    if (!%this.instrumentsList.hasKey(%instrumentName))
+    if (!(%instrumentName $= "") && !%this.instrumentsList.hasKey(%instrumentName))
     {
         warn(getScopeName() @ " " @ "- cannot find instrument '" @ %instrumentName @ "'");
         return;

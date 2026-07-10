@@ -111,13 +111,7 @@ function ImageFrameBase::onUse(%this)
     {
         return;
     }
-    if (!$CS_EditingCustomSpace)
-    {
-    }
-    if (CustomSpaceClient::isOwner())
-    {
-    }
-    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner() || ($Keyboard::modifierKeys & $EventModifier::CTRL))
+    if (!$CS_EditingCustomSpace && CustomSpaceClient::isOwner() && (CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner() || ($Keyboard::modifierKeys & $EventModifier::CTRL))
     {
         %imageTag = %this.getImageTag();
         if (%imageTag $= "")

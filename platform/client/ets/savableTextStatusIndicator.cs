@@ -79,10 +79,7 @@ function SavableTextStatusIndicator::setInitialValue(%this, %initialValue)
 function SavableTextStatusIndicator::incrementRequestCount(%this)
 {
     %newValue = %this.controlToGetValueFrom.getValue();
-    if (!%this.acceptEmptyString)
-    {
-    }
-    if (%newValue $= "")
+    if (!%this.acceptEmptyString && (%newValue $= ""))
     {
         return;
     }
@@ -100,19 +97,10 @@ function SavableTextStatusIndicator::update(%this, %doCallback)
 {
     %valueSaved = %this.requestsPendingCount == 0;
     %valueChanged = !(%this.lastValueSaved $= %this.controlToGetValueFrom.getValue());
-    if (%valueSaved)
-    {
-    }
-    %this.savedBitmap.setVisible(!%valueChanged);
-    if (!%valueSaved)
-    {
-    }
-    %this.savingBitmap.setVisible(!%valueChanged);
+    %this.savedBitmap.setVisible(%valueSaved && !%valueChanged);
+    %this.savingBitmap.setVisible(!%valueSaved && !%valueChanged);
     %this.changedBitmap.setVisible(%valueChanged);
-    if (%doCallback)
-    {
-    }
-    if (!(%this.callbackForUpdates $= ""))
+    if (%doCallback && !(%this.callbackForUpdates $= ""))
     {
         eval(%this.callbackForUpdates);
     }

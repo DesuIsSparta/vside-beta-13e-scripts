@@ -24,22 +24,13 @@ function PlayGui::onWake(%this)
     {
         schedule(0, 0, "MessageBoxOK", "DATABLOCK REGISTRATION OF OBJECT FAILED", "Do not continue editing this mission because you are missing datablocks and will destroy other people's work if you continue, but you probably just need to do an update of your working area.\n\nSearch the console.log for 'Register object failed'." @ "\n" @ $gRegisterObjectFailList, "");
     }
-    if (getNumMissingTextures() > $gPrevNumMissing)
-    {
-    }
-    if ($ETS::devMode)
+    if ((getNumMissingTextures() > $gPrevNumMissing) && $ETS::devMode)
     {
         schedule(0, 0, "MessageBoxOK", "MISSING TEXTURES", getNumMissingTextures() @ " " @ "textures were not found so far.\n\nSearch the console.log for 'missing texture:'.", "");
         $gPrevNumMissing = getNumMissingTextures();
     }
     displayStompedObjectNameErrors();
-    if ($StandAlone)
-    {
-    }
-    if ($ETS::devMode)
-    {
-    }
-    if (!$TESTMissionGroupIntegrityAlreadyRun)
+    if ($StandAlone && $ETS::devMode && !$TESTMissionGroupIntegrityAlreadyRun)
     {
         $TESTMissionGroupIntegrityAlreadyRun = 1;
         %errorCount = RunTestCase("TEST_MISSIONGROUPINTEGRITY", "WARNING: About that mission file you just loaded...");
@@ -126,10 +117,7 @@ function PlayGui::onMouseUp(%this, %obj, %pt, %worldVec)
 }
 function PlayGui::onMouseDownObj(%this, %obj, %pt, %worldVec)
 {
-    if ($ETS::devMode)
-    {
-    }
-    if ($DevPref::Debug::PrintClickedOn)
+    if ($ETS::devMode && $DevPref::Debug::PrintClickedOn)
     {
         error(getScopeName() @ " " @ "-" @ " " @ getDebugString(%obj));
     }
@@ -223,10 +211,7 @@ function PlayGui::onUsableObjectClick(%this, %obj, %pt)
     {
         if (%nuggetId >= 0)
         {
-            if ($CS_EditingCustomSpace)
-            {
-            }
-            if (!($Keyboard::modifierKeys & $EventModifier::CTRL))
+            if ($CS_EditingCustomSpace && !($Keyboard::modifierKeys & $EventModifier::CTRL))
             {
                 CSFurnitureMover.SelectNuggetObject(%obj);
             }
@@ -255,25 +240,16 @@ function PlayGui::onUsableObjectClick(%this, %obj, %pt)
 function PlayGui::onUsableObjectRightClick(%this, %obj)
 {
     %nuggetId = %obj.getInventoryNuggetID();
-    if (%nuggetId >= 0)
-    {
-    }
-    if ($CS_EditingCustomSpace)
+    if ((%nuggetId >= 0) && $CS_EditingCustomSpace)
     {
         FurnitureItemContextMenu.initWithObject(%obj);
         FurnitureItemContextMenu.showAtCursor();
     }
     else
     {
-        if (%obj != 0)
+        if (%obj != 0 && checkInteractOK(%obj) && %obj.hasMethod("onRightUse"))
         {
-            if (checkInteractOK(%obj))
-            {
-            }
-            if (%obj.hasMethod("onRightUse"))
-            {
-                %obj.onRightUse();
-            }
+            %obj.onRightUse();
         }
     }
 }
@@ -310,19 +286,7 @@ function PlayGui::onMouseOver(%this, %obj)
             }
             %datablock = 0;
             %obj.getDataBlock();
-            if (1)
-            {
-            }
-            if (%obj.isGhost())
-            {
-            }
-            if (%type & $TypeMasks::UsableObjectType && isObject(%datablock))
-            {
-            }
-            if (!(%datablock.playerAnimReach $= ""))
-            {
-            }
-            if (!$CS_EditingCustomSpace)
+            if (isObject(%datablock) && 1 && %obj.isGhost() && (%type & $TypeMasks::UsableObjectType) && !(%datablock.playerAnimReach $= "") && !$CS_EditingCustomSpace)
             {
                 commandToServer('UsableObjectReach', %obj.getGhostID());
             }
@@ -341,10 +305,7 @@ function checkInteractOK(%obj)
     {
         %activateDistance = %obj.getActivationRange();
     }
-    if (%activateDistance == 0)
-    {
-    }
-    if (%obj.hasMethod("getDataBlock"))
+    if ((%activateDistance == 0) && %obj.hasMethod("getDataBlock"))
     {
         %datablock = %obj.getDataBlock();
         %activateDistance = %datablock.activateRange;
@@ -372,13 +333,7 @@ function GuiControl::getTopNthWindow(%this, %ndex)
     while (%idx >= 0)
     {
         %obj = %this.getObject(%idx);
-        if (%obj.profile.canKeyFocus)
-        {
-        }
-        if (%obj.isVisible())
-        {
-        }
-        if (%obj.getId() != TheShapeNameHud.getId())
+        if (%obj.profile.canKeyFocus && %obj.isVisible() && (%obj.getId() != TheShapeNameHud.getId()))
         {
             if (%num >= %ndex)
             {
@@ -490,10 +445,7 @@ function GuiControl::ensureAdded(%this, %panel)
 function checkDistance(%a, %b)
 {
     %dist = 0;
-    if (isObject(%a))
-    {
-    }
-    if (isObject(%b))
+    if (isObject(%a) && isObject(%b))
     {
         %apos = %a.getPosition();
         %bpos = %b.getPosition();

@@ -22,17 +22,11 @@ function GuiTracker::setDestination(%this, %destination)
 function GuiTracker::goBack(%this)
 {
     %this.inTransit = 1;
-    if (!(%this.currentlyOpen $= ""))
-    {
-    }
-    if (!(%this.currentlyOpen.getName() $= "playGui"))
+    if (!(%this.currentlyOpen $= "") && !(%this.currentlyOpen.getName() $= "playGui"))
     {
         %this.currentlyOpen.close(0);
     }
-    if (!(%this.previouslyOpened $= ""))
-    {
-    }
-    if (!(%this.previouslyOpened.getName() $= "playGui"))
+    if (!(%this.previouslyOpened $= "") && !(%this.previouslyOpened.getName() $= "playGui"))
     {
         %this.previouslyOpened.open();
     }

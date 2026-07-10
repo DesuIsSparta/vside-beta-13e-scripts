@@ -164,10 +164,7 @@ function MessageHud::setGrayed(%this, %value)
 }
 function MessageHud::updateModeIcon(%this)
 {
-    if (isObject($player))
-    {
-    }
-    if ($player.hasMicrophone())
+    if (isObject($player) && $player.hasMicrophone())
     {
         %modeIconName = "bb_microphone";
         %modeIconCommand = "displayMicrophoneHelp();";

@@ -132,10 +132,7 @@ function danceTool::playNextStep(%this)
     if (%this.prevStep >= 0)
     {
         %n = %this.prevStep + 1;
-        if (%n < %this.numSteps)
-        {
-        }
-        while (!%tooFar)
+        while ((%n < %this.numSteps) && !%tooFar)
         {
             if (%this.stepTimes[%n] <= %curDanceTime)
             {
@@ -147,15 +144,12 @@ function danceTool::playNextStep(%this)
                 %tooFar = 1;
             }
             %n = %n + 1;
-            if (%n < %this.numSteps)
-            {
-            }
         }
     }
     else
     {
         %playStep = 0;
-        !%tooFar;
+        (%n < %this.numSteps) && !%tooFar;
     }
     if (%playStep >= (%this.numSteps - 1))
     {

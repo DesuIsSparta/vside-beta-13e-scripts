@@ -88,17 +88,11 @@ function creditsTick()
     cancel($gCreditsTimerID);
     %y = getWord(LoginCreditsText.position, 1);
     %h = getWord(LoginCreditsText.extent, 1);
-    if ($gCreditsTickDirection < 0)
-    {
-    }
-    if ((%y + %h) < 0)
+    if (($gCreditsTickDirection < 0) && ((%y + %h) < 0))
     {
         return;
     }
-    if ($gCreditsTickDirection > 0)
-    {
-    }
-    if (%y > 157)
+    if (($gCreditsTickDirection > 0) && (%y > 157))
     {
         return;
     }

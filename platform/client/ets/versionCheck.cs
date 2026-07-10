@@ -50,10 +50,7 @@ function isUpToDate(%available)
         $Net::upgradeAvailable = 0;
         return 0;
     }
-    if (%available > %buildVersion)
-    {
-    }
-    if (%available > %protocolVersion)
+    if ((%available > %buildVersion) && (%available > %protocolVersion))
     {
         echo("A new client version(" @ %available @ ") is available. We have " @ %buildVersion @ ".");
         $Net::upgradeAvailable = 1;

@@ -298,10 +298,7 @@ function geSwatchesPanelHeaderBox::onURL(%this, %url)
     {
         %listName = getWords(%url, 2);
         geSwatchesPanel.collapsedDrawers[%listName] = !geSwatchesPanel.collapsedDrawers[%listName];
-        if (!geSwatchesPanel.collapsedDrawers[%listName])
-        {
-        }
-        if (geSwatchesPanel.hilitedCell.drawerName $= %listName)
+        if (!geSwatchesPanel.collapsedDrawers[%listName] && (geSwatchesPanel.hilitedCell.drawerName $= %listName))
         {
             geSwatchesPanel.selectCell(geSwatchesPanel.hilitedCell);
         }
@@ -373,18 +370,12 @@ function geSwatchesPanel::selectSwatch(%this, %skunum)
     %cell = -(1);
     %numberOfDrawers = getFieldCount(%this.swatchDrawerNames);
     %i = 0;
-    if (%i < %numberOfDrawers)
-    {
-    }
-    while (%cell == -(1))
+    while ((%i < %numberOfDrawers) && (%cell == -(1)))
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         %cellArray = %this.swatchDrawerCellArrays[%drawerName];
         %n = %cellArray.getCount() - 1;
-        if (%n >= 0)
-        {
-        }
-        while (%cell == -(1))
+        while ((%n >= 0) && (%cell == -(1)))
         {
             %cell = %cellArray.getObject(%n);
             if (%cell.skuNum != %skunum)
@@ -392,15 +383,9 @@ function geSwatchesPanel::selectSwatch(%this, %skunum)
                 %cell = -(1);
             }
             %n = %n - 1;
-            if (%n >= 0)
-            {
-            }
         }
         %i = %i + 1;
-        %cell == -(1);
-        if (%i < %numberOfDrawers)
-        {
-        }
+        (%n >= 0) && (%cell == -(1));
     }
     if (isObject(%cell))
     {
@@ -493,15 +478,9 @@ function geSwatchesPanel::hiliteCell(%this, %cell)
     {
         %drawerName = getField(%this.swatchDrawerNames, %i);
         %cellArray = %this.swatchDrawerCellArrays[%drawerName];
-        if (isObject(%cellArray))
+        if (isObject(%cellArray) && (%cellArray.getObjectIndex(%cell) >= 0))
         {
-        }
-        if (%cellArray.getObjectIndex(%cell) >= 0)
-        {
-            if (isObject(%this.hilitedCell))
-            {
-            }
-            if (%this.hilitedCell != %cell)
+            if (isObject(%this.hilitedCell) && (%this.hilitedCell != %cell))
             {
                 %this.hilitedCell.onUnhilite();
             }

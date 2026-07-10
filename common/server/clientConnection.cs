@@ -26,10 +26,7 @@ function ValidateRequest::onDone(%this)
     {
         PendingValidate.remove(%this.name);
     }
-    if (!$Insecure)
-    {
-    }
-    if (!(%status $= "success"))
+    if (!$Insecure && !(%status $= "success"))
     {
         %this.connection.connectCallback("CR_TOKEN");
         return;
@@ -162,10 +159,7 @@ function DropRequest::onDone(%this)
 {
     %status = findRequestStatus(%this);
     log("login", "info", "DropRequest::onDone:" @ " " @ %status);
-    if (isObject(%this.client))
-    {
-    }
-    if (!%this.client.ignoreResponse)
+    if (isObject(%this.client) && !%this.client.ignoreResponse)
     {
         %this.client.delete("CLIENT_REQUEST");
     }
@@ -190,19 +184,13 @@ function GameConnection::onConnectRequest(%this, %netAddress, %name, %token, %un
         %this.connectCallback("CR_TOKEN");
         return;
     }
-    if (!$Insecure)
-    {
-    }
-    if (!(%this.getCrcRootDirVal() $= $Server::crcRootDirVal))
+    if (!$Insecure && !(%this.getCrcRootDirVal() $= $Server::crcRootDirVal))
     {
         log("login", "warn", "incompatible assets:" @ " " @ %name);
         %this.connectCallback("CHR_CLASSCRCROOTDIRVAL");
         return;
     }
-    if (!$Insecure)
-    {
-    }
-    if (%token $= "")
+    if (!$Insecure && (%token $= ""))
     {
         log("login", "error", "invalid token:" @ " " @ %name);
         %this.connectCallback("CHR_INVALID_CHALLENGE_PACKET");
@@ -368,10 +356,7 @@ function GameConnection::postClientDrop(%this, %ignoreResponse, %reason)
 function GameConnection::onDrop(%this, %reason)
 {
     log("login", "info", "GameConnection::onDrop: " @ %this @ " " @ %this.getAddress() @ ": " @ %reason);
-    if (!$StandAlone)
-    {
-    }
-    if (PendingValidate.get(%this.nameBase))
+    if (!$StandAlone && PendingValidate.get(%this.nameBase))
     {
         PendingValidate.remove(%this.nameBase);
     }

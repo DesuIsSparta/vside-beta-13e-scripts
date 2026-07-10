@@ -856,10 +856,7 @@ function BuddyHudWin::populateBuddyListsReally(%this)
         %sameServerTagDefault = "";
         %sameServerTagHilited = "";
         %ghost = Player::findPlayerInstance(%friend.name);
-        if (!(%ghost $= ""))
-        {
-        }
-        if (isObject(%ghost))
+        if (!(%ghost $= "") && isObject(%ghost))
         {
             %ghost.setBuddy(1);
             %ghost.setAmFave(1);
@@ -978,10 +975,7 @@ function BuddyHudWin::populateBuddyListsReally(%this)
                 %entryInfo.entryHilited = %entryHilited;
                 %entryInfo.name = %friend.name;
                 %botsFriendsList.put(%friend.name, %entryInfo);
-                if (%nameAtTopOfFriendsListisNPC)
-                {
-                }
-                if (%comparisonToNameAtTopOfList < 0)
+                if (%nameAtTopOfFriendsListisNPC && (%comparisonToNameAtTopOfList < 0))
                 {
                     %numberOfNamesInsertedAbove = %numberOfNamesInsertedAbove + 1;
                 }
@@ -1114,10 +1108,7 @@ function BuddyHudWin::populateBuddyListsReally(%this)
             }
             if (%fan.serverName $= $ServerName)
             {
-                if (%vipRoleMasks != 0)
-                {
-                }
-                if ((%fan.roles & %vipRoleMasks) != 0)
+                if ((%vipRoleMasks != 0) && ((%fan.roles & %vipRoleMasks) != 0))
                 {
                     %color = $NameColorStaff;
                     %listName = "FansHere";
@@ -1277,10 +1268,7 @@ function BuddyHudWin::initializeBuddyList(%this, %listName)
     while (%idx < %count)
     {
         %ghost = %dict.get(%list.getKey(%idx));
-        if (!(%ghost $= ""))
-        {
-        }
-        if (isObject(%ghost))
+        if (!(%ghost $= "") && isObject(%ghost))
         {
             %ghost.setBuddy(0);
             %ghost.setAmFave(0);
@@ -1303,10 +1291,7 @@ function BuddyHudWin::putListIntoList(%this, %srcList, %destList)
         log(relations, error, "unknown list" @ " " @ %srcList);
         return;
     }
-    if (%list.size() > 0)
-    {
-    }
-    if (!%this.listAdded[%this.curListName])
+    if ((%list.size() > 0) && !%this.listAdded[%this.curListName])
     {
         %this.listAdded[%this.curListName] = 1;
         %colorTag = "<linkcolor:ffffff>";
@@ -1321,10 +1306,7 @@ function BuddyHudWin::putListIntoList(%this, %srcList, %destList)
         %listTitle = %this[$gBuddyListTitles @ %this.curListName];
         %titleLine = "<color:ffffff>" @ %colorTag @ "<a:gamelink list " @ %this.curListName @ ">" @ %collapsed @ %listTitle @ "</a>";
         %destList.setText(%destList.getText() @ %titleLine @ "<br>");
-        if (%this.curListName $= "WaitingForYourApproval")
-        {
-        }
-        if (!(%this[$UserPref::buddies::collapsedLists @ %this.curListName]))
+        if ((%this.curListName $= "WaitingForYourApproval") && !(%this[$UserPref::buddies::collapsedLists @ %this.curListName]))
         {
             %formatStr = "<spush><linkcolor:" @ ColorIToHex("255 147 248") @ ">";
             %destList.setText(%destList.getText() @ %formatStr @ "  [<a:gamelink approveall>Approve All</a>]   [<a:gamelink declineall>Decline All</a>]<spop><br>");
@@ -1570,10 +1552,7 @@ function extractBuddyRecords(%request, %list, %type, %doIgnore)
         %record = new ScriptObject("");
         parseBuddyRecord(%record, %val);
         %list.put(%record.name, %record);
-        if (!(%record.serverName $= ""))
-        {
-        }
-        if (%record.csn $= "")
+        if (!(%record.serverName $= "") && (%record.csn $= ""))
         {
             UserListUnknownServerName.put(%record.name, %record);
             warn(getScopeName() @ " " @ "- unrecogized server name '" @ %record.serverName @ "' for " @ %type @ " user '" @ %record.name @ "'");
@@ -1626,10 +1605,7 @@ function parseBuddyRecord(%record, %val)
         %record.isIdle = 1;
     }
     %record.loggedIn = %record.loggedIn $= "yes";
-    if (%record.isNPC)
-    {
-    }
-    if (%record.serverName $= "")
+    if (%record.isNPC && (%record.serverName $= ""))
     {
         %record.serverName = $ServerName;
     }
@@ -1679,10 +1655,7 @@ $gRefreshEvenIfBuddyHudWinClosed = 1;
 function clientCmdRefreshBuddies(%status)
 {
     log("relations", "debug", "clientCmdRefreshBuddies(" @ %status @ ")");
-    if (%status)
-    {
-    }
-    if ($gRefreshEvenIfBuddyHudWinClosed || BuddyHudWin.isVisible())
+    if ($gRefreshEvenIfBuddyHudWinClosed || %status && BuddyHudWin.isVisible())
     {
         BuddyHudWin.refreshFavoritesList();
         $gRefreshEvenIfBuddyHudWinClosed = 0;
@@ -1750,18 +1723,12 @@ function onDoneOrErrorCallback_GetUserRelations_Single(%request)
         }
         %record.delete();
     }
-    if (!(%val $= ""))
-    {
-    }
-    if (isObject(%list))
+    if (!(%val $= "") && isObject(%list))
     {
         %record = new ScriptObject("");
         parseBuddyRecord(%record, %val);
         %list.put(%record.name, %record);
-        if (!(%record.serverName $= ""))
-        {
-        }
-        if (%record.csn $= "")
+        if (!(%record.serverName $= "") && (%record.csn $= ""))
         {
             safeEnsureScriptObject("StringMap", "UserListUnknownServerName");
             UserListUnknownServerName.put(%record.name, %record);
@@ -1980,10 +1947,7 @@ $gLeftClickTimer = 0;
 function onLeftClickPlayerName(%name, %objID)
 {
     %curTime = getSimTime();
-    if ((%curTime - $gLastNameClickTime) < 400)
-    {
-    }
-    if ($gLastNameClickName $= %name)
+    if (((%curTime - $gLastNameClickTime) < 400) && ($gLastNameClickName $= %name))
     {
         openUserWhisper(%name);
         if ($gLeftClickTimer != 0)
@@ -2006,28 +1970,16 @@ function onRightClickPlayerName(%name)
 }
 function onSingleClickPlayerName(%name, %objID)
 {
-    if (showPlayerInfoPopup())
-    {
-    }
-    if (!(%name $= $player.getShapeName()))
+    if (showPlayerInfoPopup() && !(%name $= $player.getShapeName()))
     {
         InfoPopupDlg.open();
         InfoPopupDlg.showInfoFor(%name);
-        if (0)
-        {
-        }
-        if (isFunction(afxSelectAvatarByName))
+        if (0 && isFunction(afxSelectAvatarByName))
         {
             afxSelectAvatarByName(%name);
         }
     }
-    if (isDefined("%objID"))
-    {
-    }
-    if (isObject(%objID))
-    {
-    }
-    if (%objID.isClassAIPlayer())
+    if (isDefined("%objID") && isObject(%objID) && %objID.isClassAIPlayer())
     {
         rentabotClient_customizeBot(%objID);
     }

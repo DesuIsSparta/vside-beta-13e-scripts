@@ -123,10 +123,7 @@ function HudTabs::getPadding(%this)
 function HudTabs::close(%this)
 {
     %tab = %this.getCurrentTab();
-    if (isObject(%tab))
-    {
-    }
-    if (isObject(%tab.content))
+    if (isObject(%tab) && isObject(%tab.content))
     {
         %tab.content.onClose();
     }
@@ -226,18 +223,12 @@ function HudTabs::tabSelected(%this, %tab)
         %this.dontCloseNextTime();
     }
     %prevTab = %this.getPreviousTab();
-    if (%prevTab != %tab)
+    if (%prevTab != %tab && isObject(%prevTab) && isObject(%prevTab.content))
     {
-        if (isObject(%prevTab))
+        %prevTab.content.onClose();
+        if (%prevTab.pulsar.isVisible())
         {
-        }
-        if (isObject(%prevTab.content))
-        {
-            %prevTab.content.onClose();
-            if (%prevTab.pulsar.isVisible())
-            {
-                %this.pausePulseOnTab(%prevTab);
-            }
+            %this.pausePulseOnTab(%prevTab);
         }
     }
 }
@@ -754,10 +745,7 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify)
     %this.respektLevelLabel.setText(%level @ " - " @ %levelName);
     HudScoresPBController.setValue((1 - respektPercentToNextLevel(%points)));
     %levelPrev = respektScoreToLevel(%this.previousRespektPoints);
-    if (%level != %levelPrev)
-    {
-    }
-    if (%this.previousRespektPoints != 0)
+    if ((%level != %levelPrev) && (%this.previousRespektPoints != 0))
     {
         if (%level > %levelPrev)
         {
@@ -778,10 +766,7 @@ function HudScoresContent::setRespektPoints(%this, %points, %notify)
         schedule(5000, 0, "respektHandle", "", %points, (%points - %this.previousRespektPoints), %code, 0, 1);
         HudTabs.schedule(5100, "pulseTabWithName", "scores");
     }
-    if (%notify)
-    {
-    }
-    if (%points != %this.previousRespektPoints)
+    if (%notify && (%points != %this.previousRespektPoints))
     {
         HudTabs.pulseTabWithName("scores");
     }
@@ -829,10 +814,7 @@ function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total)
     %ourCopy = %this.getCollectionObject(%name);
     if (!isObject(%ourCopy))
     {
-        if (%total == 0)
-        {
-        }
-        if (%sofar == 0)
+        if ((%total == 0) && (%sofar == 0))
         {
             return;
         }
@@ -845,10 +827,7 @@ function HudScoresContent::setCollectionStatus(%this, %name, %sofar, %total)
         }
         %this.collectionsSet.add(%ourCopy);
     }
-    if (%total == 0)
-    {
-    }
-    if (%sofar == 0)
+    if ((%total == 0) && (%sofar == 0))
     {
         %this.collectionsSet.remove(%ourCopy);
         %ourCopy.delete();
@@ -1665,10 +1644,7 @@ function HudTabs::addPermissionBasedContent(%this)
     %hasPerm = $player.rolesPermissionCheckNoWarn("fly");
     SpaceSurfText.setVisible(%hasPerm);
     SpaceSurfTE.setVisible(%hasPerm);
-    if (%hasPerm)
-    {
-    }
-    if ($gMode $= "PrivateSpaceGrid")
+    if (%hasPerm && ($gMode $= "PrivateSpaceGrid"))
     {
         %this.showTabWithName("private space");
     }

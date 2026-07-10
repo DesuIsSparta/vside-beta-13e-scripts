@@ -1,9 +1,6 @@
 function rentabotClient_customizeBot(%obj)
 {
-    if (!$StandAlone)
-    {
-    }
-    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !CustomSpaceClient::isOwner())
+    if ((CustomSpaceClient::GetSpaceImIn() $= "") || !$StandAlone && !CustomSpaceClient::isOwner())
     {
         return;
     }
@@ -125,10 +122,7 @@ function rentabotClient_customizeBot(%obj)
         %window.add(%ctrl);
         %row = %row + (%rowSize + %rowSpacing);
     }
-    if (%obj.getGender() $= $player.getGender())
-    {
-    }
-    if (%obj.getDressUpWrite() || %obj.getDressUpRead())
+    if (%obj.getDressUpWrite() || (%obj.getGender() $= $player.getGender()) && %obj.getDressUpRead())
     {
         %ctrl = new GuiMLTextCtrl("") {
             profile = "GuiMessageTextProfile";

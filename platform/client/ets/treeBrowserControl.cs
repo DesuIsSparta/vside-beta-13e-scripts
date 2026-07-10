@@ -233,18 +233,12 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
     %this.scrollToLevel(%level);
     %leafNode = 0;
     %expanded = %this.isNodeExpanded(%this.Path);
-    if (%this.isExpanded)
-    {
-    }
-    if (%level != %oldLevel)
+    if (%this.isExpanded && (%level != %oldLevel))
     {
         %oldChild = %this.getChild(%oldLevel, 0);
         %oldChild.expandedPane.clear();
     }
-    if (%expanded)
-    {
-    }
-    if (!%this.isExpanded)
+    if (%expanded && !%this.isExpanded)
     {
         %expandDelta = %this.getFieldValue("expandDelta");
         if (%expandDelta $= "")
@@ -259,10 +253,7 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
     }
     else
     {
-        if (%this.isExpanded)
-        {
-        }
-        if (!%expanded)
+        if (%this.isExpanded && !%expanded)
         {
             %this.collapseView();
             %this.focusCurrentFrame();
@@ -280,10 +271,7 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
         %child.contentPane.node = %node;
         %child.contentPane.clear();
         %this.fillLeafPane(%child.contentPane);
-        if (%expanded)
-        {
-        }
-        if (%this.isExpanded)
+        if (%expanded && %this.isExpanded)
         {
             %child.expandedPane.clear();
             %child.expandedPane.setVisible(1);
@@ -293,13 +281,7 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
         {
             %child.expandedPane.setVisible(0);
         }
-        if (%focus)
-        {
-        }
-        if (%this.isVisibleRecursive())
-        {
-        }
-        if (%pathchanged)
+        if (%focus && %this.isVisibleRecursive() && %pathchanged)
         {
             %child.contentPane.makeFirstResponder(1);
         }
@@ -309,10 +291,7 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
         %child.contentPane.setVisible(0);
         %child.scroll.setVisible(1);
         %child.menu.setVisible(1);
-        if (%expanded)
-        {
-        }
-        if (%this.isExpanded)
+        if (%expanded && %this.isExpanded)
         {
             %child.expandedPane.clear();
             %child.expandedPane.setVisible(1);
@@ -360,13 +339,7 @@ function TreeBrowserControl::goToPath(%this, %path, %focus)
             %child.menu.reseatChildren();
             %child.menu.hiliteCell(0, 0);
         }
-        if (%focus)
-        {
-        }
-        if (%this.isVisibleRecursive())
-        {
-        }
-        if (%pathchanged)
+        if (%focus && %this.isVisibleRecursive() && %pathchanged)
         {
             %child.menu.makeFirstResponder(1);
         }
@@ -579,10 +552,7 @@ function TreeBrowserControl::selectNextLeaf(%this, %forward, %slide)
         if (isDefined("%slide"))
         {
             %level = getFieldCount(%path);
-            if (!%slide)
-            {
-            }
-            if (getFieldCount(%this.Path) != %level)
+            if (!%slide && (getFieldCount(%this.Path) != %level))
             {
                 %this.level = %level;
                 %this.reposition((-(%level) * getWord(%this.childrenExtent, 0)), 0);
@@ -634,10 +604,7 @@ function TreeBrowserControl::getNextLeaf(%this, %path, %forward)
             return "";
         }
         %tidx = %nidx + %forward;
-        if (%tidx >= 0)
-        {
-        }
-        if (%tidx < %childCount)
+        if ((%tidx >= 0) && (%tidx < %childCount))
         {
             %node = %pnode.getObject(%tidx);
             %path = %ppath @ "\t" @ %node.name;
@@ -709,10 +676,7 @@ function TreeBrowserControl::getNodePath(%this, %node)
 {
     %path = "";
     %delim = "";
-    if (isObject(%node))
-    {
-    }
-    while (!(%node.name $= ""))
+    while (isObject(%node) && !(%node.name $= ""))
     {
         %path = %node.name @ %delim @ %path;
         %delim = "\t";
@@ -723,9 +687,6 @@ function TreeBrowserControl::getNodePath(%this, %node)
         else
         {
             %node = %node.getGroup();
-        }
-        if (isObject(%node))
-        {
         }
     }
     return %path;
@@ -782,10 +743,7 @@ function TreeBrowserControl::addMenuData(%this, %prefix, %list)
 }
 function TreeBrowserControl::setDataTree(%this, %tree)
 {
-    if (isObject(%tree))
-    {
-    }
-    if (!(%tree.text $= ""))
+    if (isObject(%tree) && !(%tree.text $= ""))
     {
         %this.title = %tree.text;
         %this.addMenuData("", %this.title);

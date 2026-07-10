@@ -229,10 +229,7 @@ function SystemMessageTextCtrl::onURL(%this, %url)
             %name = unmunge(getWord(%url, 1));
             %requestId = getWord(%url, 2);
             %coanim = getWords(%url, 3);
-            if (!(%name $= ""))
-            {
-            }
-            if (!(%coanim $= ""))
+            if (!(%name $= "") && !(%coanim $= ""))
             {
                 setIdle(0);
                 commandToServer('CoAnimRespond', %requestId, "ACCEPT MANUAL");

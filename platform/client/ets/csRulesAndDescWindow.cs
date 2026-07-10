@@ -32,10 +32,7 @@ function CSRulesAndDescWindow::close(%this)
 }
 function CSRulesAndDescWindow::setup(%this)
 {
-    if (!%this.initialized)
-    {
-    }
-    if (!%this.initializing)
+    if (!%this.initialized && !%this.initializing)
     {
         %this.initializing = 1;
         CSRulesAccessPopup.add("Open");
@@ -65,10 +62,7 @@ function CSRulesAndDescWindow::saveRulesSettings(%this)
     %this.update();
     %access = getWord($gCSRulesAccessCodes, CSRulesAccessPopup.GetSelected());
     %doorCode = CSRulesPasswordField.getValue();
-    if (%access $= "PASSWORDPROTECTED")
-    {
-    }
-    if (%doorCode $= "")
+    if ((%access $= "PASSWORDPROTECTED") && (%doorCode $= ""))
     {
         CustomSpaceSettings::saveSettings(CustomSpaceClient::GetSpaceImIn(), "", "OPEN", "", "", "");
     }
@@ -124,10 +118,7 @@ function CSRulesAndDescWindow::update(%this)
     CSRulesPasswordButton.setActive(%flag);
     CSRulesPasswordButton.setVisible(%flag);
     CSRulesPasswordDescText.setVisible(%flag);
-    if (%flag)
-    {
-    }
-    CSRulesPasswordFieldOverlay.setVisible((CSRulesPasswordField.getValue() $= ""));
+    CSRulesPasswordFieldOverlay.setVisible(%flag && (CSRulesPasswordField.getValue() $= ""));
     CSRulesDescSavedIndicator.update(0);
     CSRulesPasswordSavedIndicator.setVisible(%flag);
     CSRulesPasswordSavedIndicator.update(0);

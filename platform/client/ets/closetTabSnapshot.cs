@@ -589,16 +589,7 @@ function ProfileAvatarPictureRequestOnCompleted(%request, %result)
     else
     {
         %retryCount = 1;
-        if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0))
-        {
-        }
-        if ($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount)
-        {
-        }
-        if (ClosetGui.lastTabOpened $= "SNAPSHOT")
-        {
-        }
-        if (ClosetGui.isVisible())
+        if (!gUserPropMgrClient.getProperty($Player::Name, "hasTakenAvatarPhoto", 0) && ($Player::attemptsToAutoUploadAvatarSnapshot < %retryCount) && (ClosetGui.lastTabOpened $= "SNAPSHOT") && ClosetGui.isVisible())
         {
             ProfileSnapRegion.schedule(200, prepareSnapshot);
             $Player::attemptsToAutoUploadAvatarSnapshot = $Player::attemptsToAutoUploadAvatarSnapshot + 1;
@@ -810,10 +801,7 @@ function ProfileBackgroundChooser::moveBy(%this, %numSlots)
     %slotWidth = getWord(%this.childrenExtent, 0) + %this.spacing;
     %min = -((%this.getCount() - 6)) * %slotWidth;
     %max = 0;
-    if (ProfilePreviousBackgroundButton.isActive())
-    {
-    }
-    if ((%xPos + (%slotWidth * %numSlots)) >= %max)
+    if (ProfilePreviousBackgroundButton.isActive() && ((%xPos + (%slotWidth * %numSlots)) >= %max))
     {
         ProfilePreviousBackgroundButton.setActive(0);
     }
@@ -824,10 +812,7 @@ function ProfileBackgroundChooser::moveBy(%this, %numSlots)
             ProfilePreviousBackgroundButton.setActive(1);
         }
     }
-    if (ProfileNextBackgroundButton.isActive())
-    {
-    }
-    if ((%xPos + (%slotWidth * %numSlots)) <= %min)
+    if (ProfileNextBackgroundButton.isActive() && ((%xPos + (%slotWidth * %numSlots)) <= %min))
     {
         ProfileNextBackgroundButton.setActive(0);
     }

@@ -4,10 +4,7 @@ function roles::maskhaspermission(%rolesMask, %permName)
 }
 function Player::isSuperMod(%this)
 {
-    if (%this.hasRoleString("moderator"))
-    {
-    }
-    return %this.hasRoleString("staff");
+    return %this.hasRoleString("moderator") && %this.hasRoleString("staff");
 }
 function isObjectAndHasPermission_Warn(%obj, %permName)
 {

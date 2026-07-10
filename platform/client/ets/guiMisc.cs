@@ -75,10 +75,7 @@ function GuiControl::blinkSet(%this, %mode, %periodOffMS, %periodOnMS, %param)
     %this.blinksRemaining = 15;
     %this.origPoint = "";
     %this.blinkStateSet(0);
-    if (!(%mode $= ""))
-    {
-    }
-    if (%periodOnMS > 50)
+    if (!(%mode $= "") && (%periodOnMS > 50))
     {
         %this.blinkDo();
     }
@@ -104,10 +101,7 @@ function GuiControl::blinkDo(%this)
     {
         %this.blinksRemaining = %this.blinksRemaining - 1;
     }
-    if (%period >= 50)
-    {
-    }
-    if (%this.blinksRemaining > 0)
+    if ((%period >= 50) && (%this.blinksRemaining > 0))
     {
         %this.blinkStateSet(%newState);
         %this.blinkTimer = %this.schedule(%period, "blinkDo");
@@ -115,10 +109,7 @@ function GuiControl::blinkDo(%this)
     else
     {
         %this.blinkStateSet(0);
-        if (%period > 0)
-        {
-        }
-        if (%period < 50)
+        if ((%period > 0) && (%period < 50))
         {
             error(getScopeName() @ " " @ "- period too small:" @ " " @ %period);
         }
@@ -210,10 +201,7 @@ function GuiPopUp2MenuCtrl::onSetFirstResponder(%this)
 }
 function hiliteControl(%ctrl, %inParent)
 {
-    if (isObject(GuiEditorGui))
-    {
-    }
-    if (Canvas.getContent() == GuiEditorGui.getId())
+    if (isObject(GuiEditorGui) && (Canvas.getContent() == GuiEditorGui.getId()))
     {
         return;
     }
@@ -221,13 +209,7 @@ function hiliteControl(%ctrl, %inParent)
     {
         %inParent = 0;
     }
-    if (isObject(%ctrl))
-    {
-    }
-    if (%ctrl.canHilite)
-    {
-    }
-    if (%ctrl.isActive())
+    if (isObject(%ctrl) && %ctrl.canHilite && %ctrl.isActive())
     {
         if (!isObject(HiliteWindow))
         {
@@ -287,10 +269,7 @@ function hiliteControl(%ctrl, %inParent)
 }
 function getHiliteCtrl()
 {
-    if (isObject(HiliteWindow))
-    {
-    }
-    if (HiliteWindow.isVisible())
+    if (isObject(HiliteWindow) && HiliteWindow.isVisible())
     {
     }
     else
@@ -300,13 +279,7 @@ function getHiliteCtrl()
 }
 function GuiControl::isHiliteCtrl(%this)
 {
-    if (isObject(HiliteWindow))
-    {
-    }
-    if (HiliteWindow.isVisible())
-    {
-    }
-    return HiliteWindow.hiliteCtrl.getId() == %this.getId();
+    return isObject(HiliteWindow) && HiliteWindow.isVisible() && (HiliteWindow.hiliteCtrl.getId() == %this.getId());
 }
 $gToolTipDelay = 500;
 function GuiControl::onMouseEnterBounds(%this)
@@ -463,10 +436,7 @@ function Canvas::onDragAndDropEnd(%this, %dragCtrl, %dropAccepted)
 function onDragAndDropCtrl(%make)
 {
     %dragCtrl = Canvas.getDragControl();
-    if (isObject(%dragCtrl))
-    {
-    }
-    if (%dragCtrl.hasMethod("dragAndDropCtrl"))
+    if (isObject(%dragCtrl) && %dragCtrl.hasMethod("dragAndDropCtrl"))
     {
         %dragCtrl.dragAndDropCtrl(%make);
     }

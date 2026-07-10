@@ -164,10 +164,7 @@ function geTGF_OnGotDoneOrError_GetOnlineFriends(%request)
     {
         %item = %itemList.getValue(%n);
         %isFriend = %item.relationType $= "friend";
-        if (!($ServerName $= ""))
-        {
-        }
-        %sameServer = (%item.currentLocation_serverName $= $ServerName) ? "true" : "false";
+        %sameServer = !($ServerName $= "") && (%item.currentLocation_serverName $= $ServerName) ? "true" : "false";
         %activities = %uaw.getActivitiesMLText(%item.currentActivities, 3);
         %rowData = "avatar" @ "\t" @ "" @ "\t" @ "platform/client/ui/tgf/tgf_profile_default";
         %rowData = %rowData @ "\n" @ "username" @ "\t" @ %item.userName @ "\t" @ geTGF_tabs::friendsTab_formatUserName(%item.userName, %isFriend);

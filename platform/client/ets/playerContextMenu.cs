@@ -93,22 +93,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if (!rentabot_isRentabotName(%playerName))
             {
-                if (%sameServer)
-                {
-                }
-                if (!%isNPC || $StandAlone)
-                {
-                }
-                if (%onlineHere)
-                {
-                }
-                if (!%isIgnore)
-                {
-                }
-                if (geGiftingPanel.isInRange(%playerClicked))
-                {
-                }
-                if (!%isIdle)
+                if (!%isNPC || %sameServer && $StandAlone && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Two-Player Action..", %n = %n + 1, %schemeNormal);
                 }
@@ -123,19 +108,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             }
             if (!rentabot_isRentabotName(%playerName))
             {
-                if (%sameServer)
-                {
-                }
-                if (%onlineHere)
-                {
-                }
-                if (!%isIgnore)
-                {
-                }
-                if (geGiftingPanel.isInRange(%playerClicked))
-                {
-                }
-                if (!%isIdle)
+                if (%sameServer && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Give vCurrency", %n = %n + 1, %schemeNormal);
                 }
@@ -148,24 +121,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                     %this.add("Give vCurrency - Idle!", %n = %n + 1, %schemeDisabled);
                 }
             }
-            if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drink"))
+            if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drink") && !rentabot_isRentabotName(%playerName))
             {
-            }
-            if (!rentabot_isRentabotName(%playerName))
-            {
-                if (%sameServer)
-                {
-                }
-                if (%onlineHere)
-                {
-                }
-                if (!%isIgnore)
-                {
-                }
-                if (geGiftingPanel.isInRange(%playerClicked))
-                {
-                }
-                if (!%isIdle)
+                if (%sameServer && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Give Drink", %n = %n + 1, %schemeNormal);
                 }
@@ -179,24 +137,9 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
             }
             %this.add("Give Gift", %n = %n + 1, %schemeNormal);
-            if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drinkMaker"))
+            if (SkuManager.hasSkuWithAnyTags($player.getActiveSKUs(), "drinkMaker") && !rentabot_isRentabotName(%playerName))
             {
-            }
-            if (!rentabot_isRentabotName(%playerName))
-            {
-                if (%sameServer)
-                {
-                }
-                if (%onlineHere)
-                {
-                }
-                if (!%isIgnore)
-                {
-                }
-                if (geGiftingPanel.isInRange(%playerClicked))
-                {
-                }
-                if (!%isIdle)
+                if (%sameServer && %onlineHere && !%isIgnore && geGiftingPanel.isInRange(%playerClicked) && !%isIdle)
                 {
                     %this.add("Make Drink", %n = %n + 1, %schemeNormal);
                 }
@@ -209,10 +152,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                     %this.add("Make Drink - Idle!", %n = %n + 1, %schemeDisabled);
                 }
             }
-            if (isObject(%playerClicked))
-            {
-            }
-            if (%playerClicked.getCanHandleMusicRequest())
+            if (isObject(%playerClicked) && %playerClicked.getCanHandleMusicRequest())
             {
                 %this.add("Request Music", %n = %n + 1, %schemeNormal);
             }
@@ -230,17 +170,11 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                     }
                     %this.add("This Space: Make Co-Host", %n = %n + 1, %schemeNormal);
                 }
-                if (%isRealPlayer)
-                {
-                }
-                if (!%playerClicked.isHost())
+                if (%isRealPlayer && !%playerClicked.isHost())
                 {
                     %this.add("This Space: Kick", %n = %n + 1, %schemeNormal);
                 }
-                if (!%isRentabot)
-                {
-                }
-                if ($player.isHost())
+                if (!%isRentabot && $player.isHost())
                 {
                     if (findField($CSBlockedList, %playerName) == -(1))
                     {
@@ -250,30 +184,18 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 if (isObject(%playerClicked))
                 {
-                    if (CustomSpaceClient::isOwner())
-                    {
-                    }
-                    if (%isRentabot)
+                    if (CustomSpaceClient::isOwner() && %isRentabot)
                     {
                         %this.add("This Space: Customize", %n = %n + 1, %schemeNormal);
                     }
-                    if ($player.isHostOrCohost())
-                    {
-                    }
-                    if (!%playerClicked.rolesPermissionCheckNoWarn("customspaceImmune") && !%playerClicked.isHost())
-                    {
-                    }
-                    if ($player.isHost() || !%playerClicked.isClassAIPlayer())
+                    if (!%playerClicked.isHost() && $player.isHost() || $player.isHostOrCohost() && !%playerClicked.rolesPermissionCheckNoWarn("customspaceImmune") && !%playerClicked.isClassAIPlayer())
                     {
                         %this.add("This Space: Summon", %n = %n + 1, %schemeNormal);
                         %this.add("This Space: Respawn", %n = %n + 1, %schemeNormal);
                     }
                 }
             }
-            if (%onlineHere)
-            {
-            }
-            if (%ignorable)
+            if (%onlineHere && %ignorable)
             {
                 if (%isIgnore)
                 {
@@ -281,44 +203,26 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
                 }
                 %this.add("Ignore", %n = %n + 1, %schemeIgnore);
             }
-            if (CustomSpaceClient::isOwner())
-            {
-            }
-            if (isObject(%playerClicked))
-            {
-            }
-            if ((%friendStatus $= "friends") || %isNPC || (%playerClicked != $player))
+            if (CustomSpaceClient::isOwner() && isObject(%playerClicked) && (%friendStatus $= "friends") || %isNPC || (%playerClicked != $player))
             {
                 %this.add("Teleport To", %n = %n + 1, %schemeTeleport);
             }
-            if (%onlineHere)
-            {
-            }
-            if (!%isRentabot)
+            if (%onlineHere && !%isRentabot)
             {
                 %this.add("Report Abuse", %n = %n + 1, %schemeProfile);
             }
             if ($flowerGiftingEnabled)
             {
-                if (isObject(%playerClicked))
-                {
-                }
-                if (%isNPC)
+                if (isObject(%playerClicked) && %isNPC)
                 {
                     %skuSelf = getSpecialSKU($player, "flower");
                     %skuThem = getSpecialSKU(%playerClicked, "flower");
-                    if (%playerClicked.hasActiveSKU(%skuThem))
-                    {
-                    }
-                    if (!$player.hasInventorySKU(%skuSelf))
+                    if (%playerClicked.hasActiveSKU(%skuThem) && !$player.hasInventorySKU(%skuSelf))
                     {
                         %this.add("Take Flower", %n = %n + 1, %schemeGifting);
                     }
                 }
-                if (isObject(%playerClicked))
-                {
-                }
-                if (!%isNPC)
+                if (isObject(%playerClicked) && !%isNPC)
                 {
                     %skuSelf = getSpecialSKU($player, "flower");
                     if ($player.hasInventorySKU(%skuSelf))
@@ -425,10 +329,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
             {
                 %this.add("Invite to game");
             }
-            if (gameMgrClient.inCustomGame())
-            {
-            }
-            if (gameMgrClient.areWeHostOfInspectedGame())
+            if (gameMgrClient.inCustomGame() && gameMgrClient.areWeHostOfInspectedGame())
             {
                 %this.add("Change score");
                 %this.add("Change status");
@@ -459,10 +360,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
         %this.addIfPermitted("track", "Teleport To", %n = %n + 1, %schemeTeleport);
         %this.addIfPermitted("summon", "Respawn", %n = %n + 1, %schemeNormal);
         %this.addIfPermitted("summon", "Summon", %n = %n + 1, %schemeNormal);
-        if (CustomSpaceClient::isOwner() || $player.isHostOrCohost() || $player.rolesPermissionCheckNoWarn("microphones"))
-        {
-        }
-        if (isObject(%playerClicked))
+        if (CustomSpaceClient::isOwner() || $player.isHostOrCohost() || $player.rolesPermissionCheckNoWarn("microphones") && isObject(%playerClicked))
         {
             if (%playerClicked.hasMicrophone())
             {
@@ -473,10 +371,7 @@ function PlayerContextMenu::init(%this, %playerName, %friendStatus, %isIgnore, %
         if ($player.isDebugging())
         {
             %this.add("        --- debug --- (" @ %playerClicked @ ")", %n = %n + 1, %schemeDisabled);
-            if (%isNPC)
-            {
-            }
-            if ($StandAlone)
+            if (%isNPC && $StandAlone)
             {
                 %this.add("Set Height: really tall", %n = %n + 1, %schemeNormal);
                 %this.add("Set Height: tall", %n = %n + 1, %schemeNormal);
@@ -555,10 +450,7 @@ function PlayerContextMenu::addIfPermitted(%this, %permName, %text, %n, %scheme)
         {
             %skuGuide = getSpecialSKU($player, "guidebadge");
             %skuSGuide = getSpecialSKU($player, "seniorguidebadge");
-            if (!$player.hasActiveSKU(%skuGuide))
-            {
-            }
-            if (!$player.hasActiveSKU(%skuSGuide))
+            if (!$player.hasActiveSKU(%skuGuide) && !$player.hasActiveSKU(%skuSGuide))
             {
                 return;
             }

@@ -215,10 +215,7 @@ function gameMgrClient::inspectNewGame(%this, %serversideID, %gname, %gameType, 
             error("Existing game record has different name or type than latest record! This should never happen and is bad news. Returning <-" @ getScopeName());
             return;
         }
-        if (isObject(%this.inspectedGame))
-        {
-        }
-        if (!%this.games.isMember(%this.inspectedGame))
+        if (isObject(%this.inspectedGame) && !%this.games.isMember(%this.inspectedGame))
         {
             %this.inspectedGame.PlayerRecords.delete();
             if (isObject(%this.inspectedGame.ourRecord))
@@ -364,10 +361,7 @@ function gameMgrClient::inspectAddRemovePlayers(%this, %serversideID, %playersAd
     {
         %this.inspectedGame.readyCount = %totalReadyPlayersRemaining;
     }
-    if (%playersAdded $= "")
-    {
-    }
-    if (%playersRemoved $= "")
+    if ((%playersAdded $= "") && (%playersRemoved $= ""))
     {
         GameList.refreshInspectTab();
         return;
@@ -495,10 +489,7 @@ function gameMgrClient::playerJoined(%this, %serversideID, %gname, %gameType, %h
     {
         if (!isObject(%this.inspectedGame.ourRecord))
         {
-            if (%playerRank $= "")
-            {
-            }
-            if (%playerScore $= "")
+            if ((%playerRank $= "") && (%playerScore $= ""))
             {
                 error("on playerJoined call for joining an inspected game, playerRank and playerScore were not passed!<-" @ getScopeName());
             }
@@ -674,10 +665,7 @@ function gameMgrClient::getGameBySID(%this, %serversideID)
 function gameMgrClient::addGame(%this, %serversideID, %gname, %gameType, %host, %playerCount, %gamestatus)
 {
     echo(getScopeName());
-    if (isObject(%this.inspectedGame))
-    {
-    }
-    if (%this.inspectedGame.serversideID == %serversideID)
+    if (isObject(%this.inspectedGame) && (%this.inspectedGame.serversideID == %serversideID))
     {
         %newGame = %this.inspectedGame;
         if (!(%gname $= %this.inspectedGame.gname) || (%gameType != %this.inspectedGame.gametype))

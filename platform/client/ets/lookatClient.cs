@@ -14,10 +14,7 @@ function doLookAt(%obj, %isDanceWith, %isKiss)
     {
         %resetTime = $KissResetTimeout;
     }
-    if (!%isKiss)
-    {
-    }
-    if (!%isDanceWith)
+    if (!%isKiss && !%isDanceWith)
     {
         %resetTime = $LookAtResetTimeout;
     }
@@ -55,10 +52,7 @@ function doPointAt(%obj)
 {
     %ghostID = -(1);
     %resetTime = $PointAtResetTimeout;
-    if (%obj != $PointAtPrevObj)
-    {
-    }
-    if (%obj != $player)
+    if ((%obj != $PointAtPrevObj) && (%obj != $player))
     {
         if (isObject(%obj))
         {

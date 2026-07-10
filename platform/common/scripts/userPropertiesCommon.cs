@@ -38,10 +38,7 @@ function userPropertiesMgr::setProperty(%this, %userName, %propertyName, %proper
     }
     %propertyValue = %propertyValue;
     1;
-    if (%smValue.hasKey(%propertyName))
-    {
-    }
-    if (%smValue.get(%propertyName) $= %propertyValue)
+    if (%smValue.hasKey(%propertyName) && (%smValue.get(%propertyName) $= %propertyValue))
     {
         return;
     }
@@ -221,10 +218,7 @@ function userPropertiesMgr::requestProperties(%this, %userName, %callback)
         echo(getScopeName() @ " " @ "- standalone! loaded from" @ " " @ %fileName);
         return;
     }
-    if (%this.isClient())
-    {
-    }
-    if (!haveValidManagerHost() || !haveValidToken())
+    if (%this.isClient() && !haveValidManagerHost() || !haveValidToken())
     {
         warn(getScopeName() @ " " @ "- not connected to backend - properties not retrieved." @ " " @ %this.clientOrServer @ " " @ %userName);
         if (!isObject(%this.propertiesValue[%userName]))

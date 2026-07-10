@@ -264,10 +264,7 @@ function geTGF_tabs::Maps_changedCityFilter(%this, %cityName)
     }
     if (!(%cityName $= %this.Maps_filterCity))
     {
-        if (!(%cityName $= ""))
-        {
-        }
-        if (TGFWorldMapMultiCitySmall.isVisible() == 0)
+        if (!(%cityName $= "") && (TGFWorldMapMultiCitySmall.isVisible() == 0))
         {
             %pos = TGFDestinations.getPosition();
             %ext = TGFDestinations.getExtent();
@@ -275,10 +272,7 @@ function geTGF_tabs::Maps_changedCityFilter(%this, %cityName)
             TGFDestinations.setTrgPosition(getWord(%pos, 0) @ " " @ (getWord(%pos, 1) + TGFDestinations.childHeightDelta));
             TGFWorldMapMultiCitySmall.setVisible(1);
         }
-        if (%cityName $= "")
-        {
-        }
-        if (TGFWorldMapMultiCitySmall.isVisible() == 1)
+        if ((%cityName $= "") && (TGFWorldMapMultiCitySmall.isVisible() == 1))
         {
             %pos = TGFDestinations.getPosition();
             %ext = TGFDestinations.getExtent();

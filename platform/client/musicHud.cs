@@ -41,13 +41,7 @@ function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %is
     %commentData.delete();
     %this.charWidth = mMax(mMax(mMax(strlen(%artist), (2 + strlen(%title))), strlen(%album)), strlen(%commentText));
     %this.update();
-    if ((HudTabs.currentTabIndex < 0) || (HudTabs.getCurrentTab().name $= "music"))
-    {
-    }
-    if (!$UserPref::Audio::mute)
-    {
-    }
-    if (%this.hasMusicData())
+    if ((HudTabs.currentTabIndex < 0) || (HudTabs.getCurrentTab().name $= "music") && !$UserPref::Audio::mute && %this.hasMusicData())
     {
         %this.show();
     }
@@ -58,10 +52,7 @@ function MusicHud::displayMetaData(%this, %artist, %title, %album, %comment, %is
 }
 function MusicHud::hasMusicData(%this)
 {
-    if (!(%this.musicService $= ""))
-    {
-    }
-    return !(%this.musicService.getArtist() $= "") || !(%this.musicService.getTitle() $= "");
+    return !(%this.musicService.getArtist() $= "") || !(%this.musicService $= "") && !(%this.musicService.getTitle() $= "");
 }
 function MusicHud::update(%this)
 {
@@ -114,10 +105,7 @@ function MusicHud::update(%this)
     }
     %this.updateRatingText();
     MusicText.setText(%content);
-    if (MusicText.isVisible())
-    {
-    }
-    if (MusicText.isAwake())
+    if (MusicText.isVisible() && MusicText.isAwake())
     {
         MusicText.forceReflow();
     }
@@ -137,10 +125,7 @@ function MusicHud::updateRatingText(%this)
     }
     else
     {
-        if (%isObject)
-        {
-        }
-        if (!(RatingRequest.community_rating $= ""))
+        if (%isObject && !(RatingRequest.community_rating $= ""))
         {
             %ratingText = %ratingText @ "Avg. Rating: " @ RatingRequest.community_rating;
             if (!(RatingRequest.num_ratings $= ""))

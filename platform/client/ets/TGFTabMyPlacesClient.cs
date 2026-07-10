@@ -194,10 +194,7 @@ function geTGF_OnCompleted_MyPlace(%tracker)
         }
         else
         {
-            if (%guiTable.getId() == geTGF_OtherPlacesGuiTable.getId())
-            {
-            }
-            if (!(%itemObj.get("type") $= "MODEL"))
+            if ((%guiTable.getId() == geTGF_OtherPlacesGuiTable.getId()) && !(%itemObj.get("type") $= "MODEL"))
             {
                 echo(getScopeName() @ " " @ "- skipping space" @ " " @ %itemObj.get("description"));
             }
@@ -220,10 +217,7 @@ function geTGF_OnCompleted_MyPlace(%tracker)
         }
         %n = %n + 1;
     }
-    if (geTGF.testItemList("myplace", "happening"))
-    {
-    }
-    %bothListsExist = geTGF.testItemList("otherplaces", "happening");
+    %bothListsExist = geTGF.testItemList("myplace", "happening") && geTGF.testItemList("otherplaces", "happening");
     %n < %count;
     if (%bothListsExist)
     {
@@ -267,10 +261,7 @@ function populateMyPlaceTableFromItemList(%guiTable, %listName, %listType)
         }
         %imageURL = %item.baseImageURL @ "?size=S";
         "";
-        if (!($ServerName $= ""))
-        {
-        }
-        %sameServer = (%item.location_serverName $= $ServerName) ? "true" : "false";
+        %sameServer = !($ServerName $= "") && (%item.location_serverName $= $ServerName) ? "true" : "false";
         if (%item.eventID $= "")
         {
             %eventValue = "notAnEvent";

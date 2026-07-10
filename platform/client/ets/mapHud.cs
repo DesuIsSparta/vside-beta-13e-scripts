@@ -20,10 +20,7 @@ function geLocalMapContainer::onSpaceChange(%this, %spaceName)
     %this.spaceName = %spaceName;
     %mapObj = getSpace2DMap(%spaceName);
     %this.setMap2D(%mapObj);
-    if ($UserPref::UI::Radar::AutoOpen)
-    {
-    }
-    if (isObject(%mapObj))
+    if ($UserPref::UI::Radar::AutoOpen && isObject(%mapObj))
     {
         %this.open();
     }
@@ -196,10 +193,7 @@ function Player::updateMapIcon(%this)
         }
     }
     %bitmap = "";
-    if (isObject($player))
-    {
-    }
-    if ((%this == $player) || %this.getShowOnRadar() || $player.rolesPermissionCheckNoWarn("radarSeeAll"))
+    if ((%this == $player) || isObject($player) && %this.getShowOnRadar() || $player.rolesPermissionCheckNoWarn("radarSeeAll"))
     {
         %gender = %this.getGender();
         if (%this.getShapeName() $= $Player::Name)

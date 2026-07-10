@@ -99,10 +99,7 @@ function onPhase3Complete()
 function onMissionDownloadComplete()
 {
     InitClientSittingSystem();
-    if (isFunction("Using_DF"))
-    {
-    }
-    if (Using_DF())
+    if (isFunction("Using_DF") && Using_DF())
     {
         startDFZone();
     }
@@ -111,10 +108,7 @@ function onMissionDownloadComplete()
 addMessageCallback('MsgLoadInfo', handleLoadInfoMessage);
 addMessageCallback('MsgLoadDescripition', handleLoadDescriptionMessage);
 addMessageCallback('MsgLoadInfoDone', handleLoadInfoDoneMessage);
-if (isFunction("Using_DF"))
-{
-}
-if (Using_DF())
+if (isFunction("Using_DF") && Using_DF())
 {
     addMessageCallback('MsgDFZoneName', handleMsgDFZoneNameMessage);
 }

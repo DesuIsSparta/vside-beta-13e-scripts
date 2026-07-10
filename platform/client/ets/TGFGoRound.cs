@@ -77,10 +77,7 @@ function TGFGoRound::newContentLilThumb(%this, %container)
         %this.mItemsList.mCurrentItem = 0;
         return;
     }
-    if (%item.relationType $= "")
-    {
-    }
-    if (UserListFriends.hasKey(%item.userName))
+    if ((%item.relationType $= "") && UserListFriends.hasKey(%item.userName))
     {
         %item.relationType = "friend";
     }

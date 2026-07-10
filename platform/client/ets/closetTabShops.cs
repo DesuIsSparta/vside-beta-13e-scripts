@@ -605,10 +605,7 @@ function ClosetTabs::setStoreControlsVisible(%this, %flag)
     StoreLongDescText.setVisible(%flag);
     StoreShoppingBag.setVisible(%flag);
     StoreItemDescFrame.setVisible(%flag);
-    if (%flag)
-    {
-    }
-    StoreDirectoryLink.setVisible(!isInFUE());
+    StoreDirectoryLink.setVisible(%flag && !isInFUE());
     if (!%flag)
     {
         StoreItemDescHiliteFrame.setVisible(%flag);
@@ -975,10 +972,7 @@ function StoreShoppingListItem::onMouseLeaveBounds(%this)
 }
 function StoreShoppingListItem::onHilite(%this)
 {
-    if (0)
-    {
-    }
-    if (isObject(StoreLongDescText))
+    if (0 && isObject(StoreLongDescText))
     {
         StoreShortDescText.setDesc(ClosetTabs.getShortSkuDesc(%this.sku));
         StoreLongDescText.setDesc(ClosetTabs.getLongSkuDesc(%this.sku));
@@ -989,10 +983,7 @@ function StoreShoppingListItem::onHilite(%this)
 }
 function StoreShoppingListItem::onUnhilite(%this)
 {
-    if (0)
-    {
-    }
-    if (isObject(StoreLongDescText))
+    if (0 && isObject(StoreLongDescText))
     {
         StoreShortDescText.showBaseDesc();
         StoreLongDescText.showBaseDesc();

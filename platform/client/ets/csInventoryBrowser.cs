@@ -92,10 +92,7 @@ function CSInventoryBrowser::fillLeafPane(%this, %pane)
     %desc = %this.getMenuText(%desc);
     %paneWidth = getWord(%pane.getExtent(), 0);
     %paneHeight = getWord(%pane.getExtent(), 1);
-    if (!(%desc $= ""))
-    {
-    }
-    if (!(%desc $= %this.baseDir))
+    if (!(%desc $= "") && !(%desc $= %this.baseDir))
     {
         %ypos = getWord(%pane.itemText.getPosition(), 1) + getWord(%pane.itemText.getExtent(), 1);
         %qtyText = new GuiMLTextCtrl("") {
@@ -263,10 +260,7 @@ function CSInventoryItemPane::update(%this)
     }
     %this.placeButton.command = "CustomSpaceClient::placeSkuInWorld(" @ %sku @ ");";
     %this.putAwayButton.command = "csTestFreeSelectedItem();";
-    if (%sku == $CSSelectedSku)
-    {
-    }
-    %this.putAwayButton.setActive($CSSelectedIsOwned);
+    %this.putAwayButton.setActive((%sku == $CSSelectedSku) && $CSSelectedIsOwned);
     %this.buyButton.command = "CSInventoryBrowser.switchToOtherBrowser(); CSShoppingBrowser.navigateToSku(" @ %sku @ ");";
     %numOwned = numOwnedFurnitureSku(%sku);
     %numPlaced = numUsingFurnitureSku(%sku);

@@ -194,10 +194,7 @@ function ButtonBar::insertButton(%this, %buttonName)
     {
         %currentButton = %dummyContainer.getObject(%i);
         %dummyContainer.remove(%currentButton);
-        if (!%buttonHasBeenInserted)
-        {
-        }
-        if (%this.buttons["buttonIndex"] > %buttonIndex @ %currentButton.getName())
+        if (!%buttonHasBeenInserted && (%this.buttons["buttonIndex"] > %buttonIndex @ %currentButton.getName()))
         {
             %this.add(%buttonToInsert);
             %buttonHasBeenInserted = 1;

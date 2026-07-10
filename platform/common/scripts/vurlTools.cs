@@ -25,13 +25,7 @@ function vurl::parse(%this)
     }
     %targetpath = NextToken(%target, "targettype", "/");
     strlwr(%targettype);
-    if (stricmp(%targettype, "location") != 0)
-    {
-    }
-    if (stricmp(%targettype, "user") != 0)
-    {
-    }
-    if (stricmp(%targettype, "apartment") != 0)
+    if ((stricmp(%targettype, "location") != 0) && (stricmp(%targettype, "user") != 0) && (stricmp(%targettype, "apartment") != 0))
     {
         %errorText = "VURL::parse unknown type type in vurl =" @ " " @ %this.vurl;
         %this.doReportError("parseError", %errorText);
@@ -63,10 +57,7 @@ function vurl::parse(%this)
                 %this.targetDest = %testTargetDest;
                 %this.isRawTransform = 1;
             }
-            if (%wordCount != 1)
-            {
-            }
-            if (%this.isRawTransform == 0)
+            if ((%wordCount != 1) && (%this.isRawTransform == 0))
             {
                 %errorText = "Invalid number of parameters in target";
                 %this.doReportError("parseError", %errorText);
@@ -161,20 +152,14 @@ function vurl::setIgnoreDownloadStatus(%this, %val)
 }
 function vurl::execute(%this)
 {
-    if (%this.retryIndex == 0)
-    {
-    }
-    if (testFlooding($player, "teleport", 1))
+    if ((%this.retryIndex == 0) && testFlooding($player, "teleport", 1))
     {
         log("network", "warn", "Teleport Flooding");
         %errorText = "";
         %this.doReportError("FLOOD", %errorText);
         return 0;
     }
-    if (isObject($VURL::curVURL))
-    {
-    }
-    if ($VURL::curVURL.getId() != %this.getId())
+    if (isObject($VURL::curVURL) && ($VURL::curVURL.getId() != %this.getId()))
     {
         log("network", "warn", "Pending VURL execution being overridden");
         $VURL::curVURL.schedule(0, "delete");
@@ -195,20 +180,14 @@ function vurl::execute(%this)
             %this.doReportError("TELETOSELF", "");
             return 0;
         }
-        if (isObject(ServerConnection))
-        {
-        }
-        if (isNPCName(%this.targetPath))
+        if (isObject(ServerConnection) && isNPCName(%this.targetPath))
         {
             %this.doReportSuccessExpected();
             commandToServer('TeleportToPlayer', %this.targetPath);
             return 1;
         }
     }
-    if (!%this.isResolved)
-    {
-    }
-    if (!$StandAlone)
+    if (!%this.isResolved && !$StandAlone)
     {
         log("network", "info", "Unresolved VURL execution. Processing resolution request first");
         %this.doResolveVURL();
@@ -221,13 +200,7 @@ function vurl::execute(%this)
         %this.schedule(0, "delete");
         return 1;
     }
-    if (%this._server[%this.retryIndex] $= "")
-    {
-    }
-    if ($StandAlone)
-    {
-    }
-    if (!$StandAlone || !(%this.standAloneRetry $= ""))
+    if ($StandAlone && (%this._server[%this.retryIndex] $= "") && !$StandAlone || !(%this.standAloneRetry $= ""))
     {
         %this.doReportError("nomoreretry", "");
         return 0;
@@ -240,18 +213,12 @@ function vurl::execute(%this)
         }
     }
     %cityName = %this.getCityFromServerName(%this._server[%this.retryIndex]);
-    if (isObject(WorldMapCityInfoMap))
-    {
-    }
-    if (isObject(LoadingGui))
+    if (isObject(WorldMapCityInfoMap) && isObject(LoadingGui))
     {
         %cityInfo = WorldMapCityInfoMap.get(%cityName);
         LoadingGui.setBitmap(%cityInfo.background);
     }
-    if (%this.checkCityDownloadStatus(%cityName))
-    {
-    }
-    if (!%this.ignoreDownloadStatus)
+    if (%this.checkCityDownloadStatus(%cityName) && !%this.ignoreDownloadStatus)
     {
         %this.doReportError("downloading", "");
         return 0;
@@ -295,10 +262,7 @@ function vurl::getCityFromServerName(%this, %ServerName)
 }
 function vurl::checkCityDownloadStatus(%this, %cityName)
 {
-    if (isObject(packageDownload))
-    {
-    }
-    if ($AutoDownloadPackages)
+    if (isObject(packageDownload) && $AutoDownloadPackages)
     {
         %status = packageDownload.getStatusForCity(%cityName);
         if (%status $= "done")
@@ -403,10 +367,7 @@ function vurl::DefaultReportError(%vurl, %errorCode, %errorText)
     }
     else
     {
-        if ((%errorCode $= "accessDenied") || (errorCode $= "parseError"))
-        {
-        }
-        if (!(%errorText $= ""))
+        if ((%errorCode $= "accessDenied") || (errorCode $= "parseError") && !(%errorText $= ""))
         {
             handleSystemMessage("msgInfoMessage", %errorText);
             %vurl.VURLHandler.schedule(0, "delete");
@@ -497,10 +458,7 @@ function ResolveVURLRequest::onError(%this, %unused, %errMsg)
     log("network", "debug", "ResolveVURLRequest::onError: " @ %errMsg);
     %this.VURLHandler.error = 1;
     %this.schedule(0, "delete");
-    if (isObject($VURL::curVURL))
-    {
-    }
-    if ($VURL::curVURL.getId() == %this.VURLHandler.getId())
+    if (isObject($VURL::curVURL) && ($VURL::curVURL.getId() == %this.VURLHandler.getId()))
     {
         $VURL::curVURL.delete();
         $VURL::curVURL = 0;

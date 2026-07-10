@@ -10,10 +10,7 @@ function rentabot_getCoreName(%name)
 }
 function rentabot_isRentabotName(%name)
 {
-    if (hasPrefix(%name, "["))
-    {
-    }
-    return hasSuffix(%name, "]");
+    return hasPrefix(%name, "[") && hasSuffix(%name, "]");
 }
 function rentabot_makeRentabotName(%name)
 {

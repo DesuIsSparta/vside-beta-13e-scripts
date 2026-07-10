@@ -12,10 +12,7 @@ function CSLayoutSelector::toggle(%this)
 }
 function CSLayoutSelector::open(%this)
 {
-    if ($ETS::devMode)
-    {
-    }
-    CSLayoutSelectorSaveAsDefaultLink.setVisible($player.rolesPermissionCheckNoWarn("debugActive") || $StandAlone);
+    CSLayoutSelectorSaveAsDefaultLink.setVisible($player.rolesPermissionCheckNoWarn("debugActive") || $ETS::devMode && $StandAlone);
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
     WindowManager.update();
@@ -75,10 +72,7 @@ function CSLayoutSelector::updateSettings(%this, %numLayouts, %curLayout)
     %this.selectedLayout = %curLayout;
     CSLayoutButtonsArray.getObject(%this.selectedLayout).buttonSelect.performClick();
     %this.setSelectionState(%this.selectedLayout, 1);
-    if (!(%oldSelected $= ""))
-    {
-    }
-    if (%oldSelected != %this.selectedLayout)
+    if (!(%oldSelected $= "") && (%oldSelected != %this.selectedLayout))
     {
         %this.setSelectionState(%oldSelected, 0);
     }

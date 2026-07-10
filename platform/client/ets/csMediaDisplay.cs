@@ -70,10 +70,7 @@ function CSMediaDisplay::update(%this)
 }
 function CSMediaDisplay::Initialize()
 {
-    if (!(CSMediaDisplay.initialized $= ""))
-    {
-    }
-    if (CSMediaDisplay.initialized == 1)
+    if (!(CSMediaDisplay.initialized $= "") && (CSMediaDisplay.initialized == 1))
     {
         return;
     }
@@ -372,15 +369,9 @@ function CSMediaDisplay::extractMediaStreamId(%this, %medialink)
     %url.bindClassName("URLInfo");
     %url.url = %medialink;
     %streamID = "";
-    if (%url.parse())
+    if (%url.parse() && (stricmp(%url.protocol, "vside") == 0) && (stricmp(%url.host, "radio") == 0))
     {
-        if (stricmp(%url.protocol, "vside") == 0)
-        {
-        }
-        if (stricmp(%url.host, "radio") == 0)
-        {
-            %streamID = %url.Path;
-        }
+        %streamID = %url.Path;
     }
     %url.delete();
     return %streamID;
@@ -407,10 +398,7 @@ function CSMediaDisplay::setPlayingChild(%this, %child)
         if (%child != %otherChild)
         {
             %otherChild.isPlaying = 0;
-            if (!(%otherChild.highlight $= ""))
-            {
-            }
-            if (isObject(%otherChild.highlight))
+            if (!(%otherChild.highlight $= "") && isObject(%otherChild.highlight))
             {
                 %otherChild.remove(%otherChild.highlight);
                 %otherChild.highlight.delete();
@@ -588,10 +576,7 @@ function CSMediaDisplay::setPlaybuttonAvailable(%this, %child, %avail)
 }
 function CSMediaDisplay::setPlaybuttonVisible(%this, %child, %visible)
 {
-    if (%child.playbuttonAvailable)
-    {
-    }
-    if (!(%child.playButton $= ""))
+    if (%child.playbuttonAvailable && !(%child.playButton $= ""))
     {
         %child.playButton.visible = %visible;
     }
@@ -646,10 +631,7 @@ function CSMediaDisplay::updateMediaLinkTo(%this, %child, %newMediaLink, %skipSt
         %url.parse();
         %path = %url.Path;
         %url.delete();
-        if (%path $= "-")
-        {
-        }
-        if (!%child.forceRadio)
+        if ((%path $= "-") && !%child.forceRadio)
         {
             %newMediaType = $CSMediaDisplay::TypeEmpty;
             %newMediaLink = "";

@@ -125,10 +125,7 @@ function benchmarks::runCameraTestsReps()
     $benchmarks::camera::maxFPSSum = 0;
     $benchmarks::camera::avgFPSSum = 0;
     $benchmarks::camera::repsDone = 0;
-    if (isObject(cameraTestsGroup))
-    {
-    }
-    if (cameraTestsGroup.getCount() > 0)
+    if (isObject(cameraTestsGroup) && (cameraTestsGroup.getCount() > 0))
     {
         %n = 0;
         while (%n < cameraTestsGroup.getCount())
@@ -159,10 +156,7 @@ function benchmarks::finishedCameraTestsRep(%result)
     $benchmarks::camera::maxFPSSum = $benchmarks::camera::maxFPSSum + $benchmarks::camera::maxFPS;
     $benchmarks::camera::avgFPSSum = $benchmarks::camera::avgFPSSum + $benchmarks::camera::avgFPS;
     $benchmarks::camera::repsDone = $benchmarks::camera::repsDone + 1;
-    if (%result $= "success")
-    {
-    }
-    if ($benchmarks::camera::repsRemaining > 0)
+    if ((%result $= "success") && ($benchmarks::camera::repsRemaining > 0))
     {
         echoBenchmarksCamera("");
         benchmarks::runCameraTests();
@@ -377,10 +371,7 @@ function benchmarks::cameraToGui()
     gui_Benchs_Cam_Cur.setText($benchmarks::camera::curPoint);
     %txt = "-";
     %obj = 0;
-    if (isObject(cameraTestsGroup))
-    {
-    }
-    if ($benchmarks::camera::curPoint >= 0)
+    if (isObject(cameraTestsGroup) && ($benchmarks::camera::curPoint >= 0))
     {
         %obj = cameraTestsGroup.getObject($benchmarks::camera::curPoint);
     }
@@ -393,8 +384,5 @@ function benchmarks::cameraToGui()
 }
 function benchmarks::isInteractive()
 {
-    if (isObject(benchmarksGui))
-    {
-    }
-    return benchmarksGui.isVisible();
+    return isObject(benchmarksGui) && benchmarksGui.isVisible();
 }

@@ -111,10 +111,7 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                     %beginningOfNextWord = 0;
                     %wordDone = 0;
                     %i = 1;
-                    if (%i <= %wordLength)
-                    {
-                    }
-                    while (!%wordDone)
+                    while ((%i <= %wordLength) && !%wordDone)
                     {
                         %partialWord = getSubStr(%currentWord, 0, %i);
                         %thisLineWidth = getStrWidth(%partialWord, %profile);
@@ -132,12 +129,9 @@ function chopTextToFitLineWidths(%text, %profile, %generalWidth, %lineWidths)
                             %wordDone = 1;
                         }
                         %i = %i + 1;
-                        if (%i <= %wordLength)
-                        {
-                        }
                     }
                     %thisLine = %partialWord;
-                    !%wordDone;
+                    (%i <= %wordLength) && !%wordDone;
                     if (%beginningOfNextWord > 0)
                     {
                         %text = setWord(%text, %currentWordIndex, getSubStr(%currentWord, %beginningOfNextWord, %wordLength));

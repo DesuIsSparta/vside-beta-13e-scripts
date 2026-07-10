@@ -14,10 +14,7 @@ function Buildings::GetSkuFromFloorPlanName(%floorplanName)
 function DeclareBuilding(%buildingName, %buildingDescription, %longDescription, %minlevelToOwn, %areaNames, %floorplans)
 {
     %areaNameCity = DestinationList::GetAreaNameCity(firstWord(%areaNames));
-    if (%areaNameCity $= "")
-    {
-    }
-    if (!(%areaNames $= ""))
+    if ((%areaNameCity $= "") && !(%areaNames $= ""))
     {
         error(getScopeName() @ " " @ "- areaName does not correspond to a city. -" @ " " @ %areaNames @ " " @ getTrace());
     }

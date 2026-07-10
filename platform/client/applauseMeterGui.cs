@@ -1,33 +1,21 @@
 function ApplauseMeterGui::open(%this, %applauseMeterUse, %arg)
 {
     %applauseMeterUse = strlwr(%applauseMeterUse);
-    if (%this.applauseMeterUse $= "applause")
-    {
-    }
-    if (!(%applauseMeterUse $= "applause"))
+    if ((%this.applauseMeterUse $= "applause") && !(%applauseMeterUse $= "applause"))
     {
         ApplauseMeterGui.closeForApplause();
     }
     else
     {
-        if (%this.applauseMeterUse $= "instrument")
-        {
-        }
-        if (!(%applauseMeterUse $= "instrument"))
+        if ((%this.applauseMeterUse $= "instrument") && !(%applauseMeterUse $= "instrument"))
         {
             ApplauseMeterGui.closeForInstrument();
         }
-        if (%this.applauseMeterUse $= "sumo")
-        {
-        }
-        if (!(%applauseMeterUse $= "sumo"))
+        if ((%this.applauseMeterUse $= "sumo") && !(%applauseMeterUse $= "sumo"))
         {
             ApplauseMeterGui.closeForSumo();
         }
-        if (%this.applauseMeterUse $= "blockgame")
-        {
-        }
-        if (!(%applauseMeterUse $= "blockgame"))
+        if ((%this.applauseMeterUse $= "blockgame") && !(%applauseMeterUse $= "blockgame"))
         {
             ApplauseMeterGui.closeForBlockGame();
         }
@@ -205,10 +193,7 @@ function ApplauseMeterGui::closeForBlockGame(%this)
 $gBlockGameKeys = "" @ "\n" @ "I" @ "\n" @ "J" @ "\n" @ "K" @ "\n" @ "L" @ "\n" @ " " @ "\n" @ "left" @ "\n" @ "right" @ "\n" @ "up" @ "\n" @ "down" @ "\n" @ "lcontrol" @ "\n" @ "rcontrol";
 function ApplauseMeterGui::onBlockGameKeys(%this, %keyCodeStr, %isKeyDown)
 {
-    if (%isKeyDown)
-    {
-    }
-    %wantIt = (findRecord($gBlockGameKeys, %keyCodeStr) < 0) ? 0 : 1;
+    %wantIt = %isKeyDown && (findRecord($gBlockGameKeys, %keyCodeStr) < 0) ? 0 : 1;
     if (%wantIt)
     {
         if (%keyCodeStr $= "I")
@@ -452,10 +437,7 @@ function ApplauseMeterGui::closeForInstrument(%this)
 }
 function toggleInstrumentGame(%instrument)
 {
-    if (ApplauseMeterGui.isVisible())
-    {
-    }
-    if (ApplauseMeterGui.applauseMeterUse $= "instrument")
+    if (ApplauseMeterGui.isVisible() && (ApplauseMeterGui.applauseMeterUse $= "instrument"))
     {
         ApplauseMeterGui.close();
     }
@@ -575,10 +557,7 @@ function ApplauseMeterGui::onKeyDown(%this, %unused, %keyCode)
     setIdle(0);
     %keyCodeStr = %this.getStringFromKeyCode(%keyCode);
     %this.lastKeyDown = %keyCodeStr;
-    if (%this.applauseMeterUse $= "instrument")
-    {
-    }
-    if (!(%this.instrumentInUse $= ""))
+    if ((%this.applauseMeterUse $= "instrument") && !(%this.instrumentInUse $= ""))
     {
         %this.rawk(InstrumentRegistryClient.getAnimation(%this.instrumentInUse, %keyCodeStr));
     }

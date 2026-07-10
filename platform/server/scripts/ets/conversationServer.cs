@@ -48,10 +48,7 @@ function findConversation(%senderPlayer, %targetPlayer)
     {
         %conv = %targetPlayer.getConversation();
     }
-    if (!isObject(%conv))
-    {
-    }
-    if (!%conv.hasParticipant(%targetPlayer))
+    if (!isObject(%conv) && !%conv.hasParticipant(%targetPlayer))
     {
         if (isObject(%senderPlayer.getConversation()))
         {
@@ -89,10 +86,7 @@ function updateConvLocationsTimer()
 updateConvLocationsTimer();
 function serverCmdChatMessage(%senderConnection, %targetPlayer, %message)
 {
-    if (%message $= "")
-    {
-    }
-    if (spamAlert(%senderConnection))
+    if ((%message $= "") && spamAlert(%senderConnection))
     {
         return;
     }
@@ -150,10 +144,7 @@ function serverSideEavesdrop(%senderPlayer, %targetPlayer)
         error("serverSideEavesdrop: got Non-player sender:" @ " " @ getDebugString(%senderPlayer));
         return;
     }
-    if (%targetPlayer != 0)
-    {
-    }
-    if (!isPlayerObject(%targetPlayer))
+    if ((%targetPlayer != 0) && !isPlayerObject(%targetPlayer))
     {
         error("serverSideEavesdrop: got Non-zero, Non-player target:" @ " " @ getDebugString(%targetPlayer));
         return;

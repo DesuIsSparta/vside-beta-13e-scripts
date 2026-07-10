@@ -422,10 +422,7 @@ function addGenreSpecificAnimations(%map, %gender, %genre)
     addAnimationToMap(%map, "lol", %gender @ %genre @ "lol", "");
     addAnimationToMap(%map, "bow", %gender @ %genre @ "bow", "");
     addAnimationToMap(%map, "jump", %gender @ "njmp", "");
-    if (%gender $= "f")
-    {
-    }
-    if (%genre $= "p")
+    if ((%gender $= "f") && (%genre $= "p"))
     {
         addAnimationToMap(%map, "root", %gender @ %genre @ "idl1b", "");
     }

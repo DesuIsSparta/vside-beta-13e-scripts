@@ -6,10 +6,7 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName)
     %masterList = $gPaperDollPermutationLists[%gender];
     %found = -(1);
     %n = %masterList.size() - 1;
-    if (%found == -(1))
-    {
-    }
-    while (%n >= 0)
+    while ((%found == -(1)) && (%n >= 0))
     {
         %candidate = %masterList.get(%n);
         if (%candidate.name $= %listName)
@@ -17,14 +14,11 @@ function paperDoll_AddPermutation(%gender, %listName, %skus, %skusName)
             %found = %candidate;
         }
         %n = %n - 1;
-        if (%found == -(1))
-        {
-        }
     }
     if (%found == -(1))
     {
         %found = new_ScriptArray("");
-        %n >= 0;
+        (%found == -(1)) && (%n >= 0);
         %found.name = %listName;
         %masterList.append(%found);
     }

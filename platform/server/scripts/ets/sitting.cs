@@ -279,10 +279,7 @@ function SeatingArea::onTickTrigger(%this, %trigger)
     while (%n < %trigger.getNumObjects())
     {
         %obj = %trigger.getObject(%n);
-        if (%obj.needRefreshVisibleSeats)
-        {
-        }
-        if (isObject(%obj.client))
+        if (%obj.needRefreshVisibleSeats && isObject(%obj.client))
         {
             showPossibleSeats(%trigger.seats, %obj.client);
             %obj.needRefreshVisibleSeats = 0;

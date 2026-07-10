@@ -214,10 +214,7 @@ function standOrLeaveOrbitModeIfAppropriate()
 }
 function moveleft(%val)
 {
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -229,10 +226,7 @@ function moveleft(%val)
 }
 function moveright(%val)
 {
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -303,10 +297,7 @@ function doubleTapCheckOnAction(%actionTag, %keyDown, %canDoubleTapInCamera, %re
     }
     else
     {
-        if (!%canDoubleTapInCamera)
-        {
-        }
-        if ($IN_FREEFLY_CAM == 1)
+        if (!%canDoubleTapInCamera && ($IN_FREEFLY_CAM == 1))
         {
             doubleTapActionStop(%actionTag);
         }
@@ -361,10 +352,7 @@ function nextPlayerCamMode()
     }
     if (isObject(BroadcastHideSelfCheckbox))
     {
-        if (!$IN_ORBIT_CAM)
-        {
-        }
-        BroadcastHideSelfCheckbox.setVisible(!$firstPerson);
+        BroadcastHideSelfCheckbox.setVisible(!$IN_ORBIT_CAM && !$firstPerson);
     }
 }
 function ClientCmdOnOrbitMode(%orbitMode)
@@ -373,10 +361,7 @@ function ClientCmdOnOrbitMode(%orbitMode)
 }
 function movebackward(%val)
 {
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -397,10 +382,7 @@ function movedown(%val)
 function turnLeft(%val)
 {
     %doubleTap = doubleTapCheckOnAction("left", %val, 0, 250);
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -417,10 +399,7 @@ function turnLeft(%val)
 function turnRight(%val)
 {
     %doubleTap = doubleTapCheckOnAction("right", %val, 0, 250);
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -436,10 +415,7 @@ function turnRight(%val)
 }
 function panUp(%val)
 {
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -454,10 +430,7 @@ function panUp(%val)
 }
 function panDown(%val)
 {
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -476,10 +449,7 @@ function getMouseAdjustAmount(%val)
 }
 function yaw(%val)
 {
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -487,10 +457,7 @@ function yaw(%val)
 }
 function pitch(%val)
 {
-    if (!$IN_ORBIT_CAM)
-    {
-    }
-    if (!$player.isSitting())
+    if (!$IN_ORBIT_CAM && !$player.isSitting())
     {
         setIdle(0);
     }
@@ -803,10 +770,7 @@ function toggleBuddyHudForTab(%tabName)
         BuddyHudWin.open();
     }
     %currentTabName = BuddyHudTabs.getCurrentTab().name;
-    if (%wasOpen)
-    {
-    }
-    if (%tabName $= %currentTabName)
+    if (%wasOpen && (%tabName $= %currentTabName))
     {
         BuddyHudWin.close();
         return;
@@ -816,10 +780,7 @@ function toggleBuddyHudForTab(%tabName)
 function toggleSelfViewHud()
 {
     PlayGui.showRaiseOrHide(PlayerWin);
-    if (!PlayerWin.isVisible())
-    {
-    }
-    if ($IN_ORBIT_CAM)
+    if (!PlayerWin.isVisible() && $IN_ORBIT_CAM)
     {
         togglePlayerCamMode();
     }
@@ -994,10 +955,7 @@ function toggleBoneBlendGui()
 }
 function toggleTGF()
 {
-    if (Canvas.getContent().getId() != geTGF.getId())
-    {
-    }
-    if (geTGF.getParent().getId() != PlayGui.getId())
+    if ((Canvas.getContent().getId() != geTGF.getId()) && (geTGF.getParent().getId() != PlayGui.getId()))
     {
         geTGF.setVisible(0);
     }

@@ -21,29 +21,17 @@ function CSSpacePurchasePriceConfirmation(%space)
     %tradein = CSSpacePurchasePriceFormatting(%space.floorplan.tradeInValueVPoints, %space.floorplan.tradeInValueVBux);
     %final = CSSpacePurchasePriceFormatting(%finalVPoints, %finalVBux);
     %text = %text @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"] @ "\n<tab:30>" @ "\n" @ "\t" @ %text[$MsgCat::custSpace @ "PURCHASE_TRADEININTRO"][$MsgCat::custSpace @ "PURCHASE_SPACEPRICE"] @ " " @ %price @ "\n" @ " " @ "\n" @ "\t" @ %price[$MsgCat::custSpace @ "PURCHASE_NOTINCLUDED"] @ "\n" @ "<spop>";
-    if ($Player::VPoints >= %finalVPoints)
-    {
-    }
-    if (%finalVPoints >= 0 && ($Player::VBux >= %finalVBux))
-    {
-    }
-    if (%finalVBux >= 0)
+    if (($Player::VBux >= %finalVBux) && ($Player::VPoints >= %finalVPoints) && (%finalVPoints >= 0) && (%finalVBux >= 0))
     {
         %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_CHOICE"] @ "\n";
     }
     else
     {
-        if ($Player::VPoints >= %finalVPoints)
-        {
-        }
-        if (%finalVPoints >= 0)
+        if (($Player::VPoints >= %finalVPoints) && (%finalVPoints >= 0))
         {
             %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VPOINTSONLY"] @ "\n";
         }
-        if ($Player::VBux >= %finalVBux)
-        {
-        }
-        if (%finalVBux >= 0)
+        if (($Player::VBux >= %finalVBux) && (%finalVBux >= 0))
         {
             %text = %text @ "\n" @ %text[$MsgCat::custSpace @ "PURCHASE_VBUXONLY"] @ "\n";
         }
@@ -53,19 +41,13 @@ function CSSpacePurchasePriceConfirmation(%space)
     }
     %buttons = "";
     %count = 0;
-    if ($Player::VPoints >= %finalVPoints)
-    {
-    }
-    if (%finalVPoints >= 0)
+    if (($Player::VPoints >= %finalVPoints) && (%finalVPoints >= 0))
     {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVPoints) @ " vPoints";
         %callback[%count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", false);";
         %count = %count + 1;
     }
-    if ($Player::VBux >= %finalVBux)
-    {
-    }
-    if (%finalVBux >= 0)
+    if (($Player::VBux >= %finalVBux) && (%finalVBux >= 0))
     {
         %buttons = %buttons @ "\t" @ "Buy with " @ commaify(%finalVBux) @ " vBux";
         %callback[%count] = "CSSpacePurchaseDoConfirm(" @ %space @ ", true );";
@@ -150,10 +132,7 @@ function CSSpacePurchasePriceFormatting(%vpoints, %vbux)
     {
         %result = "<bitmap:platform/client/ui/vpoints_9> " @ commaify(%vpoints);
     }
-    if (%vpoints >= 0)
-    {
-    }
-    if (%vbux >= 0)
+    if ((%vpoints >= 0) && (%vbux >= 0))
     {
         %result = %result @ "  or  ";
     }

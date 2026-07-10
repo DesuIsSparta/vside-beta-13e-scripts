@@ -48,10 +48,7 @@ function ticker_tick()
 {
     cancel($gTicker_TimerID);
     $gTicker_TimerID = "";
-    if (isObject(geTicker_TextContainer))
-    {
-    }
-    if (geTicker_TextContainer.isVisible())
+    if (isObject(geTicker_TextContainer) && geTicker_TextContainer.isVisible())
     {
         ticker_doScroll();
         $gTicker_TimerID = schedule($gTicker_TimerPeriodMS, 0, "ticker_tick");
@@ -96,10 +93,7 @@ function ticker_newMessage()
 {
     %msg = "";
     %n = 2;
-    if (%n >= 0)
-    {
-    }
-    while (%msg $= "")
+    while ((%n >= 0) && (%msg $= ""))
     {
         %queue = ticker_getQueue(%n);
         if (%queue.count() > 0)
@@ -108,11 +102,8 @@ function ticker_newMessage()
             %queue.pop_front();
         }
         %n = %n - 1;
-        if (%n >= 0)
-        {
-        }
     }
-    if (!((%msg $= "") @ " " @ %msg $= ""))
+    if (!((%n >= 0) && (%msg $= "") @ " " @ %msg $= ""))
     {
         %senderName = getField(%msg, 0);
         %body = getField(%msg, 1);

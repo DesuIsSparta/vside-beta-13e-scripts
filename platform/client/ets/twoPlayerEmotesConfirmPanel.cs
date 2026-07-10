@@ -52,10 +52,7 @@ function geTwoPlayerEmotesConfirmPanel::countdownTick(%this, %resetTimeRemaining
     %text = %text @ "..";
     geTwoPlayerEmotesConfirmClock_readout.setTextWithStyle(%text);
     cancel(%this.countdownTimerID);
-    if (%this.countdownMSRemaining > 0)
-    {
-    }
-    if (%this.isVisible())
+    if ((%this.countdownMSRemaining > 0) && %this.isVisible())
     {
         %this.countdownTimerID = %this.schedule(%tickPeriod, "countdownTick");
     }

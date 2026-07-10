@@ -63,13 +63,7 @@ function UserActivityMgr::defineActivity(%this, %activityName, %userFacingName, 
 function UserActivityMgr::isKnownActivity(%this, %activityName, %warn)
 {
     %known = %this.knownActivities.hasKey(%activityName);
-    if (!%known)
-    {
-    }
-    if (isDefined("%warn"))
-    {
-    }
-    if (%warn)
+    if (!%known && isDefined("%warn") && %warn)
     {
         error(getScopeName() @ " " @ "- unknown activity: \"" @ %activityName @ "\"." @ " " @ getTrace());
     }

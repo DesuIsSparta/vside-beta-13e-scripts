@@ -114,10 +114,7 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request)
     }
     echo("Retrieved outfit settings:");
     %stringMap.dumpValues();
-    if (!((%n < %num) @ " " @ %stringMap.get("initialOutfitAndBody") $= ""))
-    {
-    }
-    if (%stringMap.get("currentOutfit") $= "")
+    if (!((%n < %num) @ " " @ %stringMap.get("initialOutfitAndBody") $= "") && (%stringMap.get("currentOutfit") $= ""))
     {
         $userpref::player::initialSkus[$Player::Name] = %stringMap.get("initialOutfitAndBody");
         if (!(SkuManager.filterSkusGender($userpref::player::initialSkus[$Player::Name], "f") $= $userpref::player::initialSkus[$Player::Name]))
@@ -135,10 +132,7 @@ function outfits_onDoneOrErrorCallback_GetUserInventoryCollection(%request)
         $userpref::player::initialSkusGender[$Player::Name] = $UserPref::Player::gender;
         %stringMap.clear();
     }
-    if (%stringMap.size() == 0)
-    {
-    }
-    if (!($userpref::player::initialSkus[$Player::Name] $= ""))
+    if ((%stringMap.size() == 0) && !($userpref::player::initialSkus[$Player::Name] $= ""))
     {
         if ($userpref::player::initialSkusGender[$Player::Name] $= $UserPref::Player::gender)
         {

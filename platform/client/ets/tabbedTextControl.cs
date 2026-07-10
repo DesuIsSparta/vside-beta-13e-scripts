@@ -94,10 +94,7 @@ function TabbedTextLine::onMouseDown(%this)
 }
 function TabbedTextLine::onMouseUp(%this, %unused, %unused, %clickCount)
 {
-    if (%clickCount == 2)
-    {
-    }
-    if (%this.Parent.lastClicked == %this)
+    if ((%clickCount == 2) && (%this.Parent.lastClicked == %this))
     {
         %this.onSelect();
     }

@@ -34,10 +34,7 @@ function updateHelpMeModeMenu()
         return;
     }
     %command = "toggleHelpMeMode();";
-    if (isObject($player))
-    {
-    }
-    if ($player.isInHelpMeMode())
+    if (isObject($player) && $player.isInHelpMeMode())
     {
         %text = "Stop asking vSiders for Help";
     }
@@ -89,10 +86,7 @@ function answerHelpMeMode(%newbName, %requestId)
 }
 function Player::onAnimationStart(%this, %animName)
 {
-    if (isObject($player))
-    {
-    }
-    if (%this.getId() == $player.getId())
+    if (isObject($player) && (%this.getId() == $player.getId()))
     {
         %animTags = gAnimationTags.get(%animName);
         %dancing = hasWord(%animTags, "dance");
@@ -214,10 +208,7 @@ function Player::onAnimationDoneClient(%this, %unused)
     {
         return;
     }
-    if (isObject(ClosetGui))
-    {
-    }
-    if (ClosetGui.isVisible())
+    if (isObject(ClosetGui) && ClosetGui.isVisible())
     {
         ClosetGui.isDoingPropAction = 0;
         if (isObject(ClosetWhatYoureWearingList))

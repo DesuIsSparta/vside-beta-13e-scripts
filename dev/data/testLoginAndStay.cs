@@ -25,10 +25,7 @@ function walk()
     $mvYawLeftSpeed = $Pref::Input::KeyboardTurnSpeed;
     $mvForwardAction = $movementSpeed;
     $walkIterations = $walkIterations + 1;
-    if ($loginLogout)
-    {
-    }
-    if ($walkIterations == 5)
+    if ($loginLogout && ($walkIterations == 5))
     {
         logout(0);
         WorldMap.exit();
@@ -56,10 +53,7 @@ function stopAndTalk()
         }
         pChat.say("Hello from" @ " " @ $Hostname @ ".", 0, 0);
         schedule(4000, 0, changeClothes);
-        if ($DestServerName $= "MyApartment")
-        {
-        }
-        if (!$videoURLUpdated)
+        if (($DestServerName $= "MyApartment") && !$videoURLUpdated)
         {
             updateApartment();
         }

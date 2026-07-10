@@ -62,10 +62,7 @@ function initDedicated()
 function quitApp()
 {
     echo("Server quitting");
-    if (!$StandAlone)
-    {
-    }
-    if ($AmServer)
+    if (!$StandAlone && $AmServer)
     {
         stopServer();
     }

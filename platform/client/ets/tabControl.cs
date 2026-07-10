@@ -159,13 +159,7 @@ function TabControl::selectTabAtIndex(%this, %tabIndex)
     }
     %this.upcomingTabIndex = %tabIndex;
     %this.showTabAtIndex(%tabIndex);
-    if (%this.currentTabIndex >= 0)
-    {
-    }
-    if (%this.currentTabIndex < %this.numTabs)
-    {
-    }
-    if (%this.currentTabIndex != %tabIndex)
+    if ((%this.currentTabIndex >= 0) && (%this.currentTabIndex < %this.numTabs) && (%this.currentTabIndex != %tabIndex))
     {
         %this.setTabAtIndexVisible(%this.currentTabIndex, 0);
         if (%this.hasButtons)
@@ -175,10 +169,7 @@ function TabControl::selectTabAtIndex(%this, %tabIndex)
     }
     %this.prevTabIndex = %this.currentTabIndex;
     %this.currentTabIndex = %tabIndex;
-    if (%tabIndex >= 0)
-    {
-    }
-    if (%tabIndex < %this.numTabs)
+    if ((%tabIndex >= 0) && (%tabIndex < %this.numTabs))
     {
         %this.setTabAtIndexVisible(%tabIndex, 1);
         if (%this.hasButtons)
@@ -312,10 +303,7 @@ function TabControl::getPreviousTab(%this)
 }
 function TabControl::removeTabAtIndex(%this, %tabIndex)
 {
-    if (%tabIndex >= 0)
-    {
-    }
-    if (%tabIndex < %this.numTabs)
+    if ((%tabIndex >= 0) && (%tabIndex < %this.numTabs))
     {
         %this.tabs[%tabIndex].setVisible(0);
         %this.tabs[%tabIndex].delete();
@@ -392,10 +380,7 @@ function TabControl::hideOrShowTab(%this, %tabObject, %show)
     }
     %this.overrideLockedOpen = 0;
     %button = %tabObject.button;
-    if (isObject(%button))
-    {
-    }
-    if (%button.isVisible() != %show)
+    if (isObject(%button) && (%button.isVisible() != %show))
     {
         %button.setVisible(%show);
         %this.update();
@@ -541,10 +526,7 @@ function TabControl::newTab(%this, %name, %bitmapName, %optionalToolTip)
     if (%this.hasButtons)
     {
         %button = %this.createButton(%bitmapName, %tab, %name);
-        if (isDefined("%optionalToolTip"))
-        {
-        }
-        if (!(%optionalToolTip $= ""))
+        if (isDefined("%optionalToolTip") && !(%optionalToolTip $= ""))
         {
             %button.tooltip = %optionalToolTip;
         }

@@ -185,10 +185,7 @@ function checkPointsEarnedSinceLastLogin()
     %dVB = $Player::VBux - gUserPropMgrClient.getProperty($Player::Name, "prevBalanceVBux", 0);
     echo(getScopeName() @ " " @ "- offline earnings:" @ " " @ %dVP @ " " @ "vPoints and" @ " " @ %dVB @ " " @ "vBux");
     %firstLogin = !gUserPropMgrClient.hasProperty($Player::Name, "prevBalanceVPoints");
-    if (!%firstLogin)
-    {
-    }
-    if ((%dVP != 0) || (%dVB != 0))
+    if ((%dVP != 0) || !%firstLogin && (%dVB != 0))
     {
         %msg = %dVB[$MsgCat::TGF @ "currencyEarnedOffline"];
         if (%dVP != 0)
@@ -199,10 +196,7 @@ function checkPointsEarnedSinceLastLogin()
         }
         %msg = " " @ %dVP @ " " @ "vPoints" @ "";
         %msg;
-        if (%dVP != 0)
-        {
-        }
-        if (%dVB != 0)
+        if ((%dVP != 0) && (%dVB != 0))
         {
         }
         else

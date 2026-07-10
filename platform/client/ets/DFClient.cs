@@ -69,10 +69,7 @@ function DFDebugRefresh()
 }
 function DFDebugUpdateGuiStatus()
 {
-    if ($gDFDebugCurrAdvert < 1)
-    {
-    }
-    if ($gDFDebugAdvertsList.size() > 0)
+    if (($gDFDebugCurrAdvert < 1) && ($gDFDebugAdvertsList.size() > 0))
     {
     }
     else

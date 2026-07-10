@@ -1739,10 +1739,7 @@ function OptionsPanel::open(%this)
     %this.readSettings();
     %this.setVisible(1);
     PlayGui.focusAndRaise(%this);
-    if ($player)
-    {
-    }
-    if ($player.rolesPermissionCheckNoWarn("quietHUD") || $player.rolesPermissionCheckNoWarn("farNameOpacity"))
+    if ($player.rolesPermissionCheckNoWarn("quietHUD") || $player && $player.rolesPermissionCheckNoWarn("farNameOpacity"))
     {
         OptionsPanelTabs.showTabWithName("vip");
     }
@@ -1980,10 +1977,7 @@ function OptionsPanel::applySettings(%this)
 function OptionsPanel::showBrightnessControls(%this, %flag)
 {
     %this.showBrightnessControls = %flag;
-    if (isObject(BrightnessLabel))
-    {
-    }
-    if (isObject(BrightnessSlider))
+    if (isObject(BrightnessLabel) && isObject(BrightnessSlider))
     {
         BrightnessLabel.setVisible(%flag);
         BrightnessSlider.setVisible(%flag);

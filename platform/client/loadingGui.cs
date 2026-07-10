@@ -20,10 +20,7 @@ function LoadingGui::onWake(%this)
     LoadingTipsHud.initTipsList();
     %this.doTheTipThing();
     %this.updateLogoutButton();
-    if ($StandAlone)
-    {
-    }
-    if (!$missionRunning)
+    if ($StandAlone && !$missionRunning)
     {
         error(getScopeName() @ " " @ "-" @ " " @ $missionRunning[$MsgCat::loading @ "E-MISSION-LD"] @ " " @ $MissionArg @ " " @ getTrace());
         MessageBoxOK("Error", $MsgCat::loading["E-MISSION-LD"] @ " " @ $MissionArg, "quit();");
@@ -126,10 +123,7 @@ function LoadingTipsHud::initTipsList(%this)
     %file = findFirstFile(%testImageSpec);
     if (!(%file $= ""))
     {
-        if (%this.loadTipImage(%file))
-        {
-        }
-        if (!LoadingGui.transitioning)
+        if (%this.loadTipImage(%file) && !LoadingGui.transitioning)
         {
             LoadingTipsHud.setVisible(1);
         }
@@ -177,29 +171,20 @@ function LoadingTipsHud::loadATip(%this)
     }
     %tipNum = getRandom(0, (%this.tipFileCount - 1));
     %n = 0;
-    if (%n < 10)
-    {
-    }
-    while (%this.tipFileShown[%tipNum] == 1)
+    while ((%n < 10) && (%this.tipFileShown[%tipNum] == 1))
     {
         %tipNum = getRandom(0, (%this.tipFileCount - 1));
         %n = %n + 1;
-        if (%n < 10)
-        {
-        }
     }
     %fileName = %this.tipFile[%tipNum];
-    %this.tipFileShown[%tipNum] == 1;
+    (%n < 10) && (%this.tipFileShown[%tipNum] == 1);
     if (%fileName $= "")
     {
         error("Got a bad tip filename. Skipping...");
         LoadingTipsHud.setVisible(0);
         return;
     }
-    if (%this.loadTipImage(%fileName))
-    {
-    }
-    if (!LoadingGui.transitioning)
+    if (%this.loadTipImage(%fileName) && !LoadingGui.transitioning)
     {
         LoadingTipsHud.setVisible(1);
         %this.tipFileShown[%tipNum] = 1;

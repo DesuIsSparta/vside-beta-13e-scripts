@@ -97,10 +97,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseEnterBounds(%this)
     {
         return;
     }
-    if (isObject($gCurrentTableHeaderCellHighlight))
-    {
-    }
-    if ($gCurrentTableHeaderCellHighlight != %headerCell)
+    if (isObject($gCurrentTableHeaderCellHighlight) && ($gCurrentTableHeaderCellHighlight != %headerCell))
     {
         $gCurrentTableHeaderCellHighlight.setProfile(GuiTableHeaderCell_N_Profile);
     }
@@ -124,10 +121,7 @@ function GuiTableHeaderCellButtonCtrl::onMouseDown(%this)
     {
         return;
     }
-    if (isObject($gCurrentTableHeaderCellHighlight))
-    {
-    }
-    if ($gCurrentTableHeaderCellHighlight != %headerCell)
+    if (isObject($gCurrentTableHeaderCellHighlight) && ($gCurrentTableHeaderCellHighlight != %headerCell))
     {
         $gCurrentTableHeaderCellHighlight.setProfile(GuiTableHeaderCell_N_Profile);
     }

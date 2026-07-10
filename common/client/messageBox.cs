@@ -94,10 +94,7 @@ function MessageBoxTextEntryWithCancel(%title, %message, %callback, %defaultText
 {
     %dialog = MessageBoxTextEntryWCancelDlg::newDialog();
     %dialog.window.setText(%title);
-    if (%maxLength != 0)
-    {
-    }
-    if (!(%maxLength $= ""))
+    if ((%maxLength != 0) && !(%maxLength $= ""))
     {
         %dialog.textEntry.maxLength = %maxLength;
     }

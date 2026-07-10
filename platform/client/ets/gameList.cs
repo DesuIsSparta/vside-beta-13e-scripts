@@ -202,10 +202,7 @@ function GameList::refreshInspectTab(%this)
     }
     else
     {
-        if (%game.gamestatus != $gameMgr::GameStatus::STARTED)
-        {
-        }
-        if (!%this.postgameView)
+        if ((%game.gamestatus != $gameMgr::GameStatus::STARTED) && !%this.postgameView)
         {
             %readyText = !%game.ourRecord.ready ? "[I'm ready]" : "[I'm not ready]";
             %lowerText = %lowerText @ "Change readiness:<a:game changeReady " @ %game.serversideID @ " " @ !%game.ourRecord.ready @ ">" @ %readyText @ "</a><br>";
@@ -271,10 +268,7 @@ function GameMgrMLText::onURL(%this, %url)
 }
 function GameMgrHudTabs::tabSelected(%this, %tab)
 {
-    if (%tab.name $= "INSPECT")
-    {
-    }
-    if (gameMgrClient.areWeInspecting() == 1)
+    if ((%tab.name $= "INSPECT") && (gameMgrClient.areWeInspecting() == 1))
     {
         gameMgrClient.inspectedGame.deepUpdated = 0;
         GameList.refresh();
@@ -624,10 +618,7 @@ function GameList::onRightURL(%this, %url)
 function onLeftClickGameName(%SID)
 {
     %curTime = getSimTime();
-    if ((%curTime - $gLastNameClickTime) < 400)
-    {
-    }
-    if ($gLastNameClickName $= %SID)
+    if (((%curTime - $gLastNameClickTime) < 400) && ($gLastNameClickName $= %SID))
     {
         echo("Sending inspectGameRequest with SID==" @ %SID);
         gameMgrClient.requestToInspectGame(%SID);
@@ -650,10 +641,7 @@ function onRightClickGameName(%name)
 }
 function onSingleClickGameName(%name)
 {
-    if (showPlayerInfoPopup())
-    {
-    }
-    if (!(%name $= $player.getShapeName()))
+    if (showPlayerInfoPopup() && !(%name $= $player.getShapeName()))
     {
         InfoPopupDlg.open();
         InfoPopupDlg.showInfoFor(%name);

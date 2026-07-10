@@ -163,10 +163,7 @@ package dev
     function onExit()
     {
         $ETS::devMode = 0;
-        if (!$Server::Dedicated)
-        {
-        }
-        if (!$NonInteractive)
+        if (!$Server::Dedicated && !$NonInteractive)
         {
             echo("Exporting Dev Prefs");
             export("$DevPref::*", "dev/devPrefs.cs", 0);

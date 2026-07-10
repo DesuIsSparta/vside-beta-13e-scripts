@@ -88,10 +88,7 @@ function snapshotAvatarToolonCompleted(%request, %result)
     {
         snapshotAvatarToolSet1.setVisible(1);
         snapshotAvatarToolSet2.setVisible(0);
-        if (!(%snapshot.visitWhenDoneUrl $= ""))
-        {
-        }
-        if ($UserPref::Snapshots::View)
+        if (!(%snapshot.visitWhenDoneUrl $= "") && $UserPref::Snapshots::View)
         {
             gotoWebPage(%snapshot.visitWhenDoneUrl);
         }

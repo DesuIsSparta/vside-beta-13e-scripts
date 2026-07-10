@@ -21,10 +21,7 @@ function Player::onGotSKUs(%this)
     $gOutfits.put(%gender @ "Body", SkuManager.filterSkusForBody(%skus));
     $gOutfits.put(%gender @ %outfitName, SkuManager.filterSkusForClothing(%skus));
     $Player::IsInHelpMeMode = %this.isInHelpMeMode();
-    if (isObject(SalonStyleSelector))
-    {
-    }
-    if (SalonStyleSelector.isVisible())
+    if (isObject(SalonStyleSelector) && SalonStyleSelector.isVisible())
     {
         SalonStyleSelector.refreshAvailableStyles();
     }
@@ -33,10 +30,7 @@ function Player::onGotSKUs(%this)
     {
         %usingInstrument = 0;
         %i = InstrumentRegistryClient.getInstrumentCount() - 1;
-        if (%i >= 0)
-        {
-        }
-        while (!%usingInstrument)
+        while ((%i >= 0) && !%usingInstrument)
         {
             %instrument = InstrumentRegistryClient.getInstrumentByIndex(%i);
             if (hasWord(%skus, %instrument.skus[%gender]))
@@ -46,14 +40,8 @@ function Player::onGotSKUs(%this)
                 %usingInstrument = 1;
             }
             %i = %i - 1;
-            if (%i >= 0)
-            {
-            }
         }
-        if (!%usingInstrument)
-        {
-        }
-        if (!%usingInstrument @ " " @ ApplauseMeterGui.applauseMeterUse $= "instrument")
+        if (!%usingInstrument && ((%i >= 0) && !%usingInstrument @ " " @ ApplauseMeterGui.applauseMeterUse $= "instrument"))
         {
             ApplauseMeterGui.closingFromServer = 1;
             ApplauseMeterGui.close();
@@ -83,57 +71,30 @@ function Player::onGotSKUs(%this)
     }
     %currentGenreIsInstrumentGenre = InstrumentRegistryClient.isInstrumentGenre(%currentGenre);
     %currentGenreIsPropGenre = isPropGenre(%currentGenre);
-    if (!(%instrumentGenre $= ""))
-    {
-    }
-    if (!(%currentGenre $= %instrumentGenre))
+    if (!(%instrumentGenre $= "") && !(%currentGenre $= %instrumentGenre))
     {
         commandToServer('EnterSpecialGenre', %instrumentGenre);
     }
     else
     {
-        if (%propSku $= "")
-        {
-        }
-        if (%currentGenreIsInstrumentGenre)
+        if ((%propSku $= "") && %currentGenreIsInstrumentGenre)
         {
             commandToServer('ExitSpecialGenre', %currentGenre);
         }
-        if (!(%propSku $= ""))
-        {
-        }
-        if (%instrumentGenre $= "")
-        {
-        }
-        if (!%currentGenreIsPropGenre)
+        if (!(%propSku $= "") && (%instrumentGenre $= "") && !%currentGenreIsPropGenre)
         {
             commandToServer('EnterSpecialGenre', %propGenre);
         }
-        if (%propSku $= "")
-        {
-        }
-        if (%currentGenreIsPropGenre)
+        if ((%propSku $= "") && %currentGenreIsPropGenre)
         {
             commandToServer('ExitSpecialGenre', %propGenre);
         }
-        if (!(%propSku $= ""))
-        {
-        }
-        if (%currentGenreIsPropGenre)
-        {
-        }
-        if (!(%currentGenre $= %propGenre))
+        if (!(%propSku $= "") && %currentGenreIsPropGenre && !(%currentGenre $= %propGenre))
         {
             commandToServer('SwitchSpecialGenre', %currentGenre, %propGenre);
         }
     }
-    if (%propSku $= "")
-    {
-    }
-    if (%currentGenreIsPropGenre || %currentGenreIsInstrumentGenre || !(%instrumentGenre $= ""))
-    {
-    }
-    if (!(%currentGenre $= $UserPref::Player::Genre))
+    if (%currentGenreIsPropGenre || %currentGenreIsInstrumentGenre || (%propSku $= "") && !(%instrumentGenre $= "") && !(%currentGenre $= $UserPref::Player::Genre))
     {
         commandToServer('setGenre', $UserPref::Player::Genre);
     }

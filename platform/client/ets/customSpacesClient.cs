@@ -28,10 +28,7 @@ function CustomSpaceClient::SetSpaceImIn(%buildingName, %spaceName)
     $CSBuildingName = %buildingName;
     $CSSpaceName = %spaceName;
     $CSBlockedList = "";
-    if (%buildingName $= "")
-    {
-    }
-    if (%spaceName $= "")
+    if ((%buildingName $= "") && (%spaceName $= ""))
     {
         return;
     }
@@ -133,10 +130,7 @@ function GotCustomSpaceInfo(%buildingInfo, %spaceGroup)
     {
         log("network", "error", "GotCustomSpaceInfo returned a strange number of spaces (" @ %spaceGroup.getCount() @ ")");
     }
-    if ($CSSpaceInfo != 0)
-    {
-    }
-    if (isObject($CSSpaceInfo))
+    if (($CSSpaceInfo != 0) && isObject($CSSpaceInfo))
     {
         destroySpaceInfo($CSSpaceInfo);
     }
@@ -194,10 +188,7 @@ function CustomSpaceClient::SetUpOwnership(%isOwner)
         }
         if (isObject(CSControlPanel))
         {
-            if ($CSSpaceInfo != 0)
-            {
-            }
-            if (stricmp($CSSpaceInfo.type, "model") == 0)
+            if (($CSSpaceInfo != 0) && (stricmp($CSSpaceInfo.type, "model") == 0))
             {
                 CSControlPanel.open();
                 CSControlPanelTabs.selectTabWithName("MODEL_APT");
@@ -264,10 +255,7 @@ function CustomSpaceClient::placeSkuInWorld(%sku, %position, %orientation)
         return;
     }
     $CSSelectedSku = %sku;
-    if (!(%position $= ""))
-    {
-    }
-    if (!(%orientation $= ""))
+    if (!(%position $= "") && !(%orientation $= ""))
     {
         commandToServer('CreateInventoryBySkuAt', CustomSpaceClient::GetSpaceImIn(), %sku, %position, %orientation);
     }
@@ -382,10 +370,7 @@ function clientCmdCS_OnLeaveSpace(%spaceName)
         %analytic = getAnalytic();
         %analytic.trackPageView("/client/apartment/" @ getWord(%analyticSpace, 0) @ "/exit");
         CustomSpaceClient::SetupClientAsNotInSpace();
-        if (!($CSSpaceInfo $= ""))
-        {
-        }
-        if (isObject($CSSpaceInfo))
+        if (!($CSSpaceInfo $= "") && isObject($CSSpaceInfo))
         {
             destroySpaceInfo($CSSpaceInfo);
             $CSSpaceInfo = 0;
@@ -445,10 +430,7 @@ function CustomSpaceClient::CheckBlockUserFromSpace(%playerName, %unblock)
         handleSystemMessage("msgInfoMessage", "You didn't specify anyone to " @ %blockText);
         return 0;
     }
-    if (!$player.rolesPermissionCheckNoWarn("manageUsers"))
-    {
-    }
-    if (!CustomSpaceClient::isOwner())
+    if (!$player.rolesPermissionCheckNoWarn("manageUsers") && !CustomSpaceClient::isOwner())
     {
         handleSystemMessage("msgInfoMessage", "You must be the owner of a space to " @ %blockText @ " users from it.");
         return 0;
@@ -461,10 +443,7 @@ function CustomSpaceClient::setCoHostHood(%playerName, %set, %confirm)
     {
         %confirm = 1;
     }
-    if (%set)
-    {
-    }
-    if (%confirm)
+    if (%set && %confirm)
     {
         %msg = %confirm[$MsgCat::custSpace TAB "OWNER_ACTION" @ "COHOST-CONFIRM"];
         %msg = strreplace(%msg, "[TARGET]", %playerName);
@@ -517,10 +496,7 @@ function CustomSpaceClient::ReallyTryBlockUserFromSpace(%playerName, %unblock)
     %request.blockedPlayer = %playerName;
     %request.blockText = %blockText;
     %url = $Net::ClientServiceURL @ "/BanFromSpace" @ "?user=" @ urlEncode($Player::Name) @ "&token=" @ urlEncode($Token) @ "&space=" @ urlEncode(%space) @ "&userToBan=" @ urlEncode(%playerName);
-    if (%unblock == 1)
-    {
-    }
-    if (!(%unblock $= ""))
+    if ((%unblock == 1) && !(%unblock $= ""))
     {
         %url = %url @ "&unban=true";
     }
@@ -555,17 +531,11 @@ function BanFromSpaceRequest::onDone(%this)
 }
 function CustomSpaceClient::TryBootAllUsersFromSpace(%space)
 {
-    if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic"))
-    {
-    }
-    if (!CustomSpaceClient::isOwner())
+    if (!$player.rolesPermissionCheckNoWarn("manageUsersBasic") && !CustomSpaceClient::isOwner())
     {
         return;
     }
-    if (%space $= "")
-    {
-    }
-    if (CustomSpaceClient::GetSpaceImIn() $= "")
+    if ((%space $= "") && (CustomSpaceClient::GetSpaceImIn() $= ""))
     {
         handleSystemMessage("msgInfoMessage", "You must either specify a space or be in one to boot all users.");
         return;
@@ -692,10 +662,7 @@ function checkDoneBuildingDirectory(%BuildingDirRequest)
     log("network", "debug", "Checking directory request done.");
     log("network", "debug", "Building Info    = " @ %BuildingDirRequest.doneBuildingInfo);
     log("network", "debug", "CustomSpace List = " @ %BuildingDirRequest.doneCSList);
-    if (%BuildingDirRequest.doneBuildingInfo)
-    {
-    }
-    if (%BuildingDirRequest.doneCSList)
+    if (%BuildingDirRequest.doneBuildingInfo && %BuildingDirRequest.doneCSList)
     {
         linkSpaces(%BuildingDirRequest.buildingInfo, %BuildingDirRequest.spaces);
         %command = %BuildingDirRequest.callback @ "( %BuildingDirRequest.buildingInfo, %BuildingDirRequest.spaces);";
@@ -1311,10 +1278,7 @@ function GetUrlRatingListRequest::onDone(%this)
     %mediaList = "";
     %count = %this.getValue("mediaCount");
     %idx = 0;
-    if (%idx < %count)
-    {
-    }
-    while (%idx < $CSMediaDisplay::DefaultFavoriteCount)
+    while ((%idx < %count) && (%idx < $CSMediaDisplay::DefaultFavoriteCount))
     {
         %mediaURL = urlDecode(%this.getValue("media" @ %idx @ ".url"));
         %viewCount = %this.getValue("media" @ %idx @ ".viewCount");
@@ -1329,9 +1293,6 @@ function GetUrlRatingListRequest::onDone(%this)
             %mediaList = %mediaList @ "\t" @ %mediaInfo;
         }
         %idx = %idx + 1;
-        if (%idx < %count)
-        {
-        }
     }
     CSMediaDisplay.setMediaHotlist(%mediaList);
     %this.schedule(0, "delete");

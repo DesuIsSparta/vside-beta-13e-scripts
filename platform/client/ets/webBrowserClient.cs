@@ -147,10 +147,7 @@ function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this)
     %num = %this.toDownload.count();
     %found = -(1);
     %n = 0;
-    if (%n < %num)
-    {
-    }
-    while (%found == -(1))
+    while ((%n < %num) && (%found == -(1)))
     {
         %dlItem = %this.toDownload.getKey(%n);
         if (!%this.isUrlOutstanding(%dlItem.url))
@@ -158,9 +155,6 @@ function dlMgr::getAndRemoveFirstActionableItemInToDownloadQueue(%this)
             %found = %n;
         }
         %n = %n + 1;
-        if (%n < %num)
-        {
-        }
     }
     if (%found == -(1))
     {

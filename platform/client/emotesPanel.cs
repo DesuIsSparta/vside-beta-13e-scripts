@@ -316,10 +316,7 @@ function EmoteHudList::putListIntoList(%this, %srcList)
         log(relations, error, "unknown list" @ " " @ %srcList);
         return;
     }
-    if (%list.size() > 0)
-    {
-    }
-    if (!%this.listAdded[%this.curListName])
+    if ((%list.size() > 0) && !%this.listAdded[%this.curListName])
     {
         %this.listAdded[%this.curListName] = 1;
         if (%this[$UserPref::emotes::collapsedLists @ %this.curListName])

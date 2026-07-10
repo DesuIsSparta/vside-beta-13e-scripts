@@ -53,10 +53,7 @@ function sendRequest_GetCustomSpaceInfo(%buildingName, %spaceName, %ownerName, %
     %url = %url @ "/GetCustomSpaceInfo";
     %request.setURL(%url);
     %request.addUserAndToken($Player::Name);
-    if (%buildingName $= "")
-    {
-    }
-    if (%ownerName $= "")
+    if ((%buildingName $= "") && (%ownerName $= ""))
     {
         error(getScopeName() @ " " @ "- either buildingName or ownerName must have a value." @ " " @ getTrace());
         return "";
@@ -116,10 +113,7 @@ function sendRequest_GetUserInventoryCollection(%userName, %collectionName, %cal
 function sendRequest_GetUserRelations(%userName, %singleUserName, %callbackHandler)
 {
     %requestName = "request_GetUserRelations";
-    if (%singleUserName $= "")
-    {
-    }
-    if (isObject(%requestName))
+    if ((%singleUserName $= "") && isObject(%requestName))
     {
         if (%requestName.doAnother)
         {
@@ -215,10 +209,7 @@ function sendRequest_GetOnlineUsers(%maxCount, %callbackHandler)
     %request.doAnother = 0;
     %request.addUrlParam("maxCount", %maxCount);
     %isImplemented = 1;
-    if (%isImplemented)
-    {
-    }
-    if (!$StandAlone)
+    if (%isImplemented && !$StandAlone)
     {
         %request.start();
     }
@@ -661,10 +652,7 @@ function sendRequest_PublishToTicker(%message, %priority, %callbackHandler)
     %request.setURLParam("text", %message);
     %request.setURLParam("priority", %priority);
     %isImplementedOnBackEnd = 1;
-    if (%isImplementedOnBackEnd)
-    {
-    }
-    if (!$StandAlone)
+    if (%isImplementedOnBackEnd && !$StandAlone)
     {
         %request.start();
     }

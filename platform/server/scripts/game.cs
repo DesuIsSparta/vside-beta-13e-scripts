@@ -110,10 +110,7 @@ function endGame()
 }
 function onGameDurationEnd()
 {
-    if ($Game::Duration)
-    {
-    }
-    if (!isObject(EditorGui))
+    if ($Game::Duration && !isObject(EditorGui))
     {
         cycleGame();
     }
@@ -191,19 +188,13 @@ function GameConnection::onEnterMissionArea(%this)
 function GameConnection::onDeath(%this, %unused, %sourceClient, %damageType, %unused)
 {
     %this.Player.setShapeName("");
-    if (isObject(%this.Camera))
-    {
-    }
-    if (isObject(%this.Player))
+    if (isObject(%this.Camera) && isObject(%this.Player))
     {
         %this.Camera.setMode("Corpse", %this.Player);
         %this.setControlObject(%this.Camera);
     }
     %this.Player = 0;
-    if (%damageType $= "Suicide")
-    {
-    }
-    if (%sourceClient == %this)
+    if ((%damageType $= "Suicide") && (%sourceClient == %this))
     {
         %this.incScore(-(1));
         messageAll('MsgClientKilled', '%1 takes his own life!', %this.name);

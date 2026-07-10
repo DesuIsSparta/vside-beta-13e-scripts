@@ -288,10 +288,7 @@ function yellOperation(%line)
 function teleportOperation(%playerName)
 {
     %bOwnerTele = 0;
-    if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-    {
-    }
-    if ($player.isHostOrCohost())
+    if (!(CustomSpaceClient::GetSpaceImIn() $= "") && $player.isHostOrCohost())
     {
         %playerClicked = Player::findPlayerInstance(%playerName);
         if (!isObject(%playerClicked))
@@ -332,10 +329,7 @@ function respawnOperation(%playerName)
         {
             doUserRespawn(%playerName);
         }
-        if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-        {
-        }
-        if ($player.isHostOrCohost())
+        if (!(CustomSpaceClient::GetSpaceImIn() $= "") && $player.isHostOrCohost())
         {
             CustomSpaceClient::doOwnerAction("respawn", %playerName);
         }
@@ -343,20 +337,14 @@ function respawnOperation(%playerName)
 }
 function kickOperation(%playerName)
 {
-    if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-    {
-    }
-    if ($player.isHostOrCohost())
+    if (!(CustomSpaceClient::GetSpaceImIn() $= "") && $player.isHostOrCohost())
     {
         CustomSpaceClient::doOwnerAction("kick", %playerName);
     }
 }
 function cohostOperation(%playerName)
 {
-    if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-    {
-    }
-    if ($player.isHostOrCohost())
+    if (!(CustomSpaceClient::GetSpaceImIn() $= "") && $player.isHostOrCohost())
     {
         CustomSpaceClient::toggleCoHostHood(%playerName);
     }
@@ -373,10 +361,7 @@ function summonOperation(%playerName)
     }
     else
     {
-        if (!(CustomSpaceClient::GetSpaceImIn() $= ""))
-        {
-        }
-        if ($player.isHostOrCohost())
+        if (!(CustomSpaceClient::GetSpaceImIn() $= "") && $player.isHostOrCohost())
         {
             CustomSpaceClient::doOwnerAction("summon", %playerName);
         }
@@ -547,10 +532,7 @@ function doUserIgnore(%playerName, %op)
     {
         safeEnsureScriptObjectWithInit("StringMap", "cantUnignoreList", "{ ignoreCase = true; }");
         %canUnignoreTime = cantUnignoreList.get(%playerName);
-        if (!("" $= %canUnignoreTime))
-        {
-        }
-        if (%canUnignoreTime > getSimTime())
+        if (!("" $= %canUnignoreTime) && (%canUnignoreTime > getSimTime()))
         {
             handleSystemMessage("msgInfoMessage", $MsgCat::abuse["WAIT-TO-UNIGNORE"]);
             return;
@@ -664,10 +646,7 @@ function coAnimOperation(%string)
 }
 function doCoAnim(%coAnimName, %targetName)
 {
-    if ($ETS::devMode)
-    {
-    }
-    if ($StandAlone)
+    if ($ETS::devMode && $StandAlone)
     {
         exec("platform/common/scripts/coAnimateCommon.cs");
     }
@@ -1032,10 +1011,7 @@ function RelRequest::onDone(%this)
         if (%status $= "success")
         {
             %comp = %this.relType @ %this.oper;
-            if ((%comp $= "friendacceptall") || (%comp $= "frienddeclineall"))
-            {
-            }
-            if (%this.otherName $= "")
+            if ((%comp $= "friendacceptall") || (%comp $= "frienddeclineall") && (%this.otherName $= ""))
             {
                 SystemMessageTextCtrl.updateFriendRequest(%this.otherName, (%comp $= "friendacceptall"));
             }

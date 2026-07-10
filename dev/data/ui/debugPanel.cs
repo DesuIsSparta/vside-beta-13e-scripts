@@ -21,10 +21,7 @@ function debugPanel::onWake(%this)
 {
     gui_DevOpts_ResX.setValue(getWord($UserPref::Video::Resolution, 0));
     gui_DevOpts_ResY.setValue(getWord($UserPref::Video::Resolution, 1));
-    if (isObject(debugPanel_SkuSnapButton))
-    {
-    }
-    if (!isFunction("skuSnapshot_isSkuSnapshot"))
+    if (isObject(debugPanel_SkuSnapButton) && !isFunction("skuSnapshot_isSkuSnapshot"))
     {
         debugPanel_SkuSnapButton.setActive(0);
     }

@@ -129,10 +129,7 @@ package platform
     function haveValidManagerHost()
     {
         %ret = isValidHostAddress($Net::ManagerHost);
-        if (!%ret)
-        {
-        }
-        if (!$StandAlone)
+        if (!%ret && !$StandAlone)
         {
             warn(getScopeName(1) @ " " @ "- $Net::ManagerHost is invalid." @ " " @ getTrace());
         }
@@ -146,10 +143,7 @@ package platform
     {
         Parent::parseArgs();
         echo("--------- Parsing Arg MOD: platform ---------");
-        if (hasArg("-dedicated") || hasArg("-server"))
-        {
-        }
-        if (!$Game::Compile)
+        if (hasArg("-dedicated") || hasArg("-server") && !$Game::Compile)
         {
             $Server::Dedicated = 1;
             $Con::logBufferEnabled = 0;
@@ -164,10 +158,7 @@ package platform
         {
             parseClientArgs();
         }
-        if (hasArg("-dedicated") || hasArg("-server"))
-        {
-        }
-        if (!$Game::Compile)
+        if (hasArg("-dedicated") || hasArg("-server") && !$Game::Compile)
         {
             enableWinConsole(1);
         }
@@ -542,10 +533,7 @@ package platform
     }
     function dumpConsoleHistoryReally()
     {
-        if (isObject(ConsoleEntry))
-        {
-        }
-        if (!$NonInteractive)
+        if (isObject(ConsoleEntry) && !$NonInteractive)
         {
             ConsoleEntry.dumpHistory("platform/client/consoleHistory.txt");
         }

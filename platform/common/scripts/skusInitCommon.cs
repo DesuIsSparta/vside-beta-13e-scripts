@@ -7,20 +7,11 @@ function SkuManager::addItem(%this, %skunum, %skuType, %rolesMask, %gender, %bra
     {
         %rolesMask = 2147483648;
     }
-    if (!(%stores $= ""))
-    {
-    }
-    if (%bornWith)
-    {
-    }
-    if (!$StandAlone)
+    if (!(%stores $= "") && %bornWith && !$StandAlone)
     {
         warn("Wardrobe", getScopeName() @ " " @ "- bornWith sku in a store." @ " " @ %skunum @ " " @ %descShrt @ " " @ %stores);
     }
-    if ($ETS::ProjectName $= "vmtv")
-    {
-    }
-    if (%brand $= "myet")
+    if (($ETS::ProjectName $= "vmtv") && (%brand $= "myet"))
     {
         %brand = "";
     }

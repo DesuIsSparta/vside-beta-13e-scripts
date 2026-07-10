@@ -34,10 +34,7 @@ function queuePackageUpdates(%missing)
 }
 function downloadPackageUpdates(%missing)
 {
-    if (!isObject(packageDownload))
-    {
-    }
-    if (isObject(%missing))
+    if (!isObject(packageDownload) && isObject(%missing))
     {
         queuePackageUpdates(%missing);
     }
@@ -239,10 +236,7 @@ function packageDownload::downloadFile(%this)
 function packageDownload::onError(%this, %request, %errNo)
 {
     error("Problems downloading: " @ %request.getDownloadFile());
-    if (%errNo == $CURL::OperationTimedOut)
-    {
-    }
-    if (%this.retryCount < 3)
+    if ((%errNo == $CURL::OperationTimedOut) && (%this.retryCount < 3))
     {
         echo("Retrying timed-out file " @ %request.getDownloadFile() @ " (Attempt #" @ (%this.retryCount + 1) @ ")");
         %this.retryCount = %this.retryCount + 1;
@@ -348,10 +342,7 @@ function packageDownload::getCurrentItemStatus(%this)
 function packageDownload::getPercentComplete(%this, %city)
 {
     %package = AssetManager::cityToPackage(%city);
-    if (isObject(%this.statusMap))
-    {
-    }
-    if (%this.statusMap.get(%package) $= "incomplete")
+    if (isObject(%this.statusMap) && (%this.statusMap.get(%package) $= "incomplete"))
     {
         return 0;
     }
@@ -383,10 +374,7 @@ function packageDownload::getStatusForCity(%this, %city)
     %package = AssetManager::cityToPackage(%city);
     %status = %this.getItemStatus(%package);
     %common_status = %this.getItemStatus($AssetManager::COMMONPACKAGE);
-    if ((%status $= "") || (%status $= "done"))
-    {
-    }
-    if ((%common_status $= "") || (%city $= "gw") || (%common_status $= "done"))
+    if ((%common_status $= "") || (%city $= "gw") || (%status $= "") || (%status $= "done") && (%common_status $= "done"))
     {
         return "done";
     }
@@ -447,10 +435,7 @@ function packageDownloadCheck::onDone(%this)
     %available = %this.getValue("client_version");
     %buildVersion = formatInt("%d", getBuildVersion());
     %protocolVersion = formatInt("%d", getProtocolVersion());
-    if (%available > %buildVersion)
-    {
-    }
-    if (%available > %protocolVersion)
+    if ((%available > %buildVersion) && (%available > %protocolVersion))
     {
         echo("There's a newer client version available. Letting normal upgrade process take over from here.");
         queuePackageUpdates(%badpackages);

@@ -188,10 +188,7 @@ function geTGF_OnGotDoneOrError_GetHappeningsInProgress(%request)
         }
         %imageURL = %item.baseImageURL @ "?size=S";
         "";
-        if (!($ServerName $= ""))
-        {
-        }
-        %sameServer = (%item.location_serverName $= $ServerName) ? "true" : "false";
+        %sameServer = !($ServerName $= "") && (%item.location_serverName $= $ServerName) ? "true" : "false";
         if (%item.eventID $= "")
         {
             %eventValue = "notAnEvent";
@@ -279,10 +276,7 @@ function geTGF_tabs::hotSpotsTab_formatAccess(%access, %isFriend)
     }
     else
     {
-        if (%access $= "FRIENDSONLY")
-        {
-        }
-        if (%isFriend)
+        if ((%access $= "FRIENDSONLY") && %isFriend)
         {
             return "friendsOnlyOfFriend";
         }
@@ -290,10 +284,7 @@ function geTGF_tabs::hotSpotsTab_formatAccess(%access, %isFriend)
         {
             return "friendsOnlyOfNonFriend";
         }
-        if (%access $= "PASSWORDPROTECTED")
-        {
-        }
-        if (%isFriend)
+        if ((%access $= "PASSWORDPROTECTED") && %isFriend)
         {
             return "doorcodeOfFriend";
         }

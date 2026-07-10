@@ -169,10 +169,7 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
     %text = strreplace(%text, "[LEVELNAME]", %levelName);
     %text = strreplace(%text, "[VPGIVE]", %limitVpGive);
     %text = strreplace(%text, "[VBGIVE]", %limitVbGive);
-    if (!$gGiftingEnabled_vPoints)
-    {
-    }
-    if (!$gGiftingEnabled_vBux)
+    if (!$gGiftingEnabled_vPoints && !$gGiftingEnabled_vBux)
     {
         %text = %text @ "<br><color:ff3333>Gifting is temporarily disabled.";
     }
@@ -188,14 +185,8 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
         }
     }
     geGiftingTextLimits.setTextWithStyle(%text);
-    if (%limitVpGive > 0)
-    {
-    }
-    %enableVP = $gGiftingEnabled_vPoints;
-    if (%limitVbGive > 0)
-    {
-    }
-    %enableVB = $gGiftingEnabled_vBux;
+    %enableVP = (%limitVpGive > 0) && $gGiftingEnabled_vPoints;
+    %enableVB = (%limitVbGive > 0) && $gGiftingEnabled_vBux;
     geGiftingCurrencyType_vPoints.setActive(%enableVP);
     geGiftingCurrencyType_vBux.setActive(%enableVB);
     geGiftingTextType.setTextWithStyle("<spush><font:Arial Bold:20>1.<spop> " @ geGiftingTextType.textBody);
@@ -253,10 +244,7 @@ function geGiftingPanel::refreshScreen_Initiate(%this)
         geGiftingTextCurrency.setTextWithStyle("");
         geGiftingEditAmt.setVisible(0);
     }
-    if (geGiftingEditAmt.getValue() > 0)
-    {
-    }
-    if (%amountInTheBank >= geGiftingEditAmt.getValue())
+    if ((geGiftingEditAmt.getValue() > 0) && (%amountInTheBank >= geGiftingEditAmt.getValue()))
     {
         geGiftingTextMsg.setTextWithStyle("<spush><font:Arial Bold:20>3.<spop> " @ geGiftingTextMsg.textBody);
         geGiftingEditMsg.setVisible(1);
@@ -410,10 +398,7 @@ function geGiftingPanel::countdownTick(%this)
     %text = %text @ "..";
     geGiftingAcceptDeclineClock_readout.setTextWithStyle(%text);
     cancel($gGiftingPanelAcceptDeclineTimerID);
-    if ($gGiftingPanelCountdownMSRemaining > 0)
-    {
-    }
-    if (%this.isVisible())
+    if (($gGiftingPanelCountdownMSRemaining > 0) && %this.isVisible())
     {
         $gGiftingPanelAcceptDeclineTimerID = %this.schedule(%tickPeriod, "countdownTick");
     }
@@ -769,10 +754,7 @@ function geGiftingPanel::onBack_Confirmation(%this)
 }
 function geGiftingPanel::getAmountInBankOfCurrentCurrency(%this)
 {
-    if (!geGiftingCurrencyType_vPoints.getValue())
-    {
-    }
-    if (!geGiftingCurrencyType_vBux.getValue())
+    if (!geGiftingCurrencyType_vPoints.getValue() && !geGiftingCurrencyType_vBux.getValue())
     {
         return 0;
     }

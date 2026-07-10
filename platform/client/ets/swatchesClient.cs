@@ -200,10 +200,7 @@ function onMouseWheelDifSkus(%val)
         }
     }
     $gDifSkusCurrentSwatch = getWord($gDifSkusSwatchSkusViewable, %ndx);
-    if (isObject(geSwatchesPanel))
-    {
-    }
-    if (geSwatchesPanel.isVisible())
+    if (isObject(geSwatchesPanel) && geSwatchesPanel.isVisible())
     {
         geSwatchesPanel.selectSwatch($gDifSkusCurrentSwatch);
     }

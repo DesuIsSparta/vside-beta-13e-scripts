@@ -812,10 +812,7 @@ function ClosetGui_MyShop_GetSkuUGCStatus(%sku)
     %statusi = "ACCEPTED PENDING REJECTED TEMPLATES INCOMING";
     %status = "";
     %n = getWordCount(%statusi) - 1;
-    if (%status $= "")
-    {
-    }
-    while (%n >= 0)
+    while ((%status $= "") && (%n >= 0))
     {
         %s = getWord(%statusi, %n);
         if (hasWord($gUGCSkus[%s], %sku))
@@ -823,11 +820,8 @@ function ClosetGui_MyShop_GetSkuUGCStatus(%sku)
             %status = %s;
         }
         %n = %n - 1;
-        if (%status $= "")
-        {
-        }
     }
-    %si.ugcStatus = (%n >= 0) @ %status;
+    %si.ugcStatus = (%status $= "") && (%n >= 0) @ %status;
     if (%status $= "")
     {
         error(getScopeName() @ " " @ "- no UGC status for sku" @ " " @ %sku @ " " @ getTrace());
@@ -1071,13 +1065,7 @@ function MyShopItemDeetsPanel::setSkuBaseTextures(%this, %sku)
         MyShopItemDeets_TexturesScroll.setVisible(1);
     }
     %currParent = MyShopDragFilesImage.getGroup();
-    if (%isValid)
-    {
-    }
-    if (%currParent != %prevParent)
-    {
-    }
-    if (%si.hasTag("TEMPLATE"))
+    if (%isValid && (%currParent != %prevParent) && %si.hasTag("TEMPLATE"))
     {
         MyShopDragFilesImage.FlashVisibility(5, 150);
     }
@@ -1166,10 +1154,7 @@ function geTextureDropTarget::acceptsSystemDragDropContent(%this, %text)
         return 0;
     }
     %extension = getExtension(%text);
-    if (!(%extension $= ".jpg"))
-    {
-    }
-    if (!(%extension $= ".png"))
+    if (!(%extension $= ".jpg") && !(%extension $= ".png"))
     {
         echo(getScopeName() @ " " @ "- invalid extension:" @ " " @ %text);
         return 0;
@@ -1323,10 +1308,7 @@ function MyShopSubmitButton::onClick(%this)
 }
 function MyShop_InspectTexture(%num)
 {
-    if (MyShopTextureInspector.isVisible())
-    {
-    }
-    if (MyShopTextureInspector.showingTextureNum $= %num)
+    if (MyShopTextureInspector.isVisible() && (MyShopTextureInspector.showingTextureNum $= %num))
     {
         MyShopTextureInspector.close();
         MyShopTextureInspector.showingTextureNum = "";
@@ -1379,26 +1361,17 @@ function MyShopStartNewButton::onClick(%this)
         %textureName = %originalPath;
         %ext = "";
         %try = ".png";
-        if (%ext $= "")
-        {
-        }
-        if (isFile(%originalPath @ %try))
+        if ((%ext $= "") && isFile(%originalPath @ %try))
         {
             %ext = %try;
         }
         %try = ".jpg";
-        if (%ext $= "")
-        {
-        }
-        if (isFile(%originalPath @ %try))
+        if ((%ext $= "") && isFile(%originalPath @ %try))
         {
             %ext = %try;
         }
         %try = ".png";
-        if (%ext $= "")
-        {
-        }
-        if (isFile($DC::CacheFolderName @ "/" @ %originalPath @ %try))
+        if ((%ext $= "") && isFile($DC::CacheFolderName @ "/" @ %originalPath @ %try))
         {
             %ext = %try;
             %originalPath = $DC::CacheFolderName @ "/" @ %originalPath;
@@ -1429,10 +1402,7 @@ function MyShopStartNewButton::onClick(%this)
         fileCopy(%srcFile, %trgFile);
         %n = %n - 1;
     }
-    if ((%n >= 0) @ " " @ $Platform $= "windows")
-    {
-    }
-    if ($Platform::Version::Major >= 6)
+    if (((%n >= 0) @ " " @ $Platform $= "windows") && ($Platform::Version::Major >= 6))
     {
         %vsDir = getVirtualStoreDir() @ "/" @ %trgdir;
         if (platformIsFile(%vsDir @ "/readme.txt"))

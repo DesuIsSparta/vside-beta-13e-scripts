@@ -7,10 +7,7 @@ function Player::UseHeightRandom(%this)
 function Player::setHeight(%this, %height)
 {
     %c = getSubStr(%height, 0, 1);
-    if (%c $= "+")
-    {
-    }
-    if (%c $= "-")
+    if ((%c $= "+") && (%c $= "-"))
     {
         %h = getWord(%this.getScale(), 2);
         %h = %h + %height;

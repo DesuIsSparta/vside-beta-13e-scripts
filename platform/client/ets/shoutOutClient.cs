@@ -115,21 +115,15 @@ function shoutout_takeSnapshot()
     %ctrlList;
     geShoutout_Snapshot.snap_hiddenCtrlList = %ctrlList;
     BroadSnapshotButton_HideSnoop();
-    if (!$UserPref::UI::ShoutOut::Show::Me)
+    if (!$UserPref::UI::ShoutOut::Show::Me && !$IN_ORBIT_CAM && !$firstPerson)
     {
-        if (!$IN_ORBIT_CAM)
+        $player.MeshOff("*");
+        $player.setShapeName("");
+        if (isObject($player.hudCtrl))
         {
+            %ctrlList = %ctrlList @ " " @ $player.hudCtrl;
         }
-        if (!$firstPerson)
-        {
-            $player.MeshOff("*");
-            $player.setShapeName("");
-            if (isObject($player.hudCtrl))
-            {
-                %ctrlList = %ctrlList @ " " @ $player.hudCtrl;
-            }
-            %ctrlList = %ctrlList @ " " @ ThePointsFloaterHud;
-        }
+        %ctrlList = %ctrlList @ " " @ ThePointsFloaterHud;
     }
     %ctrlList = trim(%ctrlList);
     hideABunchOfControls(%ctrlList);
@@ -138,10 +132,7 @@ function shoutout_takeSnapshot()
     geShoutout_Snapshot.snap_fnBase = $DC::LocalAvatarFolder @ "/shoutout";
     geShoutout_Snapshot.snap_fnExt = ".jpg";
     %cmd = "generic_takeSnapshotReally(geShoutout_Snapshot);";
-    if ($Platform $= "windows")
-    {
-    }
-    if ($Platform::Version::Major == 6)
+    if (($Platform $= "windows") && ($Platform::Version::Major == 6))
     {
         waitAFrameAndEval("waitAFrameAndEval(\"" @ %cmd @ "\");");
     }
@@ -309,10 +300,7 @@ function onDoneOrErrorCallback_Twitter_verify_credentials(%request)
     %xmlDoc = new XMLDoc("");
     %xmlDoc.parseXML(%request.getResults());
     %xmlRoot = %xmlDoc.getRootElement();
-    if (isObject(%xmlRoot))
-    {
-    }
-    %succ = %xmlRoot.getValue() $= "user";
+    %succ = isObject(%xmlRoot) && (%xmlRoot.getValue() $= "user");
     geShoutout_Avatar_Twitter.setBitmap("platform/client/ui/external_portrait_unknown");
     geShoutout_Avatar_Twitter.tooltip = "problem accessing your twitter account";
     if (!%succ)
@@ -427,10 +415,7 @@ function shoutOut_action_shortenPhotoURLFailed()
 }
 function shoutOut_action_sendPhase2()
 {
-    if ($UserPref::UI::ShoutOut::FB::Include)
-    {
-    }
-    if ($gShoutOut_PhotoURL $= "")
+    if ($UserPref::UI::ShoutOut::FB::Include && ($gShoutOut_PhotoURL $= ""))
     {
         MessageBoxOK("sorry, i forgot to mention..", "To share on Facebook you have to use a snapshot.<br>This will be fixed in a future release,<br>but for now Try again!", "schedule(500, 0, \"shoutOut_action_forceSnapshot\");");
         shoutOut_action_GroundState();
@@ -528,10 +513,7 @@ function onDoneOrErrorCallback_Twitter_statuses_update(%request)
     %xmlDoc = new XMLDoc("");
     %xmlDoc.parseXML(%request.getResults());
     %xmlRoot = %xmlDoc.getRootElement();
-    if (isObject(%xmlRoot))
-    {
-    }
-    %succ = %xmlRoot.getValue() $= "status";
+    %succ = isObject(%xmlRoot) && (%xmlRoot.getValue() $= "status");
     if (%succ)
     {
         %tweetID = %xmlRoot.getFirstChild("id").getText();

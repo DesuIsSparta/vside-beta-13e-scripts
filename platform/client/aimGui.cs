@@ -29,22 +29,13 @@ function AIMConvManager::Initialize(%this)
 }
 function AIMConvManager::selectConvAtIndex(%this, %convIndex)
 {
-    if (%this.currentConvIndex >= 0)
-    {
-    }
-    if (%this.currentConvIndex < %this.numConvs)
-    {
-    }
-    if (%this.currentConvIndex != %convIndex)
+    if ((%this.currentConvIndex >= 0) && (%this.currentConvIndex < %this.numConvs) && (%this.currentConvIndex != %convIndex))
     {
         %this.convs[%this.currentConvIndex].contents.setVisible(0);
         %this.convs[%this.currentConvIndex].titlebar.recipient.setProfile(ETSAIMDeselectedProfile);
         %this.convs[%this.currentConvIndex].newMessage = 0;
     }
-    if (%convIndex >= 0)
-    {
-    }
-    if (%convIndex < %this.numConvs)
+    if ((%convIndex >= 0) && (%convIndex < %this.numConvs))
     {
         %this.convs[%convIndex].titlebar.recipient.setProfile(ETSAIMSelectedProfile);
         %this.convs[%convIndex].newMessage = 0;
@@ -85,10 +76,7 @@ function AIMConvManager::previousConv(%this)
 }
 function AIMConvManager::removeConvAtIndex(%this, %convIndex)
 {
-    if (%convIndex >= 0)
-    {
-    }
-    if (%convIndex < %this.numConvs)
+    if ((%convIndex >= 0) && (%convIndex < %this.numConvs))
     {
         %conv = %this.convs[%convIndex];
         %conv.contents.setVisible(0);
@@ -143,10 +131,7 @@ function AIMConvManager::removeCurrentConv(%this)
 }
 function AIMConvManager::update(%this)
 {
-    if ((%this.numConvs == 0) || (%this.currentConvIndex < 0))
-    {
-    }
-    if (Canvas.getFirstResponder() == 0)
+    if ((%this.numConvs == 0) || (%this.currentConvIndex < 0) && (Canvas.getFirstResponder() == 0))
     {
         TheShapeNameHud.makeFirstResponder(1);
     }
@@ -458,10 +443,7 @@ function AIMConvManager::newConv(%this, %aimName)
 function AIMConvManager::convClicked(%this, %conv)
 {
     %curConv = %this.getCurrentConv();
-    if (isObject(%curConv))
-    {
-    }
-    if (%curConv.getId() == %conv.getId())
+    if (isObject(%curConv) && (%curConv.getId() == %conv.getId()))
     {
         %this.selectConvAtIndex(-(1));
     }

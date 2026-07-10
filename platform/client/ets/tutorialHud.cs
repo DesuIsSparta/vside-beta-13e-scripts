@@ -381,10 +381,7 @@ function geTutorialContainer::setMetaData(%this, %stepObj)
     %labelText = "<just:right>" @ $gTutorialsFontBig @ %tutorialName;
     geTutorialMLTop.setText(%labelText);
     %labelText = $gTutorialsFontMed @ %stepName;
-    if ((%stepObj.getGroup() == %stepObj.getGroup().tutorial) || %stepObj.getGroup().tutorial.isSecret)
-    {
-    }
-    if (%stepObj.getGroup().getCount() > 1)
+    if ((%stepObj.getGroup() == %stepObj.getGroup().tutorial) || %stepObj.getGroup().tutorial.isSecret && (%stepObj.getGroup().getCount() > 1))
     {
         %labelText = %labelText @ "<just:right>" @ $gTutorialsFontSmall @ "step " @ %stepNum @ " of " @ %stepTTL;
         if (%stepNum < %stepTTL)
@@ -479,10 +476,7 @@ function clientCmdEnterTutorialSpace(%name, %forceRestartTutorial)
 }
 function TutorialsObject::doStartTutorial(%this, %forceRestartTutorial)
 {
-    if (%this == $gCurrentMainTutorial)
-    {
-    }
-    %returningToMainTutorialFromSecretTutorial = geTutorialContainer.getCurrentTutorialObj().isSecret;
+    %returningToMainTutorialFromSecretTutorial = (%this == $gCurrentMainTutorial) && geTutorialContainer.getCurrentTutorialObj().isSecret;
     if (!%this.isSecret)
     {
         $gCurrentMainTutorial = %this.getId();

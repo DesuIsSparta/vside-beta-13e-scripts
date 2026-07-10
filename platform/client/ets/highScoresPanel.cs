@@ -108,10 +108,7 @@ function onDoneOrErrorCallback_GetHighGameScores(%request)
             %scoreRanking = %request.getValue(%prefix @ ".scoreRanking");
             %userName = %request.getValue(%prefix @ ".userName");
             %dateAttained = %request.getValue(%prefix @ ".dateAttained");
-            if (%userName $= $Player::Name)
-            {
-            }
-            if (%userRanking $= "")
+            if ((%userName $= $Player::Name) && (%userRanking $= ""))
             {
                 %userRanking = %scoreRanking;
                 %userScore = %score;

@@ -109,10 +109,7 @@ function ConvBub::updateAutoMargins(%this)
 function ConvBub::close(%this, %keepHistory)
 {
     ConvBub.setVisible(0);
-    if (!%keepHistory)
-    {
-    }
-    if (isObject(pChat))
+    if (!%keepHistory && isObject(pChat))
     {
         pChat.clearHistory();
     }
@@ -131,10 +128,7 @@ function ConvBub::open(%this)
 }
 function ConvBub::chooseProfile(%this)
 {
-    if (isObject(ApplauseMeterGui))
-    {
-    }
-    if (ApplauseMeterGui.downplayChatBubble())
+    if (isObject(ApplauseMeterGui) && ApplauseMeterGui.downplayChatBubble())
     {
         %this.setProfile(ConvBubFadedProfile);
     }

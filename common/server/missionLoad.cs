@@ -21,10 +21,7 @@ function loadMission(%missionName, %isFirstMission)
         }
         %cl = %cl + 1;
     }
-    if (%isFirstMission)
-    {
-    }
-    if ((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer")
+    if (%isFirstMission && ((%cl < %count) @ " " @ $Server::ServerType $= "SinglePlayer"))
     {
         loadMissionStage2();
     }

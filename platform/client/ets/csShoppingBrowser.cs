@@ -18,10 +18,7 @@ function CSShoppingBrowserWindow::open(%this)
 }
 function CSShoppingBrowserWindow::close(%this)
 {
-    if ($CSSelectedSku != -(1))
-    {
-    }
-    if (!$CSSelectedIsOwned)
+    if (($CSSelectedSku != -(1)) && !$CSSelectedIsOwned)
     {
         csTestFreeSelectedItem();
     }
@@ -135,10 +132,7 @@ function CSShoppingBrowser::fillLeafPane(%this, %pane)
     %paneWidth = getWord(%pane.getExtent(), 0);
     %paneHeight = getWord(%pane.getExtent(), 1);
     %pane.buyQuantity = 1;
-    if (!(%desc $= ""))
-    {
-    }
-    if (!(%desc $= %this.baseDir))
+    if (!(%desc $= "") && !(%desc $= %this.baseDir))
     {
         %ypos = getWord(%pane.itemText.getExtent(), 1);
         %rightYPos = 18;
@@ -413,10 +407,7 @@ function CSShoppingBrowser::onGotPurchaseResult(%status, %results)
             %resultCode = getWord(%result, 1);
             if (%resultCode $= "pass")
             {
-                if ($CSSelectedSku == %sku)
-                {
-                }
-                if (!$CSSelectedIsOwned)
+                if (($CSSelectedSku == %sku) && !$CSSelectedIsOwned)
                 {
                     csTestFreeSelectedItem();
                 }
@@ -459,16 +450,7 @@ function CSShoppingBrowser::goToPath(%this, %path, %focus)
     CSShoppingBrowser.vBuxIcon.reposition(3, (getWord(%this.getExtent(), 1) - 20));
     %pathSku = getSubStr(strchr(%path, "|"), 1);
     %i < %count;
-    if ($CSSelectedSku != -(1))
-    {
-    }
-    if (!$CSSelectedIsOwned)
-    {
-    }
-    if (!(%path $= %oldPath))
-    {
-    }
-    if (!(%pathSku $= $CSSelectedSku))
+    if (($CSSelectedSku != -(1)) && !$CSSelectedIsOwned && !(%path $= %oldPath) && !(%pathSku $= $CSSelectedSku))
     {
         csTestFreeSelectedItem();
     }
@@ -505,10 +487,7 @@ function CSShoppingBrowserSKUItem::onMouseLeaveBounds(%this)
     Parent::onMouseLeaveBounds(%this);
     if (!$CSShoppingBrowser::InstaTestDriveEnabled)
     {
-        if ($CSInstaTestDrive)
-        {
-        }
-        if (!isEventPending($CSShoppingBrowserSKUItem::deleteEvent))
+        if ($CSInstaTestDrive && !isEventPending($CSShoppingBrowserSKUItem::deleteEvent))
         {
             $CSInstaTestDrive = 0;
             csTestFreeSelectedItem();

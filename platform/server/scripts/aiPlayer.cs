@@ -201,10 +201,7 @@ function AIPlayer::thinkETS(%this, %periodMS)
     %secondsBetweenMoves = 10;
     %secondsBetweenWords = 13;
     %secondsBetweenEavesdrops = 7;
-    if (%periodMS > getRandom(0, (1000 * %secondsBetweenEmotes)))
-    {
-    }
-    if (%this.getMoveState() $= "stop")
+    if ((%periodMS > getRandom(0, (1000 * %secondsBetweenEmotes))) && (%this.getMoveState() $= "stop"))
     {
         %this.doRandomEmote();
     }

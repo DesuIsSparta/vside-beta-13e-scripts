@@ -23,10 +23,7 @@ function setIdle(%idle, %message)
     {
         %message = "";
     }
-    if (isObject(ServerConnection))
-    {
-    }
-    if (!ServerConnection.isPresentAtBody())
+    if (isObject(ServerConnection) && !ServerConnection.isPresentAtBody())
     {
         %idle = 1;
     }

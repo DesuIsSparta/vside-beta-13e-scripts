@@ -87,19 +87,13 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY)
         %posY = getWord(%pos, 1);
         if (%checkAtY >= 0)
         {
-            if (%posY <= %checkAtY)
-            {
-            }
-            %overlap = (%posY + getWord(%win.getExtent(), 1)) >= %checkAtY;
+            %overlap = (%posY <= %checkAtY) && ((%posY + getWord(%win.getExtent(), 1)) >= %checkAtY);
         }
         else
         {
             %overlap = 1;
         }
-        if (%win.isVisible())
-        {
-        }
-        if (%overlap)
+        if (%win.isVisible() && %overlap)
         {
             %position = mMin(%position, %posX);
         }
@@ -119,19 +113,13 @@ function WindowManager::getRightMarginAtY(%this, %checkAtY)
         %posY = getWord(%pos, 1);
         if (%checkAtY >= 0)
         {
-            if (%posY <= %checkAtY)
-            {
-            }
-            %overlap = (%posY + getWord(%ctrl.getExtent(), 1)) >= %checkAtY;
+            %overlap = (%posY <= %checkAtY) && ((%posY + getWord(%ctrl.getExtent(), 1)) >= %checkAtY);
         }
         else
         {
             %overlap = 1;
         }
-        if (%ctrl.isVisible())
-        {
-        }
-        if (%overlap)
+        if (%ctrl.isVisible() && %overlap)
         {
             %position = mMin(%position, %posX);
         }
@@ -155,19 +143,13 @@ function WindowManager::getLeftMarginAtY(%this, %checkAtY)
         %posY = getWord(%pos, 1);
         if (%checkAtY >= 0)
         {
-            if (%posY <= %checkAtY)
-            {
-            }
-            %overlap = (%posY + getWord(%win.getExtent(), 1)) >= %checkAtY;
+            %overlap = (%posY <= %checkAtY) && ((%posY + getWord(%win.getExtent(), 1)) >= %checkAtY);
         }
         else
         {
             %overlap = 1;
         }
-        if (%win.isVisible())
-        {
-        }
-        if (%overlap)
+        if (%win.isVisible() && %overlap)
         {
             %edge = getWord(%win.getExtent(), 0) + %posX;
             %width = mMax(%width, %edge);
@@ -188,19 +170,13 @@ function WindowManager::getLeftMarginAtY(%this, %checkAtY)
         %posY = getWord(%pos, 1);
         if (%checkAtY >= 0)
         {
-            if (%posY <= %checkAtY)
-            {
-            }
-            %overlap = (%posY + getWord(%ctrl.getExtent(), 1)) >= %checkAtY;
+            %overlap = (%posY <= %checkAtY) && ((%posY + getWord(%ctrl.getExtent(), 1)) >= %checkAtY);
         }
         else
         {
             %overlap = 1;
         }
-        if (%ctrl.isVisible())
-        {
-        }
-        if (%overlap)
+        if (%ctrl.isVisible() && %overlap)
         {
             %edge = getWord(%ctrl.getExtent(), 0) + %posX;
             %width = mMax(%width, %edge);
@@ -262,10 +238,7 @@ function WindowManager::repositionWindows(%this, %windowSet)
             {
                 if (%win.isVisible())
                 {
-                    if (%win.getFieldValue("doAutoClose"))
-                    {
-                    }
-                    if (%win.getFieldValue("age") > 0)
+                    if (%win.getFieldValue("doAutoClose") && (%win.getFieldValue("age") > 0))
                     {
                         if (%oldestWin $= "")
                         {
@@ -349,10 +322,7 @@ function WindowManager::repositionWindows(%this, %windowSet)
             }
             %i = %i + 1;
         }
-        if (%ypos > (getWord($UserPref::Video::Resolution, 1) - %windowSet.getFieldValue("bottomMargin")))
-        {
-        }
-        if (!((%i < %windowSet.numWindows) @ " " @ %oldestWin $= ""))
+        if ((%ypos > (getWord($UserPref::Video::Resolution, 1) - %windowSet.getFieldValue("bottomMargin"))) && !((%i < %windowSet.numWindows) @ " " @ %oldestWin $= ""))
         {
             %recomputing = 1;
             %oldestWin.close();
@@ -371,10 +341,7 @@ function WindowManager::repositionWindows(%this, %windowSet)
             %width = getWord(%win.getExtent(), 0);
             %curHeight = getWord(%win.getExtent(), 1);
             %win.resize(%xPos, %ypos, %width, %height[%i]);
-            if (%win.hasMethod("onResized"))
-            {
-            }
-            if (%height[%i] != %curHeight)
+            if (%win.hasMethod("onResized") && (%height[%i] != %curHeight))
             {
                 %win.onResized();
             }
@@ -406,17 +373,11 @@ function BuddyHudWin::open(%this)
 function BuddyHudWin::close(%this)
 {
     %this.setVisible(0);
-    if (!$UserPref::AIM::RememberMe)
-    {
-    }
-    if (isObject(AIMScreenNameField))
+    if (!$UserPref::AIM::RememberMe && isObject(AIMScreenNameField))
     {
         AIMScreenNameField.setText("");
     }
-    if (!$UserPref::AIM::SavePassword)
-    {
-    }
-    if (isObject(AIMPasswordField))
+    if (!$UserPref::AIM::SavePassword && isObject(AIMPasswordField))
     {
         AIMPasswordField.setText("");
     }

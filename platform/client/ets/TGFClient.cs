@@ -76,10 +76,7 @@ function geTGF::open(%this)
 }
 function geTGF::reopen(%this)
 {
-    if (!(%this.doreopen $= ""))
-    {
-    }
-    if (%this.doreopen == 1)
+    if (!(%this.doreopen $= "") && (%this.doreopen == 1))
     {
         %this.open();
     }
@@ -873,10 +870,7 @@ function geTGF::getPrevItem(%this, %listName, %type)
         %curNdx = 0;
     }
     %newNdx = %curNdx - 1;
-    if (%newNdx >= 0)
-    {
-    }
-    if (%newNdx < %itemList.count())
+    if ((%newNdx >= 0) && (%newNdx < %itemList.count()))
     {
         %ret = %itemList.getValue(%newNdx);
     }
@@ -895,10 +889,7 @@ function geTGF::getNextItem(%this, %listName, %type)
         %curNdx = 0;
     }
     %newNdx = %curNdx + 1;
-    if (%newNdx >= 0)
-    {
-    }
-    if (%newNdx < %itemList.count())
+    if ((%newNdx >= 0) && (%newNdx < %itemList.count()))
     {
         %ret = %itemList.getValue(%newNdx);
     }

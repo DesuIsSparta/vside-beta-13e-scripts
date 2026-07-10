@@ -182,10 +182,7 @@ function AdManager::doSwap(%this)
 }
 function AdManager::think(%this)
 {
-    if (%this.doSwap() > 0)
-    {
-    }
-    if (%this.periodSecs > 0)
+    if ((%this.doSwap() > 0) && (%this.periodSecs > 0))
     {
         %this.schedule((%this.periodSecs * 1000), think);
     }

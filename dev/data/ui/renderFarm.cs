@@ -90,20 +90,14 @@ function rf_beginRender(%request)
     $gRF_CurrentRequest = %request;
     %gender = "n";
     %n = getWordCount(%request.skus) - 1;
-    if (%n >= 0)
-    {
-    }
-    while (%gender $= "n")
+    while ((%n >= 0) && (%gender $= "n"))
     {
         %sku = getWord(%request.skus, %n);
         %si = SkuManager.findBySku(%sku);
         %gender = %si.gender;
         %n = %n - 1;
-        if (%n >= 0)
-        {
-        }
     }
-    if ((%gender $= "n") @ " " @ %gender $= "n")
+    if ((%n >= 0) && (%gender $= "n") @ " " @ %gender $= "n")
     {
         %gender = "f";
     }

@@ -2,10 +2,7 @@ function serverCmdSAD(%client, %password)
 {
     error("SAD not supported");
     return;
-    if (!(%password $= ""))
-    {
-    }
-    if (%password $= $Pref::Server::AdminPassword)
+    if (!(%password $= "") && (%password $= $Pref::Server::AdminPassword))
     {
         %client.isAdmin = 1;
         %client.isSuperAdmin = 1;

@@ -334,19 +334,7 @@ function clientCmdWhisperIn(%text, %name, %isAutoReply)
         return;
     }
     pChat::ProcessIncomingLine(%text, 0, %name, $player.getShapeName(), 0, "whisper", %isAutoReply);
-    if (!%isAutoReply)
-    {
-    }
-    if ($UserPref::Player::autoReplyToWhispersWhenAway)
-    {
-    }
-    if ($GameConnection.isPresentAtBody())
-    {
-    }
-    if ($player.getAFK())
-    {
-    }
-    if (!$player.haveNotifiedPlayerOfIdleStatus(%name))
+    if (!%isAutoReply && $UserPref::Player::autoReplyToWhispersWhenAway && $GameConnection.isPresentAtBody() && $player.getAFK() && !$player.haveNotifiedPlayerOfIdleStatus(%name))
     {
         doUserWhisper(%name, $player.getAwayMessage(), 1);
     }

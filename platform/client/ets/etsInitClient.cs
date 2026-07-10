@@ -45,10 +45,7 @@ function GameConnection::etsInit(%this)
     $player.setActiveSKUs(outfits_getCurrentSkus());
     commandToServer('setActiveSkus', $player.getActiveSKUs());
     $gClosetGuiNeedsOpen = 0;
-    if (!$StandAlone)
-    {
-    }
-    if (!$gRetrievedOutfits)
+    if (!$StandAlone && !$gRetrievedOutfits)
     {
         $gClosetGuiNeedsOpen = 1;
         $gRetrievedOutfits = 1;
@@ -58,10 +55,7 @@ function GameConnection::etsInit(%this)
     {
         doAIMSignIn();
     }
-    if (isObjectAndHasPermission_NoWarn($player, "debugPassive"))
-    {
-    }
-    if ($DevPref::reportTriggers)
+    if (isObjectAndHasPermission_NoWarn($player, "debugPassive") && $DevPref::reportTriggers)
     {
         commandToServer('reportTriggers', 1);
     }
@@ -339,10 +333,7 @@ function Player::getRoleBadgeBitmapName(%this)
     }
     %ret = "";
     %n = 0;
-    if (%n < $gRoleBadgeBitmapNamesNum)
-    {
-    }
-    while (%ret $= "")
+    while ((%n < $gRoleBadgeBitmapNamesNum) && (%ret $= ""))
     {
         if (%this.hasRoleString(%n[$gRoleBadgeBitmapNames TAB %n @ "role"]))
         {
@@ -359,9 +350,6 @@ function Player::getRoleBadgeBitmapName(%this)
             }
         }
         %n = %n + 1;
-        if (%n < $gRoleBadgeBitmapNamesNum)
-        {
-        }
     }
     return %ret;
 }

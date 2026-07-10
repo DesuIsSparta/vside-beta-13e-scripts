@@ -30,10 +30,7 @@ function TEST_MISSIONGROUPINTEGRITY::objectInstanceMustHaveUniqueName(%this, %ob
 }
 function TEST_MISSIONGROUPINTEGRITY::InitializeNPCNames(%this)
 {
-    if (!(MissionInfo.skipNPCCheck $= ""))
-    {
-    }
-    if (MissionInfo.skipNPCCheck == 1)
+    if (!(MissionInfo.skipNPCCheck $= "") && (MissionInfo.skipNPCCheck == 1))
     {
         log("general", "debug", "Skipping NPC name check.");
         %this.NPCNameMap = 0;
@@ -244,10 +241,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this)
         %this.assertCount("PRIVATESPACE_ENTRYSPAWN", 1, "private space missions must have a PRIVATESPACE_ENTRYSPAWN spawn sphere, this is where the player spawns when they enter the space, should go close to the door");
         %this.assertCount("PRIVATESPACE_EXITTRANSITION", 1, "private space missions must have a PRIVATESPACE_EXITTRANSITION, this is the teleportal that goes back to city you came from,should go close to the door");
         %this.assertCount("PRIVATESPACE_ZONEBOX", 1, "private space missions must have a PRIVATESPACE_ZONEBOX, this is the zonebox object that defines scope for this apartment, it should cover your entire apartment and anything in it that can be scoped in and out. this will handle it instead of the interior.  There should only be one, and it should cover your entire apartment so that all furniture, players etc will be inside it for this apartment");
-        if (isObject(PRIVATESPACE_AREA))
-        {
-        }
-        if (isObject(PRIVATESPACE_ZONEBOX))
+        if (isObject(PRIVATESPACE_AREA) && isObject(PRIVATESPACE_ZONEBOX))
         {
             %worldBox = PRIVATESPACE_AREA.getWorldBox();
             %minP = getWords(%worldBox, 0, 2);
@@ -267,22 +261,7 @@ function TEST_MISSIONGROUPINTEGRITY::CheckPrivateSpaceSetup(%this)
             %zonemaxx = getWord(%maxP, 0);
             %zonemaxy = getWord(%maxP, 1);
             %zonemaxz = getWord(%maxP, 2);
-            if (%zoneminx <= %areaminx)
-            {
-            }
-            if (%zoneminy <= %areaminy)
-            {
-            }
-            if (%zoneminz <= %areaminz)
-            {
-            }
-            if (%zonemaxx >= %areamaxx)
-            {
-            }
-            if (%zonemaxy >= %areamaxy)
-            {
-            }
-            %contained = %zonemaxz >= %areamaxz;
+            %contained = (%zoneminx <= %areaminx) && (%zoneminy <= %areaminy) && (%zoneminz <= %areaminz) && (%zonemaxx >= %areamaxx) && (%zonemaxy >= %areamaxy) && (%zonemaxz >= %areamaxz);
             %this.assert(%contained, " PRIVATESPACE_AREA  must be entirely inside of PRIVATESPACE_ZONEBOX, it looks like the area is outside in this mission, make sure the zonebox surrounds it completely. thanks!");
         }
     }
@@ -370,19 +349,13 @@ function TEST_MISSIONGROUPINTEGRITY::IsAbleToNotCache(%this, %obj)
     %classname = %obj.getClassName();
     %ableToNotCache = 0;
     %i = 0;
-    if (%i < %this.ableToNotCacheClassCount)
-    {
-    }
-    while (%ableToNotCache == 0)
+    while ((%i < %this.ableToNotCacheClassCount) && (%ableToNotCache == 0))
     {
         if (%this.ableToNotCacheClass[%i] $= %classname)
         {
             %ableToNotCache = 1;
         }
         %i = %i + 1;
-        if (%i < %this.ableToNotCacheClassCount)
-        {
-        }
     }
     return %ableToNotCache;
 }
@@ -395,19 +368,13 @@ function TEST_MISSIONGROUPINTEGRITY::getInitialNetCacheable(%this, %obj)
     %classname = %obj.getClassName();
     %ret = 1;
     %i = 0;
-    if (%i < %this.InitiallyNotNetCacheableClassCount)
-    {
-    }
-    while (%ret == 1)
+    while ((%i < %this.InitiallyNotNetCacheableClassCount) && (%ret == 1))
     {
         if (%this.InitiallyNotNetCacheableClass[%i] $= %classname)
         {
             %ret = 0;
         }
         %i = %i + 1;
-        if (%i < %this.InitiallyNotNetCacheableClassCount)
-        {
-        }
     }
     return %ret;
 }
@@ -468,10 +435,7 @@ function TEST_MISSIONGROUPINTEGRITY::RecursivelyCheckForThingsThatDontBelong(%th
     if (%obj.isClassAIPlayer())
     {
         %this.assert((NPCGroup.getObjectIndex(%obj) > -(1)), "AIPlayer is not in NPCGroup:" @ " " @ getDebugString(%obj));
-        if (isObject(%this.NPCNameMap))
-        {
-        }
-        if (%this.NPCNameMap.findKey(%obj.getName()) == -(1))
+        if (isObject(%this.NPCNameMap) && (%this.NPCNameMap.findKey(%obj.getName()) == -(1)))
         {
             %belongs = 0;
             %actionNeeded = "NPC" @ " " @ %obj.getName() @ " " @ "should be listed in npc_usernames.txt.";

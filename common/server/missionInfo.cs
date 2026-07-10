@@ -24,10 +24,7 @@ function buildLoadInfo(%mission)
             }
             else
             {
-                if (%inInfoBlock)
-                {
-                }
-                if (%line $= "};")
+                if (%inInfoBlock && (%line $= "};"))
                 {
                     %inInfoBlock = 0;
                     %infoObject = %infoObject @ %line;

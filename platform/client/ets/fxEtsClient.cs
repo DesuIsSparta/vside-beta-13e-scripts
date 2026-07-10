@@ -15,10 +15,7 @@ function fxEts::updateExposureFilter()
     }
     else
     {
-        if ($renderQuality == 0)
-        {
-        }
-        if ($UserPref::Video::exposureQualitySetting == 3)
+        if (($renderQuality == 0) && ($UserPref::Video::exposureQualitySetting == 3))
         {
             return;
         }
@@ -138,17 +135,11 @@ function fxEts::getColorForTOD(%sod)
     while (%n < $fxEts::TOD::ColorModSamplesNum)
     {
         %hour = %n[24 @ $fxEts::TOD::ColorModSample TAB %n @ hour] %;
-        if (%hour <= %hod)
-        {
-        }
-        if (%hour > %lowerBound)
+        if ((%hour <= %hod) && (%hour > %lowerBound))
         {
             %lowerBound = %n;
         }
-        if (%hour >= %hod)
-        {
-        }
-        if (%hour < %upperBound)
+        if ((%hour >= %hod) && (%hour < %upperBound))
         {
             %upperBound = %n;
         }
@@ -188,10 +179,7 @@ function fxEts::BrightnessFlashTick()
 function fxEts::BrightnessFlashTimer()
 {
     cancel($fxEts::BrightnessFlashTimerID);
-    if (fxEts::BrightnessFlashTick())
-    {
-    }
-    if ($fxEts::BrightnessFlashTimerPeriod > 0)
+    if (fxEts::BrightnessFlashTick() && ($fxEts::BrightnessFlashTimerPeriod > 0))
     {
         $fxEts::BrightnessFlashTimerID = schedule($fxEts::BrightnessFlashTimerPeriod, 0, "eval", "fxEts::BrightnessFlashTimer();");
     }

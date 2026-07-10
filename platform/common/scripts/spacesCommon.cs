@@ -59,10 +59,7 @@ function spaces_FindSpaceDefWithStoreID(%storeID)
 {
     %found = 0;
     %n = spaceDefsGroup.getCount() - 1;
-    if (%n >= 0)
-    {
-    }
-    while (%found == 0)
+    while ((%n >= 0) && (%found == 0))
     {
         %found = spaceDefsGroup.getObject(%n);
         if (!(%found.storeID $= %storeID))
@@ -70,9 +67,6 @@ function spaces_FindSpaceDefWithStoreID(%storeID)
             %found = 0;
         }
         %n = %n - 1;
-        if (%n >= 0)
-        {
-        }
     }
     return %found;
 }
@@ -83,10 +77,7 @@ function SpaceDef::getInternalName(%this)
 function initTokenSubstitutions()
 {
     %map = safeEnsureScriptObject("StringMap", "gTokenSubstitutionTable");
-    if (0)
-    {
-    }
-    if (%map.initialized)
+    if (0 && %map.initialized)
     {
         return %map;
     }
